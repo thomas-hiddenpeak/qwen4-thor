@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstdio>
@@ -91,18 +92,30 @@ class RequestDiagnostics {
     Event("begin");
   }
   ~RequestDiagnostics() {
-    std::fprintf(sink_,
-                 "[q4t][request] instance=%llu id=%s event=end stage=%s seq=%d "
-                 "released=%d outcome=%s reason=%s elapsed_ms=%.3f "
-                 "slot_wait_ms=%.3f model_lock_ms=%.3f tokenizer_lock_ms=%.3f "
-                 "scheduler_completion_ms=%.3f stream_write_ms=%.3f "
-                 "scheduler_waits=%llu trace_id=%s\n",
-                 instance_, id_.c_str(), stage_, seq_, released_, outcome_,
-                 reason_, Milliseconds(Clock::now() - start_), totals_[0],
-                 totals_[1], totals_[2], totals_[3], totals_[4], counts_[3],
-                 trace_id_.c_str());
+    std::fprintf(
+        sink_,
+        "[q4t][request] instance=%llu id=%s event=end stage=%s seq=%d "
+        "released=%d outcome=%s reason=%s elapsed_ms=%.3f "
+        "slot_wait_ms=%.3f model_lock_ms=%.3f tokenizer_lock_ms=%.3f "
+        "scheduler_completion_ms=%.3f stream_write_ms=%.3f "
+        "scheduler_waits=%llu trace_id=%s safety_identifier_sha256=%s\n",
+        instance_, id_.c_str(), stage_, seq_, released_, outcome_, reason_,
+        Milliseconds(Clock::now() - start_), totals_[0], totals_[1], totals_[2],
+        totals_[3], totals_[4], counts_[3], trace_id_.c_str(),
+        attribution_.c_str());
   }
   void Bind(const std::string& id) { id_ = id; Event("registered"); }
+  // Only a fixed digest may enter diagnostics, never caller-controlled text.
+  bool BindAttribution(std::string digest) {
+    if (!digest.empty() &&
+        (digest.size() != 64 ||
+         !std::all_of(digest.begin(), digest.end(), [](unsigned char c) {
+           return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+         })))
+      return false;
+    attribution_ = digest.empty() ? "-" : std::move(digest);
+    return true;
+  }
   void Stage(const char* value) {
     stage_ = value;
     const std::string_view name(value);
@@ -196,6 +209,7 @@ class RequestDiagnostics {
   const std::string trace_id_;
   Clock::time_point start_ = Clock::now();
   std::string id_ = "unregistered";
+  std::string attribution_ = "-";
   const char* stage_ = "validation";
   const char* outcome_ = "error";
   const char* reason_ = "handler_error";

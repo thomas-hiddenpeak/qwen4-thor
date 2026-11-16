@@ -175,6 +175,8 @@ Status TextOptions(const Json& request, ResponsesEnvelope* result,
 
 Status StateOptions(const Json& request, ResponsesEnvelope* result,
                     ChatPlanError* error) {
+  auto safety = ValidateSafetyIdentifier(request, &error->param);
+  if (!safety) return safety;
   for (const auto* key : {"previous_response_id", "prompt_cache_key",
                           "safety_identifier", "user"}) {
     auto status = StringOption(request, key, &result->options, "", error);
@@ -409,11 +411,15 @@ Status ParseResponsesEnvelope(const io::Json& request,
   std::string truncation = "disabled", tier = "default";
   status = ChoiceOption(request, "truncation", {"auto", "disabled"},
                         &truncation, "", error);
-  if (status)
-    status = ChoiceOption(
-        request, "service_tier",
-        {"auto", "default", "flex", "priority", "scale", "fast", "ultrafast"},
-        &tier, "", error);
+  if (status) {
+    if (const auto* value = request.Find("service_tier");
+        value && !value->IsNull()) {
+      if (!value->IsString() || !ValidServiceTier(value->str, true))
+        return Invalid(error, "service_tier",
+                       "invalid service tier preference");
+      tier = value->str;
+    }
+  }
   if (!status) return status;
   result.truncate = truncation == "auto";
   Set(&result.options, "truncation", String(truncation));

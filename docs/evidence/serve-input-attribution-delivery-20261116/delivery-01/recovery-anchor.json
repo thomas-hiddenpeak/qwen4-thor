@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/retained-01/bundle",
+  "manifest_sha256": "98b4b47ef35a70902282452acc4715117b5f72b35dd49d3234d068064274b793",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "f70c1bf3e235bf9e57632b4ce66be5de4a5cea6b8caf378e6907f8224ca0ada6",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

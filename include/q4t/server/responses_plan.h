@@ -38,7 +38,7 @@ struct ResponsesEnvelope {
   std::string conversation_id;
   std::string summary;
   std::string reasoning_context = "all_turns";
-  std::string reasoning_effort = "xhigh";
+  std::string reasoning_effort = "medium";
   std::string reasoning_mode = "standard";
   std::string verbosity = "medium";
   std::string personality;

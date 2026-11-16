@@ -138,6 +138,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "metadata",
                         "response_format",
                         "user",
+                        "safety_identifier",
+                        "service_tier",
                         "session_id",
                         "prefix_cache_scope",
                         "prefix_cache_write_tokens",
@@ -231,6 +233,12 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (const auto* user = req.Find("user");
       user && !user->IsNull() && !user->IsString())
     return invalid("user", "user must be a string or null (metadata only)");
+  status = ValidateSafetyIdentifier(req, error_param);
+  if (!status) return status;
+  if (const auto* tier = req.Find("service_tier");
+      tier && !tier->IsNull() &&
+      (!tier->IsString() || !ValidServiceTier(tier->str)))
+    return invalid("service_tier", "invalid service tier preference");
   SamplingOptions sampling;
   status = ParseSamplingOptions(req, &sampling, error_param);
   if (!status) return status;

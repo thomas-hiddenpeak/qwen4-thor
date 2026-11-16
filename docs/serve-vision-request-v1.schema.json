@@ -576,6 +576,25 @@
         "null"
       ]
     },
+    "safety_identifier": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 128
+    },
+    "service_tier": {
+      "enum": [
+        "auto",
+        "default",
+        "flex",
+        "scale",
+        "priority",
+        "fast",
+        null
+      ],
+      "default": "auto"
+    },
     "session_id": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"

@@ -188,6 +188,7 @@ Q4T_TEST(sampling_choices_share_prompt_and_aggregate_real_usage) {
   const auto& rows = result.Find("choices")->array;
   const auto& usage = *result.Find("usage");
   Q4T_CHECK(rows.size() == 2 && rows[1].GetInt("index") == 1);
+  Q4T_CHECK(result.GetString("service_tier") == "default");
   Q4T_CHECK(usage.GetInt("prompt_tokens") == 10 &&
             usage.GetInt("completion_tokens") == 16 &&
             usage.GetInt("total_tokens") == 26);

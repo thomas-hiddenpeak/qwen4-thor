@@ -737,3 +737,35 @@ Q4T_TEST(server_http_write_cancel_and_request_deadline) {
   Q4T_CHECK(std::string(expired.Reason()) == "deadline_exceeded");
   return true;
 }
+
+Q4T_TEST(server_chat_tier_in_all_chunk_shapes_and_padding) {
+  using namespace q4t::server::detail;
+  const std::string usage =
+      R"({"prompt_tokens":7,"completion_tokens":3,"total_tokens":10})";
+  for (bool padding : {false, true}) {
+    for (const auto& wire :
+         {SseChunk("id", "m", "assistant", "", "", 0, 42, true, padding),
+          SseDeltaChunk("id", "m", R"({"content":"42"})", "", 0, 42, true,
+                        "null", padding),
+          SseDeltaChunk("id", "m", "{}", "stop", 0, 42, true, "null",
+                        padding)}) {
+      const auto body = wire.substr(6, wire.size() - 10);
+      q4t::io::Json value;
+      Q4T_CHECK(q4t::io::ParseJson(body, &value));
+      Q4T_CHECK(value.GetString("service_tier") == "default");
+      Q4T_CHECK(value.Find("usage")->IsNull());
+      Q4T_CHECK(value.Has("obfuscation") == padding);
+      if (padding) Q4T_CHECK(body.size() % 128 == 0);
+    }
+  }
+  const auto wire = SseUsageChunk("id\"", "m\\", 42, usage);
+  q4t::io::Json value;
+  Q4T_CHECK(q4t::io::ParseJson(wire.substr(6, wire.size() - 10), &value));
+  Q4T_CHECK(value.GetString("id") == "id\"" &&
+            value.GetString("model") == "m\\");
+  Q4T_CHECK(value.GetString("service_tier") == "default" &&
+            !value.Has("obfuscation"));
+  Q4T_CHECK(value.GetArray("choices")->array.empty());
+  Q4T_CHECK(value.Find("usage")->GetInt("total_tokens") == 10);
+  return true;
+}

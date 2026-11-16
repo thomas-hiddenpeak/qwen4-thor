@@ -15,6 +15,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/test.h"
 
 namespace {
@@ -624,5 +625,42 @@ Q4T_TEST(chat_storage_large_original_parts_survive_update_and_restart) {
   Q4T_CHECK(
       chats.Messages("chatcmpl_test", {}, Access("client:other")).http_status ==
       404);
+  return true;
+}
+
+Q4T_TEST(stored_chat_attribution_private_scoped_and_retained_on_update) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  StoredChats chats(objects);
+  auto request = Input();
+  Set(&request, "safety_identifier", String("private-reader\n42"));
+  Set(&request, "service_tier", String("fast"));
+  auto output = Output();
+  Set(&output, "service_tier", String("default"));
+  Q4T_CHECK(Ok(chats.Save(request, output, Access())));
+  const auto before = ReadRecord(objects, "chatcmpl_test");
+  Q4T_CHECK(Ok(before));
+  const auto* attribution =
+      before.value.Find("data")->Find("request_attribution");
+  Q4T_CHECK(attribution &&
+            attribution->GetString("requested_service_tier") == "fast");
+  const auto digest = SafetyIdentifierDigest(request, Access().scope);
+  Q4T_CHECK(attribution->GetString("safety_identifier_sha256") == digest);
+  const auto returned = chats.Retrieve("chatcmpl_test", Access());
+  Q4T_CHECK(Ok(returned) &&
+            returned.value.GetString("service_tier") == "default");
+  Q4T_CHECK(OutputJson(returned.value).find("private-reader") ==
+            std::string::npos);
+  Q4T_CHECK(!returned.value.Has("request_attribution") &&
+            !returned.value.Has("safety_identifier"));
+  Q4T_CHECK(chats.Retrieve("chatcmpl_test", Access("client:b")).http_status ==
+            404);
+  Q4T_CHECK(Ok(
+      chats.Update("chatcmpl_test", Parse(R"({"changed":"yes"})"), Access())));
+  const auto after = ReadRecord(objects, "chatcmpl_test");
+  Q4T_CHECK(Ok(after) &&
+            OutputJson(*after.value.Find("data")->Find(
+                "request_attribution")) == OutputJson(*attribution));
+  Q4T_CHECK(digest != SafetyIdentifierDigest(request, "client:b"));
   return true;
 }

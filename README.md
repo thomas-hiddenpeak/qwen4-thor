@@ -56,8 +56,12 @@ accepted/rejected usage已交付；其余接口与组合按总计划继续实现
 为medium；none关闭原生thinking。`verbosity`的low/medium/high/null映射
 实际提示，不承诺固定答案长度或计算量。流式delta默认带obfuscation，
 可用`stream_options.include_obfuscation: false`关闭；padding不计token，
-正文、工具参数及usage由客户端正常重组。Responses的缺省推理级别尚待
-本轮后续合同修复，具体默认/回退身份以STATUS为准。
+正文、工具参数及usage由客户端正常重组。
+[标准输入归属合同](docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md)已交付：Chat
+`safety_identifier`支持string/null且限128个Unicode字符，只按客户端
+作用域记录摘要，不改变鉴权或提示；`service_tier`返回实际执行的default。
+Responses新请求省略/null推理级别为medium，旧queued任务恢复保留原有效
+级别和归属；具体默认及回退身份以STATUS为准。
 [工具选择与增量流](docs/SERVE_TOOL_STREAM_2026-11-08.md)支持
 allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行工具。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`

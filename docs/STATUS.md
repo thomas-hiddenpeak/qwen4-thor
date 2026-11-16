@@ -9,30 +9,34 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev158；服务包 `cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5` |
-| Generation | `2daee557faa5d43d8225569a1c75b26b7e27ede998129d18fd25bfe16435d62c` |
-| 引擎 | `e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f` |
-| 引擎发布记录 | `9f202d1d06bd03c88608167fc1e658fa9738346649ba5ee0c418c1d2fdf0eb1f` |
+| 发布 | rev166；服务包 `0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa` |
+| Generation | `23e8ae921e58973e82ecc71b35ce06bbd9748d030d3f578dd661a8f375a80246` |
+| 引擎 | `7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be` |
+| 引擎发布记录 | `e476dbe8de58981982b1c257fedc022a27ddf2fa23db6d9411a7eb4347c23296` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 版本回退 | 已验旧控制/当前引擎包 `1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7`；保留媒体/MCP/embedding及新Chat能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `98b4b47ef35a70902282452acc4715117b5f72b35dd49d3234d068064274b793`；保留媒体/MCP/embedding及输入归属合同 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[Chat样式与流式合同交付](evidence/serve-chat-style-delivery-20261116/README.md)
-完成17项STOPPED发布/实际整根回退再前进检查，55.343秒、0新增GPU。
-完整effort/null/medium缺省、verbosity真实指令、SSE默认obfuscation及
-关闭选项已发行。none的模板/grammar边界统一；真实文档单次工具调用/
-SHA续答、JSON/SSE、多choice概率与usage通过。首轮失败保留并修复。
-精确主轻资格、保留包及正式包版本恢复有独立实际证据。
+[输入归属与默认合同交付](evidence/serve-input-attribution-delivery-20261116/README.md)
+完成17项STOPPED发布/实际整根回退再前进检查，55.228秒、0新增GPU。
+Chat归属按客户端摘要记录，JSON/SSE/存储返回实际default档位；Responses
+新请求省略/null统一medium，旧queued任务保留原effort和归属。针对性
+CPU、真实JSON/SSE与文档工具/SHA闭环通过；两次驱动投影失败及修正
+原始记录保留。精确主轻资格、保留和正式包版本恢复通过。
 
-core/client/outer字节、Key/配额和容量保持；profile迁移只增加已审查
-的effort集合规则，历史/预算/冷却不清空；版本新周期保留前驱。
-四个原生辅助程序和其余控制源未改，旧压力/外层监护证据按身份复用。
-最终STOPPED、GPU释放；rev150默认/状态私有备份和可恢复归档保留。
-自动恢复保留现代根，人工整根回退v12入口无outer，仍是R09待解决项；
-保留包不是独立旧引擎回退。PR31待最终head检查与实际合main。
+控制、客户端及四个原生辅助程序字节保持；core/client/outer状态、
+Key/配额/容量、profile历史/预算/冷却不清空，版本新周期保留前驱。
+未变压力/外层证据按身份复用；最终STOPPED、GPU释放。rev158默认/
+状态私有备份和两个旧generation可恢复归档保留，首次目录权限拒绝
+与修复保留。自动回退保持现代根；人工整根回退v12入口无outer仍是
+R09必修项，保留包也不是独立旧引擎回退。PR32待最终head检查和实际合main。
+
+前驱rev158已通过PR31实际合main（`8015dbc8`），
+[合并回执](evidence/serve-pr31-merged-20261116/README.md)保留；
+[原合同交付](evidence/serve-chat-style-delivery-20261116/README.md)仍有效。
 前驱rev150显示几何已通过PR30合main（`d2524e4a`），
 [合并回执](evidence/serve-pr30-merged-20261116/README.md)保留。
 
@@ -56,6 +60,51 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev166可回退交付完成](evidence/serve-input-attribution-delivery-20261116/README.md)：
+17项检查通过；默认0bbfd5e6/7a23cb30，Key/配额/容量与历史预算保持。
+控制/客户端/原生辅助程序没有改动，0新增GPU。继续PR32实际合main、
+其余五个Chat字段、媒体缓存/后端、客户端/资源/冷启动和全部master；
+以下阶段记录按其原身份保留，过去的“待发行”不代表当前默认状态。
+
+[输入归属精确包版本短验通过](evidence/serve-input-attribution-version-business-20261116/README.md)：
+保留98b4b47e为1启动/2生成，正式0bbfd5e6为2启动/4生成/1探测；
+严格租约46.915/101.523秒，45/95项NVML正常。故障回退后实际视频/
+历史SSE、新归属/档位/default及媒体/MCP/embedding能力保留；自有进程/
+端口/锁清理通过。首次finalize参数错误与修正保留，0重复GPU。
+rev158保持，继续17项STOPPED可回退发布、PR与全部master。
+
+[输入归属候选主轻资格/封包通过](evidence/serve-input-attribution-profile-business-20261116/README.md)：
+2启动/10请求/88.426秒，83项NVML正常；两侧实际schema/工具/SHA续答/
+embedding/视频通过。正式0bbfd5e6、保留控制98b4b47e及两项sealed CPU
+通过；控制和四个原生程序字节保持。继续1启动/2生成及2启动/4生成/
+1探测的精确包版本验收，rev158未改，全部master继续。
+
+[输入归属业务接受](evidence/serve-input-attribution-business-20261116/README.md)：
+7a23cb30累计2启动/7生成，六项不同业务覆盖Chat JSON/SSE/实际档位/
+归属、文档工具/SHA、Responses省略/null medium与存储。两次驱动
+投影/SDK便利字段失败保留，修正后用实际wire和CPU正负控闭合，0追加
+GPU。第二项剩余对象用生产原生状态API在CPU删除并确认404；不称
+已重跑HTTP DELETE。模型/端口/锁清理，rev158保持，继续主轻与可回退
+发行、其余五个Chat字段及全部master。
+
+[输入归属短验首轮未通过](evidence/serve-input-attribution-business-failure-20261116/README.md)：
+1启动/5生成，四条Chat与实际文档SHA闭环通过；Responses GET默认
+投影logprobs导致驱动全量相等断言失败。唯一差异已核对，核心5/5
+成功、清理通过；补显式include，冻结仅1启动/2生成/600秒受影响
+Responses短验。引擎不改、四条Chat复用、rev158保持，master继续。
+
+[标准输入归属CPU通过](evidence/serve-input-attribution-cpu-20261116/README.md)：
+18项C++、5项schema/客户端/驱动、16项原生/公开合同对照、715来源/
+7负控及生成物一致性通过，零警告。候选7a23cb30补Chat归属摘要和
+实际档位、Responses新medium默认及旧queued语义/归属保持。
+旧README类型图错误已修正；rev158未改，继续最多1启动/6生成/
+900秒实际业务。PR31已实际合main，全部master继续。
+
+[下一组标准输入合同](SERVE_INPUT_ATTRIBUTION_2026-11-16.md)已冻结：Chat
+safety_identifier归属摘要和实际service_tier返回、Responses新请求medium
+默认及旧queued快照语义保持。先成组开发/针对性CPU，再最多1启动/
+6生成/900秒实际业务；rev158保持，PR31最终head CI中，全部master继续。
 
 [rev158可回退交付完成](evidence/serve-chat-style-delivery-20261116/README.md)：
 17项检查通过，默认cba9f596/e0b34b43，停止意图/历史预算/Key保持。

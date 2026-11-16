@@ -1,0 +1,112 @@
+{
+  "status": "ACCEPT_INPUT_ATTRIBUTION_BUSINESS",
+  "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+  "cleanup_complete": true,
+  "total_starts": 2,
+  "total_generations": 7,
+  "unique_business_cases": 6,
+  "actual_document": {
+    "title": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0",
+    "citation": "[docs/MODEL.md:L1-L16]",
+    "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+  },
+  "first_stage": {
+    "status": "REUSE_FOUR_CHAT_PASSES_RESPONSES_RETRIEVAL_PENDING",
+    "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+    "prior_plan_sha256": "4d320b8b92e42f46774790b1442a0ad139b766e1a12abbe8b655f87320cb6ad9",
+    "prior_result_sha256": "6665f214610775cc8d4946dff52ac6f0701ac45d0d1f88c530661f10c216f06e",
+    "partial_cpu_review": true,
+    "actual_starts": 1,
+    "actual_generations": 5,
+    "nvml_queries": 54,
+    "strict_lease_seconds": 56.88238047994673,
+    "cleanup_complete": true,
+    "chat_wire": {
+      "json": {
+        "events": 1,
+        "actual_tier": "default"
+      },
+      "sse": {
+        "events": 5,
+        "actual_tier": "default"
+      },
+      "tool": {
+        "events": 29,
+        "actual_tier": "default"
+      },
+      "follow": {
+        "events": 174,
+        "actual_tier": "default"
+      }
+    },
+    "actual_document": {
+      "title": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0",
+      "citation": "[docs/MODEL.md:L1-L16]",
+      "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+    },
+    "original_failure_preserved": true,
+    "failure": "GET without include intentionally projects logprobs away; full equality requires explicit include",
+    "remaining": [
+      "Responses JSON full snapshot retrieval",
+      "Responses null SSE and full snapshot retrieval",
+      "new owned object deletion"
+    ],
+    "runtime_changed": false
+  },
+  "second_stage": {
+    "result_original": {
+      "status": "FAILED",
+      "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/responses_followup.py\", line 32, in business\n    require(saved==value,'full stored Responses snapshot changed')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: full stored Responses snapshot changed\n",
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "controls": 42
+      },
+      "seconds": 41.040485211182386,
+      "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be"
+    },
+    "strict_lease_seconds": 41.574774539098144,
+    "nvml_queries": 40,
+    "values": {
+      "response_default": {
+        "id": "resp_8556518bab325bb27c7d200ca32d923f",
+        "actual_tier": "default",
+        "effort": "medium",
+        "answer": "\n\n42",
+        "raw_snapshot_equal": true
+      },
+      "response_null": {
+        "id": "resp_cee6ae737e1063fdf5ac6e9fc3dad6f8",
+        "actual_tier": "default",
+        "effort": "medium",
+        "answer": "\n\n42",
+        "raw_snapshot_equal": true
+      }
+    },
+    "raw_snapshot_equality": true,
+    "sdk_derived_text_checked": true
+  },
+  "native_cleanup": {
+    "status": "PASS_NATIVE_STORED_API_CPU_CLEANUP",
+    "actual_response_id": "resp_cee6ae737e1063fdf5ac6e9fc3dad6f8",
+    "raw_snapshot_unchanged": true,
+    "before_snapshot_backup": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/business-02-objects-before-cleanup",
+    "native_public_read_delete_api": true,
+    "http_endpoint_retested": false,
+    "statuses": [
+      200,
+      200,
+      404
+    ],
+    "model_starts": 0,
+    "gpu_runs": 0
+  },
+  "driver_failures_preserved": true,
+  "acceptance_basis": "Original four Chat passes, two actual Responses JSON/SSE/GET captures, targeted raw-versus-SDK oracle CPU and native CPU cleanup. Failed harness receipts not relabelled.",
+  "supplemental_validation_gpu_starts": 0,
+  "default_unchanged": true,
+  "performance_acceptance": false,
+  "full_model_quality": false,
+  "master_complete": false,
+  "archive_sha256": "ed847aea13140cf1635d575a231a25ac86319c7d4d001bcd3c1f66725cc819e6"
+}

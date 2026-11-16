@@ -131,7 +131,12 @@ ObjectReply StoredChats::Save(const Json& request, const Json& response,
   ChatStorageOptions options;
   std::string param;
   auto status = ParseChatStorageOptions(request, &options, &param);
+  if (status) status = ValidateSafetyIdentifier(request, &param);
   if (!status) return Invalid(status.message(), param);
+  if (const auto* tier = request.Find("service_tier");
+      tier && !tier->IsNull() &&
+      (!tier->IsString() || !ValidServiceTier(tier->str)))
+    return Invalid("invalid service tier preference", "service_tier");
   if (!options.store)
     return Invalid("Persistent completion requires store=true", "store");
   const auto* messages = request.Find("messages");
@@ -193,6 +198,13 @@ ObjectReply StoredChats::Save(const Json& request, const Json& response,
   write.data = Object({{"version", Number(1)},
                        {"response", resource},
                        {"messages", std::move(stored_messages)}});
+  Json attribution =
+      Object({{"requested_service_tier",
+               String(request.GetString("service_tier", "auto"))}});
+  const auto safety = SafetyIdentifierDigest(request, access.scope);
+  if (!safety.empty())
+    Set(&attribution, "safety_identifier_sha256", String(safety));
+  Set(&write.data, "request_attribution", std::move(attribution));
   if (!input_snapshots.IsNull()) {
     Json verified;
     auto checked =

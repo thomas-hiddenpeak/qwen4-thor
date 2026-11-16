@@ -8,6 +8,7 @@
 
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/trace/sha256.h"
 
 namespace q4t::server {
 
@@ -15,6 +16,40 @@ bool IsInputInteger(const io::Json& value) {
   return value.IsNumber() && std::isfinite(value.number) &&
          std::trunc(value.number) == value.number &&
          (value.str.empty() || IsExactJsonInteger(value.str));
+}
+
+Status ValidateSafetyIdentifier(const io::Json& request,
+                                std::string* error_param) {
+  const auto* value = request.Find("safety_identifier");
+  if (!value || value->IsNull()) return {};
+  if (!value->IsString() || std::count_if(value->str.begin(), value->str.end(),
+                                          [](unsigned char byte) {
+                                            return (byte & 0xc0) != 0x80;
+                                          }) > 128) {
+    if (error_param) *error_param = "safety_identifier";
+    return Status::Fail(
+        "safety_identifier must be text of at most 128 "
+        "characters or null");
+  }
+  return {};
+}
+
+std::string SafetyIdentifierDigest(const io::Json& request,
+                                   std::string_view scope) {
+  const auto* value = request.Find("safety_identifier");
+  // Public validation or an authenticated queued snapshot has already checked
+  // the value. Older accepted tasks may retain their former character limit.
+  if (!value || !value->IsString()) return {};
+  const std::string bound = "q4t-safety-v1:" + std::to_string(scope.size()) +
+                            ':' + std::string(scope) + ':' + value->str;
+  return trace::HexDigest(trace::Sha256(
+      {reinterpret_cast<const uint8_t*>(bound.data()), bound.size()}));
+}
+
+bool ValidServiceTier(std::string_view value, bool responses) {
+  return value == "auto" || value == "default" || value == "flex" ||
+         value == "scale" || value == "priority" || value == "fast" ||
+         (responses && value == "ultrafast");
 }
 
 bool ValidInputName(std::string_view name) {

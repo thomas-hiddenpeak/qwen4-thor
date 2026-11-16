@@ -2,6 +2,7 @@
 #include "q4t/test.h"
 
 #include <future>
+#include <cerrno>
 #include <stdexcept>
 
 namespace {
@@ -13,6 +14,48 @@ std::string Read(FILE* file) {
   return output;
 }
 }  // namespace
+
+Q4T_TEST(request_diagnostics_attribution_is_hex_only) {
+  FILE* file = std::tmpfile();
+  Q4T_CHECK(file);
+  {
+    q4t::server::RequestDiagnostics d(file, "trace-attribution");
+    Q4T_CHECK(!d.BindAttribution("raw-user\nforged=record"));
+    Q4T_CHECK(!d.BindAttribution(std::string(64, 'g')));
+    Q4T_CHECK(d.BindAttribution(std::string(64, 'a')));
+    d.Bind("request-attribution");
+    d.Outcome("success", "completed");
+  }
+  const auto text = Read(file);
+  std::fclose(file);
+  Q4T_CHECK(text.find("safety_identifier_sha256=" + std::string(64, 'a')) !=
+            text.npos);
+  Q4T_CHECK(text.find("raw-user") == text.npos &&
+            text.find("forged") == text.npos);
+  return true;
+}
+
+Q4T_TEST(request_diagnostics_attribution_failed_sink_does_not_fail_business) {
+  cookie_io_functions_t io{};
+  io.write = [](void*, const char*, size_t) -> ssize_t {
+    errno = ENOSPC;
+    return -1;
+  };
+  FILE* file = fopencookie(nullptr, "w", io);
+  Q4T_CHECK(file);
+  std::setvbuf(file, nullptr, _IONBF, 0);
+  bool completed = false;
+  {
+    q4t::server::RequestDiagnostics d(file);
+    Q4T_CHECK(d.BindAttribution(std::string(64, 'b')));
+    d.Bind("healthy-request");
+    d.Outcome("success", "completed");
+    completed = true;
+  }
+  Q4T_CHECK(completed && std::ferror(file));
+  std::fclose(file);
+  return true;
+}
 
 Q4T_TEST(request_diagnostics_terminal_and_reuse) {
   FILE* file = std::tmpfile();

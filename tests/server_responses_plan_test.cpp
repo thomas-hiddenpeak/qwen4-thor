@@ -151,7 +151,7 @@ Q4T_TEST(responses_plan_defaults_keep_real_storage_requirement) {
   Q4T_CHECK(envelope.options.GetString("model") == "base");
   Q4T_CHECK(envelope.options.GetInt("max_output_tokens") == 256);
   Q4T_CHECK(envelope.options.GetInt("temperature") == 1);
-  Q4T_CHECK(envelope.reasoning_effort == "xhigh" &&
+  Q4T_CHECK(envelope.reasoning_effort == "medium" &&
             envelope.reasoning_context == "all_turns");
   Q4T_CHECK(envelope.options.GetString("service_tier") == "default");
   Q4T_CHECK(!envelope.logprobs && envelope.obfuscation);
@@ -175,6 +175,7 @@ Q4T_TEST(responses_plan_null_defaults_and_explicit_sampling) {
       "max_output_tokens":null,"metadata":null,"reasoning":null})",
                      &envelope, &error));
   Q4T_CHECK(envelope.store && envelope.options.GetBool("parallel_tool_calls"));
+  Q4T_CHECK(envelope.reasoning_effort == "medium");
   Q4T_CHECK(Envelope(R"({"input":"x","model":"org/alias","temperature":0,
     "top_p":0,"max_output_tokens":32,"store":false,"stream":true,
     "stream_options":{"include_obfuscation":false},"top_logprobs":3,
@@ -427,5 +428,41 @@ Q4T_TEST(responses_plan_selected_probability_does_not_change_chat_sentinel) {
     const auto row = Read(probabilities).GetArray("content")->array[0];
     Q4T_CHECK(row.GetNumber("logprob") == (responses ? -23.5 : -9999));
   }
+  return true;
+}
+
+Q4T_TEST(responses_effort_defaults_and_safety_identifier_boundary) {
+  for (const auto* extra : {"", R"(,"reasoning":null)", R"(,"reasoning":{})",
+                            R"(,"reasoning":{"effort":null})"}) {
+    ResponsesEnvelope envelope;
+    ChatPlanError error;
+    Q4T_CHECK(Envelope(std::string(R"({"input":"answer")") + extra + '}',
+                       &envelope, &error));
+    Q4T_CHECK(envelope.reasoning_effort == "medium");
+    Q4T_CHECK(envelope.options.Find("reasoning")->GetString("effort") ==
+              "medium");
+    ResponsesGenerationPlan plan;
+    Q4T_CHECK(PrepareResponsesGeneration(
+        envelope, *envelope.request.Find("input"), Config(), &plan, &error));
+    Q4T_CHECK(plan.generation_request.GetString("reasoning_effort") ==
+              "medium");
+  }
+  std::string identifier;
+  for (int i = 0; i < 128; ++i) identifier += "用";
+  ResponsesEnvelope envelope;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"input":"answer","safety_identifier":")" + identifier +
+                         R"(","reasoning":{"effort":"xhigh"}})",
+                     &envelope, &error));
+  Q4T_CHECK(envelope.reasoning_effort == "xhigh");
+  Q4T_CHECK(!Envelope(
+      R"({"input":"answer","safety_identifier":")" + identifier + R"(用"})",
+      &envelope, &error));
+  Q4T_CHECK(error.param == "safety_identifier");
+  Q4T_CHECK(!Envelope(R"({"input":"answer","safety_identifier":42})", &envelope,
+                      &error));
+  Q4T_CHECK(error.param == "safety_identifier");
+  Q4T_CHECK(Envelope(R"({"input":"answer","safety_identifier":null})",
+                     &envelope, &error));
   return true;
 }

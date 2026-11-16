@@ -13,9 +13,13 @@ node tools/serve_responses/generate_item_types.mjs \
   .q4t-work/serve-responses-20261108/schema-tool \
   .q4t-work/serve-responses-20261108/application-types.json --api
 python3 -B tools/serve_responses/build_contract.py \
-  --types .q4t-work/serve-responses-20261108/application-types.json
+  --types docs/evidence/serve-input-tokens-cpu-20261110/application-types.json
 python3 -B tools/serve_protocol/build_contract.py
 ```
+
+The published graph above includes compact and input-token types. The initial
+2026-11-08 graph lacks them and cannot regenerate the current schema. New SDK
+extractions require review before replacing this source-bound graph.
 
 Both publishers accept `--check`. The graph includes standard SDK input, output,
 and event shapes; a structurally valid request still requires its real executor.

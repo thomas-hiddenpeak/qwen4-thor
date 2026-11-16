@@ -1,4 +1,5 @@
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/generation_style.h"
 #include "q4t/server/tool_result_contracts.h"
 
 #include <algorithm>
@@ -7,6 +8,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -372,10 +374,73 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
       !snapshot.GetBool("background"))
     return Error(409, "response_not_queued",
                  "Only unexecuted queued work can resume");
+  const auto* frozen_reasoning = snapshot.Find("reasoning");
+  const auto* frozen_effort =
+      frozen_reasoning ? frozen_reasoning->Find("effort") : nullptr;
+  if (!frozen_effort || !frozen_effort->IsString() ||
+      !IsReasoningEffort(frozen_effort->str))
+    return Error(503, "response_state_invalid",
+                 "Queued reasoning effort is missing or invalid");
+  const auto* original_reasoning = plan_.request.Find("reasoning");
+  const auto* original_effort =
+      original_reasoning ? original_reasoning->Find("effort") : nullptr;
+  if (original_effort && !original_effort->IsNull() &&
+      (!original_effort->IsString() ||
+       original_effort->str != frozen_effort->str))
+    return Error(503, "response_state_invalid",
+                 "Queued reasoning effort conflicts with its request");
+  const auto& saved_events = Field(restored.value, "events").array;
+  if (saved_events.size() != 2 ||
+      saved_events[0].GetString("type") != "response.created" ||
+      saved_events[1].GetString("type") != "response.queued")
+    return Error(503, "response_state_invalid",
+                 "Queued events are inconsistent");
+  for (const auto& event : saved_events) {
+    const auto* resource = event.Find("response");
+    const auto* reasoning = resource ? resource->Find("reasoning") : nullptr;
+    if (!resource || resource->GetString("id") != id ||
+        resource->GetString("status") != "queued" || !reasoning ||
+        reasoning->GetString("effort") != frozen_effort->str)
+      return Error(503, "response_state_invalid",
+                   "Queued event identity or reasoning changed");
+  }
+  // Preserve the accepted effective default without rewriting the original
+  // persisted request or events. Every subsequent internal step uses it too.
+  auto effective_request = plan_.request;
+  auto effective_reasoning =
+      original_reasoning && original_reasoning->IsObject() ? *original_reasoning
+                                                           : Object();
+  Set(&effective_reasoning, "effort", *frozen_effort);
+  Set(&effective_request, "reasoning", std::move(effective_reasoning));
+  const auto* prior_safety = plan_.request.Find("safety_identifier");
+  const bool legacy_safety = !ValidateSafetyIdentifier(plan_.request);
+  if (legacy_safety) {
+    // The previous public limit was 4096 characters. Keep accepted work only
+    // when the request and every frozen output agree; new requests use 128.
+    if (!prior_safety || !prior_safety->IsString() ||
+        std::count_if(prior_safety->str.begin(), prior_safety->str.end(),
+                      [](unsigned char c) { return (c & 0xc0) != 0x80; }) >
+            4096 ||
+        snapshot.GetString("safety_identifier") != prior_safety->str ||
+        std::any_of(
+            saved_events.begin(), saved_events.end(), [&](const Json& event) {
+              return event.Find("response")->GetString("safety_identifier") !=
+                     prior_safety->str;
+            }))
+      return Error(503, "response_state_invalid",
+                   "Queued attribution differs from its accepted snapshot");
+    std::erase_if(effective_request.object, [](const auto& entry) {
+      return entry.first == "safety_identifier";
+    });
+  }
   ChatPlanError error;
   auto status =
-      ParseResponsesEnvelope(plan_.request, config, &envelope_, &error);
+      ParseResponsesEnvelope(effective_request, config, &envelope_, &error);
   if (!status) return Error(error.http_status, error.code, status.message());
+  if (legacy_safety) {
+    Set(&envelope_.request, "safety_identifier", *prior_safety);
+    Set(&envelope_.options, "safety_identifier", *prior_safety);
+  }
   // Queued work may resume only with the original actual treatment. A new
   // grant/default/policy must not silently alter previously accepted work.
   for (const auto* key : {"access_programs", "q4t_access_program"}) {
@@ -391,18 +456,7 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
   if (result.ok())
     result = PlanGeneration(config, snapshot.GetInt("created_at"));
   if (!result.ok()) return result;
-  const auto& saved_events = Field(restored.value, "events").array;
-  if (saved_events.size() != 2 ||
-      saved_events[0].GetString("type") != "response.created" ||
-      saved_events[1].GetString("type") != "response.queued")
-    return Error(503, "response_state_invalid",
-                 "Queued events are inconsistent");
   for (const auto& event : saved_events) {
-    const auto* resource = event.Find("response");
-    if (!resource || resource->GetString("id") != id ||
-        resource->GetString("status") != "queued")
-      return Error(503, "response_state_invalid",
-                   "Queued event identity changed");
     status = Capture("event: " + event.GetString("type") +
                          "\r\ndata: " + OutputJson(event) + "\r\n\r\n",
                      &events_, &event_bytes_);

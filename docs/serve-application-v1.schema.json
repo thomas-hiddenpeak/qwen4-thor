@@ -8678,10 +8678,17 @@
           "$ref": "#/$defs/815"
         },
         "reasoning": {
-          "$ref": "#/$defs/818"
+          "$ref": "#/$defs/818",
+          "default": {
+            "effort": "medium"
+          }
         },
         "safety_identifier": {
-          "$ref": "#/$defs/20"
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
         },
         "service_tier": {
           "$ref": "#/$defs/828"
@@ -19119,6 +19126,21 @@
               }
             }
           ]
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "auto",
+            "default",
+            "flex",
+            "scale",
+            "priority",
+            "fast",
+            null
+          ]
         }
       }
     },
@@ -19209,6 +19231,26 @@
             {
               "$ref": "#/$defs/chat_usage"
             }
+          ]
+        },
+        "obfuscation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "service_tier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "auto",
+            "default",
+            "flex",
+            "scale",
+            "priority",
+            "fast",
+            null
           ]
         }
       },
@@ -20217,6 +20259,60 @@
       ],
       "additionalProperties": false
     },
+    "chat_input_filePart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "file"
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "file_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "file_data": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+              "x-q4t-max-utf8-bytes": 1024
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "oneOf": [
+            {
+              "required": [
+                "file_id"
+              ],
+              "properties": {
+                "file_id": {}
+              }
+            },
+            {
+              "required": [
+                "file_data"
+              ],
+              "properties": {
+                "file_data": {}
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "file"
+      ],
+      "additionalProperties": false
+    },
     "stored_chat_message": {
       "type": "object",
       "properties": {
@@ -20449,7 +20545,10 @@
               "$ref": "#/$defs/679"
             },
             "reasoning": {
-              "$ref": "#/$defs/818"
+              "$ref": "#/$defs/818",
+              "default": {
+                "effort": "medium"
+              }
             },
             "text": {
               "$ref": "#/$defs/837"
@@ -20724,7 +20823,10 @@
                   "$ref": "#/$defs/679"
                 },
                 "reasoning": {
-                  "$ref": "#/$defs/818"
+                  "$ref": "#/$defs/818",
+                  "default": {
+                    "effort": "medium"
+                  }
                 },
                 "text": {
                   "$ref": "#/$defs/837"
@@ -20961,60 +21063,6 @@
         }
       },
       "required": [],
-      "additionalProperties": false
-    },
-    "chat_input_filePart": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "const": "file"
-        },
-        "file": {
-          "type": "object",
-          "properties": {
-            "file_id": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128,
-              "pattern": "^[A-Za-z0-9_-]+$"
-            },
-            "file_data": {
-              "type": "string"
-            },
-            "filename": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 1024,
-              "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
-              "x-q4t-max-utf8-bytes": 1024
-            }
-          },
-          "required": [],
-          "additionalProperties": false,
-          "oneOf": [
-            {
-              "required": [
-                "file_id"
-              ],
-              "properties": {
-                "file_id": {}
-              }
-            },
-            {
-              "required": [
-                "file_data"
-              ],
-              "properties": {
-                "file_data": {}
-              }
-            }
-          ]
-        }
-      },
-      "required": [
-        "type",
-        "file"
-      ],
       "additionalProperties": false
     }
   },

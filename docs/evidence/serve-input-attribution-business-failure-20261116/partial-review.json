@@ -1,0 +1,43 @@
+{
+  "status": "REUSE_FOUR_CHAT_PASSES_RESPONSES_RETRIEVAL_PENDING",
+  "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+  "prior_plan_sha256": "4d320b8b92e42f46774790b1442a0ad139b766e1a12abbe8b655f87320cb6ad9",
+  "prior_result_sha256": "6665f214610775cc8d4946dff52ac6f0701ac45d0d1f88c530661f10c216f06e",
+  "partial_cpu_review": true,
+  "actual_starts": 1,
+  "actual_generations": 5,
+  "nvml_queries": 54,
+  "strict_lease_seconds": 56.88238047994673,
+  "cleanup_complete": true,
+  "chat_wire": {
+    "json": {
+      "events": 1,
+      "actual_tier": "default"
+    },
+    "sse": {
+      "events": 5,
+      "actual_tier": "default"
+    },
+    "tool": {
+      "events": 29,
+      "actual_tier": "default"
+    },
+    "follow": {
+      "events": 174,
+      "actual_tier": "default"
+    }
+  },
+  "actual_document": {
+    "title": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0",
+    "citation": "[docs/MODEL.md:L1-L16]",
+    "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+  },
+  "original_failure_preserved": true,
+  "failure": "GET without include intentionally projects logprobs away; full equality requires explicit include",
+  "remaining": [
+    "Responses JSON full snapshot retrieval",
+    "Responses null SSE and full snapshot retrieval",
+    "new owned object deletion"
+  ],
+  "runtime_changed": false
+}
