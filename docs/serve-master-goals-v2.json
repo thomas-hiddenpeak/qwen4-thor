@@ -3444,11 +3444,13 @@
         "existing_evidence_reviewed": true
       },
       "metric_v5_compatibility_20261116": {
-        "state": "real_business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_OPS_V5_2026-11-16.md",
         "evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
         "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
-        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74"
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "revision": 188,
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
       }
     },
     {
@@ -3697,7 +3699,8 @@
         "actual_cold_business_accepted": false,
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
-      }
+      },
+      "current_execution_prerequisite": "Before controlled cold business, refresh exact preparation/check against rev188 or the then-current default; no camera/jtop stop or device-fence action without the pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4478,6 +4481,12 @@
         "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
         "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
         "pull_request": 34
+      },
+      "native_soak_ops_20261116": {
+        "state": "delivered_main_pending",
+        "revision": 188,
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
       }
     },
     {
@@ -4513,7 +4522,7 @@
       },
       "remaining_required": [
         "Finish every remaining task before final closure",
-        "Executable long-stability handoff; user performs long run"
+        "Integrate native soak delivery into main; user executes the prepared long-stability run"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -4536,7 +4545,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "real_short_accepted_delivery_and_handoff_pending",
+        "state": "short_delivered_day_handoff_prepared_main_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4564,7 +4573,11 @@
         "second_failure_evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
         "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
         "actual_gpu_seconds": 209.11229068087414,
-        "day_executed": false
+        "day_executed": false,
+        "revision": 188,
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md"
       }
     }
   ],

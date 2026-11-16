@@ -9,19 +9,27 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev182；服务包 `430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784` |
-| Generation | `a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020` |
+| 发布 | rev188；服务包 `509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74` |
+| Generation | `daf57aaf26151a6c89905be22c8ec243a249bca4259bb5d0c28ba361887abafa` |
 | 引擎 | `0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf` |
 | 引擎发布记录 | `2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964`，保留outer及原版本周期迁移 |
+| 人工整包回退 | 前驱rev182根 `430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784`；原outer/周期完整，更早7230ac61也保留 |
 | 自动payload回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[原生整根回退交付](evidence/serve-root-delivery-20261116/README.md)完成18项STOPPED发布、实际回退再前进及
+[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
+STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
+只更新Python对当前上传/tunnel计数的解析；核心/client/outer/profile及
+所有本机程序和容量保持。原生60秒/3组/15业务加自检与完整清理通过；
+[24小时交接已准备](SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md)，实际day由用户执行。
+后续实际合main继续；R07执行前按当前默认刷新冻结包，维护交接未答
+不干预相机/监控。R08及全部协议/媒体/后端master任务继续。
+
+前驱rev182[原生整根回退交付](evidence/serve-root-delivery-20261116/README.md)完成18项STOPPED发布、实际回退再前进及
 入口检查，216.388秒，0新增GPU。迁回该根最后持久化的原周期，
 保留已消费fallback、故障、selected、terminal及预算，不以旧seed返还
 额度；只递增全局revision。现代保留根与候选均有outer和迁移合同。
@@ -71,6 +79,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev188交付与day交接](evidence/serve-ops-v5-delivery-20261116/README.md)完成，13项
+发布/实际回退/再前进与健康检查通过、0新增GPU；默认STOPPED、原预算
+保持。day只读prepare/check通过，未执行。继续实际合main和全部master。
 
 [原生60秒短验通过](evidence/serve-native-soak-business-20261116/README.md)：
 新包509c3bcb，3组/15业务生成加自检，3次真实工具闭环及运营指标排空，

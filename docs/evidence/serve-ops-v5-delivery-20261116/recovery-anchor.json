@@ -1,0 +1,9 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+  "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+  "generation_sha256": "a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-v5-20261116/delivery-01/previous/service.release.json",
+  "service_release_sha256": "12dd5618b92d1211cb759f0986ceecfdb4c9904d7f785a467c81744c7b8d7c00",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}
