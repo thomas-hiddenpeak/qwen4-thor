@@ -1,0 +1,18 @@
+{
+  "scope": "Reconcile all current Chat/Completions/HTTP inventory rows and 33 task states against source and accepted delivery; preserve dated reviews as historical, keep real implementation gaps open. No route/field/runtime changes in this audit stage.",
+  "baseline_commit": "a362d68d",
+  "default_revision": 150,
+  "checks": [
+    "review 45 Chat fields",
+    "review 21 Completion fields",
+    "review 74 backend routes",
+    "review 123 native ingress routes including CORS",
+    "review 33 master task states and concrete remaining work",
+    "inventory exact source/key self-check and existing negative controls",
+    "documentation link/JSON/default identity checks"
+  ],
+  "gpu_starts": 0,
+  "full_performance": false,
+  "full_model_correctness": false,
+  "next": "Implement newly traced unresolved API contracts and remaining media/client/resource/backend tasks; never stop at audit or stage delivery."
+}

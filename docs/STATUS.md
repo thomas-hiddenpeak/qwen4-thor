@@ -51,6 +51,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[当前协议/总任务再审计](SERVE_SURFACE_REAUDIT_2026-11-16.md)已逐条核对
+45个Chat字段、21个Completions字段、74后端/123原生路由；修正旧描述
+中的已交付能力，仍缺8个冻结标准Chat字段、流式obfuscation、完整
+reasoning effort/历史及媒体缓存等合同。33项仍required；下一组实际
+补Chat入口差异。714来源锚点/7项负控、新增26项引用和默认身份核对通过，0GPU/运行时
+未改；master继续。
+
 [rev150显示几何可回退发行完成](evidence/serve-video-geometry-delivery-20261116/README.md)：
 17项检查、实际整根回退再前进通过，最终STOPPED；预算/历史/Key保持，
 0新增GPU。归档首次路径错误发生于写入前，改为读取真实generation
