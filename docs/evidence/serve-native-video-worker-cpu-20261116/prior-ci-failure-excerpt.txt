@@ -1,7 +1,7 @@
-host-contracts	Run all public host contracts	2026-11-16T02:46:09.7255308Z 
+host-contracts	Run all public host contracts	2026-11-16T02:46:09.7255308Z
 host-contracts	Run all public host contracts	2026-11-16T02:46:09.7255608Z 47: Test command: /usr/bin/python3 "-B" "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope/test_gpu_exclusive.py"
 host-contracts	Run all public host contracts	2026-11-16T02:46:09.7256120Z 47: Working Directory: /home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/evalscope
-host-contracts	Run all public host contracts	2026-11-16T02:46:09.7256438Z 47: Environment variables: 
+host-contracts	Run all public host contracts	2026-11-16T02:46:09.7256438Z 47: Environment variables:
 host-contracts	Run all public host contracts	2026-11-16T02:46:09.7256764Z 47:  Q4T_TEST_OUTPUT_DIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_exclusive_contracts
 host-contracts	Run all public host contracts	2026-11-16T02:46:09.7257456Z 47:  TMPDIR=/home/runner/work/qwen4-thor/qwen4-thor/build/public-host/q4t_gpu_exclusive_contracts
 host-contracts	Run all public host contracts	2026-11-16T02:46:09.7257931Z 47:  PYTHONDONTWRITEBYTECODE=1
@@ -43,18 +43,18 @@ host-contracts	Run all public host contracts	2026-11-16T02:46:10.1699937Z 47:   
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1700425Z 47:     pid = int(ready.read_text())
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1700618Z 47:           ^^^^^^^^^^^^^^^^^^^^^^
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1700841Z 47: ValueError: invalid literal for int() with base 10: ''
-host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701063Z 47: 
+host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701063Z 47:
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701374Z 47: ----------------------------------------------------------------------
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701631Z 47: Ran 32 tests in 0.383s
-host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701801Z 47: 
+host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701801Z 47:
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1701944Z 47: FAILED (errors=1)
 host-contracts	Run all public host contracts	2026-11-16T02:46:10.1838748Z 47/58 Test #47: q4t_gpu_exclusive_contracts ..................***Failed    0.46 sec
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0053584Z 58/58 Test #58: q4t_grammar_isolation_stage_contracts ........   Passed    0.12 sec
-host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058276Z 
+host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058276Z
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058517Z 98% tests passed, 1 tests failed out of 58
-host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058685Z 
+host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058685Z
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058764Z Total Test time (real) = 556.17 sec
-host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058895Z 
+host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058895Z
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0058967Z The following tests FAILED:
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0061656Z 	 47 - q4t_gpu_exclusive_contracts (Failed)
 host-contracts	Run all public host contracts	2026-11-16T02:46:15.0062206Z Errors while running CTest
