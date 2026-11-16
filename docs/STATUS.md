@@ -61,6 +61,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat缓存精确包版本短验通过](evidence/serve-chat-cache-version-business-20261116/README.md)：
+保留c789291b为1启动/2生成，正式78d6bd7b为2启动/4生成/1探测；
+严格租约46.978/100.362秒，45/94项NVML正常。故障后实际视频/历史SSE、
+缓存及既有能力保持，清理通过。继续STOPPED可回退发行，rev166保持；
+全部master继续，人工旧根outer与版本周期问题须继续修复。
+
 [Chat标准缓存候选主轻资格/封包通过](evidence/serve-chat-cache-profile-business-20261116/README.md)：
 2启动/10请求/86.044秒，82项NVML正常；两侧实际schema/工具/SHA续答/
 embedding/视频通过。正式78d6bd7b、保留控制c789291b及两项sealed CPU
