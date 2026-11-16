@@ -1,0 +1,18 @@
+{
+  "state": "CPU_SCOPED_INDEX_ACCEPTED",
+  "tests": 8,
+  "seconds": 6.394992967136204,
+  "build_seconds": [
+    22.433517555706203,
+    8.807477255817503
+  ],
+  "zero_warnings": true,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "source_base": "8c040193cf5ec0373b81548d90dee08b63278938",
+  "archive_sha256": "b032c6af8f768569d787efbc0bf6c250a2fb390c728e729095687bc9ea3fb0d9",
+  "page_helpers_relocated_without_logic_change": true,
+  "actual_public_web_acquisition_tested": false,
+  "chat_responses_execution_accepted": false,
+  "master_complete": false
+}

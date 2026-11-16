@@ -108,6 +108,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页持久索引CPU验证](evidence/serve-web-search-index-20261117/README.md)
+8项全部通过，6.395秒，零警告构建、0GPU、默认rev224保持。认证
+scope/配置身份、跨重启读取、CAS/丢回执不重放、容量/取消与真实
+过期已验；继续原生抓取执行及Chat/Responses/引用/SDK，未记完整搜索。
+
 PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
 （`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
 已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。

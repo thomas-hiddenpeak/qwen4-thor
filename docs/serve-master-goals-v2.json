@@ -226,7 +226,10 @@
         "component_cpu_state": "accepted",
         "default_unchanged": true,
         "network_cpu_tests": 8,
-        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
+        "index_cpu_tests": 8,
+        "index_cpu_state": "accepted",
+        "index_evidence": "evidence/serve-web-search-index-20261117/README.md"
       }
     },
     {
@@ -1758,7 +1761,10 @@
         "component_cpu_state": "accepted",
         "default_unchanged": true,
         "network_cpu_tests": 8,
-        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
+        "index_cpu_tests": 8,
+        "index_cpu_state": "accepted",
+        "index_evidence": "evidence/serve-web-search-index-20261117/README.md"
       }
     },
     {
@@ -2922,7 +2928,10 @@
         "component_cpu_state": "accepted",
         "default_unchanged": true,
         "network_cpu_tests": 8,
-        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
+        "index_cpu_tests": 8,
+        "index_cpu_state": "accepted",
+        "index_evidence": "evidence/serve-web-search-index-20261117/README.md"
       }
     },
     {
@@ -3187,7 +3196,10 @@
         "component_cpu_state": "accepted",
         "default_unchanged": true,
         "network_cpu_tests": 8,
-        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
+        "index_cpu_tests": 8,
+        "index_cpu_state": "accepted",
+        "index_evidence": "evidence/serve-web-search-index-20261117/README.md"
       }
     },
     {
@@ -5247,7 +5259,7 @@
     }
   ],
   "next_task": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; continue native web-search persistent index, Chat/Responses execution, citations/SDK and all remaining master tasks.",
-  "next": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; continue native web-search persistent index, Chat/Responses execution, citations/SDK and all remaining master tasks.",
+  "next": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; continue native web-search acquisition/execution, Chat/Responses integration, citations/SDK and all remaining master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
