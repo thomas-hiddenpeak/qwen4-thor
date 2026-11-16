@@ -692,3 +692,39 @@ Q4T_TEST(chat_storage_cache_boundaries_survive_restart_and_client_isolation) {
   Q4T_CHECK(Ok(chats.Erase("chatcmpl_test", Access())));
   return true;
 }
+
+Q4T_TEST(chat_annotations_stored_messages_survive_restart_and_client_isolation) {
+  Fixture fixture;
+  auto input = Input();
+  auto messages = Parse(R"([{"role":"assistant","content":[
+    {"type":"text","text":"资料"},{"type":"text","text":"✅"}],
+    "annotations":[{"type":"url_citation","url_citation":{
+      "start_index":0,"end_index":3,"title":"原始引用",
+      "url":"https://example.invalid/project"}}]},
+    {"role":"user","content":"Which source?"}])");
+  Set(&input, "messages", messages);
+  Q4T_CHECK(ValidateChatContract(input, "m", false));
+  const auto original = OutputJson(*messages.array[0].Find("annotations"));
+  {
+    ObjectStore objects(fixture.options);
+    StoredChats chats(objects);
+    Q4T_CHECK(Ok(chats.Save(input, Output(), Access())));
+    Q4T_CHECK(Ok(chats.Update("chatcmpl_test", Parse(R"({"updated":"yes"})"),
+                              Access())));
+  }
+  ObjectStore objects(fixture.options);
+  const auto page = HandleStoredChatRequest(
+      objects, "GET", "/v1/chat/completions/chatcmpl_test/messages", {},
+      Access());
+  Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 2);
+  const auto& message = page.value.GetArray("data")->array[0];
+  Q4T_CHECK(message.GetString("content") == "资料✅");
+  Q4T_CHECK(message.Find("annotations") &&
+            OutputJson(*message.Find("annotations")) == original);
+  Q4T_CHECK(OutputJson(*message.Find("content_parts")) ==
+            OutputJson(*messages.array[0].Find("content")));
+  Q4T_CHECK(HandleStoredChatRequest(
+      objects, "GET", "/v1/chat/completions/chatcmpl_test/messages", {},
+      Access("client:other")).http_status == 404);
+  return true;
+}

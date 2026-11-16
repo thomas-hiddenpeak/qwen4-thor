@@ -39,8 +39,9 @@ struct ChatToolCallFormat {
   bool json_arguments = false;
 };
 
-// Shared by HTTP and the renderer: validate role-specific content, metadata
-// and historical refusal without decoding media or changing the request.
+// Shared by HTTP and the renderer: validate role-specific content, metadata,
+// historical refusal and citation offsets without decoding media or changing
+// the request. Citation metadata remains data in its original assistant turn.
 Status ValidateChatMessageProfile(const io::Json& messages,
                                   std::string* error_param = nullptr,
                                   bool allow_empty = false);

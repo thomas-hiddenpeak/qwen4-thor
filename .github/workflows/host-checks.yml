@@ -164,3 +164,5 @@ jobs:
         run: python3 -B -m unittest tools.serve_soak.test_native_soak
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs
+      - name: Check Chat citation history schemas and clients
+        run: python3 -B -m unittest tools.serve_protocol.test_chat_annotations

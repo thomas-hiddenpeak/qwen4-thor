@@ -7658,7 +7658,55 @@
                 "type": "null"
               },
               "annotations": {
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "url_citation"
+                        },
+                        "url_citation": {
+                          "type": "object",
+                          "properties": {
+                            "start_index": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "end_index": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\x00-\\x20\\x7f]*$",
+                              "x-q4t-max-utf8-bytes": 8192
+                            }
+                          },
+                          "required": [
+                            "start_index",
+                            "end_index",
+                            "title",
+                            "url"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url_citation"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "function_call": {
                 "anyOf": [
@@ -8038,6 +8086,53 @@
                       "items": {
                         "$ref": "#/components/schemas/serve-chat-request-v1.schema.json/$defs/refusalPart"
                       }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "role"
+                  ],
+                  "properties": {
+                    "role": {
+                      "not": {
+                        "const": "assistant"
+                      }
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "annotations": {
+                      "type": "null"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "annotations"
+                  ],
+                  "properties": {
+                    "annotations": {
+                      "type": "array",
+                      "minItems": 1
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": [
+                        "string",
+                        "array"
+                      ]
                     }
                   }
                 }
@@ -10879,7 +10974,55 @@
                 "type": "null"
               },
               "annotations": {
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "url_citation"
+                        },
+                        "url_citation": {
+                          "type": "object",
+                          "properties": {
+                            "start_index": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "end_index": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\x00-\\x20\\x7f]*$",
+                              "x-q4t-max-utf8-bytes": 8192
+                            }
+                          },
+                          "required": [
+                            "start_index",
+                            "end_index",
+                            "title",
+                            "url"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url_citation"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "function_call": {
                 "anyOf": [
@@ -11259,6 +11402,53 @@
                       "items": {
                         "$ref": "#/components/schemas/serve-vision-request-v1.schema.json/$defs/refusalPart"
                       }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "role"
+                  ],
+                  "properties": {
+                    "role": {
+                      "not": {
+                        "const": "assistant"
+                      }
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "annotations": {
+                      "type": "null"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "annotations"
+                  ],
+                  "properties": {
+                    "annotations": {
+                      "type": "array",
+                      "minItems": 1
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": [
+                        "string",
+                        "array"
+                      ]
                     }
                   }
                 }

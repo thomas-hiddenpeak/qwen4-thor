@@ -26,7 +26,7 @@
     },
     "messages": {
       "semantics": "qwen3.8-openai-v4：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
-      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。audio/annotations历史和完整媒体缓存仍是A02/A10待实现项。",
+      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。assistant url_citation历史现校验字符偏移并进入原模板，未据此执行联网检索；audio历史和完整媒体缓存仍是A02/A10待实现项。",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -47,7 +47,8 @@
         "docs/SERVE_FILE_INPUTS_2026-11-10.md",
         "docs/evidence/serve-managed-vision-business-20261116/README.md",
         "docs/evidence/serve-video-geometry-business-20261116/README.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "docs/SERVE_CHAT_ANNOTATIONS_2026-11-16.md"
       ]
     },
     "max_tokens": {
@@ -1682,11 +1683,21 @@
       "name",
       "arguments"
     ],
-    "chat_template.cpp:0:part": [
+    "chat_template.cpp:0:annotation": [
+      "type",
+      "url_citation"
+    ],
+    "chat_template.cpp:1:*citation": [
+      "start_index",
+      "end_index",
+      "title",
+      "url"
+    ],
+    "chat_template.cpp:2:part": [
       "type",
       "refusal"
     ],
-    "chat_template.cpp:1:part": [
+    "chat_template.cpp:3:part": [
       "type",
       "text",
       "prompt_cache_breakpoint"
@@ -2133,7 +2144,7 @@
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
     "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
-    "include/q4t/server/chat_template.h": "edeb034648a5409181c0925ba777e794959ce4d91bdc45f02d52e56a0f36ee26",
+    "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
     "include/q4t/server/client_policy.h": "82d816a798b0f9bbc27d41e25e398086e00b160bebf63b40afab069d9da4e066",
@@ -2339,9 +2350,9 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "79f0c43c784f2b8d001636a1ad05c908a5dadfca988acdcd08f348ca54640528",
+    "src/server/chat_capabilities.cpp": "b817cef4474fb0a4d445196e8143ae89465c561472e50d8eb10ff31f571d03e7",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
-    "src/server/chat_contract.cpp": "c8f433614bf1bf540b95a6c88c9dc3c765efdaea9671dbcb5a17d5625859eae5",
+    "src/server/chat_contract.cpp": "dba20dbe1e5f6675f9a1453652d4a1f00903f5487e9029cb4c300b33630b58e8",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
@@ -2366,7 +2377,7 @@
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "aaba1591030dc48916ae399b9d154a2c8d123a93a6bd7f012681bcfc9f0a93c7",
+    "src/server/chat_template.cpp": "9628d5fdadaf76b5639f8cfb6f6865fa52e8704f93397fd302efd86c3b9787a5",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2630,6 +2641,7 @@
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
     "tools/serve_gateway/gateway.py": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
+    "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
     "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
@@ -2738,6 +2750,9 @@
     "tools/serve_recovery/retention.py": "e9174f5bec4241a26847ceeaf0e0c3b708b1557e341a7fccc2623e93d5fbb862",
     "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
     "tools/serve_recovery/retrieval_acceptance.py": "4cb55e544591ee31cbd131d41bd1d526a47abd4d0d8af0127dd721c88cda1b20",
+    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
+    "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
+    "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
     "tools/serve_recovery/runtime_identity.py": "49c737a851df8afe97da6c9d5897f54f2759e3447939f5577940dba735aa5708",
     "tools/serve_recovery/service.py": "0e6c9678a13e87117da0cf337f709491439725efe5485b7d4144babdb91dd4a7",
     "tools/serve_recovery/store.py": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d",
@@ -2749,6 +2764,7 @@
     "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
     "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
     "tools/serve_recovery/version_acceptance.py": "8b6f7150ae2b9d6777b8428b657beff127f94fa585897531edf0314ebcf50eb0",
+    "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e",
     "tools/serve_recovery/version_contract.py": "8f786b5dd72c06b23b06df5dab58eafb5c03faca244b8ecece0c44159143c4ec",
     "tools/serve_recovery/version_journal.py": "f3d0ac689ffa0db5a6e1288d6c3950cfbfdae6e560a714d04134973f15f50a8c",
     "tools/serve_recovery/version_launch.py": "9a3c5408b3094e9a47a393b5c72a3a96fb573969409c02e64c2a8c695d1b953d",
@@ -2789,14 +2805,9 @@
     "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
-    "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e",
-    "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
-    "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
-    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
-    "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd"
+    "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

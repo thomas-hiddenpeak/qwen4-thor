@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-16",
+  "updated": "2026-11-17",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -145,7 +145,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "implementing",
+        "state": "targeted_cpu_passed_business_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -154,7 +154,9 @@
           "starts": 3,
           "chats": 12,
           "seconds": 600
-        }
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": false
       }
     },
     {
@@ -216,7 +218,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "implementing",
+        "state": "targeted_cpu_passed_business_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -225,7 +227,9 @@
           "starts": 3,
           "chats": 12,
           "seconds": 600
-        }
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": false
       }
     },
     {
@@ -4195,7 +4199,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "implementing",
+        "state": "targeted_cpu_passed_business_pending",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -4204,7 +4208,9 @@
           "starts": 3,
           "chats": 12,
           "seconds": 600
-        }
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": false
       }
     },
     {
@@ -4520,11 +4526,13 @@
         "pull_request": 34
       },
       "native_soak_ops_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged_user_day_pending",
         "revision": 188,
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
-        "pull_request": 35
+        "pull_request": 35,
+        "main_commit": "38451306218fa63c2112034c36984f0bc8107227",
+        "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       }
     },
     {
@@ -4560,7 +4568,7 @@
       },
       "remaining_required": [
         "Finish every remaining task before final closure",
-        "Integrate native soak delivery into main; user executes the prepared long-stability run"
+        "User executes the prepared long-stability run; native soak delivery is actually merged"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -4583,7 +4591,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "short_delivered_day_handoff_prepared_main_pending",
+        "state": "delivered_main_merged_user_day_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4616,10 +4624,12 @@
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
         "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md",
-        "pull_request": 35
+        "pull_request": 35,
+        "main_commit": "38451306218fa63c2112034c36984f0bc8107227",
+        "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       }
     }
   ],
-  "next_task": "Complete native soak/ops PR35 main integration while implementing Chat annotation history; continue all remaining protocol/backend/media, cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Complete native soak/ops PR35 main integration while implementing Chat annotation history; continue all remaining protocol/backend/media, cold/resource/host tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
 }

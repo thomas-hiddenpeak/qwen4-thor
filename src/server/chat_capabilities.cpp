@@ -602,6 +602,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("developer_mapping":"system","mixed_instruction_roles":true,)"
          R"("message_name":"json_quoted_participant","name_max_bytes":4096,)"
          R"("refusal_history":true,"user_message_required":false,)"
+         R"("annotation_history":{"types":["url_citation"],)"
+         R"("offsets":"original_content_unicode_characters",)"
+         R"("stored_message_round_trip":true,"automatic_fetch":false},)"
          R"("instruction_media":false,)"
          R"("reference_sha256":)" +
          Quote(identity::kTemplateReference) + R"(,"renderer_source_sha256":)" +

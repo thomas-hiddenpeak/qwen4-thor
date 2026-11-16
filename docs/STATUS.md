@@ -1,4 +1,4 @@
-# 当前状态（2026-11-16）
+# 当前状态（2026-11-17）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -26,7 +26,7 @@ STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
 只更新Python对当前上传/tunnel计数的解析；核心/client/outer/profile及
 所有本机程序和容量保持。原生60秒/3组/15业务加自检与完整清理通过；
 [24小时交接已准备](SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md)，实际day由用户执行。
-后续实际合main继续；R07执行前按当前默认刷新冻结包，维护交接未答
+本组[PR35已实际合main](evidence/serve-pr35-merged-20261117/README.md)（`38451306`）；R07执行前按当前默认刷新冻结包，维护交接未答
 不干预相机/监控。R08及全部协议/媒体/后端master任务继续。
 
 前驱rev182[原生整根回退交付](evidence/serve-root-delivery-20261116/README.md)完成18项STOPPED发布、实际回退再前进及
@@ -79,6 +79,20 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[Chat引用历史CPU通过](evidence/serve-chat-annotations-cpu-20261117/README.md)：
+16项不同C++/8前端病例最终通过；首轮三个模板预期偏差只修断言，
+原失败保留。723/7来源及隔离零警告构建通过，能力描述已补。继续
+最多3启动/12请求/600秒实际资格、SSE/存储隔离与可回退发行。
+PR35两组CI通过且已实际合main（`38451306`），全部master继续。
+
+
+Chat引用历史已成组实现：shared合同校验UTF-8字符偏移和字段，模板
+转义控制标记且保持原消息坐标；统一Chat/vision/message/OpenAPI
+schema已同步。存储复用原始记录，新增10项直接C++回归与8个schema/
+原生预检/双客户端病例，另复验最多6项受影响旧合同。尚未构建或
+运行测试；默认rev188保持，必要业务仍上限3启动/12Chat/600秒。
+
 
 [Chat引用历史](SERVE_CHAT_ANNOTATIONS_2026-11-16.md)进入实现：补非null
 annotations的合同、原assistant模板数据、统一schema和持久往返；
