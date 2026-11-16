@@ -51,6 +51,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat 候选精确包/版本恢复通过](evidence/serve-chat-style-version-business-20261116/README.md)：
+保留1b90a1bf独立1启动/2生成，正式d8960eed实际2启动/4生成/1探测；
+严格租约48.066/103.580秒，NVML 46/97项正常。
+回退后冻结视频SSE/能力/历史保持，持久STOPPED与资源清理通过。
+保留包首个finalize因argv路径字符串不一致拒绝，原始记录保留；同解释器/
+驱动/计划的补充核对及1正向5负控通过，0追加GPU。rev150保持，继续
+17项STOPPED可回退发布、PR31及全部master。
+
 [Chat 候选主轻资格/封包通过](evidence/serve-chat-style-profile-business-20261116/README.md)：
 2启动/10请求/92.497秒，88项NVML正常；两侧实际schema/工具/SHA续答/
 embedding/视频通过。正式d8960eed、保留控制1b90a1bf及两项sealed CPU
