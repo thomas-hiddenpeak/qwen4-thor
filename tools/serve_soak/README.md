@@ -1,4 +1,51 @@
-# 当前版本持续运行验收
+# 原生服务持续运行验收
+
+当前入口为`native_stage.py`，直接使用精确原生服务包和outer/Guardian，
+不创建systemd unit，不使用nginx。14项CPU已通过；实际short接受状态
+以[STATUS](../../docs/STATUS.md)为准。24小时由用户显式执行，agent只
+运行short。完整合同见[原生交接计划](../../docs/SERVE_NATIVE_SOAK_2026-11-16.md)。
+
+在干净且已提交的工作区，为当前包准备两个不同目录；prepare/check
+不启动模型，不改变实际默认及生产服务状态：
+
+```bash
+python3 -B tools/serve_soak/native_stage.py prepare --profile short \
+  --package build/service --output .q4t-work/operator-native-soak/short-01
+python3 -B tools/serve_soak/native_stage.py prepare --profile day \
+  --package build/service --output .q4t-work/operator-native-soak/day-01
+python3 -B tools/serve_soak/native_stage.py check \
+  --plan .q4t-work/operator-native-soak/day-01/plan.json
+```
+
+选择新的目录保留每次计划；来源/包/默认变化会拒绝旧plan，不删掉旧
+execution重试。已接受short且你准备好长时间占用GPU后，显式执行：
+
+```bash
+python3 -B tools/serve_soak/native_stage.py run \
+  --plan .q4t-work/operator-native-soak/day-01/plan.json
+python3 -B tools/serve_soak/native_report.py \
+  --output .q4t-work/operator-native-soak/day-01
+```
+
+run自己启动严格GPU guard并把原锁交给原生服务，不额外套另一把锁。
+它前台运行；不自动重放请求或工具。day为24小时，每60秒一组JSON、
+SSE、schema、真实文档工具和SSE续答，共1440组/7200业务生成加1自检；
+保持当前alpha配额。第1小时60组/300请求只写独立检查点，不宣称day
+通过。short为60秒/3组/15业务生成加1自检，最多600秒/1模型/0探测。
+
+progress.json只作进度，不能证明进程仍活着。计划目录handoff.json
+包含绑定原包/原私有状态的确切status和stop命令；终端丢失时执行其中
+的stop，再核对status。只操作这个验证服务，不能按旧PID批量kill。
+驱动/证据/外层监控失败保留原始记录，ENV_ABORT不等于核心模型故障；
+不要清空锁或recovery标记。正常结束需原生STOPPED、整树/端口/锁清理，
+并通过原始wire和工具来源、连续监控日志、计数/资源及密封文件复核。
+
+report只读，不启动模型。内存增长只描述原模型进程，RSS与RssAnon
+相互重叠；不声称统一DRAM硬上限。短验也不声称24小时或无限期无泄漏。
+
+## 历史systemd入口和证据
+
+以下仅为2026-11-03原包的历史命令/证据，不能用它们验收当前原生包。
 
 用户专门负责长时间验证；agent只做开发和short验证。默认profile为
 short，所有命令都需要显式执行，没有timer、开机项或恢复脚本。

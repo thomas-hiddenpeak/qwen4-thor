@@ -72,10 +72,20 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生长稳交接CPU通过](evidence/serve-native-soak-cpu-20261116/README.md)：
+14项首过，密封记录复核后只补1项，723来源/7负控通过。当前包/原生
+outer、实际工具及原始wire/清理复核已实现；day每分钟一组保持原配额，
+24小时由用户执行。继续精确prepare/check及1启动/16Chat/600秒short。
+
 PR34两组CI均57/58套件通过，仅三个新包用例误留v18断言而失败。
 [定点修复](evidence/serve-pr34-ci-repair-20261116/README.md)改为实际v19，
 3项CPU首过，历史v18用例保持，运行时/默认不变、0GPU。继续新head
 检查及实际合main，不用本机验证替代远端结果。
+
+[Q03原生长稳交接](SERVE_NATIVE_SOAK_2026-11-16.md)进入开发：补当前包
+可冻结入口及原生outer生命周期，保留JSON/SSE/schema/真实工具、1h
+与24h检查点和独立证据复核。最多14项CPU后只做1启动/16Chat/600秒
+short；day由用户执行，旧systemd证据保持，全部master继续。
 
 [R07精确包预检通过](evidence/serve-cold-refresh-preflight-20261116/README.md)：
 rev182原包普通prepare及root只读check闭合，原污染失败和plan保留；

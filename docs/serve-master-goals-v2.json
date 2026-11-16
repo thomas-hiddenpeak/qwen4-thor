@@ -4515,6 +4515,24 @@
         "pull_request": 31,
         "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "native_soak_20261116": {
+        "state": "implemented_targeted_cpu_accepted_short_pending",
+        "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
+        "cpu_limit": 14,
+        "short_limits": {
+          "starts": 1,
+          "chats": 16,
+          "probes": 0,
+          "seconds": 600
+        },
+        "day_run_owner": "user",
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-native-soak-cpu-20261116/README.md",
+        "cpu_tests": 14,
+        "recheck_tests": 1,
+        "day_cycles": 1440,
+        "day_business_requests": 7200
       }
     }
   ],

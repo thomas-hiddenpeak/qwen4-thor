@@ -1,0 +1,6 @@
+test_evidence_boundary_rejects_links_and_parent_traversal (tools.serve_soak.test_native_soak.PrivateTests.test_evidence_boundary_rejects_links_and_parent_traversal) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+OK

@@ -1,0 +1,19 @@
+test_checkpoint_requires_real_time_and_all_cycles (tools.serve_soak.test_native_soak.ContractTests.test_checkpoint_requires_real_time_and_all_cycles) ... ok
+test_completion_rejects_truncation_wrong_quality_and_extra_tool (tools.serve_soak.test_native_soak.ContractTests.test_completion_rejects_truncation_wrong_quality_and_extra_tool) ... ok
+test_plan_cannot_silently_raise_limits_or_replay (tools.serve_soak.test_native_soak.ContractTests.test_plan_cannot_silently_raise_limits_or_replay) ... ok
+test_profile_preserves_duration_owner_and_exact_model_work (tools.serve_soak.test_native_soak.ContractTests.test_profile_preserves_duration_owner_and_exact_model_work) ... ok
+test_resource_growth_checks_only_original_process_quantities (tools.serve_soak.test_native_soak.ContractTests.test_resource_growth_checks_only_original_process_quantities) ... ok
+test_tool_continuation_binds_actual_bytes_and_original_call (tools.serve_soak.test_native_soak.ContractTests.test_tool_continuation_binds_actual_bytes_and_original_call) ... ok
+test_unexpected_or_duplicate_tool_is_never_executed (tools.serve_soak.test_native_soak.ContractTests.test_unexpected_or_duplicate_tool_is_never_executed) ... ok
+test_workload_keeps_json_sse_schema_and_actual_tool (tools.serve_soak.test_native_soak.ContractTests.test_workload_keeps_json_sse_schema_and_actual_tool) ... ok
+test_budget_charges_before_work_and_refuses_another_start (tools.serve_soak.test_native_soak.PrivateTests.test_budget_charges_before_work_and_refuses_another_start) ... ok
+test_budget_event_tail_is_bounded_without_resetting_counts (tools.serve_soak.test_native_soak.PrivateTests.test_budget_event_tail_is_bounded_without_resetting_counts) ... ok
+test_evidence_boundary_rejects_links_and_parent_traversal (tools.serve_soak.test_native_soak.PrivateTests.test_evidence_boundary_rejects_links_and_parent_traversal) ... ok
+test_fresh_native_entry_does_not_preload_checkout_production (tools.serve_soak.test_native_soak.PrivateTests.test_fresh_native_entry_does_not_preload_checkout_production) ... ok
+test_guard_error_reaps_only_its_actual_cpu_child (tools.serve_soak.test_native_soak.PrivateTests.test_guard_error_reaps_only_its_actual_cpu_child) ... ok
+test_original_wire_seal_detects_mutation (tools.serve_soak.test_native_soak.PrivateTests.test_original_wire_seal_detects_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.113s
+
+OK
