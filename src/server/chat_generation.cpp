@@ -2843,6 +2843,47 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    saved.ok() ? "none" : saved.message().c_str(), kind);
       return saved;
     };
+    const auto save_mtp = [&](int32_t pending, int32_t last_d0,
+                              const char* kind) {
+      const auto begin = std::chrono::steady_clock::now();
+      SessionSaveTiming timing(request_id.c_str(), kind);
+      std::unique_lock<std::mutex> lock;
+      {
+        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
+        lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      }
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
+      OnException backend_failure([&] { AbortBackendExecution(); });
+      std::vector<SessionRange> ranges;
+      Status saved;
+      {
+        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+        saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
+                                   d_mtp_g, d_session_trunk, &ranges);
+      }
+      if (saved.ok() && pending >= 0 && last_d0 >= 0 && !seq.HasPending() &&
+          seq.history.size() == static_cast<size_t>(seq.position) &&
+          model_.Get().rope_delta[seq_id] == 0) {
+        std::vector<int32_t> prefix(seq.history);
+        prefix.push_back(pending);
+        saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
+                                    cancelled, last_d0, &timing);
+        if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
+      } else if (saved.ok()) {
+        saved = Status::Fail("incomplete session boundary");
+      }
+      timing.Report(saved.ok());
+      std::fprintf(stderr,
+                   "[session-cache] request=%s event=save prefix=%d "
+                   "ms=%.3f disk_bytes=%zu error=%s layout=mtp source=%s\n",
+                   request_id.c_str(), seq.position,
+                   std::chrono::duration<double, std::milli>(
+                       std::chrono::steady_clock::now() - begin)
+                       .count(),
+                   session_cache_.Bytes(),
+                   saved.ok() ? "none" : saved.message().c_str(), kind);
+      return saved;
+    };
     const auto save_shared = [&](int boundary) {
       const auto* point = cache_boundary(boundary);
       if (!point || prefix_scope.empty() || boundary >= T) return;
@@ -3633,6 +3674,28 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "gpu_unhealthy");
       return;
     }
+    // The prompt is a complete, immutable recovery boundary even if a stop
+    // later bisects a token or a speculative batch. Keep it unpublished until
+    // final validation and HTTP completion; never reconstruct model state from
+    // the cropped response. Ordinary requests still save their output tail.
+    if (text_stop.Enabled() && session.cache && response_status &&
+        !cancelled() && seq.position == T && !seq.HasPending() &&
+        T >= SessionCache::kMinPrefix && T < request_capacity &&
+        (target_cache || stream_draft_ready)) {
+      ProgressExecution progress_execution(ProgressWork::kCache);
+      if (target_cache) {
+        auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        OnException backend_failure([&] { AbortBackendExecution(); });
+        save_target(&session_cache_, session.key, "private_prompt");
+      } else {
+        save_mtp(mtp_b, mtp_d0, "private_prompt");
+      }
+      if (session_gpu_error) {
+        err_guard.ok = false;
+        RejectUnhealthy(fd);
+        return;
+      }
+    }
     // The prompt trunk is only needed for the draft-extend above; free it now
     // so decoding requests do not hold it (bounds concurrent memory).
     if (d_trunk_full) {
@@ -3818,8 +3881,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         // Stop/EOS/parser failure wins over a coincident length bound. KV was
         // committed for the entire accepted batch; keep that state intact and
-        // retire it. Stop+cache is rejected before model work, so the invisible
-        // speculative suffix cannot become a reusable response snapshot.
+        // retire it. Requests with text stopping retain only their complete
+        // prompt snapshot, so invisible speculative tokens are not published.
         if (done) break;
         if (static_cast<int>(generated.size()) >= max_tokens) {
           finish_reason = "length";
@@ -3847,55 +3910,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // successful HTTP completion. A thinking-budget tail can be longer than the
     // ordinary capacity tail; only this complete earlier MTP boundary is
     // reusable.
-    if (session.cache && mtp_sched && !generation_failed &&
-        response_status.ok() && !cancelled() &&
+    if (session.cache && mtp_sched && !text_stop.Enabled() &&
+        !generation_failed && response_status.ok() && !cancelled() &&
         seq.stage == model::ModelSequence::Stage::kDecode &&
         !seq.HasPending() && seq.position >= SessionCache::kMinPrefix &&
         seq.position < request_capacity) {
-      const auto begin = std::chrono::steady_clock::now();
-      SessionSaveTiming timing(request_id.c_str(), "private");
-      std::unique_lock<std::mutex> lock;
-      {
-        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
-        lock = diagnostic.Lock(model_mu_, Wait::kModel);
-      }
-      RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
-      OnException backend_failure([&] { AbortBackendExecution(); });
-      std::vector<SessionRange> ranges;
-      Status saved;
-      {
-        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
-        saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
-                                   d_mtp_g, d_session_trunk, &ranges);
-      }
       const bool has_step = mtp_ar.mtp_accepted_count > 0;
       const int32_t pending = has_step ? mtp_ar.mtp_next_b : mtp_b;
       const int32_t last_d0 = has_step ? mtp_ar.mtp_next_d0 : mtp_d0;
-      if (saved.ok() && pending >= 0 && last_d0 >= 0 &&
-          model_.Get().rope_delta[seq_id] == 0) {
-        std::vector<int32_t> prefix(seq.history);
-        prefix.push_back(pending);
-        saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
-                                    cancelled, last_d0, &timing);
-        if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
-      } else if (saved.ok()) {
-        saved = Status::Fail("incomplete session boundary");
-      }
-      timing.Report(saved.ok());
+      save_mtp(pending, last_d0, "private");
       if (session_gpu_error) {
         generation_failed = true;
         use_mtp = true;  // Do not enter a plain tail after a device failure.
         seq.Fail();
       }
-      std::fprintf(stderr,
-                   "[session-cache] request=%s event=save prefix=%d "
-                   "ms=%.3f disk_bytes=%zu error=%s\n",
-                   request_id.c_str(), seq.position,
-                   std::chrono::duration<double, std::milli>(
-                       std::chrono::steady_clock::now() - begin)
-                       .count(),
-                   session_cache_.Bytes(),
-                   saved.ok() ? "none" : saved.message().c_str());
     }
     if (mtp_suffix_) {
       const size_t indexed = suffix.Size();
@@ -4151,8 +4179,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // Ordinary decode has left the scheduler, and all target writes are
     // committed. A later parse, cleanup, cancellation or transport failure
     // keeps this snapshot unpublished through the existing SessionLease.
-    if (target_cache && session.cache && !generation_failed &&
-        response_status.ok() && !cancelled() &&
+    if (target_cache && session.cache && !text_stop.Enabled() &&
+        !generation_failed && response_status.ok() && !cancelled() &&
         seq.stage == model::ModelSequence::Stage::kDecode &&
         !seq.HasPending() && seq.position >= SessionCache::kMinPrefix &&
         seq.position < request_capacity) {
@@ -4401,12 +4429,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "prompt_cache_unavailable", "prompt_cache_options.prewarm");
       return;
     }
-    if (!prewarm && response_status && structured &&
-        !structured->Terminated() &&
-        !(responses && finish_reason == "length" &&
-          structured->Failure() == GrammarFailure::kNone))
-      response_status = Status::Fail(
-          "constrained response did not reach a grammar-accepted stop token");
     // Both transports use the same parser. Never publish a successful terminal
     // (or a session snapshot) for malformed/truncated model tool output.
     if (!prewarm && response_status.ok()) {
@@ -4432,6 +4454,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
       }
     }
+    if (!prewarm && response_status && structured &&
+        !structured->Terminated() &&
+        !((text_stop.Matched() || (responses && finish_reason == "length")) &&
+          structured->Failure() == GrammarFailure::kNone))
+      response_status = Status::Fail(
+          "constrained response did not reach a grammar-accepted stop token");
     if (!prewarm && response_status.ok()) {
       std::vector<ResponseDelta> deltas;
       response_status =

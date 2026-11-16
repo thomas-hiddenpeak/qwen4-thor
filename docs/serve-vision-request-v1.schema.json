@@ -3436,58 +3436,12 @@
         ]
       },
       "then": {
-        "allOf": [
-          {
-            "required": [
-              "messages"
-            ],
-            "properties": {
-              "parse_response": {
-                "const": true
-              }
-            }
-          },
-          {
-            "properties": {
-              "stop": {
-                "enum": [
-                  null,
-                  []
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "if": {
-        "anyOf": [
-          {
-            "required": [
-              "session_id"
-            ],
-            "properties": {
-              "session_id": {}
-            }
-          },
-          {
-            "required": [
-              "prefix_cache_scope"
-            ],
-            "properties": {
-              "prefix_cache_scope": {}
-            }
-          }
-        ]
-      },
-      "then": {
+        "required": [
+          "messages"
+        ],
         "properties": {
-          "stop": {
-            "enum": [
-              null,
-              []
-            ]
+          "parse_response": {
+            "const": true
           }
         }
       }

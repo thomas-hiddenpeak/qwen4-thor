@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/modern-retained-01/bundle",
+  "manifest_sha256": "9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/delivery-01/retained-service.release.json",
+  "service_release_sha256": "1748895ecbf15cdf927c001c5f5efaf5e06a3ffd1c24a20427282679cbbf5c92",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}

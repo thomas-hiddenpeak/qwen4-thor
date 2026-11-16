@@ -26,7 +26,7 @@
     },
     "messages": {
       "semantics": "qwen3.8-openai-v4：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
-      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。assistant url_citation历史现校验字符偏移并进入原模板，未据此执行联网检索；audio历史和完整媒体缓存仍是A02/A10待实现项。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
+      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体有认证路径。assistant url_citation历史校验字符偏移并进入原模板，未据此执行联网检索；audio历史仍属A02/A10。rev214已实际交付完整内容/处理器/几何身份、视觉块边界、target三轴/RoPE及视觉分块，rev224补齐Stop/约束/私有缓存组合。",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -52,7 +52,8 @@
         "src/server/media_cache.cpp",
         "include/q4t/server/session_media.h",
         "include/q4t/model/vision_positions.h",
-        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
       ]
     },
     "max_tokens": {
@@ -265,12 +266,15 @@
     },
     "stop": {
       "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
-      "boundary": "strict输出和state cache组合拒绝；包含推理/工具标记，部分工具错误；MTP已算后缀不计completion，不宣称没有额外计算",
+      "boundary": "约束输出必须通过可见完整值/receipt终态校验；stop请求私有缓存复用完整prompt，不发布MTP不可见尾部。包含推理/工具标记，部分工具错误；usage计至命中token，不宣称没有额外计算。针对性CPU及真实MTP/图片/schema/主轻/保留组合已验，rev224可回退交付；原失败和EOS未命中保持原记录。",
       "evidence": [
         "tests/server_text_stop_test.cpp",
         "docs/SERVE_TEXT_STOP_2026-11-03.md",
         "docs/serve-stop-v1.schema.json",
-        "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
+        "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md",
+        "docs/SERVE_STOP_COMBINATIONS_2026-11-17.md",
+        "tests/server_schema_token_guard_test.cpp",
+        "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
       ]
     },
     "logprobs": {
@@ -2181,7 +2185,7 @@
     "include/q4t/server/chat_moderation.h": "8fa5bfef3abccfc9cde2e621e7323eae8522650a964a225188e39213b4763d14",
     "include/q4t/server/chat_plan.h": "477bbff7a130080ecb3943c00a5e2940df4e5563128817209e7a70ea0d35faea",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
-    "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
+    "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
     "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
@@ -2314,7 +2318,7 @@
     "include/q4t/server/structured_decoder.h": "90bce7f10c21f8a4f40d9580e825ed963d1c2637a2335586aa10fa91a56d6561",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
-    "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
+    "include/q4t/server/text_stop.h": "9b5dd8313aae0b9dddb2404ac187476a4cd800adad72afc901d76e48e6ee97d8",
     "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "ebcc79af8cd4ec1a6d49ab875efededde7c2c32b4ac8362a3337b727866990e3",
     "include/q4t/server/tool_result_contracts.h": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770",
@@ -2397,14 +2401,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "547da80d03a230f3f087d922e0f40df3d25dd2f13195d34da4578f1159066939",
+    "src/server/chat_capabilities.cpp": "4c0f5284c3c03a933d5879851e1d4f0e751293bb95f83df6f579ff4c70107113",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
-    "src/server/chat_contract.cpp": "b6205aea0995e36b2f6943954423a7141deb2de8a99e88910e190296eec257b4",
+    "src/server/chat_contract.cpp": "06bc55ca7c7bb8be03934a7d7ead50b0fec5f968cd8fdb9983851414c0a8e47c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "ab7e7ca72a7a54fedb0e4c3719580b80749826358de949a8fe16d2b6db967fc5",
+    "src/server/chat_generation.cpp": "8b81de7fe71f77c651a5599972b373a44d4d2c9b61ada794b6897ff218692761",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2415,10 +2419,10 @@
     "src/server/chat_model_step.h": "64bca98f10b911594c06e9829c242189784cd8e221c3be1a9ed74374503f0a6e",
     "src/server/chat_moderation.cpp": "0c7dc6c4ac42b1bd8bd904056344f58418a60e0e5879b20255ecad208d7ac5a5",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
-    "src/server/chat_plan.cpp": "5770dbff6aa820605123c7b7a6fec71615018a8bf79ec392b6847bdabee49568",
+    "src/server/chat_plan.cpp": "de1077d6bbfa6793e3a337856473fe7538eaf6d201f55485c31f1399a8aa3e9d",
     "src/server/chat_preflight.cpp": "b7ea6a1090aa1bf6cca751a582fa33328d0559bfd0ee7bddc05784d1ab4924f5",
     "src/server/chat_prompt.cpp": "4dce5fca2fb504523445fd4e2ced5ef9c29c1f47eaebc69973a7159f3c6f68ea",
-    "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
+    "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "74fa1e051643821b26d491ef7ab10bb53151b9177d68215d0d12fa9b8a8cd336",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_server.cpp": "c7b39a179d21d6ea0d0aac7b734b7d7471cc3743e5abb58b430bd2b01b15947a",
@@ -2433,7 +2437,7 @@
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
     "src/server/client_request.cpp": "3c20cd09870843d117ce76c915749de64f78581f612dfa33d47d9583b15fab2f",
-    "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
+    "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
@@ -2638,7 +2642,7 @@
     "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
     "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
     "src/server/structured_decoder.cpp": "7a63e79a3f7d47394ffeb3238f15fd017e2076b4c1ce340f8974eb25bd18dcfe",
-    "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+    "src/server/text_stop.cpp": "bcfff59a107286c5ca3328c6f523f576f57df75d0e608c3c60afc537ec100978",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "0053655dd4eba0085e6837b491c83148de68e2131452c0ab37e026968b380867",
     "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
@@ -2774,7 +2778,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "ab9e6ddf8e26ca17b36321abecadc09315903a39930df956981665bfd6bf492e",
+    "tools/serve_recovery/profile_migration.py": "d4a06e20a506235a0c913a7b8d4c34f007515faccfee49baf83970d46af9275a",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -6540,5 +6544,12 @@
     },
     "scope": "Retry only transient read-only control reset within original deadline; protocol/launcher failures still propagate",
     "cpu_tests": 4
+  },
+  "stop_combinations_20261117": {
+    "state": "delivered_main_pending",
+    "plan": "docs/SERVE_STOP_COMBINATIONS_2026-11-17.md",
+    "default_revision": 224,
+    "default_changed": true,
+    "evidence": "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
   }
 }

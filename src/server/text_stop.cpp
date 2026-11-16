@@ -7,8 +7,7 @@
 
 namespace q4t::server {
 
-Status ParseTextStop(const io::Json& request, bool constraints_active,
-                     std::vector<std::string>* stops,
+Status ParseTextStop(const io::Json& request, std::vector<std::string>* stops,
                      std::string* error_param) {
   stops->clear();
   const auto* value = request.Find("stop");
@@ -33,12 +32,6 @@ Status ParseTextStop(const io::Json& request, bool constraints_active,
           "stop entries must be valid UTF-8 strings of 1..256 bytes");
     stops->push_back(item.str);
   }
-  if (stops->empty()) return Status();
-  if (constraints_active)
-    return invalid("stop", "stop is not supported with constrained output");
-  if (request.Has("session_id") || request.Has("prefix_cache_scope") ||
-      request.GetInt("prefix_cache_write_tokens", 0) > 0)
-    return invalid("stop", "stop is not supported with state caches");
   return Status();
 }
 

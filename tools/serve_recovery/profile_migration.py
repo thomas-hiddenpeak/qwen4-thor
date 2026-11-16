@@ -26,6 +26,35 @@ CHAT_EFFORTS = frozenset(('none', 'minimal', 'low', 'medium', 'high', 'xhigh', '
 LEGACY_CHAT_EFFORTS = frozenset(('low', 'medium', 'xhigh'))
 
 
+def text_stop_capabilities(value):
+    """Recognize the complete visible-output and prompt-snapshot extension."""
+    stop = value.get('text_stop')
+    if not isinstance(stop, dict) or stop.get('profile') not in (
+            'q4t-text-stop-v1', 'q4t-text-stop-v2'):
+        return
+    modern = stop['profile'] == 'q4t-text-stop-v2'
+    contract = dict(
+        constrained_terminal='validate_visible_complete_values_and_receipts',
+        private_cache_boundary='complete_prompt_before_generation')
+    structured = value.get('structured_output')
+    ledger.require(type(stop.get('constrained_output')) is bool and
+                   type(stop.get('state_cache')) is bool,
+                   'invalid text stop capability booleans')
+    if modern:
+        ledger.require(stop['state_cache'] and type(structured) is dict and
+                       type(structured.get('available')) is bool and
+                       stop['constrained_output'] == structured['available'] and
+                       all(stop.get(k) == v for k, v in contract.items()),
+                       'incomplete text stop combination contract')
+    else:
+        ledger.require(not stop['state_cache'] and not stop['constrained_output']
+                       and not any(k in stop for k in contract),
+                       'legacy text stop cannot declare new semantics')
+    stop['profile'] = 'q4t-text-stop'
+    for key in ('constrained_output', 'state_cache'):
+        stop[key] = dict(enabled=True) if stop[key] else {}
+
+
 def media_cache_capabilities(value, media):
     """Normalize only the qualified complete-media-cache implementation.
 
@@ -103,6 +132,7 @@ def semantic_capabilities(value):
     template revisions and other changed values are not normalized.
     """
     result = copy.deepcopy(value)
+    text_stop_capabilities(result)
     media_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:

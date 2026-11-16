@@ -212,6 +212,11 @@
         "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
         "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
         "default_unchanged": false
+      },
+      "web_search_20261117": {
+        "state": "backend_required",
+        "finding": "Only type definitions and include projection exist; native actual search, source-bound citation and Chat/Responses execution still required",
+        "scope_reduced": false
       }
     },
     {
@@ -387,7 +392,7 @@
     {
       "id": "A05",
       "required": true,
-      "state": "subset_delivered_integration_pending",
+      "state": "implemented_delivered_main_pending",
       "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
       "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
       "depends_on": [
@@ -405,9 +410,9 @@
         "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
         "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
       },
-      "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
+      "development_status": "官方schema能力、工具/媒体/缓存与Stop组合实现并针对性验证，rev224实际可回退交付；本组实际合main待完成，不以阶段结束代替总目标。",
       "remaining_required": [
-        "Stop, constrained-output and private cache combinations with correct final validation; audit remaining combinations against accepted media evidence"
+        "Actual main integration of accepted Stop combination delivery"
       ],
       "current_audit": {
         "date": "2026-11-16",
@@ -435,7 +440,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -445,7 +450,56 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
+      },
+      "stop_combinations_20261117": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
+        "cpu_max": {
+          "cpp": 20,
+          "migration": 4,
+          "schema": 2,
+          "clients": 2
+        },
+        "gpu_max": {
+          "starts": 6,
+          "external_requests": 27,
+          "seconds": 1200
+        },
+        "default_unchanged": true,
+        "whole_task_complete": false,
+        "cpu_actual": {
+          "cpp_distinct": 18,
+          "cpp_executions": 19,
+          "migration_distinct": 4,
+          "migration_executions": 7,
+          "schema": 2,
+          "clients": 2
+        },
+        "evidence": "evidence/serve-stop-combinations-cpu-20261117/README.md",
+        "candidate_engine_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+        "first_business": {
+          "starts": 1,
+          "external_requests": 10,
+          "seconds": 96.6198365483433,
+          "status": "FAILED",
+          "accepted_subset": 9,
+          "media_refusal_not_positive_acceptance": true,
+          "private_prompt_tokens": 13361,
+          "private_follow_stop_matched": false
+        },
+        "total_starts": 6,
+        "total_external_requests": 27,
+        "strict_lease_seconds": 342.3800303977914,
+        "nvml_queries": 323,
+        "business_evidence": "evidence/serve-stop-combinations-business-20261117/README.md",
+        "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+        "revision": 224,
+        "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
       }
     },
     {
@@ -2216,7 +2270,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -2226,7 +2280,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -2823,9 +2880,15 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
+        "Actual web search backend, Chat web_search_options and Responses execution with source-bound citations and SDK round trips",
         "Actual configured cloud account permission/pagination/content acceptance",
         "Remaining builtin/tool VM file/video and typed-output combinations"
-      ]
+      ],
+      "web_search_20261117": {
+        "state": "backend_required",
+        "finding": "Only type definitions and include projection exist; native actual search, source-bound citation and Chat/Responses execution still required",
+        "scope_reduced": false
+      }
     },
     {
       "id": "A12",
@@ -3061,7 +3124,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -3071,7 +3134,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -3917,7 +3983,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev214 or then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev224 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4470,7 +4536,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -4480,7 +4546,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -4693,7 +4762,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR38 final-head checks and actual main merge",
+        "Stop delivery exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4918,6 +4987,48 @@
         "main_integration_pending": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+      },
+      "stop_combinations_delivery_20261117": {
+        "status": "ACCEPT_STOP_COMBINATIONS_DELIVERY",
+        "revision": 224,
+        "current": {
+          "engine_binary_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+          "engine_release_sha256": "9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa",
+          "generation_sha256": "9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131",
+          "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "service_acceptance_sha256": "81da864a4dc0c60becf30924484e754cd041ed60ca626d69314c8ba69dd9f7bf",
+          "service_release_sha256": "b74286b9699b5c95bddd4260a73fca42f0a9574c365348006cc7d0d52b8cd48c"
+        },
+        "commands": 19,
+        "seconds": 284.4070557462983,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "core_client_outer_bytes_preserved": true,
+        "profile_migration": "Explicit complete stop/constraints/cache contract upgrade; historical budgets and cycles preserved",
+        "root_cycles_preserved": true,
+        "manual_root": "9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5",
+        "automatic_payload": "945c4b2291e5767fe6bafdc197f62bf44e09620ae6f75c104a42706b3b964ff8",
+        "candidate_whole_package_gpu_run": false,
+        "composed_change": "Current engine business and exact primary/light + retained control acceptance; only explicit publication migration differs in live control sources; Python request builder separately verified",
+        "older_engine_fallback": false,
+        "prior_rev214_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 78,
+        "secret_scan_matches": 0,
+        "archive_sha256": "b8ba8bca30561c440b01f7b30ce5daecd5d4177de8c36956d84d9426017d4264",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
+      },
+      "media_state_cache_main_merge_20261117": {
+        "state": "merged",
+        "pr": 38,
+        "head": "8f55b64351cf85f0525b63700918addc7febe5b7",
+        "merge": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -5015,28 +5126,28 @@
       },
       "current_native_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
-        "source_commit": "17e5368930065061e624422ecc2c3601e34b84ac",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
-        "revision": 214,
+        "source_commit": "00d872a2fee50329ca6eb91775fc50fb2c929915",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
+        "revision": 224,
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
-          "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3"
         },
-        "service_id": "ee49c36a-b9dc-4636-981e-e8e1e78f2b9b",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "9e21d433a327dfe320d3512174f7a513233d7311c120e64afc92b5c2b29020f3",
-        "sources": 589,
+        "service_id": "8286217f-4a80-4f47-8c9e-d89a57bcd748",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e00b66c0ee23dc77d94f9ef7f022227ffac54645e493761d6aec171b707a8972",
+        "sources": 590,
         "links": {
-          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t",
-          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t.release.json",
-          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
-          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/delivery-01/candidate-service.release.json"
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/delivery-01/candidate-service.release.json"
         },
         "protected_default": {
-          "/home/rm01/models/dev/qwen4-thor/build/q4t": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
-          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03",
-          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "e96210279524545d28c9bc93fa2196e258320bcb125e8f310bc17854701da808",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "b74286b9699b5c95bddd4260a73fca42f0a9574c365348006cc7d0d52b8cd48c",
           "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
         },
         "production_unchanged": true,
@@ -5057,9 +5168,9 @@
               "--output",
               ".q4t-work/day-01"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 1.815789708867669
+            "seconds": 1.6678077392280102
           },
           {
             "name": "check",
@@ -5072,21 +5183,21 @@
               "--plan",
               ".q4t-work/day-01/plan.json"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 0.5142534719780087
+            "seconds": 0.5142732369713485
           }
         ],
         "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "archive_sha256": "07ef68096ddf1afa738e3b345f89fe64dc024cb92059f45f6e24c3761f84c0d8",
-        "evidence": "evidence/serve-media-state-cache-day-handoff-20261117/README.md"
+        "archive_sha256": "b9a007618cc704636d1311460d218775eca5dd76dee78c2e9961ec24eecf628c",
+        "evidence": "evidence/serve-stop-combinations-day-handoff-20261117/README.md"
       }
     }
   ],
-  "next_task": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next_task": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
+  "next": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

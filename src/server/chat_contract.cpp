@@ -229,7 +229,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   status = PlanOutputConstraints(req, &constraints, error_param);
   if (!status) return status;
   std::vector<std::string> stops;
-  status = ParseTextStop(req, constraints.active, &stops, error_param);
+  status = ParseTextStop(req, &stops, error_param);
   if (!status) return status;
   if (prompt && (!prompt->IsString() || prompt->str.empty()))
     return invalid("prompt", "prompt must be a nonempty string");

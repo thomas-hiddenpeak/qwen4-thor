@@ -762,7 +762,6 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
             except UnicodeError as exc:
                 raise ProtocolError("stop must be valid UTF-8") from exc
             require(1 <= length <= 256, "invalid stop byte length")
-        require(not stops or session_id is None, "stop does not support cache")
         body["stop"] = deepcopy(stop)
     if session_id is not None:
         require(isinstance(session_id, str) and len(session_id) == 64 and

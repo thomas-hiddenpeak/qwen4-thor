@@ -11,14 +11,13 @@
 
 namespace q4t::server {
 
-inline constexpr std::string_view kTextStopProfile = "q4t-text-stop-v1";
+inline constexpr std::string_view kTextStopProfile = "q4t-text-stop-v2";
 inline constexpr size_t kMaxStopStrings = 4;
 inline constexpr size_t kMaxStopBytes = 256;
 
-// Missing/null/[] disable stopping. Validates shape and supported combinations
-// before registration/GPU work; constraints_active is the shared output plan.
-Status ParseTextStop(const io::Json& request, bool constraints_active,
-                     std::vector<std::string>* stops,
+// Missing/null/[] disable stopping. Output validation and session publication
+// remain mandatory when a stop string interrupts constrained/cached output.
+Status ParseTextStop(const io::Json& request, std::vector<std::string>* stops,
                      std::string* error_param = nullptr);
 
 class TextStopStream {

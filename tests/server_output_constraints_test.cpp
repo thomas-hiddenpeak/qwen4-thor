@@ -12,6 +12,7 @@
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/text_stop.h"
 #include "q4t/test.h"
 
 namespace {
@@ -52,6 +53,53 @@ std::string Call(std::string_view name = "read",
          std::string(args) + "\n</function>\n</tool_call>";
 }
 }  // namespace
+
+Q4T_TEST(output_constraints_text_stop_validates_visible_complete_json) {
+  const auto request =
+      Parse(R"({"messages":[{"role":"user","content":"q"}],)"
+            R"("response_format":{"type":"json_object"},"stop":"END"})");
+  for (const bool collect : {false, true}) {
+    for (const auto& [text, valid] : {std::pair{R"({"a":1}ENDhidden)", true},
+                                      {R"({"a":1END})", false},
+                                      {R"({"a":"END"})", false},
+                                      {"END", false}}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      q4t::server::TextStopStream stop({"END"});
+      Q4T_CHECK(parser.Init(request, kClosed, "stopped", collect));
+      Q4T_CHECK(parser.Append(stop.Append(text), &deltas));
+      Q4T_CHECK(stop.Matched());
+      Q4T_CHECK(parser.Finish(false, &deltas, true).ok() == valid);
+      if (valid) Q4T_CHECK(parser.Content() == R"({"a":1})");
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(output_constraints_text_stop_preserves_required_tool_and_frame_rules) {
+  for (const bool collect : {false, true}) {
+    for (const auto& [text, valid] :
+         {std::pair{Call(), true},
+          {std::string("ordinary text"), false},
+          {Call().substr(0, Call().size() - 4), false},
+          {Call() + "\n<tool_call>", false},
+          {std::string("<q4t_refusal>unfinished"), false}}) {
+      const auto request = Request(R"("tool_choice":"required")");
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "stopped", collect));
+      Q4T_CHECK(parser.Append(text, &deltas));
+      Q4T_CHECK(parser.Finish(false, &deltas, true).ok() == valid);
+    }
+    const auto none = Request(R"("tool_choice":"none")");
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(none, kClosed, "stopped", collect));
+    Q4T_CHECK(parser.Append("complete visible answer", &deltas));
+    Q4T_CHECK(parser.Finish(false, &deltas, true));
+  }
+  return true;
+}
 
 Q4T_TEST(output_constraints_style_and_template_share_thinking_boundary) {
   for (const auto& [options, thinking] :

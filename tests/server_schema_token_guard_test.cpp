@@ -10,6 +10,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/text_stop.h"
 #include "q4t/test.h"
 
 namespace {
@@ -64,7 +65,8 @@ std::string RichCall(std::string_view arguments) {
 }
 bool RequestRoundTrip(const Json& request, const std::string& text,
                       size_t calls, std::string_view content,
-                      std::string_view refusal = {}) {
+                      std::string_view refusal = {},
+                      std::string_view stop = {}) {
   OutputConstraints plan;
   auto status = PlanOutputConstraints(request, &plan);
   if (!status) std::fprintf(stderr, "plan: %s\n", status.message().c_str());
@@ -85,6 +87,9 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
   Q4T_CHECK(parser.Init(request, kClosed, "receipt", true));
   parser.SetSchemaReceipts(&decoder->Receipts());
   const std::vector<uint16_t> logits(vocabulary.size(), Bf16(1));
+  TextStopStream stopping(stop.empty()
+                              ? std::vector<std::string>{}
+                              : std::vector<std::string>{std::string(stop)});
   std::vector<ResponseDelta> deltas;
   int32_t token = -1;
   for (size_t i = 0; i < text.size(); ++i) {
@@ -92,11 +97,16 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
     if (!status)
       std::fprintf(stderr, "token %zu: %s\n", i, status.message().c_str());
     Q4T_CHECK(status);
-    Q4T_CHECK(parser.Append(vocabulary[token], &deltas));
+    Q4T_CHECK(parser.Append(stopping.Append(vocabulary[token]), &deltas));
+    if (stopping.Matched()) break;
   }
   Q4T_CHECK(!deltas.empty());  // Actual provisional output precedes terminal.
-  Q4T_CHECK(decoder->Select(logits, &token, 0) && decoder->Terminated());
-  status = parser.Finish(false, &deltas);
+  if (stop.empty()) {
+    Q4T_CHECK(decoder->Select(logits, &token, 0) && decoder->Terminated());
+  } else {
+    Q4T_CHECK(stopping.Matched() && !decoder->Terminated());
+  }
+  status = parser.Finish(false, &deltas, stopping.Matched());
   if (!status) std::fprintf(stderr, "finish: %s\n", status.message().c_str());
   Q4T_CHECK(status);
   const auto message = Parse(parser.MessageJson());
@@ -133,6 +143,79 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
   return true;
 }
 }  // namespace
+
+Q4T_TEST(schema_text_stop_worker_receipt_without_eos) {
+  const auto schema = Object(R"({"type":"string","format":"time"})");
+  const auto request = RichRequest(
+      R"("tool_choice":"none","response_format":{"type":"json_schema",)"
+      R"("json_schema":{"name":"time","strict":true,"schema":)" +
+      schema + "}}");
+  const std::string value = R"({"v":"23:59:60Z"})";
+  Q4T_CHECK(RequestRoundTrip(request, value + "\n", 0, value, {}, "\n"));
+  return true;
+}
+
+Q4T_TEST(schema_text_stop_required_tool_worker_receipt_without_eos) {
+  const auto request = RichRequest(R"("tool_choice":"required")");
+  const auto call = RichCall(R"({"v":1e400})");
+  Q4T_CHECK(RequestRoundTrip(request, call + '\n' + call, 1, "", {},
+                            "\n<tool_call>"));
+  return true;
+}
+
+Q4T_TEST(schema_text_stop_receipts_certify_visible_prefix_only) {
+  const auto request = RichRequest(R"("tool_choice":"required")");
+  const auto& schema =
+      *request.Find("tools")->array[0].Find("function")->Find("parameters");
+  SchemaReceipt right, wrong;
+  Q4T_CHECK(MakeSchemaReceipt("read", schema, Parse(R"({"v":1e400})"), &right));
+  Q4T_CHECK(
+      MakeSchemaReceipt("read", schema, Parse(R"({"v":1e-400})"), &wrong));
+  const std::vector<std::vector<SchemaReceipt>> candidates{
+      {right}, {right, wrong}, {wrong, right}, {}, {wrong}};
+  for (bool stopped : {false, true}) {
+    for (size_t i = 0; i <= candidates.size(); ++i) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "r", true));
+      if (i < candidates.size()) parser.SetSchemaReceipts(&candidates[i]);
+      Q4T_CHECK(parser.Append(RichCall(R"({"v":1e400})"), &deltas));
+      Q4T_CHECK(parser.Finish(false, &deltas, stopped).ok() ==
+                (i == 0 || (stopped && i == 1)));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(schema_text_stop_never_skips_visible_json_receipt) {
+  const auto schema = Object(R"({"type":"string","pattern":"^[A-Z]{2}$"})");
+  const auto request = RichRequest(
+      R"("tool_choice":"none","response_format":{"type":"json_schema",)"
+      R"("json_schema":{"name":"code","strict":true,"schema":)" +
+      schema + "}}");
+  SchemaReceipt right, wrong;
+  Q4T_CHECK(
+      MakeSchemaReceipt("", Parse(schema), Parse(R"({"v":"AB"})"), &right));
+  Q4T_CHECK(
+      MakeSchemaReceipt("", Parse(schema), Parse(R"({"v":"AC"})"), &wrong));
+  const std::vector<std::vector<SchemaReceipt>> receipts{{}, {wrong}, {right}};
+  for (const auto& values : receipts) {
+    for (const auto& text :
+         {R"({"v":"AB"})", R"({"v":"AC"})", R"({"v":")", ""}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "r", true));
+      parser.SetSchemaReceipts(&values);
+      Q4T_CHECK(parser.Append(text, &deltas));
+      const bool exact =
+          !values.empty() &&
+          ((values[0] == right && std::string_view(text) == R"({"v":"AB"})") ||
+           (values[0] == wrong && std::string_view(text) == R"({"v":"AC"})"));
+      Q4T_CHECK(parser.Finish(false, &deltas, true).ok() == exact);
+    }
+  }
+  return true;
+}
 
 Q4T_TEST(schema_request_worker_parser_mixed_tools_and_content_round_trip) {
   const auto response =

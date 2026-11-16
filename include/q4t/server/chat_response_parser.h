@@ -81,7 +81,8 @@ class ChatResponseParser {
  private:
   enum class Region { kContent, kReasoning, kTool, kRefusal };
   Status Fail(const std::string& message);
-  Status VerifySchemaReceipts(bool incomplete = false) const;
+  Status VerifySchemaReceipts(bool incomplete = false,
+                              bool text_stopped = false) const;
   Status ParseTool(std::string_view block, ResponseToolCall* call) const;
   Status StreamTool(size_t available, bool complete,
                     std::vector<ResponseDelta>* deltas);

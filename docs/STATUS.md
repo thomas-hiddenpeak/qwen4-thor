@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev214；服务包 `f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b` |
-| Generation | `bbd132e81985145436e46f7121795596525682acb9507c7311780d0adeb45413` |
-| 引擎 | `2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3` |
-| 引擎发布记录 | `603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03` |
+| 发布 | rev224；服务包 `4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3` |
+| Generation | `9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131` |
+| 引擎 | `b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f` |
+| 引擎发布记录 | `9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `f046a6d535d5f8b228bc913011f88b17a7253a8a722e799adc4132f1b062a40e`；outer/周期及媒体缓存能力完整，前驱204/196另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `ffa5c43848ee3bbc4696944c05b15ccef31a72135a15ce95d7fdf0684671d584`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5`；outer/周期及Stop/缓存能力完整，前驱214另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `945c4b2291e5767fe6bafdc197f62bf44e09620ae6f75c104a42706b3b964ff8`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
+[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
+已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
+GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
+主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
+新独立快照已prepare/check且未运行，原rev214计划保留；PR38及本组实际合main继续。
+全部33项master仍是总目标完成条件，其余协议/模型/资源缺口继续实现。
+
+前驱[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
 已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
 GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实
 业务通过；发布模块仅补显式能力迁移，原预算和周期保持。PR38最终
@@ -101,6 +108,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
+（`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
+已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。
+
 [PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
 7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。
 精确worker次数、不重放、真实过期/回收断言保持，原三项失败保留。
@@ -112,10 +123,36 @@ PR38的56477a5a一组CI通过，另一组发现三类时间夹具耦合：正常
 不重放/清理/实际过期断言；冻结7项关联CPU、0GPU，生产实现不改。
 通过后继续该PR最终检查和实际合main；Stop独立工作未并入本PR。
 
+[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
+已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
+GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
+主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
+新独立快照已prepare/check且未运行，原rev214计划保留；PR38及本组实际合main继续。
+全部33项master仍是总目标完成条件，其余协议/模型/资源缺口继续实现。
+
+[Stop组合真实业务接受](evidence/serve-stop-combinations-business-20261117/README.md)：
+累计6启动27请求（含原失败/保留包自检）、严格租约342.380秒，
+323项NVML正常且全部清理。可见终态/必需工具、MTP prompt-only
+恢复、实际图片/schema/缓存概率对照及主轻/两保留控制包通过；原失败
+未追认、EOS续问未冒称stop命中。下一步≤20条STOPPED可回退交付，
+0新增GPU；默认214保持，PR38独立检查及全部master继续。
+
+Stop首轮1启动10请求、96.620秒未整体通过：前9条独立核对通过，
+MTP实际保存/恢复13361-token prompt且首次停止丢弃隐藏尾部；第10条
+固定字符串视觉题返回合法拒绝，脚本错误解析null。保留原失败，
+改实际图片内容题，仅补媒体3条；累计6启动27请求1200秒，默认214不变。
+
 [PR38回执恢复夹具修复](evidence/serve-pr38-ci-payload-repair-20261117/README.md)：
 一组最终d4e检查通过，另一组正常payload GET超出250ms夹具时限。
 恢复默认2秒I/O预算，原实际提交丢回执/精确恢复断言保持；1项CPU
 通过，运行时及rev214未变，0GPU。新head CI通过后实际合main。
+
+[Stop组合CPU通过](evidence/serve-stop-combinations-cpu-20261117/README.md)：
+18项不同C++/19次、4项迁移/7次、2项schema和2项客户端通过，735/7
+来源通过，隔离构建零警告。两类夹具原失败保留并只重验受影响项；
+候选尚未GPU验收、默认rev214保持。下一步首组1启动12请求，再按
+总上限6启动27请求1200秒完成主轻/保留组合。PR38只接收独立CI修复，
+本组先本地提交；网页搜索后端及全部master继续，不能以类型结案。
 
 [rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
 已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
