@@ -1,0 +1,33 @@
+{
+  "status": "FAILED_DRIVER_METRICS_PORT_FIXED_CPU",
+  "starts": 1,
+  "chats": 6,
+  "probes": 0,
+  "seconds": 51.33854637807235,
+  "completed_business": [
+    "JSON",
+    "SSE",
+    "schema",
+    "actual_document_tool",
+    "SSE_actual_sha_continuation"
+  ],
+  "cleanup_confirmed": true,
+  "default_unchanged": true,
+  "original_failure_preserved": true,
+  "followup_limits": {
+    "starts": 1,
+    "chats": 16,
+    "probes": 0,
+    "seconds": 600
+  },
+  "cumulative_limit": {
+    "starts": 2,
+    "chats": 22,
+    "probes": 0,
+    "seconds": 1200
+  },
+  "cpu_unique": 2,
+  "cpu_selection_errors": 1,
+  "secret_scan_matches": 0,
+  "master_active": true
+}

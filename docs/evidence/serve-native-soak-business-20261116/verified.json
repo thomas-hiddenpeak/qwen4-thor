@@ -1,0 +1,23 @@
+{
+  "status": "PASS_NATIVE_SHORT_SOAK",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-v5-20261116/candidate-01/bundle",
+    "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74"
+  },
+  "profile": "short",
+  "cycles": 3,
+  "business_requests": 15,
+  "tool_executions": 3,
+  "starts": 1,
+  "guard": {
+    "passed": true,
+    "records": 102,
+    "observations": 98,
+    "seconds": 104.73919565510005
+  },
+  "native_cleanup_confirmed": true,
+  "day_scale_stability_proved": false,
+  "new_model_actions": 0,
+  "performance_acceptance": false,
+  "physical_ram_hard_boundary_proved": false
+}

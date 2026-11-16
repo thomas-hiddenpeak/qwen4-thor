@@ -1,0 +1,35 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_SOAK_CPU",
+  "unique_tests": 14,
+  "initial_passed": 14,
+  "review_strengthened_seal_rechecks": 1,
+  "seconds": 0.7243975289165974,
+  "source_gate": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 49,
+    "completion_fields": 21,
+    "routes": 74,
+    "native_routes": 123,
+    "reviewed_source_anchors": 723,
+    "mutation_checks": 7,
+    "errors": []
+  },
+  "sources": {
+    "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
+    "tools/serve_soak/native_stage.py": "68d7be1030d1c67474d1835e3f7c10e5893efccb485e4ad7d62ee97a779a93cd",
+    "tools/serve_soak/native_report.py": "b0c8c0fcc8de16bc89ec0154e4e2c2e2e886de6541420a354c3e570275692b34",
+    "tools/serve_soak/test_native_soak.py": "a02140dc0078186519102f6ba943b013fb12a61ccf8ac575210e565a25643212",
+    "tools/serve_soak/README.md": "7e06d5f749a5cc4163bd9c2fbf55accf3df03bb7aee3206aef93401181dbc9d9",
+    "docs/SERVE_NATIVE_SOAK_2026-11-16.md": "245d45fc59363955703f79c3940033e33320f2f9a4a35ef2e263eb2843c55120",
+    ".github/workflows/host-checks.yml": "ec54ef2a861d60df498ca80bba2a3571df63af1ac902a66fc163a8325cf3550b",
+    "tools/serve_audit/check_inventory.py": "4d534f97311d4900acb4bcac51e19789ec48aba47ff42f666c6f73a42c52a7ee"
+  },
+  "source_archive_sha256": "7f088bcb6c7895c3014d6581261af669376762439e25ebea24573ad3d2da05a1",
+  "gpu_starts": 0,
+  "default_revision": 182,
+  "default_changed": false,
+  "short_business_pending": true,
+  "day_run_owner": "user",
+  "master_active": true
+}

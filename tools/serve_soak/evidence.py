@@ -9,7 +9,6 @@ import threading
 import time
 
 from tools.serve_service import package as pkg
-from tools.serve_pressure import observe
 
 ROTATION_BYTES = 4*1024**2
 ENVELOPE = dict(rss=64*1024**2, anon=128*1024**2, fds=2, threads=2)
@@ -133,6 +132,9 @@ class Capture:
         self.thread.start()
 
     def attach(self, server, start_ticks):
+        # The optional historical cgroup sampler imports its own validation
+        # stack. Plain log capture must work in an isolated sealed namespace.
+        from tools.serve_pressure import observe
         with self.mutex:
             self.sampler = lambda: observe.sample(server, start_ticks)
 

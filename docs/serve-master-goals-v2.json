@@ -3128,7 +3128,7 @@
         "gpu_starts": 0
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3140,7 +3140,10 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       }
     },
     {
@@ -3439,6 +3442,15 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "metric_v5_compatibility_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_OPS_V5_2026-11-16.md",
+        "evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "revision": 188,
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
       }
     },
     {
@@ -3687,7 +3699,8 @@
         "actual_cold_business_accepted": false,
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
-      }
+      },
+      "current_execution_prerequisite": "Before controlled cold business, refresh exact preparation/check against rev188 or the then-current default; no camera/jtop stop or device-fence action without the pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -3867,7 +3880,7 @@
         "Cold/resource/host-entry composition and final release"
       ],
       "root_rollback_20261116": {
-        "state": "implemented_validated_delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_ROOT_ROLLBACK_2026-11-16.md",
         "cpu_frozen": 8,
         "new_gpu_starts": 0,
@@ -3901,10 +3914,13 @@
         "actual_business_pending": true,
         "revision": 182,
         "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3916,7 +3932,10 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       },
       "recovery_wait_20261116": {
         "state": "implemented_validated_delivered",
@@ -4446,7 +4465,7 @@
         "evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -4458,7 +4477,16 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
+      },
+      "native_soak_ops_20261116": {
+        "state": "delivered_main_pending",
+        "revision": 188,
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
       }
     },
     {
@@ -4494,7 +4522,7 @@
       },
       "remaining_required": [
         "Finish every remaining task before final closure",
-        "Executable long-stability handoff; user performs long run"
+        "Integrate native soak delivery into main; user executes the prepared long-stability run"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -4515,9 +4543,44 @@
         "pull_request": 31,
         "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "native_soak_20261116": {
+        "state": "short_delivered_day_handoff_prepared_main_pending",
+        "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
+        "cpu_limit": 14,
+        "short_limits": {
+          "starts": 1,
+          "chats": 16,
+          "probes": 0,
+          "seconds": 600
+        },
+        "day_run_owner": "user",
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-native-soak-cpu-20261116/README.md",
+        "cpu_tests": 14,
+        "recheck_tests": 1,
+        "day_cycles": 1440,
+        "day_business_requests": 7200,
+        "failure_evidence": "evidence/serve-native-soak-metrics-20261116/README.md",
+        "actual_starts": 3,
+        "actual_chats": 28,
+        "cumulative_limits": {
+          "starts": 3,
+          "chats": 28,
+          "probes": 0,
+          "seconds": 1800
+        },
+        "second_failure_evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
+        "actual_gpu_seconds": 209.11229068087414,
+        "day_executed": false,
+        "revision": 188,
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md"
       }
     }
   ],
-  "next_task": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered.",
+  "next": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered."
 }

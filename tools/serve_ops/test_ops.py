@@ -39,6 +39,42 @@ class Files(unittest.TestCase):
 
 
 class MetricContract(unittest.TestCase):
+    def test_current_archived_v5_upload_and_tunnel_reasons(self):
+        raw = (Path(__file__).with_name('fixtures') /
+               'native-v5-20261116.prom').read_text()
+        selected, omitted = contracts.parse_metrics(raw, version=5)
+        self.assertEqual(set(selected), set(contracts.METRICS_V5) |
+                         set(contracts.METRICS_V5_ADDITIONS))
+        self.assertEqual(omitted, 0)
+        self.assertEqual(selected['q4t_requests_success_total'],
+                         selected['q4t_requests_total'])
+        for name in contracts.METRICS_V5_ADDITIONS:
+            replacement = raw.replace(name+' 0\n', name+' '+str(2**64-1)+'\n')
+            self.assertNotEqual(replacement, raw)
+            self.assertEqual(contracts.parse_metrics(replacement, version=5)[0][
+                name], 2**64-1)
+
+    def test_old_v5_does_not_fabricate_absent_additions(self):
+        selected, _ = contracts.parse_metrics(fixtures.text_metrics(version=5),
+                                              version=5)
+        self.assertEqual(set(selected), set(contracts.METRICS_V5))
+        self.assertTrue(set(selected).isdisjoint(contracts.METRICS_V5_ADDITIONS))
+
+    def test_v5_additions_preserve_required_labels_and_value_rejections(self):
+        raw = (Path(__file__).with_name('fixtures') /
+               'native-v5-20261116.prom').read_text()
+        name = next(iter(contracts.METRICS_V5_ADDITIONS))
+        broken = [raw.replace('q4t_ready 1\n', ''), raw+name+' 0\n',
+                  raw.replace('body_consumer', 'unreviewed_reason'),
+                  raw.replace('kind="tunnel_poll"',
+                              'kind="tunnel_poll",kind="tunnel_poll"')]
+        broken += [raw.replace(name+' 0\n', name+' '+value+'\n')
+                   for value in ('NaN', '-1', '0.5', str(2**64))]
+        for value in broken:
+            with self.subTest(tail=value[-80:]), self.assertRaises(
+                    contracts.InvalidObservation):
+                contracts.parse_metrics(value, version=5)
+
     def test_real_archived_family_projection_and_integer_precision(self):
         values = fixtures.metrics()
         values['q4t_generation_tokens_total'] = 2**64-1
