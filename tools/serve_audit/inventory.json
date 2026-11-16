@@ -543,14 +543,15 @@
     },
     "prompt_cache_options": {
       "semantics": "Chat独立mode/ttl合同，默认隐式；显式内容断点映射真实模板/token边界，最近80查找及最多4写槽。",
-      "boundary": "针对性CPU与8项实际SSD/JSON/SSE/隔离业务通过，可回退发行待验；媒体状态指纹仍为必做项。",
+      "boundary": "20项C++及8项实际SSD/JSON/SSE/隔离业务、精确主轻/版本恢复及rev174发行通过；媒体状态指纹仍必做。",
       "evidence": [
         "docs/SERVE_CHAT_CACHE_2026-11-16.md",
         "tests/server_prompt_cache_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tools/serve_protocol/test_chat_cache.py",
         "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
-        "docs/evidence/serve-chat-cache-business-20261116/README.md"
+        "docs/evidence/serve-chat-cache-business-20261116/README.md",
+        "docs/evidence/serve-chat-cache-delivery-20261116/README.md"
       ]
     }
   },
@@ -2787,7 +2788,8 @@
     "tools/serve_service/service.py": "c9fe6f34ce19e08dc9ce0893517f2617c76a93d26f17fe9f8dfbc5fa8438f16d",
     "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
-    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "tools/serve_recovery/version_archive.py": "7e7f4e53081c3585ed91676183270ed604e29cc4f49905235ea52b26430705fa"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6425,6 +6427,19 @@
     "review": "Chat-specific policy separates Responses controls; default implicit preserves explicit native scope opt-in. Collect final Chat coordinates including file expansion; nested validators accept only reviewed markers; rendering/model bytes unchanged and original storage parts retained. Generation uses actual token mapping, existing optional SSD ownership/TTL/miss behavior, no media KV reuse. Chat latest80 differs from Responses previously qualified lookup; API reference/guidance conflict recorded. No CUDA/model arithmetic or native control source changes.",
     "evidence": "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
     "master_active": true,
-    "business_evidence": "docs/evidence/serve-chat-cache-business-20261116/README.md"
+    "business_evidence": "docs/evidence/serve-chat-cache-business-20261116/README.md",
+    "state": "delivered_main_pending",
+    "revision": 174,
+    "package_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+    "delivery_evidence": "docs/evidence/serve-chat-cache-delivery-20261116/README.md"
+  },
+  "version_retention_20261116": {
+    "state": "targeted_cpu_and_actual_maintenance_accepted",
+    "sources": {
+      "tools/serve_recovery/version_archive.py": "7e7f4e53081c3585ed91676183270ed604e29cc4f49905235ea52b26430705fa"
+    },
+    "review": "Explicit offline maintenance only, absent from bundle.SOURCES. Reuses STOPPED publication/deployment/Guardian/core/GPU ownership and adds exclusive version journal ownership. Protects current cycles, retained publication roots, incomplete intents and active references. Source/inode/byte-bound same-filesystem rename and bounded restore preserve all policy bytes, faults and budgets. Eight direct CPU methods and actual two retired registrations accepted; no runtime model/control/native/client source changes.",
+    "evidence": "docs/evidence/serve-version-retention-20261116/README.md",
+    "master_active": true
   }
 }

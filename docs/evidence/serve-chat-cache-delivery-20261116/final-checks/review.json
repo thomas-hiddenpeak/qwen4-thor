@@ -1,0 +1,11 @@
+{
+  "status": "ACCEPT_FINAL_SOURCE_REVIEW",
+  "initial_failure": "New offline version_archive.py was not yet included in the inventory source manifest; default runtime was unchanged",
+  "repair": "Reviewed ownership, retained roots, policy preservation and atomic archive/restore; anchored exact source and eight CPU plus actual maintenance evidence",
+  "sources_sha256": {
+    "tools/serve_recovery/version_archive.py": "7e7f4e53081c3585ed91676183270ed604e29cc4f49905235ea52b26430705fa"
+  },
+  "reviewed_source_anchors": 716,
+  "mutation_checks": 7,
+  "new_gpu_starts": 0
+}

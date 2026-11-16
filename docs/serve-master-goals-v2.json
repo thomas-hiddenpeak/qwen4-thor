@@ -78,8 +78,8 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat five frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/web_search_options",
-        "Remaining default/null, nested message and response projection parity beyond delivered Chat style and attribution fields"
+        "Chat four frozen-reference top-level fields: audio/modalities/moderation/web_search_options",
+        "Remaining default/null, nested message and response projection parity beyond delivered Chat style, attribution and cache fields"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -122,7 +122,7 @@
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -131,7 +131,13 @@
         "business_evidence": "evidence/serve-chat-cache-business-20261116/README.md",
         "actual_starts": 2,
         "actual_generations": 8,
-        "driver_failure_preserved": true
+        "driver_failure_preserved": true,
+        "revision": 174,
+        "default_unchanged": false,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
       }
     },
     {
@@ -1522,7 +1528,7 @@
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -1531,7 +1537,13 @@
         "business_evidence": "evidence/serve-chat-cache-business-20261116/README.md",
         "actual_starts": 2,
         "actual_generations": 8,
-        "driver_failure_preserved": true
+        "driver_failure_preserved": true,
+        "revision": 174,
+        "default_unchanged": false,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
       }
     },
     {
@@ -2804,7 +2816,7 @@
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -2813,7 +2825,13 @@
         "business_evidence": "evidence/serve-chat-cache-business-20261116/README.md",
         "actual_starts": 2,
         "actual_generations": 8,
-        "driver_failure_preserved": true
+        "driver_failure_preserved": true,
+        "revision": 174,
+        "default_unchanged": false,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
       }
     },
     {
@@ -3516,6 +3534,13 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "version_retention_20261116": {
+        "state": "implemented_cpu_and_actual_maintenance_accepted",
+        "evidence": "evidence/serve-version-retention-20261116/README.md",
+        "retired_cycles": 2,
+        "original_policy_unchanged": true,
+        "new_gpu_starts": 0
       }
     },
     {
@@ -3975,7 +4000,7 @@
         "Remaining new backend/client/fault combinations; existing project retrieval business reused"
       ],
       "chat_cache_20261116": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -3984,7 +4009,13 @@
         "business_evidence": "evidence/serve-chat-cache-business-20261116/README.md",
         "actual_starts": 2,
         "actual_generations": 8,
-        "driver_failure_preserved": true
+        "driver_failure_preserved": true,
+        "revision": 174,
+        "default_unchanged": false,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
       }
     },
     {
@@ -4004,9 +4035,9 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
-        "binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
-        "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
-        "record": "evidence/serve-input-attribution-delivery-20261116/delivery-01/result.json"
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "record": "evidence/serve-chat-cache-delivery-20261116/delivery-01/result.json"
       },
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -4023,11 +4054,11 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 166,
-        "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
-        "generation_sha256": "23e8ae921e58973e82ecc71b35ce06bbd9748d030d3f578dd661a8f375a80246",
-        "engine_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
-        "evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
+        "revision": 174,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "generation_sha256": "031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428",
+        "engine_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "state": "STOPPED",
         "main_integration_pending": true
       },
@@ -4197,6 +4228,7 @@
       },
       "remaining_required": [
         "PR32 exact-head checks and actual main merge",
+        "Chat cache and version-retention actual main integration",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4238,7 +4270,7 @@
         "evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -4247,7 +4279,20 @@
         "business_evidence": "evidence/serve-chat-cache-business-20261116/README.md",
         "actual_starts": 2,
         "actual_generations": 8,
-        "driver_failure_preserved": true
+        "driver_failure_preserved": true,
+        "revision": 174,
+        "default_unchanged": false,
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+      },
+      "version_retention_20261116": {
+        "state": "implemented_cpu_and_actual_maintenance_accepted",
+        "evidence": "evidence/serve-version-retention-20261116/README.md",
+        "retired_cycles": 2,
+        "original_policy_unchanged": true,
+        "new_gpu_starts": 0
       }
     },
     {
@@ -4307,6 +4352,6 @@
       }
     }
   ],
-  "next_task": "Complete input attribution PR exact-head main integration; implement remaining Chat prompt_cache_options and nested breakpoints with actual cache reuse, then other Chat fields, media/cache, backends, clients, cold/resource/host compositions. All 33 required master tasks remain the completion boundary.",
-  "next": "Complete input attribution PR exact-head main integration; implement remaining Chat prompt_cache_options and nested breakpoints with actual cache reuse, then other Chat fields, media/cache, backends, clients, cold/resource/host compositions. All 33 required master tasks remain the completion boundary."
+  "next_task": "Finish exact-head main integrations; implement R09 whole-root rollback preserving native outer supervision and version-cycle state, then remaining standard fields, media/cache, backends, client and cold/resource/host compositions. All 33 required tasks remain the completion boundary.",
+  "next": "Finish exact-head main integrations; implement R09 whole-root rollback preserving native outer supervision and version-cycle state, then remaining standard fields, media/cache, backends, client and cold/resource/host compositions. All 33 required tasks remain the completion boundary."
 }

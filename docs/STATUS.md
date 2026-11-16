@@ -9,30 +9,35 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev166；服务包 `0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa` |
-| Generation | `23e8ae921e58973e82ecc71b35ce06bbd9748d030d3f578dd661a8f375a80246` |
-| 引擎 | `7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be` |
-| 引擎发布记录 | `e476dbe8de58981982b1c257fedc022a27ddf2fa23db6d9411a7eb4347c23296` |
+| 发布 | rev174；服务包 `78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d` |
+| Generation | `031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428` |
+| 引擎 | `0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf` |
+| 引擎发布记录 | `2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 版本回退 | 已验旧控制/当前引擎包 `98b4b47ef35a70902282452acc4715117b5f72b35dd49d3234d068064274b793`；保留媒体/MCP/embedding及输入归属合同 |
+| 版本回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；保留缓存/媒体/MCP/embedding及输入归属合同 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[输入归属与默认合同交付](evidence/serve-input-attribution-delivery-20261116/README.md)
-完成17项STOPPED发布/实际整根回退再前进检查，55.228秒、0新增GPU。
-Chat归属按客户端摘要记录，JSON/SSE/存储返回实际default档位；Responses
-新请求省略/null统一medium，旧queued任务保留原effort和归属。针对性
-CPU、真实JSON/SSE与文档工具/SHA闭环通过；两次驱动投影失败及修正
-原始记录保留。精确主轻资格、保留和正式包版本恢复通过。
+[Chat标准缓存交付](evidence/serve-chat-cache-delivery-20261116/README.md)
+完成17项STOPPED发布/实际整根回退再前进检查，55.488秒，0新增GPU。
+mode/TTL和内容断点到实际模板/token/SSD，默认隐式及最近80查找、
+MTP/target恢复、JSON/SSE、suffix及client/key隔离、显式禁缓存已验。
+20项C++及8种实际业务通过，原驱动失败保留，最终聚合指标覆盖7项。
+精确主轻及保留/正式包版本恢复通过；媒体状态缓存仍须实现。
 
 控制、客户端及四个原生辅助程序字节保持；core/client/outer状态、
-Key/配额/容量、profile历史/预算/冷却不清空，版本新周期保留前驱。
-未变压力/外层证据按身份复用；最终STOPPED、GPU释放。rev158默认/
-状态私有备份和两个旧generation可恢复归档保留，首次目录权限拒绝
-与修复保留。自动回退保持现代根；人工整根回退v12入口无outer仍是
-R09必修项，保留包也不是独立旧引擎回退。PR32待最终head检查和实际合main。
+Key/配额/容量、profile历史预算冷却不清空，版本新周期保留前驱。
+发布前发现登记池16/16，已补[可恢复归档](SERVE_VERSION_RETENTION_2026-11-16.md)，
+8项CPU及实际2个退休周期归档通过，原策略不变；两个旧generation
+也可恢复归档，rev166默认/状态备份保留。最终STOPPED、GPU释放。
+自动回退保持现代根；人工整根回退v12入口缺outer及现代旧根周期绑定
+仍是R09必修项，不能把STOPPED检查说成恢复业务通过。回退包也不是
+独立旧引擎回退。本组实际合main待完成，全部master继续。
+
+前驱rev166[归属/default交付](evidence/serve-input-attribution-delivery-20261116/README.md)
+已接受；PR32最终head两组检查和实际合main独立核对，不能用关PR代替合入。
 
 前驱rev158已通过PR31实际合main（`8015dbc8`），
 [合并回执](evidence/serve-pr31-merged-20261116/README.md)保留；
@@ -60,6 +65,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev174缓存交付完成](evidence/serve-chat-cache-delivery-20261116/README.md)：
+78d6bd7b/0851dab3进入实际默认，17项STOPPED检查与整根回退再前进
+通过，0新增GPU；状态预算和未改控制保持。登记池满问题已实质修复。
+继续R09人工回退能力/周期迁移、PR实际合main及其余全部master。
 
 [版本登记留存已修复并应用](evidence/serve-version-retention-20261116/README.md)：
 8项CPU通过，首次setup夹具错误保留；实际只归档2个退休周期，16→14，
