@@ -217,7 +217,7 @@
         "state": "implementation_in_progress",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
-        "actual_runtime_accepted": false,
+        "actual_runtime_accepted": true,
         "whole_task_complete": false,
         "scope_reduced": false,
         "component_cpu_unique": 19,
@@ -240,7 +240,16 @@
         "api_python_contract_unique": 4,
         "api_official_python_sdk_unique": 2,
         "api_official_js_sdk_unique": 2,
-        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md",
+        "business_evidence": "evidence/serve-web-search-business-20261117/README.md",
+        "repair_cpu_evidence": "evidence/serve-web-search-repair-cpu-20261117/README.md",
+        "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+        "accepted_starts": 2,
+        "accepted_requests": 8,
+        "cumulative_starts": 4,
+        "cumulative_requests": 9,
+        "cumulative_lease_seconds": 177.11846972536296,
+        "service_delivery_pending": true
       }
     },
     {
@@ -1766,7 +1775,7 @@
         "state": "implementation_in_progress",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
-        "actual_runtime_accepted": false,
+        "actual_runtime_accepted": true,
         "whole_task_complete": false,
         "scope_reduced": false,
         "component_cpu_unique": 19,
@@ -1789,7 +1798,16 @@
         "api_python_contract_unique": 4,
         "api_official_python_sdk_unique": 2,
         "api_official_js_sdk_unique": 2,
-        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md",
+        "business_evidence": "evidence/serve-web-search-business-20261117/README.md",
+        "repair_cpu_evidence": "evidence/serve-web-search-repair-cpu-20261117/README.md",
+        "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+        "accepted_starts": 2,
+        "accepted_requests": 8,
+        "cumulative_starts": 4,
+        "cumulative_requests": 9,
+        "cumulative_lease_seconds": 177.11846972536296,
+        "service_delivery_pending": true
       }
     },
     {
@@ -2944,7 +2962,7 @@
         "state": "implementation_in_progress",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
-        "actual_runtime_accepted": false,
+        "actual_runtime_accepted": true,
         "whole_task_complete": false,
         "scope_reduced": false,
         "component_cpu_unique": 19,
@@ -2967,7 +2985,16 @@
         "api_python_contract_unique": 4,
         "api_official_python_sdk_unique": 2,
         "api_official_js_sdk_unique": 2,
-        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md",
+        "business_evidence": "evidence/serve-web-search-business-20261117/README.md",
+        "repair_cpu_evidence": "evidence/serve-web-search-repair-cpu-20261117/README.md",
+        "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+        "accepted_starts": 2,
+        "accepted_requests": 8,
+        "cumulative_starts": 4,
+        "cumulative_requests": 9,
+        "cumulative_lease_seconds": 177.11846972536296,
+        "service_delivery_pending": true
       }
     },
     {
@@ -3223,7 +3250,7 @@
         "state": "implementation_in_progress",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
-        "actual_runtime_accepted": false,
+        "actual_runtime_accepted": true,
         "whole_task_complete": false,
         "scope_reduced": false,
         "component_cpu_unique": 19,
@@ -3246,7 +3273,16 @@
         "api_python_contract_unique": 4,
         "api_official_python_sdk_unique": 2,
         "api_official_js_sdk_unique": 2,
-        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md",
+        "business_evidence": "evidence/serve-web-search-business-20261117/README.md",
+        "repair_cpu_evidence": "evidence/serve-web-search-repair-cpu-20261117/README.md",
+        "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+        "accepted_starts": 2,
+        "accepted_requests": 8,
+        "cumulative_starts": 4,
+        "cumulative_requests": 9,
+        "cumulative_lease_seconds": 177.11846972536296,
+        "service_delivery_pending": true
       }
     },
     {

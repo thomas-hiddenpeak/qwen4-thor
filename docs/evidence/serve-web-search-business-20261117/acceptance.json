@@ -1,0 +1,51 @@
+{
+  "status": "ACCEPT_NATIVE_WEB_SEARCH_BUSINESS",
+  "binary_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+  "accepted_starts": 2,
+  "accepted_requests": 8,
+  "source_commit": "66a241dc617de53c4fa2cd315477ae60e1853b07",
+  "original_failures_retained": 2,
+  "runs": [
+    {
+      "stage": "business-01",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 0,
+      "driver_seconds": 35.19333500927314,
+      "lease_seconds": 36.09092880226672,
+      "nvml_samples": 35
+    },
+    {
+      "stage": "business-02",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 1,
+      "driver_seconds": 39.565809949766845,
+      "lease_seconds": 40.584232040215284,
+      "nvml_samples": 39
+    },
+    {
+      "stage": "business-03",
+      "status": "PASS_NATIVE_WEB_SEARCH_BUSINESS",
+      "starts": 2,
+      "requests": 8,
+      "driver_seconds": 99.09592743497342,
+      "lease_seconds": 100.44330888288096,
+      "nvml_samples": 94
+    }
+  ],
+  "cumulative_starts": 4,
+  "cumulative_requests": 9,
+  "cumulative_lease_seconds": 177.11846972536296,
+  "nvml_ok_samples": 168,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "stage_sources_verified": 1398,
+  "source_sha256": "25ddf2c883e0d1958ea971d279a7e4f0fd446724ee3db7db19dadabd4a62e484",
+  "runtime_accepted": true,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "service_delivery_pending": true,
+  "master_complete": false,
+  "archive_sha256": "f8e3e11c5235f823076f8a76a8c8802c63d6608f6e09eef8a83ec08c6ac8fa6d"
+}

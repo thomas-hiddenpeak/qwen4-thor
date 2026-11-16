@@ -108,6 +108,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页搜索真实业务接受](evidence/serve-web-search-business-20261117/README.md)：
+候选e430a4bd的Chat/Responses JSON/SSE、真实来源/引用、离线/历史、
+工具选择及缺配置后同PID普通核心健康通过。正式2启动8请求，含原
+失败累计4启动9请求、严格租约177.118秒，168项NVML正常且清理
+完整；原题修复后通过，未追认旧失败。默认224保持，继续自恢复
+整包、主轻/保留版本、可回退交付和实际合main，全部master仍active。
+
 [网页API及客户端CPU接受](evidence/serve-web-search-api-cpu-20261117/README.md)：
 30项不同C++/38次执行、4项合同及Python/JS各2项最终通过。修复
 SDK选择回显、非流式来源投影、原生多步预算及配置schema漏项，原
@@ -120,8 +127,8 @@ SDK选择回显、非流式来源投影、原生多步预算及配置schema漏�
 第二轮来源正确取得，但首条Chat错误拒绝；1启动1请求39.566秒，
 普通协议拒绝终态合法不代表业务成功。[网页证据指导与可选封包
 13项CPU通过](evidence/serve-web-search-repair-cpu-20261117/README.md)，
-候选e430a4bd继续同一原题2启动8请求补验，累计4启动9请求900秒；
-默认rev224保持，真实业务尚未接受。
+候选e430a4bd的同一原题补验已通过，详细结果见上方真实业务记录；
+默认rev224保持，发行组合继续。
 
 PR39最终head `0472f354` 两组CI通过，已[实际合入main](evidence/serve-pr39-merged-20261117/README.md)
 （`1d905350`）。Stop组合、rev224交付和独立day交接源码已进入
