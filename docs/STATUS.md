@@ -43,6 +43,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[托管视觉恢复驱动/封包CPU首过](evidence/serve-media-managed-driver-cpu-20261116/README.md)：
+5项CPU通过，四个原生服务程序零警告且字节与rev134相同。候选包
+7a8e9cd2待实际恢复；继续最多3启动/12请求/900秒真实内存压力下的
+主→轻→主、视觉冻结历史/工具/配额与SSE，rev134保持，全部master继续。
+
 [媒体主轻真实资格通过](evidence/serve-media-profile-business-20261116/README.md)：
 2启动/10请求/96.528秒，92次NVML正常；两侧均完成工具实际SHA闭环、
 结构化输出、embedding和原VP8首尾识别。仅MTP开关不同，能力相等，

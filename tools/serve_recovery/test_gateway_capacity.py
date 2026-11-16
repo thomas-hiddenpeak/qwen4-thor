@@ -50,6 +50,20 @@ class GatewayCapacityTests(unittest.TestCase):
                 ready,channel=self.verify(cfg)
                 self.assertTrue(ready);channel.bound.assert_called_once_with(1)
 
+    def test_actual_gate_accepts_joint_media_and_refuses_disabled_media(self):
+        self.profile = dict(self.profile, name=capacity.NATIVE_NAME, allow_media=True)
+        self.config['capacity_profile'] = self.profile
+        for native in (False,True):
+            cfg = copy.deepcopy(self.config)
+            if native:
+                cfg.update(version=2,native_ingress=cfg.pop('nginx'),
+                           native_ingress_sha256=cfg.pop('nginx_sha256'))
+            ready,channel = self.verify(cfg)
+            self.assertTrue(ready);channel.bound.assert_called_once_with(1)
+            for invalid in (False,None,1):
+                ready,channel = self.verify(cfg,dict(media_enabled=invalid))
+                self.assertFalse(ready);channel.bound.assert_not_called()
+
     def test_missing_selected_profile_reproduces_failure_and_mismatch_still_refuses(self):
         old=copy.deepcopy(self.config);old.pop('capacity_profile')
         ready,channel=self.verify(old);self.assertFalse(ready);channel.bound.assert_not_called()
