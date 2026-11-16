@@ -101,6 +101,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR38回执恢复夹具修复](evidence/serve-pr38-ci-payload-repair-20261117/README.md)：
+一组最终d4e检查通过，另一组正常payload GET超出250ms夹具时限。
+恢复默认2秒I/O预算，原实际提交丢回执/精确恢复断言保持；1项CPU
+通过，运行时及rev214未变，0GPU。新head CI通过后实际合main。
+
 [rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
 已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
 GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实

@@ -595,7 +595,9 @@ Q4T_TEST(object_application_expanded_page_budget_preserves_next_cursor) {
 Q4T_TEST(object_application_unknown_parent_preserves_actual_single_and_batch) {
   for (const bool batch : {false, true}) {
     Fixture fixture;
-    fixture.options.io_timeout_ms = 250;
+    // The worker pauses after the durable commit to lose its receipt. Keep the
+    // ordinary I/O budget for worker recovery and successful payload reads;
+    // this case does not test a 250 ms storage service-level objective.
     Injection injection("--q4t-object-worker-application-lost-ack");
     ObjectStore objects(fixture.options);
     auto request = Request("chatcmpl_unknown", ObjectOperation::kPut);
