@@ -1,0 +1,50 @@
+{
+  "status": "PASS_NATIVE_ROOT_RETAINED",
+  "acceptance": "ACCEPT_NATIVE_ROOT_RETAINED",
+  "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964",
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_ROOT_RETAINED",
+    "strict_lease_seconds": 216.49808768182993,
+    "nvml_queries": 201,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 0,
+      "controls": 435
+    },
+    "source_commit": "eba839c45a4798640af3eedce4c1efaf5b4de46c",
+    "plan_sha256": "2ced1a311f12eb08d695d581453da32b6904d160b58053968fd3c4182a086ac1",
+    "result_sha256": "e874ae4b813b7a621028240f0fea962086966fb66f4b27d62ae050e6ae64d286",
+    "lease_result_sha256": "b8189eaab4b6aea1541a98f1914e718693b608b071621d495dbe459720500e2f",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "whole_driver_status": "COMMAND_FAILED",
+    "separate_case_accepted": true,
+    "scope": {
+      "status": "PASS",
+      "scenario": "root_wait_outer",
+      "counts": {
+        "starts": 2,
+        "chats": 4,
+        "probes": 0,
+        "controls": 435
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+        "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+      },
+      "original_cycle_forward": false,
+      "actual_outer_fault_business": true,
+      "automatic_tool_replay": false
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

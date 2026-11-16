@@ -1,0 +1,48 @@
+{
+  "status": "PASS_NATIVE_ROOT_CANDIDATE",
+  "acceptance": "ACCEPT_NATIVE_ROOT_CANDIDATE",
+  "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_ROOT_CANDIDATE",
+    "strict_lease_seconds": 49.08094865921885,
+    "nvml_queries": 47,
+    "env_abort": false,
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 165
+    },
+    "source_commit": "83ee313002cd35295c20ba8aeb08253108167947",
+    "plan_sha256": "29bf3326f30b7c9cf33a4e1afb7b83177289f43ff27c7293233c25affb7fa261",
+    "result_sha256": "f3a58757f75d436e80fcc9b492df3bb4d72aae27973b367ab3a414880a029306",
+    "lease_result_sha256": "6ce7832b7937cec184f4de7985432d92d1b26dbf93d16f7394c3c0f91cb63ecb",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "whole_driver_status": "COMPLETED",
+    "separate_case_accepted": true,
+    "scope": {
+      "status": "PASS",
+      "scenario": "root_candidate_completion",
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 165
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+        "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+      },
+      "automatic_tool_replay": false
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

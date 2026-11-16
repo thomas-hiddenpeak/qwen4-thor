@@ -68,6 +68,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R09[分项真实业务已补齐](evidence/serve-root-rollback-business-20261116/README.md)：
+原消费周期/工具续答及原周期再前进、新保留根真实outer故障恢复、
+新候选健康均通过。累计9启动/18Chat含自检/1探测、938.526秒，
+871次NVML正常，四段清理通过。三个原FAILED保留，不称原连续链
+通过；430e7985/7230ac61待实际默认发布，rev174保持，master继续。
+
+
 R09[原周期前进及新保留根outer恢复通过](evidence/serve-root-remaining-partial-20261116/README.md)：
 216.573秒内先两项已完成；新候选0启动/0Chat时组内截止触发，
 全部清理通过，原组仍FAILED。仅补原计划候选1启动/2Chat/150秒，
