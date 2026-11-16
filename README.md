@@ -236,6 +236,18 @@ WebP静态图片使用隔离子进程按需加载系统libwebpdecoder 3与zlib 1
 zlib许可（本机`/usr/share/doc/libwebpdecoder3/copyright`和
 `/usr/share/doc/zlib1g/copyright`）。完整API接入及真实模型验收继续实施。
 
+原生视频容器准备正在开发，当前候选具有独立CPU worker：通过
+GStreamer 1.x系统库和固定软件插件解码H.264/VP8/VP9，保留采样帧、
+原始PTS、尺寸及实际库身份。构建头文件为`libgstreamer1.0-dev`和
+`libgstreamer-plugins-base1.0-dev`，运行插件来自系统base/good/bad包；
+不将GStreamer链接为核心启动依赖，也不启动外部解码程序。缺库和
+解码失败只影响相应准备请求，worker复用有界回收与请求槽。
+适配依据[官方API](https://gstreamer.freedesktop.org/documentation/app/appsink.html)，
+未复制codec源码；系统库/插件按各包保留LGPL等许可，OpenH264保留
+BSD许可，以系统`/usr/share/doc/*/copyright`为准。统一文件输入、
+持久快照和实际模型业务仍在接线，不能将worker通过视为API已交付。
+详见[原生视频计划](docs/SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)。
+
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
 原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。

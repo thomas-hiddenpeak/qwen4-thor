@@ -240,8 +240,13 @@ set(protocol_inputs
   src/server/file_input.cpp
   src/server/file_image.cpp
   include/q4t/server/file_webp.h
+  include/q4t/server/file_video.h
   src/server/file_webp_protocol.h
   src/server/file_webp.cpp
+  src/server/file_video.cpp
+  src/server/file_video_worker.cpp
+  src/server/file_video_sandbox.cpp
+  src/server/file_video_protocol.h
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h
@@ -345,6 +350,7 @@ set(protocol_inputs
   include/q4t/server/file_source.h
   src/server/file_source.cpp
   cmake/NativeDocuments.cmake
+  cmake/NativeVideo.cmake
   include/q4t/server/file_pdf.h
   src/server/file_pdf.cpp
   src/server/file_pdf_protocol.h

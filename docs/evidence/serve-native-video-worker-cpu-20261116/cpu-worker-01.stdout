@@ -1,0 +1,14 @@
+[PASS] file_video_actual_h264_mp4_preserves_colors_order_and_pts
+[PASS] file_video_actual_vp8_webm_preserves_colors_order_and_pts
+[PASS] file_video_actual_vp9_webm_preserves_colors_order_and_pts
+[PASS] file_video_sandbox_permits_threads_without_external_capabilities
+[PASS] file_video_preflight_rejects_bad_scope_source_cancel_and_deadline
+[PASS] file_video_actual_limits_reject_without_publishing_partial_frames
+  CHECK failed: DecodeVideoContainer(source, {}, Access(), &output, control) .http_status == 400 && output.frames.empty() && Clean(control) (line 216)
+[FAIL] file_video_corrupt_container_is_request_local_and_reaped
+[PASS] file_video_missing_codec_keeps_native_text_and_worker_slots_healthy
+[PASS] file_video_hang_crash_and_inflight_cancel_have_bounded_cleanup
+[PASS] file_video_unreaped_worker_retains_shared_document_capacity
+[PASS] file_video_frozen_metadata_rejects_source_pts_and_frame_tampering
+[PASS] file_document_worker_actual_text_and_sheet_match_original_data
+12 tests, 11 passed, 1 failed, 0 skipped

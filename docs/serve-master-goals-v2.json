@@ -1278,6 +1278,20 @@
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "implementation_in_progress",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
+        "cpu_accepted": false,
+        "gpu_accepted": false,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
       }
     },
     {
@@ -1655,6 +1669,20 @@
         "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/release-01/candidate/bundle",
         "service_acceptance_sha256": "fe6a69ecdfb2443f13b7b2b175946dd6f1a07fac5617fd2d8375a513dc9f5bcc",
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
+      },
+      "native_video_preparation": {
+        "state": "implementation_in_progress",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
+        "cpu_accepted": false,
+        "gpu_accepted": false,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
       }
     },
     {
@@ -2188,6 +2216,20 @@
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "implementation_in_progress",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
+        "cpu_accepted": false,
+        "gpu_accepted": false,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
       }
     },
     {
@@ -3191,6 +3233,20 @@
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_preparation": {
+        "state": "implementation_in_progress",
+        "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
+        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
+        "cpu_accepted": false,
+        "gpu_accepted": false,
+        "released": false,
+        "whole_task_complete": false,
+        "worker_cpu_accepted": true,
+        "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
+        "worker_cpp_unique": 13,
+        "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
+        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
       }
     },
     {

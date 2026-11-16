@@ -403,7 +403,9 @@ class ExclusiveTests(unittest.TestCase):
         ready = self.root / 'detached-pid'
         target = ("import os,signal,time; from pathlib import Path; "
                   "signal.signal(signal.SIGTERM,signal.SIG_IGN); "
-                  f"Path({str(ready)!r}).write_text(str(os.getpid())); time.sleep(30)")
+                  f"p=Path({str(ready)!r}); staging=p.with_suffix('.pending'); "
+                  "staging.write_text(str(os.getpid())); staging.replace(p); "
+                  "time.sleep(30)")
         parent_code = ("import subprocess,sys,time; "
                        f"subprocess.Popen([sys.executable,'-c',{target!r}],start_new_session=True); "
                        "time.sleep(30)")
@@ -429,6 +431,9 @@ class ExclusiveTests(unittest.TestCase):
             self.assertIsNone(unrelated.poll())
         finally:
             if parent.poll() is None:
+                # Capture descendants before killing their parent even when a
+                # readiness/assertion fails; never leave a detached fixture.
+                guard.owned_processes(guard.processes(), parent.pid, history)
                 parent.kill(); parent.wait()
             for pid, identity in history.items():
                 guard.signal_identity(pid, identity, signal.SIGKILL)

@@ -26,6 +26,7 @@
 #include "q4t/server/mcp_tunnel_agent.h"
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
@@ -38,6 +39,7 @@ int FileSourceFixture(int argc, char** argv);
 int NestedDocumentFixture(int argc, char** argv);
 int DocumentSandboxFixture(int argc, char** argv);
 int WebpWorkerFixture(int argc, char** argv);
+int VideoWorkerFixture(int argc, char** argv);
 int WorkerIoBudgetFixture(int argc, char** argv);
 int LegacyDocumentFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
@@ -83,6 +85,10 @@ int main(int argc, char** argv) {
   if (webp_fixture >= 0) return webp_fixture;
   const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);
   if (webp_worker >= 0) return webp_worker;
+  const int video_fixture = VideoWorkerFixture(argc, argv);
+  if (video_fixture >= 0) return video_fixture;
+  const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);
+  if (video_worker >= 0) return video_worker;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);

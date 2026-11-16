@@ -43,6 +43,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生视频worker](evidence/serve-native-video-worker-cpu-20261116/README.md)
+已通过13项不同C++（26次执行）、7项来源负控/712锚点，最终主机/
+完整引擎零警告；固定软件H.264/VP8/VP9真实帧与PTS、隔离/配额有证据。
+首轮截断容器超时已修复，失败保留；0GPU、rev134保持。PR29旧head
+一组CI的PID夹具竞争也已修复，1项本机CPU过，远端尚待确认。
+继续[统一视频文件输入](SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)的快照、
+时序投影和共享预算，不能把worker通过当完整API或云账户业务通过。
+
 Graph分页兼容已接线保留原URL的受保护续接、等价编码/OData路径及
 认证提供方返回的用户/日历别名；[47项CPU首过](evidence/serve-mcp-graph-cursor-cpu-20261116/README.md)。
 原工具/参数/授权与一小时期限绑定，复用现有密码组件，无新依赖。

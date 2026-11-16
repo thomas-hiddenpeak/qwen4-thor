@@ -1,0 +1,23 @@
+{
+  "scope": "Native bounded video container preparation for MCP and standard file input; temporal frames, snapshot replay, count/generation parity and request-local codec failure",
+  "classification": "nonperformance functional gap",
+  "phase_order": [
+    "Owned native CPU codec worker with fixed system libraries and software elements; typed dimensions/PTS/sampling and bounded IPC",
+    "Unified file expansion, persistent original+frames snapshot, Responses tool temporal input and shared media budgets",
+    "Targeted CPU real MP4/WebM assets, corruption/dependency/cancel/deadline/capacity/replay/count tests",
+    "Necessary bounded GPU/SDK media business and recovery-qualified reversible delivery, with real cloud account acceptance separately pending"
+  ],
+  "scope_limits": [
+    "No expansion of hardware decode or visual concurrency",
+    "No external encoder/decoder program required at service runtime",
+    "No automatic hardware fallback or model restart",
+    "No full performance or all-model correctness matrix"
+  ],
+  "candidate_dependencies": [
+    "GStreamer 1.x system libraries and fixed software demux/decode/convert elements, dynamically loaded only by owned media worker",
+    "Existing native PNG encoding and isolated worker/snapshot infrastructure reused where applicable"
+  ],
+  "gpu_now": false,
+  "default_changed": false,
+  "master_complete": false
+}

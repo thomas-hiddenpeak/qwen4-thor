@@ -1,0 +1,144 @@
+{
+  "source": "generate.py; original solid RGB colors in listed order",
+  "width": 96,
+  "height": 64,
+  "frames": 6,
+  "fps": 2,
+  "duration_ns": 3000000000,
+  "colors": [
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      0,
+      255,
+      0
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      255,
+      255,
+      0
+    ],
+    [
+      0,
+      255,
+      255
+    ],
+    [
+      255,
+      0,
+      255
+    ]
+  ],
+  "gpu": false,
+  "commands": [
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "openh264enc",
+        "bitrate=500000",
+        "gop-size=1",
+        "enable-frame-skip=false",
+        "!",
+        "h264parse",
+        "!",
+        "mp4mux",
+        "faststart=true",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/h264.mp4"
+      ],
+      "stderr": "[OpenH264] this = 0x0xffff8001b290, Error:CWelsH264SVCEncoder::EncodeFrame(), cmInitParaError.\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "vp8enc",
+        "threads=1",
+        "deadline=1000000",
+        "keyframe-max-dist=1",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/vp8.webm"
+      ],
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "gst-launch-1.0",
+        "-q",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/source.rgb",
+        "blocksize=18432",
+        "!",
+        "rawvideoparse",
+        "format=rgb",
+        "width=96",
+        "height=64",
+        "framerate=2/1",
+        "!",
+        "videoconvert",
+        "!",
+        "video/x-raw,format=I420",
+        "!",
+        "vp9enc",
+        "threads=1",
+        "deadline=1000000",
+        "keyframe-max-dist=1",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-20261116/assets-01/vp9.webm"
+      ],
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "sha256": {
+    "h264.mp4": "abf7b4793b0c02e7df9e8100b814135fc6c7bbbf17474f76a0e5553ded426e8b",
+    "vp8.webm": "c7ca4f1261e62e936ab1def3169f716a00c05dc7c889ea4c4f8fb610f9f52b8f",
+    "vp9.webm": "c2e669bb549ac13e69dd47f90f4f68c3d1e42ca715a65be5498cf6396161ba05"
+  }
+}

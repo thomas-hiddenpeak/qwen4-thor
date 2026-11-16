@@ -1,0 +1,22 @@
+{
+  "reason": "Review found cumulative pthread creation was not metered; reuse existing seccomp notification broker",
+  "names": [
+    "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+    "file_video_actual_vp8_webm_preserves_colors_order_and_pts",
+    "file_video_actual_vp9_webm_preserves_colors_order_and_pts",
+    "file_video_sandbox_permits_threads_without_external_capabilities",
+    "file_video_actual_limits_reject_without_publishing_partial_frames",
+    "file_video_hang_crash_and_inflight_cancel_have_bounded_cleanup",
+    "file_video_frozen_metadata_rejects_source_pts_and_frame_tampering",
+    "file_video_thread_budget_exhaustion_is_bounded_and_request_local"
+  ],
+  "reuse": "Unaffected rejection, missing codec, document fallback and occupied-slot cases from preceding exact executions",
+  "source_sha256": {
+    "include/q4t/server/file_video.h": "a76e0f2ad624d12442c0f7db88aa7eda9fe801823fe682f6ad3475649ab8190b",
+    "src/server/file_video_worker.cpp": "45d8259c7c376ab3b86f2f6607b3d23ca752008bc9b3e5e68ff3ba1179de0dc1",
+    "src/server/file_video.cpp": "925c6c7c6a5a0ed1ab457410d8d92647dd737ff5f65e90ab328d44c6bef86e52",
+    "src/server/file_video_protocol.h": "81c5b85c72a240757d05f6c562af5e6db3d75aa2a77a79688bf13ef4c1132163",
+    "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
+    "tests/server_file_video_test.cpp": "55d4241849a2e3121074c8325caff5416455354f7bba7245ce8e1ceeb8b02381"
+  }
+}
