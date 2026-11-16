@@ -166,6 +166,8 @@ Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
       Q4T_CHECK(video->GetBool("runtime_codec_checked_on_request") &&
                 video->GetBool("shared_work_budget") &&
                 video->GetBool("timestamps") &&
+                video->GetBool("source_orientation") &&
+                video->GetBool("square_pixel_display") &&
                 !video->GetBool("requires_mtp_disabled", true));
       Q4T_CHECK(video->GetString("decode_strategy") == "target_model");
       for (const auto* key :

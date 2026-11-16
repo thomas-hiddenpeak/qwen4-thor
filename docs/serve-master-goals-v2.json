@@ -1751,6 +1751,38 @@
         "accepted_business_starts": 1,
         "accepted_business_creates": 8,
         "accepted_business_seconds": 53.44687231024727
+      },
+      "display_geometry": {
+        "state": "delivered_rev150_main_pending",
+        "plan": "SERVE_VIDEO_GEOMETRY_2026-11-16.md",
+        "cpu_evidence": "evidence/serve-video-geometry-cpu-20261116/README.md",
+        "candidate_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+        "limits": {
+          "starts": 1,
+          "creates": 4,
+          "seconds": 600
+        },
+        "remaining": "Arbitrary affine/remaining formats, media cache/client combinations and all other A10 requirements.",
+        "failure": "evidence/serve-video-geometry-business-failure-20261116/README.md",
+        "source_dimensions_cpu": "evidence/serve-video-display-source-cpu-20261116/README.md",
+        "prior_actual": {
+          "starts": 1,
+          "creates": 2,
+          "seconds": 43.68216426577419
+        },
+        "next": "PR30 exact-head checks and main integration; full compatibility prose audit and remaining implementation tasks.",
+        "business": "evidence/serve-video-geometry-business-20261116/README.md",
+        "current_actual": {
+          "starts": 1,
+          "creates": 4,
+          "seconds": 52.60955235315487
+        },
+        "profiles": "evidence/serve-video-geometry-profile-business-20261116/README.md",
+        "package_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+        "fallback_sha256": "a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f",
+        "version_business": "evidence/serve-video-geometry-version-business-20261116/README.md",
+        "delivery": "evidence/serve-video-geometry-delivery-20261116/README.md",
+        "revision": 150
       }
     },
     {
@@ -3412,12 +3444,13 @@
       "evidence": [
         "evidence/serve-retrieval-delivery-20261112/README.md",
         "evidence/serve-cache-route-delivery-20261112/README.md",
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "evidence/serve-video-geometry-delivery-20261116/README.md"
       ],
       "release": {
-        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
-        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
-        "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
+        "binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+        "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+        "record": "evidence/serve-video-geometry-delivery-20261116/delivery-01/result.json"
       },
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -3434,13 +3467,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 126,
-        "manifest_sha256": "6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a",
-        "generation_sha256": "813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0",
-        "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
-        "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
+        "revision": 150,
+        "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+        "generation_sha256": "37da32d909a70fb06e80dd505daa4ccbbe4831c2a4ffc32e05ee7e4c135ff83a",
+        "engine_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+        "evidence": "evidence/serve-video-geometry-delivery-20261116/README.md",
         "state": "STOPPED",
-        "main_integration_pending": false
+        "main_integration_pending": true
       },
       "merged_foundation": {
         "pr": 22,
@@ -3585,6 +3618,13 @@
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+      },
+      "native_video_main_integration": {
+        "pr": 29,
+        "head": "a68c8030861ecf7188ea50381a8cf92ed65ceba3",
+        "merge": "692982e76669d07ee51fba8d5b568edd5e6d10f8",
+        "evidence": "evidence/serve-pr29-merged-20261116/README.md",
+        "latest_release": 142
       }
     },
     {
@@ -3597,9 +3637,14 @@
         "Q02"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "surface_prose_audit": {
+        "state": "required",
+        "finding": "Source/key drift guard does not certify semantics prose; historical model alias/CRUD/schema/media descriptions are stale. Renew against code and accepted current delivery, retaining all real unimplemented tasks.",
+        "next": "After current geometry acceptance, reconcile full inventory prose and task states against implementation and evidence."
+      }
     }
   ],
-  "next_task": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task.",
-  "next": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task."
+  "next_task": "Complete PR30 exact-head checks and main integration; reconcile compatibility inventory semantics against code and evidence; implement every outstanding provider, model, client, resource and recovery master requirement.",
+  "next": "Complete PR30 exact-head checks and main integration; reconcile compatibility inventory semantics against code and evidence; implement every outstanding provider, model, client, resource and recovery master requirement."
 }

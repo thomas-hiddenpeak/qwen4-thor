@@ -9,30 +9,32 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev142；服务包 `7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce` |
-| Generation | `2970a016c6be5bb982aceb175a6e07918babfbab561be82f8d282f5ece4d8a5a` |
-| 引擎 | `cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360` |
-| 引擎发布记录 | `3188c9964a2b5031b3dbaa06f25098b14136f20c3883fe0a23dbc23b3e1b2151` |
+| 发布 | rev150；服务包 `8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9` |
+| Generation | `37da32d909a70fb06e80dd505daa4ccbbe4831c2a4ffc32e05ee7e4c135ff83a` |
+| 引擎 | `a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c` |
+| 引擎发布记录 | `690b8e356fe01dab374429c05d335fa89752679c7337137b2e2e18a439f1213b` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 版本回退 | 已验旧控制/当前引擎包 `73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a`；保留媒体/MCP/embedding能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f`；保留媒体/MCP/embedding能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[托管视觉发行与回退记录](evidence/serve-managed-vision-delivery-20261116/README.md)
-包含17项STOPPED交付检查，55.432秒，0新增GPU。普通文本MTP与视觉
-目标解码共同加载；原MP4/WebM、文件/工具/MCP输入和冻结历史有实际
-业务证据。媒体主轻资格、真实RAM压力主→轻→主和精确包整树版本
-回退均已过，视频SSE可继续；实际Key/配额/core/outer字节保持。
-容量只新增媒体与v2标识，原上下文/输出/准入及恢复历史/冷却不变；
-版本新周期保留前驱，旧默认与状态备份可核验。自动版本恢复保留
-现代根，人工整根回退的v12入口无outer；不是独立旧引擎回退。
+[显示几何发行与回退记录](evidence/serve-video-geometry-delivery-20261116/README.md)
+包含17项STOPPED交付检查，54.855秒，0新增GPU。原视频正交旋转/
+镜像、像素比例、尺寸预算与来源说明已有实际JSON/SSE、主轻及精确
+整树回退后的冻结视频证据。core/client/outer状态字节、Key/配额和
+容量保持；主轻身份迁移不清空历史/预算/冷却，版本新周期保留前驱。
+未改控制源码/四个原生辅助程序，RAM压力与外层监护证据按原身份
+复用。最终STOPPED，GPU保持释放；rev142默认/状态可核验备份保留。
+自动版本恢复保留现代根，人工整根回退的v12入口无outer；不是独立
+旧引擎回退。PR30待最终head检查与实际合main，不把已发布当已合并。
 
 八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
-仍需部署方配置，未声称通过。视觉旋转/像素比例、缓存/分块prefill、
-完整客户端矩阵及其余master缺口继续实现；不宣称完整OpenAI兼容、
-硬解码、视觉并发或长稳通过。PR29待最终head检查和实际合main。
+仍需部署方配置，未声称通过。任意仿射/其余媒体格式、缓存/分块
+prefill、完整客户端矩阵及其余master缺口继续实现；不宣称完整OpenAI
+兼容、硬解码、视觉并发或长稳通过。前驱rev142已通过PR29实际合main
+（`692982e7`），[合并回执](evidence/serve-pr29-merged-20261116/README.md)保留。
 
 前驱rev134的MCP发行已通过PR28合main（`35581f98`），
 [合并回执](evidence/serve-pr28-merged-20261116/README.md)保留；
@@ -49,9 +51,51 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[rev150显示几何可回退发行完成](evidence/serve-video-geometry-delivery-20261116/README.md)：
+17项检查、实际整根回退再前进通过，最终STOPPED；预算/历史/Key保持，
+0新增GPU。归档首次路径错误发生于写入前，改为读取真实generation
+回执，失败记录保留。继续PR30合main及全部兼容/资源/后端任务。
+以下是按原身份保留的阶段记录，其中“待发行”不代表当前默认状态。
+
+[显示候选精确包/版本回退通过](evidence/serve-video-geometry-version-business-20261116/README.md)：
+保留a9bd9c73独立1启动/2生成，正式8d9c07f1实际2启动/4生成/1探测；
+严格租约53.503/101.308秒、51/95项NVML正常。冻结镜像视频SSE角点/
+布局、能力/配置历史保留，持久STOPPED和清理通过。rev142保持，
+继续可回退发布与PR30实际合main；未改控制/数值证据复用、master继续。
+
+[显示候选主轻资格与封包通过](evidence/serve-video-geometry-profile-business-20261116/README.md)：
+a7bd6785两侧实际schema/文档工具/embedding/视频，2启动/10请求/
+87.791秒、83项NVML正常，注册表a4c27749；控制源码与四个原生程序
+字节保持。正式8d9c07f1与保留a9bd9c73包两项隔离CPU通过，继续
+1启动/2生成和2启动/4生成/1探测验证新包及冻结镜像SSE版本回退。
+rev142保持，全部master继续。
+
+[显示几何实际业务通过](evidence/serve-video-geometry-business-20261116/README.md)：
+1启动/4创建/52.610秒，51项NVML正常。原始上传/inline视频的旋转、
+镜像SSE、像素比例组合四角与布局正确，计数/同PID普通文本/清理均过。
+保留原失败，问题与预期未放宽；宽高来源元数据与像素修正分别记录。
+a7bd6785待新主轻配置资格与可回退发行，rev142保持，master继续。
+
+[显示几何实际短验](evidence/serve-video-geometry-business-failure-20261116/README.md)
+在镜像布局回答处未通过：旋转正确、镜像四角正确却回答square。
+1启动/2创建/43.682秒、43项NVML正常，自有资源已清理，rev142保持。
+实际冻结PNG和最终ProcessVideo网格均为128×64，未发现方形化；
+[共享来源尺寸5项CPU已过](evidence/serve-video-display-source-cpu-20261116/README.md)，
+仅将已验证宽、高补入输入说明，不更改像素或给定layout/颜色答案。
+候选a7bd6785继续相同原问题/预期最多1启动/4创建/600秒补验。
+
+[视频显示方向/比例修复](SERVE_VIDEO_GEOMETRY_2026-11-16.md)
+[针对性CPU已过](evidence/serve-video-geometry-cpu-20261116/README.md)：
+14项不同C++、2项驱动、714来源锚点/7项负控；主机/引擎零警告。
+首轮两项失败已保存并修复：实际系统库遗漏反射方向，原生有界MP4
+矩阵解析补齐；EOS保留原容量错误。8项受影响复验通过，6项未变成功
+记录复用。候选6135c33e继续最多1启动/4创建/600秒实际显示业务；
+尚未发行，rev142保持、master active。
+
 [PR29旧媒体/MTP断言已修复](evidence/serve-media-client-ci-20261116/README.md)：
 原f8f25148两组CI仅同一旧断言失败，本机针对性1项首过、零警告；
-运行时与rev142不变、0GPU。等待新head远端检查后合main，master继续。
+运行时与rev142不变、0GPU。新head两组远端检查成功且已实际合main，
+master继续。
 
 [rev142托管视觉可回退发行完成](evidence/serve-managed-vision-delivery-20261116/README.md)：
 17项STOPPED检查通过，实际回退再前进保持配额/历史/预算，默认

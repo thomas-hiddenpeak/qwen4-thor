@@ -1826,7 +1826,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "77fe72289047dea6884cf06be4115d4ac98e1f47fe067574cb715689ba28a692",
-    "cmake/ChatProtocolIdentity.cmake": "7d53a31fada058d7fe8a99c515b69f00c772dafe50f2fddf325b894bfdfb7790",
+    "cmake/ChatProtocolIdentity.cmake": "0bda7679238308356b51ba0decd81b406816a84e1f23842bb74e0219653a2b8a",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2089,7 +2089,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "3ca4f424a5cd463a138630829fda0ea4bc6b9fdfb7ba6fee312a3e4fd0798a4b",
+    "src/server/chat_capabilities.cpp": "e37f8ce4901427610ec4c967d32cc891554494f059990ef905dcef2b059b22b2",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "fde666898045c9ac1ec9676ea8b561fd048714a75379185bc0da9120117b6668",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -2141,7 +2141,7 @@
     "src/server/file_document.cpp": "4176c8c34297e5c480494954d20bf5d9e403f417e8a451b56833104c2c6ef711",
     "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
     "src/server/file_document_worker.cpp": "0d3bd998e76f2b14b0d15e46179dacaa1f1fdcaf221a83d95b6cff150c3dea86",
-    "src/server/file_expansion.cpp": "5b78553a2a82f1837937f18d306b25a394c7b27fe9fb3faeeb4b7748b3209d38",
+    "src/server/file_expansion.cpp": "aa5f392bc7e2605a2e311fd4459011a46ef07f8b2ec8b4af631c9df43f7b3c08",
     "src/server/file_extract.cpp": "e72c9e76fa8a3e03ba45b3841baa77c5fce1d1d82f73c5dc54c9bbfd43a3de90",
     "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
     "src/server/file_fetch_http.cpp": "fb31de9ac5970682de507c0bf4aa6b5cf628078b8434636caf68d76a8d3898c8",
@@ -2176,12 +2176,14 @@
     "src/server/file_rtf.h": "ae99c2e63cc5e5771ea23e2c15588de357d5a6e333a6587c7bd35d6a11e8c6bd",
     "src/server/file_rtf_encoding.cpp": "403a8739152fbe53094d4d1abe5894d7f6f932d203099c5347e228bd7a0c3c63",
     "src/server/file_rtf_encoding.h": "dadba820330cb95391fba72190d729af3770854da3d5f10b98cb02499ea63801",
-    "src/server/file_snapshot.cpp": "c603c2319db623c11e06e47b9c0c7c3d6db05122a2d5926fb96dc6ae63ef7310",
+    "src/server/file_snapshot.cpp": "5d2ebb8ad8d5c09bedbb8a63343fc4e1ecea2fd684ccc85546c5aaaf82335273",
     "src/server/file_source.cpp": "c7e57b4a354149e6f062438cabd169cca5e1d8a6ddb49eb88a3635457259f18f",
-    "src/server/file_video.cpp": "7fe92e0005e6992bcbb5903a6ebefaf9db6f134bd38b93e7b00e9646a9e0a4dd",
+    "src/server/file_video.cpp": "5831f37bf108266512ca80c285b061883746d91f4c21e7cc68924c287184c53d",
+    "src/server/file_video_geometry.h": "18ef4327d5e1cb5aed0a70bc1369486396f5f6604e95e8661499a6b98b037d2e",
+    "src/server/file_video_orientation.h": "b5581a31b1b8c8538811d472c2f76c3ec2d897d995a646e18704c408c7ba74e8",
     "src/server/file_video_protocol.h": "91af4d72c1ad1887076668b32e805f6b9f074a8d04d5aa73adcf9ad55b59d9de",
     "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
-    "src/server/file_video_worker.cpp": "ad1759b4f5c85402d6226bd0e6b04321cf7f2b9c243d12d116bb6def5f627224",
+    "src/server/file_video_worker.cpp": "fac5f82625d0281f48fbc9635f76203c5dcbe101e491d03a9fbdc9b6420659d6",
     "src/server/file_webp.cpp": "0e8994aee25358847f5732a6fe68fd708dfc74b46b5c3a85673006be50e0357d",
     "src/server/file_webp_protocol.h": "ae236906fdcdf4cae176be4c313729cda618802894eecc099f10b5735d089d24",
     "src/server/file_webp_worker.cpp": "ed6ca89514b2f2c1123ea89775b53e8c709e92dd79a5338579494fb0368cc5a3",
@@ -5758,5 +5760,30 @@
     "scope": "Accurate native decoder compilation/configuration/codec fault boundaries and sampled temporal file support",
     "evidence": "docs/evidence/serve-native-video-business-driver-cpu-20261116/README.md",
     "business_accepted": false
+  },
+  "native_video_geometry_review_20261116": {
+    "scope": "Actual source orientation and square-pixel display geometry; pre-allocation bounds; v3 conversion and v1/v2 frozen readers",
+    "reviewed_sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "src/server/chat_capabilities.cpp",
+      "src/server/file_snapshot.cpp",
+      "src/server/file_video.cpp",
+      "src/server/file_video_geometry.h",
+      "src/server/file_video_orientation.h",
+      "src/server/file_video_worker.cpp"
+    ],
+    "new_dependency": "Fixed videofilter plugin from already required GStreamer good system package, isolated video worker only",
+    "status": "development_targeted_validation_pending",
+    "remaining_master_tasks_open": true,
+    "correction": "Installed qtdemux omits reflected matrices; bounded native MP4 movie/selected-video-track matrix reader supplies the exact direction. Preserve explicit capacity error if pipeline reaches EOS/state failure."
+  },
+  "native_video_display_source_review_20261116": {
+    "change": "Add actual validated decoded display width and height to the shared source projection; no layout or color label, no pixel/token/numeric algorithm changes. Frozen replay uses original dimensions.",
+    "reason": "Original mirror answer returned square despite actual128x64 frozen PNG; final pixel geometry and context verified separately.",
+    "evidence": [
+      "tests/server_responses_files_test.cpp",
+      "docs/evidence/serve-video-geometry-business-failure-20261116/README.md"
+    ],
+    "pending": "Five targeted CPU checks and original four-request actual business."
   }
 }

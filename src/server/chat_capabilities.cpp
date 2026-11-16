@@ -241,6 +241,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("decoder":"isolated_cpu_worker","external_program_required":false,)"
          R"("sampling":"uniform-presentation-time-with-endpoints",)"
          R"("full_timeline_in_model":false,"timestamps":true,)"
+         R"("source_orientation":true,"square_pixel_display":true,)"
          R"("frozen_replay_requires_codec":false,"shared_work_budget":true,)"
          R"("core_readiness_dependency":false}})"
          R"(,"mcp_deployment":{)"

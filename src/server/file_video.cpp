@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "file_video_geometry.h"
 #include "file_video_protocol.h"
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
@@ -188,16 +189,42 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (OutputJson(conversion).size() > 16384) return Invalid();
   const auto* outputs = conversion.GetArray("frames");
   const auto* modules = conversion.GetArray("modules");
+  const bool geometry =
+      conversion.GetString("format") == "q4t.cpu_video_png.v3";
   const bool intervals =
-      conversion.GetString("format") == "q4t.cpu_video_png.v2";
+      geometry || conversion.GetString("format") == "q4t.cpu_video_png.v2";
   if ((!intervals &&
        conversion.GetString("format") != "q4t.cpu_video_png.v1") ||
+      (!geometry && conversion.Has("display_geometry")) ||
       conversion.GetString("source_sha256") != source_sha256 ||
       conversion.GetString("sampling") !=
           "uniform-presentation-time-with-endpoints" ||
       !outputs || outputs->array.size() != pixels.frames.size() || !modules ||
       modules->array.empty() || modules->array.size() > 16)
     return Invalid();
+  if (geometry) {
+    const auto* display = conversion.Find("display_geometry");
+    if (!display || !display->IsObject() || display->object.size() != 5 ||
+        display->GetString("policy") != "source-orientation-square-pixels")
+      return Invalid();
+    for (const char* name : {"coded_width", "coded_height", "pixel_aspect_num",
+                             "pixel_aspect_den"}) {
+      const auto* value = display->Find(name);
+      if (!value || !IsInputInteger(*value)) return Invalid();
+    }
+    video_detail::DisplayGeometry shape;
+    const auto failure = video_detail::SquarePixelGeometry(
+        display->GetInt("coded_width"), display->GetInt("coded_height"),
+        display->GetInt("pixel_aspect_num"),
+        display->GetInt("pixel_aspect_den"), limits, &shape);
+    if (failure == video_detail::Failure::kCapacity) return Capacity();
+    if (failure != video_detail::Failure::kNone ||
+        !((pixels.width == shape.square_width &&
+           pixels.height == shape.square_height) ||
+          (pixels.width == shape.square_height &&
+           pixels.height == shape.square_width)))
+      return Invalid();
+  }
   for (const auto& [name, expected] :
        std::vector<std::pair<const char*, uint64_t>>{
            {"width", pixels.width},

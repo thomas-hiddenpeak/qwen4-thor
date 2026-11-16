@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_GEOMETRY_DELIVERY",
+  "revision": 150,
+  "current": {
+    "engine_binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+    "engine_release_sha256": "690b8e356fe01dab374429c05d335fa89752679c7337137b2e2e18a439f1213b",
+    "generation_sha256": "37da32d909a70fb06e80dd505daa4ccbbe4831c2a4ffc32e05ee7e4c135ff83a",
+    "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/package-02/bundle",
+    "service_acceptance_sha256": "48f1d09523dfa79203c8aa7f9a2ddab6fa4dce034af918f6a42558a7619b3826",
+    "service_release_sha256": "92003fdf2110e08ee0d39910555a98a67dcef13cfa3581f20e766b32b676388e"
+  },
+  "commands": 17,
+  "seconds": 54.854778540786356,
+  "new_gpu_starts": 0,
+  "state": "STOPPED",
+  "core_client_outer_state_preserved": true,
+  "profile_budget_preserved": true,
+  "retained_anchor_generation": "77d5c157915097f413fb6707129a596c7209b9b96a326d3c79ac467e25827668",
+  "files": 81,
+  "archive_sha256": "3d5e87960cc4ee336d4e6de104c4793781c71bd775569cc2c7e72aef6b2458e3",
+  "secret_scan_matches": 0,
+  "remaining_master_tasks_active": true
+}

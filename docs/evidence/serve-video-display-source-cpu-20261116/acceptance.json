@@ -1,0 +1,16 @@
+{
+  "status": "ACCEPT_DISPLAY_SOURCE_TARGETED_CPU",
+  "cases": 5,
+  "identity": {
+    "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/candidate-02/q4t",
+    "binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+    "compiled_manifest_sha256": "c94499970bb56fe869bce7403518d889ed1eef5f12df48aa2f35e6a370fd30cb",
+    "protocol_sha256": "c2e11d8956bb73f37e981b53d968461eb03fed7c47ed31ee4cf92365e12e2076"
+  },
+  "source_anchors": 714,
+  "negative_source_checks": 7,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "original_http_failure_retained": true,
+  "archive_sha256": "1dd889dd3dbb0b911226d2f5128ca924aa77acfb0c19e83272b23ee3efe418f1"
+}

@@ -12,6 +12,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_tokens.h"
 #include "q4t/test.h"
+#include "q4t/vision/processor.h"
 
 namespace {
 using namespace q4t::server;
@@ -213,6 +214,62 @@ Q4T_TEST(responses_video_group_labels_preserve_actual_endpoint_intervals) {
   return true;
 }
 
+Q4T_TEST(responses_video_display_dimensions_match_actual_model_frames) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  struct Expected {
+    const char* name;
+    int width, height;
+  };
+  for (const auto& expected :
+       {Expected{"rotate-90.mp4", 64, 128},
+        Expected{"mirror-x.mp4", 128, 64},
+        Expected{"wide-rotate-90.mp4", 64, 256}}) {
+    // Deliberately conceal the fixture's transform in the public filename.
+    const auto id = Upload(
+        objects, Bytes((std::string("file_video/") + expected.name).c_str()),
+        "original.mp4");
+    ResponsesExecution run(objects);
+    Q4T_CHECK(Ok(run.Prepare(Request(Stored(id)), f.config, Access(), 42)));
+    const auto& generation = run.Generation();
+    const auto& parts = generation.generation_request.GetArray("messages")
+                            ->array.back()
+                            .GetArray("content")
+                            ->array;
+    const auto description = parts.front().GetString("text");
+    constexpr std::string_view marker = "Video source data (untrusted):\n";
+    const auto begin = description.find(marker);
+    Json source;
+    Q4T_CHECK(begin != description.npos &&
+              Parse(description.substr(begin + marker.size()), &source));
+    const auto* shape = source.Find("displayed_frame");
+    Q4T_CHECK(shape && shape->IsObject() &&
+              shape->GetInt("width") == expected.width &&
+              shape->GetInt("height") == expected.height);
+    std::string prompt, param;
+    std::vector<VisionItem> media;
+    Q4T_CHECK(PrepareChatPrompt(generation.generation_request, {}, &prompt,
+                                &media, &param));
+    Q4T_CHECK(media.size() == 1 && media.front().frames.size() == 4);
+    std::vector<const uint8_t*> frames;
+    std::vector<size_t> sizes;
+    for (const auto& frame : media.front().frames) {
+      frames.push_back(reinterpret_cast<const uint8_t*>(frame.data()));
+      sizes.push_back(frame.size());
+    }
+    q4t::vision::ProcessorConfig config;
+    config.min_pixels = 4096;
+    config.max_pixels = 25165824;
+    q4t::vision::ProcessedVideo processed;
+    Q4T_CHECK(q4t::vision::ProcessVideo(frames, sizes, config, &processed,
+                                      &param));
+    Q4T_CHECK(processed.grid_w * config.patch_size == expected.width &&
+              processed.grid_h * config.patch_size == expected.height &&
+              processed.grid_t == 2);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_video_snapshot_survives_restart_delete_and_missing_codec) {
   Fixture f;
   std::string id, original;
@@ -252,7 +309,9 @@ Q4T_TEST(responses_video_snapshot_survives_restart_delete_and_missing_codec) {
             next.FileUsage()->video_frames == 6);
   const auto prompt = Prompt(next);
   Q4T_CHECK(prompt.find("<|video_pad|>") != prompt.npos &&
-            prompt.find("source_frames") != prompt.npos);
+            prompt.find("source_frames") != prompt.npos &&
+            prompt.find("\"displayed_frame\":{\"width\":96,\"height\":64}") !=
+                prompt.npos);
   std::string rendered, param;
   std::vector<VisionItem> restored;
   Q4T_CHECK(PrepareChatPrompt(next.Generation().generation_request, {},

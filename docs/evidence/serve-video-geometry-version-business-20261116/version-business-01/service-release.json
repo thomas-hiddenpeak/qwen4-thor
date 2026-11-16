@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/version-business-01/decision.json",
+  "acceptance_sha256": "da338aa6cab35770c5c7487c636eace6dd87d8bfce1bfbd88154baa868ca0a2f",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/package-02/bundle",
+  "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+  "engine_binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
+  "engine_release_sha256": "690b8e356fe01dab374429c05d335fa89752679c7337137b2e2e18a439f1213b",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/version-business-01/execution/state",
+  "service_id": "a7c11f79-71e1-43b2-84bf-0e6edd19f9e8",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Exact display-capable retained-control/current-engine service, then native whole-tree fallback preserving actual frozen reflected video and four-corner/layout answers, media/MCP/embedding capabilities and profile state. No independent old-engine rollback, performance or long-stability claim.",
+  "default_replaced": false
+}

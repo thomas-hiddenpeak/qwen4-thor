@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/retained-01/bundle",
+  "manifest_sha256": "a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "2e86a75c4b898f4f3ac9f67118bcb119d5efdae310c4a7cb84c132d235149926",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-geometry-20261116/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}
