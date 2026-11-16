@@ -36,8 +36,8 @@ struct Fixture {
     objects.directory = path + "/objects";
     objects.restart_backoff_ms = 0;
     objects.restart_limit = 10;
-    // Normal storage uses the production deadline. Lost-ACK cases select
-    // their shorter fault-injection deadline only in the affected scope.
+    // Normal storage keeps the production deadline even in lost-ACK cases.
+    // Those workers pause after actual commit; short healthy I/O is unrelated.
     jobs.scan_interval = 5ms;
     jobs.retry_delay = 5ms;
     jobs.retry_backoff = 20ms;
@@ -313,12 +313,12 @@ Q4T_TEST(vector_jobs_lost_claim_and_parent_receipts_never_replay_model) {
     seed = Seed(objects);
   }
   Injection injection("--q4t-object-worker-application-lost-ack");
-  auto fault_options = f.objects;
-  fault_options.io_timeout_ms = 100;
-  ObjectStore objects(fault_options);
+  ObjectStore objects(f.objects);
   std::atomic<int> calls{0};
   VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
-  Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }));
+  // Multiple committed writes deliberately lose their receipts; allow their
+  // ordinary I/O deadlines and reconciliation without shrinking healthy I/O.
+  Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }, 20s));
   Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
   Q4T_CHECK(calls == 1 && objects.Health().workers_started >= 2);
   return true;
@@ -332,12 +332,12 @@ Q4T_TEST(vector_jobs_lost_snapshot_receipt_publishes_original_without_replay) {
     seed = Seed(objects);
   }
   Injection injection("--q4t-object-worker-snapshot-lost-ack");
-  auto fault_options = f.objects;
-  fault_options.io_timeout_ms = 100;
-  ObjectStore objects(fault_options);
+  ObjectStore objects(f.objects);
   std::atomic<int> calls{0};
   VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
-  Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }));
+  // Multiple committed writes deliberately lose their receipts; allow their
+  // ordinary I/O deadlines and reconciliation without shrinking healthy I/O.
+  Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }, 20s));
   Q4T_CHECK(Wait([&] { return jobs.Health().owned == 0; }));
   Q4T_CHECK(calls == 1 && objects.Health().workers_started >= 2);
   return true;
@@ -738,9 +738,7 @@ Q4T_TEST(vector_batches_lost_create_receipt_keeps_original_atomic_batch) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    auto fault_options = f.objects;
-    fault_options.io_timeout_ms = 100;
-    ObjectStore objects(fault_options);
+    ObjectStore objects(f.objects);
     auto created =
         VectorStores(objects).CreateBatch(Access(), seed.store, seed.request);
     Q4T_CHECK(created.commit_unknown);
@@ -766,9 +764,7 @@ Q4T_TEST(vector_batches_lost_cancel_receipt_recovers_without_model) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    auto fault_options = f.objects;
-    fault_options.io_timeout_ms = 100;
-    ObjectStore objects(fault_options);
+    ObjectStore objects(f.objects);
     Q4T_CHECK(VectorStores(objects)
                   .CancelBatch(Access(), seed.store, seed.id)
                   .commit_unknown);

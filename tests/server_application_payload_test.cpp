@@ -360,7 +360,8 @@ Q4T_TEST(application_payload_unknown_publication_keeps_root_and_blocks_replay) {
 
 Q4T_TEST(application_payload_actual_unknown_snapshot_write_is_not_replayed) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 250;
+  // Receipt loss is injected after commit; use the ordinary I/O budget for
+  // both fault cleanup and the successful object-count readback.
   struct Entry {
     Entry() { ObjectWorkerEntryForTesting("--q4t-object-worker-lost-ack"); }
     ~Entry() { ObjectWorkerEntryForTesting({}); }
