@@ -37,7 +37,8 @@ Key/配额/容量、profile历史预算冷却不清空，版本新周期保留�
 独立旧引擎回退。本组实际合main待完成，全部master继续。
 
 前驱rev166[归属/default交付](evidence/serve-input-attribution-delivery-20261116/README.md)
-已接受；PR32最终head两组检查和实际合main独立核对，不能用关PR代替合入。
+已通过PR32实际合main（`14221d39`），[合并回执](evidence/serve-pr32-merged-20261116/README.md)保留；
+后续缓存/留存改动继续单独提交，全部master推进。
 
 前驱rev158已通过PR31实际合main（`8015dbc8`），
 [合并回执](evidence/serve-pr31-merged-20261116/README.md)保留；

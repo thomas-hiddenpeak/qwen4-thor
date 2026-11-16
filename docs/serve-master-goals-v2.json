@@ -102,7 +102,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "input_attribution_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
         "cpp_tests": 18,
@@ -119,7 +119,10 @@
         "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md",
+        "pull_request": 32,
+        "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
         "state": "delivered_main_pending",
@@ -1508,7 +1511,7 @@
         "existing_evidence_reviewed": true
       },
       "input_attribution_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
         "cpp_tests": 18,
@@ -1525,7 +1528,10 @@
         "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md",
+        "pull_request": 32,
+        "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
         "state": "delivered_main_pending",
@@ -1618,7 +1624,7 @@
         "existing_evidence_reviewed": true
       },
       "input_attribution_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
         "cpp_tests": 18,
@@ -1635,7 +1641,10 @@
         "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md",
+        "pull_request": 32,
+        "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       }
     },
     {
@@ -2796,7 +2805,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "input_attribution_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
         "cpp_tests": 18,
@@ -2813,7 +2822,10 @@
         "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md",
+        "pull_request": 32,
+        "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
         "state": "delivered_main_pending",
@@ -4227,7 +4239,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR32 exact-head checks and actual main merge",
         "Chat cache and version-retention actual main integration",
         "Delivery of every remaining implementation"
       ],
@@ -4243,7 +4254,7 @@
         "evidence": "evidence/serve-pr30-merged-20261116/README.md"
       },
       "input_attribution_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "evidence": "evidence/serve-input-attribution-cpu-20261116/README.md",
         "cpp_tests": 18,
@@ -4260,7 +4271,10 @@
         "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md",
+        "pull_request": 32,
+        "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
       },
       "chat_style_main_integration": {
         "pr": 31,
@@ -4293,6 +4307,12 @@
         "retired_cycles": 2,
         "original_policy_unchanged": true,
         "new_gpu_starts": 0
+      },
+      "input_attribution_main_integration": {
+        "pr": 32,
+        "head": "7c66fc7404bb20fcdc0650aaff8449f16a4da58f",
+        "merge": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
+        "evidence": "evidence/serve-pr32-merged-20261116/README.md"
       }
     },
     {
@@ -4352,6 +4372,6 @@
       }
     }
   ],
-  "next_task": "Finish exact-head main integrations; implement R09 whole-root rollback preserving native outer supervision and version-cycle state, then remaining standard fields, media/cache, backends, client and cold/resource/host compositions. All 33 required tasks remain the completion boundary.",
-  "next": "Finish exact-head main integrations; implement R09 whole-root rollback preserving native outer supervision and version-cycle state, then remaining standard fields, media/cache, backends, client and cold/resource/host compositions. All 33 required tasks remain the completion boundary."
+  "next_task": "Complete Chat cache and version-retention exact-head main integration; implement R09 whole-root rollback preserving native outer and consumed cycle state, then all remaining standard fields, media/cache, backends, clients and cold/resource/host compositions. All 33 tasks remain required.",
+  "next": "Complete Chat cache and version-retention exact-head main integration; implement R09 whole-root rollback preserving native outer and consumed cycle state, then all remaining standard fields, media/cache, backends, clients and cold/resource/host compositions. All 33 tasks remain required."
 }
