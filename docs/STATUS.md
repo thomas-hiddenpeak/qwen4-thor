@@ -32,7 +32,7 @@ core/client/outer/profile字节、引擎、入口、设备辅助程序及容量�
 9启动/18Chat含自检/1探测、938.526秒，原消费周期/工具续答/再前进、
 精确新保留根outer恢复和候选健康均已验；871项NVML正常，清理通过。
 三个原失败驱动保留，不能称原连续链通过。原默认rev174及状态备份、
-退休登记/发布副本归档保留。本批实际合main待完成；R07/R08冷启动/
+退休登记/发布副本归档保留。本批[PR34已实际合main](evidence/serve-pr34-merged-20261116/README.md)（`9956e882`）；R07/R08冷启动/
 资源硬边界及宿主组合、其余协议和全部master继续。
 
 前驱rev174[Chat标准缓存交付](evidence/serve-chat-cache-delivery-20261116/README.md)
@@ -71,6 +71,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[当前v5指标CPU修复](evidence/serve-ops-v5-cpu-20261116/README.md)：
+第二轮五类业务完成后发现旧解析器拒绝五个新标签；两轮原失败保留，
+累计2启动/12Chat/103.195秒且清理通过。四项直接CPU与723/7来源通过，
+继续精确新包、一次1启动/16Chat/600秒short、可回退发布与全部master。
+PR34两组CI全部通过，已经实际合main；后续观测/交接工作单独提交。
 
 [原生长稳指标入口修复](evidence/serve-native-soak-metrics-20261116/README.md)：
 首轮1启动/6Chat/51.339秒，五类业务完成后驱动错误端口取指标失败，

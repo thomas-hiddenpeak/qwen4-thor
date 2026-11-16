@@ -1,0 +1,29 @@
+{
+  "status": "ACCEPT_TARGETED_V5_METRIC_COMPATIBILITY_CPU",
+  "cpu_tests": 4,
+  "source_anchors": 723,
+  "negative_source_checks": 7,
+  "production_change": "five exact additive v5 labels; required old fields and strict values preserved",
+  "prior_short_starts": 2,
+  "prior_short_chats": 12,
+  "prior_short_seconds": 103.19519195193425,
+  "original_failures_preserved": true,
+  "cleanup_confirmed": true,
+  "default_revision": 182,
+  "default_changed": false,
+  "new_package_pending": true,
+  "next_limits": {
+    "starts": 1,
+    "chats": 16,
+    "probes": 0,
+    "seconds": 600
+  },
+  "cumulative_limits": {
+    "starts": 3,
+    "chats": 28,
+    "probes": 0,
+    "seconds": 1800
+  },
+  "secret_scan_matches": 0,
+  "master_active": true
+}

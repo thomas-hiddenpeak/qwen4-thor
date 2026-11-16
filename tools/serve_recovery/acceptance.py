@@ -555,9 +555,13 @@ class Stage:
         def observe(timeout):
             self.budget.reserve('controls',label+'-metrics')
             response=transport.get(self.policy['upstream_operations_port'],'/metrics',timeout=timeout)
+            observation=dict(monotonic=time.monotonic(),response=response)
+            observations.append(observation)
+            # Keep the original wire even if its status/schema is rejected.
+            save(self.output/(label+'-metrics.json'),dict(observations=observations))
             self.engine.require(response['http_status']==200,'acceptance metrics unavailable')
             values,_=contracts.parse_metrics(response['body'],version=5)
-            observations.append(dict(monotonic=time.monotonic(),response=response,values=values))
+            observation['values']=values
             save(self.output/(label+'-metrics.json'),dict(observations=observations))
             return values
         return await_drain(observe,expected)

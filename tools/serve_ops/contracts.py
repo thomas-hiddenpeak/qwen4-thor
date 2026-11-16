@@ -76,6 +76,16 @@ for _name in ('public_connections', 'operations_listener_enabled',
 for _kind in ('unclassified', 'business', 'observation', 'control'):
     METRICS_V5[key('q4t_operations_connection_rejections_total', kind=_kind)] = 'counter'
 METRIC_PROFILES = {3: METRICS, 4: METRICS_V4, 5: METRICS_V5}
+# Later v5 engines add bounded upload and tunnel rejection reasons without
+# changing the observation wire version. Preserve old v5 required fields;
+# expose these exact additions only when present, never synthesize zeroes.
+METRICS_V5_ADDITIONS = {
+    key('q4t_http_receive_failures_total', reason='body_consumer'): 'counter',
+    **{key(family, kind=kind): 'counter'
+       for family in ('q4t_connection_rejections_total',
+                      'q4t_operations_connection_rejections_total')
+       for kind in ('tunnel_poll', 'tunnel_response')},
+}
 HEX = re.compile(r'[0-9a-f]{64}\Z')
 
 
@@ -141,7 +151,8 @@ def parse_metrics(raw, *, version=3):
         raise InvalidObservation('incomplete_metrics')
     if type(version) is not int or version not in METRIC_PROFILES:
         raise InvalidObservation('unsupported_observation_version')
-    contract = METRIC_PROFILES[version]
+    required = METRIC_PROFILES[version]
+    contract = dict(required, **METRICS_V5_ADDITIONS) if version == 5 else required
     families = {name.split('{', 1)[0] for name in contract}
     result, omitted = {}, 0
     for line in raw.splitlines():
@@ -171,7 +182,7 @@ def parse_metrics(raw, *, version=3):
             result[name] = int(value)
         except InvalidOperation:
             raise InvalidObservation('invalid_metric_value') from None
-    if set(result) != set(contract):
+    if not required.keys() <= result.keys():
         raise InvalidObservation('missing_required_metric')
     if any(result[name] not in (0, 1) for name in BOOLEAN):
         raise InvalidObservation('invalid_boolean_metric')

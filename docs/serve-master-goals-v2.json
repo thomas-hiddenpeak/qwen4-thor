@@ -3128,7 +3128,7 @@
         "gpu_starts": 0
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3140,7 +3140,10 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       }
     },
     {
@@ -3439,6 +3442,11 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "metric_v5_compatibility_20261116": {
+        "state": "targeted_cpu_accepted_delivery_pending",
+        "plan": "SERVE_OPS_V5_2026-11-16.md",
+        "evidence": "evidence/serve-ops-v5-cpu-20261116/README.md"
       }
     },
     {
@@ -3867,7 +3875,7 @@
         "Cold/resource/host-entry composition and final release"
       ],
       "root_rollback_20261116": {
-        "state": "implemented_validated_delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_ROOT_ROLLBACK_2026-11-16.md",
         "cpu_frozen": 8,
         "new_gpu_starts": 0,
@@ -3901,10 +3909,13 @@
         "actual_business_pending": true,
         "revision": 182,
         "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -3916,7 +3927,10 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       },
       "recovery_wait_20261116": {
         "state": "implemented_validated_delivered",
@@ -4446,7 +4460,7 @@
         "evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "root_rollback_business_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "starts": 9,
         "chats": 18,
         "probes": 1,
@@ -4458,7 +4472,10 @@
         "default_unchanged": false,
         "master_complete": false,
         "revision": 182,
-        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
+        "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
+        "pull_request": 34
       }
     },
     {
@@ -4517,7 +4534,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "short_driver_metrics_fixed_cpu_followup_pending",
+        "state": "current_metric_compatibility_fixed_cpu_new_package_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4534,17 +4551,18 @@
         "day_cycles": 1440,
         "day_business_requests": 7200,
         "failure_evidence": "evidence/serve-native-soak-metrics-20261116/README.md",
-        "actual_starts": 1,
-        "actual_chats": 6,
+        "actual_starts": 2,
+        "actual_chats": 12,
         "cumulative_limits": {
-          "starts": 2,
-          "chats": 22,
+          "starts": 3,
+          "chats": 28,
           "probes": 0,
-          "seconds": 1200
-        }
+          "seconds": 1800
+        },
+        "second_failure_evidence": "evidence/serve-ops-v5-cpu-20261116/README.md"
       }
     }
   ],
-  "next_task": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Complete native root rollback actual main integration; refresh R07 cold candidate and controlled NVML-unavailable qualification, then resource/host composition and all remaining protocol/media/backend/client tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered.",
+  "next": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered."
 }

@@ -1,0 +1,8 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/business-02/final.metrics.json",
+  "sha256": "45b26322d66c063ed81b3b5e9823c75caac5d766affc37c595842e3404a8d60e",
+  "projection": "fixed operational families; integer-valued archived measurements; no client labels",
+  "families": 50,
+  "selected": 106,
+  "engine_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf"
+}

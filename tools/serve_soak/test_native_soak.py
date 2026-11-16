@@ -129,7 +129,9 @@ class PrivateTests(unittest.TestCase):
 
     def test_metrics_use_operations_listener_and_reject_unusable_snapshot(self):
         from tools.serve_ops import fixtures
+        from tools.serve_ops import contracts as ops_contracts
         values = fixtures.metrics(version=5)
+        values.update({name: 0 for name in ops_contracts.METRICS_V5_ADDITIONS})
         values.update(q4t_requests_total=6, q4t_requests_success_total=6,
                       q4t_seq_slots_free=1, q4t_seq_slots_total=1)
         state = dict(status=200, body=fixtures.text_metrics(values), public=0)
@@ -170,6 +172,10 @@ class PrivateTests(unittest.TestCase):
                 state.update(status=status, body=body)
                 with self.assertRaises(ValueError):
                     actor.metrics('invalid', 6)
+                saved = report.read(self.path/'invalid-metrics.json')[
+                    'observations'][-1]
+                self.assertEqual(saved['response']['body'], body)
+                self.assertNotIn('values', saved)
             self.assertEqual(state['public'], 0)
         finally:
             for server in (front, operations):
