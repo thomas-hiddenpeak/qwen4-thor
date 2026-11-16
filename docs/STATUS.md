@@ -51,6 +51,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat 候选主轻资格/封包通过](evidence/serve-chat-style-profile-business-20261116/README.md)：
+2启动/10请求/92.497秒，88项NVML正常；两侧实际schema/工具/SHA续答/
+embedding/视频通过。正式d8960eed、保留控制1b90a1bf及两项sealed CPU
+通过；控制和四个原生程序字节保持。继续1启动/2生成及2启动/4生成/
+1探测的精确包版本验收，rev150未改，全部master继续。
+
 [Chat 样式实际业务通过](evidence/serve-chat-style-business-20261116/README.md)：
 e0b34b43同一严格租约1启动/6Chat/54.202秒，52项NVML正常。
 原问题/判定保持；默认/null、padding双向、双choice概率/usage、一次
