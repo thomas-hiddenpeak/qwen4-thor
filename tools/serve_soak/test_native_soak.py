@@ -1,6 +1,7 @@
 """Targeted native handoff contracts and real CPU child cleanup; no GPU."""
 import copy
 import hashlib
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
 from pathlib import Path
@@ -8,6 +9,8 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 
@@ -123,6 +126,57 @@ class PrivateTests(unittest.TestCase):
         temporary = tempfile.TemporaryDirectory(dir=stage.ROOT/'.q4t-work')
         self.addCleanup(temporary.cleanup)
         self.path = Path(temporary.name)
+
+    def test_metrics_use_operations_listener_and_reject_unusable_snapshot(self):
+        from tools.serve_ops import fixtures
+        values = fixtures.metrics(version=5)
+        values.update(q4t_requests_total=6, q4t_requests_success_total=6,
+                      q4t_seq_slots_free=1, q4t_seq_slots_total=1)
+        state = dict(status=200, body=fixtures.text_metrics(values), public=0)
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(handler):
+                public = handler.server is front
+                if public:
+                    state['public'] += 1
+                body = state['body'].encode()
+                handler.send_response(404 if public else state['status'])
+                handler.send_header('Content-Type', 'text/plain')
+                handler.send_header('Content-Length', str(len(body)))
+                handler.end_headers()
+                handler.wfile.write(body)
+
+            def log_message(*_args):
+                pass
+
+        front = HTTPServer(('127.0.0.1', 0), Handler)
+        operations = HTTPServer(('127.0.0.1', 0), Handler)
+        threads = [threading.Thread(target=s.serve_forever, daemon=True)
+                   for s in (front, operations)]
+        for thread in threads:
+            thread.start()
+        try:
+            actor = stage.Stage.__new__(stage.Stage)
+            actor.port = front.server_port
+            actor.policy = dict(upstream_operations_port=operations.server_port)
+            actor.engine = SimpleNamespace(require=contract.require)
+            actor.budget = mock.Mock()
+            actor.output = self.path
+            result = actor.metrics('cpu', 6)
+            self.assertEqual(result['q4t_requests_total'], 6)
+            observed = report.read(self.path/'cpu-metrics.json')['observations']
+            self.assertEqual(observed[-1]['response']['body'], state['body'])
+            for status, body in ((404, state['body']), (200, 'incomplete 1\n')):
+                state.update(status=status, body=body)
+                with self.assertRaises(ValueError):
+                    actor.metrics('invalid', 6)
+            self.assertEqual(state['public'], 0)
+        finally:
+            for server in (front, operations):
+                server.shutdown()
+                server.server_close()
+            for thread in threads:
+                thread.join(timeout=2)
 
     def test_budget_charges_before_work_and_refuses_another_start(self):
         budget = stage.Budget(self.path, initialize=True,

@@ -4517,7 +4517,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "implemented_targeted_cpu_accepted_short_pending",
+        "state": "short_driver_metrics_fixed_cpu_followup_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4532,7 +4532,16 @@
         "cpu_tests": 14,
         "recheck_tests": 1,
         "day_cycles": 1440,
-        "day_business_requests": 7200
+        "day_business_requests": 7200,
+        "failure_evidence": "evidence/serve-native-soak-metrics-20261116/README.md",
+        "actual_starts": 1,
+        "actual_chats": 6,
+        "cumulative_limits": {
+          "starts": 2,
+          "chats": 22,
+          "probes": 0,
+          "seconds": 1200
+        }
       }
     }
   ],

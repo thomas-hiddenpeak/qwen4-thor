@@ -72,6 +72,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生长稳指标入口修复](evidence/serve-native-soak-metrics-20261116/README.md)：
+首轮1启动/6Chat/51.339秒，五类业务完成后驱动错误端口取指标失败，
+原失败与清理保留。复用正确运营入口，两项直接CPU及723/7来源通过；
+只补1启动/16Chat/600秒连续short，累计2/22/1200秒；全部master继续。
+
 [原生长稳采集依赖隔离](evidence/serve-native-soak-import-20261116/README.md)：
 审查后解除纯日志路径对旧资源验证栈的提前导入；两项直接CPU及
 723/7来源通过，0GPU。精确short准备已完成，保留原计划后更新验证

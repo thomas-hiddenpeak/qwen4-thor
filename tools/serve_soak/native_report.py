@@ -11,6 +11,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT/'tools/evalscope')]
 from tools.examples import chat_client
+from tools.serve_ops import contracts as ops_contracts
 from tools.serve_soak import evidence
 from tools.serve_soak import native_contract as contract
 
@@ -68,7 +69,8 @@ def require_records(plan, sealed):
         for label in contract.LABELS:
             required.update(prefix+'-'+label+suffix for suffix in (
                 '-request.json', '-response.json', '-wire.bin'))
-        required.update((prefix+'-tool-executed.json', prefix+'-idle.json'))
+        required.update((prefix+'-tool-executed.json', prefix+'-idle.json',
+                         prefix+'-idle-metrics.json'))
     if plan['profile'] == 'day':
         required.add('execution/first-hour.json')
     contract.require(required <= sealed['files'].keys(),
@@ -84,7 +86,8 @@ def check(output):
     contract.require(Path(plan['output']) == output, 'evidence plan path changed')
     for name in ('tools/serve_soak/native_contract.py',
                  'tools/serve_soak/native_report.py',
-                 'tools/serve_soak/evidence.py', 'tools/examples/chat_client.py'):
+                 'tools/serve_soak/evidence.py', 'tools/examples/chat_client.py',
+                 'tools/serve_ops/contracts.py'):
         contract.require(sha(ROOT/name) == plan['sources'][name],
                          'verification implementation differs from frozen plan')
     run = read(output/'run.json')
@@ -156,6 +159,14 @@ def check(output):
             idle['model_start_ticks'] == initial['model_start_ticks'],
             'quiescent sample belongs to another model')
         metrics = idle['metrics']
+        observations = read(output/'execution'/(prefix+'-idle-metrics.json'))[
+            'observations']
+        contract.require(bool(observations), 'missing operations metric response')
+        response = observations[-1]['response']
+        parsed_metrics, _ = ops_contracts.parse_metrics(response['body'], version=5)
+        contract.require(response['http_status'] == 200 and
+            parsed_metrics == observations[-1]['values'] == metrics,
+            'operations wire differs from idle snapshot')
         contract.require(metrics['q4t_requests_total'] ==
             metrics['q4t_requests_success_total'] == number*5+1 and
             metrics['q4t_seq_slots_free'] == metrics['q4t_seq_slots_total'] == 1 and

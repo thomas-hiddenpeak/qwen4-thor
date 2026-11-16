@@ -1,0 +1,10 @@
+.E
+======================================================================
+ERROR: test_seal_rejects_symlink_and_parent_traversal (unittest.loader._FailedTest.test_seal_rejects_symlink_and_parent_traversal)
+----------------------------------------------------------------------
+AttributeError: type object 'PrivateTests' has no attribute 'test_seal_rejects_symlink_and_parent_traversal'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.508s
+
+FAILED (errors=1)

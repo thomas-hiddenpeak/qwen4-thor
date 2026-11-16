@@ -3,7 +3,6 @@ import argparse
 import copy
 from dataclasses import asdict
 import fcntl
-import http.client
 import json
 import os
 from pathlib import Path
@@ -208,26 +207,6 @@ class Stage(LEGACY['Stage']):
         CONTRACT.validate_completion(label.rsplit('-', 1)[1], result, digest)
         return result
 
-    def metrics(self):
-        self.budget.reserve('controls', 'idle-metrics')
-        connection = http.client.HTTPConnection('127.0.0.1', self.port, timeout=2)
-        try:
-            connection.request('GET', '/metrics', headers={
-                'Authorization': 'Bearer '+self.keys['alpha']})
-            response = connection.getresponse()
-            wire = response.read(1024*1024+1)
-            self.engine.require(response.status == 200 and
-                                len(wire) <= 1024*1024, 'bounded metrics failed')
-            values = {}
-            for line in wire.decode().splitlines():
-                if line and not line.startswith('#'):
-                    key, value = line.rsplit(' ', 1)
-                    if '{' not in key:
-                        values[key] = float(value)
-            return values
-        finally:
-            connection.close()
-
     def resources(self):
         state = self.same_model()
         pid = state['model_pid']
@@ -265,8 +244,7 @@ class Stage(LEGACY['Stage']):
             save(self.output/(prefix+'-tool-executed.json'), dict(executions=1,
                 source=dict(path=CONTRACT.DOCUMENT, sha256=digest), reply=reply))
             self.complete(prefix+'-answer', body, digest)
-            metrics = LEGACY['await_drain'](lambda _remaining: self.metrics(),
-                                            number*5+1)
+            metrics = self.metrics(prefix+'-idle', number*5+1)
             row = self.resources()
             rows.append(row)
             save(self.output/(prefix+'-idle.json'), dict(metrics=metrics,
