@@ -61,3 +61,9 @@ SSE、Responses省略/null、一次真实文档工具及SHA续答，验证实际
 独立保留。余下对象以生产原生状态API CPU清理，不冒充追加HTTP。
 已冻结主轻2启动/10请求/900秒、保留包1启动/2生成/300秒、正式包
 2启动/4生成/1探测/600秒。未改控制/原生程序/客户端按身份复用。
+
+[主轻资格](evidence/serve-input-attribution-profile-business-20261116/README.md)
+和[精确包版本恢复](evidence/serve-input-attribution-version-business-20261116/README.md)
+已通过；正式0bbfd5e6/保留98b4b47e待17项STOPPED可回退发布。
+控制、原生辅助程序和客户端不变，旧压力/外层证据复用；人工旧根
+outer缺口仍需实现，全部master保持active。

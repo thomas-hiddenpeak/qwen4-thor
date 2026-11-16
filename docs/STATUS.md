@@ -58,6 +58,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[输入归属精确包版本短验通过](evidence/serve-input-attribution-version-business-20261116/README.md)：
+保留98b4b47e为1启动/2生成，正式0bbfd5e6为2启动/4生成/1探测；
+严格租约46.915/101.523秒，45/95项NVML正常。故障回退后实际视频/
+历史SSE、新归属/档位/default及媒体/MCP/embedding能力保留；自有进程/
+端口/锁清理通过。首次finalize参数错误与修正保留，0重复GPU。
+rev158保持，继续17项STOPPED可回退发布、PR与全部master。
+
 [输入归属候选主轻资格/封包通过](evidence/serve-input-attribution-profile-business-20261116/README.md)：
 2启动/10请求/88.426秒，83项NVML正常；两侧实际schema/工具/SHA续答/
 embedding/视频通过。正式0bbfd5e6、保留控制98b4b47e及两项sealed CPU

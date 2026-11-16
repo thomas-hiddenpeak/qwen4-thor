@@ -1,0 +1,32 @@
+{
+  "status": "PASS_NATIVE_MEDIA_SERVICE_VERSION",
+  "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+  "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
+  "engine_binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+    "strict_lease_seconds": 101.52326136315241,
+    "nvml_queries": 95,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 329
+    },
+    "source_commit": "6be457051feba84e3b725a87e9f74e408a833e87",
+    "plan_sha256": "c8fc046960d7f858267f385ee1868398c56c1c6d4dee2355e579e3fe4299038e",
+    "result_sha256": "594eba600ec3409172ae02615f9c24acb91c1ec692d8a18e6d1139cbeecc027e",
+    "lease_result_sha256": "40b8d733804958996aa7187bfeea258ad409897c71bb5fd4e4c6664440a61540",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}
