@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+Graph分页兼容已接线保留原URL的受保护续接、等价编码/OData路径及
+认证提供方返回的用户/日历别名；[47项CPU首过](evidence/serve-mcp-graph-cursor-cpu-20261116/README.md)。
+原工具/参数/授权与一小时期限绑定，复用现有密码组件，无新依赖。
+来源7项/706锚点过、构建零警告，0GPU、rev134保持，真实账户仍待验。
+继续MCP下载视频进入实际媒体准备，不能把MP4普通文件投影当完整业务。
+
 Google Vids长耗时下载已接线一次发起、显式pending和原任务单次续接；
 [30项CPU首过](evidence/serve-mcp-drive-lro-cpu-20261116/README.md)，7项来源
 负控/705锚点过，主机和完整引擎零警告。认证下载URI留在worker内，

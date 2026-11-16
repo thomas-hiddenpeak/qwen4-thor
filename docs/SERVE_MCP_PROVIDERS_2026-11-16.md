@@ -181,6 +181,31 @@ CLI/私有封包检查及7项来源负控通过，最终主机/完整引擎零�
 GPU或全模型测试。七个提供方候选不等于真实账户/全部实时分页形式已验；
 真实租户、权限、canonical分页别名与内容资产仍需受控账户验收。
 
+### Graph分页兼容与受保护续接
+
+依据Microsoft[分页](https://learn.microsoft.com/en-us/graph/paging)和
+[查询参数](https://learn.microsoft.com/en-us/graph/query-parameters)，
+保持服务方返回的完整nextLink，不拆出skiptoken后自行重建。等价的
+百分号/OData路径可识别，ID仍区分大小写；不能用解码改变实际发出的URL。
+
+生产原生提供方将next_page_token封成有界opaque游标。复用已有原生
+AES-256-GCM及SHA256，绑定私有OAuth/部署策略、提供方、工具、原资源
+路径、参数和页大小；null/省略和对象键顺序按结构身份处理。单个游标
+一小时内有效，凭据或部署策略变化会使旧游标失效。只在认证Graph
+响应中接受/me的用户、默认/选定日历及文件夹canonical别名；客户端
+自行传入的URL仍必须是原资源。最大原URL8192、opaque游标16384字节。
+
+邮件/日历查询条件即使已被服务方放入opaque skiptoken，仍由本地绑定
+核对原调用；明文query缺失不再导致合法续页被拒绝。原邮件元数据投影
+保持，续页不能扩大到正文；显式页大小不能变化，过量响应不成功。
+旧raw游标可按原资源继续并升级，原始@odata.nextLink保留供诊断，工具
+应回传next_page_token。一次调用只读一页，不自动重试或扫完账户。
+
+[47项CPU首过](evidence/serve-mcp-graph-cursor-cpu-20261116/README.md)，
+7项来源负控/706锚点过，构建零警告、0GPU。加密组件失能仅影响需要
+保护续页的工具请求，没有nextLink的读取继续；不影响核心readiness，
+不启动模型恢复。实际账户和实时分页资产仍待验，rev134默认保持。
+
 ### Dropbox六工具候选
 
 依据官方[请求/响应格式](https://docs.dropboxapi.com/dropbox-api/docs/technical-reference/request-response-formats)、

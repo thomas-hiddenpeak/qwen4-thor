@@ -44,7 +44,8 @@ ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
 // owned MCP worker and fixed-origin HTTPS; tests can exercise real local peers.
 ObjectReply InvokeProvider(std::string_view id, std::string_view method,
                            const io::Json& params, const ProviderFetch& fetch,
-                           io::Json* result, io::Json* error);
+                           io::Json* result, io::Json* error,
+                           std::string_view cursor_authority = {});
 ObjectReply ExchangeProvider(const McpEndpoint& endpoint,
                              const FileFetchOptions& deployment,
                              std::string_view method, const io::Json& params,
@@ -72,5 +73,6 @@ ObjectReply DropboxProvider(std::string_view method, const io::Json& params,
 bool GraphProviderId(std::string_view id);
 ObjectReply GraphProvider(std::string_view id, std::string_view method,
                           const io::Json& params, const ProviderFetch& fetch,
-                          io::Json* result);
+                          io::Json* result,
+                          std::string_view cursor_authority = {});
 }  // namespace q4t::server::mcp_detail

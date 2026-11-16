@@ -106,6 +106,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_gmail.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_mail.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_graph.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_graph_cursor.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_outlook.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_teams.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider_sharepoint.cpp

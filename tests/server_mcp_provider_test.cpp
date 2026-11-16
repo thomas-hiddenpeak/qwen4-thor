@@ -17,6 +17,7 @@
 #include "../src/server/remote_http_internal.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/mcp_content.h"
+#include "q4t/server/native_crypto.h"
 #include "q4t/server/responses_mcp.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/test.h"
@@ -175,13 +176,14 @@ constexpr auto kDriveProvider = "connector_googledrive";
 constexpr auto kGmailProvider = "connector_gmail";
 Reply JsonReply(Json value) { return {200, OutputJson(value)}; }
 ObjectReply ProviderCall(std::string_view provider, std::string name, Json args,
-                         ProviderPeer& peer, Json* result, Json* error) {
+                         ProviderPeer& peer, Json* result, Json* error,
+                         std::string_view cursor_authority = {}) {
   return mcp_detail::InvokeProvider(
       provider, "tools/call", Call(std::move(name), std::move(args)),
       [&](const auto& request, Json* value) {
         return peer.Fetch(request, value);
       },
-      result, error);
+      result, error, cursor_authority);
 }
 Json DriveFile(std::string mime = "text/plain", std::string id = "file_1") {
   return Object(
@@ -2666,5 +2668,404 @@ Q4T_TEST(mcp_provider_shared_response_budget_never_accepts_partial_data) {
       mcp_detail::ReadProviderResponse(*response, &bytes, &value).http_status ==
       413);
   Q4T_CHECK(value.IsNull() && bytes == (4U << 20) - 1);
+  return true;
+}
+
+namespace {
+constexpr auto kCursorAuthority = "synthetic-private-cursor-authority-1";
+Json GraphCursorPage(std::string cursor = {}, Json item = GraphMessage()) {
+  auto page = Object({{"value", Array({std::move(item)})}});
+  if (!cursor.empty()) Set(&page, "@odata.nextLink", String(std::move(cursor)));
+  return page;
+}
+}  // namespace
+Q4T_TEST(mcp_graph_sealed_cursor_canonical_mail_exact_url_and_metadata) {
+  const std::string url =
+      "https://graph.microsoft.com/v1.0/users('user-1')/"
+      "mailFolders('canonical-inbox')/"
+      "messages?$skiptoken=opaque%2B%2F%3D&custom-state=original";
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage(url)), JsonReply(GraphCursorPage())},
+      kOutlookMail);
+  Json result, error;
+  auto args =
+      Object({{"folder_id", String("inbox")}, {"max_results", Number(2)}});
+  Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  const auto token =
+      result.Find("structuredContent")->GetString("next_page_token");
+  Q4T_CHECK(token.starts_with("q4t-graph-1.") && token != url &&
+            token.find("user-1") == token.npos &&
+            token.find(kCursorAuthority) == token.npos);
+  Set(&args, "next_page_token", String(token));
+  Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 2 &&
+            requests[1].starts_with(
+                "GET " +
+                url.substr(std::string("https://graph.microsoft.com").size()) +
+                " HTTP/1.1"));
+  Q4T_CHECK(!result.Find("structuredContent")
+                 ->GetArray("messages")
+                 ->array[0]
+                 .Has("body"));
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_raw_canonical_alias_cannot_widen_read) {
+  for (const auto* url :
+       {"https://graph.microsoft.com/v1.0/users('other-user')/messages?$skip=1",
+        "https://graph.microsoft.com/v1.0/users/other-user/messages?$skip=1",
+        "https://graph.microsoft.com/v1.0/me/mailFolders/other/"
+        "messages?$skip=1"}) {
+    ProviderPeer peer({}, kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages",
+                           Object({{"next_page_token", String(url)}}), peer,
+                           &result, &error, kCursorAuthority)
+                  .ok());
+    Q4T_CHECK(peer.Requests().empty() && result.IsNull() &&
+              error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_cursor_equivalent_syntax_preserves_opaque_id_case) {
+  const std::string target =
+      "/v1.0/me/mailfolders('Folder%2b%2f%3d')/messages?$skip=1";
+  std::string url;
+  Q4T_CHECK(mcp_detail::graph_detail::Cursor(
+                "https://graph.microsoft.com" + target,
+                "/me/mailFolders/Folder%2B%2F%3D/messages", &url)
+                .ok());
+  Q4T_CHECK(url == "https://graph.microsoft.com" + target);
+  for (const auto* bad : {"/me/mailFolders/folder%2B%2F%3D/messages",
+                          "/me/mailFolders/Folder%252B%252F%253D/messages",
+                          "/me/mailFolders/Folder/another/messages"})
+    Q4T_CHECK(!mcp_detail::graph_detail::Cursor(
+                   "https://graph.microsoft.com" + target, bad, &url)
+                   .ok());
+  Q4T_CHECK(mcp_detail::graph_detail::CursorPath(
+      "/chats('a''b')/members", "/chats/a%27b/members", false));
+  Q4T_CHECK(!mcp_detail::graph_detail::CursorPath(
+      "/chats('a')/members", "/chats/chats%28%27a%27%29/members", false));
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_tamper_credentials_tool_and_arguments_no_io) {
+  const auto first = Object({{"query", String("project")},
+                             {"folder_id", String("inbox")},
+                             {"max_results", Number(2)}});
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage("https://graph.microsoft.com/v1.0/users/"
+                                 "user-1/mailFolders/canonical/messages?"
+                                 "$skiptoken=original"))},
+      kOutlookMail);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookMail, "search_messages", first, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  const auto token =
+      result.Find("structuredContent")->GetString("next_page_token");
+  for (int mode = 0; mode < 6; ++mode) {
+    auto args = first;
+    Set(&args, "next_page_token", String(token));
+    auto tool = std::string("search_messages");
+    auto authority = std::string(kCursorAuthority);
+    if (mode == 0) {
+      auto corrupt = token;
+      corrupt[20] = corrupt[20] == 'A' ? 'B' : 'A';
+      Set(&args, "next_page_token", String(corrupt));
+    }
+    if (mode == 1) authority += "changed";
+    if (mode == 2) tool = "list_messages";
+    if (mode == 3) Set(&args, "query", String("another"));
+    if (mode == 4) Set(&args, "folder_id", String("other"));
+    if (mode == 5) Set(&args, "max_results", Number(3));
+    ProviderPeer rejected({}, kOutlookMail);
+    Q4T_CHECK(ProviderCall(kOutlookMail, tool, args, rejected, &result, &error,
+                           authority)
+                  .ok());
+    Q4T_CHECK(rejected.Requests().empty() && result.IsNull() &&
+              error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_search_query_may_be_inside_opaque_token) {
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage("https://graph.microsoft.com/v1.0/users/"
+                                 "user-1/messages?$skiptoken=original")),
+       JsonReply(GraphCursorPage())},
+      kOutlookMail);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookMail, "search_messages",
+                         Object({{"query", String("project")},
+                                 {"max_results", Number(2)}}),
+                         peer, &result, &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  auto args = Object(
+      {{"folder_id", Json()},
+       {"next_page_token",
+        String(result.Find("structuredContent")->GetString("next_page_token"))},
+       {"query", String("project")}});
+  Q4T_CHECK(ProviderCall(kOutlookMail, "search_messages", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            peer.Requests()[1].find("$search") == std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_calendar_opaque_window_and_timezone_bound) {
+  auto args = Object({{"time_min", String("2026-11-16T00:00:00Z")},
+                      {"time_max", String("2026-11-17T00:00:00Z")},
+                      {"timezone_str", String("China Standard Time")}});
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage("https://graph.microsoft.com/v1.0/"
+                                 "users('user-1')/calendars('calendar-1')/"
+                                 "calendarView?$skiptoken=bound-window",
+                                 GraphEvent())),
+       JsonReply(GraphCursorPage({}, GraphEvent()))},
+      kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "list_events", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Set(&args, "next_page_token",
+      String(result.Find("structuredContent")->GetString("next_page_token")));
+  for (int mode = 0; mode < 2; ++mode) {
+    auto changed = args;
+    Set(&changed, mode == 0 ? "time_max" : "timezone_str",
+        String(mode == 0 ? "2026-11-18T00:00:00Z" : "UTC"));
+    ProviderPeer rejected({}, kOutlookCalendar);
+    Q4T_CHECK(ProviderCall(kOutlookCalendar, "list_events", changed, rejected,
+                           &result, &error, kCursorAuthority)
+                  .ok());
+    Q4T_CHECK(error.GetInt("code") == -32602 && rejected.Requests().empty());
+  }
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "list_events", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            peer.Requests()[1].find(
+                "Prefer: outlook.timezone=\"China Standard Time\"") !=
+                std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_teams_odata_members_bind_chat) {
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage(
+           "https://graph.microsoft.com/v1.0/chats('19%3Achat%40thread.v2')/"
+           "members?$skiptoken=page2",
+           Object({{"id", String("member-1")},
+                   {"tenantId", String("tenant-1")}}))),
+       JsonReply(GraphCursorPage({}, Object({{"id", String("member-2")}})))},
+      kTeams);
+  Json result, error;
+  auto args = Object({{"chat_id", String("19:chat@thread.v2")}});
+  Q4T_CHECK(ProviderCall(kTeams, "get_chat_members", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Set(&args, "next_page_token",
+      String(result.Find("structuredContent")->GetString("next_page_token")));
+  Q4T_CHECK(ProviderCall(kTeams, "get_chat_members", args, peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            result.Find("structuredContent")
+                    ->GetArray("members")
+                    ->array[0]
+                    .GetString("id") == "member-2");
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_bad_upstream_target_never_issued) {
+  for (const auto* url :
+       {"https://evil.invalid/v1.0/me/messages?$skip=1",
+        "https://graph.microsoft.com/v1.0/users/u/events?$skip=1",
+        "https://graph.microsoft.com/beta/users/u/messages?$skip=1",
+        "https://graph.microsoft.com/v1.0/users/u/messages?$skip=1#ignored",
+        "https://graph.microsoft.com/v1.0/users/u/"
+        "messages?$skip=1&%24skip=2"}) {
+    ProviderPeer peer({JsonReply(GraphCursorPage(url))}, kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kOutlookMail, "list_messages", Object(), peer,
+                            &result, &error, kCursorAuthority)
+                   .ok());
+    Q4T_CHECK(result.IsNull() && peer.Requests().size() == 1);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_bounds_authentication_and_unique_nonce) {
+  using namespace mcp_detail::graph_detail;
+  CursorContext context{kCursorAuthority, "original-bind", 25, false};
+  const std::string url =
+      "https://graph.microsoft.com/v1.0/me/messages?$skiptoken=" +
+      std::string(7900, 'a');
+  std::string token, second, opened;
+  Q4T_CHECK(SealCursor(url, "/me/messages", context, &token).ok());
+  Q4T_CHECK(SealCursor(url, "/me/messages", context, &second).ok());
+  Q4T_CHECK(token != second && token.size() <= 16384);
+  Q4T_CHECK(OpenCursor(token, "/me/messages", &context, &opened).ok() &&
+            opened == url);
+  for (int mode = 0; mode < 4; ++mode) {
+    auto bad = context;
+    if (mode == 0) bad.binding = "another-tool-or-arguments";
+    if (mode == 1) bad.authority = "new-private-credential";
+    if (mode == 2) {
+      bad.explicit_limit = true;
+      bad.limit = 26;
+    }
+    Q4T_CHECK(!OpenCursor(token, mode == 3 ? "/me/events" : "/me/messages",
+                          &bad, &opened)
+                   .ok());
+  }
+  Q4T_CHECK(!OpenCursor("q4t-graph-1." + std::string(16384, 'A'),
+                        "/me/messages", &context, &opened)
+                 .ok());
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_expiry_and_bad_frame_rejected) {
+  using namespace mcp_detail::graph_detail;
+  CursorContext context{kCursorAuthority, "binding", 25, false};
+  const auto key = q4t::trace::Sha256(
+      {reinterpret_cast<const uint8_t*>(context.authority.data()),
+       context.authority.size()});
+  const auto aad = OutputJson(Object({{"purpose", String("q4t-graph-1.")},
+                                      {"path", String("/me/messages")},
+                                      {"binding", String("binding")}}));
+  const auto now = std::chrono::duration_cast<std::chrono::seconds>(
+                       std::chrono::system_clock::now().time_since_epoch())
+                       .count();
+  for (int delta : {-3601, 120}) {
+    CryptoNonce nonce;
+    CryptoTag tag;
+    std::string cipher;
+    Q4T_CHECK(CryptoRandom(nonce) == CryptoResult::kOk);
+    Q4T_CHECK(
+        CryptoSeal(
+            key, nonce, aad,
+            OutputJson(Object(
+                {{"url",
+                  String(
+                      "https://graph.microsoft.com/v1.0/me/messages?$skip=1")},
+                 {"limit", Number(25)},
+                 {"issued_at", Number(now + delta)}})),
+            &cipher, &tag) == CryptoResult::kOk);
+    std::string frame(reinterpret_cast<const char*>(nonce.data()),
+                      nonce.size());
+    frame.append(reinterpret_cast<const char*>(tag.data()), tag.size());
+    frame += cipher;
+    std::string opened;
+    Q4T_CHECK(!OpenCursor("q4t-graph-1." + UrlBase64(frame), "/me/messages",
+                          &context, &opened)
+                   .ok());
+  }
+  for (const auto* bad : {"q4t-graph-1.", "q4t-graph-1.A", "q4t-graph-1.AA=A",
+                          "q4t-graph-1.Zg=="}) {
+    std::string opened;
+    Q4T_CHECK(!OpenCursor(bad, "/me/messages", &context, &opened).ok());
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_crypto_failure_stays_request_local) {
+  struct Restore {
+    ~Restore() { SetCryptoUnavailableForTesting(false); }
+  } restore;
+  SetCryptoUnavailableForTesting(true);
+  ProviderPeer peer(
+      {JsonReply(GraphCursorPage(
+           "https://graph.microsoft.com/v1.0/users/u/messages?$skip=1")),
+       JsonReply(GraphCursorPage())},
+      kOutlookMail);
+  Json result, error;
+  auto reply = ProviderCall(kOutlookMail, "list_messages", Object(), peer,
+                            &result, &error, kCursorAuthority);
+  Q4T_CHECK(reply.http_status == 503 &&
+            reply.code == "mcp_provider_cursor_unavailable" && result.IsNull());
+  Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages", Object(), peer, &result,
+                         &error, kCursorAuthority)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 2 &&
+            result.Find("structuredContent")->GetArray("messages"));
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_remote_rejection_is_known_and_never_replayed) {
+  for (int status : {401, 403, 429, 503}) {
+    ProviderPeer peer(
+        {JsonReply(GraphCursorPage("https://graph.microsoft.com/v1.0/users/u/"
+                                   "messages?$skiptoken=page2")),
+         {status, "private error", true}},
+        kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages", Object(), peer,
+                           &result, &error, kCursorAuthority)
+                  .ok() &&
+              error.IsNull());
+    const auto token =
+        result.Find("structuredContent")->GetString("next_page_token");
+    Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages",
+                           Object({{"next_page_token", String(token)}}), peer,
+                           &result, &error, kCursorAuthority)
+                  .ok());
+    Q4T_CHECK(error.Find("data")->GetInt("upstream_status") == status &&
+              result.IsNull() && peer.Requests().size() == 2);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sealed_cursor_page_limit_survives_legacy_upgrade) {
+  for (bool oversize : {false, true}) {
+    auto second = GraphCursorPage();
+    auto values = *second.GetArray("value");
+    values.array.push_back(GraphMessage("second"));
+    if (oversize) values.array.push_back(GraphMessage("third"));
+    Set(&second, "value", values);
+    ProviderPeer peer(
+        {JsonReply(GraphCursorPage("https://graph.microsoft.com/v1.0/users/u/"
+                                   "messages?$skiptoken=third")),
+         JsonReply(second)},
+        kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages",
+                           Object({{"next_page_token",
+                                    String("https://graph.microsoft.com/v1.0/"
+                                           "me/messages?$top=2&$skip=1")}}),
+                           peer, &result, &error, kCursorAuthority)
+                  .ok() &&
+              error.IsNull());
+    const auto token =
+        result.Find("structuredContent")->GetString("next_page_token");
+    const auto reply = ProviderCall(kOutlookMail, "list_messages",
+                                    Object({{"next_page_token", String(token)},
+                                            {"max_results", Number(2)}}),
+                                    peer, &result, &error, kCursorAuthority);
+    Q4T_CHECK(peer.Requests().size() == 2 && reply.ok() != oversize);
+    Q4T_CHECK(oversize ? result.IsNull()
+                       : result.Find("structuredContent")
+                                 ->GetArray("messages")
+                                 ->array.size() == 2);
+  }
+  for (const auto* limit : {"0", "-1", "1001", "2junk"}) {
+    ProviderPeer peer({}, kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(
+        ProviderCall(kOutlookMail, "list_messages",
+                     Object({{"next_page_token",
+                              String(std::string("https://graph.microsoft.com/"
+                                                 "v1.0/me/messages?$top=") +
+                                     limit + "&$skip=1")}}),
+                     peer, &result, &error, kCursorAuthority)
+            .ok());
+    Q4T_CHECK(result.IsNull() && error.GetInt("code") == -32602 &&
+              peer.Requests().empty());
+  }
   return true;
 }

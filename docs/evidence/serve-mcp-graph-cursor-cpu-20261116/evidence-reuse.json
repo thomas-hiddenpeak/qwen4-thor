@@ -1,0 +1,5 @@
+{
+  "prior_46_tests": "cpu-01.json",
+  "final_extra_boundary": "cpu-02.json",
+  "note": "Only the added legacy-page-limit fixture changed after first CPU run; production source and engine build unchanged. Prior accepted private policy/CLI sealing and native AES-GCM primitive evidence reused, not attributed to this candidate executable."
+}

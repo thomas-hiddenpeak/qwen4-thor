@@ -5,6 +5,7 @@
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server::mcp_detail::graph_detail {
 using namespace object_detail;
@@ -76,15 +77,22 @@ ObjectReply Search(std::string_view entity, const Json& args,
   Set(result, "next_offset", more->boolean ? Number(offset + maximum) : Json());
   return {};
 }
-ObjectReply Cursor(std::string_view cursor, std::string_view path,
-                   std::string* url,
-                   std::map<std::string, std::string>* query) {
+namespace {
+ObjectReply ReadCursor(std::string_view cursor, std::string_view path,
+                       std::string* url,
+                       std::map<std::string, std::string>* query,
+                       bool authenticated_alias) {
   file_detail::Url parsed;
   if (!url || cursor.empty() || cursor.size() > 8192 ||
+      cursor.find('#') != cursor.npos ||
       !file_detail::ParseUrl(cursor, &parsed) || parsed.scheme != "https" ||
       parsed.host != "graph.microsoft.com" || parsed.port != 443 ||
-      parsed.target.substr(0, parsed.target.find('?')) !=
-          "/v1.0" + std::string(path))
+      !parsed.target.starts_with("/v1.0/") ||
+      !CursorPath(std::string_view(parsed.target)
+                      .substr(5, parsed.target.find('?') == parsed.target.npos
+                                     ? parsed.target.size() - 5
+                                     : parsed.target.find('?') - 5),
+                  path, authenticated_alias))
     return Invalid();
   const auto decode = [](std::string_view raw, std::string* value) {
     value->clear();
@@ -131,22 +139,45 @@ ObjectReply Cursor(std::string_view cursor, std::string_view path,
   *url = cursor;
   return {};
 }
+}  // namespace
+ObjectReply Cursor(std::string_view cursor, std::string_view path,
+                   std::string* url, std::map<std::string, std::string>* query,
+                   CursorContext* context, bool* authenticated) {
+  if (authenticated) *authenticated = false;
+  if (!cursor.starts_with("q4t-graph-1."))
+    return ReadCursor(cursor, path, url, query, false);
+  std::string raw;
+  auto reply = OpenCursor(cursor, path, context, &raw);
+  if (!reply.ok()) return reply;
+  reply = ReadCursor(raw, path, url, query, true);
+  if (reply.ok() && authenticated) *authenticated = true;
+  return reply;
+}
 ObjectReply Page(const Json& raw, std::string_view path, const char* field,
-                 size_t maximum, Json* result) {
+                 size_t maximum, Json* result, CursorContext* context) {
   const auto* values = raw.GetArray("value");
   if (!raw.IsObject() || !values || values->array.size() > maximum)
     return Protocol();
   for (const auto& item : values->array)
     if (!item.IsObject() || item.GetString("id").empty()) return Protocol();
   const auto* cursor = raw.Find("@odata.nextLink");
+  Json token;
   if (cursor) {
     std::string ignored;
-    if (!cursor->IsString() || !Cursor(cursor->str, path, &ignored).ok())
+    const bool protect = context && !context->authority.empty();
+    if (!cursor->IsString() ||
+        !ReadCursor(cursor->str, path, &ignored, nullptr, protect).ok())
       return Protocol();
+    token = *cursor;
+    if (protect) {
+      auto reply = SealCursor(cursor->str, path, *context, &ignored);
+      if (!reply.ok()) return reply;
+      token = String(std::move(ignored));
+    }
   }
   *result = raw;
   Set(result, field, *values);
-  Set(result, "next_page_token", cursor ? *cursor : Json());
+  Set(result, "next_page_token", std::move(token));
   return {};
 }
 ObjectReply Profile(const Json& args, const ProviderFetch& fetch,
@@ -178,7 +209,7 @@ bool GraphProviderId(std::string_view id) {
 }
 ObjectReply GraphProvider(std::string_view id, std::string_view method,
                           const io::Json& params, const ProviderFetch& fetch,
-                          io::Json* result) {
+                          io::Json* result, std::string_view cursor_authority) {
   using namespace object_detail;
   using namespace provider_detail;
   if (!GraphProviderId(id)) return Invalid();
@@ -200,11 +231,29 @@ ObjectReply GraphProvider(std::string_view id, std::string_view method,
   if (method != "tools/call" || !args || !args->IsObject()) return Invalid();
   Json value, content = Array();
   const auto name = params.GetString("name");
+  graph_detail::CursorContext context;
+  context.authority = cursor_authority;
+  if (!cursor_authority.empty()) {
+    auto bound = *args;
+    std::erase_if(bound.object, [](const auto& field) {
+      return field.first == "next_page_token" || field.first == "max_results" ||
+             field.second.IsNull();
+    });
+    if (!InputValueIdentity(Object({{"provider", String(std::string(id))},
+                                    {"tool", String(name)},
+                                    {"arguments", std::move(bound)}}),
+                            &context.binding))
+      return Protocol();
+    const auto* limit = args->Find("max_results");
+    context.explicit_limit = limit && !limit->IsNull();
+    context.limit = teams ? 0 : args->GetInt("max_results", 25);
+  }
   auto reply =
-      teams ? graph_detail::TeamsRead(name, *args, fetch, &value)
+      teams ? graph_detail::TeamsRead(name, *args, fetch, &value, &context)
       : sharepoint
           ? graph_detail::SharePointRead(name, *args, fetch, &value, &content)
-          : graph_detail::OutlookRead(calendar, name, *args, fetch, &value);
+          : graph_detail::OutlookRead(calendar, name, *args, fetch, &value,
+                                      &context);
   if (!reply.ok()) return reply;
   graph_detail::RemoveDownloadCapabilities(&value);
   return Result(std::move(value), std::move(content), result);

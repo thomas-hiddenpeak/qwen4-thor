@@ -1,0 +1,14 @@
+{
+  "CMakeLists.txt": "f69483e560e08e2415b6da3ae2bb315d80d2336307778de0a3cba23307e5327a",
+  "cmake/HostTestSources.cmake": "48d369eef57b1215a5fe17c2d8d56d6202249ba5ce43ccc41fed3d0fe5dbd56e",
+  "cmake/ChatProtocolIdentity.cmake": "dbb42208837338530a4b889d2b6d6253df8a9dcfd1aeb4de459ea2cd3b2a1214",
+  "src/server/mcp_provider.cpp": "afc4e376d9b68b658f76daab039f17cbd1e91fc7616c9cd1a173a6cf70c0141f",
+  "src/server/mcp_provider_graph.cpp": "3ad1ee56951bd29cb6143f7cc1c4664c74f5c0eadb40d6a7a759646c161d3d2f",
+  "src/server/mcp_provider_graph.h": "d63301ab4180a188c27dd50b0ea1e1c7925b5dca38dfc2563b4ab2af631745a1",
+  "src/server/mcp_provider_graph_cursor.cpp": "5290542be6f246ade71c932fc61d309d27d4a3dcd8479ebf8893760fd03415ff",
+  "src/server/mcp_provider_outlook.cpp": "8ce45e15bf47b4526d1ca68ee455be8d2b70701e79bc00947aebca319ef353d0",
+  "src/server/mcp_provider_teams.cpp": "2d0bdcc8091eb691b2d70f7210e66690dd6da08dd62455354d7d532a17eadf0d",
+  "src/server/mcp_provider_internal.h": "68295f290ba0b5a4f0c8fd3d832e0f0d948a5f6f67fcfdbc3f1e2e9adfa6efdb",
+  "tests/server_mcp_provider_test.cpp": "c35be86e708fa745fb826044ed57f797c3ffbeb0628ae138182ea62df66ffad7",
+  "tools/serve_audit/inventory.json": "2f7bd1df6cdec80a5563d71754ad1306c5e40b9b759220d0c6811f25c93357c4"
+}

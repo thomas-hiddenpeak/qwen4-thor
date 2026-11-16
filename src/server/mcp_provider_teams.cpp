@@ -28,29 +28,32 @@ Json TeamsCatalog() {
                      "Read a chat's membership page, preserving "
                      "opaque IDs and tenant identities",
                      Object({{"chat_id", TextSchema(2048, false)},
-                             {"next_page_token", TextSchema(8192)}}),
+                             {"next_page_token", TextSchema(16384)}}),
                      Array({String("chat_id")}))});
 }
 ObjectReply TeamsRead(std::string_view name, const Json& args,
-                      const ProviderFetch& fetch, Json* result) {
+                      const ProviderFetch& fetch, Json* result,
+                      CursorContext* context) {
   if (name == "get_profile") return Profile(args, fetch, result);
   if (name == "search") return Search("chatMessage", args, fetch, result);
   std::string field;
   if (name == "get_chat_members") {
     if (!InputFields(args, {"chat_id", "next_page_token"}, &field) ||
         !Id(Text(args, "chat_id")) ||
-        !OptionalText(args, "next_page_token", 8192))
+        !OptionalText(args, "next_page_token", 16384))
       return Invalid();
     const auto path =
         "/chats/" + ProviderEscape(Text(args, "chat_id")) + "/members";
     std::string url = std::string(kGraph) + path;
     if (!Text(args, "next_page_token").empty()) {
-      auto reply = Cursor(Text(args, "next_page_token"), path, &url);
+      auto reply =
+          Cursor(Text(args, "next_page_token"), path, &url, nullptr, context);
       if (!reply.ok()) return reply;
     }
     Json raw;
     auto reply = fetch({url}, &raw);
-    return reply.ok() ? Page(raw, path, "members", 65536, result) : reply;
+    return reply.ok() ? Page(raw, path, "members", 65536, result, context)
+                      : reply;
   }
   if (name != "fetch" ||
       !InputFields(

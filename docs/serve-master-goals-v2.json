@@ -1251,7 +1251,7 @@
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
-          "Actual Google Vids assets and supported-format decoding/acceptance; native LRO targeted CPU passed"
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
         ],
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
@@ -1265,7 +1265,7 @@
         "live_provider_pending": [
           "scoped test accounts and assets",
           "OAuth permission and content behavior",
-          "Graph canonical nextLink path aliases and actual pagination",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
           "standard SDK business and recovery-qualified release"
         ],
         "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
@@ -1274,7 +1274,10 @@
         "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
         "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
         "drive_lro_cpp_passed": 30,
-        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48"
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -2158,7 +2161,7 @@
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
-          "Actual Google Vids assets and supported-format decoding/acceptance; native LRO targeted CPU passed"
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
         ],
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
@@ -2172,7 +2175,7 @@
         "live_provider_pending": [
           "scoped test accounts and assets",
           "OAuth permission and content behavior",
-          "Graph canonical nextLink path aliases and actual pagination",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
           "standard SDK business and recovery-qualified release"
         ],
         "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
@@ -2181,7 +2184,10 @@
         "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
         "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
         "drive_lro_cpp_passed": 30,
-        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48"
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -2252,7 +2258,7 @@
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
-          "Actual Google Vids assets and supported-format decoding/acceptance; native LRO targeted CPU passed"
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
         ],
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
@@ -2266,7 +2272,7 @@
         "live_provider_pending": [
           "scoped test accounts and assets",
           "OAuth permission and content behavior",
-          "Graph canonical nextLink path aliases and actual pagination",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
           "standard SDK business and recovery-qualified release"
         ],
         "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
@@ -2275,7 +2281,10 @@
         "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
         "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
         "drive_lro_cpp_passed": 30,
-        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48"
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -3155,7 +3164,7 @@
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
-          "Actual Google Vids assets and supported-format decoding/acceptance; native LRO targeted CPU passed"
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
         ],
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
@@ -3169,7 +3178,7 @@
         "live_provider_pending": [
           "scoped test accounts and assets",
           "OAuth permission and content behavior",
-          "Graph canonical nextLink path aliases and actual pagination",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
           "standard SDK business and recovery-qualified release"
         ],
         "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
@@ -3178,7 +3187,10 @@
         "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
         "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
         "drive_lro_cpp_passed": 30,
-        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48"
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -3334,7 +3346,7 @@
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
-          "Actual Google Vids assets and supported-format decoding/acceptance; native LRO targeted CPU passed"
+          "MCP downloaded video into native model preparation; actual Google Vids and supported-format decoding/acceptance"
         ],
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
@@ -3348,7 +3360,7 @@
         "live_provider_pending": [
           "scoped test accounts and assets",
           "OAuth permission and content behavior",
-          "Graph canonical nextLink path aliases and actual pagination",
+          "Actual Graph tenants and pagination; native bound alias continuation CPU accepted",
           "standard SDK business and recovery-qualified release"
         ],
         "dropbox_evidence": "evidence/serve-mcp-dropbox-cpu-20261116/README.md",
@@ -3357,7 +3369,10 @@
         "dropbox_engine_sha256": "cc33477cfa9c15823c2b36250eb8936a29668b4c89df82929d97e83cbbb15f96",
         "drive_lro_evidence": "evidence/serve-mcp-drive-lro-cpu-20261116/README.md",
         "drive_lro_cpp_passed": 30,
-        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48"
+        "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
+        "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
+        "graph_cursor_cpp_passed": 47,
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       }
     },
     {
@@ -3373,6 +3388,6 @@
       "release": null
     }
   ],
-  "next_task": "Implement remaining content formats and provider pagination compatibility; complete real account and SDK business, recovery qualification, reversible release and all Serve master tasks.",
-  "next": "Implement remaining content formats and provider pagination compatibility; complete real account and SDK business, recovery qualification, reversible release and all Serve master tasks."
+  "next_task": "Connect downloaded MCP video to native media preparation; complete real account/SDK business, recovery qualification, reversible release and all Serve master tasks.",
+  "next": "Connect downloaded MCP video to native media preparation; complete real account/SDK business, recovery qualification, reversible release and all Serve master tasks."
 }

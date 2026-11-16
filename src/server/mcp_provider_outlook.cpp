@@ -1,6 +1,7 @@
 #include "mcp_provider_graph.h"
 
 #include <algorithm>
+#include <charconv>
 
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
@@ -133,7 +134,8 @@ std::string TimeKey(std::string value) {
   return value;
 }
 ObjectReply List(bool calendar, std::string_view name, const Json& args,
-                 const ProviderFetch& fetch, Json* result) {
+                 const ProviderFetch& fetch, Json* result,
+                 CursorContext* context) {
   std::string field;
   const bool search = name == "search_messages";
   if (!(calendar
@@ -156,7 +158,7 @@ ObjectReply List(bool calendar, std::string_view name, const Json& args,
                                    {"time_min", 128U},
                                    {"time_max", 128U},
                                    {"timezone_str", 128U},
-                                   {"next_page_token", 8192U},
+                                   {"next_page_token", 16384U},
                                    {"query", 4096U}})
     if (!OptionalText(args, key, limit)) return Invalid();
   for (const auto* key : {"calendar_id", "folder_id"})
@@ -184,11 +186,30 @@ ObjectReply List(bool calendar, std::string_view name, const Json& args,
           : "/me/mailFolders/" + ProviderEscape(folder) + "/messages";
   std::string url = std::string(kGraph) + path;
   const auto cursor = Text(args, "next_page_token");
+  bool authenticated = false;
   if (!cursor.empty()) {
     std::map<std::string, std::string> continuation;
-    auto reply = Cursor(cursor, path, &url, &continuation);
+    auto reply =
+        Cursor(cursor, path, &url, &continuation, context, &authenticated);
     if (!reply.ok()) return reply;
-    if (!calendar) {
+    if (!authenticated && context && !context->authority.empty()) {
+      // Older raw URLs remain accepted for the exact resource. Carry their
+      // actual limit into the protected continuation instead of inventing the
+      // current tool default when the caller omitted max_results.
+      context->limit = 0;
+      if (const auto top = continuation.find("$top");
+          top != continuation.end()) {
+        int limit = 0;
+        const auto& raw = top->second;
+        const auto parsed =
+            std::from_chars(raw.data(), raw.data() + raw.size(), limit);
+        if (parsed.ec != std::errc{} || parsed.ptr != raw.data() + raw.size() ||
+            limit < 1 || limit > 1000)
+          return Invalid();
+        context->limit = limit;
+      }
+    }
+    if (!calendar && !authenticated) {
       for (const auto& [key, value] : continuation) {
         if (key != "$skip" && key != "$skiptoken" && key != "$top" &&
             key != "$search" && key != "$select" && key != "$orderby")
@@ -201,11 +222,12 @@ ObjectReply List(bool calendar, std::string_view name, const Json& args,
     }
     // The complete upstream URL owns page-size/query continuation. Don't
     // silently ignore a new limit or search term alongside the cursor.
-    if (args.Has("max_results") && !args.Find("max_results")->IsNull() &&
+    if (!authenticated && args.Has("max_results") &&
+        !args.Find("max_results")->IsNull() &&
         (!continuation.contains("$top") ||
          continuation.at("$top") != std::to_string(maximum)))
       return Invalid();
-    if (search && !Text(args, "query").empty()) {
+    if (!authenticated && search && !Text(args, "query").empty()) {
       // Search query is mandatory for that tool's schema. Verify it remains
       // represented by the original $search parameter below.
       std::string quoted = "\"";
@@ -218,7 +240,7 @@ ObjectReply List(bool calendar, std::string_view name, const Json& args,
           continuation.at("$search") != quoted)
         return Invalid();
     }
-    if (window) {
+    if (!authenticated && window) {
       std::string original_start, original_end;
       if (!continuation.contains("startDateTime") ||
           !continuation.contains("endDateTime") ||
@@ -255,8 +277,12 @@ ObjectReply List(bool calendar, std::string_view name, const Json& args,
   Json response;
   auto reply = fetch(Get(url, calendar, Text(args, "timezone_str")), &response);
   if (reply.ok() && !calendar) MailMetadata(&response);
+  const auto page_limit = cursor.empty() ? maximum
+                          : authenticated && context && context->limit > 0
+                              ? context->limit
+                              : 1000;
   return reply.ok() ? Page(response, path, calendar ? "events" : "messages",
-                           cursor.empty() ? maximum : 1000, result)
+                           page_limit, result, context)
                     : reply;
 }
 }  // namespace
@@ -288,20 +314,21 @@ io::Json OutlookCatalog(bool calendar) {
     Set(&props, "time_min", TextSchema(128));
     Set(&props, "time_max", TextSchema(128));
     Set(&props, "max_results", LimitSchema(1000));
-    Set(&props, "next_page_token", TextSchema(8192));
+    Set(&props, "next_page_token", TextSchema(16384));
     tools.array.push_back(Tool(
         "list_events",
         "List one page. Supply both time bounds for "
         "expanded recurring events; naive input times are UTC. timezone_str "
         "controls returned "
-        "times. To continue, keep calendar/time bounds and omit max_results.",
+        "times. To continue, pass next_page_token unchanged, keep calendar/"
+        "time bounds/timezone and omit max_results.",
         props, Array()));
   } else {
     for (const auto* name :
          {"list_messages", "search_messages", "get_recent_emails"}) {
       auto props = Object({{"folder_id", TextSchema(2048)},
                            {"max_results", LimitSchema(1000)},
-                           {"next_page_token", TextSchema(8192)}});
+                           {"next_page_token", TextSchema(16384)}});
       auto required = Array();
       if (std::string_view(name) == "search_messages") {
         Set(&props, "query", TextSchema(4096, false));
@@ -311,7 +338,7 @@ io::Json OutlookCatalog(bool calendar) {
           Tool(name,
                "Read one metadata page; searches use Outlook search "
                "syntax, other lists newest first. Continue with the same "
-               "folder/query and omit "
+               "folder/query, pass next_page_token unchanged and omit "
                "max_results. fetch_message reads full body.",
                props, required));
     }
@@ -329,7 +356,7 @@ io::Json OutlookCatalog(bool calendar) {
 }
 ObjectReply OutlookRead(bool calendar, std::string_view name,
                         const io::Json& args, const ProviderFetch& fetch,
-                        io::Json* result) {
+                        io::Json* result, CursorContext* context) {
   using namespace provider_detail;
   if (name == "get_profile") return Profile(args, fetch, result);
   if (calendar && name == "search_events")
@@ -341,7 +368,7 @@ ObjectReply OutlookRead(bool calendar, std::string_view name,
   if (calendar ? name == "list_events"
                : name == "list_messages" || name == "search_messages" ||
                      name == "get_recent_emails")
-    return List(calendar, name, args, fetch, result);
+    return List(calendar, name, args, fetch, result, context);
   return Invalid();
 }
 }  // namespace q4t::server::mcp_detail::graph_detail

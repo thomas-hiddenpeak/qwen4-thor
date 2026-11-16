@@ -61,19 +61,20 @@ bool GoogleDownloadOrigin(std::string_view raw) {
 }
 ObjectReply InvokeProvider(std::string_view id, std::string_view method,
                            const Json& params, const ProviderFetch& fetch,
-                           Json* result, Json* error) {
+                           Json* result, Json* error,
+                           std::string_view cursor_authority) {
   if (!result || !error || !fetch || !NativeProvider(id))
     return Error(500, "mcp_provider_invalid", "Invalid native provider");
   *result = *error = Json();
-  auto reply = id == "connector_googlecalendar"
-                   ? GoogleCalendarProvider(method, params, fetch, result)
-               : id == "connector_googledrive"
-                   ? GoogleDriveProvider(method, params, fetch, result)
-               : id == "connector_gmail"
-                   ? GmailProvider(method, params, fetch, result)
-               : id == "connector_dropbox"
-                   ? DropboxProvider(method, params, fetch, result)
-                   : GraphProvider(id, method, params, fetch, result);
+  auto reply =
+      id == "connector_googlecalendar"
+          ? GoogleCalendarProvider(method, params, fetch, result)
+      : id == "connector_googledrive"
+          ? GoogleDriveProvider(method, params, fetch, result)
+      : id == "connector_gmail" ? GmailProvider(method, params, fetch, result)
+      : id == "connector_dropbox"
+          ? DropboxProvider(method, params, fetch, result)
+          : GraphProvider(id, method, params, fetch, result, cursor_authority);
   if (reply.ok()) return reply;
   const int status = reply.value.GetInt("upstream_status");
   if (status >= 300 && status <= 599) {
@@ -334,7 +335,21 @@ ObjectReply ExchangeProvider(const McpEndpoint& endpoint,
     return ReadProviderResponse(*response, &bytes, output, request.binary,
                                 request.dropbox_content);
   };
+  if (!GraphProviderId(endpoint.provider_id))
+    return InvokeProvider(endpoint.provider_id, method, params, fetch, result,
+                          error);
+  // Domain-separated private authority. This is never part of a tool result;
+  // credential or deployment-policy changes invalidate its old continuations.
+  auto headers = Object();
+  for (const auto& [key, value] : endpoint.headers)
+    Set(&headers, key, String(value));
+  const auto authority =
+      OutputJson(Object({{"purpose", String("q4t-native-graph-cursor-v1")},
+                         {"provider", String(endpoint.provider_id)},
+                         {"authorization", String(endpoint.authorization)},
+                         {"headers", std::move(headers)},
+                         {"policy", file_detail::OptionsJson(deployment)}}));
   return InvokeProvider(endpoint.provider_id, method, params, fetch, result,
-                        error);
+                        error, authority);
 }
 }  // namespace q4t::server::mcp_detail
