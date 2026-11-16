@@ -24,8 +24,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
-保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
-用户day交接已prepare/check、未启动，全部33项master保持active。
+保持，profile仅增加已验能力/身份。PR37两组检查通过且[已实际合main](evidence/serve-pr37-merged-20261117/README.md)
+（`c2a3128d`）；用户day独立快照已prepare/check、未启动。全部33项master保持active。
 
 前驱[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
@@ -94,6 +94,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[媒体缓存CPU接受](evidence/serve-media-state-cache-cpu-20261117/README.md)：
+34项C++/2项schema最终通过，729/7来源和隔离零警告构建通过。原单槽
+媒体限制与生成文档失败保留，只补受影响项；候选`5068d4c9`未交付。
+继续最多6启动/36请求/1200秒的真实业务，默认rev204与day快照保持。
+
+[媒体状态缓存/视觉分块](SERVE_MEDIA_STATE_CACHE_2026-11-17.md)已冻结实现合同：
+实际内容与完整视觉块身份、三轴位置/偏移、模板边界、特征切片及
+资源边界一起补齐。最多36项直接CPU，必要6启动/36请求/1200秒；
+CPU已通过、真实业务与交付待完成，默认rev204保持，全部master继续。
+
 [PR37 CI定点修复](evidence/serve-pr37-ci-repair-20261117/README.md)：
 原CI的MCP视频断言未适配分类后置说明，现核对全部媒体和首尾文本，
 1项CPU及隔离零警告构建通过。运行时/默认不变、0GPU；原失败保留，
@@ -107,8 +117,8 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
-保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
-用户day交接已prepare/check、未启动，全部33项master保持active。
+保持，profile仅增加已验能力/身份。PR37两组检查通过且[已实际合main](evidence/serve-pr37-merged-20261117/README.md)
+（`c2a3128d`）；用户day独立快照已prepare/check、未启动。全部33项master保持active。
 
 [Chat审核真实业务接受](evidence/serve-chat-moderation-business-20261117/README.md)：
 修复组4启动/17外部请求/238.768秒，通过原输入block、批准SSE、多

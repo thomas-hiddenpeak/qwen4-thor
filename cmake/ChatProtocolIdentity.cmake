@@ -161,6 +161,9 @@ set(protocol_inputs
   include/q4t/vision/forward_timing_core.h
   include/q4t/vision/media_plan.h
   src/vision/media_plan.cpp
+  include/q4t/server/media_cache.h
+  include/q4t/server/session_media.h
+  src/server/media_cache.cpp
   include/q4t/server/media_admission.h
   src/server/media_admission.cpp
   src/vision/vision.cu

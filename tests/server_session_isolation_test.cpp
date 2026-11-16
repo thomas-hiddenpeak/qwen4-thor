@@ -72,6 +72,135 @@ const auto Copy = [](void* host, void* state, size_t bytes, bool restore) {
 const auto Active = [] { return false; };
 }  // namespace
 
+Q4T_TEST(session_media_restores_identity_and_nonzero_rope_offset) {
+  Fixture f;
+  f.prefix = {8, 1, 1, 1, 1, 9, -1};
+  f.data.resize(64);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path, 1));
+  std::vector<SessionMediaBlock> media{{1, 5, {}}};
+  media[0].identity[0] = 1;
+  Q4T_CHECK(cache.Acquire("client:private"));
+  Q4T_CHECK(cache.Save("client:private", f.prefix, f.Ranges(), Copy, Active, -1,
+                       nullptr, SessionLayout::kTarget, {}, media, -2));
+  cache.Release("client:private", true);
+  Q4T_CHECK(cache.Acquire("client:private"));
+  Q4T_CHECK(cache.Match("client:private", f.prefix, SessionLayout::kTarget) ==
+            0);
+  Q4T_CHECK(cache.Match("client:private", f.prefix, SessionLayout::kTarget,
+                        media) == 6);
+  auto different = media;
+  different[0].identity[0] = 2;
+  Q4T_CHECK(cache.Match("client:private", f.prefix, SessionLayout::kTarget,
+                        different) == 0);
+  int copies = 0;
+  const auto tracked = [&](void* h, void* s, size_t n, bool restore) {
+    ++copies;
+    return Copy(h, s, n, restore);
+  };
+  Q4T_CHECK(!cache.Restore("client:private", f.Ranges(), tracked, Active,
+                           nullptr, nullptr, SessionLayout::kTarget));
+  Q4T_CHECK(copies == 0);
+  std::fill(f.data.begin(), f.data.end(), 0);
+  int delta = 999;
+  Q4T_CHECK(cache.Restore("client:private", f.Ranges(), tracked, Active,
+                          nullptr, nullptr, SessionLayout::kTarget, &delta));
+  Q4T_CHECK(copies == 1 && delta == -2 &&
+            f.data == std::vector<uint8_t>(64, 91));
+  cache.Release("client:private", true);
+  return true;
+}
+
+Q4T_TEST(session_media_shared_prefix_allows_append_but_preserves_scope) {
+  Fixture f;
+  f.prefix = {8, 1, 1, 1, 1, 9, -1};
+  f.data.resize(64);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path, 1));
+  std::vector<SessionMediaBlock> media{{1, 5, {}}};
+  Q4T_CHECK(cache.AcquireNew("alpha:media"));
+  Q4T_CHECK(cache.Save("alpha:media", f.prefix, f.Ranges(), Copy, Active, -1,
+                       nullptr, SessionLayout::kTarget, {}, media, -2));
+  cache.Release("alpha:media", true);
+  const std::vector<int32_t> longer{8, 1, 1, 1, 1, 9, 8, 2, 2, 9};
+  media.push_back({7, 9, {}});
+  std::string key;
+  Q4T_CHECK(cache.MatchShared("beta", longer, &key, SessionLayout::kTarget, {},
+                              media) == 0);
+  Q4T_CHECK(cache.MatchShared("alpha", longer, &key, SessionLayout::kMtp, {},
+                              media) == 0);
+  Q4T_CHECK(cache.MatchShared("alpha", longer, &key, SessionLayout::kTarget, {},
+                              media) == 6 &&
+            key == "alpha:media");
+  cache.Release(key, true);
+  media[0].identity[0] = 1;
+  Q4T_CHECK(cache.MatchShared("alpha", longer, &key, SessionLayout::kTarget, {},
+                              media) == 0);
+  return true;
+}
+
+Q4T_TEST(session_media_partial_layout_and_offset_reject_before_io) {
+  Fixture f;
+  f.prefix = {8, 1, 1, 1, 1, 9, -1};
+  f.data.resize(64);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path, 1) && cache.Acquire("key"));
+  std::vector<SessionMediaBlock> media{{1, 5, {}}};
+  int copies = 0;
+  const auto tracked = [&](void* h, void* s, size_t n, bool restore) {
+    ++copies;
+    return Copy(h, s, n, restore);
+  };
+  Q4T_CHECK(!cache.Save("key", f.prefix, f.Ranges(), tracked, Active, -1,
+                        nullptr, SessionLayout::kMtp, {}, media, -2));
+  Q4T_CHECK(!cache.Save("key", f.prefix, f.Ranges(), tracked, Active, -1,
+                        nullptr, SessionLayout::kTarget, {}, {}, -2));
+  Q4T_CHECK(!cache.Save("key", f.prefix, f.Ranges(), tracked, Active, -1,
+                        nullptr, SessionLayout::kTarget, {}, media, 1));
+  Q4T_CHECK(!cache.Save("key", {f.prefix.data(), 4}, f.Ranges(), tracked,
+                        Active, -1, nullptr, SessionLayout::kTarget, {}, media,
+                        -2));
+  Q4T_CHECK(copies == 0);
+  Q4T_CHECK(cache.Save("key", f.prefix, f.Ranges(), tracked, Active, -1,
+                       nullptr, SessionLayout::kTarget, {}, media, -2));
+  cache.Release("key", false);
+  Q4T_CHECK(cache.Acquire("key") &&
+            cache.Match("key", f.prefix, SessionLayout::kTarget, media) == 0);
+  cache.Release("key", false);
+  return true;
+}
+
+Q4T_TEST(session_media_incremental_replacement_never_retains_old_identity) {
+  Fixture f;
+  f.prefix = {8, 1, 1, 1, 1, 9, -1};
+  f.data.resize(64);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path, 1, 128 << 20, true));
+  std::vector<SessionMediaBlock> old{{1, 5, {}}}, changed = old;
+  changed[0].identity[0] = 3;
+  Q4T_CHECK(cache.Acquire("key"));
+  Q4T_CHECK(cache.Save("key", f.prefix, f.Ranges(), Copy, Active, -1, nullptr,
+                       SessionLayout::kTarget, {}, old, -2));
+  cache.Release("key", true);
+  Q4T_CHECK(cache.Acquire("key"));
+  int delta = 0;
+  Q4T_CHECK(cache.Restore("key", f.Ranges(), Copy, Active, nullptr, nullptr,
+                          SessionLayout::kTarget, &delta));
+  std::fill(f.data.begin(), f.data.end(), 31);
+  Q4T_CHECK(cache.Save("key", f.prefix, f.Ranges(), Copy, Active, -1, nullptr,
+                       SessionLayout::kTarget, {}, changed, -2));
+  cache.Release("key", true);
+  Q4T_CHECK(cache.Acquire("key"));
+  Q4T_CHECK(cache.Match("key", f.prefix, SessionLayout::kTarget, old) == 0);
+  Q4T_CHECK(cache.Match("key", f.prefix, SessionLayout::kTarget, changed) == 6);
+  std::fill(f.data.begin(), f.data.end(), 0);
+  Q4T_CHECK(cache.Restore("key", f.Ranges(), Copy, Active, nullptr, nullptr,
+                          SessionLayout::kTarget, &delta));
+  Q4T_CHECK(delta == -2 && f.data == std::vector<uint8_t>(64, 31));
+  cache.Release("key", true);
+  return true;
+}
+
 Q4T_TEST(session_cache_long_ttl_survives_short_read_without_restarting_long_ttl) {
   Fixture f;
   f.data.resize(32);

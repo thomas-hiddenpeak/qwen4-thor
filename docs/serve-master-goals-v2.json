@@ -421,6 +421,20 @@
           "Stop, constrained-output and private cache combinations with correct final validation"
         ],
         "existing_evidence_reviewed": true
+      },
+      "media_state_cache_plan": {
+        "state": "cpu_pass_business_pending",
+        "plan": "SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "limits": {
+          "cpu_cases": 36,
+          "model_starts": 6,
+          "external_requests": 36,
+          "seconds": 1200
+        },
+        "tested": "34 targeted C++ and 2 schemas; GPU not run",
+        "delivered": false,
+        "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
+        "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       }
     },
     {
@@ -2176,7 +2190,21 @@
         "Native media cache/MRoPE state resume",
         "Remaining affine/format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
-      ]
+      ],
+      "media_state_cache_plan": {
+        "state": "cpu_pass_business_pending",
+        "plan": "SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "limits": {
+          "cpu_cases": 36,
+          "model_starts": 6,
+          "external_requests": 36,
+          "seconds": 1200
+        },
+        "tested": "34 targeted C++ and 2 schemas; GPU not run",
+        "delivered": false,
+        "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
+        "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
+      }
     },
     {
       "id": "A11",
@@ -2994,6 +3022,20 @@
         "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
         "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
         "default_unchanged": false
+      },
+      "media_state_cache_plan": {
+        "state": "cpu_pass_business_pending",
+        "plan": "SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "limits": {
+          "cpu_cases": 36,
+          "model_starts": 6,
+          "external_requests": 36,
+          "seconds": 1200
+        },
+        "tested": "34 targeted C++ and 2 schemas; GPU not run",
+        "delivered": false,
+        "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
+        "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       }
     },
     {
@@ -4376,6 +4418,20 @@
         "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
         "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
         "default_unchanged": false
+      },
+      "media_state_cache_plan": {
+        "state": "cpu_pass_business_pending",
+        "plan": "SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "limits": {
+          "cpu_cases": 36,
+          "model_starts": 6,
+          "external_requests": 36,
+          "seconds": 1200
+        },
+        "tested": "34 targeted C++ and 2 schemas; GPU not run",
+        "delivered": false,
+        "evidence": "evidence/serve-media-state-cache-cpu-20261117/README.md",
+        "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       }
     },
     {
@@ -4767,6 +4823,17 @@
         "main_integration_pending": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md"
+      },
+      "chat_moderation_mainline": {
+        "headRefOid": "094bdaeb5938cff464548ec5fd8a8fe0479aa457",
+        "mergeCommit": {
+          "oid": "c2a3128d7749f2ad442d9b79f8eee7b6879aa5b3"
+        },
+        "mergedAt": "2026-11-16T18:52:28Z",
+        "number": 37,
+        "state": "MERGED",
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/37",
+        "evidence": "evidence/serve-pr37-merged-20261117/README.md"
       }
     },
     {
@@ -4910,6 +4977,6 @@
       }
     }
   ],
-  "next_task": "Refresh current native day handoff, complete PR37 checks and real main merge; continue remaining Chat audio/web-search, media/state-cache/schema combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Refresh current native day handoff, complete PR37 checks and real main merge; continue remaining Chat audio/web-search, media/state-cache/schema combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "A05/A10/A12/Q01 media state identity and vision chunked prefill",
+  "next": "Implement docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md, validate direct CPU and bounded real business, deliver reversibly and merge; continue all remaining master tasks."
 }

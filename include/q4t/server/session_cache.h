@@ -12,6 +12,7 @@
 
 #include "q4t/status.h"
 #include "q4t/server/cache_io.h"
+#include "q4t/server/session_media.h"
 #include "q4t/server/session_save_timing.h"
 #include "q4t/trace/sha256.h"
 
@@ -67,20 +68,25 @@ class SessionCache {
   bool AcquireNew(const std::string& key, int minimum_write_seconds = 0);
   int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
                   std::string* key, SessionLayout layout = SessionLayout::kMtp,
-                  std::span<const int> allowed_boundaries = {});
+                  std::span<const int> allowed_boundaries = {},
+                  std::span<const SessionMediaBlock> media = {});
   void Release(const std::string& key, bool success);
   int Match(const std::string& key, std::span<const int32_t> prompt,
-            SessionLayout layout = SessionLayout::kMtp);
+            SessionLayout layout = SessionLayout::kMtp,
+            std::span<const SessionMediaBlock> media = {});
   Status Restore(const std::string& key, std::span<const SessionRange> ranges,
                  const Copy& copy, const Cancel& cancel, int32_t* d0,
                  int32_t* pending = nullptr,
-                 SessionLayout layout = SessionLayout::kMtp);
+                 SessionLayout layout = SessionLayout::kMtp,
+                 int* rope_delta = nullptr);
   Status Save(const std::string& key, std::span<const int32_t> prefix,
               std::span<const SessionRange> ranges, const Copy& copy,
               const Cancel& cancel, int32_t d0,
               SessionSaveTiming* timing = nullptr,
               SessionLayout layout = SessionLayout::kMtp,
-              SessionCacheLifetime lifetime = {});
+              SessionCacheLifetime lifetime = {},
+              std::span<const SessionMediaBlock> media = {},
+              int rope_delta = 0);
   size_t Bytes() const;
 
  private:
@@ -98,6 +104,8 @@ class SessionCache {
     std::vector<size_t> offsets;
     int32_t d0 = -1;
     SessionLayout layout = SessionLayout::kMtp;
+    std::vector<SessionMediaBlock> media;
+    int rope_delta = 0;
     // Last element is not in target state. MTP stores its shifted pending
     // token; target-only snapshots store -1. Match leaves one input row to
     // recompute logits under the new request's sampler and constraints.

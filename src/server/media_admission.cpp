@@ -178,8 +178,9 @@ Status PlanChatMedia(std::span<const VisionItem> items,
   }
   const vision::MediaContextBudget context{
       tokens.size(), placeholders,
-      static_cast<uint64_t>(config.count_input_only ? config.max_len
-                                                    : config.max_prefill),
+      // Native visual prefill chunks fit the workspace independently of
+      // full context length; media decoder/feature budgets remain unchanged.
+      static_cast<uint64_t>(config.max_len),
       static_cast<uint64_t>(config.max_len)};
   const auto checked = vision::PlanMedia({inputs.data(), items.size()}, image,
                                          video, {}, context, device, plan);
@@ -280,7 +281,10 @@ std::string MediaLimitsJson(uint64_t attention_shared_bytes) {
          R"("video_time_default":"frame_index/24","max_timestamp_seconds":86400,)"
          R"("temporal_group_frames":2,"timestamp_rounding_decimal_places":1,)"
          R"("video_prompt":"timestamp_then_one_boundary_per_temporal_group",)"
-         R"("mtp":false,"state_cache":false,"chunked_prefill":false,)"
+         R"("mtp":false,"state_cache":true,"chunked_prefill":true,)"
+         R"("cache_identity":"source_bytes_processor_geometry_and_position",)"
+         R"("cache_boundaries":"complete_visual_blocks",)"
+         R"("cache_layout":"target_with_three_axis_rope_and_delta",)"
          R"("max_execution_slots":1,"client_governance":true,)"
          R"("max_items":)" +
          std::to_string(limits.max_items) + R"(,"max_frames_per_item":)" +

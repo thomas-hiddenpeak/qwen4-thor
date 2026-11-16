@@ -7,8 +7,8 @@
 namespace q4t::server {
 
 // Completed target prefix only: attention, recurrent/PLE and effective RoPE.
-// Text-only; callers check rope_delta==0 before publication. No sampler,
-// grammar state, draft, scratch or model-owned page table is transferred.
+// Media identity and rope_delta are separately bound by SessionCache. No
+// sampler, grammar, draft, scratch or model-owned page table is transferred.
 Status TargetSessionStateRanges(const model::Model& model, int slot, int prefix,
                                 std::vector<SessionRange>* ranges);
 

@@ -1,0 +1,21 @@
+{
+  "status": "PASS_TARGETED_CPU_NOT_DELIVERED",
+  "cpp_cases": 34,
+  "schema_cases": 2,
+  "source_anchors": 729,
+  "negative_controls": 7,
+  "warnings": 0,
+  "original_failures": [
+    "explicit single-slot media rejected by old text-only slot guard",
+    "generated semantics stale after inventory update"
+  ],
+  "retained_originals": true,
+  "rerun_cpp_cases": 1,
+  "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659",
+  "compiled_sources_sha256": "e8a41ddee45dd9f4ab73109d98b750c922d00a4266f15e3a10f5fbc196c89988",
+  "archive_sha256": "d0db1cbf399ce95c828816ada72fd177cb42a0bf36d4ec20e1cbbcc148af9dc3",
+  "gpu_starts": 0,
+  "default_revision": 204,
+  "default_unchanged": true,
+  "performance_claim": false
+}

@@ -99,7 +99,8 @@ bool SessionCache::AcquireNew(const std::string& key,
 int SessionCache::MatchShared(const std::string& scope,
                               std::span<const int32_t> prompt, std::string* key,
                               SessionLayout layout,
-                              std::span<const int> allowed_boundaries) {
+                              std::span<const int> allowed_boundaries,
+                              std::span<const SessionMediaBlock> media) {
   const std::lock_guard lock(mutex_);
   key->clear();
   Refresh();
@@ -122,9 +123,12 @@ int SessionCache::MatchShared(const std::string& scope,
     }
     if (it->first.starts_with(group) && e.published && e.layout == layout &&
         e.prefix.size() <= prompt.size() &&
+        SessionMediaMatches(e.media, media,
+                            static_cast<int>(e.prefix.size()) - 1) &&
         (allowed_boundaries.empty() ||
-         std::binary_search(allowed_boundaries.begin(), allowed_boundaries.end(),
-                             static_cast<int>(e.prefix.size()) - 1)) &&
+         std::binary_search(allowed_boundaries.begin(),
+                            allowed_boundaries.end(),
+                            static_cast<int>(e.prefix.size()) - 1)) &&
         (best == entries_.end() ||
          e.prefix.size() > best->second->prefix.size()) &&
         std::equal(e.prefix.begin(), e.prefix.end() - 1, prompt.begin()))
@@ -162,7 +166,8 @@ size_t SessionCache::Bytes() const {
   return io_ && io_->Health().available ? bytes_ : 0;
 }
 int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
-                        SessionLayout layout) {
+                        SessionLayout layout,
+                        std::span<const SessionMediaBlock> media) {
   const std::lock_guard lock(mutex_);
   Refresh();
   auto it = entries_.find(key);
@@ -175,6 +180,8 @@ int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
   }
   if (!entry.published || entry.layout != layout ||
       entry.prefix.size() > prompt.size() ||
+      !SessionMediaMatches(entry.media, media,
+                           static_cast<int>(entry.prefix.size()) - 1) ||
       !std::equal(entry.prefix.begin(), entry.prefix.end() - 1, prompt.begin()))
     return 0;
   entry.used = now;
@@ -346,7 +353,7 @@ Status SessionCache::Restore(const std::string& key,
                              std::span<const SessionRange> ranges,
                              const Copy& copy, const Cancel& cancel,
                              int32_t* d0, int32_t* pending,
-                             SessionLayout layout) {
+                             SessionLayout layout, int* rope_delta) {
   const std::lock_guard lock(mutex_);
   Refresh();
   auto it = entries_.find(key);
@@ -359,6 +366,8 @@ Status SessionCache::Restore(const std::string& key,
   }
   if (entry.layout != layout)
     return Status::Fail("session cache execution layout mismatch");
+  if (!entry.media.empty() && !rope_delta)
+    return Status::Fail("session cache visual position destination missing");
   if (ranges.size() != entry.sizes.size())
     return Status::Fail("session cache range count");
   for (size_t i = 0; i < ranges.size(); ++i)
@@ -367,6 +376,7 @@ Status SessionCache::Restore(const std::string& key,
   const Status s = Transfer(&entry, ranges, copy, cancel, true);
   if (s.ok() && d0) *d0 = entry.d0;
   if (s.ok() && pending) *pending = entry.prefix.back();
+  if (s.ok() && rope_delta) *rope_delta = entry.rope_delta;
   if (s.ok()) {
     entry.restored = true;
     Touch(&entry, std::chrono::steady_clock::now());
@@ -380,7 +390,17 @@ Status SessionCache::Save(const std::string& key,
                           std::span<const SessionRange> ranges,
                           const Copy& copy, const Cancel& cancel, int32_t d0,
                           SessionSaveTiming* timing, SessionLayout layout,
-                          SessionCacheLifetime lifetime) {
+                          SessionCacheLifetime lifetime,
+                          std::span<const SessionMediaBlock> media,
+                          int rope_delta) {
+  if (prefix.empty() || prefix.size() > kMaxPrefix + 1)
+    return Status::Fail("session cache prefix limits");
+  const int boundary = static_cast<int>(prefix.size()) - 1;
+  const int media_count = SessionMediaPrefix(media, boundary);
+  if (media_count < 0 || rope_delta > 0 || rope_delta < -boundary ||
+      (!media_count && rope_delta != 0) ||
+      (media_count && layout != SessionLayout::kTarget))
+    return Status::Fail("session cache visual boundary/layout mismatch");
   if (lifetime.write_seconds <= 0 || lifetime.write_seconds > 86400 ||
       lifetime.read_refresh_seconds < 0 ||
       lifetime.read_refresh_seconds > 86400 || lifetime.max_age_seconds < 0 ||
@@ -423,12 +443,14 @@ Status SessionCache::Save(const std::string& key,
     auto old = entries_.find(key);
     if (incremental_ && old != entries_.end()) {
       const auto& prior = *old->second;
-      bool eligible = prior.published && prior.restored &&
-                      prior.layout == layout && !prior.offsets.empty() &&
-                      prior.sizes.size() == ranges.size() &&
-                      prior.prefix.size() <= prefix.size() &&
-                      std::equal(prior.prefix.begin(), prior.prefix.end() - 1,
-                                 prefix.begin());
+      bool eligible =
+          prior.published && prior.restored && prior.layout == layout &&
+          !prior.offsets.empty() && prior.sizes.size() == ranges.size() &&
+          prior.prefix.size() <= prefix.size() &&
+          SessionMediaMatches(prior.media, media,
+                              static_cast<int>(prior.prefix.size()) - 1) &&
+          std::equal(prior.prefix.begin(), prior.prefix.end() - 1,
+                     prefix.begin());
       for (size_t i = 0; eligible && i < ranges.size(); ++i)
         eligible = ranges[i].bytes >= prior.sizes[i];
       if (eligible) {
@@ -474,6 +496,8 @@ Status SessionCache::Save(const std::string& key,
     entry->bytes = bytes;
     entry->d0 = d0;
     entry->layout = layout;
+    entry->media.assign(media.begin(), media.begin() + media_count);
+    entry->rope_delta = rope_delta;
     entry->prefix.assign(prefix.begin(), prefix.end());
     entry->used = std::chrono::steady_clock::now();
     if (!incremental_)
