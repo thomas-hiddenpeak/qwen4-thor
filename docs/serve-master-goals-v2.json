@@ -4687,6 +4687,15 @@
         "pull_request": 35,
         "main_commit": "38451306218fa63c2112034c36984f0bc8107227",
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
+      },
+      "current_native_day_handoff": {
+        "revision": 196,
+        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+        "service_id": "556e2ba7-98a3-4ef8-879b-0c712d609707",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/plan.json",
+        "evidence": "evidence/serve-chat-annotations-day-handoff-20261117/README.md",
+        "executed": false,
+        "owner": "user"
       }
     }
   ],

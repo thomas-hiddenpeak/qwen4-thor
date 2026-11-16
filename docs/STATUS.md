@@ -26,7 +26,7 @@ STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
 PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，按rev196刷新用户day交接，全部master继续。
+新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
 
 前驱[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
 STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
@@ -92,7 +92,7 @@ STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
 PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，按rev196刷新用户day交接，全部master继续。
+新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
 
 
 [Chat引用业务接受](evidence/serve-chat-annotations-business-20261117/README.md)：
