@@ -30,8 +30,9 @@ ObjectReply FetchWebPage(std::string_view url, const WebSearchOptions& request,
       budget->used_bytes > budget->max_bytes)
     return Error(500, "web_search_budget_invalid",
                  "Invalid web acquisition budget");
-  if (budget->used_files == budget->max_files)
-    return Error(413, "web_search_capacity", "Web page count exceeded");
+  if (budget->used_files == budget->max_files ||
+      budget->used_bytes == budget->max_bytes)
+    return Error(413, "web_search_capacity", "Web acquisition budget exhausted");
   FileFetchDomainPolicy domains{request.allowed_domains,
                                 request.blocked_domains};
   if (!file_detail::ValidDomains(domains))

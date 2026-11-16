@@ -322,6 +322,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/web_page_worker.cpp
   src/server/web_page_record.cpp
   src/server/web_index.cpp
+  src/server/web_policy.cpp
+  src/server/web_execution.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/mcp_http.cpp

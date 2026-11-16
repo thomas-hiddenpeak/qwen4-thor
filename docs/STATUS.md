@@ -108,6 +108,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生网页执行CPU通过](evidence/serve-web-search-execution-20261117/README.md)：
+16项新合同和4项既有获取合同最终通过，20项不同用例/21次执行。
+真实本地HTTP抓取、离线/刷新、来源读取/查找、内容/位置及预算已验；
+原预算耗尽仍连接缺陷已修复，原失败保留。0GPU，默认224保持；
+继续实际Chat/Responses接入、引用/SDK、公网业务和交付。
+
 [网页持久索引CPU验证](evidence/serve-web-search-index-20261117/README.md)
 8项全部通过，6.395秒，零警告构建、0GPU、默认rev224保持。认证
 scope/配置身份、跨重启读取、CAS/丢回执不重放、容量/取消与真实

@@ -267,6 +267,7 @@ set(protocol_inputs
   include/q4t/server/file_fetch.h
   include/q4t/server/web_search.h
   include/q4t/server/web_index.h
+  include/q4t/server/web_execution.h
   src/server/web_page_internal.h
   src/server/web_search_contract.cpp
   src/server/web_search_fetch.cpp
@@ -275,6 +276,8 @@ set(protocol_inputs
   src/server/web_page_worker.cpp
   src/server/web_page_record.cpp
   src/server/web_index.cpp
+  src/server/web_policy.cpp
+  src/server/web_execution.cpp
   src/server/file_fetch_internal.h
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp

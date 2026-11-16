@@ -104,6 +104,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_page_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_page_record.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_index.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
@@ -195,6 +197,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_fetch_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_web_search_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_web_index_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_web_execution_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/files.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/files_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_files_test.cpp
