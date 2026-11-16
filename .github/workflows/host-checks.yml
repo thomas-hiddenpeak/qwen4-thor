@@ -156,5 +156,8 @@ jobs:
           tools.serve_recovery.test_recovery_wait
           tools.serve_recovery.test_root_contract
           tools.serve_recovery.test_acceptance_wait
+      - name: Check cold acceptance package provenance
+        timeout-minutes: 1
+        run: python3 -B -m unittest tools.serve_recovery.test_cold_package
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs

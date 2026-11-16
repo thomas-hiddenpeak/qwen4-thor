@@ -72,6 +72,17 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[R07当前包CPU接受](evidence/serve-cold-refresh-cpu-20261116/README.md)：
+5项不同用例通过，原3项异常类型断言错误保留，仅重验受影响项。
+宿主只读观察BUSY：nvargus-daemon/jtop持设备句柄；未安装围栏或
+干预其他服务，0GPU。继续精确包准备/只读核验及其他独立master任务。
+
+[R07当前包冷启动](SERVE_COLD_REFRESH_2026-11-16.md)开始：旧准备器固定
+过时构建/证据已改为精确封包及完整来源核验，复用rev182原件。冻结
+5项CPU+2项实际封包只读准备/核验，随后1启动/3Chat/1探测/600秒。
+内层NVML故障注入、外层真实严格监控和内核准入保持；宿主忙不干预。
+PR34已创建等待检查；全部master继续，当前默认保持STOPPED。
+
 [rev182原生整根交付](evidence/serve-root-delivery-20261116/README.md)通过：18项STOPPED检查，
 216.388秒、0新增GPU。默认430e7985/Guardian e8290fa1，人工保留根
 7230ac61具备outer及原周期迁移；自动payload c789291b保持。原核心/

@@ -2642,7 +2642,7 @@
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
     "tools/serve_recovery/bundle.py": "f0327d7cbf73332d5983585b62339098f9b21ca9ed8f678b6905f5019e3d3bc4",
     "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
-    "tools/serve_recovery/cold_acceptance.py": "24b2900ce3d8b2e2bf6699f6e07ddb50a91a0f4637a149d543fa42c4ef45bbec",
+    "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
     "tools/serve_recovery/cold_authority.py": "2243d2e0d2828e70d7e0431869ce270673bd2f75cde4712675214db9f6542807",
     "tools/serve_recovery/cold_channel.py": "e27649148f17f667aa105046c5d84f7817a78f213f584c7c39488239f1fe130f",

@@ -3661,7 +3661,25 @@
       "remaining_required": [
         "Refresh old cold candidate source/package/driver and actual controlled NVML-unavailable qualification",
         "Cold/resource/outer combined business and reversible release"
-      ]
+      ],
+      "cold_refresh_20261116": {
+        "state": "targeted_cpu_accepted_preflight_pending",
+        "plan": "SERVE_COLD_REFRESH_2026-11-16.md",
+        "cpu_tests": 5,
+        "exact_package_checks": 2,
+        "business_limits": {
+          "starts": 1,
+          "chats": 3,
+          "probes": 1,
+          "seconds": 600
+        },
+        "default_revision": 182,
+        "default_changed": false,
+        "complete": false,
+        "evidence": "evidence/serve-cold-refresh-cpu-20261116/README.md",
+        "host_observation": "BUSY",
+        "actual_cold_business_accepted": false
+      }
     },
     {
       "id": "R08",

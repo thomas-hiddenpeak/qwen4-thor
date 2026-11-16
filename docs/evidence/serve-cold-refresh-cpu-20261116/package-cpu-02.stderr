@@ -1,0 +1,8 @@
+test_rejects_native_build_or_artifact_identity_drift (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_native_build_or_artifact_identity_drift) ... ok
+test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) ... ok
+test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.005s
+
+OK

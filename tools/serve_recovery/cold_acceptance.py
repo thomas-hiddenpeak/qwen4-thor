@@ -54,6 +54,29 @@ def guard(plan, path):
     os.execve(command[0], command, dict(os.environ))
 
 
+def reviewed_package(origin, bundle, engine):
+    """Reuse an exact sealed root; never substitute old build-directory files."""
+    digest = engine.sha(origin/'manifest.json')
+    manifest = bundle.verify(origin, digest)
+    expected = {'source/'+name: engine.sha(ROOT/name)
+                for name in bundle.SOURCES}
+    actual = {name: value for name, value in manifest['files'].items()
+              if name.startswith('source/')}
+    engine.require(actual == expected, 'cold runtime source identity differs')
+    native = engine.read(origin/'native-build.json')
+    engine.require(native['source_files'] ==
+        {name: engine.sha(ROOT/name) for name in bundle.NATIVE_SOURCES},
+        'cold native source identity differs')
+    for name, key in (('q4t-guardian', 'guardian_sha256'),
+                      ('q4t-cuda-probe', 'cuda_probe_sha256'),
+                      ('q4t-ingress', 'ingress_sha256'),
+                      ('q4t-device-control', 'device_control_sha256')):
+        engine.require(manifest['files'].get('bin/'+name) ==
+            native.get(key) == engine.sha(origin/'bin'/name),
+            'cold native artifact identity differs: '+name)
+    return manifest, dict(package=str(origin), manifest_sha256=digest)
+
+
 def prepare(args):
     bundle, _, _, _, service, engine = LEGACY['load_modules']()
     engine.require(not subprocess.check_output(['git','status','--porcelain'], cwd=ROOT),
@@ -63,45 +86,10 @@ def prepare(args):
                    'new private cold acceptance directory required')
     out.mkdir(mode=0o700, parents=True)
     origin = args.package.resolve(strict=True)
-    old = bundle.verify(origin, engine.sha(origin/'manifest.json'))
-    base = engine.read(origin/'engine/manifest.json'); settings = base['settings']
+    old, receipt = reviewed_package(origin, bundle, engine)
     gateway = engine.read(origin/'gateway-policy.json')
     engine.require(old['ingress_mode'] == 'native' and not old['tls'] and
         gateway['listen_host'] == '127.0.0.1', 'loopback cold business scope')
-    build = ROOT/'.q4t-work/serve-custom-tools-20261108/engine-build'
-    native = engine.read(origin/'native-build.json')
-    allowed = {'cmake/GuardianProcess.cmake', 'src/service/guardian_main.cpp',
-        'include/q4t/service/device_filter.h', 'src/service/device_filter.cpp',
-        'include/q4t/service/device_admission.h', 'src/service/device_admission.cpp',
-        'src/service/device_control_main.cpp'}
-    changed = {p for p in bundle.NATIVE_SOURCES
-               if native['source_files'].get(p) != engine.sha(ROOT/p)}
-    engine.require(changed <= allowed, 'cold native rebuild scope changed')
-    build_record = engine.read(ROOT/'docs/evidence/serve-device-domain-cpu-20261112/build.json')
-    engine.require(build_record['exit_code'] == 0, 'device control build did not pass')
-    reviewed = engine.read(ROOT/'docs/evidence/serve-cold-driver-cpu-20261112/review.json')
-    for name, digest in reviewed['native_artifacts'].items():
-        engine.require(engine.sha(build/name) == digest, 'reviewed cold artifact changed: '+name)
-    engine.require(reviewed['native_sources'] ==
-        {p:engine.sha(ROOT/p) for p in bundle.NATIVE_SOURCES}, 'reviewed cold native sources changed')
-    native.update(source_files={p:engine.sha(ROOT/p) for p in bundle.NATIVE_SOURCES},
-        guardian_sha256=engine.sha(build/'q4t-guardian'),
-        device_control_sha256=engine.sha(build/'q4t-device-control'))
-    engine.save(out/'native-build.json', native)
-    qualified = out/'qualified'; qualified.mkdir(mode=0o700)
-    engine.save(qualified/'registry.json', old['recovery_profiles'])
-    for name in ('primary', 'light'):
-        (qualified/(name+'.json')).write_bytes((origin/('profile-'+name+'.json')).read_bytes())
-    receipt = bundle.prepare(origin/'engine/q4t', origin/'engine/q4t.release.json',
-        base['model_dir'], build/'q4t-guardian', origin/'bin/q4t-cuda-probe', None,
-        origin/'gateway-policy.json', origin/'engine/client-policy.json', out/'bundle',
-        native_receipt=out/'native-build.json', native_ingress=origin/'bin/q4t-ingress',
-        device_control=build/'q4t-device-control',
-        capacity_config=dict(version=1, **{k:v for k,v in settings['profile'].items()
-                                          if k not in ('name','host')}),
-        application_state={k:v for k,v in settings['application_state'].items() if k != 'profile'},
-        model_names=settings.get('model_names'), embedding_model_dir=Path(settings['native_embedding']['directory']),
-        recovery_profiles=qualified/'registry.json', recovery_profile_policy=old['recovery_profile_policy'])
     # Preinitialize only this disposable service so its root device-domain
     # identity can be bound before entering the kernel-controlled domain.
     initialized = service.initialize(receipt['package'], receipt['manifest_sha256'], out/'state')
@@ -132,6 +120,8 @@ def prepare(args):
             'count actual model/probe/self-check dispatch before work',
             'inherit only the four root admission FDs into launcher/Guardian'],
         default_replacement=False, performance_acceptance=False,
+        package_reused_unchanged=True,
+        native_receipt_sha256=engine.sha(origin/'native-build.json'),
         host_root_filter_installed=False, other_services_modified=False)
     save(out/'plan.json', plan)
     print(json.dumps(dict(plan=str(out/'plan.json'), service_id=plan['service_id'], limits=LIMITS,
