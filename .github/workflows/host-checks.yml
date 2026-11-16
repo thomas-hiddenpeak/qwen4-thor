@@ -155,5 +155,6 @@ jobs:
           python3 -B -m unittest
           tools.serve_recovery.test_recovery_wait
           tools.serve_recovery.test_root_contract
+          tools.serve_recovery.test_acceptance_wait
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs

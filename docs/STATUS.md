@@ -68,6 +68,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R09第二段[短验及控制重置修复](evidence/serve-root-rollback-control-reset-20261116/README.md)：
+原状态恢复JSON通过，累计5启动/10Chat/1探测；自有Guardian故障时
+只读status连接重置被驱动误判终止，已补4项CPU并修复。两段清理
+全部通过，原失败保留，仍缺再前进及故障后业务；默认rev174保持。
+
+
 R09首次短验后的[修复CPU通过](evidence/serve-recovery-wait-cpu-20261116/README.md)：
 三个角色的真实预算等待投影及原生指标、首次/已建立整根迁移合同
 的保留。10项CPU通过，首次迁移审查后只重验3项；独立Guardian

@@ -2631,7 +2631,7 @@
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
     "tools/serve_gateway/gateway.py": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
-    "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
+    "tools/serve_recovery/acceptance.py": "61780e4d08425cd24f63e52378a7edcd25bf9f67772a3e66aefe83718f24d8bd",
     "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
     "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
     "tools/serve_recovery/access_io.py": "f41f73140426ecbc9968874e123cb7159bdefeb1b89c207cf9ba2bc3fe3102f0",
@@ -6470,5 +6470,12 @@
     },
     "scope": "Observe original role delays without changing grants, budgets or model dispatch; retain established native root migration in stopped deployments",
     "acceptance": "targeted CPU; real root continuation pending"
+  },
+  "control_reset_wait_20261116": {
+    "sources": {
+      "tools/serve_recovery/acceptance.py": "61780e4d08425cd24f63e52378a7edcd25bf9f67772a3e66aefe83718f24d8bd"
+    },
+    "scope": "Retry only transient read-only control reset within original deadline; protocol/launcher failures still propagate",
+    "cpu_tests": 4
   }
 }
