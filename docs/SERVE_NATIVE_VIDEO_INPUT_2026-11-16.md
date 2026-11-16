@@ -66,3 +66,12 @@ GStreamer的PTS是显示时间，duration可未知；参见
 [buffer时间语义](https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html)
 与[segment流时间映射](https://gstreamer.freedesktop.org/documentation/gstreamer/gstsegment.html)，
 2026-11-16查阅。业务修复仍须原请求短验，不以模板描述改动代替通过。
+
+## rev142 实际交付
+
+本阶段真实业务、媒体主轻资格、受控RAM压力主轻主、精确保留包及
+整树版本恢复均通过，已可回退发行到rev142，服务保持STOPPED。
+见[发行证据](evidence/serve-managed-vision-delivery-20261116/README.md)
+和STATUS的逐项实际证据。早期候选/待验记录保留时间语义；当前状态
+以本段与STATUS为准。旋转/像素比例、缓存/分块prefill及其余总计划
+缺口继续；不扩展硬解码/视觉并发，不冒称云账户或长期稳定通过。

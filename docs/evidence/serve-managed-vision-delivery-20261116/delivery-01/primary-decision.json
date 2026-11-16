@@ -1,0 +1,38 @@
+{
+  "status": "PASS_NATIVE_MEDIA_PRIMARY_DELIVERY",
+  "acceptance": "ACCEPT_NATIVE_MEDIA_PRIMARY_DELIVERY",
+  "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+  "engine_binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+    "strict_lease_seconds": 116.5933127538301,
+    "nvml_queries": 109,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 404
+    },
+    "source_commit": "1e48c3802fe9756496dc68819cb1c402b6879d8e",
+    "plan_sha256": "d232ad320ead117071c125f4c560032e627a1a872d3048615ec22bbf3a56d5a7",
+    "result_sha256": "f5137b72c09403918f87496557b6e59eb8b7767571283d14877065259e12f5a4",
+    "lease_result_sha256": "093d009bf77c081cc6ebb347405f46fd856aea5cc0f8164bd4c6e2241f08df82",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "original_decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/version-business-01/decision.json",
+    "sha256": "71ee925af30d78ea3e1e69516496e3d232c56264cfaf57f9b897eea1fc3f518c"
+  },
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/delivery-01/review.json",
+  "new_gpu_starts": 0,
+  "remaining_master_tasks_open": true,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-vision-20261116/deliver.py",
+    "run"
+  ],
+  "returncode": 0,
+  "seconds": 55.57988527370617,
+  "default_change_authorized": true,
+  "new_gpu_starts": 0
+}

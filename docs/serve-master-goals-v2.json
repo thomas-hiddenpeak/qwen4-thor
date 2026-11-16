@@ -154,7 +154,8 @@
       ],
       "evidence": [
         "docs/SERVE_SCHEMA_V2_2026-11-08.md",
-        "docs/evidence/serve-schema-v2-20261108/index.json"
+        "docs/evidence/serve-schema-v2-20261108/index.json",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": {
         "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
@@ -1627,7 +1628,8 @@
       "evidence": [
         "evidence/serve-native-embedding-foundation-20261111/README.md",
         "evidence/serve-native-embedding-core-cpu-20261111/README.md",
-        "evidence/serve-native-embedding-numerical-20261111/README.md"
+        "evidence/serve-native-embedding-numerical-20261111/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": null,
       "findings": [
@@ -2350,7 +2352,9 @@
         "N01",
         "N03"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
+      ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
       "mcp_business_progress": {
@@ -3219,7 +3223,7 @@
     {
       "id": "R10",
       "required": true,
-      "state": "managed_visual_and_version_recovery_accepted_delivery_pending",
+      "state": "delivered",
       "implementation": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "acceptance": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
       "depends_on": [
@@ -3239,10 +3243,15 @@
         "evidence/serve-media-profile-business-20261116/README.md",
         "evidence/serve-media-managed-driver-failure-20261116/README.md",
         "evidence/serve-media-managed-business-20261116/README.md",
-        "evidence/serve-media-version-business-20261116/README.md"
+        "evidence/serve-media-version-business-20261116/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
-      "release": null,
-      "development_status": "Native v2 managed media capacity; text MTP and per-visual target decoding; exact media primary/light qualification and original video source/result evidence. Actual controlled-RAM primary/light/primary preserves frozen media, one tool execution/result, quota and promoted SSE. 3 starts/12 requests/205.133s; strict 192 NVML observations, own cleanup. Original driver failure retained. Actual package 8fe97f50 uses isolated controlled thresholds/keys/ports; exact delivery package 7a8e9cd2 and preserved-capability version fallback still pending. No full-model/performance claim. R10 is not complete before remaining delivery tasks."
+      "release": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
+      },
+      "development_status": "Native v2 managed media capacity delivered in rev142. Text MTP and per-visual target decode, real media primary/light qualification, actual RAM-pressure primary/light/primary with frozen video, one tool execution and quota continuity, and exact whole-payload fallback with media SSE accepted. Existing visual/structured/tool service recovery covered. Wider format/cache/client combinations remain explicitly required under A05/A10/A12; no performance/full-quality or long-stability claim."
     },
     {
       "id": "Q01",
@@ -3258,7 +3267,8 @@
         "R10"
       ],
       "evidence": [
-        "evidence/serve-retrieval-managed-business-20261112/README.md"
+        "evidence/serve-retrieval-managed-business-20261112/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -3393,7 +3403,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -3401,9 +3411,14 @@
       ],
       "evidence": [
         "evidence/serve-retrieval-delivery-20261112/README.md",
-        "evidence/serve-cache-route-delivery-20261112/README.md"
+        "evidence/serve-cache-route-delivery-20261112/README.md",
+        "evidence/serve-managed-vision-delivery-20261116/README.md"
       ],
-      "release": null,
+      "release": {
+        "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+        "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
+        "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
+      },
       "capability_upgrade": {
         "state": "delivered_subset",
         "plan": "docs/SERVE_CAPABILITY_UPGRADE_2026-11-12.md",

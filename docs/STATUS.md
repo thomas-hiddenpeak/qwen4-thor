@@ -9,28 +9,34 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev134；服务包 `437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577` |
-| Generation | `b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f` |
-| 引擎 | `a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885` |
-| 引擎发布记录 | `f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0` |
+| 发布 | rev142；服务包 `7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce` |
+| Generation | `2970a016c6be5bb982aceb175a6e07918babfbab561be82f8d282f5ece4d8a5a` |
+| 引擎 | `cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360` |
+| 引擎发布记录 | `3188c9964a2b5031b3dbaa06f25098b14136f20c3883fe0a23dbc23b3e1b2151` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e`；保持新MCP能力 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；MCP数据源、私网目标/凭据与TLS/CORS等按部署显式配置 |
+| 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
+| 版本回退 | 已验旧控制/当前引擎包 `73b45ed343d8674d886c491691516bca6de549ef45c7a0bddca590af8f2f620a`；保留媒体/MCP/embedding能力 |
+| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[MCP发行与回退记录](evidence/serve-mcp-delivery-20261116/README.md)包含
-17项STOPPED交付检查，54.136秒，0新增GPU。实际MCP的审批/拒绝、
-原生隧道SSE、资料与资源读取、未知不重放、同PID普通推理已验；
-主轻资格和共享程序/存储/配额的整树恢复分别有精确包证据。
-Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱；旧默认程序和状态备份保留。自动版本恢复保留现代根，
-人工整根回退到v12入口没有outer；不是独立旧引擎回退。
-本次rev134代码已通过PR28实际合main（`35581f98`），精确head两组CI
-均成功，[合并回执](evidence/serve-pr28-merged-20261116/README.md)已归档。
-提供方原生适配、完整客户端矩阵、其他协议及可靠性组合继续；
-后续agent配置修复尚待发行，未宣称完整OpenAI兼容或长稳通过。
+[托管视觉发行与回退记录](evidence/serve-managed-vision-delivery-20261116/README.md)
+包含17项STOPPED交付检查，55.432秒，0新增GPU。普通文本MTP与视觉
+目标解码共同加载；原MP4/WebM、文件/工具/MCP输入和冻结历史有实际
+业务证据。媒体主轻资格、真实RAM压力主→轻→主和精确包整树版本
+回退均已过，视频SSE可继续；实际Key/配额/core/outer字节保持。
+容量只新增媒体与v2标识，原上下文/输出/准入及恢复历史/冷却不变；
+版本新周期保留前驱，旧默认与状态备份可核验。自动版本恢复保留
+现代根，人工整根回退的v12入口无outer；不是独立旧引擎回退。
+
+八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
+仍需部署方配置，未声称通过。视觉旋转/像素比例、缓存/分块prefill、
+完整客户端矩阵及其余master缺口继续实现；不宣称完整OpenAI兼容、
+硬解码、视觉并发或长稳通过。PR29待最终head检查和实际合main。
+
+前驱rev134的MCP发行已通过PR28合main（`35581f98`），
+[合并回执](evidence/serve-pr28-merged-20261116/README.md)保留；
+[原发行证据](evidence/serve-mcp-delivery-20261116/README.md)按原身份复用。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
@@ -42,6 +48,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev142托管视觉可回退发行完成](evidence/serve-managed-vision-delivery-20261116/README.md)：
+17项STOPPED检查通过，实际回退再前进保持配额/历史/预算，默认
+启用媒体且文本保留MTP。0新增GPU；继续PR29合main及全部master。
 
 [精确媒体包与版本回退通过](evidence/serve-media-version-business-20261116/README.md)：
 保留包73b45ed3独立1启动/2生成，正式包7a8e9cd2实际2启动/4生成/
