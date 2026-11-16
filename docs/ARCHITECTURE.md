@@ -24,7 +24,9 @@
   不是整个模型都为W4A4：其余权重/激活与状态包含BF16、FP32。
 - `src/vision/`实现ViT与图像/视频预处理；直接serve需显式--allow-media，
   当前托管包已启用单槽媒体。文本MTP可共同加载，有视觉token的请求
-  走原目标模型普通解码；媒体主轻与整树恢复证据见STATUS。
+  走原目标模型普通解码。文件视频在隔离worker中校正正交方向和
+  像素比例，分配前检查显示尺寸预算；v3快照保留来源几何，旧快照
+  仍可读。媒体主轻、显示几何与整树恢复证据见STATUS。
 - `src/ple/`实现ngram hash、页去重读取和FP8转换；`src/io/`负责权重/
   JSON配置，`src/text/`负责基于ICU的BPE tokenizer。
 
