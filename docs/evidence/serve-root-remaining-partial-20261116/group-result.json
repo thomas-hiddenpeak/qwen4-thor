@@ -1,0 +1,150 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_group.py\", line 70, in run\n    if process.wait()!=0:raise RuntimeError('actual case failed: '+case)\n       ^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 1264, in wait\n    return self._wait(timeout=timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 2053, in _wait\n    (pid, sts) = self._try_wait(0)\n                 ^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 2011, in _try_wait\n    (pid, sts) = os.waitpid(self.pid, wait_flags)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_group.py\", line 62, in stop\n    def stop(*_):raise TimeoutError('bounded remaining group deadline')\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: bounded remaining group deadline\n",
+  "seconds": 215.27456387504935,
+  "results": [
+    {
+      "status": "PASS_BOUNDED_ROOT_ROLLBACK_BUSINESS",
+      "failure": null,
+      "cleanup_failure": null,
+      "seconds": 82.5228069559671,
+      "budget": {
+        "counts": {
+          "starts": 1,
+          "chats": 2,
+          "probes": 0,
+          "controls": 266
+        },
+        "events": [
+          {
+            "kind": "starts",
+            "label": "primary-model",
+            "ordinal": 1,
+            "monotonic_ns": 3027039369745512
+          },
+          {
+            "kind": "chats",
+            "label": "primary-self-check",
+            "ordinal": 1,
+            "monotonic_ns": 3027072922405748
+          },
+          {
+            "kind": "chats",
+            "label": "original-cycle-forward-sse",
+            "ordinal": 2,
+            "monotonic_ns": 3027100185097948
+          }
+        ]
+      },
+      "models": {
+        "6": {
+          "pid": 3798123,
+          "start_ticks": 302703937
+        }
+      },
+      "quota_deadlines": {
+        "6": 3027099.364488158
+      },
+      "source_commit": "eba839c45a4798640af3eedce4c1efaf5b4de46c",
+      "roots": {
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-01/bundle",
+          "manifest_sha256": "8db077d3e943cd9ad3f0ec389dce4d791b933ecf9e9461e3baf6cae85b6bbce9"
+        },
+        "retained": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-01/bundle",
+          "manifest_sha256": "b6d655d894994cded94c290fdc4dc43295292da329da0537b7f755f10c993e1c"
+        }
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-01/bundle",
+        "manifest_sha256": "8db077d3e943cd9ad3f0ec389dce4d791b933ecf9e9461e3baf6cae85b6bbce9"
+      },
+      "scenario": "root_forward",
+      "default_replaced": false,
+      "performance_acceptance": false
+    },
+    {
+      "status": "PASS_BOUNDED_ROOT_ROLLBACK_BUSINESS",
+      "failure": null,
+      "cleanup_failure": null,
+      "seconds": 121.99704715097323,
+      "budget": {
+        "counts": {
+          "starts": 2,
+          "chats": 4,
+          "probes": 0,
+          "controls": 435
+        },
+        "events": [
+          {
+            "kind": "starts",
+            "label": "primary-model",
+            "ordinal": 1,
+            "monotonic_ns": 3027116571696450
+          },
+          {
+            "kind": "chats",
+            "label": "primary-self-check",
+            "ordinal": 1,
+            "monotonic_ns": 3027150398811345
+          },
+          {
+            "kind": "chats",
+            "label": "new-root-json",
+            "ordinal": 2,
+            "monotonic_ns": 3027152229763724
+          },
+          {
+            "kind": "starts",
+            "label": "primary-model",
+            "ordinal": 2,
+            "monotonic_ns": 3027161857465332
+          },
+          {
+            "kind": "chats",
+            "label": "primary-self-check",
+            "ordinal": 3,
+            "monotonic_ns": 3027194606408502
+          },
+          {
+            "kind": "chats",
+            "label": "new-root-outer-sse",
+            "ordinal": 4,
+            "monotonic_ns": 3027222563448771
+          }
+        ]
+      },
+      "models": {
+        "1": {
+          "pid": 3799053,
+          "start_ticks": 302711657
+        },
+        "2": {
+          "pid": 3799899,
+          "start_ticks": 302716185
+        }
+      },
+      "quota_deadlines": {
+        "2": 3027221.833938946
+      },
+      "source_commit": "eba839c45a4798640af3eedce4c1efaf5b4de46c",
+      "roots": {
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+          "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+        }
+      },
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+        "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+      },
+      "scenario": "root_wait_outer",
+      "default_replaced": false,
+      "performance_acceptance": false
+    }
+  ],
+  "group_counts": null,
+  "default_replaced": false,
+  "original_continuous_scenario_passed": false
+}

@@ -68,6 +68,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R09[原周期前进及新保留根outer恢复通过](evidence/serve-root-remaining-partial-20261116/README.md)：
+216.573秒内先两项已完成；新候选0启动/0Chat时组内截止触发，
+全部清理通过，原组仍FAILED。仅补原计划候选1启动/2Chat/150秒，
+累计上限仍9/18/1探测、GPU≤1040秒；默认rev174保持。
+
+
 R09第二段[短验及控制重置修复](evidence/serve-root-rollback-control-reset-20261116/README.md)：
 原状态恢复JSON通过，累计5启动/10Chat/1探测；自有Guardian故障时
 只读status连接重置被驱动误判终止，已补4项CPU并修复。两段清理
