@@ -58,6 +58,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[输入归属短验首轮未通过](evidence/serve-input-attribution-business-failure-20261116/README.md)：
+1启动/5生成，四条Chat与实际文档SHA闭环通过；Responses GET默认
+投影logprobs导致驱动全量相等断言失败。唯一差异已核对，核心5/5
+成功、清理通过；补显式include，冻结仅1启动/2生成/600秒受影响
+Responses短验。引擎不改、四条Chat复用、rev158保持，master继续。
+
 [标准输入归属CPU通过](evidence/serve-input-attribution-cpu-20261116/README.md)：
 18项C++、5项schema/客户端/驱动、16项原生/公开合同对照、715来源/
 7负控及生成物一致性通过，零警告。候选7a23cb30补Chat归属摘要和

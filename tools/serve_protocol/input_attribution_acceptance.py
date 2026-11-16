@@ -165,7 +165,8 @@ class Stage(responses.Stage):
                 require(all(e['response']['reasoning']['effort'] == 'medium' and
                     e['response']['service_tier'] == 'default' for e in events
                     if 'response' in e), 'Responses options changed during stream')
-            saved = self.sdk(label + '-get', 'retrieve', response_id=value['id'])
+            saved = self.sdk(label + '-get', 'retrieve', response_id=value['id'],
+                             query=dict(include=['message.output_text.logprobs']))
             require(saved == value, 'stored Responses result changed')
             response_ids.append(value['id'])
         metrics = self.drained('final')
