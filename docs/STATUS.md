@@ -34,7 +34,8 @@ Key/配额/容量、profile历史预算冷却不清空，版本新周期保留�
 也可恢复归档，rev166默认/状态备份保留。最终STOPPED、GPU释放。
 自动回退保持现代根；人工整根回退v12入口缺outer及现代旧根周期绑定
 仍是R09必修项，不能把STOPPED检查说成恢复业务通过。回退包也不是
-独立旧引擎回退。本组实际合main待完成，全部master继续。
+独立旧引擎回退。已通过PR33实际合main（`be93d566`），
+[合并回执](evidence/serve-pr33-merged-20261116/README.md)保留；全部master继续。
 
 前驱rev166[归属/default交付](evidence/serve-input-attribution-delivery-20261116/README.md)
 已通过PR32实际合main（`14221d39`），[合并回执](evidence/serve-pr32-merged-20261116/README.md)保留；
@@ -73,7 +74,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 outer保留与v19封包；检查点与退休登记一起移动。[24项针对性CPU](evidence/serve-root-rollback-cpu-20261116/README.md)首轮
 全部通过，55.819秒，0新增GPU，rev174保持；真实双根及[4项驱动CPU](evidence/serve-root-rollback-driver-20261116/README.md)
 通过，实际业务执行前修订为6启动/12Chat含自检/1探测/900秒，
-覆盖真实周期消费、outer及再前进；业务/发行尚待完成。
+覆盖真实周期消费、outer及再前进。[首次业务](evidence/serve-root-rollback-business-failure-20261116/README.md)
+4启动/8Chat/1探测后在outer新Guardian启动处因原gateway预算冷却中断；
+原周期恢复及工具续答已过，诊断错误显示STARTING/0等待须修复。
+STOPPED/进程/锁清理成功，默认保持，完整恢复/再前进/发行仍待完成。
 
 [rev174缓存交付完成](evidence/serve-chat-cache-delivery-20261116/README.md)：
 78d6bd7b/0851dab3进入实际默认，17项STOPPED检查与整根回退再前进

@@ -3740,7 +3740,8 @@
         "evidence/serve-outer-resource-delivery-20261112/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-root-rollback-cpu-20261116/README.md",
-        "evidence/serve-root-rollback-driver-20261116/README.md"
+        "evidence/serve-root-rollback-driver-20261116/README.md",
+        "evidence/serve-root-rollback-business-failure-20261116/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -3842,6 +3843,15 @@
           "seconds": 900
         },
         "actual_business_pending": true
+      },
+      "root_rollback_business_20261116": {
+        "state": "failed_original_budget_cooldown_with_status_projection_gap",
+        "starts": 4,
+        "chats": 8,
+        "probes": 1,
+        "cleanup_passed": true,
+        "default_unchanged": true,
+        "whole_master_complete": false
       }
     },
     {
@@ -4275,7 +4285,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat cache and version-retention actual main integration",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4320,7 +4329,7 @@
         "evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_cache_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
         "default_revision": 166,
         "complete": false,
@@ -4335,7 +4344,8 @@
         "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
         "delivery_evidence": "evidence/serve-chat-cache-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-chat-cache-profile-business-20261116/README.md",
-        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md"
+        "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
+        "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175"
       },
       "version_retention_20261116": {
         "state": "implemented_cpu_and_actual_maintenance_accepted",
@@ -4349,6 +4359,13 @@
         "head": "7c66fc7404bb20fcdc0650aaff8449f16a4da58f",
         "merge": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
         "evidence": "evidence/serve-pr32-merged-20261116/README.md"
+      },
+      "chat_cache_main_20261116": {
+        "state": "merged_main",
+        "pull_request": 33,
+        "head": "ba01e930e1b1c7f5f71c35db8678b55d59523397",
+        "merge": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
+        "evidence": "evidence/serve-pr33-merged-20261116/README.md"
       }
     },
     {

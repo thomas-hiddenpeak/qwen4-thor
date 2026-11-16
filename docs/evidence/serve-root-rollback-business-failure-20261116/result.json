@@ -1,0 +1,130 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_business.py\", line 254, in run\n    try:self.exercise();LEGACY['verify'](self.plan)\n        ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_business.py\", line 237, in exercise\n    fifth=self.ready_payload(5,'fallback');self.schema('outer-recovered-json')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_business.py\", line 142, in ready_payload\n    state=self.wait(lambda s:s['model_generation']==generation and s['business_ready'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 451, in wait\n    raise TimeoutError('bounded business recovery deadline')\nTimeoutError: bounded business recovery deadline\n",
+  "cleanup_failure": null,
+  "seconds": 597.2187085617334,
+  "budget": {
+    "counts": {
+      "starts": 4,
+      "chats": 8,
+      "probes": 1,
+      "controls": 2100
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 3024089874192511
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3024124015026626
+      },
+      {
+        "kind": "chats",
+        "label": "retained-primary-json",
+        "ordinal": 2,
+        "monotonic_ns": 3024125848659431
+      },
+      {
+        "kind": "probes",
+        "label": "root-version-device-proof",
+        "ordinal": 1,
+        "monotonic_ns": 3024127753116639
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 2,
+        "monotonic_ns": 3024135081285405
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 3,
+        "monotonic_ns": 3024169016239541
+      },
+      {
+        "kind": "chats",
+        "label": "retained-consumed-sse",
+        "ordinal": 4,
+        "monotonic_ns": 3024170963132080
+      },
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 3,
+        "monotonic_ns": 3024194062433329
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 5,
+        "monotonic_ns": 3024227119833443
+      },
+      {
+        "kind": "chats",
+        "label": "candidate-document-tool",
+        "ordinal": 6,
+        "monotonic_ns": 3024254781355639
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 4,
+        "monotonic_ns": 3024278329911107
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 7,
+        "monotonic_ns": 3024310598786745
+      },
+      {
+        "kind": "chats",
+        "label": "rollback-tool-result-sse",
+        "ordinal": 8,
+        "monotonic_ns": 3024312534052135
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 3788629,
+      "start_ticks": 302408987
+    },
+    "2": {
+      "pid": 3789907,
+      "start_ticks": 302413508
+    },
+    "3": {
+      "pid": 3791325,
+      "start_ticks": 302419406
+    },
+    "4": {
+      "pid": 3793043,
+      "start_ticks": 302427833
+    }
+  },
+  "quota_deadlines": {
+    "2": 3024187.607380895,
+    "3": 3024254.039750292,
+    "4": 3024338.306136081
+  },
+  "source_commit": "16990b6e50c93afb7fce2a5cdef72666bb5b670a",
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-01/bundle",
+      "manifest_sha256": "8db077d3e943cd9ad3f0ec389dce4d791b933ecf9e9461e3baf6cae85b6bbce9"
+    },
+    "retained": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-01/bundle",
+      "manifest_sha256": "b6d655d894994cded94c290fdc4dc43295292da329da0537b7f755f10c993e1c"
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}
