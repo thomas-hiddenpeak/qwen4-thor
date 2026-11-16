@@ -4863,18 +4863,50 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "status": "PASS_CURRENT_DAY_HANDOFF",
+        "status": "PASS_FROZEN_DAY_HANDOFF",
+        "source_commit": "97850fd8335454e7e90ce85d9019ba6d2cd39b08",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src",
         "revision": 204,
-        "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
-        "service_id": "e8e140dd-4ab5-49e2-ab75-18c4aaa3a210",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/day-01/plan.json",
-        "plan_sha256": "da7003c508e4ef9bc3c6f1320723c8d1ccebf7d9a084c627ae0893fbf54b126b",
-        "archive_sha256": "4ebe2313a87aafa4a8d68d1d2fbd62ccf7246eb6283dc77c4c3509aeade6fc6b",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+          "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3"
+        },
+        "service_id": "93294db6-abf0-47ea-9577-ed128d30c934",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "f8dd7856b0ab1674d9659fb9805a97cae960ec2d3e7f7319b421c5f7c61b2da7",
+        "sources": 589,
+        "links": {
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/delivery-01/candidate-service.release.json"
+        },
+        "protected_default": {
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "356456f58be9bc1ff9ed9b671e4cccfa3b2da9ce9788f511f0d14ac863de9d46",
+          "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+        },
+        "production_unchanged": true,
+        "same_git_common_dir": true,
+        "steps": [
+          {
+            "name": "prepare",
+            "exit_code": 0,
+            "seconds": 1.5155374882742763
+          },
+          {
+            "name": "check",
+            "exit_code": 0,
+            "seconds": 0.5142494109459221
+          }
+        ],
+        "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "new_gpu_starts": 0,
-        "default_unchanged": true,
-        "evidence": "evidence/serve-chat-moderation-day-handoff-20261117/README.md"
+        "archive_sha256": "508ea65169d85e0261054e0226fed523b8d61e9184cea37df6ff2f06c4cf033e",
+        "evidence": "evidence/serve-frozen-day-handoff-20261117/README.md"
       }
     }
   ],

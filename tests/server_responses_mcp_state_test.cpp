@@ -563,8 +563,12 @@ Q4T_TEST(
               generated[0].frames == reviewed[0].frames);
     const auto& review_parts =
         *plan.request.GetArray("messages")->array.back().GetArray("content");
-    Q4T_CHECK(OutputJson(review_parts.array.back()) ==
-              OutputJson(out.images.array[0]));
+    Q4T_CHECK(review_parts.array.size() == out.images.array.size() + 2 &&
+              review_parts.array.front().GetString("type") == "text" &&
+              review_parts.array.back().GetString("type") == "text");
+    for (size_t i = 0; i < out.images.array.size(); ++i)
+      Q4T_CHECK(OutputJson(review_parts.array[i + 1]) ==
+                OutputJson(out.images.array[i]));
   }
   detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
   ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });

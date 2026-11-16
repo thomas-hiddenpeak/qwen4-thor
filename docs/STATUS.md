@@ -94,6 +94,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR37 CI定点修复](evidence/serve-pr37-ci-repair-20261117/README.md)：
+原CI的MCP视频断言未适配分类后置说明，现核对全部媒体和首尾文本，
+1项CPU及隔离零警告构建通过。运行时/默认不变、0GPU；原失败保留，
+继续新head检查与实际合main，全部master推进。
+
+[长稳入口已固定到独立快照](evidence/serve-frozen-day-handoff-20261117/README.md)：
+589份源码及rev204精确包冻结，prepare/check通过，0模型动作，生产
+默认和账本不变。用户24小时可独立开展，后续开发不会改变该计划；
+原计划保留。继续PR37实际合main和媒体缓存等全部master任务。
+
 [rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
