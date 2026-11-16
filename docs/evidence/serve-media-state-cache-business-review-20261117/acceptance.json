@@ -1,0 +1,237 @@
+{
+  "status": "ACCEPT_COMPLETED_20_REQUESTS_AFTER_DRIVER_CONTRACT_REVIEW",
+  "original_result_preserved": true,
+  "original_result_sha256": "2d43801c079b1064663ab2fd0d7b573731f7ac29c4a6819575fa68c3aeda8a7b",
+  "original_guard_status": "COMMAND_FAILED",
+  "runtime_changed": false,
+  "driver_mismatch": "Request asks to report SHA prefix; it does not require suppressing prose. Exact unique 12-hex value is checked.",
+  "negative_digest_checks": 3,
+  "actual_starts": 2,
+  "actual_external_requests": 20,
+  "seconds": 110.88436378305778,
+  "nvml_queries": 105,
+  "cleanup_complete": true,
+  "binary_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659",
+  "old_full_new_chunk_exact": true,
+  "cold_warm_exact": true,
+  "state_evidence": {
+    "image_client": {
+      "writes": [
+        [
+          "1686",
+          "1800",
+          "1",
+          "654557184"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "image_key": {
+      "writes": [
+        [
+          "1686",
+          "1800",
+          "1",
+          "490917888"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "image_write": {
+      "writes": [
+        [
+          "1686",
+          "1800",
+          "1",
+          "163639296"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "schema_write": {
+      "writes": [
+        [
+          "1790",
+          "1800",
+          "1",
+          "1301250048"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "image_uncached": {
+      "writes": [],
+      "restores": [],
+      "cached_tokens": 0
+    },
+    "video_write": {
+      "writes": [
+        [
+          "1559",
+          "1800",
+          "1",
+          "814608384"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "schema_hit": {
+      "writes": [],
+      "restores": [
+        [
+          "1790",
+          "none",
+          "shared",
+          "target"
+        ]
+      ],
+      "cached_tokens": 1790
+    },
+    "video_timestamp": {
+      "writes": [
+        [
+          "1559",
+          "1800",
+          "1",
+          "1134710784"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "image_append": {
+      "writes": [],
+      "restores": [
+        [
+          "1686",
+          "none",
+          "shared",
+          "target"
+        ]
+      ],
+      "cached_tokens": 1686
+    },
+    "video_changed": {
+      "writes": [
+        [
+          "1559",
+          "1800",
+          "1",
+          "974659584"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "video_uncached": {
+      "writes": [],
+      "restores": [],
+      "cached_tokens": 0
+    },
+    "video_hit": {
+      "writes": [],
+      "restores": [
+        [
+          "1559",
+          "none",
+          "shared",
+          "target"
+        ]
+      ],
+      "cached_tokens": 1559
+    },
+    "image_changed": {
+      "writes": [
+        [
+          "1686",
+          "1800",
+          "1",
+          "327278592"
+        ]
+      ],
+      "restores": [
+        [
+          "0",
+          "none",
+          "session",
+          "target"
+        ]
+      ],
+      "cached_tokens": 0
+    },
+    "image_hit": {
+      "writes": [],
+      "restores": [
+        [
+          "1686",
+          "none",
+          "shared",
+          "target"
+        ]
+      ],
+      "cached_tokens": 1686
+    }
+  },
+  "actual_tool_answer": "The SHA256 first 12 digits of the document are: 2265eb26d4cb",
+  "unfinished": [
+    "private_write",
+    "private_follow"
+  ],
+  "new_gpu_starts": 0,
+  "default_unchanged": true,
+  "archive_sha256": "7f7a302b552662a73c4d4adcd7352487a557ded1cfd0997707222ed04a3fa5a8"
+}

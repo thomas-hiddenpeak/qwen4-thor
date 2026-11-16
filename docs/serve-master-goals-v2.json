@@ -4978,5 +4978,21 @@
     }
   ],
   "next_task": "A05/A10/A12/Q01 media state identity and vision chunked prefill",
-  "next": "Implement docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md, validate direct CPU and bounded real business, deliver reversibly and merge; continue all remaining master tasks."
+  "next": "Implement docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md, validate direct CPU and bounded real business, deliver reversibly and merge; continue all remaining master tasks.",
+  "media_state_business_review_20261117": {
+    "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
+    "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
+    "original_requests": 20,
+    "remaining_requests": [
+      "private_write",
+      "private_follow"
+    ],
+    "phase_limits": {
+      "starts": 7,
+      "requests": 36,
+      "seconds": 1200
+    },
+    "runtime_unchanged": true,
+    "default_revision": 204
+  }
 }

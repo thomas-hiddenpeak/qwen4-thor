@@ -30,9 +30,21 @@ from tools.serve_service.package import read, require, save, sha
 from tools.examples.chat_client import read_json, read_sse
 
 LIMITS = dict(starts=2, chats=22, controls=3000, seconds=720)
+PRIVATE_LIMITS = dict(starts=1, chats=2, controls=1500, seconds=360)
 FILES = ('tests/fixtures/file_images/original.png',
          'tests/fixtures/file_images/gif/opaque.png')
 DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
+
+
+def check_tool_reply(content, digest):
+    # The request asks to report a digest, not to suppress surrounding prose.
+    # Require its exact unique 12-digit value, with no competing digest.
+    require(re.findall(r'\b[0-9a-f]{12}\b', content) == [digest[:12]],
+            'actual tool answer')
+
+
+def private_requests():
+    return {k: v for k, v in requests().items() if k.startswith('private_')}
 
 
 def tagged(label, body):
@@ -123,7 +135,11 @@ def requests():
 
 
 def prepare(args):
-    responses.base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    private = args.private_only
+    responses.base.prepare(args, rows=private_requests() if private else requests(),
+        limits=PRIVATE_LIMITS if private else LIMITS, scope=(
+            'Only the two unfinished private media session requests; no replay of passed cases.'
+            if private else __doc__))
     path = args.output.resolve() / 'plan.json'
     plan = read(path)
     baseline = args.baseline.resolve(strict=True)
@@ -141,6 +157,11 @@ def prepare(args):
         actual_document_tool=True, performance_claim=False)
     plan['derived_requests'] = ['tool_follow appends actual call ID and actual document SHA256',
         'private_follow appends actual assistant answer and one fixed follow-up question']
+    plan['private_only'] = private
+    if private:
+        plan['planned'] = dict(starts=1, chats=2, candidate_prefill=512,
+            context=16384, private_cache_minimum=8192, actual_ssd_writes=True,
+            performance_claim=False, passed_business_repeated=False)
     save(path, plan)
 
 
@@ -150,9 +171,11 @@ class Stage(text_cache.Stage):
     success_status = 'PASS_MEDIA_STATE_CACHE_BUSINESS'
     requests_per_minute = 32
     tokens_per_minute = 200000
+    baseline_first = True
 
     def start(self):
-        self.kind = 'baseline' if not self.counts['starts'] else 'candidate'
+        self.kind = ('baseline' if self.baseline_first and not self.counts['starts']
+                     else 'candidate')
         encrypted.background.probe_ports((self.plan['port'], self.plan['operations_port']))
         save(self.out / 'client-policy.json', self.client_policy())
         baseline = self.plan['baseline']
@@ -282,12 +305,8 @@ class Stage(text_cache.Stage):
         follow['messages'] += [call.message, dict(role='tool', tool_call_id=calls[0]['id'],
             content=json.dumps(dict(path=DOCUMENT, sha256=source['sha256'])))]
         result = self.chat('tool_follow', follow, hit=None)
-        require(result.message['content'].strip() == source['sha256'][:12], 'actual tool answer')
-        private = self.chat('private_write', rows['private_write'])
-        require(private.usage['prompt_tokens'] >= 8192, 'private snapshot minimum')
-        follow = copy.deepcopy(rows['private_follow'])
-        follow['messages'] += [private.message, dict(role='user', content='Repeat only the same YES or NO answer.')]
-        self.chat('private_follow', follow, hit=True)
+        check_tool_reply(result.message['content'], source['sha256'])
+        self.private_business(rows)
         require(self.counts['chats'] == 22, 'exact external request count')
         log = (self.out / 'candidate-model.log').read_text()
         proof = {}
@@ -314,6 +333,34 @@ class Stage(text_cache.Stage):
             changed_media_miss=True, actual_tool=True, private_restore=True,
             no_performance_claim=True))
 
+    def private_business(self, rows):
+        private = self.chat('private_write', rows['private_write'])
+        require(private.usage['prompt_tokens'] >= 8192, 'private snapshot minimum')
+        follow = copy.deepcopy(rows['private_follow'])
+        follow['messages'] += [private.message, dict(role='user',
+            content='Repeat only the same YES or NO answer.')]
+        value = self.chat('private_follow', follow, hit=True)
+        log = (self.out / 'candidate-model.log').read_text()
+        matches = re.findall(r'\[session-cache\] request=' +
+            re.escape(rows['private_follow']['request_id']) +
+            r' event=restore prefix=(\d+) ms=\S+ error=(\S+) source=(\w+) layout=(\w+)', log)
+        require(matches == [(str(value.usage['prompt_tokens_details']['cached_tokens']),
+            'none', 'session', 'target')], 'private restore usage has no actual state proof')
+        save(self.out / 'private-business-checks.json', dict(requests=2,
+            actual_private_restore=matches, actual_answers=True))
+
+
+class PrivateStage(Stage):
+    limits = PRIVATE_LIMITS
+    request_templates = staticmethod(private_requests)
+    baseline_first = False
+    success_status = 'PASS_PRIVATE_MEDIA_STATE_CACHE_BUSINESS'
+
+    def business(self):
+        self.private_business(self.plan['requests'])
+        require(self.counts['starts'] == 1 and self.counts['chats'] == 2,
+                'unfinished private business count')
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -323,6 +370,7 @@ def main():
     p.add_argument('--baseline', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18772)
+    p.add_argument('--private-only', action='store_true')
     p = modes.add_parser('run')
     p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
@@ -332,9 +380,11 @@ def main():
         def deadline(_signum, _frame):
             raise TimeoutError('media state business deadline')
         signal.signal(signal.SIGALRM, deadline)
-        signal.setitimer(signal.ITIMER_REAL, LIMITS['seconds'] - 40)
+        plan = read(args.plan)
+        stage = PrivateStage if plan.get('private_only') else Stage
+        signal.setitimer(signal.ITIMER_REAL, stage.limits['seconds'] - 40)
         with responses.base.lifecycle.child_subreaper():
-            Stage(read(args.plan)).run()
+            stage(plan).run()
         signal.setitimer(signal.ITIMER_REAL, 0)
 
 
