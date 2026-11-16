@@ -407,9 +407,7 @@
       },
       "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
       "remaining_required": [
-        "A10媒体状态缓存及schema/工具组合：实际图像/视频身份、MRoPE与状态恢复、终态发布和客户端隔离",
-        "Media state cache with true image/video identity and MRoPE state",
-        "Stop, constrained-output and private cache combinations with correct final validation"
+        "Stop, constrained-output and private cache combinations with correct final validation; audit remaining combinations against accepted media evidence"
       ],
       "current_audit": {
         "date": "2026-11-16",
@@ -437,14 +435,17 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "actual_business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
         "total_external_requests": 60,
         "strict_lease_seconds": 636.7565552387387,
         "original_failures_preserved": true,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "revision": 214,
+        "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       }
     },
     {
@@ -2197,7 +2198,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native media cache/MRoPE state resume",
         "Remaining affine/format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
       ],
@@ -2216,14 +2216,17 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "actual_business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
         "total_external_requests": 60,
         "strict_lease_seconds": 636.7565552387387,
         "original_failures_preserved": true,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "revision": 214,
+        "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       }
     },
     {
@@ -3058,14 +3061,17 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "actual_business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
         "total_external_requests": 60,
         "strict_lease_seconds": 636.7565552387387,
         "original_failures_preserved": true,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "revision": 214,
+        "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       }
     },
     {
@@ -3911,7 +3917,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev204 or the then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev214 or then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4464,20 +4470,23 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "actual_business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
         "total_external_requests": 60,
         "strict_lease_seconds": 636.7565552387387,
         "original_failures_preserved": true,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "revision": 214,
+        "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -4684,6 +4693,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
+        "PR38 final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4873,6 +4883,41 @@
         "state": "MERGED",
         "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/37",
         "evidence": "evidence/serve-pr37-merged-20261117/README.md"
+      },
+      "media_state_cache_delivery_20261117": {
+        "status": "ACCEPT_MEDIA_STATE_CACHE_DELIVERY",
+        "revision": 214,
+        "current": {
+          "engine_binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+          "engine_release_sha256": "603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03",
+          "generation_sha256": "bbd132e81985145436e46f7121795596525682acb9507c7311780d0adeb45413",
+          "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
+          "service_acceptance_sha256": "d917251b222a7260f42ba09d976582277466611a8adcbaa7aa2a2eb0ad6ecc2d",
+          "service_release_sha256": "e96210279524545d28c9bc93fa2196e258320bcb125e8f310bc17854701da808"
+        },
+        "commands": 19,
+        "seconds": 283.0403747227974,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "core_client_outer_bytes_preserved": true,
+        "profile_migration": "Explicit complete media cache/chunked-prefill capability upgrade; historical state and budgets preserved",
+        "root_cycles_preserved": true,
+        "manual_root": "f046a6d535d5f8b228bc913011f88b17a7253a8a722e799adc4132f1b062a40e",
+        "automatic_payload": "ffa5c43848ee3bbc4696944c05b15ccef31a72135a15ce95d7fdf0684671d584",
+        "candidate_whole_package_gpu_run": false,
+        "composed_change": "Only publication profile_migration.py differs from the business-qualified candidate; CPU and actual STOPPED migration/rollback validated",
+        "older_engine_fallback": false,
+        "prior_rev204_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "c5fe8d7238b9481080a7c417d3b2e45ff11a8710985e780b7e59d28b2041b7a2",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       }
     },
     {
@@ -4970,28 +5015,28 @@
       },
       "current_native_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
-        "source_commit": "97850fd8335454e7e90ce85d9019ba6d2cd39b08",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src",
-        "revision": 204,
+        "source_commit": "17e5368930065061e624422ecc2c3601e34b84ac",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
+        "revision": 214,
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
-          "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
+          "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b"
         },
-        "service_id": "93294db6-abf0-47ea-9577-ed128d30c934",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "f8dd7856b0ab1674d9659fb9805a97cae960ec2d3e7f7319b421c5f7c61b2da7",
+        "service_id": "ee49c36a-b9dc-4636-981e-e8e1e78f2b9b",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "9e21d433a327dfe320d3512174f7a513233d7311c120e64afc92b5c2b29020f3",
         "sources": 589,
         "links": {
-          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t",
-          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t.release.json",
-          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
-          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/delivery-01/candidate-service.release.json"
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/package-02/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/delivery-01/candidate-service.release.json"
         },
         "protected_default": {
-          "/home/rm01/models/dev/qwen4-thor/build/q4t": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
-          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4",
-          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
-          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "356456f58be9bc1ff9ed9b671e4cccfa3b2da9ce9788f511f0d14ac863de9d46",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "e96210279524545d28c9bc93fa2196e258320bcb125e8f310bc17854701da808",
           "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
         },
         "production_unchanged": true,
@@ -4999,25 +5044,49 @@
         "steps": [
           {
             "name": "prepare",
+            "argv": [
+              "/usr/bin/python3",
+              "-I",
+              "-B",
+              "tools/serve_soak/native_stage.py",
+              "prepare",
+              "--profile",
+              "day",
+              "--package",
+              "build/service",
+              "--output",
+              ".q4t-work/day-01"
+            ],
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 1.5155374882742763
+            "seconds": 1.815789708867669
           },
           {
             "name": "check",
+            "argv": [
+              "/usr/bin/python3",
+              "-I",
+              "-B",
+              "tools/serve_soak/native_stage.py",
+              "check",
+              "--plan",
+              ".q4t-work/day-01/plan.json"
+            ],
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-state-cache-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 0.5142494109459221
+            "seconds": 0.5142534719780087
           }
         ],
         "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "archive_sha256": "508ea65169d85e0261054e0226fed523b8d61e9184cea37df6ff2f06c4cf033e",
-        "evidence": "evidence/serve-frozen-day-handoff-20261117/README.md"
+        "archive_sha256": "07ef68096ddf1afa738e3b345f89fe64dc024cb92059f45f6e24c3761f84c0d8",
+        "evidence": "evidence/serve-media-state-cache-day-handoff-20261117/README.md"
       }
     }
   ],
-  "next_task": "A05/A10/A12/Q01 media state identity and vision chunked prefill",
-  "next": "Implement docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md, validate direct CPU and bounded real business, deliver reversibly and merge; continue all remaining master tasks.",
+  "next_task": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

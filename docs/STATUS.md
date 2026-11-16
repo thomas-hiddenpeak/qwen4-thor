@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev204；服务包 `4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3` |
-| Generation | `91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2` |
-| 引擎 | `e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0` |
-| 引擎发布记录 | `bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4` |
+| 发布 | rev214；服务包 `f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b` |
+| Generation | `bbd132e81985145436e46f7121795596525682acb9507c7311780d0adeb45413` |
+| 引擎 | `2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3` |
+| 引擎发布记录 | `603edb5acfb5a66b2495964ec73500bdce7c0d23195663ba3363511bc0afce03` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570`；outer/周期及审核能力完整，前驱196/188另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `f046a6d535d5f8b228bc913011f88b17a7253a8a722e799adc4132f1b062a40e`；outer/周期及媒体缓存能力完整，前驱204/196另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `ffa5c43848ee3bbc4696944c05b15ccef31a72135a15ce95d7fdf0684671d584`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
+已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
+GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实
+业务通过；发布模块仅补显式能力迁移，原预算和周期保持。PR38最终
+检查与实际合main继续；用户day独立快照已prepare/check、未运行，rev204原入口保留。
+全部33项master仍是总目标完成条件，其他缺口继续实现。
+
+前驱[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
 输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
 保持，profile仅增加已验能力/身份。PR37两组检查通过且[已实际合main](evidence/serve-pr37-merged-20261117/README.md)
@@ -93,6 +100,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev214媒体缓存交付](evidence/serve-media-state-cache-delivery-20261117/README.md)
+已完成19项STOPPED发布、实际整根回退与再前进，283.040秒、0新增
+GPU。原视频数值回归已修复，图片/schema/私有缓存、主轻及保留包真实
+业务通过；发布模块仅补显式能力迁移，原预算和周期保持。PR38最终
+检查与实际合main继续；用户day独立快照已prepare/check、未运行，rev204原入口保留。
+全部33项master仍是总目标完成条件，其他缺口继续实现。
 
 [媒体能力迁移CPU通过](evidence/serve-media-cache-migration-cpu-20261117/README.md)：
 6项不同用例/7次执行，735/7来源通过。仅重封候选的发布迁移模块；
