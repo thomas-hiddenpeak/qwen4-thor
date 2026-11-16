@@ -17,6 +17,8 @@ Status ParseWebDeploymentPolicy(std::string_view raw,
                                 WebDeploymentPolicy* output);
 Status LoadWebDeploymentPolicy(const std::string& path,
                                WebDeploymentPolicy* output);
+io::Json WebDeploymentPolicyDescription(const WebDeploymentPolicy* policy);
+int RunWebDeploymentPolicyCheck(int argc, char** argv);
 std::string WebIndexIdentity(const WebDeploymentPolicy& deployment,
                              const WebSearchOptions& options);
 

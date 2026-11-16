@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_web_search.h"
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -76,10 +77,14 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
   });
   if (endpoint == "/v1/chat/completions") {
     ChatRequestPlan plan;
+    ChatWebSearch web;
     reply = chat.Prepare(row.body, config, access, &plan);
+    if (reply.ok())
+      reply = web.Prepare(&objects_, row.body, config, access, &plan);
     if (reply.ok()) reply = chat.Freeze(access, &dependencies);
     prepared = Object({{"kind", String("chat")},
-                        {"input_snapshots", dependencies}});
+                        {"input_snapshots", dependencies},
+                        {"web_content", web.Freeze()}});
   } else if (endpoint == "/v1/responses") {
     responses.emplace(objects_);
     reply = responses->Prepare(

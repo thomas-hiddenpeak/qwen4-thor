@@ -202,10 +202,27 @@ function argumentsObject(raw) {
   return result;
 }
 
+function annotations(value, content) {
+  requireValue(Array.isArray(value) && value.length <= 4096, 'invalid annotation list');
+  for (const annotation of value) {
+    fields(annotation, ['type', 'url_citation']);
+    requireValue(annotation.type === 'url_citation', 'invalid annotation');
+    const citation = annotation.url_citation;
+    fields(citation, ['url', 'title', 'start_index', 'end_index']);
+    text(citation.url, 'missing citation URL', true);
+    text(citation.title, 'invalid citation title');
+    requireValue(integer(citation.start_index) && integer(citation.end_index) &&
+      typeof content === 'string' && citation.start_index <= citation.end_index &&
+      citation.end_index <= [...content].length, 'citation offsets outside generated text');
+  }
+  return clone(value);
+}
+
 function message(value) {
-  fields(value, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
+  fields(value, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call', 'annotations']);
   requireValue(value.role === 'assistant' && Object.hasOwn(value, 'content'), 'expected assistant message');
   if (value.content !== null) text(value.content, 'invalid content');
+  if (value.annotations != null) annotations(value.annotations, value.content);
   if (value.refusal != null) text(value.refusal, 'invalid refusal');
   const reasoning = ['reasoning', 'reasoning_content'].filter(k => value[k] != null);
   requireValue(reasoning.length <= 1, 'mixed reasoning fields');
@@ -376,7 +393,7 @@ export function parseSseWire(raw) {
     requireValue(integer(choice.index) && choice.index < 128 && !indices.has(choice.index), 'invalid choice index');
     indices.add(choice.index);
     if (!states.has(choice.index)) states.set(choice.index,
-      { role: false, finish: null, content: '', refusal: null, reasoning: '', reasoningField: undefined, calls: [], functionCall: null, logprobs: null });
+      { role: false, finish: null, content: '', refusal: null, reasoning: '', reasoningField: undefined, calls: [], functionCall: null, logprobs: null, annotations: null });
     const state = states.get(choice.index);
     requireValue(state.finish === null, 'choice after terminal');
     let { role, finish, content, reasoning, reasoningField, calls } = state;
@@ -389,7 +406,7 @@ export function parseSseWire(raw) {
         state.logprobs[key].push(...probabilities[key]);
       }
     }
-    fields(delta, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
+    fields(delta, ['role', 'content', 'refusal', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call', 'annotations']);
     if (Object.hasOwn(delta, 'role')) { requireValue(!role && delta.role === 'assistant', 'invalid role delta'); role = true; }
     requireValue(role, 'delta before role');
     if (delta.refusal != null) {
@@ -397,6 +414,12 @@ export function parseSseWire(raw) {
       state.refusal += text(delta.refusal, 'invalid refusal');
     }
     if (delta.content != null) content += text(delta.content, 'invalid content delta');
+    if (delta.annotations != null) {
+      requireValue(Array.isArray(delta.annotations), 'invalid annotation delta');
+      state.annotations ??= [];
+      requireValue(state.annotations.length + delta.annotations.length <= 4096, 'annotation capacity exceeded');
+      state.annotations.push(...clone(delta.annotations));
+    }
     for (const key of ['reasoning', 'reasoning_content']) if (delta[key] != null) {
       requireValue(!reasoningField || reasoningField === key, 'reasoning field changed');
       reasoningField = key; reasoning += text(delta[key], 'invalid reasoning delta');
@@ -456,6 +479,7 @@ export function parseSseWire(raw) {
     requireValue(state.role, 'choice missing role');
     const msg = { role: 'assistant', content: (calls.length || state.functionCall || state.refusal !== null) && !content ? null : content };
     if (state.refusal !== null) msg.refusal = state.refusal;
+    if (state.annotations !== null) msg.annotations = state.annotations;
     if (reasoning) msg[reasoningField] = reasoning;
     if (calls.length) msg.tool_calls = calls;
     if (state.functionCall) msg.function_call = state.functionCall;

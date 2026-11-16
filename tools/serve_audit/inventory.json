@@ -594,6 +594,15 @@
         "tests/server_chat_moderation_test.cpp",
         "docs/SERVE_CHAT_MODERATION_2026-11-17.md"
       ]
+    },
+    "web_search_options": {
+      "semantics": "回答前执行配置网站搜索；上下文大小/位置提示进入实际检索，来源段落进入私有模型输入，引用按实际输出字符位置标注。",
+      "boundary": "开发中，未记GPU业务或发行通过。可选部署源与scope/网络预算受控；Batch保存检索快照，普通Chat不依赖搜索后端。",
+      "evidence": [
+        "src/server/chat_web_search.cpp",
+        "tests/server_responses_web_test.cpp",
+        "docs/SERVE_WEB_SEARCH_2026-11-17.md"
+      ]
     }
   },
   "routes": {

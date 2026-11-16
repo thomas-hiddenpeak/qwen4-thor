@@ -63,6 +63,12 @@ class ResponsesOutput {
   Status FailFileSearch(size_t index, std::string* wire);
   Status SkipFileSearch(size_t index, const io::Json& queries,
                         std::string* wire);
+  Status StartWebSearch(const io::Json& action, size_t* index, std::string* wire);
+  Status SearchWeb(size_t index, std::string* wire);
+  Status CompleteWebSearch(size_t index, const io::Json& action,
+                           std::string* wire);
+  Status EndWebSearch(size_t index, bool failed, std::string* wire);
+  Status CiteWebSearchSources(const io::Json& contexts, std::string* wire);
   // Private effective identities can grow without rewriting public tools.
   Status BindTools(const io::Json& active);
   Status AppendProgramItems(const io::Json& items, std::string* wire);

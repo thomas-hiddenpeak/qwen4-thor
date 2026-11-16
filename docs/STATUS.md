@@ -108,6 +108,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页API及客户端CPU接受](evidence/serve-web-search-api-cpu-20261117/README.md)：
+30项不同C++/38次执行、4项合同及Python/JS各2项最终通过。修复
+SDK选择回显、非流式来源投影、原生多步预算及配置schema漏项，原
+失败保留。实际模型尚未验收，0新增GPU、默认224保持；继续冻结
+2启动8外部请求900秒真实公网/模型业务及可回退交付，全部master继续。
+
 PR39最终head `0472f354` 两组CI通过，已[实际合入main](evidence/serve-pr39-merged-20261117/README.md)
 （`1d905350`）。Stop组合、rev224交付和独立day交接源码已进入
 主线；网页搜索及全部剩余master任务继续，0新增GPU、默认224保持。

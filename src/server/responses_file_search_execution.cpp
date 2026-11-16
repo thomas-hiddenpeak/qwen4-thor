@@ -175,7 +175,7 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || PendingMcp() || output_used < 0 ||
+      PendingToolSearch() || PendingPrograms() || PendingMcp() || PendingWebSearch() || output_used < 0 ||
       output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
@@ -222,6 +222,9 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
       native_tool_calls_ >= static_cast<uint64_t>(envelope.options.GetInt(
                                 "max_tool_calls", INT64_MAX));
   if (choice.IsString() && choice.str == "required") choice = String("auto");
+  if (IsWebSearchType(choice.GetString("type")))
+    choice = Object({{"type", String("allowed_tools")}, {"mode", String("auto")},
+                      {"tools", Array({choice})}});
   if (choice.GetString("type") == "file_search")
     choice =
         Object({{"type", String("allowed_tools")},
@@ -254,7 +257,7 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   wire->clear();
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || output_used < 0 ||
+      PendingToolSearch() || PendingPrograms() || PendingWebSearch() || output_used < 0 ||
       output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid async continuation");
   if (async_continued_) return {};

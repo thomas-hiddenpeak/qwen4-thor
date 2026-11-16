@@ -1,6 +1,7 @@
 #include "q4t/server/web_execution.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <set>
 
 #include "file_fetch_internal.h"
@@ -105,6 +106,34 @@ Status LoadWebDeploymentPolicy(const std::string& path,
   std::string raw;
   if (!ReadMcpPrivateConfig(path, &raw)) return Invalid();
   return ParseWebDeploymentPolicy(raw, output);
+}
+Json WebDeploymentPolicyDescription(const WebDeploymentPolicy* policy) {
+  return Object(
+      {{"profile", String("q4t-web-deployment-policy-v1")},
+       {"configured", Boolean(policy && !policy->sha256.empty())},
+       {"sha256", policy ? String(policy->sha256) : Json()},
+       {"backend", String("native_configured_sites")},
+       {"seed_count", Number(policy ? policy->seeds.size() : 0)},
+       {"scope_count", Number(policy ? policy->scopes.size() : 0)},
+       {"max_pages", Number(policy ? policy->max_pages : 0)},
+       {"max_download_bytes", Number(policy ? policy->max_download_bytes : 0)},
+       {"request_override", Boolean(false)},
+       {"core_readiness_dependency", Boolean(false)},
+       {"model_restart_on_error", Boolean(false)}});
+}
+int RunWebDeploymentPolicyCheck(int argc, char** argv) {
+  if (argc != 3) {
+    std::fprintf(stderr, "Usage: q4t web-policy-check FILE\n");
+    return 2;
+  }
+  WebDeploymentPolicy policy;
+  if (!LoadWebDeploymentPolicy(argv[2], &policy)) {
+    std::fprintf(stderr, "Invalid web search deployment policy\n");
+    return 2;
+  }
+  std::printf("%s\n",
+              OutputJson(WebDeploymentPolicyDescription(&policy)).c_str());
+  return 0;
 }
 std::string WebIndexIdentity(const WebDeploymentPolicy& deployment,
                              const WebSearchOptions& options) {

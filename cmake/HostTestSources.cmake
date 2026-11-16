@@ -174,6 +174,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_input_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_file_inputs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_web_search.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_file_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_preparation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_model_step.cpp
@@ -336,6 +337,10 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_query_rewrite.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_search.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_output.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_tool_search.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_tool_catalog_history.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_tool_search_output.cpp
@@ -376,6 +381,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_embeddings_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_file_search_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_web_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_tool_search_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_tool_discovery_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_execution_test.cpp

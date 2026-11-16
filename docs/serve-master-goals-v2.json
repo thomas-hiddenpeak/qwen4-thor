@@ -233,7 +233,14 @@
         "native_execution_cpu_tests": 16,
         "affected_fetch_regression_tests": 4,
         "native_execution_cpu_state": "accepted_after_targeted_repair",
-        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md"
+        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md",
+        "api_cpu_state": "accepted_after_targeted_repair",
+        "api_cpu_unique": 30,
+        "api_cpu_executions": 38,
+        "api_python_contract_unique": 4,
+        "api_official_python_sdk_unique": 2,
+        "api_official_js_sdk_unique": 2,
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
       }
     },
     {
@@ -1775,7 +1782,14 @@
         "native_execution_cpu_tests": 16,
         "affected_fetch_regression_tests": 4,
         "native_execution_cpu_state": "accepted_after_targeted_repair",
-        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md"
+        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md",
+        "api_cpu_state": "accepted_after_targeted_repair",
+        "api_cpu_unique": 30,
+        "api_cpu_executions": 38,
+        "api_python_contract_unique": 4,
+        "api_official_python_sdk_unique": 2,
+        "api_official_js_sdk_unique": 2,
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
       }
     },
     {
@@ -2946,7 +2960,14 @@
         "native_execution_cpu_tests": 16,
         "affected_fetch_regression_tests": 4,
         "native_execution_cpu_state": "accepted_after_targeted_repair",
-        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md"
+        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md",
+        "api_cpu_state": "accepted_after_targeted_repair",
+        "api_cpu_unique": 30,
+        "api_cpu_executions": 38,
+        "api_python_contract_unique": 4,
+        "api_official_python_sdk_unique": 2,
+        "api_official_js_sdk_unique": 2,
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
       }
     },
     {
@@ -3218,7 +3239,14 @@
         "native_execution_cpu_tests": 16,
         "affected_fetch_regression_tests": 4,
         "native_execution_cpu_state": "accepted_after_targeted_repair",
-        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md"
+        "native_execution_evidence": "evidence/serve-web-search-execution-20261117/README.md",
+        "api_cpu_state": "accepted_after_targeted_repair",
+        "api_cpu_unique": 30,
+        "api_cpu_executions": 38,
+        "api_python_contract_unique": 4,
+        "api_official_python_sdk_unique": 2,
+        "api_official_js_sdk_unique": 2,
+        "api_cpu_evidence": "evidence/serve-web-search-api-cpu-20261117/README.md"
       }
     },
     {

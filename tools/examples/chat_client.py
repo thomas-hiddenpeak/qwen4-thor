@@ -198,14 +198,35 @@ def _usage(value, choice_count=1):
     return deepcopy(value)
 
 
+def _annotations(value, content):
+    require(isinstance(value, list) and len(value) <= 4096,
+            "invalid annotation list")
+    for annotation in value:
+        require(isinstance(annotation, dict) and
+                set(annotation) == {"type", "url_citation"} and
+                annotation["type"] == "url_citation", "invalid annotation")
+        citation = annotation["url_citation"]
+        require(isinstance(citation, dict) and set(citation) ==
+                {"url", "title", "start_index", "end_index"}, "invalid URL citation")
+        _text(citation["url"], "missing citation URL", True)
+        _text(citation["title"], "invalid citation title")
+        start, end = citation["start_index"], citation["end_index"]
+        require(type(start) is int and type(end) is int and
+                isinstance(content, str) and 0 <= start <= end <= len(content),
+                "citation offsets outside generated text")
+    return deepcopy(value)
+
+
 def _message(value):
     require(isinstance(value, dict) and value.get("role") == "assistant",
             "expected assistant message")
     require(not (set(value) - {"role", "content", "reasoning_content", "reasoning",
-                               "refusal", "tool_calls", "function_call"}), "unsupported message field")
+                               "refusal", "tool_calls", "function_call", "annotations"}), "unsupported message field")
     require("content" in value, "missing message content")
     if value["content"] is not None:
         _text(value["content"], "invalid content")
+    if value.get("annotations") is not None:
+        _annotations(value["annotations"], value["content"])
     if value.get("refusal") is not None:
         _text(value["refusal"], "invalid refusal")
     reasoning_fields = [key for key in ("reasoning_content", "reasoning")
@@ -419,6 +440,7 @@ class _ChoiceStream:
         self.content, self.reasoning, self.calls = [], [], []
         self.refusal = None
         self.function_call = None
+        self.annotations = None
 
     def feed(self, event):
         _envelope(event, "chat.completion.chunk")
@@ -448,7 +470,7 @@ class _ChoiceStream:
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
         require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
-                                   "refusal", "tool_calls", "function_call"}), "unsupported delta field")
+                                   "refusal", "tool_calls", "function_call", "annotations"}), "unsupported delta field")
         if "role" in delta:
             require(not self.role and delta["role"] == "assistant",
                     "invalid or duplicate assistant role")
@@ -456,6 +478,13 @@ class _ChoiceStream:
         require(self.role, "delta before assistant role")
         if delta.get("content") is not None:
             self.content.append(_text(delta["content"], "invalid content"))
+        if delta.get("annotations") is not None:
+            require(isinstance(delta["annotations"], list), "invalid annotation delta")
+            if self.annotations is None:
+                self.annotations = []
+            require(len(self.annotations) + len(delta["annotations"]) <= 4096,
+                    "annotation capacity exceeded")
+            self.annotations.extend(deepcopy(delta["annotations"]))
         if delta.get("refusal") is not None:
             if self.refusal is None:
                 self.refusal = []
@@ -518,6 +547,8 @@ class _ChoiceStream:
                 "incomplete SSE terminal")
         content, reasoning = "".join(self.content), "".join(self.reasoning)
         message = dict(role="assistant", content=content)
+        if self.annotations is not None:
+            message["annotations"] = self.annotations
         if self.refusal is not None:
             message["refusal"] = "".join(self.refusal)
             if not content:

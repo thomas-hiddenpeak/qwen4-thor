@@ -29,6 +29,7 @@
 #include "q4t/server/chat_choices.h"
 #include "q4t/server/chat_moderation.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_web_search.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
@@ -326,6 +327,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string preparation_wire;
   ChatRequestPlan request_plan;
   ChatFileInputs chat_files(objects_.get());
+  ChatWebSearch chat_web;
   CompletionRequestPlan completion_plan;
   std::vector<PreparedCompletionPrompt> completion_prompts;
   uint64_t completion_prompt_tokens = 0, completion_output_tokens = 0;
@@ -523,7 +525,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     s = PlanChatRequest(original_request, validation_config, &request_plan,
                         &planning_error);
     const auto* messages = original_request.GetArray("messages");
-    if (s && !internal && messages && HasFileInputs(*messages)) {
+    const auto* web_options = original_request.Find("web_search_options");
+    const bool search_web = web_options && !web_options->IsNull();
+    if (s && !internal &&
+        ((messages && HasFileInputs(*messages)) || search_web)) {
       if (original_request.GetBool("store") &&
           (!objects_ || !http || !http->Client().Allowed())) {
         SendError(fd, 503, "Authenticated application state unavailable", {},
@@ -561,6 +566,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       auto prepared = chat_files.Prepare(
           original_request, planning_config, access, &request_plan,
           bindings ? *bindings : io::Json(), frozen_inputs != nullptr);
+      if (prepared.ok()) {
+        const auto* frozen_web =
+            frozen_inputs ? frozen_inputs->Find("web_content") : nullptr;
+        const io::Json missing;
+        prepared = chat_web.Prepare(
+            objects_.get(), original_request, planning_config, access,
+            &request_plan,
+            frozen_inputs ? (frozen_web ? frozen_web : &missing) : nullptr);
+      }
       if (!prepared.ok()) {
         SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
                   prepared.ClientCode(), prepared.value.GetString("param"));
@@ -1075,7 +1089,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
 
   const bool collect_chat =
-      !stream || chat_storage.store || chat_moderation.Enabled();
+      !stream || chat_storage.store || chat_moderation.Enabled() ||
+      chat_web.Active();
   const bool batch_usage =
       http && http->RateDomain() == ClientRateDomain::kBatch;
   ChatChoices choices(sampling.choices, !collect_chat, batch_usage);
@@ -1539,8 +1554,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // Neither path retries an answer or a client operation.
   const int response_steps =
       7 +
-      (responses && (responses->HasFileSearch() || responses->HasToolSearch() ||
-                     responses->HasPrograms() || responses->HasMcp())
+      (responses && responses->HasNativeTools()
            ? ResponsesExecution::kMaxNativeToolCalls
            : 0) +
       (responses && (responses->HasAsyncTools() || responses->HasToolSearch() ||
@@ -4666,6 +4680,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           return;
         }
         if (stream && !write_stream(citations)) return;
+        s = responses->CiteWebSearchSources(&citations);
+        if (!s) {
+          err_guard.ok = false;
+          SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+          return;
+        }
+        if (stream && !write_stream(citations)) return;
       }
       if (!internal_step && !prewarm && finish_reason != "length" &&
           responses->PendingNativeCalls()) {
@@ -4737,6 +4758,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           result = responses->RunFileSearches(
               response_parser.CompletedToolCalls(), callbacks, &query_usage,
               &answer, publish);
+        if (result.ok() && responses->PendingWebSearch())
+          result = responses->RunWebSearches(response_parser.CompletedToolCalls(), publish);
         if (result.ok() && responses->PendingToolSearch())
           result = responses->RunToolSearches(
               response_parser.CompletedToolCalls(), &client_wait, publish);
@@ -4871,8 +4894,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       if (s) s = completion_choices.Add(choice_index, T, std::move(candidate));
     } else {
-      s = choices.Add(
-          choice_index, collect_chat ? response_parser.MessageJson() : "",
+      auto message = collect_chat ? response_parser.MessageJson() : "";
+      std::string annotations;
+      s = chat_web.Annotate(message, &message, &annotations);
+      if (s && stream && annotations != "{}") {
+        if (!write_stream(detail::SseDeltaChunk(
+                id, model_field, annotations, "", choice_index, created,
+                include_usage, "null", include_obfuscation)))
+          return;
+      }
+      if (s) s = choices.Add(
+          choice_index, message,
           finish_reason, sampling.logprobs ? token_logprobs.Json() : "null", T,
           prediction.Completion(generated.size()), restored_prefix,
           session.cache || !prefix_scope.empty(),

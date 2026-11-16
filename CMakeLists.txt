@@ -381,6 +381,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_expansion.cpp
   src/server/file_input_policy.cpp
   src/server/chat_file_inputs.cpp
+  src/server/chat_web_search.cpp
   src/server/model_preparation.cpp
   src/server/file_source.cpp
   src/server/file_pdf.cpp
@@ -494,6 +495,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/vector_search_execution.cpp
     src/server/vector_query_rewrite.cpp
     src/server/responses_file_search.cpp
+    src/server/responses_web_search.cpp
+    src/server/responses_web_context.cpp
+    src/server/responses_web_output.cpp
+    src/server/responses_web_execution.cpp
     src/server/responses_tool_search.cpp
     src/server/responses_tool_catalog_history.cpp
     src/server/responses_tool_search_output.cpp

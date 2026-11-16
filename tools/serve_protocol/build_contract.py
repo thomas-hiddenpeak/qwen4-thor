@@ -90,6 +90,7 @@ def schema_node():
 
 
 def chat_schema():
+    from tools.serve_responses.web_contract import chat_options
     safe = dict(type="string", minLength=1, maxLength=64, pattern="^[A-Za-z0-9_-]+$")
     hex64 = dict(type="string", pattern="^[0-9a-f]{64}$")
     identifier = dict(type="string", minLength=1, maxLength=128,
@@ -218,6 +219,7 @@ def chat_schema():
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
         store=dict(type=["boolean", "null"], default=False),
+        web_search_options=chat_options(),
         moderation=nullable(obj(dict(
             model=dict(type="string", minLength=1,
                 **{"x-q4t-registered-model-or-alias": True}),

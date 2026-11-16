@@ -239,7 +239,7 @@ Status ResponsesOutput::Cancel() {
   for (size_t i = 0; i < Items().array.size(); ++i)
     if (!closed_items_.contains(i)) {
       const auto type = Items().array[i].GetString("type");
-      if (type == "file_search_call" || type == "mcp_call")
+      if (type == "file_search_call" || type == "mcp_call" || type == "web_search_call")
         Set(&Items().array[i], "status", String("incomplete"));
       else if (type == "mcp_list_tools")
         Set(&Items().array[i], "error", String("MCP listing cancelled"));
@@ -652,6 +652,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     for (size_t i = 0; i < Items().array.size(); ++i)
       if ((Items().array[i].GetString("type") == "file_search_call" ||
            Items().array[i].GetString("type") == "tool_search_call" ||
+           Items().array[i].GetString("type") == "web_search_call" ||
            Items().array[i].GetString("type") == "mcp_call" ||
            Items().array[i].GetString("type") == "mcp_list_tools") &&
           !closed_items_.contains(i))
@@ -665,6 +666,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
         incomplete &&
         (Items().array[i].GetString("type") == "file_search_call" ||
          Items().array[i].GetString("type") == "tool_search_call" ||
+           Items().array[i].GetString("type") == "web_search_call" ||
          Items().array[i].GetString("type") == "mcp_call" ||
          (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
                                       : i + 1 == Items().array.size()));

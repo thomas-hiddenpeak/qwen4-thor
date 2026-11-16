@@ -20,6 +20,7 @@
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/text_stop.h"
+#include "q4t/server/web_search.h"
 
 namespace q4t::server {
 namespace {
@@ -107,6 +108,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "prompt",
                         "messages",
                         "moderation",
+                        "web_search_options",
                         "max_tokens",
                         "max_completion_tokens",
                         "stream",
@@ -153,6 +155,17 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "parallel_tool_calls"},
                        error_param);
   if (!status) return status;
+  if (const auto* web = req.Find("web_search_options");
+      web && !web->IsNull()) {
+    WebSearchOptions options;
+    ChatPlanError error;
+    status = ParseWebSearchOptions(*web, true, &options, &error,
+                                   "web_search_options");
+    if (!status) {
+      *error_param = error.param;
+      return status;
+    }
+  }
   status = ValidateModerationOptions(req, error_param);
   if (!status) return status;
   ChatStorageOptions storage;

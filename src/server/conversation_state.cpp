@@ -1,3 +1,4 @@
+#include "q4t/server/responses_web_search.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/tool_result_contracts.h"
 
@@ -268,6 +269,9 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
   if (!checked.ok()) return checked;
   auto contracts =
       data.Find("tool_contracts") ? *data.Find("tool_contracts") : Json();
+  auto web = data.Find("web_content") ? *data.Find("web_content") : Json();
+  auto web_checked = MergeWebContexts(Json(), *all_items, &web);
+  if (!web_checked.ok()) return web_checked;
   checked = MergeToolResultContracts(Json(), *all_items, &contracts);
   if (!checked.ok()) return checked;
   std::vector<int64_t> item_revisions;
@@ -290,6 +294,10 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
       }
       if (const auto* bound = old_data->Find("tool_contracts")) {
         checked = MergeToolResultContracts(*bound, *all_items, &contracts);
+        if (!checked.ok()) return checked;
+      }
+      if (const auto* bound = old_data->Find("web_content")) {
+        checked = MergeWebContexts(*bound, *all_items, &web);
         if (!checked.ok()) return checked;
       }
       // Imported items keep their original binding, including explicit null
@@ -316,15 +324,20 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
     checked =
         MergeToolResultContracts(contracts, Array({item}), &own_contracts);
     if (!checked.ok()) return checked;
+    Json own_web;
+    checked = MergeWebContexts(web, Array({item}), &own_web);
+    if (!checked.ok()) return checked;
     mutations.push_back(Write(ObjectKind::kConversationItem,
                               item.GetString("id"), item_revisions[index++],
                               Object({{"item", item},
                                       {"input_snapshots", own},
-                                      {"tool_contracts", own_contracts}}),
+                                      {"tool_contracts", own_contracts},
+                                      {"web_content", own_web}}),
                               access));
   }
   Set(&data, "input_snapshots", std::move(bindings));
   Set(&data, "tool_contracts", std::move(contracts));
+  Set(&data, "web_content", std::move(web));
   mutations.insert(mutations.begin(), Write(ObjectKind::kConversation, id,
                                             revision, std::move(data), access));
   return objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
@@ -482,6 +495,12 @@ ObjectReply ConversationState::EraseItem(const std::string& id,
         MergeToolResultContracts(*contracts, Field(data, "items"), &retained);
     if (!checked.ok()) return checked;
     Set(&data, "tool_contracts", std::move(retained));
+  }
+  if (const auto* web = data.Find("web_content")) {
+    Json retained;
+    auto checked = MergeWebContexts(*web, Field(data, "items"), &retained);
+    if (!checked.ok()) return checked;
+    Set(&data, "web_content", std::move(retained));
   }
   auto resource = *data.Find("resource");
   auto written = objects_.Execute(

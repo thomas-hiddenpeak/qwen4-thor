@@ -723,6 +723,211 @@
                 "detail_policy"
               ],
               "description": "Native media v3: static GIF and per-image detail/resize policy; historical versions retain their exact schemas."
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v3"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg",
+                    "gif"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg",
+                    "image/gif"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto",
+                    "low",
+                    "high",
+                    "original"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                },
+                "video_time_field": {
+                  "const": "video_timestamps"
+                },
+                "video_time_unit": {
+                  "const": "seconds"
+                },
+                "video_time_default": {
+                  "const": "frame_index/24"
+                },
+                "max_timestamp_seconds": {
+                  "const": 86400
+                },
+                "temporal_group_frames": {
+                  "const": 2
+                },
+                "timestamp_rounding_decimal_places": {
+                  "const": 1
+                },
+                "video_prompt": {
+                  "const": "timestamp_then_one_boundary_per_temporal_group"
+                },
+                "mtp": {
+                  "const": false
+                },
+                "state_cache": {
+                  "const": true
+                },
+                "chunked_prefill": {
+                  "const": true
+                },
+                "max_execution_slots": {
+                  "const": 1
+                },
+                "client_governance": {
+                  "const": true
+                },
+                "animated_images": {
+                  "const": false
+                },
+                "detail_policy": {
+                  "const": {
+                    "auto": "qwen_reference_smart_resize",
+                    "low": {
+                      "longest_edge": 512,
+                      "max_pixels": 262144
+                    },
+                    "high": {
+                      "longest_edge": 2048,
+                      "max_pixels": 4194304
+                    },
+                    "original": "preserve_pixels_pad_right_bottom_edge",
+                    "configured_pixel_limit_applies": true
+                  }
+                },
+                "cache_identity": {
+                  "const": "source_bytes_processor_geometry_and_position"
+                },
+                "cache_boundaries": {
+                  "const": "complete_visual_blocks"
+                },
+                "cache_layout": {
+                  "const": "target_with_three_axis_rope_and_delta"
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation",
+                "video_time_field",
+                "video_time_unit",
+                "video_time_default",
+                "max_timestamp_seconds",
+                "temporal_group_frames",
+                "timestamp_rounding_decimal_places",
+                "video_prompt",
+                "mtp",
+                "state_cache",
+                "chunked_prefill",
+                "max_execution_slots",
+                "client_governance",
+                "animated_images",
+                "detail_policy",
+                "cache_identity",
+                "cache_boundaries",
+                "cache_layout"
+              ],
+              "description": "Current native media v3 retains visual state and exact processor/geometry/position identity; preceding v3 records retain their historical schema."
             }
           ]
         }
@@ -851,6 +1056,21 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 9007199254740991
+        },
+        "tunnel_poll_connections": {
+          "enum": [
+            0,
+            4
+          ]
+        },
+        "tunnel_response_connections": {
+          "enum": [
+            0,
+            4
+          ]
+        },
+        "tunnel_body_bytes": {
+          "const": 17825792
         }
       },
       "required": [
@@ -2786,6 +3006,74 @@
         },
         "body_storage_context_admission_separate": {
           "const": true
+        },
+        "video": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_source_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50000000
+            },
+            "max_frame_pixels": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 33554432
+            },
+            "max_decoded_pixels": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4294967296
+            },
+            "max_output_bytes": {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 134217728
+            },
+            "max_duration_ns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 600000000000
+            },
+            "max_edge": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8192
+            },
+            "max_scanned_frames": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 18000
+            },
+            "sample_frames": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "max_thread_creations": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30000
+            }
+          },
+          "required": [
+            "max_source_bytes",
+            "max_frame_pixels",
+            "max_decoded_pixels",
+            "max_output_bytes",
+            "max_duration_ns",
+            "max_edge",
+            "max_scanned_frames",
+            "sample_frames",
+            "max_thread_creations",
+            "timeout_ms"
+          ]
         }
       },
       "required": [
@@ -3249,6 +3537,123 @@
       ],
       "additionalProperties": false,
       "description": "Native vector ingestion job health; auxiliary failure does not affect core readiness. Historical config-v1 producers omit this property."
+    },
+    "mcp_deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-mcp-deployment-policy-v1"
+        },
+        "configured": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "native_tunnel_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "native_provider_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "request_override": {
+          "const": false
+        },
+        "redirects": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "configured",
+        "sha256",
+        "target_count",
+        "native_tunnel_count",
+        "native_provider_count",
+        "request_override",
+        "redirects"
+      ]
+    },
+    "web_deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-web-deployment-policy-v1"
+        },
+        "configured": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backend": {
+          "const": "native_configured_sites"
+        },
+        "seed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_pages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "max_download_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 52428800
+        },
+        "request_override": {
+          "const": false
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model_restart_on_error": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "configured",
+        "sha256",
+        "backend",
+        "seed_count",
+        "scope_count",
+        "max_pages",
+        "max_download_bytes",
+        "request_override",
+        "core_readiness_dependency",
+        "model_restart_on_error"
+      ]
     }
   },
   "required": [

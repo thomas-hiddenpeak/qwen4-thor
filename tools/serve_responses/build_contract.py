@@ -67,6 +67,8 @@ def schema(graph):
     definitions.update(moderation_definitions())
     from tools.serve_responses.embeddings_contract import definitions as embedding_definitions
     definitions.update(embedding_definitions())
+    from tools.serve_responses.web_contract import update_tools
+    update_tools(definitions, graph)
 
     # The current official cache guide adds a 12h request TTL; the pinned SDK
     # already permits 12h on individual blocks but has a stale request/output

@@ -262,6 +262,7 @@ class ChatServer {
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::string file_input_policy_sha256_;
   std::shared_ptr<const McpDeploymentPolicy> mcp_policy_;
+  std::shared_ptr<const WebDeploymentPolicy> web_policy_;
   std::shared_ptr<McpTunnelBroker> mcp_tunnels_;
   bool mcp_tunnels_enabled_ = false;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;

@@ -3,6 +3,7 @@
 
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_web_search.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/reasoning_options.h"
@@ -50,7 +51,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .file_inputs = file_inputs_,
           .file_input_policy_sha256 = file_input_policy_sha256_,
           .mcp_policy = mcp_policy_,
-          .mcp_tunnels = mcp_tunnels_};
+          .mcp_tunnels = mcp_tunnels_,
+          .web_policy = web_policy_};
 }
 
 void ChatServer::HandleConfig(int fd) {
@@ -196,7 +198,11 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
                                 : "local:anonymous",
                             control.deadline(), cancelled};
   ChatFileInputs files(objects_.get());
-  const auto prepared = files.Prepare(original_request, config, access, &plan);
+  auto prepared = files.Prepare(original_request, config, access, &plan);
+  ChatWebSearch web;
+  if (prepared.ok())
+    prepared = web.Prepare(objects_.get(), original_request, config, access,
+                            &plan);
   if (!prepared.ok()) {
     detail::SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
                       prepared.ClientCode(), prepared.value.GetString("param"));

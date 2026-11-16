@@ -54,6 +54,73 @@
       ],
       "default": false
     },
+    "web_search_options": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "search_context_size": {
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "user_location": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "approximate"
+                    },
+                    "approximate": {
+                      "type": "object",
+                      "properties": {
+                        "city": {
+                          "type": "string",
+                          "pattern": "^[^\\r\\n\\u0000]*$",
+                          "x-q4t-max-utf8-bytes": 256
+                        },
+                        "country": {
+                          "type": "string",
+                          "pattern": "^[A-Z]{2}$"
+                        },
+                        "region": {
+                          "type": "string",
+                          "pattern": "^[^\\r\\n\\u0000]*$",
+                          "x-q4t-max-utf8-bytes": 256
+                        },
+                        "timezone": {
+                          "type": "string",
+                          "pattern": "^[^\\r\\n\\u0000]*$",
+                          "x-q4t-max-utf8-bytes": 256
+                        }
+                      },
+                      "required": [],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "approximate"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "moderation": {
       "anyOf": [
         {

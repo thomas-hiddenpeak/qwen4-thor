@@ -90,3 +90,43 @@ binary及服务包保持。该组通过只证明组件，不记Chat/Responses已
 FetchWebPage的零剩余预算门控，只重验该项及4项既有web获取合同，
 最多5项、0GPU。保留原构建路径错误、清单空白拒绝和真实失败记录；
 没有执行的清单预检不算CPU通过，其他15项身份未变的证据复用。
+
+## API与私有来源接入组
+
+配置网站执行已通过。继续接入Responses声明/选择、原生工具循环、
+search/open/find标准item与SSE、实际来源引用和include投影；Chat在
+回答前检索。检索上下文是按认证scope持久化的私有状态，绑定原始
+调用item，不接受客户端伪造；previous_response、conversation及
+item_reference恢复同一来源，不自动重放搜索。中断/取消保留诚实
+终态和已消费预算，普通LLM请求不依赖搜索配置或网络可用性。
+
+冻结最多30项直接CPU（新协议/状态合同及必要受影响回归）、Python/
+JS两组标准客户端形状检查。成组实现后验证；必要模型业务仍使用
+前述初始2启动/8外部请求/900秒预算，不重复全量质量与性能矩阵。
+
+## 首组API验证后的定点修复
+
+30项CPU全过；Python/JS各2项SDK及Python4项合同检查发现：特定
+web_search选择值未进入官方公开枚举，响应回显在严格Python SDK和
+schema中失败；config的既有视觉缓存字段也未同步schema；JS夹具误读
+项目客户端的result包装。原件保留，不能记SDK全过。
+
+保留直接选择输入及实际约束，公开回显规范为同义的allowed_tools /
+required单类子集（支持当前官方SDK），不降低为auto或修改私有工具
+选择。配置schema增加实际已交付视觉缓存v3分支，同时保留历史分支。
+修复后仅重验8项受影响Responses CPU、两项Python失败合同、Python
+Responses SDK及JS失败组；此前通过的Chat SDK/合同及其他CPU复用。
+官方依据：
+https://developers.openai.com/api/reference/resources/responses/methods/create
+及官方openai-python的ToolChoiceTypes当前仍列preview具体选择；
+allowed_tools要求子集不变，原始请求保留，输出报告有效选择。
+
+同组后续静态审查发现HasFileSearch分支遗留在非流式响应投影和无
+客户端策略时的Batch多步预算中；统一HasNativeTools入口，并补实际
+ResultJson投影/Batch累积上界断言。Chat生成循环也使用统一入口。
+这些直接受影响断言纳入上述8项修复用例，不重跑其余已过项。
+
+定点重验中配置schema还暴露tunnel/video既有字段漏项；按当前源码
+限制补齐并仅重验该合同。最后30项不同C++/38次执行、4项合同与
+双SDK各2项通过，原失败和模拟模型CPU捕获单列。下一步按初始
+2启动8外部请求900秒执行真实来源/模型业务，不用CPU通过替代。

@@ -1,6 +1,7 @@
 #include "q4t/server/responses_execution.h"
 
 #include <stdexcept>
+#include <algorithm>
 
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
@@ -8,32 +9,39 @@
 namespace q4t::server {
 using namespace object_detail;
 namespace {
-bool IncludeResults(const ResponsesEnvelope& envelope) {
+bool Includes(const ResponsesEnvelope& envelope, std::string_view field) {
   const auto* includes = envelope.request.GetArray("include");
   if (includes)
     for (const auto& value : includes->array)
-      if (value.str == "file_search_call.results") return true;
+      if (value.str == field) return true;
   return false;
 }
-void HideResult(Json* item) {
-  if (item->GetString("type") == "file_search_call" && item->Has("results"))
+void HideResult(Json* item, const ResponsesEnvelope& envelope) {
+  if (!Includes(envelope, "file_search_call.results") &&
+      item->GetString("type") == "file_search_call" && item->Has("results"))
     Set(item, "results", Json());
+  if (!Includes(envelope, "web_search_call.action.sources") &&
+      item->GetString("type") == "web_search_call" && item->Has("action"))
+    std::erase_if(Field(*item, "action").object,
+                  [](const auto& field) { return field.first == "sources"; });
 }
-void HideResponse(Json* response) {
+void HideResponse(Json* response, const ResponsesEnvelope& envelope) {
   if (response->GetArray("output"))
-    for (auto& item : Field(*response, "output").array) HideResult(&item);
+    for (auto& item : Field(*response, "output").array) HideResult(&item, envelope);
 }
 }  // namespace
 
 Json ResponsesExecution::PublicResponse() const {
   auto response = output_.Snapshot();
-  if (!IncludeResults(envelope_)) HideResponse(&response);
+  HideResponse(&response, envelope_);
   return ResponsesPublicValue(std::move(response));
 }
 
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {
-  if (IncludeResults(envelope_) ||
-      wire.find("\"file_search_call\"") == wire.npos)
+  if ((Includes(envelope_, "file_search_call.results") ||
+       wire.find("\"file_search_call\"") == wire.npos) &&
+      (Includes(envelope_, "web_search_call.action.sources") ||
+       wire.find("\"web_search_call\"") == wire.npos))
     return std::string(wire);
   std::string result;
   while (!wire.empty()) {
@@ -48,8 +56,8 @@ std::string ResponsesExecution::PublicWire(std::string_view wire) const {
                       &event, true, kSchemaJsonLimits);
     if (!status || event.GetString("type") != wire.substr(7, line - 7))
       throw std::logic_error("Invalid native file search event value");
-    if (event.Has("item")) HideResult(&Field(event, "item"));
-    if (event.Has("response")) HideResponse(&Field(event, "response"));
+    if (event.Has("item")) HideResult(&Field(event, "item"), envelope_);
+    if (event.Has("response")) HideResponse(&Field(event, "response"), envelope_);
     result +=
         std::string(wire.substr(0, line + 8)) + OutputJson(event) + "\r\n\r\n";
     wire.remove_prefix(end + 4);

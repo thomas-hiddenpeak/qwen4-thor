@@ -34,6 +34,7 @@ struct ServerOptions {
   std::string access_program_policy_file;  // Optional native policy snapshot.
   std::string file_input_policy_file;  // Optional trusted preparation policy.
   std::string mcp_policy_file;  // Optional trusted MCP routing/network policy.
+  std::string web_policy_file;  // Optional native search sources/network policy.
   int port = 8000;
   // Optional independent local operations listener; 0 disables. Always
   // 127.0.0.1, with its own bounded handlers; never serves generation.
