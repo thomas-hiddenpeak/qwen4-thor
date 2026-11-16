@@ -1,0 +1,19 @@
+{
+  "status": "FAILED_VALIDATION_DRIVER_IMPORT",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "probes": 0,
+    "controls": 156
+  },
+  "seconds": 44.315098735969514,
+  "nvml_queries": 44,
+  "actual_media_requests": 0,
+  "pressure_started": false,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "core_service_failure_observed": false,
+  "accepted": false,
+  "repair_cpu_case": "PASS",
+  "archive_repair": "Offline archive import lacked tools/evalscope search path; corrected, originals recovered from already-sealed CPU archive with matching frozen SHA, no model rerun"
+}

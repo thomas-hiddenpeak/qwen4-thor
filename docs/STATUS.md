@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[托管视觉驱动首次失败已定位](evidence/serve-media-managed-driver-failure-20261116/README.md)：
+1启动/1自检后，驱动间接导入生产包未携带的TLS夹具失败；尚无媒体
+请求或RAM压力，持久STOPPED与自有资源清理完成。纯wire检查替代
+测试夹具导入，实际sealed namespace判定CPU单项通过；引擎/包保持，
+继续最多3启动/12请求/900秒原恢复场景，rev134保持、master继续。
+
 [托管视觉恢复驱动/封包CPU首过](evidence/serve-media-managed-driver-cpu-20261116/README.md)：
 5项CPU通过，四个原生服务程序零警告且字节与rev134相同。候选包
 7a8e9cd2待实际恢复；继续最多3启动/12请求/900秒真实内存压力下的
