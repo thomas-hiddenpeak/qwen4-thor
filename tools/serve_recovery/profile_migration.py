@@ -19,6 +19,9 @@ RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
     'mcp_approval_request', 'mcp_call'))
+MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
+    'connector_googlecalendar', 'connector_googledrive', 'connector_microsoftteams',
+    'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
 
 
 def semantic_capabilities(value):
@@ -81,6 +84,25 @@ def semantic_capabilities(value):
                 all(mcp.get(key) is False for key in ('automatic_tool_replay',
                     'model_restart_on_error', 'core_readiness_dependency')),
                 'MCP outputs lack their implementation capability')
+            if any(key in mcp for key in ('native_provider_adapters',
+                    'native_provider_ids', 'connector_transport')):
+                enabled = mcp.get('native_provider_adapters')
+                providers = mcp.get('native_provider_ids', [])
+                ledger.require(type(enabled) is bool and type(providers) is list
+                    and all(type(item) is str for item in providers)
+                    and len(set(providers)) == len(providers)
+                    and set(providers) <= MCP_PROVIDER_IDS
+                    and enabled == bool(providers)
+                    and mcp.get('connector_transport') == (
+                        'native_or_deployment_mapped_mcp' if enabled else
+                        'deployment_mapped_mcp'),
+                    'invalid native MCP provider capabilities')
+                # Only this reviewed provider enum can extend. Automatic
+                # recovery still requires equality, never provider loss/addition.
+                mcp['native_provider_adapters'] = {item: True for item in providers}
+                mcp.pop('native_provider_ids', None)
+                mcp['connector_transport'] = dict(deployment_mapped_mcp=True,
+                    **(dict(native_provider=True) if enabled else {}))
         # This field declares an unordered set of output types. Normalize only
         # this reviewed enum; all other arrays retain exact-value comparison.
         responses['output_items'] = {item: True for item in items}

@@ -81,6 +81,8 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
     Set(&authority, "tunnel_generation", String(endpoint.tunnel_generation));
     Set(&authority, "tunnel_channel", String(endpoint.tunnel_channel));
   }
+  if (!endpoint.provider_id.empty())
+    Set(&authority, "provider_id", String(endpoint.provider_id));
   std::string binding, scope;
   if (!InputValueIdentity(String(access.scope), &scope) ||
       !InputValueIdentity(authority, &binding))
@@ -210,6 +212,7 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
               {"tunnel_id", String(endpoint.tunnel_id)},
               {"tunnel_generation", String(endpoint.tunnel_generation)},
               {"tunnel_channel", String(endpoint.tunnel_channel)},
+              {"provider_id", String(endpoint.provider_id)},
               {"headers", std::move(headers)},
               {"authorization", String(endpoint.authorization)},
               {"options", file_detail::OptionsJson(deployment)},
@@ -425,6 +428,7 @@ int MaybeRunMcpWorker(int argc, char** argv) {
       endpoint.tunnel_id = request.GetString("tunnel_id");
       endpoint.tunnel_generation = request.GetString("tunnel_generation");
       endpoint.tunnel_channel = request.GetString("tunnel_channel", "main");
+      endpoint.provider_id = request.GetString("provider_id");
       endpoint.authorization = request.GetString("authorization");
       const auto* headers = request.Find("headers");
       const auto* options = request.Find("options");

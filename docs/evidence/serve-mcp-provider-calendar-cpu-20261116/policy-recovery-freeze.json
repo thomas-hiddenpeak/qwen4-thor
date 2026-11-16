@@ -1,0 +1,9 @@
+{
+  "python_tests": [
+    "tools.serve_recovery.test_mcp_recovery_contract",
+    "tools.serve_responses.test_mcp_policy"
+  ],
+  "cases": 14,
+  "reason": "Native provider capability extension requires precise nonautomatic upgrade while preserving exact set on recovery. Actual native CLI and CPU package must retain private scopes and source hash.",
+  "gpu_starts": 0
+}

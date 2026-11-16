@@ -274,6 +274,10 @@ set(protocol_inputs
   src/server/mcp_tunnel_agent_internal.h
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
+  src/server/mcp_provider_internal.h
+  src/server/mcp_provider.cpp
+  src/server/mcp_provider_calendar.cpp
+  src/server/mcp_provider_time.cpp
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp

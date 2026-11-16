@@ -1223,6 +1223,22 @@
         "actual_cli_passed": 5,
         "gpu_starts": 0,
         "default_changed": false
+      },
+      "native_providers": {
+        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 7
       }
     },
     {
@@ -2078,6 +2094,22 @@
         "actual_cli_passed": 5,
         "gpu_starts": 0,
         "default_changed": false
+      },
+      "native_providers": {
+        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 7
       }
     },
     {
@@ -2120,6 +2152,22 @@
         "pull_request": 28,
         "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "native_providers": {
+        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 7
       }
     },
     {
@@ -2971,6 +3019,22 @@
         "pull_request": 28,
         "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
+      },
+      "native_providers": {
+        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 7
       }
     },
     {
@@ -3098,6 +3162,22 @@
         "actual_cli_passed": 5,
         "gpu_starts": 0,
         "default_changed": false
+      },
+      "native_providers": {
+        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
+        "required_provider_count": 8,
+        "required_tools": 42,
+        "first": "connector_googlecalendar",
+        "cpu_cases_frozen": 27,
+        "live_provider_business": false,
+        "default_changed": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-mcp-provider-calendar-cpu-20261116/README.md",
+        "cpp_unique_passed": 28,
+        "python_unique_passed": 14,
+        "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
+        "remaining_provider_count": 7
       }
     },
     {
@@ -3113,6 +3193,6 @@
       "release": null
     }
   ],
-  "next_task": "Implement native provider adapters starting with Google Calendar, deliver agent configuration fix, and continue every remaining master task.",
-  "next": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory."
+  "next_task": "Implement native Google Drive/Gmail and remaining providers; complete live account business and agent/provider release; continue every remaining master task.",
+  "next": "Implement native Google Drive/Gmail and remaining providers; complete live account business and agent/provider release; continue every remaining master task."
 }

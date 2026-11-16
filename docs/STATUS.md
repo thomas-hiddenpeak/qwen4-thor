@@ -43,12 +43,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生提供方适配](SERVE_MCP_PROVIDERS_2026-11-16.md)的Calendar五项
+只读工具、固定主机、OAuth权限目录、时区/游标及错误处理已实现；
+[28项C++、14项Python/实际CLI最终通过](evidence/serve-mcp-provider-calendar-cpu-20261116/README.md)，
+主机/完整引擎零警告、7项来源负控通过，0GPU。首轮小数秒与恢复
+夹具失败保留并补验。实际账户业务和可用发行仍待完成；继续其余
+七提供方及全部master，八提供方42工具没有缩减。
+
 [隧道agent配置一致性修复](evidence/serve-mcp-agent-config-cpu-20261116/README.md)
 已完成：11项不同C++、5项实际CLI、7项来源负控最终通过；显式非零
 重定向不再静默覆盖，check使用实际worker序列化预算，避免检查成功
 而启动失败。首轮夹具/来源门禁失败保留，针对性补验；0GPU。候选
-9cf9af38独立保留、尚待发行；rev134默认不变。继续PR28合入及提供方
-原生适配等全部master任务。
+9cf9af38独立保留、尚待发行；rev134默认不变。PR28此前交付已合入，
+本修复随提供方原生适配继续交付，全部master任务保持active。
 
 以下保留各阶段发生时的默认身份；当前已交付身份以上表为准。
 

@@ -102,10 +102,15 @@ Q4T_TEST(chat_capabilities_mcp_native_execution_and_recovery_boundaries) {
             mcp->GetBool("authenticated_continuation") &&
             mcp->GetBool("encrypted_session_state"));
   Q4T_CHECK(mcp->GetString("approval_default") == "always");
+  Q4T_CHECK(mcp->GetBool("native_provider_adapters") &&
+            mcp->GetString("connector_transport") ==
+                "native_or_deployment_mapped_mcp");
+  const auto* providers = mcp->GetArray("native_provider_ids");
+  Q4T_CHECK(providers && providers->array.size() == 1 &&
+            providers->array[0].str == "connector_googlecalendar");
   for (const auto* field :
        {"automatic_tool_replay", "model_restart_on_error",
-        "core_readiness_dependency", "external_agent_required",
-        "native_provider_adapters"})
+        "core_readiness_dependency", "external_agent_required"})
     Q4T_CHECK(!mcp->GetBool(field, true));
   Q4T_CHECK(responses->Find("programmatic_tools")
                 ->Find("tool_types")

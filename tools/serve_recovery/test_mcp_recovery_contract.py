@@ -117,5 +117,66 @@ class PrivatePolicyRecoveryTests(unittest.TestCase):
         self.assertEqual((fixture.state/'ledger.json').read_bytes(), fixture.core_before)
 
 
+class ProviderMigrationTests(unittest.TestCase):
+    setUp = McpMigrationTests.setUp
+
+    def provider_records(self, enabled):
+        records = copy.deepcopy(self.records)
+        for record in records.values():
+            mcp = record['capabilities']['responses']['mcp']
+            mcp.update(native_provider_adapters=enabled,
+                connector_transport='native_or_deployment_mapped_mcp' if enabled
+                    else 'deployment_mapped_mcp')
+            if enabled:
+                mcp['native_provider_ids'] = ['connector_googlecalendar']
+        return records
+
+    def test_provider_upgrade_is_explicit_and_preserves_original_evidence(self):
+        base = self.base
+        old = profile_fixture.bind_records(base.old, self.provider_records(False))
+        new = profile_fixture.bind_records(base.new, self.provider_records(True))
+        before = copy.deepcopy((old, new))
+        grant = migration.permit(base.old, base.new, old, new, base.config,
+            base.config, allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        self.assertEqual((old, new), before)
+        for automatic in (False, True):
+            with self.assertRaisesRegex(ValueError, 'application capabilities'):
+                migration.permit(base.old, base.new, old, new, base.config,
+                    base.config, automatic=automatic)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(base.new, base.old, new, old, base.config,
+                base.config, allow_capability_extension=True)
+
+    def test_provider_recovery_requires_same_exact_provider_set(self):
+        base = self.base
+        records = self.provider_records(True)
+        old = profile_fixture.bind_records(base.old, copy.deepcopy(records))
+        new = profile_fixture.bind_records(base.new, copy.deepcopy(records))
+        migration.permit(base.old, base.new, old, new, base.config, base.config,
+                         automatic=True)
+        changed = copy.deepcopy(records)
+        for record in changed.values():
+            record['capabilities']['responses']['mcp']['native_provider_ids'].append(
+                'connector_gmail')
+        expanded = profile_fixture.bind_records(base.new, changed)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(base.old, base.new, old, expanded, base.config,
+                base.config, automatic=True, allow_capability_extension=True)
+        migration.permit(base.old, base.new, old, expanded, base.config,
+            base.config, allow_capability_extension=True)
+
+    def test_provider_capability_types_and_catalog_are_not_relaxed(self):
+        original = self.provider_records(True)['primary']['capabilities']
+        for patch in (dict(native_provider_adapters=1),
+                dict(native_provider_ids=[]), dict(native_provider_ids=['unknown']),
+                dict(native_provider_ids=['connector_googlecalendar']*2),
+                dict(native_provider_ids=[True]), dict(connector_transport='http')):
+            changed = copy.deepcopy(original)
+            changed['responses']['mcp'].update(patch)
+            with self.subTest(patch=patch), self.assertRaises(ValueError):
+                migration.semantic_capabilities(changed)
+
+
 if __name__ == '__main__':
     unittest.main()

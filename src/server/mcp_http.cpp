@@ -1,4 +1,5 @@
 #include "mcp_transport_internal.h"
+#include "mcp_provider_internal.h"
 #include "mcp_sse_internal.h"
 #include "mcp_tunnel_transport_internal.h"
 
@@ -66,6 +67,8 @@ class Client {
   Client(const McpEndpoint& endpoint, const FileFetchOptions& options,
          Deadline deadline)
       : options_(options), deadline_(deadline) {
+    provider_ = endpoint.provider_id;
+    if (!provider_.empty()) provider_endpoint_ = endpoint;
     native_ = !endpoint.tunnel_id.empty();
     file_detail::ParseUrl(endpoint.url, &url_);
     headers_ = endpoint.headers;
@@ -79,6 +82,14 @@ class Client {
   ObjectReply Initialize() {
     if (!entropy_)
       return Error(503, "mcp_entropy_unavailable", "MCP ID unavailable");
+    if (!provider_.empty()) {
+      // This is q4t's native MCP adapter, not a claimed remote handshake.
+      // Scoped tools/list below reads the provider's actual authorization.
+      protocol = "2025-06-18";
+      tools_ = true;
+      resources_ = false;
+      return {};
+    }
     auto params =
         Object({{"protocolVersion", String("2025-06-18")},
                 {"capabilities", Object()},
@@ -154,6 +165,10 @@ class Client {
         !state.Find("tools")->IsBool() || !state.Find("resources") ||
         !state.Find("resources")->IsBool())
       return Protocol();
+    if (!provider_.empty() &&
+        (protocol != "2025-06-18" || !session.empty() ||
+         !state.GetBool("tools") || state.GetBool("resources")))
+      return Protocol();
     if (!session.empty()) headers_["Mcp-Session-Id"] = session;
     headers_["MCP-Protocol-Version"] = protocol;
     tools_ = state.GetBool("tools");
@@ -181,6 +196,9 @@ class Client {
   }
   ObjectReply Invoke(std::string_view method, const Json& params, Json* result,
                      Json* error) {
+    if (!provider_.empty())
+      return ExchangeProvider(provider_endpoint_, options_, method, params,
+                               deadline_, result, error);
     const auto request = Request(method, params);
     std::unique_ptr<RemoteHttp> response;
     auto reply = Send(request, &response);
@@ -201,7 +219,7 @@ class Client {
   void Close() {
     // Native leases are cleaned by the parent. Idle worker collection must
     // never write unsolicited bridge frames into a later invocation's IPC.
-    if (native_) return;
+    if (native_ || !provider_.empty()) return;
     if (Legacy() || !headers_.contains("Mcp-Session-Id")) return;
     std::unique_ptr<RemoteHttp> ignored;
     try {
@@ -381,11 +399,23 @@ class Client {
   bool entropy_ = false, tools_ = false, resources_ = false;
   bool native_ = false;
   std::string instance_;
+  std::string provider_;
+  McpEndpoint provider_endpoint_;
 };
 }  // namespace
 
 ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
                           const FileFetchOptions& deployment) {
+  if (!endpoint.provider_id.empty()) {
+    if (!NativeProvider(endpoint.provider_id) || !endpoint.url.empty() ||
+        !endpoint.tunnel_id.empty() || !endpoint.tunnel_generation.empty())
+      return Error(400, "mcp_provider_invalid", "Invalid native provider");
+    if (!file_detail::ValidOptions(deployment) || deployment.max_redirects != 0)
+      return Error(500, "mcp_policy_invalid", "Invalid provider network policy");
+    if (endpoint.authorization.empty())
+      return Error(400, "mcp_credentials_required", "Provider OAuth token required");
+    return CheckHeaders(endpoint);
+  }
   if (!endpoint.tunnel_id.empty()) {
     if (!endpoint.url.empty() || !ValidApplicationId(endpoint.tunnel_id) ||
         !Visible(endpoint.tunnel_generation, 128) ||

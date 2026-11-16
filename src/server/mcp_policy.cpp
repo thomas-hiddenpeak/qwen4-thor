@@ -10,6 +10,7 @@
 #include <set>
 
 #include "file_fetch_internal.h"
+#include "mcp_provider_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -108,6 +109,10 @@ Status ParseMcpDeploymentPolicy(std::string_view raw,
         if (item.Has("channel") && !Text(item.Find("channel"), 128))
           return Invalid();
         target.channel = item.GetString("channel", "main");
+      } else if (target.transport == "provider") {
+        if (kind != "connector_id" || !mcp_detail::NativeProvider(id) ||
+            item.Has("url") || item.Has("agents") || item.Has("channel"))
+          return Invalid();
       } else {
         return Invalid();
       }
@@ -188,6 +193,7 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
   definition->credentials.tunnel_id.clear();
   definition->credentials.tunnel_generation.clear();
   definition->credentials.tunnel_channel = "main";
+  definition->credentials.provider_id.clear();
   definition->target_binding.clear();
   if (policy)
     for (const auto& target : policy->targets) {
@@ -207,6 +213,9 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
       if (target.transport == "native") {
         Set(&identity, "transport", String("native"));
         Set(&identity, "channel", String(target.channel));
+      } else if (target.transport == "provider") {
+        Set(&identity, "transport", String("provider"));
+        Set(&identity, "adapter", String("q4t-native-provider-v1"));
       }
       std::string binding;
       if (!InputValueIdentity(identity, &binding))
@@ -216,6 +225,8 @@ ObjectReply ResolveMcpDeploymentTarget(const McpDeploymentPolicy* policy,
         definition->credentials.tunnel_id = target.id;
         definition->credentials.tunnel_generation = target.generation;
         definition->credentials.tunnel_channel = target.channel;
+      } else if (target.transport == "provider") {
+        definition->credentials.provider_id = target.id;
       }
       definition->target_binding = std::move(binding);
       return {};
@@ -239,12 +250,17 @@ std::vector<McpTunnelRoute> McpDeploymentTunnelRoutes(
 }
 
 Json McpDeploymentPolicyDescription(const McpDeploymentPolicy* policy) {
+  const auto providers = policy ? std::count_if(
+      policy->targets.begin(), policy->targets.end(), [](const auto& target) {
+        return target.transport == "provider";
+      }) : 0;
   return Object({{"profile", String("q4t-mcp-deployment-policy-v1")},
                  {"configured", Boolean(policy && !policy->sha256.empty())},
                  {"sha256", policy ? String(policy->sha256) : Json()},
                  {"target_count", Number(policy ? policy->targets.size() : 0)},
                  {"native_tunnel_count",
                   Number(McpDeploymentTunnelRoutes(policy).size())},
+                 {"native_provider_count", Number(providers)},
                  {"request_override", Boolean(false)},
                  {"redirects", Boolean(false)}});
 }

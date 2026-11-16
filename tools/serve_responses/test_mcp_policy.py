@@ -81,6 +81,28 @@ class McpPolicyPackage(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'identity differs'):
             pkg.mcp_policy_binding(BINARY, path, original)
 
+    def test_native_provider_keeps_scope_authority_and_needs_no_external_mcp_url(self):
+        binary, release, model = self.native_fixture()
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=[dict(kind='connector_id',
+            id='connector_googlecalendar', transport='provider',
+            generation='calendar-private-generation', scopes=['client:owner'])])
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 1)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('calendar-private-generation', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        route = pkg.read(target/'mcp-policy.json')['targets'][0]
+        self.assertEqual(route['transport'], 'provider')
+        self.assertEqual(route['scopes'], ['client:owner'])
+        self.assertNotIn('url', route)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
     def test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes(self):
         binary, release, model = self.native_fixture()
         policy = self.policy()
