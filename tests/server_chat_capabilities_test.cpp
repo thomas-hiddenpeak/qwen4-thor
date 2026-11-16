@@ -153,6 +153,37 @@ Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
   return true;
 }
 
+Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
+  for (bool media : {false, true}) {
+    for (bool mtp : {false, true}) {
+      q4t::io::Json caps;
+      Q4T_CHECK(q4t::io::ParseJson(
+          q4t::server::ChatCapabilitiesJson("m", media, mtp), &caps));
+      const auto* video = caps.Find("file_inputs")->Find("native_video");
+      Q4T_CHECK(video &&
+                video->GetString("profile") == "q4t-native-video-input-v1");
+      Q4T_CHECK(video->GetBool("model_media_enabled") == (media && !mtp));
+      Q4T_CHECK(video->GetBool("runtime_codec_checked_on_request") &&
+                video->GetBool("shared_work_budget") &&
+                video->GetBool("timestamps") &&
+                video->GetBool("requires_mtp_disabled"));
+      for (const auto* key :
+           {"full_timeline_in_model", "frozen_replay_requires_codec",
+            "external_program_required", "core_readiness_dependency"})
+        Q4T_CHECK(!video->GetBool(key, true));
+      Q4T_CHECK(video->GetString("input_type") == "input_file");
+      Q4T_CHECK(video->GetArray("containers")->array.size() == 2 &&
+                video->GetArray("codecs")->array.size() == 3);
+#ifdef Q4T_HAVE_GSTREAMER_HEADERS
+      Q4T_CHECK(video->GetBool("decoder_compiled"));
+#else
+      Q4T_CHECK(!video->GetBool("decoder_compiled", true));
+#endif
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(chat_capabilities_transport_observation_contract) {
   q4t::io::Json caps;
   Q4T_CHECK(q4t::io::ParseJson(

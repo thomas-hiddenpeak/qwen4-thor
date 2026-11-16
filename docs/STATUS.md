@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[视频业务驱动CPU准备](evidence/serve-native-video-business-driver-cpu-20261116/README.md)
+已过：2项C++、5项Python实际TLS/请求/判定器、7项来源负控/712锚点，
+主机/引擎零警告；能力发现区分编译、媒体配置与运行库检查。
+候选e5e67af8已冻结，继续最多1启动/8创建/900秒SDK/模型
+业务短验；本记录时0GPU、rev134保持，不把CPU通过当实际业务通过。
+
 [统一视频输入CPU验证](evidence/serve-native-video-input-cpu-20261116/README.md)
 已完成：38项不同C++（39次执行）、1项实际CLI封包、7项来源负控/712
 锚点最终通过，主机/完整引擎零警告。Files、MCP、计数、工具角色、

@@ -26,9 +26,26 @@ def catalog():
         annotations=dict(readOnlyHint=True, destructiveHint=False, idempotentHint=True))])
 
 
-class ProjectMcp:
-    def __init__(self, root, output, port):
+class DocumentSource:
+    name, arguments, uri, filename, mime = (
+        'read_project_record', ARGUMENTS, URI, DOCUMENT, 'text/plain')
+
+    def __init__(self, root):
         self.records = ProjectRecords(root)
+
+    def catalog(self):
+        return catalog()
+
+    def read(self):
+        record = self.records.read(self.arguments)
+        require(record['ok'], 'actual project document unavailable')
+        return record, dict(uri=self.uri, mimeType=self.mime,
+                            text=record['source']['text'])
+
+
+class ProjectMcp:
+    def __init__(self, root, output, port, *, source=None):
+        self.source = source if source is not None else DocumentSource(root)
         self.calls, self.reads, self.methods, self.deleted = [], [], [], []
         self.sessions = set()
         self.drop_next = False
@@ -107,13 +124,13 @@ class ProjectMcp:
                         self.reply(202)
                         return
                     elif method == 'tools/list':
-                        result = catalog()
+                        result = peer.source.catalog()
                     elif method == 'tools/call':
                         params = body['params']
-                        require(params.get('name') == 'read_project_record' and
-                                params.get('arguments') == ARGUMENTS, 'peer tool/arguments denied')
-                        record = peer.records.read(ARGUMENTS)
-                        require(record['ok'], 'actual project document unavailable')
+                        require(params.get('name') == peer.source.name and
+                                params.get('arguments') == peer.source.arguments,
+                                'peer tool/arguments denied')
+                        record, _ = peer.source.read()
                         with peer.lock:
                             peer.calls.append(record)
                             drop, peer.drop_next = peer.drop_next, False
@@ -122,15 +139,16 @@ class ProjectMcp:
                             self.close_connection = True
                             return
                         result = dict(content=[dict(type='text', text=json.dumps(record, ensure_ascii=False)),
-                            dict(type='resource_link', uri=URI, name=DOCUMENT, mimeType='text/plain')],
+                            dict(type='resource_link', uri=peer.source.uri,
+                                name=peer.source.filename, mimeType=peer.source.mime)],
                             structuredContent=record, isError=False)
                     elif method == 'resources/read':
-                        require(body['params'] == dict(uri=URI), 'peer resource denied')
-                        record = peer.records.read(ARGUMENTS)
-                        require(record['ok'], 'actual project resource unavailable')
+                        require(body['params'] == dict(uri=peer.source.uri),
+                                'peer resource denied')
+                        record, content = peer.source.read()
                         with peer.lock:
                             peer.reads.append(record['source'])
-                        result = dict(contents=[dict(uri=URI, mimeType='text/plain', text=record['source']['text'])])
+                        result = dict(contents=[content])
                     else:
                         self.reply(400)
                         return

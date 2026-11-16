@@ -28,6 +28,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  const AccessProgramPolicy* access,
                                  bool native_embedding) {
   const bool constrained = kStructuredDecodingAvailable;
+#ifdef Q4T_HAVE_GSTREAMER_HEADERS
+  const bool video_decoder = true;
+#else
+  const bool video_decoder = false;
+#endif
   const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
       constrained
@@ -225,7 +230,18 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("configuration_field":"file_inputs","policy_check_cli":true,)"
          R"("request_override":false,"chat_pdf":true,"responses":true,)"
          R"("input_tokens":true,"preflight":true,"frozen_replay":true,)"
-         R"("core_readiness_dependency":false})"
+         R"("core_readiness_dependency":false,"native_video":{)"
+         R"("profile":"q4t-native-video-input-v1","input_type":"input_file",)"
+         R"("containers":["mp4","webm"],"codecs":["h264","vp8","vp9"],)"
+         R"("decoder_compiled":)" +
+         (video_decoder ? "true" : "false") + R"(,"model_media_enabled":)" +
+         (allow_media && !mtp_enabled ? "true" : "false") +
+         R"(,"requires_mtp_disabled":true,"runtime_codec_checked_on_request":true,)"
+         R"("decoder":"isolated_cpu_worker","external_program_required":false,)"
+         R"("sampling":"uniform-presentation-time-with-endpoints",)"
+         R"("full_timeline_in_model":false,"timestamps":true,)"
+         R"("frozen_replay_requires_codec":false,"shared_work_budget":true,)"
+         R"("core_readiness_dependency":false}})"
          R"(,"mcp_deployment":{)"
          R"("policy_profile":"q4t-mcp-deployment-policy-v1",)"
          R"("configuration_endpoint":"/v1/config",)"

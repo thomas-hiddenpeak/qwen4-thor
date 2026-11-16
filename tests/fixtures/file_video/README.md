@@ -18,3 +18,8 @@ They exercise software decode and do not qualify Jetson hardware video decode.
 Office alternate-content packages, including a two-level path and two videos.
 These are parser boundary fixtures, not claims that a Word editor will render
 an arbitrary video altChunk. `nested-identity.json` records exact input bytes.
+
+`generate_business.py` creates the original 12-frame red-to-blue transition
+clips at 2 fps for model business checks. The first six source frames are red
+and the last six blue. `business-identity.json` records creation commands and
+exact bytes; no color labels or expected answers are placed in the clip.

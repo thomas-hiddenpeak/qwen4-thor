@@ -2089,7 +2089,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "348f21740417c2abb7cdfeccfa810a1ddad3242167b3581ead17fe7f80f94427",
+    "src/server/chat_capabilities.cpp": "009ed80996c810325612d8ff4208471cf9dbd4004cd831d56a688b182c240e55",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "fde666898045c9ac1ec9676ea8b561fd048714a75379185bc0da9120117b6668",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -5753,5 +5753,10 @@
       "src/server/responses_program_output.cpp"
     ],
     "acceptance": "38 C++ final pass / 39 executions; 1 actual policy CLI+package; source negatives 7; actual business/release pending"
+  },
+  "native_video_business_driver_review_20261116": {
+    "scope": "Accurate native decoder compilation/configuration/codec fault boundaries and sampled temporal file support",
+    "evidence": "docs/evidence/serve-native-video-business-driver-cpu-20261116/README.md",
+    "business_accepted": false
   }
 }

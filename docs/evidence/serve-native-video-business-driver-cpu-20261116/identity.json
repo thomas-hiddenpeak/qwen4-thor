@@ -1,0 +1,12 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/candidate-01/q4t",
+  "binary_sha256": "e5e67af8772f683b2b9b601cfa1a64141fe89902da1bab93fb04078927060c64",
+  "manifest_sha256": "1d8da75fb5ce79eb155b0b15bb7afbc022b8c033818cbd99b940a7b05382795a",
+  "protocol_sha256": "22656e9692da5b0fa65a214d31541083339a0b158c624b7f49fec1328ee46651",
+  "cpp_passed": 2,
+  "python_passed": 5,
+  "source_negative_passed": 7,
+  "source_anchors": 712,
+  "gpu": false,
+  "default_changed": false
+}
