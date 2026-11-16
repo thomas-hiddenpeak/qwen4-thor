@@ -43,6 +43,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[帧时长业务](evidence/serve-native-video-intervals-business-failure-20261116/README.md)
+仍拒答，未验收；随后[三组固定诊断](evidence/serve-native-video-diagnostic-20261116/README.md)
+均答对，指向“来源可信度/指令权威”语义与结构化输出的组合问题。
+当前原生适配为真实准备文件/MCP结果加入通用数据说明，保留refusal
+协议、原问题/答案、权限和像素；普通文本不添加。[5项不同CPU最终过](evidence/serve-prepared-input-trust-cpu-20261116/README.md)，
+首轮MCP映射类型错误保留并针对性修复；主机/引擎零警告。继续
+最多1启动/8创建/900秒原业务，默认rev134保持，总目标继续。
+
 [视频首尾说明补验](evidence/serve-native-video-followup-failure-20261116/README.md)
 仍失败：模型已识别末帧蓝色，但把5.5秒PTS误解为6秒结束前缺帧。
 1启动/4创建后按失败清理，rev134不变；继续补齐实际帧显示时长、

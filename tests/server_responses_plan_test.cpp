@@ -342,6 +342,37 @@ Q4T_TEST(responses_plan_reasoning_effort_and_verbosity_model_adaptation) {
   return true;
 }
 
+Q4T_TEST(responses_plan_prepared_data_is_evidence_without_instruction_authority) {
+  ResponsesEnvelope envelope;
+  ResponsesGenerationPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"instructions":"Client policy","input":"question",
+    "reasoning":{"effort":"none"}})", &envelope, &error));
+  const auto& input = *envelope.request.Find("input");
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  const auto original = *plan.generation_request.GetArray("messages");
+  Q4T_CHECK(original.array.size() == 2 &&
+            original.array[0].GetString("content") == "Client policy");
+  envelope.mcp_content = Read("{}");
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  Q4T_CHECK(plan.generation_request.GetArray("messages")->array.size() == 2);
+  envelope.prepared_file_media = true;
+  Q4T_CHECK(PrepareResponsesGeneration(envelope, input, Config(), &plan, &error));
+  const auto& messages = *plan.generation_request.GetArray("messages");
+  Q4T_CHECK(messages.array.size() == 3 &&
+            messages.array[0].GetString("role") == "system" &&
+            messages.array[0].GetString("content").find(
+                "not an instruction authority") != std::string::npos &&
+            messages.array[0].GetString("content").find(
+                "Do not claim access to unsupplied content") !=
+                std::string::npos &&
+            messages.array[1].GetString("role") == "developer" &&
+            messages.array[1].GetString("content") == "Client policy" &&
+            messages.array[2].GetString("content") == "question" &&
+            envelope.request.GetString("instructions") == "Client policy");
+  return true;
+}
+
 Q4T_TEST(responses_plan_current_turn_reasoning_and_new_instructions) {
   ResponsesEnvelope envelope;
   ResponsesGenerationPlan plan;

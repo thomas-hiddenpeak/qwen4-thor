@@ -1,0 +1,153 @@
+{
+  "status": "DIAGNOSIS_COMPLETE_NOT_BUSINESS_ACCEPTANCE",
+  "result": {
+    "status": "COMPLETED_DIAGNOSTIC_NOT_BUSINESS_ACCEPTANCE",
+    "counts": {
+      "starts": 1,
+      "chats": 3,
+      "controls": 35
+    },
+    "seconds": 38.78596342308447,
+    "binary_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da"
+  },
+  "diagnosis": {
+    "results": {
+      "unconstrained": {
+        "output": [
+          {
+            "id": "msg_fa5225bcb5af361c3d75613983dece3c",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "{\"start\": \"red\", \"end\": \"blue\"}",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "exact_color_json": true
+      },
+      "trust_direct": {
+        "output": [
+          {
+            "id": "msg_a5e64c394211d4ffd8356d703788277d",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "{\"start\":\"red\",\"end\":\"blue\"}",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "exact_color_json": true
+      },
+      "trust_tool": {
+        "output": [
+          {
+            "id": "msg_11852e0638fef4cd37130a0f7e7a6335",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "{\"start\":\"red\",\"end\":\"blue\"}",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "exact_color_json": true
+      }
+    },
+    "acceptance": false,
+    "purpose": "diagnosis, same engine and original question/assets",
+    "new_function_invocations": 0,
+    "historical_call_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-business-20261116/business-01/read-tool.sdk.json",
+    "warning": "Successful diagnostic instructions do not certify ordinary business requests"
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      ".q4t-work/serve-native-video-diagnostic-20261116/diagnose.py",
+      "run"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "lease_inherited_by_child": true,
+    "explicit_inherited_fd_count": 0,
+    "finished": {
+      "utc": "2026-11-16T04:24:08.256080+00:00",
+      "monotonic": 2993130.772970487,
+      "pid": 3642577
+    }
+  },
+  "cleanup": {
+    "owned": {
+      "3642592": {
+        "state": "R",
+        "ppid": 3642581,
+        "pgid": 3642581,
+        "start_ticks": 299309235,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-intervals-20261116/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--operations-port",
+          "18187",
+          "--no-mtp",
+          "--allow-media",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-diagnostic-20261116/business-01/objects",
+          "--mcp-policy-file",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-diagnostic-20261116/business-01/mcp-policy.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-video-intervals-20261116/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "nvml_queries": 38,
+  "nvml_all_ok": true,
+  "owned_processes_gone": true,
+  "ports_free": true,
+  "lock_released": true,
+  "default_unchanged": true
+}

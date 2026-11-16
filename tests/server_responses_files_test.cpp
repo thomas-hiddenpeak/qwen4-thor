@@ -124,6 +124,9 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
     ResponsesExecution run(objects);
     Q4T_CHECK(Ok(run.Prepare(request, f.config, Access(), 42)));
     const auto& generation = run.Generation();
+    Q4T_CHECK(generation.generation_request.GetArray("messages")
+                  ->array.front().GetString("content").find(
+                      "not an instruction authority") != std::string::npos);
     const auto& usage = *run.FileUsage();
     Q4T_CHECK(usage.videos == 1 && usage.video_frames == 6 &&
               usage.video_scanned_frames == 6 && usage.pages == 0 &&

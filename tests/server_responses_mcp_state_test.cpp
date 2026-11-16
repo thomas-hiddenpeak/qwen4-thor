@@ -544,6 +544,17 @@ Q4T_TEST(
                                 &error.code, nullptr, false, {}, true));
     auto config = Config();
     config.allow_media = config.structured = true;
+    ResponsesEnvelope envelope;
+    ResponsesGenerationPlan generation;
+    const auto native_request = Object({{"input", Array({final})}});
+    Q4T_CHECK(ParseResponsesEnvelope(native_request, config, &envelope,
+                                      &error));
+    envelope.mcp_content = rendered;
+    Q4T_CHECK(PrepareResponsesGeneration(
+        envelope, *native_request.Find("input"), config, &generation, &error));
+    Q4T_CHECK(generation.generation_request.GetArray("messages")
+                  ->array.front().GetString("content").find(
+                      "not an instruction authority") != std::string::npos);
     ModerationPlan plan;
     Q4T_CHECK(
         PlanModeration({true, config.model}, out, config, 512, &plan, &error));
