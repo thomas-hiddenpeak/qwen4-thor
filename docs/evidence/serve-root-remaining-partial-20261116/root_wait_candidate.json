@@ -1,0 +1,31 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_cases.py\", line 203, in run\n    try:self.exercise();LEGACY['verify'](self.plan)\n        ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_cases.py\", line 181, in exercise\n    self.start('candidate',outer=True);first=self.ready_payload(1,'primary')\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_cases.py\", line 95, in ready_payload\n    state=self.wait(lambda s:s['model_generation']==generation and s['business_ready'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 449, in wait\n    time.sleep(.25)\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/root_remaining_cases.py\", line 200, in expire\n    def expire(*_):raise TimeoutError('bounded root business deadline; cleanup only')\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: bounded root business deadline; cleanup only\n",
+  "cleanup_failure": null,
+  "seconds": 9.298547165002674,
+  "budget": {
+    "counts": {
+      "starts": 0,
+      "chats": 0,
+      "probes": 0,
+      "controls": 14
+    },
+    "events": []
+  },
+  "models": {},
+  "quota_deadlines": {},
+  "source_commit": "eba839c45a4798640af3eedce4c1efaf5b4de46c",
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+      "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+    "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+  },
+  "scenario": "root_wait_candidate",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

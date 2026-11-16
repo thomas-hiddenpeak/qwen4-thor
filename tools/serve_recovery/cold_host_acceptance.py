@@ -34,7 +34,11 @@ def require(value, reason):
 def load_checked(plan):
     global domain
     if os.geteuid() == 0:
-        from tools.serve_recovery import acceptance_owner
+        # This validation-only helper is not part of the sealed production
+        # namespace. Importing it as a package would contaminate that namespace
+        # before the ordinary owner can verify and select the actual root.
+        acceptance_owner = SimpleNamespace(**runpy.run_path(
+            str(ROOT/'tools/serve_recovery/acceptance_owner.py')))
         acceptance_owner.verify(plan,business.LEGACY['verify'],reap,finish_child)
         # Pin the already verified package only after the owner check succeeds.
         # Reading private client policies as root is intentionally disallowed.

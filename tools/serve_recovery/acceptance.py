@@ -441,7 +441,7 @@ class Stage:
             self.engine.require(self.process.poll() is None, 'launcher exited unexpectedly')
             try:
                 last = self.sample()
-            except (ConnectionRefusedError, FileNotFoundError):
+            except (ConnectionRefusedError, ConnectionResetError, FileNotFoundError):
                 time.sleep(.25)
                 continue
             if predicate(last):

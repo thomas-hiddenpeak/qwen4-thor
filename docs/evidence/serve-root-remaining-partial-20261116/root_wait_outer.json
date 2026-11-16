@@ -1,0 +1,79 @@
+{
+  "status": "PASS_BOUNDED_ROOT_ROLLBACK_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 121.99704715097323,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 0,
+      "controls": 435
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 3027116571696450
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3027150398811345
+      },
+      {
+        "kind": "chats",
+        "label": "new-root-json",
+        "ordinal": 2,
+        "monotonic_ns": 3027152229763724
+      },
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 2,
+        "monotonic_ns": 3027161857465332
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 3,
+        "monotonic_ns": 3027194606408502
+      },
+      {
+        "kind": "chats",
+        "label": "new-root-outer-sse",
+        "ordinal": 4,
+        "monotonic_ns": 3027222563448771
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 3799053,
+      "start_ticks": 302711657
+    },
+    "2": {
+      "pid": 3799899,
+      "start_ticks": 302716185
+    }
+  },
+  "quota_deadlines": {
+    "2": 3027221.833938946
+  },
+  "source_commit": "eba839c45a4798640af3eedce4c1efaf5b4de46c",
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+      "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+    "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+  },
+  "scenario": "root_wait_outer",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

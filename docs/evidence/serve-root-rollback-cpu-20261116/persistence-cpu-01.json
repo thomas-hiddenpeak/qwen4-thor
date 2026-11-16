@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_recovery.test_root_transfer",
+    "tools.serve_recovery.test_root_checkpoint_archive",
+    "tools.serve_recovery.test_version_archive",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_source_imports_every_cold_management_module",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v19_contains_complete_outer_resume_and_root_transfer_sources"
+  ],
+  "exit_code": 0,
+  "seconds": 55.81870110426098,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428/q4t",
+      "sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428/q4t.release.json",
+      "sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428/q4t",
+      "sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428/q4t.release.json",
+      "sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245"
+    }
+  },
+  "default_unchanged": true
+}

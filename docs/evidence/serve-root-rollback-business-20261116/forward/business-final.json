@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scenario": "root_forward",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "probes": 0,
+    "controls": 266
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-01/bundle",
+    "manifest_sha256": "8db077d3e943cd9ad3f0ec389dce4d791b933ecf9e9461e3baf6cae85b6bbce9"
+  },
+  "original_cycle_forward": true,
+  "actual_outer_fault_business": false,
+  "automatic_tool_replay": false
+}

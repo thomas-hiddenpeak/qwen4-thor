@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "stdout": "{\"status\": \"PASS_EXACT_SEALED_CPU\", \"manifest\": \"7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964\", \"guardian\": \"e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a\", \"no_model\": true}\n",
+  "stderr": ""
+}

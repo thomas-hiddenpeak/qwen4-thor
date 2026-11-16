@@ -99,6 +99,27 @@ def write_descriptor(state, value):
     finally:os.close(fd)
 
 
+def preserve_outer(state, target, *, migration=False):
+    """Established native outer authority must remain operable after rollback."""
+    from tools.serve_recovery import outer_manager, outer_store
+    if any(os.path.lexists(Path(state)/name) for name in
+           (outer_manager.INTENT, outer_manager.PENDING,
+            outer_store.Store.marker_name, outer_store.Store.directory_name)):
+        ledger.require(target['version'] >= 18 and all(
+            'source/tools/serve_recovery/'+name+'.py' in target['files']
+            for name in ('outer_manager', 'outer_runtime', 'outer_daemon')),
+            'target would discard established native outer supervision')
+    from tools.serve_recovery import root_checkpoints, root_transfer
+    if migration or any(os.path.lexists(Path(state)/name) for name in
+           (root_checkpoints.DIRECTORY, root_transfer.INTENT,
+            root_transfer.INTENT+'.new')):
+        ledger.require(target['version'] >= 19 and all(
+            'source/tools/serve_recovery/'+name+'.py' in target['files']
+            for name in ('root_checkpoints', 'root_transfer',
+                         'root_version_policy')),
+            'target would discard established root recovery migration')
+
+
 FAMILIES = {'access': access_store.Store, 'limits': quota_store.Store, 'usage': usage_store.Store}
 
 
@@ -207,6 +228,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                 manifest_sha256=digest, deployment_revision=desc.get('deployment_revision', 0)+1,
                 deployment_id=request_id)
             old, selected = check_target(desc, target)
+            preserve_outer(state, selected)
             bootstrap = seeds(state, old)
             checked = {}
             for name, writer in FAMILIES.items():
@@ -215,9 +237,12 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                     journals[name] = stack.enter_context(access_store.open_bound(binding, writer))
                     checked[name] = journals[name].head['state']['policy']
             consistent_clients(checked['access'], checked['limits'], target)
-            from tools.serve_recovery import profile_manager
-            profile_manager.preflight(binding, old, selected, root=desc, core=core.state)
             candidate = policy.prepare(value, target, request_id, bootstrap)
+            from tools.serve_recovery import profile_manager, root_transfer
+            version_context = root_transfer.preview(binding, candidate, core.state)
+            preserve_outer(state, selected, migration=version_context is not None)
+            profile_manager.preflight(binding, old, selected, root=desc, core=core.state,
+                                      version_context=version_context)
             journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'prepare')), value['revision'], candidate)
             value = candidate
         else:
@@ -234,9 +259,13 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
                 journals[name] = stack.enter_context(access_store.open_bound(binding, writer))
         consistent_clients(journals['access'].head['state']['policy'],
                            journals['limits'].head['state']['policy'], value['target'])
-        from tools.serve_recovery import profile_manager
+        from tools.serve_recovery import profile_manager, root_transfer
         old, selected = check_target(value['current'], value['target'])
-        profile_manager.deploy(binding, value, old, selected, core.state)
+        preserve_outer(state, selected)
+        with root_transfer.transaction(binding, value, core.state) as version_context:
+            preserve_outer(state, selected, migration=version_context is not None)
+            profile_manager.deploy(binding, value, old, selected, core.state,
+                                   version_context=version_context)
         write_descriptor(state, value['target'])
         # All launchers that understand v8/v9 already reject this prepared
         # phase. Publish the coherent default generation before finalizing it.

@@ -9,32 +9,37 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev174；服务包 `78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d` |
-| Generation | `031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428` |
+| 发布 | rev182；服务包 `430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784` |
+| Generation | `a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020` |
 | 引擎 | `0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf` |
 | 引擎发布记录 | `2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245` |
-| Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
+| Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 版本回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；保留缓存/媒体/MCP/embedding及输入归属合同 |
+| 人工整包回退 | 现代保留根 `7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964`，保留outer及原版本周期迁移 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[Chat标准缓存交付](evidence/serve-chat-cache-delivery-20261116/README.md)
-完成17项STOPPED发布/实际整根回退再前进检查，55.488秒，0新增GPU。
-mode/TTL和内容断点到实际模板/token/SSD，默认隐式及最近80查找、
-MTP/target恢复、JSON/SSE、suffix及client/key隔离、显式禁缓存已验。
-20项C++及8种实际业务通过，原驱动失败保留，最终聚合指标覆盖7项。
-精确主轻及保留/正式包版本恢复通过；媒体状态缓存仍须实现。
+[原生整根回退交付](evidence/serve-root-delivery-20261116/README.md)完成18项STOPPED发布、实际回退再前进及
+入口检查，216.388秒，0新增GPU。迁回该根最后持久化的原周期，
+保留已消费fallback、故障、selected、terminal及预算，不以旧seed返还
+额度；只递增全局revision。现代保留根与候选均有outer和迁移合同。
+Guardian新增真实恢复等待角色/原因/剩余时间，预算及核心保护不变。
+core/client/outer/profile字节、引擎、入口、设备辅助程序及容量保持。
 
-控制、客户端及四个原生辅助程序字节保持；core/client/outer状态、
-Key/配额/容量、profile历史预算冷却不清空，版本新周期保留前驱。
-发布前发现登记池16/16，已补[可恢复归档](SERVE_VERSION_RETENTION_2026-11-16.md)，
-8项CPU及实际2个退休周期归档通过，原策略不变；两个旧generation
-也可恢复归档，rev166默认/状态备份保留。最终STOPPED、GPU释放。
-自动回退保持现代根；人工整根回退v12入口缺outer及现代旧根周期绑定
-仍是R09必修项，不能把STOPPED检查说成恢复业务通过。回退包也不是
-独立旧引擎回退。本组实际合main待完成，全部master继续。
+[真实业务分项接受](evidence/serve-root-rollback-business-20261116/README.md)：
+9启动/18Chat含自检/1探测、938.526秒，原消费周期/工具续答/再前进、
+精确新保留根outer恢复和候选健康均已验；871项NVML正常，清理通过。
+三个原失败驱动保留，不能称原连续链通过。原默认rev174及状态备份、
+退休登记/发布副本归档保留。本批实际合main待完成；R07/R08冷启动/
+资源硬边界及宿主组合、其余协议和全部master继续。
+
+前驱rev174[Chat标准缓存交付](evidence/serve-chat-cache-delivery-20261116/README.md)
+保留其20项C++、8种真实业务、精确主轻及版本恢复证据。模式/TTL、
+内容断点、MTP/target状态恢复、JSON/SSE与客户端/key隔离已验，媒体
+状态缓存仍须实现。已通过PR33实际合main（`be93d566`），
+[合并回执](evidence/serve-pr33-merged-20261116/README.md)保留。
 
 前驱rev166[归属/default交付](evidence/serve-input-attribution-delivery-20261116/README.md)
 已通过PR32实际合main（`14221d39`），[合并回执](evidence/serve-pr32-merged-20261116/README.md)保留；
@@ -66,6 +71,85 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+PR34两组CI均57/58套件通过，仅三个新包用例误留v18断言而失败。
+[定点修复](evidence/serve-pr34-ci-repair-20261116/README.md)改为实际v19，
+3项CPU首过，历史v18用例保持，运行时/默认不变、0GPU。继续新head
+检查及实际合main，不用本机验证替代远端结果。
+
+[R07精确包预检通过](evidence/serve-cold-refresh-preflight-20261116/README.md)：
+rev182原包普通prepare及root只读check闭合，原污染失败和plan保留；
+2项owner CPU通过。0GPU/0围栏/默认保持，等待相机/监控服务明确
+维护交接；期间继续独立协议与交接工作，全部master保持active。
+
+R07精确包prepare通过；管理员只读check在设备操作前发现验证helper
+污染sealed namespace。已改为按文件加载，2项原owner降权CPU通过，
+保留失败与原plan，仅更新验证文件绑定补check；默认/宿主服务保持。
+
+[R07当前包CPU接受](evidence/serve-cold-refresh-cpu-20261116/README.md)：
+5项不同用例通过，原3项异常类型断言错误保留，仅重验受影响项。
+宿主只读观察BUSY：nvargus-daemon/jtop持设备句柄；未安装围栏或
+干预其他服务，0GPU。继续精确包准备/只读核验及其他独立master任务。
+
+[R07当前包冷启动](SERVE_COLD_REFRESH_2026-11-16.md)开始：旧准备器固定
+过时构建/证据已改为精确封包及完整来源核验，复用rev182原件。冻结
+5项CPU+2项实际封包只读准备/核验，随后1启动/3Chat/1探测/600秒。
+内层NVML故障注入、外层真实严格监控和内核准入保持；宿主忙不干预。
+PR34已创建等待检查；全部master继续，当前默认保持STOPPED。
+
+[rev182原生整根交付](evidence/serve-root-delivery-20261116/README.md)通过：18项STOPPED检查，
+216.388秒、0新增GPU。默认430e7985/Guardian e8290fa1，人工保留根
+7230ac61具备outer及原周期迁移；自动payload c789291b保持。原核心/
+客户端/外层/profile状态不清空；继续实际合main、冷/资源及全部master。
+以下按原身份保留阶段历史，旧“待发行”不代表当前状态。
+
+R09[发布前可恢复维护](evidence/serve-root-delivery-preflight-20261116/README.md)完成：
+退休发布副本32→30、版本登记15→13，均移入归档，0删除/0GPU，
+原策略/预算/default保持。继续现代保留根与候选的STOPPED发布、
+原周期回退/前进及运行入口检查；实际默认仍rev174。
+
+
+R09[分项真实业务已补齐](evidence/serve-root-rollback-business-20261116/README.md)：
+原消费周期/工具续答及原周期再前进、新保留根真实outer故障恢复、
+新候选健康均通过。累计9启动/18Chat含自检/1探测、938.526秒，
+871次NVML正常，四段清理通过。三个原FAILED保留，不称原连续链
+通过；430e7985/7230ac61待实际默认发布，rev174保持，master继续。
+
+
+R09[原周期前进及新保留根outer恢复通过](evidence/serve-root-remaining-partial-20261116/README.md)：
+216.573秒内先两项已完成；新候选0启动/0Chat时组内截止触发，
+全部清理通过，原组仍FAILED。仅补原计划候选1启动/2Chat/150秒，
+累计上限仍9/18/1探测、GPU≤1040秒；默认rev174保持。
+
+
+R09第二段[短验及控制重置修复](evidence/serve-root-rollback-control-reset-20261116/README.md)：
+原状态恢复JSON通过，累计5启动/10Chat/1探测；自有Guardian故障时
+只读status连接重置被驱动误判终止，已补4项CPU并修复。两段清理
+全部通过，原失败保留。[剩余事实短验](evidence/serve-root-remaining-plan-20261116/README.md)
+冻结4启动/8Chat含自检/225秒：原周期前进、新保留根outer恢复及新
+候选健康，累计9/18/1探测、GPU<900秒；默认rev174保持。
+
+
+R09首次短验后的[修复CPU通过](evidence/serve-recovery-wait-cpu-20261116/README.md)：
+三个角色的真实预算等待投影及原生指标、首次/已建立整根迁移合同
+的保留。10项CPU通过，首次迁移审查后只重验3项；独立Guardian
+零警告。原预算不变，[补验驱动2项CPU](evidence/serve-root-rollback-completion-driver-20261116/README.md)
+通过；等待原窗口实际到期，仅补3启动/6Chat含自检/300秒，累计
+7启动/14Chat/1探测、GPU租约总时≤900秒。
+[修复后新双包CPU](evidence/serve-recovery-wait-sealed-20261116/README.md)2项通过，
+430e7985/7230ac61业务/发行待完成，默认rev174保持。
+
+
+[R09整根回退修复](SERVE_ROOT_ROLLBACK_2026-11-16.md)继续实现：
+8项纯策略CPU已闭合（原启动判定用例错误保留，实际入口修正后通过）。
+已接有界检查点/原STOPPED锁内迁移、实际目标payload的profile、
+outer保留与v19封包；检查点与退休登记一起移动。[24项针对性CPU](evidence/serve-root-rollback-cpu-20261116/README.md)首轮
+全部通过，55.819秒，0新增GPU，rev174保持；真实双根及[4项驱动CPU](evidence/serve-root-rollback-driver-20261116/README.md)
+通过，实际业务执行前修订为6启动/12Chat含自检/1探测/900秒，
+覆盖真实周期消费、outer及再前进。[首次业务](evidence/serve-root-rollback-business-failure-20261116/README.md)
+4启动/8Chat/1探测后在outer新Guardian启动处因原gateway预算冷却中断；
+原周期恢复及工具续答已过，诊断错误显示STARTING/0等待须修复。
+STOPPED/进程/锁清理成功，默认保持，完整恢复/再前进/发行仍待完成。
 
 [rev174缓存交付完成](evidence/serve-chat-cache-delivery-20261116/README.md)：
 78d6bd7b/0851dab3进入实际默认，17项STOPPED检查与整根回退再前进

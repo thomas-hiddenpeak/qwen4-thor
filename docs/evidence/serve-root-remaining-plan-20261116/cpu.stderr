@@ -1,0 +1,7 @@
+test_case_counts_aggregate_without_refunding_original_work (__main__.AggregateTests.test_case_counts_aggregate_without_refunding_original_work) ... ok
+test_partial_wrong_case_or_failed_cleanup_cannot_be_accepted (__main__.AggregateTests.test_partial_wrong_case_or_failed_cleanup_cannot_be_accepted) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK

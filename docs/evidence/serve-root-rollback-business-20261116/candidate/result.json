@@ -1,0 +1,55 @@
+{
+  "status": "PASS_BOUNDED_ROOT_ROLLBACK_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 47.727901498787105,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 165
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 3027414530644372
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3027448286819088
+      },
+      {
+        "kind": "chats",
+        "label": "new-root-json",
+        "ordinal": 2,
+        "monotonic_ns": 3027449969901737
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 3800987,
+      "start_ticks": 302741453
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "83ee313002cd35295c20ba8aeb08253108167947",
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+      "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+    "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+  },
+  "scenario": "root_candidate_completion",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

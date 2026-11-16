@@ -102,12 +102,16 @@ def current_source(current, sources):
     raise ValueError('profile journal differs from registered repair predecessors')
 
 
-def preflight(binding, old, new, *, root, core):
+def preflight(binding, old, new, *, root, core, version_context=None):
     """Before publishing an intent, verify the target can read current history."""
     if old.get('recovery_profiles') is None:
         return
     from tools.serve_recovery import version_runtime
-    sources, grants = version_runtime.repair_sources(binding, root, core, old)
+    if version_context is None:
+        sources, grants = version_runtime.repair_sources(binding, root, core, old)
+    else:
+        sources, grants = version_context['sources'], version_context['grants']
+        new = version_context['target']
     with access_store.open_bound(binding, migration_store(grants)) as writer:
         current = writer.head['state']['policy']
         _, old = current_source(current, sources)
@@ -121,7 +125,7 @@ def preflight(binding, old, new, *, root, core):
                        'target needs the qualified profile history adapter')
 
 
-def deploy(binding, intent, old, new, core):
+def deploy(binding, intent, old, new, core, version_context=None):
     """Apply only the locked, durable STOPPED deployment's qualified change.
 
     No wall time enters this representation transition. The next runtime
@@ -137,9 +141,14 @@ def deploy(binding, intent, old, new, core):
     if old.get('recovery_profiles') is None:
         return initialize(binding, new, core, previously_enabled=False)
     from tools.serve_recovery import version_runtime
-    sources, grants = version_runtime.repair_sources(binding, intent['current'], core, old)
+    if version_context is None:
+        sources, grants = version_runtime.repair_sources(binding, intent['current'], core, old)
+        target_package = intent['target']['package']
+    else:
+        sources, grants = version_context['sources'], version_context['grants']
+        new, target_package = version_context['target'], version_context['target_package']
     request = str(uuid.uuid5(uuid.UUID(intent['request']), 'profile-migration'))
-    permits = [compatible(manifest, new, package, intent['target']['package'])
+    permits = [compatible(manifest, new, package, target_package)
                for package, manifest in sources]
     grants[request] = [permit for permit in permits if permit is not None]
     with access_store.open_bound(binding, migration_store(grants)) as writer:
@@ -153,7 +162,7 @@ def deploy(binding, intent, old, new, core):
             result = writer.transact(request, current['revision']-1, current)
         else:
             package, actual = current_source(current, sources)
-            authorization = compatible(actual, new, package, intent['target']['package'])
+            authorization = compatible(actual, new, package, target_package)
             if authorization is None:
                 matches(current, new)
                 return None

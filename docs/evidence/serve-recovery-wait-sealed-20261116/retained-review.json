@@ -1,0 +1,21 @@
+{
+  "state": "SEALED_CPU_ACCEPTED_BUSINESS_PENDING",
+  "previous": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-01/bundle",
+    "manifest_sha256": "b6d655d894994cded94c290fdc4dc43295292da329da0537b7f755f10c993e1c"
+  },
+  "delta": [
+    "bin/q4t-guardian",
+    "native-build.json",
+    "source/tools/serve_host/native.py",
+    "source/tools/serve_recovery/deployment.py"
+  ],
+  "new": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+    "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+  },
+  "cpu_guardian_sha256": "e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a",
+  "engine_unchanged": true,
+  "profiles_unchanged": true,
+  "default_unchanged": true
+}

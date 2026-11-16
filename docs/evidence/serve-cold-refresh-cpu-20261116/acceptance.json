@@ -1,0 +1,33 @@
+{
+  "status": "ACCEPT_TARGETED_COLD_PACKAGE_CPU",
+  "unique_tests": 5,
+  "initial_passed": 2,
+  "repaired_assertion_tests": 3,
+  "executions": 8,
+  "seconds": 0.2737378776073456,
+  "original_failure_preserved": true,
+  "source_gate": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 49,
+    "completion_fields": 21,
+    "routes": 74,
+    "native_routes": 123,
+    "reviewed_source_anchors": 720,
+    "mutation_checks": 7,
+    "errors": []
+  },
+  "sources": {
+    "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
+    "tools/serve_recovery/test_cold_package.py": "9d086c0d6cb1dd9ef3906507b9f1deb7336d213553e4fa42184d9707ca2f87a5",
+    ".github/workflows/host-checks.yml": "536a236951e5e0013dc90e82435abca108dcdca7c4fc8a172d291380c7b88b29",
+    "docs/SERVE_COLD_REFRESH_2026-11-16.md": "eaabf071df20d5087b1340c7ab2c747b583141dc18c3a48b5c2a68ac7fc9eae4"
+  },
+  "archive_sha256": "15d82d5e1518f58c68684e797ab48706e7479bcf0060a41899c096d7e3ff420d",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "actual_package_preflight_pending": true,
+  "host_observation": "BUSY",
+  "foreign_services_modified": false,
+  "master_active": true
+}

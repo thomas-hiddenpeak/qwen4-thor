@@ -1,0 +1,30 @@
+{
+  "status": "ACCEPT_ROOT_BUSINESS_DRIVER_CPU",
+  "cpu": 4,
+  "seconds": 1.1379324039444327,
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-01/bundle",
+      "manifest_sha256": "8db077d3e943cd9ad3f0ec389dce4d791b933ecf9e9461e3baf6cae85b6bbce9"
+    },
+    "retained": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-01/bundle",
+      "manifest_sha256": "b6d655d894994cded94c290fdc4dc43295292da329da0537b7f755f10c993e1c"
+    }
+  },
+  "sources": {
+    "root_business.py": "eea602d8907ac5221627d99990b4edfdb3862a3459f8b74956f96801b407621e",
+    "test_root_business.py": "8168d892b15870bdb66ad57550e7e529b3b4910c99c1591d7f9e7f31910b2c58",
+    "prepare_roots.py": "e30f3e631ad6e52a41c22fad7f9994cfa61477db9ddd870e98cf16e036f2d0d1"
+  },
+  "limits": {
+    "starts": 6,
+    "chats": 12,
+    "probes": 1,
+    "controls": 3000,
+    "seconds": 900
+  },
+  "new_gpu_starts": 0,
+  "actual_business_pending": true,
+  "default_unchanged": true
+}

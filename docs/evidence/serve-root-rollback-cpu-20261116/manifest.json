@@ -1,0 +1,18 @@
+{
+  "acceptance.json": "aa4e272a01e59b6bd4f6ffbf72a63c18898d6fd8b0204df14c66b94832a68497",
+  "policy-cpu-02.json": "7ee6097b32d47711f56d0932595bf2a5439b385b580d8d49584901a52ce4f9e4",
+  "policy-cpu-02.stderr": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5",
+  "policy-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "initial-policy-test.py.txt": "b5315416648723c7f71ebea260b021edb63002852edfd78f3714361ee52f11b8",
+  "persistence-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "persistence-cpu-01.json": "6d268b337e62ecc471e87d18a2b95ddd5fa1648edc2ed617649897962dce2e1a",
+  "persistence-cpu-01.stderr": "2e591aad447875a64f026faeeb2a939aa2ee41f38bd05365a818efdbd8ac3bef",
+  "README.md": "4c1733b83bb20d5771fe37cbde31fc3905e1ba453ec1ccaa97443bef1f034721",
+  "policy-cpu-01.json": "d2d937908f8d6d44a7812420618a2e13e171ac6d7e0adb917b7be1d1cb7ce26f",
+  "policy-cpu-01.stderr": "1afe62a60c740a76d024af956a9c6b34385261beda11ef8e82302d7f60aca8f4",
+  "policy-cpu-02.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "reviewed-source.tar.gz": "26d1aaa80c0e7baa6c4a4bb6a0aa3721af5abdf469e76a5689abb70955f63110",
+  "source-gate-01.json": "c10af77b35e30a1ab5a625732c241e3f80926cc1f65bc9a61b9b99be5814ed85",
+  "source-gate-01.stdout": "14b09557db37dbee6955cb886f9389b14cbbbb6abce0e48170bd3baf2d9531a3",
+  "source-gate-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

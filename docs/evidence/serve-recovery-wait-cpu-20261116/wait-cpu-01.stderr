@@ -1,0 +1,15 @@
+test_bad_or_legacy_auxiliary_diagnostic_cannot_override_health (tools.serve_recovery.test_recovery_wait.ProjectionTests.test_bad_or_legacy_auxiliary_diagnostic_cannot_override_health) ... ok
+test_typed_wait_exports_and_becomes_unknown_when_stale (tools.serve_recovery.test_recovery_wait.ProjectionTests.test_typed_wait_exports_and_becomes_unknown_when_stale) ... ok
+test_controller_exhaustion_keeps_original_budget (tools.serve_recovery.test_recovery_wait.RuntimeWaitTests.test_controller_exhaustion_keeps_original_budget) ... ok
+test_gateway_backoff_recovers_without_restarting_healthy_model (tools.serve_recovery.test_recovery_wait.RuntimeWaitTests.test_gateway_backoff_recovers_without_restarting_healthy_model) ... ok
+test_gateway_exhaustion_is_visible_before_controller_launch (tools.serve_recovery.test_recovery_wait.RuntimeWaitTests.test_gateway_exhaustion_is_visible_before_controller_launch) ... ok
+test_model_exhaustion_is_visible_with_live_controller (tools.serve_recovery.test_recovery_wait.RuntimeWaitTests.test_model_exhaustion_is_visible_with_live_controller) ... ok
+test_restarted_guardian_reports_persisted_cooldown (tools.serve_recovery.test_recovery_wait.RuntimeWaitTests.test_restarted_guardian_reports_persisted_cooldown) ... ok
+test_checkpoint_or_partial_intent_requires_complete_migration_support (tools.serve_recovery.test_root_contract.ContractTests.test_checkpoint_or_partial_intent_requires_complete_migration_support) ... ok
+test_unestablished_migration_does_not_invent_an_old_root_requirement (tools.serve_recovery.test_root_contract.ContractTests.test_unestablished_migration_does_not_invent_an_old_root_requirement) ... ok
+test_real_roundtrip_restores_consumed_cycle_and_actual_fallback_profile (tools.serve_recovery.test_root_transfer.TransferTests.test_real_roundtrip_restores_consumed_cycle_and_actual_fallback_profile) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 10.931s
+
+OK

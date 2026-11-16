@@ -1,0 +1,27 @@
+{
+  "status": "ACCEPT_EXACT_PACKAGE_PREFLIGHT",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+    "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784"
+  },
+  "check": {
+    "package_verified": true,
+    "device_module": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle/source/tools/serve_recovery/device_domain.py",
+    "service_id": "a3abc519-7de3-43ef-9f6c-9895cbbe8d94",
+    "model_actions": false
+  },
+  "initial_source_failure_preserved": true,
+  "owner_cpu_tests": 2,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "foreign_services_modified": false,
+  "business_state": "awaiting_explicit_foreign_service_maintenance_handoff",
+  "gpu_limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "seconds": 600
+  },
+  "source_archive_sha256": "995be537cb4b8dfa46fdf55ca1416454ed82ecf2bf7ad72d4604939bb9a36b3e",
+  "master_active": true
+}

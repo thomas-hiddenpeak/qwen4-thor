@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "profile": "q4t-service-recovery-v19",
+  "acceptance": "ACCEPT_NATIVE_ROOT_CANDIDATE",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/business-04/decision.json",
+  "acceptance_sha256": "682729624f2a975d0bf3ffc943e25300eb818c8a6ea1ec89c7f6f2ea27533c16",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+  "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "engine_release_sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/business-03/root_wait_candidate/execution/state",
+  "service_id": "4eafebbf-36a4-4c9e-ada9-1ac72946a77f",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Exact root targeted business; original cycles and tool continuation separately accepted; all original failed runs preserved; cold/resource/host work remains.",
+  "default_replaced": false
+}

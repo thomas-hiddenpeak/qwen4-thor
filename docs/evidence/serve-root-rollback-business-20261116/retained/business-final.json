@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scenario": "root_wait_outer",
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 0,
+    "controls": 435
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/retained-02/bundle",
+    "manifest_sha256": "7230ac61be71a95bddd142bce982dd8b8d09eb485c57214aaa92666dc4f48964"
+  },
+  "original_cycle_forward": false,
+  "actual_outer_fault_business": true,
+  "automatic_tool_replay": false
+}

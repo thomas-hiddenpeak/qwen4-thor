@@ -81,7 +81,18 @@ def empty(reason='source_unavailable', now=None):
         state='UNKNOWN', reason=reason, sources={n: False for n in SOURCES},
         business_ready=None, observation=None, recovery_frozen=None,
         generations=None, ledger=None, process=None, runtime=None, auxiliary=None,
-        gateway_binding=None, version_recovery=None)
+        gateway_binding=None, version_recovery=None, recovery_wait=None)
+
+
+def project_wait(value):
+    """Typed optional diagnostics; malformed auxiliary input cannot set health."""
+    if (type(value) is dict and set(value) == {'role', 'reason', 'retry_after_ms'}
+            and value['role'] in ledger.ROLES
+            and value['reason'] in ('backoff', 'cooldown', 'budget_exhausted')
+            and ledger.integer(value['retry_after_ms'], minimum=1)
+            and value['retry_after_ms'] <= 24*60*60*1000):
+        return dict(value)
+    return None
 
 
 def project_version(value):
@@ -198,7 +209,10 @@ def project_status(value):
     return dict(state=value['state'], business_ready=ready,
         observation=observation, recovery_frozen=value['recovery_frozen'],
         generations=generations, auxiliary=auxiliary, gateway_binding=gateway,
-        version_recovery=project_version(value.get('version_recovery')))
+        version_recovery=project_version(value.get('version_recovery')),
+        recovery_wait=(project_wait(value.get('recovery_wait'))
+                       if not ready and value['state'] not in ('STOPPED', 'DRAINING')
+                       else None))
 
 
 def read_ledger(binding):
@@ -353,6 +367,10 @@ def metrics(value):
         emit('source_known', int(value['sources'][name]), f'source="{name}"')
     if value['business_ready'] is not None:
         emit('business_ready', int(value['business_ready']))
+    wait = project_wait(value.get('recovery_wait'))
+    if wait is not None:
+        emit('recovery_wait_seconds', wait['retry_after_ms']/1000,
+             f'role="{wait["role"]}",reason="{wait["reason"]}"')
     gateway = value.get('gateway_binding')
     if gateway is not None:
         for name in control.GATEWAY_REASONS:

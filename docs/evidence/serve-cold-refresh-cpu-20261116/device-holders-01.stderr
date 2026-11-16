@@ -1,0 +1,9 @@
+                     USER        PID ACCESS COMMAND
+/dev/nvidia0:        root      F...m nvargus-daemon
+                     root      F.... jtop
+/dev/nvidiactl:      root      F...m nvargus-daemon
+                     root      F...m jtop
+/dev/nvidia-uvm:     root      F.... nvargus-daemon
+                     root      F.... jtop
+/dev/dri/renderD128: root      F.... nvargus-daemon
+/dev/dri/renderD129: root      F.... nvargus-daemon

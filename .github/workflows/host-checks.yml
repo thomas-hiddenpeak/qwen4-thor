@@ -131,7 +131,33 @@ jobs:
         env:
           Q4T_TEST_OUTPUT_DIR: ${{ github.workspace }}/.q4t-work/version-archive-cpu
         run: python3 -B -m unittest tools.serve_recovery.test_version_archive
+      - name: Check root rollback state and sealed source contracts
+        timeout-minutes: 3
+        env:
+          Q4T_TEST_OUTPUT_DIR: ${{ github.workspace }}/.q4t-work/root-rollback-cpu
+        run: >-
+          python3 -B -m unittest
+          tools.serve_recovery.test_root_version_policy
+          tools.serve_recovery.test_root_transfer
+          tools.serve_recovery.test_root_checkpoint_archive
+          tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io
+          tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable
+          tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_source_imports_every_cold_management_module
+          tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v19_contains_complete_outer_resume_and_root_transfer_sources
       - name: Check serve surface inventory freshness
         run: python3 -B tools/serve_audit/check_inventory.py --self-check
+      - name: Check native recovery wait and root migration preservation
+        timeout-minutes: 2
+        env:
+          Q4T_GUARDIAN_BINARY: ${{ github.workspace }}/build/public-host/q4t-guardian
+          Q4T_TEST_OUTPUT_DIR: ${{ github.workspace }}/.q4t-work/recovery-wait-cpu
+        run: >-
+          python3 -B -m unittest
+          tools.serve_recovery.test_recovery_wait
+          tools.serve_recovery.test_root_contract
+          tools.serve_recovery.test_acceptance_wait
+      - name: Check cold acceptance package provenance
+        timeout-minutes: 1
+        run: python3 -B -m unittest tools.serve_recovery.test_cold_package
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs

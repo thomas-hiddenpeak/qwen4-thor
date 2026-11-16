@@ -1,0 +1,27 @@
+{
+  "status": "ACCEPT_TARGETED_CI_CONTRACT_REPAIR",
+  "head_with_failures": "2a599c847fd7dbf0e5c428d5a80cb1c387289120",
+  "runs": [
+    {
+      "run": 43884224106,
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/43884224106",
+      "original_status": "FAILURE",
+      "original_log_sha256": "b40f8555efb35d10bcfb4ae2a1f418414add162dba0140e82cf909b8f6557f3b",
+      "original_log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/pr34-ci-failure-01.log"
+    },
+    {
+      "run": 43884054509,
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/43884054509",
+      "original_status": "FAILURE",
+      "original_log_sha256": "622e976e5623b9292da89b99475b30ada2b7143cbfad935717343abc9630feb5",
+      "original_log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/pr34-ci-failure-02.log"
+    }
+  ],
+  "cause": "Three new-package assertions retained v18 after the delivered v19 source inventory upgrade",
+  "tests": 3,
+  "cpu_passed": true,
+  "runtime_changed": false,
+  "new_gpu_starts": 0,
+  "default_revision": 182,
+  "main_integration_pending": true
+}

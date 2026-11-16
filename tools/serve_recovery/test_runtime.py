@@ -55,11 +55,12 @@ class Service:
                  probe_only=False, aux_health=False, production=False,
                  usage_handoff=False, quota_restore=None, stop_handoff=False,
                  gateway_diagnostics=False, capacity_fingerprint=None,
-                 version_fixture=None):
+                 version_fixture=None, recovery_fixture=None):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
-        with store.Store(self.directory, self.service_id, initialize=True):
-            pass
+        with store.Store(self.directory, self.service_id, initialize=True) as writer:
+            if recovery_fixture is not None:
+                recovery_fixture(writer)
         if bad_ledger:
             (self.directory/store.STATE).write_text('{')
         if stale_grant:

@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_NATIVE_ROOT_DELIVERY",
+  "revision": 182,
+  "current": {
+    "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+    "engine_release_sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245",
+    "generation_sha256": "a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020",
+    "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/candidate-02/bundle",
+    "service_acceptance_sha256": "0aba255c0ba7c68d564b410eed8f6df896e91578b3e1d4bba0658b988ea2c533",
+    "service_release_sha256": "12dd5618b92d1211cb759f0986ceecfdb4c9904d7f785a467c81744c7b8d7c00"
+  },
+  "commands": 18,
+  "seconds": 216.3877275888808,
+  "new_gpu_starts": 0,
+  "state": "STOPPED",
+  "core_client_outer_profile_bytes_preserved": true,
+  "original_root_cycles_restored": true,
+  "retained_anchor_generation": "931063724bb11112d9aaf2d2c896c01167dc304a2a9273c9d725378ddcf04ce6",
+  "files": 58,
+  "archive_sha256": "9c39ef3216b4f1f494992a48ee1b73b79482dc901cd9b5870c597778f25cf66d",
+  "secret_scan_matches": 0,
+  "remaining_master_tasks_active": true
+}

@@ -1,0 +1,9 @@
+test_control_reset_after_owned_fault_retries_only_observation (tools.serve_recovery.test_acceptance_wait.WaitTests.test_control_reset_after_owned_fault_retries_only_observation) ... ok
+test_dead_launcher_is_not_retried (tools.serve_recovery.test_acceptance_wait.WaitTests.test_dead_launcher_is_not_retried) ... ok
+test_invalid_protocol_is_not_reclassified_as_a_restart_gap (tools.serve_recovery.test_acceptance_wait.WaitTests.test_invalid_protocol_is_not_reclassified_as_a_restart_gap) ... ok
+test_repeated_reset_still_hits_original_deadline (tools.serve_recovery.test_acceptance_wait.WaitTests.test_repeated_reset_still_hits_original_deadline) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

@@ -1,0 +1,121 @@
+test_rejects_native_build_or_artifact_identity_drift (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_native_build_or_artifact_identity_drift) ... ERROR
+test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) ... 
+  test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={'source/control.py': '0000000000000000000000000000000000000000000000000000000000000000'}) ... ERROR
+  test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={}) ... ERROR
+  test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={'source/control.py': 'd3d90b5570575804f2358c9bdfcc5d409e43ddb2575c5d10917fdbb89dfc2e8f', 'source/unreviewed.py': '1111111111111111111111111111111111111111111111111111111111111111'}) ... ERROR
+test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) ... 
+  test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={'guardian.cpp': '0000000000000000000000000000000000000000000000000000000000000000'}) ... ERROR
+  test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={}) ... ERROR
+  test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={'guardian.cpp': '70e71ccc4023e276b53798e7546b6cae4c3dae551607cf011915125a77e209dc', 'extra.cpp': '1111111111111111111111111111111111111111111111111111111111111111'}) ... ERROR
+test_reuses_verified_package_without_writing_or_substituting (tools.serve_recovery.test_cold_package.PackageTests.test_reuses_verified_package_without_writing_or_substituting) ... ok
+test_sealed_verification_failure_prevents_source_reuse (tools.serve_recovery.test_cold_package.PackageTests.test_sealed_verification_failure_prevents_source_reuse) ... ok
+
+======================================================================
+ERROR: test_rejects_native_build_or_artifact_identity_drift (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_native_build_or_artifact_identity_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 86, in test_rejects_native_build_or_artifact_identity_drift
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 74, in reviewed_package
+    engine.require(manifest['files'].get('bin/'+name) ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold native artifact identity differs: q4t-device-control
+
+======================================================================
+ERROR: test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={'source/control.py': '0000000000000000000000000000000000000000000000000000000000000000'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 70, in test_rejects_stale_and_incomplete_control_sources
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 65, in reviewed_package
+    engine.require(actual == expected, 'cold runtime source identity differs')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold runtime source identity differs
+
+======================================================================
+ERROR: test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 70, in test_rejects_stale_and_incomplete_control_sources
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 65, in reviewed_package
+    engine.require(actual == expected, 'cold runtime source identity differs')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold runtime source identity differs
+
+======================================================================
+ERROR: test_rejects_stale_and_incomplete_control_sources (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_and_incomplete_control_sources) (source={'source/control.py': 'd3d90b5570575804f2358c9bdfcc5d409e43ddb2575c5d10917fdbb89dfc2e8f', 'source/unreviewed.py': '1111111111111111111111111111111111111111111111111111111111111111'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 70, in test_rejects_stale_and_incomplete_control_sources
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 65, in reviewed_package
+    engine.require(actual == expected, 'cold runtime source identity differs')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold runtime source identity differs
+
+======================================================================
+ERROR: test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={'guardian.cpp': '0000000000000000000000000000000000000000000000000000000000000000'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 80, in test_rejects_stale_or_incomplete_native_source_receipt
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 67, in reviewed_package
+    engine.require(native['source_files'] ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold native source identity differs
+
+======================================================================
+ERROR: test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 80, in test_rejects_stale_or_incomplete_native_source_receipt
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 67, in reviewed_package
+    engine.require(native['source_files'] ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold native source identity differs
+
+======================================================================
+ERROR: test_rejects_stale_or_incomplete_native_source_receipt (tools.serve_recovery.test_cold_package.PackageTests.test_rejects_stale_or_incomplete_native_source_receipt) (source={'guardian.cpp': '70e71ccc4023e276b53798e7546b6cae4c3dae551607cf011915125a77e209dc', 'extra.cpp': '1111111111111111111111111111111111111111111111111111111111111111'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 80, in test_rejects_stale_or_incomplete_native_source_receipt
+    self.review()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_cold_package.py", line 47, in review
+    return driver.reviewed_package(self.origin, self.bundle, engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_acceptance.py", line 67, in reviewed_package
+    engine.require(native['source_files'] ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: cold native source identity differs
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.009s
+
+FAILED (errors=7)
