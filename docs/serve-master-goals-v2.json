@@ -409,7 +409,7 @@
     {
       "id": "A05",
       "required": true,
-      "state": "implemented_delivered_main_pending",
+      "state": "implemented_delivered_main_merged",
       "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
       "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
       "depends_on": [
@@ -473,7 +473,7 @@
         "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       },
       "stop_combinations_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
         "cpu_max": {
           "cpp": 20,
@@ -516,7 +516,10 @@
         "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
         "revision": 224,
         "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
-        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md",
+        "pr": 39,
+        "merge_commit": "1d905350aac14dc9af94d45b182a130f8b41c4d7",
+        "merge_evidence": "evidence/serve-pr39-merged-20261117/README.md"
       }
     },
     {
@@ -4633,7 +4636,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -5080,7 +5083,7 @@
         },
         "commands": 19,
         "seconds": 284.4070557462983,
-        "state": "STOPPED",
+        "state": "delivered_main_merged",
         "new_gpu_starts": 0,
         "core_client_outer_bytes_preserved": true,
         "profile_migration": "Explicit complete stop/constraints/cache contract upgrade; historical budgets and cycles preserved",
@@ -5099,7 +5102,11 @@
         "archive_sha256": "b8ba8bca30561c440b01f7b30ce5daecd5d4177de8c36956d84d9426017d4264",
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
+        "evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md",
+        "pr": 39,
+        "main_merge": "1d905350aac14dc9af94d45b182a130f8b41c4d7",
+        "merge_evidence": "evidence/serve-pr39-merged-20261117/README.md",
+        "service_state": "STOPPED"
       },
       "media_state_cache_main_merge_20261117": {
         "state": "merged",
@@ -5275,7 +5282,7 @@
     }
   ],
   "next_task": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; continue native web-search persistent index, Chat/Responses execution, citations/SDK and all remaining master tasks.",
-  "next": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; integrate native web search into Chat/Responses, citations/history/SDK and actual business delivery, then continue all remaining master tasks.",
+  "next": "PR39 Stop rev224 merged as 1d905350. Integrate native web search into Chat/Responses, citations/history/SDK and actual business delivery; continue all remaining master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

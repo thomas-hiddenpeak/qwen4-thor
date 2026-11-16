@@ -108,6 +108,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR39最终head `0472f354` 两组CI通过，已[实际合入main](evidence/serve-pr39-merged-20261117/README.md)
+（`1d905350`）。Stop组合、rev224交付和独立day交接源码已进入
+主线；网页搜索及全部剩余master任务继续，0新增GPU、默认224保持。
+
 [原生网页执行CPU通过](evidence/serve-web-search-execution-20261117/README.md)：
 16项新合同和4项既有获取合同最终通过，20项不同用例/21次执行。
 真实本地HTTP抓取、离线/刷新、来源读取/查找、内容/位置及预算已验；
