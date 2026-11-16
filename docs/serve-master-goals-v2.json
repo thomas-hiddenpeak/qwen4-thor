@@ -1225,7 +1225,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
+        "state": "seven_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -1238,11 +1238,15 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 5,
+        "remaining_provider_count": 1,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
-          "connector_gmail"
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -1251,7 +1255,18 @@
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
         "google_cli_passed": 1,
-        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Graph canonical nextLink path aliases and actual pagination",
+          "standard SDK business and recovery-qualified release"
+        ]
       }
     },
     {
@@ -2109,7 +2124,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
+        "state": "seven_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2122,11 +2137,15 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 5,
+        "remaining_provider_count": 1,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
-          "connector_gmail"
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -2135,7 +2154,18 @@
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
         "google_cli_passed": 1,
-        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Graph canonical nextLink path aliases and actual pagination",
+          "standard SDK business and recovery-qualified release"
+        ]
       }
     },
     {
@@ -2180,7 +2210,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
+        "state": "seven_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2193,11 +2223,15 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 5,
+        "remaining_provider_count": 1,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
-          "connector_gmail"
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -2206,7 +2240,18 @@
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
         "google_cli_passed": 1,
-        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Graph canonical nextLink path aliases and actual pagination",
+          "standard SDK business and recovery-qualified release"
+        ]
       }
     },
     {
@@ -3060,7 +3105,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
+        "state": "seven_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3073,11 +3118,15 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 5,
+        "remaining_provider_count": 1,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
-          "connector_gmail"
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -3086,7 +3135,18 @@
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
         "google_cli_passed": 1,
-        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Graph canonical nextLink path aliases and actual pagination",
+          "standard SDK business and recovery-qualified release"
+        ]
       }
     },
     {
@@ -3216,7 +3276,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
+        "state": "seven_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3229,11 +3289,15 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 5,
+        "remaining_provider_count": 1,
         "implemented_candidate_providers": [
           "connector_googlecalendar",
           "connector_googledrive",
-          "connector_gmail"
+          "connector_gmail",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_microsoftteams",
+          "connector_sharepoint"
         ],
         "next_cpu_count": 36,
         "remaining_formats": [
@@ -3242,7 +3306,18 @@
         "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
         "google_cpp_passed": 36,
         "google_cli_passed": 1,
-        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a",
+        "graph_evidence": "evidence/serve-mcp-graph-cpu-20261116/README.md",
+        "graph_cpp_passed": 40,
+        "graph_cpp_executions": 68,
+        "graph_cli_passed": 1,
+        "graph_engine_sha256": "352d75596be9df902e3fbb2af69a586659c71cf4021cb80a3f1d97bf93137f36",
+        "live_provider_pending": [
+          "scoped test accounts and assets",
+          "OAuth permission and content behavior",
+          "Graph canonical nextLink path aliases and actual pagination",
+          "standard SDK business and recovery-qualified release"
+        ]
       }
     },
     {
@@ -3258,6 +3333,6 @@
       "release": null
     }
   ],
-  "next_task": "Implement Microsoft Graph and Dropbox native providers, remaining formats, actual provider account business and reversible agent/provider release; continue all master tasks.",
-  "next": "Implement Microsoft Graph and Dropbox native providers, remaining formats, actual provider account business and reversible agent/provider release; continue all master tasks."
+  "next_task": "Implement Dropbox native provider and remaining content formats; complete actual provider/SDK business, reversible agent/provider release and all Serve master tasks.",
+  "next": "Implement Dropbox native provider and remaining content formats; complete actual provider/SDK business, reversible agent/provider release and all Serve master tasks."
 }

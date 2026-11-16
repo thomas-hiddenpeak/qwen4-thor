@@ -4,11 +4,13 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <charconv>
 #include <mutex>
 #include <thread>
 #include <tuple>
 
 #include "../src/server/mcp_provider_internal.h"
+#include "../src/server/mcp_provider_graph.h"
 #include "../src/server/mcp_provider_common.h"
 #include "../src/server/mcp_transport_internal.h"
 #include "../src/server/object_protocol.h"
@@ -73,8 +75,19 @@ class ProviderPeer {
         setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
         std::string request;
         char buffer[1024];
-        while (request.size() <= 32768 &&
-               request.find("\r\n\r\n") == request.npos) {
+        while (request.size() <= 32768) {
+          const auto end = request.find("\r\n\r\n");
+          if (end != request.npos) {
+            size_t length = 0;
+            const auto pos = request.find("\r\nContent-Length: ");
+            if (pos != request.npos && pos < end) {
+              const char* begin = request.data() + pos + 18;
+              const auto parsed =
+                  std::from_chars(begin, request.data() + end, length);
+              if (parsed.ec != std::errc{} || length > 32768) break;
+            }
+            if (request.size() >= end + 4 + length) break;
+          }
           const auto got = recv(client, buffer, sizeof(buffer), 0);
           if (got <= 0) break;
           request.append(buffer, got);
@@ -113,27 +126,29 @@ class ProviderPeer {
     return requests_;
   }
   ObjectReply Fetch(const mcp_detail::ProviderRequest& request, Json* output) {
-    if (!mcp_detail::ProviderOrigin(provider_, request.url))
-      return Error(403, "fixture_origin", "Unexpected adapter origin");
     file_detail::Url original, local;
-    file_detail::ParseUrl(request.url, &original);
+    FileFetchOptions options;
+    file_detail::RemoteHeaders headers;
+    McpEndpoint endpoint;
+    endpoint.provider_id = provider_;
+    endpoint.authorization = "synthetic-private-token";
+    endpoint.headers["X-Private-Tenant"] = "fixture-only";
+    auto reply = mcp_detail::PrepareProviderRequest(
+        endpoint, FileFetchOptions{}, request, &original, &headers, &options);
+    if (!reply.ok()) return reply;
+    // Only the test peer replaces the already-validated production URL with
+    // a loopback socket. Production has no such override or test environment.
     file_detail::ParseUrl(
         "http://127.0.0.1:" + std::to_string(port_) + original.target, &local);
-    FileFetchOptions options;
     options.public_networks = false;
+    options.allow_http = true;
     options.allowed_networks = {"127.0.0.1/32"};
     options.ports = {port_};
     options.max_redirects = 0;
-    file_detail::RemoteHeaders headers{{"Accept", "application/json"}};
-    for (const auto& [key, value] : request.headers) headers[key] = value;
-    if (request.token_query)
-      local.target += "?access_token=synthetic-private-token";
-    else
-      headers["Authorization"] = "Bearer synthetic-private-token";
     std::unique_ptr<file_detail::RemoteHttp> response;
-    auto reply = file_detail::RemoteHttp::Open(
-        local, options, "GET", headers, "", (4U << 20) - bytes_,
-        std::chrono::steady_clock::now() + 2s, &response);
+    reply = file_detail::RemoteHttp::Open(
+        local, options, request.method, headers, request.body,
+        (4U << 20) - bytes_, std::chrono::steady_clock::now() + 2s, &response);
     return reply.ok() ? mcp_detail::ReadProviderResponse(*response, &bytes_,
                                                          output, request.binary)
                       : reply;
@@ -763,6 +778,874 @@ Q4T_TEST(mcp_google_mime_depth_and_native_output_budget) {
   return true;
 }
 
+namespace {
+constexpr auto kOutlookMail = "connector_outlookemail";
+constexpr auto kOutlookCalendar = "connector_outlookcalendar";
+Json GraphMessage(std::string id = "message+/=1") {
+  return Object(
+      {{"id", String(std::move(id))},
+       {"subject", String("实际主题")},
+       {"body", Object({{"contentType", String("text")},
+                        {"content", String("原始正文")}})},
+       {"from",
+        Object({{"emailAddress",
+                 Object({{"address", String("owner@example.test")}})}})}});
+}
+Json GraphEvent(std::string id = "event+/=1") {
+  return Object(
+      {{"id", String(std::move(id))},
+       {"subject", String("实际会议")},
+       {"type", String("occurrence")},
+       {"seriesMasterId", String("master_original")},
+       {"start", Object({{"dateTime", String("2026-11-16T09:00:00.0000000")},
+                         {"timeZone", String("China Standard Time")}})}});
+}
+Json GraphHits(bool more = false, int total = 1, Json resource = Json()) {
+  auto hit =
+      Object({{"hitId", String("opaque+/=event")},
+              {"rank", Number(1)},
+              {"summary", String("Original summary")},
+              {"resource", resource.IsNull()
+                               ? Object({{"subject", String("Original event")}})
+                               : std::move(resource)}});
+  return Object(
+      {{"value",
+        Array({Object({{"hitsContainers",
+                        Array({Object({{"hits", total ? Array({hit}) : Array()},
+                                       {"total", Number(total)},
+                                       {"moreResultsAvailable",
+                                        Boolean(more)}})})}})})}});
+}
+}  // namespace
+
+Q4T_TEST(mcp_graph_origins_exclude_google_and_other_clouds) {
+  for (const auto* id : {kOutlookMail, kOutlookCalendar}) {
+    Q4T_CHECK(mcp_detail::NativeProvider(id));
+    Q4T_CHECK(
+        mcp_detail::ProviderOrigin(id, "https://graph.microsoft.com/v1.0/me"));
+    for (const auto* url : {"https://oauth2.googleapis.com/tokeninfo",
+                            "https://graph.microsoft.com.evil.invalid/",
+                            "http://graph.microsoft.com/v1.0/me",
+                            "https://graph.microsoft.com:8443/v1.0/me"})
+      Q4T_CHECK(!mcp_detail::ProviderOrigin(id, url));
+  }
+  Q4T_CHECK(!mcp_detail::ProviderOrigin(kGmailProvider,
+                                        "https://graph.microsoft.com/v1.0/me"));
+  return true;
+}
+Q4T_TEST(mcp_graph_catalog_schemas_no_extra_profile_dependency) {
+  for (const auto* provider : {kOutlookMail, kOutlookCalendar}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  provider, "tools/list", Object(),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    const auto* tools = result.GetArray("tools");
+    Q4T_CHECK(calls == 0 && error.IsNull() && tools &&
+              tools->array.size() == (provider == kOutlookMail ? 6U : 5U));
+    for (const auto& tool : tools->array) {
+      OutputSchemaGraph graph;
+      std::string param;
+      Q4T_CHECK(graph.Init(*tool.Find("inputSchema"), false, &param, "schema",
+                           OutputSchemaPurpose::kToolResult));
+      const auto name = tool.GetString("name");
+      auto args = Object();
+      if (name == "search_events" || name == "search_messages")
+        Set(&args, "query", String("project"));
+      if (name == "fetch_event") Set(&args, "event_id", String("event+/=1"));
+      if (name == "fetch_message")
+        Set(&args, "message_id", String("message+/=1"));
+      if (name == "fetch_events_batch")
+        Set(&args, "event_ids", Array({String("event+/=1")}));
+      if (name == "fetch_messages_batch")
+        Set(&args, "message_ids", Array({String("message+/=1")}));
+      Q4T_CHECK(graph.Check(args));
+    }
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_profile_permission_failure_does_not_disable_mail) {
+  ProviderPeer peer({{403, "private error"}, JsonReply(GraphMessage())},
+                    kOutlookMail);
+  Json result, error;
+  Q4T_CHECK(
+      ProviderCall(kOutlookMail, "get_profile", Object(), peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.Find("data")->GetInt("upstream_status") == 403);
+  Q4T_CHECK(ProviderCall(kOutlookMail, "fetch_message",
+                         Object({{"message_id", String("message+/=1")}}), peer,
+                         &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() &&
+            result.Find("structuredContent")->GetString("subject") ==
+                "实际主题");
+  Q4T_CHECK(peer.Requests().size() == 2);
+  return true;
+}
+Q4T_TEST(mcp_graph_profile_preserves_original_fields) {
+  ProviderPeer peer({JsonReply(Object({{"id", String("user-original")},
+                                       {"displayName", String("原用户")},
+                                       {"mail", Json()},
+                                       {"userPrincipalName",
+                                        String("original@example.test")}}))},
+                    kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "get_profile", Object(), peer,
+                         &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() &&
+            result.Find("structuredContent")->Find("mail")->IsNull());
+  Q4T_CHECK(peer.Requests()[0].find("GET /v1.0/me?") != std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_mail_search_and_encoded_cursor_keep_query) {
+  const std::string next =
+      "https://graph.microsoft.com/v1.0/me/"
+      "messages?%24search=%22from%3aa%2bb%40example.test%22&%24top=2&%"
+      "24skiptoken=opaque%2b%2f%3d";
+  ProviderPeer peer({JsonReply(Object({{"value", Array({GraphMessage()})},
+                                       {"@odata.nextLink", String(next)}})),
+                     JsonReply(Object({{"value", Array()}}))},
+                    kOutlookMail);
+  auto args = Object(
+      {{"query", String("from:a+b@example.test")}, {"max_results", Number(2)}});
+  Json result, error;
+  Q4T_CHECK(
+      ProviderCall(kOutlookMail, "search_messages", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.IsNull() &&
+            result.Find("structuredContent")->GetString("next_page_token") ==
+                next);
+  Set(&args, "next_page_token", String(next));
+  Q4T_CHECK(
+      ProviderCall(kOutlookMail, "search_messages", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.IsNull() && peer.Requests().size() == 2);
+  Q4T_CHECK(peer.Requests()[1].find("%24skiptoken=opaque%2b%2f%3d") !=
+            std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_mail_metadata_cursor_does_not_expose_full_body) {
+  auto message = GraphMessage();
+  Set(&message, "attachments",
+      Array({Object({{"contentBytes", String("private")}})}));
+  ProviderPeer peer({JsonReply(Object({{"value", Array({message})}}))},
+                    kOutlookMail);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookMail, "list_messages",
+                         Object({{"next_page_token",
+                                  String("https://graph.microsoft.com/v1.0/me/"
+                                         "messages?$skiptoken=opaque")}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  for (const char* field : {"value", "messages"}) {
+    const auto& metadata =
+        result.Find("structuredContent")->GetArray(field)->array[0];
+    Q4T_CHECK(metadata.GetString("id") == "message+/=1" &&
+              !metadata.Has("body") && !metadata.Has("attachments"));
+  }
+  Q4T_CHECK(OutputJson(result).find("contentBytes") == std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_mail_recent_folder_opaque_ids) {
+  ProviderPeer peer({JsonReply(Object({{"value", Array({GraphMessage()})}}))},
+                    kOutlookMail);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookMail, "get_recent_emails",
+                         Object({{"folder_id", String("folder+/=")}}), peer,
+                         &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto request = peer.Requests()[0];
+  Q4T_CHECK(request.find("/mailFolders/folder%2B%2F%3D/messages?") !=
+            request.npos);
+  Q4T_CHECK(request.find("$orderby=receivedDateTime%20desc") != request.npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_cursor_wrong_authority_or_changed_contract_no_io) {
+  for (const auto* cursor :
+       {"https://evil.invalid/v1.0/me/messages?$skip=1",
+        "http://graph.microsoft.com/v1.0/me/messages?$skip=1",
+        "https://graph.microsoft.com/v1.0/me/events?$skip=1",
+        "https://graph.microsoft.com/v1.0/me/messages?$skip=1&%24skip=2",
+        "https://graph.microsoft.com/v1.0/me/"
+        "messages?$skip=1&$expand=attachments",
+        "https://graph.microsoft.com/v1.0/me/messages?$skip=1&$select=id,body",
+        "https://graph.microsoft.com/v1.0/me/messages?$skiptoken=%zz",
+        "https://graph.microsoft.com/v1.0/me/messages?$skiptoken=x&$top=3"}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(
+        mcp_detail::InvokeProvider(
+            kOutlookMail, "tools/call",
+            Call("list_messages", Object({{"next_page_token", String(cursor)},
+                                          {"max_results", Number(2)}})),
+            [&](const auto&, Json*) {
+              ++calls;
+              return ObjectReply{};
+            },
+            &result, &error)
+            .ok());
+    Q4T_CHECK(calls == 0 && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_mail_full_body_format_and_permission_are_explicit) {
+  for (bool missing : {false, true}) {
+    auto message = GraphMessage();
+    Set(&message, "body",
+        missing ? Json()
+                : Object({{"contentType", String("html")},
+                          {"content", String("<b>原文</b>")}}));
+    ProviderPeer peer({JsonReply(message)}, kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kOutlookMail, "fetch_message",
+                           Object({{"message_id", String("message+/=1")}}),
+                           peer, &result, &error)
+                  .ok());
+    if (missing)
+      Q4T_CHECK(error.IsObject() && result.IsNull());
+    else
+      Q4T_CHECK(error.IsNull() && result.Find("structuredContent")
+                                          ->Find("body")
+                                          ->GetString("contentType") == "html");
+    Q4T_CHECK(
+        peer.Requests()[0].find("Prefer: outlook.body-content-type=\"text\"") !=
+        std::string::npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_mail_batch_order_and_known_failure) {
+  const auto args =
+      Object({{"message_ids", Array({String("m2"), String("m1")})}});
+  for (bool fail : {false, true}) {
+    ProviderPeer peer({JsonReply(GraphMessage("m2")),
+                       fail ? Reply{429, "private quota details"}
+                            : JsonReply(GraphMessage("m1"))},
+                      kOutlookMail);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kOutlookMail, "fetch_messages_batch", args, peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(peer.Requests().size() == 2);
+    if (fail)
+      Q4T_CHECK(error.Find("data")->GetInt("upstream_status") == 429 &&
+                result.IsNull());
+    else
+      Q4T_CHECK(error.IsNull() && result.Find("structuredContent")
+                                          ->GetArray("messages")
+                                          ->array[0]
+                                          .GetString("id") == "m2");
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_window_expands_recurrence_and_keeps_timezone) {
+  ProviderPeer peer({JsonReply(Object({{"value", Array({GraphEvent()})}}))},
+                    kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(
+      ProviderCall(kOutlookCalendar, "list_events",
+                   Object({{"time_min", String("2026-11-16T08:00:00+08:00")},
+                           {"time_max", String("2026-11-17T08:00:00+08:00")},
+                           {"timezone_str", String("China Standard Time")}}),
+                   peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto request = peer.Requests()[0];
+  Q4T_CHECK(request.find("/calendar/calendarView?") != request.npos &&
+            request.find("startDateTime=2026-11-16T00%3A00%3A00Z") !=
+                request.npos &&
+            request.find("Prefer: outlook.timezone=\"China Standard Time\"") !=
+                request.npos);
+  const auto& event =
+      result.Find("structuredContent")->GetArray("events")->array[0];
+  Q4T_CHECK(event.GetString("type") == "occurrence" &&
+            event.GetString("seriesMasterId") == "master_original");
+  Q4T_CHECK(event.Find("start")->GetString("timeZone") ==
+            "China Standard Time");
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_invalid_windows_and_headers_never_fetch) {
+  for (const auto& args : std::vector<Json>{
+           Object({{"time_min", String("2026-11-16")}}),
+           Object({{"time_min", String("2026-11-17")},
+                   {"time_max", String("2026-11-16")}}),
+           Object({{"time_min", String("2026-11-16T00:00:00.1Z")},
+                   {"time_max", String("2026-11-16T00:00:00Z")}}),
+           Object({{"time_min", String("2026-02-30")},
+                   {"time_max", String("2026-11-16")}}),
+           Object({{"timezone_str", String("UTC\"\r\nInjected: yes")}})}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  kOutlookCalendar, "tools/call", Call("list_events", args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_search_uses_fixed_read_only_post) {
+  ProviderPeer peer({JsonReply(GraphHits(true))}, kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "search_events",
+                         Object({{"query", String(R"(项目 \ "quoted")")},
+                                 {"offset", Number(20)},
+                                 {"max_results", Number(10)}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto request = peer.Requests()[0];
+  Q4T_CHECK(request.starts_with("POST /v1.0/search/query HTTP/1.1\r\n"));
+  Json body;
+  Q4T_CHECK(
+      q4t::io::ParseJson(request.substr(request.find("\r\n\r\n") + 4), &body));
+  const auto& search = body.GetArray("requests")->array[0];
+  Q4T_CHECK(search.GetArray("entityTypes")->array[0].str == "event" &&
+            search.GetInt("from") == 20 && search.GetInt("size") == 10);
+  Q4T_CHECK(result.Find("structuredContent")->GetInt("next_offset") == 30);
+  Q4T_CHECK(result.Find("structuredContent")
+                ->GetArray("hits")
+                ->array[0]
+                .GetString("hitId") == "opaque+/=event");
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_empty_search_does_not_invent_total) {
+  ProviderPeer peer({JsonReply(GraphHits(false, 0))}, kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "search_events",
+                         Object({{"query", String("none")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetArray("hits")->array.empty() &&
+            value->Find("next_offset")->IsNull());
+  Q4T_CHECK(value->GetArray("value")
+                ->array[0]
+                .GetArray("hitsContainers")
+                ->array[0]
+                .GetInt("total", -1) == 0);
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_fetch_and_batch_preserve_opaque_ids) {
+  ProviderPeer peer({JsonReply(GraphEvent()), JsonReply(GraphEvent()),
+                     JsonReply(GraphEvent())},
+                    kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "fetch_event",
+                         Object({{"event_id", String("event+/=1")},
+                                 {"calendar_id", String("calendar+/=")}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  Q4T_CHECK(peer.Requests()[0].find(
+                "/calendars/calendar%2B%2F%3D/events/event%2B%2F%3D1") !=
+            std::string::npos);
+  Q4T_CHECK(ProviderCall(kOutlookCalendar, "fetch_events_batch",
+                         Object({{"event_ids", Array({String("event+/=1"),
+                                                      String("event+/=1")})}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(
+      error.IsNull() &&
+      result.Find("structuredContent")->GetArray("events")->array.size() == 2);
+  return true;
+}
+Q4T_TEST(mcp_graph_calendar_cursor_keeps_original_time_window) {
+  const std::string cursor =
+      "https://graph.microsoft.com/v1.0/me/calendar/"
+      "calendarView?startDateTime=2026-11-16T00%3a00%3a00Z&endDateTime=2026-"
+      "11-17T00%3a00%3a00Z&$skiptoken=opaque";
+  auto args = Object({{"time_min", String("2026-11-16T08:00:00+08:00")},
+                      {"time_max", String("2026-11-17T08:00:00+08:00")},
+                      {"next_page_token", String(cursor)}});
+  ProviderPeer peer({JsonReply(Object({{"value", Array()}}))},
+                    kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(
+      ProviderCall(kOutlookCalendar, "list_events", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.IsNull());
+  Set(&args, "time_max", String("2026-11-18T08:00:00+08:00"));
+  Q4T_CHECK(
+      ProviderCall(kOutlookCalendar, "list_events", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(error.GetInt("code") == -32602 && peer.Requests().size() == 1);
+  return true;
+}
+Q4T_TEST(mcp_graph_malformed_page_search_or_full_body_fails) {
+  for (const auto& [name, body] : std::vector<std::pair<std::string, Json>>{
+           {"list_messages", Object({{"value", Array({Object()})}})},
+           {"list_messages",
+            Object({{"value", Array()},
+                    {"@odata.nextLink", String("https://evil.invalid/next")}})},
+           {"fetch_message",
+            Object({{"id", String("m1")}, {"body", String("not-object")}})}}) {
+    ProviderPeer peer({JsonReply(body)}, kOutlookMail);
+    Json result, error;
+    const auto args = name == "fetch_message"
+                          ? Object({{"message_id", String("m1")}})
+                          : Object();
+    Q4T_CHECK(
+        !ProviderCall(kOutlookMail, name, args, peer, &result, &error).ok());
+    Q4T_CHECK(result.IsNull());
+  }
+  ProviderPeer peer({JsonReply(Object({{"value", Array()}}))},
+                    kOutlookCalendar);
+  Json result, error;
+  Q4T_CHECK(!ProviderCall(kOutlookCalendar, "search_events",
+                          Object({{"query", String("x")}}), peer, &result,
+                          &error)
+                 .ok());
+  Q4T_CHECK(result.IsNull());
+  return true;
+}
+Q4T_TEST(mcp_graph_batch_and_search_invalid_arguments_never_fetch) {
+  for (const auto& [provider, name, args] :
+       std::vector<std::tuple<std::string, std::string, Json>>{
+           {kOutlookMail, "fetch_messages_batch",
+            Object({{"message_ids", Array({String("m1"), String("..")})}})},
+           {kOutlookMail, "search_messages", Object()},
+           {kOutlookCalendar, "search_events",
+            Object({{"query", String("x")}, {"offset", Number(-1)}})},
+           {kOutlookCalendar, "fetch_event",
+            Object({{"event_id", String("e1")},
+                    {"url", String("https://elsewhere.invalid")}})}}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  provider, "tools/call", Call(name, args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && result.IsNull() && error.GetInt("code") == -32602);
+  }
+  return true;
+}
+
+namespace {
+constexpr auto kTeams = "connector_microsoftteams";
+constexpr auto kSharePoint = "connector_sharepoint";
+Json TeamsMessage(std::string id = "message+/=1") {
+  auto message = GraphMessage(std::move(id));
+  Set(&message, "chatId", String("chat+/=1"));
+  Set(&message, "mentions",
+      Array({Object({{"id", Number(0)}, {"mentionText", String("原人名")}})}));
+  return message;
+}
+Json SharePointFile(std::string id = "file1", size_t size = 4) {
+  return Object(
+      {{"id", String(id)},
+       {"name", String("record.txt")},
+       {"size", Number(size)},
+       {"file", Object({{"mimeType", String("text/plain")}})},
+       {"webUrl", String("https://tenant.sharepoint.com/record.txt")},
+       {"@microsoft.graph.downloadUrl",
+        String("https://download.files.1drv.com/original?secret=cap")}});
+}
+}  // namespace
+Q4T_TEST(mcp_graph_teams_sharepoint_catalog_usable_schemas) {
+  for (const auto* provider : {kTeams, kSharePoint}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  provider, "tools/list", Object(),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    const auto* tools = result.GetArray("tools");
+    Q4T_CHECK(calls == 0 && error.IsNull() && tools &&
+              tools->array.size() ==
+                  (std::string_view(provider) == kTeams ? 4 : 5));
+    for (const auto& tool : tools->array) {
+      OutputSchemaGraph graph;
+      std::string param;
+      Q4T_CHECK(graph.Init(*tool.Find("inputSchema"), false, &param, "schema",
+                           OutputSchemaPurpose::kToolResult));
+      auto args = Object();
+      const auto name = tool.GetString("name");
+      if (name == "search") Set(&args, "query", String("项目"));
+      if (name == "get_site") Set(&args, "site_id", String("root"));
+      if (name == "get_chat_members") Set(&args, "chat_id", String("chat1"));
+      if (name == "fetch") {
+        if (std::string_view(provider) == kTeams) {
+          Set(&args, "chat_id", String("chat1"));
+          Set(&args, "message_id", String("message1"));
+        } else
+          Set(&args, "item_id", String("file1"));
+      }
+      Q4T_CHECK(graph.Check(args));
+    }
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_teams_search_preserves_original_hits) {
+  auto hits = GraphHits(false, 1, TeamsMessage());
+  ProviderPeer peer({JsonReply(hits)}, kTeams);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kTeams, "search",
+                         Object({{"query", String("project")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto request = peer.Requests()[0];
+  Q4T_CHECK(request.starts_with("POST /v1.0/search/query ") &&
+            request.find("Prefer: include-unknown-enum-members") !=
+                request.npos);
+  Json body;
+  Q4T_CHECK(
+      q4t::io::ParseJson(request.substr(request.find("\r\n\r\n") + 4), &body));
+  Q4T_CHECK(body.GetArray("requests")
+                ->array[0]
+                .GetArray("entityTypes")
+                ->array[0]
+                .str == "chatMessage");
+  Q4T_CHECK(result.Find("structuredContent")
+                ->GetArray("hits")
+                ->array[0]
+                .Find("resource")
+                ->GetString("chatId") == "chat+/=1");
+  return true;
+}
+Q4T_TEST(mcp_graph_teams_chat_channel_reply_paths_keep_content) {
+  for (int mode = 0; mode < 3; ++mode) {
+    auto args = Object({{"message_id", String("m+/=")}});
+    if (!mode)
+      Set(&args, "chat_id", String("chat+/="));
+    else {
+      Set(&args, "team_id", String("team+/="));
+      Set(&args, "channel_id", String("channel+/="));
+      if (mode == 2) Set(&args, "reply_id", String("reply+/="));
+    }
+    auto original = TeamsMessage(mode == 2 ? "reply+/=" : "m+/=");
+    Set(&original, "replyToId", mode == 2 ? String("m+/=") : Json());
+    ProviderPeer peer({JsonReply(original)}, kTeams);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kTeams, "fetch", args, peer, &result, &error).ok());
+    Q4T_CHECK(error.IsNull() && OutputJson(*result.Find("structuredContent")) ==
+                                    OutputJson(original));
+    const auto request = peer.Requests()[0];
+    Q4T_CHECK(request.find(!mode ? "/chats/chat%2B%2F%3D/messages/m%2B%2F%3D"
+                                 : "/teams/team%2B%2F%3D/channels/"
+                                   "channel%2B%2F%3D/messages/m%2B%2F%3D") !=
+              request.npos);
+    if (mode == 2)
+      Q4T_CHECK(request.find("/replies/reply%2B%2F%3D") != request.npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_teams_member_paging_retains_tenant_and_opaque_ids) {
+  const std::string cursor =
+      "https://graph.microsoft.com/v1.0/chats/c1/"
+      "members?$skiptoken=opaque%2B%2F%3D";
+  const auto member = Object({{"id", String("opaque:member+/=")},
+                              {"tenantId", String("other-tenant")},
+                              {"roles", Array({String("owner")})}});
+  ProviderPeer peer({JsonReply(Object({{"value", Array({member})},
+                                       {"@odata.nextLink", String(cursor)}})),
+                     JsonReply(Object({{"value", Array()}}))},
+                    kTeams);
+  Json result, error;
+  auto args = Object({{"chat_id", String("c1")}});
+  Q4T_CHECK(
+      ProviderCall(kTeams, "get_chat_members", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(
+      error.IsNull() &&
+      OutputJson(
+          result.Find("structuredContent")->GetArray("members")->array[0]) ==
+          OutputJson(member));
+  Q4T_CHECK(
+      peer.Requests()[0].starts_with("GET /v1.0/chats/c1/members HTTP/1.1"));
+  Set(&args, "next_page_token", String(cursor));
+  Q4T_CHECK(
+      ProviderCall(kTeams, "get_chat_members", args, peer, &result, &error)
+          .ok());
+  Q4T_CHECK(
+      error.IsNull() &&
+      result.Find("structuredContent")->Find("next_page_token")->IsNull());
+  return true;
+}
+Q4T_TEST(mcp_graph_teams_deleted_vs_unauthorized_body_explicit) {
+  for (bool deleted : {false, true}) {
+    auto original =
+        Object({{"id", String("m1")},
+                {"body", Json()},
+                {"deletedDateTime",
+                 deleted ? String("2026-11-16T00:00:00Z") : Json()}});
+    ProviderPeer peer({JsonReply(original)}, kTeams);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kTeams, "fetch",
+                           Object({{"chat_id", String("c1")},
+                                   {"message_id", String("m1")}}),
+                           peer, &result, &error)
+                  .ok());
+    Q4T_CHECK(deleted
+                  ? error.IsNull() &&
+                        result.Find("structuredContent")->Find("body")->IsNull()
+                  : result.IsNull() && error.GetInt("code") == -32000);
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sharepoint_site_search_and_recent_use_current_api) {
+  ProviderPeer peer({JsonReply(Object({{"id", String("tenant,site,web")},
+                                       {"displayName", String("项目")}})),
+                     JsonReply(GraphHits(true)), JsonReply(GraphHits())},
+                    kSharePoint);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kSharePoint, "get_site",
+                         Object({{"site_id", String("root")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(ProviderCall(kSharePoint, "search",
+                         Object({{"query", String("Project")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(ProviderCall(kSharePoint, "list_recent_documents", Object(), peer,
+                         &result, &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(result.Find("structuredContent")->GetString("recency") ==
+            "lastModifiedDateTime");
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests[0].starts_with("GET /v1.0/sites/root "));
+  for (size_t i = 1; i < 3; ++i) {
+    Q4T_CHECK(requests[i].starts_with("POST /v1.0/search/query "));
+    Json body;
+    Q4T_CHECK(q4t::io::ParseJson(
+        requests[i].substr(requests[i].find("\r\n\r\n") + 4), &body));
+    const auto& query = body.GetArray("requests")->array[0];
+    Q4T_CHECK(query.GetArray("entityTypes")->array[0].str == "driveItem");
+    if (i == 1)
+      Q4T_CHECK(!query.Has("sortProperties"));
+    else {
+      Q4T_CHECK(query.Find("query")->GetString("queryString") ==
+                "IsDocument:1");
+      const auto& sort = query.GetArray("sortProperties")->array[0];
+      Q4T_CHECK(sort.GetString("name") == "lastModifiedDateTime" &&
+                sort.GetBool("isDescending"));
+    }
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sharepoint_download_actual_http_strips_all_credentials) {
+  ProviderPeer peer(
+      {JsonReply(SharePointFile()), {200, "real", false, "text/plain"}},
+      kSharePoint);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kSharePoint, "fetch",
+                         Object({{"item_id", String("file1")},
+                                 {"drive_id", String("drive+/=")}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && ValidateMcpToolResult(result));
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 2 &&
+            requests[0].find("Authorization: Bearer synthetic-private-token") !=
+                requests[0].npos);
+  Q4T_CHECK(requests[0].find("/drives/drive%2B%2F%3D/items/file1?") !=
+            requests[0].npos);
+  Q4T_CHECK(requests[1].starts_with("GET /original?secret=cap ") &&
+            requests[1].find("Authorization") == requests[1].npos &&
+            requests[1].find("fixture-only") == requests[1].npos &&
+            requests[1].find("synthetic-private-token") == requests[1].npos);
+  Q4T_CHECK(OutputJson(result).find("secret=cap") == std::string::npos &&
+            OutputJson(result).find("downloadUrl") == std::string::npos);
+  const auto& resource = result.GetArray("content")->array[1];
+  Q4T_CHECK(resource.Find("resource")->GetString("blob") == "cmVhbA==");
+  return true;
+}
+Q4T_TEST(mcp_graph_download_policy_never_widens_network_or_credentials) {
+  McpEndpoint endpoint;
+  endpoint.provider_id = kSharePoint;
+  endpoint.authorization = "private-token";
+  endpoint.headers = {{"Cookie", "private-cookie"}, {"X-Private", "secret"}};
+  FileFetchOptions deployment;
+  deployment.allowed_networks = {"127.0.0.1/32", "10.0.0.0/8"};
+  deployment.allowed_hosts = {"download.files.1drv.com"};
+  deployment.ca_file = "/private/ca.pem";
+  mcp_detail::ProviderRequest request{
+      "https://download.files.1drv.com/file?private=cap"};
+  request.binary = true;
+  request.graph_download = true;
+  file_detail::Url url;
+  file_detail::RemoteHeaders headers;
+  FileFetchOptions options;
+  Q4T_CHECK(mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                               &url, &headers, &options)
+                .ok());
+  Q4T_CHECK(headers.size() == 1 && headers.at("Accept") == "*/*" &&
+            options.allowed_hosts == deployment.allowed_hosts &&
+            options.ca_file == deployment.ca_file &&
+            options.ports == deployment.ports &&
+            options.allowed_networks.empty() && !options.allow_http &&
+            !options.max_redirects);
+  Q4T_CHECK(!file_detail::AllowedAddress(
+      q4t::service::ingress::Address::Parse("127.0.0.1"), options));
+  Q4T_CHECK(!file_detail::AllowedAddress(
+      q4t::service::ingress::Address::Parse("10.1.2.3"), options));
+  deployment.public_networks = false;
+  Q4T_CHECK(mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                               &url, &headers, &options)
+                .ok() &&
+            !options.public_networks);
+  for (int variant = 0; variant < 6; ++variant) {
+    auto bad = request;
+    if (variant == 0) bad.url = "http://download.files.1drv.com/file";
+    if (variant == 1) bad.url = "https://user@download.files.1drv.com/file";
+    if (variant == 2) bad.url = "https://download.files.1drv.com:8443/file";
+    if (variant == 3) bad.headers["Authorization"] = "leak";
+    if (variant == 4) bad.method = "POST";
+    if (variant == 5) bad.token_query = true;
+    Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, deployment, bad,
+                                                  &url, &headers, &options)
+                   .ok());
+  }
+  endpoint.provider_id = kOutlookMail;
+  Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, deployment, request,
+                                                &url, &headers, &options)
+                 .ok());
+  return true;
+}
+Q4T_TEST(mcp_graph_write_methods_and_arbitrary_posts_denied) {
+  McpEndpoint endpoint;
+  endpoint.provider_id = kTeams;
+  endpoint.authorization = "opaque";
+  for (const auto* method : {"POST", "PUT", "PATCH", "DELETE"}) {
+    mcp_detail::ProviderRequest request{
+        "https://graph.microsoft.com/v1.0/chats/c1/messages"};
+    request.method = method;
+    file_detail::Url url;
+    file_detail::RemoteHeaders headers;
+    FileFetchOptions options;
+    Q4T_CHECK(!mcp_detail::PrepareProviderRequest(endpoint, FileFetchOptions{},
+                                                  request, &url, &headers,
+                                                  &options)
+                   .ok());
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sharepoint_remote_item_and_folder_do_not_fake_file) {
+  auto link = Object(
+      {{"id", String("link1")},
+       {"name", String("shortcut")},
+       {"remoteItem", Object({{"id", String("folder1")},
+                              {"parentReference",
+                               Object({{"driveId", String("other+/=")}})}})}});
+  auto folder = Object({{"id", String("folder1")},
+                        {"name", String("资料目录")},
+                        {"folder", Object({{"childCount", Number(2)}})}});
+  ProviderPeer peer({JsonReply(link), JsonReply(folder)}, kSharePoint);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kSharePoint, "fetch",
+                         Object({{"item_id", String("link1")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  const auto* value = result.Find("structuredContent");
+  Q4T_CHECK(value->GetString("kind") == "folder" &&
+            value->GetArray("resolved_links")->array[0].GetString("id") ==
+                "link1" &&
+            result.GetArray("content")->array.size() == 1);
+  Q4T_CHECK(peer.Requests()[1].find("/drives/other%2B%2F%3D/items/folder1?") !=
+            std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_sharepoint_size_errors_never_return_partial_content) {
+  for (int mode = 0; mode < 3; ++mode) {
+    auto file = SharePointFile("file1", mode == 0   ? 5
+                                        : mode == 1 ? 5000000
+                                                    : 4);
+    const Reply reply = mode == 2 ? Reply{403, "private download capability"}
+                                  : Reply{200, "real", false, "text/plain"};
+    ProviderPeer peer({JsonReply(file), reply}, kSharePoint);
+    Json result, error;
+    const auto status = ProviderCall(kSharePoint, "fetch",
+                                     Object({{"item_id", String("file1")}}),
+                                     peer, &result, &error);
+    Q4T_CHECK(result.IsNull());
+    Q4T_CHECK(mode == 2 ? status.ok() && error.Find("data")->GetInt(
+                                             "upstream_status") == 403
+                        : !status.ok());
+    Q4T_CHECK(peer.Requests().size() == (mode == 1 ? 1 : 2));
+  }
+  return true;
+}
+Q4T_TEST(mcp_graph_sharepoint_download_capability_is_not_model_content) {
+  auto hits = GraphHits(false, 1, SharePointFile());
+  ProviderPeer peer({JsonReply(hits)}, kSharePoint);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kSharePoint, "search",
+                         Object({{"query", String("project")}}), peer, &result,
+                         &error)
+                .ok() &&
+            error.IsNull());
+  Q4T_CHECK(OutputJson(result).find("secret=cap") == std::string::npos &&
+            OutputJson(result).find("downloadUrl") == std::string::npos &&
+            OutputJson(result).find("tenant.sharepoint.com/record.txt") !=
+                std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_graph_teams_sharepoint_invalid_inputs_never_fetch) {
+  for (const auto& [provider, name, args] :
+       std::vector<std::tuple<std::string, std::string, Json>>{
+           {kTeams, "fetch", Object({{"message_id", String("m1")}})},
+           {kTeams, "fetch",
+            Object({{"message_id", String("m1")},
+                    {"chat_id", String("c1")},
+                    {"team_id", String("t1")}})},
+           {kTeams, "fetch",
+            Object({{"message_id", String("m1")},
+                    {"chat_id", String("c1")},
+                    {"reply_id", String("r1")}})},
+           {kTeams, "get_chat_members",
+            Object(
+                {{"chat_id", String("c1")},
+                 {"next_page_token", String("https://graph.microsoft.com/v1.0/"
+                                            "chats/c2/members?$skip=1")}})},
+           {kSharePoint, "fetch",
+            Object({{"item_id", String("i1")},
+                    {"drive_id", String("d1")},
+                    {"site_id", String("s1")}})},
+           {kSharePoint, "fetch",
+            Object({{"item_id", String("i1")},
+                    {"url", String("https://evil.invalid/")}})},
+           {kSharePoint, "list_recent_documents",
+            Object({{"offset", Number(-1)}})},
+           {kSharePoint, "get_site", Object({{"site_id", String("..")}})}}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  provider, "tools/call", Call(name, args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && result.IsNull() && error.GetInt("code") == -32602);
+  }
+  return true;
+}
 Q4T_TEST(mcp_provider_fixed_origins_and_opaque_encoding) {
   for (const auto* url :
        {"https://www.googleapis.com/calendar/v3/calendars/primary",

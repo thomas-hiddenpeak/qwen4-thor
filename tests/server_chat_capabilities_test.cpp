@@ -106,10 +106,14 @@ Q4T_TEST(chat_capabilities_mcp_native_execution_and_recovery_boundaries) {
             mcp->GetString("connector_transport") ==
                 "native_or_deployment_mapped_mcp");
   const auto* providers = mcp->GetArray("native_provider_ids");
-  Q4T_CHECK(providers && providers->array.size() == 3 &&
+  Q4T_CHECK(providers && providers->array.size() == 7 &&
             providers->array[0].str == "connector_googlecalendar" &&
             providers->array[1].str == "connector_googledrive" &&
-            providers->array[2].str == "connector_gmail");
+            providers->array[2].str == "connector_gmail" &&
+            providers->array[3].str == "connector_outlookcalendar" &&
+            providers->array[4].str == "connector_outlookemail" &&
+            providers->array[5].str == "connector_microsoftteams" &&
+            providers->array[6].str == "connector_sharepoint");
   for (const auto* field :
        {"automatic_tool_replay", "model_restart_on_error",
         "core_readiness_dependency", "external_agent_required"})

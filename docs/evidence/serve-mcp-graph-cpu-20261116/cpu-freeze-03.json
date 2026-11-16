@@ -1,0 +1,5 @@
+{
+  "count": 40,
+  "added": "mcp_graph_mail_metadata_cursor_does_not_expose_full_body",
+  "reason": "Review found mail cursors could broaden metadata into body; enforce list-only projection and continuation fields before final run"
+}

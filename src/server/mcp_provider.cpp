@@ -13,13 +13,14 @@ constexpr uint64_t kProviderResponseBytes = 4U << 20;
 
 bool NativeProvider(std::string_view id) {
   return id == "connector_googlecalendar" || id == "connector_googledrive" ||
-         id == "connector_gmail";
+         id == "connector_gmail" || GraphProviderId(id);
 }
 bool ProviderOrigin(std::string_view id, std::string_view raw) {
   file_detail::Url url;
   if (!NativeProvider(id) || !file_detail::ParseUrl(raw, &url) ||
       url.scheme != "https" || url.port != 443)
     return false;
+  if (GraphProviderId(id)) return url.host == "graph.microsoft.com";
   if (url.host == "oauth2.googleapis.com") return true;
   if (id == "connector_gmail") return url.host == "gmail.googleapis.com";
   return url.host == "www.googleapis.com" ||
@@ -52,7 +53,9 @@ ObjectReply InvokeProvider(std::string_view id, std::string_view method,
                    ? GoogleCalendarProvider(method, params, fetch, result)
                : id == "connector_googledrive"
                    ? GoogleDriveProvider(method, params, fetch, result)
-                   : GmailProvider(method, params, fetch, result);
+               : id == "connector_gmail"
+                   ? GmailProvider(method, params, fetch, result)
+                   : GraphProvider(id, method, params, fetch, result);
   if (reply.ok()) return reply;
   const int status = reply.value.GetInt("upstream_status");
   if (status >= 300 && status <= 599) {
@@ -114,6 +117,73 @@ ObjectReply ReadProviderResponse(file_detail::RemoteHttp& response,
                  "Invalid provider response");
   return {};
 }
+ObjectReply PrepareProviderRequest(const McpEndpoint& endpoint,
+                                   const FileFetchOptions& deployment,
+                                   const ProviderRequest& request,
+                                   file_detail::Url* url,
+                                   std::map<std::string, std::string>* headers,
+                                   FileFetchOptions* options) {
+  if (!url || !headers || !options)
+    return Error(500, "mcp_provider_invalid", "Invalid provider request state");
+  *options = deployment;
+  headers->clear();
+  if (request.graph_download) {
+    if (endpoint.provider_id != "connector_sharepoint" ||
+        request.method != "GET" || !request.binary || request.token_query ||
+        !request.body.empty() || !request.headers.empty() ||
+        !file_detail::ParseUrl(request.url, url) || url->scheme != "https" ||
+        url->port != 443 || request.url.find('#') != request.url.npos)
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider download target not permitted");
+    // The authenticated API chooses the short-lived CDN URL. Keep the
+    // deployment host/CA/public-network restrictions; never inherit private
+    // network grants or credentials onto that URL, and never follow redirects.
+    options->allowed_networks.clear();
+    options->allow_http = false;
+    options->max_redirects = 0;
+    (*headers)["Accept"] = "*/*";
+    return {};
+  }
+  if (!ProviderOrigin(endpoint.provider_id, request.url))
+    return Error(403, "mcp_provider_target_denied",
+                 "Native provider target not permitted");
+  if (!file_detail::ParseUrl(request.url, url))
+    return Error(500, "mcp_provider_invalid", "Invalid provider target");
+  *headers = endpoint.headers;
+  (*headers)["Accept"] = request.binary ? "*/*" : "application/json";
+  for (const auto& [key, value] : request.headers) {
+    if (!((endpoint.provider_id == "connector_googledrive" &&
+           key == "X-Goog-Drive-Resource-Keys") ||
+          (GraphProviderId(endpoint.provider_id) && key == "Prefer")))
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider header not permitted");
+    (*headers)[key] = value;
+  }
+  if (request.method == "POST") {
+    if (!GraphProviderId(endpoint.provider_id) || request.token_query ||
+        request.binary ||
+        request.url != "https://graph.microsoft.com/v1.0/search/query")
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider operation not permitted");
+    (*headers)["Content-Type"] = "application/json";
+  } else if (request.method != "GET" || !request.body.empty()) {
+    return Error(403, "mcp_provider_target_denied",
+                 "Native provider operation not permitted");
+  }
+  if (request.token_query) {
+    if (request.url != "https://oauth2.googleapis.com/tokeninfo")
+      return Error(403, "mcp_provider_target_denied",
+                   "Native provider target not permitted");
+    // Token-info's documented API uses a query parameter. It stays inside
+    // the private worker; neither this URL nor raw errors leave the worker.
+    url->target += "?access_token=" + ProviderEscape(endpoint.authorization);
+    headers->clear();
+    (*headers)["Accept"] = "application/json";
+  } else {
+    (*headers)["Authorization"] = "Bearer " + endpoint.authorization;
+  }
+  return {};
+}
 ObjectReply ExchangeProvider(const McpEndpoint& endpoint,
                              const FileFetchOptions& deployment,
                              std::string_view method, const Json& params,
@@ -125,37 +195,16 @@ ObjectReply ExchangeProvider(const McpEndpoint& endpoint,
     if (++requests > 32 || bytes >= kProviderResponseBytes)
       return Error(413, "mcp_provider_capacity",
                    "Provider response budget exceeded");
-    if (!ProviderOrigin(endpoint.provider_id, request.url))
-      return Error(403, "mcp_provider_target_denied",
-                   "Native provider target not permitted");
     file_detail::Url url;
-    if (!file_detail::ParseUrl(request.url, &url))
-      return Error(500, "mcp_provider_invalid", "Invalid provider target");
-    auto headers = endpoint.headers;
-    headers["Accept"] = request.binary ? "*/*" : "application/json";
-    for (const auto& [key, value] : request.headers) {
-      if (endpoint.provider_id != "connector_googledrive" ||
-          key != "X-Goog-Drive-Resource-Keys")
-        return Error(403, "mcp_provider_target_denied",
-                     "Native provider header not permitted");
-      headers[key] = value;
-    }
-    if (request.token_query) {
-      if (request.url != "https://oauth2.googleapis.com/tokeninfo")
-        return Error(403, "mcp_provider_target_denied",
-                     "Native provider target not permitted");
-      // Token-info's documented API uses a query parameter. It stays inside
-      // the private worker; neither this URL nor raw errors leave the worker.
-      url.target += "?access_token=" + ProviderEscape(endpoint.authorization);
-      headers.clear();
-      headers["Accept"] = "application/json";
-    } else {
-      headers["Authorization"] = "Bearer " + endpoint.authorization;
-    }
+    file_detail::RemoteHeaders headers;
+    FileFetchOptions options;
+    auto reply = PrepareProviderRequest(endpoint, deployment, request, &url,
+                                        &headers, &options);
+    if (!reply.ok()) return reply;
     std::unique_ptr<file_detail::RemoteHttp> response;
-    auto reply = file_detail::RemoteHttp::Open(
-        url, deployment, "GET", headers, "", kProviderResponseBytes - bytes,
-        deadline, &response);
+    reply = file_detail::RemoteHttp::Open(
+        url, options, request.method, headers, request.body,
+        kProviderResponseBytes - bytes, deadline, &response);
     if (!reply.ok()) return reply;
     return ReadProviderResponse(*response, &bytes, output, request.binary);
   };

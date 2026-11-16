@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+Microsoft Graph四提供方20工具已实现候选，[40项不同C++、1项实际CLI
+最终通过](evidence/serve-mcp-graph-cpu-20261116/README.md)，7项来源负控、
+703锚点通过，最终构建零警告。OAuth与文件下载能力隔离，邮件列表
+游标不能扩大到正文；原始失败及针对性补验保留。0GPU、rev134保持，
+七提供方候选仍待真实账户/发行；继续Dropbox、特殊格式及全部master。
+
 Drive五项、Gmail六项原生只读工具已进入候选：实际下载/Office导出、
 分页与MIME正文/可选附件接线。[36项C++、1项实际CLI封包首过](evidence/serve-mcp-google-cpu-20261116/README.md)，
 最终构建零警告、7项来源负控通过，0GPU。不新增链接密码库，系统

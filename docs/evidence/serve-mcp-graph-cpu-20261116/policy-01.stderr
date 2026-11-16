@@ -1,0 +1,6 @@
+test_native_graph_provider_set_is_sealed_with_separate_scopes (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_native_graph_provider_set_is_sealed_with_separate_scopes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.378s
+
+OK

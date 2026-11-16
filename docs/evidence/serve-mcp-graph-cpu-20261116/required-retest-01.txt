@@ -1,0 +1,2 @@
+mcp_graph_sharepoint_download_actual_http_strips_all_credentials
+mcp_graph_sharepoint_size_errors_never_return_partial_content

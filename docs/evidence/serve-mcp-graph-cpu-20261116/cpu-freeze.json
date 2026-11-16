@@ -1,0 +1,35 @@
+{
+  "new": [
+    "mcp_graph_origins_exclude_google_and_other_clouds",
+    "mcp_graph_catalog_schemas_no_extra_profile_dependency",
+    "mcp_graph_profile_permission_failure_does_not_disable_mail",
+    "mcp_graph_profile_preserves_original_fields",
+    "mcp_graph_mail_search_and_encoded_cursor_keep_query",
+    "mcp_graph_mail_recent_folder_opaque_ids",
+    "mcp_graph_cursor_wrong_authority_or_changed_contract_no_io",
+    "mcp_graph_mail_full_body_format_and_permission_are_explicit",
+    "mcp_graph_mail_batch_order_and_known_failure",
+    "mcp_graph_calendar_window_expands_recurrence_and_keeps_timezone",
+    "mcp_graph_calendar_invalid_windows_and_headers_never_fetch",
+    "mcp_graph_calendar_search_uses_fixed_read_only_post",
+    "mcp_graph_calendar_empty_search_does_not_invent_total",
+    "mcp_graph_calendar_fetch_and_batch_preserve_opaque_ids",
+    "mcp_graph_calendar_cursor_keeps_original_time_window",
+    "mcp_graph_malformed_page_search_or_full_body_fails",
+    "mcp_graph_batch_and_search_invalid_arguments_never_fetch"
+  ],
+  "shared_http_peer_transport_origin_and_capability": [
+    "mcp_google_fixed_origins_are_provider_specific",
+    "mcp_google_drive_catalog_exact_permissions",
+    "mcp_google_gmail_catalog_exact_permissions",
+    "mcp_google_drive_blob_becomes_native_resource",
+    "mcp_google_gmail_full_multipart_body_and_attachment_metadata",
+    "mcp_provider_calendar_scoped_catalog_actual_http",
+    "mcp_provider_actual_http_errors_known_redacted_and_never_retried",
+    "mcp_provider_redirect_and_transport_failure_never_retry_or_fabricate",
+    "chat_capabilities_mcp_native_execution_and_recovery_boundaries"
+  ],
+  "count": 26,
+  "gpu_starts": 0,
+  "actual_accounts": false
+}

@@ -282,6 +282,11 @@ set(protocol_inputs
   src/server/mcp_provider_drive.cpp
   src/server/mcp_provider_gmail.cpp
   src/server/mcp_provider_mail.cpp
+  src/server/mcp_provider_graph.cpp
+  src/server/mcp_provider_outlook.cpp
+  src/server/mcp_provider_teams.cpp
+  src/server/mcp_provider_sharepoint.cpp
+  src/server/mcp_provider_graph.h
   src/server/mcp_provider_common.h
   src/server/mcp_provider_mail.h
   src/server/mcp_tunnel.cpp

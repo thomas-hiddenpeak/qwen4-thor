@@ -1,0 +1,19 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp: In function ‘bool q4t_test_fn_mcp_graph_teams_search_preserves_original_hits()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp:1272:7: error: invalid conversion from ‘const __gnu_cxx::__alloc_traits<std::allocator<q4t::io::Json>, q4t::io::Json>::value_type*’ {aka ‘const q4t::io::Json*’} to ‘q4t::io::Json*’ [-fpermissive]
+ 1272 |   Set(&hits.Find("value")
+In file included from /home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:12,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp:16:
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:51:23: note:   initializing argument 1 of ‘void q4t::server::responses_detail::Set(q4t::io::Json*, std::string_view, q4t::io::Json)’
+   51 | inline void Set(Json* object, std::string_view key, Json value) {
+      |                 ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp: In function ‘bool q4t_test_fn_mcp_graph_sharepoint_download_capability_is_not_model_content()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp:1573:7: error: invalid conversion from ‘const __gnu_cxx::__alloc_traits<std::allocator<q4t::io::Json>, q4t::io::Json>::value_type*’ {aka ‘const q4t::io::Json*’} to ‘q4t::io::Json*’ [-fpermissive]
+ 1573 |   Set(&hits.Find("value")
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:51:23: note:   initializing argument 1 of ‘void q4t::server::responses_detail::Set(q4t::io::Json*, std::string_view, q4t::io::Json)’
+   51 | inline void Set(Json* object, std::string_view key, Json value) {
+      |                 ~~~~~~^~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1535: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

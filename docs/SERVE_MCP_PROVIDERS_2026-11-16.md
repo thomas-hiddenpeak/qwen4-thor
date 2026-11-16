@@ -108,6 +108,51 @@ iconv复用系统libc且只在隔离worker调用，不引入常驻外部程序�
 最终构建零警告、来源检查通过。Google Vids等独立异步下载格式仍需
 继续实现与验证，不能将一般文件下载证明成所有云端格式全覆盖。
 
+### Microsoft Graph四提供方候选
+
+依据Microsoft官方[邮件读取](https://learn.microsoft.com/en-us/graph/api/message-get?view=graph-rest-1.0)、
+[日历视图](https://learn.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0)、
+[Teams消息](https://learn.microsoft.com/en-us/graph/api/chatmessage-get?view=graph-rest-1.0)、
+[搜索](https://learn.microsoft.com/en-us/graph/api/resources/searchrequest?view=graph-rest-1.0)和
+[文件下载](https://learn.microsoft.com/en-us/graph/api/driveitem-get-content?view=graph-rest-1.0)，
+Outlook Calendar五项、Email六项、Teams四项、SharePoint五项工具已接线。
+Graph访问令牌按不透明凭据处理；目录只声明本机实际工具schema，不猜测
+JWT内的权限。每个调用由Graph授权，get_profile单独需要User.Read；
+没有该权限不会在目录阶段阻止已经获准的邮件/日历读取。
+
+Graph API固定为graph.microsoft.com的v1.0。除固定只读search/query的
+JSON POST外只发GET，不能通过工具参数写入邮件/消息/文件。保留opaque
+ID、原始字段和分页URL；游标约束到原资源路径/域名，页大小、搜索词和
+日历时间窗口不能悄悄变化。邮箱列表固定元数据投影，游标不能扩展正文
+或附件；全文fetch需真实body，缺失则明确报错。邮件/事件批量最多20，
+保持输入顺序和重复ID，中途失败不返回伪造的部分成功。
+
+Outlook有范围查询用calendarView展开重复日程，日期偏移转UTC，返回
+时区与重复实例关系保留。Teams读取聊天、频道消息/回复及成员，保留
+租户和membership ID；删除消息的墓碑与无正文权限分别处理。搜索保留
+Graph原始hit、summary、resource、offset和total含义，不把事件页计数
+宣称成全局匹配数。
+
+SharePoint搜索/最近文档使用Graph Search，最近明确为索引中的修改
+时间降序；不依赖[已弃用的drive/recent](https://learn.microsoft.com/en-us/graph/api/drive-recent?view=graph-rest-1.0)
+或把它冒充个人访问记录。fetch按item/drive/site读取真实文件，支持
+SharePoint唯一ID和driveItem ID别名；remoteItem最多四跳并检测循环，
+文件夹返回明确folder类型。
+
+下载地址只能来自刚取得的、认证Graph响应的保留属性
+@microsoft.graph.downloadUrl；不能由模型传入。下载使用HTTPS:443，
+不转发OAuth、Cookie或任何部署私有头；沿用部署host/CA/公网限制，
+清除私网放行且不跟随后续重定向。该地址是短期凭据，结果和搜索结果
+递归清除它，原文件字节进入MCP resource。长度不符、超预算或下载错误
+不产生部分成功。全部复用已有RemoteHttp/worker，无新增外部程序/库。
+
+[40项不同C++最终通过](evidence/serve-mcp-graph-cpu-20261116/README.md)，
+累计68次执行（Outlook首轮26、扩展组40、失败项补验2）；1项实际候选
+CLI/私有封包检查及7项来源负控通过，最终主机/完整引擎零警告。两次
+夹具编译错误及两项HTTP/HTTPS夹具失败原样保留，针对性修复，不扩大
+GPU或全模型测试。七个提供方候选不等于真实账户/全部实时分页形式已验；
+真实租户、权限、canonical分页别名与内容资产仍需受控账户验收。
+
 ### 已验Calendar及后续
 
 初始冻结27项CPU，另补具体能力声明后，28项不同C++最终通过；
