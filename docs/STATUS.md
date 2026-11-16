@@ -72,6 +72,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR34两组CI均57/58套件通过，仅三个新包用例误留v18断言而失败。
+[定点修复](evidence/serve-pr34-ci-repair-20261116/README.md)改为实际v19，
+3项CPU首过，历史v18用例保持，运行时/默认不变、0GPU。继续新head
+检查及实际合main，不用本机验证替代远端结果。
+
 [R07精确包预检通过](evidence/serve-cold-refresh-preflight-20261116/README.md)：
 rev182原包普通prepare及root只读check闭合，原污染失败和plan保留；
 2项owner CPU通过。0GPU/0围栏/默认保持，等待相机/监控服务明确

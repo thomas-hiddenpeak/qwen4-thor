@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 18)
+        self.assertEqual(value['version'], 19)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -248,7 +248,7 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 18)
+        self.assertEqual(value['version'], 19)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -274,7 +274,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 18)
+        self.assertEqual(value['version'], 19)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

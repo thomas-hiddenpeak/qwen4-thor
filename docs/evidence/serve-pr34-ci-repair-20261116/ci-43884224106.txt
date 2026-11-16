@@ -1,0 +1,38 @@
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9043569Z 42: FAIL: test_default_package_has_native_binary_and_no_nginx_dependency (__main__.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9044714Z 42: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9045066Z 42: Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9045712Z 42:   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 76, in test_default_package_has_native_binary_and_no_nginx_dependency
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9046383Z 42:     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9046669Z 42: AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9047601Z 42: FAIL: test_file_transport_and_client_capacity_require_v11_identity (__main__.BundleTests.test_file_transport_and_client_capacity_require_v11_identity)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9048145Z 42: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9048403Z 42: Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9048915Z 42:   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 251, in test_file_transport_and_client_capacity_require_v11_identity
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9049452Z 42:     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9049670Z 42: AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9050516Z 42: FAIL: test_http_profile_seals_normalized_policy_and_preserves_managed_binding (__main__.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9051072Z 42: ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9051321Z 42: Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9051853Z 42:   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 277, in test_http_profile_seals_normalized_policy_and_preserves_managed_binding
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9052418Z 42:     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9052633Z 42: AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9235024Z FAIL: test_default_package_has_native_binary_and_no_nginx_dependency (__main__.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9235575Z ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9235835Z Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9236347Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 76, in test_default_package_has_native_binary_and_no_nginx_dependency
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9236883Z     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9237099Z AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9237882Z FAIL: test_file_transport_and_client_capacity_require_v11_identity (__main__.BundleTests.test_file_transport_and_client_capacity_require_v11_identity)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9238375Z ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9238625Z Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9239308Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 251, in test_file_transport_and_client_capacity_require_v11_identity
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9239873Z     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9240091Z AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9240921Z FAIL: test_http_profile_seals_normalized_policy_and_preserves_managed_binding (__main__.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9241467Z ----------------------------------------------------------------------
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9241717Z Traceback (most recent call last):
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9242247Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tests/host/../../tools/serve_recovery/test_native_bundle.py", line 277, in test_http_profile_seals_normalized_policy_and_preserves_managed_binding
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9242799Z     self.assertEqual(value['version'], 18)
+host-contracts	Run all public host contracts	2026-11-16T14:37:26.9243006Z AssertionError: 19 != 18
+host-contracts	Run all public host contracts	2026-11-16T14:37:40.6721571Z 98% tests passed, 1 tests failed out of 58
+host-contracts	Run all public host contracts	2026-11-16T14:37:40.6728170Z 	 42 - q4t_native_bundle_contracts (Failed)
