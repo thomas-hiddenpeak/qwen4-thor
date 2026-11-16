@@ -1542,7 +1542,13 @@ Q4T_TEST(client_policy_config_redaction_and_cli_boundary) {
   Q4T_CHECK(!ValidateServerOptions(options));
   options.host = "127.0.0.1";
   options.allow_media = true;
+  Q4T_CHECK(ValidateServerOptions(options));
+  options.max_seq = 2;
   Q4T_CHECK(!ValidateServerOptions(options));
+  options.max_seq = 1;
+  options.no_mtp = true;
+  Q4T_CHECK(ValidateServerOptions(options));
+  options.no_mtp = false;
   options.allow_media = false;
   ChatPlanConfig config;
   config.client_policy_sha256 = admission.PolicySha256();

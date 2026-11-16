@@ -49,6 +49,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR29旧媒体/MTP断言已修复](evidence/serve-media-client-ci-20261116/README.md)：
+原f8f25148两组CI仅同一旧断言失败，本机针对性1项首过、零警告；
+运行时与rev142不变、0GPU。等待新head远端检查后合main，master继续。
+
 [rev142托管视觉可回退发行完成](evidence/serve-managed-vision-delivery-20261116/README.md)：
 17项STOPPED检查通过，实际回退再前进保持配额/历史/预算，默认
 启用媒体且文本保留MTP。0新增GPU；继续PR29合main及全部master。
