@@ -18,7 +18,7 @@ from tools.serve_recovery import version_registration as registration
 from tools.serve_recovery import version_store
 from tools.serve_service import package as engine
 
-FORMAT = 'q4t-version-archive-v1'
+FORMAT = 'q4t-version-archive-v2'
 MAX_SELECTED = 4
 
 
@@ -57,9 +57,20 @@ def protected(state, desc, current, selected, records):
         if intent['base']['revision'] >= current['revision']:
             roots.update((intent['base']['current']['manifest_sha256'],
                           intent['target']['manifest_sha256']))
-    return {selected['registry']['cycle_id']} | {
+    keep = {selected['registry']['cycle_id']} | {
         cycle for cycle, (_, value) in records.items()
         if value['registration']['root']['manifest_sha256'] in roots}
+    from tools.serve_recovery import root_transfer
+    if os.path.lexists(Path(state)/root_transfer.INTENT):
+        intent = native.private_json(Path(state)/root_transfer.INTENT, root_transfer.MAX_BYTES)
+        transfer = root_transfer.policy.validate(intent['transfer'])
+        needed = {transfer[name]['registry']['cycle_id'] for name in ('before', 'candidate')}
+        rows = {cycle: dict(value=value, sha256=engine.sha(path))
+                for cycle, (path, value) in records.items() if cycle in needed}
+        value = root_transfer.read_intent(access_store.binding(state, desc['service_id']), rows)
+        keep.update(value['transfer'][name]['registry']['cycle_id']
+                    for name in ('before', 'candidate'))
+    return keep
 
 
 def unreferenced(state, current, source):
@@ -86,7 +97,7 @@ def unreferenced(state, current, source):
 
 
 def verify_file(path, row, binding):
-    ledger.keys(row, ('cycle_id', 'sha256', 'identity'))
+    ledger.keys(row, ('cycle_id', 'sha256', 'identity', 'checkpoints'))
     ledger.require(ledger.identifier(row['cycle_id']) and
         type(row['sha256']) is str and ledger.HASH.fullmatch(row['sha256']),
         'invalid archive registration identity')
@@ -99,6 +110,35 @@ def verify_file(path, row, binding):
         value['registration']['registry']['cycle_id'] == row['cycle_id'],
         'archive registration bytes or identity changed')
     return value
+
+
+def checkpoint_rows(state, binding, row, value):
+    from tools.serve_recovery import root_checkpoints as checkpoints
+    marker = checkpoints.identity(binding, row['sha256'], row['cycle_id'])
+    snapshot = checkpoints.read(state, marker)
+    if snapshot is None: return []
+    ledger.require(snapshot['registry'] == value['registration']['registry'],
+                   'checkpoint registration changed')
+    directory = Path(state)/checkpoints.DIRECTORY
+    return [dict(name=row['cycle_id']+suffix, sha256=engine.sha(directory/(row['cycle_id']+suffix)),
+                 identity=native.inode(directory/(row['cycle_id']+suffix)))
+            for suffix in ('.bound', '.json')]
+
+
+def verify_checkpoint(path, item, row, binding, value):
+    from tools.serve_recovery import root_checkpoints as checkpoints
+    ledger.keys(item, ('name', 'sha256', 'identity'))
+    ledger.require(item['name'] in (row['cycle_id']+'.bound', row['cycle_id']+'.json') and
+        engine.sha(path) == item['sha256'] and native.inode(path) == item['identity'],
+        'archive checkpoint bytes or identity changed')
+    marker = checkpoints.identity(binding, row['sha256'], row['cycle_id'])
+    actual = native.private_json(path, checkpoints.MAX_BYTES)
+    if item['name'].endswith('.bound'):
+        ledger.require(actual == marker, 'archived checkpoint binding differs')
+    else:
+        snapshot = checkpoints.validate(actual, marker)['snapshot']
+        ledger.require(snapshot['registry'] == value['registration']['registry'],
+                       'archived checkpoint registry differs')
 
 
 def prepare(state, output, cycles):
@@ -118,11 +158,13 @@ def prepare(state, output, cycles):
         rows = []
         for cycle in sorted(cycles):
             ledger.require(cycle in records, 'registration does not exist')
-            path, _ = records[cycle]
+            path, value = records[cycle]
             unreferenced(state, current, path)
             ledger.require(path.stat().st_dev == parent.stat().st_dev,
                            'archive requires same filesystem atomic rename')
-            row = dict(cycle_id=cycle, sha256=engine.sha(path), identity=native.inode(path))
+            row = dict(cycle_id=cycle, sha256=engine.sha(path), identity=native.inode(path),
+                       checkpoints=[])
+            row['checkpoints'] = checkpoint_rows(state, binding, row, value)
             verify_file(path, row, binding)
             rows.append(row)
         value = dict(format=FORMAT, state=str(state), service_id=desc['service_id'],
@@ -164,7 +206,7 @@ def apply(path, expected, *, restore=False):
                 receipt.get('status') == 'RETIRED', 'completed archive required before restore')
         records = entries(state, binding, selected)
         keep = protected(state, desc, current, selected, records)
-        moves, seen = [], set()
+        moves, seen, saved_records = [], set(), {}
         for row in value['cycles']:
             cycle = row['cycle_id']
             ledger.require(ledger.identifier(cycle) and cycle not in seen,
@@ -178,6 +220,7 @@ def apply(path, expected, *, restore=False):
             exists = [os.path.lexists(p) for p in (source, target)]
             ledger.require(sum(exists) == 1, 'archive source/destination collision or loss')
             item = verify_file(source if exists[0] else target, row, binding)
+            saved_records[cycle] = item
             ledger.require(item['candidate']['revision'] <= selected['revision'],
                            'restored registration is ahead of current recovery state')
             if not restore:
@@ -187,13 +230,44 @@ def apply(path, expected, *, restore=False):
                 ledger.require(cycle not in protected(state, desc, current, selected, combined),
                                'registration root became retained')
             if exists[0]: moves.append((source, target))
-        ledger.require(not restore or len(records)+len(moves) <= registration.MAX_CYCLES,
+            from tools.serve_recovery import root_checkpoints as checkpoints
+            expected_names = [cycle+'.bound', cycle+'.json']
+            ledger.require(type(row['checkpoints']) is list and
+                [p['name'] for p in row['checkpoints']] in ([], expected_names),
+                'archive checkpoint selection differs')
+            checkpoint_pool = state/checkpoints.DIRECTORY
+            if not row['checkpoints']:
+                ledger.require(not any(os.path.lexists(checkpoint_pool/(cycle+s))
+                    for s in ('.bound', '.json', '.bound.new', '.json.new')),
+                    'checkpoint appeared after archive preparation')
+            else:
+                files.directory(checkpoint_pool, create=restore)
+                ledger.require(not any(os.path.lexists(checkpoint_pool/(cycle+s))
+                    for s in ('.bound.new', '.json.new')), 'checkpoint needs original transaction')
+            for checkpoint in row['checkpoints']:
+                source = checkpoint_pool/checkpoint['name']
+                target = archive/('checkpoint-'+checkpoint['name'])
+                if restore: source, target = target, source
+                exists = [os.path.lexists(p) for p in (source, target)]
+                ledger.require(sum(exists) == 1, 'checkpoint source/destination collision or loss')
+                verify_checkpoint(source if exists[0] else target, checkpoint, row, binding, item)
+                ledger.require((source if exists[0] else target).stat().st_dev ==
+                    archive.stat().st_dev, 'checkpoint archive must use the same filesystem')
+                if exists[0]: moves.append((source, target))
+        restored_count = sum(not os.path.lexists(pool/(row['cycle_id']+'.json'))
+                             for row in value['cycles'])
+        ledger.require(not restore or len(records)+restored_count <= registration.MAX_CYCLES,
                        'restore exceeds active registration capacity')
         for source, target in moves:
             os.rename(source, target); files.sync(source.parent); files.sync(target.parent)
         files.sync(pool); files.sync(archive)
         for row in value['cycles']:
             verify_file((pool if restore else archive)/(row['cycle_id']+'.json'), row, binding)
+            for checkpoint in row['checkpoints']:
+                path = (state/checkpoints.DIRECTORY/checkpoint['name'] if restore else
+                        archive/('checkpoint-'+checkpoint['name']))
+                verify_checkpoint(path, checkpoint, row, binding, saved_records[row['cycle_id']])
+        if os.path.lexists(state/checkpoints.DIRECTORY): files.sync(state/checkpoints.DIRECTORY)
         ledger.require(native.private_json(state/version_store.Store.directory_name/
             'policy.json')['state']['policy'] == selected,
                        'version policy changed during archive')

@@ -3738,7 +3738,8 @@
         "evidence/serve-cold-watch-cpu-20261112/README.md",
         "evidence/serve-outer-resource-business-20261112/README.md",
         "evidence/serve-outer-resource-delivery-20261112/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-root-rollback-cpu-20261116/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -3806,7 +3807,23 @@
       "remaining_required": [
         "Cold/host-entry composition and final release",
         "Whole-root fallback entry with current outer capability"
-      ]
+      ],
+      "root_rollback_20261116": {
+        "state": "targeted_cpu_accepted_business_pending",
+        "plan": "SERVE_ROOT_ROLLBACK_2026-11-16.md",
+        "cpu_frozen": 8,
+        "new_gpu_starts": 0,
+        "default_unchanged": true,
+        "remaining": [
+          "qualified modern retained root",
+          "actual rollback/outer/forward Chat short run",
+          "reversible delivery",
+          "remaining R09 and all master tasks"
+        ],
+        "cpu_distinct": 32,
+        "persistence_cpu": 24,
+        "evidence": "evidence/serve-root-rollback-cpu-20261116/README.md"
+      }
     },
     {
       "id": "R10",

@@ -1,0 +1,32 @@
+{
+  "status": "ACCEPT_TARGETED_ROOT_TRANSFER_CPU",
+  "pure_policy_distinct": 8,
+  "persistence_and_sealed_distinct": 24,
+  "first_policy_result": "7 passed, 1 test assertion failed: selector is not launch gate",
+  "affected_policy_recheck": "actual version_launch.configuration terminal fence passed; other seven reused",
+  "persistence_first_run": "24 passed",
+  "persistence_seconds": 55.81870110426098,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "sources": {
+    "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
+    "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
+    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
+    "tools/serve_recovery/test_root_version_policy.py": "40058342c2a399bca4b53cbb4e2771cd69a02b5bd668b78058c2ca2c4a7c0cf9",
+    "tools/serve_recovery/test_root_transfer.py": "2696f35fc72ae4d7221e62acc9019d29729fb2d9c56b939104107bb6521a4fee",
+    "tools/serve_recovery/test_root_checkpoint_archive.py": "5287aed05da8f1699f3fb493c5b13b997a4d1e95902e092da020b6fab0f14784",
+    "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e",
+    "tools/serve_recovery/test_version_archive.py": "0680333beb8d381a321d50a7bd2788d6efe426af13f4500deca9b8f9ef49ad25",
+    "tools/serve_recovery/deployment.py": "ed6fd66ef31d9dc9d46cfa0869a0f329a7ac4ffd9dd1808269c27e60fd5e83a0",
+    "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
+    "tools/serve_recovery/bundle.py": "f0327d7cbf73332d5983585b62339098f9b21ca9ed8f678b6905f5019e3d3bc4",
+    "tools/serve_recovery/test_native_bundle.py": "ff4e0553d168728e394322211678006b53f68d91bd5a407ab7f970ea702d630b"
+  },
+  "business_acceptance": false,
+  "remaining": [
+    "qualified modern retained root",
+    "actual rollback/outer/forward Chat short run",
+    "reversible delivery",
+    "remaining R09 and all master tasks"
+  ]
+}

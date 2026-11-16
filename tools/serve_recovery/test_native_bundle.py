@@ -139,7 +139,10 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V17_SOURCES),
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V18_SOURCES),
+            {'tools/serve_recovery/'+name+'.py' for name in
+             ('root_version_policy', 'root_checkpoints', 'root_transfer')})
+        self.assertEqual(set(bundle.V18_SOURCES)-set(bundle.V17_SOURCES),
                          {'tools/serve_recovery/'+name+'.py' for name in
                           ('outer_policy', 'outer_store', 'outer_instance', 'outer_tree',
                            'outer_reconcile', 'outer_observe', 'outer_manager', 'outer_control',
@@ -200,7 +203,7 @@ class BundleTests(unittest.TestCase):
                 (10, bundle.V10_SOURCES), (11, bundle.V11_SOURCES),
                 (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
                 (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES),
-                (17, bundle.V17_SOURCES)):
+                (17, bundle.V17_SOURCES), (18, bundle.V18_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -477,7 +480,7 @@ print('isolated cold source imports passed')
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(result.stdout, b'isolated cold source imports passed\n')
 
-    def test_relocated_v18_contains_complete_outer_and_resume_sources(self):
+    def test_relocated_v19_contains_complete_outer_resume_and_root_transfer_sources(self):
         receipt = self.prepare()
         code = '''import sys
 sys.path.insert(0, sys.argv[1])
@@ -488,6 +491,8 @@ from tools.serve_recovery import resource_kernel, resource_install, resource_lau
 from tools.serve_recovery import outer_daemon
 from tools.serve_recovery import host_artifact, host_install, host_entry, host_systemd
 from tools.serve_recovery import host_handoff
+from tools.serve_recovery import root_transfer, root_checkpoints, root_version_policy
+assert root_transfer.INTENT == 'root-version-transfer.json'
 from tools.serve_recovery import device_resource
 from tools.serve_recovery import cold_requests, cold_verify, cold_authority, cold_channel, cold_issuer
 from tools.serve_recovery import cold_client, cold_host, cold_custody, cold_watch_policy, cold_watch, resource_memory, resource_client, resource_compat, runtime_identity

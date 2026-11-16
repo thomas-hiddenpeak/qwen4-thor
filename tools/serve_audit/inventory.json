@@ -2640,7 +2640,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "162694395c218be82e52969fe9cb26ef7f75fcc686918a48c77d7258b55b1409",
+    "tools/serve_recovery/bundle.py": "f0327d7cbf73332d5983585b62339098f9b21ca9ed8f678b6905f5019e3d3bc4",
     "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
     "tools/serve_recovery/cold_acceptance.py": "24b2900ce3d8b2e2bf6699f6e07ddb50a91a0f4637a149d543fa42c4ef45bbec",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -2660,7 +2660,7 @@
     "tools/serve_recovery/controller.py": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff",
     "tools/serve_recovery/core_http.py": "91ed363e9aa38b14b643aab9b21dcd7d5bb5f3b5ef91cc6750d873f288d42c4c",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
-    "tools/serve_recovery/deployment.py": "5c47635488b1ec762bb511b67eef0837213d97971727acd0cd44719ada8828b8",
+    "tools/serve_recovery/deployment.py": "ed6fd66ef31d9dc9d46cfa0869a0f329a7ac4ffd9dd1808269c27e60fd5e83a0",
     "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
     "tools/serve_recovery/device_budget.py": "e98a4dc142eb246d009b9d65b814f43bced006ed8fab54bcc0e7a13da160ae02",
     "tools/serve_recovery/device_control.py": "aedf363009938adc0225722bda104af07987dad83e984697e2422272f900a57c",
@@ -2711,7 +2711,7 @@
     "tools/serve_recovery/profile_evidence.py": "245a02aa755cfa689e41e82122c0d03eade76e940da06179b279dc2f2742f39f",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
-    "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
+    "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
     "tools/serve_recovery/profile_migration.py": "6473a321124414d3c392253479b6fa9a38ce613db5943a67d73b95a5bddb157f",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
@@ -2789,7 +2789,10 @@
     "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
-    "tools/serve_recovery/version_archive.py": "7e7f4e53081c3585ed91676183270ed604e29cc4f49905235ea52b26430705fa"
+    "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e",
+    "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
+    "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
+    "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6440,6 +6443,21 @@
     },
     "review": "Explicit offline maintenance only, absent from bundle.SOURCES. Reuses STOPPED publication/deployment/Guardian/core/GPU ownership and adds exclusive version journal ownership. Protects current cycles, retained publication roots, incomplete intents and active references. Source/inode/byte-bound same-filesystem rename and bounded restore preserve all policy bytes, faults and budgets. Eight direct CPU methods and actual two retired registrations accepted; no runtime model/control/native/client source changes.",
     "evidence": "docs/evidence/serve-version-retention-20261116/README.md",
+    "master_active": true
+  },
+  "root_rollback_20261116": {
+    "state": "targeted_cpu_accepted_business_pending",
+    "sources": {
+      "tools/serve_recovery/bundle.py": "f0327d7cbf73332d5983585b62339098f9b21ca9ed8f678b6905f5019e3d3bc4",
+      "tools/serve_recovery/deployment.py": "ed6fd66ef31d9dc9d46cfa0869a0f329a7ac4ffd9dd1808269c27e60fd5e83a0",
+      "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
+      "tools/serve_recovery/root_checkpoints.py": "8314331921ff449877b179529fa4e1b44d03b295bd7370d86882e78249ed7add",
+      "tools/serve_recovery/root_transfer.py": "a8aa9622cf07d589ae418ce71e698d8b8df51483457810ba772592ccaf332487",
+      "tools/serve_recovery/root_version_policy.py": "eca38e18a22ee47a9057ad86609c16f181c6fe4ce659d7a3cf98060cf6033b7d",
+      "tools/serve_recovery/version_archive.py": "0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e"
+    },
+    "review": "Stopped original deployment/Guardian/core and exclusive version ownership. Restore latest authenticated target cycle, preserving UUID, boot, faults, completed/terminal switch and all budgets; only global revision advances. Bounded checkpoint identity plus exact resumable transfer, registered source and actual target payload profile grants, established native outer preservation. V19 freezes V18 inventory. Explicit archive moves checkpoint pair with registration and protects latest transfer roots. Eight policy and24 persistence/retention/sealed CPU cases accepted; CPU model qualifications are synthetic. Actual qualified modern retained root, rollback business and delivery remain required.",
+    "evidence": "docs/evidence/serve-root-rollback-cpu-20261116/README.md",
     "master_active": true
   }
 }
