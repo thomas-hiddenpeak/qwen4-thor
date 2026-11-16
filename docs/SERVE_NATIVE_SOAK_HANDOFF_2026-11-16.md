@@ -1,33 +1,34 @@
 # 当前默认原生长稳交接
 
-当前rev196包`602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740`
-已完成引用主轻资格、SSE/存储/隔离的4启动/14请求功能短验及可回退
-发布；[业务证据](evidence/serve-chat-annotations-business-20261117/README.md)、
-[交付证据](evidence/serve-chat-annotations-delivery-20261117/README.md)。
-连续60秒/3组长稳驱动短验属于前驱rev188的509c3bcb包，其原始
+当前rev204包`4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3`
+已完成真实审核主轻、批准SSE/输入block/多choice评分、存储/隔离的
+4启动/17请求功能短验及可回退发布；[业务证据](evidence/serve-chat-moderation-business-20261117/README.md)、
+[交付证据](evidence/serve-chat-moderation-delivery-20261117/README.md)。原失败另保留，
+累计8启动/32请求；不能把原失败链改称通过。连续60秒/3组长稳驱动
+短验属于前驱rev188的509c3bcb包，其原始
 [证据](evidence/serve-native-soak-business-20261116/README.md)保留，不能
-冒称当前引用引擎重跑了该连续short。当前原生控制/helper精确身份复用。
+冒称当前审核引擎重跑该连续short。当前原生控制/helper按精确身份复用。
 
-[当前精确day prepare/check](evidence/serve-chat-annotations-day-handoff-20261117/README.md)
+[当前精确day prepare/check](evidence/serve-chat-moderation-day-handoff-20261117/README.md)
 已完成，24小时未运行，由用户选择维护窗口显式开展。
 
 ## 当前已准备的入口
 
-私有验证服务UUID `556e2ba7-98a3-4ef8-879b-0c712d609707`，生产默认状态保持STOPPED。
+私有验证服务UUID `e8e140dd-4ab5-49e2-ab75-18c4aaa3a210`，生产默认状态保持STOPPED。
 执行前在仓库根目录核对冻结源/默认/包身份：
 
 ```bash
 python3 -I -B tools/serve_soak/native_stage.py check \
-  --plan .q4t-work/serve-chat-annotations-20261116/day-01/plan.json
+  --plan .q4t-work/serve-chat-moderation-repair-20261117/day-01/plan.json
 ```
 
 准备好连续使用GPU后，由你执行：
 
 ```bash
 python3 -I -B tools/serve_soak/native_stage.py run \
-  --plan .q4t-work/serve-chat-annotations-20261116/day-01/plan.json
+  --plan .q4t-work/serve-chat-moderation-repair-20261117/day-01/plan.json
 python3 -B tools/serve_soak/native_report.py \
-  --output .q4t-work/serve-chat-annotations-20261116/day-01
+  --output .q4t-work/serve-chat-moderation-repair-20261117/day-01
 ```
 
 run自己持有严格GPU租约，整个验证不需要systemd或nginx，不安装后台
@@ -39,10 +40,10 @@ run自己持有严格GPU租约，整个验证不需要systemd或nginx，不安�
 终端丢失时，day-01/handoff.json中的status/stop命令绑定原包和私有状态：
 
 ```bash
-.q4t-work/serve-chat-annotations-20261116/package-01/bundle/bin/q4t service status \
-  --state .q4t-work/serve-chat-annotations-20261116/day-01/state
-.q4t-work/serve-chat-annotations-20261116/package-01/bundle/bin/q4t service stop \
-  --state .q4t-work/serve-chat-annotations-20261116/day-01/state
+.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/bin/q4t service status \
+  --state .q4t-work/serve-chat-moderation-repair-20261117/day-01/state
+.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/bin/q4t service stop \
+  --state .q4t-work/serve-chat-moderation-repair-20261117/day-01/state
 ```
 
 每周期progress只表示已写进度，须结合实时status。完整通过还要求

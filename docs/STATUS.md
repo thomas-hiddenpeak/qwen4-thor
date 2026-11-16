@@ -9,19 +9,25 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev196；服务包 `602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740` |
-| Generation | `85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d` |
-| 引擎 | `6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27` |
-| 引擎发布记录 | `796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840` |
+| 发布 | rev204；服务包 `4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3` |
+| Generation | `91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2` |
+| 引擎 | `e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0` |
+| 引擎发布记录 | `bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e`；outer/周期及新引用能力完整，前驱188/182另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570`；outer/周期及审核能力完整，前驱196/188另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
+输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
+保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
+用户day交接已prepare/check、未启动，全部33项master保持active。
+
+前驱[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
@@ -87,6 +93,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
+输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
+保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
+用户day交接已prepare/check、未启动，全部33项master保持active。
 
 [Chat审核真实业务接受](evidence/serve-chat-moderation-business-20261117/README.md)：
 修复组4启动/17外部请求/238.768秒，通过原输入block、批准SSE、多

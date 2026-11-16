@@ -556,3 +556,5 @@
 - [rev196引用默认交付](evidence/serve-chat-annotations-delivery-20261117/README.md)：真实整根回退/再前进、预算保持和CI依赖修复。
 
 - [Chat原生输入/输出审核](SERVE_CHAT_MODERATION_2026-11-17.md)：真实分类、流和存储发布门控、同一配额与Batch。
+
+- [rev204审核默认交付](evidence/serve-chat-moderation-delivery-20261117/README.md)：真实分类/SSE/存储与整根回退，预算和原失败保持。
