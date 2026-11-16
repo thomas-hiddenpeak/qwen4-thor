@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_INPUT_ATTRIBUTION_DELIVERY",
+  "revision": 166,
+  "current": {
+    "engine_binary_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+    "engine_release_sha256": "e476dbe8de58981982b1c257fedc022a27ddf2fa23db6d9411a7eb4347c23296",
+    "generation_sha256": "23e8ae921e58973e82ecc71b35ce06bbd9748d030d3f578dd661a8f375a80246",
+    "manifest_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-attribution-20261116/package-01/bundle",
+    "service_acceptance_sha256": "83ed371375c8a7dc94e73efb53e1d8261f6905d890ed3fd14a02c5d05a2dd097",
+    "service_release_sha256": "87696a0f5e07b1658cf4da0cd82411a04f84d6371bd3c5f3eb88f94497816c38"
+  },
+  "commands": 17,
+  "seconds": 55.22767079202458,
+  "new_gpu_starts": 0,
+  "state": "STOPPED",
+  "core_client_outer_state_preserved": true,
+  "profile_budget_preserved": true,
+  "retained_anchor_generation": "a79d2257a030165833b1ef142910f62570bf01ba9c677000aef0804483fa440c",
+  "files": 82,
+  "archive_sha256": "2b84a0afb8c43a6c9d702de2cfda0aede94d3aebab9c29fcef34c43dd530a4d2",
+  "secret_scan_matches": 0,
+  "remaining_master_tasks_active": true
+}

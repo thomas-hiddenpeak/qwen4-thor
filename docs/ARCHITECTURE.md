@@ -14,8 +14,10 @@
 - `src/server/`实现自有HTTP socket服务、请求解析、chat模板、资源预算
   接入和调度；默认数字IPv4 127.0.0.1:8000。Chat/Completions/Responses
   已有真实生成、采样、多choice、logprobs、工具和结构化输出；Chat默认
-  temperature=1，符合条件的显式greedy保留MTP。标准字段/后端和组合
-  仍按Serve总计划补齐，不以这些已交付子集宣称完整兼容。
+  temperature=1，符合条件的显式greedy保留MTP。Chat/Responses新请求
+  reasoning缺省为medium，旧queued有效值独立保持。Chat归属摘要按
+  鉴权客户端隔离，JSON/SSE/存储报告实际default档位；这些字段不提供
+  身份权限。标准字段/后端及组合仍按Serve总计划补齐，不将子集视为完整兼容。
 - `chat_scheduler.cpp`提供批处理/多序列调度与MTP批量步骤。实现存在
   不代表所有并发配置已获验收；当前托管包为单槽媒体及文本k=3，
   有视觉token的请求使用普通解码；并发扩展仍须对应证据。

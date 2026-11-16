@@ -517,26 +517,28 @@
     },
     "safety_identifier": {
       "semantics": "string/null，最多128个Unicode字符；客户端作用域SHA256归属，不参与鉴权/配额/缓存或提示。",
-      "boundary": "CPU与实际业务接受；可回退发行待做，默认仍rev158。",
+      "boundary": "针对性CPU、实际JSON/SSE/存储与工具业务及可回退rev166发行通过；其他标准字段仍须实现。",
       "evidence": [
         "docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "tests/server_chat_contract_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tests/server_http_response_test.cpp",
         "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
-        "docs/evidence/serve-input-attribution-business-20261116/README.md"
+        "docs/evidence/serve-input-attribution-business-20261116/README.md",
+        "docs/evidence/serve-input-attribution-delivery-20261116/README.md"
       ]
     },
     "service_tier": {
       "semantics": "auto/default/flex/scale/priority/fast/null；请求偏好省略/null为auto，实际本机执行及JSON/SSE/存储返回default。",
-      "boundary": "CPU与实际业务接受；可回退发行待做，默认仍rev158。",
+      "boundary": "针对性CPU、实际JSON/SSE/存储与工具业务及可回退rev166发行通过；其他标准字段仍须实现。",
       "evidence": [
         "docs/SERVE_INPUT_ATTRIBUTION_2026-11-16.md",
         "tests/server_chat_contract_test.cpp",
         "tests/server_chat_storage_test.cpp",
         "tests/server_http_response_test.cpp",
         "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
-        "docs/evidence/serve-input-attribution-business-20261116/README.md"
+        "docs/evidence/serve-input-attribution-business-20261116/README.md",
+        "docs/evidence/serve-input-attribution-delivery-20261116/README.md"
       ]
     }
   },
@@ -6381,5 +6383,13 @@
     "master_active": true,
     "evidence": "docs/evidence/serve-input-attribution-cpu-20261116/README.md",
     "business_evidence": "docs/evidence/serve-input-attribution-business-20261116/README.md"
+  },
+  "input_attribution_delivery_20261116": {
+    "status": "delivered",
+    "revision": 166,
+    "engine_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+    "package_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
+    "evidence": "docs/evidence/serve-input-attribution-delivery-20261116/README.md",
+    "master_active": true
   }
 }

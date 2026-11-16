@@ -1,7 +1,7 @@
 # 标准输入归属、服务档位与 Responses 默认值
 
 2026-11-16，A01/A07/A12 的下一组实现。rev158 已交付且 PR31 已实际合main
-（8015dbc8），本组CPU/实际业务接受、发行待做；全部33项master仍是完成边界。
+（8015dbc8），本组CPU/实际业务和rev166可回退发行已通过；全部33项master仍是完成边界。
 
 ## 功能合同
 
@@ -67,3 +67,9 @@ SSE、Responses省略/null、一次真实文档工具及SHA续答，验证实际
 已通过；正式0bbfd5e6/保留98b4b47e待17项STOPPED可回退发布。
 控制、原生辅助程序和客户端不变，旧压力/外层证据复用；人工旧根
 outer缺口仍需实现，全部master保持active。
+
+[rev166交付](evidence/serve-input-attribution-delivery-20261116/README.md)已完成：
+0bbfd5e6/7a23cb30为实际默认，98b4b47e为已验回退锚点。17项STOPPED
+检查及实际整根回退再前进通过，全部控制/原生/客户端字节及状态预算
+保持。首次目录权限拒绝原记录保留；未增加GPU。PR32实际合main及
+其余全部master任务继续。
