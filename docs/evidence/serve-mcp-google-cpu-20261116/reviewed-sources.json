@@ -1,0 +1,18 @@
+{
+  "CMakeLists.txt": "7f3c55588d9b5f547a5d831dfa6250d95147caf5ce262ce439630c963ff2faff",
+  "cmake/ChatProtocolIdentity.cmake": "7e3358c31664734b0f6acd65127af3be7cf6ac77b147c2c9e2aa890786d520b7",
+  "cmake/HostTestSources.cmake": "55f6ae040eb025cd513b88b6e5380c33a1871e7f9797d6f36c295f6d238f8782",
+  "src/server/chat_capabilities.cpp": "9166e403f97683084cd9459a48d1e9a89c42089a1dfb855c8f3866d10f4ec992",
+  "src/server/mcp_provider.cpp": "4c1d28f227da9b4a5e6e3e9931ba9a53e9a551f7b0e3e6c7384af38552004727",
+  "src/server/mcp_provider_common.cpp": "406da0eac6fed942b4c49ba7797098401d22ddc9d0bdcf05562debe30e5a5054",
+  "src/server/mcp_provider_common.h": "3a5a23e934f2dce1dfc4b5fc757a6e3931aeb609f3bda3b197efcc902228e90b",
+  "src/server/mcp_provider_drive.cpp": "a161019ea6e840f436c0f7098bd1444a53b8125287e5c8d797914133ffdd21c0",
+  "src/server/mcp_provider_gmail.cpp": "ac2f26236428e498c8d6b3db3bdce8ed445d44dd5b0c05bbde3a57bece516548",
+  "src/server/mcp_provider_internal.h": "48c0e4b4a9189ffb02f547b218161515b82416ddbe61ee75cb91ca2c7d225fe9",
+  "src/server/mcp_provider_mail.cpp": "c0c2b745717c3f343b12b5c0c0cdffe8cecf412b5690779714228810bd01601d",
+  "src/server/mcp_provider_mail.h": "59c6675d5f638347cff46029430b9c8cbb9cc9f4155062a7146c5c7be95c5714",
+  "tests/server_chat_capabilities_test.cpp": "c91c4070a37fc420f25acc7997b63ede2d01042e7b6a05439bd8f87deef998dd",
+  "tests/server_mcp_provider_test.cpp": "a79004f3a2ad7d90d407d1cdd08a4db84b3acbd130e0e6406159b13ea14042a9",
+  "tools/serve_audit/inventory.json": "162cb8af8573a729adb82ca50633e499e151ba8a908b63a3e46c7860665257dd",
+  "tools/serve_responses/test_mcp_policy.py": "e92ce1b4a8215c55e702ef1fa64456c6ce39bd26d4dacac88d29062d3194ddbe"
+}

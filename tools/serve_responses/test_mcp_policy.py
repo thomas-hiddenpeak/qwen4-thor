@@ -103,6 +103,29 @@ class McpPolicyPackage(unittest.TestCase):
         self.assertNotIn('url', route)
         self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
 
+    def test_native_google_provider_set_is_sealed_with_separate_scopes(self):
+        binary, release, model = self.native_fixture()
+        ids = ['connector_googlecalendar', 'connector_googledrive',
+               'connector_gmail']
+        routes = [dict(kind='connector_id', id=provider, transport='provider',
+                       generation='private-' + str(index),
+                       scopes=['client:provider-' + str(index)])
+                  for index, provider in enumerate(ids)]
+        policy = self.policy(fetch=dict(public_networks=True, allow_http=False,
+            ports=[443], max_redirects=0), targets=routes)
+        parsed = pkg.mcp_policy_binding(BINARY, policy, policy.read_bytes())
+        self.assertEqual(parsed['native_provider_count'], 3)
+        self.assertEqual(parsed['native_tunnel_count'], 0)
+        self.assertNotIn('private-', json.dumps(parsed))
+        receipt = pkg.prepare(binary, release, model, self.root/'google-package',
+                              mcp_policy=policy)
+        target = Path(receipt['package'])
+        policy.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['mcp_policy'], parsed)
+        self.assertEqual(pkg.read(target/'mcp-policy.json')['targets'], routes)
+        self.assertIn('--mcp-policy-file', pkg.command(target, manifest))
+
     def test_sealed_package_keeps_routes_after_source_removal_and_rejects_changes(self):
         binary, release, model = self.native_fixture()
         policy = self.policy()

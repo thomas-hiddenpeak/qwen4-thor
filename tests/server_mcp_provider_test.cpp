@@ -6,13 +6,17 @@
 #include <atomic>
 #include <mutex>
 #include <thread>
+#include <tuple>
 
 #include "../src/server/mcp_provider_internal.h"
+#include "../src/server/mcp_provider_common.h"
 #include "../src/server/mcp_transport_internal.h"
 #include "../src/server/object_protocol.h"
 #include "../src/server/remote_http_internal.h"
 #include "q4t/server/mcp_policy.h"
+#include "q4t/server/mcp_content.h"
 #include "q4t/server/responses_mcp.h"
+#include "q4t/server/schema_graph.h"
 #include "q4t/test.h"
 
 namespace {
@@ -41,11 +45,13 @@ struct Reply {
   int status = 200;
   std::string body;
   bool omit_body = false;
+  std::string mime = "application/json";
 };
 class ProviderPeer {
  public:
-  explicit ProviderPeer(std::vector<Reply> replies)
-      : replies_(std::move(replies)) {
+  explicit ProviderPeer(std::vector<Reply> replies,
+                        std::string provider = kProvider)
+      : replies_(std::move(replies)), provider_(std::move(provider)) {
     fd_ = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
     sockaddr_in address{};
     address.sin_family = AF_INET;
@@ -82,8 +88,8 @@ class ProviderPeer {
         }
         std::string output =
             "HTTP/1.1 " + std::to_string(reply.status) +
-            " Result\r\nContent-Type: application/json\r\nContent-Length: " +
-            std::to_string(reply.body.size()) +
+            " Result\r\nContent-Type: " + reply.mime +
+            "\r\nContent-Length: " + std::to_string(reply.body.size()) +
             "\r\nConnection: close\r\n\r\n" +
             (reply.omit_body ? "" : reply.body);
         std::string_view pending = output;
@@ -107,7 +113,7 @@ class ProviderPeer {
     return requests_;
   }
   ObjectReply Fetch(const mcp_detail::ProviderRequest& request, Json* output) {
-    if (!mcp_detail::ProviderOrigin(kProvider, request.url))
+    if (!mcp_detail::ProviderOrigin(provider_, request.url))
       return Error(403, "fixture_origin", "Unexpected adapter origin");
     file_detail::Url original, local;
     file_detail::ParseUrl(request.url, &original);
@@ -119,6 +125,7 @@ class ProviderPeer {
     options.ports = {port_};
     options.max_redirects = 0;
     file_detail::RemoteHeaders headers{{"Accept", "application/json"}};
+    for (const auto& [key, value] : request.headers) headers[key] = value;
     if (request.token_query)
       local.target += "?access_token=synthetic-private-token";
     else
@@ -127,9 +134,9 @@ class ProviderPeer {
     auto reply = file_detail::RemoteHttp::Open(
         local, options, "GET", headers, "", (4U << 20) - bytes_,
         std::chrono::steady_clock::now() + 2s, &response);
-    return reply.ok()
-               ? mcp_detail::ReadProviderResponse(*response, &bytes_, output)
-               : reply;
+    return reply.ok() ? mcp_detail::ReadProviderResponse(*response, &bytes_,
+                                                         output, request.binary)
+                      : reply;
   }
 
  private:
@@ -137,10 +144,624 @@ class ProviderPeer {
   uint64_t bytes_ = 0;
   std::mutex mutex_;
   std::vector<Reply> replies_;
+  std::string provider_;
   std::vector<std::string> requests_;
   std::jthread thread_;
 };
 }  // namespace
+
+namespace {
+constexpr auto kDriveProvider = "connector_googledrive";
+constexpr auto kGmailProvider = "connector_gmail";
+Reply JsonReply(Json value) { return {200, OutputJson(value)}; }
+ObjectReply ProviderCall(std::string_view provider, std::string name, Json args,
+                         ProviderPeer& peer, Json* result, Json* error) {
+  return mcp_detail::InvokeProvider(
+      provider, "tools/call", Call(std::move(name), std::move(args)),
+      [&](const auto& request, Json* value) {
+        return peer.Fetch(request, value);
+      },
+      result, error);
+}
+Json DriveFile(std::string mime = "text/plain", std::string id = "file_1") {
+  return Object(
+      {{"id", String(std::move(id))},
+       {"name", String("原始资料")},
+       {"mimeType", String(std::move(mime))},
+       {"webViewLink", String("https://drive.google.com/file/d/file_1/view")}});
+}
+std::string UrlBase64(std::string_view bytes) {
+  auto value = mcp_detail::provider_detail::Base64(bytes);
+  for (auto& c : value)
+    if (c == '+')
+      c = '-';
+    else if (c == '/')
+      c = '_';
+  while (!value.empty() && value.back() == '=') value.pop_back();
+  return value;
+}
+Json MailPart(std::string bytes, std::string mime = "text/plain",
+              std::string filename = "") {
+  return Object({{"mimeType", String(std::move(mime))},
+                 {"filename", String(std::move(filename))},
+                 {"body", Object({{"size", Number(bytes.size())},
+                                  {"data", String(UrlBase64(bytes))}})}});
+}
+Json Mail(std::string id = "mail_1", Json payload = MailPart("Original body")) {
+  Set(&payload, "headers",
+      Array(
+          {Object({{"name", String("Subject")}, {"value", String("项目验收")}}),
+           Object({{"name", String("From")},
+                   {"value", String("owner@example.test")}})}));
+  return Object({{"id", String(std::move(id))},
+                 {"threadId", String("thread_1")},
+                 {"internalDate", String("1794787200000")},
+                 {"snippet", String("Original snippet")},
+                 {"payload", std::move(payload)}});
+}
+}  // namespace
+
+Q4T_TEST(mcp_google_fixed_origins_are_provider_specific) {
+  Q4T_CHECK(mcp_detail::ProviderOrigin(
+      kGmailProvider,
+      "https://gmail.googleapis.com/gmail/v1/users/me/messages"));
+  Q4T_CHECK(!mcp_detail::ProviderOrigin(
+      kDriveProvider,
+      "https://gmail.googleapis.com/gmail/v1/users/me/messages"));
+  Q4T_CHECK(!mcp_detail::ProviderOrigin(
+      kGmailProvider, "https://www.googleapis.com/drive/v3/files"));
+  for (const auto* id : {kProvider, kDriveProvider, kGmailProvider}) {
+    Q4T_CHECK(mcp_detail::NativeProvider(id));
+    Q4T_CHECK(mcp_detail::ProviderOrigin(
+        id, "https://oauth2.googleapis.com/tokeninfo"));
+    Q4T_CHECK(!mcp_detail::ProviderOrigin(
+        id, "https://gmail.googleapis.com.attacker.invalid/"));
+    Q4T_CHECK(
+        !mcp_detail::ProviderOrigin(id, "https://gmail.googleapis.com:8443/"));
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_catalog_exact_permissions) {
+  for (const auto& [scope, count] : std::vector<std::pair<std::string, size_t>>{
+           {"drive.readonly", 5},
+           {"drive.file", 4},
+           {"drive.metadata.readonly", 3},
+           {"userinfo.email", 0}}) {
+    ProviderPeer peer(
+        {JsonReply(Object(
+            {{"scope", String("https://www.googleapis.com/auth/" + scope)}}))},
+        kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  kDriveProvider, "tools/list", Object(),
+                  [&](const auto& request, Json* value) {
+                    return peer.Fetch(request, value);
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(error.IsNull() &&
+              result.GetArray("tools")->array.size() == count);
+    const auto text = OutputJson(result);
+    Q4T_CHECK((text.find("\"fetch\"") != text.npos) == (count >= 4));
+    Q4T_CHECK((text.find("\"list_drives\"") != text.npos) == (count == 5));
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_catalog_exact_permissions) {
+  for (const auto& [scope, count] :
+       std::vector<std::pair<std::string, size_t>>{{"gmail.readonly", 6},
+                                                   {"gmail.metadata", 1},
+                                                   {"userinfo.email", 0}}) {
+    ProviderPeer peer(
+        {JsonReply(Object(
+            {{"scope", String("https://www.googleapis.com/auth/" + scope)}}))},
+        kGmailProvider);
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  kGmailProvider, "tools/list", Object(),
+                  [&](const auto& request, Json* value) {
+                    return peer.Fetch(request, value);
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(error.IsNull() &&
+              result.GetArray("tools")->array.size() == count);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_search_escape_shared_drive_cursor) {
+  ProviderPeer peer({JsonReply(Object({{"files", Array({DriveFile()})},
+                                       {"incompleteSearch", Boolean(true)},
+                                       {"nextPageToken", String("next+/=")}}))},
+                    kDriveProvider);
+  Json result, error;
+  const auto query = "owner's \\ report";
+  Q4T_CHECK(ProviderCall(kDriveProvider, "search",
+                         Object({{"query", String(query)},
+                                 {"drive_id", String("drive_1")},
+                                 {"folder_id", String("folder_1")},
+                                 {"next_page_token", String("cursor+/=")},
+                                 {"max_results", Number(2)}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto* page = result.Find("structuredContent");
+  Q4T_CHECK(page->GetBool("incompleteSearch") &&
+            page->GetString("next_page_token") == "next+/=" &&
+            page->GetArray("files")->array[0].GetString("name") == "原始资料");
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 1);
+  for (const auto* expected :
+       {"driveId=drive_1", "corpora=drive", "pageToken=cursor%2B%2F%3D",
+        "owner%5C%27s%20%5C%5C%20report", "supportsAllDrives=true", "folder_1"})
+    Q4T_CHECK(requests[0].find(expected) != requests[0].npos);
+  return true;
+}
+Q4T_TEST(mcp_google_drive_profile_shared_drives_and_recent) {
+  ProviderPeer peer(
+      {JsonReply(Object({{"user", Object({{"emailAddress",
+                                           String("user@example.test")}})}})),
+       JsonReply(
+           Object({{"drives", Array({Object({{"id", String("d1")},
+                                             {"name", String("Shared")}})})}})),
+       JsonReply(Object({{"files", Array()}}))},
+      kDriveProvider);
+  Json result, error;
+  for (const auto* tool : {"get_profile", "list_drives", "recent_documents"}) {
+    Q4T_CHECK(
+        ProviderCall(kDriveProvider, tool, Object(), peer, &result, &error)
+            .ok());
+    Q4T_CHECK(error.IsNull());
+  }
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 3);
+  Q4T_CHECK(requests[0].find("/about?fields=user") != requests[0].npos);
+  Q4T_CHECK(requests[1].find("/drives?pageSize=50") != requests[1].npos);
+  Q4T_CHECK(requests[2].find("orderBy=modifiedTime%20desc") !=
+            requests[2].npos);
+  return true;
+}
+Q4T_TEST(mcp_google_drive_blob_becomes_native_resource) {
+  const std::string source = "原始项目文档\nNo fabricated text.\n";
+  ProviderPeer peer(
+      {JsonReply(DriveFile()), {200, source, false, "text/plain"}},
+      kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                         Object({{"file_id", String("file_1")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  Q4T_CHECK(ValidateMcpToolResult(result));
+  const auto* resource = result.GetArray("content")->array[1].Find("resource");
+  Q4T_CHECK(resource->GetString("blob") ==
+            mcp_detail::provider_detail::Base64(source));
+  Q4T_CHECK(resource->GetString("mimeType") == "text/plain");
+  McpContentProjection projection;
+  Q4T_CHECK(ProjectMcpToolResult(result, Array(), &projection));
+  Q4T_CHECK(OutputJson(projection.content).find("input_file") !=
+            std::string::npos);
+  Q4T_CHECK(peer.Requests()[1].find("alt=media") != std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_google_drive_exports_preserve_complete_office_formats) {
+  for (const auto& [type, mime] :
+       std::vector<std::pair<std::string, std::string>>{
+           {"document",
+            "application/"
+            "vnd.openxmlformats-officedocument.wordprocessingml.document"},
+           {"spreadsheet",
+            "application/"
+            "vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+           {"presentation",
+            "application/"
+            "vnd.openxmlformats-officedocument.presentationml.presentation"}}) {
+    ProviderPeer peer(
+        {JsonReply(DriveFile("application/vnd.google-apps." + type)),
+         {200, "PK-fixture-transport-bytes", false, mime}},
+        kDriveProvider);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                           Object({{"file_id", String("file_1")}}), peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(error.IsNull());
+    Q4T_CHECK(
+        result.Find("structuredContent")->GetString("content_mime_type") ==
+        mime);
+    Q4T_CHECK(peer.Requests()[1].find("/export?mimeType=" +
+                                      mcp_detail::ProviderEscape(mime)) !=
+              std::string::npos);
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_drive_shortcut_uses_fixed_origin_and_resource_key) {
+  auto shortcut = DriveFile("application/vnd.google-apps.shortcut");
+  Set(&shortcut, "shortcutDetails",
+      Object({{"targetId", String("file_2")},
+              {"targetResourceKey", String("resource_key")}}));
+  auto file = DriveFile("text/plain", "file_2");
+  Set(&file, "webContentLink", String("https://attacker.invalid/never-read"));
+  ProviderPeer peer({JsonReply(shortcut),
+                     JsonReply(file),
+                     {200, "content", false, "text/plain"}},
+                    kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                         Object({{"file_id", String("file_1")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto requests = peer.Requests();
+  Q4T_CHECK(requests.size() == 3);
+  for (size_t i = 1; i < 3; ++i) {
+    Q4T_CHECK(requests[i].find("/files/file_2") != std::string::npos);
+    Q4T_CHECK(
+        requests[i].find("X-Goog-Drive-Resource-Keys: file_2/resource_key") !=
+        std::string::npos);
+    Q4T_CHECK(requests[i].find("attacker.invalid") == std::string::npos);
+  }
+  Q4T_CHECK(
+      result.Find("structuredContent")->GetArray("shortcuts")->array.size() ==
+      1);
+  return true;
+}
+Q4T_TEST(mcp_google_drive_shortcut_cycle_and_download_denial) {
+  auto shortcut = DriveFile("application/vnd.google-apps.shortcut");
+  Set(&shortcut, "shortcutDetails", Object({{"targetId", String("file_1")}}));
+  ProviderPeer cycle({JsonReply(shortcut)}, kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(!ProviderCall(kDriveProvider, "fetch",
+                          Object({{"file_id", String("file_1")}}), cycle,
+                          &result, &error)
+                 .ok());
+  Q4T_CHECK(cycle.Requests().size() == 1);
+  auto denied = DriveFile();
+  Set(&denied, "capabilities", Object({{"canDownload", Boolean(false)}}));
+  ProviderPeer peer({JsonReply(denied)}, kDriveProvider);
+  Q4T_CHECK(ProviderCall(kDriveProvider, "fetch",
+                         Object({{"file_id", String("file_1")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsObject() && result.IsNull());
+  Q4T_CHECK(peer.Requests().size() == 1);
+  return true;
+}
+Q4T_TEST(mcp_google_invalid_arguments_perform_no_io) {
+  for (const auto& [provider, name, args] :
+       std::vector<std::tuple<std::string, std::string, Json>>{
+           {kDriveProvider, "fetch",
+            Object({{"file_id", String("../secret")}})},
+           {kDriveProvider, "fetch",
+            Object({{"file_id", String("file_1")},
+                    {"resource_key", String("key\r\nInjected")}})},
+           {kDriveProvider, "search", Object({{"max_results", Number(1001)}})},
+           {kDriveProvider, "list_drives",
+            Object({{"max_results", Number(101)}})},
+           {kDriveProvider, "recent_documents",
+            Object({{"url", String("https://elsewhere.invalid/")}})},
+           {kGmailProvider, "read_email",
+            Object({{"message_id", String("..")}})},
+           {kGmailProvider, "read_email",
+            Object({{"message_id", String("m1")},
+                    {"include_attachments", Number(1)}})},
+           {kGmailProvider, "search_emails",
+            Object(
+                {{"query", String("project")}, {"max_results", Number(21)}})},
+           {kGmailProvider, "search_email_ids", Object()},
+           {kGmailProvider, "batch_read_email",
+            Object({{"message_ids",
+                     Array({String("mail_1"), String("../wrong")})}})}}) {
+    size_t calls = 0;
+    Json result, error;
+    Q4T_CHECK(mcp_detail::InvokeProvider(
+                  provider, "tools/call", Call(name, args),
+                  [&](const auto&, Json*) {
+                    ++calls;
+                    return ObjectReply{};
+                  },
+                  &result, &error)
+                  .ok());
+    Q4T_CHECK(calls == 0 && error.GetInt("code") == -32602 && result.IsNull());
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_profile_and_single_page_ids) {
+  ProviderPeer peer(
+      {JsonReply(Object({{"emailAddress", String("user@example.test")},
+                         {"messagesTotal", Number(3)}})),
+       JsonReply(Object(
+           {{"messages", Array({Object({{"id", String("mail_1")},
+                                        {"threadId", String("thread_1")}})})},
+            {"nextPageToken", String("next+/=")},
+            {"resultSizeEstimate", Number(300)}}))},
+      kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kGmailProvider, "get_profile", Object(), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  Q4T_CHECK(ProviderCall(
+                kGmailProvider, "search_email_ids",
+                Object({{"query", String("from:owner@example.test label:项目")},
+                        {"next_page_token", String("cursor+/=")},
+                        {"max_results", Number(500)}}),
+                peer, &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && peer.Requests().size() == 2);
+  const auto* page = result.Find("structuredContent");
+  Q4T_CHECK(page->GetString("next_page_token") == "next+/=" &&
+            page->GetInt("resultSizeEstimate") == 300);
+  Q4T_CHECK(peer.Requests()[1].find("pageToken=cursor%2B%2F%3D") !=
+            std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_search_hydrates_metadata_in_original_order) {
+  ProviderPeer peer(
+      {JsonReply(
+           Object({{"messages", Array({Object({{"id", String("mail_2")}}),
+                                       Object({{"id", String("mail_1")}})})}})),
+       JsonReply(Mail("mail_2")), JsonReply(Mail("mail_1"))},
+      kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kGmailProvider, "search_emails",
+                         Object({{"query", String("project")}}), peer, &result,
+                         &error)
+                .ok());
+  Q4T_CHECK(error.IsNull());
+  const auto* messages = result.Find("structuredContent")->GetArray("messages");
+  Q4T_CHECK(messages->array.size() == 2 &&
+            messages->array[0].GetString("id") == "mail_2" &&
+            messages->array[1].GetString("subject") == "项目验收");
+  Q4T_CHECK(peer.Requests().size() == 3 &&
+            peer.Requests()[1].find("format=metadata") != std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_recent_empty_page_preserves_cursor) {
+  ProviderPeer peer(
+      {JsonReply(Object({{"nextPageToken", String("continue_empty")}}))},
+      kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kGmailProvider, "get_recent_emails", Object(), peer,
+                         &result, &error)
+                .ok());
+  Q4T_CHECK(
+      error.IsNull() &&
+      result.Find("structuredContent")->GetArray("messages")->array.empty());
+  Q4T_CHECK(result.Find("structuredContent")->GetString("next_page_token") ==
+            "continue_empty");
+  Q4T_CHECK(peer.Requests().size() == 1);
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_full_multipart_body_and_attachment_metadata) {
+  auto attachment = MailPart("attachment", "application/pdf", "report.pdf");
+  Set(&attachment, "body",
+      Object({{"attachmentId", String("attachment_1")}, {"size", Number(10)}}));
+  auto payload = MailPart("", "multipart/mixed");
+  Set(&payload, "parts",
+      Array({MailPart("原始正文\n"), MailPart("<p>Original</p>", "text/html"),
+             attachment}));
+  ProviderPeer peer({JsonReply(Mail("mail_1", payload))}, kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kGmailProvider, "read_email",
+                         Object({{"message_id", String("mail_1")}}), peer,
+                         &result, &error)
+                .ok());
+  Q4T_CHECK(error.IsNull() && ValidateMcpToolResult(result));
+  Q4T_CHECK(result.GetArray("content")->array.size() == 3 &&
+            peer.Requests().size() == 1);
+  Q4T_CHECK(result.GetArray("content")
+                ->array[1]
+                .Find("resource")
+                ->GetString("text") == "原始正文\n");
+  const auto* body = result.Find("structuredContent")
+                         ->Find("payload")
+                         ->GetArray("parts")
+                         ->array[2]
+                         .Find("body");
+  Q4T_CHECK(!body->GetBool("content_read", true) &&
+            body->GetString("attachmentId") == "attachment_1");
+  Q4T_CHECK(OutputJson(*result.Find("structuredContent"))
+                .find(UrlBase64("原始正文\n")) == std::string::npos);
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_external_text_body_and_explicit_attachment) {
+  for (bool attachment : {false, true}) {
+    auto payload = MailPart("", attachment ? "application/pdf" : "text/plain",
+                            attachment ? "report.pdf" : "");
+    Set(&payload, "body",
+        Object(
+            {{"size", Number(13)}, {"attachmentId", String("attachment_1")}}));
+    ProviderPeer peer(
+        {JsonReply(Mail("mail_1", payload)),
+         JsonReply(Object({{"data", String(UrlBase64("Original body"))},
+                           {"size", Number(13)}}))},
+        kGmailProvider);
+    Json result, error;
+    Q4T_CHECK(
+        ProviderCall(kGmailProvider, "read_email",
+                     Object({{"message_id", String("mail_1")},
+                             {"include_attachments", Boolean(attachment)}}),
+                     peer, &result, &error)
+            .ok());
+    Q4T_CHECK(error.IsNull() && peer.Requests().size() == 2 &&
+              ValidateMcpToolResult(result));
+    const auto* resource =
+        result.GetArray("content")->array[1].Find("resource");
+    Q4T_CHECK(attachment ? resource->GetString("blob") == "T3JpZ2luYWwgYm9keQ=="
+                         : resource->GetString("text") == "Original body");
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_charset_conversion_and_invalid_encoding) {
+  for (const auto& [charset, good] : std::vector<std::pair<std::string, bool>>{
+           {"ISO-8859-1", true},
+           {"UTF-8", false},
+           {"not-a-real-charset", false}}) {
+    auto message = Mail("mail_1", MailPart(std::string("caf\xe9", 4)));
+    auto payload = *message.Find("payload");
+    auto headers = *payload.GetArray("headers");
+    headers.array.push_back(Object(
+        {{"name", String("Content-Type")},
+         {"value", String("text/plain; charset = \"" + charset + "\"")}}));
+    Set(&payload, "headers", headers);
+    Set(&message, "payload", payload);
+    ProviderPeer peer({JsonReply(message)}, kGmailProvider);
+    Json result, error;
+    auto reply = ProviderCall(kGmailProvider, "read_email",
+                              Object({{"message_id", String("mail_1")}}), peer,
+                              &result, &error);
+    Q4T_CHECK(reply.ok() == good);
+    if (good)
+      Q4T_CHECK(result.GetArray("content")
+                    ->array[1]
+                    .Find("resource")
+                    ->GetString("text") == "café");
+    else
+      Q4T_CHECK(result.IsNull());
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_gmail_batch_order_and_partial_error_no_fabrication) {
+  const auto args =
+      Object({{"message_ids", Array({String("mail_2"), String("mail_1")})}});
+  for (bool fail : {false, true}) {
+    ProviderPeer peer(
+        {JsonReply(Mail("mail_2")), fail ? Reply{404, "secret upstream error"}
+                                         : JsonReply(Mail("mail_1"))},
+        kGmailProvider);
+    Json result, error;
+    Q4T_CHECK(ProviderCall(kGmailProvider, "batch_read_email", args, peer,
+                           &result, &error)
+                  .ok());
+    Q4T_CHECK(peer.Requests().size() == 2);
+    if (fail) {
+      Q4T_CHECK(error.IsObject() && result.IsNull());
+      Q4T_CHECK(OutputJson(error).find("secret") == std::string::npos);
+    } else {
+      const auto* mails =
+          result.Find("structuredContent")->GetArray("messages");
+      Q4T_CHECK(mails->array.size() == 2 &&
+                mails->array[0].GetString("id") == "mail_2");
+    }
+  }
+  return true;
+}
+Q4T_TEST(mcp_google_catalog_schemas_accept_executable_arguments) {
+  for (const auto* provider : {kDriveProvider, kGmailProvider}) {
+    Json result, error;
+    Q4T_CHECK(
+        mcp_detail::InvokeProvider(
+            provider, "tools/list", Object(),
+            [](const auto&, Json* value) {
+              *value = Object(
+                  {{"scope",
+                    String("https://www.googleapis.com/auth/drive.readonly "
+                           "https://www.googleapis.com/auth/gmail.readonly")}});
+              return ObjectReply{};
+            },
+            &result, &error)
+            .ok());
+    Q4T_CHECK(error.IsNull());
+    for (const auto& tool : result.GetArray("tools")->array) {
+      OutputSchemaGraph graph;
+      std::string param;
+      Q4T_CHECK(graph.Init(*tool.Find("inputSchema"), false, &param, "schema",
+                           OutputSchemaPurpose::kToolResult));
+      auto args = Object();
+      const auto name = tool.GetString("name");
+      if (name == "fetch") Set(&args, "file_id", String("file_1"));
+      if (name == "read_email") Set(&args, "message_id", String("mail_1"));
+      if (name == "batch_read_email")
+        Set(&args, "message_ids", Array({String("mail_1"), String("mail_1")}));
+      if (name == "search_emails" || name == "search_email_ids")
+        Set(&args, "query", String("project"));
+      Q4T_CHECK(graph.Check(args));
+    }
+  }
+  ProviderPeer peer({JsonReply(Mail()), JsonReply(Mail())}, kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(ProviderCall(kGmailProvider, "batch_read_email",
+                         Object({{"message_ids", Array({String("mail_1"),
+                                                        String("mail_1")})}}),
+                         peer, &result, &error)
+                .ok());
+  Q4T_CHECK(
+      error.IsNull() &&
+      result.Find("structuredContent")->GetArray("messages")->array.size() ==
+          2);
+  return true;
+}
+
+Q4T_TEST(mcp_google_base64url_canonical_and_binary_roundtrip) {
+  for (const auto& bytes : std::vector<std::string>{
+           "", "f", "fo", "foo", std::string("\0\xff\xfe", 3), "中文"}) {
+    std::string decoded;
+    Q4T_CHECK(
+        mcp_detail::provider_detail::DecodeBase64Url(UrlBase64(bytes), &decoded)
+            .ok() &&
+        decoded == bytes);
+  }
+  for (const auto* value :
+       {"Z", "Zh", "Zg=", "=Zg=", "Zg===", "Zg+_", "Zg\n", "AA=A"}) {
+    std::string decoded = "prior";
+    Q4T_CHECK(
+        !mcp_detail::provider_detail::DecodeBase64Url(value, &decoded).ok() &&
+        decoded.empty());
+  }
+  std::string decoded;
+  Q4T_CHECK(
+      mcp_detail::provider_detail::DecodeBase64Url("Zg==", &decoded).ok() &&
+      decoded == "f");
+  return true;
+}
+Q4T_TEST(mcp_google_malformed_payload_and_response_not_success) {
+  for (auto message : std::vector<Json>{Object({{"id", String("mail_1")}}),
+                                        Mail("wrong_id"), Mail()}) {
+    if (message.GetString("id") == "mail_1" && message.Has("payload")) {
+      auto payload = *message.Find("payload");
+      Set(&payload, "body",
+          Object({{"size", Number(2)}, {"data", String("Zg")}}));
+      Set(&message, "payload", payload);
+    }
+    ProviderPeer peer({JsonReply(message)}, kGmailProvider);
+    Json result, error;
+    Q4T_CHECK(!ProviderCall(kGmailProvider, "read_email",
+                            Object({{"message_id", String("mail_1")}}), peer,
+                            &result, &error)
+                   .ok());
+    Q4T_CHECK(result.IsNull());
+  }
+  ProviderPeer peer({JsonReply(Object({{"files", String("invalid")}}))},
+                    kDriveProvider);
+  Json result, error;
+  Q4T_CHECK(
+      !ProviderCall(kDriveProvider, "search", Object(), peer, &result, &error)
+           .ok());
+  Q4T_CHECK(result.IsNull());
+  return true;
+}
+Q4T_TEST(mcp_google_mime_depth_and_native_output_budget) {
+  auto payload = MailPart("body");
+  for (int i = 0; i < 18; ++i) {
+    auto parent = MailPart("", "multipart/mixed");
+    Set(&parent, "parts", Array({payload}));
+    payload = std::move(parent);
+  }
+  ProviderPeer peer({JsonReply(Mail("mail_1", payload))}, kGmailProvider);
+  Json result, error;
+  Q4T_CHECK(!ProviderCall(kGmailProvider, "read_email",
+                          Object({{"message_id", String("mail_1")}}), peer,
+                          &result, &error)
+                 .ok());
+  Q4T_CHECK(result.IsNull());
+  auto huge = Object({{"source", String(std::string(3U << 20, 'x'))}});
+  Q4T_CHECK(
+      mcp_detail::provider_detail::Result(huge, Array(), &result).http_status ==
+      413);
+  Q4T_CHECK(result.IsNull());
+  return true;
+}
 
 Q4T_TEST(mcp_provider_fixed_origins_and_opaque_encoding) {
   for (const auto* url :

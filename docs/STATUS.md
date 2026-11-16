@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+Drive五项、Gmail六项原生只读工具已进入候选：实际下载/Office导出、
+分页与MIME正文/可选附件接线。[36项C++、1项实际CLI封包首过](evidence/serve-mcp-google-cpu-20261116/README.md)，
+最终构建零警告、7项来源负控通过，0GPU。不新增链接密码库，系统
+字符转换仅在隔离worker内使用。三个提供方仍待真实账户业务/发行，
+继续Graph/Dropbox及特殊格式，不将本机夹具称为云账户实际验收。
+
 [原生提供方适配](SERVE_MCP_PROVIDERS_2026-11-16.md)的Calendar五项
 只读工具、固定主机、OAuth权限目录、时区/游标及错误处理已实现；
 [28项C++、14项Python/实际CLI最终通过](evidence/serve-mcp-provider-calendar-cpu-20261116/README.md)，

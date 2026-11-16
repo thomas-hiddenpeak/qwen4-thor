@@ -1825,8 +1825,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "d437d0fec1982cd45cfb34c35217a0827835b22215dd7a6ff277408d30e92899",
-    "cmake/ChatProtocolIdentity.cmake": "630d2966457e44e162f8e0ca03bd93c85ddb7d4f8cb15d4ff8fc485274ec9044",
+    "CMakeLists.txt": "7f3c55588d9b5f547a5d831dfa6250d95147caf5ce262ce439630c963ff2faff",
+    "cmake/ChatProtocolIdentity.cmake": "7e3358c31664734b0f6acd65127af3be7cf6ac77b147c2c9e2aa890786d520b7",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2087,7 +2087,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "e763756e89cafa496361afbd2cbc97f7639f04975af7fe095e2840608a1c4b88",
+    "src/server/chat_capabilities.cpp": "9166e403f97683084cd9459a48d1e9a89c42089a1dfb855c8f3866d10f4ec992",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -2195,9 +2195,9 @@
     "src/server/mcp_http.cpp": "f647ab1ff780a1eed27c67fc267f1951219b6586e35a830dfffce79e7e4ebf7d",
     "src/server/mcp_policy.cpp": "4f3485e0055f89fe0bbf1c8b77656697431017bec1740ef137e8a6ed0fbbe467",
     "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
-    "src/server/mcp_provider.cpp": "610a4871c6e95d531c8683c40b6ea30a4021c1d6f5b673079315fa67d65c2e4f",
+    "src/server/mcp_provider.cpp": "4c1d28f227da9b4a5e6e3e9931ba9a53e9a551f7b0e3e6c7384af38552004727",
     "src/server/mcp_provider_calendar.cpp": "9aa182a60351cf49d74e501656bea0dd514d7b1d3698aa11a52e6201c1d85f80",
-    "src/server/mcp_provider_internal.h": "f892ea8235315f5a3f89ec20dfae34b011ad7e8b5fd4a1c38c2431446cf96fb2",
+    "src/server/mcp_provider_internal.h": "48c0e4b4a9189ffb02f547b218161515b82416ddbe61ee75cb91ca2c7d225fe9",
     "src/server/mcp_provider_time.cpp": "fa775232eecf42d5ffb18d1b441b880ff731446f65e547ff8a740b549f24c421",
     "src/server/mcp_sse_internal.h": "daadf5676840661a4735a7146663886144c5891b0f04db3176508641eb781e87",
     "src/server/mcp_transport.cpp": "7499d77f2ba98dc7d55ee8b2143522ffaeb5e61751fcdd7f7f7dcbbf9ccda99a",
@@ -2516,7 +2516,13 @@
     "tools/serve_service/service.py": "c9fe6f34ce19e08dc9ce0893517f2617c76a93d26f17fe9f8dfbc5fa8438f16d",
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
-    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "src/server/mcp_provider_common.cpp": "406da0eac6fed942b4c49ba7797098401d22ddc9d0bdcf05562debe30e5a5054",
+    "src/server/mcp_provider_common.h": "3a5a23e934f2dce1dfc4b5fc757a6e3931aeb609f3bda3b197efcc902228e90b",
+    "src/server/mcp_provider_drive.cpp": "a161019ea6e840f436c0f7098bd1444a53b8125287e5c8d797914133ffdd21c0",
+    "src/server/mcp_provider_gmail.cpp": "ac2f26236428e498c8d6b3db3bdce8ed445d44dd5b0c05bbde3a57bece516548",
+    "src/server/mcp_provider_mail.cpp": "c0c2b745717c3f343b12b5c0c0cdffe8cecf412b5690779714228810bd01601d",
+    "src/server/mcp_provider_mail.h": "59c6675d5f638347cff46029430b9c8cbb9cc9f4155062a7146c5c7be95c5714"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -5670,5 +5676,24 @@
     "model_math_changed": false,
     "default_changed": false,
     "final_review": "Validate both time bounds before timezone metadata I/O. Complete provider rejection headers remain a known result even with an incomplete body. No retry/redirect or core health change."
+  },
+  "native_provider_google_review_20261116": {
+    "files": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "src/server/chat_capabilities.cpp",
+      "src/server/mcp_provider.cpp",
+      "src/server/mcp_provider_common.cpp",
+      "src/server/mcp_provider_common.h",
+      "src/server/mcp_provider_drive.cpp",
+      "src/server/mcp_provider_gmail.cpp",
+      "src/server/mcp_provider_internal.h",
+      "src/server/mcp_provider_mail.cpp",
+      "src/server/mcp_provider_mail.h"
+    ],
+    "scope": "Drive and Gmail native fixed-origin read adapters; actual scoped catalog, downloads/exports, MIME/base64url/charset, bounded pagination/attachments. Original MCP isolation/approval/no retry and core-fault separation reused. No new linked dependency.",
+    "public_request_fields_routes_changed": false,
+    "tests": "36 targeted C++ accepted; actual CLI policy package pending",
+    "live_provider_accounts": false
   }
 }

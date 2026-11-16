@@ -1225,7 +1225,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -1238,7 +1238,20 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 7
+        "remaining_provider_count": 5,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "Drive Google Vids asynchronous download and actual supported-format acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
       }
     },
     {
@@ -2096,7 +2109,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2109,7 +2122,20 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 7
+        "remaining_provider_count": 5,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "Drive Google Vids asynchronous download and actual supported-format acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
       }
     },
     {
@@ -2154,7 +2180,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -2167,7 +2193,20 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 7
+        "remaining_provider_count": 5,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "Drive Google Vids asynchronous download and actual supported-format acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
       }
     },
     {
@@ -3021,7 +3060,7 @@
         "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "native_providers": {
-        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3034,7 +3073,20 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 7
+        "remaining_provider_count": 5,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "Drive Google Vids asynchronous download and actual supported-format acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
       }
     },
     {
@@ -3164,7 +3216,7 @@
         "default_changed": false
       },
       "native_providers": {
-        "state": "calendar_cpu_accepted_remaining_providers_in_progress",
+        "state": "google_three_providers_cpu_accepted_remaining_in_progress",
         "plan": "SERVE_MCP_PROVIDERS_2026-11-16.md",
         "required_provider_count": 8,
         "required_tools": 42,
@@ -3177,7 +3229,20 @@
         "cpp_unique_passed": 28,
         "python_unique_passed": 14,
         "candidate_engine": "8db5326b00b3eca5dbeae2e69823f70f2c818e14e48aec299cb54f861517dc99",
-        "remaining_provider_count": 7
+        "remaining_provider_count": 5,
+        "implemented_candidate_providers": [
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_gmail"
+        ],
+        "next_cpu_count": 36,
+        "remaining_formats": [
+          "Drive Google Vids asynchronous download and actual supported-format acceptance"
+        ],
+        "google_evidence": "evidence/serve-mcp-google-cpu-20261116/README.md",
+        "google_cpp_passed": 36,
+        "google_cli_passed": 1,
+        "google_engine_sha256": "978330eca82df94462541cccbf69e676243cf0af570b9feaf0c842b0611a2c4a"
       }
     },
     {
@@ -3193,6 +3258,6 @@
       "release": null
     }
   ],
-  "next_task": "Implement native Google Drive/Gmail and remaining providers; complete live account business and agent/provider release; continue every remaining master task.",
-  "next": "Implement native Google Drive/Gmail and remaining providers; complete live account business and agent/provider release; continue every remaining master task."
+  "next_task": "Implement Microsoft Graph and Dropbox native providers, remaining formats, actual provider account business and reversible agent/provider release; continue all master tasks.",
+  "next": "Implement Microsoft Graph and Dropbox native providers, remaining formats, actual provider account business and reversible agent/provider release; continue all master tasks."
 }

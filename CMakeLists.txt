@@ -319,6 +319,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/mcp_provider.cpp
   src/server/mcp_provider_calendar.cpp
   src/server/mcp_provider_time.cpp
+  src/server/mcp_provider_common.cpp
+  src/server/mcp_provider_drive.cpp
+  src/server/mcp_provider_gmail.cpp
+  src/server/mcp_provider_mail.cpp
   src/server/mcp_tunnel.cpp
   src/server/mcp_tunnel_api.cpp
   src/server/mcp_tunnel_transport.cpp

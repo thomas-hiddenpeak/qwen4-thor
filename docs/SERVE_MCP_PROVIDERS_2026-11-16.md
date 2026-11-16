@@ -77,6 +77,39 @@ next_page_token在实际目录中声明；search与search_events同义，fetch
 
 ## 针对性验证与后续交付
 
+### Google Drive与Gmail候选
+
+依据[Drive文件查询](https://developers.google.com/workspace/drive/api/reference/rest/v3/files/list)、
+[下载](https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get)、
+[导出格式](https://developers.google.com/workspace/drive/api/guides/ref-export-formats)及
+[Gmail列表](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/list)、
+[全文读取](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/get)。
+2026-11-16新增11工具候选，固定API主机、实际scope筛选沿用共享传输。
+元数据权限只暴露对应目录，不借目录扩充OAuth实际权限。
+
+Drive保留单页游标、incompleteSearch、原ID/名称/权限与共享盘选择。
+关键词按字面量转义，资源key仅组成固定提供方头。fetch读取原字节，
+Google文档/表格/幻灯片导出为docx/xlsx/pptx，不用仅首表CSV冒充完整
+表格。快捷方式最多四跳且检测循环；不跟随提供方返回的任意下载URL。
+目录返回明确folder元数据，子项由带folder_id的search单页读取。
+
+Gmail使用当前授权用户，search_email_ids单页最多500，展开元数据
+或batch最多20；列表顺序和游标保持。read_email处理完整MIME树，
+外置正文自动读取，附件默认只保留元数据，include_attachments明确
+请求字节。base64url严格解码，带charset正文经系统iconv转UTF-8；
+原邮件ID/头/线程/日期保留，二进制进入原生资源。未知字符集失败
+只影响该工具，不能自动把非法字节替换后宣称成功。batch保持输入
+顺序（含重复ID），任一读取失败则整次报错，不伪造部分成功。
+
+共用32次HTTP、4MiB原始响应及4MiB原生结果限制，绝对期限不变。
+iconv复用系统libc且只在隔离worker调用，不引入常驻外部程序或
+新链接密码库。真实提供方账户验收尚待测试资产；
+[36项CPU与实际私有配置封包首过](evidence/serve-mcp-google-cpu-20261116/README.md)，
+最终构建零警告、来源检查通过。Google Vids等独立异步下载格式仍需
+继续实现与验证，不能将一般文件下载证明成所有云端格式全覆盖。
+
+### 已验Calendar及后续
+
 初始冻结27项CPU，另补具体能力声明后，28项不同C++最终通过；
 14项不同Python/实际候选CLI与封包检查最终通过。覆盖原生部件/
 真实本机HTTP、原权限/现代/旧SSE/隧道会话、scope目录、URI/游标、
