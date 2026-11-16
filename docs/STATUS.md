@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev224；服务包 `4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3` |
-| Generation | `9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131` |
-| 引擎 | `b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f` |
-| 引擎发布记录 | `9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa` |
+| 发布 | rev234；服务包 `6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d` |
+| Generation | `3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61` |
+| 引擎 | `e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef` |
+| 引擎发布记录 | `9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5`；outer/周期及Stop/缓存能力完整，前驱214另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `945c4b2291e5767fe6bafdc197f62bf44e09620ae6f75c104a42706b3b964ff8`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8`；原生outer/周期及网页能力完整，前驱224另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
+[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
+GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
+真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
+长稳计划保留。继续当前day交接、实际合main与全部33项剩余任务，
+不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
+
+前驱[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
 已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
 GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
 主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
@@ -107,6 +114,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
+GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
+真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
+长稳计划保留。继续当前day交接、实际合main与全部33项剩余任务，
+不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
 
 [网页发行组合接受](evidence/serve-web-search-composition-20261117/README.md)：
 含原失败累计8启动25请求、361.781秒严格租约、343项NVML正常。

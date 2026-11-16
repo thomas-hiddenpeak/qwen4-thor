@@ -409,11 +409,11 @@ Responses现已原生执行MCP工具：列表与过滤、默认逐调用审批�
 
 ## 原生网页搜索
 
-当前工作分支正在验收网页搜索，尚未替换默认发行。Chat通过
+默认rev234已交付原生网页搜索，实际主线合并状态见[STATUS](docs/STATUS.md)。Chat通过
 `web_search_options`在回答前检索，Responses通过`web_search`工具
 执行搜索/读取/查找，并返回来源与实际引用。默认原生后端抓取配置
 网站并保存按客户端隔离的索引，不要求外部搜索守护程序；更广搜索
-数据源与完整交付仍按[网页搜索计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)
+数据源仍按[网页搜索计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)
 推进，不能将有限网站索引描述成全网覆盖。
 
 部署方可用`q4t web-policy-check FILE`检查私有策略，通过

@@ -78,9 +78,9 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat frozen-reference audio/modalities, including actual model backends",
-        "Native web options implemented and accepted; complete reversible delivery and actual main merge",
-        "Remaining default/null, nested message and response projection parity beyond delivered Chat style, attribution and cache fields"
+        "Chat frozen-reference audio/modalities and actual backend execution",
+        "Actual main integration of native web field delivery",
+        "Remaining default/null, nested message and response projection parity"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -215,7 +215,7 @@
         "default_unchanged": false
       },
       "web_search_20261117": {
-        "state": "accepted_composition_delivery_pending",
+        "state": "native_configured_site_delivered_main_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -225,7 +225,7 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true,
+        "default_unchanged": false,
         "network_cpu_tests": 8,
         "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
         "index_cpu_tests": 8,
@@ -250,10 +250,13 @@
         "cumulative_starts": 8,
         "cumulative_requests": 25,
         "cumulative_lease_seconds": 361.7813914818689,
-        "service_delivery_pending": true,
+        "service_delivery_pending": false,
         "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
         "recovery_cpu_tests": 7,
-        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md",
+        "revision": 234,
+        "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+        "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       }
     },
     {
@@ -1776,7 +1779,7 @@
         "new_tests": 0
       },
       "web_search_20261117": {
-        "state": "accepted_composition_delivery_pending",
+        "state": "native_configured_site_delivered_main_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -1786,7 +1789,7 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true,
+        "default_unchanged": false,
         "network_cpu_tests": 8,
         "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
         "index_cpu_tests": 8,
@@ -1811,10 +1814,13 @@
         "cumulative_starts": 8,
         "cumulative_requests": 25,
         "cumulative_lease_seconds": 361.7813914818689,
-        "service_delivery_pending": true,
+        "service_delivery_pending": false,
         "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
         "recovery_cpu_tests": 7,
-        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md",
+        "revision": 234,
+        "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+        "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       }
     },
     {
@@ -2961,12 +2967,12 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native configured-site Chat/Responses search accepted; finish reversible delivery/main and required broader web-provider coverage",
+        "Native web rev234 actual main integration and required broader web-provider coverage",
         "Actual configured cloud account permission/pagination/content acceptance",
         "Remaining builtin/tool VM file/video and typed-output combinations"
       ],
       "web_search_20261117": {
-        "state": "accepted_composition_delivery_pending",
+        "state": "native_configured_site_delivered_main_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -2976,7 +2982,7 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true,
+        "default_unchanged": false,
         "network_cpu_tests": 8,
         "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
         "index_cpu_tests": 8,
@@ -3001,10 +3007,13 @@
         "cumulative_starts": 8,
         "cumulative_requests": 25,
         "cumulative_lease_seconds": 361.7813914818689,
-        "service_delivery_pending": true,
+        "service_delivery_pending": false,
         "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
         "recovery_cpu_tests": 7,
-        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md",
+        "revision": 234,
+        "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+        "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       }
     },
     {
@@ -3257,7 +3266,7 @@
         "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       },
       "web_search_20261117": {
-        "state": "accepted_composition_delivery_pending",
+        "state": "native_configured_site_delivered_main_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -3267,7 +3276,7 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true,
+        "default_unchanged": false,
         "network_cpu_tests": 8,
         "network_evidence": "evidence/serve-web-search-network-20261117/README.md",
         "index_cpu_tests": 8,
@@ -3292,10 +3301,13 @@
         "cumulative_starts": 8,
         "cumulative_requests": 25,
         "cumulative_lease_seconds": 361.7813914818689,
-        "service_delivery_pending": true,
+        "service_delivery_pending": false,
         "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
         "recovery_cpu_tests": 7,
-        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md",
+        "revision": 234,
+        "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+        "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       }
     },
     {
@@ -4141,7 +4153,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev224 or then-current default; do not stop camera/jtop without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev234 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4713,7 +4725,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -4920,7 +4932,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native web-search reversible publication and actual main integration",
+        "Native web rev234 final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5191,6 +5203,38 @@
         "head": "8f55b64351cf85f0525b63700918addc7febe5b7",
         "merge": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
         "evidence": "evidence/serve-pr38-merged-20261117/README.md"
+      },
+      "native_web_delivery_20261117": {
+        "status": "ACCEPT_NATIVE_WEB_SEARCH_DELIVERY",
+        "revision": 234,
+        "current": {
+          "engine_binary_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+          "engine_release_sha256": "9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469",
+          "generation_sha256": "3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61",
+          "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/package-01/bundle",
+          "service_acceptance_sha256": "979d79f8e8b2da43e9161994db2aa64da12d2276a50a32917849531c8ece3c3d",
+          "service_release_sha256": "eb8872c9c6ac5001316157d43e4c7204c5ce3da7f0bd7e936ed2f2737de3f93a"
+        },
+        "commands": 19,
+        "seconds": 284.88877092301846,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8",
+        "automatic_payload": "aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315",
+        "candidate_whole_package_gpu_run": false,
+        "composed_change": "Exact-engine real web business, primary/light and retained controls plus targeted private-policy and migration CPU; live controller/native helpers unchanged; STOPPED publication and actual root rollback verified",
+        "older_engine_fallback": false,
+        "prior_rev224_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 78,
+        "secret_scan_matches": 0,
+        "archive_sha256": "14d87482f8023c8b8c7313df1fd59b417ac351577fee1eda788546976aba7a70",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       }
     },
     {
@@ -5358,8 +5402,8 @@
       }
     }
   ],
-  "next_task": "PR38/39 are actually merged. Publish accepted native web composition reversibly, refresh handoff and merge verified PR; continue remaining protocol/audio/media/backend/SDK and cold/resource/host tasks until all master requirements are complete.",
-  "next": "PR38/39 are actually merged. Publish accepted native web composition reversibly, refresh handoff and merge verified PR; continue remaining protocol/audio/media/backend/SDK and cold/resource/host tasks until all master requirements are complete.",
+  "next_task": "Freeze rev234 native day handoff and complete actual native-web PR checks/main merge. Continue all remaining protocol/audio/media/backend/SDK and cold/resource/host tasks; no stage is the total goal endpoint.",
+  "next": "Freeze rev234 native day handoff and complete actual native-web PR checks/main merge. Continue all remaining protocol/audio/media/backend/SDK and cold/resource/host tasks; no stage is the total goal endpoint.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

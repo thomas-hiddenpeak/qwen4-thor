@@ -209,3 +209,10 @@ CPU；必要构建零警告。修复后业务累计上限为4启动/9请求/900�
 正常、全部清理，见[组合接受](evidence/serve-web-search-composition-20261117/README.md)。
 继续STOPPED发布、真实整根回退与再前进及实际合main；所有其余
 master任务仍保留，未把configured-site执行等同于全网提供方已完备。
+
+## 实际默认交付
+
+rev234完成19项STOPPED升级、整根回退和再前进，284.889秒、
+0新增GPU；预算/周期保持，私有搜索配置可选。原失败不追认，
+原224及长稳入口保留。见[交付记录](evidence/serve-web-search-delivery-20261117/README.md)。
+继续day交接、实际合main及全部master任务。
