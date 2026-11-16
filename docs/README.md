@@ -552,3 +552,5 @@
 - [原生密钥、客户端策略与配额连续性](SERVE_ACCESS_CONTROL_2026-11-09.md)
 
 - [当前默认原生长稳交接](SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md)：rev188精确入口、用户24小时运行及停止/复核。
+
+- [rev196引用默认交付](evidence/serve-chat-annotations-delivery-20261117/README.md)：真实整根回退/再前进、预算保持和CI依赖修复。

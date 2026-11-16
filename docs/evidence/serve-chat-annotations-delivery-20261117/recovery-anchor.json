@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/modern-retained-01/bundle",
+  "manifest_sha256": "42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/delivery-01/retained-service.release.json",
+  "service_release_sha256": "b979a01b200de68dc741e89e575a9c8da6c88b28dd380dccff9eb39f4797e363",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}

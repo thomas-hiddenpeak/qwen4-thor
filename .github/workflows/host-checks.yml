@@ -48,6 +48,7 @@ jobs:
           command -v openssl >/dev/null || packages+=(openssl)
           command -v strace >/dev/null || packages+=(strace)
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
+          /usr/bin/python3 -c 'import ensurepip' || packages+=(python3-venv)
           if ((${#packages[@]})); then
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 \
@@ -76,6 +77,13 @@ jobs:
           mkdir -p build/public-host/sdk
           cp tools/serve_protocol/package.json tools/serve_protocol/package-lock.json build/public-host/sdk/
           npm ci --prefix build/public-host/sdk --ignore-scripts --no-audit --no-fund
+      - name: Install pinned schema validation tools
+        timeout-minutes: 2
+        run: |
+          /usr/bin/python3 -m venv build/public-host/schema-venv
+          build/public-host/schema-venv/bin/python -m pip install \
+            --disable-pip-version-check --retries 1 --timeout 20 \
+            -r tools/serve_protocol/requirements-schema.txt
       - name: Describe document sandbox prerequisites
         timeout-minutes: 1
         run: |
@@ -165,4 +173,6 @@ jobs:
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs
       - name: Check Chat citation history schemas and clients
-        run: python3 -B -m unittest tools.serve_protocol.test_chat_annotations
+        run: >-
+          build/public-host/schema-venv/bin/python -B -m unittest
+          tools.serve_protocol.test_chat_annotations

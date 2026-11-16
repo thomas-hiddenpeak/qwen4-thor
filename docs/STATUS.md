@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev188；服务包 `509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74` |
-| Generation | `daf57aaf26151a6c89905be22c8ec243a249bca4259bb5d0c28ba361887abafa` |
-| 引擎 | `0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf` |
-| 引擎发布记录 | `2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245` |
+| 发布 | rev196；服务包 `602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740` |
+| Generation | `85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d` |
+| 引擎 | `6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27` |
+| 引擎发布记录 | `796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 前驱rev182根 `430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784`；原outer/周期完整，更早7230ac61也保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e`；outer/周期及新引用能力完整，前驱188/182另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
+[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
+引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
+outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
+PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
+新提交检查及实际合main，按rev196刷新用户day交接，全部master继续。
+
+前驱[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
 STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
 只更新Python对当前上传/tunnel计数的解析；核心/client/outer/profile及
 所有本机程序和容量保持。原生60秒/3组/15业务加自检与完整清理通过；
@@ -79,6 +86,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
+引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
+outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
+PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
+新提交检查及实际合main，按rev196刷新用户day交接，全部master继续。
+
 
 [Chat引用业务接受](evidence/serve-chat-annotations-business-20261117/README.md)：
 4启动/14请求/185.929秒，176项NVML正常且清理通过。主轻真实资料
