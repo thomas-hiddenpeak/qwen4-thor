@@ -1614,7 +1614,9 @@ Q4T_TEST(responses_mcp_state_cancel_expiry_and_retention_are_bounded) {
   ObjectStore objects(f.options);
   ResponsesMcpState state(objects, Config());
   const auto definition = Definition("never");
-  const auto catalog = Catalog(state, definition, 1);
+  // Expiry uses whole wall-clock seconds. Leave setup time even when the
+  // catalog is created just before a second boundary, then await real expiry.
+  const auto catalog = Catalog(state, definition, 5);
   const auto proposal = Propose(state, catalog, definition);
   Q4T_CHECK(Ok(proposal));
   const auto id = proposal.value.GetString("id");
@@ -1625,7 +1627,7 @@ Q4T_TEST(responses_mcp_state_cancel_expiry_and_retention_are_bounded) {
   expired.deadline = Clock::now() - 1ms;
   Q4T_CHECK(state.Permit(id, definition, expired).http_status == 408);
   const auto until = Record(objects, id).GetInt("expires_at");
-  const auto deadline = Clock::now() + 2s;
+  const auto deadline = Clock::now() + 6s;
   while (std::time(nullptr) < until && Clock::now() < deadline)
     std::this_thread::sleep_for(5ms);
   Q4T_CHECK(std::time(nullptr) >= until);

@@ -108,6 +108,17 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
+7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。
+精确worker次数、不重放、真实过期/回收断言保持，原三项失败保留。
+独立修复推送后继续最终head检查与实际合main，后续Stop不混入此PR。
+
+PR38的56477a5a一组CI通过，另一组发现三类时间夹具耦合：正常
+缓存worker启动被100ms缩短、MCP一秒TTL在读取前过期、向量任务
+正常存储同被100ms限制。隔离工作区仅修夹具，保留故障注入、次数/
+不重放/清理/实际过期断言；冻结7项关联CPU、0GPU，生产实现不改。
+通过后继续该PR最终检查和实际合main；Stop独立工作未并入本PR。
+
 [rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
 已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
 GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
