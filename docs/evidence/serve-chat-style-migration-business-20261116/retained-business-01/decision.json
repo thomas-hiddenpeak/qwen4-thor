@@ -1,0 +1,36 @@
+{
+  "status": "PASS_NATIVE_MEDIA_SERVICE_RETAINED",
+  "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+  "manifest_sha256": "1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7",
+  "engine_binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+  "actual_business": {
+    "status": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+    "strict_lease_seconds": 48.06595017807558,
+    "nvml_queries": 46,
+    "env_abort": false,
+    "argv_path_review": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/retained-business-01/argv-path-review.json",
+      "sha256": "fcc699725a811db3997e414c28d3e8596cdce004725f89753ee84023d3cc3169"
+    },
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 152
+    },
+    "source_commit": "f8a05ad6bcba3beed196642029a6eef2530b2d6b",
+    "plan_sha256": "f13b1c3dae76fea05ca02fe65ffbfd9bc9de0167a5e915fa20a476fa7b3002c7",
+    "result_sha256": "08529c74cdd054a5a9ff0fee188c0798be2bfdcefb532dd9b4891c681e5da16a",
+    "lease_result_sha256": "68d689394fed4d369a408d11c4849fcf96fdfd3a027fb63990a67eb579e2cfbe",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}
