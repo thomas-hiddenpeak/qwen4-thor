@@ -8,6 +8,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_program.h"
 
@@ -813,6 +814,17 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
              {"end", frame.duration_ns
                          ? VideoSeconds(frame.timestamp_ns + frame.duration_ns)
                          : Json{}}}));
+      auto groups = Array();
+      for (size_t i = 0; i < p.frames.size(); i += 2) {
+        const size_t last = std::min(i + 1, p.frames.size() - 1);
+        groups.array.push_back(
+            Object({{"visual_timestamp",
+                     String(VideoGroupTimestamp(
+                         VideoSeconds(p.frames[i].timestamp_ns).number,
+                         VideoSeconds(p.frames[last].timestamp_ns).number))},
+                    {"source_frames",
+                     Array({intervals.array[i], intervals.array[last]})}}));
+      }
       // Explain the visual payload, not just its machine-readable provenance.
       // ValidateVideoSnapshot guarantees chronological order and both endpoints.
       // Sampling does not provide evidence about omitted intervals.
@@ -820,6 +832,11 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                      "including the first and last decoded frames. "
                      "Timestamps refer to positions in the source video. "
                      "Frames between samples are not shown.\n"
+                     "Each visual group contains two sampled frames. Its "
+                     "timestamp label is their average, not the time of "
+                     "either source frame. The final frame is repeated "
+                     "when needed to complete a pair. The groups below map "
+                     "each visual label to its actual source frames.\n"
                      "Each display interval in seconds is [start,end): "
                      "the frame is shown until the exclusive end, which "
                      "does not imply another frame exists at that time. "
@@ -834,7 +851,7 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                               {"duration_ns", Number(p.duration_ns)},
                               {"source_frames", Number(p.scanned_frames)},
                               {"included_frames", Number(p.frames.size())},
-                              {"frame_intervals", std::move(intervals)},
+                              {"visual_groups", std::move(groups)},
                               {"sampling",
                                String(p.conversion.GetString("sampling"))}})) +
                          "\n",

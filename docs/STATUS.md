@@ -43,6 +43,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[统一投影原业务](evidence/serve-video-projection-business-failure-20261116/README.md)
+在VP8仍拒答：实际看见红/蓝，却将平均视觉组标签当作缺首尾帧的证据。
+当前共用同一时间戳函数，并将每组标签对应到实际源帧的显示区间；
+不改像素、采样、张量或均值。[7项CPU首过](evidence/serve-video-group-timing-cpu-20261116/README.md)，
+主机/引擎零警告；随后最多1启动/8创建/
+900秒原业务；失败未验收，rev134保持，全部master继续。
+
 [通用说明业务](evidence/serve-prepared-input-trust-business-failure-20261116/README.md)
 仍在VP8拒答，未验收；[相同输入JSON/SSE诊断](evidence/serve-video-transport-diagnostic-20261116/README.md)
 结果完全相同，未观察到传输差异。当前修正纯视频的空文档包装，

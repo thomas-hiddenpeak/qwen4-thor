@@ -1,0 +1,14 @@
+{
+  "status": "CPU_ACCEPTED_BUSINESS_PENDING",
+  "cpp_passed": 7,
+  "source_mutation_checks": 7,
+  "source_anchors": 712,
+  "gpu_starts": 0,
+  "identity": {
+    "engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+    "manifest_sha256": "1f3d1cf4b041501aa1815c6aa4c3a2c69275c6896c8acb73a87a30fa8e50487a",
+    "protocol_sha256": "bef53460f4e94c618c97e93fe5fe66f5601f41af357aec9890b925894dd61e3c",
+    "default_unchanged": true
+  },
+  "numerical_contract": "Original mean timestamp expression, temporal patches, pixels and sampling unchanged. Source metadata now binds actual visual group labels to source frame intervals."
+}

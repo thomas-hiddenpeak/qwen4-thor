@@ -1280,7 +1280,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "shared_template_projection_cpu_accepted_business_pending",
+        "state": "group_timing_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1299,8 +1299,8 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 4,
-        "business_latest_failure_evidence": "evidence/serve-prepared-input-trust-business-failure-20261116/README.md",
+        "business_attempts": 5,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
         "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
@@ -1317,7 +1317,10 @@
         "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
         "projection_cpp_unique": 16,
         "projection_cpp_executions": 17,
-        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea"
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
       }
     },
     {
@@ -1697,7 +1700,7 @@
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
       },
       "native_video_preparation": {
-        "state": "shared_template_projection_cpu_accepted_business_pending",
+        "state": "group_timing_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1716,8 +1719,8 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 4,
-        "business_latest_failure_evidence": "evidence/serve-prepared-input-trust-business-failure-20261116/README.md",
+        "business_attempts": 5,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
         "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
@@ -1734,7 +1737,10 @@
         "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
         "projection_cpp_unique": 16,
         "projection_cpp_executions": 17,
-        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea"
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
       }
     },
     {
@@ -2270,7 +2276,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "shared_template_projection_cpu_accepted_business_pending",
+        "state": "group_timing_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -2289,8 +2295,8 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 4,
-        "business_latest_failure_evidence": "evidence/serve-prepared-input-trust-business-failure-20261116/README.md",
+        "business_attempts": 5,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
         "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
@@ -2307,7 +2313,10 @@
         "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
         "projection_cpp_unique": 16,
         "projection_cpp_executions": 17,
-        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea"
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
       }
     },
     {
@@ -3313,7 +3322,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "shared_template_projection_cpu_accepted_business_pending",
+        "state": "group_timing_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -3332,8 +3341,8 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 4,
-        "business_latest_failure_evidence": "evidence/serve-prepared-input-trust-business-failure-20261116/README.md",
+        "business_attempts": 5,
+        "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
         "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
@@ -3350,7 +3359,10 @@
         "projection_cpu_evidence": "evidence/serve-video-projection-cpu-20261116/README.md",
         "projection_cpp_unique": 16,
         "projection_cpp_executions": 17,
-        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea"
+        "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
+        "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
+        "group_timing_cpp_passed": 7,
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
       }
     },
     {

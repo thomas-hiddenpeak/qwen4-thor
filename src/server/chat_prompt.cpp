@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <format>
 #include <utility>
 
 #include "q4t/server/chat_template.h"
@@ -155,7 +154,7 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       // receives its mean timestamp and an independent visual boundary.
       for (size_t frame = 0; frame < times.size(); frame += 2) {
         const double last = times[std::min(frame + 1, times.size() - 1)];
-        out += std::format("<{:.1f} seconds>", (times[frame] + last) / 2);
+        out += VideoGroupTimestamp(times[frame], last);
         out += "<|vision_start|><|video_pad|><|vision_end|>";
       }
       if (part_ends) part_ends->push_back(out.size());

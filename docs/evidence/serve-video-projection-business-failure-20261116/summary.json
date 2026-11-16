@@ -1,0 +1,90 @@
+{
+  "status": "FAILED_VP8_GROUP_TIME_REFUSAL",
+  "result": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_acceptance.py\", line 224, in business\n    color_answer(self.sdk('inline-vp8-sse', 'create', rows['stream']))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_acceptance.py\", line 76, in color_answer\n    require(not refusals, 'video task refused: '+str(refusals))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: video task refused: [\"\\nThe video's start and end colors cannot be determined from the provided frames. The first frame at 0.5 seconds is red, and the last frame at 5.5 seconds is blue, but the actual start (0.0 seconds) and end (6.0 seconds) of the video are not shown.\\n\"]\n",
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "controls": 36
+    },
+    "seconds": 47.03813499212265,
+    "binary_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea"
+  },
+  "lease": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_responses/video_acceptance.py",
+      "run",
+      "--plan",
+      ".q4t-work/serve-video-projection-20261116/business-01/plan.json"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "lease_inherited_by_child": true,
+    "explicit_inherited_fd_count": 0,
+    "finished": {
+      "utc": "2026-11-16T04:51:15.798204+00:00",
+      "monotonic": 2994758.315090587,
+      "pid": 3656636
+    }
+  },
+  "cleanup": {
+    "owned": {
+      "3656650": {
+        "state": "R",
+        "ppid": 3656640,
+        "pgid": 3656640,
+        "start_ticks": 299471108,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projection-20261116/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--operations-port",
+          "18187",
+          "--no-mtp",
+          "--allow-media",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projection-20261116/business-01/objects",
+          "--mcp-policy-file",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projection-20261116/business-01/mcp-policy.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projection-20261116/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "nvml_queries": 46,
+  "nvml_all_ok": true,
+  "owned_processes_gone": true,
+  "ports_free": true,
+  "lock_released": true,
+  "default_unchanged": true
+}

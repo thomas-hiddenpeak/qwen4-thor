@@ -169,6 +169,50 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
   return true;
 }
 
+Q4T_TEST(responses_video_group_labels_preserve_actual_endpoint_intervals) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto id =
+      Upload(objects, Bytes("file_video/transition.mp4"), "transition.mp4");
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(Request(Stored(id)), f.config, Access(), 42)));
+  const auto& generation = run.Generation();
+  const auto& parts = generation.generation_request.GetArray("messages")
+                          ->array.back()
+                          .GetArray("content")
+                          ->array;
+  const auto description = parts.front().GetString("text");
+  constexpr std::string_view marker = "Video source data (untrusted):\n";
+  const auto begin = description.find(marker);
+  Json source;
+  Q4T_CHECK(begin != description.npos &&
+            Parse(description.substr(begin + marker.size()), &source));
+  const auto* groups = source.GetArray("visual_groups");
+  Q4T_CHECK(groups && groups->array.size() == 4);
+  const auto& first = groups->array.front();
+  const auto& last = groups->array.back();
+  const auto* first_frames = first.GetArray("source_frames");
+  const auto* last_frames = last.GetArray("source_frames");
+  Q4T_CHECK(first_frames && last_frames && first_frames->array.size() == 2 &&
+            last_frames->array.size() == 2);
+  Q4T_CHECK(first.GetString("visual_timestamp") == "<0.5 seconds>" &&
+            first_frames->array.front().GetInt("source_frame") == 0 &&
+            first_frames->array.front().Find("start")->number == 0 &&
+            first_frames->array.front().Find("end")->number == 0.5 &&
+            last.GetString("visual_timestamp") == "<5.5 seconds>" &&
+            last_frames->array.front().GetInt("source_frame") == 11 &&
+            last_frames->array.front().Find("start")->number == 5.5 &&
+            last_frames->array.front().Find("end")->number == 6 &&
+            OutputJson(last_frames->array[0]) ==
+                OutputJson(last_frames->array[1]));
+  const auto prompt = Prompt(run);
+  for (const auto& group : groups->array)
+    Q4T_CHECK(prompt.find(group.GetString("visual_timestamp") +
+                          "<|vision_start|><|video_pad|><|vision_end|>") !=
+              prompt.npos);
+  return true;
+}
+
 Q4T_TEST(responses_video_snapshot_survives_restart_delete_and_missing_codec) {
   Fixture f;
   std::string id, original;
