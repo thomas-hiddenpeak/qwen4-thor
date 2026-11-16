@@ -234,7 +234,7 @@ function message(value) {
 }
 
 function logprobs(value) {
-  if (value === null) return null;
+  if (value == null) return null;
   fields(value, ['content', 'refusal']);
   function token(item, top) {
     fields(item, top ? ['token', 'logprob', 'bytes'] : ['token', 'logprob', 'bytes', 'top_logprobs']);
@@ -255,7 +255,48 @@ function logprobs(value) {
   return clone(value);
 }
 
-function choiceResults(id, model, values, counts) {
+function moderationMetadata(value = {}) {
+  const result = {};
+  if (value.moderation != null) {
+    const reports = value.moderation;
+    requireValue(object(reports) && Object.keys(reports).length === 2 &&
+      Object.hasOwn(reports, 'input') && Object.hasOwn(reports, 'output'), 'invalid moderation directions');
+    for (const report of Object.values(reports)) {
+      requireValue(object(report), 'invalid moderation report');
+      if (report.type === 'error') {
+        text(report.code, 'missing moderation error code', true);
+        text(report.message, 'missing moderation error message');
+        continue;
+      }
+      requireValue(report.type === 'moderation_results' && Array.isArray(report.results) && report.results.length > 0,
+        'missing actual moderation results');
+      text(report.model, 'missing moderation model', true);
+      for (const item of report.results) {
+        requireValue(object(item) && item.type === 'moderation_result' && item.model === report.model &&
+          typeof item.flagged === 'boolean', 'invalid moderation result');
+        const categories = item.categories, scores = item.category_scores, applied = item.category_applied_input_types;
+        requireValue(object(categories) && object(scores) && object(applied) && Object.keys(categories).length > 0 &&
+          isDeepStrictEqual(Object.keys(categories).sort(), Object.keys(scores).sort()) &&
+          isDeepStrictEqual(Object.keys(applied).sort(), Object.keys(scores).sort()), 'incomplete moderation categories');
+        requireValue(Object.values(categories).every(v => typeof v === 'boolean') &&
+          Object.values(scores).every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1) &&
+          Object.values(applied).every(v => Array.isArray(v) && v.every(x => ['text', 'image'].includes(x))),
+        'invalid moderation scores or modalities');
+      }
+    }
+    result.moderation = clone(reports);
+  }
+  if (value.q4t_moderation_usage != null) {
+    const usage = value.q4t_moderation_usage;
+    requireValue(object(usage) && Object.keys(usage).length === 3 &&
+      ['input_tokens', 'output_tokens', 'model_steps'].every(k => integer(usage[k])), 'invalid moderation usage');
+    result.q4t_moderation_usage = clone(usage);
+  }
+  return result;
+}
+
+function choiceResults(id, model, values, counts, metadata = {}) {
+  const extra = moderationMetadata(metadata);
   requireValue(values.length >= 1 && values.length <= 128, 'invalid choice count');
   values.sort((a, b) => a.index - b.index);
   for (const [index, value] of values.entries()) requireValue(value.index === index, 'missing or duplicate choice index');
@@ -268,9 +309,9 @@ function choiceResults(id, model, values, counts) {
   if (choices.length === 1) {
     const result = completion(id, model, choices[0].message, choices[0].finish_reason, checked);
     if (choices[0].logprobs !== null) result.logprobs = choices[0].logprobs;
-    return result;
+    return { ...result, ...extra };
   }
-  return { id, model, choices, usage: checked };
+  return { id, model, choices, usage: checked, ...extra };
 }
 
 function completion(id, model, msg, finish, counts, choiceCount = 1) {
@@ -278,7 +319,7 @@ function completion(id, model, msg, finish, counts, choiceCount = 1) {
   const result = message(msg), calls = result.tool_calls ?? [];
   requireValue(result.refusal == null || (!calls.length && result.function_call == null),
     'refusal cannot authorize tool execution');
-  requireValue(['stop', 'length', 'tool_calls', 'function_call'].includes(finish), 'unsupported finish reason');
+  requireValue(['stop', 'length', 'tool_calls', 'function_call', 'content_filter'].includes(finish), 'unsupported finish reason');
   requireValue((finish === 'tool_calls') === (calls.length > 0), 'finish/tool batch mismatch');
   requireValue((finish === 'function_call') === (result.function_call != null), 'finish/function mismatch');
   return { id, model, message: result, finish_reason: finish, usage: usage(counts, choiceCount) };
@@ -302,7 +343,7 @@ export function parseJsonWire(raw) {
   requireValue(raw.length <= MAX_RESPONSE_BYTES, 'response byte limit');
   const event = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(raw));
   envelope(event, 'chat.completion');
-  return { result: choiceResults(event.id, event.model, clone(event.choices), event.usage), events: [event] };
+  return { result: choiceResults(event.id, event.model, clone(event.choices), event.usage, event), events: [event] };
 }
 
 export function parseSseWire(raw) {
@@ -311,6 +352,7 @@ export function parseSseWire(raw) {
   requireValue(source.endsWith('\n'), 'incomplete SSE line');
   let data = [], eventBytes = 0, done = false, identity, counts = null;
   const states = new Map(), events = [];
+  let metadata = {};
   const finished = () => states.size > 0 && [...states.values()].every(state => state.finish !== null);
   function feed(event) {
     envelope(event, 'chat.completion.chunk');
@@ -318,6 +360,11 @@ export function parseSseWire(raw) {
     identity ??= current;
     requireValue(isDeepStrictEqual(current, identity), 'response identity changed');
     events.push(event);
+    if (event.choices.length === 0 && event.moderation != null) {
+      requireValue(finished() && counts === null && metadata.moderation === undefined, 'unexpected moderation terminal');
+      metadata = moderationMetadata(event);
+      if (event.usage == null) return;
+    }
     if (event.choices.length === 0) {
       requireValue(finished() && counts === null, 'unexpected usage terminal');
       counts = usage(event.usage, states.size); return;
@@ -379,7 +426,7 @@ export function parseSseWire(raw) {
         state.functionCall[key] += text(delta.function_call[key], 'invalid legacy function delta');
     }
     if (choice.finish_reason != null) {
-      requireValue(['stop', 'length', 'tool_calls', 'function_call'].includes(choice.finish_reason), 'unsupported finish reason');
+      requireValue(['stop', 'length', 'tool_calls', 'function_call', 'content_filter'].includes(choice.finish_reason), 'unsupported finish reason');
       finish = choice.finish_reason;
     }
     Object.assign(state, { role, finish, content, reasoning, reasoningField });
@@ -414,7 +461,7 @@ export function parseSseWire(raw) {
     if (state.functionCall) msg.function_call = state.functionCall;
     return { index, message: msg, finish_reason: state.finish, logprobs: state.logprobs };
   });
-  return { result: choiceResults(identity[0], identity[1], choices, counts), events };
+  return { result: choiceResults(identity[0], identity[1], choices, counts, metadata), events };
 }
 
 export function prepareToolCalls(result, validators, customValidators = {}) {

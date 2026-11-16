@@ -509,6 +509,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
   src/server/chat_choices.cpp
+  src/server/chat_moderation.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
@@ -775,6 +776,7 @@ if(Q4T_BUILD_TESTS)
     src/server/embedding_metadata.cpp
     src/server/responses_execution_moderation.cpp
     src/server/chat_choices.cpp
+  src/server/chat_moderation.cpp
     src/server/model_catalog.cpp
     tests/server_sampling_test.cpp
     tests/server_completion_test.cpp
@@ -786,6 +788,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_responses_reasoning_test.cpp
     tests/server_access_program_test.cpp
     tests/server_moderation_test.cpp
+    tests/server_chat_moderation_test.cpp
     tests/server_moderations_api_test.cpp
     tests/server_embeddings_api_test.cpp
     tests/server_vector_search_test.cpp

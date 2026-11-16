@@ -1,0 +1,32 @@
+{
+  "status": "ACCEPT_CHAT_MODERATION_DELIVERY",
+  "revision": 204,
+  "current": {
+    "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+    "engine_release_sha256": "bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4",
+    "generation_sha256": "91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2",
+    "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+    "service_acceptance_sha256": "6fd471ce0940502c2d7134433f2952d38e1c18da283d6b8ad63381c06178c500",
+    "service_release_sha256": "356456f58be9bc1ff9ed9b671e4cccfa3b2da9ce9788f511f0d14ac863de9d46"
+  },
+  "commands": 18,
+  "seconds": 229.15169466892257,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "core_client_outer_bytes_preserved": true,
+  "profile_migration": "qualified additive capability and identity; state, history, configuration and clock preserved",
+  "root_cycles_preserved": true,
+  "manual_root": "c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570",
+  "automatic_payload": "4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de",
+  "older_engine_fallback": false,
+  "prior_rev196_preserved": true,
+  "retired_generations_archived": 2,
+  "retired_versions_archived": 2,
+  "deleted_files": 0,
+  "files": 70,
+  "secret_scan_matches": 0,
+  "archive_sha256": "100e8040556031a6e3e850da410d971eed7edbf72d24f8ee9b112dbef750acea",
+  "main_integration_pending": true,
+  "all_master_tasks_active": true
+}

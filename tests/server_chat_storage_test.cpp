@@ -10,6 +10,7 @@
 #include "q4t/server/application_query.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_moderation.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/lifetime.h"
@@ -726,5 +727,45 @@ Q4T_TEST(chat_annotations_stored_messages_survive_restart_and_client_isolation) 
   Q4T_CHECK(HandleStoredChatRequest(
       objects, "GET", "/v1/chat/completions/chatcmpl_test/messages", {},
       Access("client:other")).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(chat_moderation_storage_keeps_only_reviewed_output_and_report) {
+  Fixture fixture;
+  std::string reviewed;
+  ChatModeration moderation(
+      {true, "local-model", ModerationMode::kBlock, ModerationMode::kBlock});
+  ModerationPlan classifier;
+  classifier.model = "local-model";
+  classifier.text = true;
+  Json safe, blocked;
+  Q4T_CHECK(ParseModerationResult(R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0,0]})",
+                                  classifier, 0.5, &safe));
+  Q4T_CHECK(ParseModerationResult(R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,1,0]})",
+                                  classifier, 0.5, &blocked));
+  Q4T_CHECK(moderation.Record(true, safe, {12, 9, 1}));
+  Q4T_CHECK(!moderation.Project(OutputJson(Output()), &reviewed));
+  Q4T_CHECK(moderation.Record(false, blocked, {20, 10, 1}));
+  Q4T_CHECK(moderation.Project(OutputJson(Output()), &reviewed));
+  {
+    ObjectStore objects(fixture.options);
+    Q4T_CHECK(Ok(FinalizeStoredChat(&objects, Input(), reviewed, Access())));
+  }
+  ObjectStore restarted(fixture.options);
+  StoredChats chats(restarted);
+  const auto result = chats.Retrieve("chatcmpl_test", Access());
+  Q4T_CHECK(Ok(result));
+  const auto& choice = result.value.GetArray("choices")->array[0];
+  Q4T_CHECK(choice.GetString("finish_reason") == "content_filter" &&
+            choice.Find("message")->Find("content")->IsNull());
+  Q4T_CHECK(result.value.Find("moderation")
+                ->Find("output")
+                ->GetArray("results")
+                ->array[0]
+                .GetBool("flagged"));
+  Q4T_CHECK(result.value.Find("q4t_moderation_usage")->GetInt("model_steps") ==
+            2);
+  Q4T_CHECK(chats.Retrieve("chatcmpl_test", Access("client:other")).http_status ==
+            404);
   return true;
 }

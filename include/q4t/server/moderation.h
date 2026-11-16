@@ -5,24 +5,9 @@
 #include <string_view>
 
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/moderation_options.h"
 
 namespace q4t::server {
-
-enum class ModerationMode { kScore, kBlock };
-enum class ModerationDecision { kAllow, kBlocked, kUnavailable };
-
-struct ModerationUsage {
-  int64_t input_tokens = 0;
-  int64_t output_tokens = 0;
-  int64_t model_steps = 0;
-};
-
-struct ModerationOptions {
-  bool enabled = false;
-  std::string model;
-  ModerationMode input = ModerationMode::kScore;
-  ModerationMode output = ModerationMode::kScore;
-};
 
 struct ModerationContent {
   io::Json records;
@@ -60,6 +45,9 @@ inline constexpr int kMaxModerationStepTokens = 512;
 Status ParseModerationOptions(const io::Json& request,
                               const ChatPlanConfig& config,
                               ModerationOptions* options, ChatPlanError* error);
+// Structural contract only; the planner also resolves the deployment model.
+Status ValidateModerationOptions(const io::Json& request,
+                                 std::string* error_param);
 // These consume already validated actual message/output items. Tool argument
 // and result content is included, tool names/definitions and schemas are not.
 Status CollectModerationInput(const io::Json& chat_messages,

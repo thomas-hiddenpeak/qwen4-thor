@@ -145,7 +145,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -165,7 +165,53 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
+      },
+      "chat_moderation_20261117": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": true,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
+        "repair_cpu_cases": 10,
+        "repair_limits": {
+          "starts": 4,
+          "external_requests": 17,
+          "seconds": 900
+        },
+        "cumulative_limits": {
+          "starts": 8,
+          "external_requests": 32,
+          "seconds": 1200
+        },
+        "pull_request": 37,
+        "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17,
+        "revision": 204,
+        "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+        "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
+        "default_unchanged": false
       }
     },
     {
@@ -227,7 +273,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -247,7 +293,10 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
       }
     },
     {
@@ -2902,6 +2951,49 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_moderation_20261117": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": true,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
+        "repair_cpu_cases": 10,
+        "repair_limits": {
+          "starts": 4,
+          "external_requests": 17,
+          "seconds": 900
+        },
+        "cumulative_limits": {
+          "starts": 8,
+          "external_requests": 32,
+          "seconds": 1200
+        },
+        "pull_request": 37,
+        "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17,
+        "revision": 204,
+        "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+        "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
+        "default_unchanged": false
       }
     },
     {
@@ -3747,7 +3839,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev196 or the then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev204 or the then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4217,7 +4309,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -4237,7 +4329,53 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
+      },
+      "chat_moderation_20261117": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": true,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "failure_evidence": "evidence/serve-chat-moderation-business-failure-20261117/README.md",
+        "actual_starts": 8,
+        "actual_requests": 32,
+        "actual_seconds": 443.0271225241013,
+        "repair_cpu_cases": 10,
+        "repair_limits": {
+          "starts": 4,
+          "external_requests": 17,
+          "seconds": 900
+        },
+        "cumulative_limits": {
+          "starts": 8,
+          "external_requests": 32,
+          "seconds": 1200
+        },
+        "pull_request": 37,
+        "repair_evidence": "evidence/serve-chat-moderation-repair-cpu-20261117/README.md",
+        "repair_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+        "business_evidence": "evidence/serve-chat-moderation-business-20261117/README.md",
+        "accepted_starts": 4,
+        "accepted_requests": 17,
+        "revision": 204,
+        "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+        "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
+        "default_unchanged": false
       }
     },
     {
@@ -4450,7 +4588,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR36 exact-head checks and actual main merge",
+        "PR37 exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4590,9 +4728,45 @@
         "files": 78,
         "secret_scan_matches": 0,
         "archive_sha256": "23863f77760f525c84e5112c918953cf6ca87cc43084d2dc3db7b0ceac8dbb74",
+        "main_integration_pending": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md",
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
+      },
+      "chat_moderation_delivery_20261117": {
+        "status": "ACCEPT_CHAT_MODERATION_DELIVERY",
+        "revision": 204,
+        "current": {
+          "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+          "engine_release_sha256": "bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4",
+          "generation_sha256": "91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2",
+          "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+          "service_acceptance_sha256": "6fd471ce0940502c2d7134433f2952d38e1c18da283d6b8ad63381c06178c500",
+          "service_release_sha256": "356456f58be9bc1ff9ed9b671e4cccfa3b2da9ce9788f511f0d14ac863de9d46"
+        },
+        "commands": 18,
+        "seconds": 229.15169466892257,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "core_client_outer_bytes_preserved": true,
+        "profile_migration": "qualified additive capability and identity; state, history, configuration and clock preserved",
+        "root_cycles_preserved": true,
+        "manual_root": "c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570",
+        "automatic_payload": "4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de",
+        "older_engine_fallback": false,
+        "prior_rev196_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 70,
+        "secret_scan_matches": 0,
+        "archive_sha256": "100e8040556031a6e3e850da410d971eed7edbf72d24f8ee9b112dbef750acea",
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md"
+        "evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md"
       }
     },
     {
@@ -4689,16 +4863,53 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "revision": 196,
-        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
-        "service_id": "556e2ba7-98a3-4ef8-879b-0c712d609707",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/plan.json",
-        "evidence": "evidence/serve-chat-annotations-day-handoff-20261117/README.md",
+        "status": "PASS_FROZEN_DAY_HANDOFF",
+        "source_commit": "97850fd8335454e7e90ce85d9019ba6d2cd39b08",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src",
+        "revision": 204,
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+          "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3"
+        },
+        "service_id": "93294db6-abf0-47ea-9577-ed128d30c934",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "f8dd7856b0ab1674d9659fb9805a97cae960ec2d3e7f7319b421c5f7c61b2da7",
+        "sources": 589,
+        "links": {
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/delivery-01/candidate-service.release.json"
+        },
+        "protected_default": {
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "356456f58be9bc1ff9ed9b671e4cccfa3b2da9ce9788f511f0d14ac863de9d46",
+          "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+        },
+        "production_unchanged": true,
+        "same_git_common_dir": true,
+        "steps": [
+          {
+            "name": "prepare",
+            "exit_code": 0,
+            "seconds": 1.5155374882742763
+          },
+          {
+            "name": "check",
+            "exit_code": 0,
+            "seconds": 0.5142494109459221
+          }
+        ],
+        "model_actions": 0,
         "executed": false,
-        "owner": "user"
+        "owner": "user",
+        "archive_sha256": "508ea65169d85e0261054e0226fed523b8d61e9184cea37df6ff2f06c4cf033e",
+        "evidence": "evidence/serve-frozen-day-handoff-20261117/README.md"
       }
     }
   ],
-  "next_task": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "Refresh current native day handoff, complete PR37 checks and real main merge; continue remaining Chat audio/web-search, media/state-cache/schema combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Refresh current native day handoff, complete PR37 checks and real main merge; continue remaining Chat audio/web-search, media/state-cache/schema combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
 }

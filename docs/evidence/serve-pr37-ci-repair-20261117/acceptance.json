@@ -1,0 +1,12 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "failed_head": "97850fd8335454e7e90ce85d9019ba6d2cd39b08",
+  "original_ci_run": 43925570206,
+  "original_ci_result": "57/58 suites; 2177/2178 C++ cases",
+  "case": "responses_mcp_video_model_review_and_restart_use_same_temporal_sample",
+  "cases": 1,
+  "implementation_unchanged": true,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "archive_sha256": "57dee008e7c73a05f7a280002583f0998d02c8657a8e55d08ce2e4accc3c6982"
+}

@@ -176,3 +176,7 @@ jobs:
         run: >-
           build/public-host/schema-venv/bin/python -B -m unittest
           tools.serve_protocol.test_chat_annotations
+      - name: Check Chat moderation schemas and client publication
+        run: >-
+          build/public-host/schema-venv/bin/python -B -m unittest
+          tools.serve_protocol.test_chat_moderation

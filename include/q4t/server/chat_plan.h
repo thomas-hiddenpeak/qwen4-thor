@@ -14,6 +14,7 @@
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
 #include "q4t/server/prompt_cache_policy.h"
+#include "q4t/server/moderation_options.h"
 #include "q4t/server/client_policy.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/server_options.h"
@@ -104,6 +105,7 @@ struct ChatRequestPlan {
   OutputConstraints constraints;
   SamplingOptions sampling;
   PredictionOptions prediction;
+  ModerationOptions moderation;
   PromptCacheOptions cache;
   std::vector<PromptCacheInputBoundary> cache_boundaries;
   std::vector<std::string> stops;

@@ -1,0 +1,23 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "cpp_unique_tests": 26,
+  "frontend_unique_cases": 8,
+  "first_frontend_passed": 3,
+  "repeated_frontend": 5,
+  "original_build_and_frontend_failures_preserved": true,
+  "zero_warning_final_builds": true,
+  "source_anchors": 726,
+  "source_negative_controls": 7,
+  "engine_binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0",
+  "preflight_probe_sha256": "b1bfe394a4f78526d89bccbdcc0d1346cdb3918bc928f3328b31a3dba2d4f455",
+  "contract_probe_sha256": "6f1f26f5aeebea4404b41406b29925189f2b28b7b57f8d783d6935cd49e32b50",
+  "archive_sha256": "659e4708a7df567b90228003e591f12fd27ac2c332ad83c47435f015e7d4f33f",
+  "files": 84,
+  "default_revision": 196,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "runtime_accepted": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "master_complete": false
+}

@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/modern-retained-01/bundle",
+  "manifest_sha256": "c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/delivery-01/retained-service.release.json",
+  "service_release_sha256": "7b8947a8950a6c4be335aa35a424831aad12938d58c199c197f00848071416bd",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}

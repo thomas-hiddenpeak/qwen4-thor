@@ -1,0 +1,13 @@
+{
+  "status": "PASS_CURRENT_DAY_HANDOFF",
+  "revision": 204,
+  "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+  "service_id": "e8e140dd-4ab5-49e2-ab75-18c4aaa3a210",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/day-01/plan.json",
+  "plan_sha256": "da7003c508e4ef9bc3c6f1320723c8d1ccebf7d9a084c627ae0893fbf54b126b",
+  "archive_sha256": "4ebe2313a87aafa4a8d68d1d2fbd62ccf7246eb6283dc77c4c3509aeade6fc6b",
+  "executed": false,
+  "owner": "user",
+  "new_gpu_starts": 0,
+  "default_unchanged": true
+}

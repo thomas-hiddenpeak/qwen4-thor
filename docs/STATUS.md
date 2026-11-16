@@ -9,24 +9,31 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev196；服务包 `602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740` |
-| Generation | `85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d` |
-| 引擎 | `6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27` |
-| 引擎发布记录 | `796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840` |
+| 发布 | rev204；服务包 `4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3` |
+| Generation | `91704d0be13a99482ab8af8511fac78f0ff7f04f8488c459bd755608652045a2` |
+| 引擎 | `e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0` |
+| 引擎发布记录 | `bcdaa7de3fa9e37180508d244dc5574d70c3f4d9c2f79ba0b4f0d397f9d135a4` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e`；outer/周期及新引用能力完整，前驱188/182另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570`；outer/周期及审核能力完整，前驱196/188另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
+输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
+保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
+用户day交接已prepare/check、未启动，全部33项master保持active。
+
+前驱[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
-PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+PR36两组检查通过且[已实际合main](evidence/serve-pr36-merged-20261117/README.md)（`a8238ce4`）；
+rev196用户day交接已prepare/check且未启动。当前审核客户端改动须在
+下一交付后重新冻结交接，保留原计划；全部master继续。
 
 前驱[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
 STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
@@ -87,12 +94,60 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR37 CI定点修复](evidence/serve-pr37-ci-repair-20261117/README.md)：
+原CI的MCP视频断言未适配分类后置说明，现核对全部媒体和首尾文本，
+1项CPU及隔离零警告构建通过。运行时/默认不变、0GPU；原失败保留，
+继续新head检查与实际合main，全部master推进。
+
+[长稳入口已固定到独立快照](evidence/serve-frozen-day-handoff-20261117/README.md)：
+589份源码及rev204精确包冻结，prepare/check通过，0模型动作，生产
+默认和账本不变。用户24小时可独立开展，后续开发不会改变该计划；
+原计划保留。继续PR37实际合main和媒体缓存等全部master任务。
+
+[rev204审核交付](evidence/serve-chat-moderation-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退与再前进，229.152秒、0新增GPU。
+输入/输出真实审核、SSE门控、存储及双客户端一起交付；原预算和周期
+保持，profile仅增加已验能力/身份。PR37检查与实际合main继续，当前
+用户day交接已prepare/check、未启动，全部33项master保持active。
+
+[Chat审核真实业务接受](evidence/serve-chat-moderation-business-20261117/README.md)：
+修复组4启动/17外部请求/238.768秒，通过原输入block、批准SSE、多
+choice score、存储重启及客户隔离；内部分类另记12步。原失败保留，
+累计8启动/32请求/443.027秒，全部自有资源清理。新引擎`e016bd5f`
+和主轻/两种保留包已验，默认仍rev196；继续可回退发行及PR37合main。
+全部33项master仍active，不将本阶段接受当作总目标完成。
+
+[分类数据修复CPU通过](evidence/serve-chat-moderation-repair-cpu-20261117/README.md)：
+10项直接用例、726/7来源和隔离零警告构建通过；记录仍原样嵌入，
+未改阈值或拒绝保护。继续使用原失败输入短验，未声明运行时修复。
+默认rev196保持，全部master继续。
+
+[Chat审核原始短验已保留](evidence/serve-chat-moderation-business-failure-20261117/README.md)：
+4启动/15外部请求/204.259秒，194项NVML正常，清理完成。主轻资格及
+已返回的SSE/存储可复核，但威胁输入的内部模型拒绝分类，外层503，
+不能当作成功拦截。候选不交付，默认rev196保持。正在改进分类任务与
+引用数据的表达，保持拒绝/错误保护；只补10项受影响CPU和同一失败
+输入的必要精确包业务，下一组≤4启动/17请求/900秒，总≤8/32/1200秒。
+原始失败不改写；PR37草稿继续，全部master保持active。
+
+[Chat审核CPU接受](evidence/serve-chat-moderation-cpu-20261117/README.md)：
+26项C++/8种前端最终通过，726来源/7负控及隔离零警告构建通过。
+原编译和前端失败保留；JS合法缺省logprobs误拒绝已修，仅补失败项。
+当前引擎候选`23f93435`未交付；继续4启动/18外部请求/900秒真实业务。
+默认rev196保持，全部master继续。
+
+[Chat原生审核](SERVE_CHAT_MODERATION_2026-11-17.md)进入成组实现：补标准
+score/block、真实输入/全choice输出分类、SSE发布与存储门控和累计
+配额/Batch，最多26项C++/8前端病例，必要4启动/18请求/900秒。
+默认rev196保持，PR36已合main；阶段结束不停止总计划。
+
 [rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
-PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+PR36两组检查通过且[已实际合main](evidence/serve-pr36-merged-20261117/README.md)（`a8238ce4`）；
+rev196用户day交接已prepare/check且未启动。当前审核客户端改动须在
+下一交付后重新冻结交接，保留原计划；全部master继续。
 
 
 [Chat引用业务接受](evidence/serve-chat-annotations-business-20261117/README.md)：

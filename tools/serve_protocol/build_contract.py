@@ -218,6 +218,12 @@ def chat_schema():
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
         store=dict(type=["boolean", "null"], default=False),
+        moderation=nullable(obj(dict(
+            model=dict(type="string", minLength=1,
+                **{"x-q4t-registered-model-or-alias": True}),
+            policy=nullable(obj({direction: nullable(obj(dict(
+                mode=dict(enum=["score", "block"])), ("mode",)))
+                for direction in ("input", "output")}))), ("model",))),
         metadata=nullable(dict(type="object", maxProperties=16,
             propertyNames=dict(maxLength=64),
             additionalProperties=dict(type="string", maxLength=512))),
@@ -649,6 +655,14 @@ def semantics():
         "src/server/server_options.cpp", "include/q4t/server/server_options.h",
         "include/q4t/server/application_routes.h", "src/service/ingress_main.cpp"],
         "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Actual finite result usage commits atomically with its row and count; cached/reasoning details remain actual. Missing, malformed or overflowed usage is unknown and never a fabricated zero. Original legacy results are recounted before any new row/finalization, with no model replay. Batch Chat observes unbounded reasoning without forcing tokens. Background rows atomically reserve the original Response binding with their start ticket and wait fairly for its terminal plus executor cleanup; cancellation reaches that owner, and process recovery never resubmits the row. Active parent references protect the Response from TTL collection and explicit deletion until the result is copied. Native drained failures/cancellation capture committed input before sequence reset and accepted output including reasoning/cache details, merge internal preparation and preserve choice/step counting; reservations are never usage. Responses failure/cancel resources and SSE terminal carry known observations; private Batch row capture commits with original result/count and supports restart recount without changing standard HTTP error bodies. Live checkpoints never claim complete usage; unsaved work after actual process death remains unknown. Actual model business/release acceptance remains required. Started work or unknown starts never replay. Deterministic output byte/chunk exhaustion records a private bounded aggregation failure and rebuilds only complete-row result prefixes without model replay; partial Files and failed terminal commit atomically. Queue admission releases at terminal, while original result pages remain referenced only through output expiry. Temporary storage quota or unknown receipts retain their existing reconciliation semantics. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."))
+    rules.append(("chat-input-output-moderation", [
+        "include/q4t/server/chat_moderation.h", "src/server/chat_moderation.cpp",
+        "include/q4t/server/moderation_options.h", "src/server/moderation.cpp",
+        "src/server/chat_contract.cpp", "src/server/chat_plan.cpp",
+        "src/server/chat_generation.cpp", "src/server/batch_budget.cpp",
+        "src/server/chat_model_step.h", "src/server/chat_storage.cpp",
+        "tools/examples/chat_client.py", "tools/examples/js/chat_client.mjs"],
+        "Chat moderation selects the served model or a configured alias with independent input/output score or block policy; null disables it. Actual expanded messages and aggregate content from all generated choices are classified in two bounded native steps with 512 output tokens each. Reports use standard moderation_results wrappers or explicit errors and separate actual classifier usage. Block holds original SSE pieces within 32MiB and publishes/stores only reviewed output; a flagged result removes every choice body, call and probability and ends content_filter. Score retains explicit classifier errors, never zero-filled safety. One external RPM/cancel/admission owner covers both steps and primary work; actual cumulative input/output is charged, Batch precharges the dynamic input ceiling and 1024 auxiliary output. A serial classifier borrows the original grammar admission only after the primary decoder/slot is released. Python/JS preserve JSON/SSE metadata and reject duplicate review terminals. Local 13-category scores at threshold0.5 are not cloud calibration; other actual backends remain required work."))
     rules.append(("native-standalone-moderations", [
         "include/q4t/server/moderations_plan.h", "src/server/moderations_plan.cpp",
         "include/q4t/server/moderations_execution.h", "src/server/moderations_execution.cpp",

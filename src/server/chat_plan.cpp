@@ -16,6 +16,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/moderation.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/startup_admission.h"
@@ -103,6 +104,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   plan->responses_tool_media = config.responses_tool_media;
   plan->header_tools = config.header_tools;
   plan->tool_call_formats = config.tool_call_formats;
+  status = ParseModerationOptions(req, config, &plan->moderation, error);
+  if (!status) return status;
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
   status = ParsePromptCacheOptions(req, &plan->cache, &error->param,
@@ -329,6 +332,12 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"("admission_and_deadline","request_id_and_session_leases",)"
       R"("grammar_compilation","thinking_boundary_tokens",)"
       R"("cache_hits","generation_and_output_validation"])";
+  if (plan.moderation.enabled) {
+    out += R"(,"moderation":{"model":)" + Quote(plan.moderation.model) +
+           R"(,"steps_max":2,"auxiliary_output_tokens":1024,)"
+           R"("input_tokens":"additional_actual_classifier_prompts",)"
+           R"("scores_executed":false})";
+  }
   if (media && media->item_count) {
     out += R"(,"media":{"items":)" + std::to_string(media->item_count) +
            R"(,"visual_tokens":)" + std::to_string(media->merged_tokens) +

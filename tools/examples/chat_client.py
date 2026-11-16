@@ -272,6 +272,51 @@ def _logprobs(value):
     return deepcopy(value)
 
 
+def _moderation(value):
+    if value is None:
+        return None
+    require(isinstance(value, dict) and set(value) == {"input", "output"},
+            "invalid moderation directions")
+    for report in value.values():
+        require(isinstance(report, dict), "invalid moderation report")
+        if report.get("type") == "error":
+            _text(report.get("code"), "missing moderation error code", True)
+            _text(report.get("message"), "missing moderation error message")
+            continue
+        require(report.get("type") == "moderation_results" and
+                isinstance(report.get("results"), list) and report["results"],
+                "missing actual moderation results")
+        _text(report.get("model"), "missing moderation model", True)
+        for result in report["results"]:
+            require(isinstance(result, dict) and
+                    result.get("type") == "moderation_result" and
+                    result.get("model") == report["model"] and
+                    type(result.get("flagged")) is bool,
+                    "invalid moderation result")
+            categories, scores = result.get("categories"), result.get("category_scores")
+            require(isinstance(categories, dict) and categories and
+                    isinstance(scores, dict) and set(categories) == set(scores),
+                    "incomplete moderation categories")
+            require(all(type(v) is bool for v in categories.values()) and
+                    all(type(v) in (int, float) and 0 <= v <= 1 for v in scores.values()),
+                    "invalid moderation scores")
+            applied = result.get("category_applied_input_types")
+            require(isinstance(applied, dict) and set(applied) == set(scores) and
+                    all(isinstance(v, list) and all(x in ("text", "image") for x in v)
+                        for v in applied.values()), "invalid moderation modalities")
+    return deepcopy(value)
+
+
+def _moderation_usage(value):
+    if value is None:
+        return None
+    require(isinstance(value, dict) and
+            set(value) == {"input_tokens", "output_tokens", "model_steps"} and
+            all(type(v) is int and v >= 0 for v in value.values()),
+            "invalid moderation usage")
+    return deepcopy(value)
+
+
 @dataclass(frozen=True)
 class Completion:
     id: str
@@ -280,14 +325,16 @@ class Completion:
     finish_reason: str
     usage: dict
     logprobs: dict | None = None
+    moderation: dict | None = None
+    q4t_moderation_usage: dict | None = None
 
 
 def _completion(identifier, model, message, finish, usage, logprobs=None,
-                choice_count=1):
+                choice_count=1, moderation=None, moderation_usage=None):
     _text(identifier, "missing response id", True)
     _text(model, "missing response model", True)
     message = _message(message)
-    require(finish in ("stop", "tool_calls", "function_call", "length"),
+    require(finish in ("stop", "tool_calls", "function_call", "length", "content_filter"),
             "unsupported or missing finish_reason")
     has_tools = bool(message.get("tool_calls"))
     require(finish != "tool_calls" or has_tools, "tool finish without calls")
@@ -298,7 +345,8 @@ def _completion(identifier, model, message, finish, usage, logprobs=None,
     require(not legacy or finish in ("function_call", "length"), "legacy call finish mismatch")
     require(finish != "stop" or not (has_tools or legacy), "tool calls with stop finish")
     return Completion(identifier, model, message, finish, _usage(usage, choice_count),
-                      _logprobs(logprobs))
+                      _logprobs(logprobs), _moderation(moderation),
+                      _moderation_usage(moderation_usage))
 
 
 @dataclass(frozen=True)
@@ -307,6 +355,8 @@ class MultiCompletion:
     model: str
     choices: list
     usage: dict
+    moderation: dict | None = None
+    q4t_moderation_usage: dict | None = None
 
     def select(self, index):
         require(type(index) is int and 0 <= index < len(self.choices),
@@ -314,10 +364,12 @@ class MultiCompletion:
         choice = self.choices[index]
         return _completion(self.id, self.model, choice["message"],
                            choice["finish_reason"], self.usage,
-                           choice["logprobs"], len(self.choices))
+                           choice["logprobs"], len(self.choices), self.moderation,
+                           self.q4t_moderation_usage)
 
 
-def _choices_completion(identifier, model, choices, usage):
+def _choices_completion(identifier, model, choices, usage, moderation=None,
+                        moderation_usage=None):
     require(isinstance(choices, list) and 1 <= len(choices) <= 128,
             "invalid choice count")
     require(all(isinstance(choice, dict) and type(choice.get("index")) is int
@@ -329,12 +381,13 @@ def _choices_completion(identifier, model, choices, usage):
     for choice in choices:
         item = _completion(identifier, model, choice.get("message"),
                            choice.get("finish_reason"), usage,
-                           choice.get("logprobs"), len(choices))
+                           choice.get("logprobs"), len(choices), moderation, moderation_usage)
         result.append(dict(index=choice["index"], message=item.message,
                            finish_reason=item.finish_reason, logprobs=item.logprobs))
     if len(choices) == 1:
         return item
-    return MultiCompletion(identifier, model, result, _usage(usage, len(choices)))
+    return MultiCompletion(identifier, model, result, _usage(usage, len(choices)),
+                           _moderation(moderation), _moderation_usage(moderation_usage))
 
 
 def _envelope(value, kind):
@@ -428,7 +481,7 @@ class _ChoiceStream:
                 self.function_call[name].append(_text(value, "invalid function " + name))
         finish = choice.get("finish_reason")
         if finish is not None:
-            require(finish in ("stop", "tool_calls", "function_call", "length"),
+            require(finish in ("stop", "tool_calls", "function_call", "length", "content_filter"),
                     "unsupported finish_reason")
             self.finish = finish
 
@@ -491,6 +544,7 @@ class _Stream:
         self.identity = None
         self.choices = {}
         self.usage = None
+        self.moderation = self.moderation_usage = None
 
     @property
     def finish(self):
@@ -504,6 +558,13 @@ class _Stream:
             self.identity = identity
         require(self.identity == identity, "response identity changed mid-stream")
         choices = event["choices"]
+        if not choices and event.get("moderation") is not None:
+            require(self.finish is not None and self.usage is None and
+                    self.moderation is None, "unexpected moderation terminal")
+            self.moderation = _moderation(event["moderation"])
+            self.moderation_usage = _moderation_usage(event.get("q4t_moderation_usage"))
+            if event.get("usage") is None:
+                return
         if not choices:
             require(self.finish is not None and self.usage is None,
                     "unexpected or duplicate usage terminal")
@@ -531,7 +592,8 @@ class _Stream:
             item = state.result()
             values.append(dict(index=index, message=item.message,
                                finish_reason=item.finish_reason, logprobs=item.logprobs))
-        return _choices_completion(*self.identity[:2], values, self.usage)
+        return _choices_completion(*self.identity[:2], values, self.usage,
+                                   self.moderation, self.moderation_usage)
 
 
 def read_sse(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES,
@@ -586,7 +648,8 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
     event = load_json(raw)
     _envelope(event, "chat.completion")
     return _choices_completion(event["id"], event["model"], event["choices"],
-                               event.get("usage"))
+                               event.get("usage"), event.get("moderation"),
+                               event.get("q4t_moderation_usage"))
 
 
 SCHEMA_INSTRUCTION = (
@@ -655,7 +718,7 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                  thinking=False, max_tokens=512, timeout_ms=120000,
                  session_id=None, reasoning_field=None, include_reasoning=None,
                  thinking_token_budget=None, stop=None, json_schema=None,
-                 schema_name="answer"):
+                 schema_name="answer", moderation=None):
     require(isinstance(messages, list) and messages, "messages are required")
     require(isinstance(tools, list), "tools must be a list")
     require(type(stream) is bool and type(thinking) is bool, "invalid mode")
@@ -671,6 +734,9 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                 cancel_token=secrets.token_hex(32), chat_template_kwargs=dict(
                     enable_thinking=thinking, preserve_thinking=True,
                     reasoning_effort="low"))
+    if moderation is not None:
+        require(isinstance(moderation, dict), "moderation must be an object")
+        body["moderation"] = deepcopy(moderation)
     if stream:
         body["stream_options"] = dict(include_usage=True)
     if reasoning_field is not None:

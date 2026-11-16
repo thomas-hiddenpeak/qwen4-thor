@@ -1,0 +1,129 @@
+{
+  "status": "ACCEPT_CHAT_MODERATION_BUSINESS",
+  "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/package-01/bundle",
+    "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
+    "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+    "recovery_accepted": false
+  },
+  "modern_retained": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/modern-retained-01/bundle",
+    "manifest_sha256": "c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-moderation-repair-20261117/retained-01/bundle",
+    "manifest_sha256": "4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de"
+  },
+  "profile_qualification": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 106,
+      "cleanup_complete": true,
+      "lease_result_sha256": "49840b274455daff81ca1e37d33f37f4bfd058b3347d82d2b177429fc4383803"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 11,
+      "controls": 77
+    },
+    "seconds": 113.1697131888941,
+    "registry_sha256": "60829e2169e393c81a17f7a1c4c1a009079c16b8199b8096c593f6fcea927e60",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "legacy_service_acceptance": {
+    "status": "PASS_CHAT_MODERATION_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_CHAT_MODERATION_SERVICE_RETAINED",
+    "manifest_sha256": "4c95506c74b207b1fb88e4d86f586103854ecf1bd6d24483bf327761764170de",
+    "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+    "actual_business": {
+      "status": "ACCEPT_CHAT_MODERATION_SERVICE_RETAINED",
+      "strict_lease_seconds": 54.77229836164042,
+      "nvml_queries": 52,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 145
+      },
+      "source_commit": "d6cd37e03d9962c08ba63b50ef4a45ae0c343b80",
+      "plan_sha256": "11c24f520d31b1a835638d2b46cce859f54e46df5710159f1c9e346a869c5a5e",
+      "result_sha256": "f2e834ed3fb64e49c342be3f044f8c9cec3c0b647de2ccfe7b0971bf7fdd405f",
+      "lease_result_sha256": "16621ff3f2b26e2830eef38dd110f82d62bf515b1d319898d30d43c15de5ee49",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "modern_service_acceptance": {
+    "status": "PASS_CHAT_MODERATION_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_CHAT_MODERATION_SERVICE_RETAINED",
+    "manifest_sha256": "c9a8da9954717736c4befb8852440a59eab9675c5eef78fcf4629a4609c47570",
+    "engine_binary_sha256": "e016bd5f19a939441c13fb19784c875aec2892cbc9214c2bc2dff387eea9f5e0",
+    "actual_business": {
+      "status": "ACCEPT_CHAT_MODERATION_SERVICE_RETAINED",
+      "strict_lease_seconds": 69.9068235871382,
+      "nvml_queries": 66,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 4,
+        "probes": 0,
+        "controls": 142
+      },
+      "source_commit": "d6cd37e03d9962c08ba63b50ef4a45ae0c343b80",
+      "plan_sha256": "e131e290609b7cb074325e7d73c3f94164c5ed84a634628c9c4247e6374ff55a",
+      "result_sha256": "77a4113eb2811d9af0f7c25daa3846d6a9b27b3d98d4e4412872f04429110669",
+      "lease_result_sha256": "b943e8edd49ab72c69d790d1487c666c035910b845ddd1668956b33872abe41d",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "starts": 4,
+  "external_generation_requests": 17,
+  "chat_requests_including_selfchecks": 13,
+  "embeddings": 2,
+  "media": 2,
+  "classifier_model_steps": 12,
+  "seconds": 238.7679080972448,
+  "nvml_queries": 224,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "original_failures_preserved": true,
+  "original_failed_input_unchanged": true,
+  "cumulative_starts": 8,
+  "cumulative_external_requests": 32,
+  "cumulative_seconds": 443.0271225241013,
+  "prior_failure_evidence": "docs/evidence/serve-chat-moderation-business-failure-20261117/README.md",
+  "candidate_whole_package_gpu_run": false,
+  "candidate_control_reuse": "Exact delivered rev196 recovery/control and native target source/link contracts and helper executables. The only native CMake source delta adds q4t_server and host-test entries. New engine has exact primary/light qualification, distinct retained legacy SSE/storage and modern block/score/SSE/storage actual business.",
+  "default_revision": 196,
+  "default_unchanged": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "master_complete": false,
+  "files": 221,
+  "archive_sha256": "da78a30426b8d46548845e996d9250a26fdfa178cde5cfe4f1ab8db14ad76ae8",
+  "secret_scan_matches": 0
+}
