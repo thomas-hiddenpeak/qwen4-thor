@@ -56,6 +56,18 @@ void Numbers(Options& o, Visitor visit) {
   visit("pdf", "max_pixels", pdf.max_pixels, 1, 256 * mib);
   visit("pdf", "max_image_bytes", pdf.max_image_bytes, 1, 256 * mib);
   visit("pdf", "timeout_ms", pdf.timeout_ms, 1, 120000);
+  auto& video = o.extraction.video;
+  visit("video", "max_source_bytes", video.max_source_bytes, 1,
+        kFileInputBytes);
+  visit("video", "max_frame_pixels", video.max_frame_pixels, 1, 32 * mib);
+  visit("video", "max_decoded_pixels", video.max_decoded_pixels, 1, 4096 * mib);
+  visit("video", "max_output_bytes", video.max_output_bytes, 1024, 128 * mib);
+  visit("video", "max_duration_ns", video.max_duration_ns, 1, 600000000000ULL);
+  visit("video", "max_edge", video.max_edge, 1, 8192);
+  visit("video", "max_scanned_frames", video.max_scanned_frames, 2, 18000);
+  visit("video", "sample_frames", video.sample_frames, 2, 16);
+  visit("video", "max_thread_creations", video.max_thread_creations, 0, 64);
+  visit("video", "timeout_ms", video.timeout_ms, 1, 30000);
   auto& legacy = o.extraction.legacy;
   visit("legacy", "max_converted_bytes", legacy.max_converted_bytes, 1,
         kFileInputBytes);
@@ -102,6 +114,7 @@ bool ValidFileExpansionOptions(const FileExpansionOptions& options) {
   const auto& path = options.extraction.legacy.work_directory;
   return valid && file_detail::ValidOptions(options.fetch) &&
          ValidFileDocumentLimits(options.extraction.document) &&
+         ValidFileVideoLimits(options.extraction.video) &&
          options.storage.max_metadata_bytes <= options.storage.max_bytes &&
          (path.empty() || (path.front() == '/' && path.size() <= 4096 &&
                            path.find('\0') == path.npos));

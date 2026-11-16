@@ -43,7 +43,7 @@ bool Add(uint64_t amount, uint64_t maximum, uint64_t* used) {
 }
 uint64_t Retained(const FileExpansionUsage& usage) {
   return usage.source_bytes + usage.text_bytes + usage.image_bytes +
-         usage.augmentation_bytes +
+         usage.augmentation_bytes + usage.video_metadata_bytes +
          (usage.cells + usage.sheets + usage.files + usage.embedded) * 1024;
 }
 ObjectReply Charge(const FileInputSnapshot& file,
@@ -77,6 +77,25 @@ ObjectReply Charge(const FileInputSnapshot& file,
         !Add(uint64_t{page.width} * page.height, limits.pdf.max_pixels,
              &next.pixels))
       return Capacity();
+  for (const auto& video : doc.videos) {
+    const auto& p = video.pixels;
+    if (!Add(1, options.max_files, &next.videos) ||
+        !Add(p.frames.size(), options.max_files * limits.video.sample_frames,
+             &next.video_frames) ||
+        !Add(p.scanned_frames, limits.video.max_scanned_frames,
+             &next.video_scanned_frames) ||
+        !Add(p.scanned_frames * p.width * p.height,
+             limits.video.max_decoded_pixels, &next.video_decoded_pixels) ||
+        !Add(OutputJson(p.conversion).size(), options.max_retained_bytes,
+             &next.video_metadata_bytes))
+      return Capacity();
+    for (const auto& frame : p.frames)
+      if (!Add(frame.png.size(), limits.pdf.max_image_bytes,
+               &next.image_bytes) ||
+          !Add(uint64_t{p.width} * p.height, limits.pdf.max_pixels,
+               &next.pixels))
+        return Capacity();
+  }
   for (const auto& generated : file.augmentations) {
     if (!Add(generated.summary.size(), limits.document.max_text_bytes,
              &next.augmentation_bytes))
@@ -394,10 +413,29 @@ ObjectReply FileExpansion::Prepare(const Json& items, FileInputProfile profile,
                              &budget, &entry.snapshot.source, control);
         if (!reply.ok()) return reply;
         entry.snapshot.detail = candidate.source.detail;
-        reply = ExtractFileDocument(
-            entry.snapshot.source.content, options_.extraction,
-            candidate.source.pdf_only, entry.snapshot.detail, access,
-            &entry.snapshot.document, control);
+        auto extraction = options_.extraction;
+        auto remaining = extraction.remaining_video_work.value_or(
+            FileVideoWorkBudget{extraction.video.max_scanned_frames,
+                                extraction.video.max_decoded_pixels});
+        remaining.scanned_frames -=
+            std::min(remaining.scanned_frames, usage.video_scanned_frames);
+        remaining.decoded_pixels -=
+            std::min(remaining.decoded_pixels, usage.video_decoded_pixels);
+        extraction.remaining_video_work = remaining;
+        if (ClassifyFileDocument(entry.snapshot.source.content) ==
+            FileDocumentFormat::kVideo) {
+          if (remaining.scanned_frames < 2 || !remaining.decoded_pixels ||
+              usage.image_bytes + 1024 > extraction.pdf.max_image_bytes ||
+              usage.pixels >= extraction.pdf.max_pixels ||
+              usage.videos >= options_.max_files)
+            return At(Capacity(), entry.path);
+          extraction.pdf.max_image_bytes -= usage.image_bytes;
+          extraction.pdf.max_pixels -= usage.pixels;
+        }
+        reply = ExtractFileDocument(entry.snapshot.source.content, extraction,
+                                    candidate.source.pdf_only,
+                                    entry.snapshot.detail, access,
+                                    &entry.snapshot.document, control);
         if (!reply.ok()) return At(reply, entry.path);
       }
     }
@@ -746,6 +784,41 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                : Object({{"type", String("input_image")},
                          {"image_url", std::move(url)},
                          {"detail", String("auto")}}));
+    }
+    for (const auto& video : entry.snapshot.document.videos) {
+      auto path = Array(), frames = Array(), timestamps = Array();
+      for (const auto& member : video.source_path)
+        path.array.push_back(String(member));
+      const auto& p = video.pixels;
+      if (!text_part("Video sample (untrusted):\n" +
+                         OutputJson(Object(
+                             {{"source_path", std::move(path)},
+                              {"source_sha256",
+                               String(p.conversion.GetString("source_sha256"))},
+                              {"duration_ns", Number(p.duration_ns)},
+                              {"source_frames", Number(p.scanned_frames)},
+                              {"included_frames", Number(p.frames.size())},
+                              {"sampling",
+                               String(p.conversion.GetString("sampling"))}})),
+                     parts))
+        return Capacity();
+      for (const auto& frame : p.frames) {
+        if (!Add(22 + (frame.png.size() + 2) / 3 * 4,
+                 options_.max_rendered_bytes, &bytes))
+          return Capacity();
+        frames.array.push_back(
+            String("data:image/png;base64," + Encode(frame.png)));
+        auto time = Number(0);
+        const auto fraction = std::to_string(frame.timestamp_ns % 1000000000);
+        time.str = std::to_string(frame.timestamp_ns / 1000000000) + "." +
+                   std::string(9 - fraction.size(), '0') + fraction;
+        time.number = static_cast<double>(frame.timestamp_ns) / 1000000000.;
+        timestamps.array.push_back(std::move(time));
+      }
+      parts->array.push_back(Object(
+          {{"type", String(chat ? "video_frames" : "input_video_frames")},
+           {"video_frames", std::move(frames)},
+           {"video_timestamps", std::move(timestamps)}}));
     }
     if (!entry.cache_breakpoint.IsNull())
       Set(&parts->array.back(), "prompt_cache_breakpoint",

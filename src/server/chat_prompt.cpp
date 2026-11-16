@@ -91,8 +91,9 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
     }
     const io::Json* vf = part.Find("video_frames");
     if (vf != nullptr) {
-      if (m.GetString("role") != "user") {
-        *err = "Only user messages may contain videos.";
+      if (m.GetString("role") != "user" &&
+          !(responses_tool_media && m.GetString("role") == "tool")) {
+        *err = "Video requires a user or prepared Responses tool message.";
         return {};
       }
       if (!vf->IsArray()) {

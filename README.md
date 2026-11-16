@@ -236,7 +236,7 @@ WebP静态图片使用隔离子进程按需加载系统libwebpdecoder 3与zlib 1
 zlib许可（本机`/usr/share/doc/libwebpdecoder3/copyright`和
 `/usr/share/doc/zlib1g/copyright`）。完整API接入及真实模型验收继续实施。
 
-原生视频容器准备正在开发，当前候选具有独立CPU worker：通过
+原生视频容器准备已进入候选CPU验收：独立worker通过
 GStreamer 1.x系统库和固定软件插件解码H.264/VP8/VP9，保留采样帧、
 原始PTS、尺寸及实际库身份。构建头文件为`libgstreamer1.0-dev`和
 `libgstreamer-plugins-base1.0-dev`，运行插件来自系统base/good/bad包；
@@ -244,8 +244,9 @@ GStreamer 1.x系统库和固定软件插件解码H.264/VP8/VP9，保留采样帧
 解码失败只影响相应准备请求，worker复用有界回收与请求槽。
 适配依据[官方API](https://gstreamer.freedesktop.org/documentation/app/appsink.html)，
 未复制codec源码；系统库/插件按各包保留LGPL等许可，OpenH264保留
-BSD许可，以系统`/usr/share/doc/*/copyright`为准。统一文件输入、
-持久快照和实际模型业务仍在接线，不能将worker通过视为API已交付。
+BSD许可，以系统`/usr/share/doc/*/copyright`为准。候选已接通统一文件
+输入、带PTS快照、MCP/计数/审核及共享预算，针对性CPU已过；实际模型
+业务和可回退发行继续，不能将CPU通过视为API已交付。
 详见[原生视频计划](docs/SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务

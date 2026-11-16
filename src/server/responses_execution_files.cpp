@@ -27,6 +27,7 @@ ObjectReply ResponsesExecution::BuildPreparedGeneration(
   if (files_) {
     reply = files_->Render(file_history_, &generation_history_);
     if (!reply.ok()) return reply;
+    envelope_.prepared_file_media = true;
     // Authorization/order/schema were checked against the original input.
     // Only tool result values are replaced by immutable prepared content.
     // The VM cannot fetch URLs or open files on its own.
@@ -152,9 +153,9 @@ ObjectReply ResponsesExecution::CompleteFileSheet(
   if (!reply.ok()) return reply;
   reply = mcp_sheet_issued_
               ? mcp_media_->CompleteSheet(step, output, finish_reason,
-                                           input_tokens, output_tokens)
+                                          input_tokens, output_tokens)
               : files_->CompleteSheet(step, output, finish_reason, input_tokens,
-                                       output_tokens);
+                                      output_tokens);
   if (!reply.ok()) return reply;
   if (mcp_media_) {
     auto budget = OtherMcpMediaBudget();

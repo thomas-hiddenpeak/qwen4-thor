@@ -26,6 +26,7 @@ struct ModerationOptions {
 
 struct ModerationContent {
   io::Json records;
+  // Model media items: images and prepared temporal video samples.
   io::Json images;
   bool text = false;
 };
@@ -64,8 +65,7 @@ Status ParseModerationOptions(const io::Json& request,
 Status CollectModerationInput(const io::Json& chat_messages,
                               ModerationContent* content, ChatPlanError* error);
 Status CollectModerationOutput(const io::Json& response_items,
-                               ModerationContent* content,
-                               ChatPlanError* error,
+                               ModerationContent* content, ChatPlanError* error,
                                const io::Json* mcp_content = nullptr);
 Status PlanModeration(const ModerationOptions& options,
                       const ModerationContent& content,

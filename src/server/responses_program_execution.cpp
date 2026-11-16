@@ -12,7 +12,8 @@ ObjectReply ResponsesExecution::PrepareProgramMedia(Json* items) {
   if (!HasFileInputs(*items)) return {};
   auto used = OtherMcpMediaBudget();
   if (mcp_media_) AddResponsesMediaBudget(mcp_media_->Budget(), &used);
-  const auto options = RemainingResponsesMediaOptions(program_file_options_, used);
+  const auto options =
+      RemainingResponsesMediaOptions(program_file_options_, used);
   FileExpansion media(&objects_, options);
   const BinaryAccess access{access_.scope, access_.deadline, access_.cancelled};
   auto result = media.Prepare(*items, FileInputProfile::kResponsesStored,
@@ -36,6 +37,7 @@ ObjectReply ResponsesExecution::PrepareProgramMedia(Json* items) {
   // The published result contains frozen data URLs. Storage and stateless
   // replay therefore retain the same bytes without a second external read.
   *items = std::move(rendered);
+  envelope_.prepared_file_media = true;
   return {};
 }
 

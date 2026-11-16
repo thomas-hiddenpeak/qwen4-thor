@@ -14,6 +14,8 @@
 #include <thread>
 
 #include "../src/server/object_protocol.h"
+#include "../src/server/mcp_provider_common.h"
+#include "q4t/server/chat_prompt.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -168,6 +170,16 @@ Json MediaParts() {
                         {"data", String(png)}}),
                 Value(R"({"type":"resource","resource":{"uri":"project:note",
                    "mimeType":"text/plain; charset=utf-8","blob":"aGVsbG8="}})")});
+}
+Json VideoParts() {
+  std::ifstream source(std::filesystem::path(__FILE__).parent_path() /
+                           "fixtures/file_video/vp8.webm",
+                       std::ios::binary);
+  const std::string bytes((std::istreambuf_iterator<char>(source)), {});
+  if (bytes.empty()) throw std::runtime_error("video fixture missing");
+  namespace provider = mcp_detail::provider_detail;
+  return Array({provider::Resource("project:clip.webm", "video/webm",
+                                   provider::Base64(bytes))});
 }
 Json MediaItems(const std::string& id, const ObjectReply& projection) {
   return Array({Object(
@@ -495,6 +507,98 @@ Q4T_TEST(responses_mcp_shared_media_budget_cannot_refill_between_calls) {
       !mixed.Prepare(state, Array({first}), limits, other, Access(), false)
            .ok());
   Q4T_CHECK(mixed.Budget().usage.files == 0);
+  return true;
+}
+
+Q4T_TEST(
+    responses_mcp_video_model_review_and_restart_use_same_temporal_sample) {
+  Fixture f;
+  Json final, rendered;
+  {
+    ObjectStore objects(f.options);
+    ResponsesMcpState state(objects, Config());
+    final = CompletedMediaCall(state, VideoParts());
+    ResponsesMcpMedia media(objects);
+    Q4T_CHECK(
+        Ok(media.Prepare(state, Array({final}), {}, {}, Access(), false)));
+    Q4T_CHECK(media.Budget().usage.videos == 1 &&
+              media.Budget().usage.video_frames == 6 &&
+              media.Budget().usage.video_scanned_frames == 6);
+    Q4T_CHECK(Ok(media.Persist(state, Access())) &&
+              Ok(media.Render(&rendered)));
+    ResponsesInputPlan input;
+    ChatPlanError error;
+    Q4T_CHECK(NormalizeResponsesInput(Object({{"input", Array({final})}}),
+                                      &input, &error, false, false, false,
+                                      &rendered));
+    ModerationContent in, out;
+    Q4T_CHECK(CollectModerationInput(input.messages, &in, &error) &&
+              CollectModerationOutput(Array({final}), &out, &error, &rendered));
+    Q4T_CHECK(in.images.array.size() == 1 &&
+              in.images.array[0].GetString("type") == "video_frames" &&
+              OutputJson(in.images) == OutputJson(out.images));
+    const auto request = Object({{"messages", input.messages}});
+    std::string prompt;
+    std::vector<VisionItem> generated, reviewed;
+    Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &generated, &error.param,
+                                &error.code, nullptr, false, {}, true));
+    auto config = Config();
+    config.allow_media = config.structured = true;
+    ModerationPlan plan;
+    Q4T_CHECK(
+        PlanModeration({true, config.model}, out, config, 512, &plan, &error));
+    Q4T_CHECK(PrepareChatPrompt(plan.request, {}, &prompt, &reviewed,
+                                &error.param, &error.code));
+    Q4T_CHECK(generated.size() == 1 && reviewed.size() == 1 &&
+              generated[0].kind == VisionItem::kVideo &&
+              generated[0].frames == reviewed[0].frames);
+    const auto& review_parts =
+        *plan.request.GetArray("messages")->array.back().GetArray("content");
+    Q4T_CHECK(OutputJson(review_parts.array.back()) ==
+              OutputJson(out.images.array[0]));
+  }
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  ObjectStore restarted(f.options);
+  ResponsesMcpState state(restarted, Config());
+  ResponsesMcpMedia replay(restarted);
+  Q4T_CHECK(Ok(replay.Prepare(state, Array({final}), {}, {}, Access(), true)));
+  Json again;
+  Q4T_CHECK(Ok(replay.Render(&again)) &&
+            OutputJson(again) == OutputJson(rendered));
+  return true;
+}
+
+Q4T_TEST(responses_mcp_video_work_budget_is_zero_after_cross_call_exhaustion) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesMcpState state(objects, Config());
+  const auto first = CompletedMediaCall(state, VideoParts());
+  const auto second = CompletedMediaCall(state, VideoParts());
+  const auto text = CompletedMediaCall(
+      state, Array({Value(R"({"type":"text","text":"after video quota"})")}));
+  FileExpansionOptions limits;
+  limits.extraction.video.max_scanned_frames = 6;
+  ResponsesMcpMedia media(objects);
+  Q4T_CHECK(
+      Ok(media.Prepare(state, Array({first}), limits, {}, Access(), false)));
+  Q4T_CHECK(Ok(media.Persist(state, Access())));
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  // No codec can succeed here. Exhausted work must fail before starting one,
+  // while an unrelated text tool result can still proceed.
+  Q4T_CHECK(
+      Ok(media.Prepare(state, Array({text}), limits, {}, Access(), false)));
+  Q4T_CHECK(media.Prepare(state, Array({second}), limits, {}, Access(), false)
+                .http_status == 413);
+  Q4T_CHECK(media.Budget().usage.video_scanned_frames == 6 &&
+            !state.ModelContent(second.GetString("id"), Access())
+                 .value.GetBool("complete"));
+  ResponsesMcpMedia other(objects);
+  Q4T_CHECK(other.Prepare(state, Array({second}), limits, media.Budget(),
+                          Access(), false)
+                    .http_status == 413 &&
+            other.Budget().usage.files == 0);
   return true;
 }
 

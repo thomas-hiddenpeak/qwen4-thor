@@ -33,6 +33,15 @@ bool ValidFileVideoLimits(const FileVideoLimits& limits);
 ObjectReply ValidateVideoPixels(std::string_view source,
                                 const FileVideoLimits& limits,
                                 const FileVideoPixels& pixels);
+// For an immutable embedded source already bound by the parent package's
+// source receipt. This never decodes or fetches the original again.
+ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
+                                  const FileVideoLimits& limits,
+                                  const FileVideoPixels& pixels);
+// Internal prepared content. Public file input remains input_file; this maps
+// frozen PNGs and temporal positions to the existing native model adapter.
+Status MapPreparedVideoContent(const io::Json& part, io::Json* mapped,
+                               std::string* error_param = nullptr);
 ObjectReply DecodeVideoContainer(std::string_view source,
                                  const FileVideoLimits& limits,
                                  const BinaryAccess& access,

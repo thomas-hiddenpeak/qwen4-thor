@@ -13,3 +13,8 @@ the encoder's exit status alone is not accepted as valid video evidence.
 
 These are q4t-created synthetic assets with no third-party image content.
 They exercise software decode and do not qualify Jetson hardware video decode.
+
+`generate_nested.py` wraps the existing VP8 bytes in deterministic synthetic
+Office alternate-content packages, including a two-level path and two videos.
+These are parser boundary fixtures, not claims that a Word editor will render
+an arbitrary video altChunk. `nested-identity.json` records exact input bytes.

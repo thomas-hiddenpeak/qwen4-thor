@@ -5,6 +5,7 @@
 #include "file_video_protocol.h"
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/vision/media_plan.h"
 
 namespace q4t::server {
@@ -155,13 +156,26 @@ bool ValidFileVideoLimits(const FileVideoLimits& l) {
 ObjectReply ValidateVideoPixels(std::string_view source,
                                 const FileVideoLimits& limits,
                                 const FileVideoPixels& pixels) {
+  if (!IsVideoContainer(source) ||
+      pixels.conversion.GetInt("source_bytes", -1) !=
+          static_cast<int64_t>(source.size()))
+    return Invalid();
+  return ValidateVideoSnapshot(Digest(source), limits, pixels);
+}
+ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
+                                  const FileVideoLimits& limits,
+                                  const FileVideoPixels& pixels) {
   if (!ValidFileVideoLimits(limits))
     return Error(500, "file_video_budget_invalid", "Invalid video budget");
-  if (!IsVideoContainer(source) || !pixels.width || !pixels.height ||
+  if (!Sha(source_sha256) || !pixels.width || !pixels.height ||
       !pixels.duration_ns || pixels.frames.size() < 2 ||
       pixels.scanned_frames < pixels.frames.size())
     return Invalid();
-  if (source.size() > limits.max_source_bytes ||
+  const auto* source_bytes = pixels.conversion.Find("source_bytes");
+  if (!source_bytes || !IsInputInteger(*source_bytes) ||
+      source_bytes->number <= 0)
+    return Invalid();
+  if (source_bytes->number > limits.max_source_bytes ||
       pixels.width > limits.max_edge || pixels.height > limits.max_edge ||
       uint64_t{pixels.width} * pixels.height > limits.max_frame_pixels ||
       pixels.duration_ns > limits.max_duration_ns ||
@@ -171,10 +185,11 @@ ObjectReply ValidateVideoPixels(std::string_view source,
       pixels.frames.size() > limits.sample_frames)
     return Capacity();
   const auto& conversion = pixels.conversion;
+  if (OutputJson(conversion).size() > 16384) return Invalid();
   const auto* outputs = conversion.GetArray("frames");
   const auto* modules = conversion.GetArray("modules");
   if (conversion.GetString("format") != "q4t.cpu_video_png.v1" ||
-      conversion.GetString("source_sha256") != Digest(source) ||
+      conversion.GetString("source_sha256") != source_sha256 ||
       conversion.GetString("sampling") !=
           "uniform-presentation-time-with-endpoints" ||
       !outputs || outputs->array.size() != pixels.frames.size() || !modules ||
@@ -229,6 +244,34 @@ ObjectReply ValidateVideoPixels(std::string_view source,
   if (pixels.frames.front().source_index != 0 ||
       pixels.frames.back().source_index + 1 != pixels.scanned_frames)
     return Invalid();
+  return {};
+}
+Status MapPreparedVideoContent(const io::Json& part, io::Json* mapped,
+                               std::string* error_param) {
+  if (!mapped) return Status::Fail("Missing prepared video owner");
+  *mapped = {};
+  auto status = InputFields(
+      part,
+      {"type", "video_frames", "video_timestamps", "prompt_cache_breakpoint"},
+      error_param);
+  const auto* frames = part.GetArray("video_frames");
+  if (!status) return status;
+  if (part.GetString("type") != "input_video_frames" || !frames ||
+      frames->array.size() < 2 || frames->array.size() > 16 ||
+      !part.Has("video_timestamps"))
+    return Status::Fail("Invalid prepared video frames");
+  for (const auto& frame : frames->array)
+    if (!frame.IsString() || !frame.str.starts_with("data:image/png;base64,") ||
+        frame.str.size() <= 22)
+      return Status::Fail("Prepared video requires immutable PNG data");
+  std::string field;
+  status = VideoFrameTimes(part, frames->array.size(), nullptr, &field);
+  if (!status) {
+    if (error_param) *error_param = std::move(field);
+    return status;
+  }
+  *mapped = part;
+  Set(mapped, "type", String("video_frames"));
   return {};
 }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS

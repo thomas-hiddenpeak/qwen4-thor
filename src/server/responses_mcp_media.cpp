@@ -25,6 +25,11 @@ void AddResponsesMediaBudget(const ResponsesMediaBudget& source,
   d.image_bytes += s.image_bytes;
   d.pixels += s.pixels;
   d.augmentation_bytes += s.augmentation_bytes;
+  d.video_scanned_frames += s.video_scanned_frames;
+  d.video_decoded_pixels += s.video_decoded_pixels;
+  d.video_metadata_bytes += s.video_metadata_bytes;
+  d.videos += s.videos;
+  d.video_frames += s.video_frames;
   d.model_input_tokens += s.model_input_tokens;
   d.model_output_tokens += s.model_output_tokens;
   d.model_steps += s.model_steps;
@@ -67,6 +72,14 @@ FileExpansionOptions RemainingResponsesMediaOptions(
   pdf.max_pages = remaining(pdf.max_pages, u.pages);
   pdf.max_image_bytes = remaining(pdf.max_image_bytes, u.image_bytes);
   pdf.max_pixels = remaining(pdf.max_pixels, u.pixels);
+  auto video = result.extraction.remaining_video_work.value_or(
+      FileVideoWorkBudget{result.extraction.video.max_scanned_frames,
+                          result.extraction.video.max_decoded_pixels});
+  video.scanned_frames -=
+      std::min(video.scanned_frames, u.video_scanned_frames);
+  video.decoded_pixels -=
+      std::min(video.decoded_pixels, u.video_decoded_pixels);
+  result.extraction.remaining_video_work = video;
   result.total_summary_output_tokens =
       remaining(limits.total_summary_output_tokens,
                 u.model_output_tokens + used.pending_output, 64);
@@ -86,6 +99,11 @@ ObjectReply CheckResponsesMediaBudget(const FileExpansionOptions& limits,
       u.sheets > doc.max_sheets || u.cells > doc.max_cells ||
       u.embedded > doc.max_embedded_documents || u.pages > pdf.max_pages ||
       u.image_bytes > pdf.max_image_bytes || u.pixels > pdf.max_pixels ||
+      u.videos > limits.max_files ||
+      u.video_frames >
+          limits.max_files * limits.extraction.video.sample_frames ||
+      u.video_scanned_frames > limits.extraction.video.max_scanned_frames ||
+      u.video_decoded_pixels > limits.extraction.video.max_decoded_pixels ||
       used.retained > limits.max_retained_bytes ||
       used.rendered > limits.max_rendered_bytes ||
       u.model_output_tokens + used.pending_output >

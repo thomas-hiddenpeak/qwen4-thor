@@ -1,9 +1,11 @@
 #include "q4t/server/file_snapshot.h"
 
 #include <algorithm>
+#include <set>
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/vision/media_plan.h"
 
 namespace q4t::server {
@@ -119,7 +121,8 @@ bool Consume(uint64_t bytes, uint64_t* remaining) {
   return true;
 }
 ObjectReply CheckLimits(const FileExtractOptions& options) {
-  if (!ValidFileDocumentLimits(options.document) || !options.pdf.max_pages ||
+  if (!ValidFileDocumentLimits(options.document) ||
+      !ValidFileVideoLimits(options.video) || !options.pdf.max_pages ||
       options.pdf.max_pages > 256 || !options.pdf.max_pixels ||
       options.pdf.max_pixels > (256ULL << 20) || !options.pdf.max_image_bytes ||
       options.pdf.max_image_bytes > (256ULL << 20))
@@ -245,6 +248,40 @@ ObjectReply Validate(const FileInputSnapshot& input,
       return Corrupt();
     }
   }
+  uint64_t scanned = options.video.max_scanned_frames;
+  uint64_t decoded_pixels = options.video.max_decoded_pixels;
+  std::set<std::vector<std::string>> video_paths;
+  if (document.videos.size() > 1 + limits.max_embedded_documents)
+    return Capacity();
+  for (const auto& video : document.videos) {
+    if (!Path(video.source_path, limits.max_nested_documents) ||
+        !video_paths.insert(video.source_path).second)
+      return Corrupt();
+    const auto& p = video.pixels;
+    if (video.source_path.empty()) {
+      if (ClassifyFileDocument(input.source.content) !=
+          FileDocumentFormat::kVideo)
+        return Corrupt();
+      reply = ValidateVideoPixels(input.source.content.bytes, options.video, p);
+    } else {
+      const auto embedded = std::find_if(
+          document.embedded.begin(), document.embedded.end(),
+          [&](const auto& item) { return item.path == video.source_path; });
+      if (embedded == document.embedded.end()) return Corrupt();
+      reply = ValidateVideoSnapshot(embedded->source_sha256, options.video, p);
+    }
+    if (!reply.ok()) return reply.http_status == 413 ? Capacity() : Corrupt();
+    if (!Consume(p.scanned_frames, &scanned) ||
+        !Consume(p.scanned_frames * p.width * p.height, &decoded_pixels))
+      return Capacity();
+    for (const auto& frame : p.frames)
+      if (!Consume(uint64_t{p.width} * p.height, &pixels) ||
+          !Consume(frame.png.size(), &images))
+        return Capacity();
+  }
+  if ((ClassifyFileDocument(input.source.content) ==
+       FileDocumentFormat::kVideo) != video_paths.contains({}))
+    return Corrupt();
   return {};
 }
 Json Pack(const FileInputSnapshot& input,
@@ -315,6 +352,24 @@ Json Pack(const FileInputSnapshot& input,
     }
     Set(&result, "augmentations", std::move(summaries));
   }
+  if (!document.videos.empty()) {
+    Set(&result, "format", String("q4t.file_input_snapshot.v3"));
+    if (!result.Has("augmentations")) Set(&result, "augmentations", Array());
+    auto videos = Array();
+    for (const auto& video : document.videos) {
+      auto frames = Array();
+      for (const auto& frame : video.pixels.frames)
+        frames.array.push_back(
+            Object({{"part", Number(add(frame.png))},
+                    {"timestamp_ns", Number(frame.timestamp_ns)},
+                    {"source_index", Number(frame.source_index)}}));
+      videos.array.push_back(
+          Object({{"source_path", PathJson(video.source_path)},
+                  {"conversion", video.pixels.conversion},
+                  {"frames", std::move(frames)}}));
+    }
+    Set(&result, "videos", std::move(videos));
+  }
   return result;
 }
 ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
@@ -333,9 +388,13 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
       text && text->IsString() &&
       text->str.size() > limits.document.max_text_bytes)
     return Capacity();
-  const bool augmented =
-      value.GetString("format") == "q4t.file_input_snapshot.v2";
-  if (value.object.size() != (augmented ? 14 : 13) ||
+  const bool video_snapshot =
+      value.GetString("format") == "q4t.file_input_snapshot.v3";
+  const bool augmented = video_snapshot || value.GetString("format") ==
+                                               "q4t.file_input_snapshot.v2";
+  if (value.object.size() != (video_snapshot ? 15
+                              : augmented    ? 14
+                                             : 13) ||
       (!augmented &&
        value.GetString("format") != "q4t.file_input_snapshot.v1") ||
       !source || !indirect || !urls || !sheets || !pages || !embedded ||
@@ -421,7 +480,7 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
   }
   if (augmented) {
     const auto* summaries = value.GetArray("augmentations");
-    if (!summaries || summaries->array.empty() ||
+    if (!summaries || (!video_snapshot && summaries->array.empty()) ||
         summaries->array.size() > document.sheets.size())
       return Corrupt();
     uint64_t remaining = limits.document.max_text_bytes;
@@ -451,6 +510,56 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
         generated.headers.push_back(header.str);
       }
       output->augmentations.push_back(std::move(generated));
+    }
+  }
+  if (video_snapshot) {
+    const auto* videos = value.GetArray("videos");
+    if (!videos || videos->array.empty()) return Corrupt();
+    if (videos->array.size() > 1 + limits.document.max_embedded_documents)
+      return Capacity();
+    for (const auto& entry : videos->array) {
+      FileDocumentVideo video;
+      const auto* path = entry.Find("source_path");
+      const auto* frames = entry.GetArray("frames");
+      const auto* conversion = entry.Find("conversion");
+      if (entry.object.size() != 3 || !path || !frames || !conversion ||
+          !conversion->IsObject() ||
+          !ReadPath(*path, limits.document.max_nested_documents,
+                    &video.source_path))
+        return Corrupt();
+      if (frames->array.size() > limits.video.sample_frames) return Capacity();
+      auto& pixels = video.pixels;
+      pixels.conversion = *conversion;
+      for (const auto& [name, maximum] :
+           std::vector<std::pair<const char*, uint64_t>>{
+               {"width", 8192},
+               {"height", 8192},
+               {"duration_ns", 600000000000ULL},
+               {"scanned_frames", 18000}}) {
+        const auto* number = conversion->Find(name);
+        if (!number || !IsInputInteger(*number) || number->number <= 0 ||
+            number->number > maximum)
+          return Corrupt();
+      }
+      pixels.width = conversion->GetInt("width");
+      pixels.height = conversion->GetInt("height");
+      pixels.duration_ns = conversion->GetInt("duration_ns");
+      pixels.scanned_frames = conversion->GetInt("scanned_frames");
+      for (const auto& value : frames->array) {
+        FileVideoFrame frame;
+        const auto* time = value.Find("timestamp_ns");
+        const auto* index = value.Find("source_index");
+        if (value.object.size() != 3 || !time || !index ||
+            !IsInputInteger(*time) || !IsInputInteger(*index) ||
+            time->number < 0 || time->number >= pixels.duration_ns ||
+            index->number < 0 || index->number >= pixels.scanned_frames ||
+            !Take(value, "part", stored, &used, &frame.png))
+          return Corrupt();
+        frame.timestamp_ns = value.GetInt("timestamp_ns");
+        frame.source_index = value.GetInt("source_index");
+        pixels.frames.push_back(std::move(frame));
+      }
+      document.videos.push_back(std::move(video));
     }
   }
   if (std::find(used.begin(), used.end(), false) != used.end())

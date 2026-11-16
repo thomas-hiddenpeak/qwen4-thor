@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "q4t/server/file_input.h"
+#include "q4t/server/file_video.h"
 
 namespace q4t::server {
 enum class FileDocumentFormat {
@@ -16,7 +17,8 @@ enum class FileDocumentFormat {
   kPdf,
   kOfficeZip,
   kOfficeBinary,
-  kRtf
+  kRtf,
+  kVideo
 };
 struct FilePackageLimits {
   uint64_t max_bytes = 128ULL << 20;
@@ -66,10 +68,16 @@ struct FileDocumentPending {
   std::vector<std::string> path;
   FileInputContent source;
 };
+struct FileDocumentVideo {
+  // Empty for the outer source; otherwise the containing package path.
+  std::vector<std::string> source_path;
+  FileVideoPixels pixels;
+};
 struct FileDocument {
   std::string text, encoding, source_sha256;
   std::vector<FileDocumentSheet> sheets;
   std::vector<FileDocumentPage> pages;
+  std::vector<FileDocumentVideo> videos;
   // Empty codec means no system Office conversion. Converted formula values
   // must not be presented as the original binary document's cached results.
   FileDocumentConversion conversion;

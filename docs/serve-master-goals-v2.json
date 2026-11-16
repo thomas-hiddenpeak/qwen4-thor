@@ -1280,10 +1280,10 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "implementation_in_progress",
+        "state": "cpu_integrated_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
-        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
-        "cpu_accepted": false,
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
         "gpu_accepted": false,
         "released": false,
         "whole_task_complete": false,
@@ -1291,7 +1291,13 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
+        "next": "Actual SDK/model business, rotation/PAR format combinations and recovery-qualified reversible release; live provider accounts remain independently pending",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f"
       }
     },
     {
@@ -1671,10 +1677,10 @@
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
       },
       "native_video_preparation": {
-        "state": "implementation_in_progress",
+        "state": "cpu_integrated_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
-        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
-        "cpu_accepted": false,
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
         "gpu_accepted": false,
         "released": false,
         "whole_task_complete": false,
@@ -1682,7 +1688,13 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
+        "next": "Actual SDK/model business, rotation/PAR format combinations and recovery-qualified reversible release; live provider accounts remain independently pending",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f"
       }
     },
     {
@@ -2218,10 +2230,10 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "implementation_in_progress",
+        "state": "cpu_integrated_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
-        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
-        "cpu_accepted": false,
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
         "gpu_accepted": false,
         "released": false,
         "whole_task_complete": false,
@@ -2229,7 +2241,13 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
+        "next": "Actual SDK/model business, rotation/PAR format combinations and recovery-qualified reversible release; live provider accounts remain independently pending",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f"
       }
     },
     {
@@ -3235,10 +3253,10 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "implementation_in_progress",
+        "state": "cpu_integrated_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
-        "gap": "MCP video resource currently reaches generic input_file while server only accepts supplied video frames; native container decode and temporal file expansion required",
-        "cpu_accepted": false,
+        "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
+        "cpu_accepted": true,
         "gpu_accepted": false,
         "released": false,
         "whole_task_complete": false,
@@ -3246,7 +3264,13 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Unified source/snapshot/temporal projection, cross-tool preparation budget, real format combinations, SDK/model and recovery-qualified reversible delivery"
+        "next": "Actual SDK/model business, rotation/PAR format combinations and recovery-qualified reversible release; live provider accounts remain independently pending",
+        "integration_cpu_accepted": true,
+        "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
+        "integration_cpp_unique": 38,
+        "integration_cpp_executions": 39,
+        "integration_cli_passed": 1,
+        "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f"
       }
     },
     {

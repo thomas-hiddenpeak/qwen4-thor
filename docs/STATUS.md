@@ -43,11 +43,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[统一视频输入CPU验证](evidence/serve-native-video-input-cpu-20261116/README.md)
+已完成：38项不同C++（39次执行）、1项实际CLI封包、7项来源负控/712
+锚点最终通过，主机/完整引擎零警告。Files、MCP、计数、工具角色、
+审核和v3快照接线；跨文件/调用零余额阻止新解码。首轮计数夹具失败
+保留并单项修复复验；0GPU、rev134保持。候选8dbab79f尚待实际业务/
+恢复发行；PR29前驱2276928f两组远端CI均成功，不代表本批新代码已验。
+继续SDK/模型业务、格式组合和全部master。
+
 [原生视频worker](evidence/serve-native-video-worker-cpu-20261116/README.md)
 已通过13项不同C++（26次执行）、7项来源负控/712锚点，最终主机/
 完整引擎零警告；固定软件H.264/VP8/VP9真实帧与PTS、隔离/配额有证据。
 首轮截断容器超时已修复，失败保留；0GPU、rev134保持。PR29旧head
-一组CI的PID夹具竞争也已修复，1项本机CPU过，远端尚待确认。
+一组CI的PID夹具竞争也已修复，1项本机CPU及前驱两组远端CI均过。
 继续[统一视频文件输入](SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)的快照、
 时序投影和共享预算，不能把worker通过当完整API或云账户业务通过。
 

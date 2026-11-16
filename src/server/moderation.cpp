@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
@@ -79,6 +80,14 @@ struct Collector {
         status = Text(kind, text->str);
       } else if (type == "image_url") {
         status = Image(part);
+      } else if (type == "video_frames") {
+        // Keep a temporal item intact for the existing video model adapter.
+        // Classification observes the same prepared sample as generation.
+        status = Image(part);
+      } else if (type == "input_video_frames") {
+        Json mapped;
+        status = MapPreparedVideoContent(part, &mapped);
+        if (status) status = Image(mapped);
       } else {
         // The caller retains this as an error, never as a safe score. Other
         // media adapters stay tracked by A10 until they supply actual content.
@@ -213,8 +222,8 @@ Status CollectModerationInput(const io::Json& messages,
 }
 
 Status CollectModerationOutput(const io::Json& items,
-                               ModerationContent* content,
-                               ChatPlanError* error, const Json* mcp_content) {
+                               ModerationContent* content, ChatPlanError* error,
+                               const Json* mcp_content) {
   *content = {};
   *error = {};
   if (!items.IsArray() || items.array.size() > 512)

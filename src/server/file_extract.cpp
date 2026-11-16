@@ -23,6 +23,16 @@ ObjectReply Decode(const FileInputContent& input,
                    const BinaryAccess& access, FileDocument* output,
                    GrammarControl control) {
   const auto format = ClassifyFileDocument(input);
+  if (format == FileDocumentFormat::kVideo) {
+    FileVideoPixels pixels;
+    auto reply = DecodeVideoContainer(input.bytes, options.video, access,
+                                      &pixels, control);
+    if (!reply.ok()) return reply;
+    output->source_sha256 = object_detail::Digest(input.bytes);
+    output->encoding = "utf-8";
+    output->videos.push_back({{}, std::move(pixels)});
+    return {};
+  }
   if (format == FileDocumentFormat::kPdf)
     return ParsePdfFileDocument(input, options.document, options.pdf, detail,
                                 access, output, control);
@@ -58,6 +68,7 @@ ObjectReply Active(const BinaryAccess& access) {
 struct Remaining {
   uint64_t text = 0, pixels = 0, images = 0, source = kFileInputBytes;
   size_t cells = 0, pages = 0, embedded = 0;
+  uint64_t video_scanned = 0, video_decoded_pixels = 0;
 };
 bool Consume(uint64_t used, uint64_t* remaining) {
   if (used > *remaining) return false;
@@ -80,6 +91,17 @@ ObjectReply Charge(const FileDocument& document, Remaining* remaining) {
                  &remaining->pixels) ||
         !Consume(page.png.size(), &remaining->images))
       return Capacity();
+  for (const auto& video : document.videos) {
+    const auto& p = video.pixels;
+    if (!Consume(p.scanned_frames, &remaining->video_scanned) ||
+        !Consume(p.scanned_frames * p.width * p.height,
+                 &remaining->video_decoded_pixels))
+      return Capacity();
+    for (const auto& frame : p.frames)
+      if (!Consume(uint64_t{p.width} * p.height, &remaining->pixels) ||
+          !Consume(frame.png.size(), &remaining->images))
+        return Capacity();
+  }
   const auto count = document.embedded.size() + document.pending.size();
   if (count > remaining->embedded) return Capacity();
   remaining->embedded -= count;
@@ -103,6 +125,17 @@ ObjectReply Tree(const FileInputContent& input,
     selected.pdf.max_pages = remaining->pages;
     selected.pdf.max_pixels = remaining->pixels;
     selected.pdf.max_image_bytes = remaining->images;
+  }
+  if (ClassifyFileDocument(input) == FileDocumentFormat::kVideo) {
+    if (remaining->video_scanned < 2 || !remaining->video_decoded_pixels ||
+        remaining->images < 1024 || !remaining->pixels)
+      return Capacity();
+    selected.video.max_scanned_frames = remaining->video_scanned;
+    selected.video.max_decoded_pixels = remaining->video_decoded_pixels;
+    selected.video.max_output_bytes =
+        std::min(selected.video.max_output_bytes, remaining->images);
+    selected.video.max_frame_pixels =
+        std::min(selected.video.max_frame_pixels, remaining->pixels);
   }
   FileDocument next;
   reply = Decode(input, selected, detail, access, &next, control);
@@ -134,9 +167,8 @@ ObjectReply Tree(const FileInputContent& input,
     auto path = object_detail::Array();
     for (const auto& name : pending.path)
       path.array.push_back(object_detail::String(name));
-    std::string heading = "\n[Embedded document " +
-                          OutputJson(path) + "; SHA256 " +
-                          child.source_sha256;
+    std::string heading = "\n[Embedded document " + OutputJson(path) +
+                          "; SHA256 " + child.source_sha256;
     if (!child.conversion.codec.empty())
       heading += "; converted with " + child.conversion.codec + " " +
                  child.conversion.version;
@@ -166,6 +198,11 @@ ObjectReply Tree(const FileInputContent& input,
                               pending.path.end());
       next.pages.push_back(std::move(page));
     }
+    for (auto& video : child.videos) {
+      video.source_path.insert(video.source_path.begin(), pending.path.begin(),
+                               pending.path.end());
+      next.videos.push_back(std::move(video));
+    }
     previous = pending.text_offset;
   }
   if (!next.pending.empty()) {
@@ -189,7 +226,8 @@ ObjectReply ExtractFileDocument(const FileInputContent& input,
     return object_detail::Error(500, "file_document_state_invalid",
                                 "Missing output");
   *output = {};
-  if (!ValidFileDocumentLimits(options.document) || !options.timeout_ms ||
+  if (!ValidFileDocumentLimits(options.document) ||
+      !ValidFileVideoLimits(options.video) || !options.timeout_ms ||
       options.timeout_ms > 120000 || !options.pdf.max_pages ||
       options.pdf.max_pages > 256 || !options.pdf.max_pixels ||
       options.pdf.max_pixels > (256ULL << 20) || !options.pdf.max_image_bytes ||
@@ -214,7 +252,16 @@ ObjectReply ExtractFileDocument(const FileInputContent& input,
                       kFileInputBytes,
                       options.document.max_cells,
                       options.pdf.max_pages,
-                      options.document.max_embedded_documents};
+                      options.document.max_embedded_documents,
+                      options.video.max_scanned_frames,
+                      options.video.max_decoded_pixels};
+  if (options.remaining_video_work) {
+    remaining.video_scanned = std::min(
+        remaining.video_scanned, options.remaining_video_work->scanned_frames);
+    remaining.video_decoded_pixels =
+        std::min(remaining.video_decoded_pixels,
+                 options.remaining_video_work->decoded_pixels);
+  }
   return Tree(input, options, detail, bounded, control, 0, &remaining, output);
 }
 }  // namespace q4t::server

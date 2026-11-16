@@ -23,10 +23,13 @@ struct FileExpansionOptions {
 struct FileExpansionUsage {
   uint64_t source_bytes = 0, text_bytes = 0, image_bytes = 0, pixels = 0;
   uint64_t augmentation_bytes = 0;
+  uint64_t video_scanned_frames = 0, video_decoded_pixels = 0;
+  uint64_t video_metadata_bytes = 0;
   // Only work performed by this preparation; replayed summaries cost no new
   // model tokens. The execution owner also accounts incomplete/failed steps.
   uint64_t model_input_tokens = 0, model_output_tokens = 0, model_steps = 0;
   size_t files = 0, images = 0, pages = 0, sheets = 0, cells = 0, embedded = 0;
+  size_t videos = 0, video_frames = 0;
 };
 struct FileSheetStep {
   size_t file_index = 0, sheet_index = 0;

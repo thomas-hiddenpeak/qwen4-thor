@@ -470,6 +470,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   output->conversion =
       Object({{"format", String("q4t.cpu_video_png.v1")},
               {"source_sha256", String(Digest(source))},
+              {"source_bytes", Number(source.size())},
               {"sampling", String("uniform-presentation-time-with-endpoints")},
               {"width", Number(output->width)},
               {"height", Number(output->height)},
