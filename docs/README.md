@@ -562,3 +562,5 @@
 - [rev214媒体缓存与视觉分块交付](evidence/serve-media-state-cache-delivery-20261117/README.md)：完整位置/内容身份、数值修复与真实整根回退，原失败保留。
 
 - [Stop与约束/缓存组合](SERVE_STOP_COMBINATIONS_2026-11-17.md)：可见输出终态校验、停止后状态恢复及有界验收。
+
+- [rev224 Stop/约束/缓存交付](evidence/serve-stop-combinations-delivery-20261117/README.md)：可见终态和prompt-only恢复、真实业务及整根回退，原失败保留。

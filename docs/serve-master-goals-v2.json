@@ -392,7 +392,7 @@
     {
       "id": "A05",
       "required": true,
-      "state": "subset_delivered_integration_pending",
+      "state": "implemented_delivered_main_pending",
       "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
       "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
       "depends_on": [
@@ -410,9 +410,9 @@
         "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
         "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
       },
-      "development_status": "丰富schema/工具/媒体/缓存已有交付，Stop组合本次针对性CPU及实际业务通过；原失败保留，当前候选待STOPPED发行与实际合main。",
+      "development_status": "官方schema能力、工具/媒体/缓存与Stop组合实现并针对性验证，rev224实际可回退交付；本组实际合main待完成，不以阶段结束代替总目标。",
       "remaining_required": [
-        "Stop, constrained-output and private cache combinations with correct final validation; audit remaining combinations against accepted media evidence"
+        "Actual main integration of accepted Stop combination delivery"
       ],
       "current_audit": {
         "date": "2026-11-16",
@@ -453,7 +453,7 @@
         "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
       },
       "stop_combinations_20261117": {
-        "state": "business_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
         "cpu_max": {
           "cpp": 20,
@@ -493,7 +493,10 @@
         "strict_lease_seconds": 342.3800303977914,
         "nvml_queries": 323,
         "business_evidence": "evidence/serve-stop-combinations-business-20261117/README.md",
-        "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3"
+        "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+        "revision": 224,
+        "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
       }
     },
     {
@@ -3971,7 +3974,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev214 or then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev224 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4747,7 +4750,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR38 final-head checks and actual main merge",
+        "PR38 and Stop delivery exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4972,6 +4975,41 @@
         "main_integration_pending": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+      },
+      "stop_combinations_delivery_20261117": {
+        "status": "ACCEPT_STOP_COMBINATIONS_DELIVERY",
+        "revision": 224,
+        "current": {
+          "engine_binary_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+          "engine_release_sha256": "9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa",
+          "generation_sha256": "9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131",
+          "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stop-combinations-20261117/package-01/bundle",
+          "service_acceptance_sha256": "81da864a4dc0c60becf30924484e754cd041ed60ca626d69314c8ba69dd9f7bf",
+          "service_release_sha256": "b74286b9699b5c95bddd4260a73fca42f0a9574c365348006cc7d0d52b8cd48c"
+        },
+        "commands": 19,
+        "seconds": 284.4070557462983,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "core_client_outer_bytes_preserved": true,
+        "profile_migration": "Explicit complete stop/constraints/cache contract upgrade; historical budgets and cycles preserved",
+        "root_cycles_preserved": true,
+        "manual_root": "9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5",
+        "automatic_payload": "945c4b2291e5767fe6bafdc197f62bf44e09620ae6f75c104a42706b3b964ff8",
+        "candidate_whole_package_gpu_run": false,
+        "composed_change": "Current engine business and exact primary/light + retained control acceptance; only explicit publication migration differs in live control sources; Python request builder separately verified",
+        "older_engine_fallback": false,
+        "prior_rev214_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 78,
+        "secret_scan_matches": 0,
+        "archive_sha256": "b8ba8bca30561c440b01f7b30ce5daecd5d4177de8c36956d84d9426017d4264",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
       }
     },
     {
@@ -5139,8 +5177,8 @@
       }
     }
   ],
-  "next_task": "Complete PR38 final-head checks and actual merge; implement and validate A05 stop/constraints/cache combinations, then deliver. Continue web search, audio/media backends, SDK and cold/resource/host tasks; all required master tasks remain active.",
-  "next": "Complete PR38 final-head checks and actual merge; implement and validate A05 stop/constraints/cache combinations, then deliver. Continue web search, audio/media backends, SDK and cold/resource/host tasks; all required master tasks remain active.",
+  "next_task": "Freeze rev224 native day handoff; complete PR38 and Stop delivery checks and actual main merges. Continue native web-search execution, Chat/audio/media backend/SDK and cold/resource/host tasks; all required master tasks remain active.",
+  "next": "Freeze rev224 native day handoff; complete PR38 and Stop delivery checks and actual main merges. Continue native web-search execution, Chat/audio/media backend/SDK and cold/resource/host tasks; all required master tasks remain active.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

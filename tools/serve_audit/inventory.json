@@ -26,7 +26,7 @@
     },
     "messages": {
       "semantics": "qwen3.8-openai-v4：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
-      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体另有认证路径。assistant url_citation历史现校验字符偏移并进入原模板，未据此执行联网检索；audio历史和完整媒体缓存仍是A02/A10待实现项。 2026-11-17候选已接入实际媒体内容/处理器/几何身份、完整视觉块边界、target三轴位置及RoPE偏移、视觉分块；本组尚待针对性验收/交付，rev204默认仍按原证据。",
+      "boundary": "当前托管包启用单槽媒体，直接serve显式启用。原文件、HTTP(S)/inline图像、MP4/WebM、真实显示尺寸和冻结快照通过共享准备/模板/计数；普通文本保留MTP。普通Chat媒体限user，内部Responses工具媒体有认证路径。assistant url_citation历史校验字符偏移并进入原模板，未据此执行联网检索；audio历史仍属A02/A10。rev214已实际交付完整内容/处理器/几何身份、视觉块边界、target三轴/RoPE及视觉分块，rev224补齐Stop/约束/私有缓存组合。",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -52,7 +52,8 @@
         "src/server/media_cache.cpp",
         "include/q4t/server/session_media.h",
         "include/q4t/model/vision_positions.h",
-        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md"
+        "docs/SERVE_MEDIA_STATE_CACHE_2026-11-17.md",
+        "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
       ]
     },
     "max_tokens": {
@@ -265,14 +266,15 @@
     },
     "stop": {
       "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
-      "boundary": "约束输出必须通过可见完整值/receipt终态校验；stop请求的私有缓存复用完整prompt，不发布MTP不可见尾部。包含推理/工具标记，部分工具错误；usage计至命中token，不宣称没有额外计算。实现待本组验证。",
+      "boundary": "约束输出必须通过可见完整值/receipt终态校验；stop请求私有缓存复用完整prompt，不发布MTP不可见尾部。包含推理/工具标记，部分工具错误；usage计至命中token，不宣称没有额外计算。针对性CPU及真实MTP/图片/schema/主轻/保留组合已验，rev224可回退交付；原失败和EOS未命中保持原记录。",
       "evidence": [
         "tests/server_text_stop_test.cpp",
         "docs/SERVE_TEXT_STOP_2026-11-03.md",
         "docs/serve-stop-v1.schema.json",
         "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md",
         "docs/SERVE_STOP_COMBINATIONS_2026-11-17.md",
-        "tests/server_schema_token_guard_test.cpp"
+        "tests/server_schema_token_guard_test.cpp",
+        "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
       ]
     },
     "logprobs": {
@@ -6544,9 +6546,10 @@
     "cpu_tests": 4
   },
   "stop_combinations_20261117": {
-    "state": "implementation_pending_validation",
+    "state": "delivered_main_pending",
     "plan": "docs/SERVE_STOP_COMBINATIONS_2026-11-17.md",
-    "default_revision": 214,
-    "default_changed": false
+    "default_revision": 224,
+    "default_changed": true,
+    "evidence": "docs/evidence/serve-stop-combinations-delivery-20261117/README.md"
   }
 }
