@@ -1,0 +1,12 @@
+{
+  "status": "RETIRED",
+  "plan_sha256": "f542a33cc9f7985965186cc9ea90cdd8058b63872d4411f909d1902b4c8dc964",
+  "cycles": [
+    "25d1668c-1a16-45f8-a247-1c22c600abbc",
+    "682222b7-6a8e-4f97-9147-a14ddb23b111"
+  ],
+  "version_policy_unchanged": true,
+  "current_unchanged": true,
+  "deleted_files": 0,
+  "model_actions": false
+}

@@ -68,6 +68,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+R09[发布前可恢复维护](evidence/serve-root-delivery-preflight-20261116/README.md)完成：
+退休发布副本32→30、版本登记15→13，均移入归档，0删除/0GPU，
+原策略/预算/default保持。继续现代保留根与候选的STOPPED发布、
+原周期回退/前进及运行入口检查；实际默认仍rev174。
+
+
 R09[分项真实业务已补齐](evidence/serve-root-rollback-business-20261116/README.md)：
 原消费周期/工具续答及原周期再前进、新保留根真实outer故障恢复、
 新候选健康均通过。累计9启动/18Chat含自检/1探测、938.526秒，

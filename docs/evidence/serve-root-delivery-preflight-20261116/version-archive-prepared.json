@@ -1,0 +1,10 @@
+{
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-root-rollback-20261116/version-archive-01/plan.json",
+  "sha256": "f542a33cc9f7985965186cc9ea90cdd8058b63872d4411f909d1902b4c8dc964",
+  "cycles": [
+    "682222b7-6a8e-4f97-9147-a14ddb23b111",
+    "25d1668c-1a16-45f8-a247-1c22c600abbc"
+  ],
+  "model_actions": false,
+  "files_moved": false
+}

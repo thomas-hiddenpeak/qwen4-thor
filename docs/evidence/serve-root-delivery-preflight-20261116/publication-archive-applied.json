@@ -1,0 +1,13 @@
+{
+  "status": "RETIRED",
+  "plan_sha256": "cbc79509c2fda1d1f870533d2156677396c0872378648ef3ddfdcc4dcdbaa191",
+  "publication_revision": 174,
+  "generations": [
+    "9038ea9f7809bbf5a2d22424b187f2c6fadf51c3fe763eb440488b5670382677",
+    "9bcbecc40b2962fb9cdfd6af88eaa0ecd4b02147182697618c7d9f5230943460"
+  ],
+  "current_unchanged": true,
+  "packages_unchanged": true,
+  "deleted_files": 0,
+  "model_actions": false
+}
