@@ -108,6 +108,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
+（`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
+已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。
+
 [PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
 7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。
 精确worker次数、不重放、真实过期/回收断言保持，原三项失败保留。

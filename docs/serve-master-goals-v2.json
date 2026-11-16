@@ -440,7 +440,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -450,7 +450,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       },
       "stop_combinations_20261117": {
         "state": "delivered_main_pending",
@@ -2267,7 +2270,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -2277,7 +2280,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -3118,7 +3124,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -3128,7 +3134,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -4527,7 +4536,7 @@
         "candidate_engine_sha256": "5068d4c90b2737b6f16102494158e7654cb6d4e41d65779492ef2fcb54922659"
       },
       "media_state_cache_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-media-state-cache-business-20261117/README.md",
         "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
         "total_starts": 13,
@@ -4537,7 +4546,10 @@
         "whole_task_complete": false,
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
-        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md",
+        "pull_request": 38,
+        "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -4750,7 +4762,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR38 and Stop delivery exact-head checks and actual main merge",
+        "Stop delivery exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5010,6 +5022,13 @@
         "main_integration_pending": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
+      },
+      "media_state_cache_main_merge_20261117": {
+        "state": "merged",
+        "pr": 38,
+        "head": "8f55b64351cf85f0525b63700918addc7febe5b7",
+        "merge": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
+        "evidence": "evidence/serve-pr38-merged-20261117/README.md"
       }
     },
     {
@@ -5177,8 +5196,8 @@
       }
     }
   ],
-  "next_task": "Freeze rev224 native day handoff; complete PR38 and Stop delivery checks and actual main merges. Continue native web-search execution, Chat/audio/media backend/SDK and cold/resource/host tasks; all required master tasks remain active.",
-  "next": "Freeze rev224 native day handoff; complete PR38 and Stop delivery checks and actual main merges. Continue native web-search execution, Chat/audio/media backend/SDK and cold/resource/host tasks; all required master tasks remain active.",
+  "next_task": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
+  "next": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
