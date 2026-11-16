@@ -16,7 +16,7 @@ FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
-    'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
+    'custom_tool_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
     'mcp_approval_request', 'mcp_call'))
 MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
@@ -24,6 +24,48 @@ MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
     'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
 CHAT_EFFORTS = frozenset(('none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'))
 LEGACY_CHAT_EFFORTS = frozenset(('low', 'medium', 'xhigh'))
+
+
+def web_search_capabilities(value):
+    """A standard item alone does not prove native execution or isolation."""
+    responses = value.get('responses')
+    response = responses if type(responses) is dict else {}
+    items = response.get('output_items', [])
+    chat, web = value.get('web_search'), response.get('web_search')
+    declared = type(items) is list and 'web_search_call' in items
+    if chat is None and web is None and not declared:
+        return
+    ledger.require(type(items) is list and 'web_search_call' in items and
+        type(chat) is dict and type(web) is dict and
+        chat.get('profile') == web.get('profile') == 'q4t-native-web-search-v1',
+        'web search output lacks its complete native implementation')
+    chat_values = dict(chat_options='web_search_options',
+        policy_profile='q4t-web-deployment-policy-v1',
+        configuration_endpoint='/v1/config', configuration_field='web_deployment')
+    web_values = dict(executor='native_configured_sites',
+        actions=['search', 'open_page', 'find_in_page'],
+        filters=['allowed_domains', 'blocked_domains'],
+        search_content_types=['text', 'image'],
+        source_include='web_search_call.action.sources',
+        citation='actual_source_marker_in_generated_text',
+        citation_offsets='unicode_scalar', runtime_status='/v1/config.web_deployment')
+    ledger.require(all(chat.get(k) == v for k, v in chat_values.items()) and
+        all(web.get(k) == v for k, v in web_values.items()),
+        'invalid native web source or citation contract')
+    for object_, enabled, disabled in (
+        (chat, ('pre_answer_search', 'json', 'stream', 'url_citations',
+                'stored', 'batch_frozen_inputs', 'policy_check_cli'),
+               ('external_program_required', 'request_override',
+                'core_readiness_dependency', 'model_restart_on_error')),
+        (web, ('implemented', 'offline_index', 'user_location', 'search_context_size',
+               'image_settings', 'return_token_budget', 'max_tool_calls',
+               'shared_output_budget', 'shared_acquisition_budget', 'private_history',
+               'background', 'batch'),
+              ('history_replays_search', 'core_readiness_dependency',
+               'model_restart_on_error'))):
+        ledger.require(all(object_.get(k) is True for k in enabled) and
+            all(object_.get(k) is False for k in disabled),
+            'incomplete native web execution or isolation contract')
 
 
 def text_stop_capabilities(value):
@@ -134,6 +176,7 @@ def semantic_capabilities(value):
     result = copy.deepcopy(value)
     text_stop_capabilities(result)
     media_capabilities(result)
+    web_search_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']

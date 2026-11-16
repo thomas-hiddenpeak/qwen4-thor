@@ -95,7 +95,8 @@ class PrivatePolicyRecoveryTests(unittest.TestCase):
         for key, filename in (
                 ('access_program_policy', 'access-program-policy.json'),
                 ('file_input_policy', 'file-input-policy.json'),
-                ('mcp_policy', 'mcp-policy.json')):
+                ('mcp_policy', 'mcp-policy.json'),
+                ('web_policy', 'web-policy.json')):
             a, b = copy.deepcopy(first), copy.deepcopy(second)
             for value in (a, b):
                 value['engine'][key] = dict(profile='cpu-authority', sha256='a'*64)

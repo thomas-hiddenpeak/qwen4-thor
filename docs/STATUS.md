@@ -108,6 +108,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页自恢复接入CPU通过](evidence/serve-web-search-recovery-cpu-20261117/README.md)：
+7项针对性用例全过，0.667秒；bundle/CLI、主轻命令与私有策略贯通，
+能力迁移不能丢失网页合同或返还已消费预算，自动回退不能改变网络
+权限。默认224保持、0新增GPU；下一组冻结4启动16请求900秒的
+主轻/保留发行组合，完成后可回退发布及实际合main，全部master继续。
+
 [网页搜索真实业务接受](evidence/serve-web-search-business-20261117/README.md)：
 候选e430a4bd的Chat/Responses JSON/SSE、真实来源/引用、离线/历史、
 工具选择及缺配置后同PID普通核心健康通过。正式2启动8请求，含原
