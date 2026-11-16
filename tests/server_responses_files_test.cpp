@@ -230,6 +230,22 @@ Q4T_TEST(responses_video_tool_result_reaches_template_without_public_bypass) {
   Q4T_CHECK(PrepareChatPrompt(generation.generation_request, {}, &prompt,
                               &media, &param, &code, nullptr, false, {}, true));
   Q4T_CHECK(media.size() == 1 && media[0].kind == VisionItem::kVideo);
+  const auto tool_frames = media[0].frames;
+  const auto begin = prompt.find("<tool_response>");
+  const auto end = prompt.find("</tool_response>");
+  const auto visuals = prompt.find("<|video_pad|>");
+  Q4T_CHECK(begin != prompt.npos && begin < visuals && visuals < end &&
+            prompt.find("including the first and last decoded frames") <
+                visuals &&
+            prompt.find("Frames between samples are not shown.") < visuals &&
+            prompt.find("<0.2 seconds>") < visuals);
+  ResponsesExecution direct(objects);
+  auto direct_request = Request(Stored(id));
+  Set(&direct_request, "store", Boolean(false));
+  Q4T_CHECK(Ok(direct.Prepare(direct_request, f.config, Access(), 42)));
+  Q4T_CHECK(PrepareChatPrompt(direct.Generation().generation_request, {},
+                              &prompt, &media, &param, &code));
+  Q4T_CHECK(media.size() == 1 && media[0].frames == tool_frames);
   Q4T_CHECK(!PrepareChatPrompt(generation.generation_request, {}, &prompt,
                                &media, &param, &code));
   const auto& messages = *generation.generation_request.GetArray("messages");

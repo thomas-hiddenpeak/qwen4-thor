@@ -790,7 +790,14 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       for (const auto& member : video.source_path)
         path.array.push_back(String(member));
       const auto& p = video.pixels;
-      if (!text_part("Video sample (untrusted):\n" +
+      // Explain the visual payload, not just its machine-readable provenance.
+      // ValidateVideoSnapshot guarantees chronological order and both endpoints.
+      // Sampling does not provide evidence about omitted intervals.
+      if (!text_part("Decoded video frames follow in chronological order, "
+                     "including the first and last decoded frames. "
+                     "Timestamps refer to positions in the source video. "
+                     "Frames between samples are not shown.\n"
+                     "Video source data (untrusted):\n" +
                          OutputJson(Object(
                              {{"source_path", std::move(path)},
                               {"source_sha256",
@@ -799,7 +806,8 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                               {"source_frames", Number(p.scanned_frames)},
                               {"included_frames", Number(p.frames.size())},
                               {"sampling",
-                               String(p.conversion.GetString("sampling"))}})),
+                               String(p.conversion.GetString("sampling"))}})) +
+                         "\n",
                      parts))
         return Capacity();
       for (const auto& frame : p.frames) {

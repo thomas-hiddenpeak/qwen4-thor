@@ -70,7 +70,13 @@ def requests():
 
 def color_answer(response):
     background.check_response(response, 'completed')
-    value = json.loads(foreground.text(response))
+    refusals = [part['refusal'] for item in response['output']
+                if item['type'] == 'message' for part in item['content']
+                if part['type'] == 'refusal']
+    require(not refusals, 'video task refused: '+str(refusals))
+    raw = foreground.text(response)
+    require(bool(raw.strip()), 'video task produced no output text')
+    value = json.loads(raw)
     require(value == dict(start='red', end='blue'),
             'actual video transition differs: '+str(value))
     return value

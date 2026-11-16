@@ -43,6 +43,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[首次视频业务短验](evidence/serve-native-video-business-failure-20261116/README.md)
+在1启动/4创建后失败：直接MP4、VP8 SSE和计数通过，工具VP9续答拒答。
+原始首尾帧与media执行存在，45项NVML均OK、自有资源清理完成、rev134
+保持。当前补充统一投影对实际视觉内容/首尾/采样遗漏的准确说明，
+明确报告refusal；冻结4项C++/2项Python及最多1启动/8创建/900秒补验，
+原问题与判定不变。[4项C++/2项Python和来源检查已过](evidence/serve-native-video-followup-cpu-20261116/README.md)，
+主机/引擎零警告；仍须实际业务证明修复，不将失败转成兼容完成。
+
 [视频业务驱动CPU准备](evidence/serve-native-video-business-driver-cpu-20261116/README.md)
 已过：2项C++、5项Python实际TLS/请求/判定器、7项来源负控/712锚点，
 主机/引擎零警告；能力发现区分编译、媒体配置与运行库检查。

@@ -50,6 +50,10 @@ class VideoAcceptance(unittest.TestCase):
         parts[0]['text'] = '{"start":"red","end":"blue"}'
         with self.assertRaises(RuntimeError):
             driver.color_answer(dict(response, status='incomplete'))
+        parts[0].clear()
+        parts[0].update(type='refusal', refusal='Cannot inspect the frames')
+        with self.assertRaisesRegex(RuntimeError, 'video task refused:'):
+            driver.color_answer(response)
 
 
 class VideoPeer(unittest.TestCase):

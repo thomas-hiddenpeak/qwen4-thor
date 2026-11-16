@@ -1,0 +1,12 @@
+{
+  "binary_sha256": "2262d5eec074cc3ee1ad12859351dabb8373e9329a0e3ef1d2324d34f6bd3270",
+  "manifest_sha256": "589269c5e17557d9e8208d7cf9258432eb5532b9ceda93b03099e6025aed63fa",
+  "source_head": "057e35fbba8d6f4df15ddb16d6019e9915ce62bc",
+  "cpp_passed": 4,
+  "python_passed": 2,
+  "source_negative_passed": 7,
+  "source_anchors": 712,
+  "warnings": 0,
+  "gpu_added": 0,
+  "default_unchanged": true
+}
