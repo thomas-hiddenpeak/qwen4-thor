@@ -27,6 +27,9 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # Application identities are bounded ASCII tokens; backend owns query parsing.
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
+    ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
+    ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
+    ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
     *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
     *((method, '/v1/prompts/{prompt_id}',
@@ -174,6 +177,55 @@ def route_map():
                            else re.escape(part) for part in path.split('/'))
         rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
     return '\n'.join(rows)
+
+
+def tunnel_maps():
+    """Optional nginx only: bounded independent lanes and protected headers.
+
+    nginx 1.30.6 joins duplicate generic header fields with comma + space.
+    Visible ASCII tokens cannot contain that space, so we reject duplicates
+    without forbidding a legal comma inside a single opaque token. Never
+    forward arbitrary request headers or let Connection/Trailer name a token.
+    """
+    maps = []
+    for lane, rate in [('tunnel_poll', 10), ('tunnel_response', 20)]:
+        maps.append(f'''  map $q4t_lane $q4t_{lane} {{ default ""; {lane} $q4t_client; }}
+  map $q4t_lane $q4t_all_{lane} {{ default ""; {lane} all; }}
+  limit_conn_zone $q4t_{lane} zone={lane}:1m;
+  limit_conn_zone $q4t_all_{lane} zone=all_{lane}:1m;
+  limit_req_zone $q4t_{lane} zone={lane}_rate:1m rate={rate}r/s;''')
+    for name, wire in [('instance', 'x_tunnel_client_instance_id'),
+                       ('shard', 'x_tunnel_shard_token')]:
+        maps.append(f'''  map $http_{wire} $q4t_invalid_{name} {{
+    default 1;
+    "" 0;
+    "~^[!-~]{{1,128}}$" 0;
+  }}''')
+    for header in ('connection', 'trailer'):
+        maps.append(f'''  map $http_{header} $q4t_invalid_tunnel_{header} {{
+    default 0;
+    "~*(^|,)[ \\t]*(x-tunnel-client-instance-id|x-tunnel-shard-token)[ \\t]*(,|$)" 1;
+  }}''')
+    return '\n'.join(maps)
+
+
+def tunnel_checks():
+    return '\n'.join(f'    if ($q4t_invalid_{name} = 1) {{ return 400; }}'
+        for name in ('instance', 'shard', 'tunnel_connection', 'tunnel_trailer'))
+
+
+def tunnel_limits():
+    return '''      limit_conn tunnel_poll 1;
+      limit_conn all_tunnel_poll 4;
+      limit_conn tunnel_response 2;
+      limit_conn all_tunnel_response 4;
+      limit_req zone=tunnel_poll_rate burst=20 nodelay;
+      limit_req zone=tunnel_response_rate burst=64 nodelay;'''
+
+
+def tunnel_headers():
+    return '''      proxy_set_header X-Tunnel-Client-Instance-Id $http_x_tunnel_client_instance_id;
+      proxy_set_header X-Tunnel-Shard-Token $http_x_tunnel_shard_token;'''
 
 
 def client_sources(values, *, dual_stack=False):
@@ -462,6 +514,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']} ssl default_server;
     server_name {p['server_name']};
@@ -477,12 +530,14 @@ http {{
     if ($ssl_server_name != {p['server_name']}) {{ return 400; }}
     if ($q4t_client = "") {{ return 401; }}
     if ($q4t_lane = "") {{ return 404; }}
+{tunnel_checks()}
 {chr(10).join(locations)}
     location / {{
       limit_conn data {p['per_client_inflight']};
       limit_conn all_data {p['global_inflight']};
       limit_conn control 4;
       limit_conn all_control 8;
+{tunnel_limits()}
       limit_conn_status 429;
       limit_req zone=data_rate burst={p['burst']} nodelay;
       limit_req zone=control_rate burst=20 nodelay;
@@ -494,6 +549,7 @@ http {{
       proxy_set_header Connection close;
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
+{tunnel_headers()}
       {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;

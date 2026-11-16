@@ -142,13 +142,8 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                   "object_scope_unavailable");
         return;
       }
-      const auto* frozen_request =
-          frozen_inputs ? frozen_inputs->Find("request") : nullptr;
-      const bool frozen_background =
-          frozen_request && frozen_request->GetBool("background");
       responses = std::make_unique<ResponsesExecution>(
-          *objects_, frozen_background ? nullptr : background_.Get(),
-          !frozen_background, api == GenerationApi::kCompact);
+          *objects_, background_.Get(), true, api == GenerationApi::kCompact);
       context->SetUsageObserver(&ResponsesExecution::ObserveUsage,
                                 responses.get());
       if (frozen_inputs) {
@@ -162,9 +157,17 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
             client.Scoped() ? "client:" + std::string(client.Id())
                             : "local:anonymous",
             owner->deadline(), [owner] { return owner->Cancelled(); }};
+        io::Json credential_source;
+        if (!io::ParseJson(body, &credential_source, true,
+                           kApplicationJsonLimits)) {
+          SendError(fd, 500, "Original Batch request unavailable", {},
+                    "batch_prepared_input_invalid");
+          return;
+        }
         const auto restored =
             responses->RestoreInputs(*frozen_inputs, PlanningConfig(fd), access,
-                                     std::time(nullptr), batch_parent);
+                                     std::time(nullptr), batch_parent,
+                                     &credential_source);
         if (!restored.ok()) {
           SendError(fd, restored.http_status, restored.ClientMessage(), {},
                     restored.ClientCode(), restored.value.GetString("param"));
@@ -996,8 +999,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   }
-  const uint64_t prepared_input = preparation ? preparation->InputTokens() : 0;
-  const uint64_t prepared_output =
+  uint64_t prepared_input = preparation ? preparation->InputTokens() : 0;
+  uint64_t prepared_output =
       preparation ? preparation->OutputTokens() : 0;
   if (internal) {
     auto reply = internal->accounting.ReservePrompt(prompt_u32.size());
@@ -1030,7 +1033,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   : responses ? request_output_limit
                               : prompt_budget.total_output,
                   ClientClock::now(),
-                  (input_review + moderate_output) * kMaxModerationStepTokens);
+                  (input_review + moderate_output) * kMaxModerationStepTokens,
+                  responses ? responses->FileOutputBudget() : 0);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm      ? "client_rpm_exhausted"
@@ -1228,6 +1232,47 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     response_step = input ? first_business_step : ResponseStep::kFinish;
     return true;
   };
+  const auto prepare_tool_media = [&]() -> ObjectReply {
+    auto result = responses->PrepareToolMedia(
+        planning_config,
+        [&](const std::string& part) { return !stream || write_stream(part); });
+    if (!result.ok() || !responses->PendingFileSheets()) return result;
+    ModelPreparation late(clients_, http->Client(), rate_lease,
+                           request_output_limit,
+                           (input_review + moderate_output) *
+                               kMaxModerationStepTokens,
+                           responses->FileOutputBudget());
+    if (!late.ContinueReservation(
+            prepared_input + responses_usage.input_tokens +
+                moderation_usage.input_tokens,
+            prepared_output + completed_tokens()))
+      return object_detail::Error(500, "file_preparation_state_invalid",
+                                   "Invalid native tool preparation lease");
+    ScopeExit settle([&] {
+      // Include actual partial work on failure/cancellation as well. The
+      // native inner step has already observed its device work and usage.
+      prepared_input += late.InputTokens();
+      prepared_output += late.OutputTokens();
+      rate_lease.StartPrompt(prepared_input + responses_usage.input_tokens +
+                             moderation_usage.input_tokens);
+      rate_lease.Completion(prepared_output + completed_tokens());
+    });
+    while (responses->PendingFileSheets()) {
+      FileSheetStep sheet;
+      result = responses->NextFileSheet(planning_config, &sheet);
+      if (!result.ok()) return result;
+      InternalModelStep work{sheet.request, planning_config, late,
+                             [] { return ObjectReply{}; }, {}, false,
+                             {}, {}, 0, 0};
+      result = RunInternalModelStep(fd, &work, control);
+      if (!result.ok()) return result;
+      result = responses->CompleteFileSheet(
+          sheet, work.content, work.finish_reason, work.input_tokens,
+          work.output_tokens, planning_config);
+      if (!result.ok()) return result;
+    }
+    return {};
+  };
   const auto prepare_output_review = [&] {
     if (!moderate_output) {
       response_step = ResponseStep::kFinish;
@@ -1236,7 +1281,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     ModerationContent content;
     const auto visible = responses->PublicResponse();
     s = CollectModerationOutput(*visible.GetArray("output"), &content,
-                                &planning_error);
+                                &planning_error,
+                                responses->Envelope().mcp_content.IsNull()
+                                    ? nullptr
+                                    : &responses->Envelope().mcp_content);
     if (s)
       s = PlanModeration(moderation_options, content, planning_config,
                          kMaxModerationStepTokens, &output_moderation,
@@ -1256,11 +1304,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const int response_steps =
       7 +
       (responses && (responses->HasFileSearch() || responses->HasToolSearch() ||
-                     responses->HasPrograms())
+                     responses->HasPrograms() || responses->HasMcp())
            ? ResponsesExecution::kMaxNativeToolCalls
            : 0) +
       (responses && (responses->HasAsyncTools() || responses->HasToolSearch() ||
-                     responses->HasPrograms())
+                     responses->HasPrograms() || responses->HasMcp())
            ? 1
            : 0);
   for (int choice_index = 0;
@@ -1301,7 +1349,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (http) http->StartHeartbeats(control);
       }
     }
-    if (responses && !cache_prewarm && responses->PendingProgramResume() &&
+    if (responses && !cache_prewarm &&
+        (responses->PendingProgramResume() || responses->PendingMcpResume()) &&
         (response_step == ResponseStep::kPrimary ||
          response_step == ResponseStep::kPro)) {
       std::string wire;
@@ -1316,11 +1365,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (http) http->StartHeartbeats(control);
       }
       bool client_wait = false;
-      if (result.ok())
+      if (result.ok() && responses->PendingMcpResume())
+        result = responses->RunMcpApprovals([&](const std::string& part) {
+          return !stream || write_stream(part);
+        });
+      if (result.ok() && responses->PendingProgramResume())
         result = responses->RunPrograms(0, &client_wait,
                                         [&](const std::string& part) {
                                           return !stream || write_stream(part);
                                         });
+      if (result.ok()) result = prepare_tool_media();
       if (!result.ok()) {
         SendError(fd, result.http_status, result.ClientMessage(), {},
                   result.ClientCode(), result.value.GetString("param"));
@@ -1354,7 +1408,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!independent)
         result = responses->ContinueFileSearch(
             responses_usage.output_tokens, planning_config,
-            check_resumed_context, &continuation_generation);
+            check_resumed_context, &continuation_generation,
+            [&](const std::string& part) {
+              return !stream || write_stream(part);
+            });
       if (!result.ok()) {
         SendError(fd, result.http_status, result.ClientMessage(), {},
                   result.ClientCode(), result.value.GetString("param"));
@@ -4373,9 +4430,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                           &program_wait, publish);
           client_wait |= program_wait;
         }
+        if (result.ok() && responses->PendingMcp()) {
+          bool mcp_wait = false;
+          result = responses->RunMcp(response_parser.CompletedToolCalls(),
+                                     &mcp_wait, publish);
+          client_wait |= mcp_wait;
+        }
+        settle_search.Run();
+        if (result.ok()) result = prepare_tool_media();
         answer = !client_wait &&
                  native_calls == response_parser.CompletedToolCalls();
-        settle_search.Run();
         if (!result.ok()) {
           err_guard.ok = false;
           SendError(fd, result.http_status, result.ClientMessage(), {},
@@ -4390,7 +4454,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 size_t tokens = 0;
                 return measure_context(plan, &tokens, error);
               },
-              &next);
+              &next, publish);
           if (!result.ok()) {
             err_guard.ok = false;
             SendError(fd, result.http_status, result.ClientMessage(), {},

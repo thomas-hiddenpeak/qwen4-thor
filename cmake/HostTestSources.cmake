@@ -95,6 +95,34 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_agent_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_agent.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_tunnel_agent_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_tunnel_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_tunnel_api_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_policy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_content.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_projection.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_content_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mcp_transport_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_state_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_binding.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_preparation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_media.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_mcp_media.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_mcp_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_binding_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_sandbox.cpp

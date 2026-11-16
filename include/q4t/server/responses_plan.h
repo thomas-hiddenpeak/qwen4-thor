@@ -29,6 +29,9 @@ struct ResponsesEnvelope {
   bool encrypted_reasoning = false;
   // Execution-owned budget policy, never accepted from public JSON.
   bool native_tools_exhausted = false;
+  // Authenticated, prepared content by call ID. Never accepted from public
+  // request JSON or serialized as part of a Response item.
+  io::Json mcp_content;
   std::string previous_response_id;
   std::string conversation_id;
   std::string summary;

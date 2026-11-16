@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-20261115/deliver.py",
+    "run"
+  ],
+  "returncode": 0,
+  "seconds": 54.32833354640752,
+  "default_change_authorized": true,
+  "new_gpu_starts": 0
+}

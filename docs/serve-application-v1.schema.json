@@ -20339,6 +20339,9 @@
                   },
                   {
                     "$ref": "#/$defs/chat_input_videoPart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_filePart"
                   }
                 ]
               }
@@ -20958,6 +20961,60 @@
         }
       },
       "required": [],
+      "additionalProperties": false
+    },
+    "chat_input_filePart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "file"
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "file_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "file_data": {
+              "type": "string"
+            },
+            "filename": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+              "x-q4t-max-utf8-bytes": 1024
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "oneOf": [
+            {
+              "required": [
+                "file_id"
+              ],
+              "properties": {
+                "file_id": {}
+              }
+            },
+            {
+              "required": [
+                "file_data"
+              ],
+              "properties": {
+                "file_data": {}
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "file"
+      ],
       "additionalProperties": false
     }
   },

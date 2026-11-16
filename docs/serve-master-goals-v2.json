@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-15",
+  "updated": "2026-11-16",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active_master_goal",
   "app_migration": {
@@ -228,7 +228,8 @@
         "evidence/serve-input-tokens-cpu-20261110/README.md",
         "evidence/serve-input-tokens-followup-20261110/README.md",
         "evidence/serve-input-tokens-business-20261110/README.md",
-        "evidence/serve-input-tokens-delivery-20261110/README.md"
+        "evidence/serve-input-tokens-delivery-20261110/README.md",
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -255,8 +256,8 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "Complete A09/A10/A11 media/files/builtin tools and all required input/output/include/SSE producers and SDK integration",
-        "Enforce max_tool_calls in actual builtin executor; advanced async/caller/namespace/output_schema and typed output remain required",
+        "Complete A09/A10/A11 dependent media/files/builtin tools, all required input/output/include/SSE producers and SDK integration",
+        "Typed outputs, MCP and remaining builtin execution combinations. Async/caller/namespace/output_schema/discovery/programmatic have delivered subsets; do not reclassify these as entirely missing.",
         "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered"
       ],
       "automatic_truncation": {
@@ -300,7 +301,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Native programmatic tools delivered in rev126 with real controlled recovery closure; actual main merge pending, then all remaining master tasks.",
+      "current_work": "Complete native tunnel/provider integration, SDK and actual model business, recovery qualification, reversible release and main merge; continue all master tasks.",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -1053,7 +1054,7 @@
         }
       },
       "programmatic": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
@@ -1062,7 +1063,7 @@
         "delivery_pending": false,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Actual PR27 main merge, then typed outputs, MCP and all remaining master tasks",
+        "next": "Native MCP and all remaining master tasks",
         "default_capability_delivered": true,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
@@ -1090,7 +1091,6 @@
           "requests": 4,
           "probes": 1
         },
-        "repair_in_progress": "Replan reserved unadmitted prompt; preserve one RPM, output envelope, prior actual work and Batch credit",
         "rate_repair_evidence": "docs/evidence/serve-programmatic-resume-rate-cpu-20261115",
         "rate_repair_cpu_passed": 26,
         "rate_repair_gpu_budget": {
@@ -1115,8 +1115,103 @@
           "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
           "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
           "state": "STOPPED",
-          "main_integration_pending": true
-        }
+          "main_integration_pending": false
+        },
+        "main_integration": {
+          "pr": 27,
+          "merged": true,
+          "head": "9e0a4b4464ac38c9f9183a94b21b864bd4d689b7",
+          "commit": "1f0ed01a16e1a78d5e5bedbed4dbebe656006d5e",
+          "evidence": "evidence/serve-pr27-merged-20261115"
+        },
+        "rate_repair_status": "validated_delivered_main_merged"
+      },
+      "mcp": {
+        "state": "basic_execution_cpu_accepted_required_combinations_in_progress",
+        "plan": "SERVE_MCP_2026-11-15.md",
+        "public_capability_delivered": false,
+        "whole_task_complete": false,
+        "transport_evidence": "evidence/serve-mcp-transport-cpu-20261115/README.md",
+        "transport_targeted_cpu_passed": 21,
+        "authority_evidence": "evidence/serve-mcp-authority-cpu-20261115/README.md",
+        "authority_targeted_cpu_passed": 20,
+        "output_owner_evidence": "evidence/serve-mcp-output-owner-cpu-20261115/README.md",
+        "output_owner_targeted_cpp_passed": 16,
+        "output_sdk_passed": 2,
+        "binding_history_evidence": "evidence/serve-mcp-binding-history-cpu-20261115/README.md",
+        "binding_history_targeted_cpp_passed": 13,
+        "planning_evidence": "evidence/serve-mcp-planning-cpu-20261115/README.md",
+        "planning_targeted_cpp_passed": 19,
+        "execution_owner_evidence": "evidence/serve-mcp-execution-cpu-20261115/README.md",
+        "execution_owner_targeted_cpp_passed": 22,
+        "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
+        "batch_source_targeted_cpp_passed": 12,
+        "full_engine_build_passed": true,
+        "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
+        "discovery_policy_targeted_cpp_passed": 23,
+        "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
+        "prompt_targeted_cpp_passed": 11,
+        "engine_build_note": "Scoped MCP deployment routes bind immutable target authority through approvals, resources, programmatic and Batch execution; native policy CLI/package validated without GPU. Reverse tunnel/provider adapters and full MCP delivery remain required.",
+        "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
+        "recovery_owner_targeted_cpp_passed": 21,
+        "engine_candidate_sha256": "76b7f13d2e8f11bb06c14b486fbdadf8522ed320e353bef32329fd2db37f0dd1",
+        "next": "Complete native tunnel/provider integration, SDK and actual model business, recovery qualification, reversible release and main merge; continue all master tasks.",
+        "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
+        "cleanup_continuation_targeted_cpp_passed": 18,
+        "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
+        "programmatic_targeted_cpp_passed": 49,
+        "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
+        "program_boundary_targeted_cpp_passed": 8,
+        "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
+        "native_content_targeted_cpp_passed": 26,
+        "native_content_sdk_passed": 1,
+        "resource_freeze_evidence": "evidence/serve-mcp-resource-freeze-cpu-20261116/README.md",
+        "resource_freeze_targeted_cpp_passed": 16,
+        "media_projection_evidence": "evidence/serve-mcp-projection-cpu-20261116/README.md",
+        "media_projection_targeted_cpp_passed": 12,
+        "shared_media_evidence": "evidence/serve-mcp-shared-media-cpu-20261116/README.md",
+        "shared_media_targeted_cpp_passed": 14,
+        "media_execution_evidence": "evidence/serve-mcp-media-execution-cpu-20261116/README.md",
+        "media_execution_targeted_cpp_passed": 20,
+        "count_preparation_evidence": "evidence/serve-mcp-count-cpu-20261116/README.md",
+        "count_preparation_targeted_cpp_passed": 26,
+        "session_transport_evidence": "evidence/serve-mcp-sessions-transport-cpu-20261116/README.md",
+        "session_transport_targeted_cpp_passed": 30,
+        "session_execution_evidence": "evidence/serve-mcp-sessions-execution-cpu-20261116/README.md",
+        "session_execution_targeted_cpp_passed": 41,
+        "deployment_mapping_evidence": "evidence/serve-mcp-mapping-cpu-20261116/README.md",
+        "deployment_mapping_cpp_passed": 29,
+        "deployment_mapping_python_passed": 8
+      },
+      "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
+      "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
+      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
+      },
+      "mcp_delivery": {
+        "state": "delivered_main_merge_pending",
+        "revision": 134,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "record": "evidence/serve-mcp-delivery-20261116/README.md",
+        "full_task_complete": false
       }
     },
     {
@@ -1526,7 +1621,8 @@
         "evidence/serve-file-search-capabilities-cpu-20261112/README.md",
         "evidence/serve-file-search-profiles-20261112/README.md",
         "evidence/serve-retrieval-managed-business-20261112/README.md",
-        "evidence/serve-retrieval-delivery-20261112/README.md"
+        "evidence/serve-retrieval-delivery-20261112/README.md",
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
       ],
       "release": null,
       "security_requirements": [
@@ -1801,7 +1897,7 @@
         }
       },
       "programmatic": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md",
         "component_evidence": "docs/evidence/serve-programmatic-worker-cpu-20261113",
         "component_cpu_passed": 13,
@@ -1810,7 +1906,7 @@
         "delivery_pending": false,
         "authority_cpu_passed": 19,
         "authority_evidence": "docs/evidence/serve-programmatic-authority-cpu-20261113",
-        "next": "Actual PR27 main merge, then typed outputs, MCP and all remaining master tasks",
+        "next": "Native MCP and all remaining master tasks",
         "default_capability_delivered": true,
         "integration_evidence": "docs/evidence/serve-programmatic-integration-cpu-20261113",
         "integration_cpu_passed": 54,
@@ -1838,7 +1934,6 @@
           "requests": 4,
           "probes": 1
         },
-        "repair_in_progress": "Replan reserved unadmitted prompt; preserve one RPM, output envelope, prior actual work and Batch credit",
         "rate_repair_evidence": "docs/evidence/serve-programmatic-resume-rate-cpu-20261115",
         "rate_repair_cpu_passed": 26,
         "rate_repair_gpu_budget": {
@@ -1863,10 +1958,105 @@
           "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
           "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
           "state": "STOPPED",
-          "main_integration_pending": true
-        }
+          "main_integration_pending": false
+        },
+        "main_integration": {
+          "pr": 27,
+          "merged": true,
+          "head": "9e0a4b4464ac38c9f9183a94b21b864bd4d689b7",
+          "commit": "1f0ed01a16e1a78d5e5bedbed4dbebe656006d5e",
+          "evidence": "evidence/serve-pr27-merged-20261115"
+        },
+        "rate_repair_status": "validated_delivered_main_merged"
       },
-      "current_work": "Native programmatic tools delivered in rev126 with real controlled recovery closure; actual main merge pending, then all remaining master tasks."
+      "current_work": "Complete native tunnel/provider integration, SDK and actual model business, recovery qualification, reversible release and main merge; continue all master tasks.",
+      "mcp": {
+        "state": "basic_execution_cpu_accepted_required_combinations_in_progress",
+        "plan": "SERVE_MCP_2026-11-15.md",
+        "public_capability_delivered": false,
+        "whole_task_complete": false,
+        "transport_evidence": "evidence/serve-mcp-transport-cpu-20261115/README.md",
+        "transport_targeted_cpu_passed": 21,
+        "authority_evidence": "evidence/serve-mcp-authority-cpu-20261115/README.md",
+        "authority_targeted_cpu_passed": 20,
+        "output_owner_evidence": "evidence/serve-mcp-output-owner-cpu-20261115/README.md",
+        "output_owner_targeted_cpp_passed": 16,
+        "output_sdk_passed": 2,
+        "binding_history_evidence": "evidence/serve-mcp-binding-history-cpu-20261115/README.md",
+        "binding_history_targeted_cpp_passed": 13,
+        "planning_evidence": "evidence/serve-mcp-planning-cpu-20261115/README.md",
+        "planning_targeted_cpp_passed": 19,
+        "execution_owner_evidence": "evidence/serve-mcp-execution-cpu-20261115/README.md",
+        "execution_owner_targeted_cpp_passed": 22,
+        "batch_source_evidence": "evidence/serve-mcp-batch-cpu-20261115/README.md",
+        "batch_source_targeted_cpp_passed": 12,
+        "full_engine_build_passed": true,
+        "discovery_policy_evidence": "evidence/serve-mcp-discovery-cpu-20261116/README.md",
+        "discovery_policy_targeted_cpp_passed": 23,
+        "prompt_evidence": "evidence/serve-mcp-prompt-cpu-20261116/README.md",
+        "prompt_targeted_cpp_passed": 11,
+        "engine_build_note": "Scoped MCP deployment routes bind immutable target authority through approvals, resources, programmatic and Batch execution; native policy CLI/package validated without GPU. Reverse tunnel/provider adapters and full MCP delivery remain required.",
+        "recovery_owner_evidence": "evidence/serve-mcp-recovery-cpu-20261116/README.md",
+        "recovery_owner_targeted_cpp_passed": 21,
+        "engine_candidate_sha256": "76b7f13d2e8f11bb06c14b486fbdadf8522ed320e353bef32329fd2db37f0dd1",
+        "next": "Complete native tunnel/provider integration, SDK and actual model business, recovery qualification, reversible release and main merge; continue all master tasks.",
+        "cleanup_continuation_evidence": "evidence/serve-mcp-cleanup-cpu-20261116/README.md",
+        "cleanup_continuation_targeted_cpp_passed": 18,
+        "programmatic_evidence": "evidence/serve-mcp-program-cpu-20261116/README.md",
+        "programmatic_targeted_cpp_passed": 49,
+        "program_boundary_evidence": "evidence/serve-mcp-program-boundary-cpu-20261116/README.md",
+        "program_boundary_targeted_cpp_passed": 8,
+        "native_content_evidence": "evidence/serve-mcp-content-cpu-20261116/README.md",
+        "native_content_targeted_cpp_passed": 26,
+        "native_content_sdk_passed": 1,
+        "resource_freeze_evidence": "evidence/serve-mcp-resource-freeze-cpu-20261116/README.md",
+        "resource_freeze_targeted_cpp_passed": 16,
+        "media_projection_evidence": "evidence/serve-mcp-projection-cpu-20261116/README.md",
+        "media_projection_targeted_cpp_passed": 12,
+        "shared_media_evidence": "evidence/serve-mcp-shared-media-cpu-20261116/README.md",
+        "shared_media_targeted_cpp_passed": 14,
+        "media_execution_evidence": "evidence/serve-mcp-media-execution-cpu-20261116/README.md",
+        "media_execution_targeted_cpp_passed": 20,
+        "count_preparation_evidence": "evidence/serve-mcp-count-cpu-20261116/README.md",
+        "count_preparation_targeted_cpp_passed": 26,
+        "session_transport_evidence": "evidence/serve-mcp-sessions-transport-cpu-20261116/README.md",
+        "session_transport_targeted_cpp_passed": 30,
+        "session_execution_evidence": "evidence/serve-mcp-sessions-execution-cpu-20261116/README.md",
+        "session_execution_targeted_cpp_passed": 41,
+        "deployment_mapping_evidence": "evidence/serve-mcp-mapping-cpu-20261116/README.md",
+        "deployment_mapping_cpp_passed": 29,
+        "deployment_mapping_python_passed": 8
+      },
+      "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
+      "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
+      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
+      "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+      "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
+      },
+      "mcp_delivery": {
+        "state": "delivered_main_merge_pending",
+        "revision": 134,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "record": "evidence/serve-mcp-delivery-20261116/README.md",
+        "full_task_complete": false
+      }
     },
     {
       "id": "A12",
@@ -1888,7 +2078,24 @@
         "N03"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      },
+      "mcp_delivery": {
+        "state": "delivered_main_merge_pending",
+        "revision": 134,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "record": "evidence/serve-mcp-delivery-20261116/README.md",
+        "full_task_complete": false
+      }
     },
     {
       "id": "N01",
@@ -2049,7 +2256,8 @@
         "merged": true,
         "commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
         "evidence": "docs/evidence/serve-pr23-merged-20261113"
-      }
+      },
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
     },
     {
       "id": "N06",
@@ -2704,12 +2912,35 @@
       "evidence": [
         "evidence/serve-retrieval-managed-business-20261112/README.md"
       ],
-      "release": null
+      "release": null,
+      "mcp_business_progress": {
+        "evidence": "evidence/serve-mcp-business-20261116/README.md",
+        "state": "actual_business_accepted_release_pending",
+        "starts": 1,
+        "creates": 8,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "full_task_complete": false
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
+      },
+      "mcp_delivery": {
+        "state": "delivered_main_merge_pending",
+        "revision": 134,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "record": "evidence/serve-mcp-delivery-20261116/README.md",
+        "full_task_complete": false
+      }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -2741,7 +2972,7 @@
         "engine_sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080",
         "evidence": "docs/evidence/serve-programmatic-delivery-20261115",
         "state": "STOPPED",
-        "main_integration_pending": true
+        "main_integration_pending": false
       },
       "merged_foundation": {
         "pr": 22,
@@ -2798,6 +3029,28 @@
         "head": "1282ece2f4c15977a077c44ff803332d76cf44f6",
         "commit": "090f0d4892c2d5315ce492b219546f0cd5842356",
         "evidence": "docs/evidence/serve-pr26-merged-20261113"
+      },
+      "programmatic_main_integration": {
+        "pr": 27,
+        "merged": true,
+        "head": "9e0a4b4464ac38c9f9183a94b21b864bd4d689b7",
+        "commit": "1f0ed01a16e1a78d5e5bedbed4dbebe656006d5e",
+        "evidence": "evidence/serve-pr27-merged-20261115"
+      },
+      "mcp_managed_progress": {
+        "evidence": "evidence/serve-mcp-managed-20261116/README.md",
+        "state": "qualified_packages_delivery_pending",
+        "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+        "full_task_complete": false
+      },
+      "mcp_delivery": {
+        "state": "delivered_main_merge_pending",
+        "revision": 134,
+        "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+        "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+        "record": "evidence/serve-mcp-delivery-20261116/README.md",
+        "full_task_complete": false
       }
     },
     {
@@ -2813,6 +3066,6 @@
       "release": null
     }
   ],
-  "next_task": "Confirm PR27 exact head checks and merge delivered programmatic work; continue typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations. R07-R10/Q03/G00 remain mandatory; no stopping after a stage.",
-  "next": "Confirm PR27 exact head checks and merge delivered programmatic work; continue typed outputs/MCP/builtins, A10 backends and remaining A01/A02/A05/A09/A12 combinations. R07-R10/Q03/G00 remain mandatory; no stopping after a stage."
+  "next_task": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory.",
+  "next": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory."
 }

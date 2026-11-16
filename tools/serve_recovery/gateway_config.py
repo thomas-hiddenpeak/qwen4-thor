@@ -181,12 +181,14 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{g.tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']}{ssl} default_server;
     server_name {p['server_name']};
 {tls_config}{source_check}    if ($host != {p['server_name']}) {{ return 400; }}
     if ($q4t_client = "") {{ return 401; }}
     if ($q4t_lane = "") {{ return 404; }}
+{g.tunnel_checks()}
 {chr(10).join(locations)}
     error_page 500 502 503 504 = @recovering;
     location @recovering {{
@@ -215,6 +217,7 @@ http {{
       limit_conn all_data {p['global_inflight']};
       limit_conn control 4;
       limit_conn all_control 8;
+{g.tunnel_limits()}
       limit_conn_status 429;
       limit_req zone=data_rate burst={p['burst']} nodelay;
       limit_req zone=control_rate burst=20 nodelay;
@@ -230,6 +233,7 @@ http {{
       proxy_set_header Connection close;
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
+{g.tunnel_headers()}
       proxy_set_header X-Q4T-Client-Id $q4t_client;
       proxy_set_header X-Q4T-Gateway-Token $q4t_token;
       proxy_buffering off;

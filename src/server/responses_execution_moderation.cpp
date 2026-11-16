@@ -22,7 +22,10 @@ Status ResponsesExecution::SetModerationResults(const io::Json& results,
 ObjectReply ResponsesExecution::HoldUnreviewedOutput() {
   const auto* items = output_.Snapshot().GetArray("output");
   if (!begun_ || plan_.finished || commit_unknown_ || moderation_safe_ ||
-      !items || !items->array.empty() ||
+      !items || std::any_of(items->array.begin(), items->array.end(),
+                            [](const auto& item) {
+                              return item.GetString("type") != "mcp_list_tools";
+                            }) ||
       output_.Snapshot().GetString("status") != "in_progress")
     return Error(409, "moderation_hold_invalid",
                  "Output hold must start before any generated content");

@@ -170,18 +170,49 @@ ObjectReply ResponsesExecution::RunFileSearches(
 
 ObjectReply ResponsesExecution::ContinueFileSearch(
     int64_t output_used, const ChatPlanConfig& config,
-    const ResponsesContextCheck& check, ResponsesGenerationPlan* next) {
+    const ResponsesContextCheck& check, ResponsesGenerationPlan* next,
+    const std::function<bool(const std::string&)>& publish) {
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || output_used < 0 ||
+      PendingToolSearch() || PendingPrograms() || PendingMcp() || output_used < 0 ||
       output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
   auto history = generation_history_;
   const auto& output = output_.Snapshot().GetArray("output")->array;
-  history.array.insert(history.array.end(), output.begin(), output.end());
+  for (const auto& item : output) {
+    if (item.GetString("type").starts_with("mcp_") &&
+        std::any_of(history.array.begin(), history.array.end(),
+                    [&](const auto& old) {
+                      return old.GetString("id") == item.GetString("id") &&
+                             OutputJson(old) == OutputJson(item);
+                    }))
+      continue;  // Exact owned catalog or retried terminal approval result.
+    history.array.push_back(item);
+  }
+  const auto catalogs = plan_.mcp_catalogs.array.size();
+  auto prepared_mcp = PrepareMcp(config, &history);
+  if (!prepared_mcp.ok()) return prepared_mcp;
+  prepared_mcp = PrepareMcpMedia(config, history);
+  if (!prepared_mcp.ok()) return prepared_mcp;
+  if (PendingFileSheets())
+    return Error(503, "file_preparation_incomplete",
+                 "Complete tool document model steps before continuation");
+  envelope.mcp_content = envelope_.mcp_content;
+  if (plan_.mcp_catalogs.array.size() > catalogs) {
+    for (size_t i = catalogs; i < plan_.mcp_catalogs.array.size(); ++i)
+      generation_history_.array.push_back(plan_.mcp_catalogs.array[i]);
+    std::string wire;
+    auto listed = RecordOutput(BeginMcpCatalogs(&output_, &wire, catalogs), &wire);
+    if (!listed)
+      return Error(503, "response_storage_exhausted", listed.message());
+    auto saved = Checkpoint();
+    if (!saved.ok()) return saved;
+    if (publish && !publish(wire))
+      return Error(499, "request_cancelled", "MCP listing subscriber cancelled");
+  }
   ChatPlanError error;
   auto choice = envelope.request.Find("tool_choice")
                     ? *envelope.request.Find("tool_choice")
@@ -198,6 +229,9 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
                 {"tools", Array({Object({{"type", String("file_search")}})})}});
   if (choice.GetString("type") == "programmatic_tool_calling")
     choice = String("auto");
+  if (choice.GetString("type") == "mcp")
+    choice = Object({{"type", String("allowed_tools")},
+                     {"mode", String("auto")}, {"tools", Array({choice})}});
   if (choice.GetString("type") == "allowed_tools")
     Set(&choice, "mode", String("auto"));
   envelope.native_tools_exhausted = exhausted;
@@ -206,7 +240,7 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
       PrepareResponsesGeneration(envelope, history, config, next, &error);
   if (status)
     status = FitResponsesContext(envelope, config, check, next, &error);
-  if (status) status = BindActiveTools(next->active_tools, &error);
+  if (status) status = BindActiveTools(next->active_tools, &error, &history);
   if (status) status = output_.BindTools(next->active_tools);
   return status ? ObjectReply{} : PlanError(status, error);
 }
@@ -263,6 +297,12 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   // user message or an invented tool result. Keep it local to this model step.
   history.array.push_back(Object(
       {{"role", String("developer")}, {"content", String(instructions)}}));
+  auto media = PrepareMcpMedia(config, history);
+  if (!media.ok()) return media;
+  if (PendingFileSheets())
+    return Error(503, "file_preparation_incomplete",
+                 "Complete tool document model steps before continuation");
+  envelope.mcp_content = envelope_.mcp_content;
   ChatPlanError error;
   status = PrepareResponsesGeneration(envelope, history, config, next, &error);
   if (status)

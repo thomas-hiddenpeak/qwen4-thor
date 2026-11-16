@@ -1,0 +1,31 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘q4t::io::Json& {anonymous}::At(q4t::io::Json&, const std::string&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:24:10: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+   24 |   return *field;
+      |          ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_concurrent_handoff_is_once_and_fifo_with_channels()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:101:15: error: possibly dangling reference to a temporary [-Werror=dangling-reference]
+  101 |   const auto& commands =
+      |               ^~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:102:9: note: the temporary was destroyed at the end of the full expression ‘{anonymous}::At((*((a.q4t::server::ObjectReply::http_status == 200) ? (& a.q4t::server::ObjectReply::value) : (& b.q4t::server::ObjectReply::value))), std::__cxx11::basic_string<char>(((const char*)"commands"), std::allocator<char>()))’
+  102 |       At(a.http_status == 200 ? a.value : b.value, "commands");
+      |       ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_preserves_native_error_and_filters_response_headers()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:187:15: error: possibly dangling reference to a temporary [-Werror=dangling-reference]
+  187 |   const auto& headers = At(result.value, "resp_headers");
+      |               ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:187:27: note: the temporary was destroyed at the end of the full expression ‘{anonymous}::At(result.q4t::server::ObjectReply::value, std::__cxx11::basic_string<char>(((const char*)"resp_headers"), std::allocator<char>()))’
+  187 |   const auto& headers = At(result.value, "resp_headers");
+      |                         ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_final_keeps_progress_and_unicode_header_contract()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:423:15: error: possibly dangling reference to a temporary [-Werror=dangling-reference]
+  423 |   const auto& notifications = At(result.value, "notifications");
+      |               ^~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:423:33: note: the temporary was destroyed at the end of the full expression ‘{anonymous}::At(result.q4t::server::ObjectReply::value, std::__cxx11::basic_string<char>(((const char*)"notifications"), std::allocator<char>()))’
+  423 |   const auto& notifications = At(result.value, "notifications");
+      |                               ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1395: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

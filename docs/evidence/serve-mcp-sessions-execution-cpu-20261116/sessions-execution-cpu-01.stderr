@@ -1,0 +1,2 @@
+MCP execution: invalid_mcp_state: MCP dispatch differs from its owned session ()
+MCP execution: invalid_count_configuration: Input count requires count-only planning ()

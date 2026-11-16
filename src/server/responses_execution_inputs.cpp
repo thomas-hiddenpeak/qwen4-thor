@@ -51,6 +51,9 @@ ObjectReply ResponsesExecution::FreezeInputs(Json* inputs) {
               {"own_input", plan_.own_input},
               {"input_snapshots", plan_.input_snapshots},
               {"tool_contracts", plan_.tool_contracts},
+              {"mcp_catalogs", plan_.mcp_catalogs},
+              {"mcp_credential_source_sha256",
+               String(mcp_credential_source_sha256_)},
               {"request", plan_.request},
               {"options", envelope_.options},
               {"conversation_id", String(plan_.conversation_id)},
@@ -77,7 +80,8 @@ void ResponsesExecution::InputsPublished(bool uncertain) noexcept {
 
 ObjectReply ResponsesExecution::RestoreInputs(
     const Json& inputs, const ChatPlanConfig& config, StateAccess access,
-    int64_t created, const BatchResponseLink* batch_parent) {
+    int64_t created, const BatchResponseLink* batch_parent,
+    const Json* credential_source) {
   if (prepared_ || begun_ || standalone_compaction_ || created <= 0 ||
       inputs.GetString("format") != "q4t.responses_prepared.v1" ||
       inputs.GetString("scope") != access.scope || access.scope.empty())
@@ -144,6 +148,8 @@ ObjectReply ResponsesExecution::RestoreInputs(
   plan_.store = store->boolean;
   plan_.ephemeral = ephemeral->boolean;
   plan_.request = *request;
+  if (const auto* catalogs = inputs.Find("mcp_catalogs"))
+    plan_.mcp_catalogs = *catalogs;
   plan_.history = *history;
   plan_.own_input = *own;
   plan_.conversation_id = envelope_.conversation_id;
@@ -162,6 +168,26 @@ ObjectReply ResponsesExecution::RestoreInputs(
                                   &plan_.tool_contracts);
   if (!reply.ok()) return reply;
   require_frozen_inputs_ = true;
+  mcp_credential_source_sha256_ =
+      inputs.GetString("mcp_credential_source_sha256");
+  if (credential_source) {
+    // The Batch adapter has authenticated the original immutable File row.
+    // Bind it again to this preparation before accepting request-local keys.
+    // A direct/background restart has no such source and cannot recover keys.
+    auto source = *credential_source;
+    std::vector<ResponsesMcpDefinition> credentials;
+    status = CaptureResponsesMcpCredentials(&source, &credentials, &error);
+    if (!status) return Invalid();
+    if (!credentials.empty()) {
+      std::string identity;
+      if (mcp_credential_source_sha256_.empty() ||
+          !InputValueIdentity(*credential_source, &identity) ||
+          identity != mcp_credential_source_sha256_)
+        return Error(409, "mcp_credential_source_changed",
+                     "MCP credentials require the original prepared request");
+      mcp_credentials_ = std::move(credentials);
+    }
+  }
   // Never Resolve, Expand a prompt, fetch a URL or publish a queued Response.
   // FileExpansion may only read the immutable snapshots saved at validation.
   reply = PlanGeneration(config, created);

@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -38,6 +39,7 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   if (reply.commit_unknown) {
     commit_unknown_ = true;
     if (files_) files_->RetainUncertainHolds();
+    if (mcp_media_) mcp_media_->RetainUncertainHolds();
     reply.message +=
         "; retrieve response " + plan_.id + " before retrying this request";
     reply.value = Object({{"response_id", String(plan_.id)}});
@@ -52,10 +54,13 @@ size_t ResponsesExecution::RetainedInputBytes() const {
                             &plan_.own_input,
                             &plan_.input_snapshots,
                             &plan_.tool_contracts,
+                            &plan_.mcp_catalogs,
+                            &mcp_resume_,
                             &plan_.conversation,
                             &plan_.execution_owner,
                             &envelope_.request,
                             &envelope_.options,
+                            &envelope_.mcp_content,
                             &generation_.generation_request,
                             &generation_.effective_tools,
                             &generation_.active_tools,
@@ -90,10 +95,12 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   bytes += generation_.input_source_indices.size() * sizeof(size_t);
   bytes += generation_.chat.constraints.structural_tag.size();
   if (files_) bytes += files_->RetainedBytes();
+  if (mcp_media_) bytes += mcp_media_->Budget().retained;
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   bytes += file_search_argument_bytes_;
   bytes += tool_search_argument_bytes_;
   bytes += program_argument_bytes_;
+  bytes += mcp_argument_bytes_;
   for (const auto& program : programs_) {
     for (const auto* value : {&program.program, &program.tools,
                               &program.worker_input, &program.terminal})
@@ -105,6 +112,19 @@ size_t ResponsesExecution::RetainedInputBytes() const {
              OutputJson(binding.tool.search.filters).size();
     for (const auto& id : binding.tool.store_ids) bytes += id.size();
   }
+  bytes += mcp_credential_source_sha256_.size();
+  for (const auto* definitions : {&mcp_credentials_, &mcp_definitions_})
+    for (const auto& definition : *definitions) {
+      bytes += OutputJson(definition.declaration).size() +
+               definition.target_kind.size() + definition.target_id.size() +
+               definition.credentials.url.size() +
+               definition.credentials.authorization.size();
+      for (const auto& [name, value] : definition.credentials.headers)
+        bytes += name.size() + value.size();
+    }
+  for (const auto& binding : mcp_bindings_)
+    bytes +=
+        OutputJson(binding.function).size() + OutputJson(binding.tool).size();
   return bytes;
 }
 
@@ -145,6 +165,14 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   }
   auto required = RequiredExecutors(background_executor);
   if (!required.ok()) return required;
+  auto credentials = CaptureMcpCredentials();
+  if (!credentials.ok()) return credentials;
+  if (!mcp_credentials_.empty()) {
+    const auto identity =
+        InputValueIdentity(request, &mcp_credential_source_sha256_);
+    if (!identity)
+      return Error(413, "mcp_credential_source_capacity", identity.message());
+  }
   auto resolved = state_.Resolve(envelope_, access_, &plan_);
   if (!resolved.ok()) return resolved;
   return PlanGeneration(config, created);
@@ -208,6 +236,8 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  cipher_config_.model = config.model;
+  cipher_config_.count_input_only = config.count_input_only;
   auto history = plan_.history;
   compaction_trigger_ =
       !plan_.own_input.array.empty() &&
@@ -238,8 +268,9 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                            item.GetString("type") == "program_output" ||
                            (caller && caller->GetString("type") == "program");
                   })) {
+    ResponsesMcpState authority(objects_, config, plan_.id);
     auto opened = OpenResponsesPrograms(cipher_, generation_history_, config,
-                                        access_, &programs_);
+                                        access_, &programs_, &authority);
     if (!opened.ok()) return opened;
     for (const auto& program : programs_) {
       auto bound = BindResponsesProgramContracts(program, generation_history_,
@@ -249,6 +280,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   }
   ChatPlanError error;
   Json effective_tools;
+  auto mcp = PrepareMcp(config);
+  if (!mcp.ok()) return mcp;
   auto status = PlanResponsesFileSearchBindings(envelope_.request,
                                                 &file_search_bindings_, &error);
   if (status)
@@ -298,6 +331,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   }
   program_file_options_ =
       config.file_inputs ? *config.file_inputs : FileExpansionOptions{};
+  auto media = PrepareMcpMedia(config, files_ ? file_history_ : generation_history_);
+  if (!media.ok()) return media;
   if (!PendingFileSheets()) {
     auto built = BuildPreparedGeneration(config);
     if (!built.ok()) return built;
@@ -428,12 +463,18 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   size_t bytes = event_bytes_;
   std::string start;
   auto status = candidate.Start(&start);
+  if (status && !envelope_.background) {
+    std::string catalogs;
+    status = BeginMcpCatalogs(&candidate, &catalogs);
+    start += catalogs;
+  }
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
-  if (plan_.store && require_cleanup_ && !cleanup_)
+  if ((plan_.store || mcp_state_) && require_cleanup_ && !cleanup_)
     return Error(503, "response_reconciliation_unavailable",
                  "Response lifecycle owner unavailable");
-  if (plan_.store && cleanup_ && !cleanup_ticket_) {
+  if (!envelope_.background && (plan_.store || mcp_state_) && cleanup_ &&
+      !cleanup_ticket_) {
     const auto reserved =
         cleanup_->Reserve(plan_.scope, plan_.id, &cleanup_ticket_);
     if (!reserved.ok()) return reserved;
@@ -490,6 +531,11 @@ ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
   size_t bytes = event_bytes_;
   std::string start;
   auto status = candidate.StartRunning(&start);
+  if (status) {
+    std::string catalogs;
+    status = BeginMcpCatalogs(&candidate, &catalogs);
+    start += catalogs;
+  }
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
   auto result = BindMutationResult(
@@ -507,15 +553,17 @@ ObjectReply ResponsesExecution::Cancel() {
   if (plan_.finished) return {};
   if (!begun_ || commit_unknown_)
     return Error(409, "response_state_invalid", "Response cannot be cancelled");
+  StateAccess cleanup{
+      access_.scope,
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
+      {}};
+  auto closed = BindMutationResult(CloseMcpExecution(cleanup));
+  if (!closed.ok() || closed.commit_unknown) return closed;
   DiscardUnreviewedOutput();
   auto candidate = output_;
   auto status = ApplyActualUsage(&candidate);
   if (status) status = candidate.Cancel();
   if (!status) return OutputError(status);
-  StateAccess cleanup{
-      access_.scope,
-      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
-      {}};
   auto result = BindMutationResult(
       state_.Finish(candidate.Snapshot(), events_, cleanup, &plan_));
   if (!result.commit_unknown && (result.code == "object_too_large" ||
@@ -539,6 +587,8 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
   status = AppendToolSearch(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendProgram(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendMcp(delta, &handled, wire);
   if (!status || handled) return status;
   return RecordOutput(output_.Append(delta, probabilities, wire), wire);
 }
@@ -715,15 +765,29 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {
-  DiscardUnreviewedOutput();
   ScopeExit release_cleanup([&] {
+    DiscardUnreviewedOutput();
     if (cleanup_ticket_) {
-      cleanup_->Close(cleanup_ticket_,
-                      plan_.finished || !durable_begin_attempted_);
+      // A terminal parent does not prove that preparations of historical MCP
+      // calls closed. Keep their tracked cleanup responsibility until the
+      // reconciler confirms each invocation/resource under this exact owner.
+      cleanup_->Close(
+          cleanup_ticket_,
+          !mcp_state_ && (plan_.finished || !durable_begin_attempted_));
       cleanup_ticket_ = 0;
     }
   });
-  if (!begun_ || plan_.finished || commit_unknown_) return {};
+  if (!begun_ || plan_.finished) return {};
+  StateAccess cleanup{
+      access_.scope,
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
+      {}};
+  // A lost parent/child commit receipt is no permission to replay. Cleanup
+  // first reads actual child state and closes only this drained invocation.
+  auto closed = BindMutationResult(CloseMcpExecution(cleanup));
+  if (!closed.ok() || closed.commit_unknown) return closed;
+  DiscardUnreviewedOutput();
+  if (commit_unknown_) return {};
   if (!output_.Terminal()) {
     auto usage_status = ApplyActualUsage(&output_);
     if (!usage_status) return OutputError(usage_status);
@@ -737,10 +801,6 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
     if (!status) return OutputError(status);
     if (!Capture(wire, &events_, &event_bytes_)) events_ = Array();
   }
-  StateAccess cleanup{
-      access_.scope,
-      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
-      {}};
   auto saved = BindMutationResult(
       state_.Finish(output_.Snapshot(), events_, cleanup, &plan_));
   if (!saved.commit_unknown && (saved.code == "object_too_large" ||

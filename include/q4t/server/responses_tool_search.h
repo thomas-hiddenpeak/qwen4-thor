@@ -66,7 +66,8 @@ io::Json ResponsesToolItemDefaults(io::Json item);
 Status NormalizeActiveResponsesTools(const io::Json& request,
                                      const ResponsesToolCatalog& catalog,
                                      io::Json* tools, io::Json* choice,
-                                     ChatPlanError* error);
+                                     ChatPlanError* error,
+                                     bool definitions_only = false);
 
 // Resolve client-scoped, already-dereferenced history. Definitions are kept at
 // their actual input position; later redefinition never mutates an earlier

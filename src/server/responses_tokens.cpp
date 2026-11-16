@@ -1,11 +1,12 @@
 #include "q4t/server/responses_tokens.h"
 
 #include <algorithm>
+#include <ctime>
 
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
-#include "q4t/server/responses_crypto.h"
-#include "q4t/server/responses_program.h"
+#include "q4t/server/lifetime.h"
+#include "q4t/server/responses_execution.h"
 
 namespace q4t::server {
 namespace {
@@ -30,10 +31,13 @@ ObjectReply PrepareResponsesTokenCount(
     const io::Json& request, const ChatPlanConfig& config, ObjectStore& objects,
     const StateAccess& access, ResponsesEnvelope* envelope,
     ResponsesGenerationPlan* generation,
-    const ResponsesFilePreparation& prepare, FileExpansionUsage* file_usage) {
+    const ResponsesFilePreparation& prepare, FileExpansionUsage* file_usage,
+    IResponsesCleanup* cleanup, bool require_cleanup,
+    uint64_t* preparation_output_budget) {
   *envelope = {};
   *generation = {};
   if (file_usage) *file_usage = {};
+  if (preparation_output_budget) *preparation_output_budget = 0;
   auto active = CheckResponsesTokenCountActive(access);
   if (!active.ok()) return active;
   if (!config.count_input_only)
@@ -63,77 +67,24 @@ ObjectReply PrepareResponsesTokenCount(
             key == "tools" || key == "tool_choice");
   });
   Set(&normalized, "store", Boolean(false));
-  status = ParseResponsesEnvelope(normalized, config, envelope, &error);
-  if (!status) return Invalid(status, error);
-  ResponsesState state(objects);
-  ResponseStatePlan resolved;
-  auto result = state.Resolve(*envelope, access, &resolved);
-  if (!result.ok()) return result;
-  // A retained compaction trigger is bookkeeping, not a model message. A
-  // count request never executes compaction, even for a new trigger.
-  std::erase_if(resolved.history.array, [](const auto& item) {
-    return item.GetString("type") == "compaction_trigger";
-  });
-  StateCipher cipher(objects);
-  io::Json history;
-  const bool encrypted =
-      std::any_of(resolved.history.array.begin(), resolved.history.array.end(),
-                  [](const auto& item) {
-                    const auto* value = item.Find("encrypted_content");
-                    return (item.GetString("type") == "reasoning" ||
-                            item.GetString("type") == "compaction") &&
-                           value && !value->IsNull();
-                  });
-  if (encrypted) {
-    result = OpenResponsesReasoning(cipher, resolved.history, config, access,
-                                    &history);
-    if (!result.ok()) return result;
-  } else {
-    history = std::move(resolved.history);
-  }
-  Json effective_tools;
-  if (std::any_of(history.array.begin(), history.array.end(),
-                  [](const auto& item) {
-                    const auto* caller = item.Find("caller");
-                    return item.GetString("type") == "program" ||
-                           item.GetString("type") == "program_output" ||
-                           (caller && caller->GetString("type") == "program");
-                  })) {
-    std::vector<ResponsesProgramState> programs;
-    result = OpenResponsesPrograms(cipher, history, config, access, &programs);
-    if (!result.ok()) return result;
-  }
-  status = ValidateResponsesPreparation(*envelope, history, config,
-                                        &effective_tools, &error);
-  if (!status) return Invalid(status, error);
-  if (HasFileInputs(history)) {
-    FileExpansion files(&objects, config.file_inputs ? *config.file_inputs
-                                                     : FileExpansionOptions{});
-    result = files.Prepare(history, FileInputProfile::kResponsesStored,
-                           resolved.input_snapshots,
-                           {access.scope, access.deadline, access.cancelled});
-    if (!result.ok()) return result;
-    if (files.PendingSheets()) {
-      if (!prepare)
-        return Error(503, "file_preparation_unavailable",
-                     "Input count requires native sheet preparation");
-      result = prepare(files);
-      if (!result.ok()) return result;
-      if (files.PendingSheets())
-        return Error(503, "file_preparation_incomplete",
-                     "Input count preparation did not complete");
+  ResponsesExecution execution(objects, cleanup, require_cleanup);
+  ScopeExit close([&] {
+    try {
+      execution.CloseUnfinished();
+    } catch (...) {
+      // Its cleanup owner retains tracked resources across storage failures.
     }
-    active = CheckResponsesTokenCountActive(access);
-    if (!active.ok()) return active;
-    Json expanded;
-    result = files.Render(history, &expanded);
-    if (!result.ok()) return result;
-    history = std::move(expanded);
-    if (file_usage) *file_usage = files.Usage();
-  }
-  status = PrepareResponsesGeneration(*envelope, history, config, generation,
-                                      &error);
-  if (!status) return Invalid(status, error);
+  });
+  auto result =
+      execution.Prepare(normalized, config, access, std::time(nullptr));
+  if (!result.ok() || result.commit_unknown) return result;
+  if (preparation_output_budget)
+    *preparation_output_budget = execution.FileOutputBudget();
+  result = execution.PrepareInputSheets(config, prepare);
+  if (!result.ok() || result.commit_unknown) return result;
+  if (file_usage) *file_usage = *execution.FileUsage();
+  *envelope = execution.Envelope();
+  *generation = execution.Generation();
   return CheckResponsesTokenCountActive(access);
 }
 

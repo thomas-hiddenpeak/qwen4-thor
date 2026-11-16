@@ -1,0 +1,51 @@
+{
+  "scope": "Isolated MCP transport component: native HTTP/SSE/legacy, session/version/pagination and callback-gated single dispatch. No public MCP capability enabled. Existing file fetch TLS/DNS reused, framing target tests passed. No model algorithm or default changed.",
+  "sources": {
+    "src/server/file_fetch_http.cpp": {
+      "before": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
+      "after": "1afe6181ab41b60d74f28f3f6107d9d5390729a0f260d1d788d25578aee04275"
+    },
+    "include/q4t/server/mcp_transport.h": {
+      "before": null,
+      "after": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "485ac7ba70b7b1b9494ee3fff7d24c5185cf5d34f570b7146d08ec541d547f72",
+      "after": "d70e26b0d6bde97a7edc70f62fd187d1ecb91dffa7ff57c6881face34babcb3c"
+    },
+    "include/q4t/server/grammar_process.h": {
+      "before": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
+      "after": "1ea1a1d82e6ec28770d8ed698eb37db842f8ad941033d1eb96ded07bdf5fd662"
+    },
+    "src/server/grammar_process.cpp": {
+      "before": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
+      "after": "942a028e2047811e06e9e66a68e7a8b5e13b5285e24f78a999a19ec9cd13e41f"
+    },
+    "src/server/mcp_transport.cpp": {
+      "before": null,
+      "after": "c3b96421351cdb1a8921181617f6bdb7b85e39423e9a71b73e9baf1575efdc8c"
+    },
+    "src/server/remote_http_internal.h": {
+      "before": null,
+      "after": "2ff012c16ed2a2760875e27c4b54073e8b62662ad222d9d45b4e6d80bef2bba0"
+    },
+    "CMakeLists.txt": {
+      "before": "696f0d2392346a1053d0c8147bfbe43a5f9fe24a5be1c2dec2675f4e1b2679b2",
+      "after": "3eefae2a550735187c19d48fcdf823b975f632b5bb3de85a1b3f8ddae5efc64a"
+    },
+    "src/server/mcp_transport_internal.h": {
+      "before": null,
+      "after": "6d63aab1cee095f7b8f8080009ff6e9ae81222fe3d1606317dc0fff8122e343a"
+    },
+    "src/main.cpp": {
+      "before": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56",
+      "after": "4fedd2d3124340bee9a0736023ec0fbed385552de0e8100a616d14015ffb224d"
+    },
+    "src/server/mcp_http.cpp": {
+      "before": null,
+      "after": "9b8e9b1815732f07c30633da9307b10229034eb039d9cd0616f45f15c620c58c"
+    }
+  },
+  "evidence": "docs/evidence/serve-mcp-transport-cpu-20261115/README.md",
+  "public_integration_required": true
+}

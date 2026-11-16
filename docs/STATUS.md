@@ -1,4 +1,4 @@
-# 当前状态（2026-11-15）
+# 当前状态（2026-11-16）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -9,24 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev126；服务包 `6155cb97ecf3a37a03ceaaa80785bd0ded35313dafd34a1d7fbeeed634f5c54a` |
-| Generation | `813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0` |
-| 引擎 | `d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080` |
-| 引擎发布记录 | `5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a` |
+| 发布 | rev134；服务包 `437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577` |
+| Generation | `b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f` |
+| 引擎 | `a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885` |
+| 引擎发布记录 | `f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
+| 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2 |
-| 版本回退 | 已验旧控制/当前引擎包 `5251373be1781e6ecf6e3bb75995ff6c3622e7406c73e1ab68437f832b7cf17f`；保持新工具能力 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；宿主集成、TLS/CORS等可选配置 |
+| 版本回退 | 已验旧控制/当前引擎包 `52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e`；保持新MCP能力 |
+| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；MCP数据源、私网目标/凭据与TLS/CORS等按部署显式配置 |
 
-[程序调用发行与回退记录](evidence/serve-programmatic-delivery-20261115/README.md)
-包含17项STOPPED交付检查，0新增GPU。原生程序调用、认证续接、
-原工具schema、caller与JSON/SSE实际闭环已通过；首次入场前配额
-缺陷已修复并完成整树恢复中的最终回答。主轻及精确回退包均已验。
+[MCP发行与回退记录](evidence/serve-mcp-delivery-20261116/README.md)包含
+17项STOPPED交付检查，54.136秒，0新增GPU。实际MCP的审批/拒绝、
+原生隧道SSE、资料与资源读取、未知不重放、同PID普通推理已验；
+主轻资格和共享程序/存储/配额的整树恢复分别有精确包证据。
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
-保留前驱。旧默认程序和状态备份保留；自动版本恢复保留现代根，
-人工整根回退到v12入口没有outer。PR27待最终检查和实际合main，
-未宣称长稳或完整OpenAI兼容，全部master继续。
+保留前驱；旧默认程序和状态备份保留。自动版本恢复保留现代根，
+人工整根回退到v12入口没有outer；不是独立旧引擎回退。
+本次代码待最终检查和实际合main；提供方原生适配、完整客户端矩阵、
+其他协议及可靠性组合继续，未宣称完整OpenAI兼容或长稳通过。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
@@ -35,9 +37,202 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 异步实现已实际合main（PR25，`4e87a03f`），
 [合并回执](evidence/serve-pr25-merged-20261113/README.md)保留。前驱rev118的
 工具发现已发行并实际合main（PR26，`090f0d48`），
-[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付，PR27待合main，全部master继续。
+[合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+以下保留各阶段发生时的默认身份；当前已交付身份以上表为准。
+
+[MCP能力包的受控恢复](evidence/serve-mcp-managed-20261116/README.md)
+已通过：回退包1启动2业务，整树切换2启动4业务1探测；Guardian保留、
+控制器/模型/入口换代，原程序/调用/schema/存储与预算保持，实际资料
+只读1次并SSE续答。MCP远端业务与会话CPU证据分别绑定，未混称为
+同一端到端故障场景。累计6启动22请求（含2embedding）1探测，全部
+清理；主包437e477c、回退52c399d7待STOPPED发行，rev126仍保持。
+
+[MCP恢复合同与主轻资格](evidence/serve-mcp-recovery-contract-20261116/README.md)
+已通过：同一引擎主/轻2启动8业务、88.606秒；随后修复MCP能力迁移
+和自动回退私有策略保持，7项CPU首过、来源负控最终通过。4个helper
+零警告构建，3个字节不变；引擎和编译来源不变，业务资格明确复用。
+当前累计3启动/16业务；继续封包与受控恢复短验，rev126保持。
+
+[MCP真实模型与SDK业务](evidence/serve-mcp-business-20261116/README.md)
+已通过：1启动/8创建/89.225秒，直接HTTPS审批/拒绝、原生隧道SSE、
+实际资料与资源读取、未知结果不重放及同PID普通推理；84次NVML正常。
+本机进程/端口/锁已清理，现代持久会话按续接合同保留。首次入口缺少
+继承租约参数在0启动/0请求时失败，原件保留；随机凭据和私钥不公开。
+默认rev126保持，继续精确主轻资格、恢复发行/main及全部33项master。
+[驱动CPU证据](evidence/serve-mcp-business-driver-cpu-20261116/README.md)复用。
+
+- [隧道公开合同与可选前置22项CPU最终通过](evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md)：
+  三条OpenAPI/schema、两种可选nginx的TLS/受保护头与独立准入已接通；
+  修复存储Chat文件消息引用缺口。首次失败保留，来源7项过，复用未变
+  C++构建；0GPU、rev126保持。继续SDK/真实业务、提供方、恢复发行及全部master。
+
+- [自有agent 32项CPU及4项实际CLI最终通过](evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md)：
+  固定私网HTTP/SSE、真实broker往返、TLS入口/资料、会话清理及
+  35秒监护/重启预算已验证。鉴权终态与unknown传递缺口已修复；
+  实际CUDA映射超过512MiB，MCP/agent改为既有1GiB虚拟上限。
+  首次失败保留，最终主机/引擎零警告、来源7项过；0GPU、rev126
+  保持。继续提供方/SDK/业务/恢复发行/main，完整隧道与master未完成。
+
+
+- [原生隧道隔离传输38项CPU最终通过](evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md)：
+  原权限/加密会话/实例亲和、审批/资源/程序调用、已知终态和清理
+  已接线；头转换和会话schema遗漏已修复，首次失败保留。来源7项、
+  主机/完整引擎零警告，0GPU、rev126保持；继续自有agent真实HTTP/
+  SSE、SDK/业务及恢复发行，完整隧道与全部master尚未完成。
+
+- [原生隧道接入26项CPU、5项入口/封包首过](evidence/serve-mcp-tunnel-api-cpu-20261116/README.md)：
+  native配置/私有绑定、受保护头、真实TLS和独立poll/response容量
+  已验证；来源7项及主机/完整引擎/ingress零警告，0GPU、rev126保持。
+  继续隔离MCP传输与agent接线及完整交付，不能把入口当完整隧道。
+
+- [原生隧道broker 16项CPU通过](evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md)：
+  单次取走、精确实例/token/作用域、未知不重放、进度/终态与容量
+  已验证；7项来源负控、主机/完整引擎零警告通过。映射远端CI成功，
+  0GPU、rev126保持；继续HTTP/实际MCP/私网agent接线与完整交付。
+
+- [MCP部署映射29项CPU最终通过](evidence/serve-mcp-mapping-cpu-20261116/README.md)：
+  独立网络/作用域、原审批/资源目标、离线冻结及程序/Batch实际HTTP
+  已验证；执行策略快照遗漏已修复，首次3项失败保留。8项原生
+  策略/封包、7项来源负控及完整引擎零警告通过，0GPU、rev126保持。
+  继续原生隧道/提供方适配及完整业务交付，不能把映射当完整隧道。
+
+- [MCP会话实际执行41项CPU最终通过](evidence/serve-mcp-sessions-execution-cpu-20261116/README.md)：
+  加密目录、原调用/资源绑定、审批/冻结重启、凭据更新与资源失能
+  持久化已验证；首次2项夹具失败保留并修复。绝对期限阻止慢发布/
+  许可后派发；7项来源负控及完整引擎零警告，传输远端CI通过。
+  0GPU、rev126保持；继续映射、SDK/真实业务/恢复发行及全部master。
+
+- [原生会话传输30项CPU首过](evidence/serve-mcp-sessions-transport-cpu-20261116/README.md)：
+  有状态列表/调用/资源、现代恢复、旧SSE连续、隔离与过期通过；
+  7项来源负控和完整引擎零警告，0GPU、rev126保持。计数远端CI
+  的四项事务恢复失败已定位并针对性补验通过，失败保留；继续
+  加密目录/调用接线及完整MCP与全部master交付。
+
+- [计数统一26项CPU首过](evidence/serve-mcp-count-cpu-20261116/README.md)：
+  MCP图像与生成输入一致、多份CSV精确额度及冻结复用、新目录
+  只读元数据和全部计数直接合同通过；主机/完整引擎零警告，
+  7项来源负控通过。0GPU、rev126保持；继续会话/映射与全部交付。
+
+- [MCP实际媒体执行20项CPU最终通过](evidence/serve-mcp-media-execution-cpu-20261116/README.md)：
+  实际HTTP图像/文档/资源、冻结续接、共享预算、晚到sheet原配额
+  和历史资源清理责任已接线；首次媒体夹具配置失败保留，补单项
+  通过。主机/完整引擎零警告、7项来源负控通过、0GPU、默认保持。
+  继续计数统一、会话/映射与实际模型/恢复发行，master active。
+
+- [MCP共享媒体准备14项CPU首过](evidence/serve-mcp-shared-media-cpu-20261116/README.md)：
+  图像/文档进入模型和审核类型，跨调用预算、CSV持久准备/重启
+  续接与截断已验证；主机/完整引擎零警告，7项来源负控最终通过。
+  0GPU、rev126保持；继续实际执行器/计数及晚到sheet模型入场。
+
+- [MCP模型媒体投影12项CPU首过](evidence/serve-mcp-projection-cpu-20261116/README.md)：
+  真实图片/文件准备、持久来源绑定、重启无codec回放及依赖回收
+  通过；主机/完整引擎零警告、7项来源负控通过。0GPU，rev126
+  保持，762ab1aa远端CI通过；继续实际执行/审核/计数/共享预算及交付。
+
+- [MCP资源冻结16项CPU首过](evidence/serve-mcp-resource-freeze-cpu-20261116/README.md)：
+  原调用/目标/权限绑定、单次读取、重启冻结、精确拥有者和共享
+  容量已验证；为在途失败预留收尾空间。主机/完整引擎零警告，
+  0GPU、默认保持，继续模型媒体准备和全部交付。
+
+
+- [MCP原生内容与资源读取26项CPU最终通过](evidence/serve-mcp-content-cpu-20261116/README.md)：
+  五类内容、资源许可/已知与未知结果、原生错误结构化数据恢复和
+  JSON/SSE发布已接线，官方SDK新增1项通过。主机/完整引擎零警告，
+  043e5786远端CI全部通过；0GPU、rev126保持。模型媒体准备/资源冻结等继续。
+
+
+- [程序/MCP媒体边界复核8项CPU首过](evidence/serve-mcp-program-boundary-cpu-20261116/README.md)：
+  恢复公开批次的媒体校验边界，文件准备仅映射客户端子调用，避免
+  空call_id触及MCP私有结果；完整引擎零警告、0GPU、rev126保持。
+  继续MCP媒体/资源、会话/映射及完整业务发行，master保持active。
+
+- [MCP程序子调用49项CPU最终通过](evidence/serve-mcp-program-cpu-20261116/README.md)：
+  原生派发、审批续接、混合工具因果顺序、原schema/权限、计数和冻结
+  恢复已验证；主机/完整引擎零警告、0GPU、rev126保持。继续媒体、
+  会话/映射、完整SDK及真实业务、恢复发行与主线，master保持active。
+
+- [CI正常恢复期限修正](evidence/serve-ci-recovery-deadline-20261116/README.md)：
+  277257f6远端4项失败保留；100/250ms只用于故障注入，正常恢复
+  保持生产默认期限，4项本机补验通过。继续后续head远端CI确认。
+
+- [MCP存储故障清理续办18项CPU通过](evidence/serve-mcp-cleanup-cpu-20261116/README.md)：
+  派发前登记有界元数据，stateless收尾失败继续保留责任；已确认
+  进程存活/存储恢复阻塞时普通请求继续，恢复后收尾不重放。主机/
+  完整引擎零警告、0GPU、rev126保持；继续程序/媒体/会话/映射及交付。
+
+- [MCP拥有者恢复21项CPU首过](evidence/serve-mcp-recovery-cpu-20261116/README.md)：
+  真实进程退出、精确请求清理、未知不重放、已知结果保留和异常续接
+  已验证。主机/完整引擎零警告、0GPU、rev126保持；继续存储短暂
+  失能后的清理续办及程序/媒体/会话/映射、业务与发行，master active。
+
+- [MCP与Prompt组合11项CPU首过](evidence/serve-mcp-prompt-cpu-20261116/README.md)：
+  登记不联网/不授予调用，执行时校验认证目录；当次凭据、冻结版本、
+  Batch来源及延迟发现已覆盖。主机零警告、0GPU、rev126保持；继续
+  失去拥有者后的调用收尾、程序/媒体等及真实业务发行，总目标active。
+
+- [MCP发现/权限及开放schema23项CPU最终通过](evidence/serve-mcp-discovery-cpu-20261116/README.md)：
+  延迟目录实际激活、客户端新定义、权限刷新及故障后续请求恢复；
+  修复strict混合工具错误封闭MCP参数，原schema由独立worker校验
+  并绑定回执。完整引擎零警告、0GPU、rev126保持，其他组合继续。
+
+- [MCP Batch来源鉴权12项CPU最终通过](evidence/serve-mcp-batch-cpu-20261115/README.md)：
+  原始File行与准备身份绑定、重启后计数/真实本地派发、凭据隔离及
+  缺凭据不联网已验证；完整引擎零警告构建、0GPU、rev126保持。
+  继续目录权限/发现/程序/媒体/恢复等组合及真实业务和发行。
+
+- [向量任务CI夹具期限修正](evidence/serve-ci-vector-deadline-20261115/README.md)：
+  正常IO恢复生产默认期限，4处故障注入保留100ms；6项相关CPU首过，
+  生产/default未变、0GPU。旧head的4项失败保留，继续最新head检查
+  及MCP组合实现，总目标仍active。
+
+- [MCP实际执行拥有者22项CPU首过](evidence/serve-mcp-execution-cpu-20261115/README.md)：
+  本地HTTP调用、审批/续接/不重放、冻结目录与凭据隔离、故障后文本
+  续答和审核组合已验证；7项来源负控通过、0GPU、rev126保持。
+  Batch/程序/媒体/恢复等组合及SDK/真实模型业务继续，尚未发行MCP。
+
+- [MCP请求规划与历史组合19项CPU最终通过](evidence/serve-mcp-planning-cpu-20261115/README.md)：
+  工具发现按server_label、原schema/选择、审批/失败历史及截断/压缩
+  依赖已接线；首次两项夹具失败保留，修后仅补2项。7项来源负控
+  通过、0GPU、rev126保持；继续拥有者凭据/持久准备和实际执行。
+
+- [MCP模型绑定及认证历史13项CPU首过](evidence/serve-mcp-binding-history-cpu-20261115/README.md)：
+  原schema、标准可选字段、调用ID续接及原子审批索引已验证；7项
+  来源负控通过、零警告，0GPU、rev126保持。继续实际公开执行链
+  和全部master，尚未交付MCP接口。
+
+- [MCP输出与派发拥有者16项CPU、2项SDK最终通过](evidence/serve-mcp-output-owner-cpu-20261115/README.md)：
+  参数逐片事件、截断/取消形状与并发失败不覆盖在途结果已验证。
+  公开执行/历史和组合仍在接线，尚无MCP对外交付；0GPU、rev126
+  保持，继续全部master。
+
+- MCP公开输出部件10项CPU及2项官方SDK最终通过；继续接实际
+  Responses执行器。并发复核补充派发身份，防重复请求失败覆盖
+  在途结果，正在验证直接受影响项；0GPU、rev126保持。
+
+- [MCP目录与持久审批20项针对性CPU最终通过](evidence/serve-mcp-authority-cpu-20261115/README.md)：
+  单次派发、未知不重放、原schema及凭据不存储验证通过；首次清理
+  夹具失败保留，修后单项通过。0GPU、rev126保持；继续公开MCP
+  items/SSE与状态/程序/真实业务，全部master仍active。
+
+- MCP目录/凭据/过滤7项及受影响传输头1项CPU首过；正在接认证
+  目录、审批和单次派发的持久状态，尚未开放MCP对外能力。0GPU、
+  rev126保持，真实业务与全部master继续。
+
+- PR27精确head `9e0a4b44` 的两组CI全部通过，已[实际合main](evidence/serve-pr27-merged-20261115/README.md)
+  （`1f0ed01a`）。程序调用rev126已交付；MCP仍在后续开发中，
+  继续审批/公开接线及全部剩余master任务。
+
+- [原生MCP传输部件21项针对性CPU最终通过](evidence/serve-mcp-transport-cpu-20261115/README.md)：
+  JSON/SSE/旧传输、单次派发/取消、未回收隔离及HTTPS真实资料读取；
+  7项来源负控通过。0GPU、rev126保持；审批/公开接线和业务发行
+  继续，不能把传输部件通过当作MCP完整交付。
+
+- [原生MCP实施清单](SERVE_MCP_2026-11-15.md)已固定，正在开发传输、
+  审批和实际执行；默认rev126保持。PR27最终head检查进行中，
+  全部33项继续，MCP未接线/未验收前不宣称交付。
 
 - 原生程序调用已[可回退发行rev126](evidence/serve-programmatic-delivery-20261115/README.md)：
   17项STOPPED检查全过，实际回退再前进，密钥/配额/core/outer及

@@ -1,0 +1,15 @@
+{
+  "include/q4t/server/responses_execution.h": "a3ee42963f8a73ef4631800e52645cdba88a6cadf162acf1411e56652292ce7c",
+  "include/q4t/server/schema_graph.h": "12fb818aab31a3a02f1d5bc67b4b1e3692f68f6b8e9ef71a2234fd6896884229",
+  "src/server/chat_generation.cpp": "b06ecd0d9b47252f87d03db8a859537393223ef25134bcb618ce7ee1d839b212",
+  "src/server/custom_grammar.cpp": "6ce06340c9b7348533118c8661210d99623c334b5ff6e70b466574d32f5e2dab",
+  "src/server/output_constraints.cpp": "27f79f55134b574fd041e43d8e77c8d6314723febc7eb0e2ef746421057c229b",
+  "src/server/responses_file_search_execution.cpp": "befb07c310f5e4e247c8e036ccd10382bac57b76783637a85f7ba5a3b8685168",
+  "src/server/responses_mcp_preparation.cpp": "7e4e232711f3e424b7e4f34ed7957df3e351ff804ebc16383d060d61a812419f",
+  "src/server/responses_tool_search_execution.cpp": "a2bbce47d6b2b1d764bd7f036a0c892af38e8d17e183ed40bf413d577f01d2f0",
+  "src/server/schema_graph.cpp": "2f05428a190011fe020ee4d38a0918c9b49e4c13bdd312e4210858e1ae3c3bc0",
+  "src/server/schema_token_guard.cpp": "a08e932fe0d67acc7d18427b15f15a5417bddc10295ced2a3a3f92d385295e2f",
+  "tests/server_mcp_transport_test.cpp": "4b56a0af72c8f9b13ec76a50da67663d5c7b761cad82b4eec8f940b8d128d55c",
+  "tests/server_output_constraints_test.cpp": "8fa0120b02448fe0490e817c0885a6d0fabaaa052bb83f27cde5574fc382905d",
+  "tests/server_schema_token_guard_test.cpp": "ae046cc697d21337b1d55ecdc280e5f04591fe8733b43db3548e07a5c36aab39"
+}

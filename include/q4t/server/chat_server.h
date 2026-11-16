@@ -58,6 +58,7 @@
 #include "q4t/server/device_memory.h"
 #include "q4t/server/grammar_process.h"
 #include "q4t/server/object_store.h"
+#include "q4t/server/mcp_tunnel.h"
 #include "q4t/server/responses_jobs.h"
 #include "q4t/server/batch_execution.h"
 #include "q4t/server/batch_jobs.h"
@@ -260,6 +261,9 @@ class ChatServer {
   std::unique_ptr<ObjectStore> objects_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::string file_input_policy_sha256_;
+  std::shared_ptr<const McpDeploymentPolicy> mcp_policy_;
+  std::shared_ptr<McpTunnelBroker> mcp_tunnels_;
+  bool mcp_tunnels_enabled_ = false;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;
   ResponsesJobsOptions background_options_;
   BatchJobsOptions batch_options_;
@@ -407,6 +411,7 @@ class ChatServer {
   // unbounded threads. Excess connections are refused (503) to shed load.
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
+  HttpBodyBudget tunnel_body_budget_{17U << 20};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};
@@ -414,6 +419,7 @@ class ChatServer {
   std::atomic<int> operations_observation_conns_{0};
   std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
+  std::atomic<int> tunnel_poll_conns_{0}, tunnel_response_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};
   static constexpr int kControlConnections = kReservedControlConnections;

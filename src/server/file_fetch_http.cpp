@@ -1,4 +1,5 @@
 #include "file_fetch_internal.h"
+#include "remote_http_internal.h"
 
 #include <dlfcn.h>
 #include <fcntl.h>
@@ -258,6 +259,7 @@ class Reader {
  public:
   Reader(Stream& stream, Deadline deadline)
       : stream_(stream), deadline_(deadline) {}
+  void SetDeadline(Deadline deadline) { deadline_ = deadline; }
   bool Line(std::string* line, size_t limit = 8192) {
     line->clear();
     for (;;) {
@@ -294,6 +296,17 @@ class Reader {
     }
   }
   bool capacity = false;
+  bool Some(size_t limit, std::string* output, bool* eof) {
+    *eof = false;
+    if (begin_ == end_ && !Fill()) {
+      *eof = eof_;
+      return eof_;
+    }
+    const auto count = std::min(limit, end_ - begin_);
+    output->append(buffer_.data() + begin_, count);
+    begin_ += count;
+    return true;
+  }
 
  private:
   bool Fill() {
@@ -314,6 +327,7 @@ struct Headers {
   bool chunked = false;
   std::optional<uint64_t> bytes;
   std::string location, mime;
+  RemoteHeaders fields;
 };
 bool ReadHeaders(Reader& reader, Headers* headers) {
   std::string line;
@@ -337,7 +351,9 @@ bool ReadHeaders(Reader& reader, Headers* headers) {
     if (line.empty()) {
       if (headers->chunked && headers->bytes) return false;
       for (const auto& name : connection)
-        if (http::Protected(name) || name == "location") return false;
+        if (http::Protected(name) || name == "location" ||
+            name.starts_with("mcp-"))
+          return false;
       return true;
     }
     std::string name;
@@ -345,9 +361,10 @@ bool ReadHeaders(Reader& reader, Headers* headers) {
     if (!http::Field(line, &name, &value)) return false;
     if (name == "content-length" || name == "transfer-encoding" ||
         name == "content-type" || name == "content-encoding" ||
-        name == "location") {
+        name == "location" || name.starts_with("mcp-")) {
       if (!singleton.insert(name).second) return false;
     }
+    headers->fields.emplace(name, value);
     if (name == "content-length") {
       uint64_t bytes = 0;
       const auto number =
@@ -419,6 +436,200 @@ ObjectReply Body(Reader& reader, const Headers& headers, uint64_t limit,
   return {};
 }
 }  // namespace
+
+struct RemoteHttp::Impl {
+  explicit Impl(Deadline deadline) : reader(stream, deadline) {}
+  Stream stream;
+  Reader reader;
+  Headers headers;
+  uint64_t limit = 0, received = 0, remaining = 0, control = 0;
+  bool finished = false, chunk_end = false;
+  std::optional<std::string> buffered;
+};
+RemoteHttp::RemoteHttp(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
+RemoteHttp::~RemoteHttp() = default;
+
+ObjectReply RemoteHttp::Buffered(int status, const RemoteHeaders& headers,
+                                 std::string body,
+                                 std::unique_ptr<RemoteHttp>* output) {
+  if (!output) return Error(500, "remote_http_state", "Missing output");
+  output->reset();
+  if (status < 200 || status > 599 || body.size() > (6U << 20))
+    return Error(502, "remote_http_response", "Invalid buffered response");
+  auto impl = std::make_unique<Impl>(Deadline::max());
+  impl->headers.status = status;
+  size_t size = 0;
+  for (const auto& [key, value] : headers) {
+    std::string name;
+    std::string_view parsed;
+    const auto line = key + ": " + value;
+    size += line.size();
+    if (size > 32768 || !http::Field(line, &name, &parsed) ||
+        impl->headers.fields.contains(name))
+      return Error(502, "remote_http_headers", "Invalid buffered headers");
+    impl->headers.fields.emplace(name, value);
+    if (name == "content-type") {
+      const auto semicolon = parsed.find(';');
+      impl->headers.mime = http::Lower(http::Trim(parsed.substr(0, semicolon)));
+    }
+  }
+  impl->buffered = std::move(body);
+  impl->finished = impl->buffered->empty();
+  *output = std::unique_ptr<RemoteHttp>(new RemoteHttp(std::move(impl)));
+  return {};
+}
+
+ObjectReply RemoteHttp::Open(const Url& url, const FileFetchOptions& options,
+                             std::string_view method,
+                             const RemoteHeaders& headers,
+                             std::string_view body, uint64_t max_bytes,
+                             Deadline deadline,
+                             std::unique_ptr<RemoteHttp>* output,
+                             uint64_t max_request_bytes) {
+  if (!output) return Error(500, "remote_http_state", "Missing output");
+  output->reset();
+  if ((method != "POST" && method != "GET" && method != "DELETE") ||
+      ((method == "GET" || method == "DELETE") && !body.empty()) ||
+      max_request_bytes > (4U << 20) || body.size() > max_request_bytes ||
+      max_bytes > (16U << 20) || !ValidOptions(options))
+    return Error(400, "remote_http_request", "Invalid HTTP exchange");
+  std::string request = std::string(method) + " " + url.target +
+                        " HTTP/1.1\r\nHost: " + url.authority +
+                        "\r\nUser-Agent: q4t-native-tools/1\r\n"
+                        "Accept-Encoding: identity\r\nConnection: close\r\n";
+  std::set<std::string> names;
+  for (const auto& [key, value] : headers) {
+    std::string name;
+    std::string_view parsed;
+    const std::string line = key + ": " + value;
+    if (!http::Field(line, &name, &parsed) || name != http::Lower(key) ||
+        !names.insert(name).second || name == "host" ||
+        name == "content-length" || name == "transfer-encoding" ||
+        name == "trailer" || name == "connection" || name == "expect" ||
+        name == "upgrade" || name == "accept-encoding" ||
+        name == "proxy-authorization" || name == "proxy-connection" ||
+        name == "user-agent" || request.size() + line.size() > 32768)
+      return Error(400, "remote_http_headers", "Invalid HTTP headers");
+    request += line + "\r\n";
+  }
+  if (method == "POST")
+    request += "Content-Length: " + std::to_string(body.size()) + "\r\n";
+  request += "\r\n";
+  auto impl = std::make_unique<Impl>(deadline);
+  auto reply = Connect(url, options, deadline, &impl->stream);
+  if (!reply.ok()) return reply;
+  // A write can succeed remotely even if its reply is lost. No replay here.
+  if (!impl->stream.Write(request, deadline) ||
+      !impl->stream.Write(body, deadline))
+    return Failure();
+  int information = 0;
+  for (;;) {
+    if (!ReadHeaders(impl->reader, &impl->headers))
+      return Failure("file_fetch_framing_invalid");
+    if (impl->headers.status >= 200) break;
+    if (impl->headers.status == 101 || ++information > 4 ||
+        impl->headers.bytes || impl->headers.chunked)
+      return Failure("file_fetch_framing_invalid");
+    impl->headers = {};
+  }
+  impl->limit = max_bytes;
+  if (impl->headers.status == 204 || impl->headers.status == 304) {
+    if (impl->headers.chunked || impl->headers.bytes.value_or(0))
+      return Failure("file_fetch_framing_invalid");
+    impl->finished = true;
+  } else if (impl->headers.bytes) {
+    if (*impl->headers.bytes > max_bytes)
+      return Error(413, "remote_http_capacity", "Remote response too large");
+    impl->remaining = *impl->headers.bytes;
+    impl->finished = !impl->remaining;
+  }
+  *output = std::unique_ptr<RemoteHttp>(new RemoteHttp(std::move(impl)));
+  return {};
+}
+int RemoteHttp::Status() const { return impl_->headers.status; }
+std::string_view RemoteHttp::Mime() const { return impl_->headers.mime; }
+std::string_view RemoteHttp::Header(std::string_view name) const {
+  const auto found = impl_->headers.fields.find(http::Lower(name));
+  return found == impl_->headers.fields.end() ? std::string_view{}
+                                             : found->second;
+}
+bool RemoteHttp::HasHeader(std::string_view name) const {
+  return impl_->headers.fields.contains(http::Lower(name));
+}
+void RemoteHttp::BeginRead(Deadline deadline) {
+  impl_->reader.SetDeadline(deadline);
+  impl_->received = impl_->control = 0;
+}
+ObjectReply RemoteHttp::Read(std::string* bytes, bool* eof) {
+  if (!bytes || !eof) return Error(500, "remote_http_state", "Missing output");
+  bytes->clear();
+  auto& s = *impl_;
+  *eof = s.finished;
+  if (*eof) return {};
+  if (s.buffered) {
+    *bytes = s.buffered->substr(s.received, 16384);
+    s.received += bytes->size();
+    s.finished = s.received == s.buffered->size();
+    return {};
+  }
+  auto invalid = [] { return Failure("file_fetch_framing_invalid"); };
+  auto capacity = [] {
+    return Error(413, "remote_http_capacity", "Remote response too large");
+  };
+  if (s.headers.chunked && !s.remaining) {
+    std::string line;
+    if (s.chunk_end && (!s.reader.Line(&line, 2) || !line.empty()))
+      return invalid();
+    size_t chunk = 0;
+    if (!s.reader.Line(&line) || !http::ChunkSize(line, &chunk)) return invalid();
+    s.control += line.size() + 4;
+    if (s.control > (2U << 20)) return capacity();
+    if (chunk > s.limit - s.received) return capacity();
+    s.remaining = chunk;
+    s.chunk_end = true;
+    if (!chunk) {
+      size_t trailer = 0;
+      for (;;) {
+        if (!s.reader.Line(&line)) return invalid();
+        trailer += line.size() + 2;
+        if (trailer > 32768) return capacity();
+        if (line.empty()) break;
+        std::string name;
+        std::string_view value;
+        if (!http::Field(line, &name, &value) || http::Protected(name) ||
+            name == "location" || name.starts_with("mcp-"))
+          return invalid();
+      }
+      s.finished = *eof = true;
+      return {};
+    }
+  }
+  const bool framed = s.headers.chunked || s.headers.bytes.has_value();
+  const size_t count = framed ? std::min<uint64_t>(s.remaining, 16384) : 16384;
+  bool ended = false;
+  if (!s.reader.Some(count, bytes, &ended) ||
+      (ended && framed && s.remaining))
+    return Failure("file_fetch_truncated");
+  if (bytes->size() > s.limit - s.received) return capacity();
+  s.received += bytes->size();
+  if (framed) s.remaining -= bytes->size();
+  s.finished = ended || (s.headers.bytes && !s.remaining);
+  // Return the final bytes first; EOF is visible on the next read.
+  *eof = ended;
+  return {};
+}
+ObjectReply RemoteHttp::ReadAll(std::string* bytes) {
+  if (!bytes) return Error(500, "remote_http_state", "Missing output");
+  bytes->clear();
+  bool eof = false;
+  while (!eof) {
+    std::string chunk;
+    auto reply = Read(&chunk, &eof);
+    if (!reply.ok()) return reply;
+    *bytes += chunk;
+  }
+  return {};
+}
 
 ObjectReply Fetch(const Url& original, const FileFetchOptions& options,
                   uint64_t max_bytes, Deadline deadline,

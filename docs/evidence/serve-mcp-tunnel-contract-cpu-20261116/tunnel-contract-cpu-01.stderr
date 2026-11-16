@@ -1,0 +1,115 @@
+test_duplicate_and_connection_nominated_tokens_rejected_before_forwarding (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_duplicate_and_connection_nominated_tokens_rejected_before_forwarding) ... ok
+test_poll_and_response_capacity_do_not_depend_on_generation_or_each_other (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_poll_and_response_capacity_do_not_depend_on_generation_or_each_other) ... ok
+test_single_opaque_comma_is_preserved_and_invalid_headers_never_forward (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_single_opaque_comma_is_preserved_and_invalid_headers_never_forward) ... ok
+test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire) ... ERROR
+test_tls_tunnel_token_and_body_forwarding (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tls_tunnel_token_and_body_forwarding) ... FAIL
+test_tunnel_routes_auth_preserve_original_wire_headers (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tunnel_routes_auth_preserve_original_wire_headers) ... ok
+test_generated_contract_and_complete_routes (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_generated_contract_and_complete_routes) ... ok
+test_invalid_types_tokens_and_misleading_terminal_rejected (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_invalid_types_tokens_and_misleading_terminal_rejected) ... ok
+test_valid_commands_and_terminal_variants (tools.serve_responses.test_mcp_tunnel_contract.TunnelContract.test_valid_commands_and_terminal_variants) ... ok
+test_openapi_refs_routes_and_explicit_semantic_boundaries (tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries) ... ERROR
+test_protocol_contract_has_separate_bounded_capacity (tools.serve_gateway.test_gateway.GatewayTests.test_protocol_contract_has_separate_bounded_capacity) ... ok
+test_real_nginx_parse_and_private_package_verification (tools.serve_gateway.test_gateway.GatewayTests.test_real_nginx_parse_and_private_package_verification) ... ok
+
+======================================================================
+ERROR: test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_contract.py", line 129, in test_standalone_private_package_tls_wire
+    prepared = gateway.prepare(directory/'policy.json', fixture.NGINX,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 614, in prepare
+    material = certificate_check(output/'certificate.pem', output/'private-key.pem',
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 582, in certificate_check
+    return tls.inspect(certificate, key, hostname, trusted_ca=trusted_ca)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 131, in inspect
+    require(matched.decode().strip()==f'Hostname {hostname} does match certificate','gateway_tls_hostname_invalid')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 25, in require
+    if not value:raise Invalid(code)
+                 ^^^^^^^^^^^^^^^^^^^
+tools.serve_gateway.tls.Invalid: gateway_tls_hostname_invalid
+
+======================================================================
+ERROR: test_openapi_refs_routes_and_explicit_semantic_boundaries (tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 100, in test_openapi_refs_routes_and_explicit_semantic_boundaries
+    for name, value in documents.items(): check(value, name)
+                                          ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 2 more times]
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 92, in check
+    file, _, pointer = value["$ref"].partition("#")
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'partition'
+
+======================================================================
+FAIL: test_tls_tunnel_token_and_body_forwarding (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tls_tunnel_token_and_body_forwarding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_ingress.py", line 114, in test_tls_tunnel_token_and_body_forwarding
+    self.ready()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_gateway_nginx.py", line 489, in ready
+    self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_gateway_nginx.py", line 343, in wait
+    raise AssertionError('gateway worker exited: '+
+AssertionError: gateway worker exited: Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/gateway.py", line 441, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/gateway.py", line 437, in main
+    run(config, control.GatewayChannel())
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/gateway.py", line 354, in run
+    gateway_config.validate(config)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/gateway_config.py", line 64, in validate
+    ledger.keys(tls, ('certificate', 'key', 'ca', 'require_client_certificate',
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 57, in keys
+    require(type(value) is dict and set(value) == set(expected),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: unexpected record fields
+
+
+----------------------------------------------------------------------
+Ran 12 tests in 8.968s
+
+FAILED (failures=1, errors=2)

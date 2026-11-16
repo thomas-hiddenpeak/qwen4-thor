@@ -337,10 +337,11 @@ Q4T_TEST(binary_unknown_publication_recovers_file_and_removes_stage) {
     Q4T_CHECK(Ok(binary.Begin(Access(), 100, 60, &stage)) &&
               Ok(binary.Append(Access(), &stage, "durable file")));
   }
-  fixture.options.io_timeout_ms = 250;
   {
+    auto fault = fixture.options;
+    fault.io_timeout_ms = 250;
     Injection inject("--q4t-object-worker-apply-pause");
-    ObjectStore objects(fixture.options);
+    ObjectStore objects(fault);
     BinaryStore binary(objects);
     const auto failed = binary.Publish(Access(), &stage, File());
     Q4T_CHECK(!failed.ok() && failed.commit_unknown && stage.commit_unknown &&

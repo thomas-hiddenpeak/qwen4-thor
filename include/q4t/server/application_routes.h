@@ -13,6 +13,53 @@ inline bool ValidApplicationId(std::string_view id) {
   return true;
 }
 
+enum class McpTunnelRouteKind { kInvalid, kMetadata, kPoll, kResponse };
+struct McpTunnelApiRoute {
+  McpTunnelRouteKind kind = McpTunnelRouteKind::kInvalid;
+  std::string_view id;
+};
+inline bool IsMcpTunnelTarget(std::string_view path) {
+  path = path.substr(0, path.find('?'));
+  return path == "/v1/tunnels" || path.starts_with("/v1/tunnels/");
+}
+inline McpTunnelApiRoute ParseMcpTunnelRoute(std::string_view path) {
+  if (path.find('#') != path.npos || !path.starts_with("/v1/tunnels/"))
+    return {};
+  path = path.substr(12);
+  path = path.substr(0, path.find('?'));
+  const auto slash = path.find('/');
+  const auto id = path.substr(0, slash);
+  if (!ValidApplicationId(id)) return {};
+  if (slash == path.npos) return {McpTunnelRouteKind::kMetadata, id};
+  const auto action = path.substr(slash);
+  if (action == "/poll") return {McpTunnelRouteKind::kPoll, id};
+  if (action == "/response") return {McpTunnelRouteKind::kResponse, id};
+  return {};
+}
+inline bool McpTunnelMethodAllowed(std::string_view method,
+                                   std::string_view path) {
+  const auto route = ParseMcpTunnelRoute(path);
+  return route.kind == McpTunnelRouteKind::kResponse ? method == "POST"
+         : route.kind == McpTunnelRouteKind::kMetadata ||
+                 route.kind == McpTunnelRouteKind::kPoll
+             ? method == "GET"
+             : false;
+}
+inline bool IsMcpTunnelPoll(std::string_view method, std::string_view path) {
+  return method == "GET" &&
+         ParseMcpTunnelRoute(path).kind == McpTunnelRouteKind::kPoll;
+}
+inline bool IsMcpTunnelResponse(std::string_view method,
+                                std::string_view path) {
+  return method == "POST" &&
+         ParseMcpTunnelRoute(path).kind == McpTunnelRouteKind::kResponse;
+}
+inline bool IsMcpTunnelMetadata(std::string_view method,
+                                std::string_view path) {
+  return method == "GET" &&
+         ParseMcpTunnelRoute(path).kind == McpTunnelRouteKind::kMetadata;
+}
+
 enum class VectorStoreRouteKind {
   kInvalid, kStores, kStore, kFiles, kFile, kContent, kBatches, kBatch,
   kBatchFiles, kBatchCancel, kSearch

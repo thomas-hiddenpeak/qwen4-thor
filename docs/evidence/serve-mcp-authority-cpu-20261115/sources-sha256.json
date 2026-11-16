@@ -1,0 +1,17 @@
+{
+  "include/q4t/server/responses_mcp.h": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf",
+  "src/server/responses_mcp.cpp": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9",
+  "include/q4t/server/responses_mcp_state.h": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404",
+  "src/server/responses_mcp_state.cpp": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a",
+  "src/server/mcp_transport.cpp": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd",
+  "src/server/mcp_http.cpp": "ba0f31d5d9eb3986cf8dabd22202627aac14b4ebd6c93db6af1503c8edbf8617",
+  "src/server/mcp_transport_internal.h": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93",
+  "src/server/object_retention.cpp": "92433e3d30130357a4f1a19c925b8bf582951f24954c0262dadca7dcc602e531",
+  "tests/server_responses_mcp_test.cpp": "dcf50da6ee8fb8749417f1419367aa9295d02ac66ca77968516dbe6391a869bd",
+  "tests/server_responses_mcp_state_test.cpp": "b143ba5c2409d0ee5a67475a58bef6edcce06f4d37aac244e9dd10b3c901e2c8",
+  "tests/server_mcp_transport_test.cpp": "f832a31410bdbdbf059e152f0cdc2fe65b324b68203bd4d56733c25475d51563",
+  "CMakeLists.txt": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5",
+  "cmake/ChatProtocolIdentity.cmake": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef",
+  "cmake/HostTestSources.cmake": "36c7ab6d6512a3ed9b7788436576176e91b2db2e1e59384165eb9a7b539368f7",
+  "tools/serve_audit/inventory.json": "64e8d36f0a020391ccb7b08d216e7b4abb86588d4e407a9dfa2127bac3d45ea1"
+}

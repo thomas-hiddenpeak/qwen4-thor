@@ -5,6 +5,7 @@
 #include <string>
 
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/mcp_transport.h"
 #ifdef Q4T_STARTUP_RESERVATION
 #include "q4t/server/cuda_quota_metrics.h"
 #endif
@@ -188,6 +189,7 @@ void ChatServer::HandleMetrics(int fd) {
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
   detail::PollRequestWorkers();
+  PollMcpSessions();
   gauge("q4t_structured_cleanup_pending",
         "Unconfirmed cleanup retains the process-wide structured capacity.",
         detail::GrammarCleanupPending() ? 1 : 0);
@@ -264,6 +266,23 @@ void ChatServer::HandleMetrics(int fd) {
         body_budget_.Used());
   gauge("q4t_cancel_body_bytes", "Reserved cancellation bytes (32 MiB cap).",
         cancel_body_budget_.Used());
+  gauge("q4t_tunnel_poll_connections",
+        "Native tunnel poll connections (limit 4).", tunnel_poll_conns_.load());
+  gauge("q4t_tunnel_response_connections",
+        "Native tunnel response connections (limit 4).",
+        tunnel_response_conns_.load());
+  gauge("q4t_tunnel_body_bytes",
+        "Reserved native tunnel body bytes (17 MiB cap).",
+        tunnel_body_budget_.Used());
+  if (mcp_tunnels_) {
+    const auto tunnel = mcp_tunnels_->Health();
+    for (const auto* field : {"routes", "agents_online", "pending", "inflight",
+                              "completed", "retained_bytes"}) {
+      const auto name = "q4t_mcp_tunnel_" + std::string(field);
+      gauge(name.c_str(), "Native MCP tunnel auxiliary state.",
+            tunnel.GetInt(field));
+    }
+  }
   gauge("q4t_active_chats", "Admitted chat/preflight through output cleanup.",
         active_chats_.load());
   gauge("q4t_queued_requests", "Slot waiters, excluding preprocessing.",

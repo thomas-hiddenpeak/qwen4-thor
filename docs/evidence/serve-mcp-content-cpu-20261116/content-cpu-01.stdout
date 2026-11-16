@@ -1,0 +1,21 @@
+[PASS] responses_program_api_media_quota_cannot_refill_between_programs
+[PASS] mcp_content_native_binary_is_not_restricted_to_image_bytes
+[PASS] mcp_content_rejects_noncanonical_payloads_without_decoding_media
+[PASS] mcp_content_resource_identity_and_metadata_are_typed
+[PASS] mcp_content_rejects_bad_variants_and_bounds_native_result
+[PASS] mcp_transport_json_pagination_session_and_credentials
+[PASS] mcp_transport_call_waits_for_durable_permission
+[PASS] mcp_transport_reads_remote_uri_only_after_owned_permission
+[PASS] mcp_transport_resource_capability_and_operation_preflight
+[PASS] mcp_transport_resource_result_failures_never_repeat_read
+[PASS] mcp_transport_bad_native_content_is_known_without_tool_replay
+[PASS] mcp_transport_call_failure_never_retries_or_reinitializes
+[PASS] mcp_transport_rpc_error_and_structured_result_preserved
+  CHECK failed: ExecutionOk(run.RunPrograms(1, &waiting, {})) && !waiting && server.calls == 1 (line 1192)
+[FAIL] responses_mcp_program_remote_error_keeps_native_structured_content
+[PASS] responses_mcp_program_unknown_result_is_reused_without_dispatch
+[PASS] responses_mcp_recovery_requires_real_exit_and_never_replays
+[PASS] responses_mcp_state_result_schema_errors_and_no_result_forgery
+[PASS] responses_mcp_state_native_error_preserves_data_after_restart
+[PASS] responses_mcp_state_completed_result_roundtrip_after_restart
+19 tests, 18 passed, 1 failed, 0 skipped

@@ -1,0 +1,30 @@
+{
+  "argv": [
+    ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-mcp-20261115/vector-ci-required-01.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 0.8852398740127683,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0/q4t",
+      "sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0/q4t.release.json",
+      "sha256": "5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0/q4t",
+      "sha256": "d7dd0c6d629cd90ad1315b21c666a57578cd72185c4d6b441ca03bda2ca98080"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/813364752de24e2436a116dc6f53f86ce2cb64246a59b249b0793e377ea9b3e0/q4t.release.json",
+      "sha256": "5e70c24a189e37c8518e7c3ae429b24d0c6b6660f3c3834b6483a37c7e58dd0a"
+    }
+  },
+  "default_unchanged": true
+}

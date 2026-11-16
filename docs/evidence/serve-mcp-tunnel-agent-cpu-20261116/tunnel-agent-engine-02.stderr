@@ -1,0 +1,17 @@
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp: In function ‘int q4t::server::RunMcpTunnelAgent(const McpTunnelAgentConfig&, const std::function<bool()>&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp:346:32: error: no matching function for call to ‘q4t::server::detail::GrammarProcess::AwaitExit(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long int, std::ratio<1, 1000000000> > >)’
+  346 |         (void)worker->AwaitExit(Clock::now() + 2s);
+      |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/include/q4t/server/file_fetch.h:8,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/mcp_transport.h:7,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/mcp_tunnel_agent.h:4,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp:1:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/grammar_process.h:139:10: note: candidate: ‘q4t::Status q4t::server::detail::GrammarProcess::AwaitExit(std::chrono::_V2::steady_clock::time_point, const std::function<bool()>&)’
+  139 |   Status AwaitExit(std::chrono::steady_clock::time_point deadline,
+      |          ^~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/grammar_process.h:139:10: note:   candidate expects 2 arguments, 1 provided
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:653: CMakeFiles/q4t_server.dir/src/server/mcp_tunnel_agent.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1418: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1598: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:636: q4t] Error 2

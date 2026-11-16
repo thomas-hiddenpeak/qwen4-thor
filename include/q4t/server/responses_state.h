@@ -32,6 +32,7 @@ struct ResponseStatePlan {
   io::Json own_input;  // New input, without inherited context/instructions.
   io::Json input_snapshots;  // Private exact-part bindings, never API items.
   io::Json tool_contracts;   // Private invocation-time result schemas.
+  io::Json mcp_catalogs;     // Newly fetched owned catalogs, never credentials.
   io::Json request;
   std::string conversation_id;
   int64_t conversation_revision = 0;

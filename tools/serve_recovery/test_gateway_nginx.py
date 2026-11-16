@@ -110,7 +110,7 @@ class Stack:
                 path = self.path.split('?', 1)[0]
                 roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
-                         '/v1/vector_stores')
+                         '/v1/vector_stores', '/v1/tunnels')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         path.startswith('/v1/chat/completions/') or
@@ -167,6 +167,9 @@ class Stack:
                     token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
                     authorization=self.headers.get('Authorization'))
+                if self.path.startswith('/v1/tunnels/'):
+                    row.update(tunnel_instance=self.headers.get('X-Tunnel-Client-Instance-Id'),
+                               tunnel_shard_token=self.headers.get('X-Tunnel-Shard-Token'))
                 stack.application_requests.append(row)
                 if row['token'] != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
@@ -414,7 +417,7 @@ class NginxTests(unittest.TestCase):
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
-                              vector_store_id='vs_1')
+                              vector_store_id='vs_1', tunnel_id='tunnel_local')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)

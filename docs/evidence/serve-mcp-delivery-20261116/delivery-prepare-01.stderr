@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-20261115/deliver.py", line 234, in <module>
+    {'prepare':prepare,'run':run}[sys.argv[1]]()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-20261115/deliver.py", line 42, in prepare
+    p.require(len(list((DEFAULT/'.q4t-publication/generations').iterdir()))<=30,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 62, in require
+    raise RuntimeError(message)
+RuntimeError: two active generation slots required

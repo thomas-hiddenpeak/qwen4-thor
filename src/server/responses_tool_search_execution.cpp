@@ -9,11 +9,41 @@ namespace q4t::server {
 using namespace object_detail;
 
 Status ResponsesExecution::BindActiveTools(const io::Json& active,
-                                           ChatPlanError* error) {
+                                           ChatPlanError* error,
+                                           const io::Json* input) {
+  const auto& history = input ? *input : generation_history_;
   const auto request = Object({{"tools", active}});
   auto status =
       PlanResponsesFileSearchBindings(request, &file_search_bindings_, error);
   if (!status) return status;
+  status = PlanResponsesMcpRequestBindings(
+      Object({{"tools", active}, {"input", history}}),
+      &mcp_bindings_, error);
+  if (!status) return status;
+  for (auto& binding : mcp_bindings_) {
+    const auto catalog = std::find_if(
+        history.array.begin(), history.array.end(),
+        [&](const auto& item) { return item.GetString("id") == binding.catalog_id; });
+    ResponsesMcpDefinition definition;
+    for (const auto& tool : active.array)
+      if (tool.GetString("type") == "mcp" &&
+          tool.GetString("server_label") == binding.server_label) {
+        status = PlanResponsesMcpDefinition(tool, &definition, error);
+        if (!status) return status;
+        break;
+      }
+    if (!mcp_state_ || catalog == history.array.end())
+      return Status::Fail("Missing owned MCP catalog");
+    auto opened = mcp_state_->OpenCatalog(*catalog, definition, access_);
+    if (!opened.ok()) {
+      *error = {opened.code, "tools", opened.http_status};
+      return Status::Fail(opened.message);
+    }
+    const auto& original = *opened.value.Find("declaration");
+    binding.approval |= ResponsesMcpApprovalRequired(original, binding.tool);
+    binding.direct &= ResponsesToolAllows(original, "direct");
+    binding.programmatic &= ResponsesToolAllows(original, "programmatic");
+  }
   std::vector<ResponsesToolIdentity> identities;
   status = PlanResponsesToolIdentities(request, &identities, error);
   if (!status) return status;

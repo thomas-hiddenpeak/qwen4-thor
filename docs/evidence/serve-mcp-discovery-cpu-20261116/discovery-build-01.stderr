@@ -1,0 +1,18 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool q4t_test_fn_responses_mcp_discovery_loads_remote_only_when_activated()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:1257:25: error: no match for ‘operator=’ (operand types are ‘q4t::server::ResponseToolCall’ and ‘<brace-enclosed initializer list>’)
+ 1257 |                    false};
+      |                         ^
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/responses_output.h:14,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/responses_execution.h:11,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:23:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_response_parser.h:20:8: note: candidate: ‘constexpr q4t::server::ResponseToolCall& q4t::server::ResponseToolCall::operator=(const q4t::server::ResponseToolCall&)’
+   20 | struct ResponseToolCall {
+      |        ^~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_response_parser.h:20:8: note:   no known conversion for argument 1 from ‘<brace-enclosed initializer list>’ to ‘const q4t::server::ResponseToolCall&’
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_response_parser.h:20:8: note: candidate: ‘constexpr q4t::server::ResponseToolCall& q4t::server::ResponseToolCall::operator=(q4t::server::ResponseToolCall&&)’
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_response_parser.h:20:8: note:   no known conversion for argument 1 from ‘<brace-enclosed initializer list>’ to ‘q4t::server::ResponseToolCall&&’
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1381: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

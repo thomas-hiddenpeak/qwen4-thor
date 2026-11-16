@@ -17,7 +17,8 @@ CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'tool_search_call',
-    'tool_search_output', 'program', 'program_output'))
+    'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
+    'mcp_approval_request', 'mcp_call'))
 
 
 def semantic_capabilities(value):
@@ -67,6 +68,19 @@ def semantic_capabilities(value):
                 program.get('automatic_tool_replay') is False and
                 program.get('model_restart_on_error') is False,
                 'program outputs lack their implementation capability')
+        mcp_items = {'mcp_list_tools', 'mcp_approval_request', 'mcp_call'}
+        if mcp_items.intersection(items):
+            mcp = responses.get('mcp')
+            ledger.require(mcp_items.issubset(items) and type(mcp) is dict and
+                mcp.get('profile') == 'q4t-native-mcp-v1' and
+                mcp.get('approval_default') == 'always' and
+                all(mcp.get(key) is True for key in ('enabled',
+                    'authenticated_continuation', 'catalog_filtering',
+                    'input_output_schemas', 'content_and_resources',
+                    'frozen_media_replay', 'encrypted_session_state')) and
+                all(mcp.get(key) is False for key in ('automatic_tool_replay',
+                    'model_restart_on_error', 'core_readiness_dependency')),
+                'MCP outputs lack their implementation capability')
         # This field declares an unordered set of output types. Normalize only
         # this reviewed enum; all other arrays retain exact-value comparison.
         responses['output_items'] = {item: True for item in items}

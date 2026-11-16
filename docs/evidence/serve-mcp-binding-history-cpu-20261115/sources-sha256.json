@@ -1,0 +1,13 @@
+{
+  "CMakeLists.txt": "f1e218415b937073a9d467b26dfb59abdf43de41d6001d54e0607f914fd2d870",
+  "cmake/ChatProtocolIdentity.cmake": "7659e7e41444b5be66500b62c179968b23e236e9ae5238dd055cc83dfde7b423",
+  "cmake/HostTestSources.cmake": "c4c0670f7ef34ebd9b7901e786c7113ee58b642d42e4b8c84e4a1fffa4995924",
+  "include/q4t/server/responses_mcp_binding.h": "0bc2bd5a763175bc1bda8b596717e2595ad1cb65c2a6571a6a20f6ca5ad4a76a",
+  "include/q4t/server/responses_mcp_state.h": "97a4bd805561d9f3f964b01fe36e47ca9a286d0174ea5c888fcfa4fb0a1bb371",
+  "src/server/object_retention.cpp": "10583be99f3c36523399f759e7025925c3bd4f4a78ce4049426f9aafdde12308",
+  "src/server/responses_mcp_binding.cpp": "fe67e96fe5521f6da75b807d0d658b757a28b463fbdf31cb5298df57f2de06a7",
+  "src/server/responses_mcp_state.cpp": "05f6ca55ad0cf7e167bc8ecfcd593ea7848fc23cd149174b9c517bfe382fa709",
+  "tests/server_responses_mcp_binding_test.cpp": "736d9e7a70e61b57524cd46ed9ead7dbf38bb6e02b60a7f5c04d9ee82222c0ab",
+  "tests/server_responses_mcp_state_test.cpp": "28359455113191468725387093c6fe3262f923d1ff21ad0be9f7f695332da237",
+  "tools/serve_audit/inventory.json": "3e9827a504a2af5b470b8c1828658742ffd180833c6b2ffbbe67ff356d96b97e"
+}

@@ -23,7 +23,7 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                       "object_scope_unavailable");
     return;
   }
-  auto run = std::make_unique<ResponsesExecution>(objects);
+  auto run = std::make_unique<ResponsesExecution>(objects, &jobs, true);
   auto result = run->Prepare(request, config, access, std::time(nullptr), true);
   if (!result.ok()) {
     detail::SendError(fd, result.http_status, result.ClientMessage(), {},

@@ -1,0 +1,6 @@
+[PASS] responses_mcp_bindings_preserve_schema_and_distinguish_servers
+[PASS] responses_mcp_bindings_filter_callers_and_deferred_metadata
+[PASS] responses_mcp_binding_choice_named_server_and_allowed_set
+[PASS] responses_mcp_bindings_require_unambiguous_validated_catalogs
+[PASS] responses_mcp_binding_budgets_reject_expansion_without_truncation
+5 tests, 5 passed, 0 failed, 0 skipped

@@ -38,10 +38,13 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   if (identity->Scoped() && headers->content_length > headers->body_limit)
     return fail(413, "client_body_limit_exceeded");
   const auto lane =
-      IsCancellationRequest(method, path) ? ClientLane::kCancel
+      IsMcpTunnelPoll(method, path)         ? ClientLane::kTunnelPoll
+      : IsMcpTunnelResponse(method, path)   ? ClientLane::kTunnelResponse
+      : IsCancellationRequest(method, path) ? ClientLane::kCancel
       : ((method == "GET" &&
           (path == "/v1/models" || path == "/v1/capabilities")) ||
          ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)) ||
+         IsMcpTunnelMetadata(method, path) ||
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
          IsBatchObservation(method, path) || IsFileMetadata(method, path) ||

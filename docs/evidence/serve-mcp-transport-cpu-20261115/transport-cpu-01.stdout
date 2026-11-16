@@ -1,0 +1,21 @@
+[PASS] mcp_transport_json_pagination_session_and_credentials
+  CHECK failed: Invoke(server, &receipt).ok() (line 278)
+[FAIL] mcp_transport_sse_returns_before_eof_and_replies_to_ping
+[PASS] mcp_transport_call_waits_for_durable_permission
+[PASS] mcp_transport_rejects_headers_and_targets_before_worker
+[PASS] mcp_transport_call_failure_never_retries_or_reinitializes
+[PASS] mcp_transport_rpc_error_and_structured_result_preserved
+[PASS] mcp_transport_pagination_cycles_and_duplicate_names_rejected
+[PASS] mcp_transport_invalid_rpc_and_http_frames_rejected
+[PASS] mcp_transport_timeout_and_cancel_are_bounded
+[PASS] mcp_transport_unreaped_slot_isolated_from_file_and_grammar
+[PASS] mcp_transport_legacy_sse_lists_and_calls_real_endpoint
+[PASS] mcp_transport_does_not_forward_auth_to_cross_origin_endpoint
+[PASS] mcp_transport_versions_and_auth_failures_do_not_dispatch
+[PASS] mcp_transport_cancel_after_dispatch_reports_unknown
+[PASS] mcp_transport_session_cleanup_failure_preserves_known_result
+[PASS] file_fetch_http_content_length_chunked_and_close_exact_bytes
+[PASS] file_fetch_http_rejects_ambiguous_truncated_or_partial_file
+[PASS] file_fetch_cancellation_interrupts_actual_network_wait
+[PASS] file_fetch_unreaped_domain_keeps_its_slot_without_blocking_other_domains
+19 tests, 18 passed, 1 failed, 0 skipped

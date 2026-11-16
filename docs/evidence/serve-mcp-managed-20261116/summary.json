@@ -1,0 +1,23 @@
+{
+  "status": "ACCEPT_MCP_CAPABLE_MANAGED_PACKAGES",
+  "primary": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
+  "retained": "52c399d74f2885eec8fa754e105cfa342e3ae651f8db4553114cc85c87a5b40e",
+  "engine": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+  "this_group": {
+    "starts": 3,
+    "requests": 6,
+    "device_probes": 1
+  },
+  "cumulative": {
+    "starts": 6,
+    "requests": 22,
+    "native_embedding_requests": 2,
+    "device_probes": 1
+  },
+  "separate_actual_mcp": "docs/evidence/serve-mcp-business-20261116/acceptance.json",
+  "session_recovery_cpu": "docs/evidence/serve-mcp-sessions-execution-cpu-20261116/README.md",
+  "actual_recovery_remote_mcp_dispatch": false,
+  "actual_recovery_program_document_closure": true,
+  "default_changed": false,
+  "remaining_master_tasks_open": true
+}

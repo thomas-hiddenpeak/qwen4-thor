@@ -1,0 +1,104 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘q4t::io::Json {anonymous}::Response(const q4t::io::Json&, q4t::io::Json)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:55:32: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+   55 |                   {"id", Field(command, "jsonrpc").Find("id")
+      |                                ^~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/../src/server/object_protocol.h:12,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:8:
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:56:44: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+   56 |                              ? Field(Field(command, "jsonrpc"), "id")
+      |                                            ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:54:17: error: could not convert ‘{{"jsonrpc", q4t::server::responses_detail::String(std::string)()}, {"id", <expression error>}, {"result", q4t::server::responses_detail::Object(std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >)()}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   54 |     rpc = Object({{"jsonrpc", String("2.0")},
+      |           ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                 |
+      |                 <brace-enclosed initializer list>
+   55 |                   {"id", Field(command, "jsonrpc").Find("id")
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                              ? Field(Field(command, "jsonrpc"), "id")
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   57 |                              : Json()},
+      |                              ~~~~~~~~~~
+   58 |                   {"result", Object({{"content", Array()}})}});
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:59:39: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+   59 |   return Object({{"request_id", Field(command, "request_id")},
+      |                                       ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:60:36: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+   60 |                  {"channel", Field(command, "channel")},
+      |                                    ^~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:59:16: error: could not convert ‘{{"request_id", <expression error>}, {"channel", <expression error>}, {"resp_code", q4t::server::responses_detail::Number(int64_t)()}, {"resp_type", q4t::server::responses_detail::String(std::string)()}, {"resp_json", std::move<q4t::io::Json&>(rpc)}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   59 |   return Object({{"request_id", Field(command, "request_id")},
+      |          ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                |
+      |                <brace-enclosed initializer list>
+   60 |                  {"channel", Field(command, "channel")},
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   61 |                  {"resp_code", Number(200)},
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   62 |                  {"resp_type", String("jsonrpc_response")},
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   63 |                  {"resp_json", std::move(rpc)}});
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:9:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_original_identity_token_and_scope_control_completion()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:144:33: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+  144 |   Q4T_CHECK(!Field(Field(result.value, "resp_json"), "result").Has("changed"));
+      |                          ~~~~~~~^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_preserves_native_error_and_filters_response_headers()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:176:37: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+  176 |   Q4T_CHECK(OutputJson(Field(result.value, "resp_json")) == OutputJson(rpc));
+      |                              ~~~~~~~^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:177:38: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+  177 |   const auto& headers = Field(result.value, "resp_headers");
+      |                               ~~~~~~~^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_invalid_terminal_completes_without_overwriting_known_result()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:233:34: error: binding reference of type ‘q4t::io::Json&’ to ‘const q4t::io::Json’ discards qualifiers
+  233 |               Field(Field(result.value, "resp_json"), "error").GetInt("code") ==
+      |                           ~~~~~~~^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/../src/server/responses_json.h:45:26: note:   initializing argument 1 of ‘q4t::io::Json& q4t::server::responses_detail::Field(q4t::io::Json&, std::string_view)’
+   45 | inline Json& Field(Json& object, std::string_view key) {
+      |                    ~~~~~~^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp: In function ‘bool q4t_test_fn_mcp_tunnel_notifications_termination_and_status_normalization()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:240:19: error: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Werror=range-loop-construct]
+  240 |   for (const auto [wire, normalized] :
+      |                   ^~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp:240:19: note: use reference type to prevent copying
+  240 |   for (const auto [wire, normalized] :
+      |                   ^~~~~~~~~~~~~~~~~~
+      |                   &
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1395: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

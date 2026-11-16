@@ -12,6 +12,8 @@ namespace q4t::server {
 
 inline constexpr int kReservedControlConnections = 4;
 inline constexpr int kReservedObservationConnections = 4;
+inline constexpr int kTunnelPollConnections = 4;
+inline constexpr int kTunnelResponseConnections = 4;
 inline constexpr int kOperationsConnections =
     kReservedControlConnections + kReservedObservationConnections;
 
@@ -19,13 +21,21 @@ enum class HttpConnectionClass {
   kUnclassified,
   kBusiness,
   kObservation,
-  kControl
+  kControl,
+  kTunnelPoll,
+  kTunnelResponse
 };
-inline constexpr std::array<std::string_view, 4> kHttpConnectionClasses = {
-    "unclassified", "business", "observation", "control"};
+inline constexpr std::array<std::string_view, 6> kHttpConnectionClasses = {
+    "unclassified", "business",    "observation",
+    "control",      "tunnel_poll", "tunnel_response"};
 
 inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
                                                   std::string_view path) {
+  if (IsMcpTunnelPoll(method, path)) return HttpConnectionClass::kTunnelPoll;
+  if (IsMcpTunnelResponse(method, path))
+    return HttpConnectionClass::kTunnelResponse;
+  if (IsMcpTunnelMetadata(method, path))
+    return HttpConnectionClass::kObservation;
   if ((method == "GET" &&
        (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
       IsCancellationRequest(method, path))

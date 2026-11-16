@@ -44,7 +44,8 @@ struct Fixture {
     // the behavior these state-machine tests qualify.
   }
 };
-ObjectStoreOptions LostAckOptions(const Fixture& fixture, int timeout_ms = 250) {
+ObjectStoreOptions LostAckOptions(const Fixture& fixture,
+                                  int timeout_ms = 250) {
   auto options = fixture.options;
   options.io_timeout_ms = timeout_ms;
   return options;
@@ -827,13 +828,19 @@ Q4T_TEST(
     }
     Q4T_CHECK(Ok(batches.BeginFinalization(Access(), ready.id, "completed")));
   }
-  Injection injection("--q4t-object-worker-application-lost-ack");
-  ObjectStore objects(LostAckOptions(fixture));
+  ObjectReply final;
+  {
+    Injection injection("--q4t-object-worker-application-lost-ack");
+    ObjectStore objects(LostAckOptions(fixture));
+    BatchState batches(objects);
+    final = batches.Finalize(Access(), ready.id);
+    Q4T_CHECK(!final.ok() && final.commit_unknown &&
+              final.value.GetString("id") == ready.id);
+    Drain(objects);
+  }
+  // Verify the durable result with ordinary worker startup/I/O deadlines.
+  ObjectStore objects(fixture.options);
   BatchState batches(objects);
-  auto final = batches.Finalize(Access(), ready.id);
-  Q4T_CHECK(!final.ok() && final.commit_unknown &&
-            final.value.GetString("id") == ready.id);
-  Drain(objects);
   auto retrieved = batches.Retrieve(Access(), ready.id);
   Q4T_CHECK(Ok(retrieved) &&
             retrieved.value.GetString("status") == "completed");

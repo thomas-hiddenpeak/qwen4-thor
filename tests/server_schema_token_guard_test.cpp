@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
+#include "../src/server/object_protocol.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/output_schema.h"
@@ -547,3 +548,76 @@ Q4T_TEST(schema_worker_dependency_and_resource_errors_recover_per_request) {
   return true;
 }
 #endif
+
+namespace {
+Json OpenToolRequest() {
+  return Parse(R"({"messages":[{"role":"user","content":"query"}],
+    "enable_thinking":false,"tools":[
+    {"type":"function","function":{"name":"read","strict":false,
+     "parameters":{"type":"object","properties":{
+      "path":{"type":"string","pattern":"^docs/"},
+      "optional":{"type":"boolean"}},"required":["path"],
+      "additionalProperties":{"type":"integer"}}}},
+    {"type":"function","function":{"name":"strict","strict":true,
+     "parameters":{"type":"object","properties":{"n":{"type":"integer"}},
+      "required":["n"],"additionalProperties":false}}}]})");
+}
+}  // namespace
+
+Q4T_TEST(
+    schema_request_open_advisory_worker_parser_preserves_original_contract) {
+  const auto request = OpenToolRequest();
+  const auto open_call = RichCall(R"({"path":"docs/MODEL.md","extra":42})");
+  const auto strict_call =
+      "<tool_call>\n<function=strict>\n<parameter=n>7</parameter>\n"
+      "</function>\n</tool_call>";
+  Q4T_CHECK(RequestRoundTrip(request, open_call + '\n' + strict_call, 2, "\n"));
+  // The parser cannot certify an open-schema call without the worker's
+  // receipt; the lexical JSON envelope alone grants no schema guarantee.
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "open", false));
+  Q4T_CHECK(parser.Append(open_call, &deltas));
+  Q4T_CHECK(!parser.Finish(false, &deltas));
+  return true;
+}
+
+Q4T_TEST(
+    schema_guard_open_advisory_checks_values_budget_and_cannot_weaken_strict) {
+  const auto request = OpenToolRequest();
+  OutputConstraints plan;
+  Q4T_CHECK(PlanOutputConstraints(request, &plan));
+  const auto format = Parse(plan.structural_tag);
+  const auto config = *format.Find("q4t_guard");
+  SchemaTokenGuard guard;
+  Q4T_CHECK(guard.Init(config));
+  const std::vector<std::string> vocabulary{
+      "",
+      RichCall(R"({"path":"docs/MODEL.md","extra":42})"),
+      RichCall(R"({"path":"outside"})"),
+      RichCall(R"({})"),
+      RichCall(R"({"path":"docs/MODEL.md","extra":"bad"})"),
+      RichCall(R"({"path":"docs/MODEL.md","optional":false})")};
+  std::vector<int32_t> mask(1, -1);
+  const std::vector<int32_t> stops{0};
+  Q4T_CHECK(guard.Filter(vocabulary, stops, mask));
+  Q4T_CHECK(Allowed(mask, 1) && !Allowed(mask, 2) && !Allowed(mask, 3) &&
+            !Allowed(mask, 4) && Allowed(mask, 5));
+  Q4T_CHECK(guard.Accept(vocabulary[1], false) && guard.Accept("", true));
+  Q4T_CHECK(guard.Receipts().size() == 1);
+  auto weakened = config;
+  auto& tool = object_detail::Field(weakened, "tools").array[0];
+  object_detail::Field(tool, "strict").boolean = true;
+  Q4T_CHECK(!guard.Init(weakened));
+  const auto& schema =
+      *request.GetArray("tools")->array[0].Find("function")->Find("parameters");
+  OutputSchemaGraph graph;
+  Q4T_CHECK(graph.Init(schema, false, nullptr, "schema",
+                       OutputSchemaPurpose::kToolResult));
+  size_t work = 0;
+  const auto exhausted =
+      graph.CheckBounded(Parse(R"({"path":"docs/MODEL.md"})"), &work);
+  Q4T_CHECK(!exhausted &&
+            exhausted.message().starts_with("schema_resource_exhausted:"));
+  return true;
+}

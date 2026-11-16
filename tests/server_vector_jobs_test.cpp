@@ -36,7 +36,8 @@ struct Fixture {
     objects.directory = path + "/objects";
     objects.restart_backoff_ms = 0;
     objects.restart_limit = 10;
-    objects.io_timeout_ms = 100;
+    // Normal storage uses the production deadline. Lost-ACK cases select
+    // their shorter fault-injection deadline only in the affected scope.
     jobs.scan_interval = 5ms;
     jobs.retry_delay = 5ms;
     jobs.retry_backoff = 20ms;
@@ -312,7 +313,9 @@ Q4T_TEST(vector_jobs_lost_claim_and_parent_receipts_never_replay_model) {
     seed = Seed(objects);
   }
   Injection injection("--q4t-object-worker-application-lost-ack");
-  ObjectStore objects(f.objects);
+  auto fault_options = f.objects;
+  fault_options.io_timeout_ms = 100;
+  ObjectStore objects(fault_options);
   std::atomic<int> calls{0};
   VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
   Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }));
@@ -329,7 +332,9 @@ Q4T_TEST(vector_jobs_lost_snapshot_receipt_publishes_original_without_replay) {
     seed = Seed(objects);
   }
   Injection injection("--q4t-object-worker-snapshot-lost-ack");
-  ObjectStore objects(f.objects);
+  auto fault_options = f.objects;
+  fault_options.io_timeout_ms = 100;
+  ObjectStore objects(fault_options);
   std::atomic<int> calls{0};
   VectorJobs jobs(objects, f.clients, f.jobs, Encode, Embed(calls));
   Q4T_CHECK(Wait([&] { return Status(objects, seed) == "completed"; }));
@@ -442,9 +447,6 @@ Q4T_TEST(vector_jobs_detach_reattach_cannot_publish_original_execution) {
 Q4T_TEST(
     vector_jobs_partial_start_failure_drains_and_recovers_auxiliary_owner) {
   Fixture f;
-  // This case qualifies thread-owner recovery, not storage latency. A
-  // transient 100ms disk timeout must not replace the intended fault.
-  f.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(f.objects);
   std::atomic<int> calls{0};
   ApplicationOwner<VectorJobs> owner({5ms, 100ms});
@@ -623,8 +625,6 @@ Q4T_TEST(vector_batches_execution_and_attribute_changes_update_receipt) {
 
 Q4T_TEST(vector_batches_cancel_waits_for_actual_drain_and_keeps_source_files) {
   Fixture f;
-  // Cancellation must wait for the real worker, not an accidental IO timeout.
-  f.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(f.objects);
   VectorStores stores(objects);
   auto seed = BatchSources(objects);
@@ -738,7 +738,9 @@ Q4T_TEST(vector_batches_lost_create_receipt_keeps_original_atomic_batch) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(f.objects);
+    auto fault_options = f.objects;
+    fault_options.io_timeout_ms = 100;
+    ObjectStore objects(fault_options);
     auto created =
         VectorStores(objects).CreateBatch(Access(), seed.store, seed.request);
     Q4T_CHECK(created.commit_unknown);
@@ -764,7 +766,9 @@ Q4T_TEST(vector_batches_lost_cancel_receipt_recovers_without_model) {
   }
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
-    ObjectStore objects(f.objects);
+    auto fault_options = f.objects;
+    fault_options.io_timeout_ms = 100;
+    ObjectStore objects(fault_options);
     Q4T_CHECK(VectorStores(objects)
                   .CancelBatch(Access(), seed.store, seed.id)
                   .commit_unknown);

@@ -1,0 +1,33 @@
+{
+  "scope": "Owned MCP history/atomic approval alias and model binding; public execution remains pending. Original schemas preserved; canonical results authenticated; no GPU/default mutation.",
+  "sources": {
+    "CMakeLists.txt": {
+      "before": "a07f27069c7ce12f821f9643dcb860c75eab6657748189b6c2a238b64c90dccc",
+      "after": "f1e218415b937073a9d467b26dfb59abdf43de41d6001d54e0607f914fd2d870"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "ffbfef5a6910756e174ce3912d9f37da4060bc3f302866f6c431907d04ea3e88",
+      "after": "7659e7e41444b5be66500b62c179968b23e236e9ae5238dd055cc83dfde7b423"
+    },
+    "include/q4t/server/responses_mcp_binding.h": {
+      "before": null,
+      "after": "0bc2bd5a763175bc1bda8b596717e2595ad1cb65c2a6571a6a20f6ca5ad4a76a"
+    },
+    "include/q4t/server/responses_mcp_state.h": {
+      "before": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404",
+      "after": "97a4bd805561d9f3f964b01fe36e47ca9a286d0174ea5c888fcfa4fb0a1bb371"
+    },
+    "src/server/object_retention.cpp": {
+      "before": "92433e3d30130357a4f1a19c925b8bf582951f24954c0262dadca7dcc602e531",
+      "after": "10583be99f3c36523399f759e7025925c3bd4f4a78ce4049426f9aafdde12308"
+    },
+    "src/server/responses_mcp_binding.cpp": {
+      "before": null,
+      "after": "fe67e96fe5521f6da75b807d0d658b757a28b463fbdf31cb5298df57f2de06a7"
+    },
+    "src/server/responses_mcp_state.cpp": {
+      "before": "96646ffb3d28a4470bc4aac3984da68f7342e1131166cb2176afac3c9327d1ba",
+      "after": "05f6ca55ad0cf7e167bc8ecfcd593ea7848fc23cd149174b9c517bfe382fa709"
+    }
+  }
+}

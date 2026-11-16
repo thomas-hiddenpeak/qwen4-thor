@@ -1,0 +1,46 @@
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp: In member function ‘q4t::io::Json q4t::server::mcp_detail::{anonymous}::Client::Request(std::string_view, const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp:222:38: error: could not convert ‘method’ from ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’}
+  222 |                    {"method", String(method)},
+      |                                      ^~~~~~
+      |                                      |
+      |                                      std::string_view {aka std::basic_string_view<char>}
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp:220:18: error: could not convert ‘{{"jsonrpc", q4t::server::responses_detail::String(std::string)()}, {"id", q4t::server::responses_detail::Number(int64_t)()}, {"method", <expression error>}, {"params", params}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+  220 |     return Object({{"jsonrpc", String("2.0")},
+      |            ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                  |
+      |                  <brace-enclosed initializer list>
+  221 |                    {"id", Number(++id_)},
+      |                    ~~~~~~~~~~~~~~~~~~~~~~
+  222 |                    {"method", String(method)},
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  223 |                    {"params", params}});
+      |                    ~~~~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1353: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_transport.cpp: In function ‘q4t::server::ObjectReply q4t::server::InvokeMcp(const BinaryAccess&, const McpEndpoint&, const FileFetchOptions&, std::string_view, const q4t::io::Json&, const std::function<ObjectReply()>&, McpTransportReceipt*, GrammarControl)’:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_transport.cpp:82:44: error: could not convert ‘method’ from ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’}
+   82 |                          {"method", String(method)},
+      |                                            ^~~~~~
+      |                                            |
+      |                                            std::string_view {aka std::basic_string_view<char>}
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_transport.cpp:78:24: error: could not convert ‘{{"url", q4t::server::responses_detail::String(std::string)()}, {"headers", std::move<q4t::io::Json&>(headers)}, {"authorization", q4t::server::responses_detail::String(std::string)()}, {"options", q4t::server::file_detail::OptionsJson(const q4t::server::FileFetchOptions&)()}, {"method", <expression error>}, {"params", params}, {"timeout_ms", q4t::server::responses_detail::Number(int64_t)()}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   78 |   auto request = Object({{"url", String(endpoint.url)},
+      |                  ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                        |
+      |                        <brace-enclosed initializer list>
+   79 |                          {"headers", std::move(headers)},
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   80 |                          {"authorization", String(endpoint.authorization)},
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   81 |                          {"options", file_detail::OptionsJson(deployment)},
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   82 |                          {"method", String(method)},
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   83 |                          {"params", params},
+      |                          ~~~~~~~~~~~~~~~~~~~
+   84 |                          {"timeout_ms", Number(deployment.timeout_ms)}});
+      |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1367: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_transport.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

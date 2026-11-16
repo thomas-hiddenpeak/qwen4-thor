@@ -1,0 +1,9 @@
+[PASS] mcp_transport_rejects_headers_and_targets_before_worker
+[PASS] responses_mcp_credentials_are_request_local_not_echoed
+[PASS] responses_mcp_definition_fields_nulls_and_targets_checked
+[PASS] responses_mcp_allowed_names_and_readonly_filter_intersect
+[PASS] responses_mcp_default_and_explicit_approval_policy
+[PASS] responses_mcp_catalog_preserves_original_result_contract_privately
+[PASS] responses_mcp_catalog_rejects_malformed_remote_authority
+[PASS] responses_mcp_connector_and_tunnel_contracts_do_not_invent_endpoint
+8 tests, 8 passed, 0 failed, 0 skipped

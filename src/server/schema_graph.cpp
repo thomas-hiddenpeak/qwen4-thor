@@ -716,6 +716,16 @@ Status OutputSchemaGraph::Check(const Json& value,
   return CheckNode(*root_, value, strings);
 }
 
+Status OutputSchemaGraph::CheckBounded(const Json& value,
+                                       size_t* work_remaining,
+                                       const StringCheck& strings) const {
+  if (!valid_) return Status::Fail("schema graph is not initialized");
+  if (!work_remaining)
+    return Status::Fail("schema_resource_exhausted: value work budget missing");
+  std::unordered_set<const Json*> active;
+  return Value(*root_, value, 0, work_remaining, strings, &active);
+}
+
 Status OutputSchemaGraph::Prefix(
     const Json& schema, const SchemaPrefixValue& prefix, size_t depth,
     size_t* work, const StringCheck& strings,

@@ -33,6 +33,8 @@ struct HttpRequestHeaders {
   std::string content_type;
   std::string client_id;
   std::string gateway_token;
+  std::string tunnel_instance;
+  std::string tunnel_shard_token;
   std::string origin;
   std::string cors_method;
   std::string cors_headers;

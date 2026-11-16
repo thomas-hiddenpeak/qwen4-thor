@@ -1,0 +1,8 @@
+test_application_routes_preserve_methods_queries_and_identity (__main__.NginxTests.test_application_routes_preserve_methods_queries_and_identity) ... ok
+test_generation_rebind_rotates_token_and_strips_forged_client_headers (__main__.NginxTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers) ... ok
+test_accepted_post_transport_failure_is_not_replayed (__main__.NginxTests.test_accepted_post_transport_failure_is_not_replayed) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 7.141s
+
+OK

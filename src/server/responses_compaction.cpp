@@ -66,7 +66,7 @@ bool Primary(const Json& item) {
   // paraphrase or discard. Preserve their original loading points and IDs.
   if (type == "additional_tools" || type == "tool_search_call" ||
       type == "tool_search_output" || type == "program" ||
-      type == "program_output" ||
+      type == "program_output" || type.starts_with("mcp_") ||
       (item.Find("caller") &&
        item.Find("caller")->GetString("type") == "program"))
     return true;

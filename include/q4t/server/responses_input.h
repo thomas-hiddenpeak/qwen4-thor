@@ -40,7 +40,9 @@ Status PlanResponsesToolIdentities(
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
                                bool allow_empty = false,
-                               bool preparing_files = false);
+                               bool preparing_files = false,
+                               bool preparing_mcp = false,
+                               const io::Json* mcp_content = nullptr);
 // preparing_files validates and retains unresolved file/image parts for the
 // preparation owner. Its output must not be sent to the model/template.
 // Maps shared-generation errors back to the caller's Responses input path.
@@ -50,10 +52,14 @@ Status NormalizeResponsesTools(const io::Json& request, io::Json* tools,
                                io::Json* choice, ChatPlanError* error,
                                io::Json* effective_tools = nullptr,
                                io::Json* header_tools = nullptr,
-                               io::Json* active_tools = nullptr);
+                               io::Json* active_tools = nullptr,
+                               bool definitions_only = false);
+// definitions_only is registration/preflight validation, never an executable
+// plan: remote MCP selectors are checked without inventing a remote catalog.
 // Leaf definition adapter used by the request-local discovery planner. It
 // does not load history or grant access to deferred definitions by itself.
 Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
                                        io::Json* choice, ChatPlanError* error,
-                                       io::Json* effective_tools = nullptr);
+                                       io::Json* effective_tools = nullptr,
+                                       bool definitions_only = false);
 }  // namespace q4t::server

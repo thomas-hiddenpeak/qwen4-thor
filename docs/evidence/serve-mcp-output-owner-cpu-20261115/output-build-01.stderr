@@ -1,0 +1,13 @@
+/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::StartMcpItem(const q4t::io::Json&, size_t*, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp:63:19: error: ‘OutputJson’ was not declared in this scope
+   63 |   status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+      |                   ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp: In member function ‘q4t::Status q4t::server::ResponsesOutput::CompleteMcpItem(size_t, const q4t::io::Json&, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp:169:19: error: ‘OutputJson’ was not declared in this scope
+  169 |   status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+      |                   ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1451: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

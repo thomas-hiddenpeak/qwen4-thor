@@ -17,6 +17,9 @@
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_mcp_binding.h"
+#include "q4t/server/responses_mcp_state.h"
+#include "q4t/server/responses_mcp_media.h"
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
@@ -28,6 +31,9 @@ class IResponsesCleanup {
   virtual ~IResponsesCleanup() = default;
   virtual ObjectReply Reserve(const std::string& scope, const std::string& id,
                               uint64_t* ticket) = 0;
+  virtual ObjectReply TrackMcp(uint64_t ticket, const std::string& model,
+                               const io::Json& owner,
+                               const std::string& authority_id) = 0;
   virtual void Close(uint64_t ticket, bool known_terminal) noexcept = 0;
 };
 
@@ -61,33 +67,42 @@ class ResponsesExecution {
   ObjectReply RestoreInputs(const io::Json& inputs,
                             const ChatPlanConfig& config, StateAccess access,
                             int64_t created,
-                            const BatchResponseLink* batch_parent = nullptr);
+                            const BatchResponseLink* batch_parent = nullptr,
+                            const io::Json* credential_source = nullptr);
   bool GenerationReady() const { return generation_ready_; }
-  bool PendingFileSheets() const { return files_ && files_->PendingSheets(); }
+  bool PendingFileSheets() const {
+    return (files_ && files_->PendingSheets()) ||
+           (mcp_media_ && mcp_media_->PendingSheets());
+  }
   bool VariableInputSteps() const {
     const auto* context = envelope_.request.GetArray("context_management");
     return PendingFileSheets() ||
            (!envelope_.cache.prewarm && HasFileSearch()) ||
            (!envelope_.cache.prewarm && HasToolSearch()) ||
            (!envelope_.cache.prewarm && HasPrograms()) ||
+           (!envelope_.cache.prewarm && HasMcp()) ||
            (!envelope_.cache.prewarm && HasAsyncTools()) ||
            envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
             (envelope_.reasoning_mode == "pro" || !envelope_.summary.empty() ||
              compaction_trigger_ || (context && !context->array.empty())));
   }
-  uint64_t FileOutputBudget() const {
-    return files_ ? files_->PendingOutputBudget() : 0;
-  }
-  const FileExpansionUsage* FileUsage() const {
-    return files_ ? &files_->Usage() : nullptr;
-  }
+  uint64_t FileOutputBudget() const;
+  const FileExpansionUsage* FileUsage() const;
+  ObjectReply PrepareToolMedia(
+      const ChatPlanConfig& config,
+      const std::function<bool(const std::string&)>& publish = {});
   ObjectReply NextFileSheet(const ChatPlanConfig& config, FileSheetStep* step);
   ObjectReply CompleteFileSheet(const FileSheetStep& step,
                                 std::string_view output,
                                 std::string_view finish_reason,
                                 uint64_t input_tokens, uint64_t output_tokens,
                                 const ChatPlanConfig& config);
+  // Count preparation reuses the same owned files and MCP state without
+  // publishing a Response or granting any new tools/call.
+  ObjectReply PrepareInputSheets(
+      const ChatPlanConfig& config,
+      const std::function<ObjectReply(FileExpansion&)>& prepare);
   ObjectReply FitContext(const ChatPlanConfig& config,
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
@@ -131,11 +146,18 @@ class ResponsesExecution {
   bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
   bool PendingToolSearch() const { return !tool_search_pending_.empty(); }
   bool HasPrograms() const { return program_enabled_ || !programs_.empty(); }
+  bool HasMcp() const { return !mcp_bindings_.empty(); }
+  bool PendingMcp() const { return !mcp_pending_.empty(); }
+  bool PendingMcpResume() const { return !mcp_resume_.array.empty(); }
+  ObjectReply RunMcpApprovals(
+      const std::function<bool(const std::string&)>& publish);
+  ObjectReply RunMcp(size_t completed_calls, bool* client_wait,
+                     const std::function<bool(const std::string&)>& publish);
   bool PendingPrograms() const { return !program_pending_.empty(); }
   bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
     return file_search_pending_.size() + tool_search_pending_.size() +
-           program_pending_.size();
+           program_pending_.size() + mcp_pending_.size();
   }
   ObjectReply RunPrograms(
       size_t completed_calls, bool* client_wait,
@@ -149,10 +171,10 @@ class ResponsesExecution {
       size_t completed_calls, const VectorSearchCallbacks& callbacks,
       VectorSearchUsage* usage, bool* continue_answer,
       const std::function<bool(const std::string&)>& publish);
-  ObjectReply ContinueFileSearch(int64_t output_used,
-                                 const ChatPlanConfig& config,
-                                 const ResponsesContextCheck& check,
-                                 ResponsesGenerationPlan* next);
+  ObjectReply ContinueFileSearch(
+      int64_t output_used, const ChatPlanConfig& config,
+      const ResponsesContextCheck& check, ResponsesGenerationPlan* next,
+      const std::function<bool(const std::string&)>& publish = {});
   ObjectReply ContinueAsyncTools(size_t completed_calls, int64_t output_used,
                                  const ChatPlanConfig& config,
                                  const ResponsesContextCheck& check,
@@ -227,7 +249,28 @@ class ResponsesExecution {
                           std::string* wire);
   Status AppendProgram(const ResponseDelta& delta, bool* handled,
                        std::string* wire);
-  Status BindActiveTools(const io::Json& active, ChatPlanError* error);
+  Status AppendMcp(const ResponseDelta& delta, bool* handled,
+                   std::string* wire);
+  ObjectReply ExecuteMcpCall(
+      const io::Json& call, const ResponsesMcpDefinition& definition,
+      size_t output_index,
+      const std::function<bool(const std::string&)>& publish);
+  ObjectReply ExecuteProgramMcp(
+      const ResponsesProgramState& program, const io::Json& intent,
+      const std::function<bool(const std::string&)>& publish);
+  Status BindActiveTools(const io::Json& active, ChatPlanError* error,
+                         const io::Json* history = nullptr);
+  ObjectReply CaptureMcpCredentials();
+  ObjectReply CloseMcpExecution(const StateAccess& access);
+  ObjectReply TrackMcpCall(const std::string& id);
+  ObjectReply PrepareMcp(const ChatPlanConfig& config,
+                         io::Json* continuation = nullptr);
+  ObjectReply ResolveMcpResource(const std::string& id, const std::string& uri);
+  ObjectReply PrepareMcpMedia(const ChatPlanConfig& config,
+                              const io::Json& history);
+  ResponsesMediaBudget OtherMcpMediaBudget() const;
+  Status BeginMcpCatalogs(ResponsesOutput* output, std::string* wire,
+                          size_t begin = 0);
   Status ApplyActualUsage(ResponsesOutput* output) const;
   ObjectStore& objects_;
   std::unique_ptr<FileExpansion> files_;
@@ -248,6 +291,27 @@ class ResponsesExecution {
   ResponsesGenerationPlan generation_;
   ResponseStatePlan plan_;
   ResponsesOutput output_;
+  std::unique_ptr<ResponsesMcpState> mcp_state_;
+  std::unique_ptr<ResponsesMcpMedia> mcp_media_;
+  mutable FileExpansionUsage file_usage_;
+  bool mcp_sheet_issued_ = false;
+  std::vector<ResponsesMcpDefinition> mcp_credentials_;
+  // Digest of the caller's original request, not the expanded/stored one.
+  // Batch may resupply that authenticated File row, never persisted secrets.
+  std::string mcp_credential_source_sha256_;
+  std::vector<ResponsesMcpDefinition> mcp_definitions_;
+  std::vector<ResponsesMcpBinding> mcp_bindings_;
+  FileFetchOptions mcp_fetch_;
+  struct NativeMcpCall {
+    ResponseToolCall call;
+    std::string public_id;
+    size_t binding = 0;
+    size_t output_index = ResponsesOutput::kMaxItems;
+    bool dispatched = false;
+  };
+  std::map<size_t, NativeMcpCall> mcp_pending_;
+  size_t mcp_argument_bytes_ = 0;
+  io::Json mcp_resume_;
   std::vector<ResponsesFileSearchBinding> file_search_bindings_;
   struct NativeFileCall {
     ResponseToolCall call;

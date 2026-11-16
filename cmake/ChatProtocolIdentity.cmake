@@ -249,6 +249,39 @@ set(protocol_inputs
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
+  include/q4t/server/mcp_transport.h
+  include/q4t/server/mcp_policy.h
+  include/q4t/server/mcp_tunnel.h
+  include/q4t/server/mcp_tunnel_agent.h
+  include/q4t/server/mcp_content.h
+  src/server/mcp_content.cpp
+  src/server/mcp_projection.cpp
+  include/q4t/server/responses_mcp.h
+  src/server/responses_mcp.cpp
+  include/q4t/server/responses_mcp_state.h
+  include/q4t/server/responses_mcp_media.h
+  src/server/responses_mcp_state.cpp
+  src/server/responses_mcp_output.cpp
+  include/q4t/server/responses_mcp_binding.h
+  src/server/responses_mcp_binding.cpp
+  src/server/responses_mcp_preparation.cpp
+  src/server/responses_mcp_media.cpp
+  src/server/responses_execution_mcp_media.cpp
+  src/server/responses_mcp_execution.cpp
+  src/server/mcp_transport_internal.h
+  src/server/mcp_tunnel_transport_internal.h
+  src/server/mcp_sse_internal.h
+  src/server/mcp_tunnel_agent_internal.h
+  src/server/mcp_http.cpp
+  src/server/mcp_policy.cpp
+  src/server/mcp_tunnel.cpp
+  src/server/mcp_tunnel_api.cpp
+  src/server/mcp_tunnel_transport.cpp
+  src/server/mcp_tunnel_agent_http.cpp
+  src/server/mcp_tunnel_agent.cpp
+  src/server/mcp_tunnel_agent_config.cpp
+  src/server/mcp_transport.cpp
+  src/server/remote_http_internal.h
   include/q4t/server/file_document.h
   src/server/file_document.cpp
   include/q4t/server/file_document_worker.h

@@ -1,5 +1,11 @@
 # docs/ — 开发记录文档体系
 
+- [原生MCP反向隧道、broker与私网agent](SERVE_MCP_TUNNEL_2026-11-16.md)
+
+- [MCP隧道公开wire schema](serve-mcp-tunnel-v1.schema.json)
+
+- [原生MCP传输、审批与执行连续实施](SERVE_MCP_2026-11-15.md)
+
 - [原生工具发现与有序加载连续实施](SERVE_TOOL_DISCOVERY_2026-11-13.md)
 
 - [原生异步工具与高级调用连续计划](SERVE_ASYNC_TOOLS_2026-11-13.md)

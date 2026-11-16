@@ -24,6 +24,10 @@ bool Named(const Json& tool) {
   return type == "function" || type == "custom" || type == "namespace";
 }
 bool SameSlot(const Json& first, const Json& second) {
+  if (first.GetString("type") == "mcp" ||
+      second.GetString("type") == "mcp")
+    return first.GetString("type") == second.GetString("type") &&
+           first.GetString("server_label") == second.GetString("server_label");
   if (first.GetString("type") == "namespace" ||
       second.GetString("type") == "namespace")
     return first.GetString("type") == second.GetString("type") &&
@@ -87,8 +91,10 @@ Json ResponsesToolItemDefaults(Json item) {
 Status NormalizeActiveResponsesTools(const Json& request,
                                      const ResponsesToolCatalog& catalog,
                                      Json* tools, Json* choice,
-                                     ChatPlanError* error) {
-  auto status = NormalizeResponsesCallableTools(request, tools, choice, error);
+                                     ChatPlanError* error,
+                                     bool definitions_only) {
+  auto status = NormalizeResponsesCallableTools(request, tools, choice, error,
+                                                 nullptr, definitions_only);
   if (!status) return status;
   for (auto& tool : tools->array) {
     const auto* function = tool.Find("function");

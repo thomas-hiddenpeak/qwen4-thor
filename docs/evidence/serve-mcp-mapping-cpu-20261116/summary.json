@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-16",
+  "task_type": "nonperformance_native_mcp_deployment_mapping",
+  "targeted_cpp_distinct": 29,
+  "targeted_cpp_invocations": 38,
+  "cpp_final_passed": 29,
+  "cpp_unresolved": 0,
+  "initial_actual_defect_failures_preserved": 3,
+  "python_passed": 8,
+  "source_mutation_checks": 7,
+  "reviewed_source_anchors": 677,
+  "host_build": "passed_zero_warnings",
+  "engine_build": "passed_zero_warnings",
+  "engine_sha256": "76b7f13d2e8f11bb06c14b486fbdadf8522ed320e353bef32329fd2db37f0dd1",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "public_capability_delivered": false,
+  "reverse_tunnel_implemented": false,
+  "master_goal": "active"
+}

@@ -30,6 +30,8 @@ class OutputSchemaGraph {
               std::string_view path = "schema",
               OutputSchemaPurpose purpose = OutputSchemaPurpose::kGeneration);
   Status Check(const io::Json& value, const StringCheck& strings = {}) const;
+  Status CheckBounded(const io::Json& value, size_t* work_remaining,
+                      const StringCheck& strings = {}) const;
   Status CheckNode(const io::Json& schema, const io::Json& value,
                    const StringCheck& strings = {}) const;
   Status CheckPrefix(const SchemaPrefixValue& value, size_t* work_remaining,

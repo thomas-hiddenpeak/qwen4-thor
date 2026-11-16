@@ -195,6 +195,19 @@ def current_surface(root):
                 (method in ('GET', 'DELETE') and
                  path.endswith(('/{vector_store_id}', '/{file_id}', '/{batch_id}')))
                 else 'false') for method, path in vectors)
+    if 'HandleMcpTunnelRequest(*mcp_tunnels_' in dispatch:
+        tunnel_api = (root / 'src/server/mcp_tunnel_api.cpp').read_text()
+        if 'broker.Poll(access, route.id' not in tunnel_api or \
+                'broker.Respond(access, route.id' not in tunnel_api or \
+                'server::McpTunnelMethodAllowed(method, path)' not in native or \
+                'inline McpTunnelApiRoute ParseMcpTunnelRoute' not in application_routes:
+            raise ValueError('review actual native tunnel route handlers')
+        tunnels = [('GET', '/v1/tunnels/{tunnel_id}'),
+                   ('GET', '/v1/tunnels/{tunnel_id}/poll'),
+                   ('POST', '/v1/tunnels/{tunnel_id}/response')]
+        routes.extend((path, method) for method, path in tunnels)
+        native_routes.extend((method, path, 'true' if path.endswith('{tunnel_id}')
+                              else 'false') for method, path in tunnels)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")

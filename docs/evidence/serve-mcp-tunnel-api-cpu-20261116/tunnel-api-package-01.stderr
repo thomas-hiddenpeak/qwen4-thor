@@ -1,0 +1,6 @@
+test_native_tunnel_without_url_survives_private_package_binding (tools.serve_responses.test_mcp_policy.McpPolicyPackage.test_native_tunnel_without_url_survives_private_package_binding) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.365s
+
+OK

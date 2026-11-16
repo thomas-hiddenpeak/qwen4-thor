@@ -31,6 +31,16 @@ std::string Key(const std::string& scope, const std::string& id) {
 }
 }  // namespace
 
+// Fixed metadata only, no request credentials, prompts, model callback or fd.
+// This shares the bounded foreground reconciliation slots and worker cadence.
+struct ResponsesJobs::McpCleanup {
+  std::array<char, 257> model{};
+  std::array<char, 513> owner{};
+  std::array<std::array<char, 129>, 64> calls{};
+  size_t size = 0;
+  size_t next = 0;
+};
+
 struct ResponsesJobs::State {
   struct Foreground {
     uint64_t ticket = 0;
@@ -40,6 +50,7 @@ struct ResponsesJobs::State {
     bool closing = false;
     size_t attempts = 0;
     Clock::time_point next;
+    McpCleanup mcp;
   };
   ObjectStore& objects;
   ResponsesJobsOptions options;
@@ -151,6 +162,39 @@ ObjectReply ResponsesJobs::Reserve(const std::string& scope,
   return {};
 }
 
+ObjectReply ResponsesJobs::TrackMcp(uint64_t ticket, const std::string& model,
+                                    const Json& owner,
+                                    const std::string& authority_id) {
+  const auto encoded = OutputJson(owner);
+  if (!ticket || model.empty() || model.size() > 256 ||
+      !ValidResponseOwner(owner) || encoded.size() > 512 ||
+      !authority_id.starts_with("mcp_") || authority_id.size() > 128 ||
+      !ValidId(authority_id))
+    return Error(500, "mcp_reconciliation_invalid",
+                 "Invalid MCP cleanup owner");
+  const std::lock_guard lock(state_->mutex);
+  for (auto& entry : state_->foreground) {
+    if (entry.ticket != ticket || !entry.active || entry.closing) continue;
+    auto& mcp = entry.mcp;
+    if (mcp.size && (model != mcp.model.data() || encoded != mcp.owner.data()))
+      return Error(409, "mcp_reconciliation_owner_changed",
+                   "MCP cleanup identity changed");
+    for (size_t i = 0; i < mcp.size; ++i)
+      if (authority_id == mcp.calls[i].data()) return {};
+    if (mcp.size == mcp.calls.size())
+      return Error(429, "mcp_reconciliation_capacity",
+                   "MCP cleanup metadata exhausted");
+    if (!mcp.size) {
+      std::memcpy(mcp.model.data(), model.data(), model.size());
+      std::memcpy(mcp.owner.data(), encoded.data(), encoded.size());
+    }
+    std::memcpy(mcp.calls[mcp.size++].data(), authority_id.data(),
+                authority_id.size());
+    return {};
+  }
+  return Error(409, "mcp_reconciliation_unowned", "MCP cleanup ticket ended");
+}
+
 void ResponsesJobs::Close(uint64_t ticket, bool known_terminal) noexcept {
   {
     const std::lock_guard lock(state_->mutex);
@@ -169,23 +213,63 @@ void ResponsesJobs::Close(uint64_t ticket, bool known_terminal) noexcept {
 }
 
 void ResponsesJobs::ReconcileForeground(uint64_t ticket, std::string_view scope,
-                                        std::string_view id) noexcept {
+                                        std::string_view id,
+                                        const McpCleanup& mcp) noexcept {
   bool terminal = false;
+  size_t completed = mcp.next;
   try {
     StateAccess access{
         std::string(scope), Clock::now() + std::chrono::seconds(2), {}};
-    const auto reply = ResponsesState(state_->objects)
+    bool children_closed = true;
+    if (mcp.size) {
+      ResponseStatePlan ended;
+      ended.scope = scope;
+      ended.id = id;
+      if (!Parse(mcp.owner.data(), &ended.execution_owner))
+        throw std::runtime_error("Invalid MCP cleanup process identity");
+      ChatPlanConfig config;
+      config.model = mcp.model.data();
+      ResponsesMcpState calls(state_->objects, config);
+      for (size_t i = mcp.next; i < mcp.size; ++i) {
+        auto closed = calls.Recover(mcp.calls[i].data(), access, &ended);
+        if (closed.commit_unknown) {
+          children_closed = false;
+          break;
+        }
+        if (closed.ok() || closed.http_status == 404) {
+          completed = i + 1;
+          continue;
+        }
+        if (closed.code == "mcp_result_pending") {
+          const auto current = calls.Inspect(mcp.calls[i].data(), access);
+          if (current.ok() &&
+              (current.value.GetString("state") == "approval" ||
+               current.value.GetString("response_id") != ended.id)) {
+            completed = i + 1;
+            continue;  // Waiting approval or a different request now owns it.
+          }
+        }
+        children_closed = false;
+        break;
+      }
+    }
+    if (children_closed) {
+      const auto reply = ResponsesState(state_->objects)
                            .Interrupt(std::string(id), access,
                                       "response_execution_interrupted",
                                       "Execution owner completed cleanup "
                                       "without a confirmed terminal result");
-    terminal = reply.ok() || reply.http_status == 404;
+      terminal = reply.ok() || reply.http_status == 404;
+    }
   } catch (...) {
     // Preserve the slot and retry budget even when constructing a read fails.
   }
   const std::lock_guard lock(state_->mutex);
   for (auto& item : state_->foreground) {
     if (item.ticket != ticket || !item.closing) continue;
+    // A deadline or transient storage error must not restart at call zero and
+    // starve later IDs. Only acknowledged closure advances this bounded scan.
+    item.mcp.next = std::max(item.mcp.next, completed);
     if (terminal) {
       item = {};
       ++state_->foreground_reconciled;
@@ -515,7 +599,8 @@ void ResponsesJobs::Recover(ClientAdmission& clients,
             ++pending;
             continue;
           }
-          auto run = std::make_unique<ResponsesExecution>(state_->objects);
+          auto run =
+              std::make_unique<ResponsesExecution>(state_->objects, this, true);
           config.client_limits = identity->second.Limits();
           auto restored = run->RestoreQueued(id, config, access);
           if (!restored.ok()) {
@@ -767,7 +852,7 @@ void ResponsesJobs::Worker() noexcept {
       }
       if (foreground)
         ReconcileForeground(foreground->ticket, foreground->scope.data(),
-                            foreground->id.data());
+                            foreground->id.data(), foreground->mcp);
       else if (reconcile)
         Reconcile(job);
       else

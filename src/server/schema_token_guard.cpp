@@ -27,6 +27,7 @@ struct SchemaTokenGuard::Impl {
     OutputSchemaGraph graph;
     trace::Digest digest{};
     std::string begin, end;
+    bool completion_only = false;
   };
   std::unique_ptr<Binding> content;
   std::vector<std::unique_ptr<Binding>> tools;
@@ -43,8 +44,14 @@ struct SchemaTokenGuard::Impl {
     if (!schema) return Status::Fail("missing guard schema");
     auto binding = std::make_unique<Binding>();
     binding->schema = *schema;
+    binding->completion_only = spec.GetBool("completion_only");
+    if (binding->completion_only && (scope.empty() || spec.GetBool("strict")))
+      return Status::Fail("Completion-only validation requires advisory tool");
     auto status =
-        binding->graph.Init(binding->schema, spec.GetBool("strict"), nullptr);
+        binding->graph.Init(binding->schema, spec.GetBool("strict"), nullptr,
+                            "schema", binding->completion_only
+                                          ? OutputSchemaPurpose::kToolResult
+                                          : OutputSchemaPurpose::kGeneration);
     if (status)
       status = SchemaBindingDigest(scope, binding->schema, &binding->digest);
     if (!status) return status;
@@ -158,16 +165,23 @@ struct SchemaTokenGuard::Impl {
       SchemaPrefixValue prefix;
       size_t consumed = 0;
       auto status = ParseSchemaPrefix(text, &prefix, &consumed, work);
-      if (status) status = binding->graph.CheckPrefix(prefix, work, check);
+      if (status) {
+        if (binding->completion_only) {
+          if (prefix.complete)
+            status = binding->graph.CheckBounded(prefix.value, work, check);
+        } else {
+          status = binding->graph.CheckPrefix(prefix, work, check);
+        }
+      }
       if (!status) return ExternalFailure(status) ? status : Status();
       if (!prefix.complete) {
         *valid = !stop;
         return {};
       }
       if (++completed_count > 128) return Resource();
-      // CheckPrefix invokes the full independent graph validator for a
-      // completed root. Its result, rather than lexical acceptance, permits
-      // this digest to cross the worker boundary.
+      // Both modes invoke the full independent validator for a completed
+      // root. Advisory open schemas retain their original contract without
+      // claiming strict prefix generation. Only a checked value gets a receipt.
       if (completed) {
         SchemaReceipt receipt;
         receipt.binding = binding->digest;

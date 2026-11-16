@@ -1,0 +1,29 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp: In function ‘bool q4t_test_fn_output_constraints_open_advisory_keeps_schema_and_strict_neighbour()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:451:41: error: passing ‘const std::vector<q4t::io::Json>’ as ‘this’ argument discards qualifiers [-fpermissive]
+  451 |   request.Find("tools")->array.push_back(open);
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+In file included from /usr/include/c++/14/vector:66,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/output_constraints.h:6,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:1:
+/usr/include/c++/14/bits/stl_vector.h:1283:7: note:   in call to ‘constexpr void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = q4t::io::Json; _Alloc = std::allocator<q4t::io::Json>; value_type = q4t::io::Json]’
+ 1283 |       push_back(const value_type& __x)
+      |       ^~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:13:
+/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:462:13: error: ‘OutputJson’ was not declared in this scope; did you mean ‘q4t::server::OutputJson’?
+  462 |             OutputJson(*guard.Find("schema")) ==
+      |             ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:12:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/output_schema.h:28:13: note: ‘q4t::server::OutputJson’ declared here
+   28 | std::string OutputJson(const io::Json& value);
+      |             ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp:465:81: error: assignment of member ‘q4t::io::Json::boolean’ in read-only object
+  465 |   request.Find("tools")->array.back().Find("function")->Find("strict")->boolean = true;
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:3635: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

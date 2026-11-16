@@ -12,6 +12,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/responses_program.h"
 #include "responses_json.h"
@@ -528,6 +529,11 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
     std::unordered_set<std::string> disabled{
         std::string(kResponsesToolSearchModelName), kResponsesProgramModelName};
     for (const auto& binding : bindings) disabled.insert(binding.model_name);
+    std::vector<ResponsesMcpBinding> mcp;
+    status = PlanResponsesMcpRequestBindings(
+        Object({{"tools", active}, {"input", resolved_input}}), &mcp, error);
+    if (!status) return status;
+    for (const auto& binding : mcp) disabled.insert(binding.model_name);
     const auto native = [&](const Json& item) {
       const auto* function = item.Find("function");
       return function && disabled.contains(function->GetString("name"));
@@ -588,7 +594,10 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
   Set(&request, "input", resolved_input);
   ResponsesInputPlan input;
   auto status = NormalizeResponsesInput(request, &input, error,
-                                        config.count_input_only, true);
+                                        config.count_input_only, true, false,
+                                        envelope.mcp_content.IsNull()
+                                            ? nullptr
+                                            : &envelope.mcp_content);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
   status = GenerationOptions(envelope, &options, effective_tools, error,
@@ -619,7 +628,10 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   auto request = envelope.request;
   Set(&request, "input", resolved_input);
   auto status = NormalizeResponsesInput(request, &result.input, error,
-                                        config.count_input_only);
+                                        config.count_input_only, false, false,
+                                        envelope.mcp_content.IsNull()
+                                            ? nullptr
+                                            : &envelope.mcp_content);
   if (!status) return status;
   for (size_t i = 0; i < result.input.items.array.size(); ++i)
     result.input_source_indices.push_back(i);
@@ -763,6 +775,7 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
       if (i < cut && type != "additional_tools" && type != "tool_search_call" &&
           type != "tool_search_output" && type != "program" &&
           type != "program_output" &&
+          !type.starts_with("mcp_") &&
           !(items[i].Find("caller") &&
             items[i].Find("caller")->GetString("type") == "program"))
         continue;

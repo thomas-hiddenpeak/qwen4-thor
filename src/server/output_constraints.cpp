@@ -10,6 +10,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/refusal_frame.h"
+#include "q4t/server/schema_graph.h"
 
 namespace q4t::server {
 namespace {
@@ -63,10 +64,12 @@ std::string SchemaFormat(const io::Json& schema, bool xml) {
 }
 
 std::string GuardedFormat(const io::Json& schema, bool strict,
-                          std::string_view scope = {}) {
+                          std::string_view scope = {},
+                          bool completion_only = false) {
   return R"({"type":"q4t_schema","schema":)" + OutputJson(schema) +
          R"(,"strict":)" + (strict ? "true" : "false") + R"(,"scope":)" +
-         Quote(scope) + '}';
+         Quote(scope) +
+         (completion_only ? R"(,"completion_only":true)" : "") + '}';
 }
 
 std::string TextFormat() {
@@ -342,19 +345,32 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       const auto parameters = Parameters(*fn);
       status = ValidateOutputSchema(parameters, fn->GetBool("strict"), true,
                                     error_param, fn_path + ".parameters");
+      bool completion_only = false;
+      if (!status && !fn->GetBool("strict") &&
+          !status.message().starts_with("schema_resource_exhausted:")) {
+        // A strict neighbour must not close an advisory tool's open schema.
+        // Generate its JSON envelope and validate the complete original value
+        // in the isolated worker before issuing the parser's bound receipt.
+        OutputSchemaGraph graph;
+        status = graph.Init(parameters, false, error_param,
+                            fn_path + ".parameters",
+                            OutputSchemaPurpose::kToolResult);
+        completion_only = status.ok();
+      }
       if (!status) return status;
       if (!out->AllowsTool(name) ||
           (out->choice == OutputConstraints::ToolChoice::kNamed &&
            out->named_type != "function"))
         continue;
       if (!tags.empty()) tags += ',';
-      const bool guard = NeedsJsonToolArguments(*fn);
+      const bool guard = completion_only || NeedsJsonToolArguments(*fn);
       const std::string begin = "<tool_call>\n<function=" + name + ">\n" +
                                 (guard ? "<parameter=arguments>\n" : "");
       const std::string end = std::string(guard ? "\n</parameter>" : "") +
                               "\n</function>\n</tool_call>";
       tags += R"({"type":"tag","begin":)" + Quote(begin) + R"(,"content":)" +
-              (guard ? GuardedFormat(parameters, fn->GetBool("strict"), name)
+              (guard ? GuardedFormat(parameters, fn->GetBool("strict"), name,
+                                    completion_only)
                      : SchemaFormat(parameters, true)) +
               R"(,"end":)" + Quote(end) + '}';
       if (guard) {
@@ -362,6 +378,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         guard_tools += R"({"name":)" + Quote(name) + R"(,"schema":)" +
                        OutputJson(parameters) + R"(,"strict":)" +
                        (fn->GetBool("strict") ? "true" : "false") +
+                       (completion_only ? R"(,"completion_only":true)" : "") +
                        R"(,"begin":)" + Quote(begin) + R"(,"end":)" +
                        Quote(end) + '}';
       }

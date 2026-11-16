@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp: In constructor ‘q4t::server::{anonymous}::Agent::Agent(q4t::server::McpTunnelAgentConfig)’:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp:121:27: error: ‘NewRequestId’ is not a member of ‘q4t::server::detail’
+  121 |         instance_(detail::NewRequestId("q4t-agent-instance-")) {
+      |                           ^~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1437: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

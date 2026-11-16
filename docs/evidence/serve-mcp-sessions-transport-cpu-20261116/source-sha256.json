@@ -1,0 +1,15 @@
+{
+  "include/q4t/server/grammar_process.h": "584b3f5d80e3ec035a99dde02cd4894fdf2742f5b15f9c85f12f140a153915fd",
+  "include/q4t/server/mcp_transport.h": "6d518a0a3c8a52cb13819b6464faa2b74b099053b7bb48feec72d1db3701d543",
+  "src/server/chat_http.cpp": "44d3924afc80354aff690c48907034fa571d1047a121d193acafa58a94126e4b",
+  "src/server/chat_metrics.cpp": "5cd6ce65451face0b5baf0628422db8951e50ce78ffe7f66bfba0d6619782d2e",
+  "src/server/file_fetch_http.cpp": "9975734d68ed71756a45542887d3f2b75dfaf94c0a07eefaae6b9aa5f3b90866",
+  "src/server/grammar_process.cpp": "6c98537c251c6395606159d41df990d950707e15c86c7a6ab6b93ce11a678356",
+  "src/server/mcp_http.cpp": "04b2af522ea9a8c04ba8677ef6bdcb07c700893daa9dda12d83068737a7996b6",
+  "src/server/mcp_transport.cpp": "6de13d4b5d32aac35a9b48ab3dff5046e49aff67db24b8165475fc65af197452",
+  "src/server/mcp_transport_internal.h": "cc0f95b7e2e12bedc2479ae292b45f07997d45ebd518c8d9c874eef5ce6bf695",
+  "src/server/remote_http_internal.h": "6d9921bcf8a2174194a8f9096359e465d47d628fb047199b0eea74b9d6943c65",
+  "tests/server_mcp_transport_test.cpp": "eced7be2798c6b83fb96f6ecce941457ba7cc913107f7c97ca34ee9b4dbad810",
+  "tests/server_object_store_test.cpp": "276e8f9929e276a3a2b3c844a0b572db6f6fc4cf21d86fd73246bc1b398cb2a2",
+  "tools/serve_audit/inventory.json": "571622f5b5f8c45f7f3d8dcd1617c87bdaff6cc95430fdbffd9b658e02ecef93"
+}

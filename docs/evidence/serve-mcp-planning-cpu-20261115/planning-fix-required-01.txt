@@ -1,0 +1,2 @@
+responses_mcp_discovery_uses_server_labels_and_distinct_active_slots
+responses_mcp_planning_preserves_catalog_when_truncating_and_exhausted

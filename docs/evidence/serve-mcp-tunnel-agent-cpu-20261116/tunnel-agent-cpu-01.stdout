@@ -1,0 +1,29 @@
+[PASS] mcp_policy_private_loading_rejects_links_fifo_and_permissions
+[PASS] mcp_transport_json_pagination_session_and_credentials
+[PASS] mcp_transport_sse_returns_before_eof_and_replies_to_ping
+[PASS] mcp_transport_legacy_sse_lists_and_calls_real_endpoint
+  CHECK failed: !ParseMcpTunnelAgentConfig(OutputJson(bad), &config) (line 4664)
+[FAIL] mcp_agent_config_strict_network_and_redacted_description
+[PASS] mcp_agent_timeout_grammar_anchored_and_local_bound
+[PASS] mcp_agent_modern_session_call_resource_delete
+[PASS] mcp_agent_legacy_session_continuity_and_cleanup
+[PASS] mcp_agent_legacy_cross_origin_denied
+[PASS] mcp_agent_headers_conflicts_before_private_io
+[PASS] mcp_agent_exact_ids_and_non200_errors
+[PASS] mcp_agent_failed_progress_and_ping_preserve_terminal
+[PASS] mcp_agent_no_tool_replay_after_404_or_disconnect
+[PASS] mcp_agent_invalid_initialize_cleanup
+[PASS] mcp_agent_capacity_frees_on_termination
+[PASS] mcp_agent_fixed_target_deadline_and_payload_bounds
+  CHECK failed: control.Exchange(AgentCommand("ignored", headers), true) .value.GetInt("resp_code") == 204 (line 4960)
+  CHECK failed: AgentBrokerRoundtrip(remote.server, "2025-06-18") (line 4973)
+[FAIL] mcp_agent_broker_actual_http_roundtrip
+  CHECK failed: control.Exchange(AgentCommand("ignored", headers), true) .value.GetInt("resp_code") == 204 (line 4960)
+  CHECK failed: AgentBrokerRoundtrip(remote.server, "2024-11-05") (line 4980)
+[FAIL] mcp_agent_broker_actual_legacy_roundtrip
+  CHECK failed: RunMcpTunnelAgent(AgentConfig(control, remote), [&] { return Clock::now() >= deadline; }) == 2 (line 4992)
+[FAIL] mcp_agent_auth_failure_stops_no_restart
+[PASS] mcp_agent_upload_retry_preserves_body_and_one_dispatch
+[PASS] mcp_agent_skips_expired_processes_multiple_poll
+[PASS] mcp_agent_failed_progress_upload_still_final
+22 tests, 18 passed, 4 failed, 0 skipped

@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-16",
+  "task_type": "nonperformance_mcp_content_resources",
+  "targeted_cpp_distinct": 26,
+  "targeted_cpp_invocations": 27,
+  "initial_cpp": {
+    "passed": 18,
+    "failed": 1,
+    "skipped": 0
+  },
+  "repair_cpp": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "final_cpp_all_passed": true,
+  "sdk_tests": 1,
+  "sdk_wire_modes": [
+    "JSON",
+    "SSE",
+    "continuation"
+  ],
+  "source_mutation_checks": 7,
+  "reviewed_source_anchors": 671,
+  "host_final_build_passed": true,
+  "engine_build": "passed_zero_warnings",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "public_capability_delivered": false,
+  "master_goal": "active",
+  "engine_sha256": "fb3d5427e0a913cca7d69c0e5088a5f59b1da01104d6bb10af130dc2909d5482",
+  "previous_boundary_ci": {
+    "head": "043e57862a5195c3e8d6d19838059f98f23bc721",
+    "run": 43742617506,
+    "conclusion": "success"
+  }
+}

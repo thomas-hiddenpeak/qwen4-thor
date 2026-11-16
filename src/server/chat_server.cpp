@@ -4,6 +4,7 @@
 #include "chat_server_internal.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
 
@@ -34,11 +35,13 @@
 #endif
 #include "q4t/vision/vision.h"
 #include "q4t/vision/configuration.h"
+#include "q4t/server/mcp_transport.h"
 
 namespace q4t::server {
 
 ChatServer::~ChatServer() {
   RequestStop();
+  if (mcp_tunnels_) mcp_tunnels_->Stop();
   // Stop the bounded policy worker before destroying queue/client state.
   client_policy_admin_.reset();
   state_key_admin_.reset();
@@ -61,6 +64,9 @@ ChatServer::~ChatServer() {
   batches_.Join();
   vector_jobs_.Join();
   background_.Join();
+  // Drop the auxiliary owner without deleting modern sessions still held by
+  // sealed catalogs/approvals. Their fresh credentials are required on resume.
+  CloseMcpSessions(false);
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
   const auto release = [&](auto*& pointer, const char* site) {
@@ -138,6 +144,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const auto object_options =
       ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
                                 home_directory ? home_directory : "");
+  if (!opts.mcp_policy_file.empty()) {
+    auto policy = std::make_shared<McpDeploymentPolicy>();
+    const auto status = LoadMcpDeploymentPolicy(opts.mcp_policy_file, policy.get());
+    if (!status) return status;
+    mcp_policy_ = std::move(policy);
+  } else {
+    mcp_policy_.reset();
+  }
+  mcp_tunnels_ = std::make_shared<McpTunnelBroker>();
+  auto tunnel_routes = McpDeploymentTunnelRoutes(mcp_policy_.get());
+  mcp_tunnels_enabled_ = !tunnel_routes.empty();
+  const auto tunnel_status = mcp_tunnels_->Configure(std::move(tunnel_routes));
+  if (!tunnel_status) return tunnel_status;
   FileInputPolicy file_policy;
   if (!opts.file_input_policy_file.empty()) {
     const auto status =

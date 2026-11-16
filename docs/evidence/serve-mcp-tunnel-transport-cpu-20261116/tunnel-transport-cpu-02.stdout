@@ -1,0 +1,17 @@
+[PASS] mcp_native_tunnel_isolated_list_call_resource_and_private_session
+[PASS] mcp_native_tunnel_permission_and_checkpoint_fail_before_dispatch
+[PASS] mcp_native_tunnel_binding_changes_rejected_before_queueing
+[PASS] mcp_native_tunnel_owner_loss_restores_original_without_initialize
+[PASS] mcp_native_tunnel_new_agent_cannot_take_original_resource_session
+[PASS] mcp_native_tunnel_cancelled_handoff_is_unknown_and_never_replayed
+[PASS] mcp_native_tunnel_offline_broker_is_bounded_before_permission
+[PASS] mcp_native_tunnel_progress_and_http_error_keep_exact_rpc_outcome
+[PASS] mcp_native_tunnel_session_capacity_and_idle_cleanup_are_separate
+[PASS] mcp_native_tunnel_bridge_cannot_change_headers_or_dispatch_authority
+  CHECK failed: ExecutionOk(run.Prepare(peer.Request(), config, ExecutionAccess(), 42)) (line 4414)
+[FAIL] responses_mcp_native_tunnel_resource_and_frozen_offline_count
+  CHECK failed: ExecutionOk(first.Prepare(request, config, ExecutionAccess(), 42)) (line 4450)
+[FAIL] responses_mcp_native_tunnel_approval_survives_owner_restart
+  CHECK failed: ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42)) && ExecutionOk(run.Begin(&wire)) && ProgramCode( &run, "const r=await " "tools['mcp:project'].read_project({});text(r.content[0].uri);", &wire) (line 4484)
+[FAIL] responses_mcp_native_tunnel_program_retains_original_authority
+13 tests, 10 passed, 3 failed, 0 skipped

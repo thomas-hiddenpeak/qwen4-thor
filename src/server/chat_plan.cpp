@@ -7,6 +7,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
+#include "q4t/server/mcp_policy.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/media_admission.h"
@@ -398,7 +399,12 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   auto capacities = config.capacities;
   if (capacities.empty()) capacities.assign(config.max_seq, config.max_len);
   const text::TokenizerLimits tokenizer;
-  const int public_handlers = business_connections + kOperationsConnections;
+  const bool native_tunnels =
+      !McpDeploymentTunnelRoutes(config.mcp_policy.get()).empty();
+  const int tunnel_poll = native_tunnels ? kTunnelPollConnections : 0;
+  const int tunnel_response = native_tunnels ? kTunnelResponseConnections : 0;
+  const int public_handlers = business_connections + kOperationsConnections +
+                              tunnel_poll + tunnel_response;
   const int operations_handlers =
       requested.operations_port ? kOperationsConnections : 0;
   std::string aliases = "[";
@@ -417,6 +423,8 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          OutputJson(FileInputPolicyDescription(
              config.file_inputs ? *config.file_inputs : FileExpansionOptions{},
              config.file_input_policy_sha256)) +
+         R"(,"mcp_deployment":)" +
+         OutputJson(McpDeploymentPolicyDescription(config.mcp_policy.get())) +
          R"(,"completions":{"profile":"q4t-completions-v1",)"
          R"("default_output_tokens":16,"max_batch_candidates":128})"
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
@@ -591,7 +599,11 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          std::to_string(kReservedControlConnections) +
          R"(,"observation_connections":)" +
          std::to_string(kReservedObservationConnections) +
-         R"(,"public_connection_handlers":)" + std::to_string(public_handlers) +
+         R"(,"tunnel_poll_connections":)" + std::to_string(tunnel_poll) +
+         R"(,"tunnel_response_connections":)" +
+         std::to_string(tunnel_response) + R"(,"tunnel_body_bytes":)" +
+         std::to_string(17U << 20) + R"(,"public_connection_handlers":)" +
+         std::to_string(public_handlers) +
          R"(,"operations_connection_handlers":)" +
          std::to_string(operations_handlers) + R"(,"connection_handlers":)" +
          std::to_string(public_handlers + operations_handlers) +

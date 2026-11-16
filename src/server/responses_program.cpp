@@ -14,6 +14,8 @@
 #include "q4t/server/program_worker.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_mcp_binding.h"
+#include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/tool_result_contracts.h"
 
@@ -95,7 +97,17 @@ ObjectReply Shape(const Json& item, const std::string& path) {
   return status ? ObjectReply{} : Invalid(status.message(), error.param);
 }
 Json Child(const Json& program, const Json& tool, const Json& call,
-           size_t index) {
+           size_t index, const Json* positions = nullptr) {
+  if (tool.GetString("type") == "mcp")
+    return Object({{"type", String(kResponsesProgramMcpIntent)},
+                   {"id", String(ResponsesMcpProgramCallId(
+                              program.GetString("call_id"), index))},
+                   {"origin", Object({{"program_id", *program.Find("id")},
+                                      {"call_id", *program.Find("call_id")},
+                                      {"index", Number(index)},
+                                      {"call", call},
+                                      {"positions",
+                                       positions ? *positions : Array()}})}});
   const bool custom = tool.GetString("type") == "custom";
   const auto call_id = CallId(program, index);
   auto result =
@@ -122,7 +134,8 @@ ObjectReply CallsContract(const ResponsesProgramState& program,
     if (!tool) return Invalid("Program called a tool outside its authority");
     const auto& definition = *tool->Find("definition");
     const auto param = "program.calls[" + std::to_string(i) + ']';
-    if (tool->GetString("type") == "function") {
+    if (tool->GetString("type") == "function" ||
+        tool->GetString("type") == "mcp") {
       Json arguments;
       if (!io::ParseJson(call.GetString("arguments"), &arguments, true,
                          kSchemaJsonLimits) ||
@@ -144,6 +157,13 @@ ObjectReply CallsContract(const ResponsesProgramState& program,
       checks, {access.scope, access.deadline, access.cancelled});
 }
 }  // namespace
+
+std::string ResponsesMcpProgramCallId(std::string_view program_call_id,
+                                      size_t index) {
+  return "mcp_p_" +
+         Digest(std::string(program_call_id) + ':' + std::to_string(index))
+             .substr(0, 56);
+}
 
 Status ValidateResponsesAllowedCallers(const Json& definition,
                                        ChatPlanError* error,
@@ -175,11 +195,10 @@ bool ResponsesToolAllows(const Json& definition, std::string_view caller) {
                      [&](const auto& value) { return value.str == caller; });
 }
 
-ObjectReply CreateResponsesProgram(StateCipher& cipher, std::string code,
-                                   const Json& active_tools,
-                                   const ChatPlanConfig& config,
-                                   const StateAccess& access, Json* program,
-                                   bool parallel) {
+ObjectReply CreateResponsesProgram(
+    StateCipher& cipher, std::string code, const Json& active_tools,
+    const ChatPlanConfig& config, const StateAccess& access, Json* program,
+    bool parallel, const std::vector<ResponsesMcpBinding>* mcp) {
   auto active = Active(access);
   if (!active.ok()) return active;
   if (!program || !active_tools.IsArray() || active_tools.array.size() > 128 ||
@@ -220,6 +239,35 @@ ObjectReply CreateResponsesProgram(StateCipher& cipher, std::string code,
     }
   }
   if (!enabled) return Invalid("Program tool is not enabled", "tools");
+  if (mcp)
+    for (const auto& binding : *mcp) {
+      if (!binding.programmatic) continue;
+      const auto declared = std::find_if(
+          active_tools.array.begin(), active_tools.array.end(),
+          [&](const auto& tool) {
+            return tool.GetString("type") == "mcp" &&
+                   tool.GetString("server_label") == binding.server_label;
+          });
+      ResponsesMcpDefinition definition;
+      if (declared == active_tools.array.end() ||
+          !PlanResponsesMcpDefinition(*declared, &definition, &error) ||
+          !ResponsesToolAllows(definition.declaration, "programmatic") ||
+          binding.catalog_id.empty())
+        return Invalid("MCP program tool has no authorized declaration");
+      tools.array.push_back(Object(
+          {{"key", String(binding.model_name)},
+           {"type", String("mcp")},
+           {"name", String(binding.name)},
+           {"namespace",
+            String(ResponsesMcpProgramNamespace(binding.server_label))},
+           {"definition", binding.function},
+           {"mcp", Object({{"server_label", String(binding.server_label)},
+                           {"catalog_id", String(binding.catalog_id)},
+                           {"declaration", definition.declaration}})}}));
+    }
+  if (tools.array.size() > 128)
+    return Error(503, "program_state_capacity",
+                 "Program tool capacity exceeded");
   auto item = Object({{"type", String("program")},
                       {"id", String(detail::NewRequestId("prog_"))},
                       {"call_id", String(detail::NewRequestId("call_prog_"))},
@@ -254,9 +302,11 @@ ObjectReply CreateResponsesProgram(StateCipher& cipher, std::string code,
   return {};
 }
 
-ObjectReply OpenResponsesPrograms(
-    StateCipher& cipher, const Json& history, const ChatPlanConfig& config,
-    const StateAccess& access, std::vector<ResponsesProgramState>* programs) {
+ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
+                                  const ChatPlanConfig& config,
+                                  const StateAccess& access,
+                                  std::vector<ResponsesProgramState>* programs,
+                                  ResponsesMcpState* mcp) {
   if (!programs || !history.IsArray() || history.array.size() > 4096 ||
       OutputJson(history).size() > kHistoryBytes)
     return Invalid("Program history exceeds working set");
@@ -264,6 +314,43 @@ ObjectReply OpenResponsesPrograms(
   std::unordered_map<std::string, size_t> owners;
   std::unordered_map<std::string, std::pair<size_t, size_t>> calls;
   std::unordered_set<std::string> returned;
+  std::unordered_map<std::string, Json> mcp_owned, mcp_public;
+  std::unordered_map<std::string, std::vector<int64_t>> positions;
+  // MCP completes its item in place. The flat SDK history therefore cannot
+  // tell whether a later client call was emitted before that result arrived.
+  // Recover the original VM causal positions from the sealed dispatch batch,
+  // never from user metadata or the current number of flattened results.
+  for (const auto& item : history.array) {
+    const auto type = item.GetString("type");
+    if (type != "mcp_call" && type != "mcp_approval_request") continue;
+    if (!mcp)
+      return Invalid("MCP program history requires its authority store");
+    auto owned = mcp->Inspect(item.GetString("id"), access);
+    if (owned.http_status == 404 && !item.GetString("id").starts_with("mcp_p_"))
+      continue;
+    if (!owned.ok()) return owned;
+    const auto* origin = owned.value.Find("program_origin");
+    if (!origin) continue;
+    auto authenticated = mcp->Authenticate(item, access);
+    if (!authenticated.ok()) return authenticated;
+    if (owned.value.GetString("caller") != "programmatic" ||
+        !origin->GetArray("positions"))
+      return Invalid("Invalid sealed MCP program origin");
+    auto& merged = positions[origin->GetString("call_id")];
+    const auto& batch = origin->GetArray("positions")->array;
+    if (batch.size() > kCalls) return Invalid("MCP program batch too large");
+    for (size_t j = 0; j < batch.size(); ++j) {
+      if (!IsInputInteger(batch[j]) || batch[j].AsInt() < 0 ||
+          batch[j].AsInt() > static_cast<int64_t>(j))
+        return Invalid("Invalid MCP program causal position");
+      if (j < merged.size() && merged[j] != batch[j].AsInt())
+        return Invalid("MCP program batches changed causal history");
+      if (j == merged.size()) merged.push_back(batch[j].AsInt());
+    }
+    mcp_owned.insert_or_assign(item.GetString("id"), std::move(owned.value));
+    mcp_public.insert_or_assign(item.GetString("id"),
+                                std::move(authenticated.value));
+  }
   auto checks = Array();
   size_t decoded_bytes = 0;
   for (size_t i = 0; i < history.array.size(); ++i) {
@@ -315,6 +402,61 @@ ObjectReply OpenResponsesPrograms(
     }
     const auto* caller = item.Find("caller");
     const bool program_call = caller && caller->GetString("type") == "program";
+    if (const auto owned = mcp_owned.find(item.GetString("id"));
+        (type == "mcp_call" || type == "mcp_approval_request") &&
+        owned != mcp_owned.end()) {
+      const auto& payload = owned->second;
+      const auto& origin = *payload.Find("program_origin");
+      const auto owner = owners.find(origin.GetString("call_id"));
+      if (owner == owners.end()) return Invalid("Orphan MCP program child");
+      auto& state = states[owner->second];
+      const auto index = static_cast<size_t>(origin.GetInt("index", -1));
+      const auto* call = origin.Find("call");
+      const auto* tool =
+          call ? FindTool(state.tools, call->GetString("key")) : nullptr;
+      const auto canonical_id =
+          ResponsesMcpProgramCallId(state.program.GetString("call_id"), index);
+      if (!tool || tool->GetString("type") != "mcp" || index >= kCalls ||
+          origin.GetString("program_id") != state.program.GetString("id") ||
+          payload.Find("call")->GetString("id") != canonical_id ||
+          payload.GetString("catalog_id") !=
+              tool->Find("mcp")->GetString("catalog_id") ||
+          call->GetString("arguments") !=
+              payload.Find("call")->GetString("arguments") ||
+          tool->GetString("name") != payload.Find("call")->GetString("name"))
+        return Invalid("MCP child differs from its sealed program", path);
+      if (!state.terminal.IsNull()) {
+        if (type == "mcp_call" && returned.contains(canonical_id)) continue;
+        return Invalid("New MCP child after program ended", path);
+      }
+      const auto& canonical = mcp_public.at(item.GetString("id"));
+      if (index == state.calls.size()) {
+        state.calls.push_back(canonical);
+        Field(state.worker_input, "calls").array.push_back(*call);
+      } else if (index > state.calls.size() ||
+                 !Same(*call,
+                       state.worker_input.GetArray("calls")->array[index])) {
+        return Invalid("MCP child order or invocation changed", path);
+      }
+      if (type == "mcp_call" && returned.insert(canonical_id).second) {
+        Json value;
+        const auto* error = canonical.Find("error");
+        if (error && !error->IsNull()) {
+          const bool native_error =
+              error->GetString("type") == "mcp_tool_execution_error" &&
+              Parse(canonical.GetString("output"), &value) &&
+              value.GetBool("isError");
+          if (!native_error)
+            value = Object({{"isError", Boolean(true)}, {"error", *error}});
+        } else if (!Parse(canonical.GetString("output"), &value)) {
+          return Invalid("MCP result is not an authenticated native value");
+        }
+        Field(state.worker_input, "results")
+            .array.push_back(Object(
+                {{"index", Number(index)}, {"value", std::move(value)}}));
+      }
+      continue;
+    }
     if (type == "program_output") {
       const auto found = owners.find(item.GetString("call_id"));
       auto shape = Shape(item, path);
@@ -366,6 +508,9 @@ ObjectReply OpenResponsesPrograms(
                              type == "function_call" ? "arguments" : "input"))},
            {"after_results",
             Number(state.worker_input.GetArray("results")->array.size())}});
+      const auto causal = positions.find(state.program.GetString("call_id"));
+      if (causal != positions.end() && index < causal->second.size())
+        Set(&call, "after_results", Number(causal->second[index]));
       auto canonical = item;
       if (!canonical.Has("status"))
         Set(&canonical, "status", String("completed"));
@@ -449,9 +594,13 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
     return validated;
   }
   auto result = Array();
+  auto positions = Array();
+  for (const auto& call : calls.array)
+    positions.array.push_back(*call.Find("after_results"));
   for (size_t i = program.calls.size(); i < calls.array.size(); ++i) {
     const auto* tool = FindTool(program.tools, calls.array[i].GetString("key"));
-    result.array.push_back(Child(program.program, *tool, calls.array[i], i));
+    result.array.push_back(
+        Child(program.program, *tool, calls.array[i], i, &positions));
   }
   if (executed.value.GetString("status") != "suspended") {
     std::string output;

@@ -552,12 +552,13 @@ namespace {
 bool InterruptedTransaction(std::string entry, size_t applied) {
   Injection inject(std::move(entry));
   Fixture f;
-  f.options.io_timeout_ms = 250;
   ObjectStore store(f.options);
   std::array mutations{Request(), Request(ObjectOperation::kPut, "resp_2")};
-  const auto result = store.ExecuteBatch(mutations, Clock::now() + 5s);
+  // Tighten only the deliberately interrupted mutation. Journal recovery
+  // below needs the normal production I/O budget, not the injected timeout.
+  const auto result = store.ExecuteBatch(mutations, Clock::now() + 250ms);
   Q4T_CHECK(!result.ok() && result.commit_unknown);
-  const auto end = Clock::now() + 500ms;
+  const auto end = Clock::now() + 2s;
   while (store.Health().pending && Clock::now() < end)
     std::this_thread::sleep_for(1ms);
   size_t count = 0;

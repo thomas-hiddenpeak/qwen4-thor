@@ -88,7 +88,9 @@ class Contracts(unittest.TestCase):
         documents["serve-openapi-v1.json"] = spec
         def check(value, owner):
             if isinstance(value, dict):
-                if "$ref" in value:
+                # A schema may define a literal property named "$ref"; only
+                # string values are schema reference keywords.
+                if isinstance(value.get("$ref"), str):
                     file, _, pointer = value["$ref"].partition("#")
                     target = documents[file or owner]
                     for component in pointer.split("/")[1:]:

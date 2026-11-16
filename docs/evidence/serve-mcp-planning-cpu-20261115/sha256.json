@@ -1,0 +1,23 @@
+{
+  "README.md": "5a18d45a6e470816ba07869d5a4a13dcabe19f1264fdf33017559bb31af65870",
+  "planning-build-01.json": "f2a95b93bd0dc950613642988e5251eb1823f2e662656d4d8f5a0f3aa6c0f4bb",
+  "planning-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "planning-build-01.stdout": "1163775281ede57587e5ca7616e8a18be6b6a0a95f6886524071519d4f71983c",
+  "planning-build-02.json": "83dfe330ee50376ca0cd0b3894d94715ae2679c6bfd2642cc1f9a8ee2d386c66",
+  "planning-build-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "planning-build-02.stdout": "f12fdd54731fae1b917709e12526547c7f427e3297b09bc461cb0160b07921d4",
+  "planning-cpu-01.json": "177b535de3ab0be0d75d99429b1222aa2b05c57ead3291dd1464e48097c2c966",
+  "planning-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "planning-cpu-01.stdout": "295f13e84a340acb3d3262c3d27d8c88237fec24c555c9f05626a1e203ba2d34",
+  "planning-fix-cpu-01.json": "f7b8b16ec030f52dff66e98dfd9ebe8532759b3b6e4df670f4d7df2158bf9f74",
+  "planning-fix-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "planning-fix-cpu-01.stdout": "a95e17b14ecb0d3e4e0d040d5e0e0ea020b521a3abd2c806799ef19b026c8686",
+  "planning-fix-required-01.txt": "28d6e44dcad7b85a085204cad3db3cb2345918faf1f8636cbc923d898d995107",
+  "planning-inventory-01.json": "562a508e183ef57801f336691f014604b2d6ce938cb49ea7f6d1f3171be9c041",
+  "planning-inventory-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "planning-inventory-01.stdout": "cec459f71e8dee425d2b3b826bdc519656387b6e292fe5dc387e87e418d8bc6f",
+  "planning-required-01.txt": "48265f6babca6e7634a7df2fbebd42a258d6df13128d024a231971d16b533a1f",
+  "planning-review.json": "c48392ca7a6cc24213d05d96198634a5e2996c9289af5431c1e54a3734dd9a2b",
+  "run.py": "da8f049e2084443069e77cb428009a3fbd441dbbbc28bc37487f8118a1f20794",
+  "sources-sha256.json": "9af25e56f31946aa8960fd0f87b6cb88e0593f22d3a654a7eb49a4db2cde6422"
+}

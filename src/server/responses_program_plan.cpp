@@ -2,12 +2,19 @@
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_mcp_binding.h"
 #include "responses_json.h"
 
 namespace q4t::server {
 using namespace responses_detail;
-io::Json NativeResponsesProgramDefinition(const io::Json& active_tools,
-                                          bool parallel) {
+std::string ResponsesMcpProgramNamespace(std::string_view server_label) {
+  // Client namespace names cannot contain ':', so remote labels cannot shadow
+  // a client function/namespace. Original remote names remain intact.
+  return "mcp:" + std::string(server_label);
+}
+io::Json NativeResponsesProgramDefinition(
+    const io::Json& active_tools, bool parallel,
+    const std::vector<ResponsesMcpBinding>* mcp) {
   auto catalog = Array();
   const auto add = [&](const Json& tool, const std::string& name_space) {
     if (!ResponsesToolAllows(tool, "programmatic") ||
@@ -27,6 +34,20 @@ io::Json NativeResponsesProgramDefinition(const io::Json& active_tools,
       add(tool, "");
     }
   }
+  if (mcp)
+    for (const auto& binding : *mcp) {
+      if (!binding.programmatic) continue;
+      auto tool =
+          Object({{"type", String("mcp")},
+                  {"namespace",
+                   String(ResponsesMcpProgramNamespace(binding.server_label))},
+                  {"server_label", String(binding.server_label)},
+                  {"name", String(binding.name)},
+                  {"parameters", *binding.tool.Find("inputSchema")}});
+      if (const auto* description = binding.tool.Find("description"))
+        Set(&tool, "description", *description);
+      catalog.array.push_back(std::move(tool));
+    }
   const auto parameters =
       Object({{"type", String("object")},
               {"properties",
@@ -49,7 +70,10 @@ io::Json NativeResponsesProgramDefinition(const io::Json& active_tools,
                   "tools[name](arguments) "
                   "or tools[namespace][name](arguments). Function arguments "
                   "are objects; "
-                  "custom arguments are strings. Await results, then "
+                  "custom arguments are strings. "
+                  "Remote MCP calls use tools['mcp:'+server_label][name] "
+                  "with object arguments and retain server approval rules. "
+                  "Await results, then "
                   "text(value) to "
                   "emit the final result; image(dataURL) emits an image. " +
                   std::string(parallel

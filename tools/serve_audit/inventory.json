@@ -1221,6 +1221,39 @@
         "tests/server_vector_search_execution_test.cpp",
         "tools/serve_responses/test_vector_stores_transport.py"
       ]
+    },
+    "GET /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
+      ]
+    },
+    "GET /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
+      ]
+    },
+    "POST /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment scope, instance affinity and protected token; independent poll/response admission. Transport/agent CPU verified; SDK/business/release still pending.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py",
+        "docs/serve-mcp-tunnel-v1.schema.json",
+        "tools/serve_responses/test_mcp_tunnel_contract.py"
+      ]
     }
   },
   "whitelists": {
@@ -1792,8 +1825,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "696f0d2392346a1053d0c8147bfbe43a5f9fe24a5be1c2dec2675f4e1b2679b2",
-    "cmake/ChatProtocolIdentity.cmake": "485ac7ba70b7b1b9494ee3fff7d24c5185cf5d34f570b7146d08ec541d547f72",
+    "CMakeLists.txt": "55197d78ef07430ef7e6c9379b8b6f10a131146589fb250d670cc235e3eddf8f",
+    "cmake/ChatProtocolIdentity.cmake": "2c3eba5d15e4dff880385aa5d2e72d6e85b21b1afe2bd00a6c3b48c844d19656",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -1824,7 +1857,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "ec2f8f6d6f0ef42f39bcadf430afd03797ed2c3a727704d5abfc24f8c37ccd76",
+    "include/q4t/server/application_routes.h": "cc57af3a4ccd36f0cdb1088c6c1a7b5b4f24e040622658c34fd0bfa1caeb2d5e",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
     "include/q4t/server/batch_checkpoint.h": "ce3e49ef7d94b95d9b813c50e7fbc930c17a77f932437ed428ef17a93db659b9",
@@ -1845,15 +1878,15 @@
     "include/q4t/server/chat_choices.h": "adc843de79322b84d2a3e91db5ae93099f2ee5d2c6c3934343ae67a2d95dcab7",
     "include/q4t/server/chat_contract.h": "14c806c82ccea6b4556dc2c91342dadae390e08b52b2ed1baaea11e6bf910bb0",
     "include/q4t/server/chat_file_inputs.h": "9d2c1f3f9b3e4ecc48323d677cb2e03dc79c3bcaba4cd44c1a1e187875cce75b",
-    "include/q4t/server/chat_plan.h": "f1b0e0778da1f99a1baa84b0e91b3c683d10f6ce551b8a0a0767c73ca9bfd035",
+    "include/q4t/server/chat_plan.h": "90e9f214180161af252c0673cd62bb6aecc188e4b5dfd45c8ada9419a4b33aff",
     "include/q4t/server/chat_prompt.h": "661ce8074d94bf3b07364ad067509d54ede6fdc43c5f45ef57c5784173772993",
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
-    "include/q4t/server/chat_server.h": "bca38d00df8ecf4d84b3cecf44aa50aab7e95e611f5b69f06eda9d1353213e22",
+    "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "6f075e4f2e131276029668e09f549d56d7d53cd328a84f7200116f192c4af27d",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "bf1f0bded970842ca5ddabc42a19b480372fbb2608365616866c97fa847929ec",
+    "include/q4t/server/client_policy.h": "82d816a798b0f9bbc27d41e25e398086e00b160bebf63b40afab069d9da4e066",
     "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
     "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
@@ -1887,23 +1920,28 @@
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
-    "include/q4t/server/grammar_process.h": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
-    "include/q4t/server/http_connection.h": "4d504810d6a0bfed29e57b971b9c786a2c1ebfb524fc5a9a81b03831bda1ecef",
-    "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
+    "include/q4t/server/grammar_process.h": "10ce03140ff7f09755f6eb1471f32a0ea4277b2d48efb34dfc9042d3c1db08f4",
+    "include/q4t/server/http_connection.h": "3afb216669cd6ebd20fd555a25c728643ea68a4ce57d03ca61c66cc87709cf7d",
+    "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "2c84737705289d75954f55d41ff1ed810e914fd6087ce3c41b77975f02cd7563",
+    "include/q4t/server/http_request.h": "9a2f1e837f0dd118388e83e4fa8608c198eb5f2c3b519f1b419bf3626dfb8879",
     "include/q4t/server/http_response.h": "fd24155eb610847d1945de57715e00a1cfb7f6b64833c8fb78ab951912757934",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
+    "include/q4t/server/mcp_content.h": "80f421825338d9b8574be9e8beb54e2d84ebe7a4303c8471dcab40744a21a223",
+    "include/q4t/server/mcp_policy.h": "8b8c26f3af1ba647d6d263321c7be2c74ffd7d454d6771c4d93a9955de4115b6",
+    "include/q4t/server/mcp_transport.h": "185f92f748fa8c582e729a65c07b7f45c24ed69c33fa4fd6b6c3e5ca5c149b59",
+    "include/q4t/server/mcp_tunnel.h": "1d8b7fa51d220209b7b5fc003d555eeef52adb0ba80dd9eef4494bd7ced310e5",
+    "include/q4t/server/mcp_tunnel_agent.h": "3a39a1a1a7e562ffa0c9215e015ffb3f4b9b39caaed854cc413fa47955ab89ed",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
-    "include/q4t/server/model_preparation.h": "4b93e41cbcc7dc0d6cb7ca9e4e3f9a0ab8edfe0d6ec96495f6a233f0f8acf6f3",
-    "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
+    "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
+    "include/q4t/server/moderation.h": "7f385fab97af9a0fec9efec0d82caae950688e5c057325ec251e613665f86b55",
     "include/q4t/server/moderations_execution.h": "85014d7bd65cb4710e3cf755f7297e0f4e65bddf595445bb9a16a0600d1f1088",
     "include/q4t/server/moderations_plan.h": "f33b9685f35057d70b7b969db80d951a894bd687b3d306aa0b74e4637fbe2140",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
@@ -1933,28 +1971,32 @@
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "19a36ae77f7768d10c4401002690812842aa657fc1ceb067234cefbc3ea93725",
+    "include/q4t/server/responses_execution.h": "4044f7e757e99d5ad91085d152ae680531185ba79216d22875ca73ee2be71612",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
-    "include/q4t/server/responses_input.h": "00bacde441fa080f215fd8bfc35460942bdf06de326587ab174db174b91d3c7c",
+    "include/q4t/server/responses_input.h": "851e079473d6e931ea599dbcfdbd32a3d4da4e4124f4b05289233489c533d149",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
-    "include/q4t/server/responses_jobs.h": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
-    "include/q4t/server/responses_output.h": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480",
+    "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
+    "include/q4t/server/responses_mcp.h": "d77c65af504a2bbc6978e416bcc614a39f42f6ad4aa1b9ea44dcc41ccdbd6ebe",
+    "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
+    "include/q4t/server/responses_mcp_media.h": "49f332687353cbb07141081409e8236ef15033768564efaea25b3008aefc5c4c",
+    "include/q4t/server/responses_mcp_state.h": "aeaf5e0ff66e98fde9e3676c5793a3fb9629889abe67a4ee8db6a9643abb94b8",
+    "include/q4t/server/responses_output.h": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab",
     "include/q4t/server/responses_owner.h": "de775f0874ff24fef05e56049b879e2c3bd953a1fed5701307933e14d2e9b699",
-    "include/q4t/server/responses_plan.h": "236212954be25dbcc26b0ae2fc328884315626016854f431fdc619adb60ff4d0",
-    "include/q4t/server/responses_program.h": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
+    "include/q4t/server/responses_plan.h": "a567ef30b1bbd512f464d8c8d939a47ee8c9e9646b38ecb6e1d3277e8d0c568a",
+    "include/q4t/server/responses_program.h": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
-    "include/q4t/server/responses_state.h": "64196334ba93428071e04d9630673d15a3f58e01c0272d5c0a6ae78577904de2",
-    "include/q4t/server/responses_tokens.h": "ad61546724daaea14e3ff9c7f07697e2f847e389d4bdd899090f56dbf8c07de7",
-    "include/q4t/server/responses_tool_search.h": "22d28add469fdeab521ce7a2c45b961c20d15ad81712c8fd2e00423402e33e2a",
+    "include/q4t/server/responses_state.h": "22d66487e2bad57919e63860fd64435db4e4c66e3ea1ef143d24d19d1a40daa9",
+    "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
+    "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
-    "include/q4t/server/schema_graph.h": "538d8976773568262ff9310d2efc19e297560fc8571eb0ebf4c6d538670527f2",
+    "include/q4t/server/schema_graph.h": "12fb818aab31a3a02f1d5bc67b4b1e3692f68f6b8e9ef71a2234fd6896884229",
     "include/q4t/server/schema_prefix.h": "d7db116dc3f2b1135c3a5e2f152396c3e9f67a3c12b05b8d64a785d2274ba838",
     "include/q4t/server/schema_receipt.h": "7cb1f22575987c5e47e16a9c6b3cf9cb90a598a92c2c190d57cd6f077dc19626",
     "include/q4t/server/sequence_admission.h": "ed25a8d14d1b09c9bc2d1f4a50b1ed31796c6024c0442e5777db7b2e44337d91",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "3a6e251fe481eee340177fc1080d764fb3a47abfc210d8345d2558ad90be5b06",
+    "include/q4t/server/server_options.h": "88f296ce1215537b9608d42638a1dd707807b9c52c2b7a3df6a01513f54a9d9f",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/session_cache.h": "19706aeaac3c036d8325d7ae50c0e1198dfe507fc989cf6c4b5414d3dc530455",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
@@ -2007,7 +2049,7 @@
     "include/q4t/vision/timing.h": "1cf7c2342f1fbd58085a5ce4421ff0872fe56c247daadf3719ea34959d3b8ebf",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56",
+    "src/main.cpp": "495dfaaff1c80c4b2ea219a9add17189fab7bb03ee6319dbca6b56efce3bcaad",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "fd855fab933d9538c6326c1d9d7d003e3d0e6af52c33f84b07bec7480513625e",
@@ -2027,7 +2069,7 @@
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
-    "src/server/batch_budget.cpp": "111c3c8619ec8a2f88c16cb1e829a61ad617703af57a762f3f7b14906ab791b3",
+    "src/server/batch_budget.cpp": "6295858bdcda9098f943cfa42b1afb04ceb11649cb0f5c4a93e804511a5f45c9",
     "src/server/batch_checkpoint.cpp": "77f0c0fded325307c6a65c095dd0fc3aa87fa88e74151a00db0c1e802fbd232e",
     "src/server/batch_execution.cpp": "e405aa5a78586cb5d9f7f95bd330f45b610a105c3004a74dd79cbb046914d093",
     "src/server/batch_finalization.cpp": "979212557f90a6be6dcacd54ca55ceba9de08ac593e3703d5523cfe41b8619e0",
@@ -2045,30 +2087,30 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "cd42b60c0d0509a139092b2ed2f653487ee1bb1bf1a22119018e6e3e5b815e83",
+    "src/server/chat_capabilities.cpp": "176eed274d2fda5c25758149d0c0bbd3451b929cac7233654e7100276e4cce3f",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
     "src/server/chat_contract.cpp": "02c118ebce0800852f00e4726199e1fcff38218540a339e7ae562c3689bc432c",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "8e0905abc71db0caaa3a880ba35c2981c3a0468052860931d505bc018cd28dee",
-    "src/server/chat_generation.cpp": "0d908482e8079f95c474901366c297544aa778052b2273d15c61de56595865d7",
+    "src/server/chat_generation.cpp": "fc815880f0eb59d32d885496e033b903bd89802e8646e97ca4cfdd6f1bfa4c62",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "8e675e6affa0690d845a4b7ade6a91312339888560243c8b06643acc208ee931",
+    "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
-    "src/server/chat_input_tokens.cpp": "ddb35536747c9fc2e97878dff7a6e611b2472016b29433d9a73e5c20f938bf28",
+    "src/server/chat_input_tokens.cpp": "fbe52074398504070dea6f68404f6e9d6b1c2ae17273efa236e2a6cb5088a05e",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "60594faf70dad63a5a317e67bdda140227a0fc9d66f3ce2f53104b89a26f7416",
+    "src/server/chat_metrics.cpp": "7aeb7bbd9a5a3748a64aba4989ca7608b24e749da765ab116799cf294276b500",
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
     "src/server/chat_model_step.h": "4e61be099f4d32535946d22979fe837f3c120a49aab9ab986eda01dee2b7ddca",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
-    "src/server/chat_plan.cpp": "56accba876bf2c3c190707bc6d87093253a1efa204f14c703153fd214205f329",
-    "src/server/chat_preflight.cpp": "ec763dcc023d7faeedfc31a7044dd42a3bcaf892cd0e31504bc0be6312d4d489",
+    "src/server/chat_plan.cpp": "80807e9264274a30e6571be835118f0a27ea0f14a32f48dbe6530ca4e5720956",
+    "src/server/chat_preflight.cpp": "242886ea1e5df0c7c8f972f3c11e3e8c83753a315437d1aab1a4b82ed13dfd90",
     "src/server/chat_prompt.cpp": "7f54e6e302bb171347434bc3170fba913620a31b52d3970490b5662bb0d08745",
     "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
     "src/server/chat_responses.cpp": "74fa1e051643821b26d491ef7ab10bb53151b9177d68215d0d12fa9b8a8cd336",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
-    "src/server/chat_server.cpp": "8c62d260d9522ee1100c276dc0df6a1edabeb293e1c252978cb6d6a00c8621d3",
+    "src/server/chat_server.cpp": "c7b39a179d21d6ea0d0aac7b734b7d7471cc3743e5abb58b430bd2b01b15947a",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
@@ -2076,17 +2118,17 @@
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
-    "src/server/client_policy.cpp": "40c917a53281e02de140ac4ac0fdec8b6c090a33dda7d480cfe7ae5c0d37ce23",
+    "src/server/client_policy.cpp": "a142b3cb0d8ba30a7b7919c7eea8a6e83cb7f7df420cc027ec419ac6e7e49262",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "9c2eb3b26ffb92412fc4a685d7265d1f88413fcdcbeff6586a8f29a6069fb961",
+    "src/server/client_request.cpp": "3c20cd09870843d117ce76c915749de64f78581f612dfa33d47d9583b15fab2f",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
     "src/server/conversation_state.cpp": "f480ec44313ed8d84ef5f4339af76d7bd0f7ef1902687179c5da6913ed9bb44c",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
+    "src/server/custom_grammar.cpp": "6ce06340c9b7348533118c8661210d99623c334b5ff6e70b466574d32f5e2dab",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
@@ -2100,7 +2142,7 @@
     "src/server/file_expansion.cpp": "ab874b3175a5b1223f3db3d8b821310e819dce2c912da28aa107377cd83e7886",
     "src/server/file_extract.cpp": "00bc6a2bddace95dbca1ef92f3fa84fae597625f8e07972227d2fc62a89754e3",
     "src/server/file_fetch.cpp": "6cfb1ca7c6cea38ae1069f2c0c78b2f32e9006a7ba60d14c4025775169a680af",
-    "src/server/file_fetch_http.cpp": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
+    "src/server/file_fetch_http.cpp": "fb31de9ac5970682de507c0bf4aa6b5cf628078b8434636caf68d76a8d3898c8",
     "src/server/file_fetch_internal.h": "f25e5b630b36ecbe0720e159808ec70b927d73b8e8b7af090198fea2decea51f",
     "src/server/file_fetch_policy.cpp": "dda142234c8c2f35794bdcd66f6e4fbd80db8049602ca60492f6ada3b750ceec",
     "src/server/file_image.cpp": "69739e492ea56d979ebd66b639d0fb37fcdf29f9e8c49fe98bd66223695ee59c",
@@ -2140,33 +2182,48 @@
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
-    "src/server/grammar_process.cpp": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
+    "src/server/grammar_process.cpp": "d176c57391e961f475e1507320e1a7d40bd10a074b32eb0f231553ef69cb4fe9",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "a963e1099af8505277ca04dd75f18da090bcab5fd8c058eb826ff10e3a25a8b1",
+    "src/server/http_request.cpp": "475d201a89306c99927c49ae7e0161b47429f21a0035bb371508a8e884daa0e5",
     "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
     "src/server/input_snapshot_bindings.cpp": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
+    "src/server/mcp_content.cpp": "421599723f7af3d2c805e407803e44926777c666c77b372f9920343f211d3965",
+    "src/server/mcp_http.cpp": "4f149b1551fac414a472ae3edfa71c68455a64c6ca89948f80f8c6e6dab0868a",
+    "src/server/mcp_policy.cpp": "5e794d366597f8228ab61922176980bb93c500554906912968d28061f21397b8",
+    "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
+    "src/server/mcp_sse_internal.h": "daadf5676840661a4735a7146663886144c5891b0f04db3176508641eb781e87",
+    "src/server/mcp_transport.cpp": "7bd6c59f901a3f89e30917c9c657b386f7f55cfef53f8ec036d48f1e33a5757c",
+    "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
+    "src/server/mcp_tunnel.cpp": "5035671dcbdda13f7a05efa5f3cac05f9777fbbfdb247d1049b4b9aafd43a668",
+    "src/server/mcp_tunnel_agent.cpp": "56ad368c6e4c38a9f8ae6269b9e8ec1c473d9e971c11eebe253405a4a8de6483",
+    "src/server/mcp_tunnel_agent_config.cpp": "7d16c0430c399dca5f82b71e587f559209f07d2e49ace9095858d878877f1c3e",
+    "src/server/mcp_tunnel_agent_http.cpp": "ec42a0d02ba9b5de86883994a0bc6db32ab4e6c0e2b48f90f6ee0c03087c26be",
+    "src/server/mcp_tunnel_agent_internal.h": "8a34be8b6d9bc8f5d7a58ec62aadc4cf4af5bf78546c1c5d4101d7d6aa3524f3",
+    "src/server/mcp_tunnel_api.cpp": "f7b6abc4f9a45861ce3dd07d9fb63be1a3a818370013cc92980781d4852f0d30",
+    "src/server/mcp_tunnel_transport.cpp": "46fdacb5379eb33118e46c3066590f39a6ef08dfc64bd135673181d3f50e28d1",
+    "src/server/mcp_tunnel_transport_internal.h": "0474e349f1f1256a19e4d2c71efedf3a2edc35337654b6ffc459672d2da36e3c",
     "src/server/media_admission.cpp": "ca95d54ebc79450e52ea83a07e354166b7eee227185bf067bbdc213595343cf9",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
-    "src/server/model_preparation.cpp": "3076bb74055173b514a6de758238cd2c25b8240cd6f51026e673e3c103cd6e96",
-    "src/server/moderation.cpp": "101571d57bd094560859c4d85dd7896ef7a40eb7710ed493a6c0bc915d88646c",
+    "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
+    "src/server/moderation.cpp": "a3c45a934a982a222885b12835a7aca353a145b453f7d3c322b6f370fc4b2618",
     "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
     "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
     "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "06c465d72492cb095c15290338c71045fb37f6cc4317d411a4ed56f8879c1e83",
-    "src/server/object_retention.cpp": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
+    "src/server/object_retention.cpp": "712e524139de80a68b33173956ad7136273ce1b44002590d04508a1b7f034e7a",
     "src/server/object_store.cpp": "4143a1ebf04f887c7f69fba6b93e79b5cf304fe87f8d3c99ad7f1c0583824225",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "446ac5e20d9dc421ea436f9320a4909f222d0be0113000960164197f6a1bf038",
-    "src/server/output_constraints.cpp": "04dd570a10b706e7d80b787e2418ca441a1a7903706f3ddc087daf0f846e2e5f",
+    "src/server/output_constraints.cpp": "27f79f55134b574fd041e43d8e77c8d6314723febc7eb0e2ef746421057c229b",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
-    "src/server/program_vm.cpp": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686",
+    "src/server/program_vm.cpp": "044e3fbe62059a56c99ee0771247deeaf34bbd795ac58013db7654cd9d78b5f0",
     "src/server/program_vm.h": "025e749a442a04e67ee7847be6da772eafb034d0e65cb5e456e1d52a74921126",
     "src/server/program_worker.cpp": "a7aba626f2a9f49a675685796603f27dc073f3e6cdfc5617bd713439590362d5",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
@@ -2175,47 +2232,56 @@
     "src/server/prompt_cache_policy.cpp": "3b5b74a4876867699d5e17040ca6c2aa9e956085a999c73568cc94c2a5187222",
     "src/server/prompt_internal.h": "171a2463a5117f67e036c9148508f985f4360e143c350e0cb027c3762032e999",
     "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
-    "src/server/prompt_template.cpp": "ca4a9b18b4de0e1369c88cfd3b579ff5f26af6856aee6e2bb696eb8c24bd9b26",
+    "src/server/prompt_template.cpp": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
-    "src/server/responses_api.cpp": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
-    "src/server/responses_compaction.cpp": "06c36dccc8cab791dfcc002e60fc40c40422ebe819829bdf9e206a8feaf0a84e",
+    "src/server/remote_http_internal.h": "5fb3566c611d5be3816ea8986c15f6f3ff42c7b1051ab7413af1ba4c95ba0408",
+    "src/server/responses_api.cpp": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00",
+    "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "5042eaed1b135c45da9de40fb68a09fc98b4da54f22cb20599a80276a4aab736",
+    "src/server/responses_execution.cpp": "7b06e3f9647d21655a64151c49edcb0f08fd22ac24559ce9b522dc3c42eb4290",
     "src/server/responses_execution_compaction.cpp": "6a1a6501d411180c1c5ddf4014e8738953180c179de09bc44808b9c1a0e0a936",
-    "src/server/responses_execution_files.cpp": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
-    "src/server/responses_execution_inputs.cpp": "734d9d81a2659e40026be9c5979d6708f887d1ad0a906712d01844657c8848eb",
-    "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
+    "src/server/responses_execution_files.cpp": "df9d771e7b83dd5fbd6bd58be10b74437eef312102dd4f425470416b85918492",
+    "src/server/responses_execution_inputs.cpp": "8112adaf69691dcd53b172b1f0138daa8db1303cf15d7fff5038e63f48f6c6ad",
+    "src/server/responses_execution_mcp_media.cpp": "af306604efccf0844b8f6c50938eb0568c7cf53984ab67b33381f1b9e7d3d47b",
+    "src/server/responses_execution_moderation.cpp": "6b235c9d2956f752d8c5ddb76aa9bc16f152ad6bdf90a1ecbf5a874f5fa86732",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
     "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
-    "src/server/responses_file_search_execution.cpp": "9e1602cfccb2893858cf19901c52e58624d2ea6b093ea2fb2c7fbbdee45a6837",
+    "src/server/responses_file_search_execution.cpp": "0f6f0a66a63ed33a92f9ff01691f20c5cb7957a90766fc97fb8e00c5e062b20f",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "3b1b2a3174fcd3491aa6b5bd5a5a5b9a3179ad7c3a5d38ece36a30f6c9e36795",
-    "src/server/responses_input.cpp": "bc26f9e215a4a9d02b2d52fce89df1ca656fac22d131ca99184bef20d6aede11",
+    "src/server/responses_input.cpp": "3e0a59f7f6f7fd7b76e6fd53484286f626d1ba169e905ebe9dd2601700fcaf21",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
-    "src/server/responses_jobs.cpp": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
+    "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1",
+    "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
+    "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
+    "src/server/responses_mcp_execution.cpp": "783f75791e81d4770f5116e09d424b43cfe3e808dee6e021c455884a93e41acf",
+    "src/server/responses_mcp_media.cpp": "a0c64c423bd831884da6c6c3294e8fe8b4b6de3624b4a24b58b339d325d17727",
+    "src/server/responses_mcp_output.cpp": "bfa34595df96c00a98fc0322077796604cd86c6934adf2ddeeae525dbdbc76de",
+    "src/server/responses_mcp_preparation.cpp": "25ea0375bd6caf0fa0bee9983c10b0f4196aa8f76fd36af2df5fa38fd322e842",
+    "src/server/responses_mcp_state.cpp": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451",
+    "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
-    "src/server/responses_plan.cpp": "3d111362a52c66846f6b6f245449a0490ef3d13cd3606b27f7f7c01eab6118cf",
-    "src/server/responses_program.cpp": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
-    "src/server/responses_program_execution.cpp": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94",
+    "src/server/responses_plan.cpp": "52b8301cc3e9d5cbb45fac6cd27abc11c8deabb3935aecbe6dedfcfbe9fa49ba",
+    "src/server/responses_program.cpp": "c7c15a9c71fb31019275f7a9c87d78188cc0e7507ea098053906278e26e8bcbb",
+    "src/server/responses_program_execution.cpp": "5655ebd611f06505533d0dcd1dd2e4cc85c399a0744d75f7eb37eb481e992b22",
     "src/server/responses_program_output.cpp": "368d98769f65baa9fe7a2a252f9ab49469e2317f623f063cc933b42b772bb587",
-    "src/server/responses_program_plan.cpp": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
+    "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "d28d4e47b6f6947418d5d984e65e1a92c64aafdcf026a6a1e479dacd05db5f5c",
+    "src/server/responses_state.cpp": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
-    "src/server/responses_tokens.cpp": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
-    "src/server/responses_tool_catalog_history.cpp": "2b8011bf99d9264a92a9b1f9c6fa42bb3a229600833c5b29b84a27bdee4210bb",
-    "src/server/responses_tool_search.cpp": "b73429e8dbac20630baf88c3ef89667e31e6d4bc15b20c7e56f9ad1d7b44cb9d",
-    "src/server/responses_tool_search_execution.cpp": "db8c125522dd1f9e68d2b5d26e9a883a49bd244d33f2d104816c2d834c09c4d6",
+    "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
+    "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
+    "src/server/responses_tool_search.cpp": "42b50b7e4333a91a0636c950ecc7a3d69472e3ba2691f7237489f66c8cd7a3a1",
+    "src/server/responses_tool_search_execution.cpp": "a2bbce47d6b2b1d764bd7f036a0c892af38e8d17e183ed40bf413d577f01d2f0",
     "src/server/responses_tool_search_output.cpp": "270895f1134a0fefee6abcc6913fab858f20c355d141692dfeb0ee757c6ef9fc",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_grammar.h": "b91cea4dc591de156c078d5c3e8ea74028668484091688a03e62b6c51e6a45cd",
-    "src/server/schema_graph.cpp": "043567fc6fbaefb60546497f200b30d271e544c23d872573b97e3e8fdbc44aec",
+    "src/server/schema_graph.cpp": "2f05428a190011fe020ee4d38a0918c9b49e4c13bdd312e4210858e1ae3c3bc0",
     "src/server/schema_idna.cpp": "214915c2433c13b21828aba703be2ec5e4d44ee7a2a805078f3a307daa2f54fc",
     "src/server/schema_idna.h": "23325232ba88254bef18f588f0b499bd703693714bea735e498e45b1193d026f",
     "src/server/schema_number_grammar.cpp": "794d96e59285772d4cdcffba18692cd5e4ad275d7adf1e831bfa2417842c5e86",
@@ -2226,9 +2292,9 @@
     "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
     "src/server/schema_string_grammar.cpp": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a",
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
-    "src/server/schema_token_guard.cpp": "5c62dc325a781133ddc97ea5c911a5799c8870e34672e0508f9d064f47fd6d26",
+    "src/server/schema_token_guard.cpp": "a08e932fe0d67acc7d18427b15f15a5417bddc10295ced2a3a3f92d385295e2f",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
-    "src/server/server_options.cpp": "a41231b29ec11016c6a70caceb95d28ef62d3f639a084ddff15038d64907eca8",
+    "src/server/server_options.cpp": "39b64dd50f799e66a238c8a4821da0fc77bc4101912ac747fd3dbe106fde8dbd",
     "src/server/session_cache.cpp": "43263b8298973f4717a784272ceb7d1b06219781eb27ddd5d338a44fb4b40d2c",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
@@ -2277,7 +2343,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "1d3dfc296e4c3869eb5015dcea32c0109495b2302c8af8cfe0d976af6f873901",
+    "src/service/ingress_main.cpp": "902407f6dbf0a56dbeccf7454728c11b03430d40863d33651485a48fea7a1663",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -2287,7 +2353,7 @@
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "f462696017284cdd57e6f8579e3f80d3154b63bb3fe6dd8ad357b371dd457e00",
+    "tools/serve_gateway/gateway.py": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/acceptance_owner.py": "2da6981b72904f80638a6f81d38e56c9301d42a143db36b264d3d4bc8205f3fb",
@@ -2298,7 +2364,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "c0d877760b8eabdbb949a373a9ebcd352c18d4cafdb8040f5a499fdd4bdcdc71",
+    "tools/serve_recovery/bundle.py": "162694395c218be82e52969fe9cb26ef7f75fcc686918a48c77d7258b55b1409",
     "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
     "tools/serve_recovery/cold_acceptance.py": "24b2900ce3d8b2e2bf6699f6e07ddb50a91a0f4637a149d543fa42c4ef45bbec",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -2332,8 +2398,8 @@
     "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
     "tools/serve_recovery/fixture_model.py": "6a6c64f2b1742b08f1b58dd740ea28f553816edd5b613bb5b46071511bc3066c",
     "tools/serve_recovery/fixture_production.py": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18",
-    "tools/serve_recovery/gateway.py": "272b1a66c251dd6aede2c78d53bcf3a424c4cbb5cbc561b64c3de324b287bacb",
-    "tools/serve_recovery/gateway_config.py": "9306adc5736c782a3efea0845cd9dcdf184e4668cde288e60b069da9dca1be7d",
+    "tools/serve_recovery/gateway.py": "8fed57e0e6fc515928f40e26c5a46081fc767961fdf992a42bd6dada65ba7eaf",
+    "tools/serve_recovery/gateway_config.py": "ac84b61eb867ec32ba75ab95cdd6c0ba7378382da92f04a156dddf0fe5746888",
     "tools/serve_recovery/host_artifact.py": "94cf594a7bfefe3a1fafe19fb70ca8c3a1060c219cdb624cca609cc4e4f68c79",
     "tools/serve_recovery/host_entry.py": "e930b878c2d7d29621863e4f371884b75f163a0bfdacc641ce0bdc752cc47940",
     "tools/serve_recovery/host_handoff.py": "0d88e5d81c07a23d441ad5c2e9afbaca6fca4f7cc6cd68c1158a00d3be9f9431",
@@ -2361,7 +2427,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "5409c8c3cf67ed2116ca4c90aa1e617a90d8ff987642c71cc270fe904cc9adf1",
+    "tools/serve_recovery/profile_acceptance.py": "0e43b300af7270965c2b62fbbe95488b35306cac606d9dcc3e93b217d96542e3",
     "tools/serve_recovery/profile_bundle.py": "b2f033b9fd3b6b1136223fda0766652879acf884e14037e911f17d49744ba294",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "09d2bdd563517cba3ed966fc808bb34c90284289d58c3654aa53d6a274644af4",
@@ -2371,7 +2437,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
     "tools/serve_recovery/profile_manager.py": "ff8cac735812294ddaf2399751ade4a011a71f3f21ae6f24528762afcf39cd06",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "fa69991f8f8bc4d4af8f0b9ebdb0f98f476680561c56fb8945f849052a023ab6",
+    "tools/serve_recovery/profile_migration.py": "5bc16689fcc12ed804508c27979c40a74b323131822db1c415942dba30b058f4",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -2397,7 +2463,7 @@
     "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
     "tools/serve_recovery/retrieval_acceptance.py": "4cb55e544591ee31cbd131d41bd1d526a47abd4d0d8af0127dd721c88cda1b20",
     "tools/serve_recovery/runtime_identity.py": "49c737a851df8afe97da6c9d5897f54f2759e3447939f5577940dba735aa5708",
-    "tools/serve_recovery/service.py": "4d37bc2cb456b08407aadee892543ea6ea9cd7a31baa6f7ef712f18f9bf8e501",
+    "tools/serve_recovery/service.py": "0e6c9678a13e87117da0cf337f709491439725efe5485b7d4144babdb91dd4a7",
     "tools/serve_recovery/store.py": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d",
     "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
     "tools/serve_recovery/usage_control.py": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc",
@@ -2407,7 +2473,7 @@
     "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
     "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
     "tools/serve_recovery/version_acceptance.py": "8b6f7150ae2b9d6777b8428b657beff127f94fa585897531edf0314ebcf50eb0",
-    "tools/serve_recovery/version_contract.py": "5b4c1e98abfc2aa7f921df362057f7a07b744ba2e598a65a6cda58f16d991bd6",
+    "tools/serve_recovery/version_contract.py": "8f786b5dd72c06b23b06df5dab58eafb5c03faca244b8ecece0c44159143c4ec",
     "tools/serve_recovery/version_journal.py": "f3d0ac689ffa0db5a6e1288d6c3950cfbfdae6e560a714d04134973f15f50a8c",
     "tools/serve_recovery/version_launch.py": "9a3c5408b3094e9a47a393b5c72a3a96fb573969409c02e64c2a8c695d1b953d",
     "tools/serve_recovery/version_policy.py": "c3c1523aac27544af3f3d9149c275a015a040987ebb463abb2895543f28d48d6",
@@ -2433,7 +2499,7 @@
     "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "9e7b3ff721096dbe8ab129f0e52415e05e6e41a212785bc2595f9245500d9688",
+    "tools/serve_service/package.py": "04adbb7677044f37be33a4c608391ddde9ab5c988a08090fc118946e547a4478",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
@@ -2443,7 +2509,7 @@
     "tools/serve_service/resource_stage.py": "4aa07182ad087722b0cdc6a250be0d6d48caa681cb9231c9bdf6a6d341aa8064",
     "tools/serve_service/resource_worker.py": "dc448b8e295df6282af4027c1e061c06b11a6f0b927027a32ad3f326cd620eec",
     "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
-    "tools/serve_service/service.py": "27ef45f21a601d9050e1fb1fd95371c6addc89cecdf078be823b1fd6af68bc2d",
+    "tools/serve_service/service.py": "c9fe6f34ce19e08dc9ce0893517f2617c76a93d26f17fe9f8dfbc5fa8438f16d",
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
@@ -3979,6 +4045,60 @@
         "tests/server_vector_search_execution_test.cpp",
         "tools/serve_responses/test_vector_stores_transport.py"
       ]
+    },
+    "GET /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "GET /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}/poll": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
+    },
+    "POST /v1/tunnels/{tunnel_id}/response": {
+      "semantics": "Native MCP reverse tunnel metadata, single-handoff poll, original-token response; method-specific handler and optional TLS ingress.",
+      "boundary": "Exact deployment caller/agent authority, instance affinity, separate poll/response admission, deadline and body limits; complete MCP transport/agent and release remain in progress.",
+      "evidence": [
+        "src/server/mcp_tunnel_api.cpp",
+        "tests/server_mcp_tunnel_api_test.cpp",
+        "tools/serve_responses/test_mcp_tunnel_ingress.py"
+      ]
     }
   },
   "observation_io_review_20261108": {
@@ -4986,5 +5106,535 @@
     "cpu_passed": 11,
     "real_business": "pending bounded rerun",
     "default": "rev118 unchanged"
+  },
+  "mcp_transport_review_20261115": {
+    "scope": "Isolated MCP transport component: native HTTP/SSE/legacy, session/version/pagination and callback-gated single dispatch. No public MCP capability enabled. Existing file fetch TLS/DNS reused, framing target tests passed. No model algorithm or default changed.",
+    "sources": {
+      "src/server/file_fetch_http.cpp": {
+        "before": "8737d92566af852c00705cc40c1f3e1ab1d69ddc17d39f961e96b7314440504d",
+        "after": "1afe6181ab41b60d74f28f3f6107d9d5390729a0f260d1d788d25578aee04275"
+      },
+      "include/q4t/server/mcp_transport.h": {
+        "before": null,
+        "after": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "485ac7ba70b7b1b9494ee3fff7d24c5185cf5d34f570b7146d08ec541d547f72",
+        "after": "d70e26b0d6bde97a7edc70f62fd187d1ecb91dffa7ff57c6881face34babcb3c"
+      },
+      "include/q4t/server/grammar_process.h": {
+        "before": "834c0c9d4ffbf754c92211cc6df4751fae45c72fbaf3d228412a3b01f5eae660",
+        "after": "1ea1a1d82e6ec28770d8ed698eb37db842f8ad941033d1eb96ded07bdf5fd662"
+      },
+      "src/server/grammar_process.cpp": {
+        "before": "681da9e019855c60ab51177f034a281ca9ab44e368f481aa884206acd16ea85e",
+        "after": "942a028e2047811e06e9e66a68e7a8b5e13b5285e24f78a999a19ec9cd13e41f"
+      },
+      "src/server/mcp_transport.cpp": {
+        "before": null,
+        "after": "c3b96421351cdb1a8921181617f6bdb7b85e39423e9a71b73e9baf1575efdc8c"
+      },
+      "src/server/remote_http_internal.h": {
+        "before": null,
+        "after": "2ff012c16ed2a2760875e27c4b54073e8b62662ad222d9d45b4e6d80bef2bba0"
+      },
+      "CMakeLists.txt": {
+        "before": "696f0d2392346a1053d0c8147bfbe43a5f9fe24a5be1c2dec2675f4e1b2679b2",
+        "after": "3eefae2a550735187c19d48fcdf823b975f632b5bb3de85a1b3f8ddae5efc64a"
+      },
+      "src/server/mcp_transport_internal.h": {
+        "before": null,
+        "after": "6d63aab1cee095f7b8f8080009ff6e9ae81222fe3d1606317dc0fff8122e343a"
+      },
+      "src/main.cpp": {
+        "before": "98d207c47ef2a3fd769c784f9e1ed94bdb3f998af3e88a0828472f43449fed56",
+        "after": "4fedd2d3124340bee9a0736023ec0fbed385552de0e8100a616d14015ffb224d"
+      },
+      "src/server/mcp_http.cpp": {
+        "before": null,
+        "after": "9b8e9b1815732f07c30633da9307b10229034eb039d9cd0616f45f15c620c58c"
+      }
+    },
+    "evidence": "docs/evidence/serve-mcp-transport-cpu-20261115/README.md",
+    "public_integration_required": true
+  },
+  "mcp_authority_review_20261115": {
+    "scope": "MCP request-local credentials, validated catalog/filters, original schemas; client/model-bound encrypted authority, approval and single-dispatch CAS. Unknown commit cannot acknowledge transport. Result-unknown never replays. Self-contained records retain original TTL, register no local media references. No public MCP API enabled yet; engine/default unchanged.",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "3eefae2a550735187c19d48fcdf823b975f632b5bb3de85a1b3f8ddae5efc64a",
+        "after": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "d70e26b0d6bde97a7edc70f62fd187d1ecb91dffa7ff57c6881face34babcb3c",
+        "after": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef"
+      },
+      "src/server/mcp_http.cpp": {
+        "before": "9b8e9b1815732f07c30633da9307b10229034eb039d9cd0616f45f15c620c58c",
+        "after": "ba0f31d5d9eb3986cf8dabd22202627aac14b4ebd6c93db6af1503c8edbf8617"
+      },
+      "src/server/mcp_transport_internal.h": {
+        "before": "6d63aab1cee095f7b8f8080009ff6e9ae81222fe3d1606317dc0fff8122e343a",
+        "after": "25bb332622c87b1311ebf79efab37d226067c4f53d5042381ff8994bc52f1e93"
+      },
+      "src/server/mcp_transport.cpp": {
+        "before": "c3b96421351cdb1a8921181617f6bdb7b85e39423e9a71b73e9baf1575efdc8c",
+        "after": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd"
+      },
+      "src/server/object_retention.cpp": {
+        "before": "5240d67d1b561e4fcd56848654387a6f13fef11630f35054039951e60ba9608e",
+        "after": "92433e3d30130357a4f1a19c925b8bf582951f24954c0262dadca7dcc602e531"
+      },
+      "include/q4t/server/responses_mcp.h": {
+        "before": null,
+        "after": "c8643ec0748f4acdf0c893534655b2e2392510056b99fc5c52bdfcb05a611daf"
+      },
+      "src/server/responses_mcp.cpp": {
+        "before": null,
+        "after": "a163ef2e59d7f36f80b23b93f56e09f9bd435f3089752552e2d70f91bf75d9f9"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": null,
+        "after": "bd034934820cc14d23dcec8826ad53aed2d37a5f34c7fe50d143363e65cbd404"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": null,
+        "after": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a"
+      }
+    },
+    "evidence": "docs/evidence/serve-mcp-authority-cpu-20261115/README.md",
+    "public_integration_required": true
+  },
+  "mcp_output_owner_review_20261115": {
+    "scope": "Native MCP list/approval/call output and incremental arguments match SDK shape; interruption has no fabricated arguments.done/success. Private durable dispatch identity prevents a losing request from closing another active call. No public MCP execution route enabled yet.",
+    "sources": {
+      "CMakeLists.txt": {
+        "before": "46b6b3c9cdecd249557357868539d2d600b88bd482cf76e404c50473f7ebe2e5",
+        "after": "a07f27069c7ce12f821f9643dcb860c75eab6657748189b6c2a238b64c90dccc"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "4833ea9efe0c80ae4732b8b9ae06daa2460e89f225fb4b6b6b764e706ef7cdef",
+        "after": "ffbfef5a6910756e174ce3912d9f37da4060bc3f302866f6c431907d04ea3e88"
+      },
+      "include/q4t/server/mcp_transport.h": {
+        "before": "70b0892019f1ae013e3d962b49c681c62f014e2d20f92358318d27e1d33c193e",
+        "after": "5506d9e64170007da13eaa829f63d4aa99aa089ccd45e6bc9e93cab8c3418647"
+      },
+      "src/server/mcp_transport.cpp": {
+        "before": "c3150551d6f0545e9298c4fca4e26f4e8b23d1d2a0aa680a5e9905e0119a9edd",
+        "after": "36e7e426b7fd955f976020930bfcfe2a23805f3a0b8151d4eafcbfc71e283f90"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "a6cc98421a679be2a65dc75dec9f220a9080519ee35a09438281ef813f7e5c9a",
+        "after": "96646ffb3d28a4470bc4aac3984da68f7342e1131166cb2176afac3c9327d1ba"
+      },
+      "include/q4t/server/responses_output.h": {
+        "before": "e0500a97b4cc1e29763d9a814dbdb631c9a44968600f4b758bac4b99541f0480",
+        "after": "2c311a8f172a236b7ee21f85f9ea8df4b842fe311e8a7aca5523f1fbc995f5ab"
+      },
+      "src/server/responses_output.cpp": {
+        "before": "6f294ad895f784bc86ff9dd7d53e0f878037ee4fb58eda6a72bbf980bd0703e1",
+        "after": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc"
+      },
+      "src/server/responses_mcp_output.cpp": {
+        "before": null,
+        "after": "b4120e789cd5ce8281579b6b01d2a6053bec458f55121c7ec34b479d3fcdc6cd"
+      }
+    },
+    "evidence": "docs/evidence/serve-mcp-output-owner-cpu-20261115/README.md",
+    "public_integration_required": true
+  },
+  "mcp_batch_review_20261115": {
+    "state": "targeted_cpu_accepted_not_publicly_delivered",
+    "source": "original authenticated Batch File row, matching private request digest",
+    "secrets": "request-local only; never Response/catalog/preparation",
+    "checks": "12 different C++ final pass; foreground-close fixture failure retained",
+    "gpu_runs": 0,
+    "remaining": "MCP program/media/discovery/recovery/session/mapping, SDK and real business, release"
+  },
+  "mcp_discovery_review_20261116": {
+    "state": "targeted_cpu_accepted_required_combinations_continue",
+    "checks": "23 distinct C++ final pass, includes real local HTTP and isolated grammar worker/parser",
+    "policy": "activate deferred catalogs on discovery; new policy/list failure refresh once; old calls retain authority",
+    "schema": "open advisory original schema validated with bounded complete-value receipt, strict unchanged",
+    "gpu_runs": 0,
+    "public_capability_delivered": false
+  },
+  "mcp_prompt_review_20261116": {
+    "scope": "Prompt definition validation performs no remote I/O and grants no MCP callable; selected names are bound again against authenticated catalogs at actual execution. Private credentials must come from each request, including immutable Batch source. Runtime choices retain caller/filter/schema checks.",
+    "sources": {
+      "include/q4t/server/responses_input.h": {
+        "before": "10fb358dcba81a5ea08b1491050389b0660bacb9bdd3fbc4b9b476269f5cf587",
+        "after": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd"
+      },
+      "include/q4t/server/responses_mcp_binding.h": {
+        "before": "d651f42095e00c5d46d95e13182dc61b17cb30a576714cc47a5163fdb6dcd441",
+        "after": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7"
+      },
+      "src/server/prompt_template.cpp": {
+        "before": "ca4a9b18b4de0e1369c88cfd3b579ff5f26af6856aee6e2bb696eb8c24bd9b26",
+        "after": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574"
+      },
+      "src/server/responses_input.cpp": {
+        "before": "a3d51c3fce1d7962bc2006aacd2b77cde68d4e5c21b5b3dd5b8ce58eaf71a44b",
+        "after": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8"
+      },
+      "src/server/responses_mcp_binding.cpp": {
+        "before": "21514659b8b9657cc8c81344ddfdee50d21d75deaf598e13f61e3a2c18d83e86",
+        "after": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded"
+      }
+    },
+    "targeted_cpu": "11 passed, 0 failed, 0 skipped",
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-prompt-cpu-20261116"
+  },
+  "mcp_recovery_review_20261116": {
+    "scope": "Sealed process and Response ownership; automatic closure only after verified death, explicit cleanup only for exact drained Response. Dispatched unknown never replayed, unstarted failed, committed results preserved. No-result partial history grants no result/dispatch. All resource/owner combinations and public qualification remain required.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "a3ee42963f8a73ef4631800e52645cdba88a6cadf162acf1411e56652292ce7c",
+        "after": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": "7315eb8e9c7a461b12fa655720ae75f610e6564e31190896a9b9344db3d3156d",
+        "after": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "d2c02e7a0efa90ec0ad165d6254ffa6d26b8c228380ff17f43e4f7f9b7d40cff",
+        "after": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "4b55db52f3b6f26da70ae7db96e8409dcd2fee1287bffa3d5eaefd8dcaa38489",
+        "after": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e"
+      },
+      "src/server/responses_mcp_preparation.cpp": {
+        "before": "7e4e232711f3e424b7e4f34ed7957df3e351ff804ebc16383d060d61a812419f",
+        "after": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "0aec62430f669e4410a35453eba7ce4fed4bcb92fc7033b00d862b10a98e94ff",
+        "after": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3"
+      },
+      "src/server/responses_state.cpp": {
+        "before": "49feadc0dc2dd5a10065ad2fe3312139fb23402d341b01c487ee9ac0193042cc",
+        "after": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821"
+      }
+    },
+    "targeted_cpu_passed": 21,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-recovery-cpu-20261116"
+  },
+  "mcp_cleanup_review_20261116": {
+    "scope": "Bounded existing cleanup coordinator records MCP IDs and exact owner before durable proposal/approval; stateless/storage failure retains cleanup duty. No credentials, remote replay, model restart, extra daemon or worker. Background reserves MCP metadata only when needed.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83",
+        "after": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70"
+      },
+      "include/q4t/server/responses_jobs.h": {
+        "before": "0d4ba223763ba3a3e74e822451552c1a3a078a975901606567efb464b92591db",
+        "after": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff"
+      },
+      "src/server/chat_generation.cpp": {
+        "before": "b06ecd0d9b47252f87d03db8a859537393223ef25134bcb618ce7ee1d839b212",
+        "after": "673a06f5739a7b4b3af7e5d5acf7365d5540c71054ced9121f75405288fea43d"
+      },
+      "src/server/responses_api.cpp": {
+        "before": "ea9be4b21d10da7bdf53aab2ed7db91e35efaa8dd1bc912477b491fe448341eb",
+        "after": "10ac09664dc832992b64f11140698c4abebb9c5fb54adf228178fd4d95cf5a00"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18",
+        "after": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9"
+      },
+      "src/server/responses_jobs.cpp": {
+        "before": "4a7bc66377343356b4b4d0de1055fe30616586467858150d86689f5c6059477b",
+        "after": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e",
+        "after": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3",
+        "after": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f"
+      }
+    },
+    "targeted_cpu_passed": 18,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "progress": "Acknowledged child cleanup cursor survives bounded retry, so later IDs are not starved by repeated prefix scans.",
+    "evidence": "docs/evidence/serve-mcp-cleanup-cpu-20261116"
+  },
+  "mcp_program_review_20261116": {
+    "scope": "Programmatic native MCP dispatch with sealed catalog, declaration, original schema and caller authority; standard MCP public items without invented caller fields. Private batch causal positions preserve mixed client/native replay; approvals, cancellation, unknown results, current-policy tightening, frozen restore and authenticated counting retain existing bounds. Missing credentials do not consume approval. No new dependency or model restart.",
+    "sources": {
+      "include/q4t/server/responses_execution.h": {
+        "before": "d2c83538bd4212bac0bb6ea620468d023d7f17a7ea30ffa8e3b187c6f2c24c70",
+        "after": "8f9200097313838f3fc3a712161fe679cce21737debcc1b4fbd45717b6ce02e1"
+      },
+      "include/q4t/server/responses_mcp_state.h": {
+        "before": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
+        "after": "64fa5333cf6eca7eef497082dbe52c580739d2d9634b8a552358a8c83f37fe71"
+      },
+      "include/q4t/server/responses_program.h": {
+        "before": "96bce8e154d14025365869abdd532a27a7aca4b21c6bb3afdc1dac56d46ba50a",
+        "after": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5"
+      },
+      "src/server/program_vm.cpp": {
+        "before": "0ec57d859559cb4ab4d6987281f18e5f1a47c0079d0bfc7ed36da9251f644686",
+        "after": "044e3fbe62059a56c99ee0771247deeaf34bbd795ac58013db7654cd9d78b5f0"
+      },
+      "src/server/responses_execution.cpp": {
+        "before": "b49f56d639ae25d0ccfb9ed8f1aad3475b904fe34948c95579b48a8584bed9a9",
+        "after": "22feb490e9f2338525ba943e476b0cfec59d4bf52821bfeff2ecb1186497fe55"
+      },
+      "src/server/responses_input.cpp": {
+        "before": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
+        "after": "597743a1b8409c2019babead83fc24216b5dd289a01ccc4daa904ec545f2305a"
+      },
+      "src/server/responses_mcp_execution.cpp": {
+        "before": "c3682e1c592cea95b5bd44842b58c8721c2c866ec2c31cfffa8635b7b920a42a",
+        "after": "48f9c3e8c1bef87945e1f0e5e37adc154c15d3769e8a1fd40fce49f065234496"
+      },
+      "src/server/responses_mcp_preparation.cpp": {
+        "before": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
+        "after": "3ad1ff89971c1ef136868524f9b3d26e4519a3e9f1b1f1c7daf77008fac72217"
+      },
+      "src/server/responses_mcp_state.cpp": {
+        "before": "c798b9f084a08746d089e8f0e3dd13a9de19a5c9d4aaaa669ab7eb53519ab14f",
+        "after": "b4717ab5a7dfd5baf7e581b3d156e9472ac9fd29bc011df40b7c43bd538bbc3a"
+      },
+      "src/server/responses_program.cpp": {
+        "before": "0629c6d929b689ccbf0bb8998c892a0de82fddc45eebb5f144f3656eddbd7582",
+        "after": "5a9caa7de80237b8380d1cfb14a4c8d4a8c1d9d243d331a25b539596154486b5"
+      },
+      "src/server/responses_program_execution.cpp": {
+        "before": "150dc0563aa516a87034a5a329c90f4dfcc061352b3e3e8ade1b93791281cc94",
+        "after": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db"
+      },
+      "src/server/responses_program_plan.cpp": {
+        "before": "f76162d2433f01754778037979f27cbab92611f1bb70e0f4db01ad69448a4398",
+        "after": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3"
+      },
+      "src/server/responses_tokens.cpp": {
+        "before": "866db91f8666880db354352d5a3def27f3b32e98274677baf2f6afeba8eb139c",
+        "after": "17ee2d3761fab52a65b43675fb8dedd2797fda4980c0a72146f12b2a5ed78caf"
+      }
+    },
+    "targeted_cpu_passed": 49,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-program-cpu-20261116"
+  },
+  "mcp_program_media_boundary_review_20261116": {
+    "scope": "Preserve atomic publication of public program batches until media validation; MCP dispatch still checkpoints prior to remote work. File preparation only remaps function/custom public call_id children, leaving authenticated MCP results intact.",
+    "sources": {
+      "src/server/responses_execution_files.cpp": {
+        "before": "6e31359a7ecf961f18bd4a16cc105ff610c87b6c969c72c3c69e6ecc6051f2d4",
+        "after": "06ff8a3933c9a4982ea99eef69c2daecdf22e4094a68668c5dcdb4c232e299b7"
+      },
+      "src/server/responses_program_execution.cpp": {
+        "before": "f3a2eaeb76a54f2391bc33436c586384a5d78022d7f41f1ad89ce8b51e7ae5db",
+        "after": "3b853dff54e2bbbd1763ebc6643175c9c0f5411ccd78047235a574182a940ba0"
+      }
+    },
+    "targeted_cpu_passed": 8,
+    "gpu_starts": 0,
+    "public_mcp_delivery": false,
+    "evidence": "docs/evidence/serve-mcp-program-boundary-cpu-20261116"
+  },
+  "mcp_native_content_review_20261116": {
+    "scope": "Five native content variants, canonical binary payloads, resources/read on the same approved endpoint, known invalid response vs unknown remote outcome, durable native error preservation and programmatic delivery.",
+    "public_surface_changed": false,
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/mcp_content.h",
+      "include/q4t/server/mcp_transport.h",
+      "src/server/mcp_content.cpp",
+      "src/server/mcp_http.cpp",
+      "src/server/mcp_transport.cpp",
+      "src/server/responses_mcp_output.cpp",
+      "src/server/responses_mcp_state.cpp",
+      "src/server/responses_program.cpp"
+    ],
+    "public_capability_delivered": false,
+    "remaining": "Model media preparation and immutable resource resolution, sessions/mappings and full business/recovery delivery remain required.",
+    "repair": "Failed native output requires a calling invocation, typed isError result and exact matching public error content; other failures still cannot fabricate output."
+  },
+  "mcp_resource_freeze_review_20261116": {
+    "scope": "Private linked resource authority, original endpoint/current credentials/policy, single durable read, own execution recovery, raw tool outcome preservation, shared capacity and pending failure reserve.",
+    "reviewed_sources": [
+      "include/q4t/server/responses_mcp_state.h",
+      "src/server/responses_mcp_state.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Execution-owned media/resource preparation, frozen model projection/budgets, session/mapping and business/recovery delivery."
+  },
+  "mcp_media_projection_review_20261116": {
+    "scope": "Private typed native content projection and authenticated resource sources; optimistic immutable FileExpansion snapshot publication with explicit sealed dependency mirror and retention.",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/mcp_content.h",
+      "include/q4t/server/responses_mcp_state.h",
+      "src/server/mcp_projection.cpp",
+      "src/server/object_retention.cpp",
+      "src/server/responses_mcp_state.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Shared execution preparation, model admission/moderation/count/compaction and native audio backend; sessions/mappings and full business/recovery delivery."
+  },
+  "mcp_shared_media_review_20261116": {
+    "scope": "Request-shared media preparation, original snapshot authority and typed model/moderation consumption",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/moderation.h",
+      "include/q4t/server/responses_input.h",
+      "include/q4t/server/responses_mcp_media.h",
+      "include/q4t/server/responses_plan.h",
+      "src/server/moderation.cpp",
+      "src/server/responses_input.cpp",
+      "src/server/responses_mcp_media.cpp",
+      "src/server/responses_plan.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Actual Responses/count execution wiring, late sheet model admission, session/mappings, full business and release remain required"
+  },
+  "mcp_media_execution_review_20261116": {
+    "scope": "Responses media/resource ownership, shared attachments/program/MCP budgets, native late sheet steps on the original rate lease",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/model_preparation.h",
+      "include/q4t/server/responses_execution.h",
+      "src/server/chat_generation.cpp",
+      "src/server/model_preparation.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_execution_files.cpp",
+      "src/server/responses_execution_mcp_media.cpp",
+      "src/server/responses_file_search_execution.cpp",
+      "src/server/responses_program_execution.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Count integration, cross-operation sessions, mappings, SDK and actual GPU business/recovery/release/main remain required"
+  },
+  "mcp_count_preparation_review_20261116": {
+    "scope": "Count uses the generation preparation owner and exact shared sheet budget, including authenticated MCP media and resource cleanup",
+    "reviewed_sources": [
+      "include/q4t/server/responses_execution.h",
+      "include/q4t/server/responses_mcp_media.h",
+      "include/q4t/server/responses_tokens.h",
+      "src/server/chat_input_tokens.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_execution_files.cpp",
+      "src/server/responses_execution_mcp_media.cpp",
+      "src/server/responses_mcp_media.cpp",
+      "src/server/responses_tokens.cpp"
+    ],
+    "public_surface_changed": false,
+    "public_capability_delivered": false,
+    "remaining": "Cross-operation sessions, mappings, SDK and real GPU business/recovery/release/main remain required"
+  },
+  "mcp_session_transport_review_20261116": {
+    "reviewed_files": [
+      "include/q4t/server/grammar_process.h",
+      "include/q4t/server/mcp_transport.h",
+      "src/server/chat_http.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/file_fetch_http.cpp",
+      "src/server/grammar_process.cpp",
+      "src/server/mcp_http.cpp",
+      "src/server/mcp_transport.cpp",
+      "src/server/mcp_transport_internal.h",
+      "src/server/remote_http_internal.h"
+    ],
+    "targeted_cpp": 30,
+    "scope": "bounded native sessions, private modern recovery, live legacy SSE, no replay and per-operation authorization",
+    "remaining": "sealed execution/catalog wiring, deployment mappings, SDK and GPU business, qualification and delivery",
+    "public_capability_delivered": false,
+    "default_changed": false
+  },
+  "mcp_session_execution_review_20261116": {
+    "reviewed_files": [
+      "include/q4t/server/mcp_transport.h",
+      "include/q4t/server/responses_mcp_state.h",
+      "src/server/chat_server.cpp",
+      "src/server/mcp_http.cpp",
+      "src/server/mcp_transport.cpp",
+      "src/server/mcp_transport_internal.h",
+      "src/server/responses_execution_mcp_media.cpp",
+      "src/server/responses_mcp_execution.cpp",
+      "src/server/responses_mcp_preparation.cpp",
+      "src/server/responses_mcp_state.cpp"
+    ],
+    "scope": "sealed catalog/call/resource session authority, credential renewal, approval/frozen/count reuse, durable resource loss and lifecycle detach",
+    "public_capability_delivered": false,
+    "default_changed": false
+  },
+  "mcp_deployment_mapping_review_20261116": {
+    "scope": "Immutable scoped MCP routes, independent network policy, sealed original target authority, native CLI and package propagation. HTTP mapping does not certify reverse tunnel or provider adapters.",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_plan.h",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/mcp_policy.h",
+      "include/q4t/server/responses_mcp.h",
+      "include/q4t/server/server_options.h",
+      "src/main.cpp",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_plan.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/mcp_policy.cpp",
+      "src/server/responses_execution_mcp_media.cpp",
+      "src/server/responses_mcp_execution.cpp",
+      "src/server/responses_mcp_preparation.cpp",
+      "src/server/responses_mcp_state.cpp",
+      "src/server/server_options.cpp",
+      "tools/serve_recovery/bundle.py",
+      "tools/serve_recovery/profile_acceptance.py",
+      "tools/serve_recovery/service.py",
+      "tools/serve_service/package.py",
+      "tools/serve_service/service.py"
+    ],
+    "public_capability_delivered": false,
+    "default_changed": false
+  },
+  "mcp_private_agent_review_20261116": {
+    "change": "Fixed-target native HTTP/SSE private agent, no external program runtime; independently supervised child and bounded cleanup/retry. Terminal auth event drained before exit observation; failed progress cannot swallow actual terminal result.",
+    "contract": "No field/route/whitelist change. Existing RemoteHttp request default remains 1 MiB; only agent result uploads explicitly permit 4 MiB. Shared SSE parser extracted unchanged. Private file reader contract retained.",
+    "verification": "32 distinct C++ tests final PASS / 44 executions; 4 actual CLI tests final PASS / 9 executions. Initial failures retained; actual CPU watchdog and TLS native ingress/private target verified. Evidence docs/evidence/serve-mcp-tunnel-agent-cpu-20261116. 0 GPU/default unchanged; full business/release/master pending.",
+    "followup": "q4t_outcome_unknown authenticated terminal extension flows through broker and isolated receipt to durable unknown/no replay, arbitrary upstream error data stays known. Actual engine CUDA mappings exceeded 512 MiB; MCP/agent share bounded 1 GiB virtual ceiling, matching existing engine workers. Physical memory is separate R08 work. No public inference allowlist changes."
+  },
+  "mcp_tunnel_public_contract_review_20261116": {
+    "base_commit": "89a6e510",
+    "changes": [
+      "tools/serve_gateway/gateway.py",
+      "tools/serve_recovery/gateway.py",
+      "tools/serve_recovery/gateway_config.py"
+    ],
+    "new_dependencies": false,
+    "gpu_starts": 0,
+    "complete_tunnel_delivered": false,
+    "semantics": "Public wire schema, optional nginx separate tunnel lanes/protected headers; stored Chat filePart reference closure."
+  },
+  "mcp_business_driver_review_20261116": {
+    "base_commit": "d1c91a54",
+    "changed_anchors": [
+      "src/server/chat_capabilities.cpp"
+    ],
+    "implementation_only": true,
+    "release_attestation": false,
+    "description": "Expose actual MCP items, isolated transports, programmatic execution and recovery boundary; native provider adapters remain a required open task. Prepare bounded real SDK business without broad performance testing."
   }
 }

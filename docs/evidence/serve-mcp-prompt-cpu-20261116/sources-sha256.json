@@ -1,0 +1,9 @@
+{
+  "include/q4t/server/responses_input.h": "7740d8e8b8680007810cddab93f8233b9500ad1d3398e460c2dd20c5bf8b71fd",
+  "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
+  "src/server/prompt_template.cpp": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574",
+  "src/server/responses_input.cpp": "c5b5cda1106da0d1a3eef3c93c2fce35a2caace76d323d1ec44fe446daa2a0c8",
+  "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
+  "tests/server_mcp_transport_test.cpp": "1c755c9f37cc4ec8dedb5d73cc79b2fe775eb94e01ef5f88b9225e64f71dcdaa",
+  "tests/server_responses_mcp_binding_test.cpp": "894ce772bdf55ef8f75b4f1ced87c68ef4498ec16f485405cd2843a28482f770"
+}

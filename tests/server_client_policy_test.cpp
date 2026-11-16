@@ -407,9 +407,8 @@ Q4T_TEST(client_file_legacy_migration_preserves_capacity_and_usage) {
   Q4T_CHECK(admission.EnableRateRecovery());
   Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
   ClientRateLease request;
-  Q4T_CHECK(request.Reserve(admission,
-              admission.Authenticate("alpha", kSecret), 3, 5) ==
-            ClientRateResult::kAllowed);
+  Q4T_CHECK(request.Reserve(admission, admission.Authenticate("alpha", kSecret),
+                            3, 5) == ClientRateResult::kAllowed);
   request.Start();
   request.Completion(2);
   Q4T_CHECK(!admission.Publish(DynamicPolicy(3, 100, 1), 0, 8, 8));
@@ -438,8 +437,8 @@ Q4T_TEST(client_file_configuration_emits_actual_schema_value) {
   config.client_policy_content_sha256 = ClientPolicyDigest(policy);
   config.client_count = policy.clients.size();
   const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
-  const auto directory = std::filesystem::path(
-      output ? output : ".q4t-work/files-contract-cpu");
+  const auto directory =
+      std::filesystem::path(output ? output : ".q4t-work/files-contract-cpu");
   std::filesystem::create_directories(directory);
   std::ofstream file(directory / "files-config.json");
   file << EffectiveServeConfigJson({}, config, true, true, 8);
@@ -1656,6 +1655,56 @@ Q4T_TEST(model_preparation_shares_one_rpm_with_primary_and_actual_usage) {
   return true;
 }
 
+Q4T_TEST(model_preparation_late_tool_reuses_original_rpm_and_cumulative_usage) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate;
+  Q4T_CHECK(rate.Reserve(admission, client, 20, 16, ClientClock::now(), 10,
+                         80) == ClientRateResult::kAllowed);
+  rate.StartPrompt(20);
+  rate.Completion(5);
+  ModelPreparation late(admission, client, rate, 16, 10, 80);
+  Q4T_CHECK(late.ContinueReservation(20, 5));
+  Q4T_CHECK(!late.ContinueReservation(0, 0));
+  Q4T_CHECK(late.ReservePrompt(10).ok() && late.StartStep());
+  late.ObserveOutput(7);
+  late.CloseStep();
+  Q4T_CHECK(late.ReservePrompt(12).ok() && late.StartStep());
+  late.ObserveOutput(3);
+  late.CloseStep();
+  Q4T_CHECK(late.InputTokens() == 22 && late.OutputTokens() == 10 &&
+            admission.RateUsage(0).requests == 1);
+  rate.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 57 &&
+            admission.RateUsage(0).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(model_preparation_late_cancel_retains_prior_work_and_prompt_limit) {
+  for (const bool started : {false, true}) {
+    ClientAdmission admission;
+    Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+    const auto client = admission.Authenticate("alpha", kSecret);
+    ClientRateLease rate;
+    Q4T_CHECK(rate.Reserve(admission, client, 20, 16, ClientClock::now(), 0,
+                           64) == ClientRateResult::kAllowed);
+    rate.StartPrompt(20);
+    rate.Completion(5);
+    ModelPreparation late(admission, client, rate, 16, 0, 64);
+    Q4T_CHECK(late.ContinueReservation(20, 5));
+    Q4T_CHECK(!late.ReservePrompt(client.Limits()->max_prompt_tokens).ok());
+    Q4T_CHECK(late.ReservePrompt(10).ok());
+    if (started) Q4T_CHECK(late.StartStep());
+    late.ObserveOutput(7);
+    late.CloseStep();
+    rate.Settle();
+    Q4T_CHECK(admission.RateUsage(0).tokens == (started ? 42u : 25u) &&
+              admission.RateUsage(0).requests == 1);
+  }
+  return true;
+}
+
 Q4T_TEST(model_preparation_failed_steps_charge_only_admitted_actual_work) {
   for (const bool started : {false, true}) {
     ClientAdmission admission;
@@ -2616,33 +2665,89 @@ Q4T_TEST(client_rate_durable_internal_input_shares_tpm_without_external_rpm) {
   Q4T_CHECK(admission.Configure(DynamicPolicy(1, 50)));
   const auto client = admission.Authenticate("alpha", kSecret);
   ClientRateLease external;
-  Q4T_CHECK(external.Reserve(admission, client, 0, 0) == ClientRateResult::kAllowed);
+  Q4T_CHECK(external.Reserve(admission, client, 0, 0) ==
+            ClientRateResult::kAllowed);
   external.Settle();
   ClientRateLease work, denied, repeated;
-  Q4T_CHECK(work.ReserveInternalInput(admission, client, 40) == ClientRateResult::kAllowed);
-  Q4T_CHECK(admission.RateUsage(0).requests == 1 && admission.RateUsage(0).reserved == 40);
-  Q4T_CHECK(denied.ReserveInternalInput(admission, client, 11) == ClientRateResult::kTpm);
-  Q4T_CHECK(work.ReserveInternalInput(admission, client, 1) == ClientRateResult::kInvalid);
-  work.StartPrompt(12); work.Settle();
-  Q4T_CHECK(admission.RateUsage(0).tokens == 12 && admission.RateUsage(0).reserved == 0);
-  Q4T_CHECK(repeated.Reserve(admission, client, 1, 0) == ClientRateResult::kRpm);
+  Q4T_CHECK(work.ReserveInternalInput(admission, client, 40) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(admission.RateUsage(0).requests == 1 &&
+            admission.RateUsage(0).reserved == 40);
+  Q4T_CHECK(denied.ReserveInternalInput(admission, client, 11) ==
+            ClientRateResult::kTpm);
+  Q4T_CHECK(work.ReserveInternalInput(admission, client, 1) ==
+            ClientRateResult::kInvalid);
+  work.StartPrompt(12);
+  work.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 12 &&
+            admission.RateUsage(0).reserved == 0);
+  Q4T_CHECK(repeated.Reserve(admission, client, 1, 0) ==
+            ClientRateResult::kRpm);
   return true;
 }
 
-Q4T_TEST(client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries) {
+Q4T_TEST(
+    client_rate_internal_input_preserves_freeze_domain_and_identity_boundaries) {
   ClientAdmission admission, other;
-  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)) && other.Configure(DynamicPolicy(1, 100)));
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)) &&
+            other.Configure(DynamicPolicy(1, 100)));
   const auto client = admission.Authenticate("alpha", kSecret);
   const auto foreign = other.Authenticate("alpha", kSecret);
   ClientRateLease wrong, batch(ClientRateDomain::kBatch);
-  Q4T_CHECK(wrong.ReserveInternalInput(admission, foreign, 1) == ClientRateResult::kInvalid);
-  Q4T_CHECK(batch.ReserveInternalInput(admission, client, 1) == ClientRateResult::kInvalid);
+  Q4T_CHECK(wrong.ReserveInternalInput(admission, foreign, 1) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(batch.ReserveInternalInput(admission, client, 1) ==
+            ClientRateResult::kInvalid);
   Q4T_CHECK(admission.EnableRateRecovery());
   Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
   ClientRateState snapshot;
   Q4T_CHECK(admission.FreezeRates(&snapshot));
   ClientRateLease frozen;
-  Q4T_CHECK(frozen.ReserveInternalInput(admission, client, 1) == ClientRateResult::kFrozen);
-  Q4T_CHECK(admission.RateUsage(0).requests == 0 && admission.RateUsage(0).tokens == 0);
+  Q4T_CHECK(frozen.ReserveInternalInput(admission, client, 1) ==
+            ClientRateResult::kFrozen);
+  Q4T_CHECK(admission.RateUsage(0).requests == 0 &&
+            admission.RateUsage(0).tokens == 0);
+  return true;
+}
+
+Q4T_TEST(
+    client_tunnel_poll_response_and_generation_have_independent_bounded_leases) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto identity = admission.Authenticate("alpha", kSecret);
+  ClientLease data1, data2, data3, control, cancel, poll, poll_denied;
+  ClientLease response1, response2, response3, transferred;
+  Q4T_CHECK(data1.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(data2.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(!data3.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(control.Acquire(admission, identity, ClientLane::kControl));
+  Q4T_CHECK(cancel.Acquire(admission, identity, ClientLane::kCancel));
+  const auto acquire = [&](std::string method, std::string path,
+                           ClientLease* lease) {
+    HttpRequestHeaders headers;
+    headers.client_id = "alpha";
+    headers.gateway_token = kSecret;
+    ClientIdentity current;
+    int status = 400;
+    return AdmitClientRequest(method, path, &headers, admission, lease,
+                              &current, &status);
+  };
+  Q4T_CHECK(acquire("GET", "/v1/tunnels/tunnel_a/poll?timeout_ms=0", &poll));
+  Q4T_CHECK(!acquire("GET", "/v1/tunnels/tunnel_a/poll", &poll_denied));
+  Q4T_CHECK(acquire("POST", "/v1/tunnels/tunnel_a/response", &response1));
+  Q4T_CHECK(acquire("POST", "/v1/tunnels/tunnel_a/response", &response2));
+  Q4T_CHECK(!acquire("POST", "/v1/tunnels/tunnel_a/response", &response3));
+  Q4T_CHECK(poll.TransferTo(transferred) &&
+            transferred.Holds(identity, ClientLane::kTunnelPoll));
+  const auto usage = admission.Usage(0);
+  Q4T_CHECK(usage.tunnel_poll_active == 1 &&
+            usage.tunnel_response_active == 2 && usage.data_active == 2 &&
+            usage.control_active == 1 && usage.cancel_active == 1);
+  Q4T_CHECK(usage.tunnel_poll_rejected == 1 &&
+            usage.tunnel_response_rejected == 1);
+  const auto metrics = ClientPolicyMetrics(admission);
+  Q4T_CHECK(metrics.find("lane=\"tunnel_poll\"} 1") != metrics.npos &&
+            metrics.find("lane=\"tunnel_response\"} 2") != metrics.npos);
+  Q4T_CHECK(admission.RateUsage(0).requests == 0);
   return true;
 }

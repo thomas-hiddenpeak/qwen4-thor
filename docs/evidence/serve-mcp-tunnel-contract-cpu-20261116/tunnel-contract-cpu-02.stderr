@@ -1,0 +1,66 @@
+test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire) ... ERROR
+test_tls_tunnel_token_and_body_forwarding (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_tls_tunnel_token_and_body_forwarding) ... ok
+test_openapi_refs_routes_and_explicit_semantic_boundaries (tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries) ... ERROR
+
+======================================================================
+ERROR: test_standalone_private_package_tls_wire (tools.serve_responses.test_mcp_tunnel_contract.OptionalTunnel.test_standalone_private_package_tls_wire)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_mcp_tunnel_contract.py", line 159, in test_standalone_private_package_tls_wire
+    prepared = gateway.prepare(directory/'policy.json', fixture.NGINX,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 614, in prepare
+    material = certificate_check(output/'certificate.pem', output/'private-key.pem',
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 582, in certificate_check
+    return tls.inspect(certificate, key, hostname, trusted_ca=trusted_ca)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 144, in inspect
+    verify_chain(chain,anchor,hostname)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 89, in verify_chain
+    command([*args,f'/proc/self/fd/{leaf}'],fds=tuple(fds),code='gateway_tls_chain_invalid')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 35, in command
+    require(result.returncode==0 and len(result.stdout)+len(result.stderr)<=256*1024,code)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/tls.py", line 25, in require
+    if not value:raise Invalid(code)
+                 ^^^^^^^^^^^^^^^^^^^
+tools.serve_gateway.tls.Invalid: gateway_tls_chain_invalid
+
+======================================================================
+ERROR: test_openapi_refs_routes_and_explicit_semantic_boundaries (tools.serve_protocol.test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 102, in test_openapi_refs_routes_and_explicit_semantic_boundaries
+    for name, value in documents.items(): check(value, name)
+                                          ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 2 more times]
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 101, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 99, in check
+    for child in value.values(): check(child, owner)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 101, in check
+    for child in value: check(child, owner)
+                        ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 97, in check
+    target = target[component.replace("~1", "/").replace("~0", "~")]
+             ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'chat_input_filePart'
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.215s
+
+FAILED (errors=2)

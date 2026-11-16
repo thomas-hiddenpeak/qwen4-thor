@@ -1,0 +1,11 @@
+{
+  "include/q4t/server/responses_execution.h": "607d2b7ec3b8255cd78951a3bb9d7cb713c691af510a9b010d8d43ff9aaedd83",
+  "include/q4t/server/responses_mcp_state.h": "23b75dd95cee05f265717787248ce90630ba5987e9fade87232a0e3e9570cf2b",
+  "src/server/responses_execution.cpp": "0f91fe0ee263d76628668def838283d2ae7af00fabf7310a0044e7baebdd5c18",
+  "src/server/responses_mcp_execution.cpp": "e6cf3b31f3195d49b0a5f371a416fcdd847383320fa8b81710bc802f179ef33e",
+  "src/server/responses_mcp_preparation.cpp": "2b4ed9b7c051ab0952e59ed5099da13ac3cc69b08edad15ede6b64ac34622883",
+  "src/server/responses_mcp_state.cpp": "550e775b756ad87967752e1a437fdb45c008b0e53446e30d72779a5c54f33ee3",
+  "src/server/responses_state.cpp": "96f1c00633015b7bca4f24ddb9054766c63172c02db9dffc90339b6773ff6821",
+  "tests/server_mcp_transport_test.cpp": "3564d62e80632c987267f58009b7baf798f99992ab49069e95b36a85ea546bf9",
+  "tests/server_responses_mcp_state_test.cpp": "69006d4cd52f17915835e6779059cf0a6b3bbbb0cf92bc151b2d7bc142af004f"
+}

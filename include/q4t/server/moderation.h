@@ -65,7 +65,8 @@ Status CollectModerationInput(const io::Json& chat_messages,
                               ModerationContent* content, ChatPlanError* error);
 Status CollectModerationOutput(const io::Json& response_items,
                                ModerationContent* content,
-                               ChatPlanError* error);
+                               ChatPlanError* error,
+                               const io::Json* mcp_content = nullptr);
 Status PlanModeration(const ModerationOptions& options,
                       const ModerationContent& content,
                       const ChatPlanConfig& config, int output_limit,

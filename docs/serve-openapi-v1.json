@@ -1208,6 +1208,264 @@
         }
       }
     },
+    "/v1/tunnels/{tunnel_id}": {
+      "get": {
+        "operationId": "v1_tunnels_retrieve",
+        "parameters": [
+          {
+            "name": "tunnel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/route_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/metadata"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authenticated, bounded tunnel error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "lane": "control",
+          "auth": "Configured independent API Key; backend also checks exact tunnel agent/caller scope. No client identity from request JSON.",
+          "no_automatic_tool_replay": true
+        },
+        "x-q4t-query-contract": "No query fields, body or shard token."
+      }
+    },
+    "/v1/tunnels/{tunnel_id}/poll": {
+      "get": {
+        "operationId": "v1_tunnels_poll",
+        "parameters": [
+          {
+            "name": "tunnel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/route_id"
+            }
+          },
+          {
+            "name": "X-Tunnel-Client-Instance-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/header_token"
+            },
+            "description": "Single field, exact instance; duplicate or Connection-nominated fields rejected."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25,
+              "default": 25
+            }
+          },
+          {
+            "name": "timeout_ms",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 15000,
+              "default": 15000
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/channel"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/poll"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authenticated, bounded tunnel error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No commands before poll deadline; no body."
+          }
+        },
+        "x-q4t": {
+          "lane": "tunnel_poll",
+          "auth": "Configured independent API Key; backend also checks exact tunnel agent/caller scope. No client identity from request JSON.",
+          "no_automatic_tool_replay": true
+        },
+        "x-q4t-query-contract": "Only declared fields. channel repeats; limit/timeout_ms once; max 8192 bytes; no body or shard token."
+      }
+    },
+    "/v1/tunnels/{tunnel_id}/response": {
+      "post": {
+        "operationId": "v1_tunnels_response",
+        "parameters": [
+          {
+            "name": "tunnel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/route_id"
+            }
+          },
+          {
+            "name": "X-Tunnel-Client-Instance-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/header_token"
+            },
+            "description": "Single field, exact instance; duplicate or Connection-nominated fields rejected."
+          },
+          {
+            "name": "X-Tunnel-Shard-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/header_token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/ack"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authenticated, bounded tunnel error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "lane": "tunnel_response",
+          "auth": "Configured independent API Key; backend also checks exact tunnel agent/caller scope. No client identity from request JSON.",
+          "no_automatic_tool_replay": true
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-mcp-tunnel-v1.schema.json#/$defs/upload"
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "No query fields.",
+        "x-q4t-body-contract": "Max 4 MiB; no duplicate JSON keys; depth 96, 65536 values."
+      }
+    },
     "/v1/batches": {
       "post": {
         "operationId": "post_v1_batches",

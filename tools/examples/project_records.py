@@ -5,7 +5,10 @@ import re
 from pathlib import Path, PurePosixPath
 import stat
 
-from chat_client import require
+if __package__:
+    from .chat_client import require
+else:
+    from chat_client import require
 
 
 MAX_FILE = 1024 * 1024

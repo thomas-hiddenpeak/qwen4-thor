@@ -1,0 +1,14 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp: In function ‘bool q4t_test_fn_mcp_transport_resource_capability_and_operation_preflight()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:421:19: error: loop variable ‘params’ creates a copy from type ‘const q4t::io::Json’ [-Werror=range-loop-construct]
+  421 |   for (const auto params : {Object({{"uri", String("../secret")}}),
+      |                   ^~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp:421:19: note: use reference type to prevent copying
+  421 |   for (const auto params : {Object({{"uri", String("../secret")}}),
+      |                   ^~~~~~
+      |                   &
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1409: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

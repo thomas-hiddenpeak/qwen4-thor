@@ -1,0 +1,13 @@
+[PASS] responses_mcp_discovery_loads_remote_only_when_activated
+[PASS] responses_mcp_client_discovery_binds_new_credentials_and_real_call
+[PASS] output_constraints_nested_values_and_exact_integers
+[PASS] output_constraints_open_advisory_keeps_schema_and_strict_neighbour
+[PASS] schema_request_worker_parser_mixed_tools_and_content_round_trip
+[PASS] schema_parser_receipts_reject_missing_wrong_scope_value_and_count
+[PASS] schema_guard_dependency_error_is_not_an_invalid_candidate
+[PASS] schema_worker_binding_mismatch_cannot_bypass_semantic_checks
+  CHECK failed: message.GetString("content") == content (line 105)
+  CHECK failed: RequestRoundTrip(request, open_call + '\n' + strict_call, 2, "") (line 573)
+[FAIL] schema_request_open_advisory_worker_parser_preserves_original_contract
+[PASS] schema_guard_open_advisory_checks_values_budget_and_cannot_weaken_strict
+10 tests, 9 passed, 1 failed, 0 skipped

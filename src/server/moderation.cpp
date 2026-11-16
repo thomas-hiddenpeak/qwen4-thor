@@ -214,7 +214,7 @@ Status CollectModerationInput(const io::Json& messages,
 
 Status CollectModerationOutput(const io::Json& items,
                                ModerationContent* content,
-                               ChatPlanError* error) {
+                               ChatPlanError* error, const Json* mcp_content) {
   *content = {};
   *error = {};
   if (!items.IsArray() || items.array.size() > 512)
@@ -229,6 +229,46 @@ Status CollectModerationOutput(const io::Json& items,
       if (!data || !data->IsString())
         return Invalid(error, "output", "Missing generated tool argument data");
       status = collector.Text("tool_arguments", data->str);
+    } else if (type == "mcp_list_tools" || type == "mcp_call" ||
+               type == "mcp_approval_request") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                          error, "output." + type);
+      if (!status) return status;
+      // Catalogs are input definitions, not generated argument/result data.
+      if (type != "mcp_list_tools") {
+        status = collector.Text("mcp_arguments", item.GetString("arguments"));
+        if (status && type == "mcp_call" && mcp_content &&
+            (item.GetString("status") == "completed" ||
+             item.GetString("status") == "failed")) {
+          const auto* prepared = mcp_content->Find(item.GetString("id"));
+          if (!prepared || !prepared->IsArray())
+            return ContentFailure(
+                Status::Fail("MCP moderation content is not prepared"), error);
+          auto parts = *prepared;
+          for (auto& part : parts.array)
+            if (part.GetString("type") == "input_image") {
+              const auto* url = part.Find("image_url");
+              if (!url || !url->IsString())
+                return ContentFailure(
+                    Status::Fail("Invalid prepared MCP image"), error);
+              part = Object({{"type", String("image_url")},
+                             {"image_url",
+                              Object({{"url", *url},
+                                      {"detail", String(part.GetString(
+                                                     "detail", "auto"))}})}});
+            }
+          status = collector.Content(parts, "mcp_result");
+          if (!status) return ContentFailure(status, error);
+          continue;
+        }
+        for (const auto* key : {"output", "error"}) {
+          const auto* value = item.Find(key);
+          if (!status || !value || value->IsNull()) continue;
+          status = collector.Text("mcp_result", value->IsString()
+                                                    ? value->str
+                                                    : OutputJson(*value));
+        }
+      }
     } else if (type == "program" || type == "program_output") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
                                           error, "output." + type);

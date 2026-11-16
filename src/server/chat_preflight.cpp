@@ -48,7 +48,9 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .model_aliases = model_catalog_.Aliases(),
           .access_program_policy = access_program_policy_,
           .file_inputs = file_inputs_,
-          .file_input_policy_sha256 = file_input_policy_sha256_};
+          .file_input_policy_sha256 = file_input_policy_sha256_,
+          .mcp_policy = mcp_policy_,
+          .mcp_tunnels = mcp_tunnels_};
 }
 
 void ChatServer::HandleConfig(int fd) {

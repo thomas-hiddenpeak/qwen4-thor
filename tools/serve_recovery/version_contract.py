@@ -53,6 +53,16 @@ def compatible(first, second):
     a, b = first['engine'], second['engine']
     ledger.require(a['model_dir'] == b['model_dir'] and a['settings'] == b['settings'],
                    'automatic recovery would change application settings or capacity')
+    # These private authorities live outside settings. Identical model/profile
+    # observations do not authorize changing an egress destination, program or
+    # file access policy during recovery. Explicit deployment can change them.
+    for key, filename in (
+            ('access_program_policy', 'access-program-policy.json'),
+            ('file_input_policy', 'file-input-policy.json'),
+            ('mcp_policy', 'mcp-policy.json')):
+        ledger.require(a.get(key) == b.get(key) and
+            a['files'].get(filename) == b['files'].get(filename),
+            'automatic recovery would change private application policy: '+key)
     # Current dynamic credential/quota journals remain authoritative. The
     # original immutable client/transport schema must still be identical.
     for name in ('gateway-policy.json', 'engine/client-policy.json'):

@@ -1,0 +1,14 @@
+[  0%] Built target q4t_regex_build
+[  2%] Built target q4t_program_javascript
+[ 10%] Built target xgrammar
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_tokens_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_tool_discovery_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_state_cipher_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_state_key_admin_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_search_execution_test.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_content.cpp.o
+[ 14%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp.o

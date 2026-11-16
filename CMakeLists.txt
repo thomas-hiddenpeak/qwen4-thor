@@ -314,6 +314,25 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
+  src/server/mcp_http.cpp
+  src/server/mcp_policy.cpp
+  src/server/mcp_tunnel.cpp
+  src/server/mcp_tunnel_api.cpp
+  src/server/mcp_tunnel_transport.cpp
+  src/server/mcp_tunnel_agent_http.cpp
+  src/server/mcp_tunnel_agent.cpp
+  src/server/mcp_tunnel_agent_config.cpp
+  src/server/mcp_content.cpp
+  src/server/mcp_projection.cpp
+  src/server/mcp_transport.cpp
+  src/server/responses_mcp.cpp
+  src/server/responses_mcp_state.cpp
+  src/server/responses_mcp_output.cpp
+  src/server/responses_mcp_binding.cpp
+  src/server/responses_mcp_preparation.cpp
+  src/server/responses_mcp_media.cpp
+  src/server/responses_execution_mcp_media.cpp
+  src/server/responses_mcp_execution.cpp
   src/server/file_document.cpp
   src/server/file_document_worker.cpp
   src/server/file_document_sandbox.cpp

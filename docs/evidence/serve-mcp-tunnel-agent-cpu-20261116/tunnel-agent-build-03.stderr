@@ -1,0 +1,119 @@
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:50: error: no match for ‘operator+’ (operand types are ‘std::__cxx11::basic_string<char>’ and ‘const std::basic_string_view<char>’)
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                  ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+      |                                            |       |
+      |                                            |       const std::basic_string_view<char>
+      |                                            std::__cxx11::basic_string<char>
+In file included from /usr/include/c++/14/bits/stl_algobase.h:67,
+                 from /usr/include/c++/14/bits/stl_tree.h:63,
+                 from /usr/include/c++/14/map:62,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/mcp_transport.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_internal.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:1:
+/usr/include/c++/14/bits/stl_iterator.h:627:5: note: candidate: ‘template<class _Iterator> constexpr std::reverse_iterator<_IteratorL> std::operator+(typename reverse_iterator<_IteratorL>::difference_type, const reverse_iterator<_IteratorL>&)’
+  627 |     operator+(typename reverse_iterator<_Iterator>::difference_type __n,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:627:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   ‘const std::basic_string_view<char>’ is not derived from ‘const std::reverse_iterator<_IteratorL>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1797:5: note: candidate: ‘template<class _Iterator> constexpr std::move_iterator<_IteratorL> std::operator+(typename move_iterator<_IteratorL>::difference_type, const move_iterator<_IteratorL>&)’
+ 1797 |     operator+(typename move_iterator<_Iterator>::difference_type __n,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1797:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   ‘const std::basic_string_view<char>’ is not derived from ‘const std::move_iterator<_IteratorL>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/14/string:54,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/file_fetch.h:4,
+                 from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/mcp_transport.h:7:
+/usr/include/c++/14/bits/basic_string.h:3598:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 3598 |     operator+(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3598:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   ‘const std::basic_string_view<char>’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3616:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const _CharT*, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 3616 |     operator+(const _CharT* __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3616:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   mismatched types ‘const _CharT*’ and ‘std::__cxx11::basic_string<char>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3635:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(_CharT, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 3635 |     operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Alloc>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3635:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   ‘const std::basic_string_view<char>’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3652:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const _CharT*)’
+ 3652 |     operator+(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3652:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   mismatched types ‘const _CharT*’ and ‘std::basic_string_view<char>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3670:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, _CharT)’
+ 3670 |     operator+(const basic_string<_CharT, _Traits, _Alloc>& __lhs, _CharT __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3670:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   deduced conflicting types for parameter ‘_CharT’ (‘char’ and ‘std::basic_string_view<char>’)
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3682:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(__cxx11::basic_string<_CharT, _Traits, _Allocator>&&, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 3682 |     operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3682:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   ‘const std::basic_string_view<char>’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3689:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, __cxx11::basic_string<_CharT, _Traits, _Allocator>&&)’
+ 3689 |     operator+(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3689:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   types ‘std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’ and ‘const std::basic_string_view<char>’ have incompatible cv-qualifiers
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3696:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(__cxx11::basic_string<_CharT, _Traits, _Allocator>&&, __cxx11::basic_string<_CharT, _Traits, _Allocator>&&)’
+ 3696 |     operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3696:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   types ‘std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’ and ‘const std::basic_string_view<char>’ have incompatible cv-qualifiers
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3719:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(const _CharT*, __cxx11::basic_string<_CharT, _Traits, _Allocator>&&)’
+ 3719 |     operator+(const _CharT* __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3719:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   mismatched types ‘const _CharT*’ and ‘std::__cxx11::basic_string<char>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3726:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(_CharT, __cxx11::basic_string<_CharT, _Traits, _Allocator>&&)’
+ 3726 |     operator+(_CharT __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3726:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   types ‘std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’ and ‘const std::basic_string_view<char>’ have incompatible cv-qualifiers
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3733:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(__cxx11::basic_string<_CharT, _Traits, _Allocator>&&, const _CharT*)’
+ 3733 |     operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3733:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   mismatched types ‘const _CharT*’ and ‘std::basic_string_view<char>’
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3740:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr std::__cxx11::basic_string<_CharT, _Traits, _Allocator> std::operator+(__cxx11::basic_string<_CharT, _Traits, _Allocator>&&, _CharT)’
+ 3740 |     operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3740:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp:477:52: note:   deduced conflicting types for parameter ‘_CharT’ (‘char’ and ‘std::basic_string_view<char>’)
+  477 |         sessions.contains(Digest(authority + ':' + initialized_token)))
+      |                                                    ^~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1423: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:241: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:248: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:161: q4t_host_tests] Error 2

@@ -59,6 +59,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* embeddings = new WorkerOwner;
   static auto* tool_results = new WorkerOwner;
   static auto* programs = new WorkerOwner;
+  static auto* mcp = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
@@ -69,6 +70,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
     case IsolatedWorkerDomain::kToolResults:
       return *tool_results;
     case IsolatedWorkerDomain::kPrograms: return *programs;
+    case IsolatedWorkerDomain::kMcp: return *mcp;
     default: return *grammar;
   }
 }
@@ -157,6 +159,7 @@ void PollRequestWorkers() {
   PollIsolatedWorkers(IsolatedWorkerDomain::kEmbeddingAssets);
   PollIsolatedWorkers(IsolatedWorkerDomain::kToolResults);
   PollIsolatedWorkers(IsolatedWorkerDomain::kPrograms);
+  PollIsolatedWorkers(IsolatedWorkerDomain::kMcp);
 }
 
 void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
@@ -202,7 +205,8 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.domain != IsolatedWorkerDomain::kFileParse &&
       control.domain != IsolatedWorkerDomain::kEmbeddingAssets &&
       control.domain != IsolatedWorkerDomain::kToolResults &&
-      control.domain != IsolatedWorkerDomain::kPrograms)
+      control.domain != IsolatedWorkerDomain::kPrograms &&
+      control.domain != IsolatedWorkerDomain::kMcp)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -256,6 +260,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char embedding_name[] = "q4t-embedding-assets";
     char tool_result_name[] = "q4t-tool-results";
     char program_name[] = "q4t-program";
+    char mcp_name[] = "q4t-mcp";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
     if (control.domain == IsolatedWorkerDomain::kSessionCache ||
@@ -264,6 +269,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     if (control.domain == IsolatedWorkerDomain::kToolResults)
       name = tool_result_name;
     if (control.domain == IsolatedWorkerDomain::kPrograms) name = program_name;
+    if (control.domain == IsolatedWorkerDomain::kMcp) name = mcp_name;
     if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     if (control.domain == IsolatedWorkerDomain::kFileParse) name = document_name;
     if (control.domain == IsolatedWorkerDomain::kEmbeddingAssets)
@@ -344,6 +350,18 @@ void GrammarProcess::Stop() {
 
 void GrammarProcess::ReportRss(uint64_t bytes) {
   reported_rss_bytes_ = std::max(reported_rss_bytes_, bytes);
+}
+
+bool GrammarProcess::Exited() const {
+  if (pid_fd_ < 0) return true;
+  pollfd event{pid_fd_, POLLIN, 0};
+  return poll(&event, 1, 0) > 0 && (event.revents & POLLIN);
+}
+
+bool GrammarProcess::OutputReady() const {
+  if (socket_ < 0) return true;
+  pollfd event{socket_, POLLIN, 0};
+  return poll(&event, 1, 0) > 0;
 }
 
 Status GrammarProcess::Transfer(
@@ -556,4 +574,12 @@ bool WorkerTransfer(void* data, size_t bytes, bool write) {
   }
   return true;
 }
+int WaitWorkerInput(int milliseconds) {
+  pollfd event{kSocket, POLLIN, 0};
+  const auto result = poll(&event, 1, milliseconds);
+  if (!result || (result < 0 && errno == EINTR)) return 0;
+  if (result < 0 || !(event.revents & POLLIN)) return -1;
+  return 1;
+}
+
 }  // namespace q4t::server::detail

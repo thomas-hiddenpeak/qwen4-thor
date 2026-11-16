@@ -1,0 +1,16 @@
+{
+  "label": "version-register",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "service",
+    "version-register",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--registration",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-mcp-20261115/delivery-01/registration.json",
+    "--expected-cycle",
+    "1a229bcc-3a45-40f7-a9cf-398db9f3f6ec"
+  ],
+  "returncode": 0,
+  "seconds": 3.675078276079148
+}

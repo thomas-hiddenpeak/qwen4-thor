@@ -389,13 +389,29 @@ void Expand(io::Json* node, int depth) {
   Require(depth < 32);
   if (node->GetString("type") == "json_schema") return;
   if (node->GetString("type") == "q4t_schema") {
+    const bool completion_only = node->GetBool("completion_only");
+    Require(!completion_only ||
+            (!node->GetBool("strict") && !node->GetString("scope").empty()));
     OutputSchemaGraph graph;
     const auto status = graph.Init(*Field(*node, "schema"),
-                                   node->GetBool("strict"), nullptr);
+                                   node->GetBool("strict"), nullptr, "schema",
+                                   completion_only
+                                       ? OutputSchemaPurpose::kToolResult
+                                       : OutputSchemaPurpose::kGeneration);
     if (!status) {
       if (status.message().starts_with("schema_resource_exhausted:"))
         throw std::length_error("schema graph resource limit");
       throw std::runtime_error("invalid schema graph");
+    }
+    if (completion_only) {
+      // Its original schema remains mandatory in SchemaTokenGuard. This
+      // lexical envelope admits additional keys and optional properties.
+      const auto parsed = io::ParseJson(
+          R"({"type":"json_schema","json_schema":{"type":"object",)"
+          R"("additionalProperties":true},"any_order":false,)"
+          R"("max_whitespace_cnt":16})", node);
+      Require(parsed.ok());
+      return;
     }
     const auto grammar = CompileOutputSchemaEbnf(
         graph, CompileSchemaStringSyntax, CheckSchemaString);

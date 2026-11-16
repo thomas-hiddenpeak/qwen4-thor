@@ -281,9 +281,10 @@ bool HostMatches(std::string_view host, const std::string& expected) {
 }
 
 struct Usage {
-  int active[3] = {0, 0, 0};
-  double tokens[3] = {0, 0, 0};
-  Clock::time_point updated[3] = {Clock::now(), Clock::now(), Clock::now()};
+  int active[5] = {};
+  double tokens[5] = {};
+  Clock::time_point updated[5] = {Clock::now(), Clock::now(), Clock::now(),
+                                  Clock::now(), Clock::now()};
 };
 
 class Capacity {
@@ -293,24 +294,34 @@ class Capacity {
     for (auto& used : usage_) {
       used.tokens[0] = config.burst + 1;
       used.tokens[1] = 21;
-      used.tokens[2] = 21;
+      used.tokens[2] = used.tokens[3] = used.tokens[4] = 21;
     }
   }
-  bool Acquire(size_t client, bool control, bool cancel) {
+  bool Acquire(size_t client, bool control, bool cancel, bool tunnel_poll,
+               bool tunnel_response) {
     std::lock_guard guard(mutex_);
-    const size_t lane = cancel ? 2 : control ? 1 : 0;
+    const size_t lane = tunnel_response ? 4
+                        : tunnel_poll   ? 3
+                        : cancel        ? 2
+                        : control       ? 1
+                                        : 0;
+    const bool auxiliary = tunnel_poll || tunnel_response;
     auto& used = usage_[client];
     const auto now = Clock::now();
     const double elapsed =
         std::chrono::duration<double>(now - used.updated[lane]).count();
     used.updated[lane] = now;
     used.tokens[lane] = std::min<double>(
-        control ? 21 : config_.burst + 1,
-        used.tokens[lane] + elapsed * (control ? 10 : config_.rps));
-    if (used.active[lane] >= (cancel    ? 1
-                              : control ? 4
-                                        : config_.client_inflight) ||
-        active_[lane] >= (cancel    ? 4
+        control || auxiliary ? 21 : config_.burst + 1,
+        used.tokens[lane] +
+            elapsed * (control || auxiliary ? 10 : config_.rps));
+    if (used.active[lane] >= (tunnel_poll       ? 1
+                              : tunnel_response ? 2
+                              : cancel          ? 1
+                              : control         ? 4
+                                                : config_.client_inflight) ||
+        active_[lane] >= (auxiliary ? 4
+                          : cancel  ? 4
                           : control ? 8
                                     : config_.global_inflight) ||
         used.tokens[lane] < 1)
@@ -320,9 +331,14 @@ class Capacity {
     used.tokens[lane] -= 1;
     return true;
   }
-  void Release(size_t client, bool control, bool cancel) {
+  void Release(size_t client, bool control, bool cancel, bool tunnel_poll,
+               bool tunnel_response) {
     std::lock_guard guard(mutex_);
-    const auto lane = cancel ? 2 : control ? 1 : 0;
+    const auto lane = tunnel_response ? 4
+                      : tunnel_poll   ? 3
+                      : cancel        ? 2
+                      : control       ? 1
+                                      : 0;
     --usage_[client].active[lane];
     --active_[lane];
   }
@@ -331,7 +347,7 @@ class Capacity {
   const Config& config_;
   std::mutex mutex_;
   std::vector<Usage> usage_;
-  int active_[3] = {0, 0, 0};
+  int active_[5] = {};
 };
 
 struct Lease {
@@ -340,8 +356,10 @@ struct Lease {
   bool control = false;
   bool cancel = false;
   bool acquired = false;
+  bool tunnel_poll = false, tunnel_response = false;
   ~Lease() {
-    if (acquired) capacity.Release(client, control, cancel);
+    if (acquired)
+      capacity.Release(client, control, cancel, tunnel_poll, tunnel_response);
   }
 };
 
@@ -367,13 +385,15 @@ constexpr RouteSpec kRoutes[] = {
 bool Route(const std::string& method, const std::string& path, bool* control) {
   if (server::ConversationMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
+      server::McpTunnelMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
       server::FileMethodAllowed(method, path) ||
       server::UploadMethodAllowed(method, path) ||
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
-    *control = server::IsResponsesObservation(method, path) ||
+    *control = server::IsMcpTunnelMetadata(method, path) ||
+               server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
@@ -400,7 +420,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
 bool Handle(Connection& client, const Config& config, Capacity& capacity,
             ClientAccess& access, server::HttpBodyBudget& budget,
             server::HttpBodyBudget& cancel_budget,
-            Address source, bool* started, server::HttpRequestState* state,
+            server::HttpBodyBudget& tunnel_budget, Address source,
+            bool* started, server::HttpRequestState* state,
             bool allow_keep_alive) {
   client.extra_headers.clear();
   client.keep_alive = false;
@@ -440,6 +461,15 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +
+           (!server::IsMcpTunnelTarget(path) || headers.tunnel_instance.empty()
+                ? ""
+                : "X-Tunnel-Client-Instance-Id: " + headers.tunnel_instance +
+                      "\r\n") +
+           (!server::IsMcpTunnelTarget(path) ||
+                    headers.tunnel_shard_token.empty()
+                ? ""
+                : "X-Tunnel-Shard-Token: " + headers.tunnel_shard_token +
+                      "\r\n") +
            "\r\n";
   };
   const auto upload_binding = [&] {
@@ -517,9 +547,13 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (method == "GET" && headers.content_length)
       return reject(400, "gateway_bad_request");
     lease.cancel = server::IsCancellationRequest(method, path);
+    lease.tunnel_poll = server::IsMcpTunnelPoll(method, path);
+    lease.tunnel_response = server::IsMcpTunnelResponse(method, path);
     if (lease.cancel) body_lease.SelectBudget(cancel_budget);
-    lease.acquired =
-        capacity.Acquire(lease.client, lease.control, lease.cancel);
+    if (lease.tunnel_poll || lease.tunnel_response)
+      body_lease.SelectBudget(tunnel_budget);
+    lease.acquired = capacity.Acquire(lease.client, lease.control, lease.cancel,
+                                      lease.tunnel_poll, lease.tunnel_response);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
     binding = authorize();
@@ -705,6 +739,7 @@ int Run(const Config& config) {
   }
   Require(listeners.Open(config.listen, config.port, 0).ok());
   Capacity capacity(config);
+  server::HttpBodyBudget tunnel_budget(17U << 20);
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
   server::HttpBodyBudget cancel_budget(server::kCancelBodyBudgetBytes);
   std::array<Slot, 32> slots;
@@ -757,10 +792,11 @@ int Run(const Config& config) {
               if (request && !server::AwaitHttpRequest(client.Fd(), &state,
                     config.http.keep_alive_idle_ms, receive)) break;
               started = false;
-              if (!Handle(client, config, capacity, access, budget, cancel_budget,
-                           source,
-                           &started, &state,
-                           request + 1 < config.http.keep_alive_requests)) break;
+              if (!Handle(client, config, capacity, access, budget,
+                          cancel_budget, tunnel_budget, source, &started,
+                          &state,
+                          request + 1 < config.http.keep_alive_requests))
+                break;
             }
           }
         } catch (...) {

@@ -66,6 +66,14 @@ class ResponsesOutput {
   // Private effective identities can grow without rewriting public tools.
   Status BindTools(const io::Json& active);
   Status AppendProgramItems(const io::Json& items, std::string* wire);
+  // The owner supplies durable MCP identities. Arguments stream as generated;
+  // only a validated closing delimiter permits ArgumentsDone and dispatch.
+  Status StartMcpItem(const io::Json& item, size_t* index, std::string* wire);
+  Status AppendMcpArguments(size_t index, std::string_view delta,
+                            std::string* wire);
+  Status CompleteMcpArguments(size_t index, std::string* wire);
+  Status CallingMcp(size_t index);
+  Status CompleteMcpItem(size_t index, const io::Json& item, std::string* wire);
   Status StartToolSearch(const ResponseToolCall& call, bool server,
                          size_t* index, std::string* wire);
   Status CompleteToolSearchCall(size_t index, const io::Json& arguments,
@@ -109,11 +117,13 @@ class ResponsesOutput {
   Status AddItem(ResponseDelta::Kind kind, const ResponseToolCall* call,
                  size_t* index, std::string* wire);
   void CloseItem(size_t index, bool incomplete, std::string* wire);
+  bool CloseInterruptedMcp(size_t index, std::string* wire);
   io::Json response_;
   std::unordered_map<size_t, size_t> calls_;
   std::unordered_map<size_t, std::string> model_names_;
   std::vector<ResponsesToolIdentity> tool_identities_;
   std::unordered_set<size_t> tool_search_results_;
+  std::unordered_set<size_t> mcp_arguments_complete_;
   std::vector<size_t> call_indices_;
   std::unordered_set<size_t> closed_items_;
   size_t summary_item_ = kMaxItems;

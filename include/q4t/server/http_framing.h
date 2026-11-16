@@ -64,7 +64,9 @@ inline bool Protected(std::string_view name) {
         "set-cookie", "content-type", "content-encoding", "content-range",
         "range", "x-request-id", "origin", "forwarded"})
     if (name == field) return true;
-  return name.starts_with("x-q4t-") || name.starts_with("x-forwarded-") ||
+  return name == "x-tunnel-client-instance-id" ||
+         name == "x-tunnel-shard-token" || name.starts_with("x-q4t-") ||
+         name.starts_with("x-forwarded-") ||
          name.starts_with("access-control-");
 }
 

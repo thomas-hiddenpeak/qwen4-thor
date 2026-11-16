@@ -1,0 +1,9 @@
+{
+  "kind": "targeted non-performance CPU validation",
+  "gpu": 0,
+  "default_change": false,
+  "new_cpp": ["config/network/redaction", "timeout grammar/receipt/local cap", "modern session/resource/delete", "legacy session continuity", "legacy cross-origin denial", "credential/header isolation", "exact RPC identity/non200 errors", "progress failure and ping", "no tool replay", "invalid initialize cleanup", "bounded session capacity", "fixed target/deadline/response limits", "real broker-agent modern HTTP", "real broker-agent legacy SSE", "authorization stops recovery", "upload retry same result", "expired/multiple poll commands", "failed progress upload keeps final"],
+  "affected_existing": ["direct HTTP/session credentials", "direct SSE/ping", "legacy SSE", "private MCP policy file loader"],
+  "cli_cpu": ["private config file and redaction", "TLS with native ingress/target", "owned worker crash/restart budget", "stop and session cleanup"],
+  "rules": "Freeze grouped scope before running. Preserve failures; fix and rerun affected items only. No full model/performance matrix. Full engine compilation and reviewed source audit required."
+}
