@@ -5,6 +5,7 @@
 
 #include "q4t/server/http_response.h"
 #include "q4t/server/custom_tools.h"
+#include "q4t/server/generation_style.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
@@ -415,9 +416,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       Quote(kRefusalClose) + R"(]},"end":)" + Quote(kRefusalClose) + "}," +
       kWhitespace + "]}";
   payload = R"({"type":"or","elements":[)" + payload + ',' + refusal + "]}";
-  bool thinking = request.GetBool("enable_thinking", true);
-  if (const auto* options = request.Find("chat_template_kwargs"))
-    thinking = options->GetBool("enable_thinking", thinking);
+  const bool thinking = ChatThinkingEnabled(request);
   std::string prefix;
   if (thinking) {
     prefix = R"({"type":"tag","begin":"","content":{"type":"any_text",)"

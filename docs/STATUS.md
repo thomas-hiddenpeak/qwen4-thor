@@ -51,6 +51,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[none模板/约束修复CPU通过](evidence/serve-chat-style-grammar-cpu-20261116/README.md)：
+8项直接C++含真实grammar负控，来源/生成物检查通过，最终零警告。
+仅共享样式、模板、约束三项运行时变化；初次key类型构建失败保留。
+候选`e0b34b43`继续原六条业务/原判定，最多1启动/6Chat/900秒。
+rev150未改，全部master继续。
+
+[Chat 样式实际业务首轮未通过](evidence/serve-chat-style-business-failure-20261116/README.md)：
+1启动/4Chat/45.196秒，前三条通过，第4条工具无成功终态、0工具执行。
+根因是none模板关闭thinking、语法仍按enable_thinking缺省开启，第二次
+调用未被解码约束屏蔽。现统一解析，正在做真实grammar/模板针对性CPU；
+原失败保留，rev150未改，自有GPU资源已清理，全部master继续。
+
 [Chat 样式/流式针对性CPU通过](evidence/serve-chat-style-cpu-20261116/README.md)：
 15项不同C++、6项schema/客户端/驱动、32项公开/原生解析对照通过；
 715来源/7负控及生成物一致性通过，主机/引擎/probe零警告。首轮夹具

@@ -250,15 +250,9 @@ Status ModelToolJson(const io::Json& tool, std::string* out) {
   return Status();
 }
 
-const io::Json* Option(const io::Json& request, const char* name) {
-  const io::Json* options = request.Find("chat_template_kwargs");
-  if (options && options->Has(name)) return options->Find(name);
-  return request.Find(name);
-}
-
 Status BoolOption(const io::Json& request, const char* name, bool fallback,
                   bool* out) {
-  const io::Json* value = Option(request, name);
+  const io::Json* value = ChatTemplateOption(request, name);
   if (value && !value->IsBool()) {
     return Status::Fail(std::string(name) + " must be boolean");
   }
@@ -567,13 +561,12 @@ Status RenderChatPrompt(const io::Json& request,
   if (!s) return s;
   s = BoolOption(request, "preserve_thinking", true, &preserve);
   if (!s) return s;
-  const auto* value = Option(request, "reasoning_effort");
+  const auto* value = ChatTemplateOption(request, "reasoning_effort");
   if (value && !value->IsNull() &&
       (!value->IsString() || !IsReasoningEffort(value->str)))
     return Status::Fail("invalid reasoning_effort");
-  const std::string_view effort =
-      value && value->IsString() ? value->str : "medium";
-  if (effort == "none") thinking = false;
+  const std::string_view effort = ChatReasoningEffort(request);
+  thinking = ChatThinkingEnabled(request);
   std::string instructions(thinking ? ReasoningGuidance(effort) : "");
   const auto* verbosity = request.Find("verbosity");
   if (verbosity && !verbosity->IsNull() &&

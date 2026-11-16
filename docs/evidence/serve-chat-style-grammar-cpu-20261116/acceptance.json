@@ -1,0 +1,17 @@
+{
+  "status": "ACCEPT_CHAT_NONE_GRAMMAR_TARGETED_CPU",
+  "cpp": 8,
+  "build_warnings": 0,
+  "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+  "protocol_sha256": "070c7ccd3403aa66e8935f915ccb258eb4973acc3db9003cce33c6963cfceebd",
+  "source_delta": [
+    "include/q4t/server/generation_style.h",
+    "src/server/chat_template.cpp",
+    "src/server/output_constraints.cpp"
+  ],
+  "prior_build_failure": "string_view key incompatible with existing Json::Find(const string&); key type corrected before successful build",
+  "business_pending": true,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "archive_sha256": "640473a0ecc7a8dc3f5624e4dfb9719df2c369d1089fae00ccbe80c440701a28"
+}

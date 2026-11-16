@@ -1,9 +1,33 @@
 // Shared model-native adaptation of standard generation style controls.
 #pragma once
 
+#include <string>
 #include <string_view>
 
+#include "q4t/io/json.h"
+
 namespace q4t::server {
+
+// Call after validating the request. Presence, including null, selects the
+// nested option; the renderer and grammar must resolve the same prefix.
+inline const io::Json* ChatTemplateOption(const io::Json& request,
+                                         const std::string& name) {
+  const auto* options = request.Find("chat_template_kwargs");
+  if (options)
+    if (const auto* value = options->Find(name)) return value;
+  return request.Find(name);
+}
+
+inline std::string_view ChatReasoningEffort(const io::Json& request) {
+  const auto* value = ChatTemplateOption(request, "reasoning_effort");
+  return value && value->IsString() ? std::string_view(value->str) : "medium";
+}
+
+inline bool ChatThinkingEnabled(const io::Json& request) {
+  const auto* value = ChatTemplateOption(request, "enable_thinking");
+  return (!value || !value->IsBool() || value->boolean) &&
+         ChatReasoningEffort(request) != "none";
+}
 
 inline bool IsReasoningEffort(std::string_view effort) {
   return effort == "none" || effort == "minimal" || effort == "low" ||

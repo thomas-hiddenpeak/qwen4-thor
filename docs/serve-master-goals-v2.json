@@ -82,13 +82,15 @@
         "Chat stream_options.include_obfuscation, null/default and response projection parity"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_accepted_business_pending",
+        "state": "real_business_failure_repaired_targeted_cpu_passed",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": false,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
-        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
       }
     },
     {
@@ -131,13 +133,15 @@
         "Non-null audio/annotations history and matching model/output/template round trips"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_accepted_business_pending",
+        "state": "real_business_failure_repaired_targeted_cpu_passed",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": false,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
-        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
       }
     },
     {
@@ -367,7 +371,8 @@
         "Complete A09/A10/A11 dependent media/files/builtin tools, all required input/output/include/SSE producers and SDK integration",
         "Typed outputs, MCP and remaining builtin execution combinations. Async/caller/namespace/output_schema/discovery/programmatic have delivered subsets; do not reclassify these as entirely missing.",
         "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered",
-        "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP"
+        "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP",
+        "Responses default reasoning_effort remains xhigh; align omitted/null with frozen official medium default in next input-contract group."
       ],
       "automatic_truncation": {
         "state": "delivered",
@@ -2658,13 +2663,15 @@
         "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_accepted_business_pending",
+        "state": "real_business_failure_repaired_targeted_cpu_passed",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": false,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
-        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
       }
     },
     {
@@ -4082,13 +4089,15 @@
         "Executable long-stability handoff; user performs long run"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_accepted_business_pending",
+        "state": "real_business_failure_repaired_targeted_cpu_passed",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": false,
         "default_unchanged": true,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
-        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md"
       }
     }
   ],
