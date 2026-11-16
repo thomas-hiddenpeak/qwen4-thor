@@ -301,14 +301,19 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             std::string_view code = "response_parse_failed",
                             int http_status = 502);
 // delta_json is an object serialized by the response parser, never raw input.
+// Append transport padding to an object whose final closing brace is pending.
+// Does not include generated content or change token/usage accounting.
+void AppendStreamObfuscation(std::string* object);
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
                           int64_t created = 0, bool include_usage = false,
-                          std::string_view logprobs_json = "null");
+                          std::string_view logprobs_json = "null",
+                          bool obfuscate = false);
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index,
-                     int64_t created = 0, bool include_usage = false);
+                     int64_t created = 0, bool include_usage = false,
+                     bool obfuscate = false);
 
 }  // namespace q4t::server::detail

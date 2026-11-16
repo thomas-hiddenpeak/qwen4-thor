@@ -171,7 +171,8 @@ def chat_schema():
             schema=root_schema), ("name", "schema"))), ("type", "json_schema"))]))
     template = obj(dict(enable_thinking=dict(type="boolean", default=True),
         preserve_thinking=dict(type="boolean", default=True),
-        reasoning_effort=dict(enum=["low", "medium", "xhigh"], default="xhigh"),
+        reasoning_effort=dict(enum=["none", "minimal", "low", "medium", "high",
+                                   "xhigh", "max", None], default="medium"),
         add_vision_id=dict(type="boolean", default=False)))
     nonempty_tools = dict(type="array", minItems=1)
     parsed = dict(required=["messages"], properties=dict(parse_response=dict(const=True)))
@@ -203,7 +204,9 @@ def chat_schema():
         metadata=nullable(dict(type="object", maxProperties=16,
             propertyNames=dict(maxLength=64),
             additionalProperties=dict(type="string", maxLength=512))),
-        stream_options=nullable(obj(dict(include_usage=dict(type="boolean", default=False)))),
+        stream_options=nullable(obj(dict(include_usage=dict(type="boolean", default=False),
+            include_obfuscation=dict(type="boolean", default=True)))),
+        verbosity=dict(enum=["low", "medium", "high", None], default="medium"),
         request_id=identifier, cancel_token=hex64,
         request_timeout_ms=dict(type="integer", minimum=1, maximum=10800000),
         tools=nullable(dict(type="array", maxItems=128, items=ref("tool"))),
@@ -249,6 +252,9 @@ def chat_schema():
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
         "allOf": [
+            when(present("stream_options", dict(type="object")),
+                 present("stream", dict(const=True))),
+            when(present("verbosity"), dict(required=["messages"])),
             when(present("store", dict(const=True)),
                  dict(properties=dict(messages=dict(maxItems=4096)))),
             when(present("tool_choice", dict(type="null")), legacy_active),
@@ -628,6 +634,18 @@ def semantics():
         "src/server/batch_usage.cpp", "src/server/batch_execution.cpp",
         "src/server/chat_responses.cpp", "src/server/chat_http.cpp"],
         "Native LAST final-mixer hidden states, default2560 dimensions and L2 normalization. Requested dimensions select a prefix then normalize, without a retrieval-training or Matryoshka quality claim. Required served model and raw input support string/string-array/token-array/token-matrix, no ChatML or truncation; limits2048 inputs,8192/model-context tokens per input,300000 cumulative plus client input policy. Float JSON round-trips FP32; base64 is little-endian IEEE754 FP32, supporting the SDK default decoder. One RPM and committed input work, no generated output; cancellation/error drain the real slot/device owners and preserve partial actual usage. Dedicated400000-node input budget and validated metadata projections handle finite large vectors without a giant output DOM or changing ordinary Chat limits. Native Batch original-request binding, input count, precharge, result/usage/recovery use the same endpoint contract. No partial success, zero placeholders, synthesized model floats or silent invalid norm. Actual CPU/model/SDK acceptance and delivery remain separate evidence."))
+    rules.append(("chat-style-and-stream-padding", [
+        "include/q4t/server/generation_style.h", "src/server/chat_contract.cpp",
+        "src/server/chat_template.cpp", "src/server/chat_generation.cpp",
+        "src/server/http_response.cpp", "src/server/responses_plan.cpp"],
+        "Chat reasoning_effort accepts none/minimal/low/medium/high/xhigh/max and null; "
+        "omitted/null default medium. Nested template presence takes precedence, including null. "
+        "none selects the native closed-thinking prefix; explicit enable_thinking=false also disables thinking. "
+        "Effort and verbosity low/medium/high/null use native instructions, not numerical compute guarantees. "
+        "Style guidance does not insert source messages or change their source coordinates. "
+        "Chat stream_options object requires stream=true; include_obfuscation is boolean and defaults true. "
+        "Role/content/reasoning/tool/choice-finish deltas receive random transport padding; usage-only terminal, "
+        "DONE, errors and heartbeats keep their own shape. Opt-out does not change content or usage."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",

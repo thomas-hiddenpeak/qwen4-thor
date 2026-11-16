@@ -47,6 +47,23 @@ function toolMessage() {
     type: 'function', function: { name: 'read', arguments: JSON.stringify({ path: 'docs/MODEL.md', start_line: 1, line_count: 8 }) } })) };
 }
 
+test('Chat stream obfuscation preserves SDK deltas and explicit request options', async () => {
+  const events = streamEvents();
+  for (const value of events) if (value.choices.length) value.obfuscation = 'a1'.repeat(127);
+  const wire = encode(events);
+  assert.equal(parseSseWire(wire).result.message.content, '中文710003');
+  for (const padding of [true, false]) {
+    const body = request(true);
+    body.stream_options.include_obfuscation = padding;
+    const { api, requests } = client(wire, { stream: true });
+    const result = await api.chat(body);
+    assert.equal(result.message.content, '中文710003');
+    assert.deepEqual(result.usage, COUNTS);
+    assert.deepEqual(JSON.parse(requests[0].body).stream_options,
+      { include_usage: true, include_obfuscation: padding });
+  }
+});
+
 test('refusal JSON and streaming SDK preserve history and actual probabilities', async () => {
   const message = { role: 'assistant', content: null, refusal: '不能提供✅' };
   const probability = { token: '不能提供✅', logprob: -0.5, bytes: [...Buffer.from('不能提供✅')], top_logprobs: [] };

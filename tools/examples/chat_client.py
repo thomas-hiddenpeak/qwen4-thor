@@ -893,7 +893,12 @@ class ChatClient:
         stream = body.get("stream", False)
         require(type(stream) is bool, "invalid stream flag")
         if stream:
-            require(body.get("stream_options") == {"include_usage": True},
+            options = body.get("stream_options")
+            require(isinstance(options, dict) and
+                    options.get("include_usage") is True and
+                    set(options) <= {"include_usage", "include_obfuscation"} and
+                    ("include_obfuscation" not in options or
+                     type(options["include_obfuscation"]) is bool),
                     "this client requires stream usage")
         timeout = body.get("request_timeout_ms")
         require(type(timeout) is int and 1 <= timeout <= 1200000,

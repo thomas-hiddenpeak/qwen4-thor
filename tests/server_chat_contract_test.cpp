@@ -5,6 +5,7 @@
 #include "q4t/test.h"
 
 #include <string>
+#include <utility>
 
 namespace {
 bool Accept(const std::string& input, bool media = false) {
@@ -14,6 +15,44 @@ bool Accept(const std::string& input, bool media = false) {
       .ok();
 }
 }  // namespace
+
+Q4T_TEST(chat_contract_standard_style_and_stream_options) {
+  const std::string base =
+      R"({"messages":[{"role":"user","content":"q"}])";
+  for (const auto* effort : {"none", "minimal", "low", "medium", "high",
+                              "xhigh", "max"}) {
+    Q4T_CHECK(Accept(base + ",\"reasoning_effort\":\"" + effort + "\"}"));
+    Q4T_CHECK(Accept(base + ",\"chat_template_kwargs\":{"
+                                "\"reasoning_effort\":\"" + effort + "\"}}"));
+  }
+  for (const auto* extra :
+       {R"(,"reasoning_effort":null,"verbosity":null)",
+        R"(,"verbosity":"low")", R"(,"verbosity":"medium")",
+        R"(,"verbosity":"high")", R"(,"stream_options":null)",
+        R"(,"stream":true,"stream_options":{})",
+        R"(,"stream":true,"stream_options":{"include_obfuscation":false})",
+        R"(,"stream":true,"stream_options":{"include_obfuscation":true,
+             "include_usage":true})"})
+    Q4T_CHECK(Accept(base + extra + '}'));
+  for (const auto& [extra, path] :
+       {std::pair{R"(,"stream_options":{})", "stream_options"},
+        {R"(,"stream":false,"stream_options":{"include_usage":false})",
+         "stream_options"},
+        {R"(,"stream":true,"stream_options":{"include_obfuscation":null})",
+         "stream_options.include_obfuscation"},
+        {R"(,"verbosity":"verbose")", "verbosity"},
+        {R"(,"verbosity":false)", "verbosity"},
+        {R"(,"reasoning_effort":"other")", "reasoning_effort"},
+        {R"(,"reasoning_effort":true)", "reasoning_effort"}}) {
+    q4t::io::Json request;
+    Q4T_CHECK(q4t::io::ParseJson(base + extra + '}', &request));
+    std::string param;
+    Q4T_CHECK(!q4t::server::ValidateChatContract(request, "m", false, &param));
+    Q4T_CHECK(param == path);
+  }
+  Q4T_CHECK(!Accept(R"({"prompt":"q","verbosity":"low"})"));
+  return true;
+}
 
 Q4T_TEST(chat_contract_error_param_is_explicit) {
   const std::pair<const char*, const char*> cases[] = {
@@ -78,7 +117,7 @@ Q4T_TEST(chat_contract_greedy_neutral_options) {
     "repetition_penalty":1,"stop":[],"logprobs":false,
     "logit_bias":{},"response_format":{"type":"text"},"user":"test",
     "model":"qwen3.8-flash-next","stream":true,
-    "stream_options":{"include_usage":true},"max_tokens":1})"));
+    "stream":true,"stream_options":{"include_usage":true},"max_tokens":1})"));
   Q4T_CHECK(Accept(R"({"prompt":"hello","seed":null,"stop":null})"));
   Q4T_CHECK(Accept(R"({"prompt":"hello","max_tokens":2147483647})"));
   return true;

@@ -5,6 +5,7 @@
 #include "q4t/test.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -28,6 +29,96 @@ std::string WithAdapter(std::string native) {
   return native;
 }
 }  // namespace
+
+Q4T_TEST(chat_style_default_null_and_explicit_effort_rendering) {
+  const std::string base =
+      R"({"messages":[{"role":"user","content":"q"}])";
+  std::string default_prompt;
+  for (const auto* extra : {"", R"(,"reasoning_effort":null)",
+                            R"(,"reasoning_effort":"medium")"}) {
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(base + extra + '}', &request));
+    std::string prompt;
+    Q4T_CHECK(RenderChatPrompt(request, {"q"}, &prompt));
+    if (default_prompt.empty()) default_prompt = prompt;
+    Q4T_CHECK(prompt == default_prompt);
+    Q4T_CHECK(prompt.find("Reasoning effort is set to xhigh") == prompt.npos);
+    Q4T_CHECK(prompt.ends_with("<|im_start|>assistant\n<think>\n"));
+  }
+  for (const auto& [effort, expected] :
+       {std::pair{"minimal", "Use minimal reasoning:"},
+        {"low", "Reasoning effort is set to low."},
+        {"high", "Use high reasoning effort:"},
+        {"xhigh", "Reasoning effort is set to xhigh."},
+        {"max", "Use maximum reasoning effort within the output budget:"}}) {
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(
+        base + ",\"reasoning_effort\":\"" + effort + "\"}", &request));
+    std::string prompt;
+    Q4T_CHECK(RenderChatPrompt(request, {"q"}, &prompt));
+    Q4T_CHECK(prompt.find(expected) != prompt.npos);
+    Q4T_CHECK(prompt.find(expected, prompt.find(expected) + 1) == prompt.npos);
+  }
+  return true;
+}
+
+Q4T_TEST(chat_style_none_and_nested_precedence_use_native_prefix) {
+  const std::string base =
+      R"({"messages":[{"role":"user","content":"q"}])";
+  for (const auto* extra :
+       {R"(,"reasoning_effort":"none","enable_thinking":true)",
+        R"(,"reasoning_effort":"high","chat_template_kwargs":{
+             "reasoning_effort":"none","enable_thinking":true})",
+        R"(,"reasoning_effort":"high","enable_thinking":false)"}) {
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(base + extra + '}', &request));
+    Q4T_CHECK(ValidateChatContract(request, "m", false));
+    std::string prompt;
+    Q4T_CHECK(RenderChatPrompt(request, {"q"}, &prompt));
+    Q4T_CHECK(prompt.ends_with("<think>\n\n</think>\n\n"));
+    Q4T_CHECK(prompt.find("Use high reasoning effort") == prompt.npos);
+  }
+  Json request;
+  Q4T_CHECK(q4t::io::ParseJson(base + R"(,"reasoning_effort":"xhigh",
+      "chat_template_kwargs":{"reasoning_effort":null}})", &request));
+  std::string prompt;
+  Q4T_CHECK(RenderChatPrompt(request, {"q"}, &prompt));
+  Q4T_CHECK(prompt.find("Reasoning effort is set to xhigh") == prompt.npos);
+  Q4T_CHECK(prompt.ends_with("<think>\n"));
+  return true;
+}
+
+Q4T_TEST(chat_verbosity_preserves_original_message_source_coordinates) {
+  const std::vector<std::string> contents{"POLICY", "资料 零"};
+  for (const auto* style : {"low", "medium", "high"}) {
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(
+        R"({"messages":[{"role":"developer","content":"POLICY"},
+            {"role":"user","content":"资料 零"}],"verbosity":")" +
+            std::string(style) + "\"}", &request));
+    std::vector<q4t::server::ChatMessageSpan> spans;
+    std::string prompt;
+    Q4T_CHECK(RenderChatPrompt(request, contents, &prompt, &spans));
+    Q4T_CHECK(spans.size() == contents.size());
+    for (size_t i = 0; i < spans.size(); ++i) {
+      Q4T_CHECK(spans[i].source_begin == 0);
+      Q4T_CHECK(spans[i].source_size == contents[i].size());
+      Q4T_CHECK(prompt.substr(spans[i].prompt_begin, spans[i].source_size) ==
+                contents[i]);
+      // prompt_end includes the existing message terminator; source_size
+      // bounds the source bytes consumed by media/position projection.
+      Q4T_CHECK(prompt.substr(spans[i].prompt_begin + spans[i].source_size,
+                              spans[i].prompt_end - spans[i].prompt_begin -
+                                  spans[i].source_size) == "<|im_end|>\n");
+    }
+    Q4T_CHECK((prompt.find("Keep the final answer concise") != prompt.npos) ==
+              (std::string_view(style) == "low"));
+    Q4T_CHECK((prompt.find("Give a detailed final answer") != prompt.npos) ==
+              (std::string_view(style) == "high"));
+    Q4T_CHECK(request.Find("messages")->array.size() == 2);
+  }
+  return true;
+}
 
 Q4T_TEST(chat_schema_prompt_preserves_contract_and_message_boundaries) {
   Json request;

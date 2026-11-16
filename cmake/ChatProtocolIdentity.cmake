@@ -6,6 +6,7 @@ set(protocol_inputs
   include/q4t/text/tokenizer.h
   src/text/tokenizer.cpp
   include/q4t/server/model_catalog.h
+  include/q4t/server/generation_style.h
   src/server/model_catalog.cpp
   include/q4t/server/completion_plan.h
   src/server/completion_plan.cpp

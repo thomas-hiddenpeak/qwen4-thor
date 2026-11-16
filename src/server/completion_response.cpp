@@ -41,13 +41,7 @@ std::string Stream(std::string body, bool obfuscate) {
   if (obfuscate) {
     // Randomized padding to the next 128-byte bucket plus one random bucket.
     // This is optional transport padding, not an encryption replacement.
-    const auto random = detail::NewRequestId("");
-    const size_t padding = 128 - ((body.size() + 18) % 128) +
-                           ((random[0] & 1) ? 128 : 0);
-    std::string value;
-    while (value.size() < padding) value += detail::NewRequestId("");
-    value.resize(padding);
-    body += ",\"obfuscation\":" + Quote(value);
+    detail::AppendStreamObfuscation(&body);
   }
   return "data: " + body + "}\r\n\r\n";
 }

@@ -28,7 +28,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 未改控制源码/四个原生辅助程序，RAM压力与外层监护证据按原身份
 复用。最终STOPPED，GPU保持释放；rev142默认/状态可核验备份保留。
 自动版本恢复保留现代根，人工整根回退的v12入口无outer；不是独立
-旧引擎回退。PR30待最终head检查与实际合main，不把已发布当已合并。
+旧引擎回退。PR30已实际合main（`d2524e4a`），[合并回执](evidence/serve-pr30-merged-20261116/README.md)保留。
 
 八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
 仍需部署方配置，未声称通过。任意仿射/其余媒体格式、缓存/分块
@@ -50,6 +50,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[Chat 样式/流式针对性CPU通过](evidence/serve-chat-style-cpu-20261116/README.md)：
+15项不同C++、6项schema/客户端/驱动、32项公开/原生解析对照通过；
+715来源/7负控及生成物一致性通过，主机/引擎/probe零警告。首轮夹具
+误读prompt_end，按既有合同修正后单项复验，14项成功复用。候选
+`8b4e1fd1`待最多1启动/6Chat/900秒业务，rev150未改；全部master继续。
+
+[Chat 样式与流式合同](SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md)候选已实现：
+完整 effort/null/medium 缺省、verbosity 实际提示、默认 SSE obfuscation
+及关闭选项；原生来源坐标保持，公开生成器/客户端同步。15项C++及
+4项schema/客户端检查范围已冻结，尚未测试/发行；rev150保持。
+PR30最终head两组CI通过并实际合main，下一步定向CPU和最多1启动/
+6 Chat/900秒业务短验，全部master继续。
 
 [当前协议/总任务再审计](SERVE_SURFACE_REAUDIT_2026-11-16.md)已逐条核对
 45个Chat字段、21个Completions字段、74后端/123原生路由；修正旧描述

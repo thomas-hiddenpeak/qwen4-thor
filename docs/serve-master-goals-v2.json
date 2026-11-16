@@ -80,7 +80,16 @@
       "remaining_required": [
         "Chat 8 frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/verbosity/web_search_options",
         "Chat stream_options.include_obfuscation, null/default and response projection parity"
-      ]
+      ],
+      "chat_style_parity_20261116": {
+        "state": "targeted_cpu_accepted_business_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": false,
+        "default_unchanged": true,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+      }
     },
     {
       "id": "A02",
@@ -120,7 +129,16 @@
       "remaining_required": [
         "Complete Chat effort enum/null mapping using native semantics",
         "Non-null audio/annotations history and matching model/output/template round trips"
-      ]
+      ],
+      "chat_style_parity_20261116": {
+        "state": "targeted_cpu_accepted_business_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": false,
+        "default_unchanged": true,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+      }
     },
     {
       "id": "A03",
@@ -2638,7 +2656,16 @@
       },
       "remaining_required": [
         "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
-      ]
+      ],
+      "chat_style_parity_20261116": {
+        "state": "targeted_cpu_accepted_business_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": false,
+        "default_unchanged": true,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+      }
     },
     {
       "id": "N01",
@@ -4010,7 +4037,14 @@
       "remaining_required": [
         "PR30 exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
-      ]
+      ],
+      "video_geometry_main_merge_20261116": {
+        "state": "merged",
+        "pr": 30,
+        "head": "a362d68d65cdaac84a4067e92f10d87bd04d0fc8",
+        "merge": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
+        "evidence": "evidence/serve-pr30-merged-20261116/README.md"
+      }
     },
     {
       "id": "Q03",
@@ -4046,7 +4080,16 @@
       "remaining_required": [
         "Finish every remaining task before final closure",
         "Executable long-stability handoff; user performs long run"
-      ]
+      ],
+      "chat_style_parity_20261116": {
+        "state": "targeted_cpu_accepted_business_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": false,
+        "default_unchanged": true,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09"
+      }
     }
   ],
   "next_task": "Complete PR30 exact-head main integration and current surface reconciliation checks; implement Chat contract parity first, then all remaining media/cache, tool/backend, client and resource/cold-recovery tasks.",

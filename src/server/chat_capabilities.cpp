@@ -359,6 +359,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("content":true,"reasoning_content":true,"reasoning":true,)"
          R"("tool_calls":true,"legacy_function_call":true,)"
          R"("stream":true,"stream_include_usage":true,)"
+         R"("stream_include_obfuscation":true,)"
+         R"("stream_obfuscation_default":true,)"
+         R"("verbosity":["low","medium","high"],)"
          R"("stream_usage_null":true,"choice_logprobs_null":false,)"
          R"("stream_heartbeat_ms":5000,"heartbeat_write_timeout_ms":1000,)"
          R"("stream_start":"after_template_and_structured_admission",)"
@@ -594,7 +597,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          Quote(identity::kTemplateFixture) +
          R"(,"options":["enable_thinking","preserve_thinking",)"
          R"("reasoning_effort","add_vision_id"],)"
-         R"("reasoning_effort":["low","medium","xhigh"]},)"
+         R"("reasoning_effort":["none","minimal","low","medium",)"
+         R"("high","xhigh","max"],"reasoning_effort_default":"medium",)"
+         R"("effort_adaptation":"native_guidance",)"
+         R"("none_disables_thinking":true},)"
          R"("runtime":{"media_enabled":)" +
          (allow_media ? "true" : "false") + R"(,"mtp_enabled":)" +
          (mtp_enabled ? "true" : "false") + R"(},"media":)" +

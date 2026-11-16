@@ -84,13 +84,16 @@
       ]
     },
     "stream_options": {
-      "semantics": "对象或 null；null 不请求 usage",
-      "boundary": "Chat目前仅include_usage bool；include_obfuscation在Completions/Responses已有实现，Chat仍须接通A01，不能以拒绝视为兼容。",
+      "semantics": "object/null；对象要求stream=true；include_usage bool默认false，include_obfuscation bool默认true。",
+      "boundary": "Chat角色、正文、推理、工具和choice结束delta带随机padding；usage-only/DONE/错误/心跳保持，false关闭。候选待CPU和业务验收。",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "tests/server_chat_message_profile_test.cpp",
+        "tests/server_http_response_test.cpp"
       ]
     },
     "request_id": {
@@ -170,12 +173,15 @@
       ]
     },
     "reasoning_effort": {
-      "semantics": "low/medium/xhigh 提示词选择",
-      "boundary": "Chat原生模板目前仅low/medium/xhigh，尚未接通Responses已有none/minimal/high/max等映射；不是独立计算预算。其余标准枚举/null须A01/A02补齐。",
+      "semantics": "none/minimal/low/medium/high/xhigh/max/null；缺省或null为medium；嵌套存在优先，包括null。",
+      "boundary": "none选择原生关闭thinking前缀；其他级别为实际模型提示适配，不承诺数值计算预算。候选实现，业务/发行待验。",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "tests/server_chat_message_profile_test.cpp",
+        "tests/server_http_response_test.cpp"
       ]
     },
     "add_vision_id": {
@@ -495,6 +501,16 @@
         "docs/evidence/serve-cache-route-delivery-20261112/README.md",
         "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ]
+    },
+    "verbosity": {
+      "evidence": [
+        "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "tests/server_chat_contract_test.cpp",
+        "tests/server_chat_message_profile_test.cpp",
+        "tests/server_http_response_test.cpp"
+      ],
+      "semantics": "low/medium/high/null；缺省/null为medium；需要messages。",
+      "boundary": "low/high加入真实模型指令；不插入来源消息、不承诺固定答案长度。候选尚未发行，其他标准字段仍须实现。"
     }
   },
   "routes": {
@@ -1462,6 +1478,7 @@
       "enable_thinking",
       "preserve_thinking",
       "reasoning_effort",
+      "verbosity",
       "reasoning_field",
       "include_reasoning",
       "thinking_token_budget",
@@ -1492,7 +1509,8 @@
       "parallel_tool_calls"
     ],
     "chat_contract.cpp:2:*options": [
-      "include_usage"
+      "include_usage",
+      "include_obfuscation"
     ],
     "chat_contract.cpp:3:message": [
       "role",
@@ -2007,7 +2025,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "77fe72289047dea6884cf06be4115d4ac98e1f47fe067574cb715689ba28a692",
-    "cmake/ChatProtocolIdentity.cmake": "0bda7679238308356b51ba0decd81b406816a84e1f23842bb74e0219653a2b8a",
+    "cmake/ChatProtocolIdentity.cmake": "ab82d57ac1206a687c818ca49b9c377eadd73de9c93108d9b049b9685b6e5296",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2103,13 +2121,14 @@
     "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
+    "include/q4t/server/generation_style.h": "818f4aae4a891e9c05e76d6b9b4be1c8c11fda518b4aa0f045ddeeacd66bb971",
     "include/q4t/server/grammar_process.h": "10ce03140ff7f09755f6eb1471f32a0ea4277b2d48efb34dfc9042d3c1db08f4",
     "include/q4t/server/http_connection.h": "3afb216669cd6ebd20fd555a25c728643ea68a4ce57d03ca61c66cc87709cf7d",
     "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
     "include/q4t/server/http_request.h": "9a2f1e837f0dd118388e83e4fa8608c198eb5f2c3b519f1b419bf3626dfb8879",
-    "include/q4t/server/http_response.h": "fd24155eb610847d1945de57715e00a1cfb7f6b64833c8fb78ab951912757934",
+    "include/q4t/server/http_response.h": "b6762863dcc89120d27df8a513d95c886f847d76f0aec542d50481f03504d2a3",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -2270,14 +2289,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "e37f8ce4901427610ec4c967d32cc891554494f059990ef905dcef2b059b22b2",
+    "src/server/chat_capabilities.cpp": "cae719835874e40634848b0654b3cc6f76a650ad066c0b70b7140933ce63dc82",
     "src/server/chat_choices.cpp": "4b8b94ca4ea4e87868814c528aaeac2dcfebb281aecf0602668e4d6aad40ae6d",
-    "src/server/chat_contract.cpp": "fde666898045c9ac1ec9676ea8b561fd048714a75379185bc0da9120117b6668",
+    "src/server/chat_contract.cpp": "5a36378625f43fdade35408c74403b9ea366a9d231609726d3805f522464f460",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "d23865edad38a70dd463b45f63af8b65c63a59e64c6657a05e9ab5994311cdf1",
+    "src/server/chat_generation.cpp": "9ca3de8c16f5c5493ecb7476d638fd52c336435f2d12657556091ebb57981f43",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2297,7 +2316,7 @@
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "ae11c8a0dff7f1c708495144c8f83d5fcd4e5c161dbb968b495ce61a5e740289",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "351c8216e0fd35f23d0936a52bfcfeae726c4ec76c72fb0f8ed929d471c838bc",
+    "src/server/chat_template.cpp": "c42669b6db4d0c67669b0b1ecf85afa2a48d416d66ccb69a3db4dadfb8de9116",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2306,7 +2325,7 @@
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
     "src/server/client_request.cpp": "3c20cd09870843d117ce76c915749de64f78581f612dfa33d47d9583b15fab2f",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
-    "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
+    "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
     "src/server/conversation_state.cpp": "f480ec44313ed8d84ef5f4339af76d7bd0f7ef1902687179c5da6913ed9bb44c",
@@ -2375,7 +2394,7 @@
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "475d201a89306c99927c49ae7e0161b47429f21a0035bb371508a8e884daa0e5",
-    "src/server/http_response.cpp": "b3310889c2f0aca07f458d4a46227865bf300c15bc0deea2766f96d762362ea9",
+    "src/server/http_response.cpp": "83a59041bce053166f810b1db527ebeb5d6d9ea6277a2f8a2ae611f96dc3845c",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
     "src/server/input_snapshot_bindings.cpp": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985",
@@ -2471,7 +2490,7 @@
     "src/server/responses_mcp_state.cpp": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451",
     "src/server/responses_output.cpp": "24eb0fdea7e9bd9047a694e9c7f9106439cb3b54539929479f33ab3376f280dc",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
-    "src/server/responses_plan.cpp": "452c5044b64ded6be3f22f5856414505f872bfa2e5f5d2e8c6300f5f52748415",
+    "src/server/responses_plan.cpp": "892fca21b2cae5422c340fb391ea3193bfb971d2cc555a76cdaac89458c2afd3",
     "src/server/responses_program.cpp": "c7c15a9c71fb31019275f7a9c87d78188cc0e7507ea098053906278e26e8bcbb",
     "src/server/responses_program_execution.cpp": "b5b203abaf19ebfe415a916fb134cba672173821e7739db4aa8e87dd51954232",
     "src/server/responses_program_output.cpp": "b3440be7b8d21b0a5488b251979b127e1536bcb47899ead83a2320b4d49c2fc2",
@@ -6286,5 +6305,11 @@
     "new_gpu_starts": 0,
     "global_semantics_certified": false,
     "required_master_tasks_remain": true
+  },
+  "chat_style_development_20261116": {
+    "report": "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+    "status": "implemented_targeted_validation_pending",
+    "actual_default_revision": 150,
+    "master_active": true
   }
 }

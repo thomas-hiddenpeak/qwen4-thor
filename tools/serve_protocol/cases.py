@@ -154,7 +154,7 @@ def cases():
         stream_options=dict(include_usage=True), request_id="client-1", cancel_token=HEX,
         request_timeout_ms=500, tools=[tool()], functions=[legacy_fn], function_call="auto",
         chat_template_kwargs=dict(enable_thinking=False),
-        enable_thinking=False, preserve_thinking=True, reasoning_effort="low",
+        enable_thinking=False, preserve_thinking=True, reasoning_effort="low", verbosity="low",
         add_vision_id=True, reasoning_field="reasoning", include_reasoning=False,
         thinking_token_budget=1, temperature=0, top_p=1, n=1, frequency_penalty=0,
         presence_penalty=0, repetition_penalty=1, seed=42, stop="END", logprobs=False,
@@ -165,11 +165,14 @@ def cases():
     nulls = {"max_tokens", "max_completion_tokens", "stream", "stream_options", "tools",
         "thinking_token_budget", "temperature", "top_p", "n", "frequency_penalty",
         "presence_penalty", "seed", "stop", "logprobs", "top_logprobs", "logit_bias",
-        "response_format", "user", "prediction", "functions", "function_call"}
+        "response_format", "user", "prediction", "functions", "function_call",
+        "reasoning_effort", "verbosity"}
     for field, valid in values.items():
         request, config = base(), {}
         if field == "top_logprobs":
             request["logprobs"] = True
+        if field == "stream_options":
+            request["stream"] = True
         if field == "prompt":
             request = {}
         if field in ("request_id", "cancel_token"):
@@ -185,6 +188,18 @@ def cases():
         request.pop(field, None)
         add(field+"-omitted", request, field not in ("messages", "prompt", "request_id", "cancel_token"),
             field=field, **config)
+    for effort in ('none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'):
+        add('chat-style-effort-'+effort, dict(base(), reasoning_effort=effort))
+        add('chat-style-nested-'+effort,
+            dict(base(), chat_template_kwargs=dict(reasoning_effort=effort)))
+    for style in ('medium', 'high'):
+        add('chat-style-verbosity-'+style, dict(base(), verbosity=style))
+    for padding in (True, False):
+        add('chat-style-padding-'+str(padding), dict(base(), stream=True,
+            stream_options=dict(include_usage=True, include_obfuscation=padding)))
+    add('chat-style-stream-options-without-stream', dict(base(), stream_options={}), False)
+    add('chat-style-null-padding', dict(base(), stream=True,
+        stream_options=dict(include_obfuscation=None)), False)
     for key, candidates in {
         "temperature": [(-0.1, False), (0.5, True), (2, True), (2.1, False)],
         "top_p": [(0, True), (0.5, True), (1, True), (1.1, False)],

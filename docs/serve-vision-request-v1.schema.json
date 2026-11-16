@@ -80,6 +80,10 @@
             "include_usage": {
               "type": "boolean",
               "default": false
+            },
+            "include_obfuscation": {
+              "type": "boolean",
+              "default": true
             }
           },
           "required": [],
@@ -89,6 +93,15 @@
           "type": "null"
         }
       ]
+    },
+    "verbosity": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        null
+      ],
+      "default": "medium"
     },
     "request_id": {
       "type": "string",
@@ -205,11 +218,16 @@
         },
         "reasoning_effort": {
           "enum": [
+            "none",
+            "minimal",
             "low",
             "medium",
-            "xhigh"
+            "high",
+            "xhigh",
+            "max",
+            null
           ],
-          "default": "xhigh"
+          "default": "medium"
         },
         "add_vision_id": {
           "type": "boolean",
@@ -229,11 +247,16 @@
     },
     "reasoning_effort": {
       "enum": [
+        "none",
+        "minimal",
         "low",
         "medium",
-        "xhigh"
+        "high",
+        "xhigh",
+        "max",
+        null
       ],
-      "default": "xhigh"
+      "default": "medium"
     },
     "add_vision_id": {
       "type": "boolean",
@@ -2360,6 +2383,43 @@
     ]
   },
   "allOf": [
+    {
+      "if": {
+        "required": [
+          "stream_options"
+        ],
+        "properties": {
+          "stream_options": {
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "stream"
+        ],
+        "properties": {
+          "stream": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "verbosity"
+        ],
+        "properties": {
+          "verbosity": {}
+        }
+      },
+      "then": {
+        "required": [
+          "messages"
+        ]
+      }
+    },
     {
       "if": {
         "required": [

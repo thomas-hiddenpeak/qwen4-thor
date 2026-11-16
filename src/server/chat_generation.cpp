@@ -715,6 +715,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const io::Json* stream_options = req.Find("stream_options");
   const bool include_usage =
       stream_options && stream_options->GetBool("include_usage", false);
+  const bool include_obfuscation =
+      !stream_options || stream_options->GetBool("include_obfuscation", true);
   const std::string id = request_id;
   const std::string model_field = req.GetString("model", model_name_);
   const int64_t created = static_cast<int64_t>(std::time(nullptr));
@@ -1704,7 +1706,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     "", "null", include_usage,
                                     completion_plan.include_obfuscation)
                   : SseChunk(id, model_field, "assistant", "", "", choice_index,
-                             created, include_usage),
+                             created, include_usage, include_obfuscation),
               options)) {
         control->Cancel(RequestControl::State::kDisconnect);
         count_abort();
@@ -3077,7 +3079,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                   completion_plan.include_obfuscation)
                 : detail::SseDeltaChunk(id, model_field, delta.ToJson(), "",
                                         choice_index, created, include_usage,
-                                        logprobs);
+                                        logprobs, include_obfuscation);
         if (!write_stream(chunk)) return false;
         if (!first_delta_sent) {
           first_delta_sent = true;
@@ -4623,7 +4625,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                       !sampling.logprobs ? "null"
                                       : response_parser.HasRefusal()
                                           ? R"({"content":null,"refusal":[]})"
-                                          : R"({"content":[],"refusal":null})");
+                                          : R"({"content":[],"refusal":null})",
+                                      include_obfuscation);
       std::string tail;
       if (final_choice) {
         if (include_usage) {
