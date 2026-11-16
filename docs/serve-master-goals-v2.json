@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-16",
+  "updated": "2026-11-17",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -143,6 +143,29 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+        "revision": 196,
+        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+        "delivery_evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md",
+        "default_unchanged": false,
+        "actual_starts": 4,
+        "actual_requests": 14,
+        "actual_seconds": 185.92932795360684
       }
     },
     {
@@ -181,7 +204,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Non-null audio/annotations history and matching model/output/template round trips"
+        "Non-null audio history and matching model/output/template round trips; citation input history delivered in rev196, actual search output remains A01/A11"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -202,6 +225,29 @@
         "pull_request": 31,
         "main_commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+        "revision": 196,
+        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+        "delivery_evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md",
+        "default_unchanged": false,
+        "actual_starts": 4,
+        "actual_requests": 14,
+        "actual_seconds": 185.92932795360684
       }
     },
     {
@@ -3450,7 +3496,8 @@
         "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "revision": 188,
-        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "pull_request": 35
       }
     },
     {
@@ -3700,7 +3747,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Before controlled cold business, refresh exact preparation/check against rev188 or the then-current default; no camera/jtop stop or device-fence action without the pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev196 or the then-current default; do not stop camera/jtop or enter device-fence without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4168,6 +4215,29 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_annotations_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
+        "whole_task_complete": false,
+        "cpu_limit": 16,
+        "schema_cases": 8,
+        "gpu_limits": {
+          "starts": 3,
+          "chats": 12,
+          "seconds": 600
+        },
+        "evidence": "evidence/serve-chat-annotations-cpu-20261117/README.md",
+        "runtime_accepted": true,
+        "business_evidence": "evidence/serve-chat-annotations-business-20261117/README.md",
+        "binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+        "revision": 196,
+        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+        "delivery_evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md",
+        "default_unchanged": false,
+        "actual_starts": 4,
+        "actual_requests": 14,
+        "actual_seconds": 185.92932795360684
       }
     },
     {
@@ -4380,7 +4450,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native root rollback exact-head checks and actual main merge",
+        "PR36 exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4483,10 +4553,46 @@
         "pull_request": 34
       },
       "native_soak_ops_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged_user_day_pending",
         "revision": 188,
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
-        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md"
+        "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
+        "pull_request": 35,
+        "main_commit": "38451306218fa63c2112034c36984f0bc8107227",
+        "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
+      },
+      "chat_annotations_delivery_20261117": {
+        "status": "ACCEPT_CHAT_ANNOTATIONS_DELIVERY",
+        "revision": 196,
+        "current": {
+          "engine_binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+          "engine_release_sha256": "796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840",
+          "generation_sha256": "85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d",
+          "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/package-01/bundle",
+          "service_acceptance_sha256": "120bf6a9c4812955e34bb356b169494def38023a535ebebf0a25952a0a1fec49",
+          "service_release_sha256": "f6047372cb033ad61c0979a0b59ba31de1c210be6e879fbcd75216287be304c4"
+        },
+        "commands": 18,
+        "seconds": 228.64109567878768,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "core_client_outer_bytes_preserved": true,
+        "profile_migration": "qualified additive capability and identity; state, history, configuration and clock preserved",
+        "root_cycles_preserved": true,
+        "manual_root": "42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e",
+        "automatic_payload": "27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223",
+        "older_engine_fallback": false,
+        "prior_rev188_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 78,
+        "secret_scan_matches": 0,
+        "archive_sha256": "23863f77760f525c84e5112c918953cf6ca87cc43084d2dc3db7b0ceac8dbb74",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md"
       }
     },
     {
@@ -4522,7 +4628,7 @@
       },
       "remaining_required": [
         "Finish every remaining task before final closure",
-        "Integrate native soak delivery into main; user executes the prepared long-stability run"
+        "User executes the prepared long-stability run; native soak delivery is actually merged"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -4545,7 +4651,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "short_delivered_day_handoff_prepared_main_pending",
+        "state": "delivered_main_merged_user_day_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4577,10 +4683,22 @@
         "revision": 188,
         "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
         "delivery_evidence": "evidence/serve-ops-v5-delivery-20261116/README.md",
-        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md"
+        "handoff": "SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md",
+        "pull_request": 35,
+        "main_commit": "38451306218fa63c2112034c36984f0bc8107227",
+        "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
+      },
+      "current_native_day_handoff": {
+        "revision": 196,
+        "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+        "service_id": "556e2ba7-98a3-4ef8-879b-0c712d609707",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/plan.json",
+        "evidence": "evidence/serve-chat-annotations-day-handoff-20261117/README.md",
+        "executed": false,
+        "owner": "user"
       }
     }
   ],
-  "next_task": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered.",
-  "next": "Finish native soak/operational metric compatibility delivery; controlled cold-start, resource/host composition and all remaining protocol/media/backend/client tasks. Keep every required task open until implemented, validated and delivered."
+  "next_task": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
 }

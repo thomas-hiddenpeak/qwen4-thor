@@ -4,8 +4,10 @@
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/custom_tools.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
+#include "q4t/server/mcp_content.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/request_json.h"
@@ -185,6 +187,104 @@ Status ToJson(const io::Json& value, std::string* out,
       break;
   }
   return Status();
+}
+
+Status ValidateAnnotations(const io::Json& message, const std::string& path,
+                           std::string* error_param) {
+  const auto* annotations = message.Find("annotations");
+  if (!annotations || annotations->IsNull()) return {};
+  const auto invalid = [&](std::string param, std::string reason) {
+    if (error_param) *error_param = std::move(param);
+    return Status::Fail(std::move(reason));
+  };
+  const std::string base = path + ".annotations";
+  if (message.GetString("role") != "assistant" || !annotations->IsArray())
+    return invalid(base, "annotations requires an assistant citation array");
+  if (annotations->array.empty()) return {};
+  const auto* content = message.Find("content");
+  if (!content || content->IsNull())
+    return invalid(base, "citation offsets require original message content");
+  size_t characters = 0;
+  const auto count = [&](const io::Json& text) {
+    if (!text.IsString() || detail::NormalizeUtf8(text.str) != text.str)
+      return false;
+    characters += std::count_if(
+        text.str.begin(), text.str.end(),
+        [](unsigned char byte) { return (byte & 0xc0) != 0x80; });
+    return true;
+  };
+  if (content->IsString()) {
+    if (!count(*content))
+      return invalid(path + ".content", "citation content must be valid UTF-8");
+  } else if (content->IsArray()) {
+    for (const auto& part : content->array) {
+      const auto* text = part.Find(part.GetString("type") == "refusal"
+                                       ? "refusal"
+                                       : "text");
+      if (text && !count(*text))
+        return invalid(path + ".content", "citation text must be valid UTF-8");
+    }
+  } else {
+    return invalid(path + ".content", "citation content must contain text");
+  }
+  for (size_t i = 0; i < annotations->array.size(); ++i) {
+    const auto& annotation = annotations->array[i];
+    const std::string item = base + "[" + std::to_string(i) + "]";
+    auto status = InputFields(annotation, {"type", "url_citation"},
+                              error_param, item);
+    if (!status) return status;
+    if (annotation.GetString("type") != "url_citation")
+      return invalid(item + ".type", "expected url_citation annotation");
+    const auto* citation = annotation.Find("url_citation");
+    const std::string fields = item + ".url_citation";
+    if (!citation) return invalid(fields, "citation details are required");
+    status = InputFields(*citation, {"start_index", "end_index", "title", "url"},
+                         error_param, fields);
+    if (!status) return status;
+    for (const auto* key : {"title", "url"}) {
+      const auto* value = citation->Find(key);
+      if (!value || !value->IsString() ||
+          detail::NormalizeUtf8(value->str) != value->str)
+        return invalid(fields + "." + key,
+                       "citation metadata must be UTF-8 text");
+    }
+    if (!McpResourceUri(citation->GetString("url")))
+      return invalid(fields + ".url",
+                     "citation URL must be a bounded absolute URI");
+    for (const auto* key : {"start_index", "end_index"}) {
+      const auto* value = citation->Find(key);
+      if (!value || !IsInputInteger(*value) || value->number < 0 ||
+          value->number > static_cast<double>(characters))
+        return invalid(fields + "." + key,
+                       "citation offset is outside original content characters");
+    }
+    if (citation->Find("start_index")->number >
+        citation->Find("end_index")->number)
+      return invalid(fields + ".end_index", "citation end precedes its start");
+  }
+  return {};
+}
+
+Status AppendAnnotations(const io::Json& message, std::string* content) {
+  const auto* annotations = message.GetArray("annotations");
+  if (!annotations || annotations->array.empty()) return {};
+  std::string encoded;
+  auto status = ToJson(*annotations, &encoded, true);
+  if (!status) return status;
+  // This is data in the original assistant turn, never a new role or tool.
+  // The original request retains its exact offsets, before template trimming.
+  *content += "\n\n[Assistant message annotations "
+              "(original content character offsets): ";
+  for (char c : encoded) {
+    if (c == '<')
+      *content += "\\u003c";
+    else if (c == '>')
+      *content += "\\u003e";
+    else
+      *content += c;
+  }
+  *content += ']';
+  return {};
 }
 
 // Adapt custom input to the model's trained function/parameter syntax. The
@@ -484,6 +584,8 @@ Status ValidateChatMessageProfile(const io::Json& messages,
                      "message content must be text or content parts");
     if (content && content->IsArray() && content->array.empty())
       return invalid(path + ".content", "content parts must not be empty");
+    auto annotations = ValidateAnnotations(message, path, error_param);
+    if (!annotations) return annotations;
     if (content && content->IsArray()) {
       for (size_t j = 0; j < content->array.size(); ++j) {
         const auto& part = content->array[j];
@@ -690,6 +792,8 @@ Status RenderChatPrompt(const io::Json& request,
         if (!text.back().empty()) text.back() += "\n\n";
         text.back() += refusal;
       }
+      auto annotations = AppendAnnotations(ms[i], &text.back());
+      if (!annotations) return annotations;
     }
     if (role == "user") {
       if (!(text.back().starts_with("<tool_response>") &&

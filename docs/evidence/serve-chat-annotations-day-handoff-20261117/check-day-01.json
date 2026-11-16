@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "tools/serve_soak/native_stage.py",
+    "check",
+    "--plan",
+    ".q4t-work/serve-chat-annotations-20261116/day-01/plan.json"
+  ],
+  "exit_code": 0,
+  "seconds": 0.4858053531497717,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d/q4t",
+      "sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d/q4t.release.json",
+      "sha256": "796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d/q4t",
+      "sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d/q4t.release.json",
+      "sha256": "796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840"
+    }
+  },
+  "default_unchanged": true
+}

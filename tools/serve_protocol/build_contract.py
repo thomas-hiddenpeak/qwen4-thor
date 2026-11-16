@@ -100,6 +100,13 @@ def chat_schema():
         prompt_cache_breakpoint=breakpoint), ("text",))
     refusal_part = obj(dict(type=dict(const="refusal"),
                             refusal=dict(type="string")), ("type", "refusal"))
+    citation = obj(dict(type=dict(const="url_citation"), url_citation=obj(dict(
+        start_index=dict(type="integer", minimum=0),
+        end_index=dict(type="integer", minimum=0), title=dict(type="string"),
+        url=dict(type="string", pattern=r"^[A-Za-z][A-Za-z0-9+.-]*:[^\x00-\x20\x7f]*$",
+                 **{"x-q4t-max-utf8-bytes": 8192})),
+        ("start_index", "end_index", "title", "url"))),
+        ("type", "url_citation"))
     content = dict(anyOf=[dict(type=["string", "null"]),
         dict(type="array", minItems=1,
              items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])
@@ -120,7 +127,9 @@ def chat_schema():
         content=content, name=dict(type=["string", "null"],
             **{"x-q4t-max-utf8-bytes": 4096}),
         refusal=dict(type=["string", "null"]),
-        audio=dict(type="null"), annotations=dict(type="null"), function_call=nullable(legacy_call),
+        audio=dict(type="null"),
+        annotations=nullable(dict(type="array", items=citation)),
+        function_call=nullable(legacy_call),
         reasoning=dict(type=["string", "null"]), reasoning_content=dict(type=["string", "null"]),
         tool_calls=nullable(dict(type="array", maxItems=128, items=ref("historyCall"))),
         tool_call_id=dict(type="string", minLength=1, maxLength=256,
@@ -146,7 +155,12 @@ def chat_schema():
             dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
                 dict(type="array", items={"not": present("type", dict(const="refusal"))})])))),
         when(present("content", dict(type="array", contains=ref("refusalPart"))),
-            dict(properties=dict(content=dict(maxItems=1, items=ref("refusalPart")))))]
+            dict(properties=dict(content=dict(maxItems=1, items=ref("refusalPart"))))),
+        when(present("role", {"not": dict(const="assistant")}),
+            dict(properties=dict(annotations=dict(type="null")))),
+        when(present("annotations", dict(type="array", minItems=1)),
+            dict(required=["content"],
+                 properties=dict(content=dict(type=["string", "array"]))))]
     fn = obj(dict(name=text_name(), description=dict(type="string"),
         strict=dict(type=["boolean", "null"]), parameters=dict(type="object",
             properties=dict(properties=dict(type="object")))), ("name",))
@@ -447,6 +461,7 @@ def message_schema():
         "x-q4t": dict(profile="qwen3.8-openai-v4",
             developer_mapping="ordered system ChatML messages",
             name="JSON quoted participant; angle brackets escaped",
+            annotations="assistant url_citation history; original content Unicode character offsets; cross-field bounds require native preflight; metadata is data, no automatic fetch",
             name_max_utf8_bytes=4096, user_message_required=False,
             full_request_validation=False)}
 

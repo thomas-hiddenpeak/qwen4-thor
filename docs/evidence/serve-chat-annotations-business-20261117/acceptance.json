@@ -1,0 +1,149 @@
+{
+  "status": "ACCEPT_CHAT_ANNOTATIONS_BUSINESS",
+  "engine_binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/package-01/bundle",
+    "manifest_sha256": "602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740",
+    "engine_binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+    "recovery_accepted": false
+  },
+  "modern_retained": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/modern-retained-01/bundle",
+    "manifest_sha256": "42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/retained-01/bundle",
+    "manifest_sha256": "27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223"
+  },
+  "profile_qualification": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 90,
+      "cleanup_complete": true,
+      "lease_result_sha256": "6c5c324ce01009393845364d915bc48b77a28fb2a5d43f6bcb1376ab29e9d3f9"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 10,
+      "controls": 86
+    },
+    "seconds": 94.52496356097981,
+    "registry_sha256": "2fac7b38bbde5f3dcf08c7926838526e0f1658996e6e707783180591707958ef",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "legacy_service_acceptance": {
+    "status": "PASS_CHAT_ANNOTATIONS_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_CHAT_ANNOTATIONS_SERVICE_RETAINED",
+    "manifest_sha256": "27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223",
+    "engine_binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+    "actual_business": {
+      "status": "ACCEPT_CHAT_ANNOTATIONS_SERVICE_RETAINED",
+      "strict_lease_seconds": 44.85055089695379,
+      "nvml_queries": 43,
+      "env_abort": false,
+      "validation_command_review": {
+        "planned": [
+          "/usr/bin/python3",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/native_citations.py",
+          "run",
+          "--plan",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/retained-business-01/plan.json"
+        ],
+        "actual": [
+          "/usr/bin/python3",
+          "-I",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/native_citations.py",
+          "run",
+          "--plan",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/retained-business-01/plan.json"
+        ],
+        "python_isolation_added": true,
+        "program_and_arguments_identical": true
+      },
+      "original_plan_sha256": "f7efc3d83b44f8ce0da625095951039e11a74e98703a96b4c831b1ceedb2ca7e",
+      "reviewer_sha256": "6451b10a79a7a2aeb07f3e4430af0c0b7b8bcd8277117ae73ca967f716e3806e",
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 149
+      },
+      "source_commit": "12a14c86c8e6c6b3b79e03a460364ce7e7381671",
+      "plan_sha256": "f7efc3d83b44f8ce0da625095951039e11a74e98703a96b4c831b1ceedb2ca7e",
+      "result_sha256": "39238863001095b532176ae89dc4203bba671ff11b0ad365624055ca4e93a6d0",
+      "lease_result_sha256": "a785ed52d2be726077fff05cd2fd792eabcc612753269dcd08e656f6a17bbd5e",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "modern_service_acceptance": {
+    "status": "PASS_CHAT_ANNOTATIONS_MODERN_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_CHAT_ANNOTATIONS_MODERN_SERVICE_RETAINED",
+    "manifest_sha256": "42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e",
+    "engine_binary_sha256": "6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27",
+    "actual_business": {
+      "status": "ACCEPT_CHAT_ANNOTATIONS_MODERN_SERVICE_RETAINED",
+      "strict_lease_seconds": 44.78693600697443,
+      "nvml_queries": 43,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 2,
+        "probes": 0,
+        "controls": 149
+      },
+      "source_commit": "390b8d4f797afd6e4cf86cd1657295ed734e2f95",
+      "plan_sha256": "7bd6c5e9713fd9f2ed6ec7c512d53e1f9986dedcfb831495f5113a02585415f8",
+      "result_sha256": "6b57809b7c82a38adc90688fd195e777d12060718bf5a6d7dd2ac1f9b4ba5a76",
+      "lease_result_sha256": "71598b5e6e90beb62a52e69805da5d1de5ad71fc21be310d3dc7066b44d4747f",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "starts": 4,
+  "generation_requests": 14,
+  "chat_requests_including_selfcheck": 10,
+  "native_embeddings": 2,
+  "native_media": 2,
+  "seconds": 185.92932795360684,
+  "nvml_queries": 176,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "original_postflight_failures_preserved": 2,
+  "first_package_build_directory_helper_rejection_preserved": true,
+  "original_plan_and_guard_unchanged": true,
+  "additional_command_review_cpu": 2,
+  "candidate_whole_package_gpu_run": false,
+  "candidate_control_reuse": "Exact currently delivered rev188 recovery/native/helper sources and executables; new engine is qualified on primary/light. Distinct legacy and modern retained complete payloads were each started with citation SSE, storage and isolation.",
+  "default_revision": 188,
+  "default_unchanged": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "master_complete": false,
+  "secret_scan_matches": 0,
+  "files": 213,
+  "archive_sha256": "fe7749cad8ceaea41a7b5015060842819a53ffad3689420b470c6b62cf40ac04"
+}

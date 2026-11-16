@@ -305,7 +305,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                          "tool_calls", "tool_call_id", "name", "refusal",
                          "audio", "annotations", "function_call"});
     if (!status) return status;
-    for (const char* key : {"audio", "annotations", "function_call"}) {
+    for (const char* key : {"audio", "function_call"}) {
       const auto* value = message.Find(key);
       if (value && !value->IsNull())
         return Status::Fail(std::string("message field not supported: ") + key);

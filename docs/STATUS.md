@@ -1,4 +1,4 @@
-# 当前状态（2026-11-16）
+# 当前状态（2026-11-17）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -9,24 +9,31 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev188；服务包 `509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74` |
-| Generation | `daf57aaf26151a6c89905be22c8ec243a249bca4259bb5d0c28ba361887abafa` |
-| 引擎 | `0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf` |
-| 引擎发布记录 | `2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245` |
+| 发布 | rev196；服务包 `602bbee6e959fff8e7b82905789b71f0e3817bf50db88e5745544c310c704740` |
+| Generation | `85927851c5cc0041a5236f50ea29b203134be6c6fdd63f637080aabd2804420d` |
+| 引擎 | `6e89e1c10be14f7256ba745be0a87dfcd765e3a346d65029486604f006b8eb27` |
+| 引擎发布记录 | `796cd151d99d49e659a03308ac73280693e9159d690984c6779242b37ac51840` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 前驱rev182根 `430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784`；原outer/周期完整，更早7230ac61也保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `42c34068b6a588746d74fc646f27d8994d131bef79f159d154b88e1bfbbcbc2e`；outer/周期及新引用能力完整，前驱188/182另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `27db274590c76a68615631b0f8d98d2179c799e8a4d24813bd3ac1d531d2b223`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
+[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
+引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
+outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
+PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
+新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+
+前驱[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
 STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
 只更新Python对当前上传/tunnel计数的解析；核心/client/outer/profile及
 所有本机程序和容量保持。原生60秒/3组/15业务加自检与完整清理通过；
 [24小时交接已准备](SERVE_NATIVE_SOAK_HANDOFF_2026-11-16.md)，实际day由用户执行。
-后续实际合main继续；R07执行前按当前默认刷新冻结包，维护交接未答
+本组[PR35已实际合main](evidence/serve-pr35-merged-20261117/README.md)（`38451306`）；R07执行前按当前默认刷新冻结包，维护交接未答
 不干预相机/监控。R08及全部协议/媒体/后端master任务继续。
 
 前驱rev182[原生整根回退交付](evidence/serve-root-delivery-20261116/README.md)完成18项STOPPED发布、实际回退再前进及
@@ -79,6 +86,47 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
+STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
+引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
+outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
+PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
+新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+
+
+[Chat引用业务接受](evidence/serve-chat-annotations-business-20261117/README.md)：
+4启动/14请求/185.929秒，176项NVML正常且清理通过。主轻真实资料
+工具及跨重启存储、旧/现代保留控制包SSE引用标题及客户隔离通过；
+当前控制源与helper按rev188精确身份复用。继续现代回退根/候选
+可回退发行与PR36合main，全部master继续，默认仍188。
+
+
+Chat引用主/轻与旧控制器业务完成：3启动/12请求，约141.05秒，
+真实资料工具、JSON/SSE、原消息及重启回读、客户隔离通过；清理通过。
+原后置命令-I/审计器提前导入失败保留并定点复核，没有重跑业务。
+发行前补现代整根回退组合，保持新增引用、outer和周期合同；仅再
+1启动/2请求/180秒，累计4/14且GPU总时≤600秒。默认rev188保持。
+
+
+[Chat引用历史CPU通过](evidence/serve-chat-annotations-cpu-20261117/README.md)：
+16项不同C++/8前端病例最终通过；首轮三个模板预期偏差只修断言，
+原失败保留。723/7来源及隔离零警告构建通过，能力描述已补。继续
+最多3启动/12请求/600秒实际资格、SSE/存储隔离与可回退发行。
+PR35两组CI通过且已实际合main（`38451306`），全部master继续。
+
+
+Chat引用历史已成组实现：shared合同校验UTF-8字符偏移和字段，模板
+转义控制标记且保持原消息坐标；统一Chat/vision/message/OpenAPI
+schema已同步。存储复用原始记录，新增10项直接C++回归与8个schema/
+原生预检/双客户端病例，另复验最多6项受影响旧合同。尚未构建或
+运行测试；默认rev188保持，必要业务仍上限3启动/12Chat/600秒。
+
+
+[Chat引用历史](SERVE_CHAT_ANNOTATIONS_2026-11-16.md)进入实现：补非null
+annotations的合同、原assistant模板数据、统一schema和持久往返；
+不冒充已执行检索。冻结16项直接C++/8前端病例，必要业务最多3启动/
+12Chat/600秒；PR35已创建等待CI，全部master继续。
 
 [rev188交付与day交接](evidence/serve-ops-v5-delivery-20261116/README.md)完成，13项
 发布/实际回退/再前进与健康检查通过、0新增GPU；默认STOPPED、原预算

@@ -1,0 +1,6 @@
+# Development-only schema checks; never imported by the inference service.
+attrs==23.2.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.6.3

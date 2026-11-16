@@ -1,0 +1,20 @@
+{
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/plan.json",
+  "status": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/package-01/bundle/bin/q4t",
+    "service",
+    "status",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/state"
+  ],
+  "stop": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/package-01/bundle/bin/q4t",
+    "service",
+    "stop",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-annotations-20261116/day-01/state"
+  ],
+  "persistent_service_installed": false,
+  "automatically_started": false,
+  "user_runs_day": true
+}
