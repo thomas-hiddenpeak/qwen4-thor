@@ -72,6 +72,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[R07精确包预检通过](evidence/serve-cold-refresh-preflight-20261116/README.md)：
+rev182原包普通prepare及root只读check闭合，原污染失败和plan保留；
+2项owner CPU通过。0GPU/0围栏/默认保持，等待相机/监控服务明确
+维护交接；期间继续独立协议与交接工作，全部master保持active。
+
 R07精确包prepare通过；管理员只读check在设备操作前发现验证helper
 污染sealed namespace。已改为按文件加载，2项原owner降权CPU通过，
 保留失败与原plan，仅更新验证文件绑定补check；默认/宿主服务保持。

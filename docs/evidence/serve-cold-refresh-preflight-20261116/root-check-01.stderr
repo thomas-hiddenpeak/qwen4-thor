@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance_owner.py", line 20, in verify
+    checker(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py", line 136, in verify
+    bundle, _, _, _, _, engine = load_modules(plan)
+                                 ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py", line 129, in load_modules
+    pin_packaged_modules(source)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py", line 111, in pin_packaged_modules
+    raise RuntimeError('production module already loaded outside sealed source: '+name)
+RuntimeError: production module already loaded outside sealed source: tools.serve_recovery
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_host_acceptance.py", line 170, in <module>
+    if __name__ == '__main__': sys.exit(main())
+                                        ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_host_acceptance.py", line 116, in main
+    manifest = load_checked(plan)
+               ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/cold_host_acceptance.py", line 38, in load_checked
+    acceptance_owner.verify(plan,business.LEGACY['verify'],reap,finish_child)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance_owner.py", line 28, in verify
+    if code != 0:raise ValueError('original user package verification failed')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: original user package verification failed
