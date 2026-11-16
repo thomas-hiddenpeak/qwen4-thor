@@ -180,6 +180,19 @@ Status ParseModerationOptions(const io::Json& request,
   return {};
 }
 
+Status ValidateModerationOptions(const io::Json& request,
+                                 std::string* error_param) {
+  ChatPlanConfig syntax;
+  if (const auto* value = request.Find("moderation");
+      value && value->IsObject())
+    syntax.model = value->GetString("model");
+  ModerationOptions options;
+  ChatPlanError error;
+  const auto status = ParseModerationOptions(request, syntax, &options, &error);
+  if (error_param) *error_param = error.param;
+  return status;
+}
+
 Status CollectModerationInput(const io::Json& messages,
                               ModerationContent* content,
                               ChatPlanError* error) {
@@ -204,15 +217,24 @@ Status CollectModerationInput(const io::Json& messages,
         if (!status) return ContentFailure(status, error);
       }
     }
+    if (const auto* legacy = message.Find("function_call");
+        legacy && !legacy->IsNull()) {
+      const auto* arguments = legacy->Find("arguments");
+      if (!arguments || !arguments->IsString())
+        return Invalid(error, "input", "Missing legacy tool argument data");
+      auto status = collector.Text("tool_arguments", arguments->str);
+      if (!status) return ContentFailure(status, error);
+    }
     if (const auto* calls = message.GetArray("tool_calls")) {
       for (const auto& call : calls->array) {
         const bool custom = call.GetString("type") == "custom";
         const auto* body = call.Find(custom ? "custom" : "function");
         const auto* data =
             body ? body->Find(custom ? "input" : "arguments") : nullptr;
-        if (!data || !data->IsString())
+        if (!data || (!data->IsString() && (custom || !data->IsObject())))
           return Invalid(error, "input", "Missing actual tool argument data");
-        auto status = collector.Text("tool_arguments", data->str);
+        auto status = collector.Text(
+            "tool_arguments", data->IsString() ? data->str : OutputJson(*data));
         if (!status) return ContentFailure(status, error);
       }
     }

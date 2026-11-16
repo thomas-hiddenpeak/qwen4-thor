@@ -25,8 +25,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
-PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+PR36两组检查通过且[已实际合main](evidence/serve-pr36-merged-20261117/README.md)（`a8238ce4`）；
+rev196用户day交接已prepare/check且未启动。当前审核客户端改动须在
+下一交付后重新冻结交接，保留原计划；全部master继续。
 
 前驱[rev188运营指标交付](evidence/serve-ops-v5-delivery-20261116/README.md)完成13项
 STOPPED发布/实际回退/再前进和入口检查，172.414秒，0新增GPU。
@@ -87,12 +88,24 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat审核CPU接受](evidence/serve-chat-moderation-cpu-20261117/README.md)：
+26项C++/8种前端最终通过，726来源/7负控及隔离零警告构建通过。
+原编译和前端失败保留；JS合法缺省logprobs误拒绝已修，仅补失败项。
+当前引擎候选`23f93435`未交付；继续4启动/18外部请求/900秒真实业务。
+默认rev196保持，全部master继续。
+
+[Chat原生审核](SERVE_CHAT_MODERATION_2026-11-17.md)进入成组实现：补标准
+score/block、真实输入/全choice输出分类、SSE发布与存储门控和累计
+配额/Batch，最多26项C++/8前端病例，必要4启动/18请求/900秒。
+默认rev196保持，PR36已合main；阶段结束不停止总计划。
+
 [rev196引用交付](evidence/serve-chat-annotations-delivery-20261117/README.md)已完成18项
 STOPPED发布、实际整根回退及再前进，228.641秒，0新增GPU。
 引用历史/原字符偏移进入模板，存储和双客户端往返可用；核心/client/
 outer预算保持，profile仅做已验能力扩展。原记录和旧包保留。
-PR36首轮CI缺schema测试依赖，已修环境并在独立venv通过8项；继续
-新提交检查及实际合main，rev196用户day交接已prepare/check且未启动，全部master继续。
+PR36两组检查通过且[已实际合main](evidence/serve-pr36-merged-20261117/README.md)（`a8238ce4`）；
+rev196用户day交接已prepare/check且未启动。当前审核客户端改动须在
+下一交付后重新冻结交接，保留原计划；全部master继续。
 
 
 [Chat引用业务接受](evidence/serve-chat-annotations-business-20261117/README.md)：

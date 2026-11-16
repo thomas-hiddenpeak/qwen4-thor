@@ -27,6 +27,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_moderation.h"
 #include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/input_contract.h"
@@ -262,8 +263,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                          1000.0);
   });
   // Outlives request/grammar/response buffers; release only after cleanup.
-  StructuredRequestLease structured_lease(structured_admission_,
+  StructuredRequestLease owned_structured(structured_admission_,
                                           metrics_.structured_active);
+  auto& structured_lease = internal && internal->structured_owner
+                               ? *internal->structured_owner
+                               : owned_structured;
   ClientRateLease owned_rate(http ? http->RateDomain()
                                   : ClientRateDomain::kOnline);
   const auto batch_rate = http ? http->BatchRate() : nullptr;
@@ -568,6 +572,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   const auto& req = request_plan.Request(original_request);
+  const auto chat_moderation_options = !responses && !completion && !internal
+                                           ? request_plan.moderation
+                                           : ModerationOptions{};
+  ChatModeration chat_moderation(chat_moderation_options);
   ChatStorageOptions chat_storage;
   if (!completion && !responses) {
     s = ParseChatStorageOptions(req, &chat_storage, &planning_error.param);
@@ -1019,9 +1027,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 reply.ClientCode(), reply.value.GetString("param"));
       return;
     }
-  } else if (planning_config.client_limits) {
-    if (prepared_input + prompt_u32.size() >
-        planning_config.client_limits->max_prompt_tokens) {
+  } else if (planning_config.client_limits || chat_moderation.Enabled()) {
+    if (planning_config.client_limits &&
+        prepared_input + prompt_u32.size() >
+            planning_config.client_limits->max_prompt_tokens) {
       SendError(fd, 400, "Initial step exceeds client input limit", {},
                 "client_prompt_limit_exceeded", "moderation");
       return;
@@ -1030,20 +1039,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         preparation && preparation->Reserved()
             ? rate_lease.ExtendPrompt(clients_, http->Client(),
                                       prompt_u32.size())
-            : rate_lease.Reserve(
-                  clients_, http->Client(),
-                  completion ? completion_prompt_tokens
-                  : standalone_compact && !compact_step_needed
-                      ? 0
-                      : prompt_u32.size(),
-                  completion ? completion_output_tokens
-                  : standalone_compact && !compact_step_needed ? 0
-                  : cache_prewarm                              ? 0
-                  : responses ? request_output_limit
-                              : prompt_budget.total_output,
-                  ClientClock::now(),
-                  (input_review + moderate_output) * kMaxModerationStepTokens,
-                  responses ? responses->FileOutputBudget() : 0);
+            : rate_lease.Reserve(clients_, http->Client(),
+                                 completion ? completion_prompt_tokens
+                                 : standalone_compact && !compact_step_needed
+                                     ? 0
+                                     : prompt_u32.size(),
+                                 completion ? completion_output_tokens
+                                 : standalone_compact && !compact_step_needed
+                                     ? 0
+                                 : cache_prewarm ? 0
+                                 : responses     ? request_output_limit
+                                                 : prompt_budget.total_output,
+                                 ClientClock::now(),
+                                 (input_review + moderate_output +
+                                  2 * chat_moderation.Enabled()) *
+                                     kMaxModerationStepTokens,
+                                 responses ? responses->FileOutputBudget() : 0);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm      ? "client_rpm_exhausted"
@@ -1058,7 +1069,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
 
-  const bool collect_chat = !stream || chat_storage.store;
+  const bool collect_chat =
+      !stream || chat_storage.store || chat_moderation.Enabled();
   const bool batch_usage =
       http && http->RateDomain() == ClientRateDomain::kBatch;
   ChatChoices choices(sampling.choices, !collect_chat, batch_usage);
@@ -1096,6 +1108,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   bool client_disconnected = false;
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
+    if (chat_moderation.Holding()) {
+      const auto held = chat_moderation.Capture(data);
+      if (!held) {
+        err_guard.ok = false;
+        SendError(fd, 503, held.message(), {}, "moderation_output_capacity");
+        control->Cancel(RequestControl::State::kFailure);
+      }
+      return held.ok();
+    }
     RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
     const auto visible = responses ? responses->PublicWire(data) : data;
     if (!cancelled() && WriteAll(fd, visible, {.control = control.get()}))
@@ -1105,6 +1126,207 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     count_abort();
     return false;
   };
+
+  // Keep one external owner and quota lease; classifier work uses the existing
+  // typed internal model path, with no HTTP recursion or independent RPM.
+  const auto review_chat = [&](bool input, const ModerationContent& content,
+                               Status collected) -> bool {
+    ModerationPlan plan;
+    ChatPlanError error;
+    auto status = collected;
+    if (status)
+      status = PlanModeration(chat_moderation_options, content, planning_config,
+                              kMaxModerationStepTokens, &plan, &error);
+    io::Json report;
+    ModerationUsage usage;
+    if (status) {
+      ModelPreparation accounting(clients_, http->Client(), rate_lease,
+                                  prompt_budget.total_output, 0,
+                                  kMaxModerationStepTokens);
+      const uint64_t prior_input =
+          prepared_input + (input ? 0 : prompt_u32.size());
+      const uint64_t prior_output =
+          prepared_output + choices.CompletionTokens();
+      if (!accounting.ContinueReservation(prior_input, prior_output)) {
+        SendError(fd, 500, "Invalid classifier accounting state", {},
+                  "moderation_accounting_invalid");
+        return false;
+      }
+      InternalModelStep step{plan.request,
+                             planning_config,
+                             accounting,
+                             [] { return ObjectReply{}; },
+                             {},
+                             false,
+                             {},
+                             {},
+                             0,
+                             0,
+                             &structured_lease};
+      const auto executed = RunInternalModelStep(fd, &step, control);
+      usage.input_tokens = accounting.InputTokens();
+      usage.output_tokens = accounting.OutputTokens();
+      usage.model_steps = usage.input_tokens > 0;
+      prepared_input += usage.input_tokens;
+      prepared_output += usage.output_tokens;
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("Chat classification cancelled");
+        return false;
+      }
+      if (RejectUnhealthy(fd)) return false;
+      if (!executed.ok() && (executed.code.starts_with("client_") ||
+                             executed.code == "service_draining")) {
+        SendError(fd, executed.http_status, executed.ClientMessage(), {},
+                  executed.ClientCode(), executed.value.GetString("param"));
+        return false;
+      }
+      status = !executed.ok() ? Status::Fail(executed.ClientMessage())
+               : step.finish_reason != "stop"
+                   ? Status::Fail("Classification did not complete")
+                   : ParseModerationResult(step.content, plan, 0.5, &report);
+    }
+    if (!status)
+      report = ModerationError("moderation_unavailable",
+                               status.message().substr(0, 1024));
+    status = chat_moderation.Record(input, report, usage);
+    if (!status ||
+        chat_moderation.Decision(input) == ModerationDecision::kUnavailable) {
+      chat_moderation.Discard();
+      SendError(
+          fd, 503,
+          status ? "Required classification unavailable" : status.message(), {},
+          "moderation_unavailable", "moderation");
+      return false;
+    }
+    return true;
+  };
+  if (chat_moderation.Enabled()) {
+    // Mark the reservation usable by serial internal steps without charging
+    // an unexecuted primary prompt. StartStep later observes actual work only.
+    rate_lease.StartPrompt(0);
+    ModerationContent content;
+    const auto collected =
+        req.GetArray("messages")
+            ? CollectModerationInput(*req.GetArray("messages"), &content,
+                                     &planning_error)
+            : CollectModerationInput(
+                  responses_detail::Array({responses_detail::Object(
+                      {{"role", responses_detail::String("user")},
+                       {"content",
+                        responses_detail::String(req.GetString("prompt"))}})}),
+                  &content, &planning_error);
+    if (!review_chat(true, content, collected)) return;
+  }
+
+  const auto publish_moderated_chat = [&](const std::string& original) {
+    std::string result;
+    auto status = chat_moderation.Project(original, &result);
+    if (!status) {
+      SendError(fd, 503, status.message(), {}, "moderation_metadata_failed");
+      return false;
+    }
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("Chat classification publication cancelled");
+      return false;
+    }
+    if (chat_storage.store || (!stream && chat_storage.has_metadata)) {
+      io::Json snapshots;
+      const BinaryAccess access{chat_state_access.scope,
+                                chat_state_access.deadline,
+                                chat_state_access.cancelled};
+      auto stored = chat_storage.store
+                        ? chat_files.Persist(id, access, &snapshots)
+                        : ObjectReply{};
+      if (stored.ok()) {
+        stored = FinalizeStoredChat(objects_.get(), original_request, result,
+                                    chat_state_access, snapshots);
+        if (stored.ok() || stored.commit_unknown)
+          chat_files.Published(access, stored.commit_unknown);
+      }
+      if (!stored.ok()) {
+        SendError(fd, stored.http_status,
+                  stored.ClientMessage() + "; completion_id=" + id, {},
+                  stored.ClientCode(), "store");
+        return false;
+      }
+      result = OutputJson(stored.value);
+    }
+    stop_heartbeat.Run();
+    if (stream) {
+      if (!headers_started &&
+          !detail::BeginStreamingResponse(fd, response_state,
+                                          {.control = control.get()}))
+        return false;
+      std::string held;
+      if (!chat_moderation.Blocked()) {
+        status = chat_moderation.Release(&held);
+        if (!status || !write_stream(held)) return false;
+        if (!held.empty() && !first_delta_sent) {
+          first_delta_sent = true;
+          metrics_.ttft_seconds.Observe(
+              std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                            t_arrive)
+                  .count());
+        }
+      }
+      io::Json completed;
+      status = io::ParseJson(result, &completed, true, kApplicationJsonLimits);
+      if (!status) return false;
+      std::string terminal;
+      for (int index = 0; index < sampling.choices; ++index) {
+        if (!chat_moderation.Blocked() && index + 1 < sampling.choices)
+          continue;  // Earlier approved choice terminals are already in wire.
+        const auto& choice = completed.GetArray("choices")->array[index];
+        if (chat_moderation.Blocked())
+          terminal += SseChunk(id, model_field, "assistant", "", "", index,
+                               created, include_usage, include_obfuscation);
+        terminal += detail::SseDeltaChunk(
+            id, model_field, "{}", choice.GetString("finish_reason"), index,
+            created, include_usage, "null", include_obfuscation);
+      }
+      terminal += chat_moderation.StreamMetadata(id, model_field, created,
+                                                 include_usage);
+      if (include_usage)
+        terminal += detail::SseUsageChunk(id, model_field, created,
+                                          OutputJson(*completed.Find("usage")));
+      terminal += "data: [DONE]\r\n\r\n";
+      if (http) http->BeforeTerminal();
+      *response_state = detail::ResponseState::kTerminal;
+      if (!write_stream(terminal)) return false;
+    } else if (!SendSimple(fd, 200, "OK", result, "application/json",
+                           {.control = control.get()})) {
+      control->Cancel(RequestControl::State::kDisconnect);
+      count_abort();
+      return false;
+    }
+    if (control->Cancelled() || !control->Finish()) return false;
+    *response_state = detail::ResponseState::kComplete;
+    request_session.success = !chat_moderation.Blocked();
+    for (auto& lease : shared_writes)
+      lease->success = !chat_moderation.Blocked();
+    const auto seconds = std::chrono::duration<double>(
+                             std::chrono::steady_clock::now() - t_arrive)
+                             .count();
+    metrics_.response_seconds.Observe(seconds);
+    metrics_.e2e_seconds.Observe(seconds);
+    metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+    err_guard.ok = true;
+    diagnostic.Outcome(
+        "success", chat_moderation.Blocked() ? "content_filter" : "completed");
+    return true;
+  };
+  if (chat_moderation.Enabled() && chat_moderation.Blocked()) {
+    std::string filtered;
+    s = ChatModeration::EmptyCompletion(sampling.choices, id, model_field,
+                                        created, &filtered);
+    if (s)
+      publish_moderated_chat(filtered);
+    else
+      SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+    return;
+  }
 
   enum class ResponseStep {
     kInputReview,
@@ -1701,18 +1923,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return false;
       }
       const detail::WriteOptions options{.control = control.get()};
+      const auto write_start = [&](const std::string& value) {
+        return chat_moderation.Enabled() ? write_stream(value)
+                                         : WriteAll(fd, value, options);
+      };
       if ((!headers_started &&
            !detail::BeginStreamingResponse(fd, response_state, options)) ||
-          !WriteAll(
-              fd,
+          !write_start(
               responses ? response_start
               : completion
                   ? CompletionChunk(id, model_field, created, choice_index, "",
                                     "", "null", include_usage,
                                     completion_plan.include_obfuscation)
                   : SseChunk(id, model_field, "assistant", "", "", choice_index,
-                             created, include_usage, include_obfuscation),
-              options)) {
+                             created, include_usage, include_obfuscation))) {
         control->Cancel(RequestControl::State::kDisconnect);
         count_abort();
         return false;
@@ -3087,7 +3311,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                         choice_index, created, include_usage,
                                         logprobs, include_obfuscation);
         if (!write_stream(chunk)) return false;
-        if (!first_delta_sent) {
+        if (!first_delta_sent && !chat_moderation.Holding()) {
           first_delta_sent = true;
           metrics_.ttft_seconds.Observe(
               std::chrono::duration<double>(std::chrono::steady_clock::now() -
@@ -4583,6 +4807,27 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     const bool final_choice = responses || choice_index + 1 == sampling.choices;
+    if (chat_moderation.Enabled() && final_choice) {
+      err_guard.ok = false;
+      std::string candidate;
+      s = choices.Json(id, model_field, created, &candidate);
+      if (!s) {
+        SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+        return;
+      }
+      // No primary decoder or slot may remain while the classifier borrows
+      // the request's grammar lease. Unreviewed choices remain private.
+      trace_outcome = trace::RequestOutcome::kSuccess;
+      finish_usage_step.Run();
+      cleanup();
+      structured.reset();
+      ModerationContent content;
+      const auto collected =
+          ChatModeration::CollectOutput(candidate, &content, &planning_error);
+      if (review_chat(false, content, collected))
+        publish_moderated_chat(candidate);
+      return;
+    }
     if (final_choice) stop_heartbeat.Run();
     std::string stored_chat_response;
     if (!responses && !completion && final_choice &&

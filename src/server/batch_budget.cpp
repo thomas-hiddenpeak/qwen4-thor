@@ -220,6 +220,7 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
   };
   ChatPlanError error;
   BatchRateBudget planned;
+  bool chat_variable_input = false;
   Status status;
   if (endpoint == "/v1/completions") {
     if (prepared.GetString("kind") != "completion") return Invalid();
@@ -240,6 +241,14 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
         files.Prepare(row.body, config, access, &plan, *bindings, true);
     if (!reply.ok()) return reply;
     status = meter.Chat(row.body, plan, config, &error);
+    if (status && plan.moderation.enabled) {
+      chat_variable_input = true;
+      planned.input_exact = false;
+      planned.prompt_capacity = config.client_limits
+                                    ? config.client_limits->max_prompt_tokens
+                                    : 3ULL * config.max_len;
+      planned.auxiliary_output = 2 * kMaxModerationStepTokens;
+    }
   } else if (endpoint == "/v1/responses") {
     ResponsesExecution response(objects);
     auto reply = response.RestoreInputs(
@@ -295,7 +304,7 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
   if (!meter.input.tokens || meter.input.tokens > kBatchTokenLimit)
     return Invalid();
   if (rate && endpoint != "/v1/responses") {
-    planned.prompt_capacity = meter.input.tokens;
+    if (!chat_variable_input) planned.prompt_capacity = meter.input.tokens;
     planned.output = meter.output;
     if (planned.Total() > kBatchTokenLimit) return Invalid();
   }

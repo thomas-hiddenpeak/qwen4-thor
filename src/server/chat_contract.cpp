@@ -16,6 +16,7 @@
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/media_admission.h"
+#include "q4t/server/moderation.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/text_stop.h"
@@ -105,6 +106,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "function_call",
                         "prompt",
                         "messages",
+                        "moderation",
                         "max_tokens",
                         "max_completion_tokens",
                         "stream",
@@ -150,6 +152,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "tool_choice",
                         "parallel_tool_calls"},
                        error_param);
+  if (!status) return status;
+  status = ValidateModerationOptions(req, error_param);
   if (!status) return status;
   ChatStorageOptions storage;
   status = ParseChatStorageOptions(req, &storage, error_param);

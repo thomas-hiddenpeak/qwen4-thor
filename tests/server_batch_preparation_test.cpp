@@ -2024,3 +2024,35 @@ Q4T_TEST(batch_embeddings_large_finite_result_survives_restart_and_recount) {
             metadata.GetString("custom_id") == work.row.custom_id);
   return true;
 }
+
+Q4T_TEST(batch_chat_moderation_reserves_all_steps_before_original_execution) {
+  Fixture fixture;
+  ClientLimits limits;
+  limits.max_prompt_tokens = 6000;
+  limits.max_output_tokens = 128;
+  fixture.config.client_limits = &limits;
+  ObjectStore objects(fixture.options);
+  const auto body = Object(
+      {{"messages", Array({Object({{"role", String("user")},
+                                   {"content", String("Actual question")}})})},
+       {"max_tokens", Number(32)},
+       {"n", Number(2)},
+       {"moderation", Object({{"model", String("cpu-alias")}})}});
+  const auto work = Create(objects, body, "/v1/chat/completions");
+  const auto frozen = Frozen(objects, work, fixture.config);
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)));
+  Q4T_CHECK(input.exact && input.tokens > 0 && !rate.input_exact);
+  Q4T_CHECK(rate.prompt_capacity == 6000 && rate.output == 64 &&
+            rate.auxiliary_output == 1024 && rate.preparation_output == 0);
+  Q4T_CHECK(rate.Total() == 6000 + 64 + 1024);
+  fixture.config.client_limits = nullptr;
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(),
+                                 &input, &rate)));
+  Q4T_CHECK(rate.prompt_capacity == 3U * fixture.config.max_len);
+  return true;
+}

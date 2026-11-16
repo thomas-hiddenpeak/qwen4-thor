@@ -470,6 +470,24 @@
       "contract": "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Actual finite result usage commits atomically with its row and count; cached/reasoning details remain actual. Missing, malformed or overflowed usage is unknown and never a fabricated zero. Original legacy results are recounted before any new row/finalization, with no model replay. Batch Chat observes unbounded reasoning without forcing tokens. Background rows atomically reserve the original Response binding with their start ticket and wait fairly for its terminal plus executor cleanup; cancellation reaches that owner, and process recovery never resubmits the row. Active parent references protect the Response from TTL collection and explicit deletion until the result is copied. Native drained failures/cancellation capture committed input before sequence reset and accepted output including reasoning/cache details, merge internal preparation and preserve choice/step counting; reservations are never usage. Responses failure/cancel resources and SSE terminal carry known observations; private Batch row capture commits with original result/count and supports restart recount without changing standard HTTP error bodies. Live checkpoints never claim complete usage; unsaved work after actual process death remains unknown. Actual model business/release acceptance remains required. Started work or unknown starts never replay. Deterministic output byte/chunk exhaustion records a private bounded aggregation failure and rebuilds only complete-row result prefixes without model replay; partial Files and failed terminal commit atomically. Queue admission releases at terminal, while original result pages remain referenced only through output expiry. Temporary storage quota or unknown receipts retain their existing reconciliation semantics. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."
     },
     {
+      "id": "chat-input-output-moderation",
+      "sources": [
+        "include/q4t/server/chat_moderation.h",
+        "src/server/chat_moderation.cpp",
+        "include/q4t/server/moderation_options.h",
+        "src/server/moderation.cpp",
+        "src/server/chat_contract.cpp",
+        "src/server/chat_plan.cpp",
+        "src/server/chat_generation.cpp",
+        "src/server/batch_budget.cpp",
+        "src/server/chat_model_step.h",
+        "src/server/chat_storage.cpp",
+        "tools/examples/chat_client.py",
+        "tools/examples/js/chat_client.mjs"
+      ],
+      "contract": "Chat moderation selects the served model or a configured alias with independent input/output score or block policy; null disables it. Actual expanded messages and aggregate content from all generated choices are classified in two bounded native steps with 512 output tokens each. Reports use standard moderation_results wrappers or explicit errors and separate actual classifier usage. Block holds original SSE pieces within 32MiB and publishes/stores only reviewed output; a flagged result removes every choice body, call and probability and ends content_filter. Score retains explicit classifier errors, never zero-filled safety. One external RPM/cancel/admission owner covers both steps and primary work; actual cumulative input/output is charged, Batch precharges the dynamic input ceiling and 1024 auxiliary output. A serial classifier borrows the original grammar admission only after the primary decoder/slot is released. Python/JS preserve JSON/SSE metadata and reject duplicate review terminals. Local 13-category scores at threshold0.5 are not cloud calibration; other actual backends remain required work."
+    },
+    {
       "id": "native-standalone-moderations",
       "sources": [
         "include/q4t/server/moderations_plan.h",
@@ -561,7 +579,8 @@
     "include/q4t/server/batch_usage.h": "b19a03b8f2a5fe597983c954348992214668d26e2bc4aa052859958ff9dc9fe4",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
-    "include/q4t/server/chat_plan.h": "63d4aca3d416df6c8eb26b1b9a65aa300ddadae8c18aa4ec8ccc9fa5253d13c0",
+    "include/q4t/server/chat_moderation.h": "8fa5bfef3abccfc9cde2e621e7323eae8522650a964a225188e39213b4763d14",
+    "include/q4t/server/chat_plan.h": "477bbff7a130080ecb3943c00a5e2940df4e5563128817209e7a70ea0d35faea",
     "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
@@ -578,6 +597,7 @@
     "include/q4t/server/http_request.h": "9a2f1e837f0dd118388e83e4fa8608c198eb5f2c3b519f1b419bf3626dfb8879",
     "include/q4t/server/media_admission.h": "45f0cbecfdc50793763678837dbd890dd47abfe215c602ed24e798b6234a9367",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
+    "include/q4t/server/moderation_options.h": "8b7f7950f2aafbc9650e337316e2fb483ff5d130aa8f26bc577b02994a3aaf2b",
     "include/q4t/server/moderations_execution.h": "85014d7bd65cb4710e3cf755f7297e0f4e65bddf595445bb9a16a0600d1f1088",
     "include/q4t/server/moderations_plan.h": "f33b9685f35057d70b7b969db80d951a894bd687b3d306aa0b74e4637fbe2140",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
@@ -611,7 +631,7 @@
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
-    "src/server/batch_budget.cpp": "5b69be095859c90107615c3d9845cf0f6dcda058e752032b4b785e849117ab21",
+    "src/server/batch_budget.cpp": "949dce655d8bd876310856b742128616861d6544bb2491d2240e0db9c7dcbc4e",
     "src/server/batch_execution.cpp": "e405aa5a78586cb5d9f7f95bd330f45b610a105c3004a74dd79cbb046914d093",
     "src/server/batch_finalization.cpp": "979212557f90a6be6dcacd54ca55ceba9de08ac593e3703d5523cfe41b8619e0",
     "src/server/batch_input.cpp": "1872bc3eee3dec576fbfab76e4889e0312134b735efa9cddda5b7f86ae111189",
@@ -627,11 +647,11 @@
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
-    "src/server/chat_contract.cpp": "dba20dbe1e5f6675f9a1453652d4a1f00903f5487e9029cb4c300b33630b58e8",
+    "src/server/chat_contract.cpp": "b6205aea0995e36b2f6943954423a7141deb2de8a99e88910e190296eec257b4",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "87272fed97d7904668d56bd6ba2bff779ca79e368eac26c5f5db32a5fbfefbb3",
+    "src/server/chat_generation.cpp": "aaab934e9b674345684e612c62da6821711dc84702e2e88e37cff85f98d17b52",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -639,8 +659,10 @@
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "7aeb7bbd9a5a3748a64aba4989ca7608b24e749da765ab116799cf294276b500",
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
+    "src/server/chat_model_step.h": "64bca98f10b911594c06e9829c242189784cd8e221c3be1a9ed74374503f0a6e",
+    "src/server/chat_moderation.cpp": "0c7dc6c4ac42b1bd8bd904056344f58418a60e0e5879b20255ecad208d7ac5a5",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
-    "src/server/chat_plan.cpp": "51d75f5d9ba2fdcdf04338f00c44e832d373f8e924472930deeb3b47723fc776",
+    "src/server/chat_plan.cpp": "5770dbff6aa820605123c7b7a6fec71615018a8bf79ec392b6847bdabee49568",
     "src/server/chat_preflight.cpp": "b7ea6a1090aa1bf6cca751a582fa33328d0559bfd0ee7bddc05784d1ab4924f5",
     "src/server/chat_prompt.cpp": "4dce5fca2fb504523445fd4e2ced5ef9c29c1f47eaebc69973a7159f3c6f68ea",
     "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
@@ -676,7 +698,7 @@
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
-    "src/server/moderation.cpp": "8a9a4840fc04e26c78afbd35f731eac3758929769de4897634bf76a581e24ff0",
+    "src/server/moderation.cpp": "fdc0baad5671df67b09f8bfbaba4f1ff9214eb537a63daaa6ceee9faf136679e",
     "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
     "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",
     "src/server/object_retention.cpp": "712e524139de80a68b33173956ad7136273ce1b44002590d04508a1b7f034e7a",
@@ -715,6 +737,8 @@
     "src/text/tokenizer.cpp": "d468106d6e49e471bf14835443ba3333a5b9242f9d737376c8fef17191acfbd7",
     "src/vision/media_plan.cpp": "d46531462936f89c2563b58de098e0aa0174340c6da8cecbc04441ed7df590a7",
     "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
-    "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414"
+    "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
+    "tools/examples/chat_client.py": "1c454d97fe1003d91d7531edd0b3cda2dcd165a70186c1e55dc447ebfe24bdde",
+    "tools/examples/js/chat_client.mjs": "5c6ddbc4825fc4212bc4192334e160ccec802e70ad190708e01c75a3aaeafeba"
   }
 }

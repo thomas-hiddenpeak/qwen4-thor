@@ -145,7 +145,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -165,7 +165,28 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
+      },
+      "chat_moderation_20261117": {
+        "state": "cpu_accepted_runtime_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0"
       }
     },
     {
@@ -227,7 +248,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -247,7 +268,10 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
       }
     },
     {
@@ -2902,6 +2926,24 @@
         "version_evidence": "evidence/serve-chat-cache-version-business-20261116/README.md",
         "main_commit": "be93d56616d9e6ed6bf04de3a9d2108438ad6175",
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
+      },
+      "chat_moderation_20261117": {
+        "state": "cpu_accepted_runtime_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0"
       }
     },
     {
@@ -4217,7 +4259,7 @@
         "main_evidence": "evidence/serve-pr33-merged-20261116/README.md"
       },
       "chat_annotations_20261116": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_ANNOTATIONS_2026-11-16.md",
         "whole_task_complete": false,
         "cpu_limit": 16,
@@ -4237,13 +4279,34 @@
         "default_unchanged": false,
         "actual_starts": 4,
         "actual_requests": 14,
-        "actual_seconds": 185.92932795360684
+        "actual_seconds": 185.92932795360684,
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
+      },
+      "chat_moderation_20261117": {
+        "state": "cpu_accepted_runtime_pending",
+        "plan": "SERVE_CHAT_MODERATION_2026-11-17.md",
+        "cpu_limit": 26,
+        "frontend_limit": 8,
+        "gpu_limits": {
+          "starts": 4,
+          "external_generation_requests": 18,
+          "seconds": 900
+        },
+        "default_revision": 196,
+        "runtime_accepted": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-chat-moderation-cpu-20261117/README.md",
+        "cpp_tests": 26,
+        "frontend_unique_cases": 8,
+        "binary_sha256": "23f934355d62432f01bfd0879043438bd91b63a845d9e498ecd40697b6613fd0"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -4590,9 +4653,12 @@
         "files": 78,
         "secret_scan_matches": 0,
         "archive_sha256": "23863f77760f525c84e5112c918953cf6ca87cc43084d2dc3db7b0ceac8dbb74",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md"
+        "evidence": "evidence/serve-chat-annotations-delivery-20261117/README.md",
+        "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
+        "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
+        "pull_request": 36
       }
     },
     {
@@ -4699,6 +4765,6 @@
       }
     }
   ],
-  "next_task": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Complete Chat annotation history business qualification and reversible delivery, then continue all remaining protocol/backend/media and cold/resource/host tasks. All 33 required tasks remain the completion boundary."
+  "next_task": "Complete Chat input/output moderation real business qualification and reversible delivery, then continue every remaining protocol/backend/media and cold/resource/host task. All 33 required tasks remain the completion boundary.",
+  "next": "Complete Chat input/output moderation real business qualification and reversible delivery, then continue every remaining protocol/backend/media and cold/resource/host task. All 33 required tasks remain the completion boundary."
 }

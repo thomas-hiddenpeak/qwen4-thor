@@ -3,6 +3,9 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/moderation_options.h
+  include/q4t/server/chat_moderation.h
+  src/server/chat_moderation.cpp
   include/q4t/text/tokenizer.h
   src/text/tokenizer.cpp
   include/q4t/server/model_catalog.h

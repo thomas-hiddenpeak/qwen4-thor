@@ -349,6 +349,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/embedding_metadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_moderation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
@@ -358,6 +359,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_access_program_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_moderation_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderations_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_embeddings_api_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_vector_search_test.cpp
