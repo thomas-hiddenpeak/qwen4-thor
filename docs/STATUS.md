@@ -61,6 +61,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[版本登记留存已修复并应用](evidence/serve-version-retention-20261116/README.md)：
+8项CPU通过，首次setup夹具错误保留；实际只归档2个退休周期，16→14，
+原策略/预算/default全保持，0删除/0GPU。CI登记直接用例，job时限按
+实测成本调至40分钟。继续已验缓存包的STOPPED发行及其余全部master。
+
+[版本周期留存修复](SERVE_VERSION_RETENTION_2026-11-16.md)正在开发：
+rev166已有16个登记，发布前发现容量满；尚未切换默认。补最多4文件的
+显式可恢复归档，保护当前/保留根/pending/活动引用和原预算，冻结8项CPU、
+0新增GPU；通过后最多归档2个退休登记，再继续已验缓存包交付与全部master。
+
 [Chat缓存精确包版本短验通过](evidence/serve-chat-cache-version-business-20261116/README.md)：
 保留c789291b为1启动/2生成，正式78d6bd7b为2启动/4生成/1探测；
 严格租约46.978/100.362秒，45/94项NVML正常。故障后实际视频/历史SSE、
