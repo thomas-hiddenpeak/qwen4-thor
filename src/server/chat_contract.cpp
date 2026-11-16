@@ -145,6 +145,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "prefix_cache_write_tokens",
                         "prompt_cache_key",
                         "prompt_cache_retention",
+                        "prompt_cache_options",
                         "parse_response",
                         "tool_choice",
                         "parallel_tool_calls"},
@@ -154,7 +155,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   status = ParseChatStorageOptions(req, &storage, error_param);
   if (!status) return status;
   PromptCacheOptions cache;
-  status = ParsePromptCacheOptions(req, &cache, error_param);
+  status =
+      ParsePromptCacheOptions(req, &cache, error_param, PromptCacheApi::kChat);
   if (!status) return status;
   if (cache.requested && !req.GetString("prefix_cache_scope").empty())
     return invalid("prefix_cache_scope",
@@ -323,7 +325,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
       if (preparing_file_inputs && type == "file") {
-        status = Fields(part, {"type", "file"});
+        status = Fields(part, {"type", "file", "prompt_cache_breakpoint"});
         if (!status) return status;
         if (!allow_media)
           return Status::Fail("PDF input requires media processing enabled");
@@ -343,7 +345,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       }
       if (part.Has("text") && !part.Has("image_url") &&
           !part.Has("video_frames")) {
-        status = Fields(part, {"type", "text"});
+        status = Fields(part, {"type", "text", "prompt_cache_breakpoint"});
         if (!status) return status;
         const auto* kind = part.Find("type");
         if ((kind && (!kind->IsString() || kind->str != "text")) ||
@@ -365,8 +367,10 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         if (image == video || type == "video_url")
           return Status::Fail("exactly one supported media part is required");
         status =
-            image ? Fields(part, {"type", "image_url"})
-                  : Fields(part, {"type", "video_frames", "video_timestamps"});
+            image
+                ? Fields(part, {"type", "image_url", "prompt_cache_breakpoint"})
+                : Fields(part, {"type", "video_frames", "video_timestamps",
+                                "prompt_cache_breakpoint"});
         if (!status) return status;
         if (const auto* kind = part.Find("type");
             kind && (!kind->IsString() ||

@@ -94,7 +94,10 @@ def chat_schema():
     hex64 = dict(type="string", pattern="^[0-9a-f]{64}$")
     identifier = dict(type="string", minLength=1, maxLength=128,
         pattern="^[A-Za-z0-9_-]+$", **{"not": dict(pattern="^(chatcmpl|cmpl)-auto-")})
-    text_part = obj(dict(type=dict(const="text"), text=dict(type="string")), ("text",))
+    breakpoint = obj(dict(mode=dict(const="explicit"),
+        ttl=dict(enum=["30m", "12h"])), ("mode",))
+    text_part = obj(dict(type=dict(const="text"), text=dict(type="string"),
+        prompt_cache_breakpoint=breakpoint), ("text",))
     refusal_part = obj(dict(type=dict(const="refusal"),
                             refusal=dict(type="string")), ("type", "refusal"))
     content = dict(anyOf=[dict(type=["string", "null"]),
@@ -238,6 +241,9 @@ def chat_schema():
         session_id=hex64, prefix_cache_scope=hex64,
         prompt_cache_key=nullable(dict(type="string", maxLength=512)),
         prompt_cache_retention=nullable(dict(enum=["in_memory", "24h"])),
+        prompt_cache_options=obj(dict(
+            mode=dict(enum=["implicit", "explicit"], default="implicit"),
+            ttl=dict(const="30m", default="30m"))),
         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
         parse_response=dict(type="boolean"),
         tool_choice=nullable(dict(oneOf=[dict(enum=["auto", "none", "required"]),
@@ -249,7 +255,7 @@ def chat_schema():
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
         "title": "Q4T complete text Chat request structure v1",
         "description": "All supported text request fields. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
-        "$defs": dict(textPart=text_part, refusalPart=refusal_part,
+        "$defs": dict(cacheBreakpoint=breakpoint, textPart=text_part, refusalPart=refusal_part,
                        message=message, historyCall=call,
                        tool=tool, schemaNode=node),
         "oneOf": [present("messages"), present("prompt")],
@@ -290,8 +296,10 @@ def chat_schema():
             when(any_present(["session_id", "prefix_cache_scope"]),
                  dict(properties=dict(stop=dict(enum=[None, []])))),
             when(dict(anyOf=[present(key, {"not": dict(type="null")})
-                for key in ("prompt_cache_key", "prompt_cache_retention")]),
-                 {"not": dict(required=["prefix_cache_scope"])})],
+                for key in ("prompt_cache_key", "prompt_cache_retention", "prompt_cache_options")]),
+                 {"not": dict(required=["prefix_cache_scope"])}),
+            when(present("prefix_cache_scope"), dict(properties=dict(messages=dict(
+                items=dict(properties=dict(content=dict(items=forbid(["prompt_cache_breakpoint"]))))))))],
         "x-q4t": dict(profile="qwen3.8-openai-v4", scope="text; experimental media excluded",
             semantic_contract="serve-input-semantics-v1.json", required_semantic_validation=True,
             runtime_preflight="POST /v1/chat/preflight", defaults_are_annotations=True,
@@ -392,16 +400,19 @@ def vision_schema():
         description="PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy.")
     image_url = dict(oneOf=[image_uri, obj(dict(url=image_uri,
         detail=dict(enum=["auto", "low", "high", "original"])), ("url",))])
-    result["$defs"]["imagePart"] = obj(dict(type=dict(const="image_url"), image_url=image_url), ("image_url",))
+    result["$defs"]["imagePart"] = obj(dict(type=dict(const="image_url"), image_url=image_url,
+        prompt_cache_breakpoint=ref("cacheBreakpoint")), ("image_url",))
     file = obj(dict(file_id=dict(type="string", minLength=1, maxLength=128,
         pattern=r"^[A-Za-z0-9_-]+$"), file_data=dict(type="string"),
         filename=dict(type="string", minLength=1, maxLength=1024,
             pattern=r"^[^\u0000-\u001f\u007f]+$",
             **{"x-q4t-max-utf8-bytes": 1024})))
     file["oneOf"] = [present("file_id"), present("file_data")]
-    result["$defs"]["filePart"] = obj(dict(type=dict(const="file"), file=file),
+    result["$defs"]["filePart"] = obj(dict(type=dict(const="file"), file=file,
+        prompt_cache_breakpoint=ref("cacheBreakpoint")),
         ("type", "file"))
     result["$defs"]["videoPart"] = obj(dict(type=dict(const="video_frames"),
+        prompt_cache_breakpoint=ref("cacheBreakpoint"),
         video_frames=dict(type="array", minItems=2, maxItems=32, items=url),
         video_timestamps=dict(type="array", minItems=2, maxItems=32,
             items=dict(type="number", minimum=0, maximum=86400),
@@ -452,6 +463,12 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("chat-prompt-cache-controls", ["include/q4t/server/prompt_cache_policy.h",
+            "src/server/prompt_cache_policy.cpp", "include/q4t/server/chat_plan.h",
+            "src/server/chat_plan.cpp", "src/server/chat_contract.cpp",
+            "src/server/chat_template.cpp", "src/server/chat_prompt.cpp",
+            "src/server/chat_generation.cpp", "src/server/chat_storage.cpp"],
+         "Chat has closed mode/30m request options, exact content breakpoints with inherited or 30m/12h TTL, default implicit mode and a latest-80 unique-boundary lookup. Explicit mode without breakpoints reads/writes nothing. Native prefix scopes cannot mix with standard controls/markers. Final prepared content maps through actual template/token offsets; immutable input history retains markers. Client/key isolation, bounded SSD state and auxiliary-failure miss behavior reuse native cache ownership. Responses retains its separately accepted prewarm/comparison/lookup policy. Media markers are accepted but actual visual state fingerprint/restore remains required; never reuse text-only KV for media. Targeted CPU/business/delivery acceptance is separate."),
         ("chat-file-inputs", ["src/server/chat_file_inputs.cpp",
             "src/server/file_expansion.cpp", "src/server/chat_storage.cpp",
             "src/server/chat_preflight.cpp", "src/server/chat_generation.cpp"],

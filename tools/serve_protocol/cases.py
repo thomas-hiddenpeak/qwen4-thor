@@ -35,6 +35,32 @@ def cases():
             fixture=dict(raw=json.dumps(request, ensure_ascii=False, separators=(",", ":"))
                          if raw is None else raw, **config)))
 
+    for label, options in [('empty', {}), ('implicit', dict(mode='implicit')),
+                           ('explicit', dict(mode='explicit', ttl='30m'))]:
+        add('chat-cache-options-'+label, dict(base(), prompt_cache_options=options))
+    for label, options in [('null', None), ('ttl-12h', dict(ttl='12h')),
+                           ('mode-null', dict(mode=None)), ('prewarm', dict(prewarm=False)),
+                           ('comparison', dict(comparison_response_id=None))]:
+        add('chat-cache-options-'+label, dict(base(), prompt_cache_options=options),
+            False, field='prompt_cache_options')
+    for role in ('developer', 'system', 'user', 'assistant'):
+        add('chat-cache-marker-'+role, dict(base(), messages=[dict(role=role,
+            content=[dict(type='text', text='q', prompt_cache_breakpoint=dict(
+                mode='explicit', ttl='12h'))])]))
+    for label, marker in [('null', None), ('empty', {}), ('bad-mode', dict(mode='auto')),
+                          ('ttl-null', dict(mode='explicit', ttl=None)),
+                          ('unknown', dict(mode='explicit', other=0))]:
+        add('chat-cache-marker-'+label, dict(base(), messages=[dict(role='user',
+            content=[dict(type='text', text='q', prompt_cache_breakpoint=marker)])]),
+            False, field='messages')
+    marked = dict(base(), messages=[dict(role='user', content=[dict(type='text', text='q',
+        prompt_cache_breakpoint=dict(mode='explicit'))])])
+    add('chat-cache-marker-default', marked)
+    add('chat-cache-marker-native-conflict', dict(marked, prefix_cache_scope=HEX),
+        False, field='prefix_cache_scope', prefix_cache=True)
+    add('chat-cache-options-native-conflict', dict(base(), prefix_cache_scope=HEX,
+        prompt_cache_options={}), False, field='prefix_cache_scope', prefix_cache=True)
+
     custom_ref = dict(type="custom", custom=dict(name="read"))
     for tier in ["auto", "default", "flex", "scale", "priority", "fast", None]:
         add("attribution-tier-"+str(tier),dict(base(),service_tier=tier))

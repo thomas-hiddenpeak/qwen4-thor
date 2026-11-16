@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/retained-business-01/decision.json",
+  "acceptance_sha256": "ef78bc876407a2a9f0983b1fdbf3a8ab7a61b9680a901d250a7bce09dd403815",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/retained-01/bundle",
+  "manifest_sha256": "c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374",
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "engine_release_sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/retained-business-01/execution/state",
+  "service_id": "d41e5aef-d6a8-469f-ba2f-e537cc445ebb",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Exact display-capable retained-control/current-engine service, then native whole-tree fallback preserving actual frozen reflected video and four-corner/layout answers, Chat cache/media/MCP/embedding capabilities and profile state. No independent old-engine rollback, performance or long-stability claim.",
+  "default_replaced": false
+}

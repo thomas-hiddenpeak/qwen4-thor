@@ -1,0 +1,104 @@
+{
+  "status": "ACCEPT_CHAT_CACHE_VERSION_COMPOSITION",
+  "phases": {
+    "retained-business-01": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_RETAINED",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+        "manifest_sha256": "c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374",
+        "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+          "strict_lease_seconds": 46.97821101825684,
+          "nvml_queries": 45,
+          "env_abort": false,
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "probes": 0,
+            "controls": 151
+          },
+          "source_commit": "97c6c0f810bea7116458d2046c8a647caea94958",
+          "plan_sha256": "c083bbc97d1983385e3e475eb3ac12553f4b53409a732cb654190ff586e8e584",
+          "result_sha256": "e6fd579994495dbc24d62d678b70fda9f9c205825017afd3f0ea0b24841b7cf2",
+          "lease_result_sha256": "31450f10d5b0ab2b2192ac70b9e29bb5db199e31ce5cf8085c71e54d55bc1d19",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "business": {
+        "status": "PASS",
+        "actual_visual_stages": 1,
+        "frozen_media_preserved": true,
+        "actual_display_geometry": true,
+        "media_sse_after_fallback": false,
+        "media_mcp_embedding_capabilities_preserved": true,
+        "profile_state_preserved": true,
+        "version_switch": false,
+        "default_replaced": false,
+        "automatic_request_or_tool_replay": false
+      }
+    },
+    "version-business-01": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_VERSION",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+        "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+        "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+          "strict_lease_seconds": 100.3621155298315,
+          "nvml_queries": 94,
+          "env_abort": false,
+          "counts": {
+            "starts": 2,
+            "chats": 4,
+            "probes": 1,
+            "controls": 326
+          },
+          "source_commit": "97c6c0f810bea7116458d2046c8a647caea94958",
+          "plan_sha256": "a380173aec03895b09d1b43282b6373d934e894b156865335bac147c6d26955f",
+          "result_sha256": "15a597a4b54c171515281a609dbc32f3014818ce317e02de511f3361ef6ceb25",
+          "lease_result_sha256": "7298d1082913b6c01353ea9f302dd4146caeab8711ca56ecfce8fb6dad66387e",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "business": {
+        "status": "PASS",
+        "actual_visual_stages": 2,
+        "frozen_media_preserved": true,
+        "actual_display_geometry": true,
+        "media_sse_after_fallback": true,
+        "media_mcp_embedding_capabilities_preserved": true,
+        "profile_state_preserved": true,
+        "version_switch": true,
+        "default_replaced": false,
+        "automatic_request_or_tool_replay": false
+      }
+    }
+  },
+  "files": 101,
+  "archive_sha256": "e64c02bfe52f7fd4b1e5ab559ebff839c6546b2a9419e5e230ddbb484fdb09a3",
+  "secret_scan_matches": 0,
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "default_unchanged": true,
+  "delivery_pending": true,
+  "remaining_master_tasks_active": true
+}

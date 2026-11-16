@@ -61,6 +61,7 @@
 - [R01普通观察写入阻塞隔离：实现与针对性验证](SERVE_OBSERVATION_IO_2026-11-08.md)
 
 - [Serve总目标重审：OpenAI兼容、原生接入、自恢复，全部任务完成后收口](SERVE_MASTER_PLAN_2026-11-08.md)
+- [版本恢复登记的有界留存与可恢复归档](SERVE_VERSION_RETENTION_2026-11-16.md)
 - [当前协议清单再审计：已交付描述修正与真实待实现合同](SERVE_SURFACE_REAUDIT_2026-11-16.md)
 - [R06资格迁移与有界版本回退](SERVE_VERSION_RECOVERY_2026-11-11.md)
 - [全部任务状态与完成条件](serve-master-goals-v2.json)、[源码/官方协议/旧任务映射证据](evidence/serve-goal-reaudit-20261108/README.md)

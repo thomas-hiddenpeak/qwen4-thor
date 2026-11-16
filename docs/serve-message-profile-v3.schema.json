@@ -465,6 +465,24 @@
         },
         "text": {
           "type": "string"
+        },
+        "prompt_cache_breakpoint": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "explicit"
+            },
+            "ttl": {
+              "enum": [
+                "30m",
+                "12h"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

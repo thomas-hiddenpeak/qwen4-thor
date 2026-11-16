@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/retained-01/bundle",
+  "manifest_sha256": "c789291b1c06ec429d58b86dab2586cea83b84422d5daf560bec04ea15c4a374",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "a90ea4070810a054b093ec8521892e95ae80678923876c64f33e10b0e9efa3a0",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}

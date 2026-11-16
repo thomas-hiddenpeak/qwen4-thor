@@ -28,7 +28,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、按序system/developer、参与者name及refusal回填和
 `/v1/capabilities`能力/模板身份查询。消息profile为
-`qwen3.8-openai-v3`，无需人为补充user消息；实现与真实SDK验收见
+`qwen3.8-openai-v4`，无需人为补充user消息；实现与真实SDK验收见
 [消息输入交付](docs/SERVE_CHAT_INPUT_2026-11-08.md)。完整OpenAI协议
 的剩余任务继续按总计划实现。
 
@@ -62,6 +62,12 @@ accepted/rejected usage已交付；其余接口与组合按总计划继续实现
 作用域记录摘要，不改变鉴权或提示；`service_tier`返回实际执行的default。
 Responses新请求省略/null推理级别为medium，旧queued任务恢复保留原有效
 级别和归属；具体默认及回退身份以STATUS为准。
+[Chat标准缓存](docs/SERVE_CHAT_CACHE_2026-11-16.md)已交付：
+`prompt_cache_options`的mode/ttl及内容块`cache_control`进入实际状态
+保存/恢复。默认implicit；explicit仅用显式断点，无断点不读写。请求TTL
+为30m，断点可选30m/12h，至少1024 tokens，最近80断点查找、最多4处
+写入。已认证客户端和key隔离，usage报告实际恢复token；媒体状态复用
+仍须补齐。原生`prefix_cache_scope`继续独立合同，不能与标准控制混用。
 [工具选择与增量流](docs/SERVE_TOOL_STREAM_2026-11-08.md)支持
 allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行工具。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`

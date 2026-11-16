@@ -664,3 +664,31 @@ Q4T_TEST(stored_chat_attribution_private_scoped_and_retained_on_update) {
   Q4T_CHECK(digest != SafetyIdentifierDigest(request, "client:b"));
   return true;
 }
+
+Q4T_TEST(chat_storage_cache_boundaries_survive_restart_and_client_isolation) {
+  Fixture fixture;
+  auto input = Input();
+  Set(&input, "prompt_cache_options", Parse(R"({"mode":"explicit"})"));
+  const auto messages = Parse(R"([{"role":"user","content":[
+    {"type":"text","text":"shared source",
+      "prompt_cache_breakpoint":{"mode":"explicit","ttl":"12h"}},
+    {"type":"text","text":"question"}]}])");
+  Set(&input, "messages", messages);
+  {
+    ObjectStore objects(fixture.options);
+    Q4T_CHECK(Ok(StoredChats(objects).Save(input, Output(), Access())));
+  }
+  ObjectStore objects(fixture.options);
+  StoredChats chats(objects);
+  const auto restored = chats.Messages("chatcmpl_test", {}, Access());
+  Q4T_CHECK(Ok(restored));
+  const auto& message = restored.value.GetArray("data")->array[0];
+  Q4T_CHECK(OutputJson(*message.Find("content_parts")) ==
+            OutputJson(*messages.array[0].Find("content")));
+  Q4T_CHECK(message.GetString("content") == "shared sourcequestion");
+  Q4T_CHECK(
+      chats.Messages("chatcmpl_test", {}, Access("client:other")).http_status ==
+      404);
+  Q4T_CHECK(Ok(chats.Erase("chatcmpl_test", Access())));
+  return true;
+}

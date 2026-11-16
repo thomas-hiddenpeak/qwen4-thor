@@ -11,7 +11,10 @@
 
 namespace q4t::server {
 
+enum class PromptCacheApi { kResponses, kChat };
+
 struct PromptCacheOptions {
+  PromptCacheApi api = PromptCacheApi::kResponses;
   bool requested = false;
   bool explicit_only = false;
   bool prewarm = false;
@@ -27,7 +30,8 @@ struct PromptCacheOptions {
 // validates its top-level fields. Null optional fields preserve defaults.
 Status ParsePromptCacheOptions(const io::Json& request,
                                PromptCacheOptions* options,
-                               std::string* error_param);
+                               std::string* error_param,
+                               PromptCacheApi api = PromptCacheApi::kResponses);
 io::Json PublicPromptCacheOptions(const PromptCacheOptions& options);
 struct SessionCacheLifetime;
 SessionCacheLifetime PromptCacheLifetime(const PromptCacheOptions& options,
@@ -59,6 +63,11 @@ struct PromptCacheInputBoundary {
   size_t part_index = 0;
   int ttl_seconds = 0;
 };
+// Coordinates refer to effective Chat content after any file expansion.
+// Validates metadata without changing the request or its rendered prompt.
+Status CollectChatCacheBoundaries(
+    const io::Json& messages, std::vector<PromptCacheInputBoundary>* boundaries,
+    std::string* error_param);
 struct ChatPromptLayout;
 Status PlanPromptCacheLayout(
     const PromptCacheOptions& options, const io::Json& messages,

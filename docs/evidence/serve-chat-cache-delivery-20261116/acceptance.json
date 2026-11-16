@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_CHAT_CACHE_DELIVERY",
+  "revision": 174,
+  "current": {
+    "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+    "engine_release_sha256": "2331cc4c8a750a4d89ad223e47fc0721daba61ec9780240ae418831ec327c245",
+    "generation_sha256": "031223fa857a6e929b75aac1d86b48bcd39261a1c1908307a303b5e11a7a3428",
+    "manifest_sha256": "78d6bd7b89be7e1325c6c5f76d12bc2458291e79a386b5343f4274e55164fa0d",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-cache-20261116/package-01/bundle",
+    "service_acceptance_sha256": "a235de4be0b2361f8d274c942aac4dbfebdbd375c700995563b7d2854186a3a5",
+    "service_release_sha256": "8ed29ca115f18aa70ea7f8845d732b2ce0c7f1f5b635e2098b938e4c82ecb99b"
+  },
+  "commands": 17,
+  "seconds": 55.48784568393603,
+  "new_gpu_starts": 0,
+  "state": "STOPPED",
+  "core_client_outer_state_preserved": true,
+  "profile_budget_preserved": true,
+  "retained_anchor_generation": "5fcea9f1187b83fd69fcc5a0bd324531410461f88e68fd7415934a5675ca0dfd",
+  "files": 79,
+  "archive_sha256": "13373df2c5a60384743c9f180f4773c71aadff4063b5f841a9f8fc11ab84aa0c",
+  "secret_scan_matches": 0,
+  "remaining_master_tasks_active": true
+}

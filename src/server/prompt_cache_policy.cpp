@@ -38,8 +38,20 @@ int PrefixCount(std::span<const size_t> starts, size_t prompt_bytes,
 
 Status ParsePromptCacheOptions(const io::Json& request,
                                PromptCacheOptions* options,
-                               std::string* error_param) {
+                               std::string* error_param, PromptCacheApi api) {
   *options = {};
+  options->api = api;
+  const bool chat = api == PromptCacheApi::kChat;
+  // Explicit native scopes keep their opt-in policy. Ordinary Chat uses
+  // implicit caching without requiring a caller-provided routing key.
+  options->requested = chat && request.GetString("prefix_cache_scope").empty();
+  if (chat) {
+    if (const auto* messages = request.GetArray("messages"))
+      for (const auto& message : messages->array)
+        if (const auto* content = message.GetArray("content"))
+          for (const auto& part : content->array)
+            if (part.Has("prompt_cache_breakpoint")) options->requested = true;
+  }
   error_param->clear();
   if (const auto* key = request.Find("prompt_cache_key");
       key && !key->IsNull()) {
@@ -62,12 +74,18 @@ Status ParsePromptCacheOptions(const io::Json& request,
     options->requested = true;
   }
   const auto* value = request.Find("prompt_cache_options");
-  if (!value || value->IsNull()) return {};
+  if (!value || (!chat && value->IsNull())) {
+    options->modern_controls = chat && !options->retention_requested;
+    return {};
+  }
   options->requested = true;
   options->modern_controls = true;
   auto status =
-      InputFields(*value, {"mode", "ttl", "prewarm", "comparison_response_id"},
-                  error_param, "prompt_cache_options");
+      chat ? InputFields(*value, {"mode", "ttl"}, error_param,
+                         "prompt_cache_options")
+           : InputFields(*value,
+                         {"mode", "ttl", "prewarm", "comparison_response_id"},
+                         error_param, "prompt_cache_options");
   if (!status) return status;
   if (const auto* mode = value->Find("mode")) {
     if (!mode->IsString() ||
@@ -80,6 +98,9 @@ Status ParsePromptCacheOptions(const io::Json& request,
     status = Ttl(*ttl, "prompt_cache_options.ttl", &options->ttl_seconds,
                  error_param);
     if (!status) return status;
+    if (chat && options->ttl_seconds != 1800)
+      return Invalid("prompt_cache_options.ttl", "Chat request TTL must be 30m",
+                     error_param);
   }
   if (const auto* prewarm = value->Find("prewarm")) {
     if (!prewarm->IsBool())
@@ -137,6 +158,38 @@ Status ParsePromptCacheBreakpoint(const io::Json* value, std::string_view path,
   return {};
 }
 
+Status CollectChatCacheBoundaries(
+    const io::Json& messages, std::vector<PromptCacheInputBoundary>* boundaries,
+    std::string* error_param) {
+  boundaries->clear();
+  error_param->clear();
+  if (!messages.IsArray())
+    return Invalid("messages", "Expected message array", error_param);
+  for (size_t i = 0; i < messages.array.size(); ++i) {
+    const auto* content = messages.array[i].GetArray("content");
+    if (!content) continue;
+    for (size_t j = 0; j < content->array.size(); ++j) {
+      const auto& part = content->array[j];
+      const auto* value = part.Find("prompt_cache_breakpoint");
+      if (!value) continue;
+      const auto path = "messages[" + std::to_string(i) + "].content[" +
+                        std::to_string(j) + "].prompt_cache_breakpoint";
+      const auto type = part.GetString("type", part.Has("text") ? "text" : "");
+      if (value->IsNull() || (type != "text" && type != "image_url" &&
+                              type != "file" && type != "video_frames"))
+        return Invalid(path, "Expected breakpoint on a cacheable content part",
+                       error_param);
+      bool present = false;
+      int ttl = 0;
+      auto status =
+          ParsePromptCacheBreakpoint(value, path, &present, &ttl, error_param);
+      if (!status) return status;
+      if (present) boundaries->push_back({i, j, ttl});
+    }
+  }
+  return {};
+}
+
 Status PlanPromptCache(const PromptCacheOptions& options,
                        std::span<const PromptCacheBoundary> boundaries,
                        int prompt_tokens, PromptCachePlan* plan) {
@@ -169,14 +222,16 @@ Status PlanPromptCache(const PromptCacheOptions& options,
   std::sort(initial.begin(), initial.end());
   const size_t lookback = 50;
   for (size_t i = 0; i < explicit_points.size(); ++i)
-    if (i < 2 || explicit_points.size() - i <= lookback)
+    if (options.api == PromptCacheApi::kChat || i < 2 ||
+        explicit_points.size() - i <= lookback)
       plan->reads.push_back(explicit_points[i].tokens);
   int implicit = 0;
   if (!options.explicit_only) {
     if (!initial.empty()) implicit = initial.back();
     if (!eligible.empty()) implicit = std::max(implicit, eligible.back());
     for (size_t i = 0; i < eligible.size(); ++i)
-      if (eligible.size() - i <= 21) plan->reads.push_back(eligible[i]);
+      if (options.api == PromptCacheApi::kChat || eligible.size() - i <= 21)
+        plan->reads.push_back(eligible[i]);
     if (!initial.empty()) plan->reads.push_back(initial.back());
   }
   const size_t explicit_slots = options.explicit_only ? 4 : 3;
@@ -198,6 +253,8 @@ Status PlanPromptCache(const PromptCacheOptions& options,
   std::sort(plan->reads.begin(), plan->reads.end());
   plan->reads.erase(std::unique(plan->reads.begin(), plan->reads.end()),
                     plan->reads.end());
+  if (options.api == PromptCacheApi::kChat && plan->reads.size() > 80)
+    plan->reads.erase(plan->reads.begin(), plan->reads.end() - 80);
   return {};
 }
 

@@ -1,0 +1,210 @@
+{
+  "status": "ACCEPT_CHAT_CACHE_BUSINESS",
+  "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "cleanup_complete": true,
+  "total_starts": 2,
+  "total_generations": 8,
+  "unique_business_cases": 8,
+  "first_stage": {
+    "status": "ACCEPT_FIRST_FIVE_CAPTURED_CASES",
+    "original_result_status": "FAILED",
+    "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+    "counts": {
+      "starts": 1,
+      "chats": 5,
+      "controls": 42
+    },
+    "strict_lease_seconds": 48.07567300507799,
+    "nvml_queries": 46,
+    "cache_proof": {
+      "write": {
+        "writes": [
+          [
+            "2286",
+            "43200",
+            "1",
+            "186114048"
+          ],
+          [
+            "2320",
+            "1800",
+            "1",
+            "373293056"
+          ]
+        ],
+        "restores": [
+          [
+            "0",
+            "none",
+            "session",
+            "mtp"
+          ]
+        ]
+      },
+      "hit": {
+        "writes": [],
+        "restores": [
+          [
+            "2320",
+            "none",
+            "shared",
+            "mtp"
+          ]
+        ]
+      },
+      "client_isolated": {
+        "writes": [
+          [
+            "2286",
+            "43200",
+            "1",
+            "559407104"
+          ],
+          [
+            "2320",
+            "1800",
+            "1",
+            "746586112"
+          ]
+        ],
+        "restores": [
+          [
+            "0",
+            "none",
+            "session",
+            "mtp"
+          ]
+        ]
+      },
+      "key_isolated": {
+        "writes": [
+          [
+            "2286",
+            "43200",
+            "1",
+            "932700160"
+          ],
+          [
+            "2320",
+            "1800",
+            "1",
+            "1119879168"
+          ]
+        ],
+        "restores": [
+          [
+            "0",
+            "none",
+            "session",
+            "mtp"
+          ]
+        ]
+      },
+      "disabled": {
+        "writes": [],
+        "restores": []
+      }
+    },
+    "terminal_success_count": 5,
+    "metrics_observed_through": 4,
+    "default_unchanged": true,
+    "all_original_failure_records_preserved": true,
+    "remaining_labels": [
+      "default_implicit",
+      "target_write",
+      "target_hit"
+    ],
+    "new_gpu_starts": 0,
+    "explanation": "Optional zero-cache prompt_tokens_details is absent in explicit no-marker response; parsed actual response, successful terminal and no restore/write logs verify that case. Last aggregate/per-client metrics were captured through first four only; do not claim a five-request final metrics snapshot."
+  },
+  "second_stage": {
+    "result": {
+      "status": "PASS_CHAT_CACHE_REMAINING_BUSINESS",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "controls": 40
+      },
+      "seconds": 42.04215256171301,
+      "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf"
+    },
+    "checks": {
+      "actual_requests": 3,
+      "clients": 1,
+      "key_and_client_isolation": false,
+      "default_implicit_write": true,
+      "explicit_no_markers_disabled": false,
+      "exact_restore_usage": true,
+      "actual_prefix_writes_and_restores": {
+        "default_implicit": {
+          "writes": [
+            [
+              "2330",
+              "1800",
+              "1",
+              "187502592"
+            ]
+          ],
+          "restores": [
+            [
+              "0",
+              "none",
+              "session",
+              "mtp"
+            ]
+          ]
+        },
+        "target_write": {
+          "writes": [
+            [
+              "2394",
+              "43200",
+              "1",
+              "371257344"
+            ],
+            [
+              "2428",
+              "1800",
+              "1",
+              "555945984"
+            ]
+          ],
+          "restores": [
+            [
+              "0",
+              "none",
+              "session",
+              "target"
+            ]
+          ]
+        },
+        "target_hit": {
+          "writes": [],
+          "restores": [
+            [
+              "2428",
+              "none",
+              "shared",
+              "target"
+            ]
+          ]
+        }
+      },
+      "actual_answers": true,
+      "full_performance_claim": false,
+      "media_cache_claim": false
+    },
+    "strict_lease_seconds": 42.623463850002736,
+    "nvml_queries": 41
+  },
+  "default_unchanged": true,
+  "original_failure_preserved": true,
+  "aggregate_metrics_case_count": 7,
+  "unobserved_final_metric_case": "disabled",
+  "performance_acceptance": false,
+  "full_model_quality": false,
+  "master_complete": false,
+  "files": 48,
+  "archive_sha256": "e8a5418a2aa60a16c103da4d4d5de9a76628ac79933d23c401ea5ab34e241781",
+  "secret_scan_matches": 0
+}

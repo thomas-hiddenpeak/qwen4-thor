@@ -1,0 +1,21 @@
+{
+  "status": "ACCEPT_VERSION_RETENTION_MAINTENANCE",
+  "cpu_methods": 8,
+  "first_fixture_errors": 8,
+  "first_business_checks_executed": 0,
+  "cpu_seconds": 20.509864889085293,
+  "actual_seconds": 92.34013791335747,
+  "active_before": 16,
+  "active_after": 14,
+  "all_policies_unchanged": true,
+  "default_revision": 166,
+  "archived_cycles": [
+    "ca5419bc-9700-4224-99a7-aebbb171b2b2",
+    "238cfed2-40b7-4750-aff3-f35a073ccf61"
+  ],
+  "deleted_files": 0,
+  "new_gpu_starts": 0,
+  "archive_sha256": "79caed19ddf6d81b8a5a127bc1b1dea1b73b22e31fca7af25fffab08bc167565",
+  "secret_scan_matches": 0,
+  "remaining_master_active": true
+}
