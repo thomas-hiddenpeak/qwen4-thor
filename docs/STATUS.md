@@ -51,6 +51,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat 能力迁移修复CPU通过](evidence/serve-chat-style-migration-cpu-20261116/README.md)：
+发布准备发现旧规则拒绝effort枚举扩展，默认未改。限定已审查枚举集合，
+保留自动等价/禁止丢能力；4项CPU、真实封包资格/2负控、715来源/7负控
+通过。重封正式包一项控制源，复用原引擎/主轻/保留包；冻结2启动/
+4生成/1探测/600秒版本短验。rev150保持，全部master继续。
+
 [Chat 候选精确包/版本恢复通过](evidence/serve-chat-style-version-business-20261116/README.md)：
 保留1b90a1bf独立1启动/2生成，正式d8960eed实际2启动/4生成/1探测；
 严格租约48.066/103.580秒，NVML 46/97项正常。

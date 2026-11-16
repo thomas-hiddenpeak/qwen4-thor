@@ -1,0 +1,15 @@
+{
+  "reason": "STOPPED publication preparation refused seven-level Chat reasoning_effort enum expansion; default rev150 unchanged, initial failure retained.",
+  "implementation": "Normalize only reviewed template.reasoning_effort enum as an unordered capability set. Validate unique known values and native guidance/none closure/default declarations for new levels. Preserve actual original evidence; never relax automatic recovery equality or capability-loss protection.",
+  "targeted_cpu": [
+    "explicit seven-level upgrade and historical policy preservation",
+    "automatic capability change and reverse feature loss rejection",
+    "unknown/duplicate/wrong-type/incomplete implementation rejection",
+    "actual old and new sealed capability comparison; unrelated changes remain rejected",
+    "one sealed refreshed primary package import/contract check"
+  ],
+  "reuse": "Exact e0b34b43 engine, primary/light qualification, accepted retained-01, Chat business, and four unchanged native helpers. No engine rebuild or repeat functional model matrix.",
+  "exact_primary_version_short_check": {"starts": 2, "chats_including_selfchecks": 4, "probes": 1, "seconds": 600},
+  "delivery": {"commands": 17, "gpu_starts": 0},
+  "remaining_master_tasks_required": true
+}

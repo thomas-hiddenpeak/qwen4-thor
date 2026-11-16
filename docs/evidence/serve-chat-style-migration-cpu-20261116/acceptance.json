@@ -1,0 +1,10 @@
+{
+  "status": "ACCEPT_TARGETED_CHAT_EFFORT_MIGRATION_CPU",
+  "cpu_tests": 4,
+  "actual_sealed_review": true,
+  "source_guard": true,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "source_sha256": "6473a321124414d3c392253479b6fa9a38ce613db5943a67d73b95a5bddb157f",
+  "remaining_master_tasks_active": true
+}

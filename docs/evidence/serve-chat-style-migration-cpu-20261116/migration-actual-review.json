@@ -1,0 +1,50 @@
+{
+  "status": "PASS_ACTUAL_CHAT_EFFORT_UPGRADE",
+  "old_package_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
+  "new_package_sha256": "1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7",
+  "permit": {
+    "format": "q4t-profile-migration-permit-v3",
+    "from_registry": "362cccf47f47fb5a1a2a9f998085d9f79e7a47e5826c9e8ff89a64af859626ee",
+    "to_registry": "80a967b99bdca3bc2afe5d7bb6ff2373843d18e4e49cbc5e18caf5ac72bfc94e",
+    "profiles": {
+      "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+      "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "89df92cff241f6b5b3885e0445920950445c6290bbcee31aafff48cfb3f4ebb2",
+    "to_identity": "35cd089be1320c70d1b44f72529f9a032c5d349feaf29ced4dbdaaf0375f2fbe",
+    "capabilities_sha256": "295f2b02d2f2d7ab3a69fe3550ec8cedc4f3fdd948ded8cae459a3f83e59819a",
+    "automatic": false,
+    "target_profiles": {
+      "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+      "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+    },
+    "target_capabilities_sha256": "850de4960763d63276eeea7e80c573739fb932a628569fbfc4feccf0b0a8f094"
+  },
+  "protected_policy_preserved": true,
+  "negative_controls": 2,
+  "default_unchanged": true,
+  "source_sha256": "6473a321124414d3c392253479b6fa9a38ce613db5943a67d73b95a5bddb157f",
+  "new_gpu_starts": 0
+}
