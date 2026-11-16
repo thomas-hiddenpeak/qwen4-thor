@@ -204,8 +204,12 @@ class ClientContracts(unittest.TestCase):
             with self.subTest(stop=repr(stop)):
                 with self.assertRaises(client.ProtocolError):
                     client.make_request(messages, [], stop=stop)
-        with self.assertRaises(client.ProtocolError):
-            client.make_request(messages, [], stop="x", session_id="a" * 64)
+        request = client.make_request(messages, [], stop="x", session_id="a" * 64,
+            json_schema=dict(type="object", properties={}, required=[],
+                             additionalProperties=False))
+        self.assertEqual(request["stop"], "x")
+        self.assertEqual(request["session_id"], "a" * 64)
+        self.assertEqual(request["response_format"]["type"], "json_schema")
         self.assertEqual(client.make_request(messages, [], stop=[],
                                              session_id="a" * 64)["stop"], [])
 

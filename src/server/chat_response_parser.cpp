@@ -896,7 +896,7 @@ Status ChatResponseParser::Finish(bool length_limited,
                             final_prefix_pending_ && !Trim(pending_).empty())))
     return FinishIncomplete(deltas);
   finished_ = true;
-  if (constraints_.active && (length_limited || text_stopped))
+  if (constraints_.active && length_limited)
     return Fail("constrained response exhausted output/context budget");
   if (region_ == Region::kTool ||
       (!tools_.empty() && pending_.starts_with("<tool_")))
@@ -908,7 +908,7 @@ Status ChatResponseParser::Finish(bool length_limited,
        !Trim(pending_).empty()))
     return Fail("incomplete refusal frame");
   if (refusal_started_) {
-    const auto status = VerifySchemaReceipts();
+    const auto status = VerifySchemaReceipts(false, text_stopped);
     return status ? status : Fail(status.message());
   }
   if (!(constraints_.json_output && tool_count_ != 0 && Trim(pending_).empty()))
@@ -931,13 +931,14 @@ Status ChatResponseParser::Finish(bool length_limited,
                               : ValidateConstrainedContent(*request_, content_);
       if (!status) return Fail(status.message());
     }
-    const auto status = VerifySchemaReceipts();
+    const auto status = VerifySchemaReceipts(false, text_stopped);
     if (!status) return Fail(status.message());
   }
   return Status();
 }
 
-Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
+Status ChatResponseParser::VerifySchemaReceipts(bool incomplete,
+                                                bool text_stopped) const {
   if (refusal_started_ && constraints_.active) {
     if (!refusal_closed_ && incomplete) return {};
     if (!refusal_closed_ || !schema_receipts_ ||
@@ -981,10 +982,14 @@ Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
       if (!status) return status;
     }
   }
-  if (incomplete
+  // A token may also have completed values beyond the logical stop. Every
+  // visible value still needs its exact receipt in order; only a trailing
+  // receipt suffix can be ignored. Unlike an incomplete response, JSON content
+  // above remains mandatory and fully bound to its schema and actual value.
+  if ((incomplete || text_stopped)
           ? expected.size() > schema_receipts_->size() ||
                 !std::equal(expected.begin(), expected.end(),
-                             schema_receipts_->begin())
+                            schema_receipts_->begin())
           : expected != *schema_receipts_)
     return Status::Fail("structured semantic receipt mismatch");
   return {};

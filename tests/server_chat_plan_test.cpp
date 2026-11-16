@@ -388,6 +388,7 @@ Q4T_TEST(chat_plan_structured_cache_checks_actual_configuration) {
   for (const auto* field : {"session_id", "prefix_cache_scope"}) {
     Json request;
     Q4T_CHECK(Parse(R"({"messages":[{"role":"user","content":"q"}],)"
+                    R"("stop":"END",)"
                     R"("response_format":{"type":"json_object"},")" +
                         std::string(field) + R"(":")" + std::string(64, 'a') +
                         R"("})",
@@ -401,6 +402,7 @@ Q4T_TEST(chat_plan_structured_cache_checks_actual_configuration) {
     config.session_cache = config.prefix_cache = true;
     Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
     Q4T_CHECK(plan.constraints.active && plan.constraints.json_output);
+    Q4T_CHECK(plan.stops == std::vector<std::string>{"END"});
   }
   return true;
 }

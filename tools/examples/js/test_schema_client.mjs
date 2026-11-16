@@ -65,9 +65,10 @@ test('budgets are bounded, defaults stable, conflicting aliases rejected', () =>
 
 test('schema and active tools preserve explicit cache identity', () => {
   const request = { ...body(), session_id: 'a'.repeat(64),
+    stop: ['END', '中'],
     prefix_cache_scope: 'b'.repeat(64), prefix_cache_write_tokens: 1024,
     tools: [{ type: 'function', function: { name: 'read' } }], tool_choice: 'required' };
   const result = withJsonSchema(request, schema);
-  for (const key of ['session_id', 'prefix_cache_scope', 'prefix_cache_write_tokens', 'tools', 'tool_choice'])
+  for (const key of ['stop', 'session_id', 'prefix_cache_scope', 'prefix_cache_write_tokens', 'tools', 'tool_choice'])
     assert.deepEqual(result[key], request[key]);
 });

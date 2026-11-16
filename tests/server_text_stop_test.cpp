@@ -63,14 +63,14 @@ Q4T_TEST(text_stop_input_contract) {
   return true;
 }
 
-Q4T_TEST(text_stop_combinations_fail_before_generation) {
+Q4T_TEST(text_stop_constraints_and_state_caches_share_input_contract) {
   const std::string begin = R"({"messages":[{"role":"user","content":"q"}],)";
   for (const auto& extra : std::vector<std::string>{
            R"("response_format":{"type":"json_object"})",
            R"("tool_choice":"none")",
            R"("session_id":")" + std::string(64, 'a') + '"',
            R"("prefix_cache_scope":")" + std::string(64, 'a') + '"'}) {
-    Q4T_CHECK(Contract(begin + extra + R"(,"stop":"x"})", "stop"));
+    Q4T_CHECK(Contract(begin + extra + R"(,"stop":"x"})"));
     Q4T_CHECK(Contract(begin + extra + R"(,"stop":[]})"));
     Q4T_CHECK(Contract(begin + extra + R"(,"stop":null})"));
   }
@@ -88,7 +88,7 @@ Q4T_TEST(text_stop_invalid_utf8_and_clear_on_error) {
   req.object[0].second.str = std::string("\xc0\xaf", 2);
   std::vector<std::string> stops{"stale"};
   std::string param;
-  Q4T_CHECK(!q4t::server::ParseTextStop(req, false, &stops, &param));
+  Q4T_CHECK(!q4t::server::ParseTextStop(req, &stops, &param));
   Q4T_CHECK(stops.empty() && param == "stop");
   return true;
 }

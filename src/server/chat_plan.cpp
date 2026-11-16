@@ -143,8 +143,7 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   if (plan->constraints.active && !config.structured)
     return Fail(error, "structured_backend_unavailable", "",
                 "structured decoding backend is not built");
-  status =
-      ParseTextStop(req, plan->constraints.active, &plan->stops, &error->param);
+  status = ParseTextStop(req, &plan->stops, &error->param);
   if (!status) return status;
   if (!req.GetString("prefix_cache_scope").empty() && !config.prefix_cache)
     return Fail(error, "invalid_request", "prefix_cache_scope",

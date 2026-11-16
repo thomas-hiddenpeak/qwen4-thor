@@ -237,8 +237,13 @@ Q4T_TEST(chat_capabilities_text_stop_profile) {
             stop->GetString("profile") == q4t::server::kTextStopProfile);
   Q4T_CHECK(stop->GetInt("max_strings", 0) == 4);
   Q4T_CHECK(stop->GetInt("max_utf8_bytes", 0) == 256);
-  Q4T_CHECK(!stop->GetBool("constrained_output", true));
-  Q4T_CHECK(!stop->GetBool("state_cache", true));
+  Q4T_CHECK(stop->GetBool("constrained_output") ==
+            q4t::server::kStructuredDecodingAvailable);
+  Q4T_CHECK(stop->GetBool("state_cache"));
+  Q4T_CHECK(stop->GetString("constrained_terminal") ==
+            "validate_visible_complete_values_and_receipts");
+  Q4T_CHECK(stop->GetString("private_cache_boundary") ==
+            "complete_prompt_before_generation");
   return true;
 }
 

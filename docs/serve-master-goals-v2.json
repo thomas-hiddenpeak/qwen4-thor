@@ -212,6 +212,11 @@
         "manifest_sha256": "4981551e1e9dc104b9a9833f6b6cd8bd5a059c857cefd6b635e8d75f4a60ecd3",
         "delivery_evidence": "evidence/serve-chat-moderation-delivery-20261117/README.md",
         "default_unchanged": false
+      },
+      "web_search_20261117": {
+        "state": "backend_required",
+        "finding": "Only type definitions and include projection exist; native actual search, source-bound citation and Chat/Responses execution still required",
+        "scope_reduced": false
       }
     },
     {
@@ -446,6 +451,33 @@
         "revision": 214,
         "manifest_sha256": "f02ffbffa78aa24379a54e835592e00a9c3d6304ff62ac177a848ae1ae11e25b",
         "delivery_evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
+      },
+      "stop_combinations_20261117": {
+        "state": "cpu_pass_business_pending",
+        "plan": "SERVE_STOP_COMBINATIONS_2026-11-17.md",
+        "cpu_max": {
+          "cpp": 20,
+          "migration": 4,
+          "schema": 2,
+          "clients": 2
+        },
+        "gpu_max": {
+          "starts": 5,
+          "external_requests": 26,
+          "seconds": 1200
+        },
+        "default_unchanged": true,
+        "whole_task_complete": false,
+        "cpu_actual": {
+          "cpp_distinct": 18,
+          "cpp_executions": 19,
+          "migration_distinct": 4,
+          "migration_executions": 7,
+          "schema": 2,
+          "clients": 2
+        },
+        "evidence": "evidence/serve-stop-combinations-cpu-20261117/README.md",
+        "candidate_engine_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f"
       }
     },
     {
@@ -2823,9 +2855,15 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
+        "Actual web search backend, Chat web_search_options and Responses execution with source-bound citations and SDK round trips",
         "Actual configured cloud account permission/pagination/content acceptance",
         "Remaining builtin/tool VM file/video and typed-output combinations"
-      ]
+      ],
+      "web_search_20261117": {
+        "state": "backend_required",
+        "finding": "Only type definitions and include projection exist; native actual search, source-bound citation and Chat/Responses execution still required",
+        "scope_reduced": false
+      }
     },
     {
       "id": "A12",
@@ -5085,8 +5123,8 @@
       }
     }
   ],
-  "next_task": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
-  "next": "Freeze rev214 native day handoff; complete PR38 final-head checks and actual main merge; continue remaining Chat audio/web-search, schema/cache combinations, model backends and cold/resource/host tasks. All 33 required tasks remain the completion boundary.",
+  "next_task": "Complete PR38 final-head checks and actual merge; implement and validate A05 stop/constraints/cache combinations, then deliver. Continue web search, audio/media backends, SDK and cold/resource/host tasks; all required master tasks remain active.",
+  "next": "Complete PR38 final-head checks and actual merge; implement and validate A05 stop/constraints/cache combinations, then deliver. Continue web search, audio/media backends, SDK and cold/resource/host tasks; all required master tasks remain active.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

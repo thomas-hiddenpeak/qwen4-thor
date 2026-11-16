@@ -197,7 +197,7 @@ Status PlanCompletionRequest(const io::Json& req, const ChatPlanConfig& config,
       return Fail(error, "logit_bias[\"" + std::to_string(token) + "\"]",
                   "logit_bias token outside served vocabulary");
   }
-  status = ParseTextStop(req, false, &result.stops, &error->param);
+  status = ParseTextStop(req, &result.stops, &error->param);
   if (!status) return status;
   *plan = std::move(result);
   return Status();

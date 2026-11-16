@@ -1,0 +1,19 @@
+{
+  "status": "PASS_STOP_COMBINATIONS_TARGETED_CPU",
+  "cpp_distinct": 18,
+  "cpp_executions": 19,
+  "migration_distinct": 4,
+  "migration_executions": 7,
+  "schema_cases": 2,
+  "client_cases": 2,
+  "source_anchors": 735,
+  "source_negatives": 7,
+  "zero_warning_build": true,
+  "default_revision": 214,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "performance_claim": false,
+  "binary_sha256": "b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f",
+  "original_failures_preserved": true,
+  "archive_sha256": "9840fb2753b07ecdb6ea46d1559c505ead865f53bb1f7749267c4fe9599cbd7b"
+}
