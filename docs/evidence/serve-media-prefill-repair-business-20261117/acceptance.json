@@ -1,0 +1,17 @@
+{
+  "status": "ACCEPT_ORIGINAL_VIDEO_PREFILL_REPAIR",
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 35
+  },
+  "seconds": 41.27337187388912,
+  "nvml_queries": 41,
+  "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+  "cleanup_complete": true,
+  "full_cold_warm_exact": true,
+  "default_unchanged": true,
+  "release_qualified": false,
+  "performance_claim": false,
+  "archive_sha256": "7546c12ce1170f973e468c4032ab52aaf1850d096c5de41ded166650535183de"
+}

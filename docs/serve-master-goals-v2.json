@@ -78,7 +78,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat four frozen-reference top-level fields: audio/modalities/moderation/web_search_options",
+        "Chat three frozen-reference top-level fields: audio/modalities/web_search_options",
         "Remaining default/null, nested message and response projection parity beyond delivered Chat style, attribution and cache fields"
       ],
       "chat_style_parity_20261116": {
@@ -4437,7 +4437,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -4644,7 +4644,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR37 exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4996,8 +4995,9 @@
     "default_revision": 204
   },
   "media_prefill_repair_20261117": {
-    "state": "targeted_cpu_pass_business_pending",
+    "state": "original_video_business_accepted_remaining_delivery",
     "evidence": "docs/evidence/serve-media-prefill-repair-cpu-20261117/acceptance.json",
-    "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks."
+    "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks.",
+    "business_evidence": "docs/evidence/serve-media-prefill-repair-business-20261117/acceptance.json"
   }
 }

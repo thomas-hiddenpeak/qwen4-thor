@@ -94,6 +94,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原视频短尾回归已修复](evidence/serve-media-prefill-repair-business-20261117/README.md)：
+1启动3请求，完整/隐式冷/热文本及logprobs完全一致，实际1062-token
+SSD写入/恢复通过，监控清理正常。新候选2de56309未交付；下一组
+5启动23请求/780秒完成受影响图片/schema/私有缓存和主轻/保留组合，
+累计上限12/58/1200秒。原失败保留，默认204不变，全部master继续。
+
 [视觉短尾修复CPU出口](evidence/serve-media-prefill-repair-cpu-20261117/README.md)：
 2项直接CPU、735/7来源与零警告隔离构建通过。原诊断/来源失败
 保留；新候选尚未GPU验收，接下来仅3条原视频对照。默认204保持。
