@@ -1753,7 +1753,7 @@
         "accepted_business_seconds": 53.44687231024727
       },
       "display_geometry": {
-        "state": "original_business_failed_targeted_fix_cpu_accepted",
+        "state": "targeted_business_accepted_delivery_pending",
         "plan": "SERVE_VIDEO_GEOMETRY_2026-11-16.md",
         "cpu_evidence": "evidence/serve-video-geometry-cpu-20261116/README.md",
         "candidate_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
@@ -1770,7 +1770,13 @@
           "creates": 2,
           "seconds": 43.68216426577419
         },
-        "next": "Original four requests/question/oracle unchanged; corrected source geometry context only, actual HTTP pending."
+        "next": "Qualify exact new engine primary/light capacity; assemble reversible delivery with unchanged control evidence reused; all broader A10 work remains open.",
+        "business": "evidence/serve-video-geometry-business-20261116/README.md",
+        "current_actual": {
+          "starts": 1,
+          "creates": 4,
+          "seconds": 52.60955235315487
+        }
       }
     },
     {

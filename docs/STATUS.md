@@ -50,6 +50,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[显示几何实际业务通过](evidence/serve-video-geometry-business-20261116/README.md)：
+1启动/4创建/52.610秒，51项NVML正常。原始上传/inline视频的旋转、
+镜像SSE、像素比例组合四角与布局正确，计数/同PID普通文本/清理均过。
+保留原失败，问题与预期未放宽；宽高来源元数据与像素修正分别记录。
+a7bd6785待新主轻配置资格与可回退发行，rev142保持，master继续。
+
 [显示几何实际短验](evidence/serve-video-geometry-business-failure-20261116/README.md)
 在镜像布局回答处未通过：旋转正确、镜像四角正确却回答square。
 1启动/2创建/43.682秒、43项NVML正常，自有资源已清理，rev142保持。
