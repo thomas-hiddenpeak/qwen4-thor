@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[视觉服务实际自动降级/恢复通过](evidence/serve-media-managed-business-20261116/README.md)：
+3启动/12请求/205.133秒，192次NVML正常；真实RAM压力触发主→轻→主，
+8.125GiB自有页全释放，视频冻结历史/一次工具执行/配额连续/晋升SSE
+和普通Chat通过，控制树保持。实际受控包8fe97f50已验；正式候选
+7a8e9cd2及版本回退仍须完成，rev134不变，全部master继续。
+
 [托管视觉驱动首次失败已定位](evidence/serve-media-managed-driver-failure-20261116/README.md)：
 1启动/1自检后，驱动间接导入生产包未携带的TLS夹具失败；尚无媒体
 请求或RAM压力，持久STOPPED与自有资源清理完成。纯wire检查替代

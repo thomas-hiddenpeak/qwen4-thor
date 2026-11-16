@@ -1,0 +1,91 @@
+{
+  "status": "ACCEPT_MANAGED_VISUAL_PROFILE_RECOVERY",
+  "manifest_sha256": "8fe97f5063b418ee5c53d71812a4100d02469d7811e5bf9da7a89a7bde9a1426",
+  "engine_binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
+  "counts": {
+    "starts": 3,
+    "chats": 12,
+    "probes": 0,
+    "controls": 740
+  },
+  "seconds": 205.13277232600376,
+  "nvml_queries": 192,
+  "env_abort": false,
+  "postflight": {
+    "sources_unchanged": true,
+    "owned_processes_gone": true,
+    "ports_free": true,
+    "lock_released": true,
+    "default_unchanged": true
+  },
+  "actual_business": {
+    "status": "PASS",
+    "profiles": {
+      "clock": {
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "logical_ns": 73154780236,
+        "monotonic_ns": 2999169745756407
+      },
+      "completed_generation": 3,
+      "configuration": {
+        "cooldown_seconds": 60,
+        "degrade_below_mib": 24576,
+        "minimum_light_seconds": 60,
+        "pressure_seconds": 2,
+        "recover_above_mib": 28672,
+        "recovery_seconds": 30,
+        "switches_per_day": 4,
+        "switches_per_hour": 2,
+        "version": 1
+      },
+      "format": "q4t-profile-selection-v1",
+      "history": [
+        {
+          "at_logical_ns": 12287406020,
+          "reason": "sustained_memory_pressure",
+          "request_id": "525c0166-0cfd-4cf9-8f38-ec2ca2949ae4",
+          "source": "primary",
+          "source_generation": 1,
+          "target": "light",
+          "target_sha256": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+        },
+        {
+          "at_logical_ns": 73100872849,
+          "reason": "sustained_memory_recovery",
+          "request_id": "dbc13171-49f1-479d-a977-38c1b7de5581",
+          "source": "light",
+          "source_generation": 2,
+          "target": "primary",
+          "target_sha256": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b"
+        }
+      ],
+      "light_since_ns": null,
+      "not_before_ns": 133100872849,
+      "pending": null,
+      "profiles": {
+        "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55",
+        "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b"
+      },
+      "registry_sha256": "b5bf5064dcbd98082f6125349c0018740548e43194f7eade1228f1f87f868d96",
+      "revision": 10,
+      "selected": "primary"
+    },
+    "actual_visual_stages": 3,
+    "frozen_media_preserved": true,
+    "media_sse_after_promotion": true,
+    "actual_tool_executions": 1,
+    "no_tool_or_request_replay": true,
+    "stored_call_preserved": true,
+    "quota_preserved": true,
+    "control_tree_unchanged": true
+  },
+  "pressure": {
+    "allocated_bytes": 8724152320,
+    "min_observed_available_bytes": 24586993664,
+    "all_owned_pages_released": true
+  },
+  "scope": "Actual controlled pressure thresholds, isolated keys/ports; production control/engine/profile identities. Exact delivery package and version fallback still require their own acceptance.",
+  "default_changed": false,
+  "performance_claim": false,
+  "remaining_master_tasks_open": true
+}
