@@ -108,6 +108,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
+（`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
+已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。
+
 [网页搜索网络组件](evidence/serve-web-search-network-20261117/README.md)
 8项直接CPU通过：每跳域名限制先于DNS/连接，与部署网络许可取交集；
 offline不联网，失败保留尝试预算，合法来源链/摘要保持。0GPU、
