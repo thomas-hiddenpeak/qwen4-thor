@@ -43,6 +43,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生视频实际业务通过](evidence/serve-video-business-20261116/README.md)：
+1启动/8创建/53.447秒，52次NVML正常；MP4计数、VP8 SSE、实际函数
+VP9续答、MCP真实读取、删除后的冻结回放、损坏后同PID普通推理均过。
+历史失败保留，自有进程/端口/锁清理，rev134未改。继续同候选最多
+1启动/4创建/600秒的Chat PDF/WebP及Responses实际文档短验，再补齐
+托管服务视觉profile/恢复和可回退发行；全部master仍active。
+
 [统一投影原业务](evidence/serve-video-projection-business-failure-20261116/README.md)
 在VP8仍拒答：实际看见红/蓝，却将平均视觉组标签当作缺首尾帧的证据。
 当前共用同一时间戳函数，并将每组标签对应到实际源帧的显示区间；

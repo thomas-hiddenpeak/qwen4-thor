@@ -1280,18 +1280,18 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "group_timing_cpu_accepted_business_pending",
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
-        "gpu_accepted": false,
+        "gpu_accepted": true,
         "released": false,
         "whole_task_complete": false,
         "worker_cpu_accepted": true,
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "16 targeted CPU cases then original 1-start/8-create/900-second video business; complete Chat/document business, format combinations, recovery/release and all master tasks",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1299,7 +1299,7 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 5,
+        "business_attempts": 6,
         "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
@@ -1320,7 +1320,11 @@
         "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
         "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
         "group_timing_cpp_passed": 7,
-        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -1700,18 +1704,18 @@
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
       },
       "native_video_preparation": {
-        "state": "group_timing_cpu_accepted_business_pending",
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
-        "gpu_accepted": false,
+        "gpu_accepted": true,
         "released": false,
         "whole_task_complete": false,
         "worker_cpu_accepted": true,
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "16 targeted CPU cases then original 1-start/8-create/900-second video business; complete Chat/document business, format combinations, recovery/release and all master tasks",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1719,7 +1723,7 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 5,
+        "business_attempts": 6,
         "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
@@ -1740,7 +1744,11 @@
         "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
         "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
         "group_timing_cpp_passed": 7,
-        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -2276,18 +2284,18 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "group_timing_cpu_accepted_business_pending",
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
-        "gpu_accepted": false,
+        "gpu_accepted": true,
         "released": false,
         "whole_task_complete": false,
         "worker_cpu_accepted": true,
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "16 targeted CPU cases then original 1-start/8-create/900-second video business; complete Chat/document business, format combinations, recovery/release and all master tasks",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -2295,7 +2303,7 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 5,
+        "business_attempts": 6,
         "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
@@ -2316,7 +2324,11 @@
         "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
         "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
         "group_timing_cpp_passed": 7,
-        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -3322,18 +3334,18 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "group_timing_cpu_accepted_business_pending",
+        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
-        "gpu_accepted": false,
+        "gpu_accepted": true,
         "released": false,
         "whole_task_complete": false,
         "worker_cpu_accepted": true,
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "16 targeted CPU cases then original 1-start/8-create/900-second video business; complete Chat/document business, format combinations, recovery/release and all master tasks",
+        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -3341,7 +3353,7 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 5,
+        "business_attempts": 6,
         "business_latest_failure_evidence": "evidence/serve-video-projection-business-failure-20261116/README.md",
         "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
         "interval_cpp_passed": 20,
@@ -3362,7 +3374,11 @@
         "projection_engine_sha256": "dbd03bb149c0d750f4651df440afb51e0167d31adcfe9752db1cb2b4385eacea",
         "group_timing_cpu_evidence": "evidence/serve-video-group-timing-cpu-20261116/README.md",
         "group_timing_cpp_passed": 7,
-        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277"
+        "group_timing_engine_sha256": "15f89c013d67def513e39d63e8cf6332a42ee2a6ec990cfa8c801cce920c2277",
+        "business_evidence": "evidence/serve-video-business-20261116/README.md",
+        "accepted_business_starts": 1,
+        "accepted_business_creates": 8,
+        "accepted_business_seconds": 53.44687231024727
       }
     },
     {
@@ -3560,6 +3576,6 @@
       "release": null
     }
   ],
-  "next_task": "Repair actual video refusal with correct native input projection/shared template, complete targeted CPU and unchanged SDK business. Continue provider account, recovery, release and all Serve master tasks; no failure is acceptance.",
-  "next": "Repair actual video refusal with correct native input projection/shared template, complete targeted CPU and unchanged SDK business. Continue provider account, recovery, release and all Serve master tasks; no failure is acceptance."
+  "next_task": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task.",
+  "next": "Complete affected Chat/document business and native managed visual profile/recovery support; continue providers, formats, reversible release and every remaining master task."
 }
