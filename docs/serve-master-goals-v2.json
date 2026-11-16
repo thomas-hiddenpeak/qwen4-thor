@@ -499,7 +499,11 @@
         "candidate_manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
         "revision": 224,
         "manifest_sha256": "4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3",
-        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-stop-combinations-delivery-20261117/README.md",
+        "main_merged": true,
+        "pr": 39,
+        "merge_commit": "1d905350aac14dc9af94d45b182a130f8b41c4d7",
+        "merge_evidence": "evidence/serve-pr39-merged-20261117/README.md"
       }
     },
     {
@@ -5197,7 +5201,7 @@
     }
   ],
   "next_task": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
-  "next": "Complete Stop rev224 actual main merge; continue native web search, remaining Chat/audio/media/SDK and cold/resource/host tasks. All required master tasks remain active.",
+  "next": "PR39 Stop rev224 merged as 1d905350. Continue native web-search acquisition and Chat/Responses execution, citations/SDK, actual business delivery and all remaining master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

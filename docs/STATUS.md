@@ -108,6 +108,10 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+PR39最终head `0472f354` 两组CI通过，已[实际合入main](evidence/serve-pr39-merged-20261117/README.md)
+（`1d905350`）。Stop组合、rev224交付和独立day交接源码已进入
+主线；网页搜索及全部剩余master任务继续，0新增GPU、默认224保持。
+
 PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
 （`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
 已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。
