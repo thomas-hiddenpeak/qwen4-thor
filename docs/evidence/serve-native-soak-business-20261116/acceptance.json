@@ -1,0 +1,44 @@
+{
+  "status": "ACCEPT_NATIVE_SHORT_SOAK_AND_V5_METRICS",
+  "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74",
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "actual_business": {
+    "status": "PASS_NATIVE_SHORT_SOAK",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-v5-20261116/candidate-01/bundle",
+      "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74"
+    },
+    "profile": "short",
+    "cycles": 3,
+    "business_requests": 15,
+    "tool_executions": 3,
+    "starts": 1,
+    "guard": {
+      "passed": true,
+      "records": 102,
+      "observations": 98,
+      "seconds": 104.73919565510005
+    },
+    "native_cleanup_confirmed": true,
+    "day_scale_stability_proved": false,
+    "new_model_actions": 0,
+    "performance_acceptance": false,
+    "physical_ram_hard_boundary_proved": false
+  },
+  "successful_run_starts": 1,
+  "successful_run_chats": 16,
+  "successful_run_seconds": 105.91709872893989,
+  "total_starts": 3,
+  "total_chats": 28,
+  "total_probes": 0,
+  "total_seconds": 209.11229068087414,
+  "original_failures_preserved": 2,
+  "nvml_queries": 194,
+  "nvml_all_ok": true,
+  "all_cleanup_confirmed": true,
+  "default_changed": false,
+  "day_executed": false,
+  "long_stability_accepted": false,
+  "secret_scan_matches": 0,
+  "master_active": true
+}

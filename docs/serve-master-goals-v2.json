@@ -3444,9 +3444,11 @@
         "existing_evidence_reviewed": true
       },
       "metric_v5_compatibility_20261116": {
-        "state": "targeted_cpu_accepted_delivery_pending",
+        "state": "real_business_accepted_delivery_pending",
         "plan": "SERVE_OPS_V5_2026-11-16.md",
-        "evidence": "evidence/serve-ops-v5-cpu-20261116/README.md"
+        "evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
+        "manifest_sha256": "509c3bcb9a2c2d7428cbcb9117b109ae58a4087ad304abb0edda73ec74532a74"
       }
     },
     {
@@ -4534,7 +4536,7 @@
         "main_evidence": "evidence/serve-pr31-merged-20261116/README.md"
       },
       "native_soak_20261116": {
-        "state": "current_metric_compatibility_fixed_cpu_new_package_pending",
+        "state": "real_short_accepted_delivery_and_handoff_pending",
         "plan": "SERVE_NATIVE_SOAK_2026-11-16.md",
         "cpu_limit": 14,
         "short_limits": {
@@ -4551,15 +4553,18 @@
         "day_cycles": 1440,
         "day_business_requests": 7200,
         "failure_evidence": "evidence/serve-native-soak-metrics-20261116/README.md",
-        "actual_starts": 2,
-        "actual_chats": 12,
+        "actual_starts": 3,
+        "actual_chats": 28,
         "cumulative_limits": {
           "starts": 3,
           "chats": 28,
           "probes": 0,
           "seconds": 1800
         },
-        "second_failure_evidence": "evidence/serve-ops-v5-cpu-20261116/README.md"
+        "second_failure_evidence": "evidence/serve-ops-v5-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-native-soak-business-20261116/README.md",
+        "actual_gpu_seconds": 209.11229068087414,
+        "day_executed": false
       }
     }
   ],
