@@ -421,7 +421,8 @@ Status PrepareInjectGate(const HyperConnectionWeights& w,
   // is the only T-dependence source in the MTP vs plain-greedy divergence (see
   // docs/log/2026-10-10.md). Default runtime behavior is unchanged when the
   // env var is unset.
-  const bool ablate_hc_t1 = std::getenv("Q4T_ABLATE_HC_T1") != nullptr;
+  const bool ablate_hc_t1 = runtime::UsePrefillKernels() ||
+                          std::getenv("Q4T_ABLATE_HC_T1") != nullptr;
   const bool aligned =
       ((reinterpret_cast<uintptr_t>(normed) |
         reinterpret_cast<uintptr_t>(w.block_inject)) &
@@ -593,6 +594,7 @@ Status MixDownStep(const HyperConnectionWeights& w, const uint16_t* normed,
   // fixed inputs); the FP8 shadow path and all other GEMMs are untouched.
   // Default runtime behavior is unchanged (env var unset).
   const bool rowwise_mix =
+      !runtime::UsePrefillKernels() &&
       std::getenv("Q4T_HC_MIX_ROWWISE_GEMV") != nullptr && T >= 2 && T <= 8 &&
       w.mix_down_fp8.w == nullptr && (hc_dim % 8) == 0;
   Status s;

@@ -1,6 +1,10 @@
 #include "q4t/server/media_cache.h"
 
+#include <future>
+#include <stdexcept>
+
 #include "q4t/model/vision_positions.h"
+#include "q4t/runtime/prefill_kernels.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/prompt_cache_policy.h"
 #include "q4t/test.h"
@@ -44,6 +48,38 @@ struct Fixture {
   }
 };
 }  // namespace
+
+Q4T_TEST(vision_prefill_kernel_scope_restores_decode_on_return_and_exception) {
+  Q4T_CHECK(!runtime::UsePrefillKernels());
+  {
+    runtime::PrefillKernelScope prefill(true);
+    Q4T_CHECK(runtime::UsePrefillKernels());
+    try {
+      runtime::PrefillKernelScope decode(false);
+      Q4T_CHECK(!runtime::UsePrefillKernels());
+      throw std::runtime_error("cancelled prefill");
+    } catch (const std::runtime_error&) {
+      Q4T_CHECK(runtime::UsePrefillKernels());
+    }
+  }
+  Q4T_CHECK(!runtime::UsePrefillKernels());
+  return true;
+}
+
+Q4T_TEST(vision_prefill_kernel_scope_does_not_change_another_worker) {
+  runtime::PrefillKernelScope prefill(true);
+  auto worker = std::async(std::launch::async, [] {
+    if (runtime::UsePrefillKernels()) return false;
+    {
+      runtime::PrefillKernelScope inner(true);
+      if (!runtime::UsePrefillKernels()) return false;
+    }
+    return !runtime::UsePrefillKernels();
+  });
+  Q4T_CHECK(worker.get());
+  Q4T_CHECK(runtime::UsePrefillKernels());
+  return true;
+}
 
 Q4T_TEST(media_cache_identity_and_expanded_boundaries) {
   Fixture f;

@@ -17,6 +17,7 @@
 
 #include "q4t/model/gemv.h"
 #include "q4t/quant/lt_cache.h"
+#include "q4t/runtime/prefill_kernels.h"
 
 namespace q4t {
 namespace model {
@@ -104,6 +105,7 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
                                float beta, void* workspace,
                                size_t workspace_bytes, cudaStream_t stream) {
   Bf16GemmResult res;
+  const bool prefill = runtime::UsePrefillKernels();
   // ABLATION (test-only, off by default): force the M=1 path to use the
   // cuBLASLt GEMM (the same kernel family as M>1), so the GEMM is no longer
   // a T-dependence source. Used to confirm whether the M=1 GEMV is the source
@@ -118,7 +120,7 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
   // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
   // env var is unset.
   const bool ablate_gemm_tile = std::getenv("Q4T_ABLATE_GEMM_TILE") != nullptr;
-  if (M == 1 && beta == 0.0f && ablate_gemm_tile) {
+  if (!prefill && M == 1 && beta == 0.0f && ablate_gemm_tile) {
     uint16_t* x4 = nullptr;
     uint16_t* y4 = nullptr;
     if (cudaMalloc(&x4, sizeof(uint16_t) * 4 * K) != cudaSuccess) return res;
@@ -140,7 +142,7 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
   }
   // M=1 (decode): dedicated GEMV kernel — reads W at full DRAM bandwidth.
   // beta must be 0 (all call sites use 0).
-  if (M == 1 && beta == 0.0f && !ablate_gemv_t1) {
+  if (!prefill && M == 1 && beta == 0.0f && !ablate_gemv_t1) {
     if (Bf16Gev(x, w, y, N, K, alpha, stream)) {
       res.status = CUBLAS_STATUS_SUCCESS;
       res.has_algo = true;
@@ -155,7 +157,7 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
   // sites use 0). Skipped under the M=1->M=4 cuBLASLt ablation so that
   // ablation keeps forcing the cuBLASLt algorithm family. Unsupported
   // shapes return false and fall through to cuBLASLt below.
-  if (M >= 2 && M <= 8 && beta == 0.0f && !ablate_gemm_tile) {
+  if (!prefill && M >= 2 && M <= 8 && beta == 0.0f && !ablate_gemm_tile) {
     if (Bf16SmallMGemm(x, w, y, M, N, K, alpha, stream)) {
       res.status = CUBLAS_STATUS_SUCCESS;
       res.has_algo = true;
@@ -189,7 +191,8 @@ inline Bf16GemmResult ProjGemm(const uint16_t* x, const uint16_t* w,
                                void* workspace, size_t workspace_bytes,
                                cudaStream_t stream) {
   const bool ablate_gemv_t1 = std::getenv("Q4T_ABLATE_GEMV_T1") != nullptr;
-  if (M == 1 && beta == 0.0f && shadow != nullptr && shadow->w != nullptr &&
+  if (!runtime::UsePrefillKernels() && M == 1 && beta == 0.0f &&
+      shadow != nullptr && shadow->w != nullptr &&
       !ablate_gemv_t1) {
     if (Fp8Gev(x, *shadow, y, N, K, alpha, stream)) {
       Bf16GemmResult res;
@@ -202,8 +205,8 @@ inline Bf16GemmResult ProjGemm(const uint16_t* x, const uint16_t* w,
   // Batched decode (2 <= M <= kFp8SmallMMax): the hand-written FP8 small-M
   // kernel is memory-bound and beats cuBLASLt BF16; above kFp8SmallMMax the
   // GEMM is compute-bound and cuBLASLt tensor cores win, so keep BF16 there.
-  if (M >= 2 && M <= kFp8SmallMMax && beta == 0.0f && shadow != nullptr &&
-      shadow->w != nullptr) {
+  if (!runtime::UsePrefillKernels() && M >= 2 && M <= kFp8SmallMMax &&
+      beta == 0.0f && shadow != nullptr && shadow->w != nullptr) {
     if (Fp8SmallMGemm(x, *shadow, y, M, N, K, alpha, stream)) {
       Bf16GemmResult res;
       res.status = CUBLAS_STATUS_SUCCESS;

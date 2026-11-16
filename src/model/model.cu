@@ -23,6 +23,7 @@
 
 #include "q4t/runtime/residency_config.h"
 #include "q4t/runtime/cleanup_policy.h"
+#include "q4t/runtime/prefill_kernels.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -553,7 +554,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  bool sequence_last_rows = false,
                  float** ssm_captures = nullptr,
                  uint16_t** qkv_raw_captures = nullptr,
-                 uint16_t** gated_n_captures = nullptr) {
+                 uint16_t** gated_n_captures = nullptr,
+                 bool prefill_kernels = false) {
   // Checkpoints describe the most recent successful verify only. Invalidate
   // before any layer mutates recurrent state, including failed forwards.
   InvalidateVerifyCheckpoints(m);
@@ -624,6 +626,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   if (layer_subtiming) HcMixSubTiming::Instance().Begin();
   if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
+    // End the scope before HeadForward: its final single-row projection keeps
+    // the existing head contract, independently of the prompt chunk size.
+    const runtime::PrefillKernelScope kernel_scope(prefill_kernels);
     if (diag) {
       const cudaError_t e = cudaGetLastError();
       if (e != cudaSuccess) {
@@ -1134,7 +1139,7 @@ static Status RunContinuation(
                 positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
                 conv_ckpt, num_ckpt, seq_id, nullptr, 0, ple_conv_ckpt,
                 nullptr, logits_rows, false, ssm_captures, qkv_raw_captures,
-                gated_n_captures);
+                gated_n_captures, vision_plan != nullptr);
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(1, seq_id);

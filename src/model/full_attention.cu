@@ -1897,13 +1897,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md). Default
   // runtime behavior is unchanged when the env var is unset.
   mt(16, 0);
+  const bool prefill = runtime::UsePrefillKernels();
   const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
-  if (!ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 && hd == 256) {
+  if (!prefill && !ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 &&
+      hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
                        d_gate, max_topk, T, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);
     if (!s) return s;
-  } else if (T > kSplitMaxT) {
+  } else if (prefill || T > kSplitMaxT) {
     SparseAttentionKernel<true><<<dim3(T, nkv), 256, 0, stream>>>(
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);

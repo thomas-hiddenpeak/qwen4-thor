@@ -4994,5 +4994,10 @@
     },
     "runtime_unchanged": true,
     "default_revision": 204
+  },
+  "media_prefill_repair_20261117": {
+    "state": "targeted_cpu_pass_business_pending",
+    "evidence": "docs/evidence/serve-media-prefill-repair-cpu-20261117/acceptance.json",
+    "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks."
   }
 }

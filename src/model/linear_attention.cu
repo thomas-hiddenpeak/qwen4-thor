@@ -1441,6 +1441,7 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   // in_proj_qkv only; the FP8 shadow path and all other GEMMs are
   // untouched. Default runtime behavior is unchanged (env var unset).
   const bool rowwise_inproj =
+      !runtime::UsePrefillKernels() &&
       std::getenv("Q4T_INPROJ_ROWWISE_GEMV") != nullptr && T >= 2 && T <= 8 &&
       w.in_proj_qkv_fp8.w == nullptr && (hs % 8) == 0;
   if (rowwise_inproj) {

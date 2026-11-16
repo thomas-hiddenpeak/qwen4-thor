@@ -1,0 +1,19 @@
+{
+  "status": "PASS_TARGETED_PREFILL_CPU_NOT_DELIVERED",
+  "cpp_tests": 2,
+  "source_anchors": 735,
+  "negative_checks": 7,
+  "zero_warning_builds": true,
+  "binary_sha256": "2de5630966e0f3d2602b205aad2585e0ce211fdadaf655047c1ad2e03af52df3",
+  "compiled_sources_sha256": "9a23e16902b79cc396fc6860d586e47b1c716027cdc4a89897efc06f170afa0b",
+  "original_inventory_failure_preserved": true,
+  "old_gpu_evidence_not_attributed_to_new_engine": true,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "diagnostic_starts": 2,
+  "diagnostic_requests": 5,
+  "archive_sha256": "f11faae6425787ef9eae62ff2c93bcc8282184cc8d327e969f9cbd9ab1ff434e",
+  "original_capture_directory": ".q4t-work/serve-media-state-cache-20261117/capture-01",
+  "raw_tensor_bytes": 6942709760,
+  "repair_business_pending": true
+}
