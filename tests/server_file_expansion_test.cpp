@@ -356,15 +356,24 @@ Q4T_TEST(file_expansion_actual_pdf_page_and_chat_profile_are_complete) {
           std::span(reinterpret_cast<const uint8_t*>(raw.data()), raw.size()),
           &header) &&
       header.width <= 512 && header.height <= 512);
-  auto chat =
-      Array({Item(Object({{"type", String("file")},
-                          {"file", Object({{"file_id", String(id)}})}}))});
+  auto chat = Array({Item(
+      Object({{"type", String("file")},
+              {"prompt_cache_breakpoint",
+               Object({{"mode", String("explicit")}, {"ttl", String("12h")}})},
+              {"file", Object({{"file_id", String(id)}})}}))});
   FileExpansion chat_files(&objects, fixture.options);
   Q4T_CHECK(
       Ok(chat_files.Prepare(chat, FileInputProfile::kChat, Json(), Access())) &&
       Ok(chat_files.Render(chat, &result)));
   Q4T_CHECK(result.array[0].GetArray("content")->array[2].GetString("type") ==
             "image_url");
+  const auto& chat_parts = result.array[0].GetArray("content")->array;
+  Q4T_CHECK(!chat_parts[0].Has("prompt_cache_breakpoint") &&
+            !chat_parts[1].Has("prompt_cache_breakpoint"));
+  Q4T_CHECK(
+      chat_parts.back().Find("prompt_cache_breakpoint") &&
+      chat_parts.back().Find("prompt_cache_breakpoint")->GetString("ttl") ==
+          "12h");
   FileExpansion no_text(nullptr, fixture.options);
   auto non_pdf = Array(
       {Item(Object({{"type", String("file")},

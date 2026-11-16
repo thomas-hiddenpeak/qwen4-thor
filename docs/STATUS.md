@@ -61,6 +61,18 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat缓存执行CPU通过](evidence/serve-chat-cache-cpu-20261116/README.md)：
+20项C++、4项schema、3项判定器正负控、20项native/schema、715来源/
+7负控通过；零警告。独立导入失败已修复并保留。候选未替换rev166，
+继续1启动/8生成/900秒真实SSD/JSON/SSE/客户端及key隔离短验；
+PR32最终head检查与全部master继续。
+
+[Chat标准缓存下一组实现](SERVE_CHAT_CACHE_2026-11-16.md)已冻结：独立mode/
+ttl合同、内容断点进入实际模板/token边界、默认隐式及最近80查找，
+复用SSD隔离/故障保护；Responses原合同保留，媒体指纹仍必做。
+先最多20项针对性C++/24项native-schema，随后最多1启动/8生成/900秒；
+rev166保持，PR32检查中，全部master继续。
+
 [rev166可回退交付完成](evidence/serve-input-attribution-delivery-20261116/README.md)：
 17项检查通过；默认0bbfd5e6/7a23cb30，Key/配额/容量与历史预算保持。
 控制/客户端/原生辅助程序没有改动，0新增GPU。继续PR32实际合main、

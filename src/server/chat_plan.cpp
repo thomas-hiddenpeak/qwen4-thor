@@ -105,8 +105,14 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   plan->tool_call_formats = config.tool_call_formats;
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
-  status = ParsePromptCacheOptions(req, &plan->cache, &error->param);
+  status = ParsePromptCacheOptions(req, &plan->cache, &error->param,
+                                   PromptCacheApi::kChat);
   if (!status) return status;
+  if (const auto* messages = req.GetArray("messages")) {
+    status = CollectChatCacheBoundaries(*messages, &plan->cache_boundaries,
+                                        &error->param);
+    if (!status) return status;
+  }
   status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,
                                   &error->param);
   if (!status) return status;

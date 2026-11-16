@@ -1,0 +1,17 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "cpp_tests": 20,
+  "schema_tests": 4,
+  "acceptance_oracle_tests": 3,
+  "native_schema_cases": 20,
+  "source_anchors": 715,
+  "source_negative_controls": 7,
+  "zero_warning_builds": true,
+  "engine_binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+  "default_revision": 166,
+  "default_unchanged": true,
+  "gpu_runs": 0,
+  "actual_business_pending": true,
+  "archive_sha256": "fff98d048207d8aa2ab574d2465c3969cd40a8159a969f7910b92aae9bac406e",
+  "master_complete": false
+}

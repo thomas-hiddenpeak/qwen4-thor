@@ -105,6 +105,7 @@ struct ChatRequestPlan {
   SamplingOptions sampling;
   PredictionOptions prediction;
   PromptCacheOptions cache;
+  std::vector<PromptCacheInputBoundary> cache_boundaries;
   std::vector<std::string> stops;
   const io::Json& Request(const io::Json& original) const {
     return normalized_request ? *normalized_request : original;

@@ -1933,7 +1933,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                            {.cancelled = cancelled})
                                      : Status::Fail("Cache mapping cancelled");
         }
-        std::span<const PromptCacheInputBoundary> boundaries;
+        std::span<const PromptCacheInputBoundary> boundaries =
+            request_plan.cache_boundaries;
         if (responses)
           boundaries = responses->Generation().input.cache_boundaries;
         if (planned) {

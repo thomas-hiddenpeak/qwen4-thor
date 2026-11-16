@@ -540,6 +540,17 @@
         "docs/evidence/serve-input-attribution-business-20261116/README.md",
         "docs/evidence/serve-input-attribution-delivery-20261116/README.md"
       ]
+    },
+    "prompt_cache_options": {
+      "semantics": "Chat独立mode/ttl合同，默认隐式；显式内容断点映射真实模板/token边界，最近80查找及最多4写槽。",
+      "boundary": "针对性CPU通过，真实SSD写入/JSON/SSE命中及发行待验；媒体状态指纹仍为必做项。",
+      "evidence": [
+        "docs/SERVE_CHAT_CACHE_2026-11-16.md",
+        "tests/server_prompt_cache_test.cpp",
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_protocol/test_chat_cache.py",
+        "docs/evidence/serve-chat-cache-cpu-20261116/README.md"
+      ]
     }
   },
   "routes": {
@@ -1535,6 +1546,7 @@
       "prefix_cache_write_tokens",
       "prompt_cache_key",
       "prompt_cache_retention",
+      "prompt_cache_options",
       "parse_response",
       "tool_choice",
       "parallel_tool_calls"
@@ -1558,20 +1570,24 @@
     ],
     "chat_contract.cpp:4:part": [
       "type",
-      "file"
+      "file",
+      "prompt_cache_breakpoint"
     ],
     "chat_contract.cpp:5:part": [
       "type",
-      "text"
+      "text",
+      "prompt_cache_breakpoint"
     ],
     "chat_contract.cpp:6:part": [
       "type",
-      "image_url"
+      "image_url",
+      "prompt_cache_breakpoint"
     ],
     "chat_contract.cpp:7:part": [
       "type",
       "video_frames",
-      "video_timestamps"
+      "video_timestamps",
+      "prompt_cache_breakpoint"
     ],
     "chat_contract.cpp:8:value": [
       "url",
@@ -1670,7 +1686,8 @@
     ],
     "chat_template.cpp:1:part": [
       "type",
-      "text"
+      "text",
+      "prompt_cache_breakpoint"
     ],
     "legacy_tools.cpp:0:function": [
       "name",
@@ -2109,7 +2126,7 @@
     "include/q4t/server/chat_choices.h": "adc843de79322b84d2a3e91db5ae93099f2ee5d2c6c3934343ae67a2d95dcab7",
     "include/q4t/server/chat_contract.h": "14c806c82ccea6b4556dc2c91342dadae390e08b52b2ed1baaea11e6bf910bb0",
     "include/q4t/server/chat_file_inputs.h": "9d2c1f3f9b3e4ecc48323d677cb2e03dc79c3bcaba4cd44c1a1e187875cce75b",
-    "include/q4t/server/chat_plan.h": "eff0661c4d5850c048a91ec45f871e63194b7af7d2a4796249fe5caec6c3261a",
+    "include/q4t/server/chat_plan.h": "63d4aca3d416df6c8eb26b1b9a65aa300ddadae8c18aa4ec8ccc9fa5253d13c0",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "2c88d7a9ffe6bf0ba8fca1fdf4f353488b697c32e87d6bb00255baed11a68633",
     "include/q4t/server/chat_server.h": "92215ed426e823e049db31d6361b7223df095e182a612202d838347a1cad96c1",
@@ -2191,7 +2208,7 @@
     "include/q4t/server/progress_context.h": "fc6ed010388bd5e33951d0c585a1b33f7edb07570866cc38c66e7cbee16bcbb3",
     "include/q4t/server/progress_transport.h": "90adb59393f339d011c37d2a602cff6ffaa955e20bbf0c1725b1455640b9a9e3",
     "include/q4t/server/prompt_cache_diagnostics.h": "f6701c9eaabda5c613121c6b0d9f4a441e203d03ab4d5cec020cda56dc50cedd",
-    "include/q4t/server/prompt_cache_policy.h": "92ec5b1290b7bfb34f878514675256045b3634ca88cfd8e25fe90fc5e9e5fd3f",
+    "include/q4t/server/prompt_cache_policy.h": "306ed3a92c2cd0ab42a6adb4bfa397d48e7639ba9fda9dff866eae0998e752d6",
     "include/q4t/server/prompt_registry.h": "debb09d97bf89e8c542936d217983ebd20926c423804208f0b6f318c704fd3cb",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
@@ -2320,14 +2337,14 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "7697c748122d9a02d9e6a3e83c73f7678cf608d6ea9a1596b48adfd506b71d78",
+    "src/server/chat_capabilities.cpp": "79f0c43c784f2b8d001636a1ad05c908a5dadfca988acdcd08f348ca54640528",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
-    "src/server/chat_contract.cpp": "feadddf8b97d95806870b91c64edb270c0da253dc115bc89d40262b1efea801a",
+    "src/server/chat_contract.cpp": "c8f433614bf1bf540b95a6c88c9dc3c765efdaea9671dbcb5a17d5625859eae5",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "9f24a44183de0ead4a04fb6a11988cc4115af2fb9679e2dc26dd516c67b96a1d",
+    "src/server/chat_generation.cpp": "87272fed97d7904668d56bd6ba2bff779ca79e368eac26c5f5db32a5fbfefbb3",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "fedd041f930cf2161a6ee2b6d1458c363deeff910a35d56fffdb2750b66a6cf2",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -2337,7 +2354,7 @@
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
     "src/server/chat_model_step.h": "4e61be099f4d32535946d22979fe837f3c120a49aab9ab986eda01dee2b7ddca",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
-    "src/server/chat_plan.cpp": "80807e9264274a30e6571be835118f0a27ea0f14a32f48dbe6530ca4e5720956",
+    "src/server/chat_plan.cpp": "51d75f5d9ba2fdcdf04338f00c44e832d373f8e924472930deeb3b47723fc776",
     "src/server/chat_preflight.cpp": "b7ea6a1090aa1bf6cca751a582fa33328d0559bfd0ee7bddc05784d1ab4924f5",
     "src/server/chat_prompt.cpp": "4dce5fca2fb504523445fd4e2ced5ef9c29c1f47eaebc69973a7159f3c6f68ea",
     "src/server/chat_response_parser.cpp": "883715b5f4d4147577768618301575cf0d7643ce256153093c91957ddf34bce8",
@@ -2347,7 +2364,7 @@
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "7296fb3bae6d3706318fcad33fedfa3f79ecf96906d2be122818cb8cebb6f2d4",
+    "src/server/chat_template.cpp": "aaba1591030dc48916ae399b9d154a2c8d123a93a6bd7f012681bcfc9f0a93c7",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2486,7 +2503,7 @@
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
     "src/server/prompt_api.cpp": "03b07433d0586bd24cc9bda3fe99fa647a82527c18a20cbfd820dff1068d22d7",
     "src/server/prompt_cache_diagnostics.cpp": "521e46dbe3259d0d267bc295fe6a14c9c1923e425a754a32dac4efa13d5cc6d7",
-    "src/server/prompt_cache_policy.cpp": "3b5b74a4876867699d5e17040ca6c2aa9e956085a999c73568cc94c2a5187222",
+    "src/server/prompt_cache_policy.cpp": "db71d5bb8794056710d71129602b3e5e10e4553d54f783da82ed40f03ce9919f",
     "src/server/prompt_internal.h": "171a2463a5117f67e036c9148508f985f4360e143c350e0cb027c3762032e999",
     "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
     "src/server/prompt_template.cpp": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574",
@@ -6390,6 +6407,22 @@
     "engine_sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
     "package_sha256": "0bbfd5e651e84e8395dd202efb895b82188c2a3bf4b05e59289af87abf00ffaa",
     "evidence": "docs/evidence/serve-input-attribution-delivery-20261116/README.md",
+    "master_active": true
+  },
+  "chat_cache_development_20261116": {
+    "status": "targeted_cpu_passed_business_pending",
+    "changed_sources": [
+      "include/q4t/server/chat_plan.h",
+      "include/q4t/server/prompt_cache_policy.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_contract.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_plan.cpp",
+      "src/server/chat_template.cpp",
+      "src/server/prompt_cache_policy.cpp"
+    ],
+    "review": "Chat-specific policy separates Responses controls; default implicit preserves explicit native scope opt-in. Collect final Chat coordinates including file expansion; nested validators accept only reviewed markers; rendering/model bytes unchanged and original storage parts retained. Generation uses actual token mapping, existing optional SSD ownership/TTL/miss behavior, no media KV reuse. Chat latest80 differs from Responses previously qualified lookup; API reference/guidance conflict recorded. No CUDA/model arithmetic or native control source changes.",
+    "evidence": "docs/evidence/serve-chat-cache-cpu-20261116/README.md",
     "master_active": true
   }
 }

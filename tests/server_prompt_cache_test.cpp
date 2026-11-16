@@ -389,3 +389,164 @@ Q4T_TEST(
   }
   return true;
 }
+
+Q4T_TEST(chat_cache_options_defaults_and_api_specific_controls) {
+  PromptCacheOptions options;
+  std::string param;
+  Q4T_CHECK(ParsePromptCacheOptions(Read("{}"), &options, &param,
+                                    PromptCacheApi::kChat));
+  Q4T_CHECK(options.requested && options.modern_controls &&
+            !options.explicit_only && options.ttl_seconds == 1800);
+  Q4T_CHECK(ParsePromptCacheOptions(
+      Read(R"({"prompt_cache_options":{"mode":"explicit","ttl":"30m"}})"),
+      &options, &param, PromptCacheApi::kChat));
+  Q4T_CHECK(options.explicit_only && !options.prewarm);
+  for (const auto* body :
+       {R"({"prompt_cache_options":null})", R"({"prompt_cache_options":[]})",
+        R"({"prompt_cache_options":{"mode":null}})",
+        R"({"prompt_cache_options":{"ttl":"12h"}})",
+        R"({"prompt_cache_options":{"prewarm":false}})",
+        R"({"prompt_cache_options":{"comparison_response_id":null}})"}) {
+    Q4T_CHECK(!ParsePromptCacheOptions(Read(body), &options, &param,
+                                       PromptCacheApi::kChat));
+    Q4T_CHECK(param.starts_with("prompt_cache_options"));
+  }
+  Q4T_CHECK(ParsePromptCacheOptions(
+      Read(R"({"prompt_cache_options":{"ttl":"12h","prewarm":true}})"),
+      &options, &param));
+  Q4T_CHECK(options.api == PromptCacheApi::kResponses && options.prewarm &&
+            options.ttl_seconds == 43200);
+  return true;
+}
+
+Q4T_TEST(chat_cache_boundaries_preserve_requests_and_all_text_roles) {
+  const auto request = Read(R"({"model":"cpu","messages":[
+    {"role":"developer","content":[{"type":"text","text":"rules",
+      "prompt_cache_breakpoint":{"mode":"explicit","ttl":"12h"}}]},
+    {"role":"user","content":[{"type":"text","text":"question",
+      "prompt_cache_breakpoint":{"mode":"explicit"}}]},
+    {"role":"assistant","content":[{"type":"text","text":"checking",
+      "prompt_cache_breakpoint":{"mode":"explicit","ttl":"30m"}}],
+      "tool_calls":[{"id":"call","type":"function",
+        "function":{"name":"read","arguments":"{}"}}]},
+    {"role":"tool","tool_call_id":"call","content":[{"type":"text",
+      "text":"actual result","prompt_cache_breakpoint":{"mode":"explicit"}}]}]})");
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(plan.cache.requested && plan.cache_boundaries.size() == 4);
+  for (size_t i = 0; i < 4; ++i) {
+    const auto& point = plan.cache_boundaries[i];
+    Q4T_CHECK(point.message_index == i && point.part_index == 0);
+    Q4T_CHECK(point.ttl_seconds == (i == 0 ? 43200 : i == 2 ? 1800 : 0));
+    Q4T_CHECK(plan.Request(request)
+                  .GetArray("messages")
+                  ->array[i]
+                  .GetArray("content")
+                  ->array[0]
+                  .Has("prompt_cache_breakpoint"));
+  }
+  std::string marked, plain, param;
+  std::vector<VisionItem> media;
+  Q4T_CHECK(PrepareChatPrompt(request, {}, &marked, &media, &param));
+  auto without = request;
+  for (auto& [name, messages] : without.object)
+    if (name == "messages")
+      for (auto& message : messages.array)
+        for (auto& [field, content] : message.object)
+          if (field == "content")
+            for (auto& part : content.array)
+              std::erase_if(part.object, [](const auto& item) {
+                return item.first == "prompt_cache_breakpoint";
+              });
+  Q4T_CHECK(PrepareChatPrompt(without, {}, &plain, &media, &param));
+  Q4T_CHECK(marked == plain &&
+            marked.find("prompt_cache") == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(chat_cache_invalid_breakpoint_fails_before_preparation) {
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  for (const auto* marker : {"null", "{}", "true", R"({"mode":"implicit"})",
+                             R"({"mode":"explicit","ttl":null})",
+                             R"({"mode":"explicit","unknown":0})"}) {
+    const auto request = Read(
+        R"({"messages":[{"role":"developer","content":[{"type":"text","text":"q","prompt_cache_breakpoint":)" +
+        std::string(marker) + "}]}]}");
+    Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(error.param.starts_with(
+        "messages[0].content[0].prompt_cache_breakpoint"));
+  }
+  auto request = Read(
+      R"({"messages":[{"role":"user","content":[{"type":"text","text":"q","prompt_cache_breakpoint":{"mode":"explicit"}}]}]})");
+  request.object.emplace_back("prefix_cache_scope",
+                              Read("\"" + std::string(64, 'a') + "\""));
+  config.prefix_cache = true;
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.param == "prefix_cache_scope");
+  return true;
+}
+
+Q4T_TEST(chat_cache_final_layout_keeps_exact_boundary_and_longer_ttl) {
+  const auto request = Read(
+      "{\"model\":\"cpu\",\"prompt_cache_options\":{\"mode\":\"explicit\"},"
+      "\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\","
+      "\"text\":\"  " +
+      std::string(1100, 'a') +
+      "\",\"prompt_cache_breakpoint\":{\"mode\":\"explicit\",\"ttl\":\"12h\"}},"
+      "{\"type\":\"text\",\"text\":\"uncached question\"}]}]}");
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatRequestPlan request_plan;
+  ChatPlanError error;
+  Q4T_CHECK(PlanChatRequest(request, config, &request_plan, &error));
+  ChatPromptLayout layout;
+  std::string prompt, param;
+  std::vector<VisionItem> media;
+  Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &media, &param, nullptr,
+                              &layout));
+  std::vector<size_t> offsets(prompt.size());
+  std::iota(offsets.begin(), offsets.end(), 0);
+  PromptCachePlan plan;
+  Q4T_CHECK(PlanPromptCacheLayout(request_plan.cache, *request.Find("messages"),
+                                  layout, request_plan.cache_boundaries,
+                                  offsets, prompt.size(), &plan));
+  Q4T_CHECK(plan.writes.size() == 1 && plan.reads.size() == 1 &&
+            plan.writes[0].tokens ==
+                static_cast<int>(prompt.find("uncached question")) &&
+            plan.writes[0].ttl_seconds == 43200);
+  request_plan.cache_boundaries.clear();
+  Q4T_CHECK(PlanPromptCacheLayout(request_plan.cache, *request.Find("messages"),
+                                  layout, {}, offsets, prompt.size(), &plan));
+  Q4T_CHECK(plan.reads.empty() && plan.writes.empty());
+  return true;
+}
+
+Q4T_TEST(chat_cache_latest_eighty_unique_boundaries_and_four_writes) {
+  PromptCacheOptions options;
+  options.api = PromptCacheApi::kChat;
+  options.explicit_only = true;
+  std::vector<PromptCacheBoundary> points;
+  for (int i = 0; i < 100; ++i) {
+    points.push_back({1024 + i * 10, 0, Kind::kExplicit});
+    points.push_back({1024 + i * 10, 0, Kind::kEligibleMessage});
+  }
+  PromptCachePlan plan;
+  Q4T_CHECK(PlanPromptCache(options, points, 4096, &plan));
+  Q4T_CHECK(plan.reads.size() == 80 && plan.reads.front() == 1224 &&
+            plan.reads.back() == 2014);
+  Q4T_CHECK(plan.writes.size() == 4 && plan.writes.front().tokens == 1984);
+  options.explicit_only = false;
+  points.push_back({2114, 0, Kind::kEligibleMessage});
+  Q4T_CHECK(PlanPromptCache(options, points, 4096, &plan));
+  Q4T_CHECK(plan.reads.size() == 80 && plan.reads.front() == 1234 &&
+            plan.reads.back() == 2114);
+  Q4T_CHECK(plan.writes.size() == 4 && plan.writes.front().tokens == 1994 &&
+            plan.writes.back().tokens == 2114);
+  return true;
+}

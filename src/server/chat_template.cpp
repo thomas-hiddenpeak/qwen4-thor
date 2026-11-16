@@ -7,6 +7,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/reasoning_options.h"
 
@@ -508,14 +509,18 @@ Status ValidateChatMessageProfile(const io::Json& messages,
       const auto& part = content->array[j];
       const auto* type = part.Find("type");
       const auto* text = part.Find("text");
-      auto status = InputFields(part, {"type", "text"});
+      auto status =
+          InputFields(part, {"type", "text", "prompt_cache_breakpoint"});
       if (!status || !text || !text->IsString() ||
           (type && (!type->IsString() || type->str != "text")))
         return invalid(path + ".content[" + std::to_string(j) + "]",
                        "instruction content parts must contain only text");
     }
   }
-  return Status();
+  std::vector<PromptCacheInputBoundary> boundaries;
+  std::string ignored;
+  return CollectChatCacheBoundaries(messages, &boundaries,
+                                    error_param ? error_param : &ignored);
 }
 
 Status RenderChatPrompt(const io::Json& request,

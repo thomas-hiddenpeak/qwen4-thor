@@ -120,6 +120,14 @@
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+      },
+      "chat_cache_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
+        "default_revision": 166,
+        "complete": false,
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-cpu-20261116/README.md"
       }
     },
     {
@@ -1508,6 +1516,14 @@
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+      },
+      "chat_cache_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
+        "default_revision": 166,
+        "complete": false,
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-cpu-20261116/README.md"
       }
     },
     {
@@ -2778,6 +2794,14 @@
         "delivery_evidence": "evidence/serve-input-attribution-delivery-20261116/README.md",
         "profile_evidence": "evidence/serve-input-attribution-profile-business-20261116/README.md",
         "version_evidence": "evidence/serve-input-attribution-version-business-20261116/README.md"
+      },
+      "chat_cache_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
+        "default_revision": 166,
+        "complete": false,
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-cpu-20261116/README.md"
       }
     },
     {
@@ -3937,7 +3961,15 @@
       },
       "remaining_required": [
         "Remaining new backend/client/fault combinations; existing project retrieval business reused"
-      ]
+      ],
+      "chat_cache_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
+        "default_revision": 166,
+        "complete": false,
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-cpu-20261116/README.md"
+      }
     },
     {
       "id": "Q02",
@@ -4188,6 +4220,14 @@
         "head": "3b37dabf2a53927454544b1472d50eab6aa2921a",
         "commit": "8015dbc82a1e95ded758bfda4cf867410effbbec",
         "evidence": "evidence/serve-pr31-merged-20261116/README.md"
+      },
+      "chat_cache_20261116": {
+        "state": "targeted_cpu_passed_business_pending",
+        "plan": "SERVE_CHAT_CACHE_2026-11-16.md",
+        "default_revision": 166,
+        "complete": false,
+        "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
+        "evidence": "evidence/serve-chat-cache-cpu-20261116/README.md"
       }
     },
     {
