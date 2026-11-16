@@ -108,6 +108,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页搜索网络组件](evidence/serve-web-search-network-20261117/README.md)
+8项直接CPU通过：每跳域名限制先于DNS/连接，与部署网络许可取交集；
+offline不联网，失败保留尝试预算，合法来源链/摘要保持。0GPU、
+默认rev224不变；持久索引及完整工具/引用/SDK接入继续。
+
 [网页搜索组件CPU验证](evidence/serve-web-search-components-20261117/README.md)
 19项不同用例/31次执行通过，3次构建零警告，0GPU、默认rev224保持。
 真实本地HTTP提取、来源/过滤/离线词法排序及HTML纯内存沙箱已验；

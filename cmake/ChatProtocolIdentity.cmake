@@ -268,6 +268,7 @@ set(protocol_inputs
   include/q4t/server/web_search.h
   src/server/web_page_internal.h
   src/server/web_search_contract.cpp
+  src/server/web_search_fetch.cpp
   src/server/web_search_rank.cpp
   src/server/web_page_html.cpp
   src/server/web_page_worker.cpp

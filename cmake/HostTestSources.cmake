@@ -98,6 +98,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_image_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_search_contract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_search_fetch.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_search_rank.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_page_html.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_page_worker.cpp

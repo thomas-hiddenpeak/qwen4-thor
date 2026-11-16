@@ -224,7 +224,9 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true
+        "default_unchanged": true,
+        "network_cpu_tests": 8,
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
       }
     },
     {
@@ -1751,7 +1753,9 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true
+        "default_unchanged": true,
+        "network_cpu_tests": 8,
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
       }
     },
     {
@@ -2910,7 +2914,9 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true
+        "default_unchanged": true,
+        "network_cpu_tests": 8,
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
       }
     },
     {
@@ -3170,7 +3176,9 @@
         "component_cpu_executions": 31,
         "evidence": "evidence/serve-web-search-components-20261117/README.md",
         "component_cpu_state": "accepted",
-        "default_unchanged": true
+        "default_unchanged": true,
+        "network_cpu_tests": 8,
+        "network_evidence": "evidence/serve-web-search-network-20261117/README.md"
       }
     },
     {

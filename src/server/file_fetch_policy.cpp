@@ -193,6 +193,54 @@ bool AllowedUrl(const Url& url, const FileFetchOptions& options) {
          std::find(options.allowed_hosts.begin(), options.allowed_hosts.end(),
                    host) != options.allowed_hosts.end();
 }
+bool ValidDomains(const FileFetchDomainPolicy& policy) {
+  for (const auto* domains : {&policy.allowed, &policy.blocked}) {
+    if (domains->size() > 100) return false;
+    for (const auto& domain : *domains)
+      if (domain.empty() || domain.ends_with('.') || !Host(domain) ||
+          domain.find(':') != domain.npos)
+        return false;
+  }
+  return true;
+}
+bool AllowedDomains(const Url& url, const FileFetchDomainPolicy& policy) {
+  auto host = std::string_view(url.host);
+  if (host.ends_with('.')) host.remove_suffix(1);
+  const auto matches = [&](std::string_view domain) {
+    return host == domain ||
+           (host.size() > domain.size() && host.ends_with(domain) &&
+            host[host.size() - domain.size() - 1] == '.');
+  };
+  return (policy.allowed.empty() ||
+          std::any_of(policy.allowed.begin(), policy.allowed.end(), matches)) &&
+         std::none_of(policy.blocked.begin(), policy.blocked.end(), matches);
+}
+Json DomainsJson(const FileFetchDomainPolicy& policy) {
+  auto allowed = Array(), blocked = Array();
+  for (const auto& domain : policy.allowed)
+    allowed.array.push_back(String(domain));
+  for (const auto& domain : policy.blocked)
+    blocked.array.push_back(String(domain));
+  return Object(
+      {{"allowed", std::move(allowed)}, {"blocked", std::move(blocked)}});
+}
+bool ParseDomains(const Json& value, FileFetchDomainPolicy* policy) {
+  *policy = {};
+  if (!value.IsObject() || value.object.size() != 2) return false;
+  FileFetchDomainPolicy next;
+  for (auto [name, target] : {std::pair{"allowed", &next.allowed},
+                              std::pair{"blocked", &next.blocked}}) {
+    const auto* domains = value.GetArray(name);
+    if (!domains || domains->array.size() > 100) return false;
+    for (const auto& domain : domains->array) {
+      if (!domain.IsString()) return false;
+      target->push_back(domain.str);
+    }
+  }
+  if (!ValidDomains(next)) return false;
+  *policy = std::move(next);
+  return true;
+}
 bool ValidOptions(const FileFetchOptions& options) {
   if (options.timeout_ms < 1 || options.timeout_ms > 30000 ||
       options.max_redirects < 0 || options.max_redirects > 10 ||

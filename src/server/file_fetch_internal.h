@@ -19,10 +19,15 @@ bool Redirect(const Url& from, std::string_view location, Url* out);
 bool AllowedAddress(const service::ingress::Address& address,
                     const FileFetchOptions& options);
 bool AllowedUrl(const Url& url, const FileFetchOptions& options);
+bool ValidDomains(const FileFetchDomainPolicy& policy);
+bool AllowedDomains(const Url& url, const FileFetchDomainPolicy& policy);
+io::Json DomainsJson(const FileFetchDomainPolicy& policy);
+bool ParseDomains(const io::Json& value, FileFetchDomainPolicy* policy);
 bool ValidOptions(const FileFetchOptions& options);
 io::Json OptionsJson(const FileFetchOptions& options);
 ObjectReply Fetch(const Url& url, const FileFetchOptions& options,
                   uint64_t max_bytes,
                   std::chrono::steady_clock::time_point deadline,
-                  FileFetchReceipt* result);
+                  FileFetchReceipt* result,
+                  const FileFetchDomainPolicy& domains = {});
 }  // namespace q4t::server::file_detail

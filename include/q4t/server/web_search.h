@@ -50,6 +50,16 @@ ObjectReply ParseWebPage(const FileInputContent& input, std::string_view url,
                          GrammarControl control = {});
 int MaybeRunWebPageWorker(int argc, char** argv);
 
+struct WebPageReceipt {
+  FileFetchReceipt source;
+  WebPage page;
+};
+ObjectReply FetchWebPage(std::string_view url, const WebSearchOptions& request,
+                         const FileFetchOptions& deployment,
+                         const WebPageLimits& limits,
+                         const BinaryAccess& access, FileInputBudget* budget,
+                         WebPageReceipt* output, GrammarControl control = {});
+
 struct WebSearchHit {
   size_t page = 0;
   double score = 0;
