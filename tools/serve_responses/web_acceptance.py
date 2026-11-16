@@ -3,6 +3,7 @@ import argparse
 from dataclasses import asdict
 import http.client
 import io
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -26,12 +27,13 @@ URL = 'https://example.com/'
 MARKER = '[source](<' + URL + '>)'
 
 
-def policy():
+def policy(networks=()):
     return dict(version=1, seeds=[URL], scopes=['local:anonymous'],
         max_pages=1, max_depth=0, max_download_bytes=1048576,
         refresh_seconds=3600, retention_seconds=86400,
         fetch=dict(public_networks=True, allow_http=False, ports=[443],
-                   allowed_hosts=['example.com'], timeout_ms=15000))
+                   allowed_hosts=['example.com'], allowed_networks=list(networks),
+                   timeout_ms=15000))
 
 
 def requests():
@@ -120,7 +122,12 @@ def prepare(args):
     shutil.copyfile(reference, out/'public-source.html')
     plan['source_reference'] = dict(url=URL, path=str(out/'public-source.html'),
                                    sha256=sha(reference))
-    save(out/'web-policy.json', policy())
+    networks = args.source_network or []
+    for text in networks:
+        network = ipaddress.ip_network(text, strict=True)
+        require(network.prefixlen == network.max_prefixlen,
+                'preflight may grant only an explicit single source address')
+    save(out/'web-policy.json', policy(networks))
     (out/'web-policy.json').chmod(0o600)
     checked = subprocess.run([plan['binary'], 'web-policy-check',
         str(out/'web-policy.json')], capture_output=True, timeout=10)
@@ -254,6 +261,7 @@ def main():
     p = sub.add_parser('prepare')
     p.add_argument('--binary', type=Path, required=True)
     p.add_argument('--source', type=Path, required=True)
+    p.add_argument('--source-network', action='append')
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18164)
     p = sub.add_parser('run')

@@ -572,3 +572,49 @@ Q4T_TEST(web_execution_lost_publication_receipt_does_not_repeat_acquisition) {
             site.requests == 1);
   return true;
 }
+
+Q4T_TEST(web_execution_configured_source_preflight) {
+  Directory directory;
+  Site local;
+  const auto* policy_path = std::getenv("Q4T_WEB_PREFLIGHT_POLICY");
+  const auto* source_path = std::getenv("Q4T_WEB_PREFLIGHT_SOURCE");
+  Q4T_CHECK(bool(policy_path) == bool(source_path));
+  std::string bytes =
+      "<title>Example Domain</title><p>documentation examples</p>";
+  WebDeploymentPolicy policy;
+  if (policy_path) {
+    Q4T_CHECK(LoadWebDeploymentPolicy(policy_path, &policy));
+    std::ifstream input(source_path, std::ios::binary | std::ios::ate);
+    Q4T_CHECK(input && input.tellg() > 0 && input.tellg() <= (1 << 20));
+    bytes.resize(input.tellg());
+    input.seekg(0);
+    Q4T_CHECK(bool(input.read(bytes.data(), bytes.size())));
+  } else {
+    local.Page("/", bytes);
+    policy = local.Policy();
+    policy.max_depth = 0;
+  }
+  Q4T_CHECK(policy.seeds.size() == 1 && !policy.scopes.empty());
+  ObjectStore objects(directory.objects);
+  WebExecutionBudget budget;
+  WebExecutionResult result;
+  auto access = Access(policy.scopes.front());
+  access.deadline = Clock::now() + 30s;
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &result, {},
+                   Query("documentation examples"), access)));
+  Q4T_CHECK(result.sources.size() == 1 && !result.cached &&
+            result.sources[0].url == policy.seeds[0] &&
+            result.sources[0].source_sha256 == Digest(bytes) &&
+            result.sources[0].title == "Example Domain" &&
+            result.sources[0].text.find("documentation examples") !=
+                std::string::npos);
+  const auto acquired = budget.acquisition.used_files;
+  WebSearchOptions offline;
+  offline.external_web_access = false;
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &result, offline,
+                   Query("documentation examples"), access)));
+  Q4T_CHECK(result.cached && budget.acquisition.used_files == acquired &&
+            result.sources.size() == 1 &&
+            result.sources[0].source_sha256 == Digest(bytes));
+  return true;
+}
