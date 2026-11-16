@@ -434,6 +434,20 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       output->height = state.height;
     }
     if (timestamp >= output->duration_ns) return Failure::kInvalid;
+    uint64_t frame_duration = 0;
+    const auto reported_duration = GST_BUFFER_DURATION(buffer);
+    if (reported_duration != GST_CLOCK_TIME_NONE && reported_duration) {
+      const auto pts = GST_BUFFER_PTS(buffer);
+      if (reported_duration >= GST_CLOCK_TIME_NONE - pts)
+        return Failure::kInvalid;
+      const auto end = api.gst_segment_to_stream_time_fn(
+          segment, GST_FORMAT_TIME, pts + reported_duration);
+      if (end != GST_CLOCK_TIME_NONE) {
+        if (end <= timestamp || end > output->duration_ns)
+          return Failure::kInvalid;
+        frame_duration = end - timestamp;
+      }
+    }
     if (++count > request.limits.max_scanned_frames ||
         uint64_t(state.width) * state.height >
             request.limits.max_decoded_pixels / count)
@@ -441,7 +455,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     const auto size = api.gst_buffer_get_size_fn(buffer);
     if (!size || size > request.limits.max_output_bytes)
       return Failure::kCapacity;
-    last = {std::string(size, '\0'), timestamp, count - 1};
+    last = {std::string(size, '\0'), timestamp, count - 1, frame_duration};
     if (api.gst_buffer_extract_fn(buffer, 0, last.png.data(), size) != size)
       return Failure::kInvalid;
     const auto selected = output->frames.size();
@@ -466,9 +480,10 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     frames.array.push_back(
         Object({{"sha256", String(Digest(frame.png))},
                 {"timestamp_ns", Number(frame.timestamp_ns)},
+                {"duration_ns", Number(frame.duration_ns)},
                 {"source_index", Number(frame.source_index)}}));
   output->conversion =
-      Object({{"format", String("q4t.cpu_video_png.v1")},
+      Object({{"format", String("q4t.cpu_video_png.v2")},
               {"source_sha256", String(Digest(source))},
               {"source_bytes", Number(source.size())},
               {"sampling", String("uniform-presentation-time-with-endpoints")},
@@ -536,7 +551,7 @@ int Run(int argc, char** argv, bool missing) {
     return 3;
   for (auto& frame : pixels.frames) {
     video_detail::Frame wire{frame.png.size(), frame.timestamp_ns,
-                             frame.source_index};
+                             frame.source_index, frame.duration_ns};
     if (!detail::WorkerTransfer(&wire, sizeof(wire), true) ||
         !detail::WorkerTransfer(frame.png.data(), frame.png.size(), true))
       return 3;

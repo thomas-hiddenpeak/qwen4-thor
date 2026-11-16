@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <atomic>
 #include <cerrno>
 #include <cmath>
@@ -65,7 +66,8 @@ bool Actual(const char* filename) {
   for (size_t i = 0; i < output.frames.size(); ++i) {
     const auto& frame = output.frames[i];
     Q4T_CHECK(frame.source_index == indices[i] &&
-              frame.timestamp_ns == indices[i] * 500000000ULL);
+              frame.timestamp_ns == indices[i] * 500000000ULL &&
+              frame.duration_ns == 500000000ULL);
     q4t::vision::ProcessedImage image;
     q4t::vision::ProcessorOptions options;
     options.image_detail = q4t::vision::ImageDetail::kOriginal;
@@ -312,6 +314,24 @@ Q4T_TEST(file_video_frozen_metadata_rejects_source_pts_and_frame_tampering) {
   Set(&changed.conversion, "width", Number(1));
   Q4T_CHECK(!ValidateVideoPixels(source, {}, changed).ok());
   Q4T_CHECK(!ValidateVideoPixels(source + "changed", {}, original).ok());
+  changed = original;
+  changed.frames.back().duration_ns = 1;
+  Q4T_CHECK(!ValidateVideoPixels(source, {}, changed).ok());
+  Set(&Field(changed.conversion, "frames").array.back(), "duration_ns",
+      Number(1000000000));
+  changed.frames.back().duration_ns = 1000000000;
+  Q4T_CHECK(!ValidateVideoPixels(source, {}, changed).ok());
+  // Older frozen inputs have no duration; an unknown duration must not be
+  // silently extended to the end of the whole container.
+  changed = original;
+  Set(&changed.conversion, "format", String("q4t.cpu_video_png.v1"));
+  for (auto& frame : changed.frames) frame.duration_ns = 0;
+  for (auto& frame : Field(changed.conversion, "frames").array)
+    std::erase_if(frame.object,
+                  [](const auto& field) { return field.first == "duration_ns"; });
+  Q4T_CHECK(Ok(ValidateVideoPixels(source, {}, changed)));
+  changed.frames.back().duration_ns = 500000000;
+  Q4T_CHECK(!ValidateVideoPixels(source, {}, changed).ok());
   return true;
 }
 Q4T_TEST(file_video_thread_budget_exhaustion_is_bounded_and_request_local) {
@@ -323,5 +343,24 @@ Q4T_TEST(file_video_thread_budget_exhaustion_is_bounded_and_request_local) {
                                  control)
                     .http_status == 413 &&
             output.frames.empty() && Clean(control));
+  return true;
+}
+
+Q4T_TEST(file_video_unknown_duration_does_not_use_container_end) {
+  const auto source = Bytes("vp9.webm");
+  FileVideoPixels output;
+  Q4T_CHECK(Ok(DecodeVideoContainer(source, {}, Access(), &output)));
+  auto& last = output.frames.back();
+  auto& metadata = Field(output.conversion, "frames").array.back();
+  last.duration_ns = 0;
+  Set(&metadata, "duration_ns", Number(0));
+  Q4T_CHECK(Ok(ValidateVideoPixels(source, {}, output)) &&
+            last.timestamp_ns == 2500000000ULL &&
+            output.duration_ns == 3000000000ULL && !last.duration_ns);
+  auto fractional = Number(0);
+  fractional.number = 0.5;
+  fractional.str = "0.5";
+  Set(&metadata, "duration_ns", fractional);
+  Q4T_CHECK(!ValidateVideoPixels(source, {}, output).ok());
   return true;
 }

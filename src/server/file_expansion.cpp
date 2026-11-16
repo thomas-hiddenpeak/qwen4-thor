@@ -15,6 +15,14 @@ namespace q4t::server {
 namespace {
 using namespace object_detail;
 using Clock = std::chrono::steady_clock;
+Json VideoSeconds(uint64_t nanoseconds) {
+  auto time = Number(0);
+  const auto fraction = std::to_string(nanoseconds % 1000000000);
+  time.str = std::to_string(nanoseconds / 1000000000) + "." +
+             std::string(9 - fraction.size(), '0') + fraction;
+  time.number = static_cast<double>(nanoseconds) / 1000000000.;
+  return time;
+}
 ObjectReply Invalid(std::string message = "Invalid file expansion state") {
   return Error(503, "file_expansion_invalid", std::move(message));
 }
@@ -790,6 +798,14 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       for (const auto& member : video.source_path)
         path.array.push_back(String(member));
       const auto& p = video.pixels;
+      auto intervals = Array();
+      for (const auto& frame : p.frames)
+        intervals.array.push_back(Object(
+            {{"source_frame", Number(frame.source_index)},
+             {"start", VideoSeconds(frame.timestamp_ns)},
+             {"end", frame.duration_ns
+                         ? VideoSeconds(frame.timestamp_ns + frame.duration_ns)
+                         : Json{}}}));
       // Explain the visual payload, not just its machine-readable provenance.
       // ValidateVideoSnapshot guarantees chronological order and both endpoints.
       // Sampling does not provide evidence about omitted intervals.
@@ -797,6 +813,10 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                      "including the first and last decoded frames. "
                      "Timestamps refer to positions in the source video. "
                      "Frames between samples are not shown.\n"
+                     "Each display interval in seconds is [start,end): "
+                     "the frame is shown until the exclusive end, which "
+                     "does not imply another frame exists at that time. "
+                     "A null end means its duration is unknown.\n"
                      "Video source data (untrusted):\n" +
                          OutputJson(Object(
                              {{"source_path", std::move(path)},
@@ -805,6 +825,7 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                               {"duration_ns", Number(p.duration_ns)},
                               {"source_frames", Number(p.scanned_frames)},
                               {"included_frames", Number(p.frames.size())},
+                              {"frame_intervals", std::move(intervals)},
                               {"sampling",
                                String(p.conversion.GetString("sampling"))}})) +
                          "\n",
@@ -816,12 +837,7 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
           return Capacity();
         frames.array.push_back(
             String("data:image/png;base64," + Encode(frame.png)));
-        auto time = Number(0);
-        const auto fraction = std::to_string(frame.timestamp_ns % 1000000000);
-        time.str = std::to_string(frame.timestamp_ns / 1000000000) + "." +
-                   std::string(9 - fraction.size(), '0') + fraction;
-        time.number = static_cast<double>(frame.timestamp_ns) / 1000000000.;
-        timestamps.array.push_back(std::move(time));
+        timestamps.array.push_back(VideoSeconds(frame.timestamp_ns));
       }
       parts->array.push_back(Object(
           {{"type", String(chat ? "video_frames" : "input_video_frames")},

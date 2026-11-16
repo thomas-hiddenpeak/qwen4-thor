@@ -43,6 +43,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[视频首尾说明补验](evidence/serve-native-video-followup-failure-20261116/README.md)
+仍失败：模型已识别末帧蓝色，但把5.5秒PTS误解为6秒结束前缺帧。
+1启动/4创建后按失败清理，rev134不变；继续补齐实际帧显示时长、
+worker传递、快照完整性和半开时间区间表达，不根据容器时长虚构帧。
+[20项C++/7项来源负控已过](evidence/serve-native-video-intervals-cpu-20261116/README.md)，
+主机/完整引擎零警告；之后最多1启动/8创建/900秒验证原问题，业务仍未验收。
+
 [首次视频业务短验](evidence/serve-native-video-business-failure-20261116/README.md)
 在1启动/4创建后失败：直接MP4、VP8 SSE和计数通过，工具VP9续答拒答。
 原始首尾帧与media执行存在，45项NVML均OK、自有资源清理完成、rev134

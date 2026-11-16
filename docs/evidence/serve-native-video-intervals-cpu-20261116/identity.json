@@ -1,0 +1,12 @@
+{
+  "binary_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da",
+  "manifest_sha256": "c0d8edd8e98d753e49908e81d950cb3b4ceb6693053c0cf037304bc788027c8b",
+  "protocol_sha256": "65fedcd5436f9dbde7cf25999f961fc913f535b3fb49763682fdf46391785186",
+  "cpp_passed": 20,
+  "source_negative_passed": 7,
+  "source_anchors": 712,
+  "warnings": 0,
+  "gpu_added": 0,
+  "default_unchanged": true,
+  "source_base": "4f7e30eca6ce96b26c0eb136284f985ff59f8f55"
+}

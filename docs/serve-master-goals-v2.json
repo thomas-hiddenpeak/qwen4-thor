@@ -1280,7 +1280,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "tool_video_business_failure_under_remediation",
+        "state": "frame_interval_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1291,7 +1291,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Fix truthful visual payload explanation and retain original oracle; targeted CPU and original eight affected business requests; then format combinations, recovery and release",
+        "next": "Original SDK/model video business with actual display intervals, then format combinations, recovery qualification and reversible release; full master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1299,7 +1299,11 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 1
+        "business_attempts": 2,
+        "business_latest_failure_evidence": "evidence/serve-native-video-followup-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da"
       }
     },
     {
@@ -1679,7 +1683,7 @@
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
       },
       "native_video_preparation": {
-        "state": "tool_video_business_failure_under_remediation",
+        "state": "frame_interval_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1690,7 +1694,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Fix truthful visual payload explanation and retain original oracle; targeted CPU and original eight affected business requests; then format combinations, recovery and release",
+        "next": "Original SDK/model video business with actual display intervals, then format combinations, recovery qualification and reversible release; full master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1698,7 +1702,11 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 1
+        "business_attempts": 2,
+        "business_latest_failure_evidence": "evidence/serve-native-video-followup-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da"
       }
     },
     {
@@ -2234,7 +2242,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "tool_video_business_failure_under_remediation",
+        "state": "frame_interval_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -2245,7 +2253,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Fix truthful visual payload explanation and retain original oracle; targeted CPU and original eight affected business requests; then format combinations, recovery and release",
+        "next": "Original SDK/model video business with actual display intervals, then format combinations, recovery qualification and reversible release; full master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -2253,7 +2261,11 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 1
+        "business_attempts": 2,
+        "business_latest_failure_evidence": "evidence/serve-native-video-followup-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da"
       }
     },
     {
@@ -3259,7 +3271,7 @@
         "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
       },
       "native_video_preparation": {
-        "state": "tool_video_business_failure_under_remediation",
+        "state": "frame_interval_cpu_accepted_business_pending",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -3270,7 +3282,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Fix truthful visual payload explanation and retain original oracle; targeted CPU and original eight affected business requests; then format combinations, recovery and release",
+        "next": "Original SDK/model video business with actual display intervals, then format combinations, recovery qualification and reversible release; full master remains active",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -3278,7 +3290,11 @@
         "integration_cli_passed": 1,
         "integration_engine_sha256": "8dbab79f06d928586d1c077481431e8e21e27251ffb72e1144109a7994f1190f",
         "business_failure_evidence": "evidence/serve-native-video-business-failure-20261116/README.md",
-        "business_attempts": 1
+        "business_attempts": 2,
+        "business_latest_failure_evidence": "evidence/serve-native-video-followup-failure-20261116/README.md",
+        "interval_cpu_evidence": "evidence/serve-native-video-intervals-cpu-20261116/README.md",
+        "interval_cpp_passed": 20,
+        "interval_engine_sha256": "f35af0fd212b8cb55b201ed42644b7d6d57a481f8e8516ca6dcf98eb0edc14da"
       }
     },
     {

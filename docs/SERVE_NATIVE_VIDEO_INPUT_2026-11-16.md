@@ -55,3 +55,14 @@ MP4/WebM变体已经兼容。硬解码和视觉并发仍不扩展。
 零警告。候选已接通来源/PTS快照、Files与MCP、工具角色、计数、审核、
 私有程序结果载体和跨入口零余额；原件删除或缺codec不会触发再获取。
 下一步实际SDK/模型业务及恢复发行；旋转/非方形像素组合仍需完成。
+
+## 帧显示区间修复
+
+真实工具续答暴露PTS与结束时间表达缺口。当前开发将源buffer的实际
+时长通过同一segment映射到流时间，保存与验证每帧显示区间，投影为
+[start,end)；未知时长保持unknown，不从容器总时长推测。v1转换记录
+仍可离线恢复，v2保留时长；视觉processor的帧/时间合同不改。
+GStreamer的PTS是显示时间，duration可未知；参见
+[buffer时间语义](https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html)
+与[segment流时间映射](https://gstreamer.freedesktop.org/documentation/gstreamer/gstsegment.html)，
+2026-11-16查阅。业务修复仍须原请求短验，不以模板描述改动代替通过。

@@ -188,7 +188,10 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (OutputJson(conversion).size() > 16384) return Invalid();
   const auto* outputs = conversion.GetArray("frames");
   const auto* modules = conversion.GetArray("modules");
-  if (conversion.GetString("format") != "q4t.cpu_video_png.v1" ||
+  const bool intervals =
+      conversion.GetString("format") == "q4t.cpu_video_png.v2";
+  if ((!intervals &&
+       conversion.GetString("format") != "q4t.cpu_video_png.v1") ||
       conversion.GetString("source_sha256") != source_sha256 ||
       conversion.GetString("sampling") !=
           "uniform-presentation-time-with-endpoints" ||
@@ -225,6 +228,7 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
         header.format != vision::MediaFormat::kPng ||
         header.width != pixels.width || header.height != pixels.height ||
         frame.timestamp_ns >= pixels.duration_ns ||
+        frame.duration_ns > pixels.duration_ns - frame.timestamp_ns ||
         frame.source_index >= pixels.scanned_frames ||
         (i && (frame.timestamp_ns <= previous_time ||
                frame.source_index <= previous_index)) ||
@@ -237,6 +241,14 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
     for (const auto* name : {"timestamp_ns", "source_index"}) {
       const auto* value = outputs->array[i].Find(name);
       if (!value || !IsInputInteger(*value)) return Invalid();
+    }
+    const auto* duration = outputs->array[i].Find("duration_ns");
+    if (intervals) {
+      if (!duration || !IsInputInteger(*duration) || duration->number < 0 ||
+          duration->number != frame.duration_ns)
+        return Invalid();
+    } else if (duration || frame.duration_ns) {
+      return Invalid();
     }
     previous_time = frame.timestamp_ns;
     previous_index = frame.source_index;
@@ -372,7 +384,7 @@ ObjectReply DecodeVideoContainer(std::string_view source,
       return Failed(GrammarFailure::kWorker);
     bytes += frame.bytes;
     FileVideoFrame decoded{std::string(frame.bytes, '\0'), frame.timestamp_ns,
-                           frame.source_index};
+                           frame.source_index, frame.duration_ns};
     if (!transfer(decoded.png.data(), decoded.png.size(), false))
       return Failed(process->Failure());
     next.frames.push_back(std::move(decoded));

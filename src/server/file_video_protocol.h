@@ -5,7 +5,7 @@
 #include "q4t/server/file_video.h"
 
 namespace q4t::server::video_detail {
-inline constexpr uint64_t kMagic = 0x5134545649443031;
+inline constexpr uint64_t kMagic = 0x5134545649443032;
 enum class Ready : uint64_t { kReady = 1, kDependency, kSandbox, kInvalid };
 enum class Failure : uint64_t { kNone, kDependency, kInvalid, kCapacity };
 struct Request {
@@ -19,7 +19,7 @@ struct Result {
   uint64_t width = 0, height = 0, duration_ns = 0, scanned_frames = 0;
 };
 struct Frame {
-  uint64_t bytes = 0, timestamp_ns = 0, source_index = 0;
+  uint64_t bytes = 0, timestamp_ns = 0, source_index = 0, duration_ns = 0;
 };
 // Returns an owned seccomp listener; negative means isolation unavailable.
 int EnterVideoSandbox();

@@ -110,13 +110,16 @@ Q4T_TEST(file_snapshot_video_v3_roundtrip_without_codec_and_strict_integrity) {
                 OutputJson(source.document.videos[0].pixels.conversion));
   for (size_t i = 0; i < 6; ++i)
     Q4T_CHECK(replay.document.videos[0].pixels.frames[i].png ==
-              source.document.videos[0].pixels.frames[i].png);
-  for (int mode = 0; mode < 4; ++mode) {
+                  source.document.videos[0].pixels.frames[i].png &&
+              replay.document.videos[0].pixels.frames[i].duration_ns ==
+                  500000000ULL);
+  for (int mode = 0; mode < 5; ++mode) {
     auto bad = source;
     if (mode == 0) bad.document.videos.clear();
     if (mode == 1) bad.document.videos.push_back(bad.document.videos[0]);
     if (mode == 2) bad.document.videos[0].pixels.frames[0].timestamp_ns = 1;
     if (mode == 3) bad.document.videos[0].source_path = {"unknown.webm"};
+    if (mode == 4) bad.document.videos[0].pixels.frames[0].duration_ns = 1;
     InputSnapshotRef rejected;
     InputSnapshotHold rejected_hold;
     Q4T_CHECK(!Save(snapshots, f, bad, &rejected, &rejected_hold).ok());
@@ -143,7 +146,7 @@ Q4T_TEST(file_snapshot_nested_video_paths_and_raw_tampering_are_checked) {
   Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
   InputSnapshot raw;
   Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &raw)));
-  for (int mode = 0; mode < 5; ++mode) {
+  for (int mode = 0; mode < 7; ++mode) {
     auto bad = raw;
     auto& video = Field(bad.metadata, "videos").array[0];
     auto& frame = Field(video, "frames").array[0];
@@ -153,6 +156,11 @@ Q4T_TEST(file_snapshot_nested_video_paths_and_raw_tampering_are_checked) {
     if (mode == 3)
       Set(&Field(video, "conversion"), "source_sha256", String(Digest("bad")));
     if (mode == 4) bad.parts.back() += "tampered";
+    if (mode == 5) Set(&frame, "duration_ns", Number(1));
+    if (mode == 6)
+      std::erase_if(frame.object, [](const auto& field) {
+        return field.first == "duration_ns";
+      });
     std::vector<std::string_view> parts;
     for (const auto& part : bad.parts) parts.push_back(part);
     InputSnapshotRef rejected;
@@ -165,6 +173,31 @@ Q4T_TEST(file_snapshot_nested_video_paths_and_raw_tampering_are_checked) {
               Empty(replay));
     Q4T_CHECK(Ok(snapshots.Release(Access(), &rejected_hold)));
   }
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  return true;
+}
+
+Q4T_TEST(file_snapshot_legacy_video_duration_stays_unknown_without_codec) {
+  Fixture f;
+  auto source = f.Extract("file_video", "vp9.webm");
+  auto& pixels = source.document.videos[0].pixels;
+  Set(&pixels.conversion, "format", String("q4t.cpu_video_png.v1"));
+  for (auto& frame : pixels.frames) frame.duration_ns = 0;
+  for (auto& frame : Field(pixels.conversion, "frames").array)
+    std::erase_if(frame.object,
+                  [](const auto& field) { return field.first == "duration_ns"; });
+  ObjectStore objects(f.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileInputSnapshot replay;
+  Q4T_CHECK(Ok(Read(snapshots, f, reference, &replay)));
+  const auto& restored = replay.document.videos[0].pixels;
+  Q4T_CHECK(restored.frames.size() == 6 && restored.duration_ns == 3000000000);
+  for (const auto& frame : restored.frames) Q4T_CHECK(!frame.duration_ns);
   Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
   return true;
 }

@@ -139,6 +139,11 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
               prompt.find("<|video_pad|>") != prompt.npos &&
               prompt.find("uniform-presentation-time-with-endpoints") !=
                   prompt.npos);
+    Q4T_CHECK(prompt.find(
+                  "\"source_frame\":5,\"start\":2.500000000,"
+                  "\"end\":3.000000000") != prompt.npos &&
+              prompt.find("the frame is shown until the exclusive end") !=
+                  prompt.npos);
     std::erase_if(request.object,
                   [](const auto& field) { return field.first == "store"; });
     ResponsesEnvelope envelope;

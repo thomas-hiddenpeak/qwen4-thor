@@ -20,6 +20,9 @@ struct FileVideoLimits {
 struct FileVideoFrame {
   std::string png;
   uint64_t timestamp_ns = 0, source_index = 0;
+  // Duration in source stream time. Zero means unavailable, including legacy
+  // snapshots; never infer the final frame's duration from container duration.
+  uint64_t duration_ns = 0;
 };
 struct FileVideoPixels {
   uint32_t width = 0, height = 0;

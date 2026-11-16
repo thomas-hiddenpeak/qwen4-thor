@@ -358,11 +358,16 @@ Json Pack(const FileInputSnapshot& input,
     auto videos = Array();
     for (const auto& video : document.videos) {
       auto frames = Array();
-      for (const auto& frame : video.pixels.frames)
+      const bool intervals = video.pixels.conversion.GetString("format") ==
+                             "q4t.cpu_video_png.v2";
+      for (const auto& frame : video.pixels.frames) {
         frames.array.push_back(
             Object({{"part", Number(add(frame.png))},
                     {"timestamp_ns", Number(frame.timestamp_ns)},
                     {"source_index", Number(frame.source_index)}}));
+        if (intervals)
+          Set(&frames.array.back(), "duration_ns", Number(frame.duration_ns));
+      }
       videos.array.push_back(
           Object({{"source_path", PathJson(video.source_path)},
                   {"conversion", video.pixels.conversion},
@@ -545,11 +550,13 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
       pixels.height = conversion->GetInt("height");
       pixels.duration_ns = conversion->GetInt("duration_ns");
       pixels.scanned_frames = conversion->GetInt("scanned_frames");
+      const bool intervals =
+          conversion->GetString("format") == "q4t.cpu_video_png.v2";
       for (const auto& value : frames->array) {
         FileVideoFrame frame;
         const auto* time = value.Find("timestamp_ns");
         const auto* index = value.Find("source_index");
-        if (value.object.size() != 3 || !time || !index ||
+        if (value.object.size() != (intervals ? 4U : 3U) || !time || !index ||
             !IsInputInteger(*time) || !IsInputInteger(*index) ||
             time->number < 0 || time->number >= pixels.duration_ns ||
             index->number < 0 || index->number >= pixels.scanned_frames ||
@@ -557,6 +564,13 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
           return Corrupt();
         frame.timestamp_ns = value.GetInt("timestamp_ns");
         frame.source_index = value.GetInt("source_index");
+        if (intervals) {
+          const auto* duration = value.Find("duration_ns");
+          if (!duration || !IsInputInteger(*duration) || duration->number < 0 ||
+              duration->number > pixels.duration_ns - frame.timestamp_ns)
+            return Corrupt();
+          frame.duration_ns = value.GetInt("duration_ns");
+        }
         pixels.frames.push_back(std::move(frame));
       }
       document.videos.push_back(std::move(video));
