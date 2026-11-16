@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
 GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
 真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
-长稳计划保留。继续当前day交接、实际合main与全部33项剩余任务，
+长稳计划保留；当前day独立快照已prepare/check、未运行。继续实际合main与全部33项剩余任务，
 不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
 
 前驱[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
@@ -119,7 +119,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
 GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
 真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
-长稳计划保留。继续当前day交接、实际合main与全部33项剩余任务，
+长稳计划保留；当前day独立快照已prepare/check、未运行。继续实际合main与全部33项剩余任务，
 不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
 
 [网页发行组合接受](evidence/serve-web-search-composition-20261117/README.md)：
