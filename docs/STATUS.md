@@ -50,6 +50,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[显示几何实际短验](evidence/serve-video-geometry-business-failure-20261116/README.md)
+在镜像布局回答处未通过：旋转正确、镜像四角正确却回答square。
+1启动/2创建/43.682秒、43项NVML正常，自有资源已清理，rev142保持。
+实际冻结PNG和最终ProcessVideo网格均为128×64，未发现方形化；
+[共享来源尺寸5项CPU已过](evidence/serve-video-display-source-cpu-20261116/README.md)，
+仅将已验证宽、高补入输入说明，不更改像素或给定layout/颜色答案。
+候选a7bd6785继续相同原问题/预期最多1启动/4创建/600秒补验。
+
 [视频显示方向/比例修复](SERVE_VIDEO_GEOMETRY_2026-11-16.md)
 [针对性CPU已过](evidence/serve-video-geometry-cpu-20261116/README.md)：
 14项不同C++、2项驱动、714来源锚点/7项负控；主机/引擎零警告。

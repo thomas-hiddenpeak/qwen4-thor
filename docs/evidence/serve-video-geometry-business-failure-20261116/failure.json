@@ -1,0 +1,280 @@
+{
+  "status": "NOT_ACCEPTED_DISPLAY_LAYOUT_ANSWER",
+  "binary_sha256": "6135c33e75a4de51c40a43c365e502b66ea54fe904cfbb1e4fcd1176915bc8d3",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 36
+  },
+  "seconds": 43.68216426577419,
+  "nvml_queries": 43,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "failure": "All mirror corner colors correct, layout answered square instead of landscape.",
+  "actual_frozen_frames": [
+    {
+      "filename": "mirror-x.mp4",
+      "source_sha256": "07100b27ab5b8f63f71d42e9a17cfa0b18824935b3d0988fa4372046ccd14a34",
+      "conversion": {
+        "format": "q4t.cpu_video_png.v3",
+        "source_sha256": "07100b27ab5b8f63f71d42e9a17cfa0b18824935b3d0988fa4372046ccd14a34",
+        "source_bytes": 1457,
+        "sampling": "uniform-presentation-time-with-endpoints",
+        "width": 128,
+        "height": 64,
+        "duration_ns": 2000000000,
+        "scanned_frames": 4,
+        "display_geometry": {
+          "policy": "source-orientation-square-pixels",
+          "coded_width": 128,
+          "coded_height": 64,
+          "pixel_aspect_num": 1,
+          "pixel_aspect_den": 1
+        },
+        "modules": [
+          {
+            "name": "gstreamer",
+            "version": "1.24.2",
+            "sha256": "9de1efd9e400cdfa7c0d7abaf1996cef14f230c7a0e50b9833cd88a9e209388e"
+          },
+          {
+            "name": "gstapp",
+            "version": "1.24.2",
+            "sha256": "b22d9d2b2d090b580ead8ff6ce66d3f44a13f460ad86218f09fa67aed3b4ad7a"
+          },
+          {
+            "name": "coreelements",
+            "version": "1.24.2",
+            "sha256": "10758b2979f3e3d1b8ea3d88389880d65be37d471bbb79023ae47ae5ba954c49"
+          },
+          {
+            "name": "app",
+            "version": "1.24.2",
+            "sha256": "2f783218dae061037a6fb6b3284c09e91a749cdc79a2da9851256eb15df19bba"
+          },
+          {
+            "name": "isomp4",
+            "version": "1.24.2",
+            "sha256": "a7863865152badaaebb0a4e6488388bc4b5fdde0a6c8170f4c4aa4dedc6dd7cd"
+          },
+          {
+            "name": "matroska",
+            "version": "1.24.2",
+            "sha256": "6f3bce2b116065f0d7049aba03ffd79d07b92085bee7e3703148a1f8f68f7c74"
+          },
+          {
+            "name": "videoparsersbad",
+            "version": "1.24.2",
+            "sha256": "6b8523110912868c168e1c5b85be2883fbafd925c4996bc1069b65915e1d7cf2"
+          },
+          {
+            "name": "openh264",
+            "version": "1.24.2",
+            "sha256": "86a27382a2cdcc7ffaea6b5e86c371116403c06c86797f0820e3d4b6240abb03"
+          },
+          {
+            "name": "vpx",
+            "version": "1.24.2",
+            "sha256": "d8c008d113e8513af45181808f5167ff8f2db667c99e317b6c650f6895981f01"
+          },
+          {
+            "name": "videoconvertscale",
+            "version": "1.24.2",
+            "sha256": "7e10950c2c499cb5d74d5862c41fe4f879f239bf4194f6861fbd440163954468"
+          },
+          {
+            "name": "videofilter",
+            "version": "1.24.2",
+            "sha256": "1761122e5ca74d08d5ea40f2ce74b612fcfeed8c0cb2fc870514149374196322"
+          },
+          {
+            "name": "png",
+            "version": "1.24.2",
+            "sha256": "9705bc90e7f37eeff6bbfb7d86aad554217fe75f61bc99c7dd674aa185aa692e"
+          }
+        ],
+        "frames": [
+          {
+            "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17",
+            "timestamp_ns": 0,
+            "duration_ns": 500000000,
+            "source_index": 0
+          },
+          {
+            "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17",
+            "timestamp_ns": 500000000,
+            "duration_ns": 500000000,
+            "source_index": 1
+          },
+          {
+            "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17",
+            "timestamp_ns": 1000000000,
+            "duration_ns": 500000000,
+            "source_index": 2
+          },
+          {
+            "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17",
+            "timestamp_ns": 1500000000,
+            "duration_ns": 500000000,
+            "source_index": 3
+          }
+        ]
+      },
+      "pngs": [
+        {
+          "width": 128,
+          "height": 64,
+          "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17"
+        },
+        {
+          "width": 128,
+          "height": 64,
+          "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17"
+        },
+        {
+          "width": 128,
+          "height": 64,
+          "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17"
+        },
+        {
+          "width": 128,
+          "height": 64,
+          "sha256": "90cb1f8170bfa7462d3ae7056e0036a99df121f48d86ada7659d79189433dd17"
+        }
+      ]
+    },
+    {
+      "filename": "rotate-90.mp4",
+      "source_sha256": "64e21e5972576623a576e2a9eada3ca21e5dcfd015fa4752e8752b41d3e40511",
+      "conversion": {
+        "format": "q4t.cpu_video_png.v3",
+        "source_sha256": "64e21e5972576623a576e2a9eada3ca21e5dcfd015fa4752e8752b41d3e40511",
+        "source_bytes": 1457,
+        "sampling": "uniform-presentation-time-with-endpoints",
+        "width": 64,
+        "height": 128,
+        "duration_ns": 2000000000,
+        "scanned_frames": 4,
+        "display_geometry": {
+          "policy": "source-orientation-square-pixels",
+          "coded_width": 128,
+          "coded_height": 64,
+          "pixel_aspect_num": 1,
+          "pixel_aspect_den": 1
+        },
+        "modules": [
+          {
+            "name": "gstreamer",
+            "version": "1.24.2",
+            "sha256": "9de1efd9e400cdfa7c0d7abaf1996cef14f230c7a0e50b9833cd88a9e209388e"
+          },
+          {
+            "name": "gstapp",
+            "version": "1.24.2",
+            "sha256": "b22d9d2b2d090b580ead8ff6ce66d3f44a13f460ad86218f09fa67aed3b4ad7a"
+          },
+          {
+            "name": "coreelements",
+            "version": "1.24.2",
+            "sha256": "10758b2979f3e3d1b8ea3d88389880d65be37d471bbb79023ae47ae5ba954c49"
+          },
+          {
+            "name": "app",
+            "version": "1.24.2",
+            "sha256": "2f783218dae061037a6fb6b3284c09e91a749cdc79a2da9851256eb15df19bba"
+          },
+          {
+            "name": "isomp4",
+            "version": "1.24.2",
+            "sha256": "a7863865152badaaebb0a4e6488388bc4b5fdde0a6c8170f4c4aa4dedc6dd7cd"
+          },
+          {
+            "name": "matroska",
+            "version": "1.24.2",
+            "sha256": "6f3bce2b116065f0d7049aba03ffd79d07b92085bee7e3703148a1f8f68f7c74"
+          },
+          {
+            "name": "videoparsersbad",
+            "version": "1.24.2",
+            "sha256": "6b8523110912868c168e1c5b85be2883fbafd925c4996bc1069b65915e1d7cf2"
+          },
+          {
+            "name": "openh264",
+            "version": "1.24.2",
+            "sha256": "86a27382a2cdcc7ffaea6b5e86c371116403c06c86797f0820e3d4b6240abb03"
+          },
+          {
+            "name": "vpx",
+            "version": "1.24.2",
+            "sha256": "d8c008d113e8513af45181808f5167ff8f2db667c99e317b6c650f6895981f01"
+          },
+          {
+            "name": "videoconvertscale",
+            "version": "1.24.2",
+            "sha256": "7e10950c2c499cb5d74d5862c41fe4f879f239bf4194f6861fbd440163954468"
+          },
+          {
+            "name": "videofilter",
+            "version": "1.24.2",
+            "sha256": "1761122e5ca74d08d5ea40f2ce74b612fcfeed8c0cb2fc870514149374196322"
+          },
+          {
+            "name": "png",
+            "version": "1.24.2",
+            "sha256": "9705bc90e7f37eeff6bbfb7d86aad554217fe75f61bc99c7dd674aa185aa692e"
+          }
+        ],
+        "frames": [
+          {
+            "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e",
+            "timestamp_ns": 0,
+            "duration_ns": 500000000,
+            "source_index": 0
+          },
+          {
+            "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e",
+            "timestamp_ns": 500000000,
+            "duration_ns": 500000000,
+            "source_index": 1
+          },
+          {
+            "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e",
+            "timestamp_ns": 1000000000,
+            "duration_ns": 500000000,
+            "source_index": 2
+          },
+          {
+            "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e",
+            "timestamp_ns": 1500000000,
+            "duration_ns": 500000000,
+            "source_index": 3
+          }
+        ]
+      },
+      "pngs": [
+        {
+          "width": 64,
+          "height": 128,
+          "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e"
+        },
+        {
+          "width": 64,
+          "height": 128,
+          "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e"
+        },
+        {
+          "width": 64,
+          "height": 128,
+          "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e"
+        },
+        {
+          "width": 64,
+          "height": 128,
+          "sha256": "abd87b29cd176ad17196a9780ed112c73e02d502b6e131f183bbb857f8b9990e"
+        }
+      ]
+    }
+  ],
+  "raw_archive_sha256": "e0e0bdee2cf4ad5bf1c2b2fb8f8620bb3f8492d409c8538d7902fd5979a0f3e7",
+  "next": "Verify actual preprocessor shape; expose actual validated display dimensions in prepared video source metadata. Keep question/oracle unchanged."
+}

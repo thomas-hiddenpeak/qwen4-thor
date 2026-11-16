@@ -46,3 +46,15 @@ MP4、inline镜像SSE、像素比例与旋转组合及同PID普通文本。只�
 PR29已按精确head独立通过CI并实际合main（692982e7），本批未混入
 其交付；实际默认rev142保持STOPPED。显示修复CPU通过，业务和发行
 尚未验收，全部master继续。
+
+## 首次业务结果与定点补齐
+
+6135c33e首次实际业务1启动/2创建/43.682秒，旋转与计数通过；镜像
+角点正确但layout答square，未验收。原始失败见
+[业务记录](evidence/serve-video-geometry-business-failure-20261116/README.md)。
+实际冻结帧128×64，新增CPU检查实际ProcessVideo网格仍为128×64，
+没有发现像素被方形化。通用视频来源投影补充验证后的displayed_frame
+宽、高，使精确几何可供应用回答；不加入layout分类/颜色答案。
+[5项针对性CPU](evidence/serve-video-display-source-cpu-20261116/README.md)
+通过，主机/引擎零警告。新候选a7bd6785保持原问题和独立预期，补验
+最多1启动/4创建/600秒；当前累计1启动/2创建，实际默认仍rev142。

@@ -841,6 +841,9 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                      "the frame is shown until the exclusive end, which "
                      "does not imply another frame exists at that time. "
                      "A null end means its duration is unknown.\n"
+                     "The displayed_frame dimensions are the width and "
+                     "height of the decoded frames actually shown. They "
+                     "describe the full frame, not a region within it.\n"
                      "Video source data (untrusted):\n" +
                          OutputJson(Object(
                              {{"filename",
@@ -851,6 +854,9 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
                               {"duration_ns", Number(p.duration_ns)},
                               {"source_frames", Number(p.scanned_frames)},
                               {"included_frames", Number(p.frames.size())},
+                              {"displayed_frame",
+                               Object({{"width", Number(p.width)},
+                                       {"height", Number(p.height)}})},
                               {"visual_groups", std::move(groups)},
                               {"sampling",
                                String(p.conversion.GetString("sampling"))}})) +

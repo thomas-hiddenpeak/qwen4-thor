@@ -1753,16 +1753,24 @@
         "accepted_business_seconds": 53.44687231024727
       },
       "display_geometry": {
-        "state": "cpu_accepted_business_pending",
+        "state": "original_business_failed_targeted_fix_cpu_accepted",
         "plan": "SERVE_VIDEO_GEOMETRY_2026-11-16.md",
         "cpu_evidence": "evidence/serve-video-geometry-cpu-20261116/README.md",
-        "candidate_sha256": "6135c33e75a4de51c40a43c365e502b66ea54fe904cfbb1e4fcd1176915bc8d3",
+        "candidate_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
         "limits": {
           "starts": 1,
           "creates": 4,
           "seconds": 600
         },
-        "remaining": "Actual HTTP, reversible delivery, arbitrary affine/remaining format and all other A10 requirements."
+        "remaining": "Actual HTTP, reversible delivery, arbitrary affine/remaining format and all other A10 requirements.",
+        "failure": "evidence/serve-video-geometry-business-failure-20261116/README.md",
+        "source_dimensions_cpu": "evidence/serve-video-display-source-cpu-20261116/README.md",
+        "prior_actual": {
+          "starts": 1,
+          "creates": 2,
+          "seconds": 43.68216426577419
+        },
+        "next": "Original four requests/question/oracle unchanged; corrected source geometry context only, actual HTTP pending."
       }
     },
     {
