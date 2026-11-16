@@ -1185,7 +1185,7 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_delivery": "Native MCP/tunnel and actual SDK/model business, profile/managed recovery and reversible rev134 publication merged in PR28; native provider adapters and all remaining master tasks continue. Agent configuration fix 7b244b74 targeted CPU passed, release pending.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
@@ -1206,12 +1206,15 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "mcp_agent_configuration": {
         "state": "targeted_cpu_passed_release_pending",
@@ -2037,7 +2040,7 @@
       },
       "mcp_tunnel_broker_implementation": "native_bounded_queue_original_agent_and_once_only_handoff",
       "mcp_tunnel_broker_cpu_evidence": "evidence/serve-mcp-tunnel-broker-cpu-20261116/README.md",
-      "mcp_tunnel_delivery": "Native broker/isolated transport/own fixed-target supervised agent implemented; CPU and actual TLS CLI verified. Provider adapters, full SDK/model business/recovery qualification/reversible publication/main remain required.",
+      "mcp_tunnel_delivery": "Native MCP/tunnel and actual SDK/model business, profile/managed recovery and reversible rev134 publication merged in PR28; native provider adapters and all remaining master tasks continue. Agent configuration fix 7b244b74 targeted CPU passed, release pending.",
       "mcp_tunnel_api_cpu_evidence": "evidence/serve-mcp-tunnel-api-cpu-20261116/README.md",
       "mcp_tunnel_transport_cpu_evidence": "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
       "mcp_tunnel_agent_cpu_evidence": "evidence/serve-mcp-tunnel-agent-cpu-20261116/README.md",
@@ -2058,12 +2061,15 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "mcp_agent_configuration": {
         "state": "targeted_cpu_passed_release_pending",
@@ -2105,12 +2111,15 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       }
     },
     {
@@ -2953,12 +2962,15 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       }
     },
     {
@@ -3069,12 +3081,15 @@
         "full_task_complete": false
       },
       "mcp_delivery": {
-        "state": "delivered_main_merge_pending",
+        "state": "delivered_main_merged",
         "revision": 134,
         "engine_sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
-        "full_task_complete": false
+        "full_task_complete": false,
+        "pull_request": 28,
+        "main_commit": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+        "main_record": "evidence/serve-pr28-merged-20261116/README.md"
       },
       "mcp_agent_configuration": {
         "state": "targeted_cpu_passed_release_pending",
@@ -3098,6 +3113,6 @@
       "release": null
     }
   ],
-  "next_task": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory.",
+  "next_task": "Implement native provider adapters starting with Google Calendar, deliver agent configuration fix, and continue every remaining master task.",
   "next": "Bind native MCP sessions to sealed authority and execution, then mapped targets and full SDK/business/recovery delivery; all remaining master tasks mandatory."
 }

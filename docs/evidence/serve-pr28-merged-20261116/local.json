@@ -1,0 +1,6 @@
+{
+  "origin_main": "35581f984dd083ed30451b09ddc11e4c998f1dbc",
+  "current_head": "3dc8c27ba54e42483a1e377d085bd16f2a740cc9",
+  "merged_head_is_ancestor": true,
+  "active_branch_retained": "codex/serve-resilience-cd retains unique follow-up 7b244b74 and active provider development; do not delete active worktree/evidence"
+}

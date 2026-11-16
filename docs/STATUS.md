@@ -27,8 +27,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 Key/配额/core/outer字节保持，profile只绑定新资格，version新周期
 保留前驱；旧默认程序和状态备份保留。自动版本恢复保留现代根，
 人工整根回退到v12入口没有outer；不是独立旧引擎回退。
-本次代码待最终检查和实际合main；提供方原生适配、完整客户端矩阵、
-其他协议及可靠性组合继续，未宣称完整OpenAI兼容或长稳通过。
+本次rev134代码已通过PR28实际合main（`35581f98`），精确head两组CI
+均成功，[合并回执](evidence/serve-pr28-merged-20261116/README.md)已归档。
+提供方原生适配、完整客户端矩阵、其他协议及可靠性组合继续；
+后续agent配置修复尚待发行，未宣称完整OpenAI兼容或长稳通过。
 
 PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过，已实际合main（`7d00316a`），
 [合并回执](evidence/serve-pr23-merged-20261113/README.md)保留。其后namespace
