@@ -1,0 +1,21 @@
+{
+  "parent_commit": "c460cb006c67d75bf18a76fb6244fbb0d055d8a8",
+  "sources": {
+    "include/q4t/server/mcp_tunnel_agent.h": "a106be5294c3d2236f439a010968a5083f3ec673a6ac4b14a1291b2a66cd7069",
+    "src/server/mcp_tunnel_agent.cpp": "768679d8af4badc04b938495bb6012be52cc8c2727b87c50ab17a8cb22f11a1d",
+    "src/server/mcp_tunnel_agent_config.cpp": "963c95681fa094fb1baff761a2313033e2940aab0a01fa0e28b9a763f0e806f9",
+    "tests/server_mcp_transport_test.cpp": "cf4b425585b64606ef51b2cd120f910e6b97fadaf084476d7ee52a87a4babe8e",
+    "tools/serve_responses/test_mcp_tunnel_agent.py": "16a3463d55dbb28afb5f85577e8a23708384e7a8f5446d10066d0da1786d8423",
+    "tools/serve_audit/inventory.json": "3c20ccb7e42e05afb742f3537d1de2143bf18d6e4842d4a1f101ae327a6390e9"
+  },
+  "engine_sha256": "9cf9af38c071137e05a10c22a3b2f57efbe1d384b9476abf362686ee364498bf",
+  "host_sha256": "d9d75a3706e147575e2c223052d7bdad3bb42f97d1e3bd324d33ebee1864efa6",
+  "compiled_source_manifest_sha256": "7e1b7be0e786377a3ad9da56f51632ca485b5508dbc7f44d2a71f9ccf5aa6737",
+  "unique_cpp_passed": 11,
+  "cpp_executions": 14,
+  "cli_passed": 5,
+  "source_negative_checks": 7,
+  "gpu_starts": 0,
+  "default_revision": 134,
+  "default_changed": false
+}

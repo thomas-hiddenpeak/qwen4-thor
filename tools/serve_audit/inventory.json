@@ -1936,7 +1936,7 @@
     "include/q4t/server/mcp_policy.h": "8b8c26f3af1ba647d6d263321c7be2c74ffd7d454d6771c4d93a9955de4115b6",
     "include/q4t/server/mcp_transport.h": "185f92f748fa8c582e729a65c07b7f45c24ed69c33fa4fd6b6c3e5ca5c149b59",
     "include/q4t/server/mcp_tunnel.h": "1d8b7fa51d220209b7b5fc003d555eeef52adb0ba80dd9eef4494bd7ced310e5",
-    "include/q4t/server/mcp_tunnel_agent.h": "3a39a1a1a7e562ffa0c9215e015ffb3f4b9b39caaed854cc413fa47955ab89ed",
+    "include/q4t/server/mcp_tunnel_agent.h": "a106be5294c3d2236f439a010968a5083f3ec673a6ac4b14a1291b2a66cd7069",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
@@ -2199,8 +2199,8 @@
     "src/server/mcp_transport.cpp": "7bd6c59f901a3f89e30917c9c657b386f7f55cfef53f8ec036d48f1e33a5757c",
     "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
     "src/server/mcp_tunnel.cpp": "5035671dcbdda13f7a05efa5f3cac05f9777fbbfdb247d1049b4b9aafd43a668",
-    "src/server/mcp_tunnel_agent.cpp": "56ad368c6e4c38a9f8ae6269b9e8ec1c473d9e971c11eebe253405a4a8de6483",
-    "src/server/mcp_tunnel_agent_config.cpp": "7d16c0430c399dca5f82b71e587f559209f07d2e49ace9095858d878877f1c3e",
+    "src/server/mcp_tunnel_agent.cpp": "768679d8af4badc04b938495bb6012be52cc8c2727b87c50ab17a8cb22f11a1d",
+    "src/server/mcp_tunnel_agent_config.cpp": "963c95681fa094fb1baff761a2313033e2940aab0a01fa0e28b9a763f0e806f9",
     "src/server/mcp_tunnel_agent_http.cpp": "ec42a0d02ba9b5de86883994a0bc6db32ab4e6c0e2b48f90f6ee0c03087c26be",
     "src/server/mcp_tunnel_agent_internal.h": "8a34be8b6d9bc8f5d7a58ec62aadc4cf4af5bf78546c1c5d4101d7d6aa3524f3",
     "src/server/mcp_tunnel_api.cpp": "f7b6abc4f9a45861ce3dd07d9fb63be1a3a818370013cc92980781d4852f0d30",
@@ -5636,5 +5636,14 @@
     "implementation_only": true,
     "release_attestation": false,
     "description": "Expose actual MCP items, isolated transports, programmatic execution and recovery boundary; native provider adapters remain a required open task. Prepare bounded real SDK business without broad performance testing."
+  },
+  "mcp_agent_configuration_review_20261116": {
+    "files": [
+      "include/q4t/server/mcp_tunnel_agent.h",
+      "src/server/mcp_tunnel_agent.cpp",
+      "src/server/mcp_tunnel_agent_config.cpp"
+    ],
+    "scope": "Shared canonical transport serializer; check validates worker byte/string/value bounds before admitting config. Explicit nonzero or noninteger redirect authority rejected; omitted/zero remains fixed target.",
+    "no_model_math_or_routes_changed": true
   }
 }

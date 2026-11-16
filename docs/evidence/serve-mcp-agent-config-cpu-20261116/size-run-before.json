@@ -1,0 +1,9 @@
+{
+  "command": "run",
+  "exit_code": 2,
+  "timed_out": false,
+  "seconds": 0.034450667910277843,
+  "raw_bytes": 65536,
+  "stdout": "",
+  "stderr": "Invalid private MCP tunnel agent configuration\n"
+}

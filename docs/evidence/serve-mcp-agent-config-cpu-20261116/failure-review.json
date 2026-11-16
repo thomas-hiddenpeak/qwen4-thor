@@ -1,0 +1,20 @@
+{
+  "first_cpu": "3/6 passed; fractional fixture used integer Number(0.5); existing helper explicitly serialized FileFetchOptions redirects=5 which was previously ignored. Use parsed fractional JSON and explicit zero in agent-only helper.",
+  "source_check": "routes/native_routes saved as keyed metadata, current extractor returns list. Shape comparison corrected before updating only three reviewed source digests.",
+  "retest": [
+    "mcp_agent_config_redirect_authority_is_not_silently_discarded",
+    "mcp_agent_broker_actual_http_roundtrip",
+    "mcp_agent_broker_actual_legacy_roundtrip",
+    "mcp_agent_auth_failure_stops_no_restart",
+    "mcp_agent_auth_failure_cleanup_cannot_restart_owner",
+    "mcp_agent_upload_retry_preserves_body_and_one_dispatch",
+    "mcp_agent_skips_expired_processes_multiple_poll",
+    "mcp_agent_failed_progress_upload_still_final"
+  ],
+  "reuse": [
+    "mcp_agent_config_strict_network_and_redacted_description",
+    "mcp_agent_config_rejects_input_that_cannot_fit_worker_string_budget",
+    "mcp_agent_config_exact_worker_budget_round_trips_original_authority"
+  ],
+  "gpu_starts": 0
+}

@@ -123,9 +123,9 @@ worker仍不持有调用方回调；当前请求的取消/绝对期限由父进�
 自有agent已验证固定私网目标、网络/TLS策略、HTTP/SSE与会话终止，
 实跑TLS入口到真实HTTP对端；后续仍须完整SDK/模型业务及发行。
 
-## 自有私网agent（当前候选，待完整业务发行）
+## 自有私网agent（rev134已发行）
 
-使用候选的`q4t mcp-tunnel-agent check FILE`离线校验，
+使用`q4t mcp-tunnel-agent check FILE`离线校验，
 `q4t mcp-tunnel-agent run FILE`前台运行。FILE必须是当前用户拥有、
 无组/其他用户权限、无符号链接且单硬链接的常规文件，最大64KiB。
 配置和凭据通过私有IPC进入子进程，不出现在子进程参数或普通输出。
@@ -197,3 +197,14 @@ q4t agent使用可选wire扩展`q4t_outcome_unknown:true`区别传输合成错�
 配置仍可选，默认原生入口不依赖nginx。实际TLS、容量、重复/指定头
 拒绝和原生回归见[22项CPU证据](evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md)。
 完整SDK/实际模型业务、提供方与恢复发行继续，0新增GPU。
+
+## 配置一致性修复候选（2026-11-16）
+
+[专项验证](evidence/serve-mcp-agent-config-cpu-20261116/README.md)修复
+rev134的两处配置检查缺口：显式非零重定向曾被静默覆盖，原输入
+符合字符串预算而默认字段展开后超限时，check会成功但run退出。
+候选统一私有worker序列化；64KiB正文、16KiB总解码字符串及结构
+预算均在检查时应用于实际传输表示。两侧max_redirects只可省略或
+明确为整数0；错误配置在启动worker前拒绝，不输出目标或凭据。
+11项不同C++及5项实际CLI通过，0GPU；此修复尚待后续发行，当前
+默认rev134仍应使用已验正常大小配置。正常TLS/工具业务证据保持。

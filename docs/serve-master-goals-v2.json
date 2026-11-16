@@ -1212,6 +1212,14 @@
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
         "full_task_complete": false
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
       }
     },
     {
@@ -2056,6 +2064,14 @@
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
         "full_task_complete": false
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
       }
     },
     {
@@ -2364,7 +2380,15 @@
         "Native ELF service dispatch/prepare/check/reload/deploy/rollback; 26 distinct CPU cases plus actual readonly default checks",
         "Coordinated default generation publication/resume/rollback and short-write recovery; 25 distinct CPU cases"
       ],
-      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue."
+      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue.",
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
+      }
     },
     {
       "id": "R01",
@@ -3051,6 +3075,14 @@
         "service_manifest_sha256": "437e477c488e0d2b3f5cdb67cd150df379f73149b0900ef4fdb469c317351577",
         "record": "evidence/serve-mcp-delivery-20261116/README.md",
         "full_task_complete": false
+      },
+      "mcp_agent_configuration": {
+        "state": "targeted_cpu_passed_release_pending",
+        "record": "evidence/serve-mcp-agent-config-cpu-20261116/README.md",
+        "cpp_passed": 11,
+        "actual_cli_passed": 5,
+        "gpu_starts": 0,
+        "default_changed": false
       }
     },
     {

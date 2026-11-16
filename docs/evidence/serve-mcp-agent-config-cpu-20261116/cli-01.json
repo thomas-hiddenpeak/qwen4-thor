@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_private_configuration_file_contract_and_redaction",
+    "tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_redirect_setting_is_validated_without_silent_override",
+    "tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_check_rejects_configuration_that_cannot_reach_worker",
+    "tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_verified_tls_native_ingress_prefix_and_real_private_document",
+    "tools.serve_responses.test_mcp_tunnel_agent.AgentCli.test_intentional_stop_closes_private_session_without_respawn"
+  ],
+  "exit_code": 0,
+  "seconds": 3.1440591369755566,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t",
+      "sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t.release.json",
+      "sha256": "f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t",
+      "sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t.release.json",
+      "sha256": "f8c1074459efccb60dddd47c112bd78bf58908d502c5acd710b02a321d5663b0"
+    }
+  },
+  "default_unchanged": true
+}

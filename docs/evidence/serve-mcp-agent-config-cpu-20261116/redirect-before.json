@@ -1,0 +1,9 @@
+{
+  "command": "check",
+  "exit_code": 0,
+  "timed_out": false,
+  "seconds": 0.04286056710407138,
+  "raw_bytes": 375,
+  "stdout": "{\"profile\":\"q4t-native-mcp-tunnel-agent-v1\",\"sha256\":\"b8875c14f4452fd0b81d818879277e823d2735ccb385ff8a9040d9497a64ff4a\",\"control_tls\":false,\"target_tls\":false,\"session_limit\":16,\"restarts_per_300_seconds\":3,\"model_restart\":false,\"external_runtime_required\":false}\n",
+  "stderr": ""
+}

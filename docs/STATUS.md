@@ -41,6 +41,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[隧道agent配置一致性修复](evidence/serve-mcp-agent-config-cpu-20261116/README.md)
+已完成：11项不同C++、5项实际CLI、7项来源负控最终通过；显式非零
+重定向不再静默覆盖，check使用实际worker序列化预算，避免检查成功
+而启动失败。首轮夹具/来源门禁失败保留，针对性补验；0GPU。候选
+9cf9af38独立保留、尚待发行；rev134默认不变。继续PR28合入及提供方
+原生适配等全部master任务。
+
 以下保留各阶段发生时的默认身份；当前已交付身份以上表为准。
 
 [MCP能力包的受控恢复](evidence/serve-mcp-managed-20261116/README.md)

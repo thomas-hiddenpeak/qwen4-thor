@@ -4592,6 +4592,8 @@ McpTunnelAgentConfig AgentConfig(const Server& control, const Server& target) {
   config.target = target.Endpoint();
   config.control_fetch = control.Options();
   config.target_fetch = target.Options();
+  config.control_fetch.max_redirects = 0;
+  config.target_fetch.max_redirects = 0;
   return config;
 }
 // Production broker/HTTP handler and production isolated agent. Only the two
@@ -4672,6 +4674,92 @@ Q4T_TEST(mcp_agent_config_strict_network_and_redacted_description) {
   }
   Q4T_CHECK(
       !ParseMcpTunnelAgentConfig(R"({"version":1,"version":1})", &config));
+  return true;
+}
+
+namespace {
+Json SmallAgentConfig() {
+  return Object({{"version", Number(1)},
+                 {"api_base", String("https://control.example/v1")},
+                 {"api_key", String("control-token")},
+                 {"tunnel_id", String("tunnel_private")},
+                 {"target", Object({{"url", String("https://mcp.example")},
+                                    {"authorization", String("target-token")}})}});
+}
+size_t AgentConfigStringBytes(const Json& value) {
+  if (value.IsString()) return value.str.size();
+  size_t bytes = 0;
+  for (const auto& [key, entry] : value.object)
+    bytes += key.size() + AgentConfigStringBytes(entry);
+  for (const auto& entry : value.array) bytes += AgentConfigStringBytes(entry);
+  return bytes;
+}
+}  // namespace
+
+Q4T_TEST(mcp_agent_config_redirect_authority_is_not_silently_discarded) {
+  McpTunnelAgentConfig config;
+  Json fractional;
+  Q4T_CHECK(Parse("0.5", &fractional));
+  for (const auto* field : {"control_fetch", "target_fetch"}) {
+    auto raw = SmallAgentConfig();
+    for (const auto& value : {Number(1), Number(-1), fractional, Boolean(false),
+                              String("0"), Json()}) {
+      Set(&raw, field, Object({{"max_redirects", value}}));
+      Q4T_CHECK(!ParseMcpTunnelAgentConfig(OutputJson(raw), &config));
+    }
+    for (const auto& policy : {Object(), Object({{"max_redirects", Number(0)}})}) {
+      Set(&raw, field, policy);
+      Q4T_CHECK(ParseMcpTunnelAgentConfig(OutputJson(raw), &config));
+      Q4T_CHECK(config.control_fetch.max_redirects == 0 &&
+                config.target_fetch.max_redirects == 0);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(mcp_agent_config_rejects_input_that_cannot_fit_worker_string_budget) {
+  auto raw = SmallAgentConfig();
+  McpTunnelAgentConfig config;
+  const auto original = OutputJson(raw);
+  Q4T_CHECK(ParseMcpTunnelAgentConfig(original, &config));
+  const auto original_sha = config.sha256;
+  Set(&raw, "api_key", String(std::string(8192, 'a')));
+  auto target = *raw.Find("target");
+  const auto remaining = 16384 - AgentConfigStringBytes(raw);
+  Set(&target, "authorization",
+      String(std::string(target.GetString("authorization").size() + remaining,
+                         'b')));
+  Set(&raw, "target", std::move(target));
+  Q4T_CHECK(AgentConfigStringBytes(raw) == 16384);
+  q4t::io::JsonParseLimits limits;
+  limits.max_string_bytes = 16384;
+  Json parsed;
+  const auto bytes = OutputJson(raw);
+  Q4T_CHECK(q4t::io::ParseJson(bytes, &parsed, true, limits));
+  Q4T_CHECK(bytes.size() < kMcpTunnelAgentConfigBytes);
+  Q4T_CHECK(!ParseMcpTunnelAgentConfig(bytes, &config));
+  Q4T_CHECK(config.sha256 == original_sha);
+  return true;
+}
+
+Q4T_TEST(mcp_agent_config_exact_worker_budget_round_trips_original_authority) {
+  McpTunnelAgentConfig config;
+  Q4T_CHECK(ParseMcpTunnelAgentConfig(OutputJson(SmallAgentConfig()), &config));
+  config.api_key = std::string(8192, 'a');
+  Json raw;
+  Q4T_CHECK(Parse(SerializeMcpTunnelAgentConfig(config), &raw));
+  config.target.authorization +=
+      std::string(16384 - AgentConfigStringBytes(raw), 'b');
+  const auto bytes = SerializeMcpTunnelAgentConfig(config);
+  Q4T_CHECK(Parse(bytes, &raw) && AgentConfigStringBytes(raw) == 16384);
+  McpTunnelAgentConfig checked;
+  Q4T_CHECK(ParseMcpTunnelAgentConfig(bytes, &checked));
+  Q4T_CHECK(SerializeMcpTunnelAgentConfig(checked) == bytes &&
+            checked.sha256 == Digest(bytes) && checked.api_key == config.api_key &&
+            checked.target.authorization == config.target.authorization);
+  checked.target.authorization.push_back('b');
+  Q4T_CHECK(!ParseMcpTunnelAgentConfig(SerializeMcpTunnelAgentConfig(checked),
+                                      &config));
   return true;
 }
 

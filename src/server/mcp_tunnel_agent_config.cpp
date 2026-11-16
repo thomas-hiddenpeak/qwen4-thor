@@ -21,9 +21,29 @@ Status Invalid() {
   return Status::Fail("Invalid MCP tunnel agent configuration");
 }
 }  // namespace
+std::string SerializeMcpTunnelAgentConfig(const McpTunnelAgentConfig& config) {
+  auto headers = Object();
+  for (const auto& [key, value] : config.target.headers)
+    Set(&headers, key, String(value));
+  auto target = Object(
+      {{"url", String(config.target.url)}, {"headers", std::move(headers)}});
+  if (!config.target.authorization.empty())
+    Set(&target, "authorization", String(config.target.authorization));
+  return OutputJson(Object(
+      {{"version", Number(1)},
+       {"api_base", String(config.api_base)},
+       {"api_key", String(config.api_key)},
+       {"tunnel_id", String(config.tunnel_id)},
+       {"channel", String(config.channel)},
+       {"control_fetch", file_detail::OptionsJson(config.control_fetch)},
+       {"target_fetch", file_detail::OptionsJson(config.target_fetch)},
+       {"target", std::move(target)},
+       {"restart_limit", Number(config.restart_limit)}}));
+}
 Status ParseMcpTunnelAgentConfig(std::string_view raw,
                                  McpTunnelAgentConfig* output) {
-  if (!output || raw.empty() || raw.size() > (64U << 10)) return Invalid();
+  if (!output || raw.empty() || raw.size() > kMcpTunnelAgentConfigBytes)
+    return Invalid();
   Json value;
   io::JsonParseLimits limits;
   limits.max_depth = 16;
@@ -62,7 +82,14 @@ Status ParseMcpTunnelAgentConfig(std::string_view raw,
                        ? next.control_fetch
                        : next.target_fetch;
     if (const auto* config = value.Find(name)) {
-      if (!ParseFileFetchOptions(*config, &policy).ok()) return Invalid();
+      auto network = *config;
+      if (network.IsObject() && !network.Has("max_redirects"))
+        Set(&network, "max_redirects", Number(0));
+      const auto* redirects = network.Find("max_redirects");
+      if (!redirects || !IsInputInteger(*redirects) ||
+          !ParseFileFetchOptions(network, &policy).ok() ||
+          policy.max_redirects != 0)
+        return Invalid();
     }
     policy.max_redirects = 0;
   }
@@ -89,6 +116,13 @@ Status ParseMcpTunnelAgentConfig(std::string_view raw,
     }
   }
   if (!mcp_detail::CheckEndpoint(next.target, next.target_fetch).ok())
+    return Invalid();
+  // Check the representation the isolated worker will actually receive. Added
+  // defaults must fit the same aggregate string/value/byte budgets as input.
+  const auto bytes = SerializeMcpTunnelAgentConfig(next);
+  Json wire;
+  if (bytes.size() > kMcpTunnelAgentConfigBytes ||
+      !io::ParseJson(bytes, &wire, true, limits))
     return Invalid();
   next.sha256 = Digest(raw);
   *output = std::move(next);

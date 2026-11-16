@@ -1,0 +1,4 @@
+{
+  "reason": "64 KiB raw-size fixture was rejected consistently by existing decoded-string limit. Actual check/run inconsistency is canonical default fields exceeding aggregate 16 KiB decoded-string limit.",
+  "scope": "share serialization and validate canonical wire representation with same parse budgets before check accepts; reject nonzero or noninteger redirect settings"
+}

@@ -1,0 +1,25 @@
+{
+  "source": "c460cb006c67d75bf18a76fb6244fbb0d055d8a8",
+  "binary": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t",
+  "sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+  "scope": [
+    "reject explicit redirects rather than overwrite",
+    "same bounded canonical configuration for check and isolated worker"
+  ],
+  "validation": {
+    "cpu_contracts": [
+      "agent configuration redirect types/defaults",
+      "serialized boundary and original digest",
+      "actual local agent startup"
+    ],
+    "actual_cli": [
+      "private file and redaction",
+      "redirect rejection and zero acceptance",
+      "near-limit check/run parity",
+      "existing native TLS business and stop"
+    ],
+    "source_negative_checks": 7,
+    "gpu_starts": 0
+  },
+  "default_publication": "rev134 stays until a separately qualified delivery"
+}
