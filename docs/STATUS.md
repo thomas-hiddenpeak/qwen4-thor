@@ -43,6 +43,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[媒体主轻真实资格通过](evidence/serve-media-profile-business-20261116/README.md)：
+2启动/10请求/96.528秒，92次NVML正常；两侧均完成工具实际SHA闭环、
+结构化输出、embedding和原VP8首尾识别。仅MTP开关不同，能力相等，
+准入估算103887276952/93982841120字节。自有资源清理、rev134保持；
+继续同能力托管恢复/发行及全部master，尚未认作自动恢复通过。
+
 [混合文本/视觉实际业务通过](evidence/serve-managed-vision-business-20261116/README.md)：
 1启动/4创建/68.710秒，66次NVML正常。前后文本各10步MTP，中间真实
 视频和PDF普通解码且答案正确，同PID/计数/清理闭合，rev134保持。
