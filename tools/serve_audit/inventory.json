@@ -85,7 +85,7 @@
     },
     "stream_options": {
       "semantics": "object/null；对象要求stream=true；include_usage bool默认false，include_obfuscation bool默认true。",
-      "boundary": "Chat角色、正文、推理、工具和choice结束delta带随机padding；usage-only/DONE/错误/心跳保持，false关闭。候选待CPU和业务验收。",
+      "boundary": "Chat角色、正文、推理、工具和choice结束delta带随机padding；usage-only/DONE/错误/心跳保持，false关闭。CPU、真实SDK业务和rev158发行通过。",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -93,7 +93,8 @@
         "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "tests/server_chat_message_profile_test.cpp",
-        "tests/server_http_response_test.cpp"
+        "tests/server_http_response_test.cpp",
+        "docs/evidence/serve-chat-style-delivery-20261116/README.md"
       ]
     },
     "request_id": {
@@ -174,14 +175,15 @@
     },
     "reasoning_effort": {
       "semantics": "none/minimal/low/medium/high/xhigh/max/null；缺省或null为medium；嵌套存在优先，包括null。",
-      "boundary": "none选择原生关闭thinking前缀；其他级别为实际模型提示适配，不承诺数值计算预算。候选实现，业务/发行待验。",
+      "boundary": "none选择原生关闭thinking前缀；其他级别为实际模型提示适配，不承诺数值计算预算。实际业务/可回退rev158发行已验。",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "tests/server_chat_message_profile_test.cpp",
-        "tests/server_http_response_test.cpp"
+        "tests/server_http_response_test.cpp",
+        "docs/evidence/serve-chat-style-delivery-20261116/README.md"
       ]
     },
     "add_vision_id": {
@@ -507,10 +509,11 @@
         "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "tests/server_chat_contract_test.cpp",
         "tests/server_chat_message_profile_test.cpp",
-        "tests/server_http_response_test.cpp"
+        "tests/server_http_response_test.cpp",
+        "docs/evidence/serve-chat-style-delivery-20261116/README.md"
       ],
       "semantics": "low/medium/high/null；缺省/null为medium；需要messages。",
-      "boundary": "low/high加入真实模型指令；不插入来源消息、不承诺固定答案长度。候选尚未发行，其他标准字段仍须实现。"
+      "boundary": "low/high加入真实模型指令；不插入来源消息、不承诺固定答案长度。rev158已发行，其他标准字段仍须实现。"
     }
   },
   "routes": {
@@ -6319,6 +6322,14 @@
       "tools/serve_recovery/test_chat_style_migration.py"
     ],
     "state": "targeted_cpu_passed_release_pending",
+    "master_active": true
+  },
+  "chat_style_delivery_20261116": {
+    "status": "delivered",
+    "revision": 158,
+    "engine_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+    "package_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+    "evidence": "docs/evidence/serve-chat-style-delivery-20261116/README.md",
     "master_active": true
   }
 }

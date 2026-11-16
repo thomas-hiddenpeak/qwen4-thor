@@ -9,26 +9,32 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev150；服务包 `8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9` |
-| Generation | `37da32d909a70fb06e80dd505daa4ccbbe4831c2a4ffc32e05ee7e4c135ff83a` |
-| 引擎 | `a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c` |
-| 引擎发布记录 | `690b8e356fe01dab374429c05d335fa89752679c7337137b2e2e18a439f1213b` |
+| 发布 | rev158；服务包 `cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5` |
+| Generation | `2daee557faa5d43d8225569a1c75b26b7e27ede998129d18fd25bfe16435d62c` |
+| 引擎 | `e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f` |
+| 引擎发布记录 | `9f202d1d06bd03c88608167fc1e658fa9738346649ba5ee0c418c1d2fdf0eb1f` |
 | Guardian | `383bcc63b26fe0911d1d99b455c1b4effc39b6f813e147a9cfbfb6bce5bf11dc` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 版本回退 | 已验旧控制/当前引擎包 `a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f`；保留媒体/MCP/embedding能力 |
+| 版本回退 | 已验旧控制/当前引擎包 `1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7`；保留媒体/MCP/embedding及新Chat能力 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[显示几何发行与回退记录](evidence/serve-video-geometry-delivery-20261116/README.md)
-包含17项STOPPED交付检查，54.855秒，0新增GPU。原视频正交旋转/
-镜像、像素比例、尺寸预算与来源说明已有实际JSON/SSE、主轻及精确
-整树回退后的冻结视频证据。core/client/outer状态字节、Key/配额和
-容量保持；主轻身份迁移不清空历史/预算/冷却，版本新周期保留前驱。
-未改控制源码/四个原生辅助程序，RAM压力与外层监护证据按原身份
-复用。最终STOPPED，GPU保持释放；rev142默认/状态可核验备份保留。
-自动版本恢复保留现代根，人工整根回退的v12入口无outer；不是独立
-旧引擎回退。PR30已实际合main（`d2524e4a`），[合并回执](evidence/serve-pr30-merged-20261116/README.md)保留。
+[Chat样式与流式合同交付](evidence/serve-chat-style-delivery-20261116/README.md)
+完成17项STOPPED发布/实际整根回退再前进检查，55.343秒、0新增GPU。
+完整effort/null/medium缺省、verbosity真实指令、SSE默认obfuscation及
+关闭选项已发行。none的模板/grammar边界统一；真实文档单次工具调用/
+SHA续答、JSON/SSE、多choice概率与usage通过。首轮失败保留并修复。
+精确主轻资格、保留包及正式包版本恢复有独立实际证据。
+
+core/client/outer字节、Key/配额和容量保持；profile迁移只增加已审查
+的effort集合规则，历史/预算/冷却不清空；版本新周期保留前驱。
+四个原生辅助程序和其余控制源未改，旧压力/外层监护证据按身份复用。
+最终STOPPED、GPU释放；rev150默认/状态私有备份和可恢复归档保留。
+自动恢复保留现代根，人工整根回退v12入口无outer，仍是R09待解决项；
+保留包不是独立旧引擎回退。PR31待最终head检查与实际合main。
+前驱rev150显示几何已通过PR30合main（`d2524e4a`），
+[合并回执](evidence/serve-pr30-merged-20261116/README.md)保留。
 
 八云提供方原生只读适配和分页/内容映射已做CPU合同，真实账户业务
 仍需部署方配置，未声称通过。任意仿射/其余媒体格式、缓存/分块
@@ -50,6 +56,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev158可回退交付完成](evidence/serve-chat-style-delivery-20261116/README.md)：
+17项检查通过，默认cba9f596/e0b34b43，停止意图/历史预算/Key保持。
+先前真实工具失败、迁移拒绝和两处路径调用缺陷均保留原记录；
+修复后按受影响项验收。继续PR31及标准输入/媒体缓存/后端/资源等
+全部master任务；本组完成不代表完整兼容或总目标结束。
+以下为按原身份保留的阶段记录，“待发行”不代表当前默认状态。
 
 [Chat 迁移修复精确包短验通过](evidence/serve-chat-style-migration-business-20261116/README.md)：
 正式cba9f596实际2启动/4生成/1探测/102.376秒，NVML 96项正常。

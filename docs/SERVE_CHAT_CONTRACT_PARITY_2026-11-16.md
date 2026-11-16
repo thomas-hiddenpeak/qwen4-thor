@@ -1,8 +1,8 @@
 # Chat 样式与流式协议补齐
 
 2026-11-16，A01/A02/A12 的实施子项，全部 Serve 总任务仍 active。
-本项是兼容性与业务行为修复，不是性能优化；候选尚未验收或发行，
-实际默认仍为 rev150/a7bd6785。
+本项是兼容性与业务行为修复，不是性能优化；已通过针对性CPU、
+真实业务及可回退发行，实际默认为 rev158/cba9f596/e0b34b43。
 
 ## 必须实现的合同
 
@@ -47,3 +47,22 @@ CPU 通过后同一严格 GPU 租约最多 1 次模型启动、6 条 Chat、900 
 [针对性CPU证据](evidence/serve-chat-style-cpu-20261116/README.md)通过；
 15项不同C++，6项schema/客户端/驱动，32项输入对照。首轮夹具失败和
 定点修正保留；业务与发行仍待完成。其他未改行为不重复全矩阵。
+
+## 实际验收与交付
+
+[CPU](evidence/serve-chat-style-cpu-20261116/README.md)、
+[真实首轮失败](evidence/serve-chat-style-business-failure-20261116/README.md)
+及[共享thinking边界修复](evidence/serve-chat-style-grammar-cpu-20261116/README.md)
+分别保留。修复后[原六条业务](evidence/serve-chat-style-business-20261116/README.md)
+通过，包括一次真实文档工具/SHA续答；
+[主轻资格](evidence/serve-chat-style-profile-business-20261116/README.md)和
+[精确版本组合](evidence/serve-chat-style-version-business-20261116/README.md)通过。
+发布准备发现旧迁移规则拒绝effort枚举扩展，
+[针对性CPU修复](evidence/serve-chat-style-migration-cpu-20261116/README.md)
+保持自动恢复等价/禁止丢能力，新正式包再做
+[受影响版本短验](evidence/serve-chat-style-migration-business-20261116/README.md)。
+[rev158发行](evidence/serve-chat-style-delivery-20261116/README.md)完成17项
+STOPPED交付/回退/前进检查，状态预算保持；不追加全模型或性能矩阵。
+
+Responses默认medium、其余七个标准Chat字段、历史audio/annotations、
+媒体状态缓存/后端及其他全部master继续，阶段发行不是总任务结束。

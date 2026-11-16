@@ -78,20 +78,25 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat 8 frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/verbosity/web_search_options",
-        "Chat stream_options.include_obfuscation, null/default and response projection parity"
+        "Chat seven frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/web_search_options",
+        "Remaining default/null, nested message and response projection parity beyond delivered Chat style fields"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_and_real_business_accepted_release_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
-        "default_unchanged": true,
+        "default_unchanged": false,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
         "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
-        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     },
     {
@@ -130,20 +135,24 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Complete Chat effort enum/null mapping using native semantics",
         "Non-null audio/annotations history and matching model/output/template round trips"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_and_real_business_accepted_release_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
-        "default_unchanged": true,
+        "default_unchanged": false,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
         "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
-        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     },
     {
@@ -2665,16 +2674,21 @@
         "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_and_real_business_accepted_release_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
-        "default_unchanged": true,
+        "default_unchanged": false,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
         "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
-        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     },
     {
@@ -3853,9 +3867,9 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
-        "binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
-        "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
-        "record": "evidence/serve-video-geometry-delivery-20261116/delivery-01/result.json"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "record": "evidence/serve-chat-style-delivery-20261116/delivery-01/result.json"
       },
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -4045,7 +4059,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR30 exact-head checks and actual main merge",
+        "PR31 exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -4053,6 +4067,10 @@
         "pr": 30,
         "head": "a362d68d65cdaac84a4067e92f10d87bd04d0fc8",
         "merge": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
+        "evidence": "evidence/serve-pr30-merged-20261116/README.md"
+      },
+      "pr30_actual_merge": {
+        "commit": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
         "evidence": "evidence/serve-pr30-merged-20261116/README.md"
       }
     },
@@ -4092,19 +4110,24 @@
         "Executable long-stability handoff; user performs long run"
       ],
       "chat_style_parity_20261116": {
-        "state": "targeted_cpu_and_real_business_accepted_release_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
         "runtime_accepted": true,
-        "default_unchanged": true,
+        "default_unchanged": false,
         "master_complete": false,
         "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
         "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
         "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
         "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
-        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md"
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     }
   ],
-  "next_task": "Complete PR30 exact-head main integration and current surface reconciliation checks; implement Chat contract parity first, then all remaining media/cache, tool/backend, client and resource/cold-recovery tasks.",
-  "next": "Complete PR30 exact-head main integration and current surface reconciliation checks; implement Chat contract parity first, then all remaining media/cache, tool/backend, client and resource/cold-recovery tasks."
+  "next_task": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary.",
+  "next": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary."
 }

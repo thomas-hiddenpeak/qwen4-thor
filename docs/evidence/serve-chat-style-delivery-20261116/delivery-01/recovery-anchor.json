@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/retained-01/bundle",
+  "manifest_sha256": "1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/delivery-01/fallback-service.release.json",
+  "service_release_sha256": "5d1673ace010a7af1e7235c98c1a26e081cafc8228f9930c5c1f6d00513774fe",
+  "generation_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/delivery-01/retained-anchor-generation.json",
+  "manual_root_rollback_requires_stopped": true
+}
