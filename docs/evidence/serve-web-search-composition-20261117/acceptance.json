@@ -1,0 +1,120 @@
+{
+  "status": "ACCEPT_NATIVE_WEB_SEARCH_COMPOSITION",
+  "binary_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/package-01/bundle",
+    "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/retained-01/bundle",
+    "manifest_sha256": "aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/modern-retained-01/bundle",
+    "manifest_sha256": "e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8"
+  },
+  "stages": [
+    {
+      "name": "profiles-01",
+      "original_status": "PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS",
+      "guard_status": "COMPLETED",
+      "counts": {
+        "starts": 2,
+        "chats": 10,
+        "controls": 72
+      },
+      "strict_lease_seconds": 88.49698944529518,
+      "nvml_queries": 83,
+      "accepted_separately": false
+    },
+    {
+      "name": "legacy-business-01",
+      "original_status": "FAILED",
+      "guard_status": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 153
+      },
+      "strict_lease_seconds": 48.018003148026764,
+      "nvml_queries": 46,
+      "accepted_separately": true
+    },
+    {
+      "name": "modern-business-02",
+      "original_status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "guard_status": "COMPLETED",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 152
+      },
+      "strict_lease_seconds": 48.14792916318402,
+      "nvml_queries": 46,
+      "accepted_separately": false
+    }
+  ],
+  "composition_starts": 4,
+  "composition_requests": 16,
+  "composition_lease_seconds": 184.66292175650597,
+  "total_starts": 8,
+  "total_external_requests": 25,
+  "strict_lease_seconds": 361.7813914818689,
+  "nvml_queries": 343,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "feature_evidence": "docs/evidence/serve-web-search-business-20261117/README.md",
+  "legacy_original_run_accepted": false,
+  "legacy_business_independently_accepted": true,
+  "modern_service_acceptance": {
+    "status": "PASS_WEB_ISOLATION_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_WEB_ISOLATION_SERVICE_RETAINED",
+    "manifest_sha256": "e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8",
+    "engine_binary_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+    "actual_business": {
+      "status": "ACCEPT_WEB_ISOLATION_SERVICE_RETAINED",
+      "strict_lease_seconds": 48.14792916318402,
+      "nvml_queries": 46,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 152
+      },
+      "source_commit": "5289fd7c1f0c1b45b400d9c4652b7ec06ae3e0ac",
+      "plan_sha256": "520cdb265ac7c6305683fca43f665e421544759131a510a36ed59431d1abaf9f",
+      "result_sha256": "d349c64fc01e8a6ebc02d69a6baa6671b7d40083b9a1b5ef4f3b4704b1944bf3",
+      "lease_result_sha256": "765e6383ea107ecebe496422c532ba67ac38172224165dcef29f423cd6ed2bc1",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_control_delta": [
+    "tools/serve_recovery/bundle.py",
+    "tools/serve_recovery/profile_migration.py",
+    "tools/serve_recovery/service.py",
+    "tools/serve_recovery/version_contract.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/service.py"
+  ],
+  "candidate_whole_package_gpu_run": false,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "archive_sha256": "5bd5a48f99b56a33eeead3bfab264ca35f181e7fa6cac7b5152e0c1d77f1e8fe",
+  "secret_scan_matches": 0
+}

@@ -78,7 +78,8 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat three frozen-reference top-level fields: audio/modalities/web_search_options",
+        "Chat frozen-reference audio/modalities, including actual model backends",
+        "Native web options implemented and accepted; complete reversible delivery and actual main merge",
         "Remaining default/null, nested message and response projection parity beyond delivered Chat style, attribution and cache fields"
       ],
       "chat_style_parity_20261116": {
@@ -214,7 +215,7 @@
         "default_unchanged": false
       },
       "web_search_20261117": {
-        "state": "implementation_in_progress",
+        "state": "accepted_composition_delivery_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -246,10 +247,13 @@
         "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
         "accepted_starts": 2,
         "accepted_requests": 8,
-        "cumulative_starts": 4,
-        "cumulative_requests": 9,
-        "cumulative_lease_seconds": 177.11846972536296,
-        "service_delivery_pending": true
+        "cumulative_starts": 8,
+        "cumulative_requests": 25,
+        "cumulative_lease_seconds": 361.7813914818689,
+        "service_delivery_pending": true,
+        "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
+        "recovery_cpu_tests": 7,
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
       }
     },
     {
@@ -1772,7 +1776,7 @@
         "new_tests": 0
       },
       "web_search_20261117": {
-        "state": "implementation_in_progress",
+        "state": "accepted_composition_delivery_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -1804,10 +1808,13 @@
         "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
         "accepted_starts": 2,
         "accepted_requests": 8,
-        "cumulative_starts": 4,
-        "cumulative_requests": 9,
-        "cumulative_lease_seconds": 177.11846972536296,
-        "service_delivery_pending": true
+        "cumulative_starts": 8,
+        "cumulative_requests": 25,
+        "cumulative_lease_seconds": 361.7813914818689,
+        "service_delivery_pending": true,
+        "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
+        "recovery_cpu_tests": 7,
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
       }
     },
     {
@@ -2954,12 +2961,12 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Actual web search backend, Chat web_search_options and Responses execution with source-bound citations and SDK round trips",
+        "Native configured-site Chat/Responses search accepted; finish reversible delivery/main and required broader web-provider coverage",
         "Actual configured cloud account permission/pagination/content acceptance",
         "Remaining builtin/tool VM file/video and typed-output combinations"
       ],
       "web_search_20261117": {
-        "state": "implementation_in_progress",
+        "state": "accepted_composition_delivery_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -2991,10 +2998,13 @@
         "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
         "accepted_starts": 2,
         "accepted_requests": 8,
-        "cumulative_starts": 4,
-        "cumulative_requests": 9,
-        "cumulative_lease_seconds": 177.11846972536296,
-        "service_delivery_pending": true
+        "cumulative_starts": 8,
+        "cumulative_requests": 25,
+        "cumulative_lease_seconds": 361.7813914818689,
+        "service_delivery_pending": true,
+        "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
+        "recovery_cpu_tests": 7,
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
       }
     },
     {
@@ -3247,7 +3257,7 @@
         "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       },
       "web_search_20261117": {
-        "state": "implementation_in_progress",
+        "state": "accepted_composition_delivery_pending",
         "plan": "SERVE_WEB_SEARCH_2026-11-17.md",
         "component_cpu_limit": 18,
         "actual_runtime_accepted": true,
@@ -3279,10 +3289,13 @@
         "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
         "accepted_starts": 2,
         "accepted_requests": 8,
-        "cumulative_starts": 4,
-        "cumulative_requests": 9,
-        "cumulative_lease_seconds": 177.11846972536296,
-        "service_delivery_pending": true
+        "cumulative_starts": 8,
+        "cumulative_requests": 25,
+        "cumulative_lease_seconds": 361.7813914818689,
+        "service_delivery_pending": true,
+        "composition_evidence": "evidence/serve-web-search-composition-20261117/README.md",
+        "recovery_cpu_tests": 7,
+        "recovery_cpu_evidence": "evidence/serve-web-search-recovery-cpu-20261117/README.md"
       }
     },
     {
@@ -4907,7 +4920,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR39 Stop rev224 final-head checks and actual main merge",
+        "Native web-search reversible publication and actual main integration",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5345,8 +5358,8 @@
       }
     }
   ],
-  "next_task": "PR38 merged as 0e4f5ac2. Complete PR39 Stop rev224 checks and actual main merge; continue native web-search persistent index, Chat/Responses execution, citations/SDK and all remaining master tasks.",
-  "next": "PR39 Stop rev224 merged as 1d905350. Integrate native web search into Chat/Responses, citations/history/SDK and actual business delivery; continue all remaining master tasks.",
+  "next_task": "PR38/39 are actually merged. Publish accepted native web composition reversibly, refresh handoff and merge verified PR; continue remaining protocol/audio/media/backend/SDK and cold/resource/host tasks until all master requirements are complete.",
+  "next": "PR38/39 are actually merged. Publish accepted native web composition reversibly, refresh handoff and merge verified PR; continue remaining protocol/audio/media/backend/SDK and cold/resource/host tasks until all master requirements are complete.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
