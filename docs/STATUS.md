@@ -50,6 +50,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[显示候选精确包/版本回退通过](evidence/serve-video-geometry-version-business-20261116/README.md)：
+保留a9bd9c73独立1启动/2生成，正式8d9c07f1实际2启动/4生成/1探测；
+严格租约53.503/101.308秒、51/95项NVML正常。冻结镜像视频SSE角点/
+布局、能力/配置历史保留，持久STOPPED和清理通过。rev142保持，
+继续可回退发布与PR30实际合main；未改控制/数值证据复用、master继续。
+
 [显示候选主轻资格与封包通过](evidence/serve-video-geometry-profile-business-20261116/README.md)：
 a7bd6785两侧实际schema/文档工具/embedding/视频，2启动/10请求/
 87.791秒、83项NVML正常，注册表a4c27749；控制源码与四个原生程序

@@ -1753,7 +1753,7 @@
         "accepted_business_seconds": 53.44687231024727
       },
       "display_geometry": {
-        "state": "business_profiles_accepted_version_delivery_pending",
+        "state": "all_targeted_acceptance_passed_publication_pending",
         "plan": "SERVE_VIDEO_GEOMETRY_2026-11-16.md",
         "cpu_evidence": "evidence/serve-video-geometry-cpu-20261116/README.md",
         "candidate_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
@@ -1770,7 +1770,7 @@
           "creates": 2,
           "seconds": 43.68216426577419
         },
-        "next": "Exact retained and primary payload geometry/frozen SSE version acceptance then reversible publication; continue all remaining master requirements.",
+        "next": "Reversible STOPPED publication and PR30 main integration, then all remaining compatibility/resource/backend/master requirements.",
         "business": "evidence/serve-video-geometry-business-20261116/README.md",
         "current_actual": {
           "starts": 1,
@@ -1779,7 +1779,8 @@
         },
         "profiles": "evidence/serve-video-geometry-profile-business-20261116/README.md",
         "package_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
-        "fallback_sha256": "a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f"
+        "fallback_sha256": "a9bd9c73faf4aba1ee381edcac67d3eda71f2db2c862bac4f5fdc8865ba97a2f",
+        "version_business": "evidence/serve-video-geometry-version-business-20261116/README.md"
       }
     },
     {
