@@ -9,6 +9,7 @@
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/generation_style.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/responses_file_search.h"
@@ -657,25 +658,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     // The checkpoint has three named effort prompts. Other API levels use
     // explicit natural-language adaptation, not a false numeric token promise.
     Set(&chat, "reasoning_effort", String("medium"));
-    if (envelope.reasoning_effort == "minimal")
-      guidance +=
-          "Use minimal reasoning: only the essential steps needed for an "
-          "accurate answer.\n";
-    else if (envelope.reasoning_effort == "high")
-      guidance +=
-          "Use high reasoning effort: check assumptions and verify the "
-          "important steps before answering.\n";
-    else
-      guidance +=
-          "Use maximum reasoning effort within the output budget: examine "
-          "alternatives and verify the result carefully.\n";
+    guidance += ReasoningGuidance(envelope.reasoning_effort);
+    guidance += '\n';
   }
-  if (envelope.verbosity == "low")
-    guidance += "Keep the final answer concise and directly relevant.\n";
-  else if (envelope.verbosity == "high")
-    guidance +=
-        "Give a detailed final answer with the relevant explanation and "
-        "evidence.\n";
+  if (const auto style = VerbosityGuidance(envelope.verbosity);
+      !style.empty()) {
+    guidance += style;
+    guidance += '\n';
+  }
   if (!guidance.empty()) {
     Field(chat, "messages")
         .array.insert(Field(chat, "messages").array.begin(),

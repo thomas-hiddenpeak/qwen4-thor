@@ -1,0 +1,9 @@
+test_automatic_change_reverse_loss_and_implicit_upgrade_rejected (tools.serve_recovery.test_chat_style_migration.ChatStyleMigrationTests.test_automatic_change_reverse_loss_and_implicit_upgrade_rejected) ... ok
+test_enum_order_only_is_semantic_and_unrelated_changes_are_not (tools.serve_recovery.test_chat_style_migration.ChatStyleMigrationTests.test_enum_order_only_is_semantic_and_unrelated_changes_are_not) ... ok
+test_explicit_upgrade_preserves_history_and_actual_observations (tools.serve_recovery.test_chat_style_migration.ChatStyleMigrationTests.test_explicit_upgrade_preserves_history_and_actual_observations) ... ok
+test_invalid_enum_or_missing_native_implementation_rejected (tools.serve_recovery.test_chat_style_migration.ChatStyleMigrationTests.test_invalid_enum_or_missing_native_implementation_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.133s
+
+OK

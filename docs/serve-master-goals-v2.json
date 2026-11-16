@@ -27,7 +27,22 @@
       "implementation": "确认推理与应用服务之外的组织/账单/训练管理等平台API范围",
       "acceptance": "记录用户决定和端点分类；不阻塞已确定任务，不自行删项",
       "depends_on": [],
-      "evidence": []
+      "evidence": [
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "scope_clarification_pending",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "User scope decision for organization/billing/training APIs; all determined independent work continues"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "User scope decision for organization/billing/training APIs; all determined independent work continues"
+      ]
     },
     {
       "id": "A01",
@@ -38,7 +53,8 @@
       "depends_on": [],
       "evidence": [
         "SERVE_CHAT_INPUT_2026-11-08.md",
-        "evidence/serve-chat-input-20261108/README.md"
+        "evidence/serve-chat-input-20261108/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "accepted_subsets": [
@@ -49,7 +65,39 @@
           "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
           "full_task_complete": false
         }
-      ]
+      ],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Chat 8 frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/verbosity/web_search_options",
+          "Chat stream_options.include_obfuscation, null/default and response projection parity"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Chat seven frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/web_search_options",
+        "Remaining default/null, nested message and response projection parity beyond delivered Chat style fields"
+      ],
+      "chat_style_parity_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": true,
+        "default_unchanged": false,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+      }
     },
     {
       "id": "A02",
@@ -62,7 +110,8 @@
       ],
       "evidence": [
         "SERVE_CHAT_INPUT_2026-11-08.md",
-        "evidence/serve-chat-input-20261108/README.md"
+        "evidence/serve-chat-input-20261108/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "accepted_subsets": [
@@ -73,7 +122,38 @@
           "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
           "full_task_complete": false
         }
-      ]
+      ],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Complete Chat effort enum/null mapping using native semantics",
+          "Non-null audio/annotations history and matching model/output/template round trips"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Non-null audio/annotations history and matching model/output/template round trips"
+      ],
+      "chat_style_parity_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": true,
+        "default_unchanged": false,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
+      }
     },
     {
       "id": "A03",
@@ -89,7 +169,8 @@
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "docs/evidence/serve-sampling-20261108/index.json",
         "docs/SERVE_PREDICTION_2026-11-08.md",
-        "docs/evidence/serve-prediction-20261108/index.json"
+        "docs/evidence/serve-prediction-20261108/index.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
@@ -97,7 +178,15 @@
         "record": "docs/evidence/serve-prediction-20261108/delivery-01/result.json"
       },
       "remaining_required_after_sampling_subset": [],
-      "prediction_progress": "Targeted CPU and actual 1-start/7-Chat business accepted and delivered; initial warnings/JS fixture failures preserved; remaining broader A01/A04/A05 tasks stay open"
+      "prediction_progress": "Targeted CPU and actual 1-start/7-Chat business accepted and delivered; initial warnings/JS fixture failures preserved; remaining broader A01/A04/A05 tasks stay open",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implemented_validated_delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "A04",
@@ -115,7 +204,8 @@
         "docs/SERVE_LEGACY_TOOLS_2026-11-08.md",
         "docs/evidence/serve-legacy-tools-20261108/index.json",
         "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
-        "docs/evidence/serve-custom-tools-20261108/index.json"
+        "docs/evidence/serve-custom-tools-20261108/index.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
@@ -140,7 +230,15 @@
         }
       ],
       "remaining_required": [],
-      "active_subset": null
+      "active_subset": null,
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implemented_validated_delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "A05",
@@ -155,7 +253,8 @@
       "evidence": [
         "docs/SERVE_SCHEMA_V2_2026-11-08.md",
         "docs/evidence/serve-schema-v2-20261108/index.json",
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
@@ -164,8 +263,21 @@
       },
       "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
       "remaining_required": [
-        "A10媒体状态缓存及schema/工具组合：实际图像/视频身份、MRoPE与状态恢复、终态发布和客户端隔离"
-      ]
+        "A10媒体状态缓存及schema/工具组合：实际图像/视频身份、MRoPE与状态恢复、终态发布和客户端隔离",
+        "Media state cache with true image/video identity and MRoPE state",
+        "Stop, constrained-output and private cache combinations with correct final validation"
+      ],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "subset_delivered_integration_pending",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Media state cache with true image/video identity and MRoPE state",
+          "Stop, constrained-output and private cache combinations with correct final validation"
+        ],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "A06",
@@ -179,7 +291,8 @@
       ],
       "evidence": [
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "docs/evidence/serve-completions-20261108/README.md"
+        "docs/evidence/serve-completions-20261108/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55",
@@ -188,7 +301,15 @@
         "service_release_sha256": "1575d87732f6100b7dc7376492052c913334298cd81c07adf00c1dfbeb77a194",
         "protocol_sha256": "a1089f3d5c714bbb115d9fca32d755cf66804c96d16bdc88d0f39b9d82ed8484"
       },
-      "development_status": "Native Completions/Models, full prompt/echo/logprobs/best_of/usage and raw SDK JSON/SSE targeted acceptance delivered with rollback. Original final driver counter failure retained and reconciled from unchanged runtime evidence."
+      "development_status": "Native Completions/Models, full prompt/echo/logprobs/best_of/usage and raw SDK JSON/SSE targeted acceptance delivered with rollback. Original final driver counter failure retained and reconciled from unchanged runtime evidence.",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "A07",
@@ -230,7 +351,8 @@
         "evidence/serve-input-tokens-followup-20261110/README.md",
         "evidence/serve-input-tokens-business-20261110/README.md",
         "evidence/serve-input-tokens-delivery-20261110/README.md",
-        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -259,7 +381,9 @@
       "remaining_required": [
         "Complete A09/A10/A11 dependent media/files/builtin tools, all required input/output/include/SSE producers and SDK integration",
         "Typed outputs, MCP and remaining builtin execution combinations. Async/caller/namespace/output_schema/discovery/programmatic have delivered subsets; do not reclassify these as entirely missing.",
-        "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered"
+        "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered",
+        "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP",
+        "Responses default reasoning_effort remains xhigh; align omitted/null with frozen official medium default in next input-contract group."
       ],
       "automatic_truncation": {
         "state": "delivered",
@@ -1223,7 +1347,8 @@
         "cpp_passed": 11,
         "actual_cli_passed": 5,
         "gpu_starts": 0,
-        "default_changed": false
+        "default_changed": false,
+        "current_delivery": "Included in rev142/rev150 sources; original targeted CPU evidence retained. Native provider live accounts remain unaccepted."
       },
       "native_providers": {
         "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
@@ -1278,10 +1403,11 @@
         "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
-        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599",
+        "current_delivery": "Native provider implementation included in default rev150; actual cloud accounts not accepted, original CPU evidence only."
       },
       "native_video_preparation": {
-        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "state": "delivered_rev150_geometry_accepted_remaining_formats_open",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1292,7 +1418,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "next": "Media state/cache and remaining format/backend/client combinations; original and geometry business already delivered.",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1326,6 +1452,16 @@
         "accepted_business_starts": 1,
         "accepted_business_creates": 8,
         "accepted_business_seconds": 53.44687231024727
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP"
+        ],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -1342,7 +1478,8 @@
         "evidence/serve-retention-cpu-20261110/README.md",
         "evidence/serve-retention-followup-20261110/README.md",
         "evidence/serve-retention-business-20261110/README.md",
-        "evidence/serve-retention-delivery-20261110/README.md"
+        "evidence/serve-retention-delivery-20261110/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -1389,6 +1526,14 @@
         "starts": 3,
         "generations": 4,
         "seconds": 118.33398287231103
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -1407,13 +1552,16 @@
         "evidence/serve-uploads-business-20261110/README.md",
         "evidence/serve-uploads-delivery-20261110/README.md",
         "evidence/serve-batch-business-20261111/README.md",
-        "evidence/serve-batch-delivery-20261111/README.md"
+        "evidence/serve-batch-delivery-20261111/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
       "remaining_required": [
         "A09.7 all eight endpoint backends with A10",
-        "A09.8 ongoing SDK/native release and rollback for remaining APIs"
+        "A09.8 ongoing SDK/native release and rollback for remaining APIs",
+        "Actual image generation/edit and video Batch backends",
+        "Per-backend SDK, recovery and release composition"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
       "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
@@ -1613,7 +1761,18 @@
         "state": "STOPPED",
         "main_merged": false
       },
-      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md"
+      "embeddings_delivery": "evidence/serve-embeddings-delivery-20261111/README.md",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Actual image generation/edit and video Batch backends",
+          "Per-backend SDK, recovery and release composition"
+        ],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "A10",
@@ -1629,7 +1788,8 @@
         "evidence/serve-native-embedding-foundation-20261111/README.md",
         "evidence/serve-native-embedding-core-cpu-20261111/README.md",
         "evidence/serve-native-embedding-numerical-20261111/README.md",
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "findings": [
@@ -1706,7 +1866,7 @@
         "service_release_sha256": "03227770d91578ba4cba85f4232380d04f1e401c0d09e63b0bdbf4f4d01dc89d"
       },
       "native_video_preparation": {
-        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "state": "delivered_rev150_geometry_accepted_remaining_formats_open",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -1717,7 +1877,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "next": "Media state/cache and remaining format/backend/client combinations; original and geometry business already delivered.",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -1783,7 +1943,24 @@
         "version_business": "evidence/serve-video-geometry-version-business-20261116/README.md",
         "delivery": "evidence/serve-video-geometry-delivery-20261116/README.md",
         "revision": 150
-      }
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Native media cache/MRoPE state resume",
+          "Remaining affine/format combinations",
+          "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Native media cache/MRoPE state resume",
+        "Remaining affine/format combinations",
+        "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
+      ]
     },
     {
       "id": "A11",
@@ -1816,7 +1993,8 @@
         "evidence/serve-file-search-profiles-20261112/README.md",
         "evidence/serve-retrieval-managed-business-20261112/README.md",
         "evidence/serve-retrieval-delivery-20261112/README.md",
-        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md"
+        "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "security_requirements": [
@@ -2260,7 +2438,8 @@
         "cpp_passed": 11,
         "actual_cli_passed": 5,
         "gpu_starts": 0,
-        "default_changed": false
+        "default_changed": false,
+        "current_delivery": "Included in rev142/rev150 sources; original targeted CPU evidence retained. Native provider live accounts remain unaccepted."
       },
       "native_providers": {
         "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
@@ -2315,10 +2494,11 @@
         "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
-        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599",
+        "current_delivery": "Native provider implementation included in default rev150; actual cloud accounts not accepted, original CPU evidence only."
       },
       "native_video_preparation": {
-        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "state": "delivered_rev150_geometry_accepted_remaining_formats_open",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -2329,7 +2509,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "next": "Media state/cache and remaining format/backend/client combinations; original and geometry business already delivered.",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -2363,12 +2543,27 @@
         "accepted_business_starts": 1,
         "accepted_business_creates": 8,
         "accepted_business_seconds": 53.44687231024727
-      }
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementation_in_progress",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Actual configured cloud account permission/pagination/content acceptance",
+          "Remaining builtin/tool VM file/video and typed-output combinations"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Actual configured cloud account permission/pagination/content acceptance",
+        "Remaining builtin/tool VM file/video and typed-output combinations"
+      ]
     },
     {
       "id": "A12",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "官方Python/JS SDK、现有客户端与持久任务迁移",
       "acceptance": "对新能力做真实调用及错误/流式短验；升级合同与回退路径明确，逐项解除需固定旧包的限制",
       "depends_on": [
@@ -2385,7 +2580,8 @@
         "N03"
       ],
       "evidence": [
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -2461,7 +2657,38 @@
         "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
-        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599",
+        "current_delivery": "Native provider implementation included in default rev150; actual cloud accounts not accepted, original CPU evidence only."
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "planned",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
+      ],
+      "chat_style_parity_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": true,
+        "default_unchanged": false,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     },
     {
@@ -2474,7 +2701,8 @@
       "evidence": [
         "SERVE_NATIVE_ACCESS_2026-11-08.md",
         "evidence/serve-native-access-20261108/audit.json",
-        "evidence/serve-native-access-20261108/delivery-01/result.json"
+        "evidence/serve-native-access-20261108/delivery-01/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
@@ -2483,6 +2711,14 @@
         "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
         "state": "STOPPED",
         "merged_main": false
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2497,7 +2733,8 @@
       "evidence": [
         "SERVE_NATIVE_ACCESS_2026-11-08.md",
         "evidence/serve-native-access-20261108/audit.json",
-        "evidence/serve-native-access-20261108/delivery-01/result.json"
+        "evidence/serve-native-access-20261108/delivery-01/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
@@ -2506,6 +2743,14 @@
         "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
         "state": "STOPPED",
         "merged_main": false
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2520,7 +2765,8 @@
       "evidence": [
         "SERVE_NATIVE_ACCESS_2026-11-08.md",
         "evidence/serve-native-access-20261108/audit.json",
-        "evidence/serve-native-access-20261108/delivery-01/result.json"
+        "evidence/serve-native-access-20261108/delivery-01/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
@@ -2529,6 +2775,14 @@
         "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
         "state": "STOPPED",
         "merged_main": false
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2561,7 +2815,8 @@
         "evidence/serve-access-config-fix-20261109/decision.json",
         "evidence/serve-access-checkpoint-20261109/decision.json",
         "evidence/serve-access-business-20261109/decision.json",
-        "evidence/serve-access-delivery-20261109/decision.json"
+        "evidence/serve-access-delivery-20261109/decision.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
@@ -2574,7 +2829,15 @@
       },
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [],
-      "development_status": "已完成实际TLS/SDK/工具/辅助失能/密钥与配额/交接及兼容回退，20条接受CLI和停止状态交付检查通过。继续全部总计划。"
+      "development_status": "已完成实际TLS/SDK/工具/辅助失能/密钥与配额/交接及兼容回退，20条接受CLI和停止状态交付检查通过。继续全部总计划。",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "N05",
@@ -2595,7 +2858,8 @@
         "evidence/serve-http-prefix-fix-20261109/decision.json",
         "evidence/serve-http-business-20261109/decision.json",
         "evidence/serve-http-delivery-20261109/decision.json",
-        "evidence/serve-cache-route-delivery-20261112/README.md"
+        "evidence/serve-cache-route-delivery-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
@@ -2624,7 +2888,15 @@
         "commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
         "evidence": "docs/evidence/serve-pr23-merged-20261113"
       },
-      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md"
+      "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "N06",
@@ -2643,7 +2915,8 @@
         "evidence/serve-retention-lineage-20261109/decision.json",
         "evidence/serve-native-observation-delivery-20261109/decision.json",
         "evidence/serve-gateway-diagnostics-20261109/README.md",
-        "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
+        "evidence/serve-gateway-diagnostics-delivery-20261109/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
@@ -2670,7 +2943,15 @@
           "fix_evidence": "evidence/serve-gateway-diagnostics-20261109/README.md",
           "delivery_evidence": "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
         }
-      ]
+      ],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "N07",
@@ -2693,7 +2974,8 @@
         "evidence/serve-lifecycle-driver-20261109/README.md",
         "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
         "evidence/serve-lifecycle-business-20261109/README.md",
-        "evidence/serve-lifecycle-delivery-20261109/README.md"
+        "evidence/serve-lifecycle-delivery-20261109/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
@@ -2739,6 +3021,14 @@
         "actual_cli_passed": 5,
         "gpu_starts": 0,
         "default_changed": false
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2757,7 +3047,8 @@
         "evidence/serve-cache-io-business-20261109/decision.json",
         "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json",
         "evidence/serve-memory-isolation-delivery-20261111/README.md",
-        "evidence/serve-cache-route-delivery-20261112/README.md"
+        "evidence/serve-cache-route-delivery-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "e5a14e1d8d17755c2b991feec3c40a5d495c1712cc57895b526bd645e39ec1dd",
@@ -2833,6 +3124,14 @@
         "merged": true,
         "commit": "7d00316a853728e824c5e20bf98c14a10ccdaffa",
         "evidence": "docs/evidence/serve-pr23-merged-20261113"
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2846,7 +3145,8 @@
         "SERVE_GRAMMAR_REAP_2026-11-08.md",
         "evidence/serve-grammar-reap-20261108/audit.json",
         "evidence/serve-grammar-reap-20261108/business-01/result.json",
-        "evidence/serve-grammar-reap-20261108/delivery-02/result.json"
+        "evidence/serve-grammar-reap-20261108/delivery-02/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
@@ -2855,6 +3155,14 @@
         "release_sha256": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119",
         "state": "STOPPED",
         "merged_main": false
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2878,7 +3186,8 @@
         "evidence/serve-progress-business-20261109/decision.json",
         "evidence/serve-progress-resource-20261109/decision.json",
         "evidence/serve-cache-io-business-20261109/decision.json",
-        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json"
+        "evidence/serve-cache-progress-delivery-20261109/delivery-01/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "manifest_sha256": "fac58f347f8ba65857d9c8c7b2a1abf07668f80bd59b6d4dfa1b422358d2c10f",
@@ -2895,7 +3204,15 @@
           "state": "implemented_verified_delivered"
         }
       ],
-      "remaining": []
+      "remaining": [],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "R04",
@@ -2911,7 +3228,8 @@
         "evidence/serve-run-retention-20261109/decision.json",
         "evidence/serve-retention-epoch-20261109/decision.json",
         "evidence/serve-retention-lineage-20261109/decision.json",
-        "evidence/serve-native-observation-delivery-20261109/decision.json"
+        "evidence/serve-native-observation-delivery-20261109/decision.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
@@ -2923,7 +3241,15 @@
         "whole_task_complete": true
       },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": []
+      "remaining": [],
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "R05",
@@ -2938,7 +3264,8 @@
       "evidence": [
         "evidence/serve-adaptive-profile-qualification-20261111/acceptance.json",
         "evidence/serve-adaptive-profile-managed-20261111/acceptance-final.json",
-        "evidence/serve-adaptive-profile-delivery-20261111/result.json"
+        "evidence/serve-adaptive-profile-delivery-20261111/result.json",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
@@ -2966,6 +3293,14 @@
         "existing_default_rev72_preserved": true,
         "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
         "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -2990,7 +3325,8 @@
         "evidence/serve-version-business-20261112/README.md",
         "evidence/serve-version-business-driver-20261112/README.md",
         "evidence/serve-version-legacy-root-repair-20261112/README.md",
-        "evidence/serve-version-delivery-20261112/README.md"
+        "evidence/serve-version-delivery-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "engine_binary_sha256": "96577e45d40f60211bc2915da29254e5ee0c8df63dd00e1356e4ceacafb7003a",
@@ -3047,6 +3383,14 @@
         "existing_default_rev72_preserved": true,
         "actual_profiles": "docs/evidence/serve-refusal-profiles-20261112/README.md",
         "candidate_manifest_sha256": "ef8881343d3ab30ef9b100e54c0a0162cdeb4ce9a7be56a8fd8e8640c76c1384"
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
       }
     },
     {
@@ -3074,7 +3418,8 @@
         "docs/evidence/serve-cold-channel-cpu-20261112/review.json",
         "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
         "evidence/serve-cold-entry-cpu-20261112/README.md",
-        "evidence/serve-cold-watch-cpu-20261112/README.md"
+        "evidence/serve-cold-watch-cpu-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
@@ -3110,7 +3455,22 @@
       "composition_status": "Resource-bound v2 original service-leaf selection, permanent association, lifecycle and uninstall interlock: 15 targeted CPU accepted. Native explicit detach: 14 CPU accepted. Root per-generation channel: 20 distinct CPU accepted. Outer/host: 27; public entry: 12. Hardware-positive issuer paths remain explicit CPU fixtures; actual GPU cold qualification/business and combined release are still required. Original v1 R07 candidate remains frozen.",
       "cold_channel_development": "20 distinct targeted CPU tests accepted, 23 invocations including 3 corrected fixture errors; root issuer and replay journal implemented. Outer/runtime integration and release remain required.",
       "cold_outer_development": "Per-generation outer/host integration 27 distinct CPU, public protected entry/managed lease/explicit start 12 CPU, native auxiliary recovery 16 distinct CPU accepted. Native watcher uses original auxiliary tree custody plus inherited kernel OFD, durable 3 starts/15 min and 5 s cooldown; actual issuer/watcher SIGKILL, bounded crash loop, native stop/removal and history fault isolation passed. New boot origin persists without refund, historical fixture only. No GPU, host-root rule or release. Required remaining: actual cold/recovery business, R08 DRAM pressure integration and reversible delivery; all master tasks continue.",
-      "frozen_plan_status": "Old v1 plan is not executable: runtime-group and root-owner validation defects plus protected-default identity changed; refresh fixed source/package/driver before actual cold business, preserving previous evidence and maintenance boundary."
+      "frozen_plan_status": "Old v1 plan is not executable: runtime-group and root-owner validation defects plus protected-default identity changed; refresh fixed source/package/driver before actual cold business, preserving previous evidence and maintenance boundary.",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementing",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Refresh old cold candidate source/package/driver and actual controlled NVML-unavailable qualification",
+          "Cold/resource/outer combined business and reversible release"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Refresh old cold candidate source/package/driver and actual controlled NVML-unavailable qualification",
+        "Cold/resource/outer combined business and reversible release"
+      ]
     },
     {
       "id": "R08",
@@ -3139,7 +3499,8 @@
         "evidence/serve-resource-memory-cpu-20261112/README.md",
         "evidence/serve-resource-version-cpu-20261112/README.md",
         "evidence/serve-outer-resource-business-20261112/README.md",
-        "evidence/serve-outer-resource-delivery-20261112/README.md"
+        "evidence/serve-outer-resource-delivery-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
@@ -3157,7 +3518,23 @@
         "publication_revision": 72,
         "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
         "whole_task_complete": false
-      }
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "implementing",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Unified physical DRAM/GPU charge hard boundary platform evidence",
+          "Cold and pressure composition beyond delivered normal-NVML resource subset"
+        ],
+        "delivered_subset": "Normal-NVML native resource/outer/version recovery accepted and delivered; historical development notes are not current pending status.",
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Unified physical DRAM/GPU charge hard boundary platform evidence",
+        "Cold and pressure composition beyond delivered normal-NVML resource subset"
+      ]
     },
     {
       "id": "R09",
@@ -3198,7 +3575,8 @@
         "evidence/serve-cold-entry-cpu-20261112/README.md",
         "evidence/serve-cold-watch-cpu-20261112/README.md",
         "evidence/serve-outer-resource-business-20261112/README.md",
-        "evidence/serve-outer-resource-delivery-20261112/README.md"
+        "evidence/serve-outer-resource-delivery-20261112/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -3250,7 +3628,23 @@
         "publication_revision": 72,
         "record": "evidence/serve-outer-resource-delivery-20261112/result.json",
         "whole_task_complete": false
-      }
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "partial_delivery_remaining_composition",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Cold/host-entry composition and final release",
+          "Whole-root fallback entry with current outer capability"
+        ],
+        "delivered_subset": "Normal-NVML native resource/outer/version recovery accepted and delivered; historical development notes are not current pending status.",
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Cold/host-entry composition and final release",
+        "Whole-root fallback entry with current outer capability"
+      ]
     },
     {
       "id": "R10",
@@ -3276,14 +3670,23 @@
         "evidence/serve-media-managed-driver-failure-20261116/README.md",
         "evidence/serve-media-managed-business-20261116/README.md",
         "evidence/serve-media-version-business-20261116/README.md",
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
         "binary_sha256": "cd640cccdef903fb519385761f65984d310bec20ff4fadea84728a8de0788360",
         "manifest_sha256": "7a8e9cd29f81e007165803323a29e9e86e7b378be4b743936e8f95a9049168ce",
         "record": "evidence/serve-managed-vision-delivery-20261116/delivery-01/result.json"
       },
-      "development_status": "Native v2 managed media capacity delivered in rev142. Text MTP and per-visual target decode, real media primary/light qualification, actual RAM-pressure primary/light/primary with frozen video, one tool execution and quota continuity, and exact whole-payload fallback with media SSE accepted. Existing visual/structured/tool service recovery covered. Wider format/cache/client combinations remain explicitly required under A05/A10/A12; no performance/full-quality or long-stability claim."
+      "development_status": "Native v2 managed media capacity delivered in rev142. Text MTP and per-visual target decode, real media primary/light qualification, actual RAM-pressure primary/light/primary with frozen video, one tool execution and quota continuity, and exact whole-payload fallback with media SSE accepted. Existing visual/structured/tool service recovery covered. Wider format/cache/client combinations remain explicitly required under A05/A10/A12; no performance/full-quality or long-stability claim.",
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "delivered",
+        "new_runtime_acceptance": false,
+        "remaining": [],
+        "existing_evidence_reviewed": true
+      }
     },
     {
       "id": "Q01",
@@ -3300,7 +3703,8 @@
       ],
       "evidence": [
         "evidence/serve-retrieval-managed-business-20261112/README.md",
-        "evidence/serve-managed-vision-delivery-20261116/README.md"
+        "evidence/serve-managed-vision-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -3382,10 +3786,11 @@
         "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
-        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599",
+        "current_delivery": "Native provider implementation included in default rev150; actual cloud accounts not accepted, original CPU evidence only."
       },
       "native_video_preparation": {
-        "state": "native_video_sdk_business_accepted_related_clients_and_recovery_pending",
+        "state": "delivered_rev150_geometry_accepted_remaining_formats_open",
         "plan": "SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md",
         "gap": "Candidate implements native video preparation, temporal Files/MCP/tools/count/moderation and v3 frozen replay; default rev134 lacks it until business/recovery-qualified release",
         "cpu_accepted": true,
@@ -3396,7 +3801,7 @@
         "worker_evidence": "evidence/serve-native-video-worker-cpu-20261116/README.md",
         "worker_cpp_unique": 13,
         "worker_engine_sha256": "d13d18b828f3331f055c21c91319ee4b24996e1ec1c7f5b170df30443f4084f9",
-        "next": "Four affected Chat/document creates on same candidate, then native managed visual capacities/recovery, formats and reversible release; all master remains active",
+        "next": "Media state/cache and remaining format/backend/client combinations; original and geometry business already delivered.",
         "integration_cpu_accepted": true,
         "integration_evidence": "evidence/serve-native-video-input-cpu-20261116/README.md",
         "integration_cpp_unique": 38,
@@ -3430,7 +3835,20 @@
         "accepted_business_starts": 1,
         "accepted_business_creates": 8,
         "accepted_business_seconds": 53.44687231024727
-      }
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "project_retrieval_business_accepted_remaining_compositions",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Remaining new backend/client/fault combinations; existing project retrieval business reused"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Remaining new backend/client/fault combinations; existing project retrieval business reused"
+      ]
     },
     {
       "id": "Q02",
@@ -3445,12 +3863,13 @@
         "evidence/serve-retrieval-delivery-20261112/README.md",
         "evidence/serve-cache-route-delivery-20261112/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "evidence/serve-video-geometry-delivery-20261116/README.md"
+        "evidence/serve-video-geometry-delivery-20261116/README.md",
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
       ],
       "release": {
-        "binary_sha256": "a7bd6785339371a686b940a9edc2eb97b371604f451212a102a0d907c75f119c",
-        "manifest_sha256": "8d9c07f1f38dcaa9a05900439dd2edfbc22695292a57241aac25852f6bac21e9",
-        "record": "evidence/serve-video-geometry-delivery-20261116/delivery-01/result.json"
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "record": "evidence/serve-chat-style-delivery-20261116/delivery-01/result.json"
       },
       "capability_upgrade": {
         "state": "delivered_subset",
@@ -3562,7 +3981,8 @@
         "cpp_passed": 11,
         "actual_cli_passed": 5,
         "gpu_starts": 0,
-        "default_changed": false
+        "default_changed": false,
+        "current_delivery": "Included in rev142/rev150 sources; original targeted CPU evidence retained. Native provider live accounts remain unaccepted."
       },
       "native_providers": {
         "state": "eight_providers_implemented_cpu_accepted_business_release_pending",
@@ -3617,7 +4037,8 @@
         "drive_lro_engine_sha256": "f05d66b3028378d9ebfc6923c260d241d88abe2e94e79f7cc9619856ea214a48",
         "graph_cursor_evidence": "evidence/serve-mcp-graph-cursor-cpu-20261116/README.md",
         "graph_cursor_cpp_passed": 47,
-        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599"
+        "graph_cursor_engine_sha256": "d29347f4cf2ac35c80226310b89e062439f63a70130533e7451a70a566031599",
+        "current_delivery": "Native provider implementation included in default rev150; actual cloud accounts not accepted, original CPU evidence only."
       },
       "native_video_main_integration": {
         "pr": 29,
@@ -3625,26 +4046,88 @@
         "merge": "692982e76669d07ee51fba8d5b568edd5e6d10f8",
         "evidence": "evidence/serve-pr29-merged-20261116/README.md",
         "latest_release": 142
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "latest_release_delivered_main_pending_remaining_tasks_active",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "PR30 exact-head checks and actual main merge",
+          "Delivery of every remaining implementation"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "PR31 exact-head checks and actual main merge",
+        "Delivery of every remaining implementation"
+      ],
+      "video_geometry_main_merge_20261116": {
+        "state": "merged",
+        "pr": 30,
+        "head": "a362d68d65cdaac84a4067e92f10d87bd04d0fc8",
+        "merge": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
+        "evidence": "evidence/serve-pr30-merged-20261116/README.md"
+      },
+      "pr30_actual_merge": {
+        "commit": "d2524e4a71114c58d9282d9e75a3a0252f5e6192",
+        "evidence": "evidence/serve-pr30-merged-20261116/README.md"
       }
     },
     {
       "id": "Q03",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
       "acceptance": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
       "depends_on": [
         "Q02"
       ],
-      "evidence": [],
+      "evidence": [
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ],
       "release": null,
       "surface_prose_audit": {
-        "state": "required",
+        "state": "targeted_static_verified",
         "finding": "Source/key drift guard does not certify semantics prose; historical model alias/CRUD/schema/media descriptions are stale. Renew against code and accepted current delivery, retaining all real unimplemented tasks.",
-        "next": "After current geometry acceptance, reconcile full inventory prose and task states against implementation and evidence."
+        "next": "Implement explicit remaining contracts; this static review is not runtime acceptance or completion of Q03.",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence": "evidence/serve-surface-reaudit-20261116/README.md"
+      },
+      "current_audit": {
+        "date": "2026-11-16",
+        "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "state_at_review": "planned",
+        "new_runtime_acceptance": false,
+        "remaining": [
+          "Finish every remaining task before final closure",
+          "Executable long-stability handoff; user performs long run"
+        ],
+        "existing_evidence_reviewed": true
+      },
+      "remaining_required": [
+        "Finish every remaining task before final closure",
+        "Executable long-stability handoff; user performs long run"
+      ],
+      "chat_style_parity_20261116": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+        "runtime_accepted": true,
+        "default_unchanged": false,
+        "master_complete": false,
+        "evidence": "evidence/serve-chat-style-cpu-20261116/README.md",
+        "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "failure_evidence": "evidence/serve-chat-style-business-failure-20261116/README.md",
+        "repair_evidence": "evidence/serve-chat-style-grammar-cpu-20261116/README.md",
+        "business_evidence": "evidence/serve-chat-style-business-20261116/README.md",
+        "revision": 158,
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "delivery_evidence": "evidence/serve-chat-style-delivery-20261116/README.md",
+        "profile_evidence": "evidence/serve-chat-style-profile-business-20261116/README.md",
+        "version_evidence": "evidence/serve-chat-style-migration-business-20261116/README.md"
       }
     }
   ],
-  "next_task": "Complete PR30 exact-head checks and main integration; reconcile compatibility inventory semantics against code and evidence; implement every outstanding provider, model, client, resource and recovery master requirement.",
-  "next": "Complete PR30 exact-head checks and main integration; reconcile compatibility inventory semantics against code and evidence; implement every outstanding provider, model, client, resource and recovery master requirement."
+  "next_task": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary.",
+  "next": "Complete PR31 exact-head main integration; continue standard input contracts (Chat attribution/service tier and Responses medium default), then remaining media/cache, backend/tool, client and cold/resource/host compositions. All 33 required master tasks remain the completion boundary."
 }

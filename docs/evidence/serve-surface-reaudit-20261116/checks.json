@@ -1,0 +1,41 @@
+{
+  "status": "PASS_TARGETED_SURFACE_RECONCILIATION",
+  "reference_commit": "a362d68d65cdaac84a4067e92f10d87bd04d0fc8",
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 45,
+    "completion_fields": 21,
+    "routes": 74,
+    "native_routes": 123,
+    "reviewed_source_anchors": 714,
+    "mutation_checks": 7,
+    "errors": []
+  },
+  "source_and_nested_whitelists_unchanged": true,
+  "surface_key_sets_unchanged": true,
+  "new_unique_references_checked": 26,
+  "all_33_required_retained": true,
+  "default_revision": 150,
+  "default_identity_unchanged": true,
+  "gpu_starts": 0,
+  "runtime_tests": 0,
+  "missing_frozen_chat_top_level_fields": [
+    "audio",
+    "modalities",
+    "moderation",
+    "prompt_cache_options",
+    "safety_identifier",
+    "service_tier",
+    "verbosity",
+    "web_search_options"
+  ],
+  "changed_rows": {
+    "fields": 21,
+    "completion_fields": 21,
+    "routes": 68,
+    "native_routes": 116
+  },
+  "no_new_runtime_acceptance": true,
+  "remaining_master_tasks_active": true
+}

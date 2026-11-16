@@ -1,0 +1,17 @@
+{
+  "files": 102,
+  "sha256": "4fac5cb26de59c2c574ab384fb46375e625e20a6519e6d588f2b72a4bdcc4338",
+  "secret_scan_matches": 0,
+  "package": "d8960eed656e479dc600d699ea83e8b8e616eafe561d1e37645e5af0782b6f16",
+  "fallback": "1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7",
+  "control_delta": [],
+  "native_delta": [],
+  "native_executables_identical": {
+    "q4t-guardian": true,
+    "q4t-cuda-probe": true,
+    "q4t-ingress": true,
+    "q4t-device-control": true
+  },
+  "driver_cpu_cases": 2,
+  "version_business_pending": true
+}

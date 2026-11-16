@@ -302,6 +302,23 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(tools && tools->IsObject());
   const auto* chat = caps.Find("chat");
   Q4T_CHECK(chat && chat->GetString("sampling_profile") == "q4t-sampling-v1");
+  Q4T_CHECK(chat->GetBool("stream_include_obfuscation") &&
+            chat->GetBool("stream_obfuscation_default"));
+  const auto* verbosity = chat->GetArray("verbosity");
+  Q4T_CHECK(verbosity && verbosity->array.size() == 3 &&
+            verbosity->array[0].str == "low" &&
+            verbosity->array[1].str == "medium" &&
+            verbosity->array[2].str == "high");
+  const auto* style = caps.Find("template");
+  Q4T_CHECK(style && style->GetString("reasoning_effort_default") == "medium" &&
+            style->GetString("effort_adaptation") == "native_guidance" &&
+            style->GetBool("none_disables_thinking"));
+  const auto* efforts = style->GetArray("reasoning_effort");
+  Q4T_CHECK(efforts && efforts->array.size() == 7);
+  size_t effort_index = 0;
+  for (const auto* effort :
+       {"none", "minimal", "low", "medium", "high", "xhigh", "max"})
+    Q4T_CHECK(efforts->array[effort_index++].str == effort);
   Q4T_CHECK(chat->GetInt("temperature_default") == 1 &&
             chat->GetInt("choices") == 128 && chat->GetBool("logprobs") &&
             chat->GetInt("top_logprobs_max") == 20);

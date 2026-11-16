@@ -1,0 +1,81 @@
+{
+  "status": "ACCEPT_CHAT_STYLE_TARGETED_CPU",
+  "cpp_distinct": 15,
+  "cpp_executions": 16,
+  "cpp_final": {
+    "chat_capabilities_option_contract": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_stream_padding_preserves_delta_probability_and_finish": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_contract_standard_style_and_stream_options": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_contract_error_param_is_explicit": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_contract_greedy_neutral_options": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_contract_template_options_are_explicit": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_contract_nullable_defaults_are_field_specific": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_style_default_null_and_explicit_effort_rendering": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_style_none_and_nested_precedence_use_native_prefix": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_verbosity_preserves_original_message_source_coordinates": {
+      "status": "PASS",
+      "run": "host-test-02"
+    },
+    "completion_sse_shape_usage_and_optional_padding": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "responses_plan_defaults_keep_real_storage_requirement": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "responses_plan_reasoning_effort_and_verbosity_model_adaptation": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_plan_native_template_and_constraint_adapter": {
+      "status": "PASS",
+      "run": "host-test-01"
+    },
+    "chat_preflight_envelope_and_opt_in_preview": {
+      "status": "PASS",
+      "run": "host-test-01"
+    }
+  },
+  "schema_and_client_driver_tests": 6,
+  "differential_contracts": 32,
+  "source_anchors": 715,
+  "source_negative_checks": 7,
+  "build_warnings": 0,
+  "first_failure": "Fixture included message framing in expected content; verify source_size bytes and exact message terminator separately. No runtime fix.",
+  "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09",
+  "protocol_sha256": "211cf3d1fa012d090898dc3bfd7a599a731c209d336dafd6629c0cdbe33eb967",
+  "default_revision": 150,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "business_pending": true,
+  "master_active": true,
+  "archive_sha256": "06f88f6f8206b47e96206c200b3d6e822aa72f4d7857b3d780cbc4c805d20e38"
+}

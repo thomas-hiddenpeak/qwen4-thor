@@ -1,0 +1,108 @@
+{
+  "status": "ACCEPT_CHAT_STYLE_MIGRATION_VERSION_COMPOSITION",
+  "phases": {
+    "retained-business-01": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_RETAINED",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+        "manifest_sha256": "1b90a1bf135bcca17dbbe4fdf86ea33937de059db354b717b3936b1e8b8c48d7",
+        "engine_binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_RETAINED",
+          "strict_lease_seconds": 48.06595017807558,
+          "nvml_queries": 46,
+          "env_abort": false,
+          "argv_path_review": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/retained-business-01/argv-path-review.json",
+            "sha256": "fcc699725a811db3997e414c28d3e8596cdce004725f89753ee84023d3cc3169"
+          },
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "probes": 0,
+            "controls": 152
+          },
+          "source_commit": "f8a05ad6bcba3beed196642029a6eef2530b2d6b",
+          "plan_sha256": "f13b1c3dae76fea05ca02fe65ffbfd9bc9de0167a5e915fa20a476fa7b3002c7",
+          "result_sha256": "08529c74cdd054a5a9ff0fee188c0798be2bfdcefb532dd9b4891c681e5da16a",
+          "lease_result_sha256": "68d689394fed4d369a408d11c4849fcf96fdfd3a027fb63990a67eb579e2cfbe",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "business": {
+        "status": "PASS",
+        "actual_visual_stages": 1,
+        "frozen_media_preserved": true,
+        "actual_display_geometry": true,
+        "media_sse_after_fallback": false,
+        "media_mcp_embedding_capabilities_preserved": true,
+        "profile_state_preserved": true,
+        "version_switch": false,
+        "default_replaced": false,
+        "automatic_request_or_tool_replay": false
+      }
+    },
+    "version-business-02": {
+      "decision": {
+        "status": "PASS_NATIVE_MEDIA_SERVICE_VERSION",
+        "acceptance": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+        "manifest_sha256": "cba9f596c5b8ad8f6e3f94686f1d89d880c69d629202e628e40289dac9e8e3d5",
+        "engine_binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+        "actual_business": {
+          "status": "ACCEPT_NATIVE_MEDIA_SERVICE_VERSION",
+          "strict_lease_seconds": 102.37593105481938,
+          "nvml_queries": 96,
+          "env_abort": false,
+          "counts": {
+            "starts": 2,
+            "chats": 4,
+            "probes": 1,
+            "controls": 335
+          },
+          "source_commit": "4fb0737e8d0159846517da576dfdf110a1380bea",
+          "plan_sha256": "d6067e9fe6c7140674cf9b4d3a71db04879a5d673ea1cfefcce886f78b2cb760",
+          "result_sha256": "c8dda411f0cbc344a4ba9aa5f706da9498c08c370ed7e892b62dbe5dd3949d2a",
+          "lease_result_sha256": "94f08d46374bc464a8f310546b0f74e63c944614f5fcd7d3a73b4229b2d7de58",
+          "postflight": {
+            "sources_unchanged": true,
+            "owned_processes_gone": true,
+            "ports_free": true,
+            "lock_released": true,
+            "default_unchanged": true
+          }
+        },
+        "default_replaced": false,
+        "performance_acceptance": false,
+        "long_stability_accepted": false
+      },
+      "business": {
+        "status": "PASS",
+        "actual_visual_stages": 2,
+        "frozen_media_preserved": true,
+        "actual_display_geometry": true,
+        "media_sse_after_fallback": true,
+        "media_mcp_embedding_capabilities_preserved": true,
+        "profile_state_preserved": true,
+        "version_switch": true,
+        "default_replaced": false,
+        "automatic_request_or_tool_replay": false
+      }
+    }
+  },
+  "files": 117,
+  "archive_sha256": "7119ca4946fe1cbac753ade2045862e221516b37149d0e6babf3368fab00865f",
+  "secret_scan_matches": 0,
+  "engine_binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+  "default_unchanged": true,
+  "delivery_pending": true,
+  "remaining_master_tasks_active": true
+}

@@ -81,6 +81,33 @@ class Response(io.BytesIO):
 
 
 class ClientContracts(unittest.TestCase):
+    def test_stream_obfuscation_preserves_tools_usage_and_request_options(self):
+        events = [chunk(dict(role="assistant", content=""))]
+        events.extend(chunk(delta) for delta in tool_deltas())
+        events.append(chunk({}, "tool_calls"))
+        for event in events:
+            event["obfuscation"] = "a1" * 127
+        events.append(dict(id="request-1", model="qwen3.8-flash-next",
+            object="chat.completion.chunk", choices=[], usage=deepcopy(USAGE)))
+        wire = b"".join(frame(event) for event in events) + b"data: [DONE]\r\n\r\n"
+        expected = completion()
+        self.assertEqual(asdict(client.read_sse(io.BytesIO(wire))), asdict(expected))
+        api = client.ChatClient("http://127.0.0.1:8080")
+        body = client.make_request([dict(role="user", content="q")], [])
+        body["request_id"] = "request-1"
+        for padding in (True, False):
+            body["stream_options"] = dict(include_usage=True, include_obfuscation=padding)
+            with patch.object(api, "_post", return_value=Response(wire)) as post:
+                self.assertEqual(asdict(api.complete(body)), asdict(expected))
+                self.assertEqual(post.call_args.args[1]["stream_options"],
+                                 body["stream_options"])
+        for options in ({"include_usage": True, "include_obfuscation": None},
+                        {"include_usage": False}, {"include_usage": True, "typo": True}):
+            body["stream_options"] = options
+            with patch.object(api, "_post") as post, self.assertRaises(client.ProtocolError):
+                api.complete(body)
+            post.assert_not_called()
+
     def test_refusal_json_stream_history_and_incomplete_are_preserved(self):
         message = dict(role='assistant', content=None, refusal='不能提供✅')
         left = completion(message, 'stop')

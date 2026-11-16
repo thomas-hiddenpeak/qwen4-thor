@@ -117,6 +117,30 @@ Q4T_TEST(structured_decoder_required_named_and_parallel_masks) {
   return true;
 }
 
+Q4T_TEST(structured_decoder_none_starts_constraints_before_any_think_tag) {
+  auto fields = Tools(R"("required")", false);
+  fields.erase(0, std::string_view(R"("enable_thinking":false,)").size());
+  fields += R"(,"reasoning_effort":"none")";
+  const auto plan = Plan(fields);
+  Q4T_CHECK(Exact(plan, kCall));
+  Q4T_CHECK(!Exact(plan, std::string(kCall) + '\n' + kCall));
+  Q4T_CHECK(!Exact(plan, "ordinary answer"));
+  const auto json = Plan(R"("reasoning_effort":"none",
+      "enable_thinking":true,"response_format":{"type":"json_object"})");
+  Q4T_CHECK(Exact(json, R"({"answer":42})"));
+  Q4T_CHECK(!Exact(json, "unconstrained output before JSON"));
+  const auto nested = Plan(R"("reasoning_effort":"high",
+      "chat_template_kwargs":{"reasoning_effort":"none"},
+      "response_format":{"type":"json_object"})");
+  Q4T_CHECK(Exact(nested, R"({"answer":42})"));
+  const auto shielded = Plan(R"("reasoning_effort":"none",
+      "chat_template_kwargs":{"reasoning_effort":null},
+      "response_format":{"type":"json_object"})");
+  Q4T_CHECK(Exact(shielded, "reason</think>\n{\"answer\":42}"));
+  Q4T_CHECK(!Exact(shielded, R"({"answer":42})"));
+  return true;
+}
+
 Q4T_TEST(structured_decoder_large_vocab_discovery_string_uses_bounded_worker) {
   const auto plan = Plan(R"("enable_thinking":false,"tools":[
     {"type":"function","function":{"name":"q4t_builtin_tool_search",

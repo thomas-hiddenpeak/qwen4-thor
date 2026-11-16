@@ -1,4 +1,5 @@
 #include "q4t/server/chat_template.h"
+#include "q4t/server/generation_style.h"
 #include "q4t/server/refusal_frame.h"
 
 #include "q4t/server/chat_tool_history.h"
@@ -249,15 +250,9 @@ Status ModelToolJson(const io::Json& tool, std::string* out) {
   return Status();
 }
 
-const io::Json* Option(const io::Json& request, const char* name) {
-  const io::Json* options = request.Find("chat_template_kwargs");
-  if (options && options->Has(name)) return options->Find(name);
-  return request.Find(name);
-}
-
 Status BoolOption(const io::Json& request, const char* name, bool fallback,
                   bool* out) {
-  const io::Json* value = Option(request, name);
+  const io::Json* value = ChatTemplateOption(request, name);
   if (value && !value->IsBool()) {
     return Status::Fail(std::string(name) + " must be boolean");
   }
@@ -566,27 +561,22 @@ Status RenderChatPrompt(const io::Json& request,
   if (!s) return s;
   s = BoolOption(request, "preserve_thinking", true, &preserve);
   if (!s) return s;
-  std::string instructions;
-  if (thinking) {
-    const io::Json* value = Option(request, "reasoning_effort");
-    if (value && !value->IsString()) {
-      return Status::Fail("reasoning_effort must be a string");
-    }
-    const std::string effort = value ? value->str : "xhigh";
-    if (effort == "xhigh") {
-      instructions =
-          "Reasoning effort is set to xhigh. Please think carefully "
-          "through the task, validate key assumptions, consider plausible "
-          "alternatives, and prioritize correctness, consistency, and clarity "
-          "in the final answer.";
-    } else if (effort == "low") {
-      instructions =
-          "Reasoning effort is set to low. Keep your thinking brief "
-          "and focused, moving directly to the conclusion without unnecessary "
-          "elaboration.";
-    } else if (effort != "medium") {
-      return Status::Fail("reasoning_effort must be xhigh, medium, or low");
-    }
+  const auto* value = ChatTemplateOption(request, "reasoning_effort");
+  if (value && !value->IsNull() &&
+      (!value->IsString() || !IsReasoningEffort(value->str)))
+    return Status::Fail("invalid reasoning_effort");
+  const std::string_view effort = ChatReasoningEffort(request);
+  thinking = ChatThinkingEnabled(request);
+  std::string instructions(thinking ? ReasoningGuidance(effort) : "");
+  const auto* verbosity = request.Find("verbosity");
+  if (verbosity && !verbosity->IsNull() &&
+      (!verbosity->IsString() || !IsVerbosity(verbosity->str)))
+    return Status::Fail("invalid verbosity");
+  const auto guidance = VerbosityGuidance(
+      verbosity && verbosity->IsString() ? verbosity->str : "medium");
+  if (!guidance.empty()) {
+    if (!instructions.empty()) instructions += "\n\n";
+    instructions += guidance;
   }
   if (request.GetBool("parse_response", true)) {
     if (!instructions.empty()) instructions += "\n\n";

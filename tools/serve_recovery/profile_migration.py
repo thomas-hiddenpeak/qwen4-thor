@@ -22,6 +22,8 @@ RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
 MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
     'connector_googlecalendar', 'connector_googledrive', 'connector_microsoftteams',
     'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
+CHAT_EFFORTS = frozenset(('none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'))
+LEGACY_CHAT_EFFORTS = frozenset(('low', 'medium', 'xhigh'))
 
 
 def media_capabilities(value):
@@ -139,6 +141,20 @@ def semantic_capabilities(value):
         responses['output_items'] = {item: True for item in items}
     template = result.get('template')
     if isinstance(template, dict):
+        if 'reasoning_effort' in template:
+            efforts = template['reasoning_effort']
+            ledger.require(type(efforts) is list and efforts and
+                all(type(item) is str for item in efforts) and
+                len(set(efforts)) == len(efforts) and set(efforts) <= CHAT_EFFORTS,
+                'invalid Chat reasoning effort capabilities')
+            if not set(efforts) <= LEGACY_CHAT_EFFORTS:
+                ledger.require(template.get('effort_adaptation') == 'native_guidance' and
+                    template.get('reasoning_effort_default') == 'medium' and
+                    template.get('none_disables_thinking') is True,
+                    'Chat reasoning effort lacks native implementation capability')
+            # Only this reviewed enum is a set. Defaults and all other values
+            # remain part of the contract; automatic recovery requires equality.
+            template['reasoning_effort'] = {item: True for item in efforts}
         for key in ('renderer_source_sha256', 'tool_history_source_sha256'):
             if key in template:
                 fingerprint = template.pop(key)

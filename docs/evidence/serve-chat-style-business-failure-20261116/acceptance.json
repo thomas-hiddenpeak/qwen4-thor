@@ -1,0 +1,59 @@
+{
+  "status": "FAIL_CHAT_STYLE_BUSINESS",
+  "starts": 1,
+  "chat_creates": 4,
+  "seconds": 45.19638408906758,
+  "binary_sha256": "8b4e1fd1669fb591f0335488729bac90fb53a67b43348fa1c71abf83e3e11b09",
+  "passed": [
+    "default medium JSON",
+    "max/low SSE opt-out",
+    "none n=2 SSE/probability/usage with padding"
+  ],
+  "failure": "none closes native prompt but grammar still assumes an open thinking region; generated tool output is unconstrained, second call rejected by parser",
+  "tool_executions": 0,
+  "nvml_ok_samples": 44,
+  "cleanup": {
+    "owned": {
+      "3724162": {
+        "state": "R",
+        "ppid": 3724157,
+        "pgid": 3724157,
+        "start_ticks": 301056680,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--operations-port",
+          "18187",
+          "--mtp",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261116/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "default_unchanged": true,
+  "default_revision": 150,
+  "archive_sha256": "f8e5e6b8b283b7019ad5dd22ffd98f1404152e8718581f99a7b255483d344b16",
+  "master_active": true
+}

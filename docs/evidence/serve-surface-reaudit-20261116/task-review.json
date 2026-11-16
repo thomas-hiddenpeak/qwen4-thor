@@ -1,0 +1,475 @@
+[
+  {
+    "id": "G00",
+    "state": "scope_clarification_pending",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "scope_clarification_pending",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "User scope decision for organization/billing/training APIs; all determined independent work continues"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A01",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Chat 8 frozen-reference top-level fields: audio/modalities/moderation/prompt_cache_options/safety_identifier/service_tier/verbosity/web_search_options",
+        "Chat stream_options.include_obfuscation, null/default and response projection parity"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A02",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Complete Chat effort enum/null mapping using native semantics",
+        "Non-null audio/annotations history and matching model/output/template round trips"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A03",
+    "state": "implemented_validated_delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implemented_validated_delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A04",
+    "state": "implemented_validated_delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implemented_validated_delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A05",
+    "state": "subset_delivered_integration_pending",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "subset_delivered_integration_pending",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Media state cache with true image/video identity and MRoPE state",
+        "Stop, constrained-output and private cache combinations with correct final validation"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A06",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A07",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Remaining typed producers, builtin/backend and full SDK combinations; reuse delivered state/reasoning/discovery/programmatic/MCP"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A08",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A09",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Actual image generation/edit and video Batch backends",
+        "Per-backend SDK, recovery and release composition"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A10",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Native media cache/MRoPE state resume",
+        "Remaining affine/format combinations",
+        "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A11",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementation_in_progress",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Actual configured cloud account permission/pagination/content acceptance",
+        "Remaining builtin/tool VM file/video and typed-output combinations"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "A12",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "planned",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Complete published Python/JS capability and error/stream/recovery matrix; many existing real SDK chains already accepted"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N01",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N02",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N03",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N04",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N05",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N06",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "N07",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R01",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R02",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R03",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R04",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R05",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R06",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R07",
+    "state": "implementing",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementing",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Refresh old cold candidate source/package/driver and actual controlled NVML-unavailable qualification",
+        "Cold/resource/outer combined business and reversible release"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R08",
+    "state": "implementing",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "implementing",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Unified physical DRAM/GPU charge hard boundary platform evidence",
+        "Cold and pressure composition beyond delivered normal-NVML resource subset"
+      ],
+      "delivered_subset": "Normal-NVML native resource/outer/version recovery accepted and delivered; historical development notes are not current pending status.",
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R09",
+    "state": "partial_delivery_remaining_composition",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "partial_delivery_remaining_composition",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Cold/host-entry composition and final release",
+        "Whole-root fallback entry with current outer capability"
+      ],
+      "delivered_subset": "Normal-NVML native resource/outer/version recovery accepted and delivered; historical development notes are not current pending status.",
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "R10",
+    "state": "delivered",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "delivered",
+      "new_runtime_acceptance": false,
+      "remaining": [],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "Q01",
+    "state": "project_retrieval_business_accepted_remaining_compositions",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "project_retrieval_business_accepted_remaining_compositions",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Remaining new backend/client/fault combinations; existing project retrieval business reused"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "Q02",
+    "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "PR30 exact-head checks and actual main merge",
+        "Delivery of every remaining implementation"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  },
+  {
+    "id": "Q03",
+    "state": "implementation_in_progress",
+    "required": true,
+    "current_review": {
+      "date": "2026-11-16",
+      "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+      "state_at_review": "planned",
+      "new_runtime_acceptance": false,
+      "remaining": [
+        "Finish every remaining task before final closure",
+        "Executable long-stability handoff; user performs long run"
+      ],
+      "existing_evidence_reviewed": true
+    }
+  }
+]

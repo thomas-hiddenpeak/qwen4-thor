@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "local_links": 366,
+  "missing": [],
+  "files": [
+    "README.md",
+    "docs/STATUS.md",
+    "docs/ARCHITECTURE.md",
+    "docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
+    "docs/log/2026-11-16.md",
+    "docs/evidence/serve-chat-style-delivery-20261116/README.md"
+  ]
+}

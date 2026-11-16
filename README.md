@@ -51,6 +51,13 @@ logprobs/top_logprobs；多choice共用请求/配额并逐项执行，JSON/SSE
 时保留greedy/MTP。采样使用目标logits的CPU实现，未作性能优化主张；
 [prediction](docs/SERVE_PREDICTION_2026-11-08.md)目标验证、回滚与
 accepted/rejected usage已交付；其余接口与组合按总计划继续实现。
+[Chat样式与流式合同](docs/SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md)已交付：
+`reasoning_effort`支持none/minimal/low/medium/high/xhigh/max/null，缺省/null
+为medium；none关闭原生thinking。`verbosity`的low/medium/high/null映射
+实际提示，不承诺固定答案长度或计算量。流式delta默认带obfuscation，
+可用`stream_options.include_obfuscation: false`关闭；padding不计token，
+正文、工具参数及usage由客户端正常重组。Responses的缺省推理级别尚待
+本轮后续合同修复，具体默认/回退身份以STATUS为准。
 [工具选择与增量流](docs/SERVE_TOOL_STREAM_2026-11-08.md)支持
 allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行工具。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`

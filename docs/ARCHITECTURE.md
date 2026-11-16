@@ -12,10 +12,13 @@
   generate调用独立单序列MTP路径；serve默认MTP k=3，可用--no-mtp回退。
   bench存在不代表它可用于性能接受，后者使用真实HTTP E2E。
 - `src/server/`实现自有HTTP socket服务、请求解析、chat模板、资源预算
-  接入和调度；默认数字IPv4 127.0.0.1:8000。只实现规定范围的OpenAI
-  风格接口，当前生成采用greedy，不支持完整OpenAI参数语义。
+  接入和调度；默认数字IPv4 127.0.0.1:8000。Chat/Completions/Responses
+  已有真实生成、采样、多choice、logprobs、工具和结构化输出；Chat默认
+  temperature=1，符合条件的显式greedy保留MTP。标准字段/后端和组合
+  仍按Serve总计划补齐，不以这些已交付子集宣称完整兼容。
 - `chat_scheduler.cpp`提供批处理/多序列调度与MTP批量步骤。实现存在
-  不代表所有并发配置已获验收；当前冻结矩阵是纯文本单流k=3。
+  不代表所有并发配置已获验收；当前托管包为单槽媒体及文本k=3，
+  有视觉token的请求使用普通解码；并发扩展仍须对应证据。
 - `src/model/`实现48层主模型：36层linear attention、12层full attention，
   含QSA、HyperConnection、MoE和第2层PLE（0-indexed layer 1）。
 - `src/mtp/`实现一层draft与T>1 verifier路径；旧sequential verifier不在

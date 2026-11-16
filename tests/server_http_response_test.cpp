@@ -33,6 +33,50 @@ struct SocketPair {
 };
 }  // namespace
 
+Q4T_TEST(chat_stream_padding_preserves_delta_probability_and_finish) {
+  using namespace q4t::server::detail;
+  for (const auto* delta :
+       {R"({"role":"assistant","content":""})",
+        R"({"content":"中文"})", R"({"reasoning_content":"check"})",
+        R"({"tool_calls":[{"index":0,"id":"call_1","type":"function",
+            "function":{"name":"read","arguments":"{\"x\":1}"}}]})",
+        R"({})"}) {
+    for (bool obfuscate : {false, true}) {
+      const auto raw = SseDeltaChunk("id", "model", delta, "", 1, 123, true,
+                                    R"({"content":[],"refusal":null})",
+                                    obfuscate);
+      Q4T_CHECK(raw.starts_with("data: ") && raw.ends_with("\r\n\r\n"));
+      const auto body = raw.substr(6, raw.size() - 10);
+      q4t::io::Json value;
+      Q4T_CHECK(q4t::io::ParseJson(body, &value));
+      Q4T_CHECK(value.GetString("id") == "id" &&
+                value.GetString("model") == "model");
+      Q4T_CHECK(value.Find("usage")->IsNull());
+      const auto& choice = value.Find("choices")->array[0];
+      Q4T_CHECK(choice.GetInt("index") == 1);
+      Q4T_CHECK(choice.Find("finish_reason")->IsNull());
+      Q4T_CHECK(choice.Find("logprobs")->Find("content")->array.empty());
+      Q4T_CHECK(value.Has("obfuscation") == obfuscate);
+      if (obfuscate) {
+        const auto padding = value.GetString("obfuscation");
+        Q4T_CHECK(!padding.empty() && padding.size() <= 256);
+        Q4T_CHECK(padding.find_first_not_of("0123456789abcdef") == padding.npos);
+        Q4T_CHECK(body.size() % 128 == 0);
+      }
+      q4t::io::Json expected;
+      Q4T_CHECK(q4t::io::ParseJson(delta, &expected));
+      // Byte-for-byte encoded delta is still present inside the padded frame.
+      Q4T_CHECK(body.find(std::string("\"delta\":") + delta) != body.npos);
+    }
+  }
+  const auto finish = SseDeltaChunk("id", "m", "{}", "tool_calls", 0, 123,
+                                    false, "null", true);
+  Q4T_CHECK(finish.find("\"finish_reason\":\"tool_calls\"") != finish.npos);
+  Q4T_CHECK(finish.find("\"usage\"") == finish.npos);
+  Q4T_CHECK(finish.find("[DONE]") == finish.npos);
+  return true;
+}
+
 Q4T_TEST(server_preparation_usage_headers_preserve_body_and_parent_ownership) {
   using namespace q4t::server::detail;
   for (bool failure : {false, true}) {

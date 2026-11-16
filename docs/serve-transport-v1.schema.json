@@ -182,7 +182,10 @@
                     ]
                   },
                   "refusal": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "function_call": {
                     "type": "object",
@@ -281,7 +284,10 @@
                 "type": "object",
                 "properties": {
                   "refusal": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "function_call": {
                     "type": "object",
@@ -321,6 +327,11 @@
               "$ref": "#/$defs/usage"
             }
           ]
+        },
+        "obfuscation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
         }
       },
       "if": {

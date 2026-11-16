@@ -784,24 +784,34 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
 }
 
 // OpenAI SSE data chunk for a streaming completion.
+void AppendStreamObfuscation(std::string* object) {
+  const auto random = NewRequestId("");
+  const size_t padding = 128 - ((object->size() + 18) % 128) +
+                         ((random[0] & 1) ? 128 : 0);
+  std::string value;
+  while (value.size() < padding) value += NewRequestId("");
+  value.resize(padding);
+  *object += ",\"obfuscation\":\"" + value + '"';
+}
+
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index,
-                     int64_t created, bool include_usage) {
+                     int64_t created, bool include_usage, bool obfuscate) {
   std::string delta = "{";
   if (!delta_role.empty()) {
     delta += "\"role\":\"" + JsonEscape(delta_role) + "\",";
   }
   delta += "\"content\":\"" + JsonEscape(content) + "\"}";
   return SseDeltaChunk(id, model, delta, finish_reason, index, created,
-                       include_usage);
+                       include_usage, "null", obfuscate);
 }
 
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
                           int64_t created, bool include_usage,
-                          std::string_view logprobs_json) {
+                          std::string_view logprobs_json, bool obfuscate) {
   std::string choice =
       "{\"index\":" + std::to_string(index) + ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
@@ -815,8 +825,9 @@ std::string SseDeltaChunk(const std::string& id, const std::string& model,
                     "\"created\":" +
                     std::to_string(created ? created : std::time(nullptr)) +
                     ",\"model\":\"" + JsonEscape(model) + "\",\"choices\":[" +
-                    choice + "]" + (include_usage ? ",\"usage\":null" : "") +
-                    "}";
+                    choice + "]" + (include_usage ? ",\"usage\":null" : "");
+  if (obfuscate) AppendStreamObfuscation(&obj);
+  obj += '}';
   return "data: " + obj + "\r\n\r\n";
 }
 

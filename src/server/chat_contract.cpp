@@ -1,4 +1,5 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/generation_style.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
 #include "q4t/server/prompt_cache_policy.h"
@@ -52,8 +53,9 @@ bool Number(const io::Json& value, double expected) {
 
 Status TemplateOption(const std::string& key, const io::Json& value) {
   if (key == "reasoning_effort") {
-    if (!value.IsString() || !Known(value.str, {"low", "medium", "xhigh"}))
-      return Status::Fail("reasoning_effort must be low, medium or xhigh");
+    if (!value.IsNull() &&
+        (!value.IsString() || !IsReasoningEffort(value.str)))
+      return Status::Fail("invalid reasoning_effort");
   } else if (!value.IsBool()) {
     return Status::Fail(key + " must be boolean");
   }
@@ -115,6 +117,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "enable_thinking",
                         "preserve_thinking",
                         "reasoning_effort",
+                        "verbosity",
                         "reasoning_field",
                         "include_reasoning",
                         "thinking_token_budget",
@@ -240,12 +243,21 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                    "use standard presence_penalty/frequency_penalty");
   if (const auto* options = req.Find("stream_options");
       options && !options->IsNull()) {
-    status = Fields(*options, {"include_usage"});
+    status = Fields(*options, {"include_usage", "include_obfuscation"});
     if (!status) return invalid("stream_options", status.message());
-    if (const auto* usage = options->Find("include_usage");
-        usage && !usage->IsBool())
-      return invalid("stream_options.include_usage",
-                     "include_usage must be boolean");
+    for (const auto* key : {"include_usage", "include_obfuscation"})
+      if (const auto* value = options->Find(key); value && !value->IsBool())
+        return invalid(std::string("stream_options.") + key,
+                       "stream option must be boolean");
+    if (!req.GetBool("stream", false))
+      return invalid("stream_options", "stream_options requires stream=true");
+  }
+  if (const auto* value = req.Find("verbosity")) {
+    if (!messages)
+      return invalid("verbosity", "verbosity requires messages");
+    if (!value->IsNull() &&
+        (!value->IsString() || !IsVerbosity(value->str)))
+      return invalid("verbosity", "invalid verbosity");
   }
   for (const char* key : {"enable_thinking", "preserve_thinking",
                           "reasoning_effort", "add_vision_id"}) {

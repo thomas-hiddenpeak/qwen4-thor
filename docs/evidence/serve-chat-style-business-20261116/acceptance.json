@@ -1,0 +1,107 @@
+{
+  "status": "ACCEPT_CHAT_STYLE_STREAM_BUSINESS",
+  "binary_sha256": "e0b34b43a61054b29304b9907d7d8bd0df901133403fe8c2cda7f2395073cc8f",
+  "counts": {
+    "starts": 1,
+    "chats": 6,
+    "controls": 46
+  },
+  "seconds": 54.20154906483367,
+  "nvml_ok_samples": 52,
+  "cleanup_complete": true,
+  "business": {
+    "starts": 1,
+    "creates": 6,
+    "wire": {
+      "max": {
+        "padding": false,
+        "choice_count": 1,
+        "delta_events": 47,
+        "usage": {
+          "prompt_tokens": 190,
+          "completion_tokens": 48,
+          "total_tokens": 238,
+          "completion_tokens_details": {
+            "reasoning_tokens": 44
+          },
+          "q4t_thinking_budget": {
+            "limit": 64,
+            "consumed": 44,
+            "forced_closure_tokens": 0
+          }
+        }
+      },
+      "choices": {
+        "padding": true,
+        "choice_count": 2,
+        "delta_events": 8,
+        "usage": {
+          "prompt_tokens": 164,
+          "completion_tokens": 6,
+          "total_tokens": 170,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "q4t_thinking_budget": {
+            "limit": 64,
+            "consumed": 0,
+            "forced_closure_tokens": 0
+          }
+        }
+      },
+      "tool": {
+        "padding": true,
+        "choice_count": 1,
+        "delta_events": 28,
+        "usage": {
+          "prompt_tokens": 525,
+          "completion_tokens": 51,
+          "total_tokens": 576,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "q4t_thinking_budget": {
+            "limit": 64,
+            "consumed": 0,
+            "forced_closure_tokens": 0
+          }
+        }
+      },
+      "follow": {
+        "padding": false,
+        "choice_count": 1,
+        "delta_events": 125,
+        "usage": {
+          "prompt_tokens": 823,
+          "completion_tokens": 126,
+          "total_tokens": 949,
+          "completion_tokens_details": {
+            "reasoning_tokens": 60
+          },
+          "q4t_thinking_budget": {
+            "limit": 64,
+            "consumed": 60,
+            "forced_closure_tokens": 0
+          }
+        }
+      }
+    },
+    "actual_document": {
+      "title": "# MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记",
+      "citation": "[docs/MODEL.md:L1-L16]"
+    },
+    "tool_executions": 1,
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "same_model_pid": true,
+    "final_ordinary": "42",
+    "performance_or_full_quality_claim": false
+  },
+  "original_requests_and_oracles_preserved": true,
+  "first_failure": "docs/evidence/serve-chat-style-business-failure-20261116/README.md",
+  "default_revision": 150,
+  "default_unchanged": true,
+  "profile_and_release_pending": true,
+  "performance_acceptance": false,
+  "full_model_quality": false,
+  "archive_sha256": "1df7731bfe1f3175a0c3c60630564023051033ae0b99176fa6ac35d744216b1c"
+}

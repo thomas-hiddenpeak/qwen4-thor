@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../src/server/object_protocol.h"
@@ -51,6 +52,35 @@ std::string Call(std::string_view name = "read",
          std::string(args) + "\n</function>\n</tool_call>";
 }
 }  // namespace
+
+Q4T_TEST(output_constraints_style_and_template_share_thinking_boundary) {
+  for (const auto& [options, thinking] :
+       {std::pair{R"("reasoning_effort":"none")", false},
+        {R"("reasoning_effort":"none","enable_thinking":true)", false},
+        {R"("reasoning_effort":"max","chat_template_kwargs":{
+              "reasoning_effort":"none","enable_thinking":true})", false},
+        {R"("reasoning_effort":"none","chat_template_kwargs":{
+              "reasoning_effort":null})", true},
+        {R"("reasoning_effort":"none","chat_template_kwargs":{
+              "reasoning_effort":"medium"})", true},
+        {R"("reasoning_effort":"high","enable_thinking":false)", false},
+        {R"("reasoning_effort":null)", true}}) {
+    auto request = Parse(std::string(R"({"messages":[{"role":"user",
+        "content":"q"}],"response_format":{"type":"json_object"},)") +
+                         options + '}');
+    Q4T_CHECK(q4t::server::ValidateChatContract(request, "m", false));
+    OutputConstraints plan;
+    Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan));
+    const auto description = Parse(plan.structural_tag);
+    Q4T_CHECK(description.Find("q4t_guard")->GetBool("thinking") == thinking);
+    const auto* elements = description.Find("format")->GetArray("elements");
+    Q4T_CHECK(elements && elements->array.size() == (thinking ? 3 : 2));
+    std::string prompt;
+    Q4T_CHECK(q4t::server::RenderChatPrompt(request, {"q"}, &prompt));
+    Q4T_CHECK(prompt.ends_with(thinking ? kThinking : kClosed));
+  }
+  return true;
+}
 
 Q4T_TEST(output_constraints_error_paths_survive_chat_validation) {
   const std::pair<const char*, const char*> cases[] = {
