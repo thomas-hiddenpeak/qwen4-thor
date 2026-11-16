@@ -31,7 +31,8 @@ def log_rows(rows):
                 (1103, 43200), (1211, 1800)]
             log.extend(f'[prefix-cache] request={value.id} event=write prefix={prefix} '
                        f'ttl={ttl} saved=1 bytes=1234' for prefix, ttl in writes)
-    return '\n'.join(log) + '\n[mtp-accept] request=' + rows['hit'].id
+    return '\n'.join(log) + (('\n[mtp-accept] request=' + rows['hit'].id)
+                             if 'hit' in rows else '')
 
 
 class CacheAcceptance(unittest.TestCase):
@@ -53,6 +54,12 @@ class CacheAcceptance(unittest.TestCase):
         for label, value in values().items():
             a.check_answer(value, label)
         rows = values()
+        rows['disabled'].usage.pop('prompt_tokens_details')
+        a.check_answer(rows['disabled'], 'disabled')
+        rows['hit'].usage.pop('prompt_tokens_details')
+        with self.assertRaises(Exception):
+            a.check_answer(rows['hit'], 'hit')
+        rows = values()
         rows['hit'].usage['prompt_tokens_details']['cached_tokens'] = 0
         with self.assertRaises(Exception):
             a.check_answer(rows['hit'], 'hit')
@@ -65,6 +72,8 @@ class CacheAcceptance(unittest.TestCase):
         rows = values()
         log = log_rows(rows)
         self.assertEqual(len(a.check_cache_logs(log, rows)), 8)
+        remaining = {k: rows[k] for k in ('default_implicit', 'target_write', 'target_hit')}
+        self.assertEqual(len(a.check_cache_logs(log_rows(remaining), remaining)), 3)
         for changed in (
                 log.replace('source=shared', 'source=private', 1),
                 log.replace('saved=1', 'saved=0', 1),

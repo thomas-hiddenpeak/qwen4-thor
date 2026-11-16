@@ -61,6 +61,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[Chat缓存首次业务驱动中断](evidence/serve-chat-cache-business-failure-20261116/README.md)：
+1启动/5生成/48.076秒，46项NVML正常。实际双断点SSD写入、2320 token
+SSE恢复、client/key隔离已过；显式禁缓存的可选usage字段省略导致
+脚本中断。修正判定并以原捕获核对前五项，终态成功5，最终指标仅到4。
+无引擎改动、无重复生成；只补余下3项，额外1启动/3生成/600秒，
+累计2启动/8项，rev166保持，全部master继续。
+
 [Chat缓存执行CPU通过](evidence/serve-chat-cache-cpu-20261116/README.md)：
 20项C++、4项schema、3项判定器正负控、20项native/schema、715来源/
 7负控通过；零警告。独立导入失败已修复并保留。候选未替换rev166，
