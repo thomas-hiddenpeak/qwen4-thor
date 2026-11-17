@@ -1,0 +1,78 @@
+{
+  "protocol_checks_passed": true,
+  "quality_passed": false,
+  "thresholds": {
+    "per_voice_word_error_rate_max": 0.125,
+    "overlap_seconds_min": 0.3,
+    "timestamp_slack_samples": 6080
+  },
+  "original_quality_not_rewritten": true,
+  "singles_reused": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/http-04",
+    "records": {
+      "plan.json": "854a481eefd72694f65b9536e797fb0e897d5c4a927a623a543eede6772704bb",
+      "result.json": "f8e50139844df11265344dfc8a4898d3b1c11bf8debffdb6a0e6a9badb93e411",
+      "cleanup.json": "9f98a84619e2d6081da4dbfd0aad3d71c15cc603ffefbae06f70ce398157d9ba",
+      "lease/exit.json": "9c8121f093b077e0badee10d947c6a4bdd4c24708c431768636b50e253997871",
+      "python-silence.wire": "e37a2937aa2b4448c540e1f223801519f75f2239a5fae5bd6daf84737582b427",
+      "python-single.wire": "c73b373c41b9485128ef3bcaf7e7d04dbbeec87f42465eac290ca75b845252b9",
+      "python-second-solo.wire": "90c8c06209e6682db6017b860200847026f93a132e6852de16330b06f7a4d20c",
+      "python-quiet-single.wire": "c73b373c41b9485128ef3bcaf7e7d04dbbeec87f42465eac290ca75b845252b9"
+    },
+    "protected_singles": {
+      "python-single": {
+        "voice_labels": [
+          "A"
+        ],
+        "per_voice_word_error_rate": [
+          0.0
+        ],
+        "quality_passed": true,
+        "overlap_seconds": 0,
+        "text": "The child almost hurt the small dog."
+      },
+      "python-second-solo": {
+        "voice_labels": [
+          "A"
+        ],
+        "per_voice_word_error_rate": [
+          0.0
+        ],
+        "quality_passed": true,
+        "overlap_seconds": 0,
+        "text": "We are sure that one war is enough."
+      },
+      "python-quiet-single": {
+        "voice_labels": [
+          "A"
+        ],
+        "per_voice_word_error_rate": [
+          0.0
+        ],
+        "quality_passed": true,
+        "overlap_seconds": 0,
+        "text": "The child almost hurt the small dog."
+      }
+    },
+    "reviewed_changes": {
+      "include/q4t/audio/separator_resample.h": {
+        "before": "b2f5097632999d1a14e1acf0e4bc29a2f58b3dba73506eb9c61b20ef53dc6870",
+        "after": "251f39cccbdd9957c0541783cd9538ef8e48ea948e984e85704a699759b85bea"
+      },
+      "src/audio/separator_resample.cpp": {
+        "before": "ef5a119c9edb0a11547e69e4036b6ac16381810a8bf276113ca95836356ab16d",
+        "after": "9f07f34c64383b104cf49ead32f4c2f363cefccaa563ade069da40d8414a3f3a"
+      },
+      "src/server/chat_asr.cpp": {
+        "before": "030d8d6e9ea165471f771361a13f9b9bdc518512c2b22b5b76ad885032d8281d",
+        "after": "91a1c4d1b210eeef45d4f6badf5274237f656e63314a2edc5eb7cd7c7c317c26"
+      },
+      "src/server/chat_separator_execution.cpp": {
+        "before": "d0cb0396e8b4e1841249a5aa607cf16aa94da9272e91f626d6cde6a7d1742fc7",
+        "after": "46e3e8b5ed48044ed1cf73ab3943c4eeeb2b8f80607b18b2233071bc564097a0"
+      }
+    },
+    "original_quality_failure_retained": true,
+    "original_binary_sha256": "3e5b6de702d1b484b80c96ca46f2c675f55b9bf6bbc38e253cc95e7ee36d8bf4"
+  }
+}

@@ -169,9 +169,15 @@ NATIVE_SPEAKER = dict(profile='q4t-native-ecapa-speaker-v1',
     weight_sha256='901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af')
 SPEAKER_LIMITS = dict(window_ms=3000, step_ms=750, max_windows=256,
                       max_speakers=16, workspace_mib=128)
+NATIVE_SEPARATOR = dict(profile='q4t-native-sepformer-v1',
+    model='speechbrain-sepformer-wsj02mix',
+    revision='3a2826343a10e2d2e8a75f79aeab5ff3a2473531',
+    weight_sha256='5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299')
+SEPARATOR_LIMITS = dict(max_audio_seconds=30, workspace_mib=2048)
 ASR_AUXILIARY = dict(alignment=(NATIVE_ALIGNMENT, ALIGNER_LIMITS, 'aligner'),
                      vad=(NATIVE_VAD, VAD_LIMITS, 'vad'),
-                     speaker=(NATIVE_SPEAKER, SPEAKER_LIMITS, 'speaker'))
+                     speaker=(NATIVE_SPEAKER, SPEAKER_LIMITS, 'speaker'),
+                     separator=(NATIVE_SEPARATOR, SEPARATOR_LIMITS, 'separator'))
 
 
 def audio_asset_directory(path):
@@ -186,6 +192,8 @@ def asr_auxiliary_settings(value):
             'invalid optional ASR backend inventory')
     require('speaker' not in value or {'alignment', 'vad'} <= value.keys(),
             'speaker requires alignment and VAD backends')
+    require('separator' not in value or {'alignment', 'vad', 'speaker'} <= value.keys(),
+            'separator requires speaker, alignment and VAD backends')
     result = {}
     for name, selected in value.items():
         fixed, defaults, _ = ASR_AUXILIARY[name]
@@ -205,6 +213,10 @@ def asr_auxiliary_settings(value):
                     limits['max_context_tokens'], 'invalid alignment capacity')
         elif name == 'vad':
             require(1 <= limits['max_chunks'] <= 256, 'invalid VAD chunk capacity')
+        elif name == 'separator':
+            require(1 <= limits['max_audio_seconds'] <= 30 and
+                    64 <= limits['workspace_mib'] <= 2048,
+                    'invalid separator capacity')
         else:
             require(1000 <= limits['window_ms'] <= 30000 and
                 100 <= limits['step_ms'] <= limits['window_ms'] and

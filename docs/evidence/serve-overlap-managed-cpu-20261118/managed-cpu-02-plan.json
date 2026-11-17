@@ -1,0 +1,42 @@
+{
+  "tests": 2,
+  "seconds": 60,
+  "gpu": 0,
+  "reuses_unchanged_passes": 11,
+  "commands": [
+    [
+      "contracts",
+      [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_completion_declaration_and_migration_cannot_drop_separator",
+        "tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_managed_cli_accepts_explicit_fixed_source"
+      ]
+    ],
+    [
+      "inventory",
+      [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py"
+      ]
+    ],
+    [
+      "generated",
+      [
+        "python3",
+        "-B",
+        "tools/serve_protocol/build_contract.py",
+        "--check"
+      ]
+    ]
+  ],
+  "identities": {
+    "tools/serve_recovery/test_separator_profiles.py": "5a0651a938ec4d552d11306e51710e1e357032300b47275508ef3df322759d5f",
+    "tools/native_asr/service_acceptance.py": "8c8128afb25f3968d162f30c263821c84971686ae8de87265a3fc2ff0a7830a6",
+    "tools/serve_responses/web_service_acceptance.py": "a2f1d4695861fa8c135c3ce0d355fdab5b036f029cf1924d621d364ad67e5130"
+  }
+}

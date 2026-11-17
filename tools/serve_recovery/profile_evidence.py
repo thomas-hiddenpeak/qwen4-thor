@@ -2,8 +2,10 @@
 import base64
 import hashlib
 import io
+import itertools
 import json
 import math
+import re
 import wave
 
 from tools.serve_recovery import ledger, profile_contract
@@ -13,6 +15,12 @@ MEDIA_FORMAT = 'q4t-profile-business-v2'
 ASR_FORMAT = 'q4t-profile-business-v3'
 AUDIO_AUXILIARY_FORMAT = 'q4t-profile-business-v4'
 SPEAKER_FORMAT = 'q4t-profile-business-v5'
+SEPARATOR_FORMAT = 'q4t-profile-business-v6'
+SEPARATOR_FILE_SHA = 'bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001'
+SEPARATOR_SAMPLES = 64000
+SEPARATOR_UTTERANCES = (
+    (3200, 49120, 'The child almost hurt the small dog.'),
+    (3200, 35360, 'We are sure that one war is enough.'))
 # Fixed SpeechBrain sample sequence: speaker 1, speaker 2, speaker 1 returns.
 # Original assets/concatenation receipt: serve-speaker-http-20261118. Retain
 # hashes and source intervals, not public copies of the reference audio.
@@ -33,6 +41,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None):
+    if has_separator(identity or {}):
+        return SEPARATOR_FORMAT
     if has_speaker(identity or {}):
         return SPEAKER_FORMAT
     if audio_auxiliaries(identity or {}):
@@ -48,6 +58,98 @@ def audio_auxiliaries(identity):
 
 def has_speaker(identity):
     return 'speaker' in (identity.get('native_asr') or {})
+
+
+def has_separator(identity):
+    return 'separator' in (identity.get('native_asr') or {})
+
+
+def separator_request(identity):
+    ledger.require(has_separator(identity), 'missing qualified separator backend')
+    return speaker_request(identity)
+
+
+def separator_business(value, identity):
+    """Require real mixed speech, overlapping source time and frozen quality."""
+    from tools.serve_service import package
+    ledger.keys(value, ('source_sha256', 'request', 'response', 'health', 'limits'))
+    ledger.require(value['source_sha256'] == SEPARATOR_FILE_SHA and
+        package.same_json(value['request'], separator_request(identity)),
+        'qualified separator source/request differs')
+    fixed, health = identity['native_asr']['separator'], value['health']
+    ledger.require(type(health) is dict and health.get('model') == fixed['model'] and
+        health.get('state') == 'ready' and health.get('reason') == 'none' and
+        health.get('core_readiness_dependency') is False and
+        ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+        ledger.integer(health.get('device_bytes')) and health['device_bytes'] == 112957444 and
+        package.same_json(value['limits'], fixed['limits']),
+        'qualified separator health/limits differ')
+    response = value['response']
+    ledger.require(type(response) is dict and response.get('task') == 'transcribe' and
+        response.get('duration') == SEPARATOR_SAMPLES/16000 and
+        type(response.get('text')) is str and response['text'].strip(),
+        'qualified separator transcript/duration missing')
+    usage = response.get('usage', {})
+    ledger.require(type(usage) is dict and usage.get('type') == 'tokens' and all(
+        ledger.integer(usage.get(k), minimum=1) and usage[k] < 2**53 for k in
+        ('input_tokens','output_tokens','total_tokens')) and
+        usage['input_tokens'] + usage['output_tokens'] == usage['total_tokens'],
+        'qualified separator actual token usage missing')
+    details = usage.get('input_token_details', {})
+    ledger.require(type(details) is dict and
+        ledger.integer(details.get('audio_tokens'), minimum=1) and
+        ledger.integer(details.get('text_tokens')) and
+        details['audio_tokens'] + details['text_tokens'] == usage['input_tokens'],
+        'qualified separator audio/text usage differs')
+    segments = response.get('segments')
+    ledger.require(type(segments) is list and 2 <= len(segments) <= 65536,
+                   'qualified separator segments missing')
+    grouped, previous = {}, 0.
+    for index, row in enumerate(segments):
+        ledger.require(type(row) is dict and row.get('id') == str(index) and
+            row.get('type') == 'transcript.text.segment' and
+            type(row.get('speaker')) is str and row['speaker'] and
+            type(row.get('text')) is str and row['text'].strip() and all(
+                type(row.get(k)) in (int, float) and math.isfinite(row[k])
+                for k in ('start','end')),
+            'qualified separator segment identity/time/text missing')
+        ledger.require(previous <= row['start'] <= row['end'] <= SEPARATOR_SAMPLES/16000,
+                       'qualified separator source time invalid')
+        previous = row['start']
+        grouped.setdefault(row['speaker'], []).append(row)
+    ledger.require(len(grouped) == 2 and
+        re.sub(r'\s+', '', ''.join(row['text'] for row in segments)) ==
+        re.sub(r'\s+', '', response['text']), 'qualified separator lost or invented voice/text')
+
+    def word_error(hypothesis, reference):
+        # Frozen per-source WER, not substring/semantic similarity. In
+        # particular hurt -> hurts is still one substitution in seven words.
+        expected = re.findall(r'\w+', reference.lower())
+        actual = re.findall(r'\w+', hypothesis.lower())
+        costs = list(range(len(actual)+1))
+        for i, word in enumerate(expected, 1):
+            following = [i]
+            for j, observed in enumerate(actual, 1):
+                following.append(min(following[-1]+1, costs[j]+1,
+                                     costs[j-1]+(word != observed)))
+            costs = following
+        return costs[-1]/len(expected)
+
+    scored = []
+    for labels in itertools.permutations(grouped):
+        scores = [word_error(' '.join(r['text'] for r in grouped[label]), source[2])
+                  for label, source in zip(labels, SEPARATOR_UTTERANCES)]
+        scored.append((sum(scores), labels, scores))
+    _, labels, scores = min(scored)
+    ledger.require(all(v <= .125 for v in scores),
+                   'qualified separator per-voice recognition quality failed')
+    for label, (begin, end, _) in zip(labels, SEPARATOR_UTTERANCES):
+        ledger.require(all(r['start']*16000 >= begin-6080 and
+                           r['end']*16000 <= end+6080 for r in grouped[label]),
+                       'qualified separator time outside real voice')
+    overlap = max(min(a['end'],b['end'])-max(a['start'],b['start'])
+                  for a in grouped[labels[0]] for b in grouped[labels[1]])
+    ledger.require(overlap >= .3, 'qualified separator serialized actual overlapping speech')
 
 
 def speaker_request(identity):
@@ -350,7 +452,8 @@ def business(value, identity, selected=None):
                        'tool_source', 'embedding') + (('media',) if media else ()) +
                        (('asr',) if identity.get('native_asr') is not None else ()) +
                        (('asr_auxiliary',) if audio_auxiliaries(identity) else ()) +
-                       (('speaker',) if has_speaker(identity) else ()))
+                       (('speaker',) if has_speaker(identity) else ()) +
+                       (('separator',) if has_separator(identity) else ()))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:
@@ -359,6 +462,8 @@ def business(value, identity, selected=None):
         audio_auxiliary_business(value['asr_auxiliary'], identity)
     if has_speaker(identity):
         speaker_business(value['speaker'], identity)
+    if has_separator(identity):
+        separator_business(value['separator'], identity)
     schema = message(value['schema'], 'stop')
     ledger.require(json.loads(schema['content']) == {'answer': 42},
                    'profile structured business differs')

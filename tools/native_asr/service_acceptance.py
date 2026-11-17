@@ -95,11 +95,17 @@ def prepare(args):
     if profile_evidence.audio_auxiliaries(fixed):
         plan['audio_auxiliary'] = fixed
         source_path = Path(plan['clips']['zh']['path'])
-        if profile_evidence.has_speaker(fixed):
+        if profile_evidence.has_separator(fixed):
+            source_path = getattr(args, 'separator_audio', None)
+            require(source_path is not None, 'managed separator needs fixed mixed audio')
+            source_path = source_path.resolve(strict=True)
+            require(engine.sha(source_path) == profile_evidence.SEPARATOR_FILE_SHA,
+                    'qualified mixed-speaker source differs')
+        elif profile_evidence.has_speaker(fixed):
             source_path = ROOT/'.q4t-work/serve-diarization-20261118/http-01/returns.wav'
             require(engine.sha(source_path) == profile_evidence.SPEAKER_FILE_SHA,
                     'accepted returning-speaker source differs')
-            plan['sources'][str(source_path)] = engine.sha(source_path)
+        plan['sources'][str(source_path)] = engine.sha(source_path)
         source = source_path.read_bytes()
         audio = out/'auxiliary.wav'
         audio.write_bytes(auxiliary_service.source(source, fixed))
@@ -530,6 +536,7 @@ class Stage(BASE['Stage']):
 GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prepare,
                Stage=Stage, check_business=check_business, business_record=business_record,
                accepted_run=accepted_run,
+               PREPARE_PATH_ARGUMENTS=('separator-audio',),
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__

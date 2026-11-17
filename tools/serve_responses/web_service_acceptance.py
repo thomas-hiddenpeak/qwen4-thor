@@ -325,7 +325,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('prepare','run','finalize','launcher','controller','gateway','probe'))
     parser.add_argument('--scenario',choices=tuple(LIMITS),default='tool_retained')
-    for name in ('package','output','plan','config','retained','release','decision'):
+    for name in ('package','output','plan','config','retained','release','decision') + \
+                globals().get('PREPARE_PATH_ARGUMENTS', ()):
         parser.add_argument('--'+name,type=Path)
     parser.add_argument('--payload',choices=('primary','fallback'))
     args=parser.parse_args()

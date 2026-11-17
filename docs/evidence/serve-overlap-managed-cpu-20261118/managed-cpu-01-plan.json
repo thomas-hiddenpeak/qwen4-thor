@@ -1,0 +1,48 @@
+{
+  "tests": 12,
+  "seconds": 180,
+  "gpu": 0,
+  "commands": [
+    [
+      "contracts",
+      [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.serve_service.test_separator_package",
+        "tools.serve_recovery.test_separator_profiles",
+        "tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_portable_missing_assets_and_every_actual_command_limit",
+        "tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_observed_identity_limits_health_and_no_silent_backend_loss",
+        "tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown"
+      ]
+    ],
+    [
+      "inventory",
+      [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py"
+      ]
+    ],
+    [
+      "generated",
+      [
+        "python3",
+        "-B",
+        "tools/serve_protocol/build_contract.py",
+        "--check"
+      ]
+    ]
+  ],
+  "identities": {
+    "tools/serve_service/package.py": "0cf940fc2a6c5fa31796a4fbaeeade60e16dc58bb22560436375a16f4a63fe30",
+    "tools/serve_recovery/profile_evidence.py": "ea73f181c3dd678594799b2dd5521252bdc4763476b1230da95b891a47f94735",
+    "tools/serve_recovery/profile_acceptance.py": "293c5f53afa91767d65b3c81dafdc630ab0df76db2f94a93b2f54e586573a8ef",
+    "tools/serve_recovery/profile_migration.py": "51b6b43852c4cf49a26e4c3cbb5d863c21bc5c28d99d6ed11e37d83cad5e5d73",
+    "tools/native_asr/auxiliary_service.py": "cdb814b357da1c362fd3de3f5e5230648bc4d01e733a584cc14aa51619264f3d",
+    "tools/serve_service/test_separator_package.py": "3e9d825e96d5da6c1d6f54dbd1e7960299982f05f61d429ddfd4f964f09304cc",
+    "tools/serve_recovery/test_separator_profiles.py": "2bef4c2205e99e6f3e4c318cbf708f2b7de50990f0b8dad01d30f2f12a5cad03"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "version": "7.47.0",
+  "result": {
+    "events": [
+      {
+        "duration": 2,
+        "task": "transcribe",
+        "text": "",
+        "segments": [],
+        "usage": {
+          "type": "tokens",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "input_token_details": {
+            "audio_tokens": 0,
+            "text_tokens": 0
+          }
+        },
+        "type": "transcript.text.done"
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18260/v1/audio/transcriptions"
+    }
+  ]
+}

@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Complete alignment/segment/VAD package, native ingress, primary/light and recovery delivery; then all remaining audio/multimodal and master tasks.",
+      "next": "Complete native separator managed package, actual overlap qualification and recovery composition; resolve retained four-second recognition quality failure before delivery; continue Chat audio/synthesis/Realtime and every remaining master task.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -3586,6 +3586,41 @@
         "status": "FAIL_DUPLICATE_VOICE",
         "reference_bandwidth_fix": "PASS_REAL_HTTP",
         "evidence": "docs/evidence/serve-overlap-single-voice-20261118/README.md",
+        "default_changed": false
+      },
+      "overlap_track_fix_20261118": {
+        "status": "PASS_TARGETED_CPU_AND_THREE_REAL_SINGLE_VOICES",
+        "cpu": "docs/evidence/serve-overlap-track-fix-20261118/README.md",
+        "business": "docs/evidence/serve-overlap-http-track-fix-20261118/README.md",
+        "heuristic_not_universal_speaker_count": true,
+        "default_changed": false
+      },
+      "overlap_output_fix_20261118": {
+        "status": "PROTOCOL_PASS_QUALITY_FAIL",
+        "cpu": "docs/evidence/serve-overlap-output-fix-20261118/README.md",
+        "business": "docs/evidence/serve-overlap-http-output-fix-20261118/README.md",
+        "starts": 1,
+        "requests": 8,
+        "seconds": 61.33935029665008,
+        "quality": {
+          "four_seconds_per_voice_wer": [
+            0.14285714285714285,
+            0
+          ],
+          "thirty_seconds_per_voice_wer": [
+            0,
+            0
+          ],
+          "threshold": 0.125
+        },
+        "cleanup_complete": true,
+        "default_changed": false
+      },
+      "overlap_managed_cpu_20261118": {
+        "status": "PASS_13_TARGETED_CPU_NO_GPU",
+        "evidence": "docs/evidence/serve-overlap-managed-cpu-20261118/README.md",
+        "actual_failed_quality_rejected": true,
+        "actual_managed_recovery_qualified": false,
         "default_changed": false
       }
     },
@@ -7156,7 +7191,7 @@
     }
   ],
   "next_task": "A10 actual overlapping transcript integration and independent service recovery; all remaining master tasks continue",
-  "next": "Complete overlap ASR/alignment/global labels, native backend isolation/recovery/SDK delivery, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
+  "next": "Complete native separator managed package, actual overlap qualification and recovery composition; resolve retained four-second recognition quality failure before delivery; continue Chat audio/synthesis/Realtime and every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -15,7 +15,9 @@ def selected(identity, stream=False):
 
 def request(identity, stream=False):
     value = selected(identity, stream)
-    if evidence.has_speaker(value):
+    if evidence.has_separator(value):
+        result = evidence.separator_request(value)
+    elif evidence.has_speaker(value):
         result = evidence.speaker_request(value)
     elif evidence.audio_auxiliaries(value):
         result = evidence.auxiliary_audio_request(value)
@@ -28,6 +30,10 @@ def request(identity, stream=False):
 
 
 def source(original, identity):
+    if evidence.has_separator(identity):
+        evidence.ledger.require(hashlib.sha256(original).hexdigest() == evidence.SEPARATOR_FILE_SHA,
+                                'qualified managed separator source differs')
+        return original
     if evidence.has_speaker(identity):
         evidence.ledger.require(hashlib.sha256(original).hexdigest() == evidence.SPEAKER_FILE_SHA,
                                 'qualified managed speaker source differs')
@@ -50,6 +56,8 @@ def fields(value):
 def check(response, identity, config, audio, stream=False):
     """Use actual source/tokens/times and independent health, never text alone."""
     value = selected(identity, stream)
+    if evidence.has_separator(value):
+        return separator_result(response, value, config, hashlib.sha256(audio).hexdigest(), stream)
     if evidence.has_speaker(value):
         return speaker_result(response, value, config, hashlib.sha256(audio).hexdigest(), stream)
     names = evidence.audio_auxiliaries(value)
@@ -89,4 +97,28 @@ def speaker_result(response, identity, config, source_sha256, stream=False):
             'qualified speaker dependency not healthy or budget changed')
     return dict(actual_audio_sha256=source_sha256, auxiliaries=['alignment','vad','speaker'],
         stream=stream, text=response['text'], segments=len(response['segments']),
+        labels=[row['speaker'] for row in response['segments']])
+
+
+def separator_result(response, identity, config, source_sha256, stream=False):
+    """A successful mixed response must retain every configured dependency."""
+    from tools.serve_service import package
+    value = dict(source_sha256=source_sha256, request=evidence.separator_request(identity),
+        response=response, health=config['native_separator_health'],
+        limits=config['native_separator_limits'])
+    evidence.separator_business(value, identity)
+    for name in ('asr', 'alignment', 'vad', 'speaker'):
+        fixed = identity['native_asr'] if name == 'asr' else identity['native_asr'][name]
+        health = config['native_'+name+'_health']
+        limits = (config['native_asr_limits'] if name == 'asr' else
+                  package.asr_auxiliary_observed_limits(config, name))
+        evidence.ledger.require(health.get('model') == fixed['model'] and
+            health.get('state') == 'ready' and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False and
+            evidence.ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+            package.same_json(limits, fixed['limits']),
+            'qualified separator dependency not healthy or budget changed')
+    return dict(actual_audio_sha256=source_sha256,
+        auxiliaries=['alignment','vad','speaker','separator'], stream=stream,
+        text=response['text'], segments=len(response['segments']),
         labels=[row['speaker'] for row in response['segments']])

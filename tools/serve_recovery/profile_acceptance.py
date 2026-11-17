@@ -42,7 +42,8 @@ def limits_for(profile, native_asr=None):
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
                 (2 if native_asr is not None else 0) +
                 (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0) +
-                (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0))
+                (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0) +
+                (2 if profile_evidence.has_separator(dict(native_asr=native_asr or {})) else 0))
 
 
 def requests(media=False):
@@ -227,7 +228,7 @@ def prepare(args):
                 plan['native_assets'][str(directory/'silero_vad_16k.safetensors')] = \
                     settings['weight_sha256']
                 continue
-            names = ['config.json', 'model.safetensors'] if auxiliary == 'speaker' else \
+            names = ['config.json', 'model.safetensors'] if auxiliary in ('speaker','separator') else \
                 ['config.json', 'preprocessor_config.json',
                          'generation_config.json', 'vocab.json', 'merges.txt',
                          'tokenizer_config.json', 'model.safetensors']
@@ -243,6 +244,14 @@ def prepare(args):
                 'speaker qualification audio differs')
         plan['speaker_audio'] = dict(path=str(clip), sha256=sha(clip))
         plan['sources'][str(clip)] = sha(clip)
+    if profile_evidence.has_separator(plan['identity']):
+        clip = getattr(args, 'separator_audio', None)
+        require(clip is not None, 'separator qualification needs fixed real mixed audio')
+        clip = clip.resolve(strict=True)
+        require(sha(clip) == profile_evidence.SEPARATOR_FILE_SHA,
+                'separator qualification audio differs')
+        plan['separator_audio'] = dict(path=str(clip), sha256=sha(clip))
+        plan['sources'][str(clip)] = sha(clip)
     for name in ('access-program-policy.json', 'file-input-policy.json',
                  'mcp-policy.json', 'web-policy.json'):
         if (engine/name).is_file():
@@ -257,6 +266,8 @@ def prepare(args):
         plan['planned']['native_auxiliary_transcriptions'] = 2
     if profile_evidence.has_speaker(plan['identity']):
         plan['planned']['native_speaker_transcriptions'] = 2
+    if profile_evidence.has_separator(plan['identity']):
+        plan['planned']['native_separator_transcriptions'] = 2
     plan['mutations'] = ['gracefully stop owned primary after its bounded business',
         'start only qualified light command in same lease/private directory',
         'default deployment and its state remain untouched']
@@ -323,12 +334,14 @@ class Stage(encrypted.Stage):
         self.drained(label+'-drain')
         return result
 
-    def audio_request(self, auxiliary=False, speaker=False):
-        require(not (auxiliary and speaker), 'one qualified audio request kind required')
-        label = self.profile_name+('-speaker' if speaker else
+    def audio_request(self, auxiliary=False, speaker=False, separator=False):
+        require(sum((auxiliary, speaker, separator)) <= 1,
+                'one qualified audio request kind required')
+        label = self.profile_name+('-separator' if separator else '-speaker' if speaker else
                                   '-asr-auxiliary' if auxiliary else '-asr')
         selected = self.plan['base']['settings']['native_asr']
-        clip = self.plan['speaker_audio' if speaker else 'asr_audio']
+        clip = self.plan['separator_audio' if separator else
+                         'speaker_audio' if speaker else 'asr_audio']
         raw = Path(clip['path']).read_bytes()
         require(hashlib.sha256(raw).hexdigest() == clip['sha256'], 'ASR source drift')
         request = dict(model=selected['model'], response_format='json', include=['logprobs'])
@@ -337,6 +350,8 @@ class Stage(encrypted.Stage):
             request = profile_evidence.auxiliary_audio_request(self.plan['identity'])
         if speaker:
             request = profile_evidence.speaker_request(self.plan['identity'])
+        if separator:
+            request = profile_evidence.separator_request(self.plan['identity'])
         boundary = 'q4t-profile-native-asr'
         parts = []
         for key, value in request.items():
@@ -375,12 +390,16 @@ class Stage(encrypted.Stage):
             names = profile_evidence.audio_auxiliaries(self.plan['identity'])
             result['health'] = {k:config['native_'+k+'_health'] for k in names}
             result['limits'] = {k:package.asr_auxiliary_observed_limits(config, k) for k in names}
-        if speaker:
+        if speaker or separator:
             del result['source_base64']
+            backend = 'separator' if separator else 'speaker'
             result.update(source_sha256=hashlib.sha256(raw).hexdigest(),
-                health=config['native_speaker_health'], limits=config['native_speaker_limits'])
+                health=config['native_'+backend+'_health'],
+                limits=config['native_'+backend+'_limits'])
         save(self.out/(label+'.request.json'), request)
-        if speaker:
+        if separator:
+            profile_evidence.separator_business(result, self.plan['identity'])
+        elif speaker:
             profile_evidence.speaker_business(result, self.plan['identity'])
         elif auxiliary:
             profile_evidence.audio_auxiliary_business(result, self.plan['identity'])
@@ -418,6 +437,8 @@ class Stage(encrypted.Stage):
             value['asr_auxiliary'] = self.audio_request(auxiliary=True)
         if profile_evidence.has_speaker(self.plan['identity']):
             value['speaker'] = self.audio_request(speaker=True)
+        if profile_evidence.has_separator(self.plan['identity']):
+            value['separator'] = self.audio_request(separator=True)
         profile_evidence.business(value, self.plan['identity'], selected)
         save(self.out/(self.profile_name+'-business.json'), value)
 
@@ -520,6 +541,8 @@ def main():
                    help='fixed real audio required when ASR is configured')
     p.add_argument('--speaker-audio', type=Path,
                    help='fixed returning-speaker audio required when speaker is configured')
+    p.add_argument('--separator-audio', type=Path,
+                   help='fixed real mixed audio required when separator is configured')
     p.add_argument('--port', type=int, default=19069)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     p = sub.add_parser('finalize'); p.add_argument('--output', type=Path, required=True)

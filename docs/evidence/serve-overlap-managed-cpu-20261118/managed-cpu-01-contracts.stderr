@@ -1,0 +1,38 @@
+test_all_dependencies_and_capacity_types_are_required (tools.serve_service.test_separator_package.SeparatorPackage.test_all_dependencies_and_capacity_types_are_required) ... ok
+test_cli_passes_separator_settings_and_rejects_orphan_options (tools.serve_service.test_separator_package.SeparatorPackage.test_cli_passes_separator_settings_and_rejects_orphan_options) ... ok
+test_identity_budget_and_configured_backend_cannot_disappear (tools.serve_service.test_separator_package.SeparatorPackage.test_identity_budget_and_configured_backend_cannot_disappear) ... ok
+test_portable_package_has_exact_separator_command_without_asset_reads (tools.serve_service.test_separator_package.SeparatorPackage.test_portable_package_has_exact_separator_command_without_asset_reads) ... ok
+test_actual_retained_quality_failure_cannot_be_qualified (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_actual_retained_quality_failure_cannot_be_qualified) ... ok
+test_completion_declaration_and_migration_cannot_drop_separator (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_completion_declaration_and_migration_cannot_drop_separator) ... ERROR
+test_managed_requests_preserve_full_pipeline_and_require_healthy_dependencies (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_managed_requests_preserve_full_pipeline_and_require_healthy_dependencies) ... ok
+test_mixed_source_time_words_usage_and_health_are_required (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_mixed_source_time_words_usage_and_health_are_required) ... ok
+test_new_qualification_format_and_real_request_accounting (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_new_qualification_format_and_real_request_accounting) ... ok
+test_portable_missing_assets_and_every_actual_command_limit (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_portable_missing_assets_and_every_actual_command_limit) ... ok
+test_observed_identity_limits_health_and_no_silent_backend_loss (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_observed_identity_limits_health_and_no_silent_backend_loss) ... ok
+test_explicit_speaker_addition_preserves_history_pending_and_cooldown (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown) ... ok
+
+======================================================================
+ERROR: test_completion_declaration_and_migration_cannot_drop_separator (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_completion_declaration_and_migration_cannot_drop_separator)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_separator_profiles.py", line 96, in test_completion_declaration_and_migration_cannot_drop_separator
+    with self.assertRaises(ValueError):migration.audio_change(selected,bad)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_migration.py", line 271, in audio_change
+    profile_contract.asr_configuration(after)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_contract.py", line 37, in asr_configuration
+    return package.asr_settings(selected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 296, in asr_settings
+    auxiliary = asr_auxiliary_settings({k:v for k,v in value.items() if k in ASR_AUXILIARY})
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 195, in asr_auxiliary_settings
+    require('separator' not in value or {'alignment', 'vad', 'speaker'} <= value.keys(),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 63, in require
+    raise RuntimeError(message)
+RuntimeError: separator requires speaker, alignment and VAD backends
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.293s
+
+FAILED (errors=1)
