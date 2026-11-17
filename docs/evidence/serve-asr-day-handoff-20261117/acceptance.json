@@ -1,0 +1,81 @@
+{
+  "status": "PASS_FROZEN_DAY_HANDOFF",
+  "source_commit": "5ed5f57c17da0a1fa434624e05594a73d7a7b73f",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validation-src",
+  "revision": 276,
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+    "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc"
+  },
+  "service_id": "abdad47b-12b7-4674-8161-acf5316de001",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validation-src/.q4t-work/day-01/plan.json",
+  "plan_sha256": "5de2da533a21abdfcc24216a9407974c58e7ab2a23ca9e22784e4ead76396968",
+  "sources": 603,
+  "links": {
+    "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle/engine/q4t",
+    "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle/engine/q4t.release.json",
+    "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+    "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/delivery-01/candidate-service.release.json"
+  },
+  "protected_default": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "production_unchanged": true,
+  "same_git_common_dir": true,
+  "sparse_checkout_patterns": [
+    "/*",
+    "!/*/",
+    "/tools/",
+    "/src/",
+    "/include/",
+    "/tests/",
+    "/cmake/",
+    "/docs/SERVE_MEMORY_STOP_2026-11-03.md"
+  ],
+  "steps": [
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "tools/serve_soak/native_stage.py",
+        "prepare",
+        "--profile",
+        "day",
+        "--package",
+        "build/service",
+        "--output",
+        ".q4t-work/day-01"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validation-src",
+      "exit_code": 0,
+      "seconds": 1.567736345808953
+    },
+    {
+      "name": "check",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "tools/serve_soak/native_stage.py",
+        "check",
+        "--plan",
+        ".q4t-work/day-01/plan.json"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validation-src",
+      "exit_code": 0,
+      "seconds": 0.5142719373106956
+    }
+  ],
+  "model_actions": 0,
+  "executed": false,
+  "owner": "user",
+  "unchanged_existing_core_workload": true,
+  "asr_long_stability_accepted": false,
+  "archive_sha256": "75e08d25918f784894ee91eaf131552ab0ce1b6e24e6b30dffc860e71daef5c0"
+}

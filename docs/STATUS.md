@@ -62,7 +62,7 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
 ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
-原rev266及day保留；继续独立长稳交接、PR44合main与全部master。
+原rev266及day保留；既有core day已固定且未运行；继续PR44合main、后续后端长稳交接与全部master。
 
 前驱[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
@@ -187,7 +187,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
 ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
-原rev266及day保留；继续独立长稳交接、PR44合main与全部master。
+原rev266及day保留；既有core day已固定且未运行；继续PR44合main、后续后端长稳交接与全部master。
 
 [PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
 普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；
