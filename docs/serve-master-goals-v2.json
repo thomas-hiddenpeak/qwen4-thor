@@ -2858,6 +2858,18 @@
           "seconds": 900
         },
         "whole_task_complete": false
+      },
+      "audio_auxiliary_primary_light_20261117": {
+        "state": "real_profiles_accepted_service_delivery_pending",
+        "evidence": "evidence/serve-audio-auxiliary-profiles-20261117/README.md",
+        "counts": {
+          "starts": 2,
+          "chats": 14,
+          "controls": 80
+        },
+        "seconds": 110.4937121430412,
+        "whole_task_complete": false,
+        "default_unchanged": true
       }
     },
     {

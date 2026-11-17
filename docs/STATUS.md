@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[对齐/VAD主轻真实业务通过](evidence/serve-audio-auxiliary-profiles-20261117/README.md)：
+2启动/14创建/110.494秒，两种配置完整多段词/segment和原ASR/核心
+工具/embedding/视频通过；104次NVML正常，清理完成、默认未变。
+继续原生TLS/版本恢复/可回退交付，再完成全部master剩余任务。
+
+
 [对齐/VAD恢复资格19项CPU通过](evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md)
 （1.165秒、0GPU）：递归固定身份/预算、搬迁、实际辅助工作证据、
 显式新增/预算迁移及自动回退不丢能力，原历史/冷却/待处理动作保持。

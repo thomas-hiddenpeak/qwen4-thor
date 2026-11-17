@@ -151,3 +151,6 @@ docs/evidence/serve-programmatic-length-repair-20261113/*.stderr -text -whitespa
 
 # Keep exact VAD HTTP/SSE bytes and captured terminal framing.
 docs/evidence/serve-vad-http-20261117/*.wire binary
+
+# Preserve actual audio profile HTTP response bytes.
+docs/evidence/serve-audio-auxiliary-profiles-20261117/*.wire binary
