@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "seconds": 38.907519835047424,
+  "returncode": 0,
+  "selectors": [
+    "tools.serve_recovery.test_maintenance",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_maintenance_source_inventory_is_sealed_without_redefining_v19",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources",
+    "tools.serve_recovery.test_publication_archive.ArchiveTests.test_current_history_and_not_yet_journaled_intent_are_protected",
+    "tools.serve_recovery.test_publication_archive.ArchiveTests.test_interruption_after_atomic_rename_resumes_original_plan",
+    "tools.serve_recovery.test_publication_intent_archive.IntentArchiveTests.test_history_prejournal_and_partial_intents_are_protected",
+    "tools.serve_recovery.test_publication_intent_archive.IntentArchiveTests.test_interrupted_rename_resumes_exact_plan_and_syncs",
+    "tools.serve_recovery.test_version_archive.ArchiveTests.test_current_cycle_and_retained_publication_roots_are_protected",
+    "tools.serve_recovery.test_version_archive.ArchiveTests.test_interrupted_rename_resumes_and_fsyncs_without_reset"
+  ],
+  "production_sources": {
+    "tools/serve_recovery/bundle.py": "388f00ef6f08b94458f3c9a70868b47f69de2c3bc1f27d3a45e1ec48ea153139",
+    "tools/serve_recovery/service.py": "68d01dab57a6185b063d78af4e25bf4e3ce6273f817ef3dd17fa0a3914b7cf77",
+    "tools/serve_recovery/maintenance.py": "e204f27eaeb2287e0b3f0f2509bbee2c21d0bc3612a830fb61136a6155eaab89",
+    "tools/serve_recovery/publication_archive.py": "c205cdc99b348787b568e5410f90c3996821809c6156413dc99d9172a6bd260b",
+    "tools/serve_recovery/publication_intent_archive.py": "53a3582cc80b7049b55997caf4aa1686e03dfa1cdb1a1caf9342259cb070e865",
+    "tools/serve_recovery/version_archive.py": "40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08",
+    "tools/serve_recovery/test_maintenance.py": "9687b2c66662ad061e8f98228de8a8edb7df84b8d52c8728a0e89ad4df259247",
+    "tools/serve_recovery/test_native_bundle.py": "2304a4b9cabd9202e9d407061f375cc3de3c64308e6d5b04cebb56b1a98d796d"
+  },
+  "model_actions": false,
+  "synthetic_assets": true
+}

@@ -19,7 +19,7 @@ MAX_SELECTED=4
 
 
 @contextmanager
-def locked(state):
+def locked(state, *, authority=None):
     state=files.directory(state)
     with ExitStack() as locks:
         locks.enter_context(deployment.claim(state,name='publication.lock'))
@@ -29,6 +29,7 @@ def locked(state):
         locks.enter_context(publication.quiescent(state,desc))
         deployment.ready(state,desc)
         current=publication.ready(state,desc)
+        if authority is not None: authority(state, desc)
         yield state,desc,manifest,current
 
 
@@ -108,12 +109,12 @@ def verify_copy(path,row,root,state,desc):
         decision_copy=path/'service.acceptance.json')
 
 
-def prepare(state,output,generations):
+def prepare(state,output,generations,*,authority=None):
     ledger.require(type(generations) is list and 1<=len(generations)<=MAX_SELECTED and
         len(set(generations))==len(generations) and
         all(type(v) is str and ledger.HASH.fullmatch(v) for v in generations),
         'one to four explicit generation hashes required')
-    with locked(state) as (state,desc,manifest,current):
+    with locked(state,authority=authority) as (state,desc,manifest,current):
         root=Path(current['root']);output=Path(output).absolute()
         parent=files.directory(output.parent)
         repository=Path(manifest['repository'])
@@ -142,7 +143,7 @@ def prepare(state,output,generations):
                     selected=generations,model_actions=False,files_moved=False)
 
 
-def apply(path,expected,*,restore=False):
+def apply(path,expected,*,restore=False,authority=None):
     path=Path(path).absolute()
     ledger.require(engine.sha(path)==expected,'reviewed archive plan changed')
     value=native.private_json(path)
@@ -153,7 +154,7 @@ def apply(path,expected,*,restore=False):
         value['source_sha256']==engine.sha(Path(__file__).resolve()) and
         type(value['generations']) is list and 1<=len(value['generations'])<=MAX_SELECTED,
         'archive plan/source identity differs')
-    with locked(value['state']) as (state,desc,manifest,current):
+    with locked(value['state'],authority=authority) as (state,desc,manifest,current):
         root=Path(current['root']);pool=root/files.DIRECTORY/'generations'
         ledger.require(value['service_id']==desc['service_id'] and value['root']==str(root) and
             archive.is_relative_to(Path(manifest['repository'])/'.q4t-work') and

@@ -3801,7 +3801,17 @@
       },
       "remaining_required": [
         "Ship protected intent/generation/version retention in sealed native service package and CLI; preserve historical package verification and recovery budgets"
-      ]
+      ],
+      "native_maintenance_20261117": {
+        "state": "cpu_passed_package_delivery_pending",
+        "plan": "docs/SERVE_NATIVE_MAINTENANCE_2026-11-17.md",
+        "evidence": "docs/evidence/serve-native-maintenance-cpu-20261117/acceptance.json",
+        "tests": 25,
+        "gpu_starts": 0,
+        "recovery_budgets_preserved": true,
+        "new_bundle_version": 20,
+        "historical_v1_v19_retained": true
+      }
     },
     {
       "id": "R01",
@@ -5584,7 +5594,7 @@
     }
   ],
   "next_task": "N07",
-  "next": "Merge client receipts/retention phase after exact-head checks; add retained-state maintenance to sealed native service CLI and continue all remaining master tasks.",
+  "next": "Seal native maintenance v20, validate actual package CLI and reversible STOPPED delivery; PR43 exact-head checks and main merge continue independently; all remaining master tasks required",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

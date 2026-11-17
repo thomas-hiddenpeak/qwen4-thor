@@ -62,8 +62,11 @@ V18_SOURCES = tuple(sorted(set(V17_SOURCES) | {'tools/serve_recovery/'+name+'.py
                  'cold_authority', 'cold_channel', 'cold_issuer', 'cold_client', 'cold_host',
                  'cold_custody', 'cold_watch_policy', 'cold_watch', 'resource_memory', 'resource_client', 'resource_compat',
                  'runtime_identity')}))
-SOURCES = tuple(sorted(set(V18_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+V19_SOURCES = tuple(sorted(set(V18_SOURCES) | {'tools/serve_recovery/'+name+'.py'
     for name in ('root_version_policy', 'root_checkpoints', 'root_transfer')}))
+SOURCES = tuple(sorted(set(V19_SOURCES) | {'tools/serve_recovery/'+name+'.py'
+    for name in ('maintenance', 'publication_archive',
+                 'publication_intent_archive', 'version_archive')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -285,7 +288,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=19, profile='q4t-service-recovery-v19', repository=str(repository),
+    value = dict(version=20, profile='q4t-service-recovery-v20', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -313,10 +316,10 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in range(2, 20) else ()),
-        *(('tls_configuration',) if version in range(4, 20) else ()),
-        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 20) else ())))
-    ledger.require(type(version) is int and version in range(1, 20) and
+        *(('ingress_mode',) if version in range(2, 21) else ()),
+        *(('tls_configuration',) if version in range(4, 21) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 21) else ())))
+    ledger.require(type(version) is int and version in range(1, 21) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -327,7 +330,7 @@ def verify(package, digest):
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     if version >= 17 and type(value['files']) is dict and 'bin/q4t-device-control' in value['files']:
         executables = (*executables, 'q4t-device-control')
-    sources = (SOURCES if version == 19 else V18_SOURCES if version == 18 else V17_SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
+    sources = (SOURCES if version == 20 else V19_SOURCES if version == 19 else V18_SOURCES if version == 18 else V17_SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
                V11_SOURCES if version == 11 else
                V10_SOURCES if version == 10 else
                V9_SOURCES if version == 9 else
@@ -340,10 +343,10 @@ def verify(package, digest):
              'gateway-policy.json', 'native-build.json'}
     if value.get('recovery_profiles') is not None:
         names |= {'profile-primary.json', 'profile-light.json'}
-    if version in range(4, 20):
+    if version in range(4, 21):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in range(4, 20) and native):
+    if value['tls'] and not (version in range(4, 21) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')

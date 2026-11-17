@@ -371,12 +371,23 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
                  'limits-migrate', 'usage-status', 'usage-migrate',
                  'deploy', 'rollback', 'deployment-status', 'profiles-status',
+                 'maintenance-status', 'maintenance-plan',
+                 'maintenance-apply', 'maintenance-restore',
                  'version-prepare', 'version-register', 'version-status', 'version-adapt',
                  'publish', 'publish-status', 'publish-resume', 'publish-rollback'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=name not in ('check', 'version-adapt'))
         command.add_argument('--package', type=Path, default=package, required=package is None)
         command.add_argument('--manifest-sha256', default=digest, required=digest is None)
+        if name in ('maintenance-plan', 'maintenance-apply', 'maintenance-restore'):
+            command.add_argument('--kind', choices=('intents', 'generations', 'versions'),
+                                 required=True)
+        if name == 'maintenance-plan':
+            command.add_argument('--select', action='append', required=True)
+            command.add_argument('--output', type=Path, required=True)
+        if name in ('maintenance-apply', 'maintenance-restore'):
+            command.add_argument('--plan', type=Path, required=True)
+            command.add_argument('--plan-sha256', required=True)
         if name == 'reload':
             command.add_argument('--component', choices=('tls', 'access', 'limits'), required=True)
             command.add_argument('--proposal', type=Path)
@@ -507,6 +518,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             elif args.operation == 'init-resume':
                 from tools.serve_recovery import initialization
                 result = initialization.finish(args.state, package, digest, bundle.verify(package, digest))
+            elif args.operation.startswith('maintenance-'):
+                from tools.serve_recovery import maintenance
+                result = maintenance.execute(args, package, digest)
             elif args.operation.startswith('publish'):
                 from tools.serve_recovery import publication
                 if args.operation == 'publish-status':result = publication.status(args.state)

@@ -193,3 +193,8 @@ jobs:
         run: >-
           python3 -B -m unittest
           tools.serve_recovery.test_publication_intent_archive
+      - name: Check native service retention commands
+        timeout-minutes: 3
+        env:
+          Q4T_TEST_OUTPUT_DIR: ${{ github.workspace }}/.q4t-work/maintenance-cpu
+        run: python3 -B -m unittest tools.serve_recovery.test_maintenance

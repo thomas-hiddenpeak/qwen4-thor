@@ -134,6 +134,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生维护25项CPU通过](evidence/serve-native-maintenance-cpu-20261117/README.md)：
+38.908秒，13项新增/12项直接回归，0GPU。三类CLI实际文件事务、
+持锁身份/保护、历史包及隔离导入已验；精确包和实际发行尚待完成。
+默认rev260保持，下一步密封v20及STOPPED可回退交付，全部master继续。
+
+[原生保留管理交付计划](SERVE_NATIVE_MAINTENANCE_2026-11-17.md)已冻结：
+v20密封包/统一CLI覆盖三类容量和身份保护，历史v19核验保持。
+先针对性CPU及STOPPED交付，模型与native helper不变，不新增GPU；
+PR43修复head独立检查，全部master继续。
+
 PR43首次两组CI在来源库存检查失败：新增意图归档模块缺少审查锚点。
 已按实际代码/8项CPU证据补入唯一缺失哈希，本机库存及7项变异检查
 通过；保留原CI失败，继续最终提交检查和实际合main，未把失败当完成。

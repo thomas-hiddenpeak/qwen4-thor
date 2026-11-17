@@ -52,12 +52,12 @@ def destination(output, state, manifest, current):
         'new private archive directory required')
 
 
-def prepare(state, output, requests):
+def prepare(state, output, requests, *, authority=None):
     ledger.require(type(requests) is list and 1 <= len(requests) <= MAX_SELECTED
         and len(set(requests)) == len(requests)
         and all(ledger.identifier(v) for v in requests),
         'one to four explicit request UUIDs required')
-    with archives.locked(state) as (state, desc, manifest, current):
+    with archives.locked(state, authority=authority) as (state, desc, manifest, current):
         output = Path(output).absolute()
         parent = files.directory(output.parent)
         destination(output, state, manifest, current)
@@ -88,7 +88,7 @@ def prepare(state, output, requests):
                     requests=requests, model_actions=False, files_moved=False)
 
 
-def apply(path, expected, *, restore=False):
+def apply(path, expected, *, restore=False, authority=None):
     path = Path(path).absolute()
     ledger.require(engine.sha(path) == expected, 'reviewed archive plan changed')
     value = native.private_json(path)
@@ -99,7 +99,7 @@ def apply(path, expected, *, restore=False):
         value['source_sha256'] == engine.sha(Path(__file__).resolve()) and
         type(value['requests']) is list and 1 <= len(value['requests']) <= MAX_SELECTED,
         'archive plan/source identity differs')
-    with archives.locked(value['state']) as (state, desc, manifest, current):
+    with archives.locked(value['state'], authority=authority) as (state, desc, manifest, current):
         destination(archive, state, manifest, current)
         ledger.require(value['service_id'] == desc['service_id'] and
             value['root'] == current['root'], 'archive service/root differs')
