@@ -1,6 +1,7 @@
 """One real pinned Python SDK request, with bounded incremental wire capture."""
 import base64
 import json
+import ssl
 import sys
 
 import httpx
@@ -24,8 +25,8 @@ class Capture(httpx.SyncByteStream):
 
 
 class Transport(httpx.BaseTransport):
-    def __init__(self):
-        self.transport = httpx.HTTPTransport(retries=0)
+    def __init__(self, verify=True):
+        self.transport = httpx.HTTPTransport(retries=0, verify=verify)
         self.wire, self.exchanges, self.bytes = [], [], 0
 
     def handle_request(self, request):
@@ -43,10 +44,12 @@ def main():
     value = json.loads(sys.stdin.read(1024 * 1024 + 1))
     if openai.__version__ != '2.8.1':
         raise RuntimeError('Python SDK version drift')
-    transport = Transport()
+    transport = Transport(ssl.create_default_context(cafile=value['ca'])
+                          if value.get('ca') else True)
     result = dict(ok=False, version=openai.__version__)
     with httpx.Client(transport=transport, trust_env=False, timeout=180) as http:
-        client = openai.OpenAI(base_url=value['base_url'], api_key='local',
+        client = openai.OpenAI(base_url=value['base_url'],
+                               api_key=value.get('api_key', 'local'),
                                max_retries=0, timeout=180, http_client=http)
         try:
             with open(value['audio'], 'rb') as audio:

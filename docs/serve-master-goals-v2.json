@@ -2638,6 +2638,16 @@
           "seconds": 900
         },
         "whole_task_complete": false
+      },
+      "asr_primary_light_20261117": {
+        "state": "real_business_qualified_native_delivery_pending",
+        "evidence": "evidence/serve-asr-profiles-20261117/README.md",
+        "binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+        "starts": 2,
+        "creates": 12,
+        "seconds": 99.57925557391718,
+        "default_unchanged": true,
+        "whole_task_complete": false
       }
     },
     {

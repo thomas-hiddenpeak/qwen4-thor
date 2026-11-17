@@ -1,0 +1,8 @@
+{
+  "tests": [
+    "retained-real-sse",
+    "broken-terminal-or-delta"
+  ],
+  "seconds": 30,
+  "gpu_actions": 0
+}
