@@ -3566,6 +3566,14 @@
         "source_checks": 2,
         "gpu_loads": 0,
         "default_changed": false
+      },
+      "overlap_http_first_20261118": {
+        "status": "FAILED_FROZEN_QUALITY_GATE",
+        "evidence": "docs/evidence/serve-overlap-http-first-20261118/README.md",
+        "starts": 1,
+        "requests": 4,
+        "default_changed": false,
+        "remaining": "original 8 unexecuted checks, resolve quality and any runtime gaps, service recovery delivery; all master tasks continue"
       }
     },
     {

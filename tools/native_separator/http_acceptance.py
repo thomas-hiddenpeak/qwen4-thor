@@ -22,6 +22,7 @@ from tools.serve_service.package import read, require, save, sha
 
 WORK = ROOT / '.q4t-work/serve-overlap-20261118'
 LIMITS = dict(starts=1, chats=12, controls=2000, seconds=900)
+REMAINING_LIMITS = dict(LIMITS, chats=8)
 WEIGHT_SHA = '5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299'
 EXPECTED = [
     'The child almost hurt the small dog.',
@@ -35,7 +36,43 @@ def requests():
     return dict(speaker.requests(), ordinary=asr.requests()['zh'])
 
 
+def reuse_first_run(source):
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(WORK), 'prior evidence outside overlap workdir')
+    plan, result = read(source/'plan.json'), read(source/'result.json')
+    require(result['status'] == 'FAILED' and result['default_unchanged'] and
+            result['counts']['starts'] == 1 and result['counts']['chats'] == 4 and
+            'RuntimeError: a real source sentence was lost, duplicated or mistranscribed' in result['error'],
+            'unexpected predecessor failure')
+    require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED' and
+            read(source/'cleanup.json')['remaining'] == [] and
+            read(source/'cleanup.json')['ports_released'], 'invalid predecessor cleanup')
+    for name, digest in plan['sources'].items():
+        if name not in ['tools/native_separator/http_acceptance.py',
+                        'tools/native_separator/test_http_acceptance.py']:
+            require(sha(ROOT/name) == digest, 'reused dependency changed: '+name)
+    require(sha(plan['binary']) == plan['binary_sha256'], 'reused engine changed')
+    require(all(sha(path) == digest for path, digest in plan['protected'].items()),
+            'reused default changed')
+    for name in ['core-during-separator-failure.wire']:
+        value = read(source/name)
+        require(value['choices'][0]['message']['content'].strip() == '42', 'core protection missing')
+    ordinary = read(source/'python-ordinary-during-failure.wire')
+    asr.quality(ordinary['text'], 'zh'); asr.usage(ordinary)
+    value = read(source/'python-mixed.wire')
+    mixed = check_result(value, plan['clips']['mixed'], enforce_quality=False)
+    require(not mixed['quality_passed'], 'original quality failure disappeared')
+    return dict(directory=str(source), binary_sha256=plan['binary_sha256'],
+        mixed=mixed, original_quality_status='FAILED_UNCHANGED_GATE',
+        creates_reused=4, records={name:sha(source/name) for name in [
+            'plan.json','result.json','cleanup.json','lease/exit.json',
+            'missing-config.wire','missing-separator.wire',
+            'core-during-separator-failure.wire',
+            'python-ordinary-during-failure.wire','python-mixed.wire']})
+
+
 def prepare(args):
+    continuation = reuse_first_run(args.continue_from) if args.continue_from else None
     speaker.prepare(args)
     out = args.output.resolve()
     plan = read(out / 'plan.json')
@@ -86,10 +123,17 @@ def prepare(args):
             'sum fixed source PCM into owned mixed/maximum/single WAVs',
             'close owned socket after observing real execution progress',
             'no primary restart, default change or external service intervention'])
+    if continuation:
+        require(plan['binary_sha256'] == continuation['binary_sha256'],
+                'remaining run must keep the same engine')
+        plan.update(overlap_continuation=continuation, limits=REMAINING_LIMITS,
+            planned=dict(starts=1, creates=8, reused_creates=4, rejected=1,
+                         cancelled=1, mixed_transcriptions=3, single_voice=1,
+                         silence=1, core_chats=1))
     save(out / 'plan.json', plan)
 
 
-def check_result(value, clip, names=None):
+def check_result(value, clip, names=None, *, enforce_quality=True):
     require(value.get('task') == 'transcribe' and
             value.get('duration') == clip['samples']/16000, 'actual duration/task')
     rows, sources, usage = value['segments'], clip['utterances'], value['usage']
@@ -107,7 +151,7 @@ def check_result(value, clip, names=None):
     if not sources:
         require(not rows and value['text'] == '' and all(usage[k] == 0 for k in keys),
                 'silence fabricated voice/text/work')
-        return dict(silence=True)
+        return dict(silence=True, quality_passed=True)
     require(rows and value['text'].strip() and all(usage[k] > 0 for k in keys) and
             details['audio_tokens'] > 0, 'missing real transcript/usage')
     grouped, previous = {}, 0
@@ -131,8 +175,10 @@ def check_result(value, clip, names=None):
                   for label, source in zip(assignment, sources)]
         scores.append((sum(errors), assignment, errors))
     _, assignment, errors = min(scores)
-    require(all(v <= QUALITY['per_voice_word_error_rate_max'] for v in errors),
-            'a real source sentence was lost, duplicated or mistranscribed')
+    quality_passed = all(v <= QUALITY['per_voice_word_error_rate_max'] for v in errors)
+    if enforce_quality:
+        require(quality_passed,
+                'a real source sentence was lost, duplicated or mistranscribed')
     for label, source in zip(assignment, sources):
         if names is not None:
             require(label == names[source['voice']], 'known reference identity differs')
@@ -150,15 +196,16 @@ def check_result(value, clip, names=None):
     require(compact(''.join(r['text'] for r in rows)) == compact(value['text']),
             'full text differs from actual segments')
     return dict(voice_labels=list(assignment), per_voice_word_error_rate=errors,
+                quality_passed=quality_passed,
                 overlap_seconds=overlap, text=value['text'])
 
 
-def check_stream(value, clip):
+def check_stream(value, clip, *, enforce_quality=True):
     events = value['events']
     require(events and events[-1]['type'] == 'transcript.text.done' and
             sum(e['type'] == 'transcript.text.done' for e in events) == 1,
             'missing or duplicated final event')
-    checked = check_result(events[-1], clip)
+    checked = check_result(events[-1], clip, enforce_quality=enforce_quality)
     segments, ids, delta = [], [], []
     for event in events[:-1]:
         if event['type'] == 'transcript.text.delta':
@@ -180,6 +227,14 @@ class Stage(speaker.Stage):
     request_templates = staticmethod(requests)
     success_status = 'PASS_NATIVE_OVERLAP_HTTP_SDK_REFERENCES_SCOPED_RECOVERY'
 
+    def __init__(self, plan):
+        if plan.get('overlap_continuation'):
+            self.limits = REMAINING_LIMITS
+        super().__init__(plan)
+        if plan.get('overlap_continuation'):
+            require(plan['overlap_continuation'] == reuse_first_run(
+                plan['overlap_continuation']['directory']), 'reused observations changed')
+
     def additional_options(self):
         return super().additional_options() + [
             '--separator-model-dir', str(self.out/'separator-assets'),
@@ -191,7 +246,8 @@ class Stage(speaker.Stage):
             source = Path(self.plan['separator_directory'])/name
             require(sha(source) == record['sha256'] and
                     source.stat().st_size == record['bytes'], 'separator asset drift')
-            os.link(source, assets/(name+'.withheld' if name == 'config.json' else name))
+            os.link(source, assets/(name+'.withheld' if name == 'config.json' and
+                not self.plan.get('overlap_continuation') else name))
         super().start()
         assets = self.out/'speaker-assets'
         os.rename(assets/'config.json.withheld', assets/'config.json')
@@ -241,33 +297,41 @@ class Stage(speaker.Stage):
         clips, rows = self.plan['clips'], self.plan['requests']
         fields = [('model', asr.MODEL), ('response_format', 'diarized_json'), ('language', 'en')]
         mixed = Path(clips['mixed']['path']).read_bytes()
-        status, raw = self.multipart('missing-separator', fields, mixed)
-        require(status == 503 and json.loads(raw)['error']['code'] == 'separator_assets_invalid',
-                'missing separator assets misclassified')
-        failed_at = time.monotonic()
-        state = self.state('missing')
-        require(state['state'] == 'degraded' and state['load_failures'] == 1,
-                'separator failure not independently visible')
-        self.core('core-during-separator-failure')
-        ordinary = self.sdk('python-ordinary-during-failure', 'zh', rows['ordinary'], python=True)
-        asr.quality(ordinary['text'], 'zh'); asr.usage(ordinary, sdk=True)
-        assets = self.out/'separator-assets'
-        os.rename(assets/'config.json.withheld', assets/'config.json')
-        time.sleep(max(0, 5.1-(time.monotonic()-failed_at)))
+        if not self.plan.get('overlap_continuation'):
+            status, raw = self.multipart('missing-separator', fields, mixed)
+            require(status == 503 and json.loads(raw)['error']['code'] == 'separator_assets_invalid',
+                    'missing separator assets misclassified')
+            failed_at = time.monotonic()
+            state = self.state('missing')
+            require(state['state'] == 'degraded' and state['load_failures'] == 1,
+                    'separator failure not independently visible')
+            self.core('core-during-separator-failure')
+            ordinary = self.sdk('python-ordinary-during-failure', 'zh', rows['ordinary'], python=True)
+            asr.quality(ordinary['text'], 'zh'); asr.usage(ordinary, sdk=True)
+            assets = self.out/'separator-assets'
+            os.rename(assets/'config.json.withheld', assets/'config.json')
+            time.sleep(max(0, 5.1-(time.monotonic()-failed_at)))
         quality = {}
+        if self.plan.get('overlap_continuation'):
+            quality['reused-python-mixed'] = self.plan['overlap_continuation']['mixed']
         for label, clip, request, python, names in [
             ('python-mixed', 'mixed', rows['plain'], True, None),
             ('python-known', 'mixed', rows['known'], True, {'0':'first','1':'second'}),
             ('python-single', 'single', rows['plain'], True, None),
             ('js-maximum', 'maximum', rows['plain'], False, None)]:
+            if self.plan.get('overlap_continuation') and label == 'python-mixed':
+                continue
             value = self.sdk(label, clip, request, python=python)
-            quality[label] = check_result(value, clips[clip], names)
-            check_result(read(self.out/(label+'.wire')), clips[clip], names)
+            quality[label] = check_result(value, clips[clip], names, enforce_quality=False)
+            check_result(read(self.out/(label+'.wire')), clips[clip], names,
+                         enforce_quality=False)
+            save(self.out/'quality.json', quality)
         state = self.state('recovered')
-        require(state['state'] == 'ready' and state['load_failures'] == 1 and
+        require(state['state'] == 'ready' and state['load_failures'] ==
+                (0 if self.plan.get('overlap_continuation') else 1) and
                 state['compute_failures'] == 0, 'same-PID separator recovery absent')
         value = self.sdk('js-overlap-stream', 'mixed', rows['stream'])
-        quality['stream'] = check_stream(value, clips['mixed'])
+        quality['stream'] = check_stream(value, clips['mixed'], enforce_quality=False)
         require(b'[DONE]' not in (self.out/'js-overlap-stream.wire').read_bytes(), 'Chat sentinel')
         silent = self.sdk('python-silence', 'silence', rows['plain'], python=True)
         quality['silence'] = check_result(silent, clips['silence'])
@@ -280,8 +344,12 @@ class Stage(speaker.Stage):
         state = self.state('final')
         require(state['state'] == 'ready' and state['compute_failures'] == 0,
                 'final separator health differs')
-        require(self.counts['chats'] == 12, 'create accounting differs')
+        require(self.counts['chats'] == self.limits['chats'], 'create accounting differs')
         save(self.out/'quality.json', quality)
+        accepted = all(row['quality_passed'] for row in quality.values())
+        save(self.out/'business-review.json', dict(protocol_checks_passed=True,
+            quality_passed=accepted, thresholds=QUALITY, original_quality_not_rewritten=True))
+        require(accepted, 'frozen per-voice quality gate failed; protocol results retained')
 
 
 def main():
@@ -291,6 +359,7 @@ def main():
     prepare_parser.add_argument('--binary', type=Path, required=True)
     prepare_parser.add_argument('--output', type=Path, required=True)
     prepare_parser.add_argument('--port', type=int, default=18260)
+    prepare_parser.add_argument('--continue-from', type=Path)
     run = sub.add_parser('run'); run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'prepare': prepare(args)

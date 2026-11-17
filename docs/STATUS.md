@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真实重叠首轮质量FAIL](evidence/serve-overlap-http-first-20261118/README.md)：
+1启动/4请求/50.461秒，核心/ASR故障隔离通过，两人/交叠时间
+真实保留；hurt→hurts使第一句WER=1/7超过0.125。保持原失败
+和默认rev296，已清理自有进程/GPU租约。4续验器CPU通过，
+只补原未执行8请求/1新启动/900秒，门槛与引擎均不变；之后
+针对实际问题修复与全部master，不能以部分能力结束总目标。
+
 [分离运行时9CPU及来源检查通过](evidence/serve-separator-runtime-cpu-20261118/README.md)，
 0GPU/HTTP，生产/host零警告；构建/选择入口失败保留并已修正。
 固定同一严格租约1启动/12请求/900秒实际混音/30秒边界/SDK/

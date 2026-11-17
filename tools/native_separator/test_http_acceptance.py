@@ -38,6 +38,17 @@ class OverlapAcceptance(unittest.TestCase):
             if defect == 'text': bad['text'] = 'wrong final text'
             with self.assertRaises(Exception, msg=defect): check_result(bad, clip)
 
+    def test_quality_observation_does_not_hide_protocol_errors(self):
+        clip, value = fixture()
+        value['segments'][0]['text'] = EXPECTED[0].replace('hurt', 'hurts')
+        value['text'] = ' '.join(row['text'] for row in value['segments'])
+        with self.assertRaises(Exception): check_result(value, clip)
+        observed = check_result(value, clip, enforce_quality=False)
+        self.assertFalse(observed['quality_passed'])
+        self.assertEqual(observed['per_voice_word_error_rate'][0], 1/7)
+        value['segments'][1]['start'] = 3.2
+        with self.assertRaises(Exception): check_result(value, clip, enforce_quality=False)
+
     def test_single_silence_and_cumulative_usage(self):
         clip, value = fixture()
         clip['utterances'] = clip['utterances'][:1]
