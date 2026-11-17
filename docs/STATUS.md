@@ -8,8 +8,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 ## 正在推进
 
 Chat音频两个保留控制与TLS已过；整包回退因实际冷启动内存压力
-转已验light，验收器只认primary，原FAIL/清理保留。补真实策略
-输入旁录与严格历史/预算连续性检查，固定5CPU/180秒后只补该
+转已验light，验收器只认primary，原FAIL/清理保留。[5CPU验证已过](evidence/serve-chat-audio-recovery-profile-20261118/README.md)，
+旁录真实策略输入/输出并严格核对历史与预算；接着只补该
 故障链2启动/8请求/1探针/600秒。生产包不改、前三阶段复用，
 默认rev296及原重叠质量/全部master保持。
 
