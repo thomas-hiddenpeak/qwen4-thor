@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 0,
+    "controls": 155
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 3103040773764955
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 3103074996431353
+    },
+    {
+      "kind": "chats",
+      "label": "cancel-stream",
+      "ordinal": 2,
+      "monotonic_ns": 3103077486030988
+    },
+    {
+      "kind": "chats",
+      "label": "core-after",
+      "ordinal": 3,
+      "monotonic_ns": 3103081707870011
+    }
+  ]
+}

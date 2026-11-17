@@ -1,0 +1,19 @@
+{
+  "status": "EXACT_MODERN_ROOT_BUSINESS_PENDING",
+  "previous": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/modern-retained-01/bundle",
+    "manifest_sha256": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb"
+  },
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+    "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc"
+  },
+  "changed_from_candidate": [
+    "source/tools/serve_recovery/controller.py"
+  ],
+  "exact_previous_controller_sha256": "0f1070c404b6f10a70dd5c88a6699f500854f609a60c37d0bc462abe7f0cf8e6",
+  "engine_and_native_and_profiles_identical_to_candidate": true,
+  "original_acceptance_not_relabelled": true,
+  "new_gpu_starts": 0,
+  "default_unchanged": true
+}

@@ -420,6 +420,15 @@ class Stage(BASE['Stage']):
             time.sleep(.05)
         raise TimeoutError('owned ASR request did not drain')
 
+    def configuration(self):
+        from tools.serve_ops import transport
+        self.budget.reserve('controls', 'final-config')
+        response = transport.get(self.policy['upstream_operations_port'],
+                                 '/v1/config', timeout=2)
+        save(self.output/'final-config-http.json', response)
+        (self.output/'final-config.wire').write_text(response['body'])
+        require(response['http_status'] == 200, 'private configuration unavailable')
+
     def exercise(self):
         version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'].startswith('tls')
         first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')
@@ -454,7 +463,7 @@ class Stage(BASE['Stage']):
                 before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
-        self.request('final-config', path='/v1/config')
+        self.configuration()
         after = self.version_ready(2, 'fallback') if version else self.ready(1, 'primary')
         save(self.output/'core-continuity.json', dict(before=first, after=after))
         save(self.output/'media-usage.json', check_business(self.output))

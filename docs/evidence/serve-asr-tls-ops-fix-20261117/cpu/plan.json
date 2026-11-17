@@ -1,0 +1,12 @@
+{
+  "tests": [
+    "private-config-port-and-error-contract",
+    "completed-real-tls-composition"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_asr/service_acceptance.py": "eae3473ef84c1ae415240a2815d871beadff33d936c80392e19027bc4b507e42",
+    "tools/native_asr/tls_composition.py": "bf5a09edb873c0c1b7ecc1884a54df81641715c586d83b8f7da69f7846609a6c"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 457, in exercise\n    self.request('final-config', path='/v1/config')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 357, in request\n    require(response.status == expected, 'unexpected HTTP status: '+label)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 45, in require\n    if not ok: raise RuntimeError(message)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: unexpected HTTP status: final-config\n",
+  "cleanup_failure": null,
+  "seconds": 48.79949489515275,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 3,
+      "probes": 0,
+      "controls": 155
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 3103040773764955
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3103074996431353
+      },
+      {
+        "kind": "chats",
+        "label": "cancel-stream",
+        "ordinal": 2,
+        "monotonic_ns": 3103077486030988
+      },
+      {
+        "kind": "chats",
+        "label": "core-after",
+        "ordinal": 3,
+        "monotonic_ns": 3103081707870011
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 4105081,
+      "start_ticks": 310304077
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/tls-package-01/bundle",
+    "manifest_sha256": "a3e531d759cd919c7b30d5c3b10a5adf6c3f47357db27342cef5a5c96eae0586"
+  },
+  "scenario": "tls_remaining",
+  "default_replaced": false,
+  "performance_acceptance": false
+}
