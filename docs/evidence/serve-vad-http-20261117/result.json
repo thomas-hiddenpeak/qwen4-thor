@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NATIVE_VAD_MULTICLIP_SDK_BUDGETS_SCOPED_RECOVERY",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 12,
+    "controls": 64
+  },
+  "seconds": 57.0483124749735,
+  "binary_sha256": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71"
+}

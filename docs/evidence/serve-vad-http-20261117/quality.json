@@ -1,0 +1,260 @@
+{
+  "segments": {
+    "segments": [
+      {
+        "id": 0,
+        "avg_logprob": -0.0022161922646063196,
+        "compression_ratio": 0.7924528301886793,
+        "end": 4.164,
+        "no_speech_prob": 3.978805336174122e-12,
+        "seek": 72,
+        "start": 0.884,
+        "temperature": 0.0,
+        "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+        "tokens": [
+          100636,
+          100347,
+          99886,
+          100740,
+          118083,
+          102072,
+          1773
+        ]
+      },
+      {
+        "id": 1,
+        "avg_logprob": -0.0018352772228112427,
+        "compression_ratio": 0.7924528301886793,
+        "end": 9.876,
+        "no_speech_prob": 1.558123561815562e-12,
+        "seek": 635,
+        "start": 6.596,
+        "temperature": 0.0,
+        "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+        "tokens": [
+          100636,
+          100347,
+          99886,
+          100740,
+          118083,
+          102072,
+          1773
+        ]
+      }
+    ],
+    "words": 26,
+    "human_timing_accuracy_assessed": false
+  },
+  "stream": {
+    "events": 15,
+    "final": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002 \u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "type": "transcript.text.done",
+      "languages": [
+        {
+          "code": "zh"
+        }
+      ],
+      "logprobs": [
+        {
+          "token": "\u751a\u81f3",
+          "logprob": -3.91778590146943e-06,
+          "bytes": [
+            231,
+            148,
+            154,
+            232,
+            135,
+            179
+          ]
+        },
+        {
+          "token": "\u51fa\u73b0",
+          "logprob": -6.710219349256211e-06,
+          "bytes": [
+            229,
+            135,
+            186,
+            231,
+            142,
+            176
+          ]
+        },
+        {
+          "token": "\u4ea4\u6613",
+          "logprob": -2.923156948894445e-05,
+          "bytes": [
+            228,
+            186,
+            164,
+            230,
+            152,
+            147
+          ]
+        },
+        {
+          "token": "\u51e0\u4e4e",
+          "logprob": -3.723343024439556e-05,
+          "bytes": [
+            229,
+            135,
+            160,
+            228,
+            185,
+            142
+          ]
+        },
+        {
+          "token": "\u505c\u6ede",
+          "logprob": -0.01527336209134038,
+          "bytes": [
+            229,
+            129,
+            156,
+            230,
+            187,
+            158
+          ]
+        },
+        {
+          "token": "\u7684\u60c5\u51b5",
+          "logprob": -0.00016266873555392187,
+          "bytes": [
+            231,
+            154,
+            132,
+            230,
+            131,
+            133,
+            229,
+            134,
+            181
+          ]
+        },
+        {
+          "token": "\u3002",
+          "logprob": -2.2202036587025176e-07,
+          "bytes": [
+            227,
+            128,
+            130
+          ]
+        },
+        {
+          "token": "\u751a\u81f3",
+          "logprob": -4.158273450358535e-06,
+          "bytes": [
+            231,
+            148,
+            154,
+            232,
+            135,
+            179
+          ]
+        },
+        {
+          "token": "\u51fa\u73b0",
+          "logprob": -6.138908450926691e-06,
+          "bytes": [
+            229,
+            135,
+            186,
+            231,
+            142,
+            176
+          ]
+        },
+        {
+          "token": "\u4ea4\u6613",
+          "logprob": -4.1183790374559246e-05,
+          "bytes": [
+            228,
+            186,
+            164,
+            230,
+            152,
+            147
+          ]
+        },
+        {
+          "token": "\u51e0\u4e4e",
+          "logprob": -3.7412254535631627e-05,
+          "bytes": [
+            229,
+            135,
+            160,
+            228,
+            185,
+            142
+          ]
+        },
+        {
+          "token": "\u505c\u6ede",
+          "logprob": -0.012605237589113263,
+          "bytes": [
+            229,
+            129,
+            156,
+            230,
+            187,
+            158
+          ]
+        },
+        {
+          "token": "\u7684\u60c5\u51b5",
+          "logprob": -0.00015263485986345094,
+          "bytes": [
+            231,
+            154,
+            132,
+            230,
+            131,
+            133,
+            229,
+            134,
+            181
+          ]
+        },
+        {
+          "token": "\u3002",
+          "logprob": -1.7488389050914893e-07,
+          "bytes": [
+            227,
+            128,
+            130
+          ]
+        }
+      ],
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 123,
+        "output_tokens": 22,
+        "total_tokens": 145,
+        "input_token_details": {
+          "audio_tokens": 93,
+          "text_tokens": 30
+        }
+      }
+    }
+  },
+  "subtitles": {
+    "cues": [
+      {
+        "start_ms": 884,
+        "end_ms": 4164,
+        "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002"
+      },
+      {
+        "start_ms": 6596,
+        "end_ms": 9876,
+        "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002"
+      }
+    ],
+    "quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "utterances": 2,
+      "exact": true
+    },
+    "human_timing_accuracy_assessed": false
+  }
+}
