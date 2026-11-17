@@ -2451,6 +2451,28 @@
         "delivery_evidence": "evidence/serve-video-projective-delivery-20261117/README.md",
         "main_merge_commit": "431ddc136b63cdebfe154d5fcb48e8040f29ca0d",
         "main_evidence": "evidence/serve-pr42-merged-20261117/README.md"
+      },
+      "native_audio_20261117": {
+        "state": "foundation_cpu_accepted_backend_implementation_in_progress",
+        "plan": "SERVE_NATIVE_AUDIO_2026-11-17.md",
+        "substage": "ASR02",
+        "whole_task_complete": false,
+        "asset_revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+        "gpu_actions": 0,
+        "config_cpu": {
+          "tests": 8,
+          "status": "PASS",
+          "actual_checkpoint_pending": false
+        },
+        "tokenizer": "8 CPU PASS, 16 official vectors and existing main/embedding regressions",
+        "evidence": "evidence/serve-asr-foundation-cpu-20261117/README.md",
+        "cpu_tests": 24,
+        "cpu_seconds": 2.5710901035927236,
+        "asset_bytes": 1880618159,
+        "asset_sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea",
+        "default_unchanged": true,
+        "http_verified": false,
+        "features": "8 CPU PASS, six fixed full matrices max absolute error 0, declared tolerance 1e-5"
       }
     },
     {
@@ -3407,7 +3429,7 @@
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       },
       "client_receipts_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "contract": "SERVE_CLIENT_RECEIPTS_2026-11-17.md",
         "issues": [
           "Node SDK bridge drops moderation reports/usage",
@@ -3421,7 +3443,14 @@
         "package_evidence": "evidence/serve-client-receipts-package-20261117/README.md",
         "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
         "revision": 260,
-        "delivery_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md",
+        "main_merge": {
+          "state": "merged",
+          "pr": 43,
+          "head": "958674656d1327a9f37cda2251bfb702c2d9d04d",
+          "merge": "d15498f168366d6fd799a0acc791fb398f466763",
+          "evidence": "evidence/serve-pr43-merged-20261117/README.md"
+        }
       }
     },
     {
@@ -3715,7 +3744,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "implemented_validated_delivered_main_pending",
+      "state": "implemented_validated_delivered_main_merged",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -3746,7 +3775,7 @@
         "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2",
         "state": "STOPPED",
         "publication_revision": 6,
-        "merged_main": false,
+        "merged_main": true,
         "whole_task_complete": true
       },
       "findings": [
@@ -3790,7 +3819,7 @@
         "existing_evidence_reviewed": true
       },
       "publication_intent_retention_20261117": {
-        "state": "actual_accepted_main_pending",
+        "state": "actual_accepted_main_merged",
         "problem": "128 historical publication intents exhaust the bounded active directory",
         "exit": "Protected reversible archival, interrupted move recovery, stale retry rejection, CPU tests and actual stopped continuation",
         "contract": "SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md",
@@ -3801,7 +3830,7 @@
       },
       "remaining_required": [],
       "native_maintenance_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "docs/SERVE_NATIVE_MAINTENANCE_2026-11-17.md",
         "evidence": "docs/evidence/serve-native-maintenance-cpu-20261117/acceptance.json",
         "tests": 25,
@@ -3816,7 +3845,14 @@
         "actual_cli_commands": 34,
         "delivery_commands": 15,
         "legacy_plans_preserved_and_restorable": true,
-        "delivery_evidence": "docs/evidence/serve-native-maintenance-delivery-20261117/acceptance.json"
+        "delivery_evidence": "docs/evidence/serve-native-maintenance-delivery-20261117/acceptance.json",
+        "main_merge": {
+          "state": "merged",
+          "pr": 43,
+          "head": "958674656d1327a9f37cda2251bfb702c2d9d04d",
+          "merge": "d15498f168366d6fd799a0acc791fb398f466763",
+          "evidence": "evidence/serve-pr43-merged-20261117/README.md"
+        }
       }
     },
     {
@@ -4868,7 +4904,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -5420,6 +5456,13 @@
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+      },
+      "pr43_actual_merge": {
+        "state": "merged",
+        "pr": 43,
+        "head": "958674656d1327a9f37cda2251bfb702c2d9d04d",
+        "merge": "d15498f168366d6fd799a0acc791fb398f466763",
+        "evidence": "evidence/serve-pr43-merged-20261117/README.md"
       }
     },
     {
@@ -5598,8 +5641,8 @@
       }
     }
   ],
-  "next_task": "Q02",
-  "next": "rev266 native day handoff frozen and unexecuted. Complete PR43 final-head checks and actual main merge; continue all remaining protocol/backend/SDK and cold/resource/host tasks.",
+  "next_task": "A10/Q02",
+  "next": "Continue A10 native audio decoding and encoder/decoder after 24 foundation CPU checks; PR43 actually merged. All remaining master tasks remain required.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

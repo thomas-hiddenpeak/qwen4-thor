@@ -173,6 +173,8 @@ add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
+  src/audio/asr_config.cpp
+  src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
   src/model/embedding_model.cu
@@ -989,6 +991,15 @@ endif()
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
+  add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_config_test.cpp tests/asr_asset_test.cpp
+    src/audio/asr_config.cpp src/io/json.cpp)
+  target_include_directories(q4t_asr_contract_tests PRIVATE include)
+  target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+  add_executable(q4t_asr_feature_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_features_test.cpp src/audio/features.cpp)
+  target_include_directories(q4t_asr_feature_tests PRIVATE include)
+  target_compile_options(q4t_asr_feature_tests PRIVATE -Wall -Wextra -Werror)
   find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
@@ -1000,6 +1011,13 @@ q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
+    add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
+      tests/test_main.cpp tests/asr_tokenizer_test.cpp
+      tests/embedding_contract_test.cpp src/model/embedding_config.cpp
+      src/model/embedding_layout.cpp)
+    target_link_libraries(q4t_asr_tokenizer_tests PRIVATE q4t_text)
+    target_compile_options(q4t_asr_tokenizer_tests PRIVATE
+      -Wall -Wextra -Werror)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp
       tests/server_embedding_assets_test.cpp src/server/embedding_assets.cpp
       src/model/embedding_config.cpp src/model/embedding_layout.cpp)

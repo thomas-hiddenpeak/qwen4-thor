@@ -3,6 +3,10 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/audio/asr_config.h
+  src/audio/asr_config.cpp
+  include/q4t/audio/features.h
+  src/audio/features.cpp
   include/q4t/runtime/prefill_kernels.h
   include/q4t/model/linear.h
   src/model/full_attention.cu

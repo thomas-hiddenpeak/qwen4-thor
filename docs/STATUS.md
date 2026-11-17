@@ -5,9 +5,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 发行是实施边界，不能替代剩余能力。非性能改动仅做受影响行为的针对性
 验证和必要业务短验，长稳实跑由用户负责。
 
+## 正在推进
+
+[原生音频计划](SERVE_NATIVE_AUDIO_2026-11-17.md)从真实ASR资产、
+严格配置/权重合同及原生计算开始补齐A10；现有主模型不具备语音
+后端。[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)
+已通过：固定真实资产、配置/612个BF16 tensor、原生tokenizer与
+log-mel，2.571秒、0模型动作。下一步实际解码与encoder/decoder，
+再接HTTP/SDK与恢复组合；Chat音频/语音输出/Realtime及全部master
+继续。当前尚未交付音频API，默认及day身份不变；PR43已实际合main。
+
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
 current选择器并通过精确1项CPU（0.455秒）。原失败保留于
-[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)，继续最终head检查及实际合main。
+[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)。最终head两组
+CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
+（`d15498f1`）；继续真实音频后端和全部master剩余任务。
 
 ## 当前实际默认
 
@@ -29,8 +41,8 @@ current选择器并通过精确1项CPU（0.455秒）。原失败保留于
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
-最终head实际合main，再继续其余全部master任务。
+profile未变。rev266用户day已prepare/check且未运行；PR43最终head两组CI通过且
+[已实际合main](evidence/serve-pr43-merged-20261117/README.md)。继续其余全部master任务。
 
 前驱[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
 已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
@@ -148,15 +160,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
 普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；
 拆开复合断言以定位子条件。本机2项1.115秒通过、构建零警告，生产
-代码/时限未变；最终head两组CI仍须通过。PR43纳入意图容量修复的
-原生发行入口收尾，准备当前身份day后统一推送，全部master继续。
+代码/时限未变；最终head两组CI已通过；PR43包含意图容量修复和原生发行入口，
+已实际合main（`d15498f1`），全部master继续。
 
 [rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
-最终head实际合main，再继续其余全部master任务。
+profile未变。rev266用户day已prepare/check且未运行；PR43最终head两组CI通过且
+[已实际合main](evidence/serve-pr43-merged-20261117/README.md)。继续其余全部master任务。
 
 [原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
 28独立CPU/32次执行，34条原生命令374.106秒，0模型动作。三类
