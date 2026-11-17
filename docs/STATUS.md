@@ -115,6 +115,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[视频仿射实施合同](SERVE_VIDEO_AFFINE_2026-11-17.md)已冻结：补合法
+缩放/斜切/非直角旋转的实际像素处理及v4冻结重放，保留旧八方向。
+12项新CPU及4项直接回归[全部通过](evidence/serve-video-affine-cpu-20261117/README.md)，
+0.788秒、构建零警告；正在准备最多1启动4请求600秒业务短验。
+当前尚未模型验收，默认234保持。PR40原head检查/合并独立继续，
+一般透视/多轨/其余媒体后端和全部master仍未完成。
+
 [网页输出类型CI修复](evidence/serve-web-search-ci-repair-20261117/README.md)：
 旧push的2269项C++仅1项旧枚举断言失败，补齐web_search_call后该项
 CPU通过，0.031秒；不改运行时/default234/day，不追加GPU。PR40已

@@ -10,6 +10,7 @@
 #include <cstring>
 #include <mutex>
 
+#include "file_video_affine.h"
 #include "file_video_geometry.h"
 #include "file_video_orientation.h"
 #include "file_video_protocol.h"
@@ -57,6 +58,7 @@ struct Runtime {
   API(gst_structure_get_fraction);
   API(gst_caps_from_string);
   API(gst_sample_get_buffer);
+  API(gst_sample_get_caps);
   API(gst_buffer_get_size);
   API(gst_buffer_extract);
   API(gst_buffer_new_allocate);
@@ -71,6 +73,10 @@ struct Runtime {
   API(g_signal_connect_data);
   API(g_object_set);
   API(g_error_free);
+  API(gst_video_info_from_caps);
+  API(gst_video_info_set_format);
+  API(gst_video_frame_map);
+  API(gst_video_frame_unmap);
 #undef API
   Json modules = Array();
   std::vector<int> pinned;
@@ -107,12 +113,14 @@ struct Runtime {
   bool Load() {
     // Fixed C kernels avoid runtime executable mappings in the sandbox.
     setenv("ORC_CODE", "backup", 1);
-    std::string core_sha, app_sha;
+    std::string core_sha, app_sha, video_sha;
     const std::string root = Q4T_SYSTEM_GSTREAMER_DIRECTORY;
     void* core =
         Library(root + "/libgstreamer-1.0.so.0", "gstreamer", &core_sha);
     void* app = Library(root + "/libgstapp-1.0.so.0", "gstapp", &app_sha);
-    if (!core || !app) return false;
+    void* video =
+        Library(root + "/libgstvideo-1.0.so.0", "gstvideo", &video_sha);
+    if (!core || !app || !video) return false;
 #define LOAD(handle, name)                                                 \
   name##_fn = reinterpret_cast<decltype(name##_fn)>(dlsym(handle, #name)); \
   if (!name##_fn) return false
@@ -142,6 +150,7 @@ struct Runtime {
     LOAD(core, gst_structure_get_fraction);
     LOAD(core, gst_caps_from_string);
     LOAD(core, gst_sample_get_buffer);
+    LOAD(core, gst_sample_get_caps);
     LOAD(core, gst_buffer_get_size);
     LOAD(core, gst_buffer_extract);
     LOAD(core, gst_buffer_new_allocate);
@@ -156,6 +165,10 @@ struct Runtime {
     LOAD(app, gst_app_src_end_of_stream);
     LOAD(app, gst_app_sink_try_pull_sample);
     LOAD(app, gst_app_sink_is_eos);
+    LOAD(video, gst_video_info_from_caps);
+    LOAD(video, gst_video_info_set_format);
+    LOAD(video, gst_video_frame_map);
+    LOAD(video, gst_video_frame_unmap);
 #undef LOAD
     // No registry scan, plugin-scanner subprocess, user path or autoplugging.
     setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", 1);
@@ -178,6 +191,9 @@ struct Runtime {
     modules.array.push_back(Object({{"name", String("gstapp")},
                                     {"version", String(version)},
                                     {"sha256", String(app_sha)}}));
+    modules.array.push_back(Object({{"name", String("gstvideo")},
+                                    {"version", String(version)},
+                                    {"sha256", String(video_sha)}}));
     for (const char* name :
          {"coreelements", "app", "isomp4", "matroska", "videoparsersbad",
           "openh264", "vpx", "videoconvertscale", "videofilter", "png"}) {
@@ -212,6 +228,136 @@ struct Runtime {
       gst_mini_object_unref_fn(reinterpret_cast<GstMiniObject*>(object));
   }
 };
+// Reuse the already loaded PNG plugin. A single bounded pipeline serves all
+// frames of this request; no per-frame process or thread-pool proliferation.
+class PngEncoder {
+ public:
+  explicit PngEncoder(Runtime& api) : api_(api) {}
+  ~PngEncoder() {
+    if (pipeline_) {
+      api_.gst_element_set_state_fn(pipeline_, GST_STATE_NULL);
+      api_.gst_object_unref_fn(pipeline_);
+    }
+  }
+  Failure Encode(uint32_t width, uint32_t height,
+                 const std::vector<uint8_t>& rgb, uint64_t max_bytes,
+                 std::string* png) {
+    if (!pipeline_) {
+      const auto status = Initialize(width, height);
+      if (status != Failure::kNone) return status;
+    }
+    if (int(width) != info_.width || int(height) != info_.height ||
+        rgb.size() != size_t(width) * height * 3)
+      return Failure::kInvalid;
+    auto* buffer =
+        api_.gst_buffer_new_allocate_fn(nullptr, info_.size, nullptr);
+    if (!buffer) return Failure::kCapacity;
+    for (uint32_t row = 0; row < height; ++row) {
+      if (api_.gst_buffer_fill_fn(
+              buffer, info_.offset[0] + size_t(row) * info_.stride[0],
+              rgb.data() + size_t(row) * width * 3, width * 3) != width * 3) {
+        api_.Mini(buffer);
+        return Failure::kInvalid;
+      }
+    }
+    GST_BUFFER_PTS(buffer) = frames_++ * GST_SECOND;
+    GST_BUFFER_DURATION(buffer) = GST_SECOND;
+    if (api_.gst_app_src_push_buffer_fn(reinterpret_cast<GstAppSrc*>(input_),
+                                        buffer) != GST_FLOW_OK)
+      return Failure::kInvalid;
+    auto* sample = api_.gst_app_sink_try_pull_sample_fn(
+        reinterpret_cast<GstAppSink*>(output_), 5 * GST_SECOND);
+    if (!sample) return Failure::kInvalid;
+    ScopeExit release([&] { api_.Mini(sample); });
+    auto* encoded = api_.gst_sample_get_buffer_fn(sample);
+    if (!encoded) return Failure::kInvalid;
+    const auto size = api_.gst_buffer_get_size_fn(encoded);
+    if (!size || size > max_bytes) return Failure::kCapacity;
+    png->resize(size);
+    return api_.gst_buffer_extract_fn(encoded, 0, png->data(), size) == size
+               ? Failure::kNone
+               : Failure::kInvalid;
+  }
+
+ private:
+  Failure Initialize(uint32_t width, uint32_t height) {
+    if (!api_.gst_video_info_set_format_fn(&info_, GST_VIDEO_FORMAT_RGB, width,
+                                           height))
+      return Failure::kInvalid;
+    pipeline_ = api_.gst_pipeline_new_fn(nullptr);
+    if (!pipeline_) return Failure::kCapacity;
+    std::vector<GstElement*> nodes;
+    for (const char* name : {"appsrc", "pngenc", "appsink"}) {
+      auto* node = api_.gst_element_factory_make_fn(name, nullptr);
+      if (!node) return Failure::kDependency;
+      if (!api_.gst_bin_add_fn(reinterpret_cast<GstBin*>(pipeline_), node)) {
+        api_.gst_object_unref_fn(node);
+        return Failure::kInvalid;
+      }
+      nodes.push_back(node);
+    }
+    input_ = nodes[0];
+    output_ = nodes[2];
+    const auto description =
+        "video/x-raw,format=RGB,pixel-aspect-ratio=1/1,"
+        "framerate=1/1,width=" +
+        std::to_string(width) + ",height=" + std::to_string(height);
+    auto* caps = api_.gst_caps_from_string_fn(description.c_str());
+    if (!caps) return Failure::kCapacity;
+    api_.g_object_set_fn(input_, "caps", caps, "format", GST_FORMAT_TIME,
+                         "block", TRUE, "max-bytes", guint64(info_.size),
+                         nullptr);
+    api_.Mini(caps);
+    api_.g_object_set_fn(output_, "sync", FALSE, "async", FALSE, "max-buffers",
+                         guint{1}, "drop", FALSE, "wait-on-eos", FALSE,
+                         nullptr);
+    if (!api_.gst_element_link_fn(nodes[0], nodes[1]) ||
+        !api_.gst_element_link_fn(nodes[1], nodes[2]) ||
+        api_.gst_element_set_state_fn(pipeline_, GST_STATE_PLAYING) ==
+            GST_STATE_CHANGE_FAILURE)
+      return Failure::kInvalid;
+    return Failure::kNone;
+  }
+  Runtime& api_;
+  GstElement *pipeline_ = nullptr, *input_ = nullptr, *output_ = nullptr;
+  GstVideoInfo info_{};
+  uint64_t frames_ = 0;
+};
+
+Failure TransformSample(Runtime& api, GstSample* sample,
+                        const DisplayMatrices& matrices,
+                        const DisplayGeometry& shape,
+                        const FileVideoLimits& limits, PngEncoder* encoder,
+                        std::string* png) {
+  GstVideoInfo info{};
+  auto* caps = api.gst_sample_get_caps_fn(sample);
+  auto* buffer = api.gst_sample_get_buffer_fn(sample);
+  if (!caps || !buffer || !api.gst_video_info_from_caps_fn(&info, caps) ||
+      GST_VIDEO_INFO_FORMAT(&info) != GST_VIDEO_FORMAT_RGB ||
+      info.width != int(shape.square_width) ||
+      info.height != int(shape.square_height))
+    return Failure::kInvalid;
+  GstVideoFrame frame{};
+  if (!api.gst_video_frame_map_fn(&frame, &info, buffer, GST_MAP_READ))
+    return Failure::kInvalid;
+  ScopeExit unmap([&] { api.gst_video_frame_unmap_fn(&frame); });
+  const auto stride = GST_VIDEO_FRAME_PLANE_STRIDE(&frame, 0);
+  const auto start = reinterpret_cast<uintptr_t>(frame.data[0]);
+  const auto base = reinterpret_cast<uintptr_t>(frame.map[0].data);
+  if (stride <= 0 || start < base || start - base > frame.map[0].size)
+    return Failure::kInvalid;
+  std::span<const uint8_t> view(static_cast<const uint8_t*>(frame.data[0]),
+                                frame.map[0].size - (start - base));
+  AffineGeometry geometry;
+  std::vector<uint8_t> rgb;
+  const auto status =
+      RenderAffineRgb(matrices, shape.square_width, shape.square_height, view,
+                      stride, limits, &geometry, &rgb);
+  if (status != Failure::kNone) return status;
+  return encoder->Encode(geometry.width, geometry.height, rgb,
+                         limits.max_output_bytes, png);
+}
+
 struct Pipeline {
   Runtime& api;
   const Request& request;
@@ -222,6 +368,7 @@ struct Pipeline {
   std::mutex source_mutex;
   std::mutex geometry_mutex;
   DisplayGeometry geometry;
+  const DisplayMatrices* affine = nullptr;
   size_t offset = 0;
   std::atomic<Failure> failure{Failure::kNone};
   bool video = false;
@@ -266,6 +413,16 @@ struct Pipeline {
     if (result != Failure::kNone) {
       failure = result;
       return false;
+    }
+    if (affine) {
+      AffineGeometry output;
+      const auto transform =
+          MakeAffineGeometry(*affine, selected.square_width,
+                             selected.square_height, request.limits, &output);
+      if (transform != Failure::kNone) {
+        failure = transform;
+        return false;
+      }
     }
     std::lock_guard lock(geometry_mutex);
     if (geometry.coded_width) {
@@ -421,7 +578,9 @@ struct Pipeline {
 };
 Failure Decode(Runtime& api, const Request& request, const std::string& source,
                FileVideoPixels* output) {
-  const auto direction = MovieDisplay().Read(source);
+  const auto matrices = MovieDisplay().ReadMatrices(source);
+  const auto direction = matrices ? matrices->Direction() : std::nullopt;
+  const bool affine = matrices && !direction;
   auto* pipeline = api.gst_pipeline_new_fn(nullptr);
   if (!pipeline) return Failure::kCapacity;
   ScopeExit destroy([&] {
@@ -431,8 +590,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   std::vector<GstElement*> elements;
   for (const char* name :
        {"appsrc", source.substr(4, 4) == "ftyp" ? "qtdemux" : "matroskademux",
-        "videoconvert", "videoscale", "capsfilter", "videoflip", "pngenc",
-        "appsink"}) {
+        "videoconvert", "videoscale", "capsfilter", "videoflip",
+        affine ? "identity" : "pngenc", "appsink"}) {
     auto* node = api.gst_element_factory_make_fn(name, nullptr);
     if (!node) return Failure::kDependency;
     if (!api.gst_bin_add_fn(reinterpret_cast<GstBin*>(pipeline), node)) {
@@ -445,6 +604,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   state.pipeline = pipeline;
   state.convert = elements[2];
   state.square_caps = elements[4];
+  state.affine = affine ? &*matrices : nullptr;
+  PngEncoder encoder(api);
   GstAppSrcCallbacks callbacks{};
   callbacks.need_data = Pipeline::Need;
   callbacks.seek_data = Pipeline::Seek;
@@ -462,8 +623,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       GST_VIDEO_ORIENTATION_HORIZ,    GST_VIDEO_ORIENTATION_VERT,
       GST_VIDEO_ORIENTATION_UL_LR,    GST_VIDEO_ORIENTATION_UR_LL};
   api.g_object_set_fn(elements[5], "video-direction",
-                      direction ? directions[static_cast<size_t>(*direction)]
-                                : GST_VIDEO_ORIENTATION_AUTO,
+                      affine      ? GST_VIDEO_ORIENTATION_IDENTITY
+                      : direction ? directions[static_cast<size_t>(*direction)]
+                                  : GST_VIDEO_ORIENTATION_AUTO,
                       nullptr);
   auto* caps = api.gst_caps_from_string_fn("video/x-raw,format=RGB");
   if (!caps) return Failure::kCapacity;
@@ -543,25 +705,44 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
         frame_duration = end - timestamp;
       }
     }
+    AffineGeometry transformed;
+    if (affine) {
+      const auto status = MakeAffineGeometry(*matrices, geometry.square_width,
+                                             geometry.square_height,
+                                             request.limits, &transformed);
+      if (status != Failure::kNone) return status;
+    }
+    const uint64_t work_pixels =
+        std::max(uint64_t(geometry.square_width) * geometry.square_height,
+                 uint64_t(transformed.width) * transformed.height);
     if (++count > request.limits.max_scanned_frames ||
-        uint64_t(geometry.square_width) * geometry.square_height >
-            request.limits.max_decoded_pixels / count)
+        work_pixels > request.limits.max_decoded_pixels / count)
       return Failure::kCapacity;
-    const auto size = api.gst_buffer_get_size_fn(buffer);
-    if (!size || size > request.limits.max_output_bytes)
-      return Failure::kCapacity;
-    last = {std::string(size, '\0'), timestamp, count - 1, frame_duration};
-    if (api.gst_buffer_extract_fn(buffer, 0, last.png.data(), size) != size)
-      return Failure::kInvalid;
+    last = {{}, timestamp, count - 1, frame_duration};
+    if (affine) {
+      const auto status = TransformSample(api, sample, *matrices, geometry,
+                                          request.limits, &encoder, &last.png);
+      if (status != Failure::kNone) return status;
+    } else {
+      const auto size = api.gst_buffer_get_size_fn(buffer);
+      if (!size || size > request.limits.max_output_bytes)
+        return Failure::kCapacity;
+      last.png.resize(size);
+      if (api.gst_buffer_extract_fn(buffer, 0, last.png.data(), size) != size)
+        return Failure::kInvalid;
+    }
+    const auto size = last.png.size();
     vision::MediaHeader header;
     if (!vision::ReadMediaHeader(
             {reinterpret_cast<const uint8_t*>(last.png.data()), size},
             &header) ||
         header.format != vision::MediaFormat::kPng ||
-        !((header.width == geometry.square_width &&
-           header.height == geometry.square_height) ||
-          (header.width == geometry.square_height &&
-           header.height == geometry.square_width)))
+        (affine ? (header.width != transformed.width ||
+                   header.height != transformed.height)
+                : !((header.width == geometry.square_width &&
+                     header.height == geometry.square_height) ||
+                    (header.width == geometry.square_height &&
+                     header.height == geometry.square_width))))
       return Failure::kInvalid;
     if (count == 1) {
       output->width = header.width;
@@ -613,6 +794,18 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
                 {"pixel_aspect_den", Number(geometry.pixel_aspect_den)}})},
        {"modules", api.modules},
        {"frames", std::move(frames)}});
+  if (affine) {
+    Set(&output->conversion, "format", String("q4t.cpu_video_png.v4"));
+    auto& display = Field(output->conversion, "display_geometry");
+    Set(&display, "policy", String("affine-square-pixels-tight-bilinear16"));
+    for (const auto& [name, matrix] :
+         {std::pair{"movie_matrix", &matrices->movie},
+          std::pair{"track_matrix", &matrices->track}}) {
+      auto raw = Array();
+      for (int32_t value : *matrix) raw.array.push_back(Number(value));
+      Set(&display, name, std::move(raw));
+    }
+  }
   return Failure::kNone;
 }
 #endif

@@ -1,0 +1,18 @@
+{
+  "cmake/ChatProtocolIdentity.cmake": "f7a54ab8f71caaa21d8784c2c7b388c2e6ca31c701d90ef55662286840bfbccb",
+  "cmake/HostTestSources.cmake": "e639e508d170bc3150582b77a387c0a44e3473bac62131de17bdfe4eb0dec1b5",
+  "docs/STATUS.md": "e15f6f0b9ed7aa012bfe2df0c30f653afa4183cbafd54affdc759f92aed0a6b8",
+  "docs/log/2026-11-17.md": "3a4459890d3e9cf61174ec7c3166af09468007e09cfea3cbce4da1e4128f8c99",
+  "docs/serve-master-goals-v2.json": "2ce4c24477e4ca6d146515960a420df3e149f6bb64c64719515857d44ea9e04a",
+  "src/server/chat_capabilities.cpp": "37cf19eb3d64f3296e008500fb713273a68aa39acf052a668420884a338da08d",
+  "src/server/file_snapshot.cpp": "939c767dfa9063033131797875051770bd5eec266d4cde721ee4826d264c3d5e",
+  "src/server/file_video.cpp": "badd0411a32aa640eaf23cd81fe47498dcf10d9dae7e79c2d20327d3e6d291f9",
+  "src/server/file_video_orientation.h": "47d39c3d7bceaf48d50093e7ea2eb7c6e64e489b7cbea7a7a65f5af692cc488c",
+  "src/server/file_video_worker.cpp": "9ef947a9ff51f2b89ad4226249cbd01952adfc6b1706bf2c39b7f7a4640c8ad2",
+  "tests/server_file_snapshot_test.cpp": "4f7e75e540a55ede1de4931ace1f0072b2160a29558ea7ccc959560850e9f6de",
+  "docs/SERVE_VIDEO_AFFINE_2026-11-17.md": "4ba0d725c8a3d1a03bcddb0170edb8c3419646a72d5282e4e513aa3d9db16981",
+  "src/server/file_video_affine.h": "e814844fbc29132dbfaf67c8eedc71831fadea4a2b147ce6cb3307724a097a51",
+  "tests/server_file_video_affine_test.cpp": "41a1f24392cab1beeda97f8e81ba996bb31594309007543b509f673ee0331196",
+  "tests/video_affine_fixture.h": "6687219c6093ffdd1dc4bf26a869c842db9bb1a2a365c381bb1eab2ba0a8c886",
+  ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "40394480f18aa1b98577aa04c19fc2442b4b261ddb9807a322e997cb8eeb8659"
+}

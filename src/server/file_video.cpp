@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "file_video_affine.h"
 #include "file_video_geometry.h"
 #include "file_video_protocol.h"
 #include "object_protocol.h"
@@ -43,6 +44,23 @@ bool Sha(std::string_view value) {
          std::all_of(value.begin(), value.end(), [](char c) {
            return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
          });
+}
+bool Matrices(const Json& display, video_detail::DisplayMatrices* output) {
+  for (const auto& [name, matrix] :
+       {std::pair{"movie_matrix", &output->movie},
+        std::pair{"track_matrix", &output->track}}) {
+    const auto* raw = display.GetArray(name);
+    if (!raw || raw->array.size() != matrix->size()) return false;
+    for (size_t i = 0; i < matrix->size(); ++i) {
+      const auto& value = raw->array[i];
+      if (!IsInputInteger(value) || value.number < INT32_MIN ||
+          value.number > INT32_MAX)
+        return false;
+      (*matrix)[i] = int32_t(value.number);
+    }
+    if (!video_detail::IsAffine(*matrix)) return false;
+  }
+  return true;
 }
 uint64_t Big(std::string_view bytes) {
   uint64_t value = 0;
@@ -161,6 +179,17 @@ ObjectReply ValidateVideoPixels(std::string_view source,
       pixels.conversion.GetInt("source_bytes", -1) !=
           static_cast<int64_t>(source.size()))
     return Invalid();
+  if (pixels.conversion.GetString("format") == "q4t.cpu_video_png.v4") {
+    const auto* display = pixels.conversion.Find("display_geometry");
+    video_detail::DisplayMatrices recorded;
+    if (!display || !Matrices(*display, &recorded)) return Invalid();
+    try {
+      const auto actual = video_detail::MovieDisplay().ReadMatrices(source);
+      if (!actual || *actual != recorded) return Invalid();
+    } catch (...) {
+      return Invalid();
+    }
+  }
   return ValidateVideoSnapshot(Digest(source), limits, pixels);
 }
 ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
@@ -189,8 +218,9 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (OutputJson(conversion).size() > 16384) return Invalid();
   const auto* outputs = conversion.GetArray("frames");
   const auto* modules = conversion.GetArray("modules");
+  const bool affine = conversion.GetString("format") == "q4t.cpu_video_png.v4";
   const bool geometry =
-      conversion.GetString("format") == "q4t.cpu_video_png.v3";
+      affine || conversion.GetString("format") == "q4t.cpu_video_png.v3";
   const bool intervals =
       geometry || conversion.GetString("format") == "q4t.cpu_video_png.v2";
   if ((!intervals &&
@@ -204,8 +234,11 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
     return Invalid();
   if (geometry) {
     const auto* display = conversion.Find("display_geometry");
-    if (!display || !display->IsObject() || display->object.size() != 5 ||
-        display->GetString("policy") != "source-orientation-square-pixels")
+    if (!display || !display->IsObject() ||
+        display->object.size() != (affine ? 7U : 5U) ||
+        display->GetString("policy") !=
+            (affine ? "affine-square-pixels-tight-bilinear16"
+                    : "source-orientation-square-pixels"))
       return Invalid();
     for (const char* name : {"coded_width", "coded_height", "pixel_aspect_num",
                              "pixel_aspect_den"}) {
@@ -218,11 +251,26 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
         display->GetInt("pixel_aspect_num"),
         display->GetInt("pixel_aspect_den"), limits, &shape);
     if (failure == video_detail::Failure::kCapacity) return Capacity();
-    if (failure != video_detail::Failure::kNone ||
-        !((pixels.width == shape.square_width &&
-           pixels.height == shape.square_height) ||
-          (pixels.width == shape.square_height &&
-           pixels.height == shape.square_width)))
+    if (failure != video_detail::Failure::kNone) return Invalid();
+    if (uint64_t(shape.square_width) * shape.square_height >
+        limits.max_decoded_pixels / pixels.scanned_frames)
+      return Capacity();
+    if (affine) {
+      video_detail::DisplayMatrices matrices;
+      video_detail::AffineGeometry transformed;
+      if (!Matrices(*display, &matrices)) return Invalid();
+      const auto status = video_detail::MakeAffineGeometry(
+          matrices, shape.square_width, shape.square_height, limits,
+          &transformed);
+      if (status == video_detail::Failure::kCapacity) return Capacity();
+      if (status != video_detail::Failure::kNone ||
+          transformed.width != pixels.width ||
+          transformed.height != pixels.height)
+        return Invalid();
+    } else if (!((pixels.width == shape.square_width &&
+                  pixels.height == shape.square_height) ||
+                 (pixels.width == shape.square_height &&
+                  pixels.height == shape.square_width)))
       return Invalid();
   }
   for (const auto& [name, expected] :
