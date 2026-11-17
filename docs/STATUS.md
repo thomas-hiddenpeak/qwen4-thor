@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[对齐/VAD恢复资格19项CPU通过](evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md)
+（1.165秒、0GPU）：递归固定身份/预算、搬迁、实际辅助工作证据、
+显式新增/预算迁移及自动回退不丢能力，原历史/冷却/待处理动作保持。
+冻结下一组2启动/14创建/900秒，主轻各执行真实多段词/segment及
+原ASR/核心工具/embedding/视频保护；随后服务/恢复交付和全部master。
+默认rev276保持，总目标active。67个已评审源码锚点已同步，
+防遗漏门禁和7负控通过，恢复19项纳入公开CI。
+
 [对齐/VAD服务包和schema17项CPU通过](evidence/serve-audio-auxiliary-package-cpu-20261117/README.md)
 （0.522秒、0GPU），固定身份/独立预算、CLI/命令/声明及真实
 verbose/SSE/静音/健康配置合同已补齐。候选engine-04仅增VAD

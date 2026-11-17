@@ -3,6 +3,7 @@
 Two starts, six Chat and two native embedding requests under one strict lease.
 Media profiles additionally require one actual video request on each profile.
 Configured ASR additionally requires one actual audio request on each profile.
+Configured alignment/VAD additionally requires actual auxiliary audio per profile.
 Final qualification is constructed only after guard exit and complete cleanup.
 This does not enable deployment or certify automatic managed profile switching.
 """
@@ -39,7 +40,8 @@ SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 def limits_for(profile, native_asr=None):
     capacity.validate(profile)
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
-                (2 if native_asr is not None else 0))
+                (2 if native_asr is not None else 0) +
+                (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0))
 
 
 def requests(media=False):
@@ -217,6 +219,19 @@ def prepare(args):
             # Reading all weights belongs inside the strict stage lease.
             plan['native_assets'][str(asset)] = package.NATIVE_ASR['weight_sha256'] \
                 if name == 'model.safetensors' else sha(asset)
+        for auxiliary in profile_evidence.audio_auxiliaries(plan['identity']):
+            settings = asr[auxiliary]
+            directory = Path(settings['directory'])
+            if auxiliary == 'vad':
+                plan['native_assets'][str(directory/'silero_vad_16k.safetensors')] = \
+                    settings['weight_sha256']
+                continue
+            for name in ['config.json', 'preprocessor_config.json',
+                         'generation_config.json', 'vocab.json', 'merges.txt',
+                         'tokenizer_config.json', 'model.safetensors']:
+                asset = directory/name
+                plan['native_assets'][str(asset)] = settings['weight_sha256'] \
+                    if name == 'model.safetensors' else sha(asset)
     for name in ('access-program-policy.json', 'file-input-policy.json',
                  'mcp-policy.json', 'web-policy.json'):
         if (engine/name).is_file():
@@ -227,6 +242,8 @@ def prepare(args):
                            native_embedding_steps=60)
     if asr is not None:
         plan['planned']['native_transcriptions'] = 2
+    if profile_evidence.audio_auxiliaries(plan['identity']):
+        plan['planned']['native_auxiliary_transcriptions'] = 2
     plan['mutations'] = ['gracefully stop owned primary after its bounded business',
         'start only qualified light command in same lease/private directory',
         'default deployment and its state remain untouched']
@@ -253,7 +270,7 @@ class Stage(encrypted.Stage):
         self.profile_name = name
         background.probe_ports((self.plan['port'], self.plan['operations_port']))
         for path, digest in self.plan['native_assets'].items():
-            require(sha(path) == digest, 'native embedding asset drift')
+            require(sha(path) == digest, 'qualified native backend asset drift')
         save(self.out/'client-policy.json', self.client_policy())
         args = command(self.plan, name, self.out)
         save(self.out/(name+'-command.json'), args)
@@ -293,19 +310,25 @@ class Stage(encrypted.Stage):
         self.drained(label+'-drain')
         return result
 
-    def audio_request(self):
-        label = self.profile_name+'-asr'
+    def audio_request(self, auxiliary=False):
+        label = self.profile_name+('-asr-auxiliary' if auxiliary else '-asr')
         selected = self.plan['base']['settings']['native_asr']
         clip = self.plan['asr_audio']
         raw = Path(clip['path']).read_bytes()
         require(hashlib.sha256(raw).hexdigest() == clip['sha256'], 'ASR source drift')
         request = dict(model=selected['model'], response_format='json', include=['logprobs'])
+        if auxiliary:
+            raw = profile_evidence.auxiliary_audio_source(raw, self.plan['identity'])
+            request = profile_evidence.auxiliary_audio_request(self.plan['identity'])
         boundary = 'q4t-profile-native-asr'
         parts = []
-        for key, value in [('model', selected['model']), ('response_format', 'json'),
-                           ('include[]', 'logprobs')]:
-            parts.append(('--'+boundary+'\r\nContent-Disposition: form-data; name="'+
-                          key+'"\r\n\r\n'+value+'\r\n').encode())
+        for key, value in request.items():
+            values = value if type(value) is list else [value]
+            field = key+'[]' if type(value) is list else key
+            for item in values:
+                rendered = json.dumps(item) if type(item) is dict else str(item)
+                parts.append(('--'+boundary+'\r\nContent-Disposition: form-data; name="'+
+                              field+'"\r\n\r\n'+rendered+'\r\n').encode())
         parts += [('--'+boundary+'\r\nContent-Disposition: form-data; name="file"; '
                    'filename="voice.wav"\r\nContent-Type: audio/wav\r\n\r\n').encode(),
                    raw, ('\r\n--'+boundary+'--\r\n').encode()]
@@ -331,8 +354,16 @@ class Stage(encrypted.Stage):
         result = dict(source_base64=base64.b64encode(raw).decode(), request=request,
             response=json.loads(wire), health=config['native_asr_health'],
             limits=config['native_asr_limits'])
+        if auxiliary:
+            names = profile_evidence.audio_auxiliaries(self.plan['identity'])
+            result['health'] = {k:config['native_'+k+'_health'] for k in names}
+            result['limits'] = {k:(config['native_alignment_limits'] if k == 'alignment'
+                                  else dict(max_chunks=config['native_vad_max_chunks'])) for k in names}
         save(self.out/(label+'.request.json'), request)
-        profile_evidence.audio_business(result, self.plan['identity'])
+        if auxiliary:
+            profile_evidence.audio_auxiliary_business(result, self.plan['identity'])
+        else:
+            profile_evidence.audio_business(result, self.plan['identity'])
         return result
 
     def profile_business(self):
@@ -361,6 +392,8 @@ class Stage(encrypted.Stage):
                 response=self.request('media', rows['media'], '/v1/responses'))
         if self.plan['identity'].get('native_asr') is not None:
             value['asr'] = self.audio_request()
+        if profile_evidence.audio_auxiliaries(self.plan['identity']):
+            value['asr_auxiliary'] = self.audio_request(auxiliary=True)
         profile_evidence.business(value, self.plan['identity'], selected)
         save(self.out/(self.profile_name+'-business.json'), value)
 

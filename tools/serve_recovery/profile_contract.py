@@ -14,6 +14,47 @@ NAMES = ('primary', 'light')
 MIB = 1024**2
 
 
+def asr_binding(value):
+    selected = package.asr_settings(value)
+    del selected['directory']
+    for name in package.ASR_AUXILIARY:
+        if name in selected:
+            del selected[name]['directory']
+    return selected
+
+
+def asr_configuration(value):
+    """Validate a path-free qualification without reading deployment assets."""
+    ledger.require(type(value) is dict, 'invalid qualified audio identity')
+    ledger.keys(value, (*package.NATIVE_ASR, 'limits',
+                        *(k for k in package.ASR_AUXILIARY if k in value)))
+    selected = copy.deepcopy(value)
+    selected['directory'] = '/qualified/asr-assets'
+    for name, (fixed, _, _) in package.ASR_AUXILIARY.items():
+        if name in selected:
+            ledger.keys(selected[name], (*fixed, 'limits'))
+            selected[name]['directory'] = '/qualified/'+name+'-assets'
+    return package.asr_settings(selected)
+
+
+def asr_capability_binding(fixed, declared):
+    """Every configured auxiliary needs both immutable identity and budget."""
+    for name, (identity, _, _) in package.ASR_AUXILIARY.items():
+        observed = declared.get(name, {})
+        ledger.require(type(observed) is dict, 'invalid auxiliary capability')
+        if name not in fixed:
+            ledger.require(observed.get('configured') is not True,
+                           'configured audio auxiliary lacks qualification binding')
+            continue
+        ledger.require(observed.get('configured') is True and
+            all(observed.get(k) == v for k,v in identity.items()),
+            'qualified audio auxiliary identity differs')
+        if name == 'vad':
+            ledger.require(type(observed.get('max_chunks')) is int and
+                observed['max_chunks'] == fixed[name]['limits']['max_chunks'],
+                'qualified VAD capacity observation differs')
+
+
 def profiles(primary):
     primary = capacity.validate(primary)
     ledger.require(primary['mtp_enabled'], 'primary profile must enable MTP')
@@ -85,9 +126,7 @@ def binding(binary, protocol, model_files, model_assets, native_embedding=None,
                 model_files=copy.deepcopy(model_files),
                 model_assets=copy.deepcopy(model_assets), native_embedding=native)
     if native_asr is not None:
-        selected = package.asr_settings(native_asr)
-        result['native_asr'] = {k:copy.deepcopy(v) for k,v in selected.items()
-                                if k != 'directory'}
+        result['native_asr'] = asr_binding(native_asr)
     return result
 
 
@@ -133,8 +172,7 @@ def identity(value):
         native = dict(native, directory='/qualified/assets')
     asr = value.get('native_asr')
     if 'native_asr' in value:
-        ledger.keys(asr, (*package.NATIVE_ASR, 'limits'))
-        asr = dict(asr, directory='/qualified/asr-assets')
+        asr = asr_configuration(asr)
     return binding(value['binary_sha256'], value['protocol_sha256'],
                    value['model_files'], value['model_assets'], native, asr)
 
@@ -163,6 +201,7 @@ def qualification(name, selected, fixed, capability, observed, memory, evidence)
         ledger.require(declared.get('configured') is True and
             all(declared.get(k) == asr[k] for k in package.NATIVE_ASR),
             'qualified ASR backend identity differs')
+        asr_capability_binding(asr, declared)
     else:
         ledger.require(declared.get('configured') is not True,
                        'configured ASR backend lacks a qualification binding')

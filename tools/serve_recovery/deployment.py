@@ -84,6 +84,11 @@ def check_target(current, target):
         selected = new_core['settings'].get('native_asr', {})
         ledger.require(all(selected.get(k) == asr[k] for k in engine.NATIVE_ASR),
                        'deployment would remove or change accepted ASR model')
+        for name, (fixed, _, _) in engine.ASR_AUXILIARY.items():
+            if name in asr:
+                ledger.require(type(selected.get(name)) is dict and
+                    all(selected[name].get(k) == asr[name][k] for k in fixed),
+                    'deployment would remove or change accepted audio auxiliary')
     from tools.serve_recovery import profile_manager
     profile_manager.compatible(old, new, current['package'], target['package'])
     return old, new

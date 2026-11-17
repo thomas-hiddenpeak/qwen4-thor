@@ -2845,6 +2845,19 @@
         },
         "tests": 17,
         "gpu": 0
+      },
+      "audio_auxiliary_recovery_20261117": {
+        "state": "targeted_cpu_pass_actual_profiles_pending",
+        "evidence": "evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md",
+        "tests": 19,
+        "seconds": 1.16520653385669,
+        "gpu_actions": 0,
+        "next_limits": {
+          "starts": 2,
+          "creates": 14,
+          "seconds": 900
+        },
+        "whole_task_complete": false
       }
     },
     {

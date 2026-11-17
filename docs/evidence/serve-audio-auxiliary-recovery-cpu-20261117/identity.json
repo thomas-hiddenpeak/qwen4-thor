@@ -1,0 +1,37 @@
+{
+  "head": "ad307301cff38d71e59c98abddfd634cb8ee3021",
+  "sources": {
+    "docs/STATUS.md": "ac6f7144944625f16b7188b85e466719219e5f658f160b346259941f6b32a6d8",
+    "docs/log/2026-11-17.md": "7c0d136690a7fc2617800a8594e0d56a22eb350f638876135e384b2b798ad259",
+    "tools/serve_recovery/deployment.py": "fbf43aca7edd21ff880197957261927ec704d0bfb92e942bfcc746fbb0671aa6",
+    "tools/serve_recovery/outer_acceptance.py": "ec89c89d7895b7a67508cf37364201cbf9be653bb611609d0843f926fcc626ad",
+    "tools/serve_recovery/profile_acceptance.py": "097392550ec1d1b859d55a2dfb06657333cf110103a0127a63e26906ea87430b",
+    "tools/serve_recovery/profile_contract.py": "70e0c2f619f7c094148ce7c1df2044dde1b846f93637b940bd3fd4f59569dc91",
+    "tools/serve_recovery/profile_evidence.py": "13a391c83a5774ec88d114cc441cd3c61cba9c724e82281320f3db5e6d96bc48",
+    "tools/serve_recovery/profile_managed_acceptance.py": "c34f99a4103f8b044abb25ff491d0aaf3f220db09dc41be34bb91a834b77a03c",
+    "tools/serve_recovery/profile_migration.py": "ba17dc17ee2d3871d3cce4f0eba23d04c52db83a0e86c0cdd2f46e58b9bdb636",
+    "tools/serve_recovery/version_acceptance.py": "74fdd9889134a63967a45226102dc8bab7aaced2439be1f2191d097b4386c5e9",
+    "tools/serve_recovery/test_audio_auxiliary_profiles.py": "ee6d9345d6c5361afb24123bc7accc831f8beba379e9bf3a69fc631676f6507b"
+  },
+  "tests": [
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_all_auxiliary_paths_relocate_but_fixed_models_and_limits_remain_bound",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_automatic_same_features_work_and_removal_or_unsealed_addition_fail",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_deployment_preserves_accepted_auxiliary_models_and_allows_directory_moves",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_explicit_auxiliary_addition_keeps_history_pending_and_all_wait",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_explicit_vad_capacity_change_retains_original_qualification_and_wait",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_native_cli_and_both_profile_commands_keep_all_auxiliary_limits",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_pending_declarations_become_proven_additions_without_losing_features",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_qualification_requires_auxiliary_business_and_exact_declared_capacity",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_real_multiclip_witness_rejects_missing_times_tokens_stats_health_and_source",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_actual_audio_requires_real_source_usage_probabilities_and_health",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_automatic_migration_preserves_audio_and_rejects_addition_or_loss",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_deployment_cannot_drop_accepted_asr_and_allows_asset_relocation",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_disabled_backend_activation_is_explicit_and_preserves_other_capabilities",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_driver_preserves_asr_parameters_in_both_real_commands",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_addition_preserves_pending_work_and_consumed_budget",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_budget_migration_preserves_original_qualification_and_wait",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_legacy_binding_is_unchanged_and_new_binding_excludes_only_path",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_native_cli_forwards_optional_asr_identity_and_only_explicit_limits",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_profile_receipt_cannot_omit_audio_or_bind_another_backend"
+  ]
+}

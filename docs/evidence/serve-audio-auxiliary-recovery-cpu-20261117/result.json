@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "tests": 19,
+  "seconds": 1.16520653385669,
+  "gpu_actions": 0,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles"
+  ]
+}
