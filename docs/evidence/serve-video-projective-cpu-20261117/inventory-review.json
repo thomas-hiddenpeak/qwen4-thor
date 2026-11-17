@@ -1,0 +1,38 @@
+{
+  "changes": {
+    "src/server/file_video_integer.h": {
+      "before": null,
+      "after": "854b47c76ceeaf2b53167e8e871c1a9d77ca9adf1c64bb3a4f106e73a669e229"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "f7a54ab8f71caaa21d8784c2c7b388c2e6ca31c701d90ef55662286840bfbccb",
+      "after": "89529bedf57fc5d4f62f67a7cb4ad237fafdf41453fa827f09777bf2682dcab3"
+    },
+    "src/server/file_video_worker.cpp": {
+      "before": "9ef947a9ff51f2b89ad4226249cbd01952adfc6b1706bf2c39b7f7a4640c8ad2",
+      "after": "5a62016646c3eca18ecbe88624ba263458856dd05104fbcfaadb35cf731c2f10"
+    },
+    "src/server/file_video_orientation.h": {
+      "before": "47d39c3d7bceaf48d50093e7ea2eb7c6e64e489b7cbea7a7a65f5af692cc488c",
+      "after": "72d5dc1692505518dc86fb3f9046fba5c1b307b2cae96b91df4de6291cce8181"
+    },
+    "src/server/file_snapshot.cpp": {
+      "before": "939c767dfa9063033131797875051770bd5eec266d4cde721ee4826d264c3d5e",
+      "after": "e29f55c03778f6bd63dcd5249908120e261bf99b4f6d56b3162e5b92939e7260"
+    },
+    "src/server/file_video.cpp": {
+      "before": "51abd5f303ce61fde2de105a0b6a3e4d245355174686c39b483a6da1a944f4ad",
+      "after": "8e13b236b0d25e586f677913b75c31eb2f99a3341eaffcae9f0819b7b8c01dca"
+    },
+    "src/server/chat_capabilities.cpp": {
+      "before": "95d9d331a070e18e9e0b50e6a1bbf57b9b61bd490f2fca81a1ab6cccd4f8eff9",
+      "after": "af922ab25938683ff50950151995a9ebe4ed73049c1da91103136d47d79dcb22"
+    },
+    "src/server/file_video_projective.h": {
+      "before": null,
+      "after": "0eda25f344080feb35339cc3e92d9fc2d6467acc14d9c8b15ddd8842cc6faeaf"
+    }
+  },
+  "review": "Exact finite projective arithmetic, source validation, isolated worker, v5 snapshot and capability additions; no routes or public input fields changed. Old affine paths retained.",
+  "route_field_whitelists_unchanged": true
+}

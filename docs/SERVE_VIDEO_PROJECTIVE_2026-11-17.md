@@ -47,4 +47,6 @@
 - 不做完整性能或全模型质量矩阵。通过后继续适用主轻/回退组合、
   可回退默认交付与实际合main；其余master任务继续，长期实跑由用户做。
 
-当前只冻结实现与验证合同，尚无本组构建、CPU或GPU通过主张。
+当前实现与针对性用例已准备，独立Fraction/Gauss-Jordan oracle生成
+完成；20项针对性CPU及必要构建已通过，见[证据](evidence/serve-video-projective-cpu-20261117/README.md)。
+GPU业务尚未运行，下一步按冻结预算执行。

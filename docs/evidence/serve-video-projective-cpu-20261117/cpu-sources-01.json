@@ -1,0 +1,18 @@
+{
+  ".q4t-work/serve-file-search-20261112/host/q4t_host_tests": "75bf0160e3deadb261e3f5475cc4b08659584db17fec0526932f77b5db5e7d3e",
+  "cmake/ChatProtocolIdentity.cmake": "89529bedf57fc5d4f62f67a7cb4ad237fafdf41453fa827f09777bf2682dcab3",
+  "cmake/HostTestSources.cmake": "64650af49f2e426af1438ddb163e0db39ae97b54b00e99a3dd6d9ae6fb57b939",
+  "src/server/chat_capabilities.cpp": "af922ab25938683ff50950151995a9ebe4ed73049c1da91103136d47d79dcb22",
+  "src/server/file_snapshot.cpp": "e29f55c03778f6bd63dcd5249908120e261bf99b4f6d56b3162e5b92939e7260",
+  "src/server/file_video.cpp": "8e13b236b0d25e586f677913b75c31eb2f99a3341eaffcae9f0819b7b8c01dca",
+  "src/server/file_video_integer.h": "854b47c76ceeaf2b53167e8e871c1a9d77ca9adf1c64bb3a4f106e73a669e229",
+  "src/server/file_video_orientation.h": "72d5dc1692505518dc86fb3f9046fba5c1b307b2cae96b91df4de6291cce8181",
+  "src/server/file_video_projective.h": "0eda25f344080feb35339cc3e92d9fc2d6467acc14d9c8b15ddd8842cc6faeaf",
+  "src/server/file_video_worker.cpp": "a79a6c24757dc2933b60e872d86b438b9239c64f2bdd637a1925f4d5fbabe292",
+  "tests/fixtures/file_video/projective_oracle.json": "8b08685a6f2d07b1fec8f884d58770277a875454993d7c432e73f43b365e461d",
+  "tests/fixtures/file_video/projective_oracle.py": "dd508fad5fae17eb2cbd36d5d5048c3b58303ac75ada05d1f5db36aaab12e874",
+  "tests/server_file_snapshot_test.cpp": "cd4c6297a57345e5beb2d2dc16ee69bb37fbabdf180767fd283af079d409ed3e",
+  "tests/server_file_video_projective_test.cpp": "ab5a35e3587d7eb325b6845827c1700a62d502d46c11e3e871a17179cc6c6ce0",
+  "tools/serve_responses/test_video_projective_acceptance.py": "75df1439a41ae4b73358e39781eb27b7706c8f09d96a3c2f139e3a6b466a7b40",
+  "tools/serve_responses/video_projective_acceptance.py": "a0d53ee86b6d2c83c76bbcb47223fb423e0deee74576480a07a872f418338d8c"
+}

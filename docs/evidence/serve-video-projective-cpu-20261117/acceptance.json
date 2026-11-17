@@ -1,0 +1,16 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "cpp_unique": 20,
+  "cpp_new": 16,
+  "cpp_regression": 4,
+  "cpp_seconds": 1.0383548107929528,
+  "driver_unit": 2,
+  "inventory_mutations": 7,
+  "engine_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+  "model_starts": 0,
+  "full_quality": false,
+  "performance_acceptance": false,
+  "default_revision": 244,
+  "original_build_failure_retained": true,
+  "whole_master_complete": false
+}

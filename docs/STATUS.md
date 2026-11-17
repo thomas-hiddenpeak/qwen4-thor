@@ -121,9 +121,16 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[有限透视CPU接受](evidence/serve-video-projective-cpu-20261117/README.md)：
+16项新CPU及4项直接回归全过，1.038秒；独立有理数逐像素、真实
+H264/PAR、源/冻结校验和清理已验。两项驱动与库存检查通过，构建
+零警告，原测试字段名构建失败保留。默认rev244保持，继续1启动
+4生成600秒业务、适用发行及实际合main；全部master仍active。
+
 [齐次/透视视频下一组合同](SERVE_VIDEO_PROJECTIVE_2026-11-17.md)已冻结：
 补合法非单位w和有限透视的实际像素/冻结重放，用有界整数计算保持
-确定性且不新增依赖。先16项新CPU及4项直接回归，尚未测试；rev244
+确定性且不新增依赖。已接入隔离worker、来源绑定和v5冻结重放，并生成独立Fraction/
+Gauss-Jordan像素oracle。先16项新CPU及4项直接回归，尚未测试；rev244
 保持，PR41只推进已验提交，全部master继续。
 
 [rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
