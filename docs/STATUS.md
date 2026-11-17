@@ -122,6 +122,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[有限透视发行组合通过](evidence/serve-video-projective-composition-20261117/README.md)：
+累计5启动20请求（含自检/embedding），235.266秒严格租约，
+223项NVML正常、完整清理。主轻及两个精确保留包实际业务均通过；
+显式能力迁移保持预算/历史，禁止回退丢能力。默认244保持，
+继续STOPPED可回退交付、实际合main及全部master。
+
 [有限透视真实业务接受](evidence/serve-video-projective-business-20261117/README.md)：
 1启动4生成、49.230秒严格租约，47项NVML正常、完整清理；非单位w
 JSON、透视SSE、删除原上传后的冻结历史、奇异请求后同PID普通

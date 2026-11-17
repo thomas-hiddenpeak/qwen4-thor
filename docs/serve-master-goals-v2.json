@@ -2416,7 +2416,7 @@
         "main_evidence": "evidence/serve-pr41-merged-20261117/README.md"
       },
       "video_projective_20261117": {
-        "state": "business_accepted_composition_pending",
+        "state": "composition_accepted_delivery_pending",
         "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
         "cpu_new_limit": 16,
         "cpu_regressions": 4,
@@ -2439,7 +2439,14 @@
           "starts": 4,
           "requests": 16,
           "seconds": 900
-        }
+        },
+        "composition_evidence": "evidence/serve-video-projective-composition-20261117/README.md",
+        "total_actual": {
+          "starts": 5,
+          "requests": 20,
+          "strict_lease_seconds": 235.26561826793477
+        },
+        "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33"
       }
     },
     {
