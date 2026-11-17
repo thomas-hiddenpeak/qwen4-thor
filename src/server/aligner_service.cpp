@@ -1,5 +1,9 @@
 #include "q4t/server/aligner_service.h"
 
+#include <bit>
+#include <cmath>
+#include <limits>
+
 #include "q4t/audio/aligner_layout.h"
 #include "q4t/server/aligner_assets.h"
 
@@ -112,6 +116,34 @@ Status BuildAlignerPrompt(std::span<const audio::AlignerWord> words,
       !s)
     return s;
   *out = std::move(prompt);
+  return {};
+}
+Status SelectAlignerClasses(std::span<const uint16_t> logits, size_t words,
+                            std::vector<uint32_t>* out,
+                            const std::function<bool()>& cancelled) {
+  if (!out || !words || words > 2048 ||
+      logits.size() != words * 2 * C::kClasses)
+    return Status::Fail("alignment classification shape differs");
+  std::vector<uint32_t> classes;
+  classes.reserve(words * 2);
+  for (size_t slot = 0; slot < words * 2; ++slot) {
+    if (cancelled && cancelled())
+      return Status::Fail("alignment classification cancelled");
+    float maximum = -std::numeric_limits<float>::infinity();
+    uint32_t best = 0;
+    for (int id = 0; id < C::kClasses; ++id) {
+      const auto value =
+          std::bit_cast<float>(uint32_t(logits[slot * C::kClasses + id]) << 16);
+      if (!std::isfinite(value))
+        return Status::Fail("nonfinite alignment classifier output");
+      if (value > maximum) {
+        maximum = value;
+        best = id;
+      }
+    }
+    classes.push_back(best);
+  }
+  *out = std::move(classes);
   return {};
 }
 }  // namespace q4t::server

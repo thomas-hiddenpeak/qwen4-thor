@@ -60,11 +60,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                         "model_not_found", "model");
       return;
     }
-    // These fields are preserved by the common input contract. Their native
-    // alignment/diarization/VAD executors are subsequent A10 work; they must
-    // not silently route to the single-utterance text decoder below.
-    if ((request.format != AsrFormat::kJson &&
-         request.format != AsrFormat::kText) ||
+    // Segment confidence/diarization/VAD need their real evidence producers.
+    // They remain required work, separate from actual word alignment below.
+    if (request.format == AsrFormat::kDiarizedJson ||
+        request.segment_timestamps ||
         request.chunking.mode != AsrChunking::Mode::kSingle) {
       detail::SendError(fd, 503,
                         "Native audio alignment/chunking executor pending", {},
@@ -74,6 +73,9 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                             : "response_format");
       return;
     }
+    const bool aligned = request.format == AsrFormat::kSrt ||
+                         request.format == AsrFormat::kVtt ||
+                         request.format == AsrFormat::kVerboseJson;
     const auto id = detail::NewRequestId("asr_");
     control = requests_.Register(
         id, "", started + std::chrono::milliseconds(request_deadline_ms_),
@@ -114,6 +116,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       RequestDiagnostics::Scope waiting(diagnostic,
                                         RequestDiagnostics::Wait::kStorage);
       reply = EnsureNativeAsr(false, access);
+      if (reply.ok() && aligned) reply = EnsureNativeAligner(false, access);
     }
     if (!reply.ok()) {
       send_failure(reply);
@@ -121,9 +124,11 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     }
     FileAudioLimits audio_limits;
     audio_limits.max_duration_ns =
-        uint64_t(asr_limits_.max_audio_seconds) * 1000000000;
-    audio_limits.max_output_samples =
-        uint64_t(asr_limits_.max_audio_seconds) * 16000;
+        uint64_t(aligned ? std::min(asr_limits_.max_audio_seconds,
+                                    aligner_limits_.max_audio_seconds)
+                         : asr_limits_.max_audio_seconds) *
+        1000000000;
+    audio_limits.max_output_samples = audio_limits.max_duration_ns / 62500;
     FileAudioPcm pcm;
     {
       RequestDiagnostics::Scope waiting(diagnostic,
@@ -207,9 +212,19 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     }
     const auto actual = http->Usage().Total();
     std::string response;
-    status = actual ? transcript.ResultJson(*actual, prompt.audio_tokens,
-                                            request.stream, &response)
-                    : Status::Fail("ASR usage unavailable");
+    if (aligned) {
+      reply = FormatAlignedTranscription(
+          fd, request, features, pcm.duration_ns / 1000000, transcript, control,
+          diagnostic, rate, http->Usage(), &response);
+      if (!reply.ok()) {
+        send_failure(reply);
+        return;
+      }
+    }
+    status = aligned  ? Status{}
+             : actual ? transcript.ResultJson(*actual, prompt.audio_tokens,
+                                              request.stream, &response)
+                      : Status::Fail("ASR usage unavailable");
     if (!status) {
       detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");
       return;
@@ -234,9 +249,15 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       if (success) *http->State() = detail::ResponseState::kComplete;
     } else {
       const bool text = request.format == AsrFormat::kText;
-      success = detail::SendSimple(
-          fd, 200, "OK", text ? transcript.Text() : response,
-          text ? "text/plain; charset=utf-8" : "application/json", write);
+      const char* content_type = request.format == AsrFormat::kVtt
+                                     ? "text/vtt; charset=utf-8"
+                                 : request.format == AsrFormat::kSrt
+                                     ? "application/x-subrip; charset=utf-8"
+                                 : text ? "text/plain; charset=utf-8"
+                                        : "application/json";
+      success =
+          detail::SendSimple(fd, 200, "OK", text ? transcript.Text() : response,
+                             content_type, write);
     }
     diagnostic.Outcome(success ? "success" : "error",
                        success ? "complete" : "response_write_failed");

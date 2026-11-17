@@ -39,6 +39,8 @@
 #include "q4t/model/model_owner.h"
 #include "q4t/model/embedding_model.h"
 #include "q4t/audio/asr_model.h"
+#include "q4t/audio/aligner_model.h"
+#include "q4t/server/aligner_service.h"
 #include "q4t/server/asr_service.h"
 #include "q4t/server/asr_request.h"
 #include "q4t/server/asr_response.h"
@@ -208,6 +210,22 @@ class ChatServer {
   ObjectReply EnsureNativeAsr(bool weights, const BinaryAccess& access,
                               RequestDiagnostics* diagnostic = nullptr);
   std::string NativeAsrHealthJson() const;
+  ObjectReply EnsureNativeAligner(bool weights, const BinaryAccess& access,
+                                  RequestDiagnostics* diagnostic = nullptr);
+  std::string NativeAlignerHealthJson() const;
+  ObjectReply RunNativeAligner(int fd, const audio::AsrFeatures& features,
+                               const AlignerPrompt& prompt,
+                               const std::shared_ptr<RequestControl>& control,
+                               RequestDiagnostics& diagnostic,
+                               ClientRateLease& rate, ActualUsageCounter& usage,
+                               uint64_t prior_input,
+                               std::vector<uint32_t>* classes);
+  ObjectReply FormatAlignedTranscription(
+      int fd, const AsrRequest& request, const audio::AsrFeatures& features,
+      int64_t duration_ms, const AsrTranscript& transcript,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      ActualUsageCounter& usage, std::string* response);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
   ObjectReply RunNativeAsr(
@@ -514,6 +532,14 @@ class ChatServer {
   std::unique_ptr<text::Tokenizer> asr_tok_;
   uint8_t* d_asr_weights_ = nullptr;
   audio::AsrDeviceWeights asr_weights_;
+  std::string aligner_model_dir_;
+  AlignerServiceLimits aligner_limits_;
+  AsrHealth aligner_health_;
+  std::mutex aligner_mu_;
+  std::mutex aligner_tok_mu_;
+  std::unique_ptr<text::Tokenizer> aligner_tok_;
+  uint8_t* d_aligner_weights_ = nullptr;
+  audio::AlignerDeviceWeights aligner_weights_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;

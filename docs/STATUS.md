@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[对齐运行时/词时间戳/字幕14项CPU](evidence/serve-aligner-output-runtime-20261117/README.md)
+通过（0.008秒、0GPU），独立CUDA候选构建零警告。已接入实际分类、
+取消/清理、累计配额和SRT/VTT；真实HTTP随后短验，默认rev276不变。
+完整segment统计/VAD、服务交付和全部master仍须完成。
+
 PR44第二组CI暴露CPU后端未识别转录chunked上传；已补齐精确
 路由和multipart夹具。[原失败项复验通过](evidence/serve-asr-route-fixture-20261117/README.md)，
 1.015秒、0GPU。原两组CI失败和一次旧ELF误用404保留；运行时/

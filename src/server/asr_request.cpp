@@ -243,6 +243,11 @@ Status ParseAsrRequest(std::string_view content_type, std::string_view body,
                    "Timestamps require verbose_json");
   if (plan.format == AsrFormat::kVerboseJson && !plan.word_timestamps)
     plan.segment_timestamps = true;
+  if (plan.stream && plan.format != AsrFormat::kJson &&
+      plan.format != AsrFormat::kText &&
+      plan.format != AsrFormat::kDiarizedJson)
+    return Invalid(error, "stream",
+                   "Streaming requires json, text or diarized_json");
   if (plan.logprobs && plan.format != AsrFormat::kJson)
     return Invalid(error, "include", "Logprobs require json");
   if (plan.speaker_names.size() != plan.speaker_references.size())

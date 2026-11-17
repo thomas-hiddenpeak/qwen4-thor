@@ -126,6 +126,15 @@ Status ValidateServerOptions(const ServerOptions& options) {
   }
   if (!options.asr_limits.Valid())
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
+  if (!options.aligner_limits.Valid())
+    return Status::Fail(
+        "invalid alignment duration/context/word/workspace limits");
+  if (!options.aligner_model_dir.empty()) {
+    if (options.asr_model_dir.empty())
+      return Status::Fail("aligner-model-dir requires asr-model-dir");
+    if (!model::ValidEmbeddingAssetDirectory(options.aligner_model_dir))
+      return Status::Fail("aligner-model-dir must be an absolute asset path");
+  }
   if (!options.asr_model_dir.empty()) {
     // Reuse the canonical absolute asset-path grammar; no filesystem reads.
     if (!model::ValidEmbeddingAssetDirectory(options.asr_model_dir))
@@ -249,6 +258,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.asr_limits.max_output_tokens;
     if (key == "--asr-workspace-mib")
       integer = &parsed.asr_limits.workspace_mib;
+    if (key == "--aligner-max-audio-seconds")
+      integer = &parsed.aligner_limits.max_audio_seconds;
+    if (key == "--aligner-max-context-tokens")
+      integer = &parsed.aligner_limits.max_context_tokens;
+    if (key == "--aligner-max-words")
+      integer = &parsed.aligner_limits.max_words;
+    if (key == "--aligner-workspace-mib")
+      integer = &parsed.aligner_limits.workspace_mib;
     if (key == "--max-inflight-requests")
       integer = &parsed.max_inflight_requests;
     if (key == "--max-queued-requests") integer = &parsed.max_queued_requests;
@@ -287,18 +304,16 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.object_max_total_objects;
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
-        key != "--embedding-model-dir" &&
-        key != "--asr-model-dir" &&
-        key != "--mem-fraction" && key != "--moe-trace-dir" &&
-        key != "--moe-trace-workload" && key != "--moe-hot-list" &&
-        key != "--startup-plan" && key != "--mtp-subset-head" &&
-        key != "--seq-capacities" && key != "--session-cache-dir" &&
-        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
-        key != "--client-policy-file" &&
+        key != "--embedding-model-dir" && key != "--asr-model-dir" &&
+        key != "--aligner-model-dir" && key != "--mem-fraction" &&
+        key != "--moe-trace-dir" && key != "--moe-trace-workload" &&
+        key != "--moe-hot-list" && key != "--startup-plan" &&
+        key != "--mtp-subset-head" && key != "--seq-capacities" &&
+        key != "--session-cache-dir" && key != "--prefix-cache-dir" &&
+        key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
-        key != "--web-policy-file" &&
-        key != "--served-model-name" &&
+        key != "--web-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -369,6 +384,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.embedding_model_dir = value;
     } else if (key == "--asr-model-dir") {
       parsed.asr_model_dir = value;
+    } else if (key == "--aligner-model-dir") {
+      parsed.aligner_model_dir = value;
     } else if (key == "--served-model-name") {
       parsed.served_model_name = value;
     } else if (key == "--model-alias") {

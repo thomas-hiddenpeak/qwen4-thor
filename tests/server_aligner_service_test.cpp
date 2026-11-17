@@ -5,6 +5,8 @@
 #include "q4t/audio/aligner_config.h"
 #include "q4t/io/json.h"
 #include "q4t/server/aligner_assets.h"
+#include "q4t/server/server_options.h"
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/test.h"
 
 namespace {
@@ -149,5 +151,79 @@ Q4T_TEST(aligner_prompt_budget_marker_and_cancel_fail_atomically) {
   limits.max_words = 1;
   Q4T_CHECK(!BuildAlignerPrompt(kWords, 2, limits, Encode, &prompt));
   Q4T_CHECK(prompt.tokens == std::vector<int32_t>{42});
+  return true;
+}
+
+Q4T_TEST(aligner_classes_choose_first_bf16_maximum_with_true_row_stride) {
+  std::vector<uint16_t> logits(4 * C::kClasses, 0xbf80);  // -1.
+  logits[36] = logits[37] = 0x3f80;
+  logits[C::kClasses + 4999] = 0x4000;
+  logits[2 * C::kClasses + 1] = 0;  // 0 beats the other negative logits.
+  std::vector<uint32_t> classes;
+  Q4T_CHECK(SelectAlignerClasses(logits, 2, &classes));
+  Q4T_CHECK(classes == std::vector<uint32_t>({36, 4999, 1, 0}));
+  return true;
+}
+
+Q4T_TEST(aligner_classes_nonfinite_shape_and_cancel_preserve_prior_owner) {
+  std::vector<uint16_t> logits(2 * C::kClasses, 0);
+  std::vector<uint32_t> classes{42};
+  for (auto invalid : {uint16_t{0x7fc0}, uint16_t{0x7f80}, uint16_t{0xff80}}) {
+    logits.back() = invalid;
+    Q4T_CHECK(!SelectAlignerClasses(logits, 1, &classes));
+    Q4T_CHECK(classes == std::vector<uint32_t>{42});
+  }
+  logits.back() = 0;
+  int calls = 0;
+  Q4T_CHECK(
+      !SelectAlignerClasses(logits, 1, &classes, [&] { return ++calls == 2; }));
+  Q4T_CHECK(!SelectAlignerClasses(logits, 2, &classes));
+  Q4T_CHECK(!SelectAlignerClasses({}, 0, &classes));
+  Q4T_CHECK(classes == std::vector<uint32_t>{42});
+  return true;
+}
+
+Q4T_TEST(aligner_options_bind_optional_assets_and_preserve_atomic_limits) {
+  ServerOptions opts;
+  opts.model_dir = "/main-model";
+  const auto parse = [&](std::initializer_list<std::string_view> args) {
+    return ParseServerOptions({args.begin(), args.size()}, &opts);
+  };
+  Q4T_CHECK(!parse({"--aligner-model-dir", "/alignment"}));
+  Q4T_CHECK(opts.aligner_model_dir.empty());
+  Q4T_CHECK(
+      parse({"--asr-model-dir", "/asr", "--aligner-model-dir", "/alignment"}));
+  for (const char* path : {"relative", "/", "/a/", "/a//b", "/a/../b"})
+    Q4T_CHECK(!parse({"--aligner-model-dir", path}));
+  Q4T_CHECK(opts.aligner_model_dir == "/alignment");
+  Q4T_CHECK(
+      parse({"--aligner-max-audio-seconds", "400",
+             "--aligner-max-context-tokens", "8192", "--aligner-max-words",
+             "128", "--aligner-workspace-mib", "8192"}));
+  Q4T_CHECK(!parse({"--aligner-max-audio-seconds", "401"}));
+  Q4T_CHECK(!parse({"--aligner-max-words", "0"}));
+  Q4T_CHECK(!parse({"--aligner-workspace-mib", "8193"}));
+  Q4T_CHECK(opts.aligner_limits.max_audio_seconds == 400 &&
+            opts.aligner_limits.max_words == 128);
+  return true;
+}
+
+Q4T_TEST(aligner_capability_separates_configuration_and_unfinished_segments) {
+  for (bool enabled : {false, true}) {
+    q4t::io::Json root;
+    Q4T_CHECK(
+        q4t::io::ParseJson(ChatCapabilitiesJson("chat", false, true, 0, nullptr,
+                                                false, true, enabled),
+                           &root));
+    const auto* asr = root.Find("transcriptions");
+    const auto* alignment = asr ? asr->Find("alignment") : nullptr;
+    Q4T_CHECK(
+        alignment && alignment->GetBool("configured", !enabled) == enabled &&
+        alignment->GetString("profile") == kNativeAlignerProfile &&
+        alignment->GetString("weight_sha256") == kNativeAlignerWeightSha256);
+    Q4T_CHECK(asr->GetArray("remaining_native_work"));
+    Q4T_CHECK(root.GetBool("implementation_only", false));
+    Q4T_CHECK(!root.GetBool("release_attestation", true));
+  }
   return true;
 }

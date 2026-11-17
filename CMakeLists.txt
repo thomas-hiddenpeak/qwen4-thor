@@ -305,9 +305,13 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
   src/server/asr_response.cpp
+  src/server/asr_alignment_output.cpp
+  src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
+  src/server/chat_aligner_backend.cpp
+  src/server/chat_aligner_execution.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp

@@ -112,3 +112,16 @@ ICU词边界，属于明确的原生分词策略，不宣称与Nagisa/SoyNLP分�
 继续保留保护。资源估算含统一RAM中的staging/文件页/device，以及
 全时间槽logits，不能以权重另一个指针冒充容量卸载。实际完整资产
 和服务组合随后有界验证。默认rev276不变，全部master继续。
+
+## 实际请求与词时间戳/字幕开发组
+
+独立对齐加载接入共享GPU/slot/deadline/取消，内部额外输入通过
+原RPM下的ExtendPrompt预留并按实际计算计量。词级verbose JSON
+和SRT/VTT从真实分类/显式修复得到，字幕只在实际词边界分组。
+14项CPU/180秒、0GPU，覆盖分类/CLI/能力、输出/Unicode/时间边界、
+格式组合；必要隔离构建单列。实际GPU HTTP短验随后另冻结。
+
+审计发现标准segment还有tokens/avg_logprob/no_speech_prob等字段；
+词对齐模型不能提供其置信度。相关统计和VAD实际来源继续实现，
+默认segment请求当前仍待接入，不能把word-only候选当完整verbose
+或整项交付。VAD/说话人/全部master仍必做，默认rev276保持。

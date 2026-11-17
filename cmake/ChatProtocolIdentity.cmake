@@ -6,7 +6,10 @@ set(protocol_inputs
   include/q4t/server/asr_request.h
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h
+  include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
+  src/server/asr_alignment_output.cpp
+  src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_asr_execution.cpp
   include/q4t/audio/asr_config.h
@@ -159,6 +162,8 @@ set(protocol_inputs
   include/q4t/server/aligner_service.h
   src/server/aligner_service.cpp
   src/server/chat_asr_backend.cpp
+  src/server/chat_aligner_backend.cpp
+  src/server/chat_aligner_execution.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu
   src/server/responses_execution_moderation.cpp

@@ -85,6 +85,8 @@ ChatServer::~ChatServer() {
   embedding_ready_.store(false);
   release(d_asr_weights_, "shutdown.native_asr_weights");
   asr_health_.Released();
+  release(d_aligner_weights_, "shutdown.native_aligner_weights");
+  aligner_health_.Released();
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -362,6 +364,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.extra_fixed_bytes += asr.load_peak_bytes +
             uint64_t(opts.max_seq) * asr.request_device_bytes +
             uint64_t(admission.inflight) * asr.request_host_bytes;
+      }
+      if (!opts.aligner_model_dir.empty()) {
+        AlignerResourcePlan alignment;
+        s = PlanAlignerServiceResources(opts.aligner_limits, &alignment);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        // These are additional to ASR's resident weights and other requests.
+        breq.extra_fixed_bytes +=
+            alignment.load_peak_bytes +
+            uint64_t(opts.max_seq) * alignment.request_device_bytes +
+            uint64_t(admission.inflight) * alignment.request_host_bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -718,6 +733,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   asr_model_dir_ = opts.asr_model_dir;
   asr_limits_ = opts.asr_limits;
   asr_health_.Configure(!asr_model_dir_.empty());
+  aligner_model_dir_ = opts.aligner_model_dir;
+  aligner_limits_ = opts.aligner_limits;
+  aligner_health_.Configure(!aligner_model_dir_.empty());
+  if (!aligner_model_dir_.empty()) {
+    AlignerResourcePlan resources;
+    s = PlanAlignerServiceResources(aligner_limits_, &resources);
+    if (!s) return s;
+  }
   if (!asr_model_dir_.empty()) {
     AsrResourcePlan resources;
     s = PlanAsrServiceResources(asr_limits_, &resources);

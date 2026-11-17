@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Continue native timestamp compute, word segmentation, subtitle responses and service delivery; VAD/diarization/Chat audio/synthesis/Realtime and all media backends remain required.",
+      "next": "Qualify native word timestamps and subtitles through real HTTP; implement actual segment statistics/VAD and all remaining native audio/media, service and SDK tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2729,6 +2729,16 @@
         "full_checkpoint_reads": 0,
         "evidence": "evidence/serve-aligner-service-assets-20261117/README.md",
         "next": "Native ChatServer alignment integration, actual timestamps/subtitles and all required business/delivery"
+      },
+      "alignment_output_runtime_20261117": {
+        "state": "cpu_accepted_http_pending",
+        "evidence": "evidence/serve-aligner-output-runtime-20261117/README.md",
+        "cpu_tests": 14,
+        "seconds": 0.007777197752147913,
+        "gpu_actions": 0,
+        "candidate_engine_sha256": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
+        "published": false,
+        "remaining": "Real HTTP/SDK qualification, complete segment confidence and VAD producers, service integration and delivery; all other A10/master tasks continue."
       }
     },
     {

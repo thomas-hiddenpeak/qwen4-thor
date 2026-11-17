@@ -45,4 +45,8 @@ Status BuildAlignerPrompt(std::span<const audio::AlignerWord> words,
                           const AlignerServiceLimits& limits,
                           const AlignerEncode& encode, AlignerPrompt* out,
                           const std::function<bool()>& cancelled = {});
+// Exact BF16 argmax, first index on ties, finite trained-head values only.
+Status SelectAlignerClasses(std::span<const uint16_t> logits, size_t words,
+                            std::vector<uint32_t>* out,
+                            const std::function<bool()>& cancelled = {});
 }  // namespace q4t::server
