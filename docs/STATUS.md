@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
+恢复源码锚点未刷新。已逐项复审并补齐，
+[inventory与7种遗漏负控通过](evidence/serve-asr-inventory-20261117/README.md)，
+0GPU，原CI失败保留。路由/字段和门禁不变，继续最终CI及合main。
+
 [对齐运行时/词时间戳/字幕14项CPU](evidence/serve-aligner-output-runtime-20261117/README.md)
 通过（0.008秒、0GPU），独立CUDA候选构建零警告。已接入实际分类、
 取消/清理、累计配额和SRT/VTT；真实HTTP随后短验，默认rev276不变。
