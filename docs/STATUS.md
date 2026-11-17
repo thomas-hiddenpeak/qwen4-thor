@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频共享输入4CPU和2来源通过](evidence/serve-chat-audio-shared-input-20261118/README.md)。
+Batch与HTTP共持192MiB额度，执行前超限不调用模型；原始Batch
+驻留另计，共享副本不再按8在途重复。原资格启动预算FAIL保留，
+接着原未执行18项主/轻资格（2启动/900秒），不减少在途或辅助
+能力；默认rev296保持，托管交付及全部master继续。
+
 [Chat音频托管6CPU与2来源通过](evidence/serve-chat-audio-managed-cpu-20261118/README.md)，
 0GPU。接着固定2启动/18请求/900秒，同租约验证主/轻实际资格，
 保留media/embedding/ASR/对齐/VAD/说话人；默认rev296保持。

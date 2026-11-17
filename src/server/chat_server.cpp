@@ -364,13 +364,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
       }
       if (!opts.asr_model_dir.empty()) {
         AsrResourcePlan asr;
-        s = PlanAsrServiceResources(opts.asr_limits, &asr);
+        s = PlanAsrServiceResources(opts.asr_limits, &asr, opts.batch_workers);
         if (!s) return s;
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
         breq.extra_fixed_bytes +=
-            asr.load_peak_bytes +
+            asr.load_peak_bytes + asr.shared_host_bytes +
             uint64_t(opts.max_seq) * asr.request_device_bytes +
             uint64_t(admission.inflight) * asr.request_host_bytes;
       }

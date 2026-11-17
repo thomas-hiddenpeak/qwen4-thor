@@ -163,6 +163,7 @@ BatchRowResult ChatServer::RunBatchRequest(
     const io::Json& frozen_inputs, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
     std::shared_ptr<ClientRateLease> rate) {
+  const auto body = OutputJson(row.body);
   return ExecuteBatchEndpoint(
       control ? control->id() : "", client, permit, control,
       [&] {
@@ -172,7 +173,7 @@ BatchRowResult ChatServer::RunBatchRequest(
                               "batch_prepared_input_invalid");
             return;
           }
-          HandleEmbeddings(-1, OutputJson(row.body), control);
+          HandleEmbeddings(-1, body, control);
           return;
         }
         if (endpoint == "/v1/moderations") {
@@ -181,7 +182,7 @@ BatchRowResult ChatServer::RunBatchRequest(
                               "batch_prepared_input_invalid");
             return;
           }
-          HandleModerations(-1, OutputJson(row.body), control);
+          HandleModerations(-1, body, control);
           return;
         }
         const auto api = endpoint == "/v1/responses" ? GenerationApi::kResponse
@@ -201,10 +202,10 @@ BatchRowResult ChatServer::RunBatchRequest(
           return;
         }
         HandleChat(
-            -1, OutputJson(row.body), api, control, &frozen_inputs,
+            -1, body, api, control, &frozen_inputs,
             row.background_response ? &*row.background_response : nullptr);
       },
-      std::move(rate), endpoint);
+      std::move(rate), endpoint, &body_budget_, body.size());
 }
 
 }  // namespace q4t::server

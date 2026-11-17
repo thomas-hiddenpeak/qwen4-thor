@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "commands": {
+    "host": {
+      "returncode": 0,
+      "seconds": 0.0076539586298167706
+    },
+    "inventory": {
+      "returncode": 0,
+      "seconds": 0.2640077699907124
+    },
+    "contract": {
+      "returncode": 0,
+      "seconds": 0.1638796441257
+    }
+  },
+  "seconds": 0.43562365090474486,
+  "limits": {
+    "cpu_tests": 4,
+    "source_checks": 2,
+    "seconds": 180,
+    "gpu": 0
+  }
+}

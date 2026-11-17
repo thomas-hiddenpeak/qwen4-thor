@@ -1,0 +1,54 @@
+{
+  "limits": {
+    "starts": 2,
+    "chats": 18,
+    "controls": 2000,
+    "seconds": 900
+  },
+  "binary_sha256": "5b28801be5a58afe3a86728c19f428793ddc0a6defabca34ee4948df6b8b9928",
+  "source_commit": "8b3a1dff8b64c3bede01cc054e56ebcf708a14e3",
+  "profiles": {
+    "primary": {
+      "name": "native-managed-capacity-v2",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_tokens": 256,
+      "mtp_k": 3,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 2,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": true,
+      "request_deadline_ms": 1200000,
+      "allow_media": true
+    },
+    "light": {
+      "name": "native-managed-capacity-v2",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_tokens": 256,
+      "mtp_k": 3,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 2,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": false,
+      "request_deadline_ms": 1200000,
+      "allow_media": true
+    }
+  },
+  "chat_audio": true,
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c"
+  },
+  "original_plan_sha256": "26e93d161cb3655a5b224c725cb79c03607495da57185df96f8b4ee46fd7eda1"
+}
