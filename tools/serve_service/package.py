@@ -163,8 +163,15 @@ NATIVE_VAD = dict(profile='q4t-native-silero-vad-v1', model='silero-vad-16k',
     revision='066409f3d9db45a30d21dfcbf9147826ffdd7052',
     weight_sha256='c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1')
 VAD_LIMITS = dict(max_chunks=64)
+NATIVE_SPEAKER = dict(profile='q4t-native-ecapa-speaker-v1',
+    model='speechbrain-ecapa-voxceleb',
+    revision='0f99f2d0ebe89ac095bcc5903c4dd8f72b367286',
+    weight_sha256='901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af')
+SPEAKER_LIMITS = dict(window_ms=3000, step_ms=750, max_windows=256,
+                      max_speakers=16, workspace_mib=128)
 ASR_AUXILIARY = dict(alignment=(NATIVE_ALIGNMENT, ALIGNER_LIMITS, 'aligner'),
-                     vad=(NATIVE_VAD, VAD_LIMITS, 'vad'))
+                     vad=(NATIVE_VAD, VAD_LIMITS, 'vad'),
+                     speaker=(NATIVE_SPEAKER, SPEAKER_LIMITS, 'speaker'))
 
 
 def audio_asset_directory(path):
@@ -177,6 +184,8 @@ def audio_asset_directory(path):
 def asr_auxiliary_settings(value):
     require(type(value) is dict and value.keys() <= ASR_AUXILIARY.keys(),
             'invalid optional ASR backend inventory')
+    require('speaker' not in value or {'alignment', 'vad'} <= value.keys(),
+            'speaker requires alignment and VAD backends')
     result = {}
     for name, selected in value.items():
         fixed, defaults, _ = ASR_AUXILIARY[name]
@@ -194,11 +203,25 @@ def asr_auxiliary_settings(value):
                 64 <= limits['workspace_mib'] <= 8192 and
                 limits['max_audio_seconds']*13 + 2 + limits['max_words']*3 <=
                     limits['max_context_tokens'], 'invalid alignment capacity')
-        else:
+        elif name == 'vad':
             require(1 <= limits['max_chunks'] <= 256, 'invalid VAD chunk capacity')
+        else:
+            require(1000 <= limits['window_ms'] <= 30000 and
+                100 <= limits['step_ms'] <= limits['window_ms'] and
+                1 <= limits['max_windows'] <= 1024 and
+                1 <= limits['max_speakers'] <= 64 and
+                16 <= limits['workspace_mib'] <= 1024,
+                'invalid speaker capacity')
         result[name] = copy.deepcopy(selected)
     # No stat/read of optional assets: only a request may load the backend.
     return result
+
+
+def asr_auxiliary_observed_limits(configuration, name):
+    require(name in ASR_AUXILIARY, 'unknown audio auxiliary limits')
+    if name == 'vad':
+        return dict(max_chunks=configuration.get('native_vad_max_chunks'))
+    return configuration.get('native_'+name+'_limits')
 
 
 def add_asr_auxiliary_options(parser):
@@ -900,8 +923,7 @@ def check_asr_declaration(metadata, selected):
                     'package drops configured optional audio backend: '+name)
             continue
         health = configuration.get('native_'+name+'_health', {})
-        actual_limits = (configuration.get('native_alignment_limits') if name == 'alignment'
-                         else dict(max_chunks=configuration.get('native_vad_max_chunks')))
+        actual_limits = asr_auxiliary_observed_limits(configuration, name)
         require(declared.get('configured') is True and
                 all(declared.get(k) == v for k,v in fixed.items()) and
                 health.get('model') == fixed['model'] and

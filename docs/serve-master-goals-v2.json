@@ -3180,6 +3180,25 @@
         "long_stability_run": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-speaker-http-20261118/README.md"
+      },
+      "speaker_package_recovery_cpu_20261118": {
+        "status": "ACCEPT_SPEAKER_PACKAGE_RECOVERY_CPU",
+        "unique_cases": 27,
+        "original_passes": 26,
+        "original_failures": 1,
+        "repaired_cases": 1,
+        "original_seconds": 1.4656309648416936,
+        "repair_seconds": 0.5145824407227337,
+        "gpu_starts": 0,
+        "http_requests": 0,
+        "defaults_unchanged": true,
+        "repair_scope": "Only CPU assertion: logical clock and cooldown preserved; monotonic observation updated. Runtime unchanged.",
+        "reused_original_passes": 26,
+        "service_gpu_acceptance_pending": true,
+        "default_revision": 286,
+        "overlap_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-package-recovery-cpu-20261118/README.md"
       }
     },
     {

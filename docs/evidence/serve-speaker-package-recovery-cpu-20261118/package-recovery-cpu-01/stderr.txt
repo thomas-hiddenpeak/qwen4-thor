@@ -1,0 +1,48 @@
+test_cli_preserves_explicit_auxiliary_settings_and_rejects_orphan_limits (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_cli_preserves_explicit_auxiliary_settings_and_rejects_orphan_limits) ... ok
+test_identity_paths_and_capacity_are_strict_and_copied (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_identity_paths_and_capacity_are_strict_and_copied) ... ok
+test_observed_identity_limits_health_and_no_silent_backend_loss (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_observed_identity_limits_health_and_no_silent_backend_loss) ... ok
+test_orphan_auxiliary_settings_do_not_prepare_partial_package (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_orphan_auxiliary_settings_do_not_prepare_partial_package) ... ok
+test_portable_missing_assets_and_every_actual_command_limit (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_portable_missing_assets_and_every_actual_command_limit) ... ok
+test_real_speaker_observation_binds_every_budget_and_isolation (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_real_speaker_observation_binds_every_budget_and_isolation) ... ok
+test_speaker_cli_keeps_explicit_settings_and_rejects_detached_limits (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_speaker_cli_keeps_explicit_settings_and_rejects_detached_limits) ... ok
+test_speaker_requires_its_actual_dependencies_before_creating_package (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_speaker_requires_its_actual_dependencies_before_creating_package) ... ok
+test_speaker_windows_step_and_all_five_capacity_boundaries (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_speaker_windows_step_and_all_five_capacity_boundaries) ... ok
+test_unconfigured_speaker_does_not_rewrite_legacy_package_settings (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_unconfigured_speaker_does_not_rewrite_legacy_package_settings) ... ok
+test_actual_retained_primary_light_allow_only_explicit_complete_format_extension (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_actual_retained_primary_light_allow_only_explicit_complete_format_extension) ... ok
+test_all_auxiliary_paths_relocate_but_fixed_models_and_limits_remain_bound (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_all_auxiliary_paths_relocate_but_fixed_models_and_limits_remain_bound) ... ok
+test_automatic_same_features_work_and_removal_or_unsealed_addition_fail (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_automatic_same_features_work_and_removal_or_unsealed_addition_fail) ... ok
+test_deployment_preserves_accepted_auxiliary_models_and_allows_directory_moves (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_deployment_preserves_accepted_auxiliary_models_and_allows_directory_moves) ... ok
+test_explicit_auxiliary_addition_keeps_history_pending_and_all_wait (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_explicit_auxiliary_addition_keeps_history_pending_and_all_wait) ... ok
+test_explicit_vad_capacity_change_retains_original_qualification_and_wait (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_explicit_vad_capacity_change_retains_original_qualification_and_wait) ... ok
+test_native_cli_and_both_profile_commands_keep_all_auxiliary_limits (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_native_cli_and_both_profile_commands_keep_all_auxiliary_limits) ... ok
+test_pending_declarations_become_proven_additions_without_losing_features (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_pending_declarations_become_proven_additions_without_losing_features) ... ok
+test_qualification_requires_auxiliary_business_and_exact_declared_capacity (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_qualification_requires_auxiliary_business_and_exact_declared_capacity) ... ok
+test_real_multiclip_witness_rejects_missing_times_tokens_stats_health_and_source (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_real_multiclip_witness_rejects_missing_times_tokens_stats_health_and_source) ... ok
+test_actual_recurring_voice_witness_rejects_fake_labels_times_usage_and_health (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_actual_recurring_voice_witness_rejects_fake_labels_times_usage_and_health) ... ok
+test_automatic_recovery_cannot_drop_speaker_or_change_its_budget (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_automatic_recovery_cannot_drop_speaker_or_change_its_budget) ... ok
+test_explicit_speaker_addition_preserves_history_pending_and_cooldown (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown) ... FAIL
+test_native_cli_and_primary_light_commands_keep_speaker_budget_and_audio_count (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_native_cli_and_primary_light_commands_keep_speaker_budget_and_audio_count) ... ok
+test_qualification_requires_speaker_work_and_bound_backend (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_qualification_requires_speaker_work_and_bound_backend) ... ok
+test_speaker_budget_migration_is_explicit_and_keeps_consumed_state (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_speaker_budget_migration_is_explicit_and_keeps_consumed_state) ... ok
+test_legacy_binding_is_unchanged_and_new_binding_excludes_only_path (tools.serve_recovery.test_asr_profiles.AsrProfiles.test_legacy_binding_is_unchanged_and_new_binding_excludes_only_path) ... ok
+
+======================================================================
+FAIL: test_explicit_speaker_addition_preserves_history_pending_and_cooldown (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_speaker_profiles.py", line 108, in test_explicit_speaker_addition_preserves_history_pending_and_cooldown
+    self.assertEqual(result[key], pending[key])
+AssertionError: {'boo[42 chars]b8', 'monotonic_ns': 999999000000000, 'logical_ns': 1000000000} != {'boo[42 chars]b8', 'monotonic_ns': 1000000000, 'logical_ns': 1000000000}
+  {'boot_id': '00e67b9f-caa9-4e44-8ac0-6af595e6b2b8',
+   'logical_ns': 1000000000,
+-  'monotonic_ns': 999999000000000}
+?                  ^^^^^^
+
++  'monotonic_ns': 1000000000}
+?                  ^
+
+
+----------------------------------------------------------------------
+Ran 27 tests in 1.009s
+
+FAILED (failures=1)

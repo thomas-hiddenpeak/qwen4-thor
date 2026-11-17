@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+下一组主轻资格固定2启动/16创建/900秒、同一严格租约；两种
+配置各做真实A/B/A、ASR/对齐/VAD与核心工具/schema/embedding/
+视频保护。通过后封包继续TLS/恢复交付、真实重叠及全部master，
+默认rev286保持。
+
+[说话人服务/恢复27CPU闭合](evidence/serve-speaker-package-recovery-cpu-20261118/README.md)，
+0GPU/HTTP。首轮26过/1测试时钟断言失败保留，修正后仅重验该项
+通过；固定身份/预算、实际A/B/A资格、迁移与自动回退保全均通过。
+继续主轻/TLS/恢复交付、真实重叠和全部master；默认rev286保持。
+
+正在补说话人服务包与恢复资格，冻结27CPU/180秒、0GPU/HTTP；
+固定身份/5项预算、实际A/B/A业务资格、显式迁移与自动回退不丢
+能力。之后主轻/TLS/整包恢复交付及重叠路径、全部master继续；
+默认rev286保持。已过真实HTTP和ECAPA数值复用。
+
 [真实说话人HTTP通过](evidence/serve-speaker-http-20261118/README.md)：
 1启动/10创建/60.647秒，A/A、A/B/A与参考first/second/first，
 双SDK/JSON/SSE、局部故障同PID恢复、容量/取消/静音和核心保护

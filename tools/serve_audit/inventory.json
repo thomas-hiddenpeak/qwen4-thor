@@ -1547,8 +1547,8 @@
       ]
     },
     "POST /v1/audio/transcriptions": {
-      "semantics": "显式配置qwen3-asr-0.6b资产后执行原生转录；multipart真实音频、language/prompt/keywords/languages、temperature、JSON/text及独立转录SSE，实际token概率与用量。",
-      "boundary": "本轮为服务候选，34项针对性CPU已完成；HTTP/SDK证据待补；对齐/字幕/说话人/VAD执行器仍待实现，asr_executor_pending不是兼容完成；独立辅助健康不连累正常核心，真实CUDA故障仍保护。",
+      "semantics": "原生ASR、实际词/segment对齐、字幕、Silero VAD分块及ECAPA说话人分段/参考匹配；multipart、JSON/text/verbose/diarized与独立SSE，实际usage，辅助健康独立。",
+      "boundary": "ASR/对齐/VAD已交付rev286并合main；说话人同人/换人回访/参考命名、双SDK、隔离与取消直接HTTP已过，服务包/主轻/原生TLS/恢复及默认交付继续。重叠检测分离、Chat音频/合成/Realtime仍为实现任务，不能以当前待办声明结案。",
       "evidence": [
         "docs/SERVE_NATIVE_AUDIO_2026-11-17.md",
         "src/server/chat_asr.cpp",
@@ -1558,7 +1558,11 @@
         "tests/server_asr_protocol_test.cpp",
         "docs/evidence/serve-asr-service-cpu-20261117/README.md",
         "tests/server_http_request_test.cpp",
-        "tests/server_client_policy_test.cpp"
+        "tests/server_client_policy_test.cpp",
+        "src/server/chat_speaker_backend.cpp",
+        "src/server/chat_speaker_execution.cpp",
+        "src/server/chat_speaker_turns.cpp",
+        "docs/evidence/serve-speaker-http-20261118/README.md"
       ]
     }
   },
@@ -2897,17 +2901,17 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "097392550ec1d1b859d55a2dfb06657333cf110103a0127a63e26906ea87430b",
+    "tools/serve_recovery/profile_acceptance.py": "45d452aeda3730e1370d9cc05e4c801684f22c37d73c388a5d7dbd3ae25f2816",
     "tools/serve_recovery/profile_bundle.py": "0d65db217da16d70f43e48fadf6ea8654014a4eb80122d3e77fe8450d7b5e05c",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "70e0c2f619f7c094148ce7c1df2044dde1b846f93637b940bd3fd4f59569dc91",
     "tools/serve_recovery/profile_controller.py": "a70ce817523614ed78121e9206312971f843125cb95fbeefe393888b7c29f2c5",
-    "tools/serve_recovery/profile_evidence.py": "13a391c83a5774ec88d114cc441cd3c61cba9c724e82281320f3db5e6d96bc48",
+    "tools/serve_recovery/profile_evidence.py": "fdd269229d0b8a0e3688967a1a6aa5a1d1423ad7651829844dc7feb4c53325c3",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "c34f99a4103f8b044abb25ff491d0aaf3f220db09dc41be34bb91a834b77a03c",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "9950bea801e1adf2bf4b9930a34274615827d0aef2c2f16811e619db1d628476",
+    "tools/serve_recovery/profile_migration.py": "9283c4d3ee7dc4204ed1635decfd2c95d3b05b51eecbe4eee242465e92172a26",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -2974,7 +2978,7 @@
     "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "09fa16a0b6501d0c09978571d342c8045a913fe818c32faa1c6e27c92c8fd64e",
+    "tools/serve_service/package.py": "3d9d3e2145a83e4f175987224d92fdb862e00e44bb9c78b96a24ce62ba7602c7",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",

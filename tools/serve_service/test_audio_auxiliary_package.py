@@ -34,6 +34,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
                                                     core_readiness_dependency=False)
         config['native_alignment_limits'] = dict(pkg.ALIGNER_LIMITS)
         config['native_vad_max_chunks'] = 64
+        config['native_speaker_limits'] = dict(pkg.SPEAKER_LIMITS)
         metadata['chat_protocol']['transcriptions'] = caps['transcriptions']
         for name, value in [('capabilities.json', caps), ('configuration.json', config)]:
             pkg.save(root/name, value);declarations['files'][name] = pkg.sha(root/name)
@@ -93,6 +94,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
             bad['observed_configuration']['native_'+name+'_health']['state'] = 'disabled'
             with self.assertRaises(RuntimeError): pkg.check_asr_declaration(bad, selected)
             dropped = copy.deepcopy(selected);del dropped[name]
+            if name in ('alignment', 'vad'): dropped.pop('speaker', None)
             with self.assertRaisesRegex(RuntimeError, 'drops configured'):
                 pkg.check_asr_declaration(metadata, dropped)
         bad = copy.deepcopy(metadata)
@@ -131,6 +133,78 @@ class AudioAuxiliaryPackage(unittest.TestCase):
              self.assertRaisesRegex(RuntimeError, 'limits require its model directory'):
             service.main()
         prepare.assert_not_called()
+
+    def test_speaker_requires_its_actual_dependencies_before_creating_package(self):
+        binary, release, model = self.audio_fixture()
+        for dependency in ('alignment', 'vad'):
+            auxiliary = self.auxiliary();del auxiliary[dependency]
+            output = self.root/('missing-'+dependency)
+            with self.assertRaisesRegex(RuntimeError, 'speaker requires'):
+                pkg.prepare(binary, release, model, output,
+                    asr_model_dir=Path(self.selected()['directory']), asr_auxiliary=auxiliary)
+            self.assertFalse(output.exists())
+
+    def test_speaker_windows_step_and_all_five_capacity_boundaries(self):
+        value = dict(self.selected(), **self.auxiliary())
+        for name, invalid in [('window_ms',999), ('window_ms',30001),
+                ('step_ms',99), ('step_ms',3001), ('max_windows',0),
+                ('max_windows',1025), ('max_speakers',0), ('max_speakers',65),
+                ('workspace_mib',15), ('workspace_mib',1025), ('window_ms',True)]:
+            bad = copy.deepcopy(value);bad['speaker']['limits'][name] = invalid
+            with self.subTest(name=name, value=invalid), self.assertRaises(RuntimeError):
+                pkg.asr_settings(bad)
+        for low in (True, False):
+            accepted = copy.deepcopy(value)
+            accepted['speaker']['limits'] = dict(window_ms=1000 if low else 30000,
+                step_ms=100 if low else 30000, max_windows=1 if low else 1024,
+                max_speakers=1 if low else 64, workspace_mib=16 if low else 1024)
+            self.assertEqual(pkg.asr_settings(accepted), accepted)
+
+    def test_real_speaker_observation_binds_every_budget_and_isolation(self):
+        root = Path(__file__).resolve().parents[2]/'docs/evidence/serve-speaker-http-20261118'
+        config = pkg.read(root/'config.json');caps = pkg.read(root/'capabilities.json')
+        native = dict(self.selected(), **self.auxiliary())
+        native['limits'] = config['native_asr_limits']
+        for name in pkg.ASR_AUXILIARY:
+            native[name]['limits'] = pkg.asr_auxiliary_observed_limits(config, name)
+        metadata = dict(chat_protocol=caps, observed_configuration=config)
+        pkg.check_asr_declaration(metadata, native)
+        for key in pkg.SPEAKER_LIMITS:
+            bad = copy.deepcopy(metadata)
+            bad['observed_configuration']['native_speaker_limits'][key] += 1
+            with self.assertRaises(RuntimeError): pkg.check_asr_declaration(bad, native)
+        bad = copy.deepcopy(metadata)
+        bad['observed_configuration']['native_speaker_health']['core_readiness_dependency'] = True
+        with self.assertRaises(RuntimeError): pkg.check_asr_declaration(bad, native)
+
+    def test_speaker_cli_keeps_explicit_settings_and_rejects_detached_limits(self):
+        args = ['service.py','prepare','--model-dir','/model','--output',str(self.root/'pack'),
+            '--asr-model-dir','/audio','--aligner-model-dir','/align','--vad-model-dir','/vad',
+            '--speaker-model-dir','/speaker','--speaker-max-windows','8',
+            '--speaker-window-ms','2000','--speaker-step-ms','500',
+            '--speaker-max-speakers','4','--speaker-workspace-mib','128']
+        with mock.patch.object(sys, 'argv', args), \
+             mock.patch.object(pkg, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            service.main()
+        entry = prepare.call_args.kwargs['asr_auxiliary']['speaker']
+        self.assertEqual(entry, dict(pkg.NATIVE_SPEAKER, directory='/speaker',
+            limits=dict(window_ms=2000, step_ms=500, max_windows=8,
+                        max_speakers=4, workspace_mib=128)))
+        args = args[:args.index('--speaker-model-dir')] + ['--speaker-max-windows','8']
+        with mock.patch.object(sys, 'argv', args), mock.patch.object(pkg, 'prepare') as prepare, \
+             self.assertRaisesRegex(RuntimeError, 'limits require its model directory'):
+            service.main()
+        prepare.assert_not_called()
+
+    def test_unconfigured_speaker_does_not_rewrite_legacy_package_settings(self):
+        value = dict(self.selected(), **self.auxiliary());del value['speaker']
+        accepted = pkg.asr_settings(value)
+        self.assertEqual(accepted, value)
+        self.assertNotIn('speaker', accepted)
+        value['speaker'] = copy.deepcopy(self.auxiliary()['speaker'])
+        with mock.patch.object(Path, 'stat', side_effect=AssertionError('must not read optional assets')):
+            self.assertEqual(pkg.asr_settings(value), value)
 
 
 if __name__ == '__main__':
