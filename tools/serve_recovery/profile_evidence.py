@@ -8,12 +8,72 @@ from tools.serve_recovery import ledger, profile_contract
 
 FORMAT = 'q4t-profile-business-v1'
 MEDIA_FORMAT = 'q4t-profile-business-v2'
+ASR_FORMAT = 'q4t-profile-business-v3'
+ASR_FILE_SHA = '46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50'
+ASR_TEXT = '甚至出现交易几乎停滞的情况。'
 MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
-def format_for(profile):
+def format_for(profile, identity=None):
+    if (identity or {}).get('native_asr') is not None:
+        return ASR_FORMAT
     return MEDIA_FORMAT if profile.get('allow_media', False) else FORMAT
+
+
+def audio_business(value, identity):
+    """Require actual fixed audio, native text, token usage and ready state."""
+    from tools.serve_service import package
+    ledger.keys(value, ('source_base64', 'request', 'response', 'health', 'limits'))
+    ledger.require(type(value['source_base64']) is str and
+                   len(value['source_base64']) <= 1024*1024,
+                   'invalid qualified ASR source size')
+    try:
+        raw = base64.b64decode(value['source_base64'], validate=True)
+    except (ValueError, TypeError) as error:
+        raise ValueError('invalid qualified ASR source encoding') from error
+    ledger.require(hashlib.sha256(raw).hexdigest() == ASR_FILE_SHA,
+                   'qualified ASR source differs')
+    fixed = identity['native_asr']
+    ledger.require(package.same_json(value['request'], dict(model=fixed['model'],
+        response_format='json', include=['logprobs'])), 'qualified ASR request differs')
+    ledger.require(package.same_json(value['limits'], fixed['limits']),
+                   'qualified ASR effective limits differ')
+    health = value['health']
+    ledger.require(type(health) is dict and health.get('model') == fixed['model'] and
+        health.get('state') == 'ready' and health.get('reason') == 'none' and
+        health.get('core_readiness_dependency') is False and
+        ledger.integer(health.get('compute_failures')) and
+        health['compute_failures'] == 0, 'qualified ASR is not healthy/isolated')
+    response = value['response']
+    ledger.require(type(response) is dict and response.get('text') == ASR_TEXT,
+                   'qualified ASR did not transcribe actual audio')
+    usage = response.get('usage', {})
+    ledger.require(type(usage) is dict and usage.get('type') == 'tokens' and all(
+        ledger.integer(usage.get(k), minimum=1) for k in
+        ('input_tokens', 'output_tokens', 'total_tokens')) and
+        usage['input_tokens']+usage['output_tokens'] == usage['total_tokens'] and
+        usage['output_tokens'] <= fixed['limits']['max_output_tokens'] and
+        usage['total_tokens'] <= fixed['limits']['max_context_tokens'],
+        'qualified ASR actual usage missing')
+    details = usage.get('input_token_details', {})
+    ledger.require(type(details) is dict and
+        ledger.integer(details.get('audio_tokens'), minimum=1) and
+        ledger.integer(details.get('text_tokens'), minimum=1) and
+        details['audio_tokens']+details['text_tokens'] == usage['input_tokens'],
+        'qualified ASR input usage differs')
+    logs = response.get('logprobs')
+    ledger.require(type(logs) is list and 0 < len(logs) <= usage['output_tokens'],
+                   'qualified ASR probabilities missing')
+    for row in logs:
+        ledger.require(type(row) is dict and type(row.get('token')) is str and
+            type(row.get('logprob')) in (int, float) and
+            math.isfinite(row['logprob']) and row['logprob'] <= 0 and
+            type(row.get('bytes')) is list and 0 < len(row['bytes']) <= 4096 and
+            all(ledger.integer(b) and b <= 255 for b in row['bytes']),
+            'invalid qualified ASR probability')
+    ledger.require(bytes(b for row in logs for b in row['bytes']) == ASR_TEXT.encode(),
+                   'qualified ASR probabilities do not cover the actual text')
 
 
 def media_request(data):
@@ -72,9 +132,12 @@ def message(response, finish):
 def business(value, identity, selected=None):
     media = (selected or {}).get('allow_media', False)
     ledger.keys(value, ('schema', 'tool_call', 'tool_result', 'tool_reply',
-                       'tool_source', 'embedding') + (('media',) if media else ()))
+                       'tool_source', 'embedding') + (('media',) if media else ()) +
+                       (('asr',) if identity.get('native_asr') is not None else ()))
     if media:
         media_business(value['media'])
+    if identity.get('native_asr') is not None:
+        audio_business(value['asr'], identity)
     schema = message(value['schema'], 'stop')
     ledger.require(json.loads(schema['content']) == {'answer': 42},
                    'profile structured business differs')
@@ -120,7 +183,8 @@ def validate(value, registry, name, digest):
     ledger.keys(value, ('format', 'profile', 'identity', 'capacity', 'capabilities',
         'configuration', 'startup_memory', 'business', 'environment'))
     profile_contract.validate(registry)
-    ledger.require(value['format'] == format_for(registry['profiles'][name]) and
+    ledger.require(value['format'] == format_for(registry['profiles'][name],
+                                                registry['identity']) and
         value['profile'] == name and
         value['identity'] == registry['identity'] and
         value['capacity'] == registry['profiles'][name], 'profile evidence identity differs')

@@ -48,7 +48,8 @@ def capability_pair(primary, light):
     return ledger.digest(first)
 
 
-def binding(binary, protocol, model_files, model_assets, native_embedding=None):
+def binding(binary, protocol, model_files, model_assets, native_embedding=None,
+            native_asr=None):
     """Asset paths can relocate; actual fixed model identities cannot change."""
     for value in (binary, protocol):
         ledger.require(type(value) is str and ledger.HASH.fullmatch(value),
@@ -80,9 +81,14 @@ def binding(binary, protocol, model_files, model_assets, native_embedding=None):
     if native_embedding is not None:
         package.embedding_settings(native_embedding)
         native = {key:native_embedding[key] for key in package.NATIVE_EMBEDDING}
-    return dict(binary_sha256=binary, protocol_sha256=protocol,
+    result = dict(binary_sha256=binary, protocol_sha256=protocol,
                 model_files=copy.deepcopy(model_files),
                 model_assets=copy.deepcopy(model_assets), native_embedding=native)
+    if native_asr is not None:
+        selected = package.asr_settings(native_asr)
+        result['native_asr'] = {k:copy.deepcopy(v) for k,v in selected.items()
+                                if k != 'directory'}
+    return result
 
 
 def configuration(profile, observed):
@@ -115,16 +121,22 @@ def startup_memory(value):
 
 
 def identity(value):
+    ledger.require(type(value) is dict, 'invalid qualified identity')
     ledger.keys(value, ('binary_sha256', 'protocol_sha256', 'model_files',
-                       'model_assets', 'native_embedding'))
+                       'model_assets', 'native_embedding',
+                       *(('native_asr',) if 'native_asr' in value else ())))
     native = value['native_embedding']
     # The qualification omits deployment paths; reuse fixed-asset validation
     # with a synthetic absolute path without reading any file.
     if native is not None:
         ledger.keys(native, package.NATIVE_EMBEDDING)
         native = dict(native, directory='/qualified/assets')
+    asr = value.get('native_asr')
+    if 'native_asr' in value:
+        ledger.keys(asr, (*package.NATIVE_ASR, 'limits'))
+        asr = dict(asr, directory='/qualified/asr-assets')
     return binding(value['binary_sha256'], value['protocol_sha256'],
-                   value['model_files'], value['model_assets'], native)
+                   value['model_files'], value['model_assets'], native, asr)
 
 
 def qualification(name, selected, fixed, capability, observed, memory, evidence):
@@ -144,6 +156,16 @@ def qualification(name, selected, fixed, capability, observed, memory, evidence)
                        'qualified media capability differs')
     ledger.require(capability.get('protocol_source_sha256') ==
                    fixed['protocol_sha256'], 'qualified protocol observation differs')
+    asr = fixed.get('native_asr')
+    declared = capability.get('transcriptions', {})
+    ledger.require(type(declared) is dict, 'invalid qualified ASR capability')
+    if asr is not None:
+        ledger.require(declared.get('configured') is True and
+            all(declared.get(k) == asr[k] for k in package.NATIVE_ASR),
+            'qualified ASR backend identity differs')
+    else:
+        ledger.require(declared.get('configured') is not True,
+                       'configured ASR backend lacks a qualification binding')
     ledger.require(type(evidence) is str and ledger.HASH.fullmatch(evidence),
                    'invalid retained qualification evidence digest')
     return dict(profile=name, identity_sha256=ledger.digest(fixed),

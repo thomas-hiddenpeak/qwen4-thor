@@ -235,6 +235,9 @@ def prepare(args):
         repository=Path(old['repository']),
         capacity_config=capacity, application_state=application, model_names=settings.get('model_names'),
         embedding_model_dir=Path(settings['native_embedding']['directory']),
+        asr_model_dir=(Path(settings['native_asr']['directory'])
+                       if settings.get('native_asr') else None),
+        asr_limits=settings.get('native_asr', {}).get('limits'),
         recovery_profiles=qualified/'registry.json', recovery_profile_policy=old['recovery_profile_policy'])
     previous = engine.read(args.registration)
     accepted = previous['fallback_acceptance']

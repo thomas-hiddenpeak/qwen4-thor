@@ -89,6 +89,9 @@ def prepare(args):
         native_receipt=out/'native-build.json',native_ingress=origin/'bin/q4t-ingress',
         capacity_config=capacity,application_state=application,model_names=settings.get('model_names'),
         embedding_model_dir=Path(settings['native_embedding']['directory']),
+        asr_model_dir=(Path(settings['native_asr']['directory'])
+                       if settings.get('native_asr') else None),
+        asr_limits=settings.get('native_asr', {}).get('limits'),
         recovery_profiles=qualified/'registry.json',recovery_profile_policy=old['recovery_profile_policy'])
     fallback=profile_compat.prepare(origin,old_sha,out/'retained-fallback')
     root=dict(package=receipt['package'],manifest_sha256=receipt['manifest_sha256'])

@@ -2,10 +2,12 @@
 
 Two starts, six Chat and two native embedding requests under one strict lease.
 Media profiles additionally require one actual video request on each profile.
+Configured ASR additionally requires one actual audio request on each profile.
 Final qualification is constructed only after guard exit and complete cleanup.
 This does not enable deployment or certify automatic managed profile switching.
 """
 import argparse
+import base64
 import copy
 import fcntl
 import hashlib
@@ -34,9 +36,10 @@ DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
 SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
-def limits_for(profile):
+def limits_for(profile, native_asr=None):
     capacity.validate(profile)
-    return dict(LIMITS, chats=10 if profile.get('allow_media', False) else 8)
+    return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
+                (2 if native_asr is not None else 0))
 
 
 def requests(media=False):
@@ -131,15 +134,23 @@ def prepare(args):
     engine = args.package.resolve()/'engine'
     base = read(engine/'manifest.json')
     manifest = read(engine.parent/'manifest.json')
+    asr_path = getattr(args, 'asr_config', None)
+    asr = package.asr_settings(read(asr_path)) if asr_path else \
+        base['settings'].get('native_asr')
+    if asr is not None:
+        base['settings']['native_asr'] = asr
     selected_path = getattr(args, 'capacity_config', None)
     selected = capacity.normalize(read(selected_path)) if selected_path else \
         capacity.validate(base['settings']['profile'])
     profiles = profile_contract.profiles(selected)
     media = selected.get('allow_media', False)
-    limits = limits_for(selected)
+    limits = limits_for(selected, asr)
     background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
+    if asr_path:
+        asr_path = asr_path.resolve(strict=True)
+        plan['sources'][str(asr_path)] = sha(asr_path)
     if selected_path:
         selected_path = selected_path.resolve(strict=True)
         plan['sources'][str(selected_path)] = sha(selected_path)
@@ -181,7 +192,8 @@ def prepare(args):
             'qualification must use a private application directory')
     plan.update(base=base, profiles=profiles,
         identity=profile_contract.binding(base['files']['q4t'], base['protocol_sha256'],
-            base['model_files'], manifest['model_assets'], base['settings']['native_embedding']))
+            base['model_files'], manifest['model_assets'], base['settings']['native_embedding'],
+            asr))
     plan['sources'][DOCUMENT] = sha(ROOT/DOCUMENT)
     if media:
         plan['sources'][profile_evidence.MEDIA_FILE] = sha(ROOT/profile_evidence.MEDIA_FILE)
@@ -189,6 +201,22 @@ def prepare(args):
     assets = Path(base['settings']['native_embedding']['directory'])
     plan['native_assets'] = {str(assets/name):sha(assets/name) for name in
                             ['config.json', 'tokenizer.json', 'model.safetensors']}
+    if asr is not None:
+        clip = getattr(args, 'asr_audio', None)
+        require(clip is not None, 'ASR qualification needs its fixed real audio')
+        clip = clip.resolve(strict=True)
+        require(sha(clip) == profile_evidence.ASR_FILE_SHA,
+                'ASR qualification audio differs')
+        plan['asr_audio'] = dict(path=str(clip), sha256=sha(clip))
+        plan['sources'][str(clip)] = sha(clip)
+        directory = Path(asr['directory'])
+        for name in ['config.json', 'preprocessor_config.json',
+                     'generation_config.json', 'vocab.json', 'merges.txt',
+                     'tokenizer_config.json', 'model.safetensors']:
+            asset = directory/name
+            # Reading all weights belongs inside the strict stage lease.
+            plan['native_assets'][str(asset)] = package.NATIVE_ASR['weight_sha256'] \
+                if name == 'model.safetensors' else sha(asset)
     for name in ('access-program-policy.json', 'file-input-policy.json',
                  'mcp-policy.json', 'web-policy.json'):
         if (engine/name).is_file():
@@ -197,6 +225,8 @@ def prepare(args):
     plan['planned'] = dict(starts=2, requests=limits['chats'], chats=6,
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
+    if asr is not None:
+        plan['planned']['native_transcriptions'] = 2
     plan['mutations'] = ['gracefully stop owned primary after its bounded business',
         'start only qualified light command in same lease/private directory',
         'default deployment and its state remain untouched']
@@ -214,7 +244,7 @@ class Stage(encrypted.Stage):
 
     def __init__(self, plan):
         selected = plan['profiles']['primary']
-        self.limits = limits_for(selected)
+        self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'))
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
 
@@ -263,6 +293,48 @@ class Stage(encrypted.Stage):
         self.drained(label+'-drain')
         return result
 
+    def audio_request(self):
+        label = self.profile_name+'-asr'
+        selected = self.plan['base']['settings']['native_asr']
+        clip = self.plan['asr_audio']
+        raw = Path(clip['path']).read_bytes()
+        require(hashlib.sha256(raw).hexdigest() == clip['sha256'], 'ASR source drift')
+        request = dict(model=selected['model'], response_format='json', include=['logprobs'])
+        boundary = 'q4t-profile-native-asr'
+        parts = []
+        for key, value in [('model', selected['model']), ('response_format', 'json'),
+                           ('include[]', 'logprobs')]:
+            parts.append(('--'+boundary+'\r\nContent-Disposition: form-data; name="'+
+                          key+'"\r\n\r\n'+value+'\r\n').encode())
+        parts += [('--'+boundary+'\r\nContent-Disposition: form-data; name="file"; '
+                   'filename="voice.wav"\r\nContent-Type: audio/wav\r\n\r\n').encode(),
+                   raw, ('\r\n--'+boundary+'--\r\n').encode()]
+        self.budget('chats')
+        conn = http.client.HTTPConnection('127.0.0.1', self.plan['port'], timeout=120)
+        try:
+            conn.request('POST', '/v1/audio/transcriptions', body=b''.join(parts),
+                headers={**encrypted.HEADERS,
+                         'Content-Type':'multipart/form-data; boundary='+boundary})
+            response = conn.getresponse()
+            wire = response.read(4*1024*1024+1)
+            (self.out/(label+'.wire')).write_bytes(wire)
+            save(self.out/(label+'.http.json'), dict(status=response.status,
+                headers=dict(response.getheaders())))
+            require(response.status == 200 and len(wire) <= 4*1024*1024,
+                    'qualified native transcription failed')
+        finally:
+            conn.close()
+        self.same_model();self.drained(label+'-drain')
+        status, config = self.http('/v1/config', label=label+'-config')
+        require(status == 200, 'qualified ASR configuration unavailable')
+        config = json.loads(config)
+        result = dict(source_base64=base64.b64encode(raw).decode(), request=request,
+            response=json.loads(wire), health=config['native_asr_health'],
+            limits=config['native_asr_limits'])
+        save(self.out/(label+'.request.json'), request)
+        profile_evidence.audio_business(result, self.plan['identity'])
+        return result
+
     def profile_business(self):
         rows = self.plan['requests']
         schema = self.request('schema', rows['schema'])
@@ -287,6 +359,8 @@ class Stage(encrypted.Stage):
         if selected.get('allow_media', False):
             value['media'] = dict(request=copy.deepcopy(rows['media']),
                 response=self.request('media', rows['media'], '/v1/responses'))
+        if self.plan['identity'].get('native_asr') is not None:
+            value['asr'] = self.audio_request()
         profile_evidence.business(value, self.plan['identity'], selected)
         save(self.out/(self.profile_name+'-business.json'), value)
 
@@ -322,7 +396,7 @@ def environment(exit_record, queries, cleanups):
 def finalize(out):
     plan = read(out/'plan.json')
     result = read(out/'result.json')
-    limits = limits_for(plan['profiles']['primary'])
+    limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'))
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
@@ -348,7 +422,7 @@ def finalize(out):
                     profiles=plan['profiles'], qualifications={})
     for name in profile_contract.NAMES:
         config = read(out/(name+'-config.json'))
-        value = dict(format=profile_evidence.format_for(plan['profiles'][name]), profile=name,
+        value = dict(format=profile_evidence.format_for(plan['profiles'][name], plan['identity']), profile=name,
             identity=plan['identity'], capacity=plan['profiles'][name],
             capabilities=read(out/(name+'-capabilities.json')),
             configuration=contracts.configuration(config, version=5),
@@ -383,6 +457,10 @@ def main():
                    help='unsealed compiled build to qualify before release packaging')
     p.add_argument('--capacity-config', type=Path,
                    help='explicit versioned candidate capacity; retained package stays unchanged')
+    p.add_argument('--asr-config', type=Path,
+                   help='explicit native ASR identity, asset directory and limits')
+    p.add_argument('--asr-audio', type=Path,
+                   help='fixed real audio required when ASR is configured')
     p.add_argument('--port', type=int, default=19069)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     p = sub.add_parser('finalize'); p.add_argument('--output', type=Path, required=True)

@@ -2625,6 +2625,19 @@
           "gpu_actions": 0,
           "original_failure_preserved": true
         }
+      },
+      "asr_recovery_contract_20261117": {
+        "state": "targeted_cpu_pass_real_profiles_pending",
+        "tests": 13,
+        "seconds": 0.864854724612087,
+        "model_actions": 0,
+        "evidence": "evidence/serve-asr-recovery-cpu-20261117/README.md",
+        "next_limits": {
+          "starts": 2,
+          "creates": 12,
+          "seconds": 900
+        },
+        "whole_task_complete": false
       }
     },
     {
@@ -5794,7 +5807,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "Continue native ASR service health/resource lifecycle and transcription HTTP/SDK/recovery integration; native compute, codec and asset evidence retained; all master tasks remain required.",
+  "next": "Complete exact native ASR primary/light, native TLS and recovery/reversible release; continue alignment, diarization, all audio and all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

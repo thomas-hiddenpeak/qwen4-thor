@@ -22,3 +22,10 @@ PCM signals and their complete official Whisper log-mel matrices. Its manifest
 records byte counts, SHA256, NumPy/Transformers versions, reference source
 hashes and the 1e-5 maximum absolute error criterion. These fixtures contain no
 user recordings or trained weights. They test the feature layer only.
+
+`asr_zh.wav` is the unchanged 4.204-second Chinese example from the official
+Qwen3-ASR repository, commit `7c6daf77` (full source identity retained in
+`docs/evidence/serve-asr-compute-20261117/`). Its SHA256 is
+`46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50`.
+It is used to validate retained real transcription evidence without requiring
+local model files. See `third_party/licenses/qwen3-asr/` for Apache-2.0 notices.

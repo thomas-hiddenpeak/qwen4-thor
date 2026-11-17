@@ -11,10 +11,12 @@ import copy
 
 from tools.serve_recovery import ledger, profile_contract, profile_evidence
 from tools.serve_recovery import profile_policy as policy
+from tools.serve_service import package
 
 FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
+BACKEND_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v4'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
@@ -163,6 +165,18 @@ def media_capabilities(value):
             dict(joint_text_mtp=True)
 
 
+def asr_capabilities(value):
+    """Optional activation adds a qualified backend, never removes one."""
+    selected = value.get('transcriptions')
+    if selected is None:
+        return
+    ledger.require(type(selected) is dict and
+        all(selected.get(k) == v for k, v in package.NATIVE_ASR.items()) and
+        type(selected.get('configured')) is bool,
+        'invalid native ASR capability identity')
+    selected['configured'] = dict(enabled=True) if selected['configured'] else {}
+
+
 def semantic_capabilities(value):
     """Separate reviewed implementation identities from promised behavior.
 
@@ -177,6 +191,7 @@ def semantic_capabilities(value):
     text_stop_capabilities(result)
     media_capabilities(result)
     web_search_capabilities(result)
+    asr_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']
@@ -315,18 +330,28 @@ def permit(previous, target, previous_evidence, target_evidence,
                            extends(old_contract, new_contract))),
         'migration would change application capabilities without an explicit '
         'qualified extension; automatic recovery cannot lose or add features')
+    old_asr, new_asr = (registry['identity'].get('native_asr')
+                        for registry in (previous, target))
+    asr_capacity = old_asr is not None and new_asr is not None and \
+        old_asr['limits'] != new_asr['limits']
     changed = previous['profiles'] != target['profiles']
     ledger.require(type(allow_capacity_change) is bool and
-        (not changed or (allow_capacity_change and not automatic)),
+        (not (changed or asr_capacity) or (allow_capacity_change and not automatic)),
         'capacity change requires explicit historical-qualification migration')
     for key in ('model_files', 'model_assets', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
                        'migration would change fixed model identity')
+    ledger.require(old_asr == new_asr or (asr_capacity and
+        all(old_asr[k] == new_asr[k] for k in package.NATIVE_ASR)) or
+        (old_asr is None and new_asr is not None and extension and
+         allow_capability_extension and not automatic),
+        'migration would change or remove qualified ASR identity/capacity')
     policy.configuration(previous_config); policy.configuration(target_config)
     ledger.require(type(automatic) is bool and
         (not automatic or previous_config == target_config),
         'automatic fallback cannot alter profile policy')
-    return validate(dict(format=EXTENSION_FORMAT if extension else
+    return validate(dict(format=BACKEND_CAPACITY_FORMAT if asr_capacity else
+        EXTENSION_FORMAT if extension else
         CAPACITY_FORMAT if changed else FORMAT,
         from_registry=profile_contract.digest(previous),
         to_registry=profile_contract.digest(target),
@@ -337,34 +362,49 @@ def permit(previous, target, previous_evidence, target_evidence,
         to_identity=ledger.digest(target['identity']),
         capabilities_sha256=ledger.digest(first), automatic=automatic,
         **(dict(target_profiles={n:ledger.digest(v) for n,v in target['profiles'].items()})
-           if changed or extension else {}),
-        **(dict(target_capabilities_sha256=ledger.digest(second)) if extension else {})))
+           if changed or extension or asr_capacity else {}),
+        **(dict(target_capabilities_sha256=ledger.digest(second))
+           if extension or asr_capacity else {}),
+        **(dict(from_native_asr=copy.deepcopy(old_asr),
+                to_native_asr=copy.deepcopy(new_asr)) if asr_capacity else {})))
 
 
 def validate(value):
     capacity_change = type(value) is dict and value.get('format') == CAPACITY_FORMAT
     extension = type(value) is dict and value.get('format') == EXTENSION_FORMAT
+    backend = type(value) is dict and value.get('format') == BACKEND_CAPACITY_FORMAT
     ledger.keys(value, ('format','from_registry','to_registry','profiles',
         'from_configuration','to_configuration','from_identity','to_identity',
         'capabilities_sha256','automatic',
-        *(('target_profiles',) if capacity_change or extension else ()),
-        *(('target_capabilities_sha256',) if extension else ())))
-    ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT, EXTENSION_FORMAT) and
+        *(('target_profiles',) if capacity_change or extension or backend else ()),
+        *(('target_capabilities_sha256',) if extension or backend else ()),
+        *(('from_native_asr', 'to_native_asr') if backend else ())))
+    ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT, EXTENSION_FORMAT,
+                                      BACKEND_CAPACITY_FORMAT) and
                    type(value['automatic']) is bool,
                    'invalid profile migration permit')
-    if capacity_change or extension:
+    if capacity_change or extension or backend:
         ledger.keys(value['target_profiles'], profile_contract.NAMES)
         ledger.require(not value['automatic'] and
-            (extension or value['target_profiles'] != value['profiles']),
+            (extension or backend or value['target_profiles'] != value['profiles']),
             'capacity/feature migration must be explicit')
     if extension:
         ledger.require(value['target_capabilities_sha256'] != value['capabilities_sha256'],
                        'extension must bind different actual capabilities')
+    if backend:
+        before, after = value['from_native_asr'], value['to_native_asr']
+        for native in (before, after):
+            ledger.keys(native, (*package.NATIVE_ASR, 'limits'))
+            package.asr_settings(dict(native, directory='/qualified/asr-assets'))
+        ledger.require(all(before[k] == after[k] for k in package.NATIVE_ASR) and
+            before['limits'] != after['limits'],
+            'backend migration must bind the same model and changed ASR limits')
     ledger.keys(value['profiles'], profile_contract.NAMES)
     for h in [value[k] for k in ('from_registry','to_registry','from_identity',
                                'to_identity','capabilities_sha256')]+list(value['profiles'].values())+list(
                                    value.get('target_profiles', {}).values())+(
-                                   [value['target_capabilities_sha256']] if extension else []):
+                                   [value['target_capabilities_sha256']]
+                                   if extension or backend else []):
         ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
                        'invalid profile migration identity')
     policy.configuration(value['from_configuration'])
@@ -383,8 +423,9 @@ def candidate(previous, authorization, stamp):
         'profile migration predecessor differs')
     # No elapsed time, including same-boot STOPPED time, earns new budget.
     value = policy.resume(previous, stamp)
-    if authorization['format'] in (CAPACITY_FORMAT, EXTENSION_FORMAT) and \
-            authorization['target_profiles'] != previous['profiles']:
+    if authorization['format'] == BACKEND_CAPACITY_FORMAT or (
+            authorization['format'] in (CAPACITY_FORMAT, EXTENSION_FORMAT) and
+            authorization['target_profiles'] != previous['profiles']):
         value = policy.historical(value)
         value['profiles'] = copy.deepcopy(authorization['target_profiles'])
     value.update(registry_sha256=authorization['to_registry'],
