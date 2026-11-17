@@ -38,10 +38,12 @@ def clip(name):
 
 def requests():
     common = copy.deepcopy(geometry.requests()['rotation'])
+    common['input'][0]['content'][0]['detail'] = 'high'
     rows = dict(scale=common)
     rows['scale']['store'] = True
     rows['shear'] = copy.deepcopy(common)
     rows['shear']['input'][0]['content'][0] = video.inline('shear.mp4', clip('shear'))
+    rows['shear']['input'][0]['content'][0]['detail'] = 'high'
     rows['shear'].update(stream=True, stream_options=dict(include_obfuscation=False))
     rows['replay'] = copy.deepcopy(common)
     rows['replay']['input'] = 'For the same earlier video, '+geometry.QUESTION

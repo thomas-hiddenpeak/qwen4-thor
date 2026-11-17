@@ -337,12 +337,17 @@ Status MapPreparedVideoContent(const io::Json& part, io::Json* mapped,
                                std::string* error_param) {
   if (!mapped) return Status::Fail("Missing prepared video owner");
   *mapped = {};
-  auto status = InputFields(
-      part,
-      {"type", "video_frames", "video_timestamps", "prompt_cache_breakpoint"},
-      error_param);
+  auto status = InputFields(part,
+                            {"type", "video_frames", "video_timestamps",
+                             "detail", "prompt_cache_breakpoint"},
+                            error_param);
   const auto* frames = part.GetArray("video_frames");
   if (!status) return status;
+  status = VideoInputDetail(part);
+  if (!status) {
+    if (error_param) *error_param = "detail";
+    return status;
+  }
   if (part.GetString("type") != "input_video_frames" || !frames ||
       frames->array.size() < 2 || frames->array.size() > 16 ||
       !part.Has("video_timestamps"))

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/diagnostic-01/check.py", line 27, in <module>
+    assert list(samples.values())==[(255,0,0),(0,255,0),(0,0,255),(255,255,0)]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

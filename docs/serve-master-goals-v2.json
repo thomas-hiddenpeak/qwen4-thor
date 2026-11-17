@@ -2373,22 +2373,29 @@
         "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
       },
       "affine_video_20261117": {
-        "state": "cpu_passed_business_pending",
+        "state": "affine_and_explicit_detail_cpu_passed_high_detail_business_pending",
         "plan": "docs/SERVE_VIDEO_AFFINE_2026-11-17.md",
         "cpu_budget": {
           "new": 12,
           "direct_regression": 4
         },
         "business_budget": {
-          "model_starts": 1,
-          "requests": 4,
-          "lease_seconds": 600
+          "model_starts": 2,
+          "generation_requests": 5,
+          "lease_seconds": 600,
+          "consumed_starts": 1,
+          "consumed_requests": 1,
+          "consumed_seconds": 38.33
         },
         "default": "rev234 unchanged",
         "remaining": "Projective transforms, multiple tracks, remaining formats/backends and all other A10 requirements stay required.",
         "cpu_evidence": "docs/evidence/serve-video-affine-cpu-20261117/README.md",
         "business_driver": "tools/serve_responses/video_affine_acceptance.py",
-        "business_driver_cpu_passed": 2
+        "business_driver_cpu_passed": 2,
+        "business_failure": "docs/evidence/serve-video-affine-small-input-20261117/README.md",
+        "diagnosis": "Actual captured PNG and processor tensor are correct; 64x32 source gives two spatial tokens per temporal group under unchanged checkpoint preprocessing. Model swaps right-side quadrants. Low spatial representation is a hypothesis, not a proven model root cause.",
+        "next": "Implement explicit native video detail propagation and bounded high-detail preprocessing; preserve auto/low reference results. Repeat same source/question with explicit high detail. Keep original default-mode failure recorded.",
+        "detail_cpu_evidence": "docs/evidence/serve-video-detail-cpu-20261117/README.md"
       }
     },
     {
@@ -3032,6 +3039,12 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
+      },
+      "native_web_search_main_merge": {
+        "pr": 40,
+        "head": "36bf7de93ad9772d01efb52a71023fd6c132839d",
+        "main_commit": "6319018993b4d16ef0066dcc49325de6feb89984",
+        "evidence": "docs/evidence/serve-pr40-merged-20261117/README.md"
       }
     },
     {
@@ -5253,6 +5266,12 @@
         "main_integration_pending": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-web-search-delivery-20261117/README.md"
+      },
+      "native_web_search_main_merge": {
+        "pr": 40,
+        "head": "36bf7de93ad9772d01efb52a71023fd6c132839d",
+        "main_commit": "6319018993b4d16ef0066dcc49325de6feb89984",
+        "evidence": "docs/evidence/serve-pr40-merged-20261117/README.md"
       }
     },
     {
@@ -5420,8 +5439,8 @@
       }
     }
   ],
-  "next_task": "Finish PR40 final-head checks and actual merge. Continue native affine video implementation and bounded validation, then reversible delivery; all remaining master tasks stay active.",
-  "next": "Finish PR40 final-head checks and actual merge. Continue native affine video implementation and bounded validation, then reversible delivery; all remaining master tasks stay active.",
+  "next_task": "PR40 actually merged at 63190189. Continue native affine video and explicit detail correctness, bounded business validation and reversible delivery; all remaining master tasks stay active.",
+  "next": "PR40 actually merged at 63190189. Continue native affine video and explicit detail correctness, bounded business validation and reversible delivery; all remaining master tasks stay active.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

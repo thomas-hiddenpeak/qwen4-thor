@@ -31,6 +31,7 @@ class AffineAcceptance(unittest.TestCase):
         self.assertTrue(rows['scale']['store'] and rows['shear']['stream'] and
                         rows['replay']['stream'])
         for name in ('scale', 'shear'):
+            self.assertEqual(rows[name]['input'][0]['content'][0]['detail'], 'high')
             question = rows[name]['input'][0]['content'][1]['text']
             for color in ('red', 'green', 'blue', 'yellow'):
                 self.assertNotIn(color, question)

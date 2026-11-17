@@ -1,0 +1,30 @@
+{
+  "status": "PASS_EXPLICIT_VIDEO_DETAIL_CPU",
+  "cases": 8,
+  "driver_cases": 1,
+  "schema_checks": 2,
+  "gpu_actions": 0,
+  "files": {
+    "detail-required.txt": "f85617e17d036b065aaf854ec604a63480883ddfef2f8ab2b254164467afd0a4",
+    "detail-cpu-sources-01.json": "fa02087e3fcec2e027c98e73f8b496ba5011c37e827746b7769044a22c664f62",
+    "detail-cpu-01.json": "13e2c83eda3ec86271506f51d6e79af67bd7041941c80cce6fe1e2f4553ec7ba",
+    "detail-cpu-01.stdout": "4e5618f663bee26a8d3612cdfb7771e322923dc7a8ba179eae2087f6659f2ae1",
+    "detail-cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "detail-host-build-01.json": "df533f0201f25a705aa83ab3fdd7937f3cc692d3f1d57f999a120b9649483b32",
+    "detail-host-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "detail-host-build-02.json": "189f72542f85d1427fe71a37d495ab8f2e7b78a361ecc34729e6d8a29e22cfbd",
+    "detail-host-build-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "detail-driver-cpu-01.json": "03cb1ee0bbdf334b7b60931b21f107ed439d8624d52597cf4040b730e83142d8",
+    "detail-driver-cpu-01.stderr": "7e615d928ae09441661a780f9c466dcf915a23ae84038c2fe8e6f0b0fa5ffa36",
+    "detail-schema-check-01.json": "60b1435c0acf35531c74a454324d26c1dbd407685e81fc95537cb2954c2e2f5e",
+    "detail-schema-generate-01.json": "afed9c6dca14a852e2dab2ce3c5cc984e5cd5f7bd295d56775693e5b29efe5d7",
+    "detail-app-schema-generate-01.json": "3aed4b99dfdf8028ff863488741707cdb616d04cb94bc18e5bd7a6d67290045f",
+    "detail-app-schema-generate-01.stderr": "b096fa90d144d6703bc56c773127590ce4716c26374fabe0011d6eb1c5092f40",
+    "detail-app-schema-generate-02.json": "6184ed1091e275c08f4b111f1cba6ce8ee743ffcf93e0f8fd4567ccd3afd3660",
+    "detail-schema-check-02.json": "fa4d71e7b04601537f6f67b03f69322768be565c357dbb56a1df9de6a2932e03",
+    "detail-app-schema-check-02.json": "62fab1f2cf20c0964db8803037348def4f3523c6432e976b15228abf1c280455",
+    "detail-engine-build-01.json": "b2633884dcf9514b54d2a0f781677ad75fa93f41078367650c977bc906cad9f0",
+    "detail-engine-build-01.stdout": "d1cb7c534eb113ff3e1ef74468e805c986622fdddad7ee14b8c4b047a60c325f",
+    "detail-engine-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

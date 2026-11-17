@@ -41,6 +41,7 @@ struct ProcessorConfig {
 };
 
 inline constexpr size_t kDecoderOwnedBytes = 256ull * 1024 * 1024;
+inline constexpr uint64_t kVideoHighMinFramePixels = 65536;
 struct MediaItemPlan;
 class StageTimings;
 struct ProcessorResult {
@@ -57,7 +58,8 @@ struct ProcessorOptions {
   ProcessorResult* result = nullptr;
   // Optional request-local accumulator; never owns or resets prior stages.
   StageTimings* timings = nullptr;
-  // Image-only native policy. Auto preserves the checkpoint preprocessor.
+  // Native raster detail policy. Video auto/low preserve the checkpoint
+  // preprocessor; explicit high requests a bounded per-frame pixel floor.
   ImageDetail image_detail = ImageDetail::kAuto;
 };
 

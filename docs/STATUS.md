@@ -119,13 +119,19 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 缩放/斜切/非直角旋转的实际像素处理及v4冻结重放，保留旧八方向。
 12项新CPU及4项直接回归[全部通过](evidence/serve-video-affine-cpu-20261117/README.md)，
 0.788秒、构建零警告；正在准备最多1启动4请求600秒业务短验。
-当前尚未模型验收，默认234保持。PR40原head检查/合并独立继续，
+首条小尺寸模型任务[未通过](evidence/serve-video-affine-small-input-20261117/README.md)，
+已捕获真实帧及CPU张量逐位核对正确；继续补显式视频detail传播和
+有界细节预算，原auto/low数值合同及失败记录保留。[显式细节8项CPU
+及驱动/schema检查通过](evidence/serve-video-detail-cpu-20261117/README.md)，
+继续同源同问题的high实际业务；默认234保持。
+PR40已[实际合main](evidence/serve-pr40-merged-20261117/README.md)，
 一般透视/多轨/其余媒体后端和全部master仍未完成。
 
 [网页输出类型CI修复](evidence/serve-web-search-ci-repair-20261117/README.md)：
 旧push的2269项C++仅1项旧枚举断言失败，补齐web_search_call后该项
 CPU通过，0.031秒；不改运行时/default234/day，不追加GPU。PR40已
-创建，旧提交检查取消，新head所需检查通过后实际合main；全部master继续。
+创建，旧提交检查取消，最终head两组通过并实际合main（63190189）；
+全部master继续。
 
 [rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增

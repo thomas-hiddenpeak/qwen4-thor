@@ -1,0 +1,192 @@
+{
+  "format": "q4t.file_input_snapshot.v3",
+  "detail": "auto",
+  "source": {
+    "filename": "scale.mp4",
+    "mime_type": "application/octet-stream",
+    "file_id": "file_e4d53eac50bd581335e94c63cf78489e",
+    "sha256": "af0a11abfbcaaf323d2f31821e2fde31c2aafa6fc66e4971a9ce70f248459ce3",
+    "part": 0
+  },
+  "indirect_source": null,
+  "urls": [],
+  "export_format": "",
+  "text": "",
+  "encoding": "utf-8",
+  "source_sha256": "af0a11abfbcaaf323d2f31821e2fde31c2aafa6fc66e4971a9ce70f248459ce3",
+  "conversion": {
+    "codec": "",
+    "product": "",
+    "version": "",
+    "build_id": "",
+    "output_format": "",
+    "output_sha256": ""
+  },
+  "embedded": [],
+  "sheets": [],
+  "pages": [],
+  "augmentations": [],
+  "videos": [
+    {
+      "source_path": [],
+      "conversion": {
+        "format": "q4t.cpu_video_png.v4",
+        "source_sha256": "af0a11abfbcaaf323d2f31821e2fde31c2aafa6fc66e4971a9ce70f248459ce3",
+        "source_bytes": 1457,
+        "sampling": "uniform-presentation-time-with-endpoints",
+        "width": 64,
+        "height": 32,
+        "duration_ns": 2000000000,
+        "scanned_frames": 4,
+        "display_geometry": {
+          "policy": "affine-square-pixels-tight-bilinear16",
+          "coded_width": 128,
+          "coded_height": 64,
+          "pixel_aspect_num": 1,
+          "pixel_aspect_den": 1,
+          "movie_matrix": [
+            65536,
+            0,
+            0,
+            0,
+            65536,
+            0,
+            0,
+            0,
+            1073741824
+          ],
+          "track_matrix": [
+            32768,
+            0,
+            0,
+            0,
+            32768,
+            0,
+            0,
+            0,
+            1073741824
+          ]
+        },
+        "modules": [
+          {
+            "name": "gstreamer",
+            "version": "1.24.2",
+            "sha256": "9de1efd9e400cdfa7c0d7abaf1996cef14f230c7a0e50b9833cd88a9e209388e"
+          },
+          {
+            "name": "gstapp",
+            "version": "1.24.2",
+            "sha256": "b22d9d2b2d090b580ead8ff6ce66d3f44a13f460ad86218f09fa67aed3b4ad7a"
+          },
+          {
+            "name": "gstvideo",
+            "version": "1.24.2",
+            "sha256": "e38b2c7002101eb4bf6f2009e35e419c103c939483f20b89819c9837a6d0dc7b"
+          },
+          {
+            "name": "coreelements",
+            "version": "1.24.2",
+            "sha256": "10758b2979f3e3d1b8ea3d88389880d65be37d471bbb79023ae47ae5ba954c49"
+          },
+          {
+            "name": "app",
+            "version": "1.24.2",
+            "sha256": "2f783218dae061037a6fb6b3284c09e91a749cdc79a2da9851256eb15df19bba"
+          },
+          {
+            "name": "isomp4",
+            "version": "1.24.2",
+            "sha256": "a7863865152badaaebb0a4e6488388bc4b5fdde0a6c8170f4c4aa4dedc6dd7cd"
+          },
+          {
+            "name": "matroska",
+            "version": "1.24.2",
+            "sha256": "6f3bce2b116065f0d7049aba03ffd79d07b92085bee7e3703148a1f8f68f7c74"
+          },
+          {
+            "name": "videoparsersbad",
+            "version": "1.24.2",
+            "sha256": "6b8523110912868c168e1c5b85be2883fbafd925c4996bc1069b65915e1d7cf2"
+          },
+          {
+            "name": "openh264",
+            "version": "1.24.2",
+            "sha256": "86a27382a2cdcc7ffaea6b5e86c371116403c06c86797f0820e3d4b6240abb03"
+          },
+          {
+            "name": "vpx",
+            "version": "1.24.2",
+            "sha256": "d8c008d113e8513af45181808f5167ff8f2db667c99e317b6c650f6895981f01"
+          },
+          {
+            "name": "videoconvertscale",
+            "version": "1.24.2",
+            "sha256": "7e10950c2c499cb5d74d5862c41fe4f879f239bf4194f6861fbd440163954468"
+          },
+          {
+            "name": "videofilter",
+            "version": "1.24.2",
+            "sha256": "1761122e5ca74d08d5ea40f2ce74b612fcfeed8c0cb2fc870514149374196322"
+          },
+          {
+            "name": "png",
+            "version": "1.24.2",
+            "sha256": "9705bc90e7f37eeff6bbfb7d86aad554217fe75f61bc99c7dd674aa185aa692e"
+          }
+        ],
+        "frames": [
+          {
+            "sha256": "886c9ba02a7ede3d2348ba561e25c3cefa7ba19046caed22943dc8f4f924aa16",
+            "timestamp_ns": 0,
+            "duration_ns": 500000000,
+            "source_index": 0
+          },
+          {
+            "sha256": "886c9ba02a7ede3d2348ba561e25c3cefa7ba19046caed22943dc8f4f924aa16",
+            "timestamp_ns": 500000000,
+            "duration_ns": 500000000,
+            "source_index": 1
+          },
+          {
+            "sha256": "886c9ba02a7ede3d2348ba561e25c3cefa7ba19046caed22943dc8f4f924aa16",
+            "timestamp_ns": 1000000000,
+            "duration_ns": 500000000,
+            "source_index": 2
+          },
+          {
+            "sha256": "886c9ba02a7ede3d2348ba561e25c3cefa7ba19046caed22943dc8f4f924aa16",
+            "timestamp_ns": 1500000000,
+            "duration_ns": 500000000,
+            "source_index": 3
+          }
+        ]
+      },
+      "frames": [
+        {
+          "part": 1,
+          "timestamp_ns": 0,
+          "source_index": 0,
+          "duration_ns": 500000000
+        },
+        {
+          "part": 2,
+          "timestamp_ns": 500000000,
+          "source_index": 1,
+          "duration_ns": 500000000
+        },
+        {
+          "part": 3,
+          "timestamp_ns": 1000000000,
+          "source_index": 2,
+          "duration_ns": 500000000
+        },
+        {
+          "part": 4,
+          "timestamp_ns": 1500000000,
+          "source_index": 3,
+          "duration_ns": 500000000
+        }
+      ]
+    }
+  ]
+}

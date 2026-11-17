@@ -1,0 +1,30 @@
+{
+  "status": "MODEL_TASK_FAILED_INPUT_NUMERICALLY_VERIFIED",
+  "files": {
+    "business-gpu-01.json": "b46079d17559d9fe5a43650d01b5bb491e1a5c5ec78e4ed136b9a77eb4bf8bc9",
+    "business-gpu-01.stderr": "3cd691159d48a8371b4e44119d80b6e070f917c634bc3588e81e2896c564f1e7",
+    "business-01/result.json": "6d020bf5c847ed4b888f097f77058e0288798f289c87ff1df8ae28f99046a804",
+    "business-01/cleanup.json": "b7bc61dfbb0ccf3807976b72ae67989a90dcad66a635053291c1ed9dba42550b",
+    "business-01/plan.json": "f488db5e720f46b79f56391d4b9fcfb9e24bffdbef9322b61de713118d03ee8e",
+    "business-01/scale-json.sdk.json": "1b40df7d83b1620b3d6a208871fa7285ce9b2c14a89e46b61c2d213720c2abdf",
+    "business-01/scale-json.wire": "a6071f20f574d819b89c164c5d6cd07084e0380b9834f0f3f1735e5cf2ac455a",
+    "business-01/lease/exit.json": "ae51464e2241934bbab211ae3c3503940c174c2bc315b06cff06465ae01ebf5f",
+    "business-01/lease/events.jsonl": "de9b156782deeaa1c919cbb723ac2e0c5294f24b45b037c0ba338684c32069d9",
+    "business-01/lease/nvml-queries.jsonl": "3294d51a3f807834caa08307fe8fcbeb0010220d49667cd721eaeed0cda74bcd",
+    "diagnostic-build-01.json": "a310352d3a1fbf35b40f1210a3e74ce0e4b6252208a1bba782db30c11e180b41",
+    "diagnostic-cpu-01.json": "0eaeb33718a7023e755e756ea9e806c4be3eb0359433e60c993f3570e1ebdc95",
+    "diagnostic-cpu-01.stderr": "7699efaa1fc1730ed0746d746d33783dee3d4cbe62dd2fc0978dba104b535058",
+    "diagnostic-cpu-02.json": "341a675fedebdf70576be971f8d64fde8e44d48c099b419517fc9df7300bcfb8",
+    "diagnostic-cpu-02.stdout": "5b49b9c5e816a7aa6d77e4cc400b5e5fc3cfeab416f2918cb0a378297659365a",
+    "diagnostic-cpu-02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-01/check-original.py": "68616e0c8a636826b6ce80eef7005699f43cc453b600cc4af5ddd80b138bf326",
+    "diagnostic-01/check.py": "a4d4a8904ebb707cd80e429d283458e813fb514da0e74ab7a5c77243557e2bbf",
+    "diagnostic-01/process.cpp": "6a0d75663e4d1b3a17e5b6239001c3972567b7fc7753b4e61dabc654aae5ea0f",
+    "diagnostic-01/result.json": "2dfdb5b369c425258412ab329c0718a3705366e0d95ad62752e3114e7ca75a65",
+    "diagnostic-01/frozen-metadata.json": "c80ae14959144fc86ad4543cd9b98b4ca4ff639712b87d6c2504468e73d82dca"
+  },
+  "model_starts": 1,
+  "generation_requests": 1,
+  "cleanup_complete": true,
+  "default_changed": false
+}

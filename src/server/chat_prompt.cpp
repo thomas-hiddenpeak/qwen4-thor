@@ -103,6 +103,13 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       item.kind = VisionItem::kVideo;
       item.message_index = message_index;
       item.part_index = part_index;
+      if (!VideoInputDetail(part, &item.detail)) {
+        *error_param = "messages[" + std::to_string(message_index) +
+                       "].content[" + std::to_string(part_index) + "].detail";
+        *error_code = "media_detail_invalid";
+        *err = *error_code;
+        return {};
+      }
       *error_param = MediaInputParam(item);
       if (items->size() >= vision::kMediaPlanItems || vf->array.size() < 2 ||
           vf->array.size() > vision::kMediaPlanFrames) {

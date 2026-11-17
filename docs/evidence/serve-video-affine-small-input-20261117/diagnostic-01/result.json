@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CAPTURED_VIDEO_INPUT_CPU",
+  "seconds": 0.03208936890587211,
+  "grid": [
+    2,
+    2,
+    4
+  ],
+  "pixel_values": 24576,
+  "bitwise_equal": true,
+  "visual_tokens_total": 4,
+  "visual_tokens_per_group": 2,
+  "source_png_sha256": "886c9ba02a7ede3d2348ba561e25c3cefa7ba19046caed22943dc8f4f924aa16",
+  "tensor_sha256": "6c3f05fcdcfca852deae2090669ac5457fd2ea26ad3241d42a3dd14bf956b95c",
+  "corners": {
+    "(16, 8)": [
+      252,
+      0,
+      0
+    ],
+    "(48, 8)": [
+      0,
+      249,
+      0
+    ],
+    "(16, 24)": [
+      0,
+      0,
+      250
+    ],
+    "(48, 24)": [
+      250,
+      252,
+      0
+    ]
+  },
+  "source_files": {
+    "src/vision/processor.cpp": "5a789c529b10da3d244599c677d35cb76d9049963b9bb24a931faed6ca3ef01c",
+    "src/vision/media_plan.cpp": "d46531462936f89c2563b58de098e0aa0174340c6da8cecbc04441ed7df590a7"
+  },
+  "gpu_actions": 0
+}
