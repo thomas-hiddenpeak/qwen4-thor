@@ -42,6 +42,7 @@
 #include "q4t/audio/aligner_model.h"
 #include "q4t/audio/vad_chunks.h"
 #include "q4t/audio/speaker_model.h"
+#include "q4t/audio/separator_model.h"
 #include "q4t/audio/diarization.h"
 #include "q4t/server/diarized_output.h"
 #include "q4t/server/aligner_service.h"
@@ -225,11 +226,23 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic,
       std::vector<audio::SpeakerEmbedding>* embeddings);
-  ObjectReply PrepareSpeakerTurns(
-      int fd, const AsrRequest& request, std::span<const float> pcm,
-      std::span<const audio::VadChunk> chunks,
+  struct SpeakerTrack {
+    std::span<const float> pcm;
+    std::span<const audio::VadChunk> chunks;
+    std::vector<audio::SpeakerTurn> turns;
+  };
+  ObjectReply PrepareSpeakerTracks(
+      int fd, const AsrRequest& request, std::span<SpeakerTrack> tracks,
       const std::shared_ptr<RequestControl>& control,
-      RequestDiagnostics& diagnostic, std::vector<audio::SpeakerTurn>* turns);
+      RequestDiagnostics& diagnostic);
+  ObjectReply EnsureNativeSeparator(bool weights, const BinaryAccess& access,
+                                    RequestDiagnostics* diagnostic = nullptr);
+  std::string NativeSeparatorHealthJson() const;
+  ObjectReply RunNativeSeparator(
+      int fd, std::span<const float> input,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic,
+      std::array<std::vector<float>, 2>* tracks);
   std::string NativeVadHealthJson() const;
   ObjectReply EnsureNativeVad(const BinaryAccess& access,
                               std::shared_ptr<const audio::SileroVad>* out);
@@ -575,6 +588,12 @@ class ChatServer {
   std::mutex speaker_mu_;
   uint8_t* d_speaker_weights_ = nullptr;
   audio::SpeakerDeviceWeights speaker_weights_;
+  std::string separator_model_dir_;
+  SeparatorServiceLimits separator_limits_;
+  AsrHealth separator_health_;
+  std::mutex separator_mu_;
+  uint8_t* d_separator_weights_ = nullptr;
+  audio::SeparatorDeviceWeights separator_weights_;
   std::string vad_model_dir_;
   int vad_max_chunks_ = 64;
   AsrHealth vad_health_;

@@ -89,6 +89,8 @@ ChatServer::~ChatServer() {
   aligner_health_.Released();
   release(d_speaker_weights_, "shutdown.native_speaker_weights");
   speaker_health_.Released();
+  release(d_separator_weights_, "shutdown.native_separator_weights");
+  separator_health_.Released();
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -410,6 +412,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
             speaker.load_peak_bytes +
             uint64_t(opts.max_seq) * speaker.request_device_bytes +
             uint64_t(admission.inflight) * speaker.request_host_bytes;
+      }
+      if (!opts.separator_model_dir.empty()) {
+        SeparatorResourcePlan separator;
+        s = PlanSeparatorServiceResources(opts.separator_limits, &separator);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        breq.extra_fixed_bytes +=
+            separator.load_peak_bytes +
+            uint64_t(opts.max_seq) * separator.request_device_bytes +
+            uint64_t(admission.inflight) * separator.request_host_bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -772,6 +786,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   speaker_model_dir_ = opts.speaker_model_dir;
   speaker_limits_ = opts.speaker_limits;
   speaker_health_.Configure(!speaker_model_dir_.empty());
+  separator_model_dir_ = opts.separator_model_dir;
+  separator_limits_ = opts.separator_limits;
+  separator_health_.Configure(!separator_model_dir_.empty());
   vad_model_dir_ = opts.vad_model_dir;
   vad_max_chunks_ = opts.vad_max_chunks;
   vad_health_.Configure(!vad_model_dir_.empty());

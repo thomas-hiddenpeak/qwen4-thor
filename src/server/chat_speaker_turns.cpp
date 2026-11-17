@@ -1,16 +1,17 @@
 #include "chat_server_internal.h"
 
+#include <algorithm>
+
 #include "object_protocol.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/request_diagnostics.h"
 #include "q4t/server/speaker_reference.h"
 
 namespace q4t::server {
-ObjectReply ChatServer::PrepareSpeakerTurns(
-    int fd, const AsrRequest& request, std::span<const float> pcm,
-    std::span<const audio::VadChunk> chunks,
+ObjectReply ChatServer::PrepareSpeakerTracks(
+    int fd, const AsrRequest& request, std::span<SpeakerTrack> tracks,
     const std::shared_ptr<RequestControl>& control,
-    RequestDiagnostics& diagnostic, std::vector<audio::SpeakerTurn>* turns) {
+    RequestDiagnostics& diagnostic) {
   using object_detail::Error;
   const auto cancelled = [&] {
     if (stop_requested_.load())
@@ -20,7 +21,7 @@ ObjectReply ChatServer::PrepareSpeakerTurns(
   const auto interrupted = [&] {
     return Error(409, control->Reason(), "Speaker preparation cancelled");
   };
-  if (!turns || request.speaker_names.size() > 4 ||
+  if (tracks.empty() || tracks.size() > 2 || request.speaker_names.size() > 4 ||
       request.speaker_names.size() != request.speaker_references.size())
     return Error(400, "speaker_reference_invalid",
                  "Speaker reference shape invalid");
@@ -30,16 +31,35 @@ ObjectReply ChatServer::PrepareSpeakerTurns(
                      resources.request_host_bytes + (512ULL << 20)))
     return Error(503, "speaker_resource_exhausted",
                  "Speaker host memory unavailable");
-  std::vector<audio::SpeakerWindow> windows;
-  status = audio::PlanSpeakerWindows(chunks, pcm.size(),
-                                     {size_t(speaker_limits_.window_ms) * 16,
-                                      size_t(speaker_limits_.step_ms) * 16,
-                                      size_t(speaker_limits_.max_windows)},
-                                     &windows, cancelled);
-  if (!status) {
-    if (cancelled()) return interrupted();
-    return Error(400, "speaker_window_limit", status.message());
+  struct TrackWindow {
+    size_t track;
+    audio::SpeakerWindow window;
+  };
+  std::vector<TrackWindow> owned_windows;
+  const size_t max_windows = speaker_limits_.max_windows;
+  for (size_t i = 0; i < tracks.size(); ++i) {
+    if (tracks[i].chunks.empty()) continue;
+    if (owned_windows.size() >= max_windows)
+      return Error(400, "speaker_window_limit", "Shared speaker window limit");
+    std::vector<audio::SpeakerWindow> windows;
+    status = audio::PlanSpeakerWindows(tracks[i].chunks, tracks[i].pcm.size(),
+                                       {size_t(speaker_limits_.window_ms) * 16,
+                                        size_t(speaker_limits_.step_ms) * 16,
+                                        max_windows - owned_windows.size()},
+                                       &windows, cancelled);
+    if (!status) {
+      if (cancelled()) return interrupted();
+      return Error(400, "speaker_window_limit", status.message());
+    }
+    for (const auto& window : windows) owned_windows.push_back({i, window});
   }
+  std::stable_sort(owned_windows.begin(), owned_windows.end(),
+                   [](const auto& a, const auto& b) {
+                     return a.window.core_begin_sample <
+                            b.window.core_begin_sample;
+                   });
+  std::vector<audio::SpeakerWindow> windows;
+  for (const auto& owned : owned_windows) windows.push_back(owned.window);
   const auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed())
     return Error(503, "object_scope_unavailable", "Speaker owner unavailable");
@@ -58,9 +78,10 @@ ObjectReply ChatServer::PrepareSpeakerTurns(
   }
   std::vector<std::span<const float>> clips;
   for (const auto& reference : references) clips.push_back(reference.samples);
-  for (const auto& window : windows)
-    clips.push_back(pcm.subspan(window.begin_sample,
-                                window.end_sample - window.begin_sample));
+  for (const auto& owned : owned_windows)
+    clips.push_back(tracks[owned.track].pcm.subspan(
+        owned.window.begin_sample,
+        owned.window.end_sample - owned.window.begin_sample));
   std::vector<audio::SpeakerEmbedding> embeddings;
   auto reply = RunNativeSpeaker(fd, clips, control, diagnostic, &embeddings);
   if (!reply.ok()) return reply;
@@ -68,14 +89,32 @@ ObjectReply ChatServer::PrepareSpeakerTurns(
   for (size_t i = 0; i < references.size(); ++i)
     known.push_back({request.speaker_names[i], embeddings[i]});
   diagnostic.Stage("speaker_clustering");
-  status = audio::ClusterSpeakerWindows(
-      windows, std::span(embeddings).subspan(known.size()), known,
-      {.max_windows = size_t(speaker_limits_.max_windows),
-       .max_speakers = size_t(speaker_limits_.max_speakers)},
-      turns, cancelled);
+  std::vector<audio::SpeakerTurn> labels;
+  const audio::SpeakerClusteringOptions options{
+      .max_windows = size_t(speaker_limits_.max_windows),
+      .max_speakers = size_t(speaker_limits_.max_speakers)};
+  // Single-track callers retain the existing coalescing/output contract.
+  status = tracks.size() == 1
+               ? audio::ClusterSpeakerWindows(
+                     windows, std::span(embeddings).subspan(known.size()),
+                     known, options, &labels, cancelled)
+               : audio::LabelOverlappingSpeakerWindows(
+                     windows, std::span(embeddings).subspan(known.size()),
+                     known, options, &labels, cancelled);
   if (!status) {
     if (cancelled()) return interrupted();
     return Error(400, "speaker_clustering_invalid", status.message());
+  }
+  if (tracks.size() == 1) {
+    tracks[0].turns = std::move(labels);
+  } else {
+    if (labels.size() != owned_windows.size())
+      return Error(500, "speaker_clustering_invalid", "Speaker label count");
+    std::array<std::vector<audio::SpeakerTurn>, 2> output;
+    for (size_t i = 0; i < labels.size(); ++i)
+      output[owned_windows[i].track].push_back(std::move(labels[i]));
+    for (size_t i = 0; i < tracks.size(); ++i)
+      tracks[i].turns = std::move(output[i]);
   }
   return {};
 }

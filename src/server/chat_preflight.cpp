@@ -79,6 +79,9 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"native_speaker_health":)" + NativeSpeakerHealthJson() +
       R"(,"native_speaker_limits":)" +
       SpeakerServiceLimitsJson(speaker_limits_) +
+      R"(,"native_separator_health":)" + NativeSeparatorHealthJson() +
+      R"(,"native_separator_limits":)" +
+      SeparatorServiceLimitsJson(separator_limits_) +
       R"(,"native_vad_health":)" + NativeVadHealthJson() +
       R"(,"native_vad_max_chunks":)" + std::to_string(vad_max_chunks_) +
       R"(,"application_startup":{"responses":)" +

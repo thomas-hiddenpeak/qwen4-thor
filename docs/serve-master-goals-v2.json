@@ -3558,6 +3558,14 @@
         "tests": 13,
         "gpu_loads": 0,
         "default_changed": false
+      },
+      "overlap_runtime_cpu_20261118": {
+        "status": "PASS",
+        "evidence": "docs/evidence/serve-separator-runtime-cpu-20261118/README.md",
+        "cpu_tests": 9,
+        "source_checks": 2,
+        "gpu_loads": 0,
+        "default_changed": false
       }
     },
     {

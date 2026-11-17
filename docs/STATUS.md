@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[分离运行时9CPU及来源检查通过](evidence/serve-separator-runtime-cpu-20261118/README.md)，
+0GPU/HTTP，生产/host零警告；构建/选择入口失败保留并已修正。
+固定同一严格租约1启动/12请求/900秒实际混音/30秒边界/SDK/
+独立恢复短验，随后服务封包恢复交付及全部master；rev296未变。
+
+实际混音执行链与配置已接线，冻结4C+++2schema/180秒及2来源
+检查，0GPU/HTTP。两路使用同一请求预算并保留真实重叠时间；
+构建后继续实际30秒边界/混音/SDK/恢复交付与全部master。
+首次配置缺新测试文件已补齐，默认rev296保持不变。
+
 [分离资产/健康/资源13CPU通过](evidence/serve-separator-service-cpu-20261118/README.md)，
 0.464秒、0GPU/HTTP、host零警告。普通辅助故障独立恢复与真实
 设备保护保持，30秒资源边界通过；接着实际转录接线、新上限计算

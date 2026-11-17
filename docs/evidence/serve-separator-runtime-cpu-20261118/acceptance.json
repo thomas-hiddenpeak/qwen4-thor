@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "protocol_source_count": 650,
+  "protocol_sources_current": true,
+  "candidate_sha256": "ac7d037abf6e78af0f65885e719b79b4c7897c1d78740aac76d843053008a923",
+  "default_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+  "new_http_requests": 0,
+  "gpu_loads": 0,
+  "cpu_tests": {
+    "runtime_cpp": 4,
+    "schema": 2,
+    "http_validator": 3
+  },
+  "source_checks": 2,
+  "prior_failures": "configuration missing new test file; test Json accessor Get/GetObject instead of Find; multiline selection whitespace. Original records retained. Only affected build/selection retried.",
+  "archive_sha256": "23ef2775ff8594ba67680bfd9d9ecee3bfd00643fec0e6bddf49b67e5a15bbcb"
+}

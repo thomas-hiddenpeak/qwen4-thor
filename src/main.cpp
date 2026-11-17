@@ -98,6 +98,8 @@ void PrintUsage(const char* prog) {
       "[--aligner-max-context-tokens N] [--aligner-max-words N] "
       "[--aligner-workspace-mib N] "
       "[--vad-model-dir DIR] [--vad-max-chunks N] "
+      "[--separator-model-dir DIR] [--separator-max-audio-seconds N] "
+      "[--separator-workspace-mib N] "
       "[--speaker-model-dir DIR] [--speaker-window-ms N] "
       "[--speaker-step-ms N] [--speaker-max-windows N] "
       "[--speaker-max-speakers N] [--speaker-workspace-mib N] "

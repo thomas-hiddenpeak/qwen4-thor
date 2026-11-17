@@ -3170,7 +3170,21 @@
             "references": "up to 4 inline audio data URLs, 2 to 10 seconds each",
             "timing": "actual aligner words assigned by acoustic interval overlap",
             "streaming": "completed segment_id delta and segment, then one complete done",
-            "overlap": "required implementation remains pending"
+            "overlap": {
+              "configured_by": "separator-model-dir",
+              "requires": [
+                "speaker-model-dir"
+              ],
+              "model": "speechbrain-sepformer-wsj02mix",
+              "backend": "native SepFormer FP32",
+              "simultaneous_sources": 2,
+              "sample_rate": 8000,
+              "output_sample_rate": 16000,
+              "timing": "original time, crossing segments retained",
+              "identity": "cross-track actual ECAPA embeddings",
+              "quotas": "one original RPM/output/VAD/window budget for both tracks",
+              "acceptance": "actual mixed-voice HTTP and recovery remain pending"
+            }
           },
           "alignment": {
             "configured_by": "aligner-model-dir",
@@ -40894,6 +40908,98 @@
               "max_speakers",
               "workspace_mib"
             ]
+          },
+          "native_separator_health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "disabled",
+                  "configured",
+                  "loading",
+                  "metadata_ready",
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "none",
+                  "separator_assets_invalid",
+                  "separator_assets_timeout",
+                  "separator_worker_unavailable",
+                  "separator_resource_exhausted",
+                  "gpu_unhealthy",
+                  "separator_compute_failed"
+                ]
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model": {
+                "const": "speechbrain-sepformer-wsj02mix"
+              },
+              "device_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery": {
+                "const": "request_driven"
+              },
+              "retry_delay_ms": {
+                "const": 5000
+              },
+              "compute_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "asset_cleanup_pending": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "state",
+              "reason",
+              "core_readiness_dependency",
+              "model",
+              "device_bytes",
+              "load_attempts",
+              "load_failures",
+              "recovery",
+              "retry_delay_ms",
+              "compute_failures",
+              "asset_cleanup_pending"
+            ],
+            "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+          },
+          "native_separator_limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "max_audio_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30
+              },
+              "workspace_mib": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 2048
+              }
+            },
+            "required": [
+              "max_audio_seconds",
+              "workspace_mib"
+            ]
           }
         },
         "required": [
@@ -41082,6 +41188,36 @@
             },
             "then": {
               "required": [
+                "native_speaker_health",
+                "native_speaker_limits",
+                "native_asr_health",
+                "native_asr_limits",
+                "native_alignment_health",
+                "native_alignment_limits",
+                "native_vad_health",
+                "native_vad_max_chunks"
+              ]
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "native_separator_health"
+                  ]
+                },
+                {
+                  "required": [
+                    "native_separator_limits"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "native_separator_health",
+                "native_separator_limits",
                 "native_speaker_health",
                 "native_speaker_limits",
                 "native_asr_health",

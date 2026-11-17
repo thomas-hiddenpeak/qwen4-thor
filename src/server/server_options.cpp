@@ -132,6 +132,18 @@ Status ValidateServerOptions(const ServerOptions& options) {
         "invalid alignment duration/context/word/workspace limits");
   if (!options.speaker_limits.Valid())
     return Status::Fail("invalid speaker window/step/count/workspace limits");
+  if (!options.separator_limits.Valid())
+    return Status::Fail("invalid separator duration/workspace limits");
+  if (!options.separator_model_dir.empty()) {
+    if (options.speaker_model_dir.empty())
+      return Status::Fail("separator-model-dir requires speaker-model-dir");
+    if (!model::ValidEmbeddingAssetDirectory(options.separator_model_dir))
+      return Status::Fail("separator-model-dir must be an absolute asset path");
+    SeparatorResourcePlan plan;
+    if (auto status = PlanSeparatorServiceResources(options.separator_limits,
+                                                     &plan); !status)
+      return status;
+  }
   if (!options.speaker_model_dir.empty()) {
     if (options.asr_model_dir.empty() || options.aligner_model_dir.empty() ||
         options.vad_model_dir.empty())
@@ -281,6 +293,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--asr-workspace-mib")
       integer = &parsed.asr_limits.workspace_mib;
     if (key == "--vad-max-chunks") integer = &parsed.vad_max_chunks;
+    if (key == "--separator-max-audio-seconds")
+      integer = &parsed.separator_limits.max_audio_seconds;
+    if (key == "--separator-workspace-mib")
+      integer = &parsed.separator_limits.workspace_mib;
     if (key == "--speaker-window-ms")
       integer = &parsed.speaker_limits.window_ms;
     if (key == "--speaker-step-ms") integer = &parsed.speaker_limits.step_ms;
@@ -338,7 +354,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
         key != "--aligner-model-dir" && key != "--vad-model-dir" &&
-        key != "--speaker-model-dir" &&
+        key != "--speaker-model-dir" && key != "--separator-model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
@@ -422,6 +438,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.aligner_model_dir = value;
     } else if (key == "--vad-model-dir") {
       parsed.vad_model_dir = value;
+    } else if (key == "--separator-model-dir") {
+      parsed.separator_model_dir = value;
     } else if (key == "--speaker-model-dir") {
       parsed.speaker_model_dir = value;
     } else if (key == "--served-model-name") {

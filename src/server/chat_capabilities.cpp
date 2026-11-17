@@ -5,6 +5,7 @@
 #include "q4t/server/aligner_assets.h"
 #include "q4t/audio/vad.h"
 #include "q4t/audio/speaker_config.h"
+#include "q4t/audio/separator_config.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -32,7 +33,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  const AccessProgramPolicy* access,
                                  bool native_embedding, bool native_asr,
                                  bool native_aligner, bool native_vad,
-                                 int vad_max_chunks, bool native_speaker) {
+                                 int vad_max_chunks, bool native_speaker,
+                                 bool native_separator) {
   const bool constrained = kStructuredDecodingAvailable;
 #ifdef Q4T_HAVE_GSTREAMER_HEADERS
   const bool video_decoder = true;
@@ -104,6 +106,17 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("known_speakers_max":4,"reference_seconds":[2,10],)"
          R"("reference_scope":"current_request_only",)"
          R"("core_readiness_dependency":false},)"
+         R"("separator":{"configured":)" +
+         (native_separator ? "true" : "false") +
+         R"(,"profile":)" + Quote(audio::SeparatorConfig::kProfile) +
+         R"(,"revision":)" + Quote(audio::SeparatorConfig::kRevision) +
+         R"(,"weight_sha256":)" + Quote(audio::SeparatorConfig::kWeightSha256) +
+         R"(,"model":"speechbrain-sepformer-wsj02mix",)"
+         R"("backend":"native_sepformer_fp32","sample_rate":8000,)"
+         R"("simultaneous_sources":2,"output_sample_rate":16000,)"
+         R"("speaker_identity":"cross_track_acoustic_clustering",)"
+         R"("timestamps":"original_time_with_overlap",)"
+         R"("budget":"shared_request","core_readiness_dependency":false},)"
          R"("remaining_native_work":["overlap_diarization"]})" +
          R"(,"models":{"endpoint":"/v1/models","detail":true,)"
          R"("aliases":"explicit_cli","max_aliases":32,)"

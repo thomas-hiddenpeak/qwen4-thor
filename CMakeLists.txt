@@ -186,6 +186,10 @@ add_library(q4t_model STATIC
   src/audio/speaker_features.cpp
   src/audio/diarization.cpp
   src/audio/speaker_model.cu
+  src/audio/separator_config.cpp
+  src/audio/separator_layout.cpp
+  src/audio/separator_model.cu
+  src/audio/separator_resample.cpp
   src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
@@ -315,6 +319,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_speaker_backend.cpp
   src/server/chat_speaker_execution.cpp
   src/server/chat_speaker_turns.cpp
+  src/server/separator_assets.cpp
+  src/server/separator_service.cpp
+  src/server/chat_separator_backend.cpp
+  src/server/chat_separator_execution.cpp
+  src/server/overlapping_output.cpp
   src/server/vad_assets.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp

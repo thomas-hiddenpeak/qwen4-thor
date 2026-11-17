@@ -4,6 +4,7 @@
 
 #include "q4t/server/file_audio.h"
 #include "q4t/server/asr_chunk_output.h"
+#include "q4t/server/overlapping_output.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/request_diagnostics.h"
 
@@ -62,8 +63,9 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       return;
     }
     const bool diarized = request.format == AsrFormat::kDiarizedJson;
-    const bool chunked = diarized ||
-                         request.chunking.mode != AsrChunking::Mode::kSingle;
+    const bool separated = diarized && !separator_model_dir_.empty();
+    const bool chunked =
+        diarized || request.chunking.mode != AsrChunking::Mode::kSingle;
     const bool aligned = diarized || request.format == AsrFormat::kSrt ||
                          request.format == AsrFormat::kVtt ||
                          request.format == AsrFormat::kVerboseJson;
@@ -109,6 +111,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       reply = EnsureNativeAsr(false, access);
       if (reply.ok() && aligned) reply = EnsureNativeAligner(false, access);
       if (reply.ok() && diarized) reply = EnsureNativeSpeaker(false, access);
+      if (reply.ok() && separated) reply = EnsureNativeSeparator(false, access);
     }
     if (!reply.ok()) {
       send_failure(reply);
@@ -121,6 +124,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                                 aligner_limits_.max_audio_seconds)
                      : asr_limits_.max_audio_seconds) *
         1000000000;
+    if (separated)
+      audio_limits.max_duration_ns = std::min(
+          audio_limits.max_duration_ns,
+          uint64_t(separator_limits_.max_audio_seconds) * uint64_t{1000000000});
     audio_limits.max_output_samples = audio_limits.max_duration_ns / 62500;
     FileAudioPcm pcm;
     {
@@ -159,7 +166,12 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       return false;
     };
     bool reserved = false;
-    std::vector<audio::VadChunk> chunks{{0, pcm.samples.size(), false}};
+    std::array<std::vector<float>, 2> separated_pcm;
+    std::array<std::vector<audio::VadChunk>, 2> track_chunks;
+    std::array<SpeakerTrack, 2> tracks;
+    const size_t track_count = separated ? 2 : 1;
+    tracks[0].pcm = pcm.samples;
+    track_chunks[0] = {{0, pcm.samples.size(), false}};
     if (chunked) {
       // Even a VAD-silent request consumes one RPM. Reserve the shared output
       // ceiling once; actual decoder inputs are extended before each clip.
@@ -168,35 +180,76 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
         return;
       rate.StartPrompt(0);
       reserved = true;
+      if (separated) {
+        reply = RunNativeSeparator(fd, pcm.samples, control, diagnostic,
+                                   &separated_pcm);
+        if (!reply.ok()) {
+          send_failure(reply);
+          return;
+        }
+        for (size_t track = 0; track < 2; ++track)
+          tracks[track].pcm = separated_pcm[track];
+      }
       diagnostic.Stage("vad");
-      {
-        RequestDiagnostics::Scope waiting(diagnostic,
-                                          RequestDiagnostics::Wait::kMedia);
-        reply = PrepareVadChunks(request, pcm.samples, access, &chunks);
-      }
-      if (!reply.ok()) {
-        send_failure(reply);
-        return;
+      size_t shared_chunks = 0;
+      for (size_t track = 0; track < track_count; ++track) {
+        {
+          RequestDiagnostics::Scope waiting(diagnostic,
+                                            RequestDiagnostics::Wait::kMedia);
+          reply = PrepareVadChunks(request, tracks[track].pcm, access,
+                                   &track_chunks[track]);
+        }
+        if (!reply.ok()) {
+          send_failure(reply);
+          return;
+        }
+        shared_chunks += track_chunks[track].size();
+        if (shared_chunks > size_t(vad_max_chunks_)) {
+          detail::SendError(fd, 400, "Shared VAD chunk budget exhausted", {},
+                            "vad_chunk_limit");
+          return;
+        }
       }
     }
-    std::vector<audio::SpeakerTurn> turns;
+    for (size_t track = 0; track < track_count; ++track)
+      tracks[track].chunks = track_chunks[track];
     if (diarized) {
-      reply = PrepareSpeakerTurns(fd, request, pcm.samples, chunks, control,
-                                   diagnostic, &turns);
+      reply = PrepareSpeakerTracks(fd, request,
+                                   std::span(tracks).first(track_count),
+                                   control, diagnostic);
       if (!reply.ok()) {
         send_failure(reply);
         return;
       }
     }
+    struct TrackChunk {
+      size_t track;
+      audio::VadChunk chunk;
+    };
+    std::vector<TrackChunk> chunks;
+    for (size_t track = 0; track < track_count; ++track)
+      for (const auto& chunk : track_chunks[track])
+        chunks.push_back({track, chunk});
+    std::stable_sort(chunks.begin(), chunks.end(),
+                     [](const auto& a, const auto& b) {
+                       return a.chunk.begin_sample < b.chunk.begin_sample;
+                     });
     AsrChunkOutput output(request, pcm.samples.size());
     DiarizedTranscript diarization(pcm.samples.size());
+    OverlappingTranscript overlapping(pcm.samples.size());
+    const auto segments = [&] {
+      return separated ? overlapping.Segments() : diarization.Segments();
+    };
+    const auto text = [&]() -> const std::string& {
+      return separated ? overlapping.Text() : diarization.Text();
+    };
     for (size_t index = 0; index < chunks.size(); ++index) {
-      const auto& chunk = chunks[index];
+      const auto& chunk = chunks[index].chunk;
+      const auto track = chunks[index].track;
       audio::AsrFeatures features;
       status = audio::ComputeAsrFeatures(
-          std::span<const float>(pcm.samples)
-              .subspan(chunk.begin_sample,
-                       chunk.end_sample - chunk.begin_sample),
+          tracks[track].pcm.subspan(chunk.begin_sample,
+                                    chunk.end_sample - chunk.begin_sample),
           audio::AsrConfig::kSampleRate,
           {audio_limits.max_output_samples,
            size_t(asr_limits_.max_audio_seconds) * 100},
@@ -252,7 +305,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       reserved = true;
       AsrTranscript transcript(request.logprobs, request.language,
                                request.segment_timestamps);
-      const auto& previous_text = diarized ? diarization.Text() : output.Text();
+      const auto& previous_text = diarized ? text() : output.Text();
       reply = RunNativeAsr(fd, request, features, prompt, control, diagnostic,
                            rate, http->Usage(), &transcript,
                            previous_text.empty() ? "" : " ");
@@ -284,52 +337,70 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
           return;
         }
       }
-      const size_t first_segment = diarization.Segments().size();
-      const bool leading_space = !diarization.Text().empty();
-      status = diarized
-                   ? diarization.Append(transcript.Text(), chunk, words, times,
-                                         turns, prompt.audio_tokens, cancelled)
-                   : output.Append(transcript, std::move(part), chunk,
-                                    prompt.audio_tokens, cues);
+      const size_t first_segment = segments().size();
+      const bool leading_space = !text().empty();
+      if (separated) {
+        status = overlapping.Append(track, transcript.Text(), chunk, words,
+                                    times, tracks[track].turns,
+                                    prompt.audio_tokens, cancelled);
+        if (status)
+          status = overlapping.DrainBefore(
+              index + 1 < chunks.size() ? chunks[index + 1].chunk.begin_sample
+                                        : pcm.samples.size() + 1,
+              cancelled);
+      } else if (diarized) {
+        status = diarization.Append(transcript.Text(), chunk, words, times,
+                                    tracks[track].turns, prompt.audio_tokens,
+                                    cancelled);
+      } else {
+        status = output.Append(transcript, std::move(part), chunk,
+                               prompt.audio_tokens, cues);
+      }
       if (!status) {
         detail::SendError(fd, 502, status.message(), {}, "asr_output_invalid");
         return;
       }
       if (diarized && request.stream) {
         const detail::WriteOptions write{control->deadline(), control.get()};
-        for (size_t i = first_segment; i < diarization.Segments().size(); ++i) {
+        for (size_t i = first_segment; i < segments().size(); ++i) {
           if (cancelled()) return;
           if (*http->State() == detail::ResponseState::kUnsent) {
             if (!detail::BeginStreamingResponse(fd, http->State(), write))
               return;
             http->StartHeartbeats(control);
           }
-          const auto& segment = diarization.Segments()[i];
+          const auto& segment = segments()[i];
           std::string event, delta;
           status = DiarizedTranscript::SegmentJson(segment, &event);
           if (status)
             status = DiarizedTranscript::DeltaJson(
-                segment, leading_space && i == first_segment, &delta);
+                segment,
+                separated ? i > 0 : leading_space && i == first_segment,
+                &delta);
           if (!status) {
             detail::SendError(fd, 502, status.message(), {},
                               "asr_output_invalid");
             return;
           }
-          if (!detail::WriteAll(fd,
-                                "event: transcript.text.delta\r\ndata: " +
-                                    delta + "\r\n\r\n" +
-                                    "event: transcript.text.segment\r\ndata: " +
-                                    event + "\r\n\r\n", write))
+          if (!detail::WriteAll(
+                  fd,
+                  "event: transcript.text.delta\r\ndata: " + delta +
+                      "\r\n\r\n" + "event: transcript.text.segment\r\ndata: " +
+                      event + "\r\n\r\n",
+                  write))
             return;
         }
       }
     }
     std::string response;
     const auto actual = http->Usage().Total();
-    status = actual ? (diarized ? diarization.Finish(*actual, request.stream,
-                                                    &response)
-                                : output.Finish(*actual, &response))
-                    : Status::Fail("ASR usage unavailable");
+    status = actual
+                 ? (separated
+                        ? overlapping.Finish(*actual, request.stream, &response)
+                    : diarized
+                        ? diarization.Finish(*actual, request.stream, &response)
+                        : output.Finish(*actual, &response))
+                 : Status::Fail("ASR usage unavailable");
     if (!status) {
       detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");
       return;

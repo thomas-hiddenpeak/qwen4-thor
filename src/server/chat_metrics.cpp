@@ -431,7 +431,7 @@ void ChatServer::HandleCapabilities(int fd) {
                  access_program_policy_.get(), !embedding_model_dir_.empty(),
                  !asr_model_dir_.empty(), !aligner_model_dir_.empty(),
                  !vad_model_dir_.empty(), vad_max_chunks_,
-                 !speaker_model_dir_.empty()),
+                 !speaker_model_dir_.empty(), !separator_model_dir_.empty()),
              "application/json");
 }
 
