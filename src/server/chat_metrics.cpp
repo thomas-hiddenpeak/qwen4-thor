@@ -425,11 +425,12 @@ void ChatServer::HandleModel(int fd, const std::string& method,
 
 void ChatServer::HandleCapabilities(int fd) {
   SendSimple(fd, 200, "OK",
-             ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_,
-                                  vision_device_budget_.attention_shared_bytes,
-                                  access_program_policy_.get(),
-                                  !embedding_model_dir_.empty(),
-                                  !asr_model_dir_.empty()),
+             ChatCapabilitiesJson(
+                 model_name_, allow_media_, mtp_loaded_,
+                 vision_device_budget_.attention_shared_bytes,
+                 access_program_policy_.get(), !embedding_model_dir_.empty(),
+                 !asr_model_dir_.empty(), !aligner_model_dir_.empty(),
+                 !vad_model_dir_.empty(), vad_max_chunks_),
              "application/json");
 }
 

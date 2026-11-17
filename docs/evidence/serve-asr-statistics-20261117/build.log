@@ -1,0 +1,55 @@
+[  1%] Built target q4t_regex_build
+[  2%] Built target q4t_program_javascript
+[  9%] Built target xgrammar
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_request.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_response.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_protocol_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_test.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_statistics_test.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp: In function ‘q4t::Status q4t::server::MeasureAsrCompression(std::string_view, AsrCompression*, GrammarControl, GrammarFailure*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:130:19: error: ‘GrammarProcess’ was not declared in this scope; did you mean ‘q4t::server::detail::GrammarProcess’?
+  130 |   std::unique_ptr<GrammarProcess> process;
+      |                   ^~~~~~~~~~~~~~
+      |                   q4t::server::detail::GrammarProcess
+In file included from /home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/asr_statistics.h:6,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:1:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/grammar_process.h:107:7: note: ‘q4t::server::detail::GrammarProcess’ declared here
+  107 | class GrammarProcess {
+      |       ^~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:130:33: error: template argument 1 is invalid
+  130 |   std::unique_ptr<GrammarProcess> process;
+      |                                 ^
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:130:33: error: template argument 2 is invalid
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:132:8: error: ‘GrammarProcess’ is not a class, namespace, or enumeration
+  132 |   if (!GrammarProcess::Start(entry, control, &process, &cause))
+      |        ^~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:137:19: error: base operand of ‘->’ is not a pointer
+  137 |     return process->Transfer(data, bytes, write, control.compile_deadline,
+      |                   ^~
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp: In function ‘q4t::Status q4t::server::MeasureAsrCompression(std::string_view, AsrCompression*, GrammarControl, GrammarFailure*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:143:24: error: base operand of ‘->’ is not a pointer
+  143 |     return fail(process->Failure(), "ASR statistics transfer failed");
+      |                        ^~
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:145:15: error: base operand of ‘->’ is not a pointer
+  145 |   if (!process->CollectOutput(&trailing, 0, control.compile_deadline,
+      |               ^~
+/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp:147:24: error: base operand of ‘->’ is not a pointer
+  147 |     return fail(process->Failure(), "ASR statistics completion unconfirmed");
+      |                        ^~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:219: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:347: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:354: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:200: q4t_host_tests] Error 2

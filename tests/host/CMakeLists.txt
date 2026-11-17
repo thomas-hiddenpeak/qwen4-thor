@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(../../cmake/HostTestSources.cmake)
 find_package(Threads REQUIRED)
 include(../../cmake/ModelAssetTests.cmake)
+include(../../cmake/NativeVadTests.cmake)
 add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES} ../../src/io/json.cpp)
 target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
 q4t_link_structured_output(q4t_host_tests)
@@ -22,11 +23,25 @@ target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
 # Local real-checkpoint qualification is opt-in and has no CUDA dependency.
+add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
+  ../test_main.cpp ../aligner_config_test.cpp ../aligner_asset_test.cpp
+  ../../src/audio/asr_config.cpp ../../src/audio/aligner_config.cpp
+  ../../src/io/json.cpp)
+target_include_directories(q4t_aligner_contract_tests PRIVATE ../../include)
+target_compile_options(q4t_aligner_contract_tests PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
   ../test_main.cpp ../asr_config_test.cpp ../asr_asset_test.cpp
   ../../src/audio/asr_config.cpp ../../src/io/json.cpp)
 target_include_directories(q4t_asr_contract_tests PRIVATE ../../include)
 target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+add_executable(q4t_aligner_layout_tests EXCLUDE_FROM_ALL
+  ../test_main.cpp ../aligner_layout_test.cpp ../asr_layout_test.cpp
+  ../../src/audio/asr_config.cpp ../../src/audio/aligner_config.cpp
+  ../../src/audio/asr_layout.cpp ../../src/audio/aligner_layout.cpp
+  ../../src/io/json.cpp ../../src/model/embedding_layout.cpp
+  ../../src/model/embedding_config.cpp)
+target_include_directories(q4t_aligner_layout_tests PRIVATE ../../include)
+target_compile_options(q4t_aligner_layout_tests PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_asr_layout_tests EXCLUDE_FROM_ALL
   ../test_main.cpp ../asr_layout_test.cpp
   ../../src/audio/asr_layout.cpp ../../src/audio/asr_config.cpp
@@ -45,8 +60,18 @@ if(PkgConfig_FOUND)
   pkg_check_modules(ASR_ICU QUIET icu-uc icu-i18n)
 endif()
 if(ASR_ICU_FOUND)
+  add_executable(q4t_aligner_postprocess_tests EXCLUDE_FROM_ALL
+    ../test_main.cpp ../aligner_postprocess_test.cpp
+    ../../src/audio/aligner_postprocess.cpp ../../src/io/json.cpp)
+  target_include_directories(q4t_aligner_postprocess_tests PRIVATE
+    ../../include ${ASR_ICU_INCLUDE_DIRS})
+  target_link_libraries(q4t_aligner_postprocess_tests PRIVATE
+    ${ASR_ICU_LINK_LIBRARIES})
+  target_compile_options(q4t_aligner_postprocess_tests PRIVATE
+    -Wall -Wextra -Werror)
   add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
     ../test_main.cpp ../asr_tokenizer_test.cpp ../embedding_contract_test.cpp
+    ../aligner_tokenizer_test.cpp
     ../../src/text/tokenizer.cpp ../../src/io/json.cpp
     ../../src/model/embedding_config.cpp ../../src/model/embedding_layout.cpp)
   target_include_directories(q4t_asr_tokenizer_tests PRIVATE

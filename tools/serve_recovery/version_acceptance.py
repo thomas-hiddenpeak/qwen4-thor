@@ -92,6 +92,8 @@ def prepare(args):
         asr_model_dir=(Path(settings['native_asr']['directory'])
                        if settings.get('native_asr') else None),
         asr_limits=settings.get('native_asr', {}).get('limits'),
+        asr_auxiliary={k:v for k,v in settings.get('native_asr', {}).items()
+                       if k in engine.ASR_AUXILIARY} or None,
         recovery_profiles=qualified/'registry.json',recovery_profile_policy=old['recovery_profile_policy'])
     fallback=profile_compat.prepare(origin,old_sha,out/'retained-fallback')
     root=dict(package=receipt['package'],manifest_sha256=receipt['manifest_sha256'])

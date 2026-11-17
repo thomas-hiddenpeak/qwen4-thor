@@ -29,6 +29,7 @@
 #include "q4t/server/file_webp.h"
 #include "q4t/server/file_video.h"
 #include "q4t/server/file_audio.h"
+#include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
@@ -101,6 +102,8 @@ int main(int argc, char** argv) {
   if (audio_fixture >= 0) return audio_fixture;
   const int audio_worker = q4t::server::MaybeRunFileAudioWorker(argc, argv);
   if (audio_worker >= 0) return audio_worker;
+  const int asr_statistics = q4t::server::MaybeRunAsrStatisticsWorker(argc, argv);
+  if (asr_statistics >= 0) return asr_statistics;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 0.007680112030357122,
+  "tests": 1,
+  "gpu_actions": 0,
+  "binary_sha256": "577298843023628487eab54e13e2e8698b3bb920e80d222f2018c24576d54da9"
+}

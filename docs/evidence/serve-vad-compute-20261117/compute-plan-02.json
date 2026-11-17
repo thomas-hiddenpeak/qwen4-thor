@@ -1,0 +1,101 @@
+{
+  "limits": {
+    "unit_tests": 8,
+    "actual_cases": 4,
+    "gpu_actions": 0
+  },
+  "seconds": 180,
+  "unit_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_vad_tests",
+  "native_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_vad_replay",
+  "native_model": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad_16k.safetensors",
+  "reference_model": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad.jit",
+  "reference_python": "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+  "reference_source": "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_reference.py",
+  "required_list": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/required.txt",
+  "cases": [
+    {
+      "name": "zh",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/zh-pcm.f32",
+      "samples": 67263,
+      "pcm_sha256": "54d3a34be5c52ad1cf48c7f68b47299c7ce88bc893fefa4268f3e376631dee3a"
+    },
+    {
+      "name": "en",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/en-pcm.f32",
+      "samples": 240820,
+      "pcm_sha256": "1a9db18a8e557f7fb378ae401a3ebfb6ffe3b29ab86e938dc41bf1c4706247de"
+    },
+    {
+      "name": "silence",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silence.f32",
+      "samples": 16384,
+      "pcm_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31"
+    },
+    {
+      "name": "noise",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/noise.f32",
+      "samples": 16384,
+      "pcm_sha256": "db7054c10a8269a181ac59a64f0c6e13d02890668bed3786dcdacb76c6fd9732"
+    }
+  ],
+  "absolute_error": {
+    "probabilities": 2e-05,
+    "hidden": 0.0002,
+    "cell": 0.0002
+  },
+  "scope": "CPU component only; true posterior/recurrence and isolated request ownership; no service/segment/whole-clip confidence claim.",
+  "identities": {
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/audio/vad.h": "e31e1a370182b2d56b8b73f5bc0cf2d26abc30f21c7fe0d3d8a653a46062c9d5",
+    "/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp": "990ebadf5adb32e60c1c6224efb2457a1ea66aab62a9e81894209c4e88d65c04",
+    "/home/rm01/models/dev/qwen4-thor/tests/vad_test.cpp": "e6a81befb807b4d285f1979816afeafd10d50ef47b01a25fef8b1da76a27f7a1",
+    "/home/rm01/models/dev/qwen4-thor/tests/fixtures/silero_vad_header.json": "d65b7edf46df398d9e349a118372bf70e0b402f92d46125a2d67348083e9aedc",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_replay.cpp": "799dee3a76ca1347cf9cce52e761abe0e1bb553207459fd956215f3a181f6a2c",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_reference.py": "d6d3930401b58568224ee4e0040aa8a03059bb09eea710e1f57f61645059c6b2",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_acceptance.py": "c46df2336c96f589838cea5d9d842f2d67d709a30c114ea4e76504de9a32c0e1",
+    "/home/rm01/models/dev/qwen4-thor/CMakeLists.txt": "4d7e60f78a5032c2a2e54613f342ba7b56f87ecd1fba2358d9d0a5227136d8c0",
+    "/home/rm01/models/dev/qwen4-thor/cmake/HostTestSources.cmake": "de8f70a101861a3bdf3570dfd54075dab86eae18db4fdbc0b60511cb97370294",
+    "/home/rm01/models/dev/qwen4-thor/cmake/NativeVadTests.cmake": "9f3d48efa6fe0e6624f9fc5f7645efdeb28e0d68a675a106e171459c8e6fa368",
+    "/home/rm01/models/dev/qwen4-thor/tests/host/CMakeLists.txt": "8d68eeb1391d9dcf30d8d25073969d75d780bbbe66f262751d02f7428e9bcc9f",
+    "/home/rm01/models/dev/qwen4-thor/src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_vad_tests": "840770f53a0d363658c633807c65ec5685870564decfa99225810c88db30baf4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_vad_replay": "9dbc2cc4dcf241d028c7df12e1ef232589156d004d505c8533034cb6d566a78f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad_16k.safetensors": "c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad.jit": "e1122837f4154c511485fe0b9c64455f7b929c96fbb8d79fbdb336383ebd3720",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/required.txt": "2c8678fdab7e41e6db5035a74c2eb593b5c01de37793bc29680dad569c8b915a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/zh-pcm.f32": "54d3a34be5c52ad1cf48c7f68b47299c7ce88bc893fefa4268f3e376631dee3a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/en-pcm.f32": "1a9db18a8e557f7fb378ae401a3ebfb6ffe3b29ab86e938dc41bf1c4706247de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silence.f32": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/noise.f32": "db7054c10a8269a181ac59a64f0c6e13d02890668bed3786dcdacb76c6fd9732"
+  },
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc"
+  },
+  "reuse_native": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01",
+    "files": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/result.json": "263c4cf4dac51dbfce5d836b39efd1b7342277f0f330eef01fda3c1bbbd9e729",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native.log": "7a8de0fbdbe7d9ddb4c0adb5d01f7de8f19d7dc7ae641fcab0a52b280972a49a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/unit.log": "c27fd672f788535cc143981c61c418dc43c84fd9a51f22668f79a82ea0e4d5fd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/reference.log": "67314226c48f6944c4fa05b758cdcdb2e489b1678041d6c9ddf34007d2688a2e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-2-hidden.f32": "cf0d077709f8ae603882a0d20dbdf8b930a993cd2560a7a90e64b516d88d7d07",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-0-probabilities.f32": "d696d558ee3986f011f06ee9700927281d28a435d551ac1b9547e24a6f998b7e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-0-cell.f32": "b0895770b50f39fdf7993ad9f9cab362dd9577a816b49ef204afecd27c313ffd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-1-probabilities.f32": "29d697293591083ba66127b4f35dadff727ca8fcb897ea0fe537dc489254a7b3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-1-cell.f32": "9173b5e12db26087220207893314e0eddd0874dcca2756d3a86eccf0b2bec3e7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-0-hidden.f32": "307e16daea8aee032ebe7626db6450373a0dd313574a7c981f1dc9e29a4762c4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-3-hidden.f32": "2bbd3761898d7ef18be9babe731e8fdc56e467292fea2ceb5830431ce0d445b4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-1-hidden.f32": "3ca325c48ee08aa83a75f7d7619890c050bcd4f670bd4f60eb18db2165276e01",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-3-probabilities.f32": "ae814d9e8659c1789bf7c48a667330c8cb52a77e3f16a37e89be1f8672416d7f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-3-cell.f32": "7f5dfea748ff268f8e97ec3d8b16bdc05714d0ce9ad8a638af65749b91991db2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-2-probabilities.f32": "f1f335cbcc1125c20a14d5ce0d87457468418e0abd90ff2aa8160fde8847ab39",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/cpu-01/native/case-2-cell.f32": "3e6ebb2f0f14dcb7d6ba0be6e83c84728196bb3c1fc59eb23f9b41a330f530ba"
+    }
+  },
+  "bind_fixed_safetensors_to_reference_graph": true,
+  "reference_scope": "The packaged JIT weights differ from the previously frozen target safetensors. Keep the official JIT graph, explicitly bind all 15 target tensors bitwise. Original FAILED run and unchanged native/unit observations are preserved; this does not qualify the packaged JIT weights."
+}

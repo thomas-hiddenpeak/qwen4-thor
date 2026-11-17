@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Native dedicated retrieval delivered. Continue remaining media/backend/tool/recovery and master tasks.",
+      "next": "Complete alignment/segment/VAD package, native ingress, primary/light and recovery delivery; then all remaining audio/multimodal and master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2693,6 +2693,271 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "native_alignment_20261117": {
+        "state": "native_compute_reviewed_service_pending",
+        "plan": "SERVE_NATIVE_ALIGNMENT_2026-11-17.md",
+        "model_revision": "c7cbfc2048c462b0d63a45797104fc9db3ad62b7",
+        "asset_bytes_limit": 2000000000,
+        "asset_seconds_limit": 1800,
+        "cpu_tests_limit": 8,
+        "cpu_seconds_limit": 180,
+        "gpu_actions": 3,
+        "publication": false,
+        "contract_evidence": "evidence/serve-aligner-contract-20261117",
+        "tokenizer_evidence": "evidence/serve-aligner-tokenizer-20261117",
+        "cpu_passed": 20,
+        "actual_alignment": true,
+        "compute_evidence": "evidence/serve-aligner-compute-20261117",
+        "strict_raw_class_equality": "FAILED: English 2/72 slots differ 80ms; original preserved",
+        "head_operand_review": "PASS for actual BF16 operands, no model math change"
+      },
+      "alignment_postprocess_20261117": {
+        "state": "cpu_component_accepted_service_pending",
+        "evidence": "evidence/serve-aligner-postprocess-20261117/README.md",
+        "cpu_tests": 8,
+        "seconds": 0.007251206785440445,
+        "gpu_actions": 0,
+        "japanese_korean": "native ICU segmentation; actual-language qualification remains required",
+        "next": "Isolated asset/resource/health integration and real timestamp/subtitle API; all remaining master tasks continue"
+      },
+      "alignment_service_assets_20261117": {
+        "state": "cpu_component_accepted_runtime_pending",
+        "tests": 15,
+        "seconds": 0.5720565393567085,
+        "gpu_actions": 0,
+        "full_checkpoint_reads": 0,
+        "evidence": "evidence/serve-aligner-service-assets-20261117/README.md",
+        "next": "Native ChatServer alignment integration, actual timestamps/subtitles and all required business/delivery"
+      },
+      "alignment_output_runtime_20261117": {
+        "state": "cpu_accepted_http_pending",
+        "evidence": "evidence/serve-aligner-output-runtime-20261117/README.md",
+        "cpu_tests": 14,
+        "seconds": 0.007777197752147913,
+        "gpu_actions": 0,
+        "candidate_engine_sha256": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
+        "published": false,
+        "remaining": "Real HTTP/SDK qualification, complete segment confidence and VAD producers, service integration and delivery; all other A10/master tasks continue."
+      },
+      "alignment_http_20261117": {
+        "state": "direct_http_pass_full_segment_delivery_pending",
+        "driver": "tools/native_asr/alignment_http_acceptance.py",
+        "limits": {
+          "starts": 1,
+          "creates": 7,
+          "seconds": 600
+        },
+        "quality_scope": "real SDK/word/subtitle and scoped recovery; prior Chinese classification integration consistency, not human timestamp accuracy",
+        "remaining": "Complete segment metadata/VAD producers, service integration/delivery and all other master tasks",
+        "evidence": "evidence/serve-aligner-http-20261117/README.md",
+        "counts": {
+          "starts": 1,
+          "chats": 7,
+          "controls": 46
+        },
+        "seconds": 57.04449202679098,
+        "nvml_samples": 55,
+        "publication": false
+      },
+      "native_vad_20261117": {
+        "state": "cpu_component_accepted_service_pending",
+        "model_revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+        "runtime_external_inference_libraries": [],
+        "model_bytes": 1239748,
+        "unit_cases": 8,
+        "real_reference_cases": 4,
+        "seconds_limit": 180,
+        "gpu_actions": 0,
+        "published": false,
+        "remaining": "Isolated assets/request state, real VAD chunking, business and delivery; all remaining master tasks stay required.",
+        "evidence": "evidence/serve-vad-compute-20261117/README.md",
+        "frames": 667,
+        "seconds": 3.3566437661647797,
+        "original_reference": "FAILED_preserved: packaged JIT and safetensors weights differ",
+        "accepted_reference": "Official JIT graph with all 15 previously frozen target tensors explicitly bound",
+        "max_probability_absolute_error": 2.6226043701171875e-06,
+        "assets_and_chunks": {
+          "state": "cpu_components_accepted_runtime_pending",
+          "evidence": "evidence/serve-vad-assets-chunks-20261117/README.md",
+          "cpu_cases": 14,
+          "seconds": 0.07122829603031278,
+          "gpu_actions": 0
+        }
+      },
+      "segment_statistics_20261117": {
+        "state": "direct_http_accepted_service_pending",
+        "statistics_evidence": "evidence/serve-asr-statistics-20261117/README.md",
+        "segment_evidence": "evidence/serve-asr-segments-cpu-20261117/README.md",
+        "cpu_cases": 32,
+        "driver_cases": 3,
+        "gpu_actions": 2,
+        "http_limits": {
+          "starts": 1,
+          "creates": 7,
+          "seconds": 600
+        },
+        "candidate_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+        "published": false,
+        "evidence": "evidence/serve-asr-segment-http-20261117/README.md",
+        "counts": {
+          "starts": 2,
+          "creates": 7
+        },
+        "seconds": 100.61144385300577,
+        "original_failure_preserved": true,
+        "remaining": "Actual VAD/diarization, full service composition and delivery; all other master tasks"
+      },
+      "vad_runtime_20261117": {
+        "state": "targeted_cpu_and_direct_http_passed_service_delivery_pending",
+        "evidence": "evidence/serve-vad-runtime-cpu-20261117/README.md",
+        "tests": {
+          "cpp": 16,
+          "driver": 3,
+          "gpu": 0
+        },
+        "candidate": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71",
+        "http_frozen": {
+          "starts": 1,
+          "creates": 12,
+          "seconds": 600
+        },
+        "next": "Real multiclip/SDK/isolation/shared-budget business, then service/ingress/recovery/delivery; complete all remaining A10/master tasks.",
+        "http_evidence": "evidence/serve-vad-http-20261117/README.md",
+        "actual": {
+          "starts": 1,
+          "creates": 12,
+          "seconds": 57.0483124749735
+        }
+      },
+      "audio_auxiliary_package_20261117": {
+        "state": "cpu_passed_recovery_and_delivery_pending",
+        "evidence": "evidence/serve-audio-auxiliary-package-cpu-20261117/README.md",
+        "candidate": {
+          "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-04/q4t",
+          "sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "changes_since_http_engine03": [
+            "include/q4t/audio/vad.h adds fixed profile string",
+            "src/server/chat_capabilities.cpp publishes fixed VAD profile/revision/weight SHA"
+          ],
+          "compute_and_request_paths_unchanged": true,
+          "published": false
+        },
+        "tests": 17,
+        "gpu": 0
+      },
+      "audio_auxiliary_recovery_20261117": {
+        "state": "targeted_cpu_pass_actual_profiles_pending",
+        "evidence": "evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md",
+        "tests": 19,
+        "seconds": 1.16520653385669,
+        "gpu_actions": 0,
+        "next_limits": {
+          "starts": 2,
+          "creates": 14,
+          "seconds": 900
+        },
+        "whole_task_complete": false
+      },
+      "audio_auxiliary_primary_light_20261117": {
+        "state": "real_profiles_accepted_service_delivery_pending",
+        "evidence": "evidence/serve-audio-auxiliary-profiles-20261117/README.md",
+        "counts": {
+          "starts": 2,
+          "chats": 14,
+          "controls": 80
+        },
+        "seconds": 110.4937121430412,
+        "whole_task_complete": false,
+        "default_unchanged": true
+      },
+      "audio_auxiliary_service_driver_20261118": {
+        "state": "targeted_cpu_pass_real_service_pending",
+        "evidence": "evidence/serve-audio-auxiliary-service-cpu-20261118/README.md",
+        "cpu_tests": 9,
+        "gpu_actions": 0,
+        "actual_migration_defect_fixed": true,
+        "service_limits": {
+          "starts": 5,
+          "creates": 19,
+          "probes": 1,
+          "seconds": 1800
+        },
+        "whole_task_complete": false
+      },
+      "audio_auxiliary_exec_bound_20261118": {
+        "state": "failure_fixed_cpu_pass_service_retry_pending",
+        "evidence": "evidence/serve-audio-exec-bound-20261118/README.md",
+        "original_counted_spawn_attempts": 1,
+        "actual_model_execs": 0,
+        "reason": "76 arguments rejected by old <=64 check before identity receipt, permit or exec; reproduced on CPU. Later model generations exhausted the counted spawn budget before Popen.",
+        "actual_creates": 0,
+        "original_seconds": 34.10361590003595,
+        "original_status": "FAILED_preserved",
+        "cleanup_complete": true,
+        "nvml_queries": 35,
+        "static_proof_not_polling_only": true,
+        "sources": {
+          "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
+          "tools/serve_recovery/test_child.py": "d5de2dd7e9f4e9d0d4e4fe6addcfe30da0aaad249404b986c62f56f95c7ae954"
+        },
+        "remaining_actual_model_starts": 5,
+        "cumulative_counted_attempt_limit": 6,
+        "cumulative_creates_limit": 19,
+        "cumulative_seconds_limit": 1800
+      },
+      "audio_auxiliary_service_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_SERVICE_COMPOSITION",
+        "actual_model_starts": 5,
+        "counted_spawn_attempts": 6,
+        "service_requests": 19,
+        "service_probes": 1,
+        "service_seconds": 315.83405995741487,
+        "nvml_queries": 305,
+        "cleanup_complete": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "evidence": "evidence/serve-audio-auxiliary-service-20261118/README.md",
+        "whole_task_complete": false
+      },
+      "audio_auxiliary_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
+        "revision": 286,
+        "current": {
+          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
+          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
+          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
+          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
+          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+        },
+        "commands": 19,
+        "seconds": 275.8470332380384,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
+        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev276_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_timeout_preserved": true,
+        "maintenance_cumulative_seconds": 122.27650483138859,
+        "deleted_files": 0,
+        "files": 82,
+        "secret_scan_matches": 0,
+        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
       }
     },
     {
@@ -3716,6 +3981,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "audio_auxiliary_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
+        "revision": 286,
+        "current": {
+          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
+          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
+          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
+          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
+          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+        },
+        "commands": 19,
+        "seconds": 275.8470332380384,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
+        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev276_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_timeout_preserved": true,
+        "maintenance_cumulative_seconds": 122.27650483138859,
+        "deleted_files": 0,
+        "files": 82,
+        "secret_scan_matches": 0,
+        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
       }
     },
     {
@@ -4597,7 +4900,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev276 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev286 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -5209,12 +5512,50 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "audio_auxiliary_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
+        "revision": 286,
+        "current": {
+          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
+          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
+          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
+          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
+          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+        },
+        "commands": 19,
+        "seconds": 275.8470332380384,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
+        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev276_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_timeout_preserved": true,
+        "maintenance_cumulative_seconds": 122.27650483138859,
+        "deleted_files": 0,
+        "files": 82,
+        "secret_scan_matches": 0,
+        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_integration_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -5248,37 +5589,42 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
-        "revision": 276,
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
+        "revision": 286,
         "current": {
-          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
-          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
-          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
-          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
-          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
-          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
+          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
+          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
+          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
+          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
         },
         "commands": 19,
-        "seconds": 273.9558519902639,
+        "seconds": 275.8470332380384,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
-        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
+        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
         "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "previous_rev266_preserved": true,
+        "previous_rev276_preserved": true,
         "retired_intents_archived": 4,
         "retired_generations_archived": 2,
         "retired_versions_archived": 2,
+        "maintenance_original_timeout_preserved": true,
+        "maintenance_cumulative_seconds": 122.27650483138859,
         "deleted_files": 0,
-        "files": 61,
+        "files": 82,
         "secret_scan_matches": 0,
-        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
         "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5445,7 +5791,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native ASR PR44 final-head checks and actual main merge",
+        "PR45 final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5817,6 +6163,53 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "pr44_20261117": {
+        "state": "merged",
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/44",
+        "accepted_head": "5784729c4bc79fd1d210299ca10294a5071b0ca4",
+        "merge_commit": "8de16675df10ecefa818a682d745539063b84cfc",
+        "checks": "two host-contracts SUCCESS",
+        "evidence": "evidence/serve-pr44-merged-20261117/README.md",
+        "later_alignment_vad_included": false
+      },
+      "audio_auxiliary_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
+        "revision": 286,
+        "current": {
+          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
+          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
+          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
+          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
+          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+        },
+        "commands": 19,
+        "seconds": 275.8470332380384,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
+        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev276_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_timeout_preserved": true,
+        "maintenance_cumulative_seconds": 122.27650483138859,
+        "deleted_files": 0,
+        "files": 82,
+        "secret_scan_matches": 0,
+        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
       }
     },
     {
@@ -6008,8 +6401,8 @@
       }
     }
   ],
-  "next_task": "A10/Q02",
-  "next": "rev276 core day handoff prepared, not run. Complete PR44 checks and actual merge; continue ASR alignment/segmentation and every remaining master task.",
+  "next_task": "PR45 main integration and A10 diarization plus all remaining master tasks",
+  "next": "Complete final-head PR45 integration and exact user handoff, then actual diarization, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

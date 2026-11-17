@@ -36,7 +36,9 @@ def definitions():
         {'if':{'required':['timestamp_granularities'],
                'properties':{'timestamp_granularities':{'minItems':1}}},
          'then':{'required':['response_format'],
-                 'properties':{'response_format':{'const':'verbose_json'}}}}]
+                 'properties':{'response_format':{'const':'verbose_json'}}}},
+        {'if':{'required':['stream'], 'properties':{'stream':{'const':True}}},
+         'then':{'properties':{'response_format':{'enum':['json', 'text', 'diarized_json']}}}}]
     probability = obj(dict(token=text, logprob=dict(type='number', maximum=0),
         bytes=dict(type='array', minItems=1,
                    items=dict(type='integer', minimum=0, maximum=255))),
@@ -56,7 +58,25 @@ def definitions():
                ['type', 'text', 'usage'])
     error = obj(dict(type=dict(const='error'), code=text, message=text,
                      param=nullable(text)), ['type', 'code', 'message', 'param'])
+    seconds = dict(type='number', minimum=0, maximum=600)
+    word = obj(dict(word=text, start=seconds, end=seconds), ['word', 'start', 'end'])
+    segment = obj(dict(id=count, seek=count, start=seconds, end=seconds, text=text,
+        tokens=dict(type='array', minItems=1, items=dict(type='integer', minimum=0, maximum=151935)),
+        temperature=dict(type='number', minimum=0, maximum=1),
+        avg_logprob=dict(type='number', maximum=0),
+        compression_ratio=dict(type='number', minimum=0),
+        no_speech_prob=dict(type='number', minimum=0, maximum=1)),
+        ['id', 'seek', 'start', 'end', 'text', 'tokens', 'temperature',
+         'avg_logprob', 'compression_ratio', 'no_speech_prob'])
+    verbose = obj(dict(text=text, language=text, duration=seconds,
+        words=dict(type='array', items=ref('transcription_word')),
+        segments=dict(type='array', items=ref('transcription_segment')),
+        usage=obj(dict(type=dict(const='duration'), seconds=seconds), ['type', 'seconds'])),
+        ['text', 'language', 'duration', 'usage'])
+    verbose['anyOf'] = [dict(required=['words']), dict(required=['segments'])]
     return dict(transcription_create=request, transcription_response=response,
+        transcription_verbose_response=verbose, transcription_word=word,
+        transcription_segment=segment,
         transcription_logprob=probability, transcription_delta=delta,
         transcription_done=done, transcription_error=error,
         transcription_event=dict(anyOf=[ref('transcription_delta'),
@@ -73,9 +93,12 @@ def source_sha(sdk):
 
 def add_openapi(paths, response, error):
     external = lambda name: {'$ref':'serve-application-v1.schema.json#/$defs/'+name}
-    success = response(external('transcription_response'))
+    success = response(dict(anyOf=[external('transcription_response'),
+                                   external('transcription_verbose_response')]))
     success['content'].update({
         'text/plain':dict(schema=dict(type='string')),
+        'text/vtt':dict(schema=dict(type='string')),
+        'application/x-subrip':dict(schema=dict(type='string')),
         'text/event-stream':dict(schema=dict(type='string'), **{
             'x-q4t-event-schema':external('transcription_event'),
             'x-q4t-stream-contract':'transcript.text.delta then transcript.text.done; '
@@ -89,7 +112,15 @@ def add_openapi(paths, response, error):
             configured_by='asr-model-dir', binary_file_bytes=25*1024**2,
             multipart_bytes=32*1024**2, core_readiness_dependency=False,
             recovery='request-driven asset retry; no automatic primary model restart',
-            implemented_formats=['json', 'text'],
-            required_pending_executors=['actual_alignment', 'diarization', 'vad_chunking'],
+            implemented_formats=['json', 'text', 'verbose_json', 'srt', 'vtt'],
+            required_pending_executors=['diarization'],
+            alignment=dict(configured_by='aligner-model-dir',
+                timestamps='actual fixed-model word edges; repaired ordering is explicit',
+                segments='independently decoded clip with actual token/temperature/probability/compression'),
+            chunking=dict(configured_by='vad-model-dir', backend='native CPU Silero 16k',
+                strategies=['auto', 'server_vad'], max_chunks='explicit vad-max-chunks, 1..256',
+                budget='one request RPM, cumulative input/output and one output ceiling',
+                failure='no partial success or dropped tail',
+                offsets='real original sample origin; seek in 10ms feature frames'),
             multipart_arrays='repeated bracket names; nested chunking_strategy bracket fields or JSON object',
             zero_temperature='native confidence policy; not a claim about private provider thresholds')}))

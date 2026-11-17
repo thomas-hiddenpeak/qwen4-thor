@@ -1,0 +1,9 @@
+{
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "device": "cpu",
+  "fixed_jit_sha256": "e1122837f4154c511485fe0b9c64455f7b929c96fbb8d79fbdb336383ebd3720",
+  "reference_weight_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad_16k.safetensors",
+  "bound_fixed_safetensors_to_reference_graph": true,
+  "weight_tensors_bitwise_identical": 15
+}

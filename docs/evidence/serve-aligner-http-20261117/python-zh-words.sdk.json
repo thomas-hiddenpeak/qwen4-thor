@@ -1,0 +1,87 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "duration": 4.203,
+    "language": "Chinese",
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "segments": null,
+    "usage": {
+      "seconds": 4.203,
+      "type": "duration"
+    },
+    "words": [
+      {
+        "end": 0.72,
+        "start": 0.4,
+        "word": "\u751a"
+      },
+      {
+        "end": 0.96,
+        "start": 0.72,
+        "word": "\u81f3"
+      },
+      {
+        "end": 1.12,
+        "start": 0.96,
+        "word": "\u51fa"
+      },
+      {
+        "end": 1.52,
+        "start": 1.12,
+        "word": "\u73b0"
+      },
+      {
+        "end": 1.76,
+        "start": 1.52,
+        "word": "\u4ea4"
+      },
+      {
+        "end": 2.0,
+        "start": 1.76,
+        "word": "\u6613"
+      },
+      {
+        "end": 2.24,
+        "start": 2.0,
+        "word": "\u51e0"
+      },
+      {
+        "end": 2.48,
+        "start": 2.24,
+        "word": "\u4e4e"
+      },
+      {
+        "end": 2.72,
+        "start": 2.48,
+        "word": "\u505c"
+      },
+      {
+        "end": 2.88,
+        "start": 2.72,
+        "word": "\u6ede"
+      },
+      {
+        "end": 3.04,
+        "start": 2.88,
+        "word": "\u7684"
+      },
+      {
+        "end": 3.36,
+        "start": 3.04,
+        "word": "\u60c5"
+      },
+      {
+        "end": 3.68,
+        "start": 3.36,
+        "word": "\u51b5"
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18228/v1/audio/transcriptions"
+    }
+  ]
+}

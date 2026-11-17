@@ -1,0 +1,40 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/output-cpu-01/required.txt"
+  ],
+  "tests": 14,
+  "gpu_actions": 0,
+  "binary_sha256": "92374b4baa67632404dfad47975813192af5852f1da5842de62cbfa1655f8d14",
+  "candidate_engine_sha256": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
+  "sources": {
+    "CMakeLists.txt": "0ddb258a0a17281936e6ad6fdd2f4908a8c231b8c1bdfbb39f9af414579870cf",
+    "cmake/ChatProtocolIdentity.cmake": "38ba61b50a296bd254bcd98faaf2a106727f537574b479f3ece4f6a14d3a2687",
+    "cmake/HostTestSources.cmake": "dc0b2078d10a030a3d8b7e8116fa39222fd32cb2d8c6bfcee0f88da73409c99d",
+    "include/q4t/server/aligner_service.h": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017",
+    "include/q4t/server/chat_capabilities.h": "f1d7262c68726d074e10300195219f738787b4ba3d7e1e853f62fa4fd83b0f87",
+    "include/q4t/server/chat_server.h": "0f365abe827167f3f99da8b0ed88c4f561ed7f595006205df6a60c01e6d6dce4",
+    "include/q4t/server/server_options.h": "992ea561a157245e1f561b05d4b1e5d43585b01e891ccbcf0f0a4fa8ed2a5589",
+    "src/main.cpp": "c5269d3bb1767093dff74f2541e370a64ca23662166a649db1f436f620cfc1b2",
+    "src/server/aligner_service.cpp": "4049f01ff08fdefb9922b501e7086ba35ba6080b8a858c8f19daa9b1bc9b6abd",
+    "src/server/asr_request.cpp": "a186bf011966332a16431721619ac4a63fa84d2f3ffea3b2142982b094b1a955",
+    "src/server/chat_asr.cpp": "6a854ac62044cf214b32f62307ecd9321155afa3ff057c5c09ca8e36cb243c25",
+    "src/server/chat_capabilities.cpp": "4648b602924c742d2581d34acea3afaeb588edb5575411a311ece8efe81dba34",
+    "src/server/chat_metrics.cpp": "14e7e88fa8c78cdb0f2ea63bdc32af08e90f40bacd8fd151ed6e45ae14d4afc1",
+    "src/server/chat_preflight.cpp": "b90a2bdcdc104ff1bd6e5c42f5d8433a55ee58ab22be2c05a34f9c29bb930263",
+    "src/server/chat_server.cpp": "3b8f7e2bb1fd066b66a98b94be76fd4dd3bb6359bfb65edd83e42c6f4001ed34",
+    "src/server/server_options.cpp": "5b2f32df0ae2792a3b2c03044ef39c412b31ac8cdf9eda084f12ea3f20e21833",
+    "tests/server_aligner_service_test.cpp": "ea8db470b79477e80253bc0612acce17ef8fff361037798c33eae05c501ba2e7",
+    "tests/server_asr_protocol_test.cpp": "dda7130d2b32d095e8bdf050f89a9c7ce91f7911329aad089869a4e73f39ff2f",
+    "include/q4t/server/asr_alignment_output.h": "2062a08017ad8099a0e3be7fae790b956e01f630c168f6818abceb5b6401d904",
+    "src/server/asr_alignment_output.cpp": "a38d6129457c2c3fde6d8c950b2bdda9acefe7ed07cbacf0711d58d95aa081f3",
+    "src/server/chat_aligner_backend.cpp": "7f41c60d3501fc7daa9b37101643c1733316d8b74e921923a681bcdca21e92d4",
+    "src/server/chat_aligner_execution.cpp": "55cf52124f2830bfd766d13cd8d6d6210da63a23dd4cf6dbd131235c67055034",
+    "src/server/chat_asr_alignment.cpp": "a529f43d128379a6c4775fa84850c9ddeda53ae9b24fe045909e06e2279ac519",
+    "tests/server_asr_alignment_output_test.cpp": "ed53abe48359728cbc889d67b3ade1c4929dd5a0538b7c5ed6d993057c28cf1e"
+  },
+  "status": "PASS",
+  "exit": 0,
+  "seconds": 0.007777197752147913
+}

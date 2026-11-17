@@ -1,5 +1,9 @@
 #include "q4t/server/asr_response.h"
 
+#include <algorithm>
+#include <cmath>
+
+#include "q4t/audio/asr_config.h"
 #include "q4t/server/asr_request.h"
 
 namespace q4t::server {
@@ -10,6 +14,18 @@ void AsrTemperature::Observe(double logprob) {
   if (sum_ / count_ < -1.0) temperature_ = ++increases_ * 0.2;
   sum_ = 0;
   count_ = 0;
+}
+
+bool AsrSegmentTemperature::Retry(std::span<const AsrTextToken> tokens) {
+  if (!adaptive_ || increases_ == 5 || tokens.empty()) return false;
+  double mean = 0;
+  for (const auto& token : tokens) {
+    if (!std::isfinite(token.logprob) || token.logprob > 0) return false;
+    mean += token.logprob / tokens.size();
+  }
+  if (mean >= -1) return false;
+  temperature_ = ++increases_ * .2;
+  return true;
 }
 namespace {
 constexpr size_t kMaxTextBytes = 4ULL << 20;
@@ -29,9 +45,11 @@ std::string Quote(const std::string& s) {
 }
 }  // namespace
 
-AsrTranscript::AsrTranscript(bool logprobs, std::string forced_language)
+AsrTranscript::AsrTranscript(bool logprobs, std::string forced_language,
+                             bool statistics)
     : logprobs_(logprobs),
       body_(!forced_language.empty()),
+      statistics_(statistics),
       language_(std::move(forced_language)),
       probabilities_(true, false, 0, true, TokenLogprobFormat::kTranscription) {
 }
@@ -41,13 +59,29 @@ Status AsrTranscript::Fail(std::string message) {
   return status_;
 }
 Status AsrTranscript::Append(const SampledToken& token, std::string_view bytes,
-                             AsrTextDelta* delta) {
+                             AsrTextDelta* delta, double selected_temperature) {
   if (!delta) return Fail("Missing transcription delta owner");
   *delta = {};
   if (!status_) return status_;
   if (complete_) return Fail("Transcription already complete");
   if (bytes.size() > kMaxTextBytes - raw_bytes_)
     return Fail("Transcription exceeds byte budget");
+  if (statistics_) {
+    if (selected_tokens_ >= 8192 || token.token < 0 ||
+        token.token >= audio::AsrConfig::kVocab ||
+        !std::isfinite(token.raw_logprob) || token.raw_logprob > 0 ||
+        !std::isfinite(selected_temperature) || selected_temperature < 0 ||
+        selected_temperature > 1)
+      return Fail("Invalid or excessive transcription token statistics");
+    ++selected_tokens_;
+    if (!bytes.empty()) {
+      PendingToken item;
+      item.value = {token.token, token.raw_logprob, selected_temperature};
+      item.raw_begin = raw_bytes_;
+      item.raw_end = raw_bytes_ + bytes.size();
+      pending_tokens_.push_back(item);
+    }
+  }
   raw_bytes_ += bytes.size();
   if (logprobs_) {
     auto status =
@@ -58,10 +92,11 @@ Status AsrTranscript::Append(const SampledToken& token, std::string_view bytes,
     if (!status) return Fail(status.message());
   }
   std::vector<detail::Utf8Span> spans;
-  pending_ += utf8_.Append(bytes, logprobs_ ? &spans : nullptr);
+  pending_ += utf8_.Append(bytes, logprobs_ || statistics_ ? &spans : nullptr);
   if (pending_.size() + text_.size() > kMaxTextBytes)
     return Fail("Normalized transcription exceeds byte budget");
   if (logprobs_) probabilities_.Map(spans);
+  if (statistics_) MapStatistics(spans);
   return Consume(false, delta);
 }
 
@@ -70,6 +105,7 @@ Status AsrTranscript::Consume(bool final, AsrTextDelta* delta) {
     pending_.erase(0, n);
     offset_ += n;
     if (logprobs_) probabilities_.DiscardBefore(offset_);
+    if (statistics_) DiscardStatistics(offset_);
   };
   if (!body_) {
     size_t leading = 0;
@@ -117,6 +153,8 @@ Status AsrTranscript::Consume(bool final, AsrTextDelta* delta) {
       if (!status) return Fail(status.message());
     }
     delta->text = std::move(item.text);
+    if (statistics_)
+      EmitStatistics(item.source_begin, item.source_end, text_.size());
     text_ += delta->text;
     text_started_ = true;
     discard(visible);
@@ -131,11 +169,62 @@ Status AsrTranscript::Finish(AsrTextDelta* delta) {
   if (!status_) return status_;
   if (complete_) return Fail("Transcription already complete");
   std::vector<detail::Utf8Span> spans;
-  pending_ += utf8_.Finish(logprobs_ ? &spans : nullptr);
+  pending_ += utf8_.Finish(logprobs_ || statistics_ ? &spans : nullptr);
   if (logprobs_) probabilities_.Map(spans);
+  if (statistics_) MapStatistics(spans);
   const auto status = Consume(true, delta);
   if (status) complete_ = true;
   return status;
+}
+
+Status AsrTranscript::SetNoSpeechProbability(double probability) {
+  if (!status_) return status_;
+  if (!statistics_ || complete_ || no_speech_ || !std::isfinite(probability) ||
+      probability < 0 || probability > 1)
+    return Fail("Invalid or duplicate transcription no-speech posterior");
+  no_speech_ = probability;
+  return {};
+}
+
+void AsrTranscript::MapStatistics(std::span<const detail::Utf8Span> spans) {
+  for (const auto& span : spans) {
+    auto it = std::lower_bound(
+        pending_tokens_.begin(), pending_tokens_.end(), span.input_begin,
+        [](const PendingToken& t, size_t begin) { return t.raw_end <= begin; });
+    for (; it != pending_tokens_.end() && it->raw_begin < span.input_end;
+         ++it) {
+      if (!it->mapped) it->begin = span.output_begin;
+      it->end = span.output_end;
+      it->mapped_end = std::min(it->raw_end, span.input_end);
+      it->mapped = true;
+    }
+  }
+}
+
+void AsrTranscript::EmitStatistics(size_t begin, size_t end,
+                                   size_t text_offset) {
+  for (auto& item : pending_tokens_) {
+    if (!item.mapped || item.end <= begin || item.begin >= end) continue;
+    const size_t last = text_offset + std::min(item.end, end) - begin;
+    if (item.emitted != std::numeric_limits<size_t>::max()) {
+      text_tokens_[item.emitted].end = last;
+      continue;
+    }
+    item.emitted = text_tokens_.size();
+    auto value = item.value;
+    value.begin = text_offset + std::max(item.begin, begin) - begin;
+    value.end = last;
+    text_tokens_.push_back(value);
+  }
+}
+
+void AsrTranscript::DiscardStatistics(size_t offset) {
+  while (!pending_tokens_.empty()) {
+    const auto& item = pending_tokens_.front();
+    if (!item.mapped || item.mapped_end < item.raw_end || item.end > offset)
+      break;
+    pending_tokens_.pop_front();
+  }
 }
 
 std::string AsrTranscript::DeltaJson(const AsrTextDelta& delta) const {

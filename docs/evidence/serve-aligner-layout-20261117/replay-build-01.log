@@ -1,0 +1,25 @@
+[  9%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_config.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_config.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_layout.cpp.o
+[ 18%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_layout.cpp.o
+[ 22%] Building CUDA object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_model.cu.o
+[ 27%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/features.cpp.o
+[ 31%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_config.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_layout.cpp.o
+[ 40%] Building CUDA object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_model.cu.o
+[ 45%] Building CUDA object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/gemv.cu.o
+[ 50%] Building CUDA object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/gemv_hc_inject.cu.o
+[ 54%] Building CUDA object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/model/small_m_gemm.cu.o
+[ 59%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/quant/lt_cache.cpp.o
+[ 63%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 72%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_speech_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/runtime/system_memory.cpp.o
+[ 81%] Linking CXX static library libq4t_speech_replay_core.a
+[ 81%] Built target q4t_speech_replay_core
+[ 86%] Building CXX object CMakeFiles/q4t_aligner_replay.dir/aligner_replay.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_asr_replay.dir/model_replay.cpp.o
+[ 95%] Linking CXX executable q4t_aligner_replay
+[ 95%] Built target q4t_aligner_replay
+[100%] Linking CXX executable q4t_asr_replay
+[100%] Built target q4t_asr_replay

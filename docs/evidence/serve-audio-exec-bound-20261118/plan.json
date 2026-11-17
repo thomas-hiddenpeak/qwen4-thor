@@ -1,0 +1,13 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "tests": [
+    "test_auxiliary_packaged_arguments_cross_real_exec_barrier_with_original_lease",
+    "test_count_per_argument_and_total_encoded_bytes_are_bounded",
+    "test_lost_permit_channel_never_executes_target",
+    "test_stale_controller_permit_never_executes_target",
+    "test_actual_exec_carries_only_bound_progress_and_lease"
+  ],
+  "seconds": 180,
+  "gpu_actions": 0,
+  "service_retry": "One failed pre-exec attempt consumed; five actual model launches remain. Aggregate 6 counted exec attempts / 19 creates / 1 probe / 1800s. Original FAILED retained; new package identities required."
+}

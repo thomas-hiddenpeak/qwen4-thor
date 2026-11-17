@@ -1,0 +1,21 @@
+{
+  "head": "e6448bd8a6ef29e22e6bb00cac9c5a7fa438c133",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "binary_sha256": "aeffdc4672a9ee9c45127b07eef9449e5c7df31bcfba77d0dd67854575aa1566",
+  "sources": {
+    "docs/SERVE_NATIVE_ALIGNMENT_2026-11-17.md": "56410f4e3171110f87b961fadcba411906cd7a170238ea6735294b215389fb87",
+    "docs/STATUS.md": "457d8832c7aa131cca9cb70d99539f29a2a9c63f70566794cbe94fcb71c95f47",
+    "docs/log/2026-11-17.md": "137b37080b38de3461b777dfc1fa81aaddf318ba42332a2e3a3ada7f173f90a6",
+    "include/q4t/server/asr_alignment_output.h": "90b076b4c0dfd826d2155b52430b273e6b623ea48d994dc9013c15a9b3d8984b",
+    "include/q4t/server/asr_response.h": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1",
+    "src/server/asr_alignment_output.cpp": "43ef22cfba7c06b182af4b425340848f96304fc910eac7b1d04aba556cd759a7",
+    "src/server/asr_response.cpp": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc",
+    "src/server/chat_asr.cpp": "d6dfeaa0347ff627c2132d701d8589f11a38069e39d6bda5a53189c4b0faeb7e",
+    "src/server/chat_asr_alignment.cpp": "73382e40d9bf7e14a84e0ac62af0b077bfa49d4416a6611af431d33ff4771a55",
+    "src/server/chat_asr_execution.cpp": "61055c36906695f55fd741d7ee3d4cf8e682c28ae199d17ce1bfce4471ef2eb6",
+    "src/server/chat_capabilities.cpp": "ccfaccdb664959e507225411c09ccd19076f711f180549605b8da6671334ffbd",
+    "tests/server_asr_alignment_output_test.cpp": "ad817b1166556c90792002c8a7ca1e7e9d2a40d411690abd241a8a05b31847a0"
+  },
+  "required_sha256": "650f6a8ac89b897c2b4067d8cdc7eaca1368a2090175470d6cfd96c3d48b4731",
+  "plan_sha256": "7cef9aa21c9a44810467fa253895b75eec8dc75c0cf8107c125c415e461025c0"
+}

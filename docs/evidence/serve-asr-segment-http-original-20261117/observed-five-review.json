@@ -1,0 +1,123 @@
+{
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/segment-http-01",
+  "binary_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+  "status": "PASS_REVIEWED_COMPLETED_FIVE_REQUESTS_ORIGINAL_RUN_STAYS_FAILED",
+  "observations": {
+    "js-explicit-segment-en.wire": "97c9db88e76156c5743abd2f24c35287d92caa5c865e69e5a581f7eac632ef47",
+    "python-default-segment-zh.request.json": "e0ba638396b21e59413ddd57d7230db2cc0564e3abdb417d8154c9db03f66833",
+    "initial-config.http.json": "2eb6761bd2967e6e338d5f64bfb87ae2b76cdf5d28f01c9c66601d8c19e7decf",
+    "python-plain-zh.wire": "f7ec322773dffe7d98af0cd0be889d98d5bbab1f45930b69ecc504b3afdf1418",
+    "python-plain-zh-drain.metrics.json": "e7c833ac5df9f2bea2e9877a9707160016d27f68a374ea93936f2a64de844611",
+    "python-silent-segment.wire": "2e917ee559b5a9cf0721fe59d94d2eb167ec214cd5d124f19e11a42e2b1fb339",
+    "js-combined-forced-zh.wire": "92a6c910903a3b9ff99828685dbfeb76152f7e6a6386a6853eb5f07bf7dc28f9",
+    "python-plain-zh.sdk.json": "f494e86b67ca6c8a338387aecf94d6478f035b3b9d6d21baae682360193de87f",
+    "model-identity.json": "0119ef5bd02966f6690dcd9e29c5d3d33a81da99b1c76e4492ef16a5ee81de9d",
+    "python-default-segment-zh-drain.metrics.json": "9905cd217eb7f3ec1a5148a806c7e8cada2c40c937b975119c61f9cfb207a86f",
+    "result.json": "464f90c9edd77cf93d1ab7454c8b11681c5f21a844010dd11b33c5e8cec2d9c5",
+    "initial-capabilities.wire": "fffc1abc3bcce3f4ffd5f21df23b9668abb603b039f3c6721e41c7bfa68bd91d",
+    "js-combined-forced-zh.sdk.json": "1e95bed5aa8d12a876844a67adaedee27f1984efaca1b8ff859f5f5e74fc82b8",
+    "js-explicit-segment-en.request.json": "4e37b74e27d93159111f84adbb192e8e3a1b197407f327cdaf4fb62a659939d6",
+    "config.json": "3fd7fed68985316d02c6c96f7ba3f14fdb7a3f746a668e66dabf0ea8ce4476cb",
+    "initial-capabilities.http.json": "1302516a37ea56846e44d578a54d1c25ca3b72ca7fac0b09b03e75251c632a13",
+    "counts.json": "7453ccd312f0e5585a9d0038a696f15e74f92cd7bf289390ded9044685796cc2",
+    "plan.json": "e16ab647ee72301dbbf6ce53113ab43931c93142ceeae5b455e4d0e946477e49",
+    "model-command.json": "85166d8a27106a7207a10eb01a0872ebe2869f8965896afa6f83ec53e2a9ddb9",
+    "model.log": "45582b5d7543ca1de6bdd088585ee23066791b0cfb9d6609b797c8d74b4f0298",
+    "models.json": "e5528d75709f6071ee567fe9fe127fab44b6b06ed0a9f29beef400df96efa516",
+    "python-default-segment-zh.wire": "b146fa2fd8dd023359ced2572736517c649327b75581b96ed4d0b9105bcdeae0",
+    "js-explicit-segment-en.sdk.json": "b6364215918187dca3d5626105f4d5e1a991d4692747d7fcf7bf185c8d40af0f",
+    "capabilities.json": "b9f2e97a3262cae91daeb36327087d1e04e4a36ed943af158fdae69de0da2192",
+    "js-explicit-segment-en-drain.metrics.json": "0593c88ed89c4d8e8cf717aad4f52c6482f5cd81357530543034ec9e8fc144b2",
+    "python-plain-zh.request.json": "ea42d7779d7b0193049cbcd8d90c5c86f700bcf5b384adb0c51fac723a4abe95",
+    "python-silent-segment-drain.metrics.json": "fe0e0b4399ac4ba5804fb6c97f70d9b7055ddb4b0cc63d6c18f3bae2b47404d4",
+    "initial-config.wire": "1c4a8b643c80adbd7c1b94c675070184610e46117018c96ad48f0edf7b7b912e",
+    "js-combined-forced-zh-drain.metrics.json": "e2b220030b8d5be11e3a4a07d4b0cb8c4e1bc196986855d32f86d58f9326aeef",
+    "initial-models.http.json": "5eda88c24b6033651a8d63f0b566ba675f5dfbbf600712330702dc742c0ebbb9",
+    "cleanup.json": "e202e6fdc54337aaec2b84812a6ff689bfad9d144889792ba3d765fb8271c34d",
+    "js-combined-forced-zh.request.json": "e7c7268e691688901ff82e80de8e281bfc486519f379e70f9fb9cb93bf8d732a",
+    "python-silent-segment.request.json": "6b37e80b6f5fa6633b171ca8bf8e4800d6d6481824d973a4431e5d843f2dffa0",
+    "python-default-segment-zh.sdk.json": "7d5bd55c64580ead08e9d5cbd96c69215f2c60654d983488df3a9749a182d193",
+    "initial-models.wire": "a9d7e533cc03cd572f7904f7fe2ec4353f11b7750586eb7ac877a66bbe1d9911",
+    "python-silent-segment.sdk.json": "206543084c176c4d9c310fe34ff41f2513bedbf1f08710dc2ea833356e967d00",
+    "lease/exit.json": "a4bef2a469a39bed009edd87244c5c3e99672e9c209823a5bb89a93df8dc895c"
+  },
+  "quality": {
+    "python-default-segment-zh": {
+      "tokens": 7,
+      "avg_logprob": -0.0010718284354662149,
+      "temperature": 0,
+      "no_speech_prob": 3.939554283731238e-13,
+      "compression_ratio": 0.7924528301886793,
+      "start": 0.4,
+      "end": 3.68,
+      "text_quality": {
+        "text": "甚至出现交易几乎停滞的情况。",
+        "exact": true,
+        "word_error_rate": 0
+      }
+    },
+    "js-combined-forced-zh": {
+      "tokens": 7,
+      "avg_logprob": -0.0010718284354662149,
+      "temperature": 0,
+      "no_speech_prob": 3.939554283731238e-13,
+      "compression_ratio": 0.7924528301886793,
+      "start": 0.4,
+      "end": 3.68,
+      "text_quality": {
+        "text": "甚至出现交易几乎停滞的情况。",
+        "exact": true,
+        "word_error_rate": 0
+      }
+    },
+    "js-explicit-segment-en": {
+      "tokens": 45,
+      "avg_logprob": -0.05595313422918334,
+      "temperature": 0.2,
+      "no_speech_prob": 1.6917758417886603e-10,
+      "compression_ratio": 1.3805970149253732,
+      "start": 0.4,
+      "end": 14.56,
+      "text_quality": {
+        "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+        "exact": true,
+        "word_error_rate": 0.0
+      }
+    },
+    "python-silent-segment": {
+      "empty": true
+    },
+    "label_observations": [
+      {
+        "request": "asr_1c3b503627d3125a02e6d44cf0179cdf",
+        "token": 2240,
+        "raw_logprob": -28.562538617968514,
+        "probability": 3.939554283731238e-13,
+        "input": 71
+      },
+      {
+        "request": "asr_80d7ff560bccb01f6ba1560818312036",
+        "token": 2240,
+        "raw_logprob": -28.562538617968514,
+        "probability": 3.939554283731238e-13,
+        "input": 71
+      },
+      {
+        "request": "asr_73efb89945d5a42979620a82343abf5f",
+        "token": 2240,
+        "raw_logprob": -22.500072158745212,
+        "probability": 1.6917758417886603e-10,
+        "input": 212
+      },
+      {
+        "request": "asr_6790df2de3b94fbdc2644d8e1b86c882",
+        "token": 2240,
+        "raw_logprob": -0.005288855608096874,
+        "probability": 0.9947251057646525,
+        "input": 30
+      }
+    ],
+    "greedy_mean_logprob": -0.0010718284354662149
+  },
+  "review_seconds": 0.1496834820136428
+}

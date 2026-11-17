@@ -117,6 +117,8 @@ def prepare(args):
         asr_model_dir=(Path(base['settings']['native_asr']['directory'])
                        if base['settings'].get('native_asr') else None),
         asr_limits=base['settings'].get('native_asr', {}).get('limits'),
+        asr_auxiliary={k:v for k,v in base['settings'].get('native_asr', {}).items()
+                       if k in engine.ASR_AUXILIARY} or None,
         recovery_profiles=args.registry, recovery_profile_policy=policy)
     engine.save(out/'receipt.json', receipt)
     qualification = engine.read(args.registry.parent.parent/'plan.json')

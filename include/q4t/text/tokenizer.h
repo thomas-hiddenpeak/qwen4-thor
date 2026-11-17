@@ -29,7 +29,9 @@ struct Json;
 namespace text {
 
 // Distinct, pinned model contracts; never infer a profile from loose schema.
-enum class TokenizerProfile { kQwen4Exp, kQwen3Embedding, kQwen3Asr };
+enum class TokenizerProfile {
+  kQwen4Exp, kQwen3Embedding, kQwen3Asr, kQwen3Aligner
+};
 
 // Resource limits enforced while loading the tokenizer JSON and while
 // encoding/decoding caller-controlled text.
@@ -100,6 +102,14 @@ class Tokenizer {
                             const TokenizerLimits& limits,
                             std::unique_ptr<Tokenizer>* out);
 
+  // Alignment has one additional, non-special <timestamp> token (151705).
+  // Keep it distinct so ASR cannot silently accept an alignment checkpoint.
+  static Status LoadQwen3Aligner(std::string_view vocab_json,
+                                std::string_view merges_text,
+                                std::string_view config_json,
+                                const TokenizerLimits& limits,
+                                std::unique_ptr<Tokenizer>* out);
+
   // Encode text into token ids. Added/special tokens are matched as whole
   // strings before the byte-level BPE path, mirroring the reference
   // `tokenizers` behavior.
@@ -125,6 +135,12 @@ class Tokenizer {
   std::uint32_t VocabSize() const noexcept;
 
  private:
+  static Status LoadQwen3Speech(std::string_view vocab_json,
+                               std::string_view merges_text,
+                               std::string_view config_json,
+                               const TokenizerLimits& limits,
+                               std::unique_ptr<Tokenizer>* out,
+                               TokenizerProfile profile);
   static Status LoadDocument(const io::Json& root,
                              const TokenizerLimits& limits,
                              std::unique_ptr<Tokenizer>* out,

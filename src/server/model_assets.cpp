@@ -11,6 +11,8 @@
 #include <new>
 
 #include "model_assets_protocol.h"
+#include "q4t/audio/vad.h"
+#include "q4t/server/aligner_assets.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/trace/sha256.h"
@@ -18,11 +20,11 @@
 namespace q4t::server {
 namespace {
 using Clock = std::chrono::steady_clock;
-using detail::ModelAssetProfile;
-using detail::ModelAssetSpec;
 using asset_detail::kMagic;
 using asset_detail::Reply;
 using asset_detail::Request;
+using detail::ModelAssetProfile;
+using detail::ModelAssetSpec;
 constexpr ModelAssetSpec kEmbedding[]{
     {"config.json", 727,
      "b5bf1f51fc45be473a54718cef92448d90a1be001bf9b9a44b8c7f10a19feaa9"},
@@ -43,6 +45,23 @@ constexpr ModelAssetSpec kAsr[]{
     {"tokenizer_config.json", 12487,
      "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"},
     {"model.safetensors", kNativeAsrFileBytes, kNativeAsrWeightSha256}};
+constexpr ModelAssetSpec kAligner[]{
+    {"config.json", 5982,
+     "d616c65d46c4b90bdc651b0a0963ea932732241140f337f9bb6b0335a9c8ef09"},
+    {"preprocessor_config.json", 330,
+     "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"},
+    {"generation_config.json", 115,
+     "948d089b23bca1d214e768d59c4438365665f52ec6d33678f4062206b3fbbb8c"},
+    {"vocab.json", 2776833,
+     "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"},
+    {"merges.txt", 1671853,
+     "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"},
+    {"tokenizer_config.json", 12666,
+     "3ab80063f8511deb9566e6ad438d17b7a6277fcffd52d92854112f19d36bd81c"},
+    {"model.safetensors", kNativeAlignerFileBytes, kNativeAlignerWeightSha256}};
+constexpr ModelAssetSpec kVad[]{{"silero_vad_16k.safetensors",
+                                 audio::kVadFileBytes,
+                                 audio::kVadWeightSha256}};
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
@@ -108,6 +127,10 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kEmbedding;
     case ModelAssetProfile::kAsr:
       return kAsr;
+    case ModelAssetProfile::kAligner:
+      return kAligner;
+    case ModelAssetProfile::kVad:
+      return kVad;
   }
   return {};
 }

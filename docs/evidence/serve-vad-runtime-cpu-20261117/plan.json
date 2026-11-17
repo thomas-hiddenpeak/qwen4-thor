@@ -1,0 +1,25 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "host_cases": [
+    "asr_chunks_global_times_ids_and_seek_keep_actual_clip_statistics",
+    "asr_chunks_word_only_keeps_selection_and_duration_weighted_language",
+    "asr_chunks_json_stream_and_text_preserve_real_usage_and_logprobs",
+    "asr_chunks_vad_silence_has_no_invented_words_tokens_or_time_cues",
+    "asr_chunks_failed_append_cannot_publish_prior_partial_result",
+    "asr_chunks_output_bounds_and_unknown_usage_preserve_destination",
+    "asr_chunks_subtitles_keep_global_cues_offsets_and_one_vtt_header",
+    "serve_vad_options_require_asr_and_bounded_absolute_assets",
+    "serve_vad_capability_reports_cpu_optional_backend_and_chunk_bound",
+    "vad_chunks_short_final_speech_uses_real_context_or_fails_atomically",
+    "vad_chunks_hard_limits_preserve_tail_and_never_silently_drop_chunks",
+    "aligned_asr_srt_cues_use_word_edges_and_original_punctuation",
+    "aligned_asr_vtt_escapes_markup_and_cue_injection",
+    "asr_form_preserves_advanced_contract_without_silent_drops",
+    "asr_transcript_header_utf8_and_actual_token_probabilities",
+    "asr_stream_error_and_heap_failure_never_emit_chat_done_or_success"
+  ],
+  "total": 16,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "Real-clip aggregation, word/segment time origins and IDs, subtitle cues/header, one request usage, VAD-silence output, poison after failure, CLI/capabilities and minimum actual tail. Necessary host and CUDA builds separate; runtime GPU business pending."
+}

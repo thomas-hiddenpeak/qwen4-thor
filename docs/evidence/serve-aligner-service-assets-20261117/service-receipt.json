@@ -1,0 +1,21 @@
+{
+  "tests": 8,
+  "binary_sha256": "4570bc0f3fd9f8f2e754fac8aafdedd3293b7bad4760da8523318b17e9b5a0e3",
+  "sources": {
+    "src/server/aligner_service.cpp": "f6e441bbbbbf516f241fee1d3f9122f4105e2a4ece9d13302e9b101528ea1a77",
+    "include/q4t/server/aligner_service.h": "6cf9554922d2c4af060adc320bd56912d4e760e809748c9026bdcd0dbe7d6961",
+    "src/server/asr_service.cpp": "6323d72e89275105c2d7e167d98b32a285f90c24dc45c3c1afe4819a6c639a29",
+    "include/q4t/server/asr_service.h": "1da180c2905e072333081133911b98c6e4c51083dd10aeac2516e2bb1ebb9d76",
+    "tests/server_aligner_service_test.cpp": "0334b79cf5ea6dcbec641b7be20613066b6e81aecaee4d0f365e49491b5a8177",
+    "tests/server_asr_service_test.cpp": "426fad3338e4a9957d4411d814b81b93d7cb8883ae123beb9e5dca54bd9f2535"
+  },
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-assets-cpu-01/service-required.txt"
+  ],
+  "gpu_actions": 0,
+  "status": "PASS",
+  "exit": 0,
+  "seconds": 0.007703522220253944
+}

@@ -1,0 +1,10 @@
+{
+  "status": "FROZEN_BEFORE_DRIVER_CPU",
+  "tests": 3,
+  "seconds": 30,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_asr/segment_http_acceptance.py": "fb64d44d0fdb6a9141cef125759bf711a15302e9dca0b87a4487842269ef7b3a",
+    "tools/native_asr/test_segment_http.py": "6f820905a4325c8fd4df9a06bbde5fd3f79c520e0cc5bbe8f8c62780543a30c9"
+  }
+}

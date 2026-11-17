@@ -3,18 +3,40 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/asr_chunk_output.h
+  src/server/asr_chunk_output.cpp
+  include/q4t/audio/vad.h
+  src/audio/vad.cpp
+  include/q4t/audio/vad_chunks.h
+  src/audio/vad_chunks.cpp
+  include/q4t/server/vad_assets.h
+  src/server/vad_assets.cpp
   include/q4t/server/asr_request.h
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h
+  include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
+  src/server/asr_statistics.cpp
+  include/q4t/server/asr_statistics.h
+  src/server/asr_alignment_output.cpp
+  src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_asr_execution.cpp
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
+  src/audio/asr_config_internal.h
+  include/q4t/audio/aligner_config.h
+  src/audio/aligner_config.cpp
   include/q4t/trace/sha256.h
   src/trace/sha256.cpp
   include/q4t/audio/asr_layout.h
   src/audio/asr_layout.cpp
+  src/audio/asr_layout_internal.h
+  include/q4t/audio/aligner_layout.h
+  src/audio/aligner_layout.cpp
+  include/q4t/audio/aligner_model.h
+  include/q4t/audio/aligner_postprocess.h
+  src/audio/aligner_postprocess.cpp
   include/q4t/audio/asr_model.h
   src/audio/asr_model.cu
   include/q4t/audio/features.h
@@ -143,9 +165,16 @@ set(protocol_inputs
   src/server/model_assets_protocol.h
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  include/q4t/server/aligner_assets.h
+  src/server/aligner_assets.cpp
   include/q4t/server/asr_service.h
   src/server/asr_service.cpp
+  include/q4t/server/aligner_service.h
+  src/server/aligner_service.cpp
   src/server/chat_asr_backend.cpp
+  src/server/chat_aligner_backend.cpp
+  src/server/chat_vad_backend.cpp
+  src/server/chat_aligner_execution.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu
   src/server/responses_execution_moderation.cpp

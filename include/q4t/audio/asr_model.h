@@ -5,7 +5,7 @@
 #include <array>
 #include <span>
 
-#include "q4t/audio/asr_layout.h"
+#include "q4t/audio/aligner_layout.h"
 #include "q4t/model/embedding_model.h"
 
 namespace q4t::audio {
@@ -22,14 +22,18 @@ struct AsrEncoderLayerWeights {
   AsrAffineWeights fc1, fc2;
 };
 
-struct AsrDeviceWeights {
+template <typename Config>
+struct SpeechDeviceWeights {
   std::array<AsrAffineWeights, 3> convolution;
   const uint16_t* convolution_out = nullptr;
   AsrAffineWeights final_norm, proj1, proj2;
-  std::array<AsrEncoderLayerWeights, AsrConfig::kEncoderLayers> encoder;
+  std::array<AsrEncoderLayerWeights, Config::kEncoderLayers> encoder;
   model::EmbeddingDeviceWeights decoder;
   const uint16_t* lm_head = nullptr;
 };
+
+using AsrDeviceWeights = SpeechDeviceWeights<AsrConfig>;
+using AlignerDeviceWeights = SpeechDeviceWeights<AlignerConfig>;
 
 using AsrComputeResult = model::EmbeddingComputeResult;
 
@@ -38,9 +42,10 @@ Status BindAsrDeviceWeights(const void* data, size_t bytes,
                             const AsrWeightLayout& layout,
                             AsrDeviceWeights* out);
 
-class AsrEncoderRun {
+template <typename Config>
+class SpeechEncoderRun {
  public:
-  AsrComputeResult Begin(const AsrDeviceWeights& weights,
+  AsrComputeResult Begin(const SpeechDeviceWeights<Config>& weights,
                          std::span<const float> mel, int frames,
                          void* workspace, size_t bytes,
                          cudaStream_t stream = nullptr);
@@ -53,7 +58,7 @@ class AsrEncoderRun {
   std::span<const uint16_t> output() const;
 
  private:
-  const AsrDeviceWeights* weights_ = nullptr;
+  const SpeechDeviceWeights<Config>* weights_ = nullptr;
   uint8_t* workspace_ = nullptr;
   AsrEncoderLayout layout_;
   int completed_chunks_ = 0;
@@ -62,6 +67,9 @@ class AsrEncoderRun {
   bool failed_ = false;
   bool finished_ = false;
 };
+
+using AsrEncoderRun = SpeechEncoderRun<AsrConfig>;
+using AlignerEncoderRun = SpeechEncoderRun<AlignerConfig>;
 
 // One real autoregressive step, recomputing the full causal prefix. Persistent
 // KV storage is a separate scheduling optimization; no previous token or audio

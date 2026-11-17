@@ -146,6 +146,43 @@ Q4T_TEST(asr_form_preserves_advanced_contract_without_silent_drops) {
   return true;
 }
 
+Q4T_TEST(asr_form_aligned_formats_keep_word_and_segment_requests_explicit) {
+  AsrRequest request;
+  ChatPlanError error;
+  Q4T_CHECK(Parse({{"model", "a"},
+                   {"response_format", "verbose_json"},
+                   {"timestamp_granularities[]", "word"}},
+                  &request, &error));
+  Q4T_CHECK(request.word_timestamps && !request.segment_timestamps);
+  Q4T_CHECK(Parse({{"model", "a"}, {"response_format", "verbose_json"}},
+                  &request, &error));
+  Q4T_CHECK(!request.word_timestamps && request.segment_timestamps);
+  Q4T_CHECK(Parse({{"model", "a"},
+                   {"response_format", "verbose_json"},
+                   {"timestamp_granularities[]", "word"},
+                   {"timestamp_granularities[]", "segment"}},
+                  &request, &error));
+  Q4T_CHECK(request.word_timestamps && request.segment_timestamps);
+  return true;
+}
+
+Q4T_TEST(asr_form_subtitle_stream_is_rejected_without_overriding_format) {
+  AsrRequest request;
+  ChatPlanError error;
+  request.model = "previous";
+  for (const char* format : {"srt", "vtt", "verbose_json"}) {
+    Q4T_CHECK(!Parse(
+        {{"model", "a"}, {"response_format", format}, {"stream", "true"}},
+        &request, &error));
+    Q4T_CHECK(error.param == "stream" && request.model == "previous");
+  }
+  Q4T_CHECK(
+      Parse({{"model", "a"}, {"response_format", "text"}, {"stream", "true"}},
+            &request, &error));
+  Q4T_CHECK(request.format == AsrFormat::kText && request.stream);
+  return true;
+}
+
 Q4T_TEST(asr_form_rejects_nested_drift_duplicate_arrays_and_mixed_encodings) {
   AsrRequest r;
   ChatPlanError e;
@@ -423,9 +460,17 @@ Q4T_TEST(
       ChatCapabilitiesJson("primary", false, false, 0, nullptr, false, true));
   Q4T_CHECK(!absent.Find("transcriptions")->GetBool("configured"));
   Q4T_CHECK(present.Find("transcriptions")->GetBool("configured"));
-  Q4T_CHECK(present.Find("transcriptions")
-                ->GetArray("remaining_native_work")
-                ->array.size() == 3);
+  for (const auto* capabilities : {&absent, &present}) {
+    const auto* transcription = capabilities->Find("transcriptions");
+    const auto* remaining = transcription->GetArray("remaining_native_work");
+    Q4T_CHECK(remaining && remaining->array.size() == 1 &&
+              remaining->array.front().type == Json::Type::kString &&
+              remaining->array.front().str == "diarization");
+    Q4T_CHECK(transcription->Find("alignment") &&
+              transcription->Find("segments") && transcription->Find("vad"));
+    Q4T_CHECK(!transcription->Find("alignment")->GetBool("configured") &&
+              !transcription->Find("vad")->GetBool("configured"));
+  }
   Q4T_CHECK(present.GetBool("implementation_only") &&
             !present.GetBool("release_attestation"));
   return true;

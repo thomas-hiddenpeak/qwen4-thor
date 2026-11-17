@@ -1,0 +1,25 @@
+{
+  "head": "25f7a127821fe5a17397408035997634971f5b16",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "binary_sha256": "662582902ea09fe9308b898e3c29cf3a1cf750a6b252767896f8ab794030ebfe",
+  "sources": {
+    "CMakeLists.txt": "86616ff51bad80a14e2178a1d05186c4c3b3a44b3413aa8194f657fd08e369cb",
+    "cmake/ChatProtocolIdentity.cmake": "10b57e179b163e942b280ccd5a0f07a76ec6b964b9c0019883a00b1a3feede44",
+    "cmake/HostTestSources.cmake": "478dd024541f060e46e221676df46a454e68063815832ea31660664e4a0a5df1",
+    "docs/SERVE_NATIVE_ALIGNMENT_2026-11-17.md": "c9c71cd87c32c2615558336cddce098d73944593bd784e0f2d425e1af3692cbc",
+    "docs/STATUS.md": "3572711f8418fde7d13416f0659203ba400d3b2adbbd772a91aeef738f4c5dde",
+    "docs/log/2026-11-17.md": "099ec47a55e9dc0b3d7267bc74fc8b7f6fee0b1d4d33e8a73b13d05967d180e3",
+    "include/q4t/server/asr_request.h": "393329ab586cceed2f34ca61a86aa5d0003d539ad6a2c0af83b5d9b160ecbdde",
+    "include/q4t/server/asr_response.h": "f61daf21ee8314f6575f5f540e37f6f44ef59eac257133ec282e71e6719186f1",
+    "src/main.cpp": "e39266ca71431cbb24e25fcb4f19a05cdfde7fdf1d17bd007feb04e5cca06c26",
+    "src/server/asr_request.cpp": "4cb39130bfaf9c047be32b515da891c7b684309b5a97b5176424fd3c0c75beaf",
+    "src/server/asr_response.cpp": "3c6168ebff0d1a12bca449f845adaf226b5ca477a2689a6481c5f8f1d3daa680",
+    "src/server/chat_asr_execution.cpp": "33c807c6ba145e2d3ea4637c6e0c302f0db9ccb550c6f2c19a476c4e528c9e4c",
+    "tests/test_main.cpp": "2eac015238a2f3382c8e6f0217ebcf71ff52fec2a56d7db3ee06e2950eccacc8",
+    "include/q4t/server/asr_statistics.h": "044c90e1417d93c0c84edaf0e67f67d45705bcde6a2fd11b72a4f4ed7fa9b7ec",
+    "src/server/asr_statistics.cpp": "6c0f810beeb2c290f41e5df389448ec55f3539df84e3a722889c2ffffdd9d327",
+    "tests/server_asr_statistics_test.cpp": "df411f39060223f279638980aeacef0ba33a5444e82a002c462d4e8644455f31"
+  },
+  "required_sha256": "5a2247193d75723274d04a7262563d0e3489ae5e148cf0373d6798bff6261e0e",
+  "plan_sha256": "251dbbcc7d9ee7d298c65e466526203213879176d7bd2580a44aef9878817894"
+}

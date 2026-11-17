@@ -1,24 +1,157 @@
 """Verify retained profile observations and actual business result contracts."""
 import base64
 import hashlib
+import io
 import json
 import math
+import wave
 
 from tools.serve_recovery import ledger, profile_contract
 
 FORMAT = 'q4t-profile-business-v1'
 MEDIA_FORMAT = 'q4t-profile-business-v2'
 ASR_FORMAT = 'q4t-profile-business-v3'
+AUDIO_AUXILIARY_FORMAT = 'q4t-profile-business-v4'
 ASR_FILE_SHA = '46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50'
 ASR_TEXT = '甚至出现交易几乎停滞的情况。'
+ASR_TEXT_IDS = [100636, 100347, 99886, 100740, 118083, 102072, 1773]
+# Fixed oracle only, from the retained complete-segment business observation.
+# Validation must not turn the request-local compression library into a core
+# controller import dependency. Production output still measures real bytes.
+ASR_TEXT_ZLIB_BYTES = 53
+AUDIO_PAIR_SHA = 'a291086fad02098392160d70f61c1ba2a1be5996d442814c33897b95f96ac0bf'
 MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None):
+    if audio_auxiliaries(identity or {}):
+        return AUDIO_AUXILIARY_FORMAT
     if (identity or {}).get('native_asr') is not None:
         return ASR_FORMAT
     return MEDIA_FORMAT if profile.get('allow_media', False) else FORMAT
+
+
+def audio_auxiliaries(identity):
+    return tuple(k for k in ('alignment', 'vad') if k in (identity.get('native_asr') or {}))
+
+
+def auxiliary_audio_source(source, identity):
+    """Retain original PCM, inserting explicit silence between two utterances."""
+    ledger.require(hashlib.sha256(source).hexdigest() == ASR_FILE_SHA,
+                   'qualified original ASR source differs')
+    if 'vad' not in audio_auxiliaries(identity):
+        return source
+    with wave.open(io.BytesIO(source), 'rb') as audio:
+        ledger.require(audio.getnchannels() == 1 and audio.getsampwidth() == 2 and
+                       audio.getframerate() == 16000, 'qualified audio shape differs')
+        pcm = audio.readframes(audio.getnframes())
+    target = io.BytesIO()
+    with wave.open(target, 'wb') as audio:
+        audio.setnchannels(1);audio.setsampwidth(2);audio.setframerate(16000)
+        audio.writeframes(bytes(16000) + pcm + bytes(48000) + pcm + bytes(16000))
+    result = target.getvalue()
+    ledger.require(hashlib.sha256(result).hexdigest() == AUDIO_PAIR_SHA,
+                   'qualified repeated audio differs')
+    return result
+
+
+def auxiliary_audio_request(identity):
+    backends = audio_auxiliaries(identity)
+    ledger.require(backends, 'missing qualified audio auxiliaries')
+    request = dict(model=identity['native_asr']['model'])
+    if 'alignment' in backends:
+        request.update(response_format='verbose_json', timestamp_granularities=['word', 'segment'])
+    else:
+        request.update(response_format='json', include=['logprobs'])
+    if 'vad' in backends:
+        request['chunking_strategy'] = dict(type='server_vad', threshold=.5,
+            prefix_padding_ms=300, silence_duration_ms=500)
+    return request
+
+
+def audio_auxiliary_business(value, identity):
+    """Require real qualified optional work; a normal-ASR pass cannot replace it."""
+    from tools.serve_service import package
+    backends = audio_auxiliaries(identity)
+    ledger.keys(value, ('source_base64', 'request', 'response', 'health', 'limits'))
+    ledger.require(type(value['source_base64']) is str and len(value['source_base64']) <= 1024*1024,
+                   'invalid auxiliary audio source size')
+    try:
+        source = base64.b64decode(value['source_base64'], validate=True)
+    except (ValueError, TypeError) as error:
+        raise ValueError('invalid auxiliary audio source encoding') from error
+    chunks = 2 if 'vad' in backends else 1
+    seconds = 10.907 if chunks == 2 else 4.203
+    ledger.require(hashlib.sha256(source).hexdigest() == (AUDIO_PAIR_SHA if chunks == 2 else ASR_FILE_SHA)
+        and package.same_json(value['request'], auxiliary_audio_request(identity)),
+        'qualified auxiliary audio source/request differs')
+    ledger.keys(value['health'], backends)
+    ledger.keys(value['limits'], backends)
+    for name in backends:
+        fixed = identity['native_asr'][name]
+        health = value['health'][name]
+        ledger.require(type(health) is dict and health.get('model') == fixed['model'] and
+            health.get('state') == 'ready' and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False and
+            ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+            package.same_json(value['limits'][name], fixed['limits']),
+            'qualified audio auxiliary health/limits differ')
+        if name == 'vad':
+            ledger.require(type(health.get('device_bytes')) is int and health['device_bytes'] == 0 and
+                health.get('host_weight_bytes') == 1238532, 'qualified VAD residency differs')
+    response = value['response']
+    ledger.require(type(response) is dict and response.get('text') == ' '.join([ASR_TEXT]*chunks),
+                   'qualified auxiliary audio did not preserve actual utterances')
+    if 'alignment' not in backends:
+        usage = response.get('usage', {})
+        ledger.require(usage.get('type') == 'tokens' and all(ledger.integer(usage.get(k), minimum=1)
+            for k in ('input_tokens', 'output_tokens', 'total_tokens')) and
+            usage['input_tokens']+usage['output_tokens'] == usage['total_tokens'] and
+            usage['output_tokens'] <= identity['native_asr']['limits']['max_output_tokens'],
+            'qualified VAD actual token usage missing')
+        details = usage.get('input_token_details', {})
+        ledger.require(ledger.integer(details.get('audio_tokens'), minimum=1) and
+            ledger.integer(details.get('text_tokens'), minimum=1) and
+            details['audio_tokens'] + details['text_tokens'] == usage['input_tokens'],
+            'qualified VAD input usage differs')
+        logs = response.get('logprobs')
+        ledger.require(type(logs) is list and 0 < len(logs) <= usage['output_tokens'],
+                       'qualified VAD actual logprobs missing')
+        for row in logs:
+            ledger.require(type(row) is dict and type(row.get('logprob')) in (int, float) and
+                math.isfinite(row['logprob']) and row['logprob'] <= 0 and
+                type(row.get('bytes')) is list and row['bytes'] and
+                all(ledger.integer(b) and b <= 255 for b in row['bytes']),
+                'qualified VAD probability invalid')
+        ledger.require(bytes(b for row in logs for b in row['bytes']) == ASR_TEXT.encode()*chunks,
+                       'qualified VAD probabilities do not cover real clip text')
+        return
+    ledger.require(response.get('language') == 'Chinese' and response.get('duration') == seconds and
+        package.same_json(response.get('usage'), dict(type='duration', seconds=seconds)),
+        'qualified aligned duration/language differs')
+    words, segments = response.get('words'), response.get('segments')
+    ledger.require(type(words) is list and len(words) == 13*chunks and
+        all(type(v) is dict for v in words) and
+        [v.get('word') for v in words] == list(ASR_TEXT[:-1])*chunks and
+        type(segments) is list and len(segments) == chunks, 'qualified real word/segment count differs')
+    previous = 0
+    for row in words:
+        ledger.require(all(type(row.get(k)) in (int, float) and math.isfinite(row[k]) for k in ('start', 'end'))
+            and previous <= row['start'] <= row['end'] <= seconds, 'qualified word times differ')
+        previous = row['end']
+    for i, row in enumerate(segments):
+        ledger.require(type(row) is dict and ledger.integer(row.get('id')) and row['id'] == i and
+            ledger.integer(row.get('seek')) and row.get('text') == ASR_TEXT and
+            row.get('tokens') == ASR_TEXT_IDS, 'qualified segment identities/tokens differ')
+        ledger.require(all(type(row.get(k)) in (int, float) and math.isfinite(row[k]) for k in
+            ('start','end','temperature','avg_logprob','compression_ratio','no_speech_prob')) and
+            row['start'] == words[i*13]['start'] and row['end'] == words[(i+1)*13-1]['end'] and
+            row['start'] >= row['seek']/100 and (i == 0 or row['seek'] >= 590) and
+            0 <= row['temperature'] <= 1 and row['avg_logprob'] <= 0 and
+            0 <= row['no_speech_prob'] < .5 and
+            abs(row['compression_ratio'] - len(ASR_TEXT.encode())/ASR_TEXT_ZLIB_BYTES) < 1e-12,
+            'qualified actual segment observations differ')
 
 
 def audio_business(value, identity):
@@ -133,11 +266,14 @@ def business(value, identity, selected=None):
     media = (selected or {}).get('allow_media', False)
     ledger.keys(value, ('schema', 'tool_call', 'tool_result', 'tool_reply',
                        'tool_source', 'embedding') + (('media',) if media else ()) +
-                       (('asr',) if identity.get('native_asr') is not None else ()))
+                       (('asr',) if identity.get('native_asr') is not None else ()) +
+                       (('asr_auxiliary',) if audio_auxiliaries(identity) else ()))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:
         audio_business(value['asr'], identity)
+    if audio_auxiliaries(identity):
+        audio_auxiliary_business(value['asr_auxiliary'], identity)
     schema = message(value['schema'], 'stop')
     ledger.require(json.loads(schema['content']) == {'answer': 42},
                    'profile structured business differs')

@@ -1,0 +1,16 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "python_modules": [
+    "tools.serve_service.test_audio_auxiliary_package",
+    "tools.serve_service.test_asr_package",
+    "tools.serve_responses.test_transcriptions_contract"
+  ],
+  "python_tests": 16,
+  "host_cases": [
+    "serve_vad_capability_reports_cpu_optional_backend_and_chunk_bound"
+  ],
+  "total": 17,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "Fixed optional alignment/VAD identities, package/command/CLI/limits/declaration; actual retained multi-clip/schema and independent health; single capability identity CPU. Native recovery qualification still pending."
+}

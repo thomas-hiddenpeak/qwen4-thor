@@ -1,0 +1,12 @@
+[  0%] Building CXX object CMakeFiles/q4t_vad_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_vad_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_test.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_vad_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_vad_tests.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Linking CXX executable q4t_vad_tests
+[100%] Built target q4t_vad_tests
+[100%] Building CXX object CMakeFiles/q4t_vad_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_vad_replay.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_vad_replay.dir/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_replay.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_vad_replay.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t_vad_replay
+[100%] Built target q4t_vad_replay

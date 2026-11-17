@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "tests": 6,
+  "seconds": 1.4144170000217855,
+  "gpu_actions": 0,
+  "exit": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_asr_tokenizer_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/tokenizer-cpu-01/required.txt"
+  ],
+  "binary_sha256": "659af9aa8cf2fa108faeff3f8b56c6faa22037fe1a27143d77fb5b065781225d",
+  "sources": {
+    "tests/aligner_tokenizer_test.cpp": "54fc9fa118e0619d1cafa433c89bb4642467e5b5d5e12042dd768e184f7c79d4",
+    "tests/asr_tokenizer_test.cpp": "bc128453c024bcd4b78dd6bca1aefc9caa828f6b0d4c2448339245aeef30133d",
+    "src/text/tokenizer.cpp": "fe90f7c94cae4db8b2b2321cd442b05a7dd34ff81a533b6d530388cb1f16b133",
+    "include/q4t/text/tokenizer.h": "ad7256bb9fef616aee1f41da4bf248c33361d3808f49819e96683958ea1fa3fe",
+    "tests/fixtures/aligner/tokenizer-golden.json": "5f40caf35a19824123e6f182af11276f32b81b857f8c21d491f5cf7d72268660"
+  }
+}

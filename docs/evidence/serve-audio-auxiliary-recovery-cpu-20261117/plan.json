@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "modules": [
+    "tools.serve_recovery.test_audio_auxiliary_profiles",
+    "tools.serve_recovery.test_asr_profiles"
+  ],
+  "tests": 19,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "Recursive path-free identity, actual audio witness, primary/light qualification, explicit auxiliary addition/capacity and automatic parity, old qualification/history/pending/cooldown preservation, repack/CLI. Synthetic registries are only CPU fixtures, never GPU qualification."
+}

@@ -1,0 +1,39 @@
+{
+  "task": "Native forced alignment for standard transcription timestamps and subtitles",
+  "required": true,
+  "state": "implementation_preparation",
+  "model": {
+    "id": "Qwen/Qwen3-ForcedAligner-0.6B",
+    "revision": "c7cbfc2048c462b0d63a45797104fc9db3ad62b7",
+    "weight_sha256": "47831d0e82f96b20e9034dba01a075ee06436654719f6a68289e49f1b65ce0e7",
+    "bytes": 1835544544
+  },
+  "source_commit": "7c6daf77a2421100f5fb066495372c00129d39ff",
+  "stages": [
+    "AL01 strict assets/config/tokenizer and actual tensor identity",
+    "AL02 native encoder24x1024 and Qwen3 decoder timestamp classifier; actual numerical and alignment verification",
+    "AL03 timestamp/verbose_json/SRT/VTT response and resource/cancellation isolation",
+    "AL04 real SDK/profile/recovery and reversible publication"
+  ],
+  "asset_limits": {
+    "bytes": 2000000000,
+    "seconds": 1800,
+    "free_disk_reserve": 8589934592
+  },
+  "cpu_contract_limits": {
+    "tests": 8,
+    "seconds": 180,
+    "gpu_actions": 0
+  },
+  "restrictions": [
+    "No synthetic evenly spaced timestamps",
+    "Keep existing ASR contract and exact old default evidence",
+    "Model is optional deployment asset, no mandatory Python/Transformers/nginx runtime",
+    "Other ASR diarization/VAD/Chat/synthesis/Realtime and every master task remain required"
+  ],
+  "references": [
+    "https://huggingface.co/api/models/Qwen/Qwen3-ForcedAligner-0.6B?blobs=true",
+    "https://huggingface.co/Qwen/Qwen3-ForcedAligner-0.6B/resolve/c7cbfc2048c462b0d63a45797104fc9db3ad62b7/config.json",
+    "https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/7c6daf77a2421100f5fb066495372c00129d39ff/qwen_asr/inference/qwen3_forced_aligner.py"
+  ]
+}

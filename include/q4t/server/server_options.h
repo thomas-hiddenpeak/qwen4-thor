@@ -1,5 +1,6 @@
 #pragma once
 #include "q4t/server/asr_service.h"
+#include "q4t/server/aligner_service.h"
 
 #include <cstdint>
 #include <vector>
@@ -45,6 +46,10 @@ struct ServerOptions {
   std::string embedding_model_dir;
   std::string asr_model_dir;
   AsrServiceLimits asr_limits;
+  std::string aligner_model_dir;
+  AlignerServiceLimits aligner_limits;
+  std::string vad_model_dir;
+  int vad_max_chunks = 64;
   std::string served_model_name = "qwen3.8-flash-next";
   std::vector<std::string> model_aliases;
   // Durable application state, independent of model assets and KV caches.

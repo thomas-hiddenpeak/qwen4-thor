@@ -1,0 +1,9 @@
+[PASS] aligner_config_accepts_pinned_metadata_and_rejects_token_drift
+[PASS] aligner_config_rejects_encoder_decoder_and_classifier_drift
+[PASS] aligner_preprocessing_keeps_trained_audio_math
+[PASS] aligner_generation_metadata_cannot_enable_sampling_or_asr_head
+[PASS] aligner_tensor_contract_separates_vocabulary_and_timestamp_head
+[PASS] aligner_tensor_header_rejects_dtype_range_overlap_and_duplicates
+[PASS] aligner_and_asr_contracts_reject_each_others_assets
+[PASS] aligner_actual_checkpoint_matches_metadata_and_all_tensor_ranges
+8 tests, 8 passed, 0 failed, 0 skipped

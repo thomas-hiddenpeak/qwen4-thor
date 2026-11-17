@@ -3081,10 +3081,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_response"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_response"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_verbose_response"
+                    }
+                  ]
                 }
               },
               "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/x-subrip": {
                 "schema": {
                   "type": "string"
                 }
@@ -3130,13 +3147,31 @@
           "recovery": "request-driven asset retry; no automatic primary model restart",
           "implemented_formats": [
             "json",
-            "text"
+            "text",
+            "verbose_json",
+            "srt",
+            "vtt"
           ],
           "required_pending_executors": [
-            "actual_alignment",
-            "diarization",
-            "vad_chunking"
+            "diarization"
           ],
+          "alignment": {
+            "configured_by": "aligner-model-dir",
+            "timestamps": "actual fixed-model word edges; repaired ordering is explicit",
+            "segments": "independently decoded clip with actual token/temperature/probability/compression"
+          },
+          "chunking": {
+            "configured_by": "vad-model-dir",
+            "backend": "native CPU Silero 16k",
+            "strategies": [
+              "auto",
+              "server_vad"
+            ],
+            "max_chunks": "explicit vad-max-chunks, 1..256",
+            "budget": "one request RPM, cumulative input/output and one output ceiling",
+            "failure": "no partial success or dropped tail",
+            "offsets": "real original sample origin; seek in 10ms feature frames"
+          },
           "multipart_arrays": "repeated bracket names; nested chunking_strategy bracket fields or JSON object",
           "zero_temperature": "native confidence policy; not a claim about private provider thresholds"
         }
@@ -33147,6 +33182,29 @@
                     }
                   }
                 }
+              },
+              {
+                "if": {
+                  "required": [
+                    "stream"
+                  ],
+                  "properties": {
+                    "stream": {
+                      "const": true
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "response_format": {
+                      "enum": [
+                        "json",
+                        "text",
+                        "diarized_json"
+                      ]
+                    }
+                  }
+                }
               }
             ]
           },
@@ -33227,6 +33285,161 @@
             "required": [
               "text",
               "usage"
+            ],
+            "additionalProperties": false
+          },
+          "transcription_verbose_response": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "words": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_word"
+                }
+              },
+              "segments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_segment"
+                }
+              },
+              "usage": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "duration"
+                  },
+                  "seconds": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                  }
+                },
+                "required": [
+                  "type",
+                  "seconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "text",
+              "language",
+              "duration",
+              "usage"
+            ],
+            "additionalProperties": false,
+            "anyOf": [
+              {
+                "required": [
+                  "words"
+                ]
+              },
+              {
+                "required": [
+                  "segments"
+                ]
+              }
+            ]
+          },
+          "transcription_word": {
+            "type": "object",
+            "properties": {
+              "word": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "end": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              }
+            },
+            "required": [
+              "word",
+              "start",
+              "end"
+            ],
+            "additionalProperties": false
+          },
+          "transcription_segment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "seek": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "start": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "end": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "text": {
+                "type": "string"
+              },
+              "tokens": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 151935
+                }
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "avg_logprob": {
+                "type": "number",
+                "maximum": 0
+              },
+              "compression_ratio": {
+                "type": "number",
+                "minimum": 0
+              },
+              "no_speech_prob": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "id",
+              "seek",
+              "start",
+              "end",
+              "text",
+              "tokens",
+              "temperature",
+              "avg_logprob",
+              "compression_ratio",
+              "no_speech_prob"
             ],
             "additionalProperties": false
           },
@@ -40199,6 +40412,191 @@
               "max_output_tokens",
               "workspace_mib"
             ]
+          },
+          "native_alignment_health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "disabled",
+                  "configured",
+                  "loading",
+                  "metadata_ready",
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "none",
+                  "alignment_assets_invalid",
+                  "alignment_assets_timeout",
+                  "alignment_worker_unavailable",
+                  "alignment_resource_exhausted",
+                  "gpu_unhealthy",
+                  "alignment_compute_failed"
+                ]
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model": {
+                "const": "qwen3-forced-aligner-0.6b"
+              },
+              "device_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery": {
+                "const": "request_driven"
+              },
+              "retry_delay_ms": {
+                "const": 5000
+              },
+              "compute_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "asset_cleanup_pending": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "state",
+              "reason",
+              "core_readiness_dependency",
+              "model",
+              "device_bytes",
+              "load_attempts",
+              "load_failures",
+              "recovery",
+              "retry_delay_ms",
+              "compute_failures",
+              "asset_cleanup_pending"
+            ],
+            "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+          },
+          "native_vad_health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "disabled",
+                  "configured",
+                  "loading",
+                  "metadata_ready",
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "none",
+                  "vad_assets_invalid",
+                  "vad_assets_timeout",
+                  "vad_worker_unavailable",
+                  "vad_resource_exhausted",
+                  "vad_state_invalid",
+                  "vad_compute_failed"
+                ]
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model": {
+                "const": "silero-vad-16k"
+              },
+              "device_bytes": {
+                "const": 0
+              },
+              "load_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery": {
+                "const": "request_driven"
+              },
+              "retry_delay_ms": {
+                "const": 5000
+              },
+              "compute_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "asset_cleanup_pending": {
+                "type": "boolean"
+              },
+              "host_weight_bytes": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "state",
+              "reason",
+              "core_readiness_dependency",
+              "model",
+              "device_bytes",
+              "load_attempts",
+              "load_failures",
+              "recovery",
+              "retry_delay_ms",
+              "compute_failures",
+              "asset_cleanup_pending",
+              "host_weight_bytes"
+            ],
+            "description": "Independent native CPU VAD backend. Assets or compute faults never change core readiness or automatically restart the model."
+          },
+          "native_alignment_limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "max_audio_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 400
+              },
+              "max_context_tokens": {
+                "type": "integer",
+                "minimum": 128,
+                "maximum": 8192
+              },
+              "workspace_mib": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 8192
+              },
+              "max_words": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2048
+              }
+            },
+            "required": [
+              "max_audio_seconds",
+              "max_context_tokens",
+              "max_words",
+              "workspace_mib"
+            ]
+          },
+          "native_vad_max_chunks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 256
           }
         },
         "required": [
@@ -40317,6 +40715,54 @@
             },
             "then": {
               "required": [
+                "native_asr_health",
+                "native_asr_limits"
+              ]
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "native_alignment_health"
+                  ]
+                },
+                {
+                  "required": [
+                    "native_alignment_limits"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "native_alignment_health",
+                "native_alignment_limits",
+                "native_asr_health",
+                "native_asr_limits"
+              ]
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "native_vad_health"
+                  ]
+                },
+                {
+                  "required": [
+                    "native_vad_max_chunks"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "native_vad_health",
+                "native_vad_max_chunks",
                 "native_asr_health",
                 "native_asr_limits"
               ]

@@ -1,0 +1,21 @@
+test_cli_preserves_explicit_auxiliary_settings_and_rejects_orphan_limits (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_cli_preserves_explicit_auxiliary_settings_and_rejects_orphan_limits) ... ok
+test_identity_paths_and_capacity_are_strict_and_copied (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_identity_paths_and_capacity_are_strict_and_copied) ... ok
+test_observed_identity_limits_health_and_no_silent_backend_loss (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_observed_identity_limits_health_and_no_silent_backend_loss) ... ok
+test_orphan_auxiliary_settings_do_not_prepare_partial_package (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_orphan_auxiliary_settings_do_not_prepare_partial_package) ... ok
+test_portable_missing_assets_and_every_actual_command_limit (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_portable_missing_assets_and_every_actual_command_limit) ... ok
+test_declaration_binds_actual_backend_and_effective_limits (tools.serve_service.test_asr_package.AsrPackage.test_declaration_binds_actual_backend_and_effective_limits) ... ok
+test_identity_limits_paths_and_alias_collisions_fail (tools.serve_service.test_asr_package.AsrPackage.test_identity_limits_paths_and_alias_collisions_fail) ... ok
+test_missing_optional_assets_remain_portable_and_preserve_limits (tools.serve_service.test_asr_package.AsrPackage.test_missing_optional_assets_remain_portable_and_preserve_limits) ... ok
+test_prepare_cli_forwards_only_explicit_asr_overrides (tools.serve_service.test_asr_package.AsrPackage.test_prepare_cli_forwards_only_explicit_asr_overrides) ... ok
+test_unqualified_engine_or_orphan_limits_do_not_create_package (tools.serve_service.test_asr_package.AsrPackage.test_unqualified_engine_or_orphan_limits_do_not_create_package) ... ok
+test_actual_config_health_and_bounded_native_options (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options) ... ok
+test_actual_json_and_every_stream_event (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_json_and_every_stream_event) ... ok
+test_actual_multi_clip_segments_stream_and_silent_usage (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_multi_clip_segments_stream_and_silent_usage) ... ok
+test_actual_three_backend_health_is_separate_and_config_complete (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_three_backend_health_is_separate_and_config_complete) ... ok
+test_multipart_shapes_and_cross_field_constraints (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_multipart_shapes_and_cross_field_constraints) ... ok
+test_pinned_sdk_and_native_openapi_publication (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_pinned_sdk_and_native_openapi_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.278s
+
+OK

@@ -4,13 +4,29 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad_chunks.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/vad_chunks_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/vad_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/aligner_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/aligner_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/aligner_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_aligner_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_statistics.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_statistics_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_alignment_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_chunk_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_chunk_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_alignment_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_protocol_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/aligner_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/aligner_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_layout_test.cpp

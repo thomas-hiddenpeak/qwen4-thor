@@ -1,0 +1,40 @@
+{
+  "cues": [
+    {
+      "start_ms": 400,
+      "end_ms": 880,
+      "text": "Mhm. "
+    },
+    {
+      "start_ms": 1040,
+      "end_ms": 1920,
+      "text": "Oh yeah, yeah. "
+    },
+    {
+      "start_ms": 2320,
+      "end_ms": 5040,
+      "text": "He wasn't even that big when I started listening "
+    },
+    {
+      "start_ms": 5120,
+      "end_ms": 10080,
+      "text": "to him, but and his solo music didn't do overly "
+    },
+    {
+      "start_ms": 10080,
+      "end_ms": 13280,
+      "text": "well, but he did very well when he started "
+    },
+    {
+      "start_ms": 13280,
+      "end_ms": 14560,
+      "text": "writing for other people."
+    }
+  ],
+  "quality": {
+    "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+    "exact": true,
+    "word_error_rate": 0.0
+  },
+  "human_timing_accuracy_assessed": false
+}

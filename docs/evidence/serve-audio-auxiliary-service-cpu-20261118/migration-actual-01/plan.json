@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "tests": [
+    "test_actual_retained_primary_light_allow_only_explicit_complete_format_extension",
+    "test_pending_declarations_become_proven_additions_without_losing_features",
+    "test_automatic_same_features_work_and_removal_or_unsealed_addition_fail"
+  ],
+  "seconds": 180,
+  "gpu_actions": 0,
+  "original_observation": "Actual old json/text to new json/text/srt/verbose_json/vtt was rejected by generic array equality; retained as a real migration defect. No model behavior changes."
+}

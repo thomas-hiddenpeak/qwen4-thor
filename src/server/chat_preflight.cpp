@@ -73,6 +73,11 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
       R"(,"native_asr_health":)" + NativeAsrHealthJson() +
       R"(,"native_asr_limits":)" + AsrServiceLimitsJson(asr_limits_) +
+      R"(,"native_alignment_health":)" + NativeAlignerHealthJson() +
+      R"(,"native_alignment_limits":)" +
+      AlignerServiceLimitsJson(aligner_limits_) +
+      R"(,"native_vad_health":)" + NativeVadHealthJson() +
+      R"(,"native_vad_max_chunks":)" + std::to_string(vad_max_chunks_) +
       R"(,"application_startup":{"responses":)" +
       ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
       ApplicationStartupJson(batches_.StartupHealth()) +

@@ -1,0 +1,17 @@
+{
+  "docs/serve-application-v1.schema.json": "3cfe6397d94e1674a72710d7defc1d27694d247cbc793cec38777ffe21f7cb33",
+  "docs/serve-config-v1.schema.json": "b2de7d3e93f8fc873cdc30510f7151b6aaff67be00435eaf44e64e1ab243912d",
+  "docs/serve-input-semantics-v1.json": "16d4841c3e2d4d6961bd0df596f164f08d1278b2d9a3a0bd087045f1dbd59de1",
+  "docs/serve-openapi-bundle-v1.json": "08f1a7c4f2c27ff0424c04e4fd6b66bd145e81a309d94796846248df5993d203",
+  "docs/serve-openapi-v1.json": "ad8f59b75ca1b6dcab8f83c37cb0d59a5741e26e3ebbf1bb129ebe88a41f312d",
+  "include/q4t/audio/vad.h": "9a2497746a72df6807d9d87ce4e1d30cfe05365b8252ad468cdde25776f167c5",
+  "src/server/chat_capabilities.cpp": "32d3e8a826204c7295303f70ad1fafb3a562a6259ff8258b4adec8b82c00e14d",
+  "tests/server_asr_chunk_output_test.cpp": "87540e909ef4b4c64f47baf6a6fe8148988a2fcc7b41409f0fdc4686924da42d",
+  "tools/serve_recovery/bundle.py": "d244f84cb56f8f4dc8a4fdd8cd53069ec974ba1e6c8d487545571530695382c7",
+  "tools/serve_recovery/service.py": "aa1e0662dbd2a8fe13383dc33d5870efd20a7a6bcc51a7482fa17fa646b45eae",
+  "tools/serve_responses/test_transcriptions_contract.py": "14b15f3d6b0ba4a01d1cbfa749609ae3ea164d266d5efdc4ba59cea55bb36a37",
+  "tools/serve_responses/transcriptions_contract.py": "7a9f07277a303069bcebda9b45ece84f1ffc9d12bf55eb7fedba354068502426",
+  "tools/serve_service/package.py": "09fa16a0b6501d0c09978571d342c8045a913fe818c32faa1c6e27c92c8fd64e",
+  "tools/serve_service/service.py": "588ba0836c2b4a084cb20da37409490df6f42fdeab03d2494ffabddb747076b3",
+  "tools/serve_service/test_audio_auxiliary_package.py": "7cb8a375fa33db80203ca67190a5187773b72bc32124066d65da7c9ebc837259"
+}

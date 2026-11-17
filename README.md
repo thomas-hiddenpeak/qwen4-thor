@@ -856,26 +856,40 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 
 ## 原生音频
 
-原生Qwen3-ASR-0.6B转录已在rev276可回退交付，支持multipart
-JSON/text/SSE、实际usage/logprobs、language/prompt、取消和显式
-资源预算。中英文真实音频、双SDK、原生TLS、主轻与整包恢复均有
-[分项业务证据](docs/evidence/serve-asr-service-composition-20261117/README.md)。
-原数值差分和TLS驱动失败保留；不作完整模型质量或长稳主张。
+原生转录、词时间戳、完整segment统计、SRT/VTT和VAD切片已在
+[rev286可回退交付](docs/evidence/serve-audio-auxiliary-delivery-20261118/README.md)。
+支持multipart、JSON/text/SSE、实际usage/logprobs、language/prompt、
+取消及显式资源预算。双SDK、原生TLS、主轻与整包恢复后的实际多段
+对齐均有[业务证据](docs/evidence/serve-audio-auxiliary-service-20261118/README.md)。
+原数值差分及驱动失败保留；不作完整模型质量、性能或长稳主张。
 
-ASR资产按部署通过`--asr-model-dir DIR`启用，固定revision/权重
-合同在加载时核验，不要求vLLM或Transformers运行服务。默认预算为
-30秒音频、4096上下文token、1024输出token、1024MiB workspace；
-可用`--asr-max-audio-seconds`、`--asr-max-context-tokens`、
-`--asr-max-output-tokens`、`--asr-workspace-mib`显式调整。托管
-服务准备命令也接收这些选项；独立客户端上传/输入/输出额度仍生效。
-ASR或codec故障隔离于相应请求，真正共享设备故障仍保留保护。
+ASR资产通过`--asr-model-dir DIR`按部署启用；固定revision/权重在
+加载时核验，不要求vLLM或Transformers运行服务。默认预算为30秒
+音频、4096上下文token、1024输出token、1024MiB workspace，可用
+`--asr-max-audio-seconds`、`--asr-max-context-tokens`、
+`--asr-max-output-tokens`、`--asr-workspace-mib`调整。
 
-音频codec在隔离worker复用系统GStreamer音频库/固定插件，核心
-不链接或加载它们，不启动外部解码程序。按官方API适配，未复制
-codec源码；系统插件保留其LGPL等发行许可。模型来源、固定revision
-与Apache-2.0许可见[Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)。
-时间戳/字幕/说话人/VAD、Chat音频、语音合成及Realtime继续按
+真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
+`--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
+1024MiB workspace，分别用`--aligner-max-audio-seconds`、
+`--aligner-max-context-tokens`、`--aligner-max-words`和
+`--aligner-workspace-mib`配置。VAD使用Silero固定16k模型，通过
+`--vad-model-dir DIR`启用，`--vad-max-chunks`限制切片数（默认64）。
+托管服务prepare同样接收这些选项；主轻及回退资格绑定实际身份和
+预算，不能在回退时悄悄删除能力。独立客户端上传/输入/输出额度仍
+生效；codec/ASR/对齐/VAD故障只降级相应能力，共享设备故障保留保护。
+
+音频codec在隔离worker复用系统GStreamer音频库/固定插件，核心不
+链接或加载它们，不启动外部解码程序；插件按系统包保留LGPL等许可。
+原生对齐与VAD不增加PyTorch/ONNX运行依赖。Qwen3-ASR和ForcedAligner
+的固定来源及Apache-2.0许可见[声明](third_party/licenses/qwen3-asr/README.md)，
+Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
+日/韩分词已实现，实际语言业务与人工时间精度尚未验收。
+
+说话人、Chat音频、语音合成和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
+现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整
+长稳交接仍属于Q03待完成项，长稳实跑由用户执行。
 
 ## 许可证
 

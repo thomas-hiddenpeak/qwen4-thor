@@ -1,0 +1,11 @@
+test_actual_multiclip_words_segments_and_fixed_source (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_actual_multiclip_words_segments_and_fixed_source) ... ok
+test_actual_stream_preserves_separator_probabilities_and_terminal (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_actual_stream_preserves_separator_probabilities_and_terminal) ... ok
+test_managed_fallback_requires_real_alignment_and_preserved_profile_history (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history) ... ok
+test_missing_times_tokens_health_or_real_audio_never_pass (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_missing_times_tokens_health_or_real_audio_never_pass) ... ok
+test_original_asr_only_business_remains_valid (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_original_asr_only_business_remains_valid) ... ok
+test_stream_does_not_claim_alignment_and_multipart_keeps_requested_shape (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_stream_does_not_claim_alignment_and_multipart_keeps_requested_shape) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.129s
+
+OK

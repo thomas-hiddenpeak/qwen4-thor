@@ -1,0 +1,9 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-03/q4t",
+  "binary_sha256": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71",
+  "cpu_tests": 16,
+  "driver_tests": 3,
+  "gpu_actions": 0,
+  "published": false,
+  "warning_count": 0
+}

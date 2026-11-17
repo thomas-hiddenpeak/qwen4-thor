@@ -14,7 +14,12 @@ inline constexpr int kModelAssetTimeoutMs = 60000;
 int MaybeRunModelAssetWorker(int argc, char** argv);
 
 namespace detail {
-enum class ModelAssetProfile : uint64_t { kEmbedding = 1, kAsr = 2 };
+enum class ModelAssetProfile : uint64_t {
+  kEmbedding = 1,
+  kAsr = 2,
+  kAligner = 3,
+  kVad = 4
+};
 struct ModelAssetSpec {
   const char* name;
   size_t bytes;

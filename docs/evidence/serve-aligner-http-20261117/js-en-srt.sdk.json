@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "version": "7.47.0",
+  "result": "1\n00:00:00,400 --> 00:00:00,880\nMhm. \n\n2\n00:00:01,040 --> 00:00:01,920\nOh yeah, yeah. \n\n3\n00:00:02,320 --> 00:00:05,040\nHe wasn't even that big when I started listening \n\n4\n00:00:05,120 --> 00:00:10,080\nto him, but and his solo music didn't do overly \n\n5\n00:00:10,080 --> 00:00:13,280\nwell, but he did very well when he started \n\n6\n00:00:13,280 --> 00:00:14,560\nwriting for other people.\n\n",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18228/v1/audio/transcriptions"
+    }
+  ]
+}

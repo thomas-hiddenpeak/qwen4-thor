@@ -1,0 +1,28 @@
+{
+  "head": "38bad446c6d323552e867d29b5da4543750aa0f6",
+  "sources": {
+    "CMakeLists.txt": "1cf3d734a65785facef7b571c8e08c6d35a87b3af009623031c3e29a193f6714",
+    "cmake/ChatProtocolIdentity.cmake": "75d7aeb6641212c504f9f58604eb496b43d7bc806023d0f5aa0431d98485af19",
+    "cmake/HostTestSources.cmake": "969801da6d75c0b2451aa5f80f8a9aa543d4c64d6144b56e004d2db201c7d802",
+    "cmake/ModelAssetTests.cmake": "ace2528912a0eb22c3199bd464fdff0aa0a38972a4c375fce21d9baf0a701568",
+    "docs/SERVE_NATIVE_ALIGNMENT_2026-11-17.md": "e9b59eabb26614ad325d561ecd466e46e338887c03fb099bc5d0d6dfb60d5d18",
+    "docs/STATUS.md": "ffec80de70fb48cab614137457f6789b144773cffac2b1320b28311af480dd83",
+    "docs/log/2026-11-17.md": "f51f4c86a68c1170c8b60e6811a3e14b6258979e95dd042f3bcab41514664f93",
+    "include/q4t/audio/vad.h": "ce762931cc8ba86b9af1d706daf2be834fb94756ad9f4cb3dc129a9e9d884a5f",
+    "include/q4t/server/model_assets.h": "96f08e754a01ccbce782a0a8523d8424be0f4b1505648e5605cbaca631ee3e01",
+    "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
+    "src/server/model_assets.cpp": "92c5db9d1ef75a959fe9c34a70837d95b06761ce098659435a9a76d5c1b53656",
+    "tests/vad_test.cpp": "9a27bd97808998915a3fc7957994edfee18a90dc5a16f490d78287466bc84722",
+    "include/q4t/audio/vad_chunks.h": "5d65729daea3566de2582326c9a3ec2aa453f0c26dbd4f89f5cfa69d4095902c",
+    "include/q4t/server/vad_assets.h": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751",
+    "src/audio/vad_chunks.cpp": "295a13ca50f20b9da1cd4e3bb0476c9a6b5eed9ce30d19877fabd40e44a2ac32",
+    "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
+    "tests/server_vad_assets_test.cpp": "401785cd53eaaff67664dea282c4ccf67649ca32140c5084edbda0de46491ee4",
+    "tests/vad_chunks_test.cpp": "bcefc8d887e2ccbf464c78a78eabc5b983478e666e001719db9b5c1c5d841868"
+  },
+  "binaries": {
+    "q4t_host_tests": "ffd72ef8466d10b9b7627332a8d0d8efd2656c2068fddb611d11ede80e72b027",
+    "q4t_model_asset_tests": "4f6b1a80ef8b91915e3bf12a6985f45f615f125dd1ed0a1d12c463c3e3c868c0"
+  },
+  "plan_sha256": "e5b073f73ada0a94770d257b1810a757bf8366cf9499a50fc6ff3764d0ce71ea"
+}

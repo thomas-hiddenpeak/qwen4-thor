@@ -1,0 +1,19 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-02/q4t",
+  "binary_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+  "sources": {
+    "include/q4t/server/asr_alignment_output.h": "90b076b4c0dfd826d2155b52430b273e6b623ea48d994dc9013c15a9b3d8984b",
+    "include/q4t/server/asr_response.h": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1",
+    "src/server/asr_alignment_output.cpp": "43ef22cfba7c06b182af4b425340848f96304fc910eac7b1d04aba556cd759a7",
+    "src/server/asr_response.cpp": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc",
+    "src/server/chat_asr.cpp": "d6dfeaa0347ff627c2132d701d8589f11a38069e39d6bda5a53189c4b0faeb7e",
+    "src/server/chat_asr_alignment.cpp": "73382e40d9bf7e14a84e0ac62af0b077bfa49d4416a6611af431d33ff4771a55",
+    "src/server/chat_asr_execution.cpp": "b907d04485533e77c2f376a7daab50c70d7f3d825db884b907726993d0145d3f",
+    "src/server/chat_capabilities.cpp": "ccfaccdb664959e507225411c09ccd19076f711f180549605b8da6671334ffbd",
+    "tests/server_asr_alignment_output_test.cpp": "ad817b1166556c90792002c8a7ca1e7e9d2a40d411690abd241a8a05b31847a0"
+  },
+  "cpu": "16/16; numeric diagnostics added afterward only in CUDA HTTP path; CPU code unchanged",
+  "driver_cpu": "3/3; 10 invalid statistic mutations rejected",
+  "gpu_actions": 0,
+  "published": false
+}

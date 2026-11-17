@@ -214,6 +214,7 @@ def main():
     p.add_argument('--asr-model-dir', type=Path)
     for option in pkg.ASR_LIMITS:
         p.add_argument('--asr-'+option.replace('_', '-'), type=int)
+    pkg.add_asr_auxiliary_options(p)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--operations-port', type=int, default=0)
@@ -264,6 +265,7 @@ def main():
                              web_policy=args.web_policy,
                              embedding_model_dir=args.embedding_model_dir,
                              asr_model_dir=args.asr_model_dir,
+                             asr_auxiliary=pkg.asr_auxiliary_cli(args),
                              asr_limits=({k:getattr(args, 'asr_'+k) for k in pkg.ASR_LIMITS
                                  if getattr(args, 'asr_'+k) is not None} or None),
                              capacity_config=pkg.read(args.capacity_config)

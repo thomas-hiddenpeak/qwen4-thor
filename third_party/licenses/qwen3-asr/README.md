@@ -13,8 +13,8 @@ team. All rights reserved. Licensed under the [Apache License 2.0](LICENSE).
   Python inference implementation are distributed in this source tree. The
   original configuration bytes are retained; the safetensors header is
   reserialized as fixture JSON.
-- Runtime integration remains in progress. Neither this metadata nor the
-  validator alone constitutes a working transcription endpoint.
+- Native transcription is delivered; actual forced alignment remains in
+  progress. Metadata/tokenizer tests alone do not prove timestamp accuracy.
 
 The original license is included unchanged. The fixed official code was
 reviewed for the computation contract. Development-only `model_reference.py`
@@ -33,3 +33,19 @@ standard DFT/Hann/Slaney equations independently; the reference runs only to
 generate synthetic validation data. No Python, NumPy or Transformers is needed
 by the C++ runtime. Reference input generation is in
 `tools/native_asr/feature_reference.py`; matrix fixtures are little-endian F32.
+
+Forced-alignment metadata and tokenizer use the same source project and
+[Qwen/Qwen3-ForcedAligner-0.6B](https://huggingface.co/Qwen/Qwen3-ForcedAligner-0.6B/tree/c7cbfc2048c462b0d63a45797104fc9db3ad62b7),
+also Apache-2.0. The added non-special `<timestamp>` token and 24-layer encoder /
+5000-class head contracts are implemented natively; fixture headers contain no
+weights. The staged asset is optional and no Python runtime is distributed.
+
+`src/audio/aligner_postprocess.cpp` adapts Unicode text cleaning and the stable
+longest-nondecreasing-subsequence timestamp repair from
+`qwen_asr/inference/qwen3_forced_aligner.py` at the fixed source revision above.
+Copyright 2026 The Qwen team, Alibaba Group and the HuggingFace Inc. team.
+Changes: C++ implementation, explicit bounds/cancellation and atomic output,
+original UTF-8 spans, raw/repaired/clipped accounting and duration checks.
+Japanese/Korean segmentation uses the already-linked ICU word iterator instead
+of Nagisa/SoyNLP; equivalence and real-language accuracy are not asserted.
+No Python segmentation package or reference inference runtime is shipped.

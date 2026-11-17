@@ -1,0 +1,50 @@
+{
+  "status": "PASS_FIXED_ASSET_IDENTITY",
+  "revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+  "files": [
+    {
+      "upstream_path": "LICENSE",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/LICENSE",
+      "bytes": 1075,
+      "git_blob_sha1": "0bf5e90cac691b999d4a35044f97167d7bbbf0b9",
+      "sha256": "2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/LICENSE"
+    },
+    {
+      "upstream_path": "src/silero_vad/tinygrad_model.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/tinygrad_model.py",
+      "bytes": 2563,
+      "git_blob_sha1": "38108c133aeeb4fa2e0ff6ffe99f9a1bcd90a53e",
+      "sha256": "79afb8aae28bb9d20735df4053bef1191a85b74a0db335a5fc16c302ddda7e86",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/src/silero_vad/tinygrad_model.py"
+    },
+    {
+      "upstream_path": "src/silero_vad/utils_vad.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/utils_vad.py",
+      "bytes": 31474,
+      "git_blob_sha1": "4b3bef714cae87a44381077ac0519fd1a0f45089",
+      "sha256": "7e0f9b3334ee4feb79abcf2251be12458329077bce28c8540878ed9d35e5aa6b",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/src/silero_vad/utils_vad.py"
+    },
+    {
+      "upstream_path": "src/silero_vad/data/silero_vad_16k.safetensors",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad_16k.safetensors",
+      "bytes": 1239748,
+      "git_blob_sha1": "367975dcd8924bd8f17254f3da99361be0a3b928",
+      "sha256": "c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/src/silero_vad/data/silero_vad_16k.safetensors"
+    },
+    {
+      "upstream_path": "src/silero_vad/data/silero_vad.jit",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01/silero_vad.jit",
+      "bytes": 2272526,
+      "git_blob_sha1": "5c6988d663950a93a5f0d6c38c2fe024653ec552",
+      "sha256": "e1122837f4154c511485fe0b9c64455f7b929c96fbb8d79fbdb336383ebd3720",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/src/silero_vad/data/silero_vad.jit"
+    }
+  ],
+  "bytes": 3547386,
+  "seconds": 28.925922443158925,
+  "gpu_actions": 0,
+  "free_disk": 8610549760
+}

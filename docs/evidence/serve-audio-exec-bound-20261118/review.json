@@ -1,0 +1,19 @@
+{
+  "original_counted_spawn_attempts": 1,
+  "actual_model_execs": 0,
+  "reason": "76 arguments rejected by old <=64 check before identity receipt, permit or exec; reproduced on CPU. Later model generations exhausted the counted spawn budget before Popen.",
+  "actual_creates": 0,
+  "original_seconds": 34.10361590003595,
+  "original_status": "FAILED_preserved",
+  "cleanup_complete": true,
+  "nvml_queries": 35,
+  "static_proof_not_polling_only": true,
+  "sources": {
+    "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
+    "tools/serve_recovery/test_child.py": "d5de2dd7e9f4e9d0d4e4fe6addcfe30da0aaad249404b986c62f56f95c7ae954"
+  },
+  "remaining_actual_model_starts": 5,
+  "cumulative_counted_attempt_limit": 6,
+  "cumulative_creates_limit": 19,
+  "cumulative_seconds_limit": 1800
+}

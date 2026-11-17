@@ -1,0 +1,8 @@
+test_actual_fields_and_optional_words (tools.native_asr.test_segment_http.SegmentOracle.test_actual_fields_and_optional_words) ... ok
+test_missing_or_fabricated_statistics_fail (tools.native_asr.test_segment_http.SegmentOracle.test_missing_or_fabricated_statistics_fail) ... ok
+test_silence_has_no_invented_segment_or_text (tools.native_asr.test_segment_http.SegmentOracle.test_silence_has_no_invented_segment_or_text) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK

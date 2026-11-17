@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NATIVE_SEGMENTS_WITH_REUSED_FIVE_REQUESTS",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 39
+  },
+  "seconds": 48.22378011792898,
+  "binary_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d"
+}

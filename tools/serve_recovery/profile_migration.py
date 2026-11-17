@@ -17,6 +17,7 @@ FORMAT = 'q4t-profile-migration-permit-v1'
 CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 BACKEND_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v4'
+AUDIO_EXTENSION_FORMAT = 'q4t-profile-migration-permit-v5'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
@@ -175,6 +176,68 @@ def asr_capabilities(value):
         type(selected.get('configured')) is bool,
         'invalid native ASR capability identity')
     selected['configured'] = dict(enabled=True) if selected['configured'] else {}
+    if 'formats' in selected:
+        formats = selected['formats']
+        basic, aligned = {'json', 'text'}, {'srt', 'verbose_json', 'vtt'}
+        ledger.require(type(formats) is list and all(type(v) is str for v in formats)
+            and len(set(formats)) == len(formats) and basic <= set(formats)
+            and set(formats) <= basic | aligned, 'invalid native ASR format capabilities')
+        if set(formats) & aligned:
+            ledger.require(aligned <= set(formats) and 'alignment' in selected and
+                type(selected.get('segments')) is dict and
+                selected['segments'].get('scope') == 'independently_decoded_audio_clip',
+                'aligned formats lack complete backend/segment implementation')
+        # The API's output format enum is an unordered feature set. Only this
+        # reviewed enum may extend; arbitrary arrays still require equality.
+        selected['formats'] = {name:True for name in formats}
+    for name, (fixed, _, _) in package.ASR_AUXILIARY.items():
+        if name not in selected:
+            continue
+        observed = selected[name]
+        ledger.require(type(observed) is dict and
+            all(observed.get(k) == v for k,v in fixed.items()) and
+            type(observed.get('configured')) is bool,
+            'invalid native auxiliary audio capability')
+        observed['configured'] = dict(enabled=True) if observed['configured'] else {}
+        if name == 'vad':
+            ledger.require(ledger.integer(observed.get('max_chunks'), minimum=1)
+                and observed['max_chunks'] <= 256, 'invalid VAD declared capacity')
+            # This budget remains bound and checked in the immutable qualified
+            # identity. Explicit budget migration must not be mistaken for a
+            # change of the backend's features, or silently ignored on fallback.
+            del observed['max_chunks']
+    if 'remaining_native_work' in selected:
+        pending = selected.pop('remaining_native_work')
+        known = {'alignment', 'alignment_segments', 'vad_chunking', 'diarization'}
+        ledger.require(type(pending) is list and all(type(k) is str for k in pending)
+            and len(set(pending)) == len(pending) and set(pending) <= known and
+            'diarization' in pending, 'unknown native audio completion declaration')
+        resolved = {}
+        if not {'alignment', 'alignment_segments'}.intersection(pending):
+            ledger.require('alignment' in selected and 'segments' in selected,
+                           'alignment completion lacks actual backend/segment declaration')
+            resolved['alignment'] = True
+        if 'vad_chunking' not in pending:
+            ledger.require('vad' in selected and selected.get('chunking_strategy') == ['auto', 'server_vad'],
+                           'VAD completion lacks actual backend/strategy declaration')
+            resolved['vad_chunking'] = True
+        selected['resolved_native_work'] = resolved
+
+
+def audio_change(before, after):
+    """Only addition and explicit capacity changes preserve accepted backends."""
+    profile_contract.asr_configuration(before)
+    profile_contract.asr_configuration(after)
+    old = set(profile_evidence.audio_auxiliaries(dict(native_asr=before)))
+    new = set(profile_evidence.audio_auxiliaries(dict(native_asr=after)))
+    ledger.require(old <= new and all(before[k] == after[k] for k in package.NATIVE_ASR),
+                   'migration would remove or change an accepted audio backend')
+    for name in old:
+        ledger.require(all(before[name][k] == after[name][k] for k in package.ASR_AUXILIARY[name][0]),
+                       'migration would change fixed audio auxiliary identity')
+    capacity = before['limits'] != after['limits'] or any(
+        before[name]['limits'] != after[name]['limits'] for name in old)
+    return bool(new-old), capacity
 
 
 def semantic_capabilities(value):
@@ -332,8 +395,8 @@ def permit(previous, target, previous_evidence, target_evidence,
         'qualified extension; automatic recovery cannot lose or add features')
     old_asr, new_asr = (registry['identity'].get('native_asr')
                         for registry in (previous, target))
-    asr_capacity = old_asr is not None and new_asr is not None and \
-        old_asr['limits'] != new_asr['limits']
+    audio_extension, asr_capacity = (audio_change(old_asr, new_asr)
+        if old_asr is not None and new_asr is not None else (False, False))
     changed = previous['profiles'] != target['profiles']
     ledger.require(type(allow_capacity_change) is bool and
         (not (changed or asr_capacity) or (allow_capacity_change and not automatic)),
@@ -341,8 +404,8 @@ def permit(previous, target, previous_evidence, target_evidence,
     for key in ('model_files', 'model_assets', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
                        'migration would change fixed model identity')
-    ledger.require(old_asr == new_asr or (asr_capacity and
-        all(old_asr[k] == new_asr[k] for k in package.NATIVE_ASR)) or
+    ledger.require(old_asr == new_asr or (asr_capacity and not audio_extension) or
+        (audio_extension and extension and allow_capability_extension and not automatic) or
         (old_asr is None and new_asr is not None and extension and
          allow_capability_extension and not automatic),
         'migration would change or remove qualified ASR identity/capacity')
@@ -350,7 +413,8 @@ def permit(previous, target, previous_evidence, target_evidence,
     ledger.require(type(automatic) is bool and
         (not automatic or previous_config == target_config),
         'automatic fallback cannot alter profile policy')
-    return validate(dict(format=BACKEND_CAPACITY_FORMAT if asr_capacity else
+    return validate(dict(format=AUDIO_EXTENSION_FORMAT if audio_extension else
+        BACKEND_CAPACITY_FORMAT if asr_capacity else
         EXTENSION_FORMAT if extension else
         CAPACITY_FORMAT if changed else FORMAT,
         from_registry=profile_contract.digest(previous),
@@ -362,49 +426,47 @@ def permit(previous, target, previous_evidence, target_evidence,
         to_identity=ledger.digest(target['identity']),
         capabilities_sha256=ledger.digest(first), automatic=automatic,
         **(dict(target_profiles={n:ledger.digest(v) for n,v in target['profiles'].items()})
-           if changed or extension or asr_capacity else {}),
+           if changed or extension or asr_capacity or audio_extension else {}),
         **(dict(target_capabilities_sha256=ledger.digest(second))
-           if extension or asr_capacity else {}),
+           if extension or asr_capacity or audio_extension else {}),
         **(dict(from_native_asr=copy.deepcopy(old_asr),
-                to_native_asr=copy.deepcopy(new_asr)) if asr_capacity else {})))
+                to_native_asr=copy.deepcopy(new_asr)) if asr_capacity or audio_extension else {})))
 
 
 def validate(value):
     capacity_change = type(value) is dict and value.get('format') == CAPACITY_FORMAT
     extension = type(value) is dict and value.get('format') == EXTENSION_FORMAT
     backend = type(value) is dict and value.get('format') == BACKEND_CAPACITY_FORMAT
+    audio = type(value) is dict and value.get('format') == AUDIO_EXTENSION_FORMAT
     ledger.keys(value, ('format','from_registry','to_registry','profiles',
         'from_configuration','to_configuration','from_identity','to_identity',
         'capabilities_sha256','automatic',
-        *(('target_profiles',) if capacity_change or extension or backend else ()),
-        *(('target_capabilities_sha256',) if extension or backend else ()),
-        *(('from_native_asr', 'to_native_asr') if backend else ())))
+        *(('target_profiles',) if capacity_change or extension or backend or audio else ()),
+        *(('target_capabilities_sha256',) if extension or backend or audio else ()),
+        *(('from_native_asr', 'to_native_asr') if backend or audio else ())))
     ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT, EXTENSION_FORMAT,
-                                      BACKEND_CAPACITY_FORMAT) and
+                                      BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT) and
                    type(value['automatic']) is bool,
                    'invalid profile migration permit')
-    if capacity_change or extension or backend:
+    if capacity_change or extension or backend or audio:
         ledger.keys(value['target_profiles'], profile_contract.NAMES)
         ledger.require(not value['automatic'] and
-            (extension or backend or value['target_profiles'] != value['profiles']),
+            (extension or backend or audio or value['target_profiles'] != value['profiles']),
             'capacity/feature migration must be explicit')
-    if extension:
+    if extension or audio:
         ledger.require(value['target_capabilities_sha256'] != value['capabilities_sha256'],
                        'extension must bind different actual capabilities')
-    if backend:
+    if backend or audio:
         before, after = value['from_native_asr'], value['to_native_asr']
-        for native in (before, after):
-            ledger.keys(native, (*package.NATIVE_ASR, 'limits'))
-            package.asr_settings(dict(native, directory='/qualified/asr-assets'))
-        ledger.require(all(before[k] == after[k] for k in package.NATIVE_ASR) and
-            before['limits'] != after['limits'],
-            'backend migration must bind the same model and changed ASR limits')
+        added, changed = audio_change(before, after)
+        ledger.require(added if audio else changed and not added,
+                       'backend migration must bind its real addition or capacity change')
     ledger.keys(value['profiles'], profile_contract.NAMES)
     for h in [value[k] for k in ('from_registry','to_registry','from_identity',
                                'to_identity','capabilities_sha256')]+list(value['profiles'].values())+list(
                                    value.get('target_profiles', {}).values())+(
                                    [value['target_capabilities_sha256']]
-                                   if extension or backend else []):
+                                   if extension or backend or audio else []):
         ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
                        'invalid profile migration identity')
     policy.configuration(value['from_configuration'])
@@ -423,7 +485,7 @@ def candidate(previous, authorization, stamp):
         'profile migration predecessor differs')
     # No elapsed time, including same-boot STOPPED time, earns new budget.
     value = policy.resume(previous, stamp)
-    if authorization['format'] == BACKEND_CAPACITY_FORMAT or (
+    if authorization['format'] in (BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT) or (
             authorization['format'] in (CAPACITY_FORMAT, EXTENSION_FORMAT) and
             authorization['target_profiles'] != previous['profiles']):
         value = policy.historical(value)

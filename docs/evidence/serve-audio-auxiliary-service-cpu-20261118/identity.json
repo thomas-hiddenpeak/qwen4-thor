@@ -1,0 +1,7 @@
+{
+  "tools/native_asr/auxiliary_service.py": "806b1ac645fa1e82c1c6eaf0a29c4747b28cd525fec3855285e0bdb6748dfd39",
+  "tools/native_asr/service_acceptance.py": "a7ff97b9a695604397cbf8238f8261df3405a19f556a3c00cd5a2772176fc271",
+  "tools/native_asr/test_auxiliary_service.py": "df70e05230412a5b5a0b8b5ba3d7c9b01d4596e01a8f6d09a0b93cd2803a49d9",
+  "tools/serve_recovery/profile_migration.py": "9950bea801e1adf2bf4b9930a34274615827d0aef2c2f16811e619db1d628476",
+  "tools/serve_recovery/test_audio_auxiliary_profiles.py": "3cdb79dea4c35ec46ab2f65891e53faa73ebf068f79b64dbe0cdc24ac86f9072"
+}

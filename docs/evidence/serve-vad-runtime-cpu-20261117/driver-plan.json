@@ -1,0 +1,12 @@
+{
+  "status": "FROZEN_BEFORE_DRIVER_CPU",
+  "cases": 3,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_asr/test_vad_http.py": "ba2f94b016f59b0652666fa5615c60710248757032bf3d5f52b2bfbe90e4384b",
+    "tools/native_asr/vad_http_acceptance.py": "ef671f05e1a2eb8fa8fcf9e36de4148b6f01914e203f03ceb8cded544c7ceb7c",
+    "tools/native_asr/alignment_http_acceptance.py": "6398c36cbd553128c6c7380a69c129b0ecfcf0a1ef5e07b90f44fa209d652358"
+  },
+  "scope": "Synthetic pass/fail controls: global timestamp/segment observations, cross-clip SSE terminal/text/probability, silent usage. No model/GPU."
+}

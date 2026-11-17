@@ -1,0 +1,280 @@
+{
+  "scope": "Native forced alignment, complete segment statistics, CPU VAD and bounded real chunk output; recursive package and qualified recovery identity. No route/Chat field removal; diarization and all remaining master tasks remain open.",
+  "anchors": {
+    "CMakeLists.txt": {
+      "before": "25073e0d1f76a8ba47fcbfec7b45b409844520ae5a75a2657fd42ef46995fd37",
+      "after": "cf5bc171e1f7b07d681bf98e61702ade5e900196de15c85766b074df2de0f137"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "d313d219dea74612541990fc779fca45e2e9866d4e32a9a04d29ae8c960b85fc",
+      "after": "4e12a5affdaff8b588d396c1fa22656668651b49d149a584b3d56d696979b4d1"
+    },
+    "include/q4t/audio/aligner_config.h": {
+      "before": null,
+      "after": "db9e41dc284ebcf4fb7b78d0c0c4b2579902dfe7b5c946535c6643aff7b39f05"
+    },
+    "include/q4t/audio/aligner_layout.h": {
+      "before": null,
+      "after": "28fa3f1dddcffc360e9c237910d0aab3cd34556051ce690933ff07e0241ac122"
+    },
+    "include/q4t/audio/aligner_model.h": {
+      "before": null,
+      "after": "9fc650ff2eceb0ce8c8d50f9e7922bda8ccd0ad901a5136db97e2e57cf30ca05"
+    },
+    "include/q4t/audio/aligner_postprocess.h": {
+      "before": null,
+      "after": "0a8558e459836dacd8f820ddafad1893cf83791bd7c04ae3711ddc3f0410cc3d"
+    },
+    "include/q4t/audio/asr_model.h": {
+      "before": "21e3f162064aca9511be133b44103bc9727a131e33fd36451090bde8a627120b",
+      "after": "7806defb9a81583df571107e40fecefe8a33b926ef84596679085ec79d7448f8"
+    },
+    "include/q4t/audio/vad.h": {
+      "before": null,
+      "after": "9a2497746a72df6807d9d87ce4e1d30cfe05365b8252ad468cdde25776f167c5"
+    },
+    "include/q4t/audio/vad_chunks.h": {
+      "before": null,
+      "after": "5d65729daea3566de2582326c9a3ec2aa453f0c26dbd4f89f5cfa69d4095902c"
+    },
+    "include/q4t/model/embedding_model.h": {
+      "before": "b11c607ea323bb4b09bfbdf4669b5607556bf62b3e50c3c64c830c29551c3e63",
+      "after": "b2b6f97edcb335658005abe8d1b53a4d10dc46d763d82ee71be294914665a1c4"
+    },
+    "include/q4t/server/aligner_assets.h": {
+      "before": null,
+      "after": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443"
+    },
+    "include/q4t/server/aligner_service.h": {
+      "before": null,
+      "after": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017"
+    },
+    "include/q4t/server/asr_alignment_output.h": {
+      "before": null,
+      "after": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051"
+    },
+    "include/q4t/server/asr_chunk_output.h": {
+      "before": null,
+      "after": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628"
+    },
+    "include/q4t/server/asr_request.h": {
+      "before": "dd8775d0f7da893eaae57eb1c5db39df317d966a1917682ff00300573d9a7cdb",
+      "after": "393329ab586cceed2f34ca61a86aa5d0003d539ad6a2c0af83b5d9b160ecbdde"
+    },
+    "include/q4t/server/asr_response.h": {
+      "before": "70d5f398fdc01f90d87db5b4a309776d9af69026e629b77525f82c8b592703ac",
+      "after": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1"
+    },
+    "include/q4t/server/asr_service.h": {
+      "before": "0b74a69fe9d2e37f708902daf96867ec92fd77037b35aa47065dca30d4e93c04",
+      "after": "1da180c2905e072333081133911b98c6e4c51083dd10aeac2516e2bb1ebb9d76"
+    },
+    "include/q4t/server/asr_statistics.h": {
+      "before": null,
+      "after": "044c90e1417d93c0c84edaf0e67f67d45705bcde6a2fd11b72a4f4ed7fa9b7ec"
+    },
+    "include/q4t/server/chat_capabilities.h": {
+      "before": "4ba8b127f1c259bf0018ab068d6762676d48bed6c9c6a7a79b9d11fecbeeadd9",
+      "after": "6be1244bc8132ed18f8887771d509e929ea12efedd4866364d487cb6a7ecace8"
+    },
+    "include/q4t/server/chat_server.h": {
+      "before": "da0332e4733086b457f4aceab25706663c14600a3351b891db7b29dd16197d2e",
+      "after": "aaeb29d393529e449e8384c86cd5c930bc8b71b92bc7418d5c7d18902fe19fd9"
+    },
+    "include/q4t/server/model_assets.h": {
+      "before": "4b5f8fe712cb9bd1f628971ace65b21207bb93d0032e2d5dfa8d33ba3c5ef0eb",
+      "after": "96f08e754a01ccbce782a0a8523d8424be0f4b1505648e5605cbaca631ee3e01"
+    },
+    "include/q4t/server/server_options.h": {
+      "before": "1d3711a7357cca11af98aed2cafa12da5e16216d92c7ac4a4d133c55473e138c",
+      "after": "a1667ed9fbc57f7fe75c1f2b0efeb7201b0db978ba9e63388deb3474bf8a8a3d"
+    },
+    "include/q4t/server/vad_assets.h": {
+      "before": null,
+      "after": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751"
+    },
+    "src/audio/aligner_config.cpp": {
+      "before": null,
+      "after": "7d3e153a2047da5468ee94eed8644cf3764d27eb5b19541f0e616bcd9401c916"
+    },
+    "src/audio/aligner_layout.cpp": {
+      "before": null,
+      "after": "949ce1e70d0fc9ebbbce53cefb842fc003b6c0c123ba98f8ca42d02e4f31b95a"
+    },
+    "src/audio/aligner_postprocess.cpp": {
+      "before": null,
+      "after": "ce68912efd3923776407a6b2d9df2c6720a42dd06d16b06dbd74732e7d972463"
+    },
+    "src/audio/asr_config.cpp": {
+      "before": "8b717f3505329a06e0fece54f9851a98ef2d7642031aa9657c424570dd6622e8",
+      "after": "0d8e1af2cc9b6b2b55733783c0d8c129cb11633ad0b3703e31155987ecc24039"
+    },
+    "src/audio/asr_layout.cpp": {
+      "before": "fd3ae396f28905d8ebc7f3584e108c2e6c8931aa8eb4183c932a43b7208ec45d",
+      "after": "bd477f21e3a1203e70106a43ea22ec6eb9f960c66b381b0e252f1145080fe9ff"
+    },
+    "src/audio/asr_model.cu": {
+      "before": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568",
+      "after": "46a318e0194f44f2775e8a514eff33b174c99d894977b573d0f6faf44ea24a18"
+    },
+    "src/audio/vad.cpp": {
+      "before": null,
+      "after": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56"
+    },
+    "src/audio/vad_chunks.cpp": {
+      "before": null,
+      "after": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c"
+    },
+    "src/main.cpp": {
+      "before": "dc0851b1b9f9689b11e0029160c89dcc2371ebcd96eb8c80dd4c152ec1ec2fff",
+      "after": "c339837f8bda23225bfe410ef36def1f13b138358e0937bad3c7c3c92d609859"
+    },
+    "src/model/embedding_model.cu": {
+      "before": "0b82506b506bdccf305f94290cee583968945ecd2c380e217e751e768f580c3f",
+      "after": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f"
+    },
+    "src/server/aligner_assets.cpp": {
+      "before": null,
+      "after": "80fdb6af8262fe6d1ef86318915941cc319a507eb1a33c37db86bd16b3df1a9b"
+    },
+    "src/server/aligner_service.cpp": {
+      "before": null,
+      "after": "4049f01ff08fdefb9922b501e7086ba35ba6080b8a858c8f19daa9b1bc9b6abd"
+    },
+    "src/server/asr_alignment_output.cpp": {
+      "before": null,
+      "after": "66d495f012519ac93a39d16d0fd92b69e1345a921ee81a900079f246ca191d51"
+    },
+    "src/server/asr_chunk_output.cpp": {
+      "before": null,
+      "after": "80b0a2b938c2c4d8a42853d465a5b35748c09700d488eaf2f998282a366643a5"
+    },
+    "src/server/asr_request.cpp": {
+      "before": "3eafcd9d506be2908a0b53562217cf7abca2732ef57a1ef3d70714fdb7c7f8fb",
+      "after": "4cb39130bfaf9c047be32b515da891c7b684309b5a97b5176424fd3c0c75beaf"
+    },
+    "src/server/asr_response.cpp": {
+      "before": "376a0a1c9fcf1abf1bc0794d64f3947ba38962989488c638f74ab85354c7a069",
+      "after": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc"
+    },
+    "src/server/asr_service.cpp": {
+      "before": "baa85ce5ec3a6d6497bf484d112dc112c3f1b3a570ccd5a7cb9a3d6ea12057ea",
+      "after": "6323d72e89275105c2d7e167d98b32a285f90c24dc45c3c1afe4819a6c639a29"
+    },
+    "src/server/asr_statistics.cpp": {
+      "before": null,
+      "after": "6c0f810beeb2c290f41e5df389448ec55f3539df84e3a722889c2ffffdd9d327"
+    },
+    "src/server/chat_aligner_backend.cpp": {
+      "before": null,
+      "after": "7f41c60d3501fc7daa9b37101643c1733316d8b74e921923a681bcdca21e92d4"
+    },
+    "src/server/chat_aligner_execution.cpp": {
+      "before": null,
+      "after": "55cf52124f2830bfd766d13cd8d6d6210da63a23dd4cf6dbd131235c67055034"
+    },
+    "src/server/chat_asr.cpp": {
+      "before": "3f161332c66956878ec08bd1ab33904dafafe1e9a344ae5aa910612a13cb4d62",
+      "after": "2d5478fa8f6d53a2ed91d4a90b491dca0906a6c5b067b2b60e107de0e4301f89"
+    },
+    "src/server/chat_asr_alignment.cpp": {
+      "before": null,
+      "after": "c17ac4358195d66b545c85300a1f90d8eb9e3d65b7d075ea5e4c10ef69402b02"
+    },
+    "src/server/chat_asr_execution.cpp": {
+      "before": "198a38b7665e5a70ae8f012ddb2f70f95b3ed8b467474f62e92346950c3661e8",
+      "after": "b39509c50467fe016f72bfcec2927b9e8ed3b36ee38d8192d317aff88aa7de00"
+    },
+    "src/server/chat_capabilities.cpp": {
+      "before": "05747cae1a0e02ea1163ae936bb37aaec9761401a60d64380cd3977f1083230b",
+      "after": "32d3e8a826204c7295303f70ad1fafb3a562a6259ff8258b4adec8b82c00e14d"
+    },
+    "src/server/chat_metrics.cpp": {
+      "before": "58593856acc54889da281db1ca80541f7cbac583cfde3364e8e8267a45184474",
+      "after": "5897d6081f42d05108daa0602f7f0e701541d96ada69db464757f100a2153d11"
+    },
+    "src/server/chat_preflight.cpp": {
+      "before": "6e2771186218236c03dec9cf351d21bb41023522e405bd37c8a24135d1a00202",
+      "after": "3fe7cc8c297b7196a7f1de489ca1f27960c32a63d74d810e481270c3ba6be26f"
+    },
+    "src/server/chat_server.cpp": {
+      "before": "425958be81cce17b6e7b3ffc917326a96171613608af88bda7daa99146694ee8",
+      "after": "4f2a7429774b15f32f6fb8a77cbc69fd2d9188ef9a04f35f5292ae72fe47fcd1"
+    },
+    "src/server/chat_vad_backend.cpp": {
+      "before": null,
+      "after": "54fc94fc1379436f58af350645a37215f512616ed4cd9e1b5e900263ce6fd244"
+    },
+    "src/server/model_assets.cpp": {
+      "before": "310ef168d815046f7394a03dad20fda86e94e5ecdaefdb6b071e76b3a089adf6",
+      "after": "92c5db9d1ef75a959fe9c34a70837d95b06761ce098659435a9a76d5c1b53656"
+    },
+    "src/server/server_options.cpp": {
+      "before": "d5f3ad8948d97362e849145ebd660df8e80b0a31a13e248255b2a31f474ae3b1",
+      "after": "fabc133c03e136466385941a00703fa5aeb3a3e3b801a8939ee96a0c6171b9f5"
+    },
+    "src/server/vad_assets.cpp": {
+      "before": null,
+      "after": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471"
+    },
+    "src/text/tokenizer.cpp": {
+      "before": "56a560f4c68bed7973cc400ca3f0a521423567f356f4d741cdf889e9bc3850a1",
+      "after": "fe90f7c94cae4db8b2b2321cd442b05a7dd34ff81a533b6d530388cb1f16b133"
+    },
+    "tools/serve_recovery/bundle.py": {
+      "before": "e4742d688621cb0981aa6c187c34dfb36df205f3689a65a98e87eb3ce0c2f3c7",
+      "after": "d244f84cb56f8f4dc8a4fdd8cd53069ec974ba1e6c8d487545571530695382c7"
+    },
+    "tools/serve_recovery/deployment.py": {
+      "before": "fa9face227f8d43484f3d26e20fed9552ab8b18aea1f317c66d59f04a13901c4",
+      "after": "fbf43aca7edd21ff880197957261927ec704d0bfb92e942bfcc746fbb0671aa6"
+    },
+    "tools/serve_recovery/outer_acceptance.py": {
+      "before": "1298975bae47663f2f52b9261b6dd132c995b3e830bda5809395dbf0f295774d",
+      "after": "ec89c89d7895b7a67508cf37364201cbf9be653bb611609d0843f926fcc626ad"
+    },
+    "tools/serve_recovery/profile_acceptance.py": {
+      "before": "4430f7daf98698f7913a9a42589717a77d4044085ca946d77f8a4fed76ad900e",
+      "after": "097392550ec1d1b859d55a2dfb06657333cf110103a0127a63e26906ea87430b"
+    },
+    "tools/serve_recovery/profile_contract.py": {
+      "before": "a959a8ca017113e86967ffd4fbe613eb785ad4c9ecf9764dff7d4551b8e0ebc0",
+      "after": "70e0c2f619f7c094148ce7c1df2044dde1b846f93637b940bd3fd4f59569dc91"
+    },
+    "tools/serve_recovery/profile_evidence.py": {
+      "before": "58c5f0c17a2041604493fd9ed5cffb5d728eb7726c8ba29b464ac60d69945ed3",
+      "after": "13a391c83a5774ec88d114cc441cd3c61cba9c724e82281320f3db5e6d96bc48"
+    },
+    "tools/serve_recovery/profile_managed_acceptance.py": {
+      "before": "c022985cea7fd17c0b6d59549285110f19e62033e0976798f81af7ca622c0f2b",
+      "after": "c34f99a4103f8b044abb25ff491d0aaf3f220db09dc41be34bb91a834b77a03c"
+    },
+    "tools/serve_recovery/profile_migration.py": {
+      "before": "cdf4e074732f07988bf4728e729287294dcba4d8fa9c5411bbbbc360113bc4d8",
+      "after": "ba17dc17ee2d3871d3cce4f0eba23d04c52db83a0e86c0cdd2f46e58b9bdb636"
+    },
+    "tools/serve_recovery/service.py": {
+      "before": "97f6f171978a3d5ad6417a063d5aae88be5035576a82ee319b4b6eca1ba6bcc5",
+      "after": "aa1e0662dbd2a8fe13383dc33d5870efd20a7a6bcc51a7482fa17fa646b45eae"
+    },
+    "tools/serve_recovery/version_acceptance.py": {
+      "before": "de9edc7f86de286d4741fdae76b8aeff55afdb3776ad7cc22e9326d9a072565f",
+      "after": "74fdd9889134a63967a45226102dc8bab7aaced2439be1f2191d097b4386c5e9"
+    },
+    "tools/serve_service/package.py": {
+      "before": "2af622fc27a7d28ef33ba5bc1e70565f09205ed380a2a60ffb7157c26111ef57",
+      "after": "09fa16a0b6501d0c09978571d342c8045a913fe818c32faa1c6e27c92c8fd64e"
+    },
+    "tools/serve_service/service.py": {
+      "before": "24df4ebdc62383b41244fbb1a0351482c0f5082347d4e8e36daeb684753c4a55",
+      "after": "588ba0836c2b4a084cb20da37409490df6f42fdeab03d2494ffabddb747076b3"
+    }
+  },
+  "evidence": [
+    "docs/evidence/serve-aligner-http-20261117/README.md",
+    "docs/evidence/serve-asr-segment-http-20261117/README.md",
+    "docs/evidence/serve-vad-http-20261117/README.md",
+    "docs/evidence/serve-audio-auxiliary-package-cpu-20261117/README.md",
+    "docs/evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md"
+  ]
+}

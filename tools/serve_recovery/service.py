@@ -362,6 +362,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--asr-model-dir', type=Path)
     for option in engine.ASR_LIMITS:
         prepare.add_argument('--asr-'+option.replace('_', '-'), type=int)
+    engine.add_asr_auxiliary_options(prepare)
     prepare.add_argument('--recovery-profiles', type=Path)
     prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
@@ -468,6 +469,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 web_policy=args.web_policy,
                 embedding_model_dir=args.embedding_model_dir,
                 asr_model_dir=args.asr_model_dir,
+                asr_auxiliary=engine.asr_auxiliary_cli(args),
                 asr_limits=({k:getattr(args, 'asr_'+k) for k in engine.ASR_LIMITS
                              if getattr(args, 'asr_'+k) is not None} or None),
                 recovery_profiles=args.recovery_profiles,

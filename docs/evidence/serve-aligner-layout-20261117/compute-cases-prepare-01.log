@@ -1,0 +1,1 @@
+{"status": "PREPARED_CPU_ONLY", "seconds": 0.21464670216664672, "gpu": 0, "cases": [{"language": "zh", "frames": 420, "words": 13, "tokens": 96}, {"language": "en", "frames": 1505, "words": 36, "tokens": 312}]}

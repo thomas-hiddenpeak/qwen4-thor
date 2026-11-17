@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "tests": 17,
+  "seconds": 0.5222463472746313,
+  "gpu_actions": 0,
+  "candidate": {
+    "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-04/q4t",
+    "sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+    "changes_since_http_engine03": [
+      "include/q4t/audio/vad.h adds fixed profile string",
+      "src/server/chat_capabilities.cpp publishes fixed VAD profile/revision/weight SHA"
+    ],
+    "compute_and_request_paths_unchanged": true,
+    "published": false
+  }
+}

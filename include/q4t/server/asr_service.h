@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
+#include <string_view>
 
 #include "q4t/status.h"
 
@@ -89,4 +90,9 @@ class AsrHealth {
 };
 const char* AsrFailureCode(AsrFailure failure);
 std::string AsrHealthJson(const AsrHealthSnapshot& state, bool gpu_healthy);
+// Shared serialization only. Each optional backend owns a distinct AsrHealth
+// instance; dependency failures cannot mutate another backend's readiness.
+std::string SpeechHealthJson(const AsrHealthSnapshot& state, bool gpu_healthy,
+                             std::string_view model,
+                             const char* (*failure_code)(AsrFailure));
 }  // namespace q4t::server

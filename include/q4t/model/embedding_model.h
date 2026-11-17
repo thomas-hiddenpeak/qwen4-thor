@@ -74,6 +74,11 @@ class EmbeddingRun {
   // applies selected dimensions and L2 in FP32, shared with other backends.
   EmbeddingComputeResult Finish(std::span<uint16_t> last_hidden,
                                 cudaStream_t stream = nullptr);
+  // Shared causal sequence classification: normalize every actual row and
+  // return a borrowed device view in this run's workspace, without a host copy.
+  // The caller retains workspace ownership until the view is consumed.
+  EmbeddingComputeResult FinishAllDevice(
+      std::span<const uint16_t>* hidden, cudaStream_t stream = nullptr);
   int completed_layers() const { return completed_layers_; }
   bool started() const { return started_; }
   bool finished() const { return finished_; }

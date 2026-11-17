@@ -137,7 +137,13 @@ const char* AsrFailureCode(AsrFailure failure) {
   return "asr_state_invalid";
 }
 std::string AsrHealthJson(const AsrHealthSnapshot& s, bool gpu_healthy) {
-  const char* reason = AsrFailureCode(
+  return SpeechHealthJson(s, gpu_healthy, audio::AsrConfig::kModelId,
+                          AsrFailureCode);
+}
+std::string SpeechHealthJson(const AsrHealthSnapshot& s, bool gpu_healthy,
+                             std::string_view model,
+                             const char* (*failure_code)(AsrFailure)) {
+  const char* reason = failure_code(
       s.configured && !gpu_healthy ? AsrFailure::kDevice : s.failure);
   const char* state = !s.configured                        ? "disabled"
                       : s.loading                          ? "loading"
@@ -147,7 +153,7 @@ std::string AsrHealthJson(const AsrHealthSnapshot& s, bool gpu_healthy) {
                                                            : "configured";
   return std::string(R"({"state":")") + state + R"(","reason":")" + reason +
          R"(","core_readiness_dependency":false,"model":")" +
-         audio::AsrConfig::kModelId + R"(","device_bytes":)" +
+         std::string(model) + R"(","device_bytes":)" +
          std::to_string(s.device_bytes) + R"(,"load_attempts":)" +
          std::to_string(s.load_attempts) + R"(,"load_failures":)" +
          std::to_string(s.load_failures) + R"(,"compute_failures":)" +

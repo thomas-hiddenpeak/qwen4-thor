@@ -1,0 +1,8 @@
+test_actual_retained_primary_light_allow_only_explicit_complete_format_extension (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_actual_retained_primary_light_allow_only_explicit_complete_format_extension) ... ok
+test_pending_declarations_become_proven_additions_without_losing_features (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_pending_declarations_become_proven_additions_without_losing_features) ... ok
+test_automatic_same_features_work_and_removal_or_unsealed_addition_fail (tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_automatic_same_features_work_and_removal_or_unsealed_addition_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.226s
+
+OK

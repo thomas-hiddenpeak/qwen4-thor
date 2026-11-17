@@ -1,0 +1,57 @@
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[  6%] Built target q4t_ple
+[  6%] Built target q4t_io
+[  6%] Built target q4t_regex_build
+[  6%] Generating service-tools/snapshot.done
+[  6%] Built target q4t_program_javascript
+[  6%] Built target q4t_text
+[  6%] Built target q4t_quant
+[ 16%] Built target xgrammar
+[ 16%] Building CXX object CMakeFiles/q4t_model.dir/src/audio/vad.cpp.o
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/90de18a8371700c9f4240e81b3b70e3868700935da1a1c19ac32fbc07023a83b", "manifest_sha256": "90de18a8371700c9f4240e81b3b70e3868700935da1a1c19ac32fbc07023a83b", "model_actions": false}
+[ 16%] Built target q4t_service_tools
+[ 20%] Built target q4t_service_cli
+[ 20%] Linking CXX static library libq4t_model.a
+[ 30%] Built target q4t_model
+[ 33%] Built target q4t_startup_plan
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_request.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_response.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_statistics.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_alignment_output.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_alignment.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_execution.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_backend.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_aligner_backend.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_aligner_execution.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input_tokens.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_responses.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_moderations.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embeddings.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embedding_backend.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vector_ingestion.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vector_search.cpp.o
+[ 43%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 43%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 43%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_program.cpp.o
+[ 43%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

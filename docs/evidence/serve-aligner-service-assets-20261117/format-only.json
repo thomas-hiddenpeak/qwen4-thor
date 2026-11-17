@@ -1,0 +1,36 @@
+{
+  "formatter": "Ubuntu clang-format version 18.1.3 (1ubuntu1)",
+  "changes": {
+    "include/q4t/server/aligner_assets.h": {
+      "tested_sha256": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443",
+      "formatted_sha256": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443",
+      "whitespace_removed_bytes_equal": true
+    },
+    "src/server/aligner_assets.cpp": {
+      "tested_sha256": "06855092e387b8c4ed698ca3a0b67556676750ec161ade9190e31268f6e6902c",
+      "formatted_sha256": "80fdb6af8262fe6d1ef86318915941cc319a507eb1a33c37db86bd16b3df1a9b",
+      "whitespace_removed_bytes_equal": true
+    },
+    "include/q4t/server/aligner_service.h": {
+      "tested_sha256": "6cf9554922d2c4af060adc320bd56912d4e760e809748c9026bdcd0dbe7d6961",
+      "formatted_sha256": "d85822bfd12e18223d01868d9351208406177f1417f3e1f14bf484b61d91a1d0",
+      "whitespace_removed_bytes_equal": true
+    },
+    "src/server/aligner_service.cpp": {
+      "tested_sha256": "f6e441bbbbbf516f241fee1d3f9122f4105e2a4ece9d13302e9b101528ea1a77",
+      "formatted_sha256": "7d9f88ecd72cefca83567a9a20ad0fb7e01221b8531a6b189be551026330aa70",
+      "whitespace_removed_bytes_equal": true
+    },
+    "tests/server_aligner_assets_test.cpp": {
+      "tested_sha256": "7f0fe01766522d7dc8c94cd3f678109ad2bec5cddb0d576f6b0662415712375d",
+      "formatted_sha256": "e926e2079f9c0da38daabf38f4db08f12741b404203317302c9ff16abf898603",
+      "whitespace_removed_bytes_equal": true
+    },
+    "tests/server_aligner_service_test.cpp": {
+      "tested_sha256": "0334b79cf5ea6dcbec641b7be20613066b6e81aecaee4d0f365e49491b5a8177",
+      "formatted_sha256": "6a0720f0e76da8b4ef7e03934f47634650e4235629f14da59c5200a952ac8689",
+      "whitespace_removed_bytes_equal": true
+    }
+  },
+  "tests_reused": "same non-whitespace bytes; no behavior edits after targeted checks"
+}

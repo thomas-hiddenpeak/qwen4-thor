@@ -148,3 +148,9 @@ docs/evidence/serve-programmatic-integration-cpu-20261113/*.wire binary
 # Preserve original failed build and repair CPU records.
 docs/evidence/serve-programmatic-length-repair-20261113/*.stdout -text -whitespace
 docs/evidence/serve-programmatic-length-repair-20261113/*.stderr -text -whitespace
+
+# Keep exact VAD HTTP/SSE bytes and captured terminal framing.
+docs/evidence/serve-vad-http-20261117/*.wire binary
+
+# Preserve actual audio profile HTTP response bytes.
+docs/evidence/serve-audio-auxiliary-profiles-20261117/*.wire binary

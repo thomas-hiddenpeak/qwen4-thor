@@ -1,0 +1,9 @@
+[PASS] vad_fixed_upstream_header_has_all_fifteen_f32_tensors
+[PASS] vad_tensor_dtype_shape_overlap_and_unknown_fields_are_rejected
+[PASS] vad_load_is_atomic_for_nonfinite_truncated_and_cancelled_assets
+[PASS] vad_step_rejects_unloaded_shape_and_nonfinite_request_state
+[PASS] vad_state_is_request_owned_and_preserves_exact_context_samples
+[PASS] vad_cancel_and_intermediate_overflow_preserve_frame_owner
+[PASS] vad_score_zero_pads_only_tail_and_reports_real_sample_ranges
+[PASS] vad_score_budget_cancellation_and_new_request_are_isolated
+8 tests, 8 passed, 0 failed, 0 skipped

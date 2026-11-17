@@ -1,4 +1,4 @@
-# 当前状态（2026-11-17）
+# 当前状态（2026-11-18）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -7,20 +7,174 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR45能力声明旧测试已修](evidence/serve-audio-capability-ci-20261118/README.md)：
+公开CI只有旧remaining数量断言失败；改核对具体待办和组件状态，
+3项相关CPU通过、0GPU。原CI及一次本地参数失败保留，运行时和
+rev286未变；修复独立进入PR45，等待最终检查及合main，全部master继续。
+
+[rev286对齐/VAD可回退交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)
+已完成，19项STOPPED命令/275.847秒，0新增GPU。实际整根
+回退与再前进、预算/历史保持通过；前驱rev276与day保留。版本归档
+原30秒超时保留，同一计划续办成功且0删除。继续PR45合main、说话人/
+Chat音频/合成/Realtime及全部master任务；本阶段不结束总目标。
+
+[原生对齐/VAD接入与整包恢复通过](evidence/serve-audio-auxiliary-service-20261118/README.md)：
+四组实际服务验收完成，含原失败共6次计费尝试、5次模型加载、
+19创建/1探针/315.834秒，305次NVML正常，清理完成。双SDK、
+TLS/分块/配额/取消、入口恢复和整包回退后的实际对齐均通过。
+旧控制成功轮另有明确的命令路径等价审查，原自动finalizer失败保留；
+其余三组自动核验通过。默认rev276仍未变，接着可回退交付、PR45
+与说话人/Chat音频/合成/Realtime及全部master剩余任务。
+
+[服务执行屏障参数遗漏已修、5CPU通过](evidence/serve-audio-exec-bound-20261118/README.md)：
+旧保留包首轮因76参数超过64上限，在模型exec前失败；原FAILED保留，
+1次启动尝试/0业务/34.104秒，清理正常。新增整命令字节边界，
+完整参数通过真实CPU许可握手。重新封包补验，累计6计费尝试含原失败、
+5实际模型启动/19创建/1探针/1800秒；默认rev276未变，全部master继续。
+
+
+[辅助服务驱动及实际格式迁移9项CPU通过](evidence/serve-audio-auxiliary-service-cpu-20261118/README.md)，
+0GPU。实际旧/新资格揭示新增字幕格式被通用数组相等规则拒绝，
+已作严格枚举扩展修复；自动丢能力和重置历史仍拒绝。重新封包后
+按四个完整独占阶段验收，累计5启动/19创建/1探针/1800秒，
+随后可回退交付与全部master继续；默认rev276未变。
+
+
+已封装对齐/VAD候选服务包，默认未变；原生TLS/恢复驱动已补入
+实际多段音频，自动回退后再次执行对齐，不用流式文本代替对齐验证。
+冻结6CPU/180秒、0GPU，随后5启动/19创建/1探针/1800秒，分别
+验证现代保留包、旧控制保留包、TLS和实际版本恢复，再交付及全部master。
+
+
+[对齐/VAD主轻真实业务通过](evidence/serve-audio-auxiliary-profiles-20261117/README.md)：
+2启动/14创建/110.494秒，两种配置完整多段词/segment和原ASR/核心
+工具/embedding/视频通过；104次NVML正常，清理完成、默认未变。
+继续原生TLS/版本恢复/可回退交付，再完成全部master剩余任务。
+
+
+[对齐/VAD恢复资格19项CPU通过](evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md)
+（1.165秒、0GPU）：递归固定身份/预算、搬迁、实际辅助工作证据、
+显式新增/预算迁移及自动回退不丢能力，原历史/冷却/待处理动作保持。
+冻结下一组2启动/14创建/900秒，主轻各执行真实多段词/segment及
+原ASR/核心工具/embedding/视频保护；随后服务/恢复交付和全部master。
+默认rev276保持，总目标active。67个已评审源码锚点已同步，
+防遗漏门禁和7负控通过，恢复19项纳入公开CI。
+
+[对齐/VAD服务包和schema17项CPU通过](evidence/serve-audio-auxiliary-package-cpu-20261117/README.md)
+（0.522秒、0GPU），固定身份/独立预算、CLI/命令/声明及真实
+verbose/SSE/静音/健康配置合同已补齐。候选engine-04仅增VAD
+固定身份声明，执行路径不变。继续主轻/原生接入/恢复资格与交付，
+全部master保持；默认rev276未变。
+
+[VAD真实多段HTTP通过](evidence/serve-vad-http-20261117/README.md)：
+1启动/12创建/57.048秒，双SDK两段中文/真实全局时间戳/VTT/流式，
+阈值/静音/段数/共享24输出、取消及VAD失能不影响ASR/Chat通过。
+同PID恢复、独占租约与清理正常；候选未发布，继续服务/恢复/交付
+及全部master。默认rev276不变，未做完整性能/模型质量或长稳。
+
+[VAD运行时16项CPU与3项验收器通过](evidence/serve-vad-runtime-cpu-20261117/README.md)：
+跨段实际时间/字幕/流式/预算/静音、失败禁止部分发布通过；独立
+CUDA候选零警告，未发布。固定下一组1启动/12创建/600秒，验证
+真实切片与双SDK、VAD故障隔离/同PID恢复、阈值/段数/共享输出及
+取消，随后服务/恢复/交付和全部master继续；默认rev276不变。
+
+[VAD固定资产/真实分段14项CPU通过](evidence/serve-vad-assets-chunks-20261117/README.md)
+（0.071秒、0GPU）：实际权重隔离与恢复、阈值/静音/前缀、无重叠
+边界/尾段/段数/取消及原I/O保护。继续独立健康和真实多段ASR
+累计预算/所有输出，再完成服务与恢复交付；不是VAD接口已完成。
+
+[完整segment实际HTTP分项通过](evidence/serve-asr-segment-http-20261117/README.md)：
+累计2启动/7创建/100.611秒，复用原5条、仅补2条保护；双SDK、
+实际token/概率/压缩率、静音、词时间戳和核心42通过。原驱动失败
+保留，清理正常、默认rev276不变。继续VAD实际分段、完整服务
+交付及全部master；候选未发布，长稳未运行。
+
+[segment首轮5条真实业务已复核](evidence/serve-asr-segment-http-original-20261117/README.md)：
+模型成功，驱动读词表超过通用2MiB上限，原整组FAILED保留。
+1启动/52.388秒、清理正常；双SDK字段、实际token/logprob、英文
+WER=0、静音后验0.994725均成立。修验收器后仅补未执行2条，
+累计2启动/7创建/600秒；候选仍未发布，全部master继续。
+
+[完整segment执行16项CPU通过](evidence/serve-asr-segments-cpu-20261117/README.md)
+（0.016秒），另3项HTTP验收器正负控通过。零警告CUDA候选已保存；
+单段真实评分/温度与累计预算已接入。下一组固定1启动/7创建/600秒，
+双SDK、普通转录对照、静音与核心保护；业务及交付仍待验收。
+
+[完整segment统计来源16项CPU通过](evidence/serve-asr-statistics-20261117/README.md)
+（0.164秒、0GPU）：实际token/logprob/温度及UTF-8映射、训练无语音
+评分prefix、隔离真实压缩率及缺库/取消/超时清理。继续实际模型
+评分、配额、格式和业务短验；不是完整segment已验收，默认未变。
+
+[PR44已实际合main](evidence/serve-pr44-merged-20261117/README.md)
+（`8de16675`），最终5784729c两组CI均通过。rev276原生转录的
+交付已进入主线，后续alignment/VAD保留工作分支继续开发；默认
+身份未变、0新增GPU。全部master剩余任务继续。
+
+[VAD原生CPU组件通过](evidence/serve-vad-compute-20261117/README.md)：
+8边界/4音频、667帧，概率误差≤2.62e-06，两轮累计3.357秒、
+0GPU。同版上游两种权重不一致造成原参考FAILED，明确改为官方
+计算图绑定原固定目标权重后补验；原生/阈值未改、原失败保留。
+继续独立资产、实际分段、完整统计和服务交付；全部master仍active。
+
+原生VAD计算已开发，固定Silero 16k/15张量，零新增推理运行库；
+独立CPU构建通过，待8项边界和4段官方CPU差分，0GPU。
+完整segment/VAD服务接入和可回退交付仍继续，不将逐帧概率
+伪装为完整段落置信度；全部master保持active。
+
+[词时间戳/字幕真实HTTP通过](evidence/serve-aligner-http-20261117/README.md)：
+1启动/7创建/57.044秒，55次NVML正常；双SDK三种输出、
+辅助资产故障中ASR/Chat与同PID恢复、清理通过。中文26边界与已有
+实际参考一致，英文字幕WER=0；不是人工时间精度结论。候选未发布，
+继续完整segment/VAD、服务交付和全部master。
+
+对齐真实HTTP组已固定1启动/7创建/600秒，覆盖双SDK词JSON、SRT/VTT
+与缺失辅助资产时普通转录/Chat继续、恢复后同PID。驱动正例和时间
+负控通过；具体身份随后prepare，GPU尚未执行，全部后续任务继续。
+
 PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
 恢复源码锚点未刷新。已逐项复审并补齐，
 [inventory与7种遗漏负控通过](evidence/serve-asr-inventory-20261117/README.md)，
-0GPU，原CI失败保留。路由/字段和门禁不变，继续最终CI及合main。
+0GPU，原CI失败保留。路由/字段和门禁不变；最终CI通过，PR44已合main。
+
+[对齐运行时/词时间戳/字幕14项CPU](evidence/serve-aligner-output-runtime-20261117/README.md)
+通过（0.008秒、0GPU），独立CUDA候选构建零警告。已接入实际分类、
+取消/清理、累计配额和SRT/VTT；真实HTTP随后短验，默认rev276不变。
+完整segment统计/VAD、服务交付和全部master仍须完成。
 
 PR44第二组CI暴露CPU后端未识别转录chunked上传；已补齐精确
 路由和multipart夹具。[原失败项复验通过](evidence/serve-asr-route-fixture-20261117/README.md)，
 1.015秒、0GPU。原两组CI失败和一次旧ELF误用404保留；运行时/
-默认rev276不变。继续PR44最终CI及合main，后续对齐不混入。
+默认rev276不变。PR44现已合main，后续对齐继续独立推进。
 
 PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路由；
 [4项针对性CPU通过](evidence/serve-asr-optional-route-20261117/README.md)，
 0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入
-PR44，继续最终检查和合main，后续对齐开发不混入本PR。
+PR44并通过最终检查、合main；后续对齐开发独立推进。
+
+[真实时间戳/字幕计划](SERVE_NATIVE_ALIGNMENT_2026-11-17.md)已完成
+[固定资产与8项CPU合同](evidence/serve-aligner-contract-20261117/README.md)：
+708张量/独立5000类head/原ASR混用保护通过，0.016秒、0GPU。
+资产1.84GB/640.541秒、保留8GiB磁盘。继续tokenizer及原生实际
+计算、字幕接口与业务交付；配置合同通过不代表时间戳接口可用。
+[对齐tokenizer6项CPU](evidence/serve-aligner-tokenizer-20261117/README.md)
+也通过（1.414秒），原ASR golden保持；实际对齐接口仍待完成。
+PR44已完成最终修复及合main；本项不混入该PR。
+[原生计算与6项布局CPU](evidence/serve-aligner-layout-20261117/README.md)
+通过（0.008秒），隔离CUDA构建完成。首轮实模型组固定2次GPU加载、
+2对齐+2ASR前4token和1次CPU参考已执行。
+[原组件组未通过逐项argmax](evidence/serve-aligner-compute-20261117/README.md)：
+英文2/72槽差80ms，其余96/98槽相同，6数值与14原ASR逐位保护通过。
+1条英文补采独立FP64复核证明两侧head符合各自BF16操作数，原FAILED
+保留；累计3GPU加载/2CPU参考/21.738秒，25次NVML正常、默认未变。
+[词单元/时间后处理8项CPU](evidence/serve-aligner-postprocess-20261117/README.md)
+已通过（0.007秒、0GPU），原预测/修复及末尾量化裁剪分开记录。
+日/韩为ICU原生策略，实际语言业务仍待验。继续独立资产/健康和
+真实字幕接口，当前候选尚未发布。
+[独立资产/资源/健康15项CPU](evidence/serve-aligner-service-assets-20261117/README.md)
+通过（0.572秒、0GPU），含坏资产/worker/取消隔离、原ASR保护、
+统一RAM预算和实际时间槽模板。完整资产/ChatServer组合随后短验，
+继续原生HTTP和交付；候选未发布。
+
 
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
 固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、
@@ -39,7 +193,7 @@ ASR私有健康采用同引擎现代保留控制的独立证据，明确不是�
 19项STOPPED命令/273.956秒，实际整根回退与再前进通过，
 0新增GPU。原核心/client/outer预算与各根周期保持，profile显式
 增加ASR；退休记录可恢复归档，原rev266和day保持。继续固定
-当前用户day入口、PR44最终检查和实际合main，随后所有剩余任务。
+当前用户day入口；PR44已实际合main，继续所有剩余任务。
 
 [直接HTTP分项接受](evidence/serve-asr-http-20261117/README.md)、
 [主轻真实资格](evidence/serve-asr-profiles-20261117/README.md)、
@@ -62,17 +216,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev276；服务包 `4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc` |
-| Generation | `ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc` |
-| 引擎 | `b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7` |
-| 引擎发布记录 | `f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7` |
+| 发布 | rev286；服务包 `93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0` |
+| Generation | `e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752` |
+| 引擎 | `bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2` |
+| 引擎发布记录 | `3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e` |
 | Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
 | 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21`；ASR/原周期/原生入口已验，前驱rev266另保留 |
-| 自动payload回退 | 已验旧控制/当前ASR引擎包 `055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d`；不是独立旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR模型按部署显式启用，codec按请求隔离加载，失效不拖停健康Chat |
+| 人工整包回退 | 现代保留根 `deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5`；对齐/VAD/原周期/原生入口已验，前驱rev276另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
