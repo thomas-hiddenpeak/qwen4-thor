@@ -181,6 +181,10 @@ add_library(q4t_model STATIC
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
   src/audio/asr_model.cu
+  src/audio/speaker_config.cpp
+  src/audio/speaker_layout.cpp
+  src/audio/speaker_features.cpp
+  src/audio/speaker_model.cu
   src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp

@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ECAPA实际计算布局6项CPU通过](evidence/serve-speaker-layout-20261118/README.md)
+（0.032秒、0GPU）；完整F32计算已零警告编译，实际数值仍待验证。
+首次host未configure的构建失败保留；接着固定官方CPU对照和有界
+GPU，再完成分段/参考/API/恢复/交付及全部master。默认rev286不变。
+
+说话人实际计算开发继续：保持F32权重和FP32计算，复用现有
+CUDA/cuBLASLt并显式核算全部工作区。冻结6布局/绑定CPU、180秒、
+0GPU，必要构建单列；真实数值/语音随后固定短验，不以组件代替API。
+
 [说话人特征8项CPU通过](evidence/serve-speaker-features-20261118/README.md)，
 0.064秒、0GPU，六组完整矩阵最大误差0.001118≤0.002；
 预算/坏输入/取消通过。原参考类型注解失败保留，修复只涉导入。

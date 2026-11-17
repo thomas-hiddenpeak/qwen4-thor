@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "seconds": 0.03164684493094683,
+  "returncode": 0,
+  "tests": 6,
+  "gpu_starts": 0,
+  "binary_sha256": "b0a4d5b52a5562d7010a16626f8c8d9bb75955198f2450733566fcdb20c11f6c",
+  "archive_sha256": "90c59bbbae47f30af8db0a3b423f33d6f47eea5080847abb7e5ba9ca598af0e0",
+  "cuda_model_executed": false,
+  "http_business": false,
+  "default_revision": 286,
+  "initial_host_build_missing_configure_preserved": true
+}
