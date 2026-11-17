@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_NATIVE_WEB_SEARCH_DELIVERY",
+  "revision": 234,
+  "current": {
+    "engine_binary_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+    "engine_release_sha256": "9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469",
+    "generation_sha256": "3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61",
+    "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/package-01/bundle",
+    "service_acceptance_sha256": "979d79f8e8b2da43e9161994db2aa64da12d2276a50a32917849531c8ece3c3d",
+    "service_release_sha256": "eb8872c9c6ac5001316157d43e4c7204c5ce3da7f0bd7e936ed2f2737de3f93a"
+  },
+  "commands": 19,
+  "seconds": 284.88877092301846,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "manual_root": "e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8",
+  "automatic_payload": "aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315",
+  "candidate_whole_package_gpu_run": false,
+  "composed_change": "Exact-engine real web business, primary/light and retained controls plus targeted private-policy and migration CPU; live controller/native helpers unchanged; STOPPED publication and actual root rollback verified",
+  "older_engine_fallback": false,
+  "prior_rev224_preserved": true,
+  "retired_generations_archived": 2,
+  "retired_versions_archived": 2,
+  "deleted_files": 0,
+  "files": 78,
+  "secret_scan_matches": 0,
+  "archive_sha256": "14d87482f8023c8b8c7313df1fd59b417ac351577fee1eda788546976aba7a70",
+  "main_integration_pending": true,
+  "all_master_tasks_active": true
+}

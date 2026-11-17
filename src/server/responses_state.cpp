@@ -12,6 +12,7 @@
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/responses_output.h"
+#include "q4t/server/responses_web_search.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp.h"
 #include "q4t/server/responses_mcp_state.h"
@@ -68,6 +69,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                         {"input_snapshots", plan.input_snapshots},
                         {"tool_contracts", plan.tool_contracts},
                         {"mcp_catalogs", plan.mcp_catalogs},
+                        {"web_content", plan.web_content},
                         {"request", plan.request},
                         {"events", events}});
   if (!Terminal(response))
@@ -152,6 +154,8 @@ ObjectReply BindGeneratedContracts(const Json& snapshot,
   if (!output) return StateError("Missing generated output");
   history.array.insert(history.array.end(), output->array.begin(),
                        output->array.end());
+  auto web = MergeWebContexts(Json(), history, &plan->web_content);
+  if (!web.ok()) return web;
   return BindToolResultContracts(plan->request, history, &plan->tool_contracts);
 }
 bool HasFileParts(const Json& value, size_t depth = 0) {
@@ -181,7 +185,17 @@ bool HasFileParts(const Json& value, size_t depth = 0) {
 
 ObjectReply CompareStoredItem(const Json& stored, const Json& incoming) {
   std::string left, right;
-  auto status = InputValueIdentity(stored, &left);
+  auto comparable = stored;
+  // SDK read views omit search sources unless requested. An omitted source
+  // list may recover the original owned context; supplied conflicting fields
+  // still fail the ordinary exact identity check.
+  if (stored.GetString("type") == "web_search_call" &&
+      incoming.GetString("type") == "web_search_call" &&
+      incoming.Find("action") && !incoming.Find("action")->Has("sources") &&
+      comparable.Has("action"))
+    std::erase_if(Field(comparable, "action").object,
+                  [](const auto& field) { return field.first == "sources"; });
+  auto status = InputValueIdentity(comparable, &left);
   if (status) status = InputValueIdentity(incoming, &right);
   if (!status) return Error(503, "object_identity_capacity", status.message());
   if (left != right)
@@ -203,9 +217,11 @@ ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
 ObjectReply ResponsesState::ResolveItems(const Json& input,
                                          const StateAccess& access,
                                          size_t maximum, Json* input_snapshots,
-                                         Json* tool_contracts) {
+                                         Json* tool_contracts,
+                                         Json* web_content) {
   if (input_snapshots) *input_snapshots = {};
   if (tool_contracts) *tool_contracts = {};
+  if (web_content) *web_content = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
   auto items = Array();
@@ -243,6 +259,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
   std::unordered_set<std::string> ids;
   auto snapshots = Array();
   auto contracts = Array();
+  auto web = Array();
   for (auto& item : items.array) {
     // The SDK allows an omitted or null discriminator for ItemReference.
     const auto type = item.GetString("type");
@@ -295,6 +312,21 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     const auto id = item.GetString("id");
     if (!ValidId(id) || !ids.insert(id).second)
       return Error(400, "invalid_request", "Invalid or repeated input item ID");
+    if (web_content && item.GetString("type") == "web_search_call") {
+      auto existing = Get(ObjectKind::kConversationItem, id, access);
+      if (existing.ok()) {
+        auto original = Data(existing, "item");
+        if (!original.ok()) return original;
+        auto same = CompareStoredItem(original.value, item);
+        if (!same.ok()) return same;
+        if (const auto* bound = existing.value.Find("data")->Find("web_content")) {
+          Json own;
+          auto reply = MergeWebContexts(*bound, Array({item}), &own);
+          if (!reply.ok()) return reply;
+          web.array.insert(web.array.end(), own.array.begin(), own.array.end());
+        }
+      } else if (existing.http_status != 404) return existing;
+    }
     if (explicit_item && ((input_snapshots && HasFileParts(item)) ||
                           (tool_contracts && IsResultBoundToolCall(item)))) {
       auto existing = Get(ObjectKind::kConversationItem, id, access);
@@ -332,6 +364,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
   result.value = std::move(items);
   if (input_snapshots) *input_snapshots = std::move(snapshots);
   if (tool_contracts) *tool_contracts = std::move(contracts);
+  if (web_content) *web_content = std::move(web);
   return result;
 }
 
@@ -351,7 +384,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
   auto resolved = ResolveItems(input ? *input : Json(), access, 4096,
-                               &plan->input_snapshots, &plan->tool_contracts);
+                               &plan->input_snapshots, &plan->tool_contracts,
+                               &plan->web_content);
   if (!resolved.ok()) return resolved;
   plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {
@@ -391,6 +425,10 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                      plan->own_input.array.end());
     reply = MergeToolResultContracts(inherited, all, &plan->tool_contracts);
     if (!reply.ok()) return reply;
+    if (const auto* web = data->Find("web_content")) {
+      reply = MergeWebContexts(*web, all, &plan->web_content);
+      if (!reply.ok()) return reply;
+    }
     // Previous request.instructions is deliberately not consulted.
   } else if (!envelope.conversation_id.empty()) {
     auto conversation =
@@ -417,6 +455,10 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                      plan->own_input.array.end());
     reply = MergeToolResultContracts(inherited, all, &plan->tool_contracts);
     if (!reply.ok()) return reply;
+    if (const auto* web = data->Find("web_content")) {
+      reply = MergeWebContexts(*web, all, &plan->web_content);
+      if (!reply.ok()) return reply;
+    }
     if (const auto* bindings = data->Find("input_snapshots")) {
       auto all = plan->history;
       all.array.insert(all.array.end(), plan->own_input.array.begin(),
@@ -460,6 +502,14 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->history = *data->Find("history");
   plan->own_input = *data->Find("own_input");
   plan->request = *data->Find("request");
+  if (const auto* web = data->Find("web_content")) {
+    auto all = plan->history;
+    const auto* output = response->GetArray("output");
+    if (!output) return StateError("Stored response output is missing");
+    all.array.insert(all.array.end(), output->array.begin(), output->array.end());
+    auto reply = MergeWebContexts(*web, all, &plan->web_content);
+    if (!reply.ok()) return reply;
+  }
   if (const auto* catalogs = data->Find("mcp_catalogs"))
     plan->mcp_catalogs = *catalogs;  // Execution owner authenticates each entry.
   if (const auto* contracts = data->Find("tool_contracts")) {
@@ -543,7 +593,8 @@ ObjectReply ResponsesState::Interrupt(const std::string& id,
     // remain terminal, including a result committed just before owner exit.
     const auto type = item.GetString("type");
     if (type == "mcp_list_tools" || type == "mcp_approval_request") continue;
-    if (type == "mcp_call" && (item.GetString("status") == "completed" ||
+    if ((type == "mcp_call" || type == "web_search_call") &&
+        (item.GetString("status") == "completed" ||
                                item.GetString("status") == "failed"))
       continue;
     Set(&item, "status", String("incomplete"));
@@ -702,6 +753,10 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
         MergeToolResultContracts(plan->tool_contracts, *previous, &contracts);
     if (!bindings.ok()) return bindings;
     Set(&conversation, "tool_contracts", std::move(contracts));
+    auto web = conversation.Find("web_content") ? *conversation.Find("web_content") : Json();
+    bindings = MergeWebContexts(plan->web_content, *previous, &web);
+    if (!bindings.ok()) return bindings;
+    Set(&conversation, "web_content", std::move(web));
     mutations.push_back(Write(ObjectKind::kConversation, plan->conversation_id,
                               access, plan->conversation_revision,
                               std::move(conversation), true));
@@ -728,6 +783,9 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     if (!ValidId(id) || !seen.insert(id).second)
       return StateError("Generated item identity invalid or repeated");
     auto existing = Get(ObjectKind::kConversationItem, id, access);
+    Json item_web;
+    bindings = MergeWebContexts(plan->web_content, Array({item}), &item_web);
+    if (!bindings.ok()) return bindings;
     Json item_bindings;
     bindings = SelectInputSnapshots(plan->input_snapshots, Array({item}),
                                     &item_bindings);
@@ -745,6 +803,10 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
         bindings = MergeInputSnapshots(*bound, Array({item}), &item_bindings);
         if (!bindings.ok()) return bindings;
       }
+      if (const auto* web = existing.value.Find("data")->Find("web_content")) {
+        bindings = MergeWebContexts(*web, Array({item}), &item_web);
+        if (!bindings.ok()) return bindings;
+      }
       revision = existing.value.GetInt("revision");
       keep = keep || existing.value.GetInt("expires_at", -1) == 0;
       temporary = false;  // Never shorten another retained item's lifetime.
@@ -759,7 +821,8 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
                               revision,
                               Object({{"item", item},
                                       {"input_snapshots", item_bindings},
-                                      {"tool_contracts", contracts}}),
+                                      {"tool_contracts", contracts},
+                                      {"web_content", item_web}}),
                               keep, temporary));
   }
   auto written =

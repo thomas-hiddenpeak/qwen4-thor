@@ -100,6 +100,18 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   if (mcp_media_) bytes += mcp_media_->Budget().retained;
   if (!file_history_.IsNull()) bytes += OutputJson(file_history_).size();
   bytes += file_search_argument_bytes_;
+  bytes += web_argument_bytes_ + OutputJson(plan_.web_content).size() +
+           OutputJson(envelope_.web_content).size();
+  for (const auto& page : web_sources_) {
+    bytes += page.url.size() + page.title.size() + page.text.size() + page.source_sha256.size();
+    for (const auto& link : page.links) bytes += link.size();
+    for (const auto& image : page.images) bytes += image.url.size() + image.caption.size();
+  }
+  for (const auto& binding : web_bindings_) {
+    bytes += binding.model_name.size() + OutputJson(binding.options.location).size();
+    for (const auto& value : binding.options.allowed_domains) bytes += value.size();
+    for (const auto& value : binding.options.blocked_domains) bytes += value.size();
+  }
   bytes += tool_search_argument_bytes_;
   bytes += program_argument_bytes_;
   bytes += mcp_argument_bytes_;
@@ -238,6 +250,8 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  web_policy_ = config.web_policy;
+  envelope_.web_content = plan_.web_content;
   cipher_config_.model = config.model;
   cipher_config_.count_input_only = config.count_input_only;
   auto history = plan_.history;
@@ -348,7 +362,17 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   // Keep the public Responses shape, not Chat's nested function/custom shape.
   // NormalizeResponsesTools has already validated the selection and defaults.
   const auto* choice = envelope_.request.Find("tool_choice");
-  Set(&envelope_.options, "tool_choice", choice ? *choice : String("auto"));
+  auto public_choice = choice ? *choice : String("auto");
+  const auto kind = public_choice.GetString("type");
+  if (kind == "web_search" || kind == "web_search_2025_08_26") {
+    // The standard specific-selector enum still lists only preview names.
+    // Report the equivalent standard required subset without weakening the
+    // original selection or exposing private native function names.
+    public_choice = Object({{"type", String("allowed_tools")},
+                            {"mode", String("required")},
+                            {"tools", Array({public_choice})}});
+  }
+  Set(&envelope_.options, "tool_choice", std::move(public_choice));
   // The local scheduler reports the tier actually used.
   Set(&envelope_.options, "service_tier", String("default"));
   status =
@@ -636,7 +660,9 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
     return Status::Fail("Response cannot accept execution output");
   }
   bool handled = false;
-  auto status = AppendFileSearch(delta, &handled, wire);
+  auto status = AppendWebSearch(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendFileSearch(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendToolSearch(delta, &handled, wire);
   if (!status || handled) return status;

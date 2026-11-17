@@ -51,6 +51,7 @@ ObjectReply ResponsesExecution::FreezeInputs(Json* inputs) {
               {"own_input", plan_.own_input},
               {"input_snapshots", plan_.input_snapshots},
               {"tool_contracts", plan_.tool_contracts},
+              {"web_content", plan_.web_content},
               {"mcp_catalogs", plan_.mcp_catalogs},
               {"mcp_credential_source_sha256",
                String(mcp_credential_source_sha256_)},
@@ -152,6 +153,11 @@ ObjectReply ResponsesExecution::RestoreInputs(
     plan_.mcp_catalogs = *catalogs;
   plan_.history = *history;
   plan_.own_input = *own;
+  if (const auto* content = inputs.Find("web_content")) {
+    auto restored = MergeWebContexts(*content, plan_.history,
+                                    &plan_.web_content);
+    if (!restored.ok()) return restored;
+  }
   plan_.conversation_id = envelope_.conversation_id;
   plan_.conversation_revision = revision->AsInt();
   plan_.conversation = *conversation;

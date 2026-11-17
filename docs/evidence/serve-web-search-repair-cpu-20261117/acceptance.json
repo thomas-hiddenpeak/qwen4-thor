@@ -1,0 +1,45 @@
+{
+  "state": "CPU_WEB_PROMPT_AND_OPTIONAL_PACKAGE_ACCEPTED",
+  "prompt_cpu": 4,
+  "native_policy_package_cpu": 7,
+  "affected_existing_policy_cpu": 2,
+  "real_https_source_cpu": 1,
+  "new_candidate_gpu_accepted": false,
+  "engine_sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef",
+  "protocol_sources_verified": 552,
+  "default_unchanged": true,
+  "original_business_failures": [
+    {
+      "stage": "business-01",
+      "status": "FAILED",
+      "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_acceptance.py\", line 211, in business\n    require(status == 200, 'source preflight failed')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: source preflight failed\n",
+      "counts": {
+        "starts": 1,
+        "chats": 0,
+        "controls": 34
+      },
+      "seconds": 35.19333500927314,
+      "binary_sha256": "8288984a08d5c47e00f591be67271857a651980c293e5c78eb4c3c51592a6a9f"
+    },
+    {
+      "stage": "business-02",
+      "status": "FAILED",
+      "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_acceptance.py\", line 225, in business\n    check_citations(answer.message['content'],\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_acceptance.py\", line 75, in check_citations\n    require('documentation' in text.lower() and MARKER in text,\n                               ^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'lower'\n",
+      "counts": {
+        "starts": 1,
+        "chats": 1,
+        "controls": 35
+      },
+      "seconds": 39.565809949766845,
+      "binary_sha256": "8288984a08d5c47e00f591be67271857a651980c293e5c78eb4c3c51592a6a9f"
+    }
+  ],
+  "cumulative_gpu_limits": {
+    "starts": 4,
+    "requests": 9,
+    "seconds": 900
+  },
+  "zero_warnings_builds": true,
+  "archive_sha256": "7af1c20bb1d000b706ba2bb722ab6b71a285dce013eaa57ad1809d0234feea01",
+  "master_complete": false
+}

@@ -15,6 +15,7 @@
 #include "q4t/server/state_cipher.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_web_search.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp_binding.h"
@@ -77,10 +78,7 @@ class ResponsesExecution {
   bool VariableInputSteps() const {
     const auto* context = envelope_.request.GetArray("context_management");
     return PendingFileSheets() ||
-           (!envelope_.cache.prewarm && HasFileSearch()) ||
-           (!envelope_.cache.prewarm && HasToolSearch()) ||
-           (!envelope_.cache.prewarm && HasPrograms()) ||
-           (!envelope_.cache.prewarm && HasMcp()) ||
+           (!envelope_.cache.prewarm && HasNativeTools()) ||
            (!envelope_.cache.prewarm && HasAsyncTools()) ||
            envelope_.moderation.enabled ||
            (!envelope_.cache.prewarm &&
@@ -141,7 +139,16 @@ class ResponsesExecution {
                 std::string* wire);
   Status AppendSummary(std::string_view text, std::string* wire);
   Status CiteFileSearchSources(std::string* wire);
+  Status CiteWebSearchSources(std::string* wire);
+  bool HasWebSearch() const { return !web_bindings_.empty(); }
+  bool PendingWebSearch() const { return !web_pending_.empty(); }
+  ObjectReply RunWebSearches(size_t completed_calls,
+                             const std::function<bool(const std::string&)>& publish);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
+  bool HasNativeTools() const {
+    return HasFileSearch() || HasWebSearch() || HasToolSearch() ||
+           HasPrograms() || HasMcp();
+  }
   bool HasAsyncTools() const { return has_async_tools_ || program_async_wait_; }
   bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
   bool PendingToolSearch() const { return !tool_search_pending_.empty(); }
@@ -157,7 +164,7 @@ class ResponsesExecution {
   bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
     return file_search_pending_.size() + tool_search_pending_.size() +
-           program_pending_.size() + mcp_pending_.size();
+           program_pending_.size() + mcp_pending_.size() + web_pending_.size();
   }
   ObjectReply RunPrograms(
       size_t completed_calls, bool* client_wait,
@@ -245,6 +252,8 @@ class ResponsesExecution {
   Status RecordOutput(Status status, std::string* wire);
   Status AppendFileSearch(const ResponseDelta& delta, bool* handled,
                           std::string* wire);
+  Status AppendWebSearch(const ResponseDelta& delta, bool* handled,
+                         std::string* wire);
   Status AppendToolSearch(const ResponseDelta& delta, bool* handled,
                           std::string* wire);
   Status AppendProgram(const ResponseDelta& delta, bool* handled,
@@ -320,6 +329,12 @@ class ResponsesExecution {
     bool dispatched = false;
   };
   std::map<size_t, NativeFileCall> file_search_pending_;
+  std::shared_ptr<const WebDeploymentPolicy> web_policy_;
+  std::vector<ResponsesWebBinding> web_bindings_;
+  std::map<size_t, NativeFileCall> web_pending_;
+  size_t web_argument_bytes_ = 0;
+  WebExecutionBudget web_budget_;
+  std::vector<WebPage> web_sources_;
   size_t native_tool_calls_ = 0;
   size_t file_search_argument_bytes_ = 0;
   ResponsesToolCatalog tool_search_catalog_;

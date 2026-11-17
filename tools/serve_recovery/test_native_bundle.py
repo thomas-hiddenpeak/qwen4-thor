@@ -566,6 +566,11 @@ service.main(['resume', '--help'])
              contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(service.main([*arguments, '--device-control', str(path)]), 0)
         self.assertEqual(prepare.call_args.kwargs['device_control'], path)
+        web = self.directory/'private-web-policy.json'
+        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(service.main([*arguments, '--web-policy', str(web)]), 0)
+        self.assertEqual(prepare.call_args.kwargs['web_policy'], web)
 
     def test_cli_carries_application_state_limits_to_sealed_package(self):
         arguments = ['prepare']

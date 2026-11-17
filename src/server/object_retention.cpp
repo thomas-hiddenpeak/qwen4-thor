@@ -302,7 +302,32 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");
-    if (format == "q4t.mcp.approval.v1") {
+    if (format == "q4t.web.index.v1") {
+      // Complete inline page snapshots have no application-object edges.
+      // URLs, page text and image metadata are data, never retention IDs.
+      const auto* pages = data.GetArray("pages");
+      const auto digest = [](const std::string& text) {
+        return text.size() == 64 &&
+               std::all_of(text.begin(), text.end(), [](char c) {
+                 return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+               });
+      };
+      inspector.value.uncertain =
+          data.object.size() != 5 || !pages || pages->array.size() > 32 ||
+          !digest(data.GetString("policy_sha256")) ||
+          !digest(data.GetString("scope_sha256")) ||
+          data.GetInt("observed_at") < 1;
+      if (pages)
+        for (const auto& page : pages->array) {
+          inspector.value.uncertain |= !page.IsObject() ||
+              page.object.size() != 6 || !page.GetArray("links") ||
+              !page.GetArray("images") ||
+              !digest(page.GetString("source_sha256"));
+          for (const auto* key : {"url", "title", "text"})
+            inspector.value.uncertain |= !page.Find(key) ||
+                                         !page.Find(key)->IsString();
+        }
+    } else if (format == "q4t.mcp.approval.v1") {
       const auto* sealed = data.Find("sealed");
       inspector.value.uncertain =
           data.object.size() != 3 || !sealed || !sealed->IsString() ||

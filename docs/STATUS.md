@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev224；服务包 `4d36c953ed77ff7558870a56a0b4176319a9b3c85c26a47618aa12737d52e6d3` |
-| Generation | `9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131` |
-| 引擎 | `b35f400077f5e94c8e0d9c571e69fe59f9cf0b199287aab1a6a245d7c896281f` |
-| 引擎发布记录 | `9c381345d774a26a9aa186aa5593c37bd2253f3d5703393ad21d93bd60b590fa` |
+| 发布 | rev234；服务包 `6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d` |
+| Generation | `3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61` |
+| 引擎 | `e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef` |
+| 引擎发布记录 | `9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `9440f4aadec3c805dacc58b9e706421c346f004a832c8faadfefc99d0a4551a5`；outer/周期及Stop/缓存能力完整，前驱214另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `945c4b2291e5767fe6bafdc197f62bf44e09620ae6f75c104a42706b3b964ff8`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8`；原生outer/周期及网页能力完整，前驱224另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
+[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
+GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
+真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
+长稳计划保留；当前day独立快照已prepare/check、未运行。继续实际合main与全部33项剩余任务，
+不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
+
+前驱[rev224 Stop组合交付](evidence/serve-stop-combinations-delivery-20261117/README.md)
 已完成19项STOPPED发布、真实整根回退与再前进，284.407秒、0新增
 GPU。完整可见终态/receipt、prompt-only私有状态、实际工具/图片及
 主轻/保留组合已验；原预算与周期保持，原失败如实保留。用户day
@@ -108,9 +115,97 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页输出类型CI修复](evidence/serve-web-search-ci-repair-20261117/README.md)：
+旧push的2269项C++仅1项旧枚举断言失败，补齐web_search_call后该项
+CPU通过，0.031秒；不改运行时/default234/day，不追加GPU。PR40已
+创建，旧提交检查取消，新head所需检查通过后实际合main；全部master继续。
+
+[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
+GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
+真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
+长稳计划保留；当前day独立快照已prepare/check、未运行。继续实际合main与全部33项剩余任务，
+不把有限网站索引等同全网提供方完备，也不把本阶段当总目标完成。
+
+[网页发行组合接受](evidence/serve-web-search-composition-20261117/README.md)：
+含原失败累计8启动25请求、361.781秒严格租约、343项NVML正常。
+主轻和两个保留控制包的既有业务、搜索缺配置后同PID继续均已验，
+旧包后处理失败保留并单列独立CPU接受，现代包完整通过。默认224
+保持；继续STOPPED升级/整根回退/再前进、实际合main及全部master。
+
+网页旧保留包1启动3请求已执行，缺策略503后同模型/控制器完成实际
+图片/schema/SSE及存储/隔离；末尾脚本导入旧包没有的迁移模块而FAILED。
+修复为核对精确封包的已资格化声明，CPU在同样模块隔离下复核真实
+响应/源码/清理通过，原失败不改。原3请求独立接受、0追加GPU；
+继续现代保留包未运行的1启动3请求及发行，全部master仍active。
+
+网页发行主轻组合2启动10请求通过，87.694秒，83项NVML正常、清理
+完整。候选封包完成，默认224保持；两个保留控制包各1启动3请求，
+验证缺搜索策略503后同PID继续实际媒体/schema/SSE业务，原总预算
+4启动16请求900秒保持。继续可回退交付、实际合main和全部master。
+
+[网页自恢复接入CPU通过](evidence/serve-web-search-recovery-cpu-20261117/README.md)：
+7项针对性用例全过，0.667秒；bundle/CLI、主轻命令与私有策略贯通，
+能力迁移不能丢失网页合同或返还已消费预算，自动回退不能改变网络
+权限。默认224保持、0新增GPU；下一组冻结4启动16请求900秒的
+主轻/保留发行组合，完成后可回退发布及实际合main，全部master继续。
+
+[网页搜索真实业务接受](evidence/serve-web-search-business-20261117/README.md)：
+候选e430a4bd的Chat/Responses JSON/SSE、真实来源/引用、离线/历史、
+工具选择及缺配置后同PID普通核心健康通过。正式2启动8请求，含原
+失败累计4启动9请求、严格租约177.118秒，168项NVML正常且清理
+完整；原题修复后通过，未追认旧失败。默认224保持，继续自恢复
+整包、主轻/保留版本、可回退交付和实际合main，全部master仍active。
+
+[网页API及客户端CPU接受](evidence/serve-web-search-api-cpu-20261117/README.md)：
+30项不同C++/38次执行、4项合同及Python/JS各2项最终通过。修复
+SDK选择回显、非流式来源投影、原生多步预算及配置schema漏项，原
+失败保留。实际模型尚未验收，0新增GPU、默认224保持；继续冻结
+2启动8外部请求900秒真实公网/模型业务及可回退交付，全部master继续。
+首轮1启动0生成请求35.193秒在来源预检403停止：DNS映射到保留网段。
+原生产网络保护保持；单地址显式私有授权后，原生CPU实际TLS来源/
+摘要及离线重读1项通过，0.587秒。继续补尚未执行业务，累计上限
+3启动8请求900秒，原失败/清理记录保留。
+第二轮来源正确取得，但首条Chat错误拒绝；1启动1请求39.566秒，
+普通协议拒绝终态合法不代表业务成功。[网页证据指导与可选封包
+13项CPU通过](evidence/serve-web-search-repair-cpu-20261117/README.md)，
+候选e430a4bd的同一原题补验已通过，详细结果见上方真实业务记录；
+默认rev224保持，发行组合继续。
+
+PR39最终head `0472f354` 两组CI通过，已[实际合入main](evidence/serve-pr39-merged-20261117/README.md)
+（`1d905350`）。Stop组合、rev224交付和独立day交接源码已进入
+主线；网页搜索及全部剩余master任务继续，0新增GPU、默认224保持。
+
+[原生网页执行CPU通过](evidence/serve-web-search-execution-20261117/README.md)：
+16项新合同和4项既有获取合同最终通过，20项不同用例/21次执行。
+真实本地HTTP抓取、离线/刷新、来源读取/查找、内容/位置及预算已验；
+原预算耗尽仍连接缺陷已修复，原失败保留。0GPU，默认224保持；
+继续实际Chat/Responses接入、引用/SDK、公网业务和交付。
+
+[网页持久索引CPU验证](evidence/serve-web-search-index-20261117/README.md)
+8项全部通过，6.395秒，零警告构建、0GPU、默认rev224保持。认证
+scope/配置身份、跨重启读取、CAS/丢回执不重放、容量/取消与真实
+过期已验；继续原生抓取执行及Chat/Responses/引用/SDK，未记完整搜索。
+
 PR38最终head `8f55b643` 两组CI通过，已[实际合入main](evidence/serve-pr38-merged-20261117/README.md)
 （`0e4f5ac2`）。媒体状态缓存、修复和rev214交付已进入主线；
 已验Stop rev224单独推进下一PR，网页搜索及全部master缺口继续。
+
+[网页搜索网络组件](evidence/serve-web-search-network-20261117/README.md)
+8项直接CPU通过：每跳域名限制先于DNS/连接，与部署网络许可取交集；
+offline不联网，失败保留尝试预算，合法来源链/摘要保持。0GPU、
+默认rev224不变；持久索引及完整工具/引用/SDK接入继续。
+
+[网页搜索组件CPU验证](evidence/serve-web-search-components-20261117/README.md)
+19项不同用例/31次执行通过，3次构建零警告，0GPU、默认rev224保持。
+真实本地HTTP提取、来源/过滤/离线词法排序及HTML纯内存沙箱已验；
+持久索引、Chat/Responses调用与引用/SDK/发行继续，不记完整功能完成。
+
+原生网页搜索实施已冻结[完整合同与有界计划](SERVE_WEB_SEARCH_2026-11-17.md)：
+补实际搜索/读取/引用、Chat与Responses执行、离线索引和可选数据源。
+当前仍只有类型/include投影，不能记功能完成；先做最多18项直接CPU
+组件验证，默认rev224不变。PR38测试时限修复8f55b643独立推送，
+最终CI与实际合main继续；Stop改动单独保留，全部master保持active。
 
 [PR38时间夹具CPU通过](evidence/serve-pr38-ci-timing-20261117/README.md)：
 7项关联用例、17.257秒，隔离零警告构建、0GPU、生产源码未改。

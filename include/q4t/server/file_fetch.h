@@ -25,12 +25,18 @@ struct FileFetchReceipt {
   // Private provenance; URL queries may contain secrets. Never log these.
   std::vector<std::string> urls;
 };
+// Request-owned restrictions intersect the deployment policy at EVERY hop.
+// These can only deny destinations; they never grant a network/port/CA.
+struct FileFetchDomainPolicy {
+  std::vector<std::string> allowed, blocked;
+};
 ObjectReply ParseFileFetchOptions(const io::Json& value,
                                   FileFetchOptions* options);
 ObjectReply FetchFileInput(const BinaryAccess& access,
                            const FileInputSource& source,
                            const FileFetchOptions& options,
                            FileInputBudget* budget, FileFetchReceipt* result,
-                           GrammarControl control = {});
+                           GrammarControl control = {},
+                           const FileFetchDomainPolicy& domains = {});
 int MaybeRunFileFetchWorker(int argc, char** argv);
 }  // namespace q4t::server

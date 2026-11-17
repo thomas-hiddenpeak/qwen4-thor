@@ -1,0 +1,15 @@
+{
+  "status": "PASS_WEB_OUTPUT_TYPE_CONTRACT_REPAIR",
+  "failed_ci_run": 43980512732,
+  "failed_ci_head": "d0a1c52660b570005ada33e9d7a317a96ab9d56a",
+  "cause": "Existing exact output-item assertion omitted the newly implemented web_search_call type.",
+  "cpu_tests": 1,
+  "seconds": 0.03115557413548231,
+  "test_source_sha256": "425e341aefc989581a70cb00f7a32e23a62634eebe71518c28f63154d5838144",
+  "runtime_unchanged": true,
+  "default_revision": 234,
+  "new_gpu_starts": 0,
+  "old_failure_preserved": true,
+  "archive_sha256": "ce6e9dff4f63d4a2b896b1b27402c9388a49d300d85643bddef927b32d27cb44",
+  "new_head_ci_pending": true
+}

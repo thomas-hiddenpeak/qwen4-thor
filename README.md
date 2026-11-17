@@ -229,6 +229,13 @@ q4t没有复制这些库源码或随包分发库。OpenXML/ODF内容和原生RTF
 已做针对性CPU验证；RTF代码页仅在解析子进程通过系统libc的iconv
 预加载，实际未使用的代码页缺失不影响其他文档。
 
+开发中的原生网页搜索复用同一系统libxml2，在网页解析子进程预加载
+HTML接口后进入现有纯内存seccomp沙箱，再读取网页字节。禁止打开
+文件、建立网络、创建进程及可执行内存；不执行网页脚本，不添加
+外部常驻程序。库不可用只失败相关网页请求。当前组件及19项针对性
+CPU已验，持久索引与Chat/Responses接入仍在实现，默认发行尚未宣称
+网页搜索可用，见[执行计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)。
+
 Legacy Office/Apple适配使用隔离子进程中的系统
 [LibreOfficeKit](https://docs.libreoffice.org/libreofficekit.html) C API，
 构建需`libreofficekit-dev`头；不随q4t分发或启动Office常驻服务。
@@ -399,6 +406,23 @@ Responses现已原生执行MCP工具：列表与过滤、默认逐调用审批�
 [隧道配置](docs/SERVE_MCP_TUNNEL_2026-11-16.md)和
 [公开wire schema](docs/serve-mcp-tunnel-v1.schema.json)描述接入合同。
 具体云提供方原生适配及剩余兼容任务继续按总计划实现。
+
+## 原生网页搜索
+
+默认rev234已交付原生网页搜索，实际主线合并状态见[STATUS](docs/STATUS.md)。Chat通过
+`web_search_options`在回答前检索，Responses通过`web_search`工具
+执行搜索/读取/查找，并返回来源与实际引用。默认原生后端抓取配置
+网站并保存按客户端隔离的索引，不要求外部搜索守护程序；更广搜索
+数据源仍按[网页搜索计划](docs/SERVE_WEB_SEARCH_2026-11-17.md)
+推进，不能将有限网站索引描述成全网覆盖。
+
+部署方可用`q4t web-policy-check FILE`检查私有策略，通过
+`q4t serve --web-policy-file FILE`或`service prepare --web-policy FILE`
+显式启用。策略包括`version:1`、`seeds`网站URL、授权`scopes`，以及
+可选`fetch`网络策略和抓取/留存限额；文件需本用户所有且0600/0400。
+客户端请求不能修改部署网络权限、凭据或CA。检查结果仅输出摘要、
+数量和限额；发行同时绑定配置语义身份和原始文件字节。搜索未配置
+或失能只影响搜索请求，普通LLM请求不依赖其可用性。
 
 ## 目标模型
 

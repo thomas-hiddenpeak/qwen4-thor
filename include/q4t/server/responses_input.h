@@ -43,7 +43,8 @@ Status NormalizeResponsesInput(const io::Json& request,
                                bool preparing_files = false,
                                bool preparing_mcp = false,
                                const io::Json* mcp_content = nullptr,
-                               bool prepared_file_media = false);
+                               bool prepared_file_media = false,
+                               const io::Json* web_content = nullptr);
 // preparing_files validates and retains unresolved file/image parts for the
 // preparation owner. Its output must not be sent to the model/template.
 // Maps shared-generation errors back to the caller's Responses input path.

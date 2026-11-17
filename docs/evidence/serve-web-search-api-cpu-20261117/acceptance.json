@@ -1,0 +1,29 @@
+{
+  "state": "CPU_WEB_API_AND_SDK_ACCEPTED_AFTER_REPAIR",
+  "cpu_unique": 30,
+  "cpu_executions": 38,
+  "new_cpu": 23,
+  "affected_existing_cpu": 7,
+  "cpu_seconds": [
+    0.2869615820236504,
+    0.18696173513308167
+  ],
+  "contract_unique": 4,
+  "contract_executions": 7,
+  "python_sdk_unique": 2,
+  "python_sdk_executions": 3,
+  "js_sdk_unique": 2,
+  "js_sdk_executions": 4,
+  "cpu_original_failures": 0,
+  "contract_original_failures": 3,
+  "sdk_original_failures": 2,
+  "zero_warnings_final_host_and_engine_build": true,
+  "protocol_sources_verified": 552,
+  "engine_sha256": "8288984a08d5c47e00f591be67271857a651980c293e5c78eb4c3c51592a6a9f",
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "capture_kind": "native CPU adapters with simulated model deltas, not live HTTP/model",
+  "actual_runtime_accepted": false,
+  "archive_sha256": "73f854fcd36ccfea50a0da96a0edfd5c0fa5ec6648fb2984e4c4bcd30385484f",
+  "master_complete": false
+}

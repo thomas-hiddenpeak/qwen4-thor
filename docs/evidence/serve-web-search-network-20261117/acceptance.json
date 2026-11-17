@@ -1,0 +1,14 @@
+{
+  "state": "CPU_NETWORK_COMPONENT_ACCEPTED",
+  "tests": 8,
+  "seconds": 0.33715128898620605,
+  "build_seconds": 92.27052926225588,
+  "zero_warnings": true,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "source_base": "92b0ae74c126423287b984513b81cb12314309a0",
+  "archive_sha256": "b42baf5e469c88e9bd2ee4f675a6141b86253d481ea99ccc5a40ddcff7a0fe1f",
+  "backend_execution_accepted": false,
+  "persistent_index_accepted": false,
+  "master_complete": false
+}

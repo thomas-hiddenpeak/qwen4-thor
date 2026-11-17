@@ -315,6 +315,15 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp
   src/server/file_fetch.cpp
+  src/server/web_search_contract.cpp
+  src/server/web_search_fetch.cpp
+  src/server/web_search_rank.cpp
+  src/server/web_page_html.cpp
+  src/server/web_page_worker.cpp
+  src/server/web_page_record.cpp
+  src/server/web_index.cpp
+  src/server/web_policy.cpp
+  src/server/web_execution.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/mcp_http.cpp
@@ -372,6 +381,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_expansion.cpp
   src/server/file_input_policy.cpp
   src/server/chat_file_inputs.cpp
+  src/server/chat_web_search.cpp
   src/server/model_preparation.cpp
   src/server/file_source.cpp
   src/server/file_pdf.cpp
@@ -485,6 +495,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/vector_search_execution.cpp
     src/server/vector_query_rewrite.cpp
     src/server/responses_file_search.cpp
+    src/server/responses_web_search.cpp
+    src/server/responses_web_context.cpp
+    src/server/responses_web_output.cpp
+    src/server/responses_web_execution.cpp
     src/server/responses_tool_search.cpp
     src/server/responses_tool_catalog_history.cpp
     src/server/responses_tool_search_output.cpp

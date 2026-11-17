@@ -13,6 +13,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_web_search.h"
 #include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/responses_program.h"
@@ -536,6 +537,10 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
     std::unordered_set<std::string> disabled{
         std::string(kResponsesToolSearchModelName), kResponsesProgramModelName};
     for (const auto& binding : bindings) disabled.insert(binding.model_name);
+    std::vector<ResponsesWebBinding> web;
+    status = PlanResponsesWebBindings(Object({{"tools", active}}), &web, error);
+    if (!status) return status;
+    for (const auto& binding : web) disabled.insert(binding.model_name);
     std::vector<ResponsesMcpBinding> mcp;
     status = PlanResponsesMcpRequestBindings(
         Object({{"tools", active}, {"input", resolved_input}}), &mcp, error);
@@ -603,7 +608,8 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
   auto status = NormalizeResponsesInput(
       request, &input, error, config.count_input_only, true, false,
       envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
-      envelope.prepared_file_media);
+      envelope.prepared_file_media,
+      envelope.web_content.IsNull() ? nullptr : &envelope.web_content);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
   status = GenerationOptions(envelope, &options, effective_tools, error,
@@ -636,7 +642,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   auto status = NormalizeResponsesInput(
       request, &result.input, error, config.count_input_only, false, false,
       envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
-      envelope.prepared_file_media);
+      envelope.prepared_file_media,
+      envelope.web_content.IsNull() ? nullptr : &envelope.web_content);
   if (!status) return status;
   for (size_t i = 0; i < result.input.items.array.size(); ++i)
     result.input_source_indices.push_back(i);
@@ -712,7 +719,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   }
   result.chat.prepared_source_data =
       envelope.prepared_file_media ||
-      (envelope.mcp_content.IsObject() && !envelope.mcp_content.object.empty());
+      (envelope.mcp_content.IsObject() && !envelope.mcp_content.object.empty()) ||
+      (envelope.web_content.IsArray() && !envelope.web_content.array.empty());
   *plan = std::move(result);
   return {};
 }

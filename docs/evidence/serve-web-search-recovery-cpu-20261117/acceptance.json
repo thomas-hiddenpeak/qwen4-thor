@@ -1,0 +1,29 @@
+{
+  "status": "PASS_WEB_RECOVERY_TARGETED_CPU",
+  "distinct_tests": 7,
+  "unittest_seconds": 0.667,
+  "command_seconds": 1.1378927803598344,
+  "sources": {
+    "tools/serve_recovery/bundle.py": "ba0f5ca85ffcb00b5e61e0a546ab0e47560b72ce3026151398cee26cab1605cb",
+    "tools/serve_recovery/service.py": "bd9d09b055bf7c384548fc39e7528fadb0d2df47b5663ee2dc34b2adc198741b",
+    "tools/serve_recovery/profile_acceptance.py": "59df7c693cd2e8ee9714a88eb451f60fe3573805ccb81e20639cae36bbde9449",
+    "tools/serve_recovery/profile_migration.py": "7c0fba121c7bd1280532e3d32c9925569c7d3fb799d78e97f4834f6d868d6f8a",
+    "tools/serve_recovery/version_contract.py": "a883e67d37241b0dfceffc23246a1af0f520b2d53832278e06a8ca130e224d71",
+    "tools/serve_recovery/test_web_migration.py": "9bac388f432f8c20aace4692af3f34e24eb4ee3c27930eb68f060e76cfd42655",
+    "tools/serve_recovery/test_mcp_recovery_contract.py": "493ee78e2a299b00f51a745a7397d91955bc7dd821dbc59b7b251434693092e1",
+    "tools/serve_recovery/test_native_bundle.py": "8b2d199f422afadccc0c2960c35ff0cced0bbb3e413cbdf6b18d39cf4d965bb1",
+    "tools/serve_recovery/test_profile_acceptance.py": "729d424b64598782038666b358580ff3906a74859bad6898a08738aab4c477b1"
+  },
+  "evidence": {
+    "recovery-cpu-01.json": "a8f25468fd833e1d7e8347d4c639cbea1d05845ca8e9a47c4eb402b6e6df5cd2",
+    "recovery-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery-cpu-01.stderr": "af1f1b6f1fccb8313b8c5ec04d660ff02b03f346f8b32013a4ee7034b7add77e"
+  },
+  "archive_sha256": "15b0577a648629b9539143027955eb8166550960e5d0f7540e40c29b9ded242e",
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "service_delivery_pending": true,
+  "all_master_tasks_complete": false
+}

@@ -69,6 +69,7 @@ set(protocol_inputs
   include/q4t/server/vector_search.h
   include/q4t/server/vector_search_execution.h
   include/q4t/server/responses_file_search.h
+  include/q4t/server/responses_web_search.h
   include/q4t/server/vector_search_api.h
   src/server/vector_search_plan.cpp
   src/server/vector_search_rank.cpp
@@ -76,6 +77,10 @@ set(protocol_inputs
   src/server/vector_search_execution.cpp
   src/server/vector_query_rewrite.cpp
   src/server/responses_file_search.cpp
+  src/server/responses_web_search.cpp
+  src/server/responses_web_context.cpp
+  src/server/responses_web_output.cpp
+  src/server/responses_web_execution.cpp
   src/server/responses_file_search_output.cpp
   src/server/responses_file_search_execution.cpp
   src/server/responses_file_search_view.cpp
@@ -265,6 +270,19 @@ set(protocol_inputs
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h
+  include/q4t/server/web_search.h
+  include/q4t/server/web_index.h
+  include/q4t/server/web_execution.h
+  src/server/web_page_internal.h
+  src/server/web_search_contract.cpp
+  src/server/web_search_fetch.cpp
+  src/server/web_search_rank.cpp
+  src/server/web_page_html.cpp
+  src/server/web_page_worker.cpp
+  src/server/web_page_record.cpp
+  src/server/web_index.cpp
+  src/server/web_policy.cpp
+  src/server/web_execution.cpp
   src/server/file_fetch_internal.h
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
@@ -354,6 +372,8 @@ set(protocol_inputs
   src/server/file_expansion.cpp
   src/server/file_input_policy.cpp
   src/server/chat_file_inputs.cpp
+  src/server/chat_web_search.cpp
+  include/q4t/server/chat_web_search.h
   include/q4t/server/chat_file_inputs.h
   src/server/model_preparation.cpp
   include/q4t/server/model_preparation.h

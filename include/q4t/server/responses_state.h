@@ -33,6 +33,7 @@ struct ResponseStatePlan {
   io::Json input_snapshots;  // Private exact-part bindings, never API items.
   io::Json tool_contracts;   // Private invocation-time result schemas.
   io::Json mcp_catalogs;     // Newly fetched owned catalogs, never credentials.
+  io::Json web_content;     // Private acquired passages, bound to exact items.
   io::Json request;
   std::string conversation_id;
   int64_t conversation_revision = 0;
@@ -54,7 +55,8 @@ class ResponsesState {
   ObjectReply ResolveItems(const io::Json& input, const StateAccess& access,
                            size_t maximum = 4096,
                            io::Json* input_snapshots = nullptr,
-                           io::Json* tool_contracts = nullptr);
+                           io::Json* tool_contracts = nullptr,
+                           io::Json* web_content = nullptr);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan);
   // Loads authoritative inputs and revision, without rerunning resolution or

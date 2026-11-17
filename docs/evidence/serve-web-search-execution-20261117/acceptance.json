@@ -1,0 +1,28 @@
+{
+  "state": "CPU_NATIVE_WEB_EXECUTION_ACCEPTED",
+  "new_tests": 16,
+  "unique_tests_including_affected_fetch_regression": 20,
+  "test_executions": 21,
+  "original_test_failures": 1,
+  "original_failed_test": "web_execution_cancel_and_cumulative_capacity_do_not_fetch",
+  "repair": "Reject exhausted page byte budget before starting network worker",
+  "initial_and_repair_seconds": [
+    6.6460604183375835,
+    0.08654073625802994
+  ],
+  "selection_rejection_executed_tests": 0,
+  "build_exit_codes": [
+    2,
+    0,
+    0
+  ],
+  "zero_warnings_final_build": true,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "source_base": "07c6aa8ead84062f4ce3125073339fbad20ac23d",
+  "archive_sha256": "06c4743d0e219f7c0bc08a50daa8ebe96ba48038dc29ebd57bcc3ec926155654",
+  "actual_local_http_tested": true,
+  "public_web_and_model_tested": false,
+  "chat_responses_api_accepted": false,
+  "master_complete": false
+}

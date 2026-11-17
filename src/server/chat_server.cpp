@@ -1,3 +1,4 @@
+#include "q4t/server/web_execution.h"
 #include "q4t/mtp/subset_head.h"
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
@@ -144,6 +145,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const auto object_options =
       ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
                                 home_directory ? home_directory : "");
+  if (!opts.web_policy_file.empty()) {
+    auto policy = std::make_shared<WebDeploymentPolicy>();
+    const auto status = LoadWebDeploymentPolicy(opts.web_policy_file, policy.get());
+    if (!status) return status;
+    web_policy_ = std::move(policy);
+  }
   if (!opts.mcp_policy_file.empty()) {
     auto policy = std::make_shared<McpDeploymentPolicy>();
     const auto status = LoadMcpDeploymentPolicy(opts.mcp_policy_file, policy.get());

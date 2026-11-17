@@ -633,12 +633,16 @@ ObjectReply RemoteHttp::ReadAll(std::string* bytes) {
 
 ObjectReply Fetch(const Url& original, const FileFetchOptions& options,
                   uint64_t max_bytes, Deadline deadline,
-                  FileFetchReceipt* result) {
+                  FileFetchReceipt* result,
+                  const FileFetchDomainPolicy& domains) {
   *result = {};
   FileFetchReceipt next;
   Url url = original;
   std::set<std::string> visited;
   for (int hop = 0; hop <= options.max_redirects; ++hop) {
+    if (!ValidDomains(domains) || !AllowedDomains(url, domains))
+      return Error(403, "file_fetch_target_denied",
+                   "File target is not permitted");
     if (!visited.insert(url.Text()).second)
       return Failure("file_fetch_redirect_loop");
     next.urls.push_back(url.Text());

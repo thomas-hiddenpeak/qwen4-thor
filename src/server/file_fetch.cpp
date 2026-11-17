@@ -34,7 +34,8 @@ ObjectReply FetchFileInput(const BinaryAccess& access,
                            const FileInputSource& source,
                            const FileFetchOptions& options,
                            FileInputBudget* budget, FileFetchReceipt* result,
-                           GrammarControl control) {
+                           GrammarControl control,
+                           const FileFetchDomainPolicy& domains) {
   if (!result) return Error(500, "file_input_state_invalid", "Missing output");
   *result = {};
   auto at = [&](ObjectReply reply) {
@@ -64,10 +65,12 @@ ObjectReply FetchFileInput(const BinaryAccess& access,
   if (source.kind != FileInputSource::Kind::kUrl ||
       !file_detail::ParseUrl(source.value, &url))
     return at(Error(400, "invalid_request", "Invalid HTTP(S) file URL"));
-  if (!file_detail::ValidOptions(options))
+  if (!file_detail::ValidOptions(options) ||
+      !file_detail::ValidDomains(domains))
     return at(
         Error(500, "file_fetch_policy_invalid", "Invalid file fetch policy"));
-  if (!file_detail::AllowedUrl(url, options))
+  if (!file_detail::AllowedUrl(url, options) ||
+      !file_detail::AllowedDomains(url, domains))
     return at(
         Error(403, "file_fetch_target_denied", "File target is not permitted"));
   const uint64_t available = budget->max_bytes - budget->used_bytes;
@@ -89,6 +92,8 @@ ObjectReply FetchFileInput(const BinaryAccess& access,
                          {"options", file_detail::OptionsJson(options)},
                          {"max_bytes", Number(available)},
                          {"timeout_ms", Number(options.timeout_ms)}});
+  if (!domains.allowed.empty() || !domains.blocked.empty())
+    Set(&request, "domains", file_detail::DomainsJson(domains));
   auto text = OutputJson(request);
   Frame frame{kVersion, 1, text.size()}, response;
   auto transfer = [&](void* bytes, size_t size, bool write) {
@@ -125,7 +130,8 @@ ObjectReply FetchFileInput(const BinaryAccess& access,
   for (const auto& item : urls->array) {
     file_detail::Url parsed;
     if (!item.IsString() || !file_detail::ParseUrl(item.str, &parsed) ||
-        !file_detail::AllowedUrl(parsed, options))
+        !file_detail::AllowedUrl(parsed, options) ||
+        !file_detail::AllowedDomains(parsed, domains))
       return at(Failed(GrammarFailure::kWorker));
     next.urls.push_back(item.str);
   }
@@ -171,6 +177,7 @@ int MaybeRunFileFetchWorker(int argc, char** argv) {
     if (!Parse(text, &request)) return 3;
     file_detail::Url url;
     FileFetchOptions options;
+    FileFetchDomainPolicy domains;
     const auto* policy = request.Find("options");
     const auto bytes = request.GetInt("max_bytes", -1);
     const auto timeout = request.GetInt("timeout_ms", -1);
@@ -179,12 +186,15 @@ int MaybeRunFileFetchWorker(int argc, char** argv) {
         timeout < 1 || timeout > 30000 ||
         !file_detail::ParseUrl(request.GetString("url"), &url))
       return 3;
+    if (const auto* rules = request.Find("domains");
+        rules && !file_detail::ParseDomains(*rules, &domains))
+      return 3;
     FileFetchReceipt fetched;
     ObjectReply reply;
     try {
       reply = file_detail::Fetch(
           url, options, bytes,
-          Clock::now() + std::chrono::milliseconds(timeout), &fetched);
+          Clock::now() + std::chrono::milliseconds(timeout), &fetched, domains);
     } catch (const std::bad_alloc&) {
       reply = Error(503, "file_fetch_memory_capacity",
                     "File acquisition memory limit");

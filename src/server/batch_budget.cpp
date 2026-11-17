@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/model/embedding_config.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_web_search.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/moderations_plan.h"
@@ -147,9 +148,7 @@ ObjectReply MeasureResponse(ResponsesExecution& response,
       const auto* files = response.FileUsage();
       const uint64_t sheets = files ? files->sheets : 0;
       const uint64_t calls =
-          (response.HasFileSearch() || response.HasToolSearch() ||
-           response.HasMcp()) &&
-                  !envelope.cache.prewarm
+          response.HasNativeTools() && !envelope.cache.prewarm
               ? std::min<uint64_t>(
                     envelope.options.GetInt("max_tool_calls", INT64_MAX),
                     ResponsesExecution::kMaxNativeToolCalls)
@@ -239,6 +238,12 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     ChatFileInputs files(&objects);
     auto reply =
         files.Prepare(row.body, config, access, &plan, *bindings, true);
+    if (!reply.ok()) return reply;
+    ChatWebSearch web;
+    const Json missing;
+    const auto* frozen_web = prepared.Find("web_content");
+    reply = web.Prepare(&objects, row.body, config, access, &plan,
+                         frozen_web ? frozen_web : &missing);
     if (!reply.ok()) return reply;
     status = meter.Chat(row.body, plan, config, &error);
     if (status && plan.moderation.enabled) {

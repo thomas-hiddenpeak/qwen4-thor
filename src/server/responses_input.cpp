@@ -14,6 +14,7 @@
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_file_search.h"
+#include "q4t/server/responses_web_search.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_mcp_binding.h"
 #include "q4t/server/responses_program.h"
@@ -423,7 +424,8 @@ Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result, ChatPlanError* error,
                                bool allow_empty, bool preparing_files,
                                bool preparing_mcp, const Json* mcp_content,
-                               bool prepared_file_media) {
+                               bool prepared_file_media,
+                               const Json* web_content) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -883,6 +885,28 @@ Status NormalizeResponsesInput(const io::Json& request,
         status = flush();
         if (!status) return status;
       }
+    } else if (type == "web_search_call") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
+                                          error, path);
+      if (!status) return status;
+      std::string id = "history_web_search_" + std::to_string(i);
+      const auto base = id;
+      for (size_t suffix = 0;
+           call_ids.contains(id) || std::any_of(plan.items.array.begin(), plan.items.array.end(),
+             [&](const auto& value) { return value.GetString("call_id") == id; }); ++suffix)
+        id = base + '_' + std::to_string(suffix);
+      calls.array.push_back(Object({{"id", String(id)}, {"type", String("function")},
+        {"function", Object({{"name", String("web_search")},
+          {"arguments", String(OutputJson(*item.Find("action")))}})}}));
+      const auto* context = web_content ? FindWebContext(*web_content, item) : nullptr;
+      const auto result = Object({{"status", *item.Find("status")},
+        {"results_available", Boolean(context != nullptr)},
+        {"retrieved_sources", context ? *context : Json()}});
+      results.emplace_back(Object({{"role", String("tool")}, {"tool_call_id", String(id)},
+        {"content", String(OutputJson(result))}}), path);
+      expected.emplace(id, false);
+      returned.insert(id);
+      ++automatic_returns;
     } else if (type == "file_search_call") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
                                           error, path);
@@ -1077,6 +1101,9 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
   auto binding_status =
       PlanResponsesFileSearchBindings(request, &native, error);
   if (!binding_status) return binding_status;
+  std::vector<ResponsesWebBinding> web;
+  binding_status = PlanResponsesWebBindings(request, &web, error);
+  if (!binding_status) return binding_status;
   std::vector<ResponsesMcpBinding> mcp;
   binding_status =
       PlanResponsesMcpRequestBindings(request, &mcp, error, definitions_only);
@@ -1137,6 +1164,15 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           return Invalid(error, at, "Duplicate program tool");
         program_enabled = true;
         program_path = at;
+        continue;
+      }
+      if (IsWebSearchType(type)) {
+        const auto found = std::find_if(web.begin(), web.end(), [&](const auto& binding) {
+          return binding.tool_index == entry.outer;
+        });
+        if (found == web.end()) return Invalid(error, at, "Missing native web binding");
+        tools->array.push_back(NativeWebSearchDefinition(found->model_name));
+        model_paths.push_back(at);
         continue;
       }
       if (type == "file_search") {
@@ -1295,7 +1331,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     model_paths.push_back(program_path);
   }
   if (const auto* original = request.Find("tool_choice")) {
-    Json selected, native_choice, mcp_choice, mapped;
+    Json selected, native_choice, mcp_choice, web_choice, mapped;
     // Client selectors are mapped before builtin expansion. A builtin's
     // private model name must never be reinterpreted as a child's bare name.
     auto status = MapNamespaceChoice(*original, identities, &selected, error);
@@ -1307,7 +1343,9 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           native_choice, mcp, &mcp_choice, error,
           definitions_only ? request.GetArray("tools") : nullptr);
     if (status)
-      status = MapResponsesFileSearchChoice(mcp_choice, native, &mapped, error);
+      status = MapResponsesWebChoice(mcp_choice, web, &web_choice, error);
+    if (status)
+      status = MapResponsesFileSearchChoice(web_choice, native, &mapped, error);
     if (status)
       status = ToolSelection(mapped, choice, "tool_choice", {}, error);
     if (!status) return status;

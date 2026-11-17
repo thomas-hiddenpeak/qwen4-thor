@@ -16,6 +16,8 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
   auto status =
       PlanResponsesFileSearchBindings(request, &file_search_bindings_, error);
   if (!status) return status;
+  status = PlanResponsesWebBindings(request, &web_bindings_, error);
+  if (!status) return status;
   status = PlanResponsesMcpRequestBindings(
       Object({{"tools", active}, {"input", history}}),
       &mcp_bindings_, error);

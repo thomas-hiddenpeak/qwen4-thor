@@ -20,6 +20,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/web_search.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/mcp_transport.h"
@@ -34,6 +35,7 @@ int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
 int FilesApiFixture(int argc, char** argv);
 int FileFetchFixture(int argc, char** argv);
+int WebPageSandboxFixture(int argc, char** argv);
 int McpTransportFixture(int argc, char** argv);
 int FileSourceFixture(int argc, char** argv);
 int NestedDocumentFixture(int argc, char** argv);
@@ -77,6 +79,10 @@ int main(int argc, char** argv) {
   if (tunnel_agent >= 0) return tunnel_agent;
   if (argc > 1 && std::string_view(argv[1]) == "mcp-tunnel-agent")
     return q4t::server::RunMcpTunnelAgentCommand(argc, argv);
+  const int web_sandbox = WebPageSandboxFixture(argc, argv);
+  if (web_sandbox >= 0) return web_sandbox;
+  const int web_page = q4t::server::MaybeRunWebPageWorker(argc, argv);
+  if (web_page >= 0) return web_page;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);

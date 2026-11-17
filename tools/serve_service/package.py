@@ -363,7 +363,8 @@ def access_program_binding(raw, clients, model):
                 model=model, sha256=hashlib.sha256(raw).hexdigest())
 
 
-def _native_policy_binding(binary, path, raw, command, profile, label):
+def _native_policy_binding(binary, path, raw, command, profile, label,
+                           digest_field='sha256'):
     """The hash-verified engine owns policy parsing; this never loads a model."""
     from tools.serve_gateway import client_policy as cp
     require(type(raw) is bytes and 0 < len(raw) <= cp.MAX_BYTES,
@@ -381,7 +382,7 @@ def _native_policy_binding(binary, path, raw, command, profile, label):
         raise RuntimeError('native '+label+' validation failed') from error
     require(type(value) is dict and value.get('profile') == profile
             and value.get('configured') is True
-            and value.get('sha256') == hashlib.sha256(raw).hexdigest()
+            and value.get(digest_field) == hashlib.sha256(raw).hexdigest()
             and value.get('request_override') is False,
             'native '+label+' identity differs')
     return value
@@ -397,12 +398,18 @@ def mcp_policy_binding(binary, path, raw):
         'q4t-mcp-deployment-policy-v1', 'MCP deployment policy')
 
 
+def web_policy_binding(binary, path, raw):
+    return _native_policy_binding(binary, path, raw, 'web-policy-check',
+        'q4t-web-deployment-policy-v1', 'web search deployment policy',
+        digest_field='source_sha256')
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
             application_state=None, capacity_config=None, repository=None,
             access_program_policy=None, file_input_policy=None,
-            embedding_model_dir=None, mcp_policy=None):
+            embedding_model_dir=None, mcp_policy=None, web_policy=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -437,6 +444,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     if mcp_policy is not None:
         from tools.serve_gateway import client_policy as cp
         mcp_raw = cp.read_private(mcp_policy)
+    web_raw, web_binding = None, None
+    if web_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        web_raw = cp.read_private(web_policy)
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -471,6 +482,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                 .get('policy_profile') == 'q4t-mcp-deployment-policy-v1',
                 'accepted engine lacks native MCP deployment policy')
         mcp_binding = mcp_policy_binding(binary, mcp_policy, mcp_raw)
+    if web_raw is not None:
+        require(read(declarations/'capabilities.json').get('web_search', {})
+                .get('policy_profile') == 'q4t-web-deployment-policy-v1',
+                'accepted engine lacks native web search deployment policy')
+        web_binding = web_policy_binding(binary, web_policy, web_raw)
     observed_state = metadata.get('observed_configuration', {}).get('application_state')
     if observed_state is not None:
         require(type(observed_state) is dict and
@@ -539,6 +555,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             stream.write(mcp_raw)
         (target/'mcp-policy.json').chmod(0o400)
         names.append('mcp-policy.json')
+    if web_raw is not None:
+        with (target/'web-policy.json').open('xb') as stream:
+            stream.write(web_raw)
+        (target/'web-policy.json').chmod(0o400)
+        names.append('web-policy.json')
     python = Path(sys.executable).resolve()
     manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
@@ -551,6 +572,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['file_input_policy'] = file_binding
     if mcp_binding is not None:
         manifest['mcp_policy'] = mcp_binding
+    if web_binding is not None:
+        manifest['web_policy'] = web_binding
     manifest['release_declarations'] = metadata['release_declarations']['profile']
     manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
@@ -649,6 +672,8 @@ def verify(package, digest):
         expected.add('file-input-policy.json')
     if 'mcp_policy' in manifest:
         expected.add('mcp-policy.json')
+    if 'web_policy' in manifest:
+        expected.add('web-policy.json')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -695,6 +720,15 @@ def verify(package, digest):
         require(manifest['mcp_policy'] == mcp_policy_binding(
             package/'q4t', mcp_path, cp.read_private(mcp_path)),
             'MCP deployment policy binding differs')
+    if 'web_policy' in manifest:
+        from tools.serve_gateway import client_policy as cp
+        require(read(package/'declarations/capabilities.json').get('web_search', {})
+                .get('policy_profile') == 'q4t-web-deployment-policy-v1',
+                'engine web search deployment policy declaration absent')
+        web_path = package/'web-policy.json'
+        require(manifest['web_policy'] == web_policy_binding(
+            package/'q4t', web_path, cp.read_private(web_path)),
+            'web search deployment policy binding differs')
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
@@ -756,6 +790,8 @@ def command(package, manifest, *, state_directory=None):
         args += ['--file-input-policy-file', str(Path(package)/'file-input-policy.json')]
     if 'mcp_policy' in manifest:
         args += ['--mcp-policy-file', str(Path(package)/'mcp-policy.json')]
+    if 'web_policy' in manifest:
+        args += ['--web-policy-file', str(Path(package)/'web-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
     if 'model_names' in cfg:

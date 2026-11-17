@@ -8,6 +8,7 @@
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/mcp_policy.h"
+#include "q4t/server/web_execution.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/media_admission.h"
@@ -439,6 +440,8 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
              config.file_input_policy_sha256)) +
          R"(,"mcp_deployment":)" +
          OutputJson(McpDeploymentPolicyDescription(config.mcp_policy.get())) +
+         R"(,"web_deployment":)" +
+         OutputJson(WebDeploymentPolicyDescription(config.web_policy.get())) +
          R"(,"completions":{"profile":"q4t-completions-v1",)"
          R"("default_output_tokens":16,"max_batch_candidates":128})"
          R"(,"application_state":{"profile":"q4t-objects-v1",)"

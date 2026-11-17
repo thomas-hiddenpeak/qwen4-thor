@@ -1,5 +1,6 @@
 #include "q4t/server/file_fetch.h"
 #include "q4t/server/file_source.h"
+#include "q4t/server/web_search.h"
 
 #include <arpa/inet.h>
 #include <poll.h>
@@ -462,13 +463,119 @@ Q4T_TEST(file_source_actual_http_uses_same_fetch_and_provenance_contract) {
   FileSourceReceipt receipt;
   GrammarControl control;
   control.counters = std::make_shared<GrammarWorkerCounters>();
-  Q4T_CHECK(ResolveFileInput(nullptr, Access(), source, server.Options(), &budget,
-                             &receipt, control).ok());
+  Q4T_CHECK(ResolveFileInput(nullptr, Access(), source, server.Options(),
+                             &budget, &receipt, control)
+                .ok());
   Q4T_CHECK(receipt.content.bytes == "Actual source bytes" &&
             receipt.content.sha256 == Digest(receipt.content.bytes) &&
             receipt.urls == std::vector<std::string>{url} &&
             !receipt.indirect_source && receipt.export_format.empty());
-  Q4T_CHECK(budget.used_files == 1 && budget.used_bytes == receipt.content.bytes.size() &&
-            control.counters->active == 0 && control.counters->started == control.counters->reaped);
+  Q4T_CHECK(budget.used_files == 1 &&
+            budget.used_bytes == receipt.content.bytes.size() &&
+            control.counters->active == 0 &&
+            control.counters->started == control.counters->reaped);
+  return true;
+}
+
+Q4T_TEST(web_fetch_domain_policy_roundtrip_and_no_suffix_authority_bypass) {
+  FileFetchDomainPolicy policy{{"example.com"}, {"private.example.com"}},
+      decoded;
+  Q4T_CHECK(
+      file_detail::ValidDomains(policy) &&
+      file_detail::ParseDomains(file_detail::DomainsJson(policy), &decoded));
+  Q4T_CHECK(decoded.allowed == policy.allowed &&
+            decoded.blocked == policy.blocked);
+  for (const auto* host : {"example.com", "docs.example.com", "example.com."}) {
+    file_detail::Url url;
+    Q4T_CHECK(file_detail::ParseUrl(std::string("https://") + host, &url) &&
+              file_detail::AllowedDomains(url, policy));
+  }
+  for (const auto* host : {"notexample.com", "example.com.evil",
+                           "private.example.com", "a.private.example.com"}) {
+    file_detail::Url url;
+    Q4T_CHECK(file_detail::ParseUrl(std::string("https://") + host, &url) &&
+              !file_detail::AllowedDomains(url, policy));
+  }
+  for (const auto* value : {"", "https://example.com", "EXAMPLE.com",
+                            "example.com.", "example.com:443", "::1"}) {
+    policy.allowed = {value};
+    Q4T_CHECK(!file_detail::ValidDomains(policy));
+  }
+  return true;
+}
+
+Q4T_TEST(web_fetch_redirect_domain_is_denied_before_dns_or_second_connection) {
+  Server server(
+      {"HTTP/1.1 302 Found\r\nContent-Length: 0\r\nLocation: "
+       "http://forbidden.invalid/secret\r\n\r\n"});
+  WebSearchOptions options;
+  options.allowed_domains = {"127.0.0.1"};
+  auto policy = server.Options();
+  policy.ports.push_back(80);
+  FileInputBudget budget;
+  WebPageReceipt receipt;
+  GrammarControl control;
+  control.counters = std::make_shared<GrammarWorkerCounters>();
+  const auto reply = FetchWebPage(server.Url(), options, policy, {}, Access(),
+                                  &budget, &receipt, control);
+  Q4T_CHECK(reply.http_status == 403 &&
+            reply.code == "file_fetch_target_denied" && server.requests == 1 &&
+            receipt.page.text.empty() && receipt.source.urls.empty() &&
+            budget.used_files == 1 && budget.used_bytes == (2U << 20) &&
+            control.counters->started == 1 && control.counters->active == 0 &&
+            control.counters->reaped == 1);
+  return true;
+}
+
+Q4T_TEST(web_fetch_allowed_redirect_preserves_every_hop_and_actual_source) {
+  const std::string body = "Read-only source says recovery is bounded.";
+  Server server(
+      {"HTTP/1.1 302 Found\r\nContent-Length: 0\r\n"
+       "Location: /final\r\n\r\n",
+       Response(body)});
+  WebSearchOptions options;
+  options.allowed_domains = {"127.0.0.1"};
+  FileInputBudget budget;
+  WebPageReceipt receipt;
+  const auto reply = FetchWebPage(server.Url(), options, server.Options(), {},
+                                  Access(), &budget, &receipt);
+  Q4T_CHECK(
+      reply.ok() && server.requests == 2 && receipt.source.urls.size() == 2 &&
+      receipt.source.urls.front() == server.Url() &&
+      receipt.source.urls.back().ends_with("/final") &&
+      receipt.page.url == receipt.source.urls.back() &&
+      receipt.page.text == body && receipt.page.source_sha256 == Digest(body) &&
+      budget.used_bytes == body.size() && budget.used_files == 1);
+  return true;
+}
+
+Q4T_TEST(web_fetch_offline_and_client_domains_never_grant_network_authority) {
+  Server server({Response("not a successful grant")});
+  WebSearchOptions options;
+  options.external_web_access = false;
+  FileInputBudget budget;
+  WebPageReceipt receipt;
+  GrammarControl control;
+  control.counters = std::make_shared<GrammarWorkerCounters>();
+  Q4T_CHECK(FetchWebPage(server.Url(), options, server.Options(), {}, Access(),
+                         &budget, &receipt, control)
+                .code == "web_search_offline");
+  Q4T_CHECK(control.counters->started == 0 && budget.used_files == 0 &&
+            budget.used_bytes == 0 && server.requests == 0);
+  options.external_web_access = true;
+  options.allowed_domains = {"127.0.0.1"};
+  auto deployment = server.Options();
+  deployment.allowed_networks.clear();
+  Q4T_CHECK(FetchWebPage(server.Url(), options, deployment, {}, Access(),
+                         &budget, &receipt, control)
+                .http_status == 403);
+  Q4T_CHECK(server.requests == 0 && receipt.page.text.empty() &&
+            budget.used_files == 1 && budget.used_bytes == (2U << 20));
+  options.blocked_domains = {"127.0.0.1"};
+  Q4T_CHECK(FetchWebPage(server.Url(), options, server.Options(), {}, Access(),
+                         &budget, &receipt, control)
+                .http_status == 403);
+  Q4T_CHECK(control.counters->started == 1 && control.counters->active == 0 &&
+            server.requests == 0 && budget.used_files == 1);
   return true;
 }

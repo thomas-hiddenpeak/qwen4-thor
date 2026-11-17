@@ -32,6 +32,7 @@ struct ResponsesEnvelope {
   // Authenticated, prepared content by call ID. Never accepted from public
   // request JSON or serialized as part of a Response item.
   io::Json mcp_content;
+  io::Json web_content;  // Private, item-bound retrieved passages.
   // Set only after owned FileExpansion; public JSON cannot grant this flag.
   bool prepared_file_media = false;
   std::string previous_response_id;
