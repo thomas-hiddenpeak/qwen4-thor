@@ -2171,7 +2171,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-asr-transport-20261117/README.md",
         "evidence/serve-asr-scope-20261117/README.md",
-        "evidence/serve-asr-sdk-values-20261117/README.md"
+        "evidence/serve-asr-sdk-values-20261117/README.md",
+        "evidence/serve-asr-http-20261117/README.md"
       ],
       "release": null,
       "findings": [
@@ -2535,7 +2536,7 @@
         ]
       },
       "native_asr_service_20261117": {
-        "state": "targeted_cpu_accepted_real_business_pending",
+        "state": "direct_http_sdk_scoped_recovery_accepted_packaged_combinations_pending",
         "contract": "SERVE_NATIVE_AUDIO_2026-11-17.md",
         "published": false,
         "whole_task_complete": false,
@@ -2544,7 +2545,7 @@
           "seconds": 300
         },
         "remaining": [
-          "native HTTP/SDK qualification",
+          "native TLS and scoped-client multipart/SSE qualification",
           "actual alignment, diarization and VAD executors",
           "service package, primary/light recovery and reversible delivery",
           "all remaining audio and master tasks"
@@ -2588,6 +2589,31 @@
             "creates": 5,
             "seconds": 600
           }
+        },
+        "http_evidence": "evidence/serve-asr-http-20261117/README.md",
+        "http_acceptance": {
+          "status": "ACCEPT_NATIVE_ASR_DIRECT_HTTP_SCOPED_RECOVERY",
+          "binary_sha256": "9401541172832c9f340be1dc77907823bcd2ddf6b76a142b82e95bd216f31976",
+          "all_attempts": {
+            "starts": 4,
+            "creates": 11,
+            "seconds": 170.94932732917368
+          },
+          "accepted_observations": {
+            "reused_creates": 4,
+            "remaining_creates": 5,
+            "starts": 2,
+            "seconds": 93.58497711503878
+          },
+          "original_failures_preserved": true,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "default_replacement": false,
+          "remaining": [
+            "native TLS / scoped-client multipart and SSE",
+            "service-package and primary/light recovery qualification",
+            "actual alignment / diarization / VAD and all master tasks"
+          ]
         }
       }
     },

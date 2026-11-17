@@ -1,0 +1,44 @@
+{
+  "owned": {
+    "4089730": {
+      "state": "R",
+      "ppid": 4089720,
+      "pgid": 4089720,
+      "start_ticks": 309884983,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-03",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18224",
+        "--operations-port",
+        "18225",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "64",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "2",
+        "--asr-model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-http-05/asr-assets",
+        "--asr-max-output-tokens",
+        "128"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-03"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true
+}

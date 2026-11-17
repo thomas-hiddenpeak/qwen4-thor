@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NATIVE_ASR_REMAINING_WITH_REUSED_OBSERVATIONS",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 42
+  },
+  "seconds": 45.96291847107932,
+  "binary_sha256": "9401541172832c9f340be1dc77907823bcd2ddf6b76a142b82e95bd216f31976"
+}

@@ -1,0 +1,71 @@
+{
+  "zh": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  },
+  "en": {
+    "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+    "exact": true,
+    "word_error_rate": 0.0
+  },
+  "forced": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  },
+  "original_compute_logits_gate": "FAILED preserved; not this API acceptance",
+  "timestamp_diarization_vad_pending": true,
+  "full_model_quality": false,
+  "reused_evidence": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-http-04",
+    "binary_sha256": "9401541172832c9f340be1dc77907823bcd2ddf6b76a142b82e95bd216f31976",
+    "original_status": "FAILED_preserved",
+    "accepted_creates": 4,
+    "zh": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "files": {
+      "capabilities.json": "48a05ef1f1c171e3ef8e455188c5d6ec2a37459a05a283d827229fe9946b8583",
+      "cleanup.json": "7437f73b8a2b87065740e4964974f7a17435424447bc1b4abb386ef6ab5ae814",
+      "config.json": "1157f6ba59a07c3ccaa2d9d43e7720fac39765cec91e70f83cda645bb53792e9",
+      "cooldown.http.json": "55f3499e434cd9248d890ca00126b0a2e2728e04257297471f568df6a89e5185",
+      "cooldown.wire": "0e731bb5a23a09996a3eef17ec05a86494664f2ae3fe1c7cc036d716f0e8c026",
+      "core-during-asr-failure-drain.metrics.json": "803622a804b660b86f019bc109ba53d8db49769f2e9d709baa1da98c4d42fd39",
+      "core-during-asr-failure.http.json": "7092c19255e775c7a0d08cca575cc01724dd2bbc207262f4cb451256160d679c",
+      "core-during-asr-failure.request.json": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c",
+      "core-during-asr-failure.wire": "3a89031b52a8c34016e6a3dc45185559b7c2aa3017051e0786e46efabbc11f2c",
+      "counts.json": "af9a7e9b39bea1d267f1f508ec9a4c6554a87f35277253391d0142528b534d68",
+      "initial-capabilities.http.json": "b5c585170c639e75fa95f00fc5320c8d9063a80264d0998574b61bcec856742a",
+      "initial-capabilities.wire": "025efa4b91259fc837928899a377e97036f726318382e6dfdd7e69885e18d6b7",
+      "initial-config.http.json": "aea88d68eccd47b1c55edbd323b2e4cb050984b6a2b6e8b55c67d0fcc068c799",
+      "initial-config.wire": "b0963bbf399055086e4eb9cb85bb581741a4f4b656de13b8b403001ad8afe72b",
+      "initial-models.http.json": "dffb6e1a07c7327dab50ab77a3085ef47587426179e8b2de2383bf8404938388",
+      "initial-models.wire": "eb8d249791e8f5d01f3d92de9346228f1d5da234b689de6f4a329aa93dfa6cf3",
+      "lease/events.jsonl": "9b8c6aa96bd106a6b159a50ade12bc5ed040aaa7dac067401a54936e9c4a9390",
+      "lease/exit.json": "1b2d585b964c0d46760de3f172b2a1494952fdfd1fe50aeb05656ac19aebfa1f",
+      "lease/nvml-queries.jsonl": "d8c395ab84fcd14701c01aef1f81f9d1cace4022149807edbd3e6b52166bd05d",
+      "missing-config.http.json": "15d73526932eb450106c983f1e2abb34ccb5d6378d322f6afd79e86782408f95",
+      "missing-config.wire": "f9b12b55220a70f31bb7ab515309a3389bbb774a7d6168c0571fe9a59b6a59d0",
+      "missing-ready.http.json": "1e460afc51d938ed85d131d25d187f168e0ca3aa72fefaf3ab7f10a3f93924dd",
+      "missing-ready.wire": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba",
+      "missing-weights.http.json": "7e106dadd0673456e257f899d003c5865bc3279fbbed1e0ba6771aefd8e9830c",
+      "missing-weights.wire": "228c7e90c5ac2fbe531857bdfab487eaa7a0911502260822e6d5b4d0a3df34bf",
+      "model-command.json": "0291cf6ba7c5783bc2b8574b287c4e3e256781714aa75ef444d3c55fe429ab8b",
+      "model-identity.json": "d8f926b39ea017fc1cb6d31c317945bf689be12877de4130991db2929184d952",
+      "model.log": "d16a32d11d5b73700ca70c673a515e96895bb9be782e8343f823df59075fcc73",
+      "models.json": "7bf4a2686ac7d74d94b4802a9d7fef7ac368fe5c1070ba1bac231c0610319667",
+      "plan.json": "97b67db12dc1b7ba14c3947f96af6666bd45ca7c4708b84e73ac24748c5a5938",
+      "python-zh-json-drain.metrics.json": "72390bd29d7b98151bc9256f04f9d5d75165c52ebd7cdc82428079a7b77881a7",
+      "python-zh-json.request.json": "b29611a136269990d53c4ec341023ddb6c8324925bd7693dd0bd86e6ce2277bd",
+      "python-zh-json.sdk.json": "f66a6230b6944fb9111553b9cce536a9f617f1f3ff14042bfa35c328087ed374",
+      "python-zh-json.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "python-zh-json.wire": "f7ec322773dffe7d98af0cd0be889d98d5bbab1f45930b69ecc504b3afdf1418",
+      "result.json": "0085e6033be18be88cc52e7414aa0b65e0fc7d9720d7fa7ec72426cd112861af"
+    }
+  },
+  "default_replacement": false,
+  "all_master_tasks_continue": true
+}
