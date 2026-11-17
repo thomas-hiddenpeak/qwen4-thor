@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_DELIVERY",
+  "revision": 254,
+  "current": {
+    "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "engine_release_sha256": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
+    "generation_sha256": "523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466",
+    "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+    "service_acceptance_sha256": "360dc85c0366721b0dfe7ae9b68da356712ff4cd872258c1fe29332ab6c16203",
+    "service_release_sha256": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c"
+  },
+  "commands": 19,
+  "seconds": 285.69923610892147,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "manual_root": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb",
+  "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
+  "candidate_whole_package_gpu_run": false,
+  "composed_change": "Exact engine projective pixels, primary/light and retained control business; unchanged controller/client/native helpers; explicit capability extension preserves budgets and disallows capability loss; actual STOPPED whole-root rollback and forward.",
+  "older_engine_fallback": false,
+  "prior_rev244_preserved": true,
+  "retired_generations_archived": 2,
+  "retired_versions_archived": 2,
+  "deleted_files": 0,
+  "files": 81,
+  "secret_scan_matches": 0,
+  "archive_sha256": "83a9154088d008c87f217e72393971211a07a39b09d19fc2cf9a5ef2e4356400",
+  "main_integration_pending": true,
+  "all_master_tasks_active": true
+}

@@ -2343,7 +2343,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Non-unit homogeneous/perspective video transforms, multiple tracks and remaining format combinations",
+        "Multiple video tracks, presentation canvas/clipping and remaining format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
         "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes"
       ],
@@ -2416,7 +2416,7 @@
         "main_evidence": "evidence/serve-pr41-merged-20261117/README.md"
       },
       "video_projective_20261117": {
-        "state": "composition_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
         "cpu_new_limit": 16,
         "cpu_regressions": 4,
@@ -2446,7 +2446,9 @@
           "requests": 20,
           "strict_lease_seconds": 235.26561826793477
         },
-        "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33"
+        "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+        "revision": 254,
+        "delivery_evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
       }
     },
     {
@@ -4246,7 +4248,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev244 or then-current default; do not stop camera/jtop without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev254 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4852,36 +4854,36 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_VIDEO_AFFINE_DETAIL_DELIVERY",
-        "revision": 244,
+        "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_DELIVERY",
+        "revision": 254,
         "current": {
-          "engine_binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
-          "engine_release_sha256": "f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842",
-          "generation_sha256": "d548cf475ccf93d1ddffb794a8845c8524ffc80889bf7e426eab0e369da28bf0",
-          "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
-          "service_acceptance_sha256": "25dc0ef07d374626254ce9cdfede90c00c2d538d5e66cccb2f70c5724b5a6f97",
-          "service_release_sha256": "21110f3d55e7063d473b9ce611a15a7e0ec98d7d2cb4406c23c4ff1abafc7c00"
+          "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+          "engine_release_sha256": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
+          "generation_sha256": "523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466",
+          "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+          "service_acceptance_sha256": "360dc85c0366721b0dfe7ae9b68da356712ff4cd872258c1fe29332ab6c16203",
+          "service_release_sha256": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c"
         },
         "commands": 19,
-        "seconds": 284.67985774809495,
+        "seconds": 285.69923610892147,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "f329ce2277dd5d7fdc70e8716bc5068abf97287e40f744dcdf20796aad9121ad",
-        "automatic_payload": "9535ff875171e04ea4c1c011ae1b2558e26204805b9ad57280e44afb1d1cdd07",
+        "manual_root": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb",
+        "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
         "candidate_whole_package_gpu_run": false,
-        "composed_change": "Exact-engine affine video/high-detail, primary/light and retained controls; controller/client/native helpers unchanged; explicit extension preserves budgets and forbids capability loss; STOPPED publication and actual root rollback verified",
+        "composed_change": "Exact engine projective pixels, primary/light and retained control business; unchanged controller/client/native helpers; explicit capability extension preserves budgets and disallows capability loss; actual STOPPED whole-root rollback and forward.",
         "older_engine_fallback": false,
-        "prior_rev234_preserved": true,
+        "prior_rev244_preserved": true,
         "retired_generations_archived": 2,
         "retired_versions_archived": 2,
         "deleted_files": 0,
-        "files": 74,
+        "files": 81,
         "secret_scan_matches": 0,
-        "archive_sha256": "a436f53bcadd2817570f3303f18422c2c275f037571d65e6cc79cb3a77bcda82",
+        "archive_sha256": "83a9154088d008c87f217e72393971211a07a39b09d19fc2cf9a5ef2e4356400",
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+        "evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5048,7 +5050,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR41 final-head checks and actual main merge",
+        "Projective video delivery exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5546,8 +5548,8 @@
       }
     }
   ],
-  "next_task": "A10",
-  "next": "Complete exact projective primary/light and retained service qualification, reversible delivery and actual main merge; continue all master tasks.",
+  "next_task": "Q02",
+  "next": "Freeze rev254 native day handoff, complete exact-head checks and actual main merge; continue every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
