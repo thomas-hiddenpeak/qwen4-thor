@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+ECAPA验收器5CPU正负控已通过（0.164秒），独立CUDA构建零警告；
+实际组件短验已固定1GPU模型加载/
+1CPU参考/4输入/600秒，完整特征和七阶段36项比较，0HTTP/主模型。
+检查最短/30秒上限和两段官方语音，实际说话人业务/API仍继续，
+默认rev286不变；PR45修复6476e3a4检查中，全部master保持。
+
 [ECAPA实际计算布局6项CPU通过](evidence/serve-speaker-layout-20261118/README.md)
 （0.032秒、0GPU）；完整F32计算已零警告编译，实际数值仍待验证。
 首次host未configure的构建失败保留；接着固定官方CPU对照和有界
