@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ECAPA真实组件通过](evidence/serve-speaker-compute-20261118/README.md)：
+1GPU/1CPU参考、4输入/36数值+24边界与生命周期，6.318秒；
+9次NVML正常、租约清理，最大embedding相对误差2.89e-06。
+默认rev286不变；继续独立资产/健康及真实分段/参考/API/恢复交付，
+不是说话人HTTP已通过，全部master继续。
+
 ECAPA验收器5CPU正负控已通过（0.164秒），独立CUDA构建零警告；
 实际组件短验已固定1GPU模型加载/
 1CPU参考/4输入/600秒，完整特征和七阶段36项比较，0HTTP/主模型。
