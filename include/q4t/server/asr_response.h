@@ -38,6 +38,23 @@ struct AsrTextToken {
   size_t begin = 0, end = 0;
 };
 
+// Buffered segments use one actual temperature per complete attempt. Low
+// confidence can advance 0,.2,...,1; the caller retains a single cumulative
+// output budget and charges every attempted input/output. Streaming keeps
+// AsrTemperature's incremental policy because emitted text cannot be undone.
+class AsrSegmentTemperature {
+ public:
+  explicit AsrSegmentTemperature(double requested)
+      : adaptive_(requested == 0), temperature_(requested) {}
+  bool Retry(std::span<const AsrTextToken> tokens);
+  double Value() const { return temperature_; }
+
+ private:
+  bool adaptive_;
+  double temperature_;
+  int increases_ = 0;
+};
+
 class AsrTranscript {
  public:
   explicit AsrTranscript(bool logprobs, std::string forced_language = {},
@@ -52,7 +69,7 @@ class AsrTranscript {
   Status Finish(AsrTextDelta* delta);
   const std::string& Text() const { return text_; }
   const std::string& Language() const { return language_; }
-  bool Complete() const { return complete_; }
+  bool Complete() const { return complete_ && status_.ok(); }
   std::span<const AsrTextToken> TextTokens() const { return text_tokens_; }
   // Must come from the model's trained no-speech label posterior, not a
   // constant, empty-transcript heuristic or average frame-VAD probability.

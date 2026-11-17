@@ -67,11 +67,17 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          Quote(kNativeAlignerRevision) + R"(,"weight_sha256":)" +
          Quote(kNativeAlignerWeightSha256) +
          R"(,"model":"qwen3-forced-aligner-0.6b",)"
-         R"("timestamp_granularities":["word"],"timestamp_resolution_ms":80,)"
+         R"("timestamp_granularities":["word","segment"],"timestamp_resolution_ms":80,)"
          R"("languages":["zh","yue","en","de","es","fr","it","pt","ru","ko","ja"],)"
          R"("ja_ko_segmentation":"native_icu","repair":"stable_nondecreasing",)"
          R"("core_readiness_dependency":false},)"
-         R"("remaining_native_work":["segment_confidence","diarization","vad_chunking"]})" +
+         R"("segments":{"scope":"independently_decoded_audio_clip",)"
+         R"("tokens":"actual_selected_ids","avg_logprob":"actual_raw_distribution",)"
+         R"("no_speech_prob":"trained_language_None_posterior",)"
+         R"("compression_ratio":"isolated_zlib_level6",)"
+         R"("temperature":"fixed_per_attempt","adaptive_attempts_max":6,)"
+         R"("retry_input_output":"cumulative_original_request_budget"},)"
+         R"("remaining_native_work":["diarization","vad_chunking"]})" +
          R"(,"models":{"endpoint":"/v1/models","detail":true,)"
          R"("aliases":"explicit_cli","max_aliases":32,)"
          R"("created":"registration_time","loaded_base_delete":403},)"

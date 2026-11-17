@@ -2,8 +2,11 @@
 
 #include <algorithm>
 #include <array>
+#include <charconv>
+#include <cmath>
 #include <cstdio>
 
+#include "q4t/server/asr_request.h"
 #include "q4t/server/http_response.h"
 
 namespace q4t::server {
@@ -50,6 +53,22 @@ std::string Seconds(int64_t ms) {
                 static_cast<long long>(ms % 1000));
   return value;
 }
+std::string Number(double value) {
+  char buffer[64];
+  const auto result = std::to_chars(buffer, buffer + sizeof(buffer), value);
+  return std::string(buffer, result.ptr);
+}
+std::string WordRows(std::span<const audio::AlignerWord> words,
+                     const audio::AlignerTimes& times) {
+  std::string result = "[";
+  for (size_t i = 0; i < words.size(); ++i) {
+    if (i) result += ',';
+    result += R"({"word":)" + Quote(words[i].text) + R"(,"start":)" +
+              Seconds(times.fixed_ms[i * 2]) + R"(,"end":)" +
+              Seconds(times.fixed_ms[i * 2 + 1]) + "}";
+  }
+  return result + "]";
+}
 std::string Stamp(int64_t ms, bool vtt) {
   char value[32];
   std::snprintf(value, sizeof(value), "%02lld:%02lld:%02lld%c%03lld",
@@ -92,15 +111,66 @@ Status AlignedAsrWordsJson(std::string_view text, std::string_view language,
     return Status::Fail("alignment output language invalid");
   std::string result = R"({"text":)" + Quote(text) + R"(,"language":)" +
                        Quote(language) + R"(,"duration":)" +
-                       Seconds(duration_ms) + R"(,"words":[)";
-  for (size_t i = 0; i < words.size(); ++i) {
-    if (i) result += ',';
-    result += R"({"word":)" + Quote(words[i].text) + R"(,"start":)" +
-              Seconds(times.fixed_ms[i * 2]) + R"(,"end":)" +
-              Seconds(times.fixed_ms[i * 2 + 1]) + "}";
+                       Seconds(duration_ms) + R"(,"words":)" +
+                       WordRows(words, times);
+  result +=
+      R"(,"usage":{"type":"duration","seconds":)" + Seconds(duration_ms) + "}}";
+  *out = std::move(result);
+  return {};
+}
+
+Status AlignedAsrSegmentsJson(const AsrTranscript& transcript,
+                              int64_t duration_ms,
+                              std::span<const audio::AlignerWord> words,
+                              const audio::AlignerTimes& times,
+                              const AsrCompression& compression,
+                              bool include_words, std::string* out) {
+  const auto& text = transcript.Text();
+  if (auto s = Validate(text, duration_ms, words, times, out); !s) return s;
+  const auto tokens = transcript.TextTokens();
+  const auto silence = transcript.NoSpeechProbability();
+  if (!transcript.Complete() || !silence ||
+      compression.text_bytes != text.size() || !compression.compressed_bytes ||
+      compression.library_version.empty() ||
+      compression.library_sha256.size() != 64 || tokens.empty() != text.empty())
+    return Status::Fail("segment actual statistics unavailable");
+  double mean = 0;
+  size_t covered = 0;
+  std::string ids = "[";
+  for (const auto& token : tokens) {
+    if (token.id < 0 || !std::isfinite(token.logprob) || token.logprob > 0 ||
+        !std::isfinite(token.temperature) || token.temperature < 0 ||
+        token.temperature > 1 ||
+        token.temperature != tokens.front().temperature ||
+        token.begin > covered || token.end <= token.begin ||
+        token.end > text.size())
+      return Status::Fail("segment token observation invalid");
+    mean += token.logprob / tokens.size();
+    covered = std::max(covered, token.end);
+    if (ids.size() > 1) ids += ',';
+    ids += std::to_string(token.id);
   }
-  result += R"(],"usage":{"type":"duration","seconds":)" +
-            Seconds(duration_ms) + "}}";
+  if (covered != text.size())
+    return Status::Fail("segment tokens do not cover actual text");
+  ids += ']';
+  std::string result = R"({"text":)" + Quote(text) + R"(,"language":)" +
+                       Quote(AsrLanguageName(transcript.Language())) +
+                       R"(,"duration":)" + Seconds(duration_ms) +
+                       R"(,"segments":[)";
+  if (!text.empty()) {
+    const auto start = words.empty() ? 0 : times.fixed_ms.front();
+    const auto end = words.empty() ? duration_ms : times.fixed_ms.back();
+    result += R"({"id":0,"seek":0,"start":)" + Seconds(start) + R"(,"end":)" +
+              Seconds(end) + R"(,"text":)" + Quote(text) + R"(,"tokens":)" +
+              ids + R"(,"temperature":)" + Number(tokens.front().temperature) +
+              R"(,"avg_logprob":)" + Number(mean) + R"(,"compression_ratio":)" +
+              Number(compression.Ratio()) + R"(,"no_speech_prob":)" +
+              Number(*silence) + "}";
+  }
+  result += ']';
+  if (include_words) result += R"(,"words":)" + WordRows(words, times);
+  result +=
+      R"(,"usage":{"type":"duration","seconds":)" + Seconds(duration_ms) + "}}";
   *out = std::move(result);
   return {};
 }

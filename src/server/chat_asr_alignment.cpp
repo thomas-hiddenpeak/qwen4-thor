@@ -93,13 +93,40 @@ ObjectReply ChatServer::FormatAlignedTranscription(
   if (cancelled()) return interrupted();
   // Preserve raw and fixed model boundaries in the request owner until the
   // response is composed. Never substitute proportional timings on failure.
-  if (request.format == AsrFormat::kVerboseJson)
+  if (request.segment_timestamps) {
+    diagnostic.Stage("asr_segment_statistics");
+    AsrCompression compression;
+    GrammarControl statistics;
+    statistics.cancelled = cancelled;
+    statistics.compile_deadline = control->deadline();
+    GrammarFailure cause;
+    {
+      RequestDiagnostics::Scope waiting(diagnostic,
+                                        RequestDiagnostics::Wait::kStorage);
+      status = MeasureAsrCompression(transcript.Text(), &compression,
+                                     std::move(statistics), &cause);
+    }
+    if (!status) {
+      if (cancelled()) return interrupted();
+      // An auxiliary formatting dependency failure is request-local. It must
+      // not degrade ASR/Chat readiness or trigger a model restart.
+      return Error(503,
+                   cause == GrammarFailure::kDependency
+                       ? "asr_statistics_dependency_unavailable"
+                       : "asr_statistics_unavailable",
+                   status.message());
+    }
+    status =
+        AlignedAsrSegmentsJson(transcript, duration_ms, words, times,
+                               compression, request.word_timestamps, response);
+  } else if (request.format == AsrFormat::kVerboseJson) {
     status = AlignedAsrWordsJson(transcript.Text(),
                                  AsrLanguageName(transcript.Language()),
                                  duration_ms, words, times, response);
-  else
+  } else {
     status = AlignedAsrSubtitle(transcript.Text(), duration_ms, words, times,
                                 request.format == AsrFormat::kVtt, response);
+  }
   if (!status) return Error(502, "alignment_output_invalid", status.message());
   return {};
 }

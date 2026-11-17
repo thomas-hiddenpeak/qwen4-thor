@@ -60,10 +60,8 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                         "model_not_found", "model");
       return;
     }
-    // Segment confidence/diarization/VAD need their real evidence producers.
-    // They remain required work, separate from actual word alignment below.
+    // Diarization/VAD retain their separate required real executors.
     if (request.format == AsrFormat::kDiarizedJson ||
-        request.segment_timestamps ||
         request.chunking.mode != AsrChunking::Mode::kSingle) {
       detail::SendError(fd, 503,
                         "Native audio alignment/chunking executor pending", {},
@@ -178,16 +176,18 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
           cancelled() ? control->Reason() : error.code, error.param);
       return;
     }
+    const uint64_t initial_input =
+        prompt.tokens.size() + prompt.no_speech_prefix.size();
     if (const auto* client = http->Client().Limits();
-        client && prompt.tokens.size() > client->max_prompt_tokens) {
+        client && initial_input > client->max_prompt_tokens) {
       detail::SendError(fd, 400, "Transcription exceeds client input limit", {},
                         "client_prompt_limit_exceeded", "file");
       return;
     }
     ClientRateLease rate(http->RateDomain());
     ScopeExit settle([&] { rate.Settle(); });
-    const auto reserved = rate.Reserve(
-        clients_, http->Client(), prompt.tokens.size(), prompt.output_tokens);
+    const auto reserved = rate.Reserve(clients_, http->Client(), initial_input,
+                                       prompt.output_tokens);
     if (reserved != ClientRateResult::kAllowed) {
       const bool rpm = reserved == ClientRateResult::kRpm;
       const bool tpm = reserved == ClientRateResult::kTpm;
@@ -203,7 +203,8 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                                  : "client_rate_invalid");
       return;
     }
-    AsrTranscript transcript(request.logprobs, request.language);
+    AsrTranscript transcript(request.logprobs, request.language,
+                             request.segment_timestamps);
     reply = RunNativeAsr(fd, request, features, prompt, control, diagnostic,
                          rate, http->Usage(), &transcript);
     if (!reply.ok()) {

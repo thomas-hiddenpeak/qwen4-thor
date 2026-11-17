@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[完整segment执行16项CPU通过](evidence/serve-asr-segments-cpu-20261117/README.md)
+（0.016秒），另3项HTTP验收器正负控通过。零警告CUDA候选已保存；
+单段真实评分/温度与累计预算已接入。下一组固定1启动/7创建/600秒，
+双SDK、普通转录对照、静音与核心保护；业务及交付仍待验收。
+
 [完整segment统计来源16项CPU通过](evidence/serve-asr-statistics-20261117/README.md)
 （0.164秒、0GPU）：实际token/logprob/温度及UTF-8映射、训练无语音
 评分prefix、隔离真实压缩率及缺库/取消/超时清理。继续实际模型

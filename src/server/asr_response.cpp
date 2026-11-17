@@ -15,6 +15,18 @@ void AsrTemperature::Observe(double logprob) {
   sum_ = 0;
   count_ = 0;
 }
+
+bool AsrSegmentTemperature::Retry(std::span<const AsrTextToken> tokens) {
+  if (!adaptive_ || increases_ == 5 || tokens.empty()) return false;
+  double mean = 0;
+  for (const auto& token : tokens) {
+    if (!std::isfinite(token.logprob) || token.logprob > 0) return false;
+    mean += token.logprob / tokens.size();
+  }
+  if (mean >= -1) return false;
+  temperature_ = ++increases_ * .2;
+  return true;
+}
 namespace {
 constexpr size_t kMaxTextBytes = 4ULL << 20;
 constexpr std::string_view kTextMarker = "<asr_text>";

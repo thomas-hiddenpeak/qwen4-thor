@@ -179,3 +179,25 @@ segment及全部master继续，默认rev276不变。
 
 [统计来源16项CPU已通过](evidence/serve-asr-statistics-20261117/README.md)，
 0.164秒、0GPU；实际评分、完整格式及HTTP仍继续实现。
+
+## 完整segment执行组
+
+固定16项CPU/180秒、0GPU，随后另冻结真实HTTP短验。单个独立
+解码音频窗口形成一个segment；时间取实际对齐首末词边界，
+纯标点使用输入clip实际范围，seek为实际输入帧偏移0。token和
+平均logprob来自已接受正文，压缩率由隔离zlib实际计算，无语音
+概率由共享encoder的独立`language None`完整词表后验评分产生。
+
+segment采用整次固定温度解码，temperature=0时低于-1平均logprob
+最多按0/.2/.4/.6/.8/1六次尝试；所有尝试共享原请求输出上限和
+deadline，追加输入须重新取得TPM/客户端输入配额，RPM只算一次。
+只发布最终完整尝试；预算耗尽报错，不能把半段或混合温度当成功。
+普通JSON/SSE保留已有逐token自适应。分类辅助输入也真实计量，
+失败压缩库只影响本次segment格式，不污染模型readiness。
+
+[完整segment16项CPU及3项验收器检查通过](evidence/serve-asr-segments-cpu-20261117/README.md)，
+必要CUDA构建零警告。真实HTTP组1启动/7创建/600秒，双SDK默认
+segment、word+segment/强制中文、显式温度英文、静音、原word-only
+和核心Chat；中文token字节/平均logprob与普通真实转录一致，实际
+无语音后验在speech<.5/silence>.5，实际zlib独立计算复核。
+全部动作同一严格租约，默认不变；随后继续VAD与服务交付。

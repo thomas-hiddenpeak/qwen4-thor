@@ -157,3 +157,114 @@ Q4T_TEST(aligned_asr_subtitle_wrap_target_never_splits_utf8_or_word) {
   Q4T_CHECK(out.find("2\n00:00:00,400 --> 00:00:00,560\nend") != out.npos);
   return true;
 }
+
+Q4T_TEST(aligned_asr_segment_fields_are_actual_observations) {
+  AsrTranscript transcript(false, "en", true);
+  AsrTextDelta delta;
+  Q4T_CHECK(transcript.Append({8, -99, {}, -.25}, "Hello", &delta, .4));
+  Q4T_CHECK(transcript.Append({9, -99, {}, -.75}, " world", &delta, .4));
+  Q4T_CHECK(transcript.SetNoSpeechProbability(.001));
+  Q4T_CHECK(transcript.Finish(&delta));
+  const auto words = Words(transcript.Text(), {"Hello", "world"});
+  const auto times = Times({160, 400, 480, 960});
+  AsrCompression measured;
+  Q4T_CHECK(MeasureAsrCompression(transcript.Text(), &measured));
+  std::string out;
+  Q4T_CHECK(AlignedAsrSegmentsJson(transcript, 1200, words, times, measured,
+                                   true, &out));
+  const auto json = Json(out);
+  const auto* segments = json.GetArray("segments");
+  Q4T_CHECK(segments && segments->array.size() == 1);
+  const auto& segment = segments->array[0];
+  Q4T_CHECK(segment.object.size() == 10);
+  Q4T_CHECK(segment.GetString("text") == "Hello world");
+  Q4T_CHECK(segment.Find("id")->number == 0 &&
+            segment.Find("seek")->number == 0);
+  Q4T_CHECK(segment.Find("start")->number == .160 &&
+            segment.Find("end")->number == .960);
+  Q4T_CHECK(segment.Find("avg_logprob")->number == -.5 &&
+            segment.Find("temperature")->number == .4 &&
+            segment.Find("no_speech_prob")->number == .001);
+  Q4T_CHECK(segment.Find("compression_ratio")->number == 11. / 19);
+  const auto* tokens = segment.GetArray("tokens");
+  Q4T_CHECK(tokens && tokens->array.size() == 2 &&
+            tokens->array[0].number == 8 && tokens->array[1].number == 9);
+  Q4T_CHECK(json.GetArray("words")->array.size() == 2);
+  return true;
+}
+
+Q4T_TEST(aligned_asr_segment_only_and_empty_preserve_shape) {
+  AsrTextDelta delta;
+  AsrTranscript empty(false, {}, true);
+  Q4T_CHECK(empty.Append({8, -99, {}, -.1}, "language None<asr_text>", &delta));
+  Q4T_CHECK(empty.SetNoSpeechProbability(.99) && empty.Finish(&delta));
+  std::string out;
+  AsrCompression empty_compression{0, 8, "fixture", std::string(64, 'a')};
+  Q4T_CHECK(AlignedAsrSegmentsJson(empty, 1000, {}, {}, empty_compression,
+                                   false, &out));
+  const auto json = Json(out);
+  Q4T_CHECK(json.GetString("text").empty() && !json.Find("words"));
+  Q4T_CHECK(json.GetArray("segments")->array.empty());
+  Q4T_CHECK(json.Find("duration")->number == 1);
+  return true;
+}
+
+Q4T_TEST(aligned_asr_segment_punctuation_uses_real_clip_extent) {
+  AsrTextDelta delta;
+  AsrTranscript transcript(false, "en", true);
+  Q4T_CHECK(transcript.Append({8, -99, {}, -.1}, "...", &delta));
+  Q4T_CHECK(transcript.SetNoSpeechProbability(.9) && transcript.Finish(&delta));
+  AsrCompression measured{3, 11, "fixture", std::string(64, 'a')};
+  std::string out;
+  Q4T_CHECK(
+      AlignedAsrSegmentsJson(transcript, 512, {}, {}, measured, false, &out));
+  const auto json = Json(out);
+  const auto& segment = json.GetArray("segments")->array[0];
+  Q4T_CHECK(segment.Find("start")->number == 0 &&
+            segment.Find("end")->number == .512 && !json.Find("words"));
+  return true;
+}
+
+Q4T_TEST(aligned_asr_segment_rejects_incomplete_or_mixed_statistics) {
+  for (int fault = 0; fault < 5; ++fault) {
+    AsrTranscript transcript(false, "en", true);
+    AsrTextDelta delta;
+    Q4T_CHECK(transcript.Append({8, -99, {}, -.25}, "Hello", &delta, .2));
+    Q4T_CHECK(transcript.Append({9, -99, {}, -.75}, " world", &delta,
+                                fault == 0 ? .4 : .2));
+    if (fault != 1) Q4T_CHECK(transcript.SetNoSpeechProbability(.01));
+    if (fault != 2) Q4T_CHECK(transcript.Finish(&delta));
+    if (fault == 3) Q4T_CHECK(!transcript.Finish(&delta));
+    auto words = Words(transcript.Text(), {"Hello", "world"});
+    AsrCompression measured{11, 19, "fixture", std::string(64, 'a')};
+    if (fault == 4) ++measured.text_bytes;
+    std::string out = "previous";
+    Q4T_CHECK(!AlignedAsrSegmentsJson(transcript, 1200, words,
+                                      Times({160, 400, 480, 960}), measured,
+                                      false, &out));
+    Q4T_CHECK(out == "previous");
+  }
+  return true;
+}
+
+Q4T_TEST(asr_segment_temperature_retries_whole_attempt_at_most_five_times) {
+  AsrSegmentTemperature policy(0);
+  const AsrTextToken low{8, -2., 0, 0, 1};
+  for (int step = 0; step < 5; ++step) {
+    Q4T_CHECK(policy.Value() == step * .2);
+    Q4T_CHECK(policy.Retry({&low, 1}));
+  }
+  Q4T_CHECK(policy.Value() == 1 && !policy.Retry({&low, 1}));
+  return true;
+}
+
+Q4T_TEST(asr_segment_temperature_keeps_explicit_empty_and_confident_values) {
+  const AsrTextToken low{8, -2., 0, 0, 1}, good{8, -1., 0, 0, 1};
+  for (double value : {.2, .6, 1.}) {
+    AsrSegmentTemperature policy(value);
+    Q4T_CHECK(!policy.Retry({&low, 1}) && policy.Value() == value);
+  }
+  AsrSegmentTemperature zero(0);
+  Q4T_CHECK(!zero.Retry({}) && !zero.Retry({&good, 1}) && zero.Value() == 0);
+  return true;
+}

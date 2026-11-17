@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Qualify native word timestamps and subtitles through real HTTP; implement actual segment statistics/VAD and all remaining native audio/media, service and SDK tasks.",
+      "next": "Execute frozen native segment HTTP/SDK/silence group; finish VAD/diarization, native audio/media, service composition and all remaining A10/master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2770,13 +2770,28 @@
         "seconds_limit": 180,
         "gpu_actions": 0,
         "published": false,
-        "remaining": "CPU numeric qualification, isolated assets/request state, VAD chunking and correct segment confidence provenance; all master tasks remain.",
+        "remaining": "Isolated assets/request state, real VAD chunking, business and delivery; all remaining master tasks stay required.",
         "evidence": "evidence/serve-vad-compute-20261117/README.md",
         "frames": 667,
         "seconds": 3.3566437661647797,
         "original_reference": "FAILED_preserved: packaged JIT and safetensors weights differ",
         "accepted_reference": "Official JIT graph with all 15 previously frozen target tensors explicitly bound",
         "max_probability_absolute_error": 2.6226043701171875e-06
+      },
+      "segment_statistics_20261117": {
+        "state": "cpu_accepted_http_pending",
+        "statistics_evidence": "evidence/serve-asr-statistics-20261117/README.md",
+        "segment_evidence": "evidence/serve-asr-segments-cpu-20261117/README.md",
+        "cpu_cases": 32,
+        "driver_cases": 3,
+        "gpu_actions": 0,
+        "http_limits": {
+          "starts": 1,
+          "creates": 7,
+          "seconds": 600
+        },
+        "candidate_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+        "published": false
       }
     },
     {
