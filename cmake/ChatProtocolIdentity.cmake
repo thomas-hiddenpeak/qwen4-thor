@@ -268,6 +268,8 @@ set(protocol_inputs
   src/server/file_video_geometry.h
   src/server/file_video_orientation.h
   src/server/file_video_affine.h
+  src/server/file_video_integer.h
+  src/server/file_video_projective.h
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h
   include/q4t/server/file_fetch.h

@@ -570,3 +570,7 @@
 - [rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)：可选搜索策略、真实业务与故障隔离、预算保持及实际整根回退。
 
 - [rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)：原生像素变换、显式细节和实际保留包业务，可回退发布。
+
+- [齐次与透视视频实施合同](SERVE_VIDEO_PROJECTIVE_2026-11-17.md)：原生精确变换、有限画布、冻结重放及针对性验收。
+
+- [rev254有限透视视频交付](evidence/serve-video-projective-delivery-20261117/README.md)：原生精确像素变换、v5冻结重放及可回退发行。

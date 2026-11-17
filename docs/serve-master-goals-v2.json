@@ -2343,7 +2343,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Non-unit homogeneous/perspective video transforms, multiple tracks and remaining format combinations",
+        "Multiple video tracks, presentation canvas/clipping and remaining format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
         "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes"
       ],
@@ -2403,7 +2403,7 @@
         "detail_cpu_evidence": "docs/evidence/serve-video-detail-cpu-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
@@ -2411,7 +2411,44 @@
         "pull_request": 41,
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md",
+        "main_commit": "6e976419c8b3f1fc3bb30c989ca0e4ec07ede1ff",
+        "main_evidence": "evidence/serve-pr41-merged-20261117/README.md"
+      },
+      "video_projective_20261117": {
+        "state": "delivered_main_pending",
+        "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
+        "cpu_new_limit": 16,
+        "cpu_regressions": 4,
+        "business_limit": {
+          "starts": 1,
+          "requests": 4,
+          "seconds": 600
+        },
+        "tests_executed": true,
+        "whole_task_complete": false,
+        "cpu_evidence": "evidence/serve-video-projective-cpu-20261117/README.md",
+        "candidate_engine_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+        "business_evidence": "evidence/serve-video-projective-business-20261117/README.md",
+        "actual_business": {
+          "starts": 1,
+          "requests": 4,
+          "strict_lease_seconds": 49.230062146205455
+        },
+        "composition_limit": {
+          "starts": 4,
+          "requests": 16,
+          "seconds": 900
+        },
+        "composition_evidence": "evidence/serve-video-projective-composition-20261117/README.md",
+        "total_actual": {
+          "starts": 5,
+          "requests": 20,
+          "strict_lease_seconds": 235.26561826793477
+        },
+        "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+        "revision": 254,
+        "delivery_evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
       }
     },
     {
@@ -4211,7 +4248,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev244 or then-current default; do not stop camera/jtop without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev254 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4817,36 +4854,36 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_VIDEO_AFFINE_DETAIL_DELIVERY",
-        "revision": 244,
+        "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_DELIVERY",
+        "revision": 254,
         "current": {
-          "engine_binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
-          "engine_release_sha256": "f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842",
-          "generation_sha256": "d548cf475ccf93d1ddffb794a8845c8524ffc80889bf7e426eab0e369da28bf0",
-          "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
-          "service_acceptance_sha256": "25dc0ef07d374626254ce9cdfede90c00c2d538d5e66cccb2f70c5724b5a6f97",
-          "service_release_sha256": "21110f3d55e7063d473b9ce611a15a7e0ec98d7d2cb4406c23c4ff1abafc7c00"
+          "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+          "engine_release_sha256": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
+          "generation_sha256": "523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466",
+          "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+          "service_acceptance_sha256": "360dc85c0366721b0dfe7ae9b68da356712ff4cd872258c1fe29332ab6c16203",
+          "service_release_sha256": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c"
         },
         "commands": 19,
-        "seconds": 284.67985774809495,
+        "seconds": 285.69923610892147,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "f329ce2277dd5d7fdc70e8716bc5068abf97287e40f744dcdf20796aad9121ad",
-        "automatic_payload": "9535ff875171e04ea4c1c011ae1b2558e26204805b9ad57280e44afb1d1cdd07",
+        "manual_root": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb",
+        "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
         "candidate_whole_package_gpu_run": false,
-        "composed_change": "Exact-engine affine video/high-detail, primary/light and retained controls; controller/client/native helpers unchanged; explicit extension preserves budgets and forbids capability loss; STOPPED publication and actual root rollback verified",
+        "composed_change": "Exact engine projective pixels, primary/light and retained control business; unchanged controller/client/native helpers; explicit capability extension preserves budgets and disallows capability loss; actual STOPPED whole-root rollback and forward.",
         "older_engine_fallback": false,
-        "prior_rev234_preserved": true,
+        "prior_rev244_preserved": true,
         "retired_generations_archived": 2,
         "retired_versions_archived": 2,
         "deleted_files": 0,
-        "files": 74,
+        "files": 81,
         "secret_scan_matches": 0,
-        "archive_sha256": "a436f53bcadd2817570f3303f18422c2c275f037571d65e6cc79cb3a77bcda82",
+        "archive_sha256": "83a9154088d008c87f217e72393971211a07a39b09d19fc2cf9a5ef2e4356400",
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+        "evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5013,7 +5050,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR41 final-head checks and actual main merge",
+        "Projective video delivery exact-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5430,28 +5467,28 @@
       },
       "current_native_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
-        "source_commit": "a8e1c473be6fa44cc11764afc323d9f06ec57816",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/validation-src",
-        "revision": 244,
+        "source_commit": "dcfa3cf329ccc3487d605510219c707298b28fbc",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
+        "revision": 254,
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
-          "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+          "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33"
         },
-        "service_id": "59abc784-0f14-47ec-8264-eaff915382bc",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/validation-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "faf6e44e25e4ef3b904ec70a2dc37cec24a3eb693d46df265165f5ed46117bd2",
+        "service_id": "b323ff28-4a6c-43b1-a5c4-7500e693b401",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "38396dbd045d0144a9c61eac0f07f3544da812f48806229b39207580b6951cf9",
         "sources": 591,
         "links": {
-          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle/engine/q4t",
-          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle/engine/q4t.release.json",
-          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
-          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/delivery-01/candidate-service.release.json"
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/delivery-01/candidate-service.release.json"
         },
         "protected_default": {
-          "/home/rm01/models/dev/qwen4-thor/build/q4t": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
-          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842",
-          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "21110f3d55e7063d473b9ce611a15a7e0ec98d7d2cb4406c23c4ff1abafc7c00",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c",
           "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
         },
         "production_unchanged": true,
@@ -5472,9 +5509,9 @@
               "--output",
               ".q4t-work/day-01"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 1.5655143507756293
+            "seconds": 2.1662337947636843
           },
           {
             "name": "check",
@@ -5487,16 +5524,16 @@
               "--plan",
               ".q4t-work/day-01/plan.json"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 0.5142867579124868
+            "seconds": 0.5142591809853911
           }
         ],
         "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "archive_sha256": "5c71edb0407cdd9d00f9b764b27d2d1799dd8fac145da6104774a6300a0b42e2",
-        "evidence": "evidence/serve-video-affine-day-handoff-20261117/README.md"
+        "archive_sha256": "2578a0c1bbe30aa5a31a482542d11dfef0f77298c8f244642ac106213ae2c84c",
+        "evidence": "evidence/serve-video-projective-day-handoff-20261117/README.md"
       },
       "video_affine_detail_20261117": {
         "state": "delivered_main_pending",
@@ -5512,7 +5549,7 @@
     }
   ],
   "next_task": "Q02",
-  "next": "rev244 native day handoff frozen and unexecuted. Complete PR41 final-head checks and actual main merge; continue all remaining protocol/audio/media/backend/SDK and cold/resource/host tasks.",
+  "next": "rev254 native day handoff frozen and unexecuted. Complete final-head checks and actual main merge; continue all remaining protocol/backend/SDK and cold/resource/host tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -1,0 +1,13 @@
+{
+  "changes": {
+    "src/server/file_video_worker.cpp": {
+      "before": "a79a6c24757dc2933b60e872d86b438b9239c64f2bdd637a1925f4d5fbabe292",
+      "after": "5a62016646c3eca18ecbe88624ba263458856dd05104fbcfaadb35cf731c2f10"
+    },
+    "tests/server_file_snapshot_test.cpp": {
+      "before": "cd4c6297a57345e5beb2d2dc16ee69bb37fbabdf180767fd283af079d409ed3e",
+      "after": "e2e7e709caa364b73d5174d643a391568e5b7780287ecc526394e1067e3b9608"
+    }
+  },
+  "review": "Only line wrapping outside string literals; zero semantic changes. Engine rebuilt from current source. CPU evidence reused, no repeated suite."
+}

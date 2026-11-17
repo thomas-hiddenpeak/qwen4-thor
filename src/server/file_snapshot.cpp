@@ -361,7 +361,7 @@ Json Pack(const FileInputSnapshot& input,
       const auto format = video.pixels.conversion.GetString("format");
       const bool intervals =
           format == "q4t.cpu_video_png.v2" || format == "q4t.cpu_video_png.v3" ||
-          format == "q4t.cpu_video_png.v4";
+          format == "q4t.cpu_video_png.v4" || format == "q4t.cpu_video_png.v5";
       for (const auto& frame : video.pixels.frames) {
         frames.array.push_back(
             Object({{"part", Number(add(frame.png))},
@@ -555,7 +555,7 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
       const auto format = conversion->GetString("format");
       const bool intervals =
           format == "q4t.cpu_video_png.v2" || format == "q4t.cpu_video_png.v3" ||
-          format == "q4t.cpu_video_png.v4";
+          format == "q4t.cpu_video_png.v4" || format == "q4t.cpu_video_png.v5";
       for (const auto& value : frames->array) {
         FileVideoFrame frame;
         const auto* time = value.Find("timestamp_ns");

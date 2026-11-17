@@ -120,7 +120,7 @@ token预算不足而失败，canonical分词长度不构成生成上限。
   `video_frames`及原MP4/WebM文件接入。直接serve使用
   `--allow-media --max-seq 1`；当前托管包已启用，文本保留MTP，视觉请求
   走目标模型普通解码。实际视频、工具、冻结历史和自动恢复已验；
-  正交旋转/镜像、像素比例及有界仿射已校正，显式视频high细节可用；
+  正交旋转/镜像、像素比例、仿射和有限透视已校正，视频high细节可用；
   图像/视频私有缓存已交付，其余格式/后端继续补齐，硬解码和视觉并发未扩展。
   [当前交付与回退](docs/evidence/serve-video-affine-delivery-20261117/README.md)，身份见STATUS
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
@@ -287,7 +287,9 @@ JSON/SSE与恢复后的冻结视频验收。rev244补齐有界缩放、斜切及
 至少65536像素，预算不足拒绝；auto/low保持原参考数值。原小尺寸
 默认模式的质量失败仍保留，不能保证所有视频都能正确回答。
 [本次交付](docs/evidence/serve-video-affine-delivery-20261117/README.md)
-覆盖真实JSON/SSE、主轻及保留控制组合；一般透视、多轨和其余格式继续实现。
+覆盖真实JSON/SSE、主轻及保留控制组合；rev254进一步补齐非单位齐次比例与有限透视，
+[原生整数像素变换/v5冻结重放](docs/evidence/serve-video-projective-delivery-20261117/README.md)
+已经实际验证并可回退交付。多轨、裁剪画布和其余格式继续实现。
 详见[原生视频计划](docs/SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务

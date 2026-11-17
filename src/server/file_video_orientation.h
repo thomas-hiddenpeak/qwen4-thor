@@ -160,7 +160,6 @@ class MovieDisplay {
     for (size_t i = 0; i < value.size(); ++i)
       value[i] = std::bit_cast<int32_t>(
           uint32_t(Big(bytes.substr(offset + i * 4, 4))));
-    Require(IsAffine(value));
     return value;
   }
 };

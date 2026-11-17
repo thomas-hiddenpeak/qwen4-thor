@@ -1,0 +1,105 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_COMPOSITION",
+  "binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
+    "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/retained-01/bundle",
+    "manifest_sha256": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/modern-retained-01/bundle",
+    "manifest_sha256": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb"
+  },
+  "stages": [
+    {
+      "name": "profiles-01",
+      "status": "PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS",
+      "counts": {
+        "starts": 2,
+        "chats": 10,
+        "controls": 72
+      },
+      "strict_lease_seconds": 88.59980579698458,
+      "nvml_queries": 83
+    },
+    {
+      "name": "legacy-business-01",
+      "status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 153
+      },
+      "strict_lease_seconds": 49.19974521687254,
+      "nvml_queries": 47
+    },
+    {
+      "name": "modern-business-01",
+      "status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 149
+      },
+      "strict_lease_seconds": 48.23600510787219,
+      "nvml_queries": 46
+    }
+  ],
+  "composition_starts": 4,
+  "composition_requests": 16,
+  "composition_lease_seconds": 186.03555612172931,
+  "total_starts": 5,
+  "total_external_requests": 20,
+  "strict_lease_seconds": 235.26561826793477,
+  "nvml_queries": 223,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "feature_evidence": "docs/evidence/serve-video-projective-business-20261117/README.md",
+  "modern_service_acceptance": {
+    "status": "PASS_VIDEO_PROJECTIVE_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_VIDEO_PROJECTIVE_SERVICE_RETAINED",
+    "manifest_sha256": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb",
+    "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "actual_business": {
+      "status": "ACCEPT_VIDEO_PROJECTIVE_SERVICE_RETAINED",
+      "strict_lease_seconds": 48.23600510787219,
+      "nvml_queries": 46,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 149
+      },
+      "source_commit": "4f28e12868eaa15922920af68da3ad5de9f32884",
+      "plan_sha256": "babfd00ac5ff82181561a1c30d04b5ab27bf9ad6e14e5632252e36755254d027",
+      "result_sha256": "c316164c0586515d43a9eff8be15bfe0ff17ebed6a8a0d2ada4bd348b0855184",
+      "lease_result_sha256": "8bebdea7f40c504b658ffaaac9a0eb95cd2a6102148656a53cdde2f4b1de635e",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_control_delta": [],
+  "candidate_whole_package_gpu_run": false,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "archive_sha256": "bbde959073810ffba9c108566bfc3224fa28f0603702df5bc1c4b5370a2c6fdd",
+  "secret_scan_matches": 0
+}

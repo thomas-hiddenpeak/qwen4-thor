@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "gh",
+    "pr",
+    "merge",
+    "41",
+    "--merge",
+    "--match-head-commit",
+    "4d58af5c9179cb924309dffcb8f97f59974bb123"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

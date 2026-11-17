@@ -13,6 +13,7 @@
 #include "file_video_affine.h"
 #include "file_video_geometry.h"
 #include "file_video_orientation.h"
+#include "file_video_projective.h"
 #include "file_video_protocol.h"
 #include "object_protocol.h"
 #include "q4t/server/lifetime.h"
@@ -228,6 +229,25 @@ struct Runtime {
       gst_mini_object_unref_fn(reinterpret_cast<GstMiniObject*>(object));
   }
 };
+struct TransformedSize {
+  uint32_t width = 0, height = 0;
+};
+Failure GetTransformedSize(const DisplayMatrices& matrices, uint32_t width,
+                          uint32_t height, const FileVideoLimits& limits,
+                          TransformedSize* result) {
+  if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
+    AffineGeometry geometry;
+    const auto status =
+        MakeAffineGeometry(matrices, width, height, limits, &geometry);
+    *result = {geometry.width, geometry.height};
+    return status;
+  }
+  ProjectiveGeometry geometry;
+  const auto status =
+      MakeProjectiveGeometry(matrices, width, height, limits, &geometry);
+  *result = {geometry.width, geometry.height};
+  return status;
+}
 // Reuse the already loaded PNG plugin. A single bounded pipeline serves all
 // frames of this request; no per-frame process or thread-pool proliferation.
 class PngEncoder {
@@ -348,13 +368,23 @@ Failure TransformSample(Runtime& api, GstSample* sample,
     return Failure::kInvalid;
   std::span<const uint8_t> view(static_cast<const uint8_t*>(frame.data[0]),
                                 frame.map[0].size - (start - base));
-  AffineGeometry geometry;
+  TransformedSize dimensions;
   std::vector<uint8_t> rgb;
-  const auto status =
-      RenderAffineRgb(matrices, shape.square_width, shape.square_height, view,
-                      stride, limits, &geometry, &rgb);
+  Failure status;
+  if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
+    AffineGeometry geometry;
+    status = RenderAffineRgb(matrices, shape.square_width, shape.square_height,
+                             view, stride, limits, &geometry, &rgb);
+    dimensions = {geometry.width, geometry.height};
+  } else {
+    ProjectiveGeometry geometry;
+    status = RenderProjectiveRgb(matrices, shape.square_width,
+                                 shape.square_height, view, stride, limits,
+                                 &geometry, &rgb);
+    dimensions = {geometry.width, geometry.height};
+  }
   if (status != Failure::kNone) return status;
-  return encoder->Encode(geometry.width, geometry.height, rgb,
+  return encoder->Encode(dimensions.width, dimensions.height, rgb,
                          limits.max_output_bytes, png);
 }
 
@@ -368,7 +398,7 @@ struct Pipeline {
   std::mutex source_mutex;
   std::mutex geometry_mutex;
   DisplayGeometry geometry;
-  const DisplayMatrices* affine = nullptr;
+  const DisplayMatrices* transform = nullptr;
   size_t offset = 0;
   std::atomic<Failure> failure{Failure::kNone};
   bool video = false;
@@ -414,13 +444,13 @@ struct Pipeline {
       failure = result;
       return false;
     }
-    if (affine) {
-      AffineGeometry output;
-      const auto transform =
-          MakeAffineGeometry(*affine, selected.square_width,
-                             selected.square_height, request.limits, &output);
-      if (transform != Failure::kNone) {
-        failure = transform;
+    if (transform) {
+      TransformedSize output;
+      const auto status = GetTransformedSize(*transform, selected.square_width,
+                                             selected.square_height,
+                                             request.limits, &output);
+      if (status != Failure::kNone) {
+        failure = status;
         return false;
       }
     }
@@ -580,7 +610,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
                FileVideoPixels* output) {
   const auto matrices = MovieDisplay().ReadMatrices(source);
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
-  const bool affine = matrices && !direction;
+  const bool transformed = matrices && !direction;
+  const bool projective = matrices &&
+      (!IsAffine(matrices->movie) || !IsAffine(matrices->track));
   auto* pipeline = api.gst_pipeline_new_fn(nullptr);
   if (!pipeline) return Failure::kCapacity;
   ScopeExit destroy([&] {
@@ -591,7 +623,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   for (const char* name :
        {"appsrc", source.substr(4, 4) == "ftyp" ? "qtdemux" : "matroskademux",
         "videoconvert", "videoscale", "capsfilter", "videoflip",
-        affine ? "identity" : "pngenc", "appsink"}) {
+        transformed ? "identity" : "pngenc", "appsink"}) {
     auto* node = api.gst_element_factory_make_fn(name, nullptr);
     if (!node) return Failure::kDependency;
     if (!api.gst_bin_add_fn(reinterpret_cast<GstBin*>(pipeline), node)) {
@@ -604,7 +636,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   state.pipeline = pipeline;
   state.convert = elements[2];
   state.square_caps = elements[4];
-  state.affine = affine ? &*matrices : nullptr;
+  state.transform = transformed ? &*matrices : nullptr;
   PngEncoder encoder(api);
   GstAppSrcCallbacks callbacks{};
   callbacks.need_data = Pipeline::Need;
@@ -623,7 +655,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       GST_VIDEO_ORIENTATION_HORIZ,    GST_VIDEO_ORIENTATION_VERT,
       GST_VIDEO_ORIENTATION_UL_LR,    GST_VIDEO_ORIENTATION_UR_LL};
   api.g_object_set_fn(elements[5], "video-direction",
-                      affine      ? GST_VIDEO_ORIENTATION_IDENTITY
+                      transformed ? GST_VIDEO_ORIENTATION_IDENTITY
                       : direction ? directions[static_cast<size_t>(*direction)]
                                   : GST_VIDEO_ORIENTATION_AUTO,
                       nullptr);
@@ -705,21 +737,21 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
         frame_duration = end - timestamp;
       }
     }
-    AffineGeometry transformed;
-    if (affine) {
-      const auto status = MakeAffineGeometry(*matrices, geometry.square_width,
+    TransformedSize display_size;
+    if (transformed) {
+      const auto status = GetTransformedSize(*matrices, geometry.square_width,
                                              geometry.square_height,
-                                             request.limits, &transformed);
+                                             request.limits, &display_size);
       if (status != Failure::kNone) return status;
     }
     const uint64_t work_pixels =
         std::max(uint64_t(geometry.square_width) * geometry.square_height,
-                 uint64_t(transformed.width) * transformed.height);
+                 uint64_t(display_size.width) * display_size.height);
     if (++count > request.limits.max_scanned_frames ||
         work_pixels > request.limits.max_decoded_pixels / count)
       return Failure::kCapacity;
     last = {{}, timestamp, count - 1, frame_duration};
-    if (affine) {
+    if (transformed) {
       const auto status = TransformSample(api, sample, *matrices, geometry,
                                           request.limits, &encoder, &last.png);
       if (status != Failure::kNone) return status;
@@ -737,8 +769,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
             {reinterpret_cast<const uint8_t*>(last.png.data()), size},
             &header) ||
         header.format != vision::MediaFormat::kPng ||
-        (affine ? (header.width != transformed.width ||
-                   header.height != transformed.height)
+        (transformed ? (header.width != display_size.width ||
+                        header.height != display_size.height)
                 : !((header.width == geometry.square_width &&
                      header.height == geometry.square_height) ||
                     (header.width == geometry.square_height &&
@@ -794,10 +826,13 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
                 {"pixel_aspect_den", Number(geometry.pixel_aspect_den)}})},
        {"modules", api.modules},
        {"frames", std::move(frames)}});
-  if (affine) {
-    Set(&output->conversion, "format", String("q4t.cpu_video_png.v4"));
+  if (transformed) {
+    Set(&output->conversion, "format",
+        String(projective ? "q4t.cpu_video_png.v5" : "q4t.cpu_video_png.v4"));
     auto& display = Field(output->conversion, "display_geometry");
-    Set(&display, "policy", String("affine-square-pixels-tight-bilinear16"));
+    Set(&display, "policy", String(projective
+        ? "projective-square-pixels-tight-integer512-bilinear16"
+        : "affine-square-pixels-tight-bilinear16"));
     for (const auto& [name, matrix] :
          {std::pair{"movie_matrix", &matrices->movie},
           std::pair{"track_matrix", &matrices->track}}) {

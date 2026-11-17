@@ -88,6 +88,59 @@ std::string Upload(ObjectStore& objects, std::string_view bytes) {
 }
 }  // namespace
 
+Q4T_TEST(file_snapshot_video_projective_v5_offline_replay_and_tampering) {
+  Fixture f;
+  FileInputSnapshot source;
+  source.detail = "high";
+  auto& content = source.source.content;
+  content.filename = "projective.mp4";
+  video_detail::DisplayMatrices matrices;
+  matrices.track[2] = 1 << 20;
+  content.bytes = q4t::test::video_affine::Source(matrices);
+  content.sha256 = Digest(content.bytes);
+  Q4T_CHECK(Ok(ExtractFileDocument(content, f.extraction, false, source.detail,
+                                   Access(), &source.document, f.control)));
+  ObjectStore objects(f.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, f, source, &reference, &hold)));
+  const auto started = f.control.counters->started.load();
+  content.bytes.clear();
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileInputSnapshot replay;
+  Q4T_CHECK(Ok(Read(snapshots, f, reference, &replay)));
+  const auto& pixels = replay.document.videos.at(0).pixels;
+  Q4T_CHECK(pixels.conversion.GetString("format") == "q4t.cpu_video_png.v5" &&
+            pixels.width == 114 && pixels.height == 64 &&
+            pixels.frames.size() == 4 &&
+            f.control.counters->started == started && replay.detail == "high");
+  Q4T_CHECK(OutputJson(pixels.conversion) ==
+            OutputJson(source.document.videos[0].pixels.conversion));
+  for (size_t i = 0; i < pixels.frames.size(); ++i)
+    Q4T_CHECK(pixels.frames[i].duration_ns == 500000000 &&
+              pixels.frames[i].timestamp_ns == i * 500000000ULL &&
+              pixels.frames[i].png ==
+                  source.document.videos[0].pixels.frames[i].png);
+  InputSnapshot raw;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &raw)));
+  auto& frame =
+      Field(Field(raw.metadata, "videos").array[0], "frames").array[0];
+  Set(&frame, "duration_ns", Number(1));
+  InputSnapshotRef corrupt;
+  InputSnapshotHold corrupt_hold;
+  std::vector<std::string_view> parts;
+  for (const auto& part : raw.parts) parts.push_back(part);
+  Q4T_CHECK(Ok(snapshots.Save(Access(), kBinding, raw.metadata, parts, {}, 60,
+                              &corrupt, &corrupt_hold)));
+  FileInputSnapshot rejected;
+  Q4T_CHECK(!Read(snapshots, f, corrupt, &rejected).ok() && Empty(rejected));
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)) &&
+            Ok(snapshots.Release(Access(), &corrupt_hold)));
+  return true;
+}
+
 Q4T_TEST(file_snapshot_video_affine_v4_offline_replay_preserves_intervals) {
   Fixture f;
   FileInputSnapshot source;

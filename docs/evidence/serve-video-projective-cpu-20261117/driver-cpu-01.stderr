@@ -1,0 +1,7 @@
+test_answer_requires_real_complete_schema_and_exact_geometry (tools.serve_responses.test_video_projective_acceptance.ProjectiveAcceptance.test_answer_requires_real_complete_schema_and_exact_geometry) ... ok
+test_original_pixel_payload_and_four_request_contract (tools.serve_responses.test_video_projective_acceptance.ProjectiveAcceptance.test_original_pixel_payload_and_four_request_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.030s
+
+OK
