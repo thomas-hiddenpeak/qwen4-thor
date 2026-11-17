@@ -585,7 +585,7 @@
     "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
     "include/q4t/server/chat_moderation.h": "8fa5bfef3abccfc9cde2e621e7323eae8522650a964a225188e39213b4763d14",
     "include/q4t/server/chat_plan.h": "883cce87a4031ed328c05faa25eaddb3b6c65247cb3fa05d9fcec4faa43f80d8",
-    "include/q4t/server/chat_server.h": "ce3501458091e2e58d65a23a0ed509462081ed548ca04f0f2d2af458f7c0ae13",
+    "include/q4t/server/chat_server.h": "79ad5baac1d9f7522acb8a31585b5596f12abe01002c1d52ef2834e4b73f4f5d",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",

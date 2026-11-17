@@ -169,7 +169,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     std::array<std::vector<float>, 2> separated_pcm;
     std::array<std::vector<audio::VadChunk>, 2> track_chunks;
     std::array<SpeakerTrack, 2> tracks;
-    const size_t track_count = separated ? 2 : 1;
+    size_t track_count = 1;
     tracks[0].pcm = pcm.samples;
     track_chunks[0] = {{0, pcm.samples.size(), false}};
     if (chunked) {
@@ -182,12 +182,12 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       reserved = true;
       if (separated) {
         reply = RunNativeSeparator(fd, pcm.samples, control, diagnostic,
-                                   &separated_pcm);
+                                   &separated_pcm, &track_count);
         if (!reply.ok()) {
           send_failure(reply);
           return;
         }
-        for (size_t track = 0; track < 2; ++track)
+        for (size_t track = 0; track < track_count; ++track)
           tracks[track].pcm = separated_pcm[track];
       }
       diagnostic.Stage("vad");

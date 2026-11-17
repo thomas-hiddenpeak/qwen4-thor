@@ -23,6 +23,7 @@ from tools.serve_service.package import read, require, save, sha
 WORK = ROOT / '.q4t-work/serve-overlap-20261118'
 LIMITS = dict(starts=1, chats=12, controls=2000, seconds=900)
 REMAINING_LIMITS = dict(LIMITS, chats=8)
+TRACK_FIX_LIMITS = dict(LIMITS, chats=10)
 WEIGHT_SHA = '5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299'
 EXPECTED = [
     'The child almost hurt the small dog.',
@@ -36,7 +37,7 @@ def requests():
     return dict(speaker.requests(), ordinary=asr.requests()['zh'])
 
 
-def reuse_first_run(source, *, reference_fix=False):
+def reuse_first_run(source, *, reference_fix=False, track_fix=False):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(WORK), 'prior evidence outside overlap workdir')
     plan, result = read(source/'plan.json'), read(source/'result.json')
@@ -50,18 +51,27 @@ def reuse_first_run(source, *, reference_fix=False):
     changed = {}
     reference_paths = {'src/server/chat_speaker_turns.cpp',
                        'src/server/separator_service.cpp'}
+    track_paths = reference_paths | {
+        'CMakeLists.txt', 'cmake/ChatProtocolIdentity.cmake',
+        'cmake/HostTestSources.cmake', 'include/q4t/server/chat_server.h',
+        'src/server/chat_asr.cpp', 'src/server/chat_separator_execution.cpp',
+        'tools/native_separator/model_replay.cpp'}
     for name, digest in plan['sources'].items():
         if name in ['tools/native_separator/http_acceptance.py',
                     'tools/native_separator/test_http_acceptance.py']:
             continue
         actual = sha(ROOT/name)
         if actual != digest:
-            require(reference_fix and name in reference_paths,
+            require((reference_fix and name in reference_paths) or
+                    (track_fix and name in track_paths),
                     'reused dependency changed: '+name)
             changed[name] = dict(before=digest, after=actual)
     if reference_fix:
         require(set(changed) == reference_paths, 'unexpected reference fix scope')
-    original = WORK/'runtime-build-02/q4t-retained' if reference_fix else Path(plan['binary'])
+    if track_fix:
+        require(set(changed) == track_paths, 'unexpected acoustic fix scope')
+    original = (WORK/'runtime-build-02/q4t-retained' if reference_fix or track_fix
+                else Path(plan['binary']))
     require(sha(original) == plan['binary_sha256'], 'original engine evidence changed')
     require(all(sha(path) == digest for path, digest in plan['protected'].items()),
             'reused default changed')
@@ -75,7 +85,8 @@ def reuse_first_run(source, *, reference_fix=False):
     require(not mixed['quality_passed'], 'original quality failure disappeared')
     return dict(directory=str(source), binary_sha256=sha(plan['binary']),
         original_binary_sha256=plan['binary_sha256'],
-        kind='reference_bandwidth_fix' if reference_fix else 'unchanged_engine',
+        kind='acoustic_duplicate_fix' if track_fix else
+             'reference_bandwidth_fix' if reference_fix else 'unchanged_engine',
         reference_only_patches=changed,
         mixed=mixed, original_quality_status='FAILED_UNCHANGED_GATE',
         creates_reused=4, records={name:sha(source/name) for name in [
@@ -86,8 +97,11 @@ def reuse_first_run(source, *, reference_fix=False):
 
 
 def prepare(args):
-    require(not (args.continue_from and args.reference_fix_from), 'one continuation only')
-    continuation = (reuse_first_run(args.reference_fix_from, reference_fix=True)
+    track_fix_from = getattr(args, 'track_fix_from', None)
+    require(sum(bool(v) for v in [args.continue_from, args.reference_fix_from,
+                                 track_fix_from]) <= 1, 'one continuation only')
+    continuation = (reuse_first_run(track_fix_from, track_fix=True) if track_fix_from else
+                    reuse_first_run(args.reference_fix_from, reference_fix=True)
                     if args.reference_fix_from else
                     reuse_first_run(args.continue_from) if args.continue_from else None)
     speaker.prepare(args)
@@ -99,13 +113,17 @@ def prepare(args):
             raw = array.array('h', audio.readframes(audio.getnframes()))
             if sys.byteorder != 'little': raw.byteswap()
             voices.append(raw)
-    for name, duration, count in [('mixed', 4, 2), ('single', 4, 1),
-                                  ('maximum', 30, 2), ('overlimit', 31, 0)]:
+    cases = [('mixed', 4, [0, 1], .5), ('single', 4, [0], .5),
+             ('maximum', 30, [0, 1], .5), ('overlimit', 31, [], .5)]
+    if track_fix_from:
+        cases += [('quiet_single', 4, [0], .05), ('second_solo', 4, [1], .5)]
+    for name, duration, indices, gain in cases:
         values = [0] * (16000 * duration)
         utterances = []
-        for voice, raw in enumerate(voices[:count]):
+        for voice in indices:
+            raw = voices[voice]
             start = 3200
-            for i, value in enumerate(raw): values[start + i] += round(value * .5)
+            for i, value in enumerate(raw): values[start + i] += round(value * gain)
             utterances.append(dict(begin_sample=start, end_sample=start + len(raw),
                 voice=str(voice), expected_text=EXPECTED[voice]))
         require(all(-32768 <= v <= 32767 for v in values), 'fixture clips waveform')
@@ -117,7 +135,8 @@ def prepare(args):
             audio.writeframes(raw.tobytes())
         plan['clips'][name] = dict(path=str(path), sha256=sha(path),
             samples=len(values), utterances=utterances,
-            construction='half-gain integer PCM sum, 3200-sample prefix, zero tail')
+            construction=dict(gain=gain, source_indices=indices,
+                              integer_pcm_sum=True, prefix_samples=3200, zero_tail=True))
     assets = WORK / 'native-assets-01'
     plan['separator_directory'] = str(assets)
     plan['separator_assets'] = {n: dict(bytes=(assets/n).stat().st_size,
@@ -147,6 +166,11 @@ def prepare(args):
             planned=dict(starts=1, creates=8, reused_creates=4, rejected=1,
                          cancelled=1, mixed_transcriptions=3, single_voice=1,
                          silence=1, core_chats=1))
+        if track_fix_from:
+            plan.update(limits=TRACK_FIX_LIMITS,
+                planned=dict(starts=1, creates=10, reused_creates=3,
+                    rejected=1, cancelled=1, mixed_transcriptions=3,
+                    single_voice=3, silence=1, core_chats=1))
     save(out / 'plan.json', plan)
 
 
@@ -246,12 +270,14 @@ class Stage(speaker.Stage):
 
     def __init__(self, plan):
         if plan.get('overlap_continuation'):
-            self.limits = REMAINING_LIMITS
+            self.limits = (TRACK_FIX_LIMITS if plan['overlap_continuation']['kind'] ==
+                           'acoustic_duplicate_fix' else REMAINING_LIMITS)
         super().__init__(plan)
         if plan.get('overlap_continuation'):
             require(plan['overlap_continuation'] == reuse_first_run(
                 plan['overlap_continuation']['directory'], reference_fix=
-                plan['overlap_continuation']['kind'] == 'reference_bandwidth_fix'),
+                plan['overlap_continuation']['kind'] == 'reference_bandwidth_fix',
+                track_fix=plan['overlap_continuation']['kind'] == 'acoustic_duplicate_fix'),
                 'reused observations changed')
 
     def additional_options(self):
@@ -333,11 +359,16 @@ class Stage(speaker.Stage):
         quality = {}
         if self.plan.get('overlap_continuation'):
             quality['reused-python-mixed'] = self.plan['overlap_continuation']['mixed']
-        for label, clip, request, python, names in [
+        cases = [
             ('python-mixed', 'mixed', rows['plain'], True, None),
             ('python-known', 'mixed', rows['known'], True, {'0':'first','1':'second'}),
             ('python-single', 'single', rows['plain'], True, None),
-            ('js-maximum', 'maximum', rows['plain'], False, None)]:
+            ('js-maximum', 'maximum', rows['plain'], False, None)]
+        if self.plan.get('overlap_continuation', {}).get('kind') == 'acoustic_duplicate_fix':
+            cases[3:3] = [
+                ('python-second-solo', 'second_solo', rows['plain'], True, None),
+                ('python-quiet-single', 'quiet_single', rows['plain'], True, None)]
+        for label, clip, request, python, names in cases:
             if self.plan.get('overlap_continuation') and label == 'python-mixed':
                 continue
             value = self.sdk(label, clip, request, python=python)
@@ -380,6 +411,7 @@ def main():
     prepare_parser.add_argument('--port', type=int, default=18260)
     prepare_parser.add_argument('--continue-from', type=Path)
     prepare_parser.add_argument('--reference-fix-from', type=Path)
+    prepare_parser.add_argument('--track-fix-from', type=Path)
     run = sub.add_parser('run'); run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'prepare': prepare(args)

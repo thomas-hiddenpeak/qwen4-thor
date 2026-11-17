@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[单人重复修复12CPU通过](evidence/serve-overlap-track-fix-20261118/README.md)：
+8合同及4真实PCM重放、2来源均过，0新增GPU，构建零警告。
+下一组同租约1启动/10请求/900秒，覆盖受影响混音、三种单人及
+剩余边界/流式/取消。原质量FAIL和默认rev296保留，恢复交付
+与全部master继续。
+
+单人重复声学修复已接线：确认局部相关泄漏时只对原始PCM转录
+一次，独立轻声与短暂独立声音保留两路。固定8CPU+4保存PCM
+重放/120秒、2来源检查，0新增GPU；随后补受影响HTTP及剩余
+业务/恢复交付。原质量FAIL与默认rev296保持，总目标继续。
+
 [已知参考修复已验、单人重复待修复](evidence/serve-overlap-single-voice-20261118/README.md)：
 http-03为1启动/2请求/51.154秒，first/second正确；单人却
 生成A/B重复句子，整体FAIL保留。下一组仅分离组件1GPU/4输入/

@@ -190,6 +190,7 @@ add_library(q4t_model STATIC
   src/audio/separator_layout.cpp
   src/audio/separator_model.cu
   src/audio/separator_resample.cpp
+  src/audio/separator_tracks.cpp
   src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp

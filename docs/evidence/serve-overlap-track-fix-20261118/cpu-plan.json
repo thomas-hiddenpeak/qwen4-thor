@@ -1,0 +1,67 @@
+{
+  "commands": [
+    [
+      "contracts",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-cpu-01/required.txt"
+      ]
+    ],
+    [
+      "inventory",
+      [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py"
+      ]
+    ],
+    [
+      "generated",
+      [
+        "python3",
+        "-B",
+        "tools/serve_protocol/build_contract.py",
+        "--check"
+      ]
+    ],
+    [
+      "real-0",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-build-01/track-replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-diagnostic-01/native/case-0/sources.f32"
+      ]
+    ],
+    [
+      "real-1",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-build-01/track-replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-diagnostic-01/native/case-1/sources.f32"
+      ]
+    ],
+    [
+      "real-2",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-build-01/track-replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-diagnostic-01/native/case-2/sources.f32"
+      ]
+    ],
+    [
+      "real-3",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-build-01/track-replay",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-diagnostic-01/native/case-3/sources.f32"
+      ]
+    ]
+  ],
+  "cpp_tests": 8,
+  "actual_pcm_cases": 4,
+  "seconds": 120,
+  "identities": {
+    "tests/separator_tracks_test.cpp": "a3bb0cffd1bb784a7de24dbc696f3a162f04f826f8afcc2b916a399bf88db09d",
+    "src/audio/separator_tracks.cpp": "0a7c33fa92087b859ab24646e33f3b2208b61b2f8d5c162b6909788b09095b3b",
+    "include/q4t/audio/separator_tracks.h": "6b0bc4151fa5cd0d0550c063ab3f457e2e480ca32d1426667ab9be9538fb30d6",
+    "tools/native_separator/track_replay.cpp": "e46c239cc7d0ced51b9e0781239a339721d7ec45a1d0363794bd2c5066c0bb77"
+  },
+  "gpu": 0
+}

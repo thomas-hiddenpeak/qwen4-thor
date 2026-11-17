@@ -5,6 +5,7 @@
 #include "cuda_memory_backend.h"
 #include "object_protocol.h"
 #include "q4t/audio/separator_resample.h"
+#include "q4t/audio/separator_tracks.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/request_diagnostics.h"
 
@@ -12,12 +13,13 @@ namespace q4t::server {
 ObjectReply ChatServer::RunNativeSeparator(
     int fd, std::span<const float> input,
     const std::shared_ptr<RequestControl>& control,
-    RequestDiagnostics& diagnostic, std::array<std::vector<float>, 2>* tracks) {
+    RequestDiagnostics& diagnostic, std::array<std::vector<float>, 2>* tracks,
+    size_t* track_count) {
   using Clock = std::chrono::steady_clock;
   using object_detail::Error;
   const size_t max_samples =
       size_t(separator_limits_.max_audio_seconds) * 16000;
-  if (!tracks || input.empty() || input.size() > max_samples)
+  if (!tracks || !track_count || input.empty() || input.size() > max_samples)
     return Error(400, "separator_input_limit", "Separator duration invalid");
   const auto cancelled = [&] {
     if (stop_requested_.load())
@@ -168,9 +170,20 @@ ObjectReply ChatServer::RunNativeSeparator(
     if (!cleaned)
       return Error(503, "gpu_unhealthy", "Separator workspace cleanup failed");
     if (cancelled()) return interrupted();
+    diagnostic.Stage("separator_track_inspection");
+    audio::SeparationTrackDecision decision;
+    status = audio::InspectSeparationTracks(
+        std::span<const float>(separated).first(original_samples),
+        std::span<const float>(separated).subspan(pcm.size(), original_samples),
+        &decision, cancelled);
+    if (!status) {
+      if (cancelled()) return interrupted();
+      return failed(AsrFailure::kCompute, "Separator track inspection failed");
+    }
     diagnostic.Stage("separator_restore");
     std::array<std::vector<float>, 2> output;
-    for (size_t track = 0; track < 2; ++track) {
+    if (decision.use_original) output[0].assign(input.begin(), input.end());
+    for (size_t track = 0; !decision.use_original && track < 2; ++track) {
       status = audio::RestoreSeparation(
           std::span<const float>(separated).subspan(track * pcm.size(),
                                                     original_samples),
@@ -183,6 +196,7 @@ ObjectReply ChatServer::RunNativeSeparator(
     if (cancelled()) return interrupted();
     separator_health_.ComputeSucceeded();
     *tracks = std::move(output);
+    *track_count = decision.use_original ? 1 : 2;
     return {};
   } catch (const std::bad_alloc&) {
     return failed(AsrFailure::kResource, "Separator host allocation exhausted");

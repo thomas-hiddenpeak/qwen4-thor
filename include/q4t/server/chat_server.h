@@ -242,7 +242,7 @@ class ChatServer {
       int fd, std::span<const float> input,
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic,
-      std::array<std::vector<float>, 2>* tracks);
+      std::array<std::vector<float>, 2>* tracks, size_t* track_count);
   std::string NativeVadHealthJson() const;
   ObjectReply EnsureNativeVad(const BinaryAccess& access,
                               std::shared_ptr<const audio::SileroVad>* out);
