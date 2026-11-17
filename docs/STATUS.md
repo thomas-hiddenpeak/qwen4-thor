@@ -115,6 +115,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[网页输出类型CI修复](evidence/serve-web-search-ci-repair-20261117/README.md)：
+旧push的2269项C++仅1项旧枚举断言失败，补齐web_search_call后该项
+CPU通过，0.031秒；不改运行时/default234/day，不追加GPU。PR40已
+创建，旧提交检查取消，新head所需检查通过后实际合main；全部master继续。
+
 [rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
 GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
