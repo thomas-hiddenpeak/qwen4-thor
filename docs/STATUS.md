@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[完整segment统计来源16项CPU通过](evidence/serve-asr-statistics-20261117/README.md)
+（0.164秒、0GPU）：实际token/logprob/温度及UTF-8映射、训练无语音
+评分prefix、隔离真实压缩率及缺库/取消/超时清理。继续实际模型
+评分、配额、格式和业务短验；不是完整segment已验收，默认未变。
+
 [PR44已实际合main](evidence/serve-pr44-merged-20261117/README.md)
 （`8de16675`），最终5784729c两组CI均通过。rev276原生转录的
 交付已进入主线，后续alignment/VAD保留工作分支继续开发；默认

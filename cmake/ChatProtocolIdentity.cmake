@@ -8,6 +8,8 @@ set(protocol_inputs
   include/q4t/server/asr_response.h
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
+  src/server/asr_statistics.cpp
+  include/q4t/server/asr_statistics.h
   src/server/asr_alignment_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp

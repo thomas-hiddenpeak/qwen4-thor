@@ -1,0 +1,25 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "tests": [
+    "asr_statistics_keep_selected_content_tokens_and_exclude_header",
+    "asr_statistics_follow_repaired_utf8_and_delayed_whitespace_once",
+    "asr_statistics_no_speech_requires_real_single_finite_observation",
+    "asr_statistics_empty_and_disabled_paths_do_not_invent_tokens_or_scores",
+    "asr_statistics_reject_invalid_token_values_and_bound_retention",
+    "asr_label_prompt_keeps_forced_language_out_of_silence_classifier",
+    "asr_label_prompt_rejects_changed_tokenizer_and_retains_previous_owner",
+    "asr_compression_reports_actual_zlib_size_ratio_and_library_identity",
+    "asr_compression_empty_input_and_oversize_preserve_measured_owner",
+    "asr_compression_missing_dependency_is_request_scoped_and_recovers",
+    "asr_compression_cancel_timeout_and_reap_keep_result_unpublished",
+    "asr_transcript_header_utf8_and_actual_token_probabilities",
+    "asr_transcript_forced_language_and_whitespace_preserve_selected_bytes",
+    "asr_transcript_text_only_empty_and_malformed_header_boundaries",
+    "asr_transcript_utf8_repair_partial_scalar_and_single_terminal",
+    "asr_transcript_requires_eos_owner_and_finite_probabilities"
+  ],
+  "test_limit": 16,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "Actual token/temperature retention, trained no-speech scoring prefix, isolated real compression and directly affected legacy ASR outputs. Model scoring/segment HTTP remain pending."
+}

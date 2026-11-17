@@ -231,7 +231,8 @@ ObjectReply ChatServer::RunNativeAsr(
     if (!reply.ok()) return reply;
     if (cancelled()) return interrupted();
     SampledToken token;
-    sampled = sampler.SetTemperature(temperature.Value());
+    const double selected_temperature = temperature.Value();
+    sampled = sampler.SetTemperature(selected_temperature);
     if (sampled) sampled = sampler.Select(logits, &token, allowed);
     if (sampled) sampled = sampler.Observe(token.token);
     if (!sampled)
@@ -248,7 +249,8 @@ ObjectReply ChatServer::RunNativeAsr(
     sampled =
         asr_tok_->Decode({static_cast<uint32_t>(token.token)}, false, &bytes);
     AsrTextDelta delta;
-    if (sampled) sampled = transcript->Append(token, bytes, &delta);
+    if (sampled)
+      sampled = transcript->Append(token, bytes, &delta, selected_temperature);
     if (!sampled) return Error(502, "asr_output_invalid", sampled.message());
     if (!emit(delta)) return interrupted();
     prefix.push_back(token.token);

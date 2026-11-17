@@ -344,6 +344,20 @@ Status BuildAsrPrompt(const AsrRequest& request, size_t audio_tokens,
   plan.tokens.insert(plan.tokens.end(), audio_tokens,
                      audio::AsrConfig::kAudioPad);
   status = append("<|audio_end|><|im_end|>\n<|im_start|>assistant\n", true);
+  if (status && request.segment_timestamps) {
+    std::vector<uint32_t> language_prefix, silence_label;
+    status = encode("language", false, &language_prefix);
+    if (status) status = encode(" None", false, &silence_label);
+    if (!status) return status;
+    if (language_prefix != std::vector<uint32_t>{11528} ||
+        silence_label != std::vector<uint32_t>{2240})
+      return Invalid(error, {}, "ASR no-speech label tokenizer differs", 500);
+    plan.no_speech_prefix = plan.tokens;
+    plan.no_speech_prefix.push_back(11528);
+    plan.no_speech_token = 2240;
+    if (plan.no_speech_prefix.size() > size_t(limits.max_context_tokens))
+      return Invalid(error, "prompt", "ASR label prefix exceeds context");
+  }
   if (status && !language.empty())
     status = append("language " + std::string(language) + "<asr_text>", true);
   if (!status) return status;

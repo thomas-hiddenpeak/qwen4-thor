@@ -51,6 +51,10 @@ std::string_view AsrLanguageCode(std::string_view name);
 
 struct AsrPrompt {
   std::vector<int32_t> tokens;
+  // Optional actual ASR no-speech-label scoring prefix. Separate from the
+  // user-forced output language, sharing the already computed audio encoder.
+  std::vector<int32_t> no_speech_prefix;
+  int32_t no_speech_token = -1;
   size_t audio_start = 0;
   size_t audio_tokens = 0;
   size_t output_tokens = 0;

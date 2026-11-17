@@ -162,3 +162,20 @@ Python SDK中文词JSON、JS SDK英文SRT、Python SDK中文VTT、最后
 冻结；JIT与原生15张量逐位核对。0GPU，必要构建单列；不构成
 完整语音质量或服务发布验收。后续资产隔离、VAD请求组合、完整
 segment及全部master继续，默认rev276不变。
+
+## 完整segment统计来源开发组
+
+新增直接采样token/原始logprob/实际温度及可见UTF-8范围记录，
+元数据header和trim不计为正文token；跨边界token保留真实ID和
+概率，不重分词伪造。无语音概率由实际ASR训练标签`language None`
+的分布提供：独立未强制语言prefix，在同一音频encoder上评分
+` None`，不能把Silero逐帧概率均值当整段无语音概率。
+
+压缩率复用现有系统zlib，在有界exec子进程里计算真实UTF-8字节
+与zlib level 6长度，记录库身份；缺库、取消、超时不影响健康核心。
+本组16项CPU/180秒、0GPU：11项新统计/prefix/隔离压缩与5项受影响
+原ASR输出保护。实际label推理、段落序列化/配额和HTTP随后完成。
+采样温度保留逐token事实，组合输出的segment定义仍须如实处理。
+
+[统计来源16项CPU已通过](evidence/serve-asr-statistics-20261117/README.md)，
+0.164秒、0GPU；实际评分、完整格式及HTTP仍继续实现。

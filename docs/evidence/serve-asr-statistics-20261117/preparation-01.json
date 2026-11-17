@@ -1,0 +1,5 @@
+{
+  "status": "PREPARATION_FAILED_NO_TESTS",
+  "reason": "required-name extractor did not handle clang-format multiline Q4T_TEST; corrected whitespace matching before tests",
+  "gpu_actions": 0
+}

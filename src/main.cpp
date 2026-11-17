@@ -42,6 +42,7 @@
 #include "q4t/server/program_worker.h"
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
+#include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_video.h"
 #include "q4t/server/file_audio.h"
 #include "q4t/server/file_legacy.h"
@@ -965,6 +966,8 @@ int main(int argc, char** argv) {
   if (video_worker >= 0) return video_worker;
   const int audio_worker = q4t::server::MaybeRunFileAudioWorker(argc, argv);
   if (audio_worker >= 0) return audio_worker;
+  const int asr_statistics = q4t::server::MaybeRunAsrStatisticsWorker(argc, argv);
+  if (asr_statistics >= 0) return asr_statistics;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
