@@ -3715,7 +3715,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "implemented_validated_delivered_main_pending",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -3797,20 +3797,26 @@
         "cpu_evidence": "evidence/serve-publication-intent-cpu-20261117/README.md",
         "archived_intents": 4,
         "actual_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md",
-        "sealed_service_cli_delivered": false
+        "sealed_service_cli_delivered": true
       },
-      "remaining_required": [
-        "Ship protected intent/generation/version retention in sealed native service package and CLI; preserve historical package verification and recovery budgets"
-      ],
+      "remaining_required": [],
       "native_maintenance_20261117": {
-        "state": "cpu_passed_package_delivery_pending",
+        "state": "delivered_main_pending",
         "plan": "docs/SERVE_NATIVE_MAINTENANCE_2026-11-17.md",
         "evidence": "docs/evidence/serve-native-maintenance-cpu-20261117/acceptance.json",
         "tests": 25,
         "gpu_starts": 0,
         "recovery_budgets_preserved": true,
         "new_bundle_version": 20,
-        "historical_v1_v19_retained": true
+        "historical_v1_v19_retained": true,
+        "revision": 266,
+        "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+        "cpu_unique_tests": 28,
+        "cpu_invocations": 32,
+        "actual_cli_commands": 34,
+        "delivery_commands": 15,
+        "legacy_plans_preserved_and_restorable": true,
+        "delivery_evidence": "docs/evidence/serve-native-maintenance-delivery-20261117/acceptance.json"
       }
     },
     {
@@ -4290,7 +4296,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh against rev260 or then-current exact package before cold qualification; pending camera/jtop handoff remains required, do not stop other services."
+      "current_execution_prerequisite": "Refresh against rev266 or then-current exact package before cold qualification; pending camera/jtop handoff remains required, do not stop other services."
     },
     {
       "id": "R08",
@@ -4896,39 +4902,38 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "PASS_NATIVE_CLIENT_RECEIPTS_DELIVERED",
-        "revision": 260,
+        "status": "PASS_NATIVE_MAINTENANCE_DELIVERED",
+        "revision": 266,
         "current": {
           "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
           "engine_release_sha256": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
-          "generation_sha256": "4359372fb12707f6bc321e608f66e5513544968265ca41ea6f5999dd6a191ed3",
-          "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle",
-          "service_acceptance_sha256": "1e8b2a90970b340641df09d4e5cbd434eb0b9e035fa78c98a8d7dc1c3c72f0ab",
-          "service_release_sha256": "5e1dac9955ce1c56ac606fb376bd82ab17e5f987ac63edcef72ee0199e26a2cb"
+          "generation_sha256": "e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db",
+          "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
+          "service_acceptance_sha256": "35ca582780b4ef6c27c445a8cb68fece8990c5940b442a4947acaede8600d4a8",
+          "service_release_sha256": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec"
         },
-        "successful_commands": 13,
-        "failed_original_commands": 1,
-        "seconds": 178.26712806802243,
+        "commands": 15,
+        "seconds": 196.49171965103596,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "engine_control_native_profiles_unchanged": true,
-        "version_cycles_and_all_budgets_preserved": true,
-        "client_acceptance": "evidence/serve-client-receipts-package-20261117/README.md",
-        "intent_cpu_acceptance": "evidence/serve-publication-intent-cpu-20261117/README.md",
-        "archived_intents": 4,
-        "archived_generations": 1,
-        "archived_registrations": 1,
-        "deleted_files": 0,
-        "original_failure_preserved": true,
-        "manual_root": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+        "engine_protocol_native_runtime_clients_profiles_unchanged": true,
+        "original_cycles_and_budgets_preserved": true,
+        "legacy_entry_check_and_version_status_passed": true,
+        "manual_root": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
         "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
         "older_engine_fallback": false,
-        "archive_sha256": "9e05513fa18c9358c65b77b7ed847be870503020b378b6994fe7f3d8130a4091",
+        "pool_used": {
+          "intents": 125,
+          "generations": 31,
+          "versions": 15
+        },
+        "deleted_files": 0,
+        "archive_sha256": "0dd7bb4ac07a02840c011117ed006d27a339037dd328935c570d55549ab53565",
         "secret_scan_matches": 0,
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
+        "evidence": "docs/evidence/serve-native-maintenance-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5095,7 +5100,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Client receipts/intent retention final-head checks and actual main merge",
+        "Final-head checks and actual main merge for client receipts/native maintenance",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5593,8 +5598,8 @@
       }
     }
   ],
-  "next_task": "N07",
-  "next": "Seal native maintenance v20, validate actual package CLI and reversible STOPPED delivery; PR43 exact-head checks and main merge continue independently; all remaining master tasks required",
+  "next_task": "Q02",
+  "next": "Freeze rev266 user day handoff, repair PR43 affected CPU fixtures and complete final-head main integration; continue all remaining A/R/G/Q tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

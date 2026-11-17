@@ -9,19 +9,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev260；服务包 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64` |
-| Generation | `4359372fb12707f6bc321e608f66e5513544968265ca41ea6f5999dd6a191ed3` |
+| 发布 | rev266；服务包 `82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2` |
+| Generation | `e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db` |
 | 引擎 | `7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376` |
 | 引擎发布记录 | `be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | rev254根 `3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33`；原生outer/周期和媒体能力保持；旧包仍有客户端回执遗漏 |
+| 人工整包回退 | rev260根 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64`；原周期/原生入口已验；旧包无新增维护子命令 |
 | 自动payload回退 | 已验旧控制/当前引擎包 `087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
+[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
+旧rev260自己的check/version-status通过，原周期和全部预算保持；
+最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
+profile未变。下一步固定用户day、修复PR43两项CPU夹具时限并完成
+最终head实际合main，再继续其余全部master任务。
+
+前驱[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
 已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
 累计178.267秒、0GPU。精确客户端封装已验，模型/控制/native
 和profile保持；128条意图容量通过受保护、可恢复归档4条解决，
@@ -133,6 +140,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
+旧rev260自己的check/version-status通过，原周期和全部预算保持；
+最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
+profile未变。下一步固定用户day、修复PR43两项CPU夹具时限并完成
+最终head实际合main，再继续其余全部master任务。
 
 [原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
 28独立CPU/32次执行，34条原生命令374.106秒，0模型动作。三类

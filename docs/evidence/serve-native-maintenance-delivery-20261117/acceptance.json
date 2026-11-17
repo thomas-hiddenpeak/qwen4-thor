@@ -1,0 +1,33 @@
+{
+  "status": "PASS_NATIVE_MAINTENANCE_DELIVERED",
+  "revision": 266,
+  "current": {
+    "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "engine_release_sha256": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "generation_sha256": "e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db",
+    "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
+    "service_acceptance_sha256": "35ca582780b4ef6c27c445a8cb68fece8990c5940b442a4947acaede8600d4a8",
+    "service_release_sha256": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec"
+  },
+  "commands": 15,
+  "seconds": 196.49171965103596,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "engine_protocol_native_runtime_clients_profiles_unchanged": true,
+  "original_cycles_and_budgets_preserved": true,
+  "legacy_entry_check_and_version_status_passed": true,
+  "manual_root": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
+  "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
+  "older_engine_fallback": false,
+  "pool_used": {
+    "intents": 125,
+    "generations": 31,
+    "versions": 15
+  },
+  "deleted_files": 0,
+  "archive_sha256": "0dd7bb4ac07a02840c011117ed006d27a339037dd328935c570d55549ab53565",
+  "secret_scan_matches": 0,
+  "main_integration_pending": true,
+  "all_master_tasks_active": true
+}

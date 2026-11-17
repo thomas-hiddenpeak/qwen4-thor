@@ -40,6 +40,26 @@ PR43精确head检查/合并独立推进；新阶段不漂移该PR的候选身份
 本组完成后继续A01/A02/A07/A09—A12/R07—R09及G00、Q项，
 不会把维护入口交付当总计划完成。
 
+## 已交付入口
+
+rev266已实际发布，[15项发布/回退/再前进记录](evidence/serve-native-maintenance-delivery-20261117/README.md)
+包含原rev260入口check和version-status。以下命令由默认包提供；
+先停止并确认本服务，维护命令会自行核对持久STOPPED及全部锁。
+
+```bash
+./build/q4t service maintenance-status --state build/service-native-state
+./build/q4t service maintenance-plan --state build/service-native-state \
+  --kind intents --select <旧请求UUID> --output .q4t-work/<已有私有目录>/archive
+./build/q4t service maintenance-apply --state build/service-native-state \
+  --kind intents --plan <返回的plan绝对路径> --plan-sha256 <返回的SHA256>
+# 恢复使用同一plan与SHA256，把maintenance-apply改为maintenance-restore。
+```
+
+`--kind generations`选择目录hash，`--kind versions`选择恢复周期UUID；
+重复`--select`最多4项。status候选仍须经过活动引用检查，不能据候选
+列表直接删除文件。归档后publish-resume先需恢复对应意图；恢复不能
+绕过原发布revision检查。历史完整包保留自己的入口与来源核验。
+
 具体CPU清单为`test_maintenance`12项、新v20来源集合1项；旧回归
 12项：包默认/冻结旧集合/历史v1—v19核验/文件协议/HTTP合同/
 outer隔离导入6项，三类归档各取当前与待恢复保护、rename后中断
