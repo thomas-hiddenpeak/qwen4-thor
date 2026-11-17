@@ -1,0 +1,27 @@
+{
+  "status": "PASS_PACKAGED_CLIENT_RECEIPTS",
+  "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle",
+  "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+  "client_files": {
+    "tools/examples/chat_client.py": "1a1e7a35ca0c4d7db4132c79fd4ba2e18d6b3e975d6976a62c7f503f13c83710",
+    "tools/examples/deadline_http.py": "6fd8625e3705e269a255eb3b791bf7c77ac4dde7fed41a11c3106cc0da0ed792",
+    "tools/examples/js/chat_client.mjs": "69fe7d61b3794943f88dc9ff46d9e27b03f90a607f6684cbfe52645d156e2b55",
+    "tools/examples/js/node_transport.mjs": "d817acba2e063f172cd87f79b860cfb3f6318ec0639cd1c90409c3b798a822ab",
+    "tools/examples/js/project_profile.mjs": "ed3f40bd2a23b9fb6bd94f279558973d0b56ae12e94200b19abca306bd0901dd",
+    "tools/examples/project_records.py": "6389b2ca1f6775fad6d7f7424ae8f7db878c74ee59502324eed188f667b18283",
+    "tools/examples/tool_recovery.py": "1d316c13ccb58023e5a66584e3b703b51128c6e309c35cef498bb523eaf58ce5",
+    "tools/serve_protocol/js_client.py": "7c945947ec6e25d2ace71521ff593ca6ee43feffb9e52e21ddd85b7581d5c207",
+    "tools/serve_protocol/run_sdk.mjs": "d116f08289cd203bb581664d8f0ec8673917d716dad30f2ae6cc549be0366d56",
+    "tools/serve_protocol/sdk.mjs": "b91fbfdb9763abda12908184736e51de4beaa9c5d406e465db1942a78dfd7fec"
+  },
+  "client_manifest_sha256": "403557dc85e13ad07749389ce16ac94a8e151336d60f43cd2866e83d692a764d",
+  "source_import_verified": true,
+  "cases": 12,
+  "seconds": 1.1654631118290126,
+  "gpu_actions": 0,
+  "engine_control_native_profiles_unchanged": true,
+  "archive_sha256": "eb82733b5f6ffb1b1c953b85aa641e47e7f7f37933337341bd8fa1ae72b757fb",
+  "reused_engine_business": "evidence/serve-video-projective-composition-20261117/README.md",
+  "synthetic_protocol_fixtures": true
+}

@@ -3405,7 +3405,7 @@
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       },
       "client_receipts_20261117": {
-        "state": "cpu_accepted_delivery_pending",
+        "state": "package_accepted_delivery_pending",
         "contract": "SERVE_CLIENT_RECEIPTS_2026-11-17.md",
         "issues": [
           "Node SDK bridge drops moderation reports/usage",
@@ -3415,7 +3415,9 @@
         "gpu_actions": 0,
         "cpu_evidence": "evidence/serve-client-receipts-cpu-20261117/README.md",
         "new_cases": 12,
-        "direct_regressions": 4
+        "direct_regressions": 4,
+        "package_evidence": "evidence/serve-client-receipts-package-20261117/README.md",
+        "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64"
       }
     },
     {
