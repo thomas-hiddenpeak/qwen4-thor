@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR44第二组CI暴露CPU后端未识别转录chunked上传；已补齐精确
+路由和multipart夹具。[原失败项复验通过](evidence/serve-asr-route-fixture-20261117/README.md)，
+1.015秒、0GPU。原两组CI失败和一次旧ELF误用404保留；运行时/
+默认rev276不变。继续PR44最终CI及合main，后续对齐不混入。
+
 PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路由；
 [4项针对性CPU通过](evidence/serve-asr-optional-route-20261117/README.md)，
 0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入

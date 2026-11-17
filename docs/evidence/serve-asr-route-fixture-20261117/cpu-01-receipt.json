@@ -1,0 +1,23 @@
+{
+  "tests": 1,
+  "deadline_seconds": 180,
+  "gpu_actions": 0,
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_recovery/test_native_ingress.py",
+    "--ingress",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+    "-v",
+    "NativeTests.test_application_routes_preserve_methods_queries_and_identity"
+  ],
+  "sources": {
+    "tools/serve_recovery/test_native_ingress.py": "734acf409171c4429a822cf33e79b71f5bb7fb2bf56d22f434d0b91543505b95",
+    "tools/serve_recovery/test_gateway_nginx.py": "d16f1a42f2c451e5c2e525b3ceffb34a2a62fb58b92a3b21daa4be10a8ef82b3",
+    "tools/serve_gateway/gateway.py": "f402f88847695d4d1c6d4ece3b18d389fd00c23428ea85409264f9e62fe11d4e"
+  },
+  "binary_sha256": "8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a",
+  "status": "FAILED",
+  "exit": 1,
+  "seconds": 1.0150491720996797
+}
