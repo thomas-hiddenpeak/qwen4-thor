@@ -2412,6 +2412,19 @@
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+      },
+      "video_projective_20261117": {
+        "state": "contract_frozen",
+        "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
+        "cpu_new_limit": 16,
+        "cpu_regressions": 4,
+        "business_limit": {
+          "starts": 1,
+          "requests": 4,
+          "seconds": 600
+        },
+        "tests_executed": false,
+        "whole_task_complete": false
       }
     },
     {
@@ -5511,8 +5524,8 @@
       }
     }
   ],
-  "next_task": "Q02",
-  "next": "rev244 native day handoff frozen and unexecuted. Complete PR41 final-head checks and actual main merge; continue all remaining protocol/audio/media/backend/SDK and cold/resource/host tasks.",
+  "next_task": "A10",
+  "next": "Implement native finite projective/non-unit homogeneous video display and v5 replay; PR41 independently awaits final-head checks/main merge. Continue all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -121,6 +121,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[齐次/透视视频下一组合同](SERVE_VIDEO_PROJECTIVE_2026-11-17.md)已冻结：
+补合法非单位w和有限透视的实际像素/冻结重放，用有界整数计算保持
+确定性且不新增依赖。先16项新CPU及4项直接回归，尚未测试；rev244
+保持，PR41只推进已验提交，全部master继续。
+
 [rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
 GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
