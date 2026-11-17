@@ -8,15 +8,19 @@ if(MODEL_ASSET_ICU_FOUND)
   add_executable(q4t_model_asset_tests EXCLUDE_FROM_ALL
     ${model_asset_root}/tests/model_asset_test_main.cpp
     ${model_asset_root}/tests/server_model_assets_test.cpp
+    ${model_asset_root}/tests/server_aligner_assets_test.cpp
     ${model_asset_root}/tests/server_embedding_assets_test.cpp
     ${model_asset_root}/tests/router_trace_hash_test.cpp
     ${model_asset_root}/src/server/model_assets.cpp
     ${model_asset_root}/src/server/asr_assets.cpp
+    ${model_asset_root}/src/server/aligner_assets.cpp
     ${model_asset_root}/src/server/embedding_assets.cpp
     ${model_asset_root}/src/server/grammar_process.cpp
     ${model_asset_root}/src/server/worker_io_broker.cpp
     ${model_asset_root}/src/audio/asr_config.cpp
     ${model_asset_root}/src/audio/asr_layout.cpp
+    ${model_asset_root}/src/audio/aligner_config.cpp
+    ${model_asset_root}/src/audio/aligner_layout.cpp
     ${model_asset_root}/src/model/embedding_config.cpp
     ${model_asset_root}/src/model/embedding_layout.cpp
     ${model_asset_root}/src/text/tokenizer.cpp

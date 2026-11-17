@@ -300,7 +300,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  src/server/aligner_assets.cpp
   src/server/asr_service.cpp
+  src/server/aligner_service.cpp
   src/server/asr_request.cpp
   src/server/asr_response.cpp
   src/server/chat_asr.cpp

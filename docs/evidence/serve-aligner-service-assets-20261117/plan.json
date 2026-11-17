@@ -1,0 +1,17 @@
+{
+  "task": "AL03 isolated alignment assets, resource and health contracts",
+  "limits": {
+    "cpu_tests": 15,
+    "seconds": 180,
+    "gpu_actions": 0,
+    "full_checkpoint_reads": 0
+  },
+  "checks": {
+    "alignment_assets": 5,
+    "existing_asr_assets": 2,
+    "alignment_resources_health_prompt": 6,
+    "existing_asr_health": 2
+  },
+  "full_checkpoint": "Separate frozen read under lease or actual business load; not part of CPU metadata group",
+  "default": "rev276 unchanged"
+}

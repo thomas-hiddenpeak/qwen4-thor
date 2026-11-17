@@ -2720,6 +2720,15 @@
         "gpu_actions": 0,
         "japanese_korean": "native ICU segmentation; actual-language qualification remains required",
         "next": "Isolated asset/resource/health integration and real timestamp/subtitle API; all remaining master tasks continue"
+      },
+      "alignment_service_assets_20261117": {
+        "state": "cpu_component_accepted_runtime_pending",
+        "tests": 15,
+        "seconds": 0.5720565393567085,
+        "gpu_actions": 0,
+        "full_checkpoint_reads": 0,
+        "evidence": "evidence/serve-aligner-service-assets-20261117/README.md",
+        "next": "Native ChatServer alignment integration, actual timestamps/subtitles and all required business/delivery"
       }
     },
     {
@@ -6036,7 +6045,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "Merge PR44 after optional frontend route CI repair passes; continue native alignment compute and every outstanding master task.",
+  "next": "Merge PR44 after corrected transport fixture CI passes; continue native alignment runtime and every outstanding master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

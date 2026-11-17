@@ -1,0 +1,23 @@
+{
+  "tests": 7,
+  "binary_sha256": "5f9be168cfc4af07374a17ae340c54fc61c5d9b69653fcc2a0a11010935e923d",
+  "sources": {
+    "src/server/aligner_assets.cpp": "06855092e387b8c4ed698ca3a0b67556676750ec161ade9190e31268f6e6902c",
+    "src/server/model_assets.cpp": "dee6fb356834385dfb42a7a61dc1d634cd74b0c95b22863675bf42ac53f6c386",
+    "src/server/asr_assets.cpp": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
+    "tests/server_aligner_assets_test.cpp": "7f0fe01766522d7dc8c94cd3f678109ad2bec5cddb0d576f6b0662415712375d",
+    "tests/server_model_assets_test.cpp": "552345169b2a814fe24599045424c517c0fe77c1d12d3030d18e2f429c45657b",
+    "include/q4t/server/aligner_assets.h": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443",
+    "include/q4t/server/model_assets.h": "24e581501ff619124523a816e79b12a3c59d33802b3bb779b6141ac87110fda0"
+  },
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_model_asset_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-assets-cpu-01/asset-required.txt"
+  ],
+  "gpu_actions": 0,
+  "full_checkpoint_reads": 0,
+  "status": "PASS",
+  "exit": 0,
+  "seconds": 0.5643530171364546
+}

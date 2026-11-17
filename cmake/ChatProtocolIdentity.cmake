@@ -152,8 +152,12 @@ set(protocol_inputs
   src/server/model_assets_protocol.h
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  include/q4t/server/aligner_assets.h
+  src/server/aligner_assets.cpp
   include/q4t/server/asr_service.h
   src/server/asr_service.cpp
+  include/q4t/server/aligner_service.h
+  src/server/aligner_service.cpp
   src/server/chat_asr_backend.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu

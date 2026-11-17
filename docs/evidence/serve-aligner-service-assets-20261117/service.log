@@ -1,0 +1,9 @@
+[PASS] aligner_resources_include_class_logits_and_unified_load_peak
+[PASS] aligner_resources_reject_untrained_duration_and_invalid_limits
+[PASS] aligner_health_failure_and_retry_leave_transcription_ready
+[PASS] aligner_health_cancellation_and_shared_device_protection
+[PASS] aligner_prompt_preserves_literal_words_and_actual_slot_positions
+[PASS] aligner_prompt_budget_marker_and_cancel_fail_atomically
+[PASS] asr_health_configured_metadata_and_device_publication
+[PASS] asr_health_auxiliary_reasons_do_not_claim_core_dependency
+8 tests, 8 passed, 0 failed, 0 skipped

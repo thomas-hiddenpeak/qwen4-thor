@@ -36,6 +36,10 @@ PR44只追加可选前置路由修复，待检查合main；本项不混入该PR�
 已通过（0.007秒、0GPU），原预测/修复及末尾量化裁剪分开记录。
 日/韩为ICU原生策略，实际语言业务仍待验。继续独立资产/健康和
 真实字幕接口，当前候选尚未发布。
+[独立资产/资源/健康15项CPU](evidence/serve-aligner-service-assets-20261117/README.md)
+通过（0.572秒、0GPU），含坏资产/worker/取消隔离、原ASR保护、
+统一RAM预算和实际时间槽模板。完整资产/ChatServer组合随后短验，
+继续原生HTTP和交付；候选未发布。
 
 
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
