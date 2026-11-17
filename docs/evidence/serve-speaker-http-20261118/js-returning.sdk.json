@@ -1,0 +1,51 @@
+{
+  "ok": true,
+  "version": "7.47.0",
+  "result": {
+    "duration": 10.63,
+    "task": "transcribe",
+    "text": "The child almost hurt the small dog. We are sure that one war is enough. Drop the two when you add the figures.",
+    "segments": [
+      {
+        "id": "0",
+        "type": "transcript.text.segment",
+        "start": 0.372,
+        "end": 3.172,
+        "speaker": "A",
+        "text": "The child almost hurt the small dog."
+      },
+      {
+        "id": "1",
+        "type": "transcript.text.segment",
+        "start": 4.18,
+        "end": 5.94,
+        "speaker": "B",
+        "text": "We are sure that one war is enough."
+      },
+      {
+        "id": "2",
+        "type": "transcript.text.segment",
+        "start": 7.172,
+        "end": 10.292,
+        "speaker": "A",
+        "text": "Drop the two when you add the figures."
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 369,
+      "output_tokens": 29,
+      "total_tokens": 398,
+      "input_token_details": {
+        "audio_tokens": 119,
+        "text_tokens": 250
+      }
+    }
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18246/v1/audio/transcriptions"
+    }
+  ]
+}

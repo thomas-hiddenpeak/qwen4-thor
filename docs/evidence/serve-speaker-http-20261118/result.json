@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NATIVE_DIARIZED_HTTP_SDK_REFERENCES_SCOPED_RECOVERY",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 10,
+    "controls": 49
+  },
+  "seconds": 60.646762386895716,
+  "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2"
+}

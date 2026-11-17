@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "X-Accel-Buffering": "no",
+    "X-Request-Id": "req-74c0944c0eea6491a7f647d52293e16b",
+    "Connection": "keep-alive",
+    "Transfer-Encoding": "chunked"
+  },
+  "cancellation": true
+}

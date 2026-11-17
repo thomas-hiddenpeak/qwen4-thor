@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真实说话人HTTP通过](evidence/serve-speaker-http-20261118/README.md)：
+1启动/10创建/60.647秒，A/A、A/B/A与参考first/second/first，
+双SDK/JSON/SSE、局部故障同PID恢复、容量/取消/静音和核心保护
+通过；58次NVML正常、自有资源清理。默认rev286未变，继续服务
+恢复交付、重叠检测分离及全部master；阶段不结束总目标。
+
 HTTP验收器3项CPU正负控已通过（0.214秒、0GPU），源区间标签/
 回访、参考命名、SSE关联和usage失败均能检出。接着按已冻结的
 1启动/10创建/600秒严格租约执行；全部master继续，默认rev286不变。

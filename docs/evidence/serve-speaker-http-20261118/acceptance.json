@@ -1,0 +1,54 @@
+{
+  "status": "ACCEPT_NATIVE_DIARIZATION_DIRECT_HTTP",
+  "counts": {
+    "starts": 1,
+    "chats": 10,
+    "controls": 49
+  },
+  "seconds": 60.646762386895716,
+  "lease_seconds": 61.16587298316881,
+  "nvml_ok": 58,
+  "cleanup_complete": true,
+  "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+  "source_commit": "d8a1d06462328834a8540944bacb74e86034a0ca",
+  "default_revision": 286,
+  "defaults_unchanged": true,
+  "actual_labels": {
+    "python-same": [
+      "A",
+      "A"
+    ],
+    "js-returning": [
+      "A",
+      "B",
+      "A"
+    ],
+    "python-known": [
+      "first",
+      "second",
+      "first"
+    ],
+    "stream": [
+      "A",
+      "B",
+      "A"
+    ]
+  },
+  "known_references": true,
+  "python_sdk": true,
+  "javascript_sdk": true,
+  "json_and_sse": true,
+  "request_local_recovery_without_model_restart": true,
+  "capacity_silence_cancellation": true,
+  "offline_schema_observations": 15,
+  "driver_cpu_tests": 3,
+  "raw_plan_retained": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/plan.json",
+  "raw_plan_sha256": "218563683443522064af6b11b91b41cce1e7ff6182519b91a6aca3de8d8c20d6",
+  "archive_sha256": "f587c221c5a6fd76461c26cadbacd1a10438dee453a089f58d5df907900f08ce",
+  "service_delivery_pending": true,
+  "overlap_implemented": false,
+  "full_language_quality": false,
+  "performance_claim": false,
+  "long_stability_run": false,
+  "all_master_tasks_active": true
+}
