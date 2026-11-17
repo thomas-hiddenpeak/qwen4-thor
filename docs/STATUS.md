@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频服务与恢复通过](evidence/serve-chat-audio-service-20261118/README.md)：
+4阶段5启动/25创建/1探针/296.093秒；双SDK/TLS、全部保留包及
+整包回退后实际A/B/A、原状态/预算保全通过。285次NVML正常，
+清理和自动finalize通过；接着可回退发布/主线、真实重叠及全部master。
+默认rev296尚未变，旧引擎能力未冒充已验。
+
 Chat音频两个保留控制与TLS已过；整包回退因实际冷启动内存压力
 转已验light，验收器只认primary，原FAIL/清理保留。[5CPU验证已过](evidence/serve-chat-audio-recovery-profile-20261118/README.md)，
 旁录真实策略输入/输出并严格核对历史与预算；接着只补该

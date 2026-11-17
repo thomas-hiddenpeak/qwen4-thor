@@ -3697,6 +3697,305 @@
         "actual_requests": 5,
         "source_coordinate_composition_review_pending": false,
         "source_coordinate_composition_cpu_only": true
+      },
+      "chat_audio_service_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_SERVICE_COMPOSITION",
+        "binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4"
+        },
+        "automatic_fallback": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/retained-01/bundle",
+          "manifest_sha256": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e"
+        },
+        "modern_retained_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/modern-retained-01/bundle",
+          "manifest_sha256": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197"
+        },
+        "tls_package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-package-01/bundle",
+          "manifest_sha256": "64a4e50c722cb4d51e6213cda5b6bdbadb2216a4b5a0b12505b7d62dbca298a4"
+        },
+        "stages": [
+          {
+            "name": "modern-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 4,
+              "probes": 0,
+              "controls": 148
+            },
+            "actual_model_execs": 1,
+            "seconds": 53.03058382496238,
+            "nvml_queries": 52,
+            "strict_lease_seconds": 54.47075519198552,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "retained-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 4,
+              "probes": 0,
+              "controls": 150
+            },
+            "actual_model_execs": 1,
+            "seconds": 54.290466516278684,
+            "nvml_queries": 53,
+            "strict_lease_seconds": 55.78021825524047,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "tls-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 9,
+              "probes": 0,
+              "controls": 176
+            },
+            "actual_model_execs": 1,
+            "seconds": 67.86440678406507,
+            "nvml_queries": 66,
+            "strict_lease_seconds": 69.83722055517137,
+            "actual_labels": {
+              "python-zh-json": [
+                "A",
+                "B",
+                "A"
+              ],
+              "chunked-zh": [
+                "A",
+                "B",
+                "A"
+              ],
+              "js-en-stream": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "chat-python": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              },
+              "chat-js": {
+                "request_sha256": "40d96869476682e6f3713e9c75e470edbb8471401c869bbf2486ebe853acdd65",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "version-service-02",
+            "counts": {
+              "starts": 2,
+              "chats": 8,
+              "probes": 1,
+              "controls": 348
+            },
+            "actual_model_execs": 2,
+            "seconds": 120.90798674989492,
+            "nvml_queries": 114,
+            "strict_lease_seconds": 122.33875182690099,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ],
+              "fallback-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              },
+              "fallback-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "counted_spawn_attempts": 5,
+        "actual_model_starts": 5,
+        "service_requests": 25,
+        "service_probes": 1,
+        "service_seconds": 296.09344387520105,
+        "nvml_queries": 285,
+        "nvml_all_ok": true,
+        "cleanup_complete": true,
+        "strict_finalizers_all_passed": true,
+        "primary_light_evidence": "docs/evidence/serve-chat-audio-profiles-20261118/README.md",
+        "direct_http_evidence": "docs/evidence/serve-chat-audio-http-20261118/README.md",
+        "candidate_whole_package_gpu_run": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "all_master_tasks_complete": false,
+        "archive_sha256": "499bb20bc1ed0205697b879e1628e26c547f51bc3c382b2bc94613168d4f5b25",
+        "secret_scan_matches": 0,
+        "omitted_audio_requests": {
+          "modern-service-01/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/modern-service-01/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "retained-service-01/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/retained-service-01/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "tls-service-01/execution/chat-python-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-service-01/execution/chat-python-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "tls-service-01/execution/chat-js-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-service-01/execution/chat-js-request.json",
+            "sha256": "41b7520b618d81aeddefcaad0b2a78df3f4e22311d3d48901fb895c2260a97c1",
+            "bytes": 180071
+          },
+          "version-service-02/execution/fallback-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-02/execution/fallback-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "version-service-02/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-02/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          }
+        },
+        "original_failed_stage": {
+          "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-01",
+          "result_sha256": "c03582aa73986c491c4fca5409e57639ee3b8a269b00ba63d67230101b0ec6cb",
+          "starts": 2,
+          "requests": 5,
+          "probes": 1,
+          "seconds": 100.85087789781392
+        },
+        "cumulative_model_starts": 7,
+        "cumulative_service_requests": 30,
+        "cumulative_service_probes": 2,
+        "actual_recovery_profile": {
+          "kind": "unchanged_primary"
+        }
       }
     },
     {
