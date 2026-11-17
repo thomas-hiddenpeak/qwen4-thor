@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[完整segment实际HTTP分项通过](evidence/serve-asr-segment-http-20261117/README.md)：
+累计2启动/7创建/100.611秒，复用原5条、仅补2条保护；双SDK、
+实际token/概率/压缩率、静音、词时间戳和核心42通过。原驱动失败
+保留，清理正常、默认rev276不变。继续VAD实际分段、完整服务
+交付及全部master；候选未发布，长稳未运行。
+
 [segment首轮5条真实业务已复核](evidence/serve-asr-segment-http-original-20261117/README.md)：
 模型成功，驱动读词表超过通用2MiB上限，原整组FAILED保留。
 1启动/52.388秒、清理正常；双SDK字段、实际token/logprob、英文

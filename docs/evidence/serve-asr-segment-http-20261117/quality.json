@@ -1,0 +1,78 @@
+{
+  "python-default-segment-zh": {
+    "tokens": 7,
+    "avg_logprob": -0.0010718284354662149,
+    "temperature": 0,
+    "no_speech_prob": 3.939554283731238e-13,
+    "compression_ratio": 0.7924528301886793,
+    "start": 0.4,
+    "end": 3.68,
+    "text_quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    }
+  },
+  "js-combined-forced-zh": {
+    "tokens": 7,
+    "avg_logprob": -0.0010718284354662149,
+    "temperature": 0,
+    "no_speech_prob": 3.939554283731238e-13,
+    "compression_ratio": 0.7924528301886793,
+    "start": 0.4,
+    "end": 3.68,
+    "text_quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    }
+  },
+  "js-explicit-segment-en": {
+    "tokens": 45,
+    "avg_logprob": -0.05595313422918334,
+    "temperature": 0.2,
+    "no_speech_prob": 1.6917758417886603e-10,
+    "compression_ratio": 1.3805970149253732,
+    "start": 0.4,
+    "end": 14.56,
+    "text_quality": {
+      "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "exact": true,
+      "word_error_rate": 0.0
+    }
+  },
+  "python-silent-segment": {
+    "empty": true
+  },
+  "label_observations": [
+    {
+      "request": "asr_1c3b503627d3125a02e6d44cf0179cdf",
+      "token": 2240,
+      "raw_logprob": -28.562538617968514,
+      "probability": 3.939554283731238e-13,
+      "input": 71
+    },
+    {
+      "request": "asr_80d7ff560bccb01f6ba1560818312036",
+      "token": 2240,
+      "raw_logprob": -28.562538617968514,
+      "probability": 3.939554283731238e-13,
+      "input": 71
+    },
+    {
+      "request": "asr_73efb89945d5a42979620a82343abf5f",
+      "token": 2240,
+      "raw_logprob": -22.500072158745212,
+      "probability": 1.6917758417886603e-10,
+      "input": 212
+    },
+    {
+      "request": "asr_6790df2de3b94fbdc2644d8e1b86c882",
+      "token": 2240,
+      "raw_logprob": -0.005288855608096874,
+      "probability": 0.9947251057646525,
+      "input": 30
+    }
+  ],
+  "greedy_mean_logprob": -0.0010718284354662149
+}

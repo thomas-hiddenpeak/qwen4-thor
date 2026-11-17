@@ -207,3 +207,7 @@ segment、word+segment/强制中文、显式温度英文、静音、原word-only
 及posterior校验；[原证据](evidence/serve-asr-segment-http-original-20261117/README.md)。
 只补尚未执行word-only/核心两条，另1启动/2创建/300秒；本组累计
 上限2启动/7创建/600秒，原5条不重复。候选ELF和默认均未变。
+
+[完整segment实际HTTP分项接受](evidence/serve-asr-segment-http-20261117/README.md)：
+累计2启动/7创建/100.611秒，原5条复用、2条补验，默认未变。
+继续VAD实际分段与服务/恢复交付，AL03/AL04及全部master尚未完成。

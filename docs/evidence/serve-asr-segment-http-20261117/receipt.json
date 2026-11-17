@@ -1,0 +1,24 @@
+{
+  "status": "PASS_ENGINE_DIRECT_SEGMENT_BUSINESS_WITH_REUSED_OBSERVATIONS",
+  "binary_sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+  "starts": 2,
+  "creates": 7,
+  "seconds": 100.61144385300577,
+  "original_status": "FAILED_PRESERVED_metadata_size_limit",
+  "monitoring": {
+    "original": {
+      "nvml_queries": 51,
+      "all_ok": true,
+      "guard_status": "COMMAND_FAILED"
+    },
+    "supplement": {
+      "nvml_queries": 47,
+      "all_ok": true,
+      "guard_status": "COMPLETED"
+    }
+  },
+  "default_unchanged": true,
+  "published": false,
+  "remaining": "VAD/diarization, service/native TLS/recovery, delivery and all other master tasks",
+  "retry_branch": "fixed-temperature policy CPU tested; speech requests did not need low-confidence retries"
+}
