@@ -3551,6 +3551,13 @@
         "full_business_delivered": false,
         "archive_sha256": "3f0ab74eeda44b0473178e65ece8a19b02d8c0b45d6a18eae22b15c4ed5e7259",
         "evidence": "evidence/serve-overlapping-tracks-cpu-20261118/README.md"
+      },
+      "overlap_service_cpu_20261118": {
+        "status": "PASS",
+        "evidence": "docs/evidence/serve-separator-service-cpu-20261118/README.md",
+        "tests": 13,
+        "gpu_loads": 0,
+        "default_changed": false
       }
     },
     {

@@ -83,7 +83,7 @@ Status PlanSeparatorWorkspace(size_t samples, size_t max_samples,
   const auto floats = [&](size_t count) {
     return carve(count * sizeof(float));
   };
-  // All products are bounded by the fixed 64000-sample limit; no untrusted
+  // All products are bounded by the fixed 240000-sample limit; no untrusted
   // dimensions reach allocation arithmetic. Matrices use row-major channels.
   const size_t frames = layout.frames, rows = layout.rows;
   layout.pcm = floats(samples);

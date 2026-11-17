@@ -23,6 +23,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speaker_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_separator_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/separator_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_features.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_layout.cpp

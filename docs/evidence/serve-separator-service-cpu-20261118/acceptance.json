@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 0.464204091578722,
+  "tests": 13,
+  "gpu_loads": 0,
+  "http_requests": 0,
+  "default_unchanged": true,
+  "binary_sha256": "dd4bebd5cd3c5e43f18557e6b670670c64f69519c9e7fa41d63e16e6340ae012",
+  "evidence_archive_sha256": "d5d9233854a70cf9a0cb770614766f05c283d23f04f463f4ff934325c2e7a4a3",
+  "limits": {
+    "tests": 13,
+    "seconds": 180,
+    "gpu_loads": 0,
+    "http_requests": 0
+  },
+  "remaining": "actual runtime integration, large shape computation, HTTP/SDK/recovery/delivery and all master tasks"
+}

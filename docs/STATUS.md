@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[分离资产/健康/资源13CPU通过](evidence/serve-separator-service-cpu-20261118/README.md)，
+0.464秒、0GPU/HTTP、host零警告。普通辅助故障独立恢复与真实
+设备保护保持，30秒资源边界通过；接着实际转录接线、新上限计算
+与混音SDK/恢复交付及全部master，默认rev296不变。
+
+分离独立资产/健康/资源已接入合同层，冻结13CPU/180秒、0GPU。
+默认30秒上限、两路PCM及统一DRAM都计费；普通故障独立恢复，
+设备故障保留保护。下一步实际转录接线/业务及全部master，
+默认rev296保持，尚未把组件与CPU结果当作接口交付。
+
 [重叠音频/标签/输出20CPU通过](evidence/serve-overlapping-tracks-cpu-20261118/README.md)，
 0.064秒、0GPU/HTTP；精确重采样、跨通道身份、真实交叠时间与
 watermark/JSON/SSE/usage及旧聚类保护通过，host零警告。接着独立

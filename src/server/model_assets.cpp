@@ -16,6 +16,7 @@
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/server/speaker_assets.h"
+#include "q4t/server/separator_assets.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -67,6 +68,10 @@ constexpr ModelAssetSpec kSpeaker[]{
     {"config.json", kNativeSpeakerConfigBytes, kNativeSpeakerConfigSha256},
     {"model.safetensors", audio::SpeakerConfig::kFileBytes,
      audio::SpeakerConfig::kWeightSha256}};
+constexpr ModelAssetSpec kSeparator[]{
+    {"config.json", kNativeSeparatorConfigBytes, kNativeSeparatorConfigSha256},
+    {"model.safetensors", audio::SeparatorConfig::kFileBytes,
+     audio::SeparatorConfig::kWeightSha256}};
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
@@ -138,6 +143,8 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kVad;
     case ModelAssetProfile::kSpeaker:
       return kSpeaker;
+    case ModelAssetProfile::kSeparator:
+      return kSeparator;
   }
   return {};
 }

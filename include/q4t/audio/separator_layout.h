@@ -31,7 +31,7 @@ Status BindSeparatorDeviceWeights(const void* data, size_t bytes,
                                   SeparatorDeviceWeights* out);
 
 struct SeparatorWorkspaceLayout {
-  static constexpr size_t kMaxSamples = 64000;
+  static constexpr size_t kMaxSamples = 240000;
   static constexpr size_t kGemmBytes = 4ULL << 20;
   int samples = 0, frames = 0, gap = 0, segments = 0, rows = 0;
   int decoded_samples = 0, reduction_blocks = 0;

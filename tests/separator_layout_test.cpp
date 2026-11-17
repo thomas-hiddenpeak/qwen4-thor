@@ -88,9 +88,9 @@ Q4T_TEST(separator_binding_rejects_pointer_extent_overflow) {
 }
 
 Q4T_TEST(separator_workspace_convolution_and_chunk_tail_boundaries) {
-  for (const auto samples : {16, 17, 23, 24, 1008, 2008, 64000}) {
+  for (const auto samples : {16, 17, 23, 24, 1008, 2008, 64000, 239999, 240000}) {
     SeparatorWorkspaceLayout layout;
-    Q4T_CHECK(PlanSeparatorWorkspace(samples, 64000, 1ULL << 30, &layout));
+    Q4T_CHECK(PlanSeparatorWorkspace(samples, 240000, 2ULL << 30, &layout));
     Q4T_CHECK(layout.frames == (samples - 16) / 8 + 1);
     Q4T_CHECK(layout.decoded_samples <= samples);
     Q4T_CHECK(samples - layout.decoded_samples < 8);
@@ -112,9 +112,10 @@ Q4T_TEST(separator_workspace_convolution_and_chunk_tail_boundaries) {
 }
 
 Q4T_TEST(separator_workspace_disjoint_full_extent_and_exact_budget) {
-  for (size_t samples : {size_t{16}, size_t{257}, size_t{64000}}) {
+  for (size_t samples : {size_t{16}, size_t{257}, size_t{64000},
+                         size_t{240000}}) {
     SeparatorWorkspaceLayout l;
-    Q4T_CHECK(PlanSeparatorWorkspace(samples, 64000, 1ULL << 30, &l));
+    Q4T_CHECK(PlanSeparatorWorkspace(samples, 240000, 2ULL << 30, &l));
     const size_t f = l.frames, r = l.rows;
     const std::pair<size_t, size_t> buffers[] = {
         {l.pcm, samples * 4},
@@ -144,7 +145,7 @@ Q4T_TEST(separator_workspace_disjoint_full_extent_and_exact_budget) {
       Q4T_CHECK(begin % 256 == 0 && begin >= end && bytes > 0);
       end = begin + bytes;
     }
-    Q4T_CHECK(end == l.bytes && l.bytes < (512ULL << 20));
+    Q4T_CHECK(end == l.bytes && l.bytes < (2ULL << 30));
     SeparatorWorkspaceLayout same;
     Q4T_CHECK(PlanSeparatorWorkspace(samples, samples, l.bytes, &same));
     Q4T_CHECK(same.bytes == l.bytes);
@@ -156,12 +157,13 @@ Q4T_TEST(separator_workspace_disjoint_full_extent_and_exact_budget) {
 Q4T_TEST(separator_workspace_invalid_limits_preserve_owner) {
   SeparatorWorkspaceLayout layout;
   layout.samples = 777;
-  for (size_t samples : {size_t{0}, size_t{15}, size_t{64001},
+  for (size_t samples : {size_t{0}, size_t{15}, size_t{240001},
                          std::numeric_limits<size_t>::max()}) {
     Q4T_CHECK(!PlanSeparatorWorkspace(samples, SIZE_MAX, SIZE_MAX, &layout));
     Q4T_CHECK(layout.samples == 777);
   }
   Q4T_CHECK(!PlanSeparatorWorkspace(16, 15, SIZE_MAX, &layout));
+  Q4T_CHECK(!PlanSeparatorWorkspace(64001, 64000, SIZE_MAX, &layout));
   Q4T_CHECK(!PlanSeparatorWorkspace(16, 16, 0, &layout));
   Q4T_CHECK(!PlanSeparatorWorkspace(16, 16, SIZE_MAX, nullptr));
   Q4T_CHECK(layout.samples == 777);
