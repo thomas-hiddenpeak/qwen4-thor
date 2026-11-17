@@ -3405,7 +3405,7 @@
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       },
       "client_receipts_20261117": {
-        "state": "package_accepted_delivery_pending",
+        "state": "published_rev256_rollback_incomplete",
         "contract": "SERVE_CLIENT_RECEIPTS_2026-11-17.md",
         "issues": [
           "Node SDK bridge drops moderation reports/usage",
@@ -3711,7 +3711,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "delivered",
+      "state": "implementation_in_progress",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -3784,6 +3784,13 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "publication_intent_retention_20261117": {
+        "state": "cpu_accepted_actual_pending",
+        "problem": "128 historical publication intents exhaust the bounded active directory",
+        "exit": "Protected reversible archival, interrupted move recovery, stale retry rejection, CPU tests and actual stopped continuation",
+        "contract": "SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md",
+        "cpu_evidence": "evidence/serve-publication-intent-cpu-20261117/README.md"
       }
     },
     {
@@ -5563,8 +5570,8 @@
       }
     }
   ],
-  "next_task": "A12",
-  "next": "Fix SDK bridge and receipt metadata/terminal handling while PR42 exact-head checks run; continue all master tasks.",
+  "next_task": "N07",
+  "next": "Implement and validate protected publication intent retention, then finish rev256 client delivery rollback/forward; all other master tasks continue.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

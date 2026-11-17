@@ -576,3 +576,5 @@
 - [rev254有限透视视频交付](evidence/serve-video-projective-delivery-20261117/README.md)：原生精确像素变换、v5冻结重放及可回退发行。
 
 - [SDK桥接与持久响应回执](SERVE_CLIENT_RECEIPTS_2026-11-17.md)：审核元数据、logprobs和被拦截终态的针对性修复。
+
+- [发布意图可恢复保留管理](SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md)：容量满后的受保护归档、恢复和发布续做。

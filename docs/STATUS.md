@@ -9,10 +9,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev254；服务包 `3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33` |
-| Generation | `523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466` |
+| 发布 | rev256客户端候选 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64`；回退交付验收待完成 |
+| Generation | `4359372fb12707f6bc321e608f66e5513544968265ca41ea6f5999dd6a191ed3` |
 | 引擎 | `7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376` |
-| 引擎发布记录 | `429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec` |
+| 引擎发布记录 | `be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
@@ -126,6 +126,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+客户端交付在rev256回退步骤遇到发布意图128条容量上限；
+原失败保留、服务STOPPED且无GPU动作。补充可恢复意图归档：
+最多4条显式选择，[8项针对性CPU通过](evidence/serve-publication-intent-cpu-20261117/README.md)，
+严格共享锁和待恢复/当前历史保护；
+随后只续9项未完成检查，累计13项成功命令及1次原失败，不重跑客户端用例。
 
 [客户端回执修复计划](SERVE_CLIENT_RECEIPTS_2026-11-17.md)已冻结：
 补Node SDK桥接丢失审核字段、恢复器丢失审核/logprobs及被拦截终态。
