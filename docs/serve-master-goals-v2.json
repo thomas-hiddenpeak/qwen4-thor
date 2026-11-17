@@ -3247,6 +3247,143 @@
         "default_revision": 286,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-speaker-service-driver-cpu-20261118/README.md"
+      },
+      "speaker_service_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_SERVICE_COMPOSITION",
+        "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c"
+        },
+        "automatic_fallback": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/retained-01/bundle",
+          "manifest_sha256": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54"
+        },
+        "modern_retained_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/modern-retained-01/bundle",
+          "manifest_sha256": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4"
+        },
+        "tls_package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/tls-package-01/bundle",
+          "manifest_sha256": "e670d9d16f3bb1346cb24d6dfbfad6cb398cb368095e6a733ad4f07db602a804"
+        },
+        "stages": [
+          {
+            "name": "modern-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 3,
+              "probes": 0,
+              "controls": 152
+            },
+            "actual_model_execs": 1,
+            "seconds": 51.92326605319977,
+            "nvml_queries": 51,
+            "strict_lease_seconds": 53.45863579725847,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "retained-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 3,
+              "probes": 0,
+              "controls": 154
+            },
+            "actual_model_execs": 1,
+            "seconds": 53.4701138981618,
+            "nvml_queries": 52,
+            "strict_lease_seconds": 54.57568272668868,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "tls-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 7,
+              "probes": 0,
+              "controls": 205
+            },
+            "actual_model_execs": 1,
+            "seconds": 71.21996213821694,
+            "nvml_queries": 69,
+            "strict_lease_seconds": 73.07578203687444,
+            "actual_labels": {
+              "python-zh-json": [
+                "A",
+                "B",
+                "A"
+              ],
+              "chunked-zh": [
+                "A",
+                "B",
+                "A"
+              ],
+              "js-en-stream": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "version-service-01",
+            "counts": {
+              "starts": 2,
+              "chats": 6,
+              "probes": 1,
+              "controls": 340
+            },
+            "actual_model_execs": 2,
+            "seconds": 113.87310769315809,
+            "nvml_queries": 108,
+            "strict_lease_seconds": 115.4078333741054,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ],
+              "fallback-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          }
+        ],
+        "counted_spawn_attempts": 5,
+        "actual_model_starts": 5,
+        "service_requests": 19,
+        "service_probes": 1,
+        "service_seconds": 290.4864497827366,
+        "nvml_queries": 280,
+        "nvml_all_ok": true,
+        "cleanup_complete": true,
+        "strict_finalizers_all_passed": true,
+        "primary_light_evidence": "docs/evidence/serve-speaker-profiles-20261118/README.md",
+        "direct_http_evidence": "docs/evidence/serve-speaker-http-20261118/README.md",
+        "candidate_whole_package_gpu_run": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "all_master_tasks_complete": false,
+        "archive_sha256": "c2474ce40dfb3f914041929767a30d7be335b12e21cc7e3c5d91ac4048e7df1f",
+        "secret_scan_matches": 0
       }
     },
     {

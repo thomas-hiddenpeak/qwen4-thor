@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+服务短验已全过，准备STOPPED可回退发布（0新增GPU）：先最多
+7命令/360秒归档无人引用记录以腾出发行池，0删除；再最多
+20命令/540秒完成显式迁移、整根回退再前进和预算保全，保留
+原rev286。随后主线、真实重叠与全部master继续。
+
+[原生说话人服务与恢复通过](evidence/serve-speaker-service-20261118/README.md)：
+4阶段5启动/19创建/1探针/290.486秒；双SDK/TLS、全部保留包及
+整包回退后实际A/B/A、原状态/预算保全通过。280次NVML正常，
+清理和自动finalize通过；接着可回退发布/主线、真实重叠及全部master。
+默认rev286尚未变，旧引擎能力未冒充已验。
+
 [原生说话人服务验收器9CPU通过](evidence/serve-speaker-service-driver-cpu-20261118/README.md)，
 0.314秒、0GPU。实际A/B/A JSON/SSE、源/关联/依赖健康/预算及
 原ASR保护通过。接着封包和4组服务短验：累计5启动/19创建/

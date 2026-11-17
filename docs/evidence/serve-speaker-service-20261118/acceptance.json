@@ -1,0 +1,233 @@
+{
+  "status": "ACCEPT_NATIVE_SPEAKER_SERVICE_COMPOSITION",
+  "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+    "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/retained-01/bundle",
+    "manifest_sha256": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/modern-retained-01/bundle",
+    "manifest_sha256": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4"
+  },
+  "tls_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/tls-package-01/bundle",
+    "manifest_sha256": "e670d9d16f3bb1346cb24d6dfbfad6cb398cb368095e6a733ad4f07db602a804"
+  },
+  "stages": [
+    {
+      "name": "modern-service-01",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 152
+      },
+      "actual_model_execs": 1,
+      "seconds": 51.92326605319977,
+      "nvml_queries": 51,
+      "strict_lease_seconds": 53.45863579725847,
+      "actual_labels": {
+        "primary-asr": [
+          "A",
+          "B",
+          "A"
+        ]
+      }
+    },
+    {
+      "name": "retained-service-01",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 154
+      },
+      "actual_model_execs": 1,
+      "seconds": 53.4701138981618,
+      "nvml_queries": 52,
+      "strict_lease_seconds": 54.57568272668868,
+      "actual_labels": {
+        "primary-asr": [
+          "A",
+          "B",
+          "A"
+        ]
+      }
+    },
+    {
+      "name": "tls-service-01",
+      "counts": {
+        "starts": 1,
+        "chats": 7,
+        "probes": 0,
+        "controls": 205
+      },
+      "actual_model_execs": 1,
+      "seconds": 71.21996213821694,
+      "nvml_queries": 69,
+      "strict_lease_seconds": 73.07578203687444,
+      "actual_labels": {
+        "python-zh-json": [
+          "A",
+          "B",
+          "A"
+        ],
+        "chunked-zh": [
+          "A",
+          "B",
+          "A"
+        ],
+        "js-en-stream": [
+          "A",
+          "B",
+          "A"
+        ]
+      }
+    },
+    {
+      "name": "version-service-01",
+      "counts": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 1,
+        "controls": 340
+      },
+      "actual_model_execs": 2,
+      "seconds": 113.87310769315809,
+      "nvml_queries": 108,
+      "strict_lease_seconds": 115.4078333741054,
+      "actual_labels": {
+        "primary-asr": [
+          "A",
+          "B",
+          "A"
+        ],
+        "fallback-asr": [
+          "A",
+          "B",
+          "A"
+        ]
+      }
+    }
+  ],
+  "counted_spawn_attempts": 5,
+  "actual_model_starts": 5,
+  "service_requests": 19,
+  "service_probes": 1,
+  "service_seconds": 290.4864497827366,
+  "nvml_queries": 280,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "strict_finalizers_all_passed": true,
+  "primary_light_evidence": "docs/evidence/serve-speaker-profiles-20261118/README.md",
+  "direct_http_evidence": "docs/evidence/serve-speaker-http-20261118/README.md",
+  "tls_composition": {
+    "status": "PASS_NATIVE_ASR_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+    "manifest_sha256": "e670d9d16f3bb1346cb24d6dfbfad6cb398cb368095e6a733ad4f07db602a804",
+    "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+    "actual_business": {
+      "status": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+      "strict_lease_seconds": 73.07578203687444,
+      "nvml_queries": 69,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 7,
+        "probes": 0,
+        "controls": 205
+      },
+      "source_commit": "0c93520abfcdb651486d3c32d00470586fb224ab",
+      "plan_sha256": "1ad6df8b5e384b0c2ad2343307c0d8cf5f5e96f831a2172f7af42a934e3c3c16",
+      "result_sha256": "fd6c4cc4bc615d36367b8399c8b3374590e138b856f72249f107bb7ad9133773",
+      "lease_result_sha256": "0db6625652ad68eb8e919696bc841162a3b8d19f189fc39baa1d13ee10ada676",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_service_acceptance": {
+    "status": "PASS_NATIVE_ASR_SERVICE_VERSION",
+    "acceptance": "ACCEPT_NATIVE_ASR_SERVICE_VERSION",
+    "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+    "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+    "actual_business": {
+      "status": "ACCEPT_NATIVE_ASR_SERVICE_VERSION",
+      "strict_lease_seconds": 115.4078333741054,
+      "nvml_queries": 108,
+      "env_abort": false,
+      "counts": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 1,
+        "controls": 340
+      },
+      "source_commit": "0c93520abfcdb651486d3c32d00470586fb224ab",
+      "plan_sha256": "5a05a0234e9441a015562e708e28e30b8e1be540e723d12205f6e09f60d64597",
+      "result_sha256": "d309400f19858397b00cb3facc79f696685b459b57fee2f9ef136a6fd83ec778",
+      "lease_result_sha256": "89d9a15740a9a1bb60e86db06f3eb15e0d49fd04e6ca4aab4c0a2dc599d906bb",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "modern_service_acceptance": {
+    "status": "PASS_NATIVE_ASR_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+    "manifest_sha256": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+    "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+    "actual_business": {
+      "status": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+      "strict_lease_seconds": 53.45863579725847,
+      "nvml_queries": 51,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 152
+      },
+      "source_commit": "0c93520abfcdb651486d3c32d00470586fb224ab",
+      "plan_sha256": "214af74ffbd3cf70220171da9f646f5414e5c828384e47fe4bb37718c79913e0",
+      "result_sha256": "596e02614d2079deab378633e729be2740187e0b25e2727cefec1cef4230ca78",
+      "lease_result_sha256": "3cfc6d0fab1f13b6aa2dcaec1610c57aa2a7a4829c05b0f990d01c24dd3562a7",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_whole_package_gpu_run": true,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "archive_sha256": "c2474ce40dfb3f914041929767a30d7be335b12e21cc7e3c5d91ac4048e7df1f",
+  "secret_scan_matches": 0
+}
