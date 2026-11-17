@@ -2905,6 +2905,21 @@
         "cumulative_counted_attempt_limit": 6,
         "cumulative_creates_limit": 19,
         "cumulative_seconds_limit": 1800
+      },
+      "audio_auxiliary_service_20261118": {
+        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_SERVICE_COMPOSITION",
+        "actual_model_starts": 5,
+        "counted_spawn_attempts": 6,
+        "service_requests": 19,
+        "service_probes": 1,
+        "service_seconds": 315.83405995741487,
+        "nvml_queries": 305,
+        "cleanup_complete": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "evidence": "evidence/serve-audio-auxiliary-service-20261118/README.md",
+        "whole_task_complete": false
       }
     },
     {
@@ -6229,8 +6244,8 @@
       }
     }
   ],
-  "next_task": "A10 native audio alignment/segment statistics/VAD service and all remaining master tasks",
-  "next": "Continue actual segment token/confidence producers, native VAD chunking and alignment delivery, then all remaining A/N/R/Q tasks; PR44 merged, no phase-level total completion.",
+  "next_task": "A10 native audio alignment/VAD reversible delivery, then remaining master tasks",
+  "next": "Complete qualified native auxiliary delivery and PR45, then actual diarization, Chat audio/synthesis/Realtime and all remaining A/N/R/Q tasks. Stage completion is not total completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生对齐/VAD接入与整包恢复通过](evidence/serve-audio-auxiliary-service-20261118/README.md)：
+四组实际服务验收完成，含原失败共6次计费尝试、5次模型加载、
+19创建/1探针/315.834秒，305次NVML正常，清理完成。双SDK、
+TLS/分块/配额/取消、入口恢复和整包回退后的实际对齐均通过。
+旧控制成功轮另有明确的命令路径等价审查，原自动finalizer失败保留；
+其余三组自动核验通过。默认rev276仍未变，接着可回退交付、PR45
+与说话人/Chat音频/合成/Realtime及全部master剩余任务。
+
 [服务执行屏障参数遗漏已修、5CPU通过](evidence/serve-audio-exec-bound-20261118/README.md)：
 旧保留包首轮因76参数超过64上限，在模型exec前失败；原FAILED保留，
 1次启动尝试/0业务/34.104秒，清理正常。新增整命令字节边界，
