@@ -1,0 +1,34 @@
+{
+  "id": "batch_2cce0428377d648b7031e3cb918e1079",
+  "object": "batch",
+  "status": "completed",
+  "endpoint": "/v1/chat/completions",
+  "input_file_id": "file_af910eab5d78c6a4bf7e748fbf6efe39",
+  "completion_window": "24h",
+  "created_at": 1794956566,
+  "expires_at": 1795042966,
+  "metadata": null,
+  "output_file_id": "file_4260d84d38dba536897c888108517de0",
+  "error_file_id": null,
+  "errors": null,
+  "request_counts": {
+    "total": 1,
+    "completed": 1,
+    "failed": 0
+  },
+  "model": "qwen3.8-flash-next",
+  "in_progress_at": 1794956566,
+  "usage": {
+    "input_tokens": 280,
+    "output_tokens": 13,
+    "total_tokens": 293,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "finalizing_at": 1794956567,
+  "completed_at": 1794956567
+}

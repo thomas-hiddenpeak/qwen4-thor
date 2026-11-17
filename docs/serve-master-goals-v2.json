@@ -7265,7 +7265,7 @@
       }
     }
   ],
-  "next_task": "Chat audio real SDK/business, quota and recovery delivery; all remaining master tasks continue",
+  "next_task": "Chat audio qualified primary/light, native TLS, recovery and reversible delivery; all master tasks remain active",
   "next": "Implement Chat audio input using the existing native ASR backend; preserve unresolved four-second overlap recognition quality and pending managed qualification. Continue speech output/Realtime and all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -7288,5 +7288,17 @@
     "evidence": "docs/evidence/serve-media-prefill-repair-cpu-20261117/acceptance.json",
     "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks.",
     "business_evidence": "docs/evidence/serve-media-prefill-repair-business-20261117/acceptance.json"
+  },
+  "chat_audio_input_business_20261118": {
+    "state": "actual_business_passed_managed_delivery_pending",
+    "evidence": "evidence/serve-chat-audio-http-20261118/README.md",
+    "cases": 13,
+    "default_unchanged": true,
+    "remaining": [
+      "primary/light qualification and capability-preserving recovery",
+      "native TLS and reversible delivery",
+      "nonverbal audio, speech output, assistant audio history and Realtime",
+      "original overlap recognition quality"
+    ]
   }
 }

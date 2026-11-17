@@ -1,0 +1,1 @@
+{"error":{"message":"Audio preparation budget exceeded","type":"invalid_request_error","code":"file_audio_capacity","param":"messages[0].content[1]"}}

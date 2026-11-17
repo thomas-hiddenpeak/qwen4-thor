@@ -1,0 +1,1 @@
+{"error":{"message":"File data is not canonical base64","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[1].input_audio.data"}}

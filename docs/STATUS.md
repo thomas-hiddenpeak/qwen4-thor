@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频13实际业务用例闭合](evidence/serve-chat-audio-http-20261118/README.md)：
+静音原问题已修复、Batch/边界/取消与核心保护通过，最后一组
+1启动/7请求/44.235秒，资源清理、默认rev296不变。接着主/轻
+资格、原生TLS/恢复和可回退交付；原重叠质量及全部master继续。
+
 [Chat音频静音状态3CPU通过](evidence/serve-chat-audio-silence-state-20261118/README.md)，
 2来源及零警告构建通过，实际多模态3请求可复用；原静音FAIL
 保留。接着1启动/7请求/900秒针对失败与未执行项，默认rev296、

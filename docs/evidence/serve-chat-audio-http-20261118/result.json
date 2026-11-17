@@ -1,0 +1,11 @@
+{
+  "status": "PASS_CHAT_AUDIO_WITH_REUSED_SPEECH_AND_TOOL_BUSINESS",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 75
+  },
+  "seconds": 44.234555437229574,
+  "binary_sha256": "5b28801be5a58afe3a86728c19f428793ddc0a6defabca34ee4948df6b8b9928"
+}

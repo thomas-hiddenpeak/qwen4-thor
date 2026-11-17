@@ -1,0 +1,101 @@
+{
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-04",
+  "original_status": "FAILED_SILENCE_PRESERVED",
+  "accepted_requests": 3,
+  "binary_sha256": "0f3e5cf5aae420abd26aa8caa77aaf6a6b1304325bbaeb2e51cbf22c68d4a078",
+  "english": {
+    "activity": "writing for other people",
+    "usage": {
+      "prompt_tokens": 569,
+      "completion_tokens": 58,
+      "total_tokens": 627,
+      "q4t_audio_preparation": {
+        "input_tokens": 212,
+        "output_tokens": 49,
+        "audio_tokens": 197
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 197
+      }
+    }
+  },
+  "tool": {
+    "answer": {
+      "title": "MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0",
+      "zh_topic": "\u4ea4\u6613",
+      "en_activity": "writing for other people"
+    },
+    "usage": {
+      "prompt_tokens": 1659,
+      "completion_tokens": 99,
+      "total_tokens": 1758,
+      "q4t_audio_preparation": {
+        "input_tokens": 282,
+        "output_tokens": 60,
+        "audio_tokens": 252
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 252
+      }
+    }
+  },
+  "audio": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-03",
+    "original_status": "FAILED_CHECKER_PRESERVED",
+    "accepted_requests": 2,
+    "binary_sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282",
+    "stored": {
+      "originals_equal": true,
+      "messages": 1,
+      "audio": [
+        {
+          "bytes": 134570,
+          "sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50"
+        }
+      ]
+    },
+    "isolation": {
+      "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-02",
+      "original_status": "FAILED_PRESERVED",
+      "accepted_requests": 2,
+      "binary_sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d",
+      "identities": {
+        "plan.json": "90acf2db1093e6b5c7c0b3dde18dbc6e81828acceb6575ad5fb1a164458bc4f8",
+        "result.json": "1643cbcb2a850f817053ebc40bcb97cbcd90c8135265ee97e4a7219906edaf87",
+        "cleanup.json": "bd437c376b00506188ebdd51232c18755ab11fdc68ca83154e69059890685944",
+        "lease/exit.json": "37d784dea9ac13f023fd196bb84f0ed890986dcad069d62dd09482111080c119",
+        "missing-asr.http.json": "68599ac26f198c1cb1021f2e35d8f454266888acd1d52236dd1f487c6d8b9ad3",
+        "missing-asr.wire": "1344b1059bd0d056b581d73380e7e06c9ed7f335a87903357ed9f5b38706ae8b",
+        "healthy-during-asr-failure.http.json": "a3ef2c75624dfe131c36e83b5406f34a4a8cf10463e1816f4e7daf31b11be265",
+        "core-during-asr-failure.wire": "097c00f7ca1be6374f7c965c89333596b8f6defdba271492a8968828467c7678",
+        "preflight.wire": "17308c0f41f909ca427dd93c9b3d016a45a094dcee641a2d01bd053c2c62149f"
+      }
+    },
+    "identities": {
+      "plan.json": "877cdde0148de8d3729316f6f5ce2b6b5e8f5f5b79f803e9fa5766805c6ad562",
+      "result.json": "a1bb09c55312be204de22562c3b887cf4edff2cfc99a2bf8dc6d3e19c5b6bcf8",
+      "cleanup.json": "1659040ee47d30887c5c201a202d84eb43097058d66ff893610c1c2dccb4cd83",
+      "lease/exit.json": "f332ec182cd3a442824e83a7d3280813451de656caf7586ca5b1087edf11996d",
+      "python-zh.wire": "9745903fce2bab3e874d9e4d998fcde5e6fbcfccda628db5aa3a4d92b34f0798",
+      "python-zh.sdk.json": "659698eb39fd9a7cd8515461336e20f55bdc7f80dbf95a955da78c4c6fc398a5",
+      "one-rpm-exhausted.http.json": "95d573bef7cb2c5883b994118198d239a2d774f7a3d46bb29dce6cff3cf86579",
+      "one-rpm-exhausted.wire": "18a33729d6b54507be223b99852dcb130b507788b228314a63f701eb9323d88b",
+      "stored-audio-history.http.json": "79995235ce548e52a41ffb00bd7c68481b998c49cc8f3fc727393e425b3837cf",
+      "stored-audio-history.wire": "16bab75a985f09d24d7cef4f4444ff49c5b282ee3d1b3b66b1856d31b06c2d8e"
+    }
+  },
+  "identities": {
+    "plan.json": "a62b4fb7250cd7c00be4ccac889b1f1eed4ae0149ca7ab2db58e88eebab32edb",
+    "result.json": "973360d693a740bec1de4188e727ed1bb7153158017dcfb597a77177ff076448",
+    "cleanup.json": "8bc6944ea22f5975dbcf5a81cb2605d163fd713a2cb643a9104b7770a1854ae2",
+    "lease/exit.json": "38285fc7a23d3e4599acf2e3b9a5f75a19333bc1cb4130d63ab55145ba481289",
+    "js-en-mp3.wire": "eaabd0a0021d6e5edefedd9b1f999d4727f5202aee950accb83b7decc9c0303b",
+    "js-en-mp3.sdk.json": "1ad1f2f149b4617ff166d3cbe212382f884078f37980022ad4154af81e65ca80",
+    "two-audio-tool.wire": "fabac05076ab4fa1c13795b983fcad09d9727fbe621f37c5ee4dcca8e6c0508b",
+    "tool-execution.json": "ba97fd7228de23e67c229ac0a4516a0cd2326c66832d9b7bb7859f63e4891ae2",
+    "two-audio-tool-final.wire": "4547a36b868ddf2cc122713bd7cd353db473b86fdfd5ef7c17018e94d9112ccc",
+    "silence.wire": "0162bfdeb8b2a343a84c0e19bf00341e939d8dbac1a1aab1a058e5ac0b655b16"
+  }
+}
