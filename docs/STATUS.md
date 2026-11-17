@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+ASR真实业务驱动已固定为1次启动、9次创建、600秒：覆盖原生codec、
+Python/JS SDK、独立资产恢复、取消和同PID核心Chat。即将按严格
+租约执行；当前还没有这组HTTP通过结论，随后继续原生接入/恢复组合。
+
 [ASR03的34项针对性CPU](evidence/serve-asr-service-cpu-20261117/README.md)
 已完成（含失败35次、2.167秒）：独立健康/冷却、资源预算、
 multipart/字面量prompt、JSON/text/SSE与实际概率/用量、共享Chat
