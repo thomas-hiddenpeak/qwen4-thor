@@ -53,12 +53,27 @@ def definitions():
         languages=dict(type='array', items=obj(dict(code=text), ['code'])))
     response = obj(response_fields, ['text', 'usage'])
     delta = obj(dict(type=dict(const='transcript.text.delta'), delta=text,
-                     logprobs=probabilities), ['type', 'delta'])
+                     logprobs=probabilities,
+                     segment_id=dict(type='string', minLength=1, maxLength=32)),
+                ['type', 'delta'])
     done = obj(dict(response_fields, type=dict(const='transcript.text.done')),
                ['type', 'text', 'usage'])
     error = obj(dict(type=dict(const='error'), code=text, message=text,
                      param=nullable(text)), ['type', 'code', 'message', 'param'])
     seconds = dict(type='number', minimum=0, maximum=600)
+    diarized_segment = obj(dict(id=dict(type='string', minLength=1, maxLength=32),
+        type=dict(const='transcript.text.segment'), start=seconds, end=seconds,
+        speaker=dict(type='string', minLength=1, maxLength=256), text=text),
+        ['id', 'type', 'start', 'end', 'speaker', 'text'])
+    diarized_fields = dict(task=dict(const='transcribe'), duration=seconds,
+        segments=dict(type='array', maxItems=65536,
+                      items=ref('transcription_diarized_segment')))
+    diarized = obj(dict(diarized_fields, text=text, usage=usage),
+                    ['task', 'duration', 'segments', 'text', 'usage'])
+    done['properties'].update(diarized_fields)
+    done['allOf'] = [dict(
+        **{'if':dict(anyOf=[dict(required=[key]) for key in diarized_fields]),
+           'then':dict(required=list(diarized_fields))})]
     word = obj(dict(word=text, start=seconds, end=seconds), ['word', 'start', 'end'])
     segment = obj(dict(id=count, seek=count, start=seconds, end=seconds, text=text,
         tokens=dict(type='array', minItems=1, items=dict(type='integer', minimum=0, maximum=151935)),
@@ -77,10 +92,13 @@ def definitions():
     return dict(transcription_create=request, transcription_response=response,
         transcription_verbose_response=verbose, transcription_word=word,
         transcription_segment=segment,
+        transcription_diarized_response=diarized,
+        transcription_diarized_segment=diarized_segment,
         transcription_logprob=probability, transcription_delta=delta,
         transcription_done=done, transcription_error=error,
         transcription_event=dict(anyOf=[ref('transcription_delta'),
-            ref('transcription_done'), ref('transcription_error')]))
+            ref('transcription_done'), ref('transcription_diarized_segment'),
+            ref('transcription_error')]))
 
 
 def source_sha(sdk):
@@ -94,14 +112,15 @@ def source_sha(sdk):
 def add_openapi(paths, response, error):
     external = lambda name: {'$ref':'serve-application-v1.schema.json#/$defs/'+name}
     success = response(dict(anyOf=[external('transcription_response'),
-                                   external('transcription_verbose_response')]))
+                                   external('transcription_verbose_response'),
+                                   external('transcription_diarized_response')]))
     success['content'].update({
         'text/plain':dict(schema=dict(type='string')),
         'text/vtt':dict(schema=dict(type='string')),
         'application/x-subrip':dict(schema=dict(type='string')),
         'text/event-stream':dict(schema=dict(type='string'), **{
             'x-q4t-event-schema':external('transcription_event'),
-            'x-q4t-stream-contract':'transcript.text.delta then transcript.text.done; '
+            'x-q4t-stream-contract':'transcript.text.delta, diarized segment events, then transcript.text.done; '
                 'actual token usage, no Chat DONE sentinel; typed error terminates failure'})})
     paths['/v1/audio/transcriptions'] = dict(post=dict(
         operationId='v1_audio_transcriptions',
@@ -112,8 +131,15 @@ def add_openapi(paths, response, error):
             configured_by='asr-model-dir', binary_file_bytes=25*1024**2,
             multipart_bytes=32*1024**2, core_readiness_dependency=False,
             recovery='request-driven asset retry; no automatic primary model restart',
-            implemented_formats=['json', 'text', 'verbose_json', 'srt', 'vtt'],
-            required_pending_executors=['diarization'],
+            implemented_formats=['json', 'text', 'verbose_json', 'srt', 'vtt', 'diarized_json'],
+            required_pending_executors=['overlap_diarization'],
+            diarization=dict(configured_by='speaker-model-dir',
+                requires=['asr-model-dir','aligner-model-dir','vad-model-dir'],
+                backend='native ECAPA FP32, request-local cosine average linkage',
+                references='up to 4 inline audio data URLs, 2 to 10 seconds each',
+                timing='actual aligner words assigned by acoustic interval overlap',
+                streaming='completed segment_id delta and segment, then one complete done',
+                overlap='required implementation remains pending'),
             alignment=dict(configured_by='aligner-model-dir',
                 timestamps='actual fixed-model word edges; repaired ordering is explicit',
                 segments='independently decoded clip with actual token/temperature/probability/compression'),

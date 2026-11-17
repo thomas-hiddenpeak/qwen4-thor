@@ -4,6 +4,7 @@
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/aligner_assets.h"
 #include "q4t/audio/vad.h"
+#include "q4t/audio/speaker_config.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -31,7 +32,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  const AccessProgramPolicy* access,
                                  bool native_embedding, bool native_asr,
                                  bool native_aligner, bool native_vad,
-                                 int vad_max_chunks) {
+                                 int vad_max_chunks, bool native_speaker) {
   const bool constrained = kStructuredDecodingAvailable;
 #ifdef Q4T_HAVE_GSTREAMER_HEADERS
   const bool video_decoder = true;
@@ -57,8 +58,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          Quote(kNativeAsrWeightSha256) +
          R"(,"model":"qwen3-asr-0.6b","configured":)" +
          (native_asr ? "true" : "false") +
-         R"(,"formats":["json","text","srt","verbose_json","vtt"],)"
-         R"("stream":true,"stream_formats":["json","text"],"logprobs":true,)"
+         R"(,"formats":["json","text","srt","verbose_json","vtt","diarized_json"],)"
+         R"("stream":true,"stream_formats":["json","text","diarized_json"],"logprobs":true,)"
          R"("usage":"actual_tokens","prompt":"literal_context",)"
          R"("languages":"native_context_guidance","keywords":"native_context_guidance",)"
          R"("zero_temperature":{"policy":"confidence_adaptive",)"
@@ -90,7 +91,20 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"frame_samples":512,"sample_rate":16000,)"
          R"("core_readiness_dependency":false},)"
          R"("chunking_strategy":["auto","server_vad"],)"
-         R"("remaining_native_work":["diarization"]})" +
+         R"("speaker":{"configured":)" +
+         (native_speaker ? "true" : "false") +
+         R"(,"profile":)" + Quote(audio::SpeakerConfig::kProfile) +
+         R"(,"revision":)" + Quote(audio::SpeakerConfig::kRevision) +
+         R"(,"weight_sha256":)" + Quote(audio::SpeakerConfig::kWeightSha256) +
+         R"(,"model":"speechbrain-ecapa-voxceleb",)"
+         R"("backend":"native_ecapa_fp32","sample_rate":16000,)"
+         R"("embedding_dimensions":192,"clustering":"average_linkage_cosine",)"
+         R"("window_label_boundaries":"adjacent_acoustic_centers",)"
+         R"("word_assignment":"actual_alignment_maximum_overlap",)"
+         R"("known_speakers_max":4,"reference_seconds":[2,10],)"
+         R"("reference_scope":"current_request_only",)"
+         R"("core_readiness_dependency":false},)"
+         R"("remaining_native_work":["overlap_diarization"]})" +
          R"(,"models":{"endpoint":"/v1/models","detail":true,)"
          R"("aliases":"explicit_cli","max_aliases":32,)"
          R"("created":"registration_time","loaded_base_delete":403},)"

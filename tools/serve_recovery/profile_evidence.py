@@ -12,6 +12,14 @@ FORMAT = 'q4t-profile-business-v1'
 MEDIA_FORMAT = 'q4t-profile-business-v2'
 ASR_FORMAT = 'q4t-profile-business-v3'
 AUDIO_AUXILIARY_FORMAT = 'q4t-profile-business-v4'
+SPEAKER_FORMAT = 'q4t-profile-business-v5'
+# Fixed SpeechBrain sample sequence: speaker 1, speaker 2, speaker 1 returns.
+# Original assets/concatenation receipt: serve-speaker-http-20261118. Retain
+# hashes and source intervals, not public copies of the reference audio.
+SPEAKER_FILE_SHA = '4266252cab301d5f6133e49cef675fa23f549ccaa9c5907451538fd60722c51f'
+SPEAKER_SAMPLES = 170080
+SPEAKER_UTTERANCES = ((4800, 50720, 'A'), (66720, 98880, 'B'),
+                      (114880, 165280, 'A'))
 ASR_FILE_SHA = '46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50'
 ASR_TEXT = '甚至出现交易几乎停滞的情况。'
 ASR_TEXT_IDS = [100636, 100347, 99886, 100740, 118083, 102072, 1773]
@@ -25,6 +33,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None):
+    if has_speaker(identity or {}):
+        return SPEAKER_FORMAT
     if audio_auxiliaries(identity or {}):
         return AUDIO_AUXILIARY_FORMAT
     if (identity or {}).get('native_asr') is not None:
@@ -34,6 +44,78 @@ def format_for(profile, identity=None):
 
 def audio_auxiliaries(identity):
     return tuple(k for k in ('alignment', 'vad') if k in (identity.get('native_asr') or {}))
+
+
+def has_speaker(identity):
+    return 'speaker' in (identity.get('native_asr') or {})
+
+
+def speaker_request(identity):
+    ledger.require(has_speaker(identity), 'missing qualified speaker backend')
+    return dict(model=identity['native_asr']['model'], language='en',
+        response_format='diarized_json', chunking_strategy=dict(type='server_vad',
+            threshold=.5, prefix_padding_ms=300, silence_duration_ms=500))
+
+
+def speaker_business(value, identity):
+    """Require actual recurring voices, source times, usage and isolated health."""
+    from tools.serve_service import package
+    ledger.keys(value, ('source_sha256', 'request', 'response', 'health', 'limits'))
+    ledger.require(value['source_sha256'] == SPEAKER_FILE_SHA and
+        package.same_json(value['request'], speaker_request(identity)),
+        'qualified speaker source/request differs')
+    fixed = identity['native_asr']['speaker']
+    health = value['health']
+    ledger.require(type(health) is dict and health.get('model') == fixed['model'] and
+        health.get('state') == 'ready' and health.get('reason') == 'none' and
+        health.get('core_readiness_dependency') is False and
+        ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+        ledger.integer(health.get('device_bytes')) and health['device_bytes'] == 83224056 and
+        package.same_json(value['limits'], fixed['limits']),
+        'qualified speaker health/limits differ')
+    response = value['response']
+    ledger.require(type(response) is dict and response.get('task') == 'transcribe' and
+        response.get('duration') == SPEAKER_SAMPLES/16000 and
+        type(response.get('text')) is str and response['text'].strip(),
+        'qualified speaker transcript/duration missing')
+    usage = response.get('usage', {})
+    ledger.require(type(usage) is dict and usage.get('type') == 'tokens' and all(
+        ledger.integer(usage.get(k), minimum=1) and usage[k] < 2**53 for k in
+        ('input_tokens', 'output_tokens', 'total_tokens')) and
+        usage['input_tokens'] + usage['output_tokens'] == usage['total_tokens'] and
+        usage['output_tokens'] <= identity['native_asr']['limits']['max_output_tokens'],
+        'qualified speaker actual token usage missing')
+    detail = usage.get('input_token_details', {})
+    ledger.require(type(detail) is dict and
+        ledger.integer(detail.get('audio_tokens'), minimum=1) and
+        ledger.integer(detail.get('text_tokens')) and
+        detail['audio_tokens'] + detail['text_tokens'] == usage['input_tokens'],
+        'qualified speaker audio/text usage differs')
+    rows = response.get('segments')
+    ledger.require(type(rows) is list and 1 <= len(rows) <= 65536,
+                   'qualified speaker segments missing')
+    previous, seen = 0, set()
+    for index, row in enumerate(rows):
+        ledger.require(type(row) is dict and row.get('id') == str(index) and
+            row.get('type') == 'transcript.text.segment' and
+            type(row.get('text')) is str and row['text'].strip() and all(
+            type(row.get(k)) in (int, float) and math.isfinite(row[k]) for k in ('start', 'end')),
+            'qualified speaker segment identity/text/time missing')
+        begin, end = row['start']*16000, row['end']*16000
+        ledger.require(previous <= begin <= end <= SPEAKER_SAMPLES,
+                       'qualified speaker source times invalid')
+        previous = end
+        overlaps = [max(0, min(end, b)-max(begin, a)) for a,b,_ in SPEAKER_UTTERANCES]
+        owner = max(range(len(overlaps)), key=overlaps.__getitem__)
+        a, b, voice = SPEAKER_UTTERANCES[owner]
+        ledger.require(overlaps[owner] > 0 and row.get('speaker') == voice and
+            begin >= a-6080 and end <= b+6080,
+            'qualified speaker did not preserve actual recurring voices')
+        seen.add(owner)
+    compact = lambda s: ''.join(s.split())
+    ledger.require(seen == set(range(len(SPEAKER_UTTERANCES))) and
+        compact(''.join(row['text'] for row in rows)) == compact(response['text']),
+        'qualified speaker dropped actual voice or transcript text')
 
 
 def auxiliary_audio_source(source, identity):
@@ -267,13 +349,16 @@ def business(value, identity, selected=None):
     ledger.keys(value, ('schema', 'tool_call', 'tool_result', 'tool_reply',
                        'tool_source', 'embedding') + (('media',) if media else ()) +
                        (('asr',) if identity.get('native_asr') is not None else ()) +
-                       (('asr_auxiliary',) if audio_auxiliaries(identity) else ()))
+                       (('asr_auxiliary',) if audio_auxiliaries(identity) else ()) +
+                       (('speaker',) if has_speaker(identity) else ()))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:
         audio_business(value['asr'], identity)
     if audio_auxiliaries(identity):
         audio_auxiliary_business(value['asr_auxiliary'], identity)
+    if has_speaker(identity):
+        speaker_business(value['speaker'], identity)
     schema = message(value['schema'], 'stop')
     ledger.require(json.loads(schema['content']) == {'answer': 42},
                    'profile structured business differs')

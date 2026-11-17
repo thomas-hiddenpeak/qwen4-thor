@@ -1,0 +1,14 @@
+{
+  "model": "qwen3-asr-0.6b",
+  "response_format": "verbose_json",
+  "timestamp_granularities": [
+    "word",
+    "segment"
+  ],
+  "chunking_strategy": {
+    "type": "server_vad",
+    "threshold": 0.5,
+    "prefix_padding_ms": 300,
+    "silence_duration_ms": 500
+  }
+}

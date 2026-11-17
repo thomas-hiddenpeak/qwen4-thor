@@ -1,0 +1,45 @@
+{
+  "status": "ACCEPT_NATIVE_ECAPA_COMPONENT",
+  "gpu_model_loads": 1,
+  "cpu_reference_loads": 1,
+  "cases": 4,
+  "numeric_checks": 36,
+  "boundary_checks": 8,
+  "lifecycle_checks": 16,
+  "seconds": 6.317649954929948,
+  "lease_seconds": 7.817893808707595,
+  "nvml_ok": 9,
+  "http_requests": 0,
+  "default_revision": 286,
+  "defaults_unchanged": true,
+  "cleanup_complete": true,
+  "source_commit": "8c4b59d57a5aaeb618cfceb63043c6b394301b79",
+  "thresholds": {
+    "features_max_abs": 0.002,
+    "stage": {
+      "relative_l2": 0.0005,
+      "cosine": 0.999999,
+      "max_abs": 0.02
+    },
+    "embedding": {
+      "relative_l2": 0.0001,
+      "cosine": 0.99999999,
+      "max_abs": 0.01
+    }
+  },
+  "max_feature_abs": 0.000457763671875,
+  "max_stage_relative_l2": 3.31075123554831e-06,
+  "max_embedding_relative_l2": 2.886339475801872e-06,
+  "max_explicit_workspace_bytes": 281953284,
+  "raw_evidence_bytes": 205528749,
+  "raw_tensors_retained": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/component-01/run",
+  "raw_tensor_digests_recorded": true,
+  "model_end_to_end_with_reference_frontend": false,
+  "speaker_identification_business": false,
+  "diarized_http_business": false,
+  "performance_claim": false,
+  "full_model_quality": false,
+  "long_stability_run": false,
+  "all_master_tasks_active": true,
+  "archive_sha256": "f3f6e9c58878db3bbdaf9f1bf7981817c7f16f4044f6bc027cca88340301b4d6"
+}

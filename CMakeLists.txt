@@ -181,6 +181,11 @@ add_library(q4t_model STATIC
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
   src/audio/asr_model.cu
+  src/audio/speaker_config.cpp
+  src/audio/speaker_layout.cpp
+  src/audio/speaker_features.cpp
+  src/audio/diarization.cpp
+  src/audio/speaker_model.cu
   src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
@@ -303,6 +308,13 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
   src/server/aligner_assets.cpp
+  src/server/speaker_assets.cpp
+  src/server/speaker_service.cpp
+  src/server/diarized_output.cpp
+  src/server/speaker_reference.cpp
+  src/server/chat_speaker_backend.cpp
+  src/server/chat_speaker_execution.cpp
+  src/server/chat_speaker_turns.cpp
   src/server/vad_assets.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp
@@ -1029,6 +1041,7 @@ endif()
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
   include(cmake/NativeVadTests.cmake)
+  include(cmake/NativeSpeakerTests.cmake)
   add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/aligner_config_test.cpp tests/aligner_asset_test.cpp
     src/audio/asr_config.cpp src/audio/aligner_config.cpp src/io/json.cpp)

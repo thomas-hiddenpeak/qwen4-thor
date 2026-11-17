@@ -19573,6 +19573,123 @@
       ],
       "additionalProperties": false
     },
+    "transcription_diarized_response": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "const": "transcribe"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "segments": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "$ref": "#/$defs/transcription_diarized_segment"
+          }
+        },
+        "text": {
+          "type": "string"
+        },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "tokens"
+            },
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "input_token_details": {
+              "type": "object",
+              "properties": {
+                "audio_tokens": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "text_tokens": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "audio_tokens",
+                "text_tokens"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "input_tokens",
+            "output_tokens",
+            "total_tokens",
+            "input_token_details"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "task",
+        "duration",
+        "segments",
+        "text",
+        "usage"
+      ],
+      "additionalProperties": false
+    },
+    "transcription_diarized_segment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "type": {
+          "const": "transcript.text.segment"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "speaker": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "start",
+        "end",
+        "speaker",
+        "text"
+      ],
+      "additionalProperties": false
+    },
     "transcription_logprob": {
       "type": "object",
       "properties": {
@@ -19614,6 +19731,11 @@
           "items": {
             "$ref": "#/$defs/transcription_logprob"
           }
+        },
+        "segment_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
         }
       },
       "required": [
@@ -19697,6 +19819,21 @@
         },
         "type": {
           "const": "transcript.text.done"
+        },
+        "task": {
+          "const": "transcribe"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "segments": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "$ref": "#/$defs/transcription_diarized_segment"
+          }
         }
       },
       "required": [
@@ -19704,7 +19841,37 @@
         "text",
         "usage"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "task"
+                ]
+              },
+              {
+                "required": [
+                  "duration"
+                ]
+              },
+              {
+                "required": [
+                  "segments"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "task",
+              "duration",
+              "segments"
+            ]
+          }
+        }
+      ]
     },
     "transcription_error": {
       "type": "object",
@@ -19744,6 +19911,9 @@
         },
         {
           "$ref": "#/$defs/transcription_done"
+        },
+        {
+          "$ref": "#/$defs/transcription_diarized_segment"
         },
         {
           "$ref": "#/$defs/transcription_error"

@@ -61,14 +61,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                         "model_not_found", "model");
       return;
     }
-    // Diarization retains its required speaker-identity executor.
-    if (request.format == AsrFormat::kDiarizedJson) {
-      detail::SendError(fd, 503, "Native speaker diarization executor pending",
-                        {}, "asr_executor_pending", "response_format");
-      return;
-    }
-    const bool chunked = request.chunking.mode != AsrChunking::Mode::kSingle;
-    const bool aligned = request.format == AsrFormat::kSrt ||
+    const bool diarized = request.format == AsrFormat::kDiarizedJson;
+    const bool chunked = diarized ||
+                         request.chunking.mode != AsrChunking::Mode::kSingle;
+    const bool aligned = diarized || request.format == AsrFormat::kSrt ||
                          request.format == AsrFormat::kVtt ||
                          request.format == AsrFormat::kVerboseJson;
     const auto id = detail::NewRequestId("asr_");
@@ -112,6 +108,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                                         RequestDiagnostics::Wait::kStorage);
       reply = EnsureNativeAsr(false, access);
       if (reply.ok() && aligned) reply = EnsureNativeAligner(false, access);
+      if (reply.ok() && diarized) reply = EnsureNativeSpeaker(false, access);
     }
     if (!reply.ok()) {
       send_failure(reply);
@@ -182,7 +179,17 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
         return;
       }
     }
+    std::vector<audio::SpeakerTurn> turns;
+    if (diarized) {
+      reply = PrepareSpeakerTurns(fd, request, pcm.samples, chunks, control,
+                                   diagnostic, &turns);
+      if (!reply.ok()) {
+        send_failure(reply);
+        return;
+      }
+    }
     AsrChunkOutput output(request, pcm.samples.size());
+    DiarizedTranscript diarization(pcm.samples.size());
     for (size_t index = 0; index < chunks.size(); ++index) {
       const auto& chunk = chunks[index];
       audio::AsrFeatures features;
@@ -245,20 +252,24 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
       reserved = true;
       AsrTranscript transcript(request.logprobs, request.language,
                                request.segment_timestamps);
+      const auto& previous_text = diarized ? diarization.Text() : output.Text();
       reply = RunNativeAsr(fd, request, features, prompt, control, diagnostic,
                            rate, http->Usage(), &transcript,
-                           output.Text().empty() ? "" : " ");
+                           previous_text.empty() ? "" : " ");
       if (!reply.ok()) {
         send_failure(reply);
         return;
       }
       std::string part;
       size_t cues = 0;
+      std::vector<audio::AlignerWord> words;
+      audio::AlignerTimes times;
       if (aligned) {
         reply = FormatAlignedTranscription(
             fd, request, features, (chunk.end_sample - chunk.begin_sample) / 16,
             transcript, control, diagnostic, rate, http->Usage(), &part,
-            chunk.begin_sample / 16, output.CueCount() + 1, index == 0, &cues);
+            chunk.begin_sample / 16, output.CueCount() + 1, index == 0, &cues,
+            diarized ? &words : nullptr, diarized ? &times : nullptr);
         if (!reply.ok()) {
           send_failure(reply);
           return;
@@ -273,16 +284,51 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
           return;
         }
       }
-      status = output.Append(transcript, std::move(part), chunk,
-                             prompt.audio_tokens, cues);
+      const size_t first_segment = diarization.Segments().size();
+      const bool leading_space = !diarization.Text().empty();
+      status = diarized
+                   ? diarization.Append(transcript.Text(), chunk, words, times,
+                                         turns, prompt.audio_tokens, cancelled)
+                   : output.Append(transcript, std::move(part), chunk,
+                                    prompt.audio_tokens, cues);
       if (!status) {
         detail::SendError(fd, 502, status.message(), {}, "asr_output_invalid");
         return;
       }
+      if (diarized && request.stream) {
+        const detail::WriteOptions write{control->deadline(), control.get()};
+        for (size_t i = first_segment; i < diarization.Segments().size(); ++i) {
+          if (cancelled()) return;
+          if (*http->State() == detail::ResponseState::kUnsent) {
+            if (!detail::BeginStreamingResponse(fd, http->State(), write))
+              return;
+            http->StartHeartbeats(control);
+          }
+          const auto& segment = diarization.Segments()[i];
+          std::string event, delta;
+          status = DiarizedTranscript::SegmentJson(segment, &event);
+          if (status)
+            status = DiarizedTranscript::DeltaJson(
+                segment, leading_space && i == first_segment, &delta);
+          if (!status) {
+            detail::SendError(fd, 502, status.message(), {},
+                              "asr_output_invalid");
+            return;
+          }
+          if (!detail::WriteAll(fd,
+                                "event: transcript.text.delta\r\ndata: " +
+                                    delta + "\r\n\r\n" +
+                                    "event: transcript.text.segment\r\ndata: " +
+                                    event + "\r\n\r\n", write))
+            return;
+        }
+      }
     }
     std::string response;
     const auto actual = http->Usage().Total();
-    status = actual ? output.Finish(*actual, &response)
+    status = actual ? (diarized ? diarization.Finish(*actual, request.stream,
+                                                    &response)
+                                : output.Finish(*actual, &response))
                     : Status::Fail("ASR usage unavailable");
     if (!status) {
       detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");

@@ -1,0 +1,35 @@
+{
+  "status": "ACCEPT_SPEAKER_PRIMARY_LIGHT",
+  "counts": {
+    "starts": 2,
+    "chats": 16,
+    "controls": 84
+  },
+  "seconds": 112.76968623604625,
+  "nvml_queries": 106,
+  "cleanup_complete": true,
+  "exact_guard_command": true,
+  "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+  "source_commit": "a718b9c1468fd792983137b25b0bea224dd75ff1",
+  "registry_sha256": "a47005a3640eac7e60fce9f61ff4468477d48b918cfc9ffb6eb0407544359d7a",
+  "actual_recurring_voices": {
+    "primary": [
+      "A",
+      "B",
+      "A"
+    ],
+    "light": [
+      "A",
+      "B",
+      "A"
+    ]
+  },
+  "source_audio_sha256": "4266252cab301d5f6133e49cef675fa23f549ccaa9c5907451538fd60722c51f",
+  "original_asr_alignment_vad_and_core_protection": true,
+  "default_revision": 286,
+  "default_unchanged": true,
+  "managed_tls_recovery_delivery_pending": true,
+  "overlap_pending": true,
+  "all_master_tasks_active": true,
+  "lease_archive_sha256": "bc3582e473834c36659d2324114448c4493a328e1746af4978fd5dd6bc64524d"
+}

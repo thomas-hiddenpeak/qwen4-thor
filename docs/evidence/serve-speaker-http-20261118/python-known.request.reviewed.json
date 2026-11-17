@@ -1,0 +1,31 @@
+{
+  "base_url": "http://127.0.0.1:18246/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "audio": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/returns.wav",
+  "filename": "returns.wav",
+  "request": {
+    "model": "qwen3-asr-0.6b",
+    "language": "en",
+    "response_format": "diarized_json",
+    "chunking_strategy": {
+      "type": "server_vad",
+      "threshold": 0.5,
+      "prefix_padding_ms": 300,
+      "silence_duration_ms": 500
+    },
+    "known_speaker_names": [
+      "first",
+      "second"
+    ],
+    "known_speaker_references": [
+      {
+        "retained_audio_data_url_sha256": "86ff94bc65bec36d633e0678a67af284f0eec11206dc06220dccce1e6544077a",
+        "bytes": 122534
+      },
+      {
+        "retained_audio_data_url_sha256": "e519694a2e0a45157e4984e32f96ef7e984ef57e45a8fa53e806ebd18bb7f717",
+        "bytes": 85842
+      }
+    ]
+  }
+}

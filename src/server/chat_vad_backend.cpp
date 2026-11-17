@@ -131,6 +131,7 @@ ObjectReply ChatServer::PrepareVadChunks(const AsrRequest& request,
   options.silence_duration_ms = request.chunking.silence_duration_ms;
   options.max_samples = size_t(asr_limits_.max_audio_seconds) * 16000;
   const bool aligned = request.format == AsrFormat::kVerboseJson ||
+                       request.format == AsrFormat::kDiarizedJson ||
                        request.format == AsrFormat::kSrt ||
                        request.format == AsrFormat::kVtt;
   options.max_chunk_samples =

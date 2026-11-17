@@ -1,0 +1,18 @@
+{
+  "status": "ACCEPT_SPEAKER_TURNS_OUTPUT_CPU",
+  "tests": 14,
+  "seconds": 0.03177741728723049,
+  "gpu_loads": 0,
+  "http_requests": 0,
+  "constructed_embeddings_only": true,
+  "real_speech_accuracy_accepted": false,
+  "runtime_build": "PASS_ZERO_WARNINGS",
+  "candidate_engine_sha256": "c4aa19143a6f7bdd30b7668e7850f36c8a3bd49ed9ac935f0741b0ec96a9be89",
+  "inventory_anchors_reviewed": 20,
+  "inventory_negative_controls": 7,
+  "default_revision": 286,
+  "defaults_unchanged": true,
+  "speaker_http_delivered": false,
+  "all_master_tasks_active": true,
+  "archive_sha256": "a8a75c73122f30390344251ba7e2567913b3d1a0f2842e0b174008b71e65db67"
+}

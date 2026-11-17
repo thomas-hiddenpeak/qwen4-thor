@@ -5,7 +5,9 @@ profile. The fixed Qwen3-ASR-0.6B backend now performs real multipart JSON/text/
 transcription, with bounded codec/model resources and fault isolation.
 Actual direct HTTP, pinned Python/JS SDK, native TLS, primary/light profiles
 and retained/whole-payload recovery are qualified and reversibly delivered
-in rev276. CPU evidence alone never qualifies an audio endpoint.
+in rev296, including the subsequently added aligner, VAD and speaker backends.
+CPU evidence alone never qualifies an audio endpoint. See the current
+[delivery receipt](../../docs/evidence/serve-speaker-delivery-20261118/README.md).
 
 `feature_reference.py` generates six synthetic PCM/log-mel fixture pairs using
 the installed official Whisper feature extractor. It disables visible GPUs,
@@ -41,8 +43,14 @@ partial checks on exception. Its FP32/BF16 rounding and finite-ULP checks apply
 to the captured instances, not every possible input. Original numerical evidence remains in `docs/evidence/serve-asr-compute-20261117`.
 Real HTTP evidence is in `docs/evidence/serve-asr-http-20261117`, and managed
 composition is in `docs/evidence/serve-asr-service-composition-20261117`.
-Alignment/timestamps, speaker labels, VAD, Chat audio, speech synthesis and
-Realtime remain required implementation tasks.
+Native forced alignment, word timestamps, SRT/VTT and VAD chunking are now
+delivered; see the [alignment/VAD evidence](../../docs/evidence/serve-audio-auxiliary-service-20261118/README.md).
+Sequential speaker labels and request-local known-speaker references are also
+delivered through JSON/SSE; see [speaker setup and evidence](../native_speaker/README.md).
+Actual overlapping speech detection/separation, Chat audio, speech synthesis
+and Realtime remain required implementation tasks. The existing day driver
+still targets rev276; the complete current-backend long-run handoff remains
+Q03 work, with the long run itself assigned to the user.
 
 `codec_fixtures.py` generates synthetic PCM and compressed test inputs. It
 uses a bounded list of CPU GStreamer encoder plugins only; the CLI is a

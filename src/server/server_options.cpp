@@ -130,6 +130,19 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!options.aligner_limits.Valid())
     return Status::Fail(
         "invalid alignment duration/context/word/workspace limits");
+  if (!options.speaker_limits.Valid())
+    return Status::Fail("invalid speaker window/step/count/workspace limits");
+  if (!options.speaker_model_dir.empty()) {
+    if (options.asr_model_dir.empty() || options.aligner_model_dir.empty() ||
+        options.vad_model_dir.empty())
+      return Status::Fail("speaker-model-dir requires ASR, aligner and VAD");
+    if (!model::ValidEmbeddingAssetDirectory(options.speaker_model_dir))
+      return Status::Fail("speaker-model-dir must be an absolute asset path");
+    SpeakerResourcePlan plan;
+    if (auto status = PlanSpeakerServiceResources(options.speaker_limits, &plan);
+        !status)
+      return status;
+  }
   if (!options.aligner_model_dir.empty()) {
     if (options.asr_model_dir.empty())
       return Status::Fail("aligner-model-dir requires asr-model-dir");
@@ -268,6 +281,15 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--asr-workspace-mib")
       integer = &parsed.asr_limits.workspace_mib;
     if (key == "--vad-max-chunks") integer = &parsed.vad_max_chunks;
+    if (key == "--speaker-window-ms")
+      integer = &parsed.speaker_limits.window_ms;
+    if (key == "--speaker-step-ms") integer = &parsed.speaker_limits.step_ms;
+    if (key == "--speaker-max-windows")
+      integer = &parsed.speaker_limits.max_windows;
+    if (key == "--speaker-max-speakers")
+      integer = &parsed.speaker_limits.max_speakers;
+    if (key == "--speaker-workspace-mib")
+      integer = &parsed.speaker_limits.workspace_mib;
     if (key == "--aligner-max-audio-seconds")
       integer = &parsed.aligner_limits.max_audio_seconds;
     if (key == "--aligner-max-context-tokens")
@@ -316,6 +338,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
         key != "--aligner-model-dir" && key != "--vad-model-dir" &&
+        key != "--speaker-model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
@@ -399,6 +422,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.aligner_model_dir = value;
     } else if (key == "--vad-model-dir") {
       parsed.vad_model_dir = value;
+    } else if (key == "--speaker-model-dir") {
+      parsed.speaker_model_dir = value;
     } else if (key == "--served-model-name") {
       parsed.served_model_name = value;
     } else if (key == "--model-alias") {

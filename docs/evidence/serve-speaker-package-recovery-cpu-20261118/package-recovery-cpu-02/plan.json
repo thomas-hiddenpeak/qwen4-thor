@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown"
+  ],
+  "limit_seconds": 60,
+  "expected_tests": 1,
+  "reuse_tests": 26,
+  "gpu_starts": 0,
+  "http_requests": 0,
+  "changed_sources": {
+    "tools/serve_recovery/test_speaker_profiles.py": "90a1330e56769d6df6f2b1b8b9021fe91131f75337eb1e1f5a42079995f26a9f"
+  },
+  "prior_plan_sha256": "6ce3b410f7ab566fa00c2986614e4ffa1249fc8d4953b459a6f8bf15c0733caf",
+  "reason": "CPU assertion must preserve logical clock/cooldown while accepting its new monotonic observation; no runtime change"
+}

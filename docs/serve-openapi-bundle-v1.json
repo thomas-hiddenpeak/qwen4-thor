@@ -3087,6 +3087,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_verbose_response"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_diarized_response"
                     }
                   ]
                 }
@@ -3113,7 +3116,7 @@
                 "x-q4t-event-schema": {
                   "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_event"
                 },
-                "x-q4t-stream-contract": "transcript.text.delta then transcript.text.done; actual token usage, no Chat DONE sentinel; typed error terminates failure"
+                "x-q4t-stream-contract": "transcript.text.delta, diarized segment events, then transcript.text.done; actual token usage, no Chat DONE sentinel; typed error terminates failure"
               }
             }
           },
@@ -3150,11 +3153,25 @@
             "text",
             "verbose_json",
             "srt",
-            "vtt"
+            "vtt",
+            "diarized_json"
           ],
           "required_pending_executors": [
-            "diarization"
+            "overlap_diarization"
           ],
+          "diarization": {
+            "configured_by": "speaker-model-dir",
+            "requires": [
+              "asr-model-dir",
+              "aligner-model-dir",
+              "vad-model-dir"
+            ],
+            "backend": "native ECAPA FP32, request-local cosine average linkage",
+            "references": "up to 4 inline audio data URLs, 2 to 10 seconds each",
+            "timing": "actual aligner words assigned by acoustic interval overlap",
+            "streaming": "completed segment_id delta and segment, then one complete done",
+            "overlap": "required implementation remains pending"
+          },
           "alignment": {
             "configured_by": "aligner-model-dir",
             "timestamps": "actual fixed-model word edges; repaired ordering is explicit",
@@ -33443,6 +33460,123 @@
             ],
             "additionalProperties": false
           },
+          "transcription_diarized_response": {
+            "type": "object",
+            "properties": {
+              "task": {
+                "const": "transcribe"
+              },
+              "duration": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "segments": {
+                "type": "array",
+                "maxItems": 65536,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_diarized_segment"
+                }
+              },
+              "text": {
+                "type": "string"
+              },
+              "usage": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "tokens"
+                  },
+                  "input_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "output_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "total_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "input_token_details": {
+                    "type": "object",
+                    "properties": {
+                      "audio_tokens": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "text_tokens": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "audio_tokens",
+                      "text_tokens"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "input_tokens",
+                  "output_tokens",
+                  "total_tokens",
+                  "input_token_details"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "task",
+              "duration",
+              "segments",
+              "text",
+              "usage"
+            ],
+            "additionalProperties": false
+          },
+          "transcription_diarized_segment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              "type": {
+                "const": "transcript.text.segment"
+              },
+              "start": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "end": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "speaker": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "start",
+              "end",
+              "speaker",
+              "text"
+            ],
+            "additionalProperties": false
+          },
           "transcription_logprob": {
             "type": "object",
             "properties": {
@@ -33484,6 +33618,11 @@
                 "items": {
                   "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_logprob"
                 }
+              },
+              "segment_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
               }
             },
             "required": [
@@ -33567,6 +33706,21 @@
               },
               "type": {
                 "const": "transcript.text.done"
+              },
+              "task": {
+                "const": "transcribe"
+              },
+              "duration": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              },
+              "segments": {
+                "type": "array",
+                "maxItems": 65536,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_diarized_segment"
+                }
               }
             },
             "required": [
@@ -33574,7 +33728,37 @@
               "text",
               "usage"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "task"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "duration"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "segments"
+                      ]
+                    }
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "task",
+                    "duration",
+                    "segments"
+                  ]
+                }
+              }
+            ]
           },
           "transcription_error": {
             "type": "object",
@@ -33614,6 +33798,9 @@
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_done"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_diarized_segment"
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_error"
@@ -40597,6 +40784,116 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 256
+          },
+          "native_speaker_health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "disabled",
+                  "configured",
+                  "loading",
+                  "metadata_ready",
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "none",
+                  "speaker_assets_invalid",
+                  "speaker_assets_timeout",
+                  "speaker_worker_unavailable",
+                  "speaker_resource_exhausted",
+                  "gpu_unhealthy",
+                  "speaker_compute_failed"
+                ]
+              },
+              "core_readiness_dependency": {
+                "const": false
+              },
+              "model": {
+                "const": "speechbrain-ecapa-voxceleb"
+              },
+              "device_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "load_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery": {
+                "const": "request_driven"
+              },
+              "retry_delay_ms": {
+                "const": 5000
+              },
+              "compute_failures": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "asset_cleanup_pending": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "state",
+              "reason",
+              "core_readiness_dependency",
+              "model",
+              "device_bytes",
+              "load_attempts",
+              "load_failures",
+              "recovery",
+              "retry_delay_ms",
+              "compute_failures",
+              "asset_cleanup_pending"
+            ],
+            "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+          },
+          "native_speaker_limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "window_ms": {
+                "type": "integer",
+                "minimum": 1000,
+                "maximum": 30000
+              },
+              "step_ms": {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 30000
+              },
+              "max_windows": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1024
+              },
+              "max_speakers": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "workspace_mib": {
+                "type": "integer",
+                "minimum": 16,
+                "maximum": 1024
+              }
+            },
+            "required": [
+              "window_ms",
+              "step_ms",
+              "max_windows",
+              "max_speakers",
+              "workspace_mib"
+            ]
           }
         },
         "required": [
@@ -40765,6 +41062,34 @@
                 "native_vad_max_chunks",
                 "native_asr_health",
                 "native_asr_limits"
+              ]
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "native_speaker_health"
+                  ]
+                },
+                {
+                  "required": [
+                    "native_speaker_limits"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "native_speaker_health",
+                "native_speaker_limits",
+                "native_asr_health",
+                "native_asr_limits",
+                "native_alignment_health",
+                "native_alignment_limits",
+                "native_vad_health",
+                "native_vad_max_chunks"
               ]
             }
           }

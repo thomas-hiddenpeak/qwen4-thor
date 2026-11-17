@@ -1,0 +1,18 @@
+{
+  "base_url": "http://127.0.0.1:18246/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "audio": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/returns.wav",
+  "filename": "returns.wav",
+  "request": {
+    "model": "qwen3-asr-0.6b",
+    "language": "en",
+    "response_format": "diarized_json",
+    "chunking_strategy": {
+      "type": "server_vad",
+      "threshold": 0.5,
+      "prefix_padding_ms": 300,
+      "silence_duration_ms": 500
+    },
+    "stream": true
+  }
+}

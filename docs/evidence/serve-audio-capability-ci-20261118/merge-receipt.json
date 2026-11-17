@@ -1,0 +1,26 @@
+{
+  "pull_request": {
+    "number": 45,
+    "state": "closed",
+    "merged": true,
+    "head_sha": "6476e3a45b55aa126e8094e4d4451dd2dd7c4c3d",
+    "merge_commit_sha": "0ab3ce6a877e534a41bfaa7e6fb836939aa72fe4",
+    "merged_at": "2026-11-17T17:47:27Z",
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/45"
+  },
+  "checks": [
+    {
+      "run": 44134806673,
+      "job": 134221308674,
+      "conclusion": "success"
+    },
+    {
+      "run": 44134827162,
+      "job": 134221387662,
+      "conclusion": "success"
+    }
+  ],
+  "method": "merge",
+  "default_revision": 286,
+  "additional_gpu_runs": 0
+}

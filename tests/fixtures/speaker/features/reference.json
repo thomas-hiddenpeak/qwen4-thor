@@ -1,0 +1,56 @@
+{
+  "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+  "records": [
+    {
+      "name": "silence",
+      "pcm_sha256": "56a43ef88ddfcd0f56f7dd973312c0e73d62f59655c01d7b4e59aaa3be8b3fb6",
+      "frames": 11,
+      "mel_sha256": "36a26ecce01fa5b0397415be067d3d275359a48fce772eb50a916862e0bec1d6"
+    },
+    {
+      "name": "impulse",
+      "pcm_sha256": "fd3a363d87755470c1ae3e6674b36a39a02e48b2f1f705bf11c535479f0216b7",
+      "frames": 3,
+      "mel_sha256": "8983a6d8865bf8d37022796ff63e79dfd338e6cdde10e1d4c0663cad98d33ea3"
+    },
+    {
+      "name": "tone",
+      "pcm_sha256": "28b0c26a6136658f9ec7748a3fa55d1fa2ebc771b5bfc793c30f7390079923d8",
+      "frames": 51,
+      "mel_sha256": "60650fd9744b5185c4e8abcd8bd3a4f428f3ad5e7c2acefe2032361efd222a11"
+    },
+    {
+      "name": "mixture",
+      "pcm_sha256": "24dd5b1d57a0f9263f6bdbddc083088eaaaec38bc936397789ccb247bc7eb5b8",
+      "frames": 101,
+      "mel_sha256": "135f7db227d97bde1153f5f90df669d324aa2f2954e304a50119bee0d932b321"
+    },
+    {
+      "name": "noise",
+      "pcm_sha256": "57d662bcef56b837099eb25fff1e400826521ef86087c91a221c7c394ae31265",
+      "frames": 17,
+      "mel_sha256": "48505733fd069d936003dd66225ab7a76570af252523139d020e8ac1e5bfc469"
+    },
+    {
+      "name": "tail",
+      "pcm_sha256": "e70f4a86a78f127e80f48354e2de074f228805616927ebf0aac4568bdcf1d063",
+      "frames": 102,
+      "mel_sha256": "c5f87527d7c32382f8d37e6efb202dc29ebf19552aee35476edf374dbcfadd58"
+    }
+  ],
+  "source_sha256": {
+    "speechbrain/processing/features.py": "1dd596e9cd2fd76af3154a927afa9e2f4ab7077d0332ad65b69d85ac8f37de97",
+    "speechbrain/lobes/features.py": "06697948b119d82de3e17c91d799b0ba40c7d45c7a3410ccc179633de0527a12"
+  },
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "seconds": 0.02034800173714757,
+  "cuda_initialized": false,
+  "model_constructions": 0,
+  "adaptations": [
+    "AST extraction of exact standalone definitions; unrelated import graph omitted",
+    "No-op precision decorator: CPU float32, no autocast",
+    "Postponed type annotations for unused filter metadata types",
+    "Full single-utterance mean-only normalization; no padded batch"
+  ]
+}

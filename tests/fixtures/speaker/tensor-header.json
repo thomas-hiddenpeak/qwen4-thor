@@ -1,0 +1,2326 @@
+{
+  "asp.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      0,
+      12288
+    ]
+  },
+  "asp.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      3072,
+      128,
+      1
+    ],
+    "data_offsets": [
+      12288,
+      1585152
+    ]
+  },
+  "asp.tdnn.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      1585152,
+      1585664
+    ]
+  },
+  "asp.tdnn.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      9216,
+      1
+    ],
+    "data_offsets": [
+      1585664,
+      6304256
+    ]
+  },
+  "asp.tdnn.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      6304256,
+      6304768
+    ]
+  },
+  "asp.tdnn.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      6304768,
+      6304776
+    ]
+  },
+  "asp.tdnn.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      6304776,
+      6305288
+    ]
+  },
+  "asp.tdnn.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      6305288,
+      6305800
+    ]
+  },
+  "asp.tdnn.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      6305800,
+      6306312
+    ]
+  },
+  "asp_bn.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      6144
+    ],
+    "data_offsets": [
+      6306312,
+      6330888
+    ]
+  },
+  "asp_bn.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      6330888,
+      6330896
+    ]
+  },
+  "asp_bn.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      6144
+    ],
+    "data_offsets": [
+      6330896,
+      6355472
+    ]
+  },
+  "asp_bn.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      6144
+    ],
+    "data_offsets": [
+      6355472,
+      6380048
+    ]
+  },
+  "asp_bn.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      6144
+    ],
+    "data_offsets": [
+      6380048,
+      6404624
+    ]
+  },
+  "blocks.0.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      6404624,
+      6408720
+    ]
+  },
+  "blocks.0.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      80,
+      5
+    ],
+    "data_offsets": [
+      6408720,
+      8047120
+    ]
+  },
+  "blocks.0.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      8047120,
+      8051216
+    ]
+  },
+  "blocks.0.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      8051216,
+      8051224
+    ]
+  },
+  "blocks.0.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      8051224,
+      8055320
+    ]
+  },
+  "blocks.0.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      8055320,
+      8059416
+    ]
+  },
+  "blocks.0.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      8059416,
+      8063512
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8063512,
+      8064024
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      8064024,
+      8260632
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8260632,
+      8261144
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      8261144,
+      8261152
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8261152,
+      8261664
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8261664,
+      8262176
+    ]
+  },
+  "blocks.1.res2net_block.blocks.0.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8262176,
+      8262688
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8262688,
+      8263200
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      8263200,
+      8459808
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8459808,
+      8460320
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      8460320,
+      8460328
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8460328,
+      8460840
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8460840,
+      8461352
+    ]
+  },
+  "blocks.1.res2net_block.blocks.1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8461352,
+      8461864
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8461864,
+      8462376
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      8462376,
+      8658984
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8658984,
+      8659496
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      8659496,
+      8659504
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8659504,
+      8660016
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8660016,
+      8660528
+    ]
+  },
+  "blocks.1.res2net_block.blocks.2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8660528,
+      8661040
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8661040,
+      8661552
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      8661552,
+      8858160
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8858160,
+      8858672
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      8858672,
+      8858680
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8858680,
+      8859192
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8859192,
+      8859704
+    ]
+  },
+  "blocks.1.res2net_block.blocks.3.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8859704,
+      8860216
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      8860216,
+      8860728
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      8860728,
+      9057336
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9057336,
+      9057848
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      9057848,
+      9057856
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9057856,
+      9058368
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9058368,
+      9058880
+    ]
+  },
+  "blocks.1.res2net_block.blocks.4.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9058880,
+      9059392
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9059392,
+      9059904
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      9059904,
+      9256512
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9256512,
+      9257024
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      9257024,
+      9257032
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9257032,
+      9257544
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9257544,
+      9258056
+    ]
+  },
+  "blocks.1.res2net_block.blocks.5.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9258056,
+      9258568
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9258568,
+      9259080
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      9259080,
+      9455688
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9455688,
+      9456200
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      9456200,
+      9456208
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9456208,
+      9456720
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9456720,
+      9457232
+    ]
+  },
+  "blocks.1.res2net_block.blocks.6.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9457232,
+      9457744
+    ]
+  },
+  "blocks.1.se_block.conv1.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      9457744,
+      9458256
+    ]
+  },
+  "blocks.1.se_block.conv1.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      9458256,
+      9982544
+    ]
+  },
+  "blocks.1.se_block.conv2.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      9982544,
+      9986640
+    ]
+  },
+  "blocks.1.se_block.conv2.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      128,
+      1
+    ],
+    "data_offsets": [
+      9986640,
+      10510928
+    ]
+  },
+  "blocks.1.tdnn1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      10510928,
+      10515024
+    ]
+  },
+  "blocks.1.tdnn1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      10515024,
+      14709328
+    ]
+  },
+  "blocks.1.tdnn1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      14709328,
+      14713424
+    ]
+  },
+  "blocks.1.tdnn1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      14713424,
+      14713432
+    ]
+  },
+  "blocks.1.tdnn1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      14713432,
+      14717528
+    ]
+  },
+  "blocks.1.tdnn1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      14717528,
+      14721624
+    ]
+  },
+  "blocks.1.tdnn1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      14721624,
+      14725720
+    ]
+  },
+  "blocks.1.tdnn2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      14725720,
+      14729816
+    ]
+  },
+  "blocks.1.tdnn2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      14729816,
+      18924120
+    ]
+  },
+  "blocks.1.tdnn2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      18924120,
+      18928216
+    ]
+  },
+  "blocks.1.tdnn2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      18928216,
+      18928224
+    ]
+  },
+  "blocks.1.tdnn2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      18928224,
+      18932320
+    ]
+  },
+  "blocks.1.tdnn2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      18932320,
+      18936416
+    ]
+  },
+  "blocks.1.tdnn2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      18936416,
+      18940512
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      18940512,
+      18941024
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      18941024,
+      19137632
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19137632,
+      19138144
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      19138144,
+      19138152
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19138152,
+      19138664
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19138664,
+      19139176
+    ]
+  },
+  "blocks.2.res2net_block.blocks.0.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19139176,
+      19139688
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19139688,
+      19140200
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      19140200,
+      19336808
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19336808,
+      19337320
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      19337320,
+      19337328
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19337328,
+      19337840
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19337840,
+      19338352
+    ]
+  },
+  "blocks.2.res2net_block.blocks.1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19338352,
+      19338864
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19338864,
+      19339376
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      19339376,
+      19535984
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19535984,
+      19536496
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      19536496,
+      19536504
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19536504,
+      19537016
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19537016,
+      19537528
+    ]
+  },
+  "blocks.2.res2net_block.blocks.2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19537528,
+      19538040
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19538040,
+      19538552
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      19538552,
+      19735160
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19735160,
+      19735672
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      19735672,
+      19735680
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19735680,
+      19736192
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19736192,
+      19736704
+    ]
+  },
+  "blocks.2.res2net_block.blocks.3.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19736704,
+      19737216
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19737216,
+      19737728
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      19737728,
+      19934336
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19934336,
+      19934848
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      19934848,
+      19934856
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19934856,
+      19935368
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19935368,
+      19935880
+    ]
+  },
+  "blocks.2.res2net_block.blocks.4.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19935880,
+      19936392
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      19936392,
+      19936904
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      19936904,
+      20133512
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20133512,
+      20134024
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      20134024,
+      20134032
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20134032,
+      20134544
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20134544,
+      20135056
+    ]
+  },
+  "blocks.2.res2net_block.blocks.5.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20135056,
+      20135568
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20135568,
+      20136080
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      20136080,
+      20332688
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20332688,
+      20333200
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      20333200,
+      20333208
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20333208,
+      20333720
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20333720,
+      20334232
+    ]
+  },
+  "blocks.2.res2net_block.blocks.6.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20334232,
+      20334744
+    ]
+  },
+  "blocks.2.se_block.conv1.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      20334744,
+      20335256
+    ]
+  },
+  "blocks.2.se_block.conv1.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      20335256,
+      20859544
+    ]
+  },
+  "blocks.2.se_block.conv2.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      20859544,
+      20863640
+    ]
+  },
+  "blocks.2.se_block.conv2.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      128,
+      1
+    ],
+    "data_offsets": [
+      20863640,
+      21387928
+    ]
+  },
+  "blocks.2.tdnn1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      21387928,
+      21392024
+    ]
+  },
+  "blocks.2.tdnn1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      21392024,
+      25586328
+    ]
+  },
+  "blocks.2.tdnn1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      25586328,
+      25590424
+    ]
+  },
+  "blocks.2.tdnn1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      25590424,
+      25590432
+    ]
+  },
+  "blocks.2.tdnn1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      25590432,
+      25594528
+    ]
+  },
+  "blocks.2.tdnn1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      25594528,
+      25598624
+    ]
+  },
+  "blocks.2.tdnn1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      25598624,
+      25602720
+    ]
+  },
+  "blocks.2.tdnn2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      25602720,
+      25606816
+    ]
+  },
+  "blocks.2.tdnn2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      25606816,
+      29801120
+    ]
+  },
+  "blocks.2.tdnn2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      29801120,
+      29805216
+    ]
+  },
+  "blocks.2.tdnn2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      29805216,
+      29805224
+    ]
+  },
+  "blocks.2.tdnn2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      29805224,
+      29809320
+    ]
+  },
+  "blocks.2.tdnn2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      29809320,
+      29813416
+    ]
+  },
+  "blocks.2.tdnn2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      29813416,
+      29817512
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      29817512,
+      29818024
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      29818024,
+      30014632
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30014632,
+      30015144
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      30015144,
+      30015152
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30015152,
+      30015664
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30015664,
+      30016176
+    ]
+  },
+  "blocks.3.res2net_block.blocks.0.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30016176,
+      30016688
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30016688,
+      30017200
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      30017200,
+      30213808
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30213808,
+      30214320
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      30214320,
+      30214328
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30214328,
+      30214840
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30214840,
+      30215352
+    ]
+  },
+  "blocks.3.res2net_block.blocks.1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30215352,
+      30215864
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30215864,
+      30216376
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      30216376,
+      30412984
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30412984,
+      30413496
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      30413496,
+      30413504
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30413504,
+      30414016
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30414016,
+      30414528
+    ]
+  },
+  "blocks.3.res2net_block.blocks.2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30414528,
+      30415040
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30415040,
+      30415552
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      30415552,
+      30612160
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30612160,
+      30612672
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      30612672,
+      30612680
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30612680,
+      30613192
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30613192,
+      30613704
+    ]
+  },
+  "blocks.3.res2net_block.blocks.3.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30613704,
+      30614216
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30614216,
+      30614728
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      30614728,
+      30811336
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30811336,
+      30811848
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      30811848,
+      30811856
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30811856,
+      30812368
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30812368,
+      30812880
+    ]
+  },
+  "blocks.3.res2net_block.blocks.4.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30812880,
+      30813392
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      30813392,
+      30813904
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      30813904,
+      31010512
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31010512,
+      31011024
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      31011024,
+      31011032
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31011032,
+      31011544
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31011544,
+      31012056
+    ]
+  },
+  "blocks.3.res2net_block.blocks.5.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31012056,
+      31012568
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31012568,
+      31013080
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      128,
+      3
+    ],
+    "data_offsets": [
+      31013080,
+      31209688
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31209688,
+      31210200
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      31210200,
+      31210208
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31210208,
+      31210720
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31210720,
+      31211232
+    ]
+  },
+  "blocks.3.res2net_block.blocks.6.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31211232,
+      31211744
+    ]
+  },
+  "blocks.3.se_block.conv1.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      128
+    ],
+    "data_offsets": [
+      31211744,
+      31212256
+    ]
+  },
+  "blocks.3.se_block.conv1.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      128,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      31212256,
+      31736544
+    ]
+  },
+  "blocks.3.se_block.conv2.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      31736544,
+      31740640
+    ]
+  },
+  "blocks.3.se_block.conv2.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      128,
+      1
+    ],
+    "data_offsets": [
+      31740640,
+      32264928
+    ]
+  },
+  "blocks.3.tdnn1.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      32264928,
+      32269024
+    ]
+  },
+  "blocks.3.tdnn1.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      32269024,
+      36463328
+    ]
+  },
+  "blocks.3.tdnn1.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      36463328,
+      36467424
+    ]
+  },
+  "blocks.3.tdnn1.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      36467424,
+      36467432
+    ]
+  },
+  "blocks.3.tdnn1.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      36467432,
+      36471528
+    ]
+  },
+  "blocks.3.tdnn1.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      36471528,
+      36475624
+    ]
+  },
+  "blocks.3.tdnn1.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      36475624,
+      36479720
+    ]
+  },
+  "blocks.3.tdnn2.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      36479720,
+      36483816
+    ]
+  },
+  "blocks.3.tdnn2.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024,
+      1024,
+      1
+    ],
+    "data_offsets": [
+      36483816,
+      40678120
+    ]
+  },
+  "blocks.3.tdnn2.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      40678120,
+      40682216
+    ]
+  },
+  "blocks.3.tdnn2.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      40682216,
+      40682224
+    ]
+  },
+  "blocks.3.tdnn2.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      40682224,
+      40686320
+    ]
+  },
+  "blocks.3.tdnn2.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      40686320,
+      40690416
+    ]
+  },
+  "blocks.3.tdnn2.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      1024
+    ],
+    "data_offsets": [
+      40690416,
+      40694512
+    ]
+  },
+  "fc.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      192
+    ],
+    "data_offsets": [
+      40694512,
+      40695280
+    ]
+  },
+  "fc.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      192,
+      6144,
+      1
+    ],
+    "data_offsets": [
+      40695280,
+      45413872
+    ]
+  },
+  "mfa.conv.conv.bias": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      45413872,
+      45426160
+    ]
+  },
+  "mfa.conv.conv.weight": {
+    "dtype": "F32",
+    "shape": [
+      3072,
+      3072,
+      1
+    ],
+    "data_offsets": [
+      45426160,
+      83174896
+    ]
+  },
+  "mfa.norm.norm.bias": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      83174896,
+      83187184
+    ]
+  },
+  "mfa.norm.norm.num_batches_tracked": {
+    "dtype": "I64",
+    "shape": [],
+    "data_offsets": [
+      83187184,
+      83187192
+    ]
+  },
+  "mfa.norm.norm.running_mean": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      83187192,
+      83199480
+    ]
+  },
+  "mfa.norm.norm.running_var": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      83199480,
+      83211768
+    ]
+  },
+  "mfa.norm.norm.weight": {
+    "dtype": "F32",
+    "shape": [
+      3072
+    ],
+    "data_offsets": [
+      83211768,
+      83224056
+    ]
+  }
+}

@@ -41,6 +41,9 @@
 #include "q4t/audio/asr_model.h"
 #include "q4t/audio/aligner_model.h"
 #include "q4t/audio/vad_chunks.h"
+#include "q4t/audio/speaker_model.h"
+#include "q4t/audio/diarization.h"
+#include "q4t/server/diarized_output.h"
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/asr_service.h"
 #include "q4t/server/asr_request.h"
@@ -214,6 +217,19 @@ class ChatServer {
   ObjectReply EnsureNativeAligner(bool weights, const BinaryAccess& access,
                                   RequestDiagnostics* diagnostic = nullptr);
   std::string NativeAlignerHealthJson() const;
+  ObjectReply EnsureNativeSpeaker(bool weights, const BinaryAccess& access,
+                                  RequestDiagnostics* diagnostic = nullptr);
+  std::string NativeSpeakerHealthJson() const;
+  ObjectReply RunNativeSpeaker(
+      int fd, std::span<const std::span<const float>> clips,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic,
+      std::vector<audio::SpeakerEmbedding>* embeddings);
+  ObjectReply PrepareSpeakerTurns(
+      int fd, const AsrRequest& request, std::span<const float> pcm,
+      std::span<const audio::VadChunk> chunks,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, std::vector<audio::SpeakerTurn>* turns);
   std::string NativeVadHealthJson() const;
   ObjectReply EnsureNativeVad(const BinaryAccess& access,
                               std::shared_ptr<const audio::SileroVad>* out);
@@ -235,7 +251,9 @@ class ChatServer {
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       ActualUsageCounter& usage, std::string* response,
       int64_t origin_ms = 0, size_t first_cue = 1, bool header = true,
-      size_t* cue_count = nullptr);
+      size_t* cue_count = nullptr,
+      std::vector<audio::AlignerWord>* aligned_words = nullptr,
+      audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
   ObjectReply RunNativeAsr(
@@ -551,6 +569,12 @@ class ChatServer {
   std::unique_ptr<text::Tokenizer> aligner_tok_;
   uint8_t* d_aligner_weights_ = nullptr;
   audio::AlignerDeviceWeights aligner_weights_;
+  std::string speaker_model_dir_;
+  SpeakerServiceLimits speaker_limits_;
+  AsrHealth speaker_health_;
+  std::mutex speaker_mu_;
+  uint8_t* d_speaker_weights_ = nullptr;
+  audio::SpeakerDeviceWeights speaker_weights_;
   std::string vad_model_dir_;
   int vad_max_chunks_ = 64;
   AsrHealth vad_health_;

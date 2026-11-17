@@ -8,14 +8,16 @@ from tools.serve_recovery import profile_evidence as evidence
 
 def selected(identity, stream=False):
     value = copy.deepcopy(identity)
-    if stream:
+    if stream and not evidence.has_speaker(value):
         value['native_asr'].pop('alignment', None)
     return value
 
 
 def request(identity, stream=False):
     value = selected(identity, stream)
-    if evidence.audio_auxiliaries(value):
+    if evidence.has_speaker(value):
+        result = evidence.speaker_request(value)
+    elif evidence.audio_auxiliaries(value):
         result = evidence.auxiliary_audio_request(value)
     else:
         result = dict(model=value['native_asr']['model'], response_format='json',
@@ -26,6 +28,10 @@ def request(identity, stream=False):
 
 
 def source(original, identity):
+    if evidence.has_speaker(identity):
+        evidence.ledger.require(hashlib.sha256(original).hexdigest() == evidence.SPEAKER_FILE_SHA,
+                                'qualified managed speaker source differs')
+        return original
     return evidence.auxiliary_audio_source(original, identity)
 
 
@@ -44,6 +50,8 @@ def fields(value):
 def check(response, identity, config, audio, stream=False):
     """Use actual source/tokens/times and independent health, never text alone."""
     value = selected(identity, stream)
+    if evidence.has_speaker(value):
+        return speaker_result(response, value, config, hashlib.sha256(audio).hexdigest(), stream)
     names = evidence.audio_auxiliaries(value)
     witness = dict(source_base64=base64.b64encode(audio).decode(),
         request=request(identity, stream), response=response)
@@ -60,3 +68,25 @@ def check(response, identity, config, audio, stream=False):
     return dict(actual_audio_sha256=hashlib.sha256(audio).hexdigest(),
         auxiliaries=list(names), stream=stream, text=response['text'],
         words=len(response.get('words', [])), segments=len(response.get('segments', [])))
+
+
+def speaker_result(response, identity, config, source_sha256, stream=False):
+    """Shared pure witness checker; the live caller hashes its exact audio bytes."""
+    from tools.serve_service import package
+    value = dict(source_sha256=source_sha256, request=evidence.speaker_request(identity),
+        response=response, health=config['native_speaker_health'],
+        limits=config['native_speaker_limits'])
+    evidence.speaker_business(value, identity)
+    # A ready speaker alone cannot certify the alignment and VAD dependencies.
+    for name in ('alignment', 'vad'):
+        fixed = identity['native_asr'][name]
+        health = config['native_'+name+'_health']
+        evidence.ledger.require(health.get('model') == fixed['model'] and
+            health.get('state') == 'ready' and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False and
+            evidence.ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+            package.same_json(package.asr_auxiliary_observed_limits(config, name), fixed['limits']),
+            'qualified speaker dependency not healthy or budget changed')
+    return dict(actual_audio_sha256=source_sha256, auxiliaries=['alignment','vad','speaker'],
+        stream=stream, text=response['text'], segments=len(response['segments']),
+        labels=[row['speaker'] for row in response['segments']])

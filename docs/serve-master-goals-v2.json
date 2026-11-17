@@ -2951,13 +2951,477 @@
         "files": 82,
         "secret_scan_matches": 0,
         "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "main_integration_pending": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md",
+        "pull_request": 45,
+        "main_commit": "0ab3ce6a877e534a41bfaa7e6fb836939aa72fe4",
+        "main_evidence": "evidence/serve-audio-capability-ci-20261118/merge-receipt.json"
+      },
+      "native_diarization_20261118": {
+        "state": "asset_contract_cpu_pass_native_execution_pending",
+        "plan": "SERVE_NATIVE_DIARIZATION_2026-11-18.md",
+        "model_revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+        "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+        "asset_bytes_limit": 200000000,
+        "asset_seconds_limit": 600,
+        "free_disk_floor_gib": 6,
+        "cpu_tests_limit": 8,
+        "cpu_seconds_limit": 180,
+        "gpu_actions": 0,
+        "published": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-speaker-contract-20261118/README.md",
+        "cpu_tests": 8,
+        "cpu_seconds": 0.11382408114150167,
+        "converted_sha256": "901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af",
+        "tensor_count": 231
+      },
+      "speaker_features_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_FEATURES",
+        "cpu_cases": 8,
+        "reference_cases": 6,
+        "seconds": 0.06371775921434164,
+        "reference_seconds": 0.02034800173714757,
+        "max_absolute_errors": [
+          0.0,
+          1.09672546e-05,
+          0.00025177002,
+          0.0011177063,
+          5.24520874e-05,
+          0.00104904175
+        ],
+        "absolute_error_limit": 0.002,
+        "gpu_actions": 0,
+        "model_constructions": 0,
+        "original_reference_setup_failure_preserved": true,
+        "reference_adaptations": [
+          "AST extraction of exact standalone definitions; unrelated import graph omitted",
+          "No-op precision decorator: CPU float32, no autocast",
+          "Postponed type annotations for unused filter metadata types",
+          "Full single-utterance mean-only normalization; no padded batch"
+        ],
+        "source_files": {
+          "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
+          "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
+          "tests/speaker_features_test.cpp": "29a85ce181247ebada92334f87b623d4cedc34418fccc72e921fc569940a01d9",
+          "tools/native_speaker/feature_reference.py": "47e480fec4cac9cdfaed5f092d32ebd64ab0977769da551eb2eaa993f87c080c",
+          "cmake/NativeSpeakerTests.cmake": "20fb364cec7227bbe0a8c0feed172f10b635f12614d771eda23da82e148b7238"
+        },
+        "archive_sha256": "9de0a608266a73aa51d1d9a53da8306fed4b42a26898bfd6a09f40fa1f3a0080",
+        "http_verified": false,
+        "published": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-speaker-features-20261118/README.md"
+      },
+      "speaker_component_20261118": {
+        "status": "ACCEPT_NATIVE_ECAPA_COMPONENT",
+        "gpu_model_loads": 1,
+        "cpu_reference_loads": 1,
+        "cases": 4,
+        "numeric_checks": 36,
+        "boundary_checks": 8,
+        "lifecycle_checks": 16,
+        "seconds": 6.317649954929948,
+        "lease_seconds": 7.817893808707595,
+        "nvml_ok": 9,
+        "http_requests": 0,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "cleanup_complete": true,
+        "source_commit": "8c4b59d57a5aaeb618cfceb63043c6b394301b79",
+        "thresholds": {
+          "features_max_abs": 0.002,
+          "stage": {
+            "relative_l2": 0.0005,
+            "cosine": 0.999999,
+            "max_abs": 0.02
+          },
+          "embedding": {
+            "relative_l2": 0.0001,
+            "cosine": 0.99999999,
+            "max_abs": 0.01
+          }
+        },
+        "max_feature_abs": 0.000457763671875,
+        "max_stage_relative_l2": 3.31075123554831e-06,
+        "max_embedding_relative_l2": 2.886339475801872e-06,
+        "max_explicit_workspace_bytes": 281953284,
+        "raw_evidence_bytes": 205528749,
+        "raw_tensors_retained": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/component-01/run",
+        "raw_tensor_digests_recorded": true,
+        "model_end_to_end_with_reference_frontend": false,
+        "speaker_identification_business": false,
+        "diarized_http_business": false,
+        "performance_claim": false,
+        "full_model_quality": false,
+        "long_stability_run": false,
+        "all_master_tasks_active": true,
+        "archive_sha256": "f3f6e9c58878db3bbdaf9f1bf7981817c7f16f4044f6bc027cca88340301b4d6",
+        "evidence": "evidence/serve-speaker-compute-20261118/README.md"
+      },
+      "speaker_service_assets_20261118": {
+        "status": "ACCEPT_SPEAKER_ASSET_RESOURCE_HEALTH_CPU",
+        "tests": 12,
+        "seconds": 0.8149531190283597,
+        "gpu_model_loads": 0,
+        "http_requests": 0,
+        "strict_lease": true,
+        "nvml_ok": 3,
+        "cleanup_complete": true,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "actual_fixed_weights_read_only": true,
+        "original_public_link_failure_preserved": true,
+        "public_target_only_fix_after_cpu": true,
+        "affected_optin_target_unchanged": true,
+        "archive_sha256": "42d4ccd60db4e47fa2168c3fd624e04c8ef54036f92e51f1dda78047eae25d20",
+        "speaker_http_delivered": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-service-assets-20261118/README.md"
+      },
+      "speaker_turns_output_20261118": {
+        "status": "ACCEPT_SPEAKER_TURNS_OUTPUT_CPU",
+        "tests": 14,
+        "seconds": 0.03177741728723049,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "constructed_embeddings_only": true,
+        "real_speech_accuracy_accepted": false,
+        "runtime_build": "PASS_ZERO_WARNINGS",
+        "candidate_engine_sha256": "c4aa19143a6f7bdd30b7668e7850f36c8a3bd49ed9ac935f0741b0ec96a9be89",
+        "inventory_anchors_reviewed": 20,
+        "inventory_negative_controls": 7,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "speaker_http_delivered": false,
+        "all_master_tasks_active": true,
+        "archive_sha256": "a8a75c73122f30390344251ba7e2567913b3d1a0f2842e0b174008b71e65db67",
+        "evidence": "evidence/serve-speaker-turns-cpu-20261118/README.md"
+      },
+      "speaker_runtime_20261118": {
+        "status": "ACCEPT_SPEAKER_RUNTIME_TARGETED_CPU",
+        "cpp_tests": 13,
+        "schema_tests": 4,
+        "cpp_seconds": 0.16409158892929554,
+        "schema_seconds": 0.21404057927429676,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "real_reference_pcm_codec": true,
+        "own_worker_cleanup_complete": true,
+        "candidate_engine_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "compiled_sources_sha256": "4f926ea7556b29115ceb499e4bde1906092af3324ee719a957d143291cc9a812",
+        "original_schema_graph_failure_preserved": true,
+        "inventory_anchors_reviewed": 22,
+        "inventory_negative_controls": 7,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "speaker_http_accepted": false,
+        "overlap_implemented": false,
+        "all_master_tasks_active": true,
+        "archive_sha256": "abcc388b0e641f5eb91edc0206b0f4d02bbeef0af0180fb8211b534c8574a28b",
+        "evidence": "evidence/serve-speaker-runtime-cpu-20261118/README.md"
+      },
+      "speaker_http_20261118": {
+        "status": "ACCEPT_NATIVE_DIARIZATION_DIRECT_HTTP",
+        "counts": {
+          "starts": 1,
+          "chats": 10,
+          "controls": 49
+        },
+        "seconds": 60.646762386895716,
+        "lease_seconds": 61.16587298316881,
+        "nvml_ok": 58,
+        "cleanup_complete": true,
+        "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "source_commit": "d8a1d06462328834a8540944bacb74e86034a0ca",
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "actual_labels": {
+          "python-same": [
+            "A",
+            "A"
+          ],
+          "js-returning": [
+            "A",
+            "B",
+            "A"
+          ],
+          "python-known": [
+            "first",
+            "second",
+            "first"
+          ],
+          "stream": [
+            "A",
+            "B",
+            "A"
+          ]
+        },
+        "known_references": true,
+        "python_sdk": true,
+        "javascript_sdk": true,
+        "json_and_sse": true,
+        "request_local_recovery_without_model_restart": true,
+        "capacity_silence_cancellation": true,
+        "offline_schema_observations": 15,
+        "driver_cpu_tests": 3,
+        "raw_plan_retained": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/plan.json",
+        "raw_plan_sha256": "218563683443522064af6b11b91b41cce1e7ff6182519b91a6aca3de8d8c20d6",
+        "archive_sha256": "f587c221c5a6fd76461c26cadbacd1a10438dee453a089f58d5df907900f08ce",
+        "service_delivery_pending": true,
+        "overlap_implemented": false,
+        "full_language_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-http-20261118/README.md"
+      },
+      "speaker_package_recovery_cpu_20261118": {
+        "status": "ACCEPT_SPEAKER_PACKAGE_RECOVERY_CPU",
+        "unique_cases": 27,
+        "original_passes": 26,
+        "original_failures": 1,
+        "repaired_cases": 1,
+        "original_seconds": 1.4656309648416936,
+        "repair_seconds": 0.5145824407227337,
+        "gpu_starts": 0,
+        "http_requests": 0,
+        "defaults_unchanged": true,
+        "repair_scope": "Only CPU assertion: logical clock and cooldown preserved; monotonic observation updated. Runtime unchanged.",
+        "reused_original_passes": 26,
+        "service_gpu_acceptance_pending": true,
+        "default_revision": 286,
+        "overlap_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-package-recovery-cpu-20261118/README.md"
+      },
+      "speaker_profiles_20261118": {
+        "status": "ACCEPT_SPEAKER_PRIMARY_LIGHT",
+        "counts": {
+          "starts": 2,
+          "chats": 16,
+          "controls": 84
+        },
+        "seconds": 112.76968623604625,
+        "nvml_queries": 106,
+        "cleanup_complete": true,
+        "exact_guard_command": true,
+        "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "source_commit": "a718b9c1468fd792983137b25b0bea224dd75ff1",
+        "registry_sha256": "a47005a3640eac7e60fce9f61ff4468477d48b918cfc9ffb6eb0407544359d7a",
+        "actual_recurring_voices": {
+          "primary": [
+            "A",
+            "B",
+            "A"
+          ],
+          "light": [
+            "A",
+            "B",
+            "A"
+          ]
+        },
+        "source_audio_sha256": "4266252cab301d5f6133e49cef675fa23f549ccaa9c5907451538fd60722c51f",
+        "original_asr_alignment_vad_and_core_protection": true,
+        "default_revision": 286,
+        "default_unchanged": true,
+        "managed_tls_recovery_delivery_pending": true,
+        "overlap_pending": true,
+        "all_master_tasks_active": true,
+        "lease_archive_sha256": "bc3582e473834c36659d2324114448c4493a328e1746af4978fd5dd6bc64524d",
+        "evidence": "evidence/serve-speaker-profiles-20261118/README.md"
+      },
+      "speaker_service_driver_cpu_20261118": {
+        "status": "ACCEPT_SPEAKER_SERVICE_DRIVER_CPU",
+        "tests": 9,
+        "seconds": 0.3142010699957609,
+        "gpu_starts": 0,
+        "http_requests": 0,
+        "real_retained_wires": true,
+        "service_gpu_pending": true,
+        "default_revision": 286,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-service-driver-cpu-20261118/README.md"
+      },
+      "speaker_service_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_SERVICE_COMPOSITION",
+        "binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c"
+        },
+        "automatic_fallback": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/retained-01/bundle",
+          "manifest_sha256": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54"
+        },
+        "modern_retained_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/modern-retained-01/bundle",
+          "manifest_sha256": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4"
+        },
+        "tls_package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/tls-package-01/bundle",
+          "manifest_sha256": "e670d9d16f3bb1346cb24d6dfbfad6cb398cb368095e6a733ad4f07db602a804"
+        },
+        "stages": [
+          {
+            "name": "modern-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 3,
+              "probes": 0,
+              "controls": 152
+            },
+            "actual_model_execs": 1,
+            "seconds": 51.92326605319977,
+            "nvml_queries": 51,
+            "strict_lease_seconds": 53.45863579725847,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "retained-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 3,
+              "probes": 0,
+              "controls": 154
+            },
+            "actual_model_execs": 1,
+            "seconds": 53.4701138981618,
+            "nvml_queries": 52,
+            "strict_lease_seconds": 54.57568272668868,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "tls-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 7,
+              "probes": 0,
+              "controls": 205
+            },
+            "actual_model_execs": 1,
+            "seconds": 71.21996213821694,
+            "nvml_queries": 69,
+            "strict_lease_seconds": 73.07578203687444,
+            "actual_labels": {
+              "python-zh-json": [
+                "A",
+                "B",
+                "A"
+              ],
+              "chunked-zh": [
+                "A",
+                "B",
+                "A"
+              ],
+              "js-en-stream": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          },
+          {
+            "name": "version-service-01",
+            "counts": {
+              "starts": 2,
+              "chats": 6,
+              "probes": 1,
+              "controls": 340
+            },
+            "actual_model_execs": 2,
+            "seconds": 113.87310769315809,
+            "nvml_queries": 108,
+            "strict_lease_seconds": 115.4078333741054,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ],
+              "fallback-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            }
+          }
+        ],
+        "counted_spawn_attempts": 5,
+        "actual_model_starts": 5,
+        "service_requests": 19,
+        "service_probes": 1,
+        "service_seconds": 290.4864497827366,
+        "nvml_queries": 280,
+        "nvml_all_ok": true,
+        "cleanup_complete": true,
+        "strict_finalizers_all_passed": true,
+        "primary_light_evidence": "docs/evidence/serve-speaker-profiles-20261118/README.md",
+        "direct_http_evidence": "docs/evidence/serve-speaker-http-20261118/README.md",
+        "candidate_whole_package_gpu_run": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "all_master_tasks_complete": false,
+        "archive_sha256": "c2474ce40dfb3f914041929767a30d7be335b12e21cc7e3c5d91ac4048e7df1f",
+        "secret_scan_matches": 0
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -4019,6 +4483,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -4900,7 +5402,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev286 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev296 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -5550,6 +6052,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -5589,42 +6129,42 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
-        "revision": 286,
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
         "current": {
-          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
-          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
-          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
-          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
-          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
-          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
         },
         "commands": 19,
-        "seconds": 275.8470332380384,
+        "seconds": 262.46435551485047,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
-        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
         "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "previous_rev276_preserved": true,
+        "previous_rev286_preserved": true,
         "retired_intents_archived": 4,
-        "retired_generations_archived": 2,
-        "retired_versions_archived": 2,
-        "maintenance_original_timeout_preserved": true,
-        "maintenance_cumulative_seconds": 122.27650483138859,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
         "deleted_files": 0,
-        "files": 82,
+        "files": 84,
         "secret_scan_matches": 0,
-        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5791,7 +6331,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR45 final-head checks and actual main merge",
+        "Speaker PR final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -6210,6 +6750,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -6401,8 +6979,8 @@
       }
     }
   ],
-  "next_task": "PR45 main integration and A10 diarization plus all remaining master tasks",
-  "next": "Complete final-head PR45 integration and exact user handoff, then actual diarization, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "Speaker main integration and A10 overlap separation plus all remaining master tasks",
+  "next": "Complete speaker main integration, actual overlap detection/separation, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

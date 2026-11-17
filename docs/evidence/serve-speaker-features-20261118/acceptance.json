@@ -1,0 +1,36 @@
+{
+  "status": "ACCEPT_NATIVE_SPEAKER_FEATURES",
+  "cpu_cases": 8,
+  "reference_cases": 6,
+  "seconds": 0.06371775921434164,
+  "reference_seconds": 0.02034800173714757,
+  "max_absolute_errors": [
+    0.0,
+    1.09672546e-05,
+    0.00025177002,
+    0.0011177063,
+    5.24520874e-05,
+    0.00104904175
+  ],
+  "absolute_error_limit": 0.002,
+  "gpu_actions": 0,
+  "model_constructions": 0,
+  "original_reference_setup_failure_preserved": true,
+  "reference_adaptations": [
+    "AST extraction of exact standalone definitions; unrelated import graph omitted",
+    "No-op precision decorator: CPU float32, no autocast",
+    "Postponed type annotations for unused filter metadata types",
+    "Full single-utterance mean-only normalization; no padded batch"
+  ],
+  "source_files": {
+    "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
+    "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
+    "tests/speaker_features_test.cpp": "29a85ce181247ebada92334f87b623d4cedc34418fccc72e921fc569940a01d9",
+    "tools/native_speaker/feature_reference.py": "47e480fec4cac9cdfaed5f092d32ebd64ab0977769da551eb2eaa993f87c080c",
+    "cmake/NativeSpeakerTests.cmake": "20fb364cec7227bbe0a8c0feed172f10b635f12614d771eda23da82e148b7238"
+  },
+  "archive_sha256": "9de0a608266a73aa51d1d9a53da8306fed4b42a26898bfd6a09f40fa1f3a0080",
+  "http_verified": false,
+  "published": false,
+  "whole_task_complete": false
+}

@@ -7,6 +7,152 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev296使用入口已同步：说话人资产离线转换/固定配置、SDK调用、
+托管8窗口预算及局部恢复均明确；config与已验资产字节一致。
+仅文档/固定配置交接，复用全部未变运行时证据；接着PR最终检查
+合main、真实重叠检测分离及全部master，目标保持active。
+
+[rev296说话人可回退交付](evidence/serve-speaker-delivery-20261118/README.md)
+完成，19项STOPPED命令/262.464秒，0新增GPU。实际整根回退
+再前进通过，原预算/历史保持；前驱rev286和day保留。接着主线
+检查合入、真实重叠检测分离与全部master，不在本阶段结束总目标。
+
+[发行容量归档完成](evidence/serve-speaker-delivery-capacity-20261118/README.md)，
+8执行命令/102.273秒（另1只读preflight），4/4/3条记录
+归档，0删除/0模型动作；原失败保留，默认rev286及全部预算不变。
+接着STOPPED可回退发布、主线、真实重叠与全部master。
+
+维护准备首轮被每批4项保护拒绝，未移动文件，默认/预算未变；
+原失败保留。改4 intent/4 generation/3 version，累计8命令/
+360秒仍0GPU；足够本次发布容量，继续可回退交付及全部master。
+
+服务短验已全过，准备STOPPED可回退发布（0新增GPU）：先最多
+7命令/360秒归档无人引用记录以腾出发行池，0删除；再最多
+20命令/540秒完成显式迁移、整根回退再前进和预算保全，保留
+原rev286。随后主线、真实重叠与全部master继续。
+
+[原生说话人服务与恢复通过](evidence/serve-speaker-service-20261118/README.md)：
+4阶段5启动/19创建/1探针/290.486秒；双SDK/TLS、全部保留包及
+整包回退后实际A/B/A、原状态/预算保全通过。280次NVML正常，
+清理和自动finalize通过；接着可回退发布/主线、真实重叠及全部master。
+默认rev286尚未变，旧引擎能力未冒充已验。
+
+[原生说话人服务验收器9CPU通过](evidence/serve-speaker-service-driver-cpu-20261118/README.md)，
+0.314秒、0GPU。实际A/B/A JSON/SSE、源/关联/依赖健康/预算及
+原ASR保护通过。接着封包和4组服务短验：累计5启动/19创建/
+1探针/1800秒；默认rev286保持，重叠和全部master继续。
+
+主轻已验，继续原生服务组合驱动与封包。冻结9CPU/180秒、0GPU，
+保留原6项并补实际A/B/A流式、源/依赖健康/预算负控；随后固定
+TLS和整包恢复短验。默认rev286不变，重叠和全部master继续。
+
+[说话人主轻实际资格通过](evidence/serve-speaker-profiles-20261118/README.md)：
+2启动/16创建/112.770秒，两种配置均A/B/A，原音频及核心
+工具/schema/embedding/视频通过；106次NVML正常、自有资源清理。
+继续服务封包/TLS/整包恢复交付、重叠实现与全部master，rev286未变。
+
+下一组主轻资格固定2启动/16创建/900秒、同一严格租约；两种
+配置各做真实A/B/A、ASR/对齐/VAD与核心工具/schema/embedding/
+视频保护。通过后封包继续TLS/恢复交付、真实重叠及全部master，
+默认rev286保持。
+
+[说话人服务/恢复27CPU闭合](evidence/serve-speaker-package-recovery-cpu-20261118/README.md)，
+0GPU/HTTP。首轮26过/1测试时钟断言失败保留，修正后仅重验该项
+通过；固定身份/预算、实际A/B/A资格、迁移与自动回退保全均通过。
+继续主轻/TLS/恢复交付、真实重叠和全部master；默认rev286保持。
+
+正在补说话人服务包与恢复资格，冻结27CPU/180秒、0GPU/HTTP；
+固定身份/5项预算、实际A/B/A业务资格、显式迁移与自动回退不丢
+能力。之后主轻/TLS/整包恢复交付及重叠路径、全部master继续；
+默认rev286保持。已过真实HTTP和ECAPA数值复用。
+
+[真实说话人HTTP通过](evidence/serve-speaker-http-20261118/README.md)：
+1启动/10创建/60.647秒，A/A、A/B/A与参考first/second/first，
+双SDK/JSON/SSE、局部故障同PID恢复、容量/取消/静音和核心保护
+通过；58次NVML正常、自有资源清理。默认rev286未变，继续服务
+恢复交付、重叠检测分离及全部master；阶段不结束总目标。
+
+HTTP验收器3项CPU正负控已通过（0.214秒、0GPU），源区间标签/
+回访、参考命名、SSE关联和usage失败均能检出。接着按已冻结的
+1启动/10创建/600秒严格租约执行；全部master继续，默认rev286不变。
+
+真实说话人HTTP驱动已固定：先3CPU验收器/60秒，再严格单租约
+1启动/10创建/600秒，覆盖同人、换人回访、已知参考、双SDK流式、
+局部故障/同PID恢复、容量/取消/静音和核心保护。默认rev286保持；
+后续服务恢复交付、重叠检测分离及全部master继续。
+
+[Speaker运行时17项CPU通过](evidence/serve-speaker-runtime-cpu-20261118/README.md)：
+13C++/0.164秒、4schema/0.214秒，0GPU/HTTP；真实参考PCM
+编解码、配置/取消及原音频保护通过。编译身份已核对、零警告；旧
+type graph生成失败保留并纠正。继续真实语音/SDK、服务恢复交付、
+重叠检测分离及全部master；默认rev286不变。
+
+正在接入独立speaker后端及实际diarized JSON/SSE；CPU冻结13项/
+180秒、0GPU/HTTP，含实际2—10秒PCM参考编解码、作用域/取消、
+delta/segment关联与原音频配置保护。构建和验证后继续真实语音/
+API、服务恢复交付、重叠检测分离及全部master；默认rev286不变。
+
+[Speaker分段/原生输出14CPU通过](evidence/serve-speaker-turns-cpu-20261118/README.md)，
+0.032秒、0GPU/HTTP；构造声纹的聚类/参考/容量/取消与真实给定
+时间到JSON/SSE/usage通过，不能代替真实语音或API。运行时零警告，
+20源码锚点及7负控已核对；继续后端/真实业务/恢复交付与全部master。
+默认rev286不变，PR45已合main0ab3ce6a。
+
+开始DI03声音窗口/聚类/已知参考及词时间到JSON/SSE的实际接线，
+冻结14CPU/180秒、0GPU/HTTP。原子取消、容量和标签来自声音；
+实际语音/API及重叠检测分离继续实现，不能以构造向量CPU代替。
+默认rev286不变，总目标和全部master保持active。
+
+PR #45已在最终head `6476e3a4`两组CI通过后合入main
+`0ab3ce6a`；[合并记录](evidence/serve-audio-capability-ci-20261118/merge-receipt.json)。
+对齐/VAD交付已进入主线，默认rev286保持STOPPED；后续speaker开发
+与已验PR分开，本地集成保留全部历史和源码，未追加GPU测试。
+继续实际说话人分段/参考/API/恢复交付及全部master剩余任务。
+
+[Speaker资产/资源/健康12CPU通过](evidence/serve-speaker-service-assets-20261118/README.md)
+（0.815秒、0GPU模型/0HTTP）；固定权重读取、隔离/取消/预算、
+原ASR保护及设备状态通过。运行时/公开host零警告构建；原公开目标
+误挂loader的链接失败保留，依赖修正未删能力。继续真实分段/参考/
+API/恢复交付与全部master，默认rev286不变。
+
+正在补speaker独立资产/健康与统一RAM预算，冻结12项CPU/180秒；
+含完整只读权重加载，沿用严格租约，0GPU模型/0HTTP。最长10秒
+参考纳入工作区，坏资产不拖健康Chat/ASR，真实设备故障保护保持。
+随后实际分段/参考/API与恢复交付及全部master；默认rev286不变。
+
+[ECAPA真实组件通过](evidence/serve-speaker-compute-20261118/README.md)：
+1GPU/1CPU参考、4输入/36数值+24边界与生命周期，6.318秒；
+9次NVML正常、租约清理，最大embedding相对误差2.89e-06。
+默认rev286不变；继续独立资产/健康及真实分段/参考/API/恢复交付，
+不是说话人HTTP已通过，全部master继续。
+
+ECAPA验收器5CPU正负控已通过（0.164秒），独立CUDA构建零警告；
+实际组件短验已固定1GPU模型加载/
+1CPU参考/4输入/600秒，完整特征和七阶段36项比较，0HTTP/主模型。
+检查最短/30秒上限和两段官方语音，实际说话人业务/API仍继续，
+默认rev286不变；PR45修复6476e3a4检查中，全部master保持。
+
+[ECAPA实际计算布局6项CPU通过](evidence/serve-speaker-layout-20261118/README.md)
+（0.032秒、0GPU）；完整F32计算已零警告编译，实际数值仍待验证。
+首次host未configure的构建失败保留；接着固定官方CPU对照和有界
+GPU，再完成分段/参考/API/恢复/交付及全部master。默认rev286不变。
+
+说话人实际计算开发继续：保持F32权重和FP32计算，复用现有
+CUDA/cuBLASLt并显式核算全部工作区。冻结6布局/绑定CPU、180秒、
+0GPU，必要构建单列；真实数值/语音随后固定短验，不以组件代替API。
+
+[说话人特征8项CPU通过](evidence/serve-speaker-features-20261118/README.md)，
+0.064秒、0GPU，六组完整矩阵最大误差0.001118≤0.002；
+预算/坏输入/取消通过。原参考类型注解失败保留，修复只涉导入。
+继续ECAPA实际计算、真实说话人输出/恢复和全部master；PR45最终
+head独立检查，本组尚未执行模型或交付API。
+
+[原生说话人资产8项CPU通过](evidence/serve-speaker-contract-20261118/README.md)
+（0.114秒、0GPU），231张量/实际权重/取消与坏输入合同
+已核对，独立构建零警告。继续真实80维特征、ECAPA计算和全部
+聚类/参考/API/恢复交付；不是接口可用。默认rev286保持，PR45
+冻结f3268465等待最终CI，后续本地提交不混入已验发行。
+
 [PR45能力声明旧测试已修](evidence/serve-audio-capability-ci-20261118/README.md)：
 公开CI只有旧remaining数量断言失败；改核对具体待办和组件状态，
 3项相关CPU通过、0GPU。原CI及一次本地参数失败保留，运行时和
@@ -216,17 +362,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev286；服务包 `93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0` |
-| Generation | `e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752` |
-| 引擎 | `bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2` |
-| 引擎发布记录 | `3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e` |
+| 发布 | rev296；服务包 `4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c` |
+| Generation | `1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3` |
+| 引擎 | `e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2` |
+| 引擎发布记录 | `839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751` |
 | Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
 | 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5`；对齐/VAD/原周期/原生入口已验，前驱rev276另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934`；不是独立旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
+| 人工整包回退 | 现代保留根 `157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4`；实际speaker/原周期/原生入口已验，前驱rev286另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。

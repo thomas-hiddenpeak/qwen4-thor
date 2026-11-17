@@ -1,0 +1,30 @@
+{
+  "status": "ACCEPT_NATIVE_SPEAKER_ASSET_CONTRACT",
+  "cpu_tests": 8,
+  "cpu_seconds": 0.11382408114150167,
+  "gpu_actions": 0,
+  "source_files": {
+    "include/q4t/audio/speaker_config.h": "9d1bfd5caf3766798431717aa0213175ea582e36604a1c9065be190c0dff4a8d",
+    "src/audio/speaker_config.cpp": "52298090b29799ed22f9dccc8ac1f1113562acd700fe9929899ad55f1407ee89",
+    "tests/speaker_config_test.cpp": "c47d092294ef8491635d25c01b954301a602668575cae4d89add7e31e9c42141",
+    "tests/speaker_asset_test.cpp": "e9148fb839e354144ee26fa944d37e38175c230613c5ac8c859618246ccf3326",
+    "cmake/NativeSpeakerTests.cmake": "9d774fd31ed1cf7c6a90d16d19eb3b0a9c18e856eaa7517dd629377777ced952",
+    "tools/native_speaker/convert_weights.py": "9afbdcef622679d70f88aea91a0d3f5f1628e3194cdfdb717d00e5cd4f30654d",
+    "tests/fixtures/speaker/config.json": "a173ae14a11bacabd30a71535bc581e5aab1a5871855ba939e002b3284a398ac",
+    "tests/fixtures/speaker/tensor-header.json": "e4f3ba44ba88d1383c016e6f10c7551186632bd7c60855aba203a6e4b71ff06c"
+  },
+  "model_revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+  "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+  "original_sha256": "0575cb64845e6b9a10db9bcb74d5ac32b326b8dc90352671d345e2ee3d0126a2",
+  "converted_sha256": "901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af",
+  "tensor_count": 231,
+  "tensor_values_changed": false,
+  "asset_and_conversion_bytes": 166712442,
+  "asset_and_conversion_seconds": 41.31753619527444,
+  "default_rev286_unchanged": true,
+  "model_execution": false,
+  "http_verified": false,
+  "published": false,
+  "whole_task_complete": false,
+  "archive_sha256": "7d79a36e1281007c41bbb2300776d11fee42e63f17e86edd65075d5c0c45803e"
+}

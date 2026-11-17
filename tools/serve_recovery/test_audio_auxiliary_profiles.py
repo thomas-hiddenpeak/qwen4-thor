@@ -19,6 +19,8 @@ from tools.serve_service import package
 
 ROOT = Path(__file__).resolve().parents[2]
 OBSERVED = ROOT/'docs/evidence/serve-vad-http-20261117'
+# These retained v4 records predate the speaker backend. Preserve that scope.
+AUXILIARIES = {k:package.ASR_AUXILIARY[k] for k in ('alignment', 'vad')}
 
 
 class AudioAuxiliaryProfiles(unittest.TestCase):
@@ -30,7 +32,7 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
 
     def selected_auxiliary(self):
         result = self.selected()
-        for name, (fixed, defaults, _) in package.ASR_AUXILIARY.items():
+        for name, (fixed, defaults, _) in AUXILIARIES.items():
             result[name] = dict(fixed, directory='/optional/'+name,
                                 limits=dict(defaults))
         result['vad']['limits']['max_chunks'] = 3
@@ -54,7 +56,7 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
         for record in records.values():
             record['format'] = evidence.AUDIO_AUXILIARY_FORMAT
             caps = record['capabilities']['transcriptions']
-            for name, (fixed, _, _) in package.ASR_AUXILIARY.items():
+            for name, (fixed, _, _) in AUXILIARIES.items():
                 caps[name] = dict(fixed, configured=True)
             caps['vad']['max_chunks'] = 3
             record['business']['asr_auxiliary'] = self.auxiliary_audio(registry['identity'])
@@ -69,12 +71,12 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
         selected = self.selected_auxiliary()
         fixed = contract.asr_binding(selected)
         self.assertNotIn('directory', fixed)
-        self.assertTrue(all('directory' not in fixed[k] for k in package.ASR_AUXILIARY))
+        self.assertTrue(all('directory' not in fixed[k] for k in AUXILIARIES))
         moved = copy.deepcopy(selected);moved['directory'] = '/moved/asr'
-        for name in package.ASR_AUXILIARY: moved[name]['directory'] = '/moved/'+name
+        for name in AUXILIARIES: moved[name]['directory'] = '/moved/'+name
         self.assertEqual(contract.asr_binding(moved), fixed)
         self.assertEqual(contract.asr_binding(contract.asr_configuration(fixed)), fixed)
-        for name in package.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             bad = copy.deepcopy(fixed);bad[name]['directory'] = '/must-not-be-qualified'
             with self.assertRaises(ValueError): contract.asr_configuration(bad)
             bad = copy.deepcopy(fixed);bad[name]['weight_sha256'] = '0'*64
@@ -175,9 +177,9 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
         target = test_deployment.EmbeddingTargetTests().target
         selected = self.selected_auxiliary()
         moved = copy.deepcopy(selected)
-        for name in package.ASR_AUXILIARY: moved[name]['directory'] = '/moved/'+name
+        for name in AUXILIARIES: moved[name]['directory'] = '/moved/'+name
         target(dict(native_asr=selected), dict(native_asr=moved))
-        for name in package.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             for fault in ('remove','identity'):
                 bad = copy.deepcopy(selected)
                 if fault == 'remove': del bad[name]
@@ -206,7 +208,7 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
                     operations_port=10001, binary='/candidate')
         for name in contract.NAMES:
             command = driver.command(plan, name, '/bundle')
-            for key, (_, _, prefix) in package.ASR_AUXILIARY.items():
+            for key, (_, _, prefix) in AUXILIARIES.items():
                 for option, value in dict(model_dir=native[key]['directory'], **native[key]['limits']).items():
                     flag = '--'+prefix+'-'+option.replace('_','-')
                     self.assertEqual(command.count(flag), 1)

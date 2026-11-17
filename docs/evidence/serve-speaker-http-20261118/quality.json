@@ -1,0 +1,40 @@
+{
+  "python-same": {
+    "labels": [
+      "A",
+      "A"
+    ],
+    "covered_utterances": 2,
+    "text": "The child almost hurt the small dog. Drop the two when you add the figures."
+  },
+  "js-returning": {
+    "labels": [
+      "A",
+      "B",
+      "A"
+    ],
+    "covered_utterances": 3,
+    "text": "The child almost hurt the small dog. We are sure that one war is enough. Drop the two when you add the figures."
+  },
+  "python-known": {
+    "labels": [
+      "first",
+      "second",
+      "first"
+    ],
+    "covered_utterances": 3,
+    "text": "The child almost hurt the small dog. We are sure that one war is enough. Drop the two when you add the figures."
+  },
+  "stream": {
+    "labels": [
+      "A",
+      "B",
+      "A"
+    ],
+    "covered_utterances": 3,
+    "text": "The child almost hurt the small dog. We are sure that one war is enough. Drop the two when you add the figures."
+  },
+  "silence": {
+    "silence": true
+  }
+}

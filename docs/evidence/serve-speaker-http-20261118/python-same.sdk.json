@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "duration": 7.62,
+    "segments": [
+      {
+        "id": "0",
+        "end": 3.172,
+        "speaker": "A",
+        "start": 0.372,
+        "text": "The child almost hurt the small dog.",
+        "type": "transcript.text.segment"
+      },
+      {
+        "id": "1",
+        "end": 7.316,
+        "speaker": "A",
+        "start": 4.196,
+        "text": "Drop the two when you add the figures.",
+        "type": "transcript.text.segment"
+      }
+    ],
+    "task": "transcribe",
+    "text": "The child almost hurt the small dog. Drop the two when you add the figures.",
+    "usage": {
+      "input_tokens": 266,
+      "output_tokens": 19,
+      "total_tokens": 285,
+      "type": "tokens",
+      "input_token_details": {
+        "audio_tokens": 90,
+        "text_tokens": 176
+      }
+    }
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18246/v1/audio/transcriptions"
+    }
+  ]
+}

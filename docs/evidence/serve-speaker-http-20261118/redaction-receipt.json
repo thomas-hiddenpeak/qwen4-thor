@@ -1,0 +1,50 @@
+[
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/core-after-speaker.request.json",
+    "source_sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c",
+    "reviewed": "core-after-speaker.request.reviewed.json",
+    "reviewed_sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/core-during-speaker-failure.request.json",
+    "source_sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c",
+    "reviewed": "core-during-speaker-failure.request.reviewed.json",
+    "reviewed_sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/js-returning.request.json",
+    "source_sha256": "a03493499f0b02908a4b72e1ef62b65cb8679252701266ea92d21d1a92643cd1",
+    "reviewed": "js-returning.request.reviewed.json",
+    "reviewed_sha256": "a03493499f0b02908a4b72e1ef62b65cb8679252701266ea92d21d1a92643cd1"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/js-stream.request.json",
+    "source_sha256": "bdcfcf731ee9c6d88381a0d6ebab85d3e0adb824fe3327647e68d3d6f69bdcd2",
+    "reviewed": "js-stream.request.reviewed.json",
+    "reviewed_sha256": "bdcfcf731ee9c6d88381a0d6ebab85d3e0adb824fe3327647e68d3d6f69bdcd2"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/plan.json",
+    "source_sha256": "218563683443522064af6b11b91b41cce1e7ff6182519b91a6aca3de8d8c20d6",
+    "reviewed": "plan.reviewed.json",
+    "reviewed_sha256": "f8ce9302cec6b09becf1766b0326131633076cbdc6adf3f60e0a978c076e1afd"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/python-known.request.json",
+    "source_sha256": "619a47472b3e9cd1c265fda7fe6787a175e3e20d8b4bf1eeed6d57d3381e8461",
+    "reviewed": "python-known.request.reviewed.json",
+    "reviewed_sha256": "24c3a2a9ed0a39413b80067df62cd9df087ecc22838951768c780864599f51b5"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/python-same.request.json",
+    "source_sha256": "a7eb97f5d35e07b1a6a4c084bc23985f7b4fcff082105ac04ff16aaa2f2c2859",
+    "reviewed": "python-same.request.reviewed.json",
+    "reviewed_sha256": "a7eb97f5d35e07b1a6a4c084bc23985f7b4fcff082105ac04ff16aaa2f2c2859"
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/http-01/python-silence.request.json",
+    "source_sha256": "59c269b54d546eb1056ef238294be86a6811f5e06c537612dce3fdd648bfc4fd",
+    "reviewed": "python-silence.request.reviewed.json",
+    "reviewed_sha256": "59c269b54d546eb1056ef238294be86a6811f5e06c537612dce3fdd648bfc4fd"
+  }
+]

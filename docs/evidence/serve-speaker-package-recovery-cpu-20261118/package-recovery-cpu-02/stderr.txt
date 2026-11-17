@@ -1,0 +1,6 @@
+test_explicit_speaker_addition_preserves_history_pending_and_cooldown (tools.serve_recovery.test_speaker_profiles.SpeakerProfiles.test_explicit_speaker_addition_preserves_history_pending_and_cooldown) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.080s
+
+OK

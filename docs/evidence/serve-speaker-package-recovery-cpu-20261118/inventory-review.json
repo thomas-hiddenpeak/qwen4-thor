@@ -1,0 +1,24 @@
+{
+  "status": "PASS_REVIEWED_SOURCE_INVENTORY",
+  "changes": {
+    "tools/serve_recovery/profile_acceptance.py": {
+      "before": "097392550ec1d1b859d55a2dfb06657333cf110103a0127a63e26906ea87430b",
+      "after": "45d452aeda3730e1370d9cc05e4c801684f22c37d73c388a5d7dbd3ae25f2816"
+    },
+    "tools/serve_recovery/profile_evidence.py": {
+      "before": "13a391c83a5774ec88d114cc441cd3c61cba9c724e82281320f3db5e6d96bc48",
+      "after": "fdd269229d0b8a0e3688967a1a6aa5a1d1423ad7651829844dc7feb4c53325c3"
+    },
+    "tools/serve_recovery/profile_migration.py": {
+      "before": "9950bea801e1adf2bf4b9930a34274615827d0aef2c2f16811e619db1d628476",
+      "after": "9283c4d3ee7dc4204ed1635decfd2c95d3b05b51eecbe4eee242465e92172a26"
+    },
+    "tools/serve_service/package.py": {
+      "before": "09fa16a0b6501d0c09978571d342c8045a913fe818c32faa1c6e27c92c8fd64e",
+      "after": "3d9d3e2145a83e4f175987224d92fdb862e00e44bb9c78b96a24ce62ba7602c7"
+    }
+  },
+  "negative_controls": 7,
+  "anchors": 837,
+  "semantics_certified": false
+}

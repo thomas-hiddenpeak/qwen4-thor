@@ -181,7 +181,8 @@ def asr_capabilities(value):
         basic, aligned = {'json', 'text'}, {'srt', 'verbose_json', 'vtt'}
         ledger.require(type(formats) is list and all(type(v) is str for v in formats)
             and len(set(formats)) == len(formats) and basic <= set(formats)
-            and set(formats) <= basic | aligned, 'invalid native ASR format capabilities')
+            and set(formats) <= basic | aligned | {'diarized_json'},
+            'invalid native ASR format capabilities')
         if set(formats) & aligned:
             ledger.require(aligned <= set(formats) and 'alignment' in selected and
                 type(selected.get('segments')) is dict and
@@ -190,6 +191,26 @@ def asr_capabilities(value):
         # The API's output format enum is an unordered feature set. Only this
         # reviewed enum may extend; arbitrary arrays still require equality.
         selected['formats'] = {name:True for name in formats}
+    if 'stream_formats' in selected:
+        formats = selected['stream_formats']
+        ledger.require(type(formats) is list and all(type(v) is str for v in formats)
+            and len(set(formats)) == len(formats) and {'json', 'text'} <= set(formats)
+            and set(formats) <= {'json', 'text', 'diarized_json'},
+            'invalid native ASR stream formats')
+        selected['stream_formats'] = {name:True for name in formats}
+    diarized = any('diarized_json' in selected.get(k, {})
+                   for k in ('formats', 'stream_formats'))
+    if diarized:
+        speaker = selected.get('speaker', {})
+        ledger.require(type(speaker) is dict and
+            all('diarized_json' in selected.get(k, {}) for k in ('formats', 'stream_formats')) and
+            all(speaker.get(k) == v for k,v in package.NATIVE_SPEAKER.items()) and
+            {'alignment', 'vad', 'speaker'} <= selected.keys() and
+            speaker.get('backend') == 'native_ecapa_fp32' and
+            speaker.get('word_assignment') == 'actual_alignment_maximum_overlap' and
+            speaker.get('reference_scope') == 'current_request_only' and
+            speaker.get('core_readiness_dependency') is False,
+            'diarized formats lack actual isolated speaker implementation')
     for name, (fixed, _, _) in package.ASR_AUXILIARY.items():
         if name not in selected:
             continue
@@ -208,10 +229,12 @@ def asr_capabilities(value):
             del observed['max_chunks']
     if 'remaining_native_work' in selected:
         pending = selected.pop('remaining_native_work')
-        known = {'alignment', 'alignment_segments', 'vad_chunking', 'diarization'}
+        known = {'alignment', 'alignment_segments', 'vad_chunking',
+                 'diarization', 'overlap_diarization'}
         ledger.require(type(pending) is list and all(type(k) is str for k in pending)
             and len(set(pending)) == len(pending) and set(pending) <= known and
-            'diarization' in pending, 'unknown native audio completion declaration')
+            (('diarization' in pending) != ('overlap_diarization' in pending)),
+            'unknown native audio completion declaration')
         resolved = {}
         if not {'alignment', 'alignment_segments'}.intersection(pending):
             ledger.require('alignment' in selected and 'segments' in selected,
@@ -221,6 +244,9 @@ def asr_capabilities(value):
             ledger.require('vad' in selected and selected.get('chunking_strategy') == ['auto', 'server_vad'],
                            'VAD completion lacks actual backend/strategy declaration')
             resolved['vad_chunking'] = True
+        if 'diarization' not in pending:
+            ledger.require(diarized, 'diarization completion lacks actual output/backend')
+            resolved['diarization'] = True
         selected['resolved_native_work'] = resolved
 
 
@@ -228,8 +254,8 @@ def audio_change(before, after):
     """Only addition and explicit capacity changes preserve accepted backends."""
     profile_contract.asr_configuration(before)
     profile_contract.asr_configuration(after)
-    old = set(profile_evidence.audio_auxiliaries(dict(native_asr=before)))
-    new = set(profile_evidence.audio_auxiliaries(dict(native_asr=after)))
+    old = set(package.ASR_AUXILIARY).intersection(before)
+    new = set(package.ASR_AUXILIARY).intersection(after)
     ledger.require(old <= new and all(before[k] == after[k] for k in package.NATIVE_ASR),
                    'migration would remove or change an accepted audio backend')
     for name in old:
