@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
 累计178.267秒、0GPU。精确客户端封装已验，模型/控制/native
 和profile保持；128条意图容量通过受保护、可恢复归档4条解决，
-其余状态字节和原周期保留。继续新身份day交接、实际合main及全部master。
+其余状态字节和原周期保留。rev260独立day已prepare/check且未运行，继续本组实际合main及全部master。
 
 前驱[rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
@@ -134,11 +134,15 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+发行入口审查确认：意图归档目前在仓库工具中，尚未进入rev260密封
+服务包/原生service子命令。N07保持进行中，下一子任务补齐包和CLI，
+并保持旧包核验与全部预算；不能把开发脚本可用当正式入口齐备。
+
 [rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
 已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
 累计178.267秒、0GPU。精确客户端封装已验，模型/控制/native
 和profile保持；128条意图容量通过受保护、可恢复归档4条解决，
-其余状态字节和原周期保留。继续新身份day交接、实际合main及全部master。
+其余状态字节和原周期保留。rev260独立day已prepare/check且未运行，继续本组实际合main及全部master。
 
 已解决的本组原失败：客户端交付在rev256回退步骤遇到发布意图128条容量上限；
 原失败保留、服务STOPPED且无GPU动作。补充可恢复意图归档：

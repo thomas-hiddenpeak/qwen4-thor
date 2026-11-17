@@ -3796,8 +3796,12 @@
         "contract": "SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md",
         "cpu_evidence": "evidence/serve-publication-intent-cpu-20261117/README.md",
         "archived_intents": 4,
-        "actual_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
-      }
+        "actual_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md",
+        "sealed_service_cli_delivered": false
+      },
+      "remaining_required": [
+        "Ship protected intent/generation/version retention in sealed native service package and CLI; preserve historical package verification and recovery budgets"
+      ]
     },
     {
       "id": "R01",
@@ -5498,28 +5502,28 @@
       },
       "current_native_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
-        "source_commit": "dcfa3cf329ccc3487d605510219c707298b28fbc",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
-        "revision": 254,
+        "source_commit": "a94d5fc0eac64563ac07b1ded1d92b1d2c28f2ff",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/validation-src",
+        "revision": 260,
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
-          "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle",
+          "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64"
         },
-        "service_id": "b323ff28-4a6c-43b1-a5c4-7500e693b401",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "38396dbd045d0144a9c61eac0f07f3544da812f48806229b39207580b6951cf9",
-        "sources": 591,
+        "service_id": "1aaf062e-ad9e-461e-931c-72ea7094498b",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/validation-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "651375c68b2e63d1ea33b8f5fa3640bad4b45827c7a23d8b4ab6e126284f60e9",
+        "sources": 593,
         "links": {
-          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle/engine/q4t",
-          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle/engine/q4t.release.json",
-          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
-          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/delivery-01/candidate-service.release.json"
+          "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle/engine/q4t",
+          "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle/engine/q4t.release.json",
+          "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle",
+          "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/delivery-01/service.release.json"
         },
         "protected_default": {
           "/home/rm01/models/dev/qwen4-thor/build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
-          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
-          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
-          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c",
+          "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+          "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
+          "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "5e1dac9955ce1c56ac606fb376bd82ab17e5f987ac63edcef72ee0199e26a2cb",
           "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
         },
         "production_unchanged": true,
@@ -5540,9 +5544,9 @@
               "--output",
               ".q4t-work/day-01"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 2.1662337947636843
+            "seconds": 1.7156548127532005
           },
           {
             "name": "check",
@@ -5555,16 +5559,16 @@
               "--plan",
               ".q4t-work/day-01/plan.json"
             ],
-            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src",
+            "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/validation-src",
             "exit_code": 0,
-            "seconds": 0.5142591809853911
+            "seconds": 0.5151235046796501
           }
         ],
         "model_actions": 0,
         "executed": false,
         "owner": "user",
-        "archive_sha256": "2578a0c1bbe30aa5a31a482542d11dfef0f77298c8f244642ac106213ae2c84c",
-        "evidence": "evidence/serve-video-projective-day-handoff-20261117/README.md"
+        "archive_sha256": "372a5b584c271b6d93b6551e7d46b8bf81e26d05b59ea23ca5abc53208ca4c31",
+        "evidence": "evidence/serve-client-receipts-day-handoff-20261117/README.md"
       },
       "video_affine_detail_20261117": {
         "state": "delivered_main_pending",
@@ -5579,8 +5583,8 @@
       }
     }
   ],
-  "next_task": "Q02",
-  "next": "Freeze rev260 day handoff and merge the client/intent-retention repair after exact-head checks; continue every remaining master task.",
+  "next_task": "N07",
+  "next": "Merge client receipts/retention phase after exact-head checks; add retained-state maintenance to sealed native service CLI and continue all remaining master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
