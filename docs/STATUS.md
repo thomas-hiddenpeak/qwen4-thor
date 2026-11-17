@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。下一步固定用户day、修复PR43两项CPU夹具时限并完成
+profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
 最终head实际合main，再继续其余全部master任务。
 
 前驱[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
@@ -151,7 +151,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。下一步固定用户day、修复PR43两项CPU夹具时限并完成
+profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
 最终head实际合main，再继续其余全部master任务。
 
 [原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
