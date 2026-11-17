@@ -25,7 +25,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
 GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
 主轻及保留组合已验，原质量失败不追认，原234包及长稳计划保留。
-继续刷新用户day独立交接、PR41实际合main及全部master。
+用户day独立交接已prepare/check且未运行；继续PR41实际合main及全部master。
 
 前驱[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
@@ -125,7 +125,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
 GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
 主轻及保留组合已验，原质量失败不追认，原234包及长稳计划保留。
-继续刷新用户day独立交接、PR41实际合main及全部master。
+用户day独立交接已prepare/check且未运行；继续PR41实际合main及全部master。
 
 [仿射/视频细节发行组合通过](evidence/serve-video-affine-composition-20261117/README.md)：
 主轻及修复后两保留控制包均已实际验证；含原失败累计7启动24请求
