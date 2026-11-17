@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "q4t/audio/separator_resample.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/request_diagnostics.h"
 #include "q4t/server/speaker_reference.h"
@@ -68,6 +69,7 @@ ObjectReply ChatServer::PrepareSpeakerTracks(
                                      : "local:anonymous";
   const BinaryAccess access{scope, control->deadline(), cancelled};
   std::vector<FileAudioPcm> references(request.speaker_references.size());
+  std::array<std::vector<float>, 4> conditioned_references;
   for (size_t i = 0; i < references.size(); ++i) {
     RequestDiagnostics::Scope waiting(diagnostic,
                                       RequestDiagnostics::Wait::kMedia);
@@ -75,9 +77,27 @@ ObjectReply ChatServer::PrepareSpeakerTracks(
     auto reply = DecodeSpeakerReference(request.speaker_references[i], access,
                                         &references[i]);
     if (!reply.ok()) return reply;
+    if (tracks.size() > 1) {
+      // Match the separated tracks' 8k analysis/reconstruction bandwidth.
+      // Keep the validated original PCM/metadata owner intact. Never pass a
+      // clean reference through the two-source network or relax cosine gates.
+      std::vector<float> downsampled;
+      status = audio::DownsampleSeparation(references[i].samples, 160000,
+                                           &downsampled, cancelled);
+      if (status)
+        status = audio::RestoreSeparation(
+            downsampled, references[i].samples.size(), 160000,
+            &conditioned_references[i], cancelled);
+      if (!status) {
+        if (cancelled()) return interrupted();
+        return Error(400, "speaker_reference_invalid", status.message());
+      }
+    }
   }
   std::vector<std::span<const float>> clips;
-  for (const auto& reference : references) clips.push_back(reference.samples);
+  for (size_t i = 0; i < references.size(); ++i)
+    clips.push_back(tracks.size() > 1 ? conditioned_references[i]
+                                      : references[i].samples);
   for (const auto& owned : owned_windows)
     clips.push_back(tracks[owned.track].pcm.subspan(
         owned.window.begin_sample,

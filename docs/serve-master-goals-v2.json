@@ -3574,6 +3574,13 @@
         "requests": 4,
         "default_changed": false,
         "remaining": "original 8 unexecuted checks, resolve quality and any runtime gaps, service recovery delivery; all master tasks continue"
+      },
+      "overlap_reference_fix_20261118": {
+        "status": "CPU_PASS_HTTP_PENDING",
+        "evidence": "docs/evidence/serve-overlap-reference-fix-20261118/README.md",
+        "prior_failure": "known first speaker not matched",
+        "cpu_tests": 1,
+        "default_changed": false
       }
     },
     {

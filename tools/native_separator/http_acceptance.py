@@ -36,7 +36,7 @@ def requests():
     return dict(speaker.requests(), ordinary=asr.requests()['zh'])
 
 
-def reuse_first_run(source):
+def reuse_first_run(source, *, reference_fix=False):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(WORK), 'prior evidence outside overlap workdir')
     plan, result = read(source/'plan.json'), read(source/'result.json')
@@ -47,11 +47,22 @@ def reuse_first_run(source):
     require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED' and
             read(source/'cleanup.json')['remaining'] == [] and
             read(source/'cleanup.json')['ports_released'], 'invalid predecessor cleanup')
+    changed = {}
+    reference_paths = {'src/server/chat_speaker_turns.cpp',
+                       'src/server/separator_service.cpp'}
     for name, digest in plan['sources'].items():
-        if name not in ['tools/native_separator/http_acceptance.py',
-                        'tools/native_separator/test_http_acceptance.py']:
-            require(sha(ROOT/name) == digest, 'reused dependency changed: '+name)
-    require(sha(plan['binary']) == plan['binary_sha256'], 'reused engine changed')
+        if name in ['tools/native_separator/http_acceptance.py',
+                    'tools/native_separator/test_http_acceptance.py']:
+            continue
+        actual = sha(ROOT/name)
+        if actual != digest:
+            require(reference_fix and name in reference_paths,
+                    'reused dependency changed: '+name)
+            changed[name] = dict(before=digest, after=actual)
+    if reference_fix:
+        require(set(changed) == reference_paths, 'unexpected reference fix scope')
+    original = WORK/'runtime-build-02/q4t-retained' if reference_fix else Path(plan['binary'])
+    require(sha(original) == plan['binary_sha256'], 'original engine evidence changed')
     require(all(sha(path) == digest for path, digest in plan['protected'].items()),
             'reused default changed')
     for name in ['core-during-separator-failure.wire']:
@@ -62,7 +73,10 @@ def reuse_first_run(source):
     value = read(source/'python-mixed.wire')
     mixed = check_result(value, plan['clips']['mixed'], enforce_quality=False)
     require(not mixed['quality_passed'], 'original quality failure disappeared')
-    return dict(directory=str(source), binary_sha256=plan['binary_sha256'],
+    return dict(directory=str(source), binary_sha256=sha(plan['binary']),
+        original_binary_sha256=plan['binary_sha256'],
+        kind='reference_bandwidth_fix' if reference_fix else 'unchanged_engine',
+        reference_only_patches=changed,
         mixed=mixed, original_quality_status='FAILED_UNCHANGED_GATE',
         creates_reused=4, records={name:sha(source/name) for name in [
             'plan.json','result.json','cleanup.json','lease/exit.json',
@@ -72,7 +86,10 @@ def reuse_first_run(source):
 
 
 def prepare(args):
-    continuation = reuse_first_run(args.continue_from) if args.continue_from else None
+    require(not (args.continue_from and args.reference_fix_from), 'one continuation only')
+    continuation = (reuse_first_run(args.reference_fix_from, reference_fix=True)
+                    if args.reference_fix_from else
+                    reuse_first_run(args.continue_from) if args.continue_from else None)
     speaker.prepare(args)
     out = args.output.resolve()
     plan = read(out / 'plan.json')
@@ -233,7 +250,9 @@ class Stage(speaker.Stage):
         super().__init__(plan)
         if plan.get('overlap_continuation'):
             require(plan['overlap_continuation'] == reuse_first_run(
-                plan['overlap_continuation']['directory']), 'reused observations changed')
+                plan['overlap_continuation']['directory'], reference_fix=
+                plan['overlap_continuation']['kind'] == 'reference_bandwidth_fix'),
+                'reused observations changed')
 
     def additional_options(self):
         return super().additional_options() + [
@@ -360,6 +379,7 @@ def main():
     prepare_parser.add_argument('--output', type=Path, required=True)
     prepare_parser.add_argument('--port', type=int, default=18260)
     prepare_parser.add_argument('--continue-from', type=Path)
+    prepare_parser.add_argument('--reference-fix-from', type=Path)
     run = sub.add_parser('run'); run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'prepare': prepare(args)

@@ -19,6 +19,10 @@ Status PlanSeparatorServiceResources(const SeparatorServiceLimits& limits,
   // temporary atomic output copies fit in eight 16k buffers. Metadata/output
   // staging is bounded separately; original input remains owned by ASR.
   next.request_host_bytes = (8ULL << 20) + samples * 2 * 8 * sizeof(float);
+  // At most four 10-second reference clips need the same 8k bandwidth as the
+  // separated signals. Their original validated PCM stays with the speaker
+  // owner; account for four restored copies plus one sequential 8k temporary.
+  next.request_host_bytes += (4 * 160000 + 80000) * sizeof(float);
   // File pages, host staging and device upload coexist in physical DRAM.
   next.load_peak_bytes = 3 * audio::SeparatorConfig::kFileBytes + (64ULL << 20);
   *out = next;

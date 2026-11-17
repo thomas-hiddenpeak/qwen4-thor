@@ -30,7 +30,8 @@ Q4T_TEST(separator_resources_cover_full_duration_tracks_and_unified_load_peak) {
             q4t::audio::SeparatorConfig::kWeightBytes);
   Q4T_CHECK(plan.load_peak_bytes >=
             3 * q4t::audio::SeparatorConfig::kFileBytes + (64ULL << 20));
-  Q4T_CHECK(plan.request_host_bytes >= 480000 * 8 * 4 + (8ULL << 20));
+  Q4T_CHECK(plan.request_host_bytes >=
+            480000 * 8 * 4 + (8ULL << 20) + (4 * 160000 + 80000) * 4);
   const auto original = plan;
   limits.max_audio_seconds = 8;
   limits.workspace_mib = 512;

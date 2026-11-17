@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[已知参考频带修复CPU通过](evidence/serve-overlap-reference-fix-20261118/README.md)：
+http-02的1启动/1请求发现first未匹配，原FAIL保留；仅统一
+分离路径参考频带、明确额外RAM，1CPU及2来源通过。接着
+1启动/8请求/900秒复验匹配和剩余7项；原WER门槛/失败不变，
+默认rev296保持，实际业务/恢复交付及全部master继续。
+
 [真实重叠首轮质量FAIL](evidence/serve-overlap-http-first-20261118/README.md)：
 1启动/4请求/50.461秒，核心/ASR故障隔离通过，两人/交叠时间
 真实保留；hurt→hurts使第一句WER=1/7超过0.125。保持原失败
