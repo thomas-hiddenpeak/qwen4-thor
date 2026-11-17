@@ -89,7 +89,7 @@ class ChildTests(unittest.TestCase):
         self.barrier(dict(version=1, ticket=str(uuid.uuid4()),
                           controller_generation=2, model_generation=1))
 
-    def observed_exec(self, progress_fd):
+    def observed_exec(self, progress_fd, extra=()):
         parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         service_id = str(uuid.uuid4())
         code = '''import json,os,socket,sys
@@ -117,7 +117,7 @@ print(json.dumps(value))
             str(journal.process_start(os.getpid())), '--lease-fd', str(self.fd),
             '--lease-path', str(self.path), '--controller-generation', '3',
             '--progress-fd', str(progress_fd), '--service-id', service_id, '--',
-            sys.executable, '-I', '-B', '-c', code, str(endpoint.fileno()), str(self.fd)],
+            sys.executable, '-I', '-B', '-c', code, str(endpoint.fileno()), str(self.fd), *extra],
             env=dict(os.environ, Q4T_PROGRESS_FD='999', Q4T_PROGRESS_PARENT_START='999',
                      Q4T_SERVICE_ID='stale', Q4T_POLICY_PARENT_PID='999', Q4T_POLICY_PARENT_START='999',
                      Q4T_CONTROLLER_GENERATION='999', Q4T_MODEL_GENERATION='999'),
@@ -171,6 +171,28 @@ print(json.dumps(value))
         value, _ = self.observed_exec(self.fd)
         self.assertIsNone(value['progress_fd'])
         child.verify_lease(self.fd, self.path)
+
+    def test_auxiliary_packaged_arguments_cross_real_exec_barrier_with_original_lease(self):
+        from tools.serve_service import package
+        recorded = ROOT/'docs/evidence/serve-audio-auxiliary-profiles-20261117/plan.json'
+        manifest = json.loads(recorded.read_text())['base']
+        command = package.command(self.path.parent, manifest, state_directory=self.path.parent)
+        self.assertGreater(len(command), 64)
+        child.validate_command(command)
+        for flag in ['--asr-model-dir','--aligner-model-dir','--vad-model-dir']:
+            self.assertIn(flag, command)
+        # The CPU target receives the real package's full parameter tail. No
+        # model is executed and no model asset is accessed by this test.
+        value, _ = self.observed_exec(self.fd, command[1:])
+        self.assertTrue(value['lease_open'])
+
+    def test_count_per_argument_and_total_encoded_bytes_are_bounded(self):
+        child.validate_command(['/bin/true']+['x']*(child.MAX_EXEC_ARGUMENTS-1))
+        for command in [[], ['relative'], ['/bin/true',1], ['/bin/true','x\0y'],
+                        ['/bin/true']+['x']*child.MAX_EXEC_ARGUMENTS,
+                        ['/bin/true','中'*1366],
+                        ['/bin/true']+['x'*4096]*16]:
+            with self.assertRaises(ledger.LedgerError):child.validate_command(command)
 
 
 class ReceiptTests(unittest.TestCase):

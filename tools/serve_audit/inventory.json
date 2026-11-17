@@ -2813,7 +2813,7 @@
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
     "tools/serve_recovery/bundle.py": "d244f84cb56f8f4dc8a4fdd8cd53069ec974ba1e6c8d487545571530695382c7",
-    "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
+    "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
     "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
     "tools/serve_recovery/cold_authority.py": "2243d2e0d2828e70d7e0431869ce270673bd2f75cde4712675214db9f6542807",
@@ -7153,5 +7153,15 @@
     },
     "evidence": "docs/evidence/serve-audio-auxiliary-service-cpu-20261118/README.md",
     "scope": "Only reviewed transcription format enum is an unordered feature set; full recorded old/new primary/light records validate explicit v5 migration. Automatic addition/removal remains rejected."
+  },
+  "audio_exec_bound_review_20261118": {
+    "anchors": {
+      "tools/serve_recovery/child.py": {
+        "before": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
+        "after": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30"
+      }
+    },
+    "evidence": "docs/evidence/serve-audio-exec-bound-20261118/README.md",
+    "scope": "Complete sealed command crosses same exec permit with bounded argument count and encoded total bytes; no model computation change."
   }
 }

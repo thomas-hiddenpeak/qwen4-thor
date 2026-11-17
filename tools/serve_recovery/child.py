@@ -15,6 +15,21 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from tools.serve_recovery import journal, ledger, progress
 
+MAX_EXEC_ARGUMENTS = 256
+MAX_EXEC_ARGUMENT_BYTES = 4096
+MAX_EXEC_BYTES = 65536
+
+
+def validate_command(command):
+    """Bound a real packaged command, including independent optional backends."""
+    ledger.require(type(command) is list and 1 <= len(command) <= MAX_EXEC_ARGUMENTS
+        and all(type(part) is str and '\0' not in part for part in command)
+        and os.path.isabs(command[0]), 'invalid bounded exec command')
+    lengths = [len(os.fsencode(part)) for part in command]
+    ledger.require(max(lengths) <= MAX_EXEC_ARGUMENT_BYTES and
+        sum(size+1 for size in lengths) <= MAX_EXEC_BYTES,
+        'exec command byte budget exceeded')
+
 
 def progress_environment(args, permit):
     """Only the named observation socket survives; its failure is auxiliary."""
@@ -85,9 +100,7 @@ def run(args):
     command = args.command
     ledger.require(command and command[0] == '--', 'exec separator required')
     command = command[1:]
-    ledger.require(1 <= len(command) <= 64 and os.path.isabs(command[0]) and
-                   all(len(part) <= 4096 and '\0' not in part for part in command),
-                   'invalid bounded exec command')
+    validate_command(command)
     with socket.socket(fileno=args.fd) as channel:
         journal.verify_parent(channel, args.parent_pid, args.parent_start)
         verify_lease(args.lease_fd, args.lease_path)

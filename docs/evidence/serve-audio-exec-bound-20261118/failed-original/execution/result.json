@@ -1,0 +1,30 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 466, in exercise\n    first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')\n                                                             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_managed_acceptance.py\", line 219, in ready\n    state = self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 443, in wait\n    last = self.sample()\n           ^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 431, in sample\n    self.engine.require(not value['recovery_frozen'] and value['state'] != 'QUARANTINED',\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/retained-02/bundle/source/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: service entered protective state\n",
+  "cleanup_failure": null,
+  "seconds": 34.10361590003595,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 0,
+      "probes": 0,
+      "controls": 120
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 3121665532157453
+      }
+    ]
+  },
+  "models": {},
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/retained-02/bundle",
+    "manifest_sha256": "6b44c619d3adf84b0264ed8a5fc5ab934304c026730fba96a85c5b49a7507d95"
+  },
+  "scenario": "tool_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}
