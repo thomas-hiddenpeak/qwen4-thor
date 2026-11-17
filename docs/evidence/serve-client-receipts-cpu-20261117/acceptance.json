@@ -1,0 +1,18 @@
+{
+  "status": "PASS_CLIENT_RECEIPTS_CPU",
+  "new_cases": 12,
+  "direct_regressions": 4,
+  "baseline_failed_assertions": 10,
+  "baseline_seconds": 1.165437517222017,
+  "fixed_seconds": 1.165674973744899,
+  "regression_seconds": 0.16395839815959334,
+  "gpu_actions": 0,
+  "model_or_service_changed": false,
+  "production_sources": {
+    "tools/serve_protocol/js_client.py": "7c945947ec6e25d2ace71521ff593ca6ee43feffb9e52e21ddd85b7581d5c207",
+    "tools/examples/tool_recovery.py": "1d316c13ccb58023e5a66584e3b703b51128c6e309c35cef498bb523eaf58ce5"
+  },
+  "archive_sha256": "e8915ac2e77cf989d75bec6f98d8f87047b1eadeab6a4ff2f9cfd5fe3b00b028",
+  "client_artifact_validation_pending": true,
+  "complete_sdk_compatibility": false
+}

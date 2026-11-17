@@ -1146,6 +1146,9 @@ Q4T_TEST(batch_config_native_cli_budget_and_effective_discovery) {
 
 Q4T_TEST(batch_jobs_dead_owner_recounts_original_usage_before_next_invocation) {
   Fixture fixture;
+  // Exercise owner recovery and usage reconstruction, without accidentally
+  // injecting a 250 ms filesystem/receipt timeout during normal transactions.
+  fixture.objects.io_timeout_ms = 1000;
   int channel[2];
   Q4T_CHECK(pipe(channel) == 0);
   const auto pid = fork();
@@ -1212,17 +1215,17 @@ Q4T_TEST(batch_jobs_dead_owner_recounts_original_usage_before_next_invocation) {
   BatchJobs jobs(objects, fixture.clients, fixture.config, fixture.jobs,
                  Native(calls));
   const auto final = Finished(objects, jobs, std::string(bytes, count));
-  Q4T_CHECK(Ok(final) && calls == 1 && final.value.Find("usage") &&
-            final.value.Find("usage")->GetInt("input_tokens") == 14 &&
-            final.value.Find("usage")->GetInt("output_tokens") == 6 &&
-            final.value.Find("usage")
-                    ->Find("input_tokens_details")
-                    ->GetInt("cached_tokens") == 3 &&
-            final.value.Find("usage")
-                    ->Find("output_tokens_details")
-                    ->GetInt("reasoning_tokens") == 2 &&
-            jobs.Health().reserved_result_bytes == 0 &&
-            jobs.Health().recovered == 1);
+  Q4T_CHECK(Ok(final));
+  Q4T_CHECK(calls == 1);
+  const auto* usage = final.value.Find("usage");
+  Q4T_CHECK(usage && usage->GetInt("input_tokens") == 14);
+  Q4T_CHECK(usage->GetInt("output_tokens") == 6);
+  const auto* input_details = usage->Find("input_tokens_details");
+  const auto* output_details = usage->Find("output_tokens_details");
+  Q4T_CHECK(input_details && input_details->GetInt("cached_tokens") == 3);
+  Q4T_CHECK(output_details && output_details->GetInt("reasoning_tokens") == 2);
+  Q4T_CHECK(jobs.Health().reserved_result_bytes == 0);
+  Q4T_CHECK(jobs.Health().recovered == 1);
   return true;
 }
 

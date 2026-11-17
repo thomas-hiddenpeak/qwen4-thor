@@ -1,0 +1,13 @@
+{
+  "status": "PASS_PUBLICATION_INTENT_RETENTION_CPU",
+  "cases": 8,
+  "seconds": 42.310734283644706,
+  "source_sha256": {
+    "tools/serve_recovery/publication_intent_archive.py": "665ec99d7f46c60e750872901640660f0e34708b5d9ed058c9265b81b71b2763",
+    "tools/serve_recovery/test_publication_intent_archive.py": "623fc83b2ad1388aa7e1e7323d01e3f3afb8b43bb8b2599ae76eda5159c0d763"
+  },
+  "gpu_actions": 0,
+  "active_default_revision": 256,
+  "delivery_incomplete": true,
+  "archive_sha256": "cfda8a82230c0a46b6865c6cf4b300ce778197872c49c4f07c07cd4d29bdfd6e"
+}

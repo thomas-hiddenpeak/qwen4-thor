@@ -5,26 +5,44 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 发行是实施边界，不能替代剩余能力。非性能改动仅做受影响行为的针对性
 验证和必要业务短验，长稳实跑由用户负责。
 
+PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
+current选择器并通过精确1项CPU（0.455秒）。原失败保留于
+[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)，继续最终head检查及实际合main。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev254；服务包 `3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33` |
-| Generation | `523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466` |
+| 发布 | rev266；服务包 `82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2` |
+| Generation | `e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db` |
 | 引擎 | `7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376` |
-| 引擎发布记录 | `429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec` |
+| 引擎发布记录 | `be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb`；原生outer/周期及有限透视视频能力完整，前驱244另保留 |
+| 人工整包回退 | rev260根 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64`；原周期/原生入口已验；旧包无新增维护子命令 |
 | 自动payload回退 | 已验旧控制/当前引擎包 `087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
+[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
+旧rev260自己的check/version-status通过，原周期和全部预算保持；
+最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
+profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
+最终head实际合main，再继续其余全部master任务。
+
+前驱[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
+已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
+累计178.267秒、0GPU。精确客户端封装已验，模型/控制/native
+和profile保持；128条意图容量通过受保护、可恢复归档4条解决，
+其余状态字节和原周期保留。rev260独立day已prepare/check且未运行，继续本组实际合main及全部master。
+
+前驱[rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
 GPU。原预算/周期保持，控制器/native helper/client未变；原244包、
-历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；继续实际合main及全部master。
+历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；PR42两组检查通过且
+[实际合main](evidence/serve-pr42-merged-20261117/README.md)（`431ddc13`）；全部master继续。
 
 前驱[rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
@@ -127,10 +145,74 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
+普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；
+拆开复合断言以定位子条件。本机2项1.115秒通过、构建零警告，生产
+代码/时限未变；最终head两组CI仍须通过。PR43纳入意图容量修复的
+原生发行入口收尾，准备当前身份day后统一推送，全部master继续。
+
+[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
+旧rev260自己的check/version-status通过，原周期和全部预算保持；
+最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
+profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
+最终head实际合main，再继续其余全部master任务。
+
+[原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
+28独立CPU/32次执行，34条原生命令374.106秒，0模型动作。三类
+旧计划原样恢复并重新归档，当前122意图/30目录/14登记；原驱动
+失败和全部原计划保留。最终v20包已固定，继续15项STOPPED发布/
+旧入口回退/再前进；rev260尚未变更，全部master继续。
+
+原生维护16条实际命令通过：三类归档/恢复和安全预留容量完成，
+保留驱动一次意图列表断言失败及其续做。发现并补齐旧计划来源兼容，
+[7项针对性CPU通过](evidence/serve-native-maintenance-legacy-plans-20261117/README.md)：
+精确两代源码生成计划由新CLI原样恢复，未知来源仍拒绝。下一步
+新精确包真实旧计划恢复/重新归档及可回退发行，rev260保持，0GPU。
+
+[原生维护25项CPU通过](evidence/serve-native-maintenance-cpu-20261117/README.md)：
+38.908秒，13项新增/12项直接回归，0GPU。三类CLI实际文件事务、
+持锁身份/保护、历史包及隔离导入已验；精确包和实际发行尚待完成。
+默认rev260保持，下一步密封v20及STOPPED可回退交付，全部master继续。
+
+[原生保留管理交付计划](SERVE_NATIVE_MAINTENANCE_2026-11-17.md)已冻结：
+v20密封包/统一CLI覆盖三类容量和身份保护，历史v19核验保持。
+先针对性CPU及STOPPED交付，模型与native helper不变，不新增GPU；
+PR43修复head独立检查，全部master继续。
+
+PR43首次两组CI在来源库存检查失败：新增意图归档模块缺少审查锚点。
+已按实际代码/8项CPU证据补入唯一缺失哈希，本机库存及7项变异检查
+通过；保留原CI失败，继续最终提交检查和实际合main，未把失败当完成。
+
+发行入口审查确认：意图归档目前在仓库工具中，尚未进入rev260密封
+服务包/原生service子命令。N07保持进行中，下一子任务补齐包和CLI，
+并保持旧包核验与全部预算；不能把开发脚本可用当正式入口齐备。
+
+[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
+已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
+累计178.267秒、0GPU。精确客户端封装已验，模型/控制/native
+和profile保持；128条意图容量通过受保护、可恢复归档4条解决，
+其余状态字节和原周期保留。rev260独立day已prepare/check且未运行，继续本组实际合main及全部master。
+
+已解决的本组原失败：客户端交付在rev256回退步骤遇到发布意图128条容量上限；
+原失败保留、服务STOPPED且无GPU动作。补充可恢复意图归档：
+最多4条显式选择，[8项针对性CPU通过](evidence/serve-publication-intent-cpu-20261117/README.md)，
+严格共享锁和待恢复/当前历史保护；
+实际归档后续9项检查已通过，累计13项成功命令及1次原失败，不重跑客户端用例。
+
+[客户端回执修复计划](SERVE_CLIENT_RECEIPTS_2026-11-17.md)已冻结：
+补Node SDK桥接丢失审核字段、恢复器丢失审核/logprobs及被拦截终态。
+[12项新用例及4项直接回归已通过](evidence/serve-client-receipts-cpu-20261117/README.md)，
+原10处失败断言保留，无新增GPU；[精确包12项亦通过](evidence/serve-client-receipts-package-20261117/README.md)，
+继续STOPPED可回退发行，
+PR42冻结head继续检查和实际合main，
+全部master保持active。
+
 [rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
 GPU。原预算/周期保持，控制器/native helper/client未变；原244包、
-历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；继续实际合main及全部master。
+历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；PR42两组检查通过且
+[实际合main](evidence/serve-pr42-merged-20261117/README.md)（`431ddc13`）；全部master继续。
 
 [有限透视发行组合通过](evidence/serve-video-projective-composition-20261117/README.md)：
 累计5启动20请求（含自检/embedding），235.266秒严格租约，

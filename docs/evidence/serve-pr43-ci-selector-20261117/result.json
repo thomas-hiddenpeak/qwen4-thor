@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "test": "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources",
+  "seconds": 0.4552724710665643,
+  "model_actions": 0,
+  "workflow_sha256": "965582b4dbd89bebf1780a54ae9da200190b5b3c9682389224f27afb5d434ff6"
+}

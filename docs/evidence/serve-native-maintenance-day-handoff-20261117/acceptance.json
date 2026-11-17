@@ -1,0 +1,69 @@
+{
+  "status": "PASS_FROZEN_DAY_HANDOFF",
+  "source_commit": "ea52d346df5eda6e529577f1ee2eaa2dc7c033e8",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/validation-src",
+  "revision": 266,
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
+    "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2"
+  },
+  "service_id": "c9cd8195-b1b3-41fb-9392-403de3919727",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/validation-src/.q4t-work/day-01/plan.json",
+  "plan_sha256": "a156cd4ee0ae3dc8cf920ca95ce66dfe3d210fc8da149e3133a0e95ad281fcd1",
+  "sources": 601,
+  "links": {
+    "q4t": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle/engine/q4t",
+    "q4t.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle/engine/q4t.release.json",
+    "service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
+    "service.release.json": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/delivery-01/service.release.json"
+  },
+  "protected_default": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "production_unchanged": true,
+  "same_git_common_dir": true,
+  "steps": [
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "tools/serve_soak/native_stage.py",
+        "prepare",
+        "--profile",
+        "day",
+        "--package",
+        "build/service",
+        "--output",
+        ".q4t-work/day-01"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/validation-src",
+      "exit_code": 0,
+      "seconds": 1.7156180441379547
+    },
+    {
+      "name": "check",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "tools/serve_soak/native_stage.py",
+        "check",
+        "--plan",
+        ".q4t-work/day-01/plan.json"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/validation-src",
+      "exit_code": 0,
+      "seconds": 0.5142298941500485
+    }
+  ],
+  "model_actions": 0,
+  "executed": false,
+  "owner": "user",
+  "archive_sha256": "1551fc3186c7ca4667fbc3f4bcf851d5aa2134d39657518907a055a3c9b82b84"
+}

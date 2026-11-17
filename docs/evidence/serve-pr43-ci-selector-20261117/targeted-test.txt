@@ -1,0 +1,6 @@
+test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.304s
+
+OK

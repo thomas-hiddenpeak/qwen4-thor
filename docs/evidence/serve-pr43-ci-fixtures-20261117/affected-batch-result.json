@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 1.1150717022828758,
+  "tests": [
+    "batch_preparation_unknown_snapshot_receipt_keeps_private_identity",
+    "batch_jobs_dead_owner_recounts_original_usage_before_next_invocation"
+  ],
+  "binary_sha256": "88e2316f58d30db018b2e6c69e0d81729119b416bbd7463e7d239dac762f7df5",
+  "test_sources": {
+    "tests/server_batch_preparation_test.cpp": "76b8d2ac75ecdeed4e0222f09f901fbed9089f878de19a15d2810721e16ecf4d",
+    "tests/server_batch_jobs_test.cpp": "69a51a1ef9e09dd4e0aca77dd4ef904a7d98466028cda094aa8b7dac62de90c3"
+  },
+  "zero_build_warnings": true,
+  "production_sources_unchanged": true,
+  "model_actions": 0
+}

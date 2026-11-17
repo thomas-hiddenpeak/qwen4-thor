@@ -21,12 +21,19 @@ from tools.serve_service import package as engine
 FORMAT = 'q4t-version-archive-v2'
 MAX_SELECTED = 4
 
+# Reviewed predecessors: original archive, then the identity-guard-only revision.
+# Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
+LEGACY_PLAN_SOURCES = frozenset((
+    '0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e',
+    '40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08',
+))
+
 
 @contextmanager
-def locked(state):
+def locked(state, *, authority=None):
     # Also excludes live Guardians, deployment/publication writers and the GPU
     # lease. No sampling claim is needed: this tool performs no device work.
-    with publication.locked(state) as (state, desc, manifest, current):
+    with publication.locked(state, authority=authority) as (state, desc, manifest, current):
         binding = access_store.binding(state, desc['service_id'])
         with version_store.open_bound(binding) as writer:
             selected = writer.head['state']['policy']
@@ -141,11 +148,11 @@ def verify_checkpoint(path, item, row, binding, value):
                        'archived checkpoint registry differs')
 
 
-def prepare(state, output, cycles):
+def prepare(state, output, cycles, *, authority=None):
     ledger.require(type(cycles) is list and 1 <= len(cycles) <= MAX_SELECTED and
         len(set(cycles)) == len(cycles) and all(ledger.identifier(c) for c in cycles),
         'one to four explicit version cycles required')
-    with locked(state) as (state, desc, manifest, current, selected, binding):
+    with locked(state, authority=authority) as (state, desc, manifest, current, selected, binding):
         output = Path(output).absolute()
         parent = files.directory(output.parent)
         ledger.require(output.is_relative_to(Path(manifest['repository'])/'.q4t-work') and
@@ -177,7 +184,7 @@ def prepare(state, output, cycles):
                     cycles=cycles, model_actions=False, files_moved=False)
 
 
-def apply(path, expected, *, restore=False):
+def apply(path, expected, *, restore=False, authority=None):
     path = Path(path).absolute()
     ledger.require(engine.sha(path) == expected, 'reviewed archive plan changed')
     value = native.private_json(path)
@@ -185,10 +192,11 @@ def apply(path, expected, *, restore=False):
         'publication_sha256', 'version_sha256', 'cycles', 'source_sha256'))
     archive = files.directory(value['archive'])
     ledger.require(value['format'] == FORMAT and path == archive/'plan.json' and
-        value['source_sha256'] == engine.sha(Path(__file__).resolve()) and
+        value['source_sha256'] in (engine.sha(Path(__file__).resolve()),
+            *LEGACY_PLAN_SOURCES) and
         type(value['cycles']) is list and 1 <= len(value['cycles']) <= MAX_SELECTED,
         'archive plan/source identity differs')
-    with locked(value['state']) as (state, desc, manifest, current, selected, binding):
+    with locked(value['state'], authority=authority) as (state, desc, manifest, current, selected, binding):
         pool = state/registration.DIRECTORY
         ledger.require(value['service_id'] == desc['service_id'] and
             archive.is_relative_to(Path(manifest['repository'])/'.q4t-work') and

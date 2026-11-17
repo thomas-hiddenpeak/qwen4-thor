@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 19)
+        self.assertEqual(value['version'], 20)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -139,7 +139,7 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(bundle.V11_SOURCES, bundle.V10_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V18_SOURCES),
+        self.assertEqual(set(bundle.V19_SOURCES)-set(bundle.V18_SOURCES),
             {'tools/serve_recovery/'+name+'.py' for name in
              ('root_version_policy', 'root_checkpoints', 'root_transfer')})
         self.assertEqual(set(bundle.V18_SOURCES)-set(bundle.V17_SOURCES),
@@ -192,6 +192,11 @@ class BundleTests(unittest.TestCase):
              'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
              'model_admin', 'usage_manager', 'deployment_policy', 'deployment', 'initialization')})
 
+    def test_maintenance_source_inventory_is_sealed_without_redefining_v19(self):
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V19_SOURCES),
+            {'tools/serve_recovery/'+n+'.py' for n in ('maintenance',
+             'publication_archive', 'publication_intent_archive', 'version_archive')})
+
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()
         package = Path(receipt['package'])
@@ -203,7 +208,8 @@ class BundleTests(unittest.TestCase):
                 (10, bundle.V10_SOURCES), (11, bundle.V11_SOURCES),
                 (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
                 (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES),
-                (17, bundle.V17_SOURCES), (18, bundle.V18_SOURCES)):
+                (17, bundle.V17_SOURCES), (18, bundle.V18_SOURCES),
+                (19, bundle.V19_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -248,7 +254,7 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 19)
+        self.assertEqual(value['version'], 20)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -274,7 +280,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 19)
+        self.assertEqual(value['version'], 20)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],
@@ -480,7 +486,7 @@ print('isolated cold source imports passed')
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(result.stdout, b'isolated cold source imports passed\n')
 
-    def test_relocated_v19_contains_complete_outer_resume_and_root_transfer_sources(self):
+    def test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources(self):
         receipt = self.prepare()
         code = '''import sys
 sys.path.insert(0, sys.argv[1])

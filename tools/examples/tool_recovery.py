@@ -160,13 +160,20 @@ def _inspect(directory):
                 "response receipt requires raw wire")
         completion = _completion(response.get("id"), response.get("model"),
             response.get("message"), response.get("finish_reason"),
-            response.get("usage"))
+            response.get("usage"), response.get("logprobs"),
+            moderation=response.get("moderation"),
+            moderation_usage=response.get("q4t_moderation_usage"))
         require(completion.id == request.get("request_id") and
                 completion.model == request.get("model"),
                 "saved response identity mismatch")
         decoded = (read_sse if request["stream"] else read_json)(io.BytesIO(wire))
         require(asdict(decoded) == asdict(completion), "wire/receipt mismatch")
         saved_history = read(label + "-history.json")
+        if completion.finish_reason == "content_filter":
+            require(saved_history is None, "filtered turn was committed")
+            return finish("CONTENT_FILTERED", "The response was filtered. Keep "
+                "the last committed history and review the saved report; do "
+                "not execute tools or automatically retry the request.")
         if completion.finish_reason == "length":
             require(saved_history is None, "truncated turn was committed")
             return finish("LENGTH_LIMIT", "Keep the last committed history; "

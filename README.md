@@ -179,6 +179,12 @@ NVML/日志/指标失能不触发切档，原设备故障保护保持。
 消费、故障和预算。`service status/observe`显示当前恢复等待角色、原因
 和剩余时间。冷启动/资源与宿主组合仍按总计划继续。
 
+默认包已包含[原生保留管理](docs/SERVE_NATIVE_MAINTENANCE_2026-11-17.md)：
+`service maintenance-status --state build/service-native-state`查询发布意图、
+发布目录和版本登记的容量及受保护记录。维护须STOPPED，显式选择1—4项，
+先生成计划，再按计划SHA256归档或恢复；原始包/证据不删除，恢复预算不重置。
+两代已审查历史计划可由新入口原样恢复。[实际交付与回退证据](docs/evidence/serve-native-maintenance-delivery-20261117/README.md)。
+
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
