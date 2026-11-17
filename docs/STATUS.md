@@ -18,6 +18,12 @@ service-http-03已越过传输层，但处理器传入空codec归属，被既有
 CPU；下一组仍为1启动/9创建/600秒，不重复无关测试。尚无本组
 HTTP通过结论；默认及day保持，全部master继续。
 
+service-http-04实际完成权重缺失/冷却、同PID Chat与Python中文转录，
+文本精确一致，wire为整数bytes/真实logprobs和usage。驱动误把SDK
+声明的List[float]当成线缆整数合同而中止；原FAILED保留。只修正SDK
+数值检查并仍严格校验wire，冻结3项离线CPU/60秒，复用上述4创建，
+余下5创建在1启动/600秒内继续，避免重跑已成立的业务证据。
+
 [ASR03的34项针对性CPU](evidence/serve-asr-service-cpu-20261117/README.md)
 已完成（含失败35次、2.167秒）：独立健康/冷却、资源预算、
 multipart/字面量prompt、JSON/text/SSE与实际概率/用量、共享Chat

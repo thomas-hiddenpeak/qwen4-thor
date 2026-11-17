@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "actual_raw_wire_and_typed_sdk",
+      "status": "PASS"
+    },
+    {
+      "name": "reject_invalid_sdk_and_wire_bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "reassess_four_retained_business_observations",
+      "status": "PASS"
+    }
+  ],
+  "seconds": 0.06984090013429523,
+  "gpu_actions": 0
+}

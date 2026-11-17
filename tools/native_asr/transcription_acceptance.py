@@ -22,6 +22,7 @@ from tools.serve_service.package import read, require, save, sha
 
 WORK = ROOT / '.q4t-work/serve-audio-native-20261117'
 LIMITS = dict(starts=1, chats=9, controls=2000, seconds=600)
+CONTINUATION_LIMITS = dict(LIMITS, chats=5)
 MODEL = 'qwen3-asr-0.6b'
 EXPECTED = {
     'zh': '甚至出现交易几乎停滞的情况。',
@@ -59,7 +60,10 @@ def python_identity():
 
 
 def prepare(args):
-    base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    continuation = (reuse_completed(args.continue_from)
+                    if args.continue_from is not None else None)
+    base.prepare(args, rows=requests(),
+        limits=CONTINUATION_LIMITS if continuation else LIMITS, scope=__doc__)
     out = args.output.resolve()
     plan = read(out/'plan.json')
     plan['python_sdk'] = python_identity()
@@ -75,6 +79,12 @@ def prepare(args):
     plan['expected'] = EXPECTED
     plan['planned'] = dict(starts=1, creates=9, successful_asr=3, cancelled_asr=1,
                             rejected_asr=3, core_chats=2)
+    if continuation:
+        require(plan['binary_sha256'] == continuation['binary_sha256'],
+                'continuation must retain the accepted runtime')
+        plan['continuation'] = continuation
+        plan['planned'] = dict(starts=1, creates=5, successful_asr=2,
+            cancelled_asr=1, rejected_asr=1, core_chats=1, reused_creates=4)
     plan['quality'] = dict(zh_exact=True, en_word_error_rate_max=0.05,
                            en_normalization='lowercase words retaining apostrophes')
     plan['mutations'] = ['only private ASR fixture directory entries',
@@ -106,7 +116,7 @@ def quality(text, language):
     return dict(text=text, exact=text == EXPECTED[language], word_error_rate=error)
 
 
-def usage(value):
+def usage(value, *, sdk=False):
     u = value['usage']
     require(u['type'] == 'tokens' and all(type(u[k]) is int and u[k] > 0
         for k in ('input_tokens', 'output_tokens', 'total_tokens')), 'missing actual token usage')
@@ -116,8 +126,57 @@ def usage(value):
             details['audio_tokens'] + details['text_tokens'] == u['input_tokens'], 'audio/text usage')
     logs = value['logprobs']
     require(logs and all(isinstance(x['token'], str) and math.isfinite(x['logprob']) and
-        x['logprob'] <= 0 and x['bytes'] and all(type(b) is int and 0 <= b <= 255
+        x['logprob'] <= 0 and x['bytes'] and all(
+        (type(b) is int or sdk and type(b) is float) and
+        math.isfinite(b) and int(b) == b and 0 <= b <= 255
         for b in x['bytes']) for x in logs), 'actual token probabilities absent')
+
+
+def reuse_completed(source):
+    """Reassess retained observations; never rewrite the original FAILED run."""
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(WORK), 'continuation evidence outside workdir')
+    original = read(source/'plan.json')
+    outcome = read(source/'result.json')
+    require(outcome['status'] == 'FAILED' and outcome['counts']['starts'] == 1
+        and outcome['counts']['chats'] == 4 and outcome['default_unchanged']
+        and 'RuntimeError: actual token probabilities absent' in outcome['error'],
+        'unexpected continuation predecessor')
+    for name, digest in original['sources'].items():
+        if name != 'tools/native_asr/transcription_acceptance.py':
+            require(sha(ROOT/name) == digest, 'reused source drift: '+name)
+    require(sha(original['binary']) == original['binary_sha256'], 'reused binary drift')
+    require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+            'environment abort is not reusable business evidence')
+    cleanup = read(source/'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+            cleanup['ports_released'], 'reused cleanup incomplete')
+    for label, code in [('missing-weights', 'asr_assets_invalid'),
+                        ('cooldown', 'asr_retry_pending')]:
+        require(read(source/(label+'.http.json'))['status'] == 503 and
+                read(source/(label+'.wire'))['error']['code'] == code,
+                'reused asset failure classification differs')
+    require(read(source/'missing-ready.http.json')['status'] == 200,
+            'reused core health missing')
+    health = read(source/'missing-config.wire')['native_asr_health']
+    require(health['state'] == 'degraded' and health['load_failures'] == 1,
+            'reused scoped health missing')
+    require(read(source/'core-during-asr-failure.http.json')['status'] == 200,
+            'reused core Chat failed')
+    chat = read(source/'core-during-asr-failure.wire')['choices'][0]
+    require(chat['message']['content'].strip() == '42' and
+            chat['finish_reason'] == 'stop', 'reused core Chat quality differs')
+    client = read(source/'python-zh-json.sdk.json')
+    require(client['ok'] and client['version'] == '2.8.1' and
+            len(client['exchanges']) == 1, 'reused SDK failed/retried')
+    wire = read(source/'python-zh-json.wire')
+    quality(wire['text'], 'zh');usage(wire);usage(client['result'], sdk=True)
+    require(wire == client['result'], 'SDK/wire numeric values differ')
+    return dict(directory=str(source), binary_sha256=original['binary_sha256'],
+        original_status='FAILED_preserved', accepted_creates=4,
+        zh=quality(wire['text'], 'zh'),
+        files={str(p.relative_to(source)): sha(p) for p in sorted(source.rglob('*'))
+               if p.is_file() and 'asr-assets' not in p.relative_to(source).parts})
 
 
 class Stage(base.Stage):
@@ -157,6 +216,12 @@ class Stage(base.Stage):
                 save(self.out/'result.json', result)
 
     def __init__(self, plan):
+        if plan.get('continuation'):
+            self.limits = CONTINUATION_LIMITS
+            self.success_status = 'PASS_NATIVE_ASR_REMAINING_WITH_REUSED_OBSERVATIONS'
+            require(plan['continuation'] ==
+                    reuse_completed(plan['continuation']['directory']),
+                    'continuation evidence drift')
         super().__init__(plan)
         require(plan['python_sdk'] == python_identity(), 'Python SDK identity drift')
         require(plan['expected'] == EXPECTED, 'quality oracle drift')
@@ -170,7 +235,8 @@ class Stage(base.Stage):
         for name, record in self.plan['asr_assets'].items():
             source = Path(self.plan['asr_directory'])/name
             require(source.stat().st_size == record['bytes'] and sha(source) == record['sha256'], 'ASR asset drift')
-            target = assets/(name + '.withheld' if name == 'model.safetensors' else name)
+            target = assets/(name + '.withheld' if name == 'model.safetensors'
+                             and not self.plan.get('continuation') else name)
             os.link(source, target)
         args = [self.plan['binary'], 'serve', '--model-dir', self.plan['model'],
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
@@ -284,8 +350,11 @@ class Stage(base.Stage):
         self.drained(label+'-drain')
 
     def business(self):
+        if self.plan.get('continuation'):
+            save(self.out/'zh-quality.json', self.plan['continuation']['zh'])
+            self.remaining_business()
+            return
         zh = Path(self.plan['clips']['zh']['path']).read_bytes()
-        en = Path(self.plan['clips']['en']['path']).read_bytes()
         fields = [('model', MODEL)]
         status, raw = self.multipart('missing-weights', fields, zh)
         require(status == 503 and json.loads(raw)['error']['code'] == 'asr_assets_invalid', 'missing assets were not classified')
@@ -301,11 +370,17 @@ class Stage(base.Stage):
         # retry loop. There is exactly one next business attempt.
         time.sleep(max(0, 5.1 - (time.monotonic() - failed_at)))
         value = self.sdk('python-zh-json', 'zh', self.plan['requests']['zh'], python=True)
-        quality(value['text'], 'zh');usage(value)
+        quality(value['text'], 'zh');usage(value, sdk=True)
+        usage(read(self.out/'python-zh-json.wire'))
         save(self.out/'zh-quality.json', quality(value['text'], 'zh'))
         health = self.healthy('recovered')
         require(health['state'] == 'ready' and health['load_failures'] == 1 and
                 health['compute_failures'] == 0, 'ASR did not recover without restart')
+        self.remaining_business()
+
+    def remaining_business(self):
+        zh = Path(self.plan['clips']['zh']['path']).read_bytes()
+        en = Path(self.plan['clips']['en']['path']).read_bytes()
         value = self.sdk('js-en-stream', 'en', self.plan['requests']['en'])
         events = value['events']
         wire = (self.out/'js-en-stream.wire').read_bytes()
@@ -326,12 +401,15 @@ class Stage(base.Stage):
         after = self.drained('after-cancel')
         require(after['q4t_requests_aborted_total'] == before['q4t_requests_aborted_total'] + 1, 'actual cancellation was not observed')
         self.core('core-after-cancel')
-        self.healthy('final')
-        require(self.counts['chats'] == 9, 'attempt accounting changed')
+        health = self.healthy('final')
+        require(health['state'] == 'ready' and health['compute_failures'] == 0,
+                'final ASR health differs')
+        require(self.counts['chats'] == self.limits['chats'], 'attempt accounting changed')
         save(self.out/'quality.json', dict(zh=read(self.out/'zh-quality.json'),
              en=read(self.out/'en-quality.json'), forced=read(self.out/'forced-quality.json'),
              original_compute_logits_gate='FAILED preserved; not this API acceptance',
              timestamp_diarization_vad_pending=True, full_model_quality=False,
+             reused_evidence=self.plan.get('continuation'),
              default_replacement=False, all_master_tasks_continue=True))
 
 
@@ -342,6 +420,7 @@ def main():
     prepare_args.add_argument('--binary', type=Path, required=True)
     prepare_args.add_argument('--output', type=Path, required=True)
     prepare_args.add_argument('--port', type=int, default=18224)
+    prepare_args.add_argument('--continue-from', type=Path)
     run = sub.add_parser('run')
     run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

@@ -2170,7 +2170,8 @@
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-asr-transport-20261117/README.md",
-        "evidence/serve-asr-scope-20261117/README.md"
+        "evidence/serve-asr-scope-20261117/README.md",
+        "evidence/serve-asr-sdk-values-20261117/README.md"
       ],
       "release": null,
       "findings": [
@@ -2574,6 +2575,19 @@
           "attempt_starts": 1,
           "attempt_creates": 1,
           "seconds": 38.58553350623697
+        },
+        "sdk_value_check": {
+          "state": "three_offline_checks_pass_remaining_business_pending",
+          "evidence": "evidence/serve-asr-sdk-values-20261117/README.md",
+          "original_failed_unchanged": true,
+          "reused_creates": 4,
+          "cpu_tests": 3,
+          "cpu_seconds": 0.06984090013429523,
+          "remaining_limits": {
+            "starts": 1,
+            "creates": 5,
+            "seconds": 600
+          }
         }
       }
     },

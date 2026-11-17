@@ -1,0 +1,6 @@
+{
+  "tests": 3,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "purpose": "Recheck real SDK/wire and retained partial business without rerunning model"
+}
