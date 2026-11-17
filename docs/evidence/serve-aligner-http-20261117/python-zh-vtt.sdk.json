@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": "WEBVTT\n\n1\n00:00:00.400 --> 00:00:03.680\n\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002\n\n",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18228/v1/audio/transcriptions"
+    }
+  ]
+}

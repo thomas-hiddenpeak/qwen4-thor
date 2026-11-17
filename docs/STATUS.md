@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[词时间戳/字幕真实HTTP通过](evidence/serve-aligner-http-20261117/README.md)：
+1启动/7创建/57.044秒，55次NVML正常；双SDK三种输出、
+辅助资产故障中ASR/Chat与同PID恢复、清理通过。中文26边界与已有
+实际参考一致，英文字幕WER=0；不是人工时间精度结论。候选未发布，
+继续完整segment/VAD、服务交付和全部master。
+
 对齐真实HTTP组已固定1启动/7创建/600秒，覆盖双SDK词JSON、SRT/VTT
 与缺失辅助资产时普通转录/Chat继续、恢复后同PID。驱动正例和时间
 负控通过；具体身份随后prepare，GPU尚未执行，全部后续任务继续。

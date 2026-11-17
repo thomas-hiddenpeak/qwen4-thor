@@ -2741,7 +2741,7 @@
         "remaining": "Real HTTP/SDK qualification, complete segment confidence and VAD producers, service integration and delivery; all other A10/master tasks continue."
       },
       "alignment_http_20261117": {
-        "state": "prepared_not_run",
+        "state": "direct_http_pass_full_segment_delivery_pending",
         "driver": "tools/native_asr/alignment_http_acceptance.py",
         "limits": {
           "starts": 1,
@@ -2749,7 +2749,16 @@
           "seconds": 600
         },
         "quality_scope": "real SDK/word/subtitle and scoped recovery; prior Chinese classification integration consistency, not human timestamp accuracy",
-        "remaining": "Complete segment metadata/VAD producers, service integration/delivery and all other master tasks"
+        "remaining": "Complete segment metadata/VAD producers, service integration/delivery and all other master tasks",
+        "evidence": "evidence/serve-aligner-http-20261117/README.md",
+        "counts": {
+          "starts": 1,
+          "chats": 7,
+          "controls": 46
+        },
+        "seconds": 57.04449202679098,
+        "nvml_samples": 55,
+        "publication": false
       }
     },
     {
