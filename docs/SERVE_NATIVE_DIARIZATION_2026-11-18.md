@@ -37,3 +37,13 @@ Realtime及全部master，用户负责长稳实跑。
 - https://github.com/speechbrain/speechbrain/tree/c0241278f93ef02cd5191f03caf4e5f8e1292bf6
 - 本地固定OpenAI Python SDK的transcription_create_params、
   transcription_diarized、transcription_diarized_segment合同。
+
+## DI02特征组冻结
+
+8CPU/180秒、0GPU：6组固定PCM（零、冲激、单频、多频、噪声、
+非整hop）完整80维矩阵对官方固定源码的CPU参考，最大绝对误差
+≤0.002；另2项覆盖采样率/长度/帧预算/非有限输入和前中末取消
+的原输出保持。使用周期Hamming、中心零填充、完整末帧、HTK与
+同左半带宽的对称三角、10log10及80dB裁剪/逐通道句均值。
+不能复用ASR的Hann/reflect/Slaney或删除末帧。通过后继续ECAPA
+实际计算和说话人业务；仅特征通过不完成DI02或A10。

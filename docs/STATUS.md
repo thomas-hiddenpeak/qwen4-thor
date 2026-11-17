@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[说话人特征8项CPU通过](evidence/serve-speaker-features-20261118/README.md)，
+0.064秒、0GPU，六组完整矩阵最大误差0.001118≤0.002；
+预算/坏输入/取消通过。原参考类型注解失败保留，修复只涉导入。
+继续ECAPA实际计算、真实说话人输出/恢复和全部master；PR45最终
+head独立检查，本组尚未执行模型或交付API。
+
 [原生说话人资产8项CPU通过](evidence/serve-speaker-contract-20261118/README.md)
 （0.114秒、0GPU），231张量/实际权重/取消与坏输入合同
 已核对，独立构建零警告。继续真实80维特征、ECAPA计算和全部

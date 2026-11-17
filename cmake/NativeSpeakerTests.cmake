@@ -11,3 +11,12 @@ target_include_directories(q4t_speaker_contract_tests PRIVATE
   ${speaker_test_root}/include)
 target_compile_options(q4t_speaker_contract_tests PRIVATE
   -Wall -Wextra -Werror)
+
+add_executable(q4t_speaker_feature_tests EXCLUDE_FROM_ALL
+  ${speaker_test_root}/tests/test_main.cpp
+  ${speaker_test_root}/tests/speaker_features_test.cpp
+  ${speaker_test_root}/src/audio/speaker_features.cpp)
+target_include_directories(q4t_speaker_feature_tests PRIVATE
+  ${speaker_test_root}/include)
+target_compile_options(q4t_speaker_feature_tests PRIVATE
+  -Wall -Wextra -Werror)
