@@ -26,6 +26,13 @@ add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
   ../../src/audio/asr_config.cpp ../../src/io/json.cpp)
 target_include_directories(q4t_asr_contract_tests PRIVATE ../../include)
 target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+add_executable(q4t_asr_layout_tests EXCLUDE_FROM_ALL
+  ../test_main.cpp ../asr_layout_test.cpp
+  ../../src/audio/asr_layout.cpp ../../src/audio/asr_config.cpp
+  ../../src/io/json.cpp ../../src/model/embedding_layout.cpp
+  ../../src/model/embedding_config.cpp)
+target_include_directories(q4t_asr_layout_tests PRIVATE ../../include)
+target_compile_options(q4t_asr_layout_tests PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_asr_feature_tests EXCLUDE_FROM_ALL
   ../test_main.cpp ../asr_features_test.cpp ../../src/audio/features.cpp)
 target_include_directories(q4t_asr_feature_tests PRIVATE ../../include)

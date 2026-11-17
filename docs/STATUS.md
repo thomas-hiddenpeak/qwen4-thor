@@ -11,8 +11,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 严格配置/权重合同及原生计算开始补齐A10；现有主模型不具备语音
 后端。[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)
 已通过：固定真实资产、配置/612个BF16 tensor、原生tokenizer与
-log-mel，2.571秒、0模型动作。下一步实际解码与encoder/decoder，
-再接HTTP/SDK与恢复组合；Chat音频/语音输出/Realtime及全部master
+log-mel，2.571秒、0模型动作。encoder/decoder计算已实现，新增
+[8项布局CPU及真实计算证据](evidence/serve-asr-compute-20261117/README.md)
+已固定：中/英文文本与参考完全一致，但5/8 logits超出原差分门限，
+原FAILED保留。中文首步实际28层及输出算子复核无违例，末层检查器
+exp溢出修正后只补71项（1.969秒）；接受继续服务集成，未宣称原
+差分或API验收通过。随后接实际解码、HTTP/SDK与恢复组合；Chat音频/语音输出/Realtime及全部master
 继续。当前尚未交付音频API，默认及day身份不变；PR43已实际合main。
 
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步

@@ -1,0 +1,18 @@
+{
+  "include/q4t/audio/asr_layout.h": "56f92171b2f4d3687e06473f7faa1105aed27a6a0d8cee9d1a140bcb300be6e4",
+  "include/q4t/audio/asr_model.h": "21e3f162064aca9511be133b44103bc9727a131e33fd36451090bde8a627120b",
+  "include/q4t/model/embedding_model.h": "b11c607ea323bb4b09bfbdf4669b5607556bf62b3e50c3c64c830c29551c3e63",
+  "src/audio/asr_layout.cpp": "fd3ae396f28905d8ebc7f3584e108c2e6c8931aa8eb4183c932a43b7208ec45d",
+  "src/audio/asr_model.cu": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568",
+  "src/model/embedding_model.cu": "0b82506b506bdccf305f94290cee583968945ecd2c380e217e751e768f580c3f",
+  "tests/asr_layout_test.cpp": "df3d9db82ff9eb00d2786dcdd677096bad7773b5303235867bb03f4e88424fc7",
+  "tools/native_asr/CMakeLists.txt": "38c6ec81adf9e477a47350fcf70360f6838ac34ea6c2629e32f76978404e4320",
+  "tools/native_asr/README.md": "a2cba33ec1dc5de5b6a054c60a081cda54e7ac9d25d0084179f49b6f5b9b41c3",
+  "tools/native_asr/acceptance.py": "be792591c05a7c2f5402ab6530c5a69dff1b60f19119654a9111b78ec5a8b984",
+  "tools/native_asr/decoder_isolation.py": "5dc5866fba45b5ba023bf70eebf23d7b86a7877fc555bdc353295b53309de578",
+  "tools/native_asr/decoder_operand_review.py": "c77d3f7fd754d55b05acbe7aec0b2883bee56d7516532e8f22e99009393071f8",
+  "tools/native_asr/feature_reference.py": "68aa5341e8c992797db54dd68c89b39dea12f9e67f220e13e9ce728cdb5e919c",
+  "tools/native_asr/model_reference.py": "3097514bc2658e6052852796b0fd9bc9f6d812685340922857e3aacfab7d9493",
+  "tools/native_asr/model_replay.cpp": "9b16009bbd774870631e46e7a8e0961956b7624e73242b623b08ddfbb7ee19bf",
+  "tools/native_asr/prepare_cases.py": "ff961372593cfe7623740359e2f5ade39505d81412363676935ebd3fc18e648e"
+}

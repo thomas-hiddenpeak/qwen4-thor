@@ -261,6 +261,49 @@ EmbeddingComputeResult EmbeddingRun::Begin(
   return result;
 }
 
+EmbeddingComputeResult EmbeddingRun::BeginEmbeddings(
+    const EmbeddingDeviceWeights& weights,
+    std::span<const uint16_t> device_hidden, void* workspace, size_t bytes,
+    cudaStream_t stream) {
+  if (started_ || failed_ || device_hidden.empty() ||
+      device_hidden.size() % C::kHidden ||
+      device_hidden.size() / C::kHidden > C::kInputTokens || !workspace ||
+      reinterpret_cast<uintptr_t>(workspace) % 256 || !weights.final_norm)
+    return Invalid("invalid dense Qwen3 embedded input");
+  for (const auto& w : weights.layers)
+    if (!w.input_norm || !w.post_norm || !w.q_norm || !w.k_norm || !w.q ||
+        !w.k || !w.v || !w.o || !w.gate || !w.up || !w.down)
+      return Invalid("incomplete dense Qwen3 layer weights");
+  auto status = PlanEmbeddingWorkspace(
+      static_cast<int>(device_hidden.size() / C::kHidden), &layout_);
+  if (!status || bytes < layout_.bytes)
+    return Invalid("dense Qwen3 workspace too small");
+  const auto source = reinterpret_cast<uintptr_t>(device_hidden.data());
+  const auto destination = reinterpret_cast<uintptr_t>(workspace);
+  if (source % 2 || source + device_hidden.size_bytes() < source ||
+      destination + bytes < destination ||
+      (source < destination + bytes &&
+       destination < source + device_hidden.size_bytes()))
+    return Invalid("dense Qwen3 embedded input overlaps workspace");
+  weights_ = &weights;
+  workspace_ = static_cast<uint8_t*>(workspace);
+  const auto copied = cudaMemcpyAsync(workspace_ + layout_.hidden,
+      device_hidden.data(), device_hidden.size_bytes(),
+      cudaMemcpyDeviceToDevice, stream);
+  if (copied == cudaSuccess) {
+    const int count = layout_.tokens * (C::kHeadDim / 2);
+    RopeTable<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
+        reinterpret_cast<uint16_t*>(workspace_ + layout_.rope), layout_.tokens);
+  }
+  auto result = Complete(copied == cudaSuccess ? Status{}
+      : Status::Fail("dense Qwen3 embedded input copy failed"), stream);
+  if (copied != cudaSuccess && result.device_error == cudaSuccess)
+    result.device_error = copied;
+  started_ = result.ok();
+  failed_ = !result.ok();
+  return result;
+}
+
 EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
   if (!started_ || failed_ || finished_ || completed_layers_ >= C::kLayers)
     return Invalid("embedding layer execution out of order");
@@ -295,6 +338,7 @@ EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
   const auto trace = [](const char*, const uint16_t*, size_t) {};
   const auto trace_head = [](const char*, int, const uint16_t*, size_t) {};
 #endif
+  trace("hidden_input", hidden, t * C::kHidden);
   Status status;
   const auto gemm = [&](const uint16_t* x, const uint16_t* weight, uint16_t* y,
                          int n, int inner) {
@@ -368,6 +412,7 @@ EmbeddingComputeResult EmbeddingRun::NextLayer(cudaStream_t stream) {
   if (status)
     Residual<<<hidden_blocks, kThreads, 0, stream>>>(hidden, projected,
                                                    hidden_count);
+  trace("hidden_output", hidden, hidden_count);
   auto result = Complete(status, stream);
   if (result.ok()) ++completed_layers_;
   else failed_ = true;
@@ -383,6 +428,9 @@ EmbeddingComputeResult EmbeddingRun::Finish(std::span<uint16_t> last_hidden,
                     static_cast<size_t>(layout_.tokens - 1) * C::kHidden;
   auto* normalized = reinterpret_cast<uint16_t*>(workspace_ + layout_.normalized);
   Norm<<<1, kThreads, 0, stream>>>(last, weights_->final_norm, normalized);
+#ifdef Q4T_EMBEDDING_TRACE
+  TraceEmbeddingOperand(C::kLayers, "final_norm", normalized, C::kHidden);
+#endif
   const auto copied = cudaMemcpyAsync(last_hidden.data(), normalized,
       last_hidden.size_bytes(), cudaMemcpyDeviceToHost, stream);
   auto result = Complete(copied == cudaSuccess ? Status{}

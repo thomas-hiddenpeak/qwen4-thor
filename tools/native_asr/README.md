@@ -22,3 +22,18 @@ CMake targets `q4t_asr_contract_tests`, `q4t_asr_tokenizer_tests` and
 two require actual assets through `Q4T_ASR_ASSETS`; the tokenizer target also
 uses the preserved embedding and main-model assets for direct regressions.
 The public registry contains only metadata and synthetic feature checks.
+
+`CMakeLists.txt` builds the isolated native `q4t_asr_replay` driver without
+overwriting the published program. `prepare_cases.py` prepares pinned real
+WAV clips using CPU reference preprocessing. `model_reference.py` verifies
+the official source hashes and uses the explicitly documented encoder mask
+adaptation. `acceptance.py` runs a bounded component comparison inside an
+inherited strict GPU lease and protects the default release identities.
+
+The first component comparison remains FAILED (five of eight logits exceed
+the frozen cross-implementation thresholds). `decoder_isolation.py` and
+`decoder_operand_review.py` investigate actual operands; their results do not
+rewrite the original gate. The latter supports a layer interval and preserves
+partial checks on exception. Its FP32/BF16 rounding and finite-ULP checks apply
+to the captured instances, not every possible input. Current evidence and
+remaining HTTP/codec work are in `docs/evidence/serve-asr-compute-20261117`.

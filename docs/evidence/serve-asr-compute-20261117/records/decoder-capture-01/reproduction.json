@@ -1,0 +1,19 @@
+{
+  "status": "CAPTURED_BIT_IDENTICAL_DIAGNOSTIC_ONLY",
+  "checks": {
+    "encoder-input.bf16": {
+      "sha256": "445f4422877ee1d0fdad1aedf4ba113c3706ed791dccf25ae8b5c40c36805a17",
+      "identical": true
+    },
+    "encoder.bf16": {
+      "sha256": "faa6ff8de73986a4fdea5d57c8eb81c1c4f5f6aa0b78d7fd2080b692151754f7",
+      "identical": true
+    },
+    "logits-0.bf16": {
+      "sha256": "1350a37ac7df8dcab310fae13f3bed039cd490b3f66cbd59b3771a1f815e31ec",
+      "identical": true
+    }
+  },
+  "operand_files": 1849,
+  "bytes": 125227008
+}

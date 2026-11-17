@@ -1,0 +1,20 @@
+{
+  "separately_stored": true,
+  "identical_data": true,
+  "tensors": [
+    {
+      "name": "thinker.model.embed_tokens.weight",
+      "offset": 683917312,
+      "bytes": 311164928,
+      "sha256": "ab067cf4287b06781cd926874df9d0917e79a2360381e661b5010b99651ffc09"
+    },
+    {
+      "name": "thinker.lm_head.weight",
+      "offset": 372752384,
+      "bytes": 311164928,
+      "sha256": "ab067cf4287b06781cd926874df9d0917e79a2360381e661b5010b99651ffc09"
+    }
+  ],
+  "seconds": 0.44803912471979856,
+  "gpu_actions": 0
+}

@@ -5,6 +5,10 @@ get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE
 set(protocol_inputs
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
+  include/q4t/audio/asr_layout.h
+  src/audio/asr_layout.cpp
+  include/q4t/audio/asr_model.h
+  src/audio/asr_model.cu
   include/q4t/audio/features.h
   src/audio/features.cpp
   include/q4t/runtime/prefill_kernels.h

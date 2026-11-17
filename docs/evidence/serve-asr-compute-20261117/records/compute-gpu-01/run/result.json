@@ -1,0 +1,112 @@
+{
+  "status": "FAILED",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "reference_seconds": 600,
+    "gpu_model_loads": 1,
+    "cpu_reference_model_loads": 1,
+    "cases": 2,
+    "native_decode_steps": 256,
+    "reference_decoder_forwards": 264,
+    "http_requests": 0
+  },
+  "thresholds": {
+    "encoder-input.bf16": {
+      "cosine": 0.99995,
+      "relative_l2": 0.01
+    },
+    "encoder.bf16": {
+      "cosine": 0.9995,
+      "relative_l2": 0.04
+    },
+    "logits": {
+      "cosine": 0.9995,
+      "relative_l2": 0.04
+    },
+    "identical_teacher_forced_argmax": true,
+    "identical_free_generation_text_and_eos": true
+  },
+  "defaults_before": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "plan_sha256": "0644a71cb60eeb708039d9e5eaf148a3e3319329e4106b9c762fa74896a965c0",
+  "runs": [
+    {
+      "name": "native",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-gpu-01/run/native"
+      ],
+      "exit_code": 0,
+      "seconds": 3.618122366257012
+    },
+    {
+      "name": "reference",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/native_asr/model_reference.py",
+        "--assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "--official-source",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/official-src",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/plan.json",
+        "--native",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-gpu-01/run/native",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-gpu-01/run/reference"
+      ],
+      "exit_code": 1,
+      "seconds": 5.574881333857775
+    }
+  ],
+  "driver_sources": {
+    "model_replay.cpp": "63a3631cb400c9580e97a1ca2862f101e5003032205ed2ed2468c87bb837b73f",
+    "model_reference.py": "484b0865a8868c35a3e671c3c31ff37eeb58680d112a3b75226932a74f01d43c",
+    "acceptance.py": "be792591c05a7c2f5402ab6530c5a69dff1b60f19119654a9111b78ec5a8b984"
+  },
+  "error": "reference execution failed",
+  "defaults_after": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true,
+  "seconds": 9.238303751219064,
+  "artifacts": {
+    "native/case-0/encoder-input.bf16": "445f4422877ee1d0fdad1aedf4ba113c3706ed791dccf25ae8b5c40c36805a17",
+    "native/case-0/encoder.bf16": "faa6ff8de73986a4fdea5d57c8eb81c1c4f5f6aa0b78d7fd2080b692151754f7",
+    "native/case-0/generated.u32": "1286b0c36936b324efb126846c16cbfde0d56de2903c0d51e04b368308066f7e",
+    "native/case-0/logits-0.bf16": "1350a37ac7df8dcab310fae13f3bed039cd490b3f66cbd59b3771a1f815e31ec",
+    "native/case-0/logits-1.bf16": "b5249c73f0aef311784980dc7d56336955b237102357987b2dacf5f647045e71",
+    "native/case-0/logits-2.bf16": "aa2b07d6b1835268b7fb9cd7713348667878eec232e80d4d43966b12fb34ba0b",
+    "native/case-0/logits-3.bf16": "9bf2be25648e3ca87aa9d7da7c56656c70de78c99f46a966286a6c28a9d469af",
+    "native/case-0/native-mel.f32": "e74fe1d84153dfae1eec0bbc47a10809228bf63d0d4d73b1bcd8ebc3603ebe27",
+    "native/case-0/result.json": "0c2ba1e6d0760b94e7b9ce11798f4f4f5c602d0d66ad16b88dd95dcc79944969",
+    "native/case-0/text.txt": "0f00ad07f801578a8442c3a841d16297030d9656cf24fc1bb16d78374f72128e",
+    "native/case-1/encoder-input.bf16": "bea20fe054d06ddc4502f9baec7dfa6fbc1a4aa8ae5e2cdbff8138c404b97c0b",
+    "native/case-1/encoder.bf16": "d710db7cc8257d201bf7b0e3f52d115f9ea642626a08ff98a48295a254c78941",
+    "native/case-1/generated.u32": "db079b803b0ff39c7669983bbda76dfae686b608d3d226804a2377858ea75af1",
+    "native/case-1/logits-0.bf16": "ba1861da1070e4581a478ce770b860ad0cfbdaaaa9cd2e50e4af6f7adc3b7b83",
+    "native/case-1/logits-1.bf16": "22b3044f9923ac56af3723feca96c47e41f8e8dbf64e276b23969db1df5c0303",
+    "native/case-1/logits-2.bf16": "0f173c73b06d413ac1602d0d2c5c57d88bdf3b9b48cbd4d580f968e4249a6323",
+    "native/case-1/logits-3.bf16": "06a35df21669ca11f971f61c79033c66af01936e4e99a0f776538f34bca55c48",
+    "native/case-1/native-mel.f32": "c7b9296416a494e2fc072feb2d9b0a59646a508c387769fc3937b806c908f02e",
+    "native/case-1/result.json": "cd6fba4d6db44b54a08646ec400cf0d8a68666b763bcac1cfb8d6b0369fdb749",
+    "native/case-1/text.txt": "4e7fbc45f78d4e400ef4df073d6da86b774b5bab2d0fee3c4990ce60034122b2",
+    "native/result.json": "cb179e9afcafbca95c2bb3b3bee345ce723147321a657cb2fec2fdd5643a62c4",
+    "native.log": "df45c3705b94f9475a42300319591d523f5a57f5627625e9d97ba2a32ee9d393",
+    "reference.log": "89087f341f5c69c3163f0ba1df371675bbece92c69e31c8347412a62066050e0"
+  }
+}

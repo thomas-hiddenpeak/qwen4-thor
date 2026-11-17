@@ -857,7 +857,8 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 ## 许可证
 
 原生音频后端正在实现；固定Qwen3-ASR-0.6B的官方配置和权重合同，
-当前代码包含原生CPU校验及公开元数据夹具，尚不代表转录接口已交付。
+当前代码包含原生校验、log-mel、encoder/decoder与公开元数据夹具；
+两段真实转录和定点数值证据已记录，尚不代表转录接口已交付。
 模型资产按部署启用，原生实现不要求vLLM或Transformers服务。
 来源、固定revision与Apache-2.0许可见
 [Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)，

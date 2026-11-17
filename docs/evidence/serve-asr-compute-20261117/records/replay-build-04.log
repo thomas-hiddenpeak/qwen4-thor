@@ -1,0 +1,3 @@
+[  5%] Building CXX object CMakeFiles/q4t_asr_replay.dir/model_replay.cpp.o
+[ 11%] Linking CXX executable q4t_asr_replay
+[100%] Built target q4t_asr_replay

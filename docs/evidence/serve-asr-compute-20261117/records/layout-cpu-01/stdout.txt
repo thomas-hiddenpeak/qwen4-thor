@@ -1,0 +1,9 @@
+[PASS] asr_layout_binds_all_stored_tensors_with_independent_heads
+[PASS] asr_layout_rejects_forged_names_extents_and_overflow
+[PASS] asr_layout_parse_failure_preserves_verified_output
+[PASS] asr_encoder_layout_keeps_padding_and_104_position_windows
+[PASS] asr_encoder_layout_accounts_every_aligned_buffer
+[PASS] asr_encoder_layout_rejects_budget_and_index_overflow_atomically
+[PASS] asr_decoder_layout_contains_audio_prefix_and_full_output_head
+[PASS] asr_decoder_layout_rejects_limits_without_replacing_output
+8 tests, 8 passed, 0 failed, 0 skipped

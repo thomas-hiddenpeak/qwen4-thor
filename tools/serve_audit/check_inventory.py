@@ -238,6 +238,7 @@ def current_surface(root):
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
+                   set(root.glob("src/audio/**/*.cu")) |
                    set(root.glob("include/q4t/audio/**/*.h")) |
                    {p for p in root.glob("tools/serve_recovery/*.py")
                     if not p.name.startswith("test_")} |

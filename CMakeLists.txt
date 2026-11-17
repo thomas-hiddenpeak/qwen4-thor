@@ -174,6 +174,8 @@ target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
   src/audio/asr_config.cpp
+  src/audio/asr_layout.cpp
+  src/audio/asr_model.cu
   src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
@@ -207,6 +209,15 @@ add_library(q4t_model STATIC
 target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
+
+# Targeted ASR reference replay; optional, never started by ordinary builds.
+if(TARGET q4t_text)
+  add_executable(q4t_asr_replay EXCLUDE_FROM_ALL
+    tools/native_asr/model_replay.cpp)
+  target_link_libraries(q4t_asr_replay PRIVATE
+    q4t_model q4t_text q4t_runtime)
+  target_compile_options(q4t_asr_replay PRIVATE -Wall -Wextra -Werror)
+endif()
 
 # Targeted embedding reference replay; no performance acceptance claims.
 if(Q4T_HAS_ICU)
@@ -996,6 +1007,12 @@ if(Q4T_BUILD_TESTS)
     src/audio/asr_config.cpp src/io/json.cpp)
   target_include_directories(q4t_asr_contract_tests PRIVATE include)
   target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+  add_executable(q4t_asr_layout_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_layout_test.cpp
+    src/audio/asr_layout.cpp src/audio/asr_config.cpp src/io/json.cpp
+    src/model/embedding_layout.cpp src/model/embedding_config.cpp)
+  target_include_directories(q4t_asr_layout_tests PRIVATE include)
+  target_compile_options(q4t_asr_layout_tests PRIVATE -Wall -Wextra -Werror)
   add_executable(q4t_asr_feature_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/asr_features_test.cpp src/audio/features.cpp)
   target_include_directories(q4t_asr_feature_tests PRIVATE include)

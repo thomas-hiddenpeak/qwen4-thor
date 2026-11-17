@@ -2139,8 +2139,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "08b2e974122596e7b21369a763c84ccfd304eafc1bfeda8e4c0572e3b20fa1f9",
-    "cmake/ChatProtocolIdentity.cmake": "5713dc4ba2e782e03f252a75159e261b95ff5fc48d259a8e92b5dd0124128c78",
+    "CMakeLists.txt": "94f02b67df9ac5269a59c307e1e7a011b1bf9461c93310108c6a276667ac46ce",
+    "cmake/ChatProtocolIdentity.cmake": "3ca0f2fc4ea3965ae043a1d39b2b9348275262ed080a3b633df0efbf4d7379b0",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2156,7 +2156,7 @@
     "include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
     "include/q4t/model/embedding_config.h": "b486a5753102f490b129b91fc28f91557f6ed5dc3ee8a70ca5d189af149cb73c",
     "include/q4t/model/embedding_layout.h": "d4c6c8d1d5c86417217b31de116fa68edadcc3136587834f971fbff0df405e35",
-    "include/q4t/model/embedding_model.h": "aaf03b7e00955aca3380eaf67924705d4c5691b4d8c8fccd0628c1f1d5ee3cf8",
+    "include/q4t/model/embedding_model.h": "b11c607ea323bb4b09bfbdf4669b5607556bf62b3e50c3c64c830c29551c3e63",
     "include/q4t/model/linear.h": "274df361d258cf3cef0256148f4c086cfd0d9bc03883bf35b6b415c74142089d",
     "include/q4t/model/model_head.h": "5c6f7a3202d8cbeb2918aa22263d8a24b8e56d92266251701dd804adcc10bd27",
     "include/q4t/model/vision_positions.h": "69e1f066a2c09a9e4f789bbfc0cfa2ea47b05a222d1eb26c8b1745684340d427",
@@ -2384,7 +2384,7 @@
     "src/main.cpp": "4f14a83bb50101f6e27198bd880df41741f593cecf1564f295167524571844b3",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
-    "src/model/embedding_model.cu": "fd855fab933d9538c6326c1d9d7d003e3d0e6af52c33f84b07bec7480513625e",
+    "src/model/embedding_model.cu": "0b82506b506bdccf305f94290cee583968945ecd2c380e217e751e768f580c3f",
     "src/model/full_attention.cu": "b1b1a213200200eda05b2ed2d124d511e3b8bddff1f6335320641ff578d327ef",
     "src/model/hyperconnection.cu": "34d71169ce8085a5552113378abafded52ee59afbbbae068d25f1cb8af3f6031",
     "src/model/linear_attention.cu": "2ce56772fac0318ab01aca650a3d6d0d93222760b03d86677c3554902aa40c65",
@@ -2902,7 +2902,11 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/audio/asr_layout.h": "56f92171b2f4d3687e06473f7faa1105aed27a6a0d8cee9d1a140bcb300be6e4",
+    "include/q4t/audio/asr_model.h": "21e3f162064aca9511be133b44103bc9727a131e33fd36451090bde8a627120b",
+    "src/audio/asr_layout.cpp": "fd3ae396f28905d8ebc7f3584e108c2e6c8931aa8eb4183c932a43b7208ec45d",
+    "src/audio/asr_model.cu": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6698,6 +6702,27 @@
       "docs/evidence/serve-video-detail-cpu-20261117/README.md",
       "docs/evidence/serve-video-affine-composition-20261117/README.md",
       "docs/evidence/serve-video-affine-delivery-20261117/README.md"
+    ]
+  },
+  "asr_compute_development_20261117": {
+    "state": "real_generation_and_actual_operand_review_recorded_service_integration_pending",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/audio/asr_layout.h",
+      "include/q4t/audio/asr_model.h",
+      "include/q4t/model/embedding_model.h",
+      "src/audio/asr_layout.cpp",
+      "src/audio/asr_model.cu",
+      "src/model/embedding_model.cu"
+    ],
+    "cpu_layout_tests": 8,
+    "new_audio_routes": false,
+    "contract": "docs/SERVE_NATIVE_AUDIO_2026-11-17.md",
+    "scope": "native convolution/window encoder and ordinary dense Qwen3 decoder, independent LM head; no API support claimed",
+    "original_logits_gate": "FAILED_preserved",
+    "evidence": [
+      "docs/evidence/serve-asr-compute-20261117/README.md"
     ]
   }
 }

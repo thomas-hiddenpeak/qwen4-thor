@@ -2473,6 +2473,27 @@
         "default_unchanged": true,
         "http_verified": false,
         "features": "8 CPU PASS, six fixed full matrices max absolute error 0, declared tolerance 1e-5"
+      },
+      "native_asr_compute_20261117": {
+        "state": "implemented_real_generation_and_operand_review_service_integration_pending",
+        "contract": "SERVE_NATIVE_AUDIO_2026-11-17.md",
+        "targeted_cpu_passed": 8,
+        "cpu_seconds": 0.007390968967229128,
+        "published": false,
+        "remaining": [
+          "HTTP/business qualification; full model quality and original logits gate not claimed",
+          "native decode/resample",
+          "native asset lifecycle and service API",
+          "SDK/errors/cancel/resource/recovery combinations",
+          "actual alignment and further audio capabilities"
+        ],
+        "evidence": "evidence/serve-asr-compute-20261117/README.md",
+        "original_comparison": "FAILED: 5/8 logits thresholds; preserved, not retrospectively accepted",
+        "real_generation": "both official clips text and EOS equal to pinned adapted reference",
+        "operand_review": "worst Chinese first step reproduced bitwise; 1836 initial plus 71 supplemental checks, zero violations; original checker overflow retained",
+        "gpu_model_loads": 2,
+        "cpu_model_loads": 3,
+        "http_verified": false
       }
     },
     {
@@ -5642,7 +5663,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "Continue A10 native audio decoding and encoder/decoder after 24 foundation CPU checks; PR43 actually merged. All remaining master tasks remain required.",
+  "next": "Continue native ASR component numerical/real-audio qualification, then native decoding and HTTP/SDK/recovery integration. PR43 merged; all other master tasks remain required.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
