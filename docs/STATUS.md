@@ -18,7 +18,7 @@ PR44，继续最终检查和合main，后续对齐开发不混入本PR。
 资产1.84GB/640.541秒、保留8GiB磁盘。继续tokenizer及原生实际
 计算、字幕接口与业务交付；配置合同通过不代表时间戳接口可用。
 [对齐tokenizer6项CPU](evidence/serve-aligner-tokenizer-20261117/README.md)
-也通过（1.414秒），原ASR golden保持；日/韩词单元和实际对齐仍待实现。
+也通过（1.414秒），原ASR golden保持；实际对齐接口仍待完成。
 PR44只追加可选前置路由修复，待检查合main；本项不混入该PR。
 [原生计算与6项布局CPU](evidence/serve-aligner-layout-20261117/README.md)
 通过（0.008秒），隔离CUDA构建完成。首轮实模型组固定2次GPU加载、
@@ -27,7 +27,10 @@ PR44只追加可选前置路由修复，待检查合main；本项不混入该PR�
 英文2/72槽差80ms，其余96/98槽相同，6数值与14原ASR逐位保护通过。
 1条英文补采独立FP64复核证明两侧head符合各自BF16操作数，原FAILED
 保留；累计3GPU加载/2CPU参考/21.738秒，25次NVML正常、默认未变。
-继续词单元/真实字幕接口业务，当前候选尚未发布。
+[词单元/时间后处理8项CPU](evidence/serve-aligner-postprocess-20261117/README.md)
+已通过（0.007秒、0GPU），原预测/修复及末尾量化裁剪分开记录。
+日/韩为ICU原生策略，实际语言业务仍待验。继续独立资产/健康和
+真实字幕接口，当前候选尚未发布。
 
 
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：

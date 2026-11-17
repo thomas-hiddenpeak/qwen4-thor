@@ -1,0 +1,24 @@
+{
+  "task": "AL03 native lexical units and real timestamp postprocessing",
+  "limits": {
+    "cpu_tests": 8,
+    "seconds": 180,
+    "gpu_actions": 0
+  },
+  "word_policy": {
+    "space_and_cjk": "official Unicode L/N/apostrophe cleaning and CJK character split with original byte offsets",
+    "ja_ko": "existing linked ICU word iterator; explicit native segmentation policy, no claim of identical Nagisa/SoyNLP segmentation; real language qualification remains required"
+  },
+  "checks": [
+    "ordinary Unicode/CJK reference units and source byte spans",
+    "native Japanese/Korean nonempty dictionary boundaries and original text coverage",
+    "UTF8/empty/byte/word budgets and atomic failure",
+    "cancellation and marker literal cleaning",
+    "original reference monotonic repair including ties/anomalies/edges",
+    "actual 98-slot output repair preserves raw and repaired counts",
+    "duration/grid/range/count rejection",
+    "postprocess cancellation and bounded storage"
+  ],
+  "duration_policy": "reject predictions beyond duration by more than one 80ms trained class; clamp only within that final quantization interval and record it",
+  "reference_policy": "retain actual original classes; explicit monotonic correction never described as original predicted correctness"
+}

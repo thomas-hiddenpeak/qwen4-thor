@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "tests": 8,
+  "seconds": 0.007251206785440445,
+  "gpu_actions": 0,
+  "exit": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_aligner_postprocess_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/postprocess-cpu-01/required.txt"
+  ],
+  "binary_sha256": "1670c8f9843b77b5dd4f9f663eee4e966d1b086a70521b084b432ab62f5f1d69",
+  "sources": {
+    "src/audio/aligner_postprocess.cpp": "ce68912efd3923776407a6b2d9df2c6720a42dd06d16b06dbd74732e7d972463",
+    "include/q4t/audio/aligner_postprocess.h": "0a8558e459836dacd8f820ddafad1893cf83791bd7c04ae3711ddc3f0410cc3d",
+    "tests/aligner_postprocess_test.cpp": "77ac2223aa0e70439ec38ee330786f7fb8370f845cb549667ab266d1643b2cde",
+    "tests/fixtures/aligner/postprocess-golden.json": "a21534b7eabb52a6474278831bcdeb5c0cb980b4ea6dfd1f2330e7649993aaa6"
+  }
+}

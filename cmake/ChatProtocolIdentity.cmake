@@ -22,6 +22,8 @@ set(protocol_inputs
   include/q4t/audio/aligner_layout.h
   src/audio/aligner_layout.cpp
   include/q4t/audio/aligner_model.h
+  include/q4t/audio/aligner_postprocess.h
+  src/audio/aligner_postprocess.cpp
   include/q4t/audio/asr_model.h
   src/audio/asr_model.cu
   include/q4t/audio/features.h

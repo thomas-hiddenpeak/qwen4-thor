@@ -139,7 +139,8 @@ endif()
 # q4t_text — GPT-2 Byte-Level BPE tokenizer (ICU 74 for NFC + \p{L} regex)
 # ---------------------------------------------------------------------------
 if(Q4T_HAS_ICU)
-  add_library(q4t_text STATIC src/text/tokenizer.cpp)
+  add_library(q4t_text STATIC src/text/tokenizer.cpp
+    src/audio/aligner_postprocess.cpp)
   target_include_directories(q4t_text PUBLIC include ${ICU_INCLUDE_DIRS})
   target_link_libraries(q4t_text PUBLIC q4t_io ${ICU_LINK_LIBRARIES})
 endif()
@@ -1055,6 +1056,11 @@ q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
+    add_executable(q4t_aligner_postprocess_tests EXCLUDE_FROM_ALL
+      tests/test_main.cpp tests/aligner_postprocess_test.cpp)
+    target_link_libraries(q4t_aligner_postprocess_tests PRIVATE q4t_text)
+    target_compile_options(q4t_aligner_postprocess_tests PRIVATE
+      -Wall -Wextra -Werror)
     add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
       tests/test_main.cpp tests/asr_tokenizer_test.cpp
       tests/aligner_tokenizer_test.cpp

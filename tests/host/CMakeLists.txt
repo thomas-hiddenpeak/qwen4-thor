@@ -59,6 +59,15 @@ if(PkgConfig_FOUND)
   pkg_check_modules(ASR_ICU QUIET icu-uc icu-i18n)
 endif()
 if(ASR_ICU_FOUND)
+  add_executable(q4t_aligner_postprocess_tests EXCLUDE_FROM_ALL
+    ../test_main.cpp ../aligner_postprocess_test.cpp
+    ../../src/audio/aligner_postprocess.cpp ../../src/io/json.cpp)
+  target_include_directories(q4t_aligner_postprocess_tests PRIVATE
+    ../../include ${ASR_ICU_INCLUDE_DIRS})
+  target_link_libraries(q4t_aligner_postprocess_tests PRIVATE
+    ${ASR_ICU_LINK_LIBRARIES})
+  target_compile_options(q4t_aligner_postprocess_tests PRIVATE
+    -Wall -Wextra -Werror)
   add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
     ../test_main.cpp ../asr_tokenizer_test.cpp ../embedding_contract_test.cpp
     ../aligner_tokenizer_test.cpp

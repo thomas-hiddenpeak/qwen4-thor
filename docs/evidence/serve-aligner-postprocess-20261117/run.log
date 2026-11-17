@@ -1,0 +1,9 @@
+[PASS] aligner_words_match_reference_cleaning_and_original_byte_ranges
+[PASS] aligner_native_japanese_korean_words_keep_real_source_spans
+[PASS] aligner_words_reject_invalid_utf8_and_budgets_atomically
+[PASS] aligner_words_cancel_without_output_and_clean_injected_markers
+[PASS] aligner_timestamp_repair_matches_reference_anchors_and_anomalies
+[PASS] aligner_actual_predictions_keep_raw_values_and_report_repairs
+[PASS] aligner_timestamp_range_and_audio_duration_fail_atomically
+[PASS] aligner_timestamp_cancel_and_storage_limits_preserve_owner
+8 tests, 8 passed, 0 failed, 0 skipped

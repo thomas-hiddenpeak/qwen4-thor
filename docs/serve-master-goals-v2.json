@@ -2711,6 +2711,15 @@
         "compute_evidence": "evidence/serve-aligner-compute-20261117",
         "strict_raw_class_equality": "FAILED: English 2/72 slots differ 80ms; original preserved",
         "head_operand_review": "PASS for actual BF16 operands, no model math change"
+      },
+      "alignment_postprocess_20261117": {
+        "state": "cpu_component_accepted_service_pending",
+        "evidence": "evidence/serve-aligner-postprocess-20261117/README.md",
+        "cpu_tests": 8,
+        "seconds": 0.007251206785440445,
+        "gpu_actions": 0,
+        "japanese_korean": "native ICU segmentation; actual-language qualification remains required",
+        "next": "Isolated asset/resource/health integration and real timestamp/subtitle API; all remaining master tasks continue"
       }
     },
     {
