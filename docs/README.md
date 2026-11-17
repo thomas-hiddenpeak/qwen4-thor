@@ -578,3 +578,5 @@
 - [SDK桥接与持久响应回执](SERVE_CLIENT_RECEIPTS_2026-11-17.md)：审核元数据、logprobs和被拦截终态的针对性修复。
 
 - [发布意图可恢复保留管理](SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md)：容量满后的受保护归档、恢复和发布续做。
+
+- [rev260客户端回执可回退交付](evidence/serve-client-receipts-delivery-20261117/README.md)：审核信息/恢复终态及发布意图容量的实际修复。

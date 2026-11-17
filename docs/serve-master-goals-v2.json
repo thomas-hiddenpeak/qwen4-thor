@@ -2416,7 +2416,7 @@
         "main_evidence": "evidence/serve-pr41-merged-20261117/README.md"
       },
       "video_projective_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
         "cpu_new_limit": 16,
         "cpu_regressions": 4,
@@ -2448,7 +2448,9 @@
         },
         "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
         "revision": 254,
-        "delivery_evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-video-projective-delivery-20261117/README.md",
+        "main_merge_commit": "431ddc136b63cdebfe154d5fcb48e8040f29ca0d",
+        "main_evidence": "evidence/serve-pr42-merged-20261117/README.md"
       }
     },
     {
@@ -3405,7 +3407,7 @@
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       },
       "client_receipts_20261117": {
-        "state": "published_rev256_rollback_incomplete",
+        "state": "delivered_main_pending",
         "contract": "SERVE_CLIENT_RECEIPTS_2026-11-17.md",
         "issues": [
           "Node SDK bridge drops moderation reports/usage",
@@ -3417,7 +3419,9 @@
         "new_cases": 12,
         "direct_regressions": 4,
         "package_evidence": "evidence/serve-client-receipts-package-20261117/README.md",
-        "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64"
+        "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
+        "revision": 260,
+        "delivery_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
       }
     },
     {
@@ -3786,11 +3790,13 @@
         "existing_evidence_reviewed": true
       },
       "publication_intent_retention_20261117": {
-        "state": "cpu_accepted_actual_pending",
+        "state": "actual_accepted_main_pending",
         "problem": "128 historical publication intents exhaust the bounded active directory",
         "exit": "Protected reversible archival, interrupted move recovery, stale retry rejection, CPU tests and actual stopped continuation",
         "contract": "SERVE_PUBLICATION_INTENT_RETENTION_2026-11-17.md",
-        "cpu_evidence": "evidence/serve-publication-intent-cpu-20261117/README.md"
+        "cpu_evidence": "evidence/serve-publication-intent-cpu-20261117/README.md",
+        "archived_intents": 4,
+        "actual_evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
       }
     },
     {
@@ -4270,7 +4276,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev254 or then-current default; do not stop camera/jtop without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh against rev260 or then-current exact package before cold qualification; pending camera/jtop handoff remains required, do not stop other services."
     },
     {
       "id": "R08",
@@ -4876,36 +4882,39 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_DELIVERY",
-        "revision": 254,
+        "status": "PASS_NATIVE_CLIENT_RECEIPTS_DELIVERED",
+        "revision": 260,
         "current": {
           "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
-          "engine_release_sha256": "429c0065e2a199eb327496556e779a96354940db2d8a7cb8e6f95d1e3f2bd5ec",
-          "generation_sha256": "523d05a97f5bb86421683212e7f90d7a1e12dd03f3240bd9f531758fa02f7466",
-          "manifest_sha256": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/package-01/bundle",
-          "service_acceptance_sha256": "360dc85c0366721b0dfe7ae9b68da356712ff4cd872258c1fe29332ab6c16203",
-          "service_release_sha256": "888bb894b48ead1bde3d6c35b1b04b60680cfe9550e44b8d3ed83b2b1df5744c"
+          "engine_release_sha256": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+          "generation_sha256": "4359372fb12707f6bc321e608f66e5513544968265ca41ea6f5999dd6a191ed3",
+          "manifest_sha256": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-receipts-20261117/candidate-01/bundle",
+          "service_acceptance_sha256": "1e8b2a90970b340641df09d4e5cbd434eb0b9e035fa78c98a8d7dc1c3c72f0ab",
+          "service_release_sha256": "5e1dac9955ce1c56ac606fb376bd82ab17e5f987ac63edcef72ee0199e26a2cb"
         },
-        "commands": 19,
-        "seconds": 285.69923610892147,
+        "successful_commands": 13,
+        "failed_original_commands": 1,
+        "seconds": 178.26712806802243,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "51a6c274068a6c99e27153422743d033b1ea2882eb57edeb1734e9acf4bd1bfb",
-        "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
-        "candidate_whole_package_gpu_run": false,
-        "composed_change": "Exact engine projective pixels, primary/light and retained control business; unchanged controller/client/native helpers; explicit capability extension preserves budgets and disallows capability loss; actual STOPPED whole-root rollback and forward.",
-        "older_engine_fallback": false,
-        "prior_rev244_preserved": true,
-        "retired_generations_archived": 2,
-        "retired_versions_archived": 2,
+        "engine_control_native_profiles_unchanged": true,
+        "version_cycles_and_all_budgets_preserved": true,
+        "client_acceptance": "evidence/serve-client-receipts-package-20261117/README.md",
+        "intent_cpu_acceptance": "evidence/serve-publication-intent-cpu-20261117/README.md",
+        "archived_intents": 4,
+        "archived_generations": 1,
+        "archived_registrations": 1,
         "deleted_files": 0,
-        "files": 81,
+        "original_failure_preserved": true,
+        "manual_root": "3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33",
+        "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
+        "older_engine_fallback": false,
+        "archive_sha256": "9e05513fa18c9358c65b77b7ed847be870503020b378b6994fe7f3d8130a4091",
         "secret_scan_matches": 0,
-        "archive_sha256": "83a9154088d008c87f217e72393971211a07a39b09d19fc2cf9a5ef2e4356400",
         "main_integration_pending": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-video-projective-delivery-20261117/README.md"
+        "evidence": "evidence/serve-client-receipts-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5072,7 +5081,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Projective video delivery exact-head checks and actual main merge",
+        "Client receipts/intent retention final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5570,8 +5579,8 @@
       }
     }
   ],
-  "next_task": "N07",
-  "next": "Implement and validate protected publication intent retention, then finish rev256 client delivery rollback/forward; all other master tasks continue.",
+  "next_task": "Q02",
+  "next": "Freeze rev260 day handoff and merge the client/intent-retention repair after exact-head checks; continue every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
