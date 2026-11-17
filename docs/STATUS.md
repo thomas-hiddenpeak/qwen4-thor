@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频业务驱动3CPU通过](evidence/serve-chat-audio-business-driver-20261118/README.md)，
+2来源与零警告构建通过，固定实际WAV/MP3夹具已备。接着
+1启动/13请求/900秒同租约短验；默认rev296不改，托管交付、
+原重叠质量及全部master继续。
+
+Chat音频CA04业务驱动已冻结：先3针对性CPU/180秒与2来源，
+再同租约1启动/13请求（含1Batch行）/900秒，真实双SDK、
+单RPM/多段工具闭环、存储及取消/ASR隔离。默认rev296不改，
+原重叠质量及托管交付、全部master继续。
+
 [Chat音频18针对性检查通过](evidence/serve-chat-audio-runtime-cpu-20261118/README.md)，
 CA03首轮失败保留、仅3失败项重验；最终主程序/host零警告，
 2来源检查通过，0GPU/HTTP。接着真实音频业务与恢复交付，

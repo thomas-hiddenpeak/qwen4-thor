@@ -67,3 +67,12 @@ configuration is read directly from the operations listener.
 their completed wire, cancellation, quota, recovery and cleanup observations;
 its final health receipt comes explicitly from a separate same-engine managed
 run. It never reclassifies an original failed continuous driver as passed.
+
+`chat_acceptance.py` freezes a single-start, thirteen-request native Chat speech
+input stage: pinned Python/JS SDKs, actual WAV/MP3, shared preparation usage,
+one-RPM admission, stored original audio, real project-document tool/JSON loop,
+Batch, silence/capacity/cancellation and independent ASR recovery. Use `fixtures`
+only for the fixed CPU fixture generation, `prepare` with a reviewed candidate,
+and `run` only through the shared strict GPU lease. Driver/CPU acceptance does
+not attest Chat audio delivery; current status and business evidence are in
+`docs/SERVE_CHAT_AUDIO_2026-11-18.md` and `docs/STATUS.md`.

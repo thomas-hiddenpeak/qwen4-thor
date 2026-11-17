@@ -60,7 +60,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          Quote(kNativeAsrWeightSha256) +
          R"(,"model":"qwen3-asr-0.6b","configured":)" +
          (native_asr ? "true" : "false") +
-         R"(,"formats":["json","text","srt","verbose_json","vtt","diarized_json"],)"
+         R"(,"chat_input":{"profile":"q4t-chat-audio-input-v1",)"
+         R"("formats":["wav","mp3"],"max_parts":8,"max_source_bytes":26214400,)"
+         R"("preparation":"native_asr_transcript","output_modalities":["text"],)"
+         R"("usage":"actual_shared_preparation","preflight":"requires_audio_preparation"},)"
+         R"("formats":["json","text","srt","verbose_json","vtt","diarized_json"],)"
          R"("stream":true,"stream_formats":["json","text","diarized_json"],"logprobs":true,)"
          R"("usage":"actual_tokens","prompt":"literal_context",)"
          R"("languages":"native_context_guidance","keywords":"native_context_guidance",)"

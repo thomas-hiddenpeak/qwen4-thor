@@ -34,6 +34,10 @@ Q4T_TEST(asr_capability_binds_fixed_backend_when_configured_or_disabled) {
               value->GetString("revision") == kNativeAsrRevision &&
               value->GetString("weight_sha256") == kNativeAsrWeightSha256 &&
               value->GetBool("configured", !configured) == configured);
+    const auto* chat = value->Find("chat_input");
+    Q4T_CHECK(chat && chat->GetString("profile") == "q4t-chat-audio-input-v1" &&
+              chat->GetString("preparation") == "native_asr_transcript" &&
+              chat->GetInt("max_parts") == 8);
   }
   return true;
 }
