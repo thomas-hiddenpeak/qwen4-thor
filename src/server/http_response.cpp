@@ -82,6 +82,12 @@ void SendExceptionResponse(int fd, ResponseState state,
           "\"sequence_number\":%lld}\r\n\r\n",
           code, static_cast<long long>(sequence));
       if (sequence < INT64_MAX) ++sequence;
+    } else if (state == ResponseState::kStreaming && context &&
+               context->TranscriptionStream()) {
+      size = std::snprintf(
+          response, sizeof(response),
+          "event: error\r\ndata: {\"type\":\"error\",\"code\":\"%s\","
+          "\"message\":\"request failed\",\"param\":null}\r\n\r\n", code);
     } else {
       size = state == ResponseState::kStreaming
                  ? std::snprintf(response, sizeof(response),
@@ -718,6 +724,12 @@ std::string HttpResponseContext::StreamError(int status,
                                              const std::string& message,
                                              std::string_view code,
                                              std::string_view param) {
+  if (transcription_stream_)
+    return "event: error\r\ndata: {\"type\":\"error\",\"code\":\"" +
+        JsonEscape(std::string(code)) + "\",\"message\":\"" +
+        JsonEscape(message) + "\",\"param\":" +
+        (param.empty() ? "null" : '"' + JsonEscape(std::string(param)) + '"') +
+        "}\r\n\r\n";
   if (stream_error_renderer_)
     return stream_error_renderer_(stream_error_owner_, status, message, code,
                                   param);

@@ -297,6 +297,12 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  src/server/asr_service.cpp
+  src/server/asr_request.cpp
+  src/server/asr_response.cpp
+  src/server/chat_asr.cpp
+  src/server/chat_asr_execution.cpp
+  src/server/chat_asr_backend.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp

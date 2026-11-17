@@ -1,0 +1,5 @@
+{
+  "include/q4t/text/tokenizer.h": "85cf9828a0a24f2f60439a21a97a2317c743cf070d3662d247c1910b84b8f974",
+  "src/text/tokenizer.cpp": "56a560f4c68bed7973cc400ca3f0a521423567f356f4d741cdf889e9bc3850a1",
+  "tests/asr_tokenizer_test.cpp": "bc128453c024bcd4b78dd6bca1aefc9caa828f6b0d4c2448339245aeef30133d"
+}

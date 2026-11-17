@@ -757,6 +757,8 @@ bool EncodeImpl(const TokenizerData& data, std::string_view text,
   }
   output->clear();
   output->reserve(std::min(text.size(), data.limits.max_tokens));
+  if (!options.recognize_special_tokens)
+    return EncodeNormalSegment(data, text, output, err, options);
   std::size_t cursor = 0;
   // Each marker advances its own search frontier. A missing marker stays
   // missing instead of rescanning the remaining input after every match.
@@ -1040,7 +1042,8 @@ Status Tokenizer::Encode(std::string_view text,
   std::string err;
   if (!EncodeImpl(impl_->data, text, out, &err, options) ||
       EncodingCancelled(options, &err)) {
-    if (err == "encoding cancelled") out->clear();
+    if (err == "encoding cancelled" || !options.recognize_special_tokens)
+      out->clear();
     return Status::Fail(err);
   }
   if (impl_->data.profile == TokenizerProfile::kQwen3Embedding &&

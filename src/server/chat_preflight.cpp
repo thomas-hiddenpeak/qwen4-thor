@@ -71,6 +71,8 @@ void ChatServer::HandleConfig(int fd) {
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
       R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
+      R"(,"native_asr_health":)" + NativeAsrHealthJson() +
+      R"(,"native_asr_limits":)" + AsrServiceLimitsJson(asr_limits_) +
       R"(,"application_startup":{"responses":)" +
       ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
       ApplicationStartupJson(batches_.StartupHealth()) +

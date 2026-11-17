@@ -2530,6 +2530,27 @@
           "transcription HTTP, actual native-codec business and SDK",
           "all further audio/master tasks"
         ]
+      },
+      "native_asr_service_20261117": {
+        "state": "targeted_cpu_accepted_real_business_pending",
+        "contract": "SERVE_NATIVE_AUDIO_2026-11-17.md",
+        "published": false,
+        "whole_task_complete": false,
+        "cpu_limit": {
+          "tests": 36,
+          "seconds": 300
+        },
+        "remaining": [
+          "targeted CPU and native HTTP/SDK qualification",
+          "actual alignment, diarization and VAD executors",
+          "service package, primary/light recovery and reversible delivery",
+          "all remaining audio and master tasks"
+        ],
+        "cpu_evidence": "evidence/serve-asr-service-cpu-20261117/README.md",
+        "unique_cpu_tests": 34,
+        "executions": 35,
+        "seconds": 2.166639856528491,
+        "original_failure_preserved": true
       }
     },
     {

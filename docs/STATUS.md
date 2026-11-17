@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ASR03的34项针对性CPU](evidence/serve-asr-service-cpu-20261117/README.md)
+已完成（含失败35次、2.167秒）：独立健康/冷却、资源预算、
+multipart/字面量prompt、JSON/text/SSE与实际概率/用量、共享Chat
+直接回归。新literal编码预算失败留部分ID已修复，仅补原失败1项；
+原FAILED保留。实际HTTP/SDK、服务包与恢复组合接着推进，当前
+未宣称音频API已验收/发布；对齐/字幕/说话人/VAD继续实现，
+全部master保持active，默认rev266和day不变。
+
 [ASR资产加载的18项针对性检查](evidence/serve-asr-assets-20261117/README.md)
 已通过（4.184秒）：共享隔离读取器验证实际六份元数据及完整权重，
 612个tensor布局、原embedding回归、取消/超时/损坏/占槽与输出保持。

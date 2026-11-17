@@ -190,6 +190,8 @@ class HttpResponseContext {
     responses_sequence_ = enabled ? sequence : nullptr;
   }
   int64_t* ResponsesSequence() const { return responses_sequence_; }
+  void SetTranscriptionStream() noexcept { transcription_stream_ = true; }
+  bool TranscriptionStream() const { return transcription_stream_; }
   std::string StreamError(int status, const std::string& message,
                           std::string_view code, std::string_view param = {});
   void StartHeartbeats(
@@ -251,6 +253,7 @@ class HttpResponseContext {
   StreamErrorRenderer stream_error_renderer_ = nullptr;
   void* stream_error_owner_ = nullptr;
   int64_t* responses_sequence_ = nullptr;
+  bool transcription_stream_ = false;
   std::mutex write_mu_;
   std::condition_variable wake_;
   std::thread heartbeat_;

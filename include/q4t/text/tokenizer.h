@@ -56,6 +56,11 @@ struct EncodeOptions {
   // Qwen3 Embedding's trained postprocessor appends EOS. The Qwen4 profile
   // remains raw regardless of this option. Token-ID inputs bypass Encode.
   bool add_special_tokens = true;
+  // Caller text inside a trained template must not introduce structural
+  // markers. False sends every byte through the ordinary BPE path. This is
+  // separate from the profile's optional EOS postprocessor above. Literal
+  // mode clears partial tokens on any failure, so no truncated context leaks.
+  bool recognize_special_tokens = true;
 };
 
 // GPT-2 style Byte-Level BPE tokenizer loaded from tokenizer.json.

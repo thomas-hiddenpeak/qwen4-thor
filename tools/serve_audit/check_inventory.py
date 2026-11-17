@@ -39,6 +39,11 @@ def current_surface(root):
     completion_fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
+    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+        if '"/v1/audio/transcriptions"' not in dispatch or \
+                'headers.body_limit, kAsrFormBytes' not in dispatch:
+            raise ValueError('review native transcription body/dispatch contract')
+        routes.append(("/v1/audio/transcriptions", "POST"))
     if 'if (IsModelDetailPath(path))' not in dispatch or \
             'method != "GET" && method != "DELETE"' not in dispatch or \
             'HandleModel(fd, method, path)' not in dispatch:

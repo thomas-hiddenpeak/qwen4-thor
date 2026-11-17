@@ -31,6 +31,7 @@
 #include "q4t/runtime/residency_config.h"
 #include "q4t/server/cuda_quota_policy.h"
 #include "q4t/server/embedding_assets.h"
+#include "q4t/server/asr_assets.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -82,6 +83,8 @@ ChatServer::~ChatServer() {
   release(d_prefill_logits_, "shutdown.prefill_logits");
   release(d_embedding_weights_, "shutdown.native_embedding_weights");
   embedding_ready_.store(false);
+  release(d_asr_weights_, "shutdown.native_asr_weights");
+  asr_health_.Released();
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -348,6 +351,17 @@ Status ChatServer::Start(const ServerOptions& opts) {
         // DRAM. Keep the optional model's peak visible before capacity choice.
         breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
             512ULL * 1024 * 1024 + size_t(opts.max_seq) * embedding.bytes;
+      }
+      if (!opts.asr_model_dir.empty()) {
+        AsrResourcePlan asr;
+        s = PlanAsrServiceResources(opts.asr_limits, &asr);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        breq.extra_fixed_bytes += asr.load_peak_bytes +
+            uint64_t(opts.max_seq) * asr.request_device_bytes +
+            uint64_t(admission.inflight) * asr.request_host_bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -699,6 +713,17 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!embedding_model_dir_.empty()) {
     s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
                                       static_cast<int64_t>(std::time(nullptr)));
+    if (!s) return s;
+  }
+  asr_model_dir_ = opts.asr_model_dir;
+  asr_limits_ = opts.asr_limits;
+  asr_health_.Configure(!asr_model_dir_.empty());
+  if (!asr_model_dir_.empty()) {
+    AsrResourcePlan resources;
+    s = PlanAsrServiceResources(asr_limits_, &resources);
+    if (!s) return s;
+    s = asr_catalog_.Configure(audio::AsrConfig::kModelId, {},
+                               static_cast<int64_t>(std::time(nullptr)));
     if (!s) return s;
   }
   // Video processor budget comes from video_preprocessor_config.json

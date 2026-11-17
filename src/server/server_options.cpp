@@ -8,6 +8,7 @@
 
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/model/embedding_config.h"
+#include "q4t/audio/asr_config.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/object_store_options.h"
 
@@ -123,6 +124,16 @@ Status ValidateServerOptions(const ServerOptions& options) {
                       options.served_model_name, options.model_aliases))
       return Status::Fail("embedding model name conflicts with Chat model names");
   }
+  if (!options.asr_limits.Valid())
+    return Status::Fail("invalid ASR duration/context/output/workspace limits");
+  if (!options.asr_model_dir.empty()) {
+    // Reuse the canonical absolute asset-path grammar; no filesystem reads.
+    if (!model::ValidEmbeddingAssetDirectory(options.asr_model_dir))
+      return Status::Fail("asr-model-dir must be an absolute asset path");
+    if (IsServedModel(audio::AsrConfig::kModelId,
+                     options.served_model_name, options.model_aliases))
+      return Status::Fail("ASR model name conflicts with Chat model names");
+  }
   if (options.file_input_policy_file.size() > 4096 ||
       options.file_input_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid file-input-policy-file path");
@@ -230,6 +241,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-prefill") integer = &parsed.max_prefill;
     if (key == "--max-len") integer = &parsed.max_len;
     if (key == "--max-seq") integer = &parsed.max_seq;
+    if (key == "--asr-max-audio-seconds")
+      integer = &parsed.asr_limits.max_audio_seconds;
+    if (key == "--asr-max-context-tokens")
+      integer = &parsed.asr_limits.max_context_tokens;
+    if (key == "--asr-max-output-tokens")
+      integer = &parsed.asr_limits.max_output_tokens;
+    if (key == "--asr-workspace-mib")
+      integer = &parsed.asr_limits.workspace_mib;
     if (key == "--max-inflight-requests")
       integer = &parsed.max_inflight_requests;
     if (key == "--max-queued-requests") integer = &parsed.max_queued_requests;
@@ -269,6 +288,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" &&
+        key != "--asr-model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
@@ -347,6 +367,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.model_dir = value;
     } else if (key == "--embedding-model-dir") {
       parsed.embedding_model_dir = value;
+    } else if (key == "--asr-model-dir") {
+      parsed.asr_model_dir = value;
     } else if (key == "--served-model-name") {
       parsed.served_model_name = value;
     } else if (key == "--model-alias") {

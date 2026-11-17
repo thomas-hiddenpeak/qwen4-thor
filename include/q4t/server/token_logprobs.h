@@ -13,6 +13,8 @@
 
 namespace q4t::server {
 
+enum class TokenLogprobFormat { kChat, kTranscription };
+
 // Tracks actual selected tokens through UTF-8 repair, stop lookahead and
 // response parsing. Hidden-only tokens never enter content/refusal logprobs. A
 // token crossing a visible boundary retains its actual bytes/probability, once;
@@ -24,9 +26,10 @@ class TokenLogprobs {
 
   explicit TokenLogprobs(bool collect, bool completion = false,
                           size_t initial_characters = 0,
-                          bool exact_selected = false)
+                          bool exact_selected = false,
+                          TokenLogprobFormat format = TokenLogprobFormat::kChat)
       : collect_(collect), completion_(completion),
-        exact_selected_(exact_selected),
+        exact_selected_(exact_selected), format_(format),
         emitted_characters_(initial_characters) {}
   Status Push(const SampledToken& sample, std::string_view decoded_bytes,
               const Decode& decode);
@@ -53,6 +56,7 @@ class TokenLogprobs {
   bool collect_;
   bool completion_;
   bool exact_selected_;
+  TokenLogprobFormat format_;
   size_t emitted_bytes_ = 0;
   size_t emitted_characters_ = 0;
   CompletionProbabilityRows completion_rows_;

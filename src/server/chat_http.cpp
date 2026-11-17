@@ -329,6 +329,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
+      if (std::string_view(path).substr(0, path.find('?')) == "/v1/audio/transcriptions")
+        headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
       if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
@@ -375,7 +377,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
-            path == "/v1/embeddings" ||
+            path == "/v1/embeddings" || path == "/v1/audio/transcriptions" ||
             IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
@@ -490,6 +492,19 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     dispatch_started = true;
     if (file_request)
       file_request->Serve(fd);
+    else if (std::string_view(path).substr(0, path.find('?')) ==
+             "/v1/audio/transcriptions") {
+      if (method != "POST") {
+        context.RecordReceiveFailure(HttpReceiveFailure::kMethod, 405);
+        SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                    "method", "POST");
+      } else if (path != "/v1/audio/transcriptions") {
+        SendError(fd, 400, "Transcription does not accept query parameters", {},
+                    "invalid_request", "query");
+      } else {
+        HandleTranscription(fd, headers.content_type, body);
+      }
+    }
     else if (IsMcpTunnelTarget(path)) {
       const auto& client = context.Client();
       const auto scope = client.Scoped() ? "client:" + std::string(client.Id())

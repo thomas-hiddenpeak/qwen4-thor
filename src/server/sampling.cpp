@@ -227,6 +227,13 @@ Status TokenSampler::Init(const SamplingOptions& options, int vocab,
   return Status();
 }
 
+Status TokenSampler::SetTemperature(double temperature) {
+  if (counts_.empty() || !Range(temperature, 0, 2))
+    return Status::Fail("invalid sampler temperature update");
+  options_.temperature = temperature;
+  return {};
+}
+
 Status TokenSampler::Select(std::span<const uint16_t> logits,
                             SampledToken* sample,
                             std::span<const uint8_t> allowed,
