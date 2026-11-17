@@ -69,8 +69,8 @@ def prepare(args):
     plan['asr_assets'] = {name: {k: acquired[name][k] for k in ('bytes', 'sha256')}
                           for name in FILES}
     plan['asr_directory'] = str(WORK/'assets-01')
-    plan['clips'] = {language: dict(path=str(WORK/'real-audio-01'/(language+'.wav')),
-                                   sha256=sha(WORK/'real-audio-01'/(language+'.wav')))
+    plan['clips'] = {language: dict(path=str(WORK/'real-audio-01'/('asr_'+language+'.wav')),
+                                   sha256=sha(WORK/'real-audio-01'/('asr_'+language+'.wav')))
                       for language in EXPECTED}
     plan['expected'] = EXPECTED
     plan['planned'] = dict(starts=1, creates=9, successful_asr=3, cancelled_asr=1,
