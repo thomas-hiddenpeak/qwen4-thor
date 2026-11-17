@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生说话人服务验收器9CPU通过](evidence/serve-speaker-service-driver-cpu-20261118/README.md)，
+0.314秒、0GPU。实际A/B/A JSON/SSE、源/关联/依赖健康/预算及
+原ASR保护通过。接着封包和4组服务短验：累计5启动/19创建/
+1探针/1800秒；默认rev286保持，重叠和全部master继续。
+
+主轻已验，继续原生服务组合驱动与封包。冻结9CPU/180秒、0GPU，
+保留原6项并补实际A/B/A流式、源/依赖健康/预算负控；随后固定
+TLS和整包恢复短验。默认rev286不变，重叠和全部master继续。
+
+[说话人主轻实际资格通过](evidence/serve-speaker-profiles-20261118/README.md)：
+2启动/16创建/112.770秒，两种配置均A/B/A，原音频及核心
+工具/schema/embedding/视频通过；106次NVML正常、自有资源清理。
+继续服务封包/TLS/整包恢复交付、重叠实现与全部master，rev286未变。
+
 下一组主轻资格固定2启动/16创建/900秒、同一严格租约；两种
 配置各做真实A/B/A、ASR/对齐/VAD与核心工具/schema/embedding/
 视频保护。通过后封包继续TLS/恢复交付、真实重叠及全部master，

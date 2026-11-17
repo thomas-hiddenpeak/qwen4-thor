@@ -1,0 +1,11 @@
+{
+  "status": "ACCEPT_SPEAKER_SERVICE_DRIVER_CPU",
+  "tests": 9,
+  "seconds": 0.3142010699957609,
+  "gpu_starts": 0,
+  "http_requests": 0,
+  "real_retained_wires": true,
+  "service_gpu_pending": true,
+  "default_revision": 286,
+  "all_master_tasks_active": true
+}

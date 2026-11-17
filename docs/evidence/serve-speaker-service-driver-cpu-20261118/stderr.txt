@@ -1,0 +1,14 @@
+test_actual_multiclip_words_segments_and_fixed_source (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_actual_multiclip_words_segments_and_fixed_source) ... ok
+test_actual_stream_preserves_separator_probabilities_and_terminal (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_actual_stream_preserves_separator_probabilities_and_terminal) ... ok
+test_managed_fallback_requires_real_alignment_and_preserved_profile_history (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history) ... ok
+test_missing_times_tokens_health_or_real_audio_never_pass (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_missing_times_tokens_health_or_real_audio_never_pass) ... ok
+test_original_asr_only_business_remains_valid (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_original_asr_only_business_remains_valid) ... ok
+test_stream_does_not_claim_alignment_and_multipart_keeps_requested_shape (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_stream_does_not_claim_alignment_and_multipart_keeps_requested_shape) ... ok
+test_actual_retained_voice_labels_source_and_each_dependency_health (tools.native_speaker.test_service.SpeakerService.test_actual_retained_voice_labels_source_and_each_dependency_health) ... ok
+test_budget_and_output_loss_cannot_pass_whole_payload_witness (tools.native_speaker.test_service.SpeakerService.test_budget_and_output_loss_cannot_pass_whole_payload_witness) ... ok
+test_real_sse_and_multipart_preserve_every_segment_and_stream_identity (tools.native_speaker.test_service.SpeakerService.test_real_sse_and_multipart_preserve_every_segment_and_stream_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.138s
+
+OK

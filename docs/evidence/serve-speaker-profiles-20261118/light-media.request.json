@@ -1,0 +1,67 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_output_tokens": 128,
+  "reasoning": {
+    "effort": "none"
+  },
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "video_colors",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "start",
+          "end"
+        ],
+        "properties": {
+          "start": {
+            "type": "string",
+            "enum": [
+              "red",
+              "green",
+              "blue",
+              "yellow",
+              "cyan",
+              "magenta",
+              "black",
+              "white"
+            ]
+          },
+          "end": {
+            "type": "string",
+            "enum": [
+              "red",
+              "green",
+              "blue",
+              "yellow",
+              "cyan",
+              "magenta",
+              "black",
+              "white"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_file",
+          "filename": "clip.webm",
+          "file_data": "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"
+        },
+        {
+          "type": "input_text",
+          "text": "Inspect the actual video. What is the dominant color at its start and at its end? Return lowercase English colors in start and end."
+        }
+      ]
+    }
+  ]
+}

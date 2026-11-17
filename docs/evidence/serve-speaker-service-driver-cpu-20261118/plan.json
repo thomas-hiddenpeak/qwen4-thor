@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_asr.test_auxiliary_service",
+    "tools.native_speaker.test_service"
+  ],
+  "expected_tests": 9,
+  "limit_seconds": 180,
+  "gpu_starts": 0,
+  "http_requests": 0,
+  "sources": {
+    "tools/native_asr/service_acceptance.py": "f365d89cb92aae9ba72732d69a04d476baae0aa334ba89223c9d87de46c24222",
+    "tools/native_asr/auxiliary_service.py": "8f0f4263097cad4fb497c36e656898c6a6a82e7c391d6783e11ecc9759b53b91",
+    "tools/native_asr/test_auxiliary_service.py": "df70e05230412a5b5a0b8b5ba3d7c9b01d4596e01a8f6d09a0b93cd2803a49d9",
+    "tools/native_speaker/test_service.py": "91a3c6eed868ee909b69e0ba60a76d572f53da4340fc4b3fccc53e6320494163",
+    "tools/serve_recovery/profile_evidence.py": "fdd269229d0b8a0e3688967a1a6aa5a1d1423ad7651829844dc7feb4c53325c3"
+  }
+}

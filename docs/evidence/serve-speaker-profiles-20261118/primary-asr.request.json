@@ -1,0 +1,7 @@
+{
+  "model": "qwen3-asr-0.6b",
+  "response_format": "json",
+  "include": [
+    "logprobs"
+  ]
+}

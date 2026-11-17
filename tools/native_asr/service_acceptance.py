@@ -94,7 +94,13 @@ def prepare(args):
     fixed = manifest['recovery_profiles']['identity']
     if profile_evidence.audio_auxiliaries(fixed):
         plan['audio_auxiliary'] = fixed
-        source = Path(plan['clips']['zh']['path']).read_bytes()
+        source_path = Path(plan['clips']['zh']['path'])
+        if profile_evidence.has_speaker(fixed):
+            source_path = ROOT/'.q4t-work/serve-diarization-20261118/http-01/returns.wav'
+            require(engine.sha(source_path) == profile_evidence.SPEAKER_FILE_SHA,
+                    'accepted returning-speaker source differs')
+            plan['sources'][str(source_path)] = engine.sha(source_path)
+        source = source_path.read_bytes()
         audio = out/'auxiliary.wav'
         audio.write_bytes(auxiliary_service.source(source, fixed))
         plan['auxiliary_clip'] = dict(path=str(audio), sha256=engine.sha(audio))
@@ -151,6 +157,23 @@ def stream_value(raw):
     value = direct()
     events = [json.loads(line[6:]) for line in raw.decode().splitlines()
               if line.startswith('data: {')]
+    if events and 'segments' in events[-1]:
+        # Exact diarized event projection. The caller separately verifies real
+        # source voices, global times, usage, budgets and backend health.
+        require(events[-1]['type'] == 'transcript.text.done' and b'[DONE]' not in raw,
+                'wrong diarized stream terminal')
+        final = events[-1];deltas, segments, ids = [], [], []
+        for event in events[:-1]:
+            if event['type'] == 'transcript.text.delta':
+                deltas.append(event['delta']);ids.append(event['segment_id'])
+            else:
+                require(event['type'] == 'transcript.text.segment', 'unexpected diarized event')
+                segments.append(event)
+        require(''.join(deltas) == final['text'] and ids == [v['id'] for v in segments] and
+            len(segments) == len(final['segments']) and all(
+            all(a[k] == b[k] for k in ('id','type','text','start','end','speaker'))
+            for a,b in zip(segments, final['segments'])), 'diarized stream segment linkage differs')
+        return final
     require(events and events[-1]['type'] == 'transcript.text.done' and
         all(e['type'] == 'transcript.text.delta' for e in events[:-1]) and
         b'[DONE]' not in raw, 'wrong transcription event terminal')
