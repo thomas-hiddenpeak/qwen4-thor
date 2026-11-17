@@ -1,0 +1,11 @@
+{
+  "status": "FAILED_GENERATED_CONTRACT_DRIFT",
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_protocol/build_contract.py",
+    "--check"
+  ],
+  "path": "docs/serve-input-semantics-v1.json",
+  "reason": "new parser sources change generated semantic source identity; regenerate declarations, preserve this failure"
+}

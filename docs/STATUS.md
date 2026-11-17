@@ -9,19 +9,25 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev234；服务包 `6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d` |
-| Generation | `3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61` |
-| 引擎 | `e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef` |
-| 引擎发布记录 | `9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469` |
+| 发布 | rev244；服务包 `ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976` |
+| Generation | `d548cf475ccf93d1ddffb794a8845c8524ffc80889bf7e426eab0e369da28bf0` |
+| 引擎 | `e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc` |
+| 引擎发布记录 | `f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842` |
 | Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
 | 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `e37a1fc25066fa73df2f5012d73e55b3294f6d580353197e96d9c83d627fb3d8`；原生outer/周期及网页能力完整，前驱224另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `aa47bb8a5f75e5734528eeb26f7abe832af880094154c6a6f8d894704d711315`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `f329ce2277dd5d7fdc70e8716bc5068abf97287e40f744dcdf20796aad9121ad`；原生outer/周期及仿射视频/细节能力完整，前驱234另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `9535ff875171e04ea4c1c011ae1b2558e26204805b9ad57280e44afb1d1cdd07`；不是独立旧引擎回退 |
 | 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
 
-[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
+[rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
+GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
+主轻及保留组合已验，原质量失败不追认，原234包及长稳计划保留。
+用户day独立交接已prepare/check且未运行；继续PR41实际合main及全部master。
+
+前驱[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
 GPU。原预算和周期保持；搜索策略显式启用，原生helper/live控制保持。
 真实网页、主轻及保留组合已验，原失败和独立接受分列；原224包及
@@ -115,10 +121,46 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
+完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
+GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
+主轻及保留组合已验，原质量失败不追认，原234包及长稳计划保留。
+用户day独立交接已prepare/check且未运行；继续PR41实际合main及全部master。
+
+[仿射/视频细节发行组合通过](evidence/serve-video-affine-composition-20261117/README.md)：
+主轻及修复后两保留控制包均已实际验证；含原失败累计7启动24请求
+（含自检和embedding），323.503秒严格租约，308项NVML正常，
+完整清理。原auto小尺寸质量失败及含答案Chat题拒答继续保留；没有
+用新输入通过追认旧题。控制/native helper/client未变，能力扩展保持
+预算和历史且禁止回退丢失新能力。默认234保持，继续STOPPED可回退
+交付和PR41实际合main，全部master仍active。
+
+[视频仿射实施合同](SERVE_VIDEO_AFFINE_2026-11-17.md)已冻结：补合法
+缩放/斜切/非直角旋转的实际像素处理及v4冻结重放，保留旧八方向。
+12项新CPU及4项直接回归[全部通过](evidence/serve-video-affine-cpu-20261117/README.md)，
+0.788秒、构建零警告；正在准备最多1启动4请求600秒业务短验。
+首条小尺寸模型任务[未通过](evidence/serve-video-affine-small-input-20261117/README.md)，
+已捕获真实帧及CPU张量逐位核对正确；继续补显式视频detail传播和
+有界细节预算，原auto/low数值合同及失败记录保留。[显式细节8项CPU
+及驱动/schema检查通过](evidence/serve-video-detail-cpu-20261117/README.md)，
+同源同问题的high实际业务[4项通过](evidence/serve-video-affine-business-20261117/README.md)，
+含原失败累计2启动5生成、86.304秒严格租约，83项NVML正常且清理
+完整；默认234保持，继续主轻/保留组合、可回退交付及实际合main。
+保留包业务驱动3项CPU通过，复用严格生命周期；只验证实际仿射
+SSE/存储/客户端隔离和奇异请求后的普通文本，不扩展无关故障矩阵。
+主轻2启动10请求已通过；保留驱动隔离预检发现并修复旧包测试夹具
+导入，[CPU补验通过](evidence/serve-video-affine-service-preflight-20261117/README.md)，
+预检未占GPU。旧包首轮随后1启动3请求[失败](evidence/serve-video-affine-retained-failure-20261117/README.md)：
+GET投影脚本已修正，新含答案Chat题的模型拒答仍保留；恢复原中性
+Responses题后补两保留业务，累计上限5/19/900。PR41草稿已建，继续精确保留业务及交付，未提前合并。
+PR40已[实际合main](evidence/serve-pr40-merged-20261117/README.md)，
+一般透视/多轨/其余媒体后端和全部master仍未完成。
+
 [网页输出类型CI修复](evidence/serve-web-search-ci-repair-20261117/README.md)：
 旧push的2269项C++仅1项旧枚举断言失败，补齐web_search_call后该项
 CPU通过，0.031秒；不改运行时/default234/day，不追加GPU。PR40已
-创建，旧提交检查取消，新head所需检查通过后实际合main；全部master继续。
+创建，旧提交检查取消，最终head两组通过并实际合main（63190189）；
+全部master继续。
 
 [rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增

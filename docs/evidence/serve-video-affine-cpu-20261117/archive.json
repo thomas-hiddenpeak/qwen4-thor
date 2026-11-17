@@ -1,0 +1,25 @@
+{
+  "files": {
+    "cpu-required.txt": "381ae3777353ace0dbfd0ca0c8903aad479b061b875a1685b28c0e62695e47b1",
+    "cpu-sources-01.json": "2a578472ee9ea579a174b67bf3a8170baf9a095dd3e470dd271453361358d2a1",
+    "cpu-01.json": "2b5980e7c7ffce6a9e79116e8b9e38a17bbade3307af89f8838b4fe46edf4c2a",
+    "cpu-01.stdout": "4f20a1d918bceea611b7ad4e8f3898104e07327ace64da514c00733408e10ed3",
+    "cpu-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "host-build-01.json": "31655b738bae95dc34c9e8306b8681d221029bb502a652a90d680e10c62cf5db",
+    "host-build-01.stdout": "4e35e146e7ea59a847cbf482bede3d6d3bf9d79902fb45cd8b2d0cbdd519ba27",
+    "host-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "driver-cpu-01.stderr": "5ab543372f3a223378bddf565ca78c39f78cff8c91ef98b85ff0028ac1094a14",
+    "driver-cpu-01.json": "bbeb0147eda4edaf3a0c04300d485764d8024355d2db576f1e7127f593ef30f1",
+    "engine-build-01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engine-build-01.stdout": "5270a2135ee3c870902edfb6bc5d6644b48bf482234cc826b46b588de1e9d21d",
+    "driver-cpu-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engine-build-01.json": "804c00ac2cbd1decdb00a5ea9697f5ae69050394f3c86a1048279a178a8491cc"
+  },
+  "status": "PASS_NATIVE_AFFINE_VIDEO_CPU",
+  "cases": 16,
+  "passed": 16,
+  "skipped": 0,
+  "gpu_actions": 0,
+  "default_unchanged": true,
+  "business_driver_cpu_cases": 2
+}

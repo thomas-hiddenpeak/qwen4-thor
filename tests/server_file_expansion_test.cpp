@@ -11,6 +11,7 @@
 #include "q4t/server/media_admission.h"
 #include "q4t/server/files.h"
 #include "q4t/test.h"
+#include "video_affine_fixture.h"
 
 namespace {
 using namespace q4t::server;
@@ -109,6 +110,41 @@ Json Csv() {
 constexpr std::string_view kFixtureSummary =
     R"({"summary":"CPU callback fixture: alpha=42, beta=7","headers":["name: label","value: quantity"]})";
 }  // namespace
+
+Q4T_TEST(video_detail_file_expansion_and_frozen_history_preserve_selection) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  const auto id = Upload(objects, q4t::test::video_affine::Source(
+      q4t::test::video_affine::Scale()), "scale.mp4");
+  auto part = Stored(id);
+  Set(&part, "detail", String("high"));
+  const auto items = Array({Item(part)});
+  FileExpansion prepared(&objects, fixture.options);
+  Q4T_CHECK(Ok(prepared.Prepare(items, FileInputProfile::kResponsesStored, {},
+                                Access(), false, fixture.control)));
+  Q4T_CHECK(Ok(prepared.Persist(Access())));
+  Q4T_CHECK(Retain(objects, items, prepared.Bindings()));
+  Json rendered;
+  Q4T_CHECK(Ok(prepared.Render(items, &rendered)));
+  const auto* content = rendered.array[0].GetArray("content");
+  Q4T_CHECK(content && content->array.back().GetString("type") == "input_video_frames" &&
+            content->array.back().GetString("detail") == "high");
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileExpansion replay(&objects, fixture.options);
+  Q4T_CHECK(Ok(replay.Prepare(items, FileInputProfile::kResponsesStored,
+                              prepared.Bindings(), Access(), true)));
+  Json repeated;
+  Q4T_CHECK(Ok(replay.Render(items, &repeated)) &&
+            OutputJson(repeated) == OutputJson(rendered));
+  auto changed = items;
+  Set(&Field(changed.array[0], "content").array[0], "detail", String("low"));
+  FileExpansion mismatched(&objects, fixture.options);
+  Q4T_CHECK(!mismatched.Prepare(changed, FileInputProfile::kResponsesStored,
+                               prepared.Bindings(), Access(), true).ok());
+  Q4T_CHECK(Ok(prepared.Release(Access())) && Ok(replay.Release(Access())));
+  return true;
+}
 
 Q4T_TEST(
     file_expansion_sheet_total_budget_tracks_actual_receipts_without_refill) {

@@ -435,7 +435,9 @@ def vision_schema():
         video_frames=dict(type="array", minItems=2, maxItems=32, items=url),
         video_timestamps=dict(type="array", minItems=2, maxItems=32,
             items=dict(type="number", minimum=0, maximum=86400),
-            description="One strictly increasing seconds value per source frame. Omission means 24fps from zero.")), ("video_frames",))
+            description="One strictly increasing seconds value per source frame. Omission means 24fps from zero."),
+        detail=dict(enum=["auto", "low", "high"],
+            description="auto/low preserve checkpoint video preprocessing; high requests at least 65536 pixels per frame within the existing aggregate media budget.")), ("video_frames",))
     message = result["$defs"]["message"]
     message["properties"]["content"]["anyOf"][1]["items"] = dict(oneOf=[
         ref("textPart"), ref("refusalPart"), ref("imagePart"), ref("videoPart"),

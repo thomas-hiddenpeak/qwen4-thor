@@ -10,6 +10,17 @@ namespace q4t::server {
 std::string VideoGroupTimestamp(double first_seconds, double last_seconds) {
   return std::format("<{:.1f} seconds>", (first_seconds + last_seconds) / 2);
 }
+Status VideoInputDetail(const io::Json& part, vision::ImageDetail* detail) {
+  if (detail) *detail = vision::ImageDetail::kAuto;
+  const auto* value = part.Find("detail");
+  if (!value) return {};
+  if (!value->IsString() ||
+      (value->str != "auto" && value->str != "low" && value->str != "high"))
+    return Status::Fail("video detail must be auto, low or high");
+  if (detail && value->str == "low") *detail = vision::ImageDetail::kLow;
+  if (detail && value->str == "high") *detail = vision::ImageDetail::kHigh;
+  return {};
+}
 namespace {
 int Digit(unsigned char c) {
   if (c >= 'A' && c <= 'Z') return c - 'A';
@@ -168,9 +179,8 @@ Status PlanChatMedia(std::span<const VisionItem> items,
       return fail("media_placeholder_count", items.size());
     ++placeholders;
     const auto& item = items[item_index];
-    const size_t groups = item.kind == VisionItem::kImage
-                              ? 1
-                              : (item.frames.size() + 1) / 2;
+    const size_t groups =
+        item.kind == VisionItem::kImage ? 1 : (item.frames.size() + 1) / 2;
     if (++group == groups) {
       ++item_index;
       group = 0;
@@ -206,7 +216,8 @@ Status ExpandChatMedia(const io::Json& request,
   *media = {};
   if (items.empty()) {
     auto prediction = std::move(budget->prediction_tokens);
-    auto status = PlanChatBudget(request, config, tokens->size(), budget, error);
+    auto status =
+        PlanChatBudget(request, config, tokens->size(), budget, error);
     if (!status) return status;
     if (prediction.size() > static_cast<size_t>(budget->available_output)) {
       *error = {"context_length_exceeded", "prediction.content"};
@@ -224,7 +235,7 @@ Status ExpandChatMedia(const io::Json& request,
   const std::vector<int32_t> signed_tokens(tokens->begin(), tokens->end());
   vision::MediaPlan planned;
   auto status = PlanChatMedia(items, signed_tokens, image_id, video_id, image,
-                               video, device, config, &planned, error);
+                              video, device, config, &planned, error);
   if (!status) return status;
   std::vector<uint32_t> expanded;
   expanded.reserve(planned.expanded_prompt_tokens);
@@ -250,8 +261,8 @@ Status ExpandChatMedia(const io::Json& request,
     return Status::Fail("multimodal expansion mismatch");
   }
   ChatPromptBudget planned_budget;
-  status = PlanChatBudget(request, config, expanded.size(), &planned_budget,
-                          error);
+  status =
+      PlanChatBudget(request, config, expanded.size(), &planned_budget, error);
   if (!status) return status;
   if (budget->prediction_tokens.size() >
       static_cast<size_t>(planned_budget.available_output)) {
@@ -277,6 +288,8 @@ std::string MediaLimitsJson(uint64_t attention_shared_bytes) {
          R"("high":{"longest_edge":2048,"max_pixels":4194304},)"
          R"("original":"preserve_pixels_pad_right_bottom_edge",)"
          R"("configured_pixel_limit_applies":true},)"
+         R"("video_detail":["auto","low","high"],)"
+         R"("video_high_min_frame_pixels":65536,)"
          R"("video_time_field":"video_timestamps","video_time_unit":"seconds",)"
          R"("video_time_default":"frame_index/24","max_timestamp_seconds":86400,)"
          R"("temporal_group_frames":2,"timestamp_rounding_decimal_places":1,)"

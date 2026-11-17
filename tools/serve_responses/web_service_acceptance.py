@@ -31,6 +31,7 @@ LEGACY['verify'].__globals__['limits_for'] = lambda name: (
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__
 save = LEGACY['save']
+ACCEPTANCE_PREFIX = 'WEB_ISOLATION_SERVICE_'
 def requests():
     from tools.serve_protocol.media_cache_acceptance import requests as media_requests
     approved=media_requests()['schema_write']
@@ -283,7 +284,7 @@ def finalize(path):
     business=engine.read(execution/'business-final.json')
     engine.require(business == business_record(plan['scenario'] == 'tool_version'),
         'business completion record differs')
-    acceptance='ACCEPT_WEB_ISOLATION_SERVICE_'+('VERSION' if plan['scenario']=='tool_version' else 'RETAINED')
+    acceptance='ACCEPT_'+ACCEPTANCE_PREFIX+('VERSION' if plan['scenario']=='tool_version' else 'RETAINED')
     package=Path(plan['package']['package'])
     binary_sha=engine.sha(package/'engine/q4t')
     release_sha=engine.sha(package/'engine/q4t.release.json')

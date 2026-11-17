@@ -367,7 +367,7 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
   const bool video = kind == MediaKind::kVideo;
   if ((detail != ImageDetail::kAuto && detail != ImageDetail::kLow &&
        detail != ImageDetail::kHigh && detail != ImageDetail::kOriginal) ||
-      (video && detail != ImageDetail::kAuto))
+      (video && detail == ImageDetail::kOriginal))
     return Fail(MediaPlanError::kInvalidConfig);
   if ((!video && frames != 1) || (video && frames < 2) ||
       frames > kMediaPlanFrames) {
@@ -399,7 +399,7 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     const uint64_t quotient = value / divisor;
     const uint64_t twice_remainder = 2 * (value % divisor);
     return quotient + (twice_remainder > divisor ||
-                        (twice_remainder == divisor && (quotient & 1)));
+                       (twice_remainder == divisor && (quotient & 1)));
   };
   if (detail == ImageDetail::kOriginal) {
     if (!Aligned((uint64_t{height} + factor - 1) / factor, factor, &rh) ||
@@ -415,12 +415,24 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     }
     // The reference resizes before padding; its budget rounds to nearest even
     // temporal groups, while patchification below always pads the last frame.
-    const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
+    const bool high_video = video && detail == ImageDetail::kHigh;
+    const uint64_t budget_frames =
+        video
+            ? (high_video ? ((frames + 1) / 2) * 2 : round_even(frames, 2) * 2)
+            : 1;
+    const uint64_t minimum_pixels =
+        high_video
+            ? std::max<uint64_t>(config.min_pixels,
+                                 budget_frames * kVideoHighMinFramePixels)
+            : uint64_t(config.min_pixels);
+    if (high_video && minimum_pixels > uint64_t(config.max_pixels))
+      return Fail(MediaPlanError::kDetailLimit);
     uint64_t rounded_pixels = 0, source_pixels = 0;
     if (!Mul(rh, rw, &rounded_pixels) ||
         !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
         !Mul(h, w, &source_pixels) ||
-        !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
+        !Mul(source_pixels, video ? (high_video ? budget_frames : frames) : 1,
+             &source_pixels)) {
       return Fail(MediaPlanError::kIntegerRange);
     }
     if (rounded_pixels > static_cast<uint64_t>(config.max_pixels)) {
@@ -430,15 +442,16 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
           !Aligned(std::max(1.0, std::floor(w / beta / factor)), factor, &rw)) {
         return Fail(MediaPlanError::kIntegerRange);
       }
-    } else if (rounded_pixels < static_cast<uint64_t>(config.min_pixels)) {
-      const double beta = std::sqrt(static_cast<double>(config.min_pixels) /
+    } else if (rounded_pixels < minimum_pixels) {
+      const double beta = std::sqrt(static_cast<double>(minimum_pixels) /
                                     static_cast<double>(source_pixels));
       if (!Aligned(std::ceil(h * beta / factor), factor, &rh) ||
           !Aligned(std::ceil(w * beta / factor), factor, &rw)) {
         return Fail(MediaPlanError::kIntegerRange);
       }
     }
-    if (detail == ImageDetail::kLow || detail == ImageDetail::kHigh) {
+    if ((!video && detail == ImageDetail::kLow) ||
+        detail == ImageDetail::kHigh) {
       const int edge = detail == ImageDetail::kLow ? 512 : 2048;
       const int pixels = std::min(config.max_pixels, edge * edge);
       if (factor > edge || static_cast<uint64_t>(factor) * factor >
@@ -458,6 +471,10 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
           static_cast<uint64_t>(rh) * rw > static_cast<uint64_t>(pixels))
         return Fail(MediaPlanError::kDetailLimit);
     }
+    if (high_video &&
+        (uint64_t(rh) * rw < kVideoHighMinFramePixels ||
+         uint64_t(rh) * rw * budget_frames > uint64_t(config.max_pixels)))
+      return Fail(MediaPlanError::kDetailLimit);
   }
   if (rh <= 0 || rw <= 0) return Fail(MediaPlanError::kGeometry);
   // Current resampler uses int row offsets and coefficient indices. Its

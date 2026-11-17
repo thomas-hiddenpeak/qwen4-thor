@@ -1,0 +1,6 @@
+test_original_pixel_payload_and_four_request_contract (tools.serve_responses.test_video_affine_acceptance.AffineAcceptance.test_original_pixel_payload_and_four_request_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+OK

@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_AFFINE_DETAIL_DELIVERY",
+  "revision": 244,
+  "current": {
+    "engine_binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+    "engine_release_sha256": "f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842",
+    "generation_sha256": "d548cf475ccf93d1ddffb794a8845c8524ffc80889bf7e426eab0e369da28bf0",
+    "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
+    "service_acceptance_sha256": "25dc0ef07d374626254ce9cdfede90c00c2d538d5e66cccb2f70c5724b5a6f97",
+    "service_release_sha256": "21110f3d55e7063d473b9ce611a15a7e0ec98d7d2cb4406c23c4ff1abafc7c00"
+  },
+  "commands": 19,
+  "seconds": 284.67985774809495,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "manual_root": "f329ce2277dd5d7fdc70e8716bc5068abf97287e40f744dcdf20796aad9121ad",
+  "automatic_payload": "9535ff875171e04ea4c1c011ae1b2558e26204805b9ad57280e44afb1d1cdd07",
+  "candidate_whole_package_gpu_run": false,
+  "composed_change": "Exact-engine affine video/high-detail, primary/light and retained controls; controller/client/native helpers unchanged; explicit extension preserves budgets and forbids capability loss; STOPPED publication and actual root rollback verified",
+  "older_engine_fallback": false,
+  "prior_rev234_preserved": true,
+  "retired_generations_archived": 2,
+  "retired_versions_archived": 2,
+  "deleted_files": 0,
+  "files": 74,
+  "secret_scan_matches": 0,
+  "archive_sha256": "a436f53bcadd2817570f3303f18422c2c275f037571d65e6cc79cb3a77bcda82",
+  "main_integration_pending": true,
+  "all_master_tasks_active": true
+}

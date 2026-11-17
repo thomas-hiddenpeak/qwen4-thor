@@ -1,0 +1,83 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_AFFINE_DETAIL_BUSINESS",
+  "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+  "source_commit": "bcf5d88d3a4c9a7940c2aab9c2fef1b81b02a4e5",
+  "accepted_starts": 1,
+  "accepted_requests": 4,
+  "original_failures_retained": 1,
+  "runs": [
+    {
+      "stage": "business-01",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 1,
+      "driver_seconds": 37.297595692798495,
+      "strict_lease_seconds": 38.222948655020446,
+      "wrapper_seconds": 38.32953346474096,
+      "nvml_samples": 37
+    },
+    {
+      "stage": "business-02",
+      "status": "PASS_NATIVE_VIDEO_AFFINE_BUSINESS",
+      "starts": 1,
+      "requests": 4,
+      "driver_seconds": 47.410048054065555,
+      "strict_lease_seconds": 48.080721898935735,
+      "wrapper_seconds": 48.19792424188927,
+      "nvml_samples": 46
+    }
+  ],
+  "cumulative_starts": 2,
+  "cumulative_requests": 5,
+  "cumulative_lease_seconds": 86.30367055395618,
+  "cumulative_wrapper_seconds": 86.52745770663023,
+  "nvml_ok_samples": 83,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "stage_sources_verified": 1404,
+  "source_sha256": "0410738f5703b25dc21471498048c1591bfcb70e9ed4d47d3c03eede87f06a48",
+  "runtime_accepted": true,
+  "business": {
+    "starts": 1,
+    "creates": 4,
+    "answers": {
+      "scale": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      },
+      "shear": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      },
+      "replay": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      }
+    },
+    "input_count_matches": true,
+    "source_deleted_before_replay": true,
+    "singular_request_rejected": true,
+    "same_model_pid": true,
+    "ordinary_text_answer": "42",
+    "full_quality_or_performance_claim": false
+  },
+  "original_low_detail_failure_still_open": true,
+  "original_source_clips_identical": true,
+  "scale_input_tokens": {
+    "auto": 972,
+    "high": 1112
+  },
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "service_delivery_pending": true,
+  "master_complete": false
+}

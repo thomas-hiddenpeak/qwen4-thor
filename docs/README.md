@@ -568,3 +568,5 @@
 - [rev224 Stop/约束/缓存交付](evidence/serve-stop-combinations-delivery-20261117/README.md)：可见终态和prompt-only恢复、真实业务及整根回退，原失败保留。
 
 - [rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)：可选搜索策略、真实业务与故障隔离、预算保持及实际整根回退。
+
+- [rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)：原生像素变换、显式细节和实际保留包业务，可回退发布。

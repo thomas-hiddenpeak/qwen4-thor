@@ -1,0 +1,41 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.5s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  3%] Built target q4t_ple
+[  3%] Built target q4t_trace
+[  3%] Built target q4t_regex_build
+[  3%] Built target q4t_runtime
+[  3%] Generating service-tools/snapshot.done
+[  6%] Built target q4t_program_javascript
+[  6%] Built target q4t_text
+[ 16%] Built target xgrammar
+[ 20%] Built target q4t_quant
+[ 26%] Built target q4t_model
+[ 26%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/7993bb3e25e1531d0780b57b9c28505652207b757750db3a4067f690609a81a6", "manifest_sha256": "7993bb3e25e1531d0780b57b9c28505652207b757750db3a4067f690609a81a6", "model_actions": false}
+[ 26%] Built target q4t_service_tools
+[ 26%] Built target q4t_service_cli
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_video.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_video_worker.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/file_snapshot.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_program.cpp.o
+[ 26%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

@@ -387,7 +387,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
             image
                 ? Fields(part, {"type", "image_url", "prompt_cache_breakpoint"})
                 : Fields(part, {"type", "video_frames", "video_timestamps",
-                                "prompt_cache_breakpoint"});
+                                "detail", "prompt_cache_breakpoint"});
         if (!status) return status;
         if (const auto* kind = part.Find("type");
             kind && (!kind->IsString() ||
@@ -426,6 +426,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
               return invalid(parsed.value.GetString("param"), parsed.message);
           }
         } else {
+          *error_param = part_param + ".detail";
+          status = VideoInputDetail(part);
+          if (!status) return status;
           *error_param = part_param + ".video_frames";
           const auto* frames = part.Find("video_frames");
           if (!frames->IsArray() || frames->array.size() < 2 ||

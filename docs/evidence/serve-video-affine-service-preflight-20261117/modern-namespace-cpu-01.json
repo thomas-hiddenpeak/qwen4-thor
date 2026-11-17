@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    ".q4t-work/serve-video-affine-20261117/namespace-preflight.py",
+    ".q4t-work/serve-video-affine-20261117/modern-retained-01/bundle"
+  ],
+  "exit_code": 0,
+  "seconds": 0.18763004010543227,
+  "protected_before": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61/q4t",
+      "sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61/q4t.release.json",
+      "sha256": "9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469"
+    }
+  },
+  "protected_after": {
+    "build/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61/q4t",
+      "sha256": "e430a4bd4a87aa4dddbbb4ed862006856c89fbd6391b6fc77f058d2cee8b65ef"
+    },
+    "build/q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/3dcce5e7e93b129c90d4e862fee2fcc6f3881aae3f8442ea9d59230ecc0ffd61/q4t.release.json",
+      "sha256": "9eeb4bf9d0025cb844374da0d79ef518b0b3edbf346e1540504cebc690cf5469"
+    }
+  },
+  "default_unchanged": true
+}

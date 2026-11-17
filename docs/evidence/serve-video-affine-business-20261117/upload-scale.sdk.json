@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "165",
+        "content-type": "application/json",
+        "x-request-id": "req-714b4cf614e87b1e5a0ea05cffa4b37c"
+      },
+      "wire_base64": "eyJpZCI6ImZpbGVfMjM1YjRkODFjYzdjNDVjYzU0MDk4ZWMyODRhZGU5NmUiLCJvYmplY3QiOiJmaWxlIiwiYnl0ZXMiOjE0NTcsImNyZWF0ZWRfYXQiOjE3OTQ4NzY2NjYsImZpbGVuYW1lIjoic2NhbGUubXA0IiwicHVycG9zZSI6InVzZXJfZGF0YSIsInN0YXR1cyI6InByb2Nlc3NlZCJ9"
+    }
+  ],
+  "result": {
+    "id": "file_235b4d81cc7c45cc54098ec284ade96e",
+    "object": "file",
+    "bytes": 1457,
+    "created_at": 1794876666,
+    "filename": "scale.mp4",
+    "purpose": "user_data",
+    "status": "processed"
+  }
+}

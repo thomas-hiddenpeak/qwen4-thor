@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_affine_acceptance.py\", line 126, in business\n    answers = dict(scale=answer(direct))\n                         ^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_affine_acceptance.py\", line 66, in answer\n    require(value == EXPECTED, 'actual affine video answer differs: '+str(value))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: actual affine video answer differs: {'top_left': 'red', 'top_right': 'yellow', 'bottom_left': 'blue', 'bottom_right': 'green', 'layout': 'landscape'}\n",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 34
+  },
+  "seconds": 37.297595692798495,
+  "binary_sha256": "75c5911d4a1a5a9277dad1e394e6a92d4f917b21356219994055bb3f815a2f65"
+}

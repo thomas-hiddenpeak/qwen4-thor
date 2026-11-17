@@ -1,0 +1,10 @@
+{
+  "status": "PASS_NATIVE_VIDEO_AFFINE_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 40
+  },
+  "seconds": 47.410048054065555,
+  "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc"
+}

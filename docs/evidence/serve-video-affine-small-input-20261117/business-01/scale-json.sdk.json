@@ -1,0 +1,158 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_8d1e1c7f3f50f57582be92c7b8c4ab0c",
+    "object": "response",
+    "created_at": 1794875435,
+    "completed_at": 1794875438,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_ce8cb0a53a5b9d49dfade694458178eb",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"top_left\": \"red\", \"top_right\": \"yellow\", \"bottom_left\": \"blue\", \"bottom_right\": \"green\", \"layout\": \"landscape\"}",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 972,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 35,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1007
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "displayed_frame",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "top_left": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "top_right": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "bottom_left": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "bottom_right": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "portrait",
+                "landscape",
+                "square"
+              ]
+            }
+          },
+          "required": [
+            "top_left",
+            "top_right",
+            "bottom_left",
+            "bottom_right",
+            "layout"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 192,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "{\"top_left\": \"red\", \"top_right\": \"yellow\", \"bottom_left\": \"blue\", \"bottom_right\": \"green\", \"layout\": \"landscape\"}"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18186/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"max_output_tokens\":192,\"reasoning\":{\"effort\":\"none\"},\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_file\",\"file_id\":\"file_e4d53eac50bd581335e94c63cf78489e\"},{\"type\":\"input_text\",\"text\":\"Inspect the displayed video frame. Identify the color of each quadrant as top_left, top_right, bottom_left and bottom_right. Also report whether the displayed frame is portrait, landscape or square as layout. Use lowercase English color names. Return only the requested JSON object.\"}]}],\"text\":{\"format\":{\"type\":\"json_schema\",\"name\":\"displayed_frame\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"top_left\":{\"type\":\"string\",\"enum\":[\"red\",\"green\",\"blue\",\"yellow\",\"cyan\",\"magenta\",\"black\",\"white\"]},\"top_right\":{\"type\":\"string\",\"enum\":[\"red\",\"green\",\"blue\",\"yellow\",\"cyan\",\"magenta\",\"black\",\"white\"]},\"bottom_left\":{\"type\":\"string\",\"enum\":[\"red\",\"green\",\"blue\",\"yellow\",\"cyan\",\"magenta\",\"black\",\"white\"]},\"bottom_right\":{\"type\":\"string\",\"enum\":[\"red\",\"green\",\"blue\",\"yellow\",\"cyan\",\"magenta\",\"black\",\"white\"]},\"layout\":{\"type\":\"string\",\"enum\":[\"portrait\",\"landscape\",\"square\"]}},\"required\":[\"top_left\",\"top_right\",\"bottom_left\",\"bottom_right\",\"layout\"],\"additionalProperties\":false}}},\"store\":true}"
+    }
+  ]
+}

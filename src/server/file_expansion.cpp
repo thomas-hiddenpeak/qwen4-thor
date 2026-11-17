@@ -874,6 +874,7 @@ ObjectReply FileExpansion::Render(const Json& original, Json* expanded) const {
       parts->array.push_back(Object(
           {{"type", String(chat ? "video_frames" : "input_video_frames")},
            {"video_frames", std::move(frames)},
+           {"detail", String(entry.snapshot.detail)},
            {"video_timestamps", std::move(timestamps)}}));
     }
     if (!entry.cache_breakpoint.IsNull())

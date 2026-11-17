@@ -12773,6 +12773,14 @@
                   "maximum": 86400
                 },
                 "description": "One strictly increasing seconds value per source frame. Omission means 24fps from zero."
+              },
+              "detail": {
+                "enum": [
+                  "auto",
+                  "low",
+                  "high"
+                ],
+                "description": "auto/low preserve checkpoint video preprocessing; high requests at least 65536 pixels per frame within the existing aggregate media budget."
               }
             },
             "required": [
@@ -34347,6 +34355,14 @@
                   "maximum": 86400
                 },
                 "description": "One strictly increasing seconds value per source frame. Omission means 24fps from zero."
+              },
+              "detail": {
+                "enum": [
+                  "auto",
+                  "low",
+                  "high"
+                ],
+                "description": "auto/low preserve checkpoint video preprocessing; high requests at least 65536 pixels per frame within the existing aggregate media budget."
               }
             },
             "required": [
@@ -36734,6 +36750,21 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 9007199254740991
+              },
+              "tunnel_poll_connections": {
+                "enum": [
+                  0,
+                  4
+                ]
+              },
+              "tunnel_response_connections": {
+                "enum": [
+                  0,
+                  4
+                ]
+              },
+              "tunnel_body_bytes": {
+                "const": 17825792
               }
             },
             "required": [
@@ -38669,6 +38700,74 @@
               },
               "body_storage_context_admission_separate": {
                 "const": true
+              },
+              "video": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_source_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50000000
+                  },
+                  "max_frame_pixels": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 33554432
+                  },
+                  "max_decoded_pixels": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4294967296
+                  },
+                  "max_output_bytes": {
+                    "type": "integer",
+                    "minimum": 1024,
+                    "maximum": 134217728
+                  },
+                  "max_duration_ns": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 600000000000
+                  },
+                  "max_edge": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8192
+                  },
+                  "max_scanned_frames": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 18000
+                  },
+                  "sample_frames": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 16
+                  },
+                  "max_thread_creations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 64
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30000
+                  }
+                },
+                "required": [
+                  "max_source_bytes",
+                  "max_frame_pixels",
+                  "max_decoded_pixels",
+                  "max_output_bytes",
+                  "max_duration_ns",
+                  "max_edge",
+                  "max_scanned_frames",
+                  "sample_frames",
+                  "max_thread_creations",
+                  "timeout_ms"
+                ]
               }
             },
             "required": [

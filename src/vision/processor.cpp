@@ -573,7 +573,8 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     }
     bytes[f] = {frames[f], frame_bytes[f]};
   }
-  const MediaPlanInput input{MediaKind::kVideo, {bytes.data(), frames.size()}};
+  const MediaPlanInput input{MediaKind::kVideo, {bytes.data(), frames.size()},
+                             options.image_detail};
   MediaItemPlan item;
   if (!PrepareItem(input, cfg, options, &item, err)) return false;
   prepare_timing.Stop();

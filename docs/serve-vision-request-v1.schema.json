@@ -2671,6 +2671,14 @@
             "maximum": 86400
           },
           "description": "One strictly increasing seconds value per source frame. Omission means 24fps from zero."
+        },
+        "detail": {
+          "enum": [
+            "auto",
+            "low",
+            "high"
+          ],
+          "description": "auto/low preserve checkpoint video preprocessing; high requests at least 65536 pixels per frame within the existing aggregate media budget."
         }
       },
       "required": [

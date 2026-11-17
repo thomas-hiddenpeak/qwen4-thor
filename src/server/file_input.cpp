@@ -173,7 +173,7 @@ ObjectReply ParseFileInputSource(const Json& part, FileInputProfile profile,
   if (!chat && part.Has("detail")) {
     next.detail = part.GetString("detail");
     if (next.detail != "auto" && next.detail != "low" && next.detail != "high")
-      return Invalid("Invalid PDF detail", path + ".detail");
+      return Invalid("Invalid file detail", path + ".detail");
   }
   const auto* breakpoint = part.Find("prompt_cache_breakpoint");
   if (breakpoint && breakpoint->IsNull() && !stored)

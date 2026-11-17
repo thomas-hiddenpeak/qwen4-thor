@@ -1,0 +1,6 @@
+test_original_clip_and_explicit_detail_reach_request (tools.serve_responses.test_video_affine_service_acceptance.AffineServiceTests.test_original_clip_and_explicit_detail_reach_request) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK
