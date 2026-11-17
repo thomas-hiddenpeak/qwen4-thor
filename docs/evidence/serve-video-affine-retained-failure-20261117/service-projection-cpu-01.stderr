@@ -1,0 +1,6 @@
+test_get_projection_and_neutral_original_text (tools.serve_responses.test_video_affine_service_acceptance.AffineServiceTests.test_get_projection_and_neutral_original_text) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK

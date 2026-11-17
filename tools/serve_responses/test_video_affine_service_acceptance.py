@@ -1,5 +1,6 @@
 """Strict retained-service request/oracle checks, without a model launch."""
 import base64
+import copy
 import json
 from pathlib import Path
 import struct
@@ -46,6 +47,23 @@ class AffineServiceTests(unittest.TestCase):
         self.assertEqual(driver.BASE['LIMITS']['tool_retained']['chats'], 3)
         self.assertIs(driver.Stage.run, driver.BASE['Stage'].run)
         self.assertFalse(driver.business_record(False)['automatic_request_or_tool_replay'])
+
+    def test_get_projection_and_neutral_original_text(self):
+        value = driver.check_sse(WIRE.read_bytes())
+        projected = copy.deepcopy(value)
+        for item in projected['output']:
+            if item['type'] == 'message':
+                for part in item['content']:
+                    part.pop('logprobs', None)
+        driver.check_stored(value, projected)
+        projected['output'][0]['content'][0]['text'] = 'changed'
+        with self.assertRaises(RuntimeError):
+            driver.check_stored(value, projected)
+        plain = driver.requests()['plain']
+        self.assertEqual(plain['input'],
+                         'Compute 17 + 25. Reply only with the decimal number.')
+        self.assertNotIn('42', plain['input'])
+        self.assertEqual(plain['reasoning']['effort'], 'none')
 
 
 if __name__ == '__main__':

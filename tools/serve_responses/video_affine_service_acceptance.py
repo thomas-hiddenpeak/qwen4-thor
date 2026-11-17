@@ -27,9 +27,7 @@ def requests():
     frozen = json.loads((ROOT / ACCEPTED_PLAN).read_text())
     approved = copy.deepcopy(frozen['requests']['shear'])
     approved['store'] = True
-    plain = dict(model='qwen3.8-flash-next', temperature=0,
-        enable_thinking=False, max_completion_tokens=64,
-        messages=[dict(role='user', content='Compute 17+25. Reply only 42.')])
+    plain = copy.deepcopy(frozen['requests']['plain'])
     return dict(approved=approved, invalid=frozen['invalid_count_request'], plain=plain)
 
 
@@ -53,12 +51,24 @@ def check_sse(raw):
     return value
 
 
+def check_stored(value, stored):
+    expected = copy.deepcopy(value)
+    # GET hides unrequested output logprobs. Preserve all other output fields;
+    # an absent optional field is not lost generated text or changed usage.
+    for item in expected['output']:
+        if item['type'] == 'message':
+            for part in item['content']:
+                if part['type'] == 'output_text':
+                    part.pop('logprobs', None)
+    require(all(stored[k] == expected[k] for k in ('id', 'output', 'usage', 'status')),
+            'stored affine response differs beyond logprobs projection')
+
+
 def check_business(execution):
     read = lambda n: json.loads((execution / n).read_text())
     value = check_sse((execution / 'approved-sse.wire').read_bytes())
     stored = read('stored-approved.wire')
-    require(all(stored[k] == value[k] for k in ('id', 'output', 'usage', 'status')),
-            'stored affine response changed')
+    check_stored(value, stored)
     require(read('other-client-http.json')['status'] == 404, 'client isolation')
     rows = requests()
     for name, key in (('approved-sse', 'approved'), ('invalid', 'invalid'),
@@ -67,9 +77,12 @@ def check_business(execution):
     require(read('invalid-http.json')['status'] == 400 and
             read('invalid.wire')['error']['code'] == 'invalid_file_video',
             'singular matrix was not rejected locally')
-    plain = read('plain.wire')['choices'][0]
-    require(plain['finish_reason'] == 'stop' and
-            plain['message']['content'].strip() == '42', 'same-PID text failed')
+    plain = read('plain.wire')
+    parts = [p for item in plain['output'] if item['type'] == 'message'
+             for p in item['content']]
+    require(plain['status'] == 'completed' and parts and
+            all(p['type'] == 'output_text' for p in parts) and
+            ''.join(p['text'] for p in parts).strip() == '42', 'same-PID text failed')
     declared = read('capabilities.wire')
     plan = json.loads((execution.parent / 'plan.json').read_text())
     package = Path(plan['package']['package'])
@@ -120,7 +133,7 @@ class Stage(BASE['Stage']):
         self.request('invalid', self.plan['requests']['invalid'],
                      path='/v1/responses/input_tokens', expected=400)
         self.request('plain', self.plan['requests']['plain'],
-                     path='/v1/chat/completions', model_work=True)
+                     path='/v1/responses', model_work=True)
         after = self.ready(1, 'primary')
         fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
         save(self.output / 'core-continuity.json', dict(
