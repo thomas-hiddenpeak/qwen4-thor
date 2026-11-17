@@ -9,6 +9,13 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/tests/model_asset_test_main.cpp
     ${model_asset_root}/tests/server_model_assets_test.cpp
     ${model_asset_root}/tests/server_aligner_assets_test.cpp
+    ${model_asset_root}/tests/server_speaker_assets_test.cpp
+    ${model_asset_root}/tests/server_speaker_service_test.cpp
+    ${model_asset_root}/src/server/speaker_assets.cpp
+    ${model_asset_root}/src/server/speaker_service.cpp
+    ${model_asset_root}/src/server/asr_service.cpp
+    ${model_asset_root}/src/audio/speaker_config.cpp
+    ${model_asset_root}/src/audio/speaker_layout.cpp
     ${model_asset_root}/tests/server_vad_assets_test.cpp
     ${model_asset_root}/src/server/vad_assets.cpp
     ${model_asset_root}/src/audio/vad.cpp

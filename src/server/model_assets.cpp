@@ -15,6 +15,7 @@
 #include "q4t/server/aligner_assets.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/embedding_assets.h"
+#include "q4t/server/speaker_assets.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -62,6 +63,10 @@ constexpr ModelAssetSpec kAligner[]{
 constexpr ModelAssetSpec kVad[]{{"silero_vad_16k.safetensors",
                                  audio::kVadFileBytes,
                                  audio::kVadWeightSha256}};
+constexpr ModelAssetSpec kSpeaker[]{
+    {"config.json", kNativeSpeakerConfigBytes, kNativeSpeakerConfigSha256},
+    {"model.safetensors", audio::SpeakerConfig::kFileBytes,
+     audio::SpeakerConfig::kWeightSha256}};
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
@@ -131,6 +136,8 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kAligner;
     case ModelAssetProfile::kVad:
       return kVad;
+    case ModelAssetProfile::kSpeaker:
+      return kSpeaker;
   }
   return {};
 }

@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speaker资产/资源/健康12CPU通过](evidence/serve-speaker-service-assets-20261118/README.md)
+（0.815秒、0GPU模型/0HTTP）；固定权重读取、隔离/取消/预算、
+原ASR保护及设备状态通过。运行时/公开host零警告构建；原公开目标
+误挂loader的链接失败保留，依赖修正未删能力。继续真实分段/参考/
+API/恢复交付与全部master，默认rev286不变。
+
+正在补speaker独立资产/健康与统一RAM预算，冻结12项CPU/180秒；
+含完整只读权重加载，沿用严格租约，0GPU模型/0HTTP。最长10秒
+参考纳入工作区，坏资产不拖健康Chat/ASR，真实设备故障保护保持。
+随后实际分段/参考/API与恢复交付及全部master；默认rev286不变。
+
 [ECAPA真实组件通过](evidence/serve-speaker-compute-20261118/README.md)：
 1GPU/1CPU参考、4输入/36数值+24边界与生命周期，6.318秒；
 9次NVML正常、租约清理，最大embedding相对误差2.89e-06。

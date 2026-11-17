@@ -18,7 +18,8 @@ enum class ModelAssetProfile : uint64_t {
   kEmbedding = 1,
   kAsr = 2,
   kAligner = 3,
-  kVad = 4
+  kVad = 4,
+  kSpeaker = 5
 };
 struct ModelAssetSpec {
   const char* name;

@@ -4,6 +4,14 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_features_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speaker_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speaker_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad_chunks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vad_chunks_test.cpp

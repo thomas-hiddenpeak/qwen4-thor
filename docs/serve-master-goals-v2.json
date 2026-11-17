@@ -3060,6 +3060,26 @@
         "all_master_tasks_active": true,
         "archive_sha256": "f3f6e9c58878db3bbdaf9f1bf7981817c7f16f4044f6bc027cca88340301b4d6",
         "evidence": "evidence/serve-speaker-compute-20261118/README.md"
+      },
+      "speaker_service_assets_20261118": {
+        "status": "ACCEPT_SPEAKER_ASSET_RESOURCE_HEALTH_CPU",
+        "tests": 12,
+        "seconds": 0.8149531190283597,
+        "gpu_model_loads": 0,
+        "http_requests": 0,
+        "strict_lease": true,
+        "nvml_ok": 3,
+        "cleanup_complete": true,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "actual_fixed_weights_read_only": true,
+        "original_public_link_failure_preserved": true,
+        "public_target_only_fix_after_cpu": true,
+        "affected_optin_target_unchanged": true,
+        "archive_sha256": "42d4ccd60db4e47fa2168c3fd624e04c8ef54036f92e51f1dda78047eae25d20",
+        "speaker_http_delivered": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-service-assets-20261118/README.md"
       }
     },
     {
