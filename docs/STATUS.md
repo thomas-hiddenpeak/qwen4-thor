@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+对齐真实HTTP组已固定1启动/7创建/600秒，覆盖双SDK词JSON、SRT/VTT
+与缺失辅助资产时普通转录/Chat继续、恢复后同PID。驱动正例和时间
+负控通过；具体身份随后prepare，GPU尚未执行，全部后续任务继续。
+
 PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
 恢复源码锚点未刷新。已逐项复审并补齐，
 [inventory与7种遗漏负控通过](evidence/serve-asr-inventory-20261117/README.md)，

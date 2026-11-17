@@ -2739,6 +2739,17 @@
         "candidate_engine_sha256": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
         "published": false,
         "remaining": "Real HTTP/SDK qualification, complete segment confidence and VAD producers, service integration and delivery; all other A10/master tasks continue."
+      },
+      "alignment_http_20261117": {
+        "state": "prepared_not_run",
+        "driver": "tools/native_asr/alignment_http_acceptance.py",
+        "limits": {
+          "starts": 1,
+          "creates": 7,
+          "seconds": 600
+        },
+        "quality_scope": "real SDK/word/subtitle and scoped recovery; prior Chinese classification integration consistency, not human timestamp accuracy",
+        "remaining": "Complete segment metadata/VAD producers, service integration/delivery and all other master tasks"
       }
     },
     {
