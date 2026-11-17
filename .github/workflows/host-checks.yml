@@ -151,7 +151,7 @@ jobs:
           tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io
           tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable
           tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_source_imports_every_cold_management_module
-          tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v19_contains_complete_outer_resume_and_root_transfer_sources
+          tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources
       - name: Check serve surface inventory freshness
         run: python3 -B tools/serve_audit/check_inventory.py --self-check
       - name: Check native recovery wait and root migration preservation

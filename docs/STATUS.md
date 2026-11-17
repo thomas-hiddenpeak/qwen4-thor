@@ -5,6 +5,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 发行是实施边界，不能替代剩余能力。非性能改动仅做受影响行为的针对性
 验证和必要业务短验，长稳实跑由用户负责。
 
+PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
+current选择器并通过精确1项CPU（0.455秒）。原失败保留于
+[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)，继续最终head检查及实际合main。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |
