@@ -17,6 +17,13 @@ from tools.serve_service import package as engine
 FORMAT = 'q4t-publication-intent-archive-v1'
 MAX_SELECTED = 4
 
+# Reviewed predecessors: original archive, then the identity-guard-only revision.
+# Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
+LEGACY_PLAN_SOURCES = frozenset((
+    '665ec99d7f46c60e750872901640660f0e34708b5d9ed058c9265b81b71b2763',
+    '53a3582cc80b7049b55997caf4aa1686e03dfa1cdb1a1caf9342259cb070e865',
+))
+
 
 def protected(current, intents):
     publication.policy.validate(current)
@@ -96,7 +103,8 @@ def apply(path, expected, *, restore=False, authority=None):
         'publication_revision', 'publication_sha256', 'requests', 'source_sha256'))
     archive = files.directory(value['archive'])
     ledger.require(value['format'] == FORMAT and path == archive/'plan.json' and
-        value['source_sha256'] == engine.sha(Path(__file__).resolve()) and
+        value['source_sha256'] in (engine.sha(Path(__file__).resolve()),
+            *LEGACY_PLAN_SOURCES) and
         type(value['requests']) is list and 1 <= len(value['requests']) <= MAX_SELECTED,
         'archive plan/source identity differs')
     with archives.locked(value['state'], authority=authority) as (state, desc, manifest, current):

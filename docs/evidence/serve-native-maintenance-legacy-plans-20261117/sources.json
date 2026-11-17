@@ -1,0 +1,10 @@
+{
+  "tools/serve_recovery/bundle.py": "388f00ef6f08b94458f3c9a70868b47f69de2c3bc1f27d3a45e1ec48ea153139",
+  "tools/serve_recovery/service.py": "68d01dab57a6185b063d78af4e25bf4e3ce6273f817ef3dd17fa0a3914b7cf77",
+  "tools/serve_recovery/maintenance.py": "e204f27eaeb2287e0b3f0f2509bbee2c21d0bc3612a830fb61136a6155eaab89",
+  "tools/serve_recovery/publication_archive.py": "5a464925f9f493ee6c1813b0d35d3624f1f237dea5ec3e62d7f27d67e3b33bb4",
+  "tools/serve_recovery/publication_intent_archive.py": "1e8b67d27779fd344aa9c13a2b3e57a75984255537380391d4556b64c14bc6ec",
+  "tools/serve_recovery/version_archive.py": "03c4074d6584fe4c85fb06c9eb91ff8fd527453328acd04f1be2ed3a1a8a69e5",
+  "tools/serve_recovery/test_maintenance.py": "0f719879956cdcd4b1e9f85a210fc3b7141c39f1c0c7860f8280870717d1d221",
+  "tools/serve_recovery/test_native_bundle.py": "2304a4b9cabd9202e9d407061f375cc3de3c64308e6d5b04cebb56b1a98d796d"
+}

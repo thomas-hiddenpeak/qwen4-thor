@@ -21,6 +21,13 @@ from tools.serve_service import package as engine
 FORMAT = 'q4t-version-archive-v2'
 MAX_SELECTED = 4
 
+# Reviewed predecessors: original archive, then the identity-guard-only revision.
+# Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
+LEGACY_PLAN_SOURCES = frozenset((
+    '0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e',
+    '40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08',
+))
+
 
 @contextmanager
 def locked(state, *, authority=None):
@@ -185,7 +192,8 @@ def apply(path, expected, *, restore=False, authority=None):
         'publication_sha256', 'version_sha256', 'cycles', 'source_sha256'))
     archive = files.directory(value['archive'])
     ledger.require(value['format'] == FORMAT and path == archive/'plan.json' and
-        value['source_sha256'] == engine.sha(Path(__file__).resolve()) and
+        value['source_sha256'] in (engine.sha(Path(__file__).resolve()),
+            *LEGACY_PLAN_SOURCES) and
         type(value['cycles']) is list and 1 <= len(value['cycles']) <= MAX_SELECTED,
         'archive plan/source identity differs')
     with locked(value['state'], authority=authority) as (state, desc, manifest, current, selected, binding):

@@ -2,6 +2,8 @@
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 import fcntl
 import io
+import importlib.machinery
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -214,6 +216,40 @@ service.main([sys.argv[2], '--help'])
             self.assertEqual(result.returncode, 0, result.stderr.decode())
             self.assertIn(command.encode(), result.stdout)
             self.assertIn(b'--manifest-sha256', result.stdout)
+
+    def legacy_round_trip(self, kind):
+        self.fixture(kind)
+        current = maintenance.KINDS[kind]
+        before = self.state_bytes()
+        for digest in sorted(current.LEGACY_PLAN_SOURCES):
+            path = Path(__file__).parent/'testdata/archive_sources'/(digest+'.py.txt')
+            self.assertEqual(maintenance.engine.sha(path), digest)
+            loader = importlib.machinery.SourceFileLoader('legacy_archive_'+digest, str(path))
+            spec = importlib.util.spec_from_loader(loader.name, loader)
+            old = importlib.util.module_from_spec(spec)
+            loader.exec_module(old)
+            output = self.output.with_name('legacy-'+digest[:16])
+            # Execute the exact reviewed historical source; no invented plan.
+            plan = old.prepare(self.state, output, [self.selected])
+            raw = Path(plan['plan']).read_bytes()
+            old.apply(plan['plan'], plan['sha256'])
+            self.assertFalse(self.source.exists())
+            retired = (output/'retired.json').read_bytes()
+            # New native command can resume and restore the historical plan.
+            self.assertEqual(self.action(plan)['status'], 'RETIRED')
+            self.assertEqual((output/'retired.json').read_bytes(), retired)
+            self.assertEqual(self.action(plan, restore=True)['status'], 'RESTORED')
+            self.assertEqual(Path(plan['plan']).read_bytes(), raw)
+            self.assertEqual(self.state_bytes(), before)
+
+    def test_historical_intent_plan_restores_without_rewriting_evidence(self):
+        self.legacy_round_trip('intents')
+
+    def test_historical_generation_plan_restores_without_rewriting_evidence(self):
+        self.legacy_round_trip('generations')
+
+    def test_historical_version_plan_restores_without_rewriting_consumed_budget(self):
+        self.legacy_round_trip('versions')
 
 
 if __name__ == '__main__':

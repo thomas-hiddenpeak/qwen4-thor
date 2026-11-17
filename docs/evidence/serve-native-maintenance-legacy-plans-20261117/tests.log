@@ -1,0 +1,12 @@
+test_historical_intent_plan_restores_without_rewriting_evidence (tools.serve_recovery.test_maintenance.MaintenanceTests.test_historical_intent_plan_restores_without_rewriting_evidence) ... ok
+test_historical_generation_plan_restores_without_rewriting_evidence (tools.serve_recovery.test_maintenance.MaintenanceTests.test_historical_generation_plan_restores_without_rewriting_evidence) ... ok
+test_historical_version_plan_restores_without_rewriting_consumed_budget (tools.serve_recovery.test_maintenance.MaintenanceTests.test_historical_version_plan_restores_without_rewriting_consumed_budget) ... ok
+test_cli_intent_status_plan_archive_restore_preserves_state (tools.serve_recovery.test_maintenance.MaintenanceTests.test_cli_intent_status_plan_archive_restore_preserves_state) ... ok
+test_cli_generation_status_plan_archive_restore_preserves_state (tools.serve_recovery.test_maintenance.MaintenanceTests.test_cli_generation_status_plan_archive_restore_preserves_state) ... ok
+test_cli_version_status_plan_archive_restore_preserves_consumed_budget (tools.serve_recovery.test_maintenance.MaintenanceTests.test_cli_version_status_plan_archive_restore_preserves_consumed_budget) ... ok
+test_source_bound_old_plan_is_not_resigned_or_silently_upgraded (tools.serve_recovery.test_maintenance.MaintenanceTests.test_source_bound_old_plan_is_not_resigned_or_silently_upgraded) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 24.169s
+
+OK
