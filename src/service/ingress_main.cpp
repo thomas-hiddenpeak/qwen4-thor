@@ -24,6 +24,7 @@
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/service/guardian_wire.h"
 #include "q4t/service/ingress_access_admin.h"
 #include "q4t/service/ingress_address.h"
@@ -543,6 +544,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(404, "gateway_route_not_found");
     streaming = server::IsBinaryUpload(method, path);
     headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;
+    if (server::IsTranscriptionTarget(path))
+      headers.body_limit =
+          std::min(headers.body_limit, server::kTranscriptionBodyBytes);
     if (headers.content_length > headers.body_limit)
       return reject(413, "gateway_body_too_large");
     if (method == "GET" && headers.content_length)
@@ -560,7 +564,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     binding = authorize();
     if (!binding.port) return reject(503, binding.error.c_str());
     if (streaming) {
-      upload.max_bytes = config.file_body_bytes;
+      upload.max_bytes = headers.body_limit;
       upload.reservation_bytes = 65536;
       upload.max_metadata_bytes = 16 * 1024 * 1024;
       upload.failure_code = "service_binding_unavailable";

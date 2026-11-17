@@ -13,6 +13,7 @@
 #include <thread>
 
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/client_policy_admin.h"
 #include "q4t/server/client_rate_state.h"
 #include "q4t/server/file_limits.h"
@@ -248,6 +249,43 @@ Q4T_TEST(client_file_admission_separates_json_and_exact_upload_route) {
       Q4T_CHECK(allowed == upload);
       Q4T_CHECK(headers.body_limit == (upload ? kFileWireBytes : 1024));
       if (!allowed) Q4T_CHECK(status == 413);
+    }
+  }
+  Q4T_CHECK(current.Usage(0).data_active == 0 &&
+            current.RateUsage(0).requests == 0);
+  return true;
+}
+
+Q4T_TEST(client_transcription_uses_file_quota_without_relaxing_other_routes) {
+  ClientAdmission current, old;
+  Q4T_CHECK(current.Configure(FilePolicy(8192)));
+  Q4T_CHECK(old.Configure(DynamicPolicy(3, 100)));
+  for (auto* admission : {&current, &old}) {
+    for (const auto method : {"POST", "GET"}) {
+      for (const auto path : {"/v1/audio/transcriptions",
+                              "/v1/audio/transcriptions?invalid=1",
+                              "/v1/audio/transcriptions-extra",
+                              "/v1/chat/completions"}) {
+        const bool upload = std::string_view(method) == "POST" &&
+                            IsTranscriptionTarget(path);
+        Q4T_CHECK(IsBinaryUpload(method, path) == upload);
+        for (const size_t bytes : {1025, 8192, 8193}) {
+          HttpRequestHeaders headers;
+          headers.client_id = "alpha";
+          headers.gateway_token = kSecret;
+          headers.content_length = bytes;
+          ClientLease lease;
+          ClientIdentity identity;
+          int status = 0;
+          const bool allowed = AdmitClientRequest(
+              method, path, &headers, *admission, &lease, &identity, &status);
+          const size_t expected_limit =
+              admission == &current && upload ? 8192 : 1024;
+          Q4T_CHECK(headers.body_limit == expected_limit);
+          Q4T_CHECK(allowed == (bytes <= expected_limit));
+          if (!allowed) Q4T_CHECK(status == 413);
+        }
+      }
     }
   }
   Q4T_CHECK(current.Usage(0).data_active == 0 &&

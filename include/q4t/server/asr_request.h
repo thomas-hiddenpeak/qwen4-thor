@@ -8,10 +8,11 @@
 
 #include "q4t/server/asr_service.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/request_limits.h"
 
 namespace q4t::server {
 inline constexpr size_t kAsrFileBytes = 25ULL << 20;
-inline constexpr size_t kAsrFormBytes = 32ULL << 20;
+inline constexpr size_t kAsrFormBytes = kTranscriptionBodyBytes;
 inline constexpr size_t kAsrPromptBytes = 64ULL << 10;
 
 enum class AsrFormat { kJson, kText, kSrt, kVerboseJson, kVtt, kDiarizedJson };

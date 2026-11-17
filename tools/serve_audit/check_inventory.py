@@ -40,7 +40,9 @@ def current_surface(root):
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
     if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
-        if '"/v1/audio/transcriptions"' not in dispatch or \
+        reader = (root / 'src/server/http_request.cpp').read_text()
+        if 'IsTranscriptionTarget(path)' not in dispatch or \
+                'IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes' not in reader or \
                 'headers.body_limit, kAsrFormBytes' not in dispatch:
             raise ValueError('review native transcription body/dispatch contract')
         routes.append(("/v1/audio/transcriptions", "POST"))
@@ -60,6 +62,12 @@ def current_surface(root):
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
     application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+        if 'path == "/v1/files" || IsTranscriptionTarget(target)' not in application_routes or \
+                'server::IsTranscriptionTarget(path)' not in native or \
+                'std::min(headers.body_limit, server::kTranscriptionBodyBytes)' not in native or \
+                'upload.max_bytes = headers.body_limit' not in native:
+            raise ValueError('review native transcription upload quotas')
     if 'IsConversationTarget(path)' not in dispatch or \
             'HandleConversationRequest(*objects_' not in dispatch or \
             'server::ConversationMethodAllowed(method, path)' not in native or \

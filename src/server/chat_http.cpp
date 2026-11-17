@@ -329,7 +329,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
-      if (std::string_view(path).substr(0, path.find('?')) == "/v1/audio/transcriptions")
+      if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
@@ -492,8 +492,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     dispatch_started = true;
     if (file_request)
       file_request->Serve(fd);
-    else if (std::string_view(path).substr(0, path.find('?')) ==
-             "/v1/audio/transcriptions") {
+    else if (IsTranscriptionTarget(path)) {
       if (method != "POST") {
         context.RecordReceiveFailure(HttpReceiveFailure::kMethod, 405);
         SendError(fd, 405, "method not allowed", {}, "method_not_allowed",

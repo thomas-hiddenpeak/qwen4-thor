@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "tests": [
+    "http_transcription_large_fixed_and_chunked_binary_bodies",
+    "http_transcription_limits_reject_before_body_read",
+    "client_transcription_uses_file_quota_without_relaxing_other_routes"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "reuse": "docs/evidence/serve-asr-service-cpu-20261117",
+  "purpose": "Regression for actual HTTP 413; preserve first FAILED and target only transport changes."
+}

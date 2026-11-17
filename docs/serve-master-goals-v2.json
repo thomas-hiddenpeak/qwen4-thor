@@ -2168,7 +2168,8 @@
         "evidence/serve-native-embedding-core-cpu-20261111/README.md",
         "evidence/serve-native-embedding-numerical-20261111/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-asr-transport-20261117/README.md"
       ],
       "release": null,
       "findings": [
@@ -2541,7 +2542,7 @@
           "seconds": 300
         },
         "remaining": [
-          "targeted CPU and native HTTP/SDK qualification",
+          "native HTTP/SDK qualification",
           "actual alignment, diarization and VAD executors",
           "service package, primary/light recovery and reversible delivery",
           "all remaining audio and master tasks"
@@ -2550,7 +2551,21 @@
         "unique_cpu_tests": 34,
         "executions": 35,
         "seconds": 2.166639856528491,
-        "original_failure_preserved": true
+        "original_failure_preserved": true,
+        "transport_fix": {
+          "state": "targeted_cpu_accepted_http_pending",
+          "evidence": "evidence/serve-asr-transport-20261117/README.md",
+          "tests": 3,
+          "seconds": 0.06252991873770952,
+          "original_http_failure_preserved": true,
+          "first_attempt_starts": 1,
+          "first_attempt_creates": 1,
+          "retry_limits": {
+            "starts": 1,
+            "creates": 9,
+            "seconds": 600
+          }
+        }
       }
     },
     {

@@ -1556,7 +1556,9 @@
         "src/server/asr_request.cpp",
         "src/server/asr_response.cpp",
         "tests/server_asr_protocol_test.cpp",
-        "docs/evidence/serve-asr-service-cpu-20261117/README.md"
+        "docs/evidence/serve-asr-service-cpu-20261117/README.md",
+        "tests/server_http_request_test.cpp",
+        "tests/server_client_policy_test.cpp"
       ]
     }
   },
@@ -2191,9 +2193,9 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "cc57af3a4ccd36f0cdb1088c6c1a7b5b4f24e040622658c34fd0bfa1caeb2d5e",
+    "include/q4t/server/application_routes.h": "10b466ef1dd60c9784199eae8d06387f2c3f9c3b41a2515434621c46207714ac",
     "include/q4t/server/asr_assets.h": "458e9517e9ee0a757e7b05c29743835d1f1ade5817c1a41154b501bb17931b7c",
-    "include/q4t/server/asr_request.h": "c1d93e01ceee7a6a5ab8d105a24e95777a760e47c9a5d875f441feb74955d974",
+    "include/q4t/server/asr_request.h": "dd8775d0f7da893eaae57eb1c5db39df317d966a1917682ff00300573d9a7cdb",
     "include/q4t/server/asr_response.h": "70d5f398fdc01f90d87db5b4a309776d9af69026e629b77525f82c8b592703ac",
     "include/q4t/server/asr_service.h": "0b74a69fe9d2e37f708902daf96867ec92fd77037b35aa47065dca30d4e93c04",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
@@ -2312,7 +2314,7 @@
     "include/q4t/server/request_control.h": "19b02b49fe61f27ec893191319110190fa9d3fd1e43960a3287533c39e18f85b",
     "include/q4t/server/request_diagnostics.h": "75f04d74d23c042eade58ea7d18a1f78742fc714af6272059c1e6649d27395e0",
     "include/q4t/server/request_json.h": "db921e7c75126b370d7dcde14ee6ed8108f5eb89618289b2564e4062783e3e3b",
-    "include/q4t/server/request_limits.h": "551e05c38dc097450da55766fa39ceda75879e7e141385b829aa916e28f9a30a",
+    "include/q4t/server/request_limits.h": "8d18fe37312d7bb75a7ef9411dabae7fa6ffd6d23ccbb010c4af2a5b1ad8e905",
     "include/q4t/server/request_progress.h": "9ac647e9663547098ac4df80d450c5baf42ac027c33234d8f011342bab5e3478",
     "include/q4t/server/responses_api.h": "ac90f8ecf701489d9fd334d41843e0a52604c441afb4a0970539c4906f9ca424",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
@@ -2463,7 +2465,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "6a37f04bd63db1d28e8e072c5402f4017d847dd1f4f2c74505f2a6ac38be47ce",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "249dcea2fb2496a1d3d0e89df7277d14eaabe5fd96ec75cd77d6d7c34812672b",
+    "src/server/chat_http.cpp": "d7eb9aa51441682e32ea3c503819dacbd6895fd28959d95eb2c7a18a667e65fe",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
@@ -2566,7 +2568,7 @@
     "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "475d201a89306c99927c49ae7e0161b47429f21a0035bb371508a8e884daa0e5",
+    "src/server/http_request.cpp": "d7d532f2cdca965e222aa8bc37b02736f64ad4e1517617fc949ed29aae2b9129",
     "src/server/http_response.cpp": "0513b9597bfe84ea02b1f2f869dd0bcec59a949aa752e3d4a33ee0e63216c110",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -2760,7 +2762,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "cd6ab8fc8ec41dff77db8232bead20ecd3548cf4e868b947bde1f9ce833ad590",
+    "src/service/ingress_main.cpp": "651f5dfc29314f2fe6beff5fd07ad846652fffe76f2cf3f64c119204148044f3",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -4773,7 +4775,9 @@
         "src/server/asr_request.cpp",
         "src/server/asr_response.cpp",
         "tests/server_asr_protocol_test.cpp",
-        "docs/evidence/serve-asr-service-cpu-20261117/README.md"
+        "docs/evidence/serve-asr-service-cpu-20261117/README.md",
+        "tests/server_http_request_test.cpp",
+        "tests/server_client_policy_test.cpp"
       ]
     },
     "OPTIONS /v1/audio/transcriptions": {

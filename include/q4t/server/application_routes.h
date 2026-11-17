@@ -225,9 +225,13 @@ inline bool IsUploadCancellation(std::string_view method,
   return UploadMethodAllowed(method, target) &&
          target.substr(0, target.find('?')).ends_with("/cancel");
 }
+inline bool IsTranscriptionTarget(std::string_view target) {
+  return target.substr(0, target.find('?')) == "/v1/audio/transcriptions";
+}
 inline bool IsBinaryUpload(std::string_view method, std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
-  return (method == "POST" && path == "/v1/files") ||
+  return (method == "POST" &&
+          (path == "/v1/files" || IsTranscriptionTarget(target))) ||
          (UploadMethodAllowed(method, target) && path.ends_with("/parts"));
 }
 
