@@ -121,7 +121,8 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
   const auto plan = Json(TextFile(plan_path, 1 << 20));
   const bool trace_stages = plan.GetBool("trace_stages", true);
   const auto* cases = plan.GetArray("cases");
-  Require(cases && cases->array.size() == 4, "four frozen cases required");
+  Require(cases && !cases->array.empty() && cases->array.size() <= 4,
+          "one to four frozen cases required");
   Require(!fs::exists(output) && fs::create_directories(output),
           "fresh output required");
   Require(runtime::ReadSystemMemory().CanAllocate(2ULL << 30),
@@ -233,12 +234,14 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
     lifecycle_checks += 2;
   }
   checkpoint();
-  Require(boundary_checks == 8 && lifecycle_checks == 16, "case count differs");
+  Require(boundary_checks == 8 && lifecycle_checks == 4 * case_index,
+          "case count differs");
   const double seconds =
       std::chrono::duration<double>(Clock::now() - started).count();
   std::ofstream result(output / "result.json");
-  result << "{\"status\":\"PASS_NATIVE_COMPONENT\",\"cases\":4,"
-            "\"boundary_checks\":8,\"lifecycle_checks\":16,"
+  result << "{\"status\":\"PASS_NATIVE_COMPONENT\",\"cases\":" << case_index
+         << ",\"boundary_checks\":8,\"lifecycle_checks\":" << lifecycle_checks
+         << ","
             "\"gpu_model_loads\":1,\"max_explicit_workspace_bytes\":"
          << maximum_workspace << ",\"weight_bytes\":" << C::kWeightBytes
          << ",\"seconds\":" << seconds << "}\n";

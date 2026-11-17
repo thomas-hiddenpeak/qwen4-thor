@@ -906,6 +906,9 @@ Apache-2.0许可见[声明](third_party/licenses/speechbrain/README.md)。
 重叠语音正在接入固定SpeechBrain SepFormer两源分离图，沿用上述
 Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运行
 依赖，见[实施合同](docs/SERVE_NATIVE_OVERLAP_2026-11-18.md)。
+离线质量诊断参考[Demucs的移位平均思路](https://github.com/facebookresearch/demucs/blob/main/demucs/apply.py)
+（Meta，MIT），采用独立实现；本次候选未改善信号，不进入生产，
+不引入Demucs或其Python运行依赖。
 
 重叠语音的实际检测/分离、Chat音频、语音合成和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。

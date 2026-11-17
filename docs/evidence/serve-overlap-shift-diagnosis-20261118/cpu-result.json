@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_separator.test_shift_diagnosis"
+  ],
+  "returncode": 0,
+  "seconds": 0.3140780911780894
+}

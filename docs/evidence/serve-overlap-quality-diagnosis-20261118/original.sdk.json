@@ -1,0 +1,114 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "text": "The child almost hurt the small dog.",
+    "logprobs": [
+      {
+        "token": "The",
+        "bytes": [
+          84.0,
+          104.0,
+          101.0
+        ],
+        "logprob": -9.769192645828314e-07
+      },
+      {
+        "token": " child",
+        "bytes": [
+          32.0,
+          99.0,
+          104.0,
+          105.0,
+          108.0,
+          100.0
+        ],
+        "logprob": -5.234440974442228e-06
+      },
+      {
+        "token": " almost",
+        "bytes": [
+          32.0,
+          97.0,
+          108.0,
+          109.0,
+          111.0,
+          115.0,
+          116.0
+        ],
+        "logprob": -1.1649975026500503e-05
+      },
+      {
+        "token": " hurt",
+        "bytes": [
+          32.0,
+          104.0,
+          117.0,
+          114.0,
+          116.0
+        ],
+        "logprob": -0.00023825037636826207
+      },
+      {
+        "token": " the",
+        "bytes": [
+          32.0,
+          116.0,
+          104.0,
+          101.0
+        ],
+        "logprob": -0.00016485257514825498
+      },
+      {
+        "token": " small",
+        "bytes": [
+          32.0,
+          115.0,
+          109.0,
+          97.0,
+          108.0,
+          108.0
+        ],
+        "logprob": -4.931290648375832e-06
+      },
+      {
+        "token": " dog",
+        "bytes": [
+          32.0,
+          100.0,
+          111.0,
+          103.0
+        ],
+        "logprob": -1.0106384311721788e-06
+      },
+      {
+        "token": ".",
+        "bytes": [
+          46.0
+        ],
+        "logprob": -2.384783163072953e-06
+      }
+    ],
+    "usage": {
+      "input_tokens": 59,
+      "output_tokens": 9,
+      "total_tokens": 68,
+      "type": "tokens",
+      "input_token_details": {
+        "audio_tokens": 41,
+        "text_tokens": 18
+      }
+    },
+    "languages": [
+      {
+        "code": "en"
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18260/v1/audio/transcriptions"
+    }
+  ]
+}
