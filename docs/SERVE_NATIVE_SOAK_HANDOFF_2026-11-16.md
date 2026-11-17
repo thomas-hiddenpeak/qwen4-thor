@@ -1,25 +1,24 @@
 # 当前默认原生长稳交接
 
-当前rev244包`ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976`
-已完成实际仿射视频、显式high细节、冻结重放及主轻/保留控制组合。
-含原失败累计7启动24请求（含自检及embedding），原默认小尺寸
-失败和含答案Chat拒答独立保留；后续通过未追认旧题。
-[业务证据](evidence/serve-video-affine-composition-20261117/README.md)及
-[实际交付](evidence/serve-video-affine-delivery-20261117/README.md)保留完整界限。
-连续60秒长稳驱动短验仍属于前驱rev188，
-[原证据](evidence/serve-native-soak-business-20261116/README.md)按原身份保留。
+当前rev254包`3cd1fdfbcd3888848240b9c164680ea80592897ead117d29c82d0936fefe3b33`
+已完成实际齐次/有限透视视频、冻结重放及主轻/保留控制组合。
+本组累计5启动20请求（含自检及embedding），235.266秒严格租约，
+223项NVML正常、完整清理；原默认小尺寸及含答案Chat拒答仍单列。
+[业务证据](evidence/serve-video-projective-composition-20261117/README.md)与
+[实际交付](evidence/serve-video-projective-delivery-20261117/README.md)保留。
+连续60秒长稳驱动短验仍属于rev188，[原证据](evidence/serve-native-soak-business-20261116/README.md)按原身份保留。
 
-[当前独立day prepare/check](evidence/serve-video-affine-day-handoff-20261117/README.md)
-已完成，24小时未运行。快照固定`a8e1c473`及rev244包，不依赖活动
-工作区和未来默认指针；原rev234及更早快照仍按原身份保留。
+[当前独立day prepare/check](evidence/serve-video-projective-day-handoff-20261117/README.md)
+已完成，24小时未运行。快照固定`dcfa3cf3`及rev254包，不依赖活动
+工作区和未来默认指针；原rev244及更早快照保持。
 
 ## 当前已准备的入口
 
-私有验证服务UUID `59abc784-0f14-47ec-8264-eaff915382bc`，生产默认保持STOPPED。
+私有验证服务UUID `b323ff28-4a6c-43b1-a5c4-7500e693b401`，生产默认保持STOPPED。
 先进入保留的源码快照；此路径不能随清理开发分支而删除：
 
 ```bash
-cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/validation-src
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/validation-src
 /usr/bin/python3 -I -B tools/serve_soak/native_stage.py check \
   --plan .q4t-work/day-01/plan.json
 ```
@@ -53,8 +52,8 @@ STOPPED清理全部复核。RSS/RssAnon相互重叠，不能推导统一DRAM硬�
 
 ## 后续代码或发行变化
 
-此计划继续验证rev244，不会因活动开发工作区改变而失效，也不会
+此计划继续验证rev254，不会因活动开发工作区改变而失效，也不会
 自动跟随新默认。若要验证后续发行，保留此快照、包和原证据，按
 [prepare流程](../tools/serve_soak/README.md)创建新源码快照及新目录。
-不得改旧plan散列、清空execution或把rev244证据移称新版本证据。
-原rev234/rev224/rev214/rev204独立快照、工作区day-01及更早计划保留，当前有效入口以上述独立快照为准。
+不得改旧plan散列、清空execution或把rev254证据移称新版本证据。
+原rev244/rev234/rev224/rev214/rev204独立快照、工作区day-01及更早计划保留，当前有效入口以上述独立快照为准。

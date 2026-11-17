@@ -24,7 +24,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
 GPU。原预算/周期保持，控制器/native helper/client未变；原244包、
-历史失败及长稳计划保留。继续独立day交接、实际合main及全部master。
+历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；继续实际合main及全部master。
 
 前驱[rev244仿射与视频细节交付](evidence/serve-video-affine-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
@@ -130,7 +130,7 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
 GPU。原预算/周期保持，控制器/native helper/client未变；原244包、
-历史失败及长稳计划保留。继续独立day交接、实际合main及全部master。
+历史失败及长稳计划保留。用户day独立交接已prepare/check且未运行；继续实际合main及全部master。
 
 [有限透视发行组合通过](evidence/serve-video-projective-composition-20261117/README.md)：
 累计5启动20请求（含自检/embedding），235.266秒严格租约，
