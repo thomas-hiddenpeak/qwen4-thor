@@ -9,6 +9,9 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/tests/model_asset_test_main.cpp
     ${model_asset_root}/tests/server_model_assets_test.cpp
     ${model_asset_root}/tests/server_aligner_assets_test.cpp
+    ${model_asset_root}/tests/server_vad_assets_test.cpp
+    ${model_asset_root}/src/server/vad_assets.cpp
+    ${model_asset_root}/src/audio/vad.cpp
     ${model_asset_root}/tests/server_embedding_assets_test.cpp
     ${model_asset_root}/tests/router_trace_hash_test.cpp
     ${model_asset_root}/src/server/model_assets.cpp

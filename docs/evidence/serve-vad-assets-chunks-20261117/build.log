@@ -1,0 +1,33 @@
+[  1%] Built target q4t_regex_build
+[  2%] Built target q4t_program_javascript
+[  9%] Built target xgrammar
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/aligner_service.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_service.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_aligner_service_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_service_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_test.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad_chunks.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_chunks_test.cpp.o
+[ 11%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_assets.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/aligner_assets.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/embedding_assets.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/model_assets.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/model_asset_test_main.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_aligner_assets_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_model_assets_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vad_assets_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vad_assets.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o
+[ 25%] Linking CXX executable q4t_model_asset_tests
+[100%] Built target q4t_model_asset_tests

@@ -2776,7 +2776,14 @@
         "seconds": 3.3566437661647797,
         "original_reference": "FAILED_preserved: packaged JIT and safetensors weights differ",
         "accepted_reference": "Official JIT graph with all 15 previously frozen target tensors explicitly bound",
-        "max_probability_absolute_error": 2.6226043701171875e-06
+        "max_probability_absolute_error": 2.6226043701171875e-06,
+        "assets_and_chunks": {
+          "state": "cpu_components_accepted_runtime_pending",
+          "evidence": "evidence/serve-vad-assets-chunks-20261117/README.md",
+          "cpu_cases": 14,
+          "seconds": 0.07122829603031278,
+          "gpu_actions": 0
+        }
       },
       "segment_statistics_20261117": {
         "state": "direct_http_accepted_service_pending",

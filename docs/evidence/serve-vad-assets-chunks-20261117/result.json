@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "groups": [
+    {
+      "group": "host",
+      "returncode": 0,
+      "seconds": 0.007496885024011135
+    },
+    {
+      "group": "assets",
+      "returncode": 0,
+      "seconds": 0.06359011400490999
+    }
+  ],
+  "seconds": 0.07122829603031278,
+  "tests": 14,
+  "gpu_actions": 0
+}

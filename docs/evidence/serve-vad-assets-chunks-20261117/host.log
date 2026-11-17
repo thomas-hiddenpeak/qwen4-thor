@@ -1,0 +1,8 @@
+[PASS] vad_chunks_hysteresis_keeps_short_pauses_and_real_sample_edges
+[PASS] vad_chunks_prefix_padding_never_duplicates_audio_or_goes_negative
+[PASS] vad_chunks_hard_limits_preserve_tail_and_never_silently_drop_chunks
+[PASS] vad_chunks_threshold_and_zero_silence_have_actual_effect
+[PASS] vad_chunks_invalid_observations_and_options_preserve_owner
+[PASS] vad_chunks_cancellation_and_silence_publish_atomically
+[PASS] vad_score_budget_cancellation_and_new_request_are_isolated
+7 tests, 7 passed, 0 failed, 0 skipped

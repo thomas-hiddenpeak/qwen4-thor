@@ -203,7 +203,7 @@ Status SileroVad::Step(std::span<const float> samples, VadState* state,
 Status SileroVad::Score(std::span<const float> pcm, size_t max_samples,
                         std::vector<VadFrame>* out, Cancelled cancelled) const {
   if (!out || !Ready() || pcm.empty() || pcm.size() > max_samples ||
-      max_samples > 400ULL * 16000)
+      max_samples > kVadMaxSamples)
     return Status::Fail("VAD audio sample budget invalid");
   std::vector<VadFrame> frames;
   frames.reserve((pcm.size() + 511) / 512);

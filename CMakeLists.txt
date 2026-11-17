@@ -175,6 +175,7 @@ target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
   src/audio/vad.cpp
+  src/audio/vad_chunks.cpp
   src/audio/asr_config.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
@@ -302,6 +303,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
   src/server/aligner_assets.cpp
+  src/server/vad_assets.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp

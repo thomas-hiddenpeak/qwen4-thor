@@ -3,6 +3,12 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/audio/vad.h
+  src/audio/vad.cpp
+  include/q4t/audio/vad_chunks.h
+  src/audio/vad_chunks.cpp
+  include/q4t/server/vad_assets.h
+  src/server/vad_assets.cpp
   include/q4t/server/asr_request.h
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h

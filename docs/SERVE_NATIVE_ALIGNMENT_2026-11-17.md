@@ -211,3 +211,22 @@ segment、word+segment/强制中文、显式温度英文、静音、原word-only
 [完整segment实际HTTP分项接受](evidence/serve-asr-segment-http-20261117/README.md)：
 累计2启动/7创建/100.611秒，原5条复用、2条补验，默认未变。
 继续VAD实际分段与服务/恢复交付，AL03/AL04及全部master尚未完成。
+
+## VAD资产与分段组件组
+
+固定14项CPU/180秒、0GPU：7项VAD资产/原模型I/O保护与7项
+采样边界/阈值/静音/前缀填充/长段/取消/预算。1.24MB固定CPU
+权重经现有隔离worker按目录/文件类型/长度/SHA核验，没有新增
+推理库；加载失败保留既有owner。后续需独立健康/请求驱动重试，
+不能成为普通ASR或核心readiness依赖。
+
+分段使用真实16k/512帧posterior，进入>=threshold、离开低于
+max(threshold-.15,.01)，短静音保留到silence_duration满足。
+不以最短时长过滤短词；prefix_padding只取实际音频且与前段
+不重叠。长段按配置真实样本边界有界切分并标记forced_split，
+不伪装为自然停顿；超过段数预算必须失败，不能丢弃尾段。
+最大600秒与ASR配置上界一致，数值计算未变。组件验证后继续
+真实chunking执行、累计配额/输出、服务交付及全部master任务。
+
+[VAD资产/分段14项CPU通过](evidence/serve-vad-assets-chunks-20261117/README.md)，
+0.071秒、0GPU；继续独立健康、多段ASR和所有服务/交付任务。

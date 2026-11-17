@@ -1,0 +1,8 @@
+[PASS] asr_assets_preflight_cancel_deadline_and_capacity_start_no_child
+[PASS] aligner_assets_dead_worker_and_bad_reply_do_not_publish
+[PASS] vad_assets_load_fixed_cpu_model_through_verified_worker
+[PASS] vad_assets_bad_identity_keeps_loaded_cpu_owner_and_recovers
+[PASS] vad_assets_missing_fifo_and_symlink_are_request_local
+[PASS] vad_assets_preflight_cancel_deadline_and_budget_start_no_worker
+[PASS] vad_assets_dead_or_wrong_profile_worker_never_publishes_weights
+7 tests, 7 passed, 0 failed, 0 skipped

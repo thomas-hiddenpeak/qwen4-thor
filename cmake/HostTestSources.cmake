@@ -5,6 +5,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/vad_chunks.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/vad_chunks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vad_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/aligner_config.cpp

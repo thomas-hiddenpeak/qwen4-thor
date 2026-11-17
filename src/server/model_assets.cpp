@@ -11,6 +11,7 @@
 #include <new>
 
 #include "model_assets_protocol.h"
+#include "q4t/audio/vad.h"
 #include "q4t/server/aligner_assets.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/embedding_assets.h"
@@ -19,11 +20,11 @@
 namespace q4t::server {
 namespace {
 using Clock = std::chrono::steady_clock;
-using detail::ModelAssetProfile;
-using detail::ModelAssetSpec;
 using asset_detail::kMagic;
 using asset_detail::Reply;
 using asset_detail::Request;
+using detail::ModelAssetProfile;
+using detail::ModelAssetSpec;
 constexpr ModelAssetSpec kEmbedding[]{
     {"config.json", 727,
      "b5bf1f51fc45be473a54718cef92448d90a1be001bf9b9a44b8c7f10a19feaa9"},
@@ -58,6 +59,9 @@ constexpr ModelAssetSpec kAligner[]{
     {"tokenizer_config.json", 12666,
      "3ab80063f8511deb9566e6ad438d17b7a6277fcffd52d92854112f19d36bd81c"},
     {"model.safetensors", kNativeAlignerFileBytes, kNativeAlignerWeightSha256}};
+constexpr ModelAssetSpec kVad[]{{"silero_vad_16k.safetensors",
+                                 audio::kVadFileBytes,
+                                 audio::kVadWeightSha256}};
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
@@ -125,6 +129,8 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kAsr;
     case ModelAssetProfile::kAligner:
       return kAligner;
+    case ModelAssetProfile::kVad:
+      return kVad;
   }
   return {};
 }

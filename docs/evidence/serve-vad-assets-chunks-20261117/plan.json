@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "host_cases": [
+    "vad_chunks_hysteresis_keeps_short_pauses_and_real_sample_edges",
+    "vad_chunks_prefix_padding_never_duplicates_audio_or_goes_negative",
+    "vad_chunks_hard_limits_preserve_tail_and_never_silently_drop_chunks",
+    "vad_chunks_threshold_and_zero_silence_have_actual_effect",
+    "vad_chunks_invalid_observations_and_options_preserve_owner",
+    "vad_chunks_cancellation_and_silence_publish_atomically",
+    "vad_score_budget_cancellation_and_new_request_are_isolated"
+  ],
+  "asset_cases": [
+    "vad_assets_load_fixed_cpu_model_through_verified_worker",
+    "vad_assets_bad_identity_keeps_loaded_cpu_owner_and_recovers",
+    "vad_assets_missing_fifo_and_symlink_are_request_local",
+    "vad_assets_preflight_cancel_deadline_and_budget_start_no_worker",
+    "vad_assets_dead_or_wrong_profile_worker_never_publishes_weights",
+    "asr_assets_preflight_cancel_deadline_and_capacity_start_no_child",
+    "aligner_assets_dead_worker_and_bad_reply_do_not_publish"
+  ],
+  "total": 14,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "model_reads": "Fixed 1.24MB CPU VAD only; original ASR/aligner metadata guards, no accelerator weights.",
+  "scope": "Fixed verified VAD asset; posterior-driven nonoverlapping chunks, silence/threshold/padding/long-span/count/cancel boundaries. HTTP executor remains to implement."
+}

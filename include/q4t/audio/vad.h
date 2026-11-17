@@ -14,6 +14,7 @@
 namespace q4t::audio {
 inline constexpr size_t kVadFrameSamples = 512;
 inline constexpr size_t kVadContextSamples = 64;
+inline constexpr size_t kVadMaxSamples = 600ULL * 16000;
 inline constexpr size_t kVadWeightBytes = 1238532;
 inline constexpr size_t kVadFileBytes = 1239748;
 inline constexpr char kVadWeightSha256[] =

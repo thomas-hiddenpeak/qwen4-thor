@@ -158,11 +158,11 @@ Q4T_TEST(vad_score_budget_cancellation_and_new_request_are_isolated) {
   std::array<float, 512> pcm{};
   std::vector<audio::VadFrame> frames{{17, 25, .25f}};
   Q4T_CHECK(!model.Score(pcm, 511, &frames));
-  Q4T_CHECK(!model.Score(pcm, 400ULL * 16000 + 1, &frames));
+  Q4T_CHECK(!model.Score(pcm, audio::kVadMaxSamples + 1, &frames));
   Q4T_CHECK(!model.Score(pcm, 512, &frames, [] { return true; }));
   Q4T_CHECK(frames.size() == 1 && frames[0].begin_sample == 17 &&
             frames[0].speech_probability == .25f);
-  Q4T_CHECK(model.Score(pcm, 512, &frames));
+  Q4T_CHECK(model.Score(pcm, audio::kVadMaxSamples, &frames));
   Q4T_CHECK(frames.size() == 1 && frames[0].begin_sample == 0);
   return true;
 }

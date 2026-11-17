@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[VAD固定资产/真实分段14项CPU通过](evidence/serve-vad-assets-chunks-20261117/README.md)
+（0.071秒、0GPU）：实际权重隔离与恢复、阈值/静音/前缀、无重叠
+边界/尾段/段数/取消及原I/O保护。继续独立健康和真实多段ASR
+累计预算/所有输出，再完成服务与恢复交付；不是VAD接口已完成。
+
 [完整segment实际HTTP分项通过](evidence/serve-asr-segment-http-20261117/README.md)：
 累计2启动/7创建/100.611秒，复用原5条、仅补2条保护；双SDK、
 实际token/概率/压缩率、静音、词时间戳和核心42通过。原驱动失败
