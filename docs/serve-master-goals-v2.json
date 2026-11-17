@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Verify actual VAD/multiclip HTTP, deliver native alignment/segment/VAD service and recovery, then all remaining audio/multimodal and master tasks.",
+      "next": "Complete alignment/segment/VAD package, native ingress, primary/light and recovery delivery; then all remaining audio/multimodal and master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2809,7 +2809,7 @@
         "remaining": "Actual VAD/diarization, full service composition and delivery; all other master tasks"
       },
       "vad_runtime_20261117": {
-        "state": "targeted_cpu_passed_http_pending_not_delivered",
+        "state": "targeted_cpu_and_direct_http_passed_service_delivery_pending",
         "evidence": "evidence/serve-vad-runtime-cpu-20261117/README.md",
         "tests": {
           "cpp": 16,
@@ -2822,7 +2822,13 @@
           "creates": 12,
           "seconds": 600
         },
-        "next": "Real multiclip/SDK/isolation/shared-budget business, then service/ingress/recovery/delivery; complete all remaining A10/master tasks."
+        "next": "Real multiclip/SDK/isolation/shared-budget business, then service/ingress/recovery/delivery; complete all remaining A10/master tasks.",
+        "http_evidence": "evidence/serve-vad-http-20261117/README.md",
+        "actual": {
+          "starts": 1,
+          "creates": 12,
+          "seconds": 57.0483124749735
+        }
       }
     },
     {

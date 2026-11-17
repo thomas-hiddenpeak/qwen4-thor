@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[VAD真实多段HTTP通过](evidence/serve-vad-http-20261117/README.md)：
+1启动/12创建/57.048秒，双SDK两段中文/真实全局时间戳/VTT/流式，
+阈值/静音/段数/共享24输出、取消及VAD失能不影响ASR/Chat通过。
+同PID恢复、独占租约与清理正常；候选未发布，继续服务/恢复/交付
+及全部master。默认rev276不变，未做完整性能/模型质量或长稳。
+
 [VAD运行时16项CPU与3项验收器通过](evidence/serve-vad-runtime-cpu-20261117/README.md)：
 跨段实际时间/字幕/流式/预算/静音、失败禁止部分发布通过；独立
 CUDA候选零警告，未发布。固定下一组1启动/12创建/600秒，验证
