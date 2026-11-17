@@ -574,3 +574,5 @@
 - [齐次与透视视频实施合同](SERVE_VIDEO_PROJECTIVE_2026-11-17.md)：原生精确变换、有限画布、冻结重放及针对性验收。
 
 - [rev254有限透视视频交付](evidence/serve-video-projective-delivery-20261117/README.md)：原生精确像素变换、v5冻结重放及可回退发行。
+
+- [SDK桥接与持久响应回执](SERVE_CLIENT_RECEIPTS_2026-11-17.md)：审核元数据、logprobs和被拦截终态的针对性修复。

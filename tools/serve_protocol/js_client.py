@@ -121,9 +121,13 @@ class JsSdkClient:
         payload = self.call("chat", request, model=request["model"], sink=sink)
         value = payload["result"]
         if "choices" in value:
-            return _choices_completion(value["id"], value["model"], value["choices"], value["usage"])
+            return _choices_completion(value["id"], value["model"],
+                value["choices"], value["usage"], value.get("moderation"),
+                value.get("q4t_moderation_usage"))
         completion = _completion(value["id"], value["model"], value["message"],
-                                 value["finish_reason"], value["usage"], value.get("logprobs"))
+            value["finish_reason"], value["usage"], value.get("logprobs"),
+            moderation=value.get("moderation"),
+            moderation_usage=value.get("q4t_moderation_usage"))
         if completion.finish_reason in ("tool_calls", "function_call"):
             expected = [asdict(p) for p in prepare_tool_calls(completion, VALIDATORS, custom_validators=CUSTOM_VALIDATORS)]
             require(payload["planned_tools"] == expected, "JS/Python tool plan disagreement")

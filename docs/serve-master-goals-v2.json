@@ -3403,6 +3403,19 @@
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+      },
+      "client_receipts_20261117": {
+        "state": "cpu_accepted_delivery_pending",
+        "contract": "SERVE_CLIENT_RECEIPTS_2026-11-17.md",
+        "issues": [
+          "Node SDK bridge drops moderation reports/usage",
+          "Recovery receipt loses logprobs/moderation",
+          "content_filter terminal enters tool recovery"
+        ],
+        "gpu_actions": 0,
+        "cpu_evidence": "evidence/serve-client-receipts-cpu-20261117/README.md",
+        "new_cases": 12,
+        "direct_regressions": 4
       }
     },
     {
@@ -5548,8 +5561,8 @@
       }
     }
   ],
-  "next_task": "Q02",
-  "next": "rev254 native day handoff frozen and unexecuted. Complete final-head checks and actual main merge; continue all remaining protocol/backend/SDK and cold/resource/host tasks.",
+  "next_task": "A12",
+  "next": "Fix SDK bridge and receipt metadata/terminal handling while PR42 exact-head checks run; continue all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

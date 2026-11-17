@@ -127,6 +127,13 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[客户端回执修复计划](SERVE_CLIENT_RECEIPTS_2026-11-17.md)已冻结：
+补Node SDK桥接丢失审核字段、恢复器丢失审核/logprobs及被拦截终态。
+[12项新用例及4项直接回归已通过](evidence/serve-client-receipts-cpu-20261117/README.md)，
+原10处失败断言保留，无新增GPU；继续精确客户端包验证及发行，
+PR42冻结head继续检查和实际合main，
+全部master保持active。
+
 [rev254有限透视交付](evidence/serve-video-projective-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，285.699秒、0新增
 GPU。原预算/周期保持，控制器/native helper/client未变；原244包、
