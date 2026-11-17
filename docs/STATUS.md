@@ -134,6 +134,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
+28独立CPU/32次执行，34条原生命令374.106秒，0模型动作。三类
+旧计划原样恢复并重新归档，当前122意图/30目录/14登记；原驱动
+失败和全部原计划保留。最终v20包已固定，继续15项STOPPED发布/
+旧入口回退/再前进；rev260尚未变更，全部master继续。
+
 原生维护16条实际命令通过：三类归档/恢复和安全预留容量完成，
 保留驱动一次意图列表断言失败及其续做。发现并补齐旧计划来源兼容，
 [7项针对性CPU通过](evidence/serve-native-maintenance-legacy-plans-20261117/README.md)：

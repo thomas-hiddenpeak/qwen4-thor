@@ -1,0 +1,31 @@
+{
+  "status": "PASS_NATIVE_MAINTENANCE_PACKAGE_AND_ACTUAL",
+  "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
+  "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+  "cpu_unique_tests": 28,
+  "cpu_invocations": 32,
+  "native_commands": 34,
+  "seconds": 374.1064309948124,
+  "model_actions": 0,
+  "original_harness_failure_preserved": true,
+  "source_change_for_legacy_plans_explicit": true,
+  "original_plans_and_receipts_preserved": true,
+  "state_and_recovery_budgets_preserved": true,
+  "default_revision": 260,
+  "default_unchanged": true,
+  "pool_used": {
+    "intents": 122,
+    "generations": 30,
+    "versions": 14
+  },
+  "archived_intents": 4,
+  "archived_generations": 2,
+  "archived_versions": 2,
+  "deleted_files": 0,
+  "engine_protocol_runtime_native_clients_profiles_unchanged": true,
+  "archive_sha256": "4664f8597fd4d8a8811175ecca7a01afaac77618f30d3036ce60dd177f725683",
+  "secret_scan_matches": 0,
+  "delivery_pending": true,
+  "all_master_tasks_active": true
+}
