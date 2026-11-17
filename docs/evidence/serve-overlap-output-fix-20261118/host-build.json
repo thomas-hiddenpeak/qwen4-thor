@@ -1,0 +1,14 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host",
+    "--target",
+    "q4t_host_tests",
+    "--parallel",
+    "4"
+  ],
+  "returncode": 0,
+  "seconds": 25.15986105799675,
+  "default_unchanged": true
+}

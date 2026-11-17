@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "name": "contracts",
+      "returncode": 0,
+      "seconds": 0.015548603609204292
+    },
+    {
+      "name": "inventory",
+      "returncode": 0,
+      "seconds": 0.16383669804781675
+    },
+    {
+      "name": "generated",
+      "returncode": 0,
+      "seconds": 0.1638915459625423
+    }
+  ],
+  "seconds": 0.34331459924578667
+}

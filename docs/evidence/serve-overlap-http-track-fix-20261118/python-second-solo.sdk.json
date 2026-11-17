@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "duration": 4.0,
+    "segments": [
+      {
+        "id": "0",
+        "end": 2.08,
+        "speaker": "A",
+        "start": 0.16,
+        "text": "We are sure that one war is enough.",
+        "type": "transcript.text.segment"
+      }
+    ],
+    "task": "transcribe",
+    "text": "We are sure that one war is enough.",
+    "usage": {
+      "input_tokens": 99,
+      "output_tokens": 10,
+      "total_tokens": 109,
+      "type": "tokens",
+      "input_token_details": {
+        "audio_tokens": 27,
+        "text_tokens": 72
+      }
+    }
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18260/v1/audio/transcriptions"
+    }
+  ]
+}

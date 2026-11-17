@@ -1,0 +1,6 @@
+[PASS] separator_normalization_preserves_waveform_and_aliasing
+[PASS] separator_normalization_handles_silence_and_finite_extremes
+[PASS] separator_normalization_rejects_bad_input_atomically
+[PASS] separator_normalization_cancellation_keeps_owner
+[PASS] overlapping_output_cancel_and_silence_do_not_publish_partial_success
+5 tests, 5 passed, 0 failed, 0 skipped

@@ -31,6 +31,59 @@ bool Close(std::span<const float> a, std::span<const float> b) {
 }
 }  // namespace
 
+Q4T_TEST(separator_normalization_preserves_waveform_and_aliasing) {
+  const std::vector<float> input{-2.f, 4.f, 1.f, 0.f, -4.f};
+  const std::vector<float> expected{-.5f, 1.f, .25f, 0.f, -1.f};
+  std::vector<float> output{123};
+  Q4T_CHECK(NormalizeSeparation(input, 480000, &output));
+  Q4T_CHECK(output == expected && input[1] == 4.f);
+  auto alias = input;
+  Q4T_CHECK(NormalizeSeparation(alias, 480000, &alias));
+  Q4T_CHECK(alias == expected);
+  return true;
+}
+
+Q4T_TEST(separator_normalization_handles_silence_and_finite_extremes) {
+  std::vector<float> silent(480000), output;
+  Q4T_CHECK(NormalizeSeparation(silent, 480000, &output));
+  Q4T_CHECK(output == silent);
+  for (float value : {std::numeric_limits<float>::denorm_min(),
+                      std::numeric_limits<float>::max()}) {
+    const std::vector<float> input{value, -value, 0};
+    Q4T_CHECK(NormalizeSeparation(input, 480000, &output));
+    Q4T_CHECK(output == std::vector<float>({1, -1, 0}));
+  }
+  return true;
+}
+
+Q4T_TEST(separator_normalization_rejects_bad_input_atomically) {
+  std::vector<float> output{123};
+  for (const auto& input : std::vector<std::vector<float>>{
+           {},
+           std::vector<float>(480001),
+           {std::numeric_limits<float>::quiet_NaN()},
+           {std::numeric_limits<float>::infinity()}}) {
+    Q4T_CHECK(!NormalizeSeparation(input, 480000, &output));
+    Q4T_CHECK(output == std::vector<float>({123}));
+  }
+  const std::vector<float> input{1, 2};
+  Q4T_CHECK(!NormalizeSeparation(input, 1, &output));
+  Q4T_CHECK(!NormalizeSeparation(input, 480000, nullptr));
+  Q4T_CHECK(output == std::vector<float>({123}));
+  return true;
+}
+
+Q4T_TEST(separator_normalization_cancellation_keeps_owner) {
+  std::vector<float> input(1024, 2.f);
+  for (int stop : {1, 3, 6, 9}) {
+    int calls = 0;
+    Q4T_CHECK(!NormalizeSeparation(input, 480000, &input,
+                                   [&] { return ++calls == stop; }));
+    Q4T_CHECK(input == std::vector<float>(1024, 2.f));
+  }
+  return true;
+}
+
 Q4T_TEST(separator_resampling_matches_independent_full_convolution) {
   for (const auto* name : {"silence", "impulse", "tone", "noise"}) {
     const auto input = Fixture(std::string(name) + "-input");

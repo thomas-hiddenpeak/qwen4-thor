@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[静音/幅度适配5CPU通过](evidence/serve-overlap-output-fix-20261118/README.md)，
+2来源通过，必要构建零警告、0GPU。下一组同租约1启动/8请求/
+900秒，验证受影响混音/静音及未执行容量/取消/核心保护；明确
+复用三单人，原质量FAIL不改写，默认rev296保持，全部master继续。
+
+[三种单人实际修复通过、静音502待闭合](evidence/serve-overlap-http-track-fix-20261118/README.md)：
+http-04为1启动/7请求/63.808秒；混音/30秒/SSE保留真实交叠，
+三单人WER=0。修复零片段结束水位，补分离PCM单位幅度适配；
+固定5CPU/120秒与2来源检查。原质量FAIL/默认rev296保持，
+剩余HTTP/恢复交付及全部master继续。
+
 [单人重复修复12CPU通过](evidence/serve-overlap-track-fix-20261118/README.md)：
 8合同及4真实PCM重放、2来源均过，0新增GPU，构建零警告。
 下一组同租约1启动/10请求/900秒，覆盖受影响混音、三种单人及

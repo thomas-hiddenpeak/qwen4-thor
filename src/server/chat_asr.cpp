@@ -392,6 +392,17 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
         }
       }
     }
+    // No VAD clips means the loop never advances the merge watermark. Finish
+    // still requires an explicit end-of-input, including a silent request.
+    if (separated) {
+      status = overlapping.DrainBefore(pcm.samples.size() + 1, cancelled);
+      if (!status) {
+        detail::SendError(fd, cancelled() ? 409 : 502, status.message(), {},
+                          cancelled() ? control->Reason()
+                                      : "asr_output_invalid");
+        return;
+      }
+    }
     std::string response;
     const auto actual = http->Usage().Total();
     status = actual

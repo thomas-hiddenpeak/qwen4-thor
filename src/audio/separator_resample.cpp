@@ -74,4 +74,30 @@ Status RestoreSeparation(std::span<const float> input, size_t original_samples,
     return Status::Fail("separation restoration shape or budget invalid");
   return Resample(input, original_samples, false, output, cancelled);
 }
+Status NormalizeSeparation(std::span<const float> input,
+                           size_t max_output_samples,
+                           std::vector<float>* output,
+                           const std::function<bool()>& cancelled) {
+  if (!output || input.empty() || input.size() > max_output_samples ||
+      input.size() > kSeparationMaxInputSamples)
+    return Status::Fail("separation normalization shape or budget invalid");
+  double peak = 0;
+  for (size_t i = 0; i < input.size(); ++i) {
+    if (i % 256 == 0 && cancelled && cancelled())
+      return Status::Fail("separation normalization cancelled");
+    if (!std::isfinite(input[i]))
+      return Status::Fail("separation normalization input nonfinite");
+    peak = std::max(peak, std::abs(double(input[i])));
+  }
+  std::vector<float> result(input.size(), 0);
+  for (size_t i = 0; i < input.size(); ++i) {
+    if (i % 256 == 0 && cancelled && cancelled())
+      return Status::Fail("separation normalization cancelled");
+    if (peak > 0) result[i] = float(double(input[i]) / peak);
+  }
+  if (cancelled && cancelled())
+    return Status::Fail("separation normalization cancelled");
+  *output = std::move(result);
+  return {};
+}
 }  // namespace q4t::audio

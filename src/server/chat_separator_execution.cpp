@@ -188,6 +188,9 @@ ObjectReply ChatServer::RunNativeSeparator(
           std::span<const float>(separated).subspan(track * pcm.size(),
                                                     original_samples),
           input.size(), max_samples, &output[track], cancelled);
+      if (status)
+        status = audio::NormalizeSeparation(output[track], max_samples,
+                                            &output[track], cancelled);
       if (!status) {
         if (cancelled()) return interrupted();
         return failed(AsrFailure::kCompute, "Separator restoration failed");

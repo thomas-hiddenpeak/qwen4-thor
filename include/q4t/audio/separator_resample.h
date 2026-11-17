@@ -22,4 +22,12 @@ Status DownsampleSeparation(std::span<const float> input,
 Status RestoreSeparation(std::span<const float> input, size_t original_samples,
                          size_t max_output_samples, std::vector<float>* output,
                          const std::function<bool()>& cancelled = {});
+// The separator's SI-SNR-trained graph has arbitrary output scale. Prepare
+// unit-peak PCM for downstream audio models, as upstream separate_file does.
+// Keep zero input zero, preserve sign/time, never clip, and allow input/output
+// aliasing. This adapter does not change the raw separator numerical contract.
+Status NormalizeSeparation(std::span<const float> input,
+                           size_t max_output_samples,
+                           std::vector<float>* output,
+                           const std::function<bool()>& cancelled = {});
 }  // namespace q4t::audio

@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 197, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_separator/http_acceptance.py\", line 386, in business\n    silent = self.sdk('python-silence', 'silence', rows['plain'], python=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 330, in sdk\n    require(run.returncode == 0 and result['ok'], 'actual SDK request failed: '+label)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: actual SDK request failed: python-silence\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 42
+  },
+  "seconds": 63.80806163698435,
+  "binary_sha256": "3e5b6de702d1b484b80c96ca46f2c675f55b9bf6bbc38e253cc95e7ee36d8bf4"
+}
