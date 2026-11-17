@@ -7299,6 +7299,19 @@
       "native TLS and reversible delivery",
       "nonverbal audio, speech output, assistant audio history and Realtime",
       "original overlap recognition quality"
-    ]
+    ],
+    "primary_light": {
+      "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+      "counts": {
+        "starts": 2,
+        "chats": 18,
+        "controls": 87
+      },
+      "seconds": 114.82289363397285,
+      "nvml_queries": 108,
+      "binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+      "evidence": "docs/evidence/serve-chat-audio-profiles-20261118/README.md",
+      "managed_delivery_pending": true
+    }
   }
 }

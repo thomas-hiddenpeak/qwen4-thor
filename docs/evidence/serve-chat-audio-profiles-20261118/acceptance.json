@@ -1,0 +1,118 @@
+{
+  "acceptance": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 108,
+      "cleanup_complete": true,
+      "lease_result_sha256": "753ad293f42138eb48d8347378cc17e82c0bd4c25b009121dcc55eaae54906f4"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 18,
+      "controls": 87
+    },
+    "seconds": 114.82289363397285,
+    "registry_sha256": "b910c90f644aa8b871c03c3fb19d0d92ca048a0cb56a551a55d52097ba87cb87",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+  "profiles": {
+    "primary": {
+      "choices": [
+        "交易",
+        "交易"
+      ],
+      "usage": {
+        "prompt_tokens": 280,
+        "completion_tokens": 15,
+        "total_tokens": 295,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 55
+        },
+        "q4t_audio_preparation": {
+          "input_tokens": 70,
+          "output_tokens": 11,
+          "audio_tokens": 55
+        }
+      },
+      "business_fields": [
+        "asr",
+        "asr_auxiliary",
+        "chat_audio",
+        "embedding",
+        "media",
+        "schema",
+        "speaker",
+        "tool_call",
+        "tool_reply",
+        "tool_result",
+        "tool_source"
+      ],
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 118068745968,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 120216229616,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 122759385088
+      },
+      "original_business_sha256": "9f6e152c03f12ac010832fd3e9be1be1b71d05016475616880e1e2893306b5d7",
+      "original_qualification_sha256": "f85a7fe4cedf317036f347b94be3d0622fe1014c9a1fc29f057700a51fda441a"
+    },
+    "light": {
+      "choices": [
+        "交易",
+        "交易"
+      ],
+      "usage": {
+        "prompt_tokens": 280,
+        "completion_tokens": 15,
+        "total_tokens": 295,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 55
+        },
+        "q4t_audio_preparation": {
+          "input_tokens": 70,
+          "output_tokens": 11,
+          "audio_tokens": 55
+        }
+      },
+      "business_fields": [
+        "asr",
+        "asr_auxiliary",
+        "chat_audio",
+        "embedding",
+        "media",
+        "schema",
+        "speaker",
+        "tool_call",
+        "tool_reply",
+        "tool_result",
+        "tool_source"
+      ],
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 108164310136,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 110311793784,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 122669076480
+      },
+      "original_business_sha256": "30fd32090bb148f25ccfaa9fefdd857c5205746877785e17f1b15afa71d696e3",
+      "original_qualification_sha256": "8f77582fe2c931ae12830521dd1b8af95c98dcbff2bb877a5dfb9ba76bf02216"
+    }
+  },
+  "archive_sha256": "2497773ea063355a5ddec150401a5ddfee117ce9af2e70f022afff0bd6beb9aa",
+  "original_audio_payloads_omitted": true,
+  "original_qualification_private": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/profiles-02/qualified",
+  "default_changed": false,
+  "managed_delivery_pending": true,
+  "remaining_master_tasks_open": true
+}

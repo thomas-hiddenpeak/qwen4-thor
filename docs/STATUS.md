@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频主/轻资格通过](evidence/serve-chat-audio-profiles-20261118/README.md)：
+2启动/18请求/114.823秒，108次NVML正常，清理/finalize通过。
+完整8在途与原辅助能力保持，两档原中文n=2回答/共享用量通过；
+接着原生TLS及保留/整包恢复、可回退交付，默认rev296未变。
+原重叠质量及全部master继续，不能以本阶段资格结束。
+
 [Chat音频共享输入4CPU和2来源通过](evidence/serve-chat-audio-shared-input-20261118/README.md)。
 Batch与HTTP共持192MiB额度，执行前超限不调用模型；原始Batch
 驻留另计，共享副本不再按8在途重复。原资格启动预算FAIL保留，
