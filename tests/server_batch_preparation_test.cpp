@@ -515,7 +515,9 @@ Q4T_TEST(batch_preparation_atomic_page_rejects_changed_snapshot_identity) {
 
 Q4T_TEST(batch_preparation_unknown_snapshot_receipt_keeps_private_identity) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 100;
+  // The injected receipt loss blocks indefinitely. Normal worker startup and
+  // prerequisite reads must not race the fault's observation deadline.
+  fixture.options.io_timeout_ms = 1000;
   Work work;
   {
     ObjectStore objects(fixture.options);
@@ -525,15 +527,19 @@ Q4T_TEST(batch_preparation_unknown_snapshot_receipt_keeps_private_identity) {
   ObjectWorkerEntryForTesting("--q4t-object-worker-snapshot-lost-ack");
   ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
   ObjectStore objects(fixture.options);
+  Q4T_CHECK(Ok(Run(objects, Request(ObjectKind::kResponse, {},
+                                    ObjectOperation::kList))));
   BatchPreparedInput prepared;
   auto reply = BatchPreparation(objects).Prepare(
       Access(), work.id, work.endpoint, work.row, fixture.config, &prepared);
-  Q4T_CHECK(!reply.ok() && reply.commit_unknown &&
-            !prepared.reference.id.empty() && prepared.hold.commit_unknown);
+  Q4T_CHECK(!reply.ok());
+  Q4T_CHECK(reply.commit_unknown);
+  Q4T_CHECK(!prepared.reference.id.empty());
+  Q4T_CHECK(prepared.hold.commit_unknown);
   BatchPreparation(objects).Published(Access(), &prepared, true);
   Q4T_CHECK(!prepared.hold.released);
   ObjectWorkerEntryForTesting({});
-  const auto deadline = Clock::now() + 1s;
+  const auto deadline = Clock::now() + 3s;
   while (objects.Health().pending && Clock::now() < deadline)
     std::this_thread::sleep_for(1ms);
   const auto root = Run(objects, Request(ObjectKind::kInputSnapshot,

@@ -141,6 +141,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
+普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；
+拆开复合断言以定位子条件。本机2项1.115秒通过、构建零警告，生产
+代码/时限未变；最终head两组CI仍须通过。PR43纳入意图容量修复的
+原生发行入口收尾，准备当前身份day后统一推送，全部master继续。
+
 [rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；

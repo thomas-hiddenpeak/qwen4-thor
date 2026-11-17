@@ -1,0 +1,2 @@
+batch_preparation_unknown_snapshot_receipt_keeps_private_identity
+batch_jobs_dead_owner_recounts_original_usage_before_next_invocation

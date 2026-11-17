@@ -1,0 +1,3 @@
+[PASS] batch_preparation_unknown_snapshot_receipt_keeps_private_identity
+[PASS] batch_jobs_dead_owner_recounts_original_usage_before_next_invocation
+2 tests, 2 passed, 0 failed, 0 skipped
