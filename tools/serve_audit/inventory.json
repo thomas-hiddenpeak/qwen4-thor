@@ -2453,7 +2453,7 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_asr.cpp": "4078ad47eb751f80bc8f1e98de3b35f66024b51b97f77dadb8770f1e9bc9829a",
+    "src/server/chat_asr.cpp": "3f161332c66956878ec08bd1ab33904dafafe1e9a344ae5aa910612a13cb4d62",
     "src/server/chat_asr_backend.cpp": "ea7cba81bf63e96972cfb35483db9ddd3ffae3cb02950ffda74ab964a666611a",
     "src/server/chat_asr_execution.cpp": "198a38b7665e5a70ae8f012ddb2f70f95b3ed8b467474f62e92346950c3661e8",
     "src/server/chat_capabilities.cpp": "6a68f52474b0c4a83406cf5c57cf6fb4547d1b211a0109902d47e47ab76f09a9",

@@ -12,7 +12,10 @@ ASR首轮真实HTTP发现读包层仍套用4KiB控制上限，音频在到达处
 结束、模型全部1606项分配释放。现补齐共享转录路由、32MiB读包
 预算、客户端文件配额和原生入口流式上传上限；
 [3项CPU通过](evidence/serve-asr-transport-20261117/README.md)，0.063秒。
-随后继续1启动/9创建/600秒的实际SDK与隔离恢复短验。尚无本组
+service-http-03已越过传输层，但处理器传入空codec归属，被既有隔离
+保护拒绝；原FAILED保留（1启动/1创建/38.586秒），模型及GPU全部
+清理。已按认证客户端/本机匿名合同补齐传递，复用未变codec保护
+CPU；下一组仍为1启动/9创建/600秒，不重复无关测试。尚无本组
 HTTP通过结论；默认及day保持，全部master继续。
 
 [ASR03的34项针对性CPU](evidence/serve-asr-service-cpu-20261117/README.md)

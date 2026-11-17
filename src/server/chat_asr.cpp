@@ -105,7 +105,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
                         reply.ClientCode(), reply.value.GetString("param"));
     };
     if (request.stream) http->SetTranscriptionStream();
-    const BinaryAccess access{{}, control->deadline(), cancelled};
+    const auto& client = http->Client();
+    const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
+                                       : "local:anonymous";
+    const BinaryAccess access{scope, control->deadline(), cancelled};
     ObjectReply reply;
     {
       RequestDiagnostics::Scope waiting(diagnostic,

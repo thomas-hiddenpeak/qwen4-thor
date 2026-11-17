@@ -2169,7 +2169,8 @@
         "evidence/serve-native-embedding-numerical-20261111/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-asr-transport-20261117/README.md"
+        "evidence/serve-asr-transport-20261117/README.md",
+        "evidence/serve-asr-scope-20261117/README.md"
       ],
       "release": null,
       "findings": [
@@ -2565,6 +2566,14 @@
             "creates": 9,
             "seconds": 600
           }
+        },
+        "scope_fix": {
+          "state": "implemented_real_business_pending",
+          "evidence": "evidence/serve-asr-scope-20261117/README.md",
+          "original_failure_preserved": true,
+          "attempt_starts": 1,
+          "attempt_creates": 1,
+          "seconds": 38.58553350623697
         }
       }
     },
