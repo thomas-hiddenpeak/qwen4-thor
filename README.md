@@ -856,8 +856,8 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 
 ## 原生音频
 
-原生转录、词时间戳、完整segment统计、SRT/VTT和VAD切片已在
-[rev286可回退交付](docs/evidence/serve-audio-auxiliary-delivery-20261118/README.md)。
+原生转录、词时间戳、完整segment统计、SRT/VTT、VAD切片和说话人
+标注已在[rev296可回退交付](docs/evidence/serve-speaker-delivery-20261118/README.md)。
 支持multipart、JSON/text/SSE、实际usage/logprobs、language/prompt、
 取消及显式资源预算。双SDK、原生TLS、主轻与整包恢复后的实际多段
 对齐均有[业务证据](docs/evidence/serve-audio-auxiliary-service-20261118/README.md)。
@@ -886,12 +886,24 @@ ASR资产通过`--asr-model-dir DIR`按部署启用；固定revision/权重在
 Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
 日/韩分词已实现，实际语言业务与人工时间精度尚未验收。
 
-原生说话人后端正在实现，参考SpeechBrain ECAPA-TDNN及其Fbank
-合同；固定来源、作者和Apache-2.0许可见
-[声明](third_party/licenses/speechbrain/README.md)。权重按部署启用，
-开发专用转换/参考工具不成为服务运行依赖；当前尚未交付说话人接口。
+原生说话人后端通过`--speaker-model-dir DIR`启用，同时配置ASR、
+对齐和VAD资产。`POST /v1/audio/transcriptions`使用
+`response_format="diarized_json"`和`chunking_strategy="auto"`，
+返回实际声音聚类与词时间戳对应的说话人片段，支持JSON/SSE；
+`known_speaker_names`和`known_speaker_references`可提交最多4人的
+2—10秒音频参考，仅在当前请求内匹配，不接外部身份数据库。
+窗口长度/步长默认3000/750毫秒，可用`--speaker-window-ms`和
+`--speaker-step-ms`调整；`--speaker-max-windows`、
+`--speaker-max-speakers`、`--speaker-workspace-mib`限制窗口、人数和
+工作区（CLI默认256/16/128）。rev296已验托管配置明确使用8个窗口，
+超限返回容量错误。speaker资产失效不拖停健康Chat/ASR，真正设备
+故障仍保留保护。使用与资产准备见[说明](tools/native_speaker/README.md)。
 
-说话人、Chat音频、语音合成和Realtime继续按
+实现参考SpeechBrain ECAPA-TDNN及其Fbank合同；固定来源、作者和
+Apache-2.0许可见[声明](third_party/licenses/speechbrain/README.md)。
+权重按部署启用，开发专用转换/参考工具不成为服务运行依赖。
+
+重叠语音的实际检测/分离、Chat音频、语音合成和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整
 长稳交接仍属于Q03待完成项，长稳实跑由用户执行。

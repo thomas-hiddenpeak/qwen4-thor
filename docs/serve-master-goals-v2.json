@@ -3384,6 +3384,44 @@
         "all_master_tasks_complete": false,
         "archive_sha256": "c2474ce40dfb3f914041929767a30d7be335b12e21cc7e3c5d91ac4048e7df1f",
         "secret_scan_matches": 0
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -4445,6 +4483,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -5326,7 +5402,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev286 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev296 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -5976,6 +6052,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -6015,42 +6129,42 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_AUDIO_AUXILIARY_DELIVERY",
-        "revision": 286,
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
         "current": {
-          "engine_binary_sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
-          "engine_release_sha256": "3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e",
-          "generation_sha256": "e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752",
-          "manifest_sha256": "93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/service-package-03/bundle",
-          "service_acceptance_sha256": "d1f3ea668988148984b0a16e1cac56841be7f27915ea23207b1d5190fdc41ebd",
-          "service_release_sha256": "50276e463193da5a4d4f890eb1f3943298292199a8d9eb31d685bc04cbaf0a3d"
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
         },
         "commands": 19,
-        "seconds": 275.8470332380384,
+        "seconds": 262.46435551485047,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5",
-        "automatic_payload": "afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934",
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
         "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "previous_rev276_preserved": true,
+        "previous_rev286_preserved": true,
         "retired_intents_archived": 4,
-        "retired_generations_archived": 2,
-        "retired_versions_archived": 2,
-        "maintenance_original_timeout_preserved": true,
-        "maintenance_cumulative_seconds": 122.27650483138859,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
         "deleted_files": 0,
-        "files": 82,
+        "files": 84,
         "secret_scan_matches": 0,
-        "archive_sha256": "3976d544e5abba933f43141a4ce855259aaf4a69bd7758c984a77ee777de0358",
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -6217,7 +6331,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "PR45 final-head checks and actual main merge",
+        "Speaker PR final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -6636,6 +6750,44 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "speaker_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
+        "revision": 296,
+        "current": {
+          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
+          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
+          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+        },
+        "commands": 19,
+        "seconds": 262.46435551485047,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
+        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev286_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 4,
+        "retired_versions_archived": 3,
+        "maintenance_original_rejected_plan_preserved": true,
+        "maintenance_cumulative_seconds": 102.27289623068646,
+        "deleted_files": 0,
+        "files": 84,
+        "secret_scan_matches": 0,
+        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
       }
     },
     {
@@ -6827,8 +6979,8 @@
       }
     }
   ],
-  "next_task": "A10 real native diarization HTTP/SDK qualification, service recovery/delivery and overlap implementation; all remaining master tasks",
-  "next": "Complete real speaker business and usable recovery/delivery, overlap detection/separation and remaining audio/A/N/R/Q tasks. PR45 is merged. No phase-level total completion.",
+  "next_task": "Speaker main integration and A10 overlap separation plus all remaining master tasks",
+  "next": "Complete speaker main integration, actual overlap detection/separation, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
