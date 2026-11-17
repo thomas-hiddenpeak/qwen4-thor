@@ -1,0 +1,6 @@
+{
+  "status": "FAILED_PREPARE",
+  "gpu_actions": 0,
+  "package_created": false,
+  "reason": "runtime union includes unchanged third_party/quickjs/SOURCE.json absent from direct plan; its actual compiled snapshot is retained separately"
+}

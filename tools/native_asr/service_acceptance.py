@@ -5,11 +5,13 @@ transcription wire is required; CPU fixtures never qualify a service payload.
 """
 import base64
 import copy
+import hashlib
 import http.client
 import json
 import os
 from pathlib import Path
 import runpy
+import re
 import socket
 import ssl
 import subprocess
@@ -26,7 +28,8 @@ VERSION, MANAGED, LEGACY = BASE['VERSION'], BASE['MANAGED'], BASE['LEGACY']
 require, save = BASE['require'], BASE['save']
 LIMITS = dict(tool_retained=dict(starts=1, chats=3, probes=0, controls=1500, seconds=300),
               tool_version=dict(starts=2, chats=6, probes=1, controls=2500, seconds=600),
-              tls=dict(starts=1, chats=7, probes=0, controls=2000, seconds=600))
+              tls=dict(starts=1, chats=7, probes=0, controls=2000, seconds=600),
+              tls_remaining=dict(starts=1, chats=3, probes=0, controls=2000, seconds=600))
 WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
@@ -52,7 +55,7 @@ def prepare(args):
     digest = engine.sha(pack/'manifest.json'); manifest = bundle.verify(pack, digest)
     policy = engine.read(pack/'gateway-policy.json')
     require(manifest['ingress_mode'] == 'native' and
-        bool(manifest['tls']) == (args.scenario == 'tls') and
+        bool(manifest['tls']) == args.scenario.startswith('tls') and
         policy['listen_host'] == '127.0.0.1' and
         manifest['recovery_profiles']['identity'].get('native_asr'),
         'exact native ASR qualified payload/TLS mode required')
@@ -88,7 +91,7 @@ def prepare(args):
     plan['sources'][plan['sdk']['node']['path']] = plan['sdk']['node']['sha256']
     require(all(engine.sha(ROOT/name) == digest for name, digest in plan['sources'].items()),
             'frozen validation source changed')
-    if args.scenario == 'tls':
+    if args.scenario.startswith('tls'):
         # This bounded fixture uses its private self-signed certificate as CA.
         # Hostname and certificate verification stay enabled in both SDKs.
         cert = Path(manifest['tls_configuration']['certificate']).resolve(strict=True)
@@ -104,6 +107,13 @@ def prepare(args):
             limits['alpha']['max_file_body_bytes'] >= 3*1024**2 and
             limits['beta']['max_file_body_bytes'] == 65536,
             'distinct file upload limits required')
+    if args.scenario == 'tls_remaining':
+        require(args.retained is not None, 'original failed TLS evidence required')
+        reused = reuse_tls(args.retained)
+        require(reused['package'] == plan['package'], 'continuation must use exact original pack')
+        plan['reused_tls'] = reused
+        plan['prior_evidence'] = [dict(path=str(Path(reused['directory'])/name), sha256=digest)
+                                  for name, digest in reused['files'].items()]
     if args.scenario == 'tool_version':
         from tools.serve_recovery import version_contract
         require(args.retained and args.release and args.decision,
@@ -139,30 +149,122 @@ def stream_value(raw):
     return final
 
 
+def metric_values(raw):
+    """Keep the public sanitized parser; add one exact native cleanup gauge."""
+    from tools.serve_ops import contracts
+    values, _ = contracts.parse_metrics(raw, version=5)
+    rows = [line for line in raw.splitlines()
+            if line.startswith('q4t_structured_cleanup_pending')]
+    require(len(rows) == 1 and re.fullmatch(r'q4t_structured_cleanup_pending [0-9]+', rows[0]),
+            'missing or invalid native cleanup gauge')
+    value = int(rows[0].split()[1])
+    require(value < 2**64, 'native cleanup gauge overflow')
+    return dict(values, q4t_structured_cleanup_pending=value)
+
+
+def reuse_tls(directory):
+    """Recheck completed observations without changing the original FAILED."""
+    directory = Path(directory).resolve(strict=True)
+    require(directory.is_relative_to(WORK), 'TLS predecessor outside private workspace')
+    read = lambda n: json.loads((directory/n).read_text())
+    plan, outcome = read('plan.json'), read('execution/result.json')
+    require(plan['scenario'] == 'tls' and outcome['status'] == 'FAILED' and
+        outcome['cleanup_failure'] is None and
+        "KeyError: 'q4t_structured_cleanup_pending'" in outcome['failure'] and
+        outcome['budget']['counts']['starts'] == 1 and
+        outcome['budget']['counts']['chats'] == 5 and
+        outcome['budget']['counts']['probes'] == 0, 'unexpected TLS predecessor')
+    for name, digest in plan['sources'].items():
+        if name != 'tools/native_asr/service_acceptance.py':
+            require(hashlib.sha256((ROOT/name).read_bytes()).hexdigest() == digest,
+                    'completed TLS source changed: '+name)
+    from tools.serve_recovery import bundle
+    bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
+    for row in [*plan['protected'], *plan['tls_inputs'].values()]:
+        require(hashlib.sha256(Path(row['path']).read_bytes()).hexdigest() == row['sha256'],
+                'TLS predecessor protected artifact changed')
+    guard = read('lease/exit.json')
+    require(guard['status'] == 'COMMAND_FAILED' and guard['child_returncode'] == 1 and
+        guard['compute_backend'] == 'nvml' and guard['lease_inherited_by_child'] is True and
+        guard['external_lease'] is False and guard['command'] == plan['command'],
+        'environment abort cannot qualify completed TLS observations')
+    queries = [json.loads(line) for line in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()]
+    require(queries and all(q['status'] == 'OK' and q['returncode'] == 0 for q in queries),
+            'TLS predecessor monitoring gap')
+    state = read('execution/state/ledger.json')['state'];stopped = read('execution/stop.json')
+    require(stopped['cleanup_confirmed'] and stopped['stop_durable'] and
+        state['desired'] == 'STOPPED' and all(v is None for v in state['active'].values()),
+        'TLS predecessor cleanup incomplete')
+    out = directory/'execution'
+    for label in ('python-zh-json', 'chunked-zh'):
+        answer = read('execution/'+label+'.wire')
+        direct().usage(answer);direct().quality(answer['text'], 'zh')
+    direct().quality(stream_value((out/'js-en-stream.wire').read_bytes())['text'], 'en')
+    for label, status in [('beta-file-limit', 413), ('unauthorized', 401), ('chunked-zh', 200)]:
+        require(read('execution/'+label+'-http.json')['status'] == status, 'TLS scope/transport result differs')
+    require(read('execution/chunked-zh-http.json')['chunked'] is True, 'chunked evidence missing')
+    for label, version in [('python-zh-json', '2.8.1'), ('js-en-stream', '7.47.0')]:
+        sdk = read('execution/'+label+'.sdk.json')
+        require(sdk['ok'] and sdk['version'] == version and len(sdk['exchanges']) == 1,
+                'TLS SDK completed observation differs')
+    before = read('execution/ready-1.json')
+    statuses = [json.loads(line) for line in (out/'status.jsonl').read_text().splitlines()]
+    after = [s for s in statuses if s['business_ready'] and
+             s['gateway_generation'] == before['gateway_generation']+1]
+    require(after and all(after[-1][k] == before[k] for k in
+        ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')),
+        'gateway recovery did not preserve healthy core')
+    records = [p for p in directory.rglob('*') if p.is_file() and
+        (p.parent == directory or p.parent == directory/'lease' or p.parent == out or
+         p == out/'state/ledger.json') and p.suffix in ('.json', '.jsonl', '.wire', '.log')]
+    # Private credentials and runtime configs never leave the original folder.
+    files = {str(p.relative_to(directory)):hashlib.sha256(p.read_bytes()).hexdigest()
+             for p in records}
+    return dict(status='COMPLETED_TLS_OBSERVATIONS_REUSED_ORIGINAL_FAILED',
+        directory=str(directory), package=plan['package'], files=files,
+        counts=outcome['budget']['counts'], seconds=outcome['seconds'],
+        native_gateway_recovered_without_model_restart=True, nvml_queries=len(queries))
+
+
+ORIGINAL_ACCEPTED_RUN = BASE['accepted_run']
+
+
+def accepted_run(plan, *args):
+    result = ORIGINAL_ACCEPTED_RUN(plan, *args)
+    if 'reused_tls' in plan:
+        require(reuse_tls(plan['reused_tls']['directory']) == plan['reused_tls'],
+                'original TLS observations changed')
+        result['reused_tls'] = plan['reused_tls']
+        result['original_continuous_tls_driver_passed'] = False
+    return result
+
+
 def check_business(out):
     read = lambda n: json.loads((out/n).read_text())
     plan = json.loads((out.parent/'plan.json').read_text())
-    tls, version = plan['scenario'] == 'tls', plan['scenario'] == 'tool_version'
+    tls, version = plan['scenario'].startswith('tls'), plan['scenario'] == 'tool_version'
+    completed = Path(plan['reused_tls']['directory'])/'execution' if 'reused_tls' in plan else out
+    completed_read = lambda n: json.loads((completed/n).read_text())
     results = {}
     for label in (['python-zh-json', 'chunked-zh'] if tls else
                   ['primary-asr', 'fallback-asr'] if version else ['primary-asr']):
-        raw = (out/(label+'.wire')).read_bytes()
+        raw = ((completed if tls else out)/(label+'.wire')).read_bytes()
         answer = stream_value(raw) if label == 'fallback-asr' else json.loads(raw)
         direct().usage(answer);results[label] = direct().quality(answer['text'], 'zh')
     if tls:
         results['js-en-stream'] = direct().quality(
-            stream_value((out/'js-en-stream.wire').read_bytes())['text'], 'en')
-        require(read('beta-file-limit-http.json')['status'] == 413 and
-            read('unauthorized-http.json')['status'] == 401, 'scope/upload guards failed')
+            stream_value((completed/'js-en-stream.wire').read_bytes())['text'], 'en')
+        require(completed_read('beta-file-limit-http.json')['status'] == 413 and
+            completed_read('unauthorized-http.json')['status'] == 401, 'scope/upload guards failed')
         for label in ('python-zh-json', 'js-en-stream'):
-            sdk = read(label+'.sdk.json')
+            sdk = completed_read(label+'.sdk.json')
             require(sdk['ok'] and len(sdk['exchanges']) == 1, 'SDK retried or failed')
             if label == 'python-zh-json':
                 require(sdk['version'] == '2.8.1' and
-                    sdk['result']['text'] == read(label+'.wire')['text'], 'Python SDK text differs')
+                    sdk['result']['text'] == completed_read(label+'.wire')['text'], 'Python SDK text differs')
                 direct().usage(sdk['result'], sdk=True)
             else:
-                events = [json.loads(line[6:]) for line in (out/(label+'.wire')).read_text().splitlines()
+                events = [json.loads(line[6:]) for line in (completed/(label+'.wire')).read_text().splitlines()
                           if line.startswith('data: {')]
                 require(sdk['version'] == '7.47.0' and sdk['result']['events'] == events,
                         'JS SDK event projection differs')
@@ -196,11 +298,12 @@ def check_business(out):
                 'stored Chat lost on recovery')
     else:
         require(all(before[k] == after[k] for k in fields), 'healthy core restarted')
-        if tls:
+        if tls and 'reused_tls' not in plan:
             require(after['gateway_generation'] == before['gateway_generation']+1 and
                 after['gateway_pid'] != before['gateway_pid'], 'native gateway did not recover')
     return dict(results=results, native_tls=tls, version_recovery=version,
-                health=health, actual_core_text='42', default_replaced=False)
+                health=health, actual_core_text='42', default_replaced=False,
+                reused_completed=plan.get('reused_tls'))
 
 
 def business_record(version):
@@ -214,7 +317,7 @@ class Stage(BASE['Stage']):
             else LEGACY['Stage'].initialize_state(self)
 
     def connection(self):
-        if self.plan['scenario'] == 'tls':
+        if self.plan['scenario'].startswith('tls'):
             context = ssl.create_default_context(cafile=self.plan['tls_inputs']['ca']['path'])
             return http.client.HTTPSConnection('127.0.0.1', self.port, timeout=120, context=context)
         return http.client.HTTPConnection('127.0.0.1', self.port, timeout=120)
@@ -297,14 +400,14 @@ class Stage(BASE['Stage']):
                 'actual native TLS SDK failed: '+label)
 
     def drained(self, label):
-        from tools.serve_ops import contracts, transport
+        from tools.serve_ops import transport
         end = time.monotonic()+5
         observations = []
         while time.monotonic() < end:
             self.budget.reserve('controls', label)
             response = transport.get(self.policy['upstream_operations_port'], '/metrics', timeout=1)
             require(response['http_status'] == 200, 'metrics unavailable')
-            values, _ = contracts.parse_metrics(response['body'], version=5)
+            values = metric_values(response['body'])
             observations.append(dict(response=response, values=values))
             save(self.output/(label+'.json'), observations)
             if (values['q4t_seq_slots_free'] == values['q4t_seq_slots_total'] == 1 and
@@ -318,18 +421,19 @@ class Stage(BASE['Stage']):
         raise TimeoutError('owned ASR request did not drain')
 
     def exercise(self):
-        version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'] == 'tls'
+        version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'].startswith('tls')
         first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')
         self.request('capabilities', path='/v1/capabilities')
         if tls:
-            self.request('unauthorized', client='invalid', expected=401)
-            self.sdk('python-zh-json', 'zh', python=True)
-            self.kill(first, 'gateway', 'native-asr-gateway-exit')
-            self.wait(lambda s:s['business_ready'] and
-                      s['gateway_generation'] == first['gateway_generation']+1)
-            self.sdk('js-en-stream', 'en')
-            self.audio('beta-file-limit', client='beta', expected=413)
-            self.audio('chunked-zh', chunked=True)
+            if 'reused_tls' not in self.plan:
+                self.request('unauthorized', client='invalid', expected=401)
+                self.sdk('python-zh-json', 'zh', python=True)
+                self.kill(first, 'gateway', 'native-asr-gateway-exit')
+                self.wait(lambda s:s['business_ready'] and
+                          s['gateway_generation'] == first['gateway_generation']+1)
+                self.sdk('js-en-stream', 'en')
+                self.audio('beta-file-limit', client='beta', expected=413)
+                self.audio('chunked-zh', chunked=True)
             before = self.drained('before-cancel')
             self.audio('cancel-stream', stream=True, cancel=True, language='en')
             after = self.drained('after-cancel')
@@ -359,6 +463,7 @@ class Stage(BASE['Stage']):
 
 GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prepare,
                Stage=Stage, check_business=check_business, business_record=business_record,
+               accepted_run=accepted_run,
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__

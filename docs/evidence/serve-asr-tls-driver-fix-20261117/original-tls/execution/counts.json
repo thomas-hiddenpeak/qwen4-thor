@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "probes": 0,
+    "controls": 178
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 3102384008198990
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 3102417845918255
+    },
+    {
+      "kind": "chats",
+      "label": "python-zh-json",
+      "ordinal": 2,
+      "monotonic_ns": 3102420364367485
+    },
+    {
+      "kind": "chats",
+      "label": "js-en-stream",
+      "ordinal": 3,
+      "monotonic_ns": 3102430948550705
+    },
+    {
+      "kind": "chats",
+      "label": "beta-file-limit",
+      "ordinal": 4,
+      "monotonic_ns": 3102433598164148
+    },
+    {
+      "kind": "chats",
+      "label": "chunked-zh",
+      "ordinal": 5,
+      "monotonic_ns": 3102433823102022
+    }
+  ]
+}
