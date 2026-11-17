@@ -20,3 +20,8 @@ target_link_libraries(q4t_separator_component PUBLIC
 target_compile_options(q4t_separator_component PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Werror>
   $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Werror>)
+add_executable(q4t_separator_replay model_replay.cpp
+  ${Q4T_ROOT}/src/trace/sha256.cpp
+  ${Q4T_ROOT}/src/runtime/system_memory.cpp)
+target_link_libraries(q4t_separator_replay PRIVATE q4t_separator_component)
+target_compile_options(q4t_separator_replay PRIVATE -Wall -Wextra -Werror)

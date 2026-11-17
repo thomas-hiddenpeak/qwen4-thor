@@ -1,0 +1,9 @@
+{
+  "status": "ACCEPT_SEPARATOR_VALIDATOR_CPU",
+  "tests": 4,
+  "seconds": 0.16388845397159457,
+  "gpu_loads": 0,
+  "http_requests": 0,
+  "native_replay_zero_warnings": true,
+  "archive_sha256": "a0ddd8cf0109d52d14a08e4b568d9f9e9f68694fdbd1f23235a5304dd9454a64"
+}

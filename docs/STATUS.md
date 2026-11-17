@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[分离验收器4CPU通过](evidence/serve-separator-validator-20261118/README.md)，
+0.164秒、0GPU，原样混音/丢失一路等负控有效；replay零警告。
+接着已冻结1GPU/1CPU参考/4输入/600秒实际组件短验；默认rev296
+保持，PR46检查独立，真实音频业务/恢复及全部master继续。
+
+分离实际组件驱动已固定：4验收器CPU/60秒后，同一严格租约
+1GPU模型/1CPU参考/4输入/600秒，0HTTP/主模型。七阶段28数值、
+四个Finish、24边界/生命周期与实际双声各≥5dB改善分别核对；
+不能以复制混音或丢一路通过。默认rev296与PR46冻结保持，全部
+实际音频业务/恢复和master任务继续。
+
 [分离布局6CPU通过](evidence/serve-separator-layout-20261118/README.md)，
 0.004秒、0GPU/HTTP；全部缓冲区/原始权重绑定与非法边界通过，
 CUDA组件零警告。继续固定官方七阶段数值、真实双声混音/业务和
