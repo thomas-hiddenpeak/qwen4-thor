@@ -583,3 +583,5 @@
 - [rev266原生保留管理实际交付](evidence/serve-native-maintenance-delivery-20261117/README.md)：旧计划原样恢复、整根回退与再前进、预算保持。
 
 - [rev260客户端回执可回退交付](evidence/serve-client-receipts-delivery-20261117/README.md)：审核信息/恢复终态及发布意图容量的实际修复。
+
+- [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)：真实转录、独立资源和可回退服务恢复。

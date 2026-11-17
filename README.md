@@ -854,22 +854,30 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 [Completions合同](docs/SERVE_COMPLETIONS_2026-11-08.md)及
 [官方SDK接入示例](tools/serve_completions/sdk.mjs)。
 
-## 许可证
+## 原生音频
 
-原生音频后端正在实现；固定Qwen3-ASR-0.6B的官方配置和权重合同，
-当前代码包含原生校验、log-mel、encoder/decoder与公开元数据夹具；
-两段真实转录和定点数值证据已记录，尚不代表转录接口已交付。
-模型资产按部署启用，原生实现不要求vLLM或Transformers服务。
-固定资产的[隔离读取与取消/故障检查](docs/evidence/serve-asr-assets-20261117/README.md)
-已经通过；ASR复用embedding的有界读取槽，元数据模式不打开权重，
-完整SHA和tensor合同通过后才发布对象。转录服务接入继续实现。
-音频codec已通过[针对性CPU验证](docs/evidence/serve-audio-codec-cpu-20261117/README.md)：
-隔离worker复用系统GStreamer的音频库/固定插件，核心不链接或加载
-它们，不启动外部解码程序。按官方API适配、未复制codec源码；系统
-插件保留其LGPL等发行许可，仅影响对应媒体请求，HTTP集成继续。
-来源、固定revision与Apache-2.0许可见
-[Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)，
-实施与验证见[音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)。
+原生Qwen3-ASR-0.6B转录已在rev276可回退交付，支持multipart
+JSON/text/SSE、实际usage/logprobs、language/prompt、取消和显式
+资源预算。中英文真实音频、双SDK、原生TLS、主轻与整包恢复均有
+[分项业务证据](docs/evidence/serve-asr-service-composition-20261117/README.md)。
+原数值差分和TLS驱动失败保留；不作完整模型质量或长稳主张。
+
+ASR资产按部署通过`--asr-model-dir DIR`启用，固定revision/权重
+合同在加载时核验，不要求vLLM或Transformers运行服务。默认预算为
+30秒音频、4096上下文token、1024输出token、1024MiB workspace；
+可用`--asr-max-audio-seconds`、`--asr-max-context-tokens`、
+`--asr-max-output-tokens`、`--asr-workspace-mib`显式调整。托管
+服务准备命令也接收这些选项；独立客户端上传/输入/输出额度仍生效。
+ASR或codec故障隔离于相应请求，真正共享设备故障仍保留保护。
+
+音频codec在隔离worker复用系统GStreamer音频库/固定插件，核心
+不链接或加载它们，不启动外部解码程序。按官方API适配，未复制
+codec源码；系统插件保留其LGPL等发行许可。模型来源、固定revision
+与Apache-2.0许可见[Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)。
+时间戳/字幕/说话人/VAD、Chat音频、语音合成及Realtime继续按
+[总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
+
+## 许可证
 
 MIT (项目代码)。模型权重遵循其发布方条款。
 

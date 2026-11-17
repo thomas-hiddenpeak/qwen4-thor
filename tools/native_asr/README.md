@@ -4,8 +4,8 @@ Runtime code lives in `include/q4t/audio`, `src/audio`, and the ASR tokenizer
 profile. The fixed Qwen3-ASR-0.6B backend now performs real multipart JSON/text/SSE
 transcription, with bounded codec/model resources and fault isolation.
 Actual direct HTTP, pinned Python/JS SDK, native TLS, primary/light profiles
-and retained/whole-payload recovery are qualified; reversible delivery is
-next. CPU evidence alone never qualifies an audio endpoint.
+and retained/whole-payload recovery are qualified and reversibly delivered
+in rev276. CPU evidence alone never qualifies an audio endpoint.
 
 `feature_reference.py` generates six synthetic PCM/log-mel fixture pairs using
 the installed official Whisper feature extractor. It disables visible GPUs,

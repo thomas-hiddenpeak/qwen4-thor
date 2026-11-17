@@ -20,12 +20,11 @@ ASR私有健康采用同引擎现代保留控制的独立证据，明确不是�
 终态观测。ASR ready、compute_failures=0，取消后核心Chat42；
 整包回退保留存储Chat和原profile预算。
 
-下一步STOPPED可回退发布和实际合main。先用已验维护入口归档
-4条无活动引用的旧意图、2份旧发布副本和2条退休版本登记，为本次
-5个发布步骤/2个根/2个周期留容量：最多8条维护命令、300秒、0GPU，
-[容量已预留](evidence/serve-asr-delivery-capacity-20261117/README.md)，8命令/121.637秒，原两个驱动失败保留，0删除/0GPU；可恢复档案和全部核心/client/outer/profile/version预算保持。
-随后最多20条STOPPED交付命令/600秒，验证实际整根回退再前进，
-不追加已通过GPU组合；当前rev266及原用户day仍保持。
+[rev276可回退交付已完成](evidence/serve-asr-delivery-20261117/README.md)：
+19项STOPPED命令/273.956秒，实际整根回退与再前进通过，
+0新增GPU。原核心/client/outer预算与各根周期保持，profile显式
+增加ASR；退休记录可恢复归档，原rev266和day保持。继续固定
+当前用户day入口、PR44最终检查和实际合main，随后所有剩余任务。
 
 [直接HTTP分项接受](evidence/serve-asr-http-20261117/README.md)、
 [主轻真实资格](evidence/serve-asr-profiles-20261117/README.md)、
@@ -48,19 +47,24 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev266；服务包 `82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2` |
-| Generation | `e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db` |
-| 引擎 | `7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376` |
-| 引擎发布记录 | `be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806` |
-| Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
-| 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
+| 发布 | rev276；服务包 `4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc` |
+| Generation | `ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc` |
+| 引擎 | `b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7` |
+| 引擎发布记录 | `f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7` |
+| Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
+| 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | rev260根 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64`；原周期/原生入口已验；旧包无新增维护子命令 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0`；不是独立旧引擎回退 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
+| 人工整包回退 | 现代保留根 `0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21`；ASR/原周期/原生入口已验，前驱rev266另保留 |
+| 自动payload回退 | 已验旧控制/当前ASR引擎包 `055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR模型按部署显式启用，codec按请求隔离加载，失效不拖停健康Chat |
 
-[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+[rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
+19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
+ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
+原rev266及day保留；继续独立长稳交接、PR44合main与全部master。
+
+前驱[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
@@ -179,6 +183,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
+19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
+ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
+原rev266及day保留；继续独立长稳交接、PR44合main与全部master。
 
 [PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
 普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；

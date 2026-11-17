@@ -2660,6 +2660,39 @@
         "original_tls_failures_preserved": true,
         "full_model_quality": false,
         "performance_claim": false
+      },
+      "native_asr_delivery_20261117": {
+        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+        "revision": 276,
+        "current": {
+          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+        },
+        "commands": 19,
+        "seconds": 273.9558519902639,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev266_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 61,
+        "secret_scan_matches": 0,
+        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+        "main_integration_pending": true,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
       }
     },
     {
@@ -3650,6 +3683,39 @@
         "original_tls_failures_preserved": true,
         "full_model_quality": false,
         "performance_claim": false
+      },
+      "native_asr_delivery_20261117": {
+        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+        "revision": 276,
+        "current": {
+          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+        },
+        "commands": 19,
+        "seconds": 273.9558519902639,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev266_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 61,
+        "secret_scan_matches": 0,
+        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+        "main_integration_pending": true,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
       }
     },
     {
@@ -4531,7 +4597,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh against rev266 or then-current exact package before cold qualification; pending camera/jtop handoff remains required, do not stop other services."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev276 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -5110,6 +5176,39 @@
         "original_tls_failures_preserved": true,
         "full_model_quality": false,
         "performance_claim": false
+      },
+      "native_asr_delivery_20261117": {
+        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+        "revision": 276,
+        "current": {
+          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+        },
+        "commands": 19,
+        "seconds": 273.9558519902639,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev266_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 61,
+        "secret_scan_matches": 0,
+        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+        "main_integration_pending": true,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
       }
     },
     {
@@ -5149,38 +5248,37 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "PASS_NATIVE_MAINTENANCE_DELIVERED",
-        "revision": 266,
+        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+        "revision": 276,
         "current": {
-          "engine_binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
-          "engine_release_sha256": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
-          "generation_sha256": "e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db",
-          "manifest_sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle",
-          "service_acceptance_sha256": "35ca582780b4ef6c27c445a8cb68fece8990c5940b442a4947acaede8600d4a8",
-          "service_release_sha256": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec"
+          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
         },
-        "commands": 15,
-        "seconds": 196.49171965103596,
+        "commands": 19,
+        "seconds": 273.9558519902639,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "engine_protocol_native_runtime_clients_profiles_unchanged": true,
-        "original_cycles_and_budgets_preserved": true,
-        "legacy_entry_check_and_version_status_passed": true,
-        "manual_root": "168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64",
-        "automatic_payload": "087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0",
+        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "pool_used": {
-          "intents": 125,
-          "generations": 31,
-          "versions": 15
-        },
+        "previous_rev266_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
         "deleted_files": 0,
-        "archive_sha256": "0dd7bb4ac07a02840c011117ed006d27a339037dd328935c570d55549ab53565",
+        "files": 61,
         "secret_scan_matches": 0,
+        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
         "main_integration_pending": true,
+        "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "docs/evidence/serve-native-maintenance-delivery-20261117/README.md"
+        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -5347,7 +5445,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Reversible native ASR delivery and actual main merge, then every remaining implementation",
+        "Native ASR PR44 final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5686,6 +5784,39 @@
         "original_tls_failures_preserved": true,
         "full_model_quality": false,
         "performance_claim": false
+      },
+      "native_asr_delivery_20261117": {
+        "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+        "revision": 276,
+        "current": {
+          "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+          "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+          "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+          "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+          "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+          "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+        },
+        "commands": 19,
+        "seconds": 273.9558519902639,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+        "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev266_preserved": true,
+        "retired_intents_archived": 4,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 61,
+        "secret_scan_matches": 0,
+        "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+        "main_integration_pending": true,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-asr-delivery-20261117/README.md"
       }
     },
     {
@@ -5865,7 +5996,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "ASR real TLS/retained/whole-payload composition accepted with original failed drivers preserved; perform bounded STOPPED reversible delivery and main merge. Continue every remaining master task.",
+  "next": "Freeze current ASR day handoff, finish PR44 checks and actual main merge; implement every remaining Serve master-plan task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
