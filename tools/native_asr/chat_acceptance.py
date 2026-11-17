@@ -4,6 +4,7 @@ import base64
 import copy
 from dataclasses import asdict
 import http.client
+import hashlib
 import io
 import json
 import os
@@ -28,6 +29,7 @@ WORK = ROOT / '.q4t-work/serve-chat-audio-20261118'
 FIXTURES = WORK / 'fixtures-02'
 LIMITS = dict(starts=1, chats=13, controls=2000, seconds=900)
 CONTINUATION_LIMITS = dict(LIMITS, chats=11)
+REMAINING_LIMITS = dict(LIMITS, chats=9)
 HEADERS = {'X-Q4T-Client-Id': 'chat-audio', 'X-Q4T-Gateway-Token': 'c' * 64}
 
 
@@ -160,6 +162,23 @@ def usage(value):
         'q4t_audio_preparation', 'prompt_tokens_details')}
 
 
+def stored_history(value, request):
+    rows = value['data']
+    expected = materialize(request)['messages']
+    require(len(rows) == len(expected), 'stored message count changed')
+    fingerprints = []
+    for row, source in zip(rows, expected):
+        require(row['role'] == source['role'] and row['content_parts'] == source['content'],
+            'stored multimodal source parts changed')
+        text = ''.join(p['text'] for p in source['content'] if p['type'] == 'text')
+        require(row['content'] == text, 'stored text projection changed')
+        for part in row['content_parts']:
+            if part['type'] == 'input_audio':
+                raw = base64.b64decode(part['input_audio']['data'], validate=True)
+                fingerprints.append(dict(bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest()))
+    return dict(originals_equal=True, messages=len(rows), audio=fingerprints)
+
+
 def reuse_completed(source):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(WORK), 'reused evidence outside workdir')
@@ -195,9 +214,48 @@ def reuse_completed(source):
         identities={name: sha(source/name) for name in names})
 
 
+def reuse_audio_success(source):
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(WORK), 'audio evidence outside workdir')
+    plan, result = read(source/'plan.json'), read(source/'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+        result['counts']['chats'] == 2 and result['default_unchanged'] and
+        'stored audio source was replaced by transcript' in result['error'],
+        'unexpected storage checker predecessor')
+    require(plan['requests'] == requests(), 'accepted audio task changed')
+    require(sha(WORK/'runtime-build-07/q4t-2c51-retained') == plan['binary_sha256'],
+        'accepted audio candidate not retained')
+    cleanup = read(source/'cleanup.json')
+    require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED' and
+        cleanup['model_exit'] == 0 and not cleanup['remaining'] and cleanup['ports_released'],
+        'audio evidence environment or cleanup failed')
+    native = read(source/'python-zh.wire')
+    sdk = read(source/'python-zh.sdk.json')
+    require(sdk['ok'] and len(sdk['exchanges']) == 1 and
+        usage(native) == usage(sdk['result']), 'accepted SDK/actual usage changed')
+    require(len(native['choices']) == 2 and all(c['finish_reason'] == 'stop' and
+        c['message']['content'].strip() == '交易' for c in native['choices']),
+        'accepted Chinese speech quality changed')
+    require(read(source/'one-rpm-exhausted.http.json')['status'] == 429 and
+        read(source/'one-rpm-exhausted.wire')['error']['code'] == 'client_rpm_exhausted',
+        'accepted single-RPM check missing')
+    require(read(source/'stored-audio-history.http.json')['status'] == 200,
+        'stored audio unavailable')
+    stored = stored_history(read(source/'stored-audio-history.wire'), requests()['zh'])
+    names = ('plan.json', 'result.json', 'cleanup.json', 'lease/exit.json',
+        'python-zh.wire', 'python-zh.sdk.json', 'one-rpm-exhausted.http.json',
+        'one-rpm-exhausted.wire', 'stored-audio-history.http.json', 'stored-audio-history.wire')
+    return dict(directory=str(source), original_status='FAILED_CHECKER_PRESERVED',
+        accepted_requests=2, binary_sha256=plan['binary_sha256'], stored=stored,
+        isolation=reuse_completed(plan['chat_continuation']['directory']),
+        identities={name: sha(source/name) for name in names})
+
+
 def prepare(args):
-    reused = reuse_completed(args.continue_from) if args.continue_from else None
-    limits = CONTINUATION_LIMITS if reused else LIMITS
+    accepted = reuse_audio_success(args.remaining_from) if args.remaining_from else None
+    reused = (accepted['isolation'] if accepted else
+        reuse_completed(args.continue_from) if args.continue_from else None)
+    limits = REMAINING_LIMITS if accepted else CONTINUATION_LIMITS if reused else LIMITS
     asr.base.prepare(args, rows=requests(), limits=limits, scope=__doc__)
     out = args.output.resolve()
     plan = read(out/'plan.json')
@@ -215,6 +273,7 @@ def prepare(args):
     plan['planned'] = dict(starts=1, requests=limits['chats'], batch_rows=1, cancellation=1,
         no_automatic_retry=True, no_overlap_or_performance_matrix=True)
     if reused: plan['chat_continuation'] = reused
+    if accepted: plan['chat_audio_completed'] = accepted
     plan['derived_requests'] = ['Typed fixture markers are expanded from the fixed clip SHA256 immediately before HTTP; raw audio is not plan metadata.',
         'Tool follow-up appends actual call ID, actual project file result and fixed final JSON task.']
     plan['command'] = ['/usr/bin/python3', '-B', str(Path(__file__).resolve()),
@@ -228,9 +287,15 @@ class Stage(asr.Stage):
     success_status = 'PASS_NATIVE_CHAT_AUDIO_BUSINESS'
 
     def __init__(self, plan):
-        if plan.get('chat_continuation'):
+        if plan.get('chat_audio_completed'):
+            self.limits = REMAINING_LIMITS
+            self.success_status = 'PASS_CHAT_AUDIO_WITH_REUSED_QUALITY_QUOTA_AND_ISOLATION'
+            require(reuse_audio_success(plan['chat_audio_completed']['directory']) ==
+                plan['chat_audio_completed'], 'accepted audio evidence drift')
+        elif plan.get('chat_continuation'):
             self.limits = CONTINUATION_LIMITS
             self.success_status = 'PASS_CHAT_AUDIO_REMAINING_WITH_REUSED_ISOLATION'
+        if plan.get('chat_continuation'):
             require(reuse_completed(plan['chat_continuation']['directory']) ==
                     plan['chat_continuation'], 'reused Chat evidence drift')
         super().__init__(plan)
@@ -418,18 +483,19 @@ class Stage(asr.Stage):
             assets = self.out/'asr-assets'
             (assets/'model.safetensors.withheld').rename(assets/'model.safetensors')
             time.sleep(5.1)  # Existing bounded ASR cooldown, not a model restart.
-        sdk, raw = self.sdk('python-zh', rows['zh'], python=True, client='one-rpm')
-        value = json.loads(raw)
-        require(usage(value) == usage(sdk), 'Python SDK lost audio usage')
-        require(len(value['choices']) == 2 and all(c['finish_reason'] == 'stop' and
-            c['message']['content'].strip() == '交易' for c in value['choices']),
-            'real Chinese speech did not reach both answers')
-        limited = self.json_chat('one-rpm-exhausted', rows['core'], client='one-rpm', code=429)
-        require(limited['error']['code'] == 'client_rpm_exhausted', 'one request RPM accounting')
-        status, stored = self.http('/v1/chat/completions/'+value['id']+'/messages',
-            client='one-rpm', label='stored-audio-history')
-        require(status == 200 and json.loads(stored)['data'][0]['content'] ==
-            materialize(rows['zh'])['messages'][0]['content'], 'stored audio source was replaced by transcript')
+        if not self.plan.get('chat_audio_completed'):
+            sdk, raw = self.sdk('python-zh', rows['zh'], python=True, client='one-rpm')
+            value = json.loads(raw)
+            require(usage(value) == usage(sdk), 'Python SDK lost audio usage')
+            require(len(value['choices']) == 2 and all(c['finish_reason'] == 'stop' and
+                c['message']['content'].strip() == '交易' for c in value['choices']),
+                'real Chinese speech did not reach both answers')
+            limited = self.json_chat('one-rpm-exhausted', rows['core'], client='one-rpm', code=429)
+            require(limited['error']['code'] == 'client_rpm_exhausted', 'one request RPM accounting')
+            status, stored = self.http('/v1/chat/completions/'+value['id']+'/messages',
+                client='one-rpm', label='stored-audio-history')
+            require(status == 200, 'stored audio history unavailable')
+            save(self.out/'stored-audio-evidence.json', stored_history(json.loads(stored), rows['zh']))
         sdk, raw = self.sdk('js-en-mp3', rows['en'])
         completion = read_sse(io.BytesIO(raw))
         usage(dict(usage=completion.usage))
@@ -488,6 +554,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18280)
     p.add_argument('--continue-from', type=Path)
+    p.add_argument('--remaining-from', type=Path)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'fixtures': fixtures()

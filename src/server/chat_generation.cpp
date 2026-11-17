@@ -764,7 +764,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   if (has_audio) {
     io::Json rendered;
     auto prepared = PrepareNativeChatAudio(
-        fd, req, control, diagnostic, rate_lease,
+        fd, original_request, req, control, diagnostic, rate_lease,
         uint64_t(request_output_limit) * sampling.choices,
         2 * chat_moderation.Enabled() * kMaxModerationStepTokens,
         &rendered, &audio_preparation, &audio_input_tokens);

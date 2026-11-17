@@ -2,13 +2,14 @@
 import copy
 import io
 import json
+import os
 import unittest
 from unittest.mock import patch
 import base64
 from pathlib import Path
 
 from tools.native_asr.chat_acceptance import usage
-from tools.native_asr.chat_acceptance import materialize, requests
+from tools.native_asr.chat_acceptance import materialize, requests, stored_history, WORK
 from tools.examples.chat_client import read_json, read_sse
 
 
@@ -19,6 +20,23 @@ def observed():
 
 
 class ChatAcceptance(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get('Q4T_CHAT_AUDIO_RETAINED'),
+                         'explicit retained HTTP replay directory required')
+    def test_real_stored_audio_parts_match_original_and_changed_source_is_rejected(self):
+        path = Path(os.environ['Q4T_CHAT_AUDIO_RETAINED']) / 'stored-audio-history.wire'
+        value = json.loads(path.read_text())
+        result = stored_history(value, requests()['zh'])
+        self.assertTrue(result['originals_equal'])
+        self.assertEqual(result['messages'], 1)
+        self.assertEqual(len(result['audio']), 1)
+        for change in ('drop', 'replace', 'summary'):
+            bad = copy.deepcopy(value)
+            row = bad['data'][0]
+            if change == 'drop': row['content_parts'].pop()
+            elif change == 'replace': row['content_parts'][1]['input_audio']['data'] = 'AAAA'
+            else: row['content'] = 'replaced'
+            with self.assertRaises(RuntimeError): stored_history(bad, requests()['zh'])
+
     def test_only_source_bound_audio_markers_expand_and_originals_stay_small(self):
         rows = requests()
         original = copy.deepcopy(rows)

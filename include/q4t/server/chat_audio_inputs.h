@@ -39,8 +39,16 @@ class ChatAudioInputs {
   // Output is atomic on error or cancellation and never contains audio bytes.
   ObjectReply Render(const io::Json& request, const BinaryAccess& access,
                      io::Json* output) const;
+  // Native file expansion may insert parts before audio. Preserve original
+  // error/source coordinates; still bind every audio part's bytes, message,
+  // role, metadata and order. No audio source may be added, dropped or changed.
+  ObjectReply RenderExpanded(const io::Json& request,
+                             const BinaryAccess& access,
+                             io::Json* output) const;
 
  private:
+  ObjectReply RenderBound(const io::Json& request, const BinaryAccess& access,
+                          io::Json* output, bool exact_coordinates) const;
   ChatAudioLimits limits_;
   std::vector<ChatAudioInput> inputs_;
   std::vector<std::optional<std::string>> transcripts_;

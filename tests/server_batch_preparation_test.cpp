@@ -12,6 +12,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/file_document_worker.h"
@@ -2088,6 +2089,21 @@ Q4T_TEST(batch_chat_audio_preserves_originals_and_reserves_without_transcribing)
   const auto work = Create(objects, body, "/v1/chat/completions");
   const auto frozen = Frozen(objects, work, fixture.config);
   Q4T_CHECK(frozen.Find("web_content")->IsNull());
+  ChatAudioInputs audio_owner;
+  Q4T_CHECK(Ok(audio_owner.Prepare(body, Access())));
+  Q4T_CHECK(Ok(audio_owner.Complete(0, "CPU transcript fixture")));
+  ChatFileInputs files(&objects);
+  ChatRequestPlan model_plan;
+  Q4T_CHECK(Ok(files.Prepare(body, fixture.config, Access(), &model_plan,
+                             *frozen.Find("input_snapshots"), true)));
+  Json rendered;
+  Q4T_CHECK(Ok(audio_owner.RenderExpanded(model_plan.Request(body), Access(),
+                                          &rendered)));
+  const auto* parts = rendered.GetArray("messages")->array[0].GetArray("content");
+  Q4T_CHECK(parts && parts->array.size() > 2);
+  const auto transcript = parts->array.back().GetString("text");
+  Q4T_CHECK(transcript.find("messages[0].content[1]") != transcript.npos &&
+            transcript.find("CPU transcript fixture") != transcript.npos);
   BatchInputBudget input;
   BatchRateBudget rate;
   std::string encoded = "not called";

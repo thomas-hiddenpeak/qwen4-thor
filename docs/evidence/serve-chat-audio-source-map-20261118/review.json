@@ -1,0 +1,20 @@
+{
+  "status": "PURE_AUDIO_QUALITY_RPM_STORAGE_ACCEPTED_SOURCE_MAP_CPU_PASS_REMAINDER_PENDING",
+  "original_http_status": "FAILED_CHECKER_PRESERVED",
+  "actual_starts": 1,
+  "actual_requests": 2,
+  "actual_seconds": 42.34429463883862,
+  "cumulative_starts": 2,
+  "cumulative_requests": 5,
+  "cpu_tests": 3,
+  "source_checks": 2,
+  "default_changed": false,
+  "source_map_cpu_only": true,
+  "old_binary_sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282",
+  "candidate_sha256": "0f3e5cf5aae420abd26aa8caa77aaf6a6b1304325bbaeb2e51cbf22c68d4a078",
+  "next_limits": {
+    "starts": 1,
+    "requests": 9,
+    "seconds": 900
+  }
+}

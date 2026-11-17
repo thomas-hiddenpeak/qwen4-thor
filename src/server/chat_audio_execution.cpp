@@ -7,7 +7,7 @@
 
 namespace q4t::server {
 ObjectReply ChatServer::PrepareNativeChatAudio(
-    int fd, const io::Json& request,
+    int fd, const io::Json& source_request, const io::Json& request,
     const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
     uint64_t public_output, uint64_t auxiliary_output, io::Json* output,
@@ -32,7 +32,7 @@ ObjectReply ChatServer::PrepareNativeChatAudio(
                                 : "local:anonymous",
                             control->deadline(), cancelled};
   ChatAudioInputs inputs;
-  auto reply = inputs.Prepare(request, access);
+  auto reply = inputs.Prepare(source_request, access);
   if (!reply.ok()) return reply;
   if (!inputs.Active())
     return Error(500, "chat_audio_owner_invalid", "No audio input to prepare");
@@ -142,7 +142,7 @@ ObjectReply ChatServer::PrepareNativeChatAudio(
   const auto observed = http->Usage().Total();
   if (!observed || encoded_audio > observed->input)
     return Error(500, "chat_audio_usage_invalid", "Audio usage unavailable");
-  reply = inputs.Render(request, access, output);
+  reply = inputs.RenderExpanded(request, access, output);
   if (!reply.ok()) return reply;
   *actual = *observed;
   *audio_tokens = encoded_audio;

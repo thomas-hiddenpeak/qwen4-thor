@@ -1,0 +1,45 @@
+{
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-03",
+  "original_status": "FAILED_CHECKER_PRESERVED",
+  "accepted_requests": 2,
+  "binary_sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282",
+  "stored": {
+    "originals_equal": true,
+    "messages": 1,
+    "audio": [
+      {
+        "bytes": 134570,
+        "sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50"
+      }
+    ]
+  },
+  "isolation": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-02",
+    "original_status": "FAILED_PRESERVED",
+    "accepted_requests": 2,
+    "binary_sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d",
+    "identities": {
+      "plan.json": "90acf2db1093e6b5c7c0b3dde18dbc6e81828acceb6575ad5fb1a164458bc4f8",
+      "result.json": "1643cbcb2a850f817053ebc40bcb97cbcd90c8135265ee97e4a7219906edaf87",
+      "cleanup.json": "bd437c376b00506188ebdd51232c18755ab11fdc68ca83154e69059890685944",
+      "lease/exit.json": "37d784dea9ac13f023fd196bb84f0ed890986dcad069d62dd09482111080c119",
+      "missing-asr.http.json": "68599ac26f198c1cb1021f2e35d8f454266888acd1d52236dd1f487c6d8b9ad3",
+      "missing-asr.wire": "1344b1059bd0d056b581d73380e7e06c9ed7f335a87903357ed9f5b38706ae8b",
+      "healthy-during-asr-failure.http.json": "a3ef2c75624dfe131c36e83b5406f34a4a8cf10463e1816f4e7daf31b11be265",
+      "core-during-asr-failure.wire": "097c00f7ca1be6374f7c965c89333596b8f6defdba271492a8968828467c7678",
+      "preflight.wire": "17308c0f41f909ca427dd93c9b3d016a45a094dcee641a2d01bd053c2c62149f"
+    }
+  },
+  "identities": {
+    "plan.json": "877cdde0148de8d3729316f6f5ce2b6b5e8f5f5b79f803e9fa5766805c6ad562",
+    "result.json": "a1bb09c55312be204de22562c3b887cf4edff2cfc99a2bf8dc6d3e19c5b6bcf8",
+    "cleanup.json": "1659040ee47d30887c5c201a202d84eb43097058d66ff893610c1c2dccb4cd83",
+    "lease/exit.json": "f332ec182cd3a442824e83a7d3280813451de656caf7586ca5b1087edf11996d",
+    "python-zh.wire": "9745903fce2bab3e874d9e4d998fcde5e6fbcfccda628db5aa3a4d92b34f0798",
+    "python-zh.sdk.json": "659698eb39fd9a7cd8515461336e20f55bdc7f80dbf95a955da78c4c6fc398a5",
+    "one-rpm-exhausted.http.json": "95d573bef7cb2c5883b994118198d239a2d774f7a3d46bb29dce6cff3cf86579",
+    "one-rpm-exhausted.wire": "18a33729d6b54507be223b99852dcb130b507788b228314a63f701eb9323d88b",
+    "stored-audio-history.http.json": "79995235ce548e52a41ffb00bd7c68481b998c49cc8f3fc727393e425b3837cf",
+    "stored-audio-history.wire": "16bab75a985f09d24d7cef4f4444ff49c5b282ee3d1b3b66b1856d31b06c2d8e"
+  }
+}

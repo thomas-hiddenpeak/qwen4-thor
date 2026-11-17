@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频真实中文/RPM/存储已核验](evidence/serve-chat-audio-source-map-20261118/README.md)，
+原验收器字段失败保留；原始坐标/PDF与Batch组合3CPU及2来源
+通过、零警告构建。接着仅9未执行请求/1启动/900秒，复用已过
+实际语音与隔离，默认rev296、托管交付及全部master继续。
+
+Chat音频http-03中文双choice与单RPM已过（1启动/2请求/42.344秒）；
+存储原音频实际在content_parts完整保留，验收器误读content，原
+FAIL保留。补真实留存负控及PDF展开原始坐标，共3CPU/180秒、
+2来源；随后只补9未执行请求，默认rev296和全部master保持。
+
 [Chat音频投影修复2CPU通过](evidence/serve-chat-audio-projection-fix-20261118/README.md)，
 首轮质量FAIL保留；明确录音转录来源/边界与控制字符串数据化。
 零警告构建/2来源通过；接着1启动/11请求/900秒，仅失败项与

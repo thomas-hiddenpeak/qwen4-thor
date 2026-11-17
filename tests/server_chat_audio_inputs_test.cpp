@@ -390,6 +390,51 @@ Q4T_TEST(chat_audio_usage_rejects_unknown_double_or_overflow_accounting) {
   return true;
 }
 
+Q4T_TEST(
+    chat_audio_expansion_preserves_original_paths_without_weakening_binding) {
+  const auto request = Request(
+      Array({Text("original file"), Audio(), Audio("ID3abcdefghijk", "mp3")}));
+  ChatAudioInputs owner;
+  Q4T_CHECK(owner.Prepare(request, Access()).ok());
+  Q4T_CHECK(owner.Complete(0, "one").ok() && owner.Complete(1, "two").ok());
+  Json exact, prepared;
+  Q4T_CHECK(owner.Render(request, Access(), &exact).ok());
+  Q4T_CHECK(owner.RenderExpanded(request, Access(), &prepared).ok());
+  Q4T_CHECK(OutputJson(exact) == OutputJson(prepared));
+  auto expanded = request;
+  Parts(expanded).array.insert(Parts(expanded).array.begin(),
+                               Text("extra file page"));
+  auto output = String("unchanged");
+  Q4T_CHECK(!owner.Render(expanded, Access(), &output).ok());
+  Q4T_CHECK(output.str == "unchanged");
+  Q4T_CHECK(owner.RenderExpanded(expanded, Access(), &output).ok());
+  Q4T_CHECK(TranscriptPart(Parts(output).array[2]).GetString("source") ==
+            "messages[0].content[1]");
+  Q4T_CHECK(TranscriptPart(Parts(output).array[3]).GetString("source") ==
+            "messages[0].content[2]");
+  for (int change = 0; change < 5; ++change) {
+    auto wrong = expanded;
+    auto& parts = Parts(wrong).array;
+    if (change == 0) std::swap(parts[2], parts[3]);
+    if (change == 1) parts.pop_back();
+    if (change == 2) parts.push_back(Audio());
+    if (change == 3) Set(&parts[2], "prompt_cache_breakpoint", Object());
+    if (change == 4)
+      Set(&Field(wrong, "messages").array[0], "role", String("assistant"));
+    output = String("unchanged");
+    Q4T_CHECK(!owner.RenderExpanded(wrong, Access(), &output).ok());
+    Q4T_CHECK(output.str == "unchanged");
+  }
+  auto invalid = request;
+  Set(&Field(Parts(invalid).array[1], "input_audio"), "data", String("YR=="));
+  ChatAudioInputs bad;
+  const auto reply = bad.Prepare(invalid, Access());
+  Q4T_CHECK(reply.http_status == 400 &&
+            reply.value.GetString("param") ==
+                "messages[0].content[1].input_audio.data");
+  return true;
+}
+
 Q4T_TEST(chat_audio_budget_is_shared_upper_bound_without_model_execution) {
   auto request = Request(Array({Audio(), Audio()}));
   Set(&request, "max_tokens", Number(32));

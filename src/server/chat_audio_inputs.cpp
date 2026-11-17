@@ -178,6 +178,19 @@ ObjectReply ChatAudioInputs::Complete(size_t index, std::string transcript) {
 ObjectReply ChatAudioInputs::Render(const Json& request,
                                     const BinaryAccess& access,
                                     Json* output) const {
+  return RenderBound(request, access, output, true);
+}
+
+ObjectReply ChatAudioInputs::RenderExpanded(const Json& request,
+                                            const BinaryAccess& access,
+                                            Json* output) const {
+  return RenderBound(request, access, output, false);
+}
+
+ObjectReply ChatAudioInputs::RenderBound(const Json& request,
+                                         const BinaryAccess& access,
+                                         Json* output,
+                                         bool exact_coordinates) const {
   if (!output || !prepared_) return State();
   auto active = CheckAccess(access);
   if (!active.ok()) return active;
@@ -196,7 +209,8 @@ ObjectReply ChatAudioInputs::Render(const Json& request,
         if (!active.ok()) return active;
         if (index >= inputs_.size() || !transcripts_[index]) return State();
         const auto& source = inputs_[index];
-        if (source.message_index != i || source.part_index != j ||
+        if (source.message_index != i ||
+            (exact_coordinates && source.part_index != j) ||
             message.GetString("role") != "user" ||
             source.part_sha256 != Digest(OutputJson(part)))
           return State();

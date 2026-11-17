@@ -224,7 +224,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   }
   if (HasChatAudioInputs(original_request)) {
     ChatAudioInputs audio;
-    prepared = audio.Prepare(plan.Request(original_request), access);
+    prepared = audio.Prepare(original_request, access);
     ChatAudioBudget budget;
     if (prepared.ok())
       prepared = PlanChatAudioBudget(original_request, config, audio, &budget);

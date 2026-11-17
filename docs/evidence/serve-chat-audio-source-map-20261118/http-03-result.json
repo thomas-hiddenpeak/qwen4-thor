@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 197, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/chat_acceptance.py\", line 431, in business\n    require(status == 200 and json.loads(stored)['data'][0]['content'] ==\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: stored audio source was replaced by transcript\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 37
+  },
+  "seconds": 42.34429463883862,
+  "binary_sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282"
+}

@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "id": "chatcmpl-auto-affcca8edf38a6ff28b0099391e89278",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "\u4ea4\u6613",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      },
+      {
+        "finish_reason": "stop",
+        "index": 1,
+        "logprobs": null,
+        "message": {
+          "content": "\u4ea4\u6613",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1794955417,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 15,
+      "prompt_tokens": 280,
+      "total_tokens": 295,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": 55,
+        "cached_tokens": 0
+      },
+      "q4t_audio_preparation": {
+        "input_tokens": 70,
+        "output_tokens": 11,
+        "audio_tokens": 55
+      }
+    },
+    "metadata": null
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18280/v1/chat/completions"
+    }
+  ]
+}

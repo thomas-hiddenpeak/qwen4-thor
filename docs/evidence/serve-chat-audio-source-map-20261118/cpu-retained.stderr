@@ -1,0 +1,6 @@
+test_real_stored_audio_parts_match_original_and_changed_source_is_rejected (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_real_stored_audio_parts_match_original_and_changed_source_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+OK
