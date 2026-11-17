@@ -18,6 +18,10 @@ set(protocol_inputs
   src/trace/sha256.cpp
   include/q4t/audio/asr_layout.h
   src/audio/asr_layout.cpp
+  src/audio/asr_layout_internal.h
+  include/q4t/audio/aligner_layout.h
+  src/audio/aligner_layout.cpp
+  include/q4t/audio/aligner_model.h
   include/q4t/audio/asr_model.h
   src/audio/asr_model.cu
   include/q4t/audio/features.h

@@ -1,0 +1,7 @@
+[PASS] aligner_layout_validates_actual_weight_ranges_and_family
+[PASS] aligner_encoder_layout_covers_24_layer_width_and_tail_windows
+[PASS] aligner_decoder_layout_reserves_all_slots_and_enforces_budgets
+[PASS] aligner_sequence_and_encoder_reject_malformed_bounds_atomically
+[PASS] asr_layout_rejects_forged_names_extents_and_overflow
+[PASS] asr_encoder_layout_accounts_every_aligned_buffer
+6 tests, 6 passed, 0 failed, 0 skipped

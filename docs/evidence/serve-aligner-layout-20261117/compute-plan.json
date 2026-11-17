@@ -1,0 +1,18 @@
+{
+  "stage": "AL02 native alignment computation development",
+  "cpu_limits": {
+    "tests": 6,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "cases": [
+    "actual weight layout bind boundary",
+    "encoder24 dimensions and workspace partition",
+    "decoder slot count context and storage bounds",
+    "overflow and alignment boundaries",
+    "original ASR encoder workspace preserved",
+    "original ASR weight layout contract preserved"
+  ],
+  "build": "isolated target only, published build/q4t untouched",
+  "gpu_plan": "separately freeze actual alignment and ASR affected numerical/business requests before any model action"
+}

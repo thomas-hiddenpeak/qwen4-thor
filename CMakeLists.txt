@@ -176,6 +176,7 @@ add_library(q4t_model STATIC
   src/audio/asr_config.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
+  src/audio/aligner_layout.cpp
   src/audio/asr_model.cu
   src/audio/features.cpp
   src/model/embedding_config.cpp
@@ -1025,6 +1026,13 @@ if(Q4T_BUILD_TESTS)
     src/audio/asr_config.cpp src/io/json.cpp)
   target_include_directories(q4t_asr_contract_tests PRIVATE include)
   target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+  add_executable(q4t_aligner_layout_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/aligner_layout_test.cpp tests/asr_layout_test.cpp
+    src/audio/asr_config.cpp src/audio/aligner_config.cpp
+    src/audio/asr_layout.cpp src/audio/aligner_layout.cpp src/io/json.cpp
+    src/model/embedding_layout.cpp src/model/embedding_config.cpp)
+  target_include_directories(q4t_aligner_layout_tests PRIVATE include)
+  target_compile_options(q4t_aligner_layout_tests PRIVATE -Wall -Wextra -Werror)
   add_executable(q4t_asr_layout_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/asr_layout_test.cpp
     src/audio/asr_layout.cpp src/audio/asr_config.cpp src/io/json.cpp

@@ -1,4 +1,5 @@
 #include "q4t/audio/asr_model.h"
+#include "q4t/audio/aligner_model.h"
 
 #include <cuda_bf16.h>
 #include <math_constants.h>
@@ -7,6 +8,7 @@
 #include <cmath>
 #include <mutex>
 #include <string>
+#include <type_traits>
 
 #include "q4t/model/linear.h"
 #include "q4t/quant/lt_cache.h"
@@ -93,6 +95,7 @@ __global__ void FlattenConv(const uint16_t* input, uint16_t* output, int t) {
   output[i] = input[(f * t + frame) * C::kConvChannels + c];
 }
 
+template <typename C>
 __global__ void PositionAndPack(const uint16_t* input, uint16_t* hidden,
                                 int tokens, int offset) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -109,6 +112,7 @@ __global__ void PositionAndPack(const uint16_t* input, uint16_t* hidden,
       Write(__fadd_rn(Read(input, i), position));
 }
 
+template <typename C>
 __global__ void LayerNorm(const uint16_t* input, const uint16_t* weight,
                           const uint16_t* bias, uint16_t* output) {
   __shared__ float reduction[kThreads];
@@ -133,6 +137,7 @@ __global__ void LayerNorm(const uint16_t* input, const uint16_t* weight,
                   Read(bias, d)));
 }
 
+template <typename C>
 __global__ void WindowAttention(const uint16_t* q, const uint16_t* k,
                                 const uint16_t* v, uint16_t* output, int tokens,
                                 int window) {
@@ -184,6 +189,15 @@ __global__ void DecoderInput(const int32_t* ids, const uint16_t* token_table,
   output[i] = t >= audio_start && t < audio_start + audio_tokens
                   ? audio[(t - audio_start) * C::kHidden + d]
                   : token_table[static_cast<size_t>(ids[t]) * C::kHidden + d];
+}
+
+__global__ void SelectTimestampRows(const uint16_t* input,
+                                    const int32_t* positions, uint16_t* output,
+                                    int count) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < count)
+    output[i] = input[static_cast<size_t>(positions[i / C::kHidden]) *
+                          C::kHidden + i % C::kHidden];
 }
 
 struct LinearPlan {
@@ -298,13 +312,20 @@ bool Present(AsrAffineWeights weights) {
 }
 }  // namespace
 
-Status BindAsrDeviceWeights(const void* data, size_t bytes,
+template <typename C>
+Status BindSpeechDeviceWeights(const void* data, size_t bytes,
                             const AsrWeightLayout& layout,
-                            AsrDeviceWeights* out) {
+                            SpeechDeviceWeights<C>* out) {
   if (!data || reinterpret_cast<uintptr_t>(data) % 2 || !out ||
       bytes != layout.bytes)
     return Status::Fail("ASR device weight buffer differs");
-  if (auto s = ValidateAsrWeightLayout(layout); !s) return s;
+  const auto checked = [&] {
+    if constexpr (std::is_same_v<C, AsrConfig>)
+      return ValidateAsrWeightLayout(layout);
+    else
+      return ValidateAlignerWeightLayout(layout);
+  }();
+  if (!checked) return checked;
   const auto pointer = [&](const std::string& name) {
     const auto found =
         std::find_if(layout.tensors.begin(), layout.tensors.end(),
@@ -315,7 +336,7 @@ Status BindAsrDeviceWeights(const void* data, size_t bytes,
   const auto affine = [&](const std::string& name) {
     return AsrAffineWeights{pointer(name + ".weight"), pointer(name + ".bias")};
   };
-  AsrDeviceWeights result;
+  SpeechDeviceWeights<C> result;
   const std::string audio = "thinker.audio_tower.";
   for (int i = 0; i < 3; ++i)
     result.convolution[i] = affine(audio + "conv2d" + std::to_string(i + 1));
@@ -358,7 +379,20 @@ Status BindAsrDeviceWeights(const void* data, size_t bytes,
   return {};
 }
 
-AsrComputeResult AsrEncoderRun::Begin(const AsrDeviceWeights& weights,
+Status BindAsrDeviceWeights(const void* data, size_t bytes,
+                            const AsrWeightLayout& layout,
+                            AsrDeviceWeights* out) {
+  return BindSpeechDeviceWeights<AsrConfig>(data, bytes, layout, out);
+}
+
+Status BindAlignerDeviceWeights(const void* data, size_t bytes,
+                                const AsrWeightLayout& layout,
+                                AlignerDeviceWeights* out) {
+  return BindSpeechDeviceWeights<AlignerConfig>(data, bytes, layout, out);
+}
+
+template <typename C>
+AsrComputeResult SpeechEncoderRun<C>::Begin(const SpeechDeviceWeights<C>& weights,
                                       std::span<const float> mel, int frames,
                                       void* workspace, size_t bytes,
                                       cudaStream_t stream) {
@@ -378,7 +412,12 @@ AsrComputeResult AsrEncoderRun::Begin(const AsrDeviceWeights& weights,
       return Invalid("incomplete ASR encoder layer weights");
   for (const float value : mel)
     if (!std::isfinite(value)) return Invalid("nonfinite ASR mel value");
-  const auto status = PlanAsrEncoderWorkspace(frames, frames, bytes, &layout_);
+  const auto status = [&] {
+    if constexpr (std::is_same_v<C, AsrConfig>)
+      return PlanAsrEncoderWorkspace(frames, frames, bytes, &layout_);
+    else
+      return PlanAlignerEncoderWorkspace(frames, frames, bytes, &layout_);
+  }();
   if (!status) return {status, cudaSuccess};
   weights_ = &weights;
   workspace_ = static_cast<uint8_t*>(workspace);
@@ -391,7 +430,8 @@ AsrComputeResult AsrEncoderRun::Begin(const AsrDeviceWeights& weights,
   return result;
 }
 
-AsrComputeResult AsrEncoderRun::NextChunk(cudaStream_t stream) {
+template <typename C>
+AsrComputeResult SpeechEncoderRun<C>::NextChunk(cudaStream_t stream) {
   if (!started_ || failed_ || finished_ || completed_chunks_ >= layout_.chunks)
     return Invalid("ASR convolution execution out of order");
   const auto at = [&](size_t offset) {
@@ -436,7 +476,7 @@ AsrComputeResult AsrEncoderRun::NextChunk(cudaStream_t stream) {
   if (status) {
     const int tokens = (valid + 7) / 8;
     const int n = tokens * C::kEncoderHidden;
-    PositionAndPack<<<(n + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
+    PositionAndPack<C><<<(n + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         at(layout_.chunk_hidden), at(layout_.hidden), tokens,
         completed_chunks_ * C::kEncodedChunk);
   }
@@ -448,7 +488,8 @@ AsrComputeResult AsrEncoderRun::NextChunk(cudaStream_t stream) {
   return result;
 }
 
-AsrComputeResult AsrEncoderRun::NextLayer(cudaStream_t stream) {
+template <typename C>
+AsrComputeResult SpeechEncoderRun<C>::NextLayer(cudaStream_t stream) {
   if (!started_ || failed_ || finished_ ||
       completed_chunks_ != layout_.chunks ||
       completed_layers_ >= C::kEncoderLayers)
@@ -469,7 +510,7 @@ AsrComputeResult AsrEncoderRun::NextLayer(cudaStream_t stream) {
                  reinterpret_cast<float*>(workspace_ + layout_.linear_fp32),
                  workspace_ + layout_.gemm, gelu, stream);
   };
-  LayerNorm<<<t, kThreads, 0, stream>>>(hidden, w.input_norm.weight,
+  LayerNorm<C><<<t, kThreads, 0, stream>>>(hidden, w.input_norm.weight,
                                         w.input_norm.bias, normalized);
   linear(layout_.normalized, w.q, layout_.q, C::kEncoderHidden,
          C::kEncoderHidden);
@@ -478,7 +519,7 @@ AsrComputeResult AsrEncoderRun::NextLayer(cudaStream_t stream) {
   linear(layout_.normalized, w.v, layout_.v, C::kEncoderHidden,
          C::kEncoderHidden);
   if (status)
-    WindowAttention<<<dim3(t, C::kEncoderHeads), 128, 0, stream>>>(
+    WindowAttention<C><<<dim3(t, C::kEncoderHeads), 128, 0, stream>>>(
         at(layout_.q), at(layout_.k), at(layout_.v), at(layout_.attention), t,
         layout_.attention_window);
   linear(layout_.attention, w.o, layout_.projected, C::kEncoderHidden,
@@ -486,7 +527,7 @@ AsrComputeResult AsrEncoderRun::NextLayer(cudaStream_t stream) {
   if (status) {
     Residual<<<(n + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         hidden, at(layout_.projected), n);
-    LayerNorm<<<t, kThreads, 0, stream>>>(hidden, w.post_norm.weight,
+    LayerNorm<C><<<t, kThreads, 0, stream>>>(hidden, w.post_norm.weight,
                                           w.post_norm.bias, normalized);
   }
   linear(layout_.normalized, w.fc1, layout_.intermediate,
@@ -504,7 +545,8 @@ AsrComputeResult AsrEncoderRun::NextLayer(cudaStream_t stream) {
   return result;
 }
 
-AsrComputeResult AsrEncoderRun::Finish(cudaStream_t stream) {
+template <typename C>
+AsrComputeResult SpeechEncoderRun<C>::Finish(cudaStream_t stream) {
   if (!started_ || failed_ || finished_ ||
       completed_layers_ != C::kEncoderLayers)
     return Invalid("ASR encoder finish out of order");
@@ -513,7 +555,7 @@ AsrComputeResult AsrEncoderRun::Finish(cudaStream_t stream) {
   };
   const int t = layout_.tokens;
   auto* temporary = reinterpret_cast<float*>(workspace_ + layout_.linear_fp32);
-  LayerNorm<<<t, kThreads, 0, stream>>>(
+  LayerNorm<C><<<t, kThreads, 0, stream>>>(
       at(layout_.hidden), weights_->final_norm.weight,
       weights_->final_norm.bias, at(layout_.normalized));
   auto status =
@@ -530,7 +572,8 @@ AsrComputeResult AsrEncoderRun::Finish(cudaStream_t stream) {
   return result;
 }
 
-std::span<const uint16_t> AsrEncoderRun::output() const {
+template <typename C>
+std::span<const uint16_t> SpeechEncoderRun<C>::output() const {
   if (!finished_ || failed_) return {};
   return {reinterpret_cast<const uint16_t*>(workspace_ + layout_.output),
           static_cast<size_t>(layout_.tokens) * C::kHidden};
@@ -637,5 +680,109 @@ AsrComputeResult AsrDecoderStep::Finish(std::span<uint16_t> logits,
   failed_ = !result.ok();
   return result;
 }
+
+AsrComputeResult AlignerDecoderRun::Begin(
+    const AlignerDeviceWeights& weights, std::span<const int32_t> tokens,
+    size_t audio_start, std::span<const uint16_t> device_audio,
+    void* workspace, size_t bytes, cudaStream_t stream) {
+  using A = AlignerConfig;
+  static_assert(A::kHidden == C::kHidden && A::kHidden ==
+                    model::EmbeddingConfig::kHidden);
+  if (started_ || failed_ || !workspace ||
+      reinterpret_cast<uintptr_t>(workspace) % 256 || !weights.decoder.tokens ||
+      !weights.lm_head || device_audio.empty() ||
+      device_audio.size() % A::kHidden || audio_start != 1)
+    return Invalid("invalid alignment decoder begin");
+  const size_t audio_tokens = device_audio.size() / A::kHidden;
+  std::vector<int32_t> positions;
+  auto status = PlanAlignerSequence(tokens, audio_tokens, &positions);
+  if (!status) return {status, cudaSuccess};
+  status = PlanAlignerDecoderWorkspace(tokens.size(), positions.size(),
+                                       tokens.size(), bytes, &layout_);
+  if (!status) return {status, cudaSuccess};
+  const auto source = reinterpret_cast<uintptr_t>(device_audio.data());
+  const auto destination = reinterpret_cast<uintptr_t>(workspace);
+  if (source % 2 || source + device_audio.size_bytes() < source ||
+      destination + bytes < destination ||
+      (source < destination + bytes &&
+       destination < source + device_audio.size_bytes()))
+    return Invalid("alignment audio input overlaps decoder workspace");
+  weights_ = &weights;
+  workspace_ = static_cast<uint8_t*>(workspace);
+  auto* ids = reinterpret_cast<int32_t*>(workspace_ + layout_.ids);
+  auto* input = reinterpret_cast<uint16_t*>(workspace_ + layout_.input);
+  auto* slots = reinterpret_cast<int32_t*>(workspace_ + layout_.positions);
+  auto error = cudaMemcpyAsync(ids, tokens.data(), tokens.size_bytes(),
+                               cudaMemcpyHostToDevice, stream);
+  if (error == cudaSuccess)
+    error = cudaMemcpyAsync(slots, positions.data(),
+                            positions.size() * sizeof(int32_t),
+                            cudaMemcpyHostToDevice, stream);
+  if (error != cudaSuccess) {
+    failed_ = true;
+    return Complete({}, stream, error);
+  }
+  const int count = static_cast<int>(tokens.size()) * A::kHidden;
+  DecoderInput<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
+      ids, weights.decoder.tokens, device_audio.data(), input,
+      static_cast<int>(audio_start), static_cast<int>(audio_tokens), count);
+  auto result = dense_.BeginEmbeddings(
+      weights.decoder, {input, static_cast<size_t>(count)},
+      workspace_ + layout_.dense_offset, layout_.dense.bytes, stream);
+  // Drain our input copies/preparation even if the shared decoder rejects its
+  // host contract before synchronization. positions is request-local storage.
+  result = Complete(result.status, stream, result.device_error);
+  started_ = result.ok();
+  failed_ = !result.ok();
+  return result;
+}
+
+AsrComputeResult AlignerDecoderRun::NextLayer(cudaStream_t stream) {
+  if (!started_ || failed_ || finished_)
+    return Invalid("alignment decoder layer execution out of order");
+  auto result = dense_.NextLayer(stream);
+  if (!result.ok()) failed_ = true;
+  return result;
+}
+
+AsrComputeResult AlignerDecoderRun::Finish(std::span<uint16_t> logits,
+                                          cudaStream_t stream) {
+  using A = AlignerConfig;
+  if (!started_ || failed_ || finished_ ||
+      logits.size() != static_cast<size_t>(layout_.slots) * A::kClasses)
+    return Invalid("alignment classifier state or output size differs");
+  std::span<const uint16_t> hidden;
+  auto result = dense_.FinishAllDevice(&hidden, stream);
+  if (!result.ok()) {
+    failed_ = true;
+    return result;
+  }
+  auto* selected = reinterpret_cast<uint16_t*>(workspace_ + layout_.selected);
+  auto* output = reinterpret_cast<uint16_t*>(workspace_ + layout_.logits);
+  const int count = layout_.slots * A::kHidden;
+  SelectTimestampRows<<<(count + kThreads - 1) / kThreads, kThreads, 0,
+                         stream>>>(
+      hidden.data(), reinterpret_cast<int32_t*>(workspace_ + layout_.positions),
+      selected, count);
+  const auto gemm = model::Bf16Gemm(
+      selected, weights_->lm_head, output, layout_.slots, A::kClasses,
+      A::kHidden, 1.0f, 0.0f,
+      workspace_ + layout_.dense_offset + layout_.dense.gemm,
+      model::EmbeddingWorkspaceLayout::kGemmBytes, stream);
+  Status status;
+  cudaError_t error = cudaSuccess;
+  if (!gemm.has_algo || gemm.status != CUBLAS_STATUS_SUCCESS)
+    status = Status::Fail("alignment classifier GEMM failed");
+  else
+    error = cudaMemcpyAsync(logits.data(), output, logits.size_bytes(),
+                            cudaMemcpyDeviceToHost, stream);
+  result = Complete(status, stream, error);
+  finished_ = result.ok();
+  failed_ = !result.ok();
+  return result;
+}
+
+template class SpeechEncoderRun<AsrConfig>;
+template class SpeechEncoderRun<AlignerConfig>;
 
 }  // namespace q4t::audio

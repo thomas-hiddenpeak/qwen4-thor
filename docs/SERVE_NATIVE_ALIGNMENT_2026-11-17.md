@@ -76,3 +76,20 @@ CUDA、不运行模型，默认rev276不变。元数据和官方源码已留存�
 16例和marker/padding两项回归。对齐独立profile必须验证第63个
 added token `<timestamp>` 为151705且`special=false`；不改变ASR
 原62token合同，不引入Python运行时。全部后续任务继续。
+
+## 原生计算开发组
+
+计算复用同版音频卷积/窗口注意力和Qwen3因果decoder；encoder以
+固定profile实例化896×18与1024×24，分类head从各时间槽的最终
+RMSNorm状态获得5000类logits，不复用末token文本生成结果。
+共享算子保持原FP32归约/BF16舍入。GPU动作前另冻结实际短验；
+当前开发及6项CPU布局检查上限180秒、0GPU，覆盖真实权重范围、
+encoder24分区、时间槽/context/预算/溢出及原ASR两项保护。
+
+首轮实际计算清单已固定在`.q4t-work/serve-audio-aligner-20261117/gpu-plan-01.json`：
+2次GPU模型加载（对齐/ASR各一次），中英文420/1505帧；对齐分别
+13/36词，共98个真实时间槽。ASR每条只复查前4token，原旧输出仅
+作逐位回归，原数值差分失败不追认。1次官方CPU参考、600秒总上限、
+0HTTP。encoder输入cos≥0.99995/L2≤0.01，encoder/head cos≥0.9995/
+L2≤0.04，原始分类argmax逐项相同；不在结果出现后改门槛。此组
+不声称字幕服务或整模型质量已验，后续真实接口工作继续。

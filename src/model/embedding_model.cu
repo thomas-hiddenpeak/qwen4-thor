@@ -442,4 +442,23 @@ EmbeddingComputeResult EmbeddingRun::Finish(std::span<uint16_t> last_hidden,
   return result;
 }
 
+EmbeddingComputeResult EmbeddingRun::FinishAllDevice(
+    std::span<const uint16_t>* hidden, cudaStream_t stream) {
+  if (!started_ || failed_ || finished_ || completed_layers_ != C::kLayers ||
+      !hidden)
+    return Invalid("embedding final sequence state or output differs");
+  const auto* input =
+      reinterpret_cast<uint16_t*>(workspace_ + layout_.hidden);
+  auto* normalized =
+      reinterpret_cast<uint16_t*>(workspace_ + layout_.normalized);
+  Norm<<<layout_.tokens, kThreads, 0, stream>>>(input, weights_->final_norm,
+                                               normalized);
+  auto result = Complete({}, stream);
+  finished_ = result.ok();
+  failed_ = !result.ok();
+  if (result.ok())
+    *hidden = {normalized, static_cast<size_t>(layout_.tokens) * C::kHidden};
+  return result;
+}
+
 }  // namespace q4t::model

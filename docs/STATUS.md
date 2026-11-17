@@ -20,6 +20,15 @@ PR44，继续最终检查和合main，后续对齐开发不混入本PR。
 [对齐tokenizer6项CPU](evidence/serve-aligner-tokenizer-20261117/README.md)
 也通过（1.414秒），原ASR golden保持；日/韩词单元和实际对齐仍待实现。
 PR44只追加可选前置路由修复，待检查合main；本项不混入该PR。
+[原生计算与6项布局CPU](evidence/serve-aligner-layout-20261117/README.md)
+通过（0.008秒），隔离CUDA构建完成。首轮实模型组固定2次GPU加载、
+2对齐+2ASR前4token和1次CPU参考已执行。
+[原组件组未通过逐项argmax](evidence/serve-aligner-compute-20261117/README.md)：
+英文2/72槽差80ms，其余96/98槽相同，6数值与14原ASR逐位保护通过。
+1条英文补采独立FP64复核证明两侧head符合各自BF16操作数，原FAILED
+保留；累计3GPU加载/2CPU参考/21.738秒，25次NVML正常、默认未变。
+继续词单元/真实字幕接口业务，当前候选尚未发布。
+
 
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
 固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、

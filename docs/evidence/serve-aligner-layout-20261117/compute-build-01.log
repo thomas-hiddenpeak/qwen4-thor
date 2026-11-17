@@ -1,0 +1,20 @@
+[  5%] Building CXX object CMakeFiles/q4t_asr_replay.dir/model_replay.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_config.cpp.o
+[ 15%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_layout.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_config.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_layout.cpp.o
+[ 31%] Building CUDA object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_model.cu.o
+[ 36%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/audio/features.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_config.cpp.o
+[ 47%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_layout.cpp.o
+[ 52%] Building CUDA object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_model.cu.o
+[ 57%] Building CUDA object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/gemv.cu.o
+[ 63%] Building CUDA object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/gemv_hc_inject.cu.o
+[ 68%] Building CUDA object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/model/small_m_gemm.cu.o
+[ 73%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/quant/lt_cache.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[ 84%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 89%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 94%] Building CXX object CMakeFiles/q4t_asr_replay.dir/home/rm01/models/dev/qwen4-thor/src/runtime/system_memory.cpp.o
+[100%] Linking CXX executable q4t_asr_replay
+[100%] Built target q4t_asr_replay

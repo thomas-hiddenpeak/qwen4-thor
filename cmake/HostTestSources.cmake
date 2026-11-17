@@ -13,6 +13,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_protocol_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/aligner_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/aligner_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_layout_test.cpp
