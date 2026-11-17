@@ -903,6 +903,10 @@ Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
 Apache-2.0许可见[声明](third_party/licenses/speechbrain/README.md)。
 权重按部署启用，开发专用转换/参考工具不成为服务运行依赖。
 
+重叠语音正在接入固定SpeechBrain SepFormer两源分离图，沿用上述
+Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运行
+依赖，见[实施合同](docs/SERVE_NATIVE_OVERLAP_2026-11-18.md)。
+
 重叠语音的实际检测/分离、Chat音频、语音合成和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整

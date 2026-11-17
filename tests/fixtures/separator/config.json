@@ -1,0 +1,39 @@
+{
+  "profile": "q4t-native-sepformer-v1",
+  "model_id": "speechbrain-sepformer-wsj02mix",
+  "revision": "3a2826343a10e2d2e8a75f79aeab5ff3a2473531",
+  "source_revision": "fc2eabb7416b0ae68b3baaadb39972ea1d153985",
+  "weight_sha256": "5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299",
+  "sample_rate": 8000,
+  "sources": 2,
+  "encoder": {
+    "channels": 256,
+    "kernel": 16,
+    "stride": 8,
+    "padding": 0,
+    "activation": "relu"
+  },
+  "separator": {
+    "chunk": 250,
+    "dual_blocks": 2,
+    "layers_per_path": 8,
+    "heads": 8,
+    "ffn": 1024,
+    "group_norm_epsilon": 1e-08,
+    "layer_norm_epsilon": 1e-06,
+    "activation": "relu",
+    "pre_norm": true,
+    "position_frames": 2500,
+    "overlap_add": "sum",
+    "skip_intra": true,
+    "linear_after_path": false
+  },
+  "decoder": {
+    "channels": 256,
+    "kernel": 16,
+    "stride": 8,
+    "padding": 0,
+    "bias": false,
+    "tail": "zero_to_input_length"
+  }
+}

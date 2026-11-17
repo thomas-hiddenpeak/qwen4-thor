@@ -589,3 +589,5 @@
 - [rev286对齐/VAD交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)：实际时间戳、字幕、分段统计与可回退原生服务。
 
 - [rev296说话人交付](evidence/serve-speaker-delivery-20261118/README.md)：真实分人/参考/JSON/SSE与可回退原生服务。
+
+- [原生重叠语音实施](SERVE_NATIVE_OVERLAP_2026-11-18.md)：真实两路分离/转录及恢复，当前资产CPU已验、业务继续实现。
