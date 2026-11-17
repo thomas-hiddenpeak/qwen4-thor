@@ -266,11 +266,15 @@
         "whole_task_complete": false
       },
       "chat_audio_runtime_20261118": {
-        "state": "TARGETED_CPU_ACCEPTED_REAL_CHAT_AUDIO_PENDING",
+        "state": "HTTP_QUALITY_FAILED_PROJECTION_CPU_FIXED_PENDING_RETEST",
         "evidence": "evidence/serve-chat-audio-runtime-cpu-20261118/README.md",
         "unique_cpu_checks": 18,
         "gpu": 0,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "business_failure_evidence": "evidence/serve-chat-audio-projection-fix-20261118/README.md",
+        "actual_starts": 1,
+        "actual_requests": 3,
+        "source_coordinate_composition_review_pending": true
       }
     },
     {
@@ -3682,11 +3686,15 @@
         "whole_task_complete": false
       },
       "chat_audio_runtime_20261118": {
-        "state": "TARGETED_CPU_ACCEPTED_REAL_CHAT_AUDIO_PENDING",
+        "state": "HTTP_QUALITY_FAILED_PROJECTION_CPU_FIXED_PENDING_RETEST",
         "evidence": "evidence/serve-chat-audio-runtime-cpu-20261118/README.md",
         "unique_cpu_checks": 18,
         "gpu": 0,
-        "whole_task_complete": false
+        "whole_task_complete": false,
+        "business_failure_evidence": "evidence/serve-chat-audio-projection-fix-20261118/README.md",
+        "actual_starts": 1,
+        "actual_requests": 3,
+        "source_coordinate_composition_review_pending": true
       }
     },
     {

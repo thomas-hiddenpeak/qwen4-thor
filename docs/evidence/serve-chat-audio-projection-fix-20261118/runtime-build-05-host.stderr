@@ -1,0 +1,29 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_real_asr_text_reaches_template_with_modality_and_boundaries()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:258:15: error: ‘VisionItem’ was not declared in this scope
+  258 |   std::vector<VisionItem> images;
+      |               ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:258:25: error: template argument 1 is invalid
+  258 |   std::vector<VisionItem> images;
+      |                         ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:258:25: error: template argument 2 is invalid
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:259:20: error: aggregate ‘q4t::server::ChatPromptLayout layout’ has incomplete type and cannot be defined
+  259 |   ChatPromptLayout layout;
+      |                    ^~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:9:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:260:13: error: ‘PrepareChatPrompt’ was not declared in this scope
+  260 |   Q4T_CHECK(PrepareChatPrompt(projected, {}, &prompt, &images, &param, &code,
+      |             ^~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:267:59: error: request for member ‘empty’ in ‘images’, which is of non-class type ‘int’
+  267 |   Q4T_CHECK(prompt.find(control) == prompt.npos && images.empty());
+      |                                                           ^~~~~
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/test.h:140:11: note: in definition of macro ‘Q4T_CHECK’
+  140 |     if (!(cond)) {                                                         \
+      |           ^~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:639: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:512: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:519: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:265: q4t_host_tests] Error 2

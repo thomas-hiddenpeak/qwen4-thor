@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 197, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/chat_acceptance.py\", line 375, in business\n    require(len(value['choices']) == 2 and all(c['finish_reason'] == 'stop' and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: real Chinese speech did not reach both answers\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 38
+  },
+  "seconds": 50.33853558311239,
+  "binary_sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d"
+}

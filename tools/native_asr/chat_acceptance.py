@@ -27,6 +27,7 @@ from tools.serve_service.package import read, require, save, sha
 WORK = ROOT / '.q4t-work/serve-chat-audio-20261118'
 FIXTURES = WORK / 'fixtures-02'
 LIMITS = dict(starts=1, chats=13, controls=2000, seconds=900)
+CONTINUATION_LIMITS = dict(LIMITS, chats=11)
 HEADERS = {'X-Q4T-Client-Id': 'chat-audio', 'X-Q4T-Gateway-Token': 'c' * 64}
 
 
@@ -159,8 +160,45 @@ def usage(value):
         'q4t_audio_preparation', 'prompt_tokens_details')}
 
 
+def reuse_completed(source):
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(WORK), 'reused evidence outside workdir')
+    plan, result = read(source/'plan.json'), read(source/'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+        result['counts']['chats'] == 3 and result['default_unchanged'] and
+        'real Chinese speech did not reach both answers' in result['error'],
+        'unexpected Chat audio predecessor')
+    require(plan['requests'] == requests(), 'frozen business requests changed')
+    require(sha(WORK/'runtime-build-05/q4t-e740-retained') == plan['binary_sha256'],
+        'failed candidate not retained')
+    for name, digest in plan['sources'].items():
+        if name.startswith(('src/audio/', 'include/q4t/audio/', 'src/server/asr_',
+                            'src/server/chat_asr_')):
+            require(sha(ROOT/name) == digest, 'reused ASR implementation changed')
+    require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+        'environment abort cannot be reused')
+    cleanup = read(source/'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+        cleanup['ports_released'], 'reused cleanup incomplete')
+    require(read(source/'missing-asr.http.json')['status'] == 503 and
+        read(source/'missing-asr.wire')['error']['code'] == 'asr_assets_invalid' and
+        read(source/'healthy-during-asr-failure.http.json')['status'] == 200,
+        'reused auxiliary isolation failed')
+    core = read(source/'core-during-asr-failure.wire')['choices'][0]
+    require(core['finish_reason'] == 'stop' and core['message']['content'].strip() == '42',
+        'reused core business failed')
+    names = ('plan.json', 'result.json', 'cleanup.json', 'lease/exit.json',
+        'missing-asr.http.json', 'missing-asr.wire', 'healthy-during-asr-failure.http.json',
+        'core-during-asr-failure.wire', 'preflight.wire')
+    return dict(directory=str(source), original_status='FAILED_PRESERVED',
+        accepted_requests=2, binary_sha256=plan['binary_sha256'],
+        identities={name: sha(source/name) for name in names})
+
+
 def prepare(args):
-    asr.base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    reused = reuse_completed(args.continue_from) if args.continue_from else None
+    limits = CONTINUATION_LIMITS if reused else LIMITS
+    asr.base.prepare(args, rows=requests(), limits=limits, scope=__doc__)
     out = args.output.resolve()
     plan = read(out/'plan.json')
     plan['python_sdk'] = asr.python_identity()
@@ -174,8 +212,9 @@ def prepare(args):
         if path.is_file(): plan['sources'][str(path.relative_to(ROOT))] = sha(path)
     plan['quality'] = dict(zh_subject='交易', en_activity_contains=['writ', 'other'],
         tool_document='actual docs/MODEL.md lines 1..16', silence='OK', core='42')
-    plan['planned'] = dict(starts=1, requests=13, batch_rows=1, cancellation=1,
+    plan['planned'] = dict(starts=1, requests=limits['chats'], batch_rows=1, cancellation=1,
         no_automatic_retry=True, no_overlap_or_performance_matrix=True)
+    if reused: plan['chat_continuation'] = reused
     plan['derived_requests'] = ['Typed fixture markers are expanded from the fixed clip SHA256 immediately before HTTP; raw audio is not plan metadata.',
         'Tool follow-up appends actual call ID, actual project file result and fixed final JSON task.']
     plan['command'] = ['/usr/bin/python3', '-B', str(Path(__file__).resolve()),
@@ -187,6 +226,14 @@ class Stage(asr.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_NATIVE_CHAT_AUDIO_BUSINESS'
+
+    def __init__(self, plan):
+        if plan.get('chat_continuation'):
+            self.limits = CONTINUATION_LIMITS
+            self.success_status = 'PASS_CHAT_AUDIO_REMAINING_WITH_REUSED_ISOLATION'
+            require(reuse_completed(plan['chat_continuation']['directory']) ==
+                    plan['chat_continuation'], 'reused Chat evidence drift')
+        super().__init__(plan)
 
     def headers(self, client='chat-audio'):
         return dict(HEADERS, **{'X-Q4T-Client-Id': client})
@@ -221,7 +268,8 @@ class Stage(asr.Stage):
             source = Path(self.plan['asr_directory'])/name
             require(source.stat().st_size == record['bytes'] and sha(source) == record['sha256'],
                 'ASR asset drift')
-            os.link(source, assets/(name+'.withheld' if name == 'model.safetensors' else name))
+            withheld = name == 'model.safetensors' and not self.plan.get('chat_continuation')
+            os.link(source, assets/(name+'.withheld' if withheld else name))
         clients = [dict(id=name, max_inflight=4, max_control_inflight=4,
             max_prompt_tokens=16384, max_output_tokens=512, max_body_bytes=4*1024*1024,
             requests_per_minute=rpm, tokens_per_minute=200000)
@@ -360,15 +408,16 @@ class Stage(asr.Stage):
         require(status == 200 and value['status'] == 'requires_audio_preparation' and
             value['input']['tokens'] is None and not value['checks']['gpu_executed'],
             'audio preflight invented exact preparation')
-        failed = self.json_chat('missing-asr', rows['zh'], code=503)
-        require(failed['error']['code'] == 'asr_assets_invalid', 'auxiliary failure classification')
-        require(self.http('/readyz', label='healthy-during-asr-failure')[0] == 200,
-            'ASR failure closed healthy core')
-        plain = self.json_chat('core-during-asr-failure', rows['core'])
-        require(plain['choices'][0]['message']['content'].strip() == '42', 'healthy core failed')
-        assets = self.out/'asr-assets'
-        (assets/'model.safetensors.withheld').rename(assets/'model.safetensors')
-        time.sleep(5.1)  # Existing bounded ASR cooldown, not a model restart.
+        if not self.plan.get('chat_continuation'):
+            failed = self.json_chat('missing-asr', rows['zh'], code=503)
+            require(failed['error']['code'] == 'asr_assets_invalid', 'auxiliary failure classification')
+            require(self.http('/readyz', label='healthy-during-asr-failure')[0] == 200,
+                'ASR failure closed healthy core')
+            plain = self.json_chat('core-during-asr-failure', rows['core'])
+            require(plain['choices'][0]['message']['content'].strip() == '42', 'healthy core failed')
+            assets = self.out/'asr-assets'
+            (assets/'model.safetensors.withheld').rename(assets/'model.safetensors')
+            time.sleep(5.1)  # Existing bounded ASR cooldown, not a model restart.
         sdk, raw = self.sdk('python-zh', rows['zh'], python=True, client='one-rpm')
         value = json.loads(raw)
         require(usage(value) == usage(sdk), 'Python SDK lost audio usage')
@@ -427,7 +476,7 @@ class Stage(asr.Stage):
         status, raw = self.http('/v1/config', label='final-config')
         require(status == 200 and json.loads(raw)['native_asr_health']['state'] == 'ready',
             'ASR did not recover independently')
-        require(self.counts['chats'] == LIMITS['chats'], 'frozen request coverage incomplete')
+        require(self.counts['chats'] == self.limits['chats'], 'frozen request coverage incomplete')
 
 
 def main():
@@ -438,6 +487,7 @@ def main():
     p.add_argument('--binary', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=18280)
+    p.add_argument('--continue-from', type=Path)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'fixtures': fixtures()
