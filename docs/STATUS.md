@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR44已实际合main](evidence/serve-pr44-merged-20261117/README.md)
+（`8de16675`），最终5784729c两组CI均通过。rev276原生转录的
+交付已进入主线，后续alignment/VAD保留工作分支继续开发；默认
+身份未变、0新增GPU。全部master剩余任务继续。
+
 [VAD原生CPU组件通过](evidence/serve-vad-compute-20261117/README.md)：
 8边界/4音频、667帧，概率误差≤2.62e-06，两轮累计3.357秒、
 0GPU。同版上游两种权重不一致造成原参考FAILED，明确改为官方
@@ -31,7 +36,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
 恢复源码锚点未刷新。已逐项复审并补齐，
 [inventory与7种遗漏负控通过](evidence/serve-asr-inventory-20261117/README.md)，
-0GPU，原CI失败保留。路由/字段和门禁不变，继续最终CI及合main。
+0GPU，原CI失败保留。路由/字段和门禁不变；最终CI通过，PR44已合main。
 
 [对齐运行时/词时间戳/字幕14项CPU](evidence/serve-aligner-output-runtime-20261117/README.md)
 通过（0.008秒、0GPU），独立CUDA候选构建零警告。已接入实际分类、
@@ -41,12 +46,12 @@ PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
 PR44第二组CI暴露CPU后端未识别转录chunked上传；已补齐精确
 路由和multipart夹具。[原失败项复验通过](evidence/serve-asr-route-fixture-20261117/README.md)，
 1.015秒、0GPU。原两组CI失败和一次旧ELF误用404保留；运行时/
-默认rev276不变。继续PR44最终CI及合main，后续对齐不混入。
+默认rev276不变。PR44现已合main，后续对齐继续独立推进。
 
 PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路由；
 [4项针对性CPU通过](evidence/serve-asr-optional-route-20261117/README.md)，
 0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入
-PR44，继续最终检查和合main，后续对齐开发不混入本PR。
+PR44并通过最终检查、合main；后续对齐开发独立推进。
 
 [真实时间戳/字幕计划](SERVE_NATIVE_ALIGNMENT_2026-11-17.md)已完成
 [固定资产与8项CPU合同](evidence/serve-aligner-contract-20261117/README.md)：
@@ -55,7 +60,7 @@ PR44，继续最终检查和合main，后续对齐开发不混入本PR。
 计算、字幕接口与业务交付；配置合同通过不代表时间戳接口可用。
 [对齐tokenizer6项CPU](evidence/serve-aligner-tokenizer-20261117/README.md)
 也通过（1.414秒），原ASR golden保持；实际对齐接口仍待完成。
-PR44只追加可选前置路由修复，待检查合main；本项不混入该PR。
+PR44已完成最终修复及合main；本项不混入该PR。
 [原生计算与6项布局CPU](evidence/serve-aligner-layout-20261117/README.md)
 通过（0.008秒），隔离CUDA构建完成。首轮实模型组固定2次GPU加载、
 2对齐+2ASR前4token和1次CPU参考已执行。
@@ -90,7 +95,7 @@ ASR私有健康采用同引擎现代保留控制的独立证据，明确不是�
 19项STOPPED命令/273.956秒，实际整根回退与再前进通过，
 0新增GPU。原核心/client/outer预算与各根周期保持，profile显式
 增加ASR；退休记录可恢复归档，原rev266和day保持。继续固定
-当前用户day入口、PR44最终检查和实际合main，随后所有剩余任务。
+当前用户day入口；PR44已实际合main，继续所有剩余任务。
 
 [直接HTTP分项接受](evidence/serve-asr-http-20261117/README.md)、
 [主轻真实资格](evidence/serve-asr-profiles-20261117/README.md)、

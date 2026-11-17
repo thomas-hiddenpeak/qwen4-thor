@@ -5901,6 +5901,15 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "pr44_20261117": {
+        "state": "merged",
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/44",
+        "accepted_head": "5784729c4bc79fd1d210299ca10294a5071b0ca4",
+        "merge_commit": "8de16675df10ecefa818a682d745539063b84cfc",
+        "checks": "two host-contracts SUCCESS",
+        "evidence": "evidence/serve-pr44-merged-20261117/README.md",
+        "later_alignment_vad_included": false
       }
     },
     {
@@ -6092,8 +6101,8 @@
       }
     }
   ],
-  "next_task": "A10/Q02",
-  "next": "Merge PR44 after corrected transport fixture CI passes; continue native alignment runtime and every outstanding master task.",
+  "next_task": "A10 native audio alignment/segment statistics/VAD service and all remaining master tasks",
+  "next": "Continue actual segment token/confidence producers, native VAD chunking and alignment delivery, then all remaining A/N/R/Q tasks; PR44 merged, no phase-level total completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
