@@ -1,0 +1,55 @@
+{
+  "profile": "q4t-native-ecapa-speaker-v1",
+  "model_id": "speechbrain-ecapa-voxceleb",
+  "revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+  "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+  "weight_sha256": "901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af",
+  "features": {
+    "sample_rate": 16000,
+    "mel_bins": 80,
+    "fft": 400,
+    "hop": 160,
+    "window": "periodic_hamming",
+    "padding": "center_constant",
+    "mel_scale": "htk",
+    "filter_shape": "symmetric_left_band_triangle",
+    "power": 2,
+    "amin": 1e-10,
+    "top_db": 80,
+    "mean_normalize": true,
+    "std_normalize": false
+  },
+  "embedding": {
+    "channels": [
+      1024,
+      1024,
+      1024,
+      1024,
+      3072
+    ],
+    "kernel_sizes": [
+      5,
+      3,
+      3,
+      3,
+      1
+    ],
+    "dilations": [
+      1,
+      2,
+      3,
+      4,
+      1
+    ],
+    "res2_scale": 8,
+    "se_channels": 128,
+    "attention_channels": 128,
+    "global_context": true,
+    "output_size": 192,
+    "norm_epsilon": 1e-05,
+    "pool_epsilon": 1e-12,
+    "conv_padding": "reflect",
+    "activation": "relu",
+    "global_embedding_norm": false
+  }
+}

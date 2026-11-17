@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生说话人资产8项CPU通过](evidence/serve-speaker-contract-20261118/README.md)
+（0.114秒、0GPU），231张量/实际权重/取消与坏输入合同
+已核对，独立构建零警告。继续真实80维特征、ECAPA计算和全部
+聚类/参考/API/恢复交付；不是接口可用。默认rev286保持，PR45
+冻结f3268465等待最终CI，后续本地提交不混入已验发行。
+
 [rev286对齐/VAD可回退交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)
 已完成，19项STOPPED命令/275.847秒，0新增GPU。实际整根
 回退与再前进、预算/历史保持通过；前驱rev276与day保留。版本归档

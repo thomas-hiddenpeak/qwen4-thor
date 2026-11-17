@@ -886,6 +886,11 @@ ASR资产通过`--asr-model-dir DIR`按部署启用；固定revision/权重在
 Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
 日/韩分词已实现，实际语言业务与人工时间精度尚未验收。
 
+原生说话人后端正在实现，参考SpeechBrain ECAPA-TDNN及其Fbank
+合同；固定来源、作者和Apache-2.0许可见
+[声明](third_party/licenses/speechbrain/README.md)。权重按部署启用，
+开发专用转换/参考工具不成为服务运行依赖；当前尚未交付说话人接口。
+
 说话人、Chat音频、语音合成和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整

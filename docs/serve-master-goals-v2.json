@@ -2958,6 +2958,25 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-audio-auxiliary-delivery-20261118/README.md"
+      },
+      "native_diarization_20261118": {
+        "state": "asset_contract_cpu_pass_native_execution_pending",
+        "plan": "SERVE_NATIVE_DIARIZATION_2026-11-18.md",
+        "model_revision": "0f99f2d0ebe89ac095bcc5903c4dd8f72b367286",
+        "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+        "asset_bytes_limit": 200000000,
+        "asset_seconds_limit": 600,
+        "free_disk_floor_gib": 6,
+        "cpu_tests_limit": 8,
+        "cpu_seconds_limit": 180,
+        "gpu_actions": 0,
+        "published": false,
+        "whole_task_complete": false,
+        "evidence": "evidence/serve-speaker-contract-20261118/README.md",
+        "cpu_tests": 8,
+        "cpu_seconds": 0.11382408114150167,
+        "converted_sha256": "901bb7278ba2f4f43076854e1e2757d7ae8c15f429b16b42e35cd729c75754af",
+        "tensor_count": 231
       }
     },
     {
@@ -6401,8 +6420,8 @@
       }
     }
   ],
-  "next_task": "PR45 main integration and A10 diarization plus all remaining master tasks",
-  "next": "Complete final-head PR45 integration and exact user handoff, then actual diarization, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "A10 native diarization with PR45 final-head integration",
+  "next": "Complete real native speaker backend, API/recovery/delivery and PR45 integration; then all remaining audio/A/N/R/Q tasks. No phase-level total completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
