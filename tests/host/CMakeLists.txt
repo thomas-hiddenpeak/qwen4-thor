@@ -22,6 +22,12 @@ target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
 # Local real-checkpoint qualification is opt-in and has no CUDA dependency.
+add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
+  ../test_main.cpp ../aligner_config_test.cpp ../aligner_asset_test.cpp
+  ../../src/audio/asr_config.cpp ../../src/audio/aligner_config.cpp
+  ../../src/io/json.cpp)
+target_include_directories(q4t_aligner_contract_tests PRIVATE ../../include)
+target_compile_options(q4t_aligner_contract_tests PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
   ../test_main.cpp ../asr_config_test.cpp ../asr_asset_test.cpp
   ../../src/audio/asr_config.cpp ../../src/io/json.cpp)
@@ -47,6 +53,7 @@ endif()
 if(ASR_ICU_FOUND)
   add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
     ../test_main.cpp ../asr_tokenizer_test.cpp ../embedding_contract_test.cpp
+    ../aligner_tokenizer_test.cpp
     ../../src/text/tokenizer.cpp ../../src/io/json.cpp
     ../../src/model/embedding_config.cpp ../../src/model/embedding_layout.cpp)
   target_include_directories(q4t_asr_tokenizer_tests PRIVATE

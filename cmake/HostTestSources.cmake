@@ -5,6 +5,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/aligner_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/aligner_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp

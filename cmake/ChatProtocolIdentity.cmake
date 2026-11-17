@@ -11,6 +11,9 @@ set(protocol_inputs
   src/server/chat_asr_execution.cpp
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
+  src/audio/asr_config_internal.h
+  include/q4t/audio/aligner_config.h
+  src/audio/aligner_config.cpp
   include/q4t/trace/sha256.h
   src/trace/sha256.cpp
   include/q4t/audio/asr_layout.h

@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Native dedicated retrieval delivered. Continue remaining media/backend/tool/recovery and master tasks.",
+      "next": "Continue native timestamp compute, word segmentation, subtitle responses and service delivery; VAD/diarization/Chat audio/synthesis/Realtime and all media backends remain required.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2693,6 +2693,21 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-asr-delivery-20261117/README.md"
+      },
+      "native_alignment_20261117": {
+        "state": "config_and_tokenizer_passed_compute_pending",
+        "plan": "SERVE_NATIVE_ALIGNMENT_2026-11-17.md",
+        "model_revision": "c7cbfc2048c462b0d63a45797104fc9db3ad62b7",
+        "asset_bytes_limit": 2000000000,
+        "asset_seconds_limit": 1800,
+        "cpu_tests_limit": 8,
+        "cpu_seconds_limit": 180,
+        "gpu_actions": 0,
+        "publication": false,
+        "contract_evidence": "evidence/serve-aligner-contract-20261117",
+        "tokenizer_evidence": "evidence/serve-aligner-tokenizer-20261117",
+        "cpu_passed": 14,
+        "actual_alignment": false
       }
     },
     {
@@ -6009,7 +6024,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "rev276 core day handoff prepared, not run. Complete PR44 checks and actual merge; continue ASR alignment/segmentation and every remaining master task.",
+  "next": "Merge PR44 after optional frontend route CI repair passes; continue native alignment compute and every outstanding master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

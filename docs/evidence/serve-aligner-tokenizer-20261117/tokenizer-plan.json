@@ -1,0 +1,22 @@
+{
+  "task": "AL01 native forced-aligner tokenizer",
+  "tests_max": 6,
+  "seconds_max": 180,
+  "gpu_actions": 0,
+  "cases": [
+    "actual aligned tokenizer timestamp and prompt IDs",
+    "timestamp metadata drift rejected",
+    "literal text cannot inject timestamps",
+    "token budget and prior owner retained",
+    "existing ASR official 16 golden cases unchanged",
+    "existing ASR marker and padded rows unchanged"
+  ],
+  "implementation": "explicit separate profile; 63 trained added tokens; no implicit EOS; same fixed BPE and 151705 non-special timestamp",
+  "reference_preparation": {
+    "commands": 1,
+    "seconds": 60,
+    "models": 0,
+    "gpu": 0,
+    "source": "same pinned Qwen2 tokenizer used for accepted ASR golden fixtures"
+  }
+}

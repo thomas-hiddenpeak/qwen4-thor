@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "tests": 8,
+  "seconds": 0.015612325631082058,
+  "gpu_actions": 0,
+  "exit": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_aligner_contract_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/contract-cpu-01/required.txt"
+  ],
+  "binary_sha256": "fd3a2639536c86df9485ef7298448f1427bd7329a8a268c6b0c581f160c4e658",
+  "sources": {
+    "tests/aligner_config_test.cpp": "295649ac0684253d1328dc8174744ab9e06fc75043b61baf59f352955770b102",
+    "tests/aligner_asset_test.cpp": "7d8303379c38c035c83061d65f4b98c8dc428e26f2fedb3e75348b9c7a56cf42",
+    "src/audio/asr_config.cpp": "0d8e1af2cc9b6b2b55733783c0d8c129cb11633ad0b3703e31155987ecc24039",
+    "src/audio/asr_config_internal.h": "459baf2242b603e672b6518857797bfe7885c6b8687908ee77a9fa93ff5ab886",
+    "src/audio/aligner_config.cpp": "7d3e153a2047da5468ee94eed8644cf3764d27eb5b19541f0e616bcd9401c916",
+    "include/q4t/audio/aligner_config.h": "db9e41dc284ebcf4fb7b78d0c0c4b2579902dfe7b5c946535c6643aff7b39f05",
+    "include/q4t/audio/asr_config.h": "a8764ad761ebb941f70086ca4968ebf0e69b1ba18f62361edbe39f66b67e9df9"
+  }
+}

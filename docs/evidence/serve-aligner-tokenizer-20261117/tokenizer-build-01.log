@@ -1,0 +1,6 @@
+[100%] Building CXX object CMakeFiles/q4t_asr_tokenizer_tests.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_asr_tokenizer_tests.dir/home/rm01/models/dev/qwen4-thor/tests/asr_tokenizer_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_asr_tokenizer_tests.dir/home/rm01/models/dev/qwen4-thor/tests/embedding_contract_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_asr_tokenizer_tests.dir/home/rm01/models/dev/qwen4-thor/tests/aligner_tokenizer_test.cpp.o
+[100%] Linking CXX executable q4t_asr_tokenizer_tests
+[100%] Built target q4t_asr_tokenizer_tests

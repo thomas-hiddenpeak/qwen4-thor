@@ -76,8 +76,10 @@ std::string AsrAddedToken(uint32_t id) {
   return id == 151704 ? "<asr_text>" : "";
 }
 
-bool AsrTokenMetadata(const io::Json& token, uint32_t id) {
-  const auto expected = AsrAddedToken(id);
+bool AsrTokenMetadata(const io::Json& token, uint32_t id,
+                      bool alignment = false) {
+  const auto expected = alignment && id == 151705 ? "<timestamp>"
+                                                  : AsrAddedToken(id);
   if (expected.empty() || token.GetString("content") != expected ||
       token.object.size() != 7)
     return false;
@@ -87,7 +89,7 @@ bool AsrTokenMetadata(const io::Json& token, uint32_t id) {
   }
   const auto* special = token.Find("special");
   const bool expected_special = !(id >= 151657 && id <= 151668) &&
-                                 id != 151675 && id != 151704;
+                                 id != 151675 && id != 151704 && id != 151705;
   return special && special->IsBool() && special->boolean == expected_special;
 }
 
@@ -254,7 +256,8 @@ bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
                     std::string* err) {
   if (profile != TokenizerProfile::kQwen4Exp &&
       profile != TokenizerProfile::kQwen3Embedding &&
-      profile != TokenizerProfile::kQwen3Asr) {
+      profile != TokenizerProfile::kQwen3Asr &&
+      profile != TokenizerProfile::kQwen3Aligner) {
     *err = "unknown tokenizer profile";
     return false;
   }
@@ -324,7 +327,8 @@ bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
     *err = "embedding EOS postprocessor does not match the pinned contract";
     return false;
   }
-  if (profile == TokenizerProfile::kQwen3Asr) {
+  if (profile == TokenizerProfile::kQwen3Asr ||
+      profile == TokenizerProfile::kQwen3Aligner) {
     for (const char* field : {"post_processor", "truncation", "padding"}) {
       const auto* value = root.Find(field);
       if (!value || !value->IsNull()) {
@@ -474,8 +478,9 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
     *err = "embedding added-token count differs";
     return false;
   }
-  if (data.profile == TokenizerProfile::kQwen3Asr &&
-      tokens->array.size() != 62) {
+  const bool alignment = data.profile == TokenizerProfile::kQwen3Aligner;
+  if ((data.profile == TokenizerProfile::kQwen3Asr || alignment) &&
+      tokens->array.size() != (alignment ? 63 : 62)) {
     *err = "ASR added-token count differs";
     return false;
   }
@@ -498,8 +503,8 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
       return false;
     }
     const auto token_id = static_cast<uint32_t>(integer);
-    if (data.profile == TokenizerProfile::kQwen3Asr &&
-        !AsrTokenMetadata(token, token_id)) {
+    if ((data.profile == TokenizerProfile::kQwen3Asr || alignment) &&
+        !AsrTokenMetadata(token, token_id, alignment)) {
       *err = "ASR added-token contract differs";
       return false;
     }
@@ -881,6 +886,26 @@ Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
                               std::string_view config_json,
                               const TokenizerLimits& limits,
                               std::unique_ptr<Tokenizer>* out) {
+  return LoadQwen3Speech(vocab_json, merges_text, config_json, limits, out,
+                          TokenizerProfile::kQwen3Asr);
+}
+
+Status Tokenizer::LoadQwen3Aligner(std::string_view vocab_json,
+                              std::string_view merges_text,
+                              std::string_view config_json,
+                              const TokenizerLimits& limits,
+                              std::unique_ptr<Tokenizer>* out) {
+  return LoadQwen3Speech(vocab_json, merges_text, config_json, limits, out,
+                          TokenizerProfile::kQwen3Aligner);
+}
+
+Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
+                              std::string_view merges_text,
+                              std::string_view config_json,
+                              const TokenizerLimits& limits,
+                              std::unique_ptr<Tokenizer>* out,
+                                 TokenizerProfile profile) {
+  const bool alignment = profile == TokenizerProfile::kQwen3Aligner;
   size_t remaining = limits.max_tokenizer_bytes;
   for (const auto bytes : {vocab_json, merges_text, config_json}) {
     if (bytes.size() > remaining)
@@ -950,7 +975,7 @@ Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
         additional->array[i].str != AsrAddedToken(kAdditional[i]))
       return Status::Fail("ASR tokenizer additional special token differs");
   const auto* added = config.Find("added_tokens_decoder");
-  if (!added || !added->IsObject() || added->object.size() != 62 ||
+  if (!added || !added->IsObject() || added->object.size() != (alignment ? 63 : 62) ||
       added->object.size() > limits.max_added_tokens)
     return Status::Fail("ASR tokenizer added tokens differ/exceed budget");
   io::Json tokens;
@@ -967,7 +992,7 @@ Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
     number.type = io::Json::Type::kNumber;
     number.number = id;
     token.object.emplace_back("id", std::move(number));
-    if (!AsrTokenMetadata(token, id))
+    if (!AsrTokenMetadata(token, id, alignment))
       return Status::Fail("ASR tokenizer added token semantics differ");
     tokens.array.push_back(std::move(token));
   }
@@ -1032,7 +1057,7 @@ Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
   model.object.emplace_back("merges", std::move(merges));
   root.object.emplace_back("model", std::move(model));
   root.object.emplace_back("added_tokens", std::move(tokens));
-  return LoadDocument(root, limits, out, TokenizerProfile::kQwen3Asr);
+  return LoadDocument(root, limits, out, profile);
 }
 
 Status Tokenizer::Encode(std::string_view text,

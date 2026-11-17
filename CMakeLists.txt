@@ -174,6 +174,7 @@ target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
   src/audio/asr_config.cpp
+  src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
   src/audio/asr_model.cu
   src/audio/features.cpp
@@ -1013,6 +1014,12 @@ endif()
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
+  add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/aligner_config_test.cpp tests/aligner_asset_test.cpp
+    src/audio/asr_config.cpp src/audio/aligner_config.cpp src/io/json.cpp)
+  target_include_directories(q4t_aligner_contract_tests PRIVATE include)
+  target_compile_options(q4t_aligner_contract_tests PRIVATE
+    -Wall -Wextra -Werror)
   add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/asr_config_test.cpp tests/asr_asset_test.cpp
     src/audio/asr_config.cpp src/io/json.cpp)
@@ -1042,6 +1049,7 @@ q4t_link_native_documents(q4t_host_tests)
   if(Q4T_HAS_ICU)
     add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
       tests/test_main.cpp tests/asr_tokenizer_test.cpp
+      tests/aligner_tokenizer_test.cpp
       tests/embedding_contract_test.cpp src/model/embedding_config.cpp
       src/model/embedding_layout.cpp)
     target_link_libraries(q4t_asr_tokenizer_tests PRIVATE q4t_text)

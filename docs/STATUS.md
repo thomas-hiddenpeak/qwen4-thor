@@ -12,6 +12,15 @@ PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路�
 0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入
 PR44，继续最终检查和合main，后续对齐开发不混入本PR。
 
+[真实时间戳/字幕计划](SERVE_NATIVE_ALIGNMENT_2026-11-17.md)已完成
+[固定资产与8项CPU合同](evidence/serve-aligner-contract-20261117/README.md)：
+708张量/独立5000类head/原ASR混用保护通过，0.016秒、0GPU。
+资产1.84GB/640.541秒、保留8GiB磁盘。继续tokenizer及原生实际
+计算、字幕接口与业务交付；配置合同通过不代表时间戳接口可用。
+[对齐tokenizer6项CPU](evidence/serve-aligner-tokenizer-20261117/README.md)
+也通过（1.414秒），原ASR golden保持；日/韩词单元和实际对齐仍待实现。
+PR44只追加可选前置路由修复，待检查合main；本项不混入该PR。
+
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
 固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、
 独立文件配额/chunked/取消、入口恢复与整payload回退均有真实业务

@@ -1,0 +1,109 @@
+{
+  "status": "PASS_CPU_REFERENCE_GENERATION_ONLY",
+  "transformers": "5.16.1",
+  "tokenizers": "0.23.2",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/lib/python3.12/site-packages/transformers/models/qwen2/tokenization_qwen2.py",
+  "source_sha256": "fac4e6576bfe2369731be147a4e530f262bdf32f2ac50436f96f0d8bdd2fc628",
+  "asset_revision": "c7cbfc2048c462b0d63a45797104fc9db3ad62b7",
+  "model_actions": 0,
+  "cuda_initialized": false,
+  "torch_imported": true,
+  "seconds": 0.39795534685254097,
+  "assets": {
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "tokenizer_config.json": "3ab80063f8511deb9566e6ad438d17b7a6277fcffd52d92854112f19d36bd81c"
+  },
+  "cases": [
+    {
+      "text": "",
+      "ids": [],
+      "decoded": "",
+      "skip_decoded": ""
+    },
+    {
+      "text": "<timestamp>",
+      "ids": [
+        151705
+      ],
+      "decoded": "<timestamp>",
+      "skip_decoded": "<timestamp>"
+    },
+    {
+      "text": "<timestamp><timestamp>",
+      "ids": [
+        151705,
+        151705
+      ],
+      "decoded": "<timestamp><timestamp>",
+      "skip_decoded": "<timestamp><timestamp>"
+    },
+    {
+      "text": "<|audio_start|><|audio_pad|><|audio_end|>Hello<timestamp><timestamp>world<timestamp><timestamp>",
+      "ids": [
+        151669,
+        151676,
+        151670,
+        9707,
+        151705,
+        151705,
+        14615,
+        151705,
+        151705
+      ],
+      "decoded": "<|audio_start|><|audio_pad|><|audio_end|>Hello<timestamp><timestamp>world<timestamp><timestamp>",
+      "skip_decoded": "Hello<timestamp><timestamp>world<timestamp><timestamp>"
+    },
+    {
+      "text": "<|audio_start|><|audio_pad|><|audio_end|>你<timestamp><timestamp>好<timestamp><timestamp>",
+      "ids": [
+        151669,
+        151676,
+        151670,
+        56568,
+        151705,
+        151705,
+        52801,
+        151705,
+        151705
+      ],
+      "decoded": "<|audio_start|><|audio_pad|><|audio_end|>你<timestamp><timestamp>好<timestamp><timestamp>",
+      "skip_decoded": "你<timestamp><timestamp>好<timestamp><timestamp>"
+    },
+    {
+      "text": "don't<timestamp><timestamp>café<timestamp><timestamp>",
+      "ids": [
+        15007,
+        944,
+        151705,
+        151705,
+        924,
+        58858,
+        151705,
+        151705
+      ],
+      "decoded": "don't<timestamp><timestamp>café<timestamp><timestamp>",
+      "skip_decoded": "don't<timestamp><timestamp>café<timestamp><timestamp>"
+    },
+    {
+      "text": "日本語 한국어 ٣٤٥<timestamp><timestamp>",
+      "ids": [
+        101059,
+        102819,
+        130092,
+        31079,
+        220,
+        149,
+        96,
+        149,
+        97,
+        149,
+        98,
+        151705,
+        151705
+      ],
+      "decoded": "日本語 한국어 ٣٤٥<timestamp><timestamp>",
+      "skip_decoded": "日本語 한국어 ٣٤٥<timestamp><timestamp>"
+    }
+  ]
+}
