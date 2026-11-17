@@ -1,0 +1,8 @@
+test_actual_accepted_wire_and_strict_failure (tools.serve_responses.test_video_affine_service_acceptance.AffineServiceTests.test_actual_accepted_wire_and_strict_failure) ... ok
+test_original_clip_and_explicit_detail_reach_request (tools.serve_responses.test_video_affine_service_acceptance.AffineServiceTests.test_original_clip_and_explicit_detail_reach_request) ... ok
+test_wrapper_keeps_exact_lifecycle_and_distinct_acceptance (tools.serve_responses.test_video_affine_service_acceptance.AffineServiceTests.test_wrapper_keeps_exact_lifecycle_and_distinct_acceptance) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.199s
+
+OK

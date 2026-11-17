@@ -1,0 +1,33 @@
+{
+  "starts": 1,
+  "creates": 4,
+  "answers": {
+    "scale": {
+      "top_left": "red",
+      "top_right": "green",
+      "bottom_left": "blue",
+      "bottom_right": "yellow",
+      "layout": "landscape"
+    },
+    "shear": {
+      "top_left": "red",
+      "top_right": "green",
+      "bottom_left": "blue",
+      "bottom_right": "yellow",
+      "layout": "landscape"
+    },
+    "replay": {
+      "top_left": "red",
+      "top_right": "green",
+      "bottom_left": "blue",
+      "bottom_right": "yellow",
+      "layout": "landscape"
+    }
+  },
+  "input_count_matches": true,
+  "source_deleted_before_replay": true,
+  "singular_request_rejected": true,
+  "same_model_pid": true,
+  "ordinary_text_answer": "42",
+  "full_quality_or_performance_claim": false
+}

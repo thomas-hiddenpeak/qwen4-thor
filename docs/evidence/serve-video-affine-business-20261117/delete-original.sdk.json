@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_235b4d81cc7c45cc54098ec284ade96e",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "77",
+        "content-type": "application/json",
+        "x-request-id": "req-f10dfd3838996224d65891a1f20ad1d5"
+      },
+      "wire_base64": "eyJpZCI6ImZpbGVfMjM1YjRkODFjYzdjNDVjYzU0MDk4ZWMyODRhZGU5NmUiLCJvYmplY3QiOiJmaWxlIiwiZGVsZXRlZCI6dHJ1ZX0="
+    }
+  ],
+  "result": {
+    "id": "file_235b4d81cc7c45cc54098ec284ade96e",
+    "object": "file",
+    "deleted": true
+  }
+}

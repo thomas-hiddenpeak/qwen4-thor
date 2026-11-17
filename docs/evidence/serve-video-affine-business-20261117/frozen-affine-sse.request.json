@@ -1,0 +1,104 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "max_output_tokens": 192,
+    "reasoning": {
+      "effort": "none"
+    },
+    "input": "For the same earlier video, Inspect the displayed video frame. Identify the color of each quadrant as top_left, top_right, bottom_left and bottom_right. Also report whether the displayed frame is portrait, landscape or square as layout. Use lowercase English color names. Return only the requested JSON object.",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "displayed_frame",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "top_left": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "top_right": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "bottom_left": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "bottom_right": {
+              "type": "string",
+              "enum": [
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "cyan",
+                "magenta",
+                "black",
+                "white"
+              ]
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "portrait",
+                "landscape",
+                "square"
+              ]
+            }
+          },
+          "required": [
+            "top_left",
+            "top_right",
+            "bottom_left",
+            "bottom_right",
+            "layout"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "store": true,
+    "stream": true,
+    "stream_options": {
+      "include_obfuscation": false
+    },
+    "previous_response_id": "resp_93a53470bb1a07e3e10979cf9a78352e"
+  },
+  "id": null,
+  "query": null,
+  "stream_mode": null,
+  "base_url": "http://127.0.0.1:18186/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

@@ -5439,8 +5439,8 @@
       }
     }
   ],
-  "next_task": "PR40 actually merged at 63190189. Continue native affine video and explicit detail correctness, bounded business validation and reversible delivery; all remaining master tasks stay active.",
-  "next": "PR40 actually merged at 63190189. Continue native affine video and explicit detail correctness, bounded business validation and reversible delivery; all remaining master tasks stay active.",
+  "next_task": "A10",
+  "next": "仿射与显式video detail真实业务通过；继续4启动16请求900秒主轻与保留发行组合、可回退交付及实际合main；原auto小尺寸质量失败保留，全部剩余master继续。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

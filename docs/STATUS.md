@@ -123,7 +123,11 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 已捕获真实帧及CPU张量逐位核对正确；继续补显式视频detail传播和
 有界细节预算，原auto/low数值合同及失败记录保留。[显式细节8项CPU
 及驱动/schema检查通过](evidence/serve-video-detail-cpu-20261117/README.md)，
-继续同源同问题的high实际业务；默认234保持。
+同源同问题的high实际业务[4项通过](evidence/serve-video-affine-business-20261117/README.md)，
+含原失败累计2启动5生成、86.304秒严格租约，83项NVML正常且清理
+完整；默认234保持，继续主轻/保留组合、可回退交付及实际合main。
+保留包业务驱动3项CPU通过，复用严格生命周期；只验证实际仿射
+SSE/存储/客户端隔离和奇异请求后的普通文本，不扩展无关故障矩阵。
 PR40已[实际合main](evidence/serve-pr40-merged-20261117/README.md)，
 一般透视/多轨/其余媒体后端和全部master仍未完成。
 
