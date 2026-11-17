@@ -7,44 +7,36 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[原生转录直接HTTP/SDK与隔离恢复已分项接受](evidence/serve-asr-http-20261117/README.md)：
-复用已成立的4创建，续验5创建通过；中英文文本完全一致、英文WER=0，
-实际概率/usage、流式终态、坏参数、取消及同PID Chat均通过。接受
-观察为2启动/9创建/93.585秒；含原失败累计4启动/11创建/170.949秒。
-原FAILED保持，未跑完整质量/性能。默认rev266及day身份不变。
+[原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
+固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、
+独立文件配额/chunked/取消、入口恢复与整payload回退均有真实业务
+证据。接入/恢复组含原失败累计6启动/20创建/1CUDA探测、316.806秒，
+307次NVML正常，清理通过；未进行完整性能或完整模型质量矩阵。
 
-服务包ASR模型身份、显式资源预算/CLI、配置schema与原生OpenAPI
-已实现并完成定向CPU。正在接入主轻/版本恢复：固定实际模型和
-音频业务资格，允许显式预算变更，自动恢复不得丢失转录或返还
-已消费额度。[13项CPU通过](evidence/serve-asr-recovery-cpu-20261117/README.md)
-（0.865秒、0模型动作）。[实际主轻12创建通过](evidence/serve-asr-profiles-20261117/README.md)，
-2启动/99.579秒、94次NVML正常；每套都完成真实转录、原工具/
-embedding/视频，清理与身份保持。继续原生TLS/独立客户端、版本
-恢复及可回退交付。下一组冻结TLS入口1启动/7创建/600秒，
-包括实际双SDK、大文件配额、分块、取消、入口恢复且核心PID保持；
-两种精确保留控制各1启动/3创建/300秒，整payload恢复2启动/6创建/
-1真实CUDA探测/600秒，均使用独立严格租约、无需完整性能矩阵。
-[驱动2项CPU通过](evidence/serve-asr-native-driver-20261117/README.md)，
-0.176秒；原生辅助构建零警告，已验引擎及默认保持。首个TLS驱动
-5创建/1启动/57.586秒后在清理指标解析处失败，原FAILED保持；
-此前双SDK/配额/chunked和入口恢复已形成实际记录。补精确指标解析
-和旧记录SHA复核，先2项CPU/60秒，再只补1启动/3创建/600秒
-（新增自检、取消、核心Chat）。[2项CPU已通过](evidence/serve-asr-tls-driver-fix-20261117/README.md)，0.715秒、5反例；34份原记录复核通过，0GPU。累计接入/恢复上限6启动/20创建/
-1探测/2400秒；实际包/引擎保持，不重跑已完成业务。续验取消/Chat已通过，最终私有配置误从客户端入口请求404，原失败保留。修复驱动读取运维端口，冻结2项CPU/60秒；无需新增TLS模型启动，同引擎健康状态由既定保留组合补证，原TLS未观察的终态不冒充通过。[2项CPU通过](evidence/serve-asr-tls-ops-fix-20261117/README.md)，1.537秒，0GPU；继续两种精确保留控制和整payload恢复。
-[11项针对性CPU已完成](evidence/serve-asr-package-cpu-20261117/README.md)，
-含原失败12次/0.785秒，0模型动作；只补实际config暴露的媒体字段
-schema遗漏，原失败保留。继续恢复合同，再冻结下一组GPU组合。实际
-对齐/字幕/说话人/VAD、Chat音频、语音输出及全部master继续。
+两个TLS原驱动FAILED分别保留：额外清理指标被公共解析器过滤、
+私有配置误从客户端入口请求。对应驱动已修，实际已完成业务按原始
+wire/身份/监控/清理分项复核；没有重跑TLS业务或改写失败。最终
+ASR私有健康采用同引擎现代保留控制的独立证据，明确不是原TLS
+终态观测。ASR ready、compute_failures=0，取消后核心Chat42；
+整包回退保留存储Chat和原profile预算。
 
-前序证据按未变身份复用：[34项服务CPU](evidence/serve-asr-service-cpu-20261117/README.md)、
-[3项传输修复](evidence/serve-asr-transport-20261117/README.md)、
-[scope接线修复](evidence/serve-asr-scope-20261117/README.md)、
-[3项SDK数值复核](evidence/serve-asr-sdk-values-20261117/README.md)、
-[18项资产](evidence/serve-asr-assets-20261117/README.md)、
-[21项codec](evidence/serve-audio-codec-cpu-20261117/README.md)及
-[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)。
-[原计算logits差分FAILED](evidence/serve-asr-compute-20261117/README.md)不改写，
-后续实际算子复核与API业务接受分列，不宣称完整模型正确性。
+下一步STOPPED可回退发布和实际合main。先用已验维护入口归档
+4条无活动引用的旧意图、2份旧发布副本和2条退休版本登记，为本次
+5个发布步骤/2个根/2个周期留容量：最多7条维护命令、300秒、0GPU，
+保留可恢复档案和全部核心/client/outer/profile/version预算字节。
+随后最多20条STOPPED交付命令/600秒，验证实际整根回退再前进，
+不追加已通过GPU组合；当前rev266及原用户day仍保持。
+
+[直接HTTP分项接受](evidence/serve-asr-http-20261117/README.md)、
+[主轻真实资格](evidence/serve-asr-profiles-20261117/README.md)、
+[恢复13项CPU](evidence/serve-asr-recovery-cpu-20261117/README.md)、
+[包/schema11项CPU](evidence/serve-asr-package-cpu-20261117/README.md)及
+前序资产/codec/服务CPU按身份复用。原计算logits差分FAILED继续
+单列，后续实际算子复核与业务接受不冒充完整模型正确性。
+
+对齐/字幕/说话人/VAD、Chat音频及非空音频历史、语音输出、
+图像/视频生成、完整SDK矩阵、冷启动/资源硬边界和全部master
+剩余任务仍须实现。转录交付不等于整个A10或Serve总目标完成。
 
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
 current选择器并通过精确1项CPU（0.455秒）。原失败保留于

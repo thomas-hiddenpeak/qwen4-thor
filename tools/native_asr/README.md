@@ -1,8 +1,11 @@
 # Native ASR development checks
 
 Runtime code lives in `include/q4t/audio`, `src/audio`, and the ASR tokenizer
-profile. Asset loading and full inference integration are still in progress;
-these CPU checks do not establish that an audio HTTP endpoint is available.
+profile. The fixed Qwen3-ASR-0.6B backend now performs real multipart JSON/text/SSE
+transcription, with bounded codec/model resources and fault isolation.
+Actual direct HTTP, pinned Python/JS SDK, native TLS, primary/light profiles
+and retained/whole-payload recovery are qualified; reversible delivery is
+next. CPU evidence alone never qualifies an audio endpoint.
 
 `feature_reference.py` generates six synthetic PCM/log-mel fixture pairs using
 the installed official Whisper feature extractor. It disables visible GPUs,
@@ -35,8 +38,11 @@ the frozen cross-implementation thresholds). `decoder_isolation.py` and
 `decoder_operand_review.py` investigate actual operands; their results do not
 rewrite the original gate. The latter supports a layer interval and preserves
 partial checks on exception. Its FP32/BF16 rounding and finite-ULP checks apply
-to the captured instances, not every possible input. Current evidence and
-remaining HTTP/codec work are in `docs/evidence/serve-asr-compute-20261117`.
+to the captured instances, not every possible input. Original numerical evidence remains in `docs/evidence/serve-asr-compute-20261117`.
+Real HTTP evidence is in `docs/evidence/serve-asr-http-20261117`, and managed
+composition is in `docs/evidence/serve-asr-service-composition-20261117`.
+Alignment/timestamps, speaker labels, VAD, Chat audio, speech synthesis and
+Realtime remain required implementation tasks.
 
 `codec_fixtures.py` generates synthetic PCM and compressed test inputs. It
 uses a bounded list of CPU GStreamer encoder plugins only; the CLI is a
@@ -45,3 +51,11 @@ documented AAC source-tail correction without replacing passed Ogg/WebM
 fixtures. Audio decoding itself lives in the isolated native server worker;
 see `docs/evidence/serve-audio-codec-cpu-20261117` for original failures,
 numerical boundary fixes and targeted CPU qualification.
+
+`service_acceptance.py` freezes and runs bounded native TLS, retained-control
+and whole-payload recovery checks under the shared strict GPU lease. Private
+configuration is read directly from the operations listener.
+`tls_composition.py` preserves both original failed TLS drivers while checking
+their completed wire, cancellation, quota, recovery and cleanup observations;
+its final health receipt comes explicitly from a separate same-engine managed
+run. It never reclassifies an original failed continuous driver as passed.

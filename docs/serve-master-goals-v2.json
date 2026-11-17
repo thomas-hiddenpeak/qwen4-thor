@@ -2648,6 +2648,18 @@
         "seconds": 99.57925557391718,
         "default_unchanged": true,
         "whole_task_complete": false
+      },
+      "asr_service_composition_20261117": {
+        "state": "actual_service_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-asr-service-composition-20261117/README.md",
+        "starts": 6,
+        "creates": 20,
+        "probes": 1,
+        "seconds": 316.80610047187656,
+        "nvml_queries": 307,
+        "original_tls_failures_preserved": true,
+        "full_model_quality": false,
+        "performance_claim": false
       }
     },
     {
@@ -3626,6 +3638,18 @@
           "merge": "d15498f168366d6fd799a0acc791fb398f466763",
           "evidence": "evidence/serve-pr43-merged-20261117/README.md"
         }
+      },
+      "asr_service_composition_20261117": {
+        "state": "actual_service_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-asr-service-composition-20261117/README.md",
+        "starts": 6,
+        "creates": 20,
+        "probes": 1,
+        "seconds": 316.80610047187656,
+        "nvml_queries": 307,
+        "original_tls_failures_preserved": true,
+        "full_model_quality": false,
+        "performance_claim": false
       }
     },
     {
@@ -5074,6 +5098,18 @@
         "pull_request": 38,
         "main_commit": "0e4f5ac2cd20fec9f273b3b03251c7020f61f233",
         "main_evidence": "evidence/serve-pr38-merged-20261117/README.md"
+      },
+      "asr_service_composition_20261117": {
+        "state": "actual_service_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-asr-service-composition-20261117/README.md",
+        "starts": 6,
+        "creates": 20,
+        "probes": 1,
+        "seconds": 316.80610047187656,
+        "nvml_queries": 307,
+        "original_tls_failures_preserved": true,
+        "full_model_quality": false,
+        "performance_claim": false
       }
     },
     {
@@ -5311,7 +5347,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Final-head checks and actual main merge for client receipts/native maintenance",
+        "Reversible native ASR delivery and actual main merge, then every remaining implementation",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5638,6 +5674,18 @@
         "head": "958674656d1327a9f37cda2251bfb702c2d9d04d",
         "merge": "d15498f168366d6fd799a0acc791fb398f466763",
         "evidence": "evidence/serve-pr43-merged-20261117/README.md"
+      },
+      "asr_service_composition_20261117": {
+        "state": "actual_service_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-asr-service-composition-20261117/README.md",
+        "starts": 6,
+        "creates": 20,
+        "probes": 1,
+        "seconds": 316.80610047187656,
+        "nvml_queries": 307,
+        "original_tls_failures_preserved": true,
+        "full_model_quality": false,
+        "performance_claim": false
       }
     },
     {
@@ -5817,7 +5865,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "Complete exact native ASR primary/light, native TLS and recovery/reversible release; continue alignment, diarization, all audio and all master tasks.",
+  "next": "ASR real TLS/retained/whole-payload composition accepted with original failed drivers preserved; perform bounded STOPPED reversible delivery and main merge. Continue every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
