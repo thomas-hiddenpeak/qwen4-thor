@@ -430,7 +430,8 @@ void ChatServer::HandleCapabilities(int fd) {
                  vision_device_budget_.attention_shared_bytes,
                  access_program_policy_.get(), !embedding_model_dir_.empty(),
                  !asr_model_dir_.empty(), !aligner_model_dir_.empty(),
-                 !vad_model_dir_.empty(), vad_max_chunks_),
+                 !vad_model_dir_.empty(), vad_max_chunks_,
+                 !speaker_model_dir_.empty()),
              "application/json");
 }
 

@@ -3102,6 +3102,29 @@
         "all_master_tasks_active": true,
         "archive_sha256": "a8a75c73122f30390344251ba7e2567913b3d1a0f2842e0b174008b71e65db67",
         "evidence": "evidence/serve-speaker-turns-cpu-20261118/README.md"
+      },
+      "speaker_runtime_20261118": {
+        "status": "ACCEPT_SPEAKER_RUNTIME_TARGETED_CPU",
+        "cpp_tests": 13,
+        "schema_tests": 4,
+        "cpp_seconds": 0.16409158892929554,
+        "schema_seconds": 0.21404057927429676,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "real_reference_pcm_codec": true,
+        "own_worker_cleanup_complete": true,
+        "candidate_engine_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+        "compiled_sources_sha256": "4f926ea7556b29115ceb499e4bde1906092af3324ee719a957d143291cc9a812",
+        "original_schema_graph_failure_preserved": true,
+        "inventory_anchors_reviewed": 22,
+        "inventory_negative_controls": 7,
+        "default_revision": 286,
+        "defaults_unchanged": true,
+        "speaker_http_accepted": false,
+        "overlap_implemented": false,
+        "all_master_tasks_active": true,
+        "archive_sha256": "abcc388b0e641f5eb91edc0206b0f4d02bbeef0af0180fb8211b534c8574a28b",
+        "evidence": "evidence/serve-speaker-runtime-cpu-20261118/README.md"
       }
     },
     {
@@ -6545,8 +6568,8 @@
       }
     }
   ],
-  "next_task": "A10 native speaker assets/health and real diarization integration; PR45 exact-head main integration; all remaining master tasks",
-  "next": "Complete real native speaker backend, API/recovery/delivery and PR45 integration; then all remaining audio/A/N/R/Q tasks. No phase-level total completion.",
+  "next_task": "A10 real native diarization HTTP/SDK qualification, service recovery/delivery and overlap implementation; all remaining master tasks",
+  "next": "Complete real speaker business and usable recovery/delivery, overlap detection/separation and remaining audio/A/N/R/Q tasks. PR45 is merged. No phase-level total completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -6,8 +6,10 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/diarization_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_diarized_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speaker_runtime_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/diarization.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/diarized_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speaker_reference.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_layout_test.cpp

@@ -87,6 +87,8 @@ ChatServer::~ChatServer() {
   asr_health_.Released();
   release(d_aligner_weights_, "shutdown.native_aligner_weights");
   aligner_health_.Released();
+  release(d_speaker_weights_, "shutdown.native_speaker_weights");
+  speaker_health_.Released();
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -396,6 +398,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
             uint64_t(admission.inflight) *
                 (frames * sizeof(audio::VadFrame) +
                  size_t(opts.vad_max_chunks) * sizeof(audio::VadChunk));
+      }
+      if (!opts.speaker_model_dir.empty()) {
+        SpeakerResourcePlan speaker;
+        s = PlanSpeakerServiceResources(opts.speaker_limits, &speaker);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        breq.extra_fixed_bytes +=
+            speaker.load_peak_bytes +
+            uint64_t(opts.max_seq) * speaker.request_device_bytes +
+            uint64_t(admission.inflight) * speaker.request_host_bytes;
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -755,6 +769,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   aligner_model_dir_ = opts.aligner_model_dir;
   aligner_limits_ = opts.aligner_limits;
   aligner_health_.Configure(!aligner_model_dir_.empty());
+  speaker_model_dir_ = opts.speaker_model_dir;
+  speaker_limits_ = opts.speaker_limits;
+  speaker_health_.Configure(!speaker_model_dir_.empty());
   vad_model_dir_ = opts.vad_model_dir;
   vad_max_chunks_ = opts.vad_max_chunks;
   vad_health_.Configure(!vad_model_dir_.empty());

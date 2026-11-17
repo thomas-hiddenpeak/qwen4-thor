@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speaker运行时17项CPU通过](evidence/serve-speaker-runtime-cpu-20261118/README.md)：
+13C++/0.164秒、4schema/0.214秒，0GPU/HTTP；真实参考PCM
+编解码、配置/取消及原音频保护通过。编译身份已核对、零警告；旧
+type graph生成失败保留并纠正。继续真实语音/SDK、服务恢复交付、
+重叠检测分离及全部master；默认rev286不变。
+
+正在接入独立speaker后端及实际diarized JSON/SSE；CPU冻结13项/
+180秒、0GPU/HTTP，含实际2—10秒PCM参考编解码、作用域/取消、
+delta/segment关联与原音频配置保护。构建和验证后继续真实语音/
+API、服务恢复交付、重叠检测分离及全部master；默认rev286不变。
+
 [Speaker分段/原生输出14CPU通过](evidence/serve-speaker-turns-cpu-20261118/README.md)，
 0.032秒、0GPU/HTTP；构造声纹的聚类/参考/容量/取消与真实给定
 时间到JSON/SSE/usage通过，不能代替真实语音或API。运行时零警告，

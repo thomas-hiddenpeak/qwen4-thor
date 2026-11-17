@@ -311,6 +311,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/speaker_assets.cpp
   src/server/speaker_service.cpp
   src/server/diarized_output.cpp
+  src/server/speaker_reference.cpp
+  src/server/chat_speaker_backend.cpp
+  src/server/chat_speaker_execution.cpp
+  src/server/chat_speaker_turns.cpp
   src/server/vad_assets.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp

@@ -183,6 +183,18 @@ Status DiarizedTranscript::SegmentJson(const DiarizedSegment& segment,
   return {};
 }
 
+Status DiarizedTranscript::DeltaJson(const DiarizedSegment& segment,
+                                     bool leading_space, std::string* out) {
+  std::string checked;
+  if (!out) return Status::Fail("diarized delta owner unavailable");
+  if (auto status = SegmentJson(segment, &checked); !status) return status;
+  *out = OutputJson(
+      Object({{"type", String("transcript.text.delta")},
+              {"segment_id", String(segment.id)},
+              {"delta", String((leading_space ? " " : "") + segment.text)}}));
+  return {};
+}
+
 Status DiarizedTranscript::Finish(const ActualUsage& usage, bool stream,
                                   std::string* out) const {
   if (!out || !valid_ || !ValidActualUsage(usage) ||

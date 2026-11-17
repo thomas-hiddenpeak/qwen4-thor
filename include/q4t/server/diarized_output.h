@@ -26,6 +26,8 @@ class DiarizedTranscript {
   const std::string& Text() const { return text_; }
   std::span<const DiarizedSegment> Segments() const { return segments_; }
   static Status SegmentJson(const DiarizedSegment& segment, std::string* out);
+  static Status DeltaJson(const DiarizedSegment& segment, bool leading_space,
+                          std::string* out);
 
  private:
   bool valid_;

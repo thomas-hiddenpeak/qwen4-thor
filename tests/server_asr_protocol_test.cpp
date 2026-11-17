@@ -465,7 +465,7 @@ Q4T_TEST(
     const auto* remaining = transcription->GetArray("remaining_native_work");
     Q4T_CHECK(remaining && remaining->array.size() == 1 &&
               remaining->array.front().type == Json::Type::kString &&
-              remaining->array.front().str == "diarization");
+              remaining->array.front().str == "overlap_diarization");
     Q4T_CHECK(transcription->Find("alignment") &&
               transcription->Find("segments") && transcription->Find("vad"));
     Q4T_CHECK(!transcription->Find("alignment")->GetBool("configured") &&

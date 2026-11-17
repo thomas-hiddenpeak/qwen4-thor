@@ -57,6 +57,14 @@ Q4T_TEST(diarized_output_cross_clip_ids_sse_and_actual_usage) {
   Q4T_CHECK(segment.GetString("type") == "transcript.text.segment");
   Q4T_CHECK(segment.GetString("id") == "1");
   Q4T_CHECK(segment.Find("start")->number == 2.66);
+  std::string delta;
+  Q4T_CHECK(
+      DiarizedTranscript::DeltaJson(transcript.Segments()[1], true, &delta));
+  io::Json part;
+  Q4T_CHECK(io::ParseJson(delta, &part));
+  Q4T_CHECK(part.GetString("type") == "transcript.text.delta");
+  Q4T_CHECK(part.GetString("segment_id") == "1");
+  Q4T_CHECK(part.GetString("delta") == " two?");
   const auto* usage = json.Find("usage");
   Q4T_CHECK(usage->Find("input_tokens")->number == 30);
   Q4T_CHECK(usage->Find("total_tokens")->number == 34);
@@ -126,6 +134,7 @@ Q4T_TEST(diarized_output_segment_and_usage_budgets_keep_output) {
   Q4T_CHECK(!transcript.Finish({kActualUsageLimit, 1}, false, &out));
   auto segment = transcript.Segments()[0];
   segment.id = "bad\nframe";
+  Q4T_CHECK(!DiarizedTranscript::DeltaJson(segment, false, &out));
   Q4T_CHECK(!DiarizedTranscript::SegmentJson(segment, &out) &&
             out == "retained");
   segment = transcript.Segments()[0];

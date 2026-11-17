@@ -13,7 +13,9 @@ ObjectReply ChatServer::FormatAlignedTranscription(
     const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
     ActualUsageCounter& usage, std::string* response, int64_t origin_ms,
-    size_t first_cue, bool header, size_t* cue_count) {
+    size_t first_cue, bool header, size_t* cue_count,
+    std::vector<audio::AlignerWord>* aligned_words,
+    audio::AlignerTimes* aligned_times) {
   using object_detail::Error;
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto cancelled = [&] {
@@ -92,6 +94,14 @@ ObjectReply ChatServer::FormatAlignedTranscription(
     }
   }
   if (cancelled()) return interrupted();
+  if (request.format == AsrFormat::kDiarizedJson) {
+    if (!aligned_words || !aligned_times)
+      return Error(500, "alignment_owner_invalid",
+                   "Diarized alignment owner unavailable");
+    *aligned_words = std::move(words);
+    *aligned_times = std::move(times);
+    return {};
+  }
   // Preserve raw and fixed model boundaries in the request owner until the
   // response is composed. Never substitute proportional timings on failure.
   if (request.segment_timestamps) {

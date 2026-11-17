@@ -253,7 +253,9 @@ ObjectReply ChatServer::RunNativeAsr(
   const detail::WriteOptions write{control->deadline(), control.get()};
   bool first_delta = true;
   const auto emit = [&](const AsrTextDelta& delta) -> bool {
-    if (!request.stream || delta.text.empty()) return !cancelled();
+    if (!request.stream || request.format == AsrFormat::kDiarizedJson ||
+        delta.text.empty())
+      return !cancelled();
     if (*http->State() == detail::ResponseState::kUnsent) {
       if (!detail::BeginStreamingResponse(fd, http->State(), write))
         return false;

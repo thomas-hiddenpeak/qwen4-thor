@@ -3087,6 +3087,9 @@
                     },
                     {
                       "$ref": "serve-application-v1.schema.json#/$defs/transcription_verbose_response"
+                    },
+                    {
+                      "$ref": "serve-application-v1.schema.json#/$defs/transcription_diarized_response"
                     }
                   ]
                 }
@@ -3113,7 +3116,7 @@
                 "x-q4t-event-schema": {
                   "$ref": "serve-application-v1.schema.json#/$defs/transcription_event"
                 },
-                "x-q4t-stream-contract": "transcript.text.delta then transcript.text.done; actual token usage, no Chat DONE sentinel; typed error terminates failure"
+                "x-q4t-stream-contract": "transcript.text.delta, diarized segment events, then transcript.text.done; actual token usage, no Chat DONE sentinel; typed error terminates failure"
               }
             }
           },
@@ -3150,11 +3153,25 @@
             "text",
             "verbose_json",
             "srt",
-            "vtt"
+            "vtt",
+            "diarized_json"
           ],
           "required_pending_executors": [
-            "diarization"
+            "overlap_diarization"
           ],
+          "diarization": {
+            "configured_by": "speaker-model-dir",
+            "requires": [
+              "asr-model-dir",
+              "aligner-model-dir",
+              "vad-model-dir"
+            ],
+            "backend": "native ECAPA FP32, request-local cosine average linkage",
+            "references": "up to 4 inline audio data URLs, 2 to 10 seconds each",
+            "timing": "actual aligner words assigned by acoustic interval overlap",
+            "streaming": "completed segment_id delta and segment, then one complete done",
+            "overlap": "required implementation remains pending"
+          },
           "alignment": {
             "configured_by": "aligner-model-dir",
             "timestamps": "actual fixed-model word edges; repaired ordering is explicit",
