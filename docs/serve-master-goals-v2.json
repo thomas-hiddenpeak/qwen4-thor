@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -2870,6 +2870,20 @@
         "seconds": 110.4937121430412,
         "whole_task_complete": false,
         "default_unchanged": true
+      },
+      "audio_auxiliary_service_driver_20261118": {
+        "state": "targeted_cpu_pass_real_service_pending",
+        "evidence": "evidence/serve-audio-auxiliary-service-cpu-20261118/README.md",
+        "cpu_tests": 9,
+        "gpu_actions": 0,
+        "actual_migration_defect_fixed": true,
+        "service_limits": {
+          "starts": 5,
+          "creates": 19,
+          "probes": 1,
+          "seconds": 1800
+        },
+        "whole_task_complete": false
       }
     },
     {

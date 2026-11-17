@@ -89,17 +89,30 @@ def prepare(args):
     plan['sources'].update({str(Path(plan['sdk']['sdk_directory'])/name):digest
                             for name, digest in plan['sdk']['files'].items()})
     plan['sources'][plan['sdk']['node']['path']] = plan['sdk']['node']['sha256']
+    from tools.native_asr import auxiliary_service
+    from tools.serve_recovery import profile_evidence
+    fixed = manifest['recovery_profiles']['identity']
+    if profile_evidence.audio_auxiliaries(fixed):
+        plan['audio_auxiliary'] = fixed
+        source = Path(plan['clips']['zh']['path']).read_bytes()
+        audio = out/'auxiliary.wav'
+        audio.write_bytes(auxiliary_service.source(source, fixed))
+        plan['auxiliary_clip'] = dict(path=str(audio), sha256=engine.sha(audio))
+        plan['sources'][str(audio)] = engine.sha(audio)
+        plan['requests']['zh'] = auxiliary_service.request(fixed)
+        plan['requests']['en'] = auxiliary_service.request(fixed, stream=True)
     require(all(engine.sha(ROOT/name) == digest for name, digest in plan['sources'].items()),
             'frozen validation source changed')
     if args.scenario.startswith('tls'):
         # This bounded fixture uses its private self-signed certificate as CA.
         # Hostname and certificate verification stay enabled in both SDKs.
         cert = Path(manifest['tls_configuration']['certificate']).resolve(strict=True)
-        require(cert.is_relative_to(WORK), 'dedicated private TLS fixture required')
+        fixture = out.parent
+        require(cert.is_relative_to(fixture), 'dedicated private TLS fixture required')
         plan['tls_inputs'] = dict(ca=dict(path=str(cert), sha256=engine.sha(cert)))
         for key in ('certificate', 'key'):
             path = Path(manifest['tls_configuration'][key]).resolve(strict=True)
-            require(path.is_relative_to(WORK), 'private TLS material required')
+            require(path.is_relative_to(fixture), 'private TLS material required')
             plan['tls_inputs'][key] = dict(path=str(path), sha256=engine.sha(path))
         backend = engine.read(pack/'engine/client-policy.json')
         limits = {c['id']:c for c in backend['clients']}
@@ -240,8 +253,15 @@ def accepted_run(plan, *args):
 
 
 def check_business(out):
+    from tools.native_asr import auxiliary_service
     read = lambda n: json.loads((out/n).read_text())
     plan = json.loads((out.parent/'plan.json').read_text())
+    auxiliary = plan.get('audio_auxiliary')
+    config = read('final-config.wire')
+    if auxiliary:
+        clip = plan['auxiliary_clip']
+        audio = Path(clip['path']).read_bytes()
+        require(hashlib.sha256(audio).hexdigest() == clip['sha256'], 'managed audio source drift')
     tls, version = plan['scenario'].startswith('tls'), plan['scenario'] == 'tool_version'
     completed = Path(plan['reused_tls']['directory'])/'execution' if 'reused_tls' in plan else out
     completed_read = lambda n: json.loads((completed/n).read_text())
@@ -249,11 +269,15 @@ def check_business(out):
     for label in (['python-zh-json', 'chunked-zh'] if tls else
                   ['primary-asr', 'fallback-asr'] if version else ['primary-asr']):
         raw = ((completed if tls else out)/(label+'.wire')).read_bytes()
-        answer = stream_value(raw) if label == 'fallback-asr' else json.loads(raw)
-        direct().usage(answer);results[label] = direct().quality(answer['text'], 'zh')
+        answer = stream_value(raw) if label == 'fallback-asr' and not auxiliary else json.loads(raw)
+        if auxiliary:
+            results[label] = auxiliary_service.check(answer, auxiliary, config, audio)
+        else:
+            direct().usage(answer);results[label] = direct().quality(answer['text'], 'zh')
     if tls:
-        results['js-en-stream'] = direct().quality(
-            stream_value((completed/'js-en-stream.wire').read_bytes())['text'], 'en')
+        answer = stream_value((completed/'js-en-stream.wire').read_bytes())
+        results['js-en-stream'] = auxiliary_service.check(answer, auxiliary, config, audio, stream=True) \
+            if auxiliary else direct().quality(answer['text'], 'en')
         require(completed_read('beta-file-limit-http.json')['status'] == 413 and
             completed_read('unauthorized-http.json')['status'] == 401, 'scope/upload guards failed')
         for label in ('python-zh-json', 'js-en-stream'):
@@ -262,7 +286,10 @@ def check_business(out):
             if label == 'python-zh-json':
                 require(sdk['version'] == '2.8.1' and
                     sdk['result']['text'] == completed_read(label+'.wire')['text'], 'Python SDK text differs')
-                direct().usage(sdk['result'], sdk=True)
+                if auxiliary:
+                    auxiliary_service.check(sdk['result'], auxiliary, config, audio)
+                else:
+                    direct().usage(sdk['result'], sdk=True)
             else:
                 events = [json.loads(line[6:]) for line in (completed/(label+'.wire')).read_text().splitlines()
                           if line.startswith('data: {')]
@@ -275,7 +302,6 @@ def check_business(out):
     answer = read('core-after.wire')['choices'][0]
     require(answer['finish_reason'] == 'stop' and
         answer['message']['content'].strip() == '42', 'core failed after ASR')
-    config = read('final-config.wire')
     health = config['native_asr_health']
     expected = json.loads((Path(plan['package']['package'])/'engine/manifest.json').read_text())
     require(health['state'] == 'ready' and health['compute_failures'] == 0 and
@@ -363,9 +389,15 @@ class Stage(BASE['Stage']):
         boundary = 'q4t-native-asr-service'
         fields = [('model', 'qwen3-asr-0.6b'), ('include[]', 'logprobs')]
         if stream:fields.append(('stream', 'true'))
+        if self.plan.get('audio_auxiliary'):
+            from tools.native_asr import auxiliary_service
+            fields = auxiliary_service.fields(auxiliary_service.request(
+                self.plan['audio_auxiliary'], stream))
         parts = [(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n'
                   f'{value}\r\n').encode() for key, value in fields]
-        audio = Path(self.plan['clips'][language]['path']).read_bytes()
+        clip = self.plan.get('auxiliary_clip', self.plan['clips'][language])
+        audio = Path(clip['path']).read_bytes()
+        require(hashlib.sha256(audio).hexdigest() == clip['sha256'], 'managed audio drift')
         parts += [(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; '
                    'filename="voice.wav"\r\nContent-Type: audio/wav\r\n\r\n').encode(),
                   audio, f'\r\n--{boundary}--\r\n'.encode()]
@@ -378,7 +410,7 @@ class Stage(BASE['Stage']):
         self.budget.reserve('chats', label)
         config = dict(base_url=f'https://127.0.0.1:{self.port}/v1',
             api_key=self.keys['alpha'], ca=self.plan['tls_inputs']['ca']['path'],
-            audio=self.plan['clips'][language]['path'], filename=language+'.wav',
+            audio=self.plan.get('auxiliary_clip', self.plan['clips'][language])['path'], filename=language+'.wav',
             sdk_directory=self.plan['sdk']['sdk_directory'],
             request=self.plan['requests']['zh' if python else 'en'])
         save(self.output/(label+'-request.json'), {k:v for k,v in config.items() if k != 'api_key'})
@@ -455,7 +487,9 @@ class Stage(BASE['Stage']):
             before = self.family('profiles')
             self.fatal_gateway(first)
             self.version_ready(2, 'fallback')
-            self.audio('fallback-asr', stream=True)
+            # Exercise alignment after a whole-tree fallback as well. The TLS
+            # scenario separately verifies actual VAD SSE through the SDK.
+            self.audio('fallback-asr', stream=not bool(self.plan.get('audio_auxiliary')))
             stored = json.loads((self.output/'stored-before.wire').read_text())
             self.request('stored-after', path='/v1/chat/completions/'+stored['id'])
             after = self.family('profiles')

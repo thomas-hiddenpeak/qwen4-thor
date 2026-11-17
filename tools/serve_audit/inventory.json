@@ -2886,7 +2886,7 @@
     "tools/serve_recovery/profile_managed_acceptance.py": "c34f99a4103f8b044abb25ff491d0aaf3f220db09dc41be34bb91a834b77a03c",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "ba17dc17ee2d3871d3cce4f0eba23d04c52db83a0e86c0cdd2f46e58b9bdb636",
+    "tools/serve_recovery/profile_migration.py": "9950bea801e1adf2bf4b9930a34274615827d0aef2c2f16811e619db1d628476",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
@@ -7143,5 +7143,15 @@
       "docs/evidence/serve-audio-auxiliary-package-cpu-20261117/README.md",
       "docs/evidence/serve-audio-auxiliary-recovery-cpu-20261117/README.md"
     ]
+  },
+  "audio_format_extension_review_20261118": {
+    "anchors": {
+      "tools/serve_recovery/profile_migration.py": {
+        "before": "ba17dc17ee2d3871d3cce4f0eba23d04c52db83a0e86c0cdd2f46e58b9bdb636",
+        "after": "9950bea801e1adf2bf4b9930a34274615827d0aef2c2f16811e619db1d628476"
+      }
+    },
+    "evidence": "docs/evidence/serve-audio-auxiliary-service-cpu-20261118/README.md",
+    "scope": "Only reviewed transcription format enum is an unordered feature set; full recorded old/new primary/light records validate explicit v5 migration. Automatic addition/removal remains rejected."
   }
 }

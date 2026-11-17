@@ -176,6 +176,20 @@ def asr_capabilities(value):
         type(selected.get('configured')) is bool,
         'invalid native ASR capability identity')
     selected['configured'] = dict(enabled=True) if selected['configured'] else {}
+    if 'formats' in selected:
+        formats = selected['formats']
+        basic, aligned = {'json', 'text'}, {'srt', 'verbose_json', 'vtt'}
+        ledger.require(type(formats) is list and all(type(v) is str for v in formats)
+            and len(set(formats)) == len(formats) and basic <= set(formats)
+            and set(formats) <= basic | aligned, 'invalid native ASR format capabilities')
+        if set(formats) & aligned:
+            ledger.require(aligned <= set(formats) and 'alignment' in selected and
+                type(selected.get('segments')) is dict and
+                selected['segments'].get('scope') == 'independently_decoded_audio_clip',
+                'aligned formats lack complete backend/segment implementation')
+        # The API's output format enum is an unordered feature set. Only this
+        # reviewed enum may extend; arbitrary arrays still require equality.
+        selected['formats'] = {name:True for name in formats}
     for name, (fixed, _, _) in package.ASR_AUXILIARY.items():
         if name not in selected:
             continue

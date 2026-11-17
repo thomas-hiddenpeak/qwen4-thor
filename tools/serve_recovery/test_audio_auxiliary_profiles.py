@@ -231,6 +231,35 @@ class AudioAuxiliaryProfiles(unittest.TestCase):
         bad = copy.deepcopy(new);del bad['transcriptions']['segments']
         with self.assertRaises(ValueError): migration.semantic_capabilities(bad)
 
+    def test_actual_retained_primary_light_allow_only_explicit_complete_format_extension(self):
+        registries, observations = [], []
+        for name in ['serve-asr-profiles-20261117', 'serve-audio-auxiliary-profiles-20261117']:
+            folder = ROOT/'docs/evidence'/name/'qualified'
+            registries.append(json.loads((folder/'registry.json').read_text()))
+            observations.append({key:dict(record=json.loads((folder/(key+'.json')).read_text()),
+                sha256=hashlib.sha256((folder/(key+'.json')).read_bytes()).hexdigest()) for key in contract.NAMES})
+        old_registry, new_registry = registries
+        old_records, new_records = observations
+        for options in ({}, dict(automatic=True, allow_capability_extension=True)):
+            with self.assertRaises(ValueError):
+                migration.permit(old_registry,new_registry,old_records,new_records,
+                                 self.config,self.config,**options)
+        permit = migration.permit(old_registry,new_registry,old_records,new_records,
+            self.config,self.config,allow_capability_extension=True)
+        self.assertEqual(permit['format'], migration.AUDIO_EXTENSION_FORMAT)
+        pending = self.pending_for(old_registry)
+        candidate = migration.candidate(pending, permit, self.stamp(999999))
+        self.assertEqual(candidate['pending'], pending['pending'])
+        self.assertEqual(candidate['not_before_ns'], pending['not_before_ns'])
+        migration.AuthorizedContract(permit).transition(pending,candidate)
+        original = new_records['primary']['record']['capabilities']
+        for formats in [['json','text','srt'], ['json','text','invented'],
+                        ['json','text','srt','verbose_json','vtt','json']]:
+            bad = copy.deepcopy(original);bad['transcriptions']['formats'] = formats
+            with self.assertRaises(ValueError):migration.semantic_capabilities(bad)
+        bad = copy.deepcopy(original);del bad['transcriptions']['segments']
+        with self.assertRaises(ValueError):migration.semantic_capabilities(bad)
+
 
 if __name__ == '__main__':
     unittest.main()

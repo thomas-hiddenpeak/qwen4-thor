@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "tests": 6,
+  "seconds": 0.3141435980796814,
+  "returncode": 0,
+  "gpu_actions": 0,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_asr.test_auxiliary_service"
+  ]
+}

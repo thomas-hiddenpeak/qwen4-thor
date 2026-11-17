@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "tests": 3,
+  "seconds": 0.6646580640226603,
+  "returncode": 0,
+  "gpu_actions": 0,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_actual_retained_primary_light_allow_only_explicit_complete_format_extension",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_pending_declarations_become_proven_additions_without_losing_features",
+    "tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles.test_automatic_same_features_work_and_removal_or_unsealed_addition_fail"
+  ]
+}
