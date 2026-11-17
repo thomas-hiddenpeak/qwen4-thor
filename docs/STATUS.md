@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[已知参考修复已验、单人重复待修复](evidence/serve-overlap-single-voice-20261118/README.md)：
+http-03为1启动/2请求/51.154秒，first/second正确；单人却
+生成A/B重复句子，整体FAIL保留。下一组仅分离组件1GPU/4输入/
+240秒、0主模型/HTTP，依据实际波形补声学判定。原WER失败
+及默认rev296保持，剩余业务/恢复交付和全部master继续。
+
 [已知参考频带修复CPU通过](evidence/serve-overlap-reference-fix-20261118/README.md)：
 http-02的1启动/1请求发现first未匹配，原FAIL保留；仅统一
 分离路径参考频带、明确额外RAM，1CPU及2来源通过。接着

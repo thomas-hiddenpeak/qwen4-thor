@@ -119,6 +119,7 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
     Require(Clock::now() < deadline, "separator replay time budget exceeded");
   };
   const auto plan = Json(TextFile(plan_path, 1 << 20));
+  const bool trace_stages = plan.GetBool("trace_stages", true);
   const auto* cases = plan.GetArray("cases");
   Require(cases && cases->array.size() == 4, "four frozen cases required");
   Require(!fs::exists(output) && fs::create_directories(output),
@@ -214,10 +215,12 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
                            : stage < 34  ? layout.rows * 256
                            : stage == 34 ? 2 * layout.frames * 256
                                          : 2 * pcm.size();
-      SaveDevice(directory / ("stage-" + std::to_string(trace++) + ".f32"),
-                 reinterpret_cast<const float*>(
-                     static_cast<uint8_t*>(workspace.value) + offset),
-                 count);
+      if (trace_stages)
+        SaveDevice(directory / ("stage-" + std::to_string(trace) + ".f32"),
+                   reinterpret_cast<const float*>(
+                       static_cast<uint8_t*>(workspace.value) + offset),
+                   count);
+      ++trace;
     }
     Require(trace == 7, "trace count differs");
     Require(!run.NextStage().ok() && run.completed_stages() == 36,

@@ -3581,6 +3581,12 @@
         "prior_failure": "known first speaker not matched",
         "cpu_tests": 1,
         "default_changed": false
+      },
+      "overlap_single_voice_20261118": {
+        "status": "FAIL_DUPLICATE_VOICE",
+        "reference_bandwidth_fix": "PASS_REAL_HTTP",
+        "evidence": "docs/evidence/serve-overlap-single-voice-20261118/README.md",
+        "default_changed": false
       }
     },
     {
