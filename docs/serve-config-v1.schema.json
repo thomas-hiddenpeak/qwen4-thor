@@ -3975,6 +3975,191 @@
         "max_output_tokens",
         "workspace_mib"
       ]
+    },
+    "native_alignment_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "disabled",
+            "configured",
+            "loading",
+            "metadata_ready",
+            "ready",
+            "degraded"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "none",
+            "alignment_assets_invalid",
+            "alignment_assets_timeout",
+            "alignment_worker_unavailable",
+            "alignment_resource_exhausted",
+            "gpu_unhealthy",
+            "alignment_compute_failed"
+          ]
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model": {
+          "const": "qwen3-forced-aligner-0.6b"
+        },
+        "device_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery": {
+          "const": "request_driven"
+        },
+        "retry_delay_ms": {
+          "const": 5000
+        },
+        "compute_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "asset_cleanup_pending": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "core_readiness_dependency",
+        "model",
+        "device_bytes",
+        "load_attempts",
+        "load_failures",
+        "recovery",
+        "retry_delay_ms",
+        "compute_failures",
+        "asset_cleanup_pending"
+      ],
+      "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+    },
+    "native_vad_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "disabled",
+            "configured",
+            "loading",
+            "metadata_ready",
+            "ready",
+            "degraded"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "none",
+            "vad_assets_invalid",
+            "vad_assets_timeout",
+            "vad_worker_unavailable",
+            "vad_resource_exhausted",
+            "vad_state_invalid",
+            "vad_compute_failed"
+          ]
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model": {
+          "const": "silero-vad-16k"
+        },
+        "device_bytes": {
+          "const": 0
+        },
+        "load_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery": {
+          "const": "request_driven"
+        },
+        "retry_delay_ms": {
+          "const": 5000
+        },
+        "compute_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "asset_cleanup_pending": {
+          "type": "boolean"
+        },
+        "host_weight_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "core_readiness_dependency",
+        "model",
+        "device_bytes",
+        "load_attempts",
+        "load_failures",
+        "recovery",
+        "retry_delay_ms",
+        "compute_failures",
+        "asset_cleanup_pending",
+        "host_weight_bytes"
+      ],
+      "description": "Independent native CPU VAD backend. Assets or compute faults never change core readiness or automatically restart the model."
+    },
+    "native_alignment_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_audio_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 400
+        },
+        "max_context_tokens": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 8192
+        },
+        "workspace_mib": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "max_words": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2048
+        }
+      },
+      "required": [
+        "max_audio_seconds",
+        "max_context_tokens",
+        "max_words",
+        "workspace_mib"
+      ]
+    },
+    "native_vad_max_chunks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 256
     }
   },
   "required": [
@@ -4093,6 +4278,54 @@
       },
       "then": {
         "required": [
+          "native_asr_health",
+          "native_asr_limits"
+        ]
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "native_alignment_health"
+            ]
+          },
+          {
+            "required": [
+              "native_alignment_limits"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "native_alignment_health",
+          "native_alignment_limits",
+          "native_asr_health",
+          "native_asr_limits"
+        ]
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "native_vad_health"
+            ]
+          },
+          {
+            "required": [
+              "native_vad_max_chunks"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "native_vad_health",
+          "native_vad_max_chunks",
           "native_asr_health",
           "native_asr_limits"
         ]

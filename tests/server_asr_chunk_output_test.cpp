@@ -271,6 +271,10 @@ Q4T_TEST(serve_vad_capability_reports_cpu_optional_backend_and_chunk_bound) {
     Q4T_CHECK(vad->GetString("backend") == "native_silero_cpu" &&
               vad->Find("max_chunks")->number == 2 &&
               !vad->GetBool("core_readiness_dependency", true));
+    Q4T_CHECK(vad->GetString("profile") == q4t::audio::kVadProfile &&
+              vad->GetString("revision") == q4t::audio::kVadRevision &&
+              vad->GetString("weight_sha256") == q4t::audio::kVadWeightSha256 &&
+              vad->GetString("model") == "silero-vad-16k");
     Q4T_CHECK(json.GetBool("implementation_only", false) &&
               !json.GetBool("release_attestation", true));
   }

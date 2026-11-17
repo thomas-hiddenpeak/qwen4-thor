@@ -17,6 +17,7 @@ inline constexpr size_t kVadContextSamples = 64;
 inline constexpr size_t kVadMaxSamples = 600ULL * 16000;
 inline constexpr size_t kVadWeightBytes = 1238532;
 inline constexpr size_t kVadFileBytes = 1239748;
+inline constexpr char kVadProfile[] = "q4t-native-silero-vad-v1";
 inline constexpr char kVadWeightSha256[] =
     "c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1";
 inline constexpr char kVadRevision[] =

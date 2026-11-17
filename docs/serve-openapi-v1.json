@@ -3081,10 +3081,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-application-v1.schema.json#/$defs/transcription_response"
+                  "anyOf": [
+                    {
+                      "$ref": "serve-application-v1.schema.json#/$defs/transcription_response"
+                    },
+                    {
+                      "$ref": "serve-application-v1.schema.json#/$defs/transcription_verbose_response"
+                    }
+                  ]
                 }
               },
               "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/x-subrip": {
                 "schema": {
                   "type": "string"
                 }
@@ -3130,13 +3147,31 @@
           "recovery": "request-driven asset retry; no automatic primary model restart",
           "implemented_formats": [
             "json",
-            "text"
+            "text",
+            "verbose_json",
+            "srt",
+            "vtt"
           ],
           "required_pending_executors": [
-            "actual_alignment",
-            "diarization",
-            "vad_chunking"
+            "diarization"
           ],
+          "alignment": {
+            "configured_by": "aligner-model-dir",
+            "timestamps": "actual fixed-model word edges; repaired ordering is explicit",
+            "segments": "independently decoded clip with actual token/temperature/probability/compression"
+          },
+          "chunking": {
+            "configured_by": "vad-model-dir",
+            "backend": "native CPU Silero 16k",
+            "strategies": [
+              "auto",
+              "server_vad"
+            ],
+            "max_chunks": "explicit vad-max-chunks, 1..256",
+            "budget": "one request RPM, cumulative input/output and one output ceiling",
+            "failure": "no partial success or dropped tail",
+            "offsets": "real original sample origin; seek in 10ms feature frames"
+          },
           "multipart_arrays": "repeated bracket names; nested chunking_strategy bracket fields or JSON object",
           "zero_temperature": "native confidence policy; not a claim about private provider thresholds"
         }

@@ -3,6 +3,7 @@
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/aligner_assets.h"
+#include "q4t/audio/vad.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -79,7 +80,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("temperature":"fixed_per_attempt","adaptive_attempts_max":6,)"
          R"("retry_input_output":"cumulative_original_request_budget"},)"
          R"("vad":{"configured":)" +
-         (native_vad ? "true" : "false") +
+         (native_vad ? "true" : "false") + R"(,"profile":)" +
+         Quote(audio::kVadProfile) +
+         R"(,"model":"silero-vad-16k","revision":)" +
+         Quote(audio::kVadRevision) + R"(,"weight_sha256":)" +
+         Quote(audio::kVadWeightSha256) +
          R"(,"backend":"native_silero_cpu","max_chunks":)" +
          std::to_string(vad_max_chunks) +
          R"(,"frame_samples":512,"sample_rate":16000,)"

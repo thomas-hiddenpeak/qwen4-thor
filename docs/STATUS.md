@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[对齐/VAD服务包和schema17项CPU通过](evidence/serve-audio-auxiliary-package-cpu-20261117/README.md)
+（0.522秒、0GPU），固定身份/独立预算、CLI/命令/声明及真实
+verbose/SSE/静音/健康配置合同已补齐。候选engine-04仅增VAD
+固定身份声明，执行路径不变。继续主轻/原生接入/恢复资格与交付，
+全部master保持；默认rev276未变。
+
 [VAD真实多段HTTP通过](evidence/serve-vad-http-20261117/README.md)：
 1启动/12创建/57.048秒，双SDK两段中文/真实全局时间戳/VTT/流式，
 阈值/静音/段数/共享24输出、取消及VAD失能不影响ASR/Chat通过。

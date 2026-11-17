@@ -1,4 +1,5 @@
 """Snapshot the accepted text release and its operational dependencies."""
+import copy
 import hashlib
 import json
 import os
@@ -153,6 +154,72 @@ NATIVE_ASR = dict(profile='q4t-native-asr-v1', model='qwen3-asr-0.6b',
     weight_sha256='79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea')
 ASR_LIMITS = dict(max_audio_seconds=30, max_context_tokens=4096,
                   max_output_tokens=1024, workspace_mib=1024)
+NATIVE_ALIGNMENT = dict(profile='q4t-native-aligner-v1', model='qwen3-forced-aligner-0.6b',
+    revision='c7cbfc2048c462b0d63a45797104fc9db3ad62b7',
+    weight_sha256='47831d0e82f96b20e9034dba01a075ee06436654719f6a68289e49f1b65ce0e7')
+ALIGNER_LIMITS = dict(max_audio_seconds=30, max_context_tokens=4096,
+                      max_words=512, workspace_mib=1024)
+NATIVE_VAD = dict(profile='q4t-native-silero-vad-v1', model='silero-vad-16k',
+    revision='066409f3d9db45a30d21dfcbf9147826ffdd7052',
+    weight_sha256='c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1')
+VAD_LIMITS = dict(max_chunks=64)
+ASR_AUXILIARY = dict(alignment=(NATIVE_ALIGNMENT, ALIGNER_LIMITS, 'aligner'),
+                     vad=(NATIVE_VAD, VAD_LIMITS, 'vad'))
+
+
+def audio_asset_directory(path):
+    require(type(path) is str and 1 < len(path.encode('utf-8')) <= 4096 and
+            path.startswith('/') and '\0' not in path and
+            not {'', '.', '..'}.intersection(path.split('/')[1:]),
+            'invalid optional audio asset directory')
+
+
+def asr_auxiliary_settings(value):
+    require(type(value) is dict and value.keys() <= ASR_AUXILIARY.keys(),
+            'invalid optional ASR backend inventory')
+    result = {}
+    for name, selected in value.items():
+        fixed, defaults, _ = ASR_AUXILIARY[name]
+        require(type(selected) is dict and selected.keys() == {*fixed, 'directory', 'limits'}
+                and all(selected[k] == v for k, v in fixed.items()),
+                'invalid optional ASR backend identity: '+name)
+        audio_asset_directory(selected['directory'])
+        limits = selected['limits']
+        require(type(limits) is dict and limits.keys() == defaults.keys() and
+                all(type(v) is int for v in limits.values()), 'invalid '+name+' limits')
+        if name == 'alignment':
+            require(1 <= limits['max_audio_seconds'] <= 400 and
+                128 <= limits['max_context_tokens'] <= 8192 and
+                1 <= limits['max_words'] <= 2048 and
+                64 <= limits['workspace_mib'] <= 8192 and
+                limits['max_audio_seconds']*13 + 2 + limits['max_words']*3 <=
+                    limits['max_context_tokens'], 'invalid alignment capacity')
+        else:
+            require(1 <= limits['max_chunks'] <= 256, 'invalid VAD chunk capacity')
+        result[name] = copy.deepcopy(selected)
+    # No stat/read of optional assets: only a request may load the backend.
+    return result
+
+
+def add_asr_auxiliary_options(parser):
+    for _, (_, defaults, prefix) in ASR_AUXILIARY.items():
+        parser.add_argument('--'+prefix+'-model-dir', type=Path)
+        for option in defaults:
+            parser.add_argument('--'+prefix+'-'+option.replace('_', '-'), type=int)
+
+
+def asr_auxiliary_cli(args):
+    result = {}
+    for name, (fixed, defaults, prefix) in ASR_AUXILIARY.items():
+        directory = getattr(args, prefix+'_model_dir')
+        overrides = {k:getattr(args, prefix+'_'+k) for k in defaults
+                     if getattr(args, prefix+'_'+k) is not None}
+        require(directory is not None or not overrides,
+                prefix+' limits require its model directory')
+        if directory is not None:
+            result[name] = dict(fixed, directory=str(directory),
+                                limits=dict(defaults, **overrides))
+    return asr_auxiliary_settings(result) or None
 
 
 def embedding_settings(value):
@@ -170,7 +237,9 @@ def embedding_settings(value):
 
 
 def asr_settings(value):
-    require(type(value) is dict and value.keys() == {*NATIVE_ASR, 'directory', 'limits'}
+    require(type(value) is dict and
+            {*NATIVE_ASR, 'directory', 'limits'} <= value.keys() <=
+                {*NATIVE_ASR, 'directory', 'limits', *ASR_AUXILIARY}
             and all(value[k] == v for k, v in NATIVE_ASR.items()),
             'invalid native ASR identity')
     path = value['directory']
@@ -189,7 +258,8 @@ def asr_settings(value):
                 limits['max_context_tokens'], 'invalid native ASR limits')
     # Optional assets are validated by the isolated request loader. Missing
     # audio files must not make a healthy primary Chat package unverifiable.
-    return dict(value, limits=dict(limits))
+    auxiliary = asr_auxiliary_settings({k:v for k,v in value.items() if k in ASR_AUXILIARY})
+    return dict(value, limits=dict(limits), **auxiliary)
 
 
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
@@ -444,7 +514,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             application_state=None, capacity_config=None, repository=None,
             access_program_policy=None, file_input_policy=None,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
-            asr_model_dir=None, asr_limits=None):
+            asr_model_dir=None, asr_limits=None, asr_auxiliary=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -455,13 +525,16 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             'native ASR limits require an ASR model directory')
     require(asr_limits is None or type(asr_limits) is dict and
             asr_limits.keys() <= ASR_LIMITS.keys(), 'invalid native ASR overrides')
+    auxiliary = {} if asr_auxiliary is None else asr_auxiliary_settings(asr_auxiliary)
+    require(not auxiliary or asr_model_dir is not None,
+            'optional audio backends require an ASR model directory')
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
                       nvml_policy, model_names, capacity_profile=profile,
                       native_embedding=(dict(NATIVE_EMBEDDING,
                           directory=str(embedding_model_dir))
                           if embedding_model_dir is not None else None),
                       native_asr=(dict(NATIVE_ASR, directory=str(asr_model_dir),
-                          limits=dict(ASR_LIMITS, **(asr_limits or {})))
+                          limits=dict(ASR_LIMITS, **(asr_limits or {})), **auxiliary)
                           if asr_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
@@ -820,6 +893,23 @@ def check_asr_declaration(metadata, selected):
                                     'ready', 'degraded') and
             same_json(configuration.get('native_asr_limits'), selected['limits']),
             'accepted engine does not declare configured native ASR limits/identity')
+    for name, (fixed, _, _) in ASR_AUXILIARY.items():
+        declared = capability.get(name, {})
+        if name not in selected:
+            require(declared.get('configured') is not True,
+                    'package drops configured optional audio backend: '+name)
+            continue
+        health = configuration.get('native_'+name+'_health', {})
+        actual_limits = (configuration.get('native_alignment_limits') if name == 'alignment'
+                         else dict(max_chunks=configuration.get('native_vad_max_chunks')))
+        require(declared.get('configured') is True and
+                all(declared.get(k) == v for k,v in fixed.items()) and
+                health.get('model') == fixed['model'] and
+                health.get('core_readiness_dependency') is False and
+                health.get('state') in ('configured', 'loading', 'metadata_ready',
+                                        'ready', 'degraded') and
+                same_json(actual_limits, selected[name]['limits']),
+                'accepted engine does not declare optional audio limits/identity: '+name)
 
 
 def check_media_declaration(metadata, profile):
@@ -867,6 +957,11 @@ def command(package, manifest, *, state_directory=None):
         args += ['--asr-model-dir', selected['directory']]
         for key, value in selected['limits'].items():
             args += ['--asr-'+key.replace('_', '-'), str(value)]
+        for name, (_, _, prefix) in ASR_AUXILIARY.items():
+            if name in selected:
+                args += ['--'+prefix+'-model-dir', selected[name]['directory']]
+                for key, value in selected[name]['limits'].items():
+                    args += ['--'+prefix+'-'+key.replace('_', '-'), str(value)]
     if 'application_state' in cfg:
         objects = application_settings(cfg['application_state'])
         directory = objects['directory']

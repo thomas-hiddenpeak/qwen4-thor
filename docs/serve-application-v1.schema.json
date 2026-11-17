@@ -19312,6 +19312,29 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "required": [
+              "stream"
+            ],
+            "properties": {
+              "stream": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "response_format": {
+                "enum": [
+                  "json",
+                  "text",
+                  "diarized_json"
+                ]
+              }
+            }
+          }
         }
       ]
     },
@@ -19392,6 +19415,161 @@
       "required": [
         "text",
         "usage"
+      ],
+      "additionalProperties": false
+    },
+    "transcription_verbose_response": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/transcription_word"
+          }
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/transcription_segment"
+          }
+        },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "duration"
+            },
+            "seconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 600
+            }
+          },
+          "required": [
+            "type",
+            "seconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "text",
+        "language",
+        "duration",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "words"
+          ]
+        },
+        {
+          "required": [
+            "segments"
+          ]
+        }
+      ]
+    },
+    "transcription_word": {
+      "type": "object",
+      "properties": {
+        "word": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        }
+      },
+      "required": [
+        "word",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "transcription_segment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "seek": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "end": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600
+        },
+        "text": {
+          "type": "string"
+        },
+        "tokens": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 151935
+          }
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "avg_logprob": {
+          "type": "number",
+          "maximum": 0
+        },
+        "compression_ratio": {
+          "type": "number",
+          "minimum": 0
+        },
+        "no_speech_prob": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "id",
+        "seek",
+        "start",
+        "end",
+        "text",
+        "tokens",
+        "temperature",
+        "avg_logprob",
+        "compression_ratio",
+        "no_speech_prob"
       ],
       "additionalProperties": false
     },
