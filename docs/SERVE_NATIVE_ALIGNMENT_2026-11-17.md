@@ -201,3 +201,9 @@ segment、word+segment/强制中文、显式温度英文、静音、原word-only
 和核心Chat；中文token字节/平均logprob与普通真实转录一致，实际
 无语音后验在speech<.5/silence>.5，实际zlib独立计算复核。
 全部动作同一严格租约，默认不变；随后继续VAD与服务交付。
+
+首轮实际5条成功，词表读取触发验收器2MiB上限，原整组FAILED
+保留。仅修固定SHA/长度后的3MiB读取，离线补完实际token/logprob
+及posterior校验；[原证据](evidence/serve-asr-segment-http-original-20261117/README.md)。
+只补尚未执行word-only/核心两条，另1启动/2创建/300秒；本组累计
+上限2启动/7创建/600秒，原5条不重复。候选ELF和默认均未变。

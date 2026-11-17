@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[segment首轮5条真实业务已复核](evidence/serve-asr-segment-http-original-20261117/README.md)：
+模型成功，驱动读词表超过通用2MiB上限，原整组FAILED保留。
+1启动/52.388秒、清理正常；双SDK字段、实际token/logprob、英文
+WER=0、静音后验0.994725均成立。修验收器后仅补未执行2条，
+累计2启动/7创建/600秒；候选仍未发布，全部master继续。
+
 [完整segment执行16项CPU通过](evidence/serve-asr-segments-cpu-20261117/README.md)
 （0.016秒），另3项HTTP验收器正负控通过。零警告CUDA候选已保存；
 单段真实评分/温度与累计预算已接入。下一组固定1启动/7创建/600秒，

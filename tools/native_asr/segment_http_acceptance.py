@@ -17,6 +17,7 @@ from tools.native_asr import transcription_acceptance as asr
 from tools.serve_service.package import read, require, save, sha
 
 LIMITS = dict(starts=1, chats=7, controls=2000, seconds=600)
+REMAINING_LIMITS = dict(LIMITS, chats=2, seconds=300)
 
 
 def requests():
@@ -53,6 +54,14 @@ def prepare(args):
             same_zh_posterior='forced output language must not bias classifier',
             plain_vs_segment='same greedy Chinese token bytes and mean logprob',
             limitations='No full-language, diarization, VAD chunking or human timing claim'))
+    if args.reuse_completed is not None:
+        reused = review_stored(args.reuse_completed, verify_identity=True)
+        require(plan['binary_sha256'] == reused['binary_sha256'],
+                'supplement must retain the original runtime')
+        plan['segment_reuse'] = reused
+        plan['limits'] = REMAINING_LIMITS
+        plan['planned'] = dict(starts=1, creates=2, reused_creates=5,
+                               word_only=1, core_chats=1)
     save(out/'plan.json', plan)
 
 
@@ -100,10 +109,103 @@ def token_bytes(tokens, vocab):
     return [bytes(mapping[c] for c in inverse[token]) for token in tokens]
 
 
+def read_vocab(plan):
+    path = Path(plan['asr_directory'])/'vocab.json'
+    expected = plan['asr_assets']['vocab.json']
+    require(path.stat().st_size == expected['bytes'] <= 3 * 1024**2 and
+            sha(path) == expected['sha256'], 'fixed ASR vocabulary drift')
+    return json.loads(path.read_text())
+
+
+def review_stored(source, *, verify_identity=False):
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(aligned.WORK), 'segment evidence outside workdir')
+    plan = read(source/'plan.json')
+    if verify_identity:
+        outcome, lease = read(source/'result.json'), read(source/'lease/exit.json')
+        require(outcome['status'] == 'FAILED' and outcome['counts']['starts'] == 1
+            and outcome['counts']['chats'] == 5 and outcome['default_unchanged']
+            and 'metadata size limit' in outcome['error'] and
+            lease['status'] == 'COMMAND_FAILED', 'unexpected reuse predecessor')
+        cleanup = read(source/'cleanup.json')
+        require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+                cleanup['ports_released'] and cleanup['lease_continuously_held'],
+                'original cleanup incomplete')
+        for name, digest in plan['sources'].items():
+            if name != 'tools/native_asr/segment_http_acceptance.py':
+                require(sha(ROOT/name) == digest, 'reused source drift: '+name)
+        require(sha(plan['binary']) == plan['binary_sha256'], 'reused binary drift')
+    quality = {}
+    for label, language, words, empty in [
+        ('python-default-segment-zh', 'zh', False, False),
+        ('js-combined-forced-zh', 'zh', True, False),
+        ('js-explicit-segment-en', 'en', False, False),
+        ('python-silent-segment', 'silence', False, True)]:
+        wire = read(source/(label+'.wire'))
+        sdk = read(source/(label+'.sdk.json'))
+        require(sdk['ok'] and len(sdk['exchanges']) == 1, 'original SDK failed or retried')
+        ms = plan['clips'][language]['duration_ms']
+        quality[label] = check_segment(wire, ms, include_words=words, empty=empty)
+        check_segment(sdk['result'], ms, include_words=words, empty=empty)
+        if not empty:
+            quality[label]['text_quality'] = asr.quality(wire['text'], language)
+            require(wire['segments'][0]['no_speech_prob'] < .5, 'speech labelled silent')
+    baseline = read(source/'python-plain-zh.wire')
+    baseline_sdk = read(source/'python-plain-zh.sdk.json')
+    require(baseline_sdk['ok'] and len(baseline_sdk['exchanges']) == 1,
+            'ordinary original SDK failed or retried')
+    asr.quality(baseline['text'], 'zh')
+    asr.usage(baseline)
+    asr.usage(baseline_sdk['result'], sdk=True)
+    default = read(source/'python-default-segment-zh.wire')['segments'][0]
+    combined = read(source/'js-combined-forced-zh.wire')['segments'][0]
+    explicit = read(source/'js-explicit-segment-en.wire')['segments'][0]
+    require(explicit['temperature'] == .2, 'explicit sampling temperature ignored')
+    require(default['temperature'] == 0,
+            'Chinese fallback prevents comparison to ordinary greedy logs')
+    actual_bytes = token_bytes(default['tokens'], read_vocab(plan))
+    require(actual_bytes == [bytes(row['bytes']) for row in baseline['logprobs']],
+            'segment IDs differ from actual ordinary selected token bytes')
+    mean = sum(row['logprob'] for row in baseline['logprobs']) / len(baseline['logprobs'])
+    require(abs(default['avg_logprob'] - mean) < 1e-10, 'actual mean logprob differs')
+    require(default['no_speech_prob'] == combined['no_speech_prob'],
+            'output language biased no-speech scoring')
+    scores = re.findall(r'\[asr-no-speech\] request=(\S+) token=(\d+) '
+        r'raw_logprob=(\S+) probability=(\S+) input=(\d+)',
+        (source/'model.log').read_text())
+    require(len(scores) == 4, 'actual scoring observations missing')
+    values = [dict(request=r, token=int(t), raw_logprob=float(lp),
+                   probability=float(p), input=int(n)) for r,t,lp,p,n in scores]
+    require(all(v['token'] == 2240 and v['input'] > 0 and
+                math.isfinite(v['raw_logprob']) and
+                abs(math.exp(v['raw_logprob']) - v['probability']) < 1e-14
+                for v in values), 'posterior is not actual full-head probability')
+    require(values[-1]['probability'] > .5, 'silent label not dominant')
+    require(values[0]['probability'] == default['no_speech_prob'],
+            'response posterior differs from scored probability')
+    quality.update(label_observations=values, greedy_mean_logprob=mean)
+    files = [p for p in source.iterdir() if p.is_file() and
+             (p.suffix in ('.json', '.wire', '.log') or p.name == 'model.log')]
+    files += [source/'lease/exit.json', source/'lease/observations.jsonl']
+    return dict(directory=str(source), binary_sha256=plan['binary_sha256'],
+        status='PASS_REVIEWED_COMPLETED_FIVE_REQUESTS_ORIGINAL_RUN_STAYS_FAILED',
+        observations={str(p.relative_to(source)): sha(p) for p in files if p.is_file()},
+        quality=quality)
+
+
 class Stage(aligned.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_NATIVE_SEGMENT_STATISTICS_SDK_SILENCE'
+
+    def __init__(self, plan):
+        if plan.get('segment_reuse'):
+            self.limits = REMAINING_LIMITS
+            self.success_status = 'PASS_NATIVE_SEGMENTS_WITH_REUSED_FIVE_REQUESTS'
+            require(plan['segment_reuse'] == review_stored(
+                plan['segment_reuse']['directory'], verify_identity=True),
+                'original completed observations drift')
+        super().__init__(plan)
 
     def start(self):
         super().start()
@@ -116,39 +218,15 @@ class Stage(aligned.Stage):
 
     def business(self):
         rows = self.plan['requests']
-        plain = self.sdk('python-plain-zh', 'zh', rows['plain'], python=True)
-        asr.quality(plain['text'], 'zh')
-        asr.usage(plain, sdk=True)
-        default = self.sdk('python-default-segment-zh', 'zh', rows['segment'], python=True)
-        values = [('python-default-segment-zh', 'zh', default, False, False)]
-        combined = self.sdk('js-combined-forced-zh', 'zh', rows['combined'])
-        values.append(('js-combined-forced-zh', 'zh', combined, True, False))
-        explicit = self.sdk('js-explicit-segment-en', 'en', rows['explicit'])
-        values.append(('js-explicit-segment-en', 'en', explicit, False, False))
-        silence = self.sdk('python-silent-segment', 'silence', rows['segment'], python=True)
-        values.append(('python-silent-segment', 'silence', silence, False, True))
-        quality = {}
-        for label, language, value, words, empty in values:
-            ms = self.plan['clips'][language]['duration_ms']
-            quality[label] = check_segment(value, ms, include_words=words, empty=empty)
-            check_segment(read(self.out/(label+'.wire')), ms, include_words=words, empty=empty)
-            if not empty:
-                quality[label]['text_quality'] = asr.quality(value['text'], language)
-                require(value['segments'][0]['no_speech_prob'] < .5, 'speech labelled silent')
-        require(explicit['segments'][0]['temperature'] == .2,
-                'explicit sampling temperature ignored')
-        require(default['segments'][0]['temperature'] == 0,
-                'Chinese fixture unexpectedly needed fallback; cannot compare greedy logs')
-        baseline = read(self.out/'python-plain-zh.wire')['logprobs']
-        observed = default['segments'][0]
-        vocab = read(Path(self.plan['asr_directory'])/'vocab.json')
-        actual_bytes = token_bytes(observed['tokens'], vocab)
-        require(actual_bytes == [bytes(row['bytes']) for row in baseline],
-                'segment IDs differ from actual ordinary selected token bytes')
-        mean = sum(row['logprob'] for row in baseline) / len(baseline)
-        require(abs(observed['avg_logprob'] - mean) < 1e-10, 'actual mean logprob differs')
-        require(observed['no_speech_prob'] == combined['segments'][0]['no_speech_prob'],
-                'output language biased no-speech scoring')
+        if self.plan.get('segment_reuse'):
+            quality = self.plan['segment_reuse']['quality']
+        else:
+            self.sdk('python-plain-zh', 'zh', rows['plain'], python=True)
+            self.sdk('python-default-segment-zh', 'zh', rows['segment'], python=True)
+            self.sdk('js-combined-forced-zh', 'zh', rows['combined'])
+            self.sdk('js-explicit-segment-en', 'en', rows['explicit'])
+            self.sdk('python-silent-segment', 'silence', rows['segment'], python=True)
+            quality = review_stored(self.out)['quality']
         words = self.sdk('python-word-only-protection', 'zh', rows['words'], python=True)
         aligned.check_words(words, self.plan['timing_regression'],
                             self.plan['clips']['zh']['duration_ms'])
@@ -157,21 +235,6 @@ class Stage(aligned.Stage):
         require(alignment['state'] == transcription['state'] == 'ready' and
                 alignment['compute_failures'] == transcription['compute_failures'] == 0,
                 'segment execution poisoned model health')
-        scores = re.findall(r'\[asr-no-speech\] request=(\S+) token=(\d+) '
-            r'raw_logprob=(\S+) probability=(\S+) input=(\d+)',
-            (self.out/'model.log').read_text())
-        require(len(scores) == 4, 'actual scoring observations missing')
-        values = [dict(request=r, token=int(t), raw_logprob=float(lp),
-                       probability=float(p), input=int(n)) for r,t,lp,p,n in scores]
-        require(all(v['token'] == 2240 and v['input'] > 0 and
-                    math.isfinite(v['raw_logprob']) and
-                    abs(math.exp(v['raw_logprob']) - v['probability']) < 1e-14
-                    for v in values), 'posterior is not actual full-head probability')
-        require(values[-1]['probability'] > .5, 'silent label not dominant')
-        require(values[0]['probability'] == observed['no_speech_prob'],
-                'response posterior differs from scored probability')
-        quality['label_observations'] = values
-        quality['greedy_mean_logprob'] = mean
         save(self.out/'quality.json', quality)
 
 
@@ -182,6 +245,7 @@ def main():
     ready.add_argument('--binary', type=Path, required=True)
     ready.add_argument('--output', type=Path, required=True)
     ready.add_argument('--port', type=int, default=18232)
+    ready.add_argument('--reuse-completed', type=Path)
     run = sub.add_parser('run')
     run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
