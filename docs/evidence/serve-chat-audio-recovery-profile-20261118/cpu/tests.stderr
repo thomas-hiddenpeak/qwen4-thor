@@ -1,0 +1,10 @@
+test_history_budget_contract_or_generation_changes_are_rejected (tools.native_asr.test_recovery_profiles.RecoveryProfiles.test_history_budget_contract_or_generation_changes_are_rejected) ... ok
+test_missing_unknown_false_or_stale_observation_cannot_excuse_downgrade (tools.native_asr.test_recovery_profiles.RecoveryProfiles.test_missing_unknown_false_or_stale_observation_cannot_excuse_downgrade) ... ok
+test_observer_preserves_production_arguments_result_and_disabled_path (tools.native_asr.test_recovery_profiles.RecoveryProfiles.test_observer_preserves_production_arguments_result_and_disabled_path) ... ok
+test_primary_preserved_or_exact_observed_downgrade_charges_one_switch (tools.native_asr.test_recovery_profiles.RecoveryProfiles.test_primary_preserved_or_exact_observed_downgrade_charges_one_switch) ... ok
+test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget (tools.serve_recovery.test_version_acceptance.DriverTests.test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.556s
+
+OK

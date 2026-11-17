@@ -163,6 +163,7 @@ def prepare(args):
         plan['prior_evidence'] = [dict(path=str(Path(reused['directory'])/name), sha256=digest)
                                   for name, digest in reused['files'].items()]
     if args.scenario == 'tool_version':
+        plan['observe_cold_profiles'] = True
         from tools.serve_recovery import version_contract
         require(args.retained and args.release and args.decision,
                 'finalized exact retained acceptance required')
@@ -409,7 +410,17 @@ def check_business(out):
             after['version_recovery']['selected'] == 'fallback' and
             after['version_recovery']['probe_count'] == 1, 'whole-payload recovery missing')
         state = read('profile-continuity.json')
-        require(state['before'] == state['after'], 'recovery erased original profile budget')
+        if plan.get('observe_cold_profiles'):
+            from tools.native_asr import recovery_profiles
+            registry = read_registry(plan)
+            observed = cold_observations(out, plan)
+            verified = recovery_profiles.continuity(
+                state['before'], state['after'], registry, observed,
+                after['model_generation'])
+            require(state['verification'] == verified,
+                    'profile continuity observation changed')
+        else:
+            require(state['before'] == state['after'], 'recovery erased original profile budget')
         require(read('stored-before.wire')['choices'] == read('stored-after.wire')['choices'],
                 'stored Chat lost on recovery')
     else:
@@ -427,7 +438,48 @@ def business_record(version):
         version_recovery=version, default_replaced=False, automatic_request_or_tool_replay=False)
 
 
+def read_registry(plan):
+    package = Path(plan['package']['package'])
+    return json.loads((package/'manifest.json').read_text())['recovery_profiles']
+
+
+def cold_observations(out, plan):
+    path = out/'cold-profiles-fallback.jsonl'
+    if not path.exists():
+        return []
+    require(path.stat().st_size <= 1024**2, 'cold observation file bound')
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    require(len(rows) <= 128, 'cold observation count bound')
+    package = Path(plan['registration']['payloads']['fallback']['descriptor']['package'])
+    expected = (package/'source/tools/serve_recovery/profile_memory.py').resolve()
+    require(all(Path(row['module']).resolve() == expected for row in rows),
+            'cold observation did not use the selected sealed policy')
+    return rows
+
+
 class Stage(BASE['Stage']):
+    def version_ready(self, generation, name):
+        if generation == 1 or not self.plan.get('observe_cold_profiles'):
+            return VERSION['Stage'].version_ready(self, generation, name)
+        self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])
+        current = self.family('profiles')
+        deadline = time.monotonic()+5
+        while current['pending'] is not None and time.monotonic() < deadline:
+            time.sleep(.05)
+            current = self.family('profiles')
+        from tools.native_asr import recovery_profiles
+        verified = recovery_profiles.continuity(self.profile_before, current,
+            self.registry, cold_observations(self.output, self.plan), generation)
+        state = MANAGED['Stage'].ready(self, generation, current['selected'])
+        selected = state['version_recovery']
+        expected = self.plan['registration']['payloads'][name]
+        require(selected['selected'] == name and not selected['pending'] and
+            selected['payload_manifest_sha256'] == expected['descriptor']['manifest_sha256'] and
+            not selected['protected'], 'unexpected runtime recovery payload')
+        save(self.output/'profile-continuity.json', dict(
+            before=self.profile_before, after=current, verification=verified))
+        return state
+
     def initialize_state(self):
         return VERSION['Stage'].initialize_state(self) if self.plan['scenario'] == 'tool_version' \
             else LEGACY['Stage'].initialize_state(self)
@@ -609,6 +661,9 @@ class Stage(BASE['Stage']):
                          path='/v1/chat/completions', model_work=True)
             fields = ('history', 'pending', 'selected', 'not_before_ns', 'light_since_ns')
             before = self.family('profiles')
+            if self.plan.get('observe_cold_profiles'):
+                self.profile_before = before
+                save(self.output/'profile-before-recovery.json', before)
             self.fatal_gateway(first)
             self.version_ready(2, 'fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
@@ -618,8 +673,9 @@ class Stage(BASE['Stage']):
             stored = json.loads((self.output/'stored-before.wire').read_text())
             self.request('stored-after', path='/v1/chat/completions/'+stored['id'])
             after = self.family('profiles')
-            save(self.output/'profile-continuity.json', dict(
-                before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
+            if not self.plan.get('observe_cold_profiles'):
+                save(self.output/'profile-continuity.json', dict(
+                    before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
         self.configuration()
@@ -636,6 +692,8 @@ GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prep
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__
+from tools.native_asr import recovery_profiles
+VERSION['actor'].__globals__['PROFILE_LAUNCH_OBSERVER'] = recovery_profiles.observe
 
 if __name__ == '__main__':
     if '--plan' in sys.argv:

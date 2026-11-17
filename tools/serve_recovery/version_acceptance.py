@@ -178,6 +178,11 @@ def actor(plan, name, role, config):
         save(output/('gateway-'+name+'-source.json'),dict(source=native_ingress.__file__,pid=os.getpid()))
         sys.argv=[sys.argv[0],'--config',str(config)];native_ingress.main();return
     from tools.serve_recovery import controller, core_http
+    if plan.get('observe_cold_profiles'):
+        observer = globals().get('PROFILE_LAUNCH_OBSERVER')
+        if not callable(observer):
+            raise RuntimeError('cold profile observer is not configured')
+        observer(plan, name, output)
     original_spawn,original_request=subprocess.Popen,core_http.request
     def spawn(argv,**options):
         if str(controller.ROOT/'tools/serve_recovery/child.py') in argv:
