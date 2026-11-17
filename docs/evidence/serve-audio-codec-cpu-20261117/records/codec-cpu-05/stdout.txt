@@ -1,0 +1,17 @@
+stereo24 interior RMS error=5.89257153e-08
+[PASS] file_audio_pcm24_resamples_and_averages_channels_without_aliasing
+resample rate=44100 samples=16000
+resample rate=44100 interior RMS error=1.20733822e-05
+resample rate=8000 samples=16000
+resample rate=8000 interior RMS error=1.24021789e-05
+resample rate=44100 samples=16001
+resample rate=44100 interior RMS error=1.20733822e-05
+resample rate=8000 samples=16002
+resample rate=8000 interior RMS error=1.24021789e-05
+resample rate=48000 samples=16001
+resample rate=48000 interior RMS error=1.1845215e-05
+[PASS] file_audio_noninteger_and_upsample_keep_phase_and_length
+[PASS] file_audio_ogg_opus_and_vorbis_decode_real_signal
+[PASS] file_audio_webm_opus_decodes_real_signal
+[PASS] file_audio_actual_source_decode_and_output_budgets
+5 tests, 5 passed, 0 failed, 0 skipped

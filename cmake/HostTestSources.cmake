@@ -98,11 +98,14 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_affine_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_projective_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_video_detail_test.cpp

@@ -1,0 +1,15 @@
+{
+  "exit_code": 0,
+  "seconds": 0.06384218530729413,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-video-regression-02/required.txt"
+  ],
+  "required": [
+    "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+    "file_video_actual_vp8_webm_preserves_colors_order_and_pts"
+  ],
+  "binary_sha256": "0d6350dd2bad99238ac4e5c4a576b06109cd8c6e8d60586fb78c9bd6a7a18172",
+  "gpu_actions": 0
+}

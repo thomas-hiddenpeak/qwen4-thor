@@ -2139,8 +2139,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "94f02b67df9ac5269a59c307e1e7a011b1bf9461c93310108c6a276667ac46ce",
-    "cmake/ChatProtocolIdentity.cmake": "3ca0f2fc4ea3965ae043a1d39b2b9348275262ed080a3b633df0efbf4d7379b0",
+    "CMakeLists.txt": "6a8a0db0b4190bfa8cd012bebbfefc36e5d26d1dcc0dbf47073995fbb1417e77",
+    "cmake/ChatProtocolIdentity.cmake": "751dfed2a2603a25d6e5be8df79271d04dd8e10891a4b6d19786a3278b5dbc10",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2381,7 +2381,7 @@
     "src/audio/asr_config.cpp": "8b717f3505329a06e0fece54f9851a98ef2d7642031aa9657c424570dd6622e8",
     "src/audio/features.cpp": "a498a97c6445f4562372f3260a1a856bfb915469424c3e7bb15613ed579b99fc",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "4f14a83bb50101f6e27198bd880df41741f593cecf1564f295167524571844b3",
+    "src/main.cpp": "a2d24044e8fcdbe8c32a088a4e9ce16aa026b770bdbd3de8a65c0573bfafaee1",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "0b82506b506bdccf305f94290cee583968945ecd2c380e217e751e768f580c3f",
@@ -2522,7 +2522,7 @@
     "src/server/file_video_projective.h": "0eda25f344080feb35339cc3e92d9fc2d6467acc14d9c8b15ddd8842cc6faeaf",
     "src/server/file_video_protocol.h": "91af4d72c1ad1887076668b32e805f6b9f074a8d04d5aa73adcf9ad55b59d9de",
     "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
-    "src/server/file_video_worker.cpp": "5a62016646c3eca18ecbe88624ba263458856dd05104fbcfaadb35cf731c2f10",
+    "src/server/file_video_worker.cpp": "a9bd9131b47c3d8b119190e60d0e22922af21ca00ef48c46f20e2e409191f812",
     "src/server/file_webp.cpp": "0e8994aee25358847f5732a6fe68fd708dfc74b46b5c3a85673006be50e0357d",
     "src/server/file_webp_protocol.h": "ae236906fdcdf4cae176be4c313729cda618802894eecc099f10b5735d089d24",
     "src/server/file_webp_worker.cpp": "ed6ca89514b2f2c1123ea89775b53e8c709e92dd79a5338579494fb0368cc5a3",
@@ -2906,7 +2906,12 @@
     "include/q4t/audio/asr_layout.h": "56f92171b2f4d3687e06473f7faa1105aed27a6a0d8cee9d1a140bcb300be6e4",
     "include/q4t/audio/asr_model.h": "21e3f162064aca9511be133b44103bc9727a131e33fd36451090bde8a627120b",
     "src/audio/asr_layout.cpp": "fd3ae396f28905d8ebc7f3584e108c2e6c8931aa8eb4183c932a43b7208ec45d",
-    "src/audio/asr_model.cu": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568"
+    "src/audio/asr_model.cu": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568",
+    "src/server/file_audio_protocol.h": "b39940d5707920c3ca78b9ac61c3335b5acae533f41f50ace330de2f92fdc024",
+    "include/q4t/server/file_audio.h": "af6630515891ac565c3afceb9263af9db81120fbfe57b18e6d2af4ae6f519b60",
+    "src/server/media_codec_runtime.h": "63bd9f8eec631ddea6df8cd738a188525bf6e36c75d121b747d777cd0be21c19",
+    "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
+    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6723,6 +6728,32 @@
     "original_logits_gate": "FAILED_preserved",
     "evidence": [
       "docs/evidence/serve-asr-compute-20261117/README.md"
+    ]
+  },
+  "audio_codec_development_20261117": {
+    "state": "targeted_cpu_passed_service_integration_pending",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/file_audio.h",
+      "src/main.cpp",
+      "src/server/file_audio.cpp",
+      "src/server/file_audio_protocol.h",
+      "src/server/file_audio_worker.cpp",
+      "src/server/file_video_worker.cpp",
+      "src/server/media_codec_runtime.h"
+    ],
+    "evidence": [
+      "docs/evidence/serve-audio-codec-cpu-20261117/README.md"
+    ],
+    "unique_cpu_tests": 21,
+    "new_audio_routes": false,
+    "runtime_dependency": "system GStreamer/gstaudio/named CPU plugins in isolated worker only; video retains separate library/plugin set",
+    "failure_isolation": "file parse request slot and worker only; no core or model restart",
+    "remaining": [
+      "real ASR asset lifecycle",
+      "transcription HTTP/SDK and recovery combinations",
+      "further audio tasks in A10"
     ]
   }
 }

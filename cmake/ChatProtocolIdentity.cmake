@@ -267,6 +267,11 @@ set(protocol_inputs
   src/server/file_image.cpp
   include/q4t/server/file_webp.h
   include/q4t/server/file_video.h
+  include/q4t/server/file_audio.h
+  src/server/file_audio_protocol.h
+  src/server/file_audio.cpp
+  src/server/file_audio_worker.cpp
+  src/server/media_codec_runtime.h
   src/server/file_webp_protocol.h
   src/server/file_webp.cpp
   src/server/file_video.cpp

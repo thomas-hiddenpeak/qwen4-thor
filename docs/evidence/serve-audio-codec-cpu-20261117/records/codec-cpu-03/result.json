@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-03/required.txt"
+  ],
+  "exit_code": 1,
+  "seconds": 0.163896388374269,
+  "required": [
+    "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+    "file_audio_noninteger_and_upsample_keep_phase_and_length",
+    "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+    "file_audio_webm_opus_decodes_real_signal"
+  ],
+  "gpu_actions": 0,
+  "binary_sha256": "1bc2b4d016da8dd951a22b1d4eed10cd4e0f9f9eea46ee74335e6492f198317c"
+}

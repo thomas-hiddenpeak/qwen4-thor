@@ -2482,7 +2482,7 @@
         "published": false,
         "remaining": [
           "HTTP/business qualification; full model quality and original logits gate not claimed",
-          "native decode/resample",
+          "native codec CPU accepted; integrate real transcription requests",
           "native asset lifecycle and service API",
           "SDK/errors/cancel/resource/recovery combinations",
           "actual alignment and further audio capabilities"
@@ -2494,6 +2494,23 @@
         "gpu_model_loads": 2,
         "cpu_model_loads": 3,
         "http_verified": false
+      },
+      "native_audio_codec_20261117": {
+        "state": "implemented_targeted_cpu_passed_integration_pending",
+        "contract": "SERVE_NATIVE_AUDIO_2026-11-17.md",
+        "evidence": "evidence/serve-audio-codec-cpu-20261117/README.md",
+        "unique_cpu_tests": 21,
+        "executions_including_failures_and_diagnostics": 58,
+        "seconds": 5.466267427895218,
+        "new_gpu_actions": 0,
+        "published": false,
+        "http_verified": false,
+        "original_failures_preserved": true,
+        "remaining": [
+          "asset lifecycle",
+          "real audio HTTP/SDK and capability-scoped recovery",
+          "further audio tasks in A10"
+        ]
       }
     },
     {

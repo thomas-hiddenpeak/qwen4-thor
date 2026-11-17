@@ -1,0 +1,6 @@
+resample rate=44100 samples=16000
+resample rate=44100 interior RMS error=1.20733822e-05
+resample rate=8000 samples=15999
+  CHECK failed: pcm.samples.size() == 16000 (line 167)
+[FAIL] file_audio_noninteger_and_upsample_keep_phase_and_length
+1 tests, 0 passed, 1 failed, 0 skipped

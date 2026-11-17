@@ -860,6 +860,10 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 当前代码包含原生校验、log-mel、encoder/decoder与公开元数据夹具；
 两段真实转录和定点数值证据已记录，尚不代表转录接口已交付。
 模型资产按部署启用，原生实现不要求vLLM或Transformers服务。
+音频codec已通过[针对性CPU验证](docs/evidence/serve-audio-codec-cpu-20261117/README.md)：
+隔离worker复用系统GStreamer的音频库/固定插件，核心不链接或加载
+它们，不启动外部解码程序。按官方API适配、未复制codec源码；系统
+插件保留其LGPL等发行许可，仅影响对应媒体请求，HTTP集成继续。
 来源、固定revision与Apache-2.0许可见
 [Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)，
 实施与验证见[音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)。

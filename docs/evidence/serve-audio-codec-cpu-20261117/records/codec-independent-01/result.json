@@ -1,0 +1,7 @@
+{
+  "external_gstreamer_samples": 14336,
+  "native_worker_samples": 14336,
+  "byte_equal": true,
+  "external_sha256": "bd48504b9898798b987f7300007e3be88e47c2adabe419dae350a506f52a7599",
+  "worker_sha256": "bd48504b9898798b987f7300007e3be88e47c2adabe419dae350a506f52a7599"
+}

@@ -1,0 +1,9 @@
+stereo24 interior RMS error=0.000954524728
+  CHECK failed: std::sqrt(square / 15600) < 0.0001 (line 139)
+[FAIL] file_audio_pcm24_resamples_and_averages_channels_without_aliasing
+tone.m4a decoded samples=14336
+tone.aac decoded samples=14336
+  CHECK failed: pcm.samples.size() >= 15000 && pcm.samples.size() <= 19000 (line 76)
+  CHECK failed: pcm.samples.size() >= 15000 && pcm.samples.size() <= 19000 (line 76)
+[FAIL] file_audio_m4a_and_adts_aac_decode_real_signal
+2 tests, 0 passed, 2 failed, 0 skipped

@@ -37,3 +37,11 @@ rewrite the original gate. The latter supports a layer interval and preserves
 partial checks on exception. Its FP32/BF16 rounding and finite-ULP checks apply
 to the captured instances, not every possible input. Current evidence and
 remaining HTTP/codec work are in `docs/evidence/serve-asr-compute-20261117`.
+
+`codec_fixtures.py` generates synthetic PCM and compressed test inputs. It
+uses a bounded list of CPU GStreamer encoder plugins only; the CLI is a
+development tool, not a runtime dependency. `--only-aac` reproduces the
+documented AAC source-tail correction without replacing passed Ogg/WebM
+fixtures. Audio decoding itself lives in the isolated native server worker;
+see `docs/evidence/serve-audio-codec-cpu-20261117` for original failures,
+numerical boundary fixes and targeted CPU qualification.

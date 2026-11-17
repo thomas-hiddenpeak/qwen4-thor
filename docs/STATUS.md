@@ -19,6 +19,13 @@ exp溢出修正后只补71项（1.969秒）；接受继续服务集成，未宣�
 差分或API验收通过。随后接实际解码、HTTP/SDK与恢复组合；Chat音频/语音输出/Realtime及全部master
 继续。当前尚未交付音频API，默认及day身份不变；PR43已实际合main。
 
+[原生codec的21项CPU验收](evidence/serve-audio-codec-cpu-20261117/README.md)
+完成（含失败定位共58次执行、5.466秒）：实际WAV/FLAC/MP3/AAC/
+Ogg/WebM、相位/尾样本、限额、取消/故障隔离与视频直接回归。
+原重采样相位、EOS及AAC夹具失败均保留；实际CPU路径不依赖外部
+解码程序，核心不加载codec。继续资产生命周期、HTTP/SDK和恢复
+组合；尚未交付转录API，模型计算、默认及day保持。
+
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
 current选择器并通过精确1项CPU（0.455秒）。原失败保留于
 [evidence](evidence/serve-pr43-ci-selector-20261117/README.md)。最终head两组

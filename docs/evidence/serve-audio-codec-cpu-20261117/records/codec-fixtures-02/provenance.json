@@ -1,0 +1,224 @@
+{
+  "status": "GENERATED_NOT_VALIDATED",
+  "commands": [
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "flacenc",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.flac"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Cuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\nCuda failure: status=100\nNvBufSurfaceGetDeviceInfoImpl: Error: Failed to get GPU info\n"
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "lamemp3enc",
+        "!",
+        "mpegaudioparse",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.mp3"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "voaacenc",
+        "!",
+        "aacparse",
+        "!",
+        "mp4mux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.m4a"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "voaacenc",
+        "!",
+        "aacparse",
+        "!",
+        "audio/mpeg,stream-format=adts",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.aac"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "audioresample",
+        "!",
+        "audio/x-raw,rate=48000",
+        "!",
+        "opusenc",
+        "!",
+        "oggmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.opus"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "vorbisenc",
+        "!",
+        "oggmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.ogg"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/mono16.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "audioresample",
+        "!",
+        "audio/x-raw,rate=48000",
+        "!",
+        "opusenc",
+        "!",
+        "webmmux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-02/tone.webm"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "generator_sha256": "7a62758ae5fe7d4fc637371edc0c8fa9a9d72221dc821e118b3a2afa76d28f48",
+  "gstreamer": "gst-launch-1.0 version 1.24.2\nGStreamer 1.24.2\nhttps://launchpad.net/ubuntu/+source/gstreamer1.0\n",
+  "files": {
+    "mono16.wav": {
+      "bytes": 32044,
+      "sha256": "a77280a67a216c56e50a13d37d2687fe6eed1701c077ef0e343494ee4f55714c"
+    },
+    "stereo24.wav": {
+      "bytes": 288044,
+      "sha256": "ad26de988c1d18ac0afe81ba9b95335ab649fd783298fff5c0e2c4b2ab9765d3"
+    },
+    "float32.wav": {
+      "bytes": 12844,
+      "sha256": "aa6d93081235c0beb7ca27123b3070bce2da87af82f3054d23e0a92cca140914"
+    },
+    "float64.wav": {
+      "bytes": 25644,
+      "sha256": "159fbede919a23c2b74f34d574c5d50db4acbabea38c084bf1ecbd7e831fff58"
+    },
+    "tone.flac": {
+      "bytes": 9586,
+      "sha256": "1a628367d342d4b263a6bf906b1587da0ede3ae78557fec3fc509e7582b3803b"
+    },
+    "tone.mp3": {
+      "bytes": 3672,
+      "sha256": "e4772b45d1836567ddc154ef4fc80f9fc3e375aa81d2ac9906940a02cb2bf63e"
+    },
+    "tone.m4a": {
+      "bytes": 3377,
+      "sha256": "1370aa68010cb36b2bfe074d6e5b63747c6340c133c879ec54a725c56ff98ebd"
+    },
+    "tone.aac": {
+      "bytes": 2664,
+      "sha256": "ea517ad53dcbd89ec8456047131f0603aa7b84f9b056fe452c7fd2ab023a2e53"
+    },
+    "tone.opus": {
+      "bytes": 8599,
+      "sha256": "8a9f9acc33060f7f9c34aa01d114c70d91768ee5fc0c9c0f99bd97748f79aeb0"
+    },
+    "tone.ogg": {
+      "bytes": 4399,
+      "sha256": "389cf16ffd294d3373df5adde6357ebdb1716c4b4dc4a127d013b4555eb93471"
+    },
+    "tone.webm": {
+      "bytes": 10771,
+      "sha256": "0d1433b7407fab62af4ffc183bbc8cacd2d3886488b7c526c44b6b4ef7dc18e6"
+    }
+  }
+}
