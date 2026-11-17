@@ -63,7 +63,7 @@ With the official Python client configured for this deployment:
 ```python
 with open("conversation.wav", "rb") as audio:
     result = client.audio.transcriptions.create(
-        model="your-served-model-name",
+        model="qwen3-asr-0.6b",
         file=audio,
         response_format="diarized_json",
         chunking_strategy="auto",
