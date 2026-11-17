@@ -3447,6 +3447,18 @@
           "Independent health and budgets, SDK/TLS/recovery qualification",
           "Reversible delivery and main integration; all other A10 tasks remain"
         ]
+      },
+      "overlap_layout_cpu_20261118": {
+        "status": "ACCEPT_NATIVE_SEPARATOR_LAYOUT_CPU",
+        "tests": 6,
+        "seconds": 0.0035711778327822685,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "default_rev296_unchanged": true,
+        "cuda_build_zero_warnings": true,
+        "actual_numerical_execution": false,
+        "archive_sha256": "6bd952812602b1c55bdffed401f0cb1e414c8a6c8473ca673d7a1d5978a8f591",
+        "evidence": "evidence/serve-separator-layout-20261118/README.md"
       }
     },
     {

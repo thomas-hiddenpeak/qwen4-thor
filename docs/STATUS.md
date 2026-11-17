@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[分离布局6CPU通过](evidence/serve-separator-layout-20261118/README.md)，
+0.004秒、0GPU/HTTP；全部缓冲区/原始权重绑定与非法边界通过，
+CUDA组件零警告。继续固定官方七阶段数值、真实双声混音/业务和
+独立恢复及全部master；默认rev296保持，PR46检查独立推进。
+
+原生分离计算与布局已实现，下一组固定6布局CPU/180秒、0GPU；
+8kHz组件16—64000样本，全部中间值/attention/库空间显式预算，
+36个真实同步阶段。必要独立构建单列，数值和混音业务随后验证；
+默认rev296保持，PR46最终检查及全部master继续。
+
 [分离资产8CPU通过](evidence/serve-separator-contract-20261118/README.md)，
 0.164秒、0GPU/HTTP，417个F32张量/实际权重及异常合同已验，
 独立构建零警告。继续原生分离计算/混音转录/独立恢复与全部master；
