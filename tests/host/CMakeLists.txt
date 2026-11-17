@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(../../cmake/HostTestSources.cmake)
 find_package(Threads REQUIRED)
+include(../../cmake/ModelAssetTests.cmake)
 add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES} ../../src/io/json.cpp)
 target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
 q4t_link_structured_output(q4t_host_tests)

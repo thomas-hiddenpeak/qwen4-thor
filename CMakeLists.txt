@@ -223,6 +223,7 @@ endif()
 if(Q4T_HAS_ICU)
   add_executable(q4t_embedding_replay EXCLUDE_FROM_ALL
     tools/native_embedding/model_replay.cpp src/server/embedding_assets.cpp
+    src/server/model_assets.cpp
     src/server/grammar_process.cpp src/server/worker_io_broker.cpp
     src/model/embedding_model.cu)
   target_compile_definitions(q4t_embedding_replay PRIVATE Q4T_EMBEDDING_TRACE=1)
@@ -294,6 +295,8 @@ target_include_directories(q4t_runtime PUBLIC include)
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
+  src/server/model_assets.cpp
+  src/server/asr_assets.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp
@@ -1020,6 +1023,7 @@ if(Q4T_BUILD_TESTS)
   target_include_directories(q4t_asr_feature_tests PRIVATE include)
   target_compile_options(q4t_asr_feature_tests PRIVATE -Wall -Wextra -Werror)
   find_package(Threads REQUIRED)
+  include(cmake/ModelAssetTests.cmake)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
@@ -1039,6 +1043,7 @@ q4t_link_native_documents(q4t_host_tests)
       -Wall -Wextra -Werror)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp
       tests/server_embedding_assets_test.cpp src/server/embedding_assets.cpp
+      src/server/model_assets.cpp
       src/model/embedding_config.cpp src/model/embedding_layout.cpp)
     target_compile_definitions(q4t_host_tests PRIVATE
       Q4T_EMBEDDING_ASSET_WORKER_ENTRY=1)

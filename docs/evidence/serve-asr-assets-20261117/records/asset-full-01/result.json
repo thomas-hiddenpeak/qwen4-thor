@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_model_assets-cpu-01",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/asset-full-01/required.txt"
+  ],
+  "required": [
+    "asr_assets_full_checkpoint_verified_layout_and_metadata_published"
+  ],
+  "binary_sha256": "4992d57f18557c019a93736193ddb711ca57186af02b63b0717d62008d35f5c3",
+  "defaults_before": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "gpu_actions": 0,
+  "model_constructions": 0,
+  "full_checkpoint_reads": 1,
+  "status": "PASS",
+  "exit_code": 0,
+  "seconds": 2.518583071883768,
+  "defaults_after": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true
+}

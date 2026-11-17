@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ASR资产加载的18项针对性检查](evidence/serve-asr-assets-20261117/README.md)
+已通过（4.184秒）：共享隔离读取器验证实际六份元数据及完整权重，
+612个tensor布局、原embedding回归、取消/超时/损坏/占槽与输出保持。
+完整文件只读核对在严格租约中完成，0模型构造/0GPU计算；默认和
+day保持。接着实现ASR健康/冷却恢复、转录HTTP及实际客户端，不把
+组件通过当作音频服务或总目标完成。
+
 [原生音频计划](SERVE_NATIVE_AUDIO_2026-11-17.md)从真实ASR资产、
 严格配置/权重合同及原生计算开始补齐A10；现有主模型不具备语音
 后端。[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)

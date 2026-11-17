@@ -1,0 +1,50 @@
+[
+  {
+    "path": "include/q4t/server/model_assets.h",
+    "before": "4b5f8fe712cb9bd1f628971ace65b21207bb93d0032e2d5dfa8d33ba3c5ef0eb",
+    "after": "4b5f8fe712cb9bd1f628971ace65b21207bb93d0032e2d5dfa8d33ba3c5ef0eb",
+    "whitespace_only": true
+  },
+  {
+    "path": "include/q4t/server/asr_assets.h",
+    "before": "845682bbb2e18aac440ea04e23c1b7758c79c5ae945bd57df42dbdab3f66b632",
+    "after": "458e9517e9ee0a757e7b05c29743835d1f1ade5817c1a41154b501bb17931b7c",
+    "whitespace_only": true
+  },
+  {
+    "path": "src/server/model_assets_protocol.h",
+    "before": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
+    "after": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
+    "whitespace_only": true
+  },
+  {
+    "path": "src/server/model_assets.cpp",
+    "before": "8c856735a27ebfa07543a41cf743abd257fa2c6b9fab25c7326a12f3de71f793",
+    "after": "310ef168d815046f7394a03dad20fda86e94e5ecdaefdb6b071e76b3a089adf6",
+    "whitespace_only": true
+  },
+  {
+    "path": "src/server/asr_assets.cpp",
+    "before": "16b3bf0e6325c1277f891d887b9f7b7eac07280b8901441db9163989e5902c86",
+    "after": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
+    "whitespace_only": true
+  },
+  {
+    "path": "src/server/embedding_assets.cpp",
+    "before": "4a82598afd8a8755ad221a5bee3bcbbb99d0fafd16ea2de3fb468db2773f625b",
+    "after": "33b1695241a170004e4634c942b7e083d793b929ae24f6b4e497aed7086fb313",
+    "whitespace_only": true
+  },
+  {
+    "path": "tests/server_model_assets_test.cpp",
+    "before": "7f6ced1eff044735bc47bbc8275b4e894c650b804009c0d43b8afcd73eab2c86",
+    "after": "552345169b2a814fe24599045424c517c0fe77c1d12d3030d18e2f429c45657b",
+    "whitespace_only": true
+  },
+  {
+    "path": "tests/model_asset_test_main.cpp",
+    "before": "c16d871ed7abbe4ef42efe1f55100514fbbcde30c920ed99e34e323d631aa663",
+    "after": "c16d871ed7abbe4ef42efe1f55100514fbbcde30c920ed99e34e323d631aa663",
+    "whitespace_only": true
+  }
+]

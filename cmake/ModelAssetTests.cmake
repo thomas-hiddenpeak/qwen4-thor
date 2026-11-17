@@ -1,0 +1,32 @@
+# Optional local qualification with real pinned metadata, never public CI.
+find_package(PkgConfig QUIET)
+if(PkgConfig_FOUND)
+  pkg_check_modules(MODEL_ASSET_ICU QUIET IMPORTED_TARGET icu-uc icu-i18n)
+endif()
+if(MODEL_ASSET_ICU_FOUND)
+  set(model_asset_root "${CMAKE_CURRENT_LIST_DIR}/..")
+  add_executable(q4t_model_asset_tests EXCLUDE_FROM_ALL
+    ${model_asset_root}/tests/model_asset_test_main.cpp
+    ${model_asset_root}/tests/server_model_assets_test.cpp
+    ${model_asset_root}/tests/server_embedding_assets_test.cpp
+    ${model_asset_root}/tests/router_trace_hash_test.cpp
+    ${model_asset_root}/src/server/model_assets.cpp
+    ${model_asset_root}/src/server/asr_assets.cpp
+    ${model_asset_root}/src/server/embedding_assets.cpp
+    ${model_asset_root}/src/server/grammar_process.cpp
+    ${model_asset_root}/src/server/worker_io_broker.cpp
+    ${model_asset_root}/src/audio/asr_config.cpp
+    ${model_asset_root}/src/audio/asr_layout.cpp
+    ${model_asset_root}/src/model/embedding_config.cpp
+    ${model_asset_root}/src/model/embedding_layout.cpp
+    ${model_asset_root}/src/text/tokenizer.cpp
+    ${model_asset_root}/src/io/json.cpp
+    ${model_asset_root}/src/trace/sha256.cpp)
+  target_compile_definitions(q4t_model_asset_tests PRIVATE
+    Q4T_GRAMMAR_PROCESS_TESTS=1)
+  target_include_directories(q4t_model_asset_tests PRIVATE
+    ${model_asset_root}/include)
+  target_link_libraries(q4t_model_asset_tests PRIVATE
+    Threads::Threads PkgConfig::MODEL_ASSET_ICU)
+  target_compile_options(q4t_model_asset_tests PRIVATE -Wall -Wextra -Werror)
+endif()

@@ -245,6 +245,8 @@ def current_surface(root):
                    {p for p in root.glob("tools/serve_service/*.py")
                     if not p.name.startswith("test_")} | {
                        root / "src/io/json.cpp", root / "include/q4t/io/json.h",
+                       root / "src/trace/sha256.cpp",
+                       root / "include/q4t/trace/sha256.h",
                        root / "src/model/model_head.cu",
                        root / "include/q4t/model/model_head.h",
                        root / "src/text/tokenizer.cpp",

@@ -1,0 +1,2 @@
+[PASS] asr_assets_full_checkpoint_verified_layout_and_metadata_published
+1 tests, 1 passed, 0 failed, 0 skipped

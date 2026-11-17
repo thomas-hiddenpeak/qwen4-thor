@@ -257,7 +257,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char cache_name[] = "q4t-cache-worker";
     char fetch_name[] = "q4t-file-fetch";
     char document_name[] = "q4t-file-document";
-    char embedding_name[] = "q4t-embedding-assets";
+    char embedding_name[] = "q4t-model-assets";
     char tool_result_name[] = "q4t-tool-results";
     char program_name[] = "q4t-program";
     char mcp_name[] = "q4t-mcp";

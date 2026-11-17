@@ -40,6 +40,8 @@ enum class IsolatedWorkerDomain {
   kFileFetch,
   kFileParse,
   kEmbeddingAssets,
+  // Compatibility alias: embedding and ASR share one bounded asset I/O slot.
+  kModelAssets = kEmbeddingAssets,
   kToolResults,
   kPrograms,
   kMcp

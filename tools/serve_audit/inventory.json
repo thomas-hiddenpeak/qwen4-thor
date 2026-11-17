@@ -2139,8 +2139,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6a8a0db0b4190bfa8cd012bebbfefc36e5d26d1dcc0dbf47073995fbb1417e77",
-    "cmake/ChatProtocolIdentity.cmake": "751dfed2a2603a25d6e5be8df79271d04dd8e10891a4b6d19786a3278b5dbc10",
+    "CMakeLists.txt": "5b781cf6fa826f84a8ae246f9bc9ae95d9b15fc77460a4067296f8567ae7767e",
+    "cmake/ChatProtocolIdentity.cmake": "6982ff50f923315d80f51beb8522ede27be50119e2630c341f98380347f5a26c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2243,7 +2243,7 @@
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
-    "include/q4t/server/grammar_process.h": "10ce03140ff7f09755f6eb1471f32a0ea4277b2d48efb34dfc9042d3c1db08f4",
+    "include/q4t/server/grammar_process.h": "2141d40206167017a892efcc93cb42aad8f595fdb5d86609ba65f19f4a094acc",
     "include/q4t/server/http_connection.h": "3afb216669cd6ebd20fd555a25c728643ea68a4ce57d03ca61c66cc87709cf7d",
     "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
@@ -2470,7 +2470,7 @@
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
-    "src/server/embedding_assets.cpp": "264c99a931c7fc7efca9efd6bfe2846b9c1daf182117c183282132b21ddcf524",
+    "src/server/embedding_assets.cpp": "33b1695241a170004e4634c942b7e083d793b929ae24f6b4e497aed7086fb313",
     "src/server/embedding_metadata.cpp": "ace571f57dcd0b2cc2389ae37f1582eda93835d5dac30881453b9a00932f0490",
     "src/server/embeddings_execution.cpp": "2f79fcedf3c4486fff96837ba528a55cd575ee8a898e011f214dd36c800a9fd6",
     "src/server/embeddings_plan.cpp": "04d1723b63377850f176c878842b93f2e268eefc36ecb9abcb23280c8deff4cd",
@@ -2529,7 +2529,7 @@
     "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
-    "src/server/grammar_process.cpp": "d176c57391e961f475e1507320e1a7d40bd10a074b32eb0f231553ef69cb4fe9",
+    "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "475d201a89306c99927c49ae7e0161b47429f21a0035bb371508a8e884daa0e5",
@@ -2911,7 +2911,14 @@
     "include/q4t/server/file_audio.h": "af6630515891ac565c3afceb9263af9db81120fbfe57b18e6d2af4ae6f519b60",
     "src/server/media_codec_runtime.h": "63bd9f8eec631ddea6df8cd738a188525bf6e36c75d121b747d777cd0be21c19",
     "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
-    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f"
+    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f",
+    "include/q4t/server/asr_assets.h": "458e9517e9ee0a757e7b05c29743835d1f1ade5817c1a41154b501bb17931b7c",
+    "include/q4t/server/model_assets.h": "4b5f8fe712cb9bd1f628971ace65b21207bb93d0032e2d5dfa8d33ba3c5ef0eb",
+    "include/q4t/trace/sha256.h": "274b34fa302c5baccefb99f4f0845d321f46f208054b83c16a5499f879ee8474",
+    "src/server/asr_assets.cpp": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
+    "src/server/model_assets.cpp": "310ef168d815046f7394a03dad20fda86e94e5ecdaefdb6b071e76b3a089adf6",
+    "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
+    "src/trace/sha256.cpp": "f135a31a2bde6a2a76d137f733a78d3a234a6659aea08f9cd376479eb939373a"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6755,5 +6762,27 @@
       "transcription HTTP/SDK and recovery combinations",
       "further audio tasks in A10"
     ]
+  },
+  "asr_assets_development_20261117": {
+    "state": "asset_component_accepted_service_integration_pending",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/asr_assets.h",
+      "include/q4t/server/grammar_process.h",
+      "include/q4t/server/model_assets.h",
+      "include/q4t/trace/sha256.h",
+      "src/server/asr_assets.cpp",
+      "src/server/embedding_assets.cpp",
+      "src/server/grammar_process.cpp",
+      "src/server/model_assets.cpp",
+      "src/server/model_assets_protocol.h",
+      "src/trace/sha256.cpp"
+    ],
+    "evidence": "docs/evidence/serve-asr-assets-20261117/README.md",
+    "targeted_tests": 18,
+    "contract": "docs/SERVE_NATIVE_AUDIO_2026-11-17.md",
+    "scope": "fixed profile and digest catalog, one shared exec slot, metadata before weights, cancellable hashes, failure preserves previous output; no new API or device load",
+    "public_capability_delivered": false
   }
 }

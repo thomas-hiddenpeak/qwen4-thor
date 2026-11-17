@@ -1,0 +1,13 @@
+{
+  "state": "asset_component_accepted_service_integration_pending",
+  "targeted_cpu_tests": 18,
+  "seconds": 4.1842431696131825,
+  "gpu_model_loads": 0,
+  "cpu_model_constructions": 0,
+  "full_checkpoint_reads": 1,
+  "http_requests": 0,
+  "default_unchanged": true,
+  "published": false,
+  "binary_sha256": "4992d57f18557c019a93736193ddb711ca57186af02b63b0717d62008d35f5c3",
+  "original_compute_logits_gate": "FAILED_preserved_not_part_of_this_acceptance"
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      ".q4t-work/serve-audio-native-20261117/asset-build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14"
+    ],
+    "returncode": 1,
+    "seconds": 0.46433947794139385
+  }
+]

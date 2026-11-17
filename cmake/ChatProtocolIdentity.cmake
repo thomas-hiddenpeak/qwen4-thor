@@ -5,6 +5,8 @@ get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE
 set(protocol_inputs
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
+  include/q4t/trace/sha256.h
+  src/trace/sha256.cpp
   include/q4t/audio/asr_layout.h
   src/audio/asr_layout.cpp
   include/q4t/audio/asr_model.h
@@ -130,6 +132,11 @@ set(protocol_inputs
   src/model/embedding_model.cu
   include/q4t/server/embedding_assets.h
   src/server/embedding_assets.cpp
+  include/q4t/server/model_assets.h
+  include/q4t/server/asr_assets.h
+  src/server/model_assets_protocol.h
+  src/server/model_assets.cpp
+  src/server/asr_assets.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu
   src/server/responses_execution_moderation.cpp

@@ -169,6 +169,20 @@ Digest Sha256(std::span<const uint8_t> bytes) {
   hash.Add(bytes);
   return hash.Finish();
 }
+Status HashBytes(std::span<const uint8_t> bytes, Digest* digest,
+                 const std::function<bool()>& cancelled) {
+  if (!digest) return Status::Fail("trace: missing hash destination");
+  Hash hash;
+  while (!bytes.empty()) {
+    if (cancelled && cancelled()) return Status::Fail("trace: hash cancelled");
+    const auto count = std::min(bytes.size(), size_t{65536});
+    hash.Add(bytes.first(count));
+    bytes = bytes.subspan(count);
+  }
+  if (cancelled && cancelled()) return Status::Fail("trace: hash cancelled");
+  *digest = hash.Finish();
+  return {};
+}
 static Status HashFileImpl(const std::string& path, Digest* digest,
                            bool portable) {
   std::ifstream file(path, std::ios::binary);

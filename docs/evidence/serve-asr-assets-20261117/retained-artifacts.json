@@ -1,0 +1,10 @@
+{
+  ".q4t-work/serve-audio-native-20261117/validated-binaries/q4t_model_assets-cpu-01": {
+    "sha256": "4992d57f18557c019a93736193ddb711ca57186af02b63b0717d62008d35f5c3",
+    "bytes": 462792
+  },
+  ".q4t-work/serve-audio-native-20261117/run_asset_checks.py": {
+    "sha256": "c0d4f1a4088dd72b980d7ad318e2f50b4fb485cc36000a06ecd385d5c75cdc3c",
+    "bytes": 3147
+  }
+}

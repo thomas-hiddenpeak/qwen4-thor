@@ -2511,6 +2511,25 @@
           "real audio HTTP/SDK and capability-scoped recovery",
           "further audio tasks in A10"
         ]
+      },
+      "native_asr_assets_20261117": {
+        "state": "asset_component_accepted_service_integration_pending",
+        "targeted_cpu_tests": 18,
+        "seconds": 4.1842431696131825,
+        "gpu_model_loads": 0,
+        "cpu_model_constructions": 0,
+        "full_checkpoint_reads": 1,
+        "http_requests": 0,
+        "default_unchanged": true,
+        "published": false,
+        "binary_sha256": "4992d57f18557c019a93736193ddb711ca57186af02b63b0717d62008d35f5c3",
+        "original_compute_logits_gate": "FAILED_preserved_not_part_of_this_acceptance",
+        "evidence": "evidence/serve-asr-assets-20261117/README.md",
+        "remaining": [
+          "service health and request-driven cooldown/recovery",
+          "transcription HTTP, actual native-codec business and SDK",
+          "all further audio/master tasks"
+        ]
       }
     },
     {
@@ -5680,7 +5699,7 @@
     }
   ],
   "next_task": "A10/Q02",
-  "next": "Continue native ASR component numerical/real-audio qualification, then native decoding and HTTP/SDK/recovery integration. PR43 merged; all other master tasks remain required.",
+  "next": "Continue native ASR service health/resource lifecycle and transcription HTTP/SDK/recovery integration; native compute, codec and asset evidence retained; all master tasks remain required.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

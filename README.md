@@ -860,6 +860,9 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 当前代码包含原生校验、log-mel、encoder/decoder与公开元数据夹具；
 两段真实转录和定点数值证据已记录，尚不代表转录接口已交付。
 模型资产按部署启用，原生实现不要求vLLM或Transformers服务。
+固定资产的[隔离读取与取消/故障检查](docs/evidence/serve-asr-assets-20261117/README.md)
+已经通过；ASR复用embedding的有界读取槽，元数据模式不打开权重，
+完整SHA和tensor合同通过后才发布对象。转录服务接入继续实现。
 音频codec已通过[针对性CPU验证](docs/evidence/serve-audio-codec-cpu-20261117/README.md)：
 隔离worker复用系统GStreamer的音频库/固定插件，核心不链接或加载
 它们，不启动外部解码程序。按官方API适配、未复制codec源码；系统
