@@ -2194,6 +2194,11 @@
           "acceptance": "Real project/query/document retrieval cases with relevant ranking, suitable trained representation or substantiated native method; CPU or protocol success is insufficient.",
           "resolution": "Original generic observation0/2 retained. Fixed native Qwen3-Embedding0.6B implemented/delivered with actual original two plus three additional project queries5/5, same-PID asset recovery and Batch/restart.",
           "evidence": "evidence/serve-native-embedding-delivery-20261111/README.md"
+        },
+        {
+          "source": "evidence/serve-video-affine-retained-failure-20261117/README.md",
+          "issue": "The answer-bearing Chat prompt Compute 17+25. Reply only 42. returned model refusal despite correctly mentioning 42. Original semantic failure remains; subsequent neutral Responses question is a separate business result, not a fix claim.",
+          "state": "model_quality_failure_recorded_root_cause_unresolved"
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
@@ -2396,6 +2401,14 @@
         "diagnosis": "Actual captured PNG and processor tensor are correct; 64x32 source gives two spatial tokens per temporal group under unchanged checkpoint preprocessing. Model swaps right-side quadrants. Low spatial representation is a hypothesis, not a proven model root cause.",
         "next": "Implement explicit native video detail propagation and bounded high-detail preprocessing; preserve auto/low reference results. Repeat same source/question with explicit high detail. Keep original default-mode failure recorded.",
         "detail_cpu_evidence": "docs/evidence/serve-video-detail-cpu-20261117/README.md"
+      },
+      "video_affine_detail_20261117": {
+        "state": "business_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
+        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+        "whole_task_complete": false,
+        "original_model_quality_failures_retained": true,
+        "pull_request": 41
       }
     },
     {
@@ -3339,6 +3352,14 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
+      },
+      "video_affine_detail_20261117": {
+        "state": "business_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
+        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+        "whole_task_complete": false,
+        "original_model_quality_failures_retained": true,
+        "pull_request": 41
       }
     },
     {
@@ -5272,6 +5293,14 @@
         "head": "36bf7de93ad9772d01efb52a71023fd6c132839d",
         "main_commit": "6319018993b4d16ef0066dcc49325de6feb89984",
         "evidence": "docs/evidence/serve-pr40-merged-20261117/README.md"
+      },
+      "video_affine_detail_20261117": {
+        "state": "business_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
+        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+        "whole_task_complete": false,
+        "original_model_quality_failures_retained": true,
+        "pull_request": 41
       }
     },
     {
@@ -5436,11 +5465,19 @@
         "owner": "user",
         "archive_sha256": "0ebd00685c76f1b25f45c86ea49f6e171186e10063a491d1015511b576c1afb9",
         "evidence": "evidence/serve-web-search-day-handoff-20261117/README.md"
+      },
+      "video_affine_detail_20261117": {
+        "state": "business_composition_accepted_delivery_pending",
+        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
+        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+        "whole_task_complete": false,
+        "original_model_quality_failures_retained": true,
+        "pull_request": 41
       }
     }
   ],
   "next_task": "A10",
-  "next": "仿射与显式video detail真实业务通过；继续4启动16请求900秒主轻与保留发行组合、可回退交付及实际合main；原auto小尺寸质量失败保留，全部剩余master继续。",
+  "next": "仿射/显式视频细节真实主轻及保留组合通过；完成STOPPED可回退交付和PR41实际合main，继续透视/多轨/其他后端及全部master任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

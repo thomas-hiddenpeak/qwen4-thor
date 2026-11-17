@@ -115,6 +115,14 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[仿射/视频细节发行组合通过](evidence/serve-video-affine-composition-20261117/README.md)：
+主轻及修复后两保留控制包均已实际验证；含原失败累计7启动24请求
+（含自检和embedding），323.503秒严格租约，308项NVML正常，
+完整清理。原auto小尺寸质量失败及含答案Chat题拒答继续保留；没有
+用新输入通过追认旧题。控制/native helper/client未变，能力扩展保持
+预算和历史且禁止回退丢失新能力。默认234保持，继续STOPPED可回退
+交付和PR41实际合main，全部master仍active。
+
 [视频仿射实施合同](SERVE_VIDEO_AFFINE_2026-11-17.md)已冻结：补合法
 缩放/斜切/非直角旋转的实际像素处理及v4冻结重放，保留旧八方向。
 12项新CPU及4项直接回归[全部通过](evidence/serve-video-affine-cpu-20261117/README.md)，
