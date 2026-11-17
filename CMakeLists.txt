@@ -184,6 +184,7 @@ add_library(q4t_model STATIC
   src/audio/speaker_config.cpp
   src/audio/speaker_layout.cpp
   src/audio/speaker_features.cpp
+  src/audio/diarization.cpp
   src/audio/speaker_model.cu
   src/audio/features.cpp
   src/model/embedding_config.cpp
@@ -309,6 +310,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/aligner_assets.cpp
   src/server/speaker_assets.cpp
   src/server/speaker_service.cpp
+  src/server/diarized_output.cpp
   src/server/vad_assets.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp

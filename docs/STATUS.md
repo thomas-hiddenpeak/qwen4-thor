@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speaker分段/原生输出14CPU通过](evidence/serve-speaker-turns-cpu-20261118/README.md)，
+0.032秒、0GPU/HTTP；构造声纹的聚类/参考/容量/取消与真实给定
+时间到JSON/SSE/usage通过，不能代替真实语音或API。运行时零警告，
+20源码锚点及7负控已核对；继续后端/真实业务/恢复交付与全部master。
+默认rev286不变，PR45已合main0ab3ce6a。
+
+开始DI03声音窗口/聚类/已知参考及词时间到JSON/SSE的实际接线，
+冻结14CPU/180秒、0GPU/HTTP。原子取消、容量和标签来自声音；
+实际语音/API及重叠检测分离继续实现，不能以构造向量CPU代替。
+默认rev286不变，总目标和全部master保持active。
+
 PR #45已在最终head `6476e3a4`两组CI通过后合入main
 `0ab3ce6a`；[合并记录](evidence/serve-audio-capability-ci-20261118/merge-receipt.json)。
 对齐/VAD交付已进入主线，默认rev286保持STOPPED；后续speaker开发
