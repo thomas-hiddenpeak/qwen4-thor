@@ -3415,13 +3415,16 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
       },
       "overlap_asset_contract_20261118": {
         "status": "ACCEPT_NATIVE_SEPARATOR_ASSET_CONTRACT",
@@ -3459,6 +3462,84 @@
         "actual_numerical_execution": false,
         "archive_sha256": "6bd952812602b1c55bdffed401f0cb1e414c8a6c8473ca673d7a1d5978a8f591",
         "evidence": "evidence/serve-separator-layout-20261118/README.md"
+      },
+      "overlap_actual_component_20261118": {
+        "status": "ACCEPT_NATIVE_SEPARATOR_COMPONENT",
+        "seconds": 47.41229595243931,
+        "gpu_model_loads": 1,
+        "cpu_model_loads": 1,
+        "cases": 4,
+        "numerical_checks": 28,
+        "finish_checks": 4,
+        "boundary_checks": 8,
+        "lifecycle_checks": 16,
+        "nvml_samples": 47,
+        "lease_released": true,
+        "observed_final_compute_pids": [],
+        "default_rev296_unchanged": true,
+        "model_sha256": "5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299",
+        "binary_sha256": "4e607a91474803cba98b6f092081e79bfc7ad478b6739db155c86c9ffa19d8e5",
+        "max_relative_l2": 2.060557483105353e-06,
+        "max_abs": 0.000270843505859375,
+        "minimum_cosine": 0.9999999999976878,
+        "known_source_quality": {
+          "native": {
+            "permutation": [
+              0,
+              1
+            ],
+            "separated_si_sdr_db": [
+              17.966798117672855,
+              25.73312641822963
+            ],
+            "mixture_si_sdr_db": [
+              -7.556537761971594,
+              7.809364907154595
+            ],
+            "improvement_db": [
+              25.52333587964445,
+              17.923761511075035
+            ],
+            "passed": true
+          },
+          "reference": {
+            "permutation": [
+              0,
+              1
+            ],
+            "separated_si_sdr_db": [
+              17.96680099282042,
+              25.733129766454187
+            ],
+            "mixture_si_sdr_db": [
+              -7.556537761971594,
+              7.809364907154595
+            ],
+            "improvement_db": [
+              25.523338754792015,
+              17.92376485929959
+            ],
+            "passed": true
+          }
+        },
+        "native": {
+          "status": "PASS_NATIVE_COMPONENT",
+          "cases": 4,
+          "boundary_checks": 8,
+          "lifecycle_checks": 16,
+          "gpu_model_loads": 1,
+          "max_explicit_workspace_bytes": 463623940,
+          "weight_bytes": 112957444,
+          "seconds": 2.13473
+        },
+        "source_commit": "5b82bb5c207482aec7eda957979bbb25d07cf183",
+        "http_requests": 0,
+        "actual_overlap_api": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability": false,
+        "archive_sha256": "481c9e8d128c4e865a871df3e891675107842a67c645e98c56c5416936898ada",
+        "evidence": "evidence/serve-separator-compute-20261118/README.md"
       }
     },
     {
@@ -4551,13 +4632,16 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
       }
     },
     {
@@ -6120,19 +6204,22 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_integration_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -6195,13 +6282,16 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -6368,8 +6458,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Speaker PR final-head checks and actual main merge",
-        "Delivery of every remaining implementation"
+        "Delivery and main integration of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
         "state": "merged",
@@ -6818,13 +6907,16 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
       }
     },
     {
@@ -7016,8 +7108,8 @@
       }
     }
   ],
-  "next_task": "PR46 final checks/main integration; native overlapping waveform computation and all remaining master tasks",
-  "next": "Complete speaker main integration, actual overlap detection/separation, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "A10 actual overlapping transcript integration and independent service recovery; all remaining master tasks continue",
+  "next": "Complete overlap ASR/alignment/global labels, native backend isolation/recovery/SDK delivery, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

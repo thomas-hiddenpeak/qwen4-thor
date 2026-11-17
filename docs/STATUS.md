@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR46已合主线](evidence/serve-speaker-main-20261118/README.md)：最终
+3f5f68c0两组CI通过，main70413628；rev296交付完成，分离工作
+未混入该PR。[分离实际组件通过](evidence/serve-separator-compute-20261118/README.md)，
+1GPU/1CPU/4输入/47.412秒、28数值+28状态/输出检查全部通过，
+两路真实混音各改善25.523/17.924dB，47次NVML正常/清理完成。
+继续分路转录/重叠输出、独立恢复与全部master；默认rev296保持，
+不能以组件或PR交付结束总目标。
+
 [分离验收器4CPU通过](evidence/serve-separator-validator-20261118/README.md)，
 0.164秒、0GPU，原样混音/丢失一路等负控有效；replay零警告。
 接着已冻结1GPU/1CPU参考/4输入/600秒实际组件短验；默认rev296
