@@ -19,6 +19,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_statistics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_statistics_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_alignment_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_chunk_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_chunk_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_alignment_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_protocol_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_service_test.cpp

@@ -34,5 +34,7 @@ Status AlignedAsrSegmentsJson(const AsrTranscript& transcript,
 Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
                           std::span<const audio::AlignerWord> words,
                           const audio::AlignerTimes& times, bool vtt,
-                          std::string* out);
+                          std::string* out, int64_t origin_ms = 0,
+                          size_t first_cue = 1, bool header = true,
+                          size_t* cue_count = nullptr);
 }  // namespace q4t::server

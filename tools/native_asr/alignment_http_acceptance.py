@@ -107,7 +107,7 @@ def check_words(value, oracle, duration_ms):
                 human_timing_accuracy_assessed=False)
 
 
-def check_subtitles(text, language, duration_ms, *, vtt):
+def check_subtitles(text, language, duration_ms, *, vtt, quality_checker=None):
     require(isinstance(text, str), 'SDK did not return subtitle text')
     if vtt:
         require(text.startswith('WEBVTT\n\n'), 'missing WebVTT header')
@@ -130,7 +130,7 @@ def check_subtitles(text, language, duration_ms, *, vtt):
         cues.append(dict(start_ms=times[0], end_ms=times[1],
                          text=html.unescape('\n'.join(lines[2:]))))
     # Cues retain original punctuation/spacing; don't invent separators.
-    quality = asr.quality(''.join(c['text'] for c in cues), language)
+    quality = (quality_checker or asr.quality)(''.join(c['text'] for c in cues), language)
     return dict(cues=cues, quality=quality, human_timing_accuracy_assessed=False)
 
 
@@ -138,6 +138,9 @@ class Stage(asr.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_NATIVE_WORD_ALIGNMENT_SUBTITLES_SCOPED_RECOVERY'
+
+    def additional_options(self):
+        return []
 
     def __init__(self, plan):
         super().__init__(plan)
@@ -165,6 +168,7 @@ class Stage(asr.Stage):
             '--max-queued-requests', '2', '--asr-model-dir',
             str(self.out/'asr-assets'), '--asr-max-output-tokens', '128',
             '--aligner-model-dir', str(self.out/'aligner-assets')]
+        args += self.additional_options()
         save(self.out/'model-command.json', args)
         self.budget('starts')
         with (self.out/'model.log').open('xb', buffering=0) as log:

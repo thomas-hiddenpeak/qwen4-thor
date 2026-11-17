@@ -14,6 +14,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  const AccessProgramPolicy* access = nullptr,
                                  bool native_embedding = false,
                                  bool native_asr = false,
-                                 bool native_aligner = false);
+                                 bool native_aligner = false,
+                                 bool native_vad = false,
+                                 int vad_max_chunks = 64);
 
 }  // namespace q4t::server

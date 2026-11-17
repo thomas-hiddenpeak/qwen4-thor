@@ -178,8 +178,12 @@ Status AlignedAsrSegmentsJson(const AsrTranscript& transcript,
 Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
                           std::span<const audio::AlignerWord> words,
                           const audio::AlignerTimes& times, bool vtt,
-                          std::string* out) {
+                          std::string* out, int64_t origin_ms, size_t first_cue,
+                          bool header, size_t* cue_count) {
   if (auto s = Validate(text, duration_ms, words, times, out); !s) return s;
+  if (origin_ms < 0 || origin_ms > 600000 - duration_ms || !first_cue ||
+      first_cue > 65536)
+    return Status::Fail("subtitle clip origin or cue identity invalid");
   struct Cue {
     size_t first, end, source_begin, source_end;
   };
@@ -213,17 +217,20 @@ Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
     last.end = words.size();
     last.source_end = text.size();
   }
-  std::string result = vtt ? "WEBVTT\n\n" : "";
+  if (cues.size() > 65537 - first_cue)
+    return Status::Fail("subtitle cue identity budget exceeded");
+  std::string result = vtt && header ? "WEBVTT\n\n" : "";
   for (size_t i = 0; i < cues.size(); ++i) {
     const auto& cue = cues[i];
-    result += std::to_string(i + 1) + '\n' +
-              Stamp(times.fixed_ms[cue.first * 2], vtt) + " --> " +
-              Stamp(times.fixed_ms[cue.end * 2 - 1], vtt) + '\n' +
+    result += std::to_string(i + first_cue) + '\n' +
+              Stamp(origin_ms + times.fixed_ms[cue.first * 2], vtt) + " --> " +
+              Stamp(origin_ms + times.fixed_ms[cue.end * 2 - 1], vtt) + '\n' +
               SubtitleText(text.substr(cue.source_begin,
                                        cue.source_end - cue.source_begin)) +
               "\n\n";
   }
   *out = std::move(result);
+  if (cue_count) *cue_count = cues.size();
   return {};
 }
 }  // namespace q4t::server

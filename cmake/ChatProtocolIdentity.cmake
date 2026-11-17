@@ -3,6 +3,8 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/asr_chunk_output.h
+  src/server/asr_chunk_output.cpp
   include/q4t/audio/vad.h
   src/audio/vad.cpp
   include/q4t/audio/vad_chunks.h
@@ -171,6 +173,7 @@ set(protocol_inputs
   src/server/aligner_service.cpp
   src/server/chat_asr_backend.cpp
   src/server/chat_aligner_backend.cpp
+  src/server/chat_vad_backend.cpp
   src/server/chat_aligner_execution.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu

@@ -97,6 +97,7 @@ void PrintUsage(const char* prog) {
       "[--aligner-model-dir DIR] [--aligner-max-audio-seconds N] "
       "[--aligner-max-context-tokens N] [--aligner-max-words N] "
       "[--aligner-workspace-mib N] "
+      "[--vad-model-dir DIR] [--vad-max-chunks N] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--max-inflight-requests N] [--max-queued-requests N] "
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "

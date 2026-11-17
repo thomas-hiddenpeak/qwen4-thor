@@ -50,7 +50,7 @@ Q4T_TEST(vad_chunks_hard_limits_preserve_tail_and_never_silently_drop_chunks) {
   std::vector<VadChunk> chunks;
   Q4T_CHECK(SplitVadChunks(frames, 2200, options, &chunks));
   const std::vector<VadChunk> expected{
-      {0, 1024, true}, {1024, 2048, true}, {2048, 2200, false}};
+      {0, 1024, true}, {1024, 2040, true}, {2040, 2200, false}};
   Q4T_CHECK(chunks == expected);
   options.max_chunks = 2;
   Q4T_CHECK(!SplitVadChunks(frames, 2200, options, &chunks));
@@ -70,6 +70,26 @@ Q4T_TEST(vad_chunks_threshold_and_zero_silence_have_actual_effect) {
   options.threshold = 0;
   Q4T_CHECK(SplitVadChunks(frames, 2048, options, &chunks));
   Q4T_CHECK(chunks == std::vector<VadChunk>({{0, 2048, false}}));
+  return true;
+}
+
+Q4T_TEST(vad_chunks_short_final_speech_uses_real_context_or_fails_atomically) {
+  auto frames = Frames({.8f, 0, 0, .9f});
+  frames.back().end_sample = 1600;
+  std::vector<VadChunk> chunks;
+  Q4T_CHECK(SplitVadChunks(frames, 1600, Options(), &chunks));
+  const std::vector<VadChunk> expected{{0, 512, false}, {1440, 1600, false}};
+  Q4T_CHECK(chunks == expected);
+  // No synthetic PCM, silent dropping, or partially published first clip.
+  frames = Frames({.9f});
+  frames.back().end_sample = 159;
+  Q4T_CHECK(!SplitVadChunks(frames, 159, Options(), &chunks));
+  Q4T_CHECK(chunks == expected);
+  auto options = Options();
+  options.max_chunk_samples = 160;
+  frames.back().end_sample = 200;
+  Q4T_CHECK(!SplitVadChunks(frames, 200, options, &chunks));
+  Q4T_CHECK(chunks == expected);
   return true;
 }
 

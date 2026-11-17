@@ -152,13 +152,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
                                 home_directory ? home_directory : "");
   if (!opts.web_policy_file.empty()) {
     auto policy = std::make_shared<WebDeploymentPolicy>();
-    const auto status = LoadWebDeploymentPolicy(opts.web_policy_file, policy.get());
+    const auto status =
+        LoadWebDeploymentPolicy(opts.web_policy_file, policy.get());
     if (!status) return status;
     web_policy_ = std::move(policy);
   }
   if (!opts.mcp_policy_file.empty()) {
     auto policy = std::make_shared<McpDeploymentPolicy>();
-    const auto status = LoadMcpDeploymentPolicy(opts.mcp_policy_file, policy.get());
+    const auto status =
+        LoadMcpDeploymentPolicy(opts.mcp_policy_file, policy.get());
     if (!status) return status;
     mcp_policy_ = std::move(policy);
   } else {
@@ -197,11 +199,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   if (!opts.access_program_policy_file.empty()) {
     auto policy = std::make_shared<AccessProgramPolicy>();
-    auto status = LoadAccessProgramPolicy(opts.access_program_policy_file,
-                                          policy.get());
+    auto status =
+        LoadAccessProgramPolicy(opts.access_program_policy_file, policy.get());
     if (status)
       status = BindAccessProgramPolicy(*policy, opts.served_model_name,
-                                        clients_.Snapshot().get());
+                                       clients_.Snapshot().get());
     if (!status) return status;
     access_program_policy_ = std::move(policy);
   }
@@ -248,7 +250,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                             SessionCache::kDiskBudget,
                             incremental && std::strcmp(incremental, "1") == 0);
     if (!cache_status.ok()) {
-      std::fprintf(stderr, "[session-cache] unavailable; generation continues\n");
+      std::fprintf(stderr,
+                   "[session-cache] unavailable; generation continues\n");
     }
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "
@@ -263,11 +266,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
     const auto directory = opts.prefix_cache_dir.empty()
                                ? object_options.directory + "-prompt-cache"
                                : opts.prefix_cache_dir;
-    const Status cache_status =
-        prefix_cache_.Open(directory, 1024, size_t{8} << 30, false,
-                            opts.prefix_cache_dir.empty());
+    const Status cache_status = prefix_cache_.Open(
+        directory, 1024, size_t{8} << 30, false, opts.prefix_cache_dir.empty());
     if (!cache_status.ok()) {
-      std::fprintf(stderr, "[prefix-cache] unavailable; generation continues\n");
+      std::fprintf(stderr,
+                   "[prefix-cache] unavailable; generation continues\n");
     }
     prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
     std::fprintf(stderr,
@@ -352,7 +355,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
         // Host staging + device weights + possible file pages all use Thor
         // DRAM. Keep the optional model's peak visible before capacity choice.
         breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
-            512ULL * 1024 * 1024 + size_t(opts.max_seq) * embedding.bytes;
+                                  512ULL * 1024 * 1024 +
+                                  size_t(opts.max_seq) * embedding.bytes;
       }
       if (!opts.asr_model_dir.empty()) {
         AsrResourcePlan asr;
@@ -361,7 +365,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
-        breq.extra_fixed_bytes += asr.load_peak_bytes +
+        breq.extra_fixed_bytes +=
+            asr.load_peak_bytes +
             uint64_t(opts.max_seq) * asr.request_device_bytes +
             uint64_t(admission.inflight) * asr.request_host_bytes;
       }
@@ -377,6 +382,20 @@ Status ChatServer::Start(const ServerOptions& opts) {
             alignment.load_peak_bytes +
             uint64_t(opts.max_seq) * alignment.request_device_bytes +
             uint64_t(admission.inflight) * alignment.request_host_bytes;
+      }
+      if (!opts.vad_model_dir.empty()) {
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        // File pages, raw bytes and parsed CPU weights share physical RAM.
+        // PCM storage is already included in the ASR per-request allowance.
+        const auto frames =
+            (uint64_t(opts.asr_limits.max_audio_seconds) * 16000 + 511) / 512;
+        breq.extra_fixed_bytes +=
+            3 * audio::kVadFileBytes + (8ULL << 20) +
+            uint64_t(admission.inflight) *
+                (frames * sizeof(audio::VadFrame) +
+                 size_t(opts.vad_max_chunks) * sizeof(audio::VadChunk));
       }
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
@@ -722,12 +741,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_len_ = cfg.max_len;
   model_name_ = opts.served_model_name;
   s = model_catalog_.Configure(model_name_, opts.model_aliases,
-                                static_cast<int64_t>(std::time(nullptr)));
+                               static_cast<int64_t>(std::time(nullptr)));
   if (!s) return s;
   embedding_model_dir_ = opts.embedding_model_dir;
   if (!embedding_model_dir_.empty()) {
     s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
-                                      static_cast<int64_t>(std::time(nullptr)));
+                                     static_cast<int64_t>(std::time(nullptr)));
     if (!s) return s;
   }
   asr_model_dir_ = opts.asr_model_dir;
@@ -736,6 +755,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   aligner_model_dir_ = opts.aligner_model_dir;
   aligner_limits_ = opts.aligner_limits;
   aligner_health_.Configure(!aligner_model_dir_.empty());
+  vad_model_dir_ = opts.vad_model_dir;
+  vad_max_chunks_ = opts.vad_max_chunks;
+  vad_health_.Configure(!vad_model_dir_.empty());
   if (!aligner_model_dir_.empty()) {
     AlignerResourcePlan resources;
     s = PlanAlignerServiceResources(aligner_limits_, &resources);
@@ -855,10 +877,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   client_policy_admin_ = StartClientPolicyAdmin(
       clients_, admission_limits_.inflight, admission_limits_.queued,
       [this](GatewayClientPolicy candidate, uint64_t expected) {
-        return PublishClientPolicy(clients_, seq_waiters_, seq_mu_,
-                                   std::move(candidate), expected,
-                                   admission_limits_.inflight,
-                                   admission_limits_.queued);
+        return PublishClientPolicy(
+            clients_, seq_waiters_, seq_mu_, std::move(candidate), expected,
+            admission_limits_.inflight, admission_limits_.queued);
       });
   background_options_.max_input_bytes =
       static_cast<size_t>(opts.background_max_input_mib) << 20;

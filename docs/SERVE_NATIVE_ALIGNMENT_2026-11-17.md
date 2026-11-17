@@ -230,3 +230,26 @@ max(threshold-.15,.01)，短静音保留到silence_duration满足。
 
 [VAD资产/分段14项CPU通过](evidence/serve-vad-assets-chunks-20261117/README.md)，
 0.071秒、0GPU；继续独立健康、多段ASR和所有服务/交付任务。
+
+## VAD运行时与跨段输出开发组
+
+16项CPU/180秒、0GPU；清单固定在
+`.q4t-work/serve-audio-aligner-20261117/vad-runtime-01/plan.json`。
+独立CPU健康与资产恢复，阈值/静音/前缀真实切片；共享整请求的
+RPM、TPM、输出预算和取消截止。全局word/segment时间从实际切片
+样本偏移得到，seek为其10ms特征帧索引；段落统计/IDs保持原观察，
+仅总显示文本跨非空片段插入空格，不伪造对应token概率。
+字幕只出现一个VTT头且cue全局递增。短末帧可回看紧邻真实样本至
+至少10ms，不重叠已有片段；无法满足时原子失败，不补造PCM。
+VAD判定全静音输出空结果/零模型token并仍计一次RPM；原生ASR
+整clip无语音后验属于不同观测，不能相互替代。业务短验随后冻结，
+AL04完整服务/恢复/交付与全部master继续。
+
+[运行时CPU组通过](evidence/serve-vad-runtime-cpu-20261117/README.md)：
+16C++与3验收器用例，零警告候选engine-03。下一组固定1次启动、
+12创建、600秒，严格连续GPU租约。普通转录与两条核心Chat保护、
+VAD坏资产/恢复、两段中文JSON/流式/VTT、自然静音/阈值1、四段
+超过最大3段、三段共享24输出上限、首delta后取消；源码和原PCM
+固定。新音频仅重复真实官方PCM并插入明确零PCM间隔，不生成假
+转录；目标每段原中文精确、全局时间合法、无部分成功和清理完整。
+不是人工时间精度或全部语言质量验收，通过后继续AL04和全部master。

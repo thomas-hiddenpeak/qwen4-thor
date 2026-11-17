@@ -22,8 +22,12 @@ ObjectReply ChatServer::RunNativeAsr(
     int fd, const AsrRequest& request, const audio::AsrFeatures& features,
     const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
-    ActualUsageCounter& usage, AsrTranscript* transcript) {
+    ActualUsageCounter& usage, AsrTranscript* transcript,
+    std::string_view leading_text) {
   auto* http = detail::HttpResponseContext::Current(fd);
+  const auto previous = usage.Total();
+  if (!previous || !http || !transcript)
+    return Error(500, "asr_usage_invalid", "ASR prior usage unavailable");
   const auto cancelled = [&] {
     if (stop_requested_.load())
       control->Cancel(RequestControl::State::kShutdown);
@@ -61,8 +65,8 @@ ObjectReply ChatServer::RunNativeAsr(
   ScopeExit accounting([&] {
     usage.Observe({committed, generated});
     usage.EndStep();
-    rate.StartPrompt(committed);
-    rate.Completion(generated);
+    rate.StartPrompt(previous->input + committed);
+    rate.Completion(previous->output + generated);
     metrics_.prompt_tokens_total.fetch_add(committed);
     metrics_.generation_tokens_total.fetch_add(generated);
     FreeSeqId(slot);
@@ -172,7 +176,7 @@ ObjectReply ChatServer::RunNativeAsr(
     // has its trained rounded output, not an invented full 13-token chunk.
     committed = std::min<size_t>(prompt.audio_tokens, size_t(i + 1) * 13);
     usage.Observe({committed, generated});
-    rate.StartPrompt(committed);
+    rate.StartPrompt(previous->input + committed);
   }
   for (int i = 0; i < C::kEncoderLayers; ++i) {
     reply =
@@ -198,7 +202,7 @@ ObjectReply ChatServer::RunNativeAsr(
     });
     if (!result.ok()) return result;
     committed = input_total;
-    rate.StartPrompt(committed);
+    rate.StartPrompt(previous->input + committed);
     usage.Observe({committed, generated});
     for (int layer = 0; layer < C::kDecoderLayers; ++layer) {
       result =
@@ -247,6 +251,7 @@ ObjectReply ChatServer::RunNativeAsr(
   const auto seed = (uint64_t(entropy()) << 32) ^ entropy();
   AsrSegmentTemperature segment_temperature(request.temperature);
   const detail::WriteOptions write{control->deadline(), control.get()};
+  bool first_delta = true;
   const auto emit = [&](const AsrTextDelta& delta) -> bool {
     if (!request.stream || delta.text.empty()) return !cancelled();
     if (*http->State() == detail::ResponseState::kUnsent) {
@@ -254,9 +259,12 @@ ObjectReply ChatServer::RunNativeAsr(
         return false;
       http->StartHeartbeats(control);
     }
+    auto outgoing = delta;
+    if (first_delta) outgoing.text.insert(0, leading_text);
+    first_delta = false;
     return detail::WriteAll(fd,
                             "event: transcript.text.delta\r\ndata: " +
-                                transcript->DeltaJson(delta) + "\r\n\r\n",
+                                transcript->DeltaJson(outgoing) + "\r\n\r\n",
                             write);
   };
   for (unsigned attempt = 0;; ++attempt) {
@@ -283,7 +291,7 @@ ObjectReply ChatServer::RunNativeAsr(
         return failed(AsrFailure::kCompute, "ASR token selection failed");
       temperature.Observe(token.raw_logprob);
       ++generated;
-      rate.Completion(generated);
+      rate.Completion(previous->output + generated);
       usage.Observe({committed, generated});
       if (token.token == C::kEos || token.token == C::kImEnd) {
         eos = true;
@@ -317,9 +325,9 @@ ObjectReply ChatServer::RunNativeAsr(
     // every new decoder input and generated token remains charged, with the
     // original RPM admission, output ceiling and request deadline.
     if (const auto* limits = http->Client().Limits();
-        limits &&
-        (prompt.tokens.size() > limits->max_prompt_tokens ||
-         committed > limits->max_prompt_tokens - prompt.tokens.size()))
+        limits && (prompt.tokens.size() > limits->max_prompt_tokens ||
+                   previous->input + committed >
+                       limits->max_prompt_tokens - prompt.tokens.size()))
       return Error(400, "client_prompt_limit_exceeded",
                    "ASR confidence retry exceeds client input limit");
     const auto reserved =

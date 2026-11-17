@@ -1,0 +1,8 @@
+test_combined_actual_offsets_and_negative_controls (tools.native_asr.test_vad_http.VadHttpOracle.test_combined_actual_offsets_and_negative_controls) ... ok
+test_silence_rejects_fabricated_model_work_or_text (tools.native_asr.test_vad_http.VadHttpOracle.test_silence_rejects_fabricated_model_work_or_text) ... ok
+test_stream_requires_every_separator_probability_and_one_terminal (tools.native_asr.test_vad_http.VadHttpOracle.test_stream_requires_every_separator_probability_and_one_terminal) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+OK

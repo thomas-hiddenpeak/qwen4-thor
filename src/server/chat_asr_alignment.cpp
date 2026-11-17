@@ -12,7 +12,8 @@ ObjectReply ChatServer::FormatAlignedTranscription(
     int64_t duration_ms, const AsrTranscript& transcript,
     const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
-    ActualUsageCounter& usage, std::string* response) {
+    ActualUsageCounter& usage, std::string* response, int64_t origin_ms,
+    size_t first_cue, bool header, size_t* cue_count) {
   using object_detail::Error;
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto cancelled = [&] {
@@ -125,7 +126,8 @@ ObjectReply ChatServer::FormatAlignedTranscription(
                                  duration_ms, words, times, response);
   } else {
     status = AlignedAsrSubtitle(transcript.Text(), duration_ms, words, times,
-                                request.format == AsrFormat::kVtt, response);
+                                request.format == AsrFormat::kVtt, response,
+                                origin_ms, first_cue, header, cue_count);
   }
   if (!status) return Error(502, "alignment_output_invalid", status.message());
   return {};

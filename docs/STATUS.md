@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[VAD运行时16项CPU与3项验收器通过](evidence/serve-vad-runtime-cpu-20261117/README.md)：
+跨段实际时间/字幕/流式/预算/静音、失败禁止部分发布通过；独立
+CUDA候选零警告，未发布。固定下一组1启动/12创建/600秒，验证
+真实切片与双SDK、VAD故障隔离/同PID恢复、阈值/段数/共享输出及
+取消，随后服务/恢复/交付和全部master继续；默认rev276不变。
+
 [VAD固定资产/真实分段14项CPU通过](evidence/serve-vad-assets-chunks-20261117/README.md)
 （0.071秒、0GPU）：实际权重隔离与恢复、阈值/静音/前缀、无重叠
 边界/尾段/段数/取消及原I/O保护。继续独立健康和真实多段ASR

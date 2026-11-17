@@ -122,7 +122,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
       return Status::Fail("embedding-model-dir must be an absolute asset path");
     if (IsServedModel(model::EmbeddingConfig::kModelId,
                       options.served_model_name, options.model_aliases))
-      return Status::Fail("embedding model name conflicts with Chat model names");
+      return Status::Fail(
+          "embedding model name conflicts with Chat model names");
   }
   if (!options.asr_limits.Valid())
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
@@ -139,9 +140,17 @@ Status ValidateServerOptions(const ServerOptions& options) {
     // Reuse the canonical absolute asset-path grammar; no filesystem reads.
     if (!model::ValidEmbeddingAssetDirectory(options.asr_model_dir))
       return Status::Fail("asr-model-dir must be an absolute asset path");
-    if (IsServedModel(audio::AsrConfig::kModelId,
-                     options.served_model_name, options.model_aliases))
+    if (IsServedModel(audio::AsrConfig::kModelId, options.served_model_name,
+                      options.model_aliases))
       return Status::Fail("ASR model name conflicts with Chat model names");
+  }
+  if (options.vad_max_chunks < 1 || options.vad_max_chunks > 256)
+    return Status::Fail("vad-max-chunks must be in [1,256]");
+  if (!options.vad_model_dir.empty()) {
+    if (options.asr_model_dir.empty())
+      return Status::Fail("vad-model-dir requires asr-model-dir");
+    if (!model::ValidEmbeddingAssetDirectory(options.vad_model_dir))
+      return Status::Fail("vad-model-dir must be an absolute asset path");
   }
   if (options.file_input_policy_file.size() > 4096 ||
       options.file_input_policy_file.find('\0') != std::string::npos)
@@ -258,6 +267,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.asr_limits.max_output_tokens;
     if (key == "--asr-workspace-mib")
       integer = &parsed.asr_limits.workspace_mib;
+    if (key == "--vad-max-chunks") integer = &parsed.vad_max_chunks;
     if (key == "--aligner-max-audio-seconds")
       integer = &parsed.aligner_limits.max_audio_seconds;
     if (key == "--aligner-max-context-tokens")
@@ -305,12 +315,13 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
-        key != "--aligner-model-dir" && key != "--mem-fraction" &&
-        key != "--moe-trace-dir" && key != "--moe-trace-workload" &&
-        key != "--moe-hot-list" && key != "--startup-plan" &&
-        key != "--mtp-subset-head" && key != "--seq-capacities" &&
-        key != "--session-cache-dir" && key != "--prefix-cache-dir" &&
-        key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
+        key != "--aligner-model-dir" && key != "--vad-model-dir" &&
+        key != "--mem-fraction" && key != "--moe-trace-dir" &&
+        key != "--moe-trace-workload" && key != "--moe-hot-list" &&
+        key != "--startup-plan" && key != "--mtp-subset-head" &&
+        key != "--seq-capacities" && key != "--session-cache-dir" &&
+        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
+        key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
         key != "--web-policy-file" && key != "--served-model-name" &&
@@ -386,6 +397,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.asr_model_dir = value;
     } else if (key == "--aligner-model-dir") {
       parsed.aligner_model_dir = value;
+    } else if (key == "--vad-model-dir") {
+      parsed.vad_model_dir = value;
     } else if (key == "--served-model-name") {
       parsed.served_model_name = value;
     } else if (key == "--model-alias") {

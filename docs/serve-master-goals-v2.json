@@ -2206,7 +2206,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement independent VAD assets and actual bounded chunking; complete service/native ingress/recovery and all remaining A10/master tasks.",
+      "next": "Verify actual VAD/multiclip HTTP, deliver native alignment/segment/VAD service and recovery, then all remaining audio/multimodal and master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -2807,6 +2807,22 @@
         "seconds": 100.61144385300577,
         "original_failure_preserved": true,
         "remaining": "Actual VAD/diarization, full service composition and delivery; all other master tasks"
+      },
+      "vad_runtime_20261117": {
+        "state": "targeted_cpu_passed_http_pending_not_delivered",
+        "evidence": "evidence/serve-vad-runtime-cpu-20261117/README.md",
+        "tests": {
+          "cpp": 16,
+          "driver": 3,
+          "gpu": 0
+        },
+        "candidate": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71",
+        "http_frozen": {
+          "starts": 1,
+          "creates": 12,
+          "seconds": 600
+        },
+        "next": "Real multiclip/SDK/isolation/shared-budget business, then service/ingress/recovery/delivery; complete all remaining A10/master tasks."
       }
     },
     {

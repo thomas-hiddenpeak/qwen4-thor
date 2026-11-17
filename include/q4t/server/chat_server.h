@@ -40,6 +40,7 @@
 #include "q4t/model/embedding_model.h"
 #include "q4t/audio/asr_model.h"
 #include "q4t/audio/aligner_model.h"
+#include "q4t/audio/vad_chunks.h"
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/asr_service.h"
 #include "q4t/server/asr_request.h"
@@ -213,6 +214,13 @@ class ChatServer {
   ObjectReply EnsureNativeAligner(bool weights, const BinaryAccess& access,
                                   RequestDiagnostics* diagnostic = nullptr);
   std::string NativeAlignerHealthJson() const;
+  std::string NativeVadHealthJson() const;
+  ObjectReply EnsureNativeVad(const BinaryAccess& access,
+                              std::shared_ptr<const audio::SileroVad>* out);
+  ObjectReply PrepareVadChunks(const AsrRequest& request,
+                                std::span<const float> pcm,
+                                const BinaryAccess& access,
+                                std::vector<audio::VadChunk>* out);
   ObjectReply RunNativeAligner(int fd, const audio::AsrFeatures& features,
                                const AlignerPrompt& prompt,
                                const std::shared_ptr<RequestControl>& control,
@@ -225,14 +233,17 @@ class ChatServer {
       int64_t duration_ms, const AsrTranscript& transcript,
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
-      ActualUsageCounter& usage, std::string* response);
+      ActualUsageCounter& usage, std::string* response,
+      int64_t origin_ms = 0, size_t first_cue = 1, bool header = true,
+      size_t* cue_count = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
   ObjectReply RunNativeAsr(
       int fd, const AsrRequest& request, const audio::AsrFeatures& features,
       const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
-      ActualUsageCounter& usage, AsrTranscript* transcript);
+      ActualUsageCounter& usage, AsrTranscript* transcript,
+      std::string_view leading_text = {});
   ObjectReply EncodeVectorDocument(std::string_view text,
                                     const VectorSearchControl& control,
                                     VectorEncodedText* output);
@@ -540,6 +551,11 @@ class ChatServer {
   std::unique_ptr<text::Tokenizer> aligner_tok_;
   uint8_t* d_aligner_weights_ = nullptr;
   audio::AlignerDeviceWeights aligner_weights_;
+  std::string vad_model_dir_;
+  int vad_max_chunks_ = 64;
+  AsrHealth vad_health_;
+  std::mutex vad_mu_;
+  std::shared_ptr<const audio::SileroVad> vad_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;

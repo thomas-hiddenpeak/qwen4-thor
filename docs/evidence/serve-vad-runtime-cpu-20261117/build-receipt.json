@@ -1,0 +1,30 @@
+[
+  {
+    "name": "host-build",
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-file-search-20261112/host",
+      "--target",
+      "q4t_host_tests",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 219.81647473573685
+  },
+  {
+    "name": "engine-build",
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-custom-tools-20261108/engine-build",
+      "--target",
+      "q4t",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 145.7725866562687
+  }
+]

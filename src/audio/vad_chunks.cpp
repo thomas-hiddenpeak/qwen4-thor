@@ -10,7 +10,7 @@ Status SplitVadChunks(std::span<const VadFrame> frames, size_t total_samples,
                       std::vector<VadChunk>* out,
                       const std::function<bool()>& cancelled) {
   if (!out || !total_samples || total_samples > options.max_samples ||
-      options.max_samples > kVadMaxSamples || !options.max_chunk_samples ||
+      options.max_samples > kVadMaxSamples || options.max_chunk_samples < 160 ||
       options.max_chunk_samples > options.max_samples || !options.max_chunks ||
       options.max_chunks > 256 || !std::isfinite(options.threshold) ||
       options.threshold < 0 || options.threshold > 1 ||
@@ -28,14 +28,25 @@ Status SplitVadChunks(std::span<const VadFrame> frames, size_t total_samples,
   size_t previous = 0;
   const auto publish = [&](size_t begin, size_t end) -> Status {
     begin -= std::min(begin, padding);
-    if (!chunks.empty()) begin = std::max(begin, chunks.back().end_sample);
+    const auto lower = chunks.empty() ? 0 : chunks.back().end_sample;
+    begin = std::max(begin, lower);
+    // A final, partial VAD frame can contain fewer than the ASR extractor's
+    // 160 real samples. Include the immediately preceding real context,
+    // without duplicating a previously emitted clip or inventing padding.
+    if (end - begin < 160)
+      begin = std::max(lower, end - std::min(end, size_t{160}));
     while (begin < end) {
       if (cancelled && cancelled())
         return Status::Fail("VAD chunking cancelled");
       if (chunks.size() == options.max_chunks)
         return Status::Fail("VAD chunk count exceeded");
-      const auto next =
-          begin + std::min(end - begin, options.max_chunk_samples);
+      auto next = begin + std::min(end - begin, options.max_chunk_samples);
+      // The ASR feature extractor needs at least one real 10ms hop. Avoid
+      // manufacturing a too-short trailing clip when forcing a long split.
+      if (next < end && end - next < 160 && next - begin > 160)
+        next = end - 160;
+      if (next - begin < 160 || next - begin > options.max_chunk_samples)
+        return Status::Fail("VAD speech clip cannot fit minimum real samples");
       chunks.push_back({begin, next, next < end});
       begin = next;
     }

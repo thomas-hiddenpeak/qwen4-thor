@@ -29,7 +29,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  uint64_t media_attention_shared_bytes,
                                  const AccessProgramPolicy* access,
                                  bool native_embedding, bool native_asr,
-                                 bool native_aligner) {
+                                 bool native_aligner, bool native_vad,
+                                 int vad_max_chunks) {
   const bool constrained = kStructuredDecodingAvailable;
 #ifdef Q4T_HAVE_GSTREAMER_HEADERS
   const bool video_decoder = true;
@@ -77,7 +78,14 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("compression_ratio":"isolated_zlib_level6",)"
          R"("temperature":"fixed_per_attempt","adaptive_attempts_max":6,)"
          R"("retry_input_output":"cumulative_original_request_budget"},)"
-         R"("remaining_native_work":["diarization","vad_chunking"]})" +
+         R"("vad":{"configured":)" +
+         (native_vad ? "true" : "false") +
+         R"(,"backend":"native_silero_cpu","max_chunks":)" +
+         std::to_string(vad_max_chunks) +
+         R"(,"frame_samples":512,"sample_rate":16000,)"
+         R"("core_readiness_dependency":false},)"
+         R"("chunking_strategy":["auto","server_vad"],)"
+         R"("remaining_native_work":["diarization"]})" +
          R"(,"models":{"endpoint":"/v1/models","detail":true,)"
          R"("aliases":"explicit_cli","max_aliases":32,)"
          R"("created":"registration_time","loaded_base_delete":403},)"
