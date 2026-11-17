@@ -4,6 +4,11 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/overlapping_diarization_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_overlapping_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_resample.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/overlapping_output.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_config_test.cpp

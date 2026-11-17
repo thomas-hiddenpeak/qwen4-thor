@@ -96,12 +96,14 @@ Status PlanSpeakerWindows(std::span<const VadChunk> chunks,
   return {};
 }
 
-Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
-                             std::span<const SpeakerEmbedding> embeddings,
-                             std::span<const SpeakerReference> references,
-                             const SpeakerClusteringOptions& options,
-                             std::vector<SpeakerTurn>* out,
-                             const std::function<bool()>& cancelled) {
+namespace {
+Status ClusterWindows(std::span<const SpeakerWindow> windows,
+                      std::span<const SpeakerEmbedding> embeddings,
+                      std::span<const SpeakerReference> references,
+                      const SpeakerClusteringOptions& options,
+                      std::vector<SpeakerTurn>* out,
+                      const std::function<bool()>& cancelled,
+                      bool overlapping) {
   if (!out || windows.size() != embeddings.size() || !options.max_windows ||
       options.max_windows > 1024 || windows.size() > options.max_windows ||
       !options.max_speakers || options.max_speakers > 64 ||
@@ -135,7 +137,7 @@ Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
         w.end_sample - w.begin_sample > 480000 ||
         !Normalize(embeddings[i], &vectors[i]))
       return Status::Fail("speaker acoustic window or embedding invalid");
-    previous = w.core_end_sample;
+    previous = overlapping ? w.core_begin_sample : w.core_end_sample;
   }
   std::vector<float> distances(count * count);
   for (size_t i = 0; i < count; ++i) {
@@ -232,7 +234,7 @@ Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
     if (cancelled && cancelled()) return Interrupted();
     const auto& label = labels[root(i)];
     const auto& window = windows[i];
-    if (!result.empty() && result.back().speaker == label &&
+    if (!overlapping && !result.empty() && result.back().speaker == label &&
         result.back().end_sample == window.core_begin_sample)
       result.back().end_sample = window.core_end_sample;
     else
@@ -242,5 +244,25 @@ Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
   if (cancelled && cancelled()) return Interrupted();
   *out = std::move(result);
   return {};
+}
+}  // namespace
+
+Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
+                             std::span<const SpeakerEmbedding> embeddings,
+                             std::span<const SpeakerReference> references,
+                             const SpeakerClusteringOptions& options,
+                             std::vector<SpeakerTurn>* out,
+                             const std::function<bool()>& cancelled) {
+  return ClusterWindows(windows, embeddings, references, options, out,
+                        cancelled, false);
+}
+Status LabelOverlappingSpeakerWindows(
+    std::span<const SpeakerWindow> windows,
+    std::span<const SpeakerEmbedding> embeddings,
+    std::span<const SpeakerReference> references,
+    const SpeakerClusteringOptions& options, std::vector<SpeakerTurn>* out,
+    const std::function<bool()>& cancelled) {
+  return ClusterWindows(windows, embeddings, references, options, out,
+                        cancelled, true);
 }
 }  // namespace q4t::audio

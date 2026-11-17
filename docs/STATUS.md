@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[重叠音频/标签/输出20CPU通过](evidence/serve-overlapping-tracks-cpu-20261118/README.md)，
+0.064秒、0GPU/HTTP；精确重采样、跨通道身份、真实交叠时间与
+watermark/JSON/SSE/usage及旧聚类保护通过，host零警告。接着独立
+资源/健康与实际混音ASR接线、SDK/恢复交付及全部master；默认
+rev296保持，不把CPU或组件结果冒充完整接口已交付。
+
+正在接入OS03重采样、跨路声纹与重叠输出，固定20CPU/180秒、
+0GPU/HTTP；旧单路聚类保留，原时间与奇数长度不漂移，所有待处理
+路的时间watermark约束SSE提交。随后独立健康/预算和实际业务
+接线，默认rev296保持，全部master继续。
+
 [PR46已合主线](evidence/serve-speaker-main-20261118/README.md)：最终
 3f5f68c0两组CI通过，main70413628；rev296交付完成，分离工作
 未混入该PR。[分离实际组件通过](evidence/serve-separator-compute-20261118/README.md)，

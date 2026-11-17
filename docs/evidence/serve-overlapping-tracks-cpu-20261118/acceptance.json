@@ -1,0 +1,10 @@
+{
+  "status": "ACCEPT_OVERLAPPING_TRACK_CONTRACT_CPU",
+  "tests": 20,
+  "seconds": 0.0637899599969387,
+  "gpu_loads": 0,
+  "http_requests": 0,
+  "default_rev296_unchanged": true,
+  "full_business_delivered": false,
+  "archive_sha256": "3f0ab74eeda44b0473178e65ece8a19b02d8c0b45d6a18eae22b15c4ed5e7259"
+}
