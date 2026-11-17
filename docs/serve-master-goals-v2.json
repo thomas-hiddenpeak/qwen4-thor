@@ -79,7 +79,6 @@
       },
       "remaining_required": [
         "Chat frozen-reference audio/modalities and actual backend execution",
-        "Actual main integration of native web field delivery",
         "Remaining default/null, nested message and response projection parity"
       ],
       "chat_style_parity_20261116": {
@@ -451,9 +450,7 @@
         "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
       },
       "development_status": "官方schema能力、工具/媒体/缓存与Stop组合实现并针对性验证，rev224实际可回退交付；本组实际合main待完成，不以阶段结束代替总目标。",
-      "remaining_required": [
-        "Actual main integration of accepted Stop combination delivery"
-      ],
+      "remaining_required": [],
       "current_audit": {
         "date": "2026-11-16",
         "report": "SERVE_SURFACE_REAUDIT_2026-11-16.md",
@@ -2178,14 +2175,16 @@
         {
           "source": "src/server/server_options.cpp / session_state.cpp",
           "issue": "Media state caching still needs actual image/video identity and multimodal RoPE state/resume; target-only text snapshots do not implement this. Keep as required multimodal combination work, never close by rejection or documentation.",
-          "state": "open"
+          "state": "resolved_delivered_main_merged",
+          "resolution": "Actual media fingerprint, multimodal state/chunk continuation and private restore delivered rev214, merged PR38; original failures retained.",
+          "evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
         },
         {
           "source": "src/server/responses_plan.cpp / responses_execution.cpp",
           "issue": "prompt_cache_key and prompt_cache_retention are retained in envelope but not connected to native cache execution; actual key/retention/usage wiring remains required, not completed by request acceptance.",
-          "state": "text_path_resolved_media_path_open",
-          "resolution": "A07.6 delivered actual text key/retention/state/usage. A10 still requires actual media fingerprint and state resume; no media completion claim.",
-          "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
+          "state": "resolved_delivered_main_merged",
+          "resolution": "Actual media fingerprint, multimodal state/chunk continuation and private restore delivered rev214, merged PR38; original failures retained.",
+          "evidence": "evidence/serve-media-state-cache-delivery-20261117/README.md"
         },
         {
           "source": "evidence/serve-embeddings-business-20261111/retrieval-observation.json",
@@ -2344,8 +2343,9 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Remaining affine/format combinations",
-        "Audio/Realtime/image-generation/video-generation model assets and actual backend execution"
+        "Non-unit homogeneous/perspective video transforms, multiple tracks and remaining format combinations",
+        "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
+        "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes"
       ],
       "media_state_cache_plan": {
         "state": "cpu_pass_business_pending",
@@ -2403,12 +2403,15 @@
         "detail_cpu_evidence": "docs/evidence/serve-video-detail-cpu-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "business_composition_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
         "original_model_quality_failures_retained": true,
-        "pull_request": 41
+        "pull_request": 41,
+        "revision": 244,
+        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       }
     },
     {
@@ -3005,7 +3008,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native web rev234 actual main integration and required broader web-provider coverage",
+        "Required broader native web-provider coverage; configured-site implementation merged in PR40",
         "Actual configured cloud account permission/pagination/content acceptance",
         "Remaining builtin/tool VM file/video and typed-output combinations"
       ],
@@ -3354,12 +3357,15 @@
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "business_composition_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
         "original_model_quality_failures_retained": true,
-        "pull_request": 41
+        "pull_request": 41,
+        "revision": 244,
+        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       }
     },
     {
@@ -4205,7 +4211,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev234 or then-current default; do not stop camera/jtop without pending maintenance handoff."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev244 or then-current default; do not stop camera/jtop without pending maintenance handoff."
     },
     {
       "id": "R08",
@@ -4811,13 +4817,36 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 182,
-        "manifest_sha256": "430e7985f278ce84a25c99475a315e236fe0eb62201dd4b503a8cc2069805784",
-        "generation_sha256": "a262b60ea0efcab3c6ae09f1620e7092a1aa2a754951d974e7c998f5c8067020",
-        "engine_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
-        "evidence": "evidence/serve-root-delivery-20261116/README.md",
+        "status": "ACCEPT_NATIVE_VIDEO_AFFINE_DETAIL_DELIVERY",
+        "revision": 244,
+        "current": {
+          "engine_binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+          "engine_release_sha256": "f11028ac6da7265510716e96642eb1ee67382977def50856fb7d2b846e573842",
+          "generation_sha256": "d548cf475ccf93d1ddffb794a8845c8524ffc80889bf7e426eab0e369da28bf0",
+          "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/package-01/bundle",
+          "service_acceptance_sha256": "25dc0ef07d374626254ce9cdfede90c00c2d538d5e66cccb2f70c5724b5a6f97",
+          "service_release_sha256": "21110f3d55e7063d473b9ce611a15a7e0ec98d7d2cb4406c23c4ff1abafc7c00"
+        },
+        "commands": 19,
+        "seconds": 284.67985774809495,
         "state": "STOPPED",
-        "main_integration_pending": true
+        "new_gpu_starts": 0,
+        "manual_root": "f329ce2277dd5d7fdc70e8716bc5068abf97287e40f744dcdf20796aad9121ad",
+        "automatic_payload": "9535ff875171e04ea4c1c011ae1b2558e26204805b9ad57280e44afb1d1cdd07",
+        "candidate_whole_package_gpu_run": false,
+        "composed_change": "Exact-engine affine video/high-detail, primary/light and retained controls; controller/client/native helpers unchanged; explicit extension preserves budgets and forbids capability loss; STOPPED publication and actual root rollback verified",
+        "older_engine_fallback": false,
+        "prior_rev234_preserved": true,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "deleted_files": 0,
+        "files": 74,
+        "secret_scan_matches": 0,
+        "archive_sha256": "a436f53bcadd2817570f3303f18422c2c275f037571d65e6cc79cb3a77bcda82",
+        "main_integration_pending": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -4984,7 +5013,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Native web rev234 final-head checks and actual main merge",
+        "PR41 final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -5295,12 +5324,15 @@
         "evidence": "docs/evidence/serve-pr40-merged-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "business_composition_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
         "original_model_quality_failures_retained": true,
-        "pull_request": 41
+        "pull_request": 41,
+        "revision": 244,
+        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       }
     },
     {
@@ -5467,17 +5499,20 @@
         "evidence": "evidence/serve-web-search-day-handoff-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "business_composition_accepted_delivery_pending",
+        "state": "delivered_main_pending",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
         "original_model_quality_failures_retained": true,
-        "pull_request": 41
+        "pull_request": 41,
+        "revision": 244,
+        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
       }
     }
   ],
-  "next_task": "A10",
-  "next": "仿射/显式视频细节真实主轻及保留组合通过；完成STOPPED可回退交付和PR41实际合main，继续透视/多轨/其他后端及全部master任务。",
+  "next_task": "Q02",
+  "next": "Freeze rev244 native day handoff, complete PR41 final-head checks and actual main merge; continue every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

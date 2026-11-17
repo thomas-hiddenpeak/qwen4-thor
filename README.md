@@ -120,9 +120,9 @@ token预算不足而失败，canonical分词长度不构成生成上限。
   `video_frames`及原MP4/WebM文件接入。直接serve使用
   `--allow-media --max-seq 1`；当前托管包已启用，文本保留MTP，视觉请求
   走目标模型普通解码。实际视频、工具、冻结历史和自动恢复已验；
-  正交旋转/镜像与像素比例已校正，真实显示宽高随来源传递；其余
-  格式和缓存组合继续补齐，硬解码和视觉并发未扩展。
-  [当前交付与回退](docs/evidence/serve-video-geometry-delivery-20261116/README.md)，身份见STATUS
+  正交旋转/镜像、像素比例及有界仿射已校正，显式视频high细节可用；
+  图像/视频私有缓存已交付，其余格式/后端继续补齐，硬解码和视觉并发未扩展。
+  [当前交付与回退](docs/evidence/serve-video-affine-delivery-20261117/README.md)，身份见STATUS
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
   默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
   65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS
@@ -282,7 +282,12 @@ BSD许可，以系统`/usr/share/doc/*/copyright`为准。统一文件输入、�
 实际工具VP9续答、MCP资源和删除后的冻结回放通过真实模型短验。
 [可回退发行](docs/evidence/serve-video-geometry-delivery-20261116/README.md)
 保留媒体主轻及整树版本恢复；正交旋转/镜像和非方形像素已有原件
-JSON/SSE与恢复后的冻结视频验收。任意仿射等其余格式继续实现。
+JSON/SSE与恢复后的冻结视频验收。rev244补齐有界缩放、斜切及非直角
+旋转和v4冻结历史。视频文件或帧入口可显式选择`detail=high`，每帧
+至少65536像素，预算不足拒绝；auto/low保持原参考数值。原小尺寸
+默认模式的质量失败仍保留，不能保证所有视频都能正确回答。
+[本次交付](docs/evidence/serve-video-affine-delivery-20261117/README.md)
+覆盖真实JSON/SSE、主轻及保留控制组合；一般透视、多轨和其余格式继续实现。
 详见[原生视频计划](docs/SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
