@@ -1,9 +1,10 @@
 # 原生音频时间戳与字幕实施
 
 本项补齐A10转录的真实时间戳和字幕，以及A09/A12的相应服务组合。
-rev276已交付文字转录，`verbose_json`、SRT/VTT、实际对齐仍是
-待实现能力，不能以统一拒绝或均分时间替代。说话人/VAD、Chat音频、
-语音输出及Realtime继续保留在音频总计划，不因本子项关闭。
+rev286已可回退交付`verbose_json`、SRT/VTT、实际对齐/完整segment
+和VAD切片，见[交付记录](evidence/serve-audio-auxiliary-delivery-20261118/README.md)。
+说话人、Chat音频、语音输出及Realtime继续保留在音频总计划；
+日/韩真实业务和人工时间精度尚未验收，不因本次交付取消剩余项。
 
 ## 固定实现依据
 

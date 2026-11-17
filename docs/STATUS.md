@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev286对齐/VAD可回退交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)
+已完成，19项STOPPED命令/275.847秒，0新增GPU。实际整根
+回退与再前进、预算/历史保持通过；前驱rev276与day保留。版本归档
+原30秒超时保留，同一计划续办成功且0删除。继续PR45合main、说话人/
+Chat音频/合成/Realtime及全部master任务；本阶段不结束总目标。
+
 [原生对齐/VAD接入与整包恢复通过](evidence/serve-audio-auxiliary-service-20261118/README.md)：
 四组实际服务验收完成，含原失败共6次计费尝试、5次模型加载、
 19创建/1探针/315.834秒，305次NVML正常，清理完成。双SDK、
@@ -205,17 +211,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev276；服务包 `4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc` |
-| Generation | `ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc` |
-| 引擎 | `b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7` |
-| 引擎发布记录 | `f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7` |
+| 发布 | rev286；服务包 `93f00500c4c985c24ce771fe2d3358516c724a10d653b2a3161d83fe870405b0` |
+| Generation | `e889d01f165dfe11f8565a95a3570a8e82647faee5036cfc5058a9e78aad5752` |
+| 引擎 | `bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2` |
+| 引擎发布记录 | `3ad60ce9b29b6c5dfc00c4b0cc1a530fb1a9926292ca96bb28d092d2a677d69e` |
 | Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
 | 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21`；ASR/原周期/原生入口已验，前驱rev266另保留 |
-| 自动payload回退 | 已验旧控制/当前ASR引擎包 `055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d`；不是独立旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR模型按部署显式启用，codec按请求隔离加载，失效不拖停健康Chat |
+| 人工整包回退 | 现代保留根 `deef6d754bb4ce2872f5eeb3a385fb38758f5bf8bb57e028291939dbb555d4c5`；对齐/VAD/原周期/原生入口已验，前驱rev276另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `afe22b3b3149043c7844e8774b16b4bed97395454806116bfea589c6fc09a934`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。

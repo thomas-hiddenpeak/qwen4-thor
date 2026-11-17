@@ -585,3 +585,5 @@
 - [rev260客户端回执可回退交付](evidence/serve-client-receipts-delivery-20261117/README.md)：审核信息/恢复终态及发布意图容量的实际修复。
 
 - [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)：真实转录、独立资源和可回退服务恢复。
+
+- [rev286对齐/VAD交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)：实际时间戳、字幕、分段统计与可回退原生服务。
