@@ -1,0 +1,6 @@
+test_only_source_bound_audio_markers_expand_and_originals_stay_small (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_only_source_bound_audio_markers_expand_and_originals_stay_small) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

@@ -3,8 +3,12 @@ import copy
 import io
 import json
 import unittest
+from unittest.mock import patch
+import base64
+from pathlib import Path
 
 from tools.native_asr.chat_acceptance import usage
+from tools.native_asr.chat_acceptance import materialize, requests
 from tools.examples.chat_client import read_json, read_sse
 
 
@@ -15,6 +19,21 @@ def observed():
 
 
 class ChatAcceptance(unittest.TestCase):
+    def test_only_source_bound_audio_markers_expand_and_originals_stay_small(self):
+        rows = requests()
+        original = copy.deepcopy(rows)
+        self.assertLess(len(json.dumps(rows)), 16384)
+        with patch.object(Path, 'read_bytes', return_value=b'original source'):
+            prepared = materialize(rows['zh'])
+            value = prepared['messages'][0]['content'][1]['input_audio']['data']
+            self.assertEqual(base64.b64decode(value), b'original source')
+            self.assertEqual(materialize(rows['invalid']), rows['invalid'])
+        bad = copy.deepcopy(rows['zh'])
+        bad['messages'][0]['content'][1]['input_audio']['data'] = 'fixture:other'
+        with self.assertRaisesRegex(RuntimeError, 'unknown frozen'):
+            materialize(bad)
+        self.assertEqual(rows, original)
+
     def test_actual_preparation_required_and_reservations_cannot_replace_usage(self):
         value = dict(usage=observed())
         self.assertEqual(usage(value), usage(dict(usage=dict(observed(),

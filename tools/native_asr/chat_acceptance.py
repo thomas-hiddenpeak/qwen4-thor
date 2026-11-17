@@ -80,7 +80,26 @@ def clip_paths():
 def audio(label):
     path = clip_paths()[label]
     return dict(type='input_audio', input_audio=dict(format=path.suffix[1:],
-        data=base64.b64encode(path.read_bytes()).decode()))
+        data='fixture:'+label))
+
+
+def materialize(body):
+    """Frozen clip identity -> wire bytes, only at typed user audio parts."""
+    result = copy.deepcopy(body)
+    for message in result.get('messages', []):
+        parts = message.get('content')
+        if not isinstance(parts, list): continue
+        for part in parts:
+            if part.get('type') != 'input_audio': continue
+            source = part['input_audio']
+            data = source['data']
+            if not data.startswith('fixture:'): continue
+            label = data[len('fixture:'):]
+            require(label in clip_paths(), 'unknown frozen audio fixture')
+            path = clip_paths()[label]
+            require(source['format'] == path.suffix[1:], 'fixture format changed')
+            source['data'] = base64.b64encode(path.read_bytes()).decode()
+    return result
 
 
 def request(text, clips=(), **options):
@@ -157,6 +176,8 @@ def prepare(args):
         tool_document='actual docs/MODEL.md lines 1..16', silence='OK', core='42')
     plan['planned'] = dict(starts=1, requests=13, batch_rows=1, cancellation=1,
         no_automatic_retry=True, no_overlap_or_performance_matrix=True)
+    plan['derived_requests'] = ['Typed fixture markers are expanded from the fixed clip SHA256 immediately before HTTP; raw audio is not plan metadata.',
+        'Tool follow-up appends actual call ID, actual project file result and fixed final JSON task.']
     plan['command'] = ['/usr/bin/python3', '-B', str(Path(__file__).resolve()),
         'run', '--plan', str(out/'plan.json')]
     save(out/'plan.json', plan)
@@ -241,7 +262,7 @@ class Stage(asr.Stage):
 
     def json_chat(self, label, body, *, client='chat-audio', code=200):
         self.budget('chats')
-        status, raw = self.http('/v1/chat/completions', body, label=label,
+        status, raw = self.http('/v1/chat/completions', materialize(body), label=label,
             timeout=180, client=client)
         require(status == code, label+': '+raw[:512].decode(errors='replace'))
         self.drained(label+'-drain')
@@ -250,7 +271,7 @@ class Stage(asr.Stage):
     def sdk(self, label, body, *, python=False, client='chat-audio'):
         self.budget('chats')
         value = dict(base_url=f"http://127.0.0.1:{self.plan['port']}/v1",
-            sdk_directory=self.plan['sdk']['sdk_directory'], request=body,
+            sdk_directory=self.plan['sdk']['sdk_directory'], request=materialize(body),
             headers=self.headers(client))
         command = ([self.plan['python_sdk']['python'], '-B', str(ROOT/'tools/native_asr/chat_sdk.py')]
             if python else ['node', str(ROOT/'tools/native_asr/chat_sdk.mjs')])
@@ -273,7 +294,7 @@ class Stage(asr.Stage):
 
     def batch(self, body):
         self.budget('chats')  # The one original row; management is not a Chat.
-        row = dict(custom_id='original-audio', method='POST', url='/v1/chat/completions', body=body)
+        row = dict(custom_id='original-audio', method='POST', url='/v1/chat/completions', body=materialize(body))
         text = json.dumps(row, separators=(',', ':'))+'\n'
         wire = ('--b\r\nContent-Disposition: form-data; name="purpose"\r\n\r\nbatch'
             '\r\n--b\r\nContent-Disposition: form-data; name="file"; filename="input.jsonl"'
@@ -313,7 +334,7 @@ class Stage(asr.Stage):
         self.budget('chats')
         connection = http.client.HTTPConnection('127.0.0.1', self.plan['port'], timeout=30)
         try:
-            connection.request('POST', '/v1/chat/completions', json.dumps(body),
+            connection.request('POST', '/v1/chat/completions', json.dumps(materialize(body)),
                 dict(self.headers(), **{'Content-Type': 'application/json'}))
             end = time.monotonic()+30
             while time.monotonic() < end:
@@ -334,7 +355,7 @@ class Stage(asr.Stage):
     def business(self):
         rows = self.plan['requests']
         self.budget('controls')
-        status, raw = self.http('/v1/chat/preflight', dict(request=rows['zh']), label='preflight')
+        status, raw = self.http('/v1/chat/preflight', dict(request=materialize(rows['zh'])), label='preflight')
         value = json.loads(raw)
         require(status == 200 and value['status'] == 'requires_audio_preparation' and
             value['input']['tokens'] is None and not value['checks']['gpu_executed'],
@@ -359,7 +380,7 @@ class Stage(asr.Stage):
         status, stored = self.http('/v1/chat/completions/'+value['id']+'/messages',
             client='one-rpm', label='stored-audio-history')
         require(status == 200 and json.loads(stored)['data'][0]['content'] ==
-            rows['zh']['messages'][0]['content'], 'stored audio source was replaced by transcript')
+            materialize(rows['zh'])['messages'][0]['content'], 'stored audio source was replaced by transcript')
         sdk, raw = self.sdk('js-en-mp3', rows['en'])
         completion = read_sse(io.BytesIO(raw))
         usage(dict(usage=completion.usage))
