@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[Chat音频输入与执行计划](SERVE_CHAT_AUDIO_2026-11-18.md)：复用原生ASR，协议/计费/状态与真实业务持续接线。
+
 [原生音频后端与标准接口实施](SERVE_NATIVE_AUDIO_2026-11-17.md)；ASR资产、配置、tokenizer和实际计算分组推进，A10继续。
 - [原生网页发行组合接受](evidence/serve-web-search-composition-20261117/README.md)：真实搜索、主轻和保留服务隔离，原失败及独立复核分列。
 

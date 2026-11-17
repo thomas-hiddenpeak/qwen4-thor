@@ -256,6 +256,14 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
+      },
+      "chat_audio_input_foundation_20261118": {
+        "plan": "SERVE_CHAT_AUDIO_2026-11-18.md",
+        "state": "8_CPU_ACCEPTED_RUNTIME_CONNECTION_PENDING",
+        "evidence": "evidence/serve-chat-audio-foundation-cpu-20261118/README.md",
+        "cpu_tests": 8,
+        "gpu": 0,
+        "whole_task_complete": false
       }
     },
     {
@@ -3657,6 +3665,14 @@
         "release_acceptance": false,
         "source_sha256": "4e9733e193fe29bbe21477383563f00b7944e93c42764dab58f1709aa2ed6448",
         "evidence": "docs/evidence/serve-overlap-shift-diagnosis-20261118/README.md"
+      },
+      "chat_audio_input_foundation_20261118": {
+        "plan": "SERVE_CHAT_AUDIO_2026-11-18.md",
+        "state": "8_CPU_ACCEPTED_RUNTIME_CONNECTION_PENDING",
+        "evidence": "evidence/serve-chat-audio-foundation-cpu-20261118/README.md",
+        "cpu_tests": 8,
+        "gpu": 0,
+        "whole_task_complete": false
       }
     },
     {

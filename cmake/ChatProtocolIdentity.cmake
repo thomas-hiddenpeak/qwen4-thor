@@ -51,6 +51,8 @@ set(protocol_inputs
   include/q4t/server/vad_assets.h
   src/server/vad_assets.cpp
   include/q4t/server/asr_request.h
+  include/q4t/server/chat_audio_inputs.h
+  src/server/chat_audio_inputs.cpp
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h
   include/q4t/server/asr_alignment_output.h

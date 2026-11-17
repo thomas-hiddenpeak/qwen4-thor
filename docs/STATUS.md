@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频输入8CPU通过](evidence/serve-chat-audio-foundation-cpu-20261118/README.md)，
+0.008秒、0GPU，2来源检查通过。原构建失败保留，修正后零警告。
+继续同请求ASR执行/实际计费及协议状态组合，不能以合同模块
+宣称入口交付；默认rev296、原重叠质量FAIL与全部master保持。
+
+[Chat音频CA01—04](SERVE_CHAT_AUDIO_2026-11-18.md)开始：复用
+原生ASR/codec，先8输入与投影CPU/180秒、0GPU。保留顺序、
+来源、共享预算和取消；随后实际计费/执行、协议组合与业务交付。
+原重叠质量与托管资格未完，默认rev296保持，全部master继续。
+
 [固定移位候选未改善信号](evidence/serve-overlap-shift-diagnosis-20261118/README.md)：
 3CPU通过，1分离模型/2输入/1.525秒、0主模型/HTTP，两路
 SI-SDR略降，不接入生产。原词形质量与实际托管资格保持未完；

@@ -1,0 +1,182 @@
+#include "q4t/server/chat_audio_inputs.h"
+
+#include "file_audio_protocol.h"
+#include "object_protocol.h"
+#include "q4t/server/file_audio.h"
+#include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
+
+namespace q4t::server {
+namespace {
+using namespace object_detail;
+ObjectReply At(ObjectReply reply, const std::string& path) {
+  reply.value = Object({{"param", String(path)}});
+  return reply;
+}
+ObjectReply Invalid(const std::string& path, const char* message) {
+  return At(Error(400, "invalid_request", message), path);
+}
+ObjectReply State() {
+  return Error(500, "chat_audio_state_invalid",
+               "Audio preparation state is inconsistent");
+}
+ObjectReply CheckAccess(const BinaryAccess& access) {
+  if (access.cancelled && access.cancelled())
+    return Error(499, "request_cancelled", "Audio preparation cancelled");
+  if (std::chrono::steady_clock::now() >= access.deadline)
+    return Error(408, "request_deadline_exceeded",
+                 "Audio preparation deadline exceeded");
+  return {};
+}
+bool Audio(const Json& part) {
+  return part.GetString("type") == "input_audio" || part.Has("input_audio");
+}
+std::string Path(size_t message, size_t part) {
+  return "messages[" + std::to_string(message) + "].content[" +
+         std::to_string(part) + ']';
+}
+}  // namespace
+
+bool HasChatAudioInputs(const Json& request) {
+  if (const auto* messages = request.GetArray("messages"))
+    for (const auto& message : messages->array)
+      if (const auto* content = message.GetArray("content"))
+        for (const auto& part : content->array)
+          if (Audio(part)) return true;
+  return false;
+}
+
+ObjectReply ChatAudioInputs::Prepare(const Json& request,
+                                     const BinaryAccess& access,
+                                     ChatAudioLimits limits) {
+  if (prepared_ || !limits.max_parts || limits.max_parts > 8 ||
+      !limits.max_source_bytes || limits.max_source_bytes > (25ULL << 20) ||
+      !limits.max_transcript_bytes ||
+      limits.max_transcript_bytes > (1ULL << 20))
+    return State();
+  auto active = CheckAccess(access);
+  if (!active.ok()) return active;
+  std::vector<ChatAudioInput> inputs;
+  FileInputBudget budget{.max_bytes = limits.max_source_bytes,
+                         .max_files = limits.max_parts};
+  if (const auto* messages = request.GetArray("messages")) {
+    for (size_t i = 0; i < messages->array.size(); ++i) {
+      const auto& message = messages->array[i];
+      const auto* content = message.GetArray("content");
+      if (!content) continue;
+      for (size_t j = 0; j < content->array.size(); ++j) {
+        const auto& part = content->array[j];
+        if (!Audio(part)) continue;
+        const auto path = Path(i, j);
+        if (message.GetString("role") != "user")
+          return Invalid(path, "Input audio requires a user message");
+        std::string param;
+        auto fields = InputFields(
+            part, {"type", "input_audio", "prompt_cache_breakpoint"}, &param,
+            path);
+        if (!fields) return Invalid(param, "Invalid audio content part");
+        if (part.GetString("type") != "input_audio")
+          return Invalid(path + ".type", "Expected input_audio type");
+        const auto* audio = part.Find("input_audio");
+        if (!audio || !audio->IsObject())
+          return Invalid(path + ".input_audio", "Expected input_audio object");
+        fields = InputFields(*audio, {"data", "format"}, &param,
+                             path + ".input_audio");
+        if (!fields) return Invalid(param, "Invalid input_audio field");
+        const auto format = audio->GetString("format");
+        if (format != "wav" && format != "mp3")
+          return Invalid(path + ".input_audio.format", "Expected wav or mp3");
+        const auto* data = audio->Find("data");
+        if (!data || !data->IsString() || data->str.empty())
+          return Invalid(path + ".input_audio.data", "Expected base64 audio");
+        FileInputSource source;
+        source.value = data->str;
+        source.param = path + ".input_audio.data";
+        source.filename = "input." + format;
+        source.mime_type = format == "wav" ? "audio/wav" : "audio/mpeg";
+        ChatAudioInput input{i, j, path, format, Digest(OutputJson(part)), {}};
+        auto read =
+            ReadLocalFileInput(nullptr, access, source, &budget, &input.source);
+        if (!read.ok()) {
+          if (read.http_status == 413)
+            return At(Error(413, "chat_audio_capacity_exceeded",
+                            "Audio input shared budget exceeded"),
+                      path);
+          return At(std::move(read), source.param);
+        }
+        const auto kind = audio_detail::Detect(input.source.bytes);
+        if (!IsAudioContainer(input.source.bytes) ||
+            kind != (format == "wav" ? audio_detail::Container::kWave
+                                     : audio_detail::Container::kMpeg))
+          return Invalid(path + ".input_audio.format",
+                         "Audio container does not match the declared format");
+        inputs.push_back(std::move(input));
+      }
+    }
+  }
+  active = CheckAccess(access);
+  if (!active.ok()) return active;
+  std::vector<std::optional<std::string>> transcripts(inputs.size());
+  limits_ = limits;
+  inputs_ = std::move(inputs);
+  transcripts_ = std::move(transcripts);
+  prepared_ = true;
+  return {};
+}
+
+ObjectReply ChatAudioInputs::Complete(size_t index, std::string transcript) {
+  if (!prepared_ || index >= inputs_.size() || transcripts_[index])
+    return State();
+  if (transcript.find('\0') != transcript.npos ||
+      detail::NormalizeUtf8(transcript) != transcript)
+    return Error(502, "chat_audio_transcript_invalid",
+                 "Audio backend returned invalid transcript text");
+  if (transcript.size() > limits_.max_transcript_bytes - transcript_bytes_)
+    return Error(413, "chat_audio_transcript_capacity",
+                 "Audio transcripts exceed the shared text budget");
+  transcript_bytes_ += transcript.size();
+  transcripts_[index] = std::move(transcript);
+  return {};
+}
+
+ObjectReply ChatAudioInputs::Render(const Json& request,
+                                    const BinaryAccess& access,
+                                    Json* output) const {
+  if (!output || !prepared_) return State();
+  auto active = CheckAccess(access);
+  if (!active.ok()) return active;
+  auto result = request;
+  size_t index = 0;
+  if (result.GetArray("messages")) {
+    auto& messages = Field(result, "messages").array;
+    for (size_t i = 0; i < messages.size(); ++i) {
+      auto& message = messages[i];
+      if (!message.GetArray("content")) continue;
+      auto& content = Field(message, "content").array;
+      for (size_t j = 0; j < content.size(); ++j) {
+        auto& part = content[j];
+        if (!Audio(part)) continue;
+        active = CheckAccess(access);
+        if (!active.ok()) return active;
+        if (index >= inputs_.size() || !transcripts_[index]) return State();
+        const auto& source = inputs_[index];
+        if (source.message_index != i || source.part_index != j ||
+            message.GetString("role") != "user" ||
+            source.part_sha256 != Digest(OutputJson(part)))
+          return State();
+        Json projected = Object(
+            {{"type", String("text")}, {"text", String(*transcripts_[index])}});
+        if (const auto* cache = part.Find("prompt_cache_breakpoint"))
+          Set(&projected, "prompt_cache_breakpoint", *cache);
+        part = std::move(projected);
+        ++index;
+      }
+    }
+  }
+  if (index != inputs_.size()) return State();
+  active = CheckAccess(access);
+  if (!active.ok()) return active;
+  *output = std::move(result);
+  return {};
+}
+}  // namespace q4t::server

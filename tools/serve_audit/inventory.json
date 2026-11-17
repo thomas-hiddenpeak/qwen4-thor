@@ -2158,8 +2158,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5f11b5e67dcf082ca9909f05ef490556bb269c4492f2fa1eeac6c0d33f83eb6e",
-    "cmake/ChatProtocolIdentity.cmake": "b94a9c87a89f176d333d2e0921c82378039a6529f2f63d36914ed25600995400",
+    "CMakeLists.txt": "021c73d11bd84a337bbd55714aa461c7d1ba31fb1450499805162dd89ffe442a",
+    "cmake/ChatProtocolIdentity.cmake": "79ab18c0fcec070c540e90c858746e3795b9d485ab8a0f28f217b987b2f11b1d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2239,6 +2239,7 @@
     "include/q4t/server/binary_store.h": "edb2878f213dd86d136e162250e9f558ad2ec01a5599bad89bf5f5fd2c417821",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
+    "include/q4t/server/chat_audio_inputs.h": "043e8d7815160e4bf4514c0396dcc1a890a86368c2994bdbfaa9ecba176d59ab",
     "include/q4t/server/chat_capabilities.h": "26cd6e99e6ab6118a9c665f0c9c2ffc01095107497f1b55ec6e5659a3a4df97a",
     "include/q4t/server/chat_choices.h": "adc843de79322b84d2a3e91db5ae93099f2ee5d2c6c3934343ae67a2d95dcab7",
     "include/q4t/server/chat_contract.h": "14c806c82ccea6b4556dc2c91342dadae390e08b52b2ed1baaea11e6bf910bb0",
@@ -2512,6 +2513,7 @@
     "src/server/chat_asr_alignment.cpp": "383053cac6a1084bc82fcaa52b723834fcf78e6530f89cb69051b536b78a444c",
     "src/server/chat_asr_backend.cpp": "ea7cba81bf63e96972cfb35483db9ddd3ffae3cb02950ffda74ab964a666611a",
     "src/server/chat_asr_execution.cpp": "fa616c0cda0da8d0ad9755adfebbe4cbe8771fa20553224ec054096e5b292c90",
+    "src/server/chat_audio_inputs.cpp": "3a75e9f1bd3b943bbf0c835e63eed38844c46210ddc5093c7b2258622ecc7d3f",
     "src/server/chat_capabilities.cpp": "729e083979abcbe7d7d5f3a8a2b6c0b721d91688b9bd839f857c90a6e742ad06",
     "src/server/chat_choices.cpp": "935ecd4780fb2e9149b37142520b2475127a89a3aa117d2dd2b232fe2e4f5d2c",
     "src/server/chat_contract.cpp": "c4aed38c779d85abd4e11a349e66bb434ca241e6414d27622fa651f76d9dec0c",
