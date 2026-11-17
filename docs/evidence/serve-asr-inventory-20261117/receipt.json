@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "exit": 0,
+  "seconds": 0.23444093111902475,
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_audit/check_inventory.py",
+    "--self-check"
+  ],
+  "gpu_actions": 0,
+  "check": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 51,
+    "completion_fields": 21,
+    "routes": 75,
+    "native_routes": 125,
+    "reviewed_source_anchors": 789,
+    "mutation_checks": 7,
+    "errors": []
+  },
+  "inventory_sha256": "890689eac97f55b800e30289671d4c93124ca8ce1d0f2a9c957fe1af31a13fc0"
+}
