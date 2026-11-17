@@ -7,6 +7,25 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频18针对性检查通过](evidence/serve-chat-audio-runtime-cpu-20261118/README.md)，
+CA03首轮失败保留、仅3失败项重验；最终主程序/host零警告，
+2来源检查通过，0GPU/HTTP。接着真实音频业务与恢复交付，
+默认rev296、原重叠质量FAIL和全部master保持，不能以CPU结束。
+
+Chat音频CA03首轮3/6通过；修正3测试夹具及生产构建序列化命名空间，
+原失败保留。仅3失败项/180秒与2来源续验，已过3项复用；
+当前0新增GPU，实际业务/交付与全部master继续。
+
+Chat音频CA02的12CPU已通过，首次生产构建缺include已修正、原失败保留。
+CA03已补Batch上界/延后检索、显式未完成的预检及统一RAM计量；
+固定6针对性CPU/schema检查与2来源，复用未变12项，先必要构建。
+当前0新增GPU，实际业务/托管交付、原重叠质量和全部master继续。
+
+Chat音频正在接入真实ASR与同请求用量：共享RPM/时长/转录预算，
+JSON/SSE分别报告真实准备量，主模型回答上限保持。固定12CPU/
+180秒和2来源，先必要构建；Batch/preflight及实际业务接着补，
+尚未发布，默认rev296和全部master保持。
+
 [Chat音频输入8CPU通过](evidence/serve-chat-audio-foundation-cpu-20261118/README.md)，
 0.008秒、0GPU，2来源检查通过。原构建失败保留，修正后零警告。
 继续同请求ASR执行/实际计费及协议状态组合，不能以合同模块

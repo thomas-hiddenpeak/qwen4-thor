@@ -264,6 +264,13 @@
         "cpu_tests": 8,
         "gpu": 0,
         "whole_task_complete": false
+      },
+      "chat_audio_runtime_20261118": {
+        "state": "TARGETED_CPU_ACCEPTED_REAL_CHAT_AUDIO_PENDING",
+        "evidence": "evidence/serve-chat-audio-runtime-cpu-20261118/README.md",
+        "unique_cpu_checks": 18,
+        "gpu": 0,
+        "whole_task_complete": false
       }
     },
     {
@@ -3671,6 +3678,13 @@
         "state": "8_CPU_ACCEPTED_RUNTIME_CONNECTION_PENDING",
         "evidence": "evidence/serve-chat-audio-foundation-cpu-20261118/README.md",
         "cpu_tests": 8,
+        "gpu": 0,
+        "whole_task_complete": false
+      },
+      "chat_audio_runtime_20261118": {
+        "state": "TARGETED_CPU_ACCEPTED_REAL_CHAT_AUDIO_PENDING",
+        "evidence": "evidence/serve-chat-audio-runtime-cpu-20261118/README.md",
+        "unique_cpu_checks": 18,
         "gpu": 0,
         "whole_task_complete": false
       }
@@ -7241,7 +7255,7 @@
       }
     }
   ],
-  "next_task": "A01/A02/A10 native Chat audio input; overlap quality remains open; all master tasks continue",
+  "next_task": "Chat audio real SDK/business, quota and recovery delivery; all remaining master tasks continue",
   "next": "Implement Chat audio input using the existing native ASR backend; preserve unresolved four-second overlap recognition quality and pending managed qualification. Continue speech output/Realtime and all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",

@@ -2,6 +2,7 @@
 
 #include "q4t/audio/asr_layout.h"
 #include "q4t/server/asr_assets.h"
+#include "q4t/server/request_limits.h"
 
 namespace q4t::server {
 namespace {
@@ -34,9 +35,12 @@ Status PlanAsrServiceResources(const AsrServiceLimits& limits,
   // Encoder output stays in its owned workspace through decoder completion.
   plan.request_device_bytes = encoder.bytes + decoder.bytes;
   // Encoded source, mono PCM, mel, host logits/output and bounded metadata.
-  // Both the bounded multipart body and its owned binary file may coexist.
+  // Conservatively bound Chat's HTTP/JSON/legacy/file projection copies,
+  // decoded source bytes and temporary canonical-base64/hash serialization.
+  // These are all in the same physical RAM, not CPU offload. Multipart is
+  // smaller; this estimate bounds either enabled ASR entry, not host OOM.
   plan.request_host_bytes =
-      (32 + 25) * kMiB +
+      6 * kChatBodyBytes + 3 * 25 * kMiB +
       uint64_t(limits.max_audio_seconds) * 16000 * sizeof(float) +
       frames * audio::AsrConfig::kMelBins * sizeof(float) + 16 * kMiB;
   plan.load_peak_bytes = 3 * kNativeAsrFileBytes + kHostMargin;

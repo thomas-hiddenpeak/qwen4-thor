@@ -6,6 +6,7 @@
 #include "q4t/server/server_options.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/test.h"
 
 namespace {
@@ -164,7 +165,8 @@ Q4T_TEST(asr_resources_account_unified_peak_and_reject_small_workspace) {
   AsrResourcePlan plan;
   Q4T_CHECK(PlanAsrServiceResources(limits, &plan));
   Q4T_CHECK(plan.load_peak_bytes >= 3 * 1876091704ULL + (512ULL << 20));
-  Q4T_CHECK(plan.request_host_bytes > (25ULL << 20) + 480000 * sizeof(float));
+  Q4T_CHECK(plan.request_host_bytes >
+            6 * kChatBodyBytes + (75ULL << 20) + 480000 * sizeof(float));
   Q4T_CHECK(plan.request_device_bytes > plan.encoder_bytes &&
             plan.request_device_bytes > plan.decoder_bytes);
   Q4T_CHECK(plan.request_device_bytes <= (1024ULL << 20));

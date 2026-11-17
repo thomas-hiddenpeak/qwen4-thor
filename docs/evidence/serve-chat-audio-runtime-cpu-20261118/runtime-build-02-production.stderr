@@ -1,0 +1,14 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp: In member function ‘void q4t::server::ChatServer::HandlePreflight(int, const std::string&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp:241:39: error: ‘OutputJson’ is not a member of ‘q4t::server::object_detail’; did you mean ‘q4t::server::OutputJson’?
+  241 |                        object_detail::OutputJson(ChatAudioPreflight(audio, budget)),
+      |                                       ^~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/object_protocol.h:10,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/chat_preflight.cpp:2:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/output_schema.h:28:13: note: ‘q4t::server::OutputJson’ declared here
+   28 | std::string OutputJson(const io::Json& value);
+      |             ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:2907: CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1472: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1652: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:649: q4t] Error 2

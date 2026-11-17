@@ -1,0 +1,22 @@
+{
+  "status": "FAILED",
+  "records": {
+    "host": {
+      "returncode": 1,
+      "seconds": 0.03186575695872307
+    },
+    "schema": {
+      "returncode": 1,
+      "seconds": 0.2139485850930214
+    },
+    "inventory": {
+      "returncode": 0,
+      "seconds": 0.2641439866274595
+    },
+    "contract": {
+      "returncode": 0,
+      "seconds": 0.16390932817012072
+    }
+  },
+  "seconds": 0.6741531118750572
+}

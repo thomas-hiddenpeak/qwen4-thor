@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "records": {
+    "host": {
+      "returncode": 0,
+      "seconds": 0.21405550697818398
+    },
+    "schema": {
+      "returncode": 0,
+      "seconds": 0.2641523852944374
+    },
+    "inventory": {
+      "returncode": 0,
+      "seconds": 0.26747867930680513
+    },
+    "contract": {
+      "returncode": 0,
+      "seconds": 0.16404445795342326
+    }
+  },
+  "seconds": 0.9100766158662736
+}

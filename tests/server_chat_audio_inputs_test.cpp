@@ -1,4 +1,6 @@
 #include "q4t/server/chat_audio_inputs.h"
+#include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_plan.h"
 
 #include <chrono>
 
@@ -237,5 +239,158 @@ Q4T_TEST(chat_audio_binding_and_result_failures_cannot_publish_partial_text) {
   }
   Json output;
   Q4T_CHECK(owner.Render(request, Access(), &output).ok());
+  return true;
+}
+
+Q4T_TEST(chat_audio_plan_requires_real_backend_and_explicit_preparation) {
+  auto request = Request(Array({Audio()}));
+  ChatPlanConfig config;
+  config.preparing_audio_inputs = true;
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.code == "audio_backend_unavailable" &&
+            error.http_status == 503);
+  config.native_asr_enabled = true;
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  Set(&request, "modalities", Array({String("text")}));
+  Set(&request, "audio", Json());
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  Set(&request, "modalities", Json());
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  config.preparing_audio_inputs = false;
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.param == "messages[0].content[0]");
+  return true;
+}
+
+Q4T_TEST(chat_audio_modalities_preserve_output_request_and_reject_bad_shapes) {
+  auto request = Request(Array({Text("plain")}));
+  ChatPlanConfig config;
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  for (const auto& value :
+       {Array(), String("text"), Array({Number(1)}),
+        Array({String("text"), String("text")}), Array({String("video")})}) {
+    Set(&request, "modalities", value);
+    Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(error.param == "modalities" && error.http_status == 400);
+  }
+  Set(&request, "modalities", Array({String("text"), String("audio")}));
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.code == "audio_output_backend_unavailable" &&
+            error.http_status == 503);
+  Set(&request, "modalities", Array({String("text")}));
+  Set(&request, "audio", Object());
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.param == "audio" && error.http_status == 400);
+  return true;
+}
+
+Q4T_TEST(chat_audio_usage_is_shared_once_across_choices_and_transports) {
+  ChatChoices json(2, false), stream(2, true);
+  for (auto* choices : {&json, &stream}) {
+    Q4T_CHECK(choices->SetAudioPreparation({31, 7}, 20));
+    for (int i = 0; i < 2; ++i)
+      Q4T_CHECK(
+          choices->Add(i, "{}", "stop", "null", 50, 9, 10, true, -1, 0, 0));
+    Q4T_CHECK(choices->CompletionTokens() == 18);
+  }
+  Q4T_CHECK(json.UsageJson() == stream.UsageJson());
+  Json usage;
+  Q4T_CHECK(q4t::io::ParseJson(json.UsageJson(), &usage));
+  Q4T_CHECK(usage.GetInt("prompt_tokens") == 81);
+  Q4T_CHECK(usage.GetInt("completion_tokens") == 25);
+  Q4T_CHECK(usage.GetInt("total_tokens") == 106);
+  const auto* details = usage.Find("prompt_tokens_details");
+  Q4T_CHECK(details && details->GetInt("audio_tokens") == 20 &&
+            details->GetInt("cached_tokens") == 10);
+  const auto* prepared = usage.Find("q4t_audio_preparation");
+  Q4T_CHECK(prepared && prepared->GetInt("input_tokens") == 31 &&
+            prepared->GetInt("output_tokens") == 7);
+  return true;
+}
+
+Q4T_TEST(chat_audio_usage_rejects_unknown_double_or_overflow_accounting) {
+  ChatChoices choices(1, false);
+  Q4T_CHECK(!choices.SetAudioPreparation({}, 0));
+  Q4T_CHECK(!choices.SetAudioPreparation({1, 1}, 2));
+  Q4T_CHECK(!choices.SetAudioPreparation({1, 1, 1}, 1));
+  Q4T_CHECK(choices.SetAudioPreparation({2, 3}, 1));
+  const auto before = choices.UsageJson();
+  Q4T_CHECK(!choices.SetAudioPreparation({2, 3}, 1));
+  Q4T_CHECK(!choices.Add(0, "{}", "stop", "null", UINT64_MAX - 2, 1, 0, false,
+                         -1, 0, 0));
+  Q4T_CHECK(choices.UsageJson() == before);
+  Q4T_CHECK(choices.Add(0, "{}", "stop", "null", 4, 5, 0, false, -1, 0, 0));
+  Q4T_CHECK(!choices.SetAudioPreparation({2, 3}, 1));
+  ChatChoices plain(1, true);
+  Q4T_CHECK(plain.Add(0, "{}", "stop", "null", 4, 5, 0, false, -1, 0, 0));
+  Q4T_CHECK(plain.UsageJson() ==
+            "{\"prompt_tokens\":4,\"completion_tokens\":5,\"total_tokens\":9}");
+  return true;
+}
+
+Q4T_TEST(chat_audio_budget_is_shared_upper_bound_without_model_execution) {
+  auto request = Request(Array({Audio(), Audio()}));
+  Set(&request, "max_tokens", Number(32));
+  Set(&request, "n", Number(2));
+  ChatAudioInputs inputs;
+  Q4T_CHECK(inputs.Prepare(request, Access()).ok());
+  ChatPlanConfig config;
+  config.native_asr_enabled = true;
+  config.model = "cpu-audio";
+  config.max_len = 4096;
+  ChatAudioBudget budget;
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).ok());
+  Q4T_CHECK(budget.prompt_capacity ==
+            4096U + 2U * config.asr_limits.max_context_tokens);
+  Q4T_CHECK(budget.output == 64 && budget.auxiliary_output == 0 &&
+            budget.preparation_output ==
+                uint64_t(config.asr_limits.max_output_tokens));
+  ClientLimits limits;
+  limits.max_prompt_tokens = 5000;
+  limits.max_output_tokens = 128;
+  config.client_limits = &limits;
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).ok());
+  Q4T_CHECK(budget.prompt_capacity == 5000 && budget.output == 64);
+  Set(&request, "moderation", Object({{"model", String(config.model)}}));
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).ok());
+  Q4T_CHECK(budget.prompt_capacity == 5000 && budget.auxiliary_output == 1024);
+  config.client_limits = nullptr;
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).ok());
+  Q4T_CHECK(budget.prompt_capacity ==
+            3U * 4096U + 2U * config.asr_limits.max_context_tokens);
+  const auto saved = budget;
+  config.native_asr_enabled = false;
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).http_status ==
+            503);
+  Q4T_CHECK(budget.prompt_capacity == saved.prompt_capacity &&
+            budget.preparation_output == saved.preparation_output);
+  return true;
+}
+
+Q4T_TEST(chat_audio_preflight_never_claims_transcription_or_exact_context_fit) {
+  const auto request = Request(Array({Audio()}));
+  ChatAudioInputs inputs;
+  Q4T_CHECK(inputs.Prepare(request, Access()).ok());
+  ChatPlanConfig config;
+  config.native_asr_enabled = true;
+  ChatAudioBudget budget;
+  Q4T_CHECK(PlanChatAudioBudget(request, config, inputs, &budget).ok());
+  const auto value = ChatAudioPreflight(inputs, budget);
+  Q4T_CHECK(value.GetString("status") == "requires_audio_preparation");
+  Q4T_CHECK(value.Find("input")->Find("tokens")->IsNull());
+  Q4T_CHECK(value.Find("input")->GetString("mode") == "context_upper_bound");
+  Q4T_CHECK(value.Find("audio")->GetInt("parts") == 1 &&
+            !value.Find("audio")->GetBool("transcribed"));
+  for (const auto name :
+       {"audio_decoded", "media", "web_search", "template", "tokenizer",
+        "budget", "request_registered", "gpu_executed"})
+    Q4T_CHECK(value.Find("checks")->Find(name)->IsBool() &&
+              !value.Find("checks")->GetBool(name));
+  Q4T_CHECK(!value.GetBool("execution_guaranteed"));
+  Json output;
+  Q4T_CHECK(!inputs.Render(request, Access(), &output).ok());
   return true;
 }

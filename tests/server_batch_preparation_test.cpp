@@ -2062,3 +2062,54 @@ Q4T_TEST(batch_chat_moderation_reserves_all_steps_before_original_execution) {
   Q4T_CHECK(rate.prompt_capacity == 3U * fixture.config.max_len);
   return true;
 }
+
+Q4T_TEST(batch_chat_audio_preserves_originals_and_reserves_without_transcribing) {
+  Fixture fixture;
+  fixture.config.native_asr_enabled = true;
+  fixture.config.preparing_audio_inputs = true;
+  ObjectStore objects(fixture.options);
+  std::ifstream file(fs::path(__FILE__).parent_path() /
+                         "fixtures/file_nested/page.pdf", std::ios::binary);
+  Q4T_CHECK(file.good());
+  const std::string bytes(std::istreambuf_iterator<char>(file), {});
+  const auto id = Upload(objects, bytes, "original.pdf");
+  auto body = WithFile(id, true);
+  // Single-sample WAV: header validation only, never ASR/codec evidence.
+  const auto source = Object({
+      {"type", String("input_audio")},
+      {"input_audio", Object({
+          {"format", String("wav")},
+          {"data", String("UklGRiYAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAA"
+                           "ZGF0YQIAAADSBA==")}})}});
+  Field(Field(body, "messages").array[0], "content").array.push_back(source);
+  Set(&body, "max_tokens", Number(32));
+  Set(&body, "n", Number(2));
+  const auto original = OutputJson(body);
+  const auto work = Create(objects, body, "/v1/chat/completions");
+  const auto frozen = Frozen(objects, work, fixture.config);
+  Q4T_CHECK(frozen.Find("web_content")->IsNull());
+  BatchInputBudget input;
+  BatchRateBudget rate;
+  std::string encoded = "not called";
+  Q4T_CHECK(Ok(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                 fixture.config, Access(), BudgetCodec(&encoded),
+                                 &input, &rate)));
+  Q4T_CHECK(encoded == "not called" && OutputJson(work.row.body) == original);
+  Q4T_CHECK(!input.exact && !rate.input_exact &&
+            input.tokens == rate.prompt_capacity &&
+            input.tokens == uint64_t(fixture.config.max_len) +
+                                fixture.config.asr_limits.max_context_tokens);
+  Q4T_CHECK(rate.output == 64 && rate.auxiliary_output == 0 &&
+            rate.preparation_output ==
+                uint64_t(fixture.config.asr_limits.max_output_tokens));
+  auto wrong = frozen;
+  Set(&wrong, "web_content", Object());
+  Q4T_CHECK(!MeasureBatchInput(objects, work.endpoint, work.row, wrong,
+                               fixture.config, Access(), BudgetCodec(),
+                               &input, &rate).ok());
+  fixture.config.native_asr_enabled = false;
+  Q4T_CHECK(MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                              fixture.config, Access(), BudgetCodec(),
+                              &input, &rate).http_status == 503);
+  return true;
+}

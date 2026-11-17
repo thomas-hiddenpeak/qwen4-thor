@@ -275,6 +275,12 @@ class ChatServer {
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       ActualUsageCounter& usage, AsrTranscript* transcript,
       std::string_view leading_text = {});
+  ObjectReply PrepareNativeChatAudio(
+      int fd, const io::Json& request,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      uint64_t public_output, uint64_t auxiliary_output, io::Json* output,
+      ActualUsage* actual, uint64_t* audio_tokens);
   ObjectReply EncodeVectorDocument(std::string_view text,
                                     const VectorSearchControl& control,
                                     VectorEncodedText* output);

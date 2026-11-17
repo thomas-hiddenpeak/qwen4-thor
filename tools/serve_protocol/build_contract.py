@@ -101,6 +101,10 @@ def chat_schema():
         prompt_cache_breakpoint=breakpoint), ("text",))
     refusal_part = obj(dict(type=dict(const="refusal"),
                             refusal=dict(type="string")), ("type", "refusal"))
+    audio_part = obj(dict(type=dict(const="input_audio"),
+        input_audio=obj(dict(data=dict(type="string", minLength=1),
+            format=dict(enum=["wav", "mp3"])), ("data", "format")),
+        prompt_cache_breakpoint=breakpoint), ("type", "input_audio"))
     citation = obj(dict(type=dict(const="url_citation"), url_citation=obj(dict(
         start_index=dict(type="integer", minimum=0),
         end_index=dict(type="integer", minimum=0), title=dict(type="string"),
@@ -110,7 +114,7 @@ def chat_schema():
         ("type", "url_citation"))
     content = dict(anyOf=[dict(type=["string", "null"]),
         dict(type="array", minItems=1,
-             items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])
+             items=dict(oneOf=[ref("textPart"), ref("refusalPart"), ref("audioPart")]))])
     arguments = dict(anyOf=[dict(type="object"),
         dict(type="string", **{"x-q4t-json-object-text": True})])
     call = dict(oneOf=[obj(dict(id=dict(type="string", minLength=1, maxLength=256,
@@ -136,6 +140,9 @@ def chat_schema():
         tool_call_id=dict(type="string", minLength=1, maxLength=256,
                           **{"x-q4t-max-utf8-bytes": 256})), ("role",))
     message["allOf"] = [
+        when(present("role", {"not": dict(const="user")}),
+            dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
+                dict(type="array", items={"not": present("type", dict(const="input_audio"))})])))),
         when(present("role", {"not": dict(const="assistant")}),
              forbid(["reasoning", "reasoning_content", "tool_calls", "refusal", "function_call"])),
         when(present("role", {"not": dict(const="tool")}), forbid(["tool_call_id"])),
@@ -215,6 +222,9 @@ def chat_schema():
         model=dict(type="string", **{"x-q4t-registered-model-or-alias": True}),
         prompt=dict(type="string", minLength=1),
         messages=dict(type="array", minItems=1, items=ref("message")),
+        modalities=nullable(dict(type="array", minItems=1, maxItems=1,
+            uniqueItems=True, items=dict(const="text"))),
+        audio=dict(type="null"),
         max_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
@@ -275,9 +285,10 @@ def chat_schema():
         parallel_tool_calls=dict(type="boolean", default=True))
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
-        "title": "Q4T complete text Chat request structure v1",
-        "description": "All supported text request fields. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
+        "title": "Q4T Chat text and speech input request structure v1",
+        "description": "Text output with text or native ASR speech input. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
         "$defs": dict(cacheBreakpoint=breakpoint, textPart=text_part, refusalPart=refusal_part,
+                       audioPart=audio_part,
                        message=message, historyCall=call,
                        tool=tool, schemaNode=node),
         "oneOf": [present("messages"), present("prompt")],
@@ -441,7 +452,7 @@ def vision_schema():
     message = result["$defs"]["message"]
     message["properties"]["content"]["anyOf"][1]["items"] = dict(oneOf=[
         ref("textPart"), ref("refusalPart"), ref("imagePart"), ref("videoPart"),
-        ref("filePart")])
+        ref("filePart"), ref("audioPart")])
     message["allOf"].append(when(present("role", {"not":dict(const="user")}),
         dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
             dict(type="array", items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])))))
@@ -452,7 +463,7 @@ def vision_schema():
         file_inputs="Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
         state_cache="actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
         media_chunked_prefill=True,
-        unsupported=["video_container_on_server", "audio", "MTP",
+        unsupported=["video_container_on_server", "audio_output", "MTP",
                      "multiple_execution_slots"])
     return result
 
@@ -460,12 +471,12 @@ def vision_schema():
 def message_schema():
     full = chat_schema()
     return {"$schema": DRAFT, "$id": "urn:q4t:serve:message-profile:v3",
-        "title": "Text message profile v3 with qwen3.8-openai-v4 template",
-        "description": "Text message shapes only. Tool association, full request options and runtime admission still require native validation; media uses the vision request schema.",
+        "title": "Text and speech input message profile v3 with qwen3.8-openai-v4 template",
+        "description": "Text and user input_audio shapes. Native ASR preparation, tool association, full request options and runtime admission still require native validation; visual media uses the vision request schema.",
         "type": "object", "required": ["messages"],
         "properties": dict(messages=full["properties"]["messages"]),
         "$defs": {k: full["$defs"][k] for k in
-                  ("message", "textPart", "refusalPart", "historyCall")},
+                  ("message", "textPart", "refusalPart", "audioPart", "historyCall")},
         "x-q4t": dict(profile="qwen3.8-openai-v4",
             developer_mapping="ordered system ChatML messages",
             name="JSON quoted participant; angle brackets escaped",
@@ -486,6 +497,12 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("chat-audio-input", ["include/q4t/server/chat_audio_inputs.h",
+            "src/server/chat_audio_inputs.cpp", "src/server/chat_audio_execution.cpp",
+            "src/server/chat_generation.cpp", "src/server/chat_choices.cpp",
+            "src/server/chat_preflight.cpp", "src/server/batch_budget.cpp",
+            "src/server/batch_preparation.cpp", "src/server/asr_service.cpp"],
+         "User input_audio requires canonical inline base64 with matching wav/mp3 headers and the configured native ASR backend. Up to8 clips share25MiB source bytes, the configured audio duration and ASR output budget, one request deadline and RPM lease. All real transcripts replace their source parts atomically in original order, preserving neighboring media/files and cache markers. The main model consumes text transcripts, not acoustic features. Preparation input/output are charged once across choices and reported in q4t_audio_preparation; prompt audio_tokens are actual encoder positions, not duration estimates. JSON/SSE expose the same final-answer protocol; transcript chunks are not leaked as answer deltas. Batch reserves an explicitly inexact input upper bound, executes ASR only after durable start and never replays started work on recovery. Preflight validates sources and files but reports unresolved audio preparation and no exact context/usage claim. Audio-derived web search follows transcription. Speech synthesis, assistant audio history and Realtime remain implementation tasks; this text bridge is not those capabilities. Actual business and reversible release acceptance remain required."),
         ("chat-prompt-cache-controls", ["include/q4t/server/prompt_cache_policy.h",
             "src/server/prompt_cache_policy.cpp", "include/q4t/server/chat_plan.h",
             "src/server/chat_plan.cpp", "src/server/chat_contract.cpp",

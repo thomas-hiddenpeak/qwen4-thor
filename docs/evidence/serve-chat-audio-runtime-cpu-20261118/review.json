@@ -1,0 +1,22 @@
+{
+  "status": "TARGETED_CPU_ACCEPTED_REAL_CHAT_AUDIO_PENDING",
+  "unique_checks": 18,
+  "runtime_checks": 12,
+  "composition_checks": 6,
+  "composition_executions": 9,
+  "source_checks": 2,
+  "source_anchors": 858,
+  "gpu": 0,
+  "http_requests": 0,
+  "default": {
+    "build/q4t": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+    "build/q4t.release.json": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
+    "build/service/manifest.json": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
+    "build/service.release.json": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "binary_sha256": "9d8dbe2d62876fdee2a69ee78fc9c60c77a3f7b86481af0cd85576768cfeaae6",
+  "host_sha256": "8db26bd3cbe29952f550827c6e3d7f670b6e39826ba64f687785474d6083f305",
+  "failures_retained": true,
+  "whole_master_complete": false
+}

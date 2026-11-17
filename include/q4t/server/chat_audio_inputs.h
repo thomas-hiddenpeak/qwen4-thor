@@ -19,6 +19,10 @@ struct ChatAudioInput {
 };
 
 bool HasChatAudioInputs(const io::Json& request);
+// Shape-only planning before acquisition. The source borrows the input JSON.
+ObjectReply ParseChatAudioSource(const io::Json& part, std::string_view role,
+                                 const std::string& path,
+                                 FileInputSource* source);
 
 class ChatAudioInputs {
  public:
@@ -43,4 +47,16 @@ class ChatAudioInputs {
   size_t transcript_bytes_ = 0;
   bool prepared_ = false;
 };
+struct ChatPlanConfig;
+struct ChatAudioBudget {
+  uint64_t prompt_capacity = 0;
+  uint64_t output = 0, auxiliary_output = 0, preparation_output = 0;
+};
+// Reservation upper bound only; never actual usage or proof of context fit.
+ObjectReply PlanChatAudioBudget(const io::Json& request,
+                                const ChatPlanConfig& config,
+                                const ChatAudioInputs& inputs,
+                                ChatAudioBudget* output);
+io::Json ChatAudioPreflight(const ChatAudioInputs& inputs,
+                            const ChatAudioBudget& budget);
 }  // namespace q4t::server

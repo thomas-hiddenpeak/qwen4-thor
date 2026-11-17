@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_web_search.h"
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/embeddings_plan.h"
@@ -79,7 +80,7 @@ ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
     ChatRequestPlan plan;
     ChatWebSearch web;
     reply = chat.Prepare(row.body, config, access, &plan);
-    if (reply.ok())
+    if (reply.ok() && !HasChatAudioInputs(row.body))
       reply = web.Prepare(&objects_, row.body, config, access, &plan);
     if (reply.ok()) reply = chat.Freeze(access, &dependencies);
     prepared = Object({{"kind", String("chat")},

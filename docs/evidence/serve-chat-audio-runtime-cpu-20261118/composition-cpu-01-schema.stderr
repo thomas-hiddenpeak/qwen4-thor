@@ -1,0 +1,21 @@
+test_python_and_javascript_preserve_audio_order_data_and_cache_marker (tools.serve_protocol.test_chat_audio.ChatAudio.test_python_and_javascript_preserve_audio_order_data_and_cache_marker) ... FAIL
+test_source_shape_and_role_are_consistent_in_all_schemas (tools.serve_protocol.test_chat_audio.ChatAudio.test_source_shape_and_role_are_consistent_in_all_schemas) ... ok
+
+======================================================================
+FAIL: test_python_and_javascript_preserve_audio_order_data_and_cache_marker (tools.serve_protocol.test_chat_audio.ChatAudio.test_python_and_javascript_preserve_audio_order_data_and_cache_marker)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_chat_audio.py", line 54, in test_python_and_javascript_preserve_audio_order_data_and_cache_marker
+    self.assertEqual(prepared['messages'], row['messages'])
+AssertionError: Lists differ: [{'ro[206 chars]0m'}}, {'type': 'text', 'text': 'Return exactl[166 chars]'}]}] != [{'ro[206 chars]0m'}}]}]
+
+First differing element 0:
+{'rol[205 chars]0m'}}, {'type': 'text', 'text': 'Return exactl[165 chars]}'}]}
+{'rol[205 chars]0m'}}]}
+
+Diff is 714 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.016s
+
+FAILED (failures=1)

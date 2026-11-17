@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <charconv>
 #include <limits>
+#include <utility>
 
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
 #include "q4t/server/mcp_policy.h"
@@ -93,7 +95,7 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
       req, model && model->IsString() ? model->str : config.model,
       config.allow_media, &error->param, config.count_input_only,
       config.preparing_file_inputs, config.async_tool_call_ids,
-      config.responses_tool_media);
+      config.responses_tool_media, config.preparing_audio_inputs);
   if (!status) {
     if (status.message().starts_with("schema_resource_exhausted:")) {
       error->code = "constraint_resource_exhausted";
@@ -101,6 +103,33 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     }
     return status;
   }
+  if (HasChatAudioInputs(req) && !config.native_asr_enabled) {
+    *error = {"audio_backend_unavailable", "messages", 503};
+    return Status::Fail("Native audio input backend is not configured");
+  }
+  if (const auto* modalities = req.Find("modalities");
+      modalities && !modalities->IsNull()) {
+    if (!modalities->IsArray() || modalities->array.empty() ||
+        modalities->array.size() > 2)
+      return Fail(error, "invalid_request", "modalities",
+                  "Expected nonempty text/audio output modalities");
+    bool text = false, audio = false;
+    for (const auto& value : modalities->array) {
+      if (!value.IsString() ||
+          (value.str != "text" && value.str != "audio") ||
+          (value.str == "text" ? std::exchange(text, true)
+                               : std::exchange(audio, true)))
+        return Fail(error, "invalid_request", "modalities",
+                    "Expected distinct text/audio output modalities");
+    }
+    if (audio) {
+      *error = {"audio_output_backend_unavailable", "modalities", 503};
+      return Status::Fail("Speech synthesis backend is not configured");
+    }
+  }
+  if (const auto* audio = req.Find("audio"); audio && !audio->IsNull())
+    return Fail(error, "invalid_request", "audio",
+                "Audio output options require audio output modality");
   plan->async_tool_call_ids = config.async_tool_call_ids;
   plan->responses_tool_media = config.responses_tool_media;
   plan->header_tools = config.header_tools;

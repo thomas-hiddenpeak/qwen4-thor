@@ -1,0 +1,30 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp: In member function ‘q4t::server::ObjectReply q4t::server::ChatServer::PrepareNativeChatAudio(int, const q4t::io::Json&, const std::shared_ptr<q4t::server::RequestControl>&, q4t::server::RequestDiagnostics&, q4t::server::ClientRateLease&, uint64_t, uint64_t, q4t::io::Json*, q4t::server::ActualUsage*, uint64_t*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:39:25: error: incomplete type ‘q4t::server::RequestDiagnostics’ used in nested name specifier
+   39 |     RequestDiagnostics::Scope waiting(diagnostic,
+      |                         ^~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:62:5: error: invalid use of incomplete type ‘class q4t::server::RequestDiagnostics’
+   62 |     diagnostic.Stage("audio_decode");
+      |     ^~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/chat_server_internal.h:3,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:1:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_server.h:86:7: note: forward declaration of ‘class q4t::server::RequestDiagnostics’
+   86 | class RequestDiagnostics;
+      |       ^~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:64:27: error: incomplete type ‘q4t::server::RequestDiagnostics’ used in nested name specifier
+   64 |       RequestDiagnostics::Scope waiting(diagnostic,
+      |                           ^~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:96:23: error: invalid use of incomplete type ‘class q4t::server::RequestDiagnostics’
+   96 |           auto lock = diagnostic.Lock(
+      |                       ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_server.h:86:7: note: forward declaration of ‘class q4t::server::RequestDiagnostics’
+   86 | class RequestDiagnostics;
+      |       ^~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_execution.cpp:97:48: error: ‘q4t::server::RequestDiagnostics::Wait’ has not been declared
+   97 |               asr_tok_mu_, RequestDiagnostics::Wait::kTokenizer, cancelled);
+      |                                                ^~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:387: CMakeFiles/q4t_server.dir/src/server/chat_audio_execution.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1472: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1652: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:649: q4t] Error 2

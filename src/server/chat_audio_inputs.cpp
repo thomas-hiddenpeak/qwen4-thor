@@ -1,10 +1,14 @@
 #include "q4t/server/chat_audio_inputs.h"
 
+#include <algorithm>
+
 #include "file_audio_protocol.h"
 #include "object_protocol.h"
 #include "q4t/server/file_audio.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/chat_plan.h"
+#include "q4t/server/moderation.h"
 
 namespace q4t::server {
 namespace {
@@ -46,6 +50,39 @@ bool HasChatAudioInputs(const Json& request) {
   return false;
 }
 
+ObjectReply ParseChatAudioSource(const Json& part, std::string_view role,
+                                 const std::string& path,
+                                 FileInputSource* source) {
+  if (!source) return State();
+  if (role != "user")
+    return Invalid(path, "Input audio requires a user message");
+  std::string param;
+  auto fields = InputFields(
+      part, {"type", "input_audio", "prompt_cache_breakpoint"}, &param, path);
+  if (!fields) return Invalid(param, "Invalid audio content part");
+  if (part.GetString("type") != "input_audio")
+    return Invalid(path + ".type", "Expected input_audio type");
+  const auto* audio = part.Find("input_audio");
+  if (!audio || !audio->IsObject())
+    return Invalid(path + ".input_audio", "Expected input_audio object");
+  fields =
+      InputFields(*audio, {"data", "format"}, &param, path + ".input_audio");
+  if (!fields) return Invalid(param, "Invalid input_audio field");
+  const auto format = audio->GetString("format");
+  if (format != "wav" && format != "mp3")
+    return Invalid(path + ".input_audio.format", "Expected wav or mp3");
+  const auto* data = audio->Find("data");
+  if (!data || !data->IsString() || data->str.empty())
+    return Invalid(path + ".input_audio.data", "Expected base64 audio");
+  FileInputSource parsed;
+  parsed.value = data->str;
+  parsed.param = path + ".input_audio.data";
+  parsed.filename = "input." + format;
+  parsed.mime_type = format == "wav" ? "audio/wav" : "audio/mpeg";
+  *source = std::move(parsed);
+  return {};
+}
+
 ObjectReply ChatAudioInputs::Prepare(const Json& request,
                                      const BinaryAccess& access,
                                      ChatAudioLimits limits) {
@@ -68,32 +105,11 @@ ObjectReply ChatAudioInputs::Prepare(const Json& request,
         const auto& part = content->array[j];
         if (!Audio(part)) continue;
         const auto path = Path(i, j);
-        if (message.GetString("role") != "user")
-          return Invalid(path, "Input audio requires a user message");
-        std::string param;
-        auto fields = InputFields(
-            part, {"type", "input_audio", "prompt_cache_breakpoint"}, &param,
-            path);
-        if (!fields) return Invalid(param, "Invalid audio content part");
-        if (part.GetString("type") != "input_audio")
-          return Invalid(path + ".type", "Expected input_audio type");
-        const auto* audio = part.Find("input_audio");
-        if (!audio || !audio->IsObject())
-          return Invalid(path + ".input_audio", "Expected input_audio object");
-        fields = InputFields(*audio, {"data", "format"}, &param,
-                             path + ".input_audio");
-        if (!fields) return Invalid(param, "Invalid input_audio field");
-        const auto format = audio->GetString("format");
-        if (format != "wav" && format != "mp3")
-          return Invalid(path + ".input_audio.format", "Expected wav or mp3");
-        const auto* data = audio->Find("data");
-        if (!data || !data->IsString() || data->str.empty())
-          return Invalid(path + ".input_audio.data", "Expected base64 audio");
         FileInputSource source;
-        source.value = data->str;
-        source.param = path + ".input_audio.data";
-        source.filename = "input." + format;
-        source.mime_type = format == "wav" ? "audio/wav" : "audio/mpeg";
+        auto parsed = ParseChatAudioSource(part, message.GetString("role"),
+                                           path, &source);
+        if (!parsed.ok()) return parsed;
+        const auto format = part.Find("input_audio")->GetString("format");
         ChatAudioInput input{i, j, path, format, Digest(OutputJson(part)), {}};
         auto read =
             ReadLocalFileInput(nullptr, access, source, &budget, &input.source);
@@ -178,5 +194,66 @@ ObjectReply ChatAudioInputs::Render(const Json& request,
   if (!active.ok()) return active;
   *output = std::move(result);
   return {};
+}
+ObjectReply PlanChatAudioBudget(const Json& request,
+                                const ChatPlanConfig& config,
+                                const ChatAudioInputs& inputs,
+                                ChatAudioBudget* output) {
+  if (!output || !inputs.Active() || !config.asr_limits.Valid() ||
+      config.max_len < 1 || config.count_input_only)
+    return State();
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  auto validation = config;
+  validation.preparing_audio_inputs = true;
+  validation.preparing_file_inputs = true;
+  const auto status = PlanChatRequest(request, validation, &plan, &error);
+  if (!status)
+    return At(Error(error.http_status, error.code, status.message()),
+              error.param);
+  ChatAudioBudget budget;
+  budget.prompt_capacity =
+      uint64_t(config.max_len) * (1 + 2 * plan.moderation.enabled) +
+      inputs.Inputs().size() * uint64_t(config.asr_limits.max_context_tokens);
+  if (config.client_limits)
+    budget.prompt_capacity = std::min<uint64_t>(
+        budget.prompt_capacity, config.client_limits->max_prompt_tokens);
+  if (!budget.prompt_capacity) return State();
+  budget.output =
+      uint64_t(ChatOutputLimit(request, config)) * plan.sampling.choices;
+  budget.auxiliary_output =
+      2 * plan.moderation.enabled * kMaxModerationStepTokens;
+  budget.preparation_output = config.asr_limits.max_output_tokens;
+  *output = budget;
+  return {};
+}
+
+Json ChatAudioPreflight(const ChatAudioInputs& inputs,
+                        const ChatAudioBudget& budget) {
+  return Object(
+      {{"object", String("q4t.preflight")},
+       {"profile", String(std::string(kPreflightProfile))},
+       {"status", String("requires_audio_preparation")},
+       {"input", Object({{"tokens", Json()},
+                         {"mode", String("context_upper_bound")},
+                         {"capacity", Number(budget.prompt_capacity)}})},
+       {"output",
+        Object({{"reserved_tokens", Number(budget.output)},
+                {"auxiliary_tokens", Number(budget.auxiliary_output)},
+                {"preparation_tokens", Number(budget.preparation_output)}})},
+       {"audio", Object({{"parts", Number(inputs.Inputs().size())},
+                         {"transcribed", Boolean(false)}})},
+       {"checks", Object({{"input", Boolean(true)},
+                          {"file_inputs", Boolean(true)},
+                          {"container_headers", Boolean(true)},
+                          {"audio_decoded", Boolean(false)},
+                          {"media", Boolean(false)},
+                          {"web_search", Boolean(false)},
+                          {"template", Boolean(false)},
+                          {"tokenizer", Boolean(false)},
+                          {"budget", Boolean(false)},
+                          {"request_registered", Boolean(false)},
+                          {"gpu_executed", Boolean(false)}})},
+       {"execution_guaranteed", Boolean(false)}});
 }
 }  // namespace q4t::server

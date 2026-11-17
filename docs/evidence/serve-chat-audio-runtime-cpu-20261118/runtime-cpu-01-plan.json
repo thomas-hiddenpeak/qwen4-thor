@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-cpu-01/required.txt"
+  ],
+  "limits": {
+    "cpu_tests": 12,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "identities": {
+    "/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp": "ec389b8675554da5b1d0b8bcb70d2faf7410b2105dafcfc967cbaa3bf8a1ca1a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "012f484c31e3c2cd16ba04dff2935ac46ce7f20eec14faa580413d901a3c9fe3",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_audio_inputs.h": "37f8a570c272619af8682ebfcadd436f73295a232f275b86879e1791b8f8137a",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_inputs.cpp": "6ce1c287bc7f4f7ca79afa19627c0d3d5446e2e2955e97f62f9fa02f181a717a",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp": "de360ad77cd67af5da4827a0a9688aebe078bde29030bd2c2c67242b4165fab8",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp": "dc0539f6d797b693ae7c1dd9b395aeefaea2308ffaea007dbc8f1e4e56010121"
+  }
+}

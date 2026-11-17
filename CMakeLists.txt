@@ -330,6 +330,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
   src/server/chat_audio_inputs.cpp
+  src/server/chat_audio_execution.cpp
   src/server/asr_response.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp

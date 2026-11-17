@@ -6,6 +6,7 @@
 #include "object_protocol.h"
 #include "q4t/model/embedding_config.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_web_search.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/embeddings_plan.h"
@@ -242,16 +243,34 @@ ObjectReply MeasureBatchInput(ObjectStore& objects, std::string_view endpoint,
     ChatWebSearch web;
     const Json missing;
     const auto* frozen_web = prepared.Find("web_content");
-    reply = web.Prepare(&objects, row.body, config, access, &plan,
-                         frozen_web ? frozen_web : &missing);
-    if (!reply.ok()) return reply;
-    status = meter.Chat(row.body, plan, config, &error);
+    if (HasChatAudioInputs(row.body)) {
+      // The immutable row owns its inline audio. ASR and the audio-derived
+      // query execute only after the durable started marker, never on recovery.
+      if (frozen_web && !frozen_web->IsNull()) return Invalid();
+      ChatAudioInputs inputs;
+      reply = inputs.Prepare(row.body, access);
+      ChatAudioBudget budget;
+      if (reply.ok()) reply = PlanChatAudioBudget(row.body, config, inputs, &budget);
+      if (!reply.ok()) return reply;
+      meter.input = {budget.prompt_capacity, false};
+      meter.output = budget.output;
+      planned.prompt_capacity = budget.prompt_capacity;
+      planned.auxiliary_output = budget.auxiliary_output;
+      planned.preparation_output = budget.preparation_output;
+      planned.input_exact = false;
+      chat_variable_input = true;
+    } else {
+      reply = web.Prepare(&objects, row.body, config, access, &plan,
+                           frozen_web ? frozen_web : &missing);
+      if (!reply.ok()) return reply;
+      status = meter.Chat(row.body, plan, config, &error);
+    }
     if (status && plan.moderation.enabled) {
       chat_variable_input = true;
       planned.input_exact = false;
-      planned.prompt_capacity = config.client_limits
-                                    ? config.client_limits->max_prompt_tokens
-                                    : 3ULL * config.max_len;
+      planned.prompt_capacity = std::max<uint64_t>(planned.prompt_capacity,
+          config.client_limits ? config.client_limits->max_prompt_tokens
+                               : 3ULL * config.max_len);
       planned.auxiliary_output = 2 * kMaxModerationStepTokens;
     }
   } else if (endpoint == "/v1/responses") {

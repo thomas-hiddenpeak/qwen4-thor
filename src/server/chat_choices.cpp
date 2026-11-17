@@ -14,6 +14,18 @@ bool Adds(uint64_t first, uint64_t second) {
 }
 }  // namespace
 
+Status ChatChoices::SetAudioPreparation(const ActualUsage& usage,
+                                        uint64_t audio_tokens) {
+  if (accepted_ || audio_prepared_ || !ValidActualUsage(usage) ||
+      !usage.input || !audio_tokens || audio_tokens > usage.input ||
+      usage.cached || usage.cache_write || usage.reasoning)
+    return Status::Fail("invalid audio preparation usage");
+  audio_preparation_ = usage;
+  audio_tokens_ = audio_tokens;
+  audio_prepared_ = true;
+  return {};
+}
+
 Status ChatChoices::Add(int index, std::string_view message,
                         std::string_view finish, std::string_view logprobs,
                         uint64_t prompt, uint64_t completion, uint64_t cached,
@@ -26,6 +38,8 @@ Status ChatChoices::Add(int index, std::string_view message,
       !Adds(reasoning, forced) || reasoning + forced > completion ||
       !Adds(completion_, completion) ||
       !Adds(prompt, completion_ + completion) || !Adds(reasoning_, reasoning) ||
+      !Adds(prompt + completion_ + completion,
+             audio_preparation_.input + audio_preparation_.output) ||
       !Adds(forced_, forced) ||
       (!prediction && (prediction_accepted || prediction_rejected)) ||
       (index && prediction != prediction_) ||
@@ -67,12 +81,20 @@ Status ChatChoices::Add(int index, std::string_view message,
 
 std::string ChatChoices::UsageJson() const {
   std::string json =
-      "{\"prompt_tokens\":" + std::to_string(prompt_) +
-      ",\"completion_tokens\":" + std::to_string(completion_) +
-      ",\"total_tokens\":" + std::to_string(prompt_ + completion_);
-  if (report_cached_ || full_usage_)
+      "{\"prompt_tokens\":" +
+      std::to_string(prompt_ + audio_preparation_.input) +
+      ",\"completion_tokens\":" +
+      std::to_string(completion_ + audio_preparation_.output) +
+      ",\"total_tokens\":" +
+      std::to_string(prompt_ + completion_ + audio_preparation_.input +
+                     audio_preparation_.output);
+  if (report_cached_ || full_usage_ || audio_prepared_) {
     json += ",\"prompt_tokens_details\":{\"cached_tokens\":" +
-            std::to_string(cached_) + '}';
+            std::to_string(cached_);
+    if (audio_prepared_)
+      json += ",\"audio_tokens\":" + std::to_string(audio_tokens_);
+    json += '}';
+  }
   if (reasoning_limit_ >= 0 || prediction_ || full_usage_) {
     json += ",\"completion_tokens_details\":{\"reasoning_tokens\":" +
             std::to_string(reasoning_ + forced_);
@@ -89,6 +111,12 @@ std::string ChatChoices::UsageJson() const {
             ",\"consumed\":" + std::to_string(reasoning_) +
             ",\"forced_closure_tokens\":" + std::to_string(forced_) + '}';
   }
+  if (audio_prepared_)
+    json += ",\"q4t_audio_preparation\":{\"input_tokens\":" +
+            std::to_string(audio_preparation_.input) +
+            ",\"output_tokens\":" +
+            std::to_string(audio_preparation_.output) +
+            ",\"audio_tokens\":" + std::to_string(audio_tokens_) + '}';
   return json + '}';
 }
 
