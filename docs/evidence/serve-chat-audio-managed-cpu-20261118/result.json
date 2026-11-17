@@ -1,0 +1,14 @@
+{
+  "contract_cpu": {
+    "returncode": 0,
+    "seconds": 0.8647058270871639
+  },
+  "inventory": {
+    "returncode": 0,
+    "seconds": 0.2641379749402404
+  },
+  "schema": {
+    "returncode": 0,
+    "seconds": 0.16392959794029593
+  }
+}

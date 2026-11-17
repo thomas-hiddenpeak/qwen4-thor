@@ -4,6 +4,7 @@ Two starts, six Chat and two native embedding requests under one strict lease.
 Media profiles additionally require one actual video request on each profile.
 Configured ASR additionally requires one actual audio request on each profile.
 Configured alignment/VAD additionally requires actual auxiliary audio per profile.
+Declared Chat audio requires a source-bound main-model answer on each profile.
 Final qualification is constructed only after guard exit and complete cleanup.
 This does not enable deployment or certify automatic managed profile switching.
 """
@@ -37,9 +38,12 @@ DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
 SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
-def limits_for(profile, native_asr=None):
+def limits_for(profile, native_asr=None, chat_audio=False):
     capacity.validate(profile)
+    require(type(chat_audio) is bool and (not chat_audio or native_asr is not None),
+            'Chat audio qualification requires native ASR')
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
+                (2 if chat_audio else 0) +
                 (2 if native_asr is not None else 0) +
                 (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0) +
@@ -148,10 +152,12 @@ def prepare(args):
         capacity.validate(base['settings']['profile'])
     profiles = profile_contract.profiles(selected)
     media = selected.get('allow_media', False)
-    limits = limits_for(selected, asr)
+    chat_audio = getattr(args, 'chat_audio', False)
+    limits = limits_for(selected, asr, chat_audio)
     background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
+    if chat_audio: plan['chat_audio'] = True
     if asr_path:
         asr_path = asr_path.resolve(strict=True)
         plan['sources'][str(asr_path)] = sha(asr_path)
@@ -257,11 +263,13 @@ def prepare(args):
         if (engine/name).is_file():
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)
-    plan['planned'] = dict(starts=2, requests=limits['chats'], chats=6,
+    plan['planned'] = dict(starts=2, requests=limits['chats'], chats=6 + 2 * chat_audio,
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
     if asr is not None:
         plan['planned']['native_transcriptions'] = 2
+    if chat_audio:
+        plan['planned']['chat_audio_requests'] = 2
     if profile_evidence.audio_auxiliaries(plan['identity']):
         plan['planned']['native_auxiliary_transcriptions'] = 2
     if profile_evidence.has_speaker(plan['identity']):
@@ -285,7 +293,8 @@ class Stage(encrypted.Stage):
 
     def __init__(self, plan):
         selected = plan['profiles']['primary']
-        self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'))
+        self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'),
+                                 plan.get('chat_audio', False))
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
 
@@ -319,6 +328,10 @@ class Stage(encrypted.Stage):
             require(status == 200, 'missing actual '+key)
             save(self.out/(name+'-'+key+'.json'), json.loads(raw))
         config = read(self.out/(name+'-config.json'))
+        capability = read(self.out/(name+'-capabilities.json'))
+        require(profile_evidence.chat_audio_enabled(self.plan['identity'], capability) is
+            self.plan.get('chat_audio', False),
+            'freeze the declared Chat audio business budget with --chat-audio')
         profile_contract.configuration(self.plan['profiles'][name],
                                        contracts.configuration(config, version=5))
         profile_contract.startup_memory(config['startup_memory']['checks']['before_allocations'])
@@ -433,13 +446,20 @@ class Stage(encrypted.Stage):
                 response=self.request('media', rows['media'], '/v1/responses'))
         if self.plan['identity'].get('native_asr') is not None:
             value['asr'] = self.audio_request()
+        if self.plan.get('chat_audio'):
+            source = value['asr']['source_base64']
+            response = self.request('chat-audio', profile_evidence.chat_audio_request(source))
+            status, raw = self.http('/v1/config', label=self.profile_name+'-chat-audio-config')
+            require(status == 200, 'qualified Chat audio configuration unavailable')
+            value['chat_audio'] = profile_evidence.chat_audio_witness(source, response, json.loads(raw))
         if profile_evidence.audio_auxiliaries(self.plan['identity']):
             value['asr_auxiliary'] = self.audio_request(auxiliary=True)
         if profile_evidence.has_speaker(self.plan['identity']):
             value['speaker'] = self.audio_request(speaker=True)
         if profile_evidence.has_separator(self.plan['identity']):
             value['separator'] = self.audio_request(separator=True)
-        profile_evidence.business(value, self.plan['identity'], selected)
+        profile_evidence.business(value, self.plan['identity'], selected,
+            read(self.out/(self.profile_name+'-capabilities.json')))
         save(self.out/(self.profile_name+'-business.json'), value)
 
     def business(self):
@@ -474,7 +494,8 @@ def environment(exit_record, queries, cleanups):
 def finalize(out):
     plan = read(out/'plan.json')
     result = read(out/'result.json')
-    limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'))
+    limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'),
+                         plan.get('chat_audio', False))
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
@@ -500,9 +521,11 @@ def finalize(out):
                     profiles=plan['profiles'], qualifications={})
     for name in profile_contract.NAMES:
         config = read(out/(name+'-config.json'))
-        value = dict(format=profile_evidence.format_for(plan['profiles'][name], plan['identity']), profile=name,
+        capability = read(out/(name+'-capabilities.json'))
+        value = dict(format=profile_evidence.format_for(plan['profiles'][name],
+            plan['identity'], capability), profile=name,
             identity=plan['identity'], capacity=plan['profiles'][name],
-            capabilities=read(out/(name+'-capabilities.json')),
+            capabilities=capability,
             configuration=contracts.configuration(config, version=5),
             startup_memory=config['startup_memory']['checks']['before_allocations'],
             business=read(out/(name+'-business.json')), environment=env)
@@ -539,6 +562,8 @@ def main():
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,
                    help='fixed real audio required when ASR is configured')
+    p.add_argument('--chat-audio', action='store_true',
+                   help='freeze one actual Chat speech request on each profile')
     p.add_argument('--speaker-audio', type=Path,
                    help='fixed returning-speaker audio required when speaker is configured')
     p.add_argument('--separator-audio', type=Path,

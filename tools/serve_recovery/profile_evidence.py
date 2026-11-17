@@ -10,6 +10,103 @@ import wave
 
 from tools.serve_recovery import ledger, profile_contract
 
+CHAT_AUDIO_FORMAT = 'q4t-profile-business-v7'
+CHAT_AUDIO_SOURCE_SHA = '46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50'
+CHAT_AUDIO_CAPABILITY = dict(profile='q4t-chat-audio-input-v1', formats=['wav', 'mp3'],
+    max_parts=8, max_source_bytes=26214400, preparation='native_asr_transcript',
+    output_modalities=['text'], usage='actual_shared_preparation',
+    preflight='requires_audio_preparation')
+
+
+def chat_audio_capability(transcriptions):
+    ledger.require(type(transcriptions) is dict, 'invalid Chat audio declaration')
+    if 'chat_input' not in transcriptions:
+        return False  # Retained pre-Chat releases keep their original contract.
+    ledger.require(ledger.canonical(transcriptions['chat_input']) == ledger.canonical(CHAT_AUDIO_CAPABILITY),
+                   'invalid Chat audio capability contract')
+    return True
+
+
+def chat_audio_enabled(identity, capabilities):
+    if capabilities is None:
+        return False
+    transcriptions = capabilities.get('transcriptions', {})
+    declared = chat_audio_capability(transcriptions)
+    return declared and identity.get('native_asr') is not None
+
+
+def chat_audio_request(encoded, *, stream=False):
+    ledger.require(type(encoded) is str and 0 < len(encoded) <= 2**20,
+                   'invalid qualified Chat audio source')
+    try:
+        source = base64.b64decode(encoded, validate=True)
+    except ValueError as error:
+        raise ValueError('invalid qualified Chat audio encoding') from error
+    ledger.require(base64.b64encode(source).decode() == encoded and
+        hashlib.sha256(source).hexdigest() == CHAT_AUDIO_SOURCE_SHA,
+        'qualified Chat audio source differs')
+    result = dict(model='qwen3.8-flash-next', enable_thinking=False, temperature=0,
+        max_completion_tokens=32, modalities=['text'], n=2, store=True,
+        messages=[dict(role='user', content=[dict(type='text', text=
+            '录音中被描述为几乎停滞的事情是什么？只回答对应的两个汉字，不要解释。'),
+            dict(type='input_audio', input_audio=dict(data=encoded, format='wav'))])])
+    if stream:
+        result.update(stream=True, stream_options=dict(include_usage=True))
+    return result
+
+
+def chat_audio_witness(encoded, response, config, *, stream=False):
+    return dict(source_sha256=CHAT_AUDIO_SOURCE_SHA,
+        request_sha256=ledger.digest(chat_audio_request(encoded, stream=stream)),
+        response=response, health=config['native_asr_health'],
+        limits=config['native_asr_limits'])
+
+
+def chat_audio_business(value, identity, encoded, *, stream=False):
+    ledger.keys(value, ('source_sha256', 'request_sha256', 'response', 'health', 'limits'))
+    ledger.require(value['source_sha256'] == CHAT_AUDIO_SOURCE_SHA and
+        value['request_sha256'] == ledger.digest(chat_audio_request(encoded, stream=stream)),
+        'qualified Chat audio request/source differs')
+    fixed = identity.get('native_asr')
+    ledger.require(type(fixed) is dict, 'Chat audio lacks qualified ASR')
+    health = value['health']
+    ledger.require(type(health) is dict and health.get('state') == 'ready' and
+        health.get('reason') == 'none' and health.get('model') == fixed['model'] and
+        health.get('core_readiness_dependency') is False and
+        ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+        ledger.integer(health.get('device_bytes'), minimum=1) and
+        ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
+        'qualified Chat audio health/limits differ')
+    response = value['response']
+    ledger.require(type(response) is dict and response.get('object') == 'chat.completion',
+                   'qualified Chat audio response missing')
+    choices = response.get('choices')
+    ledger.require(type(choices) is list and len(choices) == 2,
+                   'qualified Chat audio choices missing')
+    for index, choice in enumerate(choices):
+        message = choice.get('message', {})
+        ledger.require(type(choice.get('index')) is int and choice['index'] == index and
+            choice.get('finish_reason') == 'stop' and message.get('role') == 'assistant' and
+            message.get('content') == '交易' and not message.get('refusal') and
+            not message.get('tool_calls'), 'qualified Chat audio meaning differs')
+    usage = response.get('usage', {})
+    prepared = usage.get('q4t_audio_preparation', {})
+    details = usage.get('prompt_tokens_details', {})
+    ledger.require(all(ledger.integer(usage.get(k), minimum=1) for k in
+        ('prompt_tokens', 'completion_tokens', 'total_tokens')) and
+        all(ledger.integer(prepared.get(k), minimum=1) for k in
+            ('input_tokens', 'output_tokens', 'audio_tokens')) and
+        usage['total_tokens'] == usage['prompt_tokens'] + usage['completion_tokens'] and
+        prepared['audio_tokens'] == details.get('audio_tokens') == 55 and
+        prepared['audio_tokens'] < prepared['input_tokens'] < usage['prompt_tokens'] and
+        prepared['output_tokens'] <= fixed['limits']['max_output_tokens'] and
+        2 <= usage['completion_tokens'] - prepared['output_tokens'] <= 64 and
+        ledger.integer(details.get('cached_tokens')) and
+        details['cached_tokens'] <= usage['prompt_tokens'] - prepared['input_tokens'],
+        'qualified Chat audio actual shared usage differs')
+    return value
+
+
 FORMAT = 'q4t-profile-business-v1'
 MEDIA_FORMAT = 'q4t-profile-business-v2'
 ASR_FORMAT = 'q4t-profile-business-v3'
@@ -40,7 +137,9 @@ MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
-def format_for(profile, identity=None):
+def format_for(profile, identity=None, capabilities=None):
+    if chat_audio_enabled(identity or {}, capabilities):
+        return CHAT_AUDIO_FORMAT
     if has_separator(identity or {}):
         return SEPARATOR_FORMAT
     if has_speaker(identity or {}):
@@ -446,18 +545,23 @@ def message(response, finish):
     return value
 
 
-def business(value, identity, selected=None):
+def business(value, identity, selected=None, capabilities=None):
     media = (selected or {}).get('allow_media', False)
+    chat_audio = chat_audio_enabled(identity, capabilities)
     ledger.keys(value, ('schema', 'tool_call', 'tool_result', 'tool_reply',
                        'tool_source', 'embedding') + (('media',) if media else ()) +
                        (('asr',) if identity.get('native_asr') is not None else ()) +
                        (('asr_auxiliary',) if audio_auxiliaries(identity) else ()) +
                        (('speaker',) if has_speaker(identity) else ()) +
-                       (('separator',) if has_separator(identity) else ()))
+                       (('separator',) if has_separator(identity) else ()) +
+                       (('chat_audio',) if chat_audio else ()))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:
         audio_business(value['asr'], identity)
+    if chat_audio:
+        chat_audio_business(value['chat_audio'], identity,
+                                    value['asr']['source_base64'])
     if audio_auxiliaries(identity):
         audio_auxiliary_business(value['asr_auxiliary'], identity)
     if has_speaker(identity):
@@ -510,7 +614,7 @@ def validate(value, registry, name, digest):
         'configuration', 'startup_memory', 'business', 'environment'))
     profile_contract.validate(registry)
     ledger.require(value['format'] == format_for(registry['profiles'][name],
-                                                registry['identity']) and
+                                                registry['identity'], value['capabilities']) and
         value['profile'] == name and
         value['identity'] == registry['identity'] and
         value['capacity'] == registry['profiles'][name], 'profile evidence identity differs')
@@ -518,7 +622,7 @@ def validate(value, registry, name, digest):
         value['capabilities'], value['configuration'], value['startup_memory'], digest)
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
-    business(value['business'], value['identity'], value['capacity'])
+    business(value['business'], value['identity'], value['capacity'], value['capabilities'])
     environment = value['environment']
     ledger.keys(environment, ('status', 'env_abort', 'all_queries_ok',
         'nvml_queries', 'lease_result_sha256', 'cleanup_complete'))

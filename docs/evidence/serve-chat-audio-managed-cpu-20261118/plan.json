@@ -1,0 +1,33 @@
+{
+  "commands": {
+    "contract_cpu": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_recovery.test_chat_audio_profiles"
+    ],
+    "inventory": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "schema": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ]
+  },
+  "limits": {
+    "cpu_tests": 6,
+    "source_checks": 2,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "environment": {
+    "TMPDIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/managed-cpu-01/fixtures"
+  }
+}

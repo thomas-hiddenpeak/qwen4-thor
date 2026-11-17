@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频托管6CPU与2来源通过](evidence/serve-chat-audio-managed-cpu-20261118/README.md)，
+0GPU。接着固定2启动/18请求/900秒，同租约验证主/轻实际资格，
+保留media/embedding/ASR/对齐/VAD/说话人；默认rev296保持。
+之后原生TLS/恢复及可回退交付，原重叠质量和全部master继续。
+
+Chat音频托管资格/恢复接线中：声明Chat输入的主/轻包必须提供
+实际语音回答与共享用量，v7保留原ASR/对齐/VAD/说话人检查；
+旧资格按原能力验证，自动回退不得丢Chat。先6针对性CPU/180秒
+及2来源，0新增GPU，随后实际profile/TLS/恢复与可回退交付。
+
 [Chat音频13实际业务用例闭合](evidence/serve-chat-audio-http-20261118/README.md)：
 静音原问题已修复、Batch/边界/取消与核心保护通过，最后一组
 1启动/7请求/44.235秒，资源清理、默认rev296不变。接着主/轻

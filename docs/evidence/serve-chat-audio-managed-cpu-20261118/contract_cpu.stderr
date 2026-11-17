@@ -1,0 +1,11 @@
+test_explicit_extension_preserves_recovery_state_and_auto_fallback_cannot_drop_chat (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_explicit_extension_preserves_recovery_state_and_auto_fallback_cannot_drop_chat) ... ok
+test_malformed_declarations_and_unbound_backend_cannot_be_qualified (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_malformed_declarations_and_unbound_backend_cannot_be_qualified) ... ok
+test_managed_budgets_and_stream_requests_stay_explicit_and_bounded (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_managed_budgets_and_stream_requests_stay_explicit_and_bounded) ... ok
+test_new_receipts_require_chat_on_both_profiles_and_preserve_old_format (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_new_receipts_require_chat_on_both_profiles_and_preserve_old_format) ... ok
+test_profile_driver_freezes_actual_extra_requests_without_omitting_auxiliaries (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_profile_driver_freezes_actual_extra_requests_without_omitting_auxiliaries) ... ok
+test_real_chat_source_answer_usage_and_health_rejects_fabricated_success (tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_real_chat_source_answer_usage_and_health_rejects_fabricated_success) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.356s
+
+OK

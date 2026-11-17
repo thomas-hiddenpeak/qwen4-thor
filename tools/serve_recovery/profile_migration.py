@@ -171,6 +171,7 @@ def asr_capabilities(value):
     selected = value.get('transcriptions')
     if selected is None:
         return
+    profile_evidence.chat_audio_capability(selected)
     ledger.require(type(selected) is dict and
         all(selected.get(k) == v for k, v in package.NATIVE_ASR.items()) and
         type(selected.get('configured')) is bool,

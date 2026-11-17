@@ -11,7 +11,7 @@ const wire = [], pending = [], exchanges = [];
 let bytes = 0;
 const control = new AbortController();
 const timer = setTimeout(() => control.abort(), 180000);
-const client = new OpenAI({ baseURL: value.base_url, apiKey: 'local',
+const client = new OpenAI({ baseURL: value.base_url, apiKey: value.api_key ?? 'local',
   maxRetries: 0, timeout: 180000, fetch: async (url, options) => {
     exchanges.push({ method: options.method, url: String(url) });
     const response = await fetch(url, options);
