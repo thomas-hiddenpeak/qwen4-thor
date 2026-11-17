@@ -1,0 +1,18 @@
+{
+  "host": {
+    "returncode": 0,
+    "seconds": 0.007594056893140078
+  },
+  "driver": {
+    "returncode": 0,
+    "seconds": 0.21389478398486972
+  },
+  "inventory": {
+    "returncode": 0,
+    "seconds": 0.26400016294792295
+  },
+  "contract": {
+    "returncode": 0,
+    "seconds": 0.16384725319221616
+  }
+}

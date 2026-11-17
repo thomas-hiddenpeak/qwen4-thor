@@ -2532,7 +2532,7 @@
     "src/server/chat_asr_backend.cpp": "ea7cba81bf63e96972cfb35483db9ddd3ffae3cb02950ffda74ab964a666611a",
     "src/server/chat_asr_execution.cpp": "fa616c0cda0da8d0ad9755adfebbe4cbe8771fa20553224ec054096e5b292c90",
     "src/server/chat_audio_execution.cpp": "9a7ded7af79c0915ed9cc2179c1aed3bb41223677b11df681da52c76f3eedb4b",
-    "src/server/chat_audio_inputs.cpp": "e5ef0555d0dc4cf54125d3f0c7659d74f0cc5ef06a1a70d8784042dfdeab3c34",
+    "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
     "src/server/chat_capabilities.cpp": "465bde7edb954853d3a3a636226982d5828db49d70b3ddf919528b26667e0374",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "dc0539f6d797b693ae7c1dd9b395aeefaea2308ffaea007dbc8f1e4e56010121",

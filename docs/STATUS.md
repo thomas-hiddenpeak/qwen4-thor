@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频静音状态3CPU通过](evidence/serve-chat-audio-silence-state-20261118/README.md)，
+2来源及零警告构建通过，实际多模态3请求可复用；原静音FAIL
+保留。接着1启动/7请求/900秒针对失败与未执行项，默认rev296、
+托管交付、原重叠质量和全部master继续。
+
+Chat音频http-04通过MP3/SSE与双音频真实工具闭环，静音主回答
+拒答，原FAIL保留（1启动/4请求/58.158秒）。空转录帧补明确
+无识别语音状态，非空投影不变；固定3CPU/180秒与2来源后，
+1启动/7请求/900秒，仅静音诊断/失败项及未执行项。默认rev296
+和剩余托管交付、原重叠质量及全部master继续。
+
 [Chat音频真实中文/RPM/存储已核验](evidence/serve-chat-audio-source-map-20261118/README.md)，
 原验收器字段失败保留；原始坐标/PDF与Batch组合3CPU及2来源
 通过、零警告构建。接着仅9未执行请求/1启动/900秒，复用已过

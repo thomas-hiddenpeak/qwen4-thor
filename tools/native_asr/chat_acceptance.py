@@ -30,6 +30,7 @@ FIXTURES = WORK / 'fixtures-02'
 LIMITS = dict(starts=1, chats=13, controls=2000, seconds=900)
 CONTINUATION_LIMITS = dict(LIMITS, chats=11)
 REMAINING_LIMITS = dict(LIMITS, chats=9)
+TAIL_LIMITS = dict(LIMITS, chats=7)  # Six remaining Chat cases + one ASR diagnosis.
 HEADERS = {'X-Q4T-Client-Id': 'chat-audio', 'X-Q4T-Gateway-Token': 'c' * 64}
 
 
@@ -179,6 +180,37 @@ def stored_history(value, request):
     return dict(originals_equal=True, messages=len(rows), audio=fingerprints)
 
 
+def english_result(raw, sdk):
+    completion = read_sse(io.BytesIO(raw))
+    observed = usage(dict(usage=completion.usage))
+    actual = json.loads(completion.message['content'])['activity'].lower()
+    require(completion.finish_reason == 'stop' and 'writ' in actual and 'other' in actual,
+        'real MP3 meaning differs')
+    sdk_usage = [e['usage'] for e in sdk['events'] if e.get('usage')]
+    require(sdk_usage == [completion.usage], 'JS SDK lost final usage or duplicated it')
+    return dict(activity=actual, usage=observed)
+
+
+def tool_result(value, result):
+    observed = usage(value)
+    actual = json.loads(value['choices'][0]['message']['content'])
+    title = result['source']['text'].splitlines()[0].split(': ', 1)[1]
+    require(value['choices'][0]['finish_reason'] == 'stop' and
+        actual['title'] in (title, title.lstrip('# ')) and actual['zh_topic'] == '交易'
+        and 'writ' in actual['en_activity'].lower() and 'other' in actual['en_activity'].lower(),
+        'audio order or actual tool/JSON closure differs')
+    return dict(answer=actual, usage=observed)
+
+
+def silence_result(value):
+    observed = usage(value)
+    choice = value['choices'][0]
+    require(choice['finish_reason'] == 'stop' and
+        choice['message'].get('content') == 'OK' and not choice['message'].get('refusal'),
+        'silence blocked text')
+    return observed
+
+
 def reuse_completed(source):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(WORK), 'reused evidence outside workdir')
@@ -251,11 +283,50 @@ def reuse_audio_success(source):
         identities={name: sha(source/name) for name in names})
 
 
+def reuse_multimodal_success(source):
+    source = Path(source).resolve(strict=True)
+    require(source.is_relative_to(WORK), 'multimodal evidence outside workdir')
+    plan, result = read(source/'plan.json'), read(source/'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+        result['counts']['chats'] == 4 and result['default_unchanged'] and
+        'silent[\'choices\'][0]' in result['error'], 'unexpected silence predecessor')
+    require(plan['requests'] == requests(), 'accepted multimodal task changed')
+    require(sha(WORK/'runtime-build-08/q4t-0f3e-retained') == plan['binary_sha256'],
+        'accepted multimodal candidate not retained')
+    cleanup = read(source/'cleanup.json')
+    require(read(source/'lease/exit.json')['status'] == 'COMMAND_FAILED' and
+        cleanup['model_exit'] == 0 and not cleanup['remaining'] and cleanup['ports_released'],
+        'multimodal environment or cleanup failed')
+    sdk = read(source/'js-en-mp3.sdk.json')
+    require(sdk['ok'] and len(sdk['exchanges']) == 1, 'accepted JS SDK retry or failure')
+    english = english_result((source/'js-en-mp3.wire').read_bytes(), sdk['result'])
+    native = read(source/'two-audio-tool.wire')
+    usage(native)
+    calls = prepare_tool_calls(read_json(io.BytesIO(json.dumps(native).encode())), VALIDATORS)
+    require(len(calls) == 1 and calls[0].arguments ==
+        dict(path='docs/MODEL.md', start_line=1, line_count=16), 'accepted tool args changed')
+    execution = read(source/'tool-execution.json')
+    actual = ProjectRecords(ROOT).execute(calls[0])
+    require(execution == dict(call=asdict(calls[0]), result=actual) and actual['ok'] and
+        actual['source']['sha256'] == plan['sources']['docs/MODEL.md'], 'tool source drift')
+    tool = tool_result(read(source/'two-audio-tool-final.wire'), actual)
+    names = ('plan.json', 'result.json', 'cleanup.json', 'lease/exit.json',
+        'js-en-mp3.wire', 'js-en-mp3.sdk.json', 'two-audio-tool.wire',
+        'tool-execution.json', 'two-audio-tool-final.wire', 'silence.wire')
+    return dict(directory=str(source), original_status='FAILED_SILENCE_PRESERVED',
+        accepted_requests=3, binary_sha256=plan['binary_sha256'], english=english, tool=tool,
+        audio=reuse_audio_success(plan['chat_audio_completed']['directory']),
+        identities={name: sha(source/name) for name in names})
+
+
 def prepare(args):
-    accepted = reuse_audio_success(args.remaining_from) if args.remaining_from else None
+    multimodal = reuse_multimodal_success(args.tail_from) if args.tail_from else None
+    accepted = (multimodal['audio'] if multimodal else
+        reuse_audio_success(args.remaining_from) if args.remaining_from else None)
     reused = (accepted['isolation'] if accepted else
         reuse_completed(args.continue_from) if args.continue_from else None)
-    limits = REMAINING_LIMITS if accepted else CONTINUATION_LIMITS if reused else LIMITS
+    limits = (TAIL_LIMITS if multimodal else REMAINING_LIMITS if accepted else
+              CONTINUATION_LIMITS if reused else LIMITS)
     asr.base.prepare(args, rows=requests(), limits=limits, scope=__doc__)
     out = args.output.resolve()
     plan = read(out/'plan.json')
@@ -274,6 +345,7 @@ def prepare(args):
         no_automatic_retry=True, no_overlap_or_performance_matrix=True)
     if reused: plan['chat_continuation'] = reused
     if accepted: plan['chat_audio_completed'] = accepted
+    if multimodal: plan['chat_multimodal_completed'] = multimodal
     plan['derived_requests'] = ['Typed fixture markers are expanded from the fixed clip SHA256 immediately before HTTP; raw audio is not plan metadata.',
         'Tool follow-up appends actual call ID, actual project file result and fixed final JSON task.']
     plan['command'] = ['/usr/bin/python3', '-B', str(Path(__file__).resolve()),
@@ -287,7 +359,12 @@ class Stage(asr.Stage):
     success_status = 'PASS_NATIVE_CHAT_AUDIO_BUSINESS'
 
     def __init__(self, plan):
-        if plan.get('chat_audio_completed'):
+        if plan.get('chat_multimodal_completed'):
+            self.limits = TAIL_LIMITS
+            self.success_status = 'PASS_CHAT_AUDIO_WITH_REUSED_SPEECH_AND_TOOL_BUSINESS'
+            require(reuse_multimodal_success(plan['chat_multimodal_completed']['directory']) ==
+                plan['chat_multimodal_completed'], 'accepted multimodal evidence drift')
+        elif plan.get('chat_audio_completed'):
             self.limits = REMAINING_LIMITS
             self.success_status = 'PASS_CHAT_AUDIO_WITH_REUSED_QUALITY_QUOTA_AND_ISOLATION'
             require(reuse_audio_success(plan['chat_audio_completed']['directory']) ==
@@ -299,6 +376,20 @@ class Stage(asr.Stage):
             require(reuse_completed(plan['chat_continuation']['directory']) ==
                     plan['chat_continuation'], 'reused Chat evidence drift')
         super().__init__(plan)
+
+    def silence_diagnosis(self):
+        boundary = 'q4t-chat-empty-transcript'
+        raw = (('--'+boundary+'\r\nContent-Disposition: form-data; name="model"\r\n\r\n'+
+            asr.MODEL+'\r\n--'+boundary+'\r\nContent-Disposition: form-data; name="file"; '+
+            'filename="silence.wav"\r\nContent-Type: audio/wav\r\n\r\n').encode()+
+            clip_paths()['silence'].read_bytes()+('\r\n--'+boundary+'--\r\n').encode())
+        self.budget('chats')
+        status, body = self.http('/v1/audio/transcriptions', raw,
+            label='silence-asr-diagnosis', content_type='multipart/form-data; boundary='+boundary)
+        require(status == 200, 'silence ASR diagnosis failed')
+        value = json.loads(body)
+        require(value['text'] == '', 'silence diagnosis did not confirm empty transcript')
+        self.drained('silence-asr-diagnosis-drain')
 
     def headers(self, client='chat-audio'):
         return dict(HEADERS, **{'X-Q4T-Client-Id': client})
@@ -496,43 +587,34 @@ class Stage(asr.Stage):
                 client='one-rpm', label='stored-audio-history')
             require(status == 200, 'stored audio history unavailable')
             save(self.out/'stored-audio-evidence.json', stored_history(json.loads(stored), rows['zh']))
-        sdk, raw = self.sdk('js-en-mp3', rows['en'])
-        completion = read_sse(io.BytesIO(raw))
-        usage(dict(usage=completion.usage))
-        actual = json.loads(completion.message['content'])['activity'].lower()
-        require(completion.finish_reason == 'stop' and 'writ' in actual and 'other' in actual,
-            'real MP3 meaning differs')
-        sdk_usage = [e['usage'] for e in sdk['events'] if e.get('usage')]
-        require(sdk_usage == [completion.usage], 'JS SDK lost final usage or duplicated it')
-        value = self.json_chat('two-audio-tool', rows['tool'])
-        usage(value)
-        completion = read_json(io.BytesIO(json.dumps(value).encode()))
-        calls = prepare_tool_calls(completion, VALIDATORS)
-        require(len(calls) == 1 and calls[0].arguments ==
-            dict(path='docs/MODEL.md', start_line=1, line_count=16), 'actual tool arguments differ')
-        result = ProjectRecords(ROOT).execute(calls[0])
-        require(result['ok'] and result['source']['sha256'] ==
-            self.plan['sources']['docs/MODEL.md'], 'actual project tool source drift')
-        save(self.out/'tool-execution.json', dict(call=asdict(calls[0]), result=result))
-        follow = copy.deepcopy(rows['tool'])
-        follow['messages'] = append_tool_results(follow['messages'], completion,
-            {calls[0].call_id: json.dumps(result, ensure_ascii=False)})
-        follow['messages'].append(dict(role='user', content='Return JSON with title from the '
-            'tool document, zh_topic as the two-Chinese-character subject described in the '
-            'first recording, and en_activity as the activity bringing more success in the second.'))
-        follow.update(tool_choice='auto', max_completion_tokens=256,
-            response_format=schema({k: dict(type='string') for k in
-                ('title', 'zh_topic', 'en_activity')}))
-        final = self.json_chat('two-audio-tool-final', follow)
-        usage(final)
-        actual = json.loads(final['choices'][0]['message']['content'])
-        title = result['source']['text'].splitlines()[0].split(': ', 1)[1]
-        require(actual['title'] in (title, title.lstrip('# ')) and actual['zh_topic'] == '交易'
-            and 'writ' in actual['en_activity'].lower() and 'other' in actual['en_activity'].lower(),
-            'audio order or actual tool/JSON closure differs')
+        if not self.plan.get('chat_multimodal_completed'):
+            sdk, raw = self.sdk('js-en-mp3', rows['en'])
+            english_result(raw, sdk)
+            value = self.json_chat('two-audio-tool', rows['tool'])
+            usage(value)
+            completion = read_json(io.BytesIO(json.dumps(value).encode()))
+            calls = prepare_tool_calls(completion, VALIDATORS)
+            require(len(calls) == 1 and calls[0].arguments ==
+                dict(path='docs/MODEL.md', start_line=1, line_count=16), 'actual tool arguments differ')
+            result = ProjectRecords(ROOT).execute(calls[0])
+            require(result['ok'] and result['source']['sha256'] ==
+                self.plan['sources']['docs/MODEL.md'], 'actual project tool source drift')
+            save(self.out/'tool-execution.json', dict(call=asdict(calls[0]), result=result))
+            follow = copy.deepcopy(rows['tool'])
+            follow['messages'] = append_tool_results(follow['messages'], completion,
+                {calls[0].call_id: json.dumps(result, ensure_ascii=False)})
+            follow['messages'].append(dict(role='user', content='Return JSON with title from the '
+                'tool document, zh_topic as the two-Chinese-character subject described in the '
+                'first recording, and en_activity as the activity bringing more success in the second.'))
+            follow.update(tool_choice='auto', max_completion_tokens=256,
+                response_format=schema({k: dict(type='string') for k in
+                    ('title', 'zh_topic', 'en_activity')}))
+            final = self.json_chat('two-audio-tool-final', follow)
+            tool_result(final, result)
+        else:
+            self.silence_diagnosis()
         silent = self.json_chat('silence', rows['silence'])
-        usage(silent)
-        require(silent['choices'][0]['message']['content'].strip() == 'OK', 'silence blocked text')
+        silence_result(silent)
         self.json_chat('invalid-base64', rows['invalid'], code=400)
         self.json_chat('shared-duration', rows['overlong'], code=413)
         self.batch(rows['batch'])
@@ -555,6 +637,7 @@ def main():
     p.add_argument('--port', type=int, default=18280)
     p.add_argument('--continue-from', type=Path)
     p.add_argument('--remaining-from', type=Path)
+    p.add_argument('--tail-from', type=Path)
     p = sub.add_parser('run'); p.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.mode == 'fixtures': fixtures()

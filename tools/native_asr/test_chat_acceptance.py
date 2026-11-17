@@ -10,6 +10,7 @@ from pathlib import Path
 
 from tools.native_asr.chat_acceptance import usage
 from tools.native_asr.chat_acceptance import materialize, requests, stored_history, WORK
+from tools.native_asr.chat_acceptance import english_result, tool_result, silence_result
 from tools.examples.chat_client import read_json, read_sse
 
 
@@ -20,6 +21,39 @@ def observed():
 
 
 class ChatAcceptance(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get('Q4T_CHAT_AUDIO_MULTIMODAL'),
+                         'explicit retained multimodal HTTP directory required')
+    def test_real_mp3_and_tool_answers_replay_and_wrong_meaning_is_rejected(self):
+        path = Path(os.environ['Q4T_CHAT_AUDIO_MULTIMODAL'])
+        sdk = json.loads((path/'js-en-mp3.sdk.json').read_text())
+        wire = (path/'js-en-mp3.wire').read_bytes()
+        self.assertIn('writing', english_result(wire, sdk['result'])['activity'])
+        changed = copy.deepcopy(sdk['result'])
+        changed['events'] = [x for x in changed['events'] if not x.get('usage')]
+        with self.assertRaises(RuntimeError): english_result(wire, changed)
+        value = json.loads((path/'two-audio-tool-final.wire').read_text())
+        result = json.loads((path/'tool-execution.json').read_text())['result']
+        self.assertEqual(tool_result(value, result)['answer']['zh_topic'], '交易')
+        changed = copy.deepcopy(value)
+        answer = json.loads(changed['choices'][0]['message']['content'])
+        answer['zh_topic'] = '天气'
+        changed['choices'][0]['message']['content'] = json.dumps(answer)
+        with self.assertRaises(RuntimeError): tool_result(changed, result)
+
+    def test_silence_refusal_null_or_truncated_answer_is_a_quality_failure(self):
+        value = dict(usage=observed(), choices=[dict(finish_reason='stop',
+            message=dict(role='assistant', content='OK'))])
+        self.assertEqual(silence_result(value), observed())
+        for change in ('null', 'refusal', 'truncated', 'wrong'):
+            bad = copy.deepcopy(value)
+            choice = bad['choices'][0]
+            if change == 'null': choice['message']['content'] = None
+            elif change == 'refusal': choice['message']['refusal'] = 'cannot answer'
+            elif change == 'truncated': choice['finish_reason'] = 'length'
+            else: choice['message']['content'] = 'No'
+            with self.assertRaisesRegex(RuntimeError, 'silence blocked text'):
+                silence_result(bad)
+
     @unittest.skipUnless(os.environ.get('Q4T_CHAT_AUDIO_RETAINED'),
                          'explicit retained HTTP replay directory required')
     def test_real_stored_audio_parts_match_original_and_changed_source_is_rejected(self):

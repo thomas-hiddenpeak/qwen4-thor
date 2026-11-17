@@ -1,0 +1,7 @@
+test_real_mp3_and_tool_answers_replay_and_wrong_meaning_is_rejected (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_real_mp3_and_tool_answers_replay_and_wrong_meaning_is_rejected) ... ok
+test_silence_refusal_null_or_truncated_answer_is_a_quality_failure (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_silence_refusal_null_or_truncated_answer_is_a_quality_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

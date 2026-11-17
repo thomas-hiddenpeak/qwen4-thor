@@ -55,9 +55,14 @@ std::string TranscriptText(const ChatAudioInput& source,
     else
       escaped += c;
   }
-  return "\n\n[Audio input transcript: recognized speech from the supplied "
-         "recording]\n" +
-         escaped + "\n[End audio input transcript]\n\n";
+  const std::string heading =
+      transcript.empty()
+          ? "[Audio input transcript: no speech recognized in the supplied "
+            "recording; accompanying user text still applies]"
+          : "[Audio input transcript: recognized speech from the supplied "
+            "recording]";
+  return "\n\n" + heading + "\n" + escaped +
+         "\n[End audio input transcript]\n\n";
 }
 }  // namespace
 

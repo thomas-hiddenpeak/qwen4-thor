@@ -233,6 +233,48 @@ Q4T_TEST(chat_audio_complete_projection_preserves_neighbors_and_silence) {
 }
 
 Q4T_TEST(
+    chat_audio_no_recognized_speech_preserves_text_and_nonempty_projection) {
+  auto request = Request(Array(
+      {Text("Reply only OK."), Audio(), Text("Second recording"), Audio()}));
+  Set(&request, "enable_thinking", Boolean(false));
+  AsrTranscript transcript(false, "");
+  AsrTextDelta delta;
+  SampledToken token;
+  Q4T_CHECK(transcript.Append(token, "language None<asr_text>", &delta));
+  Q4T_CHECK(transcript.Finish(&delta) && transcript.Text().empty());
+  ChatAudioInputs inputs;
+  Q4T_CHECK(inputs.Prepare(request, Access()).ok());
+  Q4T_CHECK(inputs.Complete(0, transcript.Text()).ok());
+  Q4T_CHECK(inputs.Complete(1, "actual speech").ok());
+  Json projected;
+  Q4T_CHECK(inputs.Render(request, Access(), &projected).ok());
+  const auto& parts = Parts(projected).array;
+  Q4T_CHECK(parts[0].GetString("text") == "Reply only OK.");
+  Q4T_CHECK(parts[1].GetString("text").find("no speech recognized") !=
+            std::string::npos);
+  Q4T_CHECK(TranscriptPart(parts[1]).GetString("transcript").empty());
+  Q4T_CHECK(TranscriptPart(parts[1]).GetString("source") ==
+            "messages[0].content[1]");
+  // Accepted spoken-audio prompts remain byte-identical; do not replay them.
+  Q4T_CHECK(parts[3].GetString("text") ==
+            "\n\n[Audio input transcript: recognized speech from the supplied "
+            "recording]\n{\"source\":\"messages[0].content[3]\","
+            "\"transcript\":\"actual speech\"}"
+            "\n[End audio input transcript]\n\n");
+  std::string prompt, param, code;
+  std::vector<VisionItem> images;
+  ChatPromptLayout layout;
+  Q4T_CHECK(PrepareChatPrompt(projected, {}, &prompt, &images, &param, &code,
+                              &layout));
+  Q4T_CHECK(prompt.find("Reply only OK.") <
+            prompt.find("no speech recognized"));
+  Q4T_CHECK(prompt.find("no speech recognized") <
+            prompt.find("Second recording"));
+  Q4T_CHECK(HasChatAudioInputs(request) && !HasChatAudioInputs(projected));
+  return true;
+}
+
+Q4T_TEST(
     chat_audio_real_asr_text_reaches_template_with_modality_and_boundaries) {
   auto request = Request(Array({Text("录音中几乎停滞的事情是什么？"), Audio(),
                                 Text("next recording"), Audio()}));
