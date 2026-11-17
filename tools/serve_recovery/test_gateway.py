@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import socket
 import sys
 import tempfile
@@ -19,6 +20,24 @@ from tools.serve_service import supervisor
 
 
 class RouteInventoryTests(unittest.TestCase):
+    def test_transcription_route_reaches_data_lane_without_exposing_neighbors(self):
+        # Exercise the actual patterns emitted into both optional nginx modes.
+        patterns = []
+        for row in frontend.route_map().splitlines():
+            pattern, lane = row.strip().rsplit(' ', 1)
+            patterns.append((re.compile(pattern[2:-1]), lane.rstrip(';')))
+        def lanes(request):
+            return [lane for pattern, lane in patterns if pattern.match(request)]
+        for request in ('POST:/v1/audio/transcriptions',
+                        'POST:/v1/audio/transcriptions?trace=1'):
+            self.assertEqual(lanes(request), ['data'])
+        for request in ('GET:/v1/audio/transcriptions',
+                        'DELETE:/v1/audio/transcriptions',
+                        'POST:/v1/audio/transcriptions/private',
+                        'POST:/v1/audio/transcriptions#hidden',
+                        'POST:/v1/config'):
+            self.assertEqual(lanes(request), [])
+
     def test_all_current_public_endpoints_are_declared(self):
         self.assertEqual(frontend.validate_routes(),
                          frontend.sha(frontend.API_CONTRACT))

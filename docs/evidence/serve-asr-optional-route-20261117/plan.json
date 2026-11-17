@@ -1,0 +1,6 @@
+{
+  "reason": "PR44 exact final head CI discovered absent optional frontend transcription route",
+  "tests": 4,
+  "seconds": 60,
+  "gpu": 0
+}

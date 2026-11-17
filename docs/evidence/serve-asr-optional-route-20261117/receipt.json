@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "tests": 4,
+  "seconds": 0.16589845903217793,
+  "gpu_actions": 0,
+  "exit": 0,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_gateway.RouteInventoryTests"
+  ],
+  "sources": {
+    "tools/serve_gateway/gateway.py": "f402f88847695d4d1c6d4ece3b18d389fd00c23428ea85409264f9e62fe11d4e",
+    "tools/serve_recovery/test_gateway.py": "8a499169af6c1edcd855a812e89f5cd1aacc2779ef474964bfccaf0d068910f8"
+  }
+}

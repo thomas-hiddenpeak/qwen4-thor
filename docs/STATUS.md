@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路由；
+[4项针对性CPU通过](evidence/serve-asr-optional-route-20261117/README.md)，
+0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入
+PR44，继续最终检查和合main，后续对齐开发不混入本PR。
+
 [原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
 固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、
 独立文件配额/chunked/取消、入口恢复与整payload回退均有真实业务
