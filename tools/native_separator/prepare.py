@@ -23,7 +23,11 @@ def main():
         parser.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
     for name in vars(args):
-        setattr(args, name, getattr(args, name).resolve())
+        path = getattr(args, name)
+        # Preserve the venv launch path: resolving its python symlink would
+        # discard that environment's CPU-only reference dependencies.
+        setattr(args, name, path.absolute() if name == 'reference_python'
+                else path.resolve())
     args.output.mkdir(exist_ok=False)
     files = [args.binary, args.reference_python]
     for name, (size, sha) in SOURCES.items():
