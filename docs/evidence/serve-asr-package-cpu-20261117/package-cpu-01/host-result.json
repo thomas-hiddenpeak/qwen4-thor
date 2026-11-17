@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-package-host-01",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-cpu-01/host-required.txt"
+  ],
+  "tests": 1,
+  "seconds": 0.036414897069334984,
+  "binary_sha256": "79dc672beaae8fdabeba400f76ce86ae850da5063b2205a39edf8481508bd0d2",
+  "gpu_actions": 0
+}

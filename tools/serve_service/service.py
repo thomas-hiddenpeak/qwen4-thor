@@ -211,6 +211,9 @@ def main():
     p.add_argument('--release', type=Path, default=ROOT/'build/q4t.release.json')
     p.add_argument('--model-dir', type=Path, required=True)
     p.add_argument('--embedding-model-dir', type=Path)
+    p.add_argument('--asr-model-dir', type=Path)
+    for option in pkg.ASR_LIMITS:
+        p.add_argument('--asr-'+option.replace('_', '-'), type=int)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--operations-port', type=int, default=0)
@@ -260,6 +263,9 @@ def main():
                              mcp_policy=args.mcp_policy,
                              web_policy=args.web_policy,
                              embedding_model_dir=args.embedding_model_dir,
+                             asr_model_dir=args.asr_model_dir,
+                             asr_limits=({k:getattr(args, 'asr_'+k) for k in pkg.ASR_LIMITS
+                                 if getattr(args, 'asr_'+k) is not None} or None),
                              capacity_config=pkg.read(args.capacity_config)
                                  if args.capacity_config is not None else None,
                              application_state=({**({'directory': args.object_store_dir}

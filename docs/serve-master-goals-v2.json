@@ -2172,7 +2172,8 @@
         "evidence/serve-asr-transport-20261117/README.md",
         "evidence/serve-asr-scope-20261117/README.md",
         "evidence/serve-asr-sdk-values-20261117/README.md",
-        "evidence/serve-asr-http-20261117/README.md"
+        "evidence/serve-asr-http-20261117/README.md",
+        "evidence/serve-asr-package-cpu-20261117/README.md"
       ],
       "release": null,
       "findings": [
@@ -2614,6 +2615,15 @@
             "service-package and primary/light recovery qualification",
             "actual alignment / diarization / VAD and all master tasks"
           ]
+        },
+        "package_contract": {
+          "state": "eleven_targeted_cpu_accepted_recovery_binding_pending",
+          "evidence": "evidence/serve-asr-package-cpu-20261117/README.md",
+          "tests": 11,
+          "executions": 12,
+          "seconds": 0.7853914122097194,
+          "gpu_actions": 0,
+          "original_failure_preserved": true
         }
       }
     },

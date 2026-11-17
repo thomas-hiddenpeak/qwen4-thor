@@ -4,6 +4,8 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/asr_assets.h"
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/test.h"
 
 namespace {
@@ -18,6 +20,22 @@ q4t::io::Json Health(const AsrHealth& health, bool gpu = true) {
   return result;
 }
 }  // namespace
+
+Q4T_TEST(asr_capability_binds_fixed_backend_when_configured_or_disabled) {
+  for (const bool configured : {false, true}) {
+    q4t::io::Json root;
+    Q4T_CHECK(q4t::io::ParseJson(
+        ChatCapabilitiesJson("chat", false, true, 0, nullptr, false,
+                              configured), &root));
+    const auto* value = root.Find("transcriptions");
+    Q4T_CHECK(value && value->GetString("profile") == kNativeAsrProfile &&
+              value->GetString("model") == "qwen3-asr-0.6b" &&
+              value->GetString("revision") == kNativeAsrRevision &&
+              value->GetString("weight_sha256") == kNativeAsrWeightSha256 &&
+              value->GetBool("configured", !configured) == configured);
+  }
+  return true;
+}
 
 Q4T_TEST(asr_health_configured_metadata_and_device_publication) {
   AsrHealth h;

@@ -11,59 +11,25 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 复用已成立的4创建，续验5创建通过；中英文文本完全一致、英文WER=0，
 实际概率/usage、流式终态、坏参数、取消及同PID Chat均通过。接受
 观察为2启动/9创建/93.585秒；含原失败累计4启动/11创建/170.949秒。
-原FAILED保持，未跑完整质量/性能；下一步原生TLS/客户端配额、服务
-包及主轻/版本恢复，默认rev266不动。对齐/说话人/VAD等全部master继续。
+原FAILED保持，未跑完整质量/性能。默认rev266及day身份不变。
 
-ASR首轮真实HTTP发现读包层仍套用4KiB控制上限，音频在到达处理器
-前被413拒绝；原FAILED保留，1启动/1创建/38.779秒，严格租约正常
-结束、模型全部1606项分配释放。现补齐共享转录路由、32MiB读包
-预算、客户端文件配额和原生入口流式上传上限；
-[3项CPU通过](evidence/serve-asr-transport-20261117/README.md)，0.063秒。
-service-http-03已越过传输层，但处理器传入空codec归属，被既有隔离
-保护拒绝；原FAILED保留（1启动/1创建/38.586秒），模型及GPU全部
-清理。已按认证客户端/本机匿名合同补齐传递，复用未变codec保护
-CPU；下一组仍为1启动/9创建/600秒，不重复无关测试。尚无本组
-HTTP通过结论；默认及day保持，全部master继续。
+正在补齐服务包ASR模型身份、显式资源预算/CLI、配置schema与原生
+OpenAPI发布。资产缺失不得使健康Chat包无法启动；之后继续原生
+TLS/独立客户端、主轻及版本恢复、可回退交付。
+[11项针对性CPU已完成](evidence/serve-asr-package-cpu-20261117/README.md)，
+含原失败12次/0.785秒，0模型动作；只补实际config暴露的媒体字段
+schema遗漏，原失败保留。继续恢复合同，再冻结下一组GPU组合。实际
+对齐/字幕/说话人/VAD、Chat音频、语音输出及全部master继续。
 
-service-http-04实际完成权重缺失/冷却、同PID Chat与Python中文转录，
-文本精确一致，wire为整数bytes/真实logprobs和usage。驱动误把SDK
-声明的List[float]当成线缆整数合同而中止；原FAILED保留。只修正SDK
-数值检查并仍严格校验wire，冻结3项离线CPU/60秒，复用上述4创建，
-余下5创建在1启动/600秒内继续，避免重跑已成立的业务证据。
-
-[ASR03的34项针对性CPU](evidence/serve-asr-service-cpu-20261117/README.md)
-已完成（含失败35次、2.167秒）：独立健康/冷却、资源预算、
-multipart/字面量prompt、JSON/text/SSE与实际概率/用量、共享Chat
-直接回归。新literal编码预算失败留部分ID已修复，仅补原失败1项；
-原FAILED保留。实际HTTP/SDK、服务包与恢复组合接着推进，当前
-未宣称音频API已验收/发布；对齐/字幕/说话人/VAD继续实现，
-全部master保持active，默认rev266和day不变。
-
-[ASR资产加载的18项针对性检查](evidence/serve-asr-assets-20261117/README.md)
-已通过（4.184秒）：共享隔离读取器验证实际六份元数据及完整权重，
-612个tensor布局、原embedding回归、取消/超时/损坏/占槽与输出保持。
-完整文件只读核对在严格租约中完成，0模型构造/0GPU计算；默认和
-day保持。接着实现ASR健康/冷却恢复、转录HTTP及实际客户端，不把
-组件通过当作音频服务或总目标完成。
-
-[原生音频计划](SERVE_NATIVE_AUDIO_2026-11-17.md)从真实ASR资产、
-严格配置/权重合同及原生计算开始补齐A10；现有主模型不具备语音
-后端。[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)
-已通过：固定真实资产、配置/612个BF16 tensor、原生tokenizer与
-log-mel，2.571秒、0模型动作。encoder/decoder计算已实现，新增
-[8项布局CPU及真实计算证据](evidence/serve-asr-compute-20261117/README.md)
-已固定：中/英文文本与参考完全一致，但5/8 logits超出原差分门限，
-原FAILED保留。中文首步实际28层及输出算子复核无违例，末层检查器
-exp溢出修正后只补71项（1.969秒）；接受继续服务集成，未宣称原
-差分或API验收通过。随后接实际解码、HTTP/SDK与恢复组合；Chat音频/语音输出/Realtime及全部master
-继续。当前尚未交付音频API，默认及day身份不变；PR43已实际合main。
-
-[原生codec的21项CPU验收](evidence/serve-audio-codec-cpu-20261117/README.md)
-完成（含失败定位共58次执行、5.466秒）：实际WAV/FLAC/MP3/AAC/
-Ogg/WebM、相位/尾样本、限额、取消/故障隔离与视频直接回归。
-原重采样相位、EOS及AAC夹具失败均保留；实际CPU路径不依赖外部
-解码程序，核心不加载codec。继续资产生命周期、HTTP/SDK和恢复
-组合；尚未交付转录API，模型计算、默认及day保持。
+前序证据按未变身份复用：[34项服务CPU](evidence/serve-asr-service-cpu-20261117/README.md)、
+[3项传输修复](evidence/serve-asr-transport-20261117/README.md)、
+[scope接线修复](evidence/serve-asr-scope-20261117/README.md)、
+[3项SDK数值复核](evidence/serve-asr-sdk-values-20261117/README.md)、
+[18项资产](evidence/serve-asr-assets-20261117/README.md)、
+[21项codec](evidence/serve-audio-codec-cpu-20261117/README.md)及
+[24项基础CPU](evidence/serve-asr-foundation-cpu-20261117/README.md)。
+[原计算logits差分FAILED](evidence/serve-asr-compute-20261117/README.md)不改写，
+后续实际算子复核与API业务接受分列，不宣称完整模型正确性。
 
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
 current选择器并通过精确1项CPU（0.455秒）。原失败保留于

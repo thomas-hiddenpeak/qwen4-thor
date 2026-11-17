@@ -1,0 +1,6 @@
+test_actual_config_health_and_bounded_native_options (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.027s
+
+OK

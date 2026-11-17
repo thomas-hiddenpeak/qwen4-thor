@@ -1,6 +1,7 @@
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/server/file_limits.h"
 #include "q4t/server/embeddings_plan.h"
+#include "q4t/server/asr_assets.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -46,7 +47,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          Quote(model) + R"(,"protocol_source_sha256":)" +
          Quote(identity::kProtocol) +
          R"(,"transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
-         R"("model":"qwen3-asr-0.6b","configured":)" +
+         R"("profile":)" + Quote(kNativeAsrProfile) +
+         R"(,"revision":)" + Quote(kNativeAsrRevision) +
+         R"(,"weight_sha256":)" + Quote(kNativeAsrWeightSha256) +
+         R"(,"model":"qwen3-asr-0.6b","configured":)" +
          (native_asr ? "true" : "false") +
          R"(,"formats":["json","text"],"stream":true,"logprobs":true,)"
          R"("usage":"actual_tokens","prompt":"literal_context",)"

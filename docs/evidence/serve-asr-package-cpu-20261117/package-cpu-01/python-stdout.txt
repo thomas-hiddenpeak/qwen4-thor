@@ -1,0 +1,29 @@
+test_missing_optional_assets_remain_portable_and_preserve_limits (tools.serve_service.test_asr_package.AsrPackage.test_missing_optional_assets_remain_portable_and_preserve_limits) ... ok
+test_identity_limits_paths_and_alias_collisions_fail (tools.serve_service.test_asr_package.AsrPackage.test_identity_limits_paths_and_alias_collisions_fail) ... ok
+test_declaration_binds_actual_backend_and_effective_limits (tools.serve_service.test_asr_package.AsrPackage.test_declaration_binds_actual_backend_and_effective_limits) ... ok
+test_unqualified_engine_or_orphan_limits_do_not_create_package (tools.serve_service.test_asr_package.AsrPackage.test_unqualified_engine_or_orphan_limits_do_not_create_package) ... ok
+test_prepare_cli_forwards_only_explicit_asr_overrides (tools.serve_service.test_asr_package.AsrPackage.test_prepare_cli_forwards_only_explicit_asr_overrides) ... ok
+test_multipart_shapes_and_cross_field_constraints (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_multipart_shapes_and_cross_field_constraints) ... ok
+test_actual_json_and_every_stream_event (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_json_and_every_stream_event) ... ok
+test_actual_config_health_and_bounded_native_options (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options) ... FAIL
+test_pinned_sdk_and_native_openapi_publication (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_pinned_sdk_and_native_openapi_publication) ... ok
+test_native_embedding_binding_survives_missing_optional_assets (tools.serve_service.test_declarations.Declarations.test_native_embedding_binding_survives_missing_optional_assets) ... ok
+
+======================================================================
+FAIL: test_actual_config_health_and_bounded_native_options (tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_transcriptions_contract.py", line 50, in test_actual_config_health_and_bounded_native_options
+    self.assertEqual(list(validator.iter_errors(value)), [])
+AssertionError: Lists differ: [<ValidationError: "{'profile': 'q4t-media[1664 chars]as">] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+<ValidationError: "{'profile': 'q4t-media-admission-v3', 'experimental': True, 'roles': ['user'], 'formats': ['png', 'jpeg', 'gif'], 'data_url_mime': ['image/png', 'image/jpeg', 'image/gif'], 'animated_images': False, 'raw_base64': True, 'base64': 'canonical_standard_padded', 'image_detail': ['auto', 'low', 'high', 'original'], 'remote_urls': False, 'detail_policy': {'auto': 'qwen_reference_smart_resize', 'low': {'longest_edge': 512, 'max_pixels': 262144}, 'high': {'longest_edge': 2048, 'max_pixels': 4194304}, 'original': 'preserve_pixels_pad_right_bottom_edge', 'configured_pixel_limit_applies': True}, 'video_detail': ['auto', 'low', 'high'], 'video_high_min_frame_pixels': 65536, 'video_time_field': 'video_timestamps', 'video_time_unit': 'seconds', 'video_time_default': 'frame_index/24', 'max_timestamp_seconds': 86400, 'temporal_group_frames': 2, 'timestamp_rounding_decimal_places': 1, 'video_prompt': 'timestamp_then_one_boundary_per_temporal_group', 'mtp': False, 'state_cache': True, 'chunked_prefill': True, 'cache_identity': 'source_bytes_processor_geometry_and_position', 'cache_boundaries': 'complete_visual_blocks', 'cache_layout': 'target_with_three_axis_rope_and_delta', 'max_execution_slots': 1, 'client_governance': True, 'max_items': 8, 'max_frames_per_item': 32, 'max_encoded_bytes': 16777216, 'max_source_edge': 16384, 'max_source_pixels': 16777216, 'max_decoded_rgb_bytes': 134217728, 'max_patches': 65536, 'max_workspace_bytes': 2147483648, 'decoder_owned_bytes': 268435456, 'attention_shared_bytes': None, 'unknown_device_limit': 'reject', 'whole_server_ram_limit': False, 'cancellation': 'item_frame_and_before_gpu_not_preemptive'} is not valid under any of the given schemas">
+
+Diff is 1719 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.194s
+
+FAILED (failures=1)

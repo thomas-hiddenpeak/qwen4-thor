@@ -9,6 +9,7 @@
 #include "q4t/text/tokenizer.h"
 
 namespace q4t::server {
+inline constexpr char kNativeAsrProfile[] = "q4t-native-asr-v1";
 inline constexpr char kNativeAsrRevision[] =
     "5eb144179a02acc5e5ba31e748d22b0cf3e303b0";
 inline constexpr char kNativeAsrWeightSha256[] =
