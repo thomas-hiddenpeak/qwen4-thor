@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR45能力声明旧测试已修](evidence/serve-audio-capability-ci-20261118/README.md)：
+公开CI只有旧remaining数量断言失败；改核对具体待办和组件状态，
+3项相关CPU通过、0GPU。原CI及一次本地参数失败保留，运行时和
+rev286未变；修复独立进入PR45，等待最终检查及合main，全部master继续。
+
 [rev286对齐/VAD可回退交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)
 已完成，19项STOPPED命令/275.847秒，0新增GPU。实际整根
 回退与再前进、预算/历史保持通过；前驱rev276与day保留。版本归档

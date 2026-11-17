@@ -460,9 +460,17 @@ Q4T_TEST(
       ChatCapabilitiesJson("primary", false, false, 0, nullptr, false, true));
   Q4T_CHECK(!absent.Find("transcriptions")->GetBool("configured"));
   Q4T_CHECK(present.Find("transcriptions")->GetBool("configured"));
-  Q4T_CHECK(present.Find("transcriptions")
-                ->GetArray("remaining_native_work")
-                ->array.size() == 3);
+  for (const auto* capabilities : {&absent, &present}) {
+    const auto* transcription = capabilities->Find("transcriptions");
+    const auto* remaining = transcription->GetArray("remaining_native_work");
+    Q4T_CHECK(remaining && remaining->array.size() == 1 &&
+              remaining->array.front().type == Json::Type::kString &&
+              remaining->array.front().str == "diarization");
+    Q4T_CHECK(transcription->Find("alignment") &&
+              transcription->Find("segments") && transcription->Find("vad"));
+    Q4T_CHECK(!transcription->Find("alignment")->GetBool("configured") &&
+              !transcription->Find("vad")->GetBool("configured"));
+  }
   Q4T_CHECK(present.GetBool("implementation_only") &&
             !present.GetBool("release_attestation"));
   return true;
