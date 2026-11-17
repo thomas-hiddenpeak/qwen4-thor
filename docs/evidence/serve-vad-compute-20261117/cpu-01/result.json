@@ -1,0 +1,8 @@
+{
+  "status": "FAILED",
+  "gpu_actions": 0,
+  "reference_device": "cpu",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_acceptance.py\", line 55, in main\n    require(run.returncode == 0, label+' failed')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_acceptance.py\", line 20, in require\n    raise RuntimeError(message)\nRuntimeError: reference failed\n",
+  "seconds": 1.6858485210686922,
+  "default_unchanged": true
+}

@@ -2759,6 +2759,24 @@
         "seconds": 57.04449202679098,
         "nvml_samples": 55,
         "publication": false
+      },
+      "native_vad_20261117": {
+        "state": "cpu_component_accepted_service_pending",
+        "model_revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+        "runtime_external_inference_libraries": [],
+        "model_bytes": 1239748,
+        "unit_cases": 8,
+        "real_reference_cases": 4,
+        "seconds_limit": 180,
+        "gpu_actions": 0,
+        "published": false,
+        "remaining": "CPU numeric qualification, isolated assets/request state, VAD chunking and correct segment confidence provenance; all master tasks remain.",
+        "evidence": "evidence/serve-vad-compute-20261117/README.md",
+        "frames": 667,
+        "seconds": 3.3566437661647797,
+        "original_reference": "FAILED_preserved: packaged JIT and safetensors weights differ",
+        "accepted_reference": "Official JIT graph with all 15 previously frozen target tensors explicitly bound",
+        "max_probability_absolute_error": 2.6226043701171875e-06
       }
     },
     {

@@ -1,0 +1,9 @@
+/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/lib/python3.12/site-packages/torch/jit/_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_reference.py", line 71, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/vad_reference.py", line 47, in main
+    assert np.array_equal(actual, state_dict[target].numpy()), name
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: final_conv.weight

@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[VAD原生CPU组件通过](evidence/serve-vad-compute-20261117/README.md)：
+8边界/4音频、667帧，概率误差≤2.62e-06，两轮累计3.357秒、
+0GPU。同版上游两种权重不一致造成原参考FAILED，明确改为官方
+计算图绑定原固定目标权重后补验；原生/阈值未改、原失败保留。
+继续独立资产、实际分段、完整统计和服务交付；全部master仍active。
+
+原生VAD计算已开发，固定Silero 16k/15张量，零新增推理运行库；
+独立CPU构建通过，待8项边界和4段官方CPU差分，0GPU。
+完整segment/VAD服务接入和可回退交付仍继续，不将逐帧概率
+伪装为完整段落置信度；全部master保持active。
+
 [词时间戳/字幕真实HTTP通过](evidence/serve-aligner-http-20261117/README.md)：
 1启动/7创建/57.044秒，55次NVML正常；双SDK三种输出、
 辅助资产故障中ASR/Chat与同PID恢复、清理通过。中文26边界与已有

@@ -140,3 +140,25 @@ Python SDK中文词JSON、JS SDK英文SRT、Python SDK中文VTT、最后
 标注的时间精度或全部语言质量结论。原英文2/72槽差异仍保留。
 2项驱动正例和2项时间负控已通过、0GPU；具体资产/源码/SDK/默认
 身份在prepare中冻结。本组尚未执行，后续完整segment及交付继续。
+
+## 真实语音活动检测计算组
+
+为VAD/chunking提供真实逐帧概率，采用Silero固定revision
+`066409f3d9db45a30d21dfcbf9147826ffdd7052`的16k模型；原生C++
+实现右侧reflect STFT/4卷积/LSTM/head，无新增推理运行库。
+[MIT来源与许可](../third_party/licenses/silero-vad/README.md)保留。
+
+资产取得上限8MiB/600秒并保留8GiB磁盘，实际3,547,386字节/
+28.926秒，包含开发专用JIT参考；每个文件对固定Git blob核对。
+原生权重1,239,748字节，15个F32张量/309633参数，512样本一帧、
+64样本上下文。每请求独立状态，尾帧补零不扩大实际音频边界。
+逐帧speech posterior不能直接冒充整段no_speech_prob；完整segment
+的定义与统计来源仍须明确并实现，当前不伪造字段。
+
+本组最多12个CPU用例/180秒：8项纯CPU结构/坏输入/原子所有权/
+取消/上下文/尾帧；中英原实际PCM、零PCM与固定噪声4项官方JIT
+差分。逐帧prob最大绝对误差≤2e-5、终态h/c≤2e-4，0.5判定
+逐项相同，真实语音有正例、零PCM最大prob≤0.1。门槛在运行前
+冻结；JIT与原生15张量逐位核对。0GPU，必要构建单列；不构成
+完整语音质量或服务发布验收。后续资产隔离、VAD请求组合、完整
+segment及全部master继续，默认rev276不变。

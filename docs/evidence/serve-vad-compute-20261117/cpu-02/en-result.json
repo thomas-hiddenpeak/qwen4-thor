@@ -1,0 +1,21 @@
+{
+  "case": "en",
+  "samples": 240820,
+  "tensors": {
+    "probabilities": {
+      "values": 471,
+      "max_absolute_error": 2.6226043701171875e-06
+    },
+    "hidden": {
+      "values": 128,
+      "max_absolute_error": 1.7881393432617188e-06
+    },
+    "cell": {
+      "values": 128,
+      "max_absolute_error": 8.392333984375e-05
+    }
+  },
+  "speech_frames": 396,
+  "speech_probability_min": 0.011395872570574284,
+  "speech_probability_max": 0.9999980926513672
+}

@@ -1,0 +1,151 @@
+[
+  {
+    "tensor": "stft_conv.weight",
+    "graph_parameter": "stft.forward_basis_buffer",
+    "shape": [
+      258,
+      1,
+      256
+    ],
+    "packaged_jit_equal": true,
+    "packaged_max_absolute_difference": 0.0
+  },
+  {
+    "tensor": "final_conv.weight",
+    "graph_parameter": "decoder.decoder.2.weight",
+    "shape": [
+      1,
+      128,
+      1
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 1.1646568775177002
+  },
+  {
+    "tensor": "final_conv.bias",
+    "graph_parameter": "decoder.decoder.2.bias",
+    "shape": [
+      1
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 0.05055886507034302
+  },
+  {
+    "tensor": "conv1.weight",
+    "graph_parameter": "encoder.0.reparam_conv.weight",
+    "shape": [
+      128,
+      129,
+      3
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 4.027359962463379
+  },
+  {
+    "tensor": "conv1.bias",
+    "graph_parameter": "encoder.0.reparam_conv.bias",
+    "shape": [
+      128
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 1.6587748527526855
+  },
+  {
+    "tensor": "conv2.weight",
+    "graph_parameter": "encoder.1.reparam_conv.weight",
+    "shape": [
+      64,
+      128,
+      3
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 0.6401568651199341
+  },
+  {
+    "tensor": "conv2.bias",
+    "graph_parameter": "encoder.1.reparam_conv.bias",
+    "shape": [
+      64
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 2.720677375793457
+  },
+  {
+    "tensor": "conv3.weight",
+    "graph_parameter": "encoder.2.reparam_conv.weight",
+    "shape": [
+      64,
+      64,
+      3
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 8.370057106018066
+  },
+  {
+    "tensor": "conv3.bias",
+    "graph_parameter": "encoder.2.reparam_conv.bias",
+    "shape": [
+      64
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 8.817852020263672
+  },
+  {
+    "tensor": "conv4.weight",
+    "graph_parameter": "encoder.3.reparam_conv.weight",
+    "shape": [
+      128,
+      64,
+      3
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 18.18006134033203
+  },
+  {
+    "tensor": "conv4.bias",
+    "graph_parameter": "encoder.3.reparam_conv.bias",
+    "shape": [
+      128
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 2.1567840576171875
+  },
+  {
+    "tensor": "lstm_cell.weight_ih",
+    "graph_parameter": "decoder.rnn.weight_ih",
+    "shape": [
+      512,
+      128
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 1.0119134187698364
+  },
+  {
+    "tensor": "lstm_cell.weight_hh",
+    "graph_parameter": "decoder.rnn.weight_hh",
+    "shape": [
+      512,
+      128
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 0.6514320373535156
+  },
+  {
+    "tensor": "lstm_cell.bias_ih",
+    "graph_parameter": "decoder.rnn.bias_ih",
+    "shape": [
+      512
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 0.08367794752120972
+  },
+  {
+    "tensor": "lstm_cell.bias_hh",
+    "graph_parameter": "decoder.rnn.bias_hh",
+    "shape": [
+      512
+    ],
+    "packaged_jit_equal": false,
+    "packaged_max_absolute_difference": 0.0836799368262291
+  }
+]

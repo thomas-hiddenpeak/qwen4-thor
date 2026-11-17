@@ -174,6 +174,7 @@ add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
+  src/audio/vad.cpp
   src/audio/asr_config.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
@@ -1022,6 +1023,7 @@ endif()
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
+  include(cmake/NativeVadTests.cmake)
   add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/aligner_config_test.cpp tests/aligner_asset_test.cpp
     src/audio/asr_config.cpp src/audio/aligner_config.cpp src/io/json.cpp)

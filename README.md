@@ -874,6 +874,9 @@ ASR或codec故障隔离于相应请求，真正共享设备故障仍保留保护
 不链接或加载它们，不启动外部解码程序。按官方API适配，未复制
 codec源码；系统插件保留其LGPL等发行许可。模型来源、固定revision
 与Apache-2.0许可见[Qwen3-ASR声明](third_party/licenses/qwen3-asr/README.md)。
+原生语音活动检测正在接入Silero固定16k权重和计算结构，遵循MIT；
+[来源及许可](third_party/licenses/silero-vad/README.md)。该组件不增加
+PyTorch/ONNX运行依赖，实际服务和发布仍按STATUS的验收状态。
 原生时间戳/字幕的[资产与实现进度](docs/SERVE_NATIVE_ALIGNMENT_2026-11-17.md)
 单独记录；配置/tokenizer通过不代表对齐业务已可用。
 时间戳/字幕/说话人/VAD、Chat音频、语音合成及Realtime继续按

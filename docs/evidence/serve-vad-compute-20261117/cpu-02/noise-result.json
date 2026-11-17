@@ -1,0 +1,21 @@
+{
+  "case": "noise",
+  "samples": 16384,
+  "tensors": {
+    "probabilities": {
+      "values": 32,
+      "max_absolute_error": 7.636845111846924e-08
+    },
+    "hidden": {
+      "values": 128,
+      "max_absolute_error": 8.344650268554688e-07
+    },
+    "cell": {
+      "values": 128,
+      "max_absolute_error": 3.814697265625e-06
+    }
+  },
+  "speech_frames": 0,
+  "speech_probability_min": 0.008452489972114563,
+  "speech_probability_max": 0.02736874483525753
+}

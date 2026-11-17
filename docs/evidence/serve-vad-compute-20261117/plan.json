@@ -1,0 +1,14 @@
+{
+  "revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+  "limits": {
+    "bytes": 8388608,
+    "seconds": 600,
+    "free_disk_reserve": 8589934592
+  },
+  "cpu_development": {
+    "tests_max": 12,
+    "seconds": 180,
+    "gpu_actions": 0
+  },
+  "purpose": "Native real speech posterior and chunking; no Torch/ONNX runtime dependency; separate ASR token/confidence producers remain required."
+}
