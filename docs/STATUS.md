@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #45已在最终head `6476e3a4`两组CI通过后合入main
+`0ab3ce6a`；[合并记录](evidence/serve-audio-capability-ci-20261118/merge-receipt.json)。
+对齐/VAD交付已进入主线，默认rev286保持STOPPED；后续speaker开发
+与已验PR分开，本地集成保留全部历史和源码，未追加GPU测试。
+继续实际说话人分段/参考/API/恢复交付及全部master剩余任务。
+
 [Speaker资产/资源/健康12CPU通过](evidence/serve-speaker-service-assets-20261118/README.md)
 （0.815秒、0GPU模型/0HTTP）；固定权重读取、隔离/取消/预算、
 原ASR保护及设备状态通过。运行时/公开host零警告构建；原公开目标
@@ -50,6 +56,11 @@ head独立检查，本组尚未执行模型或交付API。
 已核对，独立构建零警告。继续真实80维特征、ECAPA计算和全部
 聚类/参考/API/恢复交付；不是接口可用。默认rev286保持，PR45
 冻结f3268465等待最终CI，后续本地提交不混入已验发行。
+
+[PR45能力声明旧测试已修](evidence/serve-audio-capability-ci-20261118/README.md)：
+公开CI只有旧remaining数量断言失败；改核对具体待办和组件状态，
+3项相关CPU通过、0GPU。原CI及一次本地参数失败保留，运行时和
+rev286未变；修复独立进入PR45，等待最终检查及合main，全部master继续。
 
 [rev286对齐/VAD可回退交付](evidence/serve-audio-auxiliary-delivery-20261118/README.md)
 已完成，19项STOPPED命令/275.847秒，0新增GPU。实际整根

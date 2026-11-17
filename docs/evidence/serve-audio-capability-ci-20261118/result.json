@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 0.007463995832949877,
+  "tests": 3,
+  "gpu_starts": 0,
+  "binary_sha256": "9e355e4277f95d915593c5e93f8559b1554f86d34fc9e34fcb66bab1fc48dad5",
+  "runtime_unchanged": true,
+  "prior_argument_failure_preserved": true,
+  "base": "f3268465bbff5a2ffed84bcc5d8589a29cd56a08",
+  "original_ci": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/44128660281",
+  "source_sha256": "733decd4d81ec434f0862ce8d9a92434f0e31447a5dba93addbc949bf3feeb89",
+  "archive_sha256": "49befe9a0a11d02291c868ac0ecb627a26c6438840e9ecbea911c8bb48b1b932",
+  "new_gpu_starts": 0,
+  "default_revision": 286,
+  "main_merge_pending": true
+}
