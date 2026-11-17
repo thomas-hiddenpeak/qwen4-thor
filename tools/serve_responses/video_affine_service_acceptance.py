@@ -18,18 +18,19 @@ GLOBALS = BASE['main'].__globals__
 require, save = BASE['require'], BASE['save']
 EXPECTED = dict(top_left='red', top_right='green', bottom_left='blue',
                 bottom_right='yellow', layout='landscape')
+ACCEPTED_PLAN = 'docs/evidence/serve-video-affine-business-20261117/plan.json'
 
 
 def requests():
-    # Import only after the base driver pins the exact package namespaces.
-    from tools.serve_responses import video_affine_acceptance as affine
-    rows = affine.requests()
-    approved = copy.deepcopy(rows['shear'])
+    # Reuse the frozen actual inputs without importing another driver's test
+    # fixtures into a legacy package's sealed production namespaces.
+    frozen = json.loads((ROOT / ACCEPTED_PLAN).read_text())
+    approved = copy.deepcopy(frozen['requests']['shear'])
     approved['store'] = True
     plain = dict(model='qwen3.8-flash-next', temperature=0,
         enable_thinking=False, max_completion_tokens=64,
         messages=[dict(role='user', content='Compute 17+25. Reply only 42.')])
-    return dict(approved=approved, invalid=affine.invalid_count(), plain=plain)
+    return dict(approved=approved, invalid=frozen['invalid_count_request'], plain=plain)
 
 
 def check_sse(raw):
@@ -99,8 +100,8 @@ def prepare(args):
     BASE['prepare'](args)
     path = args.output.resolve() / 'plan.json'
     plan = json.loads(path.read_text())
-    fixture = 'tests/fixtures/file_video/geometry.mp4'
-    plan['sources'][fixture] = hashlib.sha256((ROOT / fixture).read_bytes()).hexdigest()
+    for fixture in ('tests/fixtures/file_video/geometry.mp4', ACCEPTED_PLAN):
+        plan['sources'][fixture] = hashlib.sha256((ROOT / fixture).read_bytes()).hexdigest()
     plan['scope'] = __doc__
     plan['planned'].update(user_generations=2, singular_input_counts=1)
     save(path, plan)

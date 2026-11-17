@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-affine-20261117/namespace-preflight.py", line 8, in <module>
+    rows=driver['requests']()
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_affine_service_acceptance.py", line 25, in requests
+    from tools.serve_responses import video_affine_acceptance as affine
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_affine_acceptance.py", line 14, in <module>
+    from tools.serve_responses import video_geometry_acceptance as geometry
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_geometry_acceptance.py", line 14, in <module>
+    from tools.serve_responses import video_acceptance as video
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/video_acceptance.py", line 18, in <module>
+    from tools.serve_responses import mcp_business_peer as peer
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/mcp_business_peer.py", line 11, in <module>
+    from tools.serve_gateway import tls_fixture
+ImportError: cannot import name 'tls_fixture' from 'tools.serve_gateway' (unknown location)
