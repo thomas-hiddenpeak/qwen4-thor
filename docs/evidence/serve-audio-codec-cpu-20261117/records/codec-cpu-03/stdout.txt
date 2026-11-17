@@ -1,0 +1,8 @@
+stereo24 interior RMS error=5.89257153e-08
+[PASS] file_audio_pcm24_resamples_and_averages_channels_without_aliasing
+resample rate=44100 interior RMS error=1.20733822e-05
+  CHECK failed: Clean(control) && pcm.samples.size() == 16000 (line 163)
+[FAIL] file_audio_noninteger_and_upsample_keep_phase_and_length
+[PASS] file_audio_ogg_opus_and_vorbis_decode_real_signal
+[PASS] file_audio_webm_opus_decodes_real_signal
+4 tests, 3 passed, 1 failed, 0 skipped

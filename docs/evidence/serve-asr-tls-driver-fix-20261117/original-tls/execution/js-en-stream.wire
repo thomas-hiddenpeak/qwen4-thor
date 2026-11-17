@@ -1,0 +1,138 @@
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":"M","logprobs":[{"token":"M","logprob":-1.0753346077778905,"bytes":[77]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":"hm","logprobs":[{"token":"hm","logprob":-0.12634801796999554,"bytes":[104,109]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":".","logprobs":[{"token":".","logprob":-0.030882829332176766,"bytes":[46]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" Oh","logprobs":[{"token":" Oh","logprob":-2.8987540146693404e-05,"bytes":[32,79,104]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" yeah","logprobs":[{"token":" yeah","logprob":-0.225480240315449,"bytes":[32,121,101,97,104]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":",","logprobs":[{"token":",","logprob":-0.012570910250589687,"bytes":[44]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" yeah","logprobs":[{"token":" yeah","logprob":-7.3151010234340634e-06,"bytes":[32,121,101,97,104]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":".","logprobs":[{"token":".","logprob":-0.31421073098768221,"bytes":[46]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" He","logprobs":[{"token":" He","logprob":-2.9767465196644797e-06,"bytes":[32,72,101]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" wasn","logprobs":[{"token":" wasn","logprob":-5.8424214255175045e-05,"bytes":[32,119,97,115,110]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":"'t","logprobs":[{"token":"'t","logprob":-1.3984413146904441e-05,"bytes":[39,116]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" even","logprobs":[{"token":" even","logprob":-1.8607501051845657e-07,"bytes":[32,101,118,101,110]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" that","logprobs":[{"token":" that","logprob":-9.0419446130436888e-07,"bytes":[32,116,104,97,116]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" big","logprobs":[{"token":" big","logprob":-2.5786248614336144e-06,"bytes":[32,98,105,103]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" when","logprobs":[{"token":" when","logprob":-6.2802736239693974e-06,"bytes":[32,119,104,101,110]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" I","logprobs":[{"token":" I","logprob":-5.96991590487035e-07,"bytes":[32,73]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" started","logprobs":[{"token":" started","logprob":-8.1280270817969464e-06,"bytes":[32,115,116,97,114,116,101,100]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" listening","logprobs":[{"token":" listening","logprob":-3.3574749354101571e-05,"bytes":[32,108,105,115,116,101,110,105,110,103]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" to","logprobs":[{"token":" to","logprob":-6.0828825458439201e-08,"bytes":[32,116,111]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" him","logprobs":[{"token":" him","logprob":-1.6579997266205087e-07,"bytes":[32,104,105,109]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":",","logprobs":[{"token":",","logprob":-0.31340000010057456,"bytes":[44]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" but","logprobs":[{"token":" but","logprob":-2.9747417854784024e-06,"bytes":[32,98,117,116]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" and","logprobs":[{"token":" and","logprob":-0.029188887821238102,"bytes":[32,97,110,100]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" his","logprobs":[{"token":" his","logprob":-4.2754791921653136e-06,"bytes":[32,104,105,115]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" solo","logprobs":[{"token":" solo","logprob":-5.1292265422500982e-06,"bytes":[32,115,111,108,111]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" music","logprobs":[{"token":" music","logprob":-2.7442616651869189e-06,"bytes":[32,109,117,115,105,99]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" didn","logprobs":[{"token":" didn","logprob":-8.1359832641391942e-05,"bytes":[32,100,105,100,110]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":"'t","logprobs":[{"token":"'t","logprob":-8.5490318983106943e-06,"bytes":[39,116]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" do","logprobs":[{"token":" do","logprob":-3.4335846822147129e-06,"bytes":[32,100,111]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" overly","logprobs":[{"token":" overly","logprob":-0.0023682967721790171,"bytes":[32,111,118,101,114,108,121]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" well","logprobs":[{"token":" well","logprob":-2.0575863279049349e-06,"bytes":[32,119,101,108,108]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":",","logprobs":[{"token":",","logprob":-0.38733485187686428,"bytes":[44]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" but","logprobs":[{"token":" but","logprob":-8.6927249408874644e-07,"bytes":[32,98,117,116]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" he","logprobs":[{"token":" he","logprob":-1.2784904080624249e-06,"bytes":[32,104,101]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" did","logprobs":[{"token":" did","logprob":-9.7087107519519545e-07,"bytes":[32,100,105,100]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" very","logprobs":[{"token":" very","logprob":-1.4391896264941936e-05,"bytes":[32,118,101,114,121]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" well","logprobs":[{"token":" well","logprob":-4.5791717769288136e-07,"bytes":[32,119,101,108,108]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" when","logprobs":[{"token":" when","logprob":-0.0004361524758642866,"bytes":[32,119,104,101,110]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" he","logprobs":[{"token":" he","logprob":-3.518159597614456e-07,"bytes":[32,104,101]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" started","logprobs":[{"token":" started","logprob":-1.8596255437330739e-06,"bytes":[32,115,116,97,114,116,101,100]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" writing","logprobs":[{"token":" writing","logprob":-2.714338997429534e-05,"bytes":[32,119,114,105,116,105,110,103]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" for","logprobs":[{"token":" for","logprob":-4.4657595246791262e-06,"bytes":[32,102,111,114]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" other","logprobs":[{"token":" other","logprob":-1.3693317212831137e-06,"bytes":[32,111,116,104,101,114]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":" people","logprobs":[{"token":" people","logprob":-4.387278297950154e-06,"bytes":[32,112,101,111,112,108,101]}]}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":".","logprobs":[{"token":".","logprob":-3.2816596970269688e-06,"bytes":[46]}]}
+
+event: transcript.text.done
+data: {"type":"transcript.text.done","text":"Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.","languages":[{"code":"en"}],"logprobs":[{"token":"M","logprob":-1.0753346077778905,"bytes":[77]},{"token":"hm","logprob":-0.12634801796999554,"bytes":[104,109]},{"token":".","logprob":-0.030882829332176766,"bytes":[46]},{"token":" Oh","logprob":-2.8987540146693404e-05,"bytes":[32,79,104]},{"token":" yeah","logprob":-0.225480240315449,"bytes":[32,121,101,97,104]},{"token":",","logprob":-0.012570910250589687,"bytes":[44]},{"token":" yeah","logprob":-7.3151010234340634e-06,"bytes":[32,121,101,97,104]},{"token":".","logprob":-0.31421073098768221,"bytes":[46]},{"token":" He","logprob":-2.9767465196644797e-06,"bytes":[32,72,101]},{"token":" wasn","logprob":-5.8424214255175045e-05,"bytes":[32,119,97,115,110]},{"token":"'t","logprob":-1.3984413146904441e-05,"bytes":[39,116]},{"token":" even","logprob":-1.8607501051845657e-07,"bytes":[32,101,118,101,110]},{"token":" that","logprob":-9.0419446130436888e-07,"bytes":[32,116,104,97,116]},{"token":" big","logprob":-2.5786248614336144e-06,"bytes":[32,98,105,103]},{"token":" when","logprob":-6.2802736239693974e-06,"bytes":[32,119,104,101,110]},{"token":" I","logprob":-5.96991590487035e-07,"bytes":[32,73]},{"token":" started","logprob":-8.1280270817969464e-06,"bytes":[32,115,116,97,114,116,101,100]},{"token":" listening","logprob":-3.3574749354101571e-05,"bytes":[32,108,105,115,116,101,110,105,110,103]},{"token":" to","logprob":-6.0828825458439201e-08,"bytes":[32,116,111]},{"token":" him","logprob":-1.6579997266205087e-07,"bytes":[32,104,105,109]},{"token":",","logprob":-0.31340000010057456,"bytes":[44]},{"token":" but","logprob":-2.9747417854784024e-06,"bytes":[32,98,117,116]},{"token":" and","logprob":-0.029188887821238102,"bytes":[32,97,110,100]},{"token":" his","logprob":-4.2754791921653136e-06,"bytes":[32,104,105,115]},{"token":" solo","logprob":-5.1292265422500982e-06,"bytes":[32,115,111,108,111]},{"token":" music","logprob":-2.7442616651869189e-06,"bytes":[32,109,117,115,105,99]},{"token":" didn","logprob":-8.1359832641391942e-05,"bytes":[32,100,105,100,110]},{"token":"'t","logprob":-8.5490318983106943e-06,"bytes":[39,116]},{"token":" do","logprob":-3.4335846822147129e-06,"bytes":[32,100,111]},{"token":" overly","logprob":-0.0023682967721790171,"bytes":[32,111,118,101,114,108,121]},{"token":" well","logprob":-2.0575863279049349e-06,"bytes":[32,119,101,108,108]},{"token":",","logprob":-0.38733485187686428,"bytes":[44]},{"token":" but","logprob":-8.6927249408874644e-07,"bytes":[32,98,117,116]},{"token":" he","logprob":-1.2784904080624249e-06,"bytes":[32,104,101]},{"token":" did","logprob":-9.7087107519519545e-07,"bytes":[32,100,105,100]},{"token":" very","logprob":-1.4391896264941936e-05,"bytes":[32,118,101,114,121]},{"token":" well","logprob":-4.5791717769288136e-07,"bytes":[32,119,101,108,108]},{"token":" when","logprob":-0.0004361524758642866,"bytes":[32,119,104,101,110]},{"token":" he","logprob":-3.518159597614456e-07,"bytes":[32,104,101]},{"token":" started","logprob":-1.8596255437330739e-06,"bytes":[32,115,116,97,114,116,101,100]},{"token":" writing","logprob":-2.714338997429534e-05,"bytes":[32,119,114,105,116,105,110,103]},{"token":" for","logprob":-4.4657595246791262e-06,"bytes":[32,102,111,114]},{"token":" other","logprob":-1.3693317212831137e-06,"bytes":[32,111,116,104,101,114]},{"token":" people","logprob":-4.387278297950154e-06,"bytes":[32,112,101,111,112,108,101]},{"token":".","logprob":-3.2816596970269688e-06,"bytes":[46]}],"usage":{"type":"tokens","input_tokens":211,"output_tokens":49,"total_tokens":260,"input_token_details":{"audio_tokens":196,"text_tokens":15}}}
+

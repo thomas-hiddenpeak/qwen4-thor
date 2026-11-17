@@ -389,6 +389,10 @@ void ChatServer::HandleModels(int fd) {
     body += ',' + embedding_catalog_.RetrieveJson(
                       model::EmbeddingConfig::kModelId) + "]}";
   }
+  if (!asr_model_dir_.empty()) {
+    body.resize(body.size() - 2);
+    body += ',' + asr_catalog_.RetrieveJson(audio::AsrConfig::kModelId) + "]}";
+  }
   SendSimple(fd, 200, "OK", body, "application/json");
 }
 
@@ -401,7 +405,8 @@ void ChatServer::HandleModel(int fd, const std::string& method,
                       "model");
   } else if (!model_catalog_.Contains(model) &&
              (embedding_model_dir_.empty() ||
-              !embedding_catalog_.Contains(model))) {
+              !embedding_catalog_.Contains(model)) &&
+             (asr_model_dir_.empty() || !asr_catalog_.Contains(model))) {
     detail::SendError(fd, 404, "model is not registered by this server", {},
                       "model_not_found", "model");
   } else if (method == "DELETE") {
@@ -411,7 +416,8 @@ void ChatServer::HandleModel(int fd, const std::string& method,
                       "model_not_deletable", "model");
   } else {
     const auto& catalog = model_catalog_.Contains(model) ? model_catalog_
-                                                        : embedding_catalog_;
+                            : asr_catalog_.Contains(model) ? asr_catalog_
+                                                           : embedding_catalog_;
     SendSimple(fd, 200, "OK", catalog.RetrieveJson(model),
                "application/json");
   }
@@ -422,7 +428,8 @@ void ChatServer::HandleCapabilities(int fd) {
              ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_,
                                   vision_device_budget_.attention_shared_bytes,
                                   access_program_policy_.get(),
-                                  !embedding_model_dir_.empty()),
+                                  !embedding_model_dir_.empty(),
+                                  !asr_model_dir_.empty()),
              "application/json");
 }
 

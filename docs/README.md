@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+[原生音频后端与标准接口实施](SERVE_NATIVE_AUDIO_2026-11-17.md)；ASR资产、配置、tokenizer和实际计算分组推进，A10继续。
 - [原生网页发行组合接受](evidence/serve-web-search-composition-20261117/README.md)：真实搜索、主轻和保留服务隔离，原失败及独立复核分列。
 
 - [原生视频文件输入闭环](SERVE_NATIVE_VIDEO_INPUT_2026-11-16.md)
@@ -582,3 +583,5 @@
 - [rev266原生保留管理实际交付](evidence/serve-native-maintenance-delivery-20261117/README.md)：旧计划原样恢复、整根回退与再前进、预算保持。
 
 - [rev260客户端回执可回退交付](evidence/serve-client-receipts-delivery-20261117/README.md)：审核信息/恢复终态及发布意图容量的实际修复。
+
+- [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)：真实转录、独立资源和可回退服务恢复。

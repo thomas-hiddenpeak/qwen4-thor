@@ -1,0 +1,5 @@
+{
+  "tools/native_asr/service_acceptance.py": "1553a2632c0b722583f2ccfc2a530c3e4f7f1780bbca965825a609dffebc1b20",
+  "tools/native_asr/transcription_sdk.py": "7848528c92c44b8fd023925dd1dd1c62ee3e6f3487eedc513e3a9aae21df55fb",
+  "tools/native_asr/transcription_sdk.mjs": "b26468e7b9cde5e2cd52a0af6da041f738e4ff932d2393ca6ea6831d0fb6acc1"
+}

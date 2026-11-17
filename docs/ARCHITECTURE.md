@@ -176,6 +176,7 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 | 恢复封装 | 默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；旧包保留 | 当前交付STOPPED；显式nginx模式保留 |
 | 已验版本恢复 | 固定Guardian核对真实致命退出、整树退休及独立CUDA探测，一次切换到已登记旧payload | 保留原Key/用量/预算/profile历史；回退再次失败保护，辅助失能不触发切换 |
 | TLS/浏览器 | 系统OpenSSL按需加载，凭据独立有界读取/轮换；IPv4/IPv6、mTLS/本地CRL和CORS | 原生CPU/浏览器及真实TLS业务通过，坏证书保持有效旧上下文，模型不重启 |
+| 音频准备候选 | 自有隔离worker调用系统GStreamer/gstaudio与固定CPU插件；ASR与embedding共享固定资产读取槽，元数据/权重按SHA及模型合同校验 | codec与资产读取已过针对性CPU；核心不加载codec，资产I/O不持GPU锁；ASR服务健康及HTTP仍在接入，尚未发行音频API |
 
 实现入口：[原生HTTP](../include/q4t/server/chat_server.h)、
 [鉴权与配额](../src/server/client_policy.cpp)、

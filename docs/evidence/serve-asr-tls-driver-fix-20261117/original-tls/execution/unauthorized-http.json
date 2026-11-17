@@ -1,0 +1,13 @@
+{
+  "status": 401,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "125",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-58090eb26b221a4b4b55fb99729776cd",
+    "WWW-Authenticate": "Bearer realm=\"q4t\""
+  },
+  "chunked": false,
+  "cancel": false
+}

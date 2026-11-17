@@ -1,0 +1,9 @@
+test_all_current_public_endpoints_are_declared (tools.serve_recovery.test_gateway.RouteInventoryTests.test_all_current_public_endpoints_are_declared) ... ok
+test_missing_or_duplicate_application_operation_is_rejected (tools.serve_recovery.test_gateway.RouteInventoryTests.test_missing_or_duplicate_application_operation_is_rejected) ... ok
+test_new_public_operation_cannot_silently_miss_frontend (tools.serve_recovery.test_gateway.RouteInventoryTests.test_new_public_operation_cannot_silently_miss_frontend) ... ok
+test_transcription_route_reaches_data_lane_without_exposing_neighbors (tools.serve_recovery.test_gateway.RouteInventoryTests.test_transcription_route_reaches_data_lane_without_exposing_neighbors) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.012s
+
+OK

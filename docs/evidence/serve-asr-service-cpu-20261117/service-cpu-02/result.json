@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_service-tokenizer-02",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-cpu-02/required.txt"
+  ],
+  "seconds": 0.4641871014609933,
+  "tests": 1,
+  "binary_sha256": "fdad6226ad2ba79fd43190714cdcdd53bb3d632ffd273d5ada3e9325e3189a06",
+  "sources": {
+    "include/q4t/text/tokenizer.h": "85cf9828a0a24f2f60439a21a97a2317c743cf070d3662d247c1910b84b8f974",
+    "src/text/tokenizer.cpp": "56a560f4c68bed7973cc400ca3f0a521423567f356f4d741cdf889e9bc3850a1",
+    "tests/asr_tokenizer_test.cpp": "bc128453c024bcd4b78dd6bca1aefc9caa828f6b0d4c2448339245aeef30133d"
+  },
+  "sources_unchanged": true,
+  "reused_tests": 33,
+  "original_failed_result": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-cpu-01/result.json",
+  "gpu_actions": 0,
+  "model_constructions": 0
+}

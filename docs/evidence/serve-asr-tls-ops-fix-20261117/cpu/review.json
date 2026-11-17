@@ -1,0 +1,123 @@
+{
+  "status": "TLS_BUSINESS_VERIFIED_FINAL_PRIVATE_HEALTH_PENDING",
+  "original": {
+    "status": "COMPLETED_TLS_OBSERVATIONS_REUSED_ORIGINAL_FAILED",
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/native-tls-01",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/tls-package-01/bundle",
+      "manifest_sha256": "a3e531d759cd919c7b30d5c3b10a5adf6c3f47357db27342cef5a5c96eae0586"
+    },
+    "files": {
+      "console.log": "2158c8f97a8a4d10483915afcf9dba2661149b3642bfe107718c2759540f8f6a",
+      "plan.json": "e74eeb2f0fb3ad0dd68736184e70e1cca9a63a50f4fb14088ad10fcc064a2772",
+      "lease/nvml-queries.jsonl": "4110360db875511de01a8af606cca9f5d02738c151e3ae8b32d5aeee77b0f4a1",
+      "lease/events.jsonl": "2e47bea6bc756af6a546dfe92933f8d976be19195fff97b31ac95683df02b183",
+      "lease/exit.json": "79c6dfda23810d931541f8ceabc88f1cfb4e6af0cd0085ed78f64c364e801410",
+      "execution/native-asr-gateway-exit-fault.json": "6a3e11de9f1b921f8c383b108e404af5b4bee69159b8f981dcc28f65f9e554a6",
+      "execution/stop.json": "ccca06257e321cc97d1f7450f4d5cd0a999005d855d974e1a7771a81b883b21d",
+      "execution/launcher-result.json": "607c90370fe73b7b217ca886957d1259afd0f36d94783755ab0ac1d2c6b278ca",
+      "execution/chunked-zh.wire": "f7ec322773dffe7d98af0cd0be889d98d5bbab1f45930b69ecc504b3afdf1418",
+      "execution/python-zh-json.wire": "f7ec322773dffe7d98af0cd0be889d98d5bbab1f45930b69ecc504b3afdf1418",
+      "execution/before-cancel.json": "0e97dae1d6db11956591a973ed3ef4afd1636fb08f92fb6f08809824d117a1ef",
+      "execution/launcher.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "execution/python-zh-json-request.json": "e3c121460970cdb488f5112c67433fcd0d39a38b88ad20224565db609431bab0",
+      "execution/result.json": "965d154d380185047266609e1480f48197c94e09e067e157ca681e3397a1e8d1",
+      "execution/capabilities-http.json": "07c06e7bf2d0761d60ad0e59f5259a83527de8cd47c806b04523dd72fd67fe3c",
+      "execution/usage-1.json": "74c0b873d2bf931cf2228720dda5eeaf71eeef6d3c872a9a4f6da2679a858063",
+      "execution/beta-file-limit.wire": "81896de59c1445742ff7403bcb8d960f78cd1f89afba27bae368a240528b1220",
+      "execution/counts.json": "36391ee16df0d151fbcf24c5a0b073ab203be0e19223cef0e7a30044b73d5751",
+      "execution/unauthorized.wire": "9cc49f5990bae941470e3b1439ee2ca4186c2fc6038db5a5b1a1260ebd82f7c9",
+      "execution/js-en-stream-request.json": "ccc3aabb6fae8de044940c7aa04066ce7a5dda3e6a7c7ad6d6a28b8807435b67",
+      "execution/self-check-1.json": "0b5c5514171504995ae1511acfb368c376998ceb95e841fea17541bdbe2fd880",
+      "execution/js-en-stream.wire": "b3ad2c97bc42d7b81b557c10e383bc55bb9a3ccdfdbd0d3e20e856afe5ebff0f",
+      "execution/unauthorized-http.json": "9b233aef292d91a5d8062c508543ffc902896c8a33a70d4bf84aa05a326760b7",
+      "execution/beta-file-limit-http.json": "e2c6e8387d2795fa9b6538a75b4947bda03003127bb59707f2980943cf6739b8",
+      "execution/capabilities.wire": "4f4a2c00c736dbfa67884d50fedfa90b8731677d19ff09a19dfd10ea1ab8cd90",
+      "execution/wrapper.json": "67fa28ea0c9dbc7ac063f7855646350be9bb1089320f79d7a37d6168a4fc9298",
+      "execution/js-en-stream.sdk.json": "09045ab43871891fd93bd87b1fac3341747084b206e4083e053a685fe973faae",
+      "execution/stopped-ledger.json": "16f031cdfcb20b1d9e5cbfa4b696fc07e7ded1d48aa68823297262f91919f692",
+      "execution/initialized.json": "6d07555d3ab68f79c0f17639648060abe5e3b64ccca015ef13794a71bddf7fd9",
+      "execution/ready-1.json": "ab969de18ad489de8cc7d31575809e3bf284fe86f3d3c1fa3f578ffb0ebe4d43",
+      "execution/python-zh-json.sdk.json": "67ad916d842fffc110dc6b2f4d3dcf18f55636535fdbec98773c549fff97bbfc",
+      "execution/chunked-zh-http.json": "9bfca570f35a4056bffa0b2613ff33bc5731b2a7b9c4736db25adb53a708f3ea",
+      "execution/status.jsonl": "fc767181d9d115b62b0d4e6d2f22f9b52fcb5b2a03cfcb430a3c87668f2ce4dc",
+      "execution/state/ledger.json": "aa85bcf88794e62cbfa66a4fbde4b7c30a140ac66200ddf8187a313266be222c"
+    },
+    "counts": {
+      "starts": 1,
+      "chats": 5,
+      "probes": 0,
+      "controls": 178
+    },
+    "seconds": 57.586069266311824,
+    "native_gateway_recovered_without_model_restart": true,
+    "nvml_queries": 56
+  },
+  "continuation": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/native-tls-02",
+    "files": {
+      "console.log": "71cf2a2daf3e9c673571cfe8e5d127d8b53102abd36f1a7d82cdd383406dc21c",
+      "plan.json": "faf617e4ff42c8189a36485ad823326593fa8c1ed10595cd1953432d4e3753a3",
+      "lease/nvml-queries.jsonl": "a8298d4639804ed04d0c37745b43823d1897f0a0f93aba72e623353caf69078f",
+      "lease/events.jsonl": "f616778385808fa743434555a1a0c9ff621adde5d7903baded4ffd632597d630",
+      "lease/exit.json": "5f5db0331019b1292ff210c89f5914f4eb7f88072d59f95832c985ec6292912f",
+      "execution/stop.json": "878839fe5995a0b1efca9a0877ee73d68cea254dcfb8bbd252a613733822eea4",
+      "execution/launcher-result.json": "793fe8f7a9118c0d6656e4eee69309c4c3681602fac54ad546f053dae629d4d9",
+      "execution/before-cancel.json": "afcb3c53018f0ae4efb085713b26745a820a7436c4d1807e96858ad6726e3ee9",
+      "execution/launcher.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "execution/cancel-stream.wire": "da5d2b8be513ac12e4d9875f30e17b5e3cd3b7066f169f8555ea02e836517da4",
+      "execution/final-config.wire": "902bed56e76886d5f2d802b419e32d5f2a15c5f52e41d80e2350efd3220f6add",
+      "execution/result.json": "6fd23267781a05069ca597709692b2d6144b1e33efae8268fe3b3e9446a3f359",
+      "execution/capabilities-http.json": "e99bdd1e90fd5460e915d38a385d0b99b0f746c4f11ccaa70d98920a68beed09",
+      "execution/usage-1.json": "51ec65e1972f36d1cca54a0bd8b9eee52f07e71c582116606ada1f2e5d97fdb2",
+      "execution/after-cancel.json": "0c26c9432b37ac79391af33a324f3bcbe70072d8f3e4262067cd6e265d7b411c",
+      "execution/core-after.wire": "e945ed7686e38300f078f5e1e68fc9e804c9efd64a86a79d23b04494a73e5db5",
+      "execution/counts.json": "08f9ae091ad25587d07f8efd0be1ab75fecbd68c8471fcffaaafa637d86e781b",
+      "execution/cancel-observation.json": "cec9d91d76f53ec94c7c4935a7b1baacdf76d4648d74209cd98f5ed1653bd3d6",
+      "execution/self-check-1.json": "c4f0c0dc173288cad7aa40f27128a681f6e6395c1ffac9560037fb7c767d3a61",
+      "execution/capabilities.wire": "4f4a2c00c736dbfa67884d50fedfa90b8731677d19ff09a19dfd10ea1ab8cd90",
+      "execution/wrapper.json": "1c94565cdcd78db5907354a79a655e36d6a3d1282714c5bdce751e094224dc6d",
+      "execution/stopped-ledger.json": "eeb1bf79b632d700511b58d456f17a2d1f11f26817649d2a5dc2bc52e0aded2a",
+      "execution/initialized.json": "d83e5015046c5186a0be8501fd60396adb92262676876725939a4fbf960dd343",
+      "execution/ready-1.json": "27f9ca7044a8a86c35d6310fd7511afe252ffa94ec50ba92af4122b8c5c86cf7",
+      "execution/final-config-http.json": "cec89f2f708092a2eb7b9791fef480d0a598c918a07c08aea38318b644dbe1d1",
+      "execution/core-after-http.json": "fdbf12aa8fdbb11795a720f0a6710c9b512498cde9577560fa2d3e2dd1ad1a70",
+      "execution/core-after-request.json": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c",
+      "execution/status.jsonl": "eef3932c02eeda74e3913dc07bb2d5a647cbc1704bebce90b11f3e73be5edd08",
+      "execution/cancel-stream-http.json": "a100466a182177db6a9a5324cc2368f5b3de31e01b9b61d34dd9cfcdb677b074",
+      "execution/state/ledger.json": "68e394875934ec6131998e19b99f511a80017b3de2e4826225e530965825b55e"
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/tls-package-01/bundle",
+    "manifest_sha256": "a3e531d759cd919c7b30d5c3b10a5adf6c3f47357db27342cef5a5c96eae0586"
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "probes": 0
+  },
+  "seconds": 106.38556416146457,
+  "environments": {
+    "original": {
+      "nvml_queries": 56,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "env_abort": false
+    },
+    "continuation": {
+      "nvml_queries": 48,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "env_abort": false
+    }
+  },
+  "actual_cancellation_and_subsequent_chat": true,
+  "private_config_exposure_rejected": true,
+  "final_tls_private_health_observed": false,
+  "original_continuous_drivers_passed": false,
+  "default_replaced": false,
+  "new_gpu_starts": 0
+}

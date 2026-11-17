@@ -23,10 +23,13 @@
 #include "q4t/status.h"
 
 namespace q4t {
+namespace io {
+struct Json;
+}
 namespace text {
 
 // Distinct, pinned model contracts; never infer a profile from loose schema.
-enum class TokenizerProfile { kQwen4Exp, kQwen3Embedding };
+enum class TokenizerProfile { kQwen4Exp, kQwen3Embedding, kQwen3Asr };
 
 // Resource limits enforced while loading the tokenizer JSON and while
 // encoding/decoding caller-controlled text.
@@ -53,6 +56,11 @@ struct EncodeOptions {
   // Qwen3 Embedding's trained postprocessor appends EOS. The Qwen4 profile
   // remains raw regardless of this option. Token-ID inputs bypass Encode.
   bool add_special_tokens = true;
+  // Caller text inside a trained template must not introduce structural
+  // markers. False sends every byte through the ordinary BPE path. This is
+  // separate from the profile's optional EOS postprocessor above. Literal
+  // mode clears partial tokens on any failure, so no truncated context leaks.
+  bool recognize_special_tokens = true;
 };
 
 // GPT-2 style Byte-Level BPE tokenizer loaded from tokenizer.json.
@@ -83,6 +91,15 @@ class Tokenizer {
                          std::unique_ptr<Tokenizer>* out,
                          TokenizerProfile profile = TokenizerProfile::kQwen4Exp);
 
+  // The official ASR asset has vocab/merges/config rather than tokenizer.json.
+  // Construct its exact pinned BPE contract natively, with no conversion tool
+  // or runtime Transformers dependency. No implicit BOS/EOS is inserted.
+  static Status LoadQwen3Asr(std::string_view vocab_json,
+                            std::string_view merges_text,
+                            std::string_view config_json,
+                            const TokenizerLimits& limits,
+                            std::unique_ptr<Tokenizer>* out);
+
   // Encode text into token ids. Added/special tokens are matched as whole
   // strings before the byte-level BPE path, mirroring the reference
   // `tokenizers` behavior.
@@ -108,6 +125,10 @@ class Tokenizer {
   std::uint32_t VocabSize() const noexcept;
 
  private:
+  static Status LoadDocument(const io::Json& root,
+                             const TokenizerLimits& limits,
+                             std::unique_ptr<Tokenizer>* out,
+                             TokenizerProfile profile);
   struct Impl;
   explicit Tokenizer(std::unique_ptr<Impl> impl) noexcept;
   std::unique_ptr<Impl> impl_;

@@ -1,0 +1,9 @@
+{
+  "tests": [
+    "exact-cleanup-metric-and-negative-controls",
+    "completed-tls-identity-wire-monitoring-cleanup"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "source_sha256": "9367829dc8aaa9da1285a8dae3bd6126e37fa2252e83bd1b959e9bf3148c7736"
+}

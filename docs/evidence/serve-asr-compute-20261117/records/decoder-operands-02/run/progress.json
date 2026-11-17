@@ -1,0 +1,538 @@
+{
+  "status": "COMPLETED",
+  "last_layer": 28,
+  "checks": [
+    {
+      "layer": 0,
+      "name": "complete_embedded_input",
+      "category": "same_operand_exact_bf16",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "layer_state_continuity",
+      "category": "same_operand_exact_bf16",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "input_norm",
+      "category": "actual_fp32_reduction_common_rsqrt_2ulp",
+      "values": 71680,
+      "violations": 0,
+      "rows": 70,
+      "bound_is_observed_instance_check": true
+    },
+    {
+      "layer": 27,
+      "name": "q",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 143360,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "k",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "v",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "rope_table",
+      "category": "same_operand_exact_bf16",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "norm_rope_q",
+      "category": "actual_fp32_reduction_common_rsqrt_2ulp",
+      "values": 143360,
+      "violations": 0,
+      "heads": 1120
+    },
+    {
+      "layer": 27,
+      "name": "padding_q",
+      "category": "same_operand_exact_bf16",
+      "values": 20480,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "norm_rope_k",
+      "category": "actual_fp32_reduction_common_rsqrt_2ulp",
+      "values": 71680,
+      "violations": 0,
+      "heads": 560
+    },
+    {
+      "layer": 27,
+      "name": "padding_k",
+      "category": "same_operand_exact_bf16",
+      "values": 10240,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "transpose_values",
+      "category": "same_operand_exact_bf16",
+      "values": 81920,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_0",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_0",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_0",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_1",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_1",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_1",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_2",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_2",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_2",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_3",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_3",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_3",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_4",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_4",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_4",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_5",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_5",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_5",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_6",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_6",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_6",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_7",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_7",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_7",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_8",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_8",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_8",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_9",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_9",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_9",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_10",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_10",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_10",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_11",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_11",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_11",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_12",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_12",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_12",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_13",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_13",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_13",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_14",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_14",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_14",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "qk_15",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "softmax_15",
+      "category": "fp32_softmax_bf16_rounding_cell",
+      "values": 5600,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "pv_15",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 8960,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "merge_heads",
+      "category": "same_operand_exact_bf16",
+      "values": 143360,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "attention_projection",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "attention_residual",
+      "category": "same_operand_exact_bf16",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "post_norm",
+      "category": "actual_fp32_reduction_common_rsqrt_2ulp",
+      "values": 71680,
+      "violations": 0,
+      "rows": 70,
+      "bound_is_observed_instance_check": true
+    },
+    {
+      "layer": 27,
+      "name": "gate",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 215040,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "up",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 215040,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "swiglu",
+      "category": "fp32_exp_2ulp_and_exp_overflow_instance_check",
+      "values": 215040,
+      "violations": 0,
+      "exp_overflow_values": 173,
+      "overflow_pinned_cpu_reference_equal": true
+    },
+    {
+      "layer": 27,
+      "name": "down",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 27,
+      "name": "final_residual",
+      "category": "same_operand_exact_bf16",
+      "values": 71680,
+      "violations": 0
+    },
+    {
+      "layer": 28,
+      "name": "final_norm",
+      "category": "actual_fp32_reduction_common_rsqrt_2ulp",
+      "values": 1024,
+      "violations": 0,
+      "rows": 1,
+      "bound_is_observed_instance_check": true
+    },
+    {
+      "layer": 28,
+      "name": "lm_head",
+      "category": "fp32_dot_bf16_rounding_cell",
+      "values": 151936,
+      "violations": 0
+    }
+  ],
+  "negative_controls": [
+    {
+      "name": "input_norm",
+      "rejected": true
+    },
+    {
+      "name": "q",
+      "rejected": true
+    },
+    {
+      "name": "swiglu_exp_overflow",
+      "rejected": true
+    },
+    {
+      "name": "lm_head",
+      "rejected": true
+    }
+  ],
+  "requested_layers": [
+    27,
+    28
+  ],
+  "original_gate_accepted": false,
+  "source_sha256": "c77d3f7fd754d55b05acbe7aec0b2883bee56d7516532e8f22e99009393071f8",
+  "seconds": 2.1446748501621187
+}

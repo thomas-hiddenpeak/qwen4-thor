@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "exact-cleanup-metric-and-negative-controls",
+      "status": "PASS",
+      "negative_controls": 5
+    },
+    {
+      "name": "completed-tls-identity-wire-monitoring-cleanup",
+      "status": "PASS",
+      "revalidated_files": 34,
+      "original_status": "FAILED"
+    }
+  ],
+  "gpu_actions": 0,
+  "seconds": 0.7148800720460713
+}

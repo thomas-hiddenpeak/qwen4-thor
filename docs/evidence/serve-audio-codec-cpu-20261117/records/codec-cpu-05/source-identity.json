@@ -1,0 +1,10 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "binary_sha256": "0d6350dd2bad99238ac4e5c4a576b06109cd8c6e8d60586fb78c9bd6a7a18172",
+  "sources": {
+    "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
+    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f",
+    "src/server/media_codec_runtime.h": "63bd9f8eec631ddea6df8cd738a188525bf6e36c75d121b747d777cd0be21c19",
+    "tests/server_file_audio_test.cpp": "c475c6e46b3da8fce2aa82b60046e7e9d7b3629cafa082457aa4b3c07dfb3fcc"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "http_status": 404,
+  "content_type": "application/json",
+  "body": "{\"native_asr_health\":{\"state\":\"ready\"}}"
+}

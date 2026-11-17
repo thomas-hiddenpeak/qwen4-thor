@@ -1,0 +1,18 @@
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/model_asset_test_main.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_model_assets_test.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_embedding_assets_test.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/router_trace_hash_test.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/model_assets.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_assets.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/embedding_assets.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/grammar_process.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/worker_io_broker.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_config.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_layout.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_config.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_layout.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t_model_asset_tests
+[100%] Built target q4t_model_asset_tests

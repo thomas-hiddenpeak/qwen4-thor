@@ -1,0 +1,14 @@
+{
+  "status": "TLS_PRIVATE_FIXTURE_PENDING",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+  "candidate_manifest": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+  "source_engine_identical": true,
+  "explicit_differences": [
+    "private TLS certificate/key",
+    "three private listen ports",
+    "independent random fixture API keys",
+    "v4 file upload quota alpha32MiB beta64KiB; other quotas unchanged"
+  ],
+  "default_unchanged": true,
+  "gpu_actions": 0
+}

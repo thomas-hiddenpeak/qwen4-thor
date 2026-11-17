@@ -1,0 +1,21 @@
+{
+  "status": "PASS_ASR_SERVICE_TARGETED_CPU",
+  "unique_tests": 34,
+  "executions_including_failed_case": 35,
+  "seconds": 2.166639856528491,
+  "original_failure_preserved": true,
+  "reused_unchanged_checks": 33,
+  "repair": "Literal-context Encode now clears partial tokens on any error; default recognizer path unchanged.",
+  "host_sha256": "6f55f963f6d076d228b7c50db5de3af81f63c1f709abbcb21b3f4e57c57e3ede",
+  "tokenizer_fixed_sha256": "fdad6226ad2ba79fd43190714cdcdd53bb3d632ffd273d5ada3e9325e3189a06",
+  "gpu_actions": 0,
+  "model_constructions": 0,
+  "http_verified": false,
+  "published": false,
+  "default_unchanged": true,
+  "remaining": [
+    "actual native audio HTTP/SDK",
+    "service package and native TLS/recovery compositions",
+    "alignment/diarization/VAD and all remaining audio/master tasks"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "status": "NEW_PAYLOAD_ACTUAL_ACCEPTANCE_PENDING",
+  "original": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-20261112/selfcheck-repair-01/fallback",
+    "manifest_sha256": "c93e9714786643a76a933039bff0843df1d40030f2669085f6041af8db0e1ae7"
+  },
+  "primary": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+    "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/retained-01/bundle",
+    "manifest_sha256": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d"
+  },
+  "changed_files": [
+    "bin/q4t-guardian",
+    "bin/q4t-ingress",
+    "native-build.json",
+    "profile-light.json",
+    "profile-primary.json",
+    "source/tools/serve_ops/contracts.py",
+    "source/tools/serve_recovery/profile_bundle.py",
+    "source/tools/serve_recovery/profile_contract.py",
+    "source/tools/serve_recovery/profile_controller.py",
+    "source/tools/serve_recovery/profile_evidence.py",
+    "source/tools/serve_service/capacity.py",
+    "source/tools/serve_service/package.py",
+    "source/tools/serve_service/supervisor.py"
+  ],
+  "asr_adapters": [
+    "tools/serve_ops/contracts.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/supervisor.py",
+    "tools/serve_service/capacity.py",
+    "tools/serve_recovery/profile_contract.py",
+    "tools/serve_recovery/profile_evidence.py",
+    "tools/serve_recovery/profile_bundle.py"
+  ],
+  "coordinator_change": "Only pass optional ASR binding to expected identity; original memory policy unchanged",
+  "compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "b7d61bf77a2640f3e2759f5e3772b21678a9da5c2cd708d1102963763d17eea1",
+    "to_registry": "b7d61bf77a2640f3e2759f5e3772b21678a9da5c2cd708d1102963763d17eea1",
+    "profiles": {
+      "primary": "178cf172a8b38c4257e0cb84d0c16230880de34f92164649207dd97edd6e2a2b",
+      "light": "73c6f619fc81d610f7990528f3f3a3db741a276d0a7890fb04625fbd3f36af55"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "fc6ffe226d0f8420d71e29fba985827906d28354b1bff74634c94dcb20ebaede",
+    "to_identity": "fc6ffe226d0f8420d71e29fba985827906d28354b1bff74634c94dcb20ebaede",
+    "capabilities_sha256": "8aefdd0f3ce15c1ad61007d322609eb3ab97805765b867dd8694ad762573ac9f",
+    "automatic": true
+  },
+  "original_acceptance_not_relabelled": true,
+  "default_unchanged": true,
+  "driver_sha256": "4ca870b0432278d00ab20f46dfe22d60eb846a755053ac95af817b597802df6d"
+}

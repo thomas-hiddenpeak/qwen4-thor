@@ -1,0 +1,7 @@
+{
+  "role": "gateway",
+  "pid": 4102655,
+  "start_ticks": 310238165,
+  "signal": "SIGKILL",
+  "monotonic": 3102424.535496224
+}

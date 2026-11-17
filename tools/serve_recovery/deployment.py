@@ -79,6 +79,11 @@ def check_target(current, target):
         ledger.require(all(selected.get(k) == embedding[k]
                            for k in engine.NATIVE_EMBEDDING),
                        'deployment would remove or change accepted embedding model')
+    asr = old_core['settings'].get('native_asr')
+    if asr is not None:
+        selected = new_core['settings'].get('native_asr', {})
+        ledger.require(all(selected.get(k) == asr[k] for k in engine.NATIVE_ASR),
+                       'deployment would remove or change accepted ASR model')
     from tools.serve_recovery import profile_manager
     profile_manager.compatible(old, new, current['package'], target['package'])
     return old, new

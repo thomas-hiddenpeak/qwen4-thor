@@ -928,6 +928,223 @@
                 "cache_layout"
               ],
               "description": "Current native media v3 retains visual state and exact processor/geometry/position identity; preceding v3 records retain their historical schema."
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v3"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg",
+                    "gif"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg",
+                    "image/gif"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto",
+                    "low",
+                    "high",
+                    "original"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                },
+                "video_time_field": {
+                  "const": "video_timestamps"
+                },
+                "video_time_unit": {
+                  "const": "seconds"
+                },
+                "video_time_default": {
+                  "const": "frame_index/24"
+                },
+                "max_timestamp_seconds": {
+                  "const": 86400
+                },
+                "temporal_group_frames": {
+                  "const": 2
+                },
+                "timestamp_rounding_decimal_places": {
+                  "const": 1
+                },
+                "video_prompt": {
+                  "const": "timestamp_then_one_boundary_per_temporal_group"
+                },
+                "mtp": {
+                  "const": false
+                },
+                "state_cache": {
+                  "const": true
+                },
+                "chunked_prefill": {
+                  "const": true
+                },
+                "max_execution_slots": {
+                  "const": 1
+                },
+                "client_governance": {
+                  "const": true
+                },
+                "animated_images": {
+                  "const": false
+                },
+                "detail_policy": {
+                  "const": {
+                    "auto": "qwen_reference_smart_resize",
+                    "low": {
+                      "longest_edge": 512,
+                      "max_pixels": 262144
+                    },
+                    "high": {
+                      "longest_edge": 2048,
+                      "max_pixels": 4194304
+                    },
+                    "original": "preserve_pixels_pad_right_bottom_edge",
+                    "configured_pixel_limit_applies": true
+                  }
+                },
+                "cache_identity": {
+                  "const": "source_bytes_processor_geometry_and_position"
+                },
+                "cache_boundaries": {
+                  "const": "complete_visual_blocks"
+                },
+                "cache_layout": {
+                  "const": "target_with_three_axis_rope_and_delta"
+                },
+                "video_detail": {
+                  "const": [
+                    "auto",
+                    "low",
+                    "high"
+                  ]
+                },
+                "video_high_min_frame_pixels": {
+                  "const": 65536
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation",
+                "video_time_field",
+                "video_time_unit",
+                "video_time_default",
+                "max_timestamp_seconds",
+                "temporal_group_frames",
+                "timestamp_rounding_decimal_places",
+                "video_prompt",
+                "mtp",
+                "state_cache",
+                "chunked_prefill",
+                "max_execution_slots",
+                "client_governance",
+                "animated_images",
+                "detail_policy",
+                "cache_identity",
+                "cache_boundaries",
+                "cache_layout",
+                "video_detail",
+                "video_high_min_frame_pixels"
+              ],
+              "description": "Current native media v3 retains visual state and exact processor/geometry/position identity; preceding v3 records retain their historical schema."
             }
           ]
         }
@@ -3654,6 +3871,110 @@
         "core_readiness_dependency",
         "model_restart_on_error"
       ]
+    },
+    "native_asr_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "disabled",
+            "configured",
+            "loading",
+            "metadata_ready",
+            "ready",
+            "degraded"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "none",
+            "asr_assets_invalid",
+            "asr_assets_timeout",
+            "asr_worker_unavailable",
+            "asr_resource_exhausted",
+            "gpu_unhealthy",
+            "asr_compute_failed"
+          ]
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model": {
+          "const": "qwen3-asr-0.6b"
+        },
+        "device_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery": {
+          "const": "request_driven"
+        },
+        "retry_delay_ms": {
+          "const": 5000
+        },
+        "compute_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "asset_cleanup_pending": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "core_readiness_dependency",
+        "model",
+        "device_bytes",
+        "load_attempts",
+        "load_failures",
+        "recovery",
+        "retry_delay_ms",
+        "compute_failures",
+        "asset_cleanup_pending"
+      ],
+      "description": "Independent backend observation. Missing or invalid assets never request a primary model restart; genuine CUDA faults still invoke global device protection."
+    },
+    "native_asr_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_audio_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 600
+        },
+        "max_context_tokens": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 8192
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "workspace_mib": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        }
+      },
+      "required": [
+        "max_audio_seconds",
+        "max_context_tokens",
+        "max_output_tokens",
+        "workspace_mib"
+      ]
     }
   },
   "required": [
@@ -3753,6 +4074,28 @@
             }
           }
         }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "native_asr_health"
+            ]
+          },
+          {
+            "required": [
+              "native_asr_limits"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "required": [
+          "native_asr_health",
+          "native_asr_limits"
+        ]
       }
     }
   ]

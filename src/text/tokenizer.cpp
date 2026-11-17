@@ -9,9 +9,11 @@
 #include <algorithm>
 #include <array>
 #include <cctype>
+#include <charconv>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <initializer_list>
 #include <limits>
 #include <map>
 #include <queue>
@@ -50,8 +52,43 @@ constexpr std::string_view kEmbeddingRegex =
 constexpr uint32_t kEmbeddingEos = 151643;
 
 std::string_view ProfileRegex(TokenizerProfile profile) {
-  return profile == TokenizerProfile::kQwen3Embedding ? kEmbeddingRegex
-                                                     : kPretokenizeRegex;
+  return profile == TokenizerProfile::kQwen4Exp ? kPretokenizeRegex
+                                               : kEmbeddingRegex;
+}
+
+// Fixed official ASR added-token metadata (Apache-2.0 attribution in
+// third_party/licenses/qwen3-asr). IDs 151677..151703 are <blank1>..<blank27>.
+std::string AsrAddedToken(uint32_t id) {
+  constexpr std::array<std::string_view, 34> names{
+      "<|endoftext|>", "<|im_start|>", "<|im_end|>",
+      "<|object_ref_start|>", "<|object_ref_end|>", "<|box_start|>",
+      "<|box_end|>", "<|quad_start|>", "<|quad_end|>", "<|vision_start|>",
+      "<|vision_end|>", "<|vision_pad|>", "<|image_pad|>", "<|video_pad|>",
+      "<tool_call>", "</tool_call>", "<|fim_prefix|>", "<|fim_middle|>",
+      "<|fim_suffix|>", "<|fim_pad|>", "<|repo_name|>", "<|file_sep|>",
+      "<tool_response>", "</tool_response>", "<think>", "</think>",
+      "<|audio_start|>", "<|audio_end|>", "<tts_pad>", "<tts_text_bos>",
+      "<tts_text_eod>", "<tts_text_bos_single>", "<non_speech>",
+      "<|audio_pad|>"};
+  if (id >= 151643 && id < 151677) return std::string(names[id - 151643]);
+  if (id >= 151677 && id <= 151703)
+    return "<blank" + std::to_string(id - 151676) + ">";
+  return id == 151704 ? "<asr_text>" : "";
+}
+
+bool AsrTokenMetadata(const io::Json& token, uint32_t id) {
+  const auto expected = AsrAddedToken(id);
+  if (expected.empty() || token.GetString("content") != expected ||
+      token.object.size() != 7)
+    return false;
+  for (const char* field : {"normalized", "single_word", "lstrip", "rstrip"}) {
+    const auto* value = token.Find(field);
+    if (!value || !value->IsBool() || value->boolean) return false;
+  }
+  const auto* special = token.Find("special");
+  const bool expected_special = !(id >= 151657 && id <= 151668) &&
+                                 id != 151675 && id != 151704;
+  return special && special->IsBool() && special->boolean == expected_special;
 }
 
 struct AddedToken {
@@ -216,7 +253,8 @@ bool EmbeddingPostprocessor(const io::Json& root) {
 bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
                     std::string* err) {
   if (profile != TokenizerProfile::kQwen4Exp &&
-      profile != TokenizerProfile::kQwen3Embedding) {
+      profile != TokenizerProfile::kQwen3Embedding &&
+      profile != TokenizerProfile::kQwen3Asr) {
     *err = "unknown tokenizer profile";
     return false;
   }
@@ -286,6 +324,15 @@ bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
     *err = "embedding EOS postprocessor does not match the pinned contract";
     return false;
   }
+  if (profile == TokenizerProfile::kQwen3Asr) {
+    for (const char* field : {"post_processor", "truncation", "padding"}) {
+      const auto* value = root.Find(field);
+      if (!value || !value->IsNull()) {
+        *err = "ASR tokenizer must not add, truncate or pad tokens";
+        return false;
+      }
+    }
+  }
   return true;
 }
 
@@ -301,9 +348,9 @@ bool ParseModel(const io::Json& root, TokenizerData& data, std::string* err) {
     *err = "vocabulary exceeds max_vocab_size";
     return false;
   }
-  const size_t expected_vocab = data.profile == TokenizerProfile::kQwen3Embedding
-                                    ? kEmbeddingEos
-                                    : Tokenizer::kPinnedBaseVocabSize;
+  const size_t expected_vocab = data.profile == TokenizerProfile::kQwen4Exp
+                                    ? Tokenizer::kPinnedBaseVocabSize
+                                    : kEmbeddingEos;
   if (vocab->object.size() != expected_vocab) {
     *err = "base vocabulary size does not match the pinned tokenizer";
     return false;
@@ -355,9 +402,9 @@ bool ParseModel(const io::Json& root, TokenizerData& data, std::string* err) {
     return false;
   }
   const size_t expected_merges =
-      data.profile == TokenizerProfile::kQwen3Embedding
-          ? 151387
-          : Tokenizer::kPinnedMergeCount;
+      data.profile == TokenizerProfile::kQwen4Exp
+          ? Tokenizer::kPinnedMergeCount
+          : 151387;
   if (merges->array.size() != expected_merges) {
     *err = "merge count does not match the pinned tokenizer";
     return false;
@@ -427,6 +474,11 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
     *err = "embedding added-token count differs";
     return false;
   }
+  if (data.profile == TokenizerProfile::kQwen3Asr &&
+      tokens->array.size() != 62) {
+    *err = "ASR added-token count differs";
+    return false;
+  }
   data.added_tokens.reserve(tokens->array.size());
   for (const io::Json& token : tokens->array) {
     if (!token.IsObject()) {
@@ -446,6 +498,11 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
       return false;
     }
     const auto token_id = static_cast<uint32_t>(integer);
+    if (data.profile == TokenizerProfile::kQwen3Asr &&
+        !AsrTokenMetadata(token, token_id)) {
+      *err = "ASR added-token contract differs";
+      return false;
+    }
     if (token_id < data.id_to_token.size()) {
       *err = "added token id collides with the base vocabulary";
       return false;
@@ -700,6 +757,8 @@ bool EncodeImpl(const TokenizerData& data, std::string_view text,
   }
   output->clear();
   output->reserve(std::min(text.size(), data.limits.max_tokens));
+  if (!options.recognize_special_tokens)
+    return EncodeNormalSegment(data, text, output, err, options);
   std::size_t cursor = 0;
   // Each marker advances its own search frontier. A missing marker stays
   // missing instead of rescanning the remaining input after every match.
@@ -771,9 +830,17 @@ Status Tokenizer::LoadJson(std::string_view json, const TokenizerLimits& limits,
   io::Json root;
   io::JsonParseLimits parse_limits;
   parse_limits.reject_duplicate_keys =
-      profile == TokenizerProfile::kQwen3Embedding;
+      profile != TokenizerProfile::kQwen4Exp;
   Status parse = io::ParseJson(std::string(json), &root, false, parse_limits);
   if (!parse.ok()) return parse;
+  return LoadDocument(root, limits, out, profile);
+}
+
+Status Tokenizer::LoadDocument(const io::Json& root,
+                               const TokenizerLimits& limits,
+                               std::unique_ptr<Tokenizer>* out,
+                               TokenizerProfile profile) {
+  if (!out) return Status::Fail("tokenizer output is null");
   std::string err;
   if (!ValidateSchema(root, profile, &err)) {
     return Status::Fail("tokenizer schema mismatch: " + err);
@@ -809,6 +876,165 @@ Status Tokenizer::Load(const std::string& path, const TokenizerLimits& limits,
   return LoadJson(json, limits, out, profile);
 }
 
+Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
+                              std::string_view merges_text,
+                              std::string_view config_json,
+                              const TokenizerLimits& limits,
+                              std::unique_ptr<Tokenizer>* out) {
+  size_t remaining = limits.max_tokenizer_bytes;
+  for (const auto bytes : {vocab_json, merges_text, config_json}) {
+    if (bytes.size() > remaining)
+      return Status::Fail("ASR tokenizer exceeds max_tokenizer_bytes");
+    remaining -= bytes.size();
+  }
+  if (config_json.size() > 65536)
+    return Status::Fail("ASR tokenizer config exceeds 64 KiB");
+  io::Json config, vocab;
+  io::JsonParseLimits parse_limits;
+  parse_limits.max_depth = 8;
+  parse_limits.max_values = 4096;
+  parse_limits.max_string_bytes = 65536;
+  parse_limits.reject_duplicate_keys = true;
+  if (auto s = io::ParseJson(std::string(config_json), &config, false,
+                             parse_limits); !s)
+    return s;
+  if (!config.IsObject()) return Status::Fail("ASR tokenizer config object");
+  for (const auto& [name, expected] :
+       std::initializer_list<std::pair<const char*, const char*>>{
+           {"tokenizer_class", "Qwen2Tokenizer"},
+           {"processor_class", "Qwen3ASRProcessor"},
+           {"eos_token", "<|im_end|>"}, {"pad_token", "<|endoftext|>"},
+           {"audio_bos_token", "<|audio_start|>"},
+           {"audio_eos_token", "<|audio_end|>"},
+           {"audio_token", "<|audio_pad|>"},
+           {"image_token", "<|image_pad|>"},
+           {"video_token", "<|video_pad|>"},
+           {"vision_bos_token", "<|vision_start|>"},
+           {"vision_eos_token", "<|vision_end|>"}, {"errors", "replace"}})
+    if (config.GetString(name) != expected)
+      return Status::Fail(std::string("ASR tokenizer differs: ") + name);
+  for (const char* name : {"add_bos_token", "add_prefix_space",
+                            "clean_up_tokenization_spaces",
+                            "split_special_tokens"}) {
+    const auto* value = config.Find(name);
+    if (!value || !value->IsBool() || value->boolean)
+      return Status::Fail(std::string("ASR tokenizer differs: ") + name);
+  }
+  for (const char* name : {"bos_token", "unk_token"}) {
+    const auto* value = config.Find(name);
+    if (!value || !value->IsNull())
+      return Status::Fail(std::string("ASR tokenizer differs: ") + name);
+  }
+  if (const auto* eos = config.Find("add_eos_token");
+      eos && (!eos->IsBool() || eos->boolean))
+    return Status::Fail("ASR tokenizer must not insert EOS");
+  if (config.GetInt("model_max_length", -1) != 131072)
+    return Status::Fail("ASR tokenizer context differs");
+  const auto* extra = config.Find("extra_special_tokens");
+  if (!extra || !extra->IsObject() || extra->object.size() != 7)
+    return Status::Fail("ASR tokenizer extra special tokens differ");
+  for (const char* name : {"audio_bos_token", "audio_eos_token", "audio_token",
+                            "image_token", "video_token", "vision_bos_token",
+                            "vision_eos_token"})
+    if (extra->GetString(name) != config.GetString(name))
+      return Status::Fail("ASR tokenizer extra special token mapping differs");
+  constexpr std::array<uint32_t, 19> kAdditional{
+      151644, 151645, 151646, 151647, 151648, 151649, 151650,
+      151651, 151652, 151653, 151654, 151655, 151656, 151669,
+      151670, 151671, 151672, 151674, 151676};
+  const auto* additional = config.GetArray("additional_special_tokens");
+  if (!additional || additional->array.size() != kAdditional.size())
+    return Status::Fail("ASR tokenizer additional special tokens differ");
+  for (size_t i = 0; i < kAdditional.size(); ++i)
+    if (!additional->array[i].IsString() ||
+        additional->array[i].str != AsrAddedToken(kAdditional[i]))
+      return Status::Fail("ASR tokenizer additional special token differs");
+  const auto* added = config.Find("added_tokens_decoder");
+  if (!added || !added->IsObject() || added->object.size() != 62 ||
+      added->object.size() > limits.max_added_tokens)
+    return Status::Fail("ASR tokenizer added tokens differ/exceed budget");
+  io::Json tokens;
+  tokens.type = io::Json::Type::kArray;
+  for (const auto& [id_text, metadata] : added->object) {
+    uint32_t id = 0;
+    const auto [end, error] = std::from_chars(
+        id_text.data(), id_text.data() + id_text.size(), id);
+    if (error != std::errc{} || end != id_text.data() + id_text.size() ||
+        std::to_string(id) != id_text || !metadata.IsObject())
+      return Status::Fail("ASR tokenizer added token id/object");
+    auto token = metadata;
+    io::Json number;
+    number.type = io::Json::Type::kNumber;
+    number.number = id;
+    token.object.emplace_back("id", std::move(number));
+    if (!AsrTokenMetadata(token, id))
+      return Status::Fail("ASR tokenizer added token semantics differ");
+    tokens.array.push_back(std::move(token));
+  }
+  parse_limits.max_depth = 2;
+  parse_limits.max_values = 1 + 2 * std::min(size_t{151643},
+                                           limits.max_vocab_size);
+  parse_limits.max_string_bytes = std::min(vocab_json.size(),
+                                            limits.max_tokenizer_bytes);
+  if (auto s = io::ParseJson(std::string(vocab_json), &vocab, false,
+                             parse_limits); !s)
+    return s;
+  if (!vocab.IsObject()) return Status::Fail("ASR vocabulary object");
+  constexpr std::string_view kHeader = "#version: 0.2\n";
+  if (!merges_text.starts_with(kHeader))
+    return Status::Fail("ASR merges version differs");
+  const auto string = [](std::string_view value) {
+    io::Json result;
+    result.type = io::Json::Type::kString;
+    result.str = value;
+    return result;
+  };
+  const auto object = [](std::initializer_list<
+                           std::pair<std::string, io::Json>> fields) {
+    io::Json result;
+    result.type = io::Json::Type::kObject;
+    result.object = fields;
+    return result;
+  };
+  io::Json merges;
+  merges.type = io::Json::Type::kArray;
+  for (size_t start = kHeader.size(); start < merges_text.size();) {
+    const auto newline = merges_text.find('\n', start);
+    const auto end = newline == merges_text.npos ? merges_text.size() : newline;
+    if (end == start || merges.array.size() >= limits.max_merges ||
+        merges.array.size() >= 151387)
+      return Status::Fail("ASR merges empty line/excess entries");
+    merges.array.push_back(string(merges_text.substr(start, end - start)));
+    start = end + (end < merges_text.size());
+  }
+  io::Json no;
+  no.type = io::Json::Type::kBool;
+  io::Json sequence;
+  sequence.type = io::Json::Type::kArray;
+  sequence.array.push_back(object({
+      {"type", string("Split")},
+      {"pattern", object({{"Regex", string(kEmbeddingRegex)}})},
+      {"behavior", string("Isolated")}, {"invert", no}}));
+  sequence.array.push_back(object({{"type", string("ByteLevel")},
+                                   {"add_prefix_space", no},
+                                   {"use_regex", no}}));
+  auto root = object({
+      {"version", string("1.0")},
+      {"normalizer", object({{"type", string("NFC")}})},
+      {"post_processor", io::Json{}}, {"padding", io::Json{}},
+      {"truncation", io::Json{}},
+      {"pre_tokenizer", object({{"type", string("Sequence")},
+                                 {"pretokenizers", std::move(sequence)}})},
+      {"decoder", object({{"type", string("ByteLevel")},
+                            {"add_prefix_space", no}})}});
+  auto model = object({{"type", string("BPE")}});
+  model.object.emplace_back("vocab", std::move(vocab));
+  model.object.emplace_back("merges", std::move(merges));
+  root.object.emplace_back("model", std::move(model));
+  root.object.emplace_back("added_tokens", std::move(tokens));
+  return LoadDocument(root, limits, out, TokenizerProfile::kQwen3Asr);
+}
+
 Status Tokenizer::Encode(std::string_view text,
                          std::vector<std::uint32_t>* out,
                          const EncodeOptions& options) const {
@@ -816,7 +1042,8 @@ Status Tokenizer::Encode(std::string_view text,
   std::string err;
   if (!EncodeImpl(impl_->data, text, out, &err, options) ||
       EncodingCancelled(options, &err)) {
-    if (err == "encoding cancelled") out->clear();
+    if (err == "encoding cancelled" || !options.recognize_special_tokens)
+      out->clear();
     return Status::Fail(err);
   }
   if (impl_->data.profile == TokenizerProfile::kQwen3Embedding &&

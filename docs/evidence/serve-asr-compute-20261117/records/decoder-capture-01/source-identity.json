@@ -1,0 +1,15 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_decoder_trace-01",
+  "binary_sha256": "91bb549ea94f327101ba83eebbc97b98849dee92fe66c91db58ac17867b896d6",
+  "sources_sha256": {
+    "tools/native_asr/model_replay.cpp": "9b16009bbd774870631e46e7a8e0961956b7624e73242b623b08ddfbb7ee19bf",
+    "tools/native_asr/CMakeLists.txt": "38c6ec81adf9e477a47350fcf70360f6838ac34ea6c2629e32f76978404e4320",
+    "src/audio/asr_model.cu": "3c68f33dadc91f49ca6c423bb0e76ff10b5c40919b4759ba1bc649f6ecd33568",
+    "src/model/embedding_model.cu": "0b82506b506bdccf305f94290cee583968945ecd2c380e217e751e768f580c3f",
+    "src/audio/asr_layout.cpp": "fd3ae396f28905d8ebc7f3584e108c2e6c8931aa8eb4183c932a43b7208ec45d"
+  },
+  "gpu_loads": 1,
+  "decoder_forwards": 1,
+  "encoder_forwards": 1,
+  "seconds_limit": 180
+}

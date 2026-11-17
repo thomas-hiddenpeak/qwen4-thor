@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      ".q4t-work/serve-file-search-20261112/host"
+    ],
+    "returncode": 0,
+    "seconds": 0.9148308131843805
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-file-search-20261112/host",
+      "--target",
+      "q4t_model_asset_tests",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 7.37628767080605
+  }
+]

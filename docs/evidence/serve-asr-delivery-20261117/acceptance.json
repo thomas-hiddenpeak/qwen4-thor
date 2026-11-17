@@ -1,0 +1,32 @@
+{
+  "status": "ACCEPT_NATIVE_ASR_DELIVERY",
+  "revision": 276,
+  "current": {
+    "engine_binary_sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+    "engine_release_sha256": "f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7",
+    "generation_sha256": "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc",
+    "manifest_sha256": "4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/package-01/bundle",
+    "service_acceptance_sha256": "5fe699a41cad5117b1ab693e6f481f956f356977c274482c5552386e678f0c7f",
+    "service_release_sha256": "a2e81c2a7430b072fb4446c140320898fa56e7144582d81bc1ba2bdbe9b71bcf"
+  },
+  "commands": 19,
+  "seconds": 273.9558519902639,
+  "state": "STOPPED",
+  "new_gpu_starts": 0,
+  "manual_root": "0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21",
+  "automatic_payload": "055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d",
+  "candidate_whole_package_gpu_run": true,
+  "older_engine_fallback": false,
+  "previous_rev266_preserved": true,
+  "retired_intents_archived": 4,
+  "retired_generations_archived": 2,
+  "retired_versions_archived": 2,
+  "deleted_files": 0,
+  "files": 61,
+  "secret_scan_matches": 0,
+  "archive_sha256": "80778487825da2740306e3519ba1f816af92dcbaaafcfc9c39258e964a0fc1f5",
+  "main_integration_pending": true,
+  "full_openai_compatibility": false,
+  "all_master_tasks_active": true
+}

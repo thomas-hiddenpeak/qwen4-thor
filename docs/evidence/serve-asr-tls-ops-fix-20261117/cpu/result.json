@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "private-config-port-and-error-contract",
+      "status": "PASS",
+      "negative_controls": 1
+    },
+    {
+      "name": "completed-real-tls-composition",
+      "status": "PASS",
+      "original_driver_statuses": [
+        "FAILED",
+        "FAILED"
+      ]
+    }
+  ],
+  "gpu_actions": 0,
+  "seconds": 1.5372276431880891
+}

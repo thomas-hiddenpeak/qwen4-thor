@@ -13,7 +13,8 @@ class Profiles:
         base = controller.base
         expected = profile_contract.binding(base['files']['q4t'],
             base['protocol_sha256'], base['model_files'],
-            controller.manifest['model_assets'], base['settings'].get('native_embedding'))
+            controller.manifest['model_assets'], base['settings'].get('native_embedding'),
+            base['settings'].get('native_asr'))
         profile_contract.validate(registry)
         ledger.require(registry['identity'] == expected and
             registry['profiles']['primary'] == base['settings']['profile'],

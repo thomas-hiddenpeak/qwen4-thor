@@ -1,0 +1,15 @@
+test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) ... 
+  test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/audio/transcriptions') ... FAIL
+
+======================================================================
+FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/audio/transcriptions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/pr44-ci-fix/tools/serve_recovery/test_gateway_nginx.py", line 446, in test_application_routes_preserve_methods_queries_and_identity
+    self.assertEqual(response.status, 200, response.read())
+AssertionError: 404 != 200 : b'{"error":{"message":"Service entrypoint rejected request","type":"gateway_error","param":null,"code":"gateway_route_not_found"}}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.799s
+
+FAILED (failures=1)

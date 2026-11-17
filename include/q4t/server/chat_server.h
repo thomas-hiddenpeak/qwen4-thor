@@ -38,6 +38,11 @@
 #include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
 #include "q4t/model/embedding_model.h"
+#include "q4t/audio/asr_model.h"
+#include "q4t/server/asr_service.h"
+#include "q4t/server/asr_request.h"
+#include "q4t/server/asr_response.h"
+#include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
 #include "q4t/server/progress_transport.h"
@@ -200,6 +205,16 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
+  ObjectReply EnsureNativeAsr(bool weights, const BinaryAccess& access,
+                              RequestDiagnostics* diagnostic = nullptr);
+  std::string NativeAsrHealthJson() const;
+  void HandleTranscription(int fd, std::string_view content_type,
+                            std::string_view body);
+  ObjectReply RunNativeAsr(
+      int fd, const AsrRequest& request, const audio::AsrFeatures& features,
+      const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      ActualUsageCounter& usage, AsrTranscript* transcript);
   ObjectReply EncodeVectorDocument(std::string_view text,
                                     const VectorSearchControl& control,
                                     VectorEncodedText* output);
@@ -490,6 +505,15 @@ class ChatServer {
   std::atomic<uint64_t> embedding_load_failures_{0};
   // Protected by embedding_mu_. Request-driven retries only, no model restart.
   std::chrono::steady_clock::time_point embedding_retry_after_{};
+  ModelCatalog asr_catalog_;
+  std::string asr_model_dir_;
+  AsrServiceLimits asr_limits_;
+  AsrHealth asr_health_;
+  std::mutex asr_mu_;
+  std::mutex asr_tok_mu_;
+  std::unique_ptr<text::Tokenizer> asr_tok_;
+  uint8_t* d_asr_weights_ = nullptr;
+  audio::AsrDeviceWeights asr_weights_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;

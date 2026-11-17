@@ -1,0 +1,20 @@
+{
+  "python": [
+    "tools.serve_service.test_asr_package.AsrPackage.test_missing_optional_assets_remain_portable_and_preserve_limits",
+    "tools.serve_service.test_asr_package.AsrPackage.test_identity_limits_paths_and_alias_collisions_fail",
+    "tools.serve_service.test_asr_package.AsrPackage.test_declaration_binds_actual_backend_and_effective_limits",
+    "tools.serve_service.test_asr_package.AsrPackage.test_unqualified_engine_or_orphan_limits_do_not_create_package",
+    "tools.serve_service.test_asr_package.AsrPackage.test_prepare_cli_forwards_only_explicit_asr_overrides",
+    "tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_multipart_shapes_and_cross_field_constraints",
+    "tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_json_and_every_stream_event",
+    "tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options",
+    "tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_pinned_sdk_and_native_openapi_publication",
+    "tools.serve_service.test_declarations.Declarations.test_native_embedding_binding_survives_missing_optional_assets"
+  ],
+  "host": [
+    "asr_capability_binds_fixed_backend_when_configured_or_disabled"
+  ],
+  "tests": 11,
+  "seconds": 180,
+  "gpu_actions": 0
+}

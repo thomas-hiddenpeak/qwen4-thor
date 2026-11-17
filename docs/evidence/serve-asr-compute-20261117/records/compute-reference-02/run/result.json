@@ -1,0 +1,231 @@
+{
+  "status": "FAILED",
+  "thresholds": {
+    "encoder-input.bf16": {
+      "cosine": 0.99995,
+      "relative_l2": 0.01
+    },
+    "encoder.bf16": {
+      "cosine": 0.9995,
+      "relative_l2": 0.04
+    },
+    "logits": {
+      "cosine": 0.9995,
+      "relative_l2": 0.04
+    },
+    "identical_teacher_forced_argmax": true,
+    "identical_free_generation_text_and_eos": true
+  },
+  "source_group": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-gpu-01/run",
+  "source_result_sha256": "a51b05db92dc1d15540266b0336ff8e18f094cd9e2bf000c6ada5e5cee86cef3",
+  "reused_native_loads": 1,
+  "new_gpu_loads": 0,
+  "cpu_reference_loads": 1,
+  "cpu_max_forwards": 264,
+  "seconds_limit": 600,
+  "defaults_before": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "reference_source_sha256": "3097514bc2658e6052852796b0fd9bc9f6d812685340922857e3aacfab7d9493",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_asr/model_reference.py",
+    "--assets",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+    "--official-source",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/official-src",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/model-cases-01/plan.json",
+    "--native",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-reference-02/run/native",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/compute-reference-02/run/reference"
+  ],
+  "reference_exit_code": 0,
+  "comparisons": [
+    {
+      "case": 0,
+      "operand": "encoder-input.bf16",
+      "cosine": 0.9999996808507162,
+      "relative_l2": 0.0007989619076597652,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "case": 0,
+      "operand": "encoder.bf16",
+      "cosine": 0.9999179860924433,
+      "relative_l2": 0.012811205086883595,
+      "max_abs": 0.001708984375,
+      "passed": true
+    },
+    {
+      "case": 0,
+      "operand": "logits-0.bf16",
+      "cosine": 0.9975937901762633,
+      "relative_l2": 0.07599143882106944,
+      "max_abs": 1.5,
+      "native_argmax": 11528,
+      "reference_argmax": 11528,
+      "passed": false
+    },
+    {
+      "case": 0,
+      "operand": "logits-1.bf16",
+      "cosine": 0.9988448514090668,
+      "relative_l2": 0.052900529726222015,
+      "max_abs": 1.03515625,
+      "native_argmax": 8453,
+      "reference_argmax": 8453,
+      "passed": false
+    },
+    {
+      "case": 0,
+      "operand": "logits-2.bf16",
+      "cosine": 0.9996760786749961,
+      "relative_l2": 0.026433205209134943,
+      "max_abs": 0.59375,
+      "native_argmax": 151704,
+      "reference_argmax": 151704,
+      "passed": true
+    },
+    {
+      "case": 0,
+      "operand": "logits-3.bf16",
+      "cosine": 0.9996894743165492,
+      "relative_l2": 0.03564529173783854,
+      "max_abs": 0.822265625,
+      "native_argmax": 100636,
+      "reference_argmax": 100636,
+      "passed": true
+    },
+    {
+      "case": 0,
+      "check": "real_audio_generation",
+      "passed": true,
+      "native_text": "language Chinese<asr_text>甚至出现交易几乎停滞的情况。",
+      "reference_text": "language Chinese<asr_text>甚至出现交易几乎停滞的情况。"
+    },
+    {
+      "case": 1,
+      "operand": "encoder-input.bf16",
+      "cosine": 0.9999997092838283,
+      "relative_l2": 0.0007625581703041932,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "case": 1,
+      "operand": "encoder.bf16",
+      "cosine": 0.9999074965430744,
+      "relative_l2": 0.013612820021763804,
+      "max_abs": 0.0037841796875,
+      "passed": true
+    },
+    {
+      "case": 1,
+      "operand": "logits-0.bf16",
+      "cosine": 0.9966093955979274,
+      "relative_l2": 0.09643022554312,
+      "max_abs": 1.625,
+      "native_argmax": 11528,
+      "reference_argmax": 11528,
+      "passed": false
+    },
+    {
+      "case": 1,
+      "operand": "logits-1.bf16",
+      "cosine": 0.9997903051617324,
+      "relative_l2": 0.021110006915677375,
+      "max_abs": 0.75,
+      "native_argmax": 6364,
+      "reference_argmax": 6364,
+      "passed": true
+    },
+    {
+      "case": 1,
+      "operand": "logits-2.bf16",
+      "cosine": 0.9994872275075232,
+      "relative_l2": 0.034531403690808274,
+      "max_abs": 0.75,
+      "native_argmax": 151704,
+      "reference_argmax": 151704,
+      "passed": false
+    },
+    {
+      "case": 1,
+      "operand": "logits-3.bf16",
+      "cosine": 0.9993050395347962,
+      "relative_l2": 0.04367351306441166,
+      "max_abs": 0.765625,
+      "native_argmax": 44,
+      "reference_argmax": 44,
+      "passed": false
+    },
+    {
+      "case": 1,
+      "check": "real_audio_generation",
+      "passed": true,
+      "native_text": "language English<asr_text>Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "reference_text": "language English<asr_text>Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people."
+    }
+  ],
+  "error": "numerical/business comparison failed",
+  "seconds": 14.30331250000745,
+  "defaults_after": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true,
+  "artifacts": {
+    "native/case-0/encoder-input.bf16": "445f4422877ee1d0fdad1aedf4ba113c3706ed791dccf25ae8b5c40c36805a17",
+    "native/case-0/encoder.bf16": "faa6ff8de73986a4fdea5d57c8eb81c1c4f5f6aa0b78d7fd2080b692151754f7",
+    "native/case-0/generated.u32": "1286b0c36936b324efb126846c16cbfde0d56de2903c0d51e04b368308066f7e",
+    "native/case-0/logits-0.bf16": "1350a37ac7df8dcab310fae13f3bed039cd490b3f66cbd59b3771a1f815e31ec",
+    "native/case-0/logits-1.bf16": "b5249c73f0aef311784980dc7d56336955b237102357987b2dacf5f647045e71",
+    "native/case-0/logits-2.bf16": "aa2b07d6b1835268b7fb9cd7713348667878eec232e80d4d43966b12fb34ba0b",
+    "native/case-0/logits-3.bf16": "9bf2be25648e3ca87aa9d7da7c56656c70de78c99f46a966286a6c28a9d469af",
+    "native/case-0/native-mel.f32": "e74fe1d84153dfae1eec0bbc47a10809228bf63d0d4d73b1bcd8ebc3603ebe27",
+    "native/case-0/result.json": "0c2ba1e6d0760b94e7b9ce11798f4f4f5c602d0d66ad16b88dd95dcc79944969",
+    "native/case-0/text.txt": "0f00ad07f801578a8442c3a841d16297030d9656cf24fc1bb16d78374f72128e",
+    "native/case-1/encoder-input.bf16": "bea20fe054d06ddc4502f9baec7dfa6fbc1a4aa8ae5e2cdbff8138c404b97c0b",
+    "native/case-1/encoder.bf16": "d710db7cc8257d201bf7b0e3f52d115f9ea642626a08ff98a48295a254c78941",
+    "native/case-1/generated.u32": "db079b803b0ff39c7669983bbda76dfae686b608d3d226804a2377858ea75af1",
+    "native/case-1/logits-0.bf16": "ba1861da1070e4581a478ce770b860ad0cfbdaaaa9cd2e50e4af6f7adc3b7b83",
+    "native/case-1/logits-1.bf16": "22b3044f9923ac56af3723feca96c47e41f8e8dbf64e276b23969db1df5c0303",
+    "native/case-1/logits-2.bf16": "0f173c73b06d413ac1602d0d2c5c57d88bdf3b9b48cbd4d580f968e4249a6323",
+    "native/case-1/logits-3.bf16": "06a35df21669ca11f971f61c79033c66af01936e4e99a0f776538f34bca55c48",
+    "native/case-1/native-mel.f32": "c7b9296416a494e2fc072feb2d9b0a59646a508c387769fc3937b806c908f02e",
+    "native/case-1/result.json": "cd6fba4d6db44b54a08646ec400cf0d8a68666b763bcac1cfb8d6b0369fdb749",
+    "native/case-1/text.txt": "4e7fbc45f78d4e400ef4df073d6da86b774b5bab2d0fee3c4990ce60034122b2",
+    "native/result.json": "cb179e9afcafbca95c2bb3b3bee345ce723147321a657cb2fec2fdd5643a62c4",
+    "reference/case-0/encoder-input.bf16": "53b16c83d0ac709abad2fc08d226956e423f1f17189c164d2f8c532d6de033c4",
+    "reference/case-0/encoder.bf16": "194a9e869d5db9426a787d776d6ec85b2c1c8918a16cc9886ef6c57f37d4fac8",
+    "reference/case-0/generated.u32": "1286b0c36936b324efb126846c16cbfde0d56de2903c0d51e04b368308066f7e",
+    "reference/case-0/logits-0.bf16": "1e21dbeab5773b6c1de25f7f1b868a84335ae37f9bde9a6724230ff93d655302",
+    "reference/case-0/logits-1.bf16": "dff9dfb69248c3e55d2fe0cf63ebde0325f50ff0bece542c76a1d8e6c4be4c24",
+    "reference/case-0/logits-2.bf16": "cf8c172167dcd8cc18a571eedf409763d332a784548dea570f73e56e87544ff3",
+    "reference/case-0/logits-3.bf16": "c424cb650bb595ffc6261626afe116b38e5ab49e68855dbacdb2d3d744a61525",
+    "reference/case-0/result.json": "3322d04856a769a62ab204fcf9bf3e21bf3430154a540a1028b716a414a7fccf",
+    "reference/case-0/text.txt": "0f00ad07f801578a8442c3a841d16297030d9656cf24fc1bb16d78374f72128e",
+    "reference/case-1/encoder-input.bf16": "5b060e8c9936f17f94a43000cf077a0354d3b77bba17f2b30647014c034b0e39",
+    "reference/case-1/encoder.bf16": "bdd53ab5872f9fdd4a442eda0024d1544aeec2ddf14e0a2876fad3b5b229408a",
+    "reference/case-1/generated.u32": "db079b803b0ff39c7669983bbda76dfae686b608d3d226804a2377858ea75af1",
+    "reference/case-1/logits-0.bf16": "56c9be436d59cc0db39b7d90b1738bb86330c02de603445ff39f346e8bd776a3",
+    "reference/case-1/logits-1.bf16": "d0cfd5908d63c045886d97154a69de300242dae2e188191cbc0e821ff7dfcf21",
+    "reference/case-1/logits-2.bf16": "572fd4299bd5834d6d5be92376b98894cfccac3d678581aef9eafc2e9b37b39b",
+    "reference/case-1/logits-3.bf16": "dd9e88cc2dff35240b468e382bed2fa967b9c894aeacf73c43bd0cf7d5abf3d5",
+    "reference/case-1/result.json": "844c5f31970ca0b60968bd9d75dcdaf68f2d87919de04efac4378c3b0409bbc9",
+    "reference/case-1/text.txt": "4e7fbc45f78d4e400ef4df073d6da86b774b5bab2d0fee3c4990ce60034122b2",
+    "reference/result.json": "dcd969fcff2356ffb1f582f88f994bcb38c5b07742c4030390dcb34b48f2a907",
+    "reference.log": "1b952d26e5ffe80caac69c9fc26b30debf2339a872e9c0f416ce73feb7d26477"
+  }
+}

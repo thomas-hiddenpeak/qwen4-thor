@@ -173,6 +173,10 @@ add_executable(q4t_router_trace_check tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE include)
 
 add_library(q4t_model STATIC
+  src/audio/asr_config.cpp
+  src/audio/asr_layout.cpp
+  src/audio/asr_model.cu
+  src/audio/features.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
   src/model/embedding_model.cu
@@ -206,10 +210,20 @@ target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
+# Targeted ASR reference replay; optional, never started by ordinary builds.
+if(TARGET q4t_text)
+  add_executable(q4t_asr_replay EXCLUDE_FROM_ALL
+    tools/native_asr/model_replay.cpp)
+  target_link_libraries(q4t_asr_replay PRIVATE
+    q4t_model q4t_text q4t_runtime)
+  target_compile_options(q4t_asr_replay PRIVATE -Wall -Wextra -Werror)
+endif()
+
 # Targeted embedding reference replay; no performance acceptance claims.
 if(Q4T_HAS_ICU)
   add_executable(q4t_embedding_replay EXCLUDE_FROM_ALL
     tools/native_embedding/model_replay.cpp src/server/embedding_assets.cpp
+    src/server/model_assets.cpp
     src/server/grammar_process.cpp src/server/worker_io_broker.cpp
     src/model/embedding_model.cu)
   target_compile_definitions(q4t_embedding_replay PRIVATE Q4T_EMBEDDING_TRACE=1)
@@ -281,6 +295,14 @@ target_include_directories(q4t_runtime PUBLIC include)
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
+  src/server/model_assets.cpp
+  src/server/asr_assets.cpp
+  src/server/asr_service.cpp
+  src/server/asr_request.cpp
+  src/server/asr_response.cpp
+  src/server/chat_asr.cpp
+  src/server/chat_asr_execution.cpp
+  src/server/chat_asr_backend.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp
@@ -311,6 +333,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_image.cpp
   src/server/file_webp.cpp
   src/server/file_video.cpp
+  src/server/file_audio.cpp
+  src/server/file_audio_worker.cpp
   src/server/file_video_worker.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp
@@ -989,7 +1013,23 @@ endif()
 # tokenizer registration when ICU is unavailable. No CUDA/model GPU tests run.
 if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
+  add_executable(q4t_asr_contract_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_config_test.cpp tests/asr_asset_test.cpp
+    src/audio/asr_config.cpp src/io/json.cpp)
+  target_include_directories(q4t_asr_contract_tests PRIVATE include)
+  target_compile_options(q4t_asr_contract_tests PRIVATE -Wall -Wextra -Werror)
+  add_executable(q4t_asr_layout_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_layout_test.cpp
+    src/audio/asr_layout.cpp src/audio/asr_config.cpp src/io/json.cpp
+    src/model/embedding_layout.cpp src/model/embedding_config.cpp)
+  target_include_directories(q4t_asr_layout_tests PRIVATE include)
+  target_compile_options(q4t_asr_layout_tests PRIVATE -Wall -Wextra -Werror)
+  add_executable(q4t_asr_feature_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/asr_features_test.cpp src/audio/features.cpp)
+  target_include_directories(q4t_asr_feature_tests PRIVATE include)
+  target_compile_options(q4t_asr_feature_tests PRIVATE -Wall -Wextra -Werror)
   find_package(Threads REQUIRED)
+  include(cmake/ModelAssetTests.cmake)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
@@ -1000,8 +1040,16 @@ q4t_link_native_documents(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
+    add_executable(q4t_asr_tokenizer_tests EXCLUDE_FROM_ALL
+      tests/test_main.cpp tests/asr_tokenizer_test.cpp
+      tests/embedding_contract_test.cpp src/model/embedding_config.cpp
+      src/model/embedding_layout.cpp)
+    target_link_libraries(q4t_asr_tokenizer_tests PRIVATE q4t_text)
+    target_compile_options(q4t_asr_tokenizer_tests PRIVATE
+      -Wall -Wextra -Werror)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp
       tests/server_embedding_assets_test.cpp src/server/embedding_assets.cpp
+      src/server/model_assets.cpp
       src/model/embedding_config.cpp src/model/embedding_layout.cpp)
     target_compile_definitions(q4t_host_tests PRIVATE
       Q4T_EMBEDDING_ASSET_WORKER_ENTRY=1)

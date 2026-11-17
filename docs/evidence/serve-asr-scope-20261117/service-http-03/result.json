@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 138, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 291, in business\n    require(status == 503 and json.loads(raw)['error']['code'] == 'asr_assets_invalid', 'missing assets were not classified')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: missing assets were not classified\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 35
+  },
+  "seconds": 38.58553350623697,
+  "binary_sha256": "3c0a090d813bac204fd6db8ab815c6a05924c381984de88cb5587785466692ed"
+}

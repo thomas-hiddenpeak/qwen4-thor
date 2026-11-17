@@ -1,0 +1,20 @@
+{
+  "tests": [
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_legacy_binding_is_unchanged_and_new_binding_excludes_only_path",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_actual_audio_requires_real_source_usage_probabilities_and_health",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_profile_receipt_cannot_omit_audio_or_bind_another_backend",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_addition_preserves_pending_work_and_consumed_budget",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_disabled_backend_activation_is_explicit_and_preserves_other_capabilities",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_budget_migration_preserves_original_qualification_and_wait",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_native_cli_forwards_optional_asr_identity_and_only_explicit_limits",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_automatic_migration_preserves_audio_and_rejects_addition_or_loss",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_deployment_cannot_drop_accepted_asr_and_allows_asset_relocation",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_driver_preserves_asr_parameters_in_both_real_commands",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_actual_pending_and_history_survive_new_identity_without_time_credit",
+    "tools.serve_recovery.test_profile_history.HistoryTests.test_pending_original_rows_and_qualification_are_not_rewritten",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency"
+  ],
+  "count": 13,
+  "seconds": 180,
+  "gpu_actions": 0
+}

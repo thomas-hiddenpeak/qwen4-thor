@@ -1,0 +1,102 @@
+{
+  "status": "GENERATED_NOT_VALIDATED",
+  "commands": [
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-aac-03/aac-input-padded.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "voaacenc",
+        "!",
+        "aacparse",
+        "!",
+        "mp4mux",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-aac-03/tone.m4a"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "gst-launch-1.0",
+        "-q",
+        "-e",
+        "filesrc",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-aac-03/aac-input-padded.wav",
+        "!",
+        "wavparse",
+        "!",
+        "audioconvert",
+        "!",
+        "voaacenc",
+        "!",
+        "aacparse",
+        "!",
+        "audio/mpeg,stream-format=adts",
+        "!",
+        "filesink",
+        "location=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-fixtures-aac-03/tone.aac"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "generator_sha256": "6ccbb0c143f809f72b8dad65d3de3257943bc8d555966359b46329c427865ac7",
+  "gstreamer": "gst-launch-1.0 version 1.24.2\nGStreamer 1.24.2\nhttps://launchpad.net/ubuntu/+source/gstreamer1.0\n",
+  "cpu_plugin_sha256": {
+    "coreelements": "10758b2979f3e3d1b8ea3d88389880d65be37d471bbb79023ae47ae5ba954c49",
+    "wavparse": "1267875e3ddaa314310aa8d526d01faf8ae40eafcf758fe3c0edb1d876103d9a",
+    "audioconvert": "10988405935b547a488631f16ce5120a7c2a5e793310dd32be518e2729665ede",
+    "audioresample": "f6879cdea33d63b7f5baaa8c63f71373e8d127ac32781ee1ffa6bec2e9b69304",
+    "lame": "45d024fc3211a0163790990d5f152bdf0aba63261f3bd3f7434ecc21491607fa",
+    "audioparsers": "3e1a24dd54a21c685192990723e92ba2006df6b59489a7ea5d8e8d0149c942c4",
+    "flac": "1f984cfdff1f5e4aa08cecc6a091854f322a0e3093c6e0414d546636bd334103",
+    "opus": "2c484c3eb32e7f2e524c717e8130f81dee3fb136a99778a84c6fd6a639fb8c49",
+    "ogg": "4f0bb8fbbdee5217a1ecd9cc3624376d366a74d462e516d496907874274a27c3",
+    "vorbis": "2a71361b255354b7b3e97adc6d69dcadc738a9ec799a5ad643de0c3edc10e81f",
+    "voaacenc": "76e7d58379c470f2116fea92f5640a37d0db769ef86f8f094c38e6cf4fcb4d98",
+    "isomp4": "a7863865152badaaebb0a4e6488388bc4b5fdde0a6c8170f4c4aa4dedc6dd7cd",
+    "matroska": "6f3bce2b116065f0d7049aba03ffd79d07b92085bee7e3703148a1f8f68f7c74"
+  },
+  "files": {
+    "mono16.wav": {
+      "bytes": 32044,
+      "sha256": "a77280a67a216c56e50a13d37d2687fe6eed1701c077ef0e343494ee4f55714c"
+    },
+    "stereo24.wav": {
+      "bytes": 288044,
+      "sha256": "ad26de988c1d18ac0afe81ba9b95335ab649fd783298fff5c0e2c4b2ab9765d3"
+    },
+    "float32.wav": {
+      "bytes": 12844,
+      "sha256": "aa6d93081235c0beb7ca27123b3070bce2da87af82f3054d23e0a92cca140914"
+    },
+    "float64.wav": {
+      "bytes": 25644,
+      "sha256": "159fbede919a23c2b74f34d574c5d50db4acbabea38c084bf1ecbd7e831fff58"
+    },
+    "aac-input-padded.wav": {
+      "bytes": 36140,
+      "sha256": "dc656c17b514ac1e981a063ceb71a69b7674891a6681d407454477a39844425e"
+    },
+    "tone.m4a": {
+      "bytes": 3727,
+      "sha256": "41e503cc2a15b65771c656e24ad2fbe802131d08b437986ba744137b5942d2be"
+    },
+    "tone.aac": {
+      "bytes": 3020,
+      "sha256": "5569c321368980cceb45b862a6f0864bfbe578753dcaac34ed4b2ac24117c5ee"
+    }
+  }
+}

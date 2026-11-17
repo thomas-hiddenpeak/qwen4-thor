@@ -113,6 +113,8 @@ class Stack:
                          '/v1/vector_stores', '/v1/tunnels')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
+                        (method == 'POST' and
+                         path == '/v1/audio/transcriptions') or
                         path.startswith('/v1/chat/completions/') or
                         (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
@@ -425,7 +427,8 @@ class NginxTests(unittest.TestCase):
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
-            if method == 'POST' and (template == '/v1/files' or
+            if method == 'POST' and (template in (
+                                      '/v1/files', '/v1/audio/transcriptions') or
                                       template.endswith('/parts')):
                 content_type = 'multipart/form-data; boundary=cpu-route'
                 body = ('--cpu-route\r\nContent-Disposition: form-data; '

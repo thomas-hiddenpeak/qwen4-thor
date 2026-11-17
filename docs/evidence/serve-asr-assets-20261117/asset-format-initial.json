@@ -1,0 +1,4 @@
+{
+  "status": "FAILED_FORMAT_CHECK",
+  "reason": "clang-format default reordered using declarations; no test failure; restore captured sources and disable declaration sorting"
+}

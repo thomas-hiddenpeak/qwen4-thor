@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 138, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 304, in business\n    quality(value['text'], 'zh');usage(value)\n                                 ^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/transcription_acceptance.py\", line 118, in usage\n    require(logs and all(isinstance(x['token'], str) and math.isfinite(x['logprob']) and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 62, in require\n    raise RuntimeError(message)\nRuntimeError: actual token probabilities absent\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 39
+  },
+  "seconds": 47.62205864395946,
+  "binary_sha256": "9401541172832c9f340be1dc77907823bcd2ddf6b76a142b82e95bd216f31976"
+}

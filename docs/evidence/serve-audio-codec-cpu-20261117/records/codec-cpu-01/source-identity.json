@@ -1,0 +1,17 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "binary_sha256": "abc309dae78b7ddf1e97f37d9957858244e2f9d418cd14516b15cda917ec9ac2",
+  "sources": {
+    "include/q4t/server/file_audio.h": "af6630515891ac565c3afceb9263af9db81120fbfe57b18e6d2af4ae6f519b60",
+    "src/server/file_audio.cpp": "d953a2f6916c9a6b70cec6cee03ef261bd9d6d2fffdacd6512e933b34002b9db",
+    "src/server/file_audio_protocol.h": "b39940d5707920c3ca78b9ac61c3335b5acae533f41f50ace330de2f92fdc024",
+    "src/server/file_audio_worker.cpp": "140e794bdaab86b5405f45e7062806a36522ebee4886ad05c756a1a6bbf483a4",
+    "src/server/media_codec_runtime.h": "690e1603d5ab0b6985396cfbf34724d917bf80e52a69e8d42959920aa74dee54",
+    "src/server/file_video_worker.cpp": "a9bd9131b47c3d8b119190e60d0e22922af21ca00ef48c46f20e2e409191f812",
+    "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
+    "src/server/grammar_process.cpp": "d176c57391e961f475e1507320e1a7d40bd10a074b32eb0f231553ef69cb4fe9",
+    "tests/server_file_audio_test.cpp": "308ac72c1eb2f565dddbebf287ac641d0e2239aa193ce5a4d008030ad910f043",
+    "tests/server_file_video_test.cpp": "9c6171b10c0209263ecab37a3cd3590b67a2684770cdf8a7dcd975608fdc42fb",
+    "tests/test_main.cpp": "23e3e4dbe2eaf3f151dabfe45327dabecec6c493d4fb0b1706c3715b974de49f"
+  }
+}

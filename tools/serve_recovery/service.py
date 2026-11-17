@@ -359,6 +359,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--mcp-policy', type=Path)
     prepare.add_argument('--web-policy', type=Path)
     prepare.add_argument('--embedding-model-dir', type=Path)
+    prepare.add_argument('--asr-model-dir', type=Path)
+    for option in engine.ASR_LIMITS:
+        prepare.add_argument('--asr-'+option.replace('_', '-'), type=int)
     prepare.add_argument('--recovery-profiles', type=Path)
     prepare.add_argument('--recovery-profile-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
@@ -464,6 +467,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 mcp_policy=args.mcp_policy,
                 web_policy=args.web_policy,
                 embedding_model_dir=args.embedding_model_dir,
+                asr_model_dir=args.asr_model_dir,
+                asr_limits=({k:getattr(args, 'asr_'+k) for k in engine.ASR_LIMITS
+                             if getattr(args, 'asr_'+k) is not None} or None),
                 recovery_profiles=args.recovery_profiles,
                 recovery_profile_policy=engine.read(args.recovery_profile_policy)
                     if args.recovery_profile_policy is not None else None,

@@ -148,6 +148,11 @@ def application_settings(value):
 NATIVE_EMBEDDING = dict(profile='q4t-native-embedding-v1', model='qwen3-embedding-0.6b',
     revision='97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3',
     weight_sha256='0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd')
+NATIVE_ASR = dict(profile='q4t-native-asr-v1', model='qwen3-asr-0.6b',
+    revision='5eb144179a02acc5e5ba31e748d22b0cf3e303b0',
+    weight_sha256='79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea')
+ASR_LIMITS = dict(max_audio_seconds=30, max_context_tokens=4096,
+                  max_output_tokens=1024, workspace_mib=1024)
 
 
 def embedding_settings(value):
@@ -164,9 +169,32 @@ def embedding_settings(value):
     return dict(value)
 
 
+def asr_settings(value):
+    require(type(value) is dict and value.keys() == {*NATIVE_ASR, 'directory', 'limits'}
+            and all(value[k] == v for k, v in NATIVE_ASR.items()),
+            'invalid native ASR identity')
+    path = value['directory']
+    require(type(path) is str and 1 < len(path.encode('utf-8')) <= 4096 and
+            path.startswith('/') and '\0' not in path and
+            not {'', '.', '..'}.intersection(path.split('/')[1:]),
+            'invalid native ASR directory')
+    limits = value['limits']
+    require(type(limits) is dict and limits.keys() == ASR_LIMITS.keys() and
+            all(type(v) is int for v in limits.values()), 'invalid native ASR limits')
+    require(1 <= limits['max_audio_seconds'] <= 600 and
+            128 <= limits['max_context_tokens'] <= 8192 and
+            1 <= limits['max_output_tokens'] <= 4096 and
+            64 <= limits['workspace_mib'] <= 8192 and
+            limits['max_audio_seconds'] * 13 + 15 + limits['max_output_tokens'] <=
+                limits['max_context_tokens'], 'invalid native ASR limits')
+    # Optional assets are validated by the isolated request loader. Missing
+    # audio files must not make a healthy primary Chat package unverifiable.
+    return dict(value, limits=dict(limits))
+
+
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
              nvml_policy='strict', model_names=None, application_state=None,
-             capacity_profile=None, native_embedding=None):
+             capacity_profile=None, native_embedding=None, native_asr=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -212,6 +240,12 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         require(selected['model'] not in [names['name'], *names['aliases']],
                 'native embedding model conflicts with Chat registry')
         result['native_embedding'] = selected
+    if native_asr is not None:
+        selected = asr_settings(native_asr)
+        names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
+        require(selected['model'] not in [names['name'], *names['aliases']],
+                'native ASR model conflicts with Chat registry')
+        result['native_asr'] = selected
     return result
 
 
@@ -409,18 +443,26 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             operations_port=0, nvml_policy='strict', model_names=None,
             application_state=None, capacity_config=None, repository=None,
             access_program_policy=None, file_input_policy=None,
-            embedding_model_dir=None, mcp_policy=None, web_policy=None):
+            embedding_model_dir=None, mcp_policy=None, web_policy=None,
+            asr_model_dir=None, asr_limits=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
     if capacity_config is not None:
         from tools.serve_service import capacity
         profile = capacity.normalize(capacity_config)
+    require(asr_model_dir is not None or asr_limits is None,
+            'native ASR limits require an ASR model directory')
+    require(asr_limits is None or type(asr_limits) is dict and
+            asr_limits.keys() <= ASR_LIMITS.keys(), 'invalid native ASR overrides')
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
                       nvml_policy, model_names, capacity_profile=profile,
                       native_embedding=(dict(NATIVE_EMBEDDING,
                           directory=str(embedding_model_dir))
-                          if embedding_model_dir is not None else None))
+                          if embedding_model_dir is not None else None),
+                      native_asr=(dict(NATIVE_ASR, directory=str(asr_model_dir),
+                          limits=dict(ASR_LIMITS, **(asr_limits or {})))
+                          if asr_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -468,6 +510,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     check_media_declaration(metadata, config['profile'])
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
+    if 'native_asr' in config:
+        check_asr_declaration(metadata, config['native_asr'])
     if access_raw is not None:
         require(read(declarations/'capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
@@ -608,7 +652,7 @@ def verify(package, digest):
                       config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10, 11) else 'strict',
                       config.get('model_names'), config.get('application_state'),
                       config['profile'] if manifest['version'] == 11 else None,
-                      config.get('native_embedding'))
+                      config.get('native_embedding'), config.get('native_asr'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -734,6 +778,8 @@ def verify(package, digest):
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
+    if 'native_asr' in config:
+        check_asr_declaration(metadata, config['native_asr'])
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -759,6 +805,21 @@ def check_embedding_declaration(metadata):
             all(capability.get(k) == v and observed.get(k) == v
                 for k, v in NATIVE_EMBEDDING.items()),
             'accepted engine does not declare configured native embedding backend')
+
+
+def check_asr_declaration(metadata, selected):
+    selected = asr_settings(selected)
+    capability = metadata.get('chat_protocol', {}).get('transcriptions', {})
+    configuration = metadata.get('observed_configuration', {})
+    health = configuration.get('native_asr_health', {})
+    require(capability.get('configured') is True and
+            all(capability.get(k) == v for k, v in NATIVE_ASR.items()) and
+            health.get('model') == NATIVE_ASR['model'] and
+            health.get('core_readiness_dependency') is False and
+            health.get('state') in ('configured', 'loading', 'metadata_ready',
+                                    'ready', 'degraded') and
+            same_json(configuration.get('native_asr_limits'), selected['limits']),
+            'accepted engine does not declare configured native ASR limits/identity')
 
 
 def check_media_declaration(metadata, profile):
@@ -801,6 +862,11 @@ def command(package, manifest, *, state_directory=None):
     if 'native_embedding' in cfg:
         selected = embedding_settings(cfg['native_embedding'])
         args += ['--embedding-model-dir', selected['directory']]
+    if 'native_asr' in cfg:
+        selected = asr_settings(cfg['native_asr'])
+        args += ['--asr-model-dir', selected['directory']]
+        for key, value in selected['limits'].items():
+            args += ['--asr-'+key.replace('_', '-'), str(value)]
     if 'application_state' in cfg:
         objects = application_settings(cfg['application_state'])
         directory = objects['directory']

@@ -1,0 +1,62 @@
+{
+  "cpu_checks": 1,
+  "mutation_checks": 7,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "review_base": "7f5ef9fdda283fe9ab99e1cc1256f30f0bdf79a6",
+  "review_head": "3c85356e7f1488f7f3076d5f1960c37bfb329d00",
+  "anchors": {
+    "tools/serve_gateway/gateway.py": {
+      "before": "d7c2197cf39972988969e4ce8d982ac5a51838a8610cb3f4f36dc4db12136ab0",
+      "after": "f402f88847695d4d1c6d4ece3b18d389fd00c23428ea85409264f9e62fe11d4e"
+    },
+    "tools/serve_recovery/bundle.py": {
+      "before": "388f00ef6f08b94458f3c9a70868b47f69de2c3bc1f27d3a45e1ec48ea153139",
+      "after": "e4742d688621cb0981aa6c187c34dfb36df205f3689a65a98e87eb3ce0c2f3c7"
+    },
+    "tools/serve_recovery/deployment.py": {
+      "before": "31d4c3823e693eb59c231e3f1fab539b98b86dc1cdf49a53b304b1b0742a75e1",
+      "after": "fa9face227f8d43484f3d26e20fed9552ab8b18aea1f317c66d59f04a13901c4"
+    },
+    "tools/serve_recovery/outer_acceptance.py": {
+      "before": "0f0d188ebe78237b48e31913a63a851790896281d883a4e64d7253b54900607a",
+      "after": "1298975bae47663f2f52b9261b6dd132c995b3e830bda5809395dbf0f295774d"
+    },
+    "tools/serve_recovery/profile_acceptance.py": {
+      "before": "59df7c693cd2e8ee9714a88eb451f60fe3573805ccb81e20639cae36bbde9449",
+      "after": "4430f7daf98698f7913a9a42589717a77d4044085ca946d77f8a4fed76ad900e"
+    },
+    "tools/serve_recovery/profile_bundle.py": {
+      "before": "b2f033b9fd3b6b1136223fda0766652879acf884e14037e911f17d49744ba294",
+      "after": "0d65db217da16d70f43e48fadf6ea8654014a4eb80122d3e77fe8450d7b5e05c"
+    },
+    "tools/serve_recovery/profile_contract.py": {
+      "before": "d9f9ffc0e6e8c4bfda9eea0201a9e2e16b63298eb55d95464a34f6a00a142c61",
+      "after": "a959a8ca017113e86967ffd4fbe613eb785ad4c9ecf9764dff7d4551b8e0ebc0"
+    },
+    "tools/serve_recovery/profile_controller.py": {
+      "before": "ad8a1d5ea07b6ec92725a930e58c9496d0fc6b608d09f41a871f5d0f3edc39de",
+      "after": "a70ce817523614ed78121e9206312971f843125cb95fbeefe393888b7c29f2c5"
+    },
+    "tools/serve_recovery/profile_evidence.py": {
+      "before": "245a02aa755cfa689e41e82122c0d03eade76e940da06179b279dc2f2742f39f",
+      "after": "58c5f0c17a2041604493fd9ed5cffb5d728eb7726c8ba29b464ac60d69945ed3"
+    },
+    "tools/serve_recovery/profile_managed_acceptance.py": {
+      "before": "9ace5fd815c8889945d0775f9ca7cde62d4f673642f022da6941084ad3fa99ea",
+      "after": "c022985cea7fd17c0b6d59549285110f19e62033e0976798f81af7ca622c0f2b"
+    },
+    "tools/serve_recovery/profile_migration.py": {
+      "before": "7c0fba121c7bd1280532e3d32c9925569c7d3fb799d78e97f4834f6d868d6f8a",
+      "after": "cdf4e074732f07988bf4728e729287294dcba4d8fa9c5411bbbbc360113bc4d8"
+    },
+    "tools/serve_recovery/service.py": {
+      "before": "68d01dab57a6185b063d78af4e25bf4e3ce6273f817ef3dd17fa0a3914b7cf77",
+      "after": "97f6f171978a3d5ad6417a063d5aae88be5035576a82ee319b4b6eca1ba6bcc5"
+    },
+    "tools/serve_recovery/version_acceptance.py": {
+      "before": "8b6f7150ae2b9d6777b8428b657beff127f94fa585897531edf0314ebcf50eb0",
+      "after": "de9edc7f86de286d4741fdae76b8aeff55afdb3776ad7cc22e9326d9a072565f"
+    }
+  }
+}

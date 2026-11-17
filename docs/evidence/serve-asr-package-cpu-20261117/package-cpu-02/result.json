@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_transcriptions_contract.TranscriptionsContract.test_actual_config_health_and_bounded_native_options"
+  ],
+  "returncode": 0,
+  "tests": 1,
+  "seconds": 0.2140449988655746,
+  "gpu_actions": 0,
+  "reused_python_tests": 9
+}

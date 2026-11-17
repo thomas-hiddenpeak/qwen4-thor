@@ -1,0 +1,180 @@
+{
+  "unique_targeted_tests": 21,
+  "executions": 58,
+  "groups": [
+    {
+      "name": "codec-cpu-01",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-01/required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 1.915972227230668,
+      "required": [
+        "file_audio_pcm16_wave_matches_every_source_sample",
+        "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+        "file_audio_float32_and_float64_preserve_finite_values",
+        "file_audio_flac_lossless_matches_pcm16",
+        "file_audio_mp3_decodes_real_signal",
+        "file_audio_m4a_and_adts_aac_decode_real_signal",
+        "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+        "file_audio_webm_opus_decodes_real_signal",
+        "file_audio_preflight_scope_limits_cancel_and_deadline",
+        "file_audio_nonfinite_pcm_is_request_local",
+        "file_audio_actual_source_decode_and_output_budgets",
+        "file_audio_dependency_failure_keeps_text_and_slots_healthy",
+        "file_audio_hang_crash_inflight_cancel_have_bounded_cleanup",
+        "file_audio_unreaped_worker_preserves_shared_parse_capacity",
+        "file_audio_conversion_rejects_source_pcm_and_policy_tampering",
+        "file_audio_corrupt_container_is_bounded_and_reaped",
+        "file_audio_thread_budget_failure_does_not_disable_next_request",
+        "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+        "file_video_actual_vp8_webm_preserves_colors_order_and_pts",
+        "file_video_sandbox_permits_threads_without_external_capabilities"
+      ],
+      "gpu_actions": 0,
+      "binary_sha256": "abc309dae78b7ddf1e97f37d9957858244e2f9d418cd14516b15cda917ec9ac2"
+    },
+    {
+      "name": "codec-diagnostic-01",
+      "exit_code": 1,
+      "seconds": 0.11379333166405559,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-diagnostic-01/required.txt"
+      ],
+      "binary_sha256": "1fb1e31c101aed13b0b951cabce2b6a2b91d79569df2579045d042ca47399c36",
+      "test_source_sha256": "4a9500b978456a03837ea12a35a658f8f70340f78b7d8ddf89c0db4f367328ac",
+      "gpu_actions": 0
+    },
+    {
+      "name": "codec-cpu-02",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-02/required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 0.263983600307256,
+      "required": [
+        "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+        "file_audio_m4a_and_adts_aac_decode_real_signal",
+        "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+        "file_audio_webm_opus_decodes_real_signal",
+        "file_audio_actual_source_decode_and_output_budgets",
+        "file_audio_conversion_rejects_source_pcm_and_policy_tampering"
+      ],
+      "gpu_actions": 0,
+      "binary_sha256": "3ad257dfe99d19f0687a21f8f9af02432efe01b6513f4d87790a51fa9a376e49"
+    },
+    {
+      "name": "codec-cpu-03",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-03/required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 0.163896388374269,
+      "required": [
+        "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+        "file_audio_noninteger_and_upsample_keep_phase_and_length",
+        "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+        "file_audio_webm_opus_decodes_real_signal"
+      ],
+      "gpu_actions": 0,
+      "binary_sha256": "1bc2b4d016da8dd951a22b1d4eed10cd4e0f9f9eea46ee74335e6492f198317c"
+    },
+    {
+      "name": "codec-upsample-diagnostic-01",
+      "exit_code": 1,
+      "seconds": 0.06387241370975971,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-upsample-diagnostic-01/required.txt"
+      ],
+      "binary_sha256": "4157ed52b931195645ef3b5a23826bbfaa6d7d79bbd2f029fbc3df891ab4c337",
+      "gpu_actions": 0
+    },
+    {
+      "name": "codec-cpu-04",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-04/required.txt"
+      ],
+      "exit_code": 1,
+      "seconds": 2.316500768996775,
+      "required": [
+        "file_audio_pcm16_wave_matches_every_source_sample",
+        "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+        "file_audio_noninteger_and_upsample_keep_phase_and_length",
+        "file_audio_float32_and_float64_preserve_finite_values",
+        "file_audio_flac_lossless_matches_pcm16",
+        "file_audio_mp3_decodes_real_signal",
+        "file_audio_m4a_and_adts_aac_decode_real_signal",
+        "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+        "file_audio_webm_opus_decodes_real_signal",
+        "file_audio_preflight_scope_limits_cancel_and_deadline",
+        "file_audio_nonfinite_pcm_is_request_local",
+        "file_audio_actual_source_decode_and_output_budgets",
+        "file_audio_dependency_failure_keeps_text_and_slots_healthy",
+        "file_audio_hang_crash_inflight_cancel_have_bounded_cleanup",
+        "file_audio_unreaped_worker_preserves_shared_parse_capacity",
+        "file_audio_conversion_rejects_source_pcm_and_policy_tampering",
+        "file_audio_corrupt_container_is_bounded_and_reaped",
+        "file_audio_thread_budget_failure_does_not_disable_next_request"
+      ],
+      "gpu_actions": 0,
+      "binary_sha256": "37b63bddbb3fd38e16d82adbee7c664cf668efb1e7fc3725f0db9ec87e07f08b"
+    },
+    {
+      "name": "codec-cpu-05",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-cpu-05/required.txt"
+      ],
+      "exit_code": 0,
+      "seconds": 0.5644065123051405,
+      "required": [
+        "file_audio_pcm24_resamples_and_averages_channels_without_aliasing",
+        "file_audio_noninteger_and_upsample_keep_phase_and_length",
+        "file_audio_ogg_opus_and_vorbis_decode_real_signal",
+        "file_audio_webm_opus_decodes_real_signal",
+        "file_audio_actual_source_decode_and_output_budgets"
+      ],
+      "gpu_actions": 0,
+      "binary_sha256": "0d6350dd2bad99238ac4e5c4a576b06109cd8c6e8d60586fb78c9bd6a7a18172"
+    },
+    {
+      "name": "codec-video-regression-02",
+      "exit_code": 0,
+      "seconds": 0.06384218530729413,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-video-regression-02/required.txt"
+      ],
+      "required": [
+        "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+        "file_video_actual_vp8_webm_preserves_colors_order_and_pts"
+      ],
+      "binary_sha256": "0d6350dd2bad99238ac4e5c4a576b06109cd8c6e8d60586fb78c9bd6a7a18172",
+      "gpu_actions": 0
+    },
+    {
+      "name": "codec-independent-01",
+      "external_gstreamer_samples": 14336,
+      "native_worker_samples": 14336,
+      "byte_equal": true,
+      "external_sha256": "bd48504b9898798b987f7300007e3be88e47c2adabe419dae350a506f52a7599",
+      "worker_sha256": "bd48504b9898798b987f7300007e3be88e47c2adabe419dae350a506f52a7599"
+    }
+  ],
+  "new_gpu_actions": 0,
+  "http_verified": false
+}

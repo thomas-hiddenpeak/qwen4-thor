@@ -1,0 +1,72 @@
+-- GLOB mismatch!
+The following files were added:
+  +/home/rm01/models/dev/qwen4-thor/cmake/../third_party/licenses/qwen3-asr/LICENSE
+  +/home/rm01/models/dev/qwen4-thor/cmake/../third_party/licenses/qwen3-asr/README.md
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.5s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_runtime
+[  0%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[  0%] Built target q4t_ple
+[  3%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[  3%] Built target q4t_io
+[  3%] Built target q4t_regex_build
+[  3%] Generating service-tools/snapshot.done
+[  3%] Built target q4t_program_javascript
+[  3%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 13%] Built target xgrammar
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/2efed30e6645cbb656324f6e5e751350b645b2c479550fbb2b9f09b51db4988e", "manifest_sha256": "2efed30e6645cbb656324f6e5e751350b645b2c479550fbb2b9f09b51db4988e", "model_actions": false}
+[ 13%] Built target q4t_service_tools
+[ 13%] Building CXX object CMakeFiles/q4t_service_cli.dir/src/service/service_cli.cpp.o
+[ 13%] Linking CXX static library libq4t_service_cli.a
+[ 13%] Built target q4t_service_cli
+[ 13%] Linking CXX static library libq4t_trace.a
+[ 13%] Built target q4t_trace
+[ 16%] Built target q4t_quant
+[ 20%] Building CXX object CMakeFiles/q4t_model.dir/src/audio/asr_config.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_model.dir/src/audio/asr_layout.cpp.o
+[ 20%] Building CUDA object CMakeFiles/q4t_model.dir/src/audio/asr_model.cu.o
+[ 20%] Building CXX object CMakeFiles/q4t_model.dir/src/audio/features.cpp.o
+[ 20%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/embedding_model.cu.o
+[ 20%] Building CXX object CMakeFiles/q4t_model.dir/src/mtp/subset_head.cpp.o
+[ 20%] Linking CXX static library libq4t_text.a
+[ 20%] Built target q4t_text
+[ 20%] Linking CXX static library libq4t_model.a
+[ 26%] Built target q4t_model
+[ 26%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_plan.cpp.o
+[ 26%] Linking CXX static library libq4t_startup_plan.a
+[ 30%] Built target q4t_startup_plan
+[ 30%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_server.dir/src/server/embedding_assets.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_server.dir/src/server/model_assets.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_assets.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_service.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_request.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/asr_response.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_execution.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_backend.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_store.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/server/chat_asr.cpp: In member function ‘void q4t::server::ChatServer::HandleTranscription(int, std::string_view, std::string_view)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_asr.cpp:42:5: error: ‘RequestAdmissionLease’ was not declared in this scope
+   42 |     RequestAdmissionLease admitted(active_chats_, admission_limits_.inflight);
+      |     ^~~~~~~~~~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/src/server/chat_asr.cpp:43:10: error: ‘admitted’ was not declared in this scope
+   43 |     if (!admitted.TryAcquire()) {
+      |          ^~~~~~~~
+[ 33%] Building CXX object CMakeFiles/q4t_server.dir/src/server/object_worker.cpp.o
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:177: CMakeFiles/q4t_server.dir/src/server/chat_asr.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1462: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1642: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:636: q4t] Error 2

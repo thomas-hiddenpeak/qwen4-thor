@@ -1,0 +1,1215 @@
+{
+  "ok": true,
+  "version": "7.47.0",
+  "result": {
+    "events": [
+      {
+        "type": "transcript.text.delta",
+        "delta": "M",
+        "logprobs": [
+          {
+            "token": "M",
+            "logprob": -1.0753346077778905,
+            "bytes": [
+              77
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": "hm",
+        "logprobs": [
+          {
+            "token": "hm",
+            "logprob": -0.12634801796999554,
+            "bytes": [
+              104,
+              109
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ".",
+        "logprobs": [
+          {
+            "token": ".",
+            "logprob": -0.030882829332176766,
+            "bytes": [
+              46
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " Oh",
+        "logprobs": [
+          {
+            "token": " Oh",
+            "logprob": -2.8987540146693404e-05,
+            "bytes": [
+              32,
+              79,
+              104
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " yeah",
+        "logprobs": [
+          {
+            "token": " yeah",
+            "logprob": -0.225480240315449,
+            "bytes": [
+              32,
+              121,
+              101,
+              97,
+              104
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ",",
+        "logprobs": [
+          {
+            "token": ",",
+            "logprob": -0.012570910250589687,
+            "bytes": [
+              44
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " yeah",
+        "logprobs": [
+          {
+            "token": " yeah",
+            "logprob": -7.315101023434063e-06,
+            "bytes": [
+              32,
+              121,
+              101,
+              97,
+              104
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ".",
+        "logprobs": [
+          {
+            "token": ".",
+            "logprob": -0.3142107309876822,
+            "bytes": [
+              46
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " He",
+        "logprobs": [
+          {
+            "token": " He",
+            "logprob": -2.9767465196644797e-06,
+            "bytes": [
+              32,
+              72,
+              101
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " wasn",
+        "logprobs": [
+          {
+            "token": " wasn",
+            "logprob": -5.8424214255175045e-05,
+            "bytes": [
+              32,
+              119,
+              97,
+              115,
+              110
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": "'t",
+        "logprobs": [
+          {
+            "token": "'t",
+            "logprob": -1.3984413146904441e-05,
+            "bytes": [
+              39,
+              116
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " even",
+        "logprobs": [
+          {
+            "token": " even",
+            "logprob": -1.8607501051845657e-07,
+            "bytes": [
+              32,
+              101,
+              118,
+              101,
+              110
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " that",
+        "logprobs": [
+          {
+            "token": " that",
+            "logprob": -9.041944613043689e-07,
+            "bytes": [
+              32,
+              116,
+              104,
+              97,
+              116
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " big",
+        "logprobs": [
+          {
+            "token": " big",
+            "logprob": -2.5786248614336144e-06,
+            "bytes": [
+              32,
+              98,
+              105,
+              103
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " when",
+        "logprobs": [
+          {
+            "token": " when",
+            "logprob": -6.280273623969397e-06,
+            "bytes": [
+              32,
+              119,
+              104,
+              101,
+              110
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " I",
+        "logprobs": [
+          {
+            "token": " I",
+            "logprob": -5.96991590487035e-07,
+            "bytes": [
+              32,
+              73
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " started",
+        "logprobs": [
+          {
+            "token": " started",
+            "logprob": -8.128027081796946e-06,
+            "bytes": [
+              32,
+              115,
+              116,
+              97,
+              114,
+              116,
+              101,
+              100
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " listening",
+        "logprobs": [
+          {
+            "token": " listening",
+            "logprob": -3.357474935410157e-05,
+            "bytes": [
+              32,
+              108,
+              105,
+              115,
+              116,
+              101,
+              110,
+              105,
+              110,
+              103
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " to",
+        "logprobs": [
+          {
+            "token": " to",
+            "logprob": -6.08288254584392e-08,
+            "bytes": [
+              32,
+              116,
+              111
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " him",
+        "logprobs": [
+          {
+            "token": " him",
+            "logprob": -1.6579997266205087e-07,
+            "bytes": [
+              32,
+              104,
+              105,
+              109
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ",",
+        "logprobs": [
+          {
+            "token": ",",
+            "logprob": -0.31340000010057456,
+            "bytes": [
+              44
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " but",
+        "logprobs": [
+          {
+            "token": " but",
+            "logprob": -2.9747417854784024e-06,
+            "bytes": [
+              32,
+              98,
+              117,
+              116
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " and",
+        "logprobs": [
+          {
+            "token": " and",
+            "logprob": -0.029188887821238102,
+            "bytes": [
+              32,
+              97,
+              110,
+              100
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " his",
+        "logprobs": [
+          {
+            "token": " his",
+            "logprob": -4.275479192165314e-06,
+            "bytes": [
+              32,
+              104,
+              105,
+              115
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " solo",
+        "logprobs": [
+          {
+            "token": " solo",
+            "logprob": -5.129226542250098e-06,
+            "bytes": [
+              32,
+              115,
+              111,
+              108,
+              111
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " music",
+        "logprobs": [
+          {
+            "token": " music",
+            "logprob": -2.744261665186919e-06,
+            "bytes": [
+              32,
+              109,
+              117,
+              115,
+              105,
+              99
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " didn",
+        "logprobs": [
+          {
+            "token": " didn",
+            "logprob": -8.135983264139194e-05,
+            "bytes": [
+              32,
+              100,
+              105,
+              100,
+              110
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": "'t",
+        "logprobs": [
+          {
+            "token": "'t",
+            "logprob": -8.549031898310694e-06,
+            "bytes": [
+              39,
+              116
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " do",
+        "logprobs": [
+          {
+            "token": " do",
+            "logprob": -3.433584682214713e-06,
+            "bytes": [
+              32,
+              100,
+              111
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " overly",
+        "logprobs": [
+          {
+            "token": " overly",
+            "logprob": -0.002368296772179017,
+            "bytes": [
+              32,
+              111,
+              118,
+              101,
+              114,
+              108,
+              121
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " well",
+        "logprobs": [
+          {
+            "token": " well",
+            "logprob": -2.057586327904935e-06,
+            "bytes": [
+              32,
+              119,
+              101,
+              108,
+              108
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ",",
+        "logprobs": [
+          {
+            "token": ",",
+            "logprob": -0.3873348518768643,
+            "bytes": [
+              44
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " but",
+        "logprobs": [
+          {
+            "token": " but",
+            "logprob": -8.692724940887464e-07,
+            "bytes": [
+              32,
+              98,
+              117,
+              116
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " he",
+        "logprobs": [
+          {
+            "token": " he",
+            "logprob": -1.278490408062425e-06,
+            "bytes": [
+              32,
+              104,
+              101
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " did",
+        "logprobs": [
+          {
+            "token": " did",
+            "logprob": -9.708710751951955e-07,
+            "bytes": [
+              32,
+              100,
+              105,
+              100
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " very",
+        "logprobs": [
+          {
+            "token": " very",
+            "logprob": -1.4391896264941936e-05,
+            "bytes": [
+              32,
+              118,
+              101,
+              114,
+              121
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " well",
+        "logprobs": [
+          {
+            "token": " well",
+            "logprob": -4.5791717769288136e-07,
+            "bytes": [
+              32,
+              119,
+              101,
+              108,
+              108
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " when",
+        "logprobs": [
+          {
+            "token": " when",
+            "logprob": -0.0004361524758642866,
+            "bytes": [
+              32,
+              119,
+              104,
+              101,
+              110
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " he",
+        "logprobs": [
+          {
+            "token": " he",
+            "logprob": -3.518159597614456e-07,
+            "bytes": [
+              32,
+              104,
+              101
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " started",
+        "logprobs": [
+          {
+            "token": " started",
+            "logprob": -1.859625543733074e-06,
+            "bytes": [
+              32,
+              115,
+              116,
+              97,
+              114,
+              116,
+              101,
+              100
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " writing",
+        "logprobs": [
+          {
+            "token": " writing",
+            "logprob": -2.714338997429534e-05,
+            "bytes": [
+              32,
+              119,
+              114,
+              105,
+              116,
+              105,
+              110,
+              103
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " for",
+        "logprobs": [
+          {
+            "token": " for",
+            "logprob": -4.465759524679126e-06,
+            "bytes": [
+              32,
+              102,
+              111,
+              114
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " other",
+        "logprobs": [
+          {
+            "token": " other",
+            "logprob": -1.3693317212831137e-06,
+            "bytes": [
+              32,
+              111,
+              116,
+              104,
+              101,
+              114
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": " people",
+        "logprobs": [
+          {
+            "token": " people",
+            "logprob": -4.387278297950154e-06,
+            "bytes": [
+              32,
+              112,
+              101,
+              111,
+              112,
+              108,
+              101
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.delta",
+        "delta": ".",
+        "logprobs": [
+          {
+            "token": ".",
+            "logprob": -3.2816596970269688e-06,
+            "bytes": [
+              46
+            ]
+          }
+        ]
+      },
+      {
+        "type": "transcript.text.done",
+        "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+        "languages": [
+          {
+            "code": "en"
+          }
+        ],
+        "logprobs": [
+          {
+            "token": "M",
+            "logprob": -1.0753346077778905,
+            "bytes": [
+              77
+            ]
+          },
+          {
+            "token": "hm",
+            "logprob": -0.12634801796999554,
+            "bytes": [
+              104,
+              109
+            ]
+          },
+          {
+            "token": ".",
+            "logprob": -0.030882829332176766,
+            "bytes": [
+              46
+            ]
+          },
+          {
+            "token": " Oh",
+            "logprob": -2.8987540146693404e-05,
+            "bytes": [
+              32,
+              79,
+              104
+            ]
+          },
+          {
+            "token": " yeah",
+            "logprob": -0.225480240315449,
+            "bytes": [
+              32,
+              121,
+              101,
+              97,
+              104
+            ]
+          },
+          {
+            "token": ",",
+            "logprob": -0.012570910250589687,
+            "bytes": [
+              44
+            ]
+          },
+          {
+            "token": " yeah",
+            "logprob": -7.315101023434063e-06,
+            "bytes": [
+              32,
+              121,
+              101,
+              97,
+              104
+            ]
+          },
+          {
+            "token": ".",
+            "logprob": -0.3142107309876822,
+            "bytes": [
+              46
+            ]
+          },
+          {
+            "token": " He",
+            "logprob": -2.9767465196644797e-06,
+            "bytes": [
+              32,
+              72,
+              101
+            ]
+          },
+          {
+            "token": " wasn",
+            "logprob": -5.8424214255175045e-05,
+            "bytes": [
+              32,
+              119,
+              97,
+              115,
+              110
+            ]
+          },
+          {
+            "token": "'t",
+            "logprob": -1.3984413146904441e-05,
+            "bytes": [
+              39,
+              116
+            ]
+          },
+          {
+            "token": " even",
+            "logprob": -1.8607501051845657e-07,
+            "bytes": [
+              32,
+              101,
+              118,
+              101,
+              110
+            ]
+          },
+          {
+            "token": " that",
+            "logprob": -9.041944613043689e-07,
+            "bytes": [
+              32,
+              116,
+              104,
+              97,
+              116
+            ]
+          },
+          {
+            "token": " big",
+            "logprob": -2.5786248614336144e-06,
+            "bytes": [
+              32,
+              98,
+              105,
+              103
+            ]
+          },
+          {
+            "token": " when",
+            "logprob": -6.280273623969397e-06,
+            "bytes": [
+              32,
+              119,
+              104,
+              101,
+              110
+            ]
+          },
+          {
+            "token": " I",
+            "logprob": -5.96991590487035e-07,
+            "bytes": [
+              32,
+              73
+            ]
+          },
+          {
+            "token": " started",
+            "logprob": -8.128027081796946e-06,
+            "bytes": [
+              32,
+              115,
+              116,
+              97,
+              114,
+              116,
+              101,
+              100
+            ]
+          },
+          {
+            "token": " listening",
+            "logprob": -3.357474935410157e-05,
+            "bytes": [
+              32,
+              108,
+              105,
+              115,
+              116,
+              101,
+              110,
+              105,
+              110,
+              103
+            ]
+          },
+          {
+            "token": " to",
+            "logprob": -6.08288254584392e-08,
+            "bytes": [
+              32,
+              116,
+              111
+            ]
+          },
+          {
+            "token": " him",
+            "logprob": -1.6579997266205087e-07,
+            "bytes": [
+              32,
+              104,
+              105,
+              109
+            ]
+          },
+          {
+            "token": ",",
+            "logprob": -0.31340000010057456,
+            "bytes": [
+              44
+            ]
+          },
+          {
+            "token": " but",
+            "logprob": -2.9747417854784024e-06,
+            "bytes": [
+              32,
+              98,
+              117,
+              116
+            ]
+          },
+          {
+            "token": " and",
+            "logprob": -0.029188887821238102,
+            "bytes": [
+              32,
+              97,
+              110,
+              100
+            ]
+          },
+          {
+            "token": " his",
+            "logprob": -4.275479192165314e-06,
+            "bytes": [
+              32,
+              104,
+              105,
+              115
+            ]
+          },
+          {
+            "token": " solo",
+            "logprob": -5.129226542250098e-06,
+            "bytes": [
+              32,
+              115,
+              111,
+              108,
+              111
+            ]
+          },
+          {
+            "token": " music",
+            "logprob": -2.744261665186919e-06,
+            "bytes": [
+              32,
+              109,
+              117,
+              115,
+              105,
+              99
+            ]
+          },
+          {
+            "token": " didn",
+            "logprob": -8.135983264139194e-05,
+            "bytes": [
+              32,
+              100,
+              105,
+              100,
+              110
+            ]
+          },
+          {
+            "token": "'t",
+            "logprob": -8.549031898310694e-06,
+            "bytes": [
+              39,
+              116
+            ]
+          },
+          {
+            "token": " do",
+            "logprob": -3.433584682214713e-06,
+            "bytes": [
+              32,
+              100,
+              111
+            ]
+          },
+          {
+            "token": " overly",
+            "logprob": -0.002368296772179017,
+            "bytes": [
+              32,
+              111,
+              118,
+              101,
+              114,
+              108,
+              121
+            ]
+          },
+          {
+            "token": " well",
+            "logprob": -2.057586327904935e-06,
+            "bytes": [
+              32,
+              119,
+              101,
+              108,
+              108
+            ]
+          },
+          {
+            "token": ",",
+            "logprob": -0.3873348518768643,
+            "bytes": [
+              44
+            ]
+          },
+          {
+            "token": " but",
+            "logprob": -8.692724940887464e-07,
+            "bytes": [
+              32,
+              98,
+              117,
+              116
+            ]
+          },
+          {
+            "token": " he",
+            "logprob": -1.278490408062425e-06,
+            "bytes": [
+              32,
+              104,
+              101
+            ]
+          },
+          {
+            "token": " did",
+            "logprob": -9.708710751951955e-07,
+            "bytes": [
+              32,
+              100,
+              105,
+              100
+            ]
+          },
+          {
+            "token": " very",
+            "logprob": -1.4391896264941936e-05,
+            "bytes": [
+              32,
+              118,
+              101,
+              114,
+              121
+            ]
+          },
+          {
+            "token": " well",
+            "logprob": -4.5791717769288136e-07,
+            "bytes": [
+              32,
+              119,
+              101,
+              108,
+              108
+            ]
+          },
+          {
+            "token": " when",
+            "logprob": -0.0004361524758642866,
+            "bytes": [
+              32,
+              119,
+              104,
+              101,
+              110
+            ]
+          },
+          {
+            "token": " he",
+            "logprob": -3.518159597614456e-07,
+            "bytes": [
+              32,
+              104,
+              101
+            ]
+          },
+          {
+            "token": " started",
+            "logprob": -1.859625543733074e-06,
+            "bytes": [
+              32,
+              115,
+              116,
+              97,
+              114,
+              116,
+              101,
+              100
+            ]
+          },
+          {
+            "token": " writing",
+            "logprob": -2.714338997429534e-05,
+            "bytes": [
+              32,
+              119,
+              114,
+              105,
+              116,
+              105,
+              110,
+              103
+            ]
+          },
+          {
+            "token": " for",
+            "logprob": -4.465759524679126e-06,
+            "bytes": [
+              32,
+              102,
+              111,
+              114
+            ]
+          },
+          {
+            "token": " other",
+            "logprob": -1.3693317212831137e-06,
+            "bytes": [
+              32,
+              111,
+              116,
+              104,
+              101,
+              114
+            ]
+          },
+          {
+            "token": " people",
+            "logprob": -4.387278297950154e-06,
+            "bytes": [
+              32,
+              112,
+              101,
+              111,
+              112,
+              108,
+              101
+            ]
+          },
+          {
+            "token": ".",
+            "logprob": -3.2816596970269688e-06,
+            "bytes": [
+              46
+            ]
+          }
+        ],
+        "usage": {
+          "type": "tokens",
+          "input_tokens": 211,
+          "output_tokens": 49,
+          "total_tokens": 260,
+          "input_token_details": {
+            "audio_tokens": 196,
+            "text_tokens": 15
+          }
+        }
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://127.0.0.1:19141/v1/audio/transcriptions"
+    }
+  ]
+}

@@ -60,6 +60,9 @@ class TokenSampler {
                 std::span<const uint8_t> allowed = {},
                 int32_t forced_token = -1);
   Status Observe(int32_t token);
+  // Change only selection temperature, retaining RNG and accepted history.
+  // Used by ASR's bounded zero-temperature confidence adaptation.
+  Status SetTemperature(double temperature);
 
  private:
   SamplingOptions options_;

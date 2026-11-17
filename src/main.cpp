@@ -43,6 +43,7 @@
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
 #include "q4t/server/file_video.h"
+#include "q4t/server/file_audio.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
@@ -89,6 +90,9 @@ void PrintUsage(const char* prog) {
       "[--operations-port N] [--model-dir DIR] "
       "[--served-model-name ID] [--model-alias ID] "
       "[--embedding-model-dir DIR] "
+      "[--asr-model-dir DIR] [--asr-max-audio-seconds N] "
+      "[--asr-max-context-tokens N] [--asr-max-output-tokens N] "
+      "[--asr-workspace-mib N] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--max-inflight-requests N] [--max-queued-requests N] "
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "
@@ -956,6 +960,8 @@ int main(int argc, char** argv) {
   if (webp_worker >= 0) return webp_worker;
   const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);
   if (video_worker >= 0) return video_worker;
+  const int audio_worker = q4t::server::MaybeRunFileAudioWorker(argc, argv);
+  if (audio_worker >= 0) return audio_worker;
   const int pdf_worker = q4t::server::MaybeRunFilePdfWorker(argc, argv);
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);

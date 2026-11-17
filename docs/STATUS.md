@@ -5,32 +5,86 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 发行是实施边界，不能替代剩余能力。非性能改动仅做受影响行为的针对性
 验证和必要业务短验，长稳实跑由用户负责。
 
+## 正在推进
+
+PR44的58组公开CTest已全过；后续审计发现13个已接受ASR发布/
+恢复源码锚点未刷新。已逐项复审并补齐，
+[inventory与7种遗漏负控通过](evidence/serve-asr-inventory-20261117/README.md)，
+0GPU，原CI失败保留。路由/字段和门禁不变，继续最终CI及合main。
+
+PR44第二组CI暴露CPU后端未识别转录chunked上传；已补齐精确
+路由和multipart夹具。[原失败项复验通过](evidence/serve-asr-route-fixture-20261117/README.md)，
+1.015秒、0GPU。原两组CI失败和一次旧ELF误用404保留；运行时/
+默认rev276不变。继续PR44最终CI及合main，后续对齐不混入。
+
+PR44最终CI发现可选nginx前置遗漏转录路由，已补入共用data路由；
+[4项针对性CPU通过](evidence/serve-asr-optional-route-20261117/README.md)，
+0.166秒、0GPU。原CI失败保留，默认原生发行未变；修复单独进入
+PR44，继续最终检查和合main，后续对齐开发不混入本PR。
+
+[原生ASR接入和恢复组合已接受](evidence/serve-asr-service-composition-20261117/README.md)：
+固定engine-04的主轻12创建，以及两种保留控制、原生TLS双SDK、
+独立文件配额/chunked/取消、入口恢复与整payload回退均有真实业务
+证据。接入/恢复组含原失败累计6启动/20创建/1CUDA探测、316.806秒，
+307次NVML正常，清理通过；未进行完整性能或完整模型质量矩阵。
+
+两个TLS原驱动FAILED分别保留：额外清理指标被公共解析器过滤、
+私有配置误从客户端入口请求。对应驱动已修，实际已完成业务按原始
+wire/身份/监控/清理分项复核；没有重跑TLS业务或改写失败。最终
+ASR私有健康采用同引擎现代保留控制的独立证据，明确不是原TLS
+终态观测。ASR ready、compute_failures=0，取消后核心Chat42；
+整包回退保留存储Chat和原profile预算。
+
+[rev276可回退交付已完成](evidence/serve-asr-delivery-20261117/README.md)：
+19项STOPPED命令/273.956秒，实际整根回退与再前进通过，
+0新增GPU。原核心/client/outer预算与各根周期保持，profile显式
+增加ASR；退休记录可恢复归档，原rev266和day保持。继续固定
+当前用户day入口、PR44最终检查和实际合main，随后所有剩余任务。
+
+[直接HTTP分项接受](evidence/serve-asr-http-20261117/README.md)、
+[主轻真实资格](evidence/serve-asr-profiles-20261117/README.md)、
+[恢复13项CPU](evidence/serve-asr-recovery-cpu-20261117/README.md)、
+[包/schema11项CPU](evidence/serve-asr-package-cpu-20261117/README.md)及
+前序资产/codec/服务CPU按身份复用。原计算logits差分FAILED继续
+单列，后续实际算子复核与业务接受不冒充完整模型正确性。
+
+对齐/字幕/说话人/VAD、Chat音频及非空音频历史、语音输出、
+图像/视频生成、完整SDK矩阵、冷启动/资源硬边界和全部master
+剩余任务仍须实现。转录交付不等于整个A10或Serve总目标完成。
+
 PR43在b548eb56的CI发现工作流仍使用已改名的v19用例；已同步
 current选择器并通过精确1项CPU（0.455秒）。原失败保留于
-[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)，继续最终head检查及实际合main。
+[evidence](evidence/serve-pr43-ci-selector-20261117/README.md)。最终head两组
+CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
+（`d15498f1`）；继续真实音频后端和全部master剩余任务。
 
 ## 当前实际默认
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev266；服务包 `82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2` |
-| Generation | `e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db` |
-| 引擎 | `7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376` |
-| 引擎发布记录 | `be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806` |
-| Guardian | `e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a` |
-| 原生入口 | `8c669d808962d74612c1ae2e6cee7758d2c19bfba6bf1c938a582d69aa91585a` |
+| 发布 | rev276；服务包 `4117ead3885ae61452d668e8ff917d1e6c0383f788d25b230931f0468b5ebcfc` |
+| Generation | `ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc` |
+| 引擎 | `b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7` |
+| 引擎发布记录 | `f27a4bf3f6461b84c57997a7cf9697c2351faa3b564bfde23fdf33a2181659c7` |
+| Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
+| 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | rev260根 `168477d190e4b0d2c5f2f92410722b39486801500ad4397ff1c717019f022d64`；原周期/原生入口已验；旧包无新增维护子命令 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `087c383b36060e60ce1a2ddcb515b157524d244366cfb7a10a5d844e47df95a0`；不是独立旧引擎回退 |
-| 外部依赖 | 默认原生入口及自监护不要求nginx/systemd；视频codec按请求在隔离worker加载；数据源/凭据与TLS/CORS按部署配置 |
+| 人工整包回退 | 现代保留根 `0753262ee95bdc8825df82c103624c913363cba6ddb2bfa4f28e93be651dcd21`；ASR/原周期/原生入口已验，前驱rev266另保留 |
+| 自动payload回退 | 已验旧控制/当前ASR引擎包 `055795efa9bd2032197046db6720449a99449e8ef81b21f00e7242385e86c16d`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR模型按部署显式启用，codec按请求隔离加载，失效不拖停健康Chat |
 
-[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
+[rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
+19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
+ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
+原rev266及day保留；既有core day已固定且未运行；继续PR44合main、后续后端长稳交接与全部master。
+
+前驱[rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
-最终head实际合main，再继续其余全部master任务。
+profile未变。rev266用户day已prepare/check且未运行；PR43最终head两组CI通过且
+[已实际合main](evidence/serve-pr43-merged-20261117/README.md)。继续其余全部master任务。
 
 前驱[rev260客户端回执交付](evidence/serve-client-receipts-delivery-20261117/README.md)
 已完成13项STOPPED检查/实际回退/再前进，另保留1次意图容量失败，
@@ -145,18 +199,23 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 
 ## 最近完成的实现和验证
 
+[rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
+19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
+ASR资产/预算已显式绑定默认，原核心/client/outer预算和周期保持。
+原rev266及day保留；既有core day已固定且未运行；继续PR44合main、后续后端长稳交接与全部master。
+
 [PR43两项失败夹具已针对性修正](evidence/serve-pr43-ci-fixtures-20261117/README.md)：
 普通I/O等待不再与100/250ms调度余量绑定，目标故障和业务断言保持；
 拆开复合断言以定位子条件。本机2项1.115秒通过、构建零警告，生产
-代码/时限未变；最终head两组CI仍须通过。PR43纳入意图容量修复的
-原生发行入口收尾，准备当前身份day后统一推送，全部master继续。
+代码/时限未变；最终head两组CI已通过；PR43包含意图容量修复和原生发行入口，
+已实际合main（`d15498f1`），全部master继续。
 
 [rev266原生维护交付](evidence/serve-native-maintenance-delivery-20261117/README.md)
 15项STOPPED发布/实际整根回退/再前进通过，196.492秒、0GPU。
 旧rev260自己的check/version-status通过，原周期和全部预算保持；
 最终默认已包含三类维护和旧计划恢复。引擎/协议/runtime/native/client/
-profile未变。rev266用户day已prepare/check且未运行；PR43两项CPU夹具已修正，继续
-最终head实际合main，再继续其余全部master任务。
+profile未变。rev266用户day已prepare/check且未运行；PR43最终head两组CI通过且
+[已实际合main](evidence/serve-pr43-merged-20261117/README.md)。继续其余全部master任务。
 
 [原生维护精确包与历史计划实际验证通过](evidence/serve-native-maintenance-package-20261117/README.md)：
 28独立CPU/32次执行，34条原生命令374.106秒，0模型动作。三类

@@ -67,6 +67,8 @@ def schema(graph):
     definitions.update(moderation_definitions())
     from tools.serve_responses.embeddings_contract import definitions as embedding_definitions
     definitions.update(embedding_definitions())
+    from tools.serve_responses.transcriptions_contract import definitions as asr_definitions
+    definitions.update(asr_definitions())
     from tools.serve_responses.web_contract import update_tools
     update_tools(definitions, graph)
 
@@ -200,6 +202,7 @@ def schema(graph):
     from tools.serve_responses.vector_stores_contract import SDK_SOURCES as VECTOR_SOURCES
     from tools.serve_responses.moderations_contract import SDK_MODERATIONS_SHA256
     from tools.serve_responses.embeddings_contract import SDK_SOURCES as EMBEDDING_SOURCES
+    from tools.serve_responses.transcriptions_contract import SDK_SOURCES as ASR_SOURCES
     return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses, Conversations, Files, Uploads and Batches wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
@@ -207,7 +210,7 @@ def schema(graph):
                             'src/resources/files.ts': SDK_FILES_SHA256, **UPLOAD_SOURCES,
                             'src/resources/batches.ts': SDK_BATCHES_SHA256,
                             'src/resources/moderations.ts': SDK_MODERATIONS_SHA256,
-                            **EMBEDDING_SOURCES, **VECTOR_SOURCES},
+                            **EMBEDDING_SOURCES, **VECTOR_SOURCES, **ASR_SOURCES},
             license_sha256=graph['license_sha256'],
             compiler_sha256=graph['compiler_sha256'],
             semantics='Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.',
@@ -257,6 +260,8 @@ def add_openapi(paths, response, error):
     add_moderations(paths, response, error)
     from tools.serve_responses.embeddings_contract import add_openapi as add_embeddings
     add_embeddings(paths, response, error)
+    from tools.serve_responses.transcriptions_contract import add_openapi as add_asr
+    add_asr(paths, response, error)
     from tools.serve_responses.files_contract import add_openapi as add_files
     add_files(paths, response, error)
     from tools.serve_responses.uploads_contract import add_openapi as add_uploads

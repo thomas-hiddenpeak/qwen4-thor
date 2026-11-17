@@ -1,0 +1,33 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+  "binary_sha256": "3ad257dfe99d19f0687a21f8f9af02432efe01b6513f4d87790a51fa9a376e49",
+  "sources": {
+    "include/q4t/server/file_audio.h": "af6630515891ac565c3afceb9263af9db81120fbfe57b18e6d2af4ae6f519b60",
+    "src/server/file_audio.cpp": "31114a70ee6f3b13eb661d9755ef9d3beeea8ae24bb85d4d34385371ca2ae3f7",
+    "src/server/file_audio_protocol.h": "b39940d5707920c3ca78b9ac61c3335b5acae533f41f50ace330de2f92fdc024",
+    "src/server/file_audio_worker.cpp": "5c00f6ae5a6bd0bde60910b6b0e137ce211c4d32e33c539d72cc3b5336a3ae24",
+    "src/server/media_codec_runtime.h": "690e1603d5ab0b6985396cfbf34724d917bf80e52a69e8d42959920aa74dee54",
+    "src/server/file_video_worker.cpp": "a9bd9131b47c3d8b119190e60d0e22922af21ca00ef48c46f20e2e409191f812",
+    "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
+    "src/server/grammar_process.cpp": "d176c57391e961f475e1507320e1a7d40bd10a074b32eb0f231553ef69cb4fe9",
+    "tests/server_file_audio_test.cpp": "4a9500b978456a03837ea12a35a658f8f70340f78b7d8ddf89c0db4f367328ac",
+    "tests/server_file_video_test.cpp": "9c6171b10c0209263ecab37a3cd3590b67a2684770cdf8a7dcd975608fdc42fb",
+    "tests/test_main.cpp": "23e3e4dbe2eaf3f151dabfe45327dabecec6c493d4fb0b1706c3715b974de49f"
+  },
+  "fixtures": {
+    "tests/fixtures/file_audio/tone.webm": "0d1433b7407fab62af4ffc183bbc8cacd2d3886488b7c526c44b6b4ef7dc18e6",
+    "tests/fixtures/file_audio/tone.m4a": "41e503cc2a15b65771c656e24ad2fbe802131d08b437986ba744137b5942d2be",
+    "tests/fixtures/file_audio/aac-provenance.json": "ee4408e8776c342d18da6265ce636774c4a125a07853c1e9e8347eab84522019",
+    "tests/fixtures/file_audio/tone.opus": "8a9f9acc33060f7f9c34aa01d114c70d91768ee5fc0c9c0f99bd97748f79aeb0",
+    "tests/fixtures/file_audio/tone.flac": "1a628367d342d4b263a6bf906b1587da0ede3ae78557fec3fc509e7582b3803b",
+    "tests/fixtures/file_audio/stereo24.wav": "ad26de988c1d18ac0afe81ba9b95335ab649fd783298fff5c0e2c4b2ab9765d3",
+    "tests/fixtures/file_audio/float64.wav": "159fbede919a23c2b74f34d574c5d50db4acbabea38c084bf1ecbd7e831fff58",
+    "tests/fixtures/file_audio/tone.mp3": "e4772b45d1836567ddc154ef4fc80f9fc3e375aa81d2ac9906940a02cb2bf63e",
+    "tests/fixtures/file_audio/provenance.json": "10b66f4eed35e02ccfd4142f8cf2b083b306dacde86230334c82e8c349a910b7",
+    "tests/fixtures/file_audio/mono16.wav": "a77280a67a216c56e50a13d37d2687fe6eed1701c077ef0e343494ee4f55714c",
+    "tests/fixtures/file_audio/aac-input-padded.wav": "dc656c17b514ac1e981a063ceb71a69b7674891a6681d407454477a39844425e",
+    "tests/fixtures/file_audio/float32.wav": "aa6d93081235c0beb7ca27123b3070bce2da87af82f3054d23e0a92cca140914",
+    "tests/fixtures/file_audio/tone.ogg": "389cf16ffd294d3373df5adde6357ebdb1716c4b4dc4a127d013b4555eb93471",
+    "tests/fixtures/file_audio/tone.aac": "5569c321368980cceb45b862a6f0864bfbe578753dcaac34ed4b2ac24117c5ee"
+  }
+}

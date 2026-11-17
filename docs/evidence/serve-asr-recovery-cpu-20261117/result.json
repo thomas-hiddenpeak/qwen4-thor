@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "tests": 13,
+  "gpu_actions": 0,
+  "defaults_before": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_legacy_binding_is_unchanged_and_new_binding_excludes_only_path",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_actual_audio_requires_real_source_usage_probabilities_and_health",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_profile_receipt_cannot_omit_audio_or_bind_another_backend",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_addition_preserves_pending_work_and_consumed_budget",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_disabled_backend_activation_is_explicit_and_preserves_other_capabilities",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_budget_migration_preserves_original_qualification_and_wait",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_native_cli_forwards_optional_asr_identity_and_only_explicit_limits",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_automatic_migration_preserves_audio_and_rejects_addition_or_loss",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_deployment_cannot_drop_accepted_asr_and_allows_asset_relocation",
+    "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_driver_preserves_asr_parameters_in_both_real_commands",
+    "tools.serve_recovery.test_profile_migration.MigrationTests.test_actual_pending_and_history_survive_new_identity_without_time_credit",
+    "tools.serve_recovery.test_profile_history.HistoryTests.test_pending_original_rows_and_qualification_are_not_rewritten",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency"
+  ],
+  "returncode": 0,
+  "seconds": 0.864854724612087,
+  "defaults_after": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true,
+  "sources_unchanged": true
+}

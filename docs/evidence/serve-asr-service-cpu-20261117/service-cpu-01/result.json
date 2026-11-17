@@ -1,0 +1,49 @@
+{
+  "status": "FAILED",
+  "tests": 34,
+  "model_constructions": 0,
+  "gpu_actions": 0,
+  "defaults_before": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "runs": [
+    {
+      "group": "host",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_service-host-01",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-cpu-01/host-required.txt"
+      ],
+      "binary_sha256": "6f55f963f6d076d228b7c50db5de3af81f63c1f709abbcb21b3f4e57c57e3ede",
+      "returncode": 0,
+      "seconds": 0.060079473070800304,
+      "tests": 30
+    },
+    {
+      "group": "tokenizer",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_service-tokenizer-01",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/service-cpu-01/tokenizer-required.txt"
+      ],
+      "binary_sha256": "cdfdb6c15c09cafcb16b1016be5e5dc50b372811e1047970d4fe67347c645509",
+      "returncode": 1,
+      "seconds": 1.6158998496830463,
+      "tests": 4
+    }
+  ],
+  "seconds": 1.7024527550674975,
+  "defaults_after": {
+    "build/q4t": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+    "build/q4t.release.json": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806",
+    "build/service/manifest.json": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2",
+    "build/service.release.json": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true,
+  "sources_unchanged": true
+}

@@ -1,0 +1,12 @@
+{
+  "base_url": "http://127.0.0.1:18224/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "audio": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_zh.wav",
+  "filename": "zh.wav",
+  "request": {
+    "model": "qwen3-asr-0.6b",
+    "language": "zh",
+    "prompt": "\u8bf7\u4f7f\u7528\u7b80\u4f53\u4e2d\u6587\u3002",
+    "response_format": "text"
+  }
+}

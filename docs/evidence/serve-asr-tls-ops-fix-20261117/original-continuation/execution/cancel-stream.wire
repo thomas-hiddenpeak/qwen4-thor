@@ -1,0 +1,2 @@
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","delta":"M","logprobs":[{"token":"M","logprob":-1.0753346077778905,"bytes":[77]}]}

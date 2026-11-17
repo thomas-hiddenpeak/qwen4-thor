@@ -3053,6 +3053,95 @@
         }
       }
     },
+    "/v1/audio/transcriptions": {
+      "post": {
+        "operationId": "v1_audio_transcriptions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/transcription_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/transcription_response"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/transcription_event"
+                },
+                "x-q4t-stream-contract": "transcript.text.delta then transcript.text.done; actual token usage, no Chat DONE sentinel; typed error terminates failure"
+              }
+            }
+          },
+          "default": {
+            "description": "Finite transcription error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "profile": "q4t-native-asr-v1",
+          "model": "qwen3-asr-0.6b",
+          "configured_by": "asr-model-dir",
+          "binary_file_bytes": 26214400,
+          "multipart_bytes": 33554432,
+          "core_readiness_dependency": false,
+          "recovery": "request-driven asset retry; no automatic primary model restart",
+          "implemented_formats": [
+            "json",
+            "text"
+          ],
+          "required_pending_executors": [
+            "actual_alignment",
+            "diarization",
+            "vad_chunking"
+          ],
+          "multipart_arrays": "repeated bracket names; nested chunking_strategy bracket fields or JSON object",
+          "zero_temperature": "native confidence policy; not a claim about private provider thresholds"
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",

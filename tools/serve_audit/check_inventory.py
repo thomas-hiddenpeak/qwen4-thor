@@ -39,6 +39,13 @@ def current_surface(root):
     completion_fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
+    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+        reader = (root / 'src/server/http_request.cpp').read_text()
+        if 'IsTranscriptionTarget(path)' not in dispatch or \
+                'IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes' not in reader or \
+                'headers.body_limit, kAsrFormBytes' not in dispatch:
+            raise ValueError('review native transcription body/dispatch contract')
+        routes.append(("/v1/audio/transcriptions", "POST"))
     if 'if (IsModelDetailPath(path))' not in dispatch or \
             'method != "GET" && method != "DELETE"' not in dispatch or \
             'HandleModel(fd, method, path)' not in dispatch:
@@ -55,6 +62,12 @@ def current_surface(root):
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
     application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+        if 'path == "/v1/files" || IsTranscriptionTarget(target)' not in application_routes or \
+                'server::IsTranscriptionTarget(path)' not in native or \
+                'std::min(headers.body_limit, server::kTranscriptionBodyBytes)' not in native or \
+                'upload.max_bytes = headers.body_limit' not in native:
+            raise ValueError('review native transcription upload quotas')
     if 'IsConversationTarget(path)' not in dispatch or \
             'HandleConversationRequest(*objects_' not in dispatch or \
             'server::ConversationMethodAllowed(method, path)' not in native or \
@@ -237,11 +250,16 @@ def current_surface(root):
                    set(root.glob("include/q4t/server/**/*.*")) |
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
+                   set(root.glob("src/audio/**/*.cpp")) |
+                   set(root.glob("src/audio/**/*.cu")) |
+                   set(root.glob("include/q4t/audio/**/*.h")) |
                    {p for p in root.glob("tools/serve_recovery/*.py")
                     if not p.name.startswith("test_")} |
                    {p for p in root.glob("tools/serve_service/*.py")
                     if not p.name.startswith("test_")} | {
                        root / "src/io/json.cpp", root / "include/q4t/io/json.h",
+                       root / "src/trace/sha256.cpp",
+                       root / "include/q4t/trace/sha256.h",
                        root / "src/model/model_head.cu",
                        root / "include/q4t/model/model_head.h",
                        root / "src/text/tokenizer.cpp",

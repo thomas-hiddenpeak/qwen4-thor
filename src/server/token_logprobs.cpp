@@ -58,8 +58,9 @@ Status TokenLogprobs::Push(const SampledToken& sample,
     status = Record(exact_selected_ ? sample.raw_logprob : sample.logprob,
                       token, &entry.json);
   if (!status) return status;
-  if (!completion_) entry.json += ",\"top_logprobs\":[";
-  for (size_t i = 0; !completion_ && i < sample.top.size(); ++i) {
+  const bool chat = !completion_ && format_ == TokenLogprobFormat::kChat;
+  if (chat) entry.json += ",\"top_logprobs\":[";
+  for (size_t i = 0; chat && i < sample.top.size(); ++i) {
     std::string item;
     status = decode(sample.top[i].token, &token);
     if (status) status = Record(sample.top[i].logprob, token, &item);
@@ -67,7 +68,7 @@ Status TokenLogprobs::Push(const SampledToken& sample,
     if (i) entry.json += ',';
     entry.json += item + '}';
   }
-  if (!completion_) entry.json += "]}";
+  if (!completion_) entry.json += chat ? "]}" : "}";
   const auto bytes = entry.json.size() + entry.completion.Bytes() +
                      sizeof(Entry);
   if (bytes > kStorageLimit || queued_bytes_ > kStorageLimit - bytes)
@@ -148,7 +149,8 @@ Status TokenLogprobs::Emit(const ResponseDelta& delta, std::string* json) {
     emitted_bytes_ = delta.source_end;
     *json = rows.Json();
   } else {
-    *json = refused ? Wrap({}, entries, true) : Wrap(entries);
+    *json = format_ == TokenLogprobFormat::kTranscription ? '[' + entries + ']'
+              : refused ? Wrap({}, entries, true) : Wrap(entries);
   }
   return Status();
 }
@@ -165,6 +167,7 @@ void TokenLogprobs::DiscardBefore(size_t offset) {
 
 std::string TokenLogprobs::Json() const {
   return completion_ ? completion_rows_.Json()
+         : format_ == TokenLogprobFormat::kTranscription ? '[' + collected_ + ']'
                      : Wrap(collected_, collected_refusal_, refusal_seen_);
 }
 

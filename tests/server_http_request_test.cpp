@@ -13,6 +13,7 @@
 
 #include "q4t/server/file_input.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/trace/sha256.h"
 
 namespace {
@@ -41,6 +42,82 @@ bool Read(const std::string& wire, std::string* body) {
 }
 
 }  // namespace
+
+Q4T_TEST(http_transcription_large_fixed_and_chunked_binary_bodies) {
+  using namespace q4t::server;
+  std::string payload(128 * 1024, 'x');
+  payload[127] = '\0';
+  payload.back() = static_cast<char>(0xff);
+  for (const auto target : {"/v1/audio/transcriptions",
+                            "/v1/audio/transcriptions?invalid=1"}) {
+    Q4T_CHECK(IsTranscriptionTarget(target));
+    const auto prefix = "POST " + std::string(target) +
+                        " HTTP/1.1\r\nHost: local\r\n";
+    std::string body;
+    Q4T_CHECK(Read(prefix + "Content-Length: 131072\r\n\r\n" + payload,
+                    &body));
+    Q4T_CHECK(body == payload);
+    Q4T_CHECK(Read(prefix + "Transfer-Encoding: chunked\r\n\r\n20000\r\n" +
+                      payload + "\r\n0\r\n\r\n", &body));
+    Q4T_CHECK(body == payload);
+  }
+  Q4T_CHECK(!IsTranscriptionTarget("/v1/audio/transcriptions-extra"));
+  Q4T_CHECK(!IsTranscriptionTarget("/v1/audio/transcriptions/"));
+  return true;
+}
+
+Q4T_TEST(http_transcription_limits_reject_before_body_read) {
+  using namespace q4t::server;
+  struct Case {
+    const char* path;
+    const char* frame;
+    size_t admitted_limit;
+    int status;
+    size_t occupied;
+  };
+  const Case cases[] = {
+      {"/v1/audio/transcriptions", "Content-Length: 33554433\r\n\r\n",
+       kChatBodyBytes, 413, 0},
+      {"/v1/audio/transcriptions", "Content-Length: 8193\r\n\r\n",
+       8192, 413, 0},
+      {"/v1/audio/transcriptions", "Transfer-Encoding: chunked\r\n\r\n"
+                                     "2000001\r\n",
+       kChatBodyBytes, 413, 0},
+      {"/v1/audio/transcriptions", "Transfer-Encoding: chunked\r\n\r\n"
+                                     "2001\r\n",
+       8192, 413, 0},
+      {"/v1/audio/transcriptions-extra", "Content-Length: 4097\r\n\r\n",
+       kChatBodyBytes, 413, 0},
+      {"/v1/audio/transcriptions", "Content-Length: 8192\r\n\r\n",
+       kChatBodyBytes, 503, 1}};
+  for (const auto& c : cases) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    const auto wire = "POST " + std::string(c.path) +
+                      " HTTP/1.1\r\nHost: local\r\n" + c.frame;
+    Q4T_CHECK(send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL) ==
+                static_cast<ssize_t>(wire.size()));
+    HttpBodyBudget budget(8192);
+    HttpBodyLease occupied(budget), lease(budget);
+    if (c.occupied) Q4T_CHECK(occupied.Acquire(c.occupied));
+    HttpRequestHeaders headers;
+    std::string method, target, body;
+    int status = 0;
+    const bool ok = ReadHttpRequest(
+        fd[1], &method, &target, &body, 500, &lease, &status, &headers, [&] {
+          headers.body_limit = c.admitted_limit;
+          return true;
+        });
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(!ok && status == c.status && body.empty());
+    Q4T_CHECK(budget.Used() == c.occupied);
+    Q4T_CHECK(headers.failure ==
+                (c.status == 413 ? HttpReceiveFailure::kBodyTooLarge
+                                 : HttpReceiveFailure::kBodyCapacity));
+  }
+  return true;
+}
 
 Q4T_TEST(http_conversation_routes_are_scoped_business_operations) {
   using namespace q4t::server;

@@ -3,6 +3,22 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/asr_request.h
+  src/server/asr_request.cpp
+  include/q4t/server/asr_response.h
+  src/server/asr_response.cpp
+  src/server/chat_asr.cpp
+  src/server/chat_asr_execution.cpp
+  include/q4t/audio/asr_config.h
+  src/audio/asr_config.cpp
+  include/q4t/trace/sha256.h
+  src/trace/sha256.cpp
+  include/q4t/audio/asr_layout.h
+  src/audio/asr_layout.cpp
+  include/q4t/audio/asr_model.h
+  src/audio/asr_model.cu
+  include/q4t/audio/features.h
+  src/audio/features.cpp
   include/q4t/runtime/prefill_kernels.h
   include/q4t/model/linear.h
   src/model/full_attention.cu
@@ -122,6 +138,14 @@ set(protocol_inputs
   src/model/embedding_model.cu
   include/q4t/server/embedding_assets.h
   src/server/embedding_assets.cpp
+  include/q4t/server/model_assets.h
+  include/q4t/server/asr_assets.h
+  src/server/model_assets_protocol.h
+  src/server/model_assets.cpp
+  src/server/asr_assets.cpp
+  include/q4t/server/asr_service.h
+  src/server/asr_service.cpp
+  src/server/chat_asr_backend.cpp
   include/q4t/model/model_head.h
   src/model/model_head.cu
   src/server/responses_execution_moderation.cpp
@@ -259,6 +283,11 @@ set(protocol_inputs
   src/server/file_image.cpp
   include/q4t/server/file_webp.h
   include/q4t/server/file_video.h
+  include/q4t/server/file_audio.h
+  src/server/file_audio_protocol.h
+  src/server/file_audio.cpp
+  src/server/file_audio_worker.cpp
+  src/server/media_codec_runtime.h
   src/server/file_webp_protocol.h
   src/server/file_webp.cpp
   src/server/file_video.cpp

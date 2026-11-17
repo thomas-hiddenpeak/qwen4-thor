@@ -114,6 +114,9 @@ def prepare(args):
         native_receipt=out/'native-build.json', native_ingress=original/'bin/q4t-ingress',
         capacity_config=dict(version=1), application_state=application,
         embedding_model_dir=Path(base['settings']['native_embedding']['directory']),
+        asr_model_dir=(Path(base['settings']['native_asr']['directory'])
+                       if base['settings'].get('native_asr') else None),
+        asr_limits=base['settings'].get('native_asr', {}).get('limits'),
         recovery_profiles=args.registry, recovery_profile_policy=policy)
     engine.save(out/'receipt.json', receipt)
     qualification = engine.read(args.registry.parent.parent/'plan.json')

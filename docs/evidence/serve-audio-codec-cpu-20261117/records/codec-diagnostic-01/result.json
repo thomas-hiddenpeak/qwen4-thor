@@ -1,0 +1,12 @@
+{
+  "exit_code": 1,
+  "seconds": 0.11379333166405559,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/codec-diagnostic-01/required.txt"
+  ],
+  "binary_sha256": "1fb1e31c101aed13b0b951cabce2b6a2b91d79569df2579045d042ca47399c36",
+  "test_source_sha256": "4a9500b978456a03837ea12a35a658f8f70340f78b7d8ddf89c0db4f367328ac",
+  "gpu_actions": 0
+}

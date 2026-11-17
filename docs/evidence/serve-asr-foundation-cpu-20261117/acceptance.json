@@ -1,0 +1,46 @@
+{
+  "status": "PASS_NATIVE_ASR_FOUNDATION_CPU_ONLY",
+  "cpu_tests": 24,
+  "cpu_seconds": 2.5710901035927236,
+  "asset_bytes": 1880618159,
+  "asset_seconds": 1532.4174643401057,
+  "asset_revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+  "model_actions": 0,
+  "http_verified": false,
+  "whole_audio_task_complete": false,
+  "reference_failure_preserved": true,
+  "configuration_build_failures_preserved": true,
+  "inventory_initial_failure_preserved": true,
+  "default_unchanged": true,
+  "protected_default": {
+    "build/q4t": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db/q4t",
+      "sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376"
+    },
+    "build/q4t.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db/q4t.release.json",
+      "sha256": "be524fc27fdf626b4bee5173f092edd464c5a3d9678a233704bd49c95e283806"
+    },
+    "build/service/manifest.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-maintenance-20261117/candidate-02/bundle/manifest.json",
+      "sha256": "82e625f293255134244fe8dd2222943a51a604cdc67e583b20ec3ebf5721dee2"
+    },
+    "build/service.release.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e88291fa12a36bed2404e43835bc1eda51ffcc775d0e21dee3d488d6f3e0d0db/service.release.json",
+      "sha256": "891747c7bb1086818acc0fa6540ffacc175a1ccd3d71834f1b0d8158772716ec"
+    },
+    "build/service-native-state/ledger.json": {
+      "target": "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json",
+      "sha256": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    }
+  },
+  "archive_sha256": "a1fbcb1ca285a5d871244023e8e3b6607050b58d88148dcac0e464201e9af12c",
+  "files": 77,
+  "secret_scan_matches": 0,
+  "binaries": {
+    "config_public": "02057c6e0d57f8d117010273568f3b57de519d9001761255d9958edeace5ca38",
+    "config_actual": "02057c6e0d57f8d117010273568f3b57de519d9001761255d9958edeace5ca38",
+    "tokenizer": "95ecf2679481969e12960eabfb0fa6ca58c85f63fc16e2cbf531b69e004460bd",
+    "features": "c4a6141355eb34a55d796abc8907f42fd9cca5b51302cea882b1218e84120106"
+  }
+}

@@ -1,0 +1,37 @@
+{"layer": 0, "checks": 68, "violations": 0}
+{"layer": 1, "checks": 136, "violations": 0}
+{"layer": 2, "checks": 204, "violations": 0}
+{"layer": 3, "checks": 272, "violations": 0}
+{"layer": 4, "checks": 340, "violations": 0}
+{"layer": 5, "checks": 408, "violations": 0}
+{"layer": 6, "checks": 476, "violations": 0}
+{"layer": 7, "checks": 544, "violations": 0}
+{"layer": 8, "checks": 612, "violations": 0}
+{"layer": 9, "checks": 680, "violations": 0}
+{"layer": 10, "checks": 748, "violations": 0}
+{"layer": 11, "checks": 816, "violations": 0}
+{"layer": 12, "checks": 884, "violations": 0}
+{"layer": 13, "checks": 952, "violations": 0}
+{"layer": 14, "checks": 1020, "violations": 0}
+{"layer": 15, "checks": 1088, "violations": 0}
+{"layer": 16, "checks": 1156, "violations": 0}
+{"layer": 17, "checks": 1224, "violations": 0}
+{"layer": 18, "checks": 1292, "violations": 0}
+{"layer": 19, "checks": 1360, "violations": 0}
+{"layer": 20, "checks": 1428, "violations": 0}
+{"layer": 21, "checks": 1496, "violations": 0}
+{"layer": 22, "checks": 1564, "violations": 0}
+{"layer": 23, "checks": 1632, "violations": 0}
+{"layer": 24, "checks": 1700, "violations": 0}
+{"layer": 25, "checks": 1768, "violations": 0}
+{"layer": 26, "checks": 1836, "violations": 0}
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/decoder_operand_review.py", line 240, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/decoder_operand_review.py", line 211, in main
+    swiglu(gate, up, read('gate', t, 3072))
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/decoder_operand_review.py", line 136, in swiglu
+    assert np.isfinite(nearest).all(), 'review overflow separately'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: review overflow separately

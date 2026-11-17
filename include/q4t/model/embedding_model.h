@@ -62,6 +62,13 @@ class EmbeddingRun {
                                std::span<const int32_t> tokens,
                                void* workspace, size_t bytes,
                                cudaStream_t stream = nullptr);
+  // Shared dense Qwen3 computation for an already prepared device sequence.
+  // ASR supplies its own token table and audio embeddings; no embedding
+  // endpoint vocabulary limit or implicit EOS is applied to this path.
+  EmbeddingComputeResult BeginEmbeddings(
+      const EmbeddingDeviceWeights& weights,
+      std::span<const uint16_t> device_hidden, void* workspace, size_t bytes,
+      cudaStream_t stream = nullptr);
   EmbeddingComputeResult NextLayer(cudaStream_t stream = nullptr);
   // LAST after final RMSNorm, BF16 output. Existing endpoint serialization
   // applies selected dimensions and L2 in FP32, shared with other backends.

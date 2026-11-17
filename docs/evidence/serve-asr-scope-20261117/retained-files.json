@@ -1,0 +1,23 @@
+{
+  "service-http-03/initial-config.http.json": "e6565cd0c3043fb02b3a2cc0890b345e47b66de3a45886fdb84bacdc67cf3241",
+  "service-http-03/missing-weights.http.json": "c9e24057522c9d48eac903b6b1b2167455d84990ac4d238df592b9182d025a54",
+  "service-http-03/model-identity.json": "64cb9bbd39eb78e1b8b29bd3f74f06ef9a518ffde9fa408d94b62e08985364a7",
+  "service-http-03/result.json": "06ddc97797396fcb1065f71ca6169b02f0bea6538dbfd0502d503044b9adc682",
+  "service-http-03/initial-capabilities.wire": "63da3da94f8959213df0ef9afce378ee176751c5c0e26121ee1c188e203c9a56",
+  "service-http-03/config.json": "3be25b361db928b134e7ad0536998045ae7946f0392813341e66e14fac915cd1",
+  "service-http-03/initial-capabilities.http.json": "53c02a1b8372329c38a6cb89c9453c106d6daf718ebca93229404338fdce1681",
+  "service-http-03/counts.json": "8e996257cf75364ff8bc19d1bc743a144ba6ab5a5104b6d0915be4413ba6945b",
+  "service-http-03/plan.json": "ddfff19d2990b10e36a600d92948f84844accedd18949fd04480afe3338ae96f",
+  "service-http-03/missing-weights.wire": "c0c3337f0e425071e6ec5d9a836cd2c57b77f225c23e94698856f38017717f42",
+  "service-http-03/model-command.json": "c1f4c3b3ca40b4469e92b70717ad3180aebea8fd75147ccbaea131d7718f9aaf",
+  "service-http-03/model.log": "960554e5183f629d341a9786f28ec491baada65d3da523b448e00c297c989a34",
+  "service-http-03/models.json": "ceb4aa18820c13587ffeac1552720a8754c7457c38f90aa3cbe66bab76daa4ed",
+  "service-http-03/capabilities.json": "c994019e0724b8b5fdcf9dfeb0100dcefd9a1cabfd7237782d6c3ce5b3dc7288",
+  "service-http-03/initial-config.wire": "0a586d717ef0f5c46a30a9058a4fdec344c5975c2b9102dcc07b38738d34a1a5",
+  "service-http-03/initial-models.http.json": "7e91226acaa1b55f674c15db64430a874567ff00e1eff85fd331a04d00d3f4cc",
+  "service-http-03/cleanup.json": "534bb22c4a9836ab3c0a7fca269a0b09dc6e4247f107d85c8f00b82f7515a255",
+  "service-http-03/initial-models.wire": "c10b1b353f0bfb3ebb51822aa57d91e48037a1f0d1c8a1bdaf375a1779adbd20",
+  "service-http-03/lease/nvml-queries.jsonl": "ba2c777741331594aa3e79bd367bc4bb0d036fdd80e1d3d75e5300e04570e191",
+  "service-http-03/lease/events.jsonl": "d583f00ae6c5cc92612ad4264940dfa365e3271d1b5f67dd3958c1e8542940eb",
+  "service-http-03/lease/exit.json": "31c151cb89b2ae431182cbf151aceb663747d034506960adbc6d59f3dd43f4d6"
+}

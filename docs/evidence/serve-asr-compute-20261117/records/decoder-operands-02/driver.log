@@ -1,0 +1,2 @@
+{"layer": 27, "checks": 69, "violations": 0}
+{"status": "OPERAND_REVIEW_ONLY", "original_gate_accepted": false, "thresholds_changed": false, "all_checks_pass": true, "seconds": 1.9686601129360497, "gpu_calls": 0, "full_model_loads": 0, "requested_layers": [27, 28], "full_28_layers_checked": false, "source_sha256": "c77d3f7fd754d55b05acbe7aec0b2883bee56d7516532e8f22e99009393071f8", "norm_rope_checker_sha256": "24319727cac92b875c9b0ba9db5350948846227b857f19b0f4f6463e0146d4e7"}

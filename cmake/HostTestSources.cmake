@@ -4,6 +4,19 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_protocol_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/asr_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/model/embedding_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program_plan.cpp
@@ -90,11 +103,14 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_affine_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_projective_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_video_detail_test.cpp

@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "839",
+    "Connection": "keep-alive",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-c23ce29a40591ed07ffa18877ac4c1f5"
+  },
+  "chunked": true,
+  "cancel": false
+}
