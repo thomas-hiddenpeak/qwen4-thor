@@ -1,0 +1,10 @@
+{
+  "status": "PASS_NATIVE_VIDEO_PROJECTIVE_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 40
+  },
+  "seconds": 47.79454021900892,
+  "binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376"
+}

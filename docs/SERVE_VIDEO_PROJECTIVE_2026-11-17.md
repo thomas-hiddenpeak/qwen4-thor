@@ -50,3 +50,13 @@
 当前实现与针对性用例已准备，独立Fraction/Gauss-Jordan oracle生成
 完成；20项针对性CPU及必要构建已通过，见[证据](evidence/serve-video-projective-cpu-20261117/README.md)。
 GPU业务尚未运行，下一步按冻结预算执行。
+
+## 真实业务后的发行组合合同
+
+原1启动4生成已接受，49.230秒严格租约，原始输入/输出和完整清理
+[证据保留](evidence/serve-video-projective-business-20261117/README.md)。
+继续最多4启动16外部请求900秒：主/轻2启动10请求，两个精确保留
+控制包各1启动3请求（含自检）；验证相同引擎的既有profile合同、
+新透视SSE/存储/客户端隔离及局部错误后同PID文本。控制器/原生
+helper未变的恢复证据按身份复用，不重复故障矩阵。随后STOPPED
+可回退发布，预算/历史/停止意图保持；day交接重新冻结但不运行。

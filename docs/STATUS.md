@@ -25,7 +25,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 完成19项STOPPED发布、实际整根回退与再前进，284.680秒、0新增
 GPU。原预算和周期保持，控制器/native helper/client不变；真实视频、
 主轻及保留组合已验，原质量失败不追认，原234包及长稳计划保留。
-用户day独立交接已prepare/check且未运行；继续PR41实际合main及全部master。
+用户day独立交接已prepare/check且未运行；PR41两组检查通过且
+[已实际合main](evidence/serve-pr41-merged-20261117/README.md)（`6e976419`），全部master继续。
 
 前驱[rev234原生网页交付](evidence/serve-web-search-delivery-20261117/README.md)
 完成19项STOPPED发布、实际整根回退与再前进，284.889秒、0新增
@@ -120,6 +121,12 @@ PR #22基础已合main（`ea0ad39a`）。PR #23的`17d8dbe2`两组CI全部通过
 [合并回执](evidence/serve-pr26-merged-20261113/README.md)保留；程序调用已在rev126交付并通过PR27实际合main；全部master继续。
 
 ## 最近完成的实现和验证
+
+[有限透视真实业务接受](evidence/serve-video-projective-business-20261117/README.md)：
+1启动4生成、49.230秒严格租约，47项NVML正常、完整清理；非单位w
+JSON、透视SSE、删除原上传后的冻结历史、奇异请求后同PID普通
+文本42均通过。默认rev244保持，继续主轻/保留组合和可回退交付；
+保留服务驱动4项CPU通过。PR41已实际合main（6e976419），全部master仍active。
 
 [有限透视CPU接受](evidence/serve-video-projective-cpu-20261117/README.md)：
 16项新CPU及4项直接回归全过，1.038秒；独立有理数逐像素、真实

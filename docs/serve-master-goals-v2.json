@@ -2403,7 +2403,7 @@
         "detail_cpu_evidence": "docs/evidence/serve-video-detail-cpu-20261117/README.md"
       },
       "video_affine_detail_20261117": {
-        "state": "delivered_main_pending",
+        "state": "delivered_main_merged",
         "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
         "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
         "whole_task_complete": false,
@@ -2411,10 +2411,12 @@
         "pull_request": 41,
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md",
+        "main_commit": "6e976419c8b3f1fc3bb30c989ca0e4ec07ede1ff",
+        "main_evidence": "evidence/serve-pr41-merged-20261117/README.md"
       },
       "video_projective_20261117": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_composition_pending",
         "plan": "SERVE_VIDEO_PROJECTIVE_2026-11-17.md",
         "cpu_new_limit": 16,
         "cpu_regressions": 4,
@@ -2426,7 +2428,18 @@
         "tests_executed": true,
         "whole_task_complete": false,
         "cpu_evidence": "evidence/serve-video-projective-cpu-20261117/README.md",
-        "candidate_engine_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376"
+        "candidate_engine_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+        "business_evidence": "evidence/serve-video-projective-business-20261117/README.md",
+        "actual_business": {
+          "starts": 1,
+          "requests": 4,
+          "strict_lease_seconds": 49.230062146205455
+        },
+        "composition_limit": {
+          "starts": 4,
+          "requests": 16,
+          "seconds": 900
+        }
       }
     },
     {
@@ -5527,7 +5540,7 @@
     }
   ],
   "next_task": "A10",
-  "next": "Implement native finite projective/non-unit homogeneous video display and v5 replay; PR41 independently awaits final-head checks/main merge. Continue all master tasks.",
+  "next": "Complete exact projective primary/light and retained service qualification, reversible delivery and actual main merge; continue all master tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

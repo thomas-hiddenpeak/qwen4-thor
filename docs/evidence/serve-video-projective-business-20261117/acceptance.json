@@ -1,0 +1,107 @@
+{
+  "status": "ACCEPT_NATIVE_VIDEO_PROJECTIVE_BUSINESS",
+  "binary_sha256": "7f25058dbfa3163e7faf17280c72cdfe81c0046c090127cf1c4f438aec444376",
+  "source_commit": "88f547b1a0a89488e6012fbef5d57d011a5b5d96",
+  "accepted_starts": 1,
+  "accepted_requests": 4,
+  "cumulative_starts": 1,
+  "cumulative_requests": 4,
+  "cumulative_lease_seconds": 49.230062146205455,
+  "cumulative_wrapper_seconds": 49.31231914181262,
+  "nvml_ok_samples": 47,
+  "cleanup_complete": true,
+  "cleanup": {
+    "owned": {
+      "3975939": {
+        "state": "R",
+        "ppid": 3975927,
+        "pgid": 3975927,
+        "start_ticks": 307091930,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/candidate-01/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18186",
+          "--mtp",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--mtp-k",
+          "3",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048",
+          "--memory-recovery-margin-mib",
+          "512",
+          "--startup-memory-headroom-mib",
+          "2048",
+          "--request-deadline-ms",
+          "1200000",
+          "--allow-media",
+          "--operations-port",
+          "18187",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/business-01/objects"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-video-projective-20261117/candidate-01/q4t"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "default_unchanged": true,
+  "stage_sources_verified": 1410,
+  "runtime_accepted": true,
+  "business": {
+    "starts": 1,
+    "creates": 4,
+    "answers": {
+      "homogeneous": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      },
+      "perspective": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      },
+      "replay": {
+        "top_left": "red",
+        "top_right": "green",
+        "bottom_left": "blue",
+        "bottom_right": "yellow",
+        "layout": "landscape"
+      }
+    },
+    "input_count_matches": true,
+    "source_deleted_before_replay": true,
+    "singular_request_rejected": true,
+    "same_model_pid": true,
+    "ordinary_text_answer": "42",
+    "full_quality_or_performance_claim": false
+  },
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "service_delivery_pending": true,
+  "master_complete": false,
+  "archive_sha256": "36b986d4824717b57f64c9df6b3268f9988819dc71f6b372c8b12b16ace61edb"
+}
