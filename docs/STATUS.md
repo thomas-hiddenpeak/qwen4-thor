@@ -7,6 +7,29 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[已注册音色Speech/Chat持久闭环通过](evidence/serve-voice-chat-fix-20261119/README.md)：
+修复Chat旧入口无条件拒绝ID，5 CPU通过；续验1启动/7POST/69.279秒，
+独立ASR、跨客户/撤销、历史及核心42通过，原11POST失败保留。复用
+成功注册与Speech证据，940来源锚点/17负控。默认rev316不变，继续
+SDK/TLS、profile、受监护恢复和保存状态回退；听感与完整音色质量待验。
+
+Voice HTTP第5轮完成授权/注册和Base Speech独立ASR，但Chat旧入口
+无条件拒绝voice.id，11POST/78.854秒后失败，原记录和状态保留。
+已修复为同客户实时授权校验，合成前再次检查撤销；内置音色保护保持。
+冻结5项直接CPU/60秒，再复用已注册状态做1启动/7POST/600秒续验，
+覆盖Chat正向/跨客户/撤销及独立ASR、历史和核心；不重新合成录音。
+
+aiden固定一次对照两段自然EOS，生产单声纹均通过，跨录音0.805486，
+混声拒绝；67.786秒/2 Speech，原ryan失败保留。冻结复用原WAV完整
+Voice HTTP续验：1主模型/14业务POST/1200秒；原授权ASR、跨客户/异声/
+配额、Base新文本Speech/Chat独立ASR、持久快照、撤销和核心42全部保持。
+同时检查C04动态错误日志；不重新生成录音，不更改0.65门。
+
+冻结第二内置音色对照：aiden原授权/样本文字各合成一次，保留原seed/
+200帧预算；1主模型、2 Speech POST、1 speaker/1CPU VAD、600秒，
+原生检查两录音及aiden+既有vivian混声，0.65门不变。复用已对齐
+声纹算术，不重新生成ryan失败、不搜索seed；ASR和完整注册另须通过。
+
 [Base实际profile驱动12项CPU通过](evidence/serve-voice-profile-driver-cpu-20261119/README.md)：
 2.517秒/0GPU，真实ID和无提示ASR路径、错误成功/错转录/缺历史拒绝，
 固定录音与3客户准入及请求边界通过；940来源锚点/17负控。驱动具备，

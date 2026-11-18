@@ -1,0 +1,8 @@
+{
+  "anchors": 940,
+  "mutations": 17,
+  "errors": [],
+  "reviewed": [
+    "src/server/chat_generation.cpp"
+  ]
+}

@@ -2699,7 +2699,7 @@
     "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "ac2a707fd7b5fe484476c94c34a66ab2076afb89910ad0d3ce9902281e6fcc6b",
+    "src/server/chat_generation.cpp": "97419f149c6cf6bdabf30377a0f67f27b525e6655eb926994109e544b81939de",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "f095c7187911c4779abb05efe0bcfb5a243fc454c3aadcbd0474ae86bf7fa487",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",

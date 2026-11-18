@@ -1,0 +1,8 @@
+{
+  "status": "ARCHIVE_CHECK_FAILED",
+  "reason": "expected exactly two Chat failures but counted the separate revoked-consent GET too",
+  "observed_terminal_object_not_found": 3,
+  "expected_chat_only": 2,
+  "no_business_failure": true,
+  "no_rerun": true
+}

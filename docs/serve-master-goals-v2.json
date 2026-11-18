@@ -8627,17 +8627,16 @@
         "evidence": "evidence/serve-custom-voice-service-cpu-20261118/README.md",
         "cpu_contracts": 27,
         "gpu_loads": 0,
-        "engine_sha256": "0d1ca22b5268c9fef7965cef8f6140370077a04b28c42a111290155d2c67e1be",
+        "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
         "runtime_http_qualified": false,
         "remaining": [
-          "real consent and sample HTTP, different speaker and wrong phrase negatives",
-          "new target text Speech/Chat plus independent ASR",
-          "scoped restart/revocation, SDK and TLS",
+          "SDK/TLS and primary/light profiles",
           "managed package and preserved-state compatible rollback",
+          "Base-only existing registered voice qualification",
           "reference audio ICL, prompt voices and Live",
           "listening and speaker similarity"
         ],
-        "latest_evidence": "evidence/serve-voice-identity-diagnostic-20261119/README.md",
+        "latest_evidence": "evidence/serve-voice-chat-fix-20261119/README.md",
         "speaker_diagnosis": {
           "native_vectors": 18,
           "official_cpu_vectors": 18,
@@ -8672,6 +8671,18 @@
           "threshold_unchanged": 0.65,
           "original_synthetic_failure_retained": true,
           "runtime_http_qualified": false
+        },
+        "registered_sample_http_qualified": true,
+        "registered_sample_scope_restart_revoke": true,
+        "chat_entry_fix": true,
+        "original_failures_preserved": true,
+        "second_voice_diagnosis": {
+          "voice": "aiden",
+          "single_shot": true,
+          "same_voice_cosine": 0.80548604298,
+          "mixed_voice_rejected": true,
+          "threshold": 0.65,
+          "original_ryan_failure_retained": true
         }
       }
     }
