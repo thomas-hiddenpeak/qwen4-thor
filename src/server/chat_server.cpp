@@ -1,4 +1,5 @@
 #include "q4t/server/web_execution.h"
+#include "q4t/server/tts_assets.h"
 #include "q4t/mtp/subset_head.h"
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
@@ -83,6 +84,9 @@ ChatServer::~ChatServer() {
   release(d_prefill_logits_, "shutdown.prefill_logits");
   release(d_embedding_weights_, "shutdown.native_embedding_weights");
   embedding_ready_.store(false);
+  release(d_tts_talker_, "shutdown.native_tts_talker");
+  release(d_tts_codec_, "shutdown.native_tts_codec");
+  tts_health_.Released();
   release(d_asr_weights_, "shutdown.native_asr_weights");
   asr_health_.Released();
   release(d_aligner_weights_, "shutdown.native_aligner_weights");
@@ -361,6 +365,26 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
                                   512ULL * 1024 * 1024 +
                                   size_t(opts.max_seq) * embedding.bytes;
+      }
+      if (!opts.tts_model_dir.empty()) {
+        TtsResourcePlan tts;
+        s = PlanTtsServiceResources(opts.tts_limits,
+                                    opts.tts_limits.max_text_tokens,
+                                    opts.tts_limits.max_prefill_tokens,
+                                    opts.tts_limits.max_frames, &tts);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        // Synthesis/tempo/encoder workspaces live only while holding a sequence
+        // slot. Finite HTTP/1.0 or Chat output may outlive that slot, bounded
+        // separately by the admitted request's output ceiling.
+        breq.extra_fixed_bytes +=
+            tts.load_peak_bytes +
+            uint64_t(opts.max_seq) *
+                (tts.request_device_bytes + tts.request_host_bytes) +
+            uint64_t(admission.inflight) *
+                (6ULL * opts.tts_limits.max_output_mib * (1ULL << 20));
       }
       if (!opts.asr_model_dir.empty()) {
         AsrResourcePlan asr;
@@ -775,6 +799,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!embedding_model_dir_.empty()) {
     s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
                                      static_cast<int64_t>(std::time(nullptr)));
+    if (!s) return s;
+  }
+  tts_model_dir_ = opts.tts_model_dir;
+  tts_limits_ = opts.tts_limits;
+  tts_health_.Configure(!tts_model_dir_.empty());
+  if (!tts_model_dir_.empty()) {
+    s = tts_catalog_.Configure(kNativeTtsModel, {},
+                               static_cast<int64_t>(std::time(nullptr)));
     if (!s) return s;
   }
   asr_model_dir_ = opts.asr_model_dir;

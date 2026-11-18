@@ -1,3 +1,4 @@
+#include "q4t/io/base64.h"
 #include "mcp_provider_common.h"
 
 #include <algorithm>
@@ -129,24 +130,8 @@ ObjectReply Result(Json value, Json content, Json* result) {
 }
 std::string Base64(std::string_view bytes) {
   if (bytes.size() > kBytes) return {};
-  // Same canonical encoding as the existing file-input/media path. Keep this
-  // byte conversion independent of the optional dynamically loaded TLS code.
-  constexpr char alphabet[] =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   std::string encoded;
-  encoded.reserve((bytes.size() + 2) / 3 * 4);
-  for (size_t i = 0; i < bytes.size(); i += 3) {
-    const auto a = static_cast<unsigned char>(bytes[i]);
-    const auto b =
-        i + 1 < bytes.size() ? static_cast<unsigned char>(bytes[i + 1]) : 0;
-    const auto c =
-        i + 2 < bytes.size() ? static_cast<unsigned char>(bytes[i + 2]) : 0;
-    encoded += alphabet[a >> 2];
-    encoded += alphabet[((a & 3) << 4) | (b >> 4)];
-    encoded +=
-        i + 1 < bytes.size() ? alphabet[((b & 15) << 2) | (c >> 6)] : '=';
-    encoded += i + 2 < bytes.size() ? alphabet[c & 63] : '=';
-  }
+  if (!io::EncodeBase64(bytes, (kBytes + 2) / 3 * 4, &encoded)) return {};
   return encoded;
 }
 ObjectReply DecodeBase64Url(std::string_view value, std::string* bytes) {

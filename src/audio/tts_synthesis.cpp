@@ -27,7 +27,8 @@ TtsComputeResult TtsSynthesisRun::Begin(
     const TtsPrompt& prompt, size_t max_frames, size_t chunk_frames,
     const TtsSampling& sampling, const TtsSampling& predictor_sampling,
     uint64_t seed, std::span<uint8_t> generation_workspace,
-    std::span<uint8_t> codec_workspace, cudaStream_t stream) {
+    std::span<uint8_t> codec_workspace, cudaStream_t stream,
+    bool defer_decode_until_eos) {
   if (stage_ != Stage::kInactive || !chunk_frames ||
       chunk_frames > TtsCodecConfig::kChunkFrames ||
       !Disjoint(generation_workspace, codec_workspace))
@@ -44,6 +45,7 @@ TtsComputeResult TtsSynthesisRun::Begin(
   codec_weights_ = &codec_weights;
   codec_workspace_ = codec_workspace;
   chunk_frames_ = chunk_frames;
+  defer_decode_until_eos_ = defer_decode_until_eos;
   stage_ = Stage::kGenerate;
   return {};
 }
@@ -68,7 +70,8 @@ TtsComputeResult TtsSynthesisRun::Advance(cudaStream_t stream) {
   if (generation_.at_limit() && !generation_.ended())
     return Record(Invalid("TTS output frame budget exhausted before EOS"));
   const size_t pending = generation_.frames() - emitted_frames_;
-  if (pending >= chunk_frames_ || (generation_.ended() && pending)) {
+  if ((!defer_decode_until_eos_ && pending >= chunk_frames_) ||
+      (generation_.ended() && pending)) {
     pending_frames_ = std::min(pending, chunk_frames_);
     const size_t history =
         std::min(emitted_frames_, TtsCodecConfig::kLeftContext);

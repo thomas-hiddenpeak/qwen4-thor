@@ -435,8 +435,7 @@ bool HttpResponseContext::WritePayload(
 bool HttpResponseContext::FinishResponse() {
   StopHeartbeats();
   const std::lock_guard<std::mutex> lock(write_mu_);
-  if (!keep_alive_ || framing_finished_ ||
-      write_failure_.reason != HttpWriteFailure::kNone ||
+  if (framing_finished_ || write_failure_.reason != HttpWriteFailure::kNone ||
       (state_ != ResponseState::kComplete &&
        !(state_ == ResponseState::kTerminal && terminal_written_)))
     return false;
@@ -451,7 +450,7 @@ bool HttpResponseContext::FinishResponse() {
     }
   }
   framing_finished_ = true;
-  return true;
+  return keep_alive_;
 }
 
 bool HttpResponseContext::Write(const char* data, size_t size,
@@ -583,6 +582,32 @@ bool BeginStreamingResponse(int fd, ResponseState* state,
 
 bool WriteAll(int fd, const std::string& s, const WriteOptions& options) {
   return WriteAll(fd, s.data(), s.size(), options);
+}
+
+bool BeginBinaryStreamResponse(int fd, std::string_view content_type,
+                               const WriteOptions& options) {
+  auto* context = HttpResponseContext::Current(fd);
+  if (!context || !context->Http11() || context->CapturesJson() ||
+      *context->State() != ResponseState::kUnsent)
+    return false;
+  if (content_type != "audio/mpeg" && content_type != "audio/aac" &&
+      content_type != "audio/ogg" && content_type != "audio/flac" &&
+      content_type != "audio/wav" && content_type != "audio/pcm" &&
+      content_type != "application/octet-stream")
+    return false;
+  const std::string header =
+      "HTTP/1.1 200 OK\r\nContent-Type: " + std::string(content_type) +
+      "\r\nTransfer-Encoding: chunked\r\nCache-Control: no-store\r\n" +
+      RequestIdHeader(fd) +
+      (context->KeepAlive() ? "Connection: keep-alive\r\n\r\n"
+                            : "Connection: close\r\n\r\n");
+  ServeFaultPoint("handler.before_header");
+  *context->State() = ResponseState::kHeadersStarted;
+  if (!context->Write(header.data(), header.size(), options, context->State()))
+    return false;
+  context->StartBinaryChunkedBody();
+  ServeFaultPoint("handler.after_header");
+  return true;
 }
 
 bool SendSimple(int fd, int code, const char* status, const std::string& body,

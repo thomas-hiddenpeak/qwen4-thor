@@ -21,6 +21,7 @@ struct TtsPrompt {
   std::vector<int32_t> trailing_text;
   int32_t pad_index = 0;
 };
+int TtsBuiltinVoiceId(std::string_view voice);
 
 // Inputs are literal BPE content from the TTS tokenizer (special recognition
 // disabled). Structural role/turn markers are inserted here, not by callers.

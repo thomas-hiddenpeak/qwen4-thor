@@ -261,6 +261,7 @@ def current_surface(root):
                        root / "src/io/json.cpp", root / "include/q4t/io/json.h",
                        root / "src/trace/sha256.cpp",
                        root / "include/q4t/trace/sha256.h",
+                       root / "include/q4t/io/base64.h",
                        root / "src/model/model_head.cu",
                        root / "include/q4t/model/model_head.h",
                        root / "src/text/tokenizer.cpp",

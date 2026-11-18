@@ -56,6 +56,10 @@ add_executable(q4t_speech_encode_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/src/server/speech_encode.cpp
   ${tts_test_root}/src/server/speech_encode_worker.cpp
   ${tts_test_root}/src/server/speech_codec_stream.cpp
+  ${tts_test_root}/src/server/speech_output.cpp
+  ${tts_test_root}/tests/server_speech_output_test.cpp
+  ${tts_test_root}/tests/pcm_output_test.cpp
+  ${tts_test_root}/src/audio/speech_tempo.cpp
   ${tts_test_root}/src/server/speech_codec_stream_worker.cpp
   ${tts_test_root}/tests/server_speech_codec_stream_test.cpp
   ${tts_test_root}/src/server/speech_request.cpp

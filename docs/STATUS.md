@@ -7,6 +7,31 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speech HTTP CPU资格](evidence/serve-speech-http-cpu-20261118/README.md)已归档。
+后续实际业务范围固定为同一严格租约1次核心/TTS/codec加载、
+13条POST（8发声、2资产失败、1取消、2核心Chat）、3次独立ASR
+加载，1200秒/64MiB产物/512MiB磁盘余量。六格式、双SDK/SSE、
+缺资产恢复与取消、原文内容及回收须全部满足；不做性能矩阵。
+候选单独保留，默认rev306不变；随后继续其余总计划。
+
+Speech HTTP接入24项CPU全过（0.915秒，0GPU），引擎与host必要
+构建零警告；保护的默认rev306及所有受检源码身份不变。继续准备
+实际六格式/双SDK/故障隔离/取消与真实内容短验，未将CPU通过
+计作接口交付。为真实HTTP音频增补只读解码驱动，不重跑模型数值矩阵。
+
+Speech接入CPU范围固定为24项/180秒：原生PCM/WAV及流式编码组合、
+真实RIFF长度、SSE字节/实际usage、二进制完整/失败分块、HTTP1.0与
+受影响会话收尾、TTS容量选项和voice模板、共享base64的文件/MCP
+消费者。0GPU/模型，≤8MiB证据、≥512MiB磁盘；构建不算测试。
+通过后按新驱动冻结真实Speech HTTP短验，不能以CPU通过结束总任务。
+
+Speech实际HTTP接线已成组实现、尚待验证：独立TTS加载/健康、
+统一RAM预算、共享GPU准入、真实token用量/配额、六格式与SSE，
+WAV自然codes结束后再分块解码，HTTP/1.1二进制失败关闭未完帧，
+HTTP/1.0有界缓冲完整体。正在必要构建并冻结直接受影响CPU；
+随后实际GPU/HTTP短验。4倍内容、注册自定义voice、Chat音频历史
+及恢复发行/全部master继续，不将接口源码当验收或默认交付。
+
 [Speech压缩流资格通过](evidence/serve-speech-codec-stream-20261118/README.md)：
 15唯一CPU/16次1.348秒；8条真实中英文流式解码与已验PCM逐字节
 相同，复用ASR内容证据，1.065秒/16worker回收，0新增GPU/HTTP。

@@ -169,6 +169,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_codec_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp

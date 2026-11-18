@@ -17,6 +17,29 @@ void U32(uint32_t value, std::string* out) {
 }
 }  // namespace
 
+Status SpeechWaveHeader(size_t samples, size_t max_output_bytes,
+                        std::string* out) {
+  if (!out || !samples || max_output_bytes < 44 ||
+      samples > (max_output_bytes - 44) / 2 ||
+      samples > (std::numeric_limits<uint32_t>::max() - 36) / 2)
+    return Status::Fail("Speech WAVE length exceeds its byte budget");
+  const auto bytes = static_cast<uint32_t>(samples * 2);
+  std::string result = "RIFF";
+  U32(bytes + 36, &result);
+  result += "WAVEfmt ";
+  U32(16, &result);
+  U16(1, &result);
+  U16(1, &result);
+  U32(24000, &result);
+  U32(48000, &result);
+  U16(2, &result);
+  U16(16, &result);
+  result += "data";
+  U32(bytes, &result);
+  *out = std::move(result);
+  return {};
+}
+
 Status EncodeSpeechPcm(std::span<const float> pcm, bool wave,
                        size_t max_output_bytes, std::string* out) {
   const size_t header = wave ? 44 : 0;
@@ -31,18 +54,8 @@ Status EncodeSpeechPcm(std::span<const float> pcm, bool wave,
   std::string result;
   result.reserve(bytes + header);
   if (wave) {
-    result += "RIFF";
-    U32(static_cast<uint32_t>(bytes + 36), &result);
-    result += "WAVEfmt ";
-    U32(16, &result);
-    U16(1, &result);  // PCM, one channel.
-    U16(1, &result);
-    U32(24000, &result);
-    U32(48000, &result);
-    U16(2, &result);
-    U16(16, &result);
-    result += "data";
-    U32(static_cast<uint32_t>(bytes), &result);
+    const auto status = SpeechWaveHeader(pcm.size(), max_output_bytes, &result);
+    if (!status) return status;
   }
   for (const auto value : pcm) {
     const auto sample =

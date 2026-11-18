@@ -207,3 +207,29 @@ Speech SSE按固定OpenAI官方.NET schema的`audio/models.tsp`接线，
 901来源/12负控、零警告；尾随字节分类修正及首个驱动失败保留。
 默认rev306保持；继续实际Speech/Chat、恢复发行及全部master，
 4倍内容问题仍待解决，组件通过不能替代接口交付。
+
+## Speech服务接线
+
+Speech实际HTTP接线已成组实现、尚待验证：独立TTS加载/健康、
+统一RAM预算、共享GPU准入、真实token用量/配额、六格式与SSE，
+WAV自然codes结束后再分块解码，HTTP/1.1二进制失败关闭未完帧，
+HTTP/1.0有界缓冲完整体。正在必要构建并冻结直接受影响CPU；
+随后实际GPU/HTTP短验。4倍内容、注册自定义voice、Chat音频历史
+及恢复发行/全部master继续，不将接口源码当验收或默认交付。
+
+首个原生入口按`--tts-model-dir`显式部署，其他五项TTS容量参数
+独立可配。SSE用量为实际投影文本token与接受的codec token，含
+自然EOS及失败前已完成的部分code；预算不计作实际usage。
+压缩依赖保留独立worker，PCM/WAV不需要外部编解码库；WAV长度
+先由自然codes得到，只保留有界codes与分块PCM，非伪造RIFF长度。
+HTTP/1.1完整结束需最后零块，生成/编码/清理失败均不能冒充成功。
+
+## Speech实际HTTP短验范围
+
+`tools/native_tts/http_acceptance.py`固定1次核心/TTS/codec加载、13条
+POST：六格式+双SDK共8发声，资产缺失/冷却2条、取消1条和
+故障期间/取消后核心Chat2条。自然EOS、真实usage、原文内容与
+辅助故障隔离必须通过；完整读取经隔离解码再分3批无提示ASR。
+1200秒，64MiB产物，512MiB磁盘余量；同一严格GPU租约。
+24CPU已过且907来源/12负控通过，不复跑已验数值或性能矩阵。
+本组不认证4倍内容、注册voice或Chat输出；这些继续实施，不删目标。

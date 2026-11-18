@@ -76,6 +76,8 @@ void ChatServer::HandleConfig(int fd) {
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
       R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
+      R"(,"native_tts_health":)" + NativeTtsHealthJson() +
+      R"(,"native_tts_limits":)" + TtsServiceLimitsJson(tts_limits_) +
       R"(,"native_asr_health":)" + NativeAsrHealthJson() +
       R"(,"native_asr_limits":)" + AsrServiceLimitsJson(asr_limits_) +
       R"(,"native_alignment_health":)" + NativeAlignerHealthJson() +

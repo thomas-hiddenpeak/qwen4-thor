@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "q4t/audio/pcm_output.h"
 #include "q4t/server/file_audio.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/speech_codec_stream.h"
@@ -158,15 +159,74 @@ void Run(const fs::path& plan_path, const fs::path& output, bool stream) {
            "\",\"cases\":8,\"gpu_model_loads\":0,\"worker_starts\":16,\"worker_"
            "reaped\":16}\n");
 }
+void DecodeHttp(const fs::path& plan_path, const fs::path& output) {
+  io::Json plan;
+  Require(io::ParseJson(Read(plan_path, 65536), &plan, false,
+                        {.reject_duplicate_keys = true}).ok(),
+          "invalid HTTP audio plan");
+  Require(plan.GetString("schema") == "q4t-speech-http-decode-v1",
+          "HTTP audio schema");
+  const auto* cases = plan.GetArray("cases");
+  Require(cases && !cases->array.empty() && cases->array.size() <= 8,
+          "bounded HTTP audio cases required");
+  Require(!fs::exists(output) && fs::create_directories(output),
+          "fresh HTTP output required");
+  for (size_t index = 0; index < cases->array.size(); ++index) {
+    const auto& item = cases->array[index];
+    auto bytes = Read(item.GetString("path"), 2 << 20);
+    Require(Hash(bytes) == item.GetString("sha256"), "HTTP audio drift");
+    if (item.GetString("format") == "pcm") {
+      Require(bytes.size() % 2 == 0, "whole PCM16 samples required");
+      std::string header;
+      Require(audio::SpeechWaveHeader(bytes.size() / 2, (2 << 20) + 44,
+                                      &header).ok(), "PCM WAV wrapper");
+      bytes = header + bytes;  // Preserve every PCM16 byte; no requantizing.
+    }
+    const auto directory = output / ("case-" + std::to_string(index));
+    Require(fs::create_directory(directory), "fresh HTTP case required");
+    GrammarControl control;
+    control.counters = std::make_shared<GrammarWorkerCounters>();
+    control.compile_deadline = Clock::now() + std::chrono::seconds(5);
+    BinaryAccess access{"test:speech-http", control.compile_deadline, {}};
+    FileAudioLimits limits;
+    limits.max_output_samples = 240000;
+    limits.max_duration_ns = 15000000000ULL;
+    FileAudioPcm decoded;
+    const auto reply = DecodeAudioContainer(bytes, limits, access, &decoded,
+                                            control);
+    Require(reply.ok(), reply.code + ": " + reply.message);
+    Require(!decoded.samples.empty() && decoded.samples.size() <= 240000,
+            "decoded HTTP duration bound");
+    Require(control.counters->started == 1 && control.counters->reaped == 1 &&
+                control.counters->active == 0, "HTTP decoder cleanup");
+    const std::string_view pcm{
+        reinterpret_cast<const char*>(decoded.samples.data()),
+        decoded.samples.size() * sizeof(float)};
+    Save(directory / "pcm.f32", pcm);
+    Save(directory / "decoding.json", OutputJson(decoded.conversion));
+    Save(directory / "result.json",
+         "{\"samples\":" + std::to_string(decoded.samples.size()) +
+             ",\"decoded_sha256\":\"" + Hash(pcm) +
+             "\",\"sample_rate\":16000,\"worker_starts\":1,"
+             "\"worker_reaped\":1}\n");
+  }
+  Save(output / "result.json",
+       "{\"status\":\"PASS_HTTP_DECODE_PENDING_CONTENT\",\"cases\":" +
+           std::to_string(cases->array.size()) + ",\"gpu_model_loads\":0}\n");
+}
 }  // namespace
 int SpeechEncodeReplay(int argc, char** argv) {
   if (argc < 2 || (std::string_view(argv[1]) != "--speech-encode-replay" &&
-                   std::string_view(argv[1]) != "--speech-stream-replay"))
+                   std::string_view(argv[1]) != "--speech-stream-replay" &&
+                   std::string_view(argv[1]) != "--speech-http-decode"))
     return -1;
   try {
     Require(argc == 4, "speech encoding replay PLAN OUTPUT");
-    Run(argv[2], argv[3],
-        std::string_view(argv[1]) == "--speech-stream-replay");
+    if (std::string_view(argv[1]) == "--speech-http-decode")
+      DecodeHttp(argv[2], argv[3]);
+    else
+      Run(argv[2], argv[3],
+          std::string_view(argv[1]) == "--speech-stream-replay");
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n';

@@ -16,7 +16,8 @@ class TtsSynthesisRun {
                          const TtsSampling& predictor_sampling, uint64_t seed,
                          std::span<uint8_t> generation_workspace,
                          std::span<uint8_t> codec_workspace,
-                         cudaStream_t stream = nullptr);
+                         cudaStream_t stream = nullptr,
+                         bool defer_decode_until_eos = false);
   TtsComputeResult Advance(cudaStream_t stream = nullptr);
   // The returned span is device memory. It stays valid until acknowledgement
   // followed by Advance; generation cannot overwrite an unconsumed chunk.
@@ -29,6 +30,7 @@ class TtsSynthesisRun {
   bool ended() const { return generation_.ended(); }
   bool at_limit() const { return generation_.at_limit(); }
   size_t frames() const { return generation_.frames(); }
+  size_t accepted_tokens() const { return generation_.accepted_tokens(); }
   size_t emitted_frames() const { return emitted_frames_; }
   std::span<const TtsCodes> codes() const { return generation_.codes(); }
 
@@ -41,6 +43,7 @@ class TtsSynthesisRun {
   std::span<uint8_t> codec_workspace_;
   size_t chunk_frames_ = 0, emitted_frames_ = 0, pending_frames_ = 0;
   size_t discard_samples_ = 0;
+  bool defer_decode_until_eos_ = false;
   Stage stage_ = Stage::kInactive;
 };
 }  // namespace q4t::audio

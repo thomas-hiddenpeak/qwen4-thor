@@ -1,5 +1,6 @@
 #pragma once
 #include "q4t/server/asr_service.h"
+#include "q4t/server/tts_service.h"
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/speaker_service.h"
 #include "q4t/server/separator_service.h"
@@ -46,6 +47,8 @@ struct ServerOptions {
   std::string model_dir;
   // Explicit optional trained embedding assets; never inferred/downloaded.
   std::string embedding_model_dir;
+  std::string tts_model_dir;
+  TtsServiceLimits tts_limits;
   std::string asr_model_dir;
   AsrServiceLimits asr_limits;
   std::string aligner_model_dir;

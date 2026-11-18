@@ -80,6 +80,87 @@ Q4T_TEST(http_session_json_error_reuse_has_new_context) {
   return true;
 }
 
+Q4T_TEST(http_binary_stream_close_and_reuse_require_success_chunk) {
+  for (bool reuse : {false, true}) {
+    Pair pair;
+    HttpResponseContext context(pair.fd[0]);
+    context.SetKeepAlive(reuse);
+    Q4T_CHECK(BeginBinaryStreamResponse(pair.fd[0], "audio/pcm"));
+    Q4T_CHECK(*context.State() == ResponseState::kHeadersStarted);
+    Q4T_CHECK(WriteAll(pair.fd[0], std::string("\x00\xff", 2)));
+    context.BeforeTerminal();
+    *context.State() = ResponseState::kComplete;
+    Q4T_CHECK(context.FinishResponse() == reuse);
+    Q4T_CHECK(!context.FinishResponse());
+    const auto wire = pair.Take();
+    Q4T_CHECK(wire.find("Content-Type: audio/pcm\r\n") != wire.npos);
+    Q4T_CHECK(wire.find("Transfer-Encoding: chunked\r\n") != wire.npos);
+    std::string decoded;
+    Q4T_CHECK(Decode(wire, &decoded) && decoded == std::string("\x00\xff", 2));
+  }
+  return true;
+}
+
+Q4T_TEST(http_binary_stream_failure_closes_without_json_or_success_chunk) {
+  for (bool exception : {false, true}) {
+    Pair pair;
+    HttpResponseContext context(pair.fd[0]);
+    context.SetKeepAlive(true);
+    Q4T_CHECK(BeginBinaryStreamResponse(pair.fd[0], "audio/mpeg"));
+    Q4T_CHECK(WriteAll(pair.fd[0], "partial"));
+    if (exception)
+      SendExceptionResponse(pair.fd[0], *context.State(),
+                            ExceptionKind::kHostMemory);
+    else
+      SendError(pair.fd[0], 503, "codec failed", {}, "speech_codec_failed");
+    Q4T_CHECK(!context.FinishResponse());
+    const auto wire = pair.Take();
+    std::string decoded;
+    Q4T_CHECK(!Decode(wire, &decoded));
+    Q4T_CHECK(wire.ends_with("7\r\npartial\r\n") &&
+              wire.find("data:") == wire.npos &&
+              wire.find("{\"error\"") == wire.npos);
+  }
+  return true;
+}
+
+Q4T_TEST(http_binary_stream_rejects_http10_and_header_injection_atomically) {
+  Pair pair;
+  HttpResponseContext context(pair.fd[0]);
+  context.SetKeepAlive(true, false);
+  Q4T_CHECK(!BeginBinaryStreamResponse(pair.fd[0], "audio/wav"));
+  context.SetKeepAlive(true);
+  Q4T_CHECK(!BeginBinaryStreamResponse(pair.fd[0], "audio/wav\r\nX: bad"));
+  Q4T_CHECK(*context.State() == ResponseState::kUnsent && pair.Take().empty());
+  Q4T_CHECK(SendSimple(pair.fd[0], 200, "OK", "finite", "audio/wav"));
+  Q4T_CHECK(context.FinishResponse());
+  Q4T_CHECK(pair.Take().find("Content-Length: 6\r\n") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(http_speech_sse_errors_have_no_success_event_or_chat_done) {
+  for (bool exception : {false, true}) {
+    Pair pair;
+    HttpResponseContext context(pair.fd[0]);
+    context.SetKeepAlive(true);
+    context.SetSpeechStream();
+    Q4T_CHECK(BeginStreamingResponse(pair.fd[0], context.State()));
+    if (exception)
+      SendExceptionResponse(pair.fd[0], *context.State(),
+                            ExceptionKind::kHostMemory);
+    else
+      SendError(pair.fd[0], 503, "codec failed", {}, "speech_codec_failed");
+    Q4T_CHECK(context.FinishResponse());
+    std::string decoded;
+    Q4T_CHECK(Decode(pair.Take(), &decoded));
+    Q4T_CHECK(
+        decoded.starts_with("event: error\r\ndata: {\"type\":\"error\",") &&
+        decoded.find("[DONE]") == decoded.npos &&
+        decoded.find("speech.audio.done") == decoded.npos);
+  }
+  return true;
+}
+
 Q4T_TEST(http_session_sse_chunks_serialize_heartbeat_and_terminal) {
   Pair pair;
   HttpResponseContext context(pair.fd[0]);

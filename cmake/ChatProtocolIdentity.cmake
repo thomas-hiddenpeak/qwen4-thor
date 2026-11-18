@@ -371,6 +371,12 @@ set(protocol_inputs
   include/q4t/server/file_audio.h
   include/q4t/server/speech_encode.h
   include/q4t/server/speech_codec_stream.h
+  include/q4t/io/base64.h
+  include/q4t/server/speech_output.h
+  src/server/speech_output.cpp
+  src/server/chat_tts_backend.cpp
+  src/server/chat_tts_execution.cpp
+  src/server/chat_speech.cpp
   src/server/speech_codec_stream_protocol.h
   src/server/speech_codec_stream.cpp
   src/server/speech_codec_stream_worker.cpp

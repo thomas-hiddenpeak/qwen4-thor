@@ -7,6 +7,10 @@
 #include "q4t/status.h"
 
 namespace q4t::audio {
+// Known final sample count is mandatory for RIFF; does not invent a length
+// for an unfinished synthesis. The later body must match this exact count.
+Status SpeechWaveHeader(size_t samples, size_t max_output_bytes,
+                        std::string* out);
 // Atomic output: no partial bytes are published on invalid PCM or budget
 // failure. Compressed formats use the separate isolated codec worker.
 Status EncodeSpeechPcm(std::span<const float> pcm, bool wave,

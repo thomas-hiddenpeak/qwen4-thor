@@ -191,6 +191,8 @@ class HttpResponseContext {
   }
   int64_t* ResponsesSequence() const { return responses_sequence_; }
   void SetTranscriptionStream() noexcept { transcription_stream_ = true; }
+  // Speech and transcription share the named audio SSE error envelope.
+  void SetSpeechStream() noexcept { transcription_stream_ = true; }
   bool TranscriptionStream() const { return transcription_stream_; }
   std::string StreamError(int status, const std::string& message,
                           std::string_view code, std::string_view param = {});
@@ -208,6 +210,9 @@ class HttpResponseContext {
   bool KeepAlive() const { return keep_alive_; }
   // Enable chunking only after the unencoded response headers were written.
   void StartChunkedBody() { chunked_ = keep_alive_ && http11_; }
+  // Binary HTTP/1.1 uses chunking even with Connection: close, so a failed
+  // stream cannot masquerade as a successful close-delimited audio body.
+  void StartBinaryChunkedBody() { chunked_ = http11_; }
   bool Http11() const { return http11_; }
   void LengthResponse() { length_response_ = true; }
   // Join heartbeats and terminate framing only after a complete logical
@@ -272,6 +277,11 @@ class HttpResponseContext {
 // incomplete headers cannot be followed by another HTTP or SSE response.
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options = {});
+// Leaves state at kHeadersStarted until the owner confirms all production
+// and cleanup. Errors then close the incomplete frame without appended JSON.
+// HTTP/1.0 callers must use a completed finite body with Content-Length.
+bool BeginBinaryStreamResponse(int fd, std::string_view content_type,
+                               const WriteOptions& options = {});
 // One deadline covers the entire logical write, including partial progress.
 bool WriteAll(int fd, const char* data, size_t len,
               const WriteOptions& options = {});

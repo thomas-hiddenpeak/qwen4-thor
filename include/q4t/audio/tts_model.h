@@ -63,6 +63,10 @@ class TtsGenerationRun {
   bool ended() const { return state_.ended(); }
   bool at_limit() const { return state_.at_limit(); }
   size_t frames() const { return state_.frames(); }
+  size_t accepted_tokens() const {
+    return state_.frames() * TtsConfig::kCodeGroups + state_.next_group() +
+           (state_.ended() ? 1 : 0);
+  }
   std::span<const TtsCodes> codes() const { return state_.completed(); }
 
  private:

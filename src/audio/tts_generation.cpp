@@ -23,6 +23,17 @@ bool Content(std::span<const int32_t> ids) {
 
 }  // namespace
 
+int TtsBuiltinVoiceId(std::string_view voice) {
+  constexpr std::pair<std::string_view, int> voices[] = {
+      {"serena", 3066}, {"vivian", 3065}, {"uncle_fu", 3010},
+      {"ryan", 3061},   {"aiden", 2861},  {"ono_anna", 2873},
+      {"sohee", 2864},  {"eric", 2875},   {"dylan", 2878}};
+  const auto speaker = Lower(voice);
+  for (const auto& [name, id] : voices)
+    if (name == speaker) return id;
+  return -1;
+}
+
 Status PlanTtsPrompt(TtsVariant variant, std::span<const int32_t> text,
                      std::span<const int32_t> instruction,
                      std::string_view voice, std::string_view language,
@@ -35,19 +46,14 @@ Status PlanTtsPrompt(TtsVariant variant, std::span<const int32_t> text,
     return Status::Fail("TTS literal content or context invalid");
   if (variant == TtsVariant::kCustomVoice06B && !instruction.empty())
     return Status::Fail("TTS instructions require the qualified 1.7B model");
-  constexpr std::pair<std::string_view, int> voices[] = {
-      {"serena", 3066}, {"vivian", 3065}, {"uncle_fu", 3010},
-      {"ryan", 3061}, {"aiden", 2861}, {"ono_anna", 2873},
-      {"sohee", 2864}, {"eric", 2875}, {"dylan", 2878}};
   constexpr std::pair<std::string_view, int> languages[] = {
       {"auto", -1}, {"chinese", 2055}, {"english", 2050}, {"german", 2053},
       {"italian", 2070}, {"portuguese", 2071}, {"spanish", 2054},
       {"japanese", 2058}, {"korean", 2064}, {"french", 2061},
       {"russian", 2069}, {"beijing_dialect", 2074}, {"sichuan_dialect", 2062}};
   const auto speaker = Lower(voice), lang = Lower(language);
-  int speaker_id = -1, language_id = -2;
-  for (const auto& [name, id] : voices)
-    if (name == speaker) speaker_id = id;
+  const int speaker_id = TtsBuiltinVoiceId(voice);
+  int language_id = -2;
   for (const auto& [name, id] : languages)
     if (name == lang) language_id = id;
   if (speaker_id < 0 || language_id == -2)
