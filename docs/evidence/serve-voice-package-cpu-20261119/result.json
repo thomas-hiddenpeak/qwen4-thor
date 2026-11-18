@@ -1,0 +1,29 @@
+{
+  "status": "PASS_TARGETED_CPU_PENDING_REAL_VOICE_PROFILE",
+  "distinct_cases": 34,
+  "runs": [
+    {
+      "status": "FAILED",
+      "cases": 22,
+      "seconds": 4.021518534049392
+    },
+    {
+      "status": "FAILED",
+      "cases": 18,
+      "seconds": 6.771450037136674
+    },
+    {
+      "status": "PASS",
+      "cases": 2,
+      "seconds": 1.315162343904376
+    }
+  ],
+  "total_seconds": 12.108130915090442,
+  "gpu": 0,
+  "model_loads": 0,
+  "failed_runs_retained": true,
+  "default_replaced": false,
+  "profile_driver_pending": true,
+  "real_voice_http_pending": true,
+  "persistent_voice_state_rollback_pending": true
+}

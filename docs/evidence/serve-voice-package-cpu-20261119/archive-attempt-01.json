@@ -1,0 +1,5 @@
+{
+  "status": "STOPPED_BEFORE_SOURCE_REFRESH",
+  "reason": "Archive wrapper compared surface name list directly with annotated inventory dictionary; no product/test failure",
+  "assertion": "fields"
+}

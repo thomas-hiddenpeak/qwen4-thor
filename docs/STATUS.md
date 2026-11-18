@@ -7,6 +7,24 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Base包/恢复迁移34项CPU通过](evidence/serve-voice-package-cpu-20261119/README.md)：
+固定身份、共享预算、注册专用ASR依赖和历史恢复额度保持；939来源锚点/
+17遗漏反例通过。原两轮夹具/消息失败保留，0GPU，默认rev316保持。
+接着实际profile驱动、音色注册质量和保存状态回退；Base-only已有音色
+消费资格另补真实保存状态，不将CPU夹具当成业务或发布通过。
+
+Base包首轮22 CPU有17项通过：4项新夹具缺时间戳、1项错误消息合同不一致，
+失败原样保留。已修复并补Base/双TTS预算迁移、注册专用ASR前后绑定；
+冻结18项受影响CPU/180秒/0GPU，不重复其余已通过项。实际HTTP、
+profile执行和持久状态回退继续，默认不变。
+
+
+Base包/CLI及恢复身份已接入开发：固定Base/codec和独立声纹健康，
+共享预算只传一次，注册只需ASR/VAD/speaker，分离器仍要求aligner。
+恢复资格新增完整voice证据合同，不能复用仅内置音色结果；旧版部署
+不得丢Base。冻结22 CPU/180秒/0GPU；实际profile驱动、Base预算迁移
+与真实注册/旧状态回退仍继续，尚未发行。
+
 [原样本完整生成轨迹118项通过](evidence/serve-voice-generation-diagnostic-20261119/README.md)：
 1 GPU/1CPU talker、47帧逐码重现、64.246秒，最大相对L2 1.178e-5；
 62次NVML正常。排除已查轨迹数值偏差，音色/核验质量继续待解，

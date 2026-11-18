@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -8651,6 +8651,15 @@
           "comparisons": 118,
           "max_relative_l2": 1.1773348038909886e-05,
           "voice_consistency_pending": true
+        },
+        "package_recovery": {
+          "state": "PASS_TARGETED_CPU_PENDING_REAL_VOICE_PROFILE",
+          "evidence": "evidence/serve-voice-package-cpu-20261119/README.md",
+          "distinct_cpu_cases": 34,
+          "base_capacity_migration": true,
+          "real_profile_driver_pending": true,
+          "base_only_saved_voice_qualification_pending": true,
+          "default_replaced": false
         }
       }
     }

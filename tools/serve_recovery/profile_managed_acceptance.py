@@ -116,7 +116,10 @@ def prepare(args):
         embedding_model_dir=Path(base['settings']['native_embedding']['directory']),
         tts_model_dir=(Path(base['settings']['native_tts']['directory'])
                        if base['settings'].get('native_tts') else None),
-        tts_limits=base['settings'].get('native_tts', {}).get('limits'),
+        tts_base_model_dir=(Path(base['settings']['native_tts_base']['directory'])
+                            if base['settings'].get('native_tts_base') else None),
+        tts_limits=(base['settings'].get('native_tts') or
+                    base['settings'].get('native_tts_base', {})).get('limits'),
         asr_model_dir=(Path(base['settings']['native_asr']['directory'])
                        if base['settings'].get('native_asr') else None),
         asr_limits=base['settings'].get('native_asr', {}).get('limits'),

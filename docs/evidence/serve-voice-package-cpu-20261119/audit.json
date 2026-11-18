@@ -1,0 +1,21 @@
+{
+  "inventory_current": true,
+  "anchors": 939,
+  "mutation_checks": 17,
+  "reviewed": [
+    "tools/serve_recovery/bundle.py",
+    "tools/serve_recovery/deployment.py",
+    "tools/serve_recovery/outer_acceptance.py",
+    "tools/serve_recovery/profile_bundle.py",
+    "tools/serve_recovery/profile_contract.py",
+    "tools/serve_recovery/profile_controller.py",
+    "tools/serve_recovery/profile_evidence.py",
+    "tools/serve_recovery/profile_managed_acceptance.py",
+    "tools/serve_recovery/profile_migration.py",
+    "tools/serve_recovery/service.py",
+    "tools/serve_recovery/version_acceptance.py",
+    "tools/serve_service/package.py",
+    "tools/serve_service/service.py"
+  ],
+  "semantics_certified": false
+}

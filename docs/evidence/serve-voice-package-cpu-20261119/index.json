@@ -1,0 +1,149 @@
+{
+  "archive_sha256": "0bc29c9e1c266fce63430228b300f8e09d3fa57b601d3b2c8f3221600ab27832",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/implement_voice_package_01.py": {
+      "bytes": 12620,
+      "sha256": "43bdefc9d200c10ae33450565e28be6c80d1676572bac6c66c04459aff633381"
+    },
+    ".q4t-work/serve-custom-voices-20261118/implement_voice_binding_01.py": {
+      "bytes": 6636,
+      "sha256": "389f06237010620a1387814cf08a69310244345ee21f78487f86c4872f238006"
+    },
+    ".q4t-work/serve-custom-voices-20261118/implement_voice_profile_evidence_01.py": {
+      "bytes": 9598,
+      "sha256": "b9659b7e9c4aff85b6cd400fdd4043940c32b3be2683cfc374f91c2dbe972610"
+    },
+    ".q4t-work/serve-custom-voices-20261118/fix_voice_package_02.py": {
+      "bytes": 2705,
+      "sha256": "9558531a53c06b48bba3f4f2141eee16180453826042b2ac6d9d12d4c58cc317"
+    },
+    ".q4t-work/serve-custom-voices-20261118/implement_voice_migration_02.py": {
+      "bytes": 6608,
+      "sha256": "75fe71f16dfcb5275cdd83d75d73f9e6d57179831481e0fab346c8eb02ce423a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/add_voice_migration_tests_02.py": {
+      "bytes": 9751,
+      "sha256": "a7c047658eb6077544dc84772f522b9e50bd32a55241360eaa776c78260bf20f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_voice_package_02.py": {
+      "bytes": 4363,
+      "sha256": "43f66016180c47de1b0a534d6b4f32dab00eec3d8369800e4f25cb8301f4c2d3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/fix_voice_migration_fixtures_03.py": {
+      "bytes": 1368,
+      "sha256": "c561318098294ef1dc119b70bafda0e93756afd21738fe27f797b1c3b421cb87"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_package_03.py": {
+      "bytes": 7186,
+      "sha256": "8ae5891ec579c6afc0a5dba60c341b5d7b1b739bf5c41f849ea37d92c212e928"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_package_04.py": {
+      "bytes": 7298,
+      "sha256": "26b6554ced111b11eef8a802148b5231b6e4fb19477db5cf84faa149fdcd1f2e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-plan-01.json": {
+      "bytes": 3168,
+      "sha256": "3a58813dcf84692a2f96ad3cf7c4d178f79d2578059dc13316e584b7868b8539"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-plan-02.json": {
+      "bytes": 2845,
+      "sha256": "533b659b14bfc917341f597c26139e4c6d342a03a5838d41c7be0172b2f2423e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-plan-03.json": {
+      "bytes": 509,
+      "sha256": "66243696cdec1c813147c39188c545024091e8433b272668bbbdc4066bec820b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-01/result.json": {
+      "bytes": 2946,
+      "sha256": "c7164f7f3c02634f3c658c5738cbc464e64bd34d7dd1aa4857ef2cc635fb96f6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-01/tests.log": {
+      "bytes": 8606,
+      "sha256": "445ca2623ad29e5ac10ef7ed4e2213b58fd2d25cd74629f8d32e8acacd18f55c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-02/result.json": {
+      "bytes": 2642,
+      "sha256": "2042dcfa8a93b28badd39a81fcb8f887d134fa3755d4a1bd3638f39e41c2d116"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-02/sources.json": {
+      "bytes": 1869,
+      "sha256": "4f3b99a5286b4e6af1d99a19b8b3b611aa0b5ad9b000150ebba5bf733b4f132d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-02/tests.log": {
+      "bytes": 6941,
+      "sha256": "fc028619a890579e4bf09e9565eea42fa75ba0497d518f0e89ecd9c97b11e90e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-03/result.json": {
+      "bytes": 120,
+      "sha256": "15b1841fac926ca3e9f7fb72b5da7583a89611bb53a02872a631d7ffea8324bc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-03/source-sha256.json": {
+      "bytes": 235,
+      "sha256": "d4d4027fab5a29c5975f78f0b25a0246cd6d4d76daed118b6a3623cd4efd5901"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-package-cpu-03/tests.log": {
+      "bytes": 530,
+      "sha256": "9b974ab8651c9118ca48c75070cc0f622f8ec9287b783eb19beb65d8ca40be65"
+    },
+    "tools/serve_recovery/bundle.py": {
+      "bytes": 23782,
+      "sha256": "56ec0c3d6d4fa45f1115708517a5ca0dc7abed490661c30540cb7d6683c98728"
+    },
+    "tools/serve_recovery/deployment.py": {
+      "bytes": 17205,
+      "sha256": "55cd328553aa790e61a369b632bc903fda82bc31f8f07e704ae5107bed92e944"
+    },
+    "tools/serve_recovery/outer_acceptance.py": {
+      "bytes": 36793,
+      "sha256": "74f5879f4ef647a745a5cc540ee954b96f5720d8388028a5c26cc26a1e0a1f6d"
+    },
+    "tools/serve_recovery/profile_bundle.py": {
+      "bytes": 2569,
+      "sha256": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9"
+    },
+    "tools/serve_recovery/profile_contract.py": {
+      "bytes": 14331,
+      "sha256": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3"
+    },
+    "tools/serve_recovery/profile_controller.py": {
+      "bytes": 7018,
+      "sha256": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba"
+    },
+    "tools/serve_recovery/profile_evidence.py": {
+      "bytes": 50231,
+      "sha256": "78d6c9cd61551f0109fca20699aa25e9f3fe8254ed159fc21ef80ecbefda7ba8"
+    },
+    "tools/serve_recovery/profile_managed_acceptance.py": {
+      "bytes": 25063,
+      "sha256": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7"
+    },
+    "tools/serve_recovery/profile_migration.py": {
+      "bytes": 41238,
+      "sha256": "68df4b9d32f47fd8ec95a7d7cd08bd7a69eb489f3bf8873cf49590829df59240"
+    },
+    "tools/serve_recovery/service.py": {
+      "bytes": 41632,
+      "sha256": "7a55b1bfd39b6b3a28a0564193f6cc0a27c776db44b0bead6aae428886964bac"
+    },
+    "tools/serve_recovery/test_voice_profiles.py": {
+      "bytes": 16779,
+      "sha256": "ffaa527795fe06fe29a24a9d92eb2fbb1e76a6158a48a460f9a398bd75a4b628"
+    },
+    "tools/serve_recovery/version_acceptance.py": {
+      "bytes": 22866,
+      "sha256": "4e2d02d128692a3e2d7d9b4e94f84ff41ee7d772cbfc51d234f823c7d065c218"
+    },
+    "tools/serve_service/package.py": {
+      "bytes": 63345,
+      "sha256": "15cfc5e16e08db15ad7fda780a4ca5d1080c7c44f9955d686044dd89562d2379"
+    },
+    "tools/serve_service/service.py": {
+      "bytes": 16351,
+      "sha256": "12e65d149d60a895d1202bef67e6d8f05ae168a4b591cda414debdde48b9eddf"
+    },
+    "tools/serve_service/test_voice_package.py": {
+      "bytes": 9030,
+      "sha256": "a4c776f6899290c6b705a3962a5e365ec72c204094af0dc5fd5af6776713a742"
+    }
+  }
+}

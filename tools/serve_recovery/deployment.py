@@ -84,6 +84,11 @@ def check_target(current, target):
         selected = new_core['settings'].get('native_tts', {})
         ledger.require(all(selected.get(k) == tts[k] for k in engine.NATIVE_TTS),
                        'deployment would remove or change accepted TTS model/codec')
+    base = old_core['settings'].get('native_tts_base')
+    if base is not None:
+        selected = new_core['settings'].get('native_tts_base', {})
+        ledger.require(all(selected.get(k) == base[k] for k in engine.NATIVE_TTS_BASE),
+                       'deployment would remove or change accepted TTS Base model/codec')
     asr = old_core['settings'].get('native_asr')
     if asr is not None:
         selected = new_core['settings'].get('native_asr', {})

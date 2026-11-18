@@ -196,7 +196,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None,
             device_control=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
-            tts_model_dir=None, tts_limits=None):
+            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -256,6 +256,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         file_input_policy=file_input_policy, embedding_model_dir=embedding_model_dir,
         asr_model_dir=asr_model_dir, asr_limits=asr_limits,
         tts_model_dir=tts_model_dir, tts_limits=tts_limits,
+        tts_base_model_dir=tts_base_model_dir,
         asr_auxiliary=asr_auxiliary,
         mcp_policy=mcp_policy, web_policy=web_policy)
     (target/'bin').mkdir(mode=0o700)
