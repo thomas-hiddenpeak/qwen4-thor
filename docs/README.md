@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。
+
 [原生语音输出与历史实施](SERVE_NATIVE_TTS_2026-11-18.md)：固定TTS模型/codec、实际合成及标准接口持续推进。
 
 [Chat音频输入与执行计划](SERVE_CHAT_AUDIO_2026-11-18.md)：复用原生ASR，协议/计费/状态与真实业务持续接线。

@@ -617,6 +617,7 @@ set(protocol_inputs
   include/q4t/server/http_response.h
   include/q4t/server/finite_response.h
   include/q4t/server/http_request.h
+  include/q4t/server/websocket.h
   include/q4t/server/http_framing.h
   include/q4t/server/http_connection.h
   include/q4t/server/http_listener.h
@@ -670,6 +671,7 @@ set(protocol_inputs
   src/server/http_response.cpp
   src/server/finite_response.cpp
   src/server/http_request.cpp
+  src/server/websocket.cpp
   src/server/chat_server.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_admission.cpp

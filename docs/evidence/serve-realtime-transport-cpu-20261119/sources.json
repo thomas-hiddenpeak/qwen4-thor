@@ -1,0 +1,10 @@
+{
+  "include/q4t/server/websocket.h": "fc8e70cd77e5297ef32bfa77160a99318613f4ba73e50f8e2f303e96a71800b9",
+  "src/server/websocket.cpp": "cca592c1479fe87f90a2df748d8077a2e1615d92793f624d7252f3f542ac1929",
+  "tests/server_websocket_test.cpp": "60cc67ca9a695e2505b0e994bf410875f4398329134556fddfaa823544357502",
+  "include/q4t/server/native_crypto.h": "c163b07a2a70ab6081733ff9b259357d2d4b70df8db03307d4faeb43df41a78d",
+  "src/server/native_crypto.cpp": "7b54b8021d06f98913ca309766ee33a1e7d97d3ad77a4f0e9347962a76d9adfd",
+  "cmake/ChatProtocolIdentity.cmake": "4c56a8236bb3669f26cebbc27271edfc3b016e1c7c4f37ea88e552dc0c35d2cb",
+  "cmake/HostTestSources.cmake": "34c504554c58fda3354649104aae1453f2c20df281699996abeb58bbcbf16ef0",
+  "CMakeLists.txt": "1bce85b67a0a2a8a858b2b080506aa90e3103e681523c34a7e537897dfcae743"
+}

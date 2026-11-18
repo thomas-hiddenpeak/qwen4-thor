@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生WebSocket基础16项CPU通过](evidence/serve-realtime-transport-cpu-20261119/README.md)：
+有界分片/掩码/UTF-8/关闭/背压和可选密码库握手已实现；14新+2旧
+检查、0.0157秒/0GPU、构建零警告，951锚点/17负控通过。实际升级
+路由与实时业务尚未接通，继续[Realtime计划](SERVE_REALTIME_2026-11-19.md)。
+历史只读重复引擎共享释放约630MiB，原路径/内容和默认rev326保持。
+
 [官方JS音色SDK9项CPU通过](evidence/serve-voice-js-sdk-cpu-20261119/README.md)：
 复用7.47.0真实方法，覆盖multipart、音频SSE、历史、错误不重试、
 有界字节和实际TLS证书正反例；1.015秒/0GPU，加入host CI。
