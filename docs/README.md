@@ -599,3 +599,5 @@
 - [说话人PR46主线交付](evidence/serve-speaker-main-20261118/README.md)；[真实分离组件](evidence/serve-separator-compute-20261118/README.md)，实际接口与服务恢复继续实现。
 
 - [rev306Chat音频交付](evidence/serve-chat-audio-delivery-20261118/README.md)：真实Chat音频/JSON/SSE/工具与可回退原生服务。
+
+- [rev316语音输入输出交付](evidence/serve-tts-delivery-20261118/README.md)：真实Speech/Chat与重叠分离、可回退原生服务。

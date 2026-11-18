@@ -944,7 +944,7 @@ Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
 Apache-2.0许可见[声明](third_party/licenses/speechbrain/README.md)。
 权重按部署启用，开发专用转换/参考工具不成为服务运行依赖。
 
-重叠语音正在接入固定SpeechBrain SepFormer两源分离图，沿用上述
+重叠语音已在rev316接入固定SpeechBrain SepFormer两源分离图，沿用上述
 Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运行
 依赖，见[实施合同](docs/SERVE_NATIVE_OVERLAP_2026-11-18.md)。
 离线质量诊断参考[Demucs的移位平均思路](https://github.com/facebookresearch/demucs/blob/main/demucs/apply.py)
@@ -953,9 +953,36 @@ Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运
 
 原生语音合成按[实施计划](docs/SERVE_NATIVE_TTS_2026-11-18.md)推进；
 固定Qwen3-TTS配置与权重头的Apache-2.0来源见[声明](third_party/licenses/qwen3-tts/README.md)。
-当前仅元数据检查通过，真实合成与标准输出接口仍在实现。
+原生合成、六格式Speech、Chat音频输出及私有音频历史已在
+[rev316可回退交付](docs/evidence/serve-tts-delivery-20261118/README.md)。
+主轻配置、原生TLS和整包恢复均验证实际收音/发声、完整音频与用量；
+默认服务保持停止，TTS资产通过 `--tts-model-dir DIR` 显式启用。
+CPU参考工具和Python模型框架不进入生产运行依赖；压缩格式复用
+已有隔离媒体worker，PCM/WAV由原生代码生成。
 
-重叠语音的质量修复、非语言声学信息、语音输出/历史和Realtime继续按
+```python
+with client.audio.speech.with_streaming_response.create(
+    model="qwen3-tts-12hz-1.7b-customvoice",
+    voice="ryan",
+    input="Hello, this is a native speech test.",
+    instructions="Speak calmly.",
+    response_format="mp3",
+) as speech:
+    speech.stream_to_file("speech.mp3")
+```
+
+部署可通过 `--tts-max-text-tokens`、`--tts-max-prefill-tokens`、
+`--tts-max-frames`、`--tts-workspace-mib`、`--tts-max-output-mib`
+配置预算。已验默认分别为512、512、160、2048MiB、16MiB；
+文本与音频codes共同计入请求用量，客户端输出额度也须覆盖它们。
+rev316显式将alpha客户端输出上限从256扩至2817，RPM/TPM原额度
+与已使用量保持。输入后端和TTS权重分组互斥驻留，切换时从已核验
+SSD资产按需冷加载；所有驻留与中转计入统一RAM。
+
+指定混音中保留句意的hurt→hurts已按用户决定接受，原WER=1/7
+和失败证据保留；漏句、额外说话人及丢失重叠仍不能接受。
+4倍语速内容、完整voice/style与注册voice、非语言声学信息，以及
+Responses/Batch/Realtime组合继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整
 长稳交接仍属于Q03待完成项，长稳实跑由用户执行。

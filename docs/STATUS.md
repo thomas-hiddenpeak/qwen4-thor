@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev316语音输入输出可回退交付](evidence/serve-tts-delivery-20261118/README.md)
+完成，19项STOPPED步骤（复用3、续办16）/290.446秒，0新增GPU。实际整根回退
+再前进通过，原用量/历史保持，alpha输出显式256→2817；前驱rev306和day保留。接着主线
+检查合入、4倍内容、完整voices与全部master，不在本阶段结束总目标。
+
 [原生TTS输入/TLS/整包恢复通过](evidence/serve-tts-service-20261118/README.md)：
 含原取消FAIL及针对续验共6核心/40POST/1探测/460.293秒；
 439次NVML全正常，全部清理和finalizer通过。两保留控制、
@@ -1092,17 +1097,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev306；服务包 `3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4` |
-| Generation | `a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a` |
-| 引擎 | `bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0` |
-| 引擎发布记录 | `0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951` |
-| Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
-| 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
+| 发布 | rev316；服务包 `e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d` |
+| Generation | `08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288` |
+| 引擎 | `5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee` |
+| 引擎发布记录 | `aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de` |
+| Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
+| 原生入口 | `5a7cb45a7eb084c467063c966d22098d453e47a88a248f0b9f22427464f2a8f3` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197`；实际Chat音频/speaker/原周期/原生入口已验，前驱rev296另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e`；不是独立旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue2；TTS 160帧、alpha合计输出2817；媒体已启用 |
+| 人工整包回退 | 现代保留根 `ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa`；实际输入/TTS/原周期/原生入口已验，前驱rev306另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0`；不是独立旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
@@ -2781,39 +2786,33 @@ Drive五项、Gmail六项原生只读工具已进入候选：实际下载/Office
 
 ## 全部任务进展与剩余缺口
 
-详细实现、来源和证据以[任务表](serve-master-goals-v2.json)为准。
-下列合并行只用于导航，不改变各任务的完成条件。
+详细逐项实现及证据以[任务表](serve-master-goals-v2.json)为准；下表
+按rev316更新，不把已有交付重新记为缺失，也不关闭剩余组合。
 
 | 任务 | 当前状态与仍需完成的内容 |
 |---|---|
-| G00 | 推理/应用服务之外的组织、账单、训练管理范围待用户决定；不阻塞已确定任务 |
-| A01/A02 | 已交付多指令、name、refusal历史等输入能力；剩余字段/模板及媒体、工具组合待逐项闭合 |
-| A03/A04 | 采样/penalty/logprobs/multi-choice/prediction与工具选择、增量流、legacy/custom工具已验交付 |
-| A05 | 丰富JSON Schema及工具/媒体组合已交付；A10媒体身份与状态缓存的组合尚待实现 |
-| A06 | Completions/Models已验交付 |
-| A07 | Responses核心、状态、reasoning/summary/encryption/compaction等已交付；原生refusal生产/SSE及恢复已发行；内建工具及媒体items、async/caller/namespace/output_schema等仍须实现 |
-| A08 | 持久Chat/Responses、Conversations、background/cancel等已交付 |
-| A09 | Files/Uploads/Batch已有实际交付；剩余8类endpoint后端及对应SDK/发行仍须与A10完成 |
-| A10 | 原生embedding检索及moderation等已有交付；audio/realtime/image generation/edit/video等后端、媒体缓存及组合仍待实现 |
-| A11 | 原生资料检索/Responses闭环已完成实际业务短验并发行；MCP及其余内建工具仍须实现 |
-| A12 | 官方Python/JS及现有客户端的最终兼容、错误/流、迁移和发行矩阵待闭合 |
-| N01—N07 | 原生接入、TLS/证书、CORS、Key/配额治理、HTTP、运维与发行入口均已验交付；N05可选前置路由已随rev94发行，主线待完成 |
-| R01—R06 | 已验隔离与恢复保持；R01取消后缓存清理修复已过CPU/真实业务并随rev94发行；后续组合继续见R07—R10 |
-| R07 | NVML失能冷准入代码/CPU验证已推进；实际设备独占资格、冷业务与组合验收未完成 |
-| R08 | 原生资源域、压力观察与实际恢复组合已推进；物理内存硬边界及完整资源验收仍须完成 |
-| R09 | 正常NVML下原生外层/资源/版本恢复已验发行；冷准入及宿主故障组合仍须闭合 |
-| R10 | 视觉与恢复、降级、工具/schema组合待实现和验证 |
-| Q01—Q03 | 跨接口真实资料查询闭环、最终可用主线发行、全任务核对和长稳交接仍待完成 |
+| G00 | 组织/账单/训练管理等平台API范围待用户决定；不阻塞已确定任务 |
+| A01/A02 | 已交付文本合同、Chat音频输入/输出与历史；剩余字段默认/null/模板及完整音频组合继续 |
+| A03—A06/A08 | 采样、工具调用、schema、Completions/Models及持久会话/后台取消已交付 |
+| A07 | Responses核心、状态/reasoning、异步/发现/程序化/MCP已交付；剩余typed产出、内建后端与媒体组合继续 |
+| A09 | Files/Uploads/Batch已交付；依赖后端的八类端点、图像/视频生成及对应SDK/恢复继续 |
+| A10 | 已交付视觉、embedding/moderation、ASR/对齐/VAD/分人/重叠、Speech/Chat音频；剩余多视频轨/画布、4倍内容、voice、Realtime及生成后端继续 |
+| A11 | 项目检索、MCP、程序化工具、已配置网站检索已交付；更广Web提供方、实际云账号及其余内建组合继续 |
+| A12 | 双SDK已有大量实际业务通过；完整公开能力/错误/流/恢复矩阵仍须收齐 |
+| N01—N07 | 原生接入、TLS/CORS/Key/配额、HTTP、运维、可选外部前置与发行入口均已交付 |
+| R01—R06/R10 | 辅助隔离、自监护及已验恢复/视觉组合已交付；新增后端组合继续验证 |
+| R07 | 需刷新当前默认冷准入资格；涉及nvargus/jtop的维护交接仍待回复 |
+| R08/R09 | 正常监控下资源/外层/版本恢复已交付；统一物理DRAM硬边界、冷/压力/宿主入口组合继续 |
+| Q01 | 实际项目资料检索闭环已交付；新增后端/客户端/故障组合继续 |
+| Q02/Q03 | rev316本机可回退交付完成，主线待合；最终全任务核对及新音频长稳交接继续，实跑由用户承担 |
 
 ## 接下来
 
-1. 基于已修复入口与实际rev80身份重建R07冻结计划。原v1 plan-v2
-   因入口缺陷及来源/默认变化而失效，不能执行。涉及nvargus/jtop的
-   维护问题仍待回复，不以等待阻塞独立开发，不擅自干预其他服务。
-2. [能力升级及恢复连续性](SERVE_CAPABILITY_UPGRADE_2026-11-12.md)已发行，继续A11项目资料查询的服务端工具执行/Responses事件，以及A10所需后端；先按官方合同
-   和代码明确缺口，再成组实现，做针对性CPU及必要真实业务。
-3. R08/R09剩余项与R10组合持续推进；各阶段可回退交付后继续下一项，
-   全部计划完成前不结束总目标。
+1. 完成rev316最终提交检查和主线合入，保留所有原失败与配额迁移记录。
+2. 解决4倍语速内容和完整voice覆盖，接续Responses/Batch/Realtime、
+   图像/视频生成、输入与恢复组合；按实际缺口成组开发、针对性验证。
+3. 并行梳理R07—R09剩余前提，未获维护窗口不干预其他服务；完成
+   新后端长稳交接。全部计划完成前，总目标持续active。
 
 ## 工作区、证据与保留候选
 
