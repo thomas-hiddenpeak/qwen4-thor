@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/server/actual_usage.h"
 
 namespace q4t::server {
 
@@ -16,6 +17,9 @@ class ChatChoices {
   static constexpr size_t kResponseLimit = 32 * 1024 * 1024;
   ChatChoices(int count, bool stream, bool full_usage = false)
       : count_(count), stream_(stream), full_usage_(full_usage) {}
+  // One shared preparation before all choices. Actual internal decoder output
+  // is separately reported; it does not enlarge the public answer budget.
+  Status SetAudioPreparation(const ActualUsage& usage, uint64_t audio_tokens);
   Status Add(int index, std::string_view message, std::string_view finish,
              std::string_view logprobs, uint64_t prompt, uint64_t completion,
              uint64_t cached, bool report_cached, int64_t reasoning_limit,
@@ -43,6 +47,9 @@ class ChatChoices {
   bool prediction_ = false;
   uint64_t prediction_accepted_ = 0;
   uint64_t prediction_rejected_ = 0;
+  ActualUsage audio_preparation_;
+  uint64_t audio_tokens_ = 0;
+  bool audio_prepared_ = false;
   std::string choices_;
 };
 

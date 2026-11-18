@@ -197,6 +197,8 @@ def qualification(name, selected, fixed, capability, observed, memory, evidence)
     asr = fixed.get('native_asr')
     declared = capability.get('transcriptions', {})
     ledger.require(type(declared) is dict, 'invalid qualified ASR capability')
+    from tools.serve_recovery import profile_evidence
+    profile_evidence.chat_audio_capability(declared)
     if asr is not None:
         ledger.require(declared.get('configured') is True and
             all(declared.get(k) == asr[k] for k in package.NATIVE_ASR),

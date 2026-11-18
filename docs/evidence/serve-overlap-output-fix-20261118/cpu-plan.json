@@ -1,0 +1,40 @@
+{
+  "commands": [
+    [
+      "contracts",
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/output-fix-cpu-01/required.txt"
+      ]
+    ],
+    [
+      "inventory",
+      [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py"
+      ]
+    ],
+    [
+      "generated",
+      [
+        "python3",
+        "-B",
+        "tools/serve_protocol/build_contract.py",
+        "--check"
+      ]
+    ]
+  ],
+  "cpu_tests": 5,
+  "seconds": 120,
+  "gpu": 0,
+  "files": {
+    "include/q4t/audio/separator_resample.h": "251f39cccbdd9957c0541783cd9538ef8e48ea948e984e85704a699759b85bea",
+    "src/audio/separator_resample.cpp": "9f07f34c64383b104cf49ead32f4c2f363cefccaa563ade069da40d8414a3f3a",
+    "src/server/chat_asr.cpp": "91a1c4d1b210eeef45d4f6badf5274237f656e63314a2edc5eb7cd7c7c317c26",
+    "src/server/chat_separator_execution.cpp": "46e3e8b5ed48044ed1cf73ab3943c4eeeb2b8f80607b18b2233071bc564097a0",
+    "tests/separator_resample_test.cpp": "0a062213a50a1948782496941f16b4f609b519f7755595a414c716c59d750c23",
+    "tools/native_separator/output_acceptance.py": "5bff699c1d6d853f1e391dcfaa614f000462d2597e9e9a265804c5a48d8490c9"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-overlap-20261118/component-build-01",
+    "--target",
+    "q4t_separator_replay",
+    "--parallel",
+    "4"
+  ],
+  "returncode": 0,
+  "seconds": 2.166437208186835
+}

@@ -1,0 +1,11 @@
+{
+  ".q4t-work/serve-chat-audio-20261118/recovery-profile-cpu-01/result.json": "9036c6c9d22fc5496da72ec88490f61f100d0603a67ecb1387b17ff182eed0c6",
+  ".q4t-work/serve-chat-audio-20261118/recovery-profile-cpu-01/tests.stderr": "41f993d4b80ec757d247ed47173bea0167979a2a1c61c8688ed06c3492f29420",
+  ".q4t-work/serve-chat-audio-20261118/recovery-profile-cpu-01/plan.json": "d853fe96578950c3abebd528eb51b9754eb1d9dc62f5e8ac9c3bab66bd53e0ba",
+  ".q4t-work/serve-chat-audio-20261118/recovery-profile-cpu-01/tests.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  ".q4t-work/serve-chat-audio-20261118/version-service-01/lease/exit.json": "33da42633ab1acb016f086cc64365caf8cacdb9e8ad376e89bcf76ad34275e78",
+  ".q4t-work/serve-chat-audio-20261118/version-service-01/execution/stop.json": "5f26165b673081f9b192cc3641715053379e6f298c27a6b19b47fbf43b2bf326",
+  ".q4t-work/serve-chat-audio-20261118/version-service-01/execution/result.json": "c03582aa73986c491c4fca5409e57639ee3b8a269b00ba63d67230101b0ec6cb",
+  ".q4t-work/serve-chat-audio-20261118/version-service-01/execution/state/ledger.json": "08cdc282b0550a22be8f03e4956cd24d525d2ba4c93414e5a5a3b00eeed354bc",
+  ".q4t-work/serve-chat-audio-20261118/version-service-01/execution/state/profile-selection/policy.json": "47307e59fcfccb1b6103ce6d2eacdf6dc252678d12d3f154f39508f3aa1eac74"
+}

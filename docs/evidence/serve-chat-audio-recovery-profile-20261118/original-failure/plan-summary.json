@@ -1,0 +1,25 @@
+{
+  "limits": {
+    "starts": 2,
+    "chats": 8,
+    "probes": 1,
+    "controls": 2500,
+    "seconds": 600
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+    "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4"
+  },
+  "source_commit": "64fdddd91f55a13cce42ac135a8cfce5760202d7",
+  "command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py",
+    "run",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-01/plan.json"
+  ],
+  "chat_audio": true,
+  "original_plan_sha256": "63cba15b9c597d4dc61c3330a11ff0f803b9918f7cef8cd31cca47e735d93b0e"
+}

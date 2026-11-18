@@ -1,0 +1,21 @@
+{
+  "status": "FAIL",
+  "results": [
+    {
+      "name": "contracts",
+      "returncode": 1,
+      "seconds": 0.7647373452782631
+    },
+    {
+      "name": "inventory",
+      "returncode": 0,
+      "seconds": 0.16409209929406643
+    },
+    {
+      "name": "generated",
+      "returncode": 0,
+      "seconds": 0.16412521013990045
+    }
+  ],
+  "seconds": 1.093151598237455
+}

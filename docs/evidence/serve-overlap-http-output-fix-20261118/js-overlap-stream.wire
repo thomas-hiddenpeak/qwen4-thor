@@ -1,0 +1,15 @@
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","segment_id":"0","delta":"We are sure that one war is enough."}
+
+event: transcript.text.segment
+data: {"id":"0","type":"transcript.text.segment","start":0.16,"end":1.9199999999999999,"speaker":"B","text":"We are sure that one war is enough."}
+
+event: transcript.text.delta
+data: {"type":"transcript.text.delta","segment_id":"1","delta":" The child almost hurts the small dog."}
+
+event: transcript.text.segment
+data: {"id":"1","type":"transcript.text.segment","start":0.23999999999999999,"end":3.04,"speaker":"A","text":"The child almost hurts the small dog."}
+
+event: transcript.text.done
+data: {"duration":4,"task":"transcribe","text":"We are sure that one war is enough. The child almost hurts the small dog.","segments":[{"id":"0","type":"transcript.text.segment","start":0.16,"end":1.9199999999999999,"speaker":"B","text":"We are sure that one war is enough."},{"id":"1","type":"transcript.text.segment","start":0.23999999999999999,"end":3.04,"speaker":"A","text":"The child almost hurts the small dog."}],"usage":{"type":"tokens","input_tokens":222,"output_tokens":19,"total_tokens":241,"input_token_details":{"audio_tokens":67,"text_tokens":155}},"type":"transcript.text.done"}
+

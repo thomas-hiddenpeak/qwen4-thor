@@ -1,4 +1,6 @@
 #include "chat_server_internal.h"
+#include "object_protocol.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/cache_health.h"
 
 #include "q4t/server/chat_response_parser.h"
@@ -33,6 +35,9 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .structured = kStructuredDecodingAvailable,
           .session_cache = session_cache_.Enabled(),
           .prefix_cache = prefix_cache_.Enabled(),
+          .preparing_audio_inputs = true,
+          .native_asr_enabled = !asr_model_dir_.empty(),
+          .asr_limits = asr_limits_,
           .header_tools = {},
           .tool_call_formats = {},
           .capacities = seq_capacities_,
@@ -79,6 +84,9 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"native_speaker_health":)" + NativeSpeakerHealthJson() +
       R"(,"native_speaker_limits":)" +
       SpeakerServiceLimitsJson(speaker_limits_) +
+      R"(,"native_separator_health":)" + NativeSeparatorHealthJson() +
+      R"(,"native_separator_limits":)" +
+      SeparatorServiceLimitsJson(separator_limits_) +
       R"(,"native_vad_health":)" + NativeVadHealthJson() +
       R"(,"native_vad_max_chunks":)" + std::to_string(vad_max_chunks_) +
       R"(,"application_startup":{"responses":)" +
@@ -209,6 +217,31 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
                             control.deadline(), cancelled};
   ChatFileInputs files(objects_.get());
   auto prepared = files.Prepare(original_request, config, access, &plan);
+  if (!prepared.ok()) {
+    detail::SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                      prepared.ClientCode(), prepared.value.GetString("param"));
+    return;
+  }
+  if (HasChatAudioInputs(original_request)) {
+    ChatAudioInputs audio;
+    prepared = audio.Prepare(original_request, access);
+    ChatAudioBudget budget;
+    if (prepared.ok())
+      prepared = PlanChatAudioBudget(original_request, config, audio, &budget);
+    if (!prepared.ok()) {
+      detail::SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                        prepared.ClientCode(), prepared.value.GetString("param"));
+      return;
+    }
+    if (cancelled() || !control.Finish()) {
+      send_cancel();
+      return;
+    }
+    detail::SendSimple(fd, 200, "OK",
+                       OutputJson(ChatAudioPreflight(audio, budget)),
+                       "application/json", {control.deadline()});
+    return;
+  }
   ChatWebSearch web;
   if (prepared.ok())
     prepared = web.Prepare(objects_.get(), original_request, config, access,

@@ -51,4 +51,13 @@ Status ClusterSpeakerWindows(std::span<const SpeakerWindow> windows,
                              const SpeakerClusteringOptions& options,
                              std::vector<SpeakerTurn>* out,
                              const std::function<bool()>& cancelled = {});
+// Cross-track observations sorted by core begin time may overlap. Each input
+// window receives one label in matching order, without coalescing intervals.
+// Shared clustering/reference rules preserve identity across channel swaps.
+Status LabelOverlappingSpeakerWindows(
+    std::span<const SpeakerWindow> windows,
+    std::span<const SpeakerEmbedding> embeddings,
+    std::span<const SpeakerReference> references,
+    const SpeakerClusteringOptions& options, std::vector<SpeakerTurn>* out,
+    const std::function<bool()>& cancelled = {});
 }  // namespace q4t::audio

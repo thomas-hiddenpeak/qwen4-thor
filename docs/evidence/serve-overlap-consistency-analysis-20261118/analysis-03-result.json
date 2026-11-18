@@ -1,0 +1,106 @@
+{
+  "status": "REJECTED_SIGNAL_CANDIDATE",
+  "observations": [
+    {
+      "case": "original_component",
+      "gains": [
+        -0.037890791919093926,
+        0.03745255829880845
+      ],
+      "determinant_ratio": 0.9998701706987797,
+      "relative_residual_rms": 0.002351891537436041,
+      "projected_sum_max_error": 7.450580596923828e-09,
+      "before": {
+        "permutation": [
+          0,
+          1
+        ],
+        "separated_si_sdr_db": [
+          17.966798117672855,
+          25.73312641822963
+        ],
+        "mixture_si_sdr_db": [
+          -7.556537761971594,
+          7.809364907154595
+        ],
+        "improvement_db": [
+          25.52333587964445,
+          17.923761511075035
+        ],
+        "passed": true
+      },
+      "after": {
+        "permutation": [
+          0,
+          1
+        ],
+        "separated_si_sdr_db": [
+          17.972929690963085,
+          25.73240950827296
+        ],
+        "mixture_si_sdr_db": [
+          -7.556537761971594,
+          7.809364907154595
+        ],
+        "improvement_db": [
+          25.52946745293468,
+          17.923044601118363
+        ],
+        "passed": true
+      },
+      "both_sources_not_worse": false
+    },
+    {
+      "case": "http_integer_mix",
+      "gains": [
+        -0.0378907747845048,
+        0.037452547179609455
+      ],
+      "determinant_ratio": 0.9998701842669114,
+      "relative_residual_rms": 0.0023548393954422172,
+      "projected_sum_max_error": 7.450580596923828e-09,
+      "before": {
+        "permutation": [
+          0,
+          1
+        ],
+        "separated_si_sdr_db": [
+          17.966723174815094,
+          25.73311891835545
+        ],
+        "mixture_si_sdr_db": [
+          -7.556483655161773,
+          7.809406271001352
+        ],
+        "improvement_db": [
+          25.523206829976868,
+          17.9237126473541
+        ],
+        "passed": true
+      },
+      "after": {
+        "permutation": [
+          0,
+          1
+        ],
+        "separated_si_sdr_db": [
+          17.972841510567843,
+          25.732428705768715
+        ],
+        "mixture_si_sdr_db": [
+          -7.556483655161773,
+          7.809406271001352
+        ],
+        "improvement_db": [
+          25.529325165729617,
+          17.92302243476736
+        ],
+        "passed": true
+      },
+      "both_sources_not_worse": false
+    }
+  ],
+  "seconds": 0.011637141928076744,
+  "defaults_unchanged": true,
+  "release_acceptance": false
+}

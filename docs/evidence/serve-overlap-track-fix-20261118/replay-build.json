@@ -1,0 +1,17 @@
+{
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Iinclude",
+    "tools/native_separator/track_replay.cpp",
+    "src/audio/separator_tracks.cpp",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/track-fix-build-01/track-replay"
+  ],
+  "returncode": 0,
+  "seconds": 1.2151791681535542,
+  "default_unchanged": true
+}

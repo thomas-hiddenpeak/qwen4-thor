@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_asr.test_chat_acceptance.ChatAcceptance.test_only_source_bound_audio_markers_expand_and_originals_stay_small"
+  ],
+  "limits": {
+    "tests": 1,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "sources": {
+    "tools/native_asr/chat_acceptance.py": "3bf4e254c5e0ac5dbea8eb50660493ff0f237f677c414138804a5edbd2d4c194",
+    "tools/native_asr/test_chat_acceptance.py": "09fc591c22d49d86530346ee08777258b3d407862f0a5a6b02b1632cbec549da"
+  }
+}

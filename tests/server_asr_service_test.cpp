@@ -6,6 +6,7 @@
 #include "q4t/server/server_options.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/test.h"
 
 namespace {
@@ -24,15 +25,20 @@ q4t::io::Json Health(const AsrHealth& health, bool gpu = true) {
 Q4T_TEST(asr_capability_binds_fixed_backend_when_configured_or_disabled) {
   for (const bool configured : {false, true}) {
     q4t::io::Json root;
-    Q4T_CHECK(q4t::io::ParseJson(
-        ChatCapabilitiesJson("chat", false, true, 0, nullptr, false,
-                              configured), &root));
+    Q4T_CHECK(
+        q4t::io::ParseJson(ChatCapabilitiesJson("chat", false, true, 0, nullptr,
+                                                false, configured),
+                           &root));
     const auto* value = root.Find("transcriptions");
     Q4T_CHECK(value && value->GetString("profile") == kNativeAsrProfile &&
               value->GetString("model") == "qwen3-asr-0.6b" &&
               value->GetString("revision") == kNativeAsrRevision &&
               value->GetString("weight_sha256") == kNativeAsrWeightSha256 &&
               value->GetBool("configured", !configured) == configured);
+    const auto* chat = value->Find("chat_input");
+    Q4T_CHECK(chat && chat->GetString("profile") == "q4t-chat-audio-input-v1" &&
+              chat->GetString("preparation") == "native_asr_transcript" &&
+              chat->GetInt("max_parts") == 8);
   }
   return true;
 }
@@ -164,11 +170,21 @@ Q4T_TEST(asr_resources_account_unified_peak_and_reject_small_workspace) {
   AsrResourcePlan plan;
   Q4T_CHECK(PlanAsrServiceResources(limits, &plan));
   Q4T_CHECK(plan.load_peak_bytes >= 3 * 1876091704ULL + (512ULL << 20));
-  Q4T_CHECK(plan.request_host_bytes > (25ULL << 20) + 480000 * sizeof(float));
+  Q4T_CHECK(plan.request_host_bytes > (75ULL << 20) + 480000 * sizeof(float));
+  Q4T_CHECK(plan.shared_host_bytes ==
+            6 * kAggregateChatBodyBytes + 2 * kChatBodyBytes);
   Q4T_CHECK(plan.request_device_bytes > plan.encoder_bytes &&
             plan.request_device_bytes > plan.decoder_bytes);
   Q4T_CHECK(plan.request_device_bytes <= (1024ULL << 20));
   const auto saved = plan;
+  AsrResourcePlan many;
+  Q4T_CHECK(PlanAsrServiceResources(limits, &many, 8));
+  Q4T_CHECK(many.request_host_bytes == plan.request_host_bytes &&
+            many.request_device_bytes == plan.request_device_bytes &&
+            many.shared_host_bytes ==
+                plan.shared_host_bytes + 14 * kChatBodyBytes);
+  Q4T_CHECK(!PlanAsrServiceResources(limits, &many, 0));
+  Q4T_CHECK(!PlanAsrServiceResources(limits, &many, 9));
   limits.workspace_mib = 64;
   Q4T_CHECK(!PlanAsrServiceResources(limits, &plan));
   Q4T_CHECK(plan.request_device_bytes == saved.request_device_bytes &&

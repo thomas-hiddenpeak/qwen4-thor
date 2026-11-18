@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:q4t:serve:message-profile:v3",
-  "title": "Text message profile v3 with qwen3.8-openai-v4 template",
-  "description": "Text message shapes only. Tool association, full request options and runtime admission still require native validation; media uses the vision request schema.",
+  "title": "Text and speech input message profile v3 with qwen3.8-openai-v4 template",
+  "description": "Text and user input_audio shapes. Native ASR preparation, tool association, full request options and runtime admission still require native validation; visual media uses the vision request schema.",
   "type": "object",
   "required": [
     "messages"
@@ -48,6 +48,9 @@
                   },
                   {
                     "$ref": "#/$defs/refusalPart"
+                  },
+                  {
+                    "$ref": "#/$defs/audioPart"
                   }
                 ]
               }
@@ -186,6 +189,49 @@
       ],
       "additionalProperties": false,
       "allOf": [
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "not": {
+                  "const": "user"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "anyOf": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "not": {
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "const": "input_audio"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "if": {
             "required": [
@@ -598,6 +644,57 @@
       "required": [
         "type",
         "refusal"
+      ],
+      "additionalProperties": false
+    },
+    "audioPart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "input_audio"
+        },
+        "input_audio": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "enum": [
+                "wav",
+                "mp3"
+              ]
+            }
+          },
+          "required": [
+            "data",
+            "format"
+          ],
+          "additionalProperties": false
+        },
+        "prompt_cache_breakpoint": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "explicit"
+            },
+            "ttl": {
+              "enum": [
+                "30m",
+                "12h"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "input_audio"
       ],
       "additionalProperties": false
     },

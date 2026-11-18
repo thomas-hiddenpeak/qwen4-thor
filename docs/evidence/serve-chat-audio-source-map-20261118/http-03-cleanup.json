@@ -1,0 +1,48 @@
+{
+  "owned": {
+    "224637": {
+      "state": "R",
+      "ppid": 224625,
+      "pgid": 224625,
+      "start_ticks": 314546626,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18280",
+        "--operations-port",
+        "18281",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "128",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "2",
+        "--asr-model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-03/asr-assets",
+        "--asr-max-output-tokens",
+        "128",
+        "--object-store-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-03/objects",
+        "--client-policy-file",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-03/client-policy.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true
+}

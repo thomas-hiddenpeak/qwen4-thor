@@ -15,6 +15,7 @@ Status ValidateChatContract(const io::Json& request,
                             bool allow_empty_messages = false,
                             bool preparing_file_inputs = false,
                             std::span<const std::string> async_call_ids = {},
-                            bool responses_tool_media = false);
+                            bool responses_tool_media = false,
+                            bool preparing_audio_inputs = false);
 
 }  // namespace q4t::server

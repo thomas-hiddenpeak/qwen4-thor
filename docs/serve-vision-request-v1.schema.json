@@ -16,6 +16,25 @@
         "$ref": "#/$defs/message"
       }
     },
+    "modalities": {
+      "anyOf": [
+        {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "const": "text"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "audio": {
+      "type": "null"
+    },
     "max_tokens": {
       "anyOf": [
         {
@@ -985,8 +1004,8 @@
   "additionalProperties": false,
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:q4t:serve-chat-request:v1",
-  "title": "Q4T complete text Chat request structure v1",
-  "description": "All supported text request fields. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
+  "title": "Q4T Chat text and speech input request structure v1",
+  "description": "Text output with text or native ASR speech input. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
   "$defs": {
     "cacheBreakpoint": {
       "type": "object",
@@ -1055,6 +1074,57 @@
       ],
       "additionalProperties": false
     },
+    "audioPart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "input_audio"
+        },
+        "input_audio": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "enum": [
+                "wav",
+                "mp3"
+              ]
+            }
+          },
+          "required": [
+            "data",
+            "format"
+          ],
+          "additionalProperties": false
+        },
+        "prompt_cache_breakpoint": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "explicit"
+            },
+            "ttl": {
+              "enum": [
+                "30m",
+                "12h"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "input_audio"
+      ],
+      "additionalProperties": false
+    },
     "message": {
       "type": "object",
       "properties": {
@@ -1095,6 +1165,9 @@
                   },
                   {
                     "$ref": "#/$defs/filePart"
+                  },
+                  {
+                    "$ref": "#/$defs/audioPart"
                   }
                 ]
               }
@@ -1233,6 +1306,49 @@
       ],
       "additionalProperties": false,
       "allOf": [
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "not": {
+                  "const": "user"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "anyOf": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "not": {
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "const": "input_audio"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "if": {
             "required": [
@@ -3637,7 +3753,7 @@
     "media_chunked_prefill": true,
     "unsupported": [
       "video_container_on_server",
-      "audio",
+      "audio_output",
       "MTP",
       "multiple_execution_slots"
     ]

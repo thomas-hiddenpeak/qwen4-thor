@@ -1,0 +1,74 @@
+{
+  "reused-python-mixed": {
+    "voice_labels": [
+      "A",
+      "B"
+    ],
+    "per_voice_word_error_rate": [
+      0.14285714285714285,
+      0.0
+    ],
+    "quality_passed": false,
+    "overlap_seconds": 1.68,
+    "text": "We are sure that one war is enough. The child almost hurts the small dog."
+  },
+  "python-known": {
+    "voice_labels": [
+      "first",
+      "second"
+    ],
+    "per_voice_word_error_rate": [
+      0.14285714285714285,
+      0.0
+    ],
+    "quality_passed": false,
+    "overlap_seconds": 1.68,
+    "text": "We are sure that one war is enough. The child almost hurts the small dog."
+  },
+  "python-single": {
+    "voice_labels": [
+      "A"
+    ],
+    "per_voice_word_error_rate": [
+      0.0
+    ],
+    "quality_passed": true,
+    "overlap_seconds": 0,
+    "text": "The child almost hurt the small dog."
+  },
+  "python-second-solo": {
+    "voice_labels": [
+      "A"
+    ],
+    "per_voice_word_error_rate": [
+      0.0
+    ],
+    "quality_passed": true,
+    "overlap_seconds": 0,
+    "text": "We are sure that one war is enough."
+  },
+  "python-quiet-single": {
+    "voice_labels": [
+      "A"
+    ],
+    "per_voice_word_error_rate": [
+      0.0
+    ],
+    "quality_passed": true,
+    "overlap_seconds": 0,
+    "text": "The child almost hurt the small dog."
+  },
+  "js-maximum": {
+    "voice_labels": [
+      "A",
+      "B"
+    ],
+    "per_voice_word_error_rate": [
+      0.14285714285714285,
+      0.0
+    ],
+    "quality_passed": false,
+    "overlap_seconds": 1.68,
+    "text": "We are sure that one war is enough. The child almost hurts the small dog."
+  }
+}

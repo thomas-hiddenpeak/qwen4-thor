@@ -13,6 +13,8 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/http_request.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_jobs.h"
@@ -163,6 +165,77 @@ Q4T_TEST(batch_execution_http_errors_are_complete_responses_not_orchestration_er
   const auto body = Parsed(result.response_body);
   Q4T_CHECK(body.Find("error")->GetString("code") == "client_tpm_exhausted" &&
             body.Find("error")->GetString("param") == "max_tokens");
+  return true;
+}
+
+Q4T_TEST(batch_execution_shared_body_lease_covers_endpoint_and_response) {
+  Fixture fixture;
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  HttpBodyBudget shared(128);
+  HttpBodyLease online(shared);
+  Q4T_CHECK(online.Acquire(64));
+  auto control = Control();
+  bool held = false;
+  const auto result = ExecuteBatchEndpoint(
+      control->id(), fixture.alpha, permit, control,
+      [&] {
+        HttpBodyLease contender(shared);
+        held = shared.Used() == 128 && !contender.Acquire(1);
+        detail::SendSimple(-1, 200, "OK", kBody, "application/json");
+        held = held && shared.Used() == 128;
+      },
+      {}, "/v1/chat/completions", &shared, 64);
+  Q4T_CHECK(held && result.error.ok() && result.http_status == 200 &&
+            result.response_body == kBody && shared.Used() == 64);
+  HttpBodyLease following(shared);
+  Q4T_CHECK(following.Acquire(64));
+  return true;
+}
+
+Q4T_TEST(batch_execution_shared_body_exhaustion_never_invokes_or_charges) {
+  Fixture fixture;
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  HttpBodyBudget shared(128);
+  HttpBodyLease online(shared);
+  Q4T_CHECK(online.Acquire(100));
+  for (const size_t bytes : {size_t{29}, kChatBodyBytes + 1}) {
+    auto control = Control();
+    bool invoked = false;
+    const auto result = ExecuteBatchEndpoint(
+        control->id(), fixture.alpha, permit, control, [&] { invoked = true; },
+        {}, "/v1/chat/completions", &shared, bytes);
+    Q4T_CHECK(!invoked && result.response_body.empty() && result.actual_usage &&
+              result.actual_usage->input == 0 &&
+              result.actual_usage->output == 0);
+    Q4T_CHECK(result.error.http_status == (bytes == 29 ? 503 : 413) &&
+              shared.Used() == 100);
+    Q4T_CHECK(control->ClaimInvocation());  // No execution ticket was consumed.
+  }
+  return true;
+}
+
+Q4T_TEST(batch_execution_shared_body_releases_after_exception_or_cancellation) {
+  Fixture fixture;
+  ClientLease permit;
+  Q4T_CHECK(permit.Acquire(fixture.clients, fixture.alpha, ClientLane::kData));
+  HttpBodyBudget shared(128);
+  for (int kind = 0; kind < 2; ++kind) {
+    auto control = Control();
+    if (kind) control->Cancel(RequestControl::State::kDisconnect);
+    bool invoked = false;
+    const auto result = ExecuteBatchEndpoint(
+        control->id(), fixture.alpha, permit, control,
+        [&] {
+          invoked = shared.Used() == 128;
+          throw std::runtime_error("owned fixture failure");
+        },
+        {}, "/v1/chat/completions", &shared, 128);
+    Q4T_CHECK(invoked == !kind && shared.Used() == 0);
+    Q4T_CHECK(kind ? result.error.http_status == 499
+                   : result.http_status == 500);
+  }
   return true;
 }
 

@@ -1,0 +1,7 @@
+test_actual_preparation_required_and_reservations_cannot_replace_usage (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_actual_preparation_required_and_reservations_cannot_replace_usage) ... ok
+test_json_and_sse_keep_actual_shared_usage_without_transcript_events (tools.native_asr.test_chat_acceptance.ChatAcceptance.test_json_and_sse_keep_actual_shared_usage_without_transcript_events) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

@@ -1,0 +1,3 @@
+[PASS] chat_audio_complete_projection_preserves_neighbors_and_silence
+[PASS] chat_audio_real_asr_text_reaches_template_with_modality_and_boundaries
+2 tests, 2 passed, 0 failed, 0 skipped

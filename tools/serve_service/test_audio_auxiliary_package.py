@@ -9,6 +9,10 @@ from unittest import mock
 
 from tools.serve_service import package as pkg, service, test_asr_package as asr
 
+# Preserve the already-qualified pre-separator package cases. The separator's
+# dependencies and additional configuration are checked in their own suite.
+AUXILIARIES = {k:pkg.ASR_AUXILIARY[k] for k in ('alignment','vad','speaker')}
+
 
 class AudioAuxiliaryPackage(unittest.TestCase):
     setUp = asr.AsrPackage.setUp
@@ -19,7 +23,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
     def auxiliary(self):
         return {name:dict(fixed, directory=str(self.root/('absent-'+name)),
                           limits=dict(defaults))
-                for name, (fixed, defaults, _) in pkg.ASR_AUXILIARY.items()}
+                for name, (fixed, defaults, _) in AUXILIARIES.items()}
 
     def audio_fixture(self):
         binary, release, model = self.asr_fixture()
@@ -64,7 +68,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
         accepted = pkg.asr_settings(value)
         accepted['alignment']['limits']['max_words'] = 1
         self.assertEqual(value['alignment']['limits']['max_words'], 512)
-        for name in pkg.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             for field in pkg.ASR_AUXILIARY[name][0]:
                 bad = copy.deepcopy(value);bad[name][field] = 'other'
                 with self.assertRaises(RuntimeError): pkg.asr_settings(bad)
@@ -84,7 +88,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
         metadata = pkg.read(release)
         selected = dict(self.selected(), **self.auxiliary())
         pkg.check_asr_declaration(metadata, selected)
-        for name in pkg.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             for field, invalid in [('configured',False), ('configured',1),
                                    ('weight_sha256','0'*64), ('revision','other')]:
                 bad = copy.deepcopy(metadata)
@@ -165,7 +169,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
         config = pkg.read(root/'config.json');caps = pkg.read(root/'capabilities.json')
         native = dict(self.selected(), **self.auxiliary())
         native['limits'] = config['native_asr_limits']
-        for name in pkg.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             native[name]['limits'] = pkg.asr_auxiliary_observed_limits(config, name)
         metadata = dict(chat_protocol=caps, observed_configuration=config)
         pkg.check_asr_declaration(metadata, native)

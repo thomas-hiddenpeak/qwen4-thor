@@ -1,0 +1,15 @@
+{
+  "status": "PASS_DRIVER_AND_CAPABILITY_CPU_HTTP_PENDING",
+  "cpu_tests": 3,
+  "source_checks": 2,
+  "gpu": 0,
+  "fixture_generation_initial_failure": "English source is 48kHz PCM24; cancellation uses original 16kHz PCM16 Chinese recording, English MP3 remains actual 48k source encoding",
+  "initial_fixture_directory": ".q4t-work/serve-chat-audio-20261118/fixtures-01",
+  "binary_sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d",
+  "next_limits": {
+    "starts": 1,
+    "requests": 13,
+    "seconds": 900
+  },
+  "default_changed": false
+}

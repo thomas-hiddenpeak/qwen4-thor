@@ -1,4 +1,5 @@
 #include "q4t/server/chat_web_search.h"
+#include "q4t/server/chat_audio_inputs.h"
 
 #include <algorithm>
 
@@ -100,7 +101,9 @@ ObjectReply ChatWebSearch::Prepare(ObjectStore* objects, const Json& request,
                  "Web search has no configured source");
   std::string identity, query;
   if (!InputValueIdentity(request, &identity)) return Invalid();
-  auto reply = Query(request, &query);
+  auto reply = Query(HasChatAudioInputs(request) ? plan->Request(request)
+                                                : request,
+                      &query);
   if (!reply.ok()) return reply;
   const auto policy = WebIndexIdentity(*config.web_policy, search);
   Json item, bindings;

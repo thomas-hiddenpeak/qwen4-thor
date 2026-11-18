@@ -1,0 +1,48 @@
+{
+  "commands": {
+    "host": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/composition-cpu-01/required.txt"
+    ],
+    "schema": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_protocol.test_chat_audio"
+    ],
+    "inventory": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "contract": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ]
+  },
+  "limits": {
+    "cpu_tests": 6,
+    "source_checks": 2,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "reuse": "runtime-cpu-01: 12 unchanged contract/usage cases",
+  "identities": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "62f326046868a65f6d08e52b0a8cef35bb9c95a81eb63a2aaa85193eda842a90",
+    "src/server/chat_audio_inputs.cpp": "ab9177274b1335e9e02f9744d0522386441fe9ea2d96eccfdff885501cc89a28",
+    "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
+    "src/server/batch_preparation.cpp": "ed88190b17068a6dfe0f74338bb0d22a8154946774be384c90fa2672cf882e3a",
+    "src/server/asr_service.cpp": "d0dde16670a061cb785bbfd2a928ef1daa717275298345aebc1e61501c2f4651",
+    "tests/server_chat_audio_inputs_test.cpp": "6ea37e94fea42b182f0fff7043b30b1f70f2e17a6594e2a89721ef8d50ce3cea",
+    "tests/server_batch_preparation_test.cpp": "1febc6bdfd82ecd018cfac4cb295871a4368452cbc64155a093cf9ae311234c0",
+    "tests/server_asr_service_test.cpp": "bdeeadaf1332643ded394ff85ebf87bff278befc5dae0438d8d335e0dee63e0e",
+    "tools/serve_protocol/test_chat_audio.py": "b7d6b49d77b010fe0fc0d72144e3e98ad92ddffd409db6c2a198118e6e498fc8",
+    "tools/serve_protocol/build_contract.py": "ec529ce8a7ebf18cc810c03a30d0e521a5a66317c1c432a44137076a5ff05b0b"
+  }
+}

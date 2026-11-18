@@ -1,0 +1,1 @@
+{"duration":4,"task":"transcribe","text":"The child almost hurt the small dog.","segments":[{"id":"0","type":"transcript.text.segment","start":0.23999999999999999,"end":3.04,"speaker":"A","text":"The child almost hurt the small dog."}],"usage":{"type":"tokens","input_tokens":124,"output_tokens":9,"total_tokens":133,"input_token_details":{"audio_tokens":41,"text_tokens":83}}}

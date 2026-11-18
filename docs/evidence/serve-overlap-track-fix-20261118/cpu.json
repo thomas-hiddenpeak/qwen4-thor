@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "name": "contracts",
+      "returncode": 0,
+      "seconds": 0.03160683112218976
+    },
+    {
+      "name": "inventory",
+      "returncode": 0,
+      "seconds": 0.16386308101937175
+    },
+    {
+      "name": "generated",
+      "returncode": 0,
+      "seconds": 0.1639814367517829
+    },
+    {
+      "name": "real-0",
+      "returncode": 0,
+      "seconds": 0.0034654131159186363,
+      "decision": {
+        "tracks": 1,
+        "coherence": 0.624713070058,
+        "coherent_energy_fraction": 1,
+        "independent_region": false
+      },
+      "expected_tracks": 1,
+      "matched": true
+    },
+    {
+      "name": "real-1",
+      "returncode": 0,
+      "seconds": 0.003393476828932762,
+      "decision": {
+        "tracks": 2,
+        "coherence": 0.0276519057738,
+        "coherent_energy_fraction": 0,
+        "independent_region": true
+      },
+      "expected_tracks": 2,
+      "matched": true
+    },
+    {
+      "name": "real-2",
+      "returncode": 0,
+      "seconds": 0.0033119963482022285,
+      "decision": {
+        "tracks": 1,
+        "coherence": 0.627128825091,
+        "coherent_energy_fraction": 1,
+        "independent_region": false
+      },
+      "expected_tracks": 1,
+      "matched": true
+    },
+    {
+      "name": "real-3",
+      "returncode": 0,
+      "seconds": 0.0032988861203193665,
+      "decision": {
+        "tracks": 1,
+        "coherence": 0.584751497362,
+        "coherent_energy_fraction": 0.969889050397,
+        "independent_region": false
+      },
+      "expected_tracks": 1,
+      "matched": true
+    }
+  ],
+  "seconds": 0.37327693961560726
+}

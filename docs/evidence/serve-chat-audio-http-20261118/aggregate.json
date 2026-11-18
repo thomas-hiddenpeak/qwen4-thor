@@ -1,0 +1,43 @@
+{
+  "runs": [
+    {
+      "directory": "http-02",
+      "result_sha256": "1643cbcb2a850f817053ebc40bcb97cbcd90c8135265ee97e4a7219906edaf87",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 3,
+      "seconds": 50.33853558311239
+    },
+    {
+      "directory": "http-03",
+      "result_sha256": "a1bb09c55312be204de22562c3b887cf4edff2cfc99a2bf8dc6d3e19c5b6bcf8",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 2,
+      "seconds": 42.34429463883862
+    },
+    {
+      "directory": "http-04",
+      "result_sha256": "973360d693a740bec1de4188e727ed1bb7153158017dcfb597a77177ff076448",
+      "status": "FAILED",
+      "starts": 1,
+      "requests": 4,
+      "seconds": 58.15840424085036
+    },
+    {
+      "directory": "http-05",
+      "result_sha256": "4eb75a43c8ab60c1fe0d4773c6974e7458877a81ef8076e14bd7406e7dc8a232",
+      "status": "PASS_CHAT_AUDIO_WITH_REUSED_SPEECH_AND_TOOL_BUSINESS",
+      "starts": 1,
+      "requests": 7,
+      "seconds": 44.234555437229574
+    }
+  ],
+  "total_starts": 4,
+  "total_requests": 16,
+  "unique_original_cases_passed": 13,
+  "additional_asr_diagnosis": 1,
+  "original_quality_failures_preserved": 2,
+  "original_checker_failure_preserved": 1,
+  "managed_delivery_pending": true
+}

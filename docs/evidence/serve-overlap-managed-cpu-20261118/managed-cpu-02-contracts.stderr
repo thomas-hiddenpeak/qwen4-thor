@@ -1,0 +1,7 @@
+test_completion_declaration_and_migration_cannot_drop_separator (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_completion_declaration_and_migration_cannot_drop_separator) ... ok
+test_managed_cli_accepts_explicit_fixed_source (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_managed_cli_accepts_explicit_fixed_source) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.036s
+
+OK

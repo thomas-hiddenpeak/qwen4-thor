@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "version": "2.8.1",
+  "error": {
+    "type": "InternalServerError",
+    "message": "Error code: 502 - {'error': {'message': 'overlapping output incomplete or usage invalid', 'type': 'server_error', 'code': 'asr_usage_invalid', 'param': None}}",
+    "status": 502
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18260/v1/audio/transcriptions"
+    }
+  ]
+}

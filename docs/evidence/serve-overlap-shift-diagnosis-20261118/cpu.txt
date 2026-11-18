@@ -1,0 +1,8 @@
+test_bad_shape_silent_and_nonfinite_sources_rejected (tools.native_separator.test_shift_diagnosis.ShiftAlignment.test_bad_shape_silent_and_nonfinite_sources_rejected) ... ok
+test_swapped_scaled_inverted_channels_keep_both_real_waves (tools.native_separator.test_shift_diagnosis.ShiftAlignment.test_swapped_scaled_inverted_channels_keep_both_real_waves) ... ok
+test_unrelated_shift_cannot_be_mixed_into_a_speaker (tools.native_separator.test_shift_diagnosis.ShiftAlignment.test_unrelated_shift_cannot_be_mixed_into_a_speaker) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.016s
+
+OK

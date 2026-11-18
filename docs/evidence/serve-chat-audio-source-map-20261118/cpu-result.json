@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "records": {
+    "host": {
+      "returncode": 0,
+      "seconds": 0.21400273963809013
+    },
+    "retained": {
+      "returncode": 0,
+      "seconds": 0.2640120489522815
+    },
+    "inventory": {
+      "returncode": 0,
+      "seconds": 0.26400144724175334
+    },
+    "contract": {
+      "returncode": 0,
+      "seconds": 0.16384446900337934
+    }
+  },
+  "seconds": 0.9061334100551903
+}

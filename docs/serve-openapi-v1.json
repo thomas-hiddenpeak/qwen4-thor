@@ -3170,7 +3170,21 @@
             "references": "up to 4 inline audio data URLs, 2 to 10 seconds each",
             "timing": "actual aligner words assigned by acoustic interval overlap",
             "streaming": "completed segment_id delta and segment, then one complete done",
-            "overlap": "required implementation remains pending"
+            "overlap": {
+              "configured_by": "separator-model-dir",
+              "requires": [
+                "speaker-model-dir"
+              ],
+              "model": "speechbrain-sepformer-wsj02mix",
+              "backend": "native SepFormer FP32",
+              "simultaneous_sources": 2,
+              "sample_rate": 8000,
+              "output_sample_rate": 16000,
+              "timing": "original time, crossing segments retained",
+              "identity": "cross-track actual ECAPA embeddings",
+              "quotas": "one original RPM/output/VAD/window budget for both tracks",
+              "acceptance": "actual mixed-voice HTTP and recovery remain pending"
+            }
           },
           "alignment": {
             "configured_by": "aligner-model-dir",

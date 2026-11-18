@@ -1,0 +1,32 @@
+{
+  "limits": {
+    "cpu_tests": 5,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "scope": [
+    "unchanged and observed qualified cold downgrade",
+    "missing or false memory evidence rejects",
+    "history/cooldown/binding tampering rejects",
+    "observer leaves production input and decision unchanged",
+    "existing actor sealed payload identity"
+  ],
+  "next_gpu": {
+    "scenario": "tool_version",
+    "starts": 2,
+    "chats": 8,
+    "probes": 1,
+    "seconds": 600,
+    "unchanged_packages": true,
+    "reuse_three_accepted_stages": true
+  },
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_asr.test_recovery_profiles",
+    "tools.serve_recovery.test_version_acceptance.DriverTests.test_each_actor_imports_its_selected_sealed_payload_and_exact_version_budget"
+  ]
+}

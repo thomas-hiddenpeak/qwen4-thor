@@ -2,6 +2,7 @@
 
 #include "q4t/audio/asr_layout.h"
 #include "q4t/server/asr_assets.h"
+#include "q4t/server/request_limits.h"
 
 namespace q4t::server {
 namespace {
@@ -9,8 +10,8 @@ constexpr uint64_t kMiB = 1024 * 1024;
 constexpr uint64_t kHostMargin = 512 * kMiB;
 }  // namespace
 Status PlanAsrServiceResources(const AsrServiceLimits& limits,
-                               AsrResourcePlan* out) {
-  if (!out || !limits.Valid())
+                               AsrResourcePlan* out, size_t batch_workers) {
+  if (!out || !limits.Valid() || !batch_workers || batch_workers > 8)
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
   const size_t frames = size_t(limits.max_audio_seconds) * 100;
   // At least the trained empty-context template and full output budget fit.
@@ -34,9 +35,19 @@ Status PlanAsrServiceResources(const AsrServiceLimits& limits,
   // Encoder output stays in its owned workspace through decoder completion.
   plan.request_device_bytes = encoder.bytes + decoder.bytes;
   // Encoded source, mono PCM, mel, host logits/output and bounded metadata.
-  // Both the bounded multipart body and its owned binary file may coexist.
+  // HTTP and executing Batch rows share one body lease through completion.
+  // Charge their bounded HTTP/JSON/legacy/file projection copies once across
+  // that aggregate, not one maximum-size aggregate per admitted request.
+  // Each Batch worker can also hold its source row and frozen input before
+  // execution acquires the shared lease. Count both separately.
+  plan.shared_host_bytes =
+      6 * kAggregateChatBodyBytes + 2 * batch_workers * kChatBodyBytes;
+  // Decoded source bytes and temporary canonical-base64/hash serialization
+  // remain per request, as do PCM/features and bounded output metadata.
+  // These are all in the same physical RAM, not CPU offload. Multipart is
+  // smaller; this estimate bounds either enabled ASR entry, not host OOM.
   plan.request_host_bytes =
-      (32 + 25) * kMiB +
+      3 * 25 * kMiB +
       uint64_t(limits.max_audio_seconds) * 16000 * sizeof(float) +
       frames * audio::AsrConfig::kMelBins * sizeof(float) + 16 * kMiB;
   plan.load_peak_bytes = 3 * kNativeAsrFileBytes + kHostMargin;

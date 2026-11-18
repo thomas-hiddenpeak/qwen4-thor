@@ -10,6 +10,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/access_program.h"
+#include "q4t/server/asr_service.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
@@ -61,6 +62,9 @@ struct ChatPlanConfig {
   // Pure validation before request-owned file acquisition. The renderer must
   // receive the expanded request, with this flag cleared.
   bool preparing_file_inputs = false;
+  bool preparing_audio_inputs = false;
+  bool native_asr_enabled = false;
+  AsrServiceLimits asr_limits;
   // Validated Responses history only. Public Chat cannot set this policy.
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;

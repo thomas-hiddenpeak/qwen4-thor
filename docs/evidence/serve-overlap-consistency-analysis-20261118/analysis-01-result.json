@@ -1,0 +1,7 @@
+{
+  "status": "PREPARE_FAILED",
+  "reason": "retained component directory needs plan output/run prefix",
+  "candidate_cases_executed": 0,
+  "gpu": 0,
+  "tool_sha256": "da1883849e8bb28b222a0f745064445898c9d1b1f4415a6078588a67c0cb2efc"
+}

@@ -1,0 +1,14 @@
+{
+  "gpu": 0,
+  "fixture_generation_only": true,
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_en.wav",
+  "source_sha256": "f9b4440ac8393e47c14a6240e9739dea09b645bb1592b8f2dd48feb9666cea7f",
+  "cancellation_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_zh.wav",
+  "cancellation_source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+  "files": {
+    "cancel.wav": "961d13c46b94b4e2935a9c28412a407b48432a6aefcba33e8caee87c1e20b99e",
+    "en.mp3": "3c38cb881f0761f3b4c2c6df68bc2ef2aaaddf065f2289598d104b5dabdaae12",
+    "overlong.wav": "6c42f77ac019a37d8986d5df8a83d188a75bbd4182f78579570c7f7b217de79b",
+    "silence.wav": "643f8a8dc8bd9c19225afffad2becfec5426180b3749cb208abdf1a6c8354efc"
+  }
+}

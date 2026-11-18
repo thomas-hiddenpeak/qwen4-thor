@@ -2,6 +2,7 @@
 #pragma once
 
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <mutex>
 #include <string>
@@ -29,12 +30,13 @@ struct AsrResourcePlan {
   uint64_t decoder_bytes = 0;
   uint64_t request_device_bytes = 0;
   uint64_t request_host_bytes = 0;
+  uint64_t shared_host_bytes = 0;
   uint64_t load_peak_bytes = 0;
 };
 // Estimates include host staging, device payload and possible file pages in
 // the same physical RAM. Not a reservation or a guarantee against host OOM.
 Status PlanAsrServiceResources(const AsrServiceLimits& limits,
-                               AsrResourcePlan* out);
+                               AsrResourcePlan* out, size_t batch_workers = 1);
 std::string AsrServiceLimitsJson(const AsrServiceLimits& limits);
 
 enum class AsrFailure {

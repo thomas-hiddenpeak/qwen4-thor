@@ -1,0 +1,16 @@
+{
+  "headRefOid": "3f5f68c077cb6bea293d688490f50eb622c8fae9",
+  "mergeCommit": {
+    "oid": "704136283e1a345f3ff6b6497f019b0cc15ee665"
+  },
+  "mergedAt": "2026-11-17T19:47:10Z",
+  "mergedBy": {
+    "id": "U_kgDOBwxNwg",
+    "is_bot": false,
+    "login": "thomas-hiddenpeak",
+    "name": "Thomas Hiddenpeak"
+  },
+  "number": 46,
+  "state": "MERGED",
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46"
+}

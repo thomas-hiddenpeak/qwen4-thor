@@ -1,0 +1,48 @@
+{
+  "observations": {
+    "original": {
+      "text": "The child almost hurt the small dog.",
+      "word_error_rate": 0.0,
+      "usage": {
+        "input_tokens": 59,
+        "output_tokens": 9,
+        "total_tokens": 68,
+        "type": "tokens",
+        "input_token_details": {
+          "audio_tokens": 41,
+          "text_tokens": 18
+        }
+      }
+    },
+    "limited": {
+      "text": "The child almost hurt the small dog.",
+      "word_error_rate": 0.0,
+      "usage": {
+        "input_tokens": 58,
+        "output_tokens": 9,
+        "total_tokens": 67,
+        "type": "tokens",
+        "input_token_details": {
+          "audio_tokens": 40,
+          "text_tokens": 18
+        }
+      }
+    },
+    "separated": {
+      "text": "The child almost hurts the small dog.",
+      "word_error_rate": 0.14285714285714285,
+      "usage": {
+        "input_tokens": 58,
+        "output_tokens": 9,
+        "total_tokens": 67,
+        "type": "tokens",
+        "input_token_details": {
+          "audio_tokens": 40,
+          "text_tokens": 18
+        }
+      }
+    }
+  },
+  "release_acceptance": false,
+  "original_quality_failure_retained": true
+}

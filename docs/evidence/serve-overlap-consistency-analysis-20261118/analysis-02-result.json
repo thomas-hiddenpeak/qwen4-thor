@@ -1,0 +1,7 @@
+{
+  "status": "PREPARE_FAILED",
+  "reason": "component run/native path not yet selected; zero candidate execution",
+  "candidate_cases_executed": 0,
+  "gpu": 0,
+  "tool_sha256": "00c4a5ac896aa5c33624302e96d3356035ccc5e66f04c9d6296a718c5f260716"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "ACCEPT_NATIVE_SEPARATOR_ASSET_CONTRACT",
+  "tests": 8,
+  "seconds": 0.16388194961473346,
+  "gpu_loads": 0,
+  "http_requests": 0,
+  "runtime_endpoint_delivered": false,
+  "default_rev296_unchanged": true,
+  "model_revision": "3a2826343a10e2d2e8a75f79aeab5ff3a2473531",
+  "model_sha256": "5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299",
+  "model_bytes": 113011580,
+  "tensor_count": 417,
+  "weight_bytes": 112957444,
+  "conversion_seconds": 1.4124692198820412,
+  "original_tensor_values_preserved": true,
+  "archive_sha256": "02d6c1cd77399d45e1ddf0602152ee0704bbf7f8012de4ec2a99457455436845",
+  "all_master_tasks_active": true
+}

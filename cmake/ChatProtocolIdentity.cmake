@@ -3,6 +3,24 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/audio/separator_tracks.h
+  src/audio/separator_tracks.cpp
+  include/q4t/audio/separator_config.h
+  include/q4t/audio/separator_layout.h
+  include/q4t/audio/separator_model.h
+  include/q4t/audio/separator_resample.h
+  include/q4t/server/separator_assets.h
+  include/q4t/server/separator_service.h
+  include/q4t/server/overlapping_output.h
+  src/audio/separator_config.cpp
+  src/audio/separator_layout.cpp
+  src/audio/separator_model.cu
+  src/audio/separator_resample.cpp
+  src/server/separator_assets.cpp
+  src/server/separator_service.cpp
+  src/server/chat_separator_backend.cpp
+  src/server/chat_separator_execution.cpp
+  src/server/overlapping_output.cpp
   include/q4t/server/speaker_reference.h
   src/server/chat_speaker_backend.cpp
   src/server/chat_speaker_execution.cpp
@@ -33,6 +51,9 @@ set(protocol_inputs
   include/q4t/server/vad_assets.h
   src/server/vad_assets.cpp
   include/q4t/server/asr_request.h
+  include/q4t/server/chat_audio_inputs.h
+  src/server/chat_audio_inputs.cpp
+  src/server/chat_audio_execution.cpp
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h
   include/q4t/server/asr_alignment_output.h

@@ -1,4 +1,5 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/generation_style.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
@@ -82,7 +83,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                             bool allow_empty_messages,
                             bool preparing_file_inputs,
                             std::span<const std::string> async_call_ids,
-                            bool responses_tool_media) {
+                            bool responses_tool_media,
+                            bool preparing_audio_inputs) {
   if (HasLegacyTools(req)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(req, &normalized, error_param);
@@ -90,7 +92,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     status = ValidateChatContract(normalized.request, model_name, allow_media,
                                   error_param, allow_empty_messages,
                                   preparing_file_inputs, async_call_ids,
-                                  responses_tool_media);
+                                  responses_tool_media, preparing_audio_inputs);
     if (!status) LegacyToolErrorParam(req, error_param);
     return status;
   }
@@ -108,6 +110,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "prompt",
                         "messages",
                         "moderation",
+                        "modalities",
+                        "audio",
                         "web_search_options",
                         "max_tokens",
                         "max_completion_tokens",
@@ -313,6 +317,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       ValidateChatMessageProfile(*messages, error_param, allow_empty_messages);
   if (!status) return status;
   size_t media_items = 0;
+  size_t audio_items = 0;
   for (size_t index = 0; index < messages->array.size(); ++index) {
     const auto& message = messages->array[index];
     *error_param = "messages[" + std::to_string(index) + "]";
@@ -341,6 +346,18 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       if (!part.IsObject())
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
+      if (type == "input_audio" || part.Has("input_audio")) {
+        FileInputSource source;
+        const auto parsed = ParseChatAudioSource(
+            part, message.GetString("role"), part_param, &source);
+        if (!parsed.ok())
+          return invalid(parsed.value.GetString("param"), parsed.message);
+        if (++audio_items > 8)
+          return invalid(part_param, "Audio part capacity exceeded");
+        if (!preparing_audio_inputs)
+          return invalid(part_param, "Audio input requires preparation");
+        continue;
+      }
       if (preparing_file_inputs && type == "file") {
         status = Fields(part, {"type", "file", "prompt_cache_breakpoint"});
         if (!status) return status;

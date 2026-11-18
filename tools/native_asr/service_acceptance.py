@@ -7,6 +7,7 @@ import base64
 import copy
 import hashlib
 import http.client
+import io
 import json
 import os
 from pathlib import Path
@@ -31,6 +32,23 @@ LIMITS = dict(tool_retained=dict(starts=1, chats=3, probes=0, controls=1500, sec
               tls=dict(starts=1, chats=7, probes=0, controls=2000, seconds=600),
               tls_remaining=dict(starts=1, chats=3, probes=0, controls=2000, seconds=600))
 WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
+
+
+def limits_for(scenario, chat_audio=False):
+    require(type(chat_audio) is bool, 'invalid managed Chat audio budget')
+    limits = dict(LIMITS[scenario])
+    if chat_audio:
+        require(scenario != 'tls_remaining', 'new Chat audio requires its complete TLS stage')
+        limits['chats'] += 2 if scenario in ('tool_version', 'tls') else 1
+    return limits
+
+
+def configure_plan_limits(plan):
+    expected = limits_for(plan['scenario'], plan.get('chat_audio', False))
+    require(plan['limits'] == expected, 'managed audio frozen budget differs')
+    # Reused actors/verifiers share this process-local namespace, never a live
+    # service policy. Only the fixed feature-specific increment is accepted.
+    GLOBALS['LIMITS'] = dict(LIMITS, **{plan['scenario']: expected})
 
 
 def direct():
@@ -59,11 +77,16 @@ def prepare(args):
         policy['listen_host'] == '127.0.0.1' and
         manifest['recovery_profiles']['identity'].get('native_asr'),
         'exact native ASR qualified payload/TLS mode required')
+    from tools.serve_recovery import profile_evidence
+    qualified = engine.read(pack/'profile-primary.json')
+    chat_audio = profile_evidence.chat_audio_enabled(
+        manifest['recovery_profiles']['identity'], qualified['capabilities'])
+    limits = limits_for(args.scenario, chat_audio)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
         'tools/native_asr', 'src/service', 'include/q4t/service'], cwd=ROOT, text=True).splitlines()
-    plan = dict(version=1, scenario=args.scenario, limits=LIMITS[args.scenario],
+    plan = dict(version=1, scenario=args.scenario, limits=limits,
         package=dict(package=str(pack), manifest_sha256=digest), output=str(out),
         sources={n:engine.sha(ROOT/n) for n in sorted(set(names)|bundle.NATIVE_SOURCES)},
         protected=[dict(path=str(ROOT/n), sha256=engine.sha(ROOT/n)) for n in
@@ -74,9 +97,9 @@ def prepare(args):
         command=[sys.executable, '-I', '-B', str(Path(__file__).resolve()),
                  'run', '--plan', str(out/'plan.json')], requests=requests(),
         default_replacement=False, automatic_request_replay=False,
-        planned=dict(starts=LIMITS[args.scenario]['starts'],
-            self_checks=LIMITS[args.scenario]['starts'],
-            counted_post_requests=LIMITS[args.scenario]['chats']), scope=__doc__)
+        planned=dict(starts=limits['starts'], self_checks=limits['starts'],
+            counted_post_requests=limits['chats']), scope=__doc__)
+    if chat_audio: plan['chat_audio'] = True
     reference = engine.read(WORK/'service-http-05/plan.json')
     plan['clips'] = reference['clips']
     plan['sdk'] = reference['sdk']
@@ -95,11 +118,17 @@ def prepare(args):
     if profile_evidence.audio_auxiliaries(fixed):
         plan['audio_auxiliary'] = fixed
         source_path = Path(plan['clips']['zh']['path'])
-        if profile_evidence.has_speaker(fixed):
+        if profile_evidence.has_separator(fixed):
+            source_path = getattr(args, 'separator_audio', None)
+            require(source_path is not None, 'managed separator needs fixed mixed audio')
+            source_path = source_path.resolve(strict=True)
+            require(engine.sha(source_path) == profile_evidence.SEPARATOR_FILE_SHA,
+                    'qualified mixed-speaker source differs')
+        elif profile_evidence.has_speaker(fixed):
             source_path = ROOT/'.q4t-work/serve-diarization-20261118/http-01/returns.wav'
             require(engine.sha(source_path) == profile_evidence.SPEAKER_FILE_SHA,
                     'accepted returning-speaker source differs')
-            plan['sources'][str(source_path)] = engine.sha(source_path)
+        plan['sources'][str(source_path)] = engine.sha(source_path)
         source = source_path.read_bytes()
         audio = out/'auxiliary.wav'
         audio.write_bytes(auxiliary_service.source(source, fixed))
@@ -134,6 +163,7 @@ def prepare(args):
         plan['prior_evidence'] = [dict(path=str(Path(reused['directory'])/name), sha256=digest)
                                   for name, digest in reused['files'].items()]
     if args.scenario == 'tool_version':
+        plan['observe_cold_profiles'] = True
         from tools.serve_recovery import version_contract
         require(args.retained and args.release and args.decision,
                 'finalized exact retained acceptance required')
@@ -266,6 +296,7 @@ ORIGINAL_ACCEPTED_RUN = BASE['accepted_run']
 
 
 def accepted_run(plan, *args):
+    configure_plan_limits(plan)
     result = ORIGINAL_ACCEPTED_RUN(plan, *args)
     if 'reused_tls' in plan:
         require(reuse_tls(plan['reused_tls']['directory']) == plan['reused_tls'],
@@ -331,6 +362,43 @@ def check_business(out):
         health['core_readiness_dependency'] is False and
         config['native_asr_limits'] == expected['settings']['native_asr']['limits'],
         'ASR health or configured budget lost')
+    if plan.get('chat_audio'):
+        from tools.serve_recovery import profile_evidence
+        from tools.examples.chat_client import read_sse
+        clip = plan['clips']['zh']
+        require(hashlib.sha256(Path(clip['path']).read_bytes()).hexdigest() == clip['sha256'],
+                'managed Chat audio source changed')
+        encoded = base64.b64encode(Path(clip['path']).read_bytes()).decode()
+        identity = dict(native_asr=expected['settings']['native_asr'])
+        for label in (['chat-python', 'chat-js'] if tls else
+                      ['primary-chat-audio', 'fallback-chat-audio'] if version else
+                      ['primary-chat-audio']):
+            stream = label == 'chat-js'
+            body = read(label+'-request.json')
+            require(body == profile_evidence.chat_audio_request(encoded, stream=stream),
+                    'managed Chat audio original request differs')
+            wire = (out/(label+'.wire')).read_bytes()
+            if stream:
+                parsed = read_sse(io.BytesIO(wire))
+                answer = dict(object='chat.completion', choices=parsed.choices, usage=parsed.usage)
+            else: answer = json.loads(wire)
+            witness = profile_evidence.chat_audio_witness(encoded, answer, config, stream=stream)
+            profile_evidence.chat_audio_business(witness, identity, encoded, stream=stream)
+            results[label] = dict(request_sha256=witness['request_sha256'],
+                source_sha256=witness['source_sha256'], usage=answer['usage'])
+            if tls:
+                sdk = read(label+'.sdk.json')
+                require(sdk['ok'] and len(sdk['exchanges']) == 1,
+                        'managed Chat SDK failed or retried')
+                if stream:
+                    events = [json.loads(line[6:]) for line in wire.decode().splitlines()
+                              if line.startswith('data: {')]
+                    require(sdk['version'] == '7.47.0' and sdk['result']['events'] == events,
+                            'managed Chat SSE differs from SDK')
+                else:
+                    sdk_witness = dict(witness, response=sdk['result'])
+                    profile_evidence.chat_audio_business(sdk_witness, identity, encoded)
+                    require(sdk['version'] == '2.8.1', 'managed Chat Python SDK drift')
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -342,7 +410,17 @@ def check_business(out):
             after['version_recovery']['selected'] == 'fallback' and
             after['version_recovery']['probe_count'] == 1, 'whole-payload recovery missing')
         state = read('profile-continuity.json')
-        require(state['before'] == state['after'], 'recovery erased original profile budget')
+        if plan.get('observe_cold_profiles'):
+            from tools.native_asr import recovery_profiles
+            registry = read_registry(plan)
+            observed = cold_observations(out, plan)
+            verified = recovery_profiles.continuity(
+                state['before'], state['after'], registry, observed,
+                after['model_generation'])
+            require(state['verification'] == verified,
+                    'profile continuity observation changed')
+        else:
+            require(state['before'] == state['after'], 'recovery erased original profile budget')
         require(read('stored-before.wire')['choices'] == read('stored-after.wire')['choices'],
                 'stored Chat lost on recovery')
     else:
@@ -360,7 +438,48 @@ def business_record(version):
         version_recovery=version, default_replaced=False, automatic_request_or_tool_replay=False)
 
 
+def read_registry(plan):
+    package = Path(plan['package']['package'])
+    return json.loads((package/'manifest.json').read_text())['recovery_profiles']
+
+
+def cold_observations(out, plan):
+    path = out/'cold-profiles-fallback.jsonl'
+    if not path.exists():
+        return []
+    require(path.stat().st_size <= 1024**2, 'cold observation file bound')
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    require(len(rows) <= 128, 'cold observation count bound')
+    package = Path(plan['registration']['payloads']['fallback']['descriptor']['package'])
+    expected = (package/'source/tools/serve_recovery/profile_memory.py').resolve()
+    require(all(Path(row['module']).resolve() == expected for row in rows),
+            'cold observation did not use the selected sealed policy')
+    return rows
+
+
 class Stage(BASE['Stage']):
+    def version_ready(self, generation, name):
+        if generation == 1 or not self.plan.get('observe_cold_profiles'):
+            return VERSION['Stage'].version_ready(self, generation, name)
+        self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])
+        current = self.family('profiles')
+        deadline = time.monotonic()+5
+        while current['pending'] is not None and time.monotonic() < deadline:
+            time.sleep(.05)
+            current = self.family('profiles')
+        from tools.native_asr import recovery_profiles
+        verified = recovery_profiles.continuity(self.profile_before, current,
+            self.registry, cold_observations(self.output, self.plan), generation)
+        state = MANAGED['Stage'].ready(self, generation, current['selected'])
+        selected = state['version_recovery']
+        expected = self.plan['registration']['payloads'][name]
+        require(selected['selected'] == name and not selected['pending'] and
+            selected['payload_manifest_sha256'] == expected['descriptor']['manifest_sha256'] and
+            not selected['protected'], 'unexpected runtime recovery payload')
+        save(self.output/'profile-continuity.json', dict(
+            before=self.profile_before, after=current, verification=verified))
+        return state
+
     def initialize_state(self):
         return VERSION['Stage'].initialize_state(self) if self.plan['scenario'] == 'tool_version' \
             else LEGACY['Stage'].initialize_state(self)
@@ -454,6 +573,36 @@ class Stage(BASE['Stage']):
         require(run.returncode == 0 and value['ok'] and len(value['exchanges']) == 1,
                 'actual native TLS SDK failed: '+label)
 
+    def chat_audio(self, label, *, sdk=False, stream=False):
+        from tools.serve_recovery import profile_evidence
+        clip = self.plan['clips']['zh']
+        raw = Path(clip['path']).read_bytes()
+        require(hashlib.sha256(raw).hexdigest() == clip['sha256'], 'managed Chat source drift')
+        body = profile_evidence.chat_audio_request(base64.b64encode(raw).decode(), stream=stream)
+        if not sdk:
+            return self.request(label, body, path='/v1/chat/completions', model_work=True)
+        self.budget.reserve('chats', label)
+        save(self.output/(label+'-request.json'), body)
+        config = dict(base_url=f'https://127.0.0.1:{self.port}/v1',
+            api_key=self.keys['alpha'], ca=self.plan['tls_inputs']['ca']['path'],
+            sdk_directory=self.plan['sdk']['sdk_directory'], request=body)
+        command = ([self.plan['sdk']['node']['path'], str(ROOT/'tools/native_asr/chat_sdk.mjs')]
+                   if stream else [self.plan['python_sdk']['python'], '-I', '-B',
+                                   str(ROOT/'tools/native_asr/chat_sdk.py')])
+        env = {k:v for k,v in os.environ.items() if k not in
+            ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD', 'HTTP_PROXY', 'HTTPS_PROXY',
+             'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy', 'NODE_USE_ENV_PROXY')}
+        env.update(PYTHONDONTWRITEBYTECODE='1', NODE_EXTRA_CA_CERTS=config['ca'])
+        run = subprocess.run(command, input=json.dumps(config), capture_output=True,
+                             text=True, env=env, timeout=190)
+        (self.output/(label+'.stderr')).write_text(run.stderr)
+        require(run.stdout, 'Chat SDK returned no evidence')
+        value = json.loads(run.stdout)
+        (self.output/(label+'.wire')).write_bytes(base64.b64decode(value.pop('wire_base64'), validate=True))
+        save(self.output/(label+'.sdk.json'), value)
+        require(run.returncode == 0 and value['ok'] and len(value['exchanges']) == 1,
+                'actual native TLS Chat SDK failed: '+label)
+
     def drained(self, label):
         from tools.serve_ops import transport
         end = time.monotonic()+5
@@ -492,32 +641,41 @@ class Stage(BASE['Stage']):
             if 'reused_tls' not in self.plan:
                 self.request('unauthorized', client='invalid', expected=401)
                 self.sdk('python-zh-json', 'zh', python=True)
+                if self.plan.get('chat_audio'): self.chat_audio('chat-python', sdk=True)
                 self.kill(first, 'gateway', 'native-asr-gateway-exit')
                 self.wait(lambda s:s['business_ready'] and
                           s['gateway_generation'] == first['gateway_generation']+1)
                 self.sdk('js-en-stream', 'en')
+                if self.plan.get('chat_audio'): self.chat_audio('chat-js', sdk=True, stream=True)
                 self.audio('beta-file-limit', client='beta', expected=413)
                 self.audio('chunked-zh', chunked=True)
             before = self.drained('before-cancel')
             self.audio('cancel-stream', stream=True, cancel=True, language='en')
             after = self.drained('after-cancel')
             save(self.output/'cancel-observation.json', dict(before=before, after=after))
-        else:self.audio('primary-asr')
+        else:
+            self.audio('primary-asr')
+            if self.plan.get('chat_audio'): self.chat_audio('primary-chat-audio')
         if version:
             self.request('stored-before', dict(self.plan['requests']['chat'], store=True),
                          path='/v1/chat/completions', model_work=True)
             fields = ('history', 'pending', 'selected', 'not_before_ns', 'light_since_ns')
             before = self.family('profiles')
+            if self.plan.get('observe_cold_profiles'):
+                self.profile_before = before
+                save(self.output/'profile-before-recovery.json', before)
             self.fatal_gateway(first)
             self.version_ready(2, 'fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
             # scenario separately verifies actual VAD SSE through the SDK.
             self.audio('fallback-asr', stream=not bool(self.plan.get('audio_auxiliary')))
+            if self.plan.get('chat_audio'): self.chat_audio('fallback-chat-audio')
             stored = json.loads((self.output/'stored-before.wire').read_text())
             self.request('stored-after', path='/v1/chat/completions/'+stored['id'])
             after = self.family('profiles')
-            save(self.output/'profile-continuity.json', dict(
-                before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
+            if not self.plan.get('observe_cold_profiles'):
+                save(self.output/'profile-continuity.json', dict(
+                    before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
         self.configuration()
@@ -530,9 +688,14 @@ class Stage(BASE['Stage']):
 GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prepare,
                Stage=Stage, check_business=check_business, business_record=business_record,
                accepted_run=accepted_run,
+               PREPARE_PATH_ARGUMENTS=('separator-audio',),
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__
+from tools.native_asr import recovery_profiles
+VERSION['actor'].__globals__['PROFILE_LAUNCH_OBSERVER'] = recovery_profiles.observe
 
 if __name__ == '__main__':
+    if '--plan' in sys.argv:
+        configure_plan_limits(json.loads(Path(sys.argv[sys.argv.index('--plan')+1]).read_text()))
     BASE['main']()

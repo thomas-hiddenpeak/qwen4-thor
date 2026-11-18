@@ -7,6 +7,7 @@
 #include "q4t/server/request_control.h"
 
 namespace q4t::server {
+class HttpBodyBudget;
 // A successful durable StartRow receipt must precede this call. The caller
 // owns the permit/control until all execution has drained; this adapter never
 // admits, retries, starts a worker or performs another HTTP request.
@@ -16,5 +17,6 @@ BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
     const std::function<void()>& execute,
-    std::shared_ptr<ClientRateLease> rate = {}, std::string_view endpoint = {});
+    std::shared_ptr<ClientRateLease> rate = {}, std::string_view endpoint = {},
+    HttpBodyBudget* input_budget = nullptr, size_t input_bytes = 0);
 }  // namespace q4t::server

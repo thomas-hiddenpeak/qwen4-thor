@@ -1,0 +1,46 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_shape_and_role_errors_preserve_original_paths()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:95:19: error: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<const char*, const char*>’ [-Werror=range-loop-construct]
+   95 |   for (const auto [field, path] :
+      |                   ^~~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:95:19: note: use reference type to prevent copying
+   95 |   for (const auto [field, path] :
+      |                   ^~~~~~~~~~~~~
+      |                   &
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_sources_keep_exact_binary_and_original_coordinates()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:86:1: error: control reaches end of non-void function [-Werror=return-type]
+   86 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_shape_and_role_errors_preserve_original_paths()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:112:1: error: control reaches end of non-void function [-Werror=return-type]
+  112 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_requires_canonical_inline_base64_without_io()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:128:1: error: control reaches end of non-void function [-Werror=return-type]
+  128 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_format_mismatch_cannot_select_another_codec()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:141:1: error: control reaches end of non-void function [-Werror=return-type]
+  141 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_shared_source_and_part_limits_are_not_per_clip()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:156:1: error: control reaches end of non-void function [-Werror=return-type]
+  156 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_cancel_and_deadline_keep_preparation_and_render_atomic()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:178:1: error: control reaches end of non-void function [-Werror=return-type]
+  178 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_complete_projection_preserves_neighbors_and_silence()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:202:1: error: control reaches end of non-void function [-Werror=return-type]
+  202 | }
+      | ^
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp: In function ‘bool q4t_test_fn_chat_audio_binding_and_result_failures_cannot_publish_partial_text()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp:231:1: error: control reaches end of non-void function [-Werror=return-type]
+  231 | }
+      | ^
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:639: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:512: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:519: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:265: q4t_host_tests] Error 2

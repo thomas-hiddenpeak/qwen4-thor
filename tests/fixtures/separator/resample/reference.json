@@ -1,0 +1,70 @@
+{
+  "method": "Independent NumPy full convolution, centered zero extension, even decimation and zero-insertion restoration",
+  "numpy": "1.26.4",
+  "sample_rate": 16000,
+  "separator_rate": 8000,
+  "taps": 65,
+  "cutoff_hz": 3600,
+  "files": [
+    {
+      "name": "silence-input.f32",
+      "samples": 16,
+      "sha256": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+    },
+    {
+      "name": "silence-down.f32",
+      "samples": 8,
+      "sha256": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
+    },
+    {
+      "name": "silence-restored.f32",
+      "samples": 16,
+      "sha256": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+    },
+    {
+      "name": "impulse-input.f32",
+      "samples": 1025,
+      "sha256": "af2be0407922ac0eebcdd71eef526723d5365fd7f55fd21c71ddb5bedbc4b1e6"
+    },
+    {
+      "name": "impulse-down.f32",
+      "samples": 513,
+      "sha256": "54af7963472a37d50c473eda17f24630c2c92182ba013e812884bd63294421a4"
+    },
+    {
+      "name": "impulse-restored.f32",
+      "samples": 1025,
+      "sha256": "ebd8fd2b75e5db9e99ec6eec98c5766570bfbaa043e369aa6396ecbbd3ee5f83"
+    },
+    {
+      "name": "tone-input.f32",
+      "samples": 4001,
+      "sha256": "58710eaae0df0933b151f668c1cd86500f495c52d06278cd1979cd283f24e7e7"
+    },
+    {
+      "name": "tone-down.f32",
+      "samples": 2001,
+      "sha256": "e3409875d980d038d806d329cb03bf14fec0dcf161475b2b8629582cfe3f22a0"
+    },
+    {
+      "name": "tone-restored.f32",
+      "samples": 4001,
+      "sha256": "a738b809a0b733d8b061b042a81d4481bcc5dca868a795c8efd693f135ded5ad"
+    },
+    {
+      "name": "noise-input.f32",
+      "samples": 2049,
+      "sha256": "f61c131e2d697c9d2491fa1c7ca149ef82824189db945b50dd99863fa86e78de"
+    },
+    {
+      "name": "noise-down.f32",
+      "samples": 1025,
+      "sha256": "38d58fe682756c3414f2c5b230ea4b52a84d0adee741d9c4707fb3d11c57b00d"
+    },
+    {
+      "name": "noise-restored.f32",
+      "samples": 2049,
+      "sha256": "0222631640856e4c5a2939a22695506753aae28fa07aaa1a26bba7c65a94c191"
+    }
+  ]
+}

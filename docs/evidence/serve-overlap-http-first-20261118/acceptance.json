@@ -1,0 +1,19 @@
+{
+  "status": "FAILED_FROZEN_QUALITY_GATE",
+  "binary_sha256": "ac7d037abf6e78af0f65885e719b79b4c7897c1d78740aac76d843053008a923",
+  "starts": 1,
+  "creates": 4,
+  "seconds": 50.46109801111743,
+  "default_unchanged": true,
+  "core_chat_and_ordinary_asr_during_separator_failure": "PASS",
+  "actual_two_voices_and_crossing_timestamps": "PASS",
+  "per_voice_wer": [
+    0.14285714285714285,
+    0
+  ],
+  "frozen_per_voice_max": 0.125,
+  "quality_failure": "hurt -> hurts",
+  "cleanup": "own processes and ports released; strict lease COMMAND_FAILED, not ENV_ABORT",
+  "archive_sha256": "f6c217b67528c9ccb4b7b23c9d14d1da839009476266d7280644cc4a951b29e1",
+  "gpu_retry": "remaining eight requests only; unchanged engine/thresholds"
+}

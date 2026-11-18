@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED_ACOUSTIC_DIAGNOSIS_NOT_RELEASE_ACCEPTANCE",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 37
+  },
+  "seconds": 46.32326211221516,
+  "binary_sha256": "a15e28f041a2697cb7d6712985515559648d0eea715b2ebce43424bdfb786210"
+}

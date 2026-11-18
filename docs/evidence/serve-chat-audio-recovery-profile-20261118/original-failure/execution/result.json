@@ -1,0 +1,81 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 613, in exercise\n    self.version_ready(2, 'fallback')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/version_acceptance.py\", line 234, in version_ready\n    state=self.ready(generation,'primary')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_managed_acceptance.py\", line 220, in ready\n    self.engine.require(state['model_capacity_sha256'] ==\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle/source/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: unqualified live model binding\n",
+  "cleanup_failure": null,
+  "seconds": 100.85087789781392,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 5,
+      "probes": 1,
+      "controls": 322
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "primary-model",
+        "ordinal": 1,
+        "monotonic_ns": 3148911099725117
+      },
+      {
+        "kind": "chats",
+        "label": "primary-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3148943367491865
+      },
+      {
+        "kind": "chats",
+        "label": "primary-asr",
+        "ordinal": 2,
+        "monotonic_ns": 3148945844791599
+      },
+      {
+        "kind": "chats",
+        "label": "primary-chat-audio",
+        "ordinal": 3,
+        "monotonic_ns": 3148954274080801
+      },
+      {
+        "kind": "chats",
+        "label": "stored-before",
+        "ordinal": 4,
+        "monotonic_ns": 3148956005957090
+      },
+      {
+        "kind": "probes",
+        "label": "root-version-device-proof",
+        "ordinal": 1,
+        "monotonic_ns": 3148957592152444
+      },
+      {
+        "kind": "starts",
+        "label": "fallback-model",
+        "ordinal": 2,
+        "monotonic_ns": 3148965728713864
+      },
+      {
+        "kind": "chats",
+        "label": "fallback-self-check",
+        "ordinal": 5,
+        "monotonic_ns": 3148994904735814
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 242287,
+      "start_ticks": 314891110
+    },
+    "2": {
+      "pid": 243211,
+      "start_ticks": 314896572
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+    "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4"
+  },
+  "scenario": "tool_version",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

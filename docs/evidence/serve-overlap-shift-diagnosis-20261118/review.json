@@ -1,0 +1,16 @@
+{
+  "status": "REJECTED_SIGNAL_CANDIDATE_NOT_IN_PRODUCTION",
+  "cpu_tests": 3,
+  "gpu_model_loads": 1,
+  "primary_model_starts": 0,
+  "cases": 2,
+  "candidates": 1,
+  "http_requests": 0,
+  "seconds": 1.5250194282270968,
+  "lease_status": "COMPLETED",
+  "lease_released": true,
+  "defaults_unchanged": true,
+  "original_quality_issue_still_open": true,
+  "release_acceptance": false,
+  "source_sha256": "4e9733e193fe29bbe21477383563f00b7944e93c42764dab58f1709aa2ed6448"
+}

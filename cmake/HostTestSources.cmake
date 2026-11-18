@@ -4,6 +4,17 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/overlapping_diarization_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_overlapping_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_resample.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/overlapping_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/diarization_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_diarized_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speaker_runtime_test.cpp
@@ -14,6 +25,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/speaker_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speaker_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_separator_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_separator_runtime_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/separator_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_features.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speaker_layout.cpp
@@ -29,6 +43,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/aligner_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_aligner_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_inputs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_statistics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_statistics_test.cpp

@@ -1,0 +1,45 @@
+{
+  "commands": {
+    "host": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/silence-cpu-01/required.txt"
+    ],
+    "driver": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.native_asr.test_chat_acceptance.ChatAcceptance.test_real_mp3_and_tool_answers_replay_and_wrong_meaning_is_rejected",
+      "tools.native_asr.test_chat_acceptance.ChatAcceptance.test_silence_refusal_null_or_truncated_answer_is_a_quality_failure"
+    ],
+    "inventory": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "contract": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ]
+  },
+  "limits": {
+    "cpu_tests": 3,
+    "source_checks": 2,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "environment": {
+    "Q4T_CHAT_AUDIO_MULTIMODAL": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/http-04"
+  },
+  "identities": {
+    "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
+    "tests/server_chat_audio_inputs_test.cpp": "e0cb24d51feece5fae288bc749e7fb25862d09cf19c3a951e7e8772cae57151a",
+    "tools/native_asr/chat_acceptance.py": "6f4e93615a18c8ec2c45ed4ab0a06b627cfebd1cf463148e30156fd4b284d90a",
+    "tools/native_asr/test_chat_acceptance.py": "0ce093c8ce5da33794ad689d9b938f87c93665002777ee9308434b1ed85f4008"
+  }
+}

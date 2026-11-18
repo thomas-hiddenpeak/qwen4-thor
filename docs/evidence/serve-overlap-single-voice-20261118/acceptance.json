@@ -1,0 +1,14 @@
+{
+  "status": "FAILED_SINGLE_VOICE_DUPLICATION",
+  "known_reference_identity": "PASS_AFTER_BANDWIDTH_FIX",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 36
+  },
+  "seconds": 51.15433123288676,
+  "binary_sha256": "04161c3fd3ec587a1e192a3ba278f8d775013b0c986019202d9b8738ed15de81",
+  "default_unchanged": true,
+  "original_word_quality": "unchanged FAIL 1/7 > 0.125",
+  "archive_sha256": "580de4aca830881dba55e5e30426891ea24202b3618e2b2a57091c7be889e5c0"
+}

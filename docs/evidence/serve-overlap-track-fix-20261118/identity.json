@@ -1,0 +1,79 @@
+{
+  "binary_sha256": "3e5b6de702d1b484b80c96ca46f2c675f55b9bf6bbc38e253cc95e7ee36d8bf4",
+  "source_files": {
+    "src/audio/separator_tracks.cpp": "0a7c33fa92087b859ab24646e33f3b2208b61b2f8d5c162b6909788b09095b3b",
+    "include/q4t/audio/separator_tracks.h": "6b0bc4151fa5cd0d0550c063ab3f457e2e480ca32d1426667ab9be9538fb30d6",
+    "src/server/chat_separator_execution.cpp": "d0cb0396e8b4e1841249a5aa607cf16aa94da9272e91f626d6cde6a7d1742fc7",
+    "src/server/chat_asr.cpp": "030d8d6e9ea165471f771361a13f9b9bdc518512c2b22b5b76ad885032d8281d"
+  },
+  "reviewed_reuse": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/http-01",
+    "binary_sha256": "3e5b6de702d1b484b80c96ca46f2c675f55b9bf6bbc38e253cc95e7ee36d8bf4",
+    "original_binary_sha256": "ac7d037abf6e78af0f65885e719b79b4c7897c1d78740aac76d843053008a923",
+    "kind": "acoustic_duplicate_fix",
+    "reference_only_patches": {
+      "CMakeLists.txt": {
+        "before": "b4f93557d5c1dbee2b0c9a427ac784697cd4bdf1ce45b0e32cf176f3d52e98df",
+        "after": "5f11b5e67dcf082ca9909f05ef490556bb269c4492f2fa1eeac6c0d33f83eb6e"
+      },
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "486d8146554198c89d2bd6e87e3db76ef5419db46d3d06b8ce440f875ce5973e",
+        "after": "b94a9c87a89f176d333d2e0921c82378039a6529f2f63d36914ed25600995400"
+      },
+      "cmake/HostTestSources.cmake": {
+        "before": "89100ed9f7a73f43ef7fdca76d70730a4ee49ef725c679fe24a65ef6d8e0d652",
+        "after": "b2fd6d163df82cd263217ed396f8e00bed8f907f47653a6298e0c40c74abd209"
+      },
+      "include/q4t/server/chat_server.h": {
+        "before": "ce3501458091e2e58d65a23a0ed509462081ed548ca04f0f2d2af458f7c0ae13",
+        "after": "79ad5baac1d9f7522acb8a31585b5596f12abe01002c1d52ef2834e4b73f4f5d"
+      },
+      "src/server/chat_asr.cpp": {
+        "before": "c92b9a880cc1b6c41b88f545f2c73ae1e1d1bf19084398ca628b752e7a340870",
+        "after": "030d8d6e9ea165471f771361a13f9b9bdc518512c2b22b5b76ad885032d8281d"
+      },
+      "src/server/chat_separator_execution.cpp": {
+        "before": "34479afed81e6209290f056b0d6fba69d2a4a2e5fd85b1abde27f5be539a3c33",
+        "after": "d0cb0396e8b4e1841249a5aa607cf16aa94da9272e91f626d6cde6a7d1742fc7"
+      },
+      "src/server/chat_speaker_turns.cpp": {
+        "before": "3f1b5e51d35df88a5b46e58bdbcfa8b638bba004db78220ea758389b6ebbb117",
+        "after": "e2579cea71db5b497da0d953f90877aa9b2f020ebc5e9edff853ce839d05a09f"
+      },
+      "src/server/separator_service.cpp": {
+        "before": "7082ae3fc85675c3c48cf137b2a4906ff50659c17ce9f7b9e91cbdcaf16393de",
+        "after": "65d9b54b20df8f49111ecdec1965a38c46a9032c6457da2fb1acd4c24cc5b0d7"
+      },
+      "tools/native_separator/model_replay.cpp": {
+        "before": "e2eab80d37ad0f1e55e41f3a7769a8f797bbde944e5d7296565ae0ec3c71fed5",
+        "after": "3237dcf92364d1e308fdbc09cf28ef603f179df4bb52b72a994bbf7d2543f683"
+      }
+    },
+    "mixed": {
+      "voice_labels": [
+        "A",
+        "B"
+      ],
+      "per_voice_word_error_rate": [
+        0.14285714285714285,
+        0.0
+      ],
+      "quality_passed": false,
+      "overlap_seconds": 1.68,
+      "text": "We are sure that one war is enough. The child almost hurts the small dog."
+    },
+    "original_quality_status": "FAILED_UNCHANGED_GATE",
+    "creates_reused": 4,
+    "records": {
+      "plan.json": "055606b093484a80d31ed9d27819046ea426e96f639a1064b2146eaac1f65a69",
+      "result.json": "a88eef704fd54d0c82b34897d084f94884ba6e482552bb2e2567705b0d1e79b5",
+      "cleanup.json": "03fd0144e870a552d45e662c0b716a0e255893aff8d775db3a68164b53968905",
+      "lease/exit.json": "d374fd7fcff3a6f711109f8835e14c91bb2a8a1ccaba951bf001787bf1e1f939",
+      "missing-config.wire": "c0230be0d843e772886df0b6e30c7f05ce89df6233fbe5abbd0f090e58a36294",
+      "missing-separator.wire": "7939eda52de1460dd339eef9972d86ffd860ec119e1c0280fd6a797e87635def",
+      "core-during-separator-failure.wire": "a97bec45dc4561afc877cf13e33babc84a79a66ee73446edc7ebf1b12d7de5ce",
+      "python-ordinary-during-failure.wire": "f7ec322773dffe7d98af0cd0be889d98d5bbab1f45930b69ecc504b3afdf1418",
+      "python-mixed.wire": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    }
+  }
+}

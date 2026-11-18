@@ -1,0 +1,1 @@
+{"duration":4,"task":"transcribe","text":"We are sure that one war is enough.","segments":[{"id":"0","type":"transcript.text.segment","start":0.16,"end":2.0800000000000001,"speaker":"A","text":"We are sure that one war is enough."}],"usage":{"type":"tokens","input_tokens":99,"output_tokens":10,"total_tokens":109,"input_token_details":{"audio_tokens":27,"text_tokens":72}}}

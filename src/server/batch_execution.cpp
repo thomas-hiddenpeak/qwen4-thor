@@ -1,17 +1,20 @@
 #include "q4t/server/batch_execution.h"
 
 #include <new>
+#include <optional>
 
 #include "object_protocol.h"
 #include "q4t/server/finite_response.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/http_request.h"
 
 namespace q4t::server {
 BatchRowResult ExecuteBatchEndpoint(
     const std::string& request_id, const ClientIdentity& client,
     ClientLease& permit, const std::shared_ptr<RequestControl>& control,
-    const std::function<void()>& execute,
-    std::shared_ptr<ClientRateLease> rate, std::string_view endpoint) {
+    const std::function<void()>& execute, std::shared_ptr<ClientRateLease> rate,
+    std::string_view endpoint, HttpBodyBudget* input_budget,
+    size_t input_bytes) {
   using namespace object_detail;
   BatchRowResult result;
   result.request_id = request_id;
@@ -21,7 +24,8 @@ BatchRowResult ExecuteBatchEndpoint(
   };
   if (!ValidId(request_id) || !control || control->id() != request_id ||
       !client.Allowed() || !permit.Holds(client, ClientLane::kData) ||
-      !execute || (rate && !rate->PrechargedFor(client)))
+      !execute || (rate && !rate->PrechargedFor(client)) ||
+      (input_bytes && !input_budget))
     return failure(500, "batch_execution_owner_invalid",
                    "Native Batch execution ownership is invalid");
   const auto interrupted = [&]() -> BatchRowResult {
@@ -34,13 +38,26 @@ BatchRowResult ExecuteBatchEndpoint(
     result.actual_usage = ActualUsage{};  // Invocation has not been claimed.
     return interrupted();
   }
+  std::optional<HttpBodyLease> input_lease;
+  if (input_budget) {
+    // Detached Batch execution bypasses the socket reader, but its original
+    // input and model-facing projections must share the online byte bound.
+    result.actual_usage = ActualUsage{};
+    if (input_bytes > kChatBodyBytes)
+      return failure(413, "batch_input_capacity",
+                     "Batch row exceeds the request body limit");
+    input_lease.emplace(*input_budget);
+    if (!input_lease->Acquire(input_bytes))
+      return failure(503, "body_capacity_exhausted",
+                     "Aggregate request body capacity exhausted");
+  }
   if (!control->ClaimInvocation())
     return failure(409, "batch_execution_already_claimed",
                    "The original execution ticket cannot be replayed");
   FiniteResponse output(kChatBodyBytes,
-                         endpoint == "/v1/embeddings"
-                             ? FiniteResponseFormat::kEmbeddings
-                             : FiniteResponseFormat::kApplication);
+                        endpoint == "/v1/embeddings"
+                            ? FiniteResponseFormat::kEmbeddings
+                            : FiniteResponseFormat::kApplication);
   detail::HttpResponseContext http(
       detail::HttpResponseContext::Detached{-1, &output});
   http.SetClient(client, &permit, ClientRateDomain::kBatch);
@@ -54,7 +71,7 @@ BatchRowResult ExecuteBatchEndpoint(
     execute();
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(-1, *http.State(),
-                                   detail::ExceptionKind::kHostMemory);
+                                  detail::ExceptionKind::kHostMemory);
   } catch (...) {
     detail::SendExceptionResponse(-1, *http.State());
   }

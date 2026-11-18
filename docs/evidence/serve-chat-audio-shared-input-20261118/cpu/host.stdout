@@ -1,0 +1,5 @@
+[PASS] asr_resources_account_unified_peak_and_reject_small_workspace
+[PASS] batch_execution_shared_body_lease_covers_endpoint_and_response
+[PASS] batch_execution_shared_body_exhaustion_never_invokes_or_charges
+[PASS] batch_execution_shared_body_releases_after_exception_or_cancellation
+4 tests, 4 passed, 0 failed, 0 skipped

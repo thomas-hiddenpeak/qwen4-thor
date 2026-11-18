@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "records": {
+    "host": {
+      "returncode": 0,
+      "seconds": 0.007681182119995356
+    },
+    "driver": {
+      "returncode": 0,
+      "seconds": 0.21395287523046136
+    },
+    "inventory": {
+      "returncode": 0,
+      "seconds": 0.2640067548491061
+    },
+    "contract": {
+      "returncode": 0,
+      "seconds": 0.16396882804110646
+    }
+  },
+  "seconds": 0.649898543022573
+}

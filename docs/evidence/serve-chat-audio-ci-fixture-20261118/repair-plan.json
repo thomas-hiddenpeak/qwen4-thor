@@ -1,0 +1,17 @@
+{
+  "parent": "9837ff8e103db69e7cedb130e7e1078908134ee5",
+  "limits": {
+    "tests": 1,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_real_speaker_observation_binds_every_budget_and_isolation"
+  ],
+  "source_sha256": "42fa6c6565371ef287328c42acefca8fe8c9bab3b66b378d2293e828652cf64e",
+  "review": "Bind the historical speaker-only observation to its existing AUXILIARIES fixture, rather than newly added separator which is not present in that historical release. All speaker budget/isolation negative controls and separate separator tests remain."
+}

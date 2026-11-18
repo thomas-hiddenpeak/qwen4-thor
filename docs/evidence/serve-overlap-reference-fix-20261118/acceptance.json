@@ -1,0 +1,28 @@
+{
+  "status": "PASS_CPU_PENDING_REFERENCE_HTTP",
+  "cpu_tests": 1,
+  "source_checks": 2,
+  "steps": [
+    {
+      "name": "cpu",
+      "returncode": 0,
+      "seconds": 0.003457793965935707
+    },
+    {
+      "name": "inventory",
+      "returncode": 0,
+      "seconds": 0.16379231261089444
+    },
+    {
+      "name": "generated",
+      "returncode": 0,
+      "seconds": 0.16393906669691205
+    }
+  ],
+  "seconds": 0.3446738813072443,
+  "gpu_loads": 0,
+  "binary_sha256": "04161c3fd3ec587a1e192a3ba278f8d775013b0c986019202d9b8738ed15de81",
+  "default_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
+  "original_binary_retained_sha256": "ac7d037abf6e78af0f65885e719b79b4c7897c1d78740aac76d843053008a923",
+  "archive_sha256": "848c1970930cfed35da9bf94178dba93561ae464ab14ca7b2b2592913d7791d4"
+}

@@ -11,15 +11,15 @@ permissions:
 jobs:
   host-contracts:
     runs-on: ubuntu-24.04
-    # Observed cold setup + clean build + contracts can exceed 30 minutes.
-    # Keep finite per-step/test limits and allow their combined clean-run cost.
-    timeout-minutes: 40
+    # Cold codec/document setup installs about 300 packages. Allow its bounded
+    # download window plus the clean build and unchanged contract checks.
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Ensure host dependencies
-        timeout-minutes: 6
+        timeout-minutes: 18
         run: |
           packages=()
           command -v g++-14 >/dev/null || packages+=(g++-14)
@@ -50,6 +50,13 @@ jobs:
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           /usr/bin/python3 -c 'import ensurepip' || packages+=(python3-venv)
           if ((${#packages[@]})); then
+            # The hosted regional mirror repeatedly stalled during cold
+            # dependency downloads. Use Ubuntu's official archive on this
+            # disposable runner; retain signed sources and all apt checks.
+            if test -f /etc/apt/apt-mirrors.txt; then
+              printf '%s\n' 'https://archive.ubuntu.com/ubuntu/' |
+                sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+            fi
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 \
               install -y --no-install-recommends "${packages[@]}"
@@ -174,7 +181,9 @@ jobs:
           tools.serve_recovery.test_speaker_profiles.SpeakerProfiles
           tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage
           tools.serve_recovery.test_asr_profiles.AsrProfiles
+          tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles
           tools.native_asr.test_auxiliary_service
+          tools.native_asr.test_recovery_profiles.RecoveryProfiles
           tools.native_speaker.test_service
       - name: Check cold acceptance package provenance
         timeout-minutes: 1

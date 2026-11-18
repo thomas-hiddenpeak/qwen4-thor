@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n        ^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 320, in start\n    self.same_model()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_grammar_reap/acceptance.py\", line 176, in same_model\n    require(self.model.poll() is None and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: core model changed during grammar fault\n",
+  "counts": {
+    "starts": 1,
+    "chats": 0,
+    "controls": 2
+  },
+  "seconds": 6.283622000366449,
+  "binary_sha256": "5b28801be5a58afe3a86728c19f428793ddc0a6defabca34ee4948df6b8b9928"
+}

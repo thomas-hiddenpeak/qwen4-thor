@@ -256,6 +256,26 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
+      },
+      "chat_audio_input_foundation_20261118": {
+        "plan": "SERVE_CHAT_AUDIO_2026-11-18.md",
+        "state": "8_CPU_ACCEPTED_RUNTIME_CONNECTION_PENDING",
+        "evidence": "evidence/serve-chat-audio-foundation-cpu-20261118/README.md",
+        "cpu_tests": 8,
+        "gpu": 0,
+        "whole_task_complete": false
+      },
+      "chat_audio_runtime_20261118": {
+        "state": "PURE_AUDIO_QUALITY_RPM_STORAGE_ACCEPTED_SOURCE_MAP_CPU_PASS_REMAINDER_PENDING",
+        "evidence": "evidence/serve-chat-audio-source-map-20261118/README.md",
+        "unique_cpu_checks": 18,
+        "gpu": 0,
+        "whole_task_complete": false,
+        "business_failure_evidence": "evidence/serve-chat-audio-projection-fix-20261118/README.md",
+        "actual_starts": 2,
+        "actual_requests": 5,
+        "source_coordinate_composition_review_pending": false,
+        "source_coordinate_composition_cpu_only": true
       }
     },
     {
@@ -2206,7 +2226,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Complete alignment/segment/VAD package, native ingress, primary/light and recovery delivery; then all remaining audio/multimodal and master tasks.",
+      "next": "Implement Chat audio input using the existing native ASR backend; preserve unresolved four-second overlap recognition quality and pending managed qualification. Continue speech output/Realtime and all master tasks.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -3415,13 +3435,605 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
+      },
+      "overlap_asset_contract_20261118": {
+        "status": "ACCEPT_NATIVE_SEPARATOR_ASSET_CONTRACT",
+        "tests": 8,
+        "seconds": 0.16388194961473346,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "runtime_endpoint_delivered": false,
+        "default_rev296_unchanged": true,
+        "model_revision": "3a2826343a10e2d2e8a75f79aeab5ff3a2473531",
+        "model_sha256": "5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299",
+        "model_bytes": 113011580,
+        "tensor_count": 417,
+        "weight_bytes": 112957444,
+        "conversion_seconds": 1.4124692198820412,
+        "original_tensor_values_preserved": true,
+        "archive_sha256": "02d6c1cd77399d45e1ddf0602152ee0704bbf7f8012de4ec2a99457455436845",
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-separator-contract-20261118/README.md",
+        "remaining_required": [
+          "Native waveform computation and numerical comparison",
+          "Actual overlapping two-source ASR/alignment/diarization and references",
+          "Independent health and budgets, SDK/TLS/recovery qualification",
+          "Reversible delivery and main integration; all other A10 tasks remain"
+        ]
+      },
+      "overlap_layout_cpu_20261118": {
+        "status": "ACCEPT_NATIVE_SEPARATOR_LAYOUT_CPU",
+        "tests": 6,
+        "seconds": 0.0035711778327822685,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "default_rev296_unchanged": true,
+        "cuda_build_zero_warnings": true,
+        "actual_numerical_execution": false,
+        "archive_sha256": "6bd952812602b1c55bdffed401f0cb1e414c8a6c8473ca673d7a1d5978a8f591",
+        "evidence": "evidence/serve-separator-layout-20261118/README.md"
+      },
+      "overlap_actual_component_20261118": {
+        "status": "ACCEPT_NATIVE_SEPARATOR_COMPONENT",
+        "seconds": 47.41229595243931,
+        "gpu_model_loads": 1,
+        "cpu_model_loads": 1,
+        "cases": 4,
+        "numerical_checks": 28,
+        "finish_checks": 4,
+        "boundary_checks": 8,
+        "lifecycle_checks": 16,
+        "nvml_samples": 47,
+        "lease_released": true,
+        "observed_final_compute_pids": [],
+        "default_rev296_unchanged": true,
+        "model_sha256": "5f5cbbd10eae7be4e56b752cbc0d27f02305dd0e5cdc3d9c115b51881ca52299",
+        "binary_sha256": "4e607a91474803cba98b6f092081e79bfc7ad478b6739db155c86c9ffa19d8e5",
+        "max_relative_l2": 2.060557483105353e-06,
+        "max_abs": 0.000270843505859375,
+        "minimum_cosine": 0.9999999999976878,
+        "known_source_quality": {
+          "native": {
+            "permutation": [
+              0,
+              1
+            ],
+            "separated_si_sdr_db": [
+              17.966798117672855,
+              25.73312641822963
+            ],
+            "mixture_si_sdr_db": [
+              -7.556537761971594,
+              7.809364907154595
+            ],
+            "improvement_db": [
+              25.52333587964445,
+              17.923761511075035
+            ],
+            "passed": true
+          },
+          "reference": {
+            "permutation": [
+              0,
+              1
+            ],
+            "separated_si_sdr_db": [
+              17.96680099282042,
+              25.733129766454187
+            ],
+            "mixture_si_sdr_db": [
+              -7.556537761971594,
+              7.809364907154595
+            ],
+            "improvement_db": [
+              25.523338754792015,
+              17.92376485929959
+            ],
+            "passed": true
+          }
+        },
+        "native": {
+          "status": "PASS_NATIVE_COMPONENT",
+          "cases": 4,
+          "boundary_checks": 8,
+          "lifecycle_checks": 16,
+          "gpu_model_loads": 1,
+          "max_explicit_workspace_bytes": 463623940,
+          "weight_bytes": 112957444,
+          "seconds": 2.13473
+        },
+        "source_commit": "5b82bb5c207482aec7eda957979bbb25d07cf183",
+        "http_requests": 0,
+        "actual_overlap_api": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability": false,
+        "archive_sha256": "481c9e8d128c4e865a871df3e891675107842a67c645e98c56c5416936898ada",
+        "evidence": "evidence/serve-separator-compute-20261118/README.md"
+      },
+      "overlap_tracks_cpu_20261118": {
+        "status": "ACCEPT_OVERLAPPING_TRACK_CONTRACT_CPU",
+        "tests": 20,
+        "seconds": 0.0637899599969387,
+        "gpu_loads": 0,
+        "http_requests": 0,
+        "default_rev296_unchanged": true,
+        "full_business_delivered": false,
+        "archive_sha256": "3f0ab74eeda44b0473178e65ece8a19b02d8c0b45d6a18eae22b15c4ed5e7259",
+        "evidence": "evidence/serve-overlapping-tracks-cpu-20261118/README.md"
+      },
+      "overlap_service_cpu_20261118": {
+        "status": "PASS",
+        "evidence": "docs/evidence/serve-separator-service-cpu-20261118/README.md",
+        "tests": 13,
+        "gpu_loads": 0,
+        "default_changed": false
+      },
+      "overlap_runtime_cpu_20261118": {
+        "status": "PASS",
+        "evidence": "docs/evidence/serve-separator-runtime-cpu-20261118/README.md",
+        "cpu_tests": 9,
+        "source_checks": 2,
+        "gpu_loads": 0,
+        "default_changed": false
+      },
+      "overlap_http_first_20261118": {
+        "status": "FAILED_FROZEN_QUALITY_GATE",
+        "evidence": "docs/evidence/serve-overlap-http-first-20261118/README.md",
+        "starts": 1,
+        "requests": 4,
+        "default_changed": false,
+        "remaining": "original 8 unexecuted checks, resolve quality and any runtime gaps, service recovery delivery; all master tasks continue"
+      },
+      "overlap_reference_fix_20261118": {
+        "status": "CPU_PASS_HTTP_PENDING",
+        "evidence": "docs/evidence/serve-overlap-reference-fix-20261118/README.md",
+        "prior_failure": "known first speaker not matched",
+        "cpu_tests": 1,
+        "default_changed": false
+      },
+      "overlap_single_voice_20261118": {
+        "status": "FAIL_DUPLICATE_VOICE",
+        "reference_bandwidth_fix": "PASS_REAL_HTTP",
+        "evidence": "docs/evidence/serve-overlap-single-voice-20261118/README.md",
+        "default_changed": false
+      },
+      "overlap_track_fix_20261118": {
+        "status": "PASS_TARGETED_CPU_AND_THREE_REAL_SINGLE_VOICES",
+        "cpu": "docs/evidence/serve-overlap-track-fix-20261118/README.md",
+        "business": "docs/evidence/serve-overlap-http-track-fix-20261118/README.md",
+        "heuristic_not_universal_speaker_count": true,
+        "default_changed": false
+      },
+      "overlap_output_fix_20261118": {
+        "status": "PROTOCOL_PASS_QUALITY_FAIL",
+        "cpu": "docs/evidence/serve-overlap-output-fix-20261118/README.md",
+        "business": "docs/evidence/serve-overlap-http-output-fix-20261118/README.md",
+        "starts": 1,
+        "requests": 8,
+        "seconds": 61.33935029665008,
+        "quality": {
+          "four_seconds_per_voice_wer": [
+            0.14285714285714285,
+            0
+          ],
+          "thirty_seconds_per_voice_wer": [
+            0,
+            0
+          ],
+          "threshold": 0.125
+        },
+        "cleanup_complete": true,
+        "default_changed": false
+      },
+      "overlap_managed_cpu_20261118": {
+        "status": "PASS_13_TARGETED_CPU_NO_GPU",
+        "evidence": "docs/evidence/serve-overlap-managed-cpu-20261118/README.md",
+        "actual_failed_quality_rejected": true,
+        "actual_managed_recovery_qualified": false,
+        "default_changed": false
+      },
+      "overlap_quality_diagnosis_20261118": {
+        "status": "SEPARATION_DISTORTION_LOCALIZED_ON_FIXED_SOURCE",
+        "evidence": "docs/evidence/serve-overlap-quality-diagnosis-20261118/README.md",
+        "starts": 1,
+        "requests": 3,
+        "seconds": 46.32326211221516,
+        "original_wer": 0,
+        "band_limited_wer": 0,
+        "separated_wer": 0.14285714285714285,
+        "quality_gate_unchanged": true
+      },
+      "overlap_consistency_candidate_20261118": {
+        "status": "REJECTED_SIGNAL_CANDIDATE_NOT_IN_PRODUCTION",
+        "evidence": "docs/evidence/serve-overlap-consistency-analysis-20261118/README.md",
+        "gpu": 0,
+        "cases": 2,
+        "original_quality_issue_still_open": true
+      },
+      "overlap_shift_candidate_20261118": {
+        "status": "REJECTED_SIGNAL_CANDIDATE_NOT_IN_PRODUCTION",
+        "cpu_tests": 3,
+        "gpu_model_loads": 1,
+        "primary_model_starts": 0,
+        "cases": 2,
+        "candidates": 1,
+        "http_requests": 0,
+        "seconds": 1.5250194282270968,
+        "lease_status": "COMPLETED",
+        "lease_released": true,
+        "defaults_unchanged": true,
+        "original_quality_issue_still_open": true,
+        "release_acceptance": false,
+        "source_sha256": "4e9733e193fe29bbe21477383563f00b7944e93c42764dab58f1709aa2ed6448",
+        "evidence": "docs/evidence/serve-overlap-shift-diagnosis-20261118/README.md"
+      },
+      "chat_audio_input_foundation_20261118": {
+        "plan": "SERVE_CHAT_AUDIO_2026-11-18.md",
+        "state": "8_CPU_ACCEPTED_RUNTIME_CONNECTION_PENDING",
+        "evidence": "evidence/serve-chat-audio-foundation-cpu-20261118/README.md",
+        "cpu_tests": 8,
+        "gpu": 0,
+        "whole_task_complete": false
+      },
+      "chat_audio_runtime_20261118": {
+        "state": "PURE_AUDIO_QUALITY_RPM_STORAGE_ACCEPTED_SOURCE_MAP_CPU_PASS_REMAINDER_PENDING",
+        "evidence": "evidence/serve-chat-audio-source-map-20261118/README.md",
+        "unique_cpu_checks": 18,
+        "gpu": 0,
+        "whole_task_complete": false,
+        "business_failure_evidence": "evidence/serve-chat-audio-projection-fix-20261118/README.md",
+        "actual_starts": 2,
+        "actual_requests": 5,
+        "source_coordinate_composition_review_pending": false,
+        "source_coordinate_composition_cpu_only": true
+      },
+      "chat_audio_service_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_SERVICE_COMPOSITION",
+        "binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+        "candidate": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4"
+        },
+        "automatic_fallback": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/retained-01/bundle",
+          "manifest_sha256": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e"
+        },
+        "modern_retained_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/modern-retained-01/bundle",
+          "manifest_sha256": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197"
+        },
+        "tls_package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-package-01/bundle",
+          "manifest_sha256": "64a4e50c722cb4d51e6213cda5b6bdbadb2216a4b5a0b12505b7d62dbca298a4"
+        },
+        "stages": [
+          {
+            "name": "modern-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 4,
+              "probes": 0,
+              "controls": 148
+            },
+            "actual_model_execs": 1,
+            "seconds": 53.03058382496238,
+            "nvml_queries": 52,
+            "strict_lease_seconds": 54.47075519198552,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "retained-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 4,
+              "probes": 0,
+              "controls": 150
+            },
+            "actual_model_execs": 1,
+            "seconds": 54.290466516278684,
+            "nvml_queries": 53,
+            "strict_lease_seconds": 55.78021825524047,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "tls-service-01",
+            "counts": {
+              "starts": 1,
+              "chats": 9,
+              "probes": 0,
+              "controls": 176
+            },
+            "actual_model_execs": 1,
+            "seconds": 67.86440678406507,
+            "nvml_queries": 66,
+            "strict_lease_seconds": 69.83722055517137,
+            "actual_labels": {
+              "python-zh-json": [
+                "A",
+                "B",
+                "A"
+              ],
+              "chunked-zh": [
+                "A",
+                "B",
+                "A"
+              ],
+              "js-en-stream": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "chat-python": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              },
+              "chat-js": {
+                "request_sha256": "40d96869476682e6f3713e9c75e470edbb8471401c869bbf2486ebe853acdd65",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "version-service-02",
+            "counts": {
+              "starts": 2,
+              "chats": 8,
+              "probes": 1,
+              "controls": 348
+            },
+            "actual_model_execs": 2,
+            "seconds": 120.90798674989492,
+            "nvml_queries": 114,
+            "strict_lease_seconds": 122.33875182690099,
+            "actual_labels": {
+              "primary-asr": [
+                "A",
+                "B",
+                "A"
+              ],
+              "fallback-asr": [
+                "A",
+                "B",
+                "A"
+              ]
+            },
+            "actual_chat": {
+              "primary-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              },
+              "fallback-chat-audio": {
+                "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+                "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+                "usage": {
+                  "prompt_tokens": 280,
+                  "completion_tokens": 15,
+                  "total_tokens": 295,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0,
+                    "audio_tokens": 55
+                  },
+                  "q4t_audio_preparation": {
+                    "input_tokens": 70,
+                    "output_tokens": 11,
+                    "audio_tokens": 55
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "counted_spawn_attempts": 5,
+        "actual_model_starts": 5,
+        "service_requests": 25,
+        "service_probes": 1,
+        "service_seconds": 296.09344387520105,
+        "nvml_queries": 285,
+        "nvml_all_ok": true,
+        "cleanup_complete": true,
+        "strict_finalizers_all_passed": true,
+        "primary_light_evidence": "docs/evidence/serve-chat-audio-profiles-20261118/README.md",
+        "direct_http_evidence": "docs/evidence/serve-chat-audio-http-20261118/README.md",
+        "candidate_whole_package_gpu_run": true,
+        "default_unchanged": true,
+        "publication_pending": true,
+        "older_engine_fallback": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "all_master_tasks_complete": false,
+        "archive_sha256": "499bb20bc1ed0205697b879e1628e26c547f51bc3c382b2bc94613168d4f5b25",
+        "secret_scan_matches": 0,
+        "omitted_audio_requests": {
+          "modern-service-01/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/modern-service-01/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "retained-service-01/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/retained-service-01/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "tls-service-01/execution/chat-python-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-service-01/execution/chat-python-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "tls-service-01/execution/chat-js-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/tls-service-01/execution/chat-js-request.json",
+            "sha256": "41b7520b618d81aeddefcaad0b2a78df3f4e22311d3d48901fb895c2260a97c1",
+            "bytes": 180071
+          },
+          "version-service-02/execution/fallback-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-02/execution/fallback-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          },
+          "version-service-02/execution/primary-chat-audio-request.json": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-02/execution/primary-chat-audio-request.json",
+            "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+            "bytes": 180000
+          }
+        },
+        "original_failed_stage": {
+          "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/version-service-01",
+          "result_sha256": "c03582aa73986c491c4fca5409e57639ee3b8a269b00ba63d67230101b0ec6cb",
+          "starts": 2,
+          "requests": 5,
+          "probes": 1,
+          "seconds": 100.85087789781392
+        },
+        "cumulative_model_starts": 7,
+        "cumulative_service_requests": 30,
+        "cumulative_service_probes": 2,
+        "actual_recovery_profile": {
+          "kind": "unchanged_primary"
+        }
+      },
+      "chat_audio_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
+        "revision": 306,
+        "current": {
+          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
+          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
+        },
+        "commands": 19,
+        "seconds": 294.80632030405104,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
+        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev296_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 0,
+        "retired_versions_archived": 0,
+        "maintenance_original_read_contention_preserved": true,
+        "maintenance_cumulative_seconds": 35.17661553667858,
+        "deleted_files": 0,
+        "files": 76,
+        "secret_scan_matches": 0,
+        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       }
     },
     {
@@ -4514,13 +5126,54 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
+      },
+      "chat_audio_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
+        "revision": 306,
+        "current": {
+          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
+          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
+        },
+        "commands": 19,
+        "seconds": 294.80632030405104,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
+        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev296_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 0,
+        "retired_versions_archived": 0,
+        "maintenance_original_read_contention_preserved": true,
+        "maintenance_cumulative_seconds": 35.17661553667858,
+        "deleted_files": 0,
+        "files": 76,
+        "secret_scan_matches": 0,
+        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       }
     },
     {
@@ -5402,7 +6055,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev296 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev306 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -6083,19 +6736,60 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
+      },
+      "chat_audio_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
+        "revision": 306,
+        "current": {
+          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
+          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
+        },
+        "commands": 19,
+        "seconds": 294.80632030405104,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
+        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev296_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 0,
+        "retired_versions_archived": 0,
+        "maintenance_original_read_contention_preserved": true,
+        "maintenance_cumulative_seconds": 35.17661553667858,
+        "deleted_files": 0,
+        "files": 76,
+        "secret_scan_matches": 0,
+        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_integration_pending_remaining_tasks_active",
+      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -6129,42 +6823,42 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_SPEAKER_DELIVERY",
-        "revision": 296,
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
+        "revision": 306,
         "current": {
-          "engine_binary_sha256": "e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2",
-          "engine_release_sha256": "839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751",
-          "generation_sha256": "1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3",
-          "manifest_sha256": "4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/service-package-01/bundle",
-          "service_acceptance_sha256": "b13098c09ad8f898f388b6fcd4ac78daec06de1222114c933f1ad64976b337f0",
-          "service_release_sha256": "3aa97fd4c9bd4f5213c19365fb7a7b6690528454a9ca04da4a82619566d760c6"
+          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
+          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
         },
         "commands": 19,
-        "seconds": 262.46435551485047,
+        "seconds": 294.80632030405104,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4",
-        "automatic_payload": "cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54",
+        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
+        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
         "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "previous_rev286_preserved": true,
-        "retired_intents_archived": 4,
-        "retired_generations_archived": 4,
-        "retired_versions_archived": 3,
-        "maintenance_original_rejected_plan_preserved": true,
-        "maintenance_cumulative_seconds": 102.27289623068646,
+        "previous_rev296_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 0,
+        "retired_versions_archived": 0,
+        "maintenance_original_read_contention_preserved": true,
+        "maintenance_cumulative_seconds": 35.17661553667858,
         "deleted_files": 0,
-        "files": 84,
+        "files": 76,
         "secret_scan_matches": 0,
-        "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -6331,7 +7025,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Speaker PR final-head checks and actual main merge",
+        "Chat audio PR final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -6781,13 +7475,54 @@
         "files": 84,
         "secret_scan_matches": 0,
         "archive_sha256": "e8a8a047a14d71dd224b280d91e46d85f2a19435101b23b9e88c025e19238bd8",
+        "main_integration_pending": false,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-speaker-delivery-20261118/README.md",
+        "main_merge_commit": "704136283e1a345f3ff6b6497f019b0cc15ee665",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/46",
+        "main_evidence": "evidence/serve-speaker-main-20261118/README.md"
+      },
+      "chat_audio_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
+        "revision": 306,
+        "current": {
+          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
+          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
+          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
+        },
+        "commands": 19,
+        "seconds": 294.80632030405104,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
+        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev296_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 0,
+        "retired_versions_archived": 0,
+        "maintenance_original_read_contention_preserved": true,
+        "maintenance_cumulative_seconds": 35.17661553667858,
+        "deleted_files": 0,
+        "files": 76,
+        "secret_scan_matches": 0,
+        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-speaker-delivery-20261118/README.md"
+        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       }
     },
     {
@@ -6979,8 +7714,8 @@
       }
     }
   ],
-  "next_task": "Speaker main integration and A10 overlap separation plus all remaining master tasks",
-  "next": "Complete speaker main integration, actual overlap detection/separation, Chat audio/synthesis/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "Chat audio main integration and remaining A10 audio capabilities plus all master tasks",
+  "next": "Complete Chat audio main integration, original overlap quality, audio output/history/Realtime and every remaining A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -7002,5 +7737,36 @@
     "evidence": "docs/evidence/serve-media-prefill-repair-cpu-20261117/acceptance.json",
     "next": "Original video full/cold/warm under one strict GPU lease; retain all original failures. Continue all master tasks.",
     "business_evidence": "docs/evidence/serve-media-prefill-repair-business-20261117/acceptance.json"
+  },
+  "chat_audio_input_business_20261118": {
+    "state": "actual_business_passed_managed_delivery_pending",
+    "evidence": "evidence/serve-chat-audio-http-20261118/README.md",
+    "cases": 13,
+    "default_unchanged": true,
+    "remaining": [
+      "primary/light qualification and capability-preserving recovery",
+      "native TLS and reversible delivery",
+      "nonverbal audio, speech output, assistant audio history and Realtime",
+      "original overlap recognition quality"
+    ],
+    "primary_light": {
+      "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+      "counts": {
+        "starts": 2,
+        "chats": 18,
+        "controls": 87
+      },
+      "seconds": 114.82289363397285,
+      "nvml_queries": 108,
+      "binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+      "evidence": "docs/evidence/serve-chat-audio-profiles-20261118/README.md",
+      "managed_delivery_pending": true
+    },
+    "managed_delivery_pending": false,
+    "delivery": {
+      "revision": 306,
+      "evidence": "docs/evidence/serve-chat-audio-delivery-20261118/README.md",
+      "main_integration_pending": true
+    }
   }
 }

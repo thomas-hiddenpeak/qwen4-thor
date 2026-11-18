@@ -1,0 +1,45 @@
+{
+  "commands": {
+    "host": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/composition-cpu-02/required.txt"
+    ],
+    "schema": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_protocol.test_chat_audio.ChatAudio.test_python_and_javascript_preserve_audio_order_data_and_cache_marker"
+    ],
+    "inventory": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "contract": [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ]
+  },
+  "limits": {
+    "cpu_tests": 3,
+    "source_checks": 2,
+    "seconds": 180,
+    "gpu": 0
+  },
+  "reuse": "composition-cpu-01: 3 passed checks unchanged; runtime-cpu-01: 12 unchanged cases",
+  "identities": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "8db26bd3cbe29952f550827c6e3d7f670b6e39826ba64f687785474d6083f305",
+    "src/server/chat_audio_inputs.cpp": "ab9177274b1335e9e02f9744d0522386441fe9ea2d96eccfdff885501cc89a28",
+    "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
+    "src/server/chat_preflight.cpp": "af412188bf1bf78f97457d27c35185a7fe27a8d20001c2fd7f3be8fc5e5fbc74",
+    "tests/server_chat_audio_inputs_test.cpp": "b70c7920fc3705e3d7bba492e4be1c170817aab7c133549af20724354a8ead29",
+    "tests/server_batch_preparation_test.cpp": "69c1af375d86a48a36b623f3d38cc25e203a13ed6dd29719bc2a74660221b7ff",
+    "tools/serve_protocol/test_chat_audio.py": "4e8db24d2d1fa5a46efac6f5ce11c865610ffe140e2c94694cc0cae02eabcd80"
+  }
+}

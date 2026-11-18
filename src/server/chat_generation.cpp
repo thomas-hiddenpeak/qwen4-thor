@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/chat_audio_inputs.h"
 #include "chat_model_step.h"
 #include "responses_json.h"
 #include "object_protocol.h"
@@ -566,7 +567,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       auto prepared = chat_files.Prepare(
           original_request, planning_config, access, &request_plan,
           bindings ? *bindings : io::Json(), frozen_inputs != nullptr);
-      if (prepared.ok()) {
+      if (prepared.ok() && !HasChatAudioInputs(original_request)) {
         const auto* frozen_web =
             frozen_inputs ? frozen_inputs->Find("web_content") : nullptr;
         const io::Json missing;
@@ -587,7 +588,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               planning_error.code, planning_error.param);
     return;
   }
-  const auto& req = request_plan.Request(original_request);
+  const bool has_audio = !responses && !completion && !internal &&
+                         HasChatAudioInputs(original_request);
+  io::Json audio_request;
+  if (has_audio) audio_request = request_plan.Request(original_request);
+  const auto& req = has_audio ? audio_request
+                              : request_plan.Request(original_request);
   const auto chat_moderation_options = !responses && !completion && !internal
                                            ? request_plan.moderation
                                            : ModerationOptions{};
@@ -752,6 +758,32 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   ScopeExit stop_heartbeat([&] {
     if (http) http->StopHeartbeats();
   });
+
+  ActualUsage audio_preparation;
+  uint64_t audio_input_tokens = 0;
+  if (has_audio) {
+    io::Json rendered;
+    auto prepared = PrepareNativeChatAudio(
+        fd, original_request, req, control, diagnostic, rate_lease,
+        uint64_t(request_output_limit) * sampling.choices,
+        2 * chat_moderation.Enabled() * kMaxModerationStepTokens,
+        &rendered, &audio_preparation, &audio_input_tokens);
+    if (prepared.ok()) {
+      request_plan.normalized_request = std::move(rendered);
+      // Batch owns the original audio row. Its query is produced only after
+      // real transcription in this single execution attempt.
+      prepared = chat_web.Prepare(
+          objects_.get(), original_request, planning_config,
+          {chat_state_access.scope, deadline, cancelled}, &request_plan);
+    }
+    if (!prepared.ok()) {
+      if (cancelled()) count_abort();
+      SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                prepared.ClientCode(), prepared.value.GetString("param"));
+      return;
+    }
+    audio_request = request_plan.Request(original_request);
+  }
 
   std::string prompt;
   std::vector<VisionItem> items;
@@ -1035,9 +1067,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   }
-  uint64_t prepared_input = preparation ? preparation->InputTokens() : 0;
+  uint64_t prepared_input =
+      (preparation ? preparation->InputTokens() : 0) + audio_preparation.input;
   uint64_t prepared_output =
-      preparation ? preparation->OutputTokens() : 0;
+      (preparation ? preparation->OutputTokens() : 0) + audio_preparation.output;
   if (internal) {
     auto reply = internal->accounting.ReservePrompt(prompt_u32.size());
     if (reply.ok()) reply = internal->before_model();
@@ -1046,16 +1079,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 reply.ClientCode(), reply.value.GetString("param"));
       return;
     }
-  } else if (planning_config.client_limits || chat_moderation.Enabled()) {
+  } else if (planning_config.client_limits || chat_moderation.Enabled() ||
+             has_audio) {
     if (planning_config.client_limits &&
         prepared_input + prompt_u32.size() >
             planning_config.client_limits->max_prompt_tokens) {
       SendError(fd, 400, "Initial step exceeds client input limit", {},
-                "client_prompt_limit_exceeded", "moderation");
+                "client_prompt_limit_exceeded", has_audio ? "messages" : "moderation");
       return;
     }
     const auto result =
-        preparation && preparation->Reserved()
+        (preparation && preparation->Reserved()) || has_audio
             ? rate_lease.ExtendPrompt(clients_, http->Client(),
                                       prompt_u32.size())
             : rate_lease.Reserve(clients_, http->Client(),
@@ -1094,6 +1128,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const bool batch_usage =
       http && http->RateDomain() == ClientRateDomain::kBatch;
   ChatChoices choices(sampling.choices, !collect_chat, batch_usage);
+  if (has_audio &&
+      !choices.SetAudioPreparation(audio_preparation, audio_input_tokens)) {
+    SendError(fd, 500, "Audio usage projection failed", {},
+              "chat_audio_usage_invalid");
+    return;
+  }
   CompletionChoices completion_choices(
       static_cast<int>(completion_plan.prompts.size()), completion_plan.n,
       completion_plan.best_of, stream);

@@ -171,6 +171,7 @@ def asr_capabilities(value):
     selected = value.get('transcriptions')
     if selected is None:
         return
+    profile_evidence.chat_audio_capability(selected)
     ledger.require(type(selected) is dict and
         all(selected.get(k) == v for k, v in package.NATIVE_ASR.items()) and
         type(selected.get('configured')) is bool,
@@ -233,7 +234,7 @@ def asr_capabilities(value):
                  'diarization', 'overlap_diarization'}
         ledger.require(type(pending) is list and all(type(k) is str for k in pending)
             and len(set(pending)) == len(pending) and set(pending) <= known and
-            (('diarization' in pending) != ('overlap_diarization' in pending)),
+            not {'diarization', 'overlap_diarization'} <= set(pending),
             'unknown native audio completion declaration')
         resolved = {}
         if not {'alignment', 'alignment_segments'}.intersection(pending):
@@ -247,6 +248,21 @@ def asr_capabilities(value):
         if 'diarization' not in pending:
             ledger.require(diarized, 'diarization completion lacks actual output/backend')
             resolved['diarization'] = True
+            if 'overlap_diarization' not in pending:
+                separator = selected.get('separator', {})
+                ledger.require(type(separator) is dict and
+                    all(separator.get(k) == v for k,v in package.NATIVE_SEPARATOR.items()) and
+                    {'alignment','vad','speaker'} <= selected.keys() and
+                    separator.get('backend') == 'native_sepformer_fp32' and
+                    separator.get('simultaneous_sources') == 2 and
+                    separator.get('sample_rate') == 8000 and
+                    separator.get('output_sample_rate') == 16000 and
+                    separator.get('speaker_identity') == 'cross_track_acoustic_clustering' and
+                    separator.get('timestamps') == 'original_time_with_overlap' and
+                    separator.get('budget') == 'shared_request' and
+                    separator.get('core_readiness_dependency') is False,
+                    'overlap completion lacks actual isolated separator')
+                resolved['overlap_diarization'] = True
         selected['resolved_native_work'] = resolved
 
 

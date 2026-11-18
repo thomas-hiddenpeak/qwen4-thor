@@ -1,0 +1,24 @@
+{
+  "status": "HTTP_QUALITY_FAILED_PROJECTION_CPU_FIXED_PENDING_RETEST",
+  "original_http": {
+    "starts": 1,
+    "requests": 3,
+    "seconds": 50.33853558311239,
+    "accepted_isolation_requests": 2,
+    "quality_failed": true,
+    "default_unchanged": true,
+    "cleanup_complete": true
+  },
+  "cpu_tests": 2,
+  "source_checks": 2,
+  "old_binary_retained_sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d",
+  "candidate_sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282",
+  "original_plan_sha256": "90acf2db1093e6b5c7c0b3dde18dbc6e81828acceb6575ad5fb1a164458bc4f8",
+  "next_limits": {
+    "starts": 1,
+    "requests": 11,
+    "seconds": 900
+  },
+  "extra_gpu_since_failure": 0,
+  "quality_gate_changed": false
+}

@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "version": "2.8.1",
+  "result": {
+    "duration": 4.0,
+    "segments": [
+      {
+        "id": "0",
+        "end": 3.04,
+        "speaker": "A",
+        "start": 0.24,
+        "text": "The child almost hurt the small dog.",
+        "type": "transcript.text.segment"
+      }
+    ],
+    "task": "transcribe",
+    "text": "The child almost hurt the small dog.",
+    "usage": {
+      "input_tokens": 124,
+      "output_tokens": 9,
+      "total_tokens": 133,
+      "type": "tokens",
+      "input_token_details": {
+        "audio_tokens": 41,
+        "text_tokens": 83
+      }
+    }
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:18260/v1/audio/transcriptions"
+    }
+  ]
+}
