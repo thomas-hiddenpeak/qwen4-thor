@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Chat音频首轮在权重加载前被公平准入配置拒绝：3客户端总inflight
+超过全局、queue仅2。1进程启动/0POST/6.801秒，已回收；仅将测试
+每客户端inflight改为1、queue改为3，生产候选及23CPU直接依赖
+保持。失败原件保留，后续仍固定2实际模型启动/12POST/2ASR；
+计入前次共最多3核心进程尝试，不将启动失败算业务通过。
+
 [Chat音频接线23项CPU通过](evidence/serve-chat-audio-output-cpu-20261118/README.md)：
 19 C++/0.114秒及4负控/0.268秒；最终引擎/host零警告，913来源/
 12负控。历史重启/隔离、流式终态/字节、真实usage与相关配额/分类

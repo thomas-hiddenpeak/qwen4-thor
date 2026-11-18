@@ -238,7 +238,7 @@ class Stage(speech.Stage):
         for port in (self.plan['port'],self.plan['operations_port']):
             with socket.socket() as sock: sock.bind(('127.0.0.1',port))
         policy=dict(version=3,revision=0,fair_queue=True,gateway_token=SECRET,
-            clients=[dict(id=name,max_inflight=4,max_control_inflight=4,
+            clients=[dict(id=name,max_inflight=1,max_control_inflight=4,
                 max_prompt_tokens=8192,max_output_tokens=8192,max_body_bytes=1048576,
                 requests_per_minute=32,tokens_per_minute=64 if name=='tiny' else 200000)
                 for name in ('audio','other','tiny')])
@@ -247,7 +247,7 @@ class Stage(speech.Stage):
             '--host','127.0.0.1','--port',str(self.plan['port']),
             '--operations-port',str(self.plan['operations_port']),'--mtp','--max-seq','1',
             '--max-len','8192','--max-prefill','2048','--max-tokens','64',
-            '--max-inflight-requests','4','--max-queued-requests','2',
+            '--max-inflight-requests','4','--max-queued-requests','3',
             '--object-store-dir',str(self.out/'objects'),'--client-policy-file',str(self.out/'client-policy.json'),
             '--tts-model-dir',self.plan['tts_directory'],'--tts-max-text-tokens','512',
             '--tts-max-prefill-tokens','512','--tts-max-frames','160',
