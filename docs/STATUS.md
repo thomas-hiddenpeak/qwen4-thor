@@ -7,6 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR47已合main](evidence/serve-chat-audio-mainline-20261118/README.md)：
+`0f809a0c`，接受HEAD双CI全部通过，Chat音频输入rev306交付保持，
+未验TTS未混入。继续修复TTS数值、实际PCM及全部master。
+
+TTS实际数值43.453秒FAIL：提示/talker通过，预测器隐藏状态偏差
+及4/64 codes不同，原证据保留、门槛不变。先CPU固定native hidden
+隔离输入累计漂移与预测器计算，0新增GPU加载；默认rev306保持。
+
+TTS绑定/缓冲2CPU通过，独立CUDA程序零警告构建；固定中英文
+各2帧、1GPU+1CPU加载、1200秒的数值短验，先3比较门负控与
+来源门，0主LLM/HTTP。真实PCM/服务仍须继续，默认rev306保持。
+
+TTS原生talker/15级预测器已接逐层CUDA、KV与帧状态，正在
+必要构建；新增权重绑定及prompt缓冲只做2项CPU/60秒。
+随后固定两种双轨提示的实际数值短验，再实现codec波形输出；
+默认rev306保持，尚未宣称真实发声或交付。
+
 PR47音频恢复55项检查中的旧speaker观察夹具漏限固定范围，
 访问历史未配置的separator失败。已修为本文件原有speaker集合，
 保留全部预算/隔离负控；仅失败用例0.164秒通过、0GPU。

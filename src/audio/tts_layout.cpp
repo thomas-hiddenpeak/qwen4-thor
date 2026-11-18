@@ -1,7 +1,11 @@
 #include "q4t/audio/tts_layout.h"
 
 #include <algorithm>
+#include <limits>
+#include <map>
 #include <utility>
+
+#include "q4t/audio/tts_generation.h"
 
 namespace q4t::audio {
 namespace {
@@ -71,6 +75,63 @@ Status ValidateTtsWeightLayout(const TtsWeightLayout& layout,
       return Status::Fail("TTS weight overlap or gap");
     end = interval.second;
   }
+  return {};
+}
+
+Status BindTtsDeviceWeights(const void* data, size_t bytes,
+                            const TtsWeightLayout& layout, TtsVariant variant,
+                            TtsDeviceWeights* out) {
+  const auto base = reinterpret_cast<uintptr_t>(data);
+  if (!data || !out || base % 2 || bytes != layout.bytes ||
+      base > std::numeric_limits<uintptr_t>::max() - bytes)
+    return Status::Fail("TTS device buffer bounds invalid");
+  if (auto s = ValidateTtsWeightLayout(layout, variant); !s) return s;
+  std::map<std::string, const uint16_t*> pointers;
+  for (const auto& t : layout.tensors)
+    pointers.emplace(t.name, reinterpret_cast<const uint16_t*>(base + t.offset));
+  const auto affine = [&](const std::string& name) {
+    return TtsAffineWeights{pointers.at(name + ".weight"),
+                             pointers.at(name + ".bias")};
+  };
+  const auto dense = [&](const std::string& name, int layers) {
+    TtsDenseWeights result;
+    result.norm = pointers.at(name + ".norm.weight");
+    for (int i = 0; i < layers; ++i) {
+      auto& w = result.layers[i];
+      const auto p = name + ".layers." + std::to_string(i) + ".";
+      w.input_norm = pointers.at(p + "input_layernorm.weight");
+      w.post_norm = pointers.at(p + "post_attention_layernorm.weight");
+      w.q_norm = pointers.at(p + "self_attn.q_norm.weight");
+      w.k_norm = pointers.at(p + "self_attn.k_norm.weight");
+      w.q = pointers.at(p + "self_attn.q_proj.weight");
+      w.k = pointers.at(p + "self_attn.k_proj.weight");
+      w.v = pointers.at(p + "self_attn.v_proj.weight");
+      w.o = pointers.at(p + "self_attn.o_proj.weight");
+      w.gate = pointers.at(p + "mlp.gate_proj.weight");
+      w.up = pointers.at(p + "mlp.up_proj.weight");
+      w.down = pointers.at(p + "mlp.down_proj.weight");
+    }
+    return result;
+  };
+  TtsDeviceWeights w;
+  w.variant = variant;
+  w.text_embedding = pointers.at("talker.model.text_embedding.weight");
+  w.codec_embedding = pointers.at("talker.model.codec_embedding.weight");
+  w.codec_head = pointers.at("talker.codec_head.weight");
+  w.text_fc1 = affine("talker.text_projection.linear_fc1");
+  w.text_fc2 = affine("talker.text_projection.linear_fc2");
+  w.talker = dense("talker.model", 28);
+  w.predictor = dense("talker.code_predictor.model", 5);
+  if (variant == TtsVariant::kCustomVoice17B)
+    w.predictor_projection = affine("talker.code_predictor.small_to_mtp_projection");
+  for (int i = 0; i < 15; ++i) {
+    const auto p = "talker.code_predictor.";
+    w.code_embeddings[i] = pointers.at(
+        p + std::string("model.codec_embedding.") + std::to_string(i) + ".weight");
+    w.code_heads[i] = pointers.at(
+        p + std::string("lm_head.") + std::to_string(i) + ".weight");
+  }
+  *out = w;
   return {};
 }
 
@@ -144,6 +205,7 @@ Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
   w.text_intermediate = bf16(text_tokens * 2048);
   w.text_projected = bf16(text_tokens * hidden);
   w.affine_fp32 = carve(text_tokens * 2048 * sizeof(float));
+  w.prompt_rows = carve(prefill_tokens * sizeof(TtsPromptRow));
   w.prefill = bf16(prefill_tokens * hidden);
   w.past_hidden = bf16(hidden);
   w.codec_embeddings = bf16(16 * hidden);

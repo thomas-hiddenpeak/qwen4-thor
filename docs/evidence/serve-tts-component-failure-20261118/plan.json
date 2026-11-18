@@ -1,0 +1,74 @@
+{
+  "schema": "q4t-native-tts-component-v1",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "reference_seconds": 600,
+    "gpu_model_loads": 1,
+    "cpu_reference_model_loads": 1,
+    "cases": 2,
+    "frames_per_case": 2,
+    "native_advances": 600,
+    "reference_talker_forwards": 4,
+    "reference_predictor_forwards": 60,
+    "main_llm_loads": 0,
+    "http_requests": 0
+  },
+  "thresholds": {
+    "conditioning": {
+      "cosine": 0.99995,
+      "relative_l2": 0.01
+    },
+    "dense": {
+      "cosine": 0.9995,
+      "relative_l2": 0.04
+    },
+    "identical_teacher_forced_greedy_codes": true
+  },
+  "cases": [
+    {
+      "text": "Hello, this is a native speech test.",
+      "instruction": "Speak calmly.",
+      "voice": "ryan",
+      "language": "english",
+      "non_streaming": false
+    },
+    {
+      "text": "你好，会议下午三点开始。",
+      "instruction": "用温柔的语气说话。",
+      "voice": "vivian",
+      "language": "chinese",
+      "non_streaming": true
+    }
+  ],
+  "eos_qualified": false,
+  "audio_qualified": false,
+  "binary_sha256": "eb0936efac85b51a55c8c4fa1c8ad1d65645456cdc264b6c6e0bf4fa1a95c2db",
+  "driver_sources": {
+    "model_replay.cpp": "ad790d41a75784ebf1374e4b8afa5ff0067848e1e71ba07867cba509ce478606",
+    "model_reference.py": "c3289cff94e28999e896b66b8696d0af3f617b1ae2b6fbe090494c7a9b457fbc",
+    "acceptance.py": "f1bba0c6b80035b80142afb395d5f9705dbda73f291e9068034a8cecee1b3e7c"
+  },
+  "runtime_sources": {
+    "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
+    "include/q4t/audio/tts_generation.h": "d8a02d72df064101ccf4230bdeb27936d6a7dbc19d55253ec02ea992b6dee744",
+    "include/q4t/audio/tts_layout.h": "cf1c8939437b153f2b0c1b694ac6dcd0f651938c8c6803826cd9cef60bb945fb",
+    "include/q4t/audio/tts_model.h": "783a512f6108c43596252bbfe2a3ea15a7f9b20667a143babe10e5f589d98e2c",
+    "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
+    "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+    "src/audio/tts_dense.cu": "f795d58f00de6be41aff08675a28b3d652551af7863fb0048f35a74ad2234e9d",
+    "src/audio/tts_generation.cpp": "013f11b66d2228b219d667d2c05ba61400aadc62fa5f6576a8142d35ad35f1a0",
+    "src/audio/tts_layout.cpp": "315dfa49860e2517e79dd3723cdc4ecfe6742e55f3a5595ed7283d0cca32231c",
+    "src/audio/tts_math_internal.h": "13efb7e19e3a7b0038f6896166aac85ea289763fdf30c87da3045fbf3cee7528",
+    "src/audio/tts_model.cu": "6680904d077b410fff8641094ae231d09180932a976323501693461bc181372b"
+  },
+  "asset_result_sha256": "271950c6f3bdedb2177d42d4ce25e806517865d67b8ad72650d2979d828f30b8",
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "note": "Native first, official CPU teacher-forced reference second; 132 operands plus 2 code groups; no EOS or acoustic quality certification."
+}

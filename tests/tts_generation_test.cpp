@@ -152,6 +152,33 @@ Q4T_TEST(tts_dense_workspace_covers_cache_temporaries_and_budget) {
   return true;
 }
 
+Q4T_TEST(tts_device_binding_rejects_bad_payload_and_preserves_projection) {
+  for (const auto variant : {kSmall, kLarge}) {
+    TtsWeightLayout layout;
+    const size_t bytes = variant == kSmall ? 1811577344 : 3833352704;
+    Q4T_CHECK(ParseTtsWeightLayout(Header(variant == kSmall
+        ? "talker-06b-header.json" : "talker-17b-header.json"), bytes,
+        variant, &layout));
+    // Binding does not dereference this address or initialize CUDA.
+    const void* base = reinterpret_cast<const void*>(uintptr_t{0x10000000});
+    TtsDeviceWeights w;
+    Q4T_CHECK(BindTtsDeviceWeights(base, bytes, layout, variant, &w));
+    Q4T_CHECK(w.variant == variant && w.talker.layers[27].down);
+    Q4T_CHECK(w.predictor.layers[4].down && !w.predictor.layers[5].down);
+    Q4T_CHECK(bool(w.predictor_projection.weight) == (variant == kLarge));
+    Q4T_CHECK(bool(w.predictor_projection.bias) == (variant == kLarge));
+    Q4T_CHECK(w.code_embeddings[14] && w.code_heads[14]);
+    const auto* previous = w.codec_head;
+    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes - 1, layout, variant, &w));
+    Q4T_CHECK(!BindTtsDeviceWeights(reinterpret_cast<const void*>(
+        std::numeric_limits<uintptr_t>::max() - 1), bytes, layout, variant, &w));
+    layout.tensors[0].offset += 2;
+    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes, layout, variant, &w));
+    Q4T_CHECK(w.codec_head == previous);
+  }
+  return true;
+}
+
 Q4T_TEST(tts_generation_workspace_accounts_for_both_models_and_history) {
   TtsGenerationLayout w;
   Q4T_CHECK(PlanTtsGenerationWorkspace(kLarge, 100, 9, 120, kUnlimited, &w));
@@ -159,6 +186,7 @@ Q4T_TEST(tts_generation_workspace_accounts_for_both_models_and_history) {
   Q4T_CHECK(w.predictor_offset >= w.talker.bytes);
   Q4T_CHECK(w.ids >= w.predictor_offset + w.predictor.bytes);
   Q4T_CHECK(w.affine_fp32 + 100 * 2048 * 4 <= w.prefill);
+  Q4T_CHECK(w.prompt_rows + 9 * sizeof(TtsPromptRow) <= w.prefill);
   Q4T_CHECK(w.text_projected + 100 * 2048 * 2 <= w.affine_fp32);
   Q4T_CHECK(w.logits + 3072 * 2 <= w.bytes);
   const size_t bytes = w.bytes;

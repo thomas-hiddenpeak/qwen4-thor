@@ -180,6 +180,8 @@ add_library(q4t_model STATIC
   src/audio/tts_config.cpp
   src/audio/tts_layout.cpp
   src/audio/tts_generation.cpp
+  src/audio/tts_dense.cu
+  src/audio/tts_model.cu
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
