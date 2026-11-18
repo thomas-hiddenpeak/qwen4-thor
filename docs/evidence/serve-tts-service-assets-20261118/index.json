@@ -1,0 +1,33 @@
+{
+  "status": "PASS_COMPONENT_SERVICE_STILL_REQUIRED",
+  "cpu_unique": 11,
+  "cpu_executions": 13,
+  "cpu_seconds": 1.7671786500141025,
+  "full_loader_cases": 1,
+  "full_checkpoint_reads": 2,
+  "full_loader_seconds": 5.552064453717321,
+  "gpu_model_loads": 0,
+  "http_requests": 0,
+  "nvml_queries": 8,
+  "lease": "COMPLETED_RELEASED",
+  "defaults": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "records_sha256": "cd34e259ac95705e0b50d230366545aaeaceeee4774b3a09c8e3d64fdb525499",
+  "full_loader_binary_sha256": "01e5993d9cb07015a628b7719d9cdcba6f785f11f630146d8d54e43e91dbf456",
+  "final_cpu_binary_sha256": "a28210721a41c171a8ee40d94a0e6918d4c8f92ba5944a148a6462efee9ee487",
+  "sources": {
+    "src/server/tts_assets.cpp": "50842cd64e95b6f316e89aa872ad81bf9f3ef8be614a3f37f71286f8613b476a",
+    "include/q4t/server/tts_assets.h": "b518227578a1f65edc1b39706a77eb4aa1e08987b64a4a9a03de0c4b81821ee1",
+    "src/server/tts_service.cpp": "68a56b92b300a9c263d1e698dbb389254f5f084271a979f40b5432aa03dee18d",
+    "include/q4t/server/tts_service.h": "59587f231d219da8b991f75a08d527214c28aadc5ec6221b6be9d9661910ab4c",
+    "src/server/model_assets.cpp": "dc7ff572ccee2eee65e376d0fac40e60be982d16f2ec606d1dae946c1b9ce3aa",
+    "include/q4t/server/model_assets.h": "1b9d38215c4c027e0cd1e63aa29dca117104211cc8f3dcff63497f1c5c20564e"
+  },
+  "full_loader_dependencies_reused_after_resource_formula_only_change": true,
+  "final_source_gate_sha256": "7cd94d971d42c9325dce8315cacda320d2986e01e2d037c101340b1d7074b231"
+}

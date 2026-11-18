@@ -2176,8 +2176,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "26d5db145b683596665ae4ee75da7005ba35c6f546b871f4cb69f6e525d81fb0",
-    "cmake/ChatProtocolIdentity.cmake": "2319a2cd016b29b11a72b8950ad8c1d2bc647b5e4369a93135df2d29dd0bd999",
+    "CMakeLists.txt": "5f7afc89f440e83db73fdf0646ec428e7db331f9596aed6aef5971b7a74a0704",
+    "cmake/ChatProtocolIdentity.cmake": "f1c9b03a3d1e99be5681ea34e2b6b9fb90e9948be1e19550cd1d11d71a433ee5",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2338,7 +2338,7 @@
     "include/q4t/server/media_admission.h": "08fdd3453746652ab6c270ecf0a0a16bdfc7dc37232bc14037fddebbd8e255aa",
     "include/q4t/server/media_cache.h": "777f159e51951bf15f9657cd5ad77930cf3349520abb2afa12ac5be82344e14a",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
-    "include/q4t/server/model_assets.h": "920929b0426472be538aa228b1253cd89410f4ad6a5a5ffadaabf67da36f217c",
+    "include/q4t/server/model_assets.h": "1b9d38215c4c027e0cd1e63aa29dca117104211cc8f3dcff63497f1c5c20564e",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
     "include/q4t/server/moderation.h": "8833b83a535ff11a765780bb1e8312bf69a017915c14c89133e3c2fffdf91529",
@@ -2410,6 +2410,7 @@
     "include/q4t/server/speaker_assets.h": "b4c66b4b6fe5ded56d155717cfe481664fa2ae856e375410c71a192c9557162b",
     "include/q4t/server/speaker_reference.h": "d0640a3f84dd671923f74ae62fede74f4b28f08c844e0b6232e1b0868287203b",
     "include/q4t/server/speaker_service.h": "8dd4b05457095100f58df2d62f8cdd061f213fe169d002b4264de145102183c9",
+    "include/q4t/server/speech_encode.h": "049cd9cbaeb4c66392ab96260be6e6610ca06847d6fb4d56bbea74fa13cbe5dd",
     "include/q4t/server/speech_request.h": "4da1ad5ae2f951f0e9b701a616a1cfd20f6a7a69b40dcb899881ebc688aa2da6",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "include/q4t/server/state_cipher.h": "d883cb8c11ccce3a39c7fadf5c9448b42086ec482258df8ca975d6782d2ec8f3",
@@ -2423,6 +2424,8 @@
     "include/q4t/server/token_logprobs.h": "39e07ab03385abbae505cb35c8948e564fff26419f050fb8d99dc121b5f28da2",
     "include/q4t/server/tool_result_contracts.h": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770",
     "include/q4t/server/tool_result_schema.h": "9b458aff192168e0872f67f4e1fc4c7aec16a3044b74e0f345612814305d57fa",
+    "include/q4t/server/tts_assets.h": "b518227578a1f65edc1b39706a77eb4aa1e08987b64a4a9a03de0c4b81821ee1",
+    "include/q4t/server/tts_service.h": "59587f231d219da8b991f75a08d527214c28aadc5ec6221b6be9d9661910ab4c",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/server/vad_assets.h": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751",
     "include/q4t/server/vector_embedding_execution.h": "ac94fed5ad80a57a201e30f5ec869a813c57a82f9c09e378ff8e6611f809239e",
@@ -2721,7 +2724,7 @@
     "src/server/media_cache.cpp": "ad3e2fae8415b04cd2cc233b7aaa61626704433c440675d478e7f69c14253a28",
     "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/model_assets.cpp": "5f67242b93292c80539e537c0ea0f1245e6cf1206213a2cb42572895d5dcf598",
+    "src/server/model_assets.cpp": "dc7ff572ccee2eee65e376d0fac40e60be982d16f2ec606d1dae946c1b9ce3aa",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
@@ -2822,6 +2825,9 @@
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
     "src/server/speaker_reference.cpp": "60ed09ac7c0f4ebfb8d6a1b7ce69900967c6392a008ccbcf21a682b2539040dd",
     "src/server/speaker_service.cpp": "a87cf727113bca9c51b20bbcf5fb841257a8f7e2110fe82e143bcfedd702bb1e",
+    "src/server/speech_encode.cpp": "6c292f99d5fc63c682a13377082cc00d3049840fed2f6e597219a1d3089afa0e",
+    "src/server/speech_encode_protocol.h": "57b31e1999d9f337c1ee76936eba9642e03a6190f1e70e5148c3e30ebe3a90c9",
+    "src/server/speech_encode_worker.cpp": "7a3a40056ef1fd9bec6be44bfd3f055c11533c641df7d7885afdb3403ff7099a",
     "src/server/speech_request.cpp": "b52fcf641b7b82b9ebfe52a529c097953b3372e927aa486c1aec32f4b5ff7a6f",
     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
     "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
@@ -2833,6 +2839,8 @@
     "src/server/token_logprobs.cpp": "9f9dfa9d1bf9e29b1e971461ba0cd000a7f6eea8cc5d25799f3bfb1e91581f32",
     "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
     "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
+    "src/server/tts_assets.cpp": "50842cd64e95b6f316e89aa872ad81bf9f3ef8be614a3f37f71286f8613b476a",
+    "src/server/tts_service.cpp": "68a56b92b300a9c263d1e698dbb389254f5f084271a979f40b5432aa03dee18d",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
@@ -3060,11 +3068,7 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "include/q4t/server/speech_encode.h": "049cd9cbaeb4c66392ab96260be6e6610ca06847d6fb4d56bbea74fa13cbe5dd",
-    "src/server/speech_encode_protocol.h": "57b31e1999d9f337c1ee76936eba9642e03a6190f1e70e5148c3e30ebe3a90c9",
-    "src/server/speech_encode.cpp": "6c292f99d5fc63c682a13377082cc00d3049840fed2f6e597219a1d3089afa0e",
-    "src/server/speech_encode_worker.cpp": "7a3a40056ef1fd9bec6be44bfd3f055c11533c641df7d7885afdb3403ff7099a"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -7376,5 +7380,19 @@
     ],
     "cpu": "10 distinct checks passed: original 8, repaired AAC and partial-tail 2; first failure and build corrections retained. AAC explicit tail padding is disclosed separately from actual source.",
     "actual_content": "Original English/Chinese through MP3/AAC/Opus/FLAC, 8/8 exact normalized ASR, 16 codec workers reaped, 3 ASR loads / 10.644s; runtime source unchanged from accepted CPU group."
+  },
+  "tts_service_assets_review_20261118": {
+    "state": "paired_assets_resources_health_qualified_runtime_in_progress",
+    "cpu_cases": 11,
+    "full_loader_cases": 1,
+    "gpu_loads": 0,
+    "speech_http": false,
+    "complete": false,
+    "remaining": [
+      "GPU lifecycle and actual progressive synthesis",
+      "speech/Chat/history/SDK/recovery/main",
+      "4x content and every remaining master task"
+    ],
+    "evidence": "docs/evidence/serve-tts-service-assets-20261118/README.md"
   }
 }

@@ -4088,30 +4088,61 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "native_tts_20261118": {
-        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
+        "state": "native_synthesis_and_complete_pcm_encoding_qualified_service_in_progress",
         "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
         "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
         "metadata_cpu": 8,
         "source_anchors": 863,
         "source_negative_controls": 10,
-        "gpu": 0,
-        "actual_speech_accepted": false,
+        "actual_speech_accepted": true,
         "default_changed": false,
         "complete": false,
         "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
         "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
         "asset_acquisition_in_progress": false,
         "remaining": [
-          "Native talker/code predictor and real PCM execution with verified assets",
-          "Actual speech and Chat audio outputs, assistant audio-id history",
-          "SDK/TLS/profile and recovery, reversible release",
-          "Responses/Batch/Realtime combinations and all remaining master tasks"
+          "TTS verified assets, full unified-RAM resource admission and health/lifecycle integration",
+          "Progressive synthesis/encoding, speech API and Chat audio/history",
+          "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
+          "SDK/TLS/profiles/recovery/reversible release/main",
+          "Responses/Batch/Realtime and every remaining master task"
         ],
         "full_asset_identity_accepted": true,
         "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
         "execution_contract_cpu_unique": 16,
         "execution_contract_cpu_executions": 19,
-        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md",
+        "metadata_gpu_loads": 0,
+        "actual_speech_scope": "Two fixed utterances with natural EOS; eight compressed-format content checks; API/history/style/all-voices and 4x remain pending",
+        "current_evidence": [
+          "evidence/serve-tts-fp32-component-20261118/README.md",
+          "evidence/serve-tts-codec-component-20261118/README.md",
+          "evidence/serve-tts-utterance-20261118/README.md",
+          "evidence/serve-speech-encoding-content-20261118/README.md"
+        ],
+        "unresolved_tempo": {
+          "state": "4x_content_unresolved",
+          "accepted_actual_speeds": [
+            0.25,
+            2
+          ],
+          "identity_speed_cpu": 1,
+          "failure_evidence": "evidence/serve-speech-tempo-diagnosis-20261118/README.md",
+          "required_range": [
+            0.25,
+            4
+          ],
+          "range_not_reduced": true
+        },
+        "service_assets": {
+          "state": "paired_loader_resources_health_component_qualified",
+          "evidence": "evidence/serve-tts-service-assets-20261118/README.md",
+          "cpu_unique": 11,
+          "cpu_executions": 13,
+          "full_loader_cases": 1,
+          "gpu_loads": 0,
+          "runtime_integrated": false
+        }
       }
     },
     {
@@ -6893,7 +6924,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_checks_pending_remaining_tasks_active",
+      "state": "latest_release_main_merged_remaining_delivery_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -7627,7 +7658,9 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
-      }
+      },
+      "current_mainline_evidence": "evidence/serve-chat-audio-mainline-20261118/README.md",
+      "current_candidate": "TTS work-branch changes; no replacement of rev306 or full-task completion"
     },
     {
       "id": "Q03",
@@ -7818,8 +7851,8 @@
       }
     }
   ],
-  "next_task": "Finish PR47 exact final-head checks/main merge; implement native TTS and all master tasks",
-  "next": "Continue native speech generation/output/history and Realtime while preserving overlap quality, R07 maintenance dependencies, and every remaining task.",
+  "next_task": "Implement TTS asset/resource lifecycle, progressive synthesis/encoding and real Speech/Chat interfaces; solve 4x tempo content and continue every remaining master task.",
+  "next": "PR47 is merged into main at 0f809a0c. rev306 remains STOPPED; TTS is a work-branch candidate with numeric, utterance and compressed-content evidence, not an API delivery. Continue all remaining tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -7875,26 +7908,58 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "native_synthesis_eos_content_qualified_service_in_progress",
+    "state": "native_synthesis_and_complete_pcm_encoding_qualified_service_in_progress",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
-      "speech format/speed/instruction/all-voice service contracts and custom voice backend",
-      "speech API and Chat audio outputs/history",
-      "SDK/TLS/recovery/release",
-      "Responses/Batch/Realtime integration"
+      "TTS verified assets, full unified-RAM resource admission and health/lifecycle integration",
+      "Progressive synthesis/encoding, speech API and Chat audio/history",
+      "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
+      "SDK/TLS/profiles/recovery/reversible release/main",
+      "Responses/Batch/Realtime and every remaining master task"
     ],
     "prior_bf16_numerical_failure_preserved": true,
     "codec": {
       "state": "numeric_component_qualified",
       "evidence": "evidence/serve-tts-codec-component-20261118/README.md",
-      "speech_quality_pending": true
+      "speech_quality_pending": false,
+      "qualified_scope": "Original two utterances; all voices/style/service composition remain pending"
     },
     "utterance": {
       "state": "natural_eos_and_actual_asr_content_passed",
       "evidence": "evidence/serve-tts-utterance-20261118/README.md",
       "all_voices_and_styles_pending": true
+    },
+    "encoding": {
+      "cpu_unique_checks": 10,
+      "cpu_evidence": "evidence/serve-speech-encoding-cpu-20261118/README.md",
+      "real_content_cases": 8,
+      "content_evidence": "evidence/serve-speech-encoding-content-20261118/README.md",
+      "progressive_encoding_pending": true
+    },
+    "tempo": {
+      "state": "4x_content_unresolved",
+      "accepted_actual_speeds": [
+        0.25,
+        2
+      ],
+      "identity_speed_cpu": 1,
+      "failure_evidence": "evidence/serve-speech-tempo-diagnosis-20261118/README.md",
+      "required_range": [
+        0.25,
+        4
+      ],
+      "range_not_reduced": true
+    },
+    "service_assets": {
+      "state": "paired_loader_resources_health_component_qualified",
+      "evidence": "evidence/serve-tts-service-assets-20261118/README.md",
+      "cpu_unique": 11,
+      "cpu_executions": 13,
+      "full_loader_cases": 1,
+      "gpu_loads": 0,
+      "runtime_integrated": false
     }
   }
 }

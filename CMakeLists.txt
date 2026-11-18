@@ -323,6 +323,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  src/server/tts_assets.cpp
+  src/server/tts_service.cpp
   src/server/aligner_assets.cpp
   src/server/speaker_assets.cpp
   src/server/speaker_service.cpp
