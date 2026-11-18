@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[C05主/轻资格通过](evidence/serve-voice-primary-light-20261119/README.md)：
+2启动/50业务POST/311.903秒；两档真实音色闭环、新采样完整音频、
+旧输入/工具/结构化/媒体能力及家族重载通过，严格租约/来源/清理通过。
+原NVML ENV_ABORT保留；940锚点/17负控。四份相同只读旧引擎共享
+存储释放112.94MB，原路径/内容/默认保持。接着真实Guardian/回退
+及可回退发行，Base-only/ICL/提示词音色/Live和听感仍须继续。
+
+空闲严格租约5次NVML正常且无GPU进程，仅证明当前可用；冻结一次
+原主轻清单续验：2启动/50POST/900秒，同C05、配置、录音及请求，
+不复用ENV_ABORT作通过证据。若再环境中止，不连续重试，继续CPU
+开发；默认rev316保持，恢复驱动14 CPU及元数据补核已提交。
+
 [音色跨恢复驱动14项CPU通过](evidence/serve-voice-managed-driver-cpu-20261119/README.md)：
 同一ID、全音频/ASR、历史/隔离及撤销双路拒绝；15次CPU执行通过，
 940锚点/17负控。主轻108.844秒/10POST因NVML查询ENV_ABORT保留，

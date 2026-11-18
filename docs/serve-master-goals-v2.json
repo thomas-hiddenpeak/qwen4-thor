@@ -8630,7 +8630,7 @@
         "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
         "runtime_http_qualified": false,
         "remaining": [
-          "primary/light profiles and managed recovery",
+          "managed recovery and reversible delivery",
           "preserved-state compatible rollback",
           "Base-only existing registered voice qualification",
           "reference audio ICL, prompt voices and Live",
@@ -8698,7 +8698,7 @@
           "validator": "evidence/serve-tts-checkpoint-profile-cpu-20261119/README.md",
           "cpu_cases": 22,
           "legacy_preserved": true,
-          "actual_profiles_pending": true
+          "actual_profiles_pending": false
         },
         "managed_voice_cpu": {
           "evidence": "evidence/serve-voice-managed-driver-cpu-20261119/README.md",
@@ -8712,6 +8712,16 @@
           "reason": "NVML query worker CLEANUP_FAILED",
           "owned_cleanup": true,
           "actual_qualification": false
+        },
+        "primary_light_qualification": {
+          "status": "ACCEPT_BASE_VOICE_AND_BUILTIN_PRIMARY_LIGHT_BUSINESS",
+          "evidence": "evidence/serve-voice-primary-light-20261119/README.md",
+          "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+          "starts": 2,
+          "posts": 50,
+          "seconds": 311.9027074780315,
+          "business_format": "v11",
+          "default_replaced": false
         }
       }
     },

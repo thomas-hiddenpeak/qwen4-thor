@@ -1,0 +1,20 @@
+{
+  "manual_sample_order": [
+    {
+      "available_mib": 164
+    },
+    {
+      "available_bytes": 314671104,
+      "stage_artifacts_bytes": 6811026
+    },
+    {
+      "available_mib": 295
+    },
+    {
+      "available_mib": 286
+    }
+  ],
+  "stage_io_failure": false,
+  "continuous_free_space_floor_not_measured": true,
+  "cleanup_scope": "subsequent four exact immutable duplicate binaries only; no raw records, old versions or paths removed"
+}
