@@ -1,0 +1,23 @@
+[  0%] Built target q4t_regex_build
+[  1%] Built target q4t_program_javascript
+[  7%] Built target xgrammar
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/stream_resample.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp.o
+/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp: In function ‘bool q4t_test_fn_stream_resample_fixed_storage_and_configuration_bounds()’:
+/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp:184:58: error: unable to deduce ‘std::initializer_list<auto>&&’ from ‘{0, 44100, 96000, 4294967295}’
+  184 |   for (const uint32_t rate : {0, 44100, 96000, UINT32_MAX})
+      |                                                          ^
+/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp:184:58: note:   deduced conflicting types for parameter ‘auto’ (‘int’ and ‘unsigned int’)
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1465: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:746: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:753: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:356: q4t_host_tests] Error 2

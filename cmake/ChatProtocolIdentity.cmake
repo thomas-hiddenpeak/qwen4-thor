@@ -110,6 +110,8 @@ set(protocol_inputs
   src/audio/asr_model.cu
   include/q4t/audio/features.h
   src/audio/features.cpp
+  src/audio/stream_resample.cpp
+  include/q4t/audio/stream_resample.h
   include/q4t/runtime/prefill_kernels.h
   include/q4t/model/linear.h
   src/model/full_attention.cu

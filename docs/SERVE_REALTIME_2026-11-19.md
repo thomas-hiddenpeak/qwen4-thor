@@ -28,6 +28,8 @@ WebSocket基础16项CPU、音频队列12项CPU及
 已通过；[原生入口升级16项CPU](evidence/serve-realtime-upgrade-cpu-20261119/README.md)
 也已通过，后端真实会话/模型及每轮配额仍按以下顺序继续。两个64 KiB转发缓冲
 不包含TLS/内核缓冲成本，正式会话准入须计入对应实际RAM。
+[实际波形重采样9项CPU](evidence/serve-realtime-resample-cpu-20261119/README.md)
+已通过，四种输入率、整数相位和尾部排空待接实际会话/ASR。
 
 ## 连续实施顺序
 

@@ -1,0 +1,26 @@
+{
+  "scope": "Constant-memory 8/16/24/48 kHz ->16 kHz real waveform converter; no route/model qualification",
+  "cpu_tests": 9,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "sources": {
+    "CMakeLists.txt": "941e55b99af6b9b167a2bda24d2e35a6f867a69851c8461b73e3ddbcf0bf6bd0",
+    "cmake/HostTestSources.cmake": "d4e14718ff8082b356fc0108ac8b6312b73c20859be438413b46f2951daa9848",
+    "cmake/ChatProtocolIdentity.cmake": "cb7cee8e812968539050aabe6068d12ca1189c3a4ce1f54905ac004b3b030b87",
+    "include/q4t/audio/stream_resample.h": "a3014b6e42e59c2ad7875b3391ea29d6e293c369b688268ac35e3d2766ac6ce5",
+    "src/audio/stream_resample.cpp": "ac901ddd21743afbcf0bb8fe3b8db678a5838be9e6d533d6fc918a33b9f380d9",
+    "tests/stream_resample_test.cpp": "4a37fd882d46806179514f56031d3d96f87609fd90dccc4364a2d06217bf48d7"
+  },
+  "acceptance": [
+    "bit-exact 16k bypass",
+    "all block/output partitions identical",
+    "exact floor total count, tail zero extension",
+    "fractional impulse moment .003 sample and mass 2e-4",
+    "unity DC 1e-7",
+    "1k tone amplitude/rms .001 and 11k alias/up-image <.0001",
+    "atomic invalid input/capacity rejection",
+    "cancel/drain distinct",
+    "fixed object <4096 bytes"
+  ],
+  "pretest_corrections": "Unsigned test constants compile fix and project clang-format; no tests previously executed and no production semantic changes."
+}

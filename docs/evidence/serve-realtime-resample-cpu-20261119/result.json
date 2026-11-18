@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "cpu_tests": 9,
+  "exit_code": 0,
+  "seconds": 0.06372455507516861,
+  "gpu_model_loads": 0,
+  "binary_sha256": "a335f0703cf432cee957ea6304099f539726fafe71d08e4e3309ae5bb2fb5764",
+  "sources_unchanged": true
+}

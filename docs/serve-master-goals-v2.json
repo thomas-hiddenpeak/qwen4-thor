@@ -9532,6 +9532,13 @@
       "executions": 19,
       "gpu_model_loads": 0,
       "backend_session_qualified": false
+    },
+    "resampler": {
+      "state": "waveform_module_cpu_verified_session_asr_integration_pending",
+      "evidence": "evidence/serve-realtime-resample-cpu-20261119/README.md",
+      "cpu_tests": 9,
+      "seconds": 0.06372455507516861,
+      "gpu_model_loads": 0
     }
   }
 }

@@ -2280,8 +2280,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "70c1e775fbe0d86a94cfcb61835b188a32ff37d957670acf26ed7338dea4dfe4",
-    "cmake/ChatProtocolIdentity.cmake": "6dc1415ef9c8b69517220f1ff478f0a81e0c7c2901debbce0f4b7121f9359e0f",
+    "CMakeLists.txt": "941e55b99af6b9b167a2bda24d2e35a6f867a69851c8461b73e3ddbcf0bf6bd0",
+    "cmake/ChatProtocolIdentity.cmake": "cb7cee8e812968539050aabe6068d12ca1189c3a4ce1f54905ac004b3b030b87",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2312,6 +2312,7 @@
     "include/q4t/audio/speaker_layout.h": "49d49b3a0801b9546d35f0ece59b57096c4822c22a939839e3fcfa09c2df7b3e",
     "include/q4t/audio/speaker_model.h": "e8ac39843a88aa7b502805a1dc49c26aa9d26bd3c69b082771f01467deb2745f",
     "include/q4t/audio/speech_tempo.h": "2a8be41dbe3ce2576b4e097fa9704160fa9f0ee79f2fcfc3b6f28bdc8fd1d29a",
+    "include/q4t/audio/stream_resample.h": "a3014b6e42e59c2ad7875b3391ea29d6e293c369b688268ac35e3d2766ac6ce5",
     "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
     "include/q4t/audio/tts_config.h": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
@@ -2617,6 +2618,7 @@
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
     "src/audio/speech_tempo.cpp": "87ddb25c673004a1ae392e133eefed923fa9926e7d85ee371c2e5a45c95c0676",
+    "src/audio/stream_resample.cpp": "ac901ddd21743afbcf0bb8fe3b8db678a5838be9e6d533d6fc918a33b9f380d9",
     "src/audio/tts_base_config_data.h": "60a46749968b7f6de39f6dfc6f248863ce0bd1cd60bd7987ff19b47732e29a08",
     "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
     "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
@@ -8230,5 +8232,10 @@
       "test certificate 0664 rejected; corrected fixture to 0644"
     ],
     "default_unchanged": true
+  },
+  "native_realtime_resample_development_20261119": {
+    "review": "Actual fixed-memory waveform interpolation/decimation; exact phase/count, prevalidation, bounded output and terminal ownership; no alteration of existing separator/model numeric path.",
+    "evidence": "docs/evidence/serve-realtime-resample-cpu-20261119/README.md",
+    "state": "9 CPU checks passed; actual session/ASR pending"
   }
 }

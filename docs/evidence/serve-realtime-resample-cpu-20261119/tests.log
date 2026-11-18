@@ -1,0 +1,10 @@
+[PASS] stream_resample_identity_keeps_float_bits_and_no_lookahead
+[PASS] stream_resample_chunk_partition_and_output_backpressure_are_bit_exact
+[PASS] stream_resample_tiny_tail_has_exact_total_count_without_padding
+[PASS] stream_resample_impulse_keeps_fractional_time_origin_and_mass
+[PASS] stream_resample_constant_signal_retains_unity_dc
+[PASS] stream_resample_voice_band_survives_and_high_frequencies_do_not_alias
+[PASS] stream_resample_bad_input_and_capacity_reject_before_mutation
+[PASS] stream_resample_finish_and_cancel_cannot_invent_completion
+[PASS] stream_resample_fixed_storage_and_configuration_bounds
+9 tests, 9 passed, 0 failed, 0 skipped

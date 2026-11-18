@@ -1,0 +1,5 @@
+{
+  "reason": "Test initializer mixed int/unsigned types; use unsigned constants. No production changes, no tests executed before build repair.",
+  "tests_before_fix": 0,
+  "gpu_model_loads": 0
+}

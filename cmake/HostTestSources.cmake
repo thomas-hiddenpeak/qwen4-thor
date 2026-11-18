@@ -102,6 +102,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/stream_resample.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/stream_resample_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program.cpp

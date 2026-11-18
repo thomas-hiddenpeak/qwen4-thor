@@ -213,6 +213,7 @@ add_library(q4t_model STATIC
   src/audio/separator_resample.cpp
   src/audio/separator_tracks.cpp
   src/audio/features.cpp
+  src/audio/stream_resample.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
   src/model/embedding_model.cu
