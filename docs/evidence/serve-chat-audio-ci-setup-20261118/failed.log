@@ -1,0 +1,345 @@
+host-contracts	Ensure host dependencies	﻿2026-11-17T23:50:48.2471271Z ##[group]Run packages=()
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2471759Z ^[[36;1mpackages=()^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2472080Z ^[[36;1mcommand -v g++-14 >/dev/null || packages+=(g++-14)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2472434Z ^[[36;1mcommand -v cmake >/dev/null || packages+=(cmake)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2472828Z ^[[36;1mtest -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2473184Z ^[[36;1mtest -f /usr/include/archive.h || packages+=(libarchive-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2473588Z ^[[36;1mtest -f /usr/include/webp/decode.h || packages+=(libwebp-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2473947Z ^[[36;1mtest -f /usr/include/zlib.h || packages+=(zlib1g-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2474344Z ^[[36;1mtest -f /usr/include/libxml2/libxml/xmlreader.h || packages+=(libxml2-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2474852Z ^[[36;1mtest -f /usr/include/LibreOfficeKit/LibreOfficeKit.h || packages+=(libreofficekit-dev)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2475297Z ^[[36;1mcommand -v pkg-config >/dev/null || packages+=(pkg-config)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2475828Z ^[[36;1mfor codec in libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2476237Z ^[[36;1m    gstreamer1.0-plugins-base gstreamer1.0-plugins-good \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2476772Z ^[[36;1m    gstreamer1.0-plugins-bad; do^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2477087Z ^[[36;1m  dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2477451Z ^[[36;1m    grep -q 'install ok installed' || packages+=("$codec")^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2477829Z ^[[36;1mdone^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2478167Z ^[[36;1mfor codec in libreoffice-writer libreoffice-calc libreoffice-impress; do^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2478584Z ^[[36;1m  dpkg-query -W -f='${Status}' "$codec" 2>/dev/null | \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2478953Z ^[[36;1m    grep -q 'install ok installed' || packages+=("$codec")^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2479270Z ^[[36;1mdone^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2479567Z ^[[36;1mcommand -v pdftoppm >/dev/null || packages+=(poppler-utils)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2480015Z ^[[36;1mtest -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf || packages+=(fonts-dejavu-core)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2480472Z ^[[36;1mdpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2481181Z ^[[36;1m  grep -q 'install ok installed' || packages+=(libidn2-0)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2481544Z ^[[36;1mcommand -v openssl >/dev/null || packages+=(openssl)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2481990Z ^[[36;1mcommand -v strace >/dev/null || packages+=(strace)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2482361Z ^[[36;1m/usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2482763Z ^[[36;1m/usr/bin/python3 -c 'import ensurepip' || packages+=(python3-venv)^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2483093Z ^[[36;1mif ((${#packages[@]})); then^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2483428Z ^[[36;1m  sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2483855Z ^[[36;1m  sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 \^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2484225Z ^[[36;1m    install -y --no-install-recommends "${packages[@]}"^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2484558Z ^[[36;1mfi^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2484786Z ^[[36;1mg++-14 --version^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2485011Z ^[[36;1mcmake --version^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.2485321Z ^[[36;1m/usr/bin/python3 -c 'import numpy; print(numpy.__version__)'^[[0m
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.4222680Z shell: /usr/bin/bash -e {0}
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.4223070Z ##[endgroup]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.7808052Z Traceback (most recent call last):
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.7808624Z   File "<string>", line 1, in <module>
+host-contracts	Ensure host dependencies	2026-11-17T23:50:48.7808929Z ModuleNotFoundError: No module named 'numpy'
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.1251911Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [152 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.1486919Z Get:5 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.1498996Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.2292724Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [792 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.2538061Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [722 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.2732379Z Get:9 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1196 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.3446045Z Get:10 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [238 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.3605835Z Get:11 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1229 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.3844576Z Get:12 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [248 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.3989194Z Get:13 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1788 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.4239662Z Get:14 http://security.ubuntu.com/ubuntu noble-security/restricted Translation-en [411 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:50:49.4395772Z Get:15 http://security.ubuntu.com/ubuntu noble-security/multiverse Translation-en [12.7 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:04.9463573Z Hit:2 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble InRelease
+host-contracts	Ensure host dependencies	2026-11-17T23:51:04.9617424Z Get:3 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:05.0312533Z Get:4 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:05.0764013Z Get:16 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1455 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:05.1761159Z Get:17 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [317 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:05.6228334Z Get:18 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1715 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:05.7388733Z Get:19 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [345 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:06.2738335Z Get:20 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1887 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:08.6771922Z Get:21 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [433 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:08.7473478Z Get:22 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [14.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:17.1196309Z Fetched 13.2 MB in 20s (670 kB/s)
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.0916167Z Reading package lists...
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.1201694Z Reading package lists...
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.3370130Z Building dependency tree...
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.3375532Z Reading state information...
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4939173Z The following additional packages will be installed:
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4940205Z   comerr-dev fonts-opensymbol gir1.2-atk-1.0 gir1.2-atspi-2.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4940869Z   gir1.2-freedesktop gir1.2-freedesktop-dev gir1.2-gdkpixbuf-2.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4941364Z   gir1.2-glib-2.0-dev gir1.2-gst-plugins-base-1.0 gir1.2-gstreamer-1.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4941867Z   gir1.2-gtk-3.0 gir1.2-gudev-1.0 gir1.2-harfbuzz-0.0 gir1.2-lokdocview-0.1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4942303Z   gir1.2-pango-1.0 glib-networking glib-networking-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4942848Z   glib-networking-services gsettings-desktop-schemas libaa1 libabsl20220623t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4943367Z   libabw-0.1-1 libacl1-dev libass9 libasyncns0 libatk-bridge2.0-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4943838Z   libatk1.0-dev libatspi2.0-dev libattr1-dev libavc1394-0 libavtp0 libblas3
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4944310Z   libblkid-dev libboost-locale1.83.0 libbrotli-dev libbs2b0 libbz2-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4944848Z   libcaca0 libcairo-script-interpreter2 libcairo2-dev libcdparanoia0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4945420Z   libcdr-0.1-1 libchromaprint1 libclucene-contribs1t64 libclucene-core1t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4945952Z   libcolamd3 libdatrie-dev libdbus-1-dev libdc1394-25 libdca0 libde265-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4946488Z   libdecor-0-0 libdeflate-dev libdirectfb-1.7-7t64 libdrm-dev libdrm-nouveau2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4947015Z   libdrm-radeon1 libdv4t64 libdvdnav4 libdvdread8t64 libdw-dev libe-book-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4948022Z   libegl-dev libegl-mesa0 libegl1 libegl1-mesa-dev libelf-dev libeot0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4948509Z   libepoxy-dev libepubgen-0.1-1 libetonyek-0.1-1 libext2fs-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4948968Z   libexttextcat-2.0-0 libexttextcat-data libfaad2 libflac12t64 libflite1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4949386Z   libfluidsynth3 libfontconfig-dev libfreeaptx0 libfreehand-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4949780Z   libfreetype-dev libfribidi-dev libgbm-dev libgbm1 libgdk-pixbuf-2.0-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4950184Z   libgdk-pixbuf2.0-bin libgirepository-2.0-0 libgl-dev libgl1-mesa-dri
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4950759Z   libgles-dev libgles1 libgles2 libglib2.0-dev libglib2.0-dev-bin
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4951166Z   libglvnd-core-dev libglvnd-dev libglx-dev libglx-mesa0 libgme0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4951595Z   libgpgmepp6t64 libgraphite2-dev libgsm1 libgssdp-1.6-0 libgstreamer-gl1.0-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4951997Z   libgstreamer-plugins-bad1.0-0 libgstreamer-plugins-base1.0-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4952436Z   libgstreamer-plugins-good1.0-0 libgtk-3-dev libgudev-1.0-dev libgupnp-1.6-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4952875Z   libgupnp-igd-1.6-0 libharfbuzz-cairo0 libharfbuzz-dev libharfbuzz-gobject0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4953345Z   libharfbuzz-icu0 libharfbuzz-subset0 libhyphen0 libice-dev libiec61883-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4953756Z   libimath-3-1-29t64 libinstpatch-1.0-2 libjack-jackd2-0 libjbig-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4954157Z   libjpeg-dev libjpeg-turbo8-dev libjpeg8-dev liblangtag-common liblangtag1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4954607Z   liblapack3 liblc3-1 libldacbt-enc2 liblerc-dev liblibreofficekitgtk
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4954978Z   liblilv-0-0 liblrdf0 libltc11 liblzma-dev libmfx1 libmhash2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4955343Z   libmjpegutils-2.1-0t64 libmodplug1 libmount-dev libmp3lame0 libmpcdec6
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4955748Z   libmpeg2encpp-2.1-0t64 libmpg123-0t64 libmplex2-2.1-0t64 libmspub-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4956132Z   libmwaw-0.3-3 libmythes-1.2-0 libneon27t64 libnice10 libodfgen-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4956661Z   libopenal-data libopenal1 libopenexr-3-1-30 libopengl-dev libopengl0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4957171Z   libopenh264-7 libopenmpt0t64 libopenni2-0 libopus0 liborc-0.4-0t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4957772Z   liborc-0.4-dev liborc-0.4-dev-bin liborcus-0.18-0 liborcus-parser-0.18-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4958235Z   libpagemaker-0.0-0 libpango1.0-dev libpangoxft-1.0-0 libpciaccess-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4958650Z   libpipewire-0.3-0t64 libpixman-1-dev libpng-dev libpoppler134 libproxy1v5
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4959088Z   libpthread-stubs0-dev libpulse0 libqrencode4 libraptor2-0 librasqal3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4959496Z   libraw1394-11 librdf0t64 libreoffice-base-core libreoffice-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4959873Z   libreoffice-core libreoffice-draw libreoffice-style-colibre
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4960238Z   libreoffice-uiconfig-calc libreoffice-uiconfig-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4960715Z   libreoffice-uiconfig-draw libreoffice-uiconfig-impress
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4961170Z   libreoffice-uiconfig-writer libreofficekit-data librevenge-0.0-0 librsvg2-2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4961593Z   libsamplerate0 libsbc1 libsdl2-2.0-0 libselinux1-dev libsepol-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4961985Z   libserd-0-0 libsharpyuv-dev libshout3 libsm-dev libsndfile1 libsndio7.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4962383Z   libsord-0-0 libsoundtouch1 libsoup-3.0-0 libsoup-3.0-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4962769Z   libspa-0.2-modules libspandsp2t64 libspeex1 libsratom-0-0 libsrt1.5-gnutls
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4963283Z   libsrtp2-1 libsuitesparseconfig7 libsvtav1enc1d1 libtag1v5 libtag1v5-vanilla
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4963763Z   libthai-dev libtheora0 libtiff-dev libtiffxx6 libtwolame0 libudev-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4964143Z   libunibreak5 libuno-cppu3t64 libuno-cppuhelpergcc3-3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4964866Z   libuno-purpenvhelpergcc3-3t64 libuno-sal3t64 libuno-salhelpergcc3-3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4965305Z   libunwind-dev libv4l-0t64 libv4lconvert0t64 libva-drm2 libva2 libvisio-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4965722Z   libvisual-0.4-0 libvo-aacenc0 libvo-amrwbenc0 libvorbisenc2 libvpx9
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4966244Z   libwavpack1 libwayland-bin libwayland-dev libwayland-server0 libwebpdecoder3
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4966668Z   libwebrtc-audio-processing1 libwildmidi2 libwpd-0.10-10 libwpg-0.3-3
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4967109Z   libwps-0.4-4 libx11-dev libx11-xcb-dev libx265-199 libxau-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4967566Z   libxcb-render0-dev libxcb-shm0-dev libxcb-xkb1 libxcb1-dev libxcomposite-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4967970Z   libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4968398Z   libxft-dev libxi-dev libxinerama-dev libxkbcommon-dev libxkbcommon-x11-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4968805Z   libxmlsec1t64-nss libxrandr-dev libxrender-dev libxtst-dev libzbar0t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4969253Z   libzix-0-0 libzvbi-common libzvbi0t64 libzxing3 lp-solve mesa-libgallium
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4969707Z   nettle-dev pango1.0-tools session-migration timgm6mb-soundfont
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4970069Z   uno-libs-private ure uuid-dev wayland-protocols x11proto-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4970413Z   xorg-sgml-doctools xtrans-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4970809Z Suggested packages:
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4971138Z   doc-base frei0r-plugins gvfs libcairo2-doc libdatrie-doc libdirectfb-extra
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4971597Z   libdv-bin oss-compat libdvdcss2 freetype2-doc libglib2.0-doc libxml2-utils
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4972012Z   libgraphite2-utils libvisual-0.4-plugins gstreamer1.0-doc libgtk-3-doc
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4972565Z   libice-doc jackd2 liblrdf0-dev liblzma-doc libportaudio2 opus-tools
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4973054Z   liborc-0.4-doc libpango1.0-doc pipewire pulseaudio raptor2-utils
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4973551Z   rasqal-utils libraw1394-doc librdf-storage-mysql librdf-storage-postgresql
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4974136Z   librdf-storage-sqlite librdf-storage-virtuoso redland-utils libreoffice-base
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4974647Z   ocl-icd-libopencl1 | mesa-opencl-icd | beignet-opencl-icd
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4975128Z   python3-scriptforge gstreamer1.0-plugins-ugly gstreamer1.0-libav bluez
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4975578Z   fonts-crosextra-caladea fonts-crosextra-carlito libreoffice-java-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4976000Z   librsvg2-bin serdi libsm-doc sndiod sordi speex libthai-doc libwayland-doc
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4976479Z   libwildmidi-config libx11-doc libxcb-doc libxext-doc graphicsmagick
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4976823Z   python3-pytest fluid-soundfont-gm
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4977089Z Recommended packages:
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4977408Z   gstreamer1.0-x bzip2-doc default-libdecor-0-plugin-1 | libdecor-0-plugin-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4977809Z   gstreamer1.0-gl libreoffice-gtk3 libpipewire-0.3-common libpng-tools
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4978252Z   poppler-data python3-uno libpaper-utils libreoffice-math librsvg2-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.4978627Z   va-driver-all | va-driver libmagickcore-6.q16-7-extra
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7484591Z The following NEW packages will be installed:
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7485243Z   comerr-dev fonts-opensymbol gir1.2-atk-1.0 gir1.2-atspi-2.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7485945Z   gir1.2-freedesktop gir1.2-freedesktop-dev gir1.2-gdkpixbuf-2.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7486458Z   gir1.2-glib-2.0-dev gir1.2-gst-plugins-base-1.0 gir1.2-gstreamer-1.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7486958Z   gir1.2-gtk-3.0 gir1.2-gudev-1.0 gir1.2-harfbuzz-0.0 gir1.2-lokdocview-0.1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7487508Z   gir1.2-pango-1.0 glib-networking glib-networking-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7488031Z   glib-networking-services gsettings-desktop-schemas gstreamer1.0-plugins-bad
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7488509Z   gstreamer1.0-plugins-base gstreamer1.0-plugins-good libaa1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7488916Z   libabsl20220623t64 libabw-0.1-1 libacl1-dev libarchive-dev libass9
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7489318Z   libasyncns0 libatk-bridge2.0-dev libatk1.0-dev libatspi2.0-dev libattr1-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7489777Z   libavc1394-0 libavtp0 libblas3 libblkid-dev libboost-locale1.83.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7490251Z   libbrotli-dev libbs2b0 libbz2-dev libcaca0 libcairo-script-interpreter2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7490973Z   libcairo2-dev libcdparanoia0 libcdr-0.1-1 libchromaprint1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7491908Z   libclucene-contribs1t64 libclucene-core1t64 libcolamd3 libdatrie-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7492435Z   libdbus-1-dev libdc1394-25 libdca0 libde265-0 libdecor-0-0 libdeflate-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7493104Z   libdirectfb-1.7-7t64 libdrm-dev libdrm-nouveau2 libdrm-radeon1 libdv4t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7493630Z   libdvdnav4 libdvdread8t64 libdw-dev libe-book-0.1-1 libegl-dev libegl-mesa0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7494114Z   libegl1 libegl1-mesa-dev libelf-dev libeot0 libepoxy-dev libepubgen-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7494523Z   libetonyek-0.1-1 libext2fs-dev libexttextcat-2.0-0 libexttextcat-data
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7495008Z   libfaad2 libflac12t64 libflite1 libfluidsynth3 libfontconfig-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7495518Z   libfreeaptx0 libfreehand-0.1-1 libfreetype-dev libfribidi-dev libgbm-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7495949Z   libgdk-pixbuf-2.0-dev libgdk-pixbuf2.0-bin libgirepository-2.0-0 libgl-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7496327Z   libgles-dev libgles1 libgles2 libglib2.0-dev libglib2.0-dev-bin
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7496731Z   libglvnd-core-dev libglvnd-dev libglx-dev libgme0 libgpgmepp6t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7497145Z   libgraphite2-dev libgsm1 libgssdp-1.6-0 libgstreamer-gl1.0-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7497530Z   libgstreamer-plugins-bad1.0-0 libgstreamer-plugins-base1.0-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7497910Z   libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7498280Z   libgstreamer1.0-dev libgtk-3-dev libgudev-1.0-dev libgupnp-1.6-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7498703Z   libgupnp-igd-1.6-0 libharfbuzz-cairo0 libharfbuzz-dev libharfbuzz-gobject0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7499156Z   libharfbuzz-icu0 libharfbuzz-subset0 libhyphen0 libice-dev libiec61883-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7499563Z   libimath-3-1-29t64 libinstpatch-1.0-2 libjack-jackd2-0 libjbig-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7500101Z   libjpeg-dev libjpeg-turbo8-dev libjpeg8-dev liblangtag-common liblangtag1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7500742Z   liblapack3 liblc3-1 libldacbt-enc2 liblerc-dev liblibreofficekitgtk
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7501261Z   liblilv-0-0 liblrdf0 libltc11 liblzma-dev libmfx1 libmhash2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7501706Z   libmjpegutils-2.1-0t64 libmodplug1 libmount-dev libmp3lame0 libmpcdec6
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7502105Z   libmpeg2encpp-2.1-0t64 libmpg123-0t64 libmplex2-2.1-0t64 libmspub-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7502503Z   libmwaw-0.3-3 libmythes-1.2-0 libneon27t64 libnice10 libodfgen-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7502886Z   libopenal-data libopenal1 libopenexr-3-1-30 libopengl-dev libopengl0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7503305Z   libopenh264-7 libopenmpt0t64 libopenni2-0 libopus0 liborc-0.4-0t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7503704Z   liborc-0.4-dev liborc-0.4-dev-bin liborcus-0.18-0 liborcus-parser-0.18-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7504095Z   libpagemaker-0.0-0 libpango1.0-dev libpangoxft-1.0-0 libpciaccess-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7504501Z   libpipewire-0.3-0t64 libpixman-1-dev libpng-dev libpoppler134 libproxy1v5
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7504911Z   libpthread-stubs0-dev libpulse0 libqrencode4 libraptor2-0 librasqal3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7505408Z   libraw1394-11 librdf0t64 libreoffice-base-core libreoffice-calc
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7505878Z   libreoffice-common libreoffice-core libreoffice-draw libreoffice-impress
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7506272Z   libreoffice-style-colibre libreoffice-uiconfig-calc
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7506670Z   libreoffice-uiconfig-common libreoffice-uiconfig-draw
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7507067Z   libreoffice-uiconfig-impress libreoffice-uiconfig-writer libreoffice-writer
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7507502Z   libreofficekit-data libreofficekit-dev librevenge-0.0-0 librsvg2-2
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7507913Z   libsamplerate0 libsbc1 libsdl2-2.0-0 libselinux1-dev libsepol-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7508293Z   libserd-0-0 libsharpyuv-dev libshout3 libsm-dev libsndfile1 libsndio7.0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7508702Z   libsord-0-0 libsoundtouch1 libsoup-3.0-0 libsoup-3.0-common
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7509085Z   libspa-0.2-modules libspandsp2t64 libspeex1 libsratom-0-0 libsrt1.5-gnutls
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7509563Z   libsrtp2-1 libsuitesparseconfig7 libsvtav1enc1d1 libtag1v5 libtag1v5-vanilla
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7510085Z   libthai-dev libtheora0 libtiff-dev libtiffxx6 libtwolame0 libudev-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7510448Z   libunibreak5 libuno-cppu3t64 libuno-cppuhelpergcc3-3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7511074Z   libuno-purpenvhelpergcc3-3t64 libuno-sal3t64 libuno-salhelpergcc3-3t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7511505Z   libunwind-dev libv4l-0t64 libv4lconvert0t64 libva-drm2 libva2 libvisio-0.1-1
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7511936Z   libvisual-0.4-0 libvo-aacenc0 libvo-amrwbenc0 libvorbisenc2 libvpx9
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7512349Z   libwavpack1 libwayland-bin libwayland-dev libwayland-server0 libwebp-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7512772Z   libwebpdecoder3 libwebrtc-audio-processing1 libwildmidi2 libwpd-0.10-10
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7513225Z   libwpg-0.3-3 libwps-0.4-4 libx11-dev libx11-xcb-dev libx265-199 libxau-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7513644Z   libxcb-render0-dev libxcb-shm0-dev libxcb-xkb1 libxcb1-dev libxcomposite-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7514079Z   libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7514497Z   libxft-dev libxi-dev libxinerama-dev libxkbcommon-dev libxkbcommon-x11-0
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7514905Z   libxmlsec1t64-nss libxrandr-dev libxrender-dev libxtst-dev libzbar0t64
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7515314Z   libzix-0-0 libzvbi-common libzvbi0t64 libzxing3 lp-solve nettle-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7515691Z   pango1.0-tools poppler-utils python3-numpy session-migration
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7516121Z   timgm6mb-soundfont uno-libs-private ure uuid-dev wayland-protocols
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7516479Z   x11proto-dev xorg-sgml-doctools xtrans-dev
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7516773Z The following packages will be upgraded:
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7517087Z   libgbm1 libgl1-mesa-dri libglx-mesa0 mesa-libgallium
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7678443Z 4 upgraded, 305 newly installed, 0 to remove and 26 not upgraded.
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7678911Z Need to get 201 MB of archives.
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7679315Z After this operation, 689 MB of additional disk space will be used.
+host-contracts	Ensure host dependencies	2026-11-17T23:51:18.7679700Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [152 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:22.9070499Z Get:2 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 fonts-opensymbol all 4:102.12+LibO24.2.7-0ubuntu0.24.04.7 [139 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:25.1505067Z Get:3 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-atk-1.0 amd64 2.52.0-1build1 [23.1 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:26.2758976Z Get:4 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-freedesktop amd64 1.80.1-1 [49.7 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:27.1622330Z Get:5 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-atspi-2.0 amd64 2.52.0-1build1 [19.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:41.0756537Z Get:6 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-glib-2.0-dev amd64 2.80.0-6ubuntu3.10 [848 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:54.5066234Z Get:7 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-freedesktop-dev amd64 1.80.1-1 [28.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:54.5833148Z Get:8 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gdkpixbuf-2.0 amd64 2.42.10+dfsg-3ubuntu3.3 [9482 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:54.6512405Z Get:9 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gstreamer-1.0 amd64 1.24.2-1ubuntu0.1 [88.4 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:51:55.0349995Z Get:10 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgl1-mesa-dri amd64 25.2.8-0ubuntu0.24.04.5 [38.0 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:07.5680171Z Get:11 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglx-mesa0 amd64 25.2.8-0ubuntu0.24.04.5 [110 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:09.5154153Z Get:12 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm1 amd64 25.2.8-0ubuntu0.24.04.5 [34.2 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:09.5748336Z Get:13 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 mesa-libgallium amd64 25.2.8-0ubuntu0.24.04.5 [10.8 MB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:11.1029852Z Get:14 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl-mesa0 amd64 25.2.8-0ubuntu0.24.04.5 [117 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:12.9842701Z Get:15 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libegl1 amd64 1.7.0-1build1 [28.7 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:13.0214500Z Get:16 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 liborc-0.4-0t64 amd64 1:0.4.38-1ubuntu0.1 [207 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:13.0689552Z Get:17 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgstreamer-plugins-base1.0-0 amd64 1.24.2-1ubuntu0.7 [863 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:13.1496004Z Get:18 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgstreamer-gl1.0-0 amd64 1.24.2-1ubuntu0.7 [214 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:31.6887716Z Get:19 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gst-plugins-base-1.0 amd64 1.24.2-1ubuntu0.7 [114 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:52.5882411Z Get:20 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-gobject0 amd64 8.3.0-2build2 [34.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:53.4362174Z Get:21 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-harfbuzz-0.0 amd64 8.3.0-2build2 [44.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.1378104Z Get:22 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libpangoxft-1.0-0 amd64 1.52.1+ds-1build1 [20.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.2107658Z Get:23 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-pango-1.0 amd64 1.52.1+ds-1build1 [34.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.2803444Z Get:24 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-gtk-3.0 amd64 3.24.41-4ubuntu1.3 [245 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.3645645Z Get:25 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-gudev-1.0 amd64 1:238-5ubuntu1 [3806 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.4135759Z Get:26 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libreofficekit-data all 4:24.2.7-0ubuntu0.24.04.7 [47.0 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.4638446Z Get:27 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 liblibreofficekitgtk amd64 4:24.2.7-0ubuntu0.24.04.7 [123 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.5252163Z Get:28 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-lokdocview-0.1 amd64 4:24.2.7-0ubuntu0.24.04.7 [10.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:52:54.5669345Z Get:29 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libproxy1v5 amd64 0.5.4-4build1 [26.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:14.6321173Z Get:30 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 glib-networking-common all 2.80.0-1build1 [6702 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:15.4592079Z Get:31 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 glib-networking-services amd64 2.80.0-1build1 [12.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:15.7154475Z Get:32 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 session-migration amd64 0.3.9build1 [9034 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:15.7551398Z Get:33 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gsettings-desktop-schemas all 46.1-0ubuntu1 [35.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:15.8039023Z Get:34 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 glib-networking amd64 2.80.0-1build1 [64.1 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:16.9752594Z Get:35 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libcdparanoia0 amd64 3.10.2+debian-14build3 [48.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:18.2722730Z Get:36 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libopus0 amd64 1.4-1build1 [208 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:21.9424926Z Get:37 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libtheora0 amd64 1.1.1+dfsg.1-16.1build3 [211 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:22.0229788Z Get:38 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libvisual-0.4-0 amd64 0.4.2-2build1 [115 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:23.4056344Z Get:39 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libvorbisenc2 amd64 1.3.7-1build3 [80.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:25.7136414Z Get:40 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gstreamer1.0-plugins-base amd64 1.24.2-1ubuntu0.7 [721 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:36.7018691Z Get:41 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libaa1 amd64 1.4p5-51.1 [49.9 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:36.7762357Z Get:42 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libraw1394-11 amd64 2.1.2-2build3 [26.2 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:36.8303101Z Get:43 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libavc1394-0 amd64 0.5.4-5build3 [15.4 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:56.9208043Z Get:44 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libcaca0 amd64 0.99.beta20-4ubuntu0.2 [209 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:57.0414596Z Get:45 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libdv4t64 amd64 1.0.0-17.1build1 [63.2 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:53:57.4904987Z Get:46 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libflac12t64 amd64 1.4.3+ds-2.1ubuntu2 [197 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:00.9972950Z Get:47 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgstreamer-plugins-good1.0-0 amd64 1.24.2-1ubuntu1.8 [34.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:01.9004158Z Get:48 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libiec61883-0 amd64 1.2.0-6build1 [24.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:02.5905124Z Get:49 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libmp3lame0 amd64 3.100-6build1 [142 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:04.9340977Z Get:50 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpg123-0t64 amd64 1.32.5-1ubuntu1.1 [169 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:05.0193442Z Get:51 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libasyncns0 amd64 0.8-6build4 [11.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:05.0781487Z Get:52 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libsndfile1 amd64 1.2.2-1ubuntu5.24.04.1 [209 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:05.1411049Z Get:53 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libpulse0 amd64 1:16.1+dfsg1-2ubuntu10.1 [292 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:09.3324282Z Get:54 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libspeex1 amd64 1.2.1-2ubuntu2.24.04.1 [59.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:10.3586650Z Get:55 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libshout3 amd64 2.4.6-1build2 [50.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:10.4263351Z Get:56 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libtag1v5-vanilla amd64 1.13.1-1build1 [326 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:10.4975659Z Get:57 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libtag1v5 amd64 1.13.1-1build1 [11.7 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:11.1970047Z Get:58 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libtwolame0 amd64 0.4.0-2build3 [52.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:12.0146761Z Get:59 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libv4lconvert0t64 amd64 1.26.1-4build3 [87.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:17.1559223Z Get:60 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libv4l-0t64 amd64 1.26.1-4build3 [46.9 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:18.0231610Z Get:61 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libvpx9 amd64 1.14.0-1ubuntu2.3 [1143 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:18.5712271Z Get:62 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libwavpack1 amd64 5.6.0-1build1 [84.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:18.6624939Z Get:63 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libsoup-3.0-common all 3.4.4-5ubuntu0.11 [13.0 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:18.7794664Z Get:64 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libsoup-3.0-0 amd64 3.4.4-5ubuntu0.11 [292 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:18.9515176Z Get:65 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 gstreamer1.0-plugins-good amd64 1.24.2-1ubuntu1.8 [2236 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:20.0457369Z Get:66 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libabsl20220623t64 amd64 20220623.1-3.1ubuntu3.2 [423 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:20.3031552Z Get:67 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 librevenge-0.0-0 amd64 0.0.5-3build1 [211 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:21.4444742Z Get:68 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libabw-0.1-1 amd64 0.1.3-1build4 [101 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:23.5171002Z Get:69 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbz2-dev amd64 1.0.8-5.1ubuntu0.1 [33.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:24.5484444Z Get:70 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 liblzma-dev amd64 5.6.1+really5.4.5-1ubuntu0.4 [176 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.3160945Z Get:71 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libattr1-dev amd64 1:2.5.2-1ubuntu0.1 [23.1 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.3726356Z Get:72 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libacl1-dev amd64 2.3.2-1build1.1 [78.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.4349728Z Get:73 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 comerr-dev amd64 2.1-1.47.0-2.4~exp1ubuntu4.1 [43.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.4834774Z Get:74 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libext2fs-dev amd64 1.47.0-2.4~exp1ubuntu4.1 [300 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.5598298Z Get:75 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 nettle-dev amd64 3.9.1-2.2build1.1 [1154 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.6653515Z Get:76 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libarchive-dev amd64 3.7.2-2ubuntu0.9 [590 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:27.7355920Z Get:77 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 libunibreak5 amd64 5.1-2build1 [25.0 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:47.8124473Z Get:78 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 libass9 amd64 1:0.17.1-2build1 [104 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:48.2372814Z Get:79 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev-bin amd64 2.80.0-6ubuntu3.10 [138 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:50.9506705Z Get:80 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 uuid-dev amd64 2.39.3-9ubuntu6.6 [33.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:52.0145364Z Get:81 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libblkid-dev amd64 2.39.3-9ubuntu6.6 [205 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:55.5705729Z Get:82 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libsepol-dev amd64 3.5-2build1 [384 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:55.7099427Z Get:83 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libselinux1-dev amd64 3.5-2ubuntu2.1 [164 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:54:55.7703180Z Get:84 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmount-dev amd64 2.39.3-9ubuntu6.6 [14.9 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:04.8390960Z Get:85 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgirepository-2.0-0 amd64 2.80.0-6ubuntu3.10 [73.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:07.0918878Z Get:86 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev amd64 2.80.0-6ubuntu3.10 [1861 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:39.8516508Z Get:87 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libatk1.0-dev amd64 2.52.0-1build1 [100 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:43.8531688Z Get:88 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdbus-1-dev amd64 1.14.10-4ubuntu4.1 [190 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:47.1942071Z Get:89 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 xorg-sgml-doctools all 1:1.11-1.1 [10.9 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:55:59.2580294Z Get:90 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 x11proto-dev all 2023.2-1 [602 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:09.5597075Z Get:91 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxau-dev amd64 1:1.0.9-1build6 [9570 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:30.1074658Z Get:92 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxdmcp-dev amd64 1:1.1.3-0ubuntu6 [26.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:30.5004511Z Get:93 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 xtrans-dev all 1.4.0-1 [68.9 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:34.7610742Z Get:94 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libpthread-stubs0-dev amd64 0.4-1build3 [4746 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:35.4233324Z Get:95 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxcb1-dev amd64 1.15-1ubuntu2 [85.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:36.7724593Z Get:96 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libx11-dev amd64 2:1.8.7-1ubuntu0.1 [732 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:36.9190907Z Get:97 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxext-dev amd64 2:1.3.4-1build2 [83.5 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:37.2509540Z Get:98 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxfixes-dev amd64 1:6.0.0-2build1 [12.1 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:37.8090099Z Get:99 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxi-dev amd64 2:1.8.1-1build1 [194 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:40.8736578Z Get:100 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libxtst-dev amd64 2:1.2.3-1.1ubuntu0.1 [15.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:40.9170163Z Get:101 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libatspi2.0-dev amd64 2.52.0-1build1 [76.2 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:40.9793012Z Get:102 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libatk-bridge2.0-dev amd64 2.52.0-1build1 [4284 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.4638874Z Get:103 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 libavtp0 amd64 0.2.0-1build1 [6414 B]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.5688998Z Get:104 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libblas3 amd64 3.12.0-3build1.1 [238 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.6357108Z Get:105 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-locale1.83.0 amd64 1.83.0-2.1ubuntu3.2 [413 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.7141357Z Get:106 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbrotli-dev amd64 1.1.0-2ubuntu0.1 [353 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.7990893Z Get:107 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libcairo-script-interpreter2 amd64 1.18.0-3build1 [60.3 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:41.8382689Z Get:108 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libpng-dev amd64 1.6.43-5ubuntu0.7 [265 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:43.9516025Z Get:109 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libfreetype-dev amd64 2.13.2+dfsg-1ubuntu0.2 [574 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:53.6114178Z Get:110 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libfontconfig-dev amd64 2.15.0-1.1ubuntu2 [161 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:56.3549459Z Get:111 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libpixman-1-dev amd64 0.42.2-1build1 [296 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:56.9397760Z Get:112 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libice-dev amd64 2:1.0.10-1build3 [51.0 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:57.8180053Z Get:113 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libsm-dev amd64 2:1.2.3-1build3 [17.8 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:56:57.8628007Z Get:114 http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-render0-dev amd64 1.15-1ubuntu2 [19.6 kB]
+host-contracts	Ensure host dependencies	2026-11-17T23:57:00.7887801Z ##[error]The action 'Ensure host dependencies' has timed out after 6 minutes.

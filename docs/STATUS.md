@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev306已交付，主线检查发现公开CI在6分钟依赖安装阶段超时，
+尚未编译。仅修临时runner官方apt镜像入口及有界时间预算，全部
+合同保留；[原失败/语法检查](evidence/serve-chat-audio-ci-setup-20261118/README.md)。
+接着新HEAD的实际CI和主线合入，再继续全部master，0新增GPU。
+
 [rev306Chat音频可回退交付](evidence/serve-chat-audio-delivery-20261118/README.md)
 完成，19项STOPPED命令/294.806秒，0新增GPU。实际整根回退
 再前进通过，原预算/历史保持；前驱rev296和day保留。接着主线

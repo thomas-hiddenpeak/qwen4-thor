@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-n",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/ci-01/setup.sh"
+  ],
+  "returncode": 0,
+  "workflow_sha256": "e2e642095c63fb815401ef025624e7a18fa063015cea7191db786ab5c37658b7",
+  "runtime_changes": false,
+  "gpu": 0
+}
