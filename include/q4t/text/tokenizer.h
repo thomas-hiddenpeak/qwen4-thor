@@ -30,7 +30,7 @@ namespace text {
 
 // Distinct, pinned model contracts; never infer a profile from loose schema.
 enum class TokenizerProfile {
-  kQwen4Exp, kQwen3Embedding, kQwen3Asr, kQwen3Aligner
+  kQwen4Exp, kQwen3Embedding, kQwen3Asr, kQwen3Aligner, kQwen3Tts
 };
 
 // Resource limits enforced while loading the tokenizer JSON and while
@@ -97,6 +97,14 @@ class Tokenizer {
   // Construct its exact pinned BPE contract natively, with no conversion tool
   // or runtime Transformers dependency. No implicit BOS/EOS is inserted.
   static Status LoadQwen3Asr(std::string_view vocab_json,
+                            std::string_view merges_text,
+                            std::string_view config_json,
+                            const TokenizerLimits& limits,
+                            std::unique_ptr<Tokenizer>* out);
+
+  // CustomVoice has only 33 added tokens and audio padding at 151675.
+  // It must not inherit ASR's 151676 padding or transcription-only tokens.
+  static Status LoadQwen3Tts(std::string_view vocab_json,
                             std::string_view merges_text,
                             std::string_view config_json,
                             const TokenizerLimits& limits,

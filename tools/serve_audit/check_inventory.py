@@ -264,6 +264,7 @@ def current_surface(root):
                        root / "src/model/model_head.cu",
                        root / "include/q4t/model/model_head.h",
                        root / "src/text/tokenizer.cpp",
+                       root / "include/q4t/text/tokenizer.h",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
                        root / "src/runtime/cuda_allocation_quota.cpp",

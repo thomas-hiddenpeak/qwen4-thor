@@ -1,0 +1,227 @@
+{
+  "status": "PASS_CPU_REFERENCE_GENERATION_ONLY",
+  "transformers": "5.16.1",
+  "tokenizers": "0.23.2",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/lib/python3.12/site-packages/transformers/models/qwen2/tokenization_qwen2.py",
+  "source_sha256": "fac4e6576bfe2369731be147a4e530f262bdf32f2ac50436f96f0d8bdd2fc628",
+  "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+  "model_actions": 0,
+  "cuda_initialized": false,
+  "torch_imported": true,
+  "seconds": 0.3859319118782878,
+  "assets": {
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "tokenizer_config.json": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670"
+  },
+  "cases": [
+    {
+      "text": "",
+      "ids": [],
+      "decoded": "",
+      "skip_decoded": ""
+    },
+    {
+      "text": "Hello",
+      "ids": [
+        9707
+      ],
+      "decoded": "Hello",
+      "skip_decoded": "Hello"
+    },
+    {
+      "text": "Hello, world!",
+      "ids": [
+        9707,
+        11,
+        1879,
+        0
+      ],
+      "decoded": "Hello, world!",
+      "skip_decoded": "Hello, world!"
+    },
+    {
+      "text": "你好，世界！",
+      "ids": [
+        108386,
+        3837,
+        99489,
+        6313
+      ],
+      "decoded": "你好，世界！",
+      "skip_decoded": "你好，世界！"
+    },
+    {
+      "text": "<|im_start|>assistant\nHello, world!<|im_end|>\n<|im_start|>assistant\n",
+      "ids": [
+        151644,
+        77091,
+        198,
+        9707,
+        11,
+        1879,
+        0,
+        151645,
+        198,
+        151644,
+        77091,
+        198
+      ],
+      "decoded": "<|im_start|>assistant\nHello, world!<|im_end|>\n<|im_start|>assistant\n",
+      "skip_decoded": "assistant\nHello, world!\nassistant\n"
+    },
+    {
+      "text": "<|im_start|>user\nSpeak cheerfully.<|im_end|>\n",
+      "ids": [
+        151644,
+        872,
+        198,
+        95845,
+        25032,
+        3641,
+        13,
+        151645,
+        198
+      ],
+      "decoded": "<|im_start|>user\nSpeak cheerfully.<|im_end|>\n",
+      "skip_decoded": "user\nSpeak cheerfully.\n"
+    },
+    {
+      "text": "今天下午三点开会。",
+      "ids": [
+        100644,
+        102172,
+        112055,
+        113716,
+        1773
+      ],
+      "decoded": "今天下午三点开会。",
+      "skip_decoded": "今天下午三点开会。"
+    },
+    {
+      "text": "The meeting starts at three.",
+      "ids": [
+        785,
+        6438,
+        8471,
+        518,
+        2326,
+        13
+      ],
+      "decoded": "The meeting starts at three.",
+      "skip_decoded": "The meeting starts at three."
+    },
+    {
+      "text": "é café",
+      "ids": [
+        963,
+        51950
+      ],
+      "decoded": "é café",
+      "skip_decoded": "é café"
+    },
+    {
+      "text": "👩🏽‍💻 says hello.",
+      "ids": [
+        145233,
+        145375,
+        378,
+        235,
+        145851,
+        2727,
+        23811,
+        13
+      ],
+      "decoded": "👩🏽‍💻 says hello.",
+      "skip_decoded": "👩🏽‍💻 says hello."
+    },
+    {
+      "text": "a  b\tc\n",
+      "ids": [
+        64,
+        220,
+        293,
+        1444,
+        198
+      ],
+      "decoded": "a  b\tc\n",
+      "skip_decoded": "a  b\tc\n"
+    },
+    {
+      "text": "<tts_pad><tts_text_bos><tts_text_eod><|audio_pad|>",
+      "ids": [
+        151671,
+        151672,
+        151673,
+        151675
+      ],
+      "decoded": "<tts_pad><tts_text_bos><tts_text_eod><|audio_pad|>",
+      "skip_decoded": ""
+    },
+    {
+      "text": "<asr_text><non_speech>",
+      "ids": [
+        27,
+        300,
+        81,
+        4326,
+        1784,
+        6280,
+        643,
+        39586,
+        29
+      ],
+      "decoded": "<asr_text><non_speech>",
+      "skip_decoded": "<asr_text><non_speech>"
+    },
+    {
+      "text": "<blank1><blank27>",
+      "ids": [
+        27,
+        10189,
+        16,
+        1784,
+        10189,
+        17,
+        22,
+        29
+      ],
+      "decoded": "<blank1><blank27>",
+      "skip_decoded": "<blank1><blank27>"
+    },
+    {
+      "text": "12345 ٣٤٥",
+      "ids": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        220,
+        149,
+        96,
+        149,
+        97,
+        149,
+        98
+      ],
+      "decoded": "12345 ٣٤٥",
+      "skip_decoded": "12345 ٣٤٥"
+    },
+    {
+      "text": "العربية 한국어 日本語",
+      "ids": [
+        31382,
+        23224,
+        125600,
+        130092,
+        31079,
+        75402,
+        21894,
+        102819
+      ],
+      "decoded": "العربية 한국어 日本語",
+      "skip_decoded": "العربية 한국어 日本語"
+    }
+  ]
+}

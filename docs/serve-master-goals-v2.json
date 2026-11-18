@@ -278,7 +278,7 @@
         "source_coordinate_composition_cpu_only": true
       },
       "native_tts_20261118": {
-        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
         "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
         "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
         "metadata_cpu": 8,
@@ -298,7 +298,10 @@
           "Responses/Batch/Realtime combinations and all remaining master tasks"
         ],
         "full_asset_identity_accepted": true,
-        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
       }
     },
     {
@@ -386,7 +389,7 @@
         "pull_request": 36
       },
       "native_tts_20261118": {
-        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
         "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
         "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
         "metadata_cpu": 8,
@@ -406,7 +409,10 @@
           "Responses/Batch/Realtime combinations and all remaining master tasks"
         ],
         "full_asset_identity_accepted": true,
-        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
       }
     },
     {
@@ -4082,7 +4088,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "native_tts_20261118": {
-        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
         "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
         "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
         "metadata_cpu": 8,
@@ -4102,7 +4108,10 @@
           "Responses/Batch/Realtime combinations and all remaining master tasks"
         ],
         "full_asset_identity_accepted": true,
-        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
       }
     },
     {
@@ -5245,7 +5254,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "native_tts_20261118": {
-        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
         "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
         "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
         "metadata_cpu": 8,
@@ -5265,7 +5274,10 @@
           "Responses/Batch/Realtime combinations and all remaining master tasks"
         ],
         "full_asset_identity_accepted": true,
-        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
       }
     },
     {

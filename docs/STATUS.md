@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS执行入口16CPU通过](evidence/serve-tts-execution-cpu-20261118/README.md)，
+原merges失败保留、只补3项；官方16文本一致，ASR与主模型受影响
+项通过，零警告/0GPU。继续真实CUDA生成及PCM、服务与恢复交付，
+默认rev306保持，总目标仍active。
+
+TTS02首轮13/16CPU通过；3项加载失败定位为真实TTS merges
+没有ASR版本首行。已按独立profile修正，原失败保留，只重验
+3项，其他13项复用；0GPU，随后继续实际CUDA计算。
+
+TTS02正在实现指令/文本双轨、独立tokenizer、KV预算与逐帧生成；
+固定最多18项CPU/180秒、官方16文本参考、0GPU，之后接实际
+计算与PCM/HTTP。资产已完整核验，默认rev306和全部master保持。
+
 [原生TTS元数据8CPU通过](evidence/serve-tts-metadata-cpu-20261118/README.md)，
 0.032秒、构建零警告，863来源锚点/10负控通过；[后续计划](SERVE_NATIVE_TTS_2026-11-18.md)
 保留真实合成、speech/Chat输出与历史、Realtime及恢复交付。1.7B

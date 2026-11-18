@@ -1,0 +1,18 @@
+{
+  "task": "TTS02 exact prompt, token profile, generation state and bounded memory",
+  "limits": {
+    "cpu_tests": 3,
+    "seconds": 180,
+    "gpu": 0,
+    "model_loads": 0
+  },
+  "tests": [
+    "tts_tokenizer_matches_official_profile_without_implicit_tokens",
+    "tts_tokenizer_does_not_accept_asr_or_changed_audio_padding",
+    "tts_tokenizer_literal_inputs_cancel_and_budgets"
+  ],
+  "reference_cpu_cases": 16,
+  "note": "No repeated metadata CPU, no model numerical or HTTP claim. Remaining slots only for concrete corrections/new direct behavior, no automatic reruns.",
+  "reuse_cpu_pass": 13,
+  "failure": "execution-cpu-01: TTS headerless merges were incorrectly required to contain ASR header"
+}

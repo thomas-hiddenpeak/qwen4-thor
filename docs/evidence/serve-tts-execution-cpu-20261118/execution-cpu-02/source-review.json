@@ -1,0 +1,30 @@
+{
+  "CMakeLists.txt": {
+    "before": "e3748ac0e38ecd6ec41e6b83ba1a2eb2fd40e8494979bbc475f86773978a7137",
+    "after": "df8801e8caabfe220701bc3d7c28efb308ae0f26c903e20aa29cc7d9014f41b7"
+  },
+  "include/q4t/audio/tts_generation.h": {
+    "before": null,
+    "after": "d8a02d72df064101ccf4230bdeb27936d6a7dbc19d55253ec02ea992b6dee744"
+  },
+  "include/q4t/audio/tts_layout.h": {
+    "before": null,
+    "after": "21ac0fc393d6080392d0394d3776b9012c6ce3cf06fb881407c65694827af80b"
+  },
+  "include/q4t/text/tokenizer.h": {
+    "before": null,
+    "after": "7bb4d249805ab904fb5b8717b983d2dd939cf5421a72e9fa67953bd4ebd59f50"
+  },
+  "src/audio/tts_generation.cpp": {
+    "before": null,
+    "after": "013f11b66d2228b219d667d2c05ba61400aadc62fa5f6576a8142d35ad35f1a0"
+  },
+  "src/audio/tts_layout.cpp": {
+    "before": null,
+    "after": "629125e6c9e674eb6ba478cf7a7b0b43c21371118bb2b23735110ea0b157aa3c"
+  },
+  "src/text/tokenizer.cpp": {
+    "before": "fe90f7c94cae4db8b2b2321cd442b05a7dd34ff81a533b6d530388cb1f16b133",
+    "after": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541"
+  }
+}

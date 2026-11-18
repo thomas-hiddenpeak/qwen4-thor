@@ -1,0 +1,20 @@
+[PASS] tts_prompt_keeps_instruction_text_and_dual_tracks
+[PASS] tts_prompt_language_dialect_and_nonstreaming_are_explicit
+[PASS] tts_prompt_rejects_wrong_template_ids_and_context_exhaustion
+[PASS] tts_weight_layout_binds_only_verified_extents
+[PASS] tts_dense_workspace_covers_cache_temporaries_and_budget
+[PASS] tts_generation_workspace_accounts_for_both_models_and_history
+[PASS] tts_code_sampling_respects_suppression_penalty_and_top_k
+[PASS] tts_code_sampling_seed_top_p_and_invalid_values
+[PASS] tts_generation_state_requires_complete_frames_before_progress
+[PASS] tts_generation_state_eos_and_budget_do_not_return_partial_frames
+  CHECK failed: Load(&tokenizer) (line 45)
+[FAIL] tts_tokenizer_matches_official_profile_without_implicit_tokens
+  CHECK failed: Load(&tokenizer) (line 77)
+[FAIL] tts_tokenizer_does_not_accept_asr_or_changed_audio_padding
+  CHECK failed: Load(&tokenizer) (line 105)
+[FAIL] tts_tokenizer_literal_inputs_cancel_and_budgets
+[PASS] asr_tokenizer_matches_official_ids_decode_and_no_implicit_eos
+[PASS] asr_tokenizer_distinguishes_audio_markers_and_model_padding_rows
+[PASS] asr_tokenizer_profile_keeps_main_model_vocabulary_and_golden_ids
+16 tests, 13 passed, 3 failed, 0 skipped
