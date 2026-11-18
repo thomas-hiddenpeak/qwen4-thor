@@ -29,6 +29,13 @@ target_compile_options(q4t_tts_replay_core PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Werror>
   $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Werror>)
 option(Q4T_TTS_TRACE "Capture bounded native TTS operands" OFF)
+option(Q4T_TTS_DENSE_TRACE "Capture predictor operands for defect diagnosis" OFF)
+if(Q4T_TTS_DENSE_TRACE)
+  if(NOT Q4T_TTS_TRACE)
+    message(FATAL_ERROR "Dense diagnosis requires the qualification trace hook")
+  endif()
+  target_compile_definitions(q4t_tts_replay_core PUBLIC Q4T_TTS_DENSE_TRACE=1)
+endif()
 if(Q4T_TTS_TRACE)
   target_compile_definitions(q4t_tts_replay_core PUBLIC Q4T_TTS_TRACE=1)
 endif()

@@ -187,6 +187,18 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
   auto* projected = at(layout_.projected);
   auto* gate = at(layout_.gate); auto* up = at(layout_.up);
   Status status;
+#ifdef Q4T_TTS_DENSE_TRACE
+  const auto trace = [&](const char* name, const uint16_t* data,
+                          size_t count) {
+    if (layout_.layers != 5 || past_ != 0) return;
+    const auto result = Complete(status, stream);
+    if (!result.ok()) { status = result.status; return; }
+    TraceTtsOperand((std::string("diag-") + name).c_str(),
+                    layer_, 0, {data, count});
+  };
+#else
+  const auto trace = [](const char*, const uint16_t*, size_t) {};
+#endif
   const auto gemm = [&](const uint16_t* x, const uint16_t* weight,
                          uint16_t* y, int n, int inner, int stride = 0) {
     if (status)
@@ -195,9 +207,13 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
           TtsDenseLayout::kGemmBytes, stream);
   };
   Norm<<<t, kThreads, 0, stream>>>(hidden, w.input_norm, normalized, h);
+  trace("norm", normalized, t * h);
   gemm(normalized, w.q, q, 2048, h);
   gemm(normalized, w.k, k, 1024, h);
   gemm(normalized, w.v, v, 1024, h);
+  trace("q", q, t * 2048);
+  trace("k", k, t * 1024);
+  trace("v", v, t * 1024);
   if (status) {
     NormRope<<<dim3(t, 16), 128, 0, stream>>>(
         q, w.q_norm, at(layout_.rope), hq, 16, layout_.padded_rows, 0);
@@ -206,6 +222,13 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
     CacheValues<<<(t * 1024 + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         v, cv, t, context, past_);
   }
+#ifdef Q4T_TTS_DENSE_TRACE
+  for (int i = 0; i < 16; ++i)
+    trace(("qr" + std::to_string(i)).c_str(),
+          hq + i * layout_.padded_rows * 128, t * 128);
+  for (int i = 0; i < 8; ++i)
+    trace(("kr" + std::to_string(i)).c_str(), ck + i * context * 128, t * 128);
+#endif
   for (int i = 0; status && i < 16; ++i) {
     const int kv = i / 2;
     gemm(hq + static_cast<size_t>(i) * layout_.padded_rows * 128,
@@ -218,21 +241,29 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
       Merge<<<(t * 128 + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
           head, attention, t, i);
   }
+  trace("attention", attention, t * 2048);
   gemm(attention, w.o, projected, h, 2048);
+  trace("o", projected, t * h);
   if (status) {
     Residual<<<(t * h + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         hidden, projected, t * h);
     Norm<<<t, kThreads, 0, stream>>>(hidden, w.post_norm, normalized, h);
   }
+  trace("post", normalized, t * h);
   gemm(normalized, w.gate, gate, f, h);
   gemm(normalized, w.up, up, f, h);
+  trace("gate", gate, t * f);
+  trace("up", up, t * f);
   if (status)
     SwiGlu<<<(t * f + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         gate, up, t * f);
+  trace("silu-up", gate, t * f);
   gemm(gate, w.down, projected, h, f);
+  trace("down", projected, t * h);
   if (status)
     Residual<<<(t * h + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         hidden, projected, t * h);
+  trace("hidden", hidden, t * h);
   auto result = Complete(status, stream);
   if (result.ok()) ++layer_;
   else failed_ = true;

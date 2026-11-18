@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS漂移定位](evidence/serve-tts-numerical-diagnosis-20261118/README.md)：
+35实际GEMM均在F32累加/BF16舍入界内，小差异沿注意力放大。
+旧候选仍FAIL；新后端保留权重/公式，提升执行为FP32并计入实际
+RAM，随后更严格数值对照及PCM/服务。主LLM与rev306不变。
+
+TTS固定native hidden的CPU隔离8.081秒完成：全部60个选择相同，
+45项内部数值检查仍偏离，原首轮FAIL保持。冻结首个两行预测器
+输入、5层逐算子对照，1GPU/1CPU模型、120秒，定位具体偏差；
+不扩语音业务或放宽门槛，默认rev306不变。
+
 [PR47已合main](evidence/serve-chat-audio-mainline-20261118/README.md)：
 `0f809a0c`，接受HEAD双CI全部通过，Chat音频输入rev306交付保持，
 未验TTS未混入。继续修复TTS数值、实际PCM及全部master。

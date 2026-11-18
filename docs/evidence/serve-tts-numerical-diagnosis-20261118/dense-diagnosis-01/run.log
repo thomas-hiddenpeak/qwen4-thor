@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/dense-diagnosis-01/driver.py", line 46, in <module>
+    assert result['status']=='DIAGNOSIS_ONLY' and result['defaults_unchanged']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

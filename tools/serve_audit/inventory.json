@@ -2480,7 +2480,7 @@
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
     "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
     "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
-    "src/audio/tts_dense.cu": "f795d58f00de6be41aff08675a28b3d652551af7863fb0048f35a74ad2234e9d",
+    "src/audio/tts_dense.cu": "35081de284ef7aa148a524f66583a8abe45be419d7db857c60ea31de3cd47272",
     "src/audio/tts_generation.cpp": "013f11b66d2228b219d667d2c05ba61400aadc62fa5f6576a8142d35ad35f1a0",
     "src/audio/tts_layout.cpp": "315dfa49860e2517e79dd3723cdc4ecfe6742e55f3a5595ed7283d0cca32231c",
     "src/audio/tts_math_internal.h": "13efb7e19e3a7b0038f6896166aac85ea289763fdf30c87da3045fbf3cee7528",

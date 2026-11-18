@@ -1,0 +1,13 @@
+{
+  "task": "Replay official CPU predictor using identical saved native talker hidden and codes; diagnose original failure, not accept it",
+  "limits": {
+    "gpu_model_loads": 0,
+    "cpu_predictor_loads": 1,
+    "predictor_forwards": 60,
+    "cases": 2,
+    "frames": 4,
+    "seconds": 180
+  },
+  "source": ".q4t-work/serve-native-tts-20261118/component-01/run/native",
+  "original_thresholds_unchanged": true
+}
