@@ -7885,6 +7885,11 @@
       "SDK/TLS/recovery/release",
       "Responses/Batch/Realtime integration"
     ],
-    "prior_bf16_numerical_failure_preserved": true
+    "prior_bf16_numerical_failure_preserved": true,
+    "codec": {
+      "state": "numeric_component_qualified",
+      "evidence": "evidence/serve-tts-codec-component-20261118/README.md",
+      "speech_quality_pending": true
+    }
   }
 }

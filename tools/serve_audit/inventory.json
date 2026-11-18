@@ -2176,7 +2176,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "e90a4ee05f33e4f15119df1a0db47dfa9756207db689be7f1922ed3b17bd132a",
+    "CMakeLists.txt": "6ba4e8a717c1f2f5690f9eacc4a495e61ab6170ebe00fc5931eec3f4a16b827c",
     "cmake/ChatProtocolIdentity.cmake": "8ece952795ce3c9c9342d1ee498f7eb170260b0db15d5a54bea49a5ca688d450",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
@@ -2206,6 +2206,7 @@
     "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
     "include/q4t/audio/speaker_layout.h": "49d49b3a0801b9546d35f0ece59b57096c4822c22a939839e3fcfa09c2df7b3e",
     "include/q4t/audio/speaker_model.h": "e8ac39843a88aa7b502805a1dc49c26aa9d26bd3c69b082771f01467deb2745f",
+    "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
     "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
     "include/q4t/audio/tts_generation.h": "9132225a9159b98675e49bf3904005887ade5e6074c23fe16afd300df814190e",
@@ -2479,6 +2480,10 @@
     "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
+    "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
+    "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
+    "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
+    "src/audio/tts_codec_internal.h": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
     "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
     "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
     "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",

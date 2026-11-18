@@ -1,0 +1,46 @@
+{
+  "status": "PASS_TARGETED_CODEC_NUMERICS",
+  "seconds": 12.714717171154916,
+  "checks": 93,
+  "full_waveform_samples": 218880,
+  "intermediate_checks": 90,
+  "gpu_model_loads": 1,
+  "cpu_reference_model_loads": 1,
+  "decoder_forwards_per_side": 5,
+  "minimum_cosine": 0.9999999999106686,
+  "maximum_relative_l2": 1.3368746403921129e-05,
+  "pcm": [
+    {
+      "case": 0,
+      "operand": "pcm.f32",
+      "elements": 3840,
+      "cosine": 0.9999999999985094,
+      "relative_l2": 1.7578808580650294e-06,
+      "max_abs": 3.818422555923462e-07,
+      "passed": true
+    },
+    {
+      "case": 1,
+      "operand": "pcm.f32",
+      "elements": 144000,
+      "cosine": 0.9999999999106686,
+      "relative_l2": 1.3368746403921129e-05,
+      "max_abs": 0.00011283159255981445,
+      "passed": true
+    },
+    {
+      "case": 2,
+      "operand": "pcm.f32",
+      "elements": 71040,
+      "cosine": 0.9999999999836157,
+      "relative_l2": 5.724754050094052e-06,
+      "max_abs": 2.65464186668396e-05,
+      "passed": true
+    }
+  ],
+  "nvml_queries": 14,
+  "lease_released": true,
+  "defaults_unchanged": true,
+  "eos_qualified": false,
+  "speech_quality_qualified": false
+}

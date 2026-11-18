@@ -1,0 +1,35 @@
+{
+  "task": "Native codec waveform gate and fixed-budget negative controls",
+  "limits": {
+    "tests": 3,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "command": [
+    ".q4t-work/refenv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.native_tts.test_codec_acceptance",
+    "-v"
+  ],
+  "next_gpu_limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "reference_seconds": 600,
+    "gpu_model_loads": 1,
+    "cpu_reference_model_loads": 1,
+    "cases": 3,
+    "decoder_forwards": 5,
+    "input_frames": 155,
+    "output_samples": 218880,
+    "native_advances": 4096,
+    "main_llm_loads": 0,
+    "talker_loads": 0,
+    "http_requests": 0
+  },
+  "thresholds": {
+    "cosine": 0.999999,
+    "relative_l2": 0.001
+  }
+}

@@ -17,6 +17,9 @@ add_library(q4t_tts_replay_core STATIC
   ${Q4T_ROOT}/src/audio/tts_generation.cpp
   ${Q4T_ROOT}/src/audio/tts_dense.cu
   ${Q4T_ROOT}/src/audio/tts_model.cu
+  ${Q4T_ROOT}/src/audio/tts_codec_conv.cu
+  ${Q4T_ROOT}/src/audio/tts_codec_dense.cu
+  ${Q4T_ROOT}/src/audio/tts_codec.cu
   ${Q4T_ROOT}/src/quant/lt_cache.cpp
   ${Q4T_ROOT}/src/text/tokenizer.cpp
   ${Q4T_ROOT}/src/io/json.cpp
@@ -43,3 +46,6 @@ endif()
 add_executable(q4t_tts_replay model_replay.cpp)
 target_link_libraries(q4t_tts_replay PRIVATE q4t_tts_replay_core)
 target_compile_options(q4t_tts_replay PRIVATE -Wall -Wextra -Werror)
+add_executable(q4t_tts_codec_replay codec_replay.cpp)
+target_link_libraries(q4t_tts_codec_replay PRIVATE q4t_tts_replay_core)
+target_compile_options(q4t_tts_codec_replay PRIVATE -Wall -Wextra -Werror)

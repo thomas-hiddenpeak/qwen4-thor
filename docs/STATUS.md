@@ -7,6 +7,27 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生TTS codec波形数值通过](evidence/serve-tts-codec-component-20261118/README.md)：
+3CPU/879来源/12负控、零警告；1GPU/1CPU、5次解码/12.715秒，
+218880采样及90中间量全部过，GPU释放、默认rev306保持。
+接着完整EOS/实际发声和speech/Chat/恢复交付，全部master继续。
+
+TTS完整codec/独立验证已零警告构建，固定官方CPU参考导入通过。
+冻结3比较门CPU/60秒后，同严格租约1GPU/1CPU codec、5次解码、
+155输入帧/218880输出采样/1200秒；93项PCM/中间量cos≥0.999999、
+relL2≤0.001。覆盖72窗口与25左上下文裁切，0主LLM/HTTP，
+不代替EOS/发声质量；默认rev306保持，之后继续接口/恢复及总任务。
+
+TTS codec卷积构建通过，RVQ/8层滑窗Transformer/双上采样及
+完整声码器已接逐步CUDA状态机，非有限波形拒绝而非伪造静音。
+当前必要构建中，尚未运行codec GPU；接着固定PCM数值与真实
+发声/EOS短验，默认rev306与全部master保持。
+
+TTS codec因果/depthwise/转置卷积已接分块CUDA：每步有界tile、
+同步成功才推进，转置卷积右侧裁切、无并发原子累加。正在必要
+构建，随后接RVQ/Transformer/声码器完整波形；未运行codec GPU
+数值或业务，默认rev306与全部master保持。
+
 [TTS codec入口4CPU通过](evidence/serve-tts-codec-layout-20261118/README.md)，
 构建零警告/0GPU，874来源/11负控通过；继续实际RVQ、因果
 卷积/Transformer与PCM，已过talker复用，默认rev306保持。
