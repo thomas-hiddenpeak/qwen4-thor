@@ -1,0 +1,74 @@
+{
+  "schema": "q4t-native-speech-tempo-repair-v1",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 60,
+    "asr0_seconds": 600,
+    "cases": 2,
+    "gpu_asr_loads": 1,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "cpu_model_loads": 0,
+    "http_requests": 0,
+    "asr_tokens_per_case": 64,
+    "native_advances": 20000
+  },
+  "cases": [
+    {
+      "utterance": 0,
+      "speed": 4.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 1,
+      "speed": 4.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    }
+  ],
+  "binary_sha256": "30d45dd11db923ea52d9f298c0f12a4956861ae1c82a864e858bb8c5c2b2f240",
+  "asr_binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "driver_sources": {
+    "tempo_replay.cpp": "1c54878aff0ba117cbda4c68c2937802b4a4ab487063bd3c2dbbfea8202e28e7",
+    "tempo_acceptance.py": "d07da77d9ce87a349e503b6d5f98c397651025b23b268fb653c3bb623f507942",
+    "utterance_acceptance.py": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0",
+    "acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "runtime_sources": {
+    "src/audio/speech_tempo.cpp": "87ddb25c673004a1ae392e133eefed923fa9926e7d85ee371c2e5a45c95c0676",
+    "include/q4t/audio/speech_tempo.h": "2a8be41dbe3ce2576b4e097fa9704160fa9f0ee79f2fcfc3b6f28bdc8fd1d29a",
+    "src/audio/pcm_output.cpp": "854f6c19c70b4d5dd98a6850ed8f4c96280900a1280f9d7bae71a13de7468950",
+    "include/q4t/audio/pcm_output.h": "bd83f21912281ab51c0d11091655636e2bb5b38f85b088b2d65ba19ec0852c93",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+    "src/trace/sha256.cpp": "f135a31a2bde6a2a76d137f733a78d3a234a6659aea08f9cd376479eb939373a"
+  },
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "contract": {
+    "exact_normalized_transcription": true,
+    "duration": "ceil(N/speed), 24kHz, no trimming",
+    "progressive": true,
+    "buffer_samples": 65536
+  },
+  "reused": [
+    "utterance-01 original TTS PCM and EOS",
+    "tempo-01 unaffected 0.25 and 2x actual speech (4 passes)",
+    "tempo-cpu-02 four direct checks",
+    "accepted ASR binary"
+  ],
+  "performance_claim": false,
+  "prior_failure": {
+    "plan_sha256": "0674bedd3b631af75174ef50172465fa246894a93addbd4d338996921eecd4c7",
+    "original_cases": [
+      2,
+      5
+    ]
+  }
+}

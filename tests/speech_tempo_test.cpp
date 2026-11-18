@@ -59,7 +59,7 @@ Q4T_TEST(speech_tempo_partition_does_not_change_audio_or_duration) {
   auto pcm = Tone(12017, 243);
   for (size_t i = 0; i < pcm.size(); ++i)
     pcm[i] *= 0.3 + 0.5 * std::abs(std::sin(double(i) / 701));
-  for (const double speed : {0.25, 0.5, 1.3, 2.0, 4.0}) {
+  for (const double speed : {0.25, 0.5, 1.3, 2.0, 2.01, 3.1, 4.0}) {
     std::vector<float> a, b;
     Q4T_CHECK(Scale(pcm, speed, 37, &a));
     Q4T_CHECK(Scale(pcm, speed, 4096, &b));
@@ -109,6 +109,18 @@ Q4T_TEST(speech_tempo_bounds_fail_atomically_and_short_tail_is_real) {
   Q4T_CHECK(bytes.size() == 2 && bytes[0] == 0.25f && bytes[1] == 0.25f);
   Q4T_CHECK(tempo.Advance(&step, &bytes) && step == SpeechTempoStep::kDone);
   Q4T_CHECK(!tempo.Advance(&step, &bytes));
+  for (double speed : {2.01, 3.1, 4.0}) {
+    for (size_t length : {1u, 17u, 239u, 481u, 1237u}) {
+      std::vector<float> short_pcm(length, 0.25f), output;
+      Q4T_CHECK(Scale(short_pcm, speed, 7, &output));
+      Q4T_CHECK(std::all_of(output.begin(), output.end(),
+                            [](float x) { return x == 0.25f; }));
+    }
+  }
+  SpeechTempo cascade_budget;
+  Q4T_CHECK(cascade_budget.Init(3.1, 100, 1));
+  Q4T_CHECK(!cascade_budget.Append(std::span(large).first(4), true));
+  Q4T_CHECK(cascade_budget.input_samples() == 0);
   SpeechTempo budget;
   Q4T_CHECK(budget.Init(0.25, 100, 3));
   Q4T_CHECK(!budget.Append(one, true) && budget.input_samples() == 0);

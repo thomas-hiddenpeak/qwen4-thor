@@ -44,12 +44,18 @@ void Run(const fs::path& plan_file, const fs::path& output) {
   Check(io::ParseJson(Read(plan_file, 65536), &plan, false,
                       {.reject_duplicate_keys = true}));
   const auto* cases = plan.GetArray("cases");
-  Require(cases && cases->array.size() == 6, "six fixed tempo cases required");
+  const bool repair =
+      plan.GetString("schema") == "q4t-native-speech-tempo-repair-v1";
+  const size_t case_count = repair ? 2 : 6;
+  Require(repair || plan.GetString("schema") == "q4t-native-speech-tempo-v1",
+          "fixed tempo schema required");
+  Require(cases && cases->array.size() == case_count,
+          "fixed tempo case count required");
   Require(!fs::exists(output) && fs::create_directories(output),
           "fresh output required");
   constexpr double kSpeeds[] = {0.25, 2, 4};
   size_t total_advances = 0;
-  for (size_t index = 0; index < 6; ++index) {
+  for (size_t index = 0; index < case_count; ++index) {
     const auto& item = cases->array[index];
     const auto bytes = Read(item.GetString("pcm"), 160 * 1920 * 4);
     Require(bytes.size() % 4 == 0 &&
@@ -59,10 +65,14 @@ void Run(const fs::path& plan_file, const fs::path& output) {
             "speech fixture identity differs");
     std::vector<float> input(bytes.size() / 4);
     std::memcpy(input.data(), bytes.data(), bytes.size());
-    Require(input.size() == (index < 3 ? 76800 : 74880),
+    const size_t utterance = repair ? index : index / 3;
+    Require(item.GetNumber("utterance") == utterance,
+            "original utterance order differs");
+    Require(input.size() == (utterance == 0 ? 76800 : 74880),
             "original speech length differs");
     const double speed = item.GetNumber("speed");
-    Require(speed == kSpeeds[index % 3], "tempo case speed differs");
+    Require(speed == (repair ? 4 : kSpeeds[index % 3]),
+            "tempo case speed differs");
     const size_t expected = std::ceil(input.size() / speed);
     audio::SpeechTempo tempo;
     Check(tempo.Init(speed, input.size(), expected));
@@ -108,7 +118,8 @@ void Run(const fs::path& plan_file, const fs::path& output) {
   }
   Save(output / "result.json",
        "{\"status\":\"PASS_TEMPO_PENDING_CONTENT\","
-       "\"cases\":6,\"model_loads\":0,\"advances\":" +
+       "\"cases\":" +
+           std::to_string(case_count) + ",\"model_loads\":0,\"advances\":" +
            std::to_string(total_advances) + "}\n");
 }
 }  // namespace

@@ -1,0 +1,42 @@
+{
+  "status": "DIAGNOSTIC_CONTENT_FAILURES_RECORDED",
+  "comparisons": [
+    {
+      "utterance": 0,
+      "kind": "reference_4x",
+      "samples24": 19200,
+      "audio_tokens": 10,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a new speech.",
+      "passed": false,
+      "eos": true,
+      "generated_tokens": 12
+    },
+    {
+      "utterance": 0,
+      "kind": "native_4x_slowed_back",
+      "samples24": 76800,
+      "audio_tokens": 42,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "language None<asr_text>Hello, hello, hello.",
+      "passed": false,
+      "error": "wrong ASR language or missing transcript marker",
+      "eos": true,
+      "generated_tokens": 10
+    },
+    {
+      "utterance": 0,
+      "kind": "reference_4x_slowed_back",
+      "samples24": 76800,
+      "audio_tokens": 42,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "language Chinese<asr_text>hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello",
+      "passed": false,
+      "error": "wrong ASR language or missing transcript marker",
+      "eos": false,
+      "generated_tokens": 64
+    }
+  ],
+  "reuses_completed_gpu_work": true,
+  "acceptance_granted": false
+}

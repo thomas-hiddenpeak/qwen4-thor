@@ -5,12 +5,13 @@
 #include <numbers>
 
 namespace q4t::audio {
-Status SpeechTempo::Init(double speed, size_t max_input_samples,
-                         size_t max_output_samples) {
+namespace detail {
+Status SpeechTempoStage::Init(double speed, size_t max_input_samples,
+                              size_t max_output_samples) {
   // Match the maximum complete code-frame budget. Sizes remain exact in
   // binary64, and no index or sample count can overflow size_t.
   constexpr size_t kMaxInput = 4096 * 1920;
-  if (initialized_ || !std::isfinite(speed) || speed < 0.25 || speed > 4 ||
+  if (initialized_ || !std::isfinite(speed) || speed < 0.25 || speed > 2 ||
       !max_input_samples || max_input_samples > kMaxInput ||
       !max_output_samples || max_output_samples > kMaxInput * 4)
     return Status::Fail("Invalid speech tempo speed or sample budget");
@@ -25,20 +26,20 @@ Status SpeechTempo::Init(double speed, size_t max_input_samples,
   return {};
 }
 
-size_t SpeechTempo::OutputCount(size_t input) const {
+size_t SpeechTempoStage::OutputCount(size_t input) const {
   return static_cast<size_t>(std::ceil(static_cast<double>(input) / speed_));
 }
-size_t SpeechTempo::Nominal() const {
+size_t SpeechTempoStage::Nominal() const {
   return static_cast<size_t>(
       std::floor(static_cast<double>(produced_) * speed_));
 }
-float SpeechTempo::Sample(size_t position) const {
+float SpeechTempoStage::Sample(size_t position) const {
   // Final right extension uses the last real sample. It never reads outside
   // the submitted stream or creates fake silence for failed computation.
   return input_[std::min(position, received_ - 1) - begin_];
 }
 
-Status SpeechTempo::Append(std::span<const float> samples, bool final) {
+Status SpeechTempoStage::Append(std::span<const float> samples, bool final) {
   if (!initialized_ || !need_input_ || final_ || done_ ||
       (samples.empty() && !final) || samples.size() > kMaxAppend ||
       samples.size() > max_input_ - received_ ||
@@ -56,7 +57,7 @@ Status SpeechTempo::Append(std::span<const float> samples, bool final) {
   return {};
 }
 
-void SpeechTempo::Discard() {
+void SpeechTempoStage::Discard() {
   const size_t nominal = speed_ == 1 ? produced_ : Nominal();
   size_t keep =
       speed_ == 1 ? nominal : (nominal > kSearch ? nominal - kSearch : 0);
@@ -68,8 +69,8 @@ void SpeechTempo::Discard() {
   }
 }
 
-Status SpeechTempo::Advance(SpeechTempoStep* step,
-                            std::span<const float>* output) {
+Status SpeechTempoStage::Advance(SpeechTempoStep* step,
+                                 std::span<const float>* output) {
   if (!initialized_ || !step || !output || done_)
     return Status::Fail("Speech tempo advance out of order");
   *output = {};
@@ -144,6 +145,94 @@ Status SpeechTempo::Advance(SpeechTempoStep* step,
   Discard();
   *output = {output_.data(), count};
   *step = SpeechTempoStep::kOutput;
+  return {};
+}
+}  // namespace detail
+
+Status SpeechTempo::Init(double speed, size_t max_input_samples,
+                         size_t max_output_samples) {
+  constexpr size_t kMaxInput = 4096 * 1920;
+  if (initialized_ || !std::isfinite(speed) || speed < 0.25 || speed > 4 ||
+      !max_input_samples || max_input_samples > kMaxInput ||
+      !max_output_samples || max_output_samples > kMaxInput * 4)
+    return Status::Fail("Invalid speech tempo speed or sample budget");
+  if (speed <= 2) {
+    if (auto status = first_.Init(speed, max_input_samples, max_output_samples);
+        !status)
+      return status;
+  } else {
+    const size_t middle = (max_input_samples + 1) / 2;
+    if (auto status = first_.Init(2, max_input_samples, middle); !status)
+      return status;
+    // The two ceil operations can add one rounding sample. The public
+    // output always ends at ceil(original input / requested speed).
+    const size_t limit = std::min(max_output_samples, max_input_samples) + 1;
+    if (auto status = second_.Init(speed / 2, middle, limit); !status)
+      return status;
+  }
+  speed_ = speed;
+  max_output_ = max_output_samples;
+  initialized_ = true;
+  return {};
+}
+
+Status SpeechTempo::Append(std::span<const float> samples, bool final) {
+  if (!initialized_ || final_ || done_ || samples.size() > kMaxAppend ||
+      std::ceil(double(input_samples() + samples.size()) / speed_) >
+          double(max_output_))
+    return Status::Fail("Speech tempo input exceeds state or sample budget");
+  if (auto status = first_.Append(samples, final); !status) return status;
+  final_ = final;
+  return {};
+}
+
+Status SpeechTempo::Advance(SpeechTempoStep* step,
+                            std::span<const float>* output) {
+  if (!initialized_ || !step || !output || done_)
+    return Status::Fail("Speech tempo advance out of order");
+  *output = {};
+  const size_t target =
+      static_cast<size_t>(std::ceil(double(input_samples()) / speed_));
+  if (final_ && produced_ == target) {
+    done_ = true;
+    *step = SpeechTempoStep::kDone;
+    return {};
+  }
+  if (speed_ <= 2) {
+    if (auto status = first_.Advance(step, output); !status) return status;
+  } else {
+    // Each second-stage hop consumes at most two first-stage grains.
+    // Startup/tail may require an additional grain and EOS notification.
+    bool ready = false;
+    for (int grain = 0; grain < 8; ++grain) {
+      if (auto status = second_.Advance(step, output); !status) return status;
+      if (*step != SpeechTempoStep::kNeedInput) {
+        ready = true;
+        break;
+      }
+      SpeechTempoStep first_step;
+      std::span<const float> middle;
+      if (auto status = first_.Advance(&first_step, &middle); !status)
+        return status;
+      if (first_step == SpeechTempoStep::kNeedInput) return {};
+      if (first_step == SpeechTempoStep::kDone) {
+        if (second_final_)
+          return Status::Fail("Speech tempo repeated intermediate EOS");
+        if (auto status = second_.Append({}, true); !status) return status;
+        second_final_ = true;
+      } else {
+        if (auto status = second_.Append(middle, false); !status) return status;
+      }
+    }
+    if (!ready) return Status::Fail("Speech tempo grain budget exhausted");
+  }
+  if (*step == SpeechTempoStep::kOutput) {
+    if (final_ && output->size() > target - produced_)
+      *output = output->first(target - produced_);
+    produced_ += output->size();
+  } else if (*step == SpeechTempoStep::kDone) {
+    return Status::Fail("Speech tempo ended before requested output length");
+  }
   return {};
 }
 }  // namespace q4t::audio

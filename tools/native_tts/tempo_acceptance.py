@@ -19,12 +19,14 @@ LIMITS = dict(seconds=1200, native_seconds=60, asr0_seconds=600,
               gpu_talker_loads=0, gpu_codec_loads=0, main_llm_loads=0,
               cpu_model_loads=0, http_requests=0, asr_tokens_per_case=64,
               native_advances=20000)
+REPAIR_LIMITS = dict(LIMITS, cases=2, gpu_asr_loads=1)
+REPAIR_LIMITS.pop('asr1_seconds')
 SPEEDS = [0.25, 2.0, 4.0]
 DRIVERS = ('tempo_replay.cpp', 'tempo_acceptance.py', 'utterance_acceptance.py',
            'acceptance.py')
 
 
-def prepare(native, assets, output):
+def prepare(native, assets, output, specifications):
     # Previously qualified test-only resampling/features. No TTS recomputation.
     os.environ['USE_TORCH'] = '0'
     os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -44,12 +46,12 @@ def prepare(native, assets, output):
     output.mkdir(exist_ok=False)
     cases = []
     receipts = []
-    for index in range(6):
+    for index, item in enumerate(specifications):
         directory = native / f'case-{index}'
         r = json.loads((directory / 'result.json').read_text())
-        expected = math.ceil((76800 if index < 3 else 74880) / SPEEDS[index % 3])
+        expected = math.ceil((76800 if item["utterance"] == 0 else 74880) / item["speed"])
         assert r['samples'] == expected and r['sample_rate'] == 24000
-        assert r['speed'] == SPEEDS[index % 3] and r['progressive_chunks'] > 0
+        assert r['speed'] == item['speed'] and r['progressive_chunks'] > 0
         assert 0 < r['maximum_buffered_samples'] <= 65536
         path = directory / 'pcm.f32'
         assert path.stat().st_size == expected * 4
@@ -76,7 +78,7 @@ def prepare(native, assets, output):
         cases.append(row)
         receipts.append(r)
     paths = []
-    for index in range(2):
+    for index in range(math.ceil(len(cases)/3)):
         path = output / f'plan-{index}.json'
         path.write_text(json.dumps(dict(cases=cases[index*3:index*3+3]), indent=2)+'\n')
         paths.append(path)
@@ -94,9 +96,12 @@ def main():
     assert not os.environ.get('PYTHONOPTIMIZE')
     assert not any(k.startswith('Q4T_ABLATE_') for k in os.environ)
     plan = json.loads(args.plan.read_text())
-    assert plan['schema'] == 'q4t-native-speech-tempo-v1' and plan['limits'] == LIMITS
-    assert [c['speed'] for c in plan['cases']] == SPEEDS * 2
-    assert [c['utterance'] for c in plan['cases']] == [0, 0, 0, 1, 1, 1]
+    repair = plan['schema'] == 'q4t-native-speech-tempo-repair-v1'
+    assert repair or plan['schema'] == 'q4t-native-speech-tempo-v1'
+    limits = REPAIR_LIMITS if repair else LIMITS
+    assert plan['limits'] == limits
+    assert [c['speed'] for c in plan['cases']] == ([4.0, 4.0] if repair else SPEEDS * 2)
+    assert [c['utterance'] for c in plan['cases']] == ([0, 1] if repair else [0, 0, 0, 1, 1, 1])
     assert defaults() == plan['default_before']
     assert digest(args.binary) == plan['binary_sha256']
     assert digest(args.asr_binary) == plan['asr_binary_sha256']
@@ -104,12 +109,12 @@ def main():
     assert {n: digest(ROOT / n) for n in plan['runtime_sources']} == plan['runtime_sources']
     args.output.mkdir(parents=True, exist_ok=False)
     started = time.monotonic()
-    result = dict(status='RUNNING', limits=LIMITS, defaults_before=defaults(),
+    result = dict(status='RUNNING', limits=limits, defaults_before=defaults(),
                   runs=[], plan_sha256=digest(args.plan))
     child_env = dict(os.environ)
 
     def run(name, command):
-        remaining = LIMITS['seconds'] - (time.monotonic()-started)
+        remaining = limits['seconds'] - (time.monotonic()-started)
         assert remaining > 0
         record = dict(name=name, command=command)
         result['runs'].append(record)
@@ -118,7 +123,7 @@ def main():
             try:
                 child = subprocess.run(command, cwd=ROOT, env=child_env,
                     pass_fds=(lease,), stdout=log, stderr=subprocess.STDOUT,
-                    timeout=min(remaining, LIMITS[name+'_seconds']))
+                    timeout=min(remaining, limits[name+'_seconds']))
                 record['exit_code'] = child.returncode
             finally:
                 record['seconds'] = time.monotonic()-step
@@ -128,20 +133,22 @@ def main():
         run('native', [str(args.binary.absolute()), str(args.plan.absolute()),
                        str(args.output.absolute() / 'native')])
         nr = json.loads((args.output / 'native/result.json').read_text())
-        assert nr['status'] == 'PASS_TEMPO_PENDING_CONTENT' and nr['cases'] == 6
+        assert nr['status'] == 'PASS_TEMPO_PENDING_CONTENT' and nr['cases'] == limits['cases']
         assert nr['model_loads'] == 0 and 0 < nr['advances'] <= 20000
         paths, result['waveforms'] = prepare(args.output / 'native', args.asr_assets,
-                                             args.output / 'asr-input')
+                                             args.output / 'asr-input', plan['cases'])
         result['comparisons'] = []
         for group, path in enumerate(paths):
             run(f'asr{group}', [str(args.asr_binary.absolute()), str(args.asr_assets.absolute()),
                                 str(path.absolute()), str(args.output.absolute() / f'asr{group}')])
-            for i in range(3):
+            for i in range(min(3, len(plan["cases"])-group*3)):
                 directory = args.output / f'asr{group}' / f'case-{i}'
                 receipt = json.loads((directory / 'result.json').read_text())
                 assert receipt['eos'] is True and 0 < receipt['generated_tokens'] <= 64
-                result['comparisons'].append(dict(case=group*3+i, speed=SPEEDS[i],
-                    **content_check((directory / 'text.txt').read_text(), CASES[group])))
+                spec = plan['cases'][group*3+i]
+                result['comparisons'].append(dict(case=group*3+i, speed=spec['speed'],
+                    utterance=spec['utterance'],
+                    **content_check((directory / 'text.txt').read_text(), CASES[spec['utterance']])))
         assert all(c['passed'] for c in result['comparisons']), 'tempo actual speech content differs'
         result['status'] = 'PASS_TEMPO_PENDING_LEASE_RECONCILIATION'
     except Exception as error:
