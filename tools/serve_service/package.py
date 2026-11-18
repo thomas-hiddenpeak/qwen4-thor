@@ -157,6 +157,9 @@ NATIVE_TTS = dict(profile='q4t-native-tts-v1',
     revision='0c0e3051f131929182e2c023b9537f8b1c68adfe',
     weight_sha256='38b1d5971bdbd982b561cccec982669a53b0537c3cf5e9bd4778ed07bb2f5137',
     codec_weight_sha256='836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258')
+NATIVE_TTS_BASE = dict(NATIVE_TTS, model='qwen3-tts-12hz-1.7b-base',
+    revision='fd4b254389122332181a7c3db7f27e918eec64e3',
+    weight_sha256='38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c')
 TTS_LIMITS = dict(max_text_tokens=16384, max_prefill_tokens=8192,
                   max_frames=4096, workspace_mib=8192, max_output_mib=64)
 ASR_LIMITS = dict(max_audio_seconds=30, max_context_tokens=4096,
@@ -194,11 +197,13 @@ def audio_asset_directory(path):
             'invalid optional audio asset directory')
 
 
-def asr_auxiliary_settings(value):
+def asr_auxiliary_settings(value, *, voice_registration=False):
     require(type(value) is dict and value.keys() <= ASR_AUXILIARY.keys(),
             'invalid optional ASR backend inventory')
-    require('speaker' not in value or {'alignment', 'vad'} <= value.keys(),
-            'speaker requires alignment and VAD backends')
+    require(type(voice_registration) is bool, 'invalid voice registration context')
+    require('speaker' not in value or
+            ('vad' in value and ('alignment' in value or voice_registration)),
+            'speaker requires VAD and either alignment or TTS Base')
     require('separator' not in value or {'alignment', 'vad', 'speaker'} <= value.keys(),
             'separator requires speaker, alignment and VAD backends')
     result = {}
@@ -261,7 +266,8 @@ def asr_auxiliary_cli(args):
         if directory is not None:
             result[name] = dict(fixed, directory=str(directory),
                                 limits=dict(defaults, **overrides))
-    return asr_auxiliary_settings(result) or None
+    return asr_auxiliary_settings(result, voice_registration=
+        getattr(args, 'tts_base_model_dir', None) is not None) or None
 
 
 def embedding_settings(value):
@@ -278,7 +284,7 @@ def embedding_settings(value):
     return dict(value)
 
 
-def asr_settings(value):
+def asr_settings(value, *, voice_registration=False):
     require(type(value) is dict and
             {*NATIVE_ASR, 'directory', 'limits'} <= value.keys() <=
                 {*NATIVE_ASR, 'directory', 'limits', *ASR_AUXILIARY}
@@ -300,13 +306,16 @@ def asr_settings(value):
                 limits['max_context_tokens'], 'invalid native ASR limits')
     # Optional assets are validated by the isolated request loader. Missing
     # audio files must not make a healthy primary Chat package unverifiable.
-    auxiliary = asr_auxiliary_settings({k:v for k,v in value.items() if k in ASR_AUXILIARY})
+    auxiliary = asr_auxiliary_settings(
+        {k:v for k,v in value.items() if k in ASR_AUXILIARY},
+        voice_registration=voice_registration)
     return dict(value, limits=dict(limits), **auxiliary)
 
 
-def tts_settings(value):
-    require(type(value) is dict and value.keys() == {*NATIVE_TTS, 'directory', 'limits'}
-            and all(value[k] == v for k, v in NATIVE_TTS.items()),
+def tts_settings(value, *, base=False):
+    fixed = NATIVE_TTS_BASE if base else NATIVE_TTS
+    require(type(value) is dict and value.keys() == {*fixed, 'directory', 'limits'}
+            and all(value[k] == v for k, v in fixed.items()),
             'invalid native TTS identity')
     audio_asset_directory(value['directory'])
     limits = value['limits']
@@ -324,7 +333,8 @@ def tts_settings(value):
 
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
              nvml_policy='strict', model_names=None, application_state=None,
-             capacity_profile=None, native_embedding=None, native_asr=None, native_tts=None):
+             capacity_profile=None, native_embedding=None, native_asr=None,
+             native_tts=None, native_tts_base=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -371,7 +381,8 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
                 'native embedding model conflicts with Chat registry')
         result['native_embedding'] = selected
     if native_asr is not None:
-        selected = asr_settings(native_asr)
+        selected = asr_settings(native_asr,
+                                voice_registration=native_tts_base is not None)
         names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
         require(selected['model'] not in [names['name'], *names['aliases']],
                 'native ASR model conflicts with Chat registry')
@@ -382,6 +393,15 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         require(selected['model'] not in [names['name'], *names['aliases']],
                 'native TTS model conflicts with Chat registry')
         result['native_tts'] = selected
+    if native_tts_base is not None:
+        selected = tts_settings(native_tts_base, base=True)
+        names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
+        require(selected['model'] not in [names['name'], *names['aliases']],
+                'native TTS Base model conflicts with Chat registry')
+        require(native_tts is None or
+                same_json(result['native_tts']['limits'], selected['limits']),
+                'native TTS families must share effective limits')
+        result['native_tts_base'] = selected
     return result
 
 
@@ -581,14 +601,15 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             access_program_policy=None, file_input_policy=None,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
-            tts_model_dir=None, tts_limits=None):
+            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
     if capacity_config is not None:
         from tools.serve_service import capacity
         profile = capacity.normalize(capacity_config)
-    require(tts_model_dir is not None or tts_limits is None,
+    require(tts_model_dir is not None or tts_base_model_dir is not None or
+            tts_limits is None,
             'native TTS limits require a TTS model directory')
     require(tts_limits is None or type(tts_limits) is dict and
             tts_limits.keys() <= TTS_LIMITS.keys(), 'invalid native TTS overrides')
@@ -596,7 +617,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             'native ASR limits require an ASR model directory')
     require(asr_limits is None or type(asr_limits) is dict and
             asr_limits.keys() <= ASR_LIMITS.keys(), 'invalid native ASR overrides')
-    auxiliary = {} if asr_auxiliary is None else asr_auxiliary_settings(asr_auxiliary)
+    auxiliary = {} if asr_auxiliary is None else asr_auxiliary_settings(
+        asr_auxiliary, voice_registration=tts_base_model_dir is not None)
     require(not auxiliary or asr_model_dir is not None,
             'optional audio backends require an ASR model directory')
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
@@ -609,7 +631,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                           if asr_model_dir is not None else None),
                       native_tts=(dict(NATIVE_TTS, directory=str(tts_model_dir),
                           limits=dict(TTS_LIMITS, **(tts_limits or {})))
-                          if tts_model_dir is not None else None))
+                          if tts_model_dir is not None else None),
+                      native_tts_base=(dict(NATIVE_TTS_BASE,
+                          directory=str(tts_base_model_dir),
+                          limits=dict(TTS_LIMITS, **(tts_limits or {})))
+                          if tts_base_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -658,8 +684,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
     if 'native_asr' in config:
-        check_asr_declaration(metadata, config['native_asr'])
-    check_tts_declaration(metadata, config.get('native_tts'))
+        check_asr_declaration(metadata, config['native_asr'],
+                              voice_registration='native_tts_base' in config)
+    check_tts_declaration(metadata, config.get('native_tts'),
+                          config.get('native_tts_base'), config.get('native_asr'))
     if access_raw is not None:
         require(read(declarations/'capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
@@ -801,7 +829,7 @@ def verify(package, digest):
                       config.get('model_names'), config.get('application_state'),
                       config['profile'] if manifest['version'] == 11 else None,
                       config.get('native_embedding'), config.get('native_asr'),
-                      config.get('native_tts'))
+                      config.get('native_tts'), config.get('native_tts_base'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -928,8 +956,10 @@ def verify(package, digest):
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
     if 'native_asr' in config:
-        check_asr_declaration(metadata, config['native_asr'])
-    check_tts_declaration(metadata, config.get('native_tts'))
+        check_asr_declaration(metadata, config['native_asr'],
+                              voice_registration='native_tts_base' in config)
+    check_tts_declaration(metadata, config.get('native_tts'),
+                          config.get('native_tts_base'), config.get('native_asr'))
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -957,8 +987,8 @@ def check_embedding_declaration(metadata):
             'accepted engine does not declare configured native embedding backend')
 
 
-def check_asr_declaration(metadata, selected):
-    selected = asr_settings(selected)
+def check_asr_declaration(metadata, selected, *, voice_registration=False):
+    selected = asr_settings(selected, voice_registration=voice_registration)
     capability = metadata.get('chat_protocol', {}).get('transcriptions', {})
     configuration = metadata.get('observed_configuration', {})
     health = configuration.get('native_asr_health', {})
@@ -988,29 +1018,71 @@ def check_asr_declaration(metadata, selected):
                 'accepted engine does not declare optional audio limits/identity: '+name)
 
 
-def check_tts_declaration(metadata, selected):
-    capability = metadata.get('chat_protocol', {}).get('speech', {})
-    chat = metadata.get('chat_protocol', {}).get('chat_audio_output', {})
-    configuration = metadata.get('observed_configuration', {})
-    health = configuration.get('native_tts_health', {})
-    require(all(type(v) is dict for v in (capability, chat, health)),
-            'invalid native TTS declarations')
-    if selected is None:
-        require(capability.get('enabled') is not True and
-                chat.get('enabled') is not True and
-                health.get('state', 'disabled') == 'disabled',
+def check_tts_capabilities(capabilities, selected, base=None, asr=None):
+    speech = capabilities.get('speech', {})
+    chat = capabilities.get('chat_audio_output', {})
+    registration = capabilities.get('voice_registration', {})
+    require(all(type(v) is dict for v in (speech, chat, registration)),
+            'invalid native TTS capabilities')
+    enabled = selected is not None or base is not None
+    if not enabled:
+        require(speech.get('enabled') is not True and chat.get('enabled') is not True,
                 'package drops configured native TTS backend')
-        return
-    selected = tts_settings(selected)
-    require(capability.get('enabled') is True and chat.get('enabled') is True and
-            all(capability.get(k) == v for k, v in NATIVE_TTS.items()) and
-            capability.get('core_health_dependency') is False and
-            health.get('model') == NATIVE_TTS['model'] and
-            health.get('core_readiness_dependency') is False and
-            health.get('state') in ('configured', 'loading', 'metadata_ready',
-                                    'ready', 'degraded') and
-            same_json(configuration.get('native_tts_limits'), selected['limits']),
-            'accepted engine does not declare configured native TTS limits/identity')
+    else:
+        fixed = NATIVE_TTS if selected is not None else NATIVE_TTS_BASE
+        require(speech.get('enabled') is True and chat.get('enabled') is True and
+                all(speech.get(k) == v for k, v in fixed.items()) and
+                speech.get('core_health_dependency') is False,
+                'accepted engine does not declare configured native TTS identity')
+    require(speech.get('registered_custom_voices', False) is (base is not None) and
+            speech.get('builtin_enabled', selected is not None) is (selected is not None),
+            'package drops or changes a configured native TTS family')
+    require(asr is None or type(asr) is dict, 'invalid native voice ASR binding')
+    expected_registration = (base is not None and asr is not None and
+                             {'speaker', 'vad'} <= asr.keys())
+    require(registration.get('enabled', False) is expected_registration,
+            'package changes configured voice registration dependencies')
+    if base is not None:
+        require(speech.get('registered_voice_model') == NATIVE_TTS_BASE['model'] and
+                speech.get('base_revision') == NATIVE_TTS_BASE['revision'] and
+                speech.get('base_weight_sha256') == NATIVE_TTS_BASE['weight_sha256'],
+                'accepted engine does not declare configured TTS Base identity')
+        require(registration.get('owner_scoped') is True and
+                registration.get('recheck_consent_per_synthesis') is True and
+                registration.get('metadata_requires_healthy_model') is False and
+                registration.get('core_health_dependency') is False,
+                'voice registration owner/revocation/isolation contract differs')
+
+
+def check_tts_declaration(metadata, selected, base=None, asr=None):
+    check_tts_capabilities(metadata.get('chat_protocol', {}), selected, base, asr)
+    configuration = metadata.get('observed_configuration', {})
+    for key, value, is_base in (('native_tts', selected, False),
+                                ('native_tts_base', base, True)):
+        health = configuration.get(key+'_health', {})
+        require(type(health) is dict, 'invalid native TTS health')
+        if value is None:
+            require(health.get('state', 'disabled') == 'disabled',
+                    'package drops configured native TTS backend: '+key)
+            continue
+        value = tts_settings(value, base=is_base)
+        require(health.get('model') == value['model'] and
+                health.get('core_readiness_dependency') is False and
+                health.get('state') in ('configured', 'loading', 'metadata_ready',
+                                        'ready', 'degraded') and
+                same_json(configuration.get('native_tts_limits'), value['limits']),
+                'accepted engine does not declare configured native TTS limits/identity')
+    voice = configuration.get('native_voice_health', {})
+    require(type(voice) is dict, 'invalid native voice health')
+    if base is None:
+        require(voice.get('state', 'disabled') == 'disabled',
+                'package drops configured native voice condition backend')
+    else:
+        require(voice.get('model') == NATIVE_TTS_BASE['model']+'-speaker' and
+                voice.get('core_readiness_dependency') is False and
+                voice.get('state') in ('configured', 'loading', 'metadata_ready',
+                                       'ready', 'degraded'),
+                'accepted engine does not declare isolated native voice condition')
 
 
 def check_media_declaration(metadata, profile):
@@ -1054,7 +1126,8 @@ def command(package, manifest, *, state_directory=None):
         selected = embedding_settings(cfg['native_embedding'])
         args += ['--embedding-model-dir', selected['directory']]
     if 'native_asr' in cfg:
-        selected = asr_settings(cfg['native_asr'])
+        selected = asr_settings(cfg['native_asr'],
+                                voice_registration='native_tts_base' in cfg)
         args += ['--asr-model-dir', selected['directory']]
         for key, value in selected['limits'].items():
             args += ['--asr-'+key.replace('_', '-'), str(value)]
@@ -1063,11 +1136,18 @@ def command(package, manifest, *, state_directory=None):
                 args += ['--'+prefix+'-model-dir', selected[name]['directory']]
                 for key, value in selected[name]['limits'].items():
                     args += ['--'+prefix+'-'+key.replace('_', '-'), str(value)]
-    if 'native_tts' in cfg:
-        selected = tts_settings(cfg['native_tts'])
-        args += ['--tts-model-dir', selected['directory']]
-        for key, value in selected['limits'].items():
-            args += ['--tts-'+key.replace('_', '-'), str(value)]
+    tts_limits = None
+    for name, is_base, flag in (('native_tts', False, '--tts-model-dir'),
+                                ('native_tts_base', True, '--tts-base-model-dir')):
+        if name not in cfg:
+            continue
+        selected = tts_settings(cfg[name], base=is_base)
+        require(tts_limits is None or same_json(tts_limits, selected['limits']),
+                'native TTS families must share effective limits')
+        tts_limits = selected['limits']
+        args += [flag, selected['directory']]
+    for key, value in (tts_limits or {}).items():
+        args += ['--tts-'+key.replace('_', '-'), str(value)]
     if 'application_state' in cfg:
         objects = application_settings(cfg['application_state'])
         directory = objects['directory']

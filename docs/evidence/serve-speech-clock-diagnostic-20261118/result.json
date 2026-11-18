@@ -1,0 +1,69 @@
+{
+  "status": "DIAGNOSTIC_SUPPORTS_ASR_TIME_SCALE_CONTRIBUTION",
+  "cpu_cases": 4,
+  "cpu_seconds": 0.033930494915694,
+  "asr_loads": 1,
+  "cases": 4,
+  "seconds": 3.143970319069922,
+  "comparisons": [
+    {
+      "method": "native_two_stage",
+      "utterance": 0,
+      "input_frames": 80,
+      "diagnostic_frames": 320,
+      "diagnostic_audio_tokens": 42,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 13
+    },
+    {
+      "method": "phase_locked",
+      "utterance": 0,
+      "input_frames": 80,
+      "diagnostic_frames": 320,
+      "diagnostic_audio_tokens": 42,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 13
+    },
+    {
+      "method": "native_two_stage",
+      "utterance": 1,
+      "input_frames": 78,
+      "diagnostic_frames": 312,
+      "diagnostic_audio_tokens": 41,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 11
+    },
+    {
+      "method": "phase_locked",
+      "utterance": 1,
+      "input_frames": 78,
+      "diagnostic_frames": 312,
+      "diagnostic_audio_tokens": 41,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 11
+    }
+  ],
+  "nvml_queries": 5,
+  "lease_completed": true,
+  "defaults_unchanged": true,
+  "production_acceptance": false,
+  "normal_speed_listening_acceptance": false,
+  "original_failures_preserved": true,
+  "negative_control_pending": true,
+  "owner_acceptance_decision_pending": true,
+  "archive_sha256": "1269aeda216283eed1883379eb3ef761cd431d78d61c55755f24b53233fdf22b",
+  "full_logits_encoder_dumps_retained_locally": true,
+  "master_complete": false
+}

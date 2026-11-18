@@ -1,0 +1,113 @@
+{
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-plan-01.json": {
+      "bytes": 752,
+      "sha256": "f8f6cf1d15f7384297ebc855d383a57ea337c9eb70a7e09e8f7aed7fa1bdee6a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/fix_voice_startup_01.py": {
+      "bytes": 4135,
+      "sha256": "594d3b0b4b36355b5770c079fa2c33f06e029ae5f5e59926501bc900cb8d7d40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/build_voice_startup_fix_01.py": {
+      "bytes": 3460,
+      "sha256": "b180dcb6851ebe049cd190b45b298d1db48f15fc07d3fbf85b0a454115450751"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-source-review-01.json": {
+      "bytes": 474,
+      "sha256": "b64366bb84f30560614c4de8df416c6d584b7d68205dec3b936d62c6a3220d1a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-inventory-01.json": {
+      "bytes": 114,
+      "sha256": "ff856f22710d5b957245a197f5d95e8aeca32c171e5c4731c60b0bee1dc26b7c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-02/identity.json": {
+      "bytes": 221,
+      "sha256": "c749f2553b469570a49378db6c3b83867380e1c41898028b3016c4fcce43abfb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-02/chat_protocol_sources.json": {
+      "bytes": 76586,
+      "sha256": "95f0b1931463f23f93b2b41275f14975f098fc0ed79ff817e64aad8f353d812f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/lease/nvml-queries.jsonl": {
+      "bytes": 22838,
+      "sha256": "5136c84a64b30b726ab862466d6d3b90e1bcaa7314608be88c831a0fb9835ced"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/lease/events.jsonl": {
+      "bytes": 2390,
+      "sha256": "af75103b6ea1fe741ba29bc12f60410658ee30ddb5d327ce912dd6f85d34ae5a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/lease/exit.json": {
+      "bytes": 725,
+      "sha256": "a327fd41df421dcb05ea019cba6904bd39fdd6b92f9aae4d8420ee0ad0805336"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/model-identity.json": {
+      "bytes": 1936,
+      "sha256": "befa9cbc0608b9eb090390ec3125604a458abc3ebf304ae647cbfaa939c79721"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/result.json": {
+      "bytes": 1436,
+      "sha256": "4d891891a729659f5302e379a23c446f4e4177f757c44e543dce9d757ac7e7a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/counts.json": {
+      "bytes": 49,
+      "sha256": "58555a2c5f9b74dbde65d6b786c0789ec33abea73650f82b281e76bc9e3fba06"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/plan.json": {
+      "bytes": 307358,
+      "sha256": "be9719efb9b3a5969d99b088ad210769f47a905ddefc161ba3ffe64a91cdd1be"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/model-command.json": {
+      "bytes": 1595,
+      "sha256": "e74ae211acbdc4e841a19e7a672b0c5dbaf1f900327970280de909405f0bc14a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/model.log": {
+      "bytes": 63,
+      "sha256": "b6ccc7c472b97840d3cebcf5df240a52b76a70c982ceaff162acd245c62379b7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-01/run/cleanup.json": {
+      "bytes": 2297,
+      "sha256": "07afb15bb94047065a3c75f9abda03622683e53de1a4f030e52f891a494622d1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/engine-result.json": {
+      "bytes": 432,
+      "sha256": "516c2ee9ef8d6fadbd2bd283023b75df379c690949d9e4263c86578c70b24c91"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/prior-host.json": {
+      "bytes": 165,
+      "sha256": "77a6662f5b0799d0cde8dafebce422ed1b3b452e758dc4d6bb24bd8d78c1ed2c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/host-result.json": {
+      "bytes": 436,
+      "sha256": "5fccccfa21d6bbfb3266bd56a6f41753a3fa7a70e6d87795c595c90d0faa21c5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/engine.log": {
+      "bytes": 1722,
+      "sha256": "de3ddc20edc99207175c9d5d25d35177c6e71e1baf000e4a5211c3d778ccfad5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/finalization.json": {
+      "bytes": 387,
+      "sha256": "a3905cb0a572b8dadd861eea31d5087c5dabfe9bebd1de12e3d999267c3f5476"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-build-01/host.log": {
+      "bytes": 1893,
+      "sha256": "9875f99761c91501bb6d1339eff7e4c1a4dd83f003d21fd4afd446dc0ef41c18"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-cpu-01/result.json": {
+      "bytes": 447,
+      "sha256": "87c6a64419f89327ab81529bf3d18dbf3d238a54b5fac8e4795f7f740d0e2d22"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-cpu-01/required.txt": {
+      "bytes": 322,
+      "sha256": "253a53d572608449bfc328934df9bfe4fdb3662128719f119c514038fb77d7b3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-startup-fix-cpu-01/tests.log": {
+      "bytes": 396,
+      "sha256": "44c9887e161e64fe5ee003d5f76f577c2c07699243abaef493acef1dc4e41abb"
+    }
+  },
+  "archive_sha256": "dd7a86c4cb019f0a5c118ceeec587fe93b459f8438b3fd44f2c09d8edd5c2f02"
+}

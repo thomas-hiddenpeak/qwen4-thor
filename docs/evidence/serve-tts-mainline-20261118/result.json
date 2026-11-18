@@ -1,0 +1,20 @@
+{
+  "status": "MERGED",
+  "seconds": 6.24542147340253,
+  "head": "7675c6625d61891f5fdb52454ffb602d32baddae",
+  "main_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+  "master_complete": false,
+  "tree_sha": "360b898f7839065b9bd8ff4417e816761eb778fa",
+  "main_tree_equals_accepted_head": true,
+  "current_work_branch": "codex/serve-resilience-cd",
+  "new_gpu_loads": 0,
+  "branch_retained_reason": "ongoing master work and uncommitted later diagnostic evidence",
+  "default_sha256": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

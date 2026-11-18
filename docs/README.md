@@ -601,3 +601,11 @@
 - [rev306Chat音频交付](evidence/serve-chat-audio-delivery-20261118/README.md)：真实Chat音频/JSON/SSE/工具与可回退原生服务。
 
 - [rev316语音输入输出交付](evidence/serve-tts-delivery-20261118/README.md)：真实Speech/Chat与重叠分离、可回退原生服务。
+
+- [rev326注册音色可回退交付](evidence/serve-voice-delivery-20261119/README.md)：持久音色、原生恢复、配额保持及STOPPED回退。
+
+- [Base-only已有音色消费CPU](evidence/serve-voice-consumer-cpu-20261119/README.md)：注册/消费依赖分离、真实保存状态与完整音频见证。
+
+- [Base-only真实消费与可选封装](evidence/serve-voice-consumer-business-20261119/README.md)：完整音频、无注册后端、原客户授权与两档资格。
+
+- [PR49会话恢复夹具修复](evidence/serve-conversation-recovery-fixture-20261119/README.md)：8项针对CPU，原预演失败保留。

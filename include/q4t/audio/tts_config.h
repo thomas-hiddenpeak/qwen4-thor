@@ -11,7 +11,7 @@
 
 namespace q4t::audio {
 
-enum class TtsVariant { kCustomVoice06B, kCustomVoice17B };
+enum class TtsVariant { kCustomVoice06B, kCustomVoice17B, kBase17B };
 
 struct TtsTensorContract {
   std::string name;
@@ -48,6 +48,12 @@ std::vector<TtsTensorContract> TtsCodecDecoderTensorContracts();
 // hole-free extents. Caller must also verify the entire asset's pinned SHA256.
 Status ValidateTtsTensorHeader(const io::Json& header, uint64_t data_bytes,
                                TtsVariant variant);
+
+// Base uses a trained 2048-dimensional speaker condition. These independent
+// metadata contracts do not imply that a registered voice backend is loaded.
+Status ValidateTtsBaseConfig(const io::Json& config);
+std::vector<TtsTensorContract> TtsBaseTensorContracts();
+Status ValidateTtsBaseTensorHeader(const io::Json& header, uint64_t data_bytes);
 
 // Validates every F32 storage extent and all 271 synthesis-decoder tensors.
 // The other 225 encoder tensors are retained, not executed or loaded as the

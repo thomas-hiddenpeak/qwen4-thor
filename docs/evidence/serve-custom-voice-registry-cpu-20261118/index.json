@@ -1,0 +1,142 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/archive_voice_registry.py": {
+    "bytes": 8389,
+    "sha256": "395bc2e7ce9133b3e2ae1d4fbcc541ea27acb3b73628a9491a5e801bcf39a289"
+  },
+  ".q4t-work/serve-custom-voices-20261118/archive_voice_registry_02.py": {
+    "bytes": 8511,
+    "sha256": "b5d48588d0ef66e92de3256da4689e8e4cf490a27389d2d5abbd84d2d55282a0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_registry.py": {
+    "bytes": 3518,
+    "sha256": "8e8a51719a90ed9de343739ebfbb47be434c78c91c5e42903df2c57e7f275f8e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/push-base-03.log": {
+    "bytes": 3758,
+    "sha256": "94e849e792800fb472f58b53cae2707d1b4f1a62aff05a88e9ac34f4454b07ad"
+  },
+  ".q4t-work/serve-custom-voices-20261118/review_voice_registry.py": {
+    "bytes": 5037,
+    "sha256": "8686192366c8270e7f6cd1271b98328888d13d8b18f593bd9ff00d3cdaae4639"
+  },
+  ".q4t-work/serve-custom-voices-20261118/run_voice_registry_cpu.py": {
+    "bytes": 1733,
+    "sha256": "d2463a3bd3dc8fc2f32f04ae5a4c5a755779d114a2b8e5c533130be423585835"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-legacy-reader-01/identity.json": {
+    "bytes": 314,
+    "sha256": "6d0a0fee4d11b8afab2d16becab239e3b35799409251da0965562e03e6568ddb"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-archive-check-01.json": {
+    "bytes": 266,
+    "sha256": "3279651f5b309c6bbd43abfff321735ff816f2132bc566a643fc1ef7314963ec"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-build-01/build.log": {
+    "bytes": 68014,
+    "sha256": "66acc3166576e24a26dff9d0efe3dc0f3ea9e5ba3b5c2a514b9d25c17f31cdc0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-build-01/result.json": {
+    "bytes": 350,
+    "sha256": "a00b265a2618d722382ae7a368a52ce6b0f49dd6e663ed6068794c927d5c6ca1"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-build-02/build.log": {
+    "bytes": 2023,
+    "sha256": "c7a65b6b8283c70d4f5c73763afcbdc751464180d210e61f384052ffa960e047"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-build-02/result.json": {
+    "bytes": 351,
+    "sha256": "0c678d2ea298204ba8826885d4fdde013797d99e55ca6b9190e8cebb03c4d196"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-cpu-01/required.txt": {
+    "bytes": 1590,
+    "sha256": "1769a5525a9f585903572fa061b89d527c2527660ad73d8c63924f469de8a1ce"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-cpu-01/result.json": {
+    "bytes": 1649,
+    "sha256": "7537df27ac5a1f22c72189e74cd3b183c89e2ee17ba2e10690e09042ebee3726"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-cpu-01/test.log": {
+    "bytes": 1813,
+    "sha256": "0ae60f564c76c54788d7ecb730f0c04f914ae7d640a72c4cdd081490382dc828"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-inventory-01.json": {
+    "bytes": 123,
+    "sha256": "197e02e14a9849baf1c87a59a9bac3918cbbfb38cb4bf50e2bf6b134068e5ea0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-plan-01.json": {
+    "bytes": 3312,
+    "sha256": "c194d2af06115090b5c97ee6e004f1c6ff0ae6658f663046266cfea159976544"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-plan-02.json": {
+    "bytes": 4009,
+    "sha256": "f71c793a2748232bb7e9d62514f98102b44f58c3052a8b6ff0d9aef1dcc8ec15"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-review-01.json": {
+    "bytes": 1357,
+    "sha256": "921524236287fbb92d5383255c72c04dd1e5b309b9916ae3fd616e6481acd89e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-registry-source-review-01.json": {
+    "bytes": 2977,
+    "sha256": "fe08925215d17c9135309f6de62e9549c1ecbb29b12b15cfbf5515b03e738267"
+  },
+  "CMakeLists.txt": {
+    "bytes": 58017,
+    "sha256": "c83fdc8a2e5c4a5b4c0c37d4574d8fa22ec2c17506cb496ea992bec8398849b1"
+  },
+  "cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 27058,
+    "sha256": "8e6960bf6a7926c84add665181520274fa827625b45b14682673ef07b1c0b6fc"
+  },
+  "cmake/HostTestSources.cmake": {
+    "bytes": 33472,
+    "sha256": "e2dbde9629bcf1ac4076503706ef2340af371516f907880774919bf19d60e5c4"
+  },
+  "include/q4t/server/object_store.h": {
+    "bytes": 7620,
+    "sha256": "4c16f4afa7e301b13e475597f699d6d44cd457f1ded3ca98142b129c135364e1"
+  },
+  "include/q4t/server/voice_registry.h": {
+    "bytes": 3108,
+    "sha256": "c646de98f99c8750b5489409c60624c2de02e399fc11127b75a76c9fd9e8386a"
+  },
+  "include/q4t/server/voice_request.h": {
+    "bytes": 1639,
+    "sha256": "a95b6e0d00ecbd733af7acab8bf0afb79aea269cec0e7c112fe1b658fe649b7e"
+  },
+  "src/server/binary_store.cpp": {
+    "bytes": 15079,
+    "sha256": "a0e15cf8ab0cf4485dc9ee836e574d5e2ae0bc740ff4934c9036d8a8bc99080d"
+  },
+  "src/server/object_protocol.h": {
+    "bytes": 4271,
+    "sha256": "cd7c4b69ab00b6ae6b7f348f669748de10e885cbab68302cca37b2109eeb7f40"
+  },
+  "src/server/object_retention.cpp": {
+    "bytes": 22765,
+    "sha256": "9bc3646b3afca1fe8441966ffa3520df3630c2301041f20cb5ac449be06e49e3"
+  },
+  "src/server/object_store.cpp": {
+    "bytes": 32575,
+    "sha256": "09c6ad0bb0646c560e2783e354e27aa83f4f2c0bf1c61b1c256954eb4d6d99ae"
+  },
+  "src/server/voice_language.cpp": {
+    "bytes": 2783,
+    "sha256": "b08962efa62a4e3667b509caad33b78da2c235b9897474a85a2a1fb09d08b53f"
+  },
+  "src/server/voice_registry.cpp": {
+    "bytes": 17048,
+    "sha256": "efc8df5407f97809353c952a6b2534328567e82c4ae3d7fc5bdc9cc398da2d99"
+  },
+  "src/server/voice_request.cpp": {
+    "bytes": 9609,
+    "sha256": "2baf14fecd21fe956885883b98b116224eda3aaabe800eb5e40779bf5bf0edbc"
+  },
+  "tests/server_voice_registry_test.cpp": {
+    "bytes": 15744,
+    "sha256": "704b4f49e3ca70471189cc8e776d5a6654979c7f999bc176d873c671a28cc339"
+  },
+  "tests/server_voice_request_test.cpp": {
+    "bytes": 9356,
+    "sha256": "b212619984cfdc4d58ddc0e9ea24c3d2077f0844fa3ce86170d26adf069cc0f5"
+  }
+}

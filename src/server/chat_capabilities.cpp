@@ -28,14 +28,12 @@ std::string Quote(const std::string& value) {
 }
 }  // namespace
 
-std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
-                                 bool mtp_enabled,
-                                 uint64_t media_attention_shared_bytes,
-                                 const AccessProgramPolicy* access,
-                                 bool native_embedding, bool native_asr,
-                                 bool native_aligner, bool native_vad,
-                                 int vad_max_chunks, bool native_speaker,
-                                 bool native_separator, bool native_tts) {
+std::string ChatCapabilitiesJson(
+    const std::string& model, bool allow_media, bool mtp_enabled,
+    uint64_t media_attention_shared_bytes, const AccessProgramPolicy* access,
+    bool native_embedding, bool native_asr, bool native_aligner,
+    bool native_vad, int vad_max_chunks, bool native_speaker,
+    bool native_separator, bool native_tts, bool native_tts_base) {
   const bool constrained = kStructuredDecodingAvailable;
 #ifdef Q4T_HAVE_GSTREAMER_HEADERS
   const bool video_decoder = true;
@@ -741,12 +739,16 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("effort_adaptation":"native_guidance",)"
          R"("none_disables_thinking":true},)"
          R"("speech":{"route":"/v1/audio/speech","enabled":)" +
-         (native_tts ? "true" : "false") + R"(,"model":)" +
-         Quote(kNativeTtsModel) + R"(,"profile":)" +
-         Quote(kNativeTtsProfile) + R"(,"revision":)" +
-         Quote(kNativeTtsRevision) + R"(,"weight_sha256":)" +
-         Quote(kNativeTtsWeightSha256) + R"(,"codec_weight_sha256":)" +
-         Quote(kNativeTtsCodecWeightSha256) +
+         (native_tts || native_tts_base ? "true" : "false") + R"(,"model":)" +
+         Quote(native_tts || !native_tts_base ? kNativeTtsModel
+                                              : kNativeTtsBaseModel) +
+         R"(,"profile":)" + Quote(kNativeTtsProfile) + R"(,"revision":)" +
+         Quote(native_tts || !native_tts_base ? kNativeTtsRevision
+                                              : kNativeTtsBaseRevision) +
+         R"(,"weight_sha256":)" +
+         Quote(native_tts || !native_tts_base ? kNativeTtsWeightSha256
+                                              : kNativeTtsBaseWeightSha256) +
+         R"(,"codec_weight_sha256":)" + Quote(kNativeTtsCodecWeightSha256) +
          R"(,"formats":["mp3","opus","aac","flac","wav","pcm"],)"
          R"("voices":["serena","vivian","uncle_fu","ryan","aiden",)"
          R"("ono_anna","sohee","eric","dylan"],)"
@@ -756,9 +758,26 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("sse_events":["speech.audio.delta","speech.audio.done"],)"
          R"("wav_decode_waits_for_natural_code_eos":true,)"
          R"("http10_buffers_bounded_complete_body":true,)"
-         R"("core_health_dependency":false,"registered_custom_voices":false},)"
+         R"("core_health_dependency":false,"registered_custom_voices":)" +
+         (native_tts_base ? "true" : "false") +
+         R"(,"registered_voice_model":)" + Quote(kNativeTtsBaseModel) +
+         R"(,"base_revision":)" + Quote(kNativeTtsBaseRevision) +
+         R"(,"base_weight_sha256":)" + Quote(kNativeTtsBaseWeightSha256) +
+         R"(,"builtin_enabled":)" + (native_tts ? "true" : "false") + "}," +
+         R"("voice_registration":{"enabled":)" +
+         (native_tts_base && native_asr && native_speaker && native_vad
+              ? "true"
+              : "false") +
+         R"(,"voices":"/v1/audio/voices",)"
+         R"("consents":"/v1/audio/voice_consents",)"
+         R"("sample_audio_bytes":10485760,"sample_seconds":60,)"
+         R"("types":["audio_sample"],"prompt_voice_design":false,)"
+         R"("independent_transcription":true,"same_speaker_verification":true,)"
+         R"("owner_scoped":true,"recheck_consent_per_synthesis":true,)"
+         R"("metadata_requires_healthy_model":false,)"
+         R"("core_health_dependency":false},)"
          R"("chat_audio_output":{"enabled":)" +
-         (native_tts ? "true" : "false") +
+         (native_tts || native_tts_base ? "true" : "false") +
          R"(,"formats":["mp3","opus","aac","flac","wav","pcm16"],)"
          R"("history_ttl_seconds":3600,"private_history":true,)"
          R"("history_requires_object_store":true,)"

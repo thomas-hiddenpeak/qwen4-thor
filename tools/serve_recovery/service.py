@@ -360,6 +360,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--web-policy', type=Path)
     prepare.add_argument('--embedding-model-dir', type=Path)
     prepare.add_argument('--tts-model-dir', type=Path)
+    prepare.add_argument('--tts-base-model-dir', type=Path)
     for option in engine.TTS_LIMITS:
         prepare.add_argument('--tts-'+option.replace('_', '-'), type=int)
     prepare.add_argument('--asr-model-dir', type=Path)
@@ -472,6 +473,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 web_policy=args.web_policy,
                 embedding_model_dir=args.embedding_model_dir,
                 tts_model_dir=args.tts_model_dir,
+                tts_base_model_dir=args.tts_base_model_dir,
                 tts_limits=({k:getattr(args, 'tts_'+k) for k in engine.TTS_LIMITS
                     if getattr(args, 'tts_'+k) is not None} or None),
                 asr_model_dir=args.asr_model_dir,

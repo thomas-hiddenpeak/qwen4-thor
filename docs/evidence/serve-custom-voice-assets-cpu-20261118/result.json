@@ -1,0 +1,77 @@
+{
+  "status": "BASE_ASSETS_METADATA_AND_RAM_CPU_QUALIFIED",
+  "cpu": {
+    "status": "PASS",
+    "exit_code": 0,
+    "seconds": 1.4165221760049462,
+    "required": [
+      "tts_base_assets_metadata_selects_actual_profile_without_weights",
+      "tts_base_registration_metadata_needs_no_codec_directory",
+      "tts_base_cross_profile_and_codec_failure_preserve_atomic_output",
+      "tts_base_budget_cancel_and_invalid_selection_start_no_worker",
+      "tts_base_synthesis_resources_include_real_source_and_owned_condition",
+      "tts_voice_registration_resources_bound_features_without_talker",
+      "tts_assets_metadata_publishes_both_profiles_without_opening_weights",
+      "tts_assets_combined_budget_cancel_and_deadline_start_no_child",
+      "tts_assets_codec_symlink_and_cross_profile_cannot_publish_talker",
+      "tts_assets_crash_hang_cancel_reap_and_allow_next_metadata_load",
+      "tts_resources_cover_real_fp32_expansion_and_request_dimensions",
+      "tts_resources_reject_capacity_and_overflow_without_trimming"
+    ],
+    "gpu_actions": 0,
+    "model_loads": 0,
+    "checkpoint_reads": 0,
+    "binary_sha256": "fdf837210510da81f259693ce5b1289cdb91e0316185b3c341e78c7bec24dc19",
+    "plan_sha256": "467003f065e95cbca7570b6a1158924e0a88e780bdf07c4cf3da21ed2a245759"
+  },
+  "build": {
+    "status": "PASS_BUILD_ONLY",
+    "seconds": 20.856382680125535,
+    "commands": [
+      {
+        "command": [
+          "cmake",
+          "--build",
+          ".q4t-work/serve-file-search-20261112/host",
+          "--target",
+          "q4t_model_asset_tests",
+          "--parallel",
+          "4"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/tts_upload.cpp",
+          "-o",
+          ".q4t-work/serve-custom-voices-20261118/base-assets-build-01/tts_upload.o"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "warnings": 0,
+    "binary_sha256": "fdf837210510da81f259693ce5b1289cdb91e0316185b3c341e78c7bec24dc19"
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "reviewed_source_anchors": 923,
+    "mutation_checks": 13,
+    "semantics_certified": false
+  },
+  "archive_sha256": "d76fa9b75d18900cbab90a8e73879d15580bccf8bd13ecd3ca7f98e66e32899f",
+  "archive_files": 24,
+  "full_weight_upload_qualified": false,
+  "api_qualified": false,
+  "default_changed": false,
+  "full_task_complete": false
+}

@@ -14,13 +14,18 @@ struct FileAudioLimits {
   uint32_t max_channels = 8;
   uint32_t max_thread_creations = 16;
   int timeout_ms = 15000;
+  // ASR remains 16 kHz; Base speaker conditioning explicitly requests 24 kHz.
+  uint32_t output_sample_rate = 16000;
 };
 struct FileAudioPcm {
-  // Always finite F32, 16 kHz mono. Duration derives from these samples;
+  // Finite F32 mono at the requested rate. Duration is floor(samples/rate)
+  // in nanoseconds; admission checks the exact rational duration separately.
+  // Duration derives from these samples;
   // it is not a word/segment alignment or a fabricated source timestamp.
   std::vector<float> samples;
   uint64_t duration_ns = 0;
   io::Json conversion;
+  uint32_t sample_rate = 16000;
 };
 bool IsAudioContainer(std::string_view bytes);
 bool ValidFileAudioLimits(const FileAudioLimits& limits);

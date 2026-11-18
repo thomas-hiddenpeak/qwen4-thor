@@ -1,0 +1,42 @@
+{
+  "status": "PASS_REGISTERED_VOICE_SPEECH_CHAT_SCOPE_RESTART_REVOKE",
+  "complete_voice_api_qualification": false,
+  "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+  "original_chat_failure_retained": true,
+  "original_ryan_identity_failure_retained": true,
+  "actual_http_reused": "voice-http-05 registration/Speech unaffected by Chat-only fix",
+  "cpu_cases": 5,
+  "cpu_seconds": 0.06976930005475879,
+  "continuation_posts": 7,
+  "continuation_seconds": 69.27878334466368,
+  "leases": {
+    "voice-aiden-diagnostic-01": {
+      "status": "COMPLETED",
+      "nvml_queries": 65,
+      "all_nvml_ok": true,
+      "owned_cleanup": true
+    },
+    "voice-http-05": {
+      "status": "COMMAND_FAILED",
+      "nvml_queries": 75,
+      "all_nvml_ok": true,
+      "owned_cleanup": true
+    },
+    "voice-http-06": {
+      "status": "COMPLETED",
+      "nvml_queries": 66,
+      "all_nvml_ok": true,
+      "owned_cleanup": true
+    }
+  },
+  "terminal_dynamic_labels": {
+    "voice_consent_mismatch": true,
+    "voice_speaker_mismatch": true,
+    "client_tpm_exhausted": true
+  },
+  "threshold_unchanged": 0.65,
+  "listening": "PENDING",
+  "human_identity": "NOT_CLAIMED",
+  "sdk_tls_profiles_managed_recovery": "PENDING",
+  "default_replaced": false
+}

@@ -1,0 +1,135 @@
+{
+  "status": "PASS_CPU_REFERENCE_GENERATION_ONLY",
+  "records": [
+    {
+      "name": "silence",
+      "samples": 512,
+      "frames": 2,
+      "pcm": {
+        "file": "silence-pcm.f32",
+        "bytes": 2048,
+        "sha256": "e5a00aa9991ac8a5ee3109844d84a55583bd20572ad3ffcd42792f3c36b183ad"
+      },
+      "mel": {
+        "file": "silence-mel.f32",
+        "bytes": 1024,
+        "sha256": "d2782a67da5f8c8504348e36bd296e956cc75474c8f224ce1ffdb6e556448f6d"
+      }
+    },
+    {
+      "name": "impulse",
+      "samples": 385,
+      "frames": 1,
+      "pcm": {
+        "file": "impulse-pcm.f32",
+        "bytes": 1540,
+        "sha256": "196b76aa2c95c6c3906328642deffc1db9a94259b787438c647b09db41d8dc5a"
+      },
+      "mel": {
+        "file": "impulse-mel.f32",
+        "bytes": 512,
+        "sha256": "7b90e0facac3d703b39e45cca01e581be1acc8d9e1fd8f54fb06497c341698e7"
+      }
+    },
+    {
+      "name": "tone",
+      "samples": 2400,
+      "frames": 9,
+      "pcm": {
+        "file": "tone-pcm.f32",
+        "bytes": 9600,
+        "sha256": "03d641bdf95f7368b632316f1ade5b29f3581cdda932203720d679c0df1b4662"
+      },
+      "mel": {
+        "file": "tone-mel.f32",
+        "bytes": 4608,
+        "sha256": "f7115eda95f6f8d3a7dc07c3650261ce7448683cb8458d6df07b8cde348e6f4c"
+      }
+    },
+    {
+      "name": "mixture",
+      "samples": 5001,
+      "frames": 19,
+      "pcm": {
+        "file": "mixture-pcm.f32",
+        "bytes": 20004,
+        "sha256": "4669c93343af134f2d39ddbd3aee39257bd8c385ccfb49cb6a39a34b288c518c"
+      },
+      "mel": {
+        "file": "mixture-mel.f32",
+        "bytes": 9728,
+        "sha256": "eb728d1dc0ee31bf70b1f93a2413cca793086f54c4d8542c57d0b2b810530e36"
+      }
+    },
+    {
+      "name": "noise",
+      "samples": 1997,
+      "frames": 7,
+      "pcm": {
+        "file": "noise-pcm.f32",
+        "bytes": 7988,
+        "sha256": "50e029aef273a3a1cdfc3a0b9491035e7423a9d53b1ae891298bc1045299fcbe"
+      },
+      "mel": {
+        "file": "noise-mel.f32",
+        "bytes": 3584,
+        "sha256": "0ae5527d2a7037604e642ced838e8fe3317d849fae78f104c7841fbae1af075f"
+      }
+    },
+    {
+      "name": "tail",
+      "samples": 24017,
+      "frames": 93,
+      "pcm": {
+        "file": "tail-pcm.f32",
+        "bytes": 96068,
+        "sha256": "3e5bf8372d8feebb5cf52427c23888f77d9ba4d762d22fdcc08b56574b05ebb9"
+      },
+      "mel": {
+        "file": "tail-mel.f32",
+        "bytes": 47616,
+        "sha256": "cf7a1b8d80e66c3b0495fa3994191f09cad0f5c76b4f94c28b08b21f1e8942c8"
+      }
+    }
+  ],
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "seconds": 0.06093735294416547,
+  "cuda_initialized": false,
+  "model_constructions": 0,
+  "maximum_absolute_logmel_error": 0.0001,
+  "sources": [
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/frontend-reference-source-01/convert.py",
+      "sha256": "3f0679eeb5706771797ddacc4174bfacd1146abae78e8a583d97d6aa4391985f",
+      "functions": [
+        "hz_to_mel",
+        "mel_to_hz",
+        "fft_frequencies",
+        "mel_frequencies"
+      ]
+    },
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/frontend-reference-source-01/filters.py",
+      "sha256": "df2914ab2262a5b72e59dba320e35fb934a0825c314c48a2542ade8c23116c4e",
+      "functions": [
+        "mel"
+      ]
+    },
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models/modeling_qwen3_tts.py",
+      "sha256": "25c42656bcf810f06ef6bc1839bd7083f3c8cfedac3a147c4060b4262b1c96a0",
+      "functions": [
+        "dynamic_range_compression_torch",
+        "mel_spectrogram"
+      ]
+    }
+  ],
+  "generator_sha256": "d57dda9b27ab0896b24f569239ce898ddd0e357ea22f34b0b8949c0f17c37fc9",
+  "adaptations": [
+    "AST extraction; unrelated imports omitted",
+    "Memoization decorators omitted; calculations unchanged",
+    "Postponed type annotations; only concrete overload definitions",
+    "Explicit CPU-only PyTorch and FP32 input"
+  ]
+}

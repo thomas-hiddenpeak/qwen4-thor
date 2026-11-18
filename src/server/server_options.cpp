@@ -135,6 +135,14 @@ Status ValidateServerOptions(const ServerOptions& options) {
                       options.model_aliases))
       return Status::Fail("TTS model name conflicts with Chat model names");
   }
+  if (!options.tts_base_model_dir.empty()) {
+    if (!model::ValidEmbeddingAssetDirectory(options.tts_base_model_dir))
+      return Status::Fail("tts-base-model-dir must be an absolute asset path");
+    if (IsServedModel(kNativeTtsBaseModel, options.served_model_name,
+                      options.model_aliases))
+      return Status::Fail(
+          "Base TTS model name conflicts with Chat model names");
+  }
   if (!options.asr_limits.Valid())
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
   if (!options.aligner_limits.Valid())
@@ -145,8 +153,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!options.separator_limits.Valid())
     return Status::Fail("invalid separator duration/workspace limits");
   if (!options.separator_model_dir.empty()) {
-    if (options.speaker_model_dir.empty())
-      return Status::Fail("separator-model-dir requires speaker-model-dir");
+    if (options.speaker_model_dir.empty() || options.aligner_model_dir.empty())
+      return Status::Fail("separator-model-dir requires speaker and aligner");
     if (!model::ValidEmbeddingAssetDirectory(options.separator_model_dir))
       return Status::Fail("separator-model-dir must be an absolute asset path");
     SeparatorResourcePlan plan;
@@ -155,9 +163,12 @@ Status ValidateServerOptions(const ServerOptions& options) {
       return status;
   }
   if (!options.speaker_model_dir.empty()) {
-    if (options.asr_model_dir.empty() || options.aligner_model_dir.empty() ||
-        options.vad_model_dir.empty())
-      return Status::Fail("speaker-model-dir requires ASR, aligner and VAD");
+    // Diarized transcripts need alignment; voice registration instead uses
+    // VAD windows directly. Do not require unused alignment weights for Base.
+    if (options.asr_model_dir.empty() || options.vad_model_dir.empty() ||
+        (options.aligner_model_dir.empty() && options.tts_base_model_dir.empty()))
+      return Status::Fail(
+          "speaker-model-dir requires ASR, VAD and either aligner or TTS Base");
     if (!model::ValidEmbeddingAssetDirectory(options.speaker_model_dir))
       return Status::Fail("speaker-model-dir must be an absolute asset path");
     SpeakerResourcePlan plan;
@@ -372,7 +383,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
-        key != "--tts-model-dir" && key != "--aligner-model-dir" &&
+        key != "--tts-model-dir" && key != "--tts-base-model-dir" &&
+        key != "--aligner-model-dir" &&
         key != "--vad-model-dir" && key != "--speaker-model-dir" &&
         key != "--separator-model-dir" && key != "--mem-fraction" &&
         key != "--moe-trace-dir" && key != "--moe-trace-workload" &&
@@ -453,6 +465,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.embedding_model_dir = value;
     } else if (key == "--tts-model-dir") {
       parsed.tts_model_dir = value;
+    } else if (key == "--tts-base-model-dir") {
+      parsed.tts_base_model_dir = value;
     } else if (key == "--asr-model-dir") {
       parsed.asr_model_dir = value;
     } else if (key == "--aligner-model-dir") {

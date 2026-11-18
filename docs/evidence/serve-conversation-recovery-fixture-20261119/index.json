@@ -1,0 +1,40 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1423,
+      "sha256": "e668fbba1351c56288b7bcb16e5e972623f34620239751531468f226ee568e3c"
+    },
+    "before.cpp": {
+      "bytes": 24726,
+      "sha256": "25dcb19a687aa5fff1ebf9be870b3dcc57aaae44bb714e67c17d243aebb7634c"
+    },
+    "build.log": {
+      "bytes": 64404,
+      "sha256": "54f3fd5528708c0c29a157bddc3bd38f4b8f50ecfef0ff4228df7e352c47adc6"
+    },
+    "original-ci-failed.log.gz": {
+      "bytes": 156324,
+      "sha256": "35fbeac24b0e8391f7f2d3af504981d8c2b1a7b2c8f6880773f84f019232b514"
+    },
+    "original-ci-jobs.json": {
+      "bytes": 6510,
+      "sha256": "50e169dc2e42ff904dda23934b610327ec010cec6bf64b097fb004cd313c40e7"
+    },
+    "plan.json": {
+      "bytes": 1494,
+      "sha256": "9fc719fdec646967a7879f14d4534ff639db9820f0f2102d8fb31fc923108a86"
+    },
+    "required.txt": {
+      "bytes": 463,
+      "sha256": "41ad9803c61e066e41c36ff23f287fae39de029a7f7a4f276aef6c0b10504689"
+    },
+    "result.json": {
+      "bytes": 647,
+      "sha256": "640f7a1dd6364eef14b6065de2fa0449df3a78509b42163058dcd5aafaf249bf"
+    },
+    "test.log": {
+      "bytes": 558,
+      "sha256": "913d8531e27550b48420b01c3c5f1b397047c3c23c49981a57ca8dd66584d4fc"
+    }
+  }
+}

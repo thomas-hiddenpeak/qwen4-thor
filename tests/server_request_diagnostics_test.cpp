@@ -212,3 +212,48 @@ Q4T_TEST(request_lock_predicate_exception_releases_lock) {
   }
   return true;
 }
+
+Q4T_TEST(request_diagnostics_owns_labels_past_mutation_and_error_lifetime) {
+  FILE* file = std::tmpfile();
+  Q4T_CHECK(file);
+  {
+    q4t::server::RequestDiagnostics d(file);
+    {
+      std::string stage = "voice_condition_embedding";
+      std::string outcome = "error";
+      std::string reason = "voice_speaker_mismatch";
+      d.Stage(stage);
+      d.Outcome(outcome, reason);
+      // Mutate the original storage before it is released. A borrowed pointer
+      // would record these replacements or freed memory at request teardown.
+      std::fill(stage.begin(), stage.end(), 'x');
+      std::fill(outcome.begin(), outcome.end(), 'y');
+      std::fill(reason.begin(), reason.end(), 'z');
+    }
+  }
+  const auto text = Read(file);
+  std::fclose(file);
+  const auto terminal = text.substr(text.find("event=end"));
+  Q4T_CHECK(terminal.find("stage=voice_condition_embedding ") != terminal.npos);
+  Q4T_CHECK(terminal.find("outcome=error reason=voice_speaker_mismatch ") !=
+            terminal.npos);
+  return true;
+}
+
+Q4T_TEST(request_diagnostics_label_overflow_is_bounded_and_does_not_throw) {
+  FILE* file = std::tmpfile();
+  Q4T_CHECK(file);
+  {
+    q4t::server::RequestDiagnostics d(file);
+    static_assert(noexcept(d.Outcome("success", "completed")));
+    const std::string label(4096, 'z');
+    d.Stage(label);
+    d.Outcome(label, label);
+  }
+  const auto text = Read(file);
+  std::fclose(file);
+  Q4T_CHECK(text.size() < 2048 && text.find("zzz") == text.npos);
+  Q4T_CHECK(text.find("outcome=diagnostic_label_too_long "
+                      "reason=diagnostic_label_too_long ") != text.npos);
+  return true;
+}

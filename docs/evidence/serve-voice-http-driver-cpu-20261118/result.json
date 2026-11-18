@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "seconds": 0.21880166605114937,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.native_tts.test_voice_service_acceptance"
+  ],
+  "sources": {
+    "tools/native_tts/voice_service_acceptance.py": "f55b5b29c0f5e971279489d88c6362d4c1e5abe12f9087d277b40cb6c5beff5b",
+    "tools/native_tts/test_voice_service_acceptance.py": "a8aa39b310121d5f4d3d8ed2ef1069c71643c61a3991506fe95df9a5e22b42e5"
+  },
+  "gpu": 0
+}

@@ -140,6 +140,7 @@ endif()
 # ---------------------------------------------------------------------------
 if(Q4T_HAS_ICU)
   add_library(q4t_text STATIC src/text/tokenizer.cpp
+    src/text/voice_consent.cpp
     src/audio/aligner_postprocess.cpp)
   target_include_directories(q4t_text PUBLIC include ${ICU_INCLUDE_DIRS})
   target_link_libraries(q4t_text PUBLIC q4t_io ${ICU_LINK_LIBRARIES})
@@ -196,6 +197,9 @@ add_library(q4t_model STATIC
   src/audio/speaker_config.cpp
   src/audio/speaker_layout.cpp
   src/audio/speaker_features.cpp
+  src/audio/tts_speaker_features.cpp
+  src/audio/tts_speaker_layout.cpp
+  src/audio/tts_speaker_model.cu
   src/audio/diarization.cpp
   src/audio/speaker_model.cu
   src/audio/separator_config.cpp
@@ -345,6 +349,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
   src/server/speech_request.cpp
+  src/server/voice_request.cpp
+  src/server/voice_language.cpp
+  src/server/voice_verification.cpp
+  src/server/voice_api.cpp
+  src/server/voice_registry.cpp
   src/server/chat_audio_output.cpp
   src/server/chat_audio_history.cpp
   src/server/chat_audio_synthesis.cpp
@@ -400,6 +409,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_tts_backend.cpp
   src/server/chat_tts_execution.cpp
   src/server/chat_speech.cpp
+  src/server/chat_speech_prompt.cpp
+  src/server/chat_voice_backend.cpp
+  src/server/chat_voice_execution.cpp
+  src/server/chat_voice_evidence.cpp
+  src/server/chat_voices.cpp
   src/server/speech_codec_stream_worker.cpp
   src/server/file_video_worker.cpp
   src/server/file_video_sandbox.cpp

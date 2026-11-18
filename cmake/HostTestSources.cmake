@@ -7,6 +7,15 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/memory_budget.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/actual_usage_step_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_language.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_verification.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_registry_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_verification_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_api_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_output.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_history.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_output_test.cpp
@@ -16,6 +25,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_request_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/pcm_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_base_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_speaker_features_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_speaker_features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_speaker_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_speaker_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/tts_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_tts_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_config.cpp
@@ -24,6 +38,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_codec_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_generation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_generation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_base_generation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp
@@ -184,6 +199,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_rate_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_encode_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_affine_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_projective_test.cpp

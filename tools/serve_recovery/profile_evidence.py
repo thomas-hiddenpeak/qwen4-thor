@@ -11,12 +11,48 @@ import wave
 from tools.serve_recovery import ledger, profile_contract
 
 TTS_FORMAT = 'q4t-profile-business-v8'
+VOICE_FORMAT = 'q4t-profile-business-v9'
+TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
+VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
+VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
+# Exact saved state and full outputs from the accepted official SDK/TLS run.
+# Both full WAVs were independently transcribed, then reproduced byte for byte
+# by both registered-voice profiles. These are content witnesses, not new ASR.
+VOICE_CONSUMER_WITNESS = dict(
+    format='q4t-voice-consumer-witness-v1', owner='audio',
+    consent='cons_152992b04ee1d2169519b5a25bf7c320',
+    voice='voice_d91ef0c25a252f9ae75a631901960d90',
+    state_sha256='b7b75d0ee358f87ac73cc61e982a8c42319165aec92da34572a982e4d7b2e53f',
+    condition_sha256='9781f722ad38343deeea05a21d7c5700e0344b3703c1ce0d44e88d9173e16e12',
+    evidence_sha256='fd2c3e8ce9fe74c84a76cd920c0b2380cf582c3c830ed99db31ee41132766af3')
+VOICE_CONSUMER_AUDIO = dict(
+    speech=(111404, '58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d'),
+    chat=(76844, '15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f'))
+TTS_CHECKPOINT_SAMPLING = 'qwen3-tts-checkpoint-seed0-v1'
+VOICE_TARGETS = ('The blue train arrives at noon.', 'Please close the window.')
 TTS_TEXT = 'Hello, this is a native speech test.'
 # Whole byte identities from the accepted native full-text synthesis + no-hint
 # ASR in serve-chat-audio-output-http-20261118; no tolerances or shortened clips.
 TTS_AUDIO = dict(
     speech=(40704, '5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323'),
     chat=(115244, '4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126'))
+
+# Independently recognized whole HTTP audio, fixed requests/seed; the original
+# greedy v8/v9 witnesses above are immutable. See the 2026-11-19 checkpoint
+# witness evidence, including its preserved driver failure and content-only run.
+TTS_CHECKPOINT_AUDIO = dict(
+    speech=(58368, 'ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4'),
+    chat=(111404, '2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9'))
+
+
+def tts_sampling(value):
+    """Missing marks historical greedy evidence; explicit unknowns fail closed."""
+    ledger.require(type(value) is dict, 'invalid TTS sampling witness')
+    if 'sampling_profile' not in value:
+        return None
+    ledger.require(value['sampling_profile'] == TTS_CHECKPOINT_SAMPLING,
+                   'unknown TTS sampling witness')
+    return value['sampling_profile']
 
 
 def tts_requests():
@@ -30,21 +66,26 @@ def tts_requests():
             stream=False, store=True))
 
 
-def tts_audio(value, kind):
+def tts_audio(value, kind, *, sampling_profile=None):
     ledger.require(type(value) is str and 0 < len(value) <= 1024*1024,
                    'invalid qualified TTS audio encoding')
     try:
         raw = base64.b64decode(value, validate=True)
     except ValueError as error:
         raise ValueError('invalid qualified TTS base64') from error
-    size, digest = TTS_AUDIO[kind]
+    ledger.require(sampling_profile in (None, TTS_CHECKPOINT_SAMPLING),
+                   'unknown TTS audio sampling witness')
+    accepted = TTS_AUDIO if sampling_profile is None else TTS_CHECKPOINT_AUDIO
+    size, digest = accepted[kind]
     ledger.require(base64.b64encode(raw).decode() == value and len(raw) == size and
         hashlib.sha256(raw).hexdigest() == digest,
         'qualified TTS whole audio differs from accepted content')
 
 
 def tts_business(value, identity):
-    ledger.keys(value, ('requests', 'speech_base64', 'chat_response', 'health', 'limits'))
+    sampling = tts_sampling(value)
+    ledger.keys(value, ('requests', 'speech_base64', 'chat_response', 'health', 'limits') +
+                (('sampling_profile',) if sampling is not None else ()))
     fixed = identity['native_tts']
     profile_contract.tts_configuration(fixed)
     ledger.require(ledger.canonical(value['requests']) == ledger.canonical(tts_requests()) and
@@ -58,7 +99,7 @@ def tts_business(value, identity):
         type(health.get('compute_failures')) is int and health['compute_failures'] == 0 and
         ledger.integer(health.get('device_bytes'), minimum=1),
         'qualified TTS backend is not healthy/isolated')
-    tts_audio(value['speech_base64'], 'speech')
+    tts_audio(value['speech_base64'], 'speech', sampling_profile=sampling)
     response = value['chat_response']
     msg = message(response, 'stop')
     ledger.require(msg.get('content') is None and type(msg.get('audio')) is dict,
@@ -67,7 +108,7 @@ def tts_business(value, identity):
     ledger.require(type(audio.get('id')) is str and audio['id'].startswith('audio_') and
         ledger.integer(audio.get('expires_at'), minimum=1) and
         audio.get('transcript') == TTS_TEXT, 'qualified Chat audio history differs')
-    tts_audio(audio.get('data'), 'chat')
+    tts_audio(audio.get('data'), 'chat', sampling_profile=sampling)
     usage = response.get('usage', {})
     ledger.require(type(usage) is dict, 'invalid qualified TTS usage')
     parts = usage.get('completion_tokens_details', {})
@@ -83,6 +124,222 @@ def tts_business(value, identity):
         usage['completion_tokens'] > synthesis['output_tokens'] and
         usage['prompt_tokens'] > synthesis['input_tokens'],
         'qualified TTS actual usage missing or inconsistent')
+
+
+def voice_requests(consent, voice):
+    from tools.serve_service import package
+    return dict(consent=dict(name='local-consent', language='en'),
+        voice=dict(name='local-sample', type='audio_sample', consent=consent),
+        speech=dict(model=package.NATIVE_TTS_BASE['model'], input=VOICE_TARGETS[0],
+            voice=dict(id=voice), response_format='wav', stream_format='sse'),
+        chat=dict(model='qwen3.8-flash-next', temperature=0, enable_thinking=False,
+            max_completion_tokens=1536, messages=[dict(role='user',
+                content='Repeat exactly without adding any words: '+VOICE_TARGETS[1])],
+            modalities=['text', 'audio'], audio=dict(voice=dict(id=voice), format='wav'),
+            stream=False, store=True),
+        transcription=dict(model='qwen3-asr-0.6b', response_format='json'))
+
+
+def voice_audio(value, limits):
+    ledger.require(type(value) is str and 0 < len(value) <= 4*1024*1024,
+                   'invalid qualified voice audio encoding')
+    try:
+        raw = base64.b64decode(value, validate=True)
+        ledger.require(base64.b64encode(raw).decode() == value,
+                       'noncanonical qualified voice audio')
+        with wave.open(io.BytesIO(raw)) as source:
+            count = source.getnframes()
+            ledger.require(source.getnchannels() == 1 and
+                source.getsampwidth() == 2 and source.getframerate() == 24000 and
+                count % 1920 == 0 and 2 <= count//1920 <= limits['max_frames'],
+                'qualified voice WAV geometry differs')
+            data = source.readframes(count)
+            ledger.require(len(data) == 2*count, 'truncated qualified voice WAV')
+    except (ValueError, EOFError, wave.Error) as error:
+        raise ValueError('invalid qualified voice WAV') from error
+    import struct
+    samples = struct.unpack('<'+'h'*count, data)
+    ledger.require(max(abs(x) for x in samples) > 327 and
+        sum(float(x)*x for x in samples)/count > (32768*.0001)**2,
+        'silent qualified voice audio')
+    return count//1920
+
+
+def voice_error(value, status, code=None):
+    ledger.keys(value, ('status', 'body'))
+    error = value['body'].get('error') if type(value['body']) is dict else None
+    ledger.require(type(value['status']) is int and value['status'] == status and
+        type(error) is dict and type(error.get('code')) is str and error['code'] and
+        'id' not in value['body'] and (code is None or error['code'] == code),
+        'qualified voice rejection differs')
+
+
+def voice_synthesis(value, fixed):
+    """Shared complete output/content checks; callers bind IDs and requests."""
+    profile_contract.tts_configuration(fixed, base=True)
+    ledger.require(ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
+                   'qualified voice effective capacity differs')
+    speech = value['speech']
+    ledger.keys(speech, ('audio_base64', 'usage'))
+    frames = voice_audio(speech['audio_base64'], fixed['limits'])
+    usage = speech['usage']
+    ledger.keys(usage, ('input_tokens', 'output_tokens', 'total_tokens'))
+    ledger.require(all(ledger.integer(n, minimum=1) for n in usage.values()) and
+        usage['output_tokens'] == frames*16+1 and
+        usage['total_tokens'] == usage['input_tokens']+usage['output_tokens'],
+        'qualified voice speech lacks natural EOS or actual usage')
+    response = value['chat']
+    msg = message(response, 'stop');audio = msg.get('audio')
+    ledger.require(type(audio) is dict and type(audio.get('id')) is str and
+        audio['id'].startswith('audio_') and ledger.integer(audio.get('expires_at'), minimum=1) and
+        audio.get('transcript') == VOICE_TARGETS[1],
+        'qualified registered voice Chat history differs')
+    frames = voice_audio(audio.get('data'), fixed['limits'])
+    usage = response.get('usage', {})
+    ledger.require(type(usage) is dict, 'invalid registered voice Chat usage')
+    parts = usage.get('completion_tokens_details', {})
+    synthesis = usage.get('q4t_audio_synthesis', {})
+    ledger.require(all(type(x) is dict for x in (usage, parts, synthesis)) and
+        all(ledger.integer(usage.get(k), minimum=1) for k in
+            ('prompt_tokens', 'completion_tokens', 'total_tokens')) and
+        usage['total_tokens'] == usage['prompt_tokens']+usage['completion_tokens'] and
+        parts.get('audio_tokens') == frames*16 and
+        synthesis.get('output_tokens') == frames*16+1 and
+        ledger.integer(synthesis.get('input_tokens'), minimum=1) and
+        usage['completion_tokens'] > synthesis['output_tokens'] and
+        usage['prompt_tokens'] > synthesis['input_tokens'],
+        'qualified registered voice Chat combined usage differs')
+    for key, text in [('speech_transcript', VOICE_TARGETS[0]),
+                       ('chat_transcript', VOICE_TARGETS[1])]:
+        ledger.require(type(value[key]) is dict and value[key].get('text') == text,
+                       'qualified voice independent transcription differs')
+
+
+
+def voice_consumer_business(value, identity):
+    """Require saved-condition use with registration backends truly absent."""
+    ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'chat',
+        'stored_chat', 'negative', 'revocation', 'health', 'limits', 'witness'))
+    ledger.require(identity.get('native_asr') is None and
+        identity.get('native_tts') is None and identity.get('native_tts_base') is not None,
+        'consumer receipt requires the explicit Base-only backend selection')
+    ledger.require(value['witness'] == VOICE_CONSUMER_WITNESS,
+                   'consumer saved-state or independent content witness differs')
+    for key, field, expected in (('consent', 'language', 'en'),
+                                  ('voice', 'type', 'audio_sample')):
+        row = value[key]
+        ledger.keys(row, ('id', 'object', 'created_at', 'name', field))
+        ledger.require(row['id'] == VOICE_CONSUMER_WITNESS[key] and
+            row['object'] == 'audio.'+('voice_consent' if key == 'consent' else 'voice') and
+            row['name'] == ('local-consent-renamed' if key == 'consent' else 'local-sample') and
+            ledger.integer(row['created_at'], minimum=1) and row[field] == expected,
+            'consumer metadata changed owner state or leaked private conditions')
+    expected = voice_requests(value['consent']['id'], value['voice']['id'])
+    expected.pop('transcription')
+    ledger.require(value['requests'] == expected, 'consumer synthesis request differs')
+    for key, encoded in (('speech', value['speech']['audio_base64']),
+                        ('chat', message(value['chat'], 'stop')['audio']['data'])):
+        voice_audio(encoded, identity['native_tts_base']['limits'])
+        raw = base64.b64decode(encoded, validate=True)
+        ledger.require((len(raw), hashlib.sha256(raw).hexdigest()) ==
+            VOICE_CONSUMER_AUDIO[key], 'consumer complete audio differs from recognized witness')
+    # Reuse content only after matching every byte, not from the output text or
+    # a prefix. There is intentionally no ASR request in this deployment.
+    voice_synthesis(dict(value, speech_transcript=dict(text=VOICE_TARGETS[0]),
+        chat_transcript=dict(text=VOICE_TARGETS[1])), identity['native_tts_base'])
+    ledger.require(value['stored_chat'].get('id') == value['chat'].get('id') and
+        message(value['stored_chat'], 'stop') == message(value['chat'], 'stop'),
+        'consumer stored complete Chat audio differs')
+    negatives = dict(cross_consent=(404, None), cross_speech=(404, None),
+        cross_chat=(404, None), new_consent=(503, 'voice_verification_not_configured'),
+        new_voice=(503, 'voice_verification_not_configured'))
+    ledger.keys(value['negative'], negatives)
+    for key, (status, code) in negatives.items():
+        voice_error(value['negative'][key], status, code)
+    revoked = value['revocation']
+    ledger.keys(revoked, ('consent_deleted', 'voice_deleted', 'speech', 'chat', 'consent'))
+    for key in ('consent', 'voice'):
+        deleted = revoked[key+'_deleted']
+        ledger.keys(deleted, ('id', 'object', 'deleted'))
+        ledger.require(deleted['id'] == value[key]['id'] and
+            deleted['object'] == value[key]['object'] and deleted['deleted'] is True,
+            'consumer revocation did not retire the original ID')
+    for key in ('speech', 'chat', 'consent'):voice_error(revoked[key], 404)
+    disabled = ('tts', 'asr', 'alignment', 'vad', 'speaker', 'separator')
+    ledger.keys(value['health'], ('base', 'condition', *disabled))
+    for key, health in value['health'].items():
+        ledger.require(type(health) is dict and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False and
+            health.get('load_failures') == 0 and health.get('compute_failures') == 0 and
+            health.get('asset_cleanup_failed', False) is False,
+            'consumer auxiliary health failed or affects core readiness')
+        if key == 'base':
+            ledger.require(health.get('model') == identity['native_tts_base']['model'] and
+                health.get('state') in ('ready', 'metadata_ready') and
+                ledger.integer(health.get('load_attempts'), minimum=1),
+                'consumer Base synthesis was not loaded')
+        else:
+            ledger.require(health.get('state') == ('configured' if key == 'condition' else 'disabled') and
+                all(type(health.get(k)) is int and health[k] == 0 for k in
+                    ('device_bytes', 'load_attempts', 'load_failures', 'compute_failures')),
+                'consumer loaded a registration-only or disabled backend')
+            if key == 'condition':
+                ledger.require(health.get('model') == identity['native_tts_base']['model']+'-speaker',
+                               'consumer registration encoder identity differs')
+
+
+def voice_business(value, identity):
+    """Validate retained actual results, not proof that a helper ran HTTP."""
+    ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
+        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits'))
+    fixed = identity['native_tts_base']
+    profile_contract.tts_configuration(fixed, base=True)
+    asr = identity.get('native_asr')
+    ledger.require(type(asr) is dict and {'speaker', 'vad'} <= asr.keys(),
+                   'voice registration receipt lacks qualified ASR/VAD/speaker')
+    profile_contract.asr_configuration(asr, voice_registration=True)
+    ledger.require(ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
+                   'qualified voice effective capacity differs')
+    for name, prefix, field in [('consent', 'cons_', 'language'),
+                                 ('voice', 'voice_', 'type')]:
+        row = value[name]
+        ledger.keys(row, ('id', 'object', 'created_at', 'name', field))
+        expected = 'audio.voice_consent' if name == 'consent' else 'audio.voice'
+        ledger.require(type(row['id']) is str and row['id'].startswith(prefix) and
+            len(row['id']) <= 128 and len(row['id']) > len(prefix) and
+            row['object'] == expected and ledger.integer(row['created_at'], minimum=1) and
+            row['name'] == ('local-consent' if name == 'consent' else 'local-sample') and
+            row[field] == ('en' if name == 'consent' else 'audio_sample'),
+            'qualified voice metadata differs or leaks private evidence')
+    expected = voice_requests(value['consent']['id'], value['voice']['id'])
+    ledger.require(ledger.canonical(value['requests']) == ledger.canonical(expected),
+                   'qualified voice requests lost the actual ID or supplied ASR hints')
+    voice_synthesis(value, fixed)
+    negatives = {'negated_consent': (400, 'voice_consent_mismatch'),
+                 'different_speaker': (400, 'voice_speaker_mismatch'),
+                 'cross_consent': (404, None), 'cross_voice': (404, None),
+                 'cross_speech': (404, None), 'quota': (429, 'client_tpm_exhausted')}
+    ledger.keys(value['negative'], negatives)
+    for key, (status, code) in negatives.items():
+        voice_error(value['negative'][key], status, code)
+    revoked = value['revocation']
+    ledger.keys(revoked, ('consent_deleted', 'voice_deleted', 'speech', 'consent'))
+    for key in ('consent', 'voice'):
+        deleted = revoked[key+'_deleted']
+        ledger.keys(deleted, ('id', 'object', 'deleted'))
+        ledger.require(deleted['id'] == value[key]['id'] and
+            deleted['object'] == value[key]['object'] and deleted['deleted'] is True,
+            'qualified voice revocation did not retire the registered ID')
+    voice_error(revoked['speech'], 404);voice_error(revoked['consent'], 404)
+    ledger.keys(value['health'], ('base', 'condition'))
+    for key, model in [('base', fixed['model']), ('condition', fixed['model']+'-speaker')]:
+        health = value['health'][key]
+        ledger.require(type(health) is dict and
+            health.get('state') in ('ready', 'metadata_ready') and
+            health.get('model') == model and health.get('core_readiness_dependency') is False and
+            health.get('reason') == 'none' and type(health.get('compute_failures')) is int and
+            health['compute_failures'] == 0,
+            'qualified voice backend failed or depends on core readiness')
 
 
 CHAT_AUDIO_FORMAT = 'q4t-profile-business-v7'
@@ -212,9 +469,15 @@ MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
-def format_for(profile, identity=None, capabilities=None):
+def format_for(profile, identity=None, capabilities=None, business_value=None):
+    checkpoint = ((identity or {}).get('native_tts') is not None and
+        tts_sampling((business_value or {}).get('tts', {})) is not None)
+    if (identity or {}).get('native_tts_base') is not None:
+        if (identity or {}).get('native_asr') is None and (identity or {}).get('native_tts') is None:
+            return VOICE_CONSUMER_FORMAT
+        return VOICE_CHECKPOINT_FORMAT if checkpoint else VOICE_FORMAT
     if (identity or {}).get('native_tts') is not None:
-        return TTS_FORMAT
+        return TTS_CHECKPOINT_FORMAT if checkpoint else TTS_FORMAT
     if chat_audio_enabled(identity or {}, capabilities):
         return CHAT_AUDIO_FORMAT
     if has_separator(identity or {}):
@@ -233,7 +496,9 @@ def audio_auxiliaries(identity):
 
 
 def has_speaker(identity):
-    return 'speaker' in (identity.get('native_asr') or {})
+    # Diarization requires alignment. A registration-only speaker is verified
+    # by the voice lifecycle receipt rather than a fictitious aligned result.
+    return {'speaker', 'alignment'} <= (identity.get('native_asr') or {}).keys()
 
 
 def has_separator(identity):
@@ -647,9 +912,15 @@ def business(value, identity, selected=None, capabilities=None):
                        (('speaker',) if has_speaker(identity) else ()) +
                        (('separator',) if has_separator(identity) else ()) +
                        (('chat_audio',) if chat_audio else ()) +
-                       (('tts',) if identity.get('native_tts') is not None else ()))
+                       (('tts',) if identity.get('native_tts') is not None else ()) +
+                       (('voice',) if identity.get('native_tts_base') is not None else ()))
     if identity.get('native_tts') is not None:
         tts_business(value['tts'], identity)
+    if identity.get('native_tts_base') is not None:
+        if identity.get('native_asr') is None and identity.get('native_tts') is None:
+            voice_consumer_business(value['voice'], identity)
+        else:
+            voice_business(value['voice'], identity)
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:
@@ -709,7 +980,8 @@ def validate(value, registry, name, digest):
         'configuration', 'startup_memory', 'business', 'environment'))
     profile_contract.validate(registry)
     ledger.require(value['format'] == format_for(registry['profiles'][name],
-                                                registry['identity'], value['capabilities']) and
+                                                registry['identity'], value['capabilities'],
+                                                value['business']) and
         value['profile'] == name and
         value['identity'] == registry['identity'] and
         value['capacity'] == registry['profiles'][name], 'profile evidence identity differs')

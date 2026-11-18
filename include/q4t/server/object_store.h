@@ -28,7 +28,9 @@ enum class ObjectKind {
   kVectorStore,
   kVectorStoreFile,
   kVectorStoreBatch,
-  kAudio
+  kAudio,
+  kVoiceConsent,
+  kVoice
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

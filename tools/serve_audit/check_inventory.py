@@ -14,10 +14,11 @@ def missing_protocol_sources(root, manifest=None):
     if manifest is None:
         manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
     registered = set(re.findall(
-        r"^\s*((?:src/server|include/q4t/server)/[^\s()]+\.(?:h|cpp))(?=\s|\))",
+        r"^\s*((?:src/server|include/q4t/server|src/text|include/q4t/text)/[^\s()]+\.(?:h|cpp))(?=\s|\))",
         manifest, re.MULTILINE))
     actual = {str(path.relative_to(root))
-              for directory in ("src/server", "include/q4t/server")
+              for directory in ("src/server", "include/q4t/server",
+                                "src/text", "include/q4t/text")
               for path in (root / directory).glob("*")
               if path.suffix in (".h", ".cpp")}
     return sorted(actual - registered)
@@ -73,6 +74,23 @@ def current_surface(root):
             'server::ConversationMethodAllowed(method, path)' not in native or \
             'inline bool ConversationMethodAllowed' not in application_routes:
         raise ValueError("review dynamic Conversations transport extractor")
+    if 'HandleVoices(fd, method, path, headers.content_type, body)' not in dispatch or \
+            'server::VoiceMethodAllowed(method, path)' not in native or \
+            'server::IsVoiceMetadata(method, path)' not in native or \
+            'std::min(headers.body_limit, server::kVoiceFormBytes)' not in native or \
+            not re.search(r'IsVoiceTarget\(\*path\)\s*\?\s*kVoiceFormBytes', reader) or \
+            'IsVoiceCreation(method, target)' not in application_routes or \
+            'inline bool VoiceMethodAllowed' not in application_routes:
+        raise ValueError("review native Voice/Consent dispatch, scope and quotas")
+    voices = [("POST", "/v1/audio/voices"),
+              ("DELETE", "/v1/audio/voices/{voice_id}"),
+              *((method, "/v1/audio/voice_consents") for method in ("GET", "POST")),
+              *((method, "/v1/audio/voice_consents/{consent_id}")
+                for method in ("GET", "POST", "DELETE"))]
+    routes.extend((path, method) for method, path in voices)
+    native_routes.extend((method, path, "false" if method == "POST" and
+        path in ("/v1/audio/voices", "/v1/audio/voice_consents") else "true")
+        for method, path in voices)
     conversations = [
         ("POST", "/v1/conversations"),
         *((method, "/v1/conversations/{conversation_id}")
@@ -248,6 +266,8 @@ def current_surface(root):
     # reader, cancellation, scheduling, configuration, and tokenizer matter too.
     paths = sorted(set(root.glob("src/server/**/*.*")) |
                    set(root.glob("include/q4t/server/**/*.*")) |
+                   set(root.glob("src/text/**/*.cpp")) |
+                   set(root.glob("include/q4t/text/**/*.h")) |
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
@@ -368,6 +388,12 @@ def mutation_checks(inventory, actual):
              dict(actual, native_routes=actual["native_routes"] + ["GET /uncatalogued"]),
              dict(actual, sources_sha256=dict(actual["sources_sha256"],
                                              **{"src/server/chat_http.cpp": "0"}))]
+    for group in ("routes", "native_routes"):
+        omitted = "POST /v1/audio/voice_consents"
+        if omitted not in actual[group]:
+            raise ValueError("Voice/Consent routes escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group]
+                                            if route != omitted]}))
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")
@@ -386,7 +412,18 @@ def mutation_checks(inventory, actual):
         changed.pop(name)
         if not check(inventory, dict(actual, sources_sha256=changed)):
             raise ValueError("audio private source omission escaped: " + name)
-    return len(cases) + 2 + len(private_headers)
+    text_paths = ("src/text/voice_consent.cpp", "include/q4t/text/voice_consent.h")
+    for name in text_paths:
+        if name not in actual["sources_sha256"]:
+            raise ValueError("voice consent text source omitted: " + name)
+        missing = missing_protocol_sources(ROOT, manifest.replace(name, ""))
+        if name not in missing:
+            raise ValueError("text protocol omission escaped: " + name)
+        changed = dict(actual["sources_sha256"])
+        changed.pop(name)
+        if not check(inventory, dict(actual, sources_sha256=changed)):
+            raise ValueError("text source omission escaped: " + name)
+    return len(cases) + 2 + len(private_headers) + len(text_paths)
 
 
 def main():

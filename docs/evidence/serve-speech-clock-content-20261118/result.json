@@ -1,0 +1,180 @@
+{
+  "status": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
+  "cpu": {
+    "exit_code": 0,
+    "seconds": 0.06388722313567996,
+    "cpu_cases": 8,
+    "gpu_actions": 0,
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.native_tts.test_clock_content",
+      "-v"
+    ],
+    "plan_sha256": "0899f828b9b6cebd575a6c51aacc8653f6e401d0fef2a44e57194a596e16ebee"
+  },
+  "new_asr_loads": 1,
+  "new_asr_cases": 4,
+  "seconds": 4.192071076948196,
+  "positives_reused": [
+    {
+      "method": "native_two_stage",
+      "utterance": 0,
+      "reused": true,
+      "expected": "Hello, this is a native speech test.",
+      "raw_transcript": "language English<asr_text>Hello. This is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "language": "english",
+      "exact_normalized_content": true,
+      "negative_control": false,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 13,
+      "listening_qualified": false
+    },
+    {
+      "method": "phase_locked",
+      "utterance": 0,
+      "reused": true,
+      "expected": "Hello, this is a native speech test.",
+      "raw_transcript": "language English<asr_text>Hello. This is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "language": "english",
+      "exact_normalized_content": true,
+      "negative_control": false,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 13,
+      "listening_qualified": false
+    },
+    {
+      "method": "native_two_stage",
+      "utterance": 1,
+      "reused": true,
+      "expected": "你好，会议下午三点开始。",
+      "raw_transcript": "language Chinese<asr_text>你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "language": "chinese",
+      "exact_normalized_content": true,
+      "negative_control": false,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 11,
+      "listening_qualified": false
+    },
+    {
+      "method": "phase_locked",
+      "utterance": 1,
+      "reused": true,
+      "expected": "你好，会议下午三点开始。",
+      "raw_transcript": "language Chinese<asr_text>你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "language": "chinese",
+      "exact_normalized_content": true,
+      "negative_control": false,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 11,
+      "listening_qualified": false
+    }
+  ],
+  "negative_controls": [
+    {
+      "utterance": 0,
+      "damage": "silence",
+      "expected": "Hello, this is a native speech test.",
+      "raw_transcript": "language None<asr_text>",
+      "transcript": "",
+      "language": "none",
+      "exact_normalized_content": false,
+      "negative_control": true,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 4,
+      "listening_qualified": false
+    },
+    {
+      "utterance": 0,
+      "damage": "first_quarter",
+      "expected": "Hello, this is a native speech test.",
+      "raw_transcript": "language English<asr_text>Hello.",
+      "transcript": "Hello.",
+      "language": "english",
+      "exact_normalized_content": false,
+      "negative_control": true,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 6,
+      "listening_qualified": false
+    },
+    {
+      "utterance": 1,
+      "damage": "silence",
+      "expected": "你好，会议下午三点开始。",
+      "raw_transcript": "language None<asr_text>",
+      "transcript": "",
+      "language": "none",
+      "exact_normalized_content": false,
+      "negative_control": true,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 4,
+      "listening_qualified": false
+    },
+    {
+      "utterance": 1,
+      "damage": "first_quarter",
+      "expected": "你好，会议下午三点开始。",
+      "raw_transcript": "language Chinese<asr_text>你好。",
+      "transcript": "你好。",
+      "language": "chinese",
+      "exact_normalized_content": false,
+      "negative_control": true,
+      "passed": true,
+      "eos": true,
+      "generated_tokens": 6,
+      "listening_qualified": false
+    }
+  ],
+  "nvml_queries": 7,
+  "nvml_all_ok": true,
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/native_tts/clock_content_acceptance.py",
+      "--plan",
+      ".q4t-work/serve-native-tts-20261118/clock-content-plan-01.json",
+      "--output",
+      ".q4t-work/serve-native-tts-20261118/clock-content-01/run"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "lease_inherited_by_child": true,
+    "explicit_inherited_fd_count": 0,
+    "finished": {
+      "utc": "2026-11-18T12:46:26.557472+00:00",
+      "monotonic": 3196069.074353531,
+      "pid": 396055
+    }
+  },
+  "defaults_unchanged": true,
+  "original_direct_asr_failures_preserved": true,
+  "phase_prototype_deployed": false,
+  "normal_playback_listening": "PENDING",
+  "full_task_complete": false,
+  "archive_sha256": "adb5802c7fdec2d9bec0e190ae30374107a5bf2c584816ab11109e80a74a8cdc",
+  "archive_files": 50,
+  "listening_files": {
+    "english-4x.wav": "5bc9a4ded4650de3778c1a324f444222c83864d06732906dd268ce4c8d34c3dc",
+    "chinese-4x.wav": "755434d9aeee78bfe35447d8de6511c7efc5fece3b242726c91aa2803a5d18a8"
+  }
+}

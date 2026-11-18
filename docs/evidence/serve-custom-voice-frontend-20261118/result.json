@@ -1,0 +1,32 @@
+{
+  "status": "FRONTEND_EQUATIONS_CPU_QUALIFIED_MODEL_PENDING",
+  "unique_cases": 14,
+  "fresh_after_repair": 8,
+  "unaffected_reused": 6,
+  "total_case_executions": 22,
+  "seconds": 0.22744640614837408,
+  "latest_build_seconds": 2.9716043979860842,
+  "warnings": 0,
+  "original_fp32_logmel_gate": "FAIL_RETAINED_3_CASES",
+  "canonical_maximum_absolute_error": 0,
+  "original_fp32_maximum_absolute_difference": 0.004363059997558594,
+  "maximum_bfloat16_ulp": 1,
+  "bfloat16_metric_is_not_runtime_precision_or_quality_acceptance": true,
+  "source_anchors": 919,
+  "negative_controls": 13,
+  "gpu_loads": 0,
+  "model_loads": 0,
+  "default_sha256": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_changed": false,
+  "full_asset_verified": false,
+  "model_numerical_qualified": false,
+  "runtime_api_qualified": false,
+  "archive_sha256": "72290737cd899dd26946a5aa03c113d086df9ecd60d10e7827eaf649da53f706",
+  "master_complete": false
+}

@@ -1,0 +1,16 @@
+{
+  "anchors": 940,
+  "reviewed": [
+    "tools/serve_recovery/profile_acceptance.py",
+    "tools/serve_recovery/profile_evidence.py"
+  ],
+  "mutations": 17,
+  "errors": [],
+  "other_reviewed_sources": {
+    "tools/serve_recovery/profile_evidence.py": "ed1c87ca95f86a1cd788196ea9253b8d3904dcffd93fbcc83758c0a388f7578f",
+    "tools/serve_recovery/profile_acceptance.py": "d6890a46e7db7a600847201e20a89901aba719f801d91c59d6f6aa5e5ae9e9a7",
+    "tools/native_tts/managed_service.py": "a44db729c0c06b97decf94ef382633857a73f45ec5ed517f3e31bf5fb09340fd",
+    "tools/native_asr/service_acceptance.py": "c61f2fc03cbd3aea99121bd0c7eb1eb698ac558dced2974e489a3cfa6033d933",
+    "tools/serve_recovery/test_tts_checkpoint_profiles.py": "e5dba281fb88696e61f046c4683a05431d8c1b30e5a44fcb6facf19b47e5cbf4"
+  }
+}

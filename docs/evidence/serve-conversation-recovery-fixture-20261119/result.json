@@ -1,0 +1,18 @@
+{
+  "state": "PASS",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/ci-conversation-01/required.txt"
+  ],
+  "returncode": 0,
+  "seconds": 0.6143926018849015,
+  "tests": 8,
+  "gpu_starts": 0,
+  "runtime_changed": false,
+  "default_revision": 326,
+  "source_sha256": "6e765896848cb3915778637586d4c739b3a08e27b064b5feec1f30c548fb46f9",
+  "binary_sha256": "9861fac5dca38a73cf8d3d4e7e5de6290a363ce43938cff70fe399ff159aa142",
+  "build_warnings": 0,
+  "failed_ci_preserved": 44379659858
+}

@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "q4t/server/file_input.h"
+#include "q4t/server/voice_request.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/request_limits.h"
 #include "q4t/trace/sha256.h"
@@ -559,5 +560,63 @@ Q4T_TEST(http_embeddings_uses_business_lane_and_normal_json_body_capacity) {
                            std::to_string(payload.size()) + "\r\n\r\n" + payload;
   std::string body;
   Q4T_CHECK(Read(wire, &body) && body == payload);
+  return true;
+}
+
+Q4T_TEST(http_voice_uploads_preserve_binary_fixed_and_chunked_bodies) {
+  using namespace q4t::server;
+  std::string payload(128 * 1024, 'x');
+  payload[100] = '\0';
+  for (auto path : {"/v1/audio/voices", "/v1/audio/voice_consents",
+                    "/v1/audio/voice_consents/cons_a"}) {
+    const auto prefix =
+        "POST " + std::string(path) + " HTTP/1.1\r\nHost: local\r\n";
+    std::string body;
+    Q4T_CHECK(Read(prefix + "Content-Length: 131072\r\n\r\n" + payload, &body));
+    Q4T_CHECK(body == payload);
+    Q4T_CHECK(Read(prefix + "Transfer-Encoding: chunked\r\n\r\n20000\r\n" +
+                       payload + "\r\n0\r\n\r\n",
+                   &body));
+    Q4T_CHECK(body == payload);
+  }
+  // Speech permits 4096 Unicode characters, not only 4096 wire bytes.
+  std::string body;
+  Q4T_CHECK(
+      Read("POST /v1/audio/speech HTTP/1.1\r\nHost: local\r\nContent-Length: "
+           "8192\r\n\r\n" +
+               std::string(8192, 's'),
+           &body));
+  Q4T_CHECK(body.size() == 8192);
+  return true;
+}
+Q4T_TEST(http_voice_body_limits_and_shared_admission_precede_upload) {
+  using namespace q4t::server;
+  for (auto path : {"/v1/audio/voices", "/v1/audio/voice_consents"}) {
+    for (int mode : {0, 1, 2}) {
+      int fd[2];
+      Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+      const auto frame =
+          mode == 0 ? "Content-Length: " + std::to_string(kVoiceFormBytes + 1) +
+                          "\r\n\r\n"
+          : mode == 1 ? "Transfer-Encoding: chunked\r\n\r\na10001\r\n"
+                      : "Content-Length: 8192\r\n\r\n";
+      const auto wire =
+          "POST " + std::string(path) + " HTTP/1.1\r\nHost: local\r\n" + frame;
+      Q4T_CHECK(send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL) ==
+                static_cast<ssize_t>(wire.size()));
+      HttpBodyBudget budget(8192);
+      HttpBodyLease held(budget), incoming(budget);
+      if (mode == 2) Q4T_CHECK(held.Acquire(1));
+      HttpRequestHeaders headers;
+      std::string method, target, body;
+      int status = 0;
+      const bool ok = ReadHttpRequest(fd[1], &method, &target, &body, 500,
+                                      &incoming, &status, &headers);
+      close(fd[0]);
+      close(fd[1]);
+      Q4T_CHECK(!ok && status == (mode == 2 ? 503 : 413) && body.empty());
+      Q4T_CHECK(budget.Used() == (mode == 2 ? 1U : 0U));
+    }
+  }
   return true;
 }

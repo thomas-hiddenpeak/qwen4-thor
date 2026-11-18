@@ -1,0 +1,25 @@
+{
+  "task": "PR49 conversation unknown-commit test isolation",
+  "source_before": "ae6fce02e3c06b1a9282d561d132ba6bc9b9e1bc",
+  "failure_run": 44379659858,
+  "failure_head": "c4fb51fab88b4ff1674156ef12c8fdcc4ef7e9a7",
+  "cause": "Fault-injection test sets global object I/O to 200ms, then uses that same timeout for journal recovery and queues retrieval before interrupted worker cleanup. CI timed out recovery and subsequent fixtures observed retained worker slot.",
+  "change": "Test-only: cancel only after actual durable journal appears, normal production I/O budget for recovery, bounded confirmed reap before one retrieval. Keep all production timeout and cleanup guards.",
+  "tests": [
+    "object_store_transaction_recovers_durable_decision_before_apply",
+    "object_store_transaction_recovers_partial_file_installation",
+    "conversation_state_unknown_create_exposes_retrievable_identity",
+    "conversation_state_crud_restart_and_item_retention",
+    "conversation_state_item_identity_ignores_json_object_field_order",
+    "conversation_state_pending_tool_and_later_result",
+    "conversation_state_client_and_membership_isolation",
+    "conversation_state_ordered_pagination_and_membership_delete"
+  ],
+  "test_count": 8,
+  "cpu_test_seconds": 120,
+  "model_starts": 0,
+  "gpu_tests": 0,
+  "full_model_or_perf": false,
+  "stop_on_failure": true,
+  "ci": "Push corrected snapshot after targeted CPU pass, retain original failed run; required remote head checks remain mandatory."
+}

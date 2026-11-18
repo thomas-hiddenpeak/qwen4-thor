@@ -1,0 +1,80 @@
+{
+  "status": "PASS_FIXED_BUILTIN_FULL_AUDIO_CONTENT_CHECKPOINT_SAMPLING",
+  "initial_driver_failure_preserved": true,
+  "initial_attempts": {
+    "starts": 1,
+    "posts": 4,
+    "controls": 51
+  },
+  "initial_seconds": 83.32621379895136,
+  "content_continuation": {
+    "status": "PASS_RETAINED_CHAT_FULL_AUDIO_UNHINTED_ASR",
+    "steps": [
+      {
+        "name": "decode",
+        "args": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/http-candidate-01/q4t-speech-decode",
+          "--speech-http-decode",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decode-plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decoded"
+        ],
+        "returncode": 0
+      },
+      {
+        "name": "features",
+        "args": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts_checkpoint_content_02.py",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/plan.json",
+          "features"
+        ],
+        "returncode": 0
+      },
+      {
+        "name": "asr",
+        "args": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/features/plan-0.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr"
+        ],
+        "returncode": 0
+      }
+    ],
+    "quality": {
+      "expected": "Hello, this is a native speech test.",
+      "text": "Hello. This is a native speech test.",
+      "response": {
+        "frames": 232,
+        "audio_tokens": 30,
+        "generated_tokens": 13,
+        "eos": true,
+        "encoder_workspace_bytes": 51444992,
+        "decoder_workspace_bytes": 38430976
+      }
+    },
+    "main_models": 0,
+    "http_posts": 0,
+    "asr_loads": 1,
+    "seconds": 6.33825359493494,
+    "defaults_unchanged": true
+  },
+  "leases": {
+    "tts-checkpoint-witness-01": {
+      "status": "COMMAND_FAILED",
+      "all_nvml_ok": true,
+      "nvml_queries": 79
+    },
+    "tts-checkpoint-content-02": {
+      "status": "COMPLETED",
+      "all_nvml_ok": true,
+      "nvml_queries": 8
+    }
+  },
+  "old_greedy_evidence_unchanged": true,
+  "profiles_qualified": false,
+  "full_voice_quality": false,
+  "listening": "PENDING",
+  "default_replaced": false
+}

@@ -11,6 +11,7 @@
 namespace q4t::audio {
 
 struct TtsPromptRow {
+  static constexpr int32_t kSpeakerCondition = -2;
   int32_t text_index = 0;
   int32_t codec_id = -1;  // -1 means pure projected text.
 };
@@ -19,6 +20,8 @@ struct TtsPrompt {
   std::vector<int32_t> text_ids;
   std::vector<TtsPromptRow> prefill;
   std::vector<int32_t> trailing_text;
+  // Base-only trained 2048-vector. Empty for built-in voices.
+  std::vector<float> speaker_embedding;
   int32_t pad_index = 0;
 };
 int TtsBuiltinVoiceId(std::string_view voice);
@@ -30,6 +33,13 @@ Status PlanTtsPrompt(TtsVariant variant, std::span<const int32_t> text,
                      std::span<const int32_t> instruction,
                      std::string_view voice, std::string_view language,
                      bool non_streaming, size_t max_context, TtsPrompt* out);
+// Base x-vector conditioning uses the supplied registered voice, never a
+// substitute built-in speaker. Copies the finite vector into request ownership.
+Status PlanTtsBasePrompt(std::span<const int32_t> text,
+                         std::span<const int32_t> instruction,
+                         std::span<const float> speaker_embedding,
+                         std::string_view language, bool non_streaming,
+                         size_t max_context, TtsPrompt* out);
 Status ValidateTtsPrompt(const TtsPrompt& prompt);
 
 struct TtsSampling {
@@ -47,11 +57,10 @@ class TtsCodeSampler {
  public:
   Status Init(const TtsSampling& options, uint64_t seed);
   Status Select(std::span<const uint16_t> logits, bool group_zero,
-                 bool allow_eos, std::span<const int32_t> history,
-                 int32_t* token);
-  Status Select(std::span<const float> logits, bool group_zero,
-                 bool allow_eos, std::span<const int32_t> history,
-                 int32_t* token);
+                bool allow_eos, std::span<const int32_t> history,
+                int32_t* token);
+  Status Select(std::span<const float> logits, bool group_zero, bool allow_eos,
+                std::span<const int32_t> history, int32_t* token);
 
  private:
   TtsSampling options_;

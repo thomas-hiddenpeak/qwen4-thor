@@ -499,3 +499,51 @@ Q4T_TEST(serve_operations_port_is_explicit_distinct_and_transactional) {
   Q4T_CHECK(options.operations_port == 0);
   return true;
 }
+
+Q4T_TEST(serve_base_tts_assets_are_independent_and_name_conflicts_are_atomic) {
+  ServerOptions options;
+  Q4T_CHECK(
+      Parse({"--model-dir", "/model", "--tts-base-model-dir", "/assets/base"},
+            &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/assets/base" &&
+            options.tts_model_dir.empty());
+  Q4T_CHECK(!Parse(
+      {"--model-dir", "/model", "--tts-base-model-dir", "relative"}, &options));
+  Q4T_CHECK(!Parse({"--model-dir", "/model", "--tts-base-model-dir", "/base",
+                    "--model-alias", "qwen3-tts-12hz-1.7b-base"},
+                   &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/assets/base");
+  Q4T_CHECK(Parse({"--model-dir", "/model", "--tts-base-model-dir", "/base",
+                   "--tts-model-dir", "/custom"},
+                  &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/base" &&
+            options.tts_model_dir == "/custom");
+  return true;
+}
+
+Q4T_TEST(serve_voice_registration_does_not_require_unused_alignment_assets) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({"--tts-base-model-dir", "/base", "--asr-model-dir", "/asr",
+                   "--speaker-model-dir", "/speaker", "--vad-model-dir", "/vad"},
+                  &options));
+  Q4T_CHECK(options.aligner_model_dir.empty() &&
+            options.tts_base_model_dir == "/base");
+  Q4T_CHECK(!Parse({"--separator-model-dir", "/separator"}, &options));
+  Q4T_CHECK(options.separator_model_dir.empty());
+  for (const auto missing : {"--asr-model-dir", "--vad-model-dir",
+                             "--tts-base-model-dir"}) {
+    auto incomplete = Defaults();
+    std::vector<std::string_view> args;
+    for (const auto flag : {"--tts-base-model-dir", "--asr-model-dir",
+                            "--speaker-model-dir", "--vad-model-dir"}) {
+      if (std::string_view(flag) == missing) continue;
+      args.push_back(flag);
+      args.push_back("/optional");
+    }
+    Q4T_CHECK(!q4t::server::ParseServerOptions(args, &incomplete));
+    Q4T_CHECK(incomplete.speaker_model_dir.empty());
+  }
+  Q4T_CHECK(Parse({"--aligner-model-dir", "/aligner",
+                   "--separator-model-dir", "/separator"}, &options));
+  return true;
+}

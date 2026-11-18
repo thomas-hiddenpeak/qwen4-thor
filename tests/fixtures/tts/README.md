@@ -10,3 +10,6 @@ License/provenance: [Qwen3-TTS notice](../../../third_party/licenses/qwen3-tts/R
 16项CPU参考输出，记录Transformers/tokenizers版本及源码SHA。
 无CUDA初始化或模型计算；实际vocab/merges通过Q4T_TTS_ASSETS
 由本机已验完整资产提供，不将权重或重复的大词表放入仓库。
+
+Base 1.7B配置与480张量头部来源见[独立身份](base-17b-sources.json)。
+包括76个训练声纹张量；头部验证不代表完整权重、数值或音色合成通过。

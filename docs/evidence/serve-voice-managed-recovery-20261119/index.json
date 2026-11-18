@@ -1,0 +1,2258 @@
+{
+  "archive_sha256": "6bed932a670cb45577129836e4f4464f229ecfc048d519d210289703d11a6eb8",
+  "records": {
+    "retained-service-02/lease-command.json": {
+      "bytes": 526,
+      "sha256": "03989746516130ce0d771ee97e61b004ee626d8a8948587abe44f68033384182"
+    },
+    "retained-service-02/launch.json": {
+      "bytes": 692,
+      "sha256": "f5dd3ccaeeed58fc0fc612343c1712e5cb93b4e2261450ce809e879cb247f996"
+    },
+    "retained-service-02/decision.json": {
+      "bytes": 1184,
+      "sha256": "44ad4f83b6f77ef3dee81d1dd7be19031f13a9c5deb7e92f563f09069623d6b6"
+    },
+    "retained-service-02/service-release.json": {
+      "bytes": 1302,
+      "sha256": "441f9812669099ab1fa86d956bb86e045b39c06642b15486544d5f90f4ebcd75"
+    },
+    "retained-service-02/plan.json": {
+      "bytes": 2173549,
+      "sha256": "a7ca81a640c7f65e3ad84ddb629533bbeaa544fc7e72901c8b675a5f6aebbca0"
+    },
+    "retained-service-02/resource-result.json": {
+      "bytes": 102,
+      "sha256": "57d0f31aa8d48521e7135e5958956795ba7e6d7c257d91b9ae61d17418270165"
+    },
+    "retained-service-02/resource-scope.json": {
+      "bytes": 831,
+      "sha256": "8a227d697b45bac960cbb61f4a8177128cd125df5766e2b8ee9a3fbe8e38ce72"
+    },
+    "retained-service-02/lease/nvml-queries.jsonl": {
+      "bytes": 280833,
+      "sha256": "dcea443ec5f82ccfaf54b087da885aabdb59dd7255ae7dedc5b0508c73681ea3"
+    },
+    "retained-service-02/lease/events.jsonl": {
+      "bytes": 22168,
+      "sha256": "228535c2ece8a15c22c41c5c2d0a274df4b23d1bcfe06919dcdefb72905cd1c4"
+    },
+    "retained-service-02/lease/exit.json": {
+      "bytes": 800,
+      "sha256": "902ab62c1650d8fb3ecce252d7ea7ad05662fcc22e43d579755a70192a0f7399"
+    },
+    "retained-service-02/execution/voice-delete.wire": {
+      "bytes": 85,
+      "sha256": "c1d794eda81a25e868a9925d5c9c785d900d967f4435a1dff140cc65bb3e3ca9"
+    },
+    "retained-service-02/execution/primary-voice-cross-chat.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "retained-service-02/execution/primary-asr-http.json": {
+      "bytes": 272,
+      "sha256": "aa9b0b13098c52ac135495add3166b35d5dda025271ba060b02cbac954acce92"
+    },
+    "retained-service-02/execution/business-final.json": {
+      "bytes": 185,
+      "sha256": "6c7da3f0c074016396f1299f185b98e79b3e22917a621417900b55b2818d0afb"
+    },
+    "retained-service-02/execution/voice-consent-drain.json": {
+      "bytes": 40525,
+      "sha256": "916e4611be5883cccea2c818f9babf87be84e6edf04a2777c077fcd38e8dde4c"
+    },
+    "retained-service-02/execution/primary-voice-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "f4bcffb68bbce2aac28d6dfdb8ae46bf20bcb96431c4a2d776d136ff134228d9"
+    },
+    "retained-service-02/execution/stop.json": {
+      "bytes": 1653,
+      "sha256": "4eaf79a5678678149c1a499bd6541ea1be45cfe345cabc2a5a9fabd917733b74"
+    },
+    "retained-service-02/execution/primary-voice-speech-drain.json": {
+      "bytes": 40531,
+      "sha256": "9d0e8f082e8654e544fd372a0370185d6c5743bd12dacb75f93d01b2c3c8ae81"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    "retained-service-02/execution/voice-revoke-http.json": {
+      "bytes": 271,
+      "sha256": "cc45e6e2433e103e329b6ef09dae530e27036089da3ad57dffe4f587f9d611eb"
+    },
+    "retained-service-02/execution/primary-voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "020f59b00443463a9f10ad29e184e9d39fa1f8f8465b2e38c25e62ba7c28b3e1"
+    },
+    "retained-service-02/execution/launcher-result.json": {
+      "bytes": 216,
+      "sha256": "48801a5f0195f2103959c6d3e055567120629ed0987675d252eaa1bcedab747d"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr-exchange.json": {
+      "bytes": 260,
+      "sha256": "117a950889b49a03b46ca12015d22ef29c45eccedfc41813a3d656cd6d214773"
+    },
+    "retained-service-02/execution/primary-voice-cross-consent-http.json": {
+      "bytes": 272,
+      "sha256": "dfd79484ca6ca30f9edec0e35ac5346c8e1b9ab3836bcb339261e75a878ff910"
+    },
+    "retained-service-02/execution/primary-tts-speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "retained-service-02/execution/primary-asr.wire": {
+      "bytes": 558,
+      "sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    },
+    "retained-service-02/execution/primary-tts-config-http.json": {
+      "bytes": 17698,
+      "sha256": "67a0ce8e7d4f45260891f4fc44053e5a93d8b0b7053ac299c4ca2b1a0c175105"
+    },
+    "retained-service-02/execution/primary-tts-speech-http.json": {
+      "bytes": 273,
+      "sha256": "6ace2e562e5fed55b3b26196618a2f99c35b343d509d73067c6c6d16f6f17a15"
+    },
+    "retained-service-02/execution/voice-delete-exchange.json": {
+      "bytes": 247,
+      "sha256": "a0e63fd51f592a3678fb00d9ee244d10886ce21f3eeffeb0b3187e3542303e07"
+    },
+    "retained-service-02/execution/voice-revoked-speech-http.json": {
+      "bytes": 272,
+      "sha256": "4dbc63a4dd5537ce57d1fac34b28a482b697f8b414d07dcbdaf72ff8eb19aad3"
+    },
+    "retained-service-02/execution/launcher.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "retained-service-02/execution/primary-voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "cc0f94aa8cc189c32127b749aa830c07fcc7beaf0428c913a9090d1b595119ef"
+    },
+    "retained-service-02/execution/voice-create-exchange.json": {
+      "bytes": 253,
+      "sha256": "b005312401a1f80fca939c868ebc4df3f1e020c48d310a363fe2808371294b97"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr-http.json": {
+      "bytes": 272,
+      "sha256": "e144fd45519bd7b42d73061585a4fb8d06842bdc1ba651e3c72b35af6f540d57"
+    },
+    "retained-service-02/execution/primary-tts-speech-request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "retained-service-02/execution/final-config.wire": {
+      "bytes": 15992,
+      "sha256": "0d494b8155f10da5936d6955f056a4bea8e413671fd6ee227b4762258d132e10"
+    },
+    "retained-service-02/execution/primary-tts-chat-http.json": {
+      "bytes": 275,
+      "sha256": "7a06327eaf6479b820addb797b2cfa136769216c8fad6d21fa6aad1b886cfc86"
+    },
+    "retained-service-02/execution/primary-voice-cross-chat-http.json": {
+      "bytes": 272,
+      "sha256": "0dc165d4c494987eb41a0e50e8b1b2940341377a8da48cbbc73432d9a0f23553"
+    },
+    "retained-service-02/execution/primary-tts-chat-request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "retained-service-02/execution/voice-revoked-speech-request.json": {
+      "bytes": 211,
+      "sha256": "6f138619812808c5a1819f4987beae711225afde4e91059356257807a6c626a5"
+    },
+    "retained-service-02/execution/primary-voice-chat-request.json": {
+      "bytes": 453,
+      "sha256": "bdabd6c03b5c77fe2686255b8393884174fdd3819f2325596d073b2b2d42b226"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    "retained-service-02/execution/result.json": {
+      "bytes": 2817,
+      "sha256": "9a6109bda59896b761952e3013ce353269a700f5a061ece2f40f73e2059c67d9"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr-exchange.json": {
+      "bytes": 261,
+      "sha256": "c5bd7642da84f1aa7f6797114f6db48cad108f6ffdf84a4eac7a2bafbdee2fe9"
+    },
+    "retained-service-02/execution/primary-voice-chat.wire": {
+      "bytes": 103078,
+      "sha256": "83f45790b9870fe8b1fec00f051109b4c049355f756c63b05728b182bfbe8cce"
+    },
+    "retained-service-02/execution/voice-revoked-consent-http.json": {
+      "bytes": 272,
+      "sha256": "af78b603a6099926b0ffad0b10b112233094bf3b49b7021f50edfec5d8f07b22"
+    },
+    "retained-service-02/execution/capabilities-http.json": {
+      "bytes": 274,
+      "sha256": "85822ad5cae9da3d5b4ebb17bf3f6f4c8dcdbf70cc44aba986d33bb69e0cd625"
+    },
+    "retained-service-02/execution/primary-voice-cross-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "retained-service-02/execution/usage-1.json": {
+      "bytes": 271,
+      "sha256": "17d37fd20401e7839e5ccfc9695366516033a77a1f52e69ba7a7a1231498b8ac"
+    },
+    "retained-service-02/execution/primary-voice-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "3784d739746b7775ef2bea6db1473a125f5be86696858e6ae7a5edebe4a7eab4"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr-drain.json": {
+      "bytes": 40531,
+      "sha256": "e330364c9394c5b90d28abad28ea21c52843b32868b608552b8ced679fe7e36f"
+    },
+    "retained-service-02/execution/primary-chat-audio-http.json": {
+      "bytes": 272,
+      "sha256": "2c3276be3aff5f71877dbfc21cd7ccd5ef805b053d5ebcdb8d6ba99a205369f8"
+    },
+    "retained-service-02/execution/voice-create-http.json": {
+      "bytes": 272,
+      "sha256": "b4d52766c666dba2a4c30f3714fe4780b47e129802ad75a9cff3af82b603968e"
+    },
+    "retained-service-02/execution/primary-voice-speech-request.json": {
+      "bytes": 211,
+      "sha256": "6f138619812808c5a1819f4987beae711225afde4e91059356257807a6c626a5"
+    },
+    "retained-service-02/execution/voice-revoked-chat.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    "retained-service-02/execution/core-after.wire": {
+      "bytes": 337,
+      "sha256": "c32af38c600f8269d637e1ef8c06293071f4f0a374ca23b1508af6686d318c7e"
+    },
+    "retained-service-02/execution/voice-revoked-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "retained-service-02/execution/counts.json": {
+      "bytes": 2078,
+      "sha256": "ade0be7b8bdadb3a6956e8c935c47dbffa663df5ba54cbc1ef6c55a47dbcd7d4"
+    },
+    "retained-service-02/execution/primary-voice-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "2ad72bcdd14ce527e8756419404049b3944e17c689f6fa82440548cf51edd9c8"
+    },
+    "retained-service-02/execution/voice-revoked-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "f4bcffb68bbce2aac28d6dfdb8ae46bf20bcb96431c4a2d776d136ff134228d9"
+    },
+    "retained-service-02/execution/primary-voice-chat-http.json": {
+      "bytes": 275,
+      "sha256": "043c8889be445474769d5dbcf4972b387c324778470ce42f16f935b9a0cfa2c1"
+    },
+    "retained-service-02/execution/voice-revoked-speech-drain.json": {
+      "bytes": 40557,
+      "sha256": "157f3e0458b64158f8435925bc400b87f7feff441bb95e47b439d77221f04636"
+    },
+    "retained-service-02/execution/voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "020f59b00443463a9f10ad29e184e9d39fa1f8f8465b2e38c25e62ba7c28b3e1"
+    },
+    "retained-service-02/execution/voice-revoked-chat-request.json": {
+      "bytes": 453,
+      "sha256": "bdabd6c03b5c77fe2686255b8393884174fdd3819f2325596d073b2b2d42b226"
+    },
+    "retained-service-02/execution/core-continuity.json": {
+      "bytes": 4781,
+      "sha256": "f29aea43468706bf825f9738ec4579a1ab0da6d9fbd6f41a31a4d2dec186c83a"
+    },
+    "retained-service-02/execution/self-check-1.json": {
+      "bytes": 475,
+      "sha256": "cc693f96432287b36601a3d0dd7721a6d81bbe9f486498cc01504ff91bacf21f"
+    },
+    "retained-service-02/execution/media-usage.json": {
+      "bytes": 3966,
+      "sha256": "cd27aaa8debe8eb222868dd5bb36c01d597daae7341b4d0e5b3c4a86ace3999d"
+    },
+    "retained-service-02/execution/voice-delete-http.json": {
+      "bytes": 271,
+      "sha256": "f6fb8cc752e81f967ea640fb214808025d21566b90e05aa2fe54e2afed0d2421"
+    },
+    "retained-service-02/execution/capabilities.wire": {
+      "bytes": 41786,
+      "sha256": "257c76124b563feb123685997df960539921acb484db6bb7c50dc3ea8b48240b"
+    },
+    "retained-service-02/execution/primary-voice-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    "retained-service-02/execution/wrapper.json": {
+      "bytes": 876,
+      "sha256": "4f40f12b41d9e1b361522a33be45378242680f826ea9679e2604e2281ccf64a4"
+    },
+    "retained-service-02/execution/voice-revoked-chat-drain.json": {
+      "bytes": 40557,
+      "sha256": "e8b41bb5b9c75ddc3345bbac29873bd796f92ae6bbe08ef9baaee7d56e48689a"
+    },
+    "retained-service-02/execution/voice-revoked-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "3784d739746b7775ef2bea6db1473a125f5be86696858e6ae7a5edebe4a7eab4"
+    },
+    "retained-service-02/execution/primary-tts-config.wire": {
+      "bytes": 15987,
+      "sha256": "49390276d20ea952b6d1e1234768cbd0d7ec502e8df3e7726a3f8b562abe7e3a"
+    },
+    "retained-service-02/execution/primary-voice-config-http.json": {
+      "bytes": 17694,
+      "sha256": "9e9f6a0e82e3180a39d660b3137836edc42e6e0791a58f59e58636699ef8065a"
+    },
+    "retained-service-02/execution/voice-create.wire": {
+      "bytes": 138,
+      "sha256": "6009d70d52af9899bc8d9cd28a4abc0ff3582c5dbadbffd87848fb62db0a46ac"
+    },
+    "retained-service-02/execution/primary-voice-chat-drain.json": {
+      "bytes": 40534,
+      "sha256": "dcea616ef0cc58d0b2438a1f794005f71bfffff53681aabfbb26f8e577378e51"
+    },
+    "retained-service-02/execution/stopped-ledger.json": {
+      "bytes": 968,
+      "sha256": "a7df6598235decc06c549b0dd116934ef6ffac73181af128f5d8ec630ce2023d"
+    },
+    "retained-service-02/execution/primary-tts-drain.json": {
+      "bytes": 40552,
+      "sha256": "e24c7fe3722dc841c9fec0bfbd6d7f8773bc69b238dfdbc8217cde0850ab58d2"
+    },
+    "retained-service-02/execution/initialized.json": {
+      "bytes": 276,
+      "sha256": "1754142abc532888a03f37360f74a312d2c2372e7de6c728cea5dceec64c4563"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr-http.json": {
+      "bytes": 272,
+      "sha256": "60429dfb89ec7fe04119acb397705e28b2532f4490f362598040119018ba3a01"
+    },
+    "retained-service-02/execution/ready-1.json": {
+      "bytes": 2230,
+      "sha256": "feeb83d07f5f6aa2fe107b0d46198f1f74fe0646c71ac2b92db3d8dd1766500b"
+    },
+    "retained-service-02/execution/primary-voice-stored-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "f95c10d2587c8e1cb5887d4660970819c50eb88b6bf00a17b17adc0f771ab4d6"
+    },
+    "retained-service-02/execution/primary-tts-chat.wire": {
+      "bytes": 149148,
+      "sha256": "cbf8b2cb36b7ac5d4251e3d27954bf140819c66399ec7e2eaa7b7f457afbacca"
+    },
+    "retained-service-02/execution/final-config-http.json": {
+      "bytes": 17703,
+      "sha256": "7bd79243191a999ee1711f81d93672d726ef87ff1f1ab254ef9664b852d82a11"
+    },
+    "retained-service-02/execution/voice-create-drain.json": {
+      "bytes": 40529,
+      "sha256": "155f56fd5429168e35c05018b457a442b6b70857ddd4ef7418eaa2f5d6d9d1d4"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr-drain.json": {
+      "bytes": 40534,
+      "sha256": "1950c3d2927ea16d957394b89ab311c90ab367cd7b2482de29f9078507a46e76"
+    },
+    "retained-service-02/execution/voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "d99203356266aa0687e685c7721a239d419812216ee54d9f89a55390464c0b3c"
+    },
+    "retained-service-02/execution/primary-voice-stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "83f45790b9870fe8b1fec00f051109b4c049355f756c63b05728b182bfbe8cce"
+    },
+    "retained-service-02/execution/primary-chat-audio.wire": {
+      "bytes": 602,
+      "sha256": "54e59bc6d78c9f6abc44a0788e08656cfbf324b1ecf287310aa2998c6cf85676"
+    },
+    "retained-service-02/execution/primary-voice-cross-chat-exchange.json": {
+      "bytes": 255,
+      "sha256": "b36a97cfa2ddf55fe0c6c6f1d6e8fe3e54ae2abaf087f32d6bd1e8b227d790ec"
+    },
+    "retained-service-02/execution/core-after-http.json": {
+      "bytes": 272,
+      "sha256": "590e4d2154b3d1d2e2941c52824fe7de5641f27d50df8173fbeee64d514f9af6"
+    },
+    "retained-service-02/execution/primary-voice-cross-consent-exchange.json": {
+      "bytes": 250,
+      "sha256": "bd7ebad1791cd37c6097d1c9fbe6c3c986392c05b67a6a90ae07d83f25485d44"
+    },
+    "retained-service-02/execution/voice-consent-exchange.json": {
+      "bytes": 261,
+      "sha256": "85c8db0f9c914caf36cf955ff008825b1e4692d76918a4100dd90cc873b3fdf0"
+    },
+    "retained-service-02/execution/voice-revoked-speech.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "retained-service-02/execution/core-after-request.json": {
+      "bytes": 242,
+      "sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c"
+    },
+    "retained-service-02/execution/voice-revoked-chat-http.json": {
+      "bytes": 272,
+      "sha256": "8a00778162c63f638a49b9c76313be5db64b06bd1ba5a195ded6005363ccdd69"
+    },
+    "retained-service-02/execution/status.jsonl": {
+      "bytes": 272677,
+      "sha256": "0fe988f0a451d70b589b9e2b3d4d75244bda7e8d1f55cdc3eace57936893b35c"
+    },
+    "retained-service-02/execution/primary-voice-config.wire": {
+      "bytes": 15983,
+      "sha256": "127251463e84ea880c969cc68c8c4abf9ba07df24a2896f998ed05c1f7ea6f12"
+    },
+    "retained-service-02/execution/voice-revoked-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "2ad72bcdd14ce527e8756419404049b3944e17c689f6fa82440548cf51edd9c8"
+    },
+    "retained-service-02/execution/voice-revoke-exchange.json": {
+      "bytes": 254,
+      "sha256": "d52139595f5484c7c31e89c9d7611dd19c718a060deb26e0d93e3f2cd27b1628"
+    },
+    "retained-service-02/execution/primary-voice-stored-chat-http.json": {
+      "bytes": 275,
+      "sha256": "35866fcf6e77602227b386c48becf9312c37bc19d8e887ac789a3125c405d9f0"
+    },
+    "retained-service-02/execution/primary-voice-speech-http.json": {
+      "bytes": 280,
+      "sha256": "0965630e1eef28d80f7aa373ca664098d17d7ae7fae252f3e7241009457191c4"
+    },
+    "retained-service-02/execution/voice-revoke.wire": {
+      "bytes": 92,
+      "sha256": "7b468ae7e36c063f431ee3fbb57cc4be6a024c5f4f372779cc165086313f6d25"
+    },
+    "retained-service-02/execution/state/ledger.json": {
+      "bytes": 938,
+      "sha256": "835583b20c6fece69081b0d52a306e42f997950166bac96e8313539b25224796"
+    },
+    "tls-service-02/lease-command.json": {
+      "bytes": 516,
+      "sha256": "21ef4e898a3e7360df7c7ff9f9f022d2c69b5fa53e078e70e6cc42695f06b574"
+    },
+    "tls-service-02/launch.json": {
+      "bytes": 676,
+      "sha256": "54c51408c6fbadae4cc7af93424e98aa3029da0b8c162fc6dff989c3123c05a3"
+    },
+    "tls-service-02/decision.json": {
+      "bytes": 1185,
+      "sha256": "78da05ac49582c16baeef2db63b7dbba4f04cdfadf7d8d2f31cac116191fb280"
+    },
+    "tls-service-02/service-release.json": {
+      "bytes": 1295,
+      "sha256": "d4fb5aac0a3b0479a2a05d5cbc83d8b0fa848442817e06efd66b332f03533bba"
+    },
+    "tls-service-02/plan.json": {
+      "bytes": 2174248,
+      "sha256": "4a345bc279e33eba3c2214d6ab07a41ab576d66ec08ab537accd98109573060c"
+    },
+    "tls-service-02/resource-result.json": {
+      "bytes": 102,
+      "sha256": "ac2b039c6a40ba494883104517a698a57c4cc38f078ef9b49544879ebc233539"
+    },
+    "tls-service-02/resource-scope.json": {
+      "bytes": 831,
+      "sha256": "bfeac6e48e12e2015f86fc29097dd9034bd2a615013a5eaac0fde410edf84d15"
+    },
+    "tls-service-02/lease/nvml-queries.jsonl": {
+      "bytes": 451917,
+      "sha256": "53e7e383ec2a926a3842231a54aca94c43bb1d00e43c9c6a8e69d1e209d18f37"
+    },
+    "tls-service-02/lease/events.jsonl": {
+      "bytes": 35298,
+      "sha256": "18e7e5a85261da484fd236b041d0a075848d559ea34fe2a104c0c93a21173bee"
+    },
+    "tls-service-02/lease/exit.json": {
+      "bytes": 796,
+      "sha256": "5725395c5cbbe3bc7971e4bd146ac4cd8fba63e6296f826dd0355a7198f6a841"
+    },
+    "tls-service-02/execution/voice-delete.wire": {
+      "bytes": 85,
+      "sha256": "a6333e90e5cc863075c191f8eeb1d20901a526cb792fb975a9567eaddfb9b4f6"
+    },
+    "tls-service-02/execution/native-asr-gateway-exit-fault.json": {
+      "bytes": 126,
+      "sha256": "700afd91a2d6642534613434ad98de53d56c3c91ec144d5559dee826eb41b52b"
+    },
+    "tls-service-02/execution/tls-after-voice-stored-chat-http.json": {
+      "bytes": 275,
+      "sha256": "5a2fd3c87c1214d550d8e9579856a396d618b829c7c7730d5c0a818598f99547"
+    },
+    "tls-service-02/execution/tls-after-voice-prior-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "cd27fc5e605830a809aa63ffa4e76bf8c45012d806d040d0abbd7d9cfbb90f85"
+    },
+    "tls-service-02/execution/tls-before-voice-config.wire": {
+      "bytes": 15983,
+      "sha256": "ed7bd132658f9c07959a39713a6e623fb4b02e367917f23a109351097a1ede50"
+    },
+    "tls-service-02/execution/business-final.json": {
+      "bytes": 185,
+      "sha256": "6c7da3f0c074016396f1299f185b98e79b3e22917a621417900b55b2818d0afb"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr-drain.json": {
+      "bytes": 40531,
+      "sha256": "6964d02a89fe1c41c40d688c11ce43ab04acdeda69b3e38c5eb739b435f2bb07"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr-http.json": {
+      "bytes": 272,
+      "sha256": "2742e01fdeb9ab19168ff61b11c72b349898bbe522bd802d07d635e8cc4756fb"
+    },
+    "tls-service-02/execution/voice-consent-drain.json": {
+      "bytes": 40525,
+      "sha256": "985ebe76c829caad6bfcf237cdf015e79d1dadb6f62225095895020e053ac2c7"
+    },
+    "tls-service-02/execution/stop.json": {
+      "bytes": 1654,
+      "sha256": "6f52faceeaa52f558dcc2ca55d71db9d1086f4da137d62db43ec31c052a7d4d0"
+    },
+    "tls-service-02/execution/voice-revoke-http.json": {
+      "bytes": 271,
+      "sha256": "7f20e41a59237b0a8249b05c5ae9163c077c174606ff2dc2bdd308885da494db"
+    },
+    "tls-service-02/execution/launcher-result.json": {
+      "bytes": 211,
+      "sha256": "5d984c645c6f1e7a288a994db4d40928e42fafcdc0aa60371e57e3887adbe149"
+    },
+    "tls-service-02/execution/chunked-zh.wire": {
+      "bytes": 558,
+      "sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    },
+    "tls-service-02/execution/tls-before-tts-config-http.json": {
+      "bytes": 17698,
+      "sha256": "3af9ef870a3d891611d3ae0080dbde0614c0a2776f22a67905a5a6c9ad873585"
+    },
+    "tls-service-02/execution/tls-after-tts-chat-request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "tls-service-02/execution/tls-before-voice-chat.wire": {
+      "bytes": 103078,
+      "sha256": "62e144ff7551c3d4f8f57c8633e76a47ad8f1e65a8ede1c49a6925bd7931e727"
+    },
+    "tls-service-02/execution/voice-delete-exchange.json": {
+      "bytes": 247,
+      "sha256": "d306c30f93614192c18e46fa4ce40b4e56f0b12a5670603765d67851c4ae4a4c"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-request.json": {
+      "bytes": 211,
+      "sha256": "c98e3f055839b1a7f4134c39b36eeef610bef926edd1321a85f3cea3725a6dbc"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr-exchange.json": {
+      "bytes": 261,
+      "sha256": "c5bd7642da84f1aa7f6797114f6db48cad108f6ffdf84a4eac7a2bafbdee2fe9"
+    },
+    "tls-service-02/execution/python-zh-json.wire": {
+      "bytes": 558,
+      "sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    },
+    "tls-service-02/execution/tls-before-tts-chat-request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "tls-service-02/execution/voice-revoked-speech-http.json": {
+      "bytes": 272,
+      "sha256": "faeeb6f099029668e69d29307ec3e1b67b3cf6a8f11a4e4f546896cdf520af81"
+    },
+    "tls-service-02/execution/before-cancel.json": {
+      "bytes": 40563,
+      "sha256": "38c7eae88429db3553ab7924ee3d5ba3b34234bd67c71df0295bb51029b22cbc"
+    },
+    "tls-service-02/execution/launcher.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tls-service-02/execution/tls-before-tts-drain.json": {
+      "bytes": 40552,
+      "sha256": "e1fec1ec23fa2720f98b4a3726ffdef1a6ce39d991cd15a8251e9c561de113cf"
+    },
+    "tls-service-02/execution/voice-create-exchange.json": {
+      "bytes": 253,
+      "sha256": "ed7b6c0f33757840e90b8a19bcc29f5e93b4a36cbcdbfdcd4377706fbf8becb2"
+    },
+    "tls-service-02/execution/tls-after-tts-config.wire": {
+      "bytes": 15995,
+      "sha256": "48dc6dafb856a05f0ef4f70cb7265afd0afc0463846eb0cc308654813b49099e"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr-http.json": {
+      "bytes": 272,
+      "sha256": "bed37c7ddc17fe391cc92d241d486d502d8e82c718677345b1323f6f31cd5132"
+    },
+    "tls-service-02/execution/tls-after-voice-stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "28ecd5031a7537e83b36f469ed56889e767c6aa2e5b8a805f98d9af7bdbfff7c"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr-drain.json": {
+      "bytes": 40560,
+      "sha256": "013d5db11690ff11a2b05d3a2f54dcd37b81bc296a399670e9c543c67be7f311"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    "tls-service-02/execution/tls-before-tts-chat.wire": {
+      "bytes": 149148,
+      "sha256": "3ee075d00394b32c442e34f7ee5040ec19621dbc3d80203c768b4734fe7c4a78"
+    },
+    "tls-service-02/execution/python-zh-json-request.json": {
+      "bytes": 668,
+      "sha256": "fb155867e50cb4b134a5551b3bd6f043ff0c541f68d690e5823088ca558ac14e"
+    },
+    "tls-service-02/execution/tls-after-voice-chat.wire": {
+      "bytes": 103078,
+      "sha256": "28ecd5031a7537e83b36f469ed56889e767c6aa2e5b8a805f98d9af7bdbfff7c"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-chat-exchange.json": {
+      "bytes": 255,
+      "sha256": "8660f45175c8235d704d9e0a099fffe7ecbb0879e8f1c1529ad655e0b730c78d"
+    },
+    "tls-service-02/execution/tls-after-tts-config-http.json": {
+      "bytes": 17706,
+      "sha256": "ba1584c333e1183b8e09e2e262c919e8430b345cf8ec148c78fd6b07a5424932"
+    },
+    "tls-service-02/execution/chat-js.wire": {
+      "bytes": 3165,
+      "sha256": "43d087ae361d73498afcbabcf65073f7b5962d40f57dc23cb0e5ac9eb9e36159"
+    },
+    "tls-service-02/execution/cancel-stream.wire": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tls-service-02/execution/tls-before-voice-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "905d9dd3c57d57b83d891647941aa86860304c8e115d232db85ac558321a3cf7"
+    },
+    "tls-service-02/execution/final-config.wire": {
+      "bytes": 15992,
+      "sha256": "ac3b71f92cd5862070e675a33d8bdd2854d248498294a102acf25e492d1f6f23"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-chat-exchange.json": {
+      "bytes": 255,
+      "sha256": "a65d19a84dcd8eda15a25063bc8d9a5f381bc94d3b90be9bf8d2ea51c6645e9d"
+    },
+    "tls-service-02/execution/tls-after-voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "82217142373dcb88167a9d379a98f391f384a69e0c9893d2c4d9efdb4714fb19"
+    },
+    "tls-service-02/execution/voice-revoked-speech-request.json": {
+      "bytes": 211,
+      "sha256": "c98e3f055839b1a7f4134c39b36eeef610bef926edd1321a85f3cea3725a6dbc"
+    },
+    "tls-service-02/execution/tls-before-tts-config.wire": {
+      "bytes": 15987,
+      "sha256": "2e5bf5c8c5e2e5036606078201ff4fcccf3d68bee7aaf0d1d76377234ad0e656"
+    },
+    "tls-service-02/execution/tls-after-voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "96a58b4e70c7abd9887db14c03cc7b2c99dba7af72d134c8d1c780c90a7a94ec"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-chat-http.json": {
+      "bytes": 272,
+      "sha256": "d553deee4eb0cbbe8952fa6cf20212b3688e4e8829f10cea2b746ce60cda0394"
+    },
+    "tls-service-02/execution/tls-after-tts-drain.json": {
+      "bytes": 40563,
+      "sha256": "633639abe6113a75fe580fa9f0a9e48bf4f00d689060ed0af1c91225c31e13b2"
+    },
+    "tls-service-02/execution/tls-after-tts-chat.sdk.json": {
+      "bytes": 149941,
+      "sha256": "6c8a213d28a26877a44e89cf0120b4d91cf1a6cb1ac732b2b619ea98f970b29d"
+    },
+    "tls-service-02/execution/result.json": {
+      "bytes": 4408,
+      "sha256": "769ca16e0ddbf2a3be1b5b2df3a4f91768c585cb422c4ba5a6e2d1c1461c1fd4"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-chat.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/tls-before-voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "96a58b4e70c7abd9887db14c03cc7b2c99dba7af72d134c8d1c780c90a7a94ec"
+    },
+    "tls-service-02/execution/tls-before-voice-stored-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "cd27fc5e605830a809aa63ffa4e76bf8c45012d806d040d0abbd7d9cfbb90f85"
+    },
+    "tls-service-02/execution/voice-revoked-consent-http.json": {
+      "bytes": 272,
+      "sha256": "466904eae70bdd53a640a1e2d1942db9a9610e410e4922217beb2afc5f69c245"
+    },
+    "tls-service-02/execution/capabilities-http.json": {
+      "bytes": 274,
+      "sha256": "673f85c8750cbea5792040bbdf4c7f0d4d7c32432e739a5625c609d5b437937c"
+    },
+    "tls-service-02/execution/tls-after-voice-prior-chat.wire": {
+      "bytes": 103078,
+      "sha256": "62e144ff7551c3d4f8f57c8633e76a47ad8f1e65a8ede1c49a6925bd7931e727"
+    },
+    "tls-service-02/execution/usage-1.json": {
+      "bytes": 271,
+      "sha256": "1ec7004fd56de45c077d310e0aab2567fcba3703fde2b87b16a91bab944abb05"
+    },
+    "tls-service-02/execution/after-cancel.json": {
+      "bytes": 81136,
+      "sha256": "cab8524d3eaab051751279e2a879d168d1844e54476a248b8d8b6dc7ae27595f"
+    },
+    "tls-service-02/execution/voice-create-http.json": {
+      "bytes": 272,
+      "sha256": "3aae0885d81fc0f9ee09f667013c48fbfd0ddb793247fbf5ae25b988590d23fd"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-consent-http.json": {
+      "bytes": 272,
+      "sha256": "785e7022f02a3bdb72dab16124a8fd0e7a7d6a50d6d554cf4367936f87549020"
+    },
+    "tls-service-02/execution/voice-revoked-chat.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    "tls-service-02/execution/core-after.wire": {
+      "bytes": 337,
+      "sha256": "9ca9205ff7ebc2690146abeeea754921cb9f9f9a2956ad256c7ca5c54184e755"
+    },
+    "tls-service-02/execution/voice-revoked-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/beta-file-limit.wire": {
+      "bytes": 109,
+      "sha256": "81896de59c1445742ff7403bcb8d960f78cd1f89afba27bae368a240528b1220"
+    },
+    "tls-service-02/execution/counts.json": {
+      "bytes": 3544,
+      "sha256": "c9c9ae5da81a1d9d8ef4ee31078fc727f7f1158f6eeebad1fe537e1dc0e4a2d9"
+    },
+    "tls-service-02/execution/voice-revoked-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "905d9dd3c57d57b83d891647941aa86860304c8e115d232db85ac558321a3cf7"
+    },
+    "tls-service-02/execution/tls-after-voice-config.wire": {
+      "bytes": 15995,
+      "sha256": "e7aec1a2808675e55751a3965862359e4170e8d0e3a66a7643b7e3dc2a55bb3a"
+    },
+    "tls-service-02/execution/tls-before-voice-stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "62e144ff7551c3d4f8f57c8633e76a47ad8f1e65a8ede1c49a6925bd7931e727"
+    },
+    "tls-service-02/execution/voice-revoked-speech-drain.json": {
+      "bytes": 40563,
+      "sha256": "9fe27a4c52e482a9ff36418294615ba0cfda781033226a1855126222b7ea7e9a"
+    },
+    "tls-service-02/execution/unauthorized.wire": {
+      "bytes": 125,
+      "sha256": "9cc49f5990bae941470e3b1439ee2ca4186c2fc6038db5a5b1a1260ebd82f7c9"
+    },
+    "tls-service-02/execution/chat-python.sdk.json": {
+      "bytes": 1476,
+      "sha256": "b01feedf4be1465513d98f5fc8495b719bbf8e6dde440b6704eddf284011d75c"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "67732eb48fe9ed246a91f77ed3a94e51121747842b022090a86d20eb0a4b5e9d"
+    },
+    "tls-service-02/execution/voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "96a58b4e70c7abd9887db14c03cc7b2c99dba7af72d134c8d1c780c90a7a94ec"
+    },
+    "tls-service-02/execution/cancel-observation.json": {
+      "bytes": 12956,
+      "sha256": "59cf34bc5f4ec1ed947f6b4460598e6f2caa4c2bb4fe0b1d3fb0c0d0d29ca04d"
+    },
+    "tls-service-02/execution/voice-revoked-chat-request.json": {
+      "bytes": 453,
+      "sha256": "8bb1f89d13e742250e28094936479ec04745e3b664970f8fd750bd6784d3c922"
+    },
+    "tls-service-02/execution/js-en-stream-request.json": {
+      "bytes": 688,
+      "sha256": "31381377f81af263bd09aeb661ecde51e5ee891e4dad6d448c64353f07f03b74"
+    },
+    "tls-service-02/execution/core-continuity.json": {
+      "bytes": 4782,
+      "sha256": "db87537986d3e560318f2bdfde0e7fcbcd7254441f335e675198f631351e861d"
+    },
+    "tls-service-02/execution/self-check-1.json": {
+      "bytes": 475,
+      "sha256": "d458aff5bfd200bf1b2a1185fb4e0fb0755ecd7397acd87d9af5c9636089a2dc"
+    },
+    "tls-service-02/execution/js-en-stream.wire": {
+      "bytes": 1267,
+      "sha256": "075168642430267ba5a70bdb9103d3c81fa918b476d0189c6a6949975b0e7cd7"
+    },
+    "tls-service-02/execution/media-usage.json": {
+      "bytes": 8608,
+      "sha256": "1876fcbd4777f5b9d026fca7fb117cde80f814ed337e3b0c24a42f4a018140d4"
+    },
+    "tls-service-02/execution/unauthorized-http.json": {
+      "bytes": 315,
+      "sha256": "b23c7e4ba71f5b0af8f1c9ac03b5d238b7c4347576c6dd6c68289331032781cc"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-drain.json": {
+      "bytes": 40531,
+      "sha256": "8222c6667ee2118cd5ea5138bcfa47ce41607e498a0b30c045003c70045b6e92"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-request.json": {
+      "bytes": 453,
+      "sha256": "8bb1f89d13e742250e28094936479ec04745e3b664970f8fd750bd6784d3c922"
+    },
+    "tls-service-02/execution/tls-before-voice-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    "tls-service-02/execution/tls-before-tts-speech-request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "4b6f02665103bfe10d3c8cdbcf404045a92674c1e6f72eaa909ac50e7d97c712"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "4b6f02665103bfe10d3c8cdbcf404045a92674c1e6f72eaa909ac50e7d97c712"
+    },
+    "tls-service-02/execution/tls-after-tts-speech-request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "tls-service-02/execution/chat-js.sdk.json": {
+      "bytes": 4762,
+      "sha256": "deb20e36d8ecc7b3d25140a93d805ff3418bdbd1c3daac38a2d19b39c4b962e5"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr-http.json": {
+      "bytes": 272,
+      "sha256": "3805c54b9f7c63946cde5605fddb30adae5bcdf4d3ccc7899874e025c13efc64"
+    },
+    "tls-service-02/execution/voice-delete-http.json": {
+      "bytes": 271,
+      "sha256": "afde549746e81eb43a17280ef60c41ea05a14b46fcb5d21c220aced6148fd4c8"
+    },
+    "tls-service-02/execution/beta-file-limit-http.json": {
+      "bytes": 272,
+      "sha256": "51378cb18016499165c70a6e790a17578f3b1d46d8f9ea69d99622e74c3671c3"
+    },
+    "tls-service-02/execution/capabilities.wire": {
+      "bytes": 41786,
+      "sha256": "257c76124b563feb123685997df960539921acb484db6bb7c50dc3ea8b48240b"
+    },
+    "tls-service-02/execution/tls-before-tts-chat.sdk.json": {
+      "bytes": 149630,
+      "sha256": "d10503eeb637353c089700e7a019e2c1a5708a4e7dbcb2d4ecba680c24d5649c"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    "tls-service-02/execution/tls-before-voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "7ed50ca51b47f857cee9674203b7cd8965b18af90913a6142215d446b9c5a9ed"
+    },
+    "tls-service-02/execution/wrapper.json": {
+      "bytes": 864,
+      "sha256": "762b610f86917032654020c3b4c754bc0d6c22fd9eb01496ede6e0c9d0a7fe78"
+    },
+    "tls-service-02/execution/tls-after-voice-stored-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "3afa82a6e6c977243c1e88931aad2a94203b3ca79ffbb0196671c383f4220d9a"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-http.json": {
+      "bytes": 275,
+      "sha256": "b754f09965923752bb15cfbc7911e31b7d16d266635d08c45f3ff512e3f9d107"
+    },
+    "tls-service-02/execution/tls-after-tts-speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr-exchange.json": {
+      "bytes": 260,
+      "sha256": "117a950889b49a03b46ca12015d22ef29c45eccedfc41813a3d656cd6d214773"
+    },
+    "tls-service-02/execution/tls-after-voice-prior-chat-http.json": {
+      "bytes": 275,
+      "sha256": "8a477e78d5652bb8ce9157e55242bc2b792452a5096c0665d9cab9bdb73ee8c7"
+    },
+    "tls-service-02/execution/voice-revoked-chat-drain.json": {
+      "bytes": 40563,
+      "sha256": "680920d592b2f265acea51bbedcfc87f97675c3c0a9f161b3a6ef9bd6530c04d"
+    },
+    "tls-service-02/execution/chat-python.wire": {
+      "bytes": 602,
+      "sha256": "793567d00d7dcad2164603b3d94c53aacf577684a40cfe222297d26495bdb5aa"
+    },
+    "tls-service-02/execution/tls-before-tts-speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "tls-service-02/execution/voice-revoked-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "67732eb48fe9ed246a91f77ed3a94e51121747842b022090a86d20eb0a4b5e9d"
+    },
+    "tls-service-02/execution/cancel-stream-active.json": {
+      "bytes": 7609,
+      "sha256": "c1f95366df7766115608254f8d6827bec95a83ecde78b935809626d467d15b73"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-http.json": {
+      "bytes": 280,
+      "sha256": "ef1be65a232c1c4e83213fbad649c59762ef63da7960172426f288e7ab17c16f"
+    },
+    "tls-service-02/execution/tls-after-tts-speech.sdk.json": {
+      "bytes": 565,
+      "sha256": "76d257a05db919a818fb578288dcef6dfe303d9badcaf76256cb2017d8a60fa4"
+    },
+    "tls-service-02/execution/js-en-stream.sdk.json": {
+      "bytes": 1851,
+      "sha256": "80dd57bf4105f3b5e9257ea197e9029f35dbab69bc74b72b3c38089b60212442"
+    },
+    "tls-service-02/execution/voice-create.wire": {
+      "bytes": 138,
+      "sha256": "488317c00118cbaf87f15785010238caf003de88cd09bce9978240f3448cca11"
+    },
+    "tls-service-02/execution/tls-after-voice-config-http.json": {
+      "bytes": 17706,
+      "sha256": "85f10b01e60bfd84c5a5c5b5dd5392b903c627ae0f022edf0e30b9ea8144ab87"
+    },
+    "tls-service-02/execution/stopped-ledger.json": {
+      "bytes": 992,
+      "sha256": "0138a69d6b936c9e26a1d7c433ce839eace4d5cc6b9ad9b54bedc87148423fd0"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-http.json": {
+      "bytes": 280,
+      "sha256": "6c1babf8bb95ee66baec7d44416b4e59229dddc31e264a1a60425ed28c4dab31"
+    },
+    "tls-service-02/execution/tls-before-voice-config-http.json": {
+      "bytes": 17694,
+      "sha256": "c3ef00a87ae946d32a14fe4005c2757b62c3f9457cecf92be08fc74bf5742210"
+    },
+    "tls-service-02/execution/initialized.json": {
+      "bytes": 271,
+      "sha256": "ae6f312e832a6bcc0d7c1c039114596ea55d13a14bd6f88bb37cdee65fa0aefe"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-drain.json": {
+      "bytes": 40560,
+      "sha256": "3bbdaa36642ff0845ef8560dc18e402baa76ac742eec5fc907e3457aa72f033b"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-drain.json": {
+      "bytes": 40559,
+      "sha256": "8d94f2489fd41e2b98881ba8380458106c9b7f7fccdca8f8ceffeb954c67a0ca"
+    },
+    "tls-service-02/execution/ready-1.json": {
+      "bytes": 2231,
+      "sha256": "31d2700e72ae59fb1d0c163ee01ff282b163913259e3f504f038e5177786f5c4"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr-drain.json": {
+      "bytes": 40559,
+      "sha256": "8cbbe2affe43b088bec9f7602c6cce3de46df0a431d44d213aacfef355296e2b"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    "tls-service-02/execution/final-config-http.json": {
+      "bytes": 17703,
+      "sha256": "65b85e16728da5d7be5024f1bafd947e4db45eadb1e2f4d5a4d4c6bf664d004b"
+    },
+    "tls-service-02/execution/voice-create-drain.json": {
+      "bytes": 40529,
+      "sha256": "084a9536f8ec2a1e882abf9262d1a7b0463ac6264d3b8c1635fb789d37a2db73"
+    },
+    "tls-service-02/execution/voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "2af82412a62187acf591b043bfcd3f45c0ce11aea6975975fb2c11f229c662f9"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-consent-exchange.json": {
+      "bytes": 250,
+      "sha256": "f4fac41ab790650edd71a1fac6df133c9e3e6c3ac26b7ab03695a72f9577163b"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-request.json": {
+      "bytes": 453,
+      "sha256": "8bb1f89d13e742250e28094936479ec04745e3b664970f8fd750bd6784d3c922"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-consent-exchange.json": {
+      "bytes": 250,
+      "sha256": "f4fac41ab790650edd71a1fac6df133c9e3e6c3ac26b7ab03695a72f9577163b"
+    },
+    "tls-service-02/execution/tls-before-voice-cross-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/tls-before-voice-stored-chat-http.json": {
+      "bytes": 275,
+      "sha256": "ad0f988ea782dc074d4dbc951dd3fa14d8229dc9e9c3486b01372b620b449564"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr-exchange.json": {
+      "bytes": 260,
+      "sha256": "117a950889b49a03b46ca12015d22ef29c45eccedfc41813a3d656cd6d214773"
+    },
+    "tls-service-02/execution/tls-after-tts-chat.wire": {
+      "bytes": 149148,
+      "sha256": "99330de86b476afd8ee46e98f23059105c47c88239ced142ebc7b554aba9f3e5"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr-http.json": {
+      "bytes": 272,
+      "sha256": "6abeec7b2d84681d3e128ef1ad4fc0b0b9cb1c270a68b5e0d8eb3e173ac6e915"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-chat.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/python-zh-json.sdk.json": {
+      "bytes": 963,
+      "sha256": "2c6540ee61ff82880d0364f513a7c129070880e73b1723a2858a7bdb76fb6d74"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr-exchange.json": {
+      "bytes": 261,
+      "sha256": "c5bd7642da84f1aa7f6797114f6db48cad108f6ffdf84a4eac7a2bafbdee2fe9"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-request.json": {
+      "bytes": 211,
+      "sha256": "c98e3f055839b1a7f4134c39b36eeef610bef926edd1321a85f3cea3725a6dbc"
+    },
+    "tls-service-02/execution/tls-before-tts-speech.sdk.json": {
+      "bytes": 570,
+      "sha256": "44f931bf7920fae708bbf21fc854d1d3aebff9e50204639ecb244bd6dc019594"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/core-after-http.json": {
+      "bytes": 272,
+      "sha256": "6c564e855b11fe3e2840c8b8e4ffb0304326fa6e8ab741a9e4c70b1ca9f19266"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "67732eb48fe9ed246a91f77ed3a94e51121747842b022090a86d20eb0a4b5e9d"
+    },
+    "tls-service-02/execution/chunked-zh-http.json": {
+      "bytes": 271,
+      "sha256": "4ae5745ee2640c0407dff5312413e49b64e5c6a2f79f948b4cf3d17e7eb12ca5"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-http.json": {
+      "bytes": 275,
+      "sha256": "0631781e7792b95cbc4248d09de41b5d5dfa5fed6c195e93ea28f61b2e22da89"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr-drain.json": {
+      "bytes": 40533,
+      "sha256": "f22d85a8dfe1cadc0d86f187a4740e52b5cd396796d365742ae4770ca5114291"
+    },
+    "tls-service-02/execution/voice-consent-exchange.json": {
+      "bytes": 261,
+      "sha256": "85c8db0f9c914caf36cf955ff008825b1e4692d76918a4100dd90cc873b3fdf0"
+    },
+    "tls-service-02/execution/voice-revoked-speech.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "tls-service-02/execution/core-after-request.json": {
+      "bytes": 242,
+      "sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c"
+    },
+    "tls-service-02/execution/voice-revoked-chat-http.json": {
+      "bytes": 272,
+      "sha256": "5fdfdd33feeb0faf02da84fbb4f125583a3e4337a3359920d2d281715486dcbf"
+    },
+    "tls-service-02/execution/tls-after-voice-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    "tls-service-02/execution/status.jsonl": {
+      "bytes": 330307,
+      "sha256": "765b787f39f916e51f292a68db4fd50fe9e98bb4dfae21bb57086287064baf71"
+    },
+    "tls-service-02/execution/tls-after-voice-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "905d9dd3c57d57b83d891647941aa86860304c8e115d232db85ac558321a3cf7"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-chat-http.json": {
+      "bytes": 272,
+      "sha256": "7cd45d27c05864243febcd0f8c1b6e546099bfc9f408b02bbb9d9e1e663799fb"
+    },
+    "tls-service-02/execution/voice-revoked-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "4b6f02665103bfe10d3c8cdbcf404045a92674c1e6f72eaa909ac50e7d97c712"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-drain.json": {
+      "bytes": 40534,
+      "sha256": "24a7e5c5a8735232f7fbdebca32b85991612a87380e4af6b824f199b6a2f8106"
+    },
+    "tls-service-02/execution/cancel-stream-http.json": {
+      "bytes": 292,
+      "sha256": "d4035ebbc3572b3dc69000ae8256c655e2a6b5164ad61070cd1f7000d37a546b"
+    },
+    "tls-service-02/execution/tls-after-voice-cross-consent-http.json": {
+      "bytes": 272,
+      "sha256": "3bb2a17d34f517f3e34ffbc4c4b8a9f95e144acb6b5a9e9350006b36291ff801"
+    },
+    "tls-service-02/execution/voice-revoke-exchange.json": {
+      "bytes": 254,
+      "sha256": "14a53efc268cc63451c5c554e84ec83a65e0d5875551026059ec9906d2e73cbf"
+    },
+    "tls-service-02/execution/voice-revoke.wire": {
+      "bytes": 92,
+      "sha256": "319ed1b7e35aaa637019237c1898c0f5353f44a5de0e08f3e07002d09cadf248"
+    },
+    "tls-service-02/execution/state/ledger.json": {
+      "bytes": 950,
+      "sha256": "5bf131ae23ba9ad1331406d9758574135891170e870eaccdbef6c2004c39abf5"
+    },
+    "version-service-01/lease-command.json": {
+      "bytes": 524,
+      "sha256": "b26e4ef2876628e17216cd05919828ac46a2968ff9da8e560cc4e512ea8aa8db"
+    },
+    "version-service-01/plan.json": {
+      "bytes": 2177794,
+      "sha256": "dfb97b9befe61675ab0a0d3beac5b973c34614d8d20f006e290e67a3054d3bcd"
+    },
+    "version-service-01/resource-scope.json": {
+      "bytes": 831,
+      "sha256": "6060591f9b509949c05d7f7de22b7ee0a4aa783559fce74b1a68e5b1becf0b45"
+    },
+    "version-service-01/lease/nvml-queries.jsonl": {
+      "bytes": 538923,
+      "sha256": "750a9efac4eb3ce4360998ddeacf6f0f752fa4896f0cd8bf73623aac64469a67"
+    },
+    "version-service-01/lease/events.jsonl": {
+      "bytes": 42152,
+      "sha256": "61e5237c4bd3537ef018aed74a608ab8d3052d66df195a846140b04f8820d160"
+    },
+    "version-service-01/lease/exit.json": {
+      "bytes": 805,
+      "sha256": "ecafc08f107b2d0b8d4e26effaa71d9e886d55c03d5e6699037337fafbd0730d"
+    },
+    "version-service-01/execution/voice-delete.wire": {
+      "bytes": 85,
+      "sha256": "5c15187ae11c75e734a5e07fbf42c6134504091e23ecf57bec8117191334b393"
+    },
+    "version-service-01/execution/primary-voice-cross-chat.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/primary-asr-http.json": {
+      "bytes": 272,
+      "sha256": "6c733c0670dbf21997e73af5280c26421aeb12fa1e7e65ae7382857e467c3bfd"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr-http.json": {
+      "bytes": 272,
+      "sha256": "3d3cfa136420c695d84fd373a95e4a44a24ab91c2f98720efd470550a8d27c6c"
+    },
+    "version-service-01/execution/fallback-voice-cross-consent-exchange.json": {
+      "bytes": 250,
+      "sha256": "e6478adfb6c14ad1a6d4d3c0c221938406d533eea7a1e2f118ba719b46ef638f"
+    },
+    "version-service-01/execution/stored-before-http.json": {
+      "bytes": 272,
+      "sha256": "8c5948d498471e12f65870dd36ff1d27cb0b92e7fe84c5d62c031df13e7b7a35"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr-http.json": {
+      "bytes": 272,
+      "sha256": "1546ce14f51a5ae24b3cc4cb702c247b1e6804b859b4a81b22b8cfc7a8c97304"
+    },
+    "version-service-01/execution/stored-before-request.json": {
+      "bytes": 259,
+      "sha256": "80f438f71b647ec6b5313e1b80246dae50267b6e250ec6056d91f8438c9daaab"
+    },
+    "version-service-01/execution/fallback-voice-prior-chat.wire": {
+      "bytes": 103078,
+      "sha256": "e9f955d2a75357ec76897ed896bdaba4dc3290523045b59b5dc4cdc38ea84fb7"
+    },
+    "version-service-01/execution/fallback-asr.wire": {
+      "bytes": 558,
+      "sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    },
+    "version-service-01/execution/profile-before-recovery.json": {
+      "bytes": 883,
+      "sha256": "4b9b886b3472a4e3d9bb906a2987790a245963ba14f3e20902a6b4c9ee913b69"
+    },
+    "version-service-01/execution/fallback-voice-prior-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "c9729eac6e340de2adbdfb1d8ab5cffbab31a23eb3dac7962716f98eed0d64ec"
+    },
+    "version-service-01/execution/voice-consent-drain.json": {
+      "bytes": 40525,
+      "sha256": "5029bf989a6818c43d5d0b61fb862697f250fbfe2dc73a2a1718dd257d6ff253"
+    },
+    "version-service-01/execution/primary-voice-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "825a866a0c966cbcb6a1484e840a37752e800cd9d37021cae4aeda9eb6f59e17"
+    },
+    "version-service-01/execution/stop.json": {
+      "bytes": 2857,
+      "sha256": "26893f75fd4a4e6cf556ab2e2d4cbb01a8036177a365adc7c9194abc27fdfa9f"
+    },
+    "version-service-01/execution/fallback-tts-config.wire": {
+      "bytes": 15978,
+      "sha256": "d39744a2005d5c277e021e0ee653536c51ecf3d62a8704fb066e75200ea9dfee"
+    },
+    "version-service-01/execution/primary-voice-speech-drain.json": {
+      "bytes": 40531,
+      "sha256": "d0533171b80bd8edc33342f88a562735f144460508448d2a94525387d56e94ff"
+    },
+    "version-service-01/execution/primary-voice-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    "version-service-01/execution/voice-revoke-http.json": {
+      "bytes": 271,
+      "sha256": "7acd50d3c28f71f6066858f92b57049ca4a2cf7329d66d5144bb3913df4439e8"
+    },
+    "version-service-01/execution/primary-voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "21e1fe3095988d24a50df67480cdeb9317890f99c613879187699cdb321089f3"
+    },
+    "version-service-01/execution/fallback-asr-http.json": {
+      "bytes": 272,
+      "sha256": "81a43c6101557d3a7fe22d39c0201b24125cfbca6bf73fa4ff240f9859835f77"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr-exchange.json": {
+      "bytes": 261,
+      "sha256": "c5bd7642da84f1aa7f6797114f6db48cad108f6ffdf84a4eac7a2bafbdee2fe9"
+    },
+    "version-service-01/execution/launcher-result.json": {
+      "bytes": 215,
+      "sha256": "57cf6c56fbc1a6c3a30cf76e38af2c75a0101a2e6fc32ca0b21e374c3e4ecd46"
+    },
+    "version-service-01/execution/primary-voice-chat-asr-exchange.json": {
+      "bytes": 260,
+      "sha256": "117a950889b49a03b46ca12015d22ef29c45eccedfc41813a3d656cd6d214773"
+    },
+    "version-service-01/execution/primary-voice-cross-consent-http.json": {
+      "bytes": 272,
+      "sha256": "cead4c031e43598c6a9321ceccd943e2e076629fe3da69c0b18025ccc95a1fc2"
+    },
+    "version-service-01/execution/primary-tts-speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "version-service-01/execution/primary-asr.wire": {
+      "bytes": 558,
+      "sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773"
+    },
+    "version-service-01/execution/primary-tts-config-http.json": {
+      "bytes": 17698,
+      "sha256": "1e3db294576bfb22eb9ab32e6729c4b80fa805c43ebd0bcf08a761b7735d30de"
+    },
+    "version-service-01/execution/fallback-voice-speech-http.json": {
+      "bytes": 280,
+      "sha256": "e2ed01600e2771619f0f8c0a2ba6052fa8b69146dcfad7e250632c76c58071d7"
+    },
+    "version-service-01/execution/fallback-voice-chat-request.json": {
+      "bytes": 453,
+      "sha256": "dfdd52108c149e83ec138ccb6ff5ca35a3200dfc886bcf1d8c37f262bf98dc6f"
+    },
+    "version-service-01/execution/primary-tts-speech-http.json": {
+      "bytes": 273,
+      "sha256": "434f9d0257a77ed23d7c7974460134469d8ee06a7952ed5cc20df51b5b07bf01"
+    },
+    "version-service-01/execution/voice-delete-exchange.json": {
+      "bytes": 247,
+      "sha256": "436ab483ec72ba4e999a26e8a3423c895855dea1237f32507d9c4db619891542"
+    },
+    "version-service-01/execution/fallback-voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "51405409c09ccbe6fa84512cd5e74507fa0d7dac0c896e6c0edd6cb1ea8e71f2"
+    },
+    "version-service-01/execution/fallback-tts-speech-request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "version-service-01/execution/fallback-tts-chat-request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "version-service-01/execution/voice-revoked-speech-http.json": {
+      "bytes": 272,
+      "sha256": "9482929f132647612010d752f813207b4c996c0995df48493adfc3d00a917c0b"
+    },
+    "version-service-01/execution/fallback-tts-chat-http.json": {
+      "bytes": 275,
+      "sha256": "8352a8ffdaa2b9ddba01d88e6c584274cb0fc3c57a6721ea46944ef3230f951e"
+    },
+    "version-service-01/execution/launcher.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "version-service-01/execution/primary-voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "710f21ef25dc4b38d4b6e485062165fe2230175a5a2535cd127e06773c6e170c"
+    },
+    "version-service-01/execution/voice-create-exchange.json": {
+      "bytes": 253,
+      "sha256": "02c9e91e2cd3410678a69368df6c9f50814e7dbf3ef925957493bf71873d2320"
+    },
+    "version-service-01/execution/controller-fallback-source.json": {
+      "bytes": 168,
+      "sha256": "3a610985a6213bab4f9a58c074060962af7dc57eabdd65f9389f32fef3ab800b"
+    },
+    "version-service-01/execution/controller-primary-source.json": {
+      "bytes": 175,
+      "sha256": "71fcb14c977dd10fc9118f7376f56f9c7b7574025180710305c7c45db182d54d"
+    },
+    "version-service-01/execution/fallback-voice-prior-chat-http.json": {
+      "bytes": 275,
+      "sha256": "23f1beba37bbd3a812e10be777674847e63c334745c73ad6e40c14fc1a54fac7"
+    },
+    "version-service-01/execution/primary-voice-chat-asr-http.json": {
+      "bytes": 272,
+      "sha256": "68a3309fe462c66380301a314c9ab1b5d3e7a5a4a124bf0de9744fc177862fbd"
+    },
+    "version-service-01/execution/primary-tts-speech-request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "version-service-01/execution/fallback-voice-config.wire": {
+      "bytes": 15974,
+      "sha256": "f9492488ea3ec6fafe24ffff3dd02a618450b2bddae2cf8eeee8a5f2af44544e"
+    },
+    "version-service-01/execution/fallback-voice-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "a768591b1ea9e7c6abad00106566b61dcda4072bfb4431c4bed43251a9017cd0"
+    },
+    "version-service-01/execution/final-config.wire": {
+      "bytes": 15988,
+      "sha256": "29ef9274ffd6d2b577e4bc2d703a1dbaa71f700e158c8b1d4b9bf1f37c7468e3"
+    },
+    "version-service-01/execution/primary-tts-chat-http.json": {
+      "bytes": 275,
+      "sha256": "7a82ffbd4cca3a323dbc53e7e5d2917f33bef01b32ed66bd95bc3b4ff088af43"
+    },
+    "version-service-01/execution/fallback-chat-audio.wire": {
+      "bytes": 602,
+      "sha256": "b4c6b1687cb868551ea32ca2be0178b6b8d4618401e511892e2ae34d637e258e"
+    },
+    "version-service-01/execution/primary-voice-cross-chat-http.json": {
+      "bytes": 272,
+      "sha256": "69b40d4f37a430316201bd8dcdca01b3389c9dc70b3c12906c227cd43abd9ee5"
+    },
+    "version-service-01/execution/primary-tts-chat-request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "version-service-01/execution/voice-revoked-speech-request.json": {
+      "bytes": 211,
+      "sha256": "7458f1d1292fecbf922346c09992d640fb326219397effd0b7b955042d7002b7"
+    },
+    "version-service-01/execution/primary-voice-chat-request.json": {
+      "bytes": 453,
+      "sha256": "dfdd52108c149e83ec138ccb6ff5ca35a3200dfc886bcf1d8c37f262bf98dc6f"
+    },
+    "version-service-01/execution/fallback-voice-stored-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "0686e810a675e4d43bbbffae10569d1d572bc3a42839fdefb911c7c94d78a148"
+    },
+    "version-service-01/execution/primary-voice-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    "version-service-01/execution/result.json": {
+      "bytes": 5727,
+      "sha256": "c959a51fc412c5ce8864b4f26f8928b7748046cdb33b234edfda06d06da99d4d"
+    },
+    "version-service-01/execution/primary-voice-speech-asr-exchange.json": {
+      "bytes": 261,
+      "sha256": "c5bd7642da84f1aa7f6797114f6db48cad108f6ffdf84a4eac7a2bafbdee2fe9"
+    },
+    "version-service-01/execution/fallback-voice-cross-chat-http.json": {
+      "bytes": 272,
+      "sha256": "4fc53620a75445d2ed2761ef58aa8e35610c5cc5251843496f2a523a0202ebf6"
+    },
+    "version-service-01/execution/fallback-voice-speech-drain.json": {
+      "bytes": 40533,
+      "sha256": "5c68bd3b5429c0d1751cec30a5e973ac36e74bb32b01b9976d9a7e51f6cfab31"
+    },
+    "version-service-01/execution/primary-voice-chat.wire": {
+      "bytes": 103078,
+      "sha256": "e9f955d2a75357ec76897ed896bdaba4dc3290523045b59b5dc4cdc38ea84fb7"
+    },
+    "version-service-01/execution/voice-revoked-consent-http.json": {
+      "bytes": 272,
+      "sha256": "3f0dac0a13c2dd0a615be70bd61db977e43bd68dec857eb19b7f4a035a2f6242"
+    },
+    "version-service-01/execution/gateway-fallback-source.json": {
+      "bytes": 172,
+      "sha256": "3592557eec87bd5d83f8c95a4438013250aadadc3b9864a1a57fb3c472d72edf"
+    },
+    "version-service-01/execution/capabilities-http.json": {
+      "bytes": 274,
+      "sha256": "a8ebac5883feea22e0f1734a0e8a4158e74d3caf94a7a91ab7356f2c0ffc9402"
+    },
+    "version-service-01/execution/primary-voice-cross-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/fallback-voice-chat-drain.json": {
+      "bytes": 40535,
+      "sha256": "8e5b6c15b83348562ab7f25ddf4484bc4f2687f026d68b2f7eb921685f08ea9d"
+    },
+    "version-service-01/execution/usage-1.json": {
+      "bytes": 271,
+      "sha256": "83187be179ccc31f78de96f8f7a7606bcc35b656a73baafdfc2cc8a9af922544"
+    },
+    "version-service-01/execution/gateway-primary-source.json": {
+      "bytes": 179,
+      "sha256": "9156276a3a2b69a721756e45a6933299e9bb69484c2f5753c230dce1206d80d0"
+    },
+    "version-service-01/execution/primary-voice-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "6f7702bbc064c872992a472eeafc28d4a34e0c67901791bc7b9e05bd696c645f"
+    },
+    "version-service-01/execution/primary-voice-speech-asr-drain.json": {
+      "bytes": 40531,
+      "sha256": "d5b0b783fd7d4da8e6bb5f795acdbedd94222018b0673f11ab281e809664b771"
+    },
+    "version-service-01/execution/primary-chat-audio-http.json": {
+      "bytes": 272,
+      "sha256": "ca4e15adf9bf3b1a3fdae325edfb7665d2b3a22f04d3753a3988c5e9452e081b"
+    },
+    "version-service-01/execution/voice-create-http.json": {
+      "bytes": 272,
+      "sha256": "4c3fcf28e752c1f681ccf390c9cc3347ab6c9c6972768f700b8750c9e6a84b16"
+    },
+    "version-service-01/execution/primary-voice-speech-request.json": {
+      "bytes": 211,
+      "sha256": "7458f1d1292fecbf922346c09992d640fb326219397effd0b7b955042d7002b7"
+    },
+    "version-service-01/execution/fallback-chat-audio-http.json": {
+      "bytes": 272,
+      "sha256": "0f5c3ca6409a0ee97bef59733d6f898c80b0480f6704b761c8fcb85cbd8e44d2"
+    },
+    "version-service-01/execution/voice-revoked-chat.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    "version-service-01/execution/core-after.wire": {
+      "bytes": 337,
+      "sha256": "648b771091b749e12b3042992c2048a226ee9834935148ddd2b9469d99d23413"
+    },
+    "version-service-01/execution/voice-revoked-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/stored-before.wire": {
+      "bytes": 353,
+      "sha256": "10377f44a9ce0bf30fa6788495d2c77b684200eae38e4698d66c97c4a8266e97"
+    },
+    "version-service-01/execution/counts.json": {
+      "bytes": 3684,
+      "sha256": "f875c3f60299ae927a4636be577ac5d86736537a425f6061b08ce6f3b5347cc4"
+    },
+    "version-service-01/execution/primary-voice-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "a768591b1ea9e7c6abad00106566b61dcda4072bfb4431c4bed43251a9017cd0"
+    },
+    "version-service-01/execution/voice-revoked-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "825a866a0c966cbcb6a1484e840a37752e800cd9d37021cae4aeda9eb6f59e17"
+    },
+    "version-service-01/execution/primary-voice-chat-http.json": {
+      "bytes": 275,
+      "sha256": "708e1496bb13462bd8d183c99381ac6095d5b031fac34ee007a01e5ef628ad0d"
+    },
+    "version-service-01/execution/wrappers.json": {
+      "bytes": 8661,
+      "sha256": "da138097abecc8371c07e3c2b3366d101c6ad313fabc103e32395f383a82d287"
+    },
+    "version-service-01/execution/voice-revoked-speech-drain.json": {
+      "bytes": 40554,
+      "sha256": "70abd736e2e09db9b3df954a20a124165c70265cfef1bbbf4808884960dfad80"
+    },
+    "version-service-01/execution/gateway-fault.json": {
+      "bytes": 141,
+      "sha256": "50e8936a7aa1fb9bc37d50fc04ad668814559ab874579757820f51583f241d2a"
+    },
+    "version-service-01/execution/usage-2.json": {
+      "bytes": 1084,
+      "sha256": "fb459fcbc23a1e592dc9a3f6821c33ba399db454eabc0f78657340c50b51200e"
+    },
+    "version-service-01/execution/voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "21e1fe3095988d24a50df67480cdeb9317890f99c613879187699cdb321089f3"
+    },
+    "version-service-01/execution/fallback-voice-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "6f7702bbc064c872992a472eeafc28d4a34e0c67901791bc7b9e05bd696c645f"
+    },
+    "version-service-01/execution/voice-revoked-chat-request.json": {
+      "bytes": 453,
+      "sha256": "dfdd52108c149e83ec138ccb6ff5ca35a3200dfc886bcf1d8c37f262bf98dc6f"
+    },
+    "version-service-01/execution/core-continuity.json": {
+      "bytes": 6750,
+      "sha256": "0f5cbdc441a133eefc835f98ea29fb2552d489a9e358c7cd4f16c8f782dedb30"
+    },
+    "version-service-01/execution/self-check-1.json": {
+      "bytes": 475,
+      "sha256": "9693221368e20115238a9948f0e19d85fd759d16ad35b209d3361bdd5707d8b4"
+    },
+    "version-service-01/execution/fallback-voice-stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "fe0556d5edda698b1147cecd37c9be7ecb3e56a459c9afb42d1aa23604d213c5"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr-drain.json": {
+      "bytes": 40533,
+      "sha256": "518f0985b8efab8fd0b35e960020d78b61d8dc87dc6fb6744a0df46b36364f4c"
+    },
+    "version-service-01/execution/voice-delete-http.json": {
+      "bytes": 271,
+      "sha256": "7b73482a4754cea84243353e400ce72d4a4a050dc9f1e7a8fe66ca8faf36d6ac"
+    },
+    "version-service-01/execution/capabilities.wire": {
+      "bytes": 41786,
+      "sha256": "257c76124b563feb123685997df960539921acb484db6bb7c50dc3ea8b48240b"
+    },
+    "version-service-01/execution/primary-voice-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    "version-service-01/execution/fallback-tts-drain.json": {
+      "bytes": 40539,
+      "sha256": "4eb035f6f1a895395f0a5bc713263ab904ac194886ef687ab184ee4028d90b30"
+    },
+    "version-service-01/execution/fallback-tts-chat.wire": {
+      "bytes": 149148,
+      "sha256": "6056308a427fb71bf3f8075b6ef81609e550f27190bd1d6c87365a630901673a"
+    },
+    "version-service-01/execution/fallback-voice-config-http.json": {
+      "bytes": 17685,
+      "sha256": "d4f2e80eb0cd60e8d08e964a2827070b6abedb6b8412e312843d84e014c1a8ae"
+    },
+    "version-service-01/execution/voice-revoked-chat-drain.json": {
+      "bytes": 40554,
+      "sha256": "c66060a762c55247f6a222a65e6af402300b366f57d30eb992a593028b8692c0"
+    },
+    "version-service-01/execution/voice-revoked-speech-exchange.json": {
+      "bytes": 208,
+      "sha256": "6f7702bbc064c872992a472eeafc28d4a34e0c67901791bc7b9e05bd696c645f"
+    },
+    "version-service-01/execution/stored-after-http.json": {
+      "bytes": 272,
+      "sha256": "c92ad5ec0d84cf93f2019b18ef8f06dec5a5a94ecafa244c4003bf13d4690c06"
+    },
+    "version-service-01/execution/primary-tts-config.wire": {
+      "bytes": 15987,
+      "sha256": "6753def3052cd90d5cded79f375864f973a9257b67e1dad0eba799266021482b"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    "version-service-01/execution/primary-voice-config-http.json": {
+      "bytes": 17694,
+      "sha256": "5f5ad0e28b9125a102185a064460753fa5c93e526fbac62918ba375434ab4e2a"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr-exchange.json": {
+      "bytes": 260,
+      "sha256": "117a950889b49a03b46ca12015d22ef29c45eccedfc41813a3d656cd6d214773"
+    },
+    "version-service-01/execution/voice-create.wire": {
+      "bytes": 138,
+      "sha256": "cacf5ba144bac8c84e2bb2e6c017038178ae38599c51393392e0f232b093e1a3"
+    },
+    "version-service-01/execution/primary-voice-chat-drain.json": {
+      "bytes": 40534,
+      "sha256": "e8eda862b44868eeb2feb1bad66b7ca95f63acc6a5b38a4366aac57a55149070"
+    },
+    "version-service-01/execution/stopped-ledger.json": {
+      "bytes": 1040,
+      "sha256": "c4b9c3ab4d6bb72921d65ed59121d22ec4358026e03563e2afd9e7dee9a6c9a6"
+    },
+    "version-service-01/execution/stored-after.wire": {
+      "bytes": 353,
+      "sha256": "10377f44a9ce0bf30fa6788495d2c77b684200eae38e4698d66c97c4a8266e97"
+    },
+    "version-service-01/execution/fallback-voice-cross-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/primary-tts-drain.json": {
+      "bytes": 40552,
+      "sha256": "97cb485d92068d4bafad50db0dc289d9325349955b4ef3b4460396da34edfa83"
+    },
+    "version-service-01/execution/initialized.json": {
+      "bytes": 275,
+      "sha256": "34487bbcaebe478ee1f07f741b5908fbb1435c630b9ac8f07d113c91e555c3e3"
+    },
+    "version-service-01/execution/fallback-voice-speech-request.json": {
+      "bytes": 211,
+      "sha256": "7458f1d1292fecbf922346c09992d640fb326219397effd0b7b955042d7002b7"
+    },
+    "version-service-01/execution/primary-voice-speech-asr-http.json": {
+      "bytes": 272,
+      "sha256": "a01ddf78b0220cf8f722bdffe9b98b6e494818fecb94189b3d7329bdf5401a06"
+    },
+    "version-service-01/execution/ready-1.json": {
+      "bytes": 2894,
+      "sha256": "a8710b85f6bce50de8bb3b6a1049fa1c6ee80c29a04ffe51804dcd29fd154db4"
+    },
+    "version-service-01/execution/fallback-voice-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    "version-service-01/execution/fallback-voice-cross-chat.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/fallback-voice-cross-chat-exchange.json": {
+      "bytes": 255,
+      "sha256": "63b031db181b0b4ef382177dd970ec0740b920f46fbd7a56ac752d448ba59f5b"
+    },
+    "version-service-01/execution/primary-voice-stored-chat-exchange.json": {
+      "bytes": 256,
+      "sha256": "c9729eac6e340de2adbdfb1d8ab5cffbab31a23eb3dac7962716f98eed0d64ec"
+    },
+    "version-service-01/execution/primary-tts-chat.wire": {
+      "bytes": 149148,
+      "sha256": "e57b80afb32651e30376af07dac3198a08a7d99f8c2261d19dbc40a571533425"
+    },
+    "version-service-01/execution/final-config-http.json": {
+      "bytes": 17699,
+      "sha256": "9f251f0e689bfaba3447b91b9fcd906a6c6a800f9ec0bbd0156f8efcf07b6976"
+    },
+    "version-service-01/execution/fallback-tts-config-http.json": {
+      "bytes": 17689,
+      "sha256": "54349c23279ad6468eacbbdf1b7fb1fe1499bd88a87005113d1847862d3a3a03"
+    },
+    "version-service-01/execution/voice-create-drain.json": {
+      "bytes": 40529,
+      "sha256": "a348593c5d2d1b193afe3231f587e2de5db12fb5c638c65ca8faf4daf408a85a"
+    },
+    "version-service-01/execution/primary-voice-chat-asr-drain.json": {
+      "bytes": 40534,
+      "sha256": "d59648bfcb6045518009dec493bc96a8451cc60f8ea8e9c2caa62533ecea9b26"
+    },
+    "version-service-01/execution/voice-consent-http.json": {
+      "bytes": 272,
+      "sha256": "ea9476cbde303ae3396a74ded1d13ec76da9cec223028c6e32761f9f44bfa2a8"
+    },
+    "version-service-01/execution/primary-voice-stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "e9f955d2a75357ec76897ed896bdaba4dc3290523045b59b5dc4cdc38ea84fb7"
+    },
+    "version-service-01/execution/primary-chat-audio.wire": {
+      "bytes": 602,
+      "sha256": "104cb3c31615461be6ff31013b736fec558665b55bceddf7af1ebc3e09100b5f"
+    },
+    "version-service-01/execution/fallback-voice-chat.wire": {
+      "bytes": 103078,
+      "sha256": "fe0556d5edda698b1147cecd37c9be7ecb3e56a459c9afb42d1aa23604d213c5"
+    },
+    "version-service-01/execution/primary-voice-cross-chat-exchange.json": {
+      "bytes": 255,
+      "sha256": "b22637bbf898f24350e5f27c71668773fbd2c1957e08052582364d8ba22c51e2"
+    },
+    "version-service-01/execution/fallback-voice-consent-exchange.json": {
+      "bytes": 251,
+      "sha256": "825a866a0c966cbcb6a1484e840a37752e800cd9d37021cae4aeda9eb6f59e17"
+    },
+    "version-service-01/execution/core-after-http.json": {
+      "bytes": 272,
+      "sha256": "4920c0ebec4b7f88dfa6db0684314bb2c2143cfe7a2590be012a4f242ed60413"
+    },
+    "version-service-01/execution/fallback-voice-stored-chat-http.json": {
+      "bytes": 275,
+      "sha256": "ea35d2b87c3a0619e7857bfc848684d13f9a2dbf49293b15bd7519ee1a4b58a6"
+    },
+    "version-service-01/execution/primary-voice-cross-consent-exchange.json": {
+      "bytes": 250,
+      "sha256": "e6478adfb6c14ad1a6d4d3c0c221938406d533eea7a1e2f118ba719b46ef638f"
+    },
+    "version-service-01/execution/fallback-voice-cross-consent-http.json": {
+      "bytes": 272,
+      "sha256": "8196bf6f77dd27178e368b0b1db50a390c45548a85f437c276eaf1ac3b1f9063"
+    },
+    "version-service-01/execution/voice-consent-exchange.json": {
+      "bytes": 261,
+      "sha256": "85c8db0f9c914caf36cf955ff008825b1e4692d76918a4100dd90cc873b3fdf0"
+    },
+    "version-service-01/execution/voice-revoked-speech.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "version-service-01/execution/fallback-voice-chat-http.json": {
+      "bytes": 275,
+      "sha256": "463862efb9c4e2025f5f35c63007c4bdeb92804253737c2470b9ac377d67ee13"
+    },
+    "version-service-01/execution/core-after-request.json": {
+      "bytes": 242,
+      "sha256": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c"
+    },
+    "version-service-01/execution/voice-revoked-chat-http.json": {
+      "bytes": 272,
+      "sha256": "150f7f9868197930612279979d4e562f61cb496cb4f00fc50f8981b19e81da7b"
+    },
+    "version-service-01/execution/self-check-13.json": {
+      "bytes": 475,
+      "sha256": "474c356f7d9283fa312b74cdcb0f832ba8d35d8202db95d2d558bbc20df79bef"
+    },
+    "version-service-01/execution/fallback-voice-consent.wire": {
+      "bytes": 140,
+      "sha256": "21e1fe3095988d24a50df67480cdeb9317890f99c613879187699cdb321089f3"
+    },
+    "version-service-01/execution/fallback-tts-speech-http.json": {
+      "bytes": 273,
+      "sha256": "1fd973065860b5cd35e1f37066c42bdb510d01072f56018a1ad1c440921db800"
+    },
+    "version-service-01/execution/status.jsonl": {
+      "bytes": 882247,
+      "sha256": "eda23a6f94ba03a6d803b8ebdc8da236e0692dc76bc88c1a67132b253cd93c1c"
+    },
+    "version-service-01/execution/primary-voice-config.wire": {
+      "bytes": 15983,
+      "sha256": "c6549535300c9dea299b351d7b4925e4859dffdbe79d93181541f6ffcdcbc094"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr-drain.json": {
+      "bytes": 40535,
+      "sha256": "654b556d356334ce525c0d5ad8937de8fb96e37c7d70b9fa79b12ada48590d51"
+    },
+    "version-service-01/execution/voice-revoked-chat-exchange.json": {
+      "bytes": 212,
+      "sha256": "a768591b1ea9e7c6abad00106566b61dcda4072bfb4431c4bed43251a9017cd0"
+    },
+    "version-service-01/execution/fallback-tts-speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "version-service-01/execution/version-installed.json": {
+      "bytes": 399,
+      "sha256": "b31663df5cea5e85c4a74f19ce0bc3e1fcbdc317a4653376f22272256d863e6d"
+    },
+    "version-service-01/execution/voice-revoke-exchange.json": {
+      "bytes": 254,
+      "sha256": "ecb5079ba499fb77a3e3ba9492999db6ec468b78b24f393efdc5b2a6e7feb16b"
+    },
+    "version-service-01/execution/profile-continuity.json": {
+      "bytes": 1971,
+      "sha256": "58c3e1535869866d857ee73da5c41ee022fb5e80e69818c119ae0699eb6c9a5a"
+    },
+    "version-service-01/execution/primary-voice-stored-chat-http.json": {
+      "bytes": 275,
+      "sha256": "40c3b5e74bdc7a1d6ccec741680544140064fffdc0ad0afc7a8dc1733c3c2857"
+    },
+    "version-service-01/execution/ready-2.json": {
+      "bytes": 3434,
+      "sha256": "35dc32e73e0736eabbea07ef71bcff057fbed1213d2b057c28792216c5f28fc3"
+    },
+    "version-service-01/execution/primary-voice-speech-http.json": {
+      "bytes": 280,
+      "sha256": "f55105b1c515aaf46e7843c127a47c21fa3c088a7c47b8d2d1648684f6680ecd"
+    },
+    "version-service-01/execution/voice-revoke.wire": {
+      "bytes": 92,
+      "sha256": "32b7a6f479db95a92fe0fffa5bd2b70cdd5515bcca926fafcacafae83c2eb7b2"
+    },
+    "version-service-01/execution/state/ledger.json": {
+      "bytes": 974,
+      "sha256": "42c72c9930b5eb8dfeaa4900207afce1de73586ed456979238c85288aaad1783"
+    },
+    "service-package-01/decision.json": {
+      "bytes": 6022,
+      "sha256": "9a069cb57cd973872b620c055440702ea28a3dd2f1710e032eb59d4a072b3c40"
+    },
+    "service-package-01/native-build.json": {
+      "bytes": 7121,
+      "sha256": "e97c41f163f34cbbef165aefcd71869a4e0d246e436a84894203717df0dc15d7"
+    },
+    "service-package-01/receipt.json": {
+      "bytes": 330,
+      "sha256": "b24ea9eb57b4f28f3f28374c69a98cbdb3b887b01d9ad3dabb57714fa22cd3a1"
+    },
+    "service-package-01/bundle/manifest.json": {
+      "bytes": 120440,
+      "sha256": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1"
+    },
+    "service-package-01/bundle/native-build.json": {
+      "bytes": 7121,
+      "sha256": "e97c41f163f34cbbef165aefcd71869a4e0d246e436a84894203717df0dc15d7"
+    },
+    "service-package-01/bundle/profile-primary.json": {
+      "bytes": 1277539,
+      "sha256": "be2f1deb588f83640845ddbe8722bd271f3c0a07b3f561ef6d7a70d8ea8ef378"
+    },
+    "service-package-01/bundle/profile-light.json": {
+      "bytes": 1277543,
+      "sha256": "ed0704a4e121fcd483a107aa431b5eb0577e782d040c9b78c5b60220700cadf0"
+    },
+    "service-package-01/bundle/engine/manifest.json": {
+      "bytes": 17062,
+      "sha256": "fe8dc84e870a3f1168ab6a1d602a6d59a5515b1e6281ec272214d16f72cf5e36"
+    },
+    "service-package-01/bundle/engine/q4t.release.json": {
+      "bytes": 1594335,
+      "sha256": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b"
+    },
+    "service-package-01/bundle/source/tools/serve_recovery/controller.py": {
+      "bytes": 37298,
+      "sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff"
+    },
+    "retained-01/receipt.json": {
+      "bytes": 199,
+      "sha256": "e69030961288002e40f7d9fe37999090c6c8ccddaee2ed8665a6c397bc74553e"
+    },
+    "retained-01/review.json": {
+      "bytes": 2898,
+      "sha256": "24efe17eb8fe1d4767660215d4f738c60f9660f8b23740f7c6828dc6b4a7214f"
+    },
+    "retained-01/bundle/manifest.json": {
+      "bytes": 120440,
+      "sha256": "db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793"
+    },
+    "retained-01/bundle/native-build.json": {
+      "bytes": 7121,
+      "sha256": "e97c41f163f34cbbef165aefcd71869a4e0d246e436a84894203717df0dc15d7"
+    },
+    "retained-01/bundle/profile-primary.json": {
+      "bytes": 1277539,
+      "sha256": "be2f1deb588f83640845ddbe8722bd271f3c0a07b3f561ef6d7a70d8ea8ef378"
+    },
+    "retained-01/bundle/profile-light.json": {
+      "bytes": 1277543,
+      "sha256": "ed0704a4e121fcd483a107aa431b5eb0577e782d040c9b78c5b60220700cadf0"
+    },
+    "retained-01/bundle/engine/manifest.json": {
+      "bytes": 17062,
+      "sha256": "fe8dc84e870a3f1168ab6a1d602a6d59a5515b1e6281ec272214d16f72cf5e36"
+    },
+    "retained-01/bundle/engine/q4t.release.json": {
+      "bytes": 1594335,
+      "sha256": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b"
+    },
+    "retained-01/bundle/source/tools/serve_recovery/controller.py": {
+      "bytes": 36786,
+      "sha256": "0f1070c404b6f10a70dd5c88a6699f500854f609a60c37d0bc462abe7f0cf8e6"
+    },
+    "tls-package-01/receipt.json": {
+      "bytes": 326,
+      "sha256": "f09675dab60ac8bde94aede85e61f99934fd4f6601e2ee98d43eab53e9c2795f"
+    },
+    "tls-package-01/review.json": {
+      "bytes": 555,
+      "sha256": "3e0c5df0aadbd59c5ca10d6feb7f1e6d8e95f16e6becb54cd68b264c47bd0dbe"
+    },
+    "tls-package-01/bundle/manifest.json": {
+      "bytes": 120767,
+      "sha256": "50a4bad694b7e5c70999129b9614d4103cdf8bd0aad55b021e98a6a10c49cce2"
+    },
+    "tls-package-01/bundle/native-build.json": {
+      "bytes": 7121,
+      "sha256": "e97c41f163f34cbbef165aefcd71869a4e0d246e436a84894203717df0dc15d7"
+    },
+    "tls-package-01/bundle/profile-primary.json": {
+      "bytes": 1277539,
+      "sha256": "be2f1deb588f83640845ddbe8722bd271f3c0a07b3f561ef6d7a70d8ea8ef378"
+    },
+    "tls-package-01/bundle/profile-light.json": {
+      "bytes": 1277543,
+      "sha256": "ed0704a4e121fcd483a107aa431b5eb0577e782d040c9b78c5b60220700cadf0"
+    },
+    "tls-package-01/bundle/engine/manifest.json": {
+      "bytes": 17219,
+      "sha256": "72332ec13989d66305df711a8168b58254a06a9adf2bd5552713288ea36041f4"
+    },
+    "tls-package-01/bundle/engine/q4t.release.json": {
+      "bytes": 1594335,
+      "sha256": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b"
+    },
+    "tls-package-01/bundle/source/tools/serve_recovery/controller.py": {
+      "bytes": 37298,
+      "sha256": "7fbaecf557c829e84339d147906e1492f6e6b99aa686b6272663a1146c4fd3ff"
+    },
+    "native-build-01/result.json": {
+      "bytes": 523,
+      "sha256": "ecac45279ec03bbce001bb45b009fc8bc9cf274cd154bbeb547511961138b714"
+    },
+    "native-build-01/plan.json": {
+      "bytes": 7933,
+      "sha256": "6277b76bac1dcb9db4115ab7dc4de3ad98ad0f6d467aff3c694386fb8a7c5db1"
+    },
+    "candidate-storage-01/progress.json": {
+      "bytes": 1012,
+      "sha256": "947320c9749518e4767f8821db59851016c03e6e79b29ce92990c1eb6bff5a04"
+    },
+    "candidate-storage-01/result.json": {
+      "bytes": 548,
+      "sha256": "e06d3198deb01ba393c0c7c69c428f9d7a84c4aa69705bc7ea4431a4db9e09e2"
+    },
+    "candidate-storage-01/plan.json": {
+      "bytes": 2369,
+      "sha256": "d54f6dccc87cf99e6d5919ab69c0662fffa9170ea8230f200b4741a350c89974"
+    },
+    "candidate-storage-02/progress.json": {
+      "bytes": 337,
+      "sha256": "b1abcf6f0dbe3b39a39f385c2ef1a87f37e55a3c0e7ae754c052233184c5431f"
+    },
+    "candidate-storage-02/result.json": {
+      "bytes": 548,
+      "sha256": "5c1cc446c0cd183a91b720849be4f51c276096ce331c4f5f299ad23534a8844f"
+    },
+    "candidate-storage-02/plan.json": {
+      "bytes": 1525,
+      "sha256": "86ca1ac64dd6d2e91afa46688b55ae3393f8503bacae68dbf5f387225e4084b7"
+    },
+    "rebuildable-cache-retirement-01/result.json": {
+      "bytes": 320,
+      "sha256": "179bfcfe0f1b6209257ba23d60600fbdd9984b6b9bd09ba45a3fbd01bf17d14b"
+    },
+    "rebuildable-cache-retirement-01/plan.json": {
+      "bytes": 267310,
+      "sha256": "6ecfbfa68486c7c5143584a555c97a34b0cfa5766b9b230a9fb4c9832eeb43a6"
+    },
+    "managed-health-cpu-01/result.json": {
+      "bytes": 117,
+      "sha256": "fd77ac6c230cc14df13c339f5f25a5ed21f1778554c4d0a68e5b04c5b6ab147c"
+    },
+    "managed-health-cpu-01/plan.json": {
+      "bytes": 664,
+      "sha256": "e0f73bd8ca9526530ad8a26c248ca7cf54c7a65de1c44c522771fccdcc8b6fda"
+    },
+    "version-review-01/decision.json": {
+      "bytes": 2786,
+      "sha256": "20fa5869a2575d61f50934745975b83ff8015aaef0cdd2f2cd2c01241488dbbb"
+    },
+    "version-review-01/service-release.json": {
+      "bytes": 1226,
+      "sha256": "e70c22930dfc0aab23e97d243a142b88f03cdd515c937e597bd8666aa5818e72"
+    },
+    "version-review-01/original-records.json": {
+      "bytes": 27889,
+      "sha256": "f2e48d89d8634b978bbd90daf8db49a3532f175a976351bac3ba96b67052c970"
+    },
+    "version-review-01/reviewed-business.json": {
+      "bytes": 7402,
+      "sha256": "f3b6e958597ee5f799f6250faeaa3662f19241cb37ac33e4e15f1a9e6c0cbd1f"
+    },
+    "managed-health-review-source-01/snapshot.json": {
+      "bytes": 1246452,
+      "sha256": "3204266b8f3be81266df33d68764d5ec23e27aac6761d352dda2e7e40c9afcbb"
+    },
+    "managed-health-review-source-01/original-sources/tools/native_tts/test_managed_voice.py": {
+      "bytes": 13431,
+      "sha256": "1529897797153873149feaf60284fbfa934b4cb4df5db67b8e81149a7d706bdc"
+    },
+    "managed-health-review-source-01/original-sources/tools/native_tts/managed_voice.py": {
+      "bytes": 12364,
+      "sha256": "bad7b8342cf51eee1da2d92f6dfddcc6ed5e6cdf4e63bdc97c1867fd34980afd"
+    },
+    "current-source/tools/native_tts/managed_voice.py": {
+      "bytes": 13140,
+      "sha256": "a139069419317f986b91c87d217588ea746e4580f0491a3c47034176bd1ed5b9"
+    },
+    "current-source/tools/native_tts/test_managed_voice.py": {
+      "bytes": 14895,
+      "sha256": "deaae7b1fd96ce3034f9d2bb1500d387d75ffefc0f33ab546c9bd9dc324f0326"
+    },
+    "current-source/tools/native_tts/managed_review.py": {
+      "bytes": 10805,
+      "sha256": "fd9be1cac145d8e957cab306e226625fa08b8585f45c44b636ce170b2a087d9e"
+    },
+    "current-source/tools/native_tts/test_managed_review.py": {
+      "bytes": 4348,
+      "sha256": "cf95de89baa07b67673eb9040fa9330c5c70f365a9f548582ebd8b32f6301c20"
+    },
+    "managed-health-cpu-01/tests.log": {
+      "bytes": 2977,
+      "sha256": "b23ba8871eea51ab72fdc7172991231368f17fbb08e5207ea07e99b9b0722d17"
+    },
+    "service-sequence-result-02.json": {
+      "bytes": 3569,
+      "sha256": "1b1baebba8dd718b128181ee954b7994aaf6f03e813cedb71ea0f5924bad1557"
+    },
+    "service-sequence-storage-stop-03.json": {
+      "bytes": 252,
+      "sha256": "1f85d1db97e8a65fdbcefdbb905d0cc887bd228167bea4d5533d689cdd4a8908"
+    },
+    "service-sequence-result-01.json": {
+      "bytes": 744,
+      "sha256": "dd2a7f2c4138f8b934a18a737f739d1905ccf149c978f527cba72a00d6a67f78"
+    },
+    "service-sequence-plan-01.json": {
+      "bytes": 1728,
+      "sha256": "8dbb7017897fa6cdd663e3b126e6d11065613cc65a382678847703488348cd52"
+    },
+    "service-sequence-storage-stop-02.json": {
+      "bytes": 131,
+      "sha256": "75426fbb0207235484c43a6aa577fa1978561ccafd3fce536fa41b2c5aef3124"
+    },
+    "service-sequence-plan-03.json": {
+      "bytes": 1852,
+      "sha256": "b0411c9fa6de3a18b648e3b3af8cb90f88602ec5ef1fe46b6657c5b8474b431a"
+    },
+    "service-sequence-result-03.json": {
+      "bytes": 741,
+      "sha256": "53f0d89750d7bc9ff9c476e68fbd8a47e98a71c1e241ef37751b1c5d91a71b7b"
+    },
+    "service-sequence-plan-02.json": {
+      "bytes": 1728,
+      "sha256": "6dc768beab7998dc80dc7fd6091aa2e60740acbe93180acbed3bd4be477be0ad"
+    },
+    "prepare_voice_package.py": {
+      "bytes": 11833,
+      "sha256": "e3a77ca31bf229a5766bfeee2bd763726aa9d9649d38be1355f3c0565ccc4487"
+    },
+    "prepare_voice_retained.py": {
+      "bytes": 3604,
+      "sha256": "0be3d566fbe1b67a0e5f95528f0811499923d2a1a1678fce6703bffaa47ea7e9"
+    },
+    "prepare_voice_tls.py": {
+      "bytes": 3707,
+      "sha256": "fe257ce59c5c3871799136f72319e93d174475e28387ff83b1e2271164eea6c2"
+    },
+    "build_voice_native.py": {
+      "bytes": 2352,
+      "sha256": "69ae2e32da491b92a6d50ee318d997e7552a34bfd9080b9ea7849c474d366e3a"
+    },
+    "run_voice_service_sequence.py": {
+      "bytes": 4849,
+      "sha256": "08a4f3f05fa5c3e977128c7f0ac931c7a12c550ab0ca54bf84566b69e9c3baaa"
+    },
+    "run_voice_service_sequence_02.py": {
+      "bytes": 4849,
+      "sha256": "98c81dc57971a6b6612336fa34337361c23f02e21cb993ee2ce4e96cd94de249"
+    },
+    "run_voice_version_01.py": {
+      "bytes": 4207,
+      "sha256": "08de58c94614709d305848f21790fcc0b0e6c182b93b054a7d691756c2c4397b"
+    },
+    "deduplicate_voice_candidates.py": {
+      "bytes": 2728,
+      "sha256": "a1bb3b2f584aa2a96cc83f88f730471acec515523b6f4082d8698fd09116f98c"
+    },
+    "deduplicate_voice_candidates_02.py": {
+      "bytes": 2655,
+      "sha256": "9e3c8c3f8e9301a3e00e08f44d3717a1a07eeb4904c705bb9ecfb35bc4dd009f"
+    },
+    "deduplicate_voice_candidates_03.py": {
+      "bytes": 2721,
+      "sha256": "1bde9855b2d5a1a45919588c654d989dee40e3fc4883dcbb86a93778e7acf135"
+    },
+    "candidate-storage-failure-02.json": {
+      "bytes": 153,
+      "sha256": "43c375163f7029b241a2a9f04bb10645febfbefd0af91a7512227d6edce27679"
+    },
+    "retire_voice_test_cache.py": {
+      "bytes": 2710,
+      "sha256": "d65685012b1c6896d66846aeeb17f72d9901997e329cd667a0fade232ffd8b71"
+    },
+    "version-plan-binding-02.json": {
+      "bytes": 191,
+      "sha256": "969887c7838952f810b840f64b821692026ebd7faa113be46aef08a0e50eca71"
+    }
+  },
+  "omitted": {
+    "retained-service-02/execution/primary-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "97ab3aba1e1a59bb90039513585098435ac4d85a46759845dcc9d8f06c37530e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "729cc71f1769df0c6f9204a911499cb85b028767281ac3978024d8f19c819fb9",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "08aa21af3745a2e561b45849c680fbabacd709d55f689f241f60c75a49bfe22a",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "08aa21af3745a2e561b45849c680fbabacd709d55f689f241f60c75a49bfe22a",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "97ab3aba1e1a59bb90039513585098435ac4d85a46759845dcc9d8f06c37530e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/chat-python-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "0d96d571aaf82e867463d2ab184d35a074c0ae38db534b2b8d40629291c8a1d6",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/chat-js-request.json": {
+      "bytes": 180071,
+      "sha256": "41b7520b618d81aeddefcaad0b2a78df3f4e22311d3d48901fb895c2260a97c1",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "5b55e0450697f0e02cd9abc9618ab6818e7b9ac389e6150e9fa4a9c5b7b67a5e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "service-package-01/prepare-review.json": {
+      "bytes": 5591,
+      "sha256": "b91be6040b0137adaa3017d11c739cdf5270f6770b88e945e90160f9e63f3a27",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "service-package-01/clients.json": {
+      "bytes": 657,
+      "sha256": "87264b5cc81c014ad665b0cfe6271c9dd84f4b10c076206d87a224aab43974c7",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-package-01/policy.json": {
+      "bytes": 579,
+      "sha256": "01cad337b438807ba96de4f329e6f19dc928dd6cac3c28b9800082def6b17474",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-package-01/clients.json": {
+      "bytes": 749,
+      "sha256": "02dcf6572f041962f18e4b195b5958b7c302ac40756de15bf100beb3ea7f561c",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "archive_voice_recovery.py": {
+      "bytes": 10757,
+      "sha256": "244111b1f4ed1cfb9ddab1cae1012250f980083cbab5f0ec37e36d673bdc0aa8",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "archive_voice_recovery_02.py": {
+      "bytes": 12773,
+      "sha256": "9b9d9fb7b5bda0a33573cfa59ef4e9accb54dee7d0fd2770010b8fab072b0498",
+      "scope": "private identity or original audio request retained locally"
+    }
+  }
+}

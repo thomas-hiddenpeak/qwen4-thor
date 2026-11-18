@@ -1,0 +1,28 @@
+{
+  "status": "PASS_SEALED_VOICE_DRIVER_IMPORT_CPU",
+  "distinct_cases": 2,
+  "executions": 3,
+  "runs": [
+    {
+      "status": "PASS",
+      "cases": 2,
+      "seconds": 0.9650615006685257,
+      "returncode": 0,
+      "models": 0,
+      "gpu": 0
+    },
+    {
+      "status": "PASS",
+      "cases": 1,
+      "seconds": 0.814712060149759,
+      "returncode": 0,
+      "models": 0,
+      "gpu": 0
+    }
+  ],
+  "original_failed_starts": 0,
+  "original_failed_posts": 0,
+  "original_cleanup_error_retained": true,
+  "real_recovery_pending": true,
+  "default_replaced": false
+}

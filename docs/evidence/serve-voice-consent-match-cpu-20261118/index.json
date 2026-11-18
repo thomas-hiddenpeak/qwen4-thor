@@ -1,0 +1,78 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/archive_consent_match.py": {
+    "bytes": 5524,
+    "sha256": "9980d8593b1bd207cfffa9632f876d5c46a35c49840c652fab47b414a9574d88"
+  },
+  ".q4t-work/serve-custom-voices-20261118/archive_consent_match_02.py": {
+    "bytes": 5631,
+    "sha256": "46aba6678a0d26a95a0f6ceb8284d075d7fa982725f248037adf57335c855313"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_consent_match.py": {
+    "bytes": 4858,
+    "sha256": "ca581d174efec4b872d0d164375c70d101533c1f8485b725eb4ff1e776ec8d39"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-archive-check-01.json": {
+    "bytes": 305,
+    "sha256": "1ea6e02ebf6747e1308cd2b46056eabc502e2dc379e5881463858875661d475d"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-build-01/build.log": {
+    "bytes": 933,
+    "sha256": "9fb3c0b31e55dd156c4510cd23cbbf8e293b011aebe0da02b3bcebc1b006926e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-build-01/result.json": {
+    "bytes": 613,
+    "sha256": "1d580c70112485837ac145a66132ae9c2a1ddbb9170b98bbadcdcfbbe1497ba7"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-cpu-01/required.txt": {
+    "bytes": 480,
+    "sha256": "6e2b5016de0db04c1ad752d7cab7332d572125fe164b14a9b0be0c1552e6e9d7"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-cpu-01/result.json": {
+    "bytes": 564,
+    "sha256": "cda889243dee0102116c99691853200d5539c1bed038d3271fdac64dff415123"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-cpu-01/test.log": {
+    "bytes": 575,
+    "sha256": "589299389007b7c563bfc0bc6fe51bedd8d3f1aaa69a8ea8d98aa091d977eaab"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-inventory-01.json": {
+    "bytes": 82,
+    "sha256": "68fe1b5ad22f50ddcc272f6c2375e7ce44b7370e83e2319a44895eda3188195e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-plan-01.json": {
+    "bytes": 1480,
+    "sha256": "e1a22e4724d7dfd3b7d7920bb0a1e0b55efa995f8a36845e0e31c08fb0ca96df"
+  },
+  ".q4t-work/serve-custom-voices-20261118/consent-match-source-review-01.json": {
+    "bytes": 1144,
+    "sha256": "586e7d51458662ed59aaa3bdd932d369d48a0962302c1f539acb52dcfb8d94ad"
+  },
+  "CMakeLists.txt": {
+    "bytes": 58048,
+    "sha256": "94e16ffe434473b5999c45c17c57adf23811b211e24cf8c9b27e9707a65c66c3"
+  },
+  "cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 27122,
+    "sha256": "b35a31f3e25e8e192df8e448b555a53d2c099a5c9a39c34983d2e78b3721de1a"
+  },
+  "cmake/NativeTtsTests.cmake": {
+    "bytes": 4964,
+    "sha256": "45027d0a2230f184fd686ec49df000681dad1922085a26b01fec4ad16e1e0bd9"
+  },
+  "include/q4t/text/voice_consent.h": {
+    "bytes": 799,
+    "sha256": "592d6f8c9f9bfdb4b735619609c4ca9a8074ea7da720520d03fcb07917e0d0a9"
+  },
+  "src/text/voice_consent.cpp": {
+    "bytes": 2812,
+    "sha256": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6"
+  },
+  "tests/voice_consent_test.cpp": {
+    "bytes": 4465,
+    "sha256": "054e0f8fe97b9fd399962501d486c2c0ca8dd67d075c3586c1b41757b63c04b5"
+  },
+  "tools/serve_audit/check_inventory.py": {
+    "bytes": 26043,
+    "sha256": "2debf1ba8951d4413d8ab04452f59bbbbe58662dafb8f389b925cd06ca3ac243"
+  }
+}

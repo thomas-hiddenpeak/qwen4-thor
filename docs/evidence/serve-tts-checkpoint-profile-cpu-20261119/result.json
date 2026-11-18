@@ -1,0 +1,59 @@
+{
+  "status": "PASS_VERSIONED_TTS_COMPLETE_PROFILE_WITNESSES_CPU",
+  "cpu": {
+    "status": "PASS",
+    "returncode": 0,
+    "cases": 22,
+    "seconds": 10.926142032723874,
+    "models": 0,
+    "gpu": 0,
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_binding_preserves_legacy_and_paired_weights_but_not_deployment_path",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_whole_audio_evidence_rejects_silence_forgery_and_budget_or_health_drift",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_profile_cannot_omit_spoken_business_or_misbind_the_codec",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_explicit_addition_keeps_pending_recovery_budget_and_never_downgrades",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_disabled_to_enabled_is_explicit_and_all_other_capabilities_stay_bound",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_automatic_version_recovery_requires_identical_tts_identity_and_budgets",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_explicit_budget_change_retains_original_history_qualification",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_combined_asr_addition_and_tts_budget_migration_has_both_evidence",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_native_cli_and_both_profile_commands_keep_tts",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_driver_audio_budget_covers_full_frames_without_changing_text_fixture",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_reload_budget_includes_one_final_speech_per_profile",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_family_reload_requires_eviction_actual_audio_and_metadata_retention",
+      "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_deployment_preserves_talker_codec_and_allows_only_asset_relocation",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_whole_audio_keeps_legacy_and_checkpoint_identities_separate",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_receipt_version_binds_sampling_without_rewriting_old_records",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_reload_requires_actual_checkpoint_bytes_and_evicted_input_weights",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_driver_preserves_explicit_sampling_and_complete_wire",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_cli_freezes_sampling_selection_explicitly",
+      "tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness.test_managed_phases_cannot_reuse_greedy_audio_or_omit_sampling",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_old_builtin_evidence_cannot_qualify_registered_voices",
+      "tools.native_tts.test_managed_service.ManagedSpeech.test_full_retained_outputs_require_both_recovery_phases",
+      "tools.native_tts.test_managed_service.ManagedSpeech.test_audio_corruption_and_synthesis_usage_are_not_accepted"
+    ]
+  },
+  "sources": {
+    "tools/serve_recovery/profile_evidence.py": "ed1c87ca95f86a1cd788196ea9253b8d3904dcffd93fbcc83758c0a388f7578f",
+    "tools/serve_recovery/profile_acceptance.py": "d6890a46e7db7a600847201e20a89901aba719f801d91c59d6f6aa5e5ae9e9a7",
+    "tools/native_tts/managed_service.py": "a44db729c0c06b97decf94ef382633857a73f45ec5ed517f3e31bf5fb09340fd",
+    "tools/native_asr/service_acceptance.py": "c61f2fc03cbd3aea99121bd0c7eb1eb698ac558dced2974e489a3cfa6033d933",
+    "tools/serve_recovery/test_tts_checkpoint_profiles.py": "e5dba281fb88696e61f046c4683a05431d8c1b30e5a44fcb6facf19b47e5cbf4"
+  },
+  "old_witness_formats_preserved": [
+    "v8",
+    "v9"
+  ],
+  "new_witness_formats": [
+    "v10",
+    "v11"
+  ],
+  "real_witness": "evidence/serve-tts-checkpoint-witness-20261119/README.md",
+  "actual_new_profiles": "PENDING",
+  "default_replaced": false,
+  "gpu_actions": 0
+}

@@ -1,5 +1,6 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/application_routes.h"
+#include "q4t/server/voice_request.h"
 
 #include <unistd.h>
 #include <poll.h>
@@ -370,15 +371,16 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     return false;
   }
   const size_t route_limit =
-      streaming ? stream->max_bytes
+      streaming                      ? stream->max_bytes
+      : IsVoiceTarget(*path)         ? kVoiceFormBytes
       : IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes
       : IsMcpTunnelResponse(*method, *path)
           ? 4U << 20
           : (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
                      *path == "/v1/completions" || *path == "/v1/moderations" ||
-                     *path == "/v1/embeddings" || IsResponsesTarget(*path) ||
-                     IsConversationTarget(*path) || IsPromptTarget(*path) ||
-                     IsUploadTarget(*path)
+                     *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
+                     IsResponsesTarget(*path) || IsConversationTarget(*path) ||
+                     IsPromptTarget(*path) || IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);
   const size_t body_limit = std::min(route_limit, headers->body_limit);

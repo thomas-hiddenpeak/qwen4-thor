@@ -1,0 +1,162 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/base-acceptance-cpu-01/result.json": {
+    "bytes": 255,
+    "sha256": "612c2968b0407a52710fd4b108f626c219d88df8b9b4a40c855d0897cdc43b7a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-acceptance-cpu-01/test.log": {
+    "bytes": 830,
+    "sha256": "8f9eb73a96f2bbea01b433f55d8e465149d90c03d8fd9e424ec125b3a5f9579c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-acceptance-cpu-plan-01.json": {
+    "bytes": 516,
+    "sha256": "a24efd0f82d7b0d99acf82e7cf822d63931dca6fb7b58c893824d648c5b1e9c1"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-compute-build-01/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-compute-build-01/plan.json": {
+    "bytes": 8417,
+    "sha256": "119ea1736f126342af760205d548d7099d2a949fe686950b5db7ee209771c802"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-compute-build-01/result.json": {
+    "bytes": 7235,
+    "sha256": "47277bd8dedd5c14f0b9fc4857d8ce3abb945a068165e87b201d31274e33c7c0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-build-01/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-build-01/result.json": {
+    "bytes": 750,
+    "sha256": "88d1159157e4f02061cb8567b47d8fd471a5a5622aeb923269bd6e42eb75cb23"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cpu-01/required.txt": {
+    "bytes": 1081,
+    "sha256": "52c10d4f071577d1a5b173bd98a054aada099d7a5cdcf2745c44cec447bdd366"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cpu-01/result.json": {
+    "bytes": 514,
+    "sha256": "e6cf077727fb01da59c20c2fcc133bd6b37b2ea0d1046e5aea84e04e03392660"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cpu-01/test.log": {
+    "bytes": 1248,
+    "sha256": "24de9c1097d3f7d8bb6a201c028ac602c911683f4da3b6c4b21835e72be2984f"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-01/0.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-01/1.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-01/2.log": {
+    "bytes": 100,
+    "sha256": "f554086562b732b858d8fe340febf3738893ff8342699138152fc363fd1774d0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-02/0.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-02/1.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-02/2.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-cuda-build-02/result.json": {
+    "bytes": 1966,
+    "sha256": "faa769c151a62984c6f51575498955ab075ab0b6204ea0403a4da0c8d9e4557c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-conditioning-plan-01.json": {
+    "bytes": 3319,
+    "sha256": "cacb4dee2845339b2d7dfee700828bc1db49b027752783d8f76fb7a3d1109c89"
+  },
+  ".q4t-work/serve-custom-voices-20261118/base-source-review-01.json": {
+    "bytes": 1993,
+    "sha256": "2bb18ae70ca8a503a97d5153623a3ba2025295f3afd7090e1ede21826bc3dd5b"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_base_replay.py": {
+    "bytes": 2440,
+    "sha256": "b731b84ccd10515589f1856e2417bc17d8a0d459bb7d756a557c0789b3096a2b"
+  },
+  ".q4t-work/serve-custom-voices-20261118/deduplicate_archived_heads.py": {
+    "bytes": 4050,
+    "sha256": "c5fdd6b6645df97a60acaa868bbb6bfb6f34e80e41a7c358a20bc73ed6b5ecde"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-head-dedup-01/plan.json": {
+    "bytes": 10149,
+    "sha256": "cc0bd5559ccddcb8810236fa3c3a028042fff3191c2c2fe2b4f3c8e35554fe17"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-head-dedup-01/progress.json": {
+    "bytes": 1353,
+    "sha256": "6a5d6274511b3c7651580d458ab24fca33c3729e310dfaaaceb7e76088e60810"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-head-dedup-01/restore.py": {
+    "bytes": 783,
+    "sha256": "24320188b96794f77de58172afb9cd47e9a2df607c4825515a53ebd39addfb0c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-head-dedup-01/result.json": {
+    "bytes": 557,
+    "sha256": "1c21373da21e226e886a935612072cf2e262b9686eee422ab61fe2c1bd84b5be"
+  },
+  "cmake/HostTestSources.cmake": {
+    "bytes": 33155,
+    "sha256": "8872d73f30a6b56b83024640faed4b7ca90c7a4dc21d650e22fd0eb262720054"
+  },
+  "cmake/NativeTtsTests.cmake": {
+    "bytes": 4416,
+    "sha256": "4663cd9262bd1c955959c58060a232c07e701e0f9dad317b9f7b36c87443469e"
+  },
+  "include/q4t/audio/tts_config.h": {
+    "bytes": 2543,
+    "sha256": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9"
+  },
+  "include/q4t/audio/tts_generation.h": {
+    "bytes": 3486,
+    "sha256": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c"
+  },
+  "include/q4t/audio/tts_layout.h": {
+    "bytes": 4137,
+    "sha256": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7"
+  },
+  "src/audio/tts_config.cpp": {
+    "bytes": 14424,
+    "sha256": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38"
+  },
+  "src/audio/tts_generation.cpp": {
+    "bytes": 12583,
+    "sha256": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb"
+  },
+  "src/audio/tts_layout.cpp": {
+    "bytes": 10874,
+    "sha256": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c"
+  },
+  "src/audio/tts_model.cu": {
+    "bytes": 15243,
+    "sha256": "14098c4cbb81a98ad479b39c3861bbb66bdfc2d86077e90d8f9752db5951ecb4"
+  },
+  "tests/tts_base_generation_test.cpp": {
+    "bytes": 8886,
+    "sha256": "f1173a48885e20aca8655a467a3999252d829370b081ace7eb64461335a5479e"
+  },
+  "tools/native_tts/base_acceptance.py": {
+    "bytes": 7888,
+    "sha256": "e885e56264380b189cd3930de8cf88d30fff8c0fdb3347465c3ceeddd342369b"
+  },
+  "tools/native_tts/base_reference.py": {
+    "bytes": 11854,
+    "sha256": "a07e40bebf0ccd2d7c899c1e9e9210c5d559c0827b825c10ac02cec0219cbb16"
+  },
+  "tools/native_tts/base_replay.cpp": {
+    "bytes": 11610,
+    "sha256": "439681110ed40f8c7bfca876580d67a949a7935055ca6cf22d7d74a6ecb25b86"
+  },
+  "tools/native_tts/test_base_acceptance.py": {
+    "bytes": 3035,
+    "sha256": "c2e07e72cb176fd37f9e191f343dd384795a8515f100f11dafdb1df3e1d0db1e"
+  }
+}

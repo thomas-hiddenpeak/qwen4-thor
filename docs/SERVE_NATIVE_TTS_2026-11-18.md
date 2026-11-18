@@ -311,3 +311,7 @@ TPM已使用量、其他客户及核心/outer历史不变，再续办原发布�
 
 继续4倍内容、完整voice/style/注册voice、TTS07组合和全部master；
 本次交付不替代这些任务，长稳工具随新后端完善、实跑由用户负责。
+
+自定义音色接续见[Base与注册实施计划](SERVE_CUSTOM_VOICES_2026-11-18.md)。
+[12项元数据CPU证据](evidence/serve-custom-voice-metadata-20261118/README.md)
+已过，实际权重/声纹/条件合成与HTTP注册仍待实施，不关闭TTS总项。

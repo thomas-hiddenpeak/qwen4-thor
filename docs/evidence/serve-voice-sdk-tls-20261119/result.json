@@ -1,0 +1,112 @@
+{
+  "status": "PASS_OFFICIAL_PYTHON_SDK_VOICE_NATIVE_TLS_SCOPED_LIFECYCLE",
+  "sdk_version": "3.55.1",
+  "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+  "first_result": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_sdk_acceptance.py\", line 218, in run\n    direct.chat.probe_ports((self.phase['edge_port'],));self.start();self.business()\n                                                                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_sdk_acceptance.py\", line 191, in business\n    raw,receipt=self.sdk('chat','chat',body)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_sdk_acceptance.py\", line 148, in sdk\n    require(receipt['version']==voice_sdk.VERSION and len(exchanges)==1 and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: SDK/wire/status mismatch: chat\n",
+    "counts": {
+      "starts": 1,
+      "posts": 11,
+      "controls": 83,
+      "ingress_starts": 2
+    },
+    "seconds": 88.03810355113819,
+    "default_replaced": false,
+    "guardian_recovery_retested": false,
+    "listening": "PENDING",
+    "performance": "NOT_CLAIMED"
+  },
+  "continuation": {
+    "status": "PASS_OFFICIAL_VOICE_SDK_TLS_CHAT_STATE_REVOKE_CONTINUATION",
+    "counts": {
+      "starts": 1,
+      "posts": 6,
+      "controls": 69,
+      "ingress_starts": 1
+    },
+    "seconds": 66.21508520795032,
+    "default_replaced": false,
+    "guardian_recovery_retested": false,
+    "listening": "PENDING",
+    "performance": "NOT_CLAIMED"
+  },
+  "cpu": [
+    {
+      "status": "PASS",
+      "returncode": 0,
+      "seconds": 0.690867826808244,
+      "cases": 8,
+      "models": 0,
+      "gpu": 0,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/python-sdk-03/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.native_tts.test_voice_sdk",
+        "tools.native_tts.test_voice_sdk_acceptance"
+      ]
+    },
+    {
+      "status": "PASS",
+      "returncode": 0,
+      "seconds": 0.2627742402255535,
+      "cases": 1,
+      "models": 0,
+      "gpu": 0,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/python-sdk-03/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.native_tts.test_voice_sdk_acceptance.VoiceSdkDriver.test_entry_cleanup_failure_keeps_model_cleanup_and_failed_result"
+      ]
+    },
+    {
+      "status": "PASS",
+      "returncode": 0,
+      "seconds": 0.48079923493787646,
+      "cases": 2,
+      "models": 0,
+      "gpu": 0,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/python-sdk-03/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.native_tts.test_voice_sdk.VoiceSdk.test_chat_extensions_are_sent_in_original_json_for_both_modes",
+        "tools.native_tts.test_voice_sdk.VoiceSdk.test_speech_and_chat_streams_use_sdk_iterators_and_preserve_wire"
+      ]
+    }
+  ],
+  "distinct_cpu_cases": 10,
+  "cpu_executions": 11,
+  "original_client_failure_preserved": true,
+  "actual_posts": 16,
+  "counted_post_attempts": 17,
+  "leases": {
+    "voice-sdk-tls-01": {
+      "status": "COMMAND_FAILED",
+      "nvml_queries": 83,
+      "all_nvml_ok": true,
+      "owned_cleanup": true,
+      "entry_starts": 2
+    },
+    "voice-sdk-tls-02": {
+      "status": "COMPLETED",
+      "nvml_queries": 63,
+      "all_nvml_ok": true,
+      "owned_cleanup": true,
+      "entry_starts": 1
+    }
+  },
+  "source_and_defaults_unchanged": true,
+  "default_replaced": false,
+  "guardian_recovery_retested": false,
+  "listening": "PENDING",
+  "full_task_complete": false
+}

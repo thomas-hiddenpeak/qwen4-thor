@@ -102,7 +102,9 @@ bool IsAudioContainer(std::string_view bytes) {
 bool ValidFileAudioLimits(const FileAudioLimits& l) {
   return l.max_source_bytes && l.max_source_bytes <= (128ULL << 20) &&
          l.max_decoded_values && l.max_decoded_values <= (512ULL << 20) &&
-         l.max_output_samples && l.max_output_samples <= 9600000 &&
+         (l.output_sample_rate == 16000 || l.output_sample_rate == 24000) &&
+         l.max_output_samples &&
+         l.max_output_samples <= 600ULL * l.output_sample_rate &&
          l.max_duration_ns && l.max_duration_ns <= 600000000000ULL &&
          l.max_sample_rate >= 8000 && l.max_sample_rate <= 384000 &&
          l.max_channels && l.max_channels <= 8 &&
@@ -118,6 +120,7 @@ ObjectReply ValidateAudioPcm(std::string_view source,
   if (!IsAudioContainer(source) || pcm.samples.empty()) return Invalid();
   if (source.size() > limits.max_source_bytes ||
       pcm.samples.size() > limits.max_output_samples ||
+      pcm.samples.size() > audio_detail::OutputSampleLimit(limits) ||
       pcm.duration_ns > limits.max_duration_ns)
     return Capacity();
   const auto& meta = pcm.conversion;
@@ -128,13 +131,15 @@ ObjectReply ValidateAudioPcm(std::string_view source,
   const std::string_view bytes(
       reinterpret_cast<const char*>(pcm.samples.data()),
       pcm.samples.size() * sizeof(float));
-  if (pcm.duration_ns != pcm.samples.size() * 62500ULL ||
+  if (pcm.sample_rate != limits.output_sample_rate ||
+      pcm.duration_ns != audio_detail::OutputDuration(
+                             pcm.samples.size(), limits.output_sample_rate) ||
       meta.GetString("format") != "q4t.cpu_audio_f32le.v1" ||
       meta.GetString("source_sha256") != Digest(source) ||
       meta.GetInt("source_bytes", -1) != int64_t(source.size()) ||
       meta.GetString("pcm_sha256") != Digest(bytes) ||
       meta.GetInt("samples", -1) != int64_t(pcm.samples.size()) ||
-      meta.GetInt("sample_rate", -1) != audio_detail::kOutputRate ||
+      meta.GetInt("sample_rate", -1) != limits.output_sample_rate ||
       meta.GetString("mono_policy") != "resample-channels-f64-mean" ||
       meta.GetInt("resample_quality", -1) != 10 ||
       meta.GetString("resample_table") != "auto-1MiB-linear" || rate < 8000 ||
@@ -147,7 +152,7 @@ ObjectReply ValidateAudioPcm(std::string_view source,
                    [](float v) { return std::isfinite(v); }))
     return Invalid();
   if (pcm.samples.size() !=
-      (uint64_t(frames) * audio_detail::kOutputRate + rate - 1) / rate)
+      (uint64_t(frames) * limits.output_sample_rate + rate - 1) / rate)
     return Invalid();
   return {};
 }
@@ -221,13 +226,15 @@ ObjectReply DecodeAudioContainer(std::string_view source,
   if (result.failure == audio_detail::Failure::kInvalid) return Invalid();
   if (result.failure != audio_detail::Failure::kNone || !result.samples ||
       result.samples > limits.max_output_samples ||
-      result.samples > limits.max_duration_ns / 62500ULL ||
+      result.samples > audio_detail::OutputSampleLimit(limits) ||
       !result.metadata_bytes || result.metadata_bytes > 16384)
     return Failed(GrammarFailure::kWorker);
   std::string metadata(result.metadata_bytes, '\0');
   FileAudioPcm next;
   next.samples.resize(result.samples);
-  next.duration_ns = result.samples * 62500ULL;
+  next.sample_rate = limits.output_sample_rate;
+  next.duration_ns =
+      audio_detail::OutputDuration(result.samples, next.sample_rate);
   if (!transfer(metadata.data(), metadata.size(), false) ||
       !transfer(next.samples.data(), next.samples.size() * sizeof(float),
                 false))

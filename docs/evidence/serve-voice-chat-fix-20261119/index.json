@@ -1,0 +1,1638 @@
+{
+  "archive_sha256": "985ef70ac8263c13741ebc88f4c1e2cbf13737fe9f4753eca66680cab5f43ec0",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/plan.json": {
+      "bytes": 319680,
+      "sha256": "3062ff158f991d63a72d0902a05b84080026ba5eef8bd6e6728264e3fb6b100f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/prepare-attempt-01.json": {
+      "bytes": 176,
+      "sha256": "8e2bca876b23c9a347ddf9199f490571d4d16d72c077e823d427d1d040f6c4cd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/lease/nvml-queries.jsonl": {
+      "bytes": 154916,
+      "sha256": "98a0747b1cf46e452c0d3522b283a64a81027d23e19c30dfbe7c5ef345b1edf6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/lease/events.jsonl": {
+      "bytes": 12551,
+      "sha256": "e38ef0103fff6d814fce293c503e09c0df6e2bad38d263ce8bcbabe62c9487b3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/lease/exit.json": {
+      "bytes": 726,
+      "sha256": "b400dd07bffd00164555d992be48e08c0fa07d24f97682e5d882d1228d04f383"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "6382d90f7e6bbc2120a71d0cfd4112f301ef5389b5d9b47b2f820f3134fc3b2d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-config.http.json": {
+      "bytes": 251,
+      "sha256": "9deb8093bd93136118381d21663823e9ef6c8a50a29e6775dae054260a54d94a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decode-plan.json": {
+      "bytes": 833,
+      "sha256": "3535cd95ef519c857045a408616bd23dca3117014cb7f8afb4aeb1994a0d2db6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-ready.http.json": {
+      "bytes": 245,
+      "sha256": "a3d446a0ef454891ee56da7f3f48567658da04a3854538cedf8a1b9ea796fb45"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-drain.metrics.json": {
+      "bytes": 24627,
+      "sha256": "2293ec8ce07c8d1d5b95f7e6128a228a33f10b4a1960632c77bbc03b1c4f3efe"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/model-identity.json": {
+      "bytes": 1960,
+      "sha256": "14893d81a51a781117ec0af389a1e8e015e52002b1ad43b4b2fa6b47f2bd6580"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent.http.json": {
+      "bytes": 283,
+      "sha256": "0d89ba6b3232d68bd7912523d63093752bfee6c7972832d29799b25f09dfdeeb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-ready.http.json": {
+      "bytes": 245,
+      "sha256": "69b57ab1cfef461bcab7419d9a6b0c5832ab0e39c76c0891019a9289857e4b11"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decode.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/result.json": {
+      "bytes": 1145,
+      "sha256": "4c8b0b67d9db61982dfb84ca360dc0f862a0930d8282d8f64e6b8baa707a699b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "f4405569abc796096ac3c31eb27e017be9370a1d2c1a1a17f16818765071ef74"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent.audio.json": {
+      "bytes": 308,
+      "sha256": "57cc473f11894302063a719ae33f220e751edd4fe00a1c2119ef462692ea5aa2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample.http.json": {
+      "bytes": 282,
+      "sha256": "3be07da72a7b8b42be8591791794229cbfc2313907c7ca10c266a5f38f76f49b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent.request.body": {
+      "bytes": 241,
+      "sha256": "ea1a9e8c3e2b677feb7daaf9f6afb6a8782ce6c2736b4da7a2cf9df0a51a8f32"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "91be2de828f88f35452db789d364ba6bc6c557e52249fd979406a15e78d57f66"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/counts.json": {
+      "bytes": 50,
+      "sha256": "5012494981d1fa0709373b36d3976416ce55f9c1dbd494f4cb0e038f4684b66d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample.request.body": {
+      "bytes": 201,
+      "sha256": "98d3552f20f6fca26372e948d3fc5f17221702387f4587a91162db8e54fdd6de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/model-command.json": {
+      "bytes": 1619,
+      "sha256": "7c2ba7de9e50b4f995351944a0d65c00211eb2ead278c2435fa87b2d5e6674f9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/model.log": {
+      "bytes": 8355,
+      "sha256": "4c473a0c8b6a4bab6426efdc0090721fc097471cb7e6b8a6b218cdf5a5f7d189"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "3e8847c568a8cdc7dc04804d9fb31fb69bcb5197e06b61e6a3ada8ca6eb7c62d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent.request.json": {
+      "bytes": 218,
+      "sha256": "6c3e9fd252c0c8d2e0baee5b8c07b3617f3d3e01752c371b8355b5e88582cdf7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/speaker.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-config.wire": {
+      "bytes": 16034,
+      "sha256": "adba080697229c984f6a9eb7fe08fcbaa5f2b0068720a2b6458474ec6b159a74"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decode.execution.json": {
+      "bytes": 458,
+      "sha256": "9f18ba2ed623702599381e18cde05aad05ce131ab683e670057b45cb381919e4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-drain.children.json": {
+      "bytes": 685,
+      "sha256": "6382d90f7e6bbc2120a71d0cfd4112f301ef5389b5d9b47b2f820f3134fc3b2d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample.request.json": {
+      "bytes": 218,
+      "sha256": "3a8aa666ff3c41458830bd05e664e47ab2f4619cf788f4a3990f5e981844ce4f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/native-plan.json": {
+      "bytes": 861,
+      "sha256": "d76951f50ce226796c0e5ba99c7d926e1d0fc616568ea5f3ed0e26121182b917"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-config.http.json": {
+      "bytes": 251,
+      "sha256": "3382a09e3bb780cfa505745af3675b63da02f7d1e8b1da139c08f1f16b4095cf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-drain.metrics.json": {
+      "bytes": 24629,
+      "sha256": "20d06563fc864b14a263fb8d6b94776662ee49583e646fed71aad5ddeed5674e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/cleanup.json": {
+      "bytes": 3055,
+      "sha256": "0e11b765b47da27bd651360fc70fb1e27586b19e7f2e652c63fbeca11f786e3b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/speaker.execution.json": {
+      "bytes": 548,
+      "sha256": "64ca061fe6ea5c9dc39c51d44cffdddca0106ad87c2c3216565e9a74adb8bfc2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-ready.http.json": {
+      "bytes": 246,
+      "sha256": "3b12f243aa22ad2f670c021ac0158656d3ea38765942396004dbd12dd5534fd6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "4a372482c7a633f49e300af5d826e58bad12e9963e2ccdb6d3827d78d1cf8fdf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample-config.wire": {
+      "bytes": 16034,
+      "sha256": "adba080697229c984f6a9eb7fe08fcbaa5f2b0068720a2b6458474ec6b159a74"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "6382d90f7e6bbc2120a71d0cfd4112f301ef5389b5d9b47b2f820f3134fc3b2d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-consent.wire": {
+      "bytes": 438396,
+      "sha256": "955e4110966828e553f4341c3fedca807e2b0a57bed02d7a9e954a282cfd6352"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample.audio.json": {
+      "bytes": 306,
+      "sha256": "f3a962ffae3aafbe63d0d700bd0b61750e73c1b445cd7ca80620754c24030f3c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/startup-config.http.json": {
+      "bytes": 252,
+      "sha256": "13c9425ef552f38e688bff04d193a6b6cd42261580aa3f882bc55054c126f2d6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/aiden-sample.wire": {
+      "bytes": 288913,
+      "sha256": "40007ca377fbab406c0bfdf5c2817dc3edb8727847fce6d80887f2320e5bb7a7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/native/windows.json": {
+      "bytes": 1650,
+      "sha256": "a2639d9b572d317e906ea4d6599a701711a449a72e9d5d6d0a4b45534fdf1ea5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/native/result.json": {
+      "bytes": 120,
+      "sha256": "88c56882d38ff19ad78a46497bcca75fd84abbc7c2356e7532bd8b7b66de1cd7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/native/gates.json": {
+      "bytes": 170,
+      "sha256": "ec508cae4c6287bcedbf8e3d76570df3309958c89a52e5986347c3f5dcaf036e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/result.json": {
+      "bytes": 76,
+      "sha256": "304b7dbaa6209ca0c6d6e7b9caf2ecef46c256645b5b9fe0de056cc48c0e828f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-0/result.json": {
+      "bytes": 159,
+      "sha256": "c18332af48b1eb545295cd22bdab2e0680a5dbaa1c83112418e148e53740def8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-0/decoding.json": {
+      "bytes": 2805,
+      "sha256": "3a6ea9baa3022f0179813f64a991dec90f3957b349d1523806b89aa2451dc61d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-2/result.json": {
+      "bytes": 159,
+      "sha256": "39d50354c2866f1f36c7a06bac47068e4ac17d7f11cb725cad5ed162083ec0aa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-2/decoding.json": {
+      "bytes": 2805,
+      "sha256": "508fe8e93bcf90f38942f8decb62e94f02337b4da0b4d03c095b0e2eeab2c492"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-1/result.json": {
+      "bytes": 158,
+      "sha256": "7985141844c540d776a23f40572236414d89ed68f750232e0115e0843dbff337"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-01/run/decoded/case-1/decoding.json": {
+      "bytes": 2804,
+      "sha256": "57a5a3059de8e4596bebe55c3235d006e998a33a8ba3b59c339c7d40fc6cdfc0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/result.json": {
+      "bytes": 190,
+      "sha256": "8038a4e0dbca2f106bc4072d3461b5ccb1c6efce7c5f0d0237a0b57b6f27e513"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/plan.json": {
+      "bytes": 7444,
+      "sha256": "5b4f086d8ddf3c75bde9c169c545f13d78b4721cc2e8c78c95f1b618d4a79773"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/replay.cpp": {
+      "bytes": 10150,
+      "sha256": "cf9e2347149002de58a436e36ae4793afdbb44a9a8f8be78de8f4f70d1a549fd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-aiden-diagnostic-build-01/0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/plan.json": {
+      "bytes": 319958,
+      "sha256": "1a6839b397be8b0072a58409f65d2981e5093917d3b7fd42ca7a49a7507153fb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/lease/nvml-queries.jsonl": {
+      "bytes": 179195,
+      "sha256": "f5ba7cc3d5df114f9e9e1fd9c19c843556703167c060a4ddc393de1ced636879"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/lease/events.jsonl": {
+      "bytes": 14408,
+      "sha256": "4e9ec32a9405890af359a0e96d9c88bb1de6ff0a33dc50fb30eadf728778af33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/lease/exit.json": {
+      "bytes": 716,
+      "sha256": "b5d0353d09847888e7a79278a8536404e71ffe0771227bb35989eeaf339dbb02"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other.request.body": {
+      "bytes": 215560,
+      "sha256": "fa200c88710ee5325710a4eed9be0c4cfba722a1099a6793448c5de45daadaab"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-list.request.json": {
+      "bytes": 169,
+      "sha256": "845465d8686377bf50dd71500cb8438f25d564e75a34c32cce8805934e4100d0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent.http.json": {
+      "bytes": 243,
+      "sha256": "7e3522b05d26e15893b5c677b3e82ccefc36505209a37e110d08220c80f5e460"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-ready.http.json": {
+      "bytes": 245,
+      "sha256": "7a9ff032282165a16e22c78907d185859a9627ad9e1f56758a3b924a33243852"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-config.wire": {
+      "bytes": 16037,
+      "sha256": "e074acf51d962b9d4c88118905fb17f2b1fd021e6d8c69401e52952ee39b0224"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-drain.metrics.json": {
+      "bytes": 24640,
+      "sha256": "617a3d8dc2104b3dad66a68da6046181e2b3b2e1a78dd899ece73b627c3200be"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-config.http.json": {
+      "bytes": 252,
+      "sha256": "395f797ce44e7a6aa1d370bfb30eda1e328e898393fc0c902290fbe203031839"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-config.http.json": {
+      "bytes": 251,
+      "sha256": "8ee1953bf12050b267a03a398194859889c23faa2aa0633064c7db8df2815979"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat.request.body": {
+      "bytes": 370,
+      "sha256": "0571c8a15d6f0d03f501c2a94c95a8954e73d340b7c3863440b44530a5ddb662"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat.request.json": {
+      "bytes": 222,
+      "sha256": "768312814fc082ef9f7662d49bdff479662bf874ea596d910844897daef6bc4c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-ready.http.json": {
+      "bytes": 245,
+      "sha256": "f4b69296029c0110ac9c08b6cde1a6d7d1677e38b8dfc00fd4c8c7fb1500170f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat.http.json": {
+      "bytes": 247,
+      "sha256": "d86909888752de6cd74250710f66ffd012895613e455f40ed05f7b3152b814d9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch.wire": {
+      "bytes": 150,
+      "sha256": "6c02b146eb91db8d0736467848d9231eba0bdc61aa50da4013cde75a10e39ee3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-ready.http.json": {
+      "bytes": 246,
+      "sha256": "1d0e7275dcaf2f096a5950299e78e8f975f6a2325541287e20fad35f7fe9a45e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/model-identity.json": {
+      "bytes": 1936,
+      "sha256": "6ce2266dd6be1ff08d068010d2ed10bfe7033989c6ae76be4df14454489d0289"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech.request.json": {
+      "bytes": 218,
+      "sha256": "f1260949f68cb2721b065d0a2f93b88728659c16d71142fd97a3f21fcb457371"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent.request.json": {
+      "bytes": 270,
+      "sha256": "b9cfb187f21b2354c2f034b96b30e4215478337b1f55e72cbb08ad31407a4fd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech.audio.json": {
+      "bytes": 303,
+      "sha256": "898e45d3476f26c95f42d295942bea8fe2f5f5fae5a14a31ca4ddbca2410d8e5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-list.http.json": {
+      "bytes": 247,
+      "sha256": "bbc3fa4cd9e86e33d049766099c697fcb2526cedd43c3985e418726f996607c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-other.request.json": {
+      "bytes": 199,
+      "sha256": "395e5916c1c05f7e5d5db2b0be60b278ec9b245cf2699ba39dbe6795286d2d4d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-config.http.json": {
+      "bytes": 251,
+      "sha256": "85c7777e21e98b942d0ee33d80a84a2f734c8d616f42096907d731d690ed0fb5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-config.http.json": {
+      "bytes": 252,
+      "sha256": "b06da768467850b401a865c4f9e442b03a452e9465325a4e223a5c3c68259b40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr.request.body": {
+      "bytes": 111758,
+      "sha256": "00e312f90109576e02dc3cdd98f00a2f2a28feeae77acaed0de3eeb8aac834ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "a6a0b41dc347158edeaee2dcf3cde17e0f2fc9920e36ea8bceb9c4540dd156a0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-ready.http.json": {
+      "bytes": 246,
+      "sha256": "408b60235aaa5ef621449e56b5182a5e8a73f6e7a7da1a4dd87139491d52ba07"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-config.http.json": {
+      "bytes": 251,
+      "sha256": "a14aa339764f1d5eeec87fc0cdfa04178b3e98e65e0a6716b4b07011a097913d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice.wire": {
+      "bytes": 138,
+      "sha256": "8134c5a090ca30e2712deba17e78d9c93018dd3b7a2edffdd9af0761b2bc4db9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/result.json": {
+      "bytes": 1307,
+      "sha256": "4ae70f6d0d20ac69a64f368e9a88d45757464cf302e73933b328c622a1b1f9c9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/rename.wire": {
+      "bytes": 148,
+      "sha256": "dd627ca8151faaa1234ca8f2a4473c81561bafb619b31f63e6caf2dbfd2357ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-drain.metrics.json": {
+      "bytes": 24645,
+      "sha256": "24080c50686ccb2d245844b2b4b6c19263787f8de5f096a1247c5eed899d8941"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-drain.metrics.json": {
+      "bytes": 24655,
+      "sha256": "a1ac3acec6c2ae5fedd67ccc822bab30bca7b503a18e9b64eaaa09e2fee8a73d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/rename.request.body": {
+      "bytes": 33,
+      "sha256": "20ae422b7c792d20668be223bc6bcc6d606ec11a85877f31156780bd55d6c53c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-ready.http.json": {
+      "bytes": 245,
+      "sha256": "417bd97661df15231018f396f021791e7b49da34140a8b74cbf5bbb2fb34777a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice.request.body": {
+      "bytes": 215560,
+      "sha256": "fa200c88710ee5325710a4eed9be0c4cfba722a1099a6793448c5de45daadaab"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-config.wire": {
+      "bytes": 16030,
+      "sha256": "0442828daa23131ee5ae619a94156d055e5e086c8545b2203e26c55c7c0936f6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "f4405569abc796096ac3c31eb27e017be9370a1d2c1a1a17f16818765071ef74"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other.request.json": {
+      "bytes": 262,
+      "sha256": "bbec1f0a2ef1e1e82d225103506616a762aa865ef6db744a1a90e7c80e511e71"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "7d415b65a4ac8c9774f2ac531f361b12b58dcf3c1092e23cacd0af4df259c1ab"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota.request.json": {
+      "bytes": 269,
+      "sha256": "b52111bd52aed66d79cf85c3898cd373325fc06ba986a14c789d03d5e7874081"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch.http.json": {
+      "bytes": 244,
+      "sha256": "f4849245566055d3847fb91d3a2119c48ca351788e494faa400aab1d4e0056e7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-config.wire": {
+      "bytes": 16037,
+      "sha256": "e074acf51d962b9d4c88118905fb17f2b1fd021e6d8c69401e52952ee39b0224"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/rename.http.json": {
+      "bytes": 247,
+      "sha256": "069b636d75f4a496cba828ec61c9a2a7df1872324b1ce13faf4fc767d0925756"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-config.wire": {
+      "bytes": 16039,
+      "sha256": "00344f8c326c28c99fcac6b4bee9e0ba321380566406a09846625cfaa8a7c4f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-drain.metrics.json": {
+      "bytes": 24643,
+      "sha256": "e8cc391baade61e1333cae144d4c3d42da063d69143574c271e490f6f3f7e03c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-config.http.json": {
+      "bytes": 252,
+      "sha256": "30e142f7de214df84749899431377a318508daa92d9abfcbf552e11dc6c88092"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent.request.body": {
+      "bytes": 326792,
+      "sha256": "5e0c5656a6e2f6286102e92e27e5a020cc86dd401f98a1b3a9c1c74ac201a016"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota.http.json": {
+      "bytes": 244,
+      "sha256": "1052fd86970c0168eb854e11fc49cf3a97fb3d98686e6106a23615acdba9cd56"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-config.http.json": {
+      "bytes": 252,
+      "sha256": "27bde09d130344cfdce37edd06e8dd26918b067dd5268425aad7702cbbbf3594"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/initial-capabilities.http.json": {
+      "bytes": 252,
+      "sha256": "6d043468ee15b2a349b479b1875515987054f089feb3acc36f5431adc995da8b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/counts.json": {
+      "bytes": 51,
+      "sha256": "39b73567a699e0ef78efd026fb555a3d8647a75978193d3518816f8aec7b4a0c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "ac06038f5c025ab1cc4a7878edaddaf6ea47a73d9ab07a439ce151e13d0a8ed6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent.request.json": {
+      "bytes": 270,
+      "sha256": "d34d99bb4d84c12a92f1c640a2deb584e8676b406eabd449da007e0178218bd8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat.wire": {
+      "bytes": 160,
+      "sha256": "9c41bc5acc4cb16c06db494d49166e099083c0d3c893510b2417d570086f4e3f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-config.http.json": {
+      "bytes": 251,
+      "sha256": "5e056684b881d4d236192c7a0eb0ac6c7ac3baa5753f35bb5dc530b87b2e5cef"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "4b07702ce3efc1cf68b0ba95903a31831a63caa08a08c04bcd1f0f6454c392db"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-drain.metrics.json": {
+      "bytes": 24645,
+      "sha256": "2306795239e29d7abb63316def8c7c89c1f154fa8b20c001585b2f537201cba5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-drain.metrics.json": {
+      "bytes": 24655,
+      "sha256": "cd64ddaf52ed138242ffb9627e71918cecb9476a93088e9ec7ed119f0b2006a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-other.http.json": {
+      "bytes": 246,
+      "sha256": "7459272e31becf128e3e2ef982a817beb10ec637a91f9f02625abf69b9cc16c8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/model-command.json": {
+      "bytes": 1595,
+      "sha256": "aa7f32be41fbc6953ab5983c5c36c774ca01325837cacfed7834efafb181839b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/model.log": {
+      "bytes": 28264,
+      "sha256": "fe00d3dbc1c40d6e5c7785801f547448b57c968a483b764a8beea982ab363d17"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "bf4de1be2222ab25ea8b04edbf1ef594a846bc5599915ee3271668ac036b770c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-ready.http.json": {
+      "bytes": 245,
+      "sha256": "b818a62f5fff4555b839a1c985fc7023ca455c4901ca58f7eaa9e82111067c8a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota.wire": {
+      "bytes": 129,
+      "sha256": "076c91c8a7e8976a4edb38d258a1aed95d1a2b1a77c87f8a9a6df4b8e03a0701"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch.request.body": {
+      "bytes": 207880,
+      "sha256": "a20d714c05908161eaeec37a4f30d716f13022fd34249669d66e627838e8ba37"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other.http.json": {
+      "bytes": 247,
+      "sha256": "e4658c4f3148aba0bf179d11b6faad34bcbb931e72d5f4d4f03f4052df0e2a2e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-config.wire": {
+      "bytes": 16039,
+      "sha256": "4ae5e6c033cf8c6c8e62a62649605cf23f14ee4d8c13bf4cc13a23af72fac835"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent.http.json": {
+      "bytes": 244,
+      "sha256": "f9f725aeb9f33834a88011e4c8d38d5d491e100e11aa47fd46035afb4382a583"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-ready.http.json": {
+      "bytes": 245,
+      "sha256": "f36e03e38efa00f1b3f040ca068e9bf0d1ea00f35861c4d834f5f52fefe40163"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before.http.json": {
+      "bytes": 244,
+      "sha256": "306a0b29f05d1f8c4c60090cf4f219896afdbd4b95099f41e865e02c6d655b10"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent.wire": {
+      "bytes": 152,
+      "sha256": "2088195093b292cc87340761d05c70e6ad4d73771c9b1fcc65bbce87121f74d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice.http.json": {
+      "bytes": 240,
+      "sha256": "9e77b13da8e17624842726bb17be4c458e69e580bd43963bad1130aaf71f8282"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-drain.metrics.json": {
+      "bytes": 24655,
+      "sha256": "f84358a57e841d2b9e1cce5dc2b561357d26139d9a26f29a80d0e860a8b95c15"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-ready.http.json": {
+      "bytes": 246,
+      "sha256": "b825d873d8a5bbbb0efbdd0bf062fde77f7723a4e61caa3cc62223f0551a0c25"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-config.http.json": {
+      "bytes": 252,
+      "sha256": "abbd13df278caabb28a7999d639d9a9452742a79ed6391b8ace0c005d8bb34a4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr.http.json": {
+      "bytes": 244,
+      "sha256": "afffe60aedd2228d8f9ca12af6781fd3ae113c8da6b4c0f24a9e9eff54fa8c35"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-config.http.json": {
+      "bytes": 251,
+      "sha256": "042f29c51b9c3bef0aa27d66650cea5152a79d570cdde8ba5e943d60d46db1c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-config.wire": {
+      "bytes": 16039,
+      "sha256": "00344f8c326c28c99fcac6b4bee9e0ba321380566406a09846625cfaa8a7c4f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/rename.request.json": {
+      "bytes": 263,
+      "sha256": "60162301f260a015f92b8bd1f597feead442015357ca5b87062abffd87d94de5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other.request.json": {
+      "bytes": 218,
+      "sha256": "a413139b952998396f9502b873d8f45523c579e86efd34ffa78535c96dccf475"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-config.http.json": {
+      "bytes": 251,
+      "sha256": "4e19a18d5278a984cf5e5958edbddcd3f69800d491604908d3c0e4c428aab9c5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-config.wire": {
+      "bytes": 16047,
+      "sha256": "a5ff0f310460d2ee5324bb8cd9d530fc77b69bfafda7742f77f7739c53fde2bc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-config.wire": {
+      "bytes": 16039,
+      "sha256": "00344f8c326c28c99fcac6b4bee9e0ba321380566406a09846625cfaa8a7c4f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-chat-config.wire": {
+      "bytes": 16047,
+      "sha256": "a5ff0f310460d2ee5324bb8cd9d530fc77b69bfafda7742f77f7739c53fde2bc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota.request.body": {
+      "bytes": 326792,
+      "sha256": "5e0c5656a6e2f6286102e92e27e5a020cc86dd401f98a1b3a9c1c74ac201a016"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent.wire": {
+      "bytes": 140,
+      "sha256": "a34fda360bed42f29f5a6284217ea338249a3a3d974eaf6077fa002d60565cbe"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr.quality.json": {
+      "bytes": 400,
+      "sha256": "e6d5d91865068842d06a27f97412152f940ec5c113a060aac720af2c8277ef48"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech.request.body": {
+      "bytes": 190,
+      "sha256": "2cf6211ea63124c7ed61601daef76b5ccbb3c8a13a0f716981648349b7534ea9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/cleanup.json": {
+      "bytes": 3031,
+      "sha256": "4c17cade20618890b12562c4db838453cb2865df8e71f2c6952219562666fe7f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice.request.json": {
+      "bytes": 262,
+      "sha256": "0ae52772f3c293903c8c2924ed45449b57c31db697cb1f632f1a77ab6b25e2fe"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other.request.body": {
+      "bytes": 190,
+      "sha256": "2cf6211ea63124c7ed61601daef76b5ccbb3c8a13a0f716981648349b7534ea9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other-ready.http.json": {
+      "bytes": 244,
+      "sha256": "8e4affd8df2880cd632ecf6c546db2c3a0f20edf0a5dcb513c554ed40b0c1697"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-ready.http.json": {
+      "bytes": 245,
+      "sha256": "5e5998b34d59f9059c4ee16c0f7eaa3e12cf9fd68975e21c1c0800c7c0ac9e5b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech.http.json": {
+      "bytes": 283,
+      "sha256": "d4e93ab693287c4c2ad266bc20b1869a8bc39e53d79cbb2327b36f16c64e4e66"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch.request.json": {
+      "bytes": 262,
+      "sha256": "2b5a5dc7026ca9f46919cf8499ee1b7f9b39c1d4ec523b2e55c4d457460821be"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-other.http.json": {
+      "bytes": 247,
+      "sha256": "380c3ae1009af2886955132d388480c7c382c3d233673c6ac6a1f7fca6bbdfac"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/voice-mismatch-drain.metrics.json": {
+      "bytes": 24645,
+      "sha256": "fc5fc139c92d305b2948a026914ac76abffee85e06a72e70e4b6c37827902e1a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/quota-ready.http.json": {
+      "bytes": 245,
+      "sha256": "449ed2032d1416c57953657c93da44da2765383450239ff14fc6e61f7c5d2959"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/speech-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-config.wire": {
+      "bytes": 16047,
+      "sha256": "4c3ccf5c74c458a2c167decdd9f76622d5f82b1ee2b167874e5d4c7c73a3c95d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "0442828daa23131ee5ae619a94156d055e5e086c8545b2203e26c55c7c0936f6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr.request.json": {
+      "bytes": 270,
+      "sha256": "9d9a134c7b2af45e5e4393b23b9ac6dc35356a8e0a66dd9ef47426af516d3dd4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-list.wire": {
+      "bytes": 293,
+      "sha256": "6c5e377ce6c47d0fe1d9c509ee99f45db2133f4fd19e06fd98276293e1bbf4dc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent.request.body": {
+      "bytes": 395912,
+      "sha256": "45c27b37059b5f8e4ad2d42be85f80ad49499f6ed4e087c66b64ea9adab38915"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/base-speech-asr-ready.http.json": {
+      "bytes": 245,
+      "sha256": "ecd5f738764e0fc5986dd9da77a047096c6c961f4f583f00bdf5071c8f448754"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/startup-config.http.json": {
+      "bytes": 251,
+      "sha256": "8eb018f9cab4e891331165038e68fd0acaac7b6646f557b26d0cb43961eb1272"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/negated-consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "122936a278c83937ea25677510e5ab85dfb8d7909780cefad0a791e6d42757c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/consent-config.wire": {
+      "bytes": 16037,
+      "sha256": "e074acf51d962b9d4c88118905fb17f2b1fd021e6d8c69401e52952ee39b0224"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_3cbb5614f6f3b88dbb40d015a60b94f7.json": {
+      "bytes": 287216,
+      "sha256": "7f4d69d5a02e897eb95a07f9b49cf8a7b9bacd45b05dd147edd16b7294fe2143"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice_consent.cons_5afae45204a142599f8e454919f3898b.json": {
+      "bytes": 5026,
+      "sha256": "4a11393dab771a807b46e807ee1df56b049dc6738ff9962458f743ebf8caf7e2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_b19292bfe85d6055d1634a58a6a15b01.json": {
+      "bytes": 435696,
+      "sha256": "1b416daf744e45a2e8b93e8d9541e1244fb734d2779b7691b4772e37b5e50ecb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice.voice_c264a903d4a0fdb536f5960d718828e5.json": {
+      "bytes": 48517,
+      "sha256": "03dcbf2e3223acd9f8328c79e8c1b3d19a8f40f937b1f9a159c3dc4463b04142"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-05/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/plan.json": {
+      "bytes": 319263,
+      "sha256": "cca0b395031f044bd3b4d741c4bc3b0646b443438e525539f6fa746c15808491"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/prepare-invocation-note.json": {
+      "bytes": 216,
+      "sha256": "df2d8d024c70d56c98fb9ec348a4f1d6117f80a1a1ef34651606aa7d0dc548b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/lease/nvml-queries.jsonl": {
+      "bytes": 157495,
+      "sha256": "db8760e63e860c90cc238520a6bd3ed9b52cf468822e9619cc4ea6465ef8afef"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/lease/events.jsonl": {
+      "bytes": 12737,
+      "sha256": "296a71f48dcc0ddac98d7a46d95da8a837e43739b1d12a899aaa18c4a1d66e25"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/lease/exit.json": {
+      "bytes": 711,
+      "sha256": "71af7d2e08564accc76b2cf8819ada59cebf68940d539dce69640770380feaac"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech.request.json": {
+      "bytes": 218,
+      "sha256": "f1260949f68cb2721b065d0a2f93b88728659c16d71142fd97a3f21fcb457371"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-config.http.json": {
+      "bytes": 251,
+      "sha256": "20848e02c67931d59a576b6863039e29de56bad473a7e92dc27d20399d35db41"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "0ea9455575876183b97f6685d7b2693e4d000e138eee33c3cc658a9872f0de69"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "787dfad5e007b5028c266b234fe0dd68ed5b78ef23365cf0036c6b00b2bbfe86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech.http.json": {
+      "bytes": 245,
+      "sha256": "1676a04b50d63f41711853f62c67d7df8995add33f8cccc65e73d845c14a09a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-ready.http.json": {
+      "bytes": 246,
+      "sha256": "798769b0db2d2ea8ef814fdc665b62edf68cdddf1178abadb85f655a1aa31f22"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-drain.metrics.json": {
+      "bytes": 24639,
+      "sha256": "5d2f378454e0405829d9fd9e5a3633d5379c1cbb1313c1bfaa986fbf5c135fd7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoke.http.json": {
+      "bytes": 244,
+      "sha256": "9e86d9aa73aff6a89d95302c27be56b30385ee843307c277111536d748366039"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-consent.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat.request.body": {
+      "bytes": 370,
+      "sha256": "0571c8a15d6f0d03f501c2a94c95a8954e73d340b7c3863440b44530a5ddb662"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat.request.json": {
+      "bytes": 222,
+      "sha256": "768312814fc082ef9f7662d49bdff479662bf874ea596d910844897daef6bc4c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after.http.json": {
+      "bytes": 244,
+      "sha256": "189ee6bb670859fb8bf057669679874bb42b6c4f1fd055fc9ba12fd2282a217c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-ready.http.json": {
+      "bytes": 244,
+      "sha256": "6457460f7772d10dd307a95490c73ea5ba57014dbbf2d16c90a2ae5eb9c36912"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat.http.json": {
+      "bytes": 249,
+      "sha256": "648bd3880c12810948d0c248b62c2cad8da3f1052aff4220256e57d8b3498f84"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-ready.http.json": {
+      "bytes": 246,
+      "sha256": "e38ce4b0831e98bb5153a7137a689e4f937422c38c87567670c9dac006802e8a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr.request.body": {
+      "bytes": 77198,
+      "sha256": "f67cafcd7a9e15f629ff5b8055826b12a2ac865a6a3abb95735a9d27a8c609ef"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/model-identity.json": {
+      "bytes": 1936,
+      "sha256": "b7bc4cc26766a8a15cb9666604eee47cd5b84b2d5c241b4c32889cb7830ff1c7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/delete-voice.request.json": {
+      "bytes": 195,
+      "sha256": "53181761fe118f5bca36612b4d4deac87561255294bc86affcf644c76b63b89d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "ce4c744f777e00e9fe097f2790c9310c9ee6cf3fb1475a714d8901efd41de4ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat.http.json": {
+      "bytes": 246,
+      "sha256": "1dc05ad74cc66c9caffbd42a5a61f0ff88e62179c954f9b4961e8c7a1cbf34b4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/delete-voice.http.json": {
+      "bytes": 245,
+      "sha256": "91d2bb214860d2e39abf47476959c9dab935fea8325a41da978b9133ca3b46ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-config.wire": {
+      "bytes": 16038,
+      "sha256": "a3525018a9a4fa9e72e13081359b4336aa8d2087f1d29e32617a64bee5d7c2a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-config.wire": {
+      "bytes": 16038,
+      "sha256": "a3525018a9a4fa9e72e13081359b4336aa8d2087f1d29e32617a64bee5d7c2a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-config.http.json": {
+      "bytes": 252,
+      "sha256": "35ec01c83f557df6483bbd0c68417690b0fe71288cb447a57d1279d5d22ae84b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-consent.http.json": {
+      "bytes": 248,
+      "sha256": "28d2c3c46a4c59b11735998cc18d609a356f2b58a24e4a4c57d1a193e5beb6e1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-drain.metrics.json": {
+      "bytes": 24643,
+      "sha256": "a6ca63ae4a2c036bd67dd8c8c3a24a9ce88a2751af6e15d3a2cd200c53190153"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-ready.http.json": {
+      "bytes": 246,
+      "sha256": "4ea9ef7619c7381f43c3b2cc9dc196265a9d23a9d1a897bcb9d81ac3fa2da67a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/result.json": {
+      "bytes": 1020,
+      "sha256": "c7f77982941fd72eca1c9ad8f51230a1e1c0dbd8a1bb925630fe068c78f0c59c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat.request.body": {
+      "bytes": 370,
+      "sha256": "0571c8a15d6f0d03f501c2a94c95a8954e73d340b7c3863440b44530a5ddb662"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-config.wire": {
+      "bytes": 16030,
+      "sha256": "357fe9eebfb622e4c2bbe4fb6a5588dda6249a356bdcf7efefd06a55d13435b9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "ca171a5423414e306fcbef6c2c59c8f7115c0e608373e8debaef082719b951b5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "e7332878b415682492fc5f56aeaff109c0bad8249c231ebb84a2317f959ee700"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat.audio.json": {
+      "bytes": 196,
+      "sha256": "2353c4334bc0d786c9d0bc5b53852610705405f39406eecee360316ed99cb9d6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/input-state.json": {
+      "bytes": 1189,
+      "sha256": "3f4e8a6ea5b81f22e0f6d323a8b96ed0b1f20108c19e884eabd89e2157597279"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/persisted-consent.request.json": {
+      "bytes": 199,
+      "sha256": "6bf1e50c4375b5a8c3355dd7047fe77b4e146b188430f1d4a7a792b0e30d8589"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/delete-voice.wire": {
+      "bytes": 85,
+      "sha256": "a5e8edc47fa22a8b1e04eeb31f591e3aa1f841a871ca9b87e3d97b33592b65e9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after.wire": {
+      "bytes": 337,
+      "sha256": "973af16091681bebf636d21652c34ac7faaaef13712e9399593993205d75deb2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "765be9fc6cb793ccf12a773abb545b1d4abdc30057a5d0f3890a5d8ddb3b9903"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/counts.json": {
+      "bytes": 50,
+      "sha256": "cbd10bb42df72375144557da7a361d94ec0fd027f82cd81e438fb47d4cebf7f1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat.wire": {
+      "bytes": 103078,
+      "sha256": "96abcb8e06315d80493e97c2bd4e3299a9cc4e7260181a449b67ec6ce5c9e0b6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "f9fa571df51a259e115bb75b0a8450a288f3d0f5c5e1996d8f3210e9335eb8f2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat.request.json": {
+      "bytes": 222,
+      "sha256": "768312814fc082ef9f7662d49bdff479662bf874ea596d910844897daef6bc4c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/model-command.json": {
+      "bytes": 1595,
+      "sha256": "fef329780032a2e6cb2df1e5acb27ca8655efa20f92defd4813ad252344218ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/model.log": {
+      "bytes": 19953,
+      "sha256": "846cb5676b8f4ea760cb0dfc4488c3d49f36db30fc6568bb50131ac63d3c3400"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other.request.body": {
+      "bytes": 370,
+      "sha256": "0571c8a15d6f0d03f501c2a94c95a8954e73d340b7c3863440b44530a5ddb662"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "b3d520fc13620d33c0c6fd7b12392926fcda3c36568a07acf29e50b11718406a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/stored-chat.wire": {
+      "bytes": 103078,
+      "sha256": "96abcb8e06315d80493e97c2bd4e3299a9cc4e7260181a449b67ec6ce5c9e0b6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoke.request.json": {
+      "bytes": 202,
+      "sha256": "0573f305c30ceac6b1c732b13766a070168ebf55004074a8e304e53af9646348"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech.request.body": {
+      "bytes": 190,
+      "sha256": "2cf6211ea63124c7ed61601daef76b5ccbb3c8a13a0f716981648349b7534ea9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other.http.json": {
+      "bytes": 247,
+      "sha256": "a6576f140bf7b7140051b0ebb37ce4b3eab437054ca06f462f630210e5a19f3a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr.request.json": {
+      "bytes": 269,
+      "sha256": "23da1d8a983728caca1496361d751e8ab6f87eeafc994a288620195649e94b06"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-config.http.json": {
+      "bytes": 252,
+      "sha256": "3385404b43021d104add54f2b63a990c951c23e9cab5d55096f202509080fa32"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-ready.http.json": {
+      "bytes": 246,
+      "sha256": "595dfc8d8a9eb1d147e08e73965d6552ad9ca94c224077ebda953adf47d90a7f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after-config.wire": {
+      "bytes": 16038,
+      "sha256": "a3525018a9a4fa9e72e13081359b4336aa8d2087f1d29e32617a64bee5d7c2a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before.http.json": {
+      "bytes": 244,
+      "sha256": "2b2d717682810478ae1857b6e897a34b01d5cdab81ecf760382476333e3d2741"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state.json": {
+      "bytes": 1634,
+      "sha256": "7626183dfb7871b46c979bd5bb99c8fbff1d342ca0923dfdae05f3e1a111fb52"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr.http.json": {
+      "bytes": 243,
+      "sha256": "c663c22a3fe3cef25d0bf90d47a76e5757fb48bf1a4acee0f0cc6acfd2359b59"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "41a44f1105d273059fff5409b4bdfd1ab7edc54b1c11a4d22ab96b033b0abe43"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoke.wire": {
+      "bytes": 92,
+      "sha256": "c045bb05a19eaf88b47284087a28f6680a4dfa0a691bb61e098feb37533bd9aa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-after.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-config.http.json": {
+      "bytes": 251,
+      "sha256": "d33619583ed5f4d92be96098bebc656b89f9777e23392906326f799aa434f217"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr.quality.json": {
+      "bytes": 385,
+      "sha256": "99058e831948b1e249b997a395c239146c2e79447c171d332d026db45a10ef58"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-config.http.json": {
+      "bytes": 251,
+      "sha256": "735df6cfa73e8c3cf66f3a6117abd199a0b1f0434c41c625d3204cea78cad5b7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-drain.children.json": {
+      "bytes": 685,
+      "sha256": "da275d7c03e6f1dabbcca251d79228c4ea29842a2e63712544bc16649c0fab99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/persisted-consent.wire": {
+      "bytes": 148,
+      "sha256": "dd627ca8151faaa1234ca8f2a4473c81561bafb619b31f63e6caf2dbfd2357ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-config.wire": {
+      "bytes": 16034,
+      "sha256": "e2dd8dd1b932ece421f80bd1d5c98018701b00a0ae26e448ac4ea03a9db5e992"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/base-chat-asr-config.wire": {
+      "bytes": 16038,
+      "sha256": "a3525018a9a4fa9e72e13081359b4336aa8d2087f1d29e32617a64bee5d7c2a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/cleanup.json": {
+      "bytes": 3031,
+      "sha256": "4707b2178cec06f6593dd0434adf757c0f60646b27165871c707c46a4d4ff8d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-config.wire": {
+      "bytes": 16030,
+      "sha256": "357fe9eebfb622e4c2bbe4fb6a5588dda6249a356bdcf7efefd06a55d13435b9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-ready.http.json": {
+      "bytes": 245,
+      "sha256": "de8369302394945b2fdc239635e9ecdd2876052b82fb9d3a2415f175b0cb1870"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other-config.http.json": {
+      "bytes": 251,
+      "sha256": "8279ca3f503ad0f78cf3301f61e99daade201cece6168f5b208aa76dba8bb83b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-config.http.json": {
+      "bytes": 252,
+      "sha256": "6483b099023a0ed0c2892e249acfaa3c3ad4600e58f7d6db822d603924be352d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech-ready.http.json": {
+      "bytes": 246,
+      "sha256": "271feeb6c5bb73e92645cb8ae0ac0b3306f174181aa157130a30a5c65ecfa969"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/stored-chat.request.json": {
+      "bytes": 204,
+      "sha256": "5a1fcc15f02423399a87faa5db0dc0298f86652e9658d0ae5544e9c81c444044"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-consent.request.json": {
+      "bytes": 199,
+      "sha256": "6bf1e50c4375b5a8c3355dd7047fe77b4e146b188430f1d4a7a792b0e30d8589"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/stored-chat.http.json": {
+      "bytes": 252,
+      "sha256": "acf0dfad4d6abced800f71a246ecf2a44110087d3d7f6cab15afafebf8e41733"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "357fe9eebfb622e4c2bbe4fb6a5588dda6249a356bdcf7efefd06a55d13435b9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/chat-other.request.json": {
+      "bytes": 222,
+      "sha256": "61d105f4060a6debffbe5d3e03b733ac254f720618466e8168719a00f69e44b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/persisted-consent.http.json": {
+      "bytes": 247,
+      "sha256": "1771a45d40455f861fd3ea767b919dd6bb48e82fd9b58e0d10ecaae8d9b4d87e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-speech.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/startup-config.http.json": {
+      "bytes": 251,
+      "sha256": "f9ef62a47ff7ba1941fe5cc7c2daf606331d1a2e02da252f8e2c1888f8496785"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/revoked-chat-ready.http.json": {
+      "bytes": 246,
+      "sha256": "e0fc7c2d442b78ff5920402b4aa23423348be73265dea7b8e65b8a0d495d8961"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_3cbb5614f6f3b88dbb40d015a60b94f7.json": {
+      "bytes": 287216,
+      "sha256": "7f4d69d5a02e897eb95a07f9b49cf8a7b9bacd45b05dd147edd16b7294fe2143"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice_consent.cons_5afae45204a142599f8e454919f3898b.json": {
+      "bytes": 5026,
+      "sha256": "4a11393dab771a807b46e807ee1df56b049dc6738ff9962458f743ebf8caf7e2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_8cf7820b86d34920483624dda4eb04ca.json": {
+      "bytes": 596,
+      "sha256": "df6eba7e72da38c25a5d4fd034846967948b98fc3707af624b7e32496cf9d6b8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_b19292bfe85d6055d1634a58a6a15b01.json": {
+      "bytes": 435696,
+      "sha256": "1b416daf744e45a2e8b93e8d9541e1244fb734d2779b7691b4772e37b5e50ecb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-35100fb4afb064a4407b9cf702db6e94.json": {
+      "bytes": 103711,
+      "sha256": "9e51e180832e173f513dfbda7d5283857078397574c16a2a7d1449331834bc57"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice.voice_c264a903d4a0fdb536f5960d718828e5.json": {
+      "bytes": 48517,
+      "sha256": "03dcbf2e3223acd9f8328c79e8c1b3d19a8f40f937b1f9a159c3dc4463b04142"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/registered-state/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_8cf7820b86d34920483624dda4eb04ca.json": {
+      "bytes": 596,
+      "sha256": "df6eba7e72da38c25a5d4fd034846967948b98fc3707af624b7e32496cf9d6b8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-35100fb4afb064a4407b9cf702db6e94.json": {
+      "bytes": 103711,
+      "sha256": "9e51e180832e173f513dfbda7d5283857078397574c16a2a7d1449331834bc57"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-06/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/engine-result.json": {
+      "bytes": 434,
+      "sha256": "3fb2feb7afcdc8e6a9d670800929eb0ffe2b7a14f4a15d34cb9ab0e33b222b7c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/prior-host.json": {
+      "bytes": 217,
+      "sha256": "810fa1dbab2f818e3c458564b5e6c16160f3174b51c0063a8a697cd07059cc08"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/host-result.json": {
+      "bytes": 436,
+      "sha256": "12c11cbab0f2de9c088412626b4aa98964714c7eb0008f78c0934c5324f5b4d0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/prior-host-correction.json": {
+      "bytes": 440,
+      "sha256": "4b619a2e3e61eb0e25c73709e13d01f9c24a0c74742edb82dbe47c8785249cb4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/engine.log": {
+      "bytes": 2059,
+      "sha256": "5dde3459861ce6a450aefa189bcebed72c9af67c8bd3a1d033c7c3e1498abb5f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-build-01/host.log": {
+      "bytes": 1651,
+      "sha256": "a8c3c72bc6d3b7a7c224f593e37ce625b18ae3aaeee1e8034c1655f9c7b70f14"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-cpu-01/result.json": {
+      "bytes": 442,
+      "sha256": "4ce01158c77751a22aca1aabff8d884da5fcc62d5ac65c0162206a7ddc46eaba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-cpu-01/required.txt": {
+      "bytes": 333,
+      "sha256": "217301ee3d15e1c74809aa338eef1c5a9ded442e5b61a816683ab57bef58a6d3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-cpu-01/tests.log": {
+      "bytes": 407,
+      "sha256": "ff1af1738756b0be6f1e35a8478a8f2103003e82da96a5c8596a8d8e64bc5354"
+    },
+    ".q4t-work/serve-custom-voices-20261118/fix_chat_registered_voice_01.py": {
+      "bytes": 4012,
+      "sha256": "03668465a427d11fac6823e38e762d20659d73affb0df3c7732ea8b6dae98371"
+    },
+    ".q4t-work/serve-custom-voices-20261118/build_chat_voice_fix_01.py": {
+      "bytes": 3514,
+      "sha256": "63d47b1f8643f8899412922695a922bbcd89fa69a4a245d00823898ba6cb48d1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/chat-voice-fix-plan-01.json": {
+      "bytes": 1507,
+      "sha256": "336672db11ae46d28aa072569858abe8acaca4b172fcf40ad8def476bf78c347"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_http_continue_05.py": {
+      "bytes": 5748,
+      "sha256": "c94e31790bc6753a92d0cc20d8179a2c6548146c6cafb92989a91bbf6c7dc5e1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_http_continue_05.py": {
+      "bytes": 5817,
+      "sha256": "b3bec0d25e99accab5d072548c787488911ce203cacf13c52f3dba7e913dadbf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_chat_continue_06.py": {
+      "bytes": 2631,
+      "sha256": "97c3167fa8036eb97ab4cb6937f6c225298f3bf98f9e62dc6ad0e7dc41130f90"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_chat_continue_06.py": {
+      "bytes": 5298,
+      "sha256": "769a1de86464aab6360e2f39ecbc7cdc63bd3e104b4505dafaa2cb687ce831f2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/build_voice_aiden_diagnostic_01.py": {
+      "bytes": 1737,
+      "sha256": "9eb5fcde274bb78914bce2b9530d323517ea08d77cfbd921a943b357d7e785b9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_aiden_diagnostic_01.py": {
+      "bytes": 6300,
+      "sha256": "694f29fcb0a5af850d3b21ce46759ae8d7ed381c8dcf628b648741269909e415"
+    },
+    ".q4t-work/serve-custom-voices-20261118/freeze_voice_aiden_diagnostic_01.py": {
+      "bytes": 3678,
+      "sha256": "6937c053d4c1a383408021ce24c6143d9f0d56f7f88b34125950043590a37f40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/freeze_voice_aiden_diagnostic_02.py": {
+      "bytes": 3681,
+      "sha256": "623d89b214dd3326c1b3504a6a263fd0828861928ff07ec896f34c9b288b7b31"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_chat_fix_01.py": {
+      "bytes": 9790,
+      "sha256": "f202c51f19fc6a1ea2fe21c0d16081efbbbbcbf878ce0965f3c4c8f888096b4e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_chat_fix_02.py": {
+      "bytes": 9838,
+      "sha256": "ac88e7a081d3d2e5d3b13b84fb6dcb5a8ff95ad5f01c0e35f0dea0abdbd85cb8"
+    },
+    "src/server/chat_generation.cpp": {
+      "bytes": 235619,
+      "sha256": "97419f149c6cf6bdabf30377a0f67f27b525e6655eb926994109e544b81939de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-05/chat_protocol_sources.json": {
+      "bytes": 76586,
+      "sha256": "3786d36848019ba00aef689de338d8b756988dcc2c75db557adc6b2b7383b234"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-05/identity.json": {
+      "bytes": 221,
+      "sha256": "49bdf099f8e0cba35e3b066aff85142e4ce37b99229bd9709c97852277f34f0a"
+    }
+  },
+  "original_audio_retained_at_same_local_paths": true
+}

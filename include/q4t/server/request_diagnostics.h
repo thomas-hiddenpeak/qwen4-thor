@@ -116,9 +116,9 @@ class RequestDiagnostics {
     attribution_ = digest.empty() ? "-" : std::move(digest);
     return true;
   }
-  void Stage(const char* value) {
-    stage_ = value;
-    const std::string_view name(value);
+  void Stage(std::string_view value) {
+    CopyLabel(stage_, value);
+    const auto name = value;
     progress_stage_ =
         name == "prefill"           ? ProgressStage::kPrefill
         : name == "decode"          ? ProgressStage::kDecode
@@ -143,9 +143,9 @@ class RequestDiagnostics {
   }
   void Admitted(int seq) { seq_ = seq; Event("admitted"); }
   void Released() { released_ = true; }
-  void Outcome(const char* value, const char* reason) {
-    outcome_ = value;
-    reason_ = reason;
+  void Outcome(std::string_view value, std::string_view reason) noexcept {
+    CopyLabel(outcome_, value);
+    CopyLabel(reason_, reason);
   }
   void Observe(Wait kind, Clock::duration elapsed) {
     const auto i = static_cast<size_t>(kind);
@@ -165,6 +165,17 @@ class RequestDiagnostics {
   double Total(Wait kind) const { return totals_[static_cast<size_t>(kind)]; }
 
  private:
+  // Request scopes often outlive the temporary error that supplied a label.
+  // Own bounded copies without allocating on a business failure path. Never
+  // turn an oversized label into a truncated but apparently valid error code.
+  template <size_t N>
+  static void CopyLabel(char (&out)[N], std::string_view value) noexcept {
+    constexpr std::string_view overflow = "diagnostic_label_too_long";
+    static_assert(N > overflow.size());
+    if (value.size() >= N) value = overflow;
+    std::copy(value.begin(), value.end(), out);
+    out[value.size()] = '\0';
+  }
   static ProgressWait ToProgressWait(Wait wait) {
     switch (wait) {
       case Wait::kSlot:
@@ -210,9 +221,9 @@ class RequestDiagnostics {
   Clock::time_point start_ = Clock::now();
   std::string id_ = "unregistered";
   std::string attribution_ = "-";
-  const char* stage_ = "validation";
-  const char* outcome_ = "error";
-  const char* reason_ = "handler_error";
+  char stage_[128] = "validation";
+  char outcome_[128] = "error";
+  char reason_[128] = "handler_error";
   int seq_ = -1;
   bool released_ = false;
   std::array<double, static_cast<size_t>(Wait::kCount)> totals_{};

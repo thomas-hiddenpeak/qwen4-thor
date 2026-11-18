@@ -84,6 +84,8 @@ def check(out, plan, configured):
         witness = dict(requests=request, speech_base64=base64.b64encode(speech).decode(),
             chat_response=chat, health=config['native_tts_health'],
             limits=config['native_tts_limits'])
+        if 'tts_sampling_profile' in plan:
+            witness['sampling_profile'] = plan['tts_sampling_profile']
         evidence.tts_business(witness, identity)
         for kind in ('speech', 'chat'):
             name = prefix+'-'+kind
@@ -110,6 +112,7 @@ def check(out, plan, configured):
                 require(read(name+'-http.json')['status'] == 200,
                         'managed TTS HTTP did not succeed')
         result[prefix] = dict(actual_speech_sha256=hashlib.sha256(speech).hexdigest(),
-            actual_chat_audio_sha256=evidence.TTS_AUDIO['chat'][1],
+            actual_chat_audio_sha256=hashlib.sha256(base64.b64decode(
+                chat['choices'][0]['message']['audio']['data'], validate=True)).hexdigest(),
             usage=chat['usage'], health=witness['health'], limits=witness['limits'])
     return result

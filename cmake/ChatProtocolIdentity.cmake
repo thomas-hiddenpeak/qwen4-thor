@@ -5,6 +5,15 @@ get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE
 set(protocol_inputs
   include/q4t/server/speech_request.h
   src/server/speech_request.cpp
+  include/q4t/server/voice_request.h
+  include/q4t/server/voice_verification.h
+  include/q4t/server/voice_api.h
+  include/q4t/server/voice_registry.h
+  src/server/voice_request.cpp
+  src/server/voice_language.cpp
+  src/server/voice_verification.cpp
+  src/server/voice_api.cpp
+  src/server/voice_registry.cpp
   src/server/chat_audio_output.cpp
   include/q4t/server/chat_audio_output.h
   include/q4t/server/chat_plan_error.h
@@ -41,6 +50,12 @@ set(protocol_inputs
   include/q4t/audio/diarization.h
   include/q4t/audio/speaker_config.h
   include/q4t/audio/speaker_features.h
+  include/q4t/audio/tts_speaker_features.h
+  src/audio/tts_speaker_features.cpp
+  include/q4t/audio/tts_speaker_layout.h
+  src/audio/tts_speaker_layout.cpp
+  include/q4t/audio/tts_speaker_model.h
+  src/audio/tts_speaker_model.cu
   include/q4t/audio/speaker_layout.h
   include/q4t/audio/speaker_model.h
   include/q4t/server/diarized_output.h
@@ -104,6 +119,8 @@ set(protocol_inputs
   include/q4t/server/moderation_options.h
   include/q4t/server/chat_moderation.h
   src/server/chat_moderation.cpp
+  include/q4t/text/voice_consent.h
+  src/text/voice_consent.cpp
   include/q4t/text/tokenizer.h
   src/text/tokenizer.cpp
   include/q4t/server/model_catalog.h
@@ -386,6 +403,11 @@ set(protocol_inputs
   src/server/chat_tts_backend.cpp
   src/server/chat_tts_execution.cpp
   src/server/chat_speech.cpp
+  src/server/chat_speech_prompt.cpp
+  src/server/chat_voice_backend.cpp
+  src/server/chat_voice_execution.cpp
+  src/server/chat_voice_evidence.cpp
+  src/server/chat_voices.cpp
   src/server/speech_codec_stream_protocol.h
   src/server/speech_codec_stream.cpp
   src/server/speech_codec_stream_worker.cpp

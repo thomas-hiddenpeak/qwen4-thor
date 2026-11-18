@@ -89,6 +89,9 @@ ChatServer::~ChatServer() {
   release(d_tts_talker_, "shutdown.native_tts_talker");
   release(d_tts_codec_, "shutdown.native_tts_codec");
   tts_health_.Released();
+  tts_base_health_.Released();
+  release(d_voice_weights_, "shutdown.native_voice_weights");
+  voice_health_.Released();
   release(d_asr_weights_, "shutdown.native_asr_weights");
   asr_health_.Released();
   release(d_aligner_weights_, "shutdown.native_aligner_weights");
@@ -371,12 +374,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
                           kNativeEmbeddingFileBytes, embedding.bytes);
         if (!s) return s;
       }
-      if (!opts.tts_model_dir.empty()) {
+      if (!opts.tts_model_dir.empty() || !opts.tts_base_model_dir.empty()) {
         TtsResourcePlan tts;
-        s = PlanTtsServiceResources(opts.tts_limits,
-                                    opts.tts_limits.max_text_tokens,
-                                    opts.tts_limits.max_prefill_tokens,
-                                    opts.tts_limits.max_frames, &tts);
+        s = PlanTtsServiceResources(
+            opts.tts_limits, opts.tts_limits.max_text_tokens,
+            opts.tts_limits.max_prefill_tokens, opts.tts_limits.max_frames,
+            &tts,
+            opts.tts_base_model_dir.empty() ? audio::TtsVariant::kCustomVoice17B
+                                            : audio::TtsVariant::kBase17B);
         if (!s) return s;
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
@@ -389,12 +394,33 @@ Status ChatServer::Start(const ServerOptions& opts) {
         // its isolated worker slot persists until confirmed process reap.
         s = auxiliary.Add(
             tts.resident_weight_bytes + tts.resident_host_bytes +
+                (!opts.tts_model_dir.empty() && !opts.tts_base_model_dir.empty()
+                     ? tts.resident_host_bytes
+                     : 0) +
                 tts.encoder_address_space_limit,
             uint64_t(admission.inflight) *
                 (6ULL * opts.tts_limits.max_output_mib * (1ULL << 20)),
             tts.source_staging_bytes + tts.expansion_scratch_bytes,
             tts.request_device_bytes + tts.request_host_bytes -
                 tts.encoder_address_space_limit);
+        if (!s) return s;
+      }
+      if (!opts.tts_base_model_dir.empty()) {
+        TtsVoiceResourcePlan voice;
+        s = PlanTtsVoiceResources(
+            60 * 24000, uint64_t(opts.tts_limits.workspace_mib) << 20, &voice);
+        if (!s) return s;
+        AdmissionLimits admission;
+        s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
+        if (!s) return s;
+        input_weights += voice.device_weight_bytes;
+        s = auxiliary.Add(
+            voice.device_weight_bytes + (512ULL << 20) + (2ULL << 30),
+            uint64_t(admission.inflight) *
+                ((24ULL << 20) + 60 * (16000 + 24000) * sizeof(float) +
+                 voice.host_feature_bytes),
+            voice.source_staging_bytes + (6ULL << 20),
+            voice.device_workspace_bytes);
         if (!s) return s;
       }
       if (!opts.asr_model_dir.empty()) {
@@ -831,6 +857,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!embedding_model_dir_.empty()) {
     s = embedding_catalog_.Configure(model::EmbeddingConfig::kModelId, {},
                                      static_cast<int64_t>(std::time(nullptr)));
+    if (!s) return s;
+  }
+  tts_base_model_dir_ = opts.tts_base_model_dir;
+  tts_base_health_.Configure(!tts_base_model_dir_.empty());
+  voice_health_.Configure(!tts_base_model_dir_.empty());
+  if (!tts_base_model_dir_.empty()) {
+    s = tts_base_catalog_.Configure(kNativeTtsBaseModel, {},
+                                    static_cast<int64_t>(std::time(nullptr)));
     if (!s) return s;
   }
   tts_model_dir_ = opts.tts_model_dir;

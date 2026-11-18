@@ -1,0 +1,59 @@
+{
+  "status": "METADATA_ONLY_NOT_FULL_ASSET_ACCEPTANCE",
+  "files": [
+    {
+      "name": "repository.json",
+      "url": "https://huggingface.co/api/models/Qwen/Qwen3-TTS-12Hz-1.7B-Base?blobs=true",
+      "bytes": 4909,
+      "sha256": "903fe4aff6a29a788962dfcc690f76bf3770d6ad9e1ca45a5ca824b9e57b1538"
+    },
+    {
+      "name": "config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/config.json",
+      "bytes": 4494,
+      "sha256": "b4f01752d15a488abde3e1ab44723ae4f4b9e68a4037257b098b3737893cc1f9"
+    },
+    {
+      "name": "generation_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/generation_config.json",
+      "bytes": 245,
+      "sha256": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa"
+    },
+    {
+      "name": "header-size.bin",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/model.safetensors?download=true&q4t=header-prefix",
+      "bytes": 8,
+      "sha256": "6860899ebdb8b9d02346d890ba28f3253bcd91dd33f80d8e451289e7aa88acab"
+    },
+    {
+      "name": "header.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/model.safetensors?download=true&q4t=header-body",
+      "bytes": 58856,
+      "sha256": "47b95834f35677667ecdc639f5374298102c303a1aefd8dc582a5db043f219ac"
+    }
+  ],
+  "gpu_loads": 0,
+  "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+  "complete_weight_identity": {
+    "rfilename": "model.safetensors",
+    "blobId": "ddd8a08fb25fddc128a33dd3f7352c778acce927",
+    "size": 3857413744,
+    "lfs": {
+      "sha256": "38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c",
+      "size": 3857413744,
+      "pointerSize": 135
+    }
+  },
+  "header_bytes": 58856,
+  "tensors": 480,
+  "data_bytes": 3857354880,
+  "seconds": 13.948974900878966,
+  "download_bytes": 68512,
+  "metadata_only": true,
+  "full_weight_hash_verified": false,
+  "upstream_source": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+  "fixtures": {
+    "base-17b-config.json": "b4f01752d15a488abde3e1ab44723ae4f4b9e68a4037257b098b3737893cc1f9",
+    "base-17b-header.json": "47b95834f35677667ecdc639f5374298102c303a1aefd8dc582a5db043f219ac"
+  }
+}

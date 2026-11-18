@@ -29,7 +29,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_ops import contracts
-from tools.serve_recovery import bundle, profile_contract, profile_evidence
+from tools.serve_recovery import bundle, profile_contract, profile_evidence, profile_voice, profile_consumer
 from tools.serve_responses import background_acceptance as background
 from tools.serve_responses import encryption_acceptance as encrypted
 from tools.serve_service import capacity, package
@@ -40,11 +40,25 @@ DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
 SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
-def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None):
+def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
+               native_tts_base=None, *, voice_consumer=False):
     capacity.validate(profile)
+    require(type(voice_consumer) is bool and (not voice_consumer or
+        native_tts_base is not None and native_asr is None and native_tts is None),
+        'saved voice qualification requires explicit Base-only backends')
     require(type(chat_audio) is bool and (not chat_audio or native_asr is not None),
             'Chat audio qualification requires native ASR')
+    if native_tts_base is not None:
+        package.tts_settings(native_tts_base, base=True)
+        if not voice_consumer:
+            require(native_asr is not None and {'speaker', 'vad'} <= native_asr.keys(),
+                    'voice registration qualification requires ASR, speaker and VAD')
+            package.asr_settings(native_asr, voice_registration=True)
+        require(native_tts is None or package.same_json(native_tts['limits'],
+                native_tts_base['limits']), 'TTS profile families must share effective limits')
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
+                (2*(profile_consumer.POSTS_PER_PROFILE if voice_consumer else
+                    profile_voice.POSTS_PER_PROFILE) if native_tts_base is not None else 0) +
                 (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
                 (2 if native_asr is not None else 0) +
                 (2 if native_tts is not None and native_asr is not None else 0) +
@@ -54,9 +68,10 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None):
 
 
 
-def check_tts_family_reload(before, after, previous, encoded, identity):
+def check_tts_family_reload(before, after, previous, encoded, identity,
+                            *, sampling_profile=None):
     """Require actual eviction, full byte-identical reload, and retained metadata."""
-    profile_evidence.tts_audio(encoded, 'speech')
+    profile_evidence.tts_audio(encoded, 'speech', sampling_profile=sampling_profile)
     old = before['native_tts_health']; new = after['native_tts_health']
     require(old.get('state') == 'metadata_ready' and old.get('device_bytes') == 0 and
         old.get('reason') == 'none' and new.get('state') == 'ready' and
@@ -108,6 +123,9 @@ def command(plan, name, directory):
     base = copy.deepcopy(plan['base'])
     base['settings'].update(profile=plan['profiles'][name], port=plan['port'],
                             operations_port=plan['operations_port'])
+    if plan.get('voice_consumer'):
+        base['settings']['application_state']['directory'] = str(
+            directory/(name+'-application-objects'))
     args = package.command(directory, base, state_directory=directory)
     args[0] = plan['binary']
     return args
@@ -172,8 +190,22 @@ def prepare(args):
     engine = args.package.resolve()/'engine'
     base = read(engine/'manifest.json')
     manifest = read(engine.parent/'manifest.json')
+    consumer_path = getattr(args, 'voice_consumer', None)
+    consumer = profile_consumer.inputs(consumer_path) if consumer_path else None
+    removed = {}
+    if consumer is not None:
+        require(not any(getattr(args, key, None) for key in
+            ('asr_config', 'tts_config', 'asr_audio', 'speaker_audio',
+             'separator_audio', 'chat_audio', 'tts_checkpoint_sampling', 'voice_fixtures')),
+            'Base-only consumer cannot configure registration or builtin TTS inputs')
+        for key in ('native_asr', 'native_tts'):
+            removed[key] = base['settings'].pop(key, None)
+    voice_path = getattr(args, 'tts_base_config', None)
+    voice = (package.tts_settings(read(voice_path), base=True) if voice_path else
+             base['settings'].get('native_tts_base'))
+    if voice is not None:base['settings']['native_tts_base'] = voice
     asr_path = getattr(args, 'asr_config', None)
-    asr = package.asr_settings(read(asr_path)) if asr_path else \
+    asr = package.asr_settings(read(asr_path), voice_registration=voice is not None) if asr_path else \
         base['settings'].get('native_asr')
     if asr is not None:
         base['settings']['native_asr'] = asr
@@ -181,17 +213,50 @@ def prepare(args):
     tts = package.tts_settings(read(tts_path)) if tts_path else base['settings'].get('native_tts')
     if tts is not None:
         base['settings']['native_tts'] = tts
+    checkpoint = getattr(args, 'tts_checkpoint_sampling', False)
+    require(type(checkpoint) is bool and (not checkpoint or tts is not None),
+            'checkpoint witness requires configured builtin TTS')
     selected_path = getattr(args, 'capacity_config', None)
     selected = capacity.normalize(read(selected_path)) if selected_path else \
         capacity.validate(base['settings']['profile'])
     profiles = profile_contract.profiles(selected)
     media = selected.get('allow_media', False)
     chat_audio = getattr(args, 'chat_audio', False)
-    limits = limits_for(selected, asr, chat_audio, tts)
+    limits = limits_for(selected, asr, chat_audio, tts, voice,
+                        voice_consumer=consumer is not None)
+    fixture_path = getattr(args, 'voice_fixtures', None)
+    require((voice is not None and consumer is None) == (fixture_path is not None),
+            'Base registration qualification needs its explicit voice fixture manifest')
+    clips = profile_voice.fixtures(fixture_path) if fixture_path is not None else None
+    if voice is not None:
+        # Validate the three real client identities before any model startup.
+        helper = profile_consumer if consumer is not None else profile_voice
+        helper.client_policy(Stage.client_policy_base(), selected, voice)
     background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     if chat_audio: plan['chat_audio'] = True
+    if checkpoint: plan['tts_sampling_profile'] = profile_evidence.TTS_CHECKPOINT_SAMPLING
+    if consumer is not None:
+        plan['voice_consumer'] = consumer
+        plan['explicit_backend_selection'] = dict(mode='base_only_saved_voice',
+            previous=removed, default_unchanged=True, registration_qualified=False)
+        plan['sources'][consumer['manifest']] = consumer['sha256']
+        for name, digest in consumer['files'].items():
+            plan['sources'][str(Path(consumer['directory'])/name)] = digest
+        source = Path(profile_consumer.__file__).resolve()
+        plan['sources'][str(source)] = sha(source)
+    if clips is not None:
+        plan['voice_clips'] = clips
+        for p in (voice_path, fixture_path):
+            if p is not None:
+                p = p.resolve(strict=True);plan['sources'][str(p)] = sha(p)
+        for row in clips.values():plan['sources'][row['path']] = row['sha256']
+        source = Path(profile_voice.__file__).resolve()
+        plan['sources'][str(source)] = sha(source)
+    if voice_path and consumer is not None:
+        source = voice_path.resolve(strict=True)
+        plan['sources'][str(source)] = sha(source)
     if tts_path:
         tts_path = tts_path.resolve(strict=True)
         plan['sources'][str(tts_path)] = sha(tts_path)
@@ -240,7 +305,7 @@ def prepare(args):
     plan.update(base=base, profiles=profiles,
         identity=profile_contract.binding(base['files']['q4t'], base['protocol_sha256'],
             base['model_files'], manifest['model_assets'], base['settings']['native_embedding'],
-            asr, tts))
+            asr, tts, voice))
     plan['sources'][DOCUMENT] = sha(ROOT/DOCUMENT)
     if media:
         plan['sources'][profile_evidence.MEDIA_FILE] = sha(ROOT/profile_evidence.MEDIA_FILE)
@@ -248,8 +313,10 @@ def prepare(args):
     assets = Path(base['settings']['native_embedding']['directory'])
     plan['native_assets'] = {str(assets/name):sha(assets/name) for name in
                             ['config.json', 'tokenizer.json', 'model.safetensors']}
-    if tts is not None:
-        speech_assets = Path(tts['directory'])
+    for speech_model, fixed in ((tts, package.NATIVE_TTS),
+                                (voice, package.NATIVE_TTS_BASE)):
+        if speech_model is None:continue
+        speech_assets = Path(speech_model['directory'])
         for prefix in ('', 'speech_tokenizer/'):
             for name in ('config.json', 'preprocessor_config.json', 'model.safetensors'):
                 asset = speech_assets/(prefix+name)
@@ -259,9 +326,9 @@ def prepare(args):
             asset = speech_assets/name
             plan['native_assets'][str(asset)] = sha(asset)
         require(plan['native_assets'][str(speech_assets/'model.safetensors')] ==
-            package.NATIVE_TTS['weight_sha256'] and
+            fixed['weight_sha256'] and
             plan['native_assets'][str(speech_assets/'speech_tokenizer/model.safetensors')] ==
-            package.NATIVE_TTS['codec_weight_sha256'], 'qualified TTS paired assets differ')
+            fixed['codec_weight_sha256'], 'qualified TTS paired assets differ')
     if asr is not None:
         clip = getattr(args, 'asr_audio', None)
         require(clip is not None, 'ASR qualification needs its fixed real audio')
@@ -315,9 +382,19 @@ def prepare(args):
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)
     plan['planned'] = dict(starts=2, requests=limits['chats'],
-                           chats=6 + 2 * chat_audio + (2 if tts is not None else 0),
+                           chats=6 + 2 * chat_audio + (2 if tts is not None else 0) +
+                                 (2 if voice is not None else 0),
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
+    if voice is not None:
+        plan['planned']['native_voice_business_requests'] = 2*(profile_consumer.POSTS_PER_PROFILE
+            if consumer is not None else profile_voice.POSTS_PER_PROFILE)
+        plan['planned']['native_voice_registrations'] = 0 if consumer is not None else 4
+        plan['planned']['registered_voice_synthesis_requests'] = 4
+        plan['planned']['registered_voice_transcriptions'] = 0 if consumer is not None else 4
+        if consumer is not None:
+            plan['planned']['complete_audio_witness_comparisons'] = 4
+            plan['planned']['registration_not_configured_rejections'] = 4
     if tts is not None:
         plan['planned']['native_speech_requests'] = 2 + (2 if asr is not None else 0)
         plan['planned']['native_speech_reload_requests'] = 2 if asr is not None else 0
@@ -348,14 +425,30 @@ class Stage(encrypted.Stage):
     requests_per_minute = 16
 
     def __init__(self, plan):
+        if 'tts_sampling_profile' in plan:
+            profile_evidence.tts_sampling(dict(sampling_profile=plan['tts_sampling_profile']))
+            require(plan['base']['settings'].get('native_tts') is not None,
+                    'sampling witness without builtin TTS')
         selected = plan['profiles']['primary']
         self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'),
-                                 plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'))
+                                 plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'),
+                                 plan['base']['settings'].get('native_tts_base'),
+                                 voice_consumer=plan.get('voice_consumer') is not None)
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
 
+    @staticmethod
+    def client_policy_base():
+        # Reuse the existing private qualification policy, without an engine.
+        stage = object.__new__(Stage)
+        return encrypted.Stage.client_policy(stage)
+
     def client_policy(self):
         value = super().client_policy()
+        base = self.plan['base']['settings'].get('native_tts_base')
+        if base is not None:
+            helper = profile_consumer if self.plan.get('voice_consumer') else profile_voice
+            return helper.client_policy(value, self.plan['profiles']['primary'], base)
         tts = self.plan['base']['settings'].get('native_tts')
         if tts is not None:
             frames = tts['limits']['max_frames']
@@ -371,7 +464,12 @@ class Stage(encrypted.Stage):
         background.probe_ports((self.plan['port'], self.plan['operations_port']))
         for path, digest in self.plan['native_assets'].items():
             require(sha(path) == digest, 'qualified native backend asset drift')
-        save(self.out/'client-policy.json', self.client_policy())
+        policy = self.client_policy()
+        capacity.check_clients(self.plan['profiles'][name], policy)
+        save(self.out/'client-policy.json', policy)
+        if self.plan.get('voice_consumer'):
+            profile_consumer.clone(self.plan['voice_consumer'],
+                                   self.out/(name+'-application-objects'))
         args = command(self.plan, name, self.out)
         save(self.out/(name+'-command.json'), args)
         self.budget('starts')
@@ -426,9 +524,12 @@ class Stage(encrypted.Stage):
         status, config = self.http('/v1/config', label=self.profile_name+'-tts-config')
         require(status == 200, 'qualified TTS configuration unavailable')
         config = json.loads(config)
-        return dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
+        result = dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
             chat_response=chat, health=config['native_tts_health'],
             limits=config['native_tts_limits'])
+        if 'tts_sampling_profile' in self.plan:
+            result['sampling_profile'] = self.plan['tts_sampling_profile']
+        return result
 
     def tts_family_reload(self, previous):
         label = self.profile_name+'-speech-reload'
@@ -446,7 +547,8 @@ class Stage(encrypted.Stage):
         require(status == 200, 'post-reload health unavailable')
         after = json.loads(raw)
         check_tts_family_reload(before, after, previous['health'], encoded,
-                               self.plan['identity'])
+                               self.plan['identity'],
+                               sampling_profile=profile_evidence.tts_sampling(previous))
         save(self.out/(label+'.result.json'), dict(status='PASS',
             speech_sha256=hashlib.sha256(base64.b64decode(encoded)).hexdigest(),
             before=before, after=after, same_model=True))
@@ -528,6 +630,9 @@ class Stage(encrypted.Stage):
     def profile_business(self):
         # Qualify the affected speech cases before unrelated model requests.
         early = {}
+        if self.plan['identity'].get('native_tts_base') is not None:
+            helper = profile_consumer if self.plan.get('voice_consumer') else profile_voice
+            early['voice'] = helper.Lifecycle(self).run()
         if profile_evidence.has_speaker(self.plan['identity']):
             early['speaker'] = self.audio_request(speaker=True)
         if profile_evidence.has_separator(self.plan['identity']):
@@ -606,7 +711,9 @@ def finalize(out):
     plan = read(out/'plan.json')
     result = read(out/'result.json')
     limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'),
-                         plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'))
+                         plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'),
+                                 plan['base']['settings'].get('native_tts_base'),
+                                 voice_consumer=plan.get('voice_consumer') is not None)
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
@@ -633,13 +740,14 @@ def finalize(out):
     for name in profile_contract.NAMES:
         config = read(out/(name+'-config.json'))
         capability = read(out/(name+'-capabilities.json'))
+        business_value = read(out/(name+'-business.json'))
         value = dict(format=profile_evidence.format_for(plan['profiles'][name],
-            plan['identity'], capability), profile=name,
+            plan['identity'], capability, business_value), profile=name,
             identity=plan['identity'], capacity=plan['profiles'][name],
             capabilities=capability,
             configuration=contracts.configuration(config, version=5),
             startup_memory=config['startup_memory']['checks']['before_allocations'],
-            business=read(out/(name+'-business.json')), environment=env)
+            business=business_value, environment=env)
         path = qualified/(name+'.json')
         save(path, value)
         registry['qualifications'][name] = profile_contract.qualification(name,
@@ -669,8 +777,16 @@ def main():
                    help='unsealed compiled build to qualify before release packaging')
     p.add_argument('--capacity-config', type=Path,
                    help='explicit versioned candidate capacity; retained package stays unchanged')
+    p.add_argument('--tts-checkpoint-sampling', action='store_true',
+                   help='use versioned complete checkpoint-sampling audio witnesses')
     p.add_argument('--tts-config', type=Path,
                    help='explicit paired TTS identity, asset directory and all budgets')
+    p.add_argument('--tts-base-config', type=Path,
+                   help='explicit Base identity, asset directory and shared TTS budgets')
+    p.add_argument('--voice-consumer', type=Path,
+                   help='explicit Base-only deployment: qualified saved voice receipt; disables ASR and builtin TTS in this private plan only')
+    p.add_argument('--voice-fixtures', type=Path,
+                   help='pinned consent/sample/different/negated WAV manifest; never success evidence')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,

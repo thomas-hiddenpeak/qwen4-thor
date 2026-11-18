@@ -1,0 +1,138 @@
+{
+  "status": "PASS_CPU_REFERENCE_GENERATION_ONLY",
+  "records": [
+    {
+      "name": "silence",
+      "samples": 512,
+      "frames": 2,
+      "pcm": {
+        "file": "silence-pcm.f32",
+        "bytes": 2048,
+        "sha256": "e5a00aa9991ac8a5ee3109844d84a55583bd20572ad3ffcd42792f3c36b183ad"
+      },
+      "mel": {
+        "file": "silence-canonical.f32",
+        "bytes": 1024,
+        "sha256": "d2782a67da5f8c8504348e36bd296e956cc75474c8f224ce1ffdb6e556448f6d"
+      }
+    },
+    {
+      "name": "impulse",
+      "samples": 385,
+      "frames": 1,
+      "pcm": {
+        "file": "impulse-pcm.f32",
+        "bytes": 1540,
+        "sha256": "196b76aa2c95c6c3906328642deffc1db9a94259b787438c647b09db41d8dc5a"
+      },
+      "mel": {
+        "file": "impulse-canonical.f32",
+        "bytes": 512,
+        "sha256": "9331110910e3e409edb7c692e0a0272c7d7b1d1f13de0f2ce6d234825adff371"
+      }
+    },
+    {
+      "name": "tone",
+      "samples": 2400,
+      "frames": 9,
+      "pcm": {
+        "file": "tone-pcm.f32",
+        "bytes": 9600,
+        "sha256": "03d641bdf95f7368b632316f1ade5b29f3581cdda932203720d679c0df1b4662"
+      },
+      "mel": {
+        "file": "tone-canonical.f32",
+        "bytes": 4608,
+        "sha256": "3c71a515802d4a1cf144ee0c8530c93306d871e781b25e8a3edc26a29454a531"
+      }
+    },
+    {
+      "name": "mixture",
+      "samples": 5001,
+      "frames": 19,
+      "pcm": {
+        "file": "mixture-pcm.f32",
+        "bytes": 20004,
+        "sha256": "4669c93343af134f2d39ddbd3aee39257bd8c385ccfb49cb6a39a34b288c518c"
+      },
+      "mel": {
+        "file": "mixture-canonical.f32",
+        "bytes": 9728,
+        "sha256": "51bf50e32c0661486583f218982ae1d5ccda8e68360805df4c96c75f583cd8ca"
+      }
+    },
+    {
+      "name": "noise",
+      "samples": 1997,
+      "frames": 7,
+      "pcm": {
+        "file": "noise-pcm.f32",
+        "bytes": 7988,
+        "sha256": "50e029aef273a3a1cdfc3a0b9491035e7423a9d53b1ae891298bc1045299fcbe"
+      },
+      "mel": {
+        "file": "noise-canonical.f32",
+        "bytes": 3584,
+        "sha256": "c2395b98314d4a21af4eedac863d1c6fe350d6f8e411af6728e06e1217b66529"
+      }
+    },
+    {
+      "name": "tail",
+      "samples": 24017,
+      "frames": 93,
+      "pcm": {
+        "file": "tail-pcm.f32",
+        "bytes": 96068,
+        "sha256": "3e5bf8372d8feebb5cf52427c23888f77d9ba4d762d22fdcc08b56574b05ebb9"
+      },
+      "mel": {
+        "file": "tail-canonical.f32",
+        "bytes": 47616,
+        "sha256": "800c62e71ef62ad463362d125b49fe6206b5626dde939ce018ce14bda46e6481"
+      }
+    }
+  ],
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.2",
+  "seconds": 0.024586094077676535,
+  "cuda_initialized": false,
+  "model_constructions": 0,
+  "maximum_absolute_logmel_error": 0.0001,
+  "precision": "float64_equations",
+  "sources": [
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/frontend-reference-source-01/convert.py",
+      "sha256": "3f0679eeb5706771797ddacc4174bfacd1146abae78e8a583d97d6aa4391985f",
+      "functions": [
+        "hz_to_mel",
+        "mel_to_hz",
+        "fft_frequencies",
+        "mel_frequencies"
+      ]
+    },
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/frontend-reference-source-01/filters.py",
+      "sha256": "df2914ab2262a5b72e59dba320e35fb934a0825c314c48a2542ade8c23116c4e",
+      "functions": [
+        "mel"
+      ]
+    },
+    {
+      "file": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models/modeling_qwen3_tts.py",
+      "sha256": "25c42656bcf810f06ef6bc1839bd7083f3c8cfedac3a147c4060b4262b1c96a0",
+      "functions": [
+        "dynamic_range_compression_torch",
+        "mel_spectrogram"
+      ]
+    }
+  ],
+  "generator_sha256": "94d129389f9b472ded7fc4d0476879c5e03ab73d25c715781cd46c97971fb3cd",
+  "adaptations": [
+    "AST extraction; unrelated imports omitted",
+    "Memoization decorators omitted; calculations unchanged",
+    "Postponed type annotations; only concrete overload definitions",
+    "Explicit CPU-only PyTorch; source PCM is FP32",
+    "Float64 operands/window/FFT/magnitude/reduction/log; official F32 mel filter values cast to float64; final output stored as F32"
+  ],
+  "original_generation_manifest_sha256": "6a9815c32709f1891c5673b75bee00d6da3b1a696294fbc343c6fc724b52de2f"
+}

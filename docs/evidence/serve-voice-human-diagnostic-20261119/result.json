@@ -1,0 +1,131 @@
+{
+  "returncode": 0,
+  "seconds": 9.276861834339797,
+  "gpu_loads": 0,
+  "status": "DIAGNOSTIC_OBSERVATIONS_REFERENCE_ALIGNED",
+  "production_gates": [
+    {
+      "clip": 0,
+      "accepted": true,
+      "reason": ""
+    },
+    {
+      "clip": 1,
+      "accepted": true,
+      "reason": ""
+    },
+    {
+      "clip": 2,
+      "accepted": true,
+      "reason": ""
+    },
+    {
+      "clip": 3,
+      "accepted": true,
+      "reason": ""
+    },
+    {
+      "clip": 4,
+      "accepted": false,
+      "reason": "Recording contains inconsistent speaker identities"
+    },
+    {
+      "clip": 5,
+      "accepted": false,
+      "reason": "Recording contains inconsistent speaker identities"
+    }
+  ],
+  "expected_gates": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "window_classification_matches": true,
+  "recording_pairs": [
+    {
+      "first": 0,
+      "second": 1,
+      "same": true,
+      "aggregate_cosine": 0.7273835054942505,
+      "whole_cosine": 0.7294943209080066
+    },
+    {
+      "first": 0,
+      "second": 2,
+      "same": false,
+      "aggregate_cosine": 0.0761979785869903,
+      "whole_cosine": 0.07619797858699033
+    },
+    {
+      "first": 1,
+      "second": 2,
+      "same": false,
+      "aggregate_cosine": -0.00025669038794983996,
+      "whole_cosine": 0.00603123432335583
+    }
+  ],
+  "recording_pair_matches": true,
+  "observations": [
+    {
+      "clip": 0,
+      "name": "speaker_A_recording_1",
+      "windows": 1,
+      "minimum_window_pair": null,
+      "whole_row": 1
+    },
+    {
+      "clip": 1,
+      "name": "speaker_A_recording_2",
+      "windows": 2,
+      "minimum_window_pair": 0.9823240837270284,
+      "whole_row": 4
+    },
+    {
+      "clip": 2,
+      "name": "speaker_B_recording_1",
+      "windows": 1,
+      "minimum_window_pair": null,
+      "whole_row": 6
+    },
+    {
+      "clip": 3,
+      "name": "same_A1_A2",
+      "windows": 3,
+      "minimum_window_pair": 0.7151047476106028,
+      "whole_row": 10
+    },
+    {
+      "clip": 4,
+      "name": "mixed_A1_B1",
+      "windows": 2,
+      "minimum_window_pair": 0.07180883918639842,
+      "whole_row": 13
+    },
+    {
+      "clip": 5,
+      "name": "mixed_B1_A1",
+      "windows": 3,
+      "minimum_window_pair": 0.07570956832931837,
+      "whole_row": 17
+    }
+  ],
+  "reference_comparisons": 18,
+  "reference_max_relative_l2": 2.2879580286959834e-06,
+  "reference_minimum_cosine": 0.9999999999974294,
+  "production_threshold_unchanged": 0.65,
+  "general_threshold_calibrated": false,
+  "lease_status": "COMMAND_FAILED_ORIGINAL_CPU_GUARD_RETAINED",
+  "nvml_queries": 4,
+  "nvml_all_ok": true,
+  "native_seconds": 1.11695,
+  "initial_attempt_seconds": 1.6044566398486495,
+  "native_gpu_speaker_loads": 1,
+  "cpu_reference_successful_loads": 1,
+  "cpu_reference_initial_loads": 0,
+  "owned_cleanup_confirmed": true,
+  "default_unchanged": true,
+  "voice_registration_http_qualified": false
+}

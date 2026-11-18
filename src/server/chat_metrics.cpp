@@ -394,6 +394,10 @@ void ChatServer::HandleModels(int fd) {
     body.resize(body.size() - 2);
     body += ',' + tts_catalog_.RetrieveJson(kNativeTtsModel) + "]}";
   }
+  if (!tts_base_model_dir_.empty()) {
+    body.resize(body.size() - 2);
+    body += ',' + tts_base_catalog_.RetrieveJson(kNativeTtsBaseModel) + "]}";
+  }
   if (!asr_model_dir_.empty()) {
     body.resize(body.size() - 2);
     body += ',' + asr_catalog_.RetrieveJson(audio::AsrConfig::kModelId) + "]}";
@@ -412,7 +416,9 @@ void ChatServer::HandleModel(int fd, const std::string& method,
              (embedding_model_dir_.empty() ||
               !embedding_catalog_.Contains(model)) &&
              (asr_model_dir_.empty() || !asr_catalog_.Contains(model)) &&
-             (tts_model_dir_.empty() || !tts_catalog_.Contains(model))) {
+             (tts_model_dir_.empty() || !tts_catalog_.Contains(model)) &&
+             (tts_base_model_dir_.empty() ||
+              !tts_base_catalog_.Contains(model))) {
     detail::SendError(fd, 404, "model is not registered by this server", {},
                       "model_not_found", "model");
   } else if (method == "DELETE") {
@@ -422,6 +428,8 @@ void ChatServer::HandleModel(int fd, const std::string& method,
                       "model_not_deletable", "model");
   } else {
     const auto& catalog = model_catalog_.Contains(model) ? model_catalog_
+                          : tts_base_catalog_.Contains(model)
+                              ? tts_base_catalog_
                           : tts_catalog_.Contains(model) ? tts_catalog_
                           : asr_catalog_.Contains(model) ? asr_catalog_
                                                          : embedding_catalog_;
@@ -431,16 +439,16 @@ void ChatServer::HandleModel(int fd, const std::string& method,
 }
 
 void ChatServer::HandleCapabilities(int fd) {
-  SendSimple(
-      fd, 200, "OK",
-      ChatCapabilitiesJson(
-          model_name_, allow_media_, mtp_loaded_,
-          vision_device_budget_.attention_shared_bytes,
-          access_program_policy_.get(), !embedding_model_dir_.empty(),
-          !asr_model_dir_.empty(), !aligner_model_dir_.empty(),
-          !vad_model_dir_.empty(), vad_max_chunks_, !speaker_model_dir_.empty(),
-          !separator_model_dir_.empty(), !tts_model_dir_.empty()),
-      "application/json");
+  SendSimple(fd, 200, "OK",
+             ChatCapabilitiesJson(
+                 model_name_, allow_media_, mtp_loaded_,
+                 vision_device_budget_.attention_shared_bytes,
+                 access_program_policy_.get(), !embedding_model_dir_.empty(),
+                 !asr_model_dir_.empty(), !aligner_model_dir_.empty(),
+                 !vad_model_dir_.empty(), vad_max_chunks_,
+                 !speaker_model_dir_.empty(), !separator_model_dir_.empty(),
+                 !tts_model_dir_.empty(), !tts_base_model_dir_.empty()),
+             "application/json");
 }
 
 }  // namespace q4t::server

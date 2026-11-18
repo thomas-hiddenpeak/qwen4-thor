@@ -34,10 +34,15 @@ LIMITS = dict(tool_retained=dict(starts=1, chats=3, probes=0, controls=1500, sec
 WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
-def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False):
-    require(all(type(v) is bool for v in (chat_audio, native_tts, retained_tts)),
+def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False,
+               native_voice=False):
+    require(all(type(v) is bool for v in (chat_audio, native_tts, retained_tts, native_voice)),
             'invalid managed audio budget flags')
     limits = dict(LIMITS[scenario])
+    if native_voice:
+        require(scenario != 'tls_remaining' and not retained_tts,
+                'registered voice needs its complete recovery phases')
+        limits['chats'] += 8 if scenario == 'tool_retained' else 12
     if retained_tts:
         require(scenario == 'tls_remaining' and native_tts,
                 'retained TTS requires its verified exact TLS predecessor')
@@ -54,7 +59,8 @@ def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False)
 def configure_plan_limits(plan):
     expected = limits_for(plan['scenario'], plan.get('chat_audio', False),
                           plan.get('native_tts') is not None,
-                          plan.get('reused_tls', {}).get('tts_complete', False))
+                          plan.get('reused_tls', {}).get('tts_complete', False),
+                          plan.get('native_voice') is not None)
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
     # Reused actors/verifiers share this process-local namespace, never a live
     # service policy. Only the fixed feature-specific increment is accepted.
@@ -92,10 +98,12 @@ def prepare(args):
     chat_audio = profile_evidence.chat_audio_enabled(
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
     native_tts = manifest['recovery_profiles']['identity'].get('native_tts')
-    profile_contract.tts_capability_binding(native_tts, qualified['capabilities'])
+    native_voice = manifest['recovery_profiles']['identity'].get('native_tts_base')
+    profile_contract.tts_capability_binding(native_tts, qualified['capabilities'],
+        native_voice, manifest['recovery_profiles']['identity'].get('native_asr'))
     limits = limits_for(args.scenario, chat_audio, native_tts is not None,
         args.scenario == 'tls_remaining' and native_tts is not None and
-        args.retained is not None)
+        args.retained is not None, native_voice is not None)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
@@ -114,8 +122,22 @@ def prepare(args):
         planned=dict(starts=limits['starts'], self_checks=limits['starts'],
             counted_post_requests=limits['chats']), scope=__doc__)
     if chat_audio: plan['chat_audio'] = True
+    if native_voice is not None:
+        from tools.serve_recovery import profile_voice
+        fixture = getattr(args, 'voice_fixtures', None)
+        require(fixture is not None, 'managed registered voice needs fixed recordings')
+        fixture = fixture.resolve(strict=True)
+        plan['native_voice'] = native_voice
+        plan['voice_clips'] = profile_voice.fixtures(fixture)
+        plan['sources'][str(fixture)] = engine.sha(fixture)
+        for row in plan['voice_clips'].values():plan['sources'][row['path']] = row['sha256']
     if native_tts is not None:
         plan['native_tts'] = native_tts
+        sampling = profile_evidence.tts_sampling(qualified['business']['tts'])
+        other = engine.read(pack/'profile-light.json')
+        require(profile_evidence.tts_sampling(other['business']['tts']) == sampling,
+                'managed primary/light sampling witnesses differ')
+        if sampling is not None: plan['tts_sampling_profile'] = sampling
         backend = engine.read(pack/'engine/client-policy.json')
         alpha = next(c for c in backend['clients'] if c['id'] == 'alpha')
         maximum = native_tts['limits']['max_frames']*16+1 + \
@@ -480,6 +502,9 @@ def check_business(out, *, verify_cancel=True):
     from tools.native_tts import managed_service
     results.update(managed_service.check(completed if tls else out, plan,
                                          expected['settings'].get('native_tts')))
+    from tools.native_tts import managed_voice
+    results.update(managed_voice.check(out, plan,
+                                       expected['settings'].get('native_tts_base')))
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -748,19 +773,22 @@ class Stage(BASE['Stage']):
         require(response['http_status'] == 200, 'private configuration unavailable')
 
     def exercise(self):
-        from tools.native_tts import managed_service
+        from tools.native_tts import managed_service, managed_voice
+        voice = managed_voice.Actor(self) if self.plan.get('native_voice') is not None else None
         version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'].startswith('tls')
         first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')
         self.request('capabilities', path='/v1/capabilities')
         if tls:
             if 'reused_tls' not in self.plan:
                 self.request('unauthorized', client='invalid', expected=401)
+                if voice:voice.observe('tls-before')
                 managed_service.observe(self, 'tls-before')
                 self.sdk('python-zh-json', 'zh', python=True)
                 if self.plan.get('chat_audio'): self.chat_audio('chat-python', sdk=True)
                 self.kill(first, 'gateway', 'native-asr-gateway-exit')
                 self.wait(lambda s:s['business_ready'] and
                           s['gateway_generation'] == first['gateway_generation']+1)
+                if voice:voice.observe('tls-after')
                 managed_service.observe(self, 'tls-after')
                 self.sdk('js-en-stream', 'en')
                 if self.plan.get('chat_audio'): self.chat_audio('chat-js', sdk=True, stream=True)
@@ -771,6 +799,7 @@ class Stage(BASE['Stage']):
             after = self.drained('after-cancel')
             save(self.output/'cancel-observation.json', dict(before=before, after=after))
         else:
+            if voice:voice.observe('primary')
             managed_service.observe(self, 'primary')
             self.audio('primary-asr')
             if self.plan.get('chat_audio'): self.chat_audio('primary-chat-audio')
@@ -786,6 +815,7 @@ class Stage(BASE['Stage']):
             self.version_ready(2, 'fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
             # scenario separately verifies actual VAD SSE through the SDK.
+            if voice:voice.observe('fallback')
             managed_service.observe(self, 'fallback')
             self.audio('fallback-asr', stream=not bool(self.plan.get('audio_auxiliary')))
             if self.plan.get('chat_audio'): self.chat_audio('fallback-chat-audio')
@@ -795,6 +825,7 @@ class Stage(BASE['Stage']):
             if not self.plan.get('observe_cold_profiles'):
                 save(self.output/'profile-continuity.json', dict(
                     before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
+        if voice:voice.finish()
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
         self.configuration()
@@ -807,7 +838,7 @@ class Stage(BASE['Stage']):
 GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prepare,
                Stage=Stage, check_business=check_business, business_record=business_record,
                accepted_run=accepted_run,
-               PREPARE_PATH_ARGUMENTS=('separator-audio',),
+               PREPARE_PATH_ARGUMENTS=('separator-audio', 'voice-fixtures'),
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__

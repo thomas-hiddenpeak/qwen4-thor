@@ -1,0 +1,214 @@
+{
+  "tempo-clock-build-01/command-1.log": {
+    "bytes": 1933,
+    "sha256": "1838af0bbebf8b9fc7cd96caeb414893724df0adc4229c5bbcff8b17c37551fb"
+  },
+  "tempo-clock-build-01/asr_clock_diagnostic.cpp": {
+    "bytes": 17425,
+    "sha256": "5ff4c3a782120bc93e08310c228a8c383d8e4bc50c9ba6521461131bc3cc41a8"
+  },
+  "tempo-clock-build-01/result.json": {
+    "bytes": 340,
+    "sha256": "2c99d7411ff4836f944b120b52ac83c35fcbc22a3ba27bcef954610852034a4e"
+  },
+  "tempo-clock-build-01/plan.json": {
+    "bytes": 8634,
+    "sha256": "276e1895ed7adea653b75f4c3c3983b0059d386e2b37ca595168aeeada4028b1"
+  },
+  "tempo-clock-build-01/command-0.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tempo-clock-build-02/command-1.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tempo-clock-build-02/asr_clock_diagnostic.cpp": {
+    "bytes": 17425,
+    "sha256": "5ff4c3a782120bc93e08310c228a8c383d8e4bc50c9ba6521461131bc3cc41a8"
+  },
+  "tempo-clock-build-02/result.json": {
+    "bytes": 286,
+    "sha256": "1bf150a80ae4c99e0c10b7c7280bc13eff2a83b7afae9c6674317c29f75b58f2"
+  },
+  "tempo-clock-build-02/plan.json": {
+    "bytes": 67647,
+    "sha256": "0ac4dc59c2f236937aec8f49f44264032cbffb9d547ac345c3b83519fd1fbb67"
+  },
+  "tempo-clock-build-02/command-0.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tempo-clock-cpu-01/result.json": {
+    "bytes": 220,
+    "sha256": "ebd3e93294f84d826589ed48db8c18ac8ecb724f63d6461da858305bac743209"
+  },
+  "tempo-clock-cpu-01/stdout": {
+    "bytes": 40,
+    "sha256": "c8e43eaca5676b0bc630a9bd742794c06c4e14f9fa3d5d1cfba54221d62f6570"
+  },
+  "tempo-clock-cpu-01/stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tempo-clock-diagnostic-01/lease/nvml-queries.jsonl": {
+    "bytes": 11543,
+    "sha256": "9d02c808dd71fbb15d7deddb7fc1c079bdd916535364cd85819d1c4c5b987590"
+  },
+  "tempo-clock-diagnostic-01/lease/events.jsonl": {
+    "bytes": 1461,
+    "sha256": "763d947546731eb48ca39346c0907b54372ecae6cf9f25acae3b9f8fda212928"
+  },
+  "tempo-clock-diagnostic-01/lease/exit.json": {
+    "bytes": 636,
+    "sha256": "a172c4fb6058208641c083c0587acb561f4b7e989acaff6fd90814a1b963e316"
+  },
+  "tempo-clock-diagnostic-01/run/asr-plan.json": {
+    "bytes": 5952,
+    "sha256": "91b5a6f1c3357b17d5da8cc5553fe2b4ece88758a69493a77404fc8e0d07f40b"
+  },
+  "tempo-clock-diagnostic-01/run/result.json": {
+    "bytes": 7511,
+    "sha256": "1562ecbfe822c7c1aba14f30d30e4f6c33614342b5d4abe538a5b494178aae05"
+  },
+  "tempo-clock-diagnostic-01/run/asr.log": {
+    "bytes": 104,
+    "sha256": "a129cfa2f7020071908d50e539601b178adfbf809914be315f5318b66d8e2318"
+  },
+  "tempo-clock-diagnostic-01/run/asr/result.json": {
+    "bytes": 97,
+    "sha256": "45288ca6d6294f0397cc522c5d211c3f9c111ad744c4f6d362e3f0aaa5342999"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-0/result.json": {
+    "bytes": 136,
+    "sha256": "31f66b5c8ca50f41ed131d1427802880cffe7bdbebf7e86618169c39cf4c6a39"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-0/text.txt": {
+    "bytes": 62,
+    "sha256": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-0/diagnostic-stretched-mel.f32": {
+    "bytes": 163840,
+    "sha256": "cd1a547b11a44458f8b30495c3cbb6d7b4e2260d26c999e44afe9eb5ae160e59"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-0/native-mel.f32": {
+    "bytes": 40960,
+    "sha256": "1d59d82e1e9746e3d7ee024eaa20056cae18d31a6f41a5e05c5ec0ef33d89650"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-0/generated.u32": {
+    "bytes": 52,
+    "sha256": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-2/result.json": {
+    "bytes": 136,
+    "sha256": "7b58e59e8fae7ae4ba63c2a157eed0cbfb1b5c3ae1768382d4017bf2b81e7142"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-2/text.txt": {
+    "bytes": 62,
+    "sha256": "376fb85523c60eddf8c40589e073b9db7626427bc092049ade137c522da51dbb"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-2/diagnostic-stretched-mel.f32": {
+    "bytes": 159744,
+    "sha256": "91318105f1cfc521361e6900b18bb2fc9111b2ca185169b906f2d2e319deb7f8"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-2/native-mel.f32": {
+    "bytes": 39936,
+    "sha256": "a9111f415b18192c776fda5d0f03b14b2c03dd78712d648a39d999c2128663a4"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-2/generated.u32": {
+    "bytes": 44,
+    "sha256": "b5923b4710a1317b4881a6a3ba7e1f94834e68c3d1d7d6e0165a5194a3d00ea4"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-1/result.json": {
+    "bytes": 136,
+    "sha256": "31f66b5c8ca50f41ed131d1427802880cffe7bdbebf7e86618169c39cf4c6a39"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-1/text.txt": {
+    "bytes": 62,
+    "sha256": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-1/diagnostic-stretched-mel.f32": {
+    "bytes": 163840,
+    "sha256": "94a96903094e5bb3767dbbd4b1c039d357ed3d122f0ecef03ab7a0c74c46116e"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-1/native-mel.f32": {
+    "bytes": 40960,
+    "sha256": "3c8e92d393875f237b4b0566a30a4eb188791683b893f2a1de2af5d20489c9e6"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-1/generated.u32": {
+    "bytes": 52,
+    "sha256": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-3/result.json": {
+    "bytes": 136,
+    "sha256": "7b58e59e8fae7ae4ba63c2a157eed0cbfb1b5c3ae1768382d4017bf2b81e7142"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-3/text.txt": {
+    "bytes": 62,
+    "sha256": "376fb85523c60eddf8c40589e073b9db7626427bc092049ade137c522da51dbb"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-3/diagnostic-stretched-mel.f32": {
+    "bytes": 159744,
+    "sha256": "dae8eb2a39c9c0237aa67493eb326c22e2f904c97752103987ed2dad612b9441"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-3/native-mel.f32": {
+    "bytes": 39936,
+    "sha256": "1f1e48366da92912c4fcdc107ab2e3d05af26be1391c3a6baae519e70f169b99"
+  },
+  "tempo-clock-diagnostic-01/run/asr/case-3/generated.u32": {
+    "bytes": 44,
+    "sha256": "b5923b4710a1317b4881a6a3ba7e1f94834e68c3d1d7d6e0165a5194a3d00ea4"
+  },
+  "tempo-acoustic-review-01/result.json": {
+    "bytes": 5090,
+    "sha256": "3afa37588651147b4cfe427ae0ea340ed040685d2d616a532708a9edb395187c"
+  },
+  "tempo-acoustic-review-01/utterance-1.png": {
+    "bytes": 284366,
+    "sha256": "0abc3aa3651e0df064a17e6ba1a5e3961eea1a42902f31d2fecad9b086190343"
+  },
+  "tempo-acoustic-review-01/utterance-0.png": {
+    "bytes": 279894,
+    "sha256": "39ee4b83f99664233a66cc8941f2dda2d900f23d77308d1b277ac4d389896784"
+  },
+  "tempo-acoustic-review-01/plan.json": {
+    "bytes": 331,
+    "sha256": "dcf0e60a2a71b267ded04658a1ec0fc92e3ab34b28dbee8ff753bcd0e8765ab3"
+  },
+  "rebuildable-cache-retirement-09/result.json": {
+    "bytes": 320,
+    "sha256": "fc36a2cd6fc48b5e7ad7d13a2987480afceb6bf327c9fd68f0a6a94772e7bddc"
+  },
+  "rebuildable-cache-retirement-09/plan.json": {
+    "bytes": 114554,
+    "sha256": "8e1f08560db12c9866f9bb63e915a1d8ec3552f3fe76a9c9c23d70222c96acda"
+  },
+  "review_tempo_acoustics.py": {
+    "bytes": 3609,
+    "sha256": "f1437b5c0ef5fd60470829ea40075597a03d7de93ca88d217b8b1972ad40fd4d"
+  },
+  "build_clock_diagnostic.py": {
+    "bytes": 5879,
+    "sha256": "7b5af358f92eda1e70dc7af0bb987a60fbaa575475572947cd4591cf79fe9bd7"
+  },
+  "build_clock_diagnostic_02.py": {
+    "bytes": 6052,
+    "sha256": "1d54c3fdbda61328632a9a707962cbb55e1805e1704fb409d093fc5276b545bb"
+  },
+  "run_clock_diagnostic.py": {
+    "bytes": 3253,
+    "sha256": "957f62753ee2ccc011a4934902c2e1caf4d15747822b8f00582fcc93087e32aa"
+  },
+  "tempo-clock-plan-01.json": {
+    "bytes": 9629,
+    "sha256": "b46e5bd56bdce1d71a1ee02af2c4e2bcf3c98f10a921c67f0477cd49bfe84ad2"
+  },
+  "archive_clock_diagnostic.py": {
+    "bytes": 5855,
+    "sha256": "3498870e1dce0899845afe41451ef5c98b907e9ad0592225c828abdc87f7a30f"
+  },
+  "retire_tempo_diagnostic_cache.py": {
+    "bytes": 2620,
+    "sha256": "26dc5da4e8a260409d0fffe38ab7393f648d709a830257792227d0baa6f4aa4b"
+  }
+}

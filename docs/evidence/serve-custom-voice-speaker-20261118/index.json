@@ -1,0 +1,370 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/acquire_speaker_parallel.py": {
+    "bytes": 3998,
+    "sha256": "c2f902d392e10888d3b5d9b1d85921ee788f847ab7b61187c7789ef7e2b5db66"
+  },
+  ".q4t-work/serve-custom-voices-20261118/acquire_speaker_weights.py": {
+    "bytes": 2728,
+    "sha256": "5e9283f30ab5e6abc73f8f7ad6d3dc4bbad446adabfcbc59747b44cae273155c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_speaker_compute.py": {
+    "bytes": 2291,
+    "sha256": "859602d4f9223c458b3b7352967d841e9ac730964d7c6d0cfbe7d5327e8a4619"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_speaker_compute_02.py": {
+    "bytes": 2323,
+    "sha256": "4c8d2e5d320946a8876a208c1e77f3a9c286740c61af8028ee71f1b957ffa98a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_speaker_layout.py": {
+    "bytes": 1188,
+    "sha256": "df671c607c15930407b5b7b38265b85ea955ec999ad85d55ca81d725cec467cf"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/config.json": {
+    "bytes": 4494,
+    "sha256": "b4f01752d15a488abde3e1ab44723ae4f4b9e68a4037257b098b3737893cc1f9"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/generation_config.json": {
+    "bytes": 245,
+    "sha256": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/header.json": {
+    "bytes": 58856,
+    "sha256": "47b95834f35677667ecdc639f5374298102c303a1aefd8dc582a5db043f219ac"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/plan.json": {
+    "bytes": 288,
+    "sha256": "b25b699f261ae977915cc71b66cb48d4745f4e30d0f53df0d50362e233758856"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/repository.json": {
+    "bytes": 4909,
+    "sha256": "903fe4aff6a29a788962dfcc690f76bf3770d6ad9e1ca45a5ca824b9e57b1538"
+  },
+  ".q4t-work/serve-custom-voices-20261118/metadata-01/result.json": {
+    "bytes": 2035,
+    "sha256": "5c0be886184663afe369f287589f26b78615f4654a4497724591025458876a01"
+  },
+  ".q4t-work/serve-custom-voices-20261118/prepare_speaker_qualification.py": {
+    "bytes": 3503,
+    "sha256": "fdded2470679b78a07b913078ccbcfc1a9e9b35ce62c665a0660d5555ce5cbf8"
+  },
+  ".q4t-work/serve-custom-voices-20261118/prepare_speaker_replay.py": {
+    "bytes": 5225,
+    "sha256": "fc2f732629f22c5757cdad5428e4a96f5e8a68b590ef75eb3ba6e58a4d219a94"
+  },
+  ".q4t-work/serve-custom-voices-20261118/relink_speaker_compute_03.py": {
+    "bytes": 2306,
+    "sha256": "5f2de666b2b48a3f4e37f0b4195c1985076b0dcd8f9886b9255da265fee395ff"
+  },
+  ".q4t-work/serve-custom-voices-20261118/run_speaker_layout_cpu.py": {
+    "bytes": 1375,
+    "sha256": "384a9e075171723d865cc2e2f3b633b21b4055d6a5f4b13a275001c03adab82b"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-acceptance-cpu-01/plan.json": {
+    "bytes": 692,
+    "sha256": "067c09007e2bd3c7ef70bddb707a5e9e3cf222170d51abe359f7cc46f4109e4c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-acceptance-cpu-01/result.json": {
+    "bytes": 342,
+    "sha256": "72a6231d569e8aa83ff48f4c94cd1aab90e041d30c41f1c4e2de8fa994b806a9"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-acceptance-cpu-01/test.log": {
+    "bytes": 817,
+    "sha256": "96d11fb692a3afab432eb82aa28c9ce660bfdec063db027738652889c84efe1e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/build.log": {
+    "bytes": 429,
+    "sha256": "a572e24486f45709d3399603fece8fafcb14e07130d1593ff48c604e3ba6725e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/plan.json": {
+    "bytes": 6913,
+    "sha256": "cbf1101be9014466f439dae049a84361d114d56819548a278883ca775762b336"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/result.json": {
+    "bytes": 6182,
+    "sha256": "0376f37c8bf979ede53addb7f25c95b7bb43bda9dd0463c994f961dab5fb61d0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/source/include/q4t/audio/tts_speaker_model.h": {
+    "bytes": 1350,
+    "sha256": "0d44c547cba8b1b424d84ed6e804ae2e6eab90c31d0b956ad21f09e5a9bf9db1"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/source/src/audio/tts_speaker_model.cu": {
+    "bytes": 18758,
+    "sha256": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-01/source/tools/native_tts/speaker_replay.cpp": {
+    "bytes": 12252,
+    "sha256": "dc491014d5fef407cf6b262cd0f0c5f63a6be7816199f8caf092cbafdc4731ab"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-02/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-02/plan.json": {
+    "bytes": 7524,
+    "sha256": "2263622741446c249ca36cd1888edea2a9ac356f1d477e83427c2e5814802c3e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-02/result.json": {
+    "bytes": 6898,
+    "sha256": "44dae8a9c982b7986e1d8448980d880e04dcbfa1ad2a66734302062fdd6db3f0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-02/source/tools/native_tts/speaker_replay.cpp": {
+    "bytes": 12178,
+    "sha256": "7db912d69d21aece808889b16406a99020101fadb7248c1feba95ae945e4e663"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-03/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-03/plan.json": {
+    "bytes": 5769,
+    "sha256": "4d5bfadf9e5de08e1c1fca2eef36d19c73f7d12ecd8123b9a590b687a84e3f4c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-compute-build-03/result.json": {
+    "bytes": 2182,
+    "sha256": "638e2bf9bb5ac7058251c471e304337f853b4772e50405d2da5a5c4aaf5ce7c5"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-inventory-01.json": {
+    "bytes": 222,
+    "sha256": "c60fb7c79964e9fcc23d9c12ca497139d217ca3a0bcb3da479fea1f25e6df729"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-kernel-build-01/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-kernel-build-01/plan.json": {
+    "bytes": 212,
+    "sha256": "f3425d8b71dd51fa3ccab139466f3a4268fd223e8bc6a85df5e41822c16c3906"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-build-01/build.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-build-01/result.json": {
+    "bytes": 1433,
+    "sha256": "3a31c372564c567e58ccc883eb474fd22729c6bc08fdf8df867faf3263a2c2b0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-cpu-01/required.txt": {
+    "bytes": 477,
+    "sha256": "88e51b8f284bbf83ffb818f43d34cfbbd102f8afcef9d0d50fa32cdd5e907d66"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-cpu-01/result.json": {
+    "bytes": 508,
+    "sha256": "06f5cb3feb1f9e6f8bc3d95965386231c4b7a5ea729115797486a6987dbd89a9"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-cpu-01/tests.log": {
+    "bytes": 572,
+    "sha256": "1ff267a683ab59192e721f87c44b1f94894d7e45aa7de995a83bf5bbf51e20f8"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-layout-plan-01.json": {
+    "bytes": 445,
+    "sha256": "42352e8934cdb3f31e84074c6bb4ee3c1512f1ece94ee729bbbd6ab314405b58"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-01/lease/events.jsonl": {
+    "bytes": 1098,
+    "sha256": "2f78ad41d09f5d8301d42e1e72e27de7ad489bd06140dccaac0798b5c357031b"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-01/lease/exit.json": {
+    "bytes": 806,
+    "sha256": "0f1dbb2fa0eebf327bee55368fc62c37fe89bd4a56fa713bd90ad6ae59d8c913"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-01/lease/nvml-queries.jsonl": {
+    "bytes": 6851,
+    "sha256": "a9fc9e32c0008b80ed9c69357352c320cd4c62b4e1318f634f6e05e2e3e1d695"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-01/run/native.log": {
+    "bytes": 37,
+    "sha256": "d837c40305c744b53db01dc355c8a25f501296e98e8aac9d8f424ca99e8ef7e0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-01/run/result.json": {
+    "bytes": 1581,
+    "sha256": "f832f60b08f437191b248465caef84d8bd87f03dfc06ef713179881124f3be29"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/lease/events.jsonl": {
+    "bytes": 1646,
+    "sha256": "6035c566d40f6dceda1403f4d65a54d5689c39492ec0636c63aaf9ff94598a03"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/lease/exit.json": {
+    "bytes": 801,
+    "sha256": "3b42dd8ab7542dc293cc189ab1933451d6738c923adf5103eb867e31c1910d67"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/lease/nvml-queries.jsonl": {
+    "bytes": 13704,
+    "sha256": "c0bbd64562287fe004e00ea31bb77d90b2e082ae22fb6aa052a11607f70a8508"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native/case-0/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "7d05b5a8c5ae262e8452d688520b31d9e43ea537b2f6722529588255e6a9e4f4"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native/case-1/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "d3f22bc1ff3111189cb929f44940d1760a9c9b528d1c411a80b45673bafd1354"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native/case-2/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "e2b65b575c95b41cf90205f74f6ac9cfbf3e11baad536fd89e953eac89c23e53"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native/case-3/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "89bade8a48903ac5d0aa1a2cd6317a83ada4a0d2cabf19b50a2c7767d0c6dc93"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native/result.json": {
+    "bytes": 190,
+    "sha256": "3f525d418af500c22b9244070f6822493fcbf3d05a4860770ea324fd35ac51bc"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/native.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-0/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "e1220c4be1a89381cb6150eead7bc217940cba2c2b7e968dd09506e13203a6cb"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-0/official-front-embedding.f32": {
+    "bytes": 8192,
+    "sha256": "e1220c4be1a89381cb6150eead7bc217940cba2c2b7e968dd09506e13203a6cb"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-1/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "0227a055c009c92271dd665ce353aae9595c41f247833dbb8857641e3d12a0ab"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-1/official-front-embedding.f32": {
+    "bytes": 8192,
+    "sha256": "07c659060c93ef26ebca49a5faaad4dbeb8c841762c21f19c7796544ea95b546"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-2/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "ea87ac07b65adf288ca529e941a461f433271bff11334d905c35b479f8c9d776"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-2/official-front-embedding.f32": {
+    "bytes": 8192,
+    "sha256": "be7f20566d7352d6e9346bc02c844aea4f4f25c51ac36d24f344b6355cb09d2e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-3/embedding.f32": {
+    "bytes": 8192,
+    "sha256": "51f8821aa9e6d9cdd6559126df1547e91d4651f38fe0c1f7a0520d9da660be6e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/case-3/official-front-embedding.f32": {
+    "bytes": 8192,
+    "sha256": "dcc49c468cacc2a0de5ff76d6b7a283745909e94ad4aea8c7115b1f33b42d86d"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference/result.json": {
+    "bytes": 523,
+    "sha256": "4ddf8f868b2d66cdebad2d73884f809974df0f719f7012f0be0079b3a43b84d2"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/reference.log": {
+    "bytes": 389,
+    "sha256": "7e0d30e02816e18117be2393d41227e583c1f0630b8cbb38dcf8b7e73f0c7ee0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-02/run/result.json": {
+    "bytes": 17796,
+    "sha256": "8f1b6470bee289175b9373942959dc7a16686bdbff4592ec84d21dd2b41606a4"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-plan-01.json": {
+    "bytes": 9617,
+    "sha256": "a2674759091f085df3c69a3ebcde68fc85aaefc59e1af318051a8acf0a8fd4bd"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-qualification-plan-02.json": {
+    "bytes": 10447,
+    "sha256": "47e01dff9b59c0258ce1ea81d00f0f3b511aea5a37cca3c93477c7ccbc690327"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-01/early-stop.json": {
+    "bytes": 306,
+    "sha256": "6b6a209e780d8b880f0ed594d94dd684eb5c3f3f1c5fb5f4a8a316293792abc5"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-01/plan.json": {
+    "bytes": 575,
+    "sha256": "3904f8e9346c699b8496122cb5c38e8ff65b81344dc68801c3404608051bdb7a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-01/result.json": {
+    "bytes": 160,
+    "sha256": "1f908be6f09bca6bbfc147415a162258aa25b73284ded03247fbe91c304fc817"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-02/plan.json": {
+    "bytes": 562,
+    "sha256": "c78a78fe817988bbc0024199d7f6647d27be271012b2c7ec1d351d2547587252"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-02/progress.json": {
+    "bytes": 98,
+    "sha256": "eadb6094349d73847587ad3759bd730494199aba823f586b5c15ba51623a283a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-02/ranges.json": {
+    "bytes": 158413,
+    "sha256": "cdfbf5448fb55a8f315429d130ff31c3a93e5e61cdc166cd370eef7221b8a074"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-02/result.json": {
+    "bytes": 551,
+    "sha256": "04eaea19cf4469378377b41d2dece64bab971cdc3f24c568234d75b46f8a340c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/speaker-source-inventory-review-01.json": {
+    "bytes": 958,
+    "sha256": "0dd6d4831ee4414234ae1c8f07ad4a4ce3c08c05ff6715bd1592c0ba81e3b0fb"
+  },
+  ".q4t-work/serve-native-tts-20261118/source-01/official/LICENSE": {
+    "bytes": 11343,
+    "sha256": "a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655"
+  },
+  ".q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models/configuration_qwen3_tts.py": {
+    "bytes": 26428,
+    "sha256": "f52867f14fde06a416dd14864d503ce6d13d0a08d5f5da30191e1c80c13f5d18"
+  },
+  ".q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models/modeling_qwen3_tts.py": {
+    "bytes": 100211,
+    "sha256": "25c42656bcf810f06ef6bc1839bd7083f3c8cfedac3a147c4060b4262b1c96a0"
+  },
+  "CMakeLists.txt": {
+    "bytes": 57922,
+    "sha256": "863e6ad1a7b05b27638cb9ab5e930a5bf07dde70bfaf3fc2760edb709182ba98"
+  },
+  "cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 26888,
+    "sha256": "344ebc2801b128c602af4821e7419b90848905c938be6a92dcd63ebc8327c931"
+  },
+  "cmake/HostTestSources.cmake": {
+    "bytes": 33089,
+    "sha256": "178db4f3c9014bdca57e89cb44aa7d6d2a75a5e36671266dee178c644bf22873"
+  },
+  "cmake/NativeTtsTests.cmake": {
+    "bytes": 4360,
+    "sha256": "9e3d0ab871dd3e7473ba490ba292277f23de49902ae9d14ef68b8a4cd536ef93"
+  },
+  "include/q4t/audio/tts_speaker_layout.h": {
+    "bytes": 2234,
+    "sha256": "41dc3e6d5de9d80ebc0db692ad64570582e327556b62d30690c68ccf2b5787b8"
+  },
+  "include/q4t/audio/tts_speaker_model.h": {
+    "bytes": 1350,
+    "sha256": "0d44c547cba8b1b424d84ed6e804ae2e6eab90c31d0b956ad21f09e5a9bf9db1"
+  },
+  "src/audio/tts_speaker_layout.cpp": {
+    "bytes": 5846,
+    "sha256": "b79e2d7281a7ec30206e4f54a873844184cfaf013b9678b872b8c13216f885e2"
+  },
+  "src/audio/tts_speaker_model.cu": {
+    "bytes": 18758,
+    "sha256": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28"
+  },
+  "tests/tts_speaker_layout_test.cpp": {
+    "bytes": 9147,
+    "sha256": "b4d0d5204acf17a9dfb0da877b82e6ff3d5ea96a47cc9d01345108a415400476"
+  },
+  "tools/native_tts/speaker_acceptance.py": {
+    "bytes": 7755,
+    "sha256": "ece0d894f45aaa5b8d1a24b2ae1dbed56c17b8ec121aa1a3843b4a9d3c27d2e2"
+  },
+  "tools/native_tts/speaker_feature_reference.py": {
+    "bytes": 6077,
+    "sha256": "94d129389f9b472ded7fc4d0476879c5e03ab73d25c715781cd46c97971fb3cd"
+  },
+  "tools/native_tts/speaker_reference.py": {
+    "bytes": 7328,
+    "sha256": "783a6e81663745fb1e79ae5799ffa0c0b2c2ad44bb18d75a5d8479ad187dfc46"
+  },
+  "tools/native_tts/speaker_replay.cpp": {
+    "bytes": 12628,
+    "sha256": "c0ff7c21311e2331ecf06bf7a7c96cfe5d59bbf406bc9fc68db1902c177a8cfa"
+  },
+  "tools/native_tts/test_speaker_acceptance.py": {
+    "bytes": 1690,
+    "sha256": "003c618eaa63340ef290b0cfb23bfa2823cb9d166e7ee924443652658c26028a"
+  }
+}

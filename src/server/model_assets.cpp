@@ -88,6 +88,15 @@ constexpr ModelAssetSpec kTts[]{
     {"tokenizer_config.json", 7344,
      "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670"},
     {"model.safetensors", kNativeTtsFileBytes, kNativeTtsWeightSha256}};
+constexpr ModelAssetSpec kTtsBase[]{
+    {"config.json", 4494,
+     "b4f01752d15a488abde3e1ab44723ae4f4b9e68a4037257b098b3737893cc1f9"},
+    kTts[1],
+    kTts[2],
+    kTts[3],
+    kTts[4],
+    kTts[5],
+    {"model.safetensors", kNativeTtsBaseFileBytes, kNativeTtsBaseWeightSha256}};
 constexpr ModelAssetSpec kTtsCodec[]{
     {"config.json", 2336,
      "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167"},
@@ -176,6 +185,8 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kTts;
     case ModelAssetProfile::kTtsCodec:
       return kTtsCodec;
+    case ModelAssetProfile::kTtsBase17B:
+      return kTtsBase;
   }
   return {};
 }

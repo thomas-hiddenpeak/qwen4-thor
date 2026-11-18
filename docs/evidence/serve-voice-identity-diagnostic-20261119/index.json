@@ -1,0 +1,817 @@
+{
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_identity_diagnostic_01.py": {
+      "bytes": 6585,
+      "sha256": "24c290f5a614720a5b998258d34b13f337eb09f04308f4ca1b177d66ffdce1e6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_identity_diagnostic_01.py": {
+      "bytes": 4434,
+      "sha256": "ae032e80738852a5fcc6f03be94d89be0037b73428398ce705e2373521dbd079"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_reference_diagnostic_01.py": {
+      "bytes": 3590,
+      "sha256": "bd8f75efb69fdb35d7627a738c4e23150a137f67f711892dbb1712a7ab27b41d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/fix_diagnostic_labels_01.py": {
+      "bytes": 4826,
+      "sha256": "16dd569481d00216b66ec9726c91d484a3cbddfd16e3a45b4e18b34510ca2b8e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/build_diagnostic_labels_01.py": {
+      "bytes": 3528,
+      "sha256": "5e8f1ef1b39eff3d16f4cb6c1753e87a796504c49d4a5d0169215406deed7b40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-plan-01.json": {
+      "bytes": 505,
+      "sha256": "bb1a1de29cf4a1dbadb6a965448eebf7a890c1e57e6d308746724d2291037505"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-inventory-01.json": {
+      "bytes": 329,
+      "sha256": "d811cded9fa2d5b50da11be9e09f21f60c392a871a1ea0999ee3d099bfeaa1f4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/lease/nvml-queries.jsonl": {
+      "bytes": 217748,
+      "sha256": "50e114c81ee963f307d9b771994eaedb81eca421d2ca9ccc2049fc0f067a8c8d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/lease/events.jsonl": {
+      "bytes": 17368,
+      "sha256": "9759887e118fab8699a5c0b1559a6914df3b7e6be1a19c0efa8ae44969ef6abf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/lease/exit.json": {
+      "bytes": 725,
+      "sha256": "9f750f985eb84a3f9784bcce06b46f0867e8de3f5aae72f1154309fde75d65e5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent.http.json": {
+      "bytes": 244,
+      "sha256": "eeeeb6ddba18be0175dd30ec5a2048c60102775f1664be70db85200bfc14812e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-drain.metrics.json": {
+      "bytes": 24641,
+      "sha256": "bb01c896123700a52ebad2edbd1050101d56c39b1bcd5b9d76c665d333ea165c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.request.json": {
+      "bytes": 218,
+      "sha256": "8abd95b4d3a3c4017e83563787ee9904429e3e712f1092e67b01f0dbf89a7abc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-config.wire": {
+      "bytes": 16034,
+      "sha256": "c9fb1cab48e99a023a0663da780dbc1009302923293a3fe0812ba0a0ea354718"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-config.wire": {
+      "bytes": 16034,
+      "sha256": "c9fb1cab48e99a023a0663da780dbc1009302923293a3fe0812ba0a0ea354718"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-config.wire": {
+      "bytes": 16034,
+      "sha256": "c9fb1cab48e99a023a0663da780dbc1009302923293a3fe0812ba0a0ea354718"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-ready.http.json": {
+      "bytes": 246,
+      "sha256": "de1300dd98acc3e719a94afb578c8da913de7bd6ec1b80c8a3e513913096a4cf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-ready.http.json": {
+      "bytes": 245,
+      "sha256": "9dddb973b39300e8ce6932deb89a21c530b575e8bcb772d211c2a2d09ae44a58"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-config.wire": {
+      "bytes": 16034,
+      "sha256": "c9fb1cab48e99a023a0663da780dbc1009302923293a3fe0812ba0a0ea354718"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.wire": {
+      "bytes": 242525,
+      "sha256": "e84a367e9e2faedaf89e2b11ab34b9f9c41f18d3d24ab05d185d57db68af661d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/model-identity.json": {
+      "bytes": 1936,
+      "sha256": "95d9a513aaee0071af494d74bf6089ed1c02d8039b0e4514522d794479425514"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent.request.json": {
+      "bytes": 270,
+      "sha256": "b9cfb187f21b2354c2f034b96b30e4215478337b1f55e72cbb08ad31407a4fd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.wire": {
+      "bytes": 278596,
+      "sha256": "daa1b59f237c76f71c3f3fa2d3aea483cd7b99d8750bef9539488d13b35fe251"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.wav": {
+      "bytes": 395564,
+      "sha256": "d177f750e5650e6897676e62c348bcd79f3a2ba84897b9e375e4a0f82c8434b2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-config.http.json": {
+      "bytes": 251,
+      "sha256": "aa780333d7b2ae7e99ed7a72c4907539c245ead840bb2eddbdfc8dc0885da7b6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.request.json": {
+      "bytes": 218,
+      "sha256": "c22504d26a9dd44b0cbd5a60c46b162c9b0383ba1c3a46192443cbb99b468d2b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-config.http.json": {
+      "bytes": 252,
+      "sha256": "8e8e3cc8faaab7acebe8489dd908fa59be14ec69a7b3a38ac62c9c72831fbb05"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.request.body": {
+      "bytes": 202,
+      "sha256": "8950f44a2cd525f1dba9332e9c5b042ccc288ff9615a0291e8a0358c5d986242"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/result.json": {
+      "bytes": 1308,
+      "sha256": "6ce0f8c710da5c6e244c68049e701a7282012ac17e493c745d1199543edd6668"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-config.wire": {
+      "bytes": 16030,
+      "sha256": "3c56ad445769a4b5013fb1f39a05e269f61ce3266319aade6b7d9f6d17b33b38"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "ed64b34fd17bb591e9fc0d15d3485ba74221356f3a98df22a1dc2b954c9ac71f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-drain.metrics.json": {
+      "bytes": 24652,
+      "sha256": "19f797cd4a7c2197dc37c6b8672a99246e6d465872cd58ba9b1b4a8868092a6b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "db114ce42767edf4374ae8c5ad8a3fb3e1042d56cdef1ff04cac39996f10e09c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.wire": {
+      "bytes": 665216,
+      "sha256": "1e37dc86ec14a8ac376f361afb4e0bb436928c5aa38063e288c3c3629763c666"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "97a25ebb5b799cecd4564bf9657adc747bf14f06a838b42edcf413855d2a4e8a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.http.json": {
+      "bytes": 283,
+      "sha256": "5b4eda678a7f5234d2ce191e79013332abc773b3a01d3656779e7fa3214facf1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-config.http.json": {
+      "bytes": 252,
+      "sha256": "4753fd47116eaa9e5f809f7e0fc38ea591eeca98568579416aae4ac49c3fb8af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent.request.body": {
+      "bytes": 495752,
+      "sha256": "861616d4265f8e82cc61db1bcceca22ab9e1fddc3de33a2f41456f8b8e3564a7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "ea1a1d0f0d625ba3dccfff65e4e72eb7a6889e910bd27d3c60310a2ad4d075a1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/counts.json": {
+      "bytes": 50,
+      "sha256": "74fbc11feeb599f16485b4254e7b118294e5858bc92449a358e4a71ff6435b76"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/plan.json": {
+      "bytes": 307358,
+      "sha256": "acf20bb158f03b9ee6cc4198f285171c62cca3f745ff7444175f479dc979c169"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent.request.json": {
+      "bytes": 270,
+      "sha256": "eed42b4ac4a4a9cdb8f68e7172ff19d9e99018de84f3eab39f539822efd965bb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "aa5c5d8f022ab6786a03516d6de83965b50107c6986c20c3d00b19a4108a4c93"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.request.body": {
+      "bytes": 240,
+      "sha256": "b1c8ee5696026a3840b2d182562f814134b35b29cccabbde7c0c72dddded7326"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.wav": {
+      "bytes": 495404,
+      "sha256": "78298c3eeb909455659cbea4523ad7b576a0f2f6412256cdf269f37b09933e7b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "e06fedceb2db2483e2fe942d3786d7c6210356d3d51b4a92ef92279d4834e192"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/model-command.json": {
+      "bytes": 1595,
+      "sha256": "98c639005064f8cb15bf1f5fb21dc56041c91d5551bacec225fbc60dbc3e4850"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/model.log": {
+      "bytes": 19141,
+      "sha256": "a3f3f13dfaa8dea93720a1a9152a7bbe6950b12c90b00c7bfe848554318a6678"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "d7ea8923a9f12a26cddfdc361ba0e2daff0c2314b1d7e1345526432b9b2a18bd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.request.json": {
+      "bytes": 218,
+      "sha256": "4ce06aa430892ccbee4aec2db76fa428f511d8cec095e7ac42e0fd0c6abe1306"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.wav": {
+      "bytes": 207404,
+      "sha256": "facd786ec5c836661e07a041719a2c89d8ddb8bfca285a951e6391402c951a0e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.audio.json": {
+      "bytes": 307,
+      "sha256": "f4e94cc40eb18314ede8c2ec557440faf3000e8fe74036158f26604e94d7e651"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-config.http.json": {
+      "bytes": 251,
+      "sha256": "287285d5a64ff89c011602458b724a9278797d3212d0d0b19f6774f43db2152b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-config.http.json": {
+      "bytes": 252,
+      "sha256": "4159580df0b9214c429808becfade4d251b6184c7c5921df11494b44aca62c9b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.http.json": {
+      "bytes": 283,
+      "sha256": "5c85278bbbf6d0598d7191e135ad3cba101b45bd340513aae4808210da237a33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-config.wire": {
+      "bytes": 16043,
+      "sha256": "398f841e6d38e9a102abbcb14de645c1755c66fa9df37a1061d652967926bfee"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.audio.json": {
+      "bytes": 304,
+      "sha256": "ca6280d7e0c42952b0ccc762d7738d9dd8a2f094800a9bc98e6f4b67dda19d0b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-ready.http.json": {
+      "bytes": 246,
+      "sha256": "61e48b0b686ef63c1cfeaac979e4ae74b1e149c1f57a18e498ca9af9ffbbfa2e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent.http.json": {
+      "bytes": 243,
+      "sha256": "2481f2b4acef98ac023b1138269f0a705d4981319a4463b0bf7559b2cb901723"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-ready.http.json": {
+      "bytes": 245,
+      "sha256": "6a003c4ea62f13133efd77be0da46bce9cc92601578c0656c267af19f505fc40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.request.json": {
+      "bytes": 218,
+      "sha256": "c4ba8daa4ea75d05ac5594b887ce760986deef7589b62519dc70635a3408a550"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.wav": {
+      "bytes": 180524,
+      "sha256": "3583e6e65d495f54e1b8744bfaa4c176fd4b0d2eb50cf8e8139c5c65f04929c2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before.http.json": {
+      "bytes": 243,
+      "sha256": "6ac06d7ee7da7eff369928b2b95588611749d24e4813943139e8c3cd5ecac552"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.audio.json": {
+      "bytes": 306,
+      "sha256": "c7a5111ce74e32e056ace1b938ca2cb20e7ed51cc71461667e5b76625657e207"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample.request.body": {
+      "bytes": 200,
+      "sha256": "44072094ba819bb85f93a7cb8fd8f1f02253764030123c341c0c6eb694aa0016"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent.wire": {
+      "bytes": 152,
+      "sha256": "2088195093b292cc87340761d05c70e6ad4d73771c9b1fcc65bbce87121f74d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different.http.json": {
+      "bytes": 282,
+      "sha256": "5b82ccf8d8b6f4e97d1694bd311d2a4789b1d14d7ebf46105b7a616dda71760c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "44981a4d8c6af0b69a91c8ef1a52dbd70852d6df8d89c31c9147c15551b0cd06"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-config.http.json": {
+      "bytes": 252,
+      "sha256": "b1e0f5e005b2b34a8e56a8730ce4fa228b8afe893ea08283e764558f3e311319"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-config.http.json": {
+      "bytes": 252,
+      "sha256": "005f1cb14914bf9e1e7aae42b165ea0024205434a22e07c1b0207a2f9e35fe00"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent.audio.json": {
+      "bytes": 305,
+      "sha256": "3c54e77f7c9943708aaee1358fd6c3d9c36d6b51c5670939d8c404281e431705"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent.wire": {
+      "bytes": 150,
+      "sha256": "6c02b146eb91db8d0736467848d9231eba0bdc61aa50da4013cde75a10e39ee3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-ready.http.json": {
+      "bytes": 244,
+      "sha256": "41740596c93d84e925ea63e513cbc1e42e21c321076f440cd3effdbe7637b4a0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/cleanup.json": {
+      "bytes": 3031,
+      "sha256": "35c37b1c27bd1d6ce746b532ccc05df0381333ec26736fc302231c0ed159a4ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.wire": {
+      "bytes": 531172,
+      "sha256": "da627cda5172f518f81f7c460cce9e9b20529546cefe21ba836e34e7d2c0bb39"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-ready.http.json": {
+      "bytes": 244,
+      "sha256": "b29a5be471f18aea3858e9691cf4245de230be391edebbaf8b330772b5b31de7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-sample-drain.metrics.json": {
+      "bytes": 24653,
+      "sha256": "fc6d54a8c1055146de865c0275e6b8ce10e429deb6966b8750e53e71c23919ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.http.json": {
+      "bytes": 280,
+      "sha256": "88b6cbe1c0441e9f4a788ab3f57ebe15a59d90d0775e456df5a902d5c6756655"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-different-ready.http.json": {
+      "bytes": 245,
+      "sha256": "5a9d97860446a9b1c21763f8425fa3bcf5d9ecb4de6b9e582315db1a2d64868b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "3c56ad445769a4b5013fb1f39a05e269f61ce3266319aade6b7d9f6d17b33b38"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-consent-ready.http.json": {
+      "bytes": 246,
+      "sha256": "7b0812410234cb01d3a7ead80a8e43b202b12222159572226d64e68e127f2b8d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/fixture-negated.request.body": {
+      "bytes": 247,
+      "sha256": "9946fdb2699e96254e702a9c4e6c9513053d3b8852bbecfba2a3d44d5a3d52b6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent.request.body": {
+      "bytes": 395912,
+      "sha256": "45c27b37059b5f8e4ad2d42be85f80ad49499f6ed4e087c66b64ea9adab38915"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/startup-config.http.json": {
+      "bytes": 251,
+      "sha256": "606e3e1337526d4e895f62f6e5dbabfe0463927e9fdbf8c319c9a6d4aaa3b553"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/negated-consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "4585ef0a2fba61bd4074ca1339340c41052d6fb95cc7cca0e1080a8573cc01de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/consent-config.wire": {
+      "bytes": 16041,
+      "sha256": "16dc421c8f4f7c183a21803afe0f8a678e6227f9d902cbcf7de333e4085422cd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-04/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/plan.json": {
+      "bytes": 10683,
+      "sha256": "7ddd00b96bc73b7e5d3b6e4c75d3b8ca21e35856301c878cdbe56e077caa61d4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/lease/nvml-queries.jsonl": {
+      "bytes": 9264,
+      "sha256": "7333a012e1e2d6a3177ba3099a2a44e6b3c7eb726170a7fb3661b64d99102c4b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/lease/events.jsonl": {
+      "bytes": 1278,
+      "sha256": "adbd788347805304e2efa98c5609e11239eb30c8d6e2417c60e170b8d9f94afa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/lease/exit.json": {
+      "bytes": 732,
+      "sha256": "65cf2fdc5a906da0683e49c5a546da4c254bab846a17a5f0963579b0879da7a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decode-plan.json": {
+      "bytes": 800,
+      "sha256": "0eae2cda05d441b063d75ccf3ec7e4d0d4f76cb8da563ab5e9c2c92d6d020bde"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/progress.json": {
+      "bytes": 1196,
+      "sha256": "303cd386aab1ebc21dfadb1617da10c66d0706eb13f4f8f956b9dad6b45d1dc9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decode.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/result.json": {
+      "bytes": 8845,
+      "sha256": "c9e7430c8ff50570ef73be460a06c76009c667c9cc16ed748c2540bab2db749c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native-plan.json": {
+      "bytes": 870,
+      "sha256": "c98ca2bb66c462a53c52d4b374fd481e86d08be743cc69687abae8a9ae8a3eaf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/cosines.json": {
+      "bytes": 7971,
+      "sha256": "3a8da90ebd55442a511fc9b8de29ea1de3f4e17eced822b4d7c60e36699f63cf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-12.f32": {
+      "bytes": 768,
+      "sha256": "3ec31f4f1b4598197e7113194611a6caa2ea9542bc4095e898271f701173094e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/windows.json": {
+      "bytes": 1870,
+      "sha256": "47fd11e684ad9202cb4d401734d882885ace3434bbdccd29f8c05cff74999d3f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-5.f32": {
+      "bytes": 768,
+      "sha256": "56639098e56fc61e1afac5152a6c686fccd1396f368c2435042d4e8a65818fa6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-13.f32": {
+      "bytes": 768,
+      "sha256": "b8214b0be7b809d43cf35d243271ee5ab30d07f058d27c87d09248265e63344d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-10.f32": {
+      "bytes": 768,
+      "sha256": "9d23478c58beefd8d9e86e532c6f672e242e540d0c157264c01d7af1b5b344d2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-14.f32": {
+      "bytes": 768,
+      "sha256": "d775749ae6d262a08d52ff74a2d3d123339408529f98bc8a06153d8dbbbd27cb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-6.f32": {
+      "bytes": 768,
+      "sha256": "e3678f5308382e68e85573df933a526fdb7ad2d60a71f491c3024eb0c71aed52"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-15.f32": {
+      "bytes": 768,
+      "sha256": "aa2afb3a3abcf667f8c9ddebacf1b68c7e81fe1442aa418e61784da613b962d2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/result.json": {
+      "bytes": 120,
+      "sha256": "d754302084f455d8242ed97cf94a699fc0f9a9cf57ba3c10f8735acdccfb8eda"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-11.f32": {
+      "bytes": 768,
+      "sha256": "350a526e12ad64e69280ee3b2399e16b53c915eb4a2ba133c978943d82962e60"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-17.f32": {
+      "bytes": 768,
+      "sha256": "62e65f7a080b53ee537d343d545b79e82b7823f6c94bae8e88ef12c5d2780fad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-4.f32": {
+      "bytes": 768,
+      "sha256": "4b19f8cc7163cdfb9a10b2d9ac12901334ab683d89b74843c8ac42436d59ec3e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-8.f32": {
+      "bytes": 768,
+      "sha256": "0a55dc20ade4ad719d900ff671ae0fde6a604bfbc44f146aa4aa8918658a7178"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-2.f32": {
+      "bytes": 768,
+      "sha256": "d91e20f4275fe816652ec8c7dd6eb7393ab3905d481fba36b9e5423c552f7ca4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-0.f32": {
+      "bytes": 768,
+      "sha256": "17189ba45eef816ad63ce46dc223d72581d6b964bb2eb0fdb4ccb9c342a1d3a0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-3.f32": {
+      "bytes": 768,
+      "sha256": "f06e6f45d8380a18590a6de207e300d4313e4bb679b452538c2b83966aac84e8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-1.f32": {
+      "bytes": 768,
+      "sha256": "25e2ae3ee888bd5748640a40a5c070ba0c7fe6596d7f27698f4606abbe176811"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-16.f32": {
+      "bytes": 768,
+      "sha256": "bed2f4412a185e926d2d4e3436c531f73e5b9f8a5c0e66c0ac5cf8b64f037cc7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-7.f32": {
+      "bytes": 768,
+      "sha256": "d4f5cb4b54b55a92d3a058af529960b8ca7c8fec48045d3f44fa2bee87938f24"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native/embedding-9.f32": {
+      "bytes": 768,
+      "sha256": "7566bc41c0fc7ffeb8ed5bd3bc21678abff261195da81ef32e0770b913df41ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/result.json": {
+      "bytes": 76,
+      "sha256": "304b7dbaa6209ca0c6d6e7b9caf2ecef46c256645b5b9fe0de056cc48c0e828f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-0/pcm.f32": {
+      "bytes": 660480,
+      "sha256": "552bdf986b5eda86ef57ee424731bfcfd55c170248bcce08b931ff6469d43dad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-0/result.json": {
+      "bytes": 159,
+      "sha256": "f6a2866d4dd3102e460d151aab83cbffe8511f420ca6ca1ff1c8e3699552c028"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-0/decoding.json": {
+      "bytes": 2805,
+      "sha256": "adc69237cc7743a992bb3979cf286bcbb427d2d5a09e680e53d63ada4fff9d72"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-2/pcm.f32": {
+      "bytes": 276480,
+      "sha256": "73e58e88638fc9f5b9504c530d2403e37c6fabdc33ea92b3b8d35ede1d629485"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-2/result.json": {
+      "bytes": 158,
+      "sha256": "8f87fda193f4119dc2405010d279fa1c1c823230fc300b224bcced7ac9f9a8f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-2/decoding.json": {
+      "bytes": 2804,
+      "sha256": "170f082c7b184f8481c42f9ea5f4636ffb0e9ffef81677e3d473cb6cbf236e76"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-1/pcm.f32": {
+      "bytes": 240640,
+      "sha256": "15548572856c5936c390ec196c547f795e54328bc60c122256e5a68d8b6123ea"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-1/result.json": {
+      "bytes": 158,
+      "sha256": "00064356407d8a8e5fb0c79332b2e362732aedaadf15ee7caec359d56d02fa2b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded/case-1/decoding.json": {
+      "bytes": 2803,
+      "sha256": "caff5937bad7f926a7a15f70f7cb1bed0570d2df9faada13dafc8174a00918c2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/result.json": {
+      "bytes": 2733,
+      "sha256": "34dab93d3504f19bb50fcd3b3e8bbf672c2e6ef79da01c2dde5e1a583f8ee133"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/plan.json": {
+      "bytes": 6734,
+      "sha256": "06a4813deb29294f02363868d1359aecb9af6316cad55e7fd58bd37622d6a139"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/replay.cpp": {
+      "bytes": 9192,
+      "sha256": "80af9ec8679041c812fc270f61bf28ec5b31b11fa1e82fab0f63131f8f696773"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/reference.py": {
+      "bytes": 5823,
+      "sha256": "34d58209e766d75da6f4ed168f9edc5e10c985c4cb1e1e279207cbf8c14bcd06"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/result.json": {
+      "bytes": 1043,
+      "sha256": "d7996318343630d2959c6db1dd9e076813b1a9c17854e80f2e77e9c8ef345afc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/plan.json": {
+      "bytes": 7195,
+      "sha256": "2dcd919a31f25b674e94c114c85fde04a6c9ae733a9adc92b149401c1fdd0149"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/reference.log": {
+      "bytes": 98,
+      "sha256": "fa64efbcbb6f289d21fbdd45bb02c030115ef28be26a44ddd754e71db4bd0de7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/command.json": {
+      "bytes": 929,
+      "sha256": "f53df067cdf4cc56684610e34229b754c54ccc350730b390498bbeb42706c9c6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-12.f32": {
+      "bytes": 768,
+      "sha256": "d7a948eaa6d0dd1b253795ad6b10607fe4fc1ac2b7e9eb68b433abd79524dea4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-5.f32": {
+      "bytes": 768,
+      "sha256": "f33312adeb96af6bc38d10c3719dd47d4647aafef3ad8369e34b423cd35d8b4b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-13.f32": {
+      "bytes": 768,
+      "sha256": "8d51fc8cdcc32206a7c23f96e20e77053fc8fde3db3197224de31495aa9861ce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-10.f32": {
+      "bytes": 768,
+      "sha256": "260c2188a11e267ead8f52b3e7d8f8c91527439f85e66f0662e552a2977dccdf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-14.f32": {
+      "bytes": 768,
+      "sha256": "db1a3b77efcbef491a57eb37a93ed907ddea3c10a8c4e6e651fe93e611081771"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-6.f32": {
+      "bytes": 768,
+      "sha256": "24a46ecf4d5cf78805739ef432e55841c56455e924dabfa0ed5a818d9943dad1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-15.f32": {
+      "bytes": 768,
+      "sha256": "98671208b52d76a037d93c38532be8641d970dc9066070b58a0f8abbb1e00bc2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/result.json": {
+      "bytes": 12499,
+      "sha256": "02bfbe739517dbe01f8cf7cf978536b8619aa066800a3478e31db03490a8c5b6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-11.f32": {
+      "bytes": 768,
+      "sha256": "3b0a0fbc06eae4d6118b6e19f207477a48a86ce111e5ef62fb2b174ad1d4f4af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-17.f32": {
+      "bytes": 768,
+      "sha256": "d3c76a63eb68110fb195cb5b1d8a202b8351a80b875a0bcad393cff920fc3153"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-4.f32": {
+      "bytes": 768,
+      "sha256": "ff07dd19328f2d386b4b92a1dad7a24e868c1a5a4869c88d1769ed903a3a67f9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-8.f32": {
+      "bytes": 768,
+      "sha256": "9f458a709f4de1e38e0d7b1cf7529ee144e7119dde3d5d0deae6cb3478d4c389"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-2.f32": {
+      "bytes": 768,
+      "sha256": "bf9c102345033be0fd5242ecc9f3c69465332de23ab095f449040fca7c34c671"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-0.f32": {
+      "bytes": 768,
+      "sha256": "698f6e428998cb44508d504b7dc611ee462d69663a7af395e3c83581a31395dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-3.f32": {
+      "bytes": 768,
+      "sha256": "18c6f0eeb91ae41af4144438ae4d001978e9c046606f6ffc23d9b3e2c7fb0dc8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-1.f32": {
+      "bytes": 768,
+      "sha256": "407b49d9f6eaf47d248455d0573868d93adc310e94f729de742f8063508dbde8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-16.f32": {
+      "bytes": 768,
+      "sha256": "9f0c29bec44c99c5615ce984653bfc5633fd2a074f0d9409a0e47b5b32733c09"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-7.f32": {
+      "bytes": 768,
+      "sha256": "9e050f326388e144d9746385d0f364230af896549d55abb864b78dce2a655726"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-reference-diagnostic-01/run/embedding-9.f32": {
+      "bytes": 768,
+      "sha256": "c0cd975a6012e54046f0d23495c93fa1eb1bc32037a13834adad682adcdb7630"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-cpu-01/result.json": {
+      "bytes": 446,
+      "sha256": "691665ed81a1a4b95279c33cb64fddc13c9f1961fdd8c185423f5a2263668369"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-cpu-01/required.txt": {
+      "bytes": 272,
+      "sha256": "7b62067464ef19ac0e51518ae8df9c6263a1490fb3740cd5692669abd2823370"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-cpu-01/tests.log": {
+      "bytes": 346,
+      "sha256": "66832668a6aa865413e2ec7c519c0053ab5bb53722d3b0d9395cf55ba08a0f0a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-build-01/engine-result.json": {
+      "bytes": 433,
+      "sha256": "f828dcb26dbf21e950b08e34bdba1e5bc0653ef3c0e87553b8a73ea22662caff"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-build-01/prior-host.json": {
+      "bytes": 165,
+      "sha256": "f518ad39e42e2983aada09ef75f4bcf823b79fd82db5e34b0868ab912107e52a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-build-01/host-result.json": {
+      "bytes": 436,
+      "sha256": "dd574d112e160c4e818552da8613648086f2aaa21ebfae0747ff5d91c70c75a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-build-01/engine.log": {
+      "bytes": 3953,
+      "sha256": "ec2033c8541af75f6c4331c64f95889b8663e3b486b5c062daf8f202d1b465fc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/diagnostic-labels-build-01/host.log": {
+      "bytes": 1914,
+      "sha256": "532a28bd6f3a705c0ef676fcd94fe6d6a25404e4ad4eb07ad1f07a7d4cec7724"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-04/identity.json": {
+      "bytes": 221,
+      "sha256": "ccc5cca50db605834c35c64673d33a804d899148db22841dc2c106d0e4e9b7aa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-04/chat_protocol_sources.json": {
+      "bytes": 76586,
+      "sha256": "5b83114608ff1ca5b3bdb9b5b15df9a89331f5beb558e100e70f77864ddd2161"
+    }
+  },
+  "archive_sha256": "85dfeffb289d131e6a01df401f95e3089303105dc0bea4cc0ef5ad610fd4030d"
+}

@@ -39,7 +39,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .preparing_audio_inputs = true,
           .native_asr_enabled = !asr_model_dir_.empty(),
           .asr_limits = asr_limits_,
-          .native_tts_enabled = !tts_model_dir_.empty(),
+          .native_tts_enabled =
+              !tts_model_dir_.empty() || !tts_base_model_dir_.empty(),
           .native_tts_output_tokens =
               tts_limits_.max_frames * audio::TtsConfig::kCodeGroups + 1,
           .header_tools = {},
@@ -81,6 +82,9 @@ void ChatServer::HandleConfig(int fd) {
       effective_config_.substr(0, effective_config_.size() - 1) +
       R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
       R"(,"native_tts_health":)" + NativeTtsHealthJson() +
+      R"(,"native_tts_base_health":)" +
+      NativeTtsHealthJson(audio::TtsVariant::kBase17B) +
+      R"(,"native_voice_health":)" + NativeVoiceHealthJson() +
       R"(,"native_tts_limits":)" + TtsServiceLimitsJson(tts_limits_) +
       R"(,"native_asr_health":)" + NativeAsrHealthJson() +
       R"(,"native_asr_limits":)" + AsrServiceLimitsJson(asr_limits_) +

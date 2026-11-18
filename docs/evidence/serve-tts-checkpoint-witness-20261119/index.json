@@ -1,0 +1,431 @@
+{
+  "archive_sha256": "fdbea850a67c515b01cad78ac44c5ed97576ce7c332772c952bdd854453886c6",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/archive_tts_checkpoint_witness_01.py": {
+      "bytes": 4926,
+      "sha256": "30510fa770d4ec09553a92394b0069efda84efaabaea19e6dd5c18c4e156b7cc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_tts_checkpoint_content_02.py": {
+      "bytes": 3098,
+      "sha256": "d1b26c370172e7bc5bdbb784b7cad84b87ed2d69e18c9da0b6e6d9bfe8130d1f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_tts_checkpoint_witness_01.py": {
+      "bytes": 2117,
+      "sha256": "4521ff2c3fdc846f0f9d2a04c300f5834d7fd0390bbd66612440ea5f8f6ea35f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/lease/events.jsonl": {
+      "bytes": 2017,
+      "sha256": "14c79e860925d3a45bb7e6e0c74b43ccd5fa45adc4017a37ccf5bfe79509f022"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/lease/exit.json": {
+      "bytes": 726,
+      "sha256": "8765e80f819715a34f1256c6f44dea1db5c8b907e341bcc13b1e81f7d6a311af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/lease/nvml-queries.jsonl": {
+      "bytes": 18273,
+      "sha256": "a0912d602a9bc389c1a67806fc222adc9f2345e863b48aa7db06bea908b5dd8b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/plan.json": {
+      "bytes": 168518,
+      "sha256": "ee7f2cb78c004cfd31a232bb6538c912a1571e30580bd92b36c9bf8278140c28"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/encoder-input.bf16": {
+      "bytes": 53760,
+      "sha256": "b4eaf6b4cd5543249176ba349327d1a40d4e9c1b914ecf6bdf2a850a6a5b10ab"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/encoder.bf16": {
+      "bytes": 61440,
+      "sha256": "dad3ce65b314d9a3e470eb2cf8e0292620bc84c8089a2d518bd15f37217480da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/generated.u32": {
+      "bytes": 52,
+      "sha256": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "d8125905ede73b8a75effaf4364c40dde440657a821e8461059f7e05ae870f55"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "8a593b8a9835b55ace435398ca3e717ccc95e7c5b7f822020d2321f2154d250b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "92dbada1e3776f8557c4f57b5db397d561403d95c9095f579a3b2d433e001f0e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "5749340cea09677ffa1567aa6cd91ba77bc7e055016de0244d6d2c374466f0e6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/result.json": {
+      "bytes": 136,
+      "sha256": "71ec12f841d080132aa88dd3c20d0380820cd8f118aeae73a9309b01b5b5653b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/case-0/text.txt": {
+      "bytes": 62,
+      "sha256": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr/result.json": {
+      "bytes": 95,
+      "sha256": "65e26edafd0cbaf27a19ff1db1de31c28e346fea3c259f18157f13e546214882"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/asr.log": {
+      "bytes": 26,
+      "sha256": "f9f5346c5967c9ca9c52a640438eb4d450443ca02206167b5c57ee2269709574"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decode-plan.json": {
+      "bytes": 313,
+      "sha256": "65211436f6577380131fdc36534cae37706a48d2c4990bd18c758379ab6333ee"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decode.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decoded/case-0/decoding.json": {
+      "bytes": 2803,
+      "sha256": "adf21e6d4b3f35318ddf59650db7b831ca19c43d0b9f63f033b7e579848ab009"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decoded/case-0/result.json": {
+      "bytes": 158,
+      "sha256": "34b5e9afd45cd9545d5e023252c24bfc2fba30e375870675b846f4c93ba45ca4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/decoded/result.json": {
+      "bytes": 76,
+      "sha256": "7c075f77a8930498951e93ef0a33b6b15360a0af8496988c136096e20ef83964"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/features/plan-0.json": {
+      "bytes": 1339,
+      "sha256": "9433fa00f86eae08b66359032cbd0e6f4c15b2da00bf77f728eb0aa3bb6ad14e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/features.log": {
+      "bytes": 558,
+      "sha256": "65c2196408f74d94dcf29f58382bce5e891b2c05c17b442dcf2943b24fa1435a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/progress.json": {
+      "bytes": 1496,
+      "sha256": "c88690db91262dfc9cbd1e9c14f5b714786b88f0c8cf2ad4f8244d7c5020a524"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/quality.json": {
+      "bytes": 297,
+      "sha256": "2613587019c5883c0a0d1f3694cdbd77adec88af50d2496cd1e1b58fefba5ac7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-content-02/run/result.json": {
+      "bytes": 1983,
+      "sha256": "4ad68139503421793cbde0821aef172a42e34ed2eba7a62455ad5ec3a510527c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/lease/events.jsonl": {
+      "bytes": 15149,
+      "sha256": "27556d04c801055b4dc838158a3f4cb6ad9264fe94a5dad202020f70c987d035"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/lease/exit.json": {
+      "bytes": 731,
+      "sha256": "aa56ee34fd286961e37fa4e7f2ff49e932fc13a591c1ac0c8dc298edd3cf857e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/lease/nvml-queries.jsonl": {
+      "bytes": 188820,
+      "sha256": "a646769d30159b18dfb91cd16bcf0a7063c81f05d13cb79a0965de2545822ba0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/plan.json": {
+      "bytes": 318232,
+      "sha256": "394b45c280bc570b2f47f2d6822037e416b07bca223ffbb9b2f9c8952ba6a024"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-config.http.json": {
+      "bytes": 251,
+      "sha256": "3bbd932baa156294d560c9431818ae84331bee6f2f5b247f6cb50fc06ba396da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-config.wire": {
+      "bytes": 16040,
+      "sha256": "e9b97aeacce6af8953baf04ab775971840736f29693b719bf5c7833707c0a019"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "0a09434adfaf1891a350c0a6600b5a4e69efcdf7a52f67215facc6651c03834c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "c69fd5ff7763f4728d3e5720ddf1f66d8c5790c7d0e25dba3fcadc4107873cd7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-ready.http.json": {
+      "bytes": 245,
+      "sha256": "c30d25f176d030ed1a56379f4d2924a287bfb01309e0edca707d31d0e0a2d6ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat.http.json": {
+      "bytes": 250,
+      "sha256": "71b654c6cc61fdc20cc1b1d8a6c6c00b8508bd2c69dca9de115d89fd9769eea8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat.request.body": {
+      "bytes": 311,
+      "sha256": "6cd71cdcb594289d3d13e72690dafc547e5eb833eada2f6e77f67d9c79d39a1a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat.request.json": {
+      "bytes": 222,
+      "sha256": "94c6004045b1ad632a72a9c39a3f2f300f024ed3452eed6ae9e9197f95c7639b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/chat.wire": {
+      "bytes": 149148,
+      "sha256": "5b09cbd70d714fbb9f0d7604e33f4a23aa8edaf30e3404f723edc798f25ff575"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/cleanup.json": {
+      "bytes": 3056,
+      "sha256": "9fb1129ca746e182d617bb59e6eeac3f6884f0a0bc9c7c39916021a25538097f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-config.http.json": {
+      "bytes": 252,
+      "sha256": "1b933f32e5012a1138ad157c22cdee888c7c4de09e7693eb8055908ccb49c607"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-config.wire": {
+      "bytes": 16032,
+      "sha256": "3bb8c738081e76275f2cd38d8a06bec67bfc3f113788417eb1ee9ef0526bec9b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "0a09434adfaf1891a350c0a6600b5a4e69efcdf7a52f67215facc6651c03834c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-drain.metrics.json": {
+      "bytes": 24643,
+      "sha256": "dd1e3b79cd137e1e8ffef5f7df71c7129e6dbfb147bd7b4b404d6b4fc13428ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-ready.http.json": {
+      "bytes": 245,
+      "sha256": "370a67bfc0009291e66d44193cab1bd89b09cce046a59ac2905e11fb6cc046ac"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before.http.json": {
+      "bytes": 244,
+      "sha256": "c5c9364fb8a8e66b103a6f60399311fb5ec7b404a74d5a82a316aeecdade948c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "32d2c3028714f92bca37ce05f757406f410dd1324636595a49ec26b89af64ab0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/counts.json": {
+      "bytes": 50,
+      "sha256": "0e231a9ac740c5b0a8165cfbda010a90d13ef633358ecd87b4ffda9d71c74c98"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "a3c2774776720bea676647230906dac268ed09f9a7eecb99c3c790832440e83a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "ca171a5423414e306fcbef6c2c59c8f7115c0e608373e8debaef082719b951b5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/model-command.json": {
+      "bytes": 1620,
+      "sha256": "d79b6a7adcb19ef27d8fb0d8bcc267ae95064aae7d7184428c9b4fbe3183dfd8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/model-identity.json": {
+      "bytes": 1961,
+      "sha256": "fe6bcd0381097462a837a1293fb1b617860b02e53ce4017624c1801588a03400"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/model.log": {
+      "bytes": 13100,
+      "sha256": "18590bb3fa27bb8d0c10cdaeb53c92d3e4d501e5dde1c48a7ca469ec12279c86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_930f654454540fc7a8f051adcc518f98.json": {
+      "bytes": 609,
+      "sha256": "c9aae2ea1bb082b7989ef75fbf0d6f3a77e9a571d85b55ac3b817865a0e6229f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-284ec623aee4b40d1894b9d018e3bfb1.json": {
+      "bytes": 149803,
+      "sha256": "373aa8a1c899fec18d8d1bcdd595a1ff25ecb875f158b022af7bc905e2b5a3fa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/result.json": {
+      "bytes": 2279,
+      "sha256": "bcc75e142ec6464b411f7e50d57ad59b2868bc7589928eaf03d74fb7642fd43e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-config.http.json": {
+      "bytes": 251,
+      "sha256": "f3f61b4f30765c15e9756bbc7e0b183f1f368d4bdf9b2b23b049aedbaf3cc789"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-config.wire": {
+      "bytes": 16040,
+      "sha256": "0d659604aafe08850b1f7f113c525c0fda2adacc29037b8f9941c65623d419d6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-drain.children.json": {
+      "bytes": 685,
+      "sha256": "0a09434adfaf1891a350c0a6600b5a4e69efcdf7a52f67215facc6651c03834c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-drain.metrics.json": {
+      "bytes": 24651,
+      "sha256": "1f1cd7604169ba79e9606bc1892e60bad4395f5d74b26535a79b51364bfdc853"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-ready.http.json": {
+      "bytes": 245,
+      "sha256": "dfedc1d01ebb573f68fa07addbd2ec6c5303363ff57c4fb1cba4b6b34c781847"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr.http.json": {
+      "bytes": 243,
+      "sha256": "89579d92153290bb3c51c58e90094c68dc261208b9f137e555ba15ed0d24b753"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr.quality.json": {
+      "bytes": 410,
+      "sha256": "1425dfbb065b1e16cdc58e0858576f109dbd5c90b47999c7815554e616884899"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr.request.body": {
+      "bytes": 58722,
+      "sha256": "9cc7133df6d32b2ffcbbc08df1ac53ac169d9749db9d3e8b64e91228d3e075bc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr.request.json": {
+      "bytes": 269,
+      "sha256": "ed2a2e302c0ea03642eddb20cc77b7f790c2ff466def1ac216e70e54b34e048f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-asr.wire": {
+      "bytes": 215,
+      "sha256": "396885b6a53dd541762170bdfe080269e80c367461598b107c1f35c0308c7255"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-config.http.json": {
+      "bytes": 251,
+      "sha256": "047e6c1ad466d03e9508552cb097d48cca6b73a02b2c8fdd72578b3c7db1b1c2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-config.wire": {
+      "bytes": 16036,
+      "sha256": "25ee04b0e180ac254b27eddb06efb24ffb05aaad4c7120a431e9bd6100cecb17"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-drain.children.json": {
+      "bytes": 685,
+      "sha256": "0a09434adfaf1891a350c0a6600b5a4e69efcdf7a52f67215facc6651c03834c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-drain.metrics.json": {
+      "bytes": 24650,
+      "sha256": "8f116acfe715274b57e9e09e89ce8067aa0bcf376c6214e59fe26fced90b4997"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-ready.http.json": {
+      "bytes": 245,
+      "sha256": "edbda5fcfca6a5e927b0b65e894c20e72a64f20cacc5a9877ef50aabd520d345"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech.http.json": {
+      "bytes": 280,
+      "sha256": "fc566e8759d97872f418d4dbfa2601218d45027a0dd19ec97eb917ffb9f0ff15"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech.mp3": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech.request.body": {
+      "bytes": 207,
+      "sha256": "32f5bd30a72e8e2ae4d578f9f6a80914050863f40a6701faae63e5b0950284f8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech.request.json": {
+      "bytes": 218,
+      "sha256": "395df01520d0ac2778ced18fd9909b67ec391b06a2f535cbe2816fbfbfc9ecc4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/speech.wire": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-config.http.json": {
+      "bytes": 252,
+      "sha256": "c27d2c7f5487825086cc8b00f6cf17aa2a80cd66d25114b74e95b35fedc08093"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-config.wire": {
+      "bytes": 16032,
+      "sha256": "3bb8c738081e76275f2cd38d8a06bec67bfc3f113788417eb1ee9ef0526bec9b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "0a09434adfaf1891a350c0a6600b5a4e69efcdf7a52f67215facc6651c03834c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "040cdb151c11aefd3232c3ffc3a979d7615cdf00c6f18ac560f51fda00027b30"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-ready.http.json": {
+      "bytes": 246,
+      "sha256": "239a31da3eac6c715ee54f7ad115b900295170550c1d7fa85ef704b2fd9b9c24"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-witness-01/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts_checkpoint_content_02.py": {
+      "bytes": 3249,
+      "sha256": "0b9ce9dd7c54d82e996e64c1988c6abbb466b7d851e0885038b366877264471f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts_checkpoint_witness_01.py": {
+      "bytes": 2660,
+      "sha256": "56410ed01ca7011c2d6d78952c6476e0a11e063c6cc029e6b75efb00e97244e6"
+    }
+  },
+  "whole_chat_wav_embedded_in_original_wire": true,
+  "original_audio_and_features_retained": true
+}

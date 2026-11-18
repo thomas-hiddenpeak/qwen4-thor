@@ -225,13 +225,40 @@ inline bool IsUploadCancellation(std::string_view method,
   return UploadMethodAllowed(method, target) &&
          target.substr(0, target.find('?')).ends_with("/cancel");
 }
+inline bool IsVoiceTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/audio/voices" || path.starts_with("/v1/audio/voices/") ||
+         path == "/v1/audio/voice_consents" ||
+         path.starts_with("/v1/audio/voice_consents/");
+}
+inline bool VoiceMethodAllowed(std::string_view method,
+                               std::string_view target) {
+  if (!IsVoiceTarget(target) || target.find('#') != target.npos) return false;
+  const auto path = target.substr(0, target.find('?'));
+  const bool consent = path.starts_with("/v1/audio/voice_consents");
+  const std::string_view root =
+      consent ? "/v1/audio/voice_consents" : "/v1/audio/voices";
+  if (path == root) return method == "POST" || (consent && method == "GET");
+  if (!ValidApplicationId(path.substr(root.size() + 1))) return false;
+  return method == "DELETE" ||
+         (consent && (method == "POST" || method == "GET"));
+}
+inline bool IsVoiceCreation(std::string_view method, std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return method == "POST" &&
+         (path == "/v1/audio/voices" || path == "/v1/audio/voice_consents");
+}
+inline bool IsVoiceMetadata(std::string_view method, std::string_view target) {
+  return VoiceMethodAllowed(method, target) && !IsVoiceCreation(method, target);
+}
 inline bool IsTranscriptionTarget(std::string_view target) {
   return target.substr(0, target.find('?')) == "/v1/audio/transcriptions";
 }
 inline bool IsBinaryUpload(std::string_view method, std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return (method == "POST" &&
-          (path == "/v1/files" || IsTranscriptionTarget(target))) ||
+          (path == "/v1/files" || IsTranscriptionTarget(target) ||
+           IsVoiceCreation(method, target))) ||
          (UploadMethodAllowed(method, target) && path.ends_with("/parts"));
 }
 

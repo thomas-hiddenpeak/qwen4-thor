@@ -1,0 +1,9 @@
+{
+  "status": "PASS_TARGETED_DRIVER_CPU_PENDING_REAL_VOICE_PROFILES",
+  "cases": 12,
+  "seconds": 2.5165791315957904,
+  "gpu_loads": 0,
+  "model_loads": 0,
+  "real_voice_primary_light_pending": true,
+  "default_replaced": false
+}

@@ -25,20 +25,27 @@ __global__ void AffineOutput(const float* input, const float* bias,
 }
 
 __global__ void PromptRows(const float* text, const float* codec,
-                           const TtsPromptRow* rows, float* output,
-                           int width, int count) {
+                           const TtsPromptRow* rows, const float* speaker,
+                           float* output, int width, int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= count) return;
   const auto row = rows[i / width];
   const int d = i % width;
   const auto source = static_cast<size_t>(row.text_index) * width + d;
-  output[i] = row.codec_id < 0 ? text[source]
-      : __fadd_rn(Read(text, source),
-                   Read(codec, static_cast<size_t>(row.codec_id) * width + d));
+  if (row.codec_id == TtsPromptRow::kSpeakerCondition) {
+    output[i] = __fadd_rn(Read(text, source), Read(speaker, d));
+  } else {
+    output[i] =
+        row.codec_id < 0
+            ? text[source]
+            : __fadd_rn(
+                  Read(text, source),
+                  Read(codec, static_cast<size_t>(row.codec_id) * width + d));
+  }
 }
 
-__global__ void SumFrame(const float* codes, const float* text,
-                         float* output, int width) {
+__global__ void SumFrame(const float* codes, const float* text, float* output,
+                         int width) {
   const int d = blockIdx.x * blockDim.x + threadIdx.x;
   if (d >= width) return;
   float sum = 0;
@@ -47,11 +54,11 @@ __global__ void SumFrame(const float* codes, const float* text,
   output[d] = __fadd_rn(sum, Read(text, d));
 }
 
-Status Affine(const float* input, TtsAffineWeights weights,
-               float* output, int m, int n, int k, bool silu,
-               float* temporary, void* gemm, cudaStream_t stream) {
-  auto status = Matmul(input, weights.weight, temporary, m, n, k, k,
-      CUDA_R_32F, CUDA_R_32F, gemm, TtsDenseLayout::kGemmBytes, stream);
+Status Affine(const float* input, TtsAffineWeights weights, float* output,
+              int m, int n, int k, bool silu, float* temporary, void* gemm,
+              cudaStream_t stream) {
+  auto status = Matmul(input, weights.weight, temporary, m, n, k, k, CUDA_R_32F,
+                       CUDA_R_32F, gemm, TtsDenseLayout::kGemmBytes, stream);
   if (status)
     AffineOutput<<<(m * n + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         temporary, weights.bias, output, m * n, n, silu);
@@ -61,31 +68,37 @@ Status Affine(const float* input, TtsAffineWeights weights,
 bool Present(TtsAffineWeights w) { return w.weight && w.bias; }
 }  // namespace
 
-TtsComputeResult TtsGenerationRun::Begin(const TtsDeviceWeights& weights,
-    const TtsPrompt& prompt, size_t max_frames,
+TtsComputeResult TtsGenerationRun::Begin(
+    const TtsDeviceWeights& weights, const TtsPrompt& prompt, size_t max_frames,
     const TtsSampling& talker_sampling, const TtsSampling& predictor_sampling,
     uint64_t seed, void* workspace, size_t bytes, cudaStream_t stream) {
   if (initialized_ || failed_ || !workspace ||
-      reinterpret_cast<uintptr_t>(workspace) % 256 ||
-      !weights.text_embedding || !weights.codec_embedding || !weights.codec_head ||
+      reinterpret_cast<uintptr_t>(workspace) % 256 || !weights.text_embedding ||
+      !weights.codec_embedding || !weights.codec_head ||
       !Present(weights.text_fc1) || !Present(weights.text_fc2) ||
-      (weights.variant == TtsVariant::kCustomVoice17B &&
+      (weights.variant != TtsVariant::kCustomVoice06B &&
        !Present(weights.predictor_projection)))
     return Invalid("TTS synthesis initialization invalid");
   for (size_t i = 0; i < 15; ++i)
     if (!weights.code_embeddings[i] || !weights.code_heads[i])
       return Invalid("TTS synthesis code-predictor weights missing");
   if (auto s = ValidateTtsPrompt(prompt); !s) return {s, cudaSuccess};
-  if (auto s = PlanTtsGenerationWorkspace(weights.variant,
-          prompt.text_ids.size(), prompt.prefill.size(), max_frames,
-          bytes, &layout_); !s) return {s, cudaSuccess};
+  if ((weights.variant == TtsVariant::kBase17B) !=
+      !prompt.speaker_embedding.empty())
+    return Invalid("TTS condition and trained weight variant differ");
+  if (auto s = PlanTtsGenerationWorkspace(
+          weights.variant, prompt.text_ids.size(), prompt.prefill.size(),
+          max_frames, bytes, &layout_);
+      !s)
+    return {s, cudaSuccess};
   const auto base = reinterpret_cast<uintptr_t>(workspace);
   if (base > std::numeric_limits<uintptr_t>::max() - layout_.bytes)
     return Invalid("TTS synthesis workspace address overflow");
   if (auto s = talker_sampler_.Init(talker_sampling, seed); !s)
     return {s, cudaSuccess};
   if (auto s = predictor_sampler_.Init(predictor_sampling,
-                                       seed ^ 0xa0761d6478bd642fULL); !s)
+                                       seed ^ 0xa0761d6478bd642fULL);
+      !s)
     return {s, cudaSuccess};
   if (auto s = state_.Init(max_frames); !s) return {s, cudaSuccess};
   weights_ = &weights;
@@ -95,131 +108,161 @@ TtsComputeResult TtsGenerationRun::Begin(const TtsDeviceWeights& weights,
     if (!r.ok()) failed_ = true;
     return r;
   };
-  auto result = talker_.Init(weights.talker, weights.variant, false,
-      layout_.talker.rows, layout_.talker.context,
-      workspace_ + layout_.talker_offset, layout_.talker.bytes, stream);
+  auto result =
+      talker_.Init(weights.talker, weights.variant, false, layout_.talker.rows,
+                   layout_.talker.context, workspace_ + layout_.talker_offset,
+                   layout_.talker.bytes, stream);
   if (!result.ok()) return record(result);
   result = predictor_.Init(weights.predictor, weights.variant, true, 2, 16,
-      workspace_ + layout_.predictor_offset, layout_.predictor.bytes, stream);
+                           workspace_ + layout_.predictor_offset,
+                           layout_.predictor.bytes, stream);
   if (!result.ok()) return record(result);
   const auto at = [&](size_t offset) {
     return reinterpret_cast<float*>(workspace_ + offset);
   };
-  auto copied = cudaMemcpyAsync(workspace_ + layout_.ids, prompt_.text_ids.data(),
-      prompt_.text_ids.size() * sizeof(int32_t), cudaMemcpyHostToDevice, stream);
+  auto copied =
+      cudaMemcpyAsync(workspace_ + layout_.ids, prompt_.text_ids.data(),
+                      prompt_.text_ids.size() * sizeof(int32_t),
+                      cudaMemcpyHostToDevice, stream);
   Status status;
   const int rows = static_cast<int>(prompt_.text_ids.size());
   if (copied == cudaSuccess) {
-    TextLookup<<<(rows * 2048 + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
-        weights.text_embedding, reinterpret_cast<int32_t*>(workspace_ + layout_.ids),
-        at(layout_.text_lookup), rows * 2048);
-    auto* temporary = reinterpret_cast<float*>(workspace_ + layout_.affine_fp32);
+    TextLookup<<<(rows * 2048 + kThreads - 1) / kThreads, kThreads, 0,
+                 stream>>>(weights.text_embedding,
+                           reinterpret_cast<int32_t*>(workspace_ + layout_.ids),
+                           at(layout_.text_lookup), rows * 2048);
+    auto* temporary =
+        reinterpret_cast<float*>(workspace_ + layout_.affine_fp32);
     auto* gemm = workspace_ + layout_.talker_offset + layout_.talker.gemm;
     status = Affine(at(layout_.text_lookup), weights.text_fc1,
-        at(layout_.text_intermediate), rows, 2048, 2048, true,
-        temporary, gemm, stream);
+                    at(layout_.text_intermediate), rows, 2048, 2048, true,
+                    temporary, gemm, stream);
     if (status)
       status = Affine(at(layout_.text_intermediate), weights.text_fc2,
-          at(layout_.text_projected), rows, layout_.talker.hidden, 2048, false,
-          temporary, gemm, stream);
+                      at(layout_.text_projected), rows, layout_.talker.hidden,
+                      2048, false, temporary, gemm, stream);
     if (status)
       copied = cudaMemcpyAsync(workspace_ + layout_.prompt_rows,
-          prompt_.prefill.data(), prompt_.prefill.size() * sizeof(TtsPromptRow),
-          cudaMemcpyHostToDevice, stream);
+                               prompt_.prefill.data(),
+                               prompt_.prefill.size() * sizeof(TtsPromptRow),
+                               cudaMemcpyHostToDevice, stream);
+    if (status && copied == cudaSuccess && !prompt_.speaker_embedding.empty())
+      copied =
+          cudaMemcpyAsync(workspace_ + layout_.speaker_condition,
+                          prompt_.speaker_embedding.data(),
+                          2048 * sizeof(float), cudaMemcpyHostToDevice, stream);
     if (status && copied == cudaSuccess) {
       const int count = layout_.talker.rows * layout_.talker.hidden;
       PromptRows<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
           at(layout_.text_projected), weights.codec_embedding,
           reinterpret_cast<TtsPromptRow*>(workspace_ + layout_.prompt_rows),
+          prompt_.speaker_embedding.empty() ? nullptr
+                                            : at(layout_.speaker_condition),
           at(layout_.prefill), layout_.talker.hidden, count);
     }
   }
   result = Complete(status, stream, copied);
   if (!result.ok()) return record(result);
 #ifdef Q4T_TTS_TRACE
-  TraceTtsOperand("text-projected", 0, 0, {at(layout_.text_projected),
-      prompt_.text_ids.size() * layout_.talker.hidden});
-  TraceTtsOperand("prefill", 0, 0, {at(layout_.prefill),
-      prompt_.prefill.size() * layout_.talker.hidden});
+  TraceTtsOperand("text-projected", 0, 0,
+                  {at(layout_.text_projected),
+                   prompt_.text_ids.size() * layout_.talker.hidden});
+  TraceTtsOperand(
+      "prefill", 0, 0,
+      {at(layout_.prefill), prompt_.prefill.size() * layout_.talker.hidden});
 #endif
-  result = talker_.Begin({at(layout_.prefill),
-      prompt_.prefill.size() * layout_.talker.hidden}, stream);
+  result = talker_.Begin(
+      {at(layout_.prefill), prompt_.prefill.size() * layout_.talker.hidden},
+      stream);
   if (!result.ok()) return record(result);
   initialized_ = true;
   return result;
 }
 
-TtsComputeResult TtsGenerationRun::Head(TtsDenseRun& run,
-    const float* head, std::span<float> logits, bool save_hidden,
-    cudaStream_t stream) {
+TtsComputeResult TtsGenerationRun::Head(TtsDenseRun& run, const float* head,
+                                        std::span<float> logits,
+                                        bool save_hidden, cudaStream_t stream) {
   std::span<const float> hidden;
   auto result = run.Finish(&hidden, stream);
   if (!result.ok()) return result;
   auto* device_logits = reinterpret_cast<float*>(workspace_ + layout_.logits);
-  auto status = Matmul(hidden.data(), head, device_logits, 1,
-      static_cast<int>(logits.size()), static_cast<int>(hidden.size()),
-      static_cast<int>(hidden.size()), CUDA_R_32F, CUDA_R_32F,
-      workspace_ + layout_.talker_offset + layout_.talker.gemm,
-      TtsDenseLayout::kGemmBytes, stream);
+  auto status =
+      Matmul(hidden.data(), head, device_logits, 1,
+             static_cast<int>(logits.size()), static_cast<int>(hidden.size()),
+             static_cast<int>(hidden.size()), CUDA_R_32F, CUDA_R_32F,
+             workspace_ + layout_.talker_offset + layout_.talker.gemm,
+             TtsDenseLayout::kGemmBytes, stream);
   cudaError_t copied = cudaSuccess;
   if (status && save_hidden)
-    copied = cudaMemcpyAsync(workspace_ + layout_.past_hidden, hidden.data(),
-        hidden.size_bytes(), cudaMemcpyDeviceToDevice, stream);
+    copied =
+        cudaMemcpyAsync(workspace_ + layout_.past_hidden, hidden.data(),
+                        hidden.size_bytes(), cudaMemcpyDeviceToDevice, stream);
   if (status && copied == cudaSuccess)
     copied = cudaMemcpyAsync(logits.data(), device_logits, logits.size_bytes(),
-                              cudaMemcpyDeviceToHost, stream);
+                             cudaMemcpyDeviceToHost, stream);
   result = Complete(status, stream, copied);
 #ifdef Q4T_TTS_TRACE
   if (result.ok()) {
     TraceTtsOperand(save_hidden ? "talker-hidden" : "predictor-hidden",
-        state_.frames(), state_.next_group(), hidden);
+                    state_.frames(), state_.next_group(), hidden);
     TraceTtsOperand(save_hidden ? "talker-logits" : "predictor-logits",
-        state_.frames(), state_.next_group(), {device_logits, logits.size()});
+                    state_.frames(), state_.next_group(),
+                    {device_logits, logits.size()});
   }
 #endif
   return result;
 }
 
 TtsComputeResult TtsGenerationRun::ProjectPredictor(int rows,
-                                                   cudaStream_t stream) {
-  const auto* input = reinterpret_cast<float*>(workspace_ + layout_.predictor_input);
-  auto* output = reinterpret_cast<float*>(workspace_ + layout_.predictor_projected);
+                                                    cudaStream_t stream) {
+  const auto* input =
+      reinterpret_cast<float*>(workspace_ + layout_.predictor_input);
+  auto* output =
+      reinterpret_cast<float*>(workspace_ + layout_.predictor_projected);
   const int hidden = layout_.talker.hidden;
   TtsComputeResult result;
   if (hidden == 1024) {
-    result = Complete({}, stream, cudaMemcpyAsync(output, input,
-        static_cast<size_t>(rows) * 1024 * sizeof(float),
-        cudaMemcpyDeviceToDevice, stream));
+    result = Complete(
+        {}, stream,
+        cudaMemcpyAsync(output, input,
+                        static_cast<size_t>(rows) * 1024 * sizeof(float),
+                        cudaMemcpyDeviceToDevice, stream));
   } else {
-    result = Complete(Affine(input, weights_->predictor_projection, output,
-        rows, 1024, hidden, false,
-        reinterpret_cast<float*>(workspace_ + layout_.affine_fp32),
-        workspace_ + layout_.predictor_offset + layout_.predictor.gemm,
-        stream), stream);
+    result = Complete(
+        Affine(input, weights_->predictor_projection, output, rows, 1024,
+               hidden, false,
+               reinterpret_cast<float*>(workspace_ + layout_.affine_fp32),
+               workspace_ + layout_.predictor_offset + layout_.predictor.gemm,
+               stream),
+        stream);
   }
   if (!result.ok()) return result;
   return predictor_.Begin({output, static_cast<size_t>(rows) * 1024}, stream);
 }
 
 TtsComputeResult TtsGenerationRun::BeginPredictor(int32_t code,
-                                                 cudaStream_t stream) {
+                                                  cudaStream_t stream) {
   auto result = predictor_.Reset(stream);
   if (!result.ok()) return result;
   const size_t row_bytes = layout_.talker.hidden * sizeof(float);
   auto copied = cudaMemcpyAsync(workspace_ + layout_.predictor_input,
-      workspace_ + layout_.past_hidden, row_bytes, cudaMemcpyDeviceToDevice, stream);
+                                workspace_ + layout_.past_hidden, row_bytes,
+                                cudaMemcpyDeviceToDevice, stream);
   if (copied == cudaSuccess)
-    copied = cudaMemcpyAsync(workspace_ + layout_.predictor_input + row_bytes,
-        weights_->codec_embedding + static_cast<size_t>(code) * layout_.talker.hidden,
-        row_bytes, cudaMemcpyDeviceToDevice, stream);
+    copied =
+        cudaMemcpyAsync(workspace_ + layout_.predictor_input + row_bytes,
+                        weights_->codec_embedding +
+                            static_cast<size_t>(code) * layout_.talker.hidden,
+                        row_bytes, cudaMemcpyDeviceToDevice, stream);
   result = Complete({}, stream, copied);
   if (!result.ok()) return result;
   return ProjectPredictor(2, stream);
 }
 
 TtsComputeResult TtsGenerationRun::ContinuePredictor(size_t group, int32_t code,
-                                                    cudaStream_t stream) {
-  const auto copied = cudaMemcpyAsync(workspace_ + layout_.predictor_input,
+                                                     cudaStream_t stream) {
+  const auto copied = cudaMemcpyAsync(
+      workspace_ + layout_.predictor_input,
       weights_->code_embeddings[group - 1] +
           static_cast<size_t>(code) * layout_.talker.hidden,
       layout_.talker.hidden * sizeof(float), cudaMemcpyDeviceToDevice, stream);
@@ -233,22 +276,25 @@ TtsComputeResult TtsGenerationRun::ContinueTalker(cudaStream_t stream) {
   const auto& codes = state_.completed().back();
   cudaError_t copied = cudaSuccess;
   for (int i = 0; i < 16 && copied == cudaSuccess; ++i) {
-    const auto* table = i == 0 ? weights_->codec_embedding
-                               : weights_->code_embeddings[i - 1];
-    copied = cudaMemcpyAsync(workspace_ + layout_.codec_embeddings +
-        i * hidden * sizeof(float), table + static_cast<size_t>(codes[i]) * hidden,
-        hidden * sizeof(float), cudaMemcpyDeviceToDevice, stream);
+    const auto* table =
+        i == 0 ? weights_->codec_embedding : weights_->code_embeddings[i - 1];
+    copied = cudaMemcpyAsync(
+        workspace_ + layout_.codec_embeddings + i * hidden * sizeof(float),
+        table + static_cast<size_t>(codes[i]) * hidden, hidden * sizeof(float),
+        cudaMemcpyDeviceToDevice, stream);
   }
   const size_t frame = state_.frames() - 1;
   const auto index = frame < prompt_.trailing_text.size()
-      ? prompt_.trailing_text[frame] : prompt_.pad_index;
-  const auto* text = reinterpret_cast<float*>(workspace_ + layout_.text_projected) +
-                     static_cast<size_t>(index) * hidden;
+                         ? prompt_.trailing_text[frame]
+                         : prompt_.pad_index;
+  const auto* text =
+      reinterpret_cast<float*>(workspace_ + layout_.text_projected) +
+      static_cast<size_t>(index) * hidden;
   auto* output = reinterpret_cast<float*>(workspace_ + layout_.decode_input);
   if (copied == cudaSuccess)
     SumFrame<<<(hidden + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
-        reinterpret_cast<float*>(workspace_ + layout_.codec_embeddings),
-        text, output, hidden);
+        reinterpret_cast<float*>(workspace_ + layout_.codec_embeddings), text,
+        output, hidden);
   auto result = Complete({}, stream, copied);
   if (!result.ok()) return result;
   return talker_.Begin({output, static_cast<size_t>(hidden)}, stream);
@@ -262,7 +308,8 @@ TtsComputeResult TtsGenerationRun::Advance(cudaStream_t stream) {
     return result;
   };
   if (!predicting_) {
-    if (talker_.completed_layers() < 28) return record(talker_.NextLayer(stream));
+    if (talker_.completed_layers() < 28)
+      return record(talker_.NextLayer(stream));
     std::array<float, 3072> logits;
     auto result = Head(talker_, weights_->codec_head, logits, true, stream);
     if (!result.ok()) return record(result);
@@ -280,8 +327,8 @@ TtsComputeResult TtsGenerationRun::Advance(cudaStream_t stream) {
     return record(predictor_.NextLayer(stream));
   const auto group = state_.next_group();
   std::array<float, 2048> logits;
-  auto result = Head(predictor_, weights_->code_heads[group - 1], logits,
-                      false, stream);
+  auto result =
+      Head(predictor_, weights_->code_heads[group - 1], logits, false, stream);
   if (!result.ok()) return record(result);
   int32_t token;
   auto status = predictor_sampler_.Select(logits, false, false, {}, &token);

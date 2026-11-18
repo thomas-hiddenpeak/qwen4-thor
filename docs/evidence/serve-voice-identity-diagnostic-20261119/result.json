@@ -1,0 +1,570 @@
+{
+  "status": "DIAGNOSTIC_LABELS_FIXED_CPU_QUALIFIED_VOICE_HTTP_PENDING",
+  "http": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_service_acceptance.py\", line 427, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_service_acceptance.py\", line 364, in business\n    consent = checked_metadata(status, raw, 'voice_consent')['id']\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_service_acceptance.py\", line 107, in checked_metadata\n    require(status == 200 and set(value) == keys and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: missing metadata or private evidence leaked\n",
+    "counts": {
+      "starts": 1,
+      "posts": 7,
+      "controls": 60
+    },
+    "seconds": 96.47498136060312,
+    "defaults_unchanged": true,
+    "acceptance": {
+      "no_asr_text_or_language_hint": true,
+      "one_core_pid": true,
+      "sample_text_differs_from_both_targets": true,
+      "same_speaker_cosine_minimum": 0.65,
+      "preserve_revocable_owner_scope": true,
+      "listening": "PENDING",
+      "human_identity": "NOT_CLAIMED",
+      "reference_audio_icl": "PENDING",
+      "performance": "NOT_CLAIMED"
+    }
+  },
+  "diagnosis": {
+    "status": "DIAGNOSTIC_OBSERVED_THRESHOLD_UNCHANGED",
+    "steps": [
+      {
+        "name": "decode",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/http-candidate-01/q4t-speech-decode",
+          "--speech-http-decode",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decode-plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/decoded"
+        ],
+        "returncode": 0,
+        "seconds": 0.11383337993174791
+      },
+      {
+        "name": "native",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-build-01/q4t_voice_identity_diagnostic",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/native-assets-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native-plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-identity-diagnostic-01/run/native"
+        ],
+        "returncode": 0,
+        "seconds": 1.1650059772655368
+      }
+    ],
+    "observations": [
+      {
+        "name": "consent",
+        "windows": 11,
+        "whole": 11,
+        "worst_pairs": [
+          {
+            "cosine": 0.04894716028901675,
+            "first": {
+              "row": 1,
+              "clip": 0,
+              "index": 1,
+              "whole": false,
+              "begin": 12000,
+              "end": 60000,
+              "core_begin": 30000,
+              "core_end": 42000
+            },
+            "second": {
+              "row": 9,
+              "clip": 0,
+              "index": 9,
+              "whole": false,
+              "begin": 108000,
+              "end": 156000,
+              "core_begin": 126000,
+              "core_end": 136560
+            }
+          },
+          {
+            "cosine": 0.05554350459569042,
+            "first": {
+              "row": 1,
+              "clip": 0,
+              "index": 1,
+              "whole": false,
+              "begin": 12000,
+              "end": 60000,
+              "core_begin": 30000,
+              "core_end": 42000
+            },
+            "second": {
+              "row": 10,
+              "clip": 0,
+              "index": 10,
+              "whole": false,
+              "begin": 117120,
+              "end": 165120,
+              "core_begin": 136560,
+              "core_end": 165120
+            }
+          },
+          {
+            "cosine": 0.06375090600648316,
+            "first": {
+              "row": 1,
+              "clip": 0,
+              "index": 1,
+              "whole": false,
+              "begin": 12000,
+              "end": 60000,
+              "core_begin": 30000,
+              "core_end": 42000
+            },
+            "second": {
+              "row": 7,
+              "clip": 0,
+              "index": 7,
+              "whole": false,
+              "begin": 84000,
+              "end": 132000,
+              "core_begin": 102000,
+              "core_end": 114000
+            }
+          },
+          {
+            "cosine": 0.06594101266771792,
+            "first": {
+              "row": 0,
+              "clip": 0,
+              "index": 0,
+              "whole": false,
+              "begin": 0,
+              "end": 48000,
+              "core_begin": 0,
+              "core_end": 30000
+            },
+            "second": {
+              "row": 9,
+              "clip": 0,
+              "index": 9,
+              "whole": false,
+              "begin": 108000,
+              "end": 156000,
+              "core_begin": 126000,
+              "core_end": 136560
+            }
+          },
+          {
+            "cosine": 0.07003397104266199,
+            "first": {
+              "row": 0,
+              "clip": 0,
+              "index": 0,
+              "whole": false,
+              "begin": 0,
+              "end": 48000,
+              "core_begin": 0,
+              "core_end": 30000
+            },
+            "second": {
+              "row": 10,
+              "clip": 0,
+              "index": 10,
+              "whole": false,
+              "begin": 117120,
+              "end": 165120,
+              "core_begin": 136560,
+              "core_end": 165120
+            }
+          }
+        ],
+        "window_to_mean": [
+          {
+            "row": 0,
+            "cosine": 0.5473295402619346,
+            "seconds": 3.0
+          },
+          {
+            "row": 1,
+            "cosine": 0.5344672820807824,
+            "seconds": 3.0
+          },
+          {
+            "row": 2,
+            "cosine": 0.5891975165130183,
+            "seconds": 3.0
+          },
+          {
+            "row": 3,
+            "cosine": 0.6535659818093167,
+            "seconds": 3.0
+          },
+          {
+            "row": 4,
+            "cosine": 0.7933376573837384,
+            "seconds": 3.0
+          },
+          {
+            "row": 5,
+            "cosine": 0.8411674919507983,
+            "seconds": 3.0
+          },
+          {
+            "row": 6,
+            "cosine": 0.8493308129906925,
+            "seconds": 3.0
+          },
+          {
+            "row": 7,
+            "cosine": 0.8194228396830289,
+            "seconds": 3.0
+          },
+          {
+            "row": 8,
+            "cosine": 0.8244284389334201,
+            "seconds": 3.0
+          },
+          {
+            "row": 9,
+            "cosine": 0.7956645557432088,
+            "seconds": 3.0
+          },
+          {
+            "row": 10,
+            "cosine": 0.7890688462091883,
+            "seconds": 3.0
+          }
+        ],
+        "window_to_whole": [
+          {
+            "row": 0,
+            "cosine": 0.14100473809970424
+          },
+          {
+            "row": 1,
+            "cosine": 0.1269255262217386
+          },
+          {
+            "row": 2,
+            "cosine": 0.2317415643187488
+          },
+          {
+            "row": 3,
+            "cosine": 0.6163798062846058
+          },
+          {
+            "row": 4,
+            "cosine": 0.8652865926167097
+          },
+          {
+            "row": 5,
+            "cosine": 0.8792963464592206
+          },
+          {
+            "row": 6,
+            "cosine": 0.8404556102761372
+          },
+          {
+            "row": 7,
+            "cosine": 0.8477922223758465
+          },
+          {
+            "row": 8,
+            "cosine": 0.8514934612906877
+          },
+          {
+            "row": 9,
+            "cosine": 0.814118393104183
+          },
+          {
+            "row": 10,
+            "cosine": 0.8305519710979969
+          }
+        ]
+      },
+      {
+        "name": "sample",
+        "windows": 2,
+        "whole": 14,
+        "worst_pairs": [
+          {
+            "cosine": 0.3752923770741739,
+            "first": {
+              "row": 12,
+              "clip": 1,
+              "index": 0,
+              "whole": false,
+              "begin": 0,
+              "end": 33792,
+              "core_begin": 0,
+              "core_end": 33792
+            },
+            "second": {
+              "row": 13,
+              "clip": 1,
+              "index": 1,
+              "whole": false,
+              "begin": 33792,
+              "end": 60160,
+              "core_begin": 33792,
+              "core_end": 60160
+            }
+          }
+        ],
+        "window_to_mean": [
+          {
+            "row": 12,
+            "cosine": 0.8727141289352817,
+            "seconds": 2.112
+          },
+          {
+            "row": 13,
+            "cosine": 0.7800679523738775,
+            "seconds": 1.648
+          }
+        ],
+        "window_to_whole": [
+          {
+            "row": 12,
+            "cosine": 0.8400926338926864
+          },
+          {
+            "row": 13,
+            "cosine": 0.7629522236686819
+          }
+        ]
+      },
+      {
+        "name": "different",
+        "windows": 2,
+        "whole": 17,
+        "worst_pairs": [
+          {
+            "cosine": 0.5677541843646466,
+            "first": {
+              "row": 15,
+              "clip": 2,
+              "index": 0,
+              "whole": false,
+              "begin": 0,
+              "end": 38400,
+              "core_begin": 0,
+              "core_end": 38400
+            },
+            "second": {
+              "row": 16,
+              "clip": 2,
+              "index": 1,
+              "whole": false,
+              "begin": 40256,
+              "end": 69120,
+              "core_begin": 40256,
+              "core_end": 69120
+            }
+          }
+        ],
+        "window_to_mean": [
+          {
+            "row": 15,
+            "cosine": 0.9174366189305915,
+            "seconds": 2.4
+          },
+          {
+            "row": 16,
+            "cosine": 0.8484141667567957,
+            "seconds": 1.804
+          }
+        ],
+        "window_to_whole": [
+          {
+            "row": 15,
+            "cosine": 0.8915359223302449
+          },
+          {
+            "row": 16,
+            "cosine": 0.8353964263667467
+          }
+        ]
+      }
+    ],
+    "aggregate_similarity": [
+      [
+        1.0,
+        0.4518978842246464,
+        0.10015773025323597
+      ],
+      [
+        0.4518978842246464,
+        1.0,
+        0.12904969921351106
+      ],
+      [
+        0.10015773025323597,
+        0.12904969921351106,
+        1.0
+      ]
+    ],
+    "verification_threshold": 0.65,
+    "seconds": 1.386700286064297,
+    "defaults_unchanged": true
+  },
+  "reference_checks": [
+    {
+      "row": 0,
+      "cosine": 0.9999999999983801,
+      "relative_l2": 1.8504574294680807e-06,
+      "passed": true
+    },
+    {
+      "row": 1,
+      "cosine": 0.9999999999979224,
+      "relative_l2": 2.048073193727345e-06,
+      "passed": true
+    },
+    {
+      "row": 2,
+      "cosine": 0.9999999999961606,
+      "relative_l2": 2.8075346032561322e-06,
+      "passed": true
+    },
+    {
+      "row": 3,
+      "cosine": 0.9999999999971819,
+      "relative_l2": 2.3945780823402068e-06,
+      "passed": true
+    },
+    {
+      "row": 4,
+      "cosine": 0.9999999999979112,
+      "relative_l2": 2.0999752909472536e-06,
+      "passed": true
+    },
+    {
+      "row": 5,
+      "cosine": 0.9999999999982464,
+      "relative_l2": 1.880016193229842e-06,
+      "passed": true
+    },
+    {
+      "row": 6,
+      "cosine": 0.9999999999970883,
+      "relative_l2": 2.4365328157982273e-06,
+      "passed": true
+    },
+    {
+      "row": 7,
+      "cosine": 0.9999999999978066,
+      "relative_l2": 2.0991264600085023e-06,
+      "passed": true
+    },
+    {
+      "row": 8,
+      "cosine": 0.9999999999967198,
+      "relative_l2": 2.561523410057153e-06,
+      "passed": true
+    },
+    {
+      "row": 9,
+      "cosine": 0.9999999999978061,
+      "relative_l2": 2.0958260622478963e-06,
+      "passed": true
+    },
+    {
+      "row": 10,
+      "cosine": 0.9999999999967418,
+      "relative_l2": 2.5666294639915096e-06,
+      "passed": true
+    },
+    {
+      "row": 11,
+      "cosine": 0.9999999999984166,
+      "relative_l2": 1.8042580607373053e-06,
+      "passed": true
+    },
+    {
+      "row": 12,
+      "cosine": 0.999999999995971,
+      "relative_l2": 2.8509007139870166e-06,
+      "passed": true
+    },
+    {
+      "row": 13,
+      "cosine": 0.9999999999966247,
+      "relative_l2": 2.6115814338448116e-06,
+      "passed": true
+    },
+    {
+      "row": 14,
+      "cosine": 0.9999999999974504,
+      "relative_l2": 2.261198672032033e-06,
+      "passed": true
+    },
+    {
+      "row": 15,
+      "cosine": 0.9999999999975789,
+      "relative_l2": 2.202821713655862e-06,
+      "passed": true
+    },
+    {
+      "row": 16,
+      "cosine": 0.9999999999970265,
+      "relative_l2": 2.4397636786342177e-06,
+      "passed": true
+    },
+    {
+      "row": 17,
+      "cosine": 0.9999999999985578,
+      "relative_l2": 1.7156942916805004e-06,
+      "passed": true
+    }
+  ],
+  "reference_seconds": 6.777495848946273,
+  "native_lease": "COMPLETED",
+  "nvml_queries": 4,
+  "nvml_all_ok": true,
+  "cpu": {
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 0.004968372639268637,
+    "cases": 5,
+    "binary_sha256": "77a791a97ee5996e15d444505982a28f3ed2eb0b6f7ff368c4d6da9702088f2d",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/diagnostic-labels-cpu-01/required.txt"
+    ],
+    "gpu": 0
+  },
+  "build": {
+    "host": {
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host",
+        "--target",
+        "q4t_host_tests",
+        "--parallel",
+        "4"
+      ],
+      "returncode": 0,
+      "seconds": 26.014339360874146,
+      "warnings": [],
+      "abort": null,
+      "minimum_free_bytes": 866893824,
+      "defaults_unchanged": true,
+      "binary_sha256": "77a791a97ee5996e15d444505982a28f3ed2eb0b6f7ff368c4d6da9702088f2d"
+    },
+    "engine": {
+      "command": [
+        "cmake",
+        "--build",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+        "--target",
+        "q4t",
+        "--parallel",
+        "4"
+      ],
+      "returncode": 0,
+      "seconds": 46.01599174691364,
+      "warnings": [],
+      "abort": null,
+      "minimum_free_bytes": 857534464,
+      "defaults_unchanged": true,
+      "binary_sha256": "0d1ca22b5268c9fef7965cef8f6140370077a04b28c42a111290155d2c67e1be"
+    }
+  },
+  "voice_threshold_unchanged": 0.65,
+  "default_replaced": false
+}

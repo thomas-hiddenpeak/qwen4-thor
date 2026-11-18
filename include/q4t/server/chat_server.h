@@ -49,6 +49,8 @@
 #include "q4t/server/asr_service.h"
 #include "q4t/server/asr_request.h"
 #include "q4t/server/tts_upload.h"
+#include "q4t/audio/tts_speaker_model.h"
+#include "q4t/server/voice_registry.h"
 #include "q4t/server/speech_output.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/audio/features.h"
@@ -225,9 +227,20 @@ class ChatServer {
   // Caller owns auxiliary_mu_ and an admitted slot; never evict active work.
   ObjectReply ActivateAuxiliaryFamily(bool speech_output,
                                       const std::function<bool()>& cancelled);
-  ObjectReply EnsureNativeTts(bool weights, const BinaryAccess& access,
-                              RequestDiagnostics* diagnostic = nullptr);
-  std::string NativeTtsHealthJson() const;
+  ObjectReply EnsureNativeTts(
+      bool weights, const BinaryAccess& access,
+      RequestDiagnostics* diagnostic = nullptr,
+      audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B);
+  AsrHealth& TtsHealth(audio::TtsVariant variant);
+  // Caller owns auxiliary_mu_ and tts_mu_; pair retirement ignores mid-free
+  // cancellation and never overwrites an allocation whose release failed.
+  ObjectReply ReleaseNativeTts(const std::function<bool()>& cancelled);
+  std::string NativeTtsHealthJson(
+      audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B) const;
+  ObjectReply PlanNativeSpeech(const SpeechRequest& request,
+                               const BinaryAccess& access,
+                               RequestDiagnostics& diagnostic,
+                               audio::TtsPrompt* prompt);
   ObjectReply RunNativeTts(
       int fd, const SpeechRequest& request, const audio::TtsPrompt& prompt,
       size_t max_frames, const std::shared_ptr<RequestControl>& control,
@@ -235,6 +248,20 @@ class ChatServer {
       ActualUsageCounter& usage,
       const std::function<ObjectReply(std::string_view)>& sink,
       SpeechEncodingReceipt* receipt);
+  ObjectReply EnsureNativeVoice(const BinaryAccess& access,
+                                RequestDiagnostics& diagnostic);
+  std::string NativeVoiceHealthJson() const;
+  ObjectReply RunNativeVoiceCondition(
+      int fd, std::span<const float> pcm,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, std::vector<float>* condition);
+  ObjectReply PrepareVoiceEvidence(
+      int fd, const VoiceAudio& audio, std::string_view consent_language,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      VoiceSampleEvidence* evidence, std::string* verified_phrase);
+  void HandleVoices(int fd, std::string_view method, std::string_view target,
+                    std::string_view content_type, std::string_view body);
   ObjectReply EnsureNativeAsr(bool weights, const BinaryAccess& access,
                               RequestDiagnostics* diagnostic = nullptr);
   std::string NativeAsrHealthJson() const;
@@ -598,15 +625,22 @@ class ChatServer {
   std::atomic<uint64_t> embedding_load_failures_{0};
   // Protected by embedding_mu_. Request-driven retries only, no model restart.
   std::chrono::steady_clock::time_point embedding_retry_after_{};
-  ModelCatalog tts_catalog_;
-  std::string tts_model_dir_;
+  ModelCatalog tts_catalog_, tts_base_catalog_;
+  std::string tts_model_dir_, tts_base_model_dir_;
   TtsServiceLimits tts_limits_;
-  AsrHealth tts_health_;
+  AsrHealth tts_health_, tts_base_health_;
   std::mutex tts_mu_, tts_tok_mu_;
-  std::unique_ptr<text::Tokenizer> tts_tok_;
+  // Metadata/tokenizers are immutable once published. Both variants have
+  // separate ownership; they share a cancellable tokenizer execution mutex.
+  std::unique_ptr<text::Tokenizer> tts_tok_, tts_base_tok_;
   uint8_t* d_tts_talker_ = nullptr;
   uint8_t* d_tts_codec_ = nullptr;
   TtsBoundWeights tts_weights_;
+  // Registration belongs to the input family; it does not load the talker.
+  std::mutex voice_mu_;
+  AsrHealth voice_health_;
+  uint8_t* d_voice_weights_ = nullptr;
+  audio::TtsSpeakerDeviceWeights voice_weights_;
   ModelCatalog asr_catalog_;
   std::string asr_model_dir_;
   AsrServiceLimits asr_limits_;

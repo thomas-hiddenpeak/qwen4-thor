@@ -57,6 +57,7 @@
 #include "q4t/server/session_state.h"
 #include "q4t/server/thinking_budget.h"
 #include "q4t/server/text_stop.h"
+#include "q4t/server/voice_registry.h"
 
 namespace q4t::server {
 namespace {
@@ -625,14 +626,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               "object_scope_unavailable", "audio");
     return;
   }
-  if (audio_output.enabled &&
-      (audio_output.speech.voice_id ||
-       audio::TtsBuiltinVoiceId(audio_output.speech.voice) < 0)) {
-    SendError(fd, audio_output.speech.voice_id ? 404 : 400,
+  if (audio_output.enabled && !audio_output.speech.voice_id &&
+      audio::TtsBuiltinVoiceId(audio_output.speech.voice) < 0) {
+    SendError(fd, 400,
               "Requested voice is not available for native Chat speech", {},
-              audio_output.speech.voice_id ? "voice_not_found"
-                                           : "invalid_speech_voice",
-              audio_output.speech.voice_id ? "audio.voice.id" : "audio.voice");
+              "invalid_speech_voice", "audio.voice");
     return;
   }
   const auto& constraints = request_plan.constraints;
@@ -725,6 +723,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     diagnostic.BindAttribution(
         SafetyIdentifierDigest(responses ? responses->Envelope().options : req,
                                chat_state_access.scope));
+  if (audio_output.enabled && audio_output.speech.voice_id) {
+    RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
+    VoiceSynthesisBinding voice;
+    const auto resolved = VoiceRegistry(*objects_).Resolve(
+        audio_output.speech.voice,
+        {chat_state_access.scope, deadline, cancelled}, &voice);
+    if (!resolved.ok()) {
+      diagnostic.Outcome("error", resolved.ClientCode());
+      SendError(fd, resolved.http_status, resolved.ClientMessage(), {},
+                resolved.ClientCode(), "audio.voice.id");
+      return;
+    }
+    // Admission does not authorize a later synthesis. PlanNativeSpeech checks
+    // the live consent again after text generation, for every output choice.
+  }
   if (chat_storage.store) {
     RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
     const auto existing =

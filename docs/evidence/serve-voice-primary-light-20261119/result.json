@@ -1,0 +1,135 @@
+{
+  "status": "ACCEPT_BASE_VOICE_AND_BUILTIN_PRIMARY_LIGHT_BUSINESS",
+  "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+  "acceptance": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 288,
+      "cleanup_complete": true,
+      "lease_result_sha256": "20ded571f142338e34228f4cece9977694af1d447c3b0803e978b4033b438744"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 50,
+      "controls": 149
+    },
+    "seconds": 311.9027074780315,
+    "registry_sha256": "318cf13d561f751acba13ae408a8b8b3e310a7d0a685fab4cf9e5145af60aced",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "results": {
+    "primary": {
+      "speech": "The blue train arrives at noon.",
+      "chat": "Please close the window.",
+      "consent_id": "cons_6f25bde58a2c4060438f785b50dda9bd",
+      "voice_id": "voice_db9e73ae3038af5833a29031082859c8",
+      "revocation": {
+        "consent_deleted": {
+          "id": "cons_6f25bde58a2c4060438f785b50dda9bd",
+          "deleted": true,
+          "object": "audio.voice_consent"
+        },
+        "speech": {
+          "status": 404,
+          "body": {
+            "error": {
+              "message": "Object not found",
+              "type": "invalid_request_error",
+              "code": "object_not_found",
+              "param": null
+            }
+          }
+        },
+        "consent": {
+          "status": 404,
+          "body": {
+            "error": {
+              "message": "Object not found",
+              "type": "invalid_request_error",
+              "code": "object_not_found",
+              "param": null
+            }
+          }
+        },
+        "voice_deleted": {
+          "id": "voice_db9e73ae3038af5833a29031082859c8",
+          "deleted": true,
+          "object": "audio.voice"
+        }
+      },
+      "sampling": "qwen3-tts-checkpoint-seed0-v1"
+    },
+    "light": {
+      "speech": "The blue train arrives at noon.",
+      "chat": "Please close the window.",
+      "consent_id": "cons_fc8497f9c7a93d9d4fde4f5de187f49f",
+      "voice_id": "voice_d2af44b34cf969cae090f7f62997815a",
+      "revocation": {
+        "consent_deleted": {
+          "id": "cons_fc8497f9c7a93d9d4fde4f5de187f49f",
+          "deleted": true,
+          "object": "audio.voice_consent"
+        },
+        "speech": {
+          "status": 404,
+          "body": {
+            "error": {
+              "message": "Object not found",
+              "type": "invalid_request_error",
+              "code": "object_not_found",
+              "param": null
+            }
+          }
+        },
+        "consent": {
+          "status": 404,
+          "body": {
+            "error": {
+              "message": "Object not found",
+              "type": "invalid_request_error",
+              "code": "object_not_found",
+              "param": null
+            }
+          }
+        },
+        "voice_deleted": {
+          "id": "voice_d2af44b34cf969cae090f7f62997815a",
+          "deleted": true,
+          "object": "audio.voice"
+        }
+      },
+      "sampling": "qwen3-tts-checkpoint-seed0-v1"
+    }
+  },
+  "nvml_queries": 288,
+  "all_nvml_ok": true,
+  "default_replaced": false,
+  "actual_managed_recovery": false,
+  "prior_env_abort_preserved": true,
+  "retained_storage": {
+    "status": "IDENTICAL_IMMUTABLE_COPIES_SHARE_STORAGE",
+    "default_unchanged": true,
+    "paths_retained": true,
+    "sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "free_before": 287444992,
+    "free_after": 400384000,
+    "logical_duplicate_bytes": 112940928,
+    "canonical_after": {
+      "dev": 66305,
+      "inode": 12333320,
+      "bytes": 28235232,
+      "mode": 320,
+      "mtime_ns": 1794996278022502193,
+      "ctime_ns": 1795026446832634783,
+      "links": 5
+    },
+    "model_actions": 0
+  },
+  "full_task_complete": false,
+  "listening": "PENDING"
+}

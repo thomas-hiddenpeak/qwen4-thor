@@ -1,0 +1,26 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/retained-logs-dedup-01/plan.json": {
+    "bytes": 6701,
+    "sha256": "c8c69c7e744ee669c4c24d70ecc3121278f28d4d29072ffa80d8348226e011f0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-logs-dedup-01/completed.json": {
+    "bytes": 2989,
+    "sha256": "bd1e87a6682fefc26df17358041c9444980abda4c640554ea088230fcec4dfc2"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-logs-dedup-01/result.json": {
+    "bytes": 417,
+    "sha256": "b3b322b2fee667f0da71c9aef8e9dc66e188e496a7342eb2941e2e16e54ca640"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-logs-dedup-01/restore.py": {
+    "bytes": 1331,
+    "sha256": "d02fd5a0669f04ad5af6acba3be2afa204f4ab866211c014f7c295abda72b8b4"
+  },
+  ".q4t-work/serve-custom-voices-20261118/deduplicate_archived_logs.py": {
+    "bytes": 5031,
+    "sha256": "15a066cbc28d5aaf5c4e3ce828f824a775bbf932ce7ba99fe76f4775e0582e4e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/retained-log-pairs-review-01.json": {
+    "bytes": 1839,
+    "sha256": "c95fce7e19ebbf66631a59e583c0fbe3d3fcfe310118eb6407e85d3430c6db2f"
+  }
+}

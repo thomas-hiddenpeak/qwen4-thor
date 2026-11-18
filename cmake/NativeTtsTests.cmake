@@ -15,6 +15,11 @@ target_compile_options(q4t_speech_contract_tests PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_tts_contract_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/tests/test_main.cpp
   ${tts_test_root}/tests/tts_config_test.cpp
+  ${tts_test_root}/tests/tts_base_config_test.cpp
+  ${tts_test_root}/tests/tts_speaker_features_test.cpp
+  ${tts_test_root}/src/audio/tts_speaker_features.cpp
+  ${tts_test_root}/tests/tts_speaker_layout_test.cpp
+  ${tts_test_root}/src/audio/tts_speaker_layout.cpp
   ${tts_test_root}/src/audio/tts_config.cpp
   ${tts_test_root}/src/io/json.cpp)
 target_include_directories(q4t_tts_contract_tests PRIVATE
@@ -27,9 +32,19 @@ if(PkgConfig_FOUND)
   pkg_check_modules(TTS_ICU QUIET icu-uc icu-i18n)
 endif()
 if(TTS_ICU_FOUND)
+  # Consent comparison reuses the inference tokenizer's ICU dependency.
+  add_executable(q4t_voice_consent_tests EXCLUDE_FROM_ALL
+    ${tts_test_root}/tests/test_main.cpp
+    ${tts_test_root}/tests/voice_consent_test.cpp
+    ${tts_test_root}/src/text/voice_consent.cpp)
+  target_include_directories(q4t_voice_consent_tests PRIVATE
+    ${tts_test_root}/include ${TTS_ICU_INCLUDE_DIRS})
+  target_link_libraries(q4t_voice_consent_tests PRIVATE ${TTS_ICU_LINK_LIBRARIES})
+  target_compile_options(q4t_voice_consent_tests PRIVATE -Wall -Wextra -Werror)
   add_executable(q4t_tts_execution_tests EXCLUDE_FROM_ALL
     ${tts_test_root}/tests/test_main.cpp
     ${tts_test_root}/tests/tts_generation_test.cpp
+    ${tts_test_root}/tests/tts_base_generation_test.cpp
     ${tts_test_root}/tests/tts_tokenizer_test.cpp
     ${tts_test_root}/tests/asr_tokenizer_test.cpp
     ${tts_test_root}/src/audio/tts_config.cpp
