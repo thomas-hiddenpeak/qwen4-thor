@@ -1,0 +1,12 @@
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_layout.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_generation.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_layout.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_speaker_layout.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/model_assets.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tts_assets.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tts_service.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tts_assets_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tts_service_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_model_asset_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_layout.cpp.o
+[ 40%] Linking CXX executable q4t_model_asset_tests
+[100%] Built target q4t_model_asset_tests

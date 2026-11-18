@@ -1,0 +1,29 @@
+{
+  "sources": {
+    "cmake/ModelAssetTests.cmake": "a6955cc6d3630080121291fa15e5bf3736eda6ef8f640279703e966c1f34cf9c",
+    "include/q4t/server/chat_server.h": "b47c308f48728b08eacf35574cd77d0ca1de88fbd2cd56a107268f3631789fa5",
+    "include/q4t/server/tts_assets.h": "41589bad6446cd94f943de6ae93696fe1303bc7a79133e901202d635eeb2fcf1",
+    "include/q4t/server/tts_service.h": "f333a7f2c11e9f9c1aefdb9851e0704a7346874ffea12e019846e20256e4e42e",
+    "include/q4t/server/tts_upload.h": "0730301f20e20be39e12e2fbce41334a0a45eedc5157cec583d881fee257c238",
+    "src/server/chat_server.cpp": "acf70ccc1bfcdafdb72968f746606148b2af787e3c3c432fcf913f79724e8776",
+    "src/server/chat_voice_backend.cpp": "1fb46a670c39589c8bb05ab09b22f84514fe1626b1e26668b1ee28030fe0b1ce",
+    "src/server/chat_voice_evidence.cpp": "76c60aaa17e53fcbf20e2bebed83c66c9c2bcbc3fbcf7dfa249294903f4757bf",
+    "src/server/chat_voice_execution.cpp": "c320fcf36617c571f144fae0e658edf3c4cc5ec410f673ab203ed6c4c3331037",
+    "src/server/tts_assets.cpp": "8f002812b6886f151100ea5ac643ed2ac57dc1fb6a6b986af17cf3a44f300e7f",
+    "src/server/tts_service.cpp": "32d55363946f639a5d7defa2fbba2f7fef616fe2bdfbd75086d918e7c1ec2984",
+    "src/server/tts_upload.cpp": "2e6134b5607f814f1ec1dc2fda179169ec3e2a7c5415052a067aa5a505436ba4",
+    "tests/server_tts_assets_test.cpp": "335509c5e7306ad4c1c3dd2cfe660dc2c1eddc44d21161fc956f8fe17e11894e",
+    "tests/server_tts_service_test.cpp": "32897b7c7ec9ecfe911b5a2ef06d88ef8751dee29da483715f2624e078d6a8cb"
+  },
+  "engine_sha256": "c85be13417ae89ac3937ae117e913653ba00d2c2ab49cea89dec823b1a8c1111",
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "gpu": 0,
+  "actual_registered_icl_qualified": false,
+  "metadata_assets_only": true
+}

@@ -18,6 +18,7 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/src/audio/tts_speaker_features.cpp
     ${model_asset_root}/src/audio/tts_layout.cpp
     ${model_asset_root}/src/audio/tts_codec_layout.cpp
+    ${model_asset_root}/src/audio/tts_encoder_layout.cpp
     ${model_asset_root}/src/audio/tts_generation.cpp
     ${model_asset_root}/tests/server_aligner_assets_test.cpp
     ${model_asset_root}/tests/server_speaker_assets_test.cpp

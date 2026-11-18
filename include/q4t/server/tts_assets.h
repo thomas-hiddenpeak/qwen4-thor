@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "q4t/audio/tts_speaker_layout.h"
+#include "q4t/audio/tts_encoder_layout.h"
 #include "q4t/server/model_assets.h"
 #include "q4t/text/tokenizer.h"
 
@@ -28,6 +29,10 @@ inline constexpr size_t kNativeTtsFileBytes = 3833402552;
 inline constexpr size_t kNativeTtsCodecFileBytes = 682293092;
 inline constexpr size_t kNativeTtsWeightBytes = 7666705408;
 inline constexpr size_t kTtsAssetStagingBytes = 5ULL << 30;
+inline constexpr size_t kNativeTtsVoiceEncoderOffset =
+    (audio::TtsSpeakerConfig::kDeviceBytes + 255) / 256 * 256;
+inline constexpr size_t kNativeTtsVoiceWeightBytes =
+    kNativeTtsVoiceEncoderOffset + audio::TtsEncoderConfig::kWeightBytes;
 
 struct TtsHostWeightFile {
   std::vector<uint8_t> bytes;
@@ -40,16 +45,20 @@ struct TtsHostWeightFile {
 };
 struct TtsAssetSelection {
   audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B;
-  // Registration needs the speaker branch, never codec weights or metadata.
+  // Speaker-only component qualification can omit the codec. Registration
+  // additionally validates its encoder; synthesis consumes the decoder only.
   bool include_codec = true;
+  bool include_encoder = false;
   bool Valid() const {
-    return variant == audio::TtsVariant::kBase17B ||
-           (variant == audio::TtsVariant::kCustomVoice17B && include_codec);
+    return (variant == audio::TtsVariant::kBase17B ||
+            (variant == audio::TtsVariant::kCustomVoice17B && include_codec)) &&
+           (!include_encoder ||
+            (variant == audio::TtsVariant::kBase17B && include_codec));
   }
 };
 struct TtsHostAssets {
   audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B;
-  audio::TtsWeightLayout speaker_layout;
+  audio::TtsWeightLayout speaker_layout, encoder_layout;
   std::unique_ptr<text::Tokenizer> tokenizer;
   TtsHostWeightFile talker, codec;
 };

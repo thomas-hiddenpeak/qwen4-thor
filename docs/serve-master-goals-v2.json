@@ -8653,7 +8653,7 @@
       }
     }
   ],
-  "next_task": "Finish registered voice PR49 main merge; reference-audio ICL, remaining voice SDK/style and Live/Realtime tasks",
+  "next_task": "Reference-audio ICL numeric decision, actual prompt/synthesis/registration/SDK/recovery; remaining voice styles, prompt voices, Live/Realtime and all master tasks. PR49 already merged.",
   "next": "Reuse accepted 4x content counterexamples and all unchanged evidence, retain listening and long-soak handoff, and complete every remaining A/N/R/Q implementation.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9414,6 +9414,15 @@
         "cpu_executions": 11,
         "original_failure_preserved": true,
         "gpu": 0
+      },
+      "backend": {
+        "state": "native_registration_integrated_cpu_passed_actual_gpu_and_business_pending",
+        "evidence": "evidence/serve-tts-icl-backend-cpu-20261119/README.md",
+        "cpu_new": 7,
+        "cpu_existing": 4,
+        "gpu": 0,
+        "engine_sha256": "c85be13417ae89ac3937ae117e913653ba00d2c2ab49cea89dec823b1a8c1111",
+        "original_selection_failure_preserved": true
       }
     }
   }

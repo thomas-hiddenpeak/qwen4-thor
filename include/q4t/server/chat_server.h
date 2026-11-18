@@ -254,7 +254,8 @@ class ChatServer {
   ObjectReply RunNativeVoiceCondition(
       int fd, std::span<const float> pcm,
       const std::shared_ptr<RequestControl>& control,
-      RequestDiagnostics& diagnostic, std::vector<float>* condition);
+      RequestDiagnostics& diagnostic, std::vector<float>* condition,
+      std::vector<audio::TtsCodes>* reference_codes);
   ObjectReply PrepareVoiceEvidence(
       int fd, const VoiceAudio& audio, std::string_view consent_language,
       const std::shared_ptr<RequestControl>& control,
@@ -640,7 +641,7 @@ class ChatServer {
   std::mutex voice_mu_;
   AsrHealth voice_health_;
   uint8_t* d_voice_weights_ = nullptr;
-  audio::TtsSpeakerDeviceWeights voice_weights_;
+  TtsVoiceBoundWeights voice_weights_;
   ModelCatalog asr_catalog_;
   std::string asr_model_dir_;
   AsrServiceLimits asr_limits_;

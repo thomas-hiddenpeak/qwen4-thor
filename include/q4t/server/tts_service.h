@@ -42,12 +42,16 @@ struct TtsVoiceResourcePlan {
   uint64_t frames = 0, device_weight_bytes = 0, device_workspace_bytes = 0;
   uint64_t host_feature_bytes = 0, source_staging_bytes = 0;
   uint64_t load_peak_bytes = 0;
+  uint64_t speaker_workspace_bytes = 0, encoder_workspace_bytes = 0;
+  uint64_t reference_frames = 0, reference_host_bytes = 0;
 };
-// Registration loads no talker or codec device graph. Complete Base source is
-// still verified/staged, and all PCM, frontend, embedding and FP32 storage is
-// charged to the same physical RAM. Caller separately accounts upload/decoder.
+// Registration loads the speaker and, when selected, the reference encoder.
+// No talker/decoder graph is resident. Both graphs share sequential workspace;
+// all source, PCM, frontend, owned codes and F32 storage consume physical RAM.
+// The caller separately accounts upload/decoder child limits.
 Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
-                             TtsVoiceResourcePlan* out);
+                             TtsVoiceResourcePlan* out,
+                             bool include_reference = false);
 std::string TtsServiceLimitsJson(const TtsServiceLimits& limits);
 const char* TtsFailureCode(AsrFailure failure);
 // The TTS service owns its own AsrHealth, never the ASR/core instance.

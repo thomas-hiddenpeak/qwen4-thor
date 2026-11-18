@@ -16,7 +16,8 @@ Status Parse(std::string_view text, io::Json* out) {
 
 Status ParseWeights(TtsHostWeightFile* file, bool codec,
                     audio::TtsVariant variant,
-                    audio::TtsWeightLayout* speaker) {
+                    audio::TtsWeightLayout* speaker,
+                    audio::TtsWeightLayout* encoder = nullptr) {
   if (file->bytes.size() != (codec ? kNativeTtsCodecFileBytes
                              : variant == audio::TtsVariant::kBase17B
                                  ? kNativeTtsBaseFileBytes
@@ -37,6 +38,11 @@ Status ParseWeights(TtsHostWeightFile* file, bool codec,
   if (!codec && variant == audio::TtsVariant::kBase17B) {
     status = audio::ParseTtsSpeakerWeightLayout(
         header, file->WeightBytes().size(), speaker);
+    if (!status) return status;
+  }
+  if (codec && encoder) {
+    status = audio::ParseTtsEncoderWeightLayout(
+        header, file->WeightBytes().size(), encoder);
     if (!status) return status;
   }
   return codec ? audio::ParseTtsCodecWeightLayout(
@@ -163,7 +169,9 @@ Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
         max_staging_bytes - next.talker.bytes.size());
     if (!status) return status;
     if (include_weights &&
-        !ParseWeights(&next.codec, true, selection.variant, nullptr))
+        !ParseWeights(&next.codec, true, selection.variant, nullptr,
+                      selection.include_encoder ? &next.encoder_layout
+                                                : nullptr))
       return fail(GrammarFailure::kDependency, "TTS codec layout differs");
     if (auto s = detail::CheckModelAssetControl(control, failure); !s) return s;
     *out = std::move(next);

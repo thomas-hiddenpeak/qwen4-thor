@@ -117,4 +117,36 @@ audio::TtsComputeResult UploadTtsSpeakerWeights(
   *out = next;
   return {};
 }
+audio::TtsComputeResult UploadTtsVoiceWeights(
+    const TtsHostAssets& assets, std::span<uint8_t> device,
+    TtsVoiceBoundWeights* out, const std::function<bool()>& cancelled,
+    cudaStream_t stream) {
+  if (!out || !device.data() || device.size() != kNativeTtsVoiceWeightBytes ||
+      assets.variant != audio::TtsVariant::kBase17B ||
+      assets.talker.bytes.size() != kNativeTtsBaseFileBytes ||
+      assets.codec.bytes.size() != kNativeTtsCodecFileBytes ||
+      assets.talker.WeightBytes().size() != assets.speaker_layout.file_bytes ||
+      assets.codec.WeightBytes().size() != assets.encoder_layout.file_bytes)
+    return Invalid("TTS voice upload assets or buffer differ");
+  // Establish every extent before the first device copy; cancellation or a
+  // failed second graph leaves the caller's existing binding untouched.
+  const auto speaker = device.first(audio::TtsSpeakerConfig::kDeviceBytes);
+  const auto encoder = device.subspan(kNativeTtsVoiceEncoderOffset);
+  TtsVoiceBoundWeights next;
+  auto status = audio::BindTtsSpeakerDeviceWeights(
+      speaker.data(), speaker.size(), assets.speaker_layout, &next.speaker);
+  if (status)
+    status = audio::BindTtsEncoderDeviceWeights(
+        encoder.data(), encoder.size(), assets.encoder_layout, &next.encoder);
+  if (!status) return {status, cudaSuccess};
+  auto copied = CopyWeights(assets.talker, assets.speaker_layout, speaker,
+                            true, cancelled, stream);
+  if (copied.ok())
+    copied = CopyWeights(assets.codec, assets.encoder_layout, encoder, false,
+                         cancelled, stream);
+  if (!copied.ok()) return copied;
+  if (cancelled && cancelled()) return Invalid("TTS voice upload cancelled");
+  *out = next;
+  return {};
+}
 }  // namespace q4t::server

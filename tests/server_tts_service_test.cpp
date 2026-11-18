@@ -1,5 +1,6 @@
 #include "q4t/server/tts_service.h"
 
+#include <algorithm>
 #include <limits>
 #include <stdexcept>
 
@@ -281,5 +282,62 @@ Q4T_TEST(tts_voice_registration_resources_bound_features_without_talker) {
   Q4T_CHECK(!PlanTtsVoiceResources(1280, 300ULL << 20, nullptr));
   Q4T_CHECK(large.frames == saved.frames &&
             large.device_workspace_bytes == saved.device_workspace_bytes);
+  return true;
+}
+
+
+Q4T_TEST(tts_voice_icl_resource_peak_covers_both_sources_and_graphs) {
+  TtsVoiceResourcePlan old, icl;
+  Q4T_CHECK(PlanTtsVoiceResources(55693, 2ULL << 30, &old));
+  Q4T_CHECK(PlanTtsVoiceResources(55693, 2ULL << 30, &icl, true));
+  Q4T_CHECK(icl.device_weight_bytes == 48004352 + 224937216);
+  Q4T_CHECK(kNativeTtsVoiceEncoderOffset % 256 == 0 &&
+            kNativeTtsVoiceEncoderOffset >=
+                q4t::audio::TtsSpeakerConfig::kDeviceBytes);
+  Q4T_CHECK(icl.source_staging_bytes ==
+            kNativeTtsBaseFileBytes + kNativeTtsCodecFileBytes);
+  Q4T_CHECK(icl.load_peak_bytes ==
+            old.load_peak_bytes + 224937216 + kNativeTtsCodecFileBytes);
+  Q4T_CHECK(icl.reference_frames == 30 &&
+            icl.reference_host_bytes == 2 * 30 * 16 * sizeof(int32_t));
+  Q4T_CHECK(icl.host_feature_bytes ==
+            old.host_feature_bytes + icl.reference_host_bytes);
+  return true;
+}
+
+Q4T_TEST(tts_voice_icl_workspace_is_sequential_max_for_actual_pcm) {
+  for (size_t samples : {1280, 1920, 1921, 55693, 1440000}) {
+    TtsVoiceResourcePlan legacy, actual;
+    q4t::audio::TtsEncoderWorkspace encoder;
+    Q4T_CHECK(PlanTtsVoiceResources(samples, 2ULL << 30, &legacy));
+    Q4T_CHECK(PlanTtsVoiceResources(samples, 2ULL << 30, &actual, true));
+    Q4T_CHECK(q4t::audio::PlanTtsEncoderWorkspace(samples, 2ULL << 30,
+                                                  &encoder));
+    Q4T_CHECK(actual.speaker_workspace_bytes == legacy.device_workspace_bytes);
+    Q4T_CHECK(actual.encoder_workspace_bytes == encoder.bytes);
+    Q4T_CHECK(actual.device_workspace_bytes ==
+              std::max(legacy.device_workspace_bytes, encoder.bytes));
+    Q4T_CHECK(actual.device_workspace_bytes <
+              legacy.device_workspace_bytes + encoder.bytes);
+    Q4T_CHECK(actual.reference_frames == (samples + 1919) / 1920);
+  }
+  return true;
+}
+
+Q4T_TEST(tts_voice_icl_budget_and_sample_failures_leave_plan_unchanged) {
+  TtsVoiceResourcePlan plan;
+  Q4T_CHECK(PlanTtsVoiceResources(1440000, 2ULL << 30, &plan, true));
+  const auto saved = plan;
+  Q4T_CHECK(!PlanTtsVoiceResources(1440000,
+                                    plan.device_workspace_bytes - 1, &plan,
+                                    true));
+  for (size_t samples : {size_t{0}, size_t{1279}, size_t{1440001},
+                         std::numeric_limits<size_t>::max()})
+    Q4T_CHECK(!PlanTtsVoiceResources(samples, 2ULL << 30, &plan, true));
+  Q4T_CHECK(!PlanTtsVoiceResources(1280, 2ULL << 30, nullptr, true));
+  Q4T_CHECK(plan.device_weight_bytes == saved.device_weight_bytes &&
+            plan.device_workspace_bytes == saved.device_workspace_bytes &&
+            plan.reference_frames == saved.reference_frames &&
+            plan.host_feature_bytes == saved.host_feature_bytes);
   return true;
 }

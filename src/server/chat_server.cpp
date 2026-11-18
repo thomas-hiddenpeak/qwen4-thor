@@ -412,7 +412,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (!opts.tts_base_model_dir.empty()) {
         TtsVoiceResourcePlan voice;
         s = PlanTtsVoiceResources(
-            60 * 24000, uint64_t(opts.tts_limits.workspace_mib) << 20, &voice);
+            60 * 24000, uint64_t(opts.tts_limits.workspace_mib) << 20, &voice,
+            true);
         if (!s) return s;
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);

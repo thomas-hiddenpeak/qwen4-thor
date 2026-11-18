@@ -92,7 +92,8 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
 }
 
 Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
-                             TtsVoiceResourcePlan* out) {
+                             TtsVoiceResourcePlan* out,
+                             bool include_reference) {
   constexpr audio::TtsSpeakerFeatureLimits limits;
   if (!out || pcm_samples > limits.max_samples)
     return Status::Fail("TTS voice PCM exceeds feature capacity");
@@ -108,9 +109,24 @@ Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
   TtsVoiceResourcePlan next;
   next.frames = frames;
   next.device_weight_bytes = audio::TtsSpeakerConfig::kDeviceBytes;
+  next.speaker_workspace_bytes = workspace.bytes;
   next.device_workspace_bytes = workspace.bytes;
   next.host_feature_bytes = host + 2 * 2048 * sizeof(float);
   next.source_staging_bytes = kNativeTtsBaseFileBytes;
+  if (include_reference) {
+    audio::TtsEncoderWorkspace encoder;
+    status = audio::PlanTtsEncoderWorkspace(pcm_samples, max_workspace_bytes,
+                                           &encoder);
+    if (!status) return status;
+    next.device_weight_bytes = kNativeTtsVoiceWeightBytes;
+    next.encoder_workspace_bytes = encoder.bytes;
+    next.device_workspace_bytes = std::max(workspace.bytes, encoder.bytes);
+    next.reference_frames = encoder.frames;
+    // Encoder output and the committed evidence owner coexist until return.
+    next.reference_host_bytes = 2 * encoder.frames * sizeof(audio::TtsCodes);
+    next.host_feature_bytes += next.reference_host_bytes;
+    next.source_staging_bytes += kNativeTtsCodecFileBytes;
+  }
   next.load_peak_bytes = next.device_weight_bytes + next.source_staging_bytes +
                          kHostMargin + 6 * kMiB;
   *out = next;

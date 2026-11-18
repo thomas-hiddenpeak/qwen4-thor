@@ -19,9 +19,9 @@ constexpr uint64_t kHostMargin = 512ULL * 1024 * 1024;
 std::string ChatServer::NativeVoiceHealthJson() const {
   auto result =
       SpeechHealthJson(voice_health_.Snapshot(), gpu_healthy_.load(),
-                       "qwen3-tts-12hz-1.7b-base-speaker", TtsFailureCode);
+                       "qwen3-tts-12hz-1.7b-base-reference", TtsFailureCode);
   result.pop_back();
-  result += R"(,"asset_cleanup_pending":)";
+  result += R"(,"reference_encoder":true,"asset_cleanup_pending":)";
   result += detail::IsolatedCleanupPending(IsolatedWorkerDomain::kModelAssets)
                 ? "true}"
                 : "false}";
@@ -65,7 +65,8 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
   };
   try {
     const uint64_t estimate = kHostMargin + kNativeTtsBaseFileBytes +
-                              audio::TtsSpeakerConfig::kDeviceBytes +
+                              kNativeTtsCodecFileBytes +
+                              kNativeTtsVoiceWeightBytes +
                               (6ULL << 20);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(AsrFailure::kResource,
@@ -79,7 +80,7 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
         Clock::now() + std::chrono::milliseconds(kModelAssetTimeoutMs));
     const auto loaded = LoadTtsAssets(tts_base_model_dir_, &assets, control,
                                       &cause, true, kTtsAssetStagingBytes,
-                                      {audio::TtsVariant::kBase17B, false});
+                                      {audio::TtsVariant::kBase17B, true, true});
     if (!loaded) {
       if (cancelled() || cause == GrammarFailure::kCancelled)
         return interrupted();
@@ -102,7 +103,7 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
       if (!shared.Healthy())
         return Error(503, shared.ErrorCode(), "Primary backend is unavailable");
       if (!runtime::ReadSystemMemory().CanAllocate(
-              audio::TtsSpeakerConfig::kDeviceBytes + kHostMargin))
+              kNativeTtsVoiceWeightBytes + kHostMargin))
         return fail(AsrFailure::kResource,
                     "Voice device memory admission unavailable");
       RequestDiagnostics::ExecutionScope execution(diagnostic,
@@ -118,7 +119,7 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
         }
       });
       const auto memory = detail::AllocateCudaMemory(
-          pending, audio::TtsSpeakerConfig::kDeviceBytes,
+          pending, kNativeTtsVoiceWeightBytes,
           "native_voice.weights");
       RecordDeviceMemoryFailure(memory, "native_voice.weights");
       if (!memory.ok()) {
@@ -128,10 +129,9 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
             memory.exhausted() ? AsrFailure::kResource : AsrFailure::kDevice,
             "Voice weight allocation unavailable");
       }
-      audio::TtsSpeakerDeviceWeights bound;
-      const auto upload = UploadTtsSpeakerWeights(
-          assets, {pending, audio::TtsSpeakerConfig::kDeviceBytes}, &bound,
-          cancelled);
+      TtsVoiceBoundWeights bound;
+      const auto upload = UploadTtsVoiceWeights(
+          assets, {pending, kNativeTtsVoiceWeightBytes}, &bound, cancelled);
       if (!upload.ok()) {
         if (upload.device_error != cudaSuccess) {
           AbortBackendExecution();
@@ -146,7 +146,7 @@ ObjectReply ChatServer::EnsureNativeVoice(const BinaryAccess& access,
       pending = nullptr;
       voice_weights_ = bound;
     }
-    voice_health_.Loaded(true, audio::TtsSpeakerConfig::kDeviceBytes);
+    voice_health_.Loaded(true, kNativeTtsVoiceWeightBytes);
     return {};
   } catch (const std::bad_alloc&) {
     return fail(AsrFailure::kResource, "Voice host allocation exhausted");

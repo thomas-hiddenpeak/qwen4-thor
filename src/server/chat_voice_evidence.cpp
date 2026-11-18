@@ -216,8 +216,9 @@ ObjectReply ChatServer::PrepareVoiceEvidence(
     if (!reply.ok()) return reply;
     next.duration_ns = original.duration_ns;
     reply = RunNativeVoiceCondition(fd, original.samples, control, diagnostic,
-                                    &next.condition);
+                                    &next.condition, &next.reference_codes);
     if (!reply.ok()) return reply;
+    next.reference_samples = original.samples.size();
   }
   if (cancelled()) return interrupted();
   *evidence = std::move(next);
