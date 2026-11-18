@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TLS取消驱动4项针对检查通过](evidence/serve-tts-tls-cancel-cpu-20261118/README.md)：
+3 CPU/0.715秒，原TLS其余全部业务只读复核0.693秒；原取消FAIL
+保持。同包同二进制续验1核心/3POST，只补实际活动取消及核心，
+再执行原2核心/12POST整包恢复；已验音频和网关恢复不重放。
+
+受管modern/legacy各1启动6POST已通过；TLS13POST全部执行后，
+取消检查FAIL：首字幕到达时计算已完成，success+1而abort未增。
+原FAILED保留，完整TTS两阶段已独立通过。仅改验收时机为看到
+真实活动槽及计算进度后断开；4针对CPU检查后，以1启动3POST
+补取消/核心/清理，复用原完整TLS业务，再继续2启动版本恢复。
+
 [TTS受管业务驱动9项CPU通过](evidence/serve-tts-managed-service-cpu-20261118/README.md)，
 3.069秒；两SDK真实HTTPS可信CA/Key成功，不可信CA拒绝，0GPU。
 原生辅助程序19.968秒零警告，包含Speech接入路由；CMake缓存

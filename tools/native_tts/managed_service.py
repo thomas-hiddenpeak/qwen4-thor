@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def labels(plan):
-    if plan['scenario'] == 'tls':
+    if plan['scenario'].startswith('tls'):
         return ('tls-before', 'tls-after')
     if plan['scenario'] == 'tool_version':
         return ('primary', 'fallback')
@@ -55,7 +55,7 @@ def observe(stage, label):
     require(label in labels(stage.plan), 'unplanned managed speech request')
     for kind, body in evidence.tts_requests().items():
         name = label+'-tts-'+kind
-        if stage.plan['scenario'] == 'tls':
+        if stage.plan['scenario'].startswith('tls'):
             sdk(stage, name, body, speech=kind == 'speech',
                 python=(kind == 'speech') == (label == 'tls-before'))
         else:
@@ -87,7 +87,7 @@ def check(out, plan, configured):
         evidence.tts_business(witness, identity)
         for kind in ('speech', 'chat'):
             name = prefix+'-'+kind
-            if plan['scenario'] == 'tls':
+            if plan['scenario'].startswith('tls'):
                 observed = read(name+'.sdk.json')
                 python = (kind == 'speech') == (label == 'tls-before')
                 require(observed.get('ok') is True and

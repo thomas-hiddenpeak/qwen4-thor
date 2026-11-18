@@ -1,0 +1,113 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 706, in exercise\n    save(self.output/'media-usage.json', check_business(self.output))\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 368, in check_business\n    require(cancelled['after']['q4t_requests_aborted_total'] ==\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 45, in require\n    if not ok: raise RuntimeError(message)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: native disconnect failed to cancel actual transcription\n",
+  "cleanup_failure": null,
+  "seconds": 111.08316229004413,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 13,
+      "probes": 0,
+      "controls": 182
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 3186837305709468
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3186870101992486
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-tts-speech",
+        "ordinal": 2,
+        "monotonic_ns": 3186872449685727
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-tts-chat",
+        "ordinal": 3,
+        "monotonic_ns": 3186886441269111
+      },
+      {
+        "kind": "chats",
+        "label": "python-zh-json",
+        "ordinal": 4,
+        "monotonic_ns": 3186889650836423
+      },
+      {
+        "kind": "chats",
+        "label": "chat-python",
+        "ordinal": 5,
+        "monotonic_ns": 3186899702469231
+      },
+      {
+        "kind": "chats",
+        "label": "tls-after-tts-speech",
+        "ordinal": 6,
+        "monotonic_ns": 3186908239756590
+      },
+      {
+        "kind": "chats",
+        "label": "tls-after-tts-chat",
+        "ordinal": 7,
+        "monotonic_ns": 3186921888143537
+      },
+      {
+        "kind": "chats",
+        "label": "js-en-stream",
+        "ordinal": 8,
+        "monotonic_ns": 3186925423563105
+      },
+      {
+        "kind": "chats",
+        "label": "chat-js",
+        "ordinal": 9,
+        "monotonic_ns": 3186934531112231
+      },
+      {
+        "kind": "chats",
+        "label": "beta-file-limit",
+        "ordinal": 10,
+        "monotonic_ns": 3186936403562535
+      },
+      {
+        "kind": "chats",
+        "label": "chunked-zh",
+        "ordinal": 11,
+        "monotonic_ns": 3186936655194615
+      },
+      {
+        "kind": "chats",
+        "label": "cancel-stream",
+        "ordinal": 12,
+        "monotonic_ns": 3186938551736186
+      },
+      {
+        "kind": "chats",
+        "label": "core-after",
+        "ordinal": 13,
+        "monotonic_ns": 3186940495221042
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 366746,
+      "start_ticks": 318683730
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tls-package-01/bundle",
+    "manifest_sha256": "93f6ce9aa8dac34e3b9a0b2bcecc4a42fdd9102d3168e8c2c53332b6bd9c1eec"
+  },
+  "scenario": "tls",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

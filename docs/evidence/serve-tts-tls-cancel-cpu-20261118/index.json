@@ -1,0 +1,42 @@
+{
+  "status": "PASS_TARGETED_CPU_AND_RETAINED_TLS_REVIEW",
+  "unittest_cases": 3,
+  "actual_prior_review": 1,
+  "gpu_actions": 0,
+  "original_failed_not_relabelled": true,
+  "cancellation_still_pending": true,
+  "records": {
+    "plan.json": {
+      "bytes": 782,
+      "sha256": "3a645249eeca502f8a35a3349b649bf993c8b886e331fd3a46e0905d2f486b53"
+    },
+    "test.log": {
+      "bytes": 675,
+      "sha256": "953f2ddd0d9e89f6577ae36dd31b029b3cf3068579fade5f1cbe68fe4110c031"
+    },
+    "test-result.json": {
+      "bytes": 75,
+      "sha256": "a92651c3af9f4156c142acedf5a7a0ca54b3e65274f580113ca0e927e72fe03a"
+    },
+    "review-result.json": {
+      "bytes": 161,
+      "sha256": "f7cd08f70e8f714092f012034ff4220ff4e312da423de39b01c4658b0766cd7a"
+    },
+    "retained-review.json": {
+      "bytes": 16542,
+      "sha256": "f1dfeb8a1fc20490f4b246824cb86f6f531c6416d33effa1dcef9e62250227f5"
+    },
+    "source-gate.json": {
+      "bytes": 222,
+      "sha256": "13bcdcf545a3a4cf49ad7c4341720e2ef4b4b641b0b8a97e39aa3cd711e54758"
+    },
+    "original-failure.json": {
+      "bytes": 3523,
+      "sha256": "fcf239d85e7a497021ef5f16041baf9b565a33a3abe69237870f9af47230ed29"
+    },
+    "original-cancel-observation.json": {
+      "bytes": 12955,
+      "sha256": "26308f0e42975a2e743d258589d9b72894d8cd7bdbfc9f6d4491aa20c7a6d8a6"
+    }
+  }
+}

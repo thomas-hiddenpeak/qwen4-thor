@@ -1,0 +1,8 @@
+test_finished_request_is_not_falsely_counted_as_active_cancellation (tools.native_asr.test_active_cancellation.ActiveCancellation.test_finished_request_is_not_falsely_counted_as_active_cancellation) ... ok
+test_real_socket_stays_open_until_admitted_and_progressing (tools.native_asr.test_active_cancellation.ActiveCancellation.test_real_socket_stays_open_until_admitted_and_progressing) ... ok
+test_output_budgets_count_every_phase_and_reject_partial_tls (tools.native_tts.test_managed_service.ManagedSpeech.test_output_budgets_count_every_phase_and_reject_partial_tls) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.211s
+
+OK

@@ -34,10 +34,14 @@ LIMITS = dict(tool_retained=dict(starts=1, chats=3, probes=0, controls=1500, sec
 WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
-def limits_for(scenario, chat_audio=False, native_tts=False):
-    require(type(chat_audio) is bool and type(native_tts) is bool,
+def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False):
+    require(all(type(v) is bool for v in (chat_audio, native_tts, retained_tts)),
             'invalid managed audio budget flags')
     limits = dict(LIMITS[scenario])
+    if retained_tts:
+        require(scenario == 'tls_remaining' and native_tts,
+                'retained TTS requires its verified exact TLS predecessor')
+        return limits
     if chat_audio:
         require(scenario != 'tls_remaining', 'new Chat audio requires its complete TLS stage')
         limits['chats'] += 2 if scenario in ('tool_version', 'tls') else 1
@@ -49,7 +53,8 @@ def limits_for(scenario, chat_audio=False, native_tts=False):
 
 def configure_plan_limits(plan):
     expected = limits_for(plan['scenario'], plan.get('chat_audio', False),
-                          plan.get('native_tts') is not None)
+                          plan.get('native_tts') is not None,
+                          plan.get('reused_tls', {}).get('tts_complete', False))
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
     # Reused actors/verifiers share this process-local namespace, never a live
     # service policy. Only the fixed feature-specific increment is accepted.
@@ -88,7 +93,9 @@ def prepare(args):
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
     native_tts = manifest['recovery_profiles']['identity'].get('native_tts')
     profile_contract.tts_capability_binding(native_tts, qualified['capabilities'])
-    limits = limits_for(args.scenario, chat_audio, native_tts is not None)
+    limits = limits_for(args.scenario, chat_audio, native_tts is not None,
+        args.scenario == 'tls_remaining' and native_tts is not None and
+        args.retained is not None)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
@@ -243,12 +250,63 @@ def metric_values(raw):
     return dict(values, q4t_structured_cleanup_pending=value)
 
 
+def reuse_tts_tls(directory, plan, outcome):
+    """Keep completed real TLS work, never relabel the original cancellation failure."""
+    read = lambda n: json.loads((directory/n).read_text())
+    require(plan['scenario'] == 'tls' and outcome['status'] == 'FAILED' and
+        outcome['cleanup_failure'] is None and outcome['budget']['counts']['starts'] == 1 and
+        outcome['budget']['counts']['chats'] == limits_for('tls', plan.get('chat_audio', False), True)['chats'] and
+        outcome['budget']['counts']['probes'] == 0 and
+        'native disconnect failed to cancel actual transcription' in outcome['failure'],
+        'unexpected completed TTS TLS predecessor')
+    reviewed = {'tools/native_asr/service_acceptance.py', 'tools/native_tts/managed_service.py'}
+    changed = {}
+    for name, expected in plan['sources'].items():
+        actual = hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
+        if actual != expected:
+            require(name in reviewed, 'completed TLS source changed: '+name)
+            changed[name] = dict(before=expected, after=actual)
+    from tools.serve_recovery import bundle
+    bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
+    for row in [*plan['protected'], *plan['tls_inputs'].values()]:
+        require(hashlib.sha256(Path(row['path']).read_bytes()).hexdigest() == row['sha256'],
+                'completed TTS TLS protected identity changed')
+    guard = read('lease/exit.json')
+    require(guard['status'] == 'COMMAND_FAILED' and guard['child_returncode'] == 1 and
+        guard['compute_backend'] == 'nvml' and guard['lease_inherited_by_child'] is True and
+        guard['external_lease'] is False and guard['command'] == plan['command'],
+        'environment failure cannot qualify completed TTS TLS observations')
+    queries = [json.loads(line) for line in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()]
+    require(queries and all(q['status'] == 'OK' and q['returncode'] == 0 for q in queries),
+            'completed TTS TLS monitoring gap')
+    state = read('execution/state/ledger.json')['state']; stopped = read('execution/stop.json')
+    require(stopped['cleanup_confirmed'] and stopped['stop_durable'] and
+        state['desired'] == 'STOPPED' and all(v is None for v in state['active'].values()),
+        'completed TTS TLS cleanup is incomplete')
+    observed = check_business(directory/'execution', verify_cancel=False)
+    require(observed['cancellation'] == 'pending', 'original cancellation must remain unaccepted')
+    records = [p for p in directory.rglob('*') if p.is_file() and
+        (p.parent in (directory, directory/'lease', directory/'execution') or
+         p == directory/'execution/state/ledger.json') and
+        p.suffix in ('.json', '.jsonl', '.wire', '.log')]
+    return dict(status='COMPLETED_TTS_TLS_REUSED_ORIGINAL_CANCELLATION_FAILED',
+        directory=str(directory), package=plan['package'], tts_complete=True,
+        files={str(p.relative_to(directory)):hashlib.sha256(p.read_bytes()).hexdigest() for p in records},
+        reviewed_driver_changes=changed, counts=outcome['budget']['counts'],
+        seconds=outcome['seconds'], nvml_queries=len(queries),
+        native_gateway_recovered_without_model_restart=True,
+        original_cancellation_accepted=False, completed_business=observed)
+
+
 def reuse_tls(directory):
     """Recheck completed observations without changing the original FAILED."""
     directory = Path(directory).resolve(strict=True)
-    require(directory.is_relative_to(WORK), 'TLS predecessor outside private workspace')
+    require(directory.is_relative_to(ROOT/'.q4t-work'), 'TLS predecessor outside private workspace')
     read = lambda n: json.loads((directory/n).read_text())
     plan, outcome = read('plan.json'), read('execution/result.json')
+    if plan.get('native_tts') is not None:
+        return reuse_tts_tls(directory, plan, outcome)
+    require(directory.is_relative_to(WORK), 'legacy TLS predecessor outside original workspace')
     require(plan['scenario'] == 'tls' and outcome['status'] == 'FAILED' and
         outcome['cleanup_failure'] is None and
         "KeyError: 'q4t_structured_cleanup_pending'" in outcome['failure'] and
@@ -321,7 +379,7 @@ def accepted_run(plan, *args):
     return result
 
 
-def check_business(out):
+def check_business(out, *, verify_cancel=True):
     from tools.native_asr import auxiliary_service
     read = lambda n: json.loads((out/n).read_text())
     plan = json.loads((out.parent/'plan.json').read_text())
@@ -334,18 +392,20 @@ def check_business(out):
     tls, version = plan['scenario'].startswith('tls'), plan['scenario'] == 'tool_version'
     completed = Path(plan['reused_tls']['directory'])/'execution' if 'reused_tls' in plan else out
     completed_read = lambda n: json.loads((completed/n).read_text())
+    business_config = completed_read('final-config.wire') if \
+        plan.get('reused_tls', {}).get('tts_complete') else config
     results = {}
     for label in (['python-zh-json', 'chunked-zh'] if tls else
                   ['primary-asr', 'fallback-asr'] if version else ['primary-asr']):
         raw = ((completed if tls else out)/(label+'.wire')).read_bytes()
         answer = stream_value(raw) if label == 'fallback-asr' and not auxiliary else json.loads(raw)
         if auxiliary:
-            results[label] = auxiliary_service.check(answer, auxiliary, config, audio)
+            results[label] = auxiliary_service.check(answer, auxiliary, business_config, audio)
         else:
             direct().usage(answer);results[label] = direct().quality(answer['text'], 'zh')
     if tls:
         answer = stream_value((completed/'js-en-stream.wire').read_bytes())
-        results['js-en-stream'] = auxiliary_service.check(answer, auxiliary, config, audio, stream=True) \
+        results['js-en-stream'] = auxiliary_service.check(answer, auxiliary, business_config, audio, stream=True) \
             if auxiliary else direct().quality(answer['text'], 'en')
         require(completed_read('beta-file-limit-http.json')['status'] == 413 and
             completed_read('unauthorized-http.json')['status'] == 401, 'scope/upload guards failed')
@@ -356,7 +416,7 @@ def check_business(out):
                 require(sdk['version'] == '2.8.1' and
                     sdk['result']['text'] == completed_read(label+'.wire')['text'], 'Python SDK text differs')
                 if auxiliary:
-                    auxiliary_service.check(sdk['result'], auxiliary, config, audio)
+                    auxiliary_service.check(sdk['result'], auxiliary, business_config, audio)
                 else:
                     direct().usage(sdk['result'], sdk=True)
             else:
@@ -364,16 +424,19 @@ def check_business(out):
                           if line.startswith('data: {')]
                 require(sdk['version'] == '7.47.0' and sdk['result']['events'] == events,
                         'JS SDK event projection differs')
-        cancelled = read('cancel-observation.json')
-        require(cancelled['after']['q4t_requests_aborted_total'] ==
-            cancelled['before']['q4t_requests_aborted_total']+1,
-            'native disconnect failed to cancel actual transcription')
+        if verify_cancel:
+            cancelled = read('cancel-observation.json')
+            require(cancelled['after']['q4t_requests_aborted_total'] ==
+                cancelled['before']['q4t_requests_aborted_total']+1,
+                'native disconnect failed to cancel actual transcription')
     answer = read('core-after.wire')['choices'][0]
     require(answer['finish_reason'] == 'stop' and
         answer['message']['content'].strip() == '42', 'core failed after ASR')
     health = config['native_asr_health']
     expected = json.loads((Path(plan['package']['package'])/'engine/manifest.json').read_text())
-    require(health['state'] == 'ready' and health['compute_failures'] == 0 and
+    states = ('ready', 'metadata_ready') if plan.get('reused_tls', {}).get('tts_complete') else ('ready',)
+    require(health['state'] in states and health['reason'] == 'none' and
+        health['compute_failures'] == 0 and
         health['core_readiness_dependency'] is False and
         config['native_asr_limits'] == expected['settings']['native_asr']['limits'],
         'ASR health or configured budget lost')
@@ -389,20 +452,20 @@ def check_business(out):
                       ['primary-chat-audio', 'fallback-chat-audio'] if version else
                       ['primary-chat-audio']):
             stream = label == 'chat-js'
-            body = read(label+'-request.json')
+            body = completed_read(label+'-request.json') if tls else read(label+'-request.json')
             require(body == profile_evidence.chat_audio_request(encoded, stream=stream),
                     'managed Chat audio original request differs')
-            wire = (out/(label+'.wire')).read_bytes()
+            wire = ((completed if tls else out)/(label+'.wire')).read_bytes()
             if stream:
                 parsed = read_sse(io.BytesIO(wire))
                 answer = dict(object='chat.completion', choices=parsed.choices, usage=parsed.usage)
             else: answer = json.loads(wire)
-            witness = profile_evidence.chat_audio_witness(encoded, answer, config, stream=stream)
+            witness = profile_evidence.chat_audio_witness(encoded, answer, business_config, stream=stream)
             profile_evidence.chat_audio_business(witness, identity, encoded, stream=stream)
             results[label] = dict(request_sha256=witness['request_sha256'],
                 source_sha256=witness['source_sha256'], usage=answer['usage'])
             if tls:
-                sdk = read(label+'.sdk.json')
+                sdk = completed_read(label+'.sdk.json')
                 require(sdk['ok'] and len(sdk['exchanges']) == 1,
                         'managed Chat SDK failed or retried')
                 if stream:
@@ -415,7 +478,8 @@ def check_business(out):
                     profile_evidence.chat_audio_business(sdk_witness, identity, encoded)
                     require(sdk['version'] == '2.8.1', 'managed Chat Python SDK drift')
     from tools.native_tts import managed_service
-    results.update(managed_service.check(out, plan, expected['settings'].get('native_tts')))
+    results.update(managed_service.check(completed if tls else out, plan,
+                                         expected['settings'].get('native_tts')))
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -447,7 +511,8 @@ def check_business(out):
                 after['gateway_pid'] != before['gateway_pid'], 'native gateway did not recover')
     return dict(results=results, native_tls=tls, version_recovery=version,
                 health=health, actual_core_text='42', default_replaced=False,
-                reused_completed=plan.get('reused_tls'))
+                reused_completed=plan.get('reused_tls'),
+                cancellation='verified' if tls and verify_cancel else 'pending' if tls else 'not_applicable')
 
 
 def business_record(version):
@@ -475,6 +540,32 @@ def cold_observations(out, plan):
 
 
 class Stage(BASE['Stage']):
+    def cancel_running(self, connection, label, before):
+        # Diarization may emit its first delta only after all model work has
+        # finished. Observe live work instead of treating that delta as proof.
+        from tools.serve_ops import transport
+        deadline = time.monotonic()+30
+        observations = []
+        while time.monotonic() < deadline:
+            self.budget.reserve('controls', label+'-active')
+            response = transport.get(self.policy['upstream_operations_port'], '/metrics', timeout=1)
+            require(response['http_status'] == 200, 'cancel observation unavailable')
+            values = metric_values(response['body'])
+            active = (values['q4t_active_chats'] == 1 and
+                values['q4t_seq_slots_free'] == 0 and values['q4t_seq_slots_total'] == 1 and
+                values['q4t_requests_total'] == before['q4t_requests_total']+1 and
+                values['q4t_execution_steps_total'] > before['q4t_execution_steps_total'])
+            observations.append({k:values[k] for k in ('q4t_active_chats', 'q4t_seq_slots_free',
+                'q4t_seq_slots_total', 'q4t_requests_total', 'q4t_execution_steps_total')})
+            save(self.output/(label+'-active.json'), dict(before=before,
+                observations=observations[-64:], active_execution_observed=active))
+            if active:
+                require(connection.sock is not None, 'cancel socket already closed')
+                connection.sock.shutdown(socket.SHUT_RDWR)
+                return observations[-1]
+            time.sleep(.02)
+        raise TimeoutError('actual execution was not observed before cancellation')
+
     def version_ready(self, generation, name):
         if generation == 1 or not self.plan.get('observe_cold_profiles'):
             return VERSION['Stage'].version_ready(self, generation, name)
@@ -509,7 +600,7 @@ class Stage(BASE['Stage']):
 
     def request(self, label, body=None, *, client='alpha', path='/v1/models', method=None,
                 expected=200, model_work=False, raw_result=False,
-                content_type='application/json', chunked=False, cancel=False):
+                content_type='application/json', chunked=False, cancel=False, cancel_baseline=None):
         time.sleep(.22)
         self.budget.reserve('chats' if model_work else 'controls', label)
         raw = body if isinstance(body, bytes) else None if body is None else json.dumps(body).encode()
@@ -520,6 +611,12 @@ class Stage(BASE['Stage']):
             wire_body = (raw[i:i+4096] for i in range(0, len(raw), 4096)) if chunked else raw
             connection.request(method or ('GET' if body is None else 'POST'), path,
                 wire_body, headers, encode_chunked=chunked)
+            if cancel and cancel_baseline is not None:
+                observation = self.cancel_running(connection, label, cancel_baseline)
+                (self.output/(label+'.wire')).write_bytes(b'')
+                save(self.output/(label+'-http.json'), dict(status=None, cancel=True,
+                    response_received=False, condition='observed_active_execution', observation=observation))
+                return b''
             response = connection.getresponse()
             if cancel:
                 require(response.status == 200, 'cancel request did not stream')
@@ -544,7 +641,7 @@ class Stage(BASE['Stage']):
         finally:connection.close()
 
     def audio(self, label, *, stream=False, client='alpha', expected=200, chunked=False,
-              cancel=False, language='zh'):
+              cancel=False, language='zh', cancel_baseline=None):
         boundary = 'q4t-native-asr-service'
         fields = [('model', 'qwen3-asr-0.6b'), ('include[]', 'logprobs')]
         if stream:fields.append(('stream', 'true'))
@@ -563,7 +660,7 @@ class Stage(BASE['Stage']):
         return self.request(label, b''.join(parts), client=client,
             path='/v1/audio/transcriptions', model_work=True, expected=expected,
             content_type='multipart/form-data; boundary='+boundary,
-            raw_result=stream, chunked=chunked, cancel=cancel)
+            raw_result=stream, chunked=chunked, cancel=cancel, cancel_baseline=cancel_baseline)
 
     def sdk(self, label, language, python=False):
         self.budget.reserve('chats', label)
@@ -670,7 +767,7 @@ class Stage(BASE['Stage']):
                 self.audio('beta-file-limit', client='beta', expected=413)
                 self.audio('chunked-zh', chunked=True)
             before = self.drained('before-cancel')
-            self.audio('cancel-stream', stream=True, cancel=True, language='en')
+            self.audio('cancel-stream', stream=True, cancel=True, language='en', cancel_baseline=before)
             after = self.drained('after-cancel')
             save(self.output/'cancel-observation.json', dict(before=before, after=after))
         else:
