@@ -1,0 +1,188 @@
+{
+  "status": "PASS_CPU_REFERENCE_EXECUTION_ONLY",
+  "cpu_model_loads": 1,
+  "torch": "2.14.0+cpu",
+  "transformers": "4.57.6",
+  "forwards": {
+    "talker": 4,
+    "predictor": 60
+  },
+  "seconds": 37.28279271069914,
+  "cuda_initialized": false,
+  "results": [
+    {
+      "expected_greedy_codes": [
+        [
+          1399,
+          909,
+          742,
+          159,
+          924,
+          261,
+          583,
+          882,
+          1658,
+          677,
+          582,
+          1170,
+          190,
+          594,
+          793,
+          734
+        ],
+        [
+          2026,
+          1220,
+          1226,
+          1366,
+          977,
+          135,
+          1813,
+          1913,
+          918,
+          1712,
+          726,
+          162,
+          654,
+          105,
+          1581,
+          196
+        ]
+      ],
+      "teacher_forced_frames": 2,
+      "native_codes": [
+        [
+          1399,
+          909,
+          742,
+          159,
+          924,
+          261,
+          583,
+          882,
+          1658,
+          677,
+          582,
+          1170,
+          190,
+          594,
+          793,
+          734
+        ],
+        [
+          2026,
+          1220,
+          1226,
+          1366,
+          977,
+          135,
+          1813,
+          1913,
+          918,
+          1712,
+          726,
+          162,
+          654,
+          105,
+          1581,
+          196
+        ]
+      ],
+      "eos_qualified": false
+    },
+    {
+      "expected_greedy_codes": [
+        [
+          859,
+          1009,
+          933,
+          371,
+          314,
+          819,
+          20,
+          108,
+          930,
+          38,
+          255,
+          1615,
+          914,
+          781,
+          1772,
+          803
+        ],
+        [
+          859,
+          957,
+          519,
+          1720,
+          550,
+          474,
+          1640,
+          1856,
+          930,
+          38,
+          255,
+          146,
+          527,
+          344,
+          812,
+          803
+        ]
+      ],
+      "teacher_forced_frames": 2,
+      "native_codes": [
+        [
+          859,
+          1009,
+          933,
+          371,
+          314,
+          819,
+          20,
+          108,
+          930,
+          38,
+          255,
+          1615,
+          914,
+          781,
+          1772,
+          803
+        ],
+        [
+          859,
+          957,
+          519,
+          1720,
+          550,
+          474,
+          1640,
+          1856,
+          930,
+          38,
+          255,
+          146,
+          527,
+          344,
+          812,
+          803
+        ]
+      ],
+      "eos_qualified": false
+    }
+  ],
+  "icl_inputs_applied": 2,
+  "base_reference_reused": true,
+  "icl_inputs": [
+    {
+      "reference_codes_sha256": "0760976ce99bc42dbabbf4c1befc0007641262ad6ea81525aece87e2f631c98f",
+      "reference_tokens": 7,
+      "non_streaming": false
+    },
+    {
+      "reference_codes_sha256": "0760976ce99bc42dbabbf4c1befc0007641262ad6ea81525aece87e2f631c98f",
+      "reference_tokens": 7,
+      "non_streaming": true
+    }
+  ]
+}
