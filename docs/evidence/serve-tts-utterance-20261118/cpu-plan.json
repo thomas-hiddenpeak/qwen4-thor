@@ -1,0 +1,35 @@
+{
+  "task": "Complete-utterance EOS, actual waveform and independently recognized content gate",
+  "limits": {
+    "tests": 2,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "next_gpu_limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "asr_seconds": 600,
+    "cases": 2,
+    "max_frames_per_case": 160,
+    "generation_advances": 48000,
+    "codec_advances": 4096,
+    "asr_tokens_per_case": 128,
+    "gpu_talker_loads": 1,
+    "gpu_codec_loads": 1,
+    "gpu_asr_loads": 1,
+    "cpu_model_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0
+  },
+  "contract": {
+    "natural_eos": true,
+    "max_frames_exclusive": 160,
+    "exact_normalized_transcription": true,
+    "minimum_rms": 0.0001,
+    "minimum_peak": 0.01,
+    "sample_rate": 24000,
+    "samples_per_frame": 1920,
+    "expressive_style_qualified": false
+  },
+  "source_gate_reuse": "codec-gate-cpu-01; runtime and audited sources unchanged"
+}

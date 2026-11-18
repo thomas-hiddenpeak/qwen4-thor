@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS完整EOS与实际内容通过](evidence/serve-tts-utterance-20261118/README.md)：
+2CPU/零警告；中英文3.20/3.12秒自然结束，独立ASR原文匹配。
+1 talker/codec/ASR、17.659秒，GPU释放、默认rev306保持。
+继续speech/Chat格式/语速/指令/流式、SDK/TLS及恢复交付，
+全部master继续，不将两句内容扩大为所有声音/风格资格。
+
+TTS完整句子驱动已接已验talker/codec；固定2比较门CPU/60秒，
+随后同严格租约各1 talker/codec/ASR加载、中英文各≤160帧、
+总1200秒/0主LLM/HTTP。自然EOS、完整采样和无提示ASR原文
+匹配必须通过；不裁静音/不以到上限冒充完成。已验数值复用，
+默认rev306保持，之后继续speech/Chat/恢复及总任务。
+
 [原生TTS codec波形数值通过](evidence/serve-tts-codec-component-20261118/README.md)：
 3CPU/879来源/12负控、零警告；1GPU/1CPU、5次解码/12.715秒，
 218880采样及90中间量全部过，GPU释放、默认rev306保持。

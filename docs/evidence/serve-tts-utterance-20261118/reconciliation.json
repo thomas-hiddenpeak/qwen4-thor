@@ -1,0 +1,53 @@
+{
+  "status": "PASS_TARGETED_UTTERANCE_EOS_AND_ASR_CONTENT",
+  "seconds": 17.658705837093294,
+  "cases": [
+    {
+      "case": 0,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "passed": true,
+      "frames": 40,
+      "eos": true,
+      "at_limit": false,
+      "samples": 76800,
+      "sample_rate": 24000,
+      "rms": 0.0594956,
+      "peak": 0.388973,
+      "generation_seconds": 2.93859,
+      "generation_workspace_bytes": 115210496,
+      "codec_workspace_bytes": 165902336,
+      "seconds": 3.04684,
+      "wav_sha256": "4e8eefe349bc5049a0e5b17214c09ddb71804c23cfecdfdcc862423ea7738062",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "case": 1,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true,
+      "frames": 39,
+      "eos": true,
+      "at_limit": false,
+      "samples": 74880,
+      "sample_rate": 24000,
+      "rms": 0.115902,
+      "peak": 0.470478,
+      "generation_seconds": 2.8224,
+      "generation_workspace_bytes": 116434432,
+      "codec_workspace_bytes": 163657216,
+      "seconds": 2.92574,
+      "wav_sha256": "d165e6bdf97286750a57cb79d62785c2e61f895a785d2ccfe9ebb3e386004a21",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    }
+  ],
+  "gpu_talker_loads": 1,
+  "gpu_codec_loads": 1,
+  "gpu_asr_loads": 1,
+  "main_llm_loads": 0,
+  "http_requests": 0,
+  "nvml_queries": 19,
+  "lease_released": true,
+  "defaults_unchanged": true,
+  "style_and_all_voices_pending": true
+}

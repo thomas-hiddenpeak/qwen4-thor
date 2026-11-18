@@ -7875,12 +7875,12 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "compute_component_qualified_pcm_and_service_in_progress",
+    "state": "native_synthesis_eos_content_qualified_service_in_progress",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
-      "native codec/PCM and utterance EOS/quality",
+      "speech format/speed/instruction/all-voice service contracts and custom voice backend",
       "speech API and Chat audio outputs/history",
       "SDK/TLS/recovery/release",
       "Responses/Batch/Realtime integration"
@@ -7890,6 +7890,11 @@
       "state": "numeric_component_qualified",
       "evidence": "evidence/serve-tts-codec-component-20261118/README.md",
       "speech_quality_pending": true
+    },
+    "utterance": {
+      "state": "natural_eos_and_actual_asr_content_passed",
+      "evidence": "evidence/serve-tts-utterance-20261118/README.md",
+      "all_voices_and_styles_pending": true
     }
   }
 }

@@ -1,0 +1,134 @@
+{
+  "status": "PASS_UTTERANCE_PENDING_LEASE_RECONCILIATION",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "asr_seconds": 600,
+    "cases": 2,
+    "max_frames_per_case": 160,
+    "generation_advances": 48000,
+    "codec_advances": 4096,
+    "asr_tokens_per_case": 128,
+    "gpu_talker_loads": 1,
+    "gpu_codec_loads": 1,
+    "gpu_asr_loads": 1,
+    "cpu_model_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0
+  },
+  "contract": {
+    "natural_eos": true,
+    "max_frames_exclusive": 160,
+    "exact_normalized_transcription": true,
+    "minimum_rms": 0.0001,
+    "minimum_peak": 0.01,
+    "sample_rate": 24000,
+    "samples_per_frame": 1920,
+    "expressive_style_qualified": false
+  },
+  "defaults_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "runs": [
+    {
+      "name": "native",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/codec-build/q4t_tts_utterance",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-plan-01.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native"
+      ],
+      "exit_code": 0,
+      "seconds": 12.978609401267022
+    },
+    {
+      "name": "asr",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/asr-input/plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/asr"
+      ],
+      "exit_code": 0,
+      "seconds": 3.217563594225794
+    }
+  ],
+  "plan_sha256": "b4909a642219e3b21f657253186d209790bbbf6aa489fe8de9c86fdf97d20d48",
+  "comparisons": [
+    {
+      "case": 0,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "passed": true
+    },
+    {
+      "case": 1,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true
+    }
+  ],
+  "native": {
+    "status": "PASS_UTTERANCE_PENDING_CONTENT_CHECK",
+    "gpu_model_loads": 2,
+    "cases": 2,
+    "frames": 79,
+    "generation_advances": 9459,
+    "codec_advances": 699,
+    "seconds": 12.6716
+  },
+  "defaults_after": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "defaults_unchanged": true,
+  "seconds": 17.658705837093294,
+  "artifacts": {
+    "asr/case-0/encoder-input.bf16": "f2cb76db360968609b2679c8a56af8ad82dd43716c68bd8ea9da935e77709749",
+    "asr/case-0/encoder.bf16": "c416cf500de82c16852dba0fc9eeab14359193817a7560daa407c050d8d94b64",
+    "asr/case-0/generated.u32": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5",
+    "asr/case-0/logits-0.bf16": "c2e726a73d7dd46fca433cd4359427b37b1fd8b4b08ea969fe9613aebbe8b8fd",
+    "asr/case-0/logits-1.bf16": "6505949c7b1d5bb41768f6a3e5af8e069d697a9d5d90dca905967b0a4bc2b380",
+    "asr/case-0/logits-2.bf16": "9a7cb8a2876bf461b22e87a588a40f50ad1a8595e2f12ddde9e8f041168773d3",
+    "asr/case-0/logits-3.bf16": "09535de24393490a4275a5b5bb926296f03b4515b050a8b9bd71bbeccdf4ebd9",
+    "asr/case-0/native-mel.f32": "aff750b43ad41e94c94f2f0639876c294af346b093f482b9a7dcf9f25e7a3c03",
+    "asr/case-0/result.json": "be33e59c3aef0223fd40976acdb00abe6e45e7cff92b2f309dacf4ce1385b9b9",
+    "asr/case-0/text.txt": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af",
+    "asr/case-1/encoder-input.bf16": "c37b9cdfbad48c146da58a85212b7adca2f419cd940d8a70f1af73c3e4659119",
+    "asr/case-1/encoder.bf16": "0263862a8985ec73a9031cc4c41f6d0a1de6ebe9dc006a15bdd6716de1715644",
+    "asr/case-1/generated.u32": "b5923b4710a1317b4881a6a3ba7e1f94834e68c3d1d7d6e0165a5194a3d00ea4",
+    "asr/case-1/logits-0.bf16": "e8f04a55ebbb9449b99f38a68c2c71a7a8dbf0cd19a22d73200234c1821a0a8c",
+    "asr/case-1/logits-1.bf16": "501c13cfa2638176476128b15d62dd320f2f25ea57c0a91e68631973c17ba8e4",
+    "asr/case-1/logits-2.bf16": "ac3b29ab9099683eaa263576d73abe97def5cb5b58923efe343185d087127523",
+    "asr/case-1/logits-3.bf16": "e0ee289aa2edcbf571df8061cc76f876fe9c25a656ac6bdde69b8d29139519c4",
+    "asr/case-1/native-mel.f32": "0725ecb17905ab669bafd084056f5ac54e7856d744d6ef4702456ea7419bcd44",
+    "asr/case-1/result.json": "0b6f6609aae934ed42805f162bf6fc5bcd20dbed7b6968c8311d01a5030f3dd1",
+    "asr/case-1/text.txt": "376fb85523c60eddf8c40589e073b9db7626427bc092049ade137c522da51dbb",
+    "asr/result.json": "0e94e118f16486acae057d098ec85fa49fb03eac82a72a18ef3b98c577d6bb35",
+    "asr-input/case-0-mel.f32": "aff750b43ad41e94c94f2f0639876c294af346b093f482b9a7dcf9f25e7a3c03",
+    "asr-input/case-0-pcm.f32": "4b3fa68df364aac8a14a3398055efd4f392bb9e401b2c41d91120cb465a6fb59",
+    "asr-input/case-1-mel.f32": "0725ecb17905ab669bafd084056f5ac54e7856d744d6ef4702456ea7419bcd44",
+    "asr-input/case-1-pcm.f32": "9d63a5fac37a9f3c7a3f9ac2e69db573bc7912142c4e59ed3602f0e5896478e8",
+    "asr-input/plan.json": "e6754009abc05207d0352a5e9951734b1fcef9c63a766e8dc0470f9b2bd4ba9e",
+    "asr.log": "6811692cddcefd59e406d6c6838b5fc3341fba8a3b160c99170cd6621a3aed40",
+    "native/case-0/audio.wav": "4e8eefe349bc5049a0e5b17214c09ddb71804c23cfecdfdcc862423ea7738062",
+    "native/case-0/codes.i32": "818d7b1a4d1669b2d8651a5de18955e77be5c370adbf952d2a515c1aab92b83e",
+    "native/case-0/generation.json": "c3cca38a40c1632d069e03a840387e8522cc4e5677091538616903ba14e938b4",
+    "native/case-0/pcm.f32": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293",
+    "native/case-0/result.json": "79c820d4ded69552f48bad6ea46e99e8ee7ba5181116dc7f96399c08f8a5c977",
+    "native/case-1/audio.wav": "d165e6bdf97286750a57cb79d62785c2e61f895a785d2ccfe9ebb3e386004a21",
+    "native/case-1/codes.i32": "75aacecb31cd168c73251fc712ea2353fc735baa31a8fa2866b344ba908cfed1",
+    "native/case-1/generation.json": "32a5dfbab123153580ac3aec43e494ec9d022a192bdacd0758587f098631677f",
+    "native/case-1/pcm.f32": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91",
+    "native/case-1/result.json": "27c2599f166b38fa6b864865bf26fc1c556212a8e5336e323b5c6b379b7ac219",
+    "native/result.json": "2e04d0df0a62768bdc3975bf4edcc732ef7b3c8242d58aec917973b927fa2a04",
+    "native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
