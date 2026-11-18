@@ -118,6 +118,16 @@ def check_transcript(value, expected):
             'independent unprompted ASR content differs')
 
 
+def check_admission(command, policy):
+    # Reject contradictory fixtures before any process/model startup.
+    inflight = int(command[command.index('--max-inflight-requests')+1])
+    queued = int(command[command.index('--max-queued-requests')+1])
+    require(not policy['fair_queue'] or
+            (queued >= len(policy['clients']) and
+             inflight >= sum(c['max_inflight'] for c in policy['clients'])),
+            'fair policy exceeds global admission capacity')
+
+
 def validate_plan(plan):
     require(plan['schema'] == 'q4t-voice-http-v1' and
             plan['limits'] == LIMITS and plan['load_limits'] == LOAD_LIMITS and
@@ -276,8 +286,8 @@ class Stage(speech.Stage):
             self.plan['model'], '--host', '127.0.0.1', '--port', str(self.plan['port']),
             '--operations-port', str(self.plan['operations_port']), '--mtp',
             '--max-seq', '1', '--max-len', '8192', '--max-prefill', '2048',
-            '--max-tokens', '64', '--max-inflight-requests', '2',
-            '--max-queued-requests', '1', '--object-store-dir', str(self.out/'objects'),
+            '--max-tokens', '64', '--max-inflight-requests', '4',
+            '--max-queued-requests', '3', '--object-store-dir', str(self.out/'objects'),
             '--client-policy-file', str(self.out/'client-policy.json'),
             '--tts-max-text-tokens', '512', '--tts-max-prefill-tokens', '512',
             '--tts-max-frames', '200', '--tts-workspace-mib', '2048',
@@ -286,6 +296,7 @@ class Stage(speech.Stage):
         for key, option in (('tts','tts-model-dir'), ('base','tts-base-model-dir'),
                 ('asr','asr-model-dir'), ('speaker','speaker-model-dir'), ('vad','vad-model-dir')):
             command += ['--'+option, self.plan['directories'][key]]
+        check_admission(command, policy)
         self.budget('starts')
         save(self.out/'model-command.json', command)
         with (self.out/'model.log').open('xb', buffering=0) as log:

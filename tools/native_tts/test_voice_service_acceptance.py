@@ -63,6 +63,19 @@ class Contract(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 subject.check_wave(raw)
 
+    def test_fair_policy_cannot_exceed_global_queue_or_inflight(self):
+        policy = dict(fair_queue=True, clients=[dict(max_inflight=1)]*3)
+        def args(inflight, queued):
+            return ['serve', '--max-inflight-requests', str(inflight),
+                    '--max-queued-requests', str(queued)]
+        subject.check_admission(args(4, 3), policy)
+        for inflight, queued in ((2, 3), (4, 1), (2, 1)):
+            with self.assertRaises(RuntimeError):
+                subject.check_admission(args(inflight, queued), policy)
+        policy['clients'][0] = dict(max_inflight=3)
+        with self.assertRaises(RuntimeError):
+            subject.check_admission(args(4, 3), policy)
+
     def test_request_time_and_frozen_plan_bounds_fail_closed(self):
         plan = dict(schema='q4t-voice-http-v1', requests=subject.requests(),
                     limits=subject.LIMITS, load_limits=subject.LOAD_LIMITS)
