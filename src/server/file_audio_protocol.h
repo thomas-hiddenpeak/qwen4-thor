@@ -3,8 +3,15 @@
 #include "q4t/server/file_audio.h"
 
 namespace q4t::server::audio_detail {
-inline constexpr uint64_t kMagic = 0x5134544155443031;
-inline constexpr uint32_t kOutputRate = 16000;
+// Same-ELF private IPC: the request layout now includes output_sample_rate.
+inline constexpr uint64_t kMagic = 0x5134544155443032;
+// Valid limits bound products below uint64_t; no fractional-sample admission.
+inline uint64_t OutputSampleLimit(const FileAudioLimits& limits) {
+  return limits.max_duration_ns * limits.output_sample_rate / 1000000000ULL;
+}
+inline uint64_t OutputDuration(uint64_t samples, uint32_t rate) {
+  return samples * 1000000000ULL / rate;
+}
 enum class Container {
   kUnknown,
   kWave,

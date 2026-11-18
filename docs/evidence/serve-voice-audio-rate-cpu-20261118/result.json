@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 1.0151037094183266,
+  "requested_cases": 14,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/audio-24k-cpu-01/required.txt"
+  ],
+  "binary_sha256": "612da9cfb114e7e2dc263ef87598dfd1c00553c0d2400df9c4a510d0b7ad27f2",
+  "plan_sha256": "d8dd21306d4ddfaf31814c7b85dbc6116f49be6ba73d177eb2fcdecb0156824d",
+  "model_loads": 0,
+  "gpu_actions": 0,
+  "default_before": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_after": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_unchanged": true,
+  "state": "NATIVE_16_24K_CPU_QUALIFIED",
+  "new_cases": 8,
+  "direct_existing_cases": 6,
+  "build": {
+    "status": "PASS_BUILD_ONLY",
+    "seconds": 28.607620693277568,
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-file-search-20261112/host",
+      "--target",
+      "q4t_host_tests",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "warnings": 0,
+    "binary_sha256": "612da9cfb114e7e2dc263ef87598dfd1c00553c0d2400df9c4a510d0b7ad27f2"
+  },
+  "archive_sha256": "d332c39740b68da80d92194dceca1abffaf8ca94815e729e74e26619fe4a78b4",
+  "archive_files": 20,
+  "voice_api_accepted": false,
+  "full_task_complete": false
+}

@@ -1,0 +1,82 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/archive_audio_24k.py": {
+    "bytes": 5941,
+    "sha256": "4d9b87053a56e9c559c163ec8166049b9e75e8c893cf3dba98aaebc2f30bb5b3"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-build-01/build.log": {
+    "bytes": 3020,
+    "sha256": "0ef756e24872729c2647c499a10c9aae55f3db5c0f881a4e886ff82e5ad075ee"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-build-01/result.json": {
+    "bytes": 351,
+    "sha256": "9bb31035fd0482ff03abf8acc63cb00f020e55aaffb1bfa575b56611b7c9a3ad"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-cpu-01/required.txt": {
+    "bytes": 790,
+    "sha256": "a3100d30aedf19c6d3ed536bb6e9f080f43c04aaab240ccede78c5c9334506d4"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-cpu-01/result.json": {
+    "bytes": 1644,
+    "sha256": "9a329e52f3993b1f846d14f013b32f0c7ad674ef788a74bc50aaec1f4db519a8"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-cpu-01/test.log": {
+    "bytes": 1565,
+    "sha256": "4bc94c5bacd58faf9f1f8f23567c3701f3ad1deec31ca28bb030f91220550e84"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-inventory-01.json": {
+    "bytes": 82,
+    "sha256": "396992bc3d349a193e17b7f03f398ec1cead31160b2a3ae353ce3c71b797c6f4"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-plan-01.json": {
+    "bytes": 2247,
+    "sha256": "d8dd21306d4ddfaf31814c7b85dbc6116f49be6ba73d177eb2fcdecb0156824d"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audio-24k-source-review-01.json": {
+    "bytes": 1391,
+    "sha256": "31be4fcfdb283cc05f62882fe3126ef9ce3babd401d0c02f6660fed2cfbc1e04"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_audio_24k.py": {
+    "bytes": 3705,
+    "sha256": "ba29610d5a81d0f9ae365402bccb857f7d9651afaccf1c8c805df362265d8c4d"
+  },
+  ".q4t-work/serve-custom-voices-20261118/develop_audio_24k.py": {
+    "bytes": 4646,
+    "sha256": "cc22b2d88d52e9642e050a60f6e16cacf4363b2b0c6d0369a75663941d90f41c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/run_audio_24k_cpu.py": {
+    "bytes": 1713,
+    "sha256": "ef003da58052359ae261c1f9a6f0592d904a47143e217fa85bcaabda49f971d8"
+  },
+  "cmake/HostTestSources.cmake": {
+    "bytes": 33541,
+    "sha256": "1f77bf80e3a3ef82a39cf37f86aa419496c837747b75e41c173b62b1515d2374"
+  },
+  "include/q4t/server/file_audio.h": {
+    "bytes": 1794,
+    "sha256": "c10902ca8e194e2c04bde93b8ea2ea777c65722dbcbba45114f631dd84c8dc75"
+  },
+  "src/server/file_audio.cpp": {
+    "bytes": 11520,
+    "sha256": "3123a206f9367824242797137efb4caddbf08c6f18dafa81df4d12c7b4aa2356"
+  },
+  "src/server/file_audio_protocol.h": {
+    "bytes": 1207,
+    "sha256": "7cde45b376ce72e1798039d79e474a1b21f96efa0dc869ad5c82f7cd5fa37999"
+  },
+  "src/server/file_audio_worker.cpp": {
+    "bytes": 23288,
+    "sha256": "326c228bed7589002d2e5d765262bb058f2cef422335b891cb0ee20782546650"
+  },
+  "tests/server_file_audio_rate_test.cpp": {
+    "bytes": 7767,
+    "sha256": "b44a85175800379f707a132cd6c12f4f54bee75fe6ac4c449c7504a21bca9267"
+  },
+  "tests/server_file_audio_test.cpp": {
+    "bytes": 15557,
+    "sha256": "c475c6e46b3da8fce2aa82b60046e7e9d7b3629cafa082457aa4b3c07dfb3fcc"
+  },
+  "tools/native_asr/codec_fixtures.py": {
+    "bytes": 5637,
+    "sha256": "6ccbb0c143f809f72b8dad65d3de3257943bc8d555966359b46329c427865ac7"
+  }
+}

@@ -195,6 +195,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_rate_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_encode_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_affine_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_projective_test.cpp

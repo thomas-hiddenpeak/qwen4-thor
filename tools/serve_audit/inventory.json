@@ -2328,7 +2328,7 @@
     "include/q4t/server/embedding_metadata.h": "e7038bd0374ff7fad77438b318cad440666a3d929172309b31bafe29fb28f9c7",
     "include/q4t/server/embeddings_execution.h": "0d7ed7709aacde156f590a913d2b0cc7245c09318c9af4705ec6f88cfc7a49e3",
     "include/q4t/server/embeddings_plan.h": "c29801b6005ec838b3f39fd52d6701e285f7a1923f791f4d4479a71334961ebe",
-    "include/q4t/server/file_audio.h": "af6630515891ac565c3afceb9263af9db81120fbfe57b18e6d2af4ae6f519b60",
+    "include/q4t/server/file_audio.h": "c10902ca8e194e2c04bde93b8ea2ea777c65722dbcbba45114f631dd84c8dc75",
     "include/q4t/server/file_document.h": "50c90e92b475063a9c469e1ac84d912a3b3232c3810a38fd86840726b5f107fd",
     "include/q4t/server/file_document_worker.h": "006f8e02037cf396a918be053328bedd0d75b77ef30c8fe5d6eca868cb36d183",
     "include/q4t/server/file_expansion.h": "a023ab8389eff1a3590fb466e3f5a95b8dc05efefc6546ec0cdc6751518f9f5a",
@@ -2664,9 +2664,9 @@
     "src/server/embedding_metadata.cpp": "ace571f57dcd0b2cc2389ae37f1582eda93835d5dac30881453b9a00932f0490",
     "src/server/embeddings_execution.cpp": "2f79fcedf3c4486fff96837ba528a55cd575ee8a898e011f214dd36c800a9fd6",
     "src/server/embeddings_plan.cpp": "04d1723b63377850f176c878842b93f2e268eefc36ecb9abcb23280c8deff4cd",
-    "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
-    "src/server/file_audio_protocol.h": "b39940d5707920c3ca78b9ac61c3335b5acae533f41f50ace330de2f92fdc024",
-    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f",
+    "src/server/file_audio.cpp": "3123a206f9367824242797137efb4caddbf08c6f18dafa81df4d12c7b4aa2356",
+    "src/server/file_audio_protocol.h": "7cde45b376ce72e1798039d79e474a1b21f96efa0dc869ad5c82f7cd5fa37999",
+    "src/server/file_audio_worker.cpp": "326c228bed7589002d2e5d765262bb058f2cef422335b891cb0ee20782546650",
     "src/server/file_document.cpp": "4176c8c34297e5c480494954d20bf5d9e403f417e8a451b56833104c2c6ef711",
     "src/server/file_document_sandbox.cpp": "e89a27499fef0bacbfbc4b5e58e99ae36ccf81627fc9dfe2598a4b544648044d",
     "src/server/file_document_worker.cpp": "0d3bd998e76f2b14b0d15e46179dacaa1f1fdcaf221a83d95b6cff150c3dea86",
@@ -7853,5 +7853,18 @@
     ],
     "runtime_api_accepted": false,
     "legacy_state_reader_bridge_pending": true
+  },
+  "native_audio_output_rate_2026_11_18": {
+    "state": "NATIVE_16_24K_CPU_QUALIFIED",
+    "evidence": [
+      "docs/evidence/serve-voice-audio-rate-cpu-20261118/README.md"
+    ],
+    "reviewed_sources": [
+      "include/q4t/server/file_audio.h",
+      "src/server/file_audio.cpp",
+      "src/server/file_audio_protocol.h",
+      "src/server/file_audio_worker.cpp"
+    ],
+    "voice_api_accepted": false
   }
 }

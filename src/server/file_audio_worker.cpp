@@ -153,16 +153,18 @@ struct Pipeline {
         return GST_PAD_PROBE_DROP;
       }
       const uint64_t wanted =
-          (self.raw_frames * kOutputRate + self.raw_info.rate - 1) /
+          (self.raw_frames * self.request.limits.output_sample_rate +
+           self.raw_info.rate - 1) /
           self.raw_info.rate;
       const auto& limits = self.request.limits;
       if (wanted > limits.max_output_samples ||
-          wanted > limits.max_duration_ns / 62500ULL) {
+          wanted > OutputSampleLimit(limits)) {
         self.failure = Failure::kCapacity;
         return GST_PAD_PROBE_DROP;
       }
       self.target_frames = wanted;
-      if (self.raw_info.rate == kOutputRate) return GST_PAD_PROBE_OK;
+      if (uint32_t(self.raw_info.rate) == limits.output_sample_rate)
+        return GST_PAD_PROBE_OK;
       // The stock EOS drain ends at the last source sample's timestamp,
       // which can omit a target sample within the source duration. Feed one
       // genuine zero-extension input frame through the SAME filter and keep
@@ -398,8 +400,10 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
                       "resample-method", gint{4}, "sinc-filter-mode", gint{2},
                       "sinc-filter-auto-threshold", guint{1048576},
                       "sinc-filter-interpolation", gint{1}, nullptr);
-  auto* caps = api.gst_caps_from_string_fn(
-      "audio/x-raw,format=F32LE,rate=16000,layout=interleaved");
+  const auto output_caps = "audio/x-raw,format=F32LE,rate=" +
+                           std::to_string(request.limits.output_sample_rate) +
+                           ",layout=interleaved";
+  auto* caps = api.gst_caps_from_string_fn(output_caps.c_str());
   if (!caps) return Failure::kCapacity;
   api.g_object_set_fn(nodes[convert_index + 2], "caps", caps, nullptr);
   api.Mini(caps);
@@ -460,7 +464,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     auto* buffer = api.gst_sample_get_buffer_fn(sample);
     if (!caps || !buffer || !api.gst_audio_info_from_caps_fn(&info, caps) ||
         GST_AUDIO_INFO_FORMAT(&info) != GST_AUDIO_FORMAT_F32LE ||
-        info.layout != GST_AUDIO_LAYOUT_INTERLEAVED || info.rate != 16000 ||
+        info.layout != GST_AUDIO_LAYOUT_INTERLEAVED ||
+        uint32_t(info.rate) != request.limits.output_sample_rate ||
         info.channels <= 0 ||
         uint32_t(info.channels) > request.limits.max_channels)
       return Failure::kInvalid;
@@ -470,9 +475,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     if (output->samples.size() > target) return Failure::kInvalid;
     const auto count =
         std::min<uint64_t>(bytes / info.bpf, target - output->samples.size());
-    const auto maximum =
-        std::min<uint64_t>(request.limits.max_output_samples,
-                           request.limits.max_duration_ns / 62500ULL);
+    const auto maximum = std::min<uint64_t>(request.limits.max_output_samples,
+                                            OutputSampleLimit(request.limits));
     if (count > maximum - output->samples.size()) return Failure::kCapacity;
     interleaved.resize(bytes / sizeof(float));
     if (api.gst_buffer_extract_fn(buffer, 0, interleaved.data(), bytes) !=
@@ -495,7 +499,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   if (output->samples.empty() || !state.connected || !state.raw_frames)
     return Failure::kInvalid;
   if (output->samples.size() != state.target_frames) return Failure::kInvalid;
-  output->duration_ns = output->samples.size() * 62500ULL;
+  output->sample_rate = request.limits.output_sample_rate;
+  output->duration_ns =
+      OutputDuration(output->samples.size(), output->sample_rate);
   const std::string_view bytes(
       reinterpret_cast<const char*>(output->samples.data()),
       output->samples.size() * sizeof(float));
@@ -505,7 +511,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
               {"source_bytes", Number(source.size())},
               {"pcm_sha256", String(Digest(bytes))},
               {"samples", Number(output->samples.size())},
-              {"sample_rate", Number(kOutputRate)},
+              {"sample_rate", Number(output->sample_rate)},
               {"source_sample_rate", Number(state.raw_info.rate)},
               {"source_channels", Number(state.raw_info.channels)},
               {"source_frames", Number(state.raw_frames)},

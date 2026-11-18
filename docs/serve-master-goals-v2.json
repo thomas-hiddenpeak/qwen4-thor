@@ -8609,6 +8609,12 @@
         "gpu_loads": 0,
         "runtime_api_accepted": false,
         "legacy_state_reader_bridge_pending": true
+      },
+      "audio_input": {
+        "state": "NATIVE_16_24K_CPU_QUALIFIED",
+        "evidence": "evidence/serve-voice-audio-rate-cpu-20261118/README.md",
+        "cpu_cases": 14,
+        "gpu_loads": 0
       }
     }
   }

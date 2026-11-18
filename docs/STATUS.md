@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[24kHz声纹输入14项CPU通过](evidence/serve-voice-audio-rate-cpu-20261118/README.md)：
+1.016秒，构建28.608秒零警告；0GPU、默认保持。原生PCM逐值、
+11kHz成分、非整数采样相位与精确时长边界通过，既有16kHz及
+worker失败隔离保持。继续真实授权验证、Base按需服务和音色ID
+合成新文本，持久对象旧包兼容仍须随发布闭合。
+
+24kHz原生音频输入已接入开发，ASR默认16kHz保持；显式输出率、
+实际采样率身份和精确有理数时长预算一起校验。冻结8新增+6直接
+受影响CPU/120秒、0模型/GPU，含11kHz保真、非整数采样、边界与
+worker隔离；通过后继续真实音色登记后端，不改变默认程序。
+
 [Voice/Consent登记26项CPU通过](evidence/serve-custom-voice-registry-cpu-20261118/README.md)：
 0.765秒，21新增+5旧合同，必要构建零警告；0GPU、默认保持。
 精确条件/私有录音、客户隔离、CAS、撤销、配额、未知提交及重启
