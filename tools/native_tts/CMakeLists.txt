@@ -86,3 +86,19 @@ target_compile_options(q4t_tts_encoder_replay PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_tts_icl_replay icl_replay.cpp)
 target_link_libraries(q4t_tts_icl_replay PRIVATE q4t_tts_replay_core)
 target_compile_options(q4t_tts_icl_replay PRIVATE -Wall -Wextra -Werror)
+
+# Production no-trace composition with fixed ICL input; no reference encoder.
+add_executable(q4t_tts_icl_synthesis icl_synthesis_replay.cpp
+  ${Q4T_ROOT}/src/server/tts_assets.cpp
+  ${Q4T_ROOT}/src/server/tts_upload.cpp
+  ${Q4T_ROOT}/src/server/tts_service.cpp
+  ${Q4T_ROOT}/src/server/model_assets.cpp
+  ${Q4T_ROOT}/src/server/grammar_process.cpp
+  ${Q4T_ROOT}/src/server/worker_io_broker.cpp
+  ${Q4T_ROOT}/src/audio/tts_speaker_layout.cpp
+  ${Q4T_ROOT}/src/audio/tts_speaker_features.cpp)
+target_link_libraries(q4t_tts_icl_synthesis PRIVATE
+  q4t_tts_replay_core Threads::Threads)
+target_compile_options(q4t_tts_icl_synthesis PRIVATE
+  -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+target_link_options(q4t_tts_icl_synthesis PRIVATE -Wl,--gc-sections)

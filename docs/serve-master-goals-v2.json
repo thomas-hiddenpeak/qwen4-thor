@@ -9450,6 +9450,12 @@
         "encoder_gate_unchanged": true,
         "eos_and_audio_qualified": false,
         "limitation": "Polling cannot exclude subinterval external contention"
+      },
+      "synthesis_driver": {
+        "state": "implemented_cpu_passed_actual_fixed_reference_audio_pending",
+        "evidence": "evidence/serve-tts-icl-synthesis-driver-cpu-20261119/README.md",
+        "cpu_tests": 8,
+        "gpu": 0
       }
     }
   }

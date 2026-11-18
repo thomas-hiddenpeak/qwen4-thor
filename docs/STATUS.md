@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL完整合成驱动8项CPU通过](evidence/serve-tts-icl-synthesis-driver-cpu-20261119/README.md)：
+生产采样、参考首块精确裁剪、背压/取消及两种帧预算失败已接线；
+0.114秒/0GPU，原生构建零警告。下一组冻结固定参考完整合成与无
+原文ASR，不加载或重新判定注册encoder；其原FAIL与待决保持。
+
 [固定参考ICL提示134项数值通过](evidence/serve-tts-icl-prompt-component-20261119/README.md)：
 1原生/1官方CPU、两对齐各2帧、50.628秒，原浮点/全码门全部通过；
 49次NVML正常、进程/锁清理，默认保持。只核对固定可信短参考的

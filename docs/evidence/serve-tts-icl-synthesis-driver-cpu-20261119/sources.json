@@ -1,0 +1,11 @@
+{
+  "sources": {
+    "tools/native_tts/icl_synthesis_replay.cpp": "bdaeb200a49c8d76b9592164f5c2685f53bc0c063018a5802e0f06530e1a8230",
+    "tools/native_tts/icl_synthesis_acceptance.py": "5d7696498a24b401ff7ebcd64888dc10f1bee691dac565c3fc551f8433f2e356",
+    "tools/native_tts/test_icl_synthesis_acceptance.py": "c8562c0e1bc7c8a754cf3002e8b41e2462485b4e1afbaff8b0cba01f19fd8e9a",
+    "tools/native_tts/CMakeLists.txt": "1be84c8baf48a7f5e464df4546845d99cacbedd44a56efbfe644e98c20b84d26"
+  },
+  "binary_sha256": "a4544a2916f5cdf7fe91f9d29b13ce2783c6170350a6834b5ac8731065c0fc72",
+  "gpu": 0,
+  "actual_complete_audio_qualified": false
+}

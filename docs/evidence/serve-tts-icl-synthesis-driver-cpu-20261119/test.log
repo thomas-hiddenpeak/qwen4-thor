@@ -1,0 +1,13 @@
+test_deferred_requires_eos_before_any_output (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_deferred_requires_eos_before_any_output) ... ok
+test_exhausted_frames_never_count_as_success (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_exhausted_frames_never_count_as_success) ... ok
+test_extra_load_or_relaxed_content_gate_rejected (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_extra_load_or_relaxed_content_gate_rejected) ... ok
+test_fixed_reference_and_production_sampling_plan (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_fixed_reference_and_production_sampling_plan) ... ok
+test_full_audio_reference_leak_truncation_and_wrong_language_fail (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_full_audio_reference_leak_truncation_and_wrong_language_fail) ... ok
+test_incremental_mixed_first_chunk_and_last_tail (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_incremental_mixed_first_chunk_and_last_tail) ... ok
+test_missing_cleanup_cancel_or_budget_result_rejected (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_missing_cleanup_cancel_or_budget_result_rejected) ... ok
+test_reference_leak_drop_overlap_or_rechunk_is_rejected (tools.native_tts.test_icl_synthesis_acceptance.IclSynthesisGate.test_reference_leak_drop_overlap_or_rechunk_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.004s
+
+OK
