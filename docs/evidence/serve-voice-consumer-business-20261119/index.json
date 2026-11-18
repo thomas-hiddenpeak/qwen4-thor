@@ -1,0 +1,858 @@
+{
+  "consumer-profiles-01/primary-capabilities.http.json": {
+    "bytes": 238,
+    "sha256": "9198ece1aa02615aaad8e134b1e607203f487990a9a3b662c4fc6884c1b44119"
+  },
+  "consumer-profiles-01/light-voice-chat.http.json": {
+    "bytes": 230,
+    "sha256": "78568d85f84b52ca3b669a11a25fc9a840f041bbf7e497a59c8d5ab4b2207082"
+  },
+  "consumer-profiles-01/primary-voice-cross-chat.wire": {
+    "bytes": 122,
+    "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+  },
+  "consumer-profiles-01/primary-voice-revoked-consent.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/primary-voice-new_voice.wire": {
+    "bytes": 159,
+    "sha256": "f2355d29100d49a9dcc8e1ffd5642cc91dd836f8afec4682b522507de2269fbe"
+  },
+  "consumer-profiles-01/light-schema-drain.metrics.json": {
+    "bytes": 22548,
+    "sha256": "8ba3dd9895098bb91afa92ea2a2432f70d65960547630414d0fcb1581644dd0a"
+  },
+  "consumer-profiles-01/primary-embedding-drain.metrics.json": {
+    "bytes": 22552,
+    "sha256": "8874d2d789307e8303ff8140c55347be67c388366d8cd9fa2e518c345f595d89"
+  },
+  "consumer-profiles-01/primary-schema-drain.metrics.json": {
+    "bytes": 22548,
+    "sha256": "6fdd90d1c1fb8193919a3d11fcaaf689904285406da4e6e2d0668be48317e81e"
+  },
+  "consumer-profiles-01/primary-voice-delete-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "27d4113a052510a6ff02dd68fe2a77317dbcebedfda70f0ac9400f1ed75b09d6"
+  },
+  "consumer-profiles-01/light-voice-new_voice-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "9c0f75a116787249ecd8e8c06a2495ba21927151b9f82f28a126888326208d77"
+  },
+  "consumer-profiles-01/light-voice-existing-consent-drain.metrics.json": {
+    "bytes": 22475,
+    "sha256": "1fa2e9a98aeb849b323001e51fe4bb549d140a061503f0c4fbf64b57571bdcb9"
+  },
+  "consumer-profiles-01/light-embedding.http.json": {
+    "bytes": 233,
+    "sha256": "2245a37334b1632c10c5aa9f85faebfd230f5f55262daded40c450bec6b94172"
+  },
+  "consumer-profiles-01/primary-voice-revoked-chat.request.json": {
+    "bytes": 222,
+    "sha256": "11bf3f689011eb548244ef0fc56e490ab22fd1a0215e9746fe304a6fa5bae42a"
+  },
+  "consumer-profiles-01/primary-voice-new_voice.http.json": {
+    "bytes": 230,
+    "sha256": "5e073d881c52958da41f0bd7108514448841de3f87fc6d543c4a9141cb55e982"
+  },
+  "consumer-profiles-01/light-config.http.json": {
+    "bytes": 239,
+    "sha256": "1f01d46e2b41e932b30adeecce5e801e5f2b1d7416efe6456d68d6d5e5b02a64"
+  },
+  "consumer-profiles-01/primary-voice-existing-consent.http.json": {
+    "bytes": 229,
+    "sha256": "c3648ac20d78211282c7ef879b5af874c04d61c86e17e4e19f791943297a003e"
+  },
+  "consumer-profiles-01/light-voice-stored-chat.http.json": {
+    "bytes": 233,
+    "sha256": "aab0dd058dc2f49fe67857a54453f37eb565ee8511a16091ac2633d8fa32b89d"
+  },
+  "consumer-profiles-01/light-voice-cross-chat-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "aa42e76232cd0570e3fea0150af654d56b82d5623178b15fd6700eeef61161de"
+  },
+  "consumer-profiles-01/primary-voice-revoked-consent.http.json": {
+    "bytes": 231,
+    "sha256": "d5cfa433aed6a0325c357b54a9521daad8fe13ead6a4aea7fb8b755406859e8f"
+  },
+  "consumer-profiles-01/light-voice-chat-drain.metrics.json": {
+    "bytes": 22517,
+    "sha256": "48d773d61dbc5f3fbda8256b470b2623f32f04eb2da643455dbf140c0a025497"
+  },
+  "consumer-profiles-01/light-tool-result.request.json": {
+    "bytes": 1614,
+    "sha256": "dd116a522cf95289cde356cb117c92e58e5694ab348064a16dfaf795d5652409"
+  },
+  "consumer-profiles-01/light-voice-new_consent-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "d54d35fd5e7c6753028065a0d9aea122ff33779d015927ad0ab920ea5aaf3e9e"
+  },
+  "consumer-profiles-01/light-embedding.wire": {
+    "bytes": 531,
+    "sha256": "ddf6444951170bdb08a7e0288c1a5425e2b15ae1ef71871e17424222f99e5f6e"
+  },
+  "consumer-profiles-01/primary-tool.wire": {
+    "bytes": 546,
+    "sha256": "09c6b2861cac8d08ec767907c3d749b5dc2d3cf9436daae76d55618bc50eb0f1"
+  },
+  "consumer-profiles-01/light-schema.wire": {
+    "bytes": 350,
+    "sha256": "71bb80a9cdedaffa58ea981dd9dee0b50545daa950b2626ad936c7b554260106"
+  },
+  "consumer-profiles-01/light-tool-result.wire": {
+    "bytes": 348,
+    "sha256": "cd4045a971703d5c0eecb8d50d385cf8ad2d8db6a135a2da052f1530ba78ff6f"
+  },
+  "consumer-profiles-01/primary-tool-result.wire": {
+    "bytes": 348,
+    "sha256": "c03da735e046d27e0dd258c77a39e8baa77cfe8c7ef092a9d2bda8c5b3e1e659"
+  },
+  "consumer-profiles-01/light-voice-revoked-speech.http.json": {
+    "bytes": 230,
+    "sha256": "dd7e0663156f9a613fa37d677434dd2dfd7dfa0e2d6001a5d407c7b76e0179b3"
+  },
+  "consumer-profiles-01/light-voice-cross-speech.http.json": {
+    "bytes": 232,
+    "sha256": "7b358e03dd22f0ced64ba49a321b3a121a81fc36c3974476876bd33e4ec44d1c"
+  },
+  "consumer-profiles-01/acceptance.json": {
+    "bytes": 603,
+    "sha256": "e2f99711bdd22cd7a97000d4de6959e4c4eefbb3ba43a65d14b3fca3d044b3c9"
+  },
+  "consumer-profiles-01/light-schema.http.json": {
+    "bytes": 233,
+    "sha256": "2bcba8673fc8eed5502903c31c043a82056276bdcf0f7ed2ee3709d4352dc3ab"
+  },
+  "consumer-profiles-01/primary-config.wire": {
+    "bytes": 15974,
+    "sha256": "19b16c0b7a1390d16b42e276b73f66a7ca161d5adb8c48f2b8b0b44744ab537a"
+  },
+  "consumer-profiles-01/primary-voice-revoked-speech.request.json": {
+    "bytes": 218,
+    "sha256": "17099111ec15d493d69eacf179c48af42e731f1685f3f868d8dcb75a81e0d44d"
+  },
+  "consumer-profiles-01/light-voice-new_consent.wire": {
+    "bytes": 159,
+    "sha256": "f2355d29100d49a9dcc8e1ffd5642cc91dd836f8afec4682b522507de2269fbe"
+  },
+  "consumer-profiles-01/light-embedding.request.json": {
+    "bytes": 104,
+    "sha256": "17228f265b9e75a8a61df1ebd4fe05588af76f14e4e9886d25e8973799d43323"
+  },
+  "consumer-profiles-01/primary-voice-revoked-speech-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "64247f38c51d5c139b756d046ebe03cd32fc82bfbbe15ef592d491e3923567a4"
+  },
+  "consumer-profiles-01/primary-voice-speech.http.json": {
+    "bytes": 264,
+    "sha256": "e3e712537b923039b7de38ea1373f16f8612dc7ac0bd1d040ddc5cf466b08d67"
+  },
+  "consumer-profiles-01/primary-config.http.json": {
+    "bytes": 239,
+    "sha256": "cdbd26f82b8ef7f09172450230fef364cba79294c47ce8eb78e24109e3e9dc1b"
+  },
+  "consumer-profiles-01/light-voice-cross-consent.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/primary-media.wire": {
+    "bytes": 1497,
+    "sha256": "830dd882c73a3314a2f84df96f96cf81fd5d42089c46c6f3b076abae04ee6179"
+  },
+  "consumer-profiles-01/primary-tool-result.request.json": {
+    "bytes": 1614,
+    "sha256": "36bc4c21064b0077b2f0ddbc80b570a08e0b9440a14de4a21718d3bae43da671"
+  },
+  "consumer-profiles-01/light-voice-revoked-chat.wire": {
+    "bytes": 122,
+    "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+  },
+  "consumer-profiles-01/light-embedding-drain.metrics.json": {
+    "bytes": 22552,
+    "sha256": "da60e67e9ccc034db7a6cb5b1ebec44bf4581934fec555b4eb0ba82eeb2ad370"
+  },
+  "consumer-profiles-01/primary-capabilities.json": {
+    "bytes": 53474,
+    "sha256": "773c84e2ae6fbeb8360a4e93f13fcef8c822b369adba3f5605c368c4f4f7aeb0"
+  },
+  "consumer-profiles-01/result.json": {
+    "bytes": 249,
+    "sha256": "7de876589d699e7ef884c1dcfdcccf1f63e29feea02092d0c13a40d980520e2e"
+  },
+  "consumer-profiles-01/light-voice-revoked-consent.request.json": {
+    "bytes": 199,
+    "sha256": "be33e533a96960b229b5fd26468b66b2356f38f7864246ee4998649b66bd0384"
+  },
+  "consumer-profiles-01/primary-voice-revoked-chat.http.json": {
+    "bytes": 231,
+    "sha256": "3f47e423cd097617a1ce2ab8225d9d7fe8f054b6b4ecc1668c0035e13b714d59"
+  },
+  "consumer-profiles-01/primary-voice-delete.request.json": {
+    "bytes": 195,
+    "sha256": "71c79a1f9830cb4ccf0dde59fb776724911071d6daf44b5ab4e6000f98181801"
+  },
+  "consumer-profiles-01/primary-voice-chat.wire": {
+    "bytes": 103078,
+    "sha256": "d17678a395140447c33e873501b7c27523c203c94c48e0c5c5e64fddf0b2c429"
+  },
+  "consumer-profiles-01/primary-voice-revoke.wire": {
+    "bytes": 92,
+    "sha256": "f38871ed8344e8ab3c49020dedef080a508b0b23aac4fb1b6e8173fde3913727"
+  },
+  "consumer-profiles-01/primary-voice-cross-consent.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/light-voice-revoke-drain.metrics.json": {
+    "bytes": 22517,
+    "sha256": "5251f9e4b46fbb05737f577ebe3cbdf87981835e266efb30107529853b9d1b45"
+  },
+  "consumer-profiles-01/light-voice-cross-consent-drain.metrics.json": {
+    "bytes": 22475,
+    "sha256": "dfc4ad2e6606528d2cd420069e2ab894fefcb0ca64615d590aa78f1abdcac92d"
+  },
+  "consumer-profiles-01/primary-voice-chat.request.json": {
+    "bytes": 222,
+    "sha256": "11bf3f689011eb548244ef0fc56e490ab22fd1a0215e9746fe304a6fa5bae42a"
+  },
+  "consumer-profiles-01/primary-embedding.request.json": {
+    "bytes": 104,
+    "sha256": "17228f265b9e75a8a61df1ebd4fe05588af76f14e4e9886d25e8973799d43323"
+  },
+  "consumer-profiles-01/light-config.json": {
+    "bytes": 20840,
+    "sha256": "6650462a96d6badd032d6513c184e5d4c732ef31963f8f38bf96596487e6c627"
+  },
+  "consumer-profiles-01/primary-voice-cross-speech-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "d1a9757dbd940dcdb373864f419edd904992307ef9b8bd2057a55ea9cea932a6"
+  },
+  "consumer-profiles-01/primary-command.json": {
+    "bytes": 1634,
+    "sha256": "40b814e07deddef9d7b97e0566d3d3181161389e01c166a567eee8835299ad75"
+  },
+  "consumer-profiles-01/light-voice-stored-chat.request.json": {
+    "bytes": 204,
+    "sha256": "fee7e2536d4eaa4aefd54eb1cccf22ba793d296ab55a8c0b46682ad037d0d20c"
+  },
+  "consumer-profiles-01/light-tool-result-drain.metrics.json": {
+    "bytes": 22552,
+    "sha256": "9d956d82c986d9f2889cbc10939ee82c611006dc0d66098f67d96ca2af1351ca"
+  },
+  "consumer-profiles-01/primary-tool.http.json": {
+    "bytes": 233,
+    "sha256": "72069cec02df18cf62e2f2ba2bbd5972e3233ac1cb365e7e6be36c2b518158d0"
+  },
+  "consumer-profiles-01/primary-voice-existing-consent-drain.metrics.json": {
+    "bytes": 22475,
+    "sha256": "f6219662213c0e94f859ee5370148672b14363b881090eef56c814fdfc889b08"
+  },
+  "consumer-profiles-01/light-voice-revoked-speech.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/light-voice-chat.wire": {
+    "bytes": 103078,
+    "sha256": "b10511d4cd070a2e44d24675a9a26ce53d03daf529e90d794cb477e3e2472467"
+  },
+  "consumer-profiles-01/light-tool.http.json": {
+    "bytes": 232,
+    "sha256": "3300376a0a5f1d3aa000bbf1df5030b3f884c3ead9107c79df9c07c2fa0a958f"
+  },
+  "consumer-profiles-01/counts.json": {
+    "bytes": 52,
+    "sha256": "1e3caee0f373e80396bb665bf91d9f001a0d2d6ff8dd40a401fbfec005910ae5"
+  },
+  "consumer-profiles-01/primary-voice-cross-speech.http.json": {
+    "bytes": 232,
+    "sha256": "c96fd1d7694939b878b13f89fcb505654f93491c775369b84c5b7728d9e28371"
+  },
+  "consumer-profiles-01/primary-tool-result-drain.metrics.json": {
+    "bytes": 22552,
+    "sha256": "ab7aa7176da44758e3a9aad7c2974779fdf0eae6156ae1d2799ee7ecdf1cd879"
+  },
+  "consumer-profiles-01/primary-voice-chat-drain.metrics.json": {
+    "bytes": 22515,
+    "sha256": "e65e0568f351cfc70dabd195b495fdea484aef0c9c3f89e046b2c22104b24673"
+  },
+  "consumer-profiles-01/primary-consumer-configuration.wire": {
+    "bytes": 15972,
+    "sha256": "5881b4085fe1153b5baedc9a4fa304f3386e834b7486a59b523a201be43289b9"
+  },
+  "consumer-profiles-01/plan.json": {
+    "bytes": 858228,
+    "sha256": "0a6a9656696c66a3ad74a0a43dbe5d990d0dca42993bc3eb153c68203e983d52"
+  },
+  "consumer-profiles-01/light-voice-revoked-consent.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/light-voice-new_voice.request.json": {
+    "bytes": 262,
+    "sha256": "7c23c376e8edf46188c36321904d1f0add4d3ccc75a4fdd0c1654a2ee866ff3c"
+  },
+  "consumer-profiles-01/primary-identity.json": {
+    "bytes": 1997,
+    "sha256": "6ba5e3057b1d18a2b56921bdef7762b8204591bb43b1a37a7b213128d348b04a"
+  },
+  "consumer-profiles-01/primary-voice-cross-consent.request.json": {
+    "bytes": 209,
+    "sha256": "7c05508c10e64cfcc7ecb5827026bc23108da8ef49f2876773f93230027e4c0d"
+  },
+  "consumer-profiles-01/primary-voice-cross-chat.http.json": {
+    "bytes": 231,
+    "sha256": "5250399a1ef11c481e959a09de568305d76add6a810efc52a524b5c40374b802"
+  },
+  "consumer-profiles-01/light-voice-cross-consent.http.json": {
+    "bytes": 232,
+    "sha256": "d1efe31d2c096af1eaa6091f529fdb87c12828b32353b02bc5d09a639d1cf7ec"
+  },
+  "consumer-profiles-01/primary-tool-drain.metrics.json": {
+    "bytes": 22548,
+    "sha256": "c9d85f72a3137f11e8b455fbf11be09825bcba8a6bf512f9e3e01fc9e0e0ed69"
+  },
+  "consumer-profiles-01/primary-voice-delete.wire": {
+    "bytes": 85,
+    "sha256": "ef69c36dfcfec55b9781d3d3573788b0e4808acdc7b12091c85995496680efac"
+  },
+  "consumer-profiles-01/light-voice-delete.http.json": {
+    "bytes": 230,
+    "sha256": "0545843be28d80d27018c0d56816a16f8f494891f13ec24a541fca1011a9962d"
+  },
+  "consumer-profiles-01/primary-voice-speech.request.json": {
+    "bytes": 218,
+    "sha256": "17099111ec15d493d69eacf179c48af42e731f1685f3f868d8dcb75a81e0d44d"
+  },
+  "consumer-profiles-01/light-media.wire": {
+    "bytes": 1497,
+    "sha256": "edbd13530d9b8b7dc0fe69e4002fd0a1f10cb1d16e3f138664c8f3869bf63f63"
+  },
+  "consumer-profiles-01/primary-voice-cross-chat-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "e62862ce123832fc49f6a0f36924d079f925530a25c0c2478e074d186e786969"
+  },
+  "consumer-profiles-01/light-command.json": {
+    "bytes": 1635,
+    "sha256": "7bf4e5db08784313115eb1c6127691028cd1d55ba29388be43ca991ab21121aa"
+  },
+  "consumer-profiles-01/light-schema.request.json": {
+    "bytes": 611,
+    "sha256": "0d7018592efcb8e7c41ff511b0c9a5fb77aa1388d51bc9b5f0689347d2a60628"
+  },
+  "consumer-profiles-01/primary-schema.request.json": {
+    "bytes": 611,
+    "sha256": "0d7018592efcb8e7c41ff511b0c9a5fb77aa1388d51bc9b5f0689347d2a60628"
+  },
+  "consumer-profiles-01/light-voice-revoke.http.json": {
+    "bytes": 229,
+    "sha256": "4b20d0791fa2148a10b7cf472f4f2b6525fc409a1cfb4ee3832f9b08fd75818d"
+  },
+  "consumer-profiles-01/light-voice-cross-speech-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "7f9ed060895cdcc0166a51853ff6bc0dd8073da7bad0d2ea8b7685d1d97a9d3d"
+  },
+  "consumer-profiles-01/primary-voice-revoked-consent.request.json": {
+    "bytes": 199,
+    "sha256": "be33e533a96960b229b5fd26468b66b2356f38f7864246ee4998649b66bd0384"
+  },
+  "consumer-profiles-01/primary-media.http.json": {
+    "bytes": 234,
+    "sha256": "2a4d6e7d5604b4dad8e8c949cfd2039add12de58c18e0fea529b14cb056a244e"
+  },
+  "consumer-profiles-01/primary-tool-result.http.json": {
+    "bytes": 233,
+    "sha256": "2bd9295fd828bbbd794e36b9bae8b3cb4de91950516ade12983785a07f23aef2"
+  },
+  "consumer-profiles-01/primary-voice-speech.wire": {
+    "bytes": 149749,
+    "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+  },
+  "consumer-profiles-01/light-business.json": {
+    "bytes": 381850,
+    "sha256": "330754d61f2c7192c78aeeba03d7ee50d2d60e621a6b98dfe45fc1e30c7a2be3"
+  },
+  "consumer-profiles-01/light-voice-existing-consent.wire": {
+    "bytes": 148,
+    "sha256": "ebe13972fc873ff02746b3e5f73620c8e11be7d978c7caefb072514a2715e12b"
+  },
+  "consumer-profiles-01/light-tool.request.json": {
+    "bytes": 948,
+    "sha256": "f777d2d6e9b89efcb6df0ebde6c7c8f01c99bdb26a2acd806906b1cb5494126d"
+  },
+  "consumer-profiles-01/light-config.wire": {
+    "bytes": 15979,
+    "sha256": "775e721ccde88566498144236b87dfd4419da969bb2cbb2a5a41f560380a933c"
+  },
+  "consumer-profiles-01/light-voice-speech.http.json": {
+    "bytes": 263,
+    "sha256": "ffad57590d7bebcb49ff0da6f9ffd70c3689691135417942069d76c8abbdf9ec"
+  },
+  "consumer-profiles-01/light-voice-new_consent.request.json": {
+    "bytes": 270,
+    "sha256": "6c64d265c138082c9893e47054130f3bcbc6214d708d088134615057c8ab9c12"
+  },
+  "consumer-profiles-01/light-media.request.json": {
+    "bytes": 3882,
+    "sha256": "d895319bbd8b5259bffb9194bb8b93aedec6376d5ea2f0dc7b78971e278aab00"
+  },
+  "consumer-profiles-01/primary-voice-speech-drain.metrics.json": {
+    "bytes": 22491,
+    "sha256": "7af7a6d609fec6f285a71e5269324c2ef4036e9e4ef7fb89f91133a11d545c72"
+  },
+  "consumer-profiles-01/light-voice-new_voice.http.json": {
+    "bytes": 231,
+    "sha256": "5b268d86624b1778d38830acfc13dd65296c16216fe04d03bb437ed9228c971a"
+  },
+  "consumer-profiles-01/primary-voice-cross-speech.request.json": {
+    "bytes": 228,
+    "sha256": "b7f631e08daa65ece01fcc7ce0a2a54c5a59e8eabb8de0d3de3dcf28fc0177ec"
+  },
+  "consumer-profiles-01/primary-voice-new_voice-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "dbc5d4989addc6db2aaf22f1cde01cef5a9d05e3d7da8623cb684c6e29d9094f"
+  },
+  "consumer-profiles-01/light-tool.wire": {
+    "bytes": 546,
+    "sha256": "2528c4f76d5a48685bc3d635481bd223f9fde72c3e4f5b03f81c650b0b7eb84f"
+  },
+  "consumer-profiles-01/primary-business.json": {
+    "bytes": 381850,
+    "sha256": "d933973b91cfacd633884eafe55bc429cab3a776dcc4fc8338a575acb95aebcd"
+  },
+  "consumer-profiles-01/light-voice-cross-consent.request.json": {
+    "bytes": 209,
+    "sha256": "7c05508c10e64cfcc7ecb5827026bc23108da8ef49f2876773f93230027e4c0d"
+  },
+  "consumer-profiles-01/light-voice-cross-chat.http.json": {
+    "bytes": 231,
+    "sha256": "3c02bd22db7832b5bc05b0b28d593df6cbf33922da282ffec2b70ce994456fdd"
+  },
+  "consumer-profiles-01/primary-voice-existing-consent.wire": {
+    "bytes": 148,
+    "sha256": "ebe13972fc873ff02746b3e5f73620c8e11be7d978c7caefb072514a2715e12b"
+  },
+  "consumer-profiles-01/light-voice-revoked-chat.request.json": {
+    "bytes": 222,
+    "sha256": "11bf3f689011eb548244ef0fc56e490ab22fd1a0215e9746fe304a6fa5bae42a"
+  },
+  "consumer-profiles-01/primary-voice-revoke.http.json": {
+    "bytes": 230,
+    "sha256": "1a4b8ffc29b7f577a5a2d5bc8466bdbca33d7de41e6d28db0dc8a596b8b36eed"
+  },
+  "consumer-profiles-01/light-voice-revoked-chat-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "c0583d737161958e17e9ba013210ee6085a756a5a2f2cf0674026e9b6ecb0253"
+  },
+  "consumer-profiles-01/light-voice-stored-chat.wire": {
+    "bytes": 103078,
+    "sha256": "b10511d4cd070a2e44d24675a9a26ce53d03daf529e90d794cb477e3e2472467"
+  },
+  "consumer-profiles-01/primary-voice-cross-chat.request.json": {
+    "bytes": 232,
+    "sha256": "02c4fba829c3c2165b4021e524cef957a725677a91e13bb961c07303a5888676"
+  },
+  "consumer-profiles-01/light-media.http.json": {
+    "bytes": 234,
+    "sha256": "1464ce77edb73b3e0d0ebd24d14578cdc64c906ad7970d35d692a4eb04a87e16"
+  },
+  "consumer-profiles-01/light-voice-revoked-chat.http.json": {
+    "bytes": 231,
+    "sha256": "dac63ce67a79bffffc9dd7b3c3a663275eaebbb6eb96b0b89a2e360738ccf74e"
+  },
+  "consumer-profiles-01/primary-embedding.http.json": {
+    "bytes": 233,
+    "sha256": "4bc44cac5c86377170c78170d8029c41c971936b55d49f1846c844d8650d88cc"
+  },
+  "consumer-profiles-01/light-voice-revoked-consent-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "6366d668ad3b08aba7b4a1e0b628d79ec47204e1fdf2640efb4d99de184dbc86"
+  },
+  "consumer-profiles-01/light-voice-revoked-speech.request.json": {
+    "bytes": 218,
+    "sha256": "17099111ec15d493d69eacf179c48af42e731f1685f3f868d8dcb75a81e0d44d"
+  },
+  "consumer-profiles-01/light-identity.json": {
+    "bytes": 1998,
+    "sha256": "de7502bd5ddc2d46f721c221664ec45330abdff2f5342a6e67da8491330ea5d4"
+  },
+  "consumer-profiles-01/primary-voice-revoked-consent-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "deb2918b9c13e4a30344ecf30dbff0b6581ccc1e91e9fd663420d5c014ac7202"
+  },
+  "consumer-profiles-01/light-voice-cross-speech.request.json": {
+    "bytes": 228,
+    "sha256": "b7f631e08daa65ece01fcc7ce0a2a54c5a59e8eabb8de0d3de3dcf28fc0177ec"
+  },
+  "consumer-profiles-01/primary-voice-revoked-speech.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/light-voice-new_voice.wire": {
+    "bytes": 159,
+    "sha256": "f2355d29100d49a9dcc8e1ffd5642cc91dd836f8afec4682b522507de2269fbe"
+  },
+  "consumer-profiles-01/light-voice-revoked-consent.http.json": {
+    "bytes": 232,
+    "sha256": "40f73dab5c1a68a638b7982c59a4d954cccb14714e0ad3e8dc740ed60859efb5"
+  },
+  "consumer-profiles-01/primary-config.json": {
+    "bytes": 20835,
+    "sha256": "523311d0c51eba1ac2bdf2e9a4a805708b6a70f9cd445cf166038f118005a7f4"
+  },
+  "consumer-profiles-01/primary-capabilities.wire": {
+    "bytes": 41786,
+    "sha256": "fa3c9c97a545da75c6ccf94698836e23354fd8f780f58f39a8a7e863562c1eed"
+  },
+  "consumer-profiles-01/primary-voice-new_consent.http.json": {
+    "bytes": 231,
+    "sha256": "692ffe6f75c62799c56e5641b558331ef3c5222daf6e5555c11e627cabb0b0d5"
+  },
+  "consumer-profiles-01/light-voice-existing-consent.request.json": {
+    "bytes": 199,
+    "sha256": "be33e533a96960b229b5fd26468b66b2356f38f7864246ee4998649b66bd0384"
+  },
+  "consumer-profiles-01/light-voice-chat.request.json": {
+    "bytes": 222,
+    "sha256": "11bf3f689011eb548244ef0fc56e490ab22fd1a0215e9746fe304a6fa5bae42a"
+  },
+  "consumer-profiles-01/light-consumer-configuration.wire": {
+    "bytes": 15977,
+    "sha256": "f870f2a3c16b27251922035f031ea52016d18b902f41fd5342e72e75d112dd7f"
+  },
+  "consumer-profiles-01/light-voice-revoke.request.json": {
+    "bytes": 202,
+    "sha256": "f847da185d9cbdd5b60074e51203f6a88e28a6b18ae1befaf578b54414b279f0"
+  },
+  "consumer-profiles-01/primary-embedding.wire": {
+    "bytes": 531,
+    "sha256": "ddf6444951170bdb08a7e0288c1a5425e2b15ae1ef71871e17424222f99e5f6e"
+  },
+  "consumer-profiles-01/light-voice-existing-consent.http.json": {
+    "bytes": 229,
+    "sha256": "60df176ab107d86ab033c089602f20cb52037ca9d3c1c08a1828f43380d07f33"
+  },
+  "consumer-profiles-01/primary-cleanup.json": {
+    "bytes": 2402,
+    "sha256": "14de129777a926c33e1aa9fc93d63151cb7ff0375cbeed7cb93b4346a86c9159"
+  },
+  "consumer-profiles-01/primary-voice-stored-chat.http.json": {
+    "bytes": 234,
+    "sha256": "25d8fac4814ca8e41dd76b2a0b11ccdd30b4274e3cc7093a0a8193475c7794a6"
+  },
+  "consumer-profiles-01/primary-voice-chat.http.json": {
+    "bytes": 231,
+    "sha256": "bb54dead171683a85a99412a34f79a07e0dbec204d28bf59b5f18b8a17720f9a"
+  },
+  "consumer-profiles-01/light-voice-speech-drain.metrics.json": {
+    "bytes": 22491,
+    "sha256": "a68ae48efb02b0d584c84abdd367014b10ccc7191959569ff8bfa3d56c289c78"
+  },
+  "consumer-profiles-01/primary-model.log": {
+    "bytes": 30018,
+    "sha256": "3f46ec0a0c37666702106e286cb7ebe1b5f997eadd0b212bca897b3d68e4f416"
+  },
+  "consumer-profiles-01/primary-voice-revoke.request.json": {
+    "bytes": 202,
+    "sha256": "f847da185d9cbdd5b60074e51203f6a88e28a6b18ae1befaf578b54414b279f0"
+  },
+  "consumer-profiles-01/light-voice-cross-speech.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/primary-voice-stored-chat.wire": {
+    "bytes": 103078,
+    "sha256": "d17678a395140447c33e873501b7c27523c203c94c48e0c5c5e64fddf0b2c429"
+  },
+  "consumer-profiles-01/primary-voice-new_consent.wire": {
+    "bytes": 159,
+    "sha256": "f2355d29100d49a9dcc8e1ffd5642cc91dd836f8afec4682b522507de2269fbe"
+  },
+  "consumer-profiles-01/primary-voice-delete.http.json": {
+    "bytes": 230,
+    "sha256": "814e31b77f2577a519c59ee14c5c01cab884e929dcde23135b555513e3a42203"
+  },
+  "consumer-profiles-01/light-voice-delete-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "4e7ea523367e717ea2228864b89bb621f041e4ece288c66791f7324ad36cb0fb"
+  },
+  "consumer-profiles-01/primary-voice-cross-speech.wire": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "consumer-profiles-01/primary-voice-revoked-chat-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "84bd7ee6ed813ed165fd46fddd6f991868f5406d71d0884933b458910e88fe20"
+  },
+  "consumer-profiles-01/light-capabilities.json": {
+    "bytes": 53475,
+    "sha256": "742fd71da8cab0be6b72d923f97215edb3ebd52a74ae6073269601197a9c4089"
+  },
+  "consumer-profiles-01/primary-voice-new_voice.request.json": {
+    "bytes": 262,
+    "sha256": "7c23c376e8edf46188c36321904d1f0add4d3ccc75a4fdd0c1654a2ee866ff3c"
+  },
+  "consumer-profiles-01/light-voice-stored-chat-drain.metrics.json": {
+    "bytes": 22517,
+    "sha256": "8581b7dc6694040ad1c4e334adb2a3ae4777ae032e941f26907ccec3aeb2994c"
+  },
+  "consumer-profiles-01/light-voice-cross-chat.wire": {
+    "bytes": 122,
+    "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+  },
+  "consumer-profiles-01/light-voice-delete.request.json": {
+    "bytes": 195,
+    "sha256": "71c79a1f9830cb4ccf0dde59fb776724911071d6daf44b5ab4e6000f98181801"
+  },
+  "consumer-profiles-01/primary-tool.request.json": {
+    "bytes": 948,
+    "sha256": "f777d2d6e9b89efcb6df0ebde6c7c8f01c99bdb26a2acd806906b1cb5494126d"
+  },
+  "consumer-profiles-01/primary-consumer-configuration.http.json": {
+    "bytes": 238,
+    "sha256": "60412538a8bb631174651555d4ab16c352a9fc8c3aae835573b76fdd79379fd9"
+  },
+  "consumer-profiles-01/primary-voice-new_consent.request.json": {
+    "bytes": 270,
+    "sha256": "6c64d265c138082c9893e47054130f3bcbc6214d708d088134615057c8ab9c12"
+  },
+  "consumer-profiles-01/light-tool-result.http.json": {
+    "bytes": 233,
+    "sha256": "68126cea368d1bcacaebf76a4a2739cbea148e8d61b19b5bf9a0b575a69914b7"
+  },
+  "consumer-profiles-01/cleanup.json": {
+    "bytes": 4686,
+    "sha256": "e20e74be22c8003125ea399fc9cecfc078e2013e2652b650de71fe900ad1e9a6"
+  },
+  "consumer-profiles-01/primary-voice-revoked-speech.http.json": {
+    "bytes": 230,
+    "sha256": "5bd52de15b37c307d6e3121c2075d74565fe370301faf0884bab7f19ba9ef0d0"
+  },
+  "consumer-profiles-01/light-capabilities.http.json": {
+    "bytes": 239,
+    "sha256": "6167960d89db948b07109d98bfe218d9a6313e738382ef7dc420b2f662449a65"
+  },
+  "consumer-profiles-01/light-media-drain.metrics.json": {
+    "bytes": 22560,
+    "sha256": "098729aee22bd9423bcd84ff1b0c6891326f62d433b3a28380d1018dded9ee25"
+  },
+  "consumer-profiles-01/primary-voice-cross-consent.http.json": {
+    "bytes": 232,
+    "sha256": "cd43a1354fc4d4dba84a722e35f9f884b30836d6a6fe46fc055ddf54a3c9a416"
+  },
+  "consumer-profiles-01/primary-media.request.json": {
+    "bytes": 3882,
+    "sha256": "d895319bbd8b5259bffb9194bb8b93aedec6376d5ea2f0dc7b78971e278aab00"
+  },
+  "consumer-profiles-01/light-consumer-configuration.http.json": {
+    "bytes": 239,
+    "sha256": "8c087a1777579d4b06ccf646c841bfb935368a68bf8f92163e0632e45d38d3ad"
+  },
+  "consumer-profiles-01/light-voice-new_consent.http.json": {
+    "bytes": 232,
+    "sha256": "9b35c65a06f109f6bcbecf1458fd63d58eab4038139aa91017989a012025dcb4"
+  },
+  "consumer-profiles-01/primary-voice-stored-chat-drain.metrics.json": {
+    "bytes": 22515,
+    "sha256": "dbd21262b8eff8452cf4df6c797a63f5077d26581f780ec5b0b5e1f94a1ebd99"
+  },
+  "consumer-profiles-01/primary-voice-revoke-drain.metrics.json": {
+    "bytes": 22517,
+    "sha256": "4b4b17c8a4b6b59589c6aec3e7c09e6c2239880c26503f95fbaf8a304da11a1d"
+  },
+  "consumer-profiles-01/primary-voice-existing-consent.request.json": {
+    "bytes": 199,
+    "sha256": "be33e533a96960b229b5fd26468b66b2356f38f7864246ee4998649b66bd0384"
+  },
+  "consumer-profiles-01/primary-schema.wire": {
+    "bytes": 350,
+    "sha256": "3aa6615e8ae183693feb7b46912656dc3a65f963a853acd4346c34b46880d506"
+  },
+  "consumer-profiles-01/light-voice-speech.request.json": {
+    "bytes": 218,
+    "sha256": "17099111ec15d493d69eacf179c48af42e731f1685f3f868d8dcb75a81e0d44d"
+  },
+  "consumer-profiles-01/primary-media-drain.metrics.json": {
+    "bytes": 22561,
+    "sha256": "8da9f9245d752a9b9a8451278bd9db5b9f52f1b53db183b7f75a52b7207ddef6"
+  },
+  "consumer-profiles-01/primary-voice-new_consent-drain.metrics.json": {
+    "bytes": 22479,
+    "sha256": "2ef671793488a58da4e086f9064e466dbe14336d7c46ae6aa69c4a3d11c6d30f"
+  },
+  "consumer-profiles-01/light-tool-drain.metrics.json": {
+    "bytes": 22548,
+    "sha256": "9e16f914e1ab64ab328e6ea1901d341a8fc5fd3d7255ceb8aecca85eca1a6a57"
+  },
+  "consumer-profiles-01/light-voice-revoke.wire": {
+    "bytes": 92,
+    "sha256": "f38871ed8344e8ab3c49020dedef080a508b0b23aac4fb1b6e8173fde3913727"
+  },
+  "consumer-profiles-01/primary-voice-cross-consent-drain.metrics.json": {
+    "bytes": 22475,
+    "sha256": "b3441805838fc0d77bbd709c396aa6cabd6175a3798f3bad2d3886cc6fec752d"
+  },
+  "consumer-profiles-01/light-voice-delete.wire": {
+    "bytes": 85,
+    "sha256": "ef69c36dfcfec55b9781d3d3573788b0e4808acdc7b12091c85995496680efac"
+  },
+  "consumer-profiles-01/light-capabilities.wire": {
+    "bytes": 41787,
+    "sha256": "d1208bb3aca745643edeb71359941767a39c4439fad97bcc2d0ae69035ff471e"
+  },
+  "consumer-profiles-01/light-voice-cross-chat.request.json": {
+    "bytes": 232,
+    "sha256": "02c4fba829c3c2165b4021e524cef957a725677a91e13bb961c07303a5888676"
+  },
+  "consumer-profiles-01/light-voice-speech.wire": {
+    "bytes": 149749,
+    "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+  },
+  "consumer-profiles-01/light-model.log": {
+    "bytes": 29259,
+    "sha256": "967f2aa496e833d39fbe2362e85fd61e7a7baaef6c462ba11c57dd8bf70ceb51"
+  },
+  "consumer-profiles-01/primary-voice-stored-chat.request.json": {
+    "bytes": 204,
+    "sha256": "537d2f6d8cb689ad4362c45bb2110908b802f9d9a66b18db3cc29a38b99fb219"
+  },
+  "consumer-profiles-01/light-voice-revoked-speech-drain.metrics.json": {
+    "bytes": 22518,
+    "sha256": "88c8d65f822f4e90586dafdac4997971fbd66016b7a1acc4302abedad87da138"
+  },
+  "consumer-profiles-01/primary-schema.http.json": {
+    "bytes": 233,
+    "sha256": "d0eb08c030cb3bed54282d7ce6fe2a1fe949dcb8488cbab5936e0835de0a689a"
+  },
+  "consumer-profiles-01/primary-voice-revoked-chat.wire": {
+    "bytes": 122,
+    "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+  },
+  "consumer-profiles-01/lease/nvml-queries.jsonl": {
+    "bytes": 282851,
+    "sha256": "19ef539dd495ba408c966299346466965f494b356bd9067704b72eed2f74051f"
+  },
+  "consumer-profiles-01/lease/events.jsonl": {
+    "bytes": 22351,
+    "sha256": "8e9e12377144e8b847b08fabaf3601cfeabb4f335e5c88031453b507d28c6b8e"
+  },
+  "consumer-profiles-01/lease/exit.json": {
+    "bytes": 721,
+    "sha256": "d0f28d9c06bb3775a3e69ac0cbfeadce8598c23f1e89786daa41a799558b14c0"
+  },
+  "consumer-profiles-01/qualified/light.json": {
+    "bytes": 491702,
+    "sha256": "1421e5e2a0a570c9fa97ef3caec5b332ca4bbaaffd2153be988576a27890bfca"
+  },
+  "consumer-profiles-01/qualified/registry.json": {
+    "bytes": 51675,
+    "sha256": "aa97c44705b3d249895074c3a5370b665831e9662aa2da0cd7381f1e18638871"
+  },
+  "consumer-profiles-01/qualified/primary.json": {
+    "bytes": 491698,
+    "sha256": "5987e89be758843b22256bc7b581b3f0e8e44eed170405343d15af376f2c7880"
+  },
+  "consumer-package-check-01/init.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "consumer-package-check-01/state-inputs.json": {
+    "bytes": 1858,
+    "sha256": "85e51fc4226750d822b0dbefe0e596bcff187f90276d08f594734e6e96bbe0f1"
+  },
+  "consumer-package-check-01/check.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "consumer-package-check-01/check.stdout": {
+    "bytes": 1437,
+    "sha256": "2ee3df0e638ac875ee2882f217c44e5fb5cacb2751b110eaa05122179f8e75ed"
+  },
+  "consumer-package-check-01/result.json": {
+    "bytes": 1711,
+    "sha256": "59cb08e8eb813ee3bb3fdee8e9ed87e082ae6d536fc93de02ec087a8653eed16"
+  },
+  "consumer-package-check-01/plan.json": {
+    "bytes": 638,
+    "sha256": "6550a607e33ea8142334f2e3125a34da91f161b8e3f08de7053f5febddffc6e1"
+  },
+  "consumer-package-check-01/init.stdout": {
+    "bytes": 258,
+    "sha256": "b525c50d9d9df76061eee7ddeae167592bb266d8c6a822fd32a84fce32018706"
+  },
+  "consumer-package-check-review-01/profiles.stdout": {
+    "bytes": 708,
+    "sha256": "2173b125c071a92a245d241b84b8602a3c718d05a06603789edca2feff7d7dba"
+  },
+  "consumer-package-check-review-01/result.json": {
+    "bytes": 2489,
+    "sha256": "a1245f737cb9a982f6f9e14aded83f9ec3168f69003c79bb0d2eac21c4895138"
+  },
+  "consumer-package-check-review-01/status.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "consumer-package-check-review-01/plan.json": {
+    "bytes": 363,
+    "sha256": "8b2c04bef5cd3355acb920b2818fdb2ac2a493c4fd49a135b63cbf11bdec2ded"
+  },
+  "consumer-package-check-review-01/observe.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "consumer-package-check-review-01/observe.stdout": {
+    "bytes": 567,
+    "sha256": "b644eeab0a65a23580d6a9c9f9fe396f6b8eb00a18c832e959016a49ad4bdfae"
+  },
+  "consumer-package-check-review-01/status.stdout": {
+    "bytes": 222,
+    "sha256": "3e3c174f1d05bcf990ab6f583c1795efb1bbb3964434baa193731f9ea9df0dce"
+  },
+  "consumer-package-check-review-01/profiles.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "prepare_consumer_profiles.py": {
+    "bytes": 2994,
+    "sha256": "8c747a32deac112c3faa1c9c66468889f545f55e432f05660f0878b8c88f4549"
+  },
+  "prepare_consumer_package.py": {
+    "bytes": 12120,
+    "sha256": "77a2cb36065720469130b0a9b046ca0ad4e76bf316c11e38ca72d4c7520ac1e4"
+  },
+  "derive_consumer_package.py": {
+    "bytes": 4723,
+    "sha256": "0a11f831f6bf26795d30616b68f4c864b44a1c4bd39b5d20a03c7a7bfe5d4e3c"
+  },
+  "check_consumer_package.py": {
+    "bytes": 2794,
+    "sha256": "c047219de4a244de65afc9df21ecd08ed0e6bf9c3cef4372d56b889a9dda3964"
+  },
+  "resume_consumer_package_check.py": {
+    "bytes": 2796,
+    "sha256": "67868b8d9c76cb7e58a361f5d6b5e8c28134c01428b8bd80da557dcdba6a30f5"
+  },
+  "archive_consumer_business.py": {
+    "bytes": 10036,
+    "sha256": "860c041a697797875bdc59c785893eaa964f86902b865c48f6ad36c61d287d41"
+  },
+  "consumer-package-01/decision.json": {
+    "bytes": 2819,
+    "sha256": "f50440a84dc19a54718831654908e54617ab125a97a2cc08f4c43716beedf32c"
+  },
+  "consumer-package-01/receipt.json": {
+    "bytes": 331,
+    "sha256": "c67785f825a7e42479822c32adf62b095246640a7215539c26b6657c4702ed23"
+  },
+  "consumer-package-01/native-build.json": {
+    "bytes": 7121,
+    "sha256": "e97c41f163f34cbbef165aefcd71869a4e0d246e436a84894203717df0dc15d7"
+  },
+  "consumer-package-01/engine/q4t.release.json": {
+    "bytes": 1591898,
+    "sha256": "34933ce8d80346892681c1fe80da641dea2a30ba8886f28979eb228c125254e8"
+  },
+  "consumer-package-01/bundle/manifest.json": {
+    "bytes": 117747,
+    "sha256": "4325b7d6b8f7f56b216ff8020de3b92aecc85ac5afb137145de20da4a6df402f"
+  }
+}

@@ -78,7 +78,8 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Complete voice/style/custom-voice and extreme-speed content coverage; Speech/Chat input/output is delivered in rev316",
+        "Remaining builtin voice/style coverage, reference-audio ICL and prompt voice/Live; registered sample Speech/Chat delivered rev326 and Base-only consumption qualified",
+        "Normal-playback listening/similarity remains pending; 4x normalized content positives and counterexamples already accepted",
         "Remaining default/null, nested message and response projection parity"
       ],
       "chat_style_parity_20261116": {
@@ -8614,8 +8615,8 @@
       }
     }
   ],
-  "next_task": "Registered voice main integration, Base-only consumer qualification, ICL/prompt voices and remaining master tasks",
-  "next": "Complete main integration, remaining audio and Realtime capabilities, and every unfinished A/N/R/Q task; listening and long-soak remain separately assigned.",
+  "next_task": "Finish registered voice PR49 main merge; reference-audio ICL, remaining voice SDK/style and Live/Realtime tasks",
+  "next": "Reuse accepted 4x content counterexamples and all unchanged evidence, retain listening and long-soak handoff, and complete every remaining A/N/R/Q implementation.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -8671,14 +8672,15 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "speech_chat_audio_business_qualified_managed_delivery_pending",
+    "state": "speech_chat_and_registered_voices_delivered_rev326_base_only_qualified_remaining_voice_and_realtime",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
-      "Managed Speech profiles/TLS/recovery/publication/main; preserve NVML ENV_ABORT and accepted content evidence",
-      "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
-      "SDK/TLS/profiles/recovery/reversible release/main",
+      "Registered voice PR49 final-head CI and main integration; Base-only qualification and optional package stage integration",
+      "Complete remaining builtin voice/style coverage, reference-audio ICL, prompt voice and Live contracts",
+      "Normal-playback listening/similarity remains user-owned; 4x normalized content positives and negative controls already accepted with raw ASR failures preserved",
+      "Remaining Python/JavaScript compatibility and backend compositions",
       "Responses/Batch/Realtime and every remaining master task"
     ],
     "prior_bf16_numerical_failure_preserved": true,
@@ -8702,7 +8704,7 @@
       "progressive_evidence": "evidence/serve-speech-codec-stream-20261118/README.md"
     },
     "tempo": {
-      "state": "4x_content_unresolved",
+      "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
       "accepted_actual_speeds": [
         0.25,
         2
@@ -8719,7 +8721,7 @@
       "clock_diagnostic_evidence": "evidence/serve-speech-clock-diagnostic-20261118/README.md",
       "clock_diagnostic_matches": 4,
       "production_acceptance": false,
-      "acceptance_rule_decision_pending": true,
+      "acceptance_rule_decision_pending": false,
       "clock_content_owner_decision_20261118": {
         "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
         "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
@@ -8732,7 +8734,10 @@
         "raw_asr_failures_preserved": true,
         "production_unchanged": true,
         "full_task_complete": false
-      }
+      },
+      "normalized_content_accepted": true,
+      "negative_controls_accepted": true,
+      "normal_playback_listening": "PENDING"
     },
     "service_assets": {
       "state": "paired_loader_resources_health_component_qualified",
@@ -9084,12 +9089,12 @@
           "voice_consistency_pending": true
         },
         "package_recovery": {
-          "state": "PASS_TARGETED_CPU_PENDING_REAL_VOICE_PROFILE",
+          "state": "REGISTERED_DEFAULT_DELIVERED_AND_BASE_ONLY_CONSUMER_QUALIFIED",
           "evidence": "evidence/serve-voice-package-cpu-20261119/README.md",
           "distinct_cpu_cases": 34,
           "base_capacity_migration": true,
           "real_profile_driver_pending": false,
-          "base_only_saved_voice_qualification_pending": true,
+          "base_only_saved_voice_qualification_pending": false,
           "default_replaced": false,
           "real_profile_execution_pending": false,
           "profile_driver_evidence": "evidence/serve-voice-profile-driver-cpu-20261119/README.md",
@@ -9257,6 +9262,49 @@
           "archive_sha256": "63aea3f451a2d07df69d393479c015aae284b231bf8760de78fa0455e35ce042",
           "all_master_tasks_active": true,
           "evidence": "evidence/serve-voice-consumer-cpu-20261119/README.md"
+        },
+        "base_only_consumer": {
+          "status": "ACCEPT_BASE_ONLY_SAVED_VOICE_PROFILES_AND_OPTIONAL_PACKAGE",
+          "actual_model_starts": 2,
+          "business_posts": 26,
+          "seconds": 126.17615611106157,
+          "nvml_queries": 118,
+          "nvml_all_ok": true,
+          "cleanup_complete": true,
+          "source_commit": "5948a83446de7402507d5497adacdfb87e15d4eb",
+          "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+          "qualification_format": "q4t-profile-business-v12",
+          "registry_sha256": "aa97c44705b3d249895074c3a5370b665831e9662aa2da0cd7381f1e18638871",
+          "same_saved_owner_and_condition": true,
+          "reference_state_changed": false,
+          "registration_backends_disabled_with_zero_loads": true,
+          "registered_voice_condition_encoder_loads": 0,
+          "complete_audio_witness_comparisons": 4,
+          "new_asr_inferences": 0,
+          "prior_independent_asr_content_reused": true,
+          "revoked_speech_and_chat_rejected": true,
+          "optional_package_sha256": "4325b7d6b8f7f56b216ff8020de3b92aecc85ac5afb137145de20da4a6df402f",
+          "optional_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/consumer-package-01/bundle",
+          "private_state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/consumer-package-check-01/state",
+          "private_state_check_commands": 5,
+          "reused_completed_check_commands": 2,
+          "new_continuation_check_commands": 3,
+          "initial_certificate_flag_assertion_failed": true,
+          "original_failure_preserved": true,
+          "certificate_check_applicable": false,
+          "client_state_checked": true,
+          "default_changed": false,
+          "default_revision": 326,
+          "automatic_managed_switching_accepted": false,
+          "full_model_quality": false,
+          "performance_claim": false,
+          "listening_and_similarity_accepted": false,
+          "files": 214,
+          "private_files_omitted": 82,
+          "secret_scan_matches": 0,
+          "archive_sha256": "9c925679392b6b4135238f6064faa1d288eb23a9e9808d458667046f16489d7a",
+          "all_master_tasks_active": true,
+          "evidence": "evidence/serve-voice-consumer-business-20261119/README.md"
         }
       }
     },
@@ -9268,6 +9316,24 @@
       "code_copied": false,
       "local_worktree_untouched": true,
       "priority": "continue frozen Voice SDK/TLS, profiles and recovery first; apply clock/state/backpressure/drain findings to existing realtime tasks"
+    },
+    "current_state_reconciliation_20261119": {
+      "previous_top_level_state": {
+        "state": "speech_chat_audio_business_qualified_managed_delivery_pending",
+        "remaining": [
+          "Managed Speech profiles/TLS/recovery/publication/main; preserve NVML ENV_ABORT and accepted content evidence",
+          "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
+          "SDK/TLS/profiles/recovery/reversible release/main",
+          "Responses/Batch/Realtime and every remaining master task"
+        ],
+        "tempo_state": "4x_content_unresolved",
+        "acceptance_rule_decision_pending": true
+      },
+      "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
+      "evidence_sha256": "1757d91c20da56e714490e23ff8e9a0990924b120c5a5e116c3de3dd3c2dda72",
+      "new_tests": 0,
+      "raw_failures_preserved": true,
+      "reason": "Top-level progress lagged behind already recorded accepted owner decision and completed counterexamples; reuse unchanged evidence."
     }
   }
 }

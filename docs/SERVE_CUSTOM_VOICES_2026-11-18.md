@@ -1,9 +1,12 @@
 # 原生自定义音色实施计划
 
-承接Serve总计划A01/A10/A12。当前Speech与Chat已接入`voice.id`的真实
-Base条件路径，注册/核验源码与针对CPU完成、HTTP验收待推进。不能用换成内置
-speaker、只保存一个ID或报unsupported代替。内置9音色已实现，完整
-音色/风格业务覆盖继续，不推定与OpenAI专有音色音质或身份相同。
+承接Serve总计划A01/A10/A12。样本音色的真实授权、持久登记、
+Speech/Chat、客户隔离、撤销、SDK/TLS及主轻/实际恢复已验并进入
+[默认rev326](evidence/serve-voice-delivery-20261119/README.md)。
+[Base-only已有音色消费](evidence/serve-voice-consumer-business-20261119/README.md)
+两档真实资格和可选封装也已完成，不依赖注册用ASR/VAD/speaker。
+参考音频ICL、提示词音色/Live、完整风格及听感/相似度继续；不推定
+与OpenAI专有音色音质或身份相同。以下实施分项及历史证据保留。
 
 1. 固定Qwen3-TTS-12Hz-1.7B-Base配置、480张量与76张量声纹分支。
    官方revision `fd4b254389122332181a7c3db7f27e918eec64e3`，完整权重

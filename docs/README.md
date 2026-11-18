@@ -605,3 +605,5 @@
 - [rev326注册音色可回退交付](evidence/serve-voice-delivery-20261119/README.md)：持久音色、原生恢复、配额保持及STOPPED回退。
 
 - [Base-only已有音色消费CPU](evidence/serve-voice-consumer-cpu-20261119/README.md)：注册/消费依赖分离、真实保存状态与完整音频见证。
+
+- [Base-only真实消费与可选封装](evidence/serve-voice-consumer-business-20261119/README.md)：完整音频、无注册后端、原客户授权与两档资格。

@@ -12,6 +12,12 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
+[注册音色](docs/evidence/serve-voice-delivery-20261119/README.md)已进入默认：
+真实授权与样本核验、Speech/Chat输出、历史、客户隔离与撤销，并验证
+原生入口及整包恢复。已有音色可[仅启用Base合成](docs/evidence/serve-voice-consumer-business-20261119/README.md)，
+沿用原对象存储和客户ID，不要求注册用ASR/VAD/speaker；新登记需启用
+这些后端。参考音频ICL、提示词音色、实时语音和听感验收继续推进。
+
 独立 Guardian 与原生服务入口已完成[有界验收交付](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
 默认包无需nginx/systemd即可提供Bearer鉴权、JSON/SSE及模型/控制器/
 入口恢复；辅助监控故障保留健康业务，恢复预算和停止意图持久化。
