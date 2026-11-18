@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "files_checked": 14,
+  "duplicate_inodes_replaced": 12,
+  "allocated_bytes_released": 1801052160,
+  "all_paths_sha256_preserved": true,
+  "owner_modes_preserved": true,
+  "default_identities_unchanged": true,
+  "changes": [
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/notification/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6170816,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-2/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6169675,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-3/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6169730,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-1/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6169620,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-watchdog-20261104/package/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6052868,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-notify-20261104/package/prometheus",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "old_inode": 6049739,
+      "new_inode": 6167045
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/notification/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6170817,
+      "new_inode": 6167046
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-2/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6169676,
+      "new_inode": 6167046
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-3/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6169731,
+      "new_inode": 6167046
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-1/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6169621,
+      "new_inode": 6167046
+    },
+    {
+      "path": ".q4t-work/serve-watchdog-20261104/package/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6052869,
+      "new_inode": 6167046
+    },
+    {
+      "path": ".q4t-work/serve-notify-20261104/package/promtool",
+      "anchor": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "old_inode": 6049740,
+      "new_inode": 6167046
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "scope": "14 immutable historical observation-program files; same pinned contents, owner and permissions; no current default/model/credentials/state/source files",
+  "live_selected_executables": [],
+  "files": [
+    {
+      "path": ".q4t-work/serve-host-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6167045,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793757539939738559,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/notification/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6170816,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793762828116892531,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-2/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6169675,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793761924714351147,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-3/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6169730,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793761926886340423,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-1/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6169620,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793761922434362401,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-watchdog-20261104/package/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6052868,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793734871109877723,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-notify-20261104/package/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+      "before": [
+        66305,
+        6049739,
+        154293542,
+        33088,
+        2002,
+        2002,
+        1793726866144661885,
+        1
+      ],
+      "blocks": 301368
+    },
+    {
+      "path": ".q4t-work/serve-host-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6167046,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793757540107738794,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/notification/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6170817,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793762828284890133,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-2/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6169676,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793761924882350318,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-3/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6169731,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793761927054339594,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-1/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6169621,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793761922610361533,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-watchdog-20261104/package/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6052869,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793734871281876905,
+        1
+      ],
+      "blocks": 284912
+    },
+    {
+      "path": ".q4t-work/serve-notify-20261104/package/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+      "before": [
+        66305,
+        6049740,
+        145870402,
+        33088,
+        2002,
+        2002,
+        1793726866312660936,
+        1
+      ],
+      "blocks": 284912
+    }
+  ],
+  "method": "atomic same-filesystem hardlink replacement after full SHA256 comparison; all original paths retained"
+}

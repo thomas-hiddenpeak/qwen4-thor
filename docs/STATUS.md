@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[构建空间已恢复](evidence/serve-realtime-build-space-20261119/README.md)：
+14份历史只读监控程序经哈希核对，12份重复内容共享存储，原路径/
+内容/权限保持，释放约1.68GiB；默认rev326不变、无服务操作。
+继续真实ASR会话接线。
+
 [实时音频到ASR波形7项CPU通过](evidence/serve-realtime-pcm-cpu-20261119/README.md)：
 PCM16全65536值、两种G.711全256码独立参考、所有跨界位置、尾长/
 预算/取消与队列借用通过；0.0637秒/0GPU、host/引擎零警告，963来源/
