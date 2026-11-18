@@ -8575,6 +8575,12 @@
         "cpu_cases": 22,
         "gpu_loads": 0,
         "actual_synthesis_pending": true
+      },
+      "native_assets": {
+        "state": "BASE_ASSETS_METADATA_AND_RAM_CPU_QUALIFIED",
+        "evidence": "evidence/serve-custom-voice-assets-cpu-20261118/README.md",
+        "cpu_cases": 12,
+        "full_weight_upload_pending": true
       }
     }
   }

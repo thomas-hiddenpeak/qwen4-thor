@@ -60,8 +60,21 @@ struct Fixture {
         fs::copy_file(Assets() / sub / spec.name, directory / sub / spec.name);
     }
   }
-  bool Rejected() {
-    return !LoadTtsAssets(directory, &output, control, &failure, false) &&
+  void BaseMetadata() {
+    const auto* env = std::getenv("Q4T_TTS_BASE_ASSETS");
+    if (!env) throw std::runtime_error("Q4T_TTS_BASE_ASSETS required");
+    for (auto profile : {detail::ModelAssetProfile::kTtsBase17B, kCodec}) {
+      const auto sub =
+          profile == kCodec ? fs::path("speech_tokenizer") : fs::path{};
+      const auto specs = detail::ModelAssetCatalog(profile);
+      for (const auto& spec : specs.first(specs.size() - 1))
+        fs::copy_file(fs::path(env) / sub / spec.name,
+                      directory / sub / spec.name);
+    }
+  }
+  bool Rejected(TtsAssetSelection selection = {}) {
+    return !LoadTtsAssets(directory, &output, control, &failure, false,
+                          kTtsAssetStagingBytes, selection) &&
            output.talker.bytes == std::vector<uint8_t>{41} &&
            output.codec.bytes == std::vector<uint8_t>{42} && !output.tokenizer;
   }
@@ -209,5 +222,79 @@ Q4T_TEST(tts_assets_full_checkpoints_bind_trained_layouts) {
   Q4T_CHECK(f.output.talker.layout.tensors.size() == 404 &&
             f.output.codec.layout.tensors.size() == 271);
   Q4T_CHECK(f.Reaped() && f.control.counters->started == 2);
+  return true;
+}
+
+Q4T_TEST(tts_base_assets_metadata_selects_actual_profile_without_weights) {
+  Fixture f;
+  f.BaseMetadata();
+  for (auto sub : {"", "speech_tokenizer"})
+    Q4T_CHECK(!mkfifo((f.directory / sub / "model.safetensors").c_str(), 0600));
+  Q4T_CHECK(LoadTtsAssets(f.directory, &f.output, f.control, &f.failure, false,
+                          kTtsAssetStagingBytes,
+                          {q4t::audio::TtsVariant::kBase17B, true}));
+  Q4T_CHECK(f.output.variant == q4t::audio::TtsVariant::kBase17B &&
+            f.output.tokenizer && f.output.talker.bytes.empty() &&
+            f.output.codec.bytes.empty() &&
+            f.output.speaker_layout.tensors.empty());
+  Q4T_CHECK(f.output.tokenizer->VocabSize() == 151676);
+  Q4T_CHECK(f.Reaped() && f.control.counters->started == 2);
+  return true;
+}
+
+Q4T_TEST(tts_base_registration_metadata_needs_no_codec_directory) {
+  Fixture f;
+  f.BaseMetadata();
+  fs::remove_all(f.directory / "speech_tokenizer");
+  Q4T_CHECK(LoadTtsAssets(f.directory, &f.output, f.control, &f.failure, false,
+                          kTtsAssetStagingBytes,
+                          {q4t::audio::TtsVariant::kBase17B, false}));
+  Q4T_CHECK(f.output.variant == q4t::audio::TtsVariant::kBase17B &&
+            f.output.tokenizer && f.output.codec.bytes.empty());
+  Q4T_CHECK(f.Reaped() && f.control.counters->started == 1);
+  return true;
+}
+
+Q4T_TEST(tts_base_cross_profile_and_codec_failure_preserve_atomic_output) {
+  Fixture f;
+  f.BaseMetadata();
+  Q4T_CHECK(f.Rejected());
+  Q4T_CHECK(f.failure == GrammarFailure::kDependency &&
+            f.output.variant == q4t::audio::TtsVariant::kCustomVoice17B);
+  Corrupt(f.directory / "speech_tokenizer/config.json");
+  Q4T_CHECK(f.Rejected({q4t::audio::TtsVariant::kBase17B, true}));
+  Q4T_CHECK(f.failure == GrammarFailure::kDependency &&
+            f.output.variant == q4t::audio::TtsVariant::kCustomVoice17B &&
+            f.output.speaker_layout.tensors.empty());
+  fs::remove(f.directory / "config.json");
+  fs::copy_file(Assets() / "config.json", f.directory / "config.json");
+  Q4T_CHECK(f.Rejected({q4t::audio::TtsVariant::kBase17B, false}));
+  Q4T_CHECK(f.failure == GrammarFailure::kDependency && f.Reaped());
+  return true;
+}
+
+Q4T_TEST(tts_base_budget_cancel_and_invalid_selection_start_no_worker) {
+  Fixture f;
+  for (bool codec : {false, true}) {
+    const TtsAssetSelection selection{q4t::audio::TtsVariant::kBase17B, codec};
+    size_t total = 0;
+    for (const auto& spec :
+         detail::ModelAssetCatalog(detail::ModelAssetProfile::kTtsBase17B))
+      total += spec.bytes;
+    if (codec)
+      for (const auto& spec : detail::ModelAssetCatalog(kCodec))
+        total += spec.bytes;
+    Q4T_CHECK(!LoadTtsAssets(f.directory, &f.output, f.control, &f.failure,
+                             true, total - 1, selection));
+    Q4T_CHECK(f.failure == GrammarFailure::kResource);
+    f.control.cancelled = [] { return true; };
+    Q4T_CHECK(f.Rejected(selection) && f.failure == GrammarFailure::kCancelled);
+    f.control.cancelled = {};
+  }
+  for (auto variant : {q4t::audio::TtsVariant::kCustomVoice06B,
+                       static_cast<q4t::audio::TtsVariant>(99)})
+    Q4T_CHECK(f.Rejected({variant, true}));
+  Q4T_CHECK(f.Rejected({q4t::audio::TtsVariant::kCustomVoice17B, false}));
+  Q4T_CHECK(f.control.counters->started == 0 && f.Reaped());
   return true;
 }

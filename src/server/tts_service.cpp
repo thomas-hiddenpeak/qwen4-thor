@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "q4t/audio/tts_codec_layout.h"
+#include "q4t/audio/tts_speaker_features.h"
 #include "q4t/server/tts_assets.h"
 
 namespace q4t::server {
@@ -20,16 +21,19 @@ bool TtsServiceLimits::Valid() const {
 
 Status PlanTtsServiceResources(const TtsServiceLimits& limits,
                                size_t text_tokens, size_t prefill_tokens,
-                               size_t max_frames, TtsResourcePlan* out) {
-  if (!out || !limits.Valid() || text_tokens > size_t(limits.max_text_tokens) ||
+                               size_t max_frames, TtsResourcePlan* out,
+                               audio::TtsVariant variant) {
+  if (!out ||
+      (variant != audio::TtsVariant::kCustomVoice17B &&
+       variant != audio::TtsVariant::kBase17B) ||
+      !limits.Valid() || text_tokens > size_t(limits.max_text_tokens) ||
       prefill_tokens > size_t(limits.max_prefill_tokens) ||
       max_frames > size_t(limits.max_frames))
     return Status::Fail("TTS request exceeds service capacity");
   const size_t budget = uint64_t(limits.workspace_mib) * kMiB;
   audio::TtsGenerationLayout generation;
   auto status = audio::PlanTtsGenerationWorkspace(
-      audio::TtsVariant::kCustomVoice17B, text_tokens, prefill_tokens,
-      max_frames, budget, &generation);
+      variant, text_tokens, prefill_tokens, max_frames, budget, &generation);
   if (!status) return status;
   audio::TtsCodecLayout codec;
   // Bound any qualified chunk size up to the official 300 + 25 history.
@@ -44,7 +48,10 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
   next.resident_weight_bytes =
       kNativeTtsWeightBytes + audio::TtsConfig::kCodecDecoderBytes;
   next.resident_host_bytes = kHostMargin;
-  next.source_staging_bytes = kNativeTtsFileBytes + kNativeTtsCodecFileBytes;
+  next.source_staging_bytes =
+      (variant == audio::TtsVariant::kBase17B ? kNativeTtsBaseFileBytes
+                                              : kNativeTtsFileBytes) +
+      kNativeTtsCodecFileBytes;
   // The isolated reader requires verified aligned O_DIRECT, with no buffered
   // fallback. Existing external file pages still consume observed system RAM.
   next.possible_file_page_bytes = 0;
@@ -67,6 +74,34 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
   next.request_host_bytes =
       samples * (5 * sizeof(float) + 4 * sizeof(int16_t)) + 6 * output +
       16 * kMiB + next.encoder_address_space_limit;
+  if (variant == audio::TtsVariant::kBase17B)
+    next.request_host_bytes += 2 * 2048 * sizeof(float);
+  *out = next;
+  return {};
+}
+
+Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
+                             TtsVoiceResourcePlan* out) {
+  constexpr audio::TtsSpeakerFeatureLimits limits;
+  if (!out || pcm_samples > limits.max_samples)
+    return Status::Fail("TTS voice PCM exceeds feature capacity");
+  const size_t frames = pcm_samples / 256;
+  audio::TtsSpeakerWorkspace workspace;
+  auto status = audio::PlanTtsSpeakerWorkspace(frames, limits.max_frames,
+                                               max_workspace_bytes, &workspace);
+  if (!status) return status;
+  const size_t host = (pcm_samples + frames * 128) * sizeof(float) +
+                      audio::TtsSpeakerFeatureFixedBytes();
+  if (host > limits.max_bytes)
+    return Status::Fail("TTS voice host features exceed capacity");
+  TtsVoiceResourcePlan next;
+  next.frames = frames;
+  next.device_weight_bytes = audio::TtsSpeakerConfig::kDeviceBytes;
+  next.device_workspace_bytes = workspace.bytes;
+  next.host_feature_bytes = host + 2 * 2048 * sizeof(float);
+  next.source_staging_bytes = kNativeTtsBaseFileBytes;
+  next.load_peak_bytes = next.device_weight_bytes + next.source_staging_bytes +
+                         kHostMargin + 6 * kMiB;
   *out = next;
   return {};
 }

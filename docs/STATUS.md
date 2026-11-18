@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Base资产与统一RAM 12项CPU通过](evidence/serve-custom-voice-assets-cpu-20261118/README.md)：
+1.417秒，零checkpoint/模型/GPU；必要host/upload构建零警告。
+实际Base元数据、无codec登记、错误模型拒绝、取消/原子性和精确
+资源边界通过。完整权重上传、实际音频和注册API继续，默认保持。
+
+Base资产按需加载与统一RAM预算已接入开发：注册可只加载声纹
+设备权重，合成使用实际Base子图；codec单独选择、失败不发布半成品。
+冻结6新增+6受影响CPU/120秒、0checkpoint/GPU，完整下载继续。
+
 [Base声纹条件CPU合同通过](evidence/serve-custom-voice-conditioning-cpu-20261118/README.md)：
 18生产合同+4验收器负控/0.080秒，独立CUDA程序零警告；0新增GPU。
 完整Base权重仍在有界获取，按真实权重与官方条件做下一步对照。

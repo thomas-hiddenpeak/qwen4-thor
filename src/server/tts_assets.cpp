@@ -5,7 +5,6 @@
 
 namespace q4t::server {
 namespace {
-constexpr auto kVariant = audio::TtsVariant::kCustomVoice17B;
 constexpr io::JsonParseLimits kJsonLimits{.max_depth = 16,
                                           .max_values = 32768,
                                           .max_string_bytes = 1024 * 1024,
@@ -15,9 +14,13 @@ Status Parse(std::string_view text, io::Json* out) {
   return io::ParseJson(std::string(text), out, false, kJsonLimits);
 }
 
-Status ParseWeights(TtsHostWeightFile* file, bool codec) {
-  if (file->bytes.size() !=
-      (codec ? kNativeTtsCodecFileBytes : kNativeTtsFileBytes))
+Status ParseWeights(TtsHostWeightFile* file, bool codec,
+                    audio::TtsVariant variant,
+                    audio::TtsWeightLayout* speaker) {
+  if (file->bytes.size() != (codec ? kNativeTtsCodecFileBytes
+                             : variant == audio::TtsVariant::kBase17B
+                                 ? kNativeTtsBaseFileBytes
+                                 : kNativeTtsFileBytes))
     return Status::Fail("TTS weight file size differs");
   uint64_t header_bytes = 0;
   for (int i = 0; i < 8; ++i)
@@ -31,10 +34,15 @@ Status ParseWeights(TtsHostWeightFile* file, bool codec) {
       {reinterpret_cast<const char*>(file->bytes.data() + 8), header_bytes},
       &header);
   if (!status) return status;
+  if (!codec && variant == audio::TtsVariant::kBase17B) {
+    status = audio::ParseTtsSpeakerWeightLayout(
+        header, file->WeightBytes().size(), speaker);
+    if (!status) return status;
+  }
   return codec ? audio::ParseTtsCodecWeightLayout(
                      header, file->WeightBytes().size(), &file->layout)
                : audio::ParseTtsWeightLayout(header, file->WeightBytes().size(),
-                                             kVariant, &file->layout);
+                                             variant, &file->layout);
 }
 
 Status ValidateProcessor(const io::Json& p, bool codec) {
@@ -60,20 +68,28 @@ Status ValidateProcessor(const io::Json& p, bool codec) {
 
 Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
                      GrammarControl control, GrammarFailure* failure,
-                     bool include_weights, size_t max_staging_bytes) {
+                     bool include_weights, size_t max_staging_bytes,
+                     TtsAssetSelection selection) {
   if (failure) *failure = GrammarFailure::kNone;
   const auto fail = [&](GrammarFailure kind, const char* message) {
     if (failure) *failure = kind;
     return Status::Fail(message);
   };
-  if (!out || !detail::ValidModelAssetDirectory(directory) ||
-      !detail::ValidModelAssetDirectory(directory + "/speech_tokenizer"))
+  if (!out || !selection.Valid() ||
+      !detail::ValidModelAssetDirectory(directory) ||
+      (selection.include_codec &&
+       !detail::ValidModelAssetDirectory(directory + "/speech_tokenizer")))
     return fail(GrammarFailure::kDependency, "invalid TTS asset destination");
   // Reject the aggregate before opening any asset or allocating either model.
+  const auto profile = selection.variant == audio::TtsVariant::kBase17B
+                           ? detail::ModelAssetProfile::kTtsBase17B
+                           : detail::ModelAssetProfile::kTtsCustomVoice17B;
+  std::vector<detail::ModelAssetProfile> profiles{profile};
+  if (selection.include_codec)
+    profiles.push_back(detail::ModelAssetProfile::kTtsCodec);
   size_t total = 0;
-  for (auto profile : {detail::ModelAssetProfile::kTtsCustomVoice17B,
-                       detail::ModelAssetProfile::kTtsCodec}) {
-    auto specs = detail::ModelAssetCatalog(profile);
+  for (auto selected : profiles) {
+    auto specs = detail::ModelAssetCatalog(selected);
     if (!include_weights) specs = specs.first(specs.size() - 1);
     for (const auto& spec : specs) {
       if (spec.bytes > max_staging_bytes - total)
@@ -88,13 +104,15 @@ Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
   if (auto s = detail::CheckModelAssetControl(control, failure); !s) return s;
   try {
     TtsHostAssets next;
+    next.variant = selection.variant;
     const auto talker_metadata = [&](std::span<const std::string> files) {
       if (files.size() != 6) return Status::Fail("TTS metadata count differs");
       for (size_t i = 0; i < 3; ++i) {
         io::Json parsed;
         auto status = Parse(files[i], &parsed);
         if (status) {
-          if (i == 0) status = audio::ValidateTtsConfig(parsed, kVariant);
+          if (i == 0)
+            status = audio::ValidateTtsConfig(parsed, selection.variant);
           if (i == 1) status = ValidateProcessor(parsed, false);
           if (i == 2) status = audio::ValidateTtsGenerationConfig(parsed);
         }
@@ -111,13 +129,17 @@ Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
                                            &next.tokenizer);
     };
     auto status = detail::ReadVerifiedModelAssets(
-        detail::ModelAssetProfile::kTtsCustomVoice17B, directory,
-        talker_metadata, &next.talker.bytes, control, failure, include_weights,
-        max_staging_bytes);
+        profile, directory, talker_metadata, &next.talker.bytes, control,
+        failure, include_weights, max_staging_bytes);
     if (!status) return status;
-    if (include_weights && !ParseWeights(&next.talker, false))
+    if (include_weights && !ParseWeights(&next.talker, false, selection.variant,
+                                         &next.speaker_layout))
       return fail(GrammarFailure::kDependency, "TTS talker layout differs");
     if (auto s = detail::CheckModelAssetControl(control, failure); !s) return s;
+    if (!selection.include_codec) {
+      *out = std::move(next);
+      return {};
+    }
     const auto codec_metadata = [&](std::span<const std::string> files) {
       if (files.size() != 3)
         return Status::Fail("TTS codec metadata count differs");
@@ -140,7 +162,8 @@ Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
         codec_metadata, &next.codec.bytes, control, failure, include_weights,
         max_staging_bytes - next.talker.bytes.size());
     if (!status) return status;
-    if (include_weights && !ParseWeights(&next.codec, true))
+    if (include_weights &&
+        !ParseWeights(&next.codec, true, selection.variant, nullptr))
       return fail(GrammarFailure::kDependency, "TTS codec layout differs");
     if (auto s = detail::CheckModelAssetControl(control, failure); !s) return s;
     *out = std::move(next);

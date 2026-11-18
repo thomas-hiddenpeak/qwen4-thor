@@ -2368,7 +2368,7 @@
     "include/q4t/server/media_admission.h": "08fdd3453746652ab6c270ecf0a0a16bdfc7dc37232bc14037fddebbd8e255aa",
     "include/q4t/server/media_cache.h": "777f159e51951bf15f9657cd5ad77930cf3349520abb2afa12ac5be82344e14a",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
-    "include/q4t/server/model_assets.h": "c898f5797ec79f3189b1d251f0a2e4d0732506b4794e7d364c6080a01bc94c65",
+    "include/q4t/server/model_assets.h": "8b04b05d90061a1c542bb7d3316ef9780f166f23ee20fceb77a0934da8eeca26",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
     "include/q4t/server/moderation.h": "8833b83a535ff11a765780bb1e8312bf69a017915c14c89133e3c2fffdf91529",
@@ -2456,9 +2456,9 @@
     "include/q4t/server/token_logprobs.h": "39e07ab03385abbae505cb35c8948e564fff26419f050fb8d99dc121b5f28da2",
     "include/q4t/server/tool_result_contracts.h": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770",
     "include/q4t/server/tool_result_schema.h": "9b458aff192168e0872f67f4e1fc4c7aec16a3044b74e0f345612814305d57fa",
-    "include/q4t/server/tts_assets.h": "601f8ad2d08718377b280eded1d55c7e70ca663e93245cc942f11cc377ede427",
-    "include/q4t/server/tts_service.h": "330baa66c9a0bed65433e9461188bd56cfa633bced4aad6ea903bb8ea3e24b4b",
-    "include/q4t/server/tts_upload.h": "26deb5a83a8e62bf71fadbb744d25262168360a13c35475464f37d954b027d6c",
+    "include/q4t/server/tts_assets.h": "d51e486def424925573ae67a15a1e15e100040c877db2defd59e8aeb600dfc3e",
+    "include/q4t/server/tts_service.h": "24f29688833bf81110a1d761aac07cbe3322b70d54d5d5c537608b2f7f52c59b",
+    "include/q4t/server/tts_upload.h": "983b28eec90539acce8337dfe3583fac55ac7d3209537f37ccdc195f6862d690",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/server/vad_assets.h": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751",
     "include/q4t/server/vector_embedding_execution.h": "ac94fed5ad80a57a201e30f5ec869a813c57a82f9c09e378ff8e6611f809239e",
@@ -2769,7 +2769,7 @@
     "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_asset_io.h": "61c1fa6d3d253c617c6db73ec9fcdfe9ea0c767b0c6dda65231252f84ed12475",
-    "src/server/model_assets.cpp": "a0dab334ee4142a88704d2cda9e106523aa048270cf18f856dbb6f2f55db8a5e",
+    "src/server/model_assets.cpp": "42aead17aaf247f527ccd91da587d5379acb4ca13ed61bab05b307b2dc1bf53e",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
@@ -2888,9 +2888,9 @@
     "src/server/token_logprobs.cpp": "9f9dfa9d1bf9e29b1e971461ba0cd000a7f6eea8cc5d25799f3bfb1e91581f32",
     "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
     "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
-    "src/server/tts_assets.cpp": "50842cd64e95b6f316e89aa872ad81bf9f3ef8be614a3f37f71286f8613b476a",
-    "src/server/tts_service.cpp": "7cd2901ac794bfec0b9599d2f6fceec8d2f96e234eecfe5bae8b2922a7a64d69",
-    "src/server/tts_upload.cpp": "e8034b37d6d13d5112acf7c8832367aca7ca01a12b7be297a9c634ce804e42b1",
+    "src/server/tts_assets.cpp": "833b0b3dac3b55658609ebfb4901d61e88da12215d20a6be63aed9f356c235c2",
+    "src/server/tts_service.cpp": "f783268b2f4d2d2e698b2690dab9c4f77ab0962c2251affc766a07ab0a0dd3ef",
+    "src/server/tts_upload.cpp": "01ed34e2ece3f95c6c53851181695d087747cf4d8bbf69cd361a2d94b2178c47",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
@@ -7809,5 +7809,22 @@
       "src/audio/tts_model.cu"
     ],
     "runtime_api_accepted": false
+  },
+  "native_custom_voice_assets_2026_11_18": {
+    "state": "BASE_ASSETS_METADATA_AND_RAM_CPU_QUALIFIED",
+    "reviewed_sources": [
+      "include/q4t/server/model_assets.h",
+      "include/q4t/server/tts_assets.h",
+      "include/q4t/server/tts_service.h",
+      "include/q4t/server/tts_upload.h",
+      "src/server/model_assets.cpp",
+      "src/server/tts_assets.cpp",
+      "src/server/tts_service.cpp",
+      "src/server/tts_upload.cpp"
+    ],
+    "evidence": [
+      "docs/evidence/serve-custom-voice-assets-cpu-20261118/README.md"
+    ],
+    "full_weight_upload_pending": true
   }
 }

@@ -237,3 +237,49 @@ Q4T_TEST(auxiliary_weight_groups_retain_metadata_workers_and_pending_bodies) {
   Q4T_CHECK(plan.resident_bytes == 125);
   return true;
 }
+
+Q4T_TEST(tts_base_synthesis_resources_include_real_source_and_owned_condition) {
+  TtsResourcePlan base, builtin;
+  Q4T_CHECK(PlanTtsServiceResources({}, 32, 48, 160, &builtin));
+  Q4T_CHECK(PlanTtsServiceResources({}, 32, 48, 160, &base,
+                                    q4t::audio::TtsVariant::kBase17B));
+  Q4T_CHECK(base.resident_weight_bytes == builtin.resident_weight_bytes);
+  Q4T_CHECK(base.source_staging_bytes ==
+            kNativeTtsBaseFileBytes + kNativeTtsCodecFileBytes);
+  Q4T_CHECK(base.request_device_bytes == builtin.request_device_bytes + 8192);
+  Q4T_CHECK(base.request_host_bytes == builtin.request_host_bytes + 16384);
+  Q4T_CHECK(base.load_peak_bytes == builtin.load_peak_bytes +
+                                        kNativeTtsBaseFileBytes -
+                                        kNativeTtsFileBytes);
+  const auto saved = base;
+  Q4T_CHECK(!PlanTtsServiceResources({}, 32, 48, 160, &base,
+                                     q4t::audio::TtsVariant::kCustomVoice06B));
+  Q4T_CHECK(base.load_peak_bytes == saved.load_peak_bytes);
+  return true;
+}
+
+Q4T_TEST(tts_voice_registration_resources_bound_features_without_talker) {
+  TtsVoiceResourcePlan small, large;
+  Q4T_CHECK(PlanTtsVoiceResources(1280, 300ULL << 20, &small));
+  Q4T_CHECK(PlanTtsVoiceResources(1440000, 300ULL << 20, &large));
+  Q4T_CHECK(small.frames == 5 && large.frames == 5625);
+  Q4T_CHECK(small.device_weight_bytes == 48004352 &&
+            large.device_weight_bytes == small.device_weight_bytes);
+  Q4T_CHECK(large.device_workspace_bytes > small.device_workspace_bytes &&
+            large.device_workspace_bytes < (300ULL << 20));
+  Q4T_CHECK(large.host_feature_bytes > small.host_feature_bytes &&
+            large.host_feature_bytes < (32ULL << 20));
+  Q4T_CHECK(large.source_staging_bytes == kNativeTtsBaseFileBytes &&
+            large.load_peak_bytes == small.load_peak_bytes &&
+            large.load_peak_bytes > kNativeTtsBaseFileBytes + 48004352);
+  const auto saved = large;
+  for (size_t samples : {size_t{0}, size_t{1279}, size_t{1440001},
+                         std::numeric_limits<size_t>::max()})
+    Q4T_CHECK(!PlanTtsVoiceResources(samples, 300ULL << 20, &large));
+  Q4T_CHECK(
+      !PlanTtsVoiceResources(1280, small.device_workspace_bytes - 1, &large));
+  Q4T_CHECK(!PlanTtsVoiceResources(1280, 300ULL << 20, nullptr));
+  Q4T_CHECK(large.frames == saved.frames &&
+            large.device_workspace_bytes == saved.device_workspace_bytes);
+  return true;
+}

@@ -20,4 +20,10 @@ audio::TtsComputeResult UploadTtsWeights(
     const TtsHostAssets& assets, std::span<uint8_t> talker_device,
     std::span<uint8_t> codec_device, TtsBoundWeights* out,
     const std::function<bool()>& cancelled = {}, cudaStream_t stream = nullptr);
+// Uses only the independently trained Base speaker subgraph. A failed upload
+// never publishes a vector-producing graph; the caller owns the raw buffer.
+audio::TtsComputeResult UploadTtsSpeakerWeights(
+    const TtsHostAssets& assets, std::span<uint8_t> speaker_device,
+    audio::TtsSpeakerDeviceWeights* out,
+    const std::function<bool()>& cancelled = {}, cudaStream_t stream = nullptr);
 }  // namespace q4t::server
