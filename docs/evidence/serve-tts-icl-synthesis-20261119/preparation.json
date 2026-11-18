@@ -1,0 +1,9 @@
+{
+  "status": "FROZEN",
+  "prior_failures": [
+    "Compiler dependency scan included object target suffix .o:.",
+    "CUDA dependency file also contains .o target without colon."
+  ],
+  "resolution": "Exclude make object targets; assert all remaining source dependencies exist.",
+  "models_loaded_before_freeze": 0
+}

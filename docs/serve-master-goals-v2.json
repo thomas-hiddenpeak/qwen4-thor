@@ -8653,7 +8653,7 @@
       }
     }
   ],
-  "next_task": "Reference-audio ICL numeric decision, actual prompt/synthesis/registration/SDK/recovery; remaining voice styles, prompt voices, Live/Realtime and all master tasks. PR49 already merged.",
+  "next_task": "JavaScript custom-voice SDK and integration drivers; reference encoder numeric decision remains pending. Then real ICL registration/SDK/recovery and reversible delivery, remaining voice styles/Live/Realtime and all master tasks.",
   "next": "Reuse accepted 4x content counterexamples and all unchanged evidence, retain listening and long-soak handoff, and complete every remaining A/N/R/Q implementation.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9374,7 +9374,7 @@
       "reason": "Top-level progress lagged behind already recorded accepted owner decision and completed counterexamples; reuse unchanged evidence."
     },
     "icl": {
-      "state": "encoder_padding_fixed_rvq_boundary_decision_pending_prompt_development_continues",
+      "state": "fixed_reference_prompt_and_complete_audio_qualified_encoder_boundary_decision_and_registration_delivery_pending",
       "evidence": "evidence/serve-tts-icl-metadata-20261119/README.md",
       "cpu_new": 10,
       "cpu_direct_decoder": 4,
@@ -9397,14 +9397,16 @@
         "evidence": "evidence/serve-tts-icl-prompt-cpu-20261119/README.md",
         "cpu_new": 9,
         "cpu_existing": 8,
-        "gpu": 0
+        "gpu": 0,
+        "current_qualification": "134 fixed-reference GPU/official checks passed; see prompt_component"
       },
       "decoder_context": {
         "state": "implemented_targeted_cpu_passed_actual_synthesis_pending",
         "evidence": "evidence/serve-tts-icl-decode-cpu-20261119/README.md",
         "cpu_new": 8,
         "cpu_existing": 2,
-        "gpu": 0
+        "gpu": 0,
+        "current_qualification": "Fixed-reference complete audio, clipping, cancellation, backpressure and frame limits passed; see fixed_reference_synthesis"
       },
       "registry": {
         "state": "implemented_targeted_cpu_passed_actual_registration_and_old_binary_rollback_pending",
@@ -9456,6 +9458,36 @@
         "evidence": "evidence/serve-tts-icl-synthesis-driver-cpu-20261119/README.md",
         "cpu_tests": 8,
         "gpu": 0
+      },
+      "fixed_reference_synthesis": {
+        "evidence": "evidence/serve-tts-icl-synthesis-20261119/README.md",
+        "status": "PASS_FIXED_REFERENCE_ICL_AUDIO",
+        "seconds": 22.00082286586985,
+        "complete_utterances": 2,
+        "independent_asr_exact": 2,
+        "cancellation_cases": 1,
+        "frame_limit_cases": 2,
+        "gpu_talker_loads": 1,
+        "gpu_codec_loads": 1,
+        "gpu_asr_loads": 1,
+        "reference_encoder_loads": 0,
+        "nvml_queries": 23,
+        "nvml_all_ok": true,
+        "monitor_workers_reaped": true,
+        "lease_released": true,
+        "lock_available": true,
+        "defaults_unchanged": true,
+        "source_identity_unchanged": true,
+        "encoder_gate_unchanged": true,
+        "registered_voice_api_qualified": false,
+        "listening_qualified": false,
+        "limitation": "Polling cannot exclude subinterval external contention; this fixed-reference component does not qualify registration, HTTP or listening.",
+        "owned_model_and_driver_pids_reaped": [
+          518970,
+          518973,
+          519069
+        ],
+        "no_observed_competition": true
       }
     }
   }

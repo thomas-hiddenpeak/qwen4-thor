@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[固定参考ICL完整音频通过](evidence/serve-tts-icl-synthesis-20261119/README.md)：
+中英两例自然EOS/完整无提示ASR均一致，实际首块2帧、背压/取消/两种
+预算失败通过；22.001秒、23次NVML正常、完整进程与锁清理。默认
+rev326不变；注册encoder原FAIL与口径待决保持，继续JS音色SDK及
+实际注册/恢复交付，正常听感仍待验。
+
 [ICL完整合成驱动8项CPU通过](evidence/serve-tts-icl-synthesis-driver-cpu-20261119/README.md)：
 生产采样、参考首块精确裁剪、背压/取消及两种帧预算失败已接线；
 0.114秒/0GPU，原生构建零警告。下一组冻结固定参考完整合成与无
