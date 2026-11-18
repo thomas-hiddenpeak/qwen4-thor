@@ -129,3 +129,49 @@ Q4T_TEST(separator_tracks_symmetric_and_scale_independent) {
   Q4T_CHECK(std::abs(original.coherence - quiet.coherence) < 1e-6);
   return true;
 }
+
+Q4T_TEST(separator_tracks_alternating_people_preserve_original_full_band) {
+  const auto voice_a = Tone(48000, 440), voice_b = Tone(48000, 688);
+  const auto residue = Tone(48000, 997);
+  for (float gain : {1.f, .00001f, 100.f}) {
+    auto a = voice_a, b = voice_b;
+    for (size_t i = 0; i < a.size(); ++i) {
+      const bool first = i < 16000 || i >= 32000;
+      a[i] = first ? voice_a[i] : .02f * residue[i];
+      b[i] = gain * (first ? .02f * residue[i] : voice_b[i]);
+    }
+    SeparationTrackDecision result, swapped;
+    Q4T_CHECK(InspectSeparationTracks(a, b, &result));
+    Q4T_CHECK(InspectSeparationTracks(b, a, &swapped));
+    Q4T_CHECK(result.use_original && result.alternating_sources &&
+              !result.independent_region && swapped.use_original &&
+              swapped.alternating_sources);
+  }
+  return true;
+}
+
+Q4T_TEST(separator_tracks_overlap_between_turns_vetoes_original_route) {
+  const auto voice_a = Tone(48000, 440), voice_b = Tone(48000, 688);
+  for (float gain : {1.f, .00001f}) {
+    auto a = voice_a, b = voice_b;
+    for (size_t i = 0; i < a.size(); ++i) {
+      a[i] *= i < 24000 ? 1.f : .001f;
+      b[i] *= gain * (i >= 24000 || (i >= 8000 && i < 12000) ? 1.f : .001f);
+    }
+    SeparationTrackDecision result;
+    Q4T_CHECK(InspectSeparationTracks(a, b, &result));
+    Q4T_CHECK(!result.use_original && !result.alternating_sources &&
+              result.independent_region);
+  }
+  return true;
+}
+
+Q4T_TEST(separator_tracks_alternating_decision_is_atomic_on_cancel) {
+  const auto input = Tone(16000, 440);
+  SeparationTrackDecision result{true, .1, .2, false, true};
+  Q4T_CHECK(!InspectSeparationTracks(input, input, &result, [] { return true; }));
+  Q4T_CHECK(result.use_original && result.coherence == .1 &&
+            result.coherent_energy_fraction == .2 &&
+            !result.independent_region && result.alternating_sources);
+  return true;
+}

@@ -23,9 +23,11 @@ int main(int argc, char** argv) {
   if (!status) return 1;
   std::printf(
       "{\"tracks\":%d,\"coherence\":%.12g,"
-      "\"coherent_energy_fraction\":%.12g,\"independent_region\":%s}\n",
+      "\"coherent_energy_fraction\":%.12g,\"independent_region\":%s,"
+      "\"alternating_sources\":%s}\n",
       result.use_original ? 1 : 2, result.coherence,
       result.coherent_energy_fraction,
-      result.independent_region ? "true" : "false");
+      result.independent_region ? "true" : "false",
+      result.alternating_sources ? "true" : "false");
   return 0;
 }

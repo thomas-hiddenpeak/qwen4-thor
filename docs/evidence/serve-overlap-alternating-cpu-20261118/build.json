@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 310.8258399767801,
+  "warnings": [],
+  "defaults_unchanged": true,
+  "binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+  "binary": ".q4t-work/serve-native-tts-20261118/alternating-candidate-01/q4t",
+  "compiled_sources_sha256": "06f6cea1f2a9cf6bd653efe4c64b54f48670f38bf161617ac9c7f3b07f4c9e5a"
+}

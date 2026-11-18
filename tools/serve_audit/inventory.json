@@ -2222,7 +2222,7 @@
     "include/q4t/audio/separator_layout.h": "7548353ef57a7a6418a3719c51ea50bf2a1a92c493891f3b0e8b6373de8992d4",
     "include/q4t/audio/separator_model.h": "5891902a361ac7f244902b4534318099f243eab424549aea9edd1f2b7ffb0c84",
     "include/q4t/audio/separator_resample.h": "251f39cccbdd9957c0541783cd9538ef8e48ea948e984e85704a699759b85bea",
-    "include/q4t/audio/separator_tracks.h": "6b0bc4151fa5cd0d0550c063ab3f457e2e480ca32d1426667ab9be9538fb30d6",
+    "include/q4t/audio/separator_tracks.h": "5f6d072233e41b661625bf33c957df9f48fcba77781d2a158f06651278f6f9ff",
     "include/q4t/audio/speaker_config.h": "9d1bfd5caf3766798431717aa0213175ea582e36604a1c9065be190c0dff4a8d",
     "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
     "include/q4t/audio/speaker_layout.h": "49d49b3a0801b9546d35f0ece59b57096c4822c22a939839e3fcfa09c2df7b3e",
@@ -2512,7 +2512,7 @@
     "src/audio/separator_layout.cpp": "8e2a9dfdd15dbe3fa4fbba5fa6b284ee3aef4e2ae597a5515370534bd46cbaaf",
     "src/audio/separator_model.cu": "da4c8b1a021f3af5b85eed0bc7eee12f33acd7decb5d04f73ffa73777f17cdb4",
     "src/audio/separator_resample.cpp": "9f07f34c64383b104cf49ead32f4c2f363cefccaa563ade069da40d8414a3f3a",
-    "src/audio/separator_tracks.cpp": "0a7c33fa92087b859ab24646e33f3b2208b61b2f8d5c162b6909788b09095b3b",
+    "src/audio/separator_tracks.cpp": "85c080ebe98b83c1c22f2d1a65633e13f607a851fc0c476c2559b1a3b134778f",
     "src/audio/speaker_config.cpp": "52298090b29799ed22f9dccc8ac1f1113562acd700fe9929899ad55f1407ee89",
     "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
@@ -3018,7 +3018,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "aee01571247a58fdaa261163a4d3f5a775df748f88773095c5918726a8d9e6c4",
+    "tools/serve_recovery/profile_acceptance.py": "ba72a35cc543c6d263b6e31649ce37e54e65a0162819620b40afcc942ca56296",
     "tools/serve_recovery/profile_bundle.py": "9f3e4ecf2ea049c8e149ce1b0784403fdc3698142ea963a9edb0bab41ef7f3ec",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "dfa08272d9d155fde13d41f57822e0e9b42d2960dceae30acd0cf27a84afef9a",
@@ -7710,5 +7710,44 @@
     "actual_business_pending": true,
     "post_test_edit": "Removed trailing blank line in moved host-only capability test; no selected CPU case or production source changed.",
     "planning_review": "Before GPU execution, planned native Speech total includes the two reload POSTs; enforced limits and loop already covered, no runtime/CPU semantics change."
+  },
+  "alternating_speech_review_20261118": {
+    "state": "CPU_QUALIFIED_HTTP_PENDING",
+    "reviewed_changes": {
+      "include/q4t/audio/separator_tracks.h": {
+        "before": "6b0bc4151fa5cd0d0550c063ab3f457e2e480ca32d1426667ab9be9538fb30d6",
+        "after": "5f6d072233e41b661625bf33c957df9f48fcba77781d2a158f06651278f6f9ff"
+      },
+      "src/audio/separator_tracks.cpp": {
+        "before": "0a7c33fa92087b859ab24646e33f3b2208b61b2f8d5c162b6909788b09095b3b",
+        "after": "85c080ebe98b83c1c22f2d1a65633e13f607a851fc0c476c2559b1a3b134778f"
+      },
+      "tests/separator_tracks_test.cpp": {
+        "before": "a3bb0cffd1bb784a7de24dbc696f3a162f04f826f8afcc2b916a399bf88db09d",
+        "after": "c39955726e3df76b024b5d55acd2af9af05c4aa9beb7ee481968dc3837130ebf"
+      },
+      "tools/native_separator/model_replay.cpp": {
+        "before": "08b5d987f161ab92aaea3e6e8bb1848a5e0f1afe4a03a71e0e520ba6cb3bea4a",
+        "after": "d11e2a7bfa11877715672d1b4853a751f2071738b090037956c41ffe522cb97e"
+      },
+      "tools/native_separator/track_replay.cpp": {
+        "before": "e46c239cc7d0ced51b9e0781239a339721d7ec45a1d0363794bd2c5066c0bb77",
+        "after": "2171e744cffa32e3705cacd9aca19f014b663bbb84dcaaa4e65641131078230c"
+      },
+      "tools/serve_recovery/profile_acceptance.py": {
+        "before": "aee01571247a58fdaa261163a4d3f5a775df748f88773095c5918726a8d9e6c4",
+        "after": "ba72a35cc543c6d263b6e31649ce37e54e65a0162819620b40afcc942ca56296"
+      },
+      "tools/serve_recovery/test_tts_profiles.py": {
+        "before": "c506d0774cedffc88d556a9ab5034e246665324e2f034818c9d0b8b4222f509b",
+        "after": "943234dfe2ceae0f6516ddd55d7c2e964f85ce656be3d6e96fddf96d93cc088d"
+      }
+    },
+    "evidence": "docs/evidence/serve-overlap-alternating-cpu-20261118/README.md",
+    "cpu_contracts": 11,
+    "retained_replays": 5,
+    "driver_schema_case": 1,
+    "model_numerics_changed": false,
+    "default_changed": false
   }
 }

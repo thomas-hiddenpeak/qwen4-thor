@@ -8049,7 +8049,7 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "capacity_fix_cpu_qualified_actual_profile_pending",
+      "state": "capacity_starts_but_speaker_composition_failed_cpu_repair_actual_pending",
       "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
@@ -8069,6 +8069,16 @@
         "evidence": "evidence/serve-auxiliary-capacity-cpu-20261118/README.md",
         "actual_business_pending": true,
         "default_changed": false
+      },
+      "composition_failure": {
+        "evidence": "evidence/serve-overlap-alternating-cpu-20261118/README.md",
+        "core_starts": 1,
+        "posts": 11,
+        "seconds": 82.96904422715306,
+        "source_preserved": true,
+        "cpu_contracts": 11,
+        "real_waveform_replays": 5,
+        "actual_fix_pending": true
       }
     }
   }

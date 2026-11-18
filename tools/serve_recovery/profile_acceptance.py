@@ -68,9 +68,7 @@ def check_tts_family_reload(before, after, previous, encoded, identity):
         'TTS family did not evict and reload cleanly')
     names = ['embedding', 'asr']
     selected = identity.get('native_asr', {})
-    names += [health for setting, health in
-              (('alignment', 'aligner'), ('speaker', 'speaker'), ('separator', 'separator'))
-              if setting in selected]
+    names += [name for name in ('alignment', 'speaker', 'separator') if name in selected]
     for name in names:
         health = after['native_'+name+'_health']
         require(health.get('state') == 'metadata_ready' and
@@ -528,6 +526,12 @@ class Stage(encrypted.Stage):
         return result
 
     def profile_business(self):
+        # Qualify the affected speech cases before unrelated model requests.
+        early = {}
+        if profile_evidence.has_speaker(self.plan['identity']):
+            early['speaker'] = self.audio_request(speaker=True)
+        if profile_evidence.has_separator(self.plan['identity']):
+            early['separator'] = self.audio_request(separator=True)
         rows = self.plan['requests']
         schema = self.request('schema', rows['schema'])
         call = self.request('tool', rows['tool'])
@@ -546,7 +550,7 @@ class Stage(encrypted.Stage):
         result = self.request('tool-result', follow)
         embedding = self.request('embedding', rows['embedding'], '/v1/embeddings')
         value = dict(schema=schema, tool_call=call, tool_result=result,
-                     tool_reply=reply, tool_source=source, embedding=embedding)
+                     tool_reply=reply, tool_source=source, embedding=embedding, **early)
         selected = self.plan['profiles'][self.profile_name]
         if selected.get('allow_media', False):
             value['media'] = dict(request=copy.deepcopy(rows['media']),
@@ -563,10 +567,6 @@ class Stage(encrypted.Stage):
             value['chat_audio'] = profile_evidence.chat_audio_witness(source, response, json.loads(raw))
         if profile_evidence.audio_auxiliaries(self.plan['identity']):
             value['asr_auxiliary'] = self.audio_request(auxiliary=True)
-        if profile_evidence.has_speaker(self.plan['identity']):
-            value['speaker'] = self.audio_request(speaker=True)
-        if profile_evidence.has_separator(self.plan['identity']):
-            value['separator'] = self.audio_request(separator=True)
         if self.plan['identity'].get('native_tts') and self.plan['identity'].get('native_asr'):
             self.tts_family_reload(value['tts'])
         profile_evidence.business(value, self.plan['identity'], selected,

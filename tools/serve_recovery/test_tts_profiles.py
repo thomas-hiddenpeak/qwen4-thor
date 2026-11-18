@@ -245,15 +245,19 @@ class TtsProfiles(unittest.TestCase):
         after = dict(native_tts_health=dict(previous, load_attempts=3))
         idle = dict(state='metadata_ready', device_bytes=0, reason='none',
                     core_readiness_dependency=False)
-        for name in ('embedding', 'asr', 'aligner', 'speaker', 'separator'):
-            after['native_'+name+'_health'] = dict(idle)
+        captured = json.loads((ROOT/'docs/evidence/serve-overlap-http-output-fix-20261118' /
+                               'final-config.wire').read_text())
+        for name in ('embedding', 'asr', 'alignment', 'speaker', 'separator'):
+            key = 'native_'+name+'_health'
+            self.assertIn(key, captured)
+            after[key] = dict(idle)
         after['native_vad_health'] = dict(state='ready')
         identity = dict(native_asr={k:{} for k in ('alignment', 'speaker', 'separator', 'vad')})
         driver.check_tts_family_reload(before, after, previous, value['speech_base64'], identity)
         changes = [lambda d:d['native_tts_health'].update(load_attempts=2),
             lambda d:d['native_tts_health'].update(load_failures=1),
             lambda d:d['native_asr_health'].update(device_bytes=1),
-            lambda d:d['native_aligner_health'].update(state='configured'),
+            lambda d:d['native_alignment_health'].update(state='configured'),
             lambda d:d['native_separator_health'].update(reason='gpu_unhealthy'),
             lambda d:d['native_vad_health'].update(state='configured')]
         for mutate in changes:
