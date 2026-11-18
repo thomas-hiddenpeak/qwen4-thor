@@ -15,6 +15,6 @@ std::string ChatCapabilitiesJson(
     bool native_asr = false, bool native_aligner = false,
     bool native_vad = false, int vad_max_chunks = 64,
     bool native_speaker = false, bool native_separator = false,
-    bool native_tts = false);
+    bool native_tts = false, bool native_tts_base = false);
 
 }  // namespace q4t::server

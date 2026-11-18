@@ -48,6 +48,8 @@ struct ServerOptions {
   // Explicit optional trained embedding assets; never inferred/downloaded.
   std::string embedding_model_dir;
   std::string tts_model_dir;
+  // Independent optional Base assets for registered voice conditioning.
+  std::string tts_base_model_dir;
   TtsServiceLimits tts_limits;
   std::string asr_model_dir;
   AsrServiceLimits asr_limits;

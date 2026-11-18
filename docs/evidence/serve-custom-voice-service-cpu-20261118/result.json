@@ -1,0 +1,121 @@
+{
+  "state": "NATIVE_SAMPLE_VOICE_SERVICE_CPU_QUALIFIED_HTTP_PENDING",
+  "cpu_first": {
+    "status": "FAIL",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/required.txt"
+    ],
+    "returncode": 1,
+    "seconds": 0.4143192218616605,
+    "cases": 27,
+    "plan_sha256": "8ed3105cd77bb8ad8a4d88250bb9ef56fa0e706c757bedc12c8718b8e394bbba",
+    "binary_sha256": "f22a502d9186aac12135a3adf28fc1feffeeb1ed421bc9219d0af066fe73fd45",
+    "defaults_unchanged": true,
+    "gpu_actions": 0,
+    "model_loads": 0,
+    "source_unchanged": true
+  },
+  "cpu_discovery_fix": {
+    "status": "PASS",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-discovery-fix-cpu-01/required.txt"
+    ],
+    "returncode": 0,
+    "seconds": 0.007485642097890377,
+    "cases": 2,
+    "binary_sha256": "e1a63206de4bd8dfea97ebdc8bf86557eb1f5ee07f8216683f76b2a513960fe3",
+    "gpu_actions": 0,
+    "model_loads": 0,
+    "plan_sha256": "d4c9ce15e8d7d6826578c5641852edf3245114db11903d184189f281e693244e"
+  },
+  "distinct_contracts_qualified": 27,
+  "total_cpu_seconds": 0.42180486395955086,
+  "engine_build": {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+      "--target",
+      "q4t",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 176.0554838301614,
+    "warnings": [],
+    "abort": null,
+    "minimum_free_bytes": 1443700736,
+    "defaults_unchanged": true,
+    "binary_sha256": {
+      "q4t": "5eb2e4660c37a3cac95637e181dd190c6de583d1451ce813f163b70bfb80ea7e"
+    }
+  },
+  "ingress_build": {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host",
+      "--target",
+      "q4t_host_tests",
+      "q4t_ingress",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 309.5958217140287,
+    "warnings": [],
+    "abort": null,
+    "minimum_free_bytes": 1691410432,
+    "defaults_unchanged": true,
+    "binary_sha256": {
+      "q4t_host_tests": "74251121458dfbc4f83e59519d11a79b6b1466e0bd8db3badfca206a45c8e7ad",
+      "q4t_ingress": "37400ff86f00b7f0ecc7345d768e020057acd1e7fce70ed07370a05f15e14211"
+    }
+  },
+  "candidate": {
+    "engine_sha256": "5eb2e4660c37a3cac95637e181dd190c6de583d1451ce813f163b70bfb80ea7e",
+    "production_source_count": 714,
+    "production_source_drift": [],
+    "runtime_http_qualified": false,
+    "default_replaced": false
+  },
+  "archive_files": 93,
+  "archive_sha256": "59ef4fa3be7da5f66da3e6b7e9fd47e4c1a4cb765930ad33a5960e88ea5640e1",
+  "audit": {
+    "inventory_current": true,
+    "source_anchors": 939,
+    "routes": 83,
+    "native_routes": 138,
+    "mutation_checks": 17,
+    "semantics_certified": false
+  },
+  "default_before": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_after": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_unchanged": true,
+  "gpu_actions": 0,
+  "full_task_complete": false,
+  "pending": [
+    "real consent and sample HTTP, different speaker and wrong phrase negatives",
+    "new target text Speech/Chat plus independent ASR",
+    "scoped restart/revocation, SDK and TLS",
+    "managed package and preserved-state compatible rollback",
+    "reference audio ICL, prompt voices and Live",
+    "listening and speaker similarity"
+  ]
+}

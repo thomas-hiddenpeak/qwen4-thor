@@ -499,3 +499,24 @@ Q4T_TEST(serve_operations_port_is_explicit_distinct_and_transactional) {
   Q4T_CHECK(options.operations_port == 0);
   return true;
 }
+
+Q4T_TEST(serve_base_tts_assets_are_independent_and_name_conflicts_are_atomic) {
+  ServerOptions options;
+  Q4T_CHECK(
+      Parse({"--model-dir", "/model", "--tts-base-model-dir", "/assets/base"},
+            &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/assets/base" &&
+            options.tts_model_dir.empty());
+  Q4T_CHECK(!Parse(
+      {"--model-dir", "/model", "--tts-base-model-dir", "relative"}, &options));
+  Q4T_CHECK(!Parse({"--model-dir", "/model", "--tts-base-model-dir", "/base",
+                    "--model-alias", "qwen3-tts-12hz-1.7b-base"},
+                   &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/assets/base");
+  Q4T_CHECK(Parse({"--model-dir", "/model", "--tts-base-model-dir", "/base",
+                   "--tts-model-dir", "/custom"},
+                  &options));
+  Q4T_CHECK(options.tts_base_model_dir == "/base" &&
+            options.tts_model_dir == "/custom");
+  return true;
+}

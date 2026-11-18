@@ -74,6 +74,23 @@ def current_surface(root):
             'server::ConversationMethodAllowed(method, path)' not in native or \
             'inline bool ConversationMethodAllowed' not in application_routes:
         raise ValueError("review dynamic Conversations transport extractor")
+    if 'HandleVoices(fd, method, path, headers.content_type, body)' not in dispatch or \
+            'server::VoiceMethodAllowed(method, path)' not in native or \
+            'server::IsVoiceMetadata(method, path)' not in native or \
+            'std::min(headers.body_limit, server::kVoiceFormBytes)' not in native or \
+            not re.search(r'IsVoiceTarget\(\*path\)\s*\?\s*kVoiceFormBytes', reader) or \
+            'IsVoiceCreation(method, target)' not in application_routes or \
+            'inline bool VoiceMethodAllowed' not in application_routes:
+        raise ValueError("review native Voice/Consent dispatch, scope and quotas")
+    voices = [("POST", "/v1/audio/voices"),
+              ("DELETE", "/v1/audio/voices/{voice_id}"),
+              *((method, "/v1/audio/voice_consents") for method in ("GET", "POST")),
+              *((method, "/v1/audio/voice_consents/{consent_id}")
+                for method in ("GET", "POST", "DELETE"))]
+    routes.extend((path, method) for method, path in voices)
+    native_routes.extend((method, path, "false" if method == "POST" and
+        path in ("/v1/audio/voices", "/v1/audio/voice_consents") else "true")
+        for method, path in voices)
     conversations = [
         ("POST", "/v1/conversations"),
         *((method, "/v1/conversations/{conversation_id}")
@@ -371,6 +388,12 @@ def mutation_checks(inventory, actual):
              dict(actual, native_routes=actual["native_routes"] + ["GET /uncatalogued"]),
              dict(actual, sources_sha256=dict(actual["sources_sha256"],
                                              **{"src/server/chat_http.cpp": "0"}))]
+    for group in ("routes", "native_routes"):
+        omitted = "POST /v1/audio/voice_consents"
+        if omitted not in actual[group]:
+            raise ValueError("Voice/Consent routes escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group]
+                                            if route != omitted]}))
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")

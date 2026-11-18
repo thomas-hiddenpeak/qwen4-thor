@@ -135,6 +135,14 @@ Status ValidateServerOptions(const ServerOptions& options) {
                       options.model_aliases))
       return Status::Fail("TTS model name conflicts with Chat model names");
   }
+  if (!options.tts_base_model_dir.empty()) {
+    if (!model::ValidEmbeddingAssetDirectory(options.tts_base_model_dir))
+      return Status::Fail("tts-base-model-dir must be an absolute asset path");
+    if (IsServedModel(kNativeTtsBaseModel, options.served_model_name,
+                      options.model_aliases))
+      return Status::Fail(
+          "Base TTS model name conflicts with Chat model names");
+  }
   if (!options.asr_limits.Valid())
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
   if (!options.aligner_limits.Valid())
@@ -372,7 +380,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
-        key != "--tts-model-dir" && key != "--aligner-model-dir" &&
+        key != "--tts-model-dir" && key != "--tts-base-model-dir" &&
+        key != "--aligner-model-dir" &&
         key != "--vad-model-dir" && key != "--speaker-model-dir" &&
         key != "--separator-model-dir" && key != "--mem-fraction" &&
         key != "--moe-trace-dir" && key != "--moe-trace-workload" &&
@@ -453,6 +462,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.embedding_model_dir = value;
     } else if (key == "--tts-model-dir") {
       parsed.tts_model_dir = value;
+    } else if (key == "--tts-base-model-dir") {
+      parsed.tts_base_model_dir = value;
     } else if (key == "--asr-model-dir") {
       parsed.asr_model_dir = value;
     } else if (key == "--aligner-model-dir") {

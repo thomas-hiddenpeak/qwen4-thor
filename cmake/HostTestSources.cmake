@@ -9,9 +9,13 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_language.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_verification.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/voice_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_request_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_registry_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_verification_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_voice_api_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_output.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_history.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_output_test.cpp

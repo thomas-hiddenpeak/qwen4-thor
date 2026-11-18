@@ -1600,6 +1600,90 @@
         "tests/server_http_session_test.cpp",
         "docs/evidence/serve-speech-http-20261118/README.md"
       ]
+    },
+    "DELETE /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "DELETE /v1/audio/voices/{voice_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "GET /v1/audio/voice_consents": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "GET /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voice_consents": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voices": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
     }
   },
   "whitelists": {
@@ -2196,8 +2280,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "94e16ffe434473b5999c45c17c57adf23811b211e24cf8c9b27e9707a65c66c3",
-    "cmake/ChatProtocolIdentity.cmake": "b35a31f3e25e8e192df8e448b555a53d2c099a5c9a39c34983d2e78b3721de1a",
+    "CMakeLists.txt": "d295da73fb9bed8c65963560fac902dfd4d82179c988bff31465cdcfc5ccee61",
+    "cmake/ChatProtocolIdentity.cmake": "493a2ec147fcd9e32379b93cb88c3c71327ea80d6a1a82a0d1fcb7d57a64e5d2",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2267,7 +2351,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "10b466ef1dd60c9784199eae8d06387f2c3f9c3b41a2515434621c46207714ac",
+    "include/q4t/server/application_routes.h": "bb96f9c7552384ed74117291483d661929ce4a49f3ce06aa20e3ad102ce95beb",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2295,7 +2379,7 @@
     "include/q4t/server/chat_audio_history.h": "97daf37c6b31941fbc43dae7f53c33c2eb2851d55cf7d89fae11a5472691707f",
     "include/q4t/server/chat_audio_inputs.h": "138e38da74c637674ccb75dd41e8f97bca9c9a9c4040df7f96d2a5a529259c20",
     "include/q4t/server/chat_audio_output.h": "32b8ce80a968831393de88a4e2fcfaadc3812b697065ff32bc144a173936ea2a",
-    "include/q4t/server/chat_capabilities.h": "5a56e9b1e8feb9ce2db91b7661899d7215dc99853bddb22def1270ffc5863b3d",
+    "include/q4t/server/chat_capabilities.h": "69aca057846046d6bfd422fad0910ed2aa1329f1ba5fb259736fb40f92dbaf20",
     "include/q4t/server/chat_choices.h": "882951fb4d6c8a4b9311a0459baaf5c19e0cf6e579e2126441da9ced3bae4c64",
     "include/q4t/server/chat_contract.h": "12e17922a8190301e97ec227996f33fbce04e2276ae6b2d64e1599825b2b9d62",
     "include/q4t/server/chat_file_inputs.h": "9d2c1f3f9b3e4ecc48323d677cb2e03dc79c3bcaba4cd44c1a1e187875cce75b",
@@ -2304,7 +2388,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "b072b1d229b5addaf99a8ad69f7177ec19dea50269c7cb298217c2e66e72ef8c",
+    "include/q4t/server/chat_server.h": "0076504e2f83fedf72921b6b80c65f73ee0aa1e8f12f8561d4163cd132a5eb1f",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2349,7 +2433,7 @@
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "2141d40206167017a892efcc93cb42aad8f595fdb5d86609ba65f19f4a094acc",
-    "include/q4t/server/http_connection.h": "3afb216669cd6ebd20fd555a25c728643ea68a4ce57d03ca61c66cc87709cf7d",
+    "include/q4t/server/http_connection.h": "7423fc1fd4fbd260205a32fff5aa7ae43fbbfe2b0784f3508980dd70f5b0cad2",
     "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -2431,7 +2515,7 @@
     "include/q4t/server/separator_service.h": "2a6a435358440f3ea3edb4feb9f76b7826fa84f264e7a244387cdd8e27165c06",
     "include/q4t/server/sequence_admission.h": "ed25a8d14d1b09c9bc2d1f4a50b1ed31796c6024c0442e5777db7b2e44337d91",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "85505a52a0fb97430139195c0fb9000f2fed7f079432cce0710b4572383ecc7e",
+    "include/q4t/server/server_options.h": "34a781e879de552a4df0c949accd829be20cfff3092878ac6c6f9f321c673368",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/session_cache.h": "3cc4370484238700780acac554442c6d14d0f958c5b179b715c46c32b145064c",
     "include/q4t/server/session_media.h": "7973093f19264f1860def6b2dc3259b451c242d721cc30ff0eca353f8b46a379",
@@ -2541,7 +2625,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "cd07c7440d8240d3e18cac5202616e06b2dbd4ab80fcde8787c91d3ca7d3219e",
+    "src/main.cpp": "18a2104da01fb0effdb135c625191fdafa9ccbee8ff836c1d5b8e5c608bdb26e",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -2602,8 +2686,8 @@
     "src/server/chat_audio_history.cpp": "1fa4824f3e5580a872523ec1fa689694552dd5e40acd5b8316894bc59103ab4b",
     "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
     "src/server/chat_audio_output.cpp": "f2d3d6216eddb0adaa41157120074f3c415e4936f409204cc23d52312ff0802a",
-    "src/server/chat_audio_synthesis.cpp": "403f7dc44a3a2ed6dd83d0b37fba3cd47c53e4287054c402867dcf98bbd93dd5",
-    "src/server/chat_capabilities.cpp": "f64f50926a788f92d814c55a9cec99093bf8822014de17c1d8e0387256ff577e",
+    "src/server/chat_audio_synthesis.cpp": "614fb9885699eebb15542696b560ad3e7eff443f29f5512811258de701e12483",
+    "src/server/chat_capabilities.cpp": "cd207418f7ca76d8e67bc7a8ba7923c68fcaba6b8fb3f662db3329fd45d77059",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -2612,35 +2696,35 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "ac2a707fd7b5fe484476c94c34a66ab2076afb89910ad0d3ce9902281e6fcc6b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "106a56d784f74b7201d8adb616b3088d614a723b3348470563dbdeca1e6f751d",
+    "src/server/chat_http.cpp": "f095c7187911c4779abb05efe0bcfb5a243fc454c3aadcbd0474ae86bf7fa487",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "e4b298a3da1ff4455db35298fe42fa4ad2fdd21e6b60f1973698a954faa9ba87",
+    "src/server/chat_metrics.cpp": "82da869ddbebde8ba0fc46d70edddbbe4d4f2c3498ef8b4e20951e353e649f91",
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
     "src/server/chat_model_step.h": "64bca98f10b911594c06e9829c242189784cd8e221c3be1a9ed74374503f0a6e",
     "src/server/chat_moderation.cpp": "0c7dc6c4ac42b1bd8bd904056344f58418a60e0e5879b20255ecad208d7ac5a5",
     "src/server/chat_moderations.cpp": "7b1515135013c7a8b0e1c3de2ead714b13de3d8c3a5db87fbd51e24410933151",
     "src/server/chat_plan.cpp": "b2927a8d44b51250a7360027410350d50ad3fb9058bc39b7c85309094c16ba04",
-    "src/server/chat_preflight.cpp": "010f52222071bf42d47023ec453fd7e1d2ce317e1d2c74ecae6cc3b96260d6e4",
+    "src/server/chat_preflight.cpp": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "1a9afce7b98fd79db487c681a50620beeb523d6bf62d051fb2132ddce0e7ef71",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_separator_backend.cpp": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf",
     "src/server/chat_separator_execution.cpp": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd",
-    "src/server/chat_server.cpp": "cf3e6f59b852cc46aaf0e78b916c054c38150c1434d3d9fa1c413fe6938e1944",
+    "src/server/chat_server.cpp": "73f3076f6dab912c687c2171702fce9b31a6c07a83ce1cd8d8f1d0e2e8cd4f6a",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_speaker_backend.cpp": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f",
     "src/server/chat_speaker_execution.cpp": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0",
     "src/server/chat_speaker_turns.cpp": "e2579cea71db5b497da0d953f90877aa9b2f020ebc5e9edff853ce839d05a09f",
-    "src/server/chat_speech.cpp": "b33256a1c47216644aaf90132ee64bb0dde5d2eae102b4a808f57a4fd9013d01",
+    "src/server/chat_speech.cpp": "ad43ea2db8fc3e6f0c37924a0d005296f9c5211f22c7681d66590026b860e946",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "891adaf390e59776189f8cf68006a3b8020ece14fbd3882c46f04aec3dcd2b68",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
-    "src/server/chat_tts_backend.cpp": "23151df0cc23053dd7c2359f9504d334e0fcd6e336548ffed68c8e30710fda40",
-    "src/server/chat_tts_execution.cpp": "4231c6a451b120da44257ade7512ad06ee2cf018f5c84ab736b3191c38023702",
+    "src/server/chat_tts_backend.cpp": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946",
+    "src/server/chat_tts_execution.cpp": "0f8d8b4140fc7d2d0d5a3d01b24a12f115ee49e76383ff3349ee9975b491193f",
     "src/server/chat_vad_backend.cpp": "6a84890c85d7053c1e94aa027f28b19e3eab1773c5a5dd6d9ab30ac255ea9f80",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2648,7 +2732,7 @@
     "src/server/client_policy.cpp": "a142b3cb0d8ba30a7b7919c7eea8a6e83cb7f7df420cc027ec419ac6e7e49262",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "3c20cd09870843d117ce76c915749de64f78581f612dfa33d47d9583b15fab2f",
+    "src/server/client_request.cpp": "1a26f2c393cf7e55371f4cdd885ab9e6d6ec2c4058c976eed4ae67b8b2800a7c",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -2725,7 +2809,7 @@
     "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "d7d532f2cdca965e222aa8bc37b02736f64ad4e1517617fc949ed29aae2b9129",
+    "src/server/http_request.cpp": "06d3d992f6264e1a6b71e84e696714b6020e649ca0917476c266d12c3860fef5",
     "src/server/http_response.cpp": "d446421c9199590ffaa1e7e8e9d9db762fcb5a1fd96e877663cfcaec872b54c5",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -2864,7 +2948,7 @@
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/separator_assets.cpp": "ef5c005d53b81cb9a5d513030c5bcb7a3e6a4253d3707464af5df5ab5c5b8464",
     "src/server/separator_service.cpp": "ab309ca909853d8deacb356efd666cc21c805025e5f8870c149ed0347233ae31",
-    "src/server/server_options.cpp": "b56b55002759a13272c495ab082f662013dd767777e992cb3449e46c98144cfe",
+    "src/server/server_options.cpp": "c0e6e1476bd1e86bd3ae8b4f84d8b6823f31b4e0e4638a179f534decbb1f7aeb",
     "src/server/session_cache.cpp": "9d3d8b0b612fccd2b3e2bf418a3672b4c90736592da7cfc082d80d33b08d9e06",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
@@ -2938,7 +3022,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "20c7c45dccf086fc96ef4f2eaf11b2b84fbb82d28bf1d7f7f90ecbe9150e78cb",
+    "src/service/ingress_main.cpp": "a8aff58ee0181dc051eeddaf383c2254cca80fa66e5916fab9eebe00a6ea6956",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
@@ -3125,7 +3209,16 @@
     "src/server/voice_registry.cpp": "efc8df5407f97809353c952a6b2534328567e82c4ae3d7fc5bdc9cc398da2d99",
     "src/server/voice_request.cpp": "2baf14fecd21fe956885883b98b116224eda3aaabe800eb5e40779bf5bf0edbc",
     "include/q4t/text/voice_consent.h": "592d6f8c9f9bfdb4b735619609c4ca9a8074ea7da720520d03fcb07917e0d0a9",
-    "src/text/voice_consent.cpp": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6"
+    "src/text/voice_consent.cpp": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6",
+    "include/q4t/server/voice_api.h": "34baad49c81e603ffce072b7a2eaab1883e9c1cb6244dd3e6447c8285cc01af1",
+    "include/q4t/server/voice_verification.h": "93ee1bcc5f6ef75bc21609754690742669b00c9c992c652e91e664252657f486",
+    "src/server/chat_speech_prompt.cpp": "3707c19c6ea6d8164ced30cef5f3d6e9ee4cb7e2af425c502c3bda13c3e0e2a3",
+    "src/server/chat_voice_backend.cpp": "5a48a59cd2e43a83cff027e30635c9ec2516ae6e26a62213fd8680555ab4fc00",
+    "src/server/chat_voice_evidence.cpp": "03b726c7f8636527f7691bf337c68c8818730fed21e51cd71e17c8f80eaed3cb",
+    "src/server/chat_voice_execution.cpp": "5a2763a750a1e680e6542b796dbc7f5000b6aa05a3e5744f513401a4f68fc54b",
+    "src/server/chat_voices.cpp": "285c0e993868fbbec87499677aa1485d5a445639691b29c8bb1a806dc4bf3732",
+    "src/server/voice_api.cpp": "221ee68919786c2aa7666bc99cab616ea9a329ad7e6632de068081bdd4d9079f",
+    "src/server/voice_verification.cpp": "d4b13ed3aa93b327b0a82afea422bad41571d7cec91e08898c11b74fd8a2506d"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -4998,6 +5091,138 @@
         "src/server/chat_tts_execution.cpp",
         "tests/server_speech_output_test.cpp",
         "tests/server_http_session_test.cpp"
+      ]
+    },
+    "DELETE /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "DELETE /v1/audio/voices/{voice_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "GET /v1/audio/voice_consents": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "GET /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "OPTIONS /v1/audio/voice_consents": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "OPTIONS /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "OPTIONS /v1/audio/voices": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "OPTIONS /v1/audio/voices/{voice_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voice_consents": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voice_consents/{consent_id}": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+      ]
+    },
+    "POST /v1/audio/voices": {
+      "semantics": "原生样本音色/consent生命周期，鉴权客户域、独立音频核验、原子同人关联及撤销。",
+      "boundary": "源码与针对CPU已验证，真实音频/HTTP及有状态回退仍待验。提示词音色另有后端任务；不能由样本路径替代。",
+      "evidence": [
+        "src/server/voice_api.cpp",
+        "src/server/chat_voices.cpp",
+        "src/server/chat_voice_evidence.cpp",
+        "src/server/voice_registry.cpp",
+        "tests/server_voice_api_test.cpp",
+        "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
       ]
     }
   },
@@ -7881,5 +8106,43 @@
       "src/text/voice_consent.cpp"
     ],
     "runtime_api_accepted": false
+  },
+  "native_custom_voice_service_2026_11_18": {
+    "state": "CPU_QUALIFIED_HTTP_PENDING",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/application_routes.h",
+      "include/q4t/server/chat_capabilities.h",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/http_connection.h",
+      "include/q4t/server/server_options.h",
+      "include/q4t/server/voice_api.h",
+      "include/q4t/server/voice_verification.h",
+      "src/main.cpp",
+      "src/server/chat_audio_synthesis.cpp",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_http.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/chat_speech.cpp",
+      "src/server/chat_speech_prompt.cpp",
+      "src/server/chat_tts_backend.cpp",
+      "src/server/chat_tts_execution.cpp",
+      "src/server/chat_voice_backend.cpp",
+      "src/server/chat_voice_evidence.cpp",
+      "src/server/chat_voice_execution.cpp",
+      "src/server/chat_voices.cpp",
+      "src/server/client_request.cpp",
+      "src/server/http_request.cpp",
+      "src/server/server_options.cpp",
+      "src/server/voice_api.cpp",
+      "src/server/voice_verification.cpp",
+      "src/service/ingress_main.cpp"
+    ],
+    "source_review": ".q4t-work/serve-custom-voices-20261118/voice-service-source-review-01.json",
+    "defaults_unchanged": true,
+    "master_complete": false
   }
 }

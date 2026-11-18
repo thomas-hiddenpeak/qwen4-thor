@@ -52,23 +52,6 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
                         error.param);
       return;
     }
-    if (tts_model_dir_.empty() || !tts_catalog_.Contains(request.model)) {
-      detail::SendError(fd, 404, "Speech model is not configured", {},
-                        "model_not_found", "model");
-      return;
-    }
-    if (request.voice_id) {
-      // Custom registered voice conditioning remains a separate required
-      // backend task; never map an opaque ID to an unrelated trained voice.
-      detail::SendError(fd, 404, "Voice is not registered for this model", {},
-                        "voice_not_found", "voice.id");
-      return;
-    }
-    if (audio::TtsBuiltinVoiceId(request.voice) < 0) {
-      detail::SendError(fd, 400, "Voice is not available for this model", {},
-                        "invalid_speech_voice", "voice");
-      return;
-    }
     const auto id = detail::NewRequestId("tts_");
     control = requests_.Register(
         id, "", started + std::chrono::milliseconds(request_deadline_ms_),
@@ -100,55 +83,14 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
                         reply.ClientCode(), reply.value.GetString("param"));
     };
     if (request.sse) http->SetSpeechStream();
-    ObjectReply loaded;
-    {
-      RequestDiagnostics::Scope wait(diagnostic,
-                                     RequestDiagnostics::Wait::kStorage);
-      loaded = EnsureNativeTts(false, {{}, control->deadline(), cancelled});
-    }
-    if (!loaded.ok()) {
-      fail(loaded);
-      return;
-    }
-    std::vector<uint32_t> text, instruction;
-    {
-      RequestDiagnostics::Scope wait(diagnostic,
-                                     RequestDiagnostics::Wait::kTokenizer);
-      auto lock = LockUnlessCancelled(tts_tok_mu_, cancelled);
-      if (!lock.owns_lock() || cancelled()) {
-        detail::SendError(fd, 409, "Speech tokenization cancelled", {},
-                          control->Reason());
-        return;
-      }
-      auto status = tts_tok_->Encode(
-          request.input, &text,
-          {.cancelled = cancelled, .recognize_special_tokens = false});
-      if (status && !request.instructions.empty())
-        status = tts_tok_->Encode(
-            request.instructions, &instruction,
-            {.cancelled = cancelled, .recognize_special_tokens = false});
-      if (!status) {
-        detail::SendError(
-            fd, cancelled() ? 409 : 400, "Speech tokenization failed", {},
-            cancelled() ? control->Reason() : "invalid_speech_text", "input");
-        return;
-      }
-    }
+    const BinaryAccess access{http->Client().Scoped()
+                                  ? "client:" + std::string(http->Client().Id())
+                                  : "local:anonymous",
+                              control->deadline(), cancelled};
     audio::TtsPrompt prompt;
-    std::vector<int32_t> text_ids(text.begin(), text.end());
-    std::vector<int32_t> instruction_ids(instruction.begin(),
-                                         instruction.end());
-    // The complete utterance is available. Prefill all of its text, matching
-    // CustomVoice's full-text input mode; PCM output remains incremental.
-    auto planned = audio::PlanTtsPrompt(
-        audio::TtsVariant::kCustomVoice17B, text_ids, instruction_ids,
-        request.voice, "auto", true, tts_limits_.max_prefill_tokens, &prompt);
-    if (!planned ||
-        prompt.text_ids.size() > size_t(tts_limits_.max_text_tokens)) {
-      detail::SendError(
-          fd, 400,
-          planned ? "Speech prompt exceeds capacity" : planned.message(), {},
-          "invalid_speech_prompt", "input");
+    auto planned = PlanNativeSpeech(request, access, diagnostic, &prompt);
+    if (!planned.ok()) {
+      fail(planned);
       return;
     }
     size_t max_frames = tts_limits_.max_frames;

@@ -49,7 +49,7 @@ ObjectReply ChatServer::SynthesizeChatAudio(
       continue;
     SpeechRequest request = options.speech;
     request.input = transcript;
-    request.model = kNativeTtsModel;
+    request.model = request.voice_id ? kNativeTtsBaseModel : kNativeTtsModel;
     const auto wire = Object(
         {{"model", String(request.model)},
          {"input", String(request.input)},
@@ -61,37 +61,9 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     if (!ParseSpeechRequest(OutputJson(wire), &request, &error))
       return Error(502, "chat_audio_text_invalid",
                    "Generated utterance exceeds speech input contract");
-    if (request.voice_id)
-      return Error(404, "voice_not_found", "Voice is not registered");
-    if (audio::TtsBuiltinVoiceId(request.voice) < 0)
-      return Error(400, "invalid_speech_voice", "Voice is unavailable");
-    auto loaded = EnsureNativeTts(false, access, &diagnostic);
-    if (!loaded.ok()) return loaded;
-    std::vector<uint32_t> tokens;
-    {
-      RequestDiagnostics::Scope wait(diagnostic,
-                                     RequestDiagnostics::Wait::kTokenizer);
-      auto lock = LockUnlessCancelled(tts_tok_mu_, cancelled);
-      if (!lock.owns_lock() || cancelled()) return interrupted();
-      const auto encoded = tts_tok_->Encode(
-          request.input, &tokens,
-          {.cancelled = cancelled, .recognize_special_tokens = false});
-      if (!encoded)
-        return cancelled() ? interrupted()
-                           : Error(502, "chat_audio_text_invalid",
-                                   "Generated utterance cannot be encoded");
-    }
     audio::TtsPrompt prompt;
-    const std::vector<int32_t> ids(tokens.begin(), tokens.end());
-    // The complete utterance is available. Prefill all of its text, matching
-    // CustomVoice's full-text input mode; PCM output remains incremental.
-    const auto planned = audio::PlanTtsPrompt(
-        audio::TtsVariant::kCustomVoice17B, ids, {}, request.voice, "auto",
-        true, tts_limits_.max_prefill_tokens, &prompt);
-    if (!planned ||
-        prompt.text_ids.size() > size_t(tts_limits_.max_text_tokens))
-      return Error(413, "chat_audio_prompt_capacity",
-                   "Generated utterance exceeds synthesis capacity");
+    auto planned = PlanNativeSpeech(request, access, diagnostic, &prompt);
+    if (!planned.ok()) return planned;
     // One per-choice public completion limit covers both primary generation
     // and actual audio codes. Input transcription remains preparation usage.
     const auto remaining = output_limit > choice_tokens[index]

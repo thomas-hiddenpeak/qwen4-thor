@@ -6,9 +6,13 @@ set(protocol_inputs
   include/q4t/server/speech_request.h
   src/server/speech_request.cpp
   include/q4t/server/voice_request.h
+  include/q4t/server/voice_verification.h
+  include/q4t/server/voice_api.h
   include/q4t/server/voice_registry.h
   src/server/voice_request.cpp
   src/server/voice_language.cpp
+  src/server/voice_verification.cpp
+  src/server/voice_api.cpp
   src/server/voice_registry.cpp
   src/server/chat_audio_output.cpp
   include/q4t/server/chat_audio_output.h
@@ -399,6 +403,11 @@ set(protocol_inputs
   src/server/chat_tts_backend.cpp
   src/server/chat_tts_execution.cpp
   src/server/chat_speech.cpp
+  src/server/chat_speech_prompt.cpp
+  src/server/chat_voice_backend.cpp
+  src/server/chat_voice_execution.cpp
+  src/server/chat_voice_evidence.cpp
+  src/server/chat_voices.cpp
   src/server/speech_codec_stream_protocol.h
   src/server/speech_codec_stream.cpp
   src/server/speech_codec_stream_worker.cpp

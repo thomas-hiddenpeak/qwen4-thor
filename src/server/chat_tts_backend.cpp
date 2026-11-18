@@ -16,8 +16,16 @@ using object_detail::Error;
 constexpr uint64_t kHostMargin = 512ULL << 20;
 }  // namespace
 
-std::string ChatServer::NativeTtsHealthJson() const {
-  auto result = TtsHealthJson(tts_health_.Snapshot(), gpu_healthy_.load());
+AsrHealth& ChatServer::TtsHealth(audio::TtsVariant variant) {
+  return variant == audio::TtsVariant::kBase17B ? tts_base_health_
+                                                : tts_health_;
+}
+
+std::string ChatServer::NativeTtsHealthJson(audio::TtsVariant variant) const {
+  const bool base = variant == audio::TtsVariant::kBase17B;
+  auto result = SpeechHealthJson(
+      (base ? tts_base_health_ : tts_health_).Snapshot(), gpu_healthy_.load(),
+      base ? kNativeTtsBaseModel : kNativeTtsModel, TtsFailureCode);
   result.pop_back();
   result += R"(,"asset_cleanup_pending":)";
   result += detail::IsolatedCleanupPending(IsolatedWorkerDomain::kModelAssets)
@@ -53,26 +61,7 @@ ObjectReply ChatServer::ActivateAuxiliaryFamily(
   if (!speech_output) {
     auto owner = LockUnlessCancelled(tts_mu_, cancelled);
     if (!owner.owns_lock() || cancelled()) return interrupted();
-    if (!d_tts_talker_ && !d_tts_codec_) return {};
-    auto gpu = LockUnlessCancelled(model_mu_, cancelled);
-    if (!gpu.owns_lock() || cancelled()) return interrupted();
-    // Retire the pair atomically with respect to cancellation/metadata.
-    // A half-retired codec must never be overwritten by a subsequent reload.
-    bool clean = true;
-    for (auto** pointer : {&d_tts_talker_, &d_tts_codec_}) {
-      const auto freed =
-          detail::ReleaseCudaMemory(*pointer, "native_tts.family_release");
-      RecordDeviceMemoryFailure(freed, "native_tts.family_release");
-      clean &= freed.ok();
-    }
-    tts_weights_ = {};
-    tts_health_.Released();
-    if (!clean) {
-      tts_health_.ComputeFailed(AsrFailure::kDevice, Clock::now());
-      AbortBackendExecution();
-      return Error(503, "gpu_unhealthy", "Optional weight release failed");
-    }
-    return {};
+    return ReleaseNativeTts(cancelled);
   }
   auto reply = release(embedding_mu_, d_embedding_weights_,
                        "native_embedding.family_release", [&](bool ok) {
@@ -100,13 +89,48 @@ ObjectReply ChatServer::ActivateAuxiliaryFamily(
   reply = speech(speaker_mu_, d_speaker_weights_, speaker_weights_,
                  speaker_health_, "native_speaker.family_release");
   if (!reply.ok()) return reply;
-  return speech(separator_mu_, d_separator_weights_, separator_weights_,
-                separator_health_, "native_separator.family_release");
+  reply = speech(separator_mu_, d_separator_weights_, separator_weights_,
+                 separator_health_, "native_separator.family_release");
+  if (!reply.ok()) return reply;
+  return speech(voice_mu_, d_voice_weights_, voice_weights_, voice_health_,
+                "native_voice.family_release");
+}
+
+ObjectReply ChatServer::ReleaseNativeTts(
+    const std::function<bool()>& cancelled) {
+  if (!d_tts_talker_ && !d_tts_codec_) return {};
+  auto gpu = LockUnlessCancelled(model_mu_, cancelled);
+  if (!gpu.owns_lock() || cancelled())
+    return Error(409, "tts_cancelled", "TTS model switch cancelled");
+  auto& health = TtsHealth(tts_weights_.talker.variant);
+  bool clean = true;
+  for (auto** pointer : {&d_tts_talker_, &d_tts_codec_}) {
+    const auto freed =
+        detail::ReleaseCudaMemory(*pointer, "native_tts.family_release");
+    RecordDeviceMemoryFailure(freed, "native_tts.family_release");
+    clean &= freed.ok();
+  }
+  tts_weights_ = {};
+  health.Released();
+  if (!clean) {
+    health.ComputeFailed(AsrFailure::kDevice, Clock::now());
+    AbortBackendExecution();
+    return Error(503, "gpu_unhealthy", "Optional weight release failed");
+  }
+  return {};
 }
 
 ObjectReply ChatServer::EnsureNativeTts(bool weights,
                                         const BinaryAccess& access,
-                                        RequestDiagnostics* diagnostic) {
+                                        RequestDiagnostics* diagnostic,
+                                        audio::TtsVariant variant) {
+  if (variant != audio::TtsVariant::kCustomVoice17B &&
+      variant != audio::TtsVariant::kBase17B)
+    return Error(400, "tts_variant_invalid", "TTS variant is unavailable");
+  const bool base = variant == audio::TtsVariant::kBase17B;
+  auto& health = TtsHealth(variant);
+  auto& tokenizer = base ? tts_base_tok_ : tts_tok_;
+  const auto& directory = base ? tts_base_model_dir_ : tts_model_dir_;
   const auto cancelled = [&] {
     return stop_requested_.load() || Clock::now() >= access.deadline ||
            (access.cancelled && access.cancelled());
@@ -114,11 +138,18 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
   const auto interrupted = [&] {
     return Error(409, "tts_cancelled", "TTS asset load cancelled");
   };
-  if (tts_model_dir_.empty())
+  if (directory.empty())
     return Error(404, "model_not_found", "TTS model is not configured");
   auto lock = LockUnlessCancelled(tts_mu_, cancelled);
   if (!lock.owns_lock() || cancelled()) return interrupted();
-  switch (tts_health_.BeginLoad(weights, Clock::now())) {
+  // Every device caller owns auxiliary_mu_. A metadata request cannot evict
+  // a model. Switching retires the old pair before allocating the new one.
+  if (weights && (d_tts_talker_ || d_tts_codec_) &&
+      tts_weights_.talker.variant != variant) {
+    auto retired = ReleaseNativeTts(cancelled);
+    if (!retired.ok()) return retired;
+  }
+  switch (health.BeginLoad(weights, Clock::now())) {
     case AsrLoadAdmission::kReady:
       return {};
     case AsrLoadAdmission::kDisabled:
@@ -132,15 +163,16 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
     case AsrLoadAdmission::kStart:
       break;
   }
-  ScopeExit loading([&] { tts_health_.CancelLoad(); });
+  ScopeExit loading([&] { health.CancelLoad(); });
   const auto fail = [&](AsrFailure kind, const char* message) {
-    tts_health_.LoadFailed(kind, Clock::now());
+    health.LoadFailed(kind, Clock::now());
     return Error(503, TtsFailureCode(kind), message);
   };
   try {
     const uint64_t estimate =
         kHostMargin +
-        (weights ? (kNativeTtsFileBytes + kNativeTtsCodecFileBytes) +
+        (weights ? ((base ? kNativeTtsBaseFileBytes : kNativeTtsFileBytes) +
+                    kNativeTtsCodecFileBytes) +
                        kNativeTtsWeightBytes +
                        audio::TtsConfig::kCodecDecoderBytes + (6ULL << 20)
                  : 0);
@@ -153,7 +185,8 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
     control.compile_deadline = std::min(
         access.deadline,
         Clock::now() + std::chrono::milliseconds(kModelAssetTimeoutMs));
-    if (!LoadTtsAssets(tts_model_dir_, &assets, control, &cause, weights)) {
+    if (!LoadTtsAssets(directory, &assets, control, &cause, weights,
+                       kTtsAssetStagingBytes, {variant, true})) {
       if (cancelled() || cause == GrammarFailure::kCancelled)
         return interrupted();
       if (cause == GrammarFailure::kResource)
@@ -189,7 +222,7 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
               detail::ReleaseCudaMemory(*pointer, "native_tts.weights_cleanup");
           RecordDeviceMemoryFailure(freed, "native_tts.weights_cleanup");
           if (!freed.ok()) {
-            tts_health_.ComputeFailed(AsrFailure::kDevice, Clock::now());
+            health.ComputeFailed(AsrFailure::kDevice, Clock::now());
             AbortBackendExecution();
           }
         }
@@ -226,11 +259,10 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
       talker = codec = nullptr;
       tts_weights_ = bound;
     }
-    if (!tts_tok_) tts_tok_ = std::move(assets.tokenizer);
-    tts_health_.Loaded(weights, weights
-                                    ? kNativeTtsWeightBytes +
-                                          audio::TtsConfig::kCodecDecoderBytes
-                                    : 0);
+    if (!tokenizer) tokenizer = std::move(assets.tokenizer);
+    health.Loaded(weights, weights ? kNativeTtsWeightBytes +
+                                         audio::TtsConfig::kCodecDecoderBytes
+                                   : 0);
     return {};
   } catch (const std::bad_alloc&) {
     return fail(AsrFailure::kResource, "TTS host allocation exhausted");

@@ -20,6 +20,7 @@
 
 #include "q4t/server/client_identity.h"
 #include "q4t/server/application_routes.h"
+#include "q4t/server/voice_request.h"
 #include "q4t/server/file_limits.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
@@ -386,7 +387,8 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
-  if (server::ConversationMethodAllowed(method, path) ||
+  if (server::VoiceMethodAllowed(method, path) ||
+      server::ConversationMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
       server::McpTunnelMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
@@ -395,7 +397,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
-    *control = server::IsMcpTunnelMetadata(method, path) ||
+    *control = server::IsVoiceMetadata(method, path) ||
+               server::IsMcpTunnelMetadata(method, path) ||
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
@@ -548,6 +551,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (server::IsTranscriptionTarget(path))
       headers.body_limit =
           std::min(headers.body_limit, server::kTranscriptionBodyBytes);
+    if (server::IsVoiceTarget(path))
+      headers.body_limit =
+          std::min(headers.body_limit, server::kVoiceFormBytes);
     if (headers.content_length > headers.body_limit)
       return reject(413, "gateway_body_too_large");
     if (method == "GET" && headers.content_length)

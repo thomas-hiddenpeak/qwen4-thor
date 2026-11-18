@@ -378,7 +378,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
             path == "/v1/embeddings" || path == "/v1/audio/speech" ||
-            path == "/v1/audio/transcriptions" || IsResponsesTarget(path) ||
+            path == "/v1/audio/transcriptions" ||
+            IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
@@ -492,7 +493,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     dispatch_started = true;
     if (file_request)
       file_request->Serve(fd);
-    else if (IsTranscriptionTarget(path)) {
+    else if (IsVoiceTarget(path)) {
+      HandleVoices(fd, method, path, headers.content_type, body);
+    } else if (IsTranscriptionTarget(path)) {
       if (method != "POST") {
         context.RecordReceiveFailure(HttpReceiveFailure::kMethod, 405);
         SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
@@ -503,8 +506,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       } else {
         HandleTranscription(fd, headers.content_type, body);
       }
-    }
-    else if (IsMcpTunnelTarget(path)) {
+    } else if (IsMcpTunnelTarget(path)) {
       const auto& client = context.Client();
       const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
                                          : "local:anonymous";

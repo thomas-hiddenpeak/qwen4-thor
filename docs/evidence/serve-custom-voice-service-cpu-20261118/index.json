@@ -1,0 +1,374 @@
+{
+  ".q4t-work/serve-custom-voices-20261118/add_voice_http_tests_01.py": {
+    "bytes": 2878,
+    "sha256": "992898110582c767de51a42c6fc18f3ccd88f8de066f2f3842ddc4222ead907c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/archive_voice_service_cpu_01.py": {
+    "bytes": 8586,
+    "sha256": "e48d50464ecd8091ec17ce10c8f530087ddafeac929296eeff4aa027a51bba3f"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audit_voice_service_01.py": {
+    "bytes": 5219,
+    "sha256": "431844cde3292afceb9ffa45711c72d99d23748f535ddafe3128b73372aaa244"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audit_voice_service_02.py": {
+    "bytes": 3416,
+    "sha256": "d804840118a4d0871d843c781cfaf16c5616c9b0d9de9c59405b607d54e12225"
+  },
+  ".q4t-work/serve-custom-voices-20261118/audit_voice_service_03.py": {
+    "bytes": 3447,
+    "sha256": "36835616057ee88c5dc58f2c19d085ada63896282adb074b690958eab46bffc9"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_voice_service_01.py": {
+    "bytes": 6945,
+    "sha256": "49a8b304278b4c006a542b729b7c779894da21962a8945ea1876965eac9375fe"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_voice_service_02.py": {
+    "bytes": 1893,
+    "sha256": "ce914d242a1e29124e4f347a772e6c7c61636dcf583843cc2f3c52767e5d6503"
+  },
+  ".q4t-work/serve-custom-voices-20261118/build_voice_service_03.py": {
+    "bytes": 1801,
+    "sha256": "c3ea1415b18f0519ebce45fc4767e91e02da6cb9bc463312114c4e320105d86c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/develop_voice_verification_01.py": {
+    "bytes": 5668,
+    "sha256": "ead9f305670733c7cf52037333d8f15e75e4c0e6ecc6d5f1eb332572b162c81a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/fix_voice_discovery_01.py": {
+    "bytes": 2919,
+    "sha256": "a25477494f7884c3ef7c02fed98727605f7ee6ba836504ef53ac46406880d571"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_base_service_01.py": {
+    "bytes": 16227,
+    "sha256": "9db86876fb947e9e1419c4e3190312b4e0f8cac398736995ea62e00a4549685c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_backend_01.py": {
+    "bytes": 10219,
+    "sha256": "3899e23eb2ca50815d17e0acc5fcd961aa8e184d3bdf13a37418f0d0ac2bf917"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_backend_02.py": {
+    "bytes": 10215,
+    "sha256": "59c970fa2318ffa5d999a0e48cc084e3cebdc74b82e5ecf649abc49235492976"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_capabilities_01.py": {
+    "bytes": 2378,
+    "sha256": "6b53571e41d5b5de03a8e2fef590cb2dc45012b5f3c17d76bece5d829c9342ea"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_registry.py": {
+    "bytes": 3518,
+    "sha256": "8e8a51719a90ed9de343739ebfbb47be434c78c91c5e42903df2c57e7f275f8e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/integrate_voice_routes_01.py": {
+    "bytes": 4549,
+    "sha256": "571424808d6c6a726137e6885d39f5d4949431c537635746740cc3fd86a749fb"
+  },
+  ".q4t-work/serve-custom-voices-20261118/run_voice_service_cpu_01.py": {
+    "bytes": 2108,
+    "sha256": "caec0a9496d56fcad52a9242c3b2d0c9ea4dcb354e0f607eb92533069e954250"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-build-01/build.log": {
+    "bytes": 1651,
+    "sha256": "a8c3c72bc6d3b7a7c224f593e37ce625b18ae3aaeee1e8034c1655f9c7b70f14"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-build-01/result.json": {
+    "bytes": 266,
+    "sha256": "692c20a2bdb1b3e5152f13a803161d13b3db0ea3b91f55638b312968eb41fd28"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-cpu-01/required.txt": {
+    "bytes": 138,
+    "sha256": "04e15be14e7a6a1c7700aba69418d87d6c5051751f32309f5c3a7986453bb844"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-cpu-01/result.json": {
+    "bytes": 561,
+    "sha256": "2631808728e44e3e10dca8e3cb87c80aa80937be880b7a56280f4e0b4a9efa62"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-cpu-01/test.log": {
+    "bytes": 191,
+    "sha256": "665eeb1fc5fce8dc10cdca730c667a027e465c70c9bc067f909f5fe84437562c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-discovery-fix-plan-01.json": {
+    "bytes": 633,
+    "sha256": "d4c9ce15e8d7d6826578c5641852edf3245114db11903d184189f281e693244e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-audit-check-01.json": {
+    "bytes": 270,
+    "sha256": "e63d5f29bc765777c771705f502668a67d26d2d3d69a552f4f233ec69782e96a"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-audit-check-02.json": {
+    "bytes": 252,
+    "sha256": "14a513a189cb4467933ff7f3165b480f67c789699a23d084e24894242745b904"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-01/prior-host.json": {
+    "bytes": 274,
+    "sha256": "79d7279e1185dd915cb868667231842643c1bf81d9c635c3a982801f7745e65e"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-01/result.json": {
+    "bytes": 165,
+    "sha256": "8775bb721a74145ffc071da21a67c16e2e5f53ad2ac50ed7264bc2189957a379"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-02/engine-result.json": {
+    "bytes": 347,
+    "sha256": "df3747e09dd4f8c8c1a5214c912992dc288f0ac151d133c791f8f65d390c06ac"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-02/engine.log": {
+    "bytes": 24716,
+    "sha256": "153dba97d75173387e0d9743018a1c1b14951e8bb309217695b97839b7cd19ae"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-02/host-result.json": {
+    "bytes": 570,
+    "sha256": "6b95bb41fe2fb201fdfcf94a1bf7bbd09b2a6a19fbeee1065f636d6ac62b3ed6"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-02/host.log": {
+    "bytes": 44654,
+    "sha256": "be462bd8faa0fd740efdf1a8d76eca9a000500c5481baef1ffb9b39742141b63"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-03/engine-result.json": {
+    "bytes": 451,
+    "sha256": "dcacd4f263c6f2653e59c9f7cc07aa613662fe6124fa694c66a86543ffdf4df3"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-build-03/engine.log": {
+    "bytes": 21488,
+    "sha256": "9ea3f2cd0dcb56dbe3c3779ef35563c327d06bea4345fdff07e430526bc90be0"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-01/chat_protocol_sources.json": {
+    "bytes": 76586,
+    "sha256": "e349257466d4f97baef03932d8afa58ad5b71446ae446cd3b67b1cd6bd4f05e6"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-01/identity.json": {
+    "bytes": 221,
+    "sha256": "6778392e8006f93166adf6f15101090a1b6d099e375f5586e49d05243b08c3ea"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/api-m60sU2/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_a8205173d374a9b4c11f2ba47b40ce08.json": {
+    "bytes": 448,
+    "sha256": "648a95d24ab61276cd8da22cf306b1aa5197be473e7a931a3f5076335b2fda05"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/api-sY5GW9/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_509bb0938e2991a35b94ba3da204e153.json": {
+    "bytes": 448,
+    "sha256": "1a75976a0179d641a21963a09b1a427fa20357fc69132bbc52940d9386b1a778"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/api-sY5GW9/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.voice_consent.cons_f51f8ec6baaa1c6625b91106c6730942.json": {
+    "bytes": 1992,
+    "sha256": "3f9ec54a997f8f5be55794900a83befb14ed23631e2219d8765462063491cd71"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-07BN7q/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_fc95f62285b71521f51042e184afdec7.json": {
+    "bytes": 388,
+    "sha256": "39d8a5cf94fa43ed40bce27352f692c02d9b61575ce0c33f1fa76c5de0e0bb64"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-VtAaUq/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_ded374e1e6675c757a779e1a7b53a272.json": {
+    "bytes": 452,
+    "sha256": "598c6d2952cf1446a87bdf991532daa34db6398775cef65cfcc0e5fe2bd4a791"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-VtAaUq/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.voice_consent.cons_19dd1de3692464763c9cc1bf26c54151.json": {
+    "bytes": 1914,
+    "sha256": "ca7c51fda84e466f5d928c70b052a57ed1f82eab2137a0cc16ed8f2076100b77"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-hGVxku/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_07b2d58c99ab3d25787ec56795613b39.json": {
+    "bytes": 452,
+    "sha256": "517336051f640204b33d0c202f9a2b975fd2d7870403a3594eb6c3c89b856e3c"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-hGVxku/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.tool_run.tool_run_8fcca0eb63532765a32239e21423af29.json": {
+    "bytes": 452,
+    "sha256": "bda87bdc8984bba5ab210c463db5f8abdcf8d439c2f25be7879b025a13c5acd8"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-hGVxku/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.voice.voice_3b60f8a79b91c1596feacab4ce72ccf0.json": {
+    "bytes": 32840,
+    "sha256": "a25627995e7340f175a3d580fcab3b5bf7a09ae8dfe149722a34fc2b6f637e85"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/fixtures/voice-hGVxku/objects/1c581ce1a12503fe348084d069d1115173fde1ff3f4e79abc2a43e7dd3ef2e86.voice_consent.cons_99c3f59919e59d38af5b53a4f211e1b3.json": {
+    "bytes": 1914,
+    "sha256": "de49b429a45bbb63512f9deb21b94c0d549b768f6f83bb26d45896c386dd50fd"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/required.txt": {
+    "bytes": 1635,
+    "sha256": "401e2205fc973bf9653dc1bda7a60142f06b5bcea4800890e7845eb7b0266772"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/result.json": {
+    "bytes": 612,
+    "sha256": "b645c6bacae3297a3bcad49eddc1c7033c605deeab3e5014b7f031a0ba12e157"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-01/test.log": {
+    "bytes": 2222,
+    "sha256": "2649ccdb27739c5a13e0119eaaa60aa414c9a9e6964eddd09c9273a443180a26"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-plan-01.json": {
+    "bytes": 6729,
+    "sha256": "d6ae986233c6c77bf1674b14d5fd820571437b75ac6b045131aa668b06dceb46"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-plan-02.json": {
+    "bytes": 7016,
+    "sha256": "5ce8ee8425de714195a76796b4666cb32457710955034b274362f4cf06bcd535"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-plan-03.json": {
+    "bytes": 6975,
+    "sha256": "9915e424efe574c6464eb8f249bb43fa70c8035a2fc1f8bb1344e0ae25305636"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-cpu-plan-04.json": {
+    "bytes": 7027,
+    "sha256": "8ed3105cd77bb8ad8a4d88250bb9ef56fa0e706c757bedc12c8718b8e394bbba"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-host-review-build-01/build.log": {
+    "bytes": 1774,
+    "sha256": "994e798e384c4e59d6925038bfa09fcf35ec23eec2de88c6ea66b58d064090a1"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-host-review-build-01/result.json": {
+    "bytes": 266,
+    "sha256": "a18626319f5c0fe8a86b9c53a4ac405fb8b78288ade122c7e6db24dc4e276ac2"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-inventory-01.json": {
+    "bytes": 154,
+    "sha256": "5cfd68d73786d3a0afac5b3978db9f77cdaf9e04a22e02fad21353abad35d294"
+  },
+  ".q4t-work/serve-custom-voices-20261118/voice-service-source-review-01.json": {
+    "bytes": 7279,
+    "sha256": "dea203fa7229bea22b6b4d4a5bfee1b2fb76e43970397a012f9b2a93c06d8ebd"
+  },
+  "CMakeLists.txt": {
+    "bytes": 58287,
+    "sha256": "d295da73fb9bed8c65963560fac902dfd4d82179c988bff31465cdcfc5ccee61"
+  },
+  "cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 27436,
+    "sha256": "493a2ec147fcd9e32379b93cb88c3c71327ea80d6a1a82a0d1fcb7d57a64e5d2"
+  },
+  "cmake/HostTestSources.cmake": {
+    "bytes": 33797,
+    "sha256": "cfb40341f2884bf7ef573cc9fac40e3fc90a55958fdf6a140c7a191aebdfad9b"
+  },
+  "include/q4t/server/application_routes.h": {
+    "bytes": 17198,
+    "sha256": "bb96f9c7552384ed74117291483d661929ce4a49f3ce06aa20e3ad102ce95beb"
+  },
+  "include/q4t/server/chat_capabilities.h": {
+    "bytes": 673,
+    "sha256": "69aca057846046d6bfd422fad0910ed2aa1329f1ba5fb259736fb40f92dbaf20"
+  },
+  "include/q4t/server/chat_server.h": {
+    "bytes": 37291,
+    "sha256": "0076504e2f83fedf72921b6b80c65f73ee0aa1e8f12f8561d4163cd132a5eb1f"
+  },
+  "include/q4t/server/http_connection.h": {
+    "bytes": 2585,
+    "sha256": "7423fc1fd4fbd260205a32fff5aa7ae43fbbfe2b0784f3508980dd70f5b0cad2"
+  },
+  "include/q4t/server/server_options.h": {
+    "bytes": 8022,
+    "sha256": "34a781e879de552a4df0c949accd829be20cfff3092878ac6c6f9f321c673368"
+  },
+  "include/q4t/server/voice_api.h": {
+    "bytes": 867,
+    "sha256": "34baad49c81e603ffce072b7a2eaab1883e9c1cb6244dd3e6447c8285cc01af1"
+  },
+  "include/q4t/server/voice_verification.h": {
+    "bytes": 1030,
+    "sha256": "93ee1bcc5f6ef75bc21609754690742669b00c9c992c652e91e664252657f486"
+  },
+  "src/main.cpp": {
+    "bytes": 40527,
+    "sha256": "18a2104da01fb0effdb135c625191fdafa9ccbee8ff836c1d5b8e5c608bdb26e"
+  },
+  "src/server/chat_audio_synthesis.cpp": {
+    "bytes": 7897,
+    "sha256": "614fb9885699eebb15542696b560ad3e7eff443f29f5512811258de701e12483"
+  },
+  "src/server/chat_capabilities.cpp": {
+    "bytes": 54543,
+    "sha256": "cd207418f7ca76d8e67bc7a8ba7923c68fcaba6b8fb3f662db3329fd45d77059"
+  },
+  "src/server/chat_http.cpp": {
+    "bytes": 32344,
+    "sha256": "f095c7187911c4779abb05efe0bcfb5a243fc454c3aadcbd0474ae86bf7fa487"
+  },
+  "src/server/chat_metrics.cpp": {
+    "bytes": 19785,
+    "sha256": "82da869ddbebde8ba0fc46d70edddbbe4d4f2c3498ef8b4e20951e353e649f91"
+  },
+  "src/server/chat_preflight.cpp": {
+    "bytes": 15576,
+    "sha256": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8"
+  },
+  "src/server/chat_server.cpp": {
+    "bytes": 49978,
+    "sha256": "73f3076f6dab912c687c2171702fce9b31a6c07a83ce1cd8d8f1d0e2e8cd4f6a"
+  },
+  "src/server/chat_speech.cpp": {
+    "bytes": 8717,
+    "sha256": "ad43ea2db8fc3e6f0c37924a0d005296f9c5211f22c7681d66590026b860e946"
+  },
+  "src/server/chat_speech_prompt.cpp": {
+    "bytes": 3855,
+    "sha256": "3707c19c6ea6d8164ced30cef5f3d6e9ee4cb7e2af425c502c3bda13c3e0e2a3"
+  },
+  "src/server/chat_tts_backend.cpp": {
+    "bytes": 11816,
+    "sha256": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946"
+  },
+  "src/server/chat_tts_execution.cpp": {
+    "bytes": 10414,
+    "sha256": "0f8d8b4140fc7d2d0d5a3d01b24a12f115ee49e76383ff3349ee9975b491193f"
+  },
+  "src/server/chat_voice_backend.cpp": {
+    "bytes": 6562,
+    "sha256": "5a48a59cd2e43a83cff027e30635c9ec2516ae6e26a62213fd8680555ab4fc00"
+  },
+  "src/server/chat_voice_evidence.cpp": {
+    "bytes": 10395,
+    "sha256": "03b726c7f8636527f7691bf337c68c8818730fed21e51cd71e17c8f80eaed3cb"
+  },
+  "src/server/chat_voice_execution.cpp": {
+    "bytes": 7194,
+    "sha256": "5a2763a750a1e680e6542b796dbc7f5000b6aa05a3e5744f513401a4f68fc54b"
+  },
+  "src/server/chat_voices.cpp": {
+    "bytes": 6243,
+    "sha256": "285c0e993868fbbec87499677aa1485d5a445639691b29c8bb1a806dc4bf3732"
+  },
+  "src/server/client_request.cpp": {
+    "bytes": 2545,
+    "sha256": "1a26f2c393cf7e55371f4cdd885ab9e6d6ec2c4058c976eed4ae67b8b2800a7c"
+  },
+  "src/server/http_request.cpp": {
+    "bytes": 20766,
+    "sha256": "06d3d992f6264e1a6b71e84e696714b6020e649ca0917476c266d12c3860fef5"
+  },
+  "src/server/server_options.cpp": {
+    "bytes": 24651,
+    "sha256": "c0e6e1476bd1e86bd3ae8b4f84d8b6823f31b4e0e4638a179f534decbb1f7aeb"
+  },
+  "src/server/voice_api.cpp": {
+    "bytes": 5296,
+    "sha256": "221ee68919786c2aa7666bc99cab616ea9a329ad7e6632de068081bdd4d9079f"
+  },
+  "src/server/voice_verification.cpp": {
+    "bytes": 6221,
+    "sha256": "d4b13ed3aa93b327b0a82afea422bad41571d7cec91e08898c11b74fd8a2506d"
+  },
+  "src/service/ingress_main.cpp": {
+    "bytes": 35474,
+    "sha256": "a8aff58ee0181dc051eeddaf383c2254cca80fa66e5916fab9eebe00a6ea6956"
+  },
+  "tests/server_http_request_test.cpp": {
+    "bytes": 25850,
+    "sha256": "8d1c955dea6c3cb9f33fe895210f69ba2282adddbe28497d13abe731327a3818"
+  },
+  "tests/server_options_test.cpp": {
+    "bytes": 22222,
+    "sha256": "c72d88d788319d50124accb0f4722dcd5b383f128944db0daa60b311cce72dc0"
+  },
+  "tests/server_voice_api_test.cpp": {
+    "bytes": 10800,
+    "sha256": "7430b3319fe2819baa230ac60a577b75e246cb4690cd7697819850f67d3df02b"
+  },
+  "tests/server_voice_verification_test.cpp": {
+    "bytes": 3674,
+    "sha256": "6f5fdadfc49becc2cab8cec289f1b42485bba35daec6bea271246e0f742bd125"
+  },
+  "tools/serve_audit/check_inventory.py": {
+    "bytes": 27598,
+    "sha256": "da292c28bba4dbf9f440c30323076f815b6e39bd263d8597385df17d88ef77ac"
+  },
+  "tools/serve_audit/inventory.json": {
+    "bytes": 480703,
+    "sha256": "199264cd60a4e5707350c4c7acd77a5958bd64cbba9eb17097ef7f57cba7c334"
+  }
+}

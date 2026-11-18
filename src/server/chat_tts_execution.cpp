@@ -21,6 +21,10 @@ ObjectReply ChatServer::RunNativeTts(
     ActualUsageCounter& usage,
     const std::function<ObjectReply(std::string_view)>& sink,
     SpeechEncodingReceipt* receipt) {
+  const auto variant = prompt.speaker_embedding.empty()
+                           ? audio::TtsVariant::kCustomVoice17B
+                           : audio::TtsVariant::kBase17B;
+  auto& health = TtsHealth(variant);
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto previous = usage.Total();
   const auto previous_input = rate.AdmittedPromptTokens();
@@ -79,12 +83,13 @@ ObjectReply ChatServer::RunNativeTts(
     RequestDiagnostics::Scope wait(diagnostic,
                                    RequestDiagnostics::Wait::kStorage);
     auto loaded = EnsureNativeTts(true, {{}, control->deadline(), cancelled},
-                                  &diagnostic);
+                                  &diagnostic, variant);
     if (!loaded.ok()) return loaded;
   }
   TtsResourcePlan resources;
   if (!PlanTtsServiceResources(tts_limits_, prompt.text_ids.size(),
-                               prompt.prefill.size(), max_frames, &resources))
+                               prompt.prefill.size(), max_frames, &resources,
+                               variant))
     return Error(400, "tts_workspace_limit", "TTS workspace budget exceeded");
   uint8_t* generation = nullptr;
   uint8_t* codec = nullptr;
@@ -102,14 +107,14 @@ ObjectReply ChatServer::RunNativeTts(
       cleaned &= freed.ok();
     }
     if (!cleaned) {
-      tts_health_.ComputeFailed(AsrFailure::kDevice, Clock::now());
+      health.ComputeFailed(AsrFailure::kDevice, Clock::now());
       AbortBackendExecution();
     } else if (had) {
       work.Completed();
     }
   });
   const auto failed = [&](AsrFailure kind, const char* message) {
-    tts_health_.ComputeFailed(kind, Clock::now());
+    health.ComputeFailed(kind, Clock::now());
     if (kind == AsrFailure::kDevice) AbortBackendExecution();
     return Error(503, TtsFailureCode(kind), message);
   };
@@ -127,7 +132,7 @@ ObjectReply ChatServer::RunNativeTts(
     RequestDiagnostics::ExecutionScope work(diagnostic, stage);
     OnException drain([&] {
       if (cudaStreamSynchronize(nullptr) != cudaSuccess) {
-        tts_health_.ComputeFailed(AsrFailure::kDevice, Clock::now());
+        health.ComputeFailed(AsrFailure::kDevice, Clock::now());
         AbortBackendExecution();
       }
     });
@@ -240,7 +245,7 @@ ObjectReply ChatServer::RunNativeTts(
   if (!cleaned)
     return Error(503, "gpu_unhealthy", "TTS workspace cleanup failed");
   if (cancelled()) return interrupted();
-  tts_health_.ComputeSucceeded();
+  health.ComputeSucceeded();
   *receipt = std::move(pending);
   return {};
 }

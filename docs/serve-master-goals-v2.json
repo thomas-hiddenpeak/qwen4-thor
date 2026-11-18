@@ -8621,6 +8621,22 @@
         "evidence": "evidence/serve-voice-consent-match-cpu-20261118/README.md",
         "cpu_cases": 8,
         "gpu_loads": 0
+      },
+      "service": {
+        "state": "NATIVE_SAMPLE_VOICE_SERVICE_CPU_QUALIFIED_HTTP_PENDING",
+        "evidence": "evidence/serve-custom-voice-service-cpu-20261118/README.md",
+        "cpu_contracts": 27,
+        "gpu_loads": 0,
+        "engine_sha256": "5eb2e4660c37a3cac95637e181dd190c6de583d1451ce813f163b70bfb80ea7e",
+        "runtime_http_qualified": false,
+        "remaining": [
+          "real consent and sample HTTP, different speaker and wrong phrase negatives",
+          "new target text Speech/Chat plus independent ASR",
+          "scoped restart/revocation, SDK and TLS",
+          "managed package and preserved-state compatible rollback",
+          "reference audio ICL, prompt voices and Live",
+          "listening and speaker similarity"
+        ]
       }
     }
   }

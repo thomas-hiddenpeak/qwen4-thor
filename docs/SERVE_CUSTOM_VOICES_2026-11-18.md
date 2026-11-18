@@ -1,7 +1,7 @@
 # 原生自定义音色实施计划
 
-承接Serve总计划A01/A10/A12。当前Speech与Chat能解析`voice.id`，但
-真实注册/条件后端缺失；本项要实际合成注册音色，不能用换成内置
+承接Serve总计划A01/A10/A12。当前Speech与Chat已接入`voice.id`的真实
+Base条件路径，注册/核验源码与针对CPU完成、HTTP验收待推进。不能用换成内置
 speaker、只保存一个ID或报unsupported代替。内置9音色已实现，完整
 音色/风格业务覆盖继续，不推定与OpenAI专有音色音质或身份相同。
 
@@ -42,7 +42,7 @@ OpenAI音色ID及服务权限语义作接口参考，不调用外部语音API。
 待实际后端验证。checkpoint BF16存储不代表原生激活采用BF16。
 
 2048维声纹组件已经实际验收：见[组件证据](evidence/serve-custom-voice-speaker-20261118/README.md)。
-完整源SHA通过后仅保留声纹前缀；全Base合成资产仍未保留。
+早期源SHA通过后仅留声纹前缀；随后完整Base资产已取得并通过全SHA。
 36数值比较和8边界/16生命周期通过，官方FP32前端差异对最终向量
 的影响在冻结门内。下一组实现Base声纹条件、持久登记和实际合成，
 不以组件通过代替自定义音色交付。
@@ -72,3 +72,8 @@ metadata。样本/consent不超过60秒/10MiB，需同一声音；登记不能
 [输入与持久登记26项CPU已通过](evidence/serve-custom-voice-registry-cpu-20261118/README.md)。
 尚未接入实际HTTP。保留原始24kHz条件输入，真实授权与同人验证后
 才登记；新增对象类型需要兼容读取回退包，有状态回退是发行必要项。
+
+服务源码与27项针对CPU已完成，见[服务CPU证据](evidence/serve-custom-voice-service-cpu-20261118/README.md)。
+`--tts-base-model-dir`独立选择固定Base资产；启用登记还需已有ASR、
+VAD和说话人资产。元数据/撤销不依赖模型健康；合成与注册分别按
+真实统一RAM预算准入。候选未发布，真实HTTP与有状态兼容回退继续。
