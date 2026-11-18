@@ -8623,12 +8623,12 @@
         "gpu_loads": 0
       },
       "service": {
-        "state": "VOICE_CONSISTENCY_DIAGNOSED_LOG_LIFETIME_FIXED_HTTP_PENDING",
+        "state": "REGISTERED_VOICE_HTTP_PROFILE_AND_MANAGED_RECOVERY_ACCEPTED_DELIVERY_PENDING",
         "evidence": "evidence/serve-custom-voice-service-cpu-20261118/README.md",
         "cpu_contracts": 27,
         "gpu_loads": 0,
         "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
-        "runtime_http_qualified": false,
+        "runtime_http_qualified": true,
         "remaining": [
           "managed recovery and reversible delivery",
           "preserved-state compatible rollback",
@@ -8659,7 +8659,7 @@
           "real_profile_driver_pending": false,
           "base_only_saved_voice_qualification_pending": true,
           "default_replaced": false,
-          "real_profile_execution_pending": true,
+          "real_profile_execution_pending": false,
           "profile_driver_evidence": "evidence/serve-voice-profile-driver-cpu-20261119/README.md",
           "profile_driver_cpu_cases": 12
         },
@@ -8728,6 +8728,19 @@
           "cpu_distinct_cases": 2,
           "real_recovery_pending": true,
           "original_failed_starts": 0
+        },
+        "managed_recovery": {
+          "state": "ACCEPT_NATIVE_REGISTERED_VOICE_SERVICE_COMPOSITION",
+          "evidence": "evidence/serve-voice-managed-recovery-20261119/README.md",
+          "starts": 4,
+          "posts": 63,
+          "probes": 1,
+          "seconds": 569.735742425546,
+          "same_voice_id_continuity": true,
+          "original_version_driver_passed": false,
+          "complete_offline_review_accepted": true,
+          "health_cpu_cases": 15,
+          "default_replaced": false
         }
       }
     },

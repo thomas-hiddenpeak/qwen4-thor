@@ -1,0 +1,1059 @@
+{
+  "status": "ACCEPT_NATIVE_REGISTERED_VOICE_SERVICE_COMPOSITION",
+  "binary_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/service-package-01/bundle",
+    "manifest_sha256": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/retained-01/bundle",
+    "manifest_sha256": "db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/retained-01/bundle",
+    "manifest_sha256": "db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793"
+  },
+  "tls_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/tls-package-01/bundle",
+    "manifest_sha256": "50a4bad694b7e5c70999129b9614d4103cdf8bd0aad55b021e98a6a10c49cce2"
+  },
+  "stages": [
+    {
+      "name": "retained-service-02",
+      "counts": {
+        "starts": 1,
+        "chats": 14,
+        "probes": 0,
+        "controls": 166
+      },
+      "actual_model_execs": 1,
+      "seconds": 123.87874657381326,
+      "nvml_queries": 117,
+      "strict_lease_seconds": 125.3575727478601,
+      "phases": [
+        "primary"
+      ],
+      "business": {
+        "results": {
+          "primary-asr": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": false,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "primary-chat-audio": {
+            "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+            "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+            "usage": {
+              "prompt_tokens": 280,
+              "completion_tokens": 15,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 55
+              },
+              "q4t_audio_preparation": {
+                "input_tokens": 70,
+                "output_tokens": 11,
+                "audio_tokens": 55
+              }
+            }
+          },
+          "primary-tts": {
+            "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+            "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+            "usage": {
+              "prompt_tokens": 180,
+              "completion_tokens": 475,
+              "total_tokens": 655,
+              "completion_tokens_details": {
+                "audio_tokens": 464
+              },
+              "q4t_audio_synthesis": {
+                "input_tokens": 15,
+                "output_tokens": 465
+              }
+            },
+            "health": {
+              "state": "ready",
+              "reason": "none",
+              "core_readiness_dependency": false,
+              "model": "qwen3-tts-12hz-1.7b-customvoice",
+              "device_bytes": 8123997956,
+              "load_attempts": 2,
+              "load_failures": 0,
+              "compute_failures": 0,
+              "recovery": "request_driven",
+              "retry_delay_ms": 5000,
+              "asset_cleanup_pending": false
+            },
+            "limits": {
+              "max_text_tokens": 512,
+              "max_prefill_tokens": 512,
+              "max_frames": 200,
+              "workspace_mib": 2048,
+              "max_output_mib": 16
+            }
+          },
+          "primary-voice": {
+            "consent_id": "cons_0caa577a7e6cb9fcea64d99d84c72194",
+            "voice_id": "voice_bd03ea7a94aaf9739e85f4e40263ffb3",
+            "chat_id": "chatcmpl-auto-ab1bbe9c6e1fd15c2801774dd453c38d",
+            "speech_sha256": "58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d",
+            "chat_audio_sha256": "15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f",
+            "speech_transcript": "The blue train arrives at noon.",
+            "chat_transcript": "Please close the window."
+          }
+        },
+        "native_tls": false,
+        "version_recovery": false,
+        "health": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-asr-0.6b",
+          "device_bytes": 1876017152,
+          "load_attempts": 5,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "actual_core_text": "42",
+        "default_replaced": false,
+        "reused_completed": null,
+        "cancellation": "not_applicable"
+      }
+    },
+    {
+      "name": "tls-service-02",
+      "counts": {
+        "starts": 1,
+        "chats": 25,
+        "probes": 0,
+        "controls": 215
+      },
+      "actual_model_execs": 1,
+      "seconds": 204.14609724469483,
+      "nvml_queries": 188,
+      "strict_lease_seconds": 206.14284022711217,
+      "phases": [
+        "tls-before",
+        "tls-after"
+      ],
+      "business": {
+        "results": {
+          "python-zh-json": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": false,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "chunked-zh": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": false,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "js-en-stream": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": true,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "chat-python": {
+            "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+            "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+            "usage": {
+              "prompt_tokens": 280,
+              "completion_tokens": 15,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 55
+              },
+              "q4t_audio_preparation": {
+                "input_tokens": 70,
+                "output_tokens": 11,
+                "audio_tokens": 55
+              }
+            }
+          },
+          "chat-js": {
+            "request_sha256": "40d96869476682e6f3713e9c75e470edbb8471401c869bbf2486ebe853acdd65",
+            "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+            "usage": {
+              "prompt_tokens": 280,
+              "completion_tokens": 15,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 55
+              },
+              "q4t_audio_preparation": {
+                "input_tokens": 70,
+                "output_tokens": 11,
+                "audio_tokens": 55
+              }
+            }
+          },
+          "tls-before-tts": {
+            "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+            "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+            "usage": {
+              "prompt_tokens": 180,
+              "completion_tokens": 475,
+              "total_tokens": 655,
+              "completion_tokens_details": {
+                "audio_tokens": 464
+              },
+              "q4t_audio_synthesis": {
+                "input_tokens": 15,
+                "output_tokens": 465
+              }
+            },
+            "health": {
+              "state": "ready",
+              "reason": "none",
+              "core_readiness_dependency": false,
+              "model": "qwen3-tts-12hz-1.7b-customvoice",
+              "device_bytes": 8123997956,
+              "load_attempts": 2,
+              "load_failures": 0,
+              "compute_failures": 0,
+              "recovery": "request_driven",
+              "retry_delay_ms": 5000,
+              "asset_cleanup_pending": false
+            },
+            "limits": {
+              "max_text_tokens": 512,
+              "max_prefill_tokens": 512,
+              "max_frames": 200,
+              "workspace_mib": 2048,
+              "max_output_mib": 16
+            }
+          },
+          "tls-after-tts": {
+            "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+            "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+            "usage": {
+              "prompt_tokens": 180,
+              "completion_tokens": 475,
+              "total_tokens": 655,
+              "completion_tokens_details": {
+                "audio_tokens": 464
+              },
+              "q4t_audio_synthesis": {
+                "input_tokens": 15,
+                "output_tokens": 465
+              }
+            },
+            "health": {
+              "state": "ready",
+              "reason": "none",
+              "core_readiness_dependency": false,
+              "model": "qwen3-tts-12hz-1.7b-customvoice",
+              "device_bytes": 8123997956,
+              "load_attempts": 3,
+              "load_failures": 0,
+              "compute_failures": 0,
+              "recovery": "request_driven",
+              "retry_delay_ms": 5000,
+              "asset_cleanup_pending": false
+            },
+            "limits": {
+              "max_text_tokens": 512,
+              "max_prefill_tokens": 512,
+              "max_frames": 200,
+              "workspace_mib": 2048,
+              "max_output_mib": 16
+            }
+          },
+          "tls-before-voice": {
+            "consent_id": "cons_f351c92ed15d0f3ac0db9bdef4b043a2",
+            "voice_id": "voice_8383b862322d5ff109feceb4e67473e5",
+            "chat_id": "chatcmpl-auto-fbded7ae1fe40529b57df23aab99b4a5",
+            "speech_sha256": "58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d",
+            "chat_audio_sha256": "15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f",
+            "speech_transcript": "The blue train arrives at noon.",
+            "chat_transcript": "Please close the window."
+          },
+          "tls-after-voice": {
+            "consent_id": "cons_f351c92ed15d0f3ac0db9bdef4b043a2",
+            "voice_id": "voice_8383b862322d5ff109feceb4e67473e5",
+            "chat_id": "chatcmpl-auto-d6b4b46effc4be7b6516e70f5f82ab78",
+            "speech_sha256": "58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d",
+            "chat_audio_sha256": "15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f",
+            "speech_transcript": "The blue train arrives at noon.",
+            "chat_transcript": "Please close the window."
+          }
+        },
+        "native_tls": true,
+        "version_recovery": false,
+        "health": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-asr-0.6b",
+          "device_bytes": 1876017152,
+          "load_attempts": 8,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "actual_core_text": "42",
+        "default_replaced": false,
+        "reused_completed": null,
+        "cancellation": "verified"
+      }
+    },
+    {
+      "name": "version-service-01",
+      "counts": {
+        "starts": 2,
+        "chats": 24,
+        "probes": 1,
+        "controls": 373
+      },
+      "actual_model_execs": 2,
+      "seconds": 241.71089860703796,
+      "nvml_queries": 225,
+      "strict_lease_seconds": 243.03400834882632,
+      "phases": [
+        "primary",
+        "fallback"
+      ],
+      "business": {
+        "results": {
+          "primary-asr": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": false,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "fallback-asr": {
+            "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "auxiliaries": [
+              "alignment",
+              "vad",
+              "speaker",
+              "separator"
+            ],
+            "stream": false,
+            "quality": {
+              "policy": "source-specific-owner-inflection-20261118",
+              "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+              "voices": [
+                {
+                  "reference": "The child almost hurt the small dog.",
+                  "observed": "The child almost hurts the small dog.",
+                  "wer": 0.14285714285714285,
+                  "threshold": 0.125,
+                  "accepted_inflection": true
+                },
+                {
+                  "reference": "We are sure that one war is enough.",
+                  "observed": "We are sure that one war is enough.",
+                  "wer": 0.0,
+                  "threshold": 0.125,
+                  "accepted_inflection": false
+                }
+              ],
+              "overlap_seconds": 1.68,
+              "model_quality_limitation": true
+            },
+            "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+            "segments": 2,
+            "labels": [
+              "B",
+              "A"
+            ]
+          },
+          "primary-chat-audio": {
+            "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+            "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+            "usage": {
+              "prompt_tokens": 280,
+              "completion_tokens": 15,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 55
+              },
+              "q4t_audio_preparation": {
+                "input_tokens": 70,
+                "output_tokens": 11,
+                "audio_tokens": 55
+              }
+            }
+          },
+          "fallback-chat-audio": {
+            "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+            "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+            "usage": {
+              "prompt_tokens": 280,
+              "completion_tokens": 15,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 55
+              },
+              "q4t_audio_preparation": {
+                "input_tokens": 70,
+                "output_tokens": 11,
+                "audio_tokens": 55
+              }
+            }
+          },
+          "primary-tts": {
+            "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+            "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+            "usage": {
+              "prompt_tokens": 180,
+              "completion_tokens": 475,
+              "total_tokens": 655,
+              "completion_tokens_details": {
+                "audio_tokens": 464
+              },
+              "q4t_audio_synthesis": {
+                "input_tokens": 15,
+                "output_tokens": 465
+              }
+            },
+            "health": {
+              "state": "ready",
+              "reason": "none",
+              "core_readiness_dependency": false,
+              "model": "qwen3-tts-12hz-1.7b-customvoice",
+              "device_bytes": 8123997956,
+              "load_attempts": 2,
+              "load_failures": 0,
+              "compute_failures": 0,
+              "recovery": "request_driven",
+              "retry_delay_ms": 5000,
+              "asset_cleanup_pending": false
+            },
+            "limits": {
+              "max_text_tokens": 512,
+              "max_prefill_tokens": 512,
+              "max_frames": 200,
+              "workspace_mib": 2048,
+              "max_output_mib": 16
+            }
+          },
+          "fallback-tts": {
+            "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+            "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+            "usage": {
+              "prompt_tokens": 180,
+              "completion_tokens": 475,
+              "total_tokens": 655,
+              "completion_tokens_details": {
+                "audio_tokens": 464
+              },
+              "q4t_audio_synthesis": {
+                "input_tokens": 15,
+                "output_tokens": 465
+              }
+            },
+            "health": {
+              "state": "ready",
+              "reason": "none",
+              "core_readiness_dependency": false,
+              "model": "qwen3-tts-12hz-1.7b-customvoice",
+              "device_bytes": 8123997956,
+              "load_attempts": 2,
+              "load_failures": 0,
+              "compute_failures": 0,
+              "recovery": "request_driven",
+              "retry_delay_ms": 5000,
+              "asset_cleanup_pending": false
+            },
+            "limits": {
+              "max_text_tokens": 512,
+              "max_prefill_tokens": 512,
+              "max_frames": 200,
+              "workspace_mib": 2048,
+              "max_output_mib": 16
+            }
+          },
+          "primary-voice": {
+            "consent_id": "cons_c160379854e1a74f30f08e31101671e5",
+            "voice_id": "voice_3227b37cc54fb6026fe2b580f5eea503",
+            "chat_id": "chatcmpl-auto-195010ecdc35093faca7fdb0d8303dee",
+            "speech_sha256": "58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d",
+            "chat_audio_sha256": "15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f",
+            "speech_transcript": "The blue train arrives at noon.",
+            "chat_transcript": "Please close the window."
+          },
+          "fallback-voice": {
+            "consent_id": "cons_c160379854e1a74f30f08e31101671e5",
+            "voice_id": "voice_3227b37cc54fb6026fe2b580f5eea503",
+            "chat_id": "chatcmpl-auto-ea737555e9c3d42ba0c8ad5a6f62e6c6",
+            "speech_sha256": "58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d",
+            "chat_audio_sha256": "15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f",
+            "speech_transcript": "The blue train arrives at noon.",
+            "chat_transcript": "Please close the window."
+          }
+        },
+        "native_tls": false,
+        "version_recovery": true,
+        "health": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-asr-0.6b",
+          "device_bytes": 1876017152,
+          "load_attempts": 4,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "actual_core_text": "42",
+        "default_replaced": false,
+        "reused_completed": null,
+        "cancellation": "not_applicable"
+      }
+    }
+  ],
+  "actual_model_starts": 4,
+  "service_requests": 63,
+  "service_probes": 1,
+  "service_seconds": 569.735742425546,
+  "nvml_queries": 530,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "strict_finalizers_all_passed": false,
+  "strict_runtime_environment_checks_passed": true,
+  "original_version_driver_passed": false,
+  "version_offline_complete_review_passed": true,
+  "health_correction_cpu_cases": 15,
+  "primary_light_evidence": "docs/evidence/serve-voice-primary-light-20261119/README.md",
+  "direct_http_evidence": [
+    "docs/evidence/serve-voice-chat-fix-20261119/README.md",
+    "docs/evidence/serve-voice-sdk-tls-20261119/README.md"
+  ],
+  "tls_composition": {
+    "status": "PASS_NATIVE_ASR_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+    "manifest_sha256": "50a4bad694b7e5c70999129b9614d4103cdf8bd0aad55b021e98a6a10c49cce2",
+    "engine_binary_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "actual_business": {
+      "status": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+      "strict_lease_seconds": 206.14284022711217,
+      "nvml_queries": 188,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 25,
+        "probes": 0,
+        "controls": 215
+      },
+      "source_commit": "825af60626a55c6d0e2486dea0509fdd4ba95cde",
+      "plan_sha256": "4a345bc279e33eba3c2214d6ab07a41ab576d66ec08ab537accd98109573060c",
+      "result_sha256": "769ca16e0ddbf2a3be1b5b2df3a4f91768c585cb422c4ba5a6e2d1c1461c1fd4",
+      "lease_result_sha256": "5725395c5cbbe3bc7971e4bd146ac4cd8fba63e6296f826dd0355a7198f6a841",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_service_acceptance": {
+    "status": "PASS_REVIEWED_NATIVE_VOICE_VERSION_RECORDS",
+    "acceptance": "ACCEPT_REVIEWED_NATIVE_VOICE_VERSION_RECORDS",
+    "manifest_sha256": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "engine_binary_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "actual_business": {
+      "status": "ACCEPT_REVIEWED_NATIVE_VOICE_VERSION_RECORDS",
+      "strict_lease_seconds": 243.03400834882632,
+      "nvml_queries": 225,
+      "env_abort": false,
+      "original_driver_status": "FAILED",
+      "original_lease_status": "COMMAND_FAILED",
+      "original_continuous_driver_passed": false,
+      "reviewed_complete_records": true,
+      "counts": {
+        "starts": 2,
+        "chats": 24,
+        "probes": 1,
+        "controls": 373
+      },
+      "source_commit": "825af60626a55c6d0e2486dea0509fdd4ba95cde",
+      "plan_sha256": "dfb97b9befe61675ab0a0d3beac5b973c34614d8d20f006e290e67a3054d3bcd",
+      "result_sha256": "c959a51fc412c5ce8864b4f26f8928b7748046cdb33b234edfda06d06da99d4d",
+      "lease_result_sha256": "ecafc08f107b2d0b8d4e26effaa71d9e886d55c03d5e6699037337fafbd0730d",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      },
+      "source_scope": "All original frozen sources verified unchanged after run and before correction; only the two declared acceptance files changed afterward; runtime source and sealed payload unchanged",
+      "source_snapshot": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/managed-health-review-source-01/snapshot.json",
+        "sha256": "3204266b8f3be81266df33d68764d5ec23e27aac6761d352dda2e7e40c9afcbb"
+      },
+      "validator_changes": {
+        "tools/native_tts/managed_voice.py": {
+          "original": "bad7b8342cf51eee1da2d92f6dfddcc6ed5e6cdf4e63bdc97c1867fd34980afd",
+          "corrected": "a139069419317f986b91c87d217588ea746e4580f0491a3c47034176bd1ed5b9"
+        },
+        "tools/native_tts/test_managed_voice.py": {
+          "original": "1529897797153873149feaf60284fbfa934b4cb4df5db67b8e81149a7d706bdc",
+          "corrected": "deaae7b1fd96ce3034f9d2bb1500d387d75ffefc0f33ab546c9bd9dc324f0326"
+        }
+      },
+      "reviewed_business_sha256": "f3b6e958597ee5f799f6250faeaa3662f19241cb37ac33e4e15f1a9e6c0cbd1f",
+      "original_records_sha256": "f2e48d89d8634b978bbd90daf8db49a3532f175a976351bac3ba96b67052c970"
+    },
+    "original_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/version-service-01",
+    "original_records_unchanged": true,
+    "original_failure_relabelled": false,
+    "new_gpu_starts": 0,
+    "new_http_requests": 0,
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "modern_service_acceptance": {
+    "status": "PASS_NATIVE_ASR_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+    "manifest_sha256": "db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793",
+    "engine_binary_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "actual_business": {
+      "status": "ACCEPT_NATIVE_ASR_SERVICE_RETAINED",
+      "strict_lease_seconds": 125.3575727478601,
+      "nvml_queries": 117,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 14,
+        "probes": 0,
+        "controls": 166
+      },
+      "source_commit": "825af60626a55c6d0e2486dea0509fdd4ba95cde",
+      "plan_sha256": "a7ca81a640c7f65e3ad84ddb629533bbeaa544fc7e72901c8b675a5f6aebbca0",
+      "result_sha256": "9a6109bda59896b761952e3013ce353269a700f5a061ece2f40f73e2059c67d9",
+      "lease_result_sha256": "902ab62c1650d8fb3ecce252d7ea7ad05662fcc22e43d579755a70192a0f7399",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_whole_package_gpu_run": true,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "archive_sha256": "6bed932a670cb45577129836e4f4464f229ecfc048d519d210289703d11a6eb8",
+  "omitted_private_or_source_audio": {
+    "retained-service-02/execution/primary-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "97ab3aba1e1a59bb90039513585098435ac4d85a46759845dcc9d8f06c37530e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "729cc71f1769df0c6f9204a911499cb85b028767281ac3978024d8f19c819fb9",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/primary-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "08aa21af3745a2e561b45849c680fbabacd709d55f689f241f60c75a49bfe22a",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "08aa21af3745a2e561b45849c680fbabacd709d55f689f241f60c75a49bfe22a",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "97ab3aba1e1a59bb90039513585098435ac4d85a46759845dcc9d8f06c37530e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "retained-service-02/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/chat-python-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "0d96d571aaf82e867463d2ab184d35a074c0ae38db534b2b8d40629291c8a1d6",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-before-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/tls-after-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "d5fbd36f9f055d0c7a4902e8685441311900468ab5981c998f00b526ab10a4f4",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "aa67ba187b6a4e921d6a96d5a0cb6b2ba1426b2daf919dc88fc2357314d8f0b0",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-service-02/execution/chat-js-request.json": {
+      "bytes": 180071,
+      "sha256": "41b7520b618d81aeddefcaad0b2a78df3f4e22311d3d48901fb895c2260a97c1",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-create-request.body": {
+      "bytes": 215565,
+      "sha256": "5b55e0450697f0e02cd9abc9618ab6818e7b9ac389e6150e9fa4a9c5b7b67a5e",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-chat-audio-request.json": {
+      "bytes": 180000,
+      "sha256": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-speech-asr-request.body": {
+      "bytes": 111762,
+      "sha256": "5d1c1db0e6fada3394a1b3d9f0f0a7eee36ba567c0fe1de9293f8a20c4917256",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/primary-voice-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-revoked-chat-request.body": {
+      "bytes": 370,
+      "sha256": "38002e38ef145acb29a983391f3444d85587a705c1c045bb10cf644e3220409b",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-revoked-speech-request.body": {
+      "bytes": 190,
+      "sha256": "7ddef9d06c43482e804829f1cdeef628a5e7d14bd6be618d027a7473a5467f88",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/voice-consent-request.body": {
+      "bytes": 326796,
+      "sha256": "c84e5b5a09bcd0dcf68ee8e8b412a2ccf2690737c8e48c1e1940d4e38dc28b19",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "version-service-01/execution/fallback-voice-chat-asr-request.body": {
+      "bytes": 77202,
+      "sha256": "fb29e4d2f582abb4a5245fc26afeada3a6c680c108323df0cf27590e7de87a8d",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "service-package-01/prepare-review.json": {
+      "bytes": 5591,
+      "sha256": "b91be6040b0137adaa3017d11c739cdf5270f6770b88e945e90160f9e63f3a27",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "service-package-01/clients.json": {
+      "bytes": 657,
+      "sha256": "87264b5cc81c014ad665b0cfe6271c9dd84f4b10c076206d87a224aab43974c7",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-package-01/policy.json": {
+      "bytes": 579,
+      "sha256": "01cad337b438807ba96de4f329e6f19dc928dd6cac3c28b9800082def6b17474",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "tls-package-01/clients.json": {
+      "bytes": 749,
+      "sha256": "02dcf6572f041962f18e4b195b5958b7c302ac40756de15bf100beb3ea7f561c",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "archive_voice_recovery.py": {
+      "bytes": 10757,
+      "sha256": "244111b1f4ed1cfb9ddab1cae1012250f980083cbab5f0ec37e36d673bdc0aa8",
+      "scope": "private identity or original audio request retained locally"
+    },
+    "archive_voice_recovery_02.py": {
+      "bytes": 12773,
+      "sha256": "9b9d9fb7b5bda0a33573cfa59ef4e9accb54dee7d0fd2770010b8fab072b0498",
+      "scope": "private identity or original audio request retained locally"
+    }
+  },
+  "original_failed_stage": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/retained-service-01",
+    "starts": 0,
+    "posts": 0,
+    "evidence": "docs/evidence/serve-voice-managed-import-cpu-20261119/README.md"
+  },
+  "original_failure_relabelled": false,
+  "actual_recovery_profile": {
+    "kind": "unchanged_primary"
+  },
+  "listening": "PENDING"
+}

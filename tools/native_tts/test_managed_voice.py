@@ -141,6 +141,28 @@ class ManagedVoice(unittest.TestCase):
             ('fallback-voice-stored-chat.wire',lambda v:v['choices'][0]['message']['audio'].update(data=''))]
         for name,change in cases:self.mutate(stage,name,change)
 
+    def test_unloaded_registration_encoder_only_after_whole_payload_restart(self):
+        stage,_=self.completed()
+        name='fallback-voice-config.wire'
+        path=stage.output/name;value=json.loads(path.read_text())
+        unloaded=dict(value['native_voice_health'],state='configured',device_bytes=0,
+            load_attempts=0,load_failures=0,compute_failures=0,asset_cleanup_pending=False)
+        value['native_voice_health']=unloaded;save(path,value)
+        self.check(stage)
+        for key in ('device_bytes','load_attempts','load_failures','compute_failures'):
+            self.mutate(stage,name,lambda v,k=key:v['native_voice_health'].update({k:1}))
+        self.mutate(stage,name,lambda v:v['native_voice_health'].update(asset_cleanup_pending=True))
+        self.mutate(stage,name,lambda v:v['native_voice_health'].update(reason='load_failed'))
+        self.mutate(stage,'primary-voice-config.wire',lambda v:v.update(native_voice_health=unloaded))
+        tls,_=self.completed('tls')
+        self.mutate(tls,'tls-after-voice-config.wire',lambda v:v.update(native_voice_health=unloaded))
+
+    def test_synthesis_backend_cannot_be_unloaded_before_actual_output(self):
+        stage,_=self.completed()
+        self.mutate(stage,'fallback-voice-config.wire',lambda v:
+            v['native_tts_base_health'].update(state='configured',device_bytes=0,
+                load_attempts=0,load_failures=0,compute_failures=0,asset_cleanup_pending=False))
+
     def test_revocation_must_retire_original_ids_and_both_generation_routes(self):
         stage,_=self.completed()
         for name in ('voice-revoke.wire','voice-delete.wire'):

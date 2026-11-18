@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[注册音色实际恢复通过](evidence/serve-voice-managed-recovery-20261119/README.md)：
+4启动/63业务POST/1探测/569.736秒；末组注册编码器懒加载
+断言修正，15CPU及完整原记录离线复核通过，原FAIL保持、0追加GPU。
+同ID跨TLS入口和整包回退，
+完整输出/独立ASR/历史/撤销通过，旧输入和双SDK保留。全部清理/来源
+通过，原import及磁盘启动前暂停保留。默认rev316待可回退交付；
+Base-only/ICL/提示词音色/Live/听感及全部master继续。
+
 [恢复驱动隔离导入修复](evidence/serve-voice-managed-import-cpu-20261119/README.md)：
 首组在模型前import失败，0启动/0POST，原失败/清理socket错误保留，
 进程/端口/锁后核实释放。2项不同CPU/3次执行通过，生产来源隔离保持；

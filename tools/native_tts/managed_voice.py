@@ -203,7 +203,19 @@ def check(out, plan, configured):
         for key,model in [('native_tts_base_health',fixed['model']),
                           ('native_voice_health',fixed['model']+'-speaker')]:
             health=config[key]
-            require(health.get('state') in ('ready','metadata_ready') and
+            fresh_condition = (key == 'native_voice_health' and
+                plan['scenario'] == 'tool_version' and label == 'fallback' and
+                health.get('state') == 'configured')
+            if fresh_condition:
+                # The same persisted speaker vector is consumed after a new
+                # model process; registration's encoder need not be loaded.
+                require(all(type(health.get(k)) is int and health[k] == 0
+                    for k in ('device_bytes','load_attempts','load_failures',
+                              'compute_failures')) and
+                    health.get('asset_cleanup_pending') is False,
+                    'unloaded registration encoder has work or pending failure')
+            require((health.get('state') in ('ready','metadata_ready') or
+                     fresh_condition) and
                 health.get('model')==model and health.get('reason')=='none' and
                 health.get('core_readiness_dependency') is False and
                 type(health.get('compute_failures')) is int and health['compute_failures']==0,
