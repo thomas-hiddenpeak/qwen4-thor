@@ -63,7 +63,7 @@ ObjectReply ChatServer::EnsureNativeAsr(bool weights,
   };
   try {
     const uint64_t estimate =
-        kHostMargin + (weights ? 3 * kNativeAsrFileBytes : 0);
+        kHostMargin + (weights ? 2 * kNativeAsrFileBytes : 0);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(AsrFailure::kResource,
                   "ASR host memory admission unavailable");

@@ -36,13 +36,7 @@ ObjectReply ChatServer::RunNativeAsr(
   const auto interrupted = [&] {
     return Error(409, control->Reason(), "Transcription execution cancelled");
   };
-  {
-    RequestDiagnostics::Scope waiting(diagnostic,
-                                      RequestDiagnostics::Wait::kStorage);
-    auto loaded = EnsureNativeAsr(true, {{}, control->deadline(), cancelled},
-                                  &diagnostic);
-    if (!loaded.ok()) return loaded;
-  }
+  std::unique_lock<std::mutex> auxiliary;
   diagnostic.Stage("slot_admission");
   int slot;
   {
@@ -72,6 +66,22 @@ ObjectReply ChatServer::RunNativeAsr(
     FreeSeqId(slot);
     diagnostic.Released();
   });
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kSlot);
+    auxiliary = LockUnlessCancelled(auxiliary_mu_, cancelled);
+  }
+  if (!auxiliary.owns_lock() || cancelled()) return interrupted();
+  if (auto switched = ActivateAuxiliaryFamily(false, cancelled); !switched.ok())
+    return switched;
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kStorage);
+    auto loaded = EnsureNativeAsr(true, {{}, control->deadline(), cancelled},
+                                  &diagnostic);
+    if (!loaded.ok()) return loaded;
+  }
+
   audio::AsrEncoderLayout encoder_layout;
   audio::AsrDecoderLayout decoder_layout;
   const size_t budget = uint64_t(asr_limits_.workspace_mib) << 20;

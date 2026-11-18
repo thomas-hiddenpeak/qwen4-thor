@@ -5,8 +5,9 @@
 
 #include "q4t/audio/tts_codec_layout.h"
 #include "q4t/io/json.h"
+#include "q4t/runtime/memory_budget.h"
+#include "q4t/server/auxiliary_resources.h"
 #include "q4t/server/tts_assets.h"
-#include "q4t/server/chat_capabilities.h"
 #include "q4t/test.h"
 
 namespace {
@@ -27,10 +28,10 @@ Q4T_TEST(tts_resources_cover_real_fp32_expansion_and_request_dimensions) {
   Q4T_CHECK(PlanTtsServiceResources(limits, 32, 48, 160, &plan));
   Q4T_CHECK(plan.resident_weight_bytes == 8123997956ULL);
   Q4T_CHECK(plan.source_staging_bytes == 4515695644ULL);
-  Q4T_CHECK(plan.possible_file_page_bytes == plan.source_staging_bytes);
+  Q4T_CHECK(plan.possible_file_page_bytes == 0);
   Q4T_CHECK(plan.expansion_scratch_bytes == (6ULL << 20));
   Q4T_CHECK(plan.load_peak_bytes >=
-            8123997956ULL + 2 * 4515695644ULL + (518ULL << 20));
+            8123997956ULL + 4515695644ULL + (518ULL << 20));
   Q4T_CHECK(plan.request_device_bytes ==
             plan.generation_bytes + plan.codec_bytes);
   Q4T_CHECK(plan.request_host_bytes >=
@@ -144,21 +145,95 @@ Q4T_TEST(tts_health_cancellation_release_and_device_fault_boundaries) {
   return true;
 }
 
-Q4T_TEST(tts_capability_pins_the_actual_talker_and_codec_independently_of_health) {
-  for (bool enabled : {false, true}) {
-    const auto value = Parse(ChatCapabilitiesJson(
-        "chat", false, true, 0, nullptr, false, false, false, false, 64,
-        false, false, enabled));
-    const auto* speech = value.Find("speech");
-    Q4T_CHECK(speech && speech->GetBool("enabled") == enabled);
-    Q4T_CHECK(speech->GetString("profile") == kNativeTtsProfile);
-    Q4T_CHECK(speech->GetString("model") == kNativeTtsModel);
-    Q4T_CHECK(speech->GetString("revision") == kNativeTtsRevision);
-    Q4T_CHECK(speech->GetString("weight_sha256") == kNativeTtsWeightSha256);
-    Q4T_CHECK(speech->GetString("codec_weight_sha256") ==
-              kNativeTtsCodecWeightSha256);
-    Q4T_CHECK(!speech->GetBool("core_health_dependency", true));
-    Q4T_CHECK(value.Find("chat_audio_output")->GetBool("enabled") == enabled);
-  }
+Q4T_TEST(auxiliary_resources_keep_residents_pending_and_one_transient) {
+  AuxiliaryResourceBudget plan;
+  Q4T_CHECK(plan.Add(100, 20, 60, 40));
+  Q4T_CHECK(plan.Add(200, 30, 10, 70));
+  Q4T_CHECK(plan.resident_bytes == 300 && plan.pending_host_bytes == 50 &&
+            plan.sequence_bytes == 70);
+  Q4T_CHECK(!plan.Add(std::numeric_limits<uint64_t>::max(), 0, 0, 0));
+  Q4T_CHECK(plan.resident_bytes == 300 && plan.pending_host_bytes == 50 &&
+            plan.sequence_bytes == 70);
+  Q4T_CHECK(!plan.Add(0, std::numeric_limits<uint64_t>::max() - 50, 0, 0));
+  return true;
+}
+
+namespace {
+q4t::runtime::BudgetRequest AuxiliaryBudgetRequest(int slots) {
+  q4t::runtime::BudgetRequest request;
+  request.max_len = 1024;
+  request.max_seq = slots;
+  request.max_prefill = 2048;
+  request.mem_fraction = 1;
+  request.mtp_workspace_bytes = 1ULL << 30;
+  request.mtp_weights_bytes = 6ULL << 30;
+  request.mtp_load_host_bytes = 4ULL << 30;
+  return request;
+}
+}  // namespace
+
+Q4T_TEST(auxiliary_budget_single_slot_excludes_primary_request_overlap) {
+  using namespace q4t::runtime;
+  BudgetModelParams params;
+  params.has_mtp = true;
+  auto request = AuxiliaryBudgetRequest(1);
+  const auto primary =
+      ComputeMemoryBudget(params, request, 1ULL << 30, 128ULL << 30);
+  request.auxiliary_sequence_bytes = 5ULL << 30;
+  const auto combined =
+      ComputeMemoryBudget(params, request, 1ULL << 30, 128ULL << 30);
+  Q4T_CHECK(primary.feasible && combined.feasible);
+  Q4T_CHECK(combined.per_request == request.auxiliary_sequence_bytes);
+  Q4T_CHECK(combined.fixed == primary.fixed &&
+            combined.state_pool == primary.state_pool &&
+            combined.startup_peak == primary.startup_peak);
+  const auto exact = ComputeMemoryBudget(params, request, 1ULL << 30,
+                                         combined.estimated_total);
+  const auto short_one = ComputeMemoryBudget(params, request, 1ULL << 30,
+                                             combined.estimated_total - 1);
+  Q4T_CHECK(exact.feasible && !short_one.feasible);
+  return true;
+}
+
+Q4T_TEST(auxiliary_budget_multiple_slots_keep_primary_overlap) {
+  using namespace q4t::runtime;
+  BudgetModelParams params;
+  params.has_mtp = true;
+  auto request = AuxiliaryBudgetRequest(2);
+  const auto primary =
+      ComputeMemoryBudget(params, request, 1ULL << 30, 128ULL << 30);
+  request.auxiliary_sequence_bytes = 5ULL << 30;
+  const auto combined =
+      ComputeMemoryBudget(params, request, 1ULL << 30, 128ULL << 30);
+  Q4T_CHECK(primary.feasible && combined.feasible && combined.max_seq == 2);
+  Q4T_CHECK(combined.per_request == primary.per_request + (5ULL << 30));
+  return true;
+}
+
+Q4T_TEST(auxiliary_budget_plain_decode_still_charges_optional_loads) {
+  using namespace q4t::runtime;
+  auto request = AuxiliaryBudgetRequest(1);
+  const auto primary =
+      ComputeMemoryBudget({}, request, 1ULL << 30, 128ULL << 30);
+  request.auxiliary_sequence_bytes = 5ULL << 30;
+  const auto combined =
+      ComputeMemoryBudget({}, request, 1ULL << 30, 128ULL << 30);
+  Q4T_CHECK(primary.feasible && combined.feasible && primary.per_request == 0);
+  Q4T_CHECK(combined.estimated_total == primary.estimated_total + (5ULL << 30));
+  request.auxiliary_sequence_bytes = std::numeric_limits<size_t>::max();
+  Q4T_CHECK(
+      !ComputeMemoryBudget({}, request, 1ULL << 30, 128ULL << 30).feasible);
+  return true;
+}
+
+Q4T_TEST(auxiliary_weight_groups_retain_metadata_workers_and_pending_bodies) {
+  AuxiliaryResourceBudget plan;
+  Q4T_CHECK(plan.Add(100 + 12, 20, 60, 40));
+  Q4T_CHECK(plan.Add(80 + 13, 30, 10, 70));
+  Q4T_CHECK(plan.ShareWeights(100, 80));
+  Q4T_CHECK(plan.resident_bytes == 100 + 12 + 13 &&
+            plan.pending_host_bytes == 50 && plan.sequence_bytes == 70);
+  Q4T_CHECK(!plan.ShareWeights(100, 80));
+  Q4T_CHECK(plan.resident_bytes == 125);
   return true;
 }

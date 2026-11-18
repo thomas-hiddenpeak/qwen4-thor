@@ -40,7 +40,8 @@ struct TtsHostAssets {
 // Atomically publishes both trained profiles, including speech_tokenizer/.
 // Metadata-only loading opens neither checkpoint. Both stages share one
 // deadline. max_staging_bytes covers their combined raw bytes; parsed objects,
-// device weights, expansion scratch and file pages need separate RAM admission.
+// device weights and expansion scratch need separate RAM admission. Payloads
+// use verified aligned direct I/O; metadata file pages fit the host margin.
 // No remote code/downloads, CUDA calls or full FP32 host copy are performed.
 Status LoadTtsAssets(const std::string& directory, TtsHostAssets* out,
                      GrammarControl control = {},

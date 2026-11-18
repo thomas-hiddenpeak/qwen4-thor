@@ -47,13 +47,7 @@ ObjectReply ChatServer::RunNativeSeparator(
   // A sub-millisecond input still keeps its exact original duration. Padding
   // only supplies the minimum encoder receptive field; trim before restoring.
   if (pcm.size() < 16) pcm.resize(16, 0);
-  {
-    RequestDiagnostics::Scope waiting(diagnostic,
-                                      RequestDiagnostics::Wait::kStorage);
-    auto reply = EnsureNativeSeparator(
-        true, {{}, control->deadline(), cancelled}, &diagnostic);
-    if (!reply.ok()) return reply;
-  }
+  std::unique_lock<std::mutex> auxiliary;
   diagnostic.Stage("separator_slot_admission");
   int slot;
   {
@@ -75,6 +69,22 @@ ObjectReply ChatServer::RunNativeSeparator(
     FreeSeqId(slot);
     diagnostic.Released();
   });
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kSlot);
+    auxiliary = LockUnlessCancelled(auxiliary_mu_, cancelled);
+  }
+  if (!auxiliary.owns_lock() || cancelled()) return interrupted();
+  if (auto switched = ActivateAuxiliaryFamily(false, cancelled); !switched.ok())
+    return switched;
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kStorage);
+    auto reply = EnsureNativeSeparator(
+        true, {{}, control->deadline(), cancelled}, &diagnostic);
+    if (!reply.ok()) return reply;
+  }
+
   audio::SeparatorWorkspaceLayout layout;
   status = audio::PlanSeparatorWorkspace(
       pcm.size(), max_samples / 2,

@@ -8049,12 +8049,12 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "cpu_qualified_actual_profile_startup_capacity_failed_fix_pending",
+      "state": "capacity_fix_cpu_qualified_actual_profile_pending",
       "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
         "starts": 2,
-        "posts": 22,
+        "posts": 26,
         "seconds": 900
       },
       "default_changed": false,
@@ -8062,7 +8062,14 @@
       "process_attempts": 1,
       "actual_core_weight_loads": 0,
       "actual_posts": 0,
-      "seconds": 8.800035278778523
+      "seconds": 8.800035278778523,
+      "capacity_fix": {
+        "cpu_unique": 24,
+        "cpu_executions": 26,
+        "evidence": "evidence/serve-auxiliary-capacity-cpu-20261118/README.md",
+        "actual_business_pending": true,
+        "default_changed": false
+      }
     }
   }
 }

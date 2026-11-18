@@ -2197,7 +2197,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "1aac6147d4edf9777231d406a108dfe71ab52f02f5455a6c84e855d4c7847511",
-    "cmake/ChatProtocolIdentity.cmake": "ec06f56d21502b155311d72cb23c65297ca6091cd005dcc8ce22f77b83047883",
+    "cmake/ChatProtocolIdentity.cmake": "4dcd012ca4e57bed3abf479aa4289ecdc1ce94b1f3d8dd37ea71c5cb366d883a",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2270,8 +2270,9 @@
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
     "include/q4t/server/asr_request.h": "393329ab586cceed2f34ca61a86aa5d0003d539ad6a2c0af83b5d9b160ecbdde",
     "include/q4t/server/asr_response.h": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1",
-    "include/q4t/server/asr_service.h": "5a0e55d18bfe8195b7176631944558fcea3f3a0b7bd73f8d1c0901464498d8bf",
+    "include/q4t/server/asr_service.h": "18b98c5ded0851c2f316774c131df9db36bcd85a0dacaaed3299ebfa7d17256f",
     "include/q4t/server/asr_statistics.h": "044c90e1417d93c0c84edaf0e67f67d45705bcde6a2fd11b72a4f4ed7fa9b7ec",
+    "include/q4t/server/auxiliary_resources.h": "ec943f992f3279a656a1668d3d4e718e64e146c19284ce4a538b5e926f28e446",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
     "include/q4t/server/batch_checkpoint.h": "ce3e49ef7d94b95d9b813c50e7fbc930c17a77f932437ed428ef17a93db659b9",
@@ -2300,7 +2301,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "30defd52f1cee81b980cc3e9966d24e6ca575e5bcff88f9992e894bac20d0987",
+    "include/q4t/server/chat_server.h": "b072b1d229b5addaf99a8ad69f7177ec19dea50269c7cb298217c2e66e72ef8c",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2364,7 +2365,7 @@
     "include/q4t/server/media_admission.h": "08fdd3453746652ab6c270ecf0a0a16bdfc7dc37232bc14037fddebbd8e255aa",
     "include/q4t/server/media_cache.h": "777f159e51951bf15f9657cd5ad77930cf3349520abb2afa12ac5be82344e14a",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
-    "include/q4t/server/model_assets.h": "1b9d38215c4c027e0cd1e63aa29dca117104211cc8f3dcff63497f1c5c20564e",
+    "include/q4t/server/model_assets.h": "c898f5797ec79f3189b1d251f0a2e4d0732506b4794e7d364c6080a01bc94c65",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/model_preparation.h": "a6d68909fd2e2e54826e370ae9cba68a23a7feb73e08b0593adc95d8a5e9d94a",
     "include/q4t/server/moderation.h": "8833b83a535ff11a765780bb1e8312bf69a017915c14c89133e3c2fffdf91529",
@@ -2452,8 +2453,8 @@
     "include/q4t/server/token_logprobs.h": "39e07ab03385abbae505cb35c8948e564fff26419f050fb8d99dc121b5f28da2",
     "include/q4t/server/tool_result_contracts.h": "a55f00b2efae3172356bd27afe04db1f95a781642132bb28f5a8160a4f0cd770",
     "include/q4t/server/tool_result_schema.h": "9b458aff192168e0872f67f4e1fc4c7aec16a3044b74e0f345612814305d57fa",
-    "include/q4t/server/tts_assets.h": "b518227578a1f65edc1b39706a77eb4aa1e08987b64a4a9a03de0c4b81821ee1",
-    "include/q4t/server/tts_service.h": "59587f231d219da8b991f75a08d527214c28aadc5ec6221b6be9d9661910ab4c",
+    "include/q4t/server/tts_assets.h": "601f8ad2d08718377b280eded1d55c7e70ca663e93245cc942f11cc377ede427",
+    "include/q4t/server/tts_service.h": "330baa66c9a0bed65433e9461188bd56cfa633bced4aad6ea903bb8ea3e24b4b",
     "include/q4t/server/tts_upload.h": "26deb5a83a8e62bf71fadbb744d25262168360a13c35475464f37d954b027d6c",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/server/vad_assets.h": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751",
@@ -2554,7 +2555,7 @@
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/access_program.cpp": "ff759ca9c3a410e0c35518cd5bdeb45fba589fb4ce9d34261ce3896ff60f7b97",
     "src/server/aligner_assets.cpp": "80fdb6af8262fe6d1ef86318915941cc319a507eb1a33c37db86bd16b3df1a9b",
-    "src/server/aligner_service.cpp": "4049f01ff08fdefb9922b501e7086ba35ba6080b8a858c8f19daa9b1bc9b6abd",
+    "src/server/aligner_service.cpp": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba",
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
@@ -2563,7 +2564,7 @@
     "src/server/asr_chunk_output.cpp": "80b0a2b938c2c4d8a42853d465a5b35748c09700d488eaf2f998282a366643a5",
     "src/server/asr_request.cpp": "4cb39130bfaf9c047be32b515da891c7b684309b5a97b5176424fd3c0c75beaf",
     "src/server/asr_response.cpp": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc",
-    "src/server/asr_service.cpp": "c9564d72c7a0e51edfe737fac800b2aa841ca202f868d03296d4b48a98d878ef",
+    "src/server/asr_service.cpp": "76bf9ae9a3d7dd491290385ef23d8468f0650beedad58bf2a3de030853162320",
     "src/server/asr_statistics.cpp": "6c0f810beeb2c290f41e5df389448ec55f3539df84e3a722889c2ffffdd9d327",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
     "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
@@ -2584,12 +2585,12 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_aligner_backend.cpp": "7f41c60d3501fc7daa9b37101643c1733316d8b74e921923a681bcdca21e92d4",
-    "src/server/chat_aligner_execution.cpp": "55cf52124f2830bfd766d13cd8d6d6210da63a23dd4cf6dbd131235c67055034",
+    "src/server/chat_aligner_backend.cpp": "0328fdadc55cccf314830603eaf53b34314e884761ee5b49e6dd6f86735947d3",
+    "src/server/chat_aligner_execution.cpp": "2ed5d14cbaf8a69d30ff1cdc13adc5ee68835551dd07c61b565a65c8884c6a38",
     "src/server/chat_asr.cpp": "91a1c4d1b210eeef45d4f6badf5274237f656e63314a2edc5eb7cd7c7c317c26",
     "src/server/chat_asr_alignment.cpp": "383053cac6a1084bc82fcaa52b723834fcf78e6530f89cb69051b536b78a444c",
-    "src/server/chat_asr_backend.cpp": "ea7cba81bf63e96972cfb35483db9ddd3ffae3cb02950ffda74ab964a666611a",
-    "src/server/chat_asr_execution.cpp": "fa616c0cda0da8d0ad9755adfebbe4cbe8771fa20553224ec054096e5b292c90",
+    "src/server/chat_asr_backend.cpp": "290164200f6b9d410c0d2e9bc3d7a0a10e7f7371ce487fd678a5bccadf8fadbe",
+    "src/server/chat_asr_execution.cpp": "33a8d8d86d194641d3617b9598c863e779bba33f1149bcb5206e77c98fc93fbb",
     "src/server/chat_audio_execution.cpp": "9a7ded7af79c0915ed9cc2179c1aed3bb41223677b11df681da52c76f3eedb4b",
     "src/server/chat_audio_history.cpp": "1fa4824f3e5580a872523ec1fa689694552dd5e40acd5b8316894bc59103ab4b",
     "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
@@ -2599,7 +2600,7 @@
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_embedding_backend.cpp": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
+    "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "ac2a707fd7b5fe484476c94c34a66ab2076afb89910ad0d3ce9902281e6fcc6b",
@@ -2619,20 +2620,20 @@
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "1a9afce7b98fd79db487c681a50620beeb523d6bf62d051fb2132ddce0e7ef71",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
-    "src/server/chat_separator_backend.cpp": "605c03bbc5584a30df80f29dcc42742419be67e5ecc7d69e6c98a2277d3d713c",
-    "src/server/chat_separator_execution.cpp": "46e3e8b5ed48044ed1cf73ab3943c4eeeb2b8f80607b18b2233071bc564097a0",
-    "src/server/chat_server.cpp": "dcd73860893f4aba39d9a8460a75a3f5c62a797ac4c9c046459a27e747f92699",
+    "src/server/chat_separator_backend.cpp": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf",
+    "src/server/chat_separator_execution.cpp": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd",
+    "src/server/chat_server.cpp": "cf3e6f59b852cc46aaf0e78b916c054c38150c1434d3d9fa1c413fe6938e1944",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
-    "src/server/chat_speaker_backend.cpp": "98d9821e82630da26a57338fa264ee84639769711614b62c0ce5c63923fe01ac",
-    "src/server/chat_speaker_execution.cpp": "829251cb9bba37d2b073a29e4c7c29b7ea378a3c6c0330f03dfe8621c187be19",
+    "src/server/chat_speaker_backend.cpp": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f",
+    "src/server/chat_speaker_execution.cpp": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0",
     "src/server/chat_speaker_turns.cpp": "e2579cea71db5b497da0d953f90877aa9b2f020ebc5e9edff853ce839d05a09f",
     "src/server/chat_speech.cpp": "b33256a1c47216644aaf90132ee64bb0dde5d2eae102b4a808f57a4fd9013d01",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "891adaf390e59776189f8cf68006a3b8020ece14fbd3882c46f04aec3dcd2b68",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
-    "src/server/chat_tts_backend.cpp": "3aada2d0674728d85a7931d665eed19b3e6d8cf5efd043f4046e04485c67b425",
-    "src/server/chat_tts_execution.cpp": "f022921eef29769a4bd2b5796a595c684200cf1dffb68502db58b531bc97ac20",
+    "src/server/chat_tts_backend.cpp": "23151df0cc23053dd7c2359f9504d334e0fcd6e336548ffed68c8e30710fda40",
+    "src/server/chat_tts_execution.cpp": "4231c6a451b120da44257ade7512ad06ee2cf018f5c84ab736b3191c38023702",
     "src/server/chat_vad_backend.cpp": "6a84890c85d7053c1e94aa027f28b19e3eab1773c5a5dd6d9ab30ac255ea9f80",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
@@ -2760,7 +2761,8 @@
     "src/server/media_cache.cpp": "ad3e2fae8415b04cd2cc233b7aaa61626704433c440675d478e7f69c14253a28",
     "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/model_assets.cpp": "dc7ff572ccee2eee65e376d0fac40e60be982d16f2ec606d1dae946c1b9ce3aa",
+    "src/server/model_asset_io.h": "61c1fa6d3d253c617c6db73ec9fcdfe9ea0c767b0c6dda65231252f84ed12475",
+    "src/server/model_assets.cpp": "a0dab334ee4142a88704d2cda9e106523aa048270cf18f856dbb6f2f55db8a5e",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "de391a345f6f2c53a4e32c4be60be3fc9570fa0ca3250a98a9bf2c70bc69bc29",
@@ -2854,13 +2856,13 @@
     "src/server/schema_token_guard.cpp": "a08e932fe0d67acc7d18427b15f15a5417bddc10295ced2a3a3f92d385295e2f",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/separator_assets.cpp": "ef5c005d53b81cb9a5d513030c5bcb7a3e6a4253d3707464af5df5ab5c5b8464",
-    "src/server/separator_service.cpp": "65d9b54b20df8f49111ecdec1965a38c46a9032c6457da2fb1acd4c24cc5b0d7",
+    "src/server/separator_service.cpp": "ab309ca909853d8deacb356efd666cc21c805025e5f8870c149ed0347233ae31",
     "src/server/server_options.cpp": "b56b55002759a13272c495ab082f662013dd767777e992cb3449e46c98144cfe",
     "src/server/session_cache.cpp": "9d3d8b0b612fccd2b3e2bf418a3672b4c90736592da7cfc082d80d33b08d9e06",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
     "src/server/speaker_reference.cpp": "60ed09ac7c0f4ebfb8d6a1b7ce69900967c6392a008ccbcf21a682b2539040dd",
-    "src/server/speaker_service.cpp": "a87cf727113bca9c51b20bbcf5fb841257a8f7e2110fe82e143bcfedd702bb1e",
+    "src/server/speaker_service.cpp": "aa7564970ef8db5837fbe6af9cf126c62b69c59a5557864939d21a2c7f3d8f36",
     "src/server/speech_codec_stream.cpp": "84e0a31f766bc55fad2313644e5917123cd803e4159f84fc6e98e522ed3f1d09",
     "src/server/speech_codec_stream_protocol.h": "b045a80f89747ddc714b653ee703df9ad5fdac45a8517b601aed1c50b0cf2eb1",
     "src/server/speech_codec_stream_worker.cpp": "7780c887375426abb294eb04192acf210ec71d09471b4889973a506f48c14946",
@@ -2880,7 +2882,7 @@
     "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
     "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
     "src/server/tts_assets.cpp": "50842cd64e95b6f316e89aa872ad81bf9f3ef8be614a3f37f71286f8613b476a",
-    "src/server/tts_service.cpp": "68a56b92b300a9c263d1e698dbb389254f5f084271a979f40b5432aa03dee18d",
+    "src/server/tts_service.cpp": "7cd2901ac794bfec0b9599d2f6fceec8d2f96e234eecfe5bae8b2922a7a64d69",
     "src/server/tts_upload.cpp": "e8034b37d6d13d5112acf7c8832367aca7ca01a12b7be297a9c634ce804e42b1",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
@@ -3016,7 +3018,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "25f8177fc5504992ca30967f4f2821cbf9db092f2529dafc126bd3afae47e703",
+    "tools/serve_recovery/profile_acceptance.py": "aee01571247a58fdaa261163a4d3f5a775df748f88773095c5918726a8d9e6c4",
     "tools/serve_recovery/profile_bundle.py": "9f3e4ecf2ea049c8e149ce1b0784403fdc3698142ea963a9edb0bab41ef7f3ec",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "dfa08272d9d155fde13d41f57822e0e9b42d2960dceae30acd0cf27a84afef9a",
@@ -7553,5 +7555,160 @@
     },
     "quality_fix": false,
     "default_changed": false
+  },
+  "auxiliary_capacity_development_20261118": {
+    "state": "TARGETED_CPU_QUALIFIED_ACTUAL_PROFILE_PENDING",
+    "reviewed_changes": {
+      "cmake/ChatProtocolIdentity.cmake": {
+        "before": "ec06f56d21502b155311d72cb23c65297ca6091cd005dcc8ce22f77b83047883",
+        "after": "4dcd012ca4e57bed3abf479aa4289ecdc1ce94b1f3d8dd37ea71c5cb366d883a"
+      },
+      "include/q4t/server/asr_service.h": {
+        "before": "5a0e55d18bfe8195b7176631944558fcea3f3a0b7bd73f8d1c0901464498d8bf",
+        "after": "18b98c5ded0851c2f316774c131df9db36bcd85a0dacaaed3299ebfa7d17256f"
+      },
+      "include/q4t/server/auxiliary_resources.h": {
+        "before": null,
+        "after": "ec943f992f3279a656a1668d3d4e718e64e146c19284ce4a538b5e926f28e446"
+      },
+      "include/q4t/server/chat_server.h": {
+        "before": "30defd52f1cee81b980cc3e9966d24e6ca575e5bcff88f9992e894bac20d0987",
+        "after": "b072b1d229b5addaf99a8ad69f7177ec19dea50269c7cb298217c2e66e72ef8c"
+      },
+      "include/q4t/server/model_assets.h": {
+        "before": "1b9d38215c4c027e0cd1e63aa29dca117104211cc8f3dcff63497f1c5c20564e",
+        "after": "c898f5797ec79f3189b1d251f0a2e4d0732506b4794e7d364c6080a01bc94c65"
+      },
+      "include/q4t/server/tts_assets.h": {
+        "before": "b518227578a1f65edc1b39706a77eb4aa1e08987b64a4a9a03de0c4b81821ee1",
+        "after": "601f8ad2d08718377b280eded1d55c7e70ca663e93245cc942f11cc377ede427"
+      },
+      "include/q4t/server/tts_service.h": {
+        "before": "59587f231d219da8b991f75a08d527214c28aadc5ec6221b6be9d9661910ab4c",
+        "after": "330baa66c9a0bed65433e9461188bd56cfa633bced4aad6ea903bb8ea3e24b4b"
+      },
+      "src/server/aligner_service.cpp": {
+        "before": "4049f01ff08fdefb9922b501e7086ba35ba6080b8a858c8f19daa9b1bc9b6abd",
+        "after": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba"
+      },
+      "src/server/asr_service.cpp": {
+        "before": "c9564d72c7a0e51edfe737fac800b2aa841ca202f868d03296d4b48a98d878ef",
+        "after": "76bf9ae9a3d7dd491290385ef23d8468f0650beedad58bf2a3de030853162320"
+      },
+      "src/server/chat_aligner_backend.cpp": {
+        "before": "7f41c60d3501fc7daa9b37101643c1733316d8b74e921923a681bcdca21e92d4",
+        "after": "0328fdadc55cccf314830603eaf53b34314e884761ee5b49e6dd6f86735947d3"
+      },
+      "src/server/chat_aligner_execution.cpp": {
+        "before": "55cf52124f2830bfd766d13cd8d6d6210da63a23dd4cf6dbd131235c67055034",
+        "after": "2ed5d14cbaf8a69d30ff1cdc13adc5ee68835551dd07c61b565a65c8884c6a38"
+      },
+      "src/server/chat_asr_backend.cpp": {
+        "before": "ea7cba81bf63e96972cfb35483db9ddd3ffae3cb02950ffda74ab964a666611a",
+        "after": "290164200f6b9d410c0d2e9bc3d7a0a10e7f7371ce487fd678a5bccadf8fadbe"
+      },
+      "src/server/chat_asr_execution.cpp": {
+        "before": "fa616c0cda0da8d0ad9755adfebbe4cbe8771fa20553224ec054096e5b292c90",
+        "after": "33a8d8d86d194641d3617b9598c863e779bba33f1149bcb5206e77c98fc93fbb"
+      },
+      "src/server/chat_embedding_backend.cpp": {
+        "before": "341cde2459e65df98d92a8ad9b6ff92e2470c0908cd23d71039f4d9f7a6b4b96",
+        "after": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9"
+      },
+      "src/server/chat_separator_backend.cpp": {
+        "before": "605c03bbc5584a30df80f29dcc42742419be67e5ecc7d69e6c98a2277d3d713c",
+        "after": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf"
+      },
+      "src/server/chat_separator_execution.cpp": {
+        "before": "46e3e8b5ed48044ed1cf73ab3943c4eeeb2b8f80607b18b2233071bc564097a0",
+        "after": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd"
+      },
+      "src/server/chat_server.cpp": {
+        "before": "dcd73860893f4aba39d9a8460a75a3f5c62a797ac4c9c046459a27e747f92699",
+        "after": "cf3e6f59b852cc46aaf0e78b916c054c38150c1434d3d9fa1c413fe6938e1944"
+      },
+      "src/server/chat_speaker_backend.cpp": {
+        "before": "98d9821e82630da26a57338fa264ee84639769711614b62c0ce5c63923fe01ac",
+        "after": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f"
+      },
+      "src/server/chat_speaker_execution.cpp": {
+        "before": "829251cb9bba37d2b073a29e4c7c29b7ea378a3c6c0330f03dfe8621c187be19",
+        "after": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0"
+      },
+      "src/server/chat_tts_backend.cpp": {
+        "before": "3aada2d0674728d85a7931d665eed19b3e6d8cf5efd043f4046e04485c67b425",
+        "after": "23151df0cc23053dd7c2359f9504d334e0fcd6e336548ffed68c8e30710fda40"
+      },
+      "src/server/chat_tts_execution.cpp": {
+        "before": "f022921eef29769a4bd2b5796a595c684200cf1dffb68502db58b531bc97ac20",
+        "after": "4231c6a451b120da44257ade7512ad06ee2cf018f5c84ab736b3191c38023702"
+      },
+      "src/server/model_asset_io.h": {
+        "before": null,
+        "after": "61c1fa6d3d253c617c6db73ec9fcdfe9ea0c767b0c6dda65231252f84ed12475"
+      },
+      "src/server/model_assets.cpp": {
+        "before": "dc7ff572ccee2eee65e376d0fac40e60be982d16f2ec606d1dae946c1b9ce3aa",
+        "after": "a0dab334ee4142a88704d2cda9e106523aa048270cf18f856dbb6f2f55db8a5e"
+      },
+      "src/server/separator_service.cpp": {
+        "before": "65d9b54b20df8f49111ecdec1965a38c46a9032c6457da2fb1acd4c24cc5b0d7",
+        "after": "ab309ca909853d8deacb356efd666cc21c805025e5f8870c149ed0347233ae31"
+      },
+      "src/server/speaker_service.cpp": {
+        "before": "a87cf727113bca9c51b20bbcf5fb841257a8f7e2110fe82e143bcfedd702bb1e",
+        "after": "aa7564970ef8db5837fbe6af9cf126c62b69c59a5557864939d21a2c7f3d8f36"
+      },
+      "src/server/tts_service.cpp": {
+        "before": "68a56b92b300a9c263d1e698dbb389254f5f084271a979f40b5432aa03dee18d",
+        "after": "7cd2901ac794bfec0b9599d2f6fceec8d2f96e234eecfe5bae8b2922a7a64d69"
+      },
+      "tests/server_tts_service_test.cpp": {
+        "before": "01223ab0df0a21ec9a5f5e3eb55a8bb10152d06c6b91e059db8278cbfc6a9dcb",
+        "after": "b4369f0727fd224070c13ddc122ff63a32d239340d3b74ed4e034dd1b0a269ae"
+      },
+      "tests/server_chat_capabilities_test.cpp": {
+        "before": "425e341aefc989581a70cb00f7a32e23a62634eebe71518c28f63154d5838144",
+        "after": "73c0c55044a18af2746379982e4fc88f317e215afd2e4de1dd98d9eb43e1e021"
+      },
+      "tests/server_model_assets_test.cpp": {
+        "before": "552345169b2a814fe24599045424c517c0fe77c1d12d3030d18e2f429c45657b",
+        "after": "272a4272a2eae8493e0dfb91819ddc165405cfd61228424074cc54acefdc9ac6"
+      },
+      "cmake/ModelAssetTests.cmake": {
+        "before": "9655624e921c91e8258db6442db5aed356fdf09224282513ac081185690def8f",
+        "after": "ac443e8a0bb8b1fe9e18d76311493bdaf1556d11355f5f12264bc7b57562972b"
+      },
+      "cmake/HostTestSources.cmake": {
+        "before": "bd863fd1eb8aae45bbcb41811518ce8fba68dc8972517b778b1f2825d25e04a9",
+        "after": "e2bc03efd04a182ebd8324ab6af740d2d40d61e52f8c9365f55e810028c94612"
+      },
+      "src/runtime/memory_budget.cpp": {
+        "before": "3f1e736cc0fe45349d2849daddebd7007d604689277d1c9b14071b5b396d226a",
+        "after": "b199bfd366703d878ad2e5ad71fe8772dc1541c11195a3e36cafb5b6e25f489b"
+      },
+      "include/q4t/runtime/memory_budget.h": {
+        "before": "9e677aaf1ca6751112a956b0b104ee00b2fa8abd505ba23b793c36491fa3d1db",
+        "after": "a91b5ce22142c4884e7a586a602a4c2d56c7d504ec1c6ba94123259a1fb2ba67"
+      },
+      "tools/serve_recovery/profile_acceptance.py": {
+        "before": "25f8177fc5504992ca30967f4f2821cbf9db092f2529dafc126bd3afae47e703",
+        "after": "aee01571247a58fdaa261163a4d3f5a775df748f88773095c5918726a8d9e6c4"
+      },
+      "tools/serve_recovery/test_tts_profiles.py": {
+        "before": "3ab13ce1ab095b6bc60d6e8e4e7cc236c58fcf3aa0ff961565e356c4a38947d0",
+        "after": "c506d0774cedffc88d556a9ab5034e246665324e2f034818c9d0b8b4222f509b"
+      }
+    },
+    "resource_contract": "Verified direct reads; input and TTS GPU weight groups evict under one admitted sequence owner; retain metadata, pending HTTP and encoder worker ceiling",
+    "cpu_checks": 22,
+    "default_changed": false,
+    "test_registration_review": "Asset fixtures belong to the opt-in asset binary; capability assertion moved to its host-only file. Exact 22 cases split 13 host/9 asset, first selector failed before executing any case.",
+    "cpu_unique": 24,
+    "cpu_executions": 26,
+    "evidence": "docs/evidence/serve-auxiliary-capacity-cpu-20261118/README.md",
+    "actual_business_pending": true,
+    "post_test_edit": "Removed trailing blank line in moved host-only capability test; no selected CPU case or production source changed.",
+    "planning_review": "Before GPU execution, planned native Speech total includes the two reload POSTs; enforced limits and loop already covered, no runtime/CPU semantics change."
   }
 }

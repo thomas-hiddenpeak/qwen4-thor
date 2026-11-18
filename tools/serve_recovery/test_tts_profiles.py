@@ -231,6 +231,42 @@ class TtsProfiles(unittest.TestCase):
             self.old['profiles']['primary']['max_tokens']+160*16+1)
         self.assertEqual(policy['tokens_per_minute'], 32768)
 
+    def test_reload_budget_includes_one_final_speech_per_profile(self):
+        profile = self.old['profiles']['primary']
+        asr = AsrProfiles().selected()
+        without = driver.limits_for(profile, native_asr=asr)['chats']
+        self.assertEqual(driver.limits_for(profile, native_asr=asr,
+            native_tts=self.selected())['chats'], without+6)
+
+    def test_family_reload_requires_eviction_actual_audio_and_metadata_retention(self):
+        value, _ = retained()
+        previous = dict(value['health'], load_attempts=2, load_failures=0)
+        before = dict(native_tts_health=dict(previous, state='metadata_ready', device_bytes=0))
+        after = dict(native_tts_health=dict(previous, load_attempts=3))
+        idle = dict(state='metadata_ready', device_bytes=0, reason='none',
+                    core_readiness_dependency=False)
+        for name in ('embedding', 'asr', 'aligner', 'speaker', 'separator'):
+            after['native_'+name+'_health'] = dict(idle)
+        after['native_vad_health'] = dict(state='ready')
+        identity = dict(native_asr={k:{} for k in ('alignment', 'speaker', 'separator', 'vad')})
+        driver.check_tts_family_reload(before, after, previous, value['speech_base64'], identity)
+        changes = [lambda d:d['native_tts_health'].update(load_attempts=2),
+            lambda d:d['native_tts_health'].update(load_failures=1),
+            lambda d:d['native_asr_health'].update(device_bytes=1),
+            lambda d:d['native_aligner_health'].update(state='configured'),
+            lambda d:d['native_separator_health'].update(reason='gpu_unhealthy'),
+            lambda d:d['native_vad_health'].update(state='configured')]
+        for mutate in changes:
+            bad = copy.deepcopy(after); mutate(bad)
+            with self.assertRaises((ValueError, RuntimeError)):
+                driver.check_tts_family_reload(before, bad, previous, value['speech_base64'], identity)
+        with self.assertRaises((ValueError, RuntimeError)):
+            driver.check_tts_family_reload(dict(native_tts_health=previous), after,
+                previous, value['speech_base64'], identity)
+        with self.assertRaises((ValueError, RuntimeError)):
+            driver.check_tts_family_reload(before, after, previous,
+                base64.b64encode(b'fake').decode(), identity)
+
     def test_deployment_preserves_talker_codec_and_allows_only_asset_relocation(self):
         target = EmbeddingTargetTests().target;selected = self.selected()
         target({}, dict(native_tts=selected))

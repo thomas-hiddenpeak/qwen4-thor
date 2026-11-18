@@ -11,6 +11,7 @@
 #include <new>
 
 #include "model_assets_protocol.h"
+#include "model_asset_io.h"
 #include "q4t/audio/vad.h"
 #include "q4t/server/aligner_assets.h"
 #include "q4t/server/asr_assets.h"
@@ -122,13 +123,15 @@ int OpenDirectory(std::string_view path) {
   }
   return fd;
 }
-int OpenFile(int directory, const ModelAssetSpec& spec) {
-  const int fd = openat(directory, spec.name,
-                        O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK);
+int OpenFile(int directory, const ModelAssetSpec& spec, bool direct) {
+  const int fd = openat(
+      directory, spec.name,
+      O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK | (direct ? O_DIRECT : 0));
   struct stat st {};
   if (fd < 0) return -1;
   if (fstat(fd, &st) || !S_ISREG(st.st_mode) || st.st_size < 0 ||
-      static_cast<uint64_t>(st.st_size) != spec.bytes) {
+      static_cast<uint64_t>(st.st_size) != spec.bytes ||
+      (direct && !detail::DirectModelAssetReady(fd))) {
     close(fd);
     return -1;
   }
@@ -336,7 +339,9 @@ int MaybeRunModelAssetWorker(int argc, char** argv) {
     size_t total = 0;
     for (size_t i = 0; i < specs.size(); ++i) {
       total += specs[i].bytes;
-      if (directory >= 0) fds[i] = OpenFile(directory, specs[i]);
+      if (directory >= 0)
+        fds[i] = OpenFile(directory, specs[i],
+                          request.include_weights && i + 1 == specs.size());
       opened = opened && fds[i] >= 0;
     }
     if (directory >= 0) close(directory);
@@ -344,8 +349,15 @@ int MaybeRunModelAssetWorker(int argc, char** argv) {
                 total};
     bool ok = detail::WorkerTransfer(&reply, sizeof(reply), true);
     if (ok && opened)
-      for (size_t i = 0; ok && i < specs.size(); ++i)
-        ok = StreamFile(fds[i], specs[i].bytes);
+      for (size_t i = 0; ok && i < specs.size(); ++i) {
+        if (request.include_weights && i + 1 == specs.size())
+          ok = detail::StreamDirectModelAsset(
+              fds[i], specs[i].bytes, [](uint8_t* data, size_t bytes) {
+                return detail::WorkerTransfer(data, bytes, true);
+              });
+        else
+          ok = StreamFile(fds[i], specs[i].bytes);
+      }
     for (const int fd : fds)
       if (fd >= 0) close(fd);
     return ok ? 0 : 4;

@@ -3,6 +3,7 @@
 Two starts, six Chat and two native embedding requests under one strict lease.
 Media profiles additionally require one actual video request on each profile.
 Configured TTS requires actual Speech and Chat output on both profiles.
+When ASR is also configured, repeat Speech after input work to qualify reload.
 Configured ASR additionally requires one actual audio request on each profile.
 Configured alignment/VAD additionally requires actual auxiliary audio per profile.
 Declared Chat audio requires a source-bound main-model answer on each profile.
@@ -46,9 +47,39 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None):
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
                 (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
                 (2 if native_asr is not None else 0) +
+                (2 if native_tts is not None and native_asr is not None else 0) +
                 (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_separator(dict(native_asr=native_asr or {})) else 0))
+
+
+
+def check_tts_family_reload(before, after, previous, encoded, identity):
+    """Require actual eviction, full byte-identical reload, and retained metadata."""
+    profile_evidence.tts_audio(encoded, 'speech')
+    old = before['native_tts_health']; new = after['native_tts_health']
+    require(old.get('state') == 'metadata_ready' and old.get('device_bytes') == 0 and
+        old.get('reason') == 'none' and new.get('state') == 'ready' and
+        new.get('reason') == 'none' and new.get('device_bytes') == previous['device_bytes'] and
+        type(new.get('load_attempts')) is int and
+        new['load_attempts'] == previous['load_attempts']+1 and
+        old.get('load_attempts') == previous['load_attempts'] and
+        new.get('load_failures') == 0 and new.get('compute_failures') == 0,
+        'TTS family did not evict and reload cleanly')
+    names = ['embedding', 'asr']
+    selected = identity.get('native_asr', {})
+    names += [health for setting, health in
+              (('alignment', 'aligner'), ('speaker', 'speaker'), ('separator', 'separator'))
+              if setting in selected]
+    for name in names:
+        health = after['native_'+name+'_health']
+        require(health.get('state') == 'metadata_ready' and
+            health.get('device_bytes') == 0 and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False,
+            'input family retained device weights or lost metadata: '+name)
+    if 'vad' in selected:
+        require(after['native_vad_health']['state'] == 'ready',
+                'CPU VAD changed during GPU family switch')
 
 
 def requests(media=False):
@@ -290,7 +321,8 @@ def prepare(args):
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
     if tts is not None:
-        plan['planned']['native_speech_requests'] = 2
+        plan['planned']['native_speech_requests'] = 2 + (2 if asr is not None else 0)
+        plan['planned']['native_speech_reload_requests'] = 2 if asr is not None else 0
         plan['planned']['chat_audio_output_requests'] = 2
     if asr is not None:
         plan['planned']['native_transcriptions'] = 2
@@ -399,6 +431,27 @@ class Stage(encrypted.Stage):
         return dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
             chat_response=chat, health=config['native_tts_health'],
             limits=config['native_tts_limits'])
+
+    def tts_family_reload(self, previous):
+        label = self.profile_name+'-speech-reload'
+        status, raw = self.http('/v1/config', label=label+'-before')
+        require(status == 200, 'pre-reload health unavailable')
+        before = json.loads(raw)
+        request = profile_evidence.tts_requests()['speech']
+        save(self.out/(label+'.request.json'), request)
+        self.budget('chats')
+        status, raw = self.http('/v1/audio/speech', request, label=label, timeout=120)
+        require(status == 200, 'Speech reload request failed')
+        encoded = base64.b64encode(raw).decode()
+        self.same_model(); self.drained(label+'-drain')
+        status, raw = self.http('/v1/config', label=label+'-after')
+        require(status == 200, 'post-reload health unavailable')
+        after = json.loads(raw)
+        check_tts_family_reload(before, after, previous['health'], encoded,
+                               self.plan['identity'])
+        save(self.out/(label+'.result.json'), dict(status='PASS',
+            speech_sha256=hashlib.sha256(base64.b64decode(encoded)).hexdigest(),
+            before=before, after=after, same_model=True))
 
     def audio_request(self, auxiliary=False, speaker=False, separator=False):
         require(sum((auxiliary, speaker, separator)) <= 1,
@@ -514,6 +567,8 @@ class Stage(encrypted.Stage):
             value['speaker'] = self.audio_request(speaker=True)
         if profile_evidence.has_separator(self.plan['identity']):
             value['separator'] = self.audio_request(separator=True)
+        if self.plan['identity'].get('native_tts') and self.plan['identity'].get('native_asr'):
+            self.tts_family_reload(value['tts'])
         profile_evidence.business(value, self.plan['identity'], selected,
             read(self.out/(self.profile_name+'-capabilities.json')))
         save(self.out/(self.profile_name+'-business.json'), value)

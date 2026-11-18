@@ -217,6 +217,8 @@ set(protocol_inputs
   include/q4t/server/model_assets.h
   include/q4t/server/asr_assets.h
   src/server/model_assets_protocol.h
+  src/server/model_asset_io.h
+  include/q4t/server/auxiliary_resources.h
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
   include/q4t/server/tts_assets.h

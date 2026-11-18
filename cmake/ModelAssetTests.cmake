@@ -12,6 +12,7 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/tests/server_tts_service_test.cpp
     ${model_asset_root}/src/server/tts_assets.cpp
     ${model_asset_root}/src/server/tts_service.cpp
+    ${model_asset_root}/src/runtime/memory_budget.cpp
     ${model_asset_root}/src/audio/tts_config.cpp
     ${model_asset_root}/src/audio/tts_layout.cpp
     ${model_asset_root}/src/audio/tts_codec_layout.cpp

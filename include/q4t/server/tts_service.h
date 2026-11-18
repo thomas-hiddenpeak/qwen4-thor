@@ -28,7 +28,7 @@ struct TtsResourcePlan {
 };
 
 // Exact request dimensions are used for admission; no silent token/frame
-// trimming. File pages, source staging, F32 device weights and expansion
+// trimming. Direct-read source staging, F32 device weights and expansion
 // scratch coexist in physical DRAM. This is an allocation estimate, not a
 // reservation or measured RSS. Other backends remain charged to their owners.
 Status PlanTtsServiceResources(const TtsServiceLimits& limits,

@@ -222,6 +222,9 @@ class ChatServer {
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       const std::function<bool(int, const std::string&, bool)>& delta,
       io::Json* completion);
+  // Caller owns auxiliary_mu_ and an admitted slot; never evict active work.
+  ObjectReply ActivateAuxiliaryFamily(bool speech_output,
+                                      const std::function<bool()>& cancelled);
   ObjectReply EnsureNativeTts(bool weights, const BinaryAccess& access,
                               RequestDiagnostics* diagnostic = nullptr);
   std::string NativeTtsHealthJson() const;
@@ -573,7 +576,11 @@ class ChatServer {
   ModelCatalog embedding_catalog_;
   std::string embedding_model_dir_;
   // Optional model ownership is independent of Chat readiness. Asset I/O
-  // never holds model_mu_; published immutable weights live until drain.
+  // never holds model_mu_; immutable weights are leased through execution.
+  // Idle family weights may be released; validated metadata lives until drain.
+  // Acquire inside an admitted sequence; release after all workspaces/slot.
+  // No primary Chat or metadata-only load takes this cancellable mutex.
+  std::mutex auxiliary_mu_;
   std::mutex embedding_mu_;
   std::mutex embedding_tok_mu_;
   std::unique_ptr<text::Tokenizer> embedding_tok_;

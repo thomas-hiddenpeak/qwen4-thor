@@ -45,7 +45,9 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
       kNativeTtsWeightBytes + audio::TtsConfig::kCodecDecoderBytes;
   next.resident_host_bytes = kHostMargin;
   next.source_staging_bytes = kNativeTtsFileBytes + kNativeTtsCodecFileBytes;
-  next.possible_file_page_bytes = next.source_staging_bytes;
+  // The isolated reader requires verified aligned O_DIRECT, with no buffered
+  // fallback. Existing external file pages still consume observed system RAM.
+  next.possible_file_page_bytes = 0;
   // BF16 chunk and F32 expansion only, never another full F32 host payload.
   next.expansion_scratch_bytes = 6 * kMiB;
   next.load_peak_bytes = next.resident_weight_bytes + next.resident_host_bytes +

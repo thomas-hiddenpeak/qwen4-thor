@@ -29,9 +29,9 @@ Status PlanSpeakerServiceResources(const SpeakerServiceLimits& limits,
       size_t(limits.max_windows) * (192 * sizeof(float) + 128) +
       size_t(limits.max_windows) * limits.max_windows * sizeof(float) +
       size_t(limits.max_speakers) * 192 * sizeof(double);
-  // File pages, staged bytes and uploaded data coexist in unified RAM. The
+  // Direct payload I/O stages bytes and uploaded data in unified RAM. The
   // margin also covers worker buffers and bounded parsing metadata.
-  next.load_peak_bytes = 3 * audio::SpeakerConfig::kFileBytes + (64ULL << 20);
+  next.load_peak_bytes = 2 * audio::SpeakerConfig::kFileBytes + (64ULL << 20);
   *out = next;
   return {};
 }

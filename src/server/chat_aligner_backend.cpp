@@ -67,7 +67,7 @@ ObjectReply ChatServer::EnsureNativeAligner(bool weights,
   };
   try {
     const uint64_t estimate =
-        kHostMargin + (weights ? 3 * kNativeAlignerFileBytes : 0);
+        kHostMargin + (weights ? 2 * kNativeAlignerFileBytes : 0);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(AsrFailure::kResource,
                   "Alignment host memory admission unavailable");

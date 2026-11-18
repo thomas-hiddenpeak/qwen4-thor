@@ -4,6 +4,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/memory_budget.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/actual_usage_step_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_output.cpp

@@ -67,7 +67,7 @@ ObjectReply ChatServer::EnsureNativeSeparator(bool weights,
   };
   try {
     const uint64_t estimate =
-        kHostMargin + (weights ? 3 * audio::SeparatorConfig::kFileBytes : 0);
+        kHostMargin + (weights ? 2 * audio::SeparatorConfig::kFileBytes : 0);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(AsrFailure::kResource,
                   "Separator host memory admission unavailable");

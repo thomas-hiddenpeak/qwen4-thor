@@ -35,13 +35,7 @@ ObjectReply ChatServer::RunNativeTts(
   const auto interrupted = [&] {
     return Error(409, control->Reason(), "Speech synthesis cancelled");
   };
-  {
-    RequestDiagnostics::Scope wait(diagnostic,
-                                   RequestDiagnostics::Wait::kStorage);
-    auto loaded = EnsureNativeTts(true, {{}, control->deadline(), cancelled},
-                                  &diagnostic);
-    if (!loaded.ok()) return loaded;
-  }
+  std::unique_lock<std::mutex> auxiliary;
   int slot;
   {
     RequestDiagnostics::Scope wait(diagnostic, RequestDiagnostics::Wait::kSlot);
@@ -73,6 +67,21 @@ ObjectReply ChatServer::RunNativeTts(
     FreeSeqId(slot);
     diagnostic.Released();
   });
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kSlot);
+    auxiliary = LockUnlessCancelled(auxiliary_mu_, cancelled);
+  }
+  if (!auxiliary.owns_lock() || cancelled()) return interrupted();
+  if (auto switched = ActivateAuxiliaryFamily(true, cancelled); !switched.ok())
+    return switched;
+  {
+    RequestDiagnostics::Scope wait(diagnostic,
+                                   RequestDiagnostics::Wait::kStorage);
+    auto loaded = EnsureNativeTts(true, {{}, control->deadline(), cancelled},
+                                  &diagnostic);
+    if (!loaded.ok()) return loaded;
+  }
   TtsResourcePlan resources;
   if (!PlanTtsServiceResources(tts_limits_, prompt.text_ids.size(),
                                prompt.prefill.size(), max_frames, &resources))

@@ -26,6 +26,84 @@ std::string ChatServer::NativeTtsHealthJson() const {
   return result;
 }
 
+ObjectReply ChatServer::ActivateAuxiliaryFamily(
+    bool speech_output, const std::function<bool()>& cancelled) {
+  const auto interrupted = [&] {
+    return Error(409, "auxiliary_cancelled", "Optional model switch cancelled");
+  };
+  const auto release = [&](std::mutex& owner, uint8_t*& memory,
+                           const char* site, const auto& retired) {
+    auto lock = LockUnlessCancelled(owner, cancelled);
+    if (!lock.owns_lock() || cancelled()) return interrupted();
+    if (!memory) return ObjectReply{};
+    auto gpu = LockUnlessCancelled(model_mu_, cancelled);
+    if (!gpu.owns_lock() || cancelled()) return interrupted();
+    const auto freed = detail::ReleaseCudaMemory(memory, site);
+    RecordDeviceMemoryFailure(freed, site);
+    retired(freed.ok());
+    if (!freed.ok()) {
+      AbortBackendExecution();
+      return Error(503, "gpu_unhealthy", "Optional weight release failed");
+    }
+    return ObjectReply{};
+  };
+  // The other family has no executing borrower: every optional load/run
+  // owns auxiliary_mu_. Metadata-only requests use the owner mutex but no
+  // device pointer. All compute streams drain before releasing that lease.
+  if (!speech_output) {
+    auto owner = LockUnlessCancelled(tts_mu_, cancelled);
+    if (!owner.owns_lock() || cancelled()) return interrupted();
+    if (!d_tts_talker_ && !d_tts_codec_) return {};
+    auto gpu = LockUnlessCancelled(model_mu_, cancelled);
+    if (!gpu.owns_lock() || cancelled()) return interrupted();
+    // Retire the pair atomically with respect to cancellation/metadata.
+    // A half-retired codec must never be overwritten by a subsequent reload.
+    bool clean = true;
+    for (auto** pointer : {&d_tts_talker_, &d_tts_codec_}) {
+      const auto freed =
+          detail::ReleaseCudaMemory(*pointer, "native_tts.family_release");
+      RecordDeviceMemoryFailure(freed, "native_tts.family_release");
+      clean &= freed.ok();
+    }
+    tts_weights_ = {};
+    tts_health_.Released();
+    if (!clean) {
+      tts_health_.ComputeFailed(AsrFailure::kDevice, Clock::now());
+      AbortBackendExecution();
+      return Error(503, "gpu_unhealthy", "Optional weight release failed");
+    }
+    return {};
+  }
+  auto reply = release(embedding_mu_, d_embedding_weights_,
+                       "native_embedding.family_release", [&](bool ok) {
+                         embedding_weights_ = {};
+                         embedding_ready_.store(false);
+                         embedding_device_bytes_.store(0);
+                         if (!ok)
+                           embedding_failure_.store(EmbeddingFailure::kDevice);
+                       });
+  if (!reply.ok()) return reply;
+  const auto speech = [&](std::mutex& owner, uint8_t*& pointer, auto& weights,
+                          AsrHealth& health, const char* site) {
+    return release(owner, pointer, site, [&](bool ok) {
+      weights = {};
+      health.Released();
+      if (!ok) health.ComputeFailed(AsrFailure::kDevice, Clock::now());
+    });
+  };
+  reply = speech(asr_mu_, d_asr_weights_, asr_weights_, asr_health_,
+                 "native_asr.family_release");
+  if (!reply.ok()) return reply;
+  reply = speech(aligner_mu_, d_aligner_weights_, aligner_weights_,
+                 aligner_health_, "native_aligner.family_release");
+  if (!reply.ok()) return reply;
+  reply = speech(speaker_mu_, d_speaker_weights_, speaker_weights_,
+                 speaker_health_, "native_speaker.family_release");
+  if (!reply.ok()) return reply;
+  return speech(separator_mu_, d_separator_weights_, separator_weights_,
+                separator_health_, "native_separator.family_release");
+}
+
 ObjectReply ChatServer::EnsureNativeTts(bool weights,
                                         const BinaryAccess& access,
                                         RequestDiagnostics* diagnostic) {
@@ -62,7 +140,7 @@ ObjectReply ChatServer::EnsureNativeTts(bool weights,
   try {
     const uint64_t estimate =
         kHostMargin +
-        (weights ? 2 * (kNativeTtsFileBytes + kNativeTtsCodecFileBytes) +
+        (weights ? (kNativeTtsFileBytes + kNativeTtsCodecFileBytes) +
                        kNativeTtsWeightBytes +
                        audio::TtsConfig::kCodecDecoderBytes + (6ULL << 20)
                  : 0);

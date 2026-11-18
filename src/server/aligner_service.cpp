@@ -40,7 +40,8 @@ Status PlanAlignerServiceResources(const AlignerServiceLimits& limits,
       uint64_t(limits.max_audio_seconds) * 16000 * sizeof(float) +
       frames * C::kMelBins * sizeof(float) +
       uint64_t(limits.max_words) * 2 * C::kClasses * sizeof(uint16_t);
-  plan.load_peak_bytes = 3 * kNativeAlignerFileBytes + 512 * kMiB;
+  // Direct payload I/O retains one host source and one device copy.
+  plan.load_peak_bytes = 2 * kNativeAlignerFileBytes + 512 * kMiB;
   *out = plan;
   return {};
 }

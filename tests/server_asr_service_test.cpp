@@ -169,7 +169,7 @@ Q4T_TEST(asr_resources_account_unified_peak_and_reject_small_workspace) {
   AsrServiceLimits limits;
   AsrResourcePlan plan;
   Q4T_CHECK(PlanAsrServiceResources(limits, &plan));
-  Q4T_CHECK(plan.load_peak_bytes >= 3 * 1876091704ULL + (512ULL << 20));
+  Q4T_CHECK(plan.load_peak_bytes >= 2 * 1876091704ULL + (512ULL << 20));
   Q4T_CHECK(plan.request_host_bytes > (75ULL << 20) + 480000 * sizeof(float));
   Q4T_CHECK(plan.shared_host_bytes ==
             6 * kAggregateChatBodyBytes + 2 * kChatBodyBytes);

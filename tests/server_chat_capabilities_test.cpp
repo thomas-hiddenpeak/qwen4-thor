@@ -5,6 +5,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/tts_assets.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/file_limits.h"
 #include "q4t/server/structured_decoder.h"
@@ -553,5 +554,26 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             http->GetString("query_parameters") ==
                 "route_specific_closed_contract" &&
             http->GetInt("client_cancel_inflight") == 1);
+  return true;
+}
+
+Q4T_TEST(tts_capability_pins_the_actual_talker_and_codec_independently_of_health) {
+  using namespace q4t::server;
+  for (bool enabled : {false, true}) {
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson(
+        "chat", false, true, 0, nullptr, false, false, false, false, 64,
+        false, false, enabled), &value));
+    const auto* speech = value.Find("speech");
+    Q4T_CHECK(speech && speech->GetBool("enabled") == enabled);
+    Q4T_CHECK(speech->GetString("profile") == kNativeTtsProfile);
+    Q4T_CHECK(speech->GetString("model") == kNativeTtsModel);
+    Q4T_CHECK(speech->GetString("revision") == kNativeTtsRevision);
+    Q4T_CHECK(speech->GetString("weight_sha256") == kNativeTtsWeightSha256);
+    Q4T_CHECK(speech->GetString("codec_weight_sha256") ==
+              kNativeTtsCodecWeightSha256);
+    Q4T_CHECK(!speech->GetBool("core_health_dependency", true));
+    Q4T_CHECK(value.Find("chat_audio_output")->GetBool("enabled") == enabled);
+  }
   return true;
 }

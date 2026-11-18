@@ -33,7 +33,7 @@ struct AsrResourcePlan {
   uint64_t shared_host_bytes = 0;
   uint64_t load_peak_bytes = 0;
 };
-// Estimates include host staging, device payload and possible file pages in
+// Estimates include direct-read host staging and device payload in
 // the same physical RAM. Not a reservation or a guarantee against host OOM.
 Status PlanAsrServiceResources(const AsrServiceLimits& limits,
                                AsrResourcePlan* out, size_t batch_workers = 1);

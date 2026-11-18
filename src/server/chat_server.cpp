@@ -1,5 +1,6 @@
 #include "q4t/server/web_execution.h"
 #include "q4t/server/tts_assets.h"
+#include "q4t/server/auxiliary_resources.h"
 #include "q4t/mtp/subset_head.h"
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
@@ -33,6 +34,7 @@
 #include "q4t/server/cuda_quota_policy.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/server/asr_assets.h"
+#include "q4t/server/aligner_assets.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -355,16 +357,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
              quant::MoEResidencyMirrorK() *
                  quant::MoEResidencyMirrorBytes(cfg.hs, cfg.moe_is));
       }
+      AuxiliaryResourceBudget auxiliary;
+      uint64_t input_weights = 0, speech_weights = 0;
       if (!opts.embedding_model_dir.empty()) {
         model::EmbeddingWorkspaceLayout embedding;
         const auto planned = model::PlanEmbeddingWorkspace(
             model::EmbeddingConfig::kInputTokens, &embedding);
         if (!planned) return planned;
-        // Host staging + device weights + possible file pages all use Thor
-        // DRAM. Keep the optional model's peak visible before capacity choice.
-        breq.extra_fixed_bytes += 3 * kNativeEmbeddingFileBytes +
-                                  512ULL * 1024 * 1024 +
-                                  size_t(opts.max_seq) * embedding.bytes;
+        input_weights += kNativeEmbeddingFileBytes;
+        // Direct weight I/O cannot create a second file-page copy. All
+        // resident weights, metadata and source staging still use Thor RAM.
+        s = auxiliary.Add(kNativeEmbeddingFileBytes + (512ULL << 20), 0,
+                          kNativeEmbeddingFileBytes, embedding.bytes);
+        if (!s) return s;
       }
       if (!opts.tts_model_dir.empty()) {
         TtsResourcePlan tts;
@@ -379,12 +384,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
         // Synthesis/tempo/encoder workspaces live only while holding a sequence
         // slot. Finite HTTP/1.0 or Chat output may outlive that slot, bounded
         // separately by the admitted request's output ceiling.
-        breq.extra_fixed_bytes +=
-            tts.load_peak_bytes +
-            uint64_t(opts.max_seq) *
-                (tts.request_device_bytes + tts.request_host_bytes) +
+        speech_weights = tts.resident_weight_bytes;
+        // Retain the encoder child ceiling even after request completion;
+        // its isolated worker slot persists until confirmed process reap.
+        s = auxiliary.Add(
+            tts.resident_weight_bytes + tts.resident_host_bytes +
+                tts.encoder_address_space_limit,
             uint64_t(admission.inflight) *
-                (6ULL * opts.tts_limits.max_output_mib * (1ULL << 20));
+                (6ULL * opts.tts_limits.max_output_mib * (1ULL << 20)),
+            tts.source_staging_bytes + tts.expansion_scratch_bytes,
+            tts.request_device_bytes + tts.request_host_bytes -
+                tts.encoder_address_space_limit);
+        if (!s) return s;
       }
       if (!opts.asr_model_dir.empty()) {
         AsrResourcePlan asr;
@@ -393,10 +404,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
-        breq.extra_fixed_bytes +=
-            asr.load_peak_bytes + asr.shared_host_bytes +
-            uint64_t(opts.max_seq) * asr.request_device_bytes +
-            uint64_t(admission.inflight) * asr.request_host_bytes;
+        input_weights += kNativeAsrFileBytes;
+        s = auxiliary.Add(asr.load_peak_bytes - kNativeAsrFileBytes,
+                          asr.shared_host_bytes + uint64_t(admission.inflight) *
+                                                      asr.request_host_bytes,
+                          kNativeAsrFileBytes, asr.request_device_bytes);
+        if (!s) return s;
       }
       if (!opts.aligner_model_dir.empty()) {
         AlignerResourcePlan alignment;
@@ -406,10 +419,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
         // These are additional to ASR's resident weights and other requests.
-        breq.extra_fixed_bytes +=
-            alignment.load_peak_bytes +
-            uint64_t(opts.max_seq) * alignment.request_device_bytes +
-            uint64_t(admission.inflight) * alignment.request_host_bytes;
+        input_weights += kNativeAlignerFileBytes;
+        s = auxiliary.Add(
+            alignment.load_peak_bytes - kNativeAlignerFileBytes,
+            uint64_t(admission.inflight) * alignment.request_host_bytes,
+            kNativeAlignerFileBytes, alignment.request_device_bytes);
+        if (!s) return s;
       }
       if (!opts.vad_model_dir.empty()) {
         AdmissionLimits admission;
@@ -432,10 +447,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
-        breq.extra_fixed_bytes +=
-            speaker.load_peak_bytes +
-            uint64_t(opts.max_seq) * speaker.request_device_bytes +
-            uint64_t(admission.inflight) * speaker.request_host_bytes;
+        input_weights += audio::SpeakerConfig::kFileBytes;
+        s = auxiliary.Add(
+            speaker.load_peak_bytes - audio::SpeakerConfig::kFileBytes,
+            uint64_t(admission.inflight) * speaker.request_host_bytes,
+            audio::SpeakerConfig::kFileBytes, speaker.request_device_bytes);
+        if (!s) return s;
       }
       if (!opts.separator_model_dir.empty()) {
         SeparatorResourcePlan separator;
@@ -444,11 +461,26 @@ Status ChatServer::Start(const ServerOptions& opts) {
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
         if (!s) return s;
-        breq.extra_fixed_bytes +=
-            separator.load_peak_bytes +
-            uint64_t(opts.max_seq) * separator.request_device_bytes +
-            uint64_t(admission.inflight) * separator.request_host_bytes;
+        input_weights += audio::SeparatorConfig::kFileBytes;
+        s = auxiliary.Add(
+            separator.load_peak_bytes - audio::SeparatorConfig::kFileBytes,
+            uint64_t(admission.inflight) * separator.request_host_bytes,
+            audio::SeparatorConfig::kFileBytes, separator.request_device_bytes);
+        if (!s) return s;
       }
+      s = auxiliary.ShareWeights(input_weights, speech_weights);
+      if (!s) return s;
+      breq.extra_fixed_bytes +=
+          auxiliary.resident_bytes + auxiliary.pending_host_bytes;
+      breq.auxiliary_sequence_bytes = auxiliary.sequence_bytes;
+      std::fprintf(
+          stderr,
+          "[q4t][auxiliary-budget] resident=%llu pending_host=%llu "
+          "sequence=%llu weight_io=verified_direct "
+          "execution=serialized_shared_slot residency=input_or_tts\n",
+          static_cast<unsigned long long>(auxiliary.resident_bytes),
+          static_cast<unsigned long long>(auxiliary.pending_host_bytes),
+          static_cast<unsigned long long>(auxiliary.sequence_bytes));
       // Reuse allocation sizing functions. For auto/capped length, use the
       // requested upper bound; small-T attention scratch can depend on it.
       model::FullAttentionWeights full;

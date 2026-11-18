@@ -80,6 +80,10 @@ struct BudgetRequest {
   // Extra fixed cost beyond weights + measured constants (e.g. tiered
   // residency per-layer pinned staging buffers).
   size_t extra_fixed_bytes = 0;
+  // Optional model load/execution owns a sequence slot and one serialized
+  // auxiliary lease. At B=1 it cannot overlap the primary request transient;
+  // at B>1 conservatively add it to all primary request allocations.
+  size_t auxiliary_sequence_bytes = 0;
   size_t mtp_weights_bytes =
       0;  // independent MTP index, excluding main weights
   size_t mtp_load_host_bytes = 0;  // largest simultaneous loader host staging
@@ -94,7 +98,7 @@ struct MemoryBudget {
   size_t fixed = 0;      // weights + workspace + buffers + margin
   size_t state_pool =
       0;  // KV/indexer/SSM/conv/rope (scales with max_len x max_seq)
-  size_t per_request = 0;  // Peak for all admitted MTP requests; extend serialized
+  size_t per_request = 0;  // Primary/auxiliary peak; shared slots respected
   size_t available_for_state = 0;  // budget - fixed - max(request, loading)
   size_t main_workspace = 0;
   size_t mtp_workspace = 0;
