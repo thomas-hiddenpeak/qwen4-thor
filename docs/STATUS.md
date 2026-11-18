@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原样本完整生成轨迹118项通过](evidence/serve-voice-generation-diagnostic-20261119/README.md)：
+1 GPU/1CPU talker、47帧逐码重现、64.246秒，最大相对L2 1.178e-5；
+62次NVML正常。排除已查轨迹数值偏差，音色/核验质量继续待解，
+不修改0.65门；正常播放听感可选反馈待回，先继续包和恢复接入。
+
+冻结原样本47帧轨迹复核：1 GPU talker/1官方CPU，0codec/ASR/主模型/
+HTTP；48次talker、75次predictor参考与118项数值，900秒/32MiB。
+必须逐码重现既有失败样本，保留原音色低相似度，不搜索seed/改门槛。
+
 [声纹算术复核与终态日志修复通过](evidence/serve-voice-identity-diagnostic-20261119/README.md)：
 18原生/官方CPU向量最大相对L2 2.851e-6，官方同样复现低相似度，
 注册门槛保持0.65；后续查较长TTS计算与录音音色，未判整体通过。

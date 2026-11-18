@@ -1,0 +1,48 @@
+{
+  "status": "PASS_FIXED_TRAJECTORY_COMPUTATION_PENDING_VOICE_QUALITY",
+  "steps": [
+    {
+      "name": "native",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/q4t_voice_generation_diagnostic",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/plan.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native"
+      ],
+      "returncode": 0,
+      "seconds": 9.880348673090339
+    },
+    {
+      "name": "reference",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/reference.py",
+        "--assets",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+        "--official-source",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/plan.json",
+        "--native",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference"
+      ],
+      "returncode": 0,
+      "seconds": 51.53816398233175
+    }
+  ],
+  "comparisons": 118,
+  "max_relative_l2": 1.1773348038909886e-05,
+  "minimum_cosine": 0.9999999999306957,
+  "seconds": 64.24594578007236,
+  "defaults_unchanged": true,
+  "lease_status": "COMPLETED",
+  "nvml_queries": 62,
+  "nvml_all_ok": true,
+  "voice_quality": "PENDING",
+  "registration_http": "PENDING",
+  "production_changed": false,
+  "default_replaced": false
+}

@@ -8644,6 +8644,13 @@
           "max_relative_l2": 2.8509007139870166e-06,
           "threshold_unchanged": 0.65,
           "synthetic_recording_consistency_pending": true
+        },
+        "generation_diagnosis": {
+          "state": "PASS_FIXED_TRAJECTORY_COMPUTATION_PENDING_VOICE_QUALITY",
+          "evidence": "evidence/serve-voice-generation-diagnostic-20261119/README.md",
+          "comparisons": 118,
+          "max_relative_l2": 1.1773348038909886e-05,
+          "voice_consistency_pending": true
         }
       }
     }

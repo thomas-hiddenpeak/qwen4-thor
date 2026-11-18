@@ -1,0 +1,1037 @@
+{
+  "archive_sha256": "77ba652a943fb16f11b569f2644aeb2b0328ce5d901c70b0714ab99f5c060606",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_generation_diagnostic_01.py": {
+      "bytes": 4393,
+      "sha256": "7bd78e375e495af99dca78fb5e92a4aa24a00e8c27edc0b4565e1af98d96cdc0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_generation_reference_01.py": {
+      "bytes": 4923,
+      "sha256": "5bf64b8a2eda2d66827a5b5c917969e97994e6ae2ca1d0d1f26ec904e8ea5aa1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_generation_diagnostic_01.py": {
+      "bytes": 2816,
+      "sha256": "48ab25b242229da2226f0c3c4a2023d6843c612daa7f5090b580fe6a0c8b3ba8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/reference.py": {
+      "bytes": 9852,
+      "sha256": "986d5e8649fc93df4abc3a030f66cf1db21069867c341279c429e7459ff3e505"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/plan.json": {
+      "bytes": 20946,
+      "sha256": "8ff5b8fbf924f0b8c46ff600f05cd79c471a9a0918378a301248b7de29070b73"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/lease/nvml-queries.jsonl": {
+      "bytes": 142188,
+      "sha256": "35cc273e3c79f578dd5c5ef1d4e52f0c3dacfad68ace0d0bd9f0cfd05ad460ee"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/lease/events.jsonl": {
+      "bytes": 11997,
+      "sha256": "8a3b986b5c96722578789ba5d703869e6a83e5ebc90e70175dbda1df37d5764c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/lease/exit.json": {
+      "bytes": 736,
+      "sha256": "c089c904554297af9f2c4913616b3dc85d26cb5db7f5921591a01729701fe80e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/progress.json": {
+      "bytes": 1695,
+      "sha256": "56a8f102c442b8885edb88f3c52340e15674629d517ad0a7f1e603d70897c23e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/result.json": {
+      "bytes": 1913,
+      "sha256": "7acecef02206bcaef47c6400c7db3182daabdf1c83c5f19e4d02126d2184c252"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference.log": {
+      "bytes": 523,
+      "sha256": "60a04729636720524499d79cea04d34474e7908b9af158f3175efbc284acac5c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/result.json": {
+      "bytes": 139,
+      "sha256": "695a652af1926d83637336fecacd5be4570f129491fa0e270093a83375f82fce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-32-15.f32": {
+      "bytes": 4096,
+      "sha256": "c81bd52c6add11f8b5e5526d0eee7d3dcd2687d49f7237d5b2e5a3e335709ee6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-44-0.f32": {
+      "bytes": 8192,
+      "sha256": "e00cb2da1eca2d8a2aaff7e82bc7b9bc1b952479a74a4391f7cdc7d7d1f9902d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-46-15.f32": {
+      "bytes": 4096,
+      "sha256": "857080b0b66097baed01d1b794009a920a9099a229a5a2ba77bbdc7c894b0154"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-33-0.f32": {
+      "bytes": 12288,
+      "sha256": "5d2e0e9718e64a8126246a5288956828dfc67c09fff7d4f0e4069dc793e200f2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/prefill-0-0.f32": {
+      "bytes": 172032,
+      "sha256": "a789a39914967e20d4cc941c9e7243c4175b89eebf00498ab04b0794d04f46c2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-12-0.f32": {
+      "bytes": 12288,
+      "sha256": "d92a7e9622e54ede40a647c7e6dc26fd47bd768056f71901dcb87312e540ddb9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-2-0.f32": {
+      "bytes": 12288,
+      "sha256": "3c3ce6e5d8a6ded05b6d1ef240a2cefcec4fa12e185c932883ef6e425ce31423"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-1-0.f32": {
+      "bytes": 12288,
+      "sha256": "968fe6a476b5f1c979425e269c00baf5794f2983420d0d57e1de753e7c032fd2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-42-0.f32": {
+      "bytes": 12288,
+      "sha256": "f2d6650a32886da7901b1ebf4515b286a26f454666b446bd3207a878779297a8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-16-0.f32": {
+      "bytes": 8192,
+      "sha256": "124c358c7e17018803bd4b28fbb9fe3c25995787b7f69f7215e529408eb08306"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-13-0.f32": {
+      "bytes": 12288,
+      "sha256": "9ca8366f1554be1c2ab0640b60297eded82d71bfc719e918d02d0b963cf09603"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-0-0.f32": {
+      "bytes": 8192,
+      "sha256": "10405fe41750d5b83be3237392b59efc741af6d663d8af788cc67bb10c1e1cd4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-23-0.f32": {
+      "bytes": 12288,
+      "sha256": "ad8f7b64be947cfbbc3fb7c14de93b8e8857bc36586a0262f48f066dfff7390a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-0-1.f32": {
+      "bytes": 4096,
+      "sha256": "39791ed900a05b933ec7252f0ced3adc99170ead62897edca52817857f739f9b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-42-0.f32": {
+      "bytes": 8192,
+      "sha256": "5b4f94f6620a036fa63ae9b9fe51e0e1f243de21d50a08d02aec4839e40f6cc8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-4-0.f32": {
+      "bytes": 8192,
+      "sha256": "4e0954773caed2f1d0a4ceca2c1ceb859a6c759070a282e2ae0f5a6a9a62b874"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-21-0.f32": {
+      "bytes": 12288,
+      "sha256": "d3cd9eabb741d110f445b870703e718a1740375fe7a3b6cd427f10b8b402c445"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-9-0.f32": {
+      "bytes": 8192,
+      "sha256": "ab22187b821bf06488a2d3005dfd199c3df4c932df4271f464d198ca443e5a56"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-30-0.f32": {
+      "bytes": 8192,
+      "sha256": "b334f3868e0e8bd1fe4da5c2d6d63af24b181d0fa755d072ad179851f774b304"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-32-1.f32": {
+      "bytes": 8192,
+      "sha256": "7bfb8da500ad33efdaf725d5e237facfa8904808e215ff178336eb33a4251de3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-41-0.f32": {
+      "bytes": 12288,
+      "sha256": "d4c5f1b6ddca269df49462b48ba7f89be983c22f532239fe39a33ca0017113ce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-3-0.f32": {
+      "bytes": 12288,
+      "sha256": "820cc54afbea0f4694439fea930a7863ef3ab078e4126ed0313349f53ee9a7ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-1-1.f32": {
+      "bytes": 4096,
+      "sha256": "c5e315cb76ef549769b2bf96f19ba30618e9977ea784ad28fcc7d2cad744de12"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-11-0.f32": {
+      "bytes": 12288,
+      "sha256": "ae43e84774e876a3f9678abd2483de3da96ddbf7f0899eaa27c6b59fccef8dea"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-1-15.f32": {
+      "bytes": 8192,
+      "sha256": "632ff85e441455969601ba0574b4cd6471789fd8f49d2fd00da7a9d3be4719ad"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-19-0.f32": {
+      "bytes": 8192,
+      "sha256": "d2c05c630e6364f65066b73d2bc22fe20e19e5beb33efb634b8282785552873c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-32-15.f32": {
+      "bytes": 8192,
+      "sha256": "06d13605b7194bc431775f6aa2a57586e544f0b94c770e13773afe410830d53e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-23-0.f32": {
+      "bytes": 8192,
+      "sha256": "3441543d817aa49a1975afcaa8e1265b5e39dc058c192bbb5d8b0dc14f5a1592"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-9-0.f32": {
+      "bytes": 12288,
+      "sha256": "b762924b33e6f39f9aa81312fc20ca22cae5bd08e62f328011558aa92d501296"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-47-0.f32": {
+      "bytes": 8192,
+      "sha256": "023c5369c4219a25b63362c2382631cabb27022d90819ada342d5758d56c98dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-18-0.f32": {
+      "bytes": 8192,
+      "sha256": "ec944bda56ee611367651b01b2c3dd69f7df08dd80e17dad61382e79039ea1f3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-5-0.f32": {
+      "bytes": 8192,
+      "sha256": "a37b6aa5447fcbcc028a935b6bf6ed3d173a121da14d8d000c17b6975635f970"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-43-0.f32": {
+      "bytes": 12288,
+      "sha256": "0d2531b7f54fac50890359089e2b655af233e09e91db7cbfb03926aaa98d5f86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-24-0.f32": {
+      "bytes": 12288,
+      "sha256": "7cac4192ef5a22b64bbdca95453bf6f7ccf7409591f8a7e0da442608124a60dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-1-1.f32": {
+      "bytes": 8192,
+      "sha256": "3dbabd3c0c0d9da6827ff90eaac5ce53ba392bd2466bb6dc578fad8310381803"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-4-0.f32": {
+      "bytes": 12288,
+      "sha256": "c316b90be722aad175ea22c18615ea182712f3d1d101ddd22c55748edc7561af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-10-0.f32": {
+      "bytes": 12288,
+      "sha256": "b8536b6ed5535eac3970a0f3aea45aec034d333db60131fe92c4fef404302f48"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-14-0.f32": {
+      "bytes": 12288,
+      "sha256": "6057246724b2147b0ec91e255d4bef866c5cb6e48d7c2e0410065b8106d6bfca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-26-0.f32": {
+      "bytes": 8192,
+      "sha256": "60ea47c537ccf9c639de32d2bce119f40ef146760c222663333f0a33686274d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-27-0.f32": {
+      "bytes": 8192,
+      "sha256": "2ebd5b60e44288694623c97187a5f8c09d88dcd712af81d84bc4ac95e46fc33a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-34-0.f32": {
+      "bytes": 8192,
+      "sha256": "a26930cc3f73343bf7889593af172ed8daa5de35c31fce4850b1ff92a37d3422"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-20-0.f32": {
+      "bytes": 8192,
+      "sha256": "06e7f05ee41cbcba735044b98dbe208cad569bd29eca7eda6dc57d58c0d02877"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-0-1.f32": {
+      "bytes": 8192,
+      "sha256": "739af294ff7e360d52862d797ef602841ad3086bc903983139cbc7e2aa21ef44"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-17-0.f32": {
+      "bytes": 12288,
+      "sha256": "0dfcbc1afa05c683a09d5671fb329eb2adf1e297d1b2a90081a9a1cab8983a35"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-38-0.f32": {
+      "bytes": 12288,
+      "sha256": "fc6ffd7a1554b80c38e24ac3d4d3c04b9e44eb12aac6ea3e8a0dae3e33e5d215"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-13-0.f32": {
+      "bytes": 8192,
+      "sha256": "5ea7eb0db044e370f880cdcf22db7432ac50d3c899fee3417aa8104a5cbd5bb6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/result.json": {
+      "bytes": 24677,
+      "sha256": "641da2067fac940e6f8c7ce757eb1135da5c889e14bfa3186adbedd298d4d831"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-41-0.f32": {
+      "bytes": 8192,
+      "sha256": "f65341030abab9743b61f1874d42a7c60e69ed15763b7191428d754af39b213d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-2-0.f32": {
+      "bytes": 8192,
+      "sha256": "9634a5062d87e4dd709e8b88ec784f2e7638c566df0e9de66fa63874de633fd8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-44-0.f32": {
+      "bytes": 12288,
+      "sha256": "4204aa44da2a8b9679c49b081c5d0e8668022c251f1a28be5c1abb764ae0f7ea"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-7-0.f32": {
+      "bytes": 8192,
+      "sha256": "a12ab776a108acded9bf6838141ac362184ad7a0c5539b648e6726b06f3e274a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-1-0.f32": {
+      "bytes": 8192,
+      "sha256": "6ae10fdac81bfcf9efd0472f6ec480d7cb65984a26e77d950361bbe2ebeb98af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-45-0.f32": {
+      "bytes": 12288,
+      "sha256": "d42eda29986bf890a37877f97a40214572f18a42acd44de17a70088e0270a4ea"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-35-0.f32": {
+      "bytes": 8192,
+      "sha256": "62b771a2ed92f5e14bc5dbd568a4f0c9cf99ac196e0d7295b0860623b5e82403"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-8-0.f32": {
+      "bytes": 12288,
+      "sha256": "460028faf696c6373dc31c32ef117a87d4bf8f124e4af19f508ec6991c7a9a40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-1-15.f32": {
+      "bytes": 4096,
+      "sha256": "f8347fb3937f760db05cebb224aefb1249d31d85c8bd992fc076e54663d00004"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-36-0.f32": {
+      "bytes": 8192,
+      "sha256": "bc1b125ba5c96f65a058b80b272fa7a2c2701718414e16f2783d5c4fae50045d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-40-0.f32": {
+      "bytes": 12288,
+      "sha256": "d9cfc078ea4fee917c87790ad4932a1ab3a04b1aaec2e999fa77ff7b3b1f0a72"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-0-15.f32": {
+      "bytes": 8192,
+      "sha256": "0ed647ce3d31157761debff31d550ab446f0445737d2f5527cf4a01d1cc3b312"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-31-0.f32": {
+      "bytes": 8192,
+      "sha256": "c17df0dec9d24b34856ac444a14195101b9190cf1134772f9b5bdac9a508fa04"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-7-0.f32": {
+      "bytes": 12288,
+      "sha256": "c2a0da61711b65de102f81ecb5a5a4fdbb640f5b7c43163e5904ec32a4ec6be6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-29-0.f32": {
+      "bytes": 8192,
+      "sha256": "e8410c5474209ab0bd9f2678d8bd0d7f23f228fe0c84104eaf500502a57abfe2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-45-0.f32": {
+      "bytes": 8192,
+      "sha256": "5b3a26f54727ddf94334fdab03cf425705477d9978a4d0ad45f4b146db144277"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-16-15.f32": {
+      "bytes": 4096,
+      "sha256": "8050021392f7fe229bcb9902c01a1c964524ffad6937495661c4301d41c70f44"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-17-0.f32": {
+      "bytes": 8192,
+      "sha256": "135e09e4c5933d780dac50e631a7fb8257b206758f4c5be661c4864117fb18fa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-6-0.f32": {
+      "bytes": 12288,
+      "sha256": "a30da29249fb1376b9748fdb7561ee2ccfa54460e73e695f8ab2fc6dbef65463"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-16-0.f32": {
+      "bytes": 12288,
+      "sha256": "926f13f25a5d3871420954a26fc6efa731266487b9645b4b50573c17e9122885"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-3-0.f32": {
+      "bytes": 8192,
+      "sha256": "0db5cbc7dbd538098f39c374a260203abe1459933ebdf4a66cb78accab1a6592"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-16-1.f32": {
+      "bytes": 8192,
+      "sha256": "798fee6a6c82d19f77e1736ce3c458db566a639c198e3fd26bdbc1b12abbbcfc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-32-1.f32": {
+      "bytes": 4096,
+      "sha256": "f19b30f3c146167ddd0b54fb0a7020720e87012c708ad580de3fcd9634250f7d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-16-15.f32": {
+      "bytes": 8192,
+      "sha256": "8d4ce1984f9286322699db37453a0f7c1323c77f4d2683953585208f26f79ae4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-29-0.f32": {
+      "bytes": 12288,
+      "sha256": "8628fd9bb8a548838ace2d04ce739a03dfd032fe4c6d9cfd89a713d0af42c5e3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-46-15.f32": {
+      "bytes": 8192,
+      "sha256": "523253d315da792910d0d2b380203a8e0b5d09d7bb98418c9526e66c5bc8afc8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-25-0.f32": {
+      "bytes": 12288,
+      "sha256": "6c807ea272c3c122178cc88a853e8578828d65cd5cb3d9c56a105f6883eab3fa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-20-0.f32": {
+      "bytes": 12288,
+      "sha256": "7ae459a41184533975062f5a56fc1186699e7cacfa4907ccca6cb50233260f9f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-15-0.f32": {
+      "bytes": 8192,
+      "sha256": "c2ee792cd73c1368cb146a85d80ce15b7f0d068ab5878af6b99d9d45dd0ccf31"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-21-0.f32": {
+      "bytes": 8192,
+      "sha256": "537a3cf79485a816b50602b7bd2bb994c85381490d47b436c24e2389af4d576c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-34-0.f32": {
+      "bytes": 12288,
+      "sha256": "48a106f77691a55311758182da3cd7a849cde92a312b4fd933e18de09b9ea644"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-37-0.f32": {
+      "bytes": 8192,
+      "sha256": "c1fc51fc4108c58b16ee80e5c45e579055e383e63a6dee108355b9148da45e5e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-43-0.f32": {
+      "bytes": 8192,
+      "sha256": "8800bc2dd212abbe9e7c2f9e68bf3960889a13f1197aedff95063b6825e16d41"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-37-0.f32": {
+      "bytes": 12288,
+      "sha256": "8dac33c10043a153ef77fbb74e02f1a9ef80b54021de5271dba9004c9a5a2183"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-46-0.f32": {
+      "bytes": 12288,
+      "sha256": "508021f82877c3bf6197b9d1ebb069e02e9e3673357d565ba87f035665e3118c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-10-0.f32": {
+      "bytes": 8192,
+      "sha256": "4ed83a5c4701f732a5a0d3cf411708e73453b32cb3ebff50b51620acbf1f4e75"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-31-0.f32": {
+      "bytes": 12288,
+      "sha256": "4f0f076be6f8390ad93668d20c1b1ae4b939ddb3276e1943efcf2497495f67d0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-6-0.f32": {
+      "bytes": 8192,
+      "sha256": "8031308b50e2f0dacbee9d9930f28d3578fcc1419c35f392a42cc5fe89156f89"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-28-0.f32": {
+      "bytes": 8192,
+      "sha256": "3eb5b4a259c842723df9fb17b12bf49040e86ad24f0026318ecfba7e14478120"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-19-0.f32": {
+      "bytes": 12288,
+      "sha256": "837fa5babb970cb79d2d8fced0a5be8512a32e08f92c7c49920ff0f6f7d0adb9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-25-0.f32": {
+      "bytes": 8192,
+      "sha256": "df18d93e0e4ce4236313d2525922b051ba9ab1320dfdfbb932afb70ad3a1629e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-36-0.f32": {
+      "bytes": 12288,
+      "sha256": "c1ec4a78caf4bf5cd0a1952600030b24b4674626eb0a055efa3a8a74fa529a2c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-0-0.f32": {
+      "bytes": 12288,
+      "sha256": "9c14fe22d6cd91c0274f8b30b2171e14d13c105b24f7f1135c240b93d5748c05"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-22-0.f32": {
+      "bytes": 12288,
+      "sha256": "8a0e1ed634cc5943a11d12ac8b6942782b16fbb15a0ef3267abb1de2f12f277e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-12-0.f32": {
+      "bytes": 8192,
+      "sha256": "03ff1f3bda754a4f1fe69255c7a771a879966fea89edf678e7474815ab0e959b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-40-0.f32": {
+      "bytes": 8192,
+      "sha256": "4a8c508a996d5a8df9173c4c29c916bbcd6122b64a8f185ac43968573ce549bf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-8-0.f32": {
+      "bytes": 8192,
+      "sha256": "49ff1b12dcab2561ab5166ea8f244e1c0ee78653e7088c18c9319bae7ec03d34"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-30-0.f32": {
+      "bytes": 12288,
+      "sha256": "b6cc08ebe86934efd601686abdb6072ee2f3ab96edf15cf94cd76c1d3969e9e5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-16-1.f32": {
+      "bytes": 4096,
+      "sha256": "538c240eb896f7e3e81a39920939e818c9e89057f61b28b22bfc745166049e57"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-14-0.f32": {
+      "bytes": 8192,
+      "sha256": "225d986ffaaa8a0e3a741971ebfc1bf1049c17d39bdd6d9840418c1fc27bdd08"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-33-0.f32": {
+      "bytes": 8192,
+      "sha256": "cf6e702540140de4ed0987ac5ffe34243cd271f2fbcf1ab2b99bfb9283493489"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-46-1.f32": {
+      "bytes": 4096,
+      "sha256": "442cc705d54ad119dd2ce73eafb451e6d05dd03e0cb2e509f1ad38e98cfbf12e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-47-0.f32": {
+      "bytes": 12288,
+      "sha256": "06ca705f6c2a8ce4af2ffcd5edeeaf8dd2744066d52662af874562bb316de476"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-28-0.f32": {
+      "bytes": 12288,
+      "sha256": "53ecc2433118413fefba6ce1af87f77b70e15c1d299de5506bd69eb2f7a72e1c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-46-0.f32": {
+      "bytes": 8192,
+      "sha256": "732a69b6dac01e58f29a5ffd43ce8caf147dc1cec7e7c172a7d77109feadcbbc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/text-projected-0-0.f32": {
+      "bytes": 139264,
+      "sha256": "b9784013515fae32597af7c7b60d4bb8574478f30bec9323eb3ad06c8c5f8865"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-35-0.f32": {
+      "bytes": 12288,
+      "sha256": "16582a8f0c103a256ff28ed10bf4b1799007b2b4bb687d58278c289527661ef2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-27-0.f32": {
+      "bytes": 12288,
+      "sha256": "b33bc581c5c2f48443037f42624becac34969acafa70fd83e5a3fc58bfcbe225"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-logits-46-1.f32": {
+      "bytes": 8192,
+      "sha256": "e411034735855ea17583d5a64215e6a58adc4f92a8466a6ad92913ab301f471d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-32-0.f32": {
+      "bytes": 12288,
+      "sha256": "c16f4b3a78e1f2a45ecf85a6e3ce80299a31118f6a3e52e6724749c906ff6a0a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-22-0.f32": {
+      "bytes": 8192,
+      "sha256": "749323b29417c23c021e4878b9e2e12c72f63e9055eb32244baacb04b4e24dc2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-24-0.f32": {
+      "bytes": 8192,
+      "sha256": "6feef8c708de9878bf1293958acb43dd35319eb0094917555bd59fed9552539e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-38-0.f32": {
+      "bytes": 8192,
+      "sha256": "a4110792b305ea5f9b2ae3aaee483452cbe7b39dc8166b676f2a0ba035dc632e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-32-0.f32": {
+      "bytes": 8192,
+      "sha256": "4d93cf7b506de2921275dfafd524ec0693e3b06af5836b0029eae5ac1bdbba7e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-11-0.f32": {
+      "bytes": 8192,
+      "sha256": "0d8b2e97a69f63d805f6b3c7c40560310a554f8593896085d7f7323bba37959e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-18-0.f32": {
+      "bytes": 12288,
+      "sha256": "29ca2aab1b38f0aaa76cd00f138b66ecebc9b3199ed9b63f75cdeaa54571f07a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-26-0.f32": {
+      "bytes": 12288,
+      "sha256": "9863b600d9c1202e3ba1c26a4f24f8c59a40b89b67e7b01504fd8fb03f17a87e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-39-0.f32": {
+      "bytes": 12288,
+      "sha256": "208a08037bd7f8f1d4f54ee53b5d46afac705b846ce3b1abf3b3a20614218c63"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-hidden-39-0.f32": {
+      "bytes": 8192,
+      "sha256": "a0ce6639b1e4c0ded36e364d627a5a28f403ba5e06ad64a59f4809a450453ef8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-5-0.f32": {
+      "bytes": 12288,
+      "sha256": "959b300b1407a5bc212d465854e60c0fbdaf9655226417425f0c078098ab071f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/predictor-hidden-0-15.f32": {
+      "bytes": 4096,
+      "sha256": "f9e82bf8d25d15b1ba5e33b50b7904b92e9070084317abdd57d9819c6ae22367"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/reference/talker-logits-15-0.f32": {
+      "bytes": 12288,
+      "sha256": "df24bf2912059d089314418104bbdf2bd951759ab22b2dc9dda147f4317abacf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-32-15.f32": {
+      "bytes": 4096,
+      "sha256": "8318870952f1c256bd0d6867eb5b1bc56aea86135dd5cd3ae60123664c45a7c1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-44-0.f32": {
+      "bytes": 8192,
+      "sha256": "063a5075ab3c8a1d0c23f680ac6f3527e65d89c1e04e37e04c0326830c8127f6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-46-15.f32": {
+      "bytes": 4096,
+      "sha256": "acb37342ccfca7900c08b0296d9fdb99b555dc62eb6bda2fb76607e280ac962b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-33-0.f32": {
+      "bytes": 12288,
+      "sha256": "9950c64d428f4e9ec1e4846d5a2215909af0d5b2817fa8fb063d15de2b6dc797"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/prefill-0-0.f32": {
+      "bytes": 172032,
+      "sha256": "11b944dfa859a6323701570141e3662ce9d26d9663b8570b416e6391117a812f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-12-0.f32": {
+      "bytes": 12288,
+      "sha256": "31835c0cbbb1a4f8529c3bf8a928b0483bba95b172156b0e9263f65c4e5007e3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-2-0.f32": {
+      "bytes": 12288,
+      "sha256": "e61484d61d7dfac53f38d9b6c649f8bd78269f107afb29ced431cf1827829094"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-1-0.f32": {
+      "bytes": 12288,
+      "sha256": "7f993c15e23282b8d4232fd4c212e953f1ecf058ddbab33559ae401915ac689a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-42-0.f32": {
+      "bytes": 12288,
+      "sha256": "99099f5a47219167747a809520ca926db8ffdf17f53ee20d68efb8f658913fb0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-16-0.f32": {
+      "bytes": 8192,
+      "sha256": "4455cad0e8d6d95f44ba826283a753927a9a5b3c6b35d2e5f9f137344303d5da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-13-0.f32": {
+      "bytes": 12288,
+      "sha256": "40c162e8115bf713d990881933714b325622b22e211df0bbb0d5936db74d5fae"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-0-0.f32": {
+      "bytes": 8192,
+      "sha256": "e4946bd80e344936cd4faf0c100f7a519f3623a870739698cdd2419476a30d96"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-23-0.f32": {
+      "bytes": 12288,
+      "sha256": "f40afa11ad797f85ab65af0a81979480be376b93bee4f0431a197f876677f6c2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-0-1.f32": {
+      "bytes": 4096,
+      "sha256": "4b6361bddc881bcdaadd0ed1255fe215f49b6853d77a622ffd90669767f1232c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-42-0.f32": {
+      "bytes": 8192,
+      "sha256": "d54f35b8f44a4325b42ae75bdae1bcfcaf3cc5b594d3b438d7dcea9c8430879e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-4-0.f32": {
+      "bytes": 8192,
+      "sha256": "e89ba2245a727359f06c528d32f1e9faeed6f99d8f4f8757c7584b29e8553643"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-21-0.f32": {
+      "bytes": 12288,
+      "sha256": "1c4e7ecc05a834bfae99d1e04c1c94960936977b6484afc8ac5d5228d70957de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-9-0.f32": {
+      "bytes": 8192,
+      "sha256": "401af2723ba3a3c2ac3579e298423dcc3b4258aae34422816b524f25ac0a5c77"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-30-0.f32": {
+      "bytes": 8192,
+      "sha256": "cfb5dd4a838b942dbb36665b5e1771108d45b20c265b21ddeff4859bba794ec2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-32-1.f32": {
+      "bytes": 8192,
+      "sha256": "a5c8daf832debd3750d359e67fce977716511a638cf09b82c92ae7381c69caf2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-41-0.f32": {
+      "bytes": 12288,
+      "sha256": "a7247f4a7276c182a94573e2013b50a6ea6c71be7862e0feacd14be3f27254d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-3-0.f32": {
+      "bytes": 12288,
+      "sha256": "c16527607b04ece0c349a1a2247a60750722c03fd32c6a3a7d08cead44c428c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-1-1.f32": {
+      "bytes": 4096,
+      "sha256": "d0280baa4808fb7ee45a7fa0815298575e4a21a13d73af21e845926f3b9a0022"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-11-0.f32": {
+      "bytes": 12288,
+      "sha256": "a597fe451746595ea9e6e177cda219a76aa2c95514ac3d8d294178e3c7eae5a6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-1-15.f32": {
+      "bytes": 8192,
+      "sha256": "4b2659067cba0b5ecf84c3099ce5d4f71e0c0f9510e36164dfc53d6b9bf5a7ce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-19-0.f32": {
+      "bytes": 8192,
+      "sha256": "2fed458a1cf7313bd58cbab1c52ca34aa3e4a21b79d865faf736f716df741d22"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-32-15.f32": {
+      "bytes": 8192,
+      "sha256": "448dc161066eb58a710a6cb760763b220dcde1c2a461742c889b90efa467b2c9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-23-0.f32": {
+      "bytes": 8192,
+      "sha256": "d65e5360f964d12da81cc5658ad7fa956f6cd9001fadbb6e3fcd02d9bad006cc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-9-0.f32": {
+      "bytes": 12288,
+      "sha256": "54c55c3f8d577bf2767bd24d3a330f206070ebfcaf52baf6ba6ca26350486efb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-47-0.f32": {
+      "bytes": 8192,
+      "sha256": "064afc2818643e754fee16c35ce77ca4dd1ada8e9a31f687ee535dd325d49616"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-18-0.f32": {
+      "bytes": 8192,
+      "sha256": "4ac26c8b15929ff76b907b42c75a543533541dae95063e17a1a2afc30e88d9c8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-5-0.f32": {
+      "bytes": 8192,
+      "sha256": "7119bfc56dfee5fb65414f6a015cc9136268839284943598f8504c1cb8db72da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-43-0.f32": {
+      "bytes": 12288,
+      "sha256": "c7b85af21f210074dc1d7e6ae93977ab1852262c827f1692f21b073e3b7cabb5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-24-0.f32": {
+      "bytes": 12288,
+      "sha256": "73ae0a20408b31a21ec5ed87c6b1a989c65c6d4bf949ae2fbb2ed6c3bef04190"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-1-1.f32": {
+      "bytes": 8192,
+      "sha256": "f676c11254cbbd7434b51e31ad4bba5c375194ac9d4f4db5b654d314edc64049"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-4-0.f32": {
+      "bytes": 12288,
+      "sha256": "f8f0d7ff030ba7924ffef2aaed89f1584b8cb3a38c0b40cd3fadf1f520499deb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-10-0.f32": {
+      "bytes": 12288,
+      "sha256": "5fd3de2d27d860ce8469e6415303893958e2b886972461122d82af5a025c5459"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-14-0.f32": {
+      "bytes": 12288,
+      "sha256": "9b6cbfe5deb1bbaedc7e66b953ada34cb2114c6f52feaf18cf81c11d2ed3ca94"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-26-0.f32": {
+      "bytes": 8192,
+      "sha256": "877188d50a4d3decce0c26f0a36fc24f584ed17ab6eb4796fc6202d6efcc76d4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-27-0.f32": {
+      "bytes": 8192,
+      "sha256": "8a275148b20052a98cf3259a9fbd8130d022930fc63ea2af100885993ad8a36f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-34-0.f32": {
+      "bytes": 8192,
+      "sha256": "d0d48442fd3e7e030c5a1f0ae12ce83db3b5bd043f708a940fde6ff4644a4558"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-20-0.f32": {
+      "bytes": 8192,
+      "sha256": "50c30edc552e21c98223b343f9aed1b6e14b4b728f5daacd7efacc7f4625714b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-0-1.f32": {
+      "bytes": 8192,
+      "sha256": "6d8a0513e77c3807a33330c35391270f8acab0ae942ed477987fd56b63637a33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-17-0.f32": {
+      "bytes": 12288,
+      "sha256": "efd18a5eeec86864abe672beb6d561dc3135898fae682cf9303ae1a7cdf04be4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-38-0.f32": {
+      "bytes": 12288,
+      "sha256": "015f68abfc31dce6dd93ba3b3b39a67595e63713c0d855d9ef54685286118b83"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-13-0.f32": {
+      "bytes": 8192,
+      "sha256": "85b595a8d3f60da23d870ba4757dd9611fcdef6edc4490f1cd2ebd49d2d1aa1a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-41-0.f32": {
+      "bytes": 8192,
+      "sha256": "ff724f0dba8449433ebaa4b058446adb927e9bf359d4fb677c02c55981afd87a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/generation.json": {
+      "bytes": 86,
+      "sha256": "743e5a867b63c4584e847c8aecb650d1e68d9c8c857e5b36380be550ab1688df"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-2-0.f32": {
+      "bytes": 8192,
+      "sha256": "939fd1c052d821d48860e359fcc27290035751b0ad70967f63eed4433c44588e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-44-0.f32": {
+      "bytes": 12288,
+      "sha256": "24b2ffa55dddfef84d2cd3551085350319d5c763922ad746595b20c7b49ecbe9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-7-0.f32": {
+      "bytes": 8192,
+      "sha256": "6cd873e5f2f9e3fd420c25215cd2377d37b873d30e8619356c39f496166dc80e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-1-0.f32": {
+      "bytes": 8192,
+      "sha256": "f790991ccd1edc9491e2d76a49737112392706e40655aacdc7d7dc4981487f4e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/codes.i32": {
+      "bytes": 3008,
+      "sha256": "08f22d008c3c7a42ae23a0e54c5515ab2e1289c8942a3201dd20b813b3499be7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-45-0.f32": {
+      "bytes": 12288,
+      "sha256": "47ba59e9b6cc34ba02e57e51244a84685ecd892c99a3e9aaa78435b772dcccbb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-35-0.f32": {
+      "bytes": 8192,
+      "sha256": "102336ca1b5033c918ecc23ac83e43abb6f225c4c6e1e13981627bf23cc83bfa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-8-0.f32": {
+      "bytes": 12288,
+      "sha256": "e966e2d4d42e3ebd85c1e6f175ca1b468769f417bb0e41228f51b158c4fd4bcf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-1-15.f32": {
+      "bytes": 4096,
+      "sha256": "7dba0c0d79c6629e54a463da025588d7e51c495f89e097eacc52a9919fd3fa50"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-36-0.f32": {
+      "bytes": 8192,
+      "sha256": "3b194d1f98bbb90b11222f6410569ce002413fa0a85263b3d83475b97f0561ce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-40-0.f32": {
+      "bytes": 12288,
+      "sha256": "139c5049b543a3d4bf842d79d318e2d4896ec9af16d72cfee06657574534866c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-0-15.f32": {
+      "bytes": 8192,
+      "sha256": "732a260128bb09fd5062d28bd5424ff1fa9004fb91f511fd2c404c31840b3bd6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/text-ids.i32": {
+      "bytes": 68,
+      "sha256": "417d94ae53d094c6cf47245cc3fca7915ba6c70cad7aeb918b579febc5e5338d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-31-0.f32": {
+      "bytes": 8192,
+      "sha256": "26adfb92100705e5dc7e68fa8170b58ead5d2c47283ec5ce626e38f39e921c2a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-7-0.f32": {
+      "bytes": 12288,
+      "sha256": "8f220e7f83e1d18f788c97ace62fa43067d36aa9840d4b28c3663fd28520bc52"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-29-0.f32": {
+      "bytes": 8192,
+      "sha256": "94ca834fee1188c92ac2271abcbf81438f6e692a40ffa804ec7c566d1ecb8dbd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-45-0.f32": {
+      "bytes": 8192,
+      "sha256": "cd22034153ea36c55637d3204bfd0a49ee87f66a56255e33c0f6d0d9b4e4cf66"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-16-15.f32": {
+      "bytes": 4096,
+      "sha256": "28f5a6bc8d437063c3c7a919e5239b0a701792f7a0e137e540c4206ad794475f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-17-0.f32": {
+      "bytes": 8192,
+      "sha256": "7fdd31043c67c84ee8fb122f517f951bc20b1b16a21b2ab80a09f2286de431a9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-6-0.f32": {
+      "bytes": 12288,
+      "sha256": "f0350333c0db62e4c2b5cb820886f4fa409388945bc423a3f2f8200cba427ac9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-16-0.f32": {
+      "bytes": 12288,
+      "sha256": "acd16e30fc08574fdb68b7d7156379ca52f9ec3590b9058e62fd847471cc04a4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-3-0.f32": {
+      "bytes": 8192,
+      "sha256": "eee89cbb29901df78523ad1c1ac721d836941ce20ffafdd211c060e79f383e01"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-16-1.f32": {
+      "bytes": 8192,
+      "sha256": "3de12281f67f38859284cdccea332748e4d42627bcd501b90ac504485fca4899"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-32-1.f32": {
+      "bytes": 4096,
+      "sha256": "792c717f0d8b4d5af355707569974a9dcc4e7199362d5384ea02506eb6cd28be"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-16-15.f32": {
+      "bytes": 8192,
+      "sha256": "8053358d615085a2d8c44a38c22fd3e3248066ef0a0fbbe18de36389a1f9b0a4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-29-0.f32": {
+      "bytes": 12288,
+      "sha256": "3c8b21364b1173d70728a1bc02d34030e54922b426efa789e236838639b5e7f1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-46-15.f32": {
+      "bytes": 8192,
+      "sha256": "66d0b63ee333ac07fdcbab3e84c8d46080a3903a3607a58cfb577049ce212ff8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-25-0.f32": {
+      "bytes": 12288,
+      "sha256": "652386f59153a1edefa9da463e0becaa67151ebba8d9780e31c2b07eb9774f78"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-20-0.f32": {
+      "bytes": 12288,
+      "sha256": "3d244b41cac7cfabc4fbf68edf2be71a839018f41a5687675be5ab00401aaf85"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-15-0.f32": {
+      "bytes": 8192,
+      "sha256": "bbe3cdf895b03daf3b416dc53e5d341c895a1a62db0270193e60725bb5c8483e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-21-0.f32": {
+      "bytes": 8192,
+      "sha256": "c0c72e62aa96ddb84a6c180614f6720b19a68493b833c618f5239b6e11dfb471"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-34-0.f32": {
+      "bytes": 12288,
+      "sha256": "dc57567f287f6a90dd88a6fb800d9e85890f23b54ead2e229825564e2b481806"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-37-0.f32": {
+      "bytes": 8192,
+      "sha256": "c4b9df5f2374a20aae78513fefa06e6c2479d3ade51d1364bf350eb4ebf9d442"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-43-0.f32": {
+      "bytes": 8192,
+      "sha256": "b9168e5167ddd77821e3b4ae25830099f5d37ce907cf41588cf43b29f49d3aa4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-37-0.f32": {
+      "bytes": 12288,
+      "sha256": "b44b185362098d24be7c549e78f2a5b897b4363eb305ac1515a15a5f54ec0ddf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-46-0.f32": {
+      "bytes": 12288,
+      "sha256": "b719f114f794597d5b1fcfe662506c09a5e9bacbf9eb169c0c504ed85e31d440"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-10-0.f32": {
+      "bytes": 8192,
+      "sha256": "6fe75e37ecfcab203c2b4fdf5a12519f9e45627ed7b69257fe2b28ef4c4c9ba1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-31-0.f32": {
+      "bytes": 12288,
+      "sha256": "b6fc903055e24f158eacf803d16349640c27d88a3797e6e91c2bbfb419de0db5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-6-0.f32": {
+      "bytes": 8192,
+      "sha256": "f7ba703a091d3648b1b368d4cdcb52b5cdb31c401f32e46abe4d4f431a4d5b6a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-28-0.f32": {
+      "bytes": 8192,
+      "sha256": "0196c71ffd7869c8d09b32713fd30996fddc48fb4c0f25e2861de0f0dd9a8750"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-19-0.f32": {
+      "bytes": 12288,
+      "sha256": "51909d5830a97a89f3202269c07e0151759f913a7227ed691f6b5df6d4358636"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-25-0.f32": {
+      "bytes": 8192,
+      "sha256": "13960715c3d5c91a57dca1ef5f87bb4a704ce514b99cba4aae9765677ea09632"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-36-0.f32": {
+      "bytes": 12288,
+      "sha256": "c6b6918d27656e107f762f348feb746040e9329fa7324ce88fd0195bfc0583d5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-0-0.f32": {
+      "bytes": 12288,
+      "sha256": "623e7aa91f65e6acf442bde6644bb3fcb03b9bbb7d527b038f1c08710d4ef2da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-22-0.f32": {
+      "bytes": 12288,
+      "sha256": "3d6e7c1e8333b8b764c7e1e17fbd16b45d73860330ca775a05fa0aa74092e9af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-12-0.f32": {
+      "bytes": 8192,
+      "sha256": "0906c746a831e127a7902988053677efa3416b35c656bf087fe94fd4af80e089"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-40-0.f32": {
+      "bytes": 8192,
+      "sha256": "e1855cf66fab524ebd2c495f28d90f38d5ce125acb51a22bff24ed080f0c55d9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-8-0.f32": {
+      "bytes": 8192,
+      "sha256": "44a264eade64bfa707371f5a3c00990f80f5e8f40131f1027a7542a839d91d64"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-30-0.f32": {
+      "bytes": 12288,
+      "sha256": "3a038cd9a49f12ea15840b106123decb6a36f43d4f2f46b7879444e92e6178ec"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-16-1.f32": {
+      "bytes": 4096,
+      "sha256": "f64e9e4f9a4922eacc6fb772093d213ca60ed47acf87b25221de9fdc57c8d559"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-14-0.f32": {
+      "bytes": 8192,
+      "sha256": "64cf67996beec34a80f1b4d8ea5731c22a8d53f93e3a6a2f13edf71a83ed03c1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-33-0.f32": {
+      "bytes": 8192,
+      "sha256": "0747205e1f2157f74de8bbf366ae087f172f0326c4edf6d1bcf88b86d4ae6186"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-46-1.f32": {
+      "bytes": 4096,
+      "sha256": "b6bca3af652ebb7802f076c111f980a311af3a495db751c5f1c3b74ccc1bcf4f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-47-0.f32": {
+      "bytes": 12288,
+      "sha256": "04ea1ad3f77e384fa2faff4c8f8f7d433b2fb8f07c996c8ecf9b2170070a2c36"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-28-0.f32": {
+      "bytes": 12288,
+      "sha256": "9f8751b02bbbff91407ecb6bace1ac059276f8bf0fe1e039d69266a465a9685e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-46-0.f32": {
+      "bytes": 8192,
+      "sha256": "bc7fc4fdba9e1f180a16f155fe1cd897e62afe55d761c7765acd461b6a87227f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/text-projected-0-0.f32": {
+      "bytes": 139264,
+      "sha256": "bf052381cf36ce2fe93d2f66f72a775c11ac7402c3384f2bf593284be957eecb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-35-0.f32": {
+      "bytes": 12288,
+      "sha256": "6099065ea2205178f48f1437441ea10f1748c3c6147f8afbb3adcbe453f9aef3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-27-0.f32": {
+      "bytes": 12288,
+      "sha256": "fab18942ddcd99910ab0cba4016405d8f3d01288adcb9611af6ec4c4b02203ed"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-logits-46-1.f32": {
+      "bytes": 8192,
+      "sha256": "b42987e04c97f813a92d8740801c9dd95f6cff1f0923bfa60e1462d4e383cd70"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-32-0.f32": {
+      "bytes": 12288,
+      "sha256": "3b9fe49ffe03a1660537d3c4b2b9fe6b74afaaf488d625d0a1e6f26061029553"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-22-0.f32": {
+      "bytes": 8192,
+      "sha256": "838550349f9adb22514f94dbd405f64e7f4628e59b397236a1c591b7e33fe43a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-24-0.f32": {
+      "bytes": 8192,
+      "sha256": "2bfaf4c121cc80941d7c439aed85b390c67835cdc25942f1992f121abf9b41d3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-38-0.f32": {
+      "bytes": 8192,
+      "sha256": "c36f26d10e18bbebf21d7d82d43a06ba1dbcae67f77772f3cca11bb7d4dfabc4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-32-0.f32": {
+      "bytes": 8192,
+      "sha256": "bf57690d84b2a27582d2be0001ee6e057f0ed860e0c2427ad038f7cfbb62e257"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-11-0.f32": {
+      "bytes": 8192,
+      "sha256": "bf7e0eedc2084f16713d46b7948c2d74f9d9d40fa9594537e3148bca2e2f14f3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-18-0.f32": {
+      "bytes": 12288,
+      "sha256": "8b51e55d28d6f9a5533a19e2584fb6ae60833b86383284baab4634eb913c5c3e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-26-0.f32": {
+      "bytes": 12288,
+      "sha256": "14f0aa55cc291342decef98afeabd373d8dbd3743ef41d894353b0ffd4e82446"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-39-0.f32": {
+      "bytes": 12288,
+      "sha256": "f85340478253037852d9c08adffbb55982e7cde175e2a6299941661cbfa93518"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-hidden-39-0.f32": {
+      "bytes": 8192,
+      "sha256": "84e944ea90e22e7ee1e22267d726564736db243e967b7f74208bc79b9d6f431d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-5-0.f32": {
+      "bytes": 12288,
+      "sha256": "e288bfc24c2967bfe09726e5d81f9a65d8407c0b9d8a683bba927a7217504dc7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/predictor-hidden-0-15.f32": {
+      "bytes": 4096,
+      "sha256": "e11719efb6174652e64441694330975bf79ea335d72ec73d6f0263559e2f7e8e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-01/run/native/case-0/talker-logits-15-0.f32": {
+      "bytes": 12288,
+      "sha256": "aa362c9039ba7dd6980617267a55431fc62f28da82affd83848d59ba169e5eff"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/result.json": {
+      "bytes": 2894,
+      "sha256": "6e3465bdc2107822421c899772dc81442c7c557fb1257cf7643dbd3ae81ea7b7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/plan.json": {
+      "bytes": 16276,
+      "sha256": "5e33501ffc9b42dc28aad0e1a53ac33e2f78c555fcbd304803abefafe0e6ec82"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/replay.cpp": {
+      "bytes": 11912,
+      "sha256": "510c5d496185eb946ee037e3ad435753c15b5020bbd92971cb9e48a1f6efd3e3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-generation-diagnostic-build-01/0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
