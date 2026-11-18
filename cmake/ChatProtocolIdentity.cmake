@@ -43,6 +43,10 @@ set(protocol_inputs
   include/q4t/audio/speaker_features.h
   include/q4t/audio/tts_speaker_features.h
   src/audio/tts_speaker_features.cpp
+  include/q4t/audio/tts_speaker_layout.h
+  src/audio/tts_speaker_layout.cpp
+  include/q4t/audio/tts_speaker_model.h
+  src/audio/tts_speaker_model.cu
   include/q4t/audio/speaker_layout.h
   include/q4t/audio/speaker_model.h
   include/q4t/server/diarized_output.h

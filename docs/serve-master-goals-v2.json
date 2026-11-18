@@ -354,6 +354,19 @@
         "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
         "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
         "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
+      },
+      "tts_clock_content_20261118": {
+        "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
+        "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
+        "owner_approved": true,
+        "cpu_cases": 8,
+        "new_asr_loads": 1,
+        "new_negative_cases": 4,
+        "reused_positive_cases": 4,
+        "normal_playback_listening": "PENDING",
+        "raw_asr_failures_preserved": true,
+        "production_unchanged": true,
+        "full_task_complete": false
       }
     },
     {
@@ -4321,6 +4334,19 @@
         "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
         "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
         "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
+      },
+      "tts_clock_content_20261118": {
+        "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
+        "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
+        "owner_approved": true,
+        "cpu_cases": 8,
+        "new_asr_loads": 1,
+        "new_negative_cases": 4,
+        "reused_positive_cases": 4,
+        "normal_playback_listening": "PENDING",
+        "raw_asr_failures_preserved": true,
+        "production_unchanged": true,
+        "full_task_complete": false
       }
     },
     {
@@ -7202,6 +7228,19 @@
         "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
         "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
         "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
+      },
+      "tts_clock_content_20261118": {
+        "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
+        "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
+        "owner_approved": true,
+        "cpu_cases": 8,
+        "new_asr_loads": 1,
+        "new_negative_cases": 4,
+        "reused_positive_cases": 4,
+        "normal_playback_listening": "PENDING",
+        "raw_asr_failures_preserved": true,
+        "production_unchanged": true,
+        "full_task_complete": false
       }
     },
     {
@@ -8304,7 +8343,20 @@
       "clock_diagnostic_evidence": "evidence/serve-speech-clock-diagnostic-20261118/README.md",
       "clock_diagnostic_matches": 4,
       "production_acceptance": false,
-      "acceptance_rule_decision_pending": true
+      "acceptance_rule_decision_pending": true,
+      "clock_content_owner_decision_20261118": {
+        "state": "CONTENT_ACCEPTED_BY_OWNER_RULE_LISTENING_PENDING",
+        "evidence": "evidence/serve-speech-clock-content-20261118/README.md",
+        "owner_approved": true,
+        "cpu_cases": 8,
+        "new_asr_loads": 1,
+        "new_negative_cases": 4,
+        "reused_positive_cases": 4,
+        "normal_playback_listening": "PENDING",
+        "raw_asr_failures_preserved": true,
+        "production_unchanged": true,
+        "full_task_complete": false
+      }
     },
     "service_assets": {
       "state": "paired_loader_resources_health_component_qualified",
@@ -8504,6 +8556,18 @@
         "gpu_loads": 0,
         "original_fp32_logmel_gate": "FAIL_RETAINED_3_CASES",
         "model_numerical_qualified": false
+      },
+      "speaker_2048": {
+        "state": "NATIVE_SPEAKER_2048_QUALIFIED_SYNTHESIS_PENDING",
+        "evidence": "evidence/serve-custom-voice-speaker-20261118/README.md",
+        "cpu_cases": 13,
+        "numerical_comparisons": 36,
+        "complete_gpu_speaker_loads": 1,
+        "partial_gpu_load_failures": 1,
+        "cpu_reference_loads": 1,
+        "full_source_sha256": "38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c",
+        "synthesis_pending": true,
+        "full_task_complete": false
       }
     }
   }

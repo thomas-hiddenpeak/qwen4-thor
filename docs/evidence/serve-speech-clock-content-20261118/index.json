@@ -1,0 +1,202 @@
+{
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/lease/events.jsonl": {
+    "bytes": 1829,
+    "sha256": "1de8930792df6e2b27daa1f736763555858705fbf8841812e8e189b181d16762"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/lease/exit.json": {
+    "bytes": 785,
+    "sha256": "a385080003e4bfa8881dae0979ed9385278ce74a2be42339e9783c3503368f6e"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/lease/nvml-queries.jsonl": {
+    "bytes": 15986,
+    "sha256": "fcd324d231b7122f24f528b57a47bcc146b5cb1aca1bbd6e813745b07cbeada6"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-0/diagnostic-stretched-mel.f32": {
+    "bytes": 163840,
+    "sha256": "58e37fe20512aafdd39263e017351df43aab5e6204b60c385db3dfa1b8bd7d7f"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-0/generated.u32": {
+    "bytes": 16,
+    "sha256": "9cffe52ca724d5be9b53be1be20ca9b6c946ea3ef654e21ea6b90d76814b4aa2"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-0/native-mel.f32": {
+    "bytes": 40960,
+    "sha256": "e8c9ab2bd6cd20cca3c78d3c21a92e0554ac87c852cf67922518d81f7d27c86d"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-0/result.json": {
+    "bytes": 135,
+    "sha256": "989cc1cdb8ef9ca43d60bc7d0e4752349a4ec48d2eb43317e5adbb08377d1faf"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-0/text.txt": {
+    "bytes": 23,
+    "sha256": "90f5c163071f4fa0ce3144d7b2659f8c4c2d7f5a211c8480f085b674789601e0"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-1/diagnostic-stretched-mel.f32": {
+    "bytes": 163840,
+    "sha256": "afbe088fb74761e8c3a17b83df3c1a50539ecae6746880a351697c0847204b83"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-1/generated.u32": {
+    "bytes": 24,
+    "sha256": "d40fe4b3416ad56d6eff366bcef42222981c6a0b92627326f765d6336b7ed7be"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-1/native-mel.f32": {
+    "bytes": 40960,
+    "sha256": "ea2d3e2971aa12e8fa10c6fe6046f802677fcea525f96ccd2910ff44fd640f9b"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-1/result.json": {
+    "bytes": 135,
+    "sha256": "fd6445f8c57547fc00b5232732d3219426c7c1f367f644f7c25478f090130fde"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-1/text.txt": {
+    "bytes": 32,
+    "sha256": "d890cc38e0e53f9c3e7e7349b304580742ddd7d00c42b670d07e687ed9e73569"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-2/diagnostic-stretched-mel.f32": {
+    "bytes": 159744,
+    "sha256": "b4e06d918f566cc41701a94cb37a29da4f3c424a6d24e5907055e5255f64bf0d"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-2/generated.u32": {
+    "bytes": 16,
+    "sha256": "9cffe52ca724d5be9b53be1be20ca9b6c946ea3ef654e21ea6b90d76814b4aa2"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-2/native-mel.f32": {
+    "bytes": 39936,
+    "sha256": "3da1950faca84fab5f6c8b58a02b55c55c83dd18a2ed0393294263b9c87b44a9"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-2/result.json": {
+    "bytes": 135,
+    "sha256": "6cf0893d524d6ef610a3c0df6b0477c680d3b84112ef979e6e7f9219ee528426"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-2/text.txt": {
+    "bytes": 23,
+    "sha256": "90f5c163071f4fa0ce3144d7b2659f8c4c2d7f5a211c8480f085b674789601e0"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-3/diagnostic-stretched-mel.f32": {
+    "bytes": 159744,
+    "sha256": "294be151a59b277c55dd5999a7acd65bfce6046984a99fed1270301577a2449b"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-3/generated.u32": {
+    "bytes": 24,
+    "sha256": "e7ea11be7aacdf9d5b529393e94a010d1abc247db765478ba375db7747e0ef8f"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-3/native-mel.f32": {
+    "bytes": 39936,
+    "sha256": "f3229d375171142077fef4ff902f3a765343d0be7be7972a7002cf89def9b7c5"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-3/result.json": {
+    "bytes": 135,
+    "sha256": "3f0b434cf09aa75306c31be48a9a9b7cbe439069e05e6b950bba852f1487e754"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/case-3/text.txt": {
+    "bytes": 35,
+    "sha256": "ca4b4128ca23ec9440655ac87e48e299b835785b8094222da3efce07416741ca"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr/result.json": {
+    "bytes": 97,
+    "sha256": "7a3f2c68c136b59de6bb69497cc439c90c7c7db4ffe7dccc86d11b95cfba408b"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr-plan.json": {
+    "bytes": 5920,
+    "sha256": "98fc16617baa0169b214019eb7d2862216770300be90d76c18bf235f77eb60fd"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/asr.log": {
+    "bytes": 100,
+    "sha256": "76c0b171223a20c434ca40c0a2cd166aa8ce905f04e2539ef306b316a13dec3d"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-0-mel.f32": {
+    "bytes": 40960,
+    "sha256": "e8c9ab2bd6cd20cca3c78d3c21a92e0554ac87c852cf67922518d81f7d27c86d"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-0-pcm.f32": {
+    "bytes": 51200,
+    "sha256": "16fa66a7dc98d93f2a4c5d20baf5177f59c4c37fc62face65690c11c15fe6ff9"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-1-mel.f32": {
+    "bytes": 40960,
+    "sha256": "ea2d3e2971aa12e8fa10c6fe6046f802677fcea525f96ccd2910ff44fd640f9b"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-1-pcm.f32": {
+    "bytes": 51200,
+    "sha256": "815e82677761f65aea4d9783d141cd849b115a60a2129c542a5c5b63e4e332d1"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-2-mel.f32": {
+    "bytes": 39936,
+    "sha256": "3da1950faca84fab5f6c8b58a02b55c55c83dd18a2ed0393294263b9c87b44a9"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-2-pcm.f32": {
+    "bytes": 49920,
+    "sha256": "cb4b474957ec7b6bc98feb14d982493d673775b750a01701a076cf35eab62954"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-3-mel.f32": {
+    "bytes": 39936,
+    "sha256": "f3229d375171142077fef4ff902f3a765343d0be7be7972a7002cf89def9b7c5"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/case-3-pcm.f32": {
+    "bytes": 49920,
+    "sha256": "617483a8e634ce585902feec904ba774a76dec31a9d40cb229010120caaa0351"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-01/run/result.json": {
+    "bytes": 10525,
+    "sha256": "788b2af4fc052432c6d60797881f9ff22a8e47514a44d31db1791aedcb27c647"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-cpu-01/plan.json": {
+    "bytes": 904,
+    "sha256": "0899f828b9b6cebd575a6c51aacc8653f6e401d0fef2a44e57194a596e16ebee"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-cpu-01/result.json": {
+    "bytes": 310,
+    "sha256": "2ed39972d32b5bc90ddebe590c4fa0740ed7e0791f8495be2a6f56d2a36a8bf9"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-cpu-01/test.log": {
+    "bytes": 1442,
+    "sha256": "dd9de5eafe5ea9e77a8dd92c5902ff4436396ffef20a18d67d5bfe1bfb2dd908"
+  },
+  ".q4t-work/serve-native-tts-20261118/clock-content-plan-01.json": {
+    "bytes": 19024,
+    "sha256": "b1a2b22ac1cea75e9c0adbd31eb8f027d63a5a44e72fbeb0e38c6db0faa7a439"
+  },
+  ".q4t-work/serve-native-tts-20261118/phase-tempo-content-02/run/result.json": {
+    "bytes": 5725,
+    "sha256": "f1b2bd010ad6745cbf04cb0d0c1ca38af5d5b6fdc8b2b71c7002d52b1d6e9ad1"
+  },
+  ".q4t-work/serve-native-tts-20261118/prepare_clock_content.py": {
+    "bytes": 3384,
+    "sha256": "1e9dc204f33f455a72e1167e1509ec903deee677a7a8b7d9da3d9a6b8a38cadb"
+  },
+  ".q4t-work/serve-native-tts-20261118/tempo-02/run/result.json": {
+    "bytes": 6913,
+    "sha256": "24ca9ed6553dc92b26e19e0c41c8de0ef63ba499b08193cce51d819deed3da7f"
+  },
+  ".q4t-work/serve-native-tts-20261118/tempo-clock-build-02/asr_clock_diagnostic.cpp": {
+    "bytes": 17425,
+    "sha256": "5ff4c3a782120bc93e08310c228a8c383d8e4bc50c9ba6521461131bc3cc41a8"
+  },
+  ".q4t-work/serve-native-tts-20261118/tempo-clock-diagnostic-01/lease/exit.json": {
+    "bytes": 636,
+    "sha256": "a172c4fb6058208641c083c0587acb561f4b7e989acaff6fd90814a1b963e316"
+  },
+  ".q4t-work/serve-native-tts-20261118/tempo-clock-diagnostic-01/run/result.json": {
+    "bytes": 7511,
+    "sha256": "1562ecbfe822c7c1aba14f30d30e4f6c33614342b5d4abe538a5b494178aae05"
+  },
+  "tools/native_tts/acceptance.py": {
+    "bytes": 10077,
+    "sha256": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "tools/native_tts/clock_content.py": {
+    "bytes": 2616,
+    "sha256": "4df46a3b767897ea01a73c6edf1b07ef54264f2c1116b41ad184a0f595565142"
+  },
+  "tools/native_tts/clock_content_acceptance.py": {
+    "bytes": 8049,
+    "sha256": "341cefe9ef1f5019ce547b1839b67b078be3140570181342341d051524e18f31"
+  },
+  "tools/native_tts/test_clock_content.py": {
+    "bytes": 4111,
+    "sha256": "d4a92ad107e7b2fa473d1dbb14aa66e8e7a6fd08ef36e43e41a3d41b0770f412"
+  },
+  "tools/native_tts/utterance_acceptance.py": {
+    "bytes": 9542,
+    "sha256": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0"
+  }
+}

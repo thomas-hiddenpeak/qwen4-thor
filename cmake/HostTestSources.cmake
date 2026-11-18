@@ -19,6 +19,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_base_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_speaker_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_speaker_features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_speaker_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_speaker_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/tts_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_tts_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_config.cpp

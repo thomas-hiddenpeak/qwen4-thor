@@ -197,6 +197,8 @@ add_library(q4t_model STATIC
   src/audio/speaker_layout.cpp
   src/audio/speaker_features.cpp
   src/audio/tts_speaker_features.cpp
+  src/audio/tts_speaker_layout.cpp
+  src/audio/tts_speaker_model.cu
   src/audio/diarization.cpp
   src/audio/speaker_model.cu
   src/audio/separator_config.cpp

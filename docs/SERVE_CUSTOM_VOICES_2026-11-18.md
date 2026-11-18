@@ -40,3 +40,9 @@ OpenAI音色ID及服务权限语义作接口参考，不调用外部语音API。
 前端阶段证据见[原生计算与舍入诊断](evidence/serve-custom-voice-frontend-20261118/README.md)。
 原FP32 log门失败原样保留；高精度方程通过，模型数值与音色业务仍
 待实际后端验证。checkpoint BF16存储不代表原生激活采用BF16。
+
+2048维声纹组件已经实际验收：见[组件证据](evidence/serve-custom-voice-speaker-20261118/README.md)。
+完整源SHA通过后仅保留声纹前缀；全Base合成资产仍未保留。
+36数值比较和8边界/16生命周期通过，官方FP32前端差异对最终向量
+的影响在冻结门内。下一组实现Base声纹条件、持久登记和实际合成，
+不以组件通过代替自定义音色交付。
