@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev326注册音色可回退交付](evidence/serve-voice-delivery-20261119/README.md)
+完成：19项STOPPED检查/305.245秒，实际整根回退再前进，
+0新增GPU。原用量/恢复历史/预算保持；alpha输出2817→3457，RPM30/
+TPM6000不变。47项音色恢复CPU合同接入CI。接着主线合入、Base-only
+消费资格、ICL/提示词音色/Live及全部master；听感仍待用户验证。
+
 [注册音色实际恢复通过](evidence/serve-voice-managed-recovery-20261119/README.md)：
 4启动/63业务POST/1探测/569.736秒；末组注册编码器懒加载
 断言修正，15CPU及完整原记录离线复核通过，原FAIL保持、0追加GPU。
@@ -1485,17 +1491,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev316；服务包 `e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d` |
-| Generation | `08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288` |
-| 引擎 | `5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee` |
-| 引擎发布记录 | `aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de` |
+| 发布 | rev326；服务包 `cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1` |
+| Generation | `f668a05b9cb84cb19ef9d6d12a4e8791a650608205ef8c48cded2597f34e2da1` |
+| 引擎 | `943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9` |
+| 引擎发布记录 | `fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
-| 原生入口 | `5a7cb45a7eb084c467063c966d22098d453e47a88a248f0b9f22427464f2a8f3` |
+| 原生入口 | `37400ff86f00b7f0ecc7345d768e020057acd1e7fce70ed07370a05f15e14211` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue2；TTS 160帧、alpha合计输出2817；媒体已启用 |
-| 人工整包回退 | 现代保留根 `ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa`；实际输入/TTS/原周期/原生入口已验，前驱rev306另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0`；不是独立旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha合计输出3457/RPM30/TPM6000；媒体已启用 |
+| 人工整包回退 | 保留控制根 `db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793`；同C05/实际输入和音色/原周期已验，前驱rev316另保留 |
+| 自动payload回退 | 候选→保留控制包 `db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793` 实际故障恢复已验；反向登记和STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/内置及Base TTS按部署启用，注册校验依赖ASR/VAD/speaker，健康核心业务与辅助故障隔离 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。
