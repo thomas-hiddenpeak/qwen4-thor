@@ -41,7 +41,7 @@ ObjectReply ChatServer::PlanNativeSpeech(const SpeechRequest& request,
     auto loaded = EnsureNativeTts(false, access, &diagnostic, variant);
     if (!loaded.ok()) return loaded;
   }
-  std::vector<uint32_t> text, instruction;
+  std::vector<uint32_t> text, instruction, reference;
   {
     RequestDiagnostics::Scope wait(diagnostic,
                                    RequestDiagnostics::Wait::kTokenizer);
@@ -56,6 +56,10 @@ ObjectReply ChatServer::PlanNativeSpeech(const SpeechRequest& request,
       status = tokenizer->Encode(
           request.instructions, &instruction,
           {.cancelled = cancelled, .recognize_special_tokens = false});
+    if (status && !voice.reference_codes.empty())
+      status = tokenizer->Encode(
+          voice.reference_transcript, &reference,
+          {.cancelled = cancelled, .recognize_special_tokens = false});
     if (!status)
       return Error(cancelled() ? 409 : 400,
                    cancelled() ? "tts_cancelled" : "invalid_speech_text",
@@ -64,14 +68,22 @@ ObjectReply ChatServer::PlanNativeSpeech(const SpeechRequest& request,
   const std::vector<int32_t> ids(text.begin(), text.end());
   const std::vector<int32_t> instructions(instruction.begin(),
                                           instruction.end());
+  const std::vector<int32_t> reference_ids(reference.begin(), reference.end());
   audio::TtsPrompt next;
-  const auto status =
-      base ? audio::PlanTtsBasePrompt(ids, instructions, voice.condition,
-                                      "auto", true,
-                                      tts_limits_.max_prefill_tokens, &next)
-           : audio::PlanTtsPrompt(variant, ids, instructions, request.voice,
-                                  "auto", true, tts_limits_.max_prefill_tokens,
-                                  &next);
+  Status status;
+  if (base && !voice.reference_codes.empty()) {
+    status = audio::PlanTtsBaseIclPrompt(
+        ids, reference_ids, voice.reference_codes, instructions,
+        voice.condition, "auto", true, tts_limits_.max_prefill_tokens, &next);
+  } else if (base) {
+    status =
+        audio::PlanTtsBasePrompt(ids, instructions, voice.condition, "auto",
+                                 true, tts_limits_.max_prefill_tokens, &next);
+  } else {
+    status =
+        audio::PlanTtsPrompt(variant, ids, instructions, request.voice, "auto",
+                             true, tts_limits_.max_prefill_tokens, &next);
+  }
   if (!status || next.text_ids.size() > size_t(tts_limits_.max_text_tokens))
     return Error(400, "invalid_speech_prompt",
                  status ? "Speech prompt exceeds capacity" : status.message());

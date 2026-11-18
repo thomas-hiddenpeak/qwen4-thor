@@ -1,0 +1,19 @@
+{
+  "cases": [
+    "voice_icl_persists_exact_reference_with_legacy_vector_and_private_metadata",
+    "voice_icl_absent_reference_keeps_existing_xvector_records",
+    "voice_icl_invalid_encoder_evidence_never_publishes_or_changes_consent",
+    "voice_icl_malformed_saved_reference_fails_locally_without_silent_downgrade",
+    "voice_icl_keeps_owner_isolation_revocation_and_owned_condition",
+    "voice_icl_full_minute_reference_roundtrips_without_dropping_groups",
+    "voice_registry_persists_exact_condition_and_private_recordings",
+    "voice_registry_every_lookup_mutation_and_list_is_owner_scoped",
+    "voice_registry_revocation_blocks_new_resolution_keeps_owned_snapshot",
+    "voice_registry_retention_keeps_audio_edges_and_corruption_is_local"
+  ],
+  "new": 6,
+  "direct_existing": 4,
+  "seconds": 120,
+  "gpu": 0,
+  "binary_sha256": "bf8147e0881e7bf8bf1d9a6a69592ff6fdbb6da413e5b79f5f7a95f986714c49"
+}

@@ -9405,6 +9405,15 @@
         "cpu_new": 8,
         "cpu_existing": 2,
         "gpu": 0
+      },
+      "registry": {
+        "state": "implemented_targeted_cpu_passed_actual_registration_and_old_binary_rollback_pending",
+        "evidence": "evidence/serve-tts-icl-registry-cpu-20261119/README.md",
+        "cpu_new": 6,
+        "cpu_existing": 4,
+        "cpu_executions": 11,
+        "original_failure_preserved": true,
+        "gpu": 0
       }
     }
   }

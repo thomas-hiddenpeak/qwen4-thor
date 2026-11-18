@@ -1,0 +1,8 @@
+{
+  "cases": [
+    "voice_icl_malformed_saved_reference_fails_locally_without_silent_downgrade"
+  ],
+  "seconds": 60,
+  "gpu": 0,
+  "reason": "Parsed numeric spelling made fixture mutations ineffective; replace both forms, rerun only failed case; production unchanged."
+}

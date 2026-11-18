@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL参考持久化10项CPU通过](evidence/serve-tts-icl-registry-cpu-20261119/README.md)：
+完整码/样本数/身份与旧声纹向量共同保存，重开、隔离、撤销、60秒
+及损坏局部失败通过；10用例11执行/0GPU。原夹具数字文本失败保留，
+仅修复重验该1项。实际编码器服务和旧包回退尚待验，默认rev326保持。
+
 [ICL参考解码10项CPU通过](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：
 完整参考+新码分块差分、25帧上下文及精确裁剪、流式/EOS与实际RAM
 预算；8新增/2旧合同、0.0034秒/0GPU，构建零警告。新target配置前

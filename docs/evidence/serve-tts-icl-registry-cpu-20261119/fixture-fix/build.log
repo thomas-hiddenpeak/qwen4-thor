@@ -1,0 +1,6 @@
+[  0%] Built target q4t_program_javascript
+[  0%] Built target q4t_regex_build
+[  6%] Built target xgrammar
+[  6%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_voice_registry_test.cpp.o
+[  6%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

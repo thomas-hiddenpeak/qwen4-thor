@@ -1,0 +1,17 @@
+{
+  "sources": {
+    "include/q4t/server/voice_registry.h": "cd6b371a7e1db24213bdc5c044057fc4c4b0b6fc6cb5d46da41bcb901e82bb18",
+    "src/server/voice_registry.cpp": "a69e374bc39a0b64ae632837ef03d535d490d37d8618efe519768c2e96e3fd48",
+    "src/server/chat_speech_prompt.cpp": "8ae4eaf7d1fbbe522e65ff0b05760b466b0e4ce7abd0d4ec8e093283b713cd2a",
+    "tests/server_voice_registry_test.cpp": "232c049756fb7533d22ff138bda4b68ba0f7b63087740c040befb6dbb0f36c95"
+  },
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "gpu": 0,
+  "actual_registered_icl_qualified": false
+}
