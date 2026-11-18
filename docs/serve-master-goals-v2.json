@@ -8699,6 +8699,19 @@
           "cpu_cases": 22,
           "legacy_preserved": true,
           "actual_profiles_pending": true
+        },
+        "managed_voice_cpu": {
+          "evidence": "evidence/serve-voice-managed-driver-cpu-20261119/README.md",
+          "distinct_cases": 14,
+          "actual_recovery": false
+        },
+        "primary_light_attempt": {
+          "status": "ENV_ABORT",
+          "starts": 1,
+          "posts": 10,
+          "reason": "NVML query worker CLEANUP_FAILED",
+          "owned_cleanup": true,
+          "actual_qualification": false
         }
       }
     },

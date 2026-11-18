@@ -1,0 +1,86 @@
+{
+  "status": "PASS_REGISTERED_VOICE_MANAGED_RECOVERY_DRIVER_CPU_ONLY",
+  "cpu_first": {
+    "status": "PASS",
+    "returncode": 0,
+    "cases": 14,
+    "seconds": 2.7167971008457243,
+    "models": 0,
+    "gpu": 0,
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_one_registration_persists_across_entry_and_whole_payload_phases",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_partial_or_repeated_phase_cannot_retry_a_mutating_request",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_missing_second_phase_or_changed_http_status_cannot_pass",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_retained_request_body_prevents_hint_and_owner_substitution",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_complete_audio_usage_content_and_isolated_health_are_required",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_revocation_must_retire_original_ids_and_both_generation_routes",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_frozen_service_budget_covers_posts_without_changing_restart_counts",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_package_binding_and_changed_recording_fail_before_service_acceptance",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_voice_receipt_requires_ids_audio_asr_usage_negatives_and_revocation",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_old_builtin_evidence_cannot_qualify_registered_voices",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_both_families_migrate_shared_limits_and_automatic_recovery_keeps_features",
+      "tools.native_tts.test_managed_service.ManagedSpeech.test_output_budgets_count_every_phase_and_reject_partial_tls",
+      "tools.native_tts.test_managed_service.ManagedSpeech.test_omitted_binding_or_unhealthy_reload_cannot_reuse_other_phase",
+      "tools.native_tts.test_managed_service.ManagedSpeech.test_full_retained_outputs_require_both_recovery_phases"
+    ]
+  },
+  "cpu_metadata_review": {
+    "status": "PASS",
+    "returncode": 0,
+    "cases": 1,
+    "seconds": 0.5644884631037712,
+    "models": 0,
+    "gpu": 0,
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.native_tts.test_managed_voice.ManagedVoice.test_package_binding_and_changed_recording_fail_before_service_acceptance"
+    ],
+    "sources": {
+      "tools/native_tts/managed_voice.py": "0e1ed1a6b225782383802f3bfab3a65ca00b9aa58bf42248340a9c28c819a90e",
+      "tools/native_tts/test_managed_voice.py": "c9f8228b26e6be3a1a0ad1a2ff9ddc246186f20d5a804fd452ecca12b9120df7"
+    }
+  },
+  "distinct_cpu_cases": 14,
+  "cpu_executions": 15,
+  "sources": {
+    "tools/native_tts/managed_voice.py": "0e1ed1a6b225782383802f3bfab3a65ca00b9aa58bf42248340a9c28c819a90e",
+    "tools/native_tts/test_managed_voice.py": "c9f8228b26e6be3a1a0ad1a2ff9ddc246186f20d5a804fd452ecca12b9120df7",
+    "tools/native_asr/service_acceptance.py": "f855882f9431ed582114a6a85f771c6467e88fc171d24a0e7209cd7240a86a33",
+    "tools/serve_recovery/profile_evidence.py": "961545f34d65e24632d31e8b991bd1f16ad0abe2afcfa512d9214eed562b275d"
+  },
+  "actual_profiles": {
+    "status": "ENV_ABORT",
+    "counts": {
+      "starts": 1,
+      "chats": 10,
+      "controls": 43
+    },
+    "seconds": 108.84371170401573,
+    "postflight": {
+      "status": "ENV_ABORT_RECORDED",
+      "nvml_worker": {
+        "pid": 472274,
+        "exists": false
+      },
+      "model_owned_remaining": [],
+      "ports_released": true,
+      "lock_released": true,
+      "default_unchanged": true,
+      "full_profile_qualified": false,
+      "reason": "RuntimeError('NVML process query: CLEANUP_FAILED; details in /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-profiles-01/lease/nvml-queries.jsonl')",
+      "actions": "read-only postflight; no GPU launch or monitor restart"
+    }
+  },
+  "actual_managed_recovery": false,
+  "default_replaced": false,
+  "full_task_complete": false
+}

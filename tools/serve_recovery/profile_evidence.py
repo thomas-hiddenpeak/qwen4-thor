@@ -160,32 +160,11 @@ def voice_error(value, status, code=None):
         'qualified voice rejection differs')
 
 
-def voice_business(value, identity):
-    """Validate retained actual results, not proof that a helper ran HTTP."""
-    ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
-        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits'))
-    fixed = identity['native_tts_base']
+def voice_synthesis(value, fixed):
+    """Shared complete output/content checks; callers bind IDs and requests."""
     profile_contract.tts_configuration(fixed, base=True)
-    asr = identity.get('native_asr')
-    ledger.require(type(asr) is dict and {'speaker', 'vad'} <= asr.keys(),
-                   'voice registration receipt lacks qualified ASR/VAD/speaker')
-    profile_contract.asr_configuration(asr, voice_registration=True)
     ledger.require(ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
                    'qualified voice effective capacity differs')
-    for name, prefix, field in [('consent', 'cons_', 'language'),
-                                 ('voice', 'voice_', 'type')]:
-        row = value[name]
-        ledger.keys(row, ('id', 'object', 'created_at', 'name', field))
-        expected = 'audio.voice_consent' if name == 'consent' else 'audio.voice'
-        ledger.require(type(row['id']) is str and row['id'].startswith(prefix) and
-            len(row['id']) <= 128 and len(row['id']) > len(prefix) and
-            row['object'] == expected and ledger.integer(row['created_at'], minimum=1) and
-            row['name'] == ('local-consent' if name == 'consent' else 'local-sample') and
-            row[field] == ('en' if name == 'consent' else 'audio_sample'),
-            'qualified voice metadata differs or leaks private evidence')
-    expected = voice_requests(value['consent']['id'], value['voice']['id'])
-    ledger.require(ledger.canonical(value['requests']) == ledger.canonical(expected),
-                   'qualified voice requests lost the actual ID or supplied ASR hints')
     speech = value['speech']
     ledger.keys(speech, ('audio_base64', 'usage'))
     frames = voice_audio(speech['audio_base64'], fixed['limits'])
@@ -220,6 +199,35 @@ def voice_business(value, identity):
                        ('chat_transcript', VOICE_TARGETS[1])]:
         ledger.require(type(value[key]) is dict and value[key].get('text') == text,
                        'qualified voice independent transcription differs')
+
+
+def voice_business(value, identity):
+    """Validate retained actual results, not proof that a helper ran HTTP."""
+    ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
+        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits'))
+    fixed = identity['native_tts_base']
+    profile_contract.tts_configuration(fixed, base=True)
+    asr = identity.get('native_asr')
+    ledger.require(type(asr) is dict and {'speaker', 'vad'} <= asr.keys(),
+                   'voice registration receipt lacks qualified ASR/VAD/speaker')
+    profile_contract.asr_configuration(asr, voice_registration=True)
+    ledger.require(ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
+                   'qualified voice effective capacity differs')
+    for name, prefix, field in [('consent', 'cons_', 'language'),
+                                 ('voice', 'voice_', 'type')]:
+        row = value[name]
+        ledger.keys(row, ('id', 'object', 'created_at', 'name', field))
+        expected = 'audio.voice_consent' if name == 'consent' else 'audio.voice'
+        ledger.require(type(row['id']) is str and row['id'].startswith(prefix) and
+            len(row['id']) <= 128 and len(row['id']) > len(prefix) and
+            row['object'] == expected and ledger.integer(row['created_at'], minimum=1) and
+            row['name'] == ('local-consent' if name == 'consent' else 'local-sample') and
+            row[field] == ('en' if name == 'consent' else 'audio_sample'),
+            'qualified voice metadata differs or leaks private evidence')
+    expected = voice_requests(value['consent']['id'], value['voice']['id'])
+    ledger.require(ledger.canonical(value['requests']) == ledger.canonical(expected),
+                   'qualified voice requests lost the actual ID or supplied ASR hints')
+    voice_synthesis(value, fixed)
     negatives = {'negated_consent': (400, 'voice_consent_mismatch'),
                  'different_speaker': (400, 'voice_speaker_mismatch'),
                  'cross_consent': (404, None), 'cross_voice': (404, None),
