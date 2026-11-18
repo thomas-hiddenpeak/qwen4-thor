@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #48已创建；发布与26条可移植语音/配额/活动取消CPU合同接入
+主线CI，选择器加载26项、0执行；复用本机针对验收，不新增GPU。
+默认rev316保持STOPPED，等待当前提交CI后合入，全部master继续。
+
 [rev316语音输入输出可回退交付](evidence/serve-tts-delivery-20261118/README.md)
 完成，19项STOPPED步骤（复用3、续办16）/290.446秒，0新增GPU。实际整根回退
 再前进通过，原用量/历史保持，alpha输出显式256→2817；前驱rev306和day保留。接着主线
