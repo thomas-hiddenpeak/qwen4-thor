@@ -4152,6 +4152,19 @@
           "frame_limit_cases": 1,
           "actual_http": false
         }
+      },
+      "overlap_owner_decision_20261118": {
+        "state": "SPECIFIC_INFLECTION_ACCEPTED_MODEL_QUALITY_LIMITATION_RETAINED",
+        "evidence": "docs/evidence/serve-overlap-owner-decision-20261118/README.md",
+        "wer": [
+          0.14285714285714285,
+          0
+        ],
+        "original_failures_preserved": true,
+        "quality_defect_fixed": false,
+        "actual_managed_recovery_qualified": false,
+        "cpu_tests": 3,
+        "default_changed": false
       }
     },
     {
@@ -8036,15 +8049,20 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "cpu_qualified_actual_primary_light_tls_recovery_pending",
-      "cpu_unique": 19,
+      "state": "cpu_qualified_actual_profile_startup_capacity_failed_fix_pending",
+      "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
         "starts": 2,
         "posts": 22,
         "seconds": 900
       },
-      "default_changed": false
+      "default_changed": false,
+      "capacity_failure_evidence": "evidence/serve-tts-managed-capacity-20261118/README.md",
+      "process_attempts": 1,
+      "actual_core_weight_loads": 0,
+      "actual_posts": 0,
+      "seconds": 8.800035278778523
     }
   }
 }

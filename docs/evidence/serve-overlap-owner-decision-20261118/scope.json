@@ -1,0 +1,18 @@
+{
+  "kind": "targeted_acceptance_policy",
+  "user_decision": "允许此类识别误差，单独记录模型质量限制",
+  "cpu_tests": 3,
+  "seconds": 60,
+  "gpu": 0,
+  "model_loads": 0,
+  "http": 0,
+  "max_artifact_bytes": 2097152,
+  "min_free_bytes": 536870912,
+  "original_failures_immutable": true,
+  "files_before": {
+    "tools/serve_recovery/profile_evidence.py": "d877a5a1f6de9ed87bf6a9c77442866d376a2a6e54c5abd9730846d52cddd679",
+    "tools/native_asr/auxiliary_service.py": "cdb814b357da1c362fd3de3f5e5230648bc4d01e733a584cc14aa51619264f3d",
+    "tools/serve_recovery/profile_acceptance.py": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
+    "tools/serve_recovery/test_separator_profiles.py": "5a0651a938ec4d552d11306e51710e1e357032300b47275508ef3df322759d5f"
+  }
+}

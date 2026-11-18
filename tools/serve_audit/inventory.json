@@ -3016,12 +3016,12 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
+    "tools/serve_recovery/profile_acceptance.py": "25f8177fc5504992ca30967f4f2821cbf9db092f2529dafc126bd3afae47e703",
     "tools/serve_recovery/profile_bundle.py": "9f3e4ecf2ea049c8e149ce1b0784403fdc3698142ea963a9edb0bab41ef7f3ec",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "dfa08272d9d155fde13d41f57822e0e9b42d2960dceae30acd0cf27a84afef9a",
     "tools/serve_recovery/profile_controller.py": "eb7832650bc5cad8f6aabee5bdda1632e513e08e2c6d65fca6b585cda192e9e3",
-    "tools/serve_recovery/profile_evidence.py": "d877a5a1f6de9ed87bf6a9c77442866d376a2a6e54c5abd9730846d52cddd679",
+    "tools/serve_recovery/profile_evidence.py": "8c5720e1e095f83361afbbaf85b4068faa118120e62fc859704886a00e7bcd95",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "56da5ad86a8807cd03e31f3ed4f2b959393d33bb391185e79a4e0e4c644a9028",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
@@ -7538,5 +7538,20 @@
     },
     "evidence": "docs/evidence/serve-tts-managed-cpu-20261118/README.md",
     "driver_budget_repair": "1 targeted CPU passed; retained text512 and TPM, TTS primary_tokens+16*frames+EOS; no GPU in supersededplan"
+  },
+  "overlap_inflection_acceptance_20261118": {
+    "scope": "Explicit owner acceptance of observed hurt -> hurts only; WER and voice/timing checks retained",
+    "reviewed_sources": {
+      "tools/serve_recovery/profile_acceptance.py": {
+        "before": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
+        "after": "25f8177fc5504992ca30967f4f2821cbf9db092f2529dafc126bd3afae47e703"
+      },
+      "tools/serve_recovery/profile_evidence.py": {
+        "before": "d877a5a1f6de9ed87bf6a9c77442866d376a2a6e54c5abd9730846d52cddd679",
+        "after": "8c5720e1e095f83361afbbaf85b4068faa118120e62fc859704886a00e7bcd95"
+      }
+    },
+    "quality_fix": false,
+    "default_changed": false
   }
 }

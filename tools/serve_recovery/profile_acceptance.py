@@ -464,7 +464,8 @@ class Stage(encrypted.Stage):
                 limits=config['native_'+backend+'_limits'])
         save(self.out/(label+'.request.json'), request)
         if separator:
-            profile_evidence.separator_business(result, self.plan['identity'])
+            quality = profile_evidence.separator_business(result, self.plan['identity'])
+            save(self.out/(label+'.quality.json'), quality)
         elif speaker:
             profile_evidence.speaker_business(result, self.plan['identity'])
         elif auxiliary:

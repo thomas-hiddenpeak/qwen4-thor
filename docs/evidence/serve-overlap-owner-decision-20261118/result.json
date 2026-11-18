@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "tests": 3,
+  "seconds": 0.4303266811184585,
+  "gpu": 0,
+  "http": 0,
+  "free_before": 552837120
+}

@@ -317,8 +317,20 @@ def separator_business(value, identity):
                   for label, source in zip(labels, SEPARATOR_UTTERANCES)]
         scored.append((sum(scores), labels, scores))
     _, labels, scores = min(scored)
-    ledger.require(all(v <= .125 for v in scores),
-                   'qualified separator per-voice recognition quality failed')
+    # 2026-11-18 owner decision: this observed inflection preserves meaning.
+    # Keep raw WER and the old failed record. This is an explicit review of
+    # the pinned source, not stemming, a higher threshold, or a general waiver.
+    approved = ('the child almost hurts the small dog', None)
+    quality = []
+    for label, source, score, allowed in zip(
+            labels, SEPARATOR_UTTERANCES, scores, approved):
+        observed = ' '.join(r['text'] for r in grouped[label])
+        normalized = ' '.join(re.findall(r'\w+', observed.lower()))
+        reviewed = score > .125 and allowed is not None and normalized == allowed
+        ledger.require(score <= .125 or reviewed,
+                       'qualified separator per-voice recognition quality failed')
+        quality.append(dict(reference=source[2], observed=observed, wer=score,
+            threshold=.125, accepted_inflection=reviewed))
     for label, (begin, end, _) in zip(labels, SEPARATOR_UTTERANCES):
         ledger.require(all(r['start']*16000 >= begin-6080 and
                            r['end']*16000 <= end+6080 for r in grouped[label]),
@@ -326,6 +338,9 @@ def separator_business(value, identity):
     overlap = max(min(a['end'],b['end'])-max(a['start'],b['start'])
                   for a in grouped[labels[0]] for b in grouped[labels[1]])
     ledger.require(overlap >= .3, 'qualified separator serialized actual overlapping speech')
+    return dict(policy='source-specific-owner-inflection-20261118',
+        source_sha256=SEPARATOR_FILE_SHA, voices=quality, overlap_seconds=overlap,
+        model_quality_limitation=any(row['accepted_inflection'] for row in quality))
 
 
 def speaker_request(identity):

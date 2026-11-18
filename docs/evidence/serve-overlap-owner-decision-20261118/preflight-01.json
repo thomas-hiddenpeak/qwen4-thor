@@ -1,0 +1,8 @@
+{
+  "status": "NOT_RUN",
+  "reason": "disk_floor",
+  "free_bytes": 534089728,
+  "minimum": 536870912,
+  "tests": 0,
+  "gpu": 0
+}
