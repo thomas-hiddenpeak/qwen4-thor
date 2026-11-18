@@ -7,6 +7,8 @@ set(protocol_inputs
   src/server/speech_request.cpp
   include/q4t/audio/pcm_output.h
   src/audio/pcm_output.cpp
+  include/q4t/audio/speech_tempo.h
+  src/audio/speech_tempo.cpp
   include/q4t/audio/separator_tracks.h
   src/audio/separator_tracks.cpp
   include/q4t/audio/separator_config.h

@@ -1,0 +1,24 @@
+{
+  "task": "Native streaming time scaling at 0.25 to 4, preserving pitch without a resampling shortcut",
+  "limits": {
+    "cpu_tests": 4,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "tests": [
+    "speech_tempo_identity_is_exact_and_progressive",
+    "speech_tempo_partition_does_not_change_audio_or_duration",
+    "speech_tempo_preserves_tone_pitch_at_speed_extremes",
+    "speech_tempo_bounds_fail_atomically_and_short_tail_is_real"
+  ],
+  "contracts": {
+    "identity": "bit-exact speed 1",
+    "duration": "ceil(input samples / speed)",
+    "partition": "37 vs 4096 sample packets produce identical float output",
+    "pitch": "240 Hz tone within 10 Hz at speeds 0.25,0.5,2,4",
+    "memory": "65536 input sample slots and fixed grain buffers",
+    "progress": "at most 240 output samples per Advance; output before input completion"
+  },
+  "actual_speech_quality_pending": true,
+  "prior_freeze_failure": "Python syntax error before execution; no files written or tests run"
+}

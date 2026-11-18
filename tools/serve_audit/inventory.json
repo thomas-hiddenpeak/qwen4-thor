@@ -2176,8 +2176,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "b1373011f355492d63619ab25b7a960d0bbf2944e10fde4aa49583f5a702381b",
-    "cmake/ChatProtocolIdentity.cmake": "fa10eb72c2dfe830e7b1ac649e91fcd9d60b8a7e7bc827e9a07e660c7369eec9",
+    "CMakeLists.txt": "5a73f5d6cbb71418ee445c2abd96639ad920a82506652fbb832d8da8f5ed1e6c",
+    "cmake/ChatProtocolIdentity.cmake": "9477dbe608a49737bafbb34587202cdc47737a96c35489b18c2c3aa50d373ccc",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2207,6 +2207,7 @@
     "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
     "include/q4t/audio/speaker_layout.h": "49d49b3a0801b9546d35f0ece59b57096c4822c22a939839e3fcfa09c2df7b3e",
     "include/q4t/audio/speaker_model.h": "e8ac39843a88aa7b502805a1dc49c26aa9d26bd3c69b082771f01467deb2745f",
+    "include/q4t/audio/speech_tempo.h": "226e2ca5431ff80af6146c7391fe92ecdf04b89784e9bef2406cdddb581e5a71",
     "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
     "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
@@ -2483,6 +2484,7 @@
     "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
+    "src/audio/speech_tempo.cpp": "feea91f23065cf5039b5e3410b87b30423861609adce22b132776b52808f45d3",
     "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
     "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
     "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",

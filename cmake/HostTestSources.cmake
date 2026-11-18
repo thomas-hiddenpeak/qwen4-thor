@@ -6,6 +6,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/pcm_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speech_tempo.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/speech_tempo_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_request_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/pcm_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_config_test.cpp

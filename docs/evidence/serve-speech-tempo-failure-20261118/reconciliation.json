@@ -1,0 +1,17 @@
+{
+  "status": "FAILED_ACTUAL_CONTENT",
+  "asr_cases": 6,
+  "passed": 4,
+  "failed": [
+    2,
+    5
+  ],
+  "seconds": 7.833889981266111,
+  "nvml_queries": 10,
+  "nvml_all_ok": true,
+  "lease_released": true,
+  "lock_available": true,
+  "defaults_unchanged": true,
+  "scope": "No deployment; original binary and sources retained before repair",
+  "next": "Two stages at <=2x for speeds >2, CPU and only original two failed 4x speech cases"
+}

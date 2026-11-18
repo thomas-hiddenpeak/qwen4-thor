@@ -1,0 +1,92 @@
+{
+  "schema": "q4t-native-speech-tempo-v1",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 60,
+    "asr0_seconds": 600,
+    "asr1_seconds": 600,
+    "cases": 6,
+    "gpu_asr_loads": 2,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "cpu_model_loads": 0,
+    "http_requests": 0,
+    "asr_tokens_per_case": 64,
+    "native_advances": 20000
+  },
+  "cases": [
+    {
+      "utterance": 0,
+      "speed": 0.25,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 0,
+      "speed": 2.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 0,
+      "speed": 4.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 1,
+      "speed": 0.25,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    },
+    {
+      "utterance": 1,
+      "speed": 2.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    },
+    {
+      "utterance": 1,
+      "speed": 4.0,
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    }
+  ],
+  "binary_sha256": "3d7accd273c2771419252b1157371c27ed3189e81c7b4b23d49070c99022f8a6",
+  "asr_binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "driver_sources": {
+    "tempo_replay.cpp": "48f9469a82cd25f108d7823476ecad122c2b5b3d8167b9bf40faa07f6639dcd8",
+    "tempo_acceptance.py": "4a5d790f12408ee74816c3ea6347e16487d902e10dabe117f96b2289183c60ec",
+    "utterance_acceptance.py": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0",
+    "acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "runtime_sources": {
+    "src/audio/speech_tempo.cpp": "feea91f23065cf5039b5e3410b87b30423861609adce22b132776b52808f45d3",
+    "include/q4t/audio/speech_tempo.h": "226e2ca5431ff80af6146c7391fe92ecdf04b89784e9bef2406cdddb581e5a71",
+    "src/audio/pcm_output.cpp": "854f6c19c70b4d5dd98a6850ed8f4c96280900a1280f9d7bae71a13de7468950",
+    "include/q4t/audio/pcm_output.h": "bd83f21912281ab51c0d11091655636e2bb5b38f85b088b2d65ba19ec0852c93",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+    "src/trace/sha256.cpp": "f135a31a2bde6a2a76d137f733a78d3a234a6659aea08f9cd376479eb939373a"
+  },
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "contract": {
+    "exact_normalized_transcription": true,
+    "duration": "ceil(N/speed), 24kHz, no trimming",
+    "progressive": true,
+    "buffer_samples": 65536
+  },
+  "reused": [
+    "utterance-01 original TTS audio and EOS",
+    "tempo-cpu-01 4 checks",
+    "utterance-cpu-01 content gate",
+    "accepted ASR binary"
+  ],
+  "performance_claim": false
+}

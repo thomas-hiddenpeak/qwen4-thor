@@ -4,8 +4,10 @@ add_executable(q4t_speech_contract_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/tests/test_main.cpp
   ${tts_test_root}/tests/server_speech_request_test.cpp
   ${tts_test_root}/tests/pcm_output_test.cpp
+  ${tts_test_root}/tests/speech_tempo_test.cpp
   ${tts_test_root}/src/server/speech_request.cpp
   ${tts_test_root}/src/audio/pcm_output.cpp
+  ${tts_test_root}/src/audio/speech_tempo.cpp
   ${tts_test_root}/src/io/json.cpp)
 target_include_directories(q4t_speech_contract_tests PRIVATE
   ${tts_test_root}/include)

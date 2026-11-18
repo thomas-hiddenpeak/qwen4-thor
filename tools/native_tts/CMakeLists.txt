@@ -52,3 +52,9 @@ target_compile_options(q4t_tts_codec_replay PRIVATE -Wall -Wextra -Werror)
 add_executable(q4t_tts_utterance utterance_replay.cpp)
 target_link_libraries(q4t_tts_utterance PRIVATE q4t_tts_replay_core)
 target_compile_options(q4t_tts_utterance PRIVATE -Wall -Wextra -Werror)
+add_executable(q4t_speech_tempo tempo_replay.cpp
+  ${Q4T_ROOT}/src/audio/pcm_output.cpp
+  ${Q4T_ROOT}/src/audio/speech_tempo.cpp
+  ${Q4T_ROOT}/src/io/json.cpp ${Q4T_ROOT}/src/trace/sha256.cpp)
+target_include_directories(q4t_speech_tempo PRIVATE ${Q4T_ROOT}/include)
+target_compile_options(q4t_speech_tempo PRIVATE -Wall -Wextra -Werror)
