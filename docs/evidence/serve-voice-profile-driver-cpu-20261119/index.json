@@ -1,0 +1,45 @@
+{
+  "archive_sha256": "71170b942f1bb13baebc7022dc668e62d3dd4ca55dcbede62126744c93dce8a4",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/voice-profile-driver-cpu-01/sources.json": {
+      "bytes": 460,
+      "sha256": "b799b89ab09815a9a5265bb1e53474590e5525ad0019ad46a93a272c79fdb382"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-profile-driver-cpu-01/result.json": {
+      "bytes": 1685,
+      "sha256": "265ff5a98e8b60b92ac22c5d097d2314fb0f8db577eba43d9c00c3ee09da4f05"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-profile-driver-cpu-01/plan.json": {
+      "bytes": 1780,
+      "sha256": "1941f2b3f792e059c522af607c0106f1d14e4a8ac067386b9464cd01848e71d9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-profile-driver-cpu-01/tests.log": {
+      "bytes": 2391,
+      "sha256": "c8cc847e8dbc5ee2fd4b95545600d233cef39db2da1e2211b33c5f0e7d9e4a88"
+    },
+    ".q4t-work/serve-custom-voices-20261118/implement_voice_profile_driver_01.py": {
+      "bytes": 7512,
+      "sha256": "120bea92728f2621127b48cc5aa1d5b60b8c51c732ff0a797a7929ddd1a36623"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_voice_profile_driver_cpu_01.py": {
+      "bytes": 3090,
+      "sha256": "7627d8333e3fc89d45b7ee965fee09ca55beaf82310e7a0c58dee47337482f70"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_profile_driver_cpu_01.py": {
+      "bytes": 5685,
+      "sha256": "72c8663f16a1bc48b19c5e4a0730fc8664510d99da4fbe909593ad1ec353435c"
+    },
+    "tools/serve_recovery/profile_voice.py": {
+      "bytes": 11974,
+      "sha256": "d270c33c871f4bd0b5b8591aef3a8c2aebd7052bf57d03421eaf2091cf6f8349"
+    },
+    "tools/serve_recovery/profile_acceptance.py": {
+      "bytes": 42557,
+      "sha256": "0daf2703203e54d4149fe46f291809b1ac4feebe982ebc0210955e76e5800b98"
+    },
+    "tools/serve_recovery/test_profile_voice.py": {
+      "bytes": 11688,
+      "sha256": "b1d7696b02dbdeed82051a6f94a47efd5d273d6dbb02834f891625d477cf8aee"
+    }
+  }
+}

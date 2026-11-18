@@ -3125,7 +3125,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "ba72a35cc543c6d263b6e31649ce37e54e65a0162819620b40afcc942ca56296",
+    "tools/serve_recovery/profile_acceptance.py": "0daf2703203e54d4149fe46f291809b1ac4feebe982ebc0210955e76e5800b98",
     "tools/serve_recovery/profile_bundle.py": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
@@ -3218,7 +3218,8 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "tools/serve_recovery/profile_voice.py": "d270c33c871f4bd0b5b8591aef3a8c2aebd7052bf57d03421eaf2091cf6f8349"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

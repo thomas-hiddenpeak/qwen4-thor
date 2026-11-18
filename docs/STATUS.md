@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Base实际profile驱动12项CPU通过](evidence/serve-voice-profile-driver-cpu-20261119/README.md)：
+2.517秒/0GPU，真实ID和无提示ASR路径、错误成功/错转录/缺历史拒绝，
+固定录音与3客户准入及请求边界通过；940来源锚点/17负控。驱动具备，
+真实两profile、原合成音色不匹配和保存状态回退继续；默认rev316保持。
+
+Base主/轻profile真实验收驱动已补：显式Base配置和4份固定录音，
+每profile 12业务POST及5控制请求，真实注册ID→Speech/Chat→独立ASR、
+存储历史、跨客户/配额/错误授权/异声反例和撤销；启动前核对3客户
+公平容量，不能复用旧内置音色证据。冻结12 CPU/120秒/0GPU；
+真实HTTP仍待合适录音和完整流程通过，默认不变。
+
 [真人声纹6正反例符合预期](evidence/serve-voice-human-diagnostic-20261119/README.md)：
 4单人/同人通过、2异声拒绝；独立A/A余弦0.727，A/B≤0.0762。
 18原生/官方CPU向量一致，最大relativeL2 2.288e-6；门保持0.65。

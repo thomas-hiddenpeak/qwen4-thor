@@ -8657,9 +8657,12 @@
           "evidence": "evidence/serve-voice-package-cpu-20261119/README.md",
           "distinct_cpu_cases": 34,
           "base_capacity_migration": true,
-          "real_profile_driver_pending": true,
+          "real_profile_driver_pending": false,
           "base_only_saved_voice_qualification_pending": true,
-          "default_replaced": false
+          "default_replaced": false,
+          "real_profile_execution_pending": true,
+          "profile_driver_evidence": "evidence/serve-voice-profile-driver-cpu-20261119/README.md",
+          "profile_driver_cpu_cases": 12
         },
         "human_speaker_diagnosis": {
           "evidence": "evidence/serve-voice-human-diagnostic-20261119/README.md",
