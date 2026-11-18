@@ -1,0 +1,22 @@
+{
+  "status": "PASS_BASE_ONLY_CONSUMER_CPU_RUNTIME_PENDING",
+  "cpu_cases": 24,
+  "cpu_seconds": 2.5668770000338554,
+  "inventory_anchors": 941,
+  "inventory_negatives": 17,
+  "original_inventory_metadata_error_preserved": true,
+  "inventory_only_retested": true,
+  "real_saved_state_files": 8,
+  "compiled_engine_sources_unchanged": 714,
+  "new_gpu_starts": 0,
+  "default_revision": 326,
+  "default_unchanged": true,
+  "storage_duplicate_inode_bytes": 490422128,
+  "storage_paths_retained": true,
+  "unique_content_deleted": false,
+  "actual_base_only_business_accepted": false,
+  "registration_qualification_replaced": false,
+  "new_asr_inference": false,
+  "archive_sha256": "63aea3f451a2d07df69d393479c015aae284b231bf8760de78fa0455e35ce042",
+  "all_master_tasks_active": true
+}

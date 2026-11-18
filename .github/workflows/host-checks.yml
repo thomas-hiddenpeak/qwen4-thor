@@ -205,6 +205,7 @@ jobs:
           tools.serve_service.test_voice_package.VoicePackage
           tools.serve_recovery.test_voice_profiles.VoiceProfiles
           tools.serve_recovery.test_profile_voice.VoiceDriver
+          tools.serve_recovery.test_profile_consumer
           tools.serve_recovery.test_tts_checkpoint_profiles.CheckpointWitness
           tools.native_tts.test_managed_voice
           tools.native_tts.test_managed_review

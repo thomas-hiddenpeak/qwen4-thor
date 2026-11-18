@@ -14,6 +14,20 @@ TTS_FORMAT = 'q4t-profile-business-v8'
 VOICE_FORMAT = 'q4t-profile-business-v9'
 TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
 VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
+VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
+# Exact saved state and full outputs from the accepted official SDK/TLS run.
+# Both full WAVs were independently transcribed, then reproduced byte for byte
+# by both registered-voice profiles. These are content witnesses, not new ASR.
+VOICE_CONSUMER_WITNESS = dict(
+    format='q4t-voice-consumer-witness-v1', owner='audio',
+    consent='cons_152992b04ee1d2169519b5a25bf7c320',
+    voice='voice_d91ef0c25a252f9ae75a631901960d90',
+    state_sha256='b7b75d0ee358f87ac73cc61e982a8c42319165aec92da34572a982e4d7b2e53f',
+    condition_sha256='9781f722ad38343deeea05a21d7c5700e0344b3703c1ce0d44e88d9173e16e12',
+    evidence_sha256='fd2c3e8ce9fe74c84a76cd920c0b2380cf582c3c830ed99db31ee41132766af3')
+VOICE_CONSUMER_AUDIO = dict(
+    speech=(111404, '58dd9c9389ce28237d37c612e6a1208739bdaf8dd5ec3fcf2db0cbaae3c3176d'),
+    chat=(76844, '15324b851c3ebca829b9d73b3848d590a3a657cc46e49c0277e7cef473b0fe0f'))
 TTS_CHECKPOINT_SAMPLING = 'qwen3-tts-checkpoint-seed0-v1'
 VOICE_TARGETS = ('The blue train arrives at noon.', 'Please close the window.')
 TTS_TEXT = 'Hello, this is a native speech test.'
@@ -201,6 +215,79 @@ def voice_synthesis(value, fixed):
                        'qualified voice independent transcription differs')
 
 
+
+def voice_consumer_business(value, identity):
+    """Require saved-condition use with registration backends truly absent."""
+    ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'chat',
+        'stored_chat', 'negative', 'revocation', 'health', 'limits', 'witness'))
+    ledger.require(identity.get('native_asr') is None and
+        identity.get('native_tts') is None and identity.get('native_tts_base') is not None,
+        'consumer receipt requires the explicit Base-only backend selection')
+    ledger.require(value['witness'] == VOICE_CONSUMER_WITNESS,
+                   'consumer saved-state or independent content witness differs')
+    for key, field, expected in (('consent', 'language', 'en'),
+                                  ('voice', 'type', 'audio_sample')):
+        row = value[key]
+        ledger.keys(row, ('id', 'object', 'created_at', 'name', field))
+        ledger.require(row['id'] == VOICE_CONSUMER_WITNESS[key] and
+            row['object'] == 'audio.'+('voice_consent' if key == 'consent' else 'voice') and
+            row['name'] == ('local-consent-renamed' if key == 'consent' else 'local-sample') and
+            ledger.integer(row['created_at'], minimum=1) and row[field] == expected,
+            'consumer metadata changed owner state or leaked private conditions')
+    expected = voice_requests(value['consent']['id'], value['voice']['id'])
+    expected.pop('transcription')
+    ledger.require(value['requests'] == expected, 'consumer synthesis request differs')
+    for key, encoded in (('speech', value['speech']['audio_base64']),
+                        ('chat', message(value['chat'], 'stop')['audio']['data'])):
+        voice_audio(encoded, identity['native_tts_base']['limits'])
+        raw = base64.b64decode(encoded, validate=True)
+        ledger.require((len(raw), hashlib.sha256(raw).hexdigest()) ==
+            VOICE_CONSUMER_AUDIO[key], 'consumer complete audio differs from recognized witness')
+    # Reuse content only after matching every byte, not from the output text or
+    # a prefix. There is intentionally no ASR request in this deployment.
+    voice_synthesis(dict(value, speech_transcript=dict(text=VOICE_TARGETS[0]),
+        chat_transcript=dict(text=VOICE_TARGETS[1])), identity['native_tts_base'])
+    ledger.require(value['stored_chat'].get('id') == value['chat'].get('id') and
+        message(value['stored_chat'], 'stop') == message(value['chat'], 'stop'),
+        'consumer stored complete Chat audio differs')
+    negatives = dict(cross_consent=(404, None), cross_speech=(404, None),
+        cross_chat=(404, None), new_consent=(503, 'voice_verification_not_configured'),
+        new_voice=(503, 'voice_verification_not_configured'))
+    ledger.keys(value['negative'], negatives)
+    for key, (status, code) in negatives.items():
+        voice_error(value['negative'][key], status, code)
+    revoked = value['revocation']
+    ledger.keys(revoked, ('consent_deleted', 'voice_deleted', 'speech', 'chat', 'consent'))
+    for key in ('consent', 'voice'):
+        deleted = revoked[key+'_deleted']
+        ledger.keys(deleted, ('id', 'object', 'deleted'))
+        ledger.require(deleted['id'] == value[key]['id'] and
+            deleted['object'] == value[key]['object'] and deleted['deleted'] is True,
+            'consumer revocation did not retire the original ID')
+    for key in ('speech', 'chat', 'consent'):voice_error(revoked[key], 404)
+    disabled = ('tts', 'asr', 'alignment', 'vad', 'speaker', 'separator')
+    ledger.keys(value['health'], ('base', 'condition', *disabled))
+    for key, health in value['health'].items():
+        ledger.require(type(health) is dict and health.get('reason') == 'none' and
+            health.get('core_readiness_dependency') is False and
+            health.get('load_failures') == 0 and health.get('compute_failures') == 0 and
+            health.get('asset_cleanup_failed', False) is False,
+            'consumer auxiliary health failed or affects core readiness')
+        if key == 'base':
+            ledger.require(health.get('model') == identity['native_tts_base']['model'] and
+                health.get('state') in ('ready', 'metadata_ready') and
+                ledger.integer(health.get('load_attempts'), minimum=1),
+                'consumer Base synthesis was not loaded')
+        else:
+            ledger.require(health.get('state') == ('configured' if key == 'condition' else 'disabled') and
+                all(type(health.get(k)) is int and health[k] == 0 for k in
+                    ('device_bytes', 'load_attempts', 'load_failures', 'compute_failures')),
+                'consumer loaded a registration-only or disabled backend')
+            if key == 'condition':
+                ledger.require(health.get('model') == identity['native_tts_base']['model']+'-speaker',
+                               'consumer registration encoder identity differs')
+
+
 def voice_business(value, identity):
     """Validate retained actual results, not proof that a helper ran HTTP."""
     ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
@@ -386,6 +473,8 @@ def format_for(profile, identity=None, capabilities=None, business_value=None):
     checkpoint = ((identity or {}).get('native_tts') is not None and
         tts_sampling((business_value or {}).get('tts', {})) is not None)
     if (identity or {}).get('native_tts_base') is not None:
+        if (identity or {}).get('native_asr') is None and (identity or {}).get('native_tts') is None:
+            return VOICE_CONSUMER_FORMAT
         return VOICE_CHECKPOINT_FORMAT if checkpoint else VOICE_FORMAT
     if (identity or {}).get('native_tts') is not None:
         return TTS_CHECKPOINT_FORMAT if checkpoint else TTS_FORMAT
@@ -828,7 +917,10 @@ def business(value, identity, selected=None, capabilities=None):
     if identity.get('native_tts') is not None:
         tts_business(value['tts'], identity)
     if identity.get('native_tts_base') is not None:
-        voice_business(value['voice'], identity)
+        if identity.get('native_asr') is None and identity.get('native_tts') is None:
+            voice_consumer_business(value['voice'], identity)
+        else:
+            voice_business(value['voice'], identity)
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:

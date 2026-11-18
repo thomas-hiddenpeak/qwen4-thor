@@ -3125,12 +3125,13 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "d6890a46e7db7a600847201e20a89901aba719f801d91c59d6f6aa5e5ae9e9a7",
+    "tools/serve_recovery/profile_acceptance.py": "7b89be40a94eb06b02d7c3db751404d3737b798d45bd4a8a69460e75fd601318",
     "tools/serve_recovery/profile_bundle.py": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
+    "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
     "tools/serve_recovery/profile_controller.py": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba",
-    "tools/serve_recovery/profile_evidence.py": "961545f34d65e24632d31e8b991bd1f16ad0abe2afcfa512d9214eed562b275d",
+    "tools/serve_recovery/profile_evidence.py": "92ab437f2407a530065c60925827562ff006e3c94d18a9d38db07ee764db8b6c",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
@@ -3139,6 +3140,7 @@
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
+    "tools/serve_recovery/profile_voice.py": "d270c33c871f4bd0b5b8591aef3a8c2aebd7052bf57d03421eaf2091cf6f8349",
     "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
     "tools/serve_recovery/publication.py": "a3211f3c1e117f0f7922fa8f3ddaed7aaeab36d9293ae4a3324f8f78930b0205",
     "tools/serve_recovery/publication_archive.py": "5a464925f9f493ee6c1813b0d35d3624f1f237dea5ec3e62d7f27d67e3b33bb4",
@@ -3218,8 +3220,7 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "tools/serve_recovery/profile_voice.py": "d270c33c871f4bd0b5b8591aef3a8c2aebd7052bf57d03421eaf2091cf6f8349"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8145,5 +8146,14 @@
     "source_review": ".q4t-work/serve-custom-voices-20261118/voice-service-source-review-01.json",
     "defaults_unchanged": true,
     "master_complete": false
+  },
+  "base_only_voice_consumer_20261119": {
+    "state": "SOURCE_READY_CPU_PENDING",
+    "sources": {
+      "tools/serve_recovery/profile_acceptance.py": "7b89be40a94eb06b02d7c3db751404d3737b798d45bd4a8a69460e75fd601318",
+      "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
+      "tools/serve_recovery/profile_evidence.py": "92ab437f2407a530065c60925827562ff006e3c94d18a9d38db07ee764db8b6c"
+    },
+    "scope": "Explicit Base-only qualification from accepted persistent voice state; full independent-ASR-proven audio witnesses, no registration dependency, same ownership and live revocation. No default capability removal or automatic profile downgrade."
   }
 }
