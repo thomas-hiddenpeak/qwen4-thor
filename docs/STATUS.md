@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR47音频恢复55项检查中的旧speaker观察夹具漏限固定范围，
+访问历史未配置的separator失败。已修为本文件原有speaker集合，
+保留全部预算/隔离负控；仅失败用例0.164秒通过、0GPU。
+[原失败与修复](evidence/serve-chat-audio-ci-fixture-20261118/README.md)，
+继续最终HEAD检查/合main，默认rev306与全部master保持。
+
 PR47当前提交的编译及公共host合同已过，来源门发现验收观察hook
 摘要未更新。独立HEAD快照重现后，仅补已审来源摘要，858锚点/
 7负控通过；[原失败与修复](evidence/serve-chat-audio-source-gate-20261118/README.md)。

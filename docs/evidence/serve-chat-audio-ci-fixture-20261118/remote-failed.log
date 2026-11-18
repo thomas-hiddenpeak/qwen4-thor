@@ -1,0 +1,21 @@
+host-contracts	Check qualified audio auxiliary recovery and migrations	﻿2026-11-18T00:58:11.5716769Z ##[group]Run python3 -B -m unittest tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles tools.serve_recovery.test_speaker_profiles.SpeakerProfiles tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage tools.serve_recovery.test_asr_profiles.AsrProfiles tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles tools.native_asr.test_auxiliary_service tools.native_asr.test_recovery_profiles.RecoveryProfiles tools.native_speaker.test_service
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:11.5719282Z ^[[36;1mpython3 -B -m unittest tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles tools.serve_recovery.test_speaker_profiles.SpeakerProfiles tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage tools.serve_recovery.test_asr_profiles.AsrProfiles tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles tools.native_asr.test_auxiliary_service tools.native_asr.test_recovery_profiles.RecoveryProfiles tools.native_speaker.test_service^[[0m
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:11.5746988Z shell: /usr/bin/bash -e {0}
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:11.5747211Z env:
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:11.5747502Z   Q4T_TEST_OUTPUT_DIR: /home/runner/work/qwen4-thor/qwen4-thor/.q4t-work/audio-recovery-cpu
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:11.5747820Z ##[endgroup]
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6393645Z .....................E.................................
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6394301Z ======================================================================
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6396261Z ERROR: test_real_speaker_observation_binds_every_budget_and_isolation (tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage.test_real_speaker_observation_binds_every_budget_and_isolation)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6398069Z ----------------------------------------------------------------------
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6398677Z Traceback (most recent call last):
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6400172Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tools/serve_service/test_audio_auxiliary_package.py", line 173, in test_real_speaker_observation_binds_every_budget_and_isolation
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6401695Z     native[name]['limits'] = pkg.asr_auxiliary_observed_limits(config, name)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6402381Z     ~~~~~~^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6402723Z KeyError: 'separator'
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6402954Z 
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6403200Z ----------------------------------------------------------------------
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6403764Z Ran 55 tests in 1.683s
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6404006Z 
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6404152Z FAILED (errors=1)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-18T00:58:13.6678503Z ##[error]Process completed with exit code 1.
