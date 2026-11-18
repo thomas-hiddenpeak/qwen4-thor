@@ -1,0 +1,20 @@
+{
+  "cpu_cases": 9,
+  "seconds": 120,
+  "gpu_model_loads": 0,
+  "network_scope": "Owned ephemeral loopback TLS fixture only; other cases inject CPU responses into the actual pinned SDK.",
+  "sources": {
+    "tools/native_tts/voice_sdk.mjs": "c3402d1b523ba02aebbecdfb4f7dd94ce7aa716a9a38a1f702027351db53270d",
+    "tools/native_tts/test_voice_sdk.mjs": "1162ce801b5751fc58c6a727f81ff2d9a3a2cccc5e22f3f68e6d16b4c3d9e5ef",
+    "tools/serve_protocol/sdk.mjs": "b91fbfdb9763abda12908184736e51de4beaa9c5d406e465db1942a78dfd7fec"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "sdk_sources_sha256": "c6e71bc918b38130655b7c91ad4d94b5687b00538711c5010bfab3e00c9d22cc",
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

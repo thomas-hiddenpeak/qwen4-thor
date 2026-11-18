@@ -1,0 +1,17 @@
+✔ official voice and consent create preserve multipart bytes and fields (105.269635ms)
+✔ metadata uses original SDK IDs and verbs without automatic pagination (9.7484ms)
+✔ error bodies and status survive the SDK without retries (5.714792ms)
+✔ speech binary and SSE preserve every response byte with custom voice ID (3.503211ms)
+✔ chat SDK consumes split audio SSE and retains history and extensions (5.914078ms)
+✔ ASR uses full fixed input without text hints; bad hash prevents transport (4.44679ms)
+✔ request and response byte bounds fail without hidden replay (31.189139ms)
+✔ endpoint, symlink input and TLS bypass controls fail before transport (1.75786ms)
+✔ real TLS CLI verifies trusted certificate and rejects untrusted peer (711.649698ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 942.681473

@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[官方JS音色SDK9项CPU通过](evidence/serve-voice-js-sdk-cpu-20261119/README.md)：
+复用7.47.0真实方法，覆盖multipart、音频SSE、历史、错误不重试、
+有界字节和实际TLS证书正反例；1.015秒/0GPU，加入host CI。
+实际模型/入口业务仍待验，默认rev326保持；继续Realtime协议开发，
+ICL注册encoder口径待决与其余master任务保持。
+
 [固定参考ICL完整音频通过](evidence/serve-tts-icl-synthesis-20261119/README.md)：
 中英两例自然EOS/完整无提示ASR均一致，实际首块2帧、背压/取消/两种
 预算失败通过；22.001秒、23次NVML正常、完整进程与锁清理。默认

@@ -8653,7 +8653,7 @@
       }
     }
   ],
-  "next_task": "JavaScript custom-voice SDK and integration drivers; reference encoder numeric decision remains pending. Then real ICL registration/SDK/recovery and reversible delivery, remaining voice styles/Live/Realtime and all master tasks.",
+  "next_task": "Native Realtime protocol/transport and session clocks while ICL encoder numeric decision is pending; complete actual JavaScript/ICL registration/recovery and reversible delivery, remaining voice styles/Live and all master tasks.",
   "next": "Reuse accepted 4x content counterexamples and all unchanged evidence, retain listening and long-soak handoff, and complete every remaining A/N/R/Q implementation.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9344,6 +9344,14 @@
           "all_master_tasks_active": true,
           "evidence": "evidence/serve-voice-consumer-business-20261119/README.md"
         }
+      },
+      "javascript_sdk_cpu": {
+        "evidence": "evidence/serve-voice-js-sdk-cpu-20261119/README.md",
+        "tests": 9,
+        "seconds": 1.0150566967204213,
+        "gpu_model_loads": 0,
+        "state": "client_implemented_cpu_verified_actual_business_pending",
+        "sdk_version": "7.47.0"
       }
     },
     "orator_reference": {
