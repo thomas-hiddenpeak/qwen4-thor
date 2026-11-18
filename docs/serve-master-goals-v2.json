@@ -9550,6 +9550,15 @@
       "api_qualified": false,
       "delivered": false,
       "explicit_reuse": true
+    },
+    "pcm": {
+      "state": "actual_queue_audio_to_asr_samples_cpu_verified_model_session_pending",
+      "evidence": "evidence/serve-realtime-pcm-cpu-20261119/README.md",
+      "cpu_tests": 7,
+      "seconds": 0.06369850086048245,
+      "gpu_model_loads": 0,
+      "api_qualified": false,
+      "delivered": false
     }
   }
 }

@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[实时音频到ASR波形7项CPU通过](evidence/serve-realtime-pcm-cpu-20261119/README.md)：
+PCM16全65536值、两种G.711全256码独立参考、所有跨界位置、尾长/
+预算/取消与队列借用通过；0.0637秒/0GPU、host/引擎零警告，963来源/
+17负控。默认rev326保持，继续实际ASR执行及会话协议接线。
+
 [后端会话治理23项CPU通过](evidence/serve-realtime-session-cpu-20261119/README.md)：
 独立会话槽、HTTP永久升级隔离、真实socket背压/取消/关闭与每轮配额
 原语通过；25执行/0.229秒/0GPU，host与引擎零警告，961锚点/17负控。

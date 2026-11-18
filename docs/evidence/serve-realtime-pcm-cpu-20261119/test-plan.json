@@ -1,0 +1,29 @@
+{
+  "scope": "Actual committed PCM16/G.711 bytes to normalized 16k ASR input; no model or route qualification",
+  "cpu_tests": 7,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "reference": "reference.json pinned local CPython audioop oracle, development only",
+  "sources": {
+    "CMakeLists.txt": "7c92d06e05e4bd80981f7df3977adccc67a4d668e6adb3ea895191ab5bcd7a02",
+    "cmake/ChatProtocolIdentity.cmake": "7de07bad6b306454d33aa7333ac7d10ab4b23a11964bb79e2936f51b9154a650",
+    "cmake/HostTestSources.cmake": "bf529310ccdb2dff81aca5188c47c93e082978bb1b3feaa019556762da6afa97",
+    "include/q4t/server/realtime_pcm.h": "3b46f993ebe332a0afcbc446dc657ea9b5aa19631df60bf429d12f21e0dde73c",
+    "src/server/realtime_pcm.cpp": "54673dbfa6336ab153da502be8a9bf276652017f54c157bec28875bf22b17e7f",
+    "tests/server_realtime_pcm_test.cpp": "286388b4e9a09ec132e60ab4503e950ed2d40b25a9e11f342a3198278a5d7340",
+    "tests/server_realtime_pcm_g711.inc": "e36924eb5f22bcbca464a3df80a5350ed8b280ad7fbffd26df6480a552e4971c",
+    "include/q4t/server/realtime_audio_queue.h": "af1d83113fae79f49e057068f4583e10f809e90ea9e2c00b32115b02410705a9",
+    "src/server/realtime_audio_queue.cpp": "e8c55eed7dbfde11e1ca6fe11b579af838e6c5caecf587f4a804437858043a05",
+    "include/q4t/audio/stream_resample.h": "a3014b6e42e59c2ad7875b3391ea29d6e293c369b688268ac35e3d2766ac6ce5",
+    "src/audio/stream_resample.cpp": "ac901ddd21743afbcf0bb8fe3b8db678a5838be9e6d533d6fc918a33b9f380d9"
+  },
+  "acceptance": [
+    "all 65536 PCM16 values exact including odd split",
+    "all 256 mu-law and A-law codes match independent reference at both DC phases <=1e-7",
+    "every two-span split produces bit-exact samples",
+    "bad metadata/extents reject before allocation and preserve output",
+    "exact floor sample length and bounded output without padding",
+    "early/mid/late cancellation preserves caller output",
+    "real queue wrap and exact acknowledgement keep borrowed data alive"
+  ]
+}

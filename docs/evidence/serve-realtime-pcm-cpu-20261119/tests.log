@@ -1,0 +1,8 @@
+[PASS] realtime_pcm16_all_values_keep_signed_bits_across_odd_wrap
+[PASS] realtime_g711_all_codes_match_independent_decoder_unity_dc
+[PASS] realtime_pcm_every_queue_split_preserves_phase_and_complete_output
+[PASS] realtime_pcm_invalid_metadata_and_spans_leave_output_unchanged
+[PASS] realtime_pcm_sample_budget_and_short_tail_never_pad_audio
+[PASS] realtime_pcm_cancel_before_during_and_after_decode_is_transactional
+[PASS] realtime_pcm_committed_queue_wrap_retains_borrow_until_exact_ack
+7 tests, 7 passed, 0 failed, 0 skipped
