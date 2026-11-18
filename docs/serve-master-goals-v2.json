@@ -7859,7 +7859,7 @@
       }
     }
   ],
-  "next_task": "Implement TTS asset/resource lifecycle, progressive synthesis/encoding and real Speech/Chat interfaces; solve 4x tempo content and continue every remaining master task.",
+  "next_task": "Complete remaining Speech HTTP/SDK/content with retained transport evidence; then Chat audio/history, 4x content, managed recovery/release and every master task.",
   "next": "PR47 is merged into main at 0f809a0c. rev306 remains STOPPED; TTS is a work-branch candidate with numeric, utterance and compressed-content evidence, not an API delivery. Continue all remaining tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -7916,13 +7916,13 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "native_synthesis_and_complete_pcm_encoding_qualified_service_in_progress",
+    "state": "incremental_tts_and_http_implemented_cpu_passed_business_in_progress",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
-      "TTS verified assets, full unified-RAM resource admission and health/lifecycle integration",
-      "Progressive synthesis/encoding, speech API and Chat audio/history",
+      "Complete real TTS/Speech content, all formats/SDK/recovery and resource cleanup acceptance; retain NVML ENV_ABORT, not treat diagnosis as root-cause fix",
+      "Chat audio output/history and integration of the qualified progressive synthesis/encoding",
       "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
       "SDK/TLS/profiles/recovery/reversible release/main",
       "Responses/Batch/Realtime and every remaining master task"
@@ -7944,7 +7944,8 @@
       "cpu_evidence": "evidence/serve-speech-encoding-cpu-20261118/README.md",
       "real_content_cases": 8,
       "content_evidence": "evidence/serve-speech-encoding-content-20261118/README.md",
-      "progressive_encoding_pending": true
+      "progressive_encoding_pending": false,
+      "progressive_evidence": "evidence/serve-speech-codec-stream-20261118/README.md"
     },
     "tempo": {
       "state": "4x_content_unresolved",
@@ -7967,7 +7968,8 @@
       "cpu_executions": 13,
       "full_loader_cases": 1,
       "gpu_loads": 0,
-      "runtime_integrated": false
+      "runtime_integrated": true,
+      "runtime_http_qualified": false
     },
     "incremental_synthesis": {
       "state": "incremental_pcm_and_lifecycle_qualified",
@@ -7976,6 +7978,15 @@
       "cancellation_cases": 1,
       "frame_limit_cases": 1,
       "actual_http": false
+    },
+    "http": {
+      "state": "targeted_cpu_passed_remaining_real_business",
+      "cpu_unique": 24,
+      "cpu_evidence": "evidence/serve-speech-http-cpu-20261118/README.md",
+      "accepted_transport_posts": 4,
+      "content_accepted": false,
+      "environment_abort_preserved": true,
+      "default_changed": false
     }
   }
 }

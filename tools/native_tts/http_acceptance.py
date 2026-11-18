@@ -32,6 +32,7 @@ LIMITS = dict(starts=1, chats=13, controls=2000, seconds=1200,
     decode_cases=8, asr_tokens_per_case=64, artifact_mib=64,
     disk_headroom_mib=512)
 CONTINUATION_LIMITS = dict(LIMITS, chats=11)
+REMAINING_LIMITS = dict(LIMITS, chats=10)
 FORMATS = ['mp3', 'aac', 'opus', 'flac', 'wav', 'pcm', 'pcm', 'mp3']
 UTTERANCES = [0, 1, 0, 0, 0, 0, 1, 1]
 MIMES = dict(mp3='audio/mpeg', aac='audio/aac', opus='audio/ogg',
@@ -80,8 +81,10 @@ def prepare(args):
         asr=ASR/'validated-binaries/q4t_asr_replay-compute-01')
     tts_assets = WORK/'assets-1b7-01'
     reused = reuse(args.continue_from) if args.continue_from else None
+    completed = reuse_speech(args.reuse_speech) if args.reuse_speech else None
+    require(not completed or reused, 'Speech reuse requires the retained fault evidence')
     plan = dict(schema='q4t-speech-http-v1', output=str(out),
-        limits=CONTINUATION_LIMITS if reused else LIMITS,
+        limits=REMAINING_LIMITS if completed else CONTINUATION_LIMITS if reused else LIMITS,
         port=args.port, operations_port=args.port+1, model=str(model),
         model_assets=assets(model), requests=[speech(i) for i in range(8)],
         sources={name: sha(ROOT/name) for name in names},
@@ -103,6 +106,9 @@ def prepare(args):
     if reused:
         require(plan['binaries']['engine'] == reused['engine'], 'reused engine drift')
         plan['continuation'] = reused
+    if completed:
+        require(plan['binaries']['engine'] == completed['engine'], 'Speech engine drift')
+        plan['completed_speech'] = completed
     save(out/'plan.json', plan)
     print(json.dumps(dict(plan=str(out/'plan.json'), limits=plan['limits'])))
 
@@ -136,6 +142,33 @@ def reuse(path):
             if p.is_file() and 'tts-assets' not in p.relative_to(path).parts})
 
 
+def reuse_speech(path):
+    path = Path(path).resolve(strict=True)
+    require(path.is_relative_to(WORK), 'Speech evidence outside workdir')
+    plan, result = read(path/'plan.json'), read(path/'result.json')
+    require(result['status'] == 'COMPLETED_LOAD_DIAGNOSIS' and result['observer_exit'] == 0
+        and result['counts']['chats'] == 1 and result['defaults_unchanged'], 'incomplete Speech diagnosis')
+    require(read(path/'lease/exit.json')['status'] == 'COMPLETED', 'invalid Speech lease')
+    cleanup = read(path/'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and cleanup['ports_released'], 'Speech cleanup')
+    for name,h in plan['sources'].items():
+        if name != 'tools/native_tts/http_acceptance.py':
+            require(sha(ROOT/name) == h, 'Speech source drift: '+name)
+    require(read(path/'speech.request.json') == speech(0), 'Speech request drift')
+    response = read(path/'speech.http.json')
+    require(response['status'] == 200 and not response['cancelled'] and
+        response['headers']['Transfer-Encoding'] == 'chunked' and
+        response['headers']['Content-Type'] == 'audio/mpeg' and response['chunks'] > 1 and
+        response['first_seconds'] < response['seconds'] and
+        (path/'speech.wire').stat().st_size == response['bytes'] > 1024, 'Speech framing')
+    require(defaults() == plan['defaults'] and sha(plan['binaries']['engine']['path']) ==
+        plan['binaries']['engine']['sha256'], 'Speech protected identity')
+    return dict(directory=str(path), engine=plan['binaries']['engine'], case=0,
+        state='completed_transport_audio_pending_decoding_and_asr',
+        files={str(p.relative_to(path)):sha(p) for p in sorted(path.rglob('*'))
+            if p.is_file() and 'tts-assets' not in p.relative_to(path).parts})
+
+
 class Stage(lifecycle.Stage):
     def __init__(self, plan):
         require(not os.environ.get('PYTHONOPTIMIZE') and not any(
@@ -146,9 +179,12 @@ class Stage(lifecycle.Stage):
         self.model = self.model_identity = self.fault_thread = None
         self.history = {}
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
-        self.limits = CONTINUATION_LIMITS if plan.get('continuation') else LIMITS
+        self.limits = (REMAINING_LIMITS if plan.get('completed_speech') else
+                       CONTINUATION_LIMITS if plan.get('continuation') else LIMITS)
         if plan.get('continuation'):
             require(plan['continuation'] == reuse(plan['continuation']['directory']), 'reuse identity')
+        if plan.get('completed_speech'):
+            require(plan['completed_speech'] == reuse_speech(plan['completed_speech']['directory']), 'Speech reuse')
         lifecycle.verify_lease(self.lease, lifecycle.guard.common_lock())
         require(plan['limits'] == self.limits and plan['schema'] == 'q4t-speech-http-v1'
             and plan['requests'] == [speech(i) for i in range(8)], 'frozen plan drift')
@@ -320,7 +356,15 @@ class Stage(lifecycle.Stage):
         rows = []
         for index in range(8):
             label = 'case-'+str(index)
-            if index < 6:
+            if index == 0 and self.plan.get('completed_speech'):
+                source = Path(self.plan['completed_speech']['directory'])
+                raw = (source/'speech.wire').read_bytes()
+                response = read(source/'speech.http.json')
+                headers = response['headers']
+                (self.out/(label+'.wire')).write_bytes(raw)
+                save(self.out/(label+'.http.json'), dict(response, reused_from=str(source)))
+                save(self.out/(label+'.request.json'), speech(index))
+            elif index < 6:
                 status,raw = self.post(label, speech(index))
                 require(status == 200, 'Speech failed: '+label)
                 headers = read(self.out/(label+'.http.json'))['headers']
@@ -451,6 +495,7 @@ def main():
     for name in ('binary', 'decoder', 'output'): prepare_parser.add_argument('--'+name, type=Path, required=True)
     prepare_parser.add_argument('--port', type=int, default=18484)
     prepare_parser.add_argument('--continue-from', type=Path)
+    prepare_parser.add_argument('--reuse-speech', type=Path)
     sub.add_parser('run').add_argument('--plan', type=Path, required=True)
     sub.add_parser('features').add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
