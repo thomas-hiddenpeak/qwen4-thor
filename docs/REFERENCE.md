@@ -12,6 +12,18 @@ KVMem、NInfer、ActKV、Strata、Megatron Inference 的本轮源码研究与适
 > `reference/` 目录存放外部参考项目源码 (只读, 不参与构建,
 > 不修改)。本文说明每个项目取什么、怎么用。
 
+## Orator（2026-11-19用户新增，实时音频会话参考）
+
+- 仓库：[thomas-hiddenpeak/Orator](https://github.com/thomas-hiddenpeak/Orator)。
+- 本次远端固定提交：`d456d8381e76787d7907f31d8cdd8f59450fe717`，14个文件已按Git blob/SHA256核对；
+  本机已有脏工作区保持原样，未修改reference/，未构建或运行Orator。
+- 优先借鉴统一采样时钟、独立流水线、partial/final身份、按依赖顺序
+  排空和producer/observer所有权，落实到现有A10/R/N任务。
+- 已确认缓存上限/SSD spill仍是声明、排空存在无截止等待，不能把
+  这些部分当成已完备保护。自有WebSocket协议也不能替代OpenAI合同。
+- AGPL-3.0-or-later；本次仅研究设计，不移植代码或加入运行时依赖。
+  具体源码结论与实施映射见[参考记录](evidence/serve-orator-reference-20261119/README.md)。
+
 ## 目录约定
 
 ```

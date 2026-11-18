@@ -8685,6 +8685,15 @@
           "original_ryan_failure_retained": true
         }
       }
+    },
+    "orator_reference": {
+      "state": "READ_ONLY_SOURCE_REVIEW_MAPPED_TO_EXISTING_A10_R_N",
+      "commit": "d456d8381e76787d7907f31d8cdd8f59450fe717",
+      "evidence": "evidence/serve-orator-reference-20261119/README.md",
+      "runtime_dependency": false,
+      "code_copied": false,
+      "local_worktree_untouched": true,
+      "priority": "continue frozen Voice SDK/TLS, profiles and recovery first; apply clock/state/backpressure/drain findings to existing realtime tasks"
     }
   }
 }

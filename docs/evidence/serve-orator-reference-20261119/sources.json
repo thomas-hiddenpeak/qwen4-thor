@@ -1,0 +1,114 @@
+{
+  "source": {
+    "repository": "https://github.com/thomas-hiddenpeak/Orator",
+    "commit": "d456d8381e76787d7907f31d8cdd8f59450fe717",
+    "tree_url": "https://api.github.com/repos/thomas-hiddenpeak/Orator/git/trees/d456d8381e76787d7907f31d8cdd8f59450fe717?recursive=1",
+    "tree_sha256": "4a0ac5d82f4a2b5d9dbc7f3f46055eb90c951e8d9101c2f2d9399ed32d3865e1",
+    "local_worktree": "/home/rm01/Orator",
+    "local_head": "6aed0da7e5c1a0370b46cd6e4bbabf4fd45e0d23",
+    "local_dirty_preserved": true
+  },
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1246,
+      "sha256": "bffd3017cf66bf4030ca5b8d65976e10d86f75cef1fd92ae55fb1c46a59825bc",
+      "git_blob": "eb9d210dbfd78fcffea613312c75769c8953a6fd",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "bytes": 17378,
+      "sha256": "416b3e8901428abf324f1d1f5869709c29e58b3de9f10acb72c320195236efed",
+      "git_blob": "fa756d9652cb5f41d460af88a5bf9c0509e5fbea",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/README.md"
+    },
+    {
+      "path": "include/core/time_base.h",
+      "bytes": 3647,
+      "sha256": "6b0a20a25e55de65dbfc460366b8de5070023d5ccc2a1e4541db38392dd66890",
+      "git_blob": "aac3ef989c0fee0971647f96d0d885b9d1ea5a62",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/include/core/time_base.h"
+    },
+    {
+      "path": "include/pipeline/comprehensive_timeline.h",
+      "bytes": 9342,
+      "sha256": "2cc611256c748b71912631539beb1543d3de8606e19bb5872a52b2dc1579eaea",
+      "git_blob": "12bfc3f5ea55c84c30c2ca4bea5a1e25a0c491ac",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/include/pipeline/comprehensive_timeline.h"
+    },
+    {
+      "path": "src/pipeline/comprehensive_timeline.cc",
+      "bytes": 18666,
+      "sha256": "af7e9a1afebe4fd13d39a62da7c6e9c3b21b5d212bec7094ed527676ff9a163e",
+      "git_blob": "c4993fd783eac3470372ddad64b57ab5edfd426a",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/pipeline/comprehensive_timeline.cc"
+    },
+    {
+      "path": "include/pipeline/pipeline_audio_cache.h",
+      "bytes": 5067,
+      "sha256": "b1d2a675126573c187d6f2f17b91afc9d275772ffa4111e0fb0875249bc1dc92",
+      "git_blob": "4119e11d344d1c65fc4af262359b12a1e6649123",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/include/pipeline/pipeline_audio_cache.h"
+    },
+    {
+      "path": "src/pipeline/pipeline_audio_cache.cc",
+      "bytes": 2151,
+      "sha256": "71ce057229c3809db9be9b420ea8668f5aa7773c525727050c6b3004bd72aab3",
+      "git_blob": "3c7a69fa5717776f22b3d8187632f04e4ed60a2f",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/pipeline/pipeline_audio_cache.cc"
+    },
+    {
+      "path": "include/pipeline/asr_worker.h",
+      "bytes": 4406,
+      "sha256": "33ba03df2bad8f034a7f8fe40892bf56871b3408c247ae13e80a6e25d8ab2f65",
+      "git_blob": "5d5f87b8c78339a7fa76ead1cb92a101a5160543",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/include/pipeline/asr_worker.h"
+    },
+    {
+      "path": "src/pipeline/asr_worker.cc",
+      "bytes": 16228,
+      "sha256": "25d3a346cf8eed7130ad625b743f7f8453fcf79ff9ae8dce31f7b0afc95d9c2c",
+      "git_blob": "6192ba048547aac1dccaf3da66f0e593d1f84a5f",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/pipeline/asr_worker.cc"
+    },
+    {
+      "path": "src/pipeline/auditory_stream.cc",
+      "bytes": 42320,
+      "sha256": "84369e13c8ad1a503fb3fd52210b735e054f2911705494f670d1e61a1d499838",
+      "git_blob": "5b549b3caa380a19c589895d4e8baaf26a43c027",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/pipeline/auditory_stream.cc"
+    },
+    {
+      "path": "src/net/auditory_ws_handler.cc",
+      "bytes": 12920,
+      "sha256": "f12287035652aeb3ae926ebed49934d49a5e3b9a869d127c62b04a4ee891fbe9",
+      "git_blob": "60592fb437a22d5e2b4555bb7d9d64c5845bf35e",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/net/auditory_ws_handler.cc"
+    },
+    {
+      "path": "src/protocol/session_store.cc",
+      "bytes": 6043,
+      "sha256": "236f71f49e4971b1280d94bba3b1818e9703f86bac5dbc332682ad357ffd0906",
+      "git_blob": "d58231403532dd10e8e75c9073b99690bdc34d85",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/src/protocol/session_store.cc"
+    },
+    {
+      "path": "include/pipeline/worker_common.h",
+      "bytes": 511,
+      "sha256": "414fb0ca74b413442d1f2d3d84cf337831a63f1c0df3b25020af94afa5524ee4",
+      "git_blob": "aca3e135b29b5a7313b7aaee533dd085bd3c7d41",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/include/pipeline/worker_common.h"
+    },
+    {
+      "path": "specs/PROJECT_STATE.md",
+      "bytes": 153220,
+      "sha256": "5a3579c4eea0bd8c82a2193ded936fb5978afb9f0be977431e6494188e876dff",
+      "git_blob": "78c93908331ebf3e219bf4116dcb107698edd6b5",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Orator/d456d8381e76787d7907f31d8cdd8f59450fe717/specs/PROJECT_STATE.md"
+    }
+  ],
+  "read_only": true,
+  "not_built": true,
+  "no_gpu": true
+}

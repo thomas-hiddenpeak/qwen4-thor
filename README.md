@@ -987,6 +987,11 @@ Responses/Batch/Realtime组合继续按
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整
 长稳交接仍属于Q03待完成项，长稳实跑由用户执行。
 
+实时语音会话设计已纳入[Orator参考记录](docs/evidence/serve-orator-reference-20261119/README.md)，
+固定来源为[Orator d456d838](https://github.com/thomas-hiddenpeak/Orator/tree/d456d8381e76787d7907f31d8cdd8f59450fe717)
+（AGPL-3.0-or-later）。当前仅研究时间轴、流水线及终态设计，未移植其
+源码，也不构成发行或运行依赖。
+
 ## 许可证
 
 MIT (项目代码)。模型权重遵循其发布方条款。
