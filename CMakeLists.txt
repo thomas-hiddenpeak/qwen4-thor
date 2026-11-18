@@ -177,6 +177,7 @@ add_library(q4t_model STATIC
   src/audio/vad.cpp
   src/audio/vad_chunks.cpp
   src/audio/asr_config.cpp
+  src/audio/tts_config.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
@@ -1055,6 +1056,7 @@ if(Q4T_BUILD_TESTS)
   include(cmake/NativeVadTests.cmake)
   include(cmake/NativeSpeakerTests.cmake)
   include(cmake/NativeSeparatorTests.cmake)
+  include(cmake/NativeTtsTests.cmake)
   add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/aligner_config_test.cpp tests/aligner_asset_test.cpp
     src/audio/asr_config.cpp src/audio/aligner_config.cpp src/io/json.cpp)

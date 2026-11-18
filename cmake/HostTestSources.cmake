@@ -4,6 +4,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp

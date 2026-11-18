@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[原生语音输出与历史实施](SERVE_NATIVE_TTS_2026-11-18.md)：固定TTS模型/codec、实际合成及标准接口持续推进。
+
 [Chat音频输入与执行计划](SERVE_CHAT_AUDIO_2026-11-18.md)：复用原生ASR，协议/计费/状态与真实业务持续接线。
 
 [原生音频后端与标准接口实施](SERVE_NATIVE_AUDIO_2026-11-17.md)；ASR资产、配置、tokenizer和实际计算分组推进，A10继续。

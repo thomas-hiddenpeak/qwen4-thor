@@ -1,0 +1,46 @@
+{
+  "limits": {
+    "cpu_tests": 8,
+    "seconds": 180,
+    "gpu": 0,
+    "http": 0
+  },
+  "source": {
+    "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
+    "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
+    "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+    "tests/fixtures/tts/README.md": "b27c190c6680ef29964ab6080d9944fe7562a7b969d05cbe33e693e16d6b78ca",
+    "tests/fixtures/tts/codec-config.json": "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167",
+    "tests/fixtures/tts/codec-header.json": "2ba4e8dcbacb8aca087f1f8cfd8b7a2ab144d32486e635afaf2b3f6918b8cb65",
+    "tests/fixtures/tts/config-06b.json": "81aca2b6fac304944d8acf345272d8a9a727d5fc2e2e66b222ab4729340c7455",
+    "tests/fixtures/tts/config-17b.json": "17a07f527a1c25ea30b4e023a184482a23d3e279d697b1dc81b1bde498d29cf9",
+    "tests/fixtures/tts/generation.json": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa",
+    "tests/fixtures/tts/sources.json": "0ea9c5e38a0ce2d224b05e9f3fffd2b8c9d99a3c56da86696e71acb593625e67",
+    "tests/fixtures/tts/talker-06b-header.json": "b125649e98d52f4ac605666a212eee68c6f4f5faf9b9a5e7b930565b578f96a1",
+    "tests/fixtures/tts/talker-17b-header.json": "0e3594fc3c6c3fa05e2175fc7063bedbf9f55be7e9771f11e4770228cf9b2c26",
+    "tests/test_main.cpp": "2eac015238a2f3382c8e6f0217ebcf71ff52fec2a56d7db3ee06e2950eccacc8",
+    "tests/tts_config_test.cpp": "a61bdba482b090e00c4a6c1474e5dde4aa0e3486ae7268c92785076438cd9d69"
+  },
+  "build": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Iinclude",
+    "tests/test_main.cpp",
+    "tests/tts_config_test.cpp",
+    "src/audio/tts_config.cpp",
+    "src/io/json.cpp",
+    "-o",
+    ".q4t-work/serve-native-tts-20261118/metadata-cpu-01/q4t_tts_contract_tests"
+  ],
+  "test": [
+    ".q4t-work/serve-native-tts-20261118/metadata-cpu-01/q4t_tts_contract_tests",
+    "--required-list",
+    ".q4t-work/serve-native-tts-20261118/metadata-cpu-01/required.txt"
+  ],
+  "full_checkpoint_verification": false
+}

@@ -78,7 +78,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat frozen-reference audio/modalities and actual backend execution",
+        "Chat audio output/modalities and its actual backend execution; native speech input is already delivered in rev306",
         "Remaining default/null, nested message and response projection parity"
       ],
       "chat_style_parity_20261116": {
@@ -276,6 +276,29 @@
         "actual_requests": 5,
         "source_coordinate_composition_review_pending": false,
         "source_coordinate_composition_cpu_only": true
+      },
+      "native_tts_20261118": {
+        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
       }
     },
     {
@@ -361,6 +384,29 @@
         "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
         "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
         "pull_request": 36
+      },
+      "native_tts_20261118": {
+        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
       }
     },
     {
@@ -2226,7 +2272,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement Chat audio input using the existing native ASR backend; preserve unresolved four-second overlap recognition quality and pending managed qualification. Continue speech output/Realtime and all master tasks.",
+      "next": "Implement native instruction-capable TTS, then speech/Chat output and audio history/Realtime. Preserve unresolved overlap recognition quality and every remaining master task.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -4034,6 +4080,29 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "native_tts_20261118": {
+        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
       }
     },
     {
@@ -5174,6 +5243,29 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "native_tts_20261118": {
+        "state": "metadata_cpu_accepted_actual_synthesis_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md"
       }
     },
     {
@@ -6789,7 +6881,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_delivered_main_checks_pending_remaining_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -7714,8 +7806,8 @@
       }
     }
   ],
-  "next_task": "Chat audio main integration and remaining A10 audio capabilities plus all master tasks",
-  "next": "Complete Chat audio main integration, original overlap quality, audio output/history/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "Finish PR47 exact final-head checks/main merge; implement native TTS and all master tasks",
+  "next": "Continue native speech generation/output/history and Realtime while preserving overlap quality, R07 maintenance dependencies, and every remaining task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

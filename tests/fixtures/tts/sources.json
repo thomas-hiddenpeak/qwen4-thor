@@ -1,0 +1,51 @@
+{
+  "upstream_source": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+  "checkpoint_06b": "85e237c12c027371202489a0ec509ded67b5e4b5",
+  "checkpoint_17b": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+  "metadata_only": true,
+  "full_weight_hash_verified": false,
+  "files": [
+    {
+      "fixture": "config-06b.json",
+      "source": "config.json",
+      "bytes": 4908,
+      "sha256": "81aca2b6fac304944d8acf345272d8a9a727d5fc2e2e66b222ab4729340c7455"
+    },
+    {
+      "fixture": "config-17b.json",
+      "source": "model-1b7/config.json",
+      "bytes": 4908,
+      "sha256": "17a07f527a1c25ea30b4e023a184482a23d3e279d697b1dc81b1bde498d29cf9"
+    },
+    {
+      "fixture": "generation.json",
+      "source": "generation_config.json",
+      "bytes": 245,
+      "sha256": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa"
+    },
+    {
+      "fixture": "codec-config.json",
+      "source": "speech_tokenizer/config.json",
+      "bytes": 2336,
+      "sha256": "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167"
+    },
+    {
+      "fixture": "talker-06b-header.json",
+      "source": "model.safetensors.header.json",
+      "bytes": 49224,
+      "sha256": "b125649e98d52f4ac605666a212eee68c6f4f5faf9b9a5e7b930565b578f96a1"
+    },
+    {
+      "fixture": "talker-17b-header.json",
+      "source": "model-1b7/model.safetensors.header.json",
+      "bytes": 49840,
+      "sha256": "0e3594fc3c6c3fa05e2175fc7063bedbf9f55be7e9771f11e4770228cf9b2c26"
+    },
+    {
+      "fixture": "codec-header.json",
+      "source": "speech_tokenizer/model.safetensors.header.json",
+      "bytes": 63320,
+      "sha256": "2ba4e8dcbacb8aca087f1f8cfd8b7a2ab144d32486e635afaf2b3f6918b8cb65"
+    }
+  ]
+}

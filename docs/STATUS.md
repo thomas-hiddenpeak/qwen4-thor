@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生TTS元数据8CPU通过](evidence/serve-tts-metadata-cpu-20261118/README.md)，
+0.032秒、构建零警告，863来源锚点/10负控通过；[后续计划](SERVE_NATIVE_TTS_2026-11-18.md)
+保留真实合成、speech/Chat输出与历史、Realtime及恢复交付。1.7B
+[完整资产已核验](evidence/serve-tts-assets-20261118/README.md)，0GPU；旧可重建对象缓存释放2.64GB，
+现有程序/模型/证据保持。PR47检查独立推进，默认rev306不变。
+
 PR47当前提交的编译及公共host合同已过，来源门发现验收观察hook
 摘要未更新。独立HEAD快照重现后，仅补已审来源摘要，858锚点/
 7负控通过；[原失败与修复](evidence/serve-chat-audio-source-gate-20261118/README.md)。

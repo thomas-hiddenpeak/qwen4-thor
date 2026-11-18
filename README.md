@@ -945,6 +945,10 @@ Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运
 （Meta，MIT），采用独立实现；本次候选未改善信号，不进入生产，
 不引入Demucs或其Python运行依赖。
 
+原生语音合成按[实施计划](docs/SERVE_NATIVE_TTS_2026-11-18.md)推进；
+固定Qwen3-TTS配置与权重头的Apache-2.0来源见[声明](third_party/licenses/qwen3-tts/README.md)。
+当前仅元数据检查通过，真实合成与标准输出接口仍在实现。
+
 重叠语音的质量修复、非语言声学信息、语音输出/历史和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整

@@ -2176,7 +2176,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6f4e710650093f91f95c386b7b02a3c08356892b8f30a487194db56ac1c0c0ee",
+    "CMakeLists.txt": "e3748ac0e38ecd6ec41e6b83ba1a2eb2fd40e8494979bbc475f86773978a7137",
     "cmake/ChatProtocolIdentity.cmake": "8ece952795ce3c9c9342d1ee498f7eb170260b0db15d5a54bea49a5ca688d450",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
@@ -2206,6 +2206,7 @@
     "include/q4t/audio/speaker_features.h": "6bac2671feefbabf6df9eb9ca7027135e466a8e6748f02a6ecdf6cec2303f3a7",
     "include/q4t/audio/speaker_layout.h": "49d49b3a0801b9546d35f0ece59b57096c4822c22a939839e3fcfa09c2df7b3e",
     "include/q4t/audio/speaker_model.h": "e8ac39843a88aa7b502805a1dc49c26aa9d26bd3c69b082771f01467deb2745f",
+    "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
     "include/q4t/audio/vad.h": "9a2497746a72df6807d9d87ce4e1d30cfe05365b8252ad468cdde25776f167c5",
     "include/q4t/audio/vad_chunks.h": "5d65729daea3566de2582326c9a3ec2aa453f0c26dbd4f89f5cfa69d4095902c",
     "include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
@@ -2458,7 +2459,9 @@
     "src/audio/aligner_layout.cpp": "949ce1e70d0fc9ebbbce53cefb842fc003b6c0c123ba98f8ca42d02e4f31b95a",
     "src/audio/aligner_postprocess.cpp": "ce68912efd3923776407a6b2d9df2c6720a42dd06d16b06dbd74732e7d972463",
     "src/audio/asr_config.cpp": "0d8e1af2cc9b6b2b55733783c0d8c129cb11633ad0b3703e31155987ecc24039",
+    "src/audio/asr_config_internal.h": "459baf2242b603e672b6518857797bfe7885c6b8687908ee77a9fa93ff5ab886",
     "src/audio/asr_layout.cpp": "bd477f21e3a1203e70106a43ea22ec6eb9f960c66b381b0e252f1145080fe9ff",
+    "src/audio/asr_layout_internal.h": "eec8527f45cc183761dfe9172155b1ec1d2b790c9512a5457868a7492a907e2d",
     "src/audio/asr_model.cu": "46a318e0194f44f2775e8a514eff33b174c99d894977b573d0f6faf44ea24a18",
     "src/audio/diarization.cpp": "3cb74aafaa25f51ca617bddcaf9a087271a9f34c1ad47f7b13f1ff6b47e669d4",
     "src/audio/features.cpp": "a498a97c6445f4562372f3260a1a856bfb915469424c3e7bb15613ed579b99fc",
@@ -2471,6 +2474,8 @@
     "src/audio/speaker_features.cpp": "ab4e89d843818ef92cd2690e3c86d58802325d15d087b2962cdc42c9483e4874",
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
+    "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
+    "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
@@ -7296,6 +7301,38 @@
     "evidence": [
       "docs/evidence/serve-chat-audio-recovery-profile-20261118/README.md",
       "docs/evidence/serve-chat-audio-service-20261118/README.md"
+    ]
+  },
+  "tts_metadata_review_20261118": {
+    "changes": {
+      "CMakeLists.txt": {
+        "before": "6f4e710650093f91f95c386b7b02a3c08356892b8f30a487194db56ac1c0c0ee",
+        "after": "e3748ac0e38ecd6ec41e6b83ba1a2eb2fd40e8494979bbc475f86773978a7137"
+      },
+      "include/q4t/audio/tts_config.h": {
+        "before": null,
+        "after": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602"
+      },
+      "src/audio/asr_config_internal.h": {
+        "before": null,
+        "after": "459baf2242b603e672b6518857797bfe7885c6b8687908ee77a9fa93ff5ab886"
+      },
+      "src/audio/asr_layout_internal.h": {
+        "before": null,
+        "after": "eec8527f45cc183761dfe9172155b1ec1d2b790c9512a5457868a7492a907e2d"
+      },
+      "src/audio/tts_config.cpp": {
+        "before": null,
+        "after": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1"
+      },
+      "src/audio/tts_config_data.h": {
+        "before": null,
+        "after": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb"
+      }
+    },
+    "scope": "Fixed 0.6B/1.7B TTS and decoder metadata contracts, not speech execution. Bind private audio headers (including existing ASR helpers) so mathematical/config constants cannot drift outside the source gate. Existing ASR code unchanged. Eight targeted metadata CPU checks passed; full weight identity and synthesis remain required.",
+    "evidence": [
+      "docs/evidence/serve-tts-metadata-cpu-20261118/README.md"
     ]
   }
 }
