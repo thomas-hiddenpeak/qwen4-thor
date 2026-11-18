@@ -1,0 +1,115 @@
+{
+  "format": "q4t-fixed-tts-witness-v2",
+  "sampling_profile": "qwen3-tts-checkpoint-seed0-v1",
+  "engine": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-service-candidate-05/q4t",
+    "sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9"
+  },
+  "requests": {
+    "speech": {
+      "model": "qwen3-tts-12hz-1.7b-customvoice",
+      "input": "Hello, this is a native speech test.",
+      "voice": "ryan",
+      "instructions": "Speak calmly.",
+      "response_format": "mp3",
+      "stream_format": "audio",
+      "speed": 1
+    },
+    "chat": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Repeat exactly this sentence without adding words: Hello, this is a native speech test."
+        }
+      ],
+      "modalities": [
+        "audio"
+      ],
+      "audio": {
+        "voice": "ryan",
+        "format": "wav"
+      },
+      "stream": false,
+      "store": true
+    }
+  },
+  "whole_audio": {
+    "speech": {
+      "bytes": 58368,
+      "sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4"
+    },
+    "chat": {
+      "bytes": 111404,
+      "sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9"
+    }
+  },
+  "speech_quality": {
+    "expected": "Hello, this is a native speech test.",
+    "response": {
+      "text": "Hello. This is a native speech test.",
+      "languages": [
+        {
+          "code": "en"
+        }
+      ],
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 62,
+        "output_tokens": 13,
+        "total_tokens": 75,
+        "input_token_details": {
+          "audio_tokens": 47,
+          "text_tokens": 15
+        }
+      }
+    }
+  },
+  "chat_quality": {
+    "expected": "Hello, this is a native speech test.",
+    "text": "Hello. This is a native speech test.",
+    "response": {
+      "frames": 232,
+      "audio_tokens": 30,
+      "generated_tokens": 13,
+      "eos": true,
+      "encoder_workspace_bytes": 51444992,
+      "decoder_workspace_bytes": 38430976
+    }
+  },
+  "chat_finish": "stop",
+  "chat_usage": {
+    "prompt_tokens": 180,
+    "completion_tokens": 475,
+    "total_tokens": 655,
+    "completion_tokens_details": {
+      "audio_tokens": 464
+    },
+    "q4t_audio_synthesis": {
+      "input_tokens": 15,
+      "output_tokens": 465
+    }
+  },
+  "health": {
+    "state": "ready",
+    "reason": "none",
+    "core_readiness_dependency": false,
+    "model": "qwen3-tts-12hz-1.7b-customvoice",
+    "device_bytes": 8123997956,
+    "load_attempts": 3,
+    "load_failures": 0,
+    "compute_failures": 0,
+    "recovery": "request_driven",
+    "retry_delay_ms": 5000,
+    "asset_cleanup_pending": false
+  },
+  "limits": {
+    "max_text_tokens": 512,
+    "max_prefill_tokens": 512,
+    "max_frames": 200,
+    "workspace_mib": 2048,
+    "max_output_mib": 16
+  }
+}

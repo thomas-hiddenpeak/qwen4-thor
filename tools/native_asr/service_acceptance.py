@@ -116,6 +116,11 @@ def prepare(args):
     if chat_audio: plan['chat_audio'] = True
     if native_tts is not None:
         plan['native_tts'] = native_tts
+        sampling = profile_evidence.tts_sampling(qualified['business']['tts'])
+        other = engine.read(pack/'profile-light.json')
+        require(profile_evidence.tts_sampling(other['business']['tts']) == sampling,
+                'managed primary/light sampling witnesses differ')
+        if sampling is not None: plan['tts_sampling_profile'] = sampling
         backend = engine.read(pack/'engine/client-policy.json')
         alpha = next(c for c in backend['clients'] if c['id'] == 'alpha')
         maximum = native_tts['limits']['max_frames']*16+1 + \

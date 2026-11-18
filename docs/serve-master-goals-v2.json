@@ -8691,6 +8691,14 @@
           "entry_restart": true,
           "guardian_recovery": false,
           "original_failure_preserved": true
+        },
+        "builtin_sampling_profile": {
+          "profile": "qwen3-tts-checkpoint-seed0-v1",
+          "witness": "evidence/serve-tts-checkpoint-witness-20261119/README.md",
+          "validator": "evidence/serve-tts-checkpoint-profile-cpu-20261119/README.md",
+          "cpu_cases": 22,
+          "legacy_preserved": true,
+          "actual_profiles_pending": true
         }
       }
     },

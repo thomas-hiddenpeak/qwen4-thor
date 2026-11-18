@@ -1,0 +1,53 @@
+{
+  "archive_sha256": "47fa6aa61c7861914f259ecebc40cebcca1cfc22ed2e6e6ac6d6b13d7e502011",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/version_tts_witness_01.py": {
+      "bytes": 7299,
+      "sha256": "b41d419312557a0223e9efb4e799733e40ed1f28904ea989e80850b183cb6ac2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-validator-plan-01.json": {
+      "bytes": 3084,
+      "sha256": "d21b227c4c094e59282151db78dc21103ca44643e18c11b8ed4d64dc3f4aa21f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_tts_checkpoint_cpu_01.py": {
+      "bytes": 1305,
+      "sha256": "380c56a774f9e52ee3b0642eac027400d16276446a30c5c5434bc8856ea13753"
+    },
+    ".q4t-work/serve-custom-voices-20261118/archive_tts_checkpoint_cpu_01.py": {
+      "bytes": 4574,
+      "sha256": "c44a85863b926bec85904ab5b899d155bddb1418b68a05c938fe32f4c17e286b"
+    },
+    "tools/serve_recovery/profile_evidence.py": {
+      "bytes": 51947,
+      "sha256": "ed1c87ca95f86a1cd788196ea9253b8d3904dcffd93fbcc83758c0a388f7578f"
+    },
+    "tools/serve_recovery/profile_acceptance.py": {
+      "bytes": 43667,
+      "sha256": "d6890a46e7db7a600847201e20a89901aba719f801d91c59d6f6aa5e5ae9e9a7"
+    },
+    "tools/native_tts/managed_service.py": {
+      "bytes": 6080,
+      "sha256": "a44db729c0c06b97decf94ef382633857a73f45ec5ed517f3e31bf5fb09340fd"
+    },
+    "tools/native_asr/service_acceptance.py": {
+      "bytes": 49814,
+      "sha256": "c61f2fc03cbd3aea99121bd0c7eb1eb698ac558dced2974e489a3cfa6033d933"
+    },
+    "tools/serve_recovery/test_tts_checkpoint_profiles.py": {
+      "bytes": 8756,
+      "sha256": "e5dba281fb88696e61f046c4683a05431d8c1b30e5a44fcb6facf19b47e5cbf4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-cpu-01/sources.json": {
+      "bytes": 580,
+      "sha256": "308c981eb2eb090a4d3bb231ae1f795d82e5fc90b10ab09e54390c5d318b55d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-cpu-01/result.json": {
+      "bytes": 3026,
+      "sha256": "744e2802db6435212957e73145b2cc4344fa705dceeca314d332ad7237e047e2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/tts-checkpoint-cpu-01/tests.log": {
+      "bytes": 4418,
+      "sha256": "67fa47f253702f48beb330d8bf3f5184eea99b84d90d7304ee53aca56bf53659"
+    }
+  }
+}

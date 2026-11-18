@@ -63,9 +63,10 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
 
 
 
-def check_tts_family_reload(before, after, previous, encoded, identity):
+def check_tts_family_reload(before, after, previous, encoded, identity,
+                            *, sampling_profile=None):
     """Require actual eviction, full byte-identical reload, and retained metadata."""
-    profile_evidence.tts_audio(encoded, 'speech')
+    profile_evidence.tts_audio(encoded, 'speech', sampling_profile=sampling_profile)
     old = before['native_tts_health']; new = after['native_tts_health']
     require(old.get('state') == 'metadata_ready' and old.get('device_bytes') == 0 and
         old.get('reason') == 'none' and new.get('state') == 'ready' and
@@ -194,6 +195,9 @@ def prepare(args):
     tts = package.tts_settings(read(tts_path)) if tts_path else base['settings'].get('native_tts')
     if tts is not None:
         base['settings']['native_tts'] = tts
+    checkpoint = getattr(args, 'tts_checkpoint_sampling', False)
+    require(type(checkpoint) is bool and (not checkpoint or tts is not None),
+            'checkpoint witness requires configured builtin TTS')
     selected_path = getattr(args, 'capacity_config', None)
     selected = capacity.normalize(read(selected_path)) if selected_path else \
         capacity.validate(base['settings']['profile'])
@@ -212,6 +216,7 @@ def prepare(args):
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     if chat_audio: plan['chat_audio'] = True
+    if checkpoint: plan['tts_sampling_profile'] = profile_evidence.TTS_CHECKPOINT_SAMPLING
     if voice is not None:
         plan['voice_clips'] = clips
         for p in (voice_path, fixture_path):
@@ -384,6 +389,10 @@ class Stage(encrypted.Stage):
     requests_per_minute = 16
 
     def __init__(self, plan):
+        if 'tts_sampling_profile' in plan:
+            profile_evidence.tts_sampling(dict(sampling_profile=plan['tts_sampling_profile']))
+            require(plan['base']['settings'].get('native_tts') is not None,
+                    'sampling witness without builtin TTS')
         selected = plan['profiles']['primary']
         self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'),
                                  plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'),
@@ -474,9 +483,12 @@ class Stage(encrypted.Stage):
         status, config = self.http('/v1/config', label=self.profile_name+'-tts-config')
         require(status == 200, 'qualified TTS configuration unavailable')
         config = json.loads(config)
-        return dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
+        result = dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
             chat_response=chat, health=config['native_tts_health'],
             limits=config['native_tts_limits'])
+        if 'tts_sampling_profile' in self.plan:
+            result['sampling_profile'] = self.plan['tts_sampling_profile']
+        return result
 
     def tts_family_reload(self, previous):
         label = self.profile_name+'-speech-reload'
@@ -494,7 +506,8 @@ class Stage(encrypted.Stage):
         require(status == 200, 'post-reload health unavailable')
         after = json.loads(raw)
         check_tts_family_reload(before, after, previous['health'], encoded,
-                               self.plan['identity'])
+                               self.plan['identity'],
+                               sampling_profile=profile_evidence.tts_sampling(previous))
         save(self.out/(label+'.result.json'), dict(status='PASS',
             speech_sha256=hashlib.sha256(base64.b64decode(encoded)).hexdigest(),
             before=before, after=after, same_model=True))
@@ -684,13 +697,14 @@ def finalize(out):
     for name in profile_contract.NAMES:
         config = read(out/(name+'-config.json'))
         capability = read(out/(name+'-capabilities.json'))
+        business_value = read(out/(name+'-business.json'))
         value = dict(format=profile_evidence.format_for(plan['profiles'][name],
-            plan['identity'], capability), profile=name,
+            plan['identity'], capability, business_value), profile=name,
             identity=plan['identity'], capacity=plan['profiles'][name],
             capabilities=capability,
             configuration=contracts.configuration(config, version=5),
             startup_memory=config['startup_memory']['checks']['before_allocations'],
-            business=read(out/(name+'-business.json')), environment=env)
+            business=business_value, environment=env)
         path = qualified/(name+'.json')
         save(path, value)
         registry['qualifications'][name] = profile_contract.qualification(name,
@@ -720,6 +734,8 @@ def main():
                    help='unsealed compiled build to qualify before release packaging')
     p.add_argument('--capacity-config', type=Path,
                    help='explicit versioned candidate capacity; retained package stays unchanged')
+    p.add_argument('--tts-checkpoint-sampling', action='store_true',
+                   help='use versioned complete checkpoint-sampling audio witnesses')
     p.add_argument('--tts-config', type=Path,
                    help='explicit paired TTS identity, asset directory and all budgets')
     p.add_argument('--tts-base-config', type=Path,

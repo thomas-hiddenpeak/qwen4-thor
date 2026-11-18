@@ -12,6 +12,9 @@ from tools.serve_recovery import ledger, profile_contract
 
 TTS_FORMAT = 'q4t-profile-business-v8'
 VOICE_FORMAT = 'q4t-profile-business-v9'
+TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
+VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
+TTS_CHECKPOINT_SAMPLING = 'qwen3-tts-checkpoint-seed0-v1'
 VOICE_TARGETS = ('The blue train arrives at noon.', 'Please close the window.')
 TTS_TEXT = 'Hello, this is a native speech test.'
 # Whole byte identities from the accepted native full-text synthesis + no-hint
@@ -19,6 +22,23 @@ TTS_TEXT = 'Hello, this is a native speech test.'
 TTS_AUDIO = dict(
     speech=(40704, '5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323'),
     chat=(115244, '4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126'))
+
+# Independently recognized whole HTTP audio, fixed requests/seed; the original
+# greedy v8/v9 witnesses above are immutable. See the 2026-11-19 checkpoint
+# witness evidence, including its preserved driver failure and content-only run.
+TTS_CHECKPOINT_AUDIO = dict(
+    speech=(58368, 'ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4'),
+    chat=(111404, '2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9'))
+
+
+def tts_sampling(value):
+    """Missing marks historical greedy evidence; explicit unknowns fail closed."""
+    ledger.require(type(value) is dict, 'invalid TTS sampling witness')
+    if 'sampling_profile' not in value:
+        return None
+    ledger.require(value['sampling_profile'] == TTS_CHECKPOINT_SAMPLING,
+                   'unknown TTS sampling witness')
+    return value['sampling_profile']
 
 
 def tts_requests():
@@ -32,21 +52,26 @@ def tts_requests():
             stream=False, store=True))
 
 
-def tts_audio(value, kind):
+def tts_audio(value, kind, *, sampling_profile=None):
     ledger.require(type(value) is str and 0 < len(value) <= 1024*1024,
                    'invalid qualified TTS audio encoding')
     try:
         raw = base64.b64decode(value, validate=True)
     except ValueError as error:
         raise ValueError('invalid qualified TTS base64') from error
-    size, digest = TTS_AUDIO[kind]
+    ledger.require(sampling_profile in (None, TTS_CHECKPOINT_SAMPLING),
+                   'unknown TTS audio sampling witness')
+    accepted = TTS_AUDIO if sampling_profile is None else TTS_CHECKPOINT_AUDIO
+    size, digest = accepted[kind]
     ledger.require(base64.b64encode(raw).decode() == value and len(raw) == size and
         hashlib.sha256(raw).hexdigest() == digest,
         'qualified TTS whole audio differs from accepted content')
 
 
 def tts_business(value, identity):
-    ledger.keys(value, ('requests', 'speech_base64', 'chat_response', 'health', 'limits'))
+    sampling = tts_sampling(value)
+    ledger.keys(value, ('requests', 'speech_base64', 'chat_response', 'health', 'limits') +
+                (('sampling_profile',) if sampling is not None else ()))
     fixed = identity['native_tts']
     profile_contract.tts_configuration(fixed)
     ledger.require(ledger.canonical(value['requests']) == ledger.canonical(tts_requests()) and
@@ -60,7 +85,7 @@ def tts_business(value, identity):
         type(health.get('compute_failures')) is int and health['compute_failures'] == 0 and
         ledger.integer(health.get('device_bytes'), minimum=1),
         'qualified TTS backend is not healthy/isolated')
-    tts_audio(value['speech_base64'], 'speech')
+    tts_audio(value['speech_base64'], 'speech', sampling_profile=sampling)
     response = value['chat_response']
     msg = message(response, 'stop')
     ledger.require(msg.get('content') is None and type(msg.get('audio')) is dict,
@@ -69,7 +94,7 @@ def tts_business(value, identity):
     ledger.require(type(audio.get('id')) is str and audio['id'].startswith('audio_') and
         ledger.integer(audio.get('expires_at'), minimum=1) and
         audio.get('transcript') == TTS_TEXT, 'qualified Chat audio history differs')
-    tts_audio(audio.get('data'), 'chat')
+    tts_audio(audio.get('data'), 'chat', sampling_profile=sampling)
     usage = response.get('usage', {})
     ledger.require(type(usage) is dict, 'invalid qualified TTS usage')
     parts = usage.get('completion_tokens_details', {})
@@ -349,11 +374,13 @@ MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
-def format_for(profile, identity=None, capabilities=None):
+def format_for(profile, identity=None, capabilities=None, business_value=None):
+    checkpoint = ((identity or {}).get('native_tts') is not None and
+        tts_sampling((business_value or {}).get('tts', {})) is not None)
     if (identity or {}).get('native_tts_base') is not None:
-        return VOICE_FORMAT
+        return VOICE_CHECKPOINT_FORMAT if checkpoint else VOICE_FORMAT
     if (identity or {}).get('native_tts') is not None:
-        return TTS_FORMAT
+        return TTS_CHECKPOINT_FORMAT if checkpoint else TTS_FORMAT
     if chat_audio_enabled(identity or {}, capabilities):
         return CHAT_AUDIO_FORMAT
     if has_separator(identity or {}):
@@ -853,7 +880,8 @@ def validate(value, registry, name, digest):
         'configuration', 'startup_memory', 'business', 'environment'))
     profile_contract.validate(registry)
     ledger.require(value['format'] == format_for(registry['profiles'][name],
-                                                registry['identity'], value['capabilities']) and
+                                                registry['identity'], value['capabilities'],
+                                                value['business']) and
         value['profile'] == name and
         value['identity'] == registry['identity'] and
         value['capacity'] == registry['profiles'][name], 'profile evidence identity differs')
