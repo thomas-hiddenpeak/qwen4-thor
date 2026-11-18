@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR49会话故障夹具修复8项CPU通过](evidence/serve-conversation-recovery-fixture-20261119/README.md)：
+原预演恢复查询受200ms注入限制、后续清理槽连锁失败；改为日志出现后
+取消、正常恢复预算与确认回收。0.614秒/0GPU，生产代码和默认rev326
+不变。原远端失败保留，推送已验Base-only与修复后继续CI合入及ICL。
+
 4倍语速任务状态已与[既有正反例证据](evidence/serve-speech-clock-content-20261118/README.md)
 同步：内容已按用户授权口径通过，8 CPU/4反例不再重复；原直接ASR
 失败保留，正常播放听感仍待验。修正总表顶层滞后状态，原分阶段记录保持。

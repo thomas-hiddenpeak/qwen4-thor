@@ -7552,7 +7552,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_main_merged_remaining_delivery_tasks_active",
+      "state": "rev326_delivered_pr49_ci_repair_pending_main_merge",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8424,6 +8424,34 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "registered_voice_mainline": {
+        "pr": 49,
+        "original_head": "c4fb51fab88b4ff1674156ef12c8fdcc4ef7e9a7",
+        "push_run": 44379572070,
+        "push_result": "SUCCESS",
+        "pr_run": 44379659858,
+        "pr_result": "FAILURE_PRESERVED",
+        "repair_cpu": {
+          "state": "PASS",
+          "command": [
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+            "--required-list",
+            "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/ci-conversation-01/required.txt"
+          ],
+          "returncode": 0,
+          "seconds": 0.6143926018849015,
+          "tests": 8,
+          "gpu_starts": 0,
+          "runtime_changed": false,
+          "default_revision": 326,
+          "source_sha256": "6e765896848cb3915778637586d4c739b3a08e27b064b5feec1f30c548fb46f9",
+          "binary_sha256": "9861fac5dca38a73cf8d3d4e7e5de6290a363ce43938cff70fe399ff159aa142",
+          "build_warnings": 0,
+          "failed_ci_preserved": 44379659858
+        },
+        "evidence": "evidence/serve-conversation-recovery-fixture-20261119/README.md",
+        "merged": false
       }
     },
     {

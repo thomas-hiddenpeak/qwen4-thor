@@ -4,9 +4,11 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <thread>
 
 #include "q4t/server/output_schema.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/grammar_process.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
@@ -84,11 +86,32 @@ Q4T_TEST(conversation_state_unknown_create_exposes_retrievable_identity) {
   ObjectWorkerEntryForTesting("--q4t-object-worker-commit-pause");
   ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
   Fixture f;
-  f.options.io_timeout_ms = 200;
   ObjectStore objects(f.options);
   ConversationState states(objects);
-  const auto created = states.Create(Json(), Parse("[]"), Access());
-  Q4T_CHECK(!created.ok() && created.commit_unknown);
+  const auto journal = fs::path(f.options.directory) / ".q4t-transaction";
+  auto interrupted = Access();
+  bool journal_seen = false;
+  interrupted.cancelled = [&] {
+    journal_seen = fs::exists(journal);
+    return journal_seen;
+  };
+  // The worker pauses after publishing its transaction. Cancel only once that
+  // decision exists, without imposing a tiny I/O timeout on later recovery.
+  const auto created = states.Create(Json(), Parse("[]"), interrupted);
+  const auto cleanup_deadline = Clock::now() + 2s;
+  while (Clock::now() < cleanup_deadline) {
+    detail::PollIsolatedWorkers(IsolatedWorkerDomain::kObjects);
+    const auto health = objects.Health();
+    if (!health.pending && health.workers_reaped == health.workers_started)
+      break;
+    std::this_thread::sleep_for(1ms);
+  }
+  const auto interrupted_health = objects.Health();
+  Q4T_CHECK(!interrupted_health.pending &&
+            interrupted_health.workers_started == 1 &&
+            interrupted_health.workers_reaped == 1);
+  Q4T_CHECK(journal_seen && created.code == "object_cancelled" &&
+            created.commit_unknown);
   const auto id = created.value.GetString("id");
   Q4T_CHECK(!id.empty());
   const auto error = Parse(detail::ErrorJson(
@@ -98,6 +121,7 @@ Q4T_TEST(conversation_state_unknown_create_exposes_retrievable_identity) {
             std::string::npos);
   const auto confirmed = states.Retrieve(id, Access());
   Q4T_CHECK(Ok(confirmed) && confirmed.value.GetString("id") == id);
+  Q4T_CHECK(!fs::exists(journal) && objects.Health().workers_started == 2);
   return true;
 }
 
