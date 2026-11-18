@@ -1,0 +1,15 @@
+{
+  "execution_dtype": "FP32",
+  "tf32": false,
+  "trace": true,
+  "dense_trace": false,
+  "native_loads_max": 1,
+  "official_cpu_loads_max": 1,
+  "cases": 2,
+  "frames_per_case": 2,
+  "http": 0,
+  "seconds": 1200,
+  "strict_lease": true,
+  "stop_on_failure": true,
+  "no_encoder_rerun": true
+}

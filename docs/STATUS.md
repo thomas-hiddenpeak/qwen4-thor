@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[固定参考ICL提示134项数值通过](evidence/serve-tts-icl-prompt-component-20261119/README.md)：
+1原生/1官方CPU、两对齐各2帧、50.628秒，原浮点/全码门全部通过；
+49次NVML正常、进程/锁清理，默认保持。只核对固定可信短参考的
+提示数学，编码器原长例FAIL、口径待决及完整音频/业务未验继续保留。
+
 [ICL官方提示驱动7项CPU通过](evidence/serve-tts-icl-prompt-driver-cpu-20261119/README.md)：
 两对齐/全部16组固定参考、官方数学调用和原数值门已接线，0.114秒/
 0GPU，CUDA构建零警告。可先独立核对已知短样本固定输入的提示数学；

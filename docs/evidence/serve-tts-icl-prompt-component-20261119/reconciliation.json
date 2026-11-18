@@ -1,0 +1,19 @@
+{
+  "status": "PASS_FIXED_REFERENCE_ICL_PROMPT_MATH",
+  "comparisons": 134,
+  "seconds": 50.62800084287301,
+  "native_model_loads": 1,
+  "official_cpu_model_loads": 1,
+  "cases": 2,
+  "frames": 4,
+  "nvml_queries": 49,
+  "nvml_all_ok": true,
+  "monitor_workers_reaped": true,
+  "no_observed_competition": true,
+  "lease_released": true,
+  "lock_available": true,
+  "defaults_unchanged": true,
+  "encoder_gate_unchanged": true,
+  "eos_and_audio_qualified": false,
+  "limitation": "Polling cannot exclude subinterval external contention"
+}
