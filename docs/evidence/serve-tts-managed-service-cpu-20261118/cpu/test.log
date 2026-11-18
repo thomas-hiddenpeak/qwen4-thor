@@ -1,0 +1,14 @@
+test_absent_tts_keeps_original_asr_only_qualification (tools.native_tts.test_managed_service.ManagedSpeech.test_absent_tts_keeps_original_asr_only_qualification) ... ok
+test_audio_corruption_and_synthesis_usage_are_not_accepted (tools.native_tts.test_managed_service.ManagedSpeech.test_audio_corruption_and_synthesis_usage_are_not_accepted) ... ok
+test_full_retained_outputs_require_both_recovery_phases (tools.native_tts.test_managed_service.ManagedSpeech.test_full_retained_outputs_require_both_recovery_phases) ... ok
+test_omitted_binding_or_unhealthy_reload_cannot_reuse_other_phase (tools.native_tts.test_managed_service.ManagedSpeech.test_omitted_binding_or_unhealthy_reload_cannot_reuse_other_phase) ... ok
+test_output_budgets_count_every_phase_and_reject_partial_tls (tools.native_tts.test_managed_service.ManagedSpeech.test_output_budgets_count_every_phase_and_reject_partial_tls) ... ok
+test_tls_requires_both_sdk_outputs_and_verified_https_endpoint (tools.native_tts.test_managed_service.ManagedSpeech.test_tls_requires_both_sdk_outputs_and_verified_https_endpoint) ... ok
+test_javascript_sdk_verifies_ca_and_sends_scoped_key (tools.native_tts.test_managed_service.SpeechSdkTls.test_javascript_sdk_verifies_ca_and_sends_scoped_key) ... ok
+test_python_sdk_verifies_ca_and_sends_scoped_key (tools.native_tts.test_managed_service.SpeechSdkTls.test_python_sdk_verifies_ca_and_sends_scoped_key) ... ok
+test_managed_fallback_requires_real_alignment_and_preserved_profile_history (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 2.570s
+
+OK

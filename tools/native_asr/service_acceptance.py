@@ -34,17 +34,22 @@ LIMITS = dict(tool_retained=dict(starts=1, chats=3, probes=0, controls=1500, sec
 WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
-def limits_for(scenario, chat_audio=False):
-    require(type(chat_audio) is bool, 'invalid managed Chat audio budget')
+def limits_for(scenario, chat_audio=False, native_tts=False):
+    require(type(chat_audio) is bool and type(native_tts) is bool,
+            'invalid managed audio budget flags')
     limits = dict(LIMITS[scenario])
     if chat_audio:
         require(scenario != 'tls_remaining', 'new Chat audio requires its complete TLS stage')
         limits['chats'] += 2 if scenario in ('tool_version', 'tls') else 1
+    if native_tts:
+        require(scenario != 'tls_remaining', 'new TTS requires its complete TLS stage')
+        limits['chats'] += 4 if scenario in ('tool_version', 'tls') else 2
     return limits
 
 
 def configure_plan_limits(plan):
-    expected = limits_for(plan['scenario'], plan.get('chat_audio', False))
+    expected = limits_for(plan['scenario'], plan.get('chat_audio', False),
+                          plan.get('native_tts') is not None)
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
     # Reused actors/verifiers share this process-local namespace, never a live
     # service policy. Only the fixed feature-specific increment is accepted.
@@ -77,15 +82,17 @@ def prepare(args):
         policy['listen_host'] == '127.0.0.1' and
         manifest['recovery_profiles']['identity'].get('native_asr'),
         'exact native ASR qualified payload/TLS mode required')
-    from tools.serve_recovery import profile_evidence
+    from tools.serve_recovery import profile_contract, profile_evidence
     qualified = engine.read(pack/'profile-primary.json')
     chat_audio = profile_evidence.chat_audio_enabled(
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
-    limits = limits_for(args.scenario, chat_audio)
+    native_tts = manifest['recovery_profiles']['identity'].get('native_tts')
+    profile_contract.tts_capability_binding(native_tts, qualified['capabilities'])
+    limits = limits_for(args.scenario, chat_audio, native_tts is not None)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
-        'tools/native_asr', 'src/service', 'include/q4t/service'], cwd=ROOT, text=True).splitlines()
+        'tools/native_asr', 'tools/native_tts', 'src/service', 'include/q4t/service'], cwd=ROOT, text=True).splitlines()
     plan = dict(version=1, scenario=args.scenario, limits=limits,
         package=dict(package=str(pack), manifest_sha256=digest), output=str(out),
         sources={n:engine.sha(ROOT/n) for n in sorted(set(names)|bundle.NATIVE_SOURCES)},
@@ -100,6 +107,14 @@ def prepare(args):
         planned=dict(starts=limits['starts'], self_checks=limits['starts'],
             counted_post_requests=limits['chats']), scope=__doc__)
     if chat_audio: plan['chat_audio'] = True
+    if native_tts is not None:
+        plan['native_tts'] = native_tts
+        backend = engine.read(pack/'engine/client-policy.json')
+        alpha = next(c for c in backend['clients'] if c['id'] == 'alpha')
+        maximum = native_tts['limits']['max_frames']*16+1 + \
+            engine.read(pack/'engine/manifest.json')['settings']['profile']['max_tokens']
+        require(alpha['max_output_tokens'] >= maximum,
+                'managed client budget would truncate full speech output')
     reference = engine.read(WORK/'service-http-05/plan.json')
     plan['clips'] = reference['clips']
     plan['sdk'] = reference['sdk']
@@ -399,6 +414,8 @@ def check_business(out):
                     sdk_witness = dict(witness, response=sdk['result'])
                     profile_evidence.chat_audio_business(sdk_witness, identity, encoded)
                     require(sdk['version'] == '2.8.1', 'managed Chat Python SDK drift')
+    from tools.native_tts import managed_service
+    results.update(managed_service.check(out, plan, expected['settings'].get('native_tts')))
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -624,27 +641,30 @@ class Stage(BASE['Stage']):
             time.sleep(.05)
         raise TimeoutError('owned ASR request did not drain')
 
-    def configuration(self):
+    def configuration(self, label='final'):
         from tools.serve_ops import transport
-        self.budget.reserve('controls', 'final-config')
+        self.budget.reserve('controls', label+'-config')
         response = transport.get(self.policy['upstream_operations_port'],
                                  '/v1/config', timeout=2)
-        save(self.output/'final-config-http.json', response)
-        (self.output/'final-config.wire').write_text(response['body'])
+        save(self.output/(label+'-config-http.json'), response)
+        (self.output/(label+'-config.wire')).write_text(response['body'])
         require(response['http_status'] == 200, 'private configuration unavailable')
 
     def exercise(self):
+        from tools.native_tts import managed_service
         version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'].startswith('tls')
         first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')
         self.request('capabilities', path='/v1/capabilities')
         if tls:
             if 'reused_tls' not in self.plan:
                 self.request('unauthorized', client='invalid', expected=401)
+                managed_service.observe(self, 'tls-before')
                 self.sdk('python-zh-json', 'zh', python=True)
                 if self.plan.get('chat_audio'): self.chat_audio('chat-python', sdk=True)
                 self.kill(first, 'gateway', 'native-asr-gateway-exit')
                 self.wait(lambda s:s['business_ready'] and
                           s['gateway_generation'] == first['gateway_generation']+1)
+                managed_service.observe(self, 'tls-after')
                 self.sdk('js-en-stream', 'en')
                 if self.plan.get('chat_audio'): self.chat_audio('chat-js', sdk=True, stream=True)
                 self.audio('beta-file-limit', client='beta', expected=413)
@@ -654,6 +674,7 @@ class Stage(BASE['Stage']):
             after = self.drained('after-cancel')
             save(self.output/'cancel-observation.json', dict(before=before, after=after))
         else:
+            managed_service.observe(self, 'primary')
             self.audio('primary-asr')
             if self.plan.get('chat_audio'): self.chat_audio('primary-chat-audio')
         if version:
@@ -668,6 +689,7 @@ class Stage(BASE['Stage']):
             self.version_ready(2, 'fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
             # scenario separately verifies actual VAD SSE through the SDK.
+            managed_service.observe(self, 'fallback')
             self.audio('fallback-asr', stream=not bool(self.plan.get('audio_auxiliary')))
             if self.plan.get('chat_audio'): self.chat_audio('fallback-chat-audio')
             stored = json.loads((self.output/'stored-before.wire').read_text())

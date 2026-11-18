@@ -1,0 +1,53 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "unique_tests": 9,
+  "seconds": 3.068562980275601,
+  "actual_sdk_invocations": 4,
+  "actual_cpu_https_requests": 2,
+  "untrusted_ca_rejections": 2,
+  "gpu_actions": 0,
+  "model_qualification": false,
+  "default_unchanged": true,
+  "records": {
+    "cpu/plan.json": {
+      "bytes": 1217,
+      "sha256": "29ae8ec198a3892d6a4ae6843883a974daca7503c5e6f81875ff0fcd2fb9ac27"
+    },
+    "cpu/result.json": {
+      "bytes": 74,
+      "sha256": "f45cb2e89f47419f5c97555322778ab6c34c721ff29f3907121fe1d21622a9ae"
+    },
+    "cpu/test.log": {
+      "bytes": 1724,
+      "sha256": "9209c960cddc1517be2ecf93fcb6eacc29ea5552a3eb1972778dbed6d2ac8db8"
+    },
+    "cpu/source-gate.json": {
+      "bytes": 222,
+      "sha256": "13bcdcf545a3a4cf49ad7c4341720e2ef4b4b641b0b8a97e39aa3cd711e54758"
+    },
+    "native-build/plan.json": {
+      "bytes": 7723,
+      "sha256": "75e944d62a97e9616fbb4f05744b0783cc8fec3d1536fec4426add8eada87020"
+    },
+    "native-build/result.json": {
+      "bytes": 124,
+      "sha256": "9cac90f40ac89fcd963fe482fe5408b66aeac66f830dd2a8f9a95e120b462ee4"
+    },
+    "native-build/result-02.json": {
+      "bytes": 653,
+      "sha256": "628fc1b83381b1383095867bf4ebbbe00400c9e80b6f227aabfa0f658ed97907"
+    },
+    "native-build/build.log": {
+      "bytes": 460,
+      "sha256": "253e0e05e6449420ac0fb89e2cf38a38a22a97a7fd68d6e98b52cd6cb220a9ad"
+    },
+    "native-build/build-02.log": {
+      "bytes": 3001,
+      "sha256": "0d6c05ef08f0c2390cc8ab9eb4ef03ebd621ab3a2754694d9ec87a3c3ded393b"
+    },
+    "native-build/configure.log": {
+      "bytes": 508,
+      "sha256": "7c61978496a460f106ce989fc42918c3e6a7e80112a255c51f1069db285fdcf5"
+    }
+  }
+}

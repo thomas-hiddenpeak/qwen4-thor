@@ -1,6 +1,7 @@
 """One real Python Speech SDK stream; bounded bytes, no automatic retry."""
 import hashlib
 import json
+import ssl
 from pathlib import Path
 import sys
 import time
@@ -14,11 +15,12 @@ from tools.native_asr.transcription_sdk import Transport
 def main():
     value = json.loads(sys.stdin.read(65537))
     assert openai.__version__ == '2.8.1'
-    transport = Transport()
+    transport = Transport(ssl.create_default_context(cafile=value['ca'])
+                          if value.get('ca') else True)
     chunks = []
     started = time.monotonic()
     with httpx.Client(transport=transport, trust_env=False, timeout=180) as http:
-        client = openai.OpenAI(base_url=value['base_url'], api_key='local',
+        client = openai.OpenAI(base_url=value['base_url'], api_key=value.get('api_key', 'local'),
             max_retries=0, timeout=180, http_client=http)
         with client.audio.speech.with_streaming_response.create(
                 **value['request']) as response:

@@ -7749,5 +7749,20 @@
     "driver_schema_case": 1,
     "model_numerics_changed": false,
     "default_changed": false
+  },
+  "tts_managed_business_development_20261118": {
+    "scope": "Real Speech and Chat output before/after native TLS ingress recovery and whole-payload fallback; independent health/limits per phase and full audio + usage validators; pinned Python and JavaScript SDK preserve CA verification and scoped API keys",
+    "reviewed_sources": {
+      "tools/native_asr/service_acceptance.py": "3401b315f1365ffd809d4b759afeec4f840cf464315f00ab64ea77dcf2fde92d",
+      "tools/native_tts/managed_service.py": "5c07b8d26e8c1b84b3fca6dea20eb06d7a81a2fa55f46949877e6b8704093ce1",
+      "tools/native_tts/test_managed_service.py": "92e37e0f378b243415f8064bacb7541575d265ae7c0e3f23af8f33bf019a8e26",
+      "tools/native_tts/http_sdk.py": "db01dfe9d6faeef35f3c497c01797eb0da9642a1f2b4a8761fd078a42d00b027",
+      "tools/native_tts/http_sdk.mjs": "a04090b40739cf9717b0bf5ae6091b6f627cc6efe6ea5abb2f0a9cea983b6626"
+    },
+    "cpu_validation_pending": false,
+    "gpu_validation_pending": true,
+    "default_unchanged": true,
+    "master_complete": false,
+    "cpu_evidence": "docs/evidence/serve-tts-managed-service-cpu-20261118/README.md"
   }
 }

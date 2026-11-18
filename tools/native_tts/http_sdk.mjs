@@ -10,7 +10,7 @@ for await (const part of process.stdin) {
 const value = JSON.parse(input);
 const { OpenAI, version } = loadSdk(value.sdk_directory);
 const exchanges = [];
-const client = new OpenAI({ baseURL: value.base_url, apiKey: 'local',
+const client = new OpenAI({ baseURL: value.base_url, apiKey: value.api_key ?? 'local',
   maxRetries: 0, timeout: 180000, fetch: async (url, options) => {
     exchanges.push({ method: options.method, url: String(url) });
     return fetch(url, options);

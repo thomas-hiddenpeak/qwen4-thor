@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS受管业务驱动9项CPU通过](evidence/serve-tts-managed-service-cpu-20261118/README.md)，
+3.069秒；两SDK真实HTTPS可信CA/Key成功，不可信CA拒绝，0GPU。
+原生辅助程序19.968秒零警告，包含Speech接入路由；CMake缓存
+缺失的首次失败保留，重新生成后构建通过。主轻26条不重测，
+继续带TTS的实际TLS/整包恢复，默认及总目标保持。
+
+TTS受管恢复实际驱动已补入每阶段Speech/Chat完整输出、用量和
+独立健康快照；原生TLS恢复前后交叉Python/JS SDK，保留证书校验
+及独立API Key。冻结9针对CPU/120秒/0GPU，含4次CPU HTTPS SDK
+成功/不可信CA拒绝；通过后打包实际恢复短验，默认保持。
+
 [输入与TTS组合主轻26条真实业务通过](evidence/serve-tts-input-profiles-20261118/README.md)：
 2核心/26POST/204.599秒，190次NVML全正常，退出0及资源完整清理。
 A/B/A不再多出说话人；双人重叠保留，hurt→hurts按用户决定保留
