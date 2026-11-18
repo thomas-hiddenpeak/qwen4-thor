@@ -2230,7 +2230,7 @@
     "include/q4t/audio/speech_tempo.h": "2a8be41dbe3ce2576b4e097fa9704160fa9f0ee79f2fcfc3b6f28bdc8fd1d29a",
     "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
-    "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
+    "include/q4t/audio/tts_config.h": "873339447a1a506b246e844bd72eaa8da24b9c3b8cf66dc0fe4bfff4c78203aa",
     "include/q4t/audio/tts_generation.h": "fb834e5c102945ef8691852790616ad46a428261cc4cf6119457105093e1a125",
     "include/q4t/audio/tts_layout.h": "da96a7ff39a150b9b84f34d70c05696fbc7418207274420e468044ca9232c447",
     "include/q4t/audio/tts_model.h": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
@@ -2518,12 +2518,13 @@
     "src/audio/speaker_layout.cpp": "c5bf34910af6dc78d03f1c1258b08a5c3ad5f621abb4b694e59245008a634ae0",
     "src/audio/speaker_model.cu": "2f6ce1e24cb84bb820c9d19ebf6c11ddca6ca68345cb3d3a6b0e97d0e27e903b",
     "src/audio/speech_tempo.cpp": "87ddb25c673004a1ae392e133eefed923fa9926e7d85ee371c2e5a45c95c0676",
+    "src/audio/tts_base_config_data.h": "60a46749968b7f6de39f6dfc6f248863ce0bd1cd60bd7987ff19b47732e29a08",
     "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
     "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
     "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
     "src/audio/tts_codec_internal.h": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
     "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
-    "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
+    "src/audio/tts_config.cpp": "d383815f5377dbbeb79a70965c681057ea6b8457e729a46db226aae044cac850",
     "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
     "src/audio/tts_dense.cu": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
     "src/audio/tts_generation.cpp": "3beead09a42057bd05aa4d52a458e70370cd50790b6662bfc8574a8452ea60f0",
@@ -7777,5 +7778,14 @@
     "cpu_validation_pending": false,
     "gpu_validation_pending": true,
     "evidence": "docs/evidence/serve-tts-tls-cancel-cpu-20261118/README.md"
+  },
+  "tts_base_metadata_review_20261118": {
+    "state": "metadata_cpu_qualified_runtime_pending",
+    "new_cpu_cases": 10,
+    "affected_existing_cases": 2,
+    "full_weights_verified": false,
+    "runtime_qualified": false,
+    "default_changed": false,
+    "plan": "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
   }
 }

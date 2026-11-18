@@ -49,6 +49,12 @@ std::vector<TtsTensorContract> TtsCodecDecoderTensorContracts();
 Status ValidateTtsTensorHeader(const io::Json& header, uint64_t data_bytes,
                                TtsVariant variant);
 
+// Base uses a trained 2048-dimensional speaker condition. These independent
+// metadata contracts do not imply that a registered voice backend is loaded.
+Status ValidateTtsBaseConfig(const io::Json& config);
+std::vector<TtsTensorContract> TtsBaseTensorContracts();
+Status ValidateTtsBaseTensorHeader(const io::Json& header, uint64_t data_bytes);
+
 // Validates every F32 storage extent and all 271 synthesis-decoder tensors.
 // The other 225 encoder tensors are retained, not executed or loaded as the
 // decoder. Their semantics are not certified by this function; the complete

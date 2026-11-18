@@ -8485,6 +8485,17 @@
         "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
         "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
+    },
+    "custom_voice": {
+      "state": "BASE_METADATA_CPU_QUALIFIED_RUNTIME_PENDING",
+      "plan": "SERVE_CUSTOM_VOICES_2026-11-18.md",
+      "evidence": "evidence/serve-custom-voice-metadata-20261118/README.md",
+      "cpu_unique": 12,
+      "gpu_loads": 0,
+      "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "full_asset_verified": false,
+      "runtime_api_accepted": false,
+      "default_changed": false
     }
   }
 }

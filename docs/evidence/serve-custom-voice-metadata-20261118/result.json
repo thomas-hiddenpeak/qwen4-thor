@@ -1,0 +1,26 @@
+{
+  "status": "BASE_METADATA_CPU_QUALIFIED_RUNTIME_PENDING",
+  "cpu_unique": 12,
+  "cpu_seconds": 0.0636919541284442,
+  "build_seconds": 8.373585106804967,
+  "warnings": 0,
+  "source_anchors": 917,
+  "negative_source_controls": 13,
+  "gpu_loads": 0,
+  "full_asset_verified": false,
+  "runtime_api_accepted": false,
+  "default_changed": false,
+  "fixture_archive": {
+    "status": "LOSSLESS_DUPLICATE_FIXTURES_ARCHIVED",
+    "raw_bytes": 1200655776,
+    "archive_bytes": 114092755,
+    "archive_sha256": "6cde416cf78c43fed61c46bd1dce4e049c8cc5876842e6dafd4de0c3bdce1c14",
+    "files": 8,
+    "seconds": 12.772080454975367,
+    "free_bytes": 1318375424,
+    "canonical_tools_unchanged": true,
+    "models_and_receipts_unchanged": true
+  },
+  "archive_sha256": "2dbe246c3d1714748c4b34d874737a88905f559ba20d1c1c971a7237538c1a04",
+  "master_complete": false
+}

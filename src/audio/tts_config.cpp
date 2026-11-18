@@ -7,6 +7,7 @@
 #include <span>
 #include <string_view>
 
+#include "tts_base_config_data.h"
 #include "tts_config_data.h"
 
 namespace q4t::audio {
@@ -209,6 +210,40 @@ Status ValidateTtsConfig(const Json& config, TtsVariant variant) {
   return Config(config, variant == TtsVariant::kCustomVoice06B
                             ? tts_detail::kConfig06B
                             : tts_detail::kConfig17B);
+}
+
+Status ValidateTtsBaseConfig(const Json& config) {
+  return Config(config, tts_detail::kBaseConfig17B);
+}
+
+std::vector<TtsTensorContract> TtsBaseTensorContracts() {
+  // The Base talker/predictor shapes match the 1.7B graph. Weight identity
+  // remains separate: shape equality never permits reusing CustomVoice data.
+  auto tensors = TtsTensorContracts(TtsVariant::kCustomVoice17B);
+  TensorGraph graph(2);
+  const std::string prefix = "speaker_encoder.";
+  graph.Conv(prefix + "blocks.0.conv", 128, 512, 5);
+  for (int block = 1; block <= 3; ++block) {
+    const auto p = prefix + "blocks." + std::to_string(block) + ".";
+    graph.Conv(p + "tdnn1.conv", 512, 512, 1);
+    graph.Conv(p + "tdnn2.conv", 512, 512, 1);
+    for (int split = 0; split < 7; ++split)
+      graph.Conv(p + "res2net_block.blocks." + std::to_string(split) + ".conv",
+                 64, 64, 3);
+    graph.Conv(p + "se_block.conv1", 512, 128, 1);
+    graph.Conv(p + "se_block.conv2", 128, 512, 1);
+  }
+  graph.Conv(prefix + "mfa.conv", 1536, 1536, 1);
+  graph.Conv(prefix + "asp.tdnn.conv", 4608, 128, 1);
+  graph.Conv(prefix + "asp.conv", 128, 1536, 1);
+  graph.Conv(prefix + "fc", 3072, 2048, 1);
+  auto speaker = graph.Finish();
+  tensors.insert(tensors.end(), speaker.begin(), speaker.end());
+  return tensors;
+}
+
+Status ValidateTtsBaseTensorHeader(const Json& header, uint64_t data_bytes) {
+  return Header(header, data_bytes, TtsBaseTensorContracts(), false);
 }
 
 Status ValidateTtsGenerationConfig(const Json& config) {
