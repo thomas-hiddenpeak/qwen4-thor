@@ -153,8 +153,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!options.separator_limits.Valid())
     return Status::Fail("invalid separator duration/workspace limits");
   if (!options.separator_model_dir.empty()) {
-    if (options.speaker_model_dir.empty())
-      return Status::Fail("separator-model-dir requires speaker-model-dir");
+    if (options.speaker_model_dir.empty() || options.aligner_model_dir.empty())
+      return Status::Fail("separator-model-dir requires speaker and aligner");
     if (!model::ValidEmbeddingAssetDirectory(options.separator_model_dir))
       return Status::Fail("separator-model-dir must be an absolute asset path");
     SeparatorResourcePlan plan;
@@ -163,9 +163,12 @@ Status ValidateServerOptions(const ServerOptions& options) {
       return status;
   }
   if (!options.speaker_model_dir.empty()) {
-    if (options.asr_model_dir.empty() || options.aligner_model_dir.empty() ||
-        options.vad_model_dir.empty())
-      return Status::Fail("speaker-model-dir requires ASR, aligner and VAD");
+    // Diarized transcripts need alignment; voice registration instead uses
+    // VAD windows directly. Do not require unused alignment weights for Base.
+    if (options.asr_model_dir.empty() || options.vad_model_dir.empty() ||
+        (options.aligner_model_dir.empty() && options.tts_base_model_dir.empty()))
+      return Status::Fail(
+          "speaker-model-dir requires ASR, VAD and either aligner or TTS Base");
     if (!model::ValidEmbeddingAssetDirectory(options.speaker_model_dir))
       return Status::Fail("speaker-model-dir must be an absolute asset path");
     SpeakerResourcePlan plan;

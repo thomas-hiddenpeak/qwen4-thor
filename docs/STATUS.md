@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[音色注册启动依赖已修复](evidence/serve-voice-startup-fix-20261118/README.md)：
+5项CPU通过/0.0051秒，两构建零警告，939锚点/17负控通过。首轮CLI
+拒绝和0模型/0POST记录保留；候选714源码一致，继续原18POST短验。
+
+首轮音色HTTP在CLI依赖校验停止：speaker旧配置强制aligner，实际0模型
+加载/0业务请求，清理与默认身份通过。现按实际消费者区分Base注册与
+对齐转写，分离器仍要求aligner；冻结1新增+4受影响CPU/60秒后续验。
+
 [音色HTTP验收器6项CPU通过](evidence/serve-voice-http-driver-cpu-20261118/README.md)：
 进程0.219秒、0GPU；错误分类、内容反例、静音/截断和有界执行检查通过。
 下一步执行已冻结的1主模型/18POST短验，默认与原先失败证据保持。

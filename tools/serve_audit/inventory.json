@@ -2948,7 +2948,7 @@
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/separator_assets.cpp": "ef5c005d53b81cb9a5d513030c5bcb7a3e6a4253d3707464af5df5ab5c5b8464",
     "src/server/separator_service.cpp": "ab309ca909853d8deacb356efd666cc21c805025e5f8870c149ed0347233ae31",
-    "src/server/server_options.cpp": "c0e6e1476bd1e86bd3ae8b4f84d8b6823f31b4e0e4638a179f534decbb1f7aeb",
+    "src/server/server_options.cpp": "94a31a43e620fa8ffd073e988342669f347d297227221c3afad2fbf47b0ae3da",
     "src/server/session_cache.cpp": "9d3d8b0b612fccd2b3e2bf418a3672b4c90736592da7cfc082d80d33b08d9e06",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
