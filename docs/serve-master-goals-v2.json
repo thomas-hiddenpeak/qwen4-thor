@@ -8007,7 +8007,7 @@
       "nvml_root_cause_resolved": false
     },
     "chat_audio_output": {
-      "state": "actual_no_instruction_eos_failure_full_text_repair_pending",
+      "state": "multi_choice_usage_repair_cpu_passed_actual_pending",
       "evidence": "evidence/serve-chat-audio-output-cpu-20261118/README.md",
       "cpp_cases": 19,
       "driver_negative_controls": 4,
@@ -8020,7 +8020,9 @@
       "default_changed": false,
       "diagnosis": "1 core/3 POST/75.872s: exact main transcript and2625-token budget; identical Speech without instructions also hit frame limit. Full-text conditioning repair uses official CustomVoice default; incremental PCM and sampler unchanged. Retest actual business before accepting.",
       "source_failure_retained": ".q4t-work/serve-native-tts-20261118/chat-http-03/result.json",
-      "routing_cpu_cases": 2
+      "routing_cpu_cases": 2,
+      "actual_progress": "Full-text repair reached natural30-frame EOS. Actual Chinese SSE/Python SDK and real-record tool/JavaScript output passed transport; independent content pending. Multi-choice/schema exposed late RAII observers after EndStep; scoped producer repair3 CPU passed, shared affected Chat lifecycle requires actual retest.",
+      "usage_repair_cpu_cases": 3
     }
   }
 }
