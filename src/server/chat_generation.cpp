@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/actual_usage_step.h"
 #include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_audio_history.h"
 #include "chat_model_step.h"
@@ -2365,13 +2366,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     model::ModelSequence* usage_sequence = nullptr;
     const std::vector<int32_t>* usage_generated = nullptr;
     ActualUsage observed_usage;
-    if (http)
-      http->Usage().BeginStep(completion
-                                  ? choice_index % completion_plan.best_of == 0
-                                  : responses || choice_index == 0,
-                              !moderation_step);
+    ActualUsageStep usage_step(
+        http ? &http->Usage() : nullptr,
+        completion ? choice_index % completion_plan.best_of == 0
+                   : responses || choice_index == 0,
+        !moderation_step);
     auto refresh_usage = [&]() noexcept {
-      if (!http) return;
+      // Explicit handoff may precede per-buffer scope cleanup. An old
+      // observer must not touch finished work or a subsequent audio step.
+      if (!usage_step.Active()) return;
       if (usage_sequence) {
         observed_usage.input = std::max(
             observed_usage.input,
@@ -2389,7 +2392,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             : internal || completion   ? 0
                                        : thinking_budget.ReasoningTokens();
       }
-      http->Usage().Observe(observed_usage);
+      usage_step.Observe(observed_usage);
     };
     if (http)
       http->SetUsageRefresh(
@@ -2401,7 +2404,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!http) return;
       http->RefreshUsage();
       http->SetUsageRefresh(nullptr, nullptr);
-      http->Usage().EndStep();
+      usage_step.Finish();
       http->RefreshUsage();
     });
     const size_t required_capacity =
