@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真人声纹6正反例符合预期](evidence/serve-voice-human-diagnostic-20261119/README.md)：
+4单人/同人通过、2异声拒绝；独立A/A余弦0.727，A/B≤0.0762。
+18原生/官方CPU向量一致，最大relativeL2 2.288e-6；门保持0.65。
+初轮CPU环境检查中止保留，仅补CPU9.277秒，0重复GPU；默认保持。
+原合成夹具与核验的不匹配继续待解，未将注册API或通用阈值宣布通过。
+
+冻结真人声纹诊断：复用上游已校验3录音（A两条、B一条）及完整原PCM
+构造同人拼接、两种顺序异声拼接，共6例；直接调用生产BuildVoiceIdentity，
+1GPU speaker/1CPU VAD/1官方CPU对照、≤99向量/600秒/16MiB，0主LLM/
+TTS/ASR/HTTP，0.65门不变。用于区分音色质量与核验策略，不当作授权验收。
+
 [Base包/恢复迁移34项CPU通过](evidence/serve-voice-package-cpu-20261119/README.md)：
 固定身份、共享预算、注册专用ASR依赖和历史恢复额度保持；939来源锚点/
 17遗漏反例通过。原两轮夹具/消息失败保留，0GPU，默认rev316保持。
