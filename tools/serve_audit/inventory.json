@@ -2176,8 +2176,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5f7afc89f440e83db73fdf0646ec428e7db331f9596aed6aef5971b7a74a0704",
-    "cmake/ChatProtocolIdentity.cmake": "f1c9b03a3d1e99be5681ea34e2b6b9fb90e9948be1e19550cd1d11d71a433ee5",
+    "CMakeLists.txt": "43cfd4444b8e97de2be0eb14907a8dfcae342b9f92eb641de5649a5fa926a2c4",
+    "cmake/ChatProtocolIdentity.cmake": "fc20f36111e8a7a38ed08bae590e1160f24363b5d5988fdf0e4fc98d08516133",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2214,6 +2214,7 @@
     "include/q4t/audio/tts_generation.h": "9132225a9159b98675e49bf3904005887ade5e6074c23fe16afd300df814190e",
     "include/q4t/audio/tts_layout.h": "da96a7ff39a150b9b84f34d70c05696fbc7418207274420e468044ca9232c447",
     "include/q4t/audio/tts_model.h": "06acf6e9e2c75cfabbbb6add859497dc5c1fe2bacda4fc3f8992bfb401a919e2",
+    "include/q4t/audio/tts_synthesis.h": "bc9d4986d666cad8c63b1fc6b02cbc9bc701efab6ac43e2852c91cf804df8cfb",
     "include/q4t/audio/vad.h": "9a2497746a72df6807d9d87ce4e1d30cfe05365b8252ad468cdde25776f167c5",
     "include/q4t/audio/vad_chunks.h": "5d65729daea3566de2582326c9a3ec2aa453f0c26dbd4f89f5cfa69d4095902c",
     "include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
@@ -2426,6 +2427,7 @@
     "include/q4t/server/tool_result_schema.h": "9b458aff192168e0872f67f4e1fc4c7aec16a3044b74e0f345612814305d57fa",
     "include/q4t/server/tts_assets.h": "b518227578a1f65edc1b39706a77eb4aa1e08987b64a4a9a03de0c4b81821ee1",
     "include/q4t/server/tts_service.h": "59587f231d219da8b991f75a08d527214c28aadc5ec6221b6be9d9661910ab4c",
+    "include/q4t/server/tts_upload.h": "26deb5a83a8e62bf71fadbb744d25262168360a13c35475464f37d954b027d6c",
     "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/server/vad_assets.h": "2bf8c0d9e438f0a76afc88e8ad3d27479ca4cb04076d3ed0901f5dddb4f38751",
     "include/q4t/server/vector_embedding_execution.h": "ac94fed5ad80a57a201e30f5ec869a813c57a82f9c09e378ff8e6611f809239e",
@@ -2500,6 +2502,7 @@
     "src/audio/tts_layout.cpp": "14d5d3bb84a4313bbfd07ba3c36c37f351c7faffbcc4c5bd2e60d8d39e220141",
     "src/audio/tts_math_internal.h": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
     "src/audio/tts_model.cu": "ba007e4f544fd3adbfd38b86eeeb4cc2169da34d839c48b47c3392a003f456e8",
+    "src/audio/tts_synthesis.cpp": "f35da40df0ecd9477c0e21a5ba20088daad3024db22525912e3749e0c1ece2af",
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
@@ -2841,6 +2844,7 @@
     "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
     "src/server/tts_assets.cpp": "50842cd64e95b6f316e89aa872ad81bf9f3ef8be614a3f37f71286f8613b476a",
     "src/server/tts_service.cpp": "68a56b92b300a9c263d1e698dbb389254f5f084271a979f40b5432aa03dee18d",
+    "src/server/tts_upload.cpp": "e8034b37d6d13d5112acf7c8832367aca7ca01a12b7be297a9c634ce804e42b1",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
@@ -7394,5 +7398,14 @@
       "4x content and every remaining master task"
     ],
     "evidence": "docs/evidence/serve-tts-service-assets-20261118/README.md"
+  },
+  "tts_incremental_synthesis_review_20261118": {
+    "state": "actual_content_cancellation_budget_and_cleanup_qualified",
+    "chunk_frames": 16,
+    "unacknowledged_output_pauses_generation": true,
+    "natural_eos_required": true,
+    "http_integrated": false,
+    "complete": false,
+    "evidence": "docs/evidence/serve-tts-incremental-synthesis-20261118/README.md"
   }
 }

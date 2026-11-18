@@ -7,6 +7,7 @@ set(CMAKE_CUDA_STANDARD 23)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_ARCHITECTURES 110a)
 find_package(CUDAToolkit REQUIRED)
+find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ICU REQUIRED IMPORTED_TARGET icu-uc icu-i18n)
 get_filename_component(Q4T_ROOT "../.." ABSOLUTE)
@@ -20,6 +21,7 @@ add_library(q4t_tts_replay_core STATIC
   ${Q4T_ROOT}/src/audio/tts_codec_conv.cu
   ${Q4T_ROOT}/src/audio/tts_codec_dense.cu
   ${Q4T_ROOT}/src/audio/tts_codec.cu
+  ${Q4T_ROOT}/src/audio/tts_synthesis.cpp
   ${Q4T_ROOT}/src/quant/lt_cache.cpp
   ${Q4T_ROOT}/src/text/tokenizer.cpp
   ${Q4T_ROOT}/src/io/json.cpp
@@ -58,3 +60,15 @@ add_executable(q4t_speech_tempo tempo_replay.cpp
   ${Q4T_ROOT}/src/io/json.cpp ${Q4T_ROOT}/src/trace/sha256.cpp)
 target_include_directories(q4t_speech_tempo PRIVATE ${Q4T_ROOT}/include)
 target_compile_options(q4t_speech_tempo PRIVATE -Wall -Wextra -Werror)
+
+add_executable(q4t_tts_synthesis synthesis_replay.cpp
+  ${Q4T_ROOT}/src/server/tts_assets.cpp
+  ${Q4T_ROOT}/src/server/tts_upload.cpp
+  ${Q4T_ROOT}/src/server/tts_service.cpp
+  ${Q4T_ROOT}/src/server/model_assets.cpp
+  ${Q4T_ROOT}/src/server/grammar_process.cpp
+  ${Q4T_ROOT}/src/server/worker_io_broker.cpp)
+target_link_libraries(q4t_tts_synthesis PRIVATE q4t_tts_replay_core Threads::Threads)
+target_compile_options(q4t_tts_synthesis PRIVATE
+  -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+target_link_options(q4t_tts_synthesis PRIVATE -Wl,--gc-sections)

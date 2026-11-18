@@ -188,6 +188,7 @@ add_library(q4t_model STATIC
   src/audio/tts_codec_conv.cu
   src/audio/tts_codec_dense.cu
   src/audio/tts_codec.cu
+  src/audio/tts_synthesis.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
@@ -325,6 +326,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_assets.cpp
   src/server/tts_assets.cpp
   src/server/tts_service.cpp
+  src/server/tts_upload.cpp
   src/server/aligner_assets.cpp
   src/server/speaker_assets.cpp
   src/server/speaker_service.cpp

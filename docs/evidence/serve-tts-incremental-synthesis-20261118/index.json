@@ -1,0 +1,60 @@
+{
+  "status": "PASS_INCREMENTAL_SYNTHESIS_COMPONENT",
+  "seconds": 21.367946987971663,
+  "gpu_talker_loads": 1,
+  "gpu_codec_loads": 1,
+  "gpu_asr_loads": 1,
+  "main_llm_loads": 0,
+  "http_requests": 0,
+  "spoken_cases": 2,
+  "cancellation_cases": 1,
+  "frame_limit_cases": 1,
+  "nvml_queries": 22,
+  "lease": "COMPLETED_RELEASED",
+  "explicit_device_allocations": 10,
+  "explicit_device_releases": 10,
+  "binary_sha256": "3eea9d94ab221c692404d4a7663199b3eea78d89573e9ae00dc65534f600c78e",
+  "records_sha256": "8e78f5e4edc4d7eb98b9a082edcd3118e946c20b2b56ba5a70a638f7de179f9b",
+  "comparisons": [
+    {
+      "case": 0,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a native speech test.",
+      "passed": true
+    },
+    {
+      "case": 1,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true
+    }
+  ],
+  "default_unchanged": true,
+  "defaults": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "frames": [
+    40,
+    39
+  ],
+  "chunks": [
+    [
+      16,
+      16,
+      8
+    ],
+    [
+      16,
+      16,
+      7
+    ]
+  ],
+  "codes_identical_to_prior": true,
+  "first_chunk_precedes_eos": true,
+  "all_voices_or_styles_qualified": false,
+  "speech_api_delivered": false
+}

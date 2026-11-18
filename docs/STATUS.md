@@ -7,6 +7,24 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS生成中分块PCM通过](evidence/serve-tts-incremental-synthesis-20261118/README.md)：
+两句原文及codes保持、首块先于EOS，背压/取消/上限与10项设备
+分配回收通过；1 talker/codec/ASR、21.368秒，GPU释放、rev306
+不变。继续压缩编码流、HTTP/Chat历史/恢复与全部master，
+不将组件通过当作接口交付；4倍内容问题保持。
+
+TTS增量合成零警告构建通过；固定同租约1 talker/1 codec/1 ASR、
+2原中英文各<160帧，另16帧待输出取消和2帧上限失败。首块必须
+先于EOS，完整codes与旧已验相同，分块PCM经无提示ASR原文匹配；
+10项显式设备分配须回收。600秒总上限、75000推进、0主LLM/HTTP。
+本组最多16MiB产物、保留512MiB磁盘，既有资产/编码/数值资格
+复用；通过后继续编码流、HTTP/Chat/恢复及全部master。
+
+TTS生成中分块输出及有界上传已成组实现：每次2MiB源/4MiB展开、
+取消后不发布权重；逐层生成与codec交替，未确认PCM阻止继续推进，
+自然EOS才成功，上限/取消显式失败。正在独立无trace必要构建，
+之后固定实际流式发声与回收短验，不复跑完整数值矩阵。
+
 [TTS服务资产/资源资格通过](evidence/serve-tts-service-assets-20261118/README.md)：
 11唯一CPU/13次1.767秒，完整双权重读取5.552秒、404/271布局，
 零警告、0CUDA/HTTP，租约释放与默认rev306保持。低压缩上限

@@ -217,6 +217,10 @@ set(protocol_inputs
   src/server/tts_assets.cpp
   include/q4t/server/tts_service.h
   src/server/tts_service.cpp
+  include/q4t/server/tts_upload.h
+  src/server/tts_upload.cpp
+  include/q4t/audio/tts_synthesis.h
+  src/audio/tts_synthesis.cpp
   include/q4t/server/aligner_assets.h
   src/server/aligner_assets.cpp
   include/q4t/server/asr_service.h

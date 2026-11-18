@@ -4142,6 +4142,14 @@
           "full_loader_cases": 1,
           "gpu_loads": 0,
           "runtime_integrated": false
+        },
+        "incremental_synthesis": {
+          "state": "incremental_pcm_and_lifecycle_qualified",
+          "evidence": "evidence/serve-tts-incremental-synthesis-20261118/README.md",
+          "cases": 2,
+          "cancellation_cases": 1,
+          "frame_limit_cases": 1,
+          "actual_http": false
         }
       }
     },
@@ -7960,6 +7968,14 @@
       "full_loader_cases": 1,
       "gpu_loads": 0,
       "runtime_integrated": false
+    },
+    "incremental_synthesis": {
+      "state": "incremental_pcm_and_lifecycle_qualified",
+      "evidence": "evidence/serve-tts-incremental-synthesis-20261118/README.md",
+      "cases": 2,
+      "cancellation_cases": 1,
+      "frame_limit_cases": 1,
+      "actual_http": false
     }
   }
 }
