@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speech输入/PCM-WAV 5CPU通过](evidence/serve-speech-contract-20261118/README.md)，
+零警告、883来源/12负控，0GPU；Unicode/voice id/六格式参数与
+真实PCM字节/长度边界已覆盖。继续原生分块变速、压缩编码及
+后端/HTTP/SDK/恢复，默认rev306和全部master保持。
+
+Speech输入/原生PCM-WAV已成组实现：保留voice id与指令，
+4096字符含Unicode、六格式、语速和独立流格式；非有限样本
+显式失败、PCM16与RIFF长度有界。冻结5CPU/60秒、0新增GPU，
+已验发声复用；接下来语速/压缩编码、后端/HTTP/恢复和总任务，
+不将字段解析当实际能力交付。默认rev306保持。
+
 [TTS完整EOS与实际内容通过](evidence/serve-tts-utterance-20261118/README.md)：
 2CPU/零警告；中英文3.20/3.12秒自然结束，独立ASR原文匹配。
 1 talker/codec/ASR、17.659秒，GPU释放、默认rev306保持。

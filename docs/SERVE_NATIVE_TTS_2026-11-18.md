@@ -115,3 +115,15 @@ TTS03完整codec已零警告构建，固定3比较门CPU/60秒后，同严格
 PCM均要求cos≥0.999999、relL2≤0.001、有限且样本计数精确。
 复用talker通过证据，0主LLM/HTTP，不将数值夹具当语音质量；
 通过后继续完整EOS/实际内容及TTS04—07。
+
+## Speech输入与输出合同补齐
+
+2026-11-18核对[官方Speech接口](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create)：
+input/instructions按4096个Unicode字符，model/voice必须保留；
+voice既可字符串，也可自定义id对象。输出含mp3/opus/aac/flac/
+wav/pcm，speed为0.25—4，stream_format为audio/sse。自定义
+voice的真实资产/注册/条件后端仍是待实现项，不能只解析后换成
+固定说话人，也不能删除该能力。PCM/WAV原生无编码库依赖，
+压缩格式复用既有隔离媒体worker；库/插件故障仅影响对应格式。
+固定本组5CPU/60秒，随后实际语速/编码/HTTP/SDK与恢复；已验
+合成数值与两句真实发声直接复用，不扩五档性能或全模型质量。

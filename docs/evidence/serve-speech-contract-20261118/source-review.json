@@ -1,0 +1,26 @@
+{
+  "CMakeLists.txt": {
+    "before": "6ba4e8a717c1f2f5690f9eacc4a495e61ab6170ebe00fc5931eec3f4a16b827c",
+    "after": "b1373011f355492d63619ab25b7a960d0bbf2944e10fde4aa49583f5a702381b"
+  },
+  "cmake/ChatProtocolIdentity.cmake": {
+    "before": "8ece952795ce3c9c9342d1ee498f7eb170260b0db15d5a54bea49a5ca688d450",
+    "after": "fa10eb72c2dfe830e7b1ac649e91fcd9d60b8a7e7bc827e9a07e660c7369eec9"
+  },
+  "include/q4t/audio/pcm_output.h": {
+    "before": null,
+    "after": "bd83f21912281ab51c0d11091655636e2bb5b38f85b088b2d65ba19ec0852c93"
+  },
+  "include/q4t/server/speech_request.h": {
+    "before": null,
+    "after": "4da1ad5ae2f951f0e9b701a616a1cfd20f6a7a69b40dcb899881ebc688aa2da6"
+  },
+  "src/audio/pcm_output.cpp": {
+    "before": null,
+    "after": "854f6c19c70b4d5dd98a6850ed8f4c96280900a1280f9d7bae71a13de7468950"
+  },
+  "src/server/speech_request.cpp": {
+    "before": null,
+    "after": "b52fcf641b7b82b9ebfe52a529c097953b3372e927aa486c1aec32f4b5ff7a6f"
+  }
+}

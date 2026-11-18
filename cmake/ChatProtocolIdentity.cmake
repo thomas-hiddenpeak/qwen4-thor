@@ -3,6 +3,10 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/speech_request.h
+  src/server/speech_request.cpp
+  include/q4t/audio/pcm_output.h
+  src/audio/pcm_output.cpp
   include/q4t/audio/separator_tracks.h
   src/audio/separator_tracks.cpp
   include/q4t/audio/separator_config.h

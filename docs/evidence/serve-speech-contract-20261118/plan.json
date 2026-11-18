@@ -1,0 +1,19 @@
+{
+  "task": "Speech API request and native PCM/WAV contracts",
+  "limits": {
+    "cpu_tests": 5,
+    "seconds": 60,
+    "gpu": 0
+  },
+  "tests": [
+    "speech_request_preserves_content_and_protocol_defaults",
+    "speech_request_voice_reference_is_not_silently_aliased",
+    "speech_request_counts_unicode_and_rejects_ambiguous_controls",
+    "speech_pcm_has_exact_signed_little_endian_samples",
+    "speech_pcm_failure_preserves_output_and_rejects_fake_silence"
+  ],
+  "source": "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create",
+  "api_retrieved": "2026-11-18",
+  "actual_synthesis_evidence_reused": "serve-tts-utterance-20261118",
+  "full_http_pending": true
+}

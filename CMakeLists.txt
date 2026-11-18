@@ -178,6 +178,7 @@ add_library(q4t_model STATIC
   src/audio/vad_chunks.cpp
   src/audio/asr_config.cpp
   src/audio/tts_config.cpp
+  src/audio/pcm_output.cpp
   src/audio/tts_layout.cpp
   src/audio/tts_codec_layout.cpp
   src/audio/tts_generation.cpp
@@ -338,6 +339,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
+  src/server/speech_request.cpp
   src/server/chat_audio_inputs.cpp
   src/server/chat_audio_execution.cpp
   src/server/asr_response.cpp
