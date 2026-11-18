@@ -18,6 +18,7 @@ CAPACITY_FORMAT = 'q4t-profile-migration-permit-v2'
 EXTENSION_FORMAT = 'q4t-profile-migration-permit-v3'
 BACKEND_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v4'
 AUDIO_EXTENSION_FORMAT = 'q4t-profile-migration-permit-v5'
+TTS_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v6'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
@@ -166,6 +167,27 @@ def media_capabilities(value):
             dict(joint_text_mtp=True)
 
 
+def tts_capabilities(value):
+    speech, chat = value.get('speech'), value.get('chat_audio_output')
+    if speech is None and chat is None:
+        return
+    ledger.require(type(speech) is dict and type(chat) is dict and
+        type(speech.get('enabled')) is bool and
+        chat.get('enabled') is speech['enabled'], 'invalid TTS activation capability')
+    enabled = speech['enabled']
+    profile_contract.tts_capability_binding(package.NATIVE_TTS if enabled else None, value)
+    for item in (speech, chat):
+        item['enabled'] = dict(enabled=True) if enabled else {}
+
+
+def tts_capacity_change(before, after):
+    profile_contract.tts_configuration(before)
+    profile_contract.tts_configuration(after)
+    ledger.require(all(before[k] == after[k] for k in package.NATIVE_TTS),
+                   'migration would change qualified talker/codec identity')
+    return before['limits'] != after['limits']
+
+
 def asr_capabilities(value):
     """Optional activation adds a qualified backend, never removes one."""
     selected = value.get('transcriptions')
@@ -297,6 +319,7 @@ def semantic_capabilities(value):
     media_capabilities(result)
     web_search_capabilities(result)
     asr_capabilities(result)
+    tts_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']
@@ -439,9 +462,16 @@ def permit(previous, target, previous_evidence, target_evidence,
                         for registry in (previous, target))
     audio_extension, asr_capacity = (audio_change(old_asr, new_asr)
         if old_asr is not None and new_asr is not None else (False, False))
+    old_tts, new_tts = (r['identity'].get('native_tts') for r in (previous, target))
+    tts_capacity = (tts_capacity_change(old_tts, new_tts)
+        if old_tts is not None and new_tts is not None else False)
+    ledger.require(old_tts == new_tts or tts_capacity or
+        (old_tts is None and new_tts is not None and extension and
+         allow_capability_extension and not automatic),
+        'migration would change or remove qualified TTS identity/capacity')
     changed = previous['profiles'] != target['profiles']
     ledger.require(type(allow_capacity_change) is bool and
-        (not (changed or asr_capacity) or (allow_capacity_change and not automatic)),
+        (not (changed or asr_capacity or tts_capacity) or (allow_capacity_change and not automatic)),
         'capacity change requires explicit historical-qualification migration')
     for key in ('model_files', 'model_assets', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
@@ -455,7 +485,8 @@ def permit(previous, target, previous_evidence, target_evidence,
     ledger.require(type(automatic) is bool and
         (not automatic or previous_config == target_config),
         'automatic fallback cannot alter profile policy')
-    return validate(dict(format=AUDIO_EXTENSION_FORMAT if audio_extension else
+    return validate(dict(format=TTS_CAPACITY_FORMAT if tts_capacity else
+        AUDIO_EXTENSION_FORMAT if audio_extension else
         BACKEND_CAPACITY_FORMAT if asr_capacity else
         EXTENSION_FORMAT if extension else
         CAPACITY_FORMAT if changed else FORMAT,
@@ -468,11 +499,14 @@ def permit(previous, target, previous_evidence, target_evidence,
         to_identity=ledger.digest(target['identity']),
         capabilities_sha256=ledger.digest(first), automatic=automatic,
         **(dict(target_profiles={n:ledger.digest(v) for n,v in target['profiles'].items()})
-           if changed or extension or asr_capacity or audio_extension else {}),
+           if changed or extension or asr_capacity or audio_extension or tts_capacity else {}),
         **(dict(target_capabilities_sha256=ledger.digest(second))
-           if extension or asr_capacity or audio_extension else {}),
+           if extension or asr_capacity or audio_extension or tts_capacity else {}),
         **(dict(from_native_asr=copy.deepcopy(old_asr),
-                to_native_asr=copy.deepcopy(new_asr)) if asr_capacity or audio_extension else {})))
+                to_native_asr=copy.deepcopy(new_asr))
+           if asr_capacity or audio_extension or tts_capacity else {}),
+        **(dict(from_native_tts=copy.deepcopy(old_tts),
+                to_native_tts=copy.deepcopy(new_tts)) if tts_capacity else {})))
 
 
 def validate(value):
@@ -480,20 +514,23 @@ def validate(value):
     extension = type(value) is dict and value.get('format') == EXTENSION_FORMAT
     backend = type(value) is dict and value.get('format') == BACKEND_CAPACITY_FORMAT
     audio = type(value) is dict and value.get('format') == AUDIO_EXTENSION_FORMAT
+    tts = type(value) is dict and value.get('format') == TTS_CAPACITY_FORMAT
     ledger.keys(value, ('format','from_registry','to_registry','profiles',
         'from_configuration','to_configuration','from_identity','to_identity',
         'capabilities_sha256','automatic',
-        *(('target_profiles',) if capacity_change or extension or backend or audio else ()),
-        *(('target_capabilities_sha256',) if extension or backend or audio else ()),
-        *(('from_native_asr', 'to_native_asr') if backend or audio else ())))
+        *(('target_profiles',) if capacity_change or extension or backend or audio or tts else ()),
+        *(('target_capabilities_sha256',) if extension or backend or audio or tts else ()),
+        *(('from_native_asr', 'to_native_asr') if backend or audio or tts else ()),
+        *(('from_native_tts', 'to_native_tts') if tts else ())))
     ledger.require(value['format'] in (FORMAT, CAPACITY_FORMAT, EXTENSION_FORMAT,
-                                      BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT) and
+                                      BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT,
+                                      TTS_CAPACITY_FORMAT) and
                    type(value['automatic']) is bool,
                    'invalid profile migration permit')
-    if capacity_change or extension or backend or audio:
+    if capacity_change or extension or backend or audio or tts:
         ledger.keys(value['target_profiles'], profile_contract.NAMES)
         ledger.require(not value['automatic'] and
-            (extension or backend or audio or value['target_profiles'] != value['profiles']),
+            (extension or backend or audio or tts or value['target_profiles'] != value['profiles']),
             'capacity/feature migration must be explicit')
     if extension or audio:
         ledger.require(value['target_capabilities_sha256'] != value['capabilities_sha256'],
@@ -503,12 +540,24 @@ def validate(value):
         added, changed = audio_change(before, after)
         ledger.require(added if audio else changed and not added,
                        'backend migration must bind its real addition or capacity change')
+    if tts:
+        ledger.require(tts_capacity_change(value['from_native_tts'], value['to_native_tts']),
+                       'TTS capacity migration must bind a real budget change')
+        before, after = value['from_native_asr'], value['to_native_asr']
+        if before != after:
+            if before is None:
+                profile_contract.asr_configuration(after)
+                added = True
+            else:
+                added, _ = audio_change(before, after)
+            ledger.require(not added or value['target_capabilities_sha256'] !=
+                value['capabilities_sha256'], 'audio extension lacks changed capabilities')
     ledger.keys(value['profiles'], profile_contract.NAMES)
     for h in [value[k] for k in ('from_registry','to_registry','from_identity',
                                'to_identity','capabilities_sha256')]+list(value['profiles'].values())+list(
                                    value.get('target_profiles', {}).values())+(
                                    [value['target_capabilities_sha256']]
-                                   if extension or backend or audio else []):
+                                   if extension or backend or audio or tts else []):
         ledger.require(type(h) is str and ledger.HASH.fullmatch(h),
                        'invalid profile migration identity')
     policy.configuration(value['from_configuration'])
@@ -527,7 +576,8 @@ def candidate(previous, authorization, stamp):
         'profile migration predecessor differs')
     # No elapsed time, including same-boot STOPPED time, earns new budget.
     value = policy.resume(previous, stamp)
-    if authorization['format'] in (BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT) or (
+    if authorization['format'] in (BACKEND_CAPACITY_FORMAT, AUDIO_EXTENSION_FORMAT,
+                                    TTS_CAPACITY_FORMAT) or (
             authorization['format'] in (CAPACITY_FORMAT, EXTENSION_FORMAT) and
             authorization['target_profiles'] != previous['profiles']):
         value = policy.historical(value)

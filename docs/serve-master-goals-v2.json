@@ -8034,6 +8034,17 @@
       "total_actual_http_posts": 21,
       "total_asr_loads": 2,
       "total_seconds": 499.4088844098151
+    },
+    "managed": {
+      "state": "cpu_qualified_actual_primary_light_tls_recovery_pending",
+      "cpu_unique": 19,
+      "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
+      "profile_short_scope": {
+        "starts": 2,
+        "posts": 22,
+        "seconds": 900
+      },
+      "default_changed": false
     }
   }
 }

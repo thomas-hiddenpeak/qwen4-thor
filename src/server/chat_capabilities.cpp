@@ -742,7 +742,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("none_disables_thinking":true},)"
          R"("speech":{"route":"/v1/audio/speech","enabled":)" +
          (native_tts ? "true" : "false") + R"(,"model":)" +
-         Quote(kNativeTtsModel) +
+         Quote(kNativeTtsModel) + R"(,"profile":)" +
+         Quote(kNativeTtsProfile) + R"(,"revision":)" +
+         Quote(kNativeTtsRevision) + R"(,"weight_sha256":)" +
+         Quote(kNativeTtsWeightSha256) + R"(,"codec_weight_sha256":)" +
+         Quote(kNativeTtsCodecWeightSha256) +
          R"(,"formats":["mp3","opus","aac","flac","wav","pcm"],)"
          R"("voices":["serena","vivian","uncle_fu","ryan","aiden",)"
          R"("ono_anna","sohee","eric","dylan"],)"

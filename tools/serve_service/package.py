@@ -152,6 +152,13 @@ NATIVE_EMBEDDING = dict(profile='q4t-native-embedding-v1', model='qwen3-embeddin
 NATIVE_ASR = dict(profile='q4t-native-asr-v1', model='qwen3-asr-0.6b',
     revision='5eb144179a02acc5e5ba31e748d22b0cf3e303b0',
     weight_sha256='79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea')
+NATIVE_TTS = dict(profile='q4t-native-tts-v1',
+    model='qwen3-tts-12hz-1.7b-customvoice',
+    revision='0c0e3051f131929182e2c023b9537f8b1c68adfe',
+    weight_sha256='38b1d5971bdbd982b561cccec982669a53b0537c3cf5e9bd4778ed07bb2f5137',
+    codec_weight_sha256='836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258')
+TTS_LIMITS = dict(max_text_tokens=16384, max_prefill_tokens=8192,
+                  max_frames=4096, workspace_mib=8192, max_output_mib=64)
 ASR_LIMITS = dict(max_audio_seconds=30, max_context_tokens=4096,
                   max_output_tokens=1024, workspace_mib=1024)
 NATIVE_ALIGNMENT = dict(profile='q4t-native-aligner-v1', model='qwen3-forced-aligner-0.6b',
@@ -297,9 +304,27 @@ def asr_settings(value):
     return dict(value, limits=dict(limits), **auxiliary)
 
 
+def tts_settings(value):
+    require(type(value) is dict and value.keys() == {*NATIVE_TTS, 'directory', 'limits'}
+            and all(value[k] == v for k, v in NATIVE_TTS.items()),
+            'invalid native TTS identity')
+    audio_asset_directory(value['directory'])
+    limits = value['limits']
+    require(type(limits) is dict and limits.keys() == TTS_LIMITS.keys() and
+            all(type(v) is int for v in limits.values()), 'invalid native TTS limits')
+    require(4 <= limits['max_text_tokens'] <= 32768 and
+            2 <= limits['max_frames'] <= 4096 and
+            8 <= limits['max_prefill_tokens'] <= 32768-limits['max_frames'] and
+            128 <= limits['workspace_mib'] <= 16384 and
+            1 <= limits['max_output_mib'] <= 128, 'invalid native TTS capacity')
+    # Both local checkpoints are checked together by the isolated request
+    # loader. An absent TTS asset must not make healthy core Chat unverifiable.
+    return copy.deepcopy(value)
+
+
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
              nvml_policy='strict', model_names=None, application_state=None,
-             capacity_profile=None, native_embedding=None, native_asr=None):
+             capacity_profile=None, native_embedding=None, native_asr=None, native_tts=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -351,6 +376,12 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         require(selected['model'] not in [names['name'], *names['aliases']],
                 'native ASR model conflicts with Chat registry')
         result['native_asr'] = selected
+    if native_tts is not None:
+        selected = tts_settings(native_tts)
+        names = result.get('model_names', dict(name='qwen3.8-flash-next', aliases=[]))
+        require(selected['model'] not in [names['name'], *names['aliases']],
+                'native TTS model conflicts with Chat registry')
+        result['native_tts'] = selected
     return result
 
 
@@ -549,13 +580,18 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             application_state=None, capacity_config=None, repository=None,
             access_program_policy=None, file_input_policy=None,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
-            asr_model_dir=None, asr_limits=None, asr_auxiliary=None):
+            asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
+            tts_model_dir=None, tts_limits=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
     if capacity_config is not None:
         from tools.serve_service import capacity
         profile = capacity.normalize(capacity_config)
+    require(tts_model_dir is not None or tts_limits is None,
+            'native TTS limits require a TTS model directory')
+    require(tts_limits is None or type(tts_limits) is dict and
+            tts_limits.keys() <= TTS_LIMITS.keys(), 'invalid native TTS overrides')
     require(asr_model_dir is not None or asr_limits is None,
             'native ASR limits require an ASR model directory')
     require(asr_limits is None or type(asr_limits) is dict and
@@ -570,7 +606,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                           if embedding_model_dir is not None else None),
                       native_asr=(dict(NATIVE_ASR, directory=str(asr_model_dir),
                           limits=dict(ASR_LIMITS, **(asr_limits or {})), **auxiliary)
-                          if asr_model_dir is not None else None))
+                          if asr_model_dir is not None else None),
+                      native_tts=(dict(NATIVE_TTS, directory=str(tts_model_dir),
+                          limits=dict(TTS_LIMITS, **(tts_limits or {})))
+                          if tts_model_dir is not None else None))
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -620,6 +659,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         check_embedding_declaration(metadata)
     if 'native_asr' in config:
         check_asr_declaration(metadata, config['native_asr'])
+    check_tts_declaration(metadata, config.get('native_tts'))
     if access_raw is not None:
         require(read(declarations/'capabilities.json').get('responses', {})
                 .get('access_programs', {}).get('enabled') is True,
@@ -760,7 +800,8 @@ def verify(package, digest):
                       config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10, 11) else 'strict',
                       config.get('model_names'), config.get('application_state'),
                       config['profile'] if manifest['version'] == 11 else None,
-                      config.get('native_embedding'), config.get('native_asr'))
+                      config.get('native_embedding'), config.get('native_asr'),
+                      config.get('native_tts'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -888,6 +929,7 @@ def verify(package, digest):
         check_embedding_declaration(metadata)
     if 'native_asr' in config:
         check_asr_declaration(metadata, config['native_asr'])
+    check_tts_declaration(metadata, config.get('native_tts'))
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -946,6 +988,31 @@ def check_asr_declaration(metadata, selected):
                 'accepted engine does not declare optional audio limits/identity: '+name)
 
 
+def check_tts_declaration(metadata, selected):
+    capability = metadata.get('chat_protocol', {}).get('speech', {})
+    chat = metadata.get('chat_protocol', {}).get('chat_audio_output', {})
+    configuration = metadata.get('observed_configuration', {})
+    health = configuration.get('native_tts_health', {})
+    require(all(type(v) is dict for v in (capability, chat, health)),
+            'invalid native TTS declarations')
+    if selected is None:
+        require(capability.get('enabled') is not True and
+                chat.get('enabled') is not True and
+                health.get('state', 'disabled') == 'disabled',
+                'package drops configured native TTS backend')
+        return
+    selected = tts_settings(selected)
+    require(capability.get('enabled') is True and chat.get('enabled') is True and
+            all(capability.get(k) == v for k, v in NATIVE_TTS.items()) and
+            capability.get('core_health_dependency') is False and
+            health.get('model') == NATIVE_TTS['model'] and
+            health.get('core_readiness_dependency') is False and
+            health.get('state') in ('configured', 'loading', 'metadata_ready',
+                                    'ready', 'degraded') and
+            same_json(configuration.get('native_tts_limits'), selected['limits']),
+            'accepted engine does not declare configured native TTS limits/identity')
+
+
 def check_media_declaration(metadata, profile):
     """Opt-in media requires an actually accepted media-enabled engine."""
     if profile.get('allow_media', False):
@@ -996,6 +1063,11 @@ def command(package, manifest, *, state_directory=None):
                 args += ['--'+prefix+'-model-dir', selected[name]['directory']]
                 for key, value in selected[name]['limits'].items():
                     args += ['--'+prefix+'-'+key.replace('_', '-'), str(value)]
+    if 'native_tts' in cfg:
+        selected = tts_settings(cfg['native_tts'])
+        args += ['--tts-model-dir', selected['directory']]
+        for key, value in selected['limits'].items():
+            args += ['--tts-'+key.replace('_', '-'), str(value)]
     if 'application_state' in cfg:
         objects = application_settings(cfg['application_state'])
         directory = objects['directory']

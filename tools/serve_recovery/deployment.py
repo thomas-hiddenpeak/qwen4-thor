@@ -79,6 +79,11 @@ def check_target(current, target):
         ledger.require(all(selected.get(k) == embedding[k]
                            for k in engine.NATIVE_EMBEDDING),
                        'deployment would remove or change accepted embedding model')
+    tts = old_core['settings'].get('native_tts')
+    if tts is not None:
+        selected = new_core['settings'].get('native_tts', {})
+        ledger.require(all(selected.get(k) == tts[k] for k in engine.NATIVE_TTS),
+                       'deployment would remove or change accepted TTS model/codec')
     asr = old_core['settings'].get('native_asr')
     if asr is not None:
         selected = new_core['settings'].get('native_asr', {})

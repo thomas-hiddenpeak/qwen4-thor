@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[受管TTS 19针对CPU通过](evidence/serve-tts-managed-cpu-20261118/README.md)：
+18 Python/8.523秒、1 C++/0.0075秒；引擎/host零警告，914来源/
+12负控。候选638171d9单独保留，默认rev306仍停止。接着冻结
+同一严格租约2核心/22POST/900秒主轻业务，各自含真实Speech和
+Chat发声，完整音频须与已验原文音频逐字节一致；保留已有业务
+合同和实际健康。随后原生TLS/受管恢复/发行及全部master继续。
+
+受管TTS配置/声明及恢复接线已成组实现，尚未验收：talker/codec双
+身份、五预算、缺资产与核心隔离、两层CLI与主轻/版本通道保持。
+恢复资格须含两配置真实Speech与Chat完整音频；显式预算迁移保留
+历史冷却，自动回退不能删能力。冻结19针对CPU/180秒/0GPU，
+其中18 Python和1 C++声明；随后必要实际TLS/恢复短验另列冻结。
+旧构建产物102.03MB逐SHA无损归档44.35MB，默认/候选/模型不变；
+4倍内容、voice及全部master继续。
+
 [Chat音频输出/历史/内容12条业务通过](evidence/serve-chat-audio-output-http-20261118/README.md)。
 双SDK、JSON/SSE、真实工具、n/schema、取消、重启历史、隔离与
 TPM均满足；六完整音频独立ASR全过。所有原失败保留，两个生产

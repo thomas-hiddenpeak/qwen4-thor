@@ -6,6 +6,7 @@
 #include "q4t/audio/tts_codec_layout.h"
 #include "q4t/io/json.h"
 #include "q4t/server/tts_assets.h"
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/test.h"
 
 namespace {
@@ -140,5 +141,24 @@ Q4T_TEST(tts_health_cancellation_release_and_device_fault_boundaries) {
       Parse(TtsHealthJson(metadata.Snapshot(), false)).GetString("reason") ==
       "gpu_unhealthy");
   Q4T_CHECK(!metadata.Snapshot().ready);
+  return true;
+}
+
+Q4T_TEST(tts_capability_pins_the_actual_talker_and_codec_independently_of_health) {
+  for (bool enabled : {false, true}) {
+    const auto value = Parse(ChatCapabilitiesJson(
+        "chat", false, true, 0, nullptr, false, false, false, false, 64,
+        false, false, enabled));
+    const auto* speech = value.Find("speech");
+    Q4T_CHECK(speech && speech->GetBool("enabled") == enabled);
+    Q4T_CHECK(speech->GetString("profile") == kNativeTtsProfile);
+    Q4T_CHECK(speech->GetString("model") == kNativeTtsModel);
+    Q4T_CHECK(speech->GetString("revision") == kNativeTtsRevision);
+    Q4T_CHECK(speech->GetString("weight_sha256") == kNativeTtsWeightSha256);
+    Q4T_CHECK(speech->GetString("codec_weight_sha256") ==
+              kNativeTtsCodecWeightSha256);
+    Q4T_CHECK(!speech->GetBool("core_health_dependency", true));
+    Q4T_CHECK(value.Find("chat_audio_output")->GetBool("enabled") == enabled);
+  }
   return true;
 }

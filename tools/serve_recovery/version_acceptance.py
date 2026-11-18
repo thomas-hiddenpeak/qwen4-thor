@@ -89,6 +89,9 @@ def prepare(args):
         native_receipt=out/'native-build.json',native_ingress=origin/'bin/q4t-ingress',
         capacity_config=capacity,application_state=application,model_names=settings.get('model_names'),
         embedding_model_dir=Path(settings['native_embedding']['directory']),
+        tts_model_dir=(Path(settings['native_tts']['directory'])
+                       if settings.get('native_tts') else None),
+        tts_limits=settings.get('native_tts', {}).get('limits'),
         asr_model_dir=(Path(settings['native_asr']['directory'])
                        if settings.get('native_asr') else None),
         asr_limits=settings.get('native_asr', {}).get('limits'),

@@ -2,6 +2,7 @@
 
 Two starts, six Chat and two native embedding requests under one strict lease.
 Media profiles additionally require one actual video request on each profile.
+Configured TTS requires actual Speech and Chat output on both profiles.
 Configured ASR additionally requires one actual audio request on each profile.
 Configured alignment/VAD additionally requires actual auxiliary audio per profile.
 Declared Chat audio requires a source-bound main-model answer on each profile.
@@ -38,12 +39,12 @@ DOCUMENT = 'docs/SERVE_MEMORY_STOP_2026-11-03.md'
 SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
-def limits_for(profile, native_asr=None, chat_audio=False):
+def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None):
     capacity.validate(profile)
     require(type(chat_audio) is bool and (not chat_audio or native_asr is not None),
             'Chat audio qualification requires native ASR')
     return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
-                (2 if chat_audio else 0) +
+                (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
                 (2 if native_asr is not None else 0) +
                 (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0) +
@@ -147,17 +148,24 @@ def prepare(args):
         base['settings'].get('native_asr')
     if asr is not None:
         base['settings']['native_asr'] = asr
+    tts_path = getattr(args, 'tts_config', None)
+    tts = package.tts_settings(read(tts_path)) if tts_path else base['settings'].get('native_tts')
+    if tts is not None:
+        base['settings']['native_tts'] = tts
     selected_path = getattr(args, 'capacity_config', None)
     selected = capacity.normalize(read(selected_path)) if selected_path else \
         capacity.validate(base['settings']['profile'])
     profiles = profile_contract.profiles(selected)
     media = selected.get('allow_media', False)
     chat_audio = getattr(args, 'chat_audio', False)
-    limits = limits_for(selected, asr, chat_audio)
+    limits = limits_for(selected, asr, chat_audio, tts)
     background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     if chat_audio: plan['chat_audio'] = True
+    if tts_path:
+        tts_path = tts_path.resolve(strict=True)
+        plan['sources'][str(tts_path)] = sha(tts_path)
     if asr_path:
         asr_path = asr_path.resolve(strict=True)
         plan['sources'][str(asr_path)] = sha(asr_path)
@@ -203,7 +211,7 @@ def prepare(args):
     plan.update(base=base, profiles=profiles,
         identity=profile_contract.binding(base['files']['q4t'], base['protocol_sha256'],
             base['model_files'], manifest['model_assets'], base['settings']['native_embedding'],
-            asr))
+            asr, tts))
     plan['sources'][DOCUMENT] = sha(ROOT/DOCUMENT)
     if media:
         plan['sources'][profile_evidence.MEDIA_FILE] = sha(ROOT/profile_evidence.MEDIA_FILE)
@@ -211,6 +219,20 @@ def prepare(args):
     assets = Path(base['settings']['native_embedding']['directory'])
     plan['native_assets'] = {str(assets/name):sha(assets/name) for name in
                             ['config.json', 'tokenizer.json', 'model.safetensors']}
+    if tts is not None:
+        speech_assets = Path(tts['directory'])
+        for prefix in ('', 'speech_tokenizer/'):
+            for name in ('config.json', 'preprocessor_config.json', 'model.safetensors'):
+                asset = speech_assets/(prefix+name)
+                plan['native_assets'][str(asset)] = sha(asset)
+        for name in ('tokenizer_config.json', 'vocab.json', 'merges.txt',
+                     'generation_config.json', 'speech_tokenizer/configuration.json'):
+            asset = speech_assets/name
+            plan['native_assets'][str(asset)] = sha(asset)
+        require(plan['native_assets'][str(speech_assets/'model.safetensors')] ==
+            package.NATIVE_TTS['weight_sha256'] and
+            plan['native_assets'][str(speech_assets/'speech_tokenizer/model.safetensors')] ==
+            package.NATIVE_TTS['codec_weight_sha256'], 'qualified TTS paired assets differ')
     if asr is not None:
         clip = getattr(args, 'asr_audio', None)
         require(clip is not None, 'ASR qualification needs its fixed real audio')
@@ -294,7 +316,7 @@ class Stage(encrypted.Stage):
     def __init__(self, plan):
         selected = plan['profiles']['primary']
         self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'),
-                                 plan.get('chat_audio', False))
+                                 plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'))
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
 
@@ -346,6 +368,22 @@ class Stage(encrypted.Stage):
         self.same_model()
         self.drained(label+'-drain')
         return result
+
+    def tts_request(self):
+        rows = profile_evidence.tts_requests()
+        label = self.profile_name+'-speech'
+        save(self.out/(label+'.request.json'), rows['speech'])
+        self.budget('chats')
+        status, raw = self.http('/v1/audio/speech', rows['speech'], label=label, timeout=120)
+        require(status == 200, 'qualified Speech request failed')
+        self.same_model(); self.drained(label+'-drain')
+        chat = self.request('chat-output', rows['chat'])
+        status, config = self.http('/v1/config', label=self.profile_name+'-tts-config')
+        require(status == 200, 'qualified TTS configuration unavailable')
+        config = json.loads(config)
+        return dict(requests=rows, speech_base64=base64.b64encode(raw).decode(),
+            chat_response=chat, health=config['native_tts_health'],
+            limits=config['native_tts_limits'])
 
     def audio_request(self, auxiliary=False, speaker=False, separator=False):
         require(sum((auxiliary, speaker, separator)) <= 1,
@@ -444,6 +482,8 @@ class Stage(encrypted.Stage):
         if selected.get('allow_media', False):
             value['media'] = dict(request=copy.deepcopy(rows['media']),
                 response=self.request('media', rows['media'], '/v1/responses'))
+        if self.plan['identity'].get('native_tts') is not None:
+            value['tts'] = self.tts_request()
         if self.plan['identity'].get('native_asr') is not None:
             value['asr'] = self.audio_request()
         if self.plan.get('chat_audio'):
@@ -495,7 +535,7 @@ def finalize(out):
     plan = read(out/'plan.json')
     result = read(out/'result.json')
     limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'),
-                         plan.get('chat_audio', False))
+                         plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'))
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
@@ -558,6 +598,8 @@ def main():
                    help='unsealed compiled build to qualify before release packaging')
     p.add_argument('--capacity-config', type=Path,
                    help='explicit versioned candidate capacity; retained package stays unchanged')
+    p.add_argument('--tts-config', type=Path,
+                   help='explicit paired TTS identity, asset directory and all budgets')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,
