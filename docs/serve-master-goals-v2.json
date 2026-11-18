@@ -8623,11 +8623,11 @@
         "gpu_loads": 0
       },
       "service": {
-        "state": "SAMPLING_DEFECT_FIXED_CPU_QUALIFIED_HTTP_PENDING",
+        "state": "VOICE_CONSISTENCY_DIAGNOSED_LOG_LIFETIME_FIXED_HTTP_PENDING",
         "evidence": "evidence/serve-custom-voice-service-cpu-20261118/README.md",
         "cpu_contracts": 27,
         "gpu_loads": 0,
-        "engine_sha256": "fa2a78e177909747efb0e062f435462493c36e07cb67843bbbb612dfd898af54",
+        "engine_sha256": "0d1ca22b5268c9fef7965cef8f6140370077a04b28c42a111290155d2c67e1be",
         "runtime_http_qualified": false,
         "remaining": [
           "real consent and sample HTTP, different speaker and wrong phrase negatives",
@@ -8637,7 +8637,14 @@
           "reference audio ICL, prompt voices and Live",
           "listening and speaker similarity"
         ],
-        "latest_evidence": "evidence/serve-voice-sampling-fix-20261119/README.md"
+        "latest_evidence": "evidence/serve-voice-identity-diagnostic-20261119/README.md",
+        "speaker_diagnosis": {
+          "native_vectors": 18,
+          "official_cpu_vectors": 18,
+          "max_relative_l2": 2.8509007139870166e-06,
+          "threshold_unchanged": 0.65,
+          "synthetic_recording_consistency_pending": true
+        }
       }
     }
   }

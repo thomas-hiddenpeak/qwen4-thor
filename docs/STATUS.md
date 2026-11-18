@@ -7,6 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[声纹算术复核与终态日志修复通过](evidence/serve-voice-identity-diagnostic-20261119/README.md)：
+18原生/官方CPU向量最大相对L2 2.851e-6，官方同样复现低相似度，
+注册门槛保持0.65；后续查较长TTS计算与录音音色，未判整体通过。
+日志局部字符串改自有有界副本，5 CPU通过，两构建零警告，默认保持。
+
+声纹诊断18个原生向量已完成（1.387秒、严格租约正常）：授权完整3秒
+窗口间最低余弦0.049，整段授权/样本0.439，不能归因短窗口或直接放宽。
+冻结官方CPU同18窗口/180秒独立前端+模型复核；门槛保持0.65。
+同时修复RequestDiagnostics对动态stage/outcome/reason的借用，改为
+有界自有存储，超长标签明确标记且Outcome不分配。冻结5 CPU/60秒。
+
+采样修复后四份录音均自然EOS，否定授权正确400；正向授权文本通过，
+但192维窗口一致性拒绝（voice_speaker_mismatch）。原96.475秒/7POST
+失败保留。冻结复用三份原WAV、原生16k解码/VAD与最多99声纹窗口诊断，
+1speaker/1CPU VAD、600秒、0主模型/TTS/ASR/HTTP，不改变0.65门槛。
+同时发现终态日志借用了已释放的动态reason字符串，后续一起修复。
+
 [语音贪心缺陷已修复，待HTTP续验](evidence/serve-voice-sampling-fix-20261119/README.md)：
 原句贪心200帧无EOS，checkpoint采样47帧/独立ASR两句完整；31.401秒、
 31次NVML正常。4项CPU/0.0096秒，引擎17.010秒零警告，原失败保留。
