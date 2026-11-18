@@ -1,0 +1,49 @@
+{
+  "schema": "q4t-tempo-oracle-diagnosis-continuation-v1",
+  "limits": {
+    "seconds": 1200,
+    "gpu_asr_loads": 1,
+    "cases": 3,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0,
+    "asr_tokens_per_case": 64,
+    "cpu_reference_calls": 3,
+    "cpu_reference_samples": 1000000
+  },
+  "utterances": [
+    {
+      "utterance": 1,
+      "original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "original_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91",
+      "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tempo-02/run/native/case-1/pcm.f32",
+      "candidate_sha256": "b5b36e7ecdea48c252a5faa54a8390d5add4a9882ac99e8305314b1e611e01df"
+    }
+  ],
+  "defaults": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "library_sha256": "c45b35e13d535349e72d2ea22ce0fbc78629d9e6d01e7237d3ab249f840d5148",
+  "asr_binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "driver_sources": {
+    "tempo_diagnosis.py": "b9ca4ed27ad70185fe4a570d6a967ffe6f2b536cc9048ee01872e0e4414f7486",
+    "utterance_acceptance.py": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0",
+    "acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "reference": {
+    "library": "SoundTouch 2.3.2",
+    "role": "test-only existing system library; no production dependency",
+    "api_source": {
+      "url": "https://codeberg.org/soundtouch/soundtouch/raw/tag/2.3.2/source/SoundTouchDLL/SoundTouchDLL.h",
+      "sha256": "8178a7f68891ac784c0ba987966768f68a62ffd7becb3a26c809448ce05172f3"
+    },
+    "ffmpeg": "Installed build has no atempo filter; no ffmpeg execution or download"
+  },
+  "acceptance_granted": false,
+  "reuse": "tempo-diagnosis-01 completed first English group; wrong language/EOS explicitly recorded as failed content; only previously unexecuted Chinese group"
+}

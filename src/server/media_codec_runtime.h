@@ -21,7 +21,7 @@
 
 namespace q4t::server::media_detail {
 using namespace object_detail;
-enum class CodecDomain { kVideo, kAudio };
+enum class CodecDomain { kVideo, kAudio, kSpeech };
 struct Runtime {
 #define API(name) decltype(&name) name##_fn = nullptr
   API(gst_init_check);
@@ -113,7 +113,7 @@ struct Runtime {
     void* core =
         Library(root + "/libgstreamer-1.0.so.0", "gstreamer", &core_sha);
     void* app = Library(root + "/libgstapp-1.0.so.0", "gstapp", &app_sha);
-    const bool audio = domain == CodecDomain::kAudio;
+    const bool audio = domain != CodecDomain::kVideo;
     const char* media_name = audio ? "gstaudio" : "gstvideo";
     void* media = Library(root + "/lib" + media_name + "-1.0.so.0", media_name,
                           &media_sha);
@@ -206,7 +206,11 @@ struct Runtime {
         "audioparsers", "flac",    "ogg",          "opus",          "vorbis",
         "mpg123",       "isomp4",  "matroska",     "faad",          "alaw",
         "mulaw",        "adpcmdec"};
-    for (const char* name : audio ? audio_plugins : video_plugins) {
+    const std::initializer_list<const char*> speech_plugins = {
+        "coreelements", "app", "flac", "ogg", "opus", "lame", "voaacenc"};
+    const auto plugins = domain == CodecDomain::kSpeech ? speech_plugins
+                         : audio ? audio_plugins : video_plugins;
+    for (const char* name : plugins) {
       std::string sha;
       auto handle =
           Library(root + "/gstreamer-1.0/libgst" + name + ".so", name, &sha);

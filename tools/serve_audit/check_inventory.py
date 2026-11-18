@@ -252,6 +252,7 @@ def current_surface(root):
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
                    set(root.glob("src/audio/**/*.cu")) |
+                   set(root.glob("src/audio/**/*.h")) |
                    set(root.glob("include/q4t/audio/**/*.h")) |
                    {p for p in root.glob("tools/serve_recovery/*.py")
                     if not p.name.startswith("test_")} |
@@ -260,9 +261,11 @@ def current_surface(root):
                        root / "src/io/json.cpp", root / "include/q4t/io/json.h",
                        root / "src/trace/sha256.cpp",
                        root / "include/q4t/trace/sha256.h",
+                       root / "include/q4t/io/base64.h",
                        root / "src/model/model_head.cu",
                        root / "include/q4t/model/model_head.h",
                        root / "src/text/tokenizer.cpp",
+                       root / "include/q4t/text/tokenizer.h",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
                        root / "src/runtime/cuda_allocation_quota.cpp",
@@ -374,7 +377,16 @@ def mutation_checks(inventory, actual):
         missing = missing_protocol_sources(ROOT, manifest.replace(path, ""))
         if path not in missing:
             raise ValueError("protocol source omission escaped detection: " + path)
-    return len(cases) + 2
+    private_headers = sorted(ROOT.glob("src/audio/**/*.h"))
+    for header in private_headers:
+        name = str(header.relative_to(ROOT))
+        if name not in actual["sources_sha256"]:
+            raise ValueError("audio private source omitted: " + name)
+        changed = dict(actual["sources_sha256"])
+        changed.pop(name)
+        if not check(inventory, dict(actual, sources_sha256=changed)):
+            raise ValueError("audio private source omission escaped: " + name)
+    return len(cases) + 2 + len(private_headers)
 
 
 def main():

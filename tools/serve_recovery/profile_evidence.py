@@ -10,6 +10,81 @@ import wave
 
 from tools.serve_recovery import ledger, profile_contract
 
+TTS_FORMAT = 'q4t-profile-business-v8'
+TTS_TEXT = 'Hello, this is a native speech test.'
+# Whole byte identities from the accepted native full-text synthesis + no-hint
+# ASR in serve-chat-audio-output-http-20261118; no tolerances or shortened clips.
+TTS_AUDIO = dict(
+    speech=(40704, '5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323'),
+    chat=(115244, '4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126'))
+
+
+def tts_requests():
+    from tools.serve_service import package
+    return dict(speech=dict(model=package.NATIVE_TTS['model'], input=TTS_TEXT,
+        voice='ryan', instructions='Speak calmly.', response_format='mp3',
+        stream_format='audio', speed=1),
+        chat=dict(model='qwen3.8-flash-next', temperature=0, enable_thinking=False,
+            messages=[dict(role='user', content='Repeat exactly this sentence without adding words: '+TTS_TEXT)],
+            modalities=['audio'], audio=dict(voice='ryan', format='wav'),
+            stream=False, store=True))
+
+
+def tts_audio(value, kind):
+    ledger.require(type(value) is str and 0 < len(value) <= 1024*1024,
+                   'invalid qualified TTS audio encoding')
+    try:
+        raw = base64.b64decode(value, validate=True)
+    except ValueError as error:
+        raise ValueError('invalid qualified TTS base64') from error
+    size, digest = TTS_AUDIO[kind]
+    ledger.require(base64.b64encode(raw).decode() == value and len(raw) == size and
+        hashlib.sha256(raw).hexdigest() == digest,
+        'qualified TTS whole audio differs from accepted content')
+
+
+def tts_business(value, identity):
+    ledger.keys(value, ('requests', 'speech_base64', 'chat_response', 'health', 'limits'))
+    fixed = identity['native_tts']
+    profile_contract.tts_configuration(fixed)
+    ledger.require(ledger.canonical(value['requests']) == ledger.canonical(tts_requests()) and
+        ledger.canonical(value['limits']) == ledger.canonical(fixed['limits']),
+        'qualified TTS requests or effective budgets differ')
+    health = value['health']
+    ledger.require(type(health) is dict and health.get('state') == 'ready' and
+        health.get('model') == fixed['model'] and
+        health.get('core_readiness_dependency') is False and
+        health.get('reason') == 'none' and
+        type(health.get('compute_failures')) is int and health['compute_failures'] == 0 and
+        ledger.integer(health.get('device_bytes'), minimum=1),
+        'qualified TTS backend is not healthy/isolated')
+    tts_audio(value['speech_base64'], 'speech')
+    response = value['chat_response']
+    msg = message(response, 'stop')
+    ledger.require(msg.get('content') is None and type(msg.get('audio')) is dict,
+                   'qualified Chat audio output is missing')
+    audio = msg['audio']
+    ledger.require(type(audio.get('id')) is str and audio['id'].startswith('audio_') and
+        ledger.integer(audio.get('expires_at'), minimum=1) and
+        audio.get('transcript') == TTS_TEXT, 'qualified Chat audio history differs')
+    tts_audio(audio.get('data'), 'chat')
+    usage = response.get('usage', {})
+    ledger.require(type(usage) is dict, 'invalid qualified TTS usage')
+    parts = usage.get('completion_tokens_details', {})
+    synthesis = usage.get('q4t_audio_synthesis', {})
+    ledger.require(all(type(v) is dict for v in (usage, parts, synthesis)) and
+        all(ledger.integer(usage.get(k), minimum=1) for k in
+            ('prompt_tokens', 'completion_tokens', 'total_tokens')) and
+        usage['total_tokens'] == usage['prompt_tokens']+usage['completion_tokens'] and
+        ledger.integer(parts.get('audio_tokens'), minimum=16) and
+        parts['audio_tokens'] % 16 == 0 and
+        ledger.integer(synthesis.get('input_tokens'), minimum=1) and
+        synthesis.get('output_tokens') == parts['audio_tokens']+1 and
+        usage['completion_tokens'] > synthesis['output_tokens'] and
+        usage['prompt_tokens'] > synthesis['input_tokens'],
+        'qualified TTS actual usage missing or inconsistent')
+
+
 CHAT_AUDIO_FORMAT = 'q4t-profile-business-v7'
 CHAT_AUDIO_SOURCE_SHA = '46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50'
 CHAT_AUDIO_CAPABILITY = dict(profile='q4t-chat-audio-input-v1', formats=['wav', 'mp3'],
@@ -138,6 +213,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None):
+    if (identity or {}).get('native_tts') is not None:
+        return TTS_FORMAT
     if chat_audio_enabled(identity or {}, capabilities):
         return CHAT_AUDIO_FORMAT
     if has_separator(identity or {}):
@@ -240,8 +317,20 @@ def separator_business(value, identity):
                   for label, source in zip(labels, SEPARATOR_UTTERANCES)]
         scored.append((sum(scores), labels, scores))
     _, labels, scores = min(scored)
-    ledger.require(all(v <= .125 for v in scores),
-                   'qualified separator per-voice recognition quality failed')
+    # 2026-11-18 owner decision: this observed inflection preserves meaning.
+    # Keep raw WER and the old failed record. This is an explicit review of
+    # the pinned source, not stemming, a higher threshold, or a general waiver.
+    approved = ('the child almost hurts the small dog', None)
+    quality = []
+    for label, source, score, allowed in zip(
+            labels, SEPARATOR_UTTERANCES, scores, approved):
+        observed = ' '.join(r['text'] for r in grouped[label])
+        normalized = ' '.join(re.findall(r'\w+', observed.lower()))
+        reviewed = score > .125 and allowed is not None and normalized == allowed
+        ledger.require(score <= .125 or reviewed,
+                       'qualified separator per-voice recognition quality failed')
+        quality.append(dict(reference=source[2], observed=observed, wer=score,
+            threshold=.125, accepted_inflection=reviewed))
     for label, (begin, end, _) in zip(labels, SEPARATOR_UTTERANCES):
         ledger.require(all(r['start']*16000 >= begin-6080 and
                            r['end']*16000 <= end+6080 for r in grouped[label]),
@@ -249,6 +338,9 @@ def separator_business(value, identity):
     overlap = max(min(a['end'],b['end'])-max(a['start'],b['start'])
                   for a in grouped[labels[0]] for b in grouped[labels[1]])
     ledger.require(overlap >= .3, 'qualified separator serialized actual overlapping speech')
+    return dict(policy='source-specific-owner-inflection-20261118',
+        source_sha256=SEPARATOR_FILE_SHA, voices=quality, overlap_seconds=overlap,
+        model_quality_limitation=any(row['accepted_inflection'] for row in quality))
 
 
 def speaker_request(identity):
@@ -554,7 +646,10 @@ def business(value, identity, selected=None, capabilities=None):
                        (('asr_auxiliary',) if audio_auxiliaries(identity) else ()) +
                        (('speaker',) if has_speaker(identity) else ()) +
                        (('separator',) if has_separator(identity) else ()) +
-                       (('chat_audio',) if chat_audio else ()))
+                       (('chat_audio',) if chat_audio else ()) +
+                       (('tts',) if identity.get('native_tts') is not None else ()))
+    if identity.get('native_tts') is not None:
+        tts_business(value['tts'], identity)
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:

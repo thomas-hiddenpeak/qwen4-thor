@@ -38,13 +38,7 @@ ObjectReply ChatServer::RunNativeSpeaker(
     embeddings->clear();
     return {};
   }
-  {
-    RequestDiagnostics::Scope waiting(diagnostic,
-                                      RequestDiagnostics::Wait::kStorage);
-    auto reply = EnsureNativeSpeaker(true, {{}, control->deadline(), cancelled},
-                                     &diagnostic);
-    if (!reply.ok()) return reply;
-  }
+  std::unique_lock<std::mutex> auxiliary;
   diagnostic.Stage("speaker_slot_admission");
   int slot;
   {
@@ -66,6 +60,22 @@ ObjectReply ChatServer::RunNativeSpeaker(
     FreeSeqId(slot);
     diagnostic.Released();
   });
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kSlot);
+    auxiliary = LockUnlessCancelled(auxiliary_mu_, cancelled);
+  }
+  if (!auxiliary.owns_lock() || cancelled()) return interrupted();
+  if (auto switched = ActivateAuxiliaryFamily(false, cancelled); !switched.ok())
+    return switched;
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kStorage);
+    auto reply = EnsureNativeSpeaker(true, {{}, control->deadline(), cancelled},
+                                     &diagnostic);
+    if (!reply.ok()) return reply;
+  }
+
   audio::SpeakerWorkspaceLayout layout;
   auto status = audio::PlanSpeakerWorkspace(
       1 + max_samples / 160, audio::SpeakerWorkspaceLayout::kMaxFrames,

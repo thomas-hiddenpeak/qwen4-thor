@@ -1,6 +1,8 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/actual_usage_step.h"
 #include "q4t/server/chat_audio_inputs.h"
+#include "q4t/server/chat_audio_history.h"
 #include "chat_model_step.h"
 #include "responses_json.h"
 #include "object_protocol.h"
@@ -590,10 +592,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   const bool has_audio = !responses && !completion && !internal &&
                          HasChatAudioInputs(original_request);
+  const bool has_audio_history = !responses && !completion && !internal &&
+                                 HasChatAudioHistory(original_request);
+  const bool prepare_audio = has_audio || has_audio_history;
   io::Json audio_request;
-  if (has_audio) audio_request = request_plan.Request(original_request);
-  const auto& req = has_audio ? audio_request
-                              : request_plan.Request(original_request);
+  if (prepare_audio) audio_request = request_plan.Request(original_request);
+  const auto& req =
+      prepare_audio ? audio_request : request_plan.Request(original_request);
   const auto chat_moderation_options = !responses && !completion && !internal
                                            ? request_plan.moderation
                                            : ModerationOptions{};
@@ -612,6 +617,23 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "object_scope_unavailable", "store");
       return;
     }
+  }
+  const auto& audio_output = request_plan.audio_output;
+  if (audio_output.enabled &&
+      (!objects_ || !http || !http->Client().Allowed())) {
+    SendError(fd, 503, "Authenticated audio history unavailable", {},
+              "object_scope_unavailable", "audio");
+    return;
+  }
+  if (audio_output.enabled &&
+      (audio_output.speech.voice_id ||
+       audio::TtsBuiltinVoiceId(audio_output.speech.voice) < 0)) {
+    SendError(fd, audio_output.speech.voice_id ? 404 : 400,
+              "Requested voice is not available for native Chat speech", {},
+              audio_output.speech.voice_id ? "voice_not_found"
+                                           : "invalid_speech_voice",
+              audio_output.speech.voice_id ? "audio.voice.id" : "audio.voice");
+    return;
   }
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
@@ -759,6 +781,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (http) http->StopHeartbeats();
   });
 
+  if (has_audio_history) {
+    io::Json rendered;
+    RequestDiagnostics::Scope wait(diagnostic, Wait::kStorage);
+    const auto resolved = ResolveChatAudioHistory(
+        objects_.get(), {chat_state_access.scope, deadline, cancelled}, req,
+        &rendered);
+    if (!resolved.ok()) {
+      SendError(fd, resolved.http_status, resolved.ClientMessage(), {},
+                resolved.ClientCode(), resolved.value.GetString("param"));
+      return;
+    }
+    audio_request = std::move(rendered);
+    request_plan.normalized_request = audio_request;
+  }
   ActualUsage audio_preparation;
   uint64_t audio_input_tokens = 0;
   if (has_audio) {
@@ -1080,7 +1116,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   } else if (planning_config.client_limits || chat_moderation.Enabled() ||
-             has_audio) {
+             has_audio || audio_output.enabled) {
     if (planning_config.client_limits &&
         prepared_input + prompt_u32.size() >
             planning_config.client_limits->max_prompt_tokens) {
@@ -1122,9 +1158,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
 
-  const bool collect_chat =
-      !stream || chat_storage.store || chat_moderation.Enabled() ||
-      chat_web.Active();
+  const bool collect_chat = !stream || chat_storage.store ||
+                            chat_moderation.Enabled() || chat_web.Active() ||
+                            audio_output.enabled;
   const bool batch_usage =
       http && http->RateDomain() == ClientRateDomain::kBatch;
   ChatChoices choices(sampling.choices, !collect_chat, batch_usage);
@@ -1134,6 +1170,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               "chat_audio_usage_invalid");
     return;
   }
+  std::vector<uint64_t> audio_choice_tokens;
   CompletionChoices completion_choices(
       static_cast<int>(completion_plan.prompts.size()), completion_plan.n,
       completion_plan.best_of, stream);
@@ -1279,9 +1316,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (!review_chat(true, content, collected)) return;
   }
 
-  const auto publish_moderated_chat = [&](const std::string& original) {
-    std::string result;
-    auto status = chat_moderation.Project(original, &result);
+  const auto publish_completed_chat = [&](const std::string& original) {
+    std::string result = original;
+    auto status = chat_moderation.Enabled()
+                      ? chat_moderation.Project(original, &result)
+                      : Status{};
     if (!status) {
       SendError(fd, 503, status.message(), {}, "moderation_metadata_failed");
       return false;
@@ -1290,6 +1329,36 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       count_abort();
       send_cancel_error("Chat classification publication cancelled");
       return false;
+    }
+    if (audio_output.enabled && !chat_moderation.Blocked()) {
+      io::Json completed;
+      status = io::ParseJson(result, &completed, true, kApplicationJsonLimits);
+      if (!status) {
+        SendError(fd, 500, status.message(), {}, "chat_audio_response_invalid");
+        return false;
+      }
+      if (stream && chat_moderation.Enabled()) {
+        std::string held;
+        status = chat_moderation.Release(&held);
+        if (!status || !write_stream(held)) return false;
+      }
+      const auto emit_audio = [&](int index, const std::string& event,
+                                  bool expiry_only) {
+        return write_stream(detail::SseDeltaChunk(
+            id, model_field, event, "", index, created, include_usage, "null",
+            include_obfuscation, expiry_only));
+      };
+      std::function<bool(int, const std::string&, bool)> emit;
+      if (stream) emit = emit_audio;
+      const auto synthesized = SynthesizeChatAudio(
+          fd, audio_output, prompt_budget.available_output, audio_choice_tokens,
+          control, diagnostic, rate_lease, emit, &completed);
+      if (!synthesized.ok()) {
+        SendError(fd, synthesized.http_status, synthesized.ClientMessage(), {},
+                  synthesized.ClientCode(), "audio");
+        return false;
+      }
+      result = OutputJson(completed);
     }
     if (chat_storage.store || (!stream && chat_storage.has_metadata)) {
       io::Json snapshots;
@@ -1320,7 +1389,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                           {.control = control.get()}))
         return false;
       std::string held;
-      if (!chat_moderation.Blocked()) {
+      if (chat_moderation.Enabled() && !audio_output.enabled &&
+          !chat_moderation.Blocked()) {
         status = chat_moderation.Release(&held);
         if (!status || !write_stream(held)) return false;
         if (!held.empty() && !first_delta_sent) {
@@ -1336,7 +1406,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!status) return false;
       std::string terminal;
       for (int index = 0; index < sampling.choices; ++index) {
-        if (!chat_moderation.Blocked() && index + 1 < sampling.choices)
+        if (!audio_output.enabled && !chat_moderation.Blocked() &&
+            index + 1 < sampling.choices)
           continue;  // Earlier approved choice terminals are already in wire.
         const auto& choice = completed.GetArray("choices")->array[index];
         if (chat_moderation.Blocked())
@@ -1382,7 +1453,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     s = ChatModeration::EmptyCompletion(sampling.choices, id, model_field,
                                         created, &filtered);
     if (s)
-      publish_moderated_chat(filtered);
+      publish_completed_chat(filtered);
     else
       SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
     return;
@@ -1994,6 +2065,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   ? CompletionChunk(id, model_field, created, choice_index, "",
                                     "", "null", include_usage,
                                     completion_plan.include_obfuscation)
+              : audio_output.enabled && !audio_output.text
+                  ? detail::SseDeltaChunk(id, model_field,
+                                          R"({"role":"assistant"})", "",
+                                          choice_index, created, include_usage,
+                                          "null", include_obfuscation)
                   : SseChunk(id, model_field, "assistant", "", "", choice_index,
                              created, include_usage, include_obfuscation))) {
         control->Cancel(RequestControl::State::kDisconnect);
@@ -2290,13 +2366,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     model::ModelSequence* usage_sequence = nullptr;
     const std::vector<int32_t>* usage_generated = nullptr;
     ActualUsage observed_usage;
-    if (http)
-      http->Usage().BeginStep(completion
-                                  ? choice_index % completion_plan.best_of == 0
-                                  : responses || choice_index == 0,
-                              !moderation_step);
+    ActualUsageStep usage_step(
+        http ? &http->Usage() : nullptr,
+        completion ? choice_index % completion_plan.best_of == 0
+                   : responses || choice_index == 0,
+        !moderation_step);
     auto refresh_usage = [&]() noexcept {
-      if (!http) return;
+      // Explicit handoff may precede per-buffer scope cleanup. An old
+      // observer must not touch finished work or a subsequent audio step.
+      if (!usage_step.Active()) return;
       if (usage_sequence) {
         observed_usage.input = std::max(
             observed_usage.input,
@@ -2314,7 +2392,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             : internal || completion   ? 0
                                        : thinking_budget.ReasoningTokens();
       }
-      http->Usage().Observe(observed_usage);
+      usage_step.Observe(observed_usage);
     };
     if (http)
       http->SetUsageRefresh(
@@ -2326,7 +2404,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!http) return;
       http->RefreshUsage();
       http->SetUsageRefresh(nullptr, nullptr);
-      http->Usage().EndStep();
+      usage_step.Finish();
       http->RefreshUsage();
     });
     const size_t required_capacity =
@@ -3445,6 +3523,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         if (!stream || compaction_step || moderation_step ||
             (responses && responses->OutputHeld()))
+          continue;
+        if (audio_output.enabled && !audio_output.text &&
+            delta.kind == ResponseDelta::Kind::kContent)
           continue;
         detail::ServeFaultPoint("handler.before_content");
         const auto chunk =
@@ -4943,6 +5024,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 include_usage, "null", include_obfuscation)))
           return;
       }
+      if (s && audio_output.enabled)
+        audio_choice_tokens.push_back(prediction.Completion(generated.size()));
       if (s) s = choices.Add(
           choice_index, message,
           finish_reason, sampling.logprobs ? token_logprobs.Json() : "null", T,
@@ -4958,7 +5041,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     const bool final_choice = responses || choice_index + 1 == sampling.choices;
-    if (chat_moderation.Enabled() && final_choice) {
+    if ((chat_moderation.Enabled() || audio_output.enabled) && final_choice) {
       err_guard.ok = false;
       std::string candidate;
       s = choices.Json(id, model_field, created, &candidate);
@@ -4975,9 +5058,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       ModerationContent content;
       const auto collected =
           ChatModeration::CollectOutput(candidate, &content, &planning_error);
-      if (review_chat(false, content, collected))
-        publish_moderated_chat(candidate);
+      if (!chat_moderation.Enabled() || review_chat(false, content, collected))
+        publish_completed_chat(candidate);
       return;
+    }
+    if (audio_output.enabled) {
+      // Defer choice terminals until all requested audio has actually ended.
+      trace_outcome = trace::RequestOutcome::kSuccess;
+      finish_usage_step.Run();
+      cleanup();
+      continue;
     }
     if (final_choice) stop_heartbeat.Run();
     std::string stored_chat_response;

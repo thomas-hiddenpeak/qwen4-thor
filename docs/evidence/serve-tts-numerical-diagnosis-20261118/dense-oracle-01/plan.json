@@ -1,0 +1,13 @@
+{
+  "task": "High-precision CPU recomputation of saved native operands, distinguish FP32 accumulation/BF16 rounding from wrong operations",
+  "limits": {
+    "gpu_model_loads": 0,
+    "cpu_model_construction": 0,
+    "checkpoint_mappings": 1,
+    "linear_operators": 35,
+    "seconds": 120
+  },
+  "source": ".q4t-work/serve-native-tts-20261118/dense-diagnosis-02/native",
+  "original_comparison_stays_failed": true,
+  "note": "Diagnostic only, not retroactive acceptance and not synthesized audio"
+}

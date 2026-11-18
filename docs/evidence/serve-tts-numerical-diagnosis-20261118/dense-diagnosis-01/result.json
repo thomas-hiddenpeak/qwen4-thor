@@ -1,0 +1,37 @@
+{
+  "status": "FAILED_DIAGNOSIS",
+  "defaults_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "runs": [
+    {
+      "name": "reference",
+      "code": 1,
+      "seconds": 9.5784407639876
+    }
+  ],
+  "plan": {
+    "task": "First predictor two-row input with exact shared BF16 projection; trace every operation in five layers to find the numerical defect",
+    "limits": {
+      "gpu_model_loads": 1,
+      "cpu_predictor_loads": 1,
+      "input_rows": 2,
+      "predictor_layers": 5,
+      "http_requests": 0,
+      "main_llm_loads": 0,
+      "seconds": 120,
+      "reference_seconds": 60,
+      "native_seconds": 60
+    },
+    "original_failure_preserved": true,
+    "original_thresholds_unchanged": true
+  },
+  "binary_sha256": "a91d6cb7bea7aac2128dbdcb7b5f964fa87e29dae9948e955b622b5c3e0f1fde",
+  "error": "reference failed",
+  "defaults_unchanged": true,
+  "seconds": 9.628968497738242
+}

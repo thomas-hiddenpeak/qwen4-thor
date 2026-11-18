@@ -36,6 +36,36 @@ Q4T_TEST(serve_embedding_options_bind_distinct_model_and_absolute_assets) {
   return true;
 }
 
+Q4T_TEST(serve_tts_options_bind_absolute_assets_and_transactional_budgets) {
+  ServerOptions options;
+  Q4T_CHECK(Parse({"--model-dir", "/model", "--tts-model-dir", "/assets/tts",
+                   "--tts-max-text-tokens", "512", "--tts-max-prefill-tokens",
+                   "512", "--tts-max-frames", "160", "--tts-workspace-mib",
+                   "2048", "--tts-max-output-mib", "16"},
+                  &options));
+  Q4T_CHECK(options.tts_model_dir == "/assets/tts" &&
+            options.tts_limits.max_text_tokens == 512 &&
+            options.tts_limits.max_prefill_tokens == 512 &&
+            options.tts_limits.max_frames == 160 &&
+            options.tts_limits.workspace_mib == 2048 &&
+            options.tts_limits.max_output_mib == 16);
+  for (auto pair : {std::pair{"--tts-model-dir", "relative"},
+                    std::pair{"--tts-max-text-tokens", "3"},
+                    std::pair{"--tts-max-prefill-tokens", "32768"},
+                    std::pair{"--tts-max-frames", "4097"},
+                    std::pair{"--tts-workspace-mib", "127"},
+                    std::pair{"--tts-max-output-mib", "129"}}) {
+    Q4T_CHECK(
+        !Parse({"--model-dir", "/model", pair.first, pair.second}, &options));
+    Q4T_CHECK(options.tts_model_dir == "/assets/tts" &&
+              options.tts_limits.max_frames == 160);
+  }
+  Q4T_CHECK(!Parse({"--model-dir", "/model", "--tts-model-dir", "/assets/tts",
+                    "--served-model-name", "qwen3-tts-12hz-1.7b-customvoice"},
+                   &options));
+  return true;
+}
+
 Q4T_TEST(serve_access_program_option_requires_trusted_client_policy) {
   auto options = Defaults();
   Q4T_CHECK(!Parse({"--access-program-policy-file", "/private/access.json"},

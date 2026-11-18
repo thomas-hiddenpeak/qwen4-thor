@@ -90,7 +90,7 @@ def capability_pair(primary, light):
 
 
 def binding(binary, protocol, model_files, model_assets, native_embedding=None,
-            native_asr=None):
+            native_asr=None, native_tts=None):
     """Asset paths can relocate; actual fixed model identities cannot change."""
     for value in (binary, protocol):
         ledger.require(type(value) is str and ledger.HASH.fullmatch(value),
@@ -127,7 +127,36 @@ def binding(binary, protocol, model_files, model_assets, native_embedding=None,
                 model_assets=copy.deepcopy(model_assets), native_embedding=native)
     if native_asr is not None:
         result['native_asr'] = asr_binding(native_asr)
+    if native_tts is not None:
+        result['native_tts'] = tts_binding(native_tts)
     return result
+
+
+def tts_binding(value):
+    selected = package.tts_settings(value)
+    del selected['directory']
+    return selected
+
+
+def tts_configuration(value):
+    ledger.keys(value, (*package.NATIVE_TTS, 'limits'))
+    return package.tts_settings(dict(value, directory='/qualified/tts-assets'))
+
+
+def tts_capability_binding(fixed, capability):
+    declared = capability.get('speech', {})
+    chat = capability.get('chat_audio_output', {})
+    ledger.require(type(declared) is dict and type(chat) is dict,
+                   'invalid qualified TTS capability')
+    if fixed is None:
+        ledger.require(declared.get('enabled') is not True and
+            chat.get('enabled') is not True, 'configured TTS lacks qualification binding')
+    else:
+        ledger.require(declared.get('enabled') is True and
+            chat.get('enabled') is True and
+            all(declared.get(k) == v for k, v in package.NATIVE_TTS.items()) and
+            declared.get('core_health_dependency') is False,
+            'qualified TTS backend identity/isolation differs')
 
 
 def configuration(profile, observed):
@@ -163,7 +192,8 @@ def identity(value):
     ledger.require(type(value) is dict, 'invalid qualified identity')
     ledger.keys(value, ('binary_sha256', 'protocol_sha256', 'model_files',
                        'model_assets', 'native_embedding',
-                       *(('native_asr',) if 'native_asr' in value else ())))
+                       *(('native_asr',) if 'native_asr' in value else ()),
+                       *(('native_tts',) if 'native_tts' in value else ())))
     native = value['native_embedding']
     # The qualification omits deployment paths; reuse fixed-asset validation
     # with a synthetic absolute path without reading any file.
@@ -173,8 +203,9 @@ def identity(value):
     asr = value.get('native_asr')
     if 'native_asr' in value:
         asr = asr_configuration(asr)
+    tts = tts_configuration(value['native_tts']) if 'native_tts' in value else None
     return binding(value['binary_sha256'], value['protocol_sha256'],
-                   value['model_files'], value['model_assets'], native, asr)
+                   value['model_files'], value['model_assets'], native, asr, tts)
 
 
 def qualification(name, selected, fixed, capability, observed, memory, evidence):
@@ -194,6 +225,7 @@ def qualification(name, selected, fixed, capability, observed, memory, evidence)
                        'qualified media capability differs')
     ledger.require(capability.get('protocol_source_sha256') ==
                    fixed['protocol_sha256'], 'qualified protocol observation differs')
+    tts_capability_binding(fixed.get('native_tts'), capability)
     asr = fixed.get('native_asr')
     declared = capability.get('transcriptions', {})
     ledger.require(type(declared) is dict, 'invalid qualified ASR capability')

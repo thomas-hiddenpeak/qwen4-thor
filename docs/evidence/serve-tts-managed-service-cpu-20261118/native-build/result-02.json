@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 19.96813899325207,
+  "warnings": [],
+  "defaults_unchanged": true,
+  "original_failure_preserved": true,
+  "repair": "Regenerate CMake dependency includes removed as reconstructible cache; no production source change",
+  "binaries": {
+    "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+    "q4t-ingress": "5a7cb45a7eb084c467063c966d22098d453e47a88a248f0b9f22427464f2a8f3",
+    "q4t-cuda-probe": "aa39a17bd243ac1d3b9c24d5d9617f8dccfd9ff0e91d67685d56331e1d056cbf",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+  }
+}

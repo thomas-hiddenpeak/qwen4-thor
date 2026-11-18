@@ -1,0 +1,105 @@
+{
+  "status": "FAILED_DIAGNOSIS",
+  "limits": {
+    "seconds": 1200,
+    "gpu_asr_loads": 2,
+    "cases": 6,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0,
+    "asr_tokens_per_case": 64,
+    "cpu_reference_calls": 6,
+    "cpu_reference_samples": 1000000
+  },
+  "runs": [
+    {
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tempo-diagnosis-01/run/plan-0.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tempo-diagnosis-01/run/asr-0"
+      ],
+      "exit_code": 0,
+      "seconds": 3.6746041108854115
+    }
+  ],
+  "comparisons": [
+    {
+      "utterance": 0,
+      "kind": "reference_4x",
+      "samples24": 19200,
+      "audio_tokens": 10,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is a new speech.",
+      "passed": false
+    },
+    {
+      "utterance": 0,
+      "kind": "native_4x_slowed_back",
+      "samples24": 76800,
+      "audio_tokens": 42
+    },
+    {
+      "utterance": 0,
+      "kind": "reference_4x_slowed_back",
+      "samples24": 76800,
+      "audio_tokens": 42
+    }
+  ],
+  "defaults_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "acceptance_granted": false,
+  "error": "wrong ASR language or missing transcript marker",
+  "defaults_unchanged": true,
+  "seconds": 4.0521413632668555,
+  "artifacts": {
+    "asr-0/case-0/encoder-input.bf16": "5418218382295233d502e8366eeb80bbcacc9cd06806f86835f93f71b8445594",
+    "asr-0/case-0/encoder.bf16": "56dec433ea59a1f39f76de2440f63150ea2b2e1205acf167f0d4c1de15cf99a8",
+    "asr-0/case-0/generated.u32": "3b74be9a7a2846ae54a47eed5a5e4b5b170bad539bf3cdc531136821fe53367f",
+    "asr-0/case-0/logits-0.bf16": "2b93805f230616ad74c304b6d14af8a3ab1bb02a584525d05e2d0e2ccba7a723",
+    "asr-0/case-0/logits-1.bf16": "60d115d98526179190e71663014f971d7fee931d81ebc74e75199506c6be7002",
+    "asr-0/case-0/logits-2.bf16": "9943e48dc062f6f2319d182275028f3bb0a59eb54c5f91683925d2de84393843",
+    "asr-0/case-0/logits-3.bf16": "72eed26fac5aec63b6f8a3a92686f533b1a6b0625e694b90aae289bf7342f2bc",
+    "asr-0/case-0/native-mel.f32": "0b172463fe2c5bf1e8b6f775c3681a2176b86c1e167e52e709ec057bfb720b9d",
+    "asr-0/case-0/result.json": "a4133c2dd4b7601b1367ff2927d82bca65dfbd3e047dd3fea9676b304d402560",
+    "asr-0/case-0/text.txt": "a0169ee7a11a750628005af8ece626ce46c1bf4e18d699bc08ff5e36bb3fdcba",
+    "asr-0/case-1/encoder-input.bf16": "60dbb1c9f5ee2ac13bcb09e4543bba65ef1b7a49cc825c8b684b41947833ec6b",
+    "asr-0/case-1/encoder.bf16": "607710b910c90922dea1ba670b317e1d1250d11652cd658dcb167c5d03957d46",
+    "asr-0/case-1/generated.u32": "dcf2d551134b9395ca5f84890f842f55fe65ad13b7fbcbf917e54c20068fe235",
+    "asr-0/case-1/logits-0.bf16": "012084e34281a77e11d31408f807641c4038dc843be0e5005818e3bd5b79d13a",
+    "asr-0/case-1/logits-1.bf16": "03d6e4af7f2ea693b1ee278264003f0ac1b9c3ceec5490726e461fbbcc3363d8",
+    "asr-0/case-1/logits-2.bf16": "2336d938824d07df7d97b81070a6d9f6bd774b4e104e12f0a3f4401578a982a5",
+    "asr-0/case-1/logits-3.bf16": "68c25a243428b621735659b2e2725ad2f3a7db86edd67ae6d076c65548d3e3e3",
+    "asr-0/case-1/native-mel.f32": "c26a40b5974e975ff05b9e09c18420cf267f16bf581ab69bdcd7367b1cef63c3",
+    "asr-0/case-1/result.json": "968bd22892a2eeed70286aad7f0b6bad407e9bdb1f94534343ddaf6736c032ab",
+    "asr-0/case-1/text.txt": "be5a10a3c600dfc5a39d8ccacbb612ac96727d300de5917364c3a505edb27362",
+    "asr-0/case-2/encoder-input.bf16": "e033c90a0d45ae30cd022ad9026aeb347643a90245600e10f2f049de85d18848",
+    "asr-0/case-2/encoder.bf16": "c52198e2152cbf00853d6800107f0570dd37d5480a30bbff162fee1afeaa2f8c",
+    "asr-0/case-2/generated.u32": "d1b410037b736c5f06608bd1387327cc49b33f4a20489c1b210838b3ec99839d",
+    "asr-0/case-2/logits-0.bf16": "531dd8ef5c406c21853cc9ba51b238999c6cbc998227fc858c69c813134906d9",
+    "asr-0/case-2/logits-1.bf16": "4ce271e7ba566117350aaeabb9a30d97f51fc694a90ef75103156ee2a419b1c6",
+    "asr-0/case-2/logits-2.bf16": "b49a745828ffb52b55f7c1c8315852ba5bfefc239188b3851810ebfaea3a8d8b",
+    "asr-0/case-2/logits-3.bf16": "e13c3661e6a61a603620f576447bd7bdf9ac199b0fcb59e433a047c20d26bdaa",
+    "asr-0/case-2/native-mel.f32": "67f1f4a6cd13531fbe1ece53c7b306be805cacb9552259841bdba23128dfe5e8",
+    "asr-0/case-2/result.json": "5074d9ad4a3adbb73cc1092e3fbe0f2372df60814755cd62151f5873e392d1a1",
+    "asr-0/case-2/text.txt": "8b0df53c7ee03e1f5d7dfc86239c8d586def8ab4f2b15cc11f63acfa3b3e4b6e",
+    "asr-0/result.json": "3059784af8d8e91f332d839a2baac22ee6424eb8ddb546467abbf7a98560aca1",
+    "asr-0.log": "28cf9d39c7c92d4051e349e066881fa213d2aca9dd569aff4ac5526b246ab37f",
+    "case-0-0/mel.f32": "0b172463fe2c5bf1e8b6f775c3681a2176b86c1e167e52e709ec057bfb720b9d",
+    "case-0-0/pcm.f32": "a01a9ac424d9531533edd94e68d0b30b11ba86e863051618a932f70d8fe66a52",
+    "case-0-0/pcm24.f32": "cb8fd4ee7fbd8caebef2d441d9a9435afb8c40d8631ba113ac51ba99ff27dc8e",
+    "case-0-1/mel.f32": "c26a40b5974e975ff05b9e09c18420cf267f16bf581ab69bdcd7367b1cef63c3",
+    "case-0-1/pcm.f32": "d689c5fe447f18d864dc43bb7413f5eb4b67a2e74e61d2082f54153bba71b14e",
+    "case-0-1/pcm24.f32": "9ceba9dda389409530f0b8a0e79e7352b79962b7df177564206bf94d3d583b8d",
+    "case-0-2/mel.f32": "67f1f4a6cd13531fbe1ece53c7b306be805cacb9552259841bdba23128dfe5e8",
+    "case-0-2/pcm.f32": "aecf7b42b06fde7df2191c051dd7ee757c4ed2fd90233541c892c1cf4986faa7",
+    "case-0-2/pcm24.f32": "395dd25858363866ec00e8b5e7439e2c33835600a93c98c7c8181ec91736ef6b",
+    "plan-0.json": "bc04a687b90bf4384cc405938b69ccbb8c4c29dbd8c629f62f2dc0021154525b"
+  }
+}

@@ -378,6 +378,8 @@ Q4T_TEST(chat_audio_modalities_preserve_output_request_and_reject_bad_shapes) {
     Q4T_CHECK(error.param == "modalities" && error.http_status == 400);
   }
   Set(&request, "modalities", Array({String("text"), String("audio")}));
+  Set(&request, "audio",
+      Object({{"voice", String("ryan")}, {"format", String("mp3")}}));
   Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
   Q4T_CHECK(error.code == "audio_output_backend_unavailable" &&
             error.http_status == 503);

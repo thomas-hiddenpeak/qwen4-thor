@@ -1,0 +1,14 @@
+{
+  "command": [
+    ".q4t-work/refenv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.native_tts.test_acceptance",
+    "-v"
+  ],
+  "returncode": 0,
+  "seconds": 0.1675962070003152,
+  "tests": 3,
+  "gpu": 0
+}

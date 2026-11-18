@@ -1,0 +1,25 @@
+{
+  "policy": "source-specific-owner-inflection-20261118",
+  "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+  "voices": [
+    {
+      "reference": "The child almost hurt the small dog.",
+      "observed": "The child almost hurts the small dog.",
+      "wer": 0.14285714285714285,
+      "threshold": 0.125,
+      "accepted_inflection": true
+    },
+    {
+      "reference": "We are sure that one war is enough.",
+      "observed": "We are sure that one war is enough.",
+      "wer": 0.0,
+      "threshold": 0.125,
+      "accepted_inflection": false
+    }
+  ],
+  "overlap_seconds": 1.68,
+  "model_quality_limitation": true,
+  "original_evidence": "docs/evidence/serve-overlap-http-output-fix-20261118",
+  "original_failed_record_preserved": true,
+  "actual_managed_recovery_qualified": false
+}

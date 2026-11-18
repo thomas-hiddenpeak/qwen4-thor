@@ -1,0 +1,31 @@
+{
+  "runs": [
+    {
+      "name": "cpp",
+      "command": [
+        ".q4t-work/serve-native-tts-20261118/fp32-cpu-01/q4t_tts_cpu",
+        "--required-list",
+        ".q4t-work/serve-native-tts-20261118/fp32-cpu-01/required.txt"
+      ],
+      "returncode": 0,
+      "seconds": 0.015626251231878996,
+      "tests": 7
+    },
+    {
+      "name": "comparison",
+      "command": [
+        ".q4t-work/refenv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.native_tts.test_acceptance",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 0.16501311073079705,
+      "tests": 3
+    }
+  ],
+  "gpu": 0,
+  "seconds": 0.18092980608344078
+}

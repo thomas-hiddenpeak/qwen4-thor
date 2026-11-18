@@ -45,6 +45,8 @@
 #include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_video.h"
 #include "q4t/server/file_audio.h"
+#include "q4t/server/speech_encode.h"
+#include "q4t/server/speech_codec_stream.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
@@ -91,6 +93,9 @@ void PrintUsage(const char* prog) {
       "[--operations-port N] [--model-dir DIR] "
       "[--served-model-name ID] [--model-alias ID] "
       "[--embedding-model-dir DIR] "
+      "[--tts-model-dir DIR] [--tts-max-text-tokens N] "
+      "[--tts-max-prefill-tokens N] [--tts-max-frames N] "
+      "[--tts-workspace-mib N] [--tts-max-output-mib N] "
       "[--asr-model-dir DIR] [--asr-max-audio-seconds N] "
       "[--asr-max-context-tokens N] [--asr-max-output-tokens N] "
       "[--asr-workspace-mib N] "
@@ -970,6 +975,11 @@ int main(int argc, char** argv) {
   if (webp_worker >= 0) return webp_worker;
   const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);
   if (video_worker >= 0) return video_worker;
+  const int speech_stream =
+      q4t::server::MaybeRunSpeechCodecStreamWorker(argc, argv);
+  if (speech_stream >= 0) return speech_stream;
+  const int speech_encoder = q4t::server::MaybeRunSpeechEncodeWorker(argc, argv);
+  if (speech_encoder >= 0) return speech_encoder;
   const int audio_worker = q4t::server::MaybeRunFileAudioWorker(argc, argv);
   if (audio_worker >= 0) return audio_worker;
   const int asr_statistics = q4t::server::MaybeRunAsrStatisticsWorker(argc, argv);

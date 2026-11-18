@@ -1,0 +1,21 @@
+{
+  "task": "TTS03 F32 codec decoder bindings, memory budget, chunk context and exact PCM sample counts",
+  "limits": {
+    "cpu_tests": 4,
+    "seconds": 60,
+    "gpu": 0,
+    "model_loads": 0
+  },
+  "tests": [
+    "tts_codec_binding_preserves_every_vocoder_stage",
+    "tts_codec_workspace_covers_wave_residuals_and_bounded_tiles",
+    "tts_codec_chunks_preserve_context_trim_and_last_samples",
+    "tts_codec_codes_reject_control_tokens_before_gpu_work"
+  ],
+  "scope": "Preparation only; no codec numerical or speech quality claim",
+  "sources_sha256": {
+    "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
+    "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
+    "tests/tts_codec_layout_test.cpp": "f0d53a43b9e20130ea2dd6c11c03fa396a52952d188f6726801c36813c000dc8"
+  }
+}

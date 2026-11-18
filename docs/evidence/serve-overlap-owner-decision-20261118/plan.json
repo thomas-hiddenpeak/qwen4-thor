@@ -1,0 +1,30 @@
+{
+  "kind": "targeted_acceptance_policy",
+  "user_decision": "允许此类识别误差，单独记录模型质量限制",
+  "cpu_tests": 3,
+  "seconds": 60,
+  "gpu": 0,
+  "model_loads": 0,
+  "http": 0,
+  "max_artifact_bytes": 2097152,
+  "min_free_bytes": 536870912,
+  "original_failures_immutable": true,
+  "files_before": {
+    "tools/serve_recovery/profile_evidence.py": "d877a5a1f6de9ed87bf6a9c77442866d376a2a6e54c5abd9730846d52cddd679",
+    "tools/native_asr/auxiliary_service.py": "cdb814b357da1c362fd3de3f5e5230648bc4d01e733a584cc14aa51619264f3d",
+    "tools/serve_recovery/profile_acceptance.py": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
+    "tools/serve_recovery/test_separator_profiles.py": "5a0651a938ec4d552d11306e51710e1e357032300b47275508ef3df322759d5f"
+  },
+  "tests": [
+    "tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_reviewed_inflection_retains_raw_wer_and_model_limitation",
+    "tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_mixed_source_time_words_usage_and_health_are_required",
+    "tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_review_does_not_accept_meaning_changes_or_missing_speech"
+  ],
+  "sources_after": {
+    "tools/serve_recovery/profile_evidence.py": "8c5720e1e095f83361afbbaf85b4068faa118120e62fc859704886a00e7bcd95",
+    "tools/native_asr/auxiliary_service.py": "62297818a2b787d05ee262b738f527c241c53f5111dc3fda5a2f2dddcc3013ac",
+    "tools/serve_recovery/profile_acceptance.py": "25f8177fc5504992ca30967f4f2821cbf9db092f2529dafc126bd3afae47e703",
+    "tools/serve_recovery/test_separator_profiles.py": "566de1f5dc9e5d3f7dfecf6f0e8d2259951d43a5995a0fd3990f57a17a2b5cf5"
+  },
+  "source_inventory_sha256": "edccbcbbb9e802d381e216421cdc29e9967cfa9b1e8ffd00e5262c1bbcd52f96"
+}

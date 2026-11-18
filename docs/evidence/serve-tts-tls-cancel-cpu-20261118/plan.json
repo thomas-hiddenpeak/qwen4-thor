@@ -1,0 +1,16 @@
+{
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "seconds": 120,
+  "checks": 4,
+  "unittest_cases": 3,
+  "readonly_actual_tls_review": 1,
+  "gpu_actions": 0,
+  "artifact_cap_bytes": 8388608,
+  "min_free_bytes": 268435456,
+  "sources": {
+    "tools/native_asr/service_acceptance.py": "be87cde25750bd910578dd955cd5c52146ae9fb9d979ebffd5dd106c42c1bad3",
+    "tools/native_asr/test_active_cancellation.py": "c25170dbdbc3538797b23389842adc9eba50f0fe64f8935e7ba77c7f5a8b7ed3",
+    "tools/native_tts/managed_service.py": "c15e51aa175cf570bc637f478f744514bad800adabf324481303fcd771291a0a"
+  },
+  "scope": "Two real CPU socket cancellation controls, old budget guard, and independent validation of all retained actual TLS work except the known late cancellation. No original failure rewritten."
+}

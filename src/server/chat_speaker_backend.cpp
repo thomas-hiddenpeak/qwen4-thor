@@ -66,7 +66,7 @@ ObjectReply ChatServer::EnsureNativeSpeaker(bool weights,
   };
   try {
     const uint64_t estimate =
-        kHostMargin + (weights ? 3 * audio::SpeakerConfig::kFileBytes : 0);
+        kHostMargin + (weights ? 2 * audio::SpeakerConfig::kFileBytes : 0);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(AsrFailure::kResource,
                   "Speaker host memory admission unavailable");

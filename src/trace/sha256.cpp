@@ -164,6 +164,29 @@ class Hash {
   uint64_t length_ = 0;
 };
 }  // namespace
+struct Sha256Stream::State {
+  Hash hash;
+  uint64_t bytes = 0, limit = 0;
+};
+Sha256Stream::Sha256Stream(uint64_t max_bytes)
+    : state_(std::make_unique<State>()) {
+  state_->limit = std::min(max_bytes, UINT64_MAX / 8);
+}
+Sha256Stream::~Sha256Stream() = default;
+Status Sha256Stream::Add(std::span<const uint8_t> bytes) {
+  if (bytes.size() > state_->limit - state_->bytes ||
+      (!bytes.empty() && !bytes.data()))
+    return Status::Fail("trace: stream hash byte limit exceeded");
+  state_->hash.Add(bytes);
+  state_->bytes += bytes.size();
+  return {};
+}
+Digest Sha256Stream::Snapshot() const {
+  auto copy = state_->hash;
+  return copy.Finish();
+}
+uint64_t Sha256Stream::bytes() const { return state_->bytes; }
+
 Digest Sha256(std::span<const uint8_t> bytes) {
   Hash hash;
   hash.Add(bytes);

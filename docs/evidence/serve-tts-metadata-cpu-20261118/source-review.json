@@ -1,0 +1,26 @@
+{
+  "CMakeLists.txt": {
+    "before": "6f4e710650093f91f95c386b7b02a3c08356892b8f30a487194db56ac1c0c0ee",
+    "after": "e3748ac0e38ecd6ec41e6b83ba1a2eb2fd40e8494979bbc475f86773978a7137"
+  },
+  "include/q4t/audio/tts_config.h": {
+    "before": null,
+    "after": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602"
+  },
+  "src/audio/asr_config_internal.h": {
+    "before": null,
+    "after": "459baf2242b603e672b6518857797bfe7885c6b8687908ee77a9fa93ff5ab886"
+  },
+  "src/audio/asr_layout_internal.h": {
+    "before": null,
+    "after": "eec8527f45cc183761dfe9172155b1ec1d2b790c9512a5457868a7492a907e2d"
+  },
+  "src/audio/tts_config.cpp": {
+    "before": null,
+    "after": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1"
+  },
+  "src/audio/tts_config_data.h": {
+    "before": null,
+    "after": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb"
+  }
+}

@@ -211,6 +211,9 @@ def main():
     p.add_argument('--release', type=Path, default=ROOT/'build/q4t.release.json')
     p.add_argument('--model-dir', type=Path, required=True)
     p.add_argument('--embedding-model-dir', type=Path)
+    p.add_argument('--tts-model-dir', type=Path)
+    for option in pkg.TTS_LIMITS:
+        p.add_argument('--tts-'+option.replace('_', '-'), type=int)
     p.add_argument('--asr-model-dir', type=Path)
     for option in pkg.ASR_LIMITS:
         p.add_argument('--asr-'+option.replace('_', '-'), type=int)
@@ -264,6 +267,9 @@ def main():
                              mcp_policy=args.mcp_policy,
                              web_policy=args.web_policy,
                              embedding_model_dir=args.embedding_model_dir,
+                             tts_model_dir=args.tts_model_dir,
+                             tts_limits=({k:getattr(args, 'tts_'+k) for k in pkg.TTS_LIMITS
+                                 if getattr(args, 'tts_'+k) is not None} or None),
                              asr_model_dir=args.asr_model_dir,
                              asr_auxiliary=pkg.asr_auxiliary_cli(args),
                              asr_limits=({k:getattr(args, 'asr_'+k) for k in pkg.ASR_LIMITS

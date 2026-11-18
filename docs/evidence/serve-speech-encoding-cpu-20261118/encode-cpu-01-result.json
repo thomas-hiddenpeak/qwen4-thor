@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "runs": [
+    {
+      "name": "tests",
+      "exit_code": 1,
+      "seconds": 0.36405327869579196
+    }
+  ],
+  "gpu_model_loads": 0,
+  "binary_sha256": "87b7ef578bd1c7da2390359580d7241e4380bff747d96d3ad772e37094389ed1",
+  "seconds": 0.36446473002433777
+}

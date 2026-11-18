@@ -78,7 +78,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat frozen-reference audio/modalities and actual backend execution",
+        "Complete voice/style/custom-voice and extreme-speed content coverage; Speech/Chat input/output is delivered in rev316",
         "Remaining default/null, nested message and response projection parity"
       ],
       "chat_style_parity_20261116": {
@@ -276,6 +276,81 @@
         "actual_requests": 5,
         "source_coordinate_composition_review_pending": false,
         "source_coordinate_composition_cpu_only": true
+      },
+      "native_tts_20261118": {
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
+      },
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
@@ -314,7 +389,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Non-null audio history and matching model/output/template round trips; citation input history delivered in rev196, actual search output remains A01/A11"
+        "Remaining full template/history parity; non-null audio history and actual speech round trips delivered in rev316"
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -361,6 +436,81 @@
         "main_commit": "a8238ce4462df09518bebe1cf6285eaa0cfdc56a",
         "main_evidence": "evidence/serve-pr36-merged-20261117/README.md",
         "pull_request": 36
+      },
+      "native_tts_20261118": {
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
+      },
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
@@ -2193,7 +2343,8 @@
         "evidence/serve-asr-scope-20261117/README.md",
         "evidence/serve-asr-sdk-values-20261117/README.md",
         "evidence/serve-asr-http-20261117/README.md",
-        "evidence/serve-asr-package-cpu-20261117/README.md"
+        "evidence/serve-asr-package-cpu-20261117/README.md",
+        "evidence/serve-speech-http-20261118/README.md"
       ],
       "release": null,
       "findings": [
@@ -2226,7 +2377,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement Chat audio input using the existing native ASR backend; preserve unresolved four-second overlap recognition quality and pending managed qualification. Continue speech output/Realtime and all master tasks.",
+      "next": "Implement native instruction-capable TTS, then speech/Chat output and audio history/Realtime. Preserve unresolved overlap recognition quality and every remaining master task.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -4034,6 +4185,133 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "native_tts_20261118": {
+        "state": "native_synthesis_and_complete_pcm_encoding_qualified_service_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "actual_speech_accepted": true,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "TTS verified assets, full unified-RAM resource admission and health/lifecycle integration",
+          "Progressive synthesis/encoding, speech API and Chat audio/history",
+          "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
+          "SDK/TLS/profiles/recovery/reversible release/main",
+          "Responses/Batch/Realtime and every remaining master task"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md",
+        "metadata_gpu_loads": 0,
+        "actual_speech_scope": "Two fixed utterances with natural EOS; eight compressed-format content checks; API/history/style/all-voices and 4x remain pending",
+        "current_evidence": [
+          "evidence/serve-tts-fp32-component-20261118/README.md",
+          "evidence/serve-tts-codec-component-20261118/README.md",
+          "evidence/serve-tts-utterance-20261118/README.md",
+          "evidence/serve-speech-encoding-content-20261118/README.md"
+        ],
+        "unresolved_tempo": {
+          "state": "4x_content_unresolved",
+          "accepted_actual_speeds": [
+            0.25,
+            2
+          ],
+          "identity_speed_cpu": 1,
+          "failure_evidence": "evidence/serve-speech-tempo-diagnosis-20261118/README.md",
+          "required_range": [
+            0.25,
+            4
+          ],
+          "range_not_reduced": true
+        },
+        "service_assets": {
+          "state": "paired_loader_resources_health_component_qualified",
+          "evidence": "evidence/serve-tts-service-assets-20261118/README.md",
+          "cpu_unique": 11,
+          "cpu_executions": 13,
+          "full_loader_cases": 1,
+          "gpu_loads": 0,
+          "runtime_integrated": false
+        },
+        "incremental_synthesis": {
+          "state": "incremental_pcm_and_lifecycle_qualified",
+          "evidence": "evidence/serve-tts-incremental-synthesis-20261118/README.md",
+          "cases": 2,
+          "cancellation_cases": 1,
+          "frame_limit_cases": 1,
+          "actual_http": false
+        }
+      },
+      "overlap_owner_decision_20261118": {
+        "state": "SPECIFIC_INFLECTION_ACCEPTED_MODEL_QUALITY_LIMITATION_RETAINED",
+        "evidence": "docs/evidence/serve-overlap-owner-decision-20261118/README.md",
+        "wer": [
+          0.14285714285714285,
+          0
+        ],
+        "original_failures_preserved": true,
+        "quality_defect_fixed": false,
+        "actual_managed_recovery_qualified": false,
+        "cpu_tests": 3,
+        "default_changed": false
+      },
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
@@ -4706,7 +4984,8 @@
       ],
       "evidence": [
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-speech-http-20261118/README.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -5174,6 +5453,81 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "native_tts_20261118": {
+        "state": "execution_contract_cpu_accepted_native_cuda_in_progress",
+        "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+        "evidence": "evidence/serve-tts-metadata-cpu-20261118/README.md",
+        "metadata_cpu": 8,
+        "source_anchors": 863,
+        "source_negative_controls": 10,
+        "gpu": 0,
+        "actual_speech_accepted": false,
+        "default_changed": false,
+        "complete": false,
+        "instruction_candidate": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+        "asset_revision": "0c0e3051f131929182e2c023b9537f8b1c68adfe",
+        "asset_acquisition_in_progress": false,
+        "remaining": [
+          "Native talker/code predictor and real PCM execution with verified assets",
+          "Actual speech and Chat audio outputs, assistant audio-id history",
+          "SDK/TLS/profile and recovery, reversible release",
+          "Responses/Batch/Realtime combinations and all remaining master tasks"
+        ],
+        "full_asset_identity_accepted": true,
+        "asset_evidence": "evidence/serve-tts-assets-20261118/README.md",
+        "execution_contract_cpu_unique": 16,
+        "execution_contract_cpu_executions": 19,
+        "execution_contract_evidence": "evidence/serve-tts-execution-cpu-20261118/README.md"
+      },
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
@@ -6055,7 +6409,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev306 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev316 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -6784,12 +7138,61 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "latest_release_delivered_main_merged_remaining_tasks_active",
+      "state": "latest_release_main_merged_remaining_delivery_tasks_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -6823,42 +7226,53 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_CHAT_AUDIO_DELIVERY",
-        "revision": 306,
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
         "current": {
-          "engine_binary_sha256": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
-          "engine_release_sha256": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
-          "generation_sha256": "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a",
-          "manifest_sha256": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/service-package-01/bundle",
-          "service_acceptance_sha256": "f5cde30947a7f987ea2643965f638f33a77ed2a78f35b60b4f81608b3d9faf75",
-          "service_release_sha256": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a"
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
         },
         "commands": 19,
-        "seconds": 294.80632030405104,
+        "seconds": 290.4459193898365,
         "state": "STOPPED",
         "new_gpu_starts": 0,
-        "manual_root": "e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197",
-        "automatic_payload": "6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e",
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
         "candidate_whole_package_gpu_run": true,
         "older_engine_fallback": false,
-        "previous_rev296_preserved": true,
+        "previous_rev306_preserved": true,
         "retired_intents_archived": 5,
-        "retired_generations_archived": 0,
-        "retired_versions_archived": 0,
-        "maintenance_original_read_contention_preserved": true,
-        "maintenance_cumulative_seconds": 35.17661553667858,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
         "deleted_files": 0,
-        "files": 76,
+        "files": 115,
         "secret_scan_matches": 0,
-        "archive_sha256": "77210849c94156ceb085ac9e1c633aae337bed1c952548977f3118b2a52c486d",
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -7025,7 +7439,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat audio PR final-head checks and actual main merge",
+        "Speech/input PR final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -7523,6 +7937,57 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
+      },
+      "current_mainline_evidence": "evidence/serve-chat-audio-mainline-20261118/README.md",
+      "current_candidate": "TTS work-branch changes; no replacement of rev306 or full-task completion",
+      "tts_input_delivery_20261118": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
       }
     },
     {
@@ -7714,8 +8179,8 @@
       }
     }
   ],
-  "next_task": "Chat audio main integration and remaining A10 audio capabilities plus all master tasks",
-  "next": "Complete Chat audio main integration, original overlap quality, audio output/history/Realtime and every remaining A/N/R/Q task.",
+  "next_task": "Speech/input main integration and remaining audio/voice/Realtime plus all master tasks",
+  "next": "Complete main integration, four-times-speed content, complete voices and remaining Responses/Batch/Realtime and every A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -7767,6 +8232,230 @@
       "revision": 306,
       "evidence": "docs/evidence/serve-chat-audio-delivery-20261118/README.md",
       "main_integration_pending": true
+    }
+  },
+  "native_tts_progress": {
+    "date": "2026-11-18",
+    "state": "speech_chat_audio_business_qualified_managed_delivery_pending",
+    "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+    "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
+    "full_task_complete": false,
+    "remaining": [
+      "Managed Speech profiles/TLS/recovery/publication/main; preserve NVML ENV_ABORT and accepted content evidence",
+      "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
+      "SDK/TLS/profiles/recovery/reversible release/main",
+      "Responses/Batch/Realtime and every remaining master task"
+    ],
+    "prior_bf16_numerical_failure_preserved": true,
+    "codec": {
+      "state": "numeric_component_qualified",
+      "evidence": "evidence/serve-tts-codec-component-20261118/README.md",
+      "speech_quality_pending": false,
+      "qualified_scope": "Original two utterances; all voices/style/service composition remain pending"
+    },
+    "utterance": {
+      "state": "natural_eos_and_actual_asr_content_passed",
+      "evidence": "evidence/serve-tts-utterance-20261118/README.md",
+      "all_voices_and_styles_pending": true
+    },
+    "encoding": {
+      "cpu_unique_checks": 10,
+      "cpu_evidence": "evidence/serve-speech-encoding-cpu-20261118/README.md",
+      "real_content_cases": 8,
+      "content_evidence": "evidence/serve-speech-encoding-content-20261118/README.md",
+      "progressive_encoding_pending": false,
+      "progressive_evidence": "evidence/serve-speech-codec-stream-20261118/README.md"
+    },
+    "tempo": {
+      "state": "4x_content_unresolved",
+      "accepted_actual_speeds": [
+        0.25,
+        2
+      ],
+      "identity_speed_cpu": 1,
+      "failure_evidence": "evidence/serve-speech-tempo-diagnosis-20261118/README.md",
+      "required_range": [
+        0.25,
+        4
+      ],
+      "range_not_reduced": true
+    },
+    "service_assets": {
+      "state": "paired_loader_resources_health_component_qualified",
+      "evidence": "evidence/serve-tts-service-assets-20261118/README.md",
+      "cpu_unique": 11,
+      "cpu_executions": 13,
+      "full_loader_cases": 1,
+      "gpu_loads": 0,
+      "runtime_integrated": true,
+      "runtime_http_qualified": true
+    },
+    "incremental_synthesis": {
+      "state": "incremental_pcm_and_lifecycle_qualified",
+      "evidence": "evidence/serve-tts-incremental-synthesis-20261118/README.md",
+      "cases": 2,
+      "cancellation_cases": 1,
+      "frame_limit_cases": 1,
+      "actual_http": true
+    },
+    "http": {
+      "state": "direct_http_sdk_content_accepted_managed_delivery_pending",
+      "cpu_unique": 24,
+      "cpu_evidence": "evidence/serve-speech-http-cpu-20261118/README.md",
+      "accepted_transport_posts": 13,
+      "content_accepted": true,
+      "environment_abort_preserved": true,
+      "default_changed": false,
+      "evidence": "evidence/serve-speech-http-20261118/README.md",
+      "actual_audio_cases": 8,
+      "formats": [
+        "mp3",
+        "aac",
+        "opus",
+        "flac",
+        "wav",
+        "pcm"
+      ],
+      "accepted_speed": 1,
+      "total_core_starts_including_failures": 4,
+      "total_asr_loads": 3,
+      "total_posts_including_failures": 16,
+      "total_seconds": 265.7168065723963,
+      "nvml_root_cause_resolved": false
+    },
+    "chat_audio_output": {
+      "state": "actual_http_sdk_history_and_content_accepted_managed_delivery_pending",
+      "evidence": "evidence/serve-chat-audio-output-http-20261118/README.md",
+      "cpp_cases": 19,
+      "driver_negative_controls": 4,
+      "gpu_short_scope": {
+        "core_starts": 2,
+        "post_requests": 12,
+        "asr_loads": 2,
+        "seconds": 1200
+      },
+      "default_changed": false,
+      "diagnosis": "Exact-text/full-budget diagnosis led to official full-text conditioning fix; accepted actual content evidence now verifies repair.",
+      "source_failure_retained": ".q4t-work/serve-native-tts-20261118/chat-http-03/result.json",
+      "routing_cpu_cases": 2,
+      "actual_progress": "All12 business POSTs and6 full audio ASR content checks passed; full-text conditioning and scoped usage repairs qualified. Original failures preserved; managed/native TLS/recovery/release remain required.",
+      "usage_repair_cpu_cases": 3,
+      "restart_probe_cpu": 1,
+      "accepted_unique_business_posts": 12,
+      "actual_audio_cases": 6,
+      "content_accepted": true,
+      "sdk_cpu_cases": 1,
+      "additional_cpu_unique": 7,
+      "separate_leases": true,
+      "total_core_process_attempts": 8,
+      "total_core_model_loads": 7,
+      "total_actual_http_posts": 21,
+      "total_asr_loads": 2,
+      "total_seconds": 499.4088844098151
+    },
+    "managed": {
+      "state": "delivered_rev316_main_pending",
+      "cpu_unique": 20,
+      "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
+      "profile_short_scope": {
+        "starts": 2,
+        "posts": 26,
+        "seconds": 900
+      },
+      "default_changed": false,
+      "capacity_failure_evidence": "evidence/serve-tts-managed-capacity-20261118/README.md",
+      "process_attempts": 1,
+      "actual_core_weight_loads": 0,
+      "actual_posts": 0,
+      "seconds": 8.800035278778523,
+      "capacity_fix": {
+        "cpu_unique": 24,
+        "cpu_executions": 26,
+        "evidence": "evidence/serve-auxiliary-capacity-cpu-20261118/README.md",
+        "actual_business_pending": false,
+        "default_changed": false
+      },
+      "composition_failure": {
+        "evidence": "evidence/serve-overlap-alternating-cpu-20261118/README.md",
+        "core_starts": 1,
+        "posts": 11,
+        "seconds": 82.96904422715306,
+        "source_preserved": true,
+        "cpu_contracts": 11,
+        "real_waveform_replays": 5,
+        "actual_fix_pending": false
+      },
+      "qualified_profiles": {
+        "evidence": "evidence/serve-tts-input-profiles-20261118/README.md",
+        "binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+        "starts": 2,
+        "posts": 26,
+        "seconds": 204.59922144003212,
+        "nvml_queries": 190,
+        "default_changed": false,
+        "managed_composition_pending": true
+      },
+      "service_composition": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_SERVICE_COMPOSITION",
+        "binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+        "actual_model_starts": 6,
+        "service_requests": 40,
+        "service_probes": 1,
+        "service_seconds": 460.2926034927368,
+        "nvml_queries": 439,
+        "cleanup_complete": true,
+        "default_unchanged": true,
+        "evidence": "evidence/serve-tts-service-20261118/README.md"
+      },
+      "delivery": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
+        "revision": 316,
+        "current": {
+          "engine_binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+          "engine_release_sha256": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+          "generation_sha256": "08cb686fe08eba01976294c7219c227cfa222b4f2f980f12f29e569ff9d8a288",
+          "manifest_sha256": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/service-package-01/bundle",
+          "service_acceptance_sha256": "032ab3029a5234c5b0d91c246904ef57881c23497177699f204338a837b5bde8",
+          "service_release_sha256": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49"
+        },
+        "commands": 19,
+        "seconds": 290.4459193898365,
+        "state": "STOPPED",
+        "new_gpu_starts": 0,
+        "executed_continuation_commands": 16,
+        "reused_completed_checks": 3,
+        "original_delivery_failed_commands": 4,
+        "original_failure_preserved": true,
+        "client_output_extension": {
+          "client": "alpha",
+          "previous": 256,
+          "current": 2817,
+          "policy_revision": 1
+        },
+        "usage_reset": false,
+        "manual_root": "ffc8be5a4ab4a20b8fe46463365346287538d877fb1969c0b4bb455c7df08bfa",
+        "automatic_payload": "a526d4f291dce3b33d4791b5caae95f473e18c6fdad01800f98319e0664e03d0",
+        "candidate_whole_package_gpu_run": true,
+        "older_engine_fallback": false,
+        "previous_rev306_preserved": true,
+        "retired_intents_archived": 5,
+        "retired_generations_archived": 2,
+        "retired_versions_archived": 2,
+        "maintenance_original_read_contention_preserved": false,
+        "maintenance_cumulative_seconds": 106.2833039839752,
+        "deleted_files": 0,
+        "files": 115,
+        "secret_scan_matches": 0,
+        "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+      }
     }
   }
 }

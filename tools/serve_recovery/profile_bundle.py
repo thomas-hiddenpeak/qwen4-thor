@@ -10,7 +10,7 @@ def compatible(base, assets, registry):
     profile_contract.validate(registry)
     expected = profile_contract.binding(base['files']['q4t'], base['protocol_sha256'],
         base['model_files'], assets, base['settings'].get('native_embedding'),
-        base['settings'].get('native_asr'))
+        base['settings'].get('native_asr'), base['settings'].get('native_tts'))
     ledger.require(registry['identity'] == expected and
         registry['profiles']['primary'] == base['settings']['profile'],
         'qualified profiles do not belong to this engine/assets/capacity')

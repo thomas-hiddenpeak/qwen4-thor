@@ -1,0 +1,345 @@
+{
+  "status": "COMPLETED_TTS_TLS_REUSED_ORIGINAL_CANCELLATION_FAILED",
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tls-service-01",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tls-package-01/bundle",
+    "manifest_sha256": "93f6ce9aa8dac34e3b9a0b2bcecc4a42fdd9102d3168e8c2c53332b6bd9c1eec"
+  },
+  "tts_complete": true,
+  "files": {
+    "lease-command.json": "0cffeba34bba03cdec8ec6c3cc5d51466b2a524628d94d591a44ec76d370ac81",
+    "plan.json": "3d4e7e6cc4bbb3a09e0aa52d03d9f8688962de9ea3c6760b0b9496f8cdec2372",
+    "resource-scope.json": "a44596a463afb7e068df661afdf7e492e96c9427c98eca42122a6c9c0f687b5b",
+    "lease/nvml-queries.jsonl": "84bc6e2f90bc1cf07b7a9df579177a7e015a548da6853e0a8054ab9c9dead131",
+    "lease/events.jsonl": "0eb04cc4519bb6ed5258300a13ff11f05f2948dbb59d6808707ab9d5c98c73e0",
+    "lease/exit.json": "065d5bb21f223dcc099e54c754d2d57be5f3a5794059160776a98c148d6e0057",
+    "execution/native-asr-gateway-exit-fault.json": "b7fdc14167cae0d8a16650e1986cde232aadadc45be2130de3f525952b6351a4",
+    "execution/stop.json": "4a92e8fd9191f85be2314c04366bd454bef1bcdc3c05ceaa6e81cb061eb5243d",
+    "execution/launcher-result.json": "14a2f78749e8da51e4e2ce15d70214279e73246aef04af3efb267e3645006daa",
+    "execution/chunked-zh.wire": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+    "execution/tls-before-tts-config-http.json": "6ce3960d32403041cc0a51dcf1d5ed85968ad972a6065f4bc366a1d5f23f04f9",
+    "execution/tls-after-tts-chat-request.json": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+    "execution/python-zh-json.wire": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+    "execution/tls-before-tts-chat-request.json": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+    "execution/before-cancel.json": "6a1b527085100c214e1e0ab39cb08f8780a3adf062c2820008aeafbcba058109",
+    "execution/launcher.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "execution/tls-before-tts-drain.json": "202e6dd653342f3a9f761f2da7499e967f04eb5c2451d0c62cf13e95bf3a1c73",
+    "execution/tls-after-tts-config.wire": "e6c38a2e294ecf9d24ebfcd7957456c08fbb8c80faabd21a6243ceab7a3c420c",
+    "execution/chat-python-request.json": "d88f5efa4ad5ba1ead93255b19f47009d567945a3416854ed33f01f6f254f67b",
+    "execution/tls-before-tts-chat.wire": "eae0e865d75d31b44df62abc6dc9535eda836cfc03cb23334a4e0d149829fb6f",
+    "execution/python-zh-json-request.json": "e0b66945b06e80509b3d89e9816877a09a87bc6d724dd6ee95256a65ff78ffe7",
+    "execution/tls-after-tts-config-http.json": "b14d4315a210f303129056663eee7a8f1d09ee317abe4fee5f6a96f472389133",
+    "execution/chat-js.wire": "8bb1920f9819c27f8358c8da6241b583734f90853a03cdd25468f5735ea03ac0",
+    "execution/cancel-stream.wire": "34554fa3aad9bc28847ec2bf102c1310dd50a9f7bf7f7290cdb578480db60bf5",
+    "execution/final-config.wire": "dd9589c0101ae4c60a4279d44b4dee2193f0911d8b0d47d0ac65f4feff3d9a62",
+    "execution/tls-before-tts-config.wire": "f9ff6ac8d021a21552ddec9e407e5dfdc4032f67f1534177aafdc906bcdd53dc",
+    "execution/tls-after-tts-drain.json": "6f4e05c316774c3dbddf8c3f79a4ad5daf60ab29026b9fd30b4c141ac86d0acb",
+    "execution/tls-after-tts-chat.sdk.json": "cd9cd770030bff86cfa3e03c9d2d246ed24bec4f1f23c09e4dd2ae8d0b72e44f",
+    "execution/result.json": "fcf239d85e7a497021ef5f16041baf9b565a33a3abe69237870f9af47230ed29",
+    "execution/capabilities-http.json": "a22326b447fefc4122499ecc746468d2ffa82c91cdae51cf074c3b18ffafe32d",
+    "execution/usage-1.json": "5c1551bf48268a00ac186172eef0d76e653cb5856c78a3f171f8f33e6ca8d108",
+    "execution/after-cancel.json": "3eebed7c06977243dc4e04185fe1f9b6f6797e43c418707df02998d147ed9385",
+    "execution/core-after.wire": "5d6f67e0df287e1a3706f2565750feda9540459ba56aded59b7bb1b3b91ee156",
+    "execution/beta-file-limit.wire": "81896de59c1445742ff7403bcb8d960f78cd1f89afba27bae368a240528b1220",
+    "execution/counts.json": "a93d804c1560c24b4b4dde07c03d824195532174f33ab512b13f89ac0d4f23c9",
+    "execution/unauthorized.wire": "9cc49f5990bae941470e3b1439ee2ca4186c2fc6038db5a5b1a1260ebd82f7c9",
+    "execution/chat-python.sdk.json": "5e436fad0ac573958f13e3b1c96f95d1e9c27bd926f6de2547e4baaca38cdfc1",
+    "execution/cancel-observation.json": "26308f0e42975a2e743d258589d9b72894d8cd7bdbfc9f6d4491aa20c7a6d8a6",
+    "execution/js-en-stream-request.json": "13bb5451c0e9e98f6ad4ad04ab81123e57020bf28aa9065da9d47498338a6453",
+    "execution/core-continuity.json": "d960ad67b6e8ac9b6637eeb03fd279ac82d39d76c4027d16bb671f2e3e1b7a0e",
+    "execution/self-check-1.json": "8f1068e1d88bb874581a6d263cf2101c881132f7affdb6af2be360b7fb54695d",
+    "execution/js-en-stream.wire": "075168642430267ba5a70bdb9103d3c81fa918b476d0189c6a6949975b0e7cd7",
+    "execution/unauthorized-http.json": "4f1e74a42aba622b3d60b5a3fe79f6bec29f947b9d3355aa59a41dd84385f337",
+    "execution/tls-before-tts-speech-request.json": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19",
+    "execution/tls-after-tts-speech-request.json": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19",
+    "execution/chat-js.sdk.json": "7c28902a23482267bb237b31d6a6f21ac1719aa322208721e2f4eb0d45f961fc",
+    "execution/beta-file-limit-http.json": "a916310b8a77c848295cbe90a773c09e2f4bb8721017f1b576b9d6e8673b9bb2",
+    "execution/capabilities.wire": "6a00ef43d656d2eba1a32add14a0d718dcfec558519f564859eb5a283f3b05af",
+    "execution/tls-before-tts-chat.sdk.json": "69f4ee5c9fd884e2bf684fc6e22ec7f30f99eb8db40fda613004c0b9fb1120e9",
+    "execution/wrapper.json": "2a9b0bcf444872e3669d0813fc7cdb8b8ad6e63dd841de709d0448200a038d36",
+    "execution/tls-after-tts-speech.wire": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323",
+    "execution/chat-python.wire": "4426c114b94f21b6440259249af2259e8d780bfb58a5ba85ccfbd23c07998777",
+    "execution/tls-before-tts-speech.wire": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323",
+    "execution/tls-after-tts-speech.sdk.json": "244f8a4f4915dff86b602ca8bd0b600c5f9f963336e1ceab7fea88fb271497c9",
+    "execution/js-en-stream.sdk.json": "80dd57bf4105f3b5e9257ea197e9029f35dbab69bc74b72b3c38089b60212442",
+    "execution/stopped-ledger.json": "c3d43108b34c104bbd0a5e774db704992cf539a7fd47214f50822f44ef49c8ed",
+    "execution/initialized.json": "5aded8c27de8bceb5fc89e0e18f9e323ca93cfc39d71c6a494e21ea7ed2d3d70",
+    "execution/ready-1.json": "a278bf6e646100642ec535659a17fc5622832d2b58d6b62783aa4939b3ed5e51",
+    "execution/final-config-http.json": "7d238a046a8c990280587c9f1937057c10ee85a6a66f7437b6f3bb4f461082d0",
+    "execution/tls-after-tts-chat.wire": "dcda3ac72835af0dc3309e4428915d30c81fc1115ffdc812e70c6c43400b1063",
+    "execution/python-zh-json.sdk.json": "2c6540ee61ff82880d0364f513a7c129070880e73b1723a2858a7bdb76fb6d74",
+    "execution/tls-before-tts-speech.sdk.json": "31a414811ee36ee4ccf91da012da7f800b81cc4b8fcae873ec57f7bf721c6084",
+    "execution/core-after-http.json": "9617858809dcfae4b5386c31cda9f205135b6650253f9ac09cb8af69a21136e0",
+    "execution/chunked-zh-http.json": "0e8fb2903f20184cc18fb644afa8004249750baabeae52e4bfc57ea95f093fde",
+    "execution/core-after-request.json": "8ff3b6074023aed4961cdbeb584b4050b26f2e075b7f4839fab363c2cc5aba1c",
+    "execution/status.jsonl": "d1372f581f011ddfc1aba1966a275e00c35bc730db3123d627a129d6d046e31e",
+    "execution/cancel-stream-http.json": "50cf60d4a14ace79093eefc1b24a3edbffea3af4ec818ae41836c2f7584bba3a",
+    "execution/chat-js-request.json": "41b7520b618d81aeddefcaad0b2a78df3f4e22311d3d48901fb895c2260a97c1",
+    "execution/state/ledger.json": "c2c9d67ac1bc65c50e5f23652e950a3da8413de89eeafb12234627dcb29d9492"
+  },
+  "reviewed_driver_changes": {
+    "tools/native_asr/service_acceptance.py": {
+      "before": "3401b315f1365ffd809d4b759afeec4f840cf464315f00ab64ea77dcf2fde92d",
+      "after": "be87cde25750bd910578dd955cd5c52146ae9fb9d979ebffd5dd106c42c1bad3"
+    },
+    "tools/native_tts/managed_service.py": {
+      "before": "5c07b8d26e8c1b84b3fca6dea20eb06d7a81a2fa55f46949877e6b8704093ce1",
+      "after": "c15e51aa175cf570bc637f478f744514bad800adabf324481303fcd771291a0a"
+    }
+  },
+  "counts": {
+    "starts": 1,
+    "chats": 13,
+    "probes": 0,
+    "controls": 182
+  },
+  "seconds": 111.08316229004413,
+  "nvml_queries": 105,
+  "native_gateway_recovered_without_model_restart": true,
+  "original_cancellation_accepted": false,
+  "completed_business": {
+    "results": {
+      "python-zh-json": {
+        "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "auxiliaries": [
+          "alignment",
+          "vad",
+          "speaker",
+          "separator"
+        ],
+        "stream": false,
+        "quality": {
+          "policy": "source-specific-owner-inflection-20261118",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "voices": [
+            {
+              "reference": "The child almost hurt the small dog.",
+              "observed": "The child almost hurts the small dog.",
+              "wer": 0.14285714285714285,
+              "threshold": 0.125,
+              "accepted_inflection": true
+            },
+            {
+              "reference": "We are sure that one war is enough.",
+              "observed": "We are sure that one war is enough.",
+              "wer": 0.0,
+              "threshold": 0.125,
+              "accepted_inflection": false
+            }
+          ],
+          "overlap_seconds": 1.68,
+          "model_quality_limitation": true
+        },
+        "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+        "segments": 2,
+        "labels": [
+          "B",
+          "A"
+        ]
+      },
+      "chunked-zh": {
+        "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "auxiliaries": [
+          "alignment",
+          "vad",
+          "speaker",
+          "separator"
+        ],
+        "stream": false,
+        "quality": {
+          "policy": "source-specific-owner-inflection-20261118",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "voices": [
+            {
+              "reference": "The child almost hurt the small dog.",
+              "observed": "The child almost hurts the small dog.",
+              "wer": 0.14285714285714285,
+              "threshold": 0.125,
+              "accepted_inflection": true
+            },
+            {
+              "reference": "We are sure that one war is enough.",
+              "observed": "We are sure that one war is enough.",
+              "wer": 0.0,
+              "threshold": 0.125,
+              "accepted_inflection": false
+            }
+          ],
+          "overlap_seconds": 1.68,
+          "model_quality_limitation": true
+        },
+        "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+        "segments": 2,
+        "labels": [
+          "B",
+          "A"
+        ]
+      },
+      "js-en-stream": {
+        "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "auxiliaries": [
+          "alignment",
+          "vad",
+          "speaker",
+          "separator"
+        ],
+        "stream": true,
+        "quality": {
+          "policy": "source-specific-owner-inflection-20261118",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "voices": [
+            {
+              "reference": "The child almost hurt the small dog.",
+              "observed": "The child almost hurts the small dog.",
+              "wer": 0.14285714285714285,
+              "threshold": 0.125,
+              "accepted_inflection": true
+            },
+            {
+              "reference": "We are sure that one war is enough.",
+              "observed": "We are sure that one war is enough.",
+              "wer": 0.0,
+              "threshold": 0.125,
+              "accepted_inflection": false
+            }
+          ],
+          "overlap_seconds": 1.68,
+          "model_quality_limitation": true
+        },
+        "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+        "segments": 2,
+        "labels": [
+          "B",
+          "A"
+        ]
+      },
+      "chat-python": {
+        "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+        "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+        "usage": {
+          "prompt_tokens": 280,
+          "completion_tokens": 15,
+          "total_tokens": 295,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 55
+          },
+          "q4t_audio_preparation": {
+            "input_tokens": 70,
+            "output_tokens": 11,
+            "audio_tokens": 55
+          }
+        }
+      },
+      "chat-js": {
+        "request_sha256": "40d96869476682e6f3713e9c75e470edbb8471401c869bbf2486ebe853acdd65",
+        "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+        "usage": {
+          "prompt_tokens": 280,
+          "completion_tokens": 15,
+          "total_tokens": 295,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 55
+          },
+          "q4t_audio_preparation": {
+            "input_tokens": 70,
+            "output_tokens": 11,
+            "audio_tokens": 55
+          }
+        }
+      },
+      "tls-before-tts": {
+        "actual_speech_sha256": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323",
+        "actual_chat_audio_sha256": "4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126",
+        "usage": {
+          "prompt_tokens": 180,
+          "completion_tokens": 491,
+          "total_tokens": 671,
+          "completion_tokens_details": {
+            "audio_tokens": 480
+          },
+          "q4t_audio_synthesis": {
+            "input_tokens": 15,
+            "output_tokens": 481
+          }
+        },
+        "health": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-customvoice",
+          "device_bytes": 8123997956,
+          "load_attempts": 2,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "limits": {
+          "max_text_tokens": 512,
+          "max_prefill_tokens": 512,
+          "max_frames": 160,
+          "workspace_mib": 2048,
+          "max_output_mib": 16
+        }
+      },
+      "tls-after-tts": {
+        "actual_speech_sha256": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323",
+        "actual_chat_audio_sha256": "4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126",
+        "usage": {
+          "prompt_tokens": 180,
+          "completion_tokens": 491,
+          "total_tokens": 671,
+          "completion_tokens_details": {
+            "audio_tokens": 480
+          },
+          "q4t_audio_synthesis": {
+            "input_tokens": 15,
+            "output_tokens": 481
+          }
+        },
+        "health": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-customvoice",
+          "device_bytes": 8123997956,
+          "load_attempts": 3,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "limits": {
+          "max_text_tokens": 512,
+          "max_prefill_tokens": 512,
+          "max_frames": 160,
+          "workspace_mib": 2048,
+          "max_output_mib": 16
+        }
+      }
+    },
+    "native_tls": true,
+    "version_recovery": false,
+    "health": {
+      "state": "ready",
+      "reason": "none",
+      "core_readiness_dependency": false,
+      "model": "qwen3-asr-0.6b",
+      "device_bytes": 1876017152,
+      "load_attempts": 3,
+      "load_failures": 0,
+      "compute_failures": 0,
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "asset_cleanup_pending": false
+    },
+    "actual_core_text": "42",
+    "default_replaced": false,
+    "reused_completed": null,
+    "cancellation": "pending"
+  }
+}

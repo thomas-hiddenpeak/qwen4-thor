@@ -1,0 +1,16 @@
+{
+  "task": "First predictor two-row input with exact shared BF16 projection; trace every operation in five layers to find the numerical defect",
+  "limits": {
+    "gpu_model_loads": 1,
+    "cpu_predictor_loads": 1,
+    "input_rows": 2,
+    "predictor_layers": 5,
+    "http_requests": 0,
+    "main_llm_loads": 0,
+    "seconds": 120,
+    "reference_seconds": 60,
+    "native_seconds": 60
+  },
+  "original_failure_preserved": true,
+  "original_thresholds_unchanged": true
+}

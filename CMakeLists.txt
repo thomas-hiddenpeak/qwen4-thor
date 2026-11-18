@@ -177,6 +177,18 @@ add_library(q4t_model STATIC
   src/audio/vad.cpp
   src/audio/vad_chunks.cpp
   src/audio/asr_config.cpp
+  src/audio/tts_config.cpp
+  src/audio/pcm_output.cpp
+  src/audio/speech_tempo.cpp
+  src/audio/tts_layout.cpp
+  src/audio/tts_codec_layout.cpp
+  src/audio/tts_generation.cpp
+  src/audio/tts_dense.cu
+  src/audio/tts_model.cu
+  src/audio/tts_codec_conv.cu
+  src/audio/tts_codec_dense.cu
+  src/audio/tts_codec.cu
+  src/audio/tts_synthesis.cpp
   src/audio/aligner_config.cpp
   src/audio/asr_layout.cpp
   src/audio/aligner_layout.cpp
@@ -312,6 +324,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/embedding_assets.cpp
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  src/server/tts_assets.cpp
+  src/server/tts_service.cpp
+  src/server/tts_upload.cpp
   src/server/aligner_assets.cpp
   src/server/speaker_assets.cpp
   src/server/speaker_service.cpp
@@ -329,6 +344,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_service.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
+  src/server/speech_request.cpp
+  src/server/chat_audio_output.cpp
+  src/server/chat_audio_history.cpp
+  src/server/chat_audio_synthesis.cpp
   src/server/chat_audio_inputs.cpp
   src/server/chat_audio_execution.cpp
   src/server/asr_response.cpp
@@ -374,6 +393,14 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_video.cpp
   src/server/file_audio.cpp
   src/server/file_audio_worker.cpp
+  src/server/speech_encode.cpp
+  src/server/speech_encode_worker.cpp
+  src/server/speech_codec_stream.cpp
+  src/server/speech_output.cpp
+  src/server/chat_tts_backend.cpp
+  src/server/chat_tts_execution.cpp
+  src/server/chat_speech.cpp
+  src/server/speech_codec_stream_worker.cpp
   src/server/file_video_worker.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp
@@ -1055,6 +1082,7 @@ if(Q4T_BUILD_TESTS)
   include(cmake/NativeVadTests.cmake)
   include(cmake/NativeSpeakerTests.cmake)
   include(cmake/NativeSeparatorTests.cmake)
+  include(cmake/NativeTtsTests.cmake)
   add_executable(q4t_aligner_contract_tests EXCLUDE_FROM_ALL
     tests/test_main.cpp tests/aligner_config_test.cpp tests/aligner_asset_test.cpp
     src/audio/asr_config.cpp src/audio/aligner_config.cpp src/io/json.cpp)

@@ -377,12 +377,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
-            path == "/v1/embeddings" || path == "/v1/audio/transcriptions" ||
-            IsResponsesTarget(path) ||
+            path == "/v1/embeddings" || path == "/v1/audio/speech" ||
+            path == "/v1/audio/transcriptions" || IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
-            IsFileTarget(path) ||
-            IsUploadTarget(path))) ||
+            IsFileTarget(path) || IsUploadTarget(path))) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&
@@ -456,10 +455,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" ||
-        path == "/v1/embeddings" || IsResponsesTarget(path) ||
-        path == "/v1/requests/cancel" || IsConversationTarget(path) ||
-        IsPromptTarget(path) || IsBatchTarget(path) ||
-        IsVectorStoreTarget(path) || IsMcpTunnelTarget(path)) {
+        path == "/v1/embeddings" || path == "/v1/audio/speech" ||
+        IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
+        IsConversationTarget(path) || IsPromptTarget(path) ||
+        IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+        IsMcpTunnelTarget(path)) {
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
@@ -673,9 +673,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || path == "/v1/responses" ||
-           path == "/v1/moderations" ||
-            path == "/v1/embeddings" ||
-           path == "/v1/requests/cancel")
+           path == "/v1/moderations" || path == "/v1/embeddings" ||
+           path == "/v1/audio/speech" || path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
     rejected(HttpReceiveFailure::kMethod, 405);
@@ -749,6 +748,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/completions" && method == "POST") {
     HandleChat(fd, body, GenerationApi::kCompletion);
+    return;
+  }
+  if (path == "/v1/audio/speech" && method == "POST") {
+    HandleSpeech(fd, body);
     return;
   }
   if (path == "/v1/embeddings" && method == "POST") {

@@ -56,11 +56,13 @@ inline std::string Kind(ObjectKind kind) {
       return "vector_store_file";
     case ObjectKind::kVectorStoreBatch:
       return "vector_store_batch";
+    case ObjectKind::kAudio:
+      return "audio";
   }
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kVectorStoreBatch); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kAudio); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

@@ -189,6 +189,12 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.uncertain =
         !data.Find("item") || !data.Find("item")->IsObject();
     inspector.Items(data.Find("item"));
+  } else if (kind == "audio" &&
+             data.GetString("format") == "q4t.chat_audio.v1") {
+    // Self-contained transcript and completed waveform digest; expiry is
+    // mandatory and does not extend when another message references the ID.
+    inspector.value.uncertain =
+        data.GetInt("expires_at") <= 0 || data.GetString("transcript").empty();
   } else if (kind == "chat") {
     inspector.value.uncertain = !data.GetArray("messages");
     inspector.Items(data.Find("messages"));

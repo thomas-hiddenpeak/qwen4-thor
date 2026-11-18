@@ -2,6 +2,7 @@
 #include "q4t/server/file_limits.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/asr_assets.h"
+#include "q4t/server/tts_assets.h"
 #include "q4t/server/aligner_assets.h"
 #include "q4t/audio/vad.h"
 #include "q4t/audio/speaker_config.h"
@@ -34,7 +35,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  bool native_embedding, bool native_asr,
                                  bool native_aligner, bool native_vad,
                                  int vad_max_chunks, bool native_speaker,
-                                 bool native_separator) {
+                                 bool native_separator, bool native_tts) {
   const bool constrained = kStructuredDecodingAvailable;
 #ifdef Q4T_HAVE_GSTREAMER_HEADERS
   const bool video_decoder = true;
@@ -98,10 +99,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("core_readiness_dependency":false},)"
          R"("chunking_strategy":["auto","server_vad"],)"
          R"("speaker":{"configured":)" +
-         (native_speaker ? "true" : "false") +
-         R"(,"profile":)" + Quote(audio::SpeakerConfig::kProfile) +
-         R"(,"revision":)" + Quote(audio::SpeakerConfig::kRevision) +
-         R"(,"weight_sha256":)" + Quote(audio::SpeakerConfig::kWeightSha256) +
+         (native_speaker ? "true" : "false") + R"(,"profile":)" +
+         Quote(audio::SpeakerConfig::kProfile) + R"(,"revision":)" +
+         Quote(audio::SpeakerConfig::kRevision) + R"(,"weight_sha256":)" +
+         Quote(audio::SpeakerConfig::kWeightSha256) +
          R"(,"model":"speechbrain-ecapa-voxceleb",)"
          R"("backend":"native_ecapa_fp32","sample_rate":16000,)"
          R"("embedding_dimensions":192,"clustering":"average_linkage_cosine",)"
@@ -111,10 +112,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("reference_scope":"current_request_only",)"
          R"("core_readiness_dependency":false},)"
          R"("separator":{"configured":)" +
-         (native_separator ? "true" : "false") +
-         R"(,"profile":)" + Quote(audio::SeparatorConfig::kProfile) +
-         R"(,"revision":)" + Quote(audio::SeparatorConfig::kRevision) +
-         R"(,"weight_sha256":)" + Quote(audio::SeparatorConfig::kWeightSha256) +
+         (native_separator ? "true" : "false") + R"(,"profile":)" +
+         Quote(audio::SeparatorConfig::kProfile) + R"(,"revision":)" +
+         Quote(audio::SeparatorConfig::kRevision) + R"(,"weight_sha256":)" +
+         Quote(audio::SeparatorConfig::kWeightSha256) +
          R"(,"model":"speechbrain-sepformer-wsj02mix",)"
          R"("backend":"native_sepformer_fp32","sample_rate":8000,)"
          R"("simultaneous_sources":2,"output_sample_rate":16000,)"
@@ -739,6 +740,31 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("high","xhigh","max"],"reasoning_effort_default":"medium",)"
          R"("effort_adaptation":"native_guidance",)"
          R"("none_disables_thinking":true},)"
+         R"("speech":{"route":"/v1/audio/speech","enabled":)" +
+         (native_tts ? "true" : "false") + R"(,"model":)" +
+         Quote(kNativeTtsModel) + R"(,"profile":)" +
+         Quote(kNativeTtsProfile) + R"(,"revision":)" +
+         Quote(kNativeTtsRevision) + R"(,"weight_sha256":)" +
+         Quote(kNativeTtsWeightSha256) + R"(,"codec_weight_sha256":)" +
+         Quote(kNativeTtsCodecWeightSha256) +
+         R"(,"formats":["mp3","opus","aac","flac","wav","pcm"],)"
+         R"("voices":["serena","vivian","uncle_fu","ryan","aiden",)"
+         R"("ono_anna","sohee","eric","dylan"],)"
+         R"("instructions":true,"speed_min":0.25,"speed_max":4,)"
+         R"("sample_rate":24000,"channels":1,"pcm_format":"s16le",)"
+         R"("stream_formats":["audio","sse"],)"
+         R"("sse_events":["speech.audio.delta","speech.audio.done"],)"
+         R"("wav_decode_waits_for_natural_code_eos":true,)"
+         R"("http10_buffers_bounded_complete_body":true,)"
+         R"("core_health_dependency":false,"registered_custom_voices":false},)"
+         R"("chat_audio_output":{"enabled":)" +
+         (native_tts ? "true" : "false") +
+         R"(,"formats":["mp3","opus","aac","flac","wav","pcm16"],)"
+         R"("history_ttl_seconds":3600,"private_history":true,)"
+         R"("history_requires_object_store":true,)"
+         R"("completion_budget":"primary_tokens_plus_audio_codes_and_eos",)"
+         R"("usage":"actual_primary_and_synthesis",)"
+         R"("stream_expiry_omits_finish_reason":true},)"
          R"("runtime":{"media_enabled":)" +
          (allow_media ? "true" : "false") + R"(,"mtp_enabled":)" +
          (mtp_enabled ? "true" : "false") + R"(},"media":)" +

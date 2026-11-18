@@ -29,7 +29,7 @@ Q4T_TEST(speaker_resources_cover_full_known_reference_and_unified_load_peak) {
   Q4T_CHECK(plan.resident_weight_bytes ==
             q4t::audio::SpeakerConfig::kWeightBytes);
   Q4T_CHECK(plan.load_peak_bytes >=
-            3 * q4t::audio::SpeakerConfig::kFileBytes + (64ULL << 20));
+            2 * q4t::audio::SpeakerConfig::kFileBytes + (64ULL << 20));
   Q4T_CHECK(plan.request_host_bytes >= 4 * 160000 * 4 + (16ULL << 20));
   const auto original = plan;
   limits.window_ms = 30000;

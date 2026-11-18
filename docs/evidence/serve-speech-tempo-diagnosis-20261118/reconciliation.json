@@ -1,0 +1,33 @@
+{
+  "status": "TEMPO_4X_STILL_UNRESOLVED",
+  "acceptance_granted": false,
+  "leases": [
+    {
+      "stage": "tempo-02",
+      "status": "COMMAND_FAILED",
+      "child_returncode": 1,
+      "nvml_queries": 6,
+      "nvml_ok": true,
+      "lease_released": true
+    },
+    {
+      "stage": "tempo-diagnosis-01",
+      "status": "COMMAND_FAILED",
+      "child_returncode": 1,
+      "nvml_queries": 7,
+      "nvml_ok": true,
+      "lease_released": true
+    },
+    {
+      "stage": "tempo-diagnosis-02",
+      "status": "COMPLETED",
+      "child_returncode": 0,
+      "nvml_queries": 8,
+      "nvml_ok": true,
+      "lease_released": true
+    }
+  ],
+  "lock_available": true,
+  "defaults_unchanged": true,
+  "follow_up": "Implement and qualify a speech-preserving high-speed algorithm; compressed encoding and service integration proceed independently without claiming speed completeness"
+}

@@ -1,4 +1,5 @@
 #include "q4t/server/server_options.h"
+#include "q4t/server/tts_assets.h"
 
 #include <arpa/inet.h>
 
@@ -124,6 +125,15 @@ Status ValidateServerOptions(const ServerOptions& options) {
                       options.served_model_name, options.model_aliases))
       return Status::Fail(
           "embedding model name conflicts with Chat model names");
+  }
+  if (!options.tts_limits.Valid())
+    return Status::Fail("invalid TTS context/frame/workspace/output limits");
+  if (!options.tts_model_dir.empty()) {
+    if (!model::ValidEmbeddingAssetDirectory(options.tts_model_dir))
+      return Status::Fail("tts-model-dir must be an absolute asset path");
+    if (IsServedModel(kNativeTtsModel, options.served_model_name,
+                      options.model_aliases))
+      return Status::Fail("TTS model name conflicts with Chat model names");
   }
   if (!options.asr_limits.Valid())
     return Status::Fail("invalid ASR duration/context/output/workspace limits");
@@ -284,6 +294,15 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-prefill") integer = &parsed.max_prefill;
     if (key == "--max-len") integer = &parsed.max_len;
     if (key == "--max-seq") integer = &parsed.max_seq;
+    if (key == "--tts-max-text-tokens")
+      integer = &parsed.tts_limits.max_text_tokens;
+    if (key == "--tts-max-prefill-tokens")
+      integer = &parsed.tts_limits.max_prefill_tokens;
+    if (key == "--tts-max-frames") integer = &parsed.tts_limits.max_frames;
+    if (key == "--tts-workspace-mib")
+      integer = &parsed.tts_limits.workspace_mib;
+    if (key == "--tts-max-output-mib")
+      integer = &parsed.tts_limits.max_output_mib;
     if (key == "--asr-max-audio-seconds")
       integer = &parsed.asr_limits.max_audio_seconds;
     if (key == "--asr-max-context-tokens")
@@ -353,14 +372,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
-        key != "--aligner-model-dir" && key != "--vad-model-dir" &&
-        key != "--speaker-model-dir" && key != "--separator-model-dir" &&
-        key != "--mem-fraction" && key != "--moe-trace-dir" &&
-        key != "--moe-trace-workload" && key != "--moe-hot-list" &&
-        key != "--startup-plan" && key != "--mtp-subset-head" &&
-        key != "--seq-capacities" && key != "--session-cache-dir" &&
-        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
-        key != "--client-policy-file" &&
+        key != "--tts-model-dir" && key != "--aligner-model-dir" &&
+        key != "--vad-model-dir" && key != "--speaker-model-dir" &&
+        key != "--separator-model-dir" && key != "--mem-fraction" &&
+        key != "--moe-trace-dir" && key != "--moe-trace-workload" &&
+        key != "--moe-hot-list" && key != "--startup-plan" &&
+        key != "--mtp-subset-head" && key != "--seq-capacities" &&
+        key != "--session-cache-dir" && key != "--prefix-cache-dir" &&
+        key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
         key != "--web-policy-file" && key != "--served-model-name" &&
@@ -432,6 +451,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.model_dir = value;
     } else if (key == "--embedding-model-dir") {
       parsed.embedding_model_dir = value;
+    } else if (key == "--tts-model-dir") {
+      parsed.tts_model_dir = value;
     } else if (key == "--asr-model-dir") {
       parsed.asr_model_dir = value;
     } else if (key == "--aligner-model-dir") {

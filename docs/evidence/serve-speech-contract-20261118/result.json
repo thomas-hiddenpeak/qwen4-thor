@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "name": "tests",
+      "exit_code": 0,
+      "seconds": 0.0033627660013735294
+    },
+    {
+      "name": "source-gate",
+      "exit_code": 0,
+      "seconds": 0.31388278491795063
+    }
+  ],
+  "seconds": 0.3174153259024024,
+  "gpu_model_loads": 0
+}

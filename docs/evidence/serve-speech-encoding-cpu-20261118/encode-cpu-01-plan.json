@@ -1,0 +1,32 @@
+{
+  "task": "Native six-format speech encoding with bounded isolated compression",
+  "limits": {
+    "cpu_tests": 9,
+    "seconds": 60,
+    "gpu_model_loads": 0,
+    "http_requests": 0
+  },
+  "tests": [
+    "speech_encode_native_pcm_wave_uses_no_codec_worker",
+    "speech_encode_mp3_real_roundtrip",
+    "speech_encode_aac_real_roundtrip",
+    "speech_encode_opus_real_roundtrip",
+    "speech_encode_flac_lossless_roundtrip",
+    "speech_encode_invalid_input_is_atomic_before_worker",
+    "speech_encode_budgets_and_child_thread_failure_are_bounded",
+    "speech_encode_dependency_and_crash_preserve_parent_and_native_output",
+    "speech_encode_cancel_and_deadline_reap_owned_worker"
+  ],
+  "contracts": {
+    "lossless": "FLAC decoded samples match native PCM16 WAV through existing decoder",
+    "lossy": "Actual MP3/AAC/Ogg Opus decode, 1s source yields 1.0..1.15s including codec priming/tail; interior amplitudes 440Hz 0.5 and 997Hz 0.1 each within 0.05",
+    "faults": "missing codec, crashed/hung child, cancellation, output/input/thread budgets and atomic output; healthy parent and native PCM/WAV survive",
+    "dependencies": "Reuse system GStreamer in child only; no external executable or startup dependency"
+  },
+  "not_claimed": [
+    "speech content for compressed formats pending",
+    "streaming synthesis/encoding pending",
+    "4x content unresolved",
+    "HTTP/SDK/recovery pending"
+  ]
+}

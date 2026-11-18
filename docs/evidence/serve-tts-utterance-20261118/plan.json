@@ -1,0 +1,86 @@
+{
+  "schema": "q4t-native-tts-utterance-v1",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 600,
+    "asr_seconds": 600,
+    "cases": 2,
+    "max_frames_per_case": 160,
+    "generation_advances": 48000,
+    "codec_advances": 4096,
+    "asr_tokens_per_case": 128,
+    "gpu_talker_loads": 1,
+    "gpu_codec_loads": 1,
+    "gpu_asr_loads": 1,
+    "cpu_model_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0
+  },
+  "contract": {
+    "natural_eos": true,
+    "max_frames_exclusive": 160,
+    "exact_normalized_transcription": true,
+    "minimum_rms": 0.0001,
+    "minimum_peak": 0.01,
+    "sample_rate": 24000,
+    "samples_per_frame": 1920,
+    "expressive_style_qualified": false
+  },
+  "cases": [
+    {
+      "text": "Hello, this is a native speech test.",
+      "instruction": "Speak calmly.",
+      "voice": "ryan",
+      "language": "english",
+      "non_streaming": false
+    },
+    {
+      "text": "你好，会议下午三点开始。",
+      "instruction": "用温柔的语气说话。",
+      "voice": "vivian",
+      "language": "chinese",
+      "non_streaming": true
+    }
+  ],
+  "binary_sha256": "9a047a78f70c02c67b20f68f9b2446495c6215c89970fa69b698783e3957bf48",
+  "asr_binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "driver_sources": {
+    "utterance_replay.cpp": "fb5fbe8488563110b981e75f4d6d77c5c4dd19f5479cc4e80945400119a79351",
+    "utterance_acceptance.py": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0",
+    "acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "runtime_sources": {
+    "include/q4t/audio/tts_model.h": "06acf6e9e2c75cfabbbb6add859497dc5c1fe2bacda4fc3f8992bfb401a919e2",
+    "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
+    "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
+    "include/q4t/audio/tts_generation.h": "9132225a9159b98675e49bf3904005887ade5e6074c23fe16afd300df814190e",
+    "include/q4t/audio/tts_config.h": "d08b705557f29dc5a0d2c26c87417ca3ba1582618e9b4e4696b919ecf9ec0602",
+    "include/q4t/audio/tts_layout.h": "da96a7ff39a150b9b84f34d70c05696fbc7418207274420e468044ca9232c447",
+    "src/audio/tts_math_internal.h": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
+    "src/audio/tts_codec_internal.h": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
+    "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+    "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
+    "src/audio/tts_generation.cpp": "982a508acf131229aa019b687d6dbeb8e652723efa7d2e5867340593bf0aa5cb",
+    "src/audio/tts_layout.cpp": "14d5d3bb84a4313bbfd07ba3c36c37f351c7faffbcc4c5bd2e60d8d39e220141",
+    "src/audio/tts_config.cpp": "c5293eaa94a06fc6507510647c8354644a3b59df83d8c7a54024d8800a8919c1",
+    "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
+    "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
+    "src/audio/tts_dense.cu": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
+    "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
+    "src/audio/tts_model.cu": "ba007e4f544fd3adbfd38b86eeeb4cc2169da34d839c48b47c3392a003f456e8"
+  },
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "numeric_evidence_reused": [
+    "evidence/serve-tts-fp32-component-20261118/README.md",
+    "evidence/serve-tts-codec-component-20261118/README.md"
+  ],
+  "asr_reference": "Previously qualified native q4t_asr_replay-compute-01, empty system prompt, no forced expected text or language",
+  "sampling": "greedy both talker and predictor; talker repeat penalty 1.05; no post-hoc waveform trim",
+  "http_qualified": false
+}

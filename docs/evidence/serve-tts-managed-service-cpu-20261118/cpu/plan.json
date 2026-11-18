@@ -1,0 +1,23 @@
+{
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "unique_tests": 9,
+  "seconds": 120,
+  "gpu_loads": 0,
+  "model_starts": 0,
+  "http_model_calls": 0,
+  "real_cpu_sdk_tls_calls": 4,
+  "artifact_cap_bytes": 8388608,
+  "min_free_bytes": 268435456,
+  "tests": [
+    "tools.native_tts.test_managed_service",
+    "tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history"
+  ],
+  "sources": {
+    "tools/native_asr/service_acceptance.py": "3401b315f1365ffd809d4b759afeec4f840cf464315f00ab64ea77dcf2fde92d",
+    "tools/native_tts/managed_service.py": "5c07b8d26e8c1b84b3fca6dea20eb06d7a81a2fa55f46949877e6b8704093ce1",
+    "tools/native_tts/test_managed_service.py": "92e37e0f378b243415f8064bacb7541575d265ae7c0e3f23af8f33bf019a8e26",
+    "tools/native_tts/http_sdk.py": "db01dfe9d6faeef35f3c497c01797eb0da9642a1f2b4a8761fd078a42d00b027",
+    "tools/native_tts/http_sdk.mjs": "a04090b40739cf9717b0bf5ae6091b6f627cc6efe6ea5abb2f0a9cea983b6626"
+  },
+  "scope": "Targeted managed TTS validator cases, prior ASR fallback fixture and actual loopback CPU HTTPS Speech SDK success/untrusted-CA rejection. Synthetic response is not speech/model qualification."
+}

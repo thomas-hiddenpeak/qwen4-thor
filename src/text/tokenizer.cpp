@@ -93,6 +93,22 @@ bool AsrTokenMetadata(const io::Json& token, uint32_t id,
   return special && special->IsBool() && special->boolean == expected_special;
 }
 
+// The TTS vocabulary shares its first 32 added tokens with ASR, but its
+// final padding marker is 151675, with no <non_speech> or <asr_text> entries.
+bool SpeechTokenMetadata(const io::Json& token, uint32_t id,
+                         TokenizerProfile profile) {
+  if (profile != TokenizerProfile::kQwen3Tts)
+    return AsrTokenMetadata(token, id,
+                            profile == TokenizerProfile::kQwen3Aligner);
+  if (id < 151643 || id > 151675) return false;
+  if (id != 151675) return AsrTokenMetadata(token, id);
+  auto copy = token;
+  for (auto& [key, value] : copy.object)
+    if (key == "content") value.str = "<|audio_pad|>";
+  return token.GetString("content") == "<|audio_pad|>" &&
+         AsrTokenMetadata(copy, 151676);
+}
+
 struct AddedToken {
   std::uint32_t id = 0;
   std::string content;
@@ -257,7 +273,8 @@ bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
   if (profile != TokenizerProfile::kQwen4Exp &&
       profile != TokenizerProfile::kQwen3Embedding &&
       profile != TokenizerProfile::kQwen3Asr &&
-      profile != TokenizerProfile::kQwen3Aligner) {
+      profile != TokenizerProfile::kQwen3Aligner &&
+      profile != TokenizerProfile::kQwen3Tts) {
     *err = "unknown tokenizer profile";
     return false;
   }
@@ -328,7 +345,8 @@ bool ValidateSchema(const io::Json& root, TokenizerProfile profile,
     return false;
   }
   if (profile == TokenizerProfile::kQwen3Asr ||
-      profile == TokenizerProfile::kQwen3Aligner) {
+      profile == TokenizerProfile::kQwen3Aligner ||
+      profile == TokenizerProfile::kQwen3Tts) {
     for (const char* field : {"post_processor", "truncation", "padding"}) {
       const auto* value = root.Find(field);
       if (!value || !value->IsNull()) {
@@ -479,8 +497,9 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
     return false;
   }
   const bool alignment = data.profile == TokenizerProfile::kQwen3Aligner;
-  if ((data.profile == TokenizerProfile::kQwen3Asr || alignment) &&
-      tokens->array.size() != (alignment ? 63 : 62)) {
+  const bool tts = data.profile == TokenizerProfile::kQwen3Tts;
+  if ((data.profile == TokenizerProfile::kQwen3Asr || alignment || tts) &&
+      tokens->array.size() != (tts ? 33 : (alignment ? 63 : 62))) {
     *err = "ASR added-token count differs";
     return false;
   }
@@ -503,8 +522,8 @@ bool ParseAddedTokens(const io::Json& root, TokenizerData& data,
       return false;
     }
     const auto token_id = static_cast<uint32_t>(integer);
-    if ((data.profile == TokenizerProfile::kQwen3Asr || alignment) &&
-        !AsrTokenMetadata(token, token_id, alignment)) {
+    if ((data.profile == TokenizerProfile::kQwen3Asr || alignment || tts) &&
+        !SpeechTokenMetadata(token, token_id, data.profile)) {
       *err = "ASR added-token contract differs";
       return false;
     }
@@ -890,6 +909,15 @@ Status Tokenizer::LoadQwen3Asr(std::string_view vocab_json,
                           TokenizerProfile::kQwen3Asr);
 }
 
+Status Tokenizer::LoadQwen3Tts(std::string_view vocab_json,
+                              std::string_view merges_text,
+                              std::string_view config_json,
+                              const TokenizerLimits& limits,
+                              std::unique_ptr<Tokenizer>* out) {
+  return LoadQwen3Speech(vocab_json, merges_text, config_json, limits, out,
+                          TokenizerProfile::kQwen3Tts);
+}
+
 Status Tokenizer::LoadQwen3Aligner(std::string_view vocab_json,
                               std::string_view merges_text,
                               std::string_view config_json,
@@ -906,6 +934,7 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
                               std::unique_ptr<Tokenizer>* out,
                                  TokenizerProfile profile) {
   const bool alignment = profile == TokenizerProfile::kQwen3Aligner;
+  const bool tts = profile == TokenizerProfile::kQwen3Tts;
   size_t remaining = limits.max_tokenizer_bytes;
   for (const auto bytes : {vocab_json, merges_text, config_json}) {
     if (bytes.size() > remaining)
@@ -936,8 +965,11 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
            {"video_token", "<|video_pad|>"},
            {"vision_bos_token", "<|vision_start|>"},
            {"vision_eos_token", "<|vision_end|>"}, {"errors", "replace"}})
-    if (config.GetString(name) != expected)
-      return Status::Fail(std::string("ASR tokenizer differs: ") + name);
+    if (!(tts && std::string_view(name) == "processor_class") &&
+        config.GetString(name) != expected)
+      return Status::Fail(std::string("speech tokenizer differs: ") + name);
+  if (tts && config.Find("processor_class"))
+    return Status::Fail("TTS tokenizer processor metadata differs");
   for (const char* name : {"add_bos_token", "add_prefix_space",
                             "clean_up_tokenization_spaces",
                             "split_special_tokens"}) {
@@ -975,7 +1007,7 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
         additional->array[i].str != AsrAddedToken(kAdditional[i]))
       return Status::Fail("ASR tokenizer additional special token differs");
   const auto* added = config.Find("added_tokens_decoder");
-  if (!added || !added->IsObject() || added->object.size() != (alignment ? 63 : 62) ||
+  if (!added || !added->IsObject() || added->object.size() != (tts ? 33 : (alignment ? 63 : 62)) ||
       added->object.size() > limits.max_added_tokens)
     return Status::Fail("ASR tokenizer added tokens differ/exceed budget");
   io::Json tokens;
@@ -992,7 +1024,7 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
     number.type = io::Json::Type::kNumber;
     number.number = id;
     token.object.emplace_back("id", std::move(number));
-    if (!AsrTokenMetadata(token, id, alignment))
+    if (!SpeechTokenMetadata(token, id, profile))
       return Status::Fail("ASR tokenizer added token semantics differ");
     tokens.array.push_back(std::move(token));
   }
@@ -1006,8 +1038,11 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
     return s;
   if (!vocab.IsObject()) return Status::Fail("ASR vocabulary object");
   constexpr std::string_view kHeader = "#version: 0.2\n";
-  if (!merges_text.starts_with(kHeader))
-    return Status::Fail("ASR merges version differs");
+  // The pinned TTS file is headerless; ASR/aligner carry the version line.
+  // Starting TTS at kHeader.size() would silently discard its first merges.
+  if ((!tts && !merges_text.starts_with(kHeader)) ||
+      (tts && merges_text.starts_with("#")))
+    return Status::Fail("speech merges file header differs");
   const auto string = [](std::string_view value) {
     io::Json result;
     result.type = io::Json::Type::kString;
@@ -1023,7 +1058,7 @@ Status Tokenizer::LoadQwen3Speech(std::string_view vocab_json,
   };
   io::Json merges;
   merges.type = io::Json::Type::kArray;
-  for (size_t start = kHeader.size(); start < merges_text.size();) {
+  for (size_t start = tts ? 0 : kHeader.size(); start < merges_text.size();) {
     const auto newline = merges_text.find('\n', start);
     const auto end = newline == merges_text.npos ? merges_text.size() : newline;
     if (end == start || merges.array.size() >= limits.max_merges ||

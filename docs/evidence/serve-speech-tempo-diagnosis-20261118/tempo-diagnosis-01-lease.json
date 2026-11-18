@@ -1,0 +1,30 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    ".q4t-work/refenv/bin/python",
+    "-B",
+    "tools/native_tts/tempo_diagnosis.py",
+    "--asr-binary",
+    ".q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+    "--asr-assets",
+    ".q4t-work/serve-audio-native-20261117/assets-01",
+    "--plan",
+    ".q4t-work/serve-native-tts-20261118/tempo-diagnosis-plan-01.json",
+    "--output",
+    ".q4t-work/serve-native-tts-20261118/tempo-diagnosis-01/run"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "explicit_inherited_fd_count": 0,
+  "finished": {
+    "utc": "2026-11-18T03:00:53.785979+00:00",
+    "monotonic": 3160936.302860954,
+    "pid": 277695
+  }
+}

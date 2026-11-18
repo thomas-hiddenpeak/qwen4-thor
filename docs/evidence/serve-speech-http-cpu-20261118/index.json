@@ -1,0 +1,97 @@
+{
+  "scope": "24 targeted CPU cases, 0 GPU/HTTP; actual Speech acceptance pending",
+  "files": {
+    "http-cpu-01/test.log": {
+      "bytes": 2058,
+      "sha256": "a5ab477214df61b4a45e205634ccde81fe43a1409490e49343bdcd6d78c85591"
+    },
+    "http-cpu-01/source-gate.json": {
+      "bytes": 222,
+      "sha256": "92c648bb089b62901cb116d9878392145db22300fb6abf5f6d05225bd3132469"
+    },
+    "http-cpu-01/result.json": {
+      "bytes": 144,
+      "sha256": "90016b26847b3eb5032f52735d26606adb9aa3a7cfec0e1fe4d96c9140c6d9ea"
+    },
+    "http-cpu-01/plan.json": {
+      "bytes": 101851,
+      "sha256": "a04e8b8af2295c1de4b1c62c035eef9a7fe756c128f8ca296a1e7ba5195ded7e"
+    },
+    "http-cpu-01/required.txt": {
+      "bytes": 1391,
+      "sha256": "c8c3e25d6bafbc08ad597c9c0a4849b4eb6d2ee8064a1bd4552b39312cfbf25d"
+    },
+    "http-cpu-01/scope.json": {
+      "bytes": 1862,
+      "sha256": "6305e4fa11ab12e3230c2338edeae1f45ced79fa7bd978b2eda99cc37dcfad6b"
+    },
+    "http-cpu-01/fixtures/binary-9hVSIa/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.tool_run.tool_run_1c0ebe53ad023229cf088bac3fd3bfbc.json": {
+      "bytes": 1398541,
+      "sha256": "ad11646771ed835fae61733dfdd2dc39682cdade23a43d1626a5f780d5c2ee63"
+    },
+    "http-cpu-01/fixtures/binary-9hVSIa/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.tool_run.tool_run_c67fffce6758a146a6f2c61d5e180618.json": {
+      "bytes": 777,
+      "sha256": "bf9c76a110f04d1c52fb88a7a200b7c1069757fb1f1ca0328d5605f06d5f297c"
+    },
+    "http-cpu-01/fixtures/binary-9hVSIa/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "http-cpu-01/fixtures/binary-9hVSIa/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.file.file_binary.json": {
+      "bytes": 637,
+      "sha256": "f4eca80267775fe5cbe9985b5ac4c0662523776a0685e3f9408e59cd3b856782"
+    },
+    "http-cpu-01/fixtures/binary-9hVSIa/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "http-cpu-01/fixtures/binary-vrFmq9/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.tool_run.tool_run_79cc253c21f0ea37618f941ba2179b0f.json": {
+      "bytes": 508,
+      "sha256": "28ae86811fdfa71fc73370cbef85ff7b6864e1c7ab087a4fe5c792f326230246"
+    },
+    "http-cpu-01/fixtures/binary-vrFmq9/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "http-cpu-01/fixtures/binary-vrFmq9/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.tool_run.tool_run_0afa34db3b1d09e8086af46026381c39.json": {
+      "bytes": 435,
+      "sha256": "ccdfe9823d292446aad251a061e00aa5be7ac3d4c13b42779d16ee4b8f0b4d97"
+    },
+    "http-cpu-01/fixtures/binary-vrFmq9/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.file.file_binary.json": {
+      "bytes": 486,
+      "sha256": "b579801a297fe0aaacd30a3f260cf5f3d34d834076253514a358efcf82fb1c72"
+    },
+    "http-cpu-01/fixtures/binary-vrFmq9/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "http-build-01/host/result.json": {
+      "bytes": 66,
+      "sha256": "4cd0a16bf87da2def84b5f3f670e070968d2042872efc86c91925c4ade1dafd2"
+    },
+    "http-build-01/host/build.log": {
+      "bytes": 49709,
+      "sha256": "7549e39b537fdbc9dc5e0162e647392202b16776f1b8cb429f1c738d4d1061a4"
+    },
+    "http-build-01/engine/result.json": {
+      "bytes": 67,
+      "sha256": "0ad7281fd9f1d01c67305c46a2c6e5dcf5cf5ee3de1b7ae82b99aae0b26fb6c1"
+    },
+    "http-build-01/engine/build.log": {
+      "bytes": 26912,
+      "sha256": "39a60808e1dd4d1f77029ed530cdd4d8034df6b58092c934c511dde55e4d775c"
+    },
+    "http-build-02/result.json": {
+      "bytes": 67,
+      "sha256": "643818eaaa0ede1831eca9e55f6a3be5a526fc183d79cc11f503db1f2ddd1752"
+    },
+    "http-build-02/build.log": {
+      "bytes": 233,
+      "sha256": "9c95543b512bedea2a611559ffcb61c7a5859470ce92ea3d5a68672e75a21326"
+    }
+  },
+  "archive": {
+    "bytes": 62445,
+    "sha256": "6e792c6c3db44794a6b6b1c938da8075a9c6c36d48aa600951afe88d537dddcc"
+  }
+}

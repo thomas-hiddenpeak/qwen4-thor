@@ -1,0 +1,8 @@
+test_reviewed_inflection_retains_raw_wer_and_model_limitation (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_reviewed_inflection_retains_raw_wer_and_model_limitation) ... ok
+test_mixed_source_time_words_usage_and_health_are_required (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_mixed_source_time_words_usage_and_health_are_required) ... ok
+test_review_does_not_accept_meaning_changes_or_missing_speech (tools.serve_recovery.test_separator_profiles.SeparatorProfiles.test_review_does_not_accept_meaning_changes_or_missing_speech) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+OK

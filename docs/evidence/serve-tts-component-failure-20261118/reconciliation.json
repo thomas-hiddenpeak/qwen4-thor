@@ -1,0 +1,11 @@
+{
+  "status": "FAIL_NUMERICAL_PRESERVED",
+  "seconds": 43.45267476560548,
+  "failed_checks": 55,
+  "checks": 134,
+  "different_codes": 4,
+  "monitor_samples": 42,
+  "lease_released": true,
+  "defaults_unchanged": true,
+  "next": "One CPU predictor replay from saved native talker hidden states; isolate accumulated talker drift from predictor math, no new GPU model load. Original thresholds unchanged."
+}

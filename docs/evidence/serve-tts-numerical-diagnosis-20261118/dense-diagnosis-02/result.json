@@ -1,0 +1,1311 @@
+{
+  "status": "DIAGNOSIS_ONLY",
+  "defaults_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "runs": [
+    {
+      "name": "reference",
+      "code": 0,
+      "seconds": 9.62481285771355
+    },
+    {
+      "name": "native",
+      "code": 0,
+      "seconds": 4.018403773661703
+    }
+  ],
+  "plan": {
+    "task": "First predictor two-row input with exact shared BF16 projection; trace every operation in five layers to find the numerical defect",
+    "limits": {
+      "gpu_model_loads": 1,
+      "cpu_predictor_loads": 1,
+      "input_rows": 2,
+      "predictor_layers": 5,
+      "http_requests": 0,
+      "main_llm_loads": 0,
+      "seconds": 120,
+      "reference_seconds": 60,
+      "native_seconds": 60
+    },
+    "original_failure_preserved": true,
+    "original_thresholds_unchanged": true,
+    "repair": "Official decoder layer hook returns tuple; read hidden at index 0. Previous reference failed at layer 0, GPU driver was not executed; original failure preserved."
+  },
+  "binary_sha256": "a91d6cb7bea7aac2128dbdcb7b5f964fa87e29dae9948e955b622b5c3e0f1fde",
+  "checks": [
+    {
+      "operand": "diag-attention-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 1.4805220078943216e-08,
+      "max_abs": 1.1920928955078125e-07,
+      "passed": true
+    },
+    {
+      "operand": "diag-attention-1-0.bf16",
+      "cosine": 0.9999993483171796,
+      "relative_l2": 0.0011417070318475906,
+      "max_abs": 0.00390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-attention-2-0.bf16",
+      "cosine": 0.9999956461007466,
+      "relative_l2": 0.0029519545193800335,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-attention-3-0.bf16",
+      "cosine": 0.9999857635425982,
+      "relative_l2": 0.005335984255500917,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-attention-4-0.bf16",
+      "cosine": 0.9993010206516253,
+      "relative_l2": 0.037681846737548465,
+      "max_abs": 0.19921875,
+      "passed": false
+    },
+    {
+      "operand": "diag-down-0-0.bf16",
+      "cosine": 0.9999999246316615,
+      "relative_l2": 0.0003883173033302186,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-down-1-0.bf16",
+      "cosine": 0.9999875141502466,
+      "relative_l2": 0.005001628303567766,
+      "max_abs": 0.00244140625,
+      "passed": true
+    },
+    {
+      "operand": "diag-down-2-0.bf16",
+      "cosine": 0.9999999721709548,
+      "relative_l2": 0.0002359229941125146,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-down-3-0.bf16",
+      "cosine": 0.9999999901503033,
+      "relative_l2": 0.00014035463675382177,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-down-4-0.bf16",
+      "cosine": 0.9991773888128,
+      "relative_l2": 0.04071595332927371,
+      "max_abs": 0.087890625,
+      "passed": false
+    },
+    {
+      "operand": "diag-final-0-0.bf16",
+      "cosine": 0.9992254685028996,
+      "relative_l2": 0.039364295224049585,
+      "max_abs": 0.453125,
+      "passed": false
+    },
+    {
+      "operand": "diag-gate-0-0.bf16",
+      "cosine": 0.9999999922808622,
+      "relative_l2": 0.00012426913336858808,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-gate-1-0.bf16",
+      "cosine": 0.9999985985115563,
+      "relative_l2": 0.0016751618508271575,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-gate-2-0.bf16",
+      "cosine": 0.9999991298543526,
+      "relative_l2": 0.0013192251304843497,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-gate-3-0.bf16",
+      "cosine": 0.9999924592664915,
+      "relative_l2": 0.003884017387489208,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-gate-4-0.bf16",
+      "cosine": 0.9997045275247087,
+      "relative_l2": 0.02433554018164457,
+      "max_abs": 0.20443344116210938,
+      "passed": true
+    },
+    {
+      "operand": "diag-hidden-0-0.bf16",
+      "cosine": 0.999999999926276,
+      "relative_l2": 1.2142817881924621e-05,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-hidden-1-0.bf16",
+      "cosine": 0.9999999472899592,
+      "relative_l2": 0.00032468465928546454,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-hidden-2-0.bf16",
+      "cosine": 0.999999966541204,
+      "relative_l2": 0.0002586987179890519,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-hidden-3-0.bf16",
+      "cosine": 0.999999986617851,
+      "relative_l2": 0.00016359803718531035,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-hidden-4-0.bf16",
+      "cosine": 0.9999996639619579,
+      "relative_l2": 0.0008198027852776114,
+      "max_abs": 0.09765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-k-0-0.bf16",
+      "cosine": 0.9999999999999466,
+      "relative_l2": 3.274973529113368e-07,
+      "max_abs": 7.62939453125e-06,
+      "passed": true
+    },
+    {
+      "operand": "diag-k-1-0.bf16",
+      "cosine": 0.9999999673911243,
+      "relative_l2": 0.00025555100264049765,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-k-2-0.bf16",
+      "cosine": 0.9999986929236998,
+      "relative_l2": 0.0016238784588359057,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-k-3-0.bf16",
+      "cosine": 0.9999974657615563,
+      "relative_l2": 0.0022586088449900433,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-k-4-0.bf16",
+      "cosine": 0.9999967392796963,
+      "relative_l2": 0.0027052199027341978,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr0-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr0-1-0.bf16",
+      "cosine": 0.9999994136104281,
+      "relative_l2": 0.0010888988863800486,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr0-2-0.bf16",
+      "cosine": 0.9999876288148972,
+      "relative_l2": 0.00497832883401613,
+      "max_abs": 0.01953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr0-3-0.bf16",
+      "cosine": 0.9999934273216704,
+      "relative_l2": 0.0036325989891752486,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr0-4-0.bf16",
+      "cosine": 0.9999940333611529,
+      "relative_l2": 0.0034742495744660516,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr1-0-0.bf16",
+      "cosine": 0.9999999999999989,
+      "relative_l2": 4.434438151237445e-08,
+      "max_abs": 9.5367431640625e-07,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr1-1-0.bf16",
+      "cosine": 0.999999857460957,
+      "relative_l2": 0.000534407462885775,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr1-2-0.bf16",
+      "cosine": 0.9999911652074305,
+      "relative_l2": 0.0042112896848504,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr1-3-0.bf16",
+      "cosine": 0.9999912941551314,
+      "relative_l2": 0.004203696091472548,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr1-4-0.bf16",
+      "cosine": 0.9999949071202513,
+      "relative_l2": 0.0031978066399956143,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr2-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr2-1-0.bf16",
+      "cosine": 0.9999992953935315,
+      "relative_l2": 0.0011872601983136631,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr2-2-0.bf16",
+      "cosine": 0.9999887665418042,
+      "relative_l2": 0.0047458731909543255,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr2-3-0.bf16",
+      "cosine": 0.9999920802405828,
+      "relative_l2": 0.0039826428718719095,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr2-4-0.bf16",
+      "cosine": 0.9999958459028359,
+      "relative_l2": 0.002891301657052029,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr3-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr3-1-0.bf16",
+      "cosine": 0.9999998428817564,
+      "relative_l2": 0.0005616961172965771,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr3-2-0.bf16",
+      "cosine": 0.9999895417648618,
+      "relative_l2": 0.004573449044510804,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr3-3-0.bf16",
+      "cosine": 0.9999898833382354,
+      "relative_l2": 0.0045308263116263185,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr3-4-0.bf16",
+      "cosine": 0.9999875606051124,
+      "relative_l2": 0.005326896932755604,
+      "max_abs": 0.25,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr4-0-0.bf16",
+      "cosine": 0.9999999999999997,
+      "relative_l2": 2.4793759731474144e-08,
+      "max_abs": 4.76837158203125e-07,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr4-1-0.bf16",
+      "cosine": 0.9999991459375805,
+      "relative_l2": 0.0013070781145278875,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr4-2-0.bf16",
+      "cosine": 0.9999875533881345,
+      "relative_l2": 0.005005673752453569,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr4-3-0.bf16",
+      "cosine": 0.9999871779518711,
+      "relative_l2": 0.00506790950451802,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr4-4-0.bf16",
+      "cosine": 0.9999924191839028,
+      "relative_l2": 0.0038938161390522875,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr5-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr5-1-0.bf16",
+      "cosine": 0.9999989389625089,
+      "relative_l2": 0.0014637788602471502,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr5-2-0.bf16",
+      "cosine": 0.9999923974799486,
+      "relative_l2": 0.00395204477219529,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr5-3-0.bf16",
+      "cosine": 0.9999896530208832,
+      "relative_l2": 0.00455504904643645,
+      "max_abs": 0.046875,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr5-4-0.bf16",
+      "cosine": 0.9999952931412033,
+      "relative_l2": 0.003071469054529826,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr6-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr6-1-0.bf16",
+      "cosine": 0.9999999991353289,
+      "relative_l2": 4.1586559310250666e-05,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr6-2-0.bf16",
+      "cosine": 0.9999948831169521,
+      "relative_l2": 0.003270984929067148,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr6-3-0.bf16",
+      "cosine": 0.9999862680591345,
+      "relative_l2": 0.005241893549148147,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr6-4-0.bf16",
+      "cosine": 0.9999962197570947,
+      "relative_l2": 0.0027782975383806256,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr7-0-0.bf16",
+      "cosine": 0.9999999999999998,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr7-1-0.bf16",
+      "cosine": 0.9999993948828522,
+      "relative_l2": 0.0011025767644404665,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr7-2-0.bf16",
+      "cosine": 0.9999886174880563,
+      "relative_l2": 0.004774391304226885,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr7-3-0.bf16",
+      "cosine": 0.9999889620637107,
+      "relative_l2": 0.0047012744806720725,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-kr7-4-0.bf16",
+      "cosine": 0.9999918443099698,
+      "relative_l2": 0.0040388029611398875,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-norm-0-0.bf16",
+      "cosine": 0.9999999999999999,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-norm-1-0.bf16",
+      "cosine": 0.9999999874551893,
+      "relative_l2": 0.00015840253256414977,
+      "max_abs": 0.005859375,
+      "passed": true
+    },
+    {
+      "operand": "diag-norm-2-0.bf16",
+      "cosine": 0.9999957697510299,
+      "relative_l2": 0.0029090500023318563,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-norm-3-0.bf16",
+      "cosine": 0.9999894948572207,
+      "relative_l2": 0.004583710664601024,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-norm-4-0.bf16",
+      "cosine": 0.9999778257699302,
+      "relative_l2": 0.006660575658293063,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-o-0-0.bf16",
+      "cosine": 0.9999999998768974,
+      "relative_l2": 1.5691026193784808e-05,
+      "max_abs": 6.103515625e-05,
+      "passed": true
+    },
+    {
+      "operand": "diag-o-1-0.bf16",
+      "cosine": 0.9999981795136345,
+      "relative_l2": 0.0019081456310752584,
+      "max_abs": 0.001953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-o-2-0.bf16",
+      "cosine": 0.9999937828049782,
+      "relative_l2": 0.003526656135758936,
+      "max_abs": 0.001953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-o-3-0.bf16",
+      "cosine": 0.9999855635774161,
+      "relative_l2": 0.005400876615685537,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-o-4-0.bf16",
+      "cosine": 0.9991367217968493,
+      "relative_l2": 0.041604976144905326,
+      "max_abs": 0.0625,
+      "passed": false
+    },
+    {
+      "operand": "diag-post-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-post-1-0.bf16",
+      "cosine": 0.9999987739806248,
+      "relative_l2": 0.0015663483365403147,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-post-2-0.bf16",
+      "cosine": 0.9999978050109224,
+      "relative_l2": 0.0020952502220566863,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-post-3-0.bf16",
+      "cosine": 0.9999903241937821,
+      "relative_l2": 0.004399046976238078,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-post-4-0.bf16",
+      "cosine": 0.9997611003566531,
+      "relative_l2": 0.02185861612303001,
+      "max_abs": 0.171875,
+      "passed": true
+    },
+    {
+      "operand": "diag-q-0-0.bf16",
+      "cosine": 0.9999999987275574,
+      "relative_l2": 5.044931972064026e-05,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-q-1-0.bf16",
+      "cosine": 0.999999885094808,
+      "relative_l2": 0.00047939840588411947,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-q-2-0.bf16",
+      "cosine": 0.9999952436101541,
+      "relative_l2": 0.0031035159235569417,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-q-3-0.bf16",
+      "cosine": 0.9999904762760333,
+      "relative_l2": 0.0043664307643576155,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-q-4-0.bf16",
+      "cosine": 0.99997124227845,
+      "relative_l2": 0.007602284920456729,
+      "max_abs": 0.0703125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr0-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr0-1-0.bf16",
+      "cosine": 0.9999996973358667,
+      "relative_l2": 0.0007813679613541275,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr0-2-0.bf16",
+      "cosine": 0.999991475442028,
+      "relative_l2": 0.004131614800621345,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr0-3-0.bf16",
+      "cosine": 0.9999927150013896,
+      "relative_l2": 0.003817061565246137,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr0-4-0.bf16",
+      "cosine": 0.9999768875282942,
+      "relative_l2": 0.006811667205103336,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr1-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr1-1-0.bf16",
+      "cosine": 0.999999686883992,
+      "relative_l2": 0.0007983860443830954,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr1-2-0.bf16",
+      "cosine": 0.9999872493024453,
+      "relative_l2": 0.005264486921099408,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr1-3-0.bf16",
+      "cosine": 0.9999867191523754,
+      "relative_l2": 0.005158924023030241,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr1-4-0.bf16",
+      "cosine": 0.999982520647797,
+      "relative_l2": 0.00591257355585606,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr10-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr10-1-0.bf16",
+      "cosine": 0.9999999803973808,
+      "relative_l2": 0.00019800841606481764,
+      "max_abs": 0.001953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr10-2-0.bf16",
+      "cosine": 0.9999921723373248,
+      "relative_l2": 0.003972825807133255,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr10-3-0.bf16",
+      "cosine": 0.9999883776931356,
+      "relative_l2": 0.004822663301151128,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr10-4-0.bf16",
+      "cosine": 0.9999822450278201,
+      "relative_l2": 0.005966426344253072,
+      "max_abs": 0.0546875,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr11-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr11-1-0.bf16",
+      "cosine": 0.999999741256903,
+      "relative_l2": 0.0007194278491036195,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr11-2-0.bf16",
+      "cosine": 0.9999903475527053,
+      "relative_l2": 0.0044332505112692185,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr11-3-0.bf16",
+      "cosine": 0.9999914350133914,
+      "relative_l2": 0.004145672209778783,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr11-4-0.bf16",
+      "cosine": 0.9999666582524587,
+      "relative_l2": 0.008168702328439312,
+      "max_abs": 0.109375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr12-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr12-1-0.bf16",
+      "cosine": 0.9999999927962413,
+      "relative_l2": 0.00012005019376469373,
+      "max_abs": 0.001953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr12-2-0.bf16",
+      "cosine": 0.9999950422398766,
+      "relative_l2": 0.003151837946829031,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr12-3-0.bf16",
+      "cosine": 0.9999849415105196,
+      "relative_l2": 0.005491783604914412,
+      "max_abs": 0.046875,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr12-4-0.bf16",
+      "cosine": 0.999970750296861,
+      "relative_l2": 0.007648470851212588,
+      "max_abs": 0.08203125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr13-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr13-1-0.bf16",
+      "cosine": 0.9999999573558381,
+      "relative_l2": 0.00029204355384612214,
+      "max_abs": 0.00390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr13-2-0.bf16",
+      "cosine": 0.9999902311769285,
+      "relative_l2": 0.0044329719422925365,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr13-3-0.bf16",
+      "cosine": 0.999990392783816,
+      "relative_l2": 0.004426829294693227,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr13-4-0.bf16",
+      "cosine": 0.9999786343667649,
+      "relative_l2": 0.006538171583497762,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr14-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr14-1-0.bf16",
+      "cosine": 0.9999998459322587,
+      "relative_l2": 0.0005551641118446583,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr14-2-0.bf16",
+      "cosine": 0.999994622334836,
+      "relative_l2": 0.0033066666906382434,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr14-3-0.bf16",
+      "cosine": 0.9999862092115739,
+      "relative_l2": 0.005253753750657888,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr14-4-0.bf16",
+      "cosine": 0.9999716491899889,
+      "relative_l2": 0.007557744005436429,
+      "max_abs": 0.08984375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr15-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr15-1-0.bf16",
+      "cosine": 0.9999998620862158,
+      "relative_l2": 0.0005253115033666087,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr15-2-0.bf16",
+      "cosine": 0.9999932104360278,
+      "relative_l2": 0.003686110842753711,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr15-3-0.bf16",
+      "cosine": 0.9999831360216402,
+      "relative_l2": 0.005858679445118421,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr15-4-0.bf16",
+      "cosine": 0.9999691973201861,
+      "relative_l2": 0.007849786191404813,
+      "max_abs": 0.1171875,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr2-0-0.bf16",
+      "cosine": 0.9999999999999998,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr2-1-0.bf16",
+      "cosine": 0.9999998516133024,
+      "relative_l2": 0.0005450021530411102,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr2-2-0.bf16",
+      "cosine": 0.9999962428519883,
+      "relative_l2": 0.002745519986798014,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr2-3-0.bf16",
+      "cosine": 0.9999843336487181,
+      "relative_l2": 0.005597791625529528,
+      "max_abs": 0.03515625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr2-4-0.bf16",
+      "cosine": 0.9999653590281169,
+      "relative_l2": 0.008325251610129548,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr3-0-0.bf16",
+      "cosine": 0.9999999999999998,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr3-1-0.bf16",
+      "cosine": 0.9999997601756593,
+      "relative_l2": 0.0006927823222383705,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr3-2-0.bf16",
+      "cosine": 0.999990497986395,
+      "relative_l2": 0.004377605338648247,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr3-3-0.bf16",
+      "cosine": 0.9999874952153763,
+      "relative_l2": 0.005000957784591652,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr3-4-0.bf16",
+      "cosine": 0.9999783323724909,
+      "relative_l2": 0.006585527423189639,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr4-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr4-1-0.bf16",
+      "cosine": 0.9999999513499922,
+      "relative_l2": 0.0003122390982839017,
+      "max_abs": 0.00390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr4-2-0.bf16",
+      "cosine": 0.9999934062749484,
+      "relative_l2": 0.0037382713650535677,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr4-3-0.bf16",
+      "cosine": 0.999986400512351,
+      "relative_l2": 0.0052221819482117775,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr4-4-0.bf16",
+      "cosine": 0.9999831570520135,
+      "relative_l2": 0.005805264773679744,
+      "max_abs": 0.046875,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr5-0-0.bf16",
+      "cosine": 1.0000000000000002,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr5-1-0.bf16",
+      "cosine": 0.9999999904951717,
+      "relative_l2": 0.00013787733352547282,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr5-2-0.bf16",
+      "cosine": 0.9999954324997101,
+      "relative_l2": 0.0030277909151596085,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr5-3-0.bf16",
+      "cosine": 0.9999863747307038,
+      "relative_l2": 0.0052208059092614416,
+      "max_abs": 0.02734375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr5-4-0.bf16",
+      "cosine": 0.999971946489235,
+      "relative_l2": 0.007494476374951634,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr6-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr6-1-0.bf16",
+      "cosine": 0.9999994264451069,
+      "relative_l2": 0.001075686345901879,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr6-2-0.bf16",
+      "cosine": 0.9999955008620037,
+      "relative_l2": 0.002999809746012243,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr6-3-0.bf16",
+      "cosine": 0.9999770661137616,
+      "relative_l2": 0.00677853879466006,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr6-4-0.bf16",
+      "cosine": 0.9999945346503126,
+      "relative_l2": 0.003340517284711872,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr7-0-0.bf16",
+      "cosine": 0.9999998860602604,
+      "relative_l2": 0.00047759296225366563,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr7-1-0.bf16",
+      "cosine": 0.9999998043173834,
+      "relative_l2": 0.0006260390409072396,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr7-2-0.bf16",
+      "cosine": 0.9999928855357427,
+      "relative_l2": 0.003778201317748165,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr7-3-0.bf16",
+      "cosine": 0.9999849382432882,
+      "relative_l2": 0.00548908389918131,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr7-4-0.bf16",
+      "cosine": 0.9999891092527826,
+      "relative_l2": 0.004698027545924498,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr8-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr8-1-0.bf16",
+      "cosine": 0.9999997325105984,
+      "relative_l2": 0.0007322679607620374,
+      "max_abs": 0.01171875,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr8-2-0.bf16",
+      "cosine": 0.9999940547179279,
+      "relative_l2": 0.0034551195949499057,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr8-3-0.bf16",
+      "cosine": 0.9999899835556952,
+      "relative_l2": 0.004477285599409687,
+      "max_abs": 0.0390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr8-4-0.bf16",
+      "cosine": 0.9999760110459791,
+      "relative_l2": 0.007094920942500185,
+      "max_abs": 0.0703125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr9-0-0.bf16",
+      "cosine": 1.0,
+      "relative_l2": 0.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr9-1-0.bf16",
+      "cosine": 0.9999996377778285,
+      "relative_l2": 0.0008531264036220483,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr9-2-0.bf16",
+      "cosine": 0.9999909900472863,
+      "relative_l2": 0.004287174741271037,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr9-3-0.bf16",
+      "cosine": 0.9999917727030828,
+      "relative_l2": 0.004056679965369352,
+      "max_abs": 0.0234375,
+      "passed": true
+    },
+    {
+      "operand": "diag-qr9-4-0.bf16",
+      "cosine": 0.9999765773153465,
+      "relative_l2": 0.006970646669961564,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-silu-up-0-0.bf16",
+      "cosine": 0.999999990939085,
+      "relative_l2": 0.0001346359086752448,
+      "max_abs": 0.0009765625,
+      "passed": true
+    },
+    {
+      "operand": "diag-silu-up-1-0.bf16",
+      "cosine": 0.9999901301637169,
+      "relative_l2": 0.004448802653274331,
+      "max_abs": 0.01171875,
+      "passed": true
+    },
+    {
+      "operand": "diag-silu-up-2-0.bf16",
+      "cosine": 0.9999999870317122,
+      "relative_l2": 0.000161048416879375,
+      "max_abs": 0.03125,
+      "passed": true
+    },
+    {
+      "operand": "diag-silu-up-3-0.bf16",
+      "cosine": 0.9999999922828878,
+      "relative_l2": 0.00012423488834652636,
+      "max_abs": 0.0625,
+      "passed": true
+    },
+    {
+      "operand": "diag-silu-up-4-0.bf16",
+      "cosine": 0.9992023519326855,
+      "relative_l2": 0.04014053372264736,
+      "max_abs": 0.3125,
+      "passed": false
+    },
+    {
+      "operand": "diag-up-0-0.bf16",
+      "cosine": 0.9999999958910939,
+      "relative_l2": 9.066263725228637e-05,
+      "max_abs": 0.001953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-up-1-0.bf16",
+      "cosine": 0.9999959370649457,
+      "relative_l2": 0.0028539046156477463,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-up-2-0.bf16",
+      "cosine": 0.9999983966355436,
+      "relative_l2": 0.0017908347533933428,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-up-3-0.bf16",
+      "cosine": 0.9999923548946296,
+      "relative_l2": 0.003911145272158507,
+      "max_abs": 0.0390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-up-4-0.bf16",
+      "cosine": 0.999707203721566,
+      "relative_l2": 0.02419939972232866,
+      "max_abs": 0.1953125,
+      "passed": true
+    },
+    {
+      "operand": "diag-v-0-0.bf16",
+      "cosine": 0.9999999999999998,
+      "relative_l2": 1.2999126040322737e-08,
+      "max_abs": 1.1920928955078125e-07,
+      "passed": true
+    },
+    {
+      "operand": "diag-v-1-0.bf16",
+      "cosine": 0.9999996006251353,
+      "relative_l2": 0.0008937424565302365,
+      "max_abs": 0.00390625,
+      "passed": true
+    },
+    {
+      "operand": "diag-v-2-0.bf16",
+      "cosine": 0.9999910168427153,
+      "relative_l2": 0.004238678899148137,
+      "max_abs": 0.0078125,
+      "passed": true
+    },
+    {
+      "operand": "diag-v-3-0.bf16",
+      "cosine": 0.9999859757046307,
+      "relative_l2": 0.005296115631769261,
+      "max_abs": 0.015625,
+      "passed": true
+    },
+    {
+      "operand": "diag-v-4-0.bf16",
+      "cosine": 0.9999774165530401,
+      "relative_l2": 0.006721518219147748,
+      "max_abs": 0.0244140625,
+      "passed": true
+    }
+  ],
+  "defaults_unchanged": true,
+  "seconds": 13.750016308855265
+}

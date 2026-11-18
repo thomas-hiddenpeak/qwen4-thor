@@ -1,0 +1,7 @@
+{
+  "warnings": 0,
+  "log": ".q4t-work/serve-native-tts-20261118/speech-contract-build-02.log",
+  "sha256": "0e3ad201c60f82befec8f91027f9bb16203cedb1b34df8fd04f16efa897834e8",
+  "binary_sha256": "e64d05bb4a3dd3f05f66f53282dd6d2692eab45e3b4506ed2b54ac223bea798f",
+  "prior_build_failure": "speech-contract-build-01.log: new target needed CMake regeneration; no test or runtime executed"
+}

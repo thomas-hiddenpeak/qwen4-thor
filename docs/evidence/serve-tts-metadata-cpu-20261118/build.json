@@ -1,0 +1,21 @@
+{
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Iinclude",
+    "tests/test_main.cpp",
+    "tests/tts_config_test.cpp",
+    "src/audio/tts_config.cpp",
+    "src/io/json.cpp",
+    "-o",
+    ".q4t-work/serve-native-tts-20261118/metadata-cpu-01/q4t_tts_contract_tests"
+  ],
+  "returncode": 0,
+  "seconds": 6.321661369409412,
+  "warnings": 0,
+  "binary_sha256": "2f111c36f5a63d5cef4cf64c3ae4285d2ccea2bfd98c3b51ef3a322f09aa3cef"
+}

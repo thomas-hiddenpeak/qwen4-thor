@@ -4,6 +4,26 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeDocuments.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/memory_budget.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/actual_usage_step_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_history.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/pcm_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/speech_tempo.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/speech_tempo_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/pcm_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_config_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/tts_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_tts_service_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_config.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_codec_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_codec_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_generation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_generation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp
@@ -151,12 +171,20 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_codec_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_encode_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_affine_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_projective_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_video_detail_test.cpp
@@ -313,6 +341,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/suffix_drafter_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/router_trace_hash_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/sha256_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/router_trace_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/router_trace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/test_main.cpp

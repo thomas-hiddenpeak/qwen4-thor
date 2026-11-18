@@ -48,6 +48,8 @@
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/asr_service.h"
 #include "q4t/server/asr_request.h"
+#include "q4t/server/tts_upload.h"
+#include "q4t/server/speech_output.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
@@ -212,6 +214,27 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
+  void HandleSpeech(int fd, const std::string& body);
+  ObjectReply SynthesizeChatAudio(
+      int fd, const ChatAudioOptions& options, uint64_t output_limit,
+      std::span<const uint64_t> choice_tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      const std::function<bool(int, const std::string&, bool)>& delta,
+      io::Json* completion);
+  // Caller owns auxiliary_mu_ and an admitted slot; never evict active work.
+  ObjectReply ActivateAuxiliaryFamily(bool speech_output,
+                                      const std::function<bool()>& cancelled);
+  ObjectReply EnsureNativeTts(bool weights, const BinaryAccess& access,
+                              RequestDiagnostics* diagnostic = nullptr);
+  std::string NativeTtsHealthJson() const;
+  ObjectReply RunNativeTts(
+      int fd, const SpeechRequest& request, const audio::TtsPrompt& prompt,
+      size_t max_frames, const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      ActualUsageCounter& usage,
+      const std::function<ObjectReply(std::string_view)>& sink,
+      SpeechEncodingReceipt* receipt);
   ObjectReply EnsureNativeAsr(bool weights, const BinaryAccess& access,
                               RequestDiagnostics* diagnostic = nullptr);
   std::string NativeAsrHealthJson() const;
@@ -553,7 +576,11 @@ class ChatServer {
   ModelCatalog embedding_catalog_;
   std::string embedding_model_dir_;
   // Optional model ownership is independent of Chat readiness. Asset I/O
-  // never holds model_mu_; published immutable weights live until drain.
+  // never holds model_mu_; immutable weights are leased through execution.
+  // Idle family weights may be released; validated metadata lives until drain.
+  // Acquire inside an admitted sequence; release after all workspaces/slot.
+  // No primary Chat or metadata-only load takes this cancellable mutex.
+  std::mutex auxiliary_mu_;
   std::mutex embedding_mu_;
   std::mutex embedding_tok_mu_;
   std::unique_ptr<text::Tokenizer> embedding_tok_;
@@ -571,6 +598,15 @@ class ChatServer {
   std::atomic<uint64_t> embedding_load_failures_{0};
   // Protected by embedding_mu_. Request-driven retries only, no model restart.
   std::chrono::steady_clock::time_point embedding_retry_after_{};
+  ModelCatalog tts_catalog_;
+  std::string tts_model_dir_;
+  TtsServiceLimits tts_limits_;
+  AsrHealth tts_health_;
+  std::mutex tts_mu_, tts_tok_mu_;
+  std::unique_ptr<text::Tokenizer> tts_tok_;
+  uint8_t* d_tts_talker_ = nullptr;
+  uint8_t* d_tts_codec_ = nullptr;
+  TtsBoundWeights tts_weights_;
   ModelCatalog asr_catalog_;
   std::string asr_model_dir_;
   AsrServiceLimits asr_limits_;

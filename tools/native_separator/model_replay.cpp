@@ -120,6 +120,11 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
   };
   const auto plan = Json(TextFile(plan_path, 1 << 20));
   const bool trace_stages = plan.GetBool("trace_stages", true);
+  const int64_t max_samples = plan.GetInt("max_input_samples", 64000);
+  Require(max_samples >= 16 && max_samples <= 240000,
+          "separator replay sample budget invalid");
+  const size_t workspace_limit =
+      max_samples <= 64000 ? size_t{512} << 20 : size_t{2048} << 20;
   const auto* cases = plan.GetArray("cases");
   Require(cases && !cases->array.empty() && cases->array.size() <= 4,
           "one to four frozen cases required");
@@ -153,7 +158,7 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
   int case_index = 0, boundary_checks = 0, lifecycle_checks = 0;
   for (const auto& input : cases->array) {
     checkpoint();
-    const auto pcm_bytes = ReadFile(input.GetString("pcm"), 64000 * 4);
+    const auto pcm_bytes = ReadFile(input.GetString("pcm"), size_t(max_samples) * 4);
     Require(pcm_bytes.size() % 4 == 0 &&
                 trace::HexDigest(trace::Sha256(pcm_bytes)) ==
                     input.GetString("pcm_sha256"),
@@ -165,7 +170,8 @@ int Replay(const fs::path& assets, const fs::path& plan_path,
     const auto directory = output / ("case-" + std::to_string(case_index++));
     Require(fs::create_directory(directory), "case output failed");
     audio::SeparatorWorkspaceLayout layout;
-    Check(audio::PlanSeparatorWorkspace(pcm.size(), 64000, 512ULL << 20,
+    Check(audio::PlanSeparatorWorkspace(pcm.size(), size_t(max_samples),
+                                        workspace_limit,
                                         &layout));
     maximum_workspace = std::max(maximum_workspace, layout.bytes);
     Device workspace(layout.bytes);

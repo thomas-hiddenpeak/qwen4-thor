@@ -6,27 +6,16 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/io/base64.h"
 
 namespace q4t::server {
 namespace {
 using namespace object_detail;
-constexpr std::string_view kBase64 =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
+constexpr auto kBase64 = io::kBase64Alphabet;
 std::string Encode(std::string_view bytes) {
   std::string out;
-  out.reserve((bytes.size() + 2) / 3 * 4);
-  for (size_t i = 0; i < bytes.size(); i += 3) {
-    const auto a = static_cast<uint8_t>(bytes[i]);
-    const auto b =
-        i + 1 < bytes.size() ? static_cast<uint8_t>(bytes[i + 1]) : 0;
-    const auto c =
-        i + 2 < bytes.size() ? static_cast<uint8_t>(bytes[i + 2]) : 0;
-    out += kBase64[a >> 2];
-    out += kBase64[((a & 3) << 4) | (b >> 4)];
-    out += i + 1 < bytes.size() ? kBase64[((b & 15) << 2) | (c >> 6)] : '=';
-    out += i + 2 < bytes.size() ? kBase64[c & 63] : '=';
-  }
+  if (!io::EncodeBase64(bytes, (kBinaryChunkBytes + 2) / 3 * 4, &out))
+    return {};
   return out;
 }
 bool Decode(std::string_view text, uint64_t expected, std::string* out) {

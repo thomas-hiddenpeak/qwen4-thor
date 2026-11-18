@@ -8,6 +8,15 @@ if(MODEL_ASSET_ICU_FOUND)
   add_executable(q4t_model_asset_tests EXCLUDE_FROM_ALL
     ${model_asset_root}/tests/model_asset_test_main.cpp
     ${model_asset_root}/tests/server_model_assets_test.cpp
+    ${model_asset_root}/tests/server_tts_assets_test.cpp
+    ${model_asset_root}/tests/server_tts_service_test.cpp
+    ${model_asset_root}/src/server/tts_assets.cpp
+    ${model_asset_root}/src/server/tts_service.cpp
+    ${model_asset_root}/src/runtime/memory_budget.cpp
+    ${model_asset_root}/src/audio/tts_config.cpp
+    ${model_asset_root}/src/audio/tts_layout.cpp
+    ${model_asset_root}/src/audio/tts_codec_layout.cpp
+    ${model_asset_root}/src/audio/tts_generation.cpp
     ${model_asset_root}/tests/server_aligner_assets_test.cpp
     ${model_asset_root}/tests/server_speaker_assets_test.cpp
     ${model_asset_root}/tests/server_separator_assets_test.cpp

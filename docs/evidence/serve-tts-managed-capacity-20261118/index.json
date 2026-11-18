@@ -1,0 +1,53 @@
+{
+  "archive_sha256": "c5615dae91b5631f6c82ae31da47f32ed6399d0de57d5b7177c4bdfe98727314",
+  "files": {
+    "cleanup.json": {
+      "bytes": 3522,
+      "sha256": "4d974ae7417ae5df7279db12a2ad8cbf82a8e7c9e8f3af0d06098a7bb62d8fab"
+    },
+    "client-policy.json": {
+      "bytes": 432,
+      "sha256": "d937b8270231ec58e40949263c3f12e392c061f34c586090ff75494a3a3b2fac"
+    },
+    "counts.json": {
+      "bytes": 49,
+      "sha256": "95448f0edd395f7d91fa5a6c401caeaf1a94430c25e0c7f4ae8b1a90150e5165"
+    },
+    "driver.log": {
+      "bytes": 1002,
+      "sha256": "3c6eb11b7f6c99c09b032f0dde5c38669d5c7c2168a1f1a51007f57676bcb6c4"
+    },
+    "lease/events.jsonl": {
+      "bytes": 2574,
+      "sha256": "adcb874860940135fd7c22b400060117a47009ea4bc75477c1aff5ccbdc7b12a"
+    },
+    "lease/exit.json": {
+      "bytes": 722,
+      "sha256": "c4dc376b7f460789af2c5a81d927103f7965f5abf3b03404abbfd02f39d80b70"
+    },
+    "lease/nvml-queries.jsonl": {
+      "bytes": 25117,
+      "sha256": "d54c1b87149687c0201df16fe832f8dcf0678c006ebef7ff0bfae6b38690f116"
+    },
+    "plan.json": {
+      "bytes": 852192,
+      "sha256": "37850e7457d971f670bf9cb350175e095855a6367c1ef0d064ac991b451cd2a4"
+    },
+    "primary-command.json": {
+      "bytes": 2547,
+      "sha256": "28e495ca011809e9af5d6ce55a152c09935277c6b1002ab2a2ece4c806d707a8"
+    },
+    "primary-identity.json": {
+      "bytes": 2973,
+      "sha256": "b3b08713ff7eca8b5854d67e892ecbd348ccf758fb5e4a4d6047d4a168f7fd36"
+    },
+    "primary-model.log": {
+      "bytes": 1635,
+      "sha256": "1e842cd5c88436ea71b63c943e70e196b284607b0b4e18a1ac7b0b6ccc13a478"
+    },
+    "result.json": {
+      "bytes": 929,
+      "sha256": "11f8c77269896b538bc48073ce84b96ccfa76243c7f93a5fa6ffeb599c2383e5"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "argv": [
+    ".q4t-work/serve-native-tts-20261118/execution-cpu-01/q4t_tts_execution_tests",
+    "--required-list",
+    ".q4t-work/serve-native-tts-20261118/execution-cpu-01/required.txt"
+  ],
+  "returncode": 1,
+  "seconds": 1.2150984550826252,
+  "gpu": 0,
+  "model_loads": 0
+}

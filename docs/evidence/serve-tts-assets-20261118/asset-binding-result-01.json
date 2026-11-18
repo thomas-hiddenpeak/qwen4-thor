@@ -1,0 +1,40 @@
+{
+  "status": "PASS_FULL_ASSET_TO_METADATA_BINDING",
+  "gpu": 0,
+  "model_loads": 0,
+  "comparisons": [
+    {
+      "asset": "config.json",
+      "fixture": "tests/fixtures/tts/config-17b.json",
+      "semantic_equal": true,
+      "asset_sha256": "17a07f527a1c25ea30b4e023a184482a23d3e279d697b1dc81b1bde498d29cf9"
+    },
+    {
+      "asset": "generation_config.json",
+      "fixture": "tests/fixtures/tts/generation.json",
+      "semantic_equal": true,
+      "asset_sha256": "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa"
+    },
+    {
+      "asset": "speech_tokenizer/config.json",
+      "fixture": "tests/fixtures/tts/codec-config.json",
+      "semantic_equal": true,
+      "asset_sha256": "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167"
+    },
+    {
+      "asset": "model.safetensors",
+      "fixture": "tests/fixtures/tts/talker-17b-header.json",
+      "header_bytes": 49840,
+      "header_sha256": "0e3594fc3c6c3fa05e2175fc7063bedbf9f55be7e9771f11e4770228cf9b2c26",
+      "semantic_equal": true
+    },
+    {
+      "asset": "speech_tokenizer/model.safetensors",
+      "fixture": "tests/fixtures/tts/codec-header.json",
+      "header_bytes": 63320,
+      "header_sha256": "2ba4e8dcbacb8aca087f1f8cfd8b7a2ab144d32486e635afaf2b3f6918b8cb65",
+      "semantic_equal": true
+    }
+  ],
+  "total_asset_bytes": 4520217432
+}

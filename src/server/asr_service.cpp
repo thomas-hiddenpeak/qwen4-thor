@@ -50,7 +50,8 @@ Status PlanAsrServiceResources(const AsrServiceLimits& limits,
       3 * 25 * kMiB +
       uint64_t(limits.max_audio_seconds) * 16000 * sizeof(float) +
       frames * audio::AsrConfig::kMelBins * sizeof(float) + 16 * kMiB;
-  plan.load_peak_bytes = 3 * kNativeAsrFileBytes + kHostMargin;
+  // Direct payload I/O: staged bytes + device weights, no new file pages.
+  plan.load_peak_bytes = 2 * kNativeAsrFileBytes + kHostMargin;
   *out = plan;
   return {};
 }

@@ -11,12 +11,14 @@
 #include <new>
 
 #include "model_assets_protocol.h"
+#include "model_asset_io.h"
 #include "q4t/audio/vad.h"
 #include "q4t/server/aligner_assets.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/server/speaker_assets.h"
 #include "q4t/server/separator_assets.h"
+#include "q4t/server/tts_assets.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -72,6 +74,29 @@ constexpr ModelAssetSpec kSeparator[]{
     {"config.json", kNativeSeparatorConfigBytes, kNativeSeparatorConfigSha256},
     {"model.safetensors", audio::SeparatorConfig::kFileBytes,
      audio::SeparatorConfig::kWeightSha256}};
+constexpr ModelAssetSpec kTts[]{
+    {"config.json", 4908,
+     "17a07f527a1c25ea30b4e023a184482a23d3e279d697b1dc81b1bde498d29cf9"},
+    {"preprocessor_config.json", 127,
+     "efdde1022ea9d76928bf7a9cd53139138f5ba2e466e837f08f6105ab1af1c119"},
+    {"generation_config.json", 245,
+     "f1b90b4513f3b34c62851049e2492d7b4c5940daf1276f89c82b8ef04127f3aa"},
+    {"vocab.json", 2776833,
+     "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"},
+    {"merges.txt", 1671839,
+     "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"},
+    {"tokenizer_config.json", 7344,
+     "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670"},
+    {"model.safetensors", kNativeTtsFileBytes, kNativeTtsWeightSha256}};
+constexpr ModelAssetSpec kTtsCodec[]{
+    {"config.json", 2336,
+     "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167"},
+    {"preprocessor_config.json", 234,
+     "fcb3805e597e786d4067706e602f6688524640f8d3396790e2e09b5942fcbdfb"},
+    {"configuration.json", 76,
+     "6bc26d64eb5024b4d1dab5a52371958b429256d6c9d59787f1f5294a54e0cebd"},
+    {"model.safetensors", kNativeTtsCodecFileBytes,
+     kNativeTtsCodecWeightSha256}};
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 thread_local std::string test_entry;
 #endif
@@ -98,13 +123,15 @@ int OpenDirectory(std::string_view path) {
   }
   return fd;
 }
-int OpenFile(int directory, const ModelAssetSpec& spec) {
-  const int fd = openat(directory, spec.name,
-                        O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK);
+int OpenFile(int directory, const ModelAssetSpec& spec, bool direct) {
+  const int fd = openat(
+      directory, spec.name,
+      O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK | (direct ? O_DIRECT : 0));
   struct stat st {};
   if (fd < 0) return -1;
   if (fstat(fd, &st) || !S_ISREG(st.st_mode) || st.st_size < 0 ||
-      static_cast<uint64_t>(st.st_size) != spec.bytes) {
+      static_cast<uint64_t>(st.st_size) != spec.bytes ||
+      (direct && !detail::DirectModelAssetReady(fd))) {
     close(fd);
     return -1;
   }
@@ -145,6 +172,10 @@ std::span<const ModelAssetSpec> ModelAssetCatalog(ModelAssetProfile profile) {
       return kSpeaker;
     case ModelAssetProfile::kSeparator:
       return kSeparator;
+    case ModelAssetProfile::kTtsCustomVoice17B:
+      return kTts;
+    case ModelAssetProfile::kTtsCodec:
+      return kTtsCodec;
   }
   return {};
 }
@@ -308,7 +339,9 @@ int MaybeRunModelAssetWorker(int argc, char** argv) {
     size_t total = 0;
     for (size_t i = 0; i < specs.size(); ++i) {
       total += specs[i].bytes;
-      if (directory >= 0) fds[i] = OpenFile(directory, specs[i]);
+      if (directory >= 0)
+        fds[i] = OpenFile(directory, specs[i],
+                          request.include_weights && i + 1 == specs.size());
       opened = opened && fds[i] >= 0;
     }
     if (directory >= 0) close(directory);
@@ -316,8 +349,15 @@ int MaybeRunModelAssetWorker(int argc, char** argv) {
                 total};
     bool ok = detail::WorkerTransfer(&reply, sizeof(reply), true);
     if (ok && opened)
-      for (size_t i = 0; ok && i < specs.size(); ++i)
-        ok = StreamFile(fds[i], specs[i].bytes);
+      for (size_t i = 0; ok && i < specs.size(); ++i) {
+        if (request.include_weights && i + 1 == specs.size())
+          ok = detail::StreamDirectModelAsset(
+              fds[i], specs[i].bytes, [](uint8_t* data, size_t bytes) {
+                return detail::WorkerTransfer(data, bytes, true);
+              });
+        else
+          ok = StreamFile(fds[i], specs[i].bytes);
+      }
     for (const int fd : fds)
       if (fd >= 0) close(fd);
     return ok ? 0 : 4;

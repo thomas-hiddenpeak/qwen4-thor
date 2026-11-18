@@ -3,6 +3,18 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/speech_request.h
+  src/server/speech_request.cpp
+  src/server/chat_audio_output.cpp
+  include/q4t/server/chat_audio_output.h
+  include/q4t/server/chat_plan_error.h
+  src/server/chat_audio_history.cpp
+  include/q4t/server/chat_audio_history.h
+  src/server/chat_audio_synthesis.cpp
+  include/q4t/audio/pcm_output.h
+  src/audio/pcm_output.cpp
+  include/q4t/audio/speech_tempo.h
+  src/audio/speech_tempo.cpp
   include/q4t/audio/separator_tracks.h
   src/audio/separator_tracks.cpp
   include/q4t/audio/separator_config.h
@@ -205,8 +217,18 @@ set(protocol_inputs
   include/q4t/server/model_assets.h
   include/q4t/server/asr_assets.h
   src/server/model_assets_protocol.h
+  src/server/model_asset_io.h
+  include/q4t/server/auxiliary_resources.h
   src/server/model_assets.cpp
   src/server/asr_assets.cpp
+  include/q4t/server/tts_assets.h
+  src/server/tts_assets.cpp
+  include/q4t/server/tts_service.h
+  src/server/tts_service.cpp
+  include/q4t/server/tts_upload.h
+  src/server/tts_upload.cpp
+  include/q4t/audio/tts_synthesis.h
+  src/audio/tts_synthesis.cpp
   include/q4t/server/aligner_assets.h
   src/server/aligner_assets.cpp
   include/q4t/server/asr_service.h
@@ -330,6 +352,7 @@ set(protocol_inputs
   src/server/batch_response_link.cpp
   include/q4t/server/batch_usage.h
   include/q4t/server/actual_usage.h
+  include/q4t/server/actual_usage_step.h
   include/q4t/server/batch_response_link.h
   include/q4t/server/batch_checkpoint.h
   src/server/batch_checkpoint.cpp
@@ -355,9 +378,23 @@ set(protocol_inputs
   include/q4t/server/file_webp.h
   include/q4t/server/file_video.h
   include/q4t/server/file_audio.h
+  include/q4t/server/speech_encode.h
+  include/q4t/server/speech_codec_stream.h
+  include/q4t/io/base64.h
+  include/q4t/server/speech_output.h
+  src/server/speech_output.cpp
+  src/server/chat_tts_backend.cpp
+  src/server/chat_tts_execution.cpp
+  src/server/chat_speech.cpp
+  src/server/speech_codec_stream_protocol.h
+  src/server/speech_codec_stream.cpp
+  src/server/speech_codec_stream_worker.cpp
+  src/server/speech_encode_protocol.h
   src/server/file_audio_protocol.h
   src/server/file_audio.cpp
   src/server/file_audio_worker.cpp
+  src/server/speech_encode.cpp
+  src/server/speech_encode_worker.cpp
   src/server/media_codec_runtime.h
   src/server/file_webp_protocol.h
   src/server/file_webp.cpp

@@ -1,0 +1,4 @@
+[PASS] speech_encode_aac_real_roundtrip
+AAC whole cosine=0.999917 tail=0.999873 lag=384 samples=2731
+[PASS] speech_encode_aac_partial_tail_contains_actual_signal
+2 tests, 2 passed, 0 failed, 0 skipped

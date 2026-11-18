@@ -1,0 +1,359 @@
+{
+  "status": "DIAGNOSIS_ONLY",
+  "seconds": 2.7770733209326863,
+  "checks": [
+    {
+      "layer": 0,
+      "operator": "q",
+      "values": 4096,
+      "differing_from_exact_bf16": 2,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.013274961151182652,
+      "largest_accumulation_bound": 0.0014622139282654224
+    },
+    {
+      "layer": 0,
+      "operator": "k",
+      "values": 2048,
+      "differing_from_exact_bf16": 3,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.006715007446473464,
+      "largest_accumulation_bound": 0.0005386467306913533
+    },
+    {
+      "layer": 0,
+      "operator": "v",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.003766991780139506,
+      "largest_accumulation_bound": 0.0003231796501208066
+    },
+    {
+      "layer": 0,
+      "operator": "o",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.001383039325446589,
+      "largest_accumulation_bound": 0.0011110556798951288
+    },
+    {
+      "layer": 0,
+      "operator": "gate",
+      "values": 6144,
+      "differing_from_exact_bf16": 2,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.023129142820835114,
+      "largest_accumulation_bound": 0.0035869848398075734
+    },
+    {
+      "layer": 0,
+      "operator": "up",
+      "values": 6144,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.007563625404145569,
+      "largest_accumulation_bound": 0.0008615585638246901
+    },
+    {
+      "layer": 0,
+      "operator": "down",
+      "values": 2048,
+      "differing_from_exact_bf16": 6,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.0018963948969030753,
+      "largest_accumulation_bound": 0.0015130906994229414
+    },
+    {
+      "layer": 1,
+      "operator": "q",
+      "values": 4096,
+      "differing_from_exact_bf16": 2,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.023062627762556076,
+      "largest_accumulation_bound": 0.002518652853300692
+    },
+    {
+      "layer": 1,
+      "operator": "k",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.03029351169243455,
+      "largest_accumulation_bound": 0.0015649480674098648
+    },
+    {
+      "layer": 1,
+      "operator": "v",
+      "values": 2048,
+      "differing_from_exact_bf16": 2,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.003849473432637751,
+      "largest_accumulation_bound": 0.000749077405557714
+    },
+    {
+      "layer": 1,
+      "operator": "o",
+      "values": 2048,
+      "differing_from_exact_bf16": 3,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.003612310225435067,
+      "largest_accumulation_bound": 0.0014395418593476953
+    },
+    {
+      "layer": 1,
+      "operator": "gate",
+      "values": 6144,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.014879037160426378,
+      "largest_accumulation_bound": 0.0032367716791768925
+    },
+    {
+      "layer": 1,
+      "operator": "up",
+      "values": 6144,
+      "differing_from_exact_bf16": 5,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.007707665557973087,
+      "largest_accumulation_bound": 0.0009327754086445543
+    },
+    {
+      "layer": 1,
+      "operator": "down",
+      "values": 2048,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.0009756248100529774,
+      "largest_accumulation_bound": 0.0016068547534026391
+    },
+    {
+      "layer": 2,
+      "operator": "q",
+      "values": 4096,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.014814130263403058,
+      "largest_accumulation_bound": 0.002248350817884525
+    },
+    {
+      "layer": 2,
+      "operator": "k",
+      "values": 2048,
+      "differing_from_exact_bf16": 3,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.05126907769590616,
+      "largest_accumulation_bound": 0.0017078316074744914
+    },
+    {
+      "layer": 2,
+      "operator": "v",
+      "values": 2048,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.0030246686073951423,
+      "largest_accumulation_bound": 0.0005842413408665265
+    },
+    {
+      "layer": 2,
+      "operator": "o",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.0018508343200664967,
+      "largest_accumulation_bound": 0.0014751401157704223
+    },
+    {
+      "layer": 2,
+      "operator": "gate",
+      "values": 6144,
+      "differing_from_exact_bf16": 3,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.06386950996238738,
+      "largest_accumulation_bound": 0.0033638643918657072
+    },
+    {
+      "layer": 2,
+      "operator": "up",
+      "values": 6144,
+      "differing_from_exact_bf16": 6,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.04439208960684482,
+      "largest_accumulation_bound": 0.002346533760952237
+    },
+    {
+      "layer": 2,
+      "operator": "down",
+      "values": 2048,
+      "differing_from_exact_bf16": 5,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.5435321390391437,
+      "largest_accumulation_bound": 0.05678972809080994
+    },
+    {
+      "layer": 3,
+      "operator": "q",
+      "values": 4096,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.013970705884275958,
+      "largest_accumulation_bound": 0.0023103065480976825
+    },
+    {
+      "layer": 3,
+      "operator": "k",
+      "values": 2048,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.025782807904761285,
+      "largest_accumulation_bound": 0.002131788664664167
+    },
+    {
+      "layer": 3,
+      "operator": "v",
+      "values": 2048,
+      "differing_from_exact_bf16": 2,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.003872673027217388,
+      "largest_accumulation_bound": 0.0008323325818682082
+    },
+    {
+      "layer": 3,
+      "operator": "o",
+      "values": 2048,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.0031725276494398713,
+      "largest_accumulation_bound": 0.00102543375837048
+    },
+    {
+      "layer": 3,
+      "operator": "gate",
+      "values": 6144,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.034934829258418176,
+      "largest_accumulation_bound": 0.00318802084374799
+    },
+    {
+      "layer": 3,
+      "operator": "up",
+      "values": 6144,
+      "differing_from_exact_bf16": 5,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.07316916948184371,
+      "largest_accumulation_bound": 0.0032234571157927746
+    },
+    {
+      "layer": 3,
+      "operator": "down",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 1.738150372780865,
+      "largest_accumulation_bound": 0.09676264171389853
+    },
+    {
+      "layer": 4,
+      "operator": "q",
+      "values": 4096,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.024574252776801586,
+      "largest_accumulation_bound": 0.0062380256352425785
+    },
+    {
+      "layer": 4,
+      "operator": "k",
+      "values": 2048,
+      "differing_from_exact_bf16": 0,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.03112807814613916,
+      "largest_accumulation_bound": 0.0028288903196682746
+    },
+    {
+      "layer": 4,
+      "operator": "v",
+      "values": 2048,
+      "differing_from_exact_bf16": 1,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.007787160342559218,
+      "largest_accumulation_bound": 0.00143985525775382
+    },
+    {
+      "layer": 4,
+      "operator": "o",
+      "values": 2048,
+      "differing_from_exact_bf16": 3,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.003562683501513675,
+      "largest_accumulation_bound": 0.0027471448100404388
+    },
+    {
+      "layer": 4,
+      "operator": "gate",
+      "values": 6144,
+      "differing_from_exact_bf16": 5,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.01542314956896007,
+      "largest_accumulation_bound": 0.0036022850463903228
+    },
+    {
+      "layer": 4,
+      "operator": "up",
+      "values": 6144,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.01492751995101571,
+      "largest_accumulation_bound": 0.004039730958286121
+    },
+    {
+      "layer": 4,
+      "operator": "down",
+      "values": 2048,
+      "differing_from_exact_bf16": 4,
+      "outside_fp32_bf16_error_bound": 0,
+      "sign_negative_control_rejected": true,
+      "maximum_abs_error": 0.00778710999213672,
+      "largest_accumulation_bound": 0.008323615038096071
+    }
+  ],
+  "model_constructions": 0,
+  "cuda_initialized": false,
+  "source_sha256": "6e7ef0f9df4e6a4d913443735b649be46e5627023f2d7463036bc11bfa1b562a"
+}

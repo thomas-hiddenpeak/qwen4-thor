@@ -2,6 +2,7 @@
 
 #include <fcntl.h>
 #include <signal.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -12,6 +13,7 @@
 #include <fstream>
 #include <thread>
 
+#include "../src/server/model_asset_io.h"
 #include "../src/server/model_assets_protocol.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/test.h"
@@ -355,5 +357,111 @@ Q4T_TEST(asr_assets_full_checkpoint_verified_layout_and_metadata_published) {
   Q4T_CHECK(q4t::audio::ValidateAsrWeightLayout(f.output.layout));
   Q4T_CHECK(f.control.counters->started == 1 &&
             f.control.counters->reaped == 1 && f.control.counters->active == 0);
+  return true;
+}
+
+namespace {
+struct DirectAssetFixture {
+  Fixture owner;
+  std::vector<uint8_t> source;
+  int fd = -1;
+  explicit DirectAssetFixture(size_t bytes = 2 * detail::kModelReadBlockBytes +
+                                             37)
+      : source(bytes) {
+    for (size_t i = 0; i < bytes; ++i) source[i] = uint8_t(i * 31 + 7);
+    const auto path = owner.directory / "direct.bin";
+    const int output = open(path.c_str(), O_CREAT | O_EXCL | O_WRONLY, 0600);
+    if (output < 0) throw std::runtime_error("direct fixture creation");
+    const bool written = write(output, source.data(), source.size()) ==
+                         static_cast<ssize_t>(source.size());
+    const bool synced = fsync(output) == 0;
+    const bool dropped = posix_fadvise(output, 0, 0, POSIX_FADV_DONTNEED) == 0;
+    close(output);
+    if (!written || !synced || !dropped)
+      throw std::runtime_error("direct fixture write/drop");
+    fd = open(path.c_str(), O_RDONLY | O_DIRECT | O_CLOEXEC);
+    if (fd < 0) throw std::runtime_error("direct fixture read open");
+  }
+  ~DirectAssetFixture() {
+    if (fd >= 0) close(fd);
+  }
+  bool Read(std::vector<uint8_t>* target, size_t bytes = 0) {
+    return detail::StreamDirectModelAsset(
+        fd, bytes ? bytes : source.size(),
+        [&](const uint8_t* data, size_t count) {
+          target->insert(target->end(), data, data + count);
+          return true;
+        });
+  }
+};
+}  // namespace
+
+Q4T_TEST(model_assets_direct_io_preserves_blocks_and_unaligned_eof) {
+  DirectAssetFixture fixture;
+  Q4T_CHECK(detail::DirectModelAssetReady(fixture.fd));
+  std::vector<uint8_t> observed;
+  Q4T_CHECK(fixture.Read(&observed) && observed == fixture.source);
+  struct stat st {};
+  Q4T_CHECK(!fstat(fixture.fd, &st) &&
+            st.st_size == static_cast<off_t>(fixture.source.size()));
+  return true;
+}
+
+Q4T_TEST(model_assets_direct_io_refuses_buffered_descriptor) {
+  DirectAssetFixture fixture;
+  const int fd = open((fixture.owner.directory / "direct.bin").c_str(),
+                      O_RDONLY | O_CLOEXEC);
+  Q4T_CHECK(fd >= 0);
+  size_t calls = 0;
+  const bool read = detail::StreamDirectModelAsset(fd, fixture.source.size(),
+                                                   [&](const uint8_t*, size_t) {
+                                                     ++calls;
+                                                     return true;
+                                                   });
+  close(fd);
+  Q4T_CHECK(!read && !calls);
+  return true;
+}
+
+Q4T_TEST(model_assets_direct_io_short_source_never_completes) {
+  DirectAssetFixture fixture;
+  std::vector<uint8_t> observed;
+  Q4T_CHECK(!fixture.Read(&observed, fixture.source.size() + 1));
+  Q4T_CHECK(observed.size() == 2 * detail::kModelReadBlockBytes);
+  return true;
+}
+
+Q4T_TEST(model_assets_direct_io_sink_cancellation_stops_at_one_block) {
+  DirectAssetFixture fixture;
+  size_t bytes = 0;
+  Q4T_CHECK(!detail::StreamDirectModelAsset(fixture.fd, fixture.source.size(),
+                                            [&](const uint8_t*, size_t count) {
+                                              bytes += count;
+                                              return false;
+                                            }));
+  Q4T_CHECK(bytes == detail::kModelReadBlockBytes);
+  return true;
+}
+
+Q4T_TEST(model_assets_direct_io_does_not_populate_cold_file_pages) {
+  DirectAssetFixture fixture;
+  const auto bytes = fixture.source.size();
+  const long page = sysconf(_SC_PAGESIZE);
+  Q4T_CHECK(page > 0);
+  std::vector<uint8_t> pages((bytes + page - 1) / page);
+  void* mapping = mmap(nullptr, bytes, PROT_NONE, MAP_PRIVATE, fixture.fd, 0);
+  Q4T_CHECK(mapping != MAP_FAILED);
+  const auto cold = [&] {
+    if (mincore(mapping, bytes, pages.data())) return false;
+    for (auto value : pages)
+      if (value & 1) return false;
+    return true;
+  };
+  const bool before = cold();
+  std::vector<uint8_t> observed;
+  const bool read = fixture.Read(&observed);
+  const bool after = cold();
+  munmap(mapping, bytes);
+  Q4T_CHECK(before && read && after && observed == fixture.source);
   return true;
 }

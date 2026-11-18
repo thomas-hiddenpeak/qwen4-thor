@@ -1,0 +1,326 @@
+{
+  "scope": "15 unique targeted CPU cases / 16 executions plus 8 exact-PCM real speech comparisons, 0 added GPU/ASR/HTTP",
+  "files": {
+    "codec-stream-build-01/build.log": {
+      "bytes": 2288,
+      "sha256": "8411bac274611bf47fae5bf3e5e58ebddff466c30b2ba1710e4a86157fa26df4"
+    },
+    "codec-stream-build-01/result.json": {
+      "bytes": 66,
+      "sha256": "757b6f264eec656fe16e6901c8408ea67cd657fd7df78fb527f8c03dbd16daad"
+    },
+    "codec-stream-build-02/build.log": {
+      "bytes": 692,
+      "sha256": "0ec57a03b73cda1deca679a80af9d138b28941e8062ef132efac03caaea6990e"
+    },
+    "codec-stream-build-02/result.json": {
+      "bytes": 67,
+      "sha256": "d485733b9aec3e06914bbe4cd6d4fc404e201807d00973fd4e7ee5789b66f144"
+    },
+    "codec-stream-build-03/build.log": {
+      "bytes": 834,
+      "sha256": "83c96ac66c7fb974e455dc9eab40df57d553c50252f64c28059189048b019b53"
+    },
+    "codec-stream-build-03/result.json": {
+      "bytes": 66,
+      "sha256": "d101d4fa66ed7b0ad02d59777a382dd058560b95b8c3d088665303eaada36aba"
+    },
+    "codec-stream-build-04/build.log": {
+      "bytes": 233,
+      "sha256": "9c95543b512bedea2a611559ffcb61c7a5859470ce92ea3d5a68672e75a21326"
+    },
+    "codec-stream-build-04/result.json": {
+      "bytes": 67,
+      "sha256": "3bc296e63403e37d9f7bd85654d2b153b98b60d53424346da798ab6047dd529f"
+    },
+    "codec-stream-cpu-01/fixtures/stream.aac": {
+      "bytes": 49834,
+      "sha256": "55ffa5dd807442ae29f70da3fd82c75e8e800f850b6884557ccbabe7b58cbc21"
+    },
+    "codec-stream-cpu-01/fixtures/stream.aac.json": {
+      "bytes": 1490,
+      "sha256": "b5feb048241b153c365b6e47fb017e67b7ee41b1bea6f7b9f5f53a2714417e47"
+    },
+    "codec-stream-cpu-01/fixtures/stream.aac.prefix": {
+      "bytes": 47786,
+      "sha256": "75830290164ada4514a96e1db7541a0b1dd6ed88cb9fe34c4884656f792aaffd"
+    },
+    "codec-stream-cpu-01/fixtures/stream.flac": {
+      "bytes": 40938,
+      "sha256": "12230e75fbae449118f0b7e37575a109cf9a7869167e77b79370738bec86a471"
+    },
+    "codec-stream-cpu-01/fixtures/stream.flac.json": {
+      "bytes": 1433,
+      "sha256": "35a9e5f3a4095a2e117433b2b305394d520b0c98cd971c03f3ee085badfbecdc"
+    },
+    "codec-stream-cpu-01/fixtures/stream.flac.prefix": {
+      "bytes": 39347,
+      "sha256": "b046c5c2aeb90d766b0b5c355535c4f94ef2414d865aa8f72a63f8571040f65f"
+    },
+    "codec-stream-cpu-01/fixtures/stream.mp3": {
+      "bytes": 48768,
+      "sha256": "6317f0b81f6e1642ea27a267f5ae63fa94b8d7a0608eacf7af662b54818ca19a"
+    },
+    "codec-stream-cpu-01/fixtures/stream.mp3.json": {
+      "bytes": 1432,
+      "sha256": "2ad1085d48e724b381b4c0cc444e90c8f58a512eb7b3afccdd9bec9ef6b53b7e"
+    },
+    "codec-stream-cpu-01/fixtures/stream.mp3.prefix": {
+      "bytes": 47232,
+      "sha256": "fb68904f3f6f9907ef6750d92ca19bd692c546e079b551369bebdc6d190a5c07"
+    },
+    "codec-stream-cpu-01/fixtures/stream.opus": {
+      "bytes": 24906,
+      "sha256": "b25081244fd48a05440365103bc7576a08d5e700dc383dbc079385895b876656"
+    },
+    "codec-stream-cpu-01/fixtures/stream.opus.json": {
+      "bytes": 1433,
+      "sha256": "cc21aa0874f67e9f33f2f82835ff9df4ac1c947740c90c8d3c670f6c58e90745"
+    },
+    "codec-stream-cpu-01/fixtures/stream.opus.prefix": {
+      "bytes": 21315,
+      "sha256": "98831f38322eaf26644e70d4403b2211eb9318e077332c70fe98b274e22df0a0"
+    },
+    "codec-stream-cpu-01/plan.json": {
+      "bytes": 100574,
+      "sha256": "4255f7714acec7f2e25e05b6daef21bfe185c9f4a2c5615105ee486be1ed2b68"
+    },
+    "codec-stream-cpu-01/required.txt": {
+      "bytes": 770,
+      "sha256": "0582aaec90062c0516114a5d71be192cc1bb66e8e6cc0661fdbea0d7d7792216"
+    },
+    "codec-stream-cpu-01/result.json": {
+      "bytes": 1098,
+      "sha256": "bb10a4e9645dfbf8dfda2833b718e16da0f1dcdb63099008fad9c11d815a2756"
+    },
+    "codec-stream-cpu-01/tests.log": {
+      "bytes": 1274,
+      "sha256": "6c665ffd19978e604180b6bfb2e4329a8cf9376978e65c6f1c0fbc4739bd1d39"
+    },
+    "codec-stream-cpu-02/plan.json": {
+      "bytes": 1069,
+      "sha256": "2f8988f9ebcda5ba10390362bc9739be7866333eeb28dbd518e670b83569f4e3"
+    },
+    "codec-stream-cpu-02/required.txt": {
+      "bytes": 58,
+      "sha256": "2bf28ac68398460754ea84abe8b0f29cd0f7c7a9b5c64f4c8d8c3f803f822efc"
+    },
+    "codec-stream-cpu-02/result.json": {
+      "bytes": 127,
+      "sha256": "be8c949f391360a2416adfe9d0bfc6dd451d833816b94e51244c004dd080fcdc"
+    },
+    "codec-stream-cpu-02/source-gate.json": {
+      "bytes": 222,
+      "sha256": "459398b6e5522de315f4e7457e03d5c7f1cc62f8d42aeb0a608049ddbea3e593"
+    },
+    "codec-stream-cpu-02/tests.log": {
+      "bytes": 485,
+      "sha256": "034bced246f5c4657be79db93b1cb096cd42db58b5e857618b5084a0ee613428"
+    },
+    "codec-stream-content-01/plan.json": {
+      "bytes": 105837,
+      "sha256": "cf915a6d1ae49fa01ec83a43c820dc8b4ce5c5020beacafa72cef0d1b7e10166"
+    },
+    "codec-stream-content-01/result.json": {
+      "bytes": 158,
+      "sha256": "0ff0c4b5b3ba297803aaa5c890883b9f92409327e08022903068dc24056dc3da"
+    },
+    "codec-stream-content-01/tests.log": {
+      "bytes": 19,
+      "sha256": "6d280afbc28ec08c45b2912a7cf801695558a87fdc5f4f6a65b86a1840c1a29c"
+    },
+    "codec-stream-content-02/input.json": {
+      "bytes": 4204,
+      "sha256": "accff0ba3804c10eed18b68ab04015e3501e75ed3f0cd1dc5f5558b0bc5b9092"
+    },
+    "codec-stream-content-02/plan.json": {
+      "bytes": 106040,
+      "sha256": "c673740b7c567fb875416028e799f840cbdc2067f1770c0ff776ad4e44e18e38"
+    },
+    "codec-stream-content-02/result.json": {
+      "bytes": 154,
+      "sha256": "b94caacb7c051ae459f6e805e1747092587dbf1ab689d9c258973a1a4a916e5a"
+    },
+    "codec-stream-content-02/run/case-0/audio.mp3": {
+      "bytes": 52224,
+      "sha256": "5286630b9314cc659397ec43421e9c9bbc89d85010a8c5b4020ae7d131ee9d30"
+    },
+    "codec-stream-content-02/run/case-0/decoding.json": {
+      "bytes": 2802,
+      "sha256": "cdc42fb15762d955bce576ff0a3f9db034b5c4f3f4c14a647ed9ac1f0347840c"
+    },
+    "codec-stream-content-02/run/case-0/encoding.json": {
+      "bytes": 1432,
+      "sha256": "bc5652c86bfbb9740ba1122a1e5fffff8aab40bf344afec9692c92816ddf401e"
+    },
+    "codec-stream-content-02/run/case-0/pcm.f32": {
+      "bytes": 208896,
+      "sha256": "12b2d3342a453a5df89075ffbccd9e594efcb44a5c8bab28ee2b8c93fe8c68cf"
+    },
+    "codec-stream-content-02/run/case-0/result.json": {
+      "bytes": 185,
+      "sha256": "ce3a62ec7ee99e44e1f26f6dcf7f34e5de57ca380ac6373a09acd092e4fed2ba"
+    },
+    "codec-stream-content-02/run/case-1/audio.aac": {
+      "bytes": 52565,
+      "sha256": "e90fd728d01f07044e725c2e55dc83ed65c8acf1ff8a7a6796944881111a74bc"
+    },
+    "codec-stream-content-02/run/case-1/decoding.json": {
+      "bytes": 2802,
+      "sha256": "b991dfd257ac9b02cacd525cb5f9a8d5e39ea2b20659f54bffa23df72577adb9"
+    },
+    "codec-stream-content-02/run/case-1/encoding.json": {
+      "bytes": 1490,
+      "sha256": "b232b03ccffab889f75af52241e4d60cc819b735c175d572433255e88fd4fcea"
+    },
+    "codec-stream-content-02/run/case-1/pcm.f32": {
+      "bytes": 207532,
+      "sha256": "9fee2b883d1a76c031b4c541a4eab3f1a932348be406f5b416ccb88fef876e8a"
+    },
+    "codec-stream-content-02/run/case-1/result.json": {
+      "bytes": 185,
+      "sha256": "99dcd498c26680f88585bfb57df264c8ce5288ca723e3280a175ca382dab7269"
+    },
+    "codec-stream-content-02/run/case-2/audio.opus": {
+      "bytes": 24046,
+      "sha256": "5cd67e0ca5d5e67d84cb2d62eeb3af871eedf7e7d261d369eb0069094030d958"
+    },
+    "codec-stream-content-02/run/case-2/decoding.json": {
+      "bytes": 2802,
+      "sha256": "b7767e5e2a1d64fdddac2c9fa15bfe46bdeaacf8dcdcf69995b75a116d569152"
+    },
+    "codec-stream-content-02/run/case-2/encoding.json": {
+      "bytes": 1433,
+      "sha256": "6e93c44002f10ca2a533fbaf9565676dbcf8eca49b9bae97bad7ade914373553"
+    },
+    "codec-stream-content-02/run/case-2/pcm.f32": {
+      "bytes": 204800,
+      "sha256": "c0667a7c20e830d214e3d0372acf5e93886ed9d983d43f04d9b65c40621c8520"
+    },
+    "codec-stream-content-02/run/case-2/result.json": {
+      "bytes": 185,
+      "sha256": "bebc0f3a283f99bc4446ba6d9a6d3f9ecce81038c5d2035524f7a3dcc2c0b2eb"
+    },
+    "codec-stream-content-02/run/case-3/audio.flac": {
+      "bytes": 74366,
+      "sha256": "be437ecb2945fa24b17b2f88cb63d03537c2327c10efe109af07ffb3615eb561"
+    },
+    "codec-stream-content-02/run/case-3/decoding.json": {
+      "bytes": 2802,
+      "sha256": "b3189ce25894dad697657dd51b3c105a20b5689e96c647aa7df0c34bc95c0dce"
+    },
+    "codec-stream-content-02/run/case-3/encoding.json": {
+      "bytes": 1433,
+      "sha256": "e2276776362d5a52c0c670f001ec5f6d1991abfcef7f1c1a2edcb8314ab6e709"
+    },
+    "codec-stream-content-02/run/case-3/pcm.f32": {
+      "bytes": 204800,
+      "sha256": "edcff9baf9f9094c25b7ea8e95f79d3550acde110dfc0e3516ad57df294424fb"
+    },
+    "codec-stream-content-02/run/case-3/result.json": {
+      "bytes": 185,
+      "sha256": "6c0cba175e4e442600b1323c5e3adcc2431248c0162eb2c532a93bbbb32ced88"
+    },
+    "codec-stream-content-02/run/case-4/audio.mp3": {
+      "bytes": 50688,
+      "sha256": "2921be67ed9fb20d3562c971fa6384168aa89ed5444cce170191cd91b4ae1a63"
+    },
+    "codec-stream-content-02/run/case-4/decoding.json": {
+      "bytes": 2802,
+      "sha256": "1932a7c0d8ad30d345c1232c73a1df3bbf284b41a10a0c84339b818de12a557a"
+    },
+    "codec-stream-content-02/run/case-4/encoding.json": {
+      "bytes": 1432,
+      "sha256": "fb17d25ffb60d6cbe0de270833368484eac10f95a1a4b587158dc027e448ce46"
+    },
+    "codec-stream-content-02/run/case-4/pcm.f32": {
+      "bytes": 202752,
+      "sha256": "5ba7253095e912d1ccc14df2ac85602ee28eaccd820d0a3fdfb8d49702728e73"
+    },
+    "codec-stream-content-02/run/case-4/result.json": {
+      "bytes": 185,
+      "sha256": "f7600c31f3fe88ef8e00c494a273c032f34256d1daf0e150da73e1c3039645ca"
+    },
+    "codec-stream-content-02/run/case-5/audio.aac": {
+      "bytes": 51882,
+      "sha256": "fe5159b55504680870b28486ae2e3fb0502600b3d6ab3cf0495d6faadc7891ce"
+    },
+    "codec-stream-content-02/run/case-5/decoding.json": {
+      "bytes": 2802,
+      "sha256": "d978b4fd5f1d97a47622d86a14756229cefd51f45cce54cc36f954464ba44775"
+    },
+    "codec-stream-content-02/run/case-5/encoding.json": {
+      "bytes": 1490,
+      "sha256": "183fc4a5346b7006fecb7a719ed20ec3172f20250a38998e7ff4d068118be4c1"
+    },
+    "codec-stream-content-02/run/case-5/pcm.f32": {
+      "bytes": 204800,
+      "sha256": "e26c6b7fbce1880d9802c1729a1ff56bfa38fad947edfee19751a9d6e94b6d6d"
+    },
+    "codec-stream-content-02/run/case-5/result.json": {
+      "bytes": 185,
+      "sha256": "d345101fe7cb02f1f37de992c576577d92a4575215a18250435b775aa2e1379e"
+    },
+    "codec-stream-content-02/run/case-6/audio.opus": {
+      "bytes": 24287,
+      "sha256": "7ca676a1f972418b9001ae9325f2c5382eec7937b151b66ea6b46e4abf572364"
+    },
+    "codec-stream-content-02/run/case-6/decoding.json": {
+      "bytes": 2802,
+      "sha256": "a811d4856cf5833d5193cffe3a0805c77604ce4534b213f19e0e8d5bb16503f6"
+    },
+    "codec-stream-content-02/run/case-6/encoding.json": {
+      "bytes": 1433,
+      "sha256": "25fdfa17e6c8da6d268db1d9fce413c5665d861a288845f38f1c00a53eedffa4"
+    },
+    "codec-stream-content-02/run/case-6/pcm.f32": {
+      "bytes": 199680,
+      "sha256": "35448336ea8c67f1fbe8de33c035606f797ec52aed3e9fa2588cdb4df573001e"
+    },
+    "codec-stream-content-02/run/case-6/result.json": {
+      "bytes": 185,
+      "sha256": "033015cbf71cd67f949018c21e9c0166412c8b7781475895e715735c03753e92"
+    },
+    "codec-stream-content-02/run/case-7/audio.flac": {
+      "bytes": 86534,
+      "sha256": "c83ce8274b0485fbb0d58bd8c980ac8907cb01c32d78ce5ad8949339a5d0c29a"
+    },
+    "codec-stream-content-02/run/case-7/decoding.json": {
+      "bytes": 2802,
+      "sha256": "a245c5b095cfa7a64e87bb3cf71afd2332629da041c4976408186f2c3a73c1f4"
+    },
+    "codec-stream-content-02/run/case-7/encoding.json": {
+      "bytes": 1433,
+      "sha256": "06e9f57e06dd9cf6162756ad6b5b59b09b537ee6901846d56679cc1b6c38565d"
+    },
+    "codec-stream-content-02/run/case-7/pcm.f32": {
+      "bytes": 199680,
+      "sha256": "4a90336ad06c9bf181dd53fb51e090d3659faecc90799fe14811d2e5e8d35751"
+    },
+    "codec-stream-content-02/run/case-7/result.json": {
+      "bytes": 185,
+      "sha256": "bb70c41dcb2040335712ec420f458d6cc7d49b8070fd988744140db186e900e4"
+    },
+    "codec-stream-content-02/run/result.json": {
+      "bytes": 110,
+      "sha256": "e7e09c685256a0096a7007db0cc49632a48ae18cbaf09083e07d49349705a20c"
+    },
+    "codec-stream-content-02/tests.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "speech-sse-source-01/source.json": {
+      "bytes": 416,
+      "sha256": "1009efd1cfa837830de314cffe4a00a1d21deecb7eaee8d7b718859021356798"
+    }
+  },
+  "archive_sha256": "834d6f4d142659c8d428612745874c70f11f0376b76cdb38a6d3e57f92de3f04",
+  "qualified_cpu_binary": {
+    "path": ".q4t-work/serve-native-tts-20261118/codec-stream-cpu-02/q4t-speech-stream-qualified",
+    "sha256": "aaa988a10b54ba434d44fda2a71e299b9a32e787934706bc279afae55c94c99f"
+  },
+  "qualified_content_binary": {
+    "path": ".q4t-work/serve-native-tts-20261118/codec-stream-content-02/q4t-speech-stream-content-qualified",
+    "sha256": "d9ac84429d925dd5c625a460d613233bc425d7fb9523417096522397bf9f9dc0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "reviewed": {
+    "CMakeLists.txt": {
+      "before": "e90a4ee05f33e4f15119df1a0db47dfa9756207db689be7f1922ed3b17bd132a",
+      "after": "6ba4e8a717c1f2f5690f9eacc4a495e61ab6170ebe00fc5931eec3f4a16b827c"
+    },
+    "include/q4t/audio/tts_codec.h": {
+      "before": null,
+      "after": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91"
+    },
+    "src/audio/tts_codec.cu": {
+      "before": null,
+      "after": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c"
+    },
+    "src/audio/tts_codec_conv.cu": {
+      "before": null,
+      "after": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd"
+    },
+    "src/audio/tts_codec_dense.cu": {
+      "before": null,
+      "after": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3"
+    },
+    "src/audio/tts_codec_internal.h": {
+      "before": null,
+      "after": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380"
+    }
+  },
+  "removed": []
+}

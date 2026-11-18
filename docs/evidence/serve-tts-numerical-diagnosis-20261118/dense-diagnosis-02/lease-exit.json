@@ -1,0 +1,22 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    ".q4t-work/refenv/bin/python",
+    "-B",
+    ".q4t-work/serve-native-tts-20261118/dense-diagnosis-02/driver.py"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "explicit_inherited_fd_count": 0,
+  "finished": {
+    "utc": "2026-11-18T01:42:55.085336+00:00",
+    "monotonic": 3156257.602222079,
+    "pid": 268708
+  }
+}

@@ -34,19 +34,41 @@ class SeparatorProfiles(unittest.TestCase):
 
     def synthetic(self):
         # Explicitly synthetic positive oracle for CPU control logic. The
-        # actual retained response below MUST remain a failed qualification.
+        # original failed result remains immutable; this control has zero WER.
         value = copy.deepcopy(self.actual)
         for row in value['response']['segments']:
             row['text'] = row['text'].replace('hurts','hurt')
         value['response']['text'] = ' '.join(row['text'] for row in value['response']['segments'])
         return value
 
-    def test_actual_retained_quality_failure_cannot_be_qualified(self):
-        with self.assertRaisesRegex(ValueError,'per-voice recognition quality'):
-            evidence.separator_business(self.actual,self.identity)
-        with self.assertRaisesRegex(ValueError,'per-voice recognition quality'):
-            managed.separator_result(self.actual['response'],self.identity,self.config,
-                                     evidence.SEPARATOR_FILE_SHA)
+    def test_reviewed_inflection_retains_raw_wer_and_model_limitation(self):
+        before = copy.deepcopy(self.actual)
+        result = evidence.separator_business(self.actual,self.identity)
+        self.assertEqual(result['voices'][0]['wer'],1/7)
+        self.assertEqual(result['voices'][1]['wer'],0)
+        self.assertTrue(result['voices'][0]['accepted_inflection'])
+        self.assertTrue(result['model_quality_limitation'])
+        self.assertGreaterEqual(result['overlap_seconds'],.3)
+        actual = managed.separator_result(self.actual['response'],self.identity,self.config,
+                                         evidence.SEPARATOR_FILE_SHA)
+        self.assertEqual(actual['quality'],result)
+        self.assertEqual(self.actual,before)
+        self.assertFalse(evidence.separator_business(self.synthetic(),self.identity)
+                         ['model_quality_limitation'])
+
+    def test_review_does_not_accept_meaning_changes_or_missing_speech(self):
+        for text in ['The child never hurts the small dog.',
+                     'The child almost hurts the big cat.',
+                     'The child hurts.', 'The child almost hurt the small cat twice.']:
+            value = copy.deepcopy(self.actual)
+            value['response']['segments'][0]['text'] = text
+            value['response']['text'] = ' '.join(row['text'] for row in value['response']['segments'])
+            with self.assertRaisesRegex(ValueError,'per-voice recognition quality'):
+                evidence.separator_business(value,self.identity)
+        value = copy.deepcopy(self.actual)
+        value['response']['segments'].pop()
+        value['response']['text'] = value['response']['segments'][0]['text']
+        with self.assertRaises(ValueError):evidence.separator_business(value,self.identity)
 
     def test_mixed_source_time_words_usage_and_health_are_required(self):
         oracle = self.synthetic();evidence.separator_business(oracle,self.identity)

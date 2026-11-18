@@ -20,7 +20,9 @@ enum class ModelAssetProfile : uint64_t {
   kAligner = 3,
   kVad = 4,
   kSpeaker = 5,
-  kSeparator = 6
+  kSeparator = 6,
+  kTtsCustomVoice17B = 7,
+  kTtsCodec = 8
 };
 struct ModelAssetSpec {
   const char* name;
@@ -40,7 +42,8 @@ using ModelMetadataValidator =
 // Metadata is verified before invoking validate and allocating weight bytes.
 // Failure preserves *weights. Caller publishes parsed metadata only on success.
 // max_staging_bytes covers raw metadata + weights, not all live RAM; server
-// admission must additionally account for parsed objects/device/file pages.
+// admission also counts parsed objects/device memory. Weight payload reads
+// require per-file verified O_DIRECT; metadata still uses bounded file pages.
 Status ReadVerifiedModelAssets(
     ModelAssetProfile profile, const std::string& directory,
     const ModelMetadataValidator& validate, std::vector<uint8_t>* weights,

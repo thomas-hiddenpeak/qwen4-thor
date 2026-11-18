@@ -106,7 +106,7 @@ def separator_result(response, identity, config, source_sha256, stream=False):
     value = dict(source_sha256=source_sha256, request=evidence.separator_request(identity),
         response=response, health=config['native_separator_health'],
         limits=config['native_separator_limits'])
-    evidence.separator_business(value, identity)
+    quality = evidence.separator_business(value, identity)
     for name in ('asr', 'alignment', 'vad', 'speaker'):
         fixed = identity['native_asr'] if name == 'asr' else identity['native_asr'][name]
         health = config['native_'+name+'_health']
@@ -120,5 +120,6 @@ def separator_result(response, identity, config, source_sha256, stream=False):
             'qualified separator dependency not healthy or budget changed')
     return dict(actual_audio_sha256=source_sha256,
         auxiliaries=['alignment','vad','speaker','separator'], stream=stream,
+        quality=quality,
         text=response['text'], segments=len(response['segments']),
         labels=[row['speaker'] for row in response['segments']])

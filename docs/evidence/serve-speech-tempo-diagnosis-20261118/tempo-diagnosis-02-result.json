@@ -1,0 +1,116 @@
+{
+  "status": "DIAGNOSIS_COMPLETE_PENDING_LEASE",
+  "limits": {
+    "seconds": 1200,
+    "gpu_asr_loads": 1,
+    "cases": 3,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0,
+    "asr_tokens_per_case": 64,
+    "cpu_reference_calls": 3,
+    "cpu_reference_samples": 1000000
+  },
+  "runs": [
+    {
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tempo-diagnosis-02/run/plan-1.json",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/tempo-diagnosis-02/run/asr-1"
+      ],
+      "exit_code": 0,
+      "seconds": 4.12702186498791
+    }
+  ],
+  "comparisons": [
+    {
+      "utterance": 1,
+      "kind": "reference_4x",
+      "samples24": 18720,
+      "audio_tokens": 10,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会像森林开始。",
+      "passed": false,
+      "eos": true,
+      "generated_tokens": 11
+    },
+    {
+      "utterance": 1,
+      "kind": "native_4x_slowed_back",
+      "samples24": 74880,
+      "audio_tokens": 41,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，你好，欢迎欢迎，谢谢谢谢，向向我走走走，三点半，三点半，开开开，开开开，开开开，开开开。",
+      "passed": false,
+      "eos": true,
+      "generated_tokens": 43
+    },
+    {
+      "utterance": 1,
+      "kind": "reference_4x_slowed_back",
+      "samples24": 74880,
+      "audio_tokens": 41,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会会",
+      "passed": false,
+      "eos": false,
+      "generated_tokens": 64
+    }
+  ],
+  "defaults_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "acceptance_granted": false,
+  "defaults_unchanged": true,
+  "seconds": 4.503724619280547,
+  "artifacts": {
+    "asr-1/case-0/encoder-input.bf16": "af536eb17d85ebe63acd7770a52bd739a66f19c20d3fd9b70d773b67004b6d70",
+    "asr-1/case-0/encoder.bf16": "e49f3cee263ec878e457d32070cf332f0041046fcd750cf2db8bf75d2e85f770",
+    "asr-1/case-0/generated.u32": "cbaef2a44cdb82c9e629d206a6d649ffb1f42911fdbcca4ec7acfe709914fa60",
+    "asr-1/case-0/logits-0.bf16": "597407c5833e9dee65cd486f149e0ceeaeb5e10add45cb9d34fc89b4e27f472f",
+    "asr-1/case-0/logits-1.bf16": "432bfa4c0123bb34a12e3351992cb8f66a380bfd227af822350663fd565a91aa",
+    "asr-1/case-0/logits-2.bf16": "54681e8eec620a2ebf6305641cbcd1daa8c3dccaf9a9e58ca26b7e4277df8c48",
+    "asr-1/case-0/logits-3.bf16": "592b7486f4192a7494f0e0ba47500da77eefdb7fed820e25cac0e347c02b4bf7",
+    "asr-1/case-0/native-mel.f32": "e63c69acf8aac3857799d28ac346a5ba9255838400583f9ad5dae7371e9dc9ea",
+    "asr-1/case-0/result.json": "bfb2e016d18dd1cfe358d0de4d74830db1a9c07346efcb855f84bfe1e1966e70",
+    "asr-1/case-0/text.txt": "4f2105e9eb71e29a3e59ea9040a8c390ae7e8651d974ec0770c5ff762ae67f41",
+    "asr-1/case-1/encoder-input.bf16": "438608181f8b58e3e4122ec71a963ff97612ac13e5b8dcfd6b2456ec352d32ed",
+    "asr-1/case-1/encoder.bf16": "91c3640227fc442f46c10b20dba00304140e7f37cf39624c74ba92d3c58970e1",
+    "asr-1/case-1/generated.u32": "cae20c97db6069f6b0594217d58da601be3b6365020fd5feaadd0a25b8b35644",
+    "asr-1/case-1/logits-0.bf16": "08a93070c0606d8e0daaaddb6b01425d154e3638f8197b8850224002095821e8",
+    "asr-1/case-1/logits-1.bf16": "ca40a2a904a71e3f1e1aeee01358fa5af5fb2008a3852e8bdf14b2aac83773ee",
+    "asr-1/case-1/logits-2.bf16": "7515cac469bd5e09ee5d1f9583df55683004524b3775731650f609b32cd1987b",
+    "asr-1/case-1/logits-3.bf16": "4ca9629dee703f61bba426dd470e729bdce185569185ad9492b566038d030367",
+    "asr-1/case-1/native-mel.f32": "31027eb947362845ecfd6151a3e735ac5bbac0e412a965857bd3d518479eab0a",
+    "asr-1/case-1/result.json": "8e42f672627d7b664dcee036e094a146524b663a869321b33f969badbf10b2d2",
+    "asr-1/case-1/text.txt": "1f56cb7c834365869d96c814afba4539ddd7b3e51ad5d3eb19bbed22da7c700a",
+    "asr-1/case-2/encoder-input.bf16": "add524c169b6303e1c016959f0a6b34b4841f6664faa4b453faab2be78dedfe2",
+    "asr-1/case-2/encoder.bf16": "9a7d26eeb813d9f3e592a6aec003f5803eb245a7c2a70c5178f1c2256f35c8e4",
+    "asr-1/case-2/generated.u32": "cdc2417155af2847b71b9fc0264588d87e526843354d99ecb2c0a01d418c9478",
+    "asr-1/case-2/logits-0.bf16": "103d5f20eca687df59334e31ba6186076547dc69cdf4576407d4f48d455ff697",
+    "asr-1/case-2/logits-1.bf16": "37a7fac3a9cc70d13f34e44b19bc31cd27e582b7aa19b43f5971673ddae9cad0",
+    "asr-1/case-2/logits-2.bf16": "c23dac320be1a32d46b5376462550c16984333dfeb47519be8261d72b880670a",
+    "asr-1/case-2/logits-3.bf16": "0c2465c25ad5f40ffac07cf446b6d44e457696df2ef5fa57218a2501af81aaef",
+    "asr-1/case-2/native-mel.f32": "0ec310a5756d0a4ef4318df03996c84a2fc4bfe2565281cf2e6e073e3e78a25c",
+    "asr-1/case-2/result.json": "28dea4b7d4c9f53640cc378b8a131e0e397915f8fea47a8e4cdf724d4e813602",
+    "asr-1/case-2/text.txt": "52dccdfc9d68ad4ce0f4dbc9c9c58c28d7106aa6e2368345436abda9df9919cb",
+    "asr-1/result.json": "9d01c33cc6694d57b9d9f7e5559f610512366913cee4f6b2217f7ef1e07ccd9e",
+    "asr-1.log": "1d9c7d8cfee244b8dd829528eb2cde5aa23f9435d06016c117334e2a1afb8d9d",
+    "case-1-0/mel.f32": "e63c69acf8aac3857799d28ac346a5ba9255838400583f9ad5dae7371e9dc9ea",
+    "case-1-0/pcm.f32": "ef7fff84c8a95fd5fd13a88eaf0835d5c34ea9a17781d3a6fae32403632017de",
+    "case-1-0/pcm24.f32": "68768c2a37ade28150b61f8b0ab362491f5208782b1d2a97b3fb21fee0d8d234",
+    "case-1-1/mel.f32": "31027eb947362845ecfd6151a3e735ac5bbac0e412a965857bd3d518479eab0a",
+    "case-1-1/pcm.f32": "c19ad9917275ae2bc93c99f23621898f8549d748b94f8038a1890dec16885c5a",
+    "case-1-1/pcm24.f32": "c197b544b4a62b72214ce35a120a2d34f79572b4bfb02448f962e2721dc3f855",
+    "case-1-2/mel.f32": "0ec310a5756d0a4ef4318df03996c84a2fc4bfe2565281cf2e6e073e3e78a25c",
+    "case-1-2/pcm.f32": "0f48cf1210a7f895355148b935e21f167923a029ce9c2fe7f40de0283913c4c8",
+    "case-1-2/pcm24.f32": "036dd560c6e45ac2b572696e9ac6e3b5bd601a90213d82ba50ff4d0291b1df8e",
+    "plan-1.json": "ea65d2c03c730bcd6234addfa05fd01b0f2f6115cfec6e647724308fffe07b35"
+  }
+}

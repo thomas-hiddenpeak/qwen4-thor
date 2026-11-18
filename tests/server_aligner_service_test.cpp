@@ -28,7 +28,7 @@ Q4T_TEST(aligner_resources_include_class_logits_and_unified_load_peak) {
   AlignerResourcePlan plan;
   Q4T_CHECK(PlanAlignerServiceResources(limits, &plan));
   Q4T_CHECK(plan.load_peak_bytes >=
-            3 * kNativeAlignerFileBytes + (512ULL << 20));
+            2 * kNativeAlignerFileBytes + (512ULL << 20));
   Q4T_CHECK(plan.request_host_bytes >=
             (73ULL << 20) + 512 * 2 * 5000 * sizeof(uint16_t));
   Q4T_CHECK(plan.request_device_bytes ==

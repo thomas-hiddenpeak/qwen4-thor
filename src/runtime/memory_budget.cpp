@@ -261,7 +261,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
                  Mul(MtpCheckpointBytes(p, req.mtp_k), seq)})
           : common_fixed;
     };
-    const auto request_peak = [&](int len, int seq) {
+    const auto primary_request_peak = [&](int len, int seq) {
       if (!p.has_mtp) return size_t{0};
       if (!req.seq_capacities.empty()) {
         const int rows = std::min(len, p.max_prefill);
@@ -282,6 +282,11 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       return Add(PerRequestBytes(p, len,
                                   MtpForwardTempBytes(p, req.mtp_k, seq)),
                  Mul(held, static_cast<size_t>(seq - 1)));
+    };
+    const auto request_peak = [&](int len, int seq) {
+      const auto primary = primary_request_peak(len, seq);
+      return seq == 1 ? std::max(primary, req.auxiliary_sequence_bytes)
+                      : Add(primary, req.auxiliary_sequence_bytes);
     };
     const auto peak_extra = [&](int len, int seq) {
       return std::max(request_peak(len, seq), MtpLoadingHostBytes(p, req, len));
@@ -395,9 +400,11 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
      << " mtp_workspace=" << b.mtp_workspace
      << " forward_buffers=" << b.forward_buffers
      << " ple_working=" << b.ple_working << " mtp=" << p.has_mtp << "\n"
+     << "[q4t][budget]   auxiliary_sequence=" << req.auxiliary_sequence_bytes
+     << "\n"
      << "[q4t][budget]   per_request=" << b.per_request / 1e9
-     << " GB (peak admitted MTP request allocations)  state_pool=" << b.state_pool / 1e9
-     << " GB\n"
+     << " GB (peak admitted primary/auxiliary allocations)  state_pool="
+     << b.state_pool / 1e9 << " GB\n"
      << "[q4t][budget]   => max_len=" << b.max_len << " max_seq=" << b.max_seq
      << (b.capped ? "  (CAPPED to fit estimate)" : "") << "\n";
   if (p.has_mtp) {

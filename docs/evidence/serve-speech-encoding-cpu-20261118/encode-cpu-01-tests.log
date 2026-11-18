@@ -1,0 +1,11 @@
+[PASS] speech_encode_native_pcm_wave_uses_no_codec_worker
+[PASS] speech_encode_mp3_real_roundtrip
+  CHECK failed: decoded.samples.size() >= 16000 && decoded.samples.size() <= 18400 (line 78)
+[FAIL] speech_encode_aac_real_roundtrip
+[PASS] speech_encode_opus_real_roundtrip
+[PASS] speech_encode_flac_lossless_roundtrip
+[PASS] speech_encode_invalid_input_is_atomic_before_worker
+[PASS] speech_encode_budgets_and_child_thread_failure_are_bounded
+[PASS] speech_encode_dependency_and_crash_preserve_parent_and_native_output
+[PASS] speech_encode_cancel_and_deadline_reap_owned_worker
+9 tests, 8 passed, 1 failed, 0 skipped

@@ -1,0 +1,169 @@
+{
+  "summary": {
+    "status": "PASS_TTS_MANAGED_TARGETED_CPU",
+    "python": {
+      "status": "PASS",
+      "returncode": 0,
+      "cases": 18,
+      "seconds": 8.523251391015947,
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.serve_service.test_tts_package.TtsPackage.test_missing_optional_assets_stay_portable_with_all_budgets",
+        "tools.serve_service.test_tts_package.TtsPackage.test_identity_capacity_paths_and_aliases_are_strict",
+        "tools.serve_service.test_tts_package.TtsPackage.test_declared_pair_health_and_effective_limits_cannot_drift",
+        "tools.serve_service.test_tts_package.TtsPackage.test_backend_cannot_be_silently_dropped_or_enabled_without_evidence",
+        "tools.serve_service.test_tts_package.TtsPackage.test_prepare_cli_forwards_only_explicit_tts_overrides",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_binding_preserves_legacy_and_paired_weights_but_not_deployment_path",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_whole_audio_evidence_rejects_silence_forgery_and_budget_or_health_drift",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_profile_cannot_omit_spoken_business_or_misbind_the_codec",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_explicit_addition_keeps_pending_recovery_budget_and_never_downgrades",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_disabled_to_enabled_is_explicit_and_all_other_capabilities_stay_bound",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_automatic_version_recovery_requires_identical_tts_identity_and_budgets",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_explicit_budget_change_retains_original_history_qualification",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_combined_asr_addition_and_tts_budget_migration_has_both_evidence",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_native_cli_and_both_profile_commands_keep_tts",
+        "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_deployment_preserves_talker_codec_and_allows_only_asset_relocation",
+        "tools.serve_service.test_asr_package.AsrPackage.test_missing_optional_assets_remain_portable_and_preserve_limits",
+        "tools.serve_recovery.test_asr_profiles.AsrProfiles.test_explicit_asr_budget_migration_preserves_original_qualification_and_wait",
+        "tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles.test_new_receipts_require_chat_on_both_profiles_and_preserve_old_format"
+      ],
+      "defaults_unchanged": true,
+      "gpu_loads": 0
+    },
+    "cpp": {
+      "status": "PASS",
+      "returncode": 0,
+      "cases": 1,
+      "seconds": 0.007500829640775919,
+      "command": [
+        ".q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        ".q4t-work/serve-native-tts-20261118/managed-cpu-01/required.txt"
+      ],
+      "binary_sha256": "1335a95d55bed2cae2b5c688efd08be1c6cfaa6d308e1131fae97e713c5a5511",
+      "defaults_unchanged": true
+    },
+    "engine_build": {
+      "status": "PASS",
+      "returncode": 0,
+      "seconds": 15.749780020210892,
+      "warnings": [],
+      "defaults_unchanged": true
+    },
+    "host_build": {
+      "status": "PASS",
+      "returncode": 0,
+      "seconds": 22.505054706707597,
+      "warnings": [],
+      "defaults_unchanged": true
+    },
+    "unique_cpu": 19,
+    "gpu_loads": 0,
+    "http_requests": 0,
+    "default_changed": false,
+    "actual_profiles_tls_recovery_pending": true,
+    "whole_tts_complete": false
+  },
+  "files": {
+    "managed-build-01/engine-binary.json": {
+      "bytes": 205,
+      "sha256": "ab2ab4c80843f64afdfd6ddb531a58be4b6a3d830c129a6ce4977d493dc80d33"
+    },
+    "managed-build-01/engine-result.json": {
+      "bytes": 123,
+      "sha256": "eb349046c7c14769e9a29035a8c2cb8d5fb96da933fcd64a5a6cd3a2384a01a1"
+    },
+    "managed-build-01/engine.log": {
+      "bytes": 1973,
+      "sha256": "6c47b4954b198a1fe69b4fd7839210071dfa0bbc34544ecb5d9bc9e5db132545"
+    },
+    "managed-build-01/host-binary.json": {
+      "bytes": 207,
+      "sha256": "648714c32b731d18485b73a1b3ea227b14d07a74684a1be4ec5e189190eb6d52"
+    },
+    "managed-build-01/host-result.json": {
+      "bytes": 123,
+      "sha256": "5d4341337de403603ebbe3a2ec0027a3c5f6ea1272c3b7829d0db68b3e950745"
+    },
+    "managed-build-01/host.log": {
+      "bytes": 1900,
+      "sha256": "8fa47dbd1033cf835e7abce44c17b564e2dd80c3af8cd27c4402f5bfe18b8563"
+    },
+    "managed-build-01/plan.json": {
+      "bytes": 1133,
+      "sha256": "da39d631b4d28539124fe0097c8612c723e53e5ded286757a359662c237087b4"
+    },
+    "managed-build-01/prior-host-tests.json": {
+      "bytes": 317,
+      "sha256": "eba9e2518c2166bb173853a8904cc3560d9514829ce2d3a7558d037aa6861e8d"
+    },
+    "managed-build-01/restored.json": {
+      "bytes": 72654,
+      "sha256": "6edba1902a26793574f81e98248724e5df8b21e5808668588e1002ab5293f339"
+    },
+    "managed-candidate-01/CMakeCache.txt": {
+      "bytes": 54898,
+      "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+    },
+    "managed-candidate-01/generated/q4t/server/chat_protocol_sources.json": {
+      "bytes": 74008,
+      "sha256": "b1da07ff1c75c3e4bb45343235a49625768e95c04b9090b0b2932364e9ed9579"
+    },
+    "managed-candidate-01/retention.json": {
+      "bytes": 282,
+      "sha256": "b9dcac8f7dbdd59d3edc57a7abb6440d4823a7a235acadb92d50ed87b7238673"
+    },
+    "managed-cpu-01/cpp-preflight-01.json": {
+      "bytes": 231,
+      "sha256": "78d8256d0cc3d0fe3d992f8681aea81f34c94f1dd167e07b02c072ea5963ff8f"
+    },
+    "managed-cpu-01/cpp-result.json": {
+      "bytes": 385,
+      "sha256": "a6789e19d425c62ab37b0bfe4c821c58781e0e01a55e3caad5484d9f2f248b06"
+    },
+    "managed-cpu-01/cpp.log": {
+      "bytes": 118,
+      "sha256": "46a26e931c1844e86ea8c6781b59790b172c19edcfea5618b63090b0b02fdcc3"
+    },
+    "managed-cpu-01/plan.json": {
+      "bytes": 5360,
+      "sha256": "29eed6ba7031f6b5b5b9f12dd5c343b877802e3ae06df08115f37d58501cd018"
+    },
+    "managed-cpu-01/python-result.json": {
+      "bytes": 2461,
+      "sha256": "cd536a5e01f068c0470d6b379ab453bccf8e639bd0a7ee0506cfcfb5efa0869f"
+    },
+    "managed-cpu-01/python.log": {
+      "bytes": 3584,
+      "sha256": "a5f90071e4196df6bc8f72c2c60453bae3c9d5c65fdec64835d47f9a4b22a614"
+    },
+    "managed-cpu-01/required.txt": {
+      "bytes": 72,
+      "sha256": "1fbacf3845228803b58d0e7b5e8af515d8f50d8554fcbe2b2785f993ea8392c4"
+    },
+    "managed-cpu-01/source-gate.json": {
+      "bytes": 222,
+      "sha256": "23aa3334d16168b4fc23f943f31a8338278c1df88f3e7373d43246664be71877"
+    },
+    "retired-build-archive-05/manifest.json": {
+      "bytes": 1682,
+      "sha256": "0333e8763de9d13611e3ac35eaf2a7d7ba04f7e5097d73c452af316b02d57dbe"
+    },
+    "retired-build-archive-06/manifest.json": {
+      "bytes": 207648,
+      "sha256": "37ae457c45f6dbbdbf81018f55dc5736231650d06563cff4c31eddebdd42c745"
+    },
+    "retired-build-archive-07/manifest.json": {
+      "bytes": 218530,
+      "sha256": "79899056bc60141eb7c648d6c36e5b6bd94131eae46c911cb4d74710159194f7"
+    }
+  },
+  "archive": {
+    "bytes": 134305,
+    "sha256": "fecf8904aca5de59969487bf69190ffd2e29617604871e5be4f0d8a4826ebba8"
+  }
+}

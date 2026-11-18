@@ -23,8 +23,8 @@ Status PlanSeparatorServiceResources(const SeparatorServiceLimits& limits,
   // separated signals. Their original validated PCM stays with the speaker
   // owner; account for four restored copies plus one sequential 8k temporary.
   next.request_host_bytes += (4 * 160000 + 80000) * sizeof(float);
-  // File pages, host staging and device upload coexist in physical DRAM.
-  next.load_peak_bytes = 3 * audio::SeparatorConfig::kFileBytes + (64ULL << 20);
+  // Direct payload I/O: host staging and device upload share physical DRAM.
+  next.load_peak_bytes = 2 * audio::SeparatorConfig::kFileBytes + (64ULL << 20);
   *out = next;
   return {};
 }

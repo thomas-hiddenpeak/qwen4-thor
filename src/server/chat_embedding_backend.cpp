@@ -92,7 +92,7 @@ ObjectReply ChatServer::EnsureNativeEmbedding(bool weights,
     // Unified RAM: staging, device payload and possibly retained file pages.
     // These are estimates, not a reservation or a guarantee against host OOM.
     const uint64_t estimate =
-        kHostMargin + (weights ? 3 * kNativeEmbeddingFileBytes : 0);
+        kHostMargin + (weights ? 2 * kNativeEmbeddingFileBytes : 0);
     if (!runtime::ReadSystemMemory().CanAllocate(estimate))
       return fail(EmbeddingFailure::kResource, "embedding_resource_exhausted",
                   "Embedding host memory admission unavailable");
@@ -207,13 +207,7 @@ ObjectReply ChatServer::RunNativeEmbeddingInput(
   const auto interrupted = [&] {
     return Error(409, control->Reason(), "Embedding execution cancelled");
   };
-  {
-    RequestDiagnostics::Scope waiting(diagnostic,
-                                      RequestDiagnostics::Wait::kStorage);
-    auto loaded = EnsureNativeEmbedding(
-        true, {{}, control->deadline(), cancelled}, &diagnostic);
-    if (!loaded.ok()) return loaded;
-  }
+  std::unique_lock<std::mutex> auxiliary;
   diagnostic.Stage("slot_admission");
   int slot;
   {
@@ -237,6 +231,22 @@ ObjectReply ChatServer::RunNativeEmbeddingInput(
     diagnostic.Released();
     metrics_.prompt_tokens_total.fetch_add(result->committed_input);
   });
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kSlot);
+    auxiliary = LockUnlessCancelled(auxiliary_mu_, cancelled);
+  }
+  if (!auxiliary.owns_lock() || cancelled()) return interrupted();
+  if (auto switched = ActivateAuxiliaryFamily(false, cancelled); !switched.ok())
+    return switched;
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kStorage);
+    auto loaded = EnsureNativeEmbedding(
+        true, {{}, control->deadline(), cancelled}, &diagnostic);
+    if (!loaded.ok()) return loaded;
+  }
+
   model::EmbeddingWorkspaceLayout layout;
   const auto planned = model::PlanEmbeddingWorkspace(tokens.size(), &layout);
   if (!planned)
