@@ -611,3 +611,6 @@
 - [PR49会话恢复夹具修复](evidence/serve-conversation-recovery-fixture-20261119/README.md)：8项针对CPU，原预演失败保留。
 
 - [ICL编码器合同与预算](evidence/serve-tts-icl-metadata-20261119/README.md)：14项CPU；实际编码、服务和交付继续。
+
+- [注册音色实际合入主线](evidence/serve-voice-mainline-20261119/README.md)：PR49双CI通过、42a42846。
+- [ICL编码器末层修复与量化边界](evidence/serve-tts-icl-encoder-20261119/README.md)：原全码一致FAIL保留，独立诊断和验收决定待续。

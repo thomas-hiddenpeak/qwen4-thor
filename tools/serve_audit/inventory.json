@@ -2280,7 +2280,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "0c15017e80a3823c0f6b1d155d4150245e5c87df3f95de821d2fcc54d5d22074",
+    "CMakeLists.txt": "67df16529e71a799cb09fb971b787907f245ec95f1ba902143da0d9eded6df0c",
     "cmake/ChatProtocolIdentity.cmake": "493a2ec147fcd9e32379b93cb88c3c71327ea80d6a1a82a0d1fcb7d57a64e5d2",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
@@ -3222,7 +3222,11 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/audio/tts_encoder.h": "9dc0865669c71ce33ba4d932b23804666c5513c6c0018f3a8587bbb0dc71f449",
+    "src/audio/tts_encoder.cu": "fe52ad0b73f48482f2dd2c5286746bbb6b4d71efc87efabb37284e5ef9e4a96f",
+    "src/audio/tts_encoder_conv.cu": "4d7698b3331de724dd4617935ad6db7e3d7aced56fc1895c9f6f9b58cc1ecc97",
+    "src/audio/tts_encoder_dense.cu": "c8faa1b19432b797ca1675da82fdc155453746476fc5ff3d35b647db6e9f265b"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

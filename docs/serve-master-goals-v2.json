@@ -7552,7 +7552,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev326_delivered_pr49_ci_repair_pending_main_merge",
+      "state": "rev326_delivered_pr49_merged_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8452,6 +8452,16 @@
         },
         "evidence": "evidence/serve-conversation-recovery-fixture-20261119/README.md",
         "merged": false
+      },
+      "latest_mainline_merge": {
+        "headRefOid": "0febc4f58e5b6ad70f163a3aa5a0ab2acdad7ac9",
+        "mergeCommit": {
+          "oid": "42a428466e258c6a8698fea14418ecf962ae66a6"
+        },
+        "mergedAt": "2026-11-18T20:30:00Z",
+        "state": "MERGED",
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/49",
+        "evidence": "evidence/serve-voice-mainline-20261119/README.md"
       }
     },
     {
@@ -9364,16 +9374,24 @@
       "reason": "Top-level progress lagged behind already recorded accepted owner decision and completed counterexamples; reuse unchanged evidence."
     },
     "icl": {
-      "state": "encoder_metadata_cpu_passed_execution_pending",
+      "state": "encoder_padding_fixed_rvq_boundary_decision_pending_prompt_development_continues",
       "evidence": "evidence/serve-tts-icl-metadata-20261119/README.md",
       "cpu_new": 10,
       "cpu_direct_decoder": 4,
       "tensor_count": 225,
       "weights_bytes": 224937216,
-      "gpu_tests": 0,
+      "gpu_tests": 3,
       "runtime_dependencies_added": [],
       "reference_attention": "Pinned Transformers4.57.6 non-streaming eager full causal; declared window250 does not prove execution mask",
-      "reference_audio_conditioning_delivered": false
+      "reference_audio_conditioning_delivered": false,
+      "execution_evidence": "evidence/serve-tts-icl-encoder-20261119/README.md",
+      "cpu_gate_tests": 8,
+      "native_model_loads": 3,
+      "official_cpu_loads": 2,
+      "exact_code_gate": "FAILED_PRESERVED_4_OF_2336_LONG_CASE_CODES",
+      "continuous_operand_checks_passed": 222,
+      "independent_fp64_nearest_neighbor": "Both sides correct on all16 groups at diagnosed frame94; first-input relativeL2 3.4013e-5",
+      "acceptance_rule_decision_pending": true
     }
   }
 }

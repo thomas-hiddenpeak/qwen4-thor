@@ -1,0 +1,669 @@
+{
+  "records": [
+    {
+      "path": "README.md",
+      "sha256": "1c52b6bf8932a20f32e108779bf30b9195b6e7c1806e96f8cfac43ac21ce457a",
+      "bytes": 1824
+    },
+    {
+      "path": "component-01/build-02.log",
+      "sha256": "10665994b898093a94e1cf225cacc105f34822bf8d09fbfd000b7f5c80887df2",
+      "bytes": 1737
+    },
+    {
+      "path": "component-01/build-padding-fix.log",
+      "sha256": "a0d181076fc4c8696803d84b01cbeec590edf167ab7076e283003e2196c41781",
+      "bytes": 658
+    },
+    {
+      "path": "component-01/build.log",
+      "sha256": "a45ea0d1e931cea5d6df61ccd6ca446618120a3a34c211e1e4450591e6831982",
+      "bytes": 2146
+    },
+    {
+      "path": "component-01/configure.log",
+      "sha256": "b1a2c85800769c0bea27bc5800171f858069c49a381437c3a8aa90f14bedfb8a",
+      "bytes": 1190
+    },
+    {
+      "path": "component-01/inventory.json",
+      "sha256": "0dd6a77ccd250af8be81e1a0e56c77de3c3062744f1c162da666a6c60118abe6",
+      "bytes": 222
+    },
+    {
+      "path": "component-01/lease/events.jsonl.gz",
+      "sha256": "be6e8a8fb525c4d6d92a6f485247310b0f6fbd10a060b87124800c35c61baaf5",
+      "bytes": 526
+    },
+    {
+      "path": "component-01/lease/exit.json",
+      "sha256": "339777d109c053816d5b7e4d032976b7e9223a2299b740b4be63d11ddd1046c9",
+      "bytes": 1216
+    },
+    {
+      "path": "component-01/lease/nvml-queries.jsonl.gz",
+      "sha256": "d1bff5bd81aeb264f9fd7acfb9088925748609c6c8f8d024e19e1a650eec419a",
+      "bytes": 3268
+    },
+    {
+      "path": "component-01/plan.json",
+      "sha256": "1a81bda37159d95ceffe6da5ff53af0e2225f638c468120758cba7de7f41b415",
+      "bytes": 7636
+    },
+    {
+      "path": "component-01/run/native/result.json",
+      "sha256": "d46b291d408732412066dfc10dce5bca3aad2fb340107987ea3eec4fc5d979fb",
+      "bytes": 208
+    },
+    {
+      "path": "component-01/run/native.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "component-01/run/reference/result.json",
+      "sha256": "0b3ee2ac9135c97db56e673a08594ce8853dca29edea7e66544a967e57aeef94",
+      "bytes": 599
+    },
+    {
+      "path": "component-01/run/reference.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "component-01/run/result.json",
+      "sha256": "c1133f0303cb2123dc56a4f3168377f3cc644489a028dd30ac317288c80d6445",
+      "bytes": 110553
+    },
+    {
+      "path": "component-01/sources/CMakeLists.txt",
+      "sha256": "67df16529e71a799cb09fb971b787907f245ec95f1ba902143da0d9eded6df0c",
+      "bytes": 58414
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_codec.h",
+      "sha256": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
+      "bytes": 3005
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_codec_layout.h",
+      "sha256": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
+      "bytes": 4041
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_config.h",
+      "sha256": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
+      "bytes": 2543
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_encoder.h",
+      "sha256": "f7c07e5e83639af37803da10c6cdd3e3cd761aeb58220181ea9c2c8bea6ee7a3",
+      "bytes": 3263
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_encoder_layout.h",
+      "sha256": "34a5076bbb714965c3dd50d5632e93f4da27e5a2350353cadb587bfef7e707a7",
+      "bytes": 3252
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_generation.h",
+      "sha256": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c",
+      "bytes": 3486
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_layout.h",
+      "sha256": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7",
+      "bytes": 4137
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_model.h",
+      "sha256": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
+      "bytes": 3860
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_speaker_features.h",
+      "sha256": "c8d67499a28c4312ddc6d9b5164fc2a97f41f8f7c39e2be5d9335237dae220f1",
+      "bytes": 1301
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_speaker_layout.h",
+      "sha256": "41dc3e6d5de9d80ebc0db692ad64570582e327556b62d30690c68ccf2b5787b8",
+      "bytes": 2234
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_speaker_model.h",
+      "sha256": "0d44c547cba8b1b424d84ed6e804ae2e6eab90c31d0b956ad21f09e5a9bf9db1",
+      "bytes": 1350
+    },
+    {
+      "path": "component-01/sources/include/q4t/audio/tts_synthesis.h",
+      "sha256": "a213244a9ebb4585b51727ed083d65cbd40a603c7ecc4b936b0b331765443c55",
+      "bytes": 2434
+    },
+    {
+      "path": "component-01/sources/include/q4t/io/json.h",
+      "sha256": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
+      "bytes": 3919
+    },
+    {
+      "path": "component-01/sources/include/q4t/quant/lt_cache.h",
+      "sha256": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+      "bytes": 3317
+    },
+    {
+      "path": "component-01/sources/include/q4t/trace/sha256.h",
+      "sha256": "68a3bb18e5023b7d214cbb66bb96b66b5e9942fbadae6fdf8a30ddfde91a3ae8",
+      "bytes": 1470
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_base_config_data.h",
+      "sha256": "60a46749968b7f6de39f6dfc6f248863ce0bd1cd60bd7987ff19b47732e29a08",
+      "bytes": 4751
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_codec.cu",
+      "sha256": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
+      "bytes": 14887
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_codec_conv.cu",
+      "sha256": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
+      "bytes": 8620
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_codec_dense.cu",
+      "sha256": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
+      "bytes": 10362
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_codec_internal.h",
+      "sha256": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
+      "bytes": 1266
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_codec_layout.cpp",
+      "sha256": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
+      "bytes": 7585
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_config.cpp",
+      "sha256": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38",
+      "bytes": 14424
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_config_data.h",
+      "sha256": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+      "bytes": 12906
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_dense.cu",
+      "sha256": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
+      "bytes": 12099
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_encoder.cu",
+      "sha256": "cecbfe71869122582009a233e37b5b296e540193919c3ec71be52981c3a136f9",
+      "bytes": 11251
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_encoder_conv.cu",
+      "sha256": "b8e8b1a84f3ef5c796362378aa836991caefe6a8efe573f130ca9375f9ed0dd3",
+      "bytes": 4288
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_encoder_dense.cu",
+      "sha256": "c8faa1b19432b797ca1675da82fdc155453746476fc5ff3d35b647db6e9f265b",
+      "bytes": 12312
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_encoder_layout.cpp",
+      "sha256": "214715bfcb6ac5e14817241af6cd07007e3a33710fd6d2e616f2c16bda84898d",
+      "bytes": 11652
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_generation.cpp",
+      "sha256": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb",
+      "bytes": 12583
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_layout.cpp",
+      "sha256": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c",
+      "bytes": 10874
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_math_internal.h",
+      "sha256": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
+      "bytes": 5701
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_model.cu",
+      "sha256": "14098c4cbb81a98ad479b39c3861bbb66bdfc2d86077e90d8f9752db5951ecb4",
+      "bytes": 15243
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_speaker_features.cpp",
+      "sha256": "db8b424d5f90be9011a6a840cbaf57b02881ddc134c2035b0a7c8be3b3503502",
+      "bytes": 5471
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_speaker_layout.cpp",
+      "sha256": "b79e2d7281a7ec30206e4f54a873844184cfaf013b9678b872b8c13216f885e2",
+      "bytes": 5846
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_speaker_model.cu",
+      "sha256": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28",
+      "bytes": 18758
+    },
+    {
+      "path": "component-01/sources/src/audio/tts_synthesis.cpp",
+      "sha256": "43ba44cf8de79517af5bebfd5a30bcd96d70414e232b1a668acc7cadbdf62e98",
+      "bytes": 4530
+    },
+    {
+      "path": "component-01/sources/src/io/json.cpp",
+      "sha256": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+      "bytes": 13289
+    },
+    {
+      "path": "component-01/sources/src/quant/lt_cache.cpp",
+      "sha256": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+      "bytes": 1028
+    },
+    {
+      "path": "component-01/sources/src/trace/sha256.cpp",
+      "sha256": "bd5e9f506e90574710cda42adb82efa1e8a32121b3f28b9dbb517633b6de1da7",
+      "bytes": 8449
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/CMakeLists.txt",
+      "sha256": "031e59c99536735fb593dced2f1f4b22d87a2a03f14a604fa3ecab288e8a09d6",
+      "bytes": 3875
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/acceptance.py",
+      "sha256": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f",
+      "bytes": 10077
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/codec_reference.py",
+      "sha256": "560fdc63a6fba1c80a412ab3edaaffb3a5fe2f49d880e32b84ca48fbc42e0dd4",
+      "bytes": 5955
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/encoder_acceptance.py",
+      "sha256": "e948d80cea7d85f5affd39e295638d1e74052ecdebb4afb308d7a3f8e6401e55",
+      "bytes": 9317
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/encoder_reference.py",
+      "sha256": "a8bb820f38b0ada4dd1fe85a76d64668ebb737b1a3f5fcdf871cd568c2aaa872",
+      "bytes": 7574
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/encoder_replay.cpp",
+      "sha256": "28f14158b15fadddd756d154f221998e3c2f9e4c0c736a80802f111a8d746f53",
+      "bytes": 10731
+    },
+    {
+      "path": "component-01/sources/tools/native_tts/model_reference.py",
+      "sha256": "d3d3c7b5a266bc07aa6430417425660fe9edc75b716c08ed91654d9ab461d5e1",
+      "bytes": 11246
+    },
+    {
+      "path": "component-02/driver.py",
+      "sha256": "0b773040d36e005db9b3db06091cdeeed0f6749bab2ec2c5fe730b3bce6be1e1",
+      "bytes": 5327
+    },
+    {
+      "path": "component-02/inventory.json",
+      "sha256": "0dd6a77ccd250af8be81e1a0e56c77de3c3062744f1c162da666a6c60118abe6",
+      "bytes": 222
+    },
+    {
+      "path": "component-02/lease/events.jsonl.gz",
+      "sha256": "6d00adeeca54f8389e367978185cba9d3ad2c3080e2300f7f1a1ead1f7338341",
+      "bytes": 366
+    },
+    {
+      "path": "component-02/lease/exit.json",
+      "sha256": "f3e5d52308c75a408fc80cb7ee0e749c129d07c0de6b438e2cfcff9230f95fc2",
+      "bytes": 637
+    },
+    {
+      "path": "component-02/lease/nvml-queries.jsonl.gz",
+      "sha256": "a5168350f13cf0012f6b4477ae1a2ee7afd63ae45cd9ae3d83dfd687c5f48453",
+      "bytes": 1177
+    },
+    {
+      "path": "component-02/plan.json",
+      "sha256": "eb0c38be6ae73c3e361fb9f0dd55f27145fb256fa806c9a2d765525cce73ec4a",
+      "bytes": 8760
+    },
+    {
+      "path": "component-02/run/native/result.json",
+      "sha256": "87483ab0483a940bc5e21c3a19976209c8ef632c30c10a693c112d3b8d761921",
+      "bytes": 208
+    },
+    {
+      "path": "component-02/run/native.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "component-02/run/reference/result.json",
+      "sha256": "0b3ee2ac9135c97db56e673a08594ce8853dca29edea7e66544a967e57aeef94",
+      "bytes": 599
+    },
+    {
+      "path": "component-02/run/result.json",
+      "sha256": "458447f15ee34026884c21ccfa2c5b1f846c0cc6f31ad1012bdb5ef9095a26cb",
+      "bytes": 108286
+    },
+    {
+      "path": "component-02/sources/CMakeLists.txt",
+      "sha256": "67df16529e71a799cb09fb971b787907f245ec95f1ba902143da0d9eded6df0c",
+      "bytes": 58414
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_codec.h",
+      "sha256": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
+      "bytes": 3005
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_codec_layout.h",
+      "sha256": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
+      "bytes": 4041
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_config.h",
+      "sha256": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
+      "bytes": 2543
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_encoder.h",
+      "sha256": "9dc0865669c71ce33ba4d932b23804666c5513c6c0018f3a8587bbb0dc71f449",
+      "bytes": 3418
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_encoder_layout.h",
+      "sha256": "34a5076bbb714965c3dd50d5632e93f4da27e5a2350353cadb587bfef7e707a7",
+      "bytes": 3252
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_generation.h",
+      "sha256": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c",
+      "bytes": 3486
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_layout.h",
+      "sha256": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7",
+      "bytes": 4137
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_model.h",
+      "sha256": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
+      "bytes": 3860
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_speaker_features.h",
+      "sha256": "c8d67499a28c4312ddc6d9b5164fc2a97f41f8f7c39e2be5d9335237dae220f1",
+      "bytes": 1301
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_speaker_layout.h",
+      "sha256": "41dc3e6d5de9d80ebc0db692ad64570582e327556b62d30690c68ccf2b5787b8",
+      "bytes": 2234
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_speaker_model.h",
+      "sha256": "0d44c547cba8b1b424d84ed6e804ae2e6eab90c31d0b956ad21f09e5a9bf9db1",
+      "bytes": 1350
+    },
+    {
+      "path": "component-02/sources/include/q4t/audio/tts_synthesis.h",
+      "sha256": "a213244a9ebb4585b51727ed083d65cbd40a603c7ecc4b936b0b331765443c55",
+      "bytes": 2434
+    },
+    {
+      "path": "component-02/sources/include/q4t/io/json.h",
+      "sha256": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
+      "bytes": 3919
+    },
+    {
+      "path": "component-02/sources/include/q4t/quant/lt_cache.h",
+      "sha256": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+      "bytes": 3317
+    },
+    {
+      "path": "component-02/sources/include/q4t/trace/sha256.h",
+      "sha256": "68a3bb18e5023b7d214cbb66bb96b66b5e9942fbadae6fdf8a30ddfde91a3ae8",
+      "bytes": 1470
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_base_config_data.h",
+      "sha256": "60a46749968b7f6de39f6dfc6f248863ce0bd1cd60bd7987ff19b47732e29a08",
+      "bytes": 4751
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_codec.cu",
+      "sha256": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
+      "bytes": 14887
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_codec_conv.cu",
+      "sha256": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
+      "bytes": 8620
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_codec_dense.cu",
+      "sha256": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
+      "bytes": 10362
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_codec_internal.h",
+      "sha256": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
+      "bytes": 1266
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_codec_layout.cpp",
+      "sha256": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
+      "bytes": 7585
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_config.cpp",
+      "sha256": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38",
+      "bytes": 14424
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_config_data.h",
+      "sha256": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+      "bytes": 12906
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_dense.cu",
+      "sha256": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
+      "bytes": 12099
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_encoder.cu",
+      "sha256": "495476b499ba96fe54a5a487b87b39120e3be4620adccfd542162ea05cfd03eb",
+      "bytes": 11513
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_encoder_conv.cu",
+      "sha256": "4d7698b3331de724dd4617935ad6db7e3d7aced56fc1895c9f6f9b58cc1ecc97",
+      "bytes": 4260
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_encoder_dense.cu",
+      "sha256": "c8faa1b19432b797ca1675da82fdc155453746476fc5ff3d35b647db6e9f265b",
+      "bytes": 12312
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_encoder_layout.cpp",
+      "sha256": "214715bfcb6ac5e14817241af6cd07007e3a33710fd6d2e616f2c16bda84898d",
+      "bytes": 11652
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_generation.cpp",
+      "sha256": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb",
+      "bytes": 12583
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_layout.cpp",
+      "sha256": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c",
+      "bytes": 10874
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_math_internal.h",
+      "sha256": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
+      "bytes": 5701
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_model.cu",
+      "sha256": "14098c4cbb81a98ad479b39c3861bbb66bdfc2d86077e90d8f9752db5951ecb4",
+      "bytes": 15243
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_speaker_features.cpp",
+      "sha256": "db8b424d5f90be9011a6a840cbaf57b02881ddc134c2035b0a7c8be3b3503502",
+      "bytes": 5471
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_speaker_layout.cpp",
+      "sha256": "b79e2d7281a7ec30206e4f54a873844184cfaf013b9678b872b8c13216f885e2",
+      "bytes": 5846
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_speaker_model.cu",
+      "sha256": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28",
+      "bytes": 18758
+    },
+    {
+      "path": "component-02/sources/src/audio/tts_synthesis.cpp",
+      "sha256": "43ba44cf8de79517af5bebfd5a30bcd96d70414e232b1a668acc7cadbdf62e98",
+      "bytes": 4530
+    },
+    {
+      "path": "component-02/sources/src/io/json.cpp",
+      "sha256": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+      "bytes": 13289
+    },
+    {
+      "path": "component-02/sources/src/quant/lt_cache.cpp",
+      "sha256": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+      "bytes": 1028
+    },
+    {
+      "path": "component-02/sources/src/trace/sha256.cpp",
+      "sha256": "bd5e9f506e90574710cda42adb82efa1e8a32121b3f28b9dbb517633b6de1da7",
+      "bytes": 8449
+    },
+    {
+      "path": "component-02/sources/tools/native_tts/CMakeLists.txt",
+      "sha256": "031e59c99536735fb593dced2f1f4b22d87a2a03f14a604fa3ecab288e8a09d6",
+      "bytes": 3875
+    },
+    {
+      "path": "driver-cpu-01/plan.json",
+      "sha256": "c49ce83d2508c7899afc447e544e368513bbadb71864da47eb36ceed1400260b",
+      "bytes": 199
+    },
+    {
+      "path": "driver-cpu-01/result.json",
+      "sha256": "339a02102c6ab660bfaf2241a0ddc9762add49c405e8cb925200829da8063a6d",
+      "bytes": 101
+    },
+    {
+      "path": "driver-cpu-01/test.log",
+      "sha256": "e93abf60eaa3c5efc4528ee6d6ae400577a525064ff9b2406b756e8370634116",
+      "bytes": 1464
+    },
+    {
+      "path": "reconciliation.json",
+      "sha256": "640bb87aa5d603c61ea722d4b54eb248fc87e68705b28adf74382e5fd8e2efbe",
+      "bytes": 944
+    },
+    {
+      "path": "rvq-diagnostic-01/build.log",
+      "sha256": "07a8e949ca5248276d2c9febbe4cf9a90216e9a89bb6f0d1f37755685fd642b8",
+      "bytes": 2427
+    },
+    {
+      "path": "rvq-diagnostic-01/compile-command.json",
+      "sha256": "a24e7e11df5fb72d210b2f2ef75cabcaf02ca8e55835938c6207d73f438d5ee8",
+      "bytes": 1165
+    },
+    {
+      "path": "rvq-diagnostic-01/configure.log",
+      "sha256": "848b3711e5356135ee1f221f03d399e0ecb234c0877252f5394d4beaf1cf46ef",
+      "bytes": 172
+    },
+    {
+      "path": "rvq-diagnostic-01/driver.py",
+      "sha256": "f8178522895cfca50d21549985967c9cd7b21ff00fa18025ea5fa85aba6ce433",
+      "bytes": 4347
+    },
+    {
+      "path": "rvq-diagnostic-01/lease/events.jsonl.gz",
+      "sha256": "014a75d6d6e0a5a9cc72be0a6bf36e90baba1ba15daac8d9edc2967599e50f31",
+      "bytes": 506
+    },
+    {
+      "path": "rvq-diagnostic-01/lease/exit.json",
+      "sha256": "9e97386419b069f28d023e201f636b172699cf04efe5f351d0e59cad29b304ad",
+      "bytes": 635
+    },
+    {
+      "path": "rvq-diagnostic-01/lease/nvml-queries.jsonl.gz",
+      "sha256": "43e94ef91fc50d2671c5b05479f4bfeddeab5d3ffa108a3a522a10f5b9583dee",
+      "bytes": 3051
+    },
+    {
+      "path": "rvq-diagnostic-01/plan.json",
+      "sha256": "80ec5fe0e0ddee13429dfcfe1afc9cc56db345664712e5f9ab7b75bbf665e3cc",
+      "bytes": 9760
+    },
+    {
+      "path": "rvq-diagnostic-01/reference.py",
+      "sha256": "b2179efd614e44a6af6b7fba00b1b72e0ab79c35f0e73f7976e41171b6a280d6",
+      "bytes": 7874
+    },
+    {
+      "path": "rvq-diagnostic-01/replay-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "rvq-diagnostic-01/replay.cpp",
+      "sha256": "b2517fe35bd9c0c93e0bfb151d993e3d137ddd428da50b29b61e71fdf76a8c51",
+      "bytes": 10734
+    },
+    {
+      "path": "rvq-diagnostic-01/run/native/result.json",
+      "sha256": "b09cf5ae8a735fea784693014231a438432b39b60afb5103b87287de6f2056fe",
+      "bytes": 211
+    },
+    {
+      "path": "rvq-diagnostic-01/run/native.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "rvq-diagnostic-01/run/reference/result.json",
+      "sha256": "d77a420f67d7a69927a6194a209ab3b1de48eff822744a5cb29e82da6880e0dc",
+      "bytes": 334
+    },
+    {
+      "path": "rvq-diagnostic-01/run/reference.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "rvq-diagnostic-01/run/result.json",
+      "sha256": "ba7b840306c87c5d13498005f0726a57e483924f2b2d9ed7d49868e2bca66ab3",
+      "bytes": 34809
+    }
+  ]
+}

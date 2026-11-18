@@ -1,0 +1,36 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/native_tts/encoder_acceptance.py",
+    "--binary",
+    ".q4t-work/serve-tts-icl-20261119/native-build-01/q4t_tts_encoder_replay",
+    "--reference-python",
+    ".q4t-work/refenv/bin/python",
+    "--reference-deps",
+    ".q4t-work/serve-audio-native-20261117/reference-deps",
+    "--assets",
+    ".q4t-work/serve-native-tts-20261118/assets-1b7-01/speech_tokenizer",
+    "--official-source",
+    ".q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/tokenizer_12hz",
+    "--plan",
+    ".q4t-work/serve-tts-icl-20261119/component-01/plan.json",
+    "--output",
+    ".q4t-work/serve-tts-icl-20261119/component-01/run"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "explicit_inherited_fd_count": 0,
+  "finished": {
+    "utc": "2026-11-18T20:22:56.440489+00:00",
+    "monotonic": 3223458.957374471,
+    "pid": 503384
+  }
+}

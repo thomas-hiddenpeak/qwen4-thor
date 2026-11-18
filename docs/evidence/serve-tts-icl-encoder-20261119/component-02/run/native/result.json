@@ -1,0 +1,1 @@
+{"status":"PASS_ENCODER_NATIVE_EXECUTION_ONLY","gpu_model_loads":1,"cases":3,"encoder_forwards":3,"output_frames":177,"advances":729,"boundary_checks":15,"owned_allocations_released":true,"seconds":0.959318}

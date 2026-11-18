@@ -1,0 +1,26 @@
+[  9%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_config.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_layout.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_layout.cpp.o
+[ 18%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_layout.cpp.o
+[ 22%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_conv.cu.o
+[ 27%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu.o
+[ 31%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder.cu.o
+[ 36%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_generation.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu(63): error: identifier "CUDART_INF_F" is undefined
+    float maximum = -CUDART_INF_F;
+                     ^
+
+/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu(129): error: identifier "CUDART_INF_F" is undefined
+      output[blockIdx.x] = isfinite(sum) ? sum : CUDART_INF_F;
+                                                 ^
+
+/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu(139): error: identifier "CUDART_INF_F" is undefined
+    float minimum = CUDART_INF_F;
+                    ^
+
+3 errors detected in the compilation of "/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu".
+gmake[3]: *** [CMakeFiles/q4t_tts_replay_core.dir/build.make:151: CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu.o] Error 2
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:105: CMakeFiles/q4t_tts_replay_core.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:304: CMakeFiles/q4t_tts_encoder_replay.dir/rule] Error 2
+gmake: *** [Makefile:209: q4t_tts_encoder_replay] Error 2
