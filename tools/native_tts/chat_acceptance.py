@@ -163,8 +163,39 @@ def prepare(args):
                    'one graceful owned model restart with the same private object directory'],
         acceptance=dict(exact_normalized_asr=True,default_unchanged=True,
             performance_claim=False,automatic_model_restart=False,managed_ingress_qualified=False))
+    if args.reuse_json:
+        previous = args.reuse_json.absolute()
+        require(previous.is_relative_to(ROOT/'.q4t-work'), 'private prior attempt required')
+        accepted = read(previous/'plan.json')
+        require(accepted['binaries'] == plan['binaries'] and
+                accepted['defaults'] == plan['defaults'] and
+                accepted['requests']['json'] == plan['requests']['json'], 'reuse identity differs')
+        for name, digest in accepted['sources'].items():
+            if name.startswith(('src/', 'include/', 'cmake/')) or name == 'CMakeLists.txt':
+                require(plan['sources'][name] == digest, 'reused production changed: '+name)
+        require(read(previous/'json.request.json') == plan['requests']['json'],
+                'reused actual request differs')
+        require(read(previous/'json.http.json')['status'] == 200 and
+                not read(previous/'cleanup.json')['remaining'] and
+                read(previous/'cleanup.json')['model_exit'] == 0, 'prior JSON or cleanup incomplete')
+        require(read(previous/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+                'prior lease not an ordinary driver failure')
+        members = ['json.wire', 'json.http.json', 'json.request.json']
+        members += [str(p.relative_to(previous)) for p in sorted((previous/'objects').rglob('*'))
+                    if p.is_file()]
+        require(len(members) < 1000 and sum((previous/p).stat().st_size for p in members)
+                < 8<<20, 'reuse snapshot bound')
+        for name in members:
+            path = previous/name
+            require(not path.is_symlink(), 'reuse symlink')
+            target = out/name; target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            shutil.copy2(path, target)
+        plan['reuse_json'] = dict(directory=str(previous),
+            files={name:sha(previous/name) for name in members},
+            note='Reuse completed JSON transport and exact durable history snapshot; content still checked by ASR.')
+        plan['limits'] = dict(LIMITS, chats=11)
     save(out/'plan.json',plan)
-    print(json.dumps(dict(plan=str(out/'plan.json'),limits=LIMITS)))
+    print(json.dumps(dict(plan=str(out/'plan.json'),limits=plan['limits'])))
 
 
 class Stage(speech.Stage):
@@ -172,13 +203,14 @@ class Stage(speech.Stage):
         require(not os.environ.get('PYTHONOPTIMIZE') and not any(
             key.startswith('Q4T_ABLATE_') for key in os.environ),'unqualified environment')
         self.plan,self.out=plan,Path(plan['output'])
-        self.started=time.monotonic();self.limits=LIMITS
+        self.started=time.monotonic();self.limits=plan['limits']
         self.counts=dict(starts=0,chats=0,controls=0,gpu_asr_loads=0)
         self.model=self.model_identity=self.fault_thread=None
         self.history={};self.rows=[];self.expected=[]
         self.lease=int(os.environ['Q4T_MANAGED_LEASE_FD'])
         lifecycle.verify_lease(self.lease,lifecycle.guard.common_lock())
-        require(plan['schema']=='q4t-chat-audio-http-v1' and plan['limits']==LIMITS and
+        expected_limits = dict(LIMITS, chats=11) if 'reuse_json' in plan else LIMITS
+        require(plan['schema']=='q4t-chat-audio-http-v1' and plan['limits']==expected_limits and
                 plan['requests']==requests(),'frozen plan drift')
         for p,h in plan['sources'].items(): require(sha(ROOT/p)==h,'source drift: '+p)
         for row in plan['binaries'].values(): require(sha(row['path'])==row['sha256'],'binary drift')
@@ -190,11 +222,16 @@ class Stage(speech.Stage):
         for name,row in plan['tts_assets'].items():
             path=Path(plan['tts_directory'])/name
             require(path.stat().st_size==row['bytes'] and sha(path)==row['sha256'],'TTS drift')
+        if 'reuse_json' in plan:
+            for name, digest in plan['reuse_json']['files'].items():
+                require(sha(self.out/name) == digest and
+                        sha(Path(plan['reuse_json']['directory'])/name) == digest,
+                        'reused snapshot drift: '+name)
         self.artifacts()
 
     def budget(self,kind):
         require(time.monotonic()-self.started<LIMITS['seconds']-40,'stage deadline')
-        require(self.counts[kind]<LIMITS[kind],'attempt budget: '+kind)
+        require(self.counts[kind]<self.limits[kind],'attempt budget: '+kind)
         self.counts[kind]+=1;save(self.out/'counts.json',self.counts)
 
     def artifacts(self):
@@ -330,8 +367,11 @@ class Stage(speech.Stage):
         return choices[0]['message']['audio']['id']
 
     def business(self):
-        status,raw=self.post('json',self.plan['requests']['json'])
-        require(status==200,'JSON audio failed')
+        if 'reuse_json' in self.plan:
+            raw = (self.out/'json.wire').read_bytes()
+        else:
+            status,raw=self.post('json',self.plan['requests']['json'])
+            require(status==200,'JSON audio failed')
         audio_id=self.capture('json',raw,'wav',[EN],audio_only=True)
         stored=json.loads(raw)
         raw=self.sdk('python',self.plan['requests']['python'],True)
@@ -486,6 +526,7 @@ def main():
     for name in ('binary','decoder','output'):
         prepare_parser.add_argument('--'+name,type=Path,required=True)
     prepare_parser.add_argument('--port',type=int,default=18484)
+    prepare_parser.add_argument('--reuse-json',type=Path)
     sub.add_parser('run').add_argument('--plan',type=Path,required=True)
     sub.add_parser('features').add_argument('--output',type=Path,required=True)
     args=parser.parse_args()

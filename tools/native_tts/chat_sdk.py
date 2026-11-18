@@ -19,7 +19,11 @@ def main():
         client = openai.OpenAI(base_url=value['base_url'], api_key='local',
             default_headers=value['headers'], max_retries=0, timeout=180,
             http_client=http)
-        answer = client.chat.completions.create(**value['request'])
+        request = dict(value['request'])
+        extra = {}
+        if 'enable_thinking' in request:
+            extra['enable_thinking'] = request.pop('enable_thinking')
+        answer = client.chat.completions.create(**request, extra_body=extra)
         if value['request'].get('stream'):
             events = []
             with answer:

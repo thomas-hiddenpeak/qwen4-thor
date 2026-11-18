@@ -3,12 +3,14 @@ import copy
 import json
 import unittest
 import tempfile
+import subprocess
+import os
 import threading
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
-from tools.native_tts.chat_acceptance import Stage, HEADERS, check_usage, parse_stream
+from tools.native_tts.chat_acceptance import Stage, HEADERS, ROOT, speech, requests, check_usage, parse_stream
 
 
 def usage():
@@ -115,6 +117,43 @@ class ObservationRouting(unittest.TestCase):
             receipt = json.loads((stage.out/'readiness-failure.json').read_text())
             self.assertEqual(receipt['status'], 403)
             self.assertIn('client_route_forbidden', receipt['body'])
+
+
+class SdkTransport(unittest.TestCase):
+    def test_python_sdk_keeps_native_extension_and_actual_stream_fields(self):
+        received = []
+        payload = wire([dict(row, id='chatcmpl_fixture', created=1, model='fixture')
+                        for row in events()])
+        class Handler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                received.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
+                self.send_response(200);self.send_header('Content-Type','text/event-stream')
+                self.send_header('Content-Length',str(len(payload)));self.end_headers()
+                self.wfile.write(payload)
+            def log_message(self, *_args): pass
+        server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
+        thread=threading.Thread(target=server.serve_forever,kwargs={'poll_interval':.01})
+        thread.start()
+        try:
+            with tempfile.TemporaryDirectory(dir='.q4t-work') as directory:
+                target=Path(directory)/'wire'
+                original=requests()['python']
+                value=dict(request=original,headers=HEADERS,
+                    base_url=f'http://127.0.0.1:{server.server_port}/v1',output=str(target))
+                result=subprocess.run([speech.python_identity()['python'],'-B',
+                    str(ROOT/'tools/native_tts/chat_sdk.py')],input=json.dumps(value),
+                    text=True,capture_output=True,timeout=15,
+                    env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+                decoded=json.loads(result.stdout)
+                self.assertEqual(received,[original])
+                self.assertEqual(len(decoded['exchanges']),1)
+                self.assertEqual(target.read_bytes(),payload)
+                self.assertEqual([e['choices'] for e in decoded['result']['events']],
+                                 [e['choices'] for e in events()])
+        finally:
+            server.shutdown();server.server_close();thread.join(timeout=2)
+            self.assertFalse(thread.is_alive())
 
 
 if __name__=='__main__': unittest.main()
