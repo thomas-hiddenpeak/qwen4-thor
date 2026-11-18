@@ -68,3 +68,7 @@ metadata。样本/consent不超过60秒/10MiB，需同一声音；登记不能
 [实际原始样本到完整Base语音已通过](evidence/serve-custom-voice-base-utterance-20261118/README.md)：
 两句自然EOS和独立ASR内容通过；接着持久API与新文本，听感/相似度、
 风格、参考音频ICL及提示词音色仍分别保留，不能由本阶段替代。
+
+[输入与持久登记26项CPU已通过](evidence/serve-custom-voice-registry-cpu-20261118/README.md)。
+尚未接入实际HTTP。保留原始24kHz条件输入，真实授权与同人验证后
+才登记；新增对象类型需要兼容读取回退包，有状态回退是发行必要项。

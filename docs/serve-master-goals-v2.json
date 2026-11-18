@@ -8601,7 +8601,15 @@
         "api_qualified": false
       },
       "reference_audio_icl_pending": true,
-      "listening_and_speaker_similarity_pending": true
+      "listening_and_speaker_similarity_pending": true,
+      "registry": {
+        "state": "INPUT_AND_DURABLE_REGISTRY_CPU_QUALIFIED_RUNTIME_PENDING",
+        "evidence": "evidence/serve-custom-voice-registry-cpu-20261118/README.md",
+        "cpu_cases": 26,
+        "gpu_loads": 0,
+        "runtime_api_accepted": false,
+        "legacy_state_reader_bridge_pending": true
+      }
     }
   }
 }

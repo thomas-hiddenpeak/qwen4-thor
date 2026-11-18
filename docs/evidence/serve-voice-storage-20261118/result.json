@@ -1,0 +1,14 @@
+{
+  "status": "DUPLICATE_HISTORICAL_RECORDS_DEDUPLICATED_PATHS_RETAINED",
+  "groups": 3,
+  "paths": 6,
+  "seconds": 16.910629583057016,
+  "free_before": 450277376,
+  "free_after": 2096025600,
+  "net_recovered": 1645748224,
+  "independent_backups": true,
+  "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/retained-logs-dedup-01/restore.py",
+  "gpu_actions": 0,
+  "model_loads": 0,
+  "archive_sha256": "c25dd2345f81b1ab17e264ab0ff648d0f1dbe0d929c6ff007570295e3b9f0310"
+}

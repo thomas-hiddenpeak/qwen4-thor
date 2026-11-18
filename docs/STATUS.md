@@ -7,6 +7,24 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Voice/Consent登记26项CPU通过](evidence/serve-custom-voice-registry-cpu-20261118/README.md)：
+0.765秒，21新增+5旧合同，必要构建零警告；0GPU、默认保持。
+精确条件/私有录音、客户隔离、CAS、撤销、配额、未知提交及重启
+通过。下一步真实授权/说话人验证、24kHz原始音频接入和HTTP新文本；
+新增对象类型的旧包读取兼容须在发布前闭合，总目标继续。
+
+Voice/Consent输入与持久登记已接入开发：10MiB音频边界、BCP47、
+真实样本/条件持久化、客户隔离、consent版本CAS和撤销后的新请求
+拒绝。冻结20新增+5受影响CPU/180秒、0GPU，尚未执行；实际授权
+识别、HTTP和新文本合成继续，不把CPU夹具称为真实登记验收。
+Base提交047fc13b第三次推送成功，保留前两次408，不改变默认。
+
+[后续构建空间已恢复](evidence/serve-voice-storage-20261118/README.md)：
+三组历史相同run/archive记录保留独立压缩备份和恢复脚本后共享
+存储，六个原路径/SHA/权限/mtime保持，净回收1.646GB；0GPU。
+Base实际合成提交047fc13b已保留，前两次HTTP408后第三次推送
+成功；原失败记录保留。继续持久音色登记与隔离。
+
 [Base原始样本→完整语音通过](evidence/serve-custom-voice-base-utterance-20261118/README.md)：
 生产加载/upload后重算声纹逐值一致；两句各3.2秒自然EOS，独立
 ASR完整还原。1声纹/1talker/1codec/1ASR、21.172秒，22次NVML

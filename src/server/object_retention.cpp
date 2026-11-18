@@ -195,6 +195,15 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // mandatory and does not extend when another message references the ID.
     inspector.value.uncertain =
         data.GetInt("expires_at") <= 0 || data.GetString("transcript").empty();
+  } else if (kind == "voice_consent" &&
+             data.GetString("format") == "q4t.voice_consent.v1") {
+    inspector.Blob(data);
+  } else if (kind == "voice" &&
+             data.GetString("format") == "q4t.voice.v1") {
+    inspector.Blob(data);
+    inspector.Reference(data.Find("consent"));
+    if (!data.Find("consent") || data.Find("consent")->IsNull())
+      inspector.value.uncertain = true;
   } else if (kind == "chat") {
     inspector.value.uncertain = !data.GetArray("messages");
     inspector.Items(data.Find("messages"));

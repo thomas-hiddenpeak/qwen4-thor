@@ -348,6 +348,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/aligner_service.cpp
   src/server/asr_request.cpp
   src/server/speech_request.cpp
+  src/server/voice_request.cpp
+  src/server/voice_language.cpp
+  src/server/voice_registry.cpp
   src/server/chat_audio_output.cpp
   src/server/chat_audio_history.cpp
   src/server/chat_audio_synthesis.cpp

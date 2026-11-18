@@ -5,6 +5,11 @@ get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE
 set(protocol_inputs
   include/q4t/server/speech_request.h
   src/server/speech_request.cpp
+  include/q4t/server/voice_request.h
+  include/q4t/server/voice_registry.h
+  src/server/voice_request.cpp
+  src/server/voice_language.cpp
+  src/server/voice_registry.cpp
   src/server/chat_audio_output.cpp
   include/q4t/server/chat_audio_output.h
   include/q4t/server/chat_plan_error.h

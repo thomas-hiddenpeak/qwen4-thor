@@ -752,6 +752,7 @@ std::string NewObjectId(ObjectKind kind) {
   if (kind == ObjectKind::kResponse) prefix = "resp";
   if (kind == ObjectKind::kConversation) prefix = "conv";
   if (kind == ObjectKind::kChat) prefix = "chatcmpl";
+  if (kind == ObjectKind::kVoiceConsent) prefix = "cons";
   if (kind == ObjectKind::kVectorStore) prefix = "vs";
   if (kind == ObjectKind::kVectorStoreBatch) prefix = "vsfb";
   unsigned char bytes[16];
