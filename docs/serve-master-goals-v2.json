@@ -8722,6 +8722,12 @@
           "seconds": 311.9027074780315,
           "business_format": "v11",
           "default_replaced": false
+        },
+        "managed_import_fix": {
+          "evidence": "evidence/serve-voice-managed-import-cpu-20261119/README.md",
+          "cpu_distinct_cases": 2,
+          "real_recovery_pending": true,
+          "original_failed_starts": 0
         }
       }
     },

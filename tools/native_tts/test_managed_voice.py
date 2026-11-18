@@ -3,6 +3,9 @@ import copy
 import hashlib
 import json
 import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -173,6 +176,55 @@ class ManagedVoice(unittest.TestCase):
         fresh=self.stage('tls');actor=voice.Actor(fresh)
         with self.assertRaises(RuntimeError):actor.observe('tls-before')
         self.assertEqual(fresh.request.call_count,0)
+
+
+class SealedVoiceImports(unittest.TestCase):
+    def test_acceptance_helper_keeps_all_production_imports_in_sealed_source(self):
+        from tools.serve_recovery import bundle
+        root = Path(__file__).resolve().parents[2]
+        output = Path(os.environ['Q4T_TEST_OUTPUT_DIR'])
+        output.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=output) as temporary:
+            source = Path(temporary)/'source'
+            for name in bundle.SOURCES:
+                target = source/name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(root/name, target)
+            # Reproduce the real package: profile_voice is not a runtime file.
+            self.assertFalse((source/'tools/serve_recovery/profile_voice.py').exists())
+            code = """
+import pathlib,runpy,sys
+root,source=map(pathlib.Path,sys.argv[1:])
+sys.path.insert(0,str(root))
+acceptance=runpy.run_path(str(root/'tools/serve_recovery/acceptance.py'))
+acceptance['pin_packaged_modules'](source)
+try:
+    from tools.serve_recovery import profile_voice
+except ImportError:
+    pass
+else:
+    raise AssertionError('unexpected helper inside sealed namespace')
+from tools.native_tts import managed_voice
+assert pathlib.Path(managed_voice.profile_voice.__file__)==root/'tools/serve_recovery/profile_voice.py'
+body,mime=managed_voice.profile_voice.multipart({'name':'CPU'},'recording',b'CPU')
+assert b'CPU' in body and 'multipart/form-data' in mime
+prefixes=('tools.serve_recovery','tools.serve_service','tools.serve_gateway','tools.serve_ops','tools.serve_host')
+observed=[]
+for name,module in sys.modules.items():
+    if any(name==p or name.startswith(p+'.') for p in prefixes):
+        path=getattr(module,'__file__',None)
+        if path:
+            assert pathlib.Path(path).resolve().is_relative_to(source), (name,path)
+            observed.append(name)
+assert 'tools.serve_recovery.profile_evidence' in observed
+assert 'tools.serve_service.package' in observed
+print('PASS_SEALED_PRODUCTION_AND_EXPLICIT_ACCEPTANCE_HELPER')
+"""
+            child = subprocess.run([sys.executable,'-I','-B','-c',code,str(root),str(source)],
+                text=True,capture_output=True,timeout=30,
+                env=dict(os.environ,CUDA_VISIBLE_DEVICES=''))
+            self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+            self.assertIn('PASS_SEALED_PRODUCTION_AND_EXPLICIT_ACCEPTANCE_HELPER',child.stdout)
 
 
 if __name__=='__main__':unittest.main()

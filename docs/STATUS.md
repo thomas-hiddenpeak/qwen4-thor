@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[恢复驱动隔离导入修复](evidence/serve-voice-managed-import-cpu-20261119/README.md)：
+首组在模型前import失败，0启动/0POST，原失败/清理socket错误保留，
+进程/端口/锁后核实释放。2项不同CPU/3次执行通过，生产来源隔离保持；
+同C05候选/回退/TLS包不变，继续3组4启动/63POST/1探测/1500秒。
+
 [C05主/轻资格通过](evidence/serve-voice-primary-light-20261119/README.md)：
 2启动/50业务POST/311.903秒；两档真实音色闭环、新采样完整音频、
 旧输入/工具/结构化/媒体能力及家族重载通过，严格租约/来源/清理通过。

@@ -6,14 +6,27 @@ checked after the final phase. This test actor is not a runtime dependency.
 """
 import base64
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
 from tools.native_tts import managed_service
 from tools.native_tts.http_acceptance import sse
 from tools.serve_recovery import profile_contract, profile_evidence as evidence
-from tools.serve_recovery import profile_voice
 from tools.serve_service.package import read, require, same_json, save, sha
+
+
+def voice_helper():
+    # This acceptance-only helper is intentionally absent from the sealed
+    # production namespace. Its own production imports must remain sealed.
+    path = Path(__file__).resolve().parents[2]/'tools/serve_recovery/profile_voice.py'
+    spec = importlib.util.spec_from_file_location('q4t_voice_acceptance_helper', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+profile_voice = voice_helper()
 
 
 def labels(plan):
