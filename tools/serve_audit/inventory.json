@@ -3016,7 +3016,7 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "7aaf53fc6fc134e66a949993c2e2a20a84bb1988de53cf2e8ebad5be2960685a",
+    "tools/serve_recovery/profile_acceptance.py": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
     "tools/serve_recovery/profile_bundle.py": "9f3e4ecf2ea049c8e149ce1b0784403fdc3698142ea963a9edb0bab41ef7f3ec",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_contract.py": "dfa08272d9d155fde13d41f57822e0e9b42d2960dceae30acd0cf27a84afef9a",
@@ -7536,6 +7536,7 @@
       "tools/serve_service/test_tts_package.py": "235b03286b6739d00e7adcad16cd10a8058e56d3cff04a3fd42908940b030652",
       "tools/serve_recovery/test_tts_profiles.py": "bfb53e24d863bf71141b1495d82b1d0ddc1a51363403d0eced63382437c31569"
     },
-    "evidence": "docs/evidence/serve-tts-managed-cpu-20261118/README.md"
+    "evidence": "docs/evidence/serve-tts-managed-cpu-20261118/README.md",
+    "driver_budget_repair": "1 targeted CPU passed; retained text512 and TPM, TTS primary_tokens+16*frames+EOS; no GPU in supersededplan"
   }
 }

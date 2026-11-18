@@ -221,6 +221,16 @@ class TtsProfiles(unittest.TestCase):
                          driver.limits_for(profile)['chats']+4)
         self.assertEqual(evidence.format_for(profile, registry['identity']), evidence.TTS_FORMAT)
 
+    def test_driver_audio_budget_covers_full_frames_without_changing_text_fixture(self):
+        stage = object.__new__(driver.Stage)
+        stage.plan = dict(base=dict(settings={}), profiles=self.old['profiles'])
+        self.assertEqual(stage.client_policy()['clients'][0]['max_output_tokens'], 512)
+        stage.plan['base']['settings']['native_tts'] = self.selected()
+        policy = stage.client_policy()['clients'][0]
+        self.assertEqual(policy['max_output_tokens'],
+            self.old['profiles']['primary']['max_tokens']+160*16+1)
+        self.assertEqual(policy['tokens_per_minute'], 32768)
+
     def test_deployment_preserves_talker_codec_and_allows_only_asset_relocation(self):
         target = EmbeddingTargetTests().target;selected = self.selected()
         target({}, dict(native_tts=selected))

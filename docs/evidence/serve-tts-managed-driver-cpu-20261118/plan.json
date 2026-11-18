@@ -1,0 +1,11 @@
+{
+  "cases": [
+    "tools.serve_recovery.test_tts_profiles.TtsProfiles.test_driver_audio_budget_covers_full_frames_without_changing_text_fixture"
+  ],
+  "seconds": 60,
+  "gpu_loads": 0,
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "f1fd3bd018c2116a3cc3a323df20837496bf11b48a4a54f66dec788037ec1c09",
+    "tools/serve_recovery/test_tts_profiles.py": "3ab13ce1ab095b6bc60d6e8e4e7cc236c58fcf3aa0ff961565e356c4a38947d0"
+  }
+}

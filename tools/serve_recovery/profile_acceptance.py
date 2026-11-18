@@ -285,9 +285,13 @@ def prepare(args):
         if (engine/name).is_file():
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)
-    plan['planned'] = dict(starts=2, requests=limits['chats'], chats=6 + 2 * chat_audio,
+    plan['planned'] = dict(starts=2, requests=limits['chats'],
+                           chats=6 + 2 * chat_audio + (2 if tts is not None else 0),
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
+    if tts is not None:
+        plan['planned']['native_speech_requests'] = 2
+        plan['planned']['chat_audio_output_requests'] = 2
     if asr is not None:
         plan['planned']['native_transcriptions'] = 2
     if chat_audio:
@@ -319,6 +323,17 @@ class Stage(encrypted.Stage):
                                  plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'))
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
+
+    def client_policy(self):
+        value = super().client_policy()
+        tts = self.plan['base']['settings'].get('native_tts')
+        if tts is not None:
+            frames = tts['limits']['max_frames']
+            primary = self.plan['profiles']['primary']['max_tokens']
+            # Audio codes/EOS share the Chat choice budget; ordinary text's
+            # old 512-token fixture must not truncate a complete utterance.
+            value['clients'][0]['max_output_tokens'] = max(512, primary + frames*16+1)
+        return value
 
     def start(self):
         name = profile_contract.NAMES[self.counts['starts']]

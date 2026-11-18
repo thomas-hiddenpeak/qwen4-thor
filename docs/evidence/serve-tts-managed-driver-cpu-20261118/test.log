@@ -1,0 +1,6 @@
+test_driver_audio_budget_covers_full_frames_without_changing_text_fixture (tools.serve_recovery.test_tts_profiles.TtsProfiles.test_driver_audio_budget_covers_full_frames_without_changing_text_fixture) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.221s
+
+OK
