@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/chat_audio_inputs.h"
+#include "q4t/server/chat_audio_history.h"
 #include "q4t/server/cache_health.h"
 
 #include "q4t/server/chat_response_parser.h"
@@ -38,6 +39,9 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .preparing_audio_inputs = true,
           .native_asr_enabled = !asr_model_dir_.empty(),
           .asr_limits = asr_limits_,
+          .native_tts_enabled = !tts_model_dir_.empty(),
+          .native_tts_output_tokens =
+              tts_limits_.max_frames * audio::TtsConfig::kCodeGroups + 1,
           .header_tools = {},
           .tool_call_formats = {},
           .capacities = seq_capacities_,
@@ -253,9 +257,21 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
                       prepared.ClientCode(), prepared.value.GetString("param"));
     return;
   }
-  const auto& req = plan.Request(original_request);
   std::string prompt;
   std::vector<VisionItem> items;
+  if (HasChatAudioHistory(plan.Request(original_request))) {
+    io::Json rendered;
+    prepared = ResolveChatAudioHistory(
+        objects_.get(), access, plan.Request(original_request), &rendered);
+    if (!prepared.ok()) {
+      detail::SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                        prepared.ClientCode(),
+                        prepared.value.GetString("param"));
+      return;
+    }
+    plan.normalized_request = std::move(rendered);
+  }
+  const auto& req = plan.Request(original_request);
   status = PrepareChatPrompt(
       req, plan.constraints, &prompt, &items, &error.param, &error.code,
       nullptr, false, plan.async_tool_call_ids, plan.responses_tool_media,

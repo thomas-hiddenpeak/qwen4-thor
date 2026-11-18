@@ -322,7 +322,8 @@ std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& finish_reason, int index,
                           int64_t created = 0, bool include_usage = false,
                           std::string_view logprobs_json = "null",
-                          bool obfuscate = false);
+                          bool obfuscate = false,
+                          bool omit_finish_reason = false);
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index,

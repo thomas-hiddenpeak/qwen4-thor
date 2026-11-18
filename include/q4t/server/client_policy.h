@@ -292,6 +292,8 @@ class ClientRateLease {
     if (count >= admitted_prompt_ && count <= prompt_) admitted_prompt_ = count;
   }
   void Completion(uint64_t count) noexcept { completion_ = count; }
+  uint64_t AdmittedPromptTokens() const noexcept { return admitted_prompt_; }
+  uint64_t CompletionTokens() const noexcept { return completion_; }
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:

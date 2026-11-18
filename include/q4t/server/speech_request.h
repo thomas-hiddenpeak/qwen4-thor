@@ -6,7 +6,8 @@
 #include <string>
 #include <string_view>
 
-#include "q4t/server/chat_plan.h"
+#include "q4t/status.h"
+#include "q4t/server/chat_plan_error.h"
 
 namespace q4t::server {
 inline constexpr size_t kSpeechBodyBytes = 128 * 1024;

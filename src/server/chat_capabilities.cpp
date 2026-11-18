@@ -753,6 +753,14 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("wav_decode_waits_for_natural_code_eos":true,)"
          R"("http10_buffers_bounded_complete_body":true,)"
          R"("core_health_dependency":false,"registered_custom_voices":false},)"
+         R"("chat_audio_output":{"enabled":)" +
+         (native_tts ? "true" : "false") +
+         R"(,"formats":["mp3","opus","aac","flac","wav","pcm16"],)"
+         R"("history_ttl_seconds":3600,"private_history":true,)"
+         R"("history_requires_object_store":true,)"
+         R"("completion_budget":"primary_tokens_plus_audio_codes_and_eos",)"
+         R"("usage":"actual_primary_and_synthesis",)"
+         R"("stream_expiry_omits_finish_reason":true},)"
          R"("runtime":{"media_enabled":)" +
          (allow_media ? "true" : "false") + R"(,"mtp_enabled":)" +
          (mtp_enabled ? "true" : "false") + R"(},"media":)" +

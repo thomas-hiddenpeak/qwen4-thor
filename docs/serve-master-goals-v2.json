@@ -7862,7 +7862,7 @@
     }
   ],
   "next_task": "Implement Chat audio output/history with real usage and private audio IDs; continue 4x content, all voices/custom voices, managed delivery, Responses/Batch/Realtime and every master task.",
-  "next": "PR47 is merged into main at 0f809a0c. rev306 remains STOPPED; TTS is a work-branch candidate with numeric, utterance and compressed-content evidence, not an API delivery. Continue all remaining tasks.",
+  "next": "完成Chat音频输出/历史固定真实HTTP短验；继续注册voice/4倍内容、受管恢复/发行与所有未完成master任务，不以阶段通过结束。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -8005,6 +8005,19 @@
       "total_posts_including_failures": 16,
       "total_seconds": 265.7168065723963,
       "nvml_root_cause_resolved": false
+    },
+    "chat_audio_output": {
+      "state": "targeted_cpu_passed_actual_http_pending",
+      "evidence": "evidence/serve-chat-audio-output-cpu-20261118/README.md",
+      "cpp_cases": 19,
+      "driver_negative_controls": 4,
+      "gpu_short_scope": {
+        "core_starts": 2,
+        "post_requests": 12,
+        "asr_loads": 2,
+        "seconds": 1200
+      },
+      "default_changed": false
     }
   }
 }

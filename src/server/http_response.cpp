@@ -848,12 +848,13 @@ std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
                           int64_t created, bool include_usage,
-                          std::string_view logprobs_json, bool obfuscate) {
+                          std::string_view logprobs_json, bool obfuscate,
+                          bool omit_finish_reason) {
   std::string choice =
       "{\"index\":" + std::to_string(index) + ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
     choice += ",\"finish_reason\":\"" + finish_reason + "\"";
-  } else {
+  } else if (!omit_finish_reason) {
     choice += ",\"finish_reason\":null";
   }
   choice += ",\"logprobs\":" + std::string(logprobs_json) + '}';

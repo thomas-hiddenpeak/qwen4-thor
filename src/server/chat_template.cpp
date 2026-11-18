@@ -8,6 +8,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/mcp_content.h"
+#include "q4t/server/chat_audio_output.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/request_json.h"
@@ -572,10 +573,13 @@ Status ValidateChatMessageProfile(const io::Json& messages,
     const auto* content = message.Find("content");
     const auto* calls = message.GetArray("tool_calls");
     const auto* legacy = message.Find("function_call");
+    std::string audio_id;
+    const auto audio_status = ChatAudioHistoryId(message, &audio_id, nullptr);
+    if (!audio_status) return invalid(path + ".audio", audio_status.message());
     const bool assistant_payload =
         role == "assistant" &&
         ((calls && !calls->array.empty()) || (legacy && !legacy->IsNull()) ||
-         (refusal && refusal->IsString()));
+         (refusal && refusal->IsString()) || !audio_id.empty());
     if ((!content || content->IsNull()) && !assistant_payload)
       return invalid(path + ".content", "message content is required");
     if (content && !content->IsNull() && !content->IsString() &&
@@ -655,6 +659,11 @@ Status RenderChatPrompt(const io::Json& request,
   }
   auto profile = ValidateChatMessageProfile(*messages, nullptr, allow_empty);
   if (!profile) return profile;
+  for (const auto& message : messages->array) {
+    const auto* audio = message.Find("audio");
+    if (audio && !audio->IsNull())
+      return Status::Fail("Audio history must be resolved before rendering");
+  }
   std::vector<size_t> tool_result_order;
   auto history =
       PlanToolResultOrder(*messages, &tool_result_order, async_call_ids);

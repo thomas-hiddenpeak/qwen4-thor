@@ -7,6 +7,32 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频接线23项CPU通过](evidence/serve-chat-audio-output-cpu-20261118/README.md)：
+19 C++/0.114秒及4负控/0.268秒；最终引擎/host零警告，913来源/
+12负控。历史重启/隔离、流式终态/字节、真实usage与相关配额/分类
+已过，未计GPU/HTTP资格。继续固定2核心启动/12POST/2ASR/1200秒
+实际业务；默认rev306保持，注册voice/4倍内容与全部master继续。
+
+Chat音频实际驱动准备完成，CPU冻结补入4项验收器负控（总23项，
+仍180秒/0GPU），防止错误接受缺终态、中途base64填充或伪usage。
+实际业务候选范围为同严格租约2核心启动/12POST/2独立ASR、1200秒，
+六条完整发声内容、双SDK、n/schema、真实记录工具闭环、单槽取消、
+存储/历史重启、私有隔离和TPM；通过CPU且冻结源码后才执行。
+默认音频预算已按TTS帧容量补齐，显式/客户端/上下文上限保持。
+
+Chat音频接线CPU范围冻结为19项/180秒、0GPU/HTTP，覆盖协议、
+历史重启/隔离/过期、base64任意分块、真实usage及受影响分类/配额/
+SSE默认行为；证据≤8MiB、磁盘≥512MiB。必要构建通过后统一执行，
+随后按实际请求清单冻结业务短验；不扩展全模型或性能矩阵。
+
+Chat音频输出/私有历史已成组接线、尚未验证：实际LLM文本交给
+已验TTS，JSON/SSE六格式、audio-only、n/tool/schema组合、逐段
+base64及expiry-only终态；先结束主模型槽和usage再串行合成。
+1小时客户端私有ID持久化与到期解析，TTS输入追加同RPM/TPM租约，
+音频codes/EOS占同一choice输出预算，真实usage分项累计。接下来
+必要构建、冻结受影响CPU，再实际内容/历史/SDK短验；默认rev306
+未变，未把源码接线当接口验收，其余总计划持续推进。
+
 [Speech实际HTTP/SDK/内容短验通过](evidence/serve-speech-http-20261118/README.md)：
 六格式、8音频原文、SSE实际usage、资产故障隔离及同PID恢复、
 取消后核心Chat通过；最终92.491秒/10POST/3ASR，严格租约88

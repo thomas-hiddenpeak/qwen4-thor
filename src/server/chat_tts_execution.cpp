@@ -23,6 +23,8 @@ ObjectReply ChatServer::RunNativeTts(
     SpeechEncodingReceipt* receipt) {
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto previous = usage.Total();
+  const auto previous_input = rate.AdmittedPromptTokens();
+  const auto previous_output = rate.CompletionTokens();
   if (!previous || !http || !receipt)
     return Error(500, "tts_usage_invalid", "TTS prior usage unavailable");
   const auto cancelled = [&] {
@@ -60,8 +62,8 @@ ObjectReply ChatServer::RunNativeTts(
   usage.BeginStep();
   const auto account = [&] {
     usage.Observe({committed, synthesis.accepted_tokens()});
-    rate.StartPrompt(previous->input + committed);
-    rate.Completion(previous->output + synthesis.accepted_tokens());
+    rate.StartPrompt(previous_input + committed);
+    rate.Completion(previous_output + synthesis.accepted_tokens());
   };
   ScopeExit accounting([&] {
     account();

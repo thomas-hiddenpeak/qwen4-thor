@@ -215,6 +215,13 @@ class ChatServer {
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
   void HandleSpeech(int fd, const std::string& body);
+  ObjectReply SynthesizeChatAudio(
+      int fd, const ChatAudioOptions& options, uint64_t output_limit,
+      std::span<const uint64_t> choice_tokens,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ClientRateLease& rate,
+      const std::function<bool(int, const std::string&, bool)>& delta,
+      io::Json* completion);
   ObjectReply EnsureNativeTts(bool weights, const BinaryAccess& access,
                               RequestDiagnostics* diagnostic = nullptr);
   std::string NativeTtsHealthJson() const;

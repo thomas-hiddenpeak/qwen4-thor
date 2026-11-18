@@ -11,6 +11,7 @@
 #include "q4t/io/json.h"
 #include "q4t/server/access_program.h"
 #include "q4t/server/asr_service.h"
+#include "q4t/server/chat_audio_output.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
@@ -65,6 +66,10 @@ struct ChatPlanConfig {
   bool preparing_audio_inputs = false;
   bool native_asr_enabled = false;
   AsrServiceLimits asr_limits;
+  bool native_tts_enabled = false;
+  // Extra codec/EOS budget when audio is requested without an explicit limit.
+  // Explicit limits and client/context ceilings still bound total output.
+  int native_tts_output_tokens = 0;
   // Validated Responses history only. Public Chat cannot set this policy.
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
@@ -92,12 +97,6 @@ struct ChatPlanConfig {
   std::shared_ptr<const WebDeploymentPolicy> web_policy;
 };
 
-struct ChatPlanError {
-  std::string code = "invalid_request";
-  std::string param;
-  int http_status = 400;
-};
-
 struct ChatRequestPlan {
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
@@ -112,6 +111,7 @@ struct ChatRequestPlan {
   SamplingOptions sampling;
   PredictionOptions prediction;
   ModerationOptions moderation;
+  ChatAudioOptions audio_output;
   PromptCacheOptions cache;
   std::vector<PromptCacheInputBoundary> cache_boundaries;
   std::vector<std::string> stops;

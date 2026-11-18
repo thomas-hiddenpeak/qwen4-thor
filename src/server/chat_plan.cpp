@@ -46,11 +46,19 @@ const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
   if (config.prewarm_only || config.count_input_only) return 0;
+  const auto* modes = req.GetArray("modalities");
+  const bool audio = config.native_tts_enabled && modes &&
+      std::any_of(modes->array.begin(), modes->array.end(), [](const auto& mode) {
+        return mode.IsString() && mode.str == "audio";
+      });
+  const int default_tokens = static_cast<int>(std::min<int64_t>(
+      INT_MAX, int64_t(config.default_max_tokens) +
+                   (audio ? std::max(0, config.native_tts_output_tokens) : 0)));
   const int fallback =
       config.client_limits
-          ? std::min(config.default_max_tokens,
+          ? std::min(default_tokens,
                      static_cast<int>(config.client_limits->max_output_tokens))
-          : config.default_max_tokens;
+          : default_tokens;
   return static_cast<int>(
       req.GetInt("max_completion_tokens", req.GetInt("max_tokens", fallback)));
 }
@@ -107,29 +115,12 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     *error = {"audio_backend_unavailable", "messages", 503};
     return Status::Fail("Native audio input backend is not configured");
   }
-  if (const auto* modalities = req.Find("modalities");
-      modalities && !modalities->IsNull()) {
-    if (!modalities->IsArray() || modalities->array.empty() ||
-        modalities->array.size() > 2)
-      return Fail(error, "invalid_request", "modalities",
-                  "Expected nonempty text/audio output modalities");
-    bool text = false, audio = false;
-    for (const auto& value : modalities->array) {
-      if (!value.IsString() ||
-          (value.str != "text" && value.str != "audio") ||
-          (value.str == "text" ? std::exchange(text, true)
-                               : std::exchange(audio, true)))
-        return Fail(error, "invalid_request", "modalities",
-                    "Expected distinct text/audio output modalities");
-    }
-    if (audio) {
-      *error = {"audio_output_backend_unavailable", "modalities", 503};
-      return Status::Fail("Speech synthesis backend is not configured");
-    }
+  status = ParseChatAudioOptions(req, &plan->audio_output, error);
+  if (!status) return status;
+  if (plan->audio_output.enabled && !config.native_tts_enabled) {
+    *error = {"audio_output_backend_unavailable", "modalities", 503};
+    return Status::Fail("Speech synthesis backend is not configured");
   }
-  if (const auto* audio = req.Find("audio"); audio && !audio->IsNull())
-    return Fail(error, "invalid_request", "audio",
-                "Audio output options require audio output modality");
   plan->async_tool_call_ids = config.async_tool_call_ids;
   plan->responses_tool_media = config.responses_tool_media;
   plan->header_tools = config.header_tools;

@@ -1,7 +1,9 @@
 #include "q4t/server/speech_request.h"
+#include "q4t/io/json.h"
 
 #include <algorithm>
 #include <cmath>
+
 
 namespace q4t::server {
 namespace {
