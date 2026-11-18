@@ -1,0 +1,64 @@
+{
+  "records": [
+    {
+      "path": "README.md",
+      "bytes": 1368,
+      "sha256": "9467463e792ae8fe204efb818daf47a85ec30d71336a8cb63f95c4deb92f8087"
+    },
+    {
+      "path": "build-02.log",
+      "bytes": 1296,
+      "sha256": "6aafc48f4f6868ce285f2b9e11e17d0511659a94e9c570c9cba1214b5002c5f0"
+    },
+    {
+      "path": "build.log",
+      "bytes": 73,
+      "sha256": "55197ee74582812471f0b0b192f2f609f6ac33c2b74b5aa3f96d042c12606527"
+    },
+    {
+      "path": "cases.txt",
+      "bytes": 628,
+      "sha256": "2adec3942cb0b72c1e5a42777bb1aff4e7b4f4c650a61d2c082321b245807a39"
+    },
+    {
+      "path": "configure.log",
+      "bytes": 459,
+      "sha256": "b798ed9a5406317d857cb72c3043eba08fe2859b87a9e78e2924073c288b437e"
+    },
+    {
+      "path": "cuda-build.log",
+      "bytes": 524,
+      "sha256": "dd596df85e02baae02cbc04a120583cf07e6ce7d7e6b9cb3fb9e074c0050ca9a"
+    },
+    {
+      "path": "execution-plan.json",
+      "bytes": 871,
+      "sha256": "ee2290bf8e5c790669ad4d0a746041350bd3ffc3cda1e4b4577f9129e4062eb1"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 123,
+      "sha256": "aa3883bcb583a472df44e7669c2866bc74b3e893aeb3fb4787620b6b2b203d48"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 647,
+      "sha256": "73b2e564e3dada58e8e87a4fea34bf72603680108e9fd19510383e1142c7838f"
+    },
+    {
+      "path": "result.json",
+      "bytes": 228,
+      "sha256": "20ad5be7159d2a54f00bf26c255c3ad0d40619dbcc012d3844accf808c8fa22e"
+    },
+    {
+      "path": "sources.json",
+      "bytes": 1961,
+      "sha256": "d163a1e85d1c135cf992aa7919a596133c9390a469329377b76276ebcb3430f6"
+    },
+    {
+      "path": "test.log",
+      "bytes": 739,
+      "sha256": "495925bf55b7d6797f6d1620921bcefb56a9f00836b0e2ba99ba4f4b377cc6d4"
+    }
+  ]
+}

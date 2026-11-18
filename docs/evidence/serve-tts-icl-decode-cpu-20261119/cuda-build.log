@@ -1,0 +1,7 @@
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/native-build-01
+[  4%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis_plan.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis.cpp.o
+[ 14%] Linking CXX static library libq4t_tts_replay_core.a
+[100%] Built target q4t_tts_replay_core

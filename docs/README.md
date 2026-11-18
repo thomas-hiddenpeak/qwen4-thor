@@ -616,3 +616,5 @@
 - [ICL编码器末层修复与量化边界](evidence/serve-tts-icl-encoder-20261119/README.md)：原全码一致FAIL保留，独立诊断和验收决定待续。
 
 - [ICL全部码组提示与预算](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：17 CPU通过，神经合成、解码上下文及持久接线继续。
+
+- [ICL参考解码上下文和精确裁剪](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：10 CPU通过，实际合成待验。

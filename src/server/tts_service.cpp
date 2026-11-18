@@ -22,7 +22,8 @@ bool TtsServiceLimits::Valid() const {
 Status PlanTtsServiceResources(const TtsServiceLimits& limits,
                                size_t text_tokens, size_t prefill_tokens,
                                size_t max_frames, TtsResourcePlan* out,
-                               audio::TtsVariant variant) {
+                               audio::TtsVariant variant,
+                               size_t reference_frames) {
   if (!out ||
       (variant != audio::TtsVariant::kCustomVoice17B &&
        variant != audio::TtsVariant::kBase17B) ||
@@ -33,12 +34,14 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
   const size_t budget = uint64_t(limits.workspace_mib) * kMiB;
   audio::TtsGenerationLayout generation;
   auto status = audio::PlanTtsGenerationWorkspace(
-      variant, text_tokens, prefill_tokens, max_frames, budget, &generation);
+      variant, text_tokens, prefill_tokens, max_frames, budget, &generation,
+      reference_frames);
   if (!status) return status;
   audio::TtsCodecLayout codec;
   // Bound any qualified chunk size up to the official 300 + 25 history.
   status = audio::PlanTtsCodecWorkspace(
-      std::min(max_frames, audio::TtsCodecConfig::kMaxInputFrames),
+      std::min(max_frames + reference_frames,
+               audio::TtsCodecConfig::kMaxInputFrames),
       budget - generation.bytes, &codec);
   if (!status) return status;
   TtsResourcePlan next;
@@ -76,6 +79,14 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
       16 * kMiB + next.encoder_address_space_limit;
   if (variant == audio::TtsVariant::kBase17B)
     next.request_host_bytes += 2 * 2048 * sizeof(float);
+  if (reference_frames) {
+    // Planning prompt, generation prompt and synthesis reference ownership;
+    // one bounded code slice is retained while its decoder/output is active.
+    next.reference_host_bytes =
+        (3 * reference_frames + audio::TtsCodecConfig::kMaxInputFrames) *
+        sizeof(audio::TtsCodes);
+    next.request_host_bytes += next.reference_host_bytes;
+  }
   *out = next;
   return {};
 }

@@ -51,6 +51,7 @@ if(TTS_ICU_FOUND)
     ${tts_test_root}/src/audio/tts_config.cpp
     ${tts_test_root}/src/audio/tts_layout.cpp
     ${tts_test_root}/src/audio/tts_codec_layout.cpp
+    ${tts_test_root}/src/audio/tts_synthesis_plan.cpp
     ${tts_test_root}/tests/tts_codec_layout_test.cpp
     ${tts_test_root}/src/audio/tts_generation.cpp
     ${tts_test_root}/src/text/tokenizer.cpp
@@ -104,9 +105,26 @@ add_executable(q4t_tts_encoder_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/tests/tts_codec_layout_test.cpp
   ${tts_test_root}/src/audio/tts_encoder_layout.cpp
   ${tts_test_root}/src/audio/tts_codec_layout.cpp
+  ${tts_test_root}/src/audio/tts_synthesis_plan.cpp
   ${tts_test_root}/src/audio/tts_layout.cpp
   ${tts_test_root}/src/audio/tts_config.cpp
   ${tts_test_root}/src/io/json.cpp)
 target_include_directories(q4t_tts_encoder_tests PRIVATE
   ${tts_test_root}/include)
 target_compile_options(q4t_tts_encoder_tests PRIVATE -Wall -Wextra -Werror)
+
+# Reference-conditioned chunk slicing and actual unified-RAM resource contracts.
+add_executable(q4t_tts_synthesis_plan_tests EXCLUDE_FROM_ALL
+  ${tts_test_root}/tests/test_main.cpp
+  ${tts_test_root}/tests/tts_synthesis_plan_test.cpp
+  ${tts_test_root}/tests/tts_codec_layout_test.cpp
+  ${tts_test_root}/src/audio/tts_synthesis_plan.cpp
+  ${tts_test_root}/src/server/tts_service.cpp
+  ${tts_test_root}/src/audio/tts_codec_layout.cpp
+  ${tts_test_root}/src/audio/tts_layout.cpp
+  ${tts_test_root}/src/audio/tts_config.cpp
+  ${tts_test_root}/src/io/json.cpp)
+target_include_directories(q4t_tts_synthesis_plan_tests PRIVATE ${tts_test_root}/include)
+target_compile_options(q4t_tts_synthesis_plan_tests PRIVATE
+  -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+target_link_options(q4t_tts_synthesis_plan_tests PRIVATE -Wl,--gc-sections)

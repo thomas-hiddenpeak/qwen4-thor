@@ -1,0 +1,26 @@
+{
+  "sources": {
+    "CMakeLists.txt": "021db1ec3b681001ce89cc26ad9fc7383f804919267dd19e77f9787b532c9c9a",
+    "cmake/HostTestSources.cmake": "a5bee8658acb697b274b59d4ef05aa6fd56ec97514a75d72529f96bb6de84663",
+    "cmake/NativeTtsTests.cmake": "103861aa4a5abeb6b20f52020abf7f03ed256b0f1de87716f07b16d0750ef4bb",
+    "include/q4t/audio/tts_synthesis.h": "d8c5edd655dfcf83cfb66b843b0c840d3905828869bcc6a4b0a87735a818d06b",
+    "include/q4t/audio/tts_synthesis_plan.h": "d064d18c1c2074c8065caaf4b6027b394e7b05daf0715c97d78fc622891f68dd",
+    "include/q4t/server/tts_service.h": "13a188d57d7945e00616b29cc0a73941729aefbb16e8c0d9ba823830b08b6b18",
+    "src/audio/tts_synthesis.cpp": "19b854c2b7e2fe9a830672e02b7f162d9756c4a37390088bd101b0786318739f",
+    "src/audio/tts_synthesis_plan.cpp": "7f91ddeb4e41896d2ad17981b99a5c031f4cec64b4be2fa5dcecadfd1a4e3512",
+    "src/server/tts_service.cpp": "1a2013e5eb1c49ec5ddf621d7937bb1368081ecbace70d4d30f1288074ec253e",
+    "src/server/chat_server.cpp": "4f77b2f6a85e196508f6afdc53f37b44c83b4940e079c264398ba0daa357f3c7",
+    "src/server/chat_tts_execution.cpp": "4e67aeed975451e17d90ec1fab6b330e3d8c43c53109d927a4aaec424ad9f02d",
+    "tools/native_tts/CMakeLists.txt": "e4063ab52bb01fa49015b90be3635a2d39e7325e55edce09742d1a99640891df",
+    "tests/tts_synthesis_plan_test.cpp": "6bb0bae67e62bf53a24484a4cf4a4656c252ee0ab2d110133844289e7f2340e6"
+  },
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "gpu": 0,
+  "actual_synthesis_qualified": false
+}

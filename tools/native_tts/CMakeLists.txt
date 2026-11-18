@@ -15,6 +15,7 @@ add_library(q4t_tts_replay_core STATIC
   ${Q4T_ROOT}/src/audio/tts_config.cpp
   ${Q4T_ROOT}/src/audio/tts_layout.cpp
   ${Q4T_ROOT}/src/audio/tts_codec_layout.cpp
+  ${Q4T_ROOT}/src/audio/tts_synthesis_plan.cpp
   ${Q4T_ROOT}/src/audio/tts_encoder_layout.cpp
   ${Q4T_ROOT}/src/audio/tts_encoder_conv.cu
   ${Q4T_ROOT}/src/audio/tts_encoder_dense.cu

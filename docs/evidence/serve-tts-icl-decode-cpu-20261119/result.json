@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "new": 8,
+  "direct_existing": 2,
+  "tests": 10,
+  "seconds": 0.0034186760894954205,
+  "gpu": 0,
+  "binary_sha256": "f9322ca0be538711f0f502ccebe12db4ff2ba890beb1d7ca5af0d7205fc6ca88"
+}

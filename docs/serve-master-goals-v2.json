@@ -9398,6 +9398,13 @@
         "cpu_new": 9,
         "cpu_existing": 8,
         "gpu": 0
+      },
+      "decoder_context": {
+        "state": "implemented_targeted_cpu_passed_actual_synthesis_pending",
+        "evidence": "evidence/serve-tts-icl-decode-cpu-20261119/README.md",
+        "cpu_new": 8,
+        "cpu_existing": 2,
+        "gpu": 0
       }
     }
   }

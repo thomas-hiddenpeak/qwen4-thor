@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL参考解码10项CPU通过](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：
+完整参考+新码分块差分、25帧上下文及精确裁剪、流式/EOS与实际RAM
+预算；8新增/2旧合同、0.0034秒/0GPU，构建零警告。新target配置前
+make失败保留；实际语音尚待验，继续持久状态与编码器服务接线。
+
 [ICL提示17项CPU通过](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：
 参考转录与目标文本、16组码的两种对齐、所有权及实际工作区预算；
 9新增/8旧合同、0.0035秒/0GPU，host/CUDA零警告。继续参考码全局

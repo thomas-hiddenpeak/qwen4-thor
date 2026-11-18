@@ -19,6 +19,7 @@ struct TtsResourcePlan {
   uint64_t codec_bytes = 0;
   uint64_t request_device_bytes = 0;
   uint64_t request_host_bytes = 0;
+  uint64_t reference_host_bytes = 0;
   uint64_t resident_weight_bytes = 0;
   uint64_t resident_host_bytes = 0;
   uint64_t source_staging_bytes = 0;
@@ -35,7 +36,8 @@ struct TtsResourcePlan {
 Status PlanTtsServiceResources(
     const TtsServiceLimits& limits, size_t text_tokens, size_t prefill_tokens,
     size_t max_frames, TtsResourcePlan* out,
-    audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B);
+    audio::TtsVariant variant = audio::TtsVariant::kCustomVoice17B,
+    size_t reference_frames = 0);
 struct TtsVoiceResourcePlan {
   uint64_t frames = 0, device_weight_bytes = 0, device_workspace_bytes = 0;
   uint64_t host_feature_bytes = 0, source_staging_bytes = 0;
