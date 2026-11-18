@@ -169,7 +169,7 @@ class AudioAuxiliaryPackage(unittest.TestCase):
         config = pkg.read(root/'config.json');caps = pkg.read(root/'capabilities.json')
         native = dict(self.selected(), **self.auxiliary())
         native['limits'] = config['native_asr_limits']
-        for name in pkg.ASR_AUXILIARY:
+        for name in AUXILIARIES:
             native[name]['limits'] = pkg.asr_auxiliary_observed_limits(config, name)
         metadata = dict(chat_protocol=caps, observed_configuration=config)
         pkg.check_asr_declaration(metadata, native)

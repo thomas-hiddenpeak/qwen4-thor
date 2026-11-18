@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR47音频恢复55项检查中的旧speaker观察夹具漏限固定范围，
+访问历史未配置的separator失败。已修为本文件原有speaker集合，
+保留全部预算/隔离负控；仅失败用例0.164秒通过、0GPU。
+[原失败与修复](evidence/serve-chat-audio-ci-fixture-20261118/README.md)，
+继续最终HEAD检查/合main，默认rev306与全部master保持。
+
 [TTS执行入口16CPU通过](evidence/serve-tts-execution-cpu-20261118/README.md)，
 原merges失败保留、只补3项；官方16文本一致，ASR与主模型受影响
 项通过，零警告/0GPU。继续真实CUDA生成及PCM、服务与恢复交付，
