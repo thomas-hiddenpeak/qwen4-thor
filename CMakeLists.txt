@@ -140,6 +140,7 @@ endif()
 # ---------------------------------------------------------------------------
 if(Q4T_HAS_ICU)
   add_library(q4t_text STATIC src/text/tokenizer.cpp
+    src/text/voice_consent.cpp
     src/audio/aligner_postprocess.cpp)
   target_include_directories(q4t_text PUBLIC include ${ICU_INCLUDE_DIRS})
   target_link_libraries(q4t_text PUBLIC q4t_io ${ICU_LINK_LIBRARIES})

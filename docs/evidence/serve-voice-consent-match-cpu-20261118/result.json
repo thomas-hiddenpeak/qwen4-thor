@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "seconds": 0.003385819960385561,
+  "returncode": 0,
+  "cases": 8,
+  "model_loads": 0,
+  "gpu_actions": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_voice_consent_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/consent-match-cpu-01/required.txt"
+  ],
+  "binary_sha256": "cba13855438ba695976db83d574634904f9d74a71288679030e87acd8bf43487",
+  "plan_sha256": "e1a22e4724d7dfd3b7d7920bb0a1e0b55efa995f8a36845e0e31c08fb0ca96df",
+  "state": "CONSENT_TEXT_COMPARISON_CPU_QUALIFIED_AUDIO_PENDING",
+  "build": {
+    "status": "PASS_BUILD_ONLY",
+    "seconds": 2.232261322904378,
+    "commands": [
+      {
+        "command": [
+          "cmake",
+          "-S",
+          "tests/host",
+          "-B",
+          ".q4t-work/serve-file-search-20261112/host"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "cmake",
+          "--build",
+          ".q4t-work/serve-file-search-20261112/host",
+          "--target",
+          "q4t_voice_consent_tests",
+          "--parallel",
+          "4"
+        ],
+        "returncode": 0
+      }
+    ],
+    "warnings": 0,
+    "binary_sha256": "cba13855438ba695976db83d574634904f9d74a71288679030e87acd8bf43487"
+  },
+  "archive_sha256": "4630b2c393a701172c1f2c29050331ecc184801bcf35c2f4cfccb4f6d2013b38",
+  "archive_files": 19,
+  "default_before": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_after": {
+    "build/q4t": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+    "build/q4t.release.json": "aa20961387ab39cbd40df9c6e331964c4275a89037b411b436f887d29af4e7de",
+    "build/service/manifest.json": "e992bae3e6a090c595605ff1fbb4c122c96838510bef1f3f6ec6f3c7b4fd111d",
+    "build/service.release.json": "52e03d9bad5a933170664bd65fed247623024ebc6dc3eed49ef263e453c2ac49",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "default_unchanged": true,
+  "full_task_complete": false
+}

@@ -8615,6 +8615,12 @@
         "evidence": "evidence/serve-voice-audio-rate-cpu-20261118/README.md",
         "cpu_cases": 14,
         "gpu_loads": 0
+      },
+      "consent_match": {
+        "state": "CONSENT_TEXT_COMPARISON_CPU_QUALIFIED_AUDIO_PENDING",
+        "evidence": "evidence/serve-voice-consent-match-cpu-20261118/README.md",
+        "cpu_cases": 8,
+        "gpu_loads": 0
       }
     }
   }

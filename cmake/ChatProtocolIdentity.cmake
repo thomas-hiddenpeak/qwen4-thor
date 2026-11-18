@@ -115,6 +115,8 @@ set(protocol_inputs
   include/q4t/server/moderation_options.h
   include/q4t/server/chat_moderation.h
   src/server/chat_moderation.cpp
+  include/q4t/text/voice_consent.h
+  src/text/voice_consent.cpp
   include/q4t/text/tokenizer.h
   src/text/tokenizer.cpp
   include/q4t/server/model_catalog.h

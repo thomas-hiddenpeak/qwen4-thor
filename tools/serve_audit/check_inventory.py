@@ -14,10 +14,11 @@ def missing_protocol_sources(root, manifest=None):
     if manifest is None:
         manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
     registered = set(re.findall(
-        r"^\s*((?:src/server|include/q4t/server)/[^\s()]+\.(?:h|cpp))(?=\s|\))",
+        r"^\s*((?:src/server|include/q4t/server|src/text|include/q4t/text)/[^\s()]+\.(?:h|cpp))(?=\s|\))",
         manifest, re.MULTILINE))
     actual = {str(path.relative_to(root))
-              for directory in ("src/server", "include/q4t/server")
+              for directory in ("src/server", "include/q4t/server",
+                                "src/text", "include/q4t/text")
               for path in (root / directory).glob("*")
               if path.suffix in (".h", ".cpp")}
     return sorted(actual - registered)
@@ -248,6 +249,8 @@ def current_surface(root):
     # reader, cancellation, scheduling, configuration, and tokenizer matter too.
     paths = sorted(set(root.glob("src/server/**/*.*")) |
                    set(root.glob("include/q4t/server/**/*.*")) |
+                   set(root.glob("src/text/**/*.cpp")) |
+                   set(root.glob("include/q4t/text/**/*.h")) |
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
@@ -386,7 +389,18 @@ def mutation_checks(inventory, actual):
         changed.pop(name)
         if not check(inventory, dict(actual, sources_sha256=changed)):
             raise ValueError("audio private source omission escaped: " + name)
-    return len(cases) + 2 + len(private_headers)
+    text_paths = ("src/text/voice_consent.cpp", "include/q4t/text/voice_consent.h")
+    for name in text_paths:
+        if name not in actual["sources_sha256"]:
+            raise ValueError("voice consent text source omitted: " + name)
+        missing = missing_protocol_sources(ROOT, manifest.replace(name, ""))
+        if name not in missing:
+            raise ValueError("text protocol omission escaped: " + name)
+        changed = dict(actual["sources_sha256"])
+        changed.pop(name)
+        if not check(inventory, dict(actual, sources_sha256=changed)):
+            raise ValueError("text source omission escaped: " + name)
+    return len(cases) + 2 + len(private_headers) + len(text_paths)
 
 
 def main():

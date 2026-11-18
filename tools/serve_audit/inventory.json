@@ -2196,8 +2196,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "c83fdc8a2e5c4a5b4c0c37d4574d8fa22ec2c17506cb496ea992bec8398849b1",
-    "cmake/ChatProtocolIdentity.cmake": "8e6960bf6a7926c84add665181520274fa827625b45b14682673ef07b1c0b6fc",
+    "CMakeLists.txt": "94e16ffe434473b5999c45c17c57adf23811b211e24cf8c9b27e9707a65c66c3",
+    "cmake/ChatProtocolIdentity.cmake": "b35a31f3e25e8e192df8e448b555a53d2c099a5c9a39c34983d2e78b3721de1a",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3123,7 +3123,9 @@
     "include/q4t/server/voice_request.h": "a95b6e0d00ecbd733af7acab8bf0afb79aea269cec0e7c112fe1b658fe649b7e",
     "src/server/voice_language.cpp": "b08962efa62a4e3667b509caad33b78da2c235b9897474a85a2a1fb09d08b53f",
     "src/server/voice_registry.cpp": "efc8df5407f97809353c952a6b2534328567e82c4ae3d7fc5bdc9cc398da2d99",
-    "src/server/voice_request.cpp": "2baf14fecd21fe956885883b98b116224eda3aaabe800eb5e40779bf5bf0edbc"
+    "src/server/voice_request.cpp": "2baf14fecd21fe956885883b98b116224eda3aaabe800eb5e40779bf5bf0edbc",
+    "include/q4t/text/voice_consent.h": "592d6f8c9f9bfdb4b735619609c4ca9a8074ea7da720520d03fcb07917e0d0a9",
+    "src/text/voice_consent.cpp": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -7866,5 +7868,18 @@
       "src/server/file_audio_worker.cpp"
     ],
     "voice_api_accepted": false
+  },
+  "native_voice_consent_match_2026_11_18": {
+    "state": "CONSENT_TEXT_COMPARISON_CPU_QUALIFIED_AUDIO_PENDING",
+    "evidence": [
+      "docs/evidence/serve-voice-consent-match-cpu-20261118/README.md"
+    ],
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/text/voice_consent.h",
+      "src/text/voice_consent.cpp"
+    ],
+    "runtime_api_accepted": false
   }
 }
