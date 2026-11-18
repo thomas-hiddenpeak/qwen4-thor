@@ -1,0 +1,25 @@
+{
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/voice-http-driver-cpu-plan-01.json": {
+      "bytes": 347,
+      "sha256": "a32c1662756d4848225ac94d7ec04498a335c9753997290e6db31d36b22d4c97"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-driver-cpu-01/result.json": {
+      "bytes": 494,
+      "sha256": "6b44ce281de323ea48100023bfd018f440f95d0cc880faff042fe31e03d4eef9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-http-driver-cpu-01/tests.log": {
+      "bytes": 1202,
+      "sha256": "03dc9e6c43cfecd43e1f1ac2048803ba78c7bd3fab62b7ac51e456e1737d1917"
+    },
+    "tools/native_tts/voice_service_acceptance.py": {
+      "bytes": 24170,
+      "sha256": "f55b5b29c0f5e971279489d88c6362d4c1e5abe12f9087d277b40cb6c5beff5b"
+    },
+    "tools/native_tts/test_voice_service_acceptance.py": {
+      "bytes": 4289,
+      "sha256": "a8aa39b310121d5f4d3d8ed2ef1069c71643c61a3991506fe95df9a5e22b42e5"
+    }
+  },
+  "archive_sha256": "dd1af4d06d32119b4b591d853a35883ad0be72495e4c4cf011a6e62360acfd7e"
+}
