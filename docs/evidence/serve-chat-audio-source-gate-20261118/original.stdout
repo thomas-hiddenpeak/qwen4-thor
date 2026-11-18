@@ -1,0 +1,13 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 53,
+  "completion_fields": 21,
+  "routes": 75,
+  "native_routes": 125,
+  "reviewed_source_anchors": 858,
+  "mutation_checks": 7,
+  "errors": [
+    "sources_sha256 requires renewed review: ['tools/serve_recovery/version_acceptance.py']"
+  ]
+}

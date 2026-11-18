@@ -1,0 +1,8 @@
+{
+  "head": "e8e1075d4228a84fbecc1b3b7d4d81bcd852b78f",
+  "files": 40427,
+  "seconds": 0.26583312591537833,
+  "returncode": 1,
+  "snapshot_seconds": 1.0631596348248422,
+  "snapshot": "hardlinked tracked HEAD with changed tracked files restored from Git; no untracked TTS sources"
+}

@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR47当前提交的编译及公共host合同已过，来源门发现验收观察hook
+摘要未更新。独立HEAD快照重现后，仅补已审来源摘要，858锚点/
+7负控通过；[原失败与修复](evidence/serve-chat-audio-source-gate-20261118/README.md)。
+接着修复HEAD实际CI和合main，rev306及全部master保持，0新增GPU。
+
 rev306已交付，主线检查发现公开CI在6分钟依赖安装阶段超时，
 尚未编译。仅修临时runner官方apt镜像入口及有界时间预算，全部
 合同保留；[原失败/语法检查](evidence/serve-chat-audio-ci-setup-20261118/README.md)。

@@ -2989,7 +2989,7 @@
     "tools/serve_recovery/usage_policy.py": "405fef4ee1f953b12a04e40ea74c67d2d445e7a4f55a6499b0414e0c7e2f61f0",
     "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
     "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
-    "tools/serve_recovery/version_acceptance.py": "74fdd9889134a63967a45226102dc8bab7aaced2439be1f2191d097b4386c5e9",
+    "tools/serve_recovery/version_acceptance.py": "ba6d6c460c9c7130dd2f722f8c741b2d225972b0be2e594234523830199aefed",
     "tools/serve_recovery/version_archive.py": "03c4074d6584fe4c85fb06c9eb91ff8fd527453328acd04f1be2ed3a1a8a69e5",
     "tools/serve_recovery/version_contract.py": "a883e67d37241b0dfceffc23246a1af0f520b2d53832278e06a8ca130e224d71",
     "tools/serve_recovery/version_journal.py": "f3d0ac689ffa0db5a6e1288d6c3950cfbfdae6e560a714d04134973f15f50a8c",
@@ -7286,6 +7286,16 @@
     "scope": "Independent ECAPA loading/execution, literal bounded audio references, real VAD/word alignment to diarized JSON/SSE, optional config and health. CPU accepted; actual HTTP and overlap still pending.",
     "evidence": [
       "docs/evidence/serve-speaker-runtime-cpu-20261118/README.md"
+    ]
+  },
+  "chat_audio_cold_observer_review_20261118": {
+    "source": "tools/serve_recovery/version_acceptance.py",
+    "before": "74fdd9889134a63967a45226102dc8bab7aaced2439be1f2191d097b4386c5e9",
+    "after": "ba6d6c460c9c7130dd2f722f8c741b2d225972b0be2e594234523830199aefed",
+    "scope": "Validation-only hook after sealed controller import. Enabled only by an explicitly frozen observe_cold_profiles plan; absent/noncallable observer is a hard error. Does not change production memory selection, model process, budget or package. Existing actual recovery and five targeted CPU checks are reused.",
+    "evidence": [
+      "docs/evidence/serve-chat-audio-recovery-profile-20261118/README.md",
+      "docs/evidence/serve-chat-audio-service-20261118/README.md"
     ]
   }
 }

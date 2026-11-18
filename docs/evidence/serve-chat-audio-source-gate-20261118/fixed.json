@@ -1,0 +1,10 @@
+{
+  "returncode": 0,
+  "seconds": 0.2640194999985397,
+  "reviewed_source": "tools/serve_recovery/version_acceptance.py",
+  "before": "74fdd9889134a63967a45226102dc8bab7aaced2439be1f2191d097b4386c5e9",
+  "after": "ba6d6c460c9c7130dd2f722f8c741b2d225972b0be2e594234523830199aefed",
+  "manifest_sha256": "e3eb9583b5272c172244b5fc562952edb3737b80b8ca659258fb8ce7af2f0bcb",
+  "runtime_changes": false,
+  "gpu": 0
+}

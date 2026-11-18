@@ -1,0 +1,18 @@
+host-contracts	Check serve surface inventory freshness	﻿2026-11-18T00:32:39.6642132Z ##[group]Run python3 -B tools/serve_audit/check_inventory.py --self-check
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.6642524Z ^[[36;1mpython3 -B tools/serve_audit/check_inventory.py --self-check^[[0m
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.6668523Z shell: /usr/bin/bash -e {0}
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.6668742Z ##[endgroup]
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8520622Z {
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8521009Z   "inventory_current": false,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8521294Z   "semantics_certified": false,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8521514Z   "fields": 53,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8521726Z   "completion_fields": 21,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8521935Z   "routes": 75,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8522115Z   "native_routes": 125,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8522329Z   "reviewed_source_anchors": 858,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8522564Z   "mutation_checks": 7,
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8522763Z   "errors": [
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8523142Z     "sources_sha256 requires renewed review: ['tools/serve_recovery/version_acceptance.py']"
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8523556Z   ]
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8523737Z }
+host-contracts	Check serve surface inventory freshness	2026-11-18T00:32:39.8577919Z ##[error]Process completed with exit code 1.
