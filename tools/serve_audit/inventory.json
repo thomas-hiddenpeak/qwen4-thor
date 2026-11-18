@@ -2280,8 +2280,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "1bce85b67a0a2a8a858b2b080506aa90e3103e681523c34a7e537897dfcae743",
-    "cmake/ChatProtocolIdentity.cmake": "4c56a8236bb3669f26cebbc27271edfc3b016e1c7c4f37ea88e552dc0c35d2cb",
+    "CMakeLists.txt": "b47cc892ffcf22398760dda247701d53446d3e7fb494a1ae7cad69c6cfc2d559",
+    "cmake/ChatProtocolIdentity.cmake": "6dc1415ef9c8b69517220f1ff478f0a81e0c7c2901debbce0f4b7121f9359e0f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2479,6 +2479,7 @@
     "include/q4t/server/prompt_cache_diagnostics.h": "f6701c9eaabda5c613121c6b0d9f4a441e203d03ab4d5cec020cda56dc50cedd",
     "include/q4t/server/prompt_cache_policy.h": "306ed3a92c2cd0ab42a6adb4bfa397d48e7639ba9fda9dff866eae0998e752d6",
     "include/q4t/server/prompt_registry.h": "debb09d97bf89e8c542936d217983ebd20926c423804208f0b6f318c704fd3cb",
+    "include/q4t/server/realtime_audio_queue.h": "af1d83113fae79f49e057068f4583e10f809e90ea9e2c00b32115b02410705a9",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
@@ -2900,6 +2901,7 @@
     "src/server/prompt_internal.h": "171a2463a5117f67e036c9148508f985f4360e143c350e0cb027c3762032e999",
     "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
     "src/server/prompt_template.cpp": "dd30ebc3e2838b08a3fee01cace0608bf7acff2ab6ab3b0889c136924b0c9574",
+    "src/server/realtime_audio_queue.cpp": "e8c55eed7dbfde11e1ca6fe11b579af838e6c5caecf587f4a804437858043a05",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",

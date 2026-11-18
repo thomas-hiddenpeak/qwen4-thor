@@ -1,0 +1,14 @@
+{
+  "cpu_tests": 12,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "scope": "Owned input ring and sample clock only, no resampler or Realtime API qualification",
+  "sources": {
+    "include/q4t/server/realtime_audio_queue.h": "af1d83113fae79f49e057068f4583e10f809e90ea9e2c00b32115b02410705a9",
+    "src/server/realtime_audio_queue.cpp": "e8c55eed7dbfde11e1ca6fe11b579af838e6c5caecf587f4a804437858043a05",
+    "tests/server_realtime_audio_queue_test.cpp": "75f8e0c439dbf4d79f88341a31392e43963df6194716b791e9f873762c706e50",
+    "CMakeLists.txt": "b47cc892ffcf22398760dda247701d53446d3e7fb494a1ae7cad69c6cfc2d559",
+    "cmake/HostTestSources.cmake": "817276535d53c71273e6c1096a31298affcb1354b9b362a3fc162dc99de0fadf",
+    "cmake/ChatProtocolIdentity.cmake": "6dc1415ef9c8b69517220f1ff478f0a81e0c7c2901debbce0f4b7121f9359e0f"
+  }
+}

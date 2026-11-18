@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[实时音频队列12项CPU通过](evidence/serve-realtime-audio-queue-cpu-20261119/README.md)：
+有界实际PCM环形缓冲、整数样本时钟、清空不倒退、提交背压及取消
+后借用回收通过；0.0077秒/0GPU、零警告，953锚点/17负控。
+默认rev326不变；继续HTTP升级、会话与真实ASR接线，波形重采样和
+Realtime业务仍待实现/验证，ICL数值待决保持。
+
 [原生WebSocket基础16项CPU通过](evidence/serve-realtime-transport-cpu-20261119/README.md)：
 有界分片/掩码/UTF-8/关闭/背压和可选密码库握手已实现；14新+2旧
 检查、0.0157秒/0GPU、构建零警告，951锚点/17负控通过。实际升级

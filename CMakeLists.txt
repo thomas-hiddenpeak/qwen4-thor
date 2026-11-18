@@ -575,6 +575,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/websocket.cpp
+  src/server/realtime_audio_queue.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/sampling.cpp
@@ -811,6 +812,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_websocket_test.cpp
+    tests/server_realtime_audio_queue_test.cpp
     tests/server_http_framing_test.cpp
     tests/server_http_session_test.cpp
     tests/server_http_observation_test.cpp
@@ -944,6 +946,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     src/server/websocket.cpp
+    src/server/realtime_audio_queue.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
     tests/io_weight_loader_test.cpp
