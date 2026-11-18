@@ -133,6 +133,86 @@ def check_usage(usage, audio_count):
             usage['completion_tokens'] > synth['output_tokens'], 'invented/double-counted usage')
 
 
+def probe_ports(ports):
+    # Match the server's restart semantics without sharing an active listener.
+    # A plain bind incorrectly rejects a just-closed listener's TIME_WAIT.
+    for port in ports:
+        with socket.socket() as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind(('127.0.0.1', port))
+
+
+def resume_restart(previous, out, plan):
+    previous = previous.absolute()
+    require(previous.is_relative_to(ROOT/'.q4t-work'), 'private prior attempt required')
+    frozen, result = read(previous/'plan.json'), read(previous/'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+            result['counts']['chats'] == 8 and result['counts']['gpu_asr_loads'] == 0 and
+            'Address already in use' in result['error'] and result['defaults_unchanged'],
+            'not the completed pre-restart prefix')
+    require(read(previous/'lease/exit.json')['status'] == 'COMMAND_FAILED',
+            'environment abort cannot supply reused business')
+    cleanup = read(previous/'restart-cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+            cleanup['ports_released'], 'original model not cleanly stopped')
+    require(frozen['binaries'] == plan['binaries'] and frozen['defaults'] == plan['defaults']
+            and frozen['requests'] == plan['requests'], 'restart source identity differs')
+    for name, digest in frozen['sources'].items():
+        if name.startswith(('src/', 'include/', 'cmake/')) or name == 'CMakeLists.txt':
+            require(plan['sources'][name] == digest, 'reused production changed: '+name)
+    for name in ('json','tool','schema','core','speech','cancel'):
+        require(read(previous/(name+'.http.json'))['status'] == 200, 'unfinished request: '+name)
+    for name in ('python','javascript'):
+        result = read(previous/(name+'.sdk.json'))
+        require(result['ok'] and len(result['exchanges']) == 1, 'unfinished SDK: '+name)
+    require(read(previous/'core.wire')['choices'][0]['message']['content'].strip() == '42',
+            'core after cancellation failed')
+    require(read(previous/'cancel.http.json')['cancelled'] and
+            b'[DONE]' not in (previous/'cancel.wire').read_bytes(), 'cancellation differs')
+    rows=[];expected=[]
+    for label, fmt, texts, stream in (
+        ('json','wav',[EN],False),('python','pcm',[ZH],True),
+        ('javascript','mp3',['The speech checks passed.'],False),
+        ('schema','mp3',['{"text":"Hello"}']*2,False)):
+        raw=(previous/(label+'.wire')).read_bytes()
+        if stream:
+            choices, usage, _ = parse_stream(raw,len(texts))
+        else:
+            response=json.loads(raw);usage=response['usage']
+            require(all(c['finish_reason']=='stop' for c in response['choices']), 'partial audio')
+            choices=[c['message']['audio'] for c in response['choices']]
+        check_usage(usage,len(texts))
+        require(len(choices)==len(texts), 'audio choices differ')
+        for index,(audio, target) in enumerate(zip(choices,texts,strict=True)):
+            path=previous/f'{label}-{index}.{fmt}'
+            require(base64.b64decode(audio['data'],validate=True)==path.read_bytes() and
+                    normalize(audio['transcript'])==normalize(target), 'reused audio differs')
+            rows.append(dict(path=str(path),sha256=sha(path),format=fmt))
+            expected.append(audio['transcript'])
+    path=previous/'speech.mp3'
+    require(path.read_bytes()==(previous/'speech.wire').read_bytes(), 'Speech bytes differ')
+    rows.append(dict(path=str(path),sha256=sha(path),format='mp3'));expected.append(EN)
+    stored=read(previous/'json.wire');audio=stored['choices'][0]['message']['audio']
+    require(audio['expires_at']>time.time()+LIMITS['seconds'], 'history deadline too close')
+    members=['json.wire','json.request.json','json.http.json']
+    members += [str(p.relative_to(previous)) for p in sorted((previous/'objects').rglob('*'))
+                if p.is_file()]
+    require(len(members)<1000 and sum((previous/p).stat().st_size for p in members)<8<<20,
+            'history snapshot exceeds bound')
+    for name in members:
+        path=previous/name;require(not path.is_symlink(),'snapshot symlink')
+        target=out/name;target.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+        shutil.copy2(path,target)
+    plan['resume_restart']=dict(directory=str(previous),audio_id=audio['id'],
+        rows=rows,expected=expected,accepted_transport_posts=8,
+        files={str(p.relative_to(previous)):sha(p) for p in sorted(previous.rglob('*')) if p.is_file()},
+        snapshot={name:sha(previous/name) for name in members},
+        separate_leases=True,content_accepted=False)
+    plan['limits']=dict(LIMITS,starts=1,chats=4,gpu_talker_loads=0,gpu_codec_loads=0)
+    plan['mutations']=['restore byte-identical private state from the cleanly stopped prior attempt',
+                       'gracefully stop only the new owned model after four remaining POSTs']
+
+
 def prepare(args):
     require(not subprocess.check_output(['git','status','--porcelain']), 'commit sources first')
     out = args.output.absolute()
@@ -163,6 +243,8 @@ def prepare(args):
                    'one graceful owned model restart with the same private object directory'],
         acceptance=dict(exact_normalized_asr=True,default_unchanged=True,
             performance_claim=False,automatic_model_restart=False,managed_ingress_qualified=False))
+    if args.resume_restart:
+        resume_restart(args.resume_restart, out, plan)
     if args.reuse_json:
         previous = args.reuse_json.absolute()
         require(previous.is_relative_to(ROOT/'.q4t-work'), 'private prior attempt required')
@@ -209,7 +291,8 @@ class Stage(speech.Stage):
         self.history={};self.rows=[];self.expected=[]
         self.lease=int(os.environ['Q4T_MANAGED_LEASE_FD'])
         lifecycle.verify_lease(self.lease,lifecycle.guard.common_lock())
-        expected_limits = dict(LIMITS, chats=11) if 'reuse_json' in plan else LIMITS
+        expected_limits = (dict(LIMITS, starts=1, chats=4, gpu_talker_loads=0, gpu_codec_loads=0)
+            if 'resume_restart' in plan else dict(LIMITS, chats=11) if 'reuse_json' in plan else LIMITS)
         require(plan['schema']=='q4t-chat-audio-http-v1' and plan['limits']==expected_limits and
                 plan['requests']==requests(),'frozen plan drift')
         for p,h in plan['sources'].items(): require(sha(ROOT/p)==h,'source drift: '+p)
@@ -227,6 +310,12 @@ class Stage(speech.Stage):
                 require(sha(self.out/name) == digest and
                         sha(Path(plan['reuse_json']['directory'])/name) == digest,
                         'reused snapshot drift: '+name)
+        if 'resume_restart' in plan:
+            reuse=plan['resume_restart']
+            for name,digest in reuse['files'].items():
+                require(sha(Path(reuse['directory'])/name)==digest, 'prior attempt changed: '+name)
+            for name,digest in reuse['snapshot'].items():
+                require(sha(self.out/name)==digest,'restored snapshot changed: '+name)
         self.artifacts()
 
     def budget(self,kind):
@@ -276,8 +365,7 @@ class Stage(speech.Stage):
         return self.http('/v1/chat/completions',body,label=label,**kwargs)
 
     def start(self):
-        for port in (self.plan['port'],self.plan['operations_port']):
-            with socket.socket() as sock: sock.bind(('127.0.0.1',port))
+        probe_ports((self.plan['port'],self.plan['operations_port']))
         policy=dict(version=3,revision=0,fair_queue=True,gateway_token=SECRET,
             clients=[dict(id=name,max_inflight=1,max_control_inflight=4,
                 max_prompt_tokens=8192,max_output_tokens=8192,max_body_bytes=1048576,
@@ -367,6 +455,11 @@ class Stage(speech.Stage):
         return choices[0]['message']['audio']['id']
 
     def business(self):
+        if 'resume_restart' in self.plan:
+            reuse=self.plan['resume_restart']
+            self.rows=copy.deepcopy(reuse['rows']);self.expected=list(reuse['expected'])
+            self.history_business(reuse['audio_id'],read(self.out/'json.wire'))
+            return
         if 'reuse_json' in self.plan:
             raw = (self.out/'json.wire').read_bytes()
         else:
@@ -416,6 +509,9 @@ class Stage(speech.Stage):
         self.cleanup();require(self.model.returncode==0,'graceful model stop failed')
         shutil.copy2(self.out/'cleanup.json',self.out/'restart-cleanup.json')
         self.start()
+        self.history_business(audio_id, stored)
+
+    def history_business(self, audio_id, stored):
         history=dict(model='qwen3.8-flash-next',temperature=0,enable_thinking=False,
             max_completion_tokens=64,messages=[dict(role='assistant',audio=dict(id=audio_id)),
                 dict(role='user',content='Repeat the previous assistant sentence exactly, no added words.')])
@@ -526,7 +622,9 @@ def main():
     for name in ('binary','decoder','output'):
         prepare_parser.add_argument('--'+name,type=Path,required=True)
     prepare_parser.add_argument('--port',type=int,default=18484)
-    prepare_parser.add_argument('--reuse-json',type=Path)
+    reuse=prepare_parser.add_mutually_exclusive_group()
+    reuse.add_argument('--reuse-json',type=Path)
+    reuse.add_argument('--resume-restart',type=Path)
     sub.add_parser('run').add_argument('--plan',type=Path,required=True)
     sub.add_parser('features').add_argument('--output',type=Path,required=True)
     args=parser.parse_args()

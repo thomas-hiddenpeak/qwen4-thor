@@ -5,12 +5,14 @@ import unittest
 import tempfile
 import subprocess
 import os
+import socket
+import errno
 import threading
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
-from tools.native_tts.chat_acceptance import Stage, HEADERS, ROOT, speech, requests, check_usage, parse_stream
+from tools.native_tts.chat_acceptance import Stage, HEADERS, ROOT, speech, requests, probe_ports, check_usage, parse_stream
 
 
 def usage():
@@ -71,6 +73,23 @@ class Contract(unittest.TestCase):
 
 
 class ObservationRouting(unittest.TestCase):
+    def test_restart_probe_accepts_time_wait_but_rejects_a_live_listener(self):
+        with socket.socket() as listener:
+            listener.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+            listener.bind(('127.0.0.1',0));listener.listen(1)
+            port=listener.getsockname()[1]
+            with self.assertRaises(OSError) as occupied:probe_ports([port])
+            self.assertEqual(occupied.exception.errno,errno.EADDRINUSE)
+            with socket.create_connection(('127.0.0.1',port)) as client:
+                accepted,_=listener.accept()
+                with accepted:
+                    accepted.shutdown(socket.SHUT_WR)
+                    self.assertEqual(client.recv(1),b'')
+        with socket.socket() as naive:
+            with self.assertRaises(OSError) as stale:naive.bind(('127.0.0.1',port))
+            self.assertEqual(stale.exception.errno,errno.EADDRINUSE)
+        probe_ports([port])
+
     def test_local_operations_and_client_business_are_separate(self):
         calls = []
         class Handler(BaseHTTPRequestHandler):
