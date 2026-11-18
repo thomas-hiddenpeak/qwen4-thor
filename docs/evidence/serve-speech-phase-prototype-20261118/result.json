@@ -1,0 +1,100 @@
+{
+  "status": "NO_GO_PHASE_TEMPO_PROTOTYPE_CONTENT",
+  "cpu_tests": 6,
+  "cpu_seconds": 0.3008542419411242,
+  "asr_loads": 1,
+  "tts_loads": 0,
+  "main_llm_loads": 0,
+  "http_requests": 0,
+  "original_utterances": 2,
+  "content_seconds": 4.827599564101547,
+  "preload_failure_seconds": 0.024052666034549475,
+  "preload_failure_preserved": true,
+  "comparisons": [
+    {
+      "utterance": 0,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello. This is an A S V test.",
+      "passed": false,
+      "eos": true,
+      "generated_tokens": 14
+    },
+    {
+      "utterance": 1,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，欢迎从三点开始。",
+      "passed": false,
+      "eos": true,
+      "generated_tokens": 11
+    }
+  ],
+  "waveforms": [
+    {
+      "frames": 316,
+      "input_samples": 76800,
+      "output_samples": 19200,
+      "analysis_coverage_min": 1.4999999999999996,
+      "window": 1024,
+      "synthesis_hop": 64,
+      "maximum_analysis_hop": 256,
+      "raw_peak": 0.2651197142283238,
+      "clipped_samples": 0,
+      "streaming_implemented": false,
+      "production_acceptance": false,
+      "sha256": "6206488454d4445f7ba3b5b17d93d1cdf8e5851528145e13f3af073b9a5138e8",
+      "original_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293",
+      "utterance": 0
+    },
+    {
+      "frames": 309,
+      "input_samples": 74880,
+      "output_samples": 18720,
+      "analysis_coverage_min": 1.4999999999999996,
+      "window": 1024,
+      "synthesis_hop": 64,
+      "maximum_analysis_hop": 256,
+      "raw_peak": 0.4035729872574901,
+      "clipped_samples": 0,
+      "streaming_implemented": false,
+      "production_acceptance": false,
+      "sha256": "3b966baeb57195d3a4445fbe960cb805bea5df1ae7d40869203f7849620ff9a3",
+      "original_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91",
+      "utterance": 1
+    }
+  ],
+  "nvml_queries": 10,
+  "nvml_all_ok": true,
+  "default_revision": 316,
+  "defaults_unchanged": true,
+  "production_acceptance": false,
+  "streaming_implemented": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "master_goal_complete": false,
+  "archive_sha256": "32374c4d78395a96339a6f476bfbe6d176bdabfc9592fc630b925cbdb74266ea",
+  "next": "Analyze existing acoustic evidence and ASR time resolution before choosing a concrete repair; no parameter sweep or scope removal",
+  "oracle_resolution": {
+    "original_frames": [
+      320,
+      312
+    ],
+    "original_audio_tokens": [
+      42,
+      41
+    ],
+    "fast_frames": [
+      80,
+      78
+    ],
+    "fast_audio_tokens": [
+      10,
+      10
+    ],
+    "causal_conclusion_proven": false
+  },
+  "prototype_environments": {
+    "cpu_numpy": "1.26.4",
+    "reference_numpy": "2.5.2",
+    "production_numerical_equivalence_accepted": false
+  }
+}

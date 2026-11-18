@@ -344,13 +344,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -504,13 +507,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -4305,13 +4311,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -5521,13 +5530,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -7180,13 +7192,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -7266,13 +7281,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -7439,7 +7457,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Speech/input PR final-head checks and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -7938,8 +7955,8 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
-      "current_mainline_evidence": "evidence/serve-chat-audio-mainline-20261118/README.md",
-      "current_candidate": "TTS work-branch changes; no replacement of rev306 or full-task completion",
+      "current_mainline_evidence": "evidence/serve-tts-mainline-20261118/README.md",
+      "current_candidate": "4x speech diagnostic only; no production candidate accepted, rev316 remains delivered",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -7981,13 +7998,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     },
     {
@@ -8179,8 +8199,8 @@
       }
     }
   ],
-  "next_task": "Speech/input main integration and remaining audio/voice/Realtime plus all master tasks",
-  "next": "Complete main integration, four-times-speed content, complete voices and remaining Responses/Batch/Realtime and every A/N/R/Q task.",
+  "next_task": "Four-times-speed content diagnosis, complete voice contracts and remaining audio/Realtime plus all master tasks",
+  "next": "Resolve actual remaining capability gaps, validate affected behavior, deliver reversibly and continue every A/N/R/Q task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -8278,7 +8298,13 @@
         0.25,
         4
       ],
-      "range_not_reduced": true
+      "range_not_reduced": true,
+      "phase_prototype_state": "content_failed_not_delivered",
+      "phase_prototype_evidence": "evidence/serve-speech-phase-prototype-20261118/README.md",
+      "clock_diagnostic_evidence": "evidence/serve-speech-clock-diagnostic-20261118/README.md",
+      "clock_diagnostic_matches": 4,
+      "production_acceptance": false,
+      "acceptance_rule_decision_pending": true
     },
     "service_assets": {
       "state": "paired_loader_resources_health_component_qualified",
@@ -8354,7 +8380,7 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "delivered_rev316_main_pending",
+      "state": "delivered_rev316_main_merged",
       "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
@@ -8448,13 +8474,16 @@
         "files": 115,
         "secret_scan_matches": 0,
         "archive_sha256": "8408d4ddaaaa4ad89b6b87edf85138c0d1544a161f465b34b31582b355e817b7",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-tts-delivery-20261118/README.md"
+        "evidence": "evidence/serve-tts-delivery-20261118/README.md",
+        "main_merge_commit": "81bf3d1e35dfbf9566957be35f3a3c3980b1bcac",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/48",
+        "main_evidence": "evidence/serve-tts-mainline-20261118/README.md"
       }
     }
   }
