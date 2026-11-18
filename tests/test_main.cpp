@@ -29,6 +29,7 @@
 #include "q4t/server/file_webp.h"
 #include "q4t/server/file_video.h"
 #include "q4t/server/file_audio.h"
+#include "q4t/server/speech_encode.h"
 #include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
@@ -45,6 +46,7 @@ int DocumentSandboxFixture(int argc, char** argv);
 int WebpWorkerFixture(int argc, char** argv);
 int VideoWorkerFixture(int argc, char** argv);
 int AudioWorkerFixture(int argc, char** argv);
+int SpeechEncodeFixture(int argc, char** argv);
 int WorkerIoBudgetFixture(int argc, char** argv);
 int LegacyDocumentFixture(int argc, char** argv);
 int PdfSandboxFixture(int argc, char** argv);
@@ -98,6 +100,10 @@ int main(int argc, char** argv) {
   if (video_fixture >= 0) return video_fixture;
   const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);
   if (video_worker >= 0) return video_worker;
+  const int speech_fixture = SpeechEncodeFixture(argc, argv);
+  if (speech_fixture >= 0) return speech_fixture;
+  const int speech_encoder = q4t::server::MaybeRunSpeechEncodeWorker(argc, argv);
+  if (speech_encoder >= 0) return speech_encoder;
   const int audio_fixture = AudioWorkerFixture(argc, argv);
   if (audio_fixture >= 0) return audio_fixture;
   const int audio_worker = q4t::server::MaybeRunFileAudioWorker(argc, argv);

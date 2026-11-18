@@ -1,0 +1,42 @@
+{
+  "status": "PASS_COMPONENT_PENDING_BUSINESS_AND_STREAMING",
+  "distinct_tests": 10,
+  "executions": 11,
+  "cpu_seconds": 0.4778657117858529,
+  "gpu_model_loads": 0,
+  "http_requests": 0,
+  "source_gate": {
+    "anchors": 889,
+    "negative_controls": 12
+  },
+  "defaults_unchanged": true,
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "sources": {
+    "include/q4t/server/speech_encode.h": "049cd9cbaeb4c66392ab96260be6e6610ca06847d6fb4d56bbea74fa13cbe5dd",
+    "src/server/speech_encode_protocol.h": "57b31e1999d9f337c1ee76936eba9642e03a6190f1e70e5148c3e30ebe3a90c9",
+    "src/server/speech_encode.cpp": "6c292f99d5fc63c682a13377082cc00d3049840fed2f6e597219a1d3089afa0e",
+    "src/server/speech_encode_worker.cpp": "7a3a40056ef1fd9bec6be44bfd3f055c11533c641df7d7885afdb3403ff7099a",
+    "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
+    "src/audio/pcm_output.cpp": "854f6c19c70b4d5dd98a6850ed8f4c96280900a1280f9d7bae71a13de7468950",
+    "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
+    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f",
+    "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
+    "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
+    "src/server/worker_io_broker.cpp": "bb7ead8d038868af5bdca8148bec08d313eeb685fefaf57c502ee97e0a29830a"
+  },
+  "original_failure": "AAC partial frame and reservoir not drained; original test program/source/output retained",
+  "accepted": "Unchanged initial 8 passes plus repaired AAC and actual partial-tail tests",
+  "remaining": [
+    "speech content roundtrip",
+    "HTTP and SDK",
+    "progressive generation/encoding",
+    "lifecycle/recovery/release",
+    "4x tempo content"
+  ]
+}

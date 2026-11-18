@@ -1,0 +1,18 @@
+{
+  "task": "AAC EOS drain: align partial frame and two codec tail input frames, disclose source vs encoder input",
+  "limits": {
+    "cpu_tests": 2,
+    "seconds": 60,
+    "gpu_model_loads": 0
+  },
+  "tests": [
+    "speech_encode_aac_real_roundtrip",
+    "speech_encode_aac_partial_tail_contains_actual_signal"
+  ],
+  "contracts": {
+    "original": "unchanged 1.0..1.15s duration and tone thresholds",
+    "tail": "2507 actual samples, 5120 codec input including 2613 explicit tail; decode cosine >=0.9 whole and >=0.8 last 422 samples after one best lag <=2048",
+    "reuse": "Original eight unrelated passes; pad length is zero outside AAC; no other codec math changed"
+  },
+  "original_failure": "encode-cpu-01: nine tests, AAC short, eight pass; two initial necessary build corrections retained"
+}

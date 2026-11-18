@@ -127,3 +127,27 @@ voice的真实资产/注册/条件后端仍是待实现项，不能只解析后�
 压缩格式复用既有隔离媒体worker；库/插件故障仅影响对应格式。
 固定本组5CPU/60秒，随后实际语速/编码/HTTP/SDK与恢复；已验
 合成数值与两句真实发声直接复用，不扩五档性能或全模型质量。
+
+## Speech变速与编码的当前实施状态
+
+0.25/2倍的原中英文内容通过；4倍直达与两级候选仍有丢词，
+独立SoundTouch对照及减速回放不能排除算法内容损失，仍需
+解决，不能以缩小speed范围或“参考也失败”结案。
+[原失败](evidence/serve-speech-tempo-failure-20261118/README.md)和
+[后续诊断](evidence/serve-speech-tempo-diagnosis-20261118/README.md)
+保持可核验。该库仅用于测试，不进入生产发行。
+
+六格式编码成组实现，压缩格式复用GStreamer受限子进程，
+共享文件解析容量槽，样本/输出/线程/CPU时间及父进程墙钟截止
+分别有界；缺库、崩溃、卡死与取消只影响相应请求。PCM/WAV
+直接原生输出。当前版本接完整PCM，生成中流式编码仍须完成，
+不能把完整生成后分块发送替代实时流式。固定9 CPU/60秒验证
+实际格式与回环、故障隔离和回收，随后实际语音、HTTP和恢复。
+参考接口为[MP3](https://gstreamer.freedesktop.org/documentation/lame/index.html)、
+[AAC](https://gstreamer.freedesktop.org/documentation/voaacenc/index.html)与
+[Opus](https://gstreamer.freedesktop.org/documentation/opus/opusenc.html)。
+只使用库的公开API，无移植这些项目的实现代码。
+
+六格式组件10项独立CPU已过，见[编码证据](evidence/serve-speech-encoding-cpu-20261118/README.md)。
+AAC真实末尾截断已补整帧和两帧编码排空，单列填充采样量；
+压缩实际语音、生成流式/HTTP/恢复及4倍内容仍继续。

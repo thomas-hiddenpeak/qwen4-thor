@@ -916,6 +916,12 @@ RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 
 音频codec在隔离worker复用系统GStreamer音频库/固定插件，核心不
 链接或加载它们，不启动外部解码程序；插件按系统包保留LGPL等许可。
+Speech候选的压缩输出复用同一隔离机制：MP3用LAME、AAC用
+VisualOn AAC、Opus/FLAC使用对应系统插件；PCM/WAV保持原生。
+这些库只在选择压缩格式时由子进程加载，其缺失/失败不影响健康
+核心或原生PCM/WAV，不增加nginx、FFmpeg命令行或Python服务依赖。
+当前只是编码组件候选，真实Speech HTTP、生成流式和4倍语速
+内容仍须完成，不能据此宣称语音输出已交付。
 原生对齐与VAD不增加PyTorch/ONNX运行依赖。Qwen3-ASR和ForcedAligner
 的固定来源及Apache-2.0许可见[声明](third_party/licenses/qwen3-asr/README.md)，
 Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。

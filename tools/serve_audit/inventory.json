@@ -2176,8 +2176,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5a73f5d6cbb71418ee445c2abd96639ad920a82506652fbb832d8da8f5ed1e6c",
-    "cmake/ChatProtocolIdentity.cmake": "9477dbe608a49737bafbb34587202cdc47737a96c35489b18c2c3aa50d373ccc",
+    "CMakeLists.txt": "26d5db145b683596665ae4ee75da7005ba35c6f546b871f4cb69f6e525d81fb0",
+    "cmake/ChatProtocolIdentity.cmake": "2319a2cd016b29b11a72b8950ad8c1d2bc647b5e4369a93135df2d29dd0bd999",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2500,7 +2500,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "b73de00ef493766bd7a229685cb648b9c7cf284c7c749b69d5cbff3468427c50",
+    "src/main.cpp": "c3331cda4d4fc45c9868d3596e6062d4f412efe98cc0a9f6211c41eaa0cc71f0",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -2719,7 +2719,7 @@
     "src/server/mcp_tunnel_transport_internal.h": "0474e349f1f1256a19e4d2c71efedf3a2edc35337654b6ffc459672d2da36e3c",
     "src/server/media_admission.cpp": "cb8791e4a45118a830b5a094d518886e0cf0f33d88c8683cb4c0ebeea2a18902",
     "src/server/media_cache.cpp": "ad3e2fae8415b04cd2cc233b7aaa61626704433c440675d478e7f69c14253a28",
-    "src/server/media_codec_runtime.h": "63bd9f8eec631ddea6df8cd738a188525bf6e36c75d121b747d777cd0be21c19",
+    "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_assets.cpp": "5f67242b93292c80539e537c0ea0f1245e6cf1206213a2cb42572895d5dcf598",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
@@ -3060,7 +3060,11 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/server/speech_encode.h": "049cd9cbaeb4c66392ab96260be6e6610ca06847d6fb4d56bbea74fa13cbe5dd",
+    "src/server/speech_encode_protocol.h": "57b31e1999d9f337c1ee76936eba9642e03a6190f1e70e5148c3e30ebe3a90c9",
+    "src/server/speech_encode.cpp": "6c292f99d5fc63c682a13377082cc00d3049840fed2f6e597219a1d3089afa0e",
+    "src/server/speech_encode_worker.cpp": "7a3a40056ef1fd9bec6be44bfd3f055c11533c641df7d7885afdb3403ff7099a"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -7362,5 +7366,15 @@
     "tokenizer": "Explicit 33-added-token profile; 151675 audio padding and headerless merges, keeps ASR header requirement. Public tokenizer header now source-bound.",
     "validation": "13 first-pass CPU + only 3 failed tokenizer cases repaired against 16 official reference texts; original failure preserved; no CUDA/HTTP acceptance.",
     "evidence": "docs/evidence/serve-tts-execution-cpu-20261118/README.md"
+  },
+  "native_speech_encoding_20261118": {
+    "scope": "Bounded complete-waveform six-format encoder candidate. PCM/WAV native; compressed formats use existing isolated system codec loading. Missing codec/crash/cancel cannot fail core startup.",
+    "remaining": [
+      "compressed actual speech content",
+      "progressive synthesis and encoding",
+      "HTTP/SDK/TLS/recovery delivery",
+      "4x tempo content remains unresolved"
+    ],
+    "cpu": "10 distinct checks passed: original 8, repaired AAC and partial-tail 2; first failure and build corrections retained. AAC explicit tail padding is disclosed separately from actual source."
   }
 }

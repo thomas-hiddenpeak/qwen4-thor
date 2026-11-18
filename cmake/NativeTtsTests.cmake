@@ -44,3 +44,29 @@ if(TTS_ICU_FOUND)
   target_link_libraries(q4t_tts_execution_tests PRIVATE ${TTS_ICU_LINK_LIBRARIES})
   target_compile_options(q4t_tts_execution_tests PRIVATE -Wall -Wextra -Werror)
 endif()
+
+# Real encoding uses existing exec isolation; never links codecs into the core.
+include(${CMAKE_CURRENT_LIST_DIR}/NativeVideo.cmake)
+add_executable(q4t_speech_encode_tests EXCLUDE_FROM_ALL
+  ${tts_test_root}/tests/speech_encode_test_main.cpp
+  ${tts_test_root}/tests/server_speech_encode_test.cpp
+  ${tts_test_root}/src/server/speech_encode.cpp
+  ${tts_test_root}/src/server/speech_encode_worker.cpp
+  ${tts_test_root}/src/server/speech_request.cpp
+  ${tts_test_root}/src/audio/pcm_output.cpp
+  ${tts_test_root}/src/server/file_audio.cpp
+  ${tts_test_root}/src/server/file_audio_worker.cpp
+  ${tts_test_root}/src/server/file_video_sandbox.cpp
+  ${tts_test_root}/src/server/grammar_process.cpp
+  ${tts_test_root}/src/server/worker_io_broker.cpp
+  ${tts_test_root}/src/server/output_schema.cpp
+  ${tts_test_root}/src/server/http_response.cpp
+  ${tts_test_root}/src/io/json.cpp
+  ${tts_test_root}/src/trace/sha256.cpp)
+target_compile_definitions(q4t_speech_encode_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_include_directories(q4t_speech_encode_tests PRIVATE ${tts_test_root}/include)
+q4t_configure_native_video(q4t_speech_encode_tests)
+target_link_libraries(q4t_speech_encode_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
+target_compile_options(q4t_speech_encode_tests PRIVATE
+  -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+target_link_options(q4t_speech_encode_tests PRIVATE -Wl,--gc-sections)
