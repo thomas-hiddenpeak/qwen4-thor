@@ -869,6 +869,41 @@ ASR资产通过`--asr-model-dir DIR`按部署启用；固定revision/权重在
 `--asr-max-audio-seconds`、`--asr-max-context-tokens`、
 `--asr-max-output-tokens`、`--asr-workspace-mib`调整。
 
+Chat语音输入已进入[rev306可回退交付](docs/evidence/serve-chat-audio-delivery-20261118/README.md)。
+启用ASR后，`/v1/chat/completions`支持user消息中的
+`input_audio: {data, format}`，其中data是标准base64，format为
+`wav`或`mp3`。真实转录按原片段位置送入主模型，支持文本回答、
+工具/结构化输出、多choice、JSON/SSE和Batch；存储保留原音频。
+例如使用OpenAI Python客户端：
+
+```python
+import base64
+import os
+from pathlib import Path
+from openai import OpenAI
+
+client = OpenAI(base_url=os.environ["Q4T_BASE_URL"],
+                api_key=os.environ["Q4T_API_KEY"])
+reply = client.chat.completions.create(
+    model="qwen3.8-flash-next",
+    messages=[{"role": "user", "content": [
+        {"type": "text", "text": "请概括这段录音的内容。"},
+        {"type": "input_audio", "input_audio": {
+            "data": base64.b64encode(Path("recording.wav").read_bytes()).decode(),
+            "format": "wav"}},
+    ]}],
+    modalities=["text"], max_completion_tokens=128,
+    extra_body={"enable_thinking": False},
+)
+print(reply.choices[0].message.content)
+```
+
+每请求最多8段、解码前源字节合计25MiB；所有片段共享配置的音频
+时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
+RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
+多choice只计一次。当前路径识别语音内容；非语言声学信息、语音
+输出、assistant音频历史和Realtime仍是总计划中的待实现能力。
+
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
 1024MiB workspace，分别用`--aligner-max-audio-seconds`、
@@ -910,7 +945,7 @@ Apache-2.0声明；权重仅为显式部署资产，CPU转换/参考不成为运
 （Meta，MIT），采用独立实现；本次候选未改善信号，不进入生产，
 不引入Demucs或其Python运行依赖。
 
-重叠语音的实际检测/分离、Chat音频、语音合成和Realtime继续按
+重叠语音的质量修复、非语言声学信息、语音输出/历史和Realtime继续按
 [总音频计划](docs/SERVE_NATIVE_AUDIO_2026-11-17.md)实现。
 现有独立day入口固定在rev276的核心业务循环；当前辅助后端的完整
 长稳交接仍属于Q03待完成项，长稳实跑由用户执行。

@@ -595,3 +595,5 @@
 - [原生重叠语音实施](SERVE_NATIVE_OVERLAP_2026-11-18.md)：真实两路分离/转录及恢复，当前资产CPU已验、业务继续实现。
 
 - [说话人PR46主线交付](evidence/serve-speaker-main-20261118/README.md)；[真实分离组件](evidence/serve-separator-compute-20261118/README.md)，实际接口与服务恢复继续实现。
+
+- [rev306Chat音频交付](evidence/serve-chat-audio-delivery-20261118/README.md)：真实Chat音频/JSON/SSE/工具与可回退原生服务。

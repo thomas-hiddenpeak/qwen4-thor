@@ -174,7 +174,9 @@ jobs:
           tools.serve_recovery.test_speaker_profiles.SpeakerProfiles
           tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage
           tools.serve_recovery.test_asr_profiles.AsrProfiles
+          tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles
           tools.native_asr.test_auxiliary_service
+          tools.native_asr.test_recovery_profiles.RecoveryProfiles
           tools.native_speaker.test_service
       - name: Check cold acceptance package provenance
         timeout-minutes: 1

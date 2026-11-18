@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev306Chat音频可回退交付](evidence/serve-chat-audio-delivery-20261118/README.md)
+完成，19项STOPPED命令/294.806秒，0新增GPU。实际整根回退
+再前进通过，原预算/历史保持；前驱rev296和day保留。接着主线
+检查合入、真实重叠检测分离与全部master，不在本阶段结束总目标。
+
 [Chat音频服务与恢复通过](evidence/serve-chat-audio-service-20261118/README.md)：
 4阶段5启动/25创建/1探针/296.093秒；双SDK/TLS、全部保留包及
 整包回退后实际A/B/A、原状态/预算保全通过。285次NVML正常，
@@ -640,16 +645,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev296；服务包 `4945bfea581033b42c2b88bb2fbd8c053b266426b268104a7a8b55089293773c` |
-| Generation | `1617fb1d82036768ec785e8ac4fa1948e29d8d9ad948a0be616e22d222f57be3` |
-| 引擎 | `e5c65f79cd38f46f3d24cd2fefb845f1bbb1c81e37f82808b829b6bced3c71f2` |
-| 引擎发布记录 | `839692d724b90adffc6e57cfd1d627b9bc714853bb5c991261b3b65060da2751` |
+| 发布 | rev306；服务包 `3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4` |
+| Generation | `a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a` |
+| 引擎 | `bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0` |
+| 引擎发布记录 | `0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951` |
 | Guardian | `58fd31007b8d7fce7a31fc17d9a3252645e08616a54112a5924cde366bcf575f` |
 | 原生入口 | `c75fe4f96522a9f85144b7281c656674831141abe1f155b8046320da391eb9c4` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
 | 默认容量 | 单流、ctx8192、prefill2048、输出256、MTP k=3；inflight8/queue2；媒体已启用 |
-| 人工整包回退 | 现代保留根 `157d3c0b53b86ce4f27c49533de2fd335f7ffd32c5f213a1008671e5da3afae4`；实际speaker/原周期/原生入口已验，前驱rev286另保留 |
-| 自动payload回退 | 已验旧控制/当前引擎包 `cad13869f52f2d5616577750c3fd1913304640345c0e9f132a833acc83f05f54`；不是独立旧引擎回退 |
+| 人工整包回退 | 现代保留根 `e9cd734a50c8938b62217df331d1bb04c364d0ef59c49481bb46bea6db72f197`；实际Chat音频/speaker/原周期/原生入口已验，前驱rev296另保留 |
+| 自动payload回退 | 已验旧控制/当前引擎包 `6171679f81ef9e1e40f013a028830b21794b647d90f406d9ac57c17f2f5d4a7e`；不是独立旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker资产按部署显式启用，codec按请求隔离，辅助失能不拖停健康Chat |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
