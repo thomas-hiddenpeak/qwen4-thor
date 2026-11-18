@@ -1,0 +1,21 @@
+{
+  "sources": {
+    "cmake/HostTestSources.cmake": "bc5186bee84498a471d6e9934fafac03e5e7c410e3d6470fad6cf8687afe57e9",
+    "cmake/NativeTtsTests.cmake": "67f1ed8cd27e10ea61a82de21736a549eee419b45bfb368332d47fbf421cefc2",
+    "include/q4t/audio/tts_generation.h": "77ec384cb4096ea22fa4629c0a21ab145fe7b0227f3dd9528c3e1382fef9de51",
+    "include/q4t/audio/tts_layout.h": "19cbac06fdd86ed3e9f792fc41c7680ced17cfceaac4b0e5aad8cafc6035644b",
+    "src/audio/tts_generation.cpp": "b15ab893d560e8890654f4d353ccf4e21fe3206db46b9977a9ed030f937a4d1c",
+    "src/audio/tts_layout.cpp": "d442296d64c2a78b050dc3f7af1714723df697486ed5e878a34bb984e5237fcc",
+    "src/audio/tts_model.cu": "eafae3d7c541631e1ede12c9348f1f1a498cd3920c50d9317adfa7c0b98c0afc",
+    "tests/tts_icl_prompt_test.cpp": "725b10a8171bca491f5a2ef6ad37adc45206d1b5dfa53bb18ad0e5063ccdb210"
+  },
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "gpu": 0,
+  "native_prompt_qualified": false
+}

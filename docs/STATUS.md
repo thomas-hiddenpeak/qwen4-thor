@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL提示17项CPU通过](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：
+参考转录与目标文本、16组码的两种对齐、所有权及实际工作区预算；
+9新增/8旧合同、0.0035秒/0GPU，host/CUDA零警告。继续参考码全局
+块边界解码与精确裁剪、持久化和实际业务；数值边界决定保持待答复。
+
 [PR49已真实合入main](evidence/serve-voice-mainline-20261119/README.md)：
 精确头0febc4f5的push/PR检查均通过，合并42a42846；rev326、注册音色
 恢复和Base-only消费已进入主线。工作分支有后继ICL开发，继续保留。

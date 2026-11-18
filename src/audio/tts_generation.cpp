@@ -151,6 +151,57 @@ Status PlanTtsBasePrompt(std::span<const int32_t> text,
                     out);
 }
 
+Status PlanTtsBaseIclPrompt(std::span<const int32_t> text,
+                            std::span<const int32_t> reference_text,
+                            std::span<const TtsCodes> reference_codes,
+                            std::span<const int32_t> instruction,
+                            std::span<const float> speaker_embedding,
+                            std::string_view language, bool non_streaming,
+                            size_t max_context, TtsPrompt* out) {
+  if (!out || text.empty() || reference_text.empty() ||
+      reference_text.size() > 32700 ||
+      text.size() > 32700 - reference_text.size() || !Content(reference_text) ||
+      reference_codes.empty() ||
+      reference_codes.size() > TtsPrompt::kMaxReferenceFrames ||
+      max_context > 32768)
+    return Status::Fail("TTS ICL reference content or context invalid");
+  for (const auto& frame : reference_codes)
+    for (const auto code : frame)
+      if (code < 0 || code >= TtsConfig::kCodebook)
+        return Status::Fail("TTS ICL reference contains a non-audio code");
+  std::vector<int32_t> combined(reference_text.begin(), reference_text.end());
+  combined.insert(combined.end(), text.begin(), text.end());
+  TtsPrompt p;
+  if (auto status = PlanTtsBasePrompt(combined, instruction, speaker_embedding,
+                                      language, non_streaming, 32768, &p);
+      !status)
+    return status;
+  p.reference_codes.assign(reference_codes.begin(), reference_codes.end());
+  const int32_t text_start = p.pad_index + 3, eos = p.pad_index + 2;
+  for (size_t i = 0; i < reference_codes.size(); ++i) {
+    const size_t position = i + 1;  // codec BOS is the preceding existing row.
+    const int32_t index = non_streaming || position > combined.size()
+                              ? p.pad_index
+                          : position == combined.size()
+                              ? eos
+                              : text_start + static_cast<int32_t>(position);
+    p.prefill.push_back(
+        {index, TtsPromptRow::kReferenceFrame - static_cast<int32_t>(i)});
+  }
+  if (!non_streaming) {
+    p.trailing_text.clear();
+    for (size_t i = reference_codes.size() + 1; i <= combined.size(); ++i)
+      p.trailing_text.push_back(
+          i == combined.size() ? eos : text_start + static_cast<int32_t>(i));
+    if (p.trailing_text.empty()) p.trailing_text.push_back(p.pad_index);
+  }
+  if (p.prefill.size() > max_context)
+    return Status::Fail("TTS ICL prompt exceeds the configured context budget");
+  if (auto status = ValidateTtsPrompt(p); !status) return status;
+  *out = std::move(p);
+  return {};
+}
+
 Status ValidateTtsPrompt(const TtsPrompt& p) {
   const auto index = [&](int32_t i) {
     return i >= 0 && static_cast<size_t>(i) < p.text_ids.size();
@@ -163,12 +214,32 @@ Status ValidateTtsPrompt(const TtsPrompt& p) {
   for (const auto id : p.text_ids)
     if (id < 0 || id >= 151676)
       return Status::Fail("TTS text ID exceeds tokenizer vocabulary");
-  size_t speaker_rows = 0;
+  if (p.reference_codes.size() > TtsPrompt::kMaxReferenceFrames ||
+      (!p.reference_codes.empty() && p.speaker_embedding.empty()))
+    return Status::Fail(
+        "TTS reference condition exceeds storage or lacks speaker");
+  for (const auto& frame : p.reference_codes)
+    for (const auto code : frame)
+      if (code < 0 || code >= TtsConfig::kCodebook)
+        return Status::Fail("TTS reference condition has non-audio code");
+  size_t speaker_rows = 0, reference_rows = 0;
   for (size_t i = 0; i < p.prefill.size(); ++i) {
     const auto& row = p.prefill[i];
     if (!index(row.text_index) ||
-        row.codec_id < TtsPromptRow::kSpeakerCondition || row.codec_id >= 3072)
+        row.codec_id <
+            TtsPromptRow::kReferenceFrame -
+                static_cast<int32_t>(TtsPrompt::kMaxReferenceFrames - 1) ||
+        row.codec_id >= 3072)
       return Status::Fail("TTS dual-track row outside its storage");
+    if (row.codec_id <= TtsPromptRow::kReferenceFrame) {
+      const size_t frame = TtsPromptRow::kReferenceFrame - row.codec_id;
+      if (frame != reference_rows || frame >= p.reference_codes.size() ||
+          i == 0 || (frame == 0 && p.prefill[i - 1].codec_id != 2149) ||
+          i + p.reference_codes.size() - frame != p.prefill.size())
+        return Status::Fail(
+            "TTS reference frame missing, reordered or misplaced");
+      ++reference_rows;
+    }
     if (row.codec_id == TtsPromptRow::kSpeakerCondition) {
       if (row.text_index != p.pad_index || i == 0 ||
           i + 1 == p.prefill.size() || p.prefill[i - 1].codec_id != 2157 ||
@@ -180,6 +251,8 @@ Status ValidateTtsPrompt(const TtsPrompt& p) {
       ++speaker_rows;
     }
   }
+  if (reference_rows != p.reference_codes.size())
+    return Status::Fail("TTS reference condition has unused frames");
   if ((!p.speaker_embedding.empty() &&
        (!SpeakerEmbedding(p.speaker_embedding) || speaker_rows != 1)) ||
       (p.speaker_embedding.empty() && speaker_rows != 0))

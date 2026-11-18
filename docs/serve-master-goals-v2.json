@@ -9391,7 +9391,14 @@
       "exact_code_gate": "FAILED_PRESERVED_4_OF_2336_LONG_CASE_CODES",
       "continuous_operand_checks_passed": 222,
       "independent_fp64_nearest_neighbor": "Both sides correct on all16 groups at diagnosed frame94; first-input relativeL2 3.4013e-5",
-      "acceptance_rule_decision_pending": true
+      "acceptance_rule_decision_pending": true,
+      "prompt": {
+        "state": "implemented_targeted_cpu_passed_gpu_pending",
+        "evidence": "evidence/serve-tts-icl-prompt-cpu-20261119/README.md",
+        "cpu_new": 9,
+        "cpu_existing": 8,
+        "gpu": 0
+      }
     }
   }
 }

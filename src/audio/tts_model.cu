@@ -26,7 +26,8 @@ __global__ void AffineOutput(const float* input, const float* bias,
 
 __global__ void PromptRows(const float* text, const float* codec,
                            const TtsPromptRow* rows, const float* speaker,
-                           float* output, int width, int count) {
+                           const float* reference, float* output, int width,
+                           int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= count) return;
   const auto row = rows[i / width];
@@ -34,6 +35,10 @@ __global__ void PromptRows(const float* text, const float* codec,
   const auto source = static_cast<size_t>(row.text_index) * width + d;
   if (row.codec_id == TtsPromptRow::kSpeakerCondition) {
     output[i] = __fadd_rn(Read(text, source), Read(speaker, d));
+  } else if (row.codec_id <= TtsPromptRow::kReferenceFrame) {
+    const size_t frame = TtsPromptRow::kReferenceFrame - row.codec_id;
+    output[i] =
+        __fadd_rn(Read(text, source), Read(reference, frame * width + d));
   } else {
     output[i] =
         row.codec_id < 0
@@ -42,6 +47,22 @@ __global__ void PromptRows(const float* text, const float* codec,
                   Read(text, source),
                   Read(codec, static_cast<size_t>(row.codec_id) * width + d));
   }
+}
+
+struct ReferenceTables {
+  const float* groups[16];
+};
+
+__global__ void ReferenceFrames(ReferenceTables tables, const int32_t* ids,
+                                float* output, int count, int width) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= count) return;
+  const int frame = i / width, d = i % width;
+  float sum = 0;
+  for (int group = 0; group < 16; ++group)
+    sum += Read(tables.groups[group],
+                static_cast<size_t>(ids[frame * 16 + group]) * width + d);
+  output[i] = sum;
 }
 
 __global__ void SumFrame(const float* codes, const float* text, float* output,
@@ -88,7 +109,7 @@ TtsComputeResult TtsGenerationRun::Begin(
     return Invalid("TTS condition and trained weight variant differ");
   if (auto s = PlanTtsGenerationWorkspace(
           weights.variant, prompt.text_ids.size(), prompt.prefill.size(),
-          max_frames, bytes, &layout_);
+          max_frames, bytes, &layout_, prompt.reference_codes.size());
       !s)
     return {s, cudaSuccess};
   const auto base = reinterpret_cast<uintptr_t>(workspace);
@@ -151,6 +172,25 @@ TtsComputeResult TtsGenerationRun::Begin(
           cudaMemcpyAsync(workspace_ + layout_.speaker_condition,
                           prompt_.speaker_embedding.data(),
                           2048 * sizeof(float), cudaMemcpyHostToDevice, stream);
+    if (status && copied == cudaSuccess && !prompt_.reference_codes.empty()) {
+      copied = cudaMemcpyAsync(
+          workspace_ + layout_.reference_codes, prompt_.reference_codes.data(),
+          prompt_.reference_codes.size() * sizeof(TtsCodes),
+          cudaMemcpyHostToDevice, stream);
+      if (copied == cudaSuccess) {
+        ReferenceTables tables{};
+        tables.groups[0] = weights.codec_embedding;
+        for (size_t i = 1; i < 16; ++i)
+          tables.groups[i] = weights.code_embeddings[i - 1];
+        const int count = static_cast<int>(prompt_.reference_codes.size()) *
+                          layout_.talker.hidden;
+        ReferenceFrames<<<(count + kThreads - 1) / kThreads, kThreads, 0,
+                          stream>>>(
+            tables,
+            reinterpret_cast<int32_t*>(workspace_ + layout_.reference_codes),
+            at(layout_.reference_embeddings), count, layout_.talker.hidden);
+      }
+    }
     if (status && copied == cudaSuccess) {
       const int count = layout_.talker.rows * layout_.talker.hidden;
       PromptRows<<<(count + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
@@ -158,6 +198,8 @@ TtsComputeResult TtsGenerationRun::Begin(
           reinterpret_cast<TtsPromptRow*>(workspace_ + layout_.prompt_rows),
           prompt_.speaker_embedding.empty() ? nullptr
                                             : at(layout_.speaker_condition),
+          prompt_.reference_codes.empty() ? nullptr
+                                          : at(layout_.reference_embeddings),
           at(layout_.prefill), layout_.talker.hidden, count);
     }
   }

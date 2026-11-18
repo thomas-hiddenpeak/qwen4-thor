@@ -99,12 +99,14 @@ struct TtsGenerationLayout {
   size_t ids = 0, text_lookup = 0, text_intermediate = 0, text_projected = 0;
   size_t affine_fp32 = 0, prefill = 0, past_hidden = 0;
   size_t prompt_rows = 0, speaker_condition = 0;
+  size_t reference_codes = 0, reference_embeddings = 0;
   size_t codec_embeddings = 0, decode_input = 0, predictor_input = 0;
   size_t predictor_projected = 0, logits = 0;
 };
 
 Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
                                   size_t prefill_tokens, size_t max_frames,
-                                  size_t max_bytes, TtsGenerationLayout* out);
+                                  size_t max_bytes, TtsGenerationLayout* out,
+                                  size_t reference_frames = 0);
 
 }  // namespace q4t::audio

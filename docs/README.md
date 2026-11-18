@@ -614,3 +614,5 @@
 
 - [注册音色实际合入主线](evidence/serve-voice-mainline-20261119/README.md)：PR49双CI通过、42a42846。
 - [ICL编码器末层修复与量化边界](evidence/serve-tts-icl-encoder-20261119/README.md)：原全码一致FAIL保留，独立诊断和验收决定待续。
+
+- [ICL全部码组提示与预算](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：17 CPU通过，神经合成、解码上下文及持久接线继续。

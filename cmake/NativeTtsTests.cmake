@@ -45,6 +45,7 @@ if(TTS_ICU_FOUND)
     ${tts_test_root}/tests/test_main.cpp
     ${tts_test_root}/tests/tts_generation_test.cpp
     ${tts_test_root}/tests/tts_base_generation_test.cpp
+    ${tts_test_root}/tests/tts_icl_prompt_test.cpp
     ${tts_test_root}/tests/tts_tokenizer_test.cpp
     ${tts_test_root}/tests/asr_tokenizer_test.cpp
     ${tts_test_root}/src/audio/tts_config.cpp
