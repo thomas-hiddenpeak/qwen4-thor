@@ -5,7 +5,10 @@
 #include <fstream>
 
 int SpeechEncodeFixture(int argc, char** argv);
+int SpeechEncodeReplay(int argc, char** argv);
 int main(int argc, char** argv) {
+  const int replay = SpeechEncodeReplay(argc, argv);
+  if (replay >= 0) return replay;
   const int encoder = q4t::server::MaybeRunSpeechEncodeWorker(argc, argv);
   if (encoder >= 0) return encoder;
   const int decoder = q4t::server::MaybeRunFileAudioWorker(argc, argv);

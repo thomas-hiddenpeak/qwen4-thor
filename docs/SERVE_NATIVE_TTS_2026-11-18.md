@@ -151,3 +151,9 @@ voice的真实资产/注册/条件后端仍是待实现项，不能只解析后�
 六格式组件10项独立CPU已过，见[编码证据](evidence/serve-speech-encoding-cpu-20261118/README.md)。
 AAC真实末尾截断已补整帧和两帧编码排空，单列填充采样量；
 压缩实际语音、生成流式/HTTP/恢复及4倍内容仍继续。
+
+四种压缩格式的真实中英文8例全部原文匹配，见
+[压缩内容资格](evidence/serve-speech-encoding-content-20261118/README.md)。
+16个CPU编解码worker回收，3 ASR加载/10.644秒，同租约释放。
+继续TTS04/05服务资产、资源预算、生成中流式与协议；现有完整
+PCM编码不能替代流式。4倍内容保留待修，总计划仍active。

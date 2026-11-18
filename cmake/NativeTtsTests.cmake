@@ -49,6 +49,7 @@ endif()
 include(${CMAKE_CURRENT_LIST_DIR}/NativeVideo.cmake)
 add_executable(q4t_speech_encode_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/tests/speech_encode_test_main.cpp
+  ${tts_test_root}/tools/native_tts/encode_replay.cpp
   ${tts_test_root}/tests/server_speech_encode_test.cpp
   ${tts_test_root}/src/server/speech_encode.cpp
   ${tts_test_root}/src/server/speech_encode_worker.cpp

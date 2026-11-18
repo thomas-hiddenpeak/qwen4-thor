@@ -1,0 +1,83 @@
+{
+  "scope": "Only regenerable compiler identification temporary files; no active CMake or CUDA compilation; executable/library/model/evidence paths retained",
+  "archive": ".q4t-work/serve-native-tts-20261118/compiler-probe-tmp-archive-02.tar.gz",
+  "archive_sha256": "6400de251b7652a8e7fab6fe2742adecac5f9d843a2c48149ce5bd279a629221",
+  "files": {
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp1.ii": {
+      "bytes": 1355786,
+      "sha256": "6639466d7a9e8fcbb4768eebdeae5df5bd6e2bdfb1040ce5c6d90b9e7f8f655a"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp4.ii": {
+      "bytes": 1229245,
+      "sha256": "fae1db9f647484ee8e2f927b1784388b4de251b8e22e0940aaa21fdd05521a74"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.c": {
+      "bytes": 3281,
+      "sha256": "87ac80dd10959a13778627d2fcbf1ce64816134900e70ee2b9674191d7040463"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.cpp": {
+      "bytes": 1152648,
+      "sha256": "ca93d8931e548bb0fba5c493bd3b39ff735dc0c5e7f40044e777c16504e5aeed"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.gpu": {
+      "bytes": 7637,
+      "sha256": "3b826ac345e082993c4049b9b3e515275f0e709e3d27ca5d2baaa54fc7de7dfc"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.stub.c": {
+      "bytes": 790,
+      "sha256": "4fae13c08327d281b4834a727193b083ebd081aea5824f197d676ce2451ccaf5"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin": {
+      "bytes": 1696,
+      "sha256": "01e215791d821ada559b31af255d61d725453c266681dfd305fd44eab103debb"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin.c": {
+      "bytes": 5214,
+      "sha256": "bd36b0450951cd9fb311812ad13f73fe7e745db3a0782d027af9635e5670574a"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.module_id": {
+      "bytes": 44,
+      "sha256": "209afd87868bfacf82593837c0b74a778ad6748618623502efc03121d1bc9ea3"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.o": {
+      "bytes": 8536,
+      "sha256": "55555bc3b319d0e38e1a4e74c56ebc8bc09ec963698b0f2f3af7d025d4ecf0af"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.ptx": {
+      "bytes": 201,
+      "sha256": "1f2813c68c4b0b64bbe78df562dd50a60af9b36c7b94a1ef21eee2c2528f3adb"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.sm_75.cubin": {
+      "bytes": 1464,
+      "sha256": "f3e9bd54d7d5303ec96386c5c2abd2afd73c2ef1d796014615d2a9669d1a7065"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin": {
+      "bytes": 1536,
+      "sha256": "4498ba8c0bd09b5872aae556f9d2c8dd87217e94a3e057af6b98faa626b73c8d"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin.c": {
+      "bytes": 4813,
+      "sha256": "5eab5802fbaa3247f41d3462e218fd18b9ac96da6cb38619323bdbce9f44fdfe"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.o": {
+      "bytes": 3816,
+      "sha256": "a414d8ae9b6dc84d4320d43980c0ecaa7fd4c528500ffbb558b4d8aad40c3580"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.reg.c": {
+      "bytes": 32,
+      "sha256": "ee015e094b9cc8117c3fec9ddcb24b480d2a639f70b049cdc43775745c19da89"
+    },
+    "codec-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.sm_75.cubin": {
+      "bytes": 1456,
+      "sha256": "f5cd887b502102c4af858a8fd0412cc8ac610152b3891af3e272cbbb6837d54e"
+    }
+  },
+  "executables_unchanged": {
+    ".q4t-work/serve-native-tts-20261118/codec-build/q4t_tts_replay": "051a85fb6fa64b4d04c91affbac9fa5d8703dbf1bc57e2814337c4c7ec6d4d13",
+    ".q4t-work/serve-native-tts-20261118/codec-build/q4t_speech_tempo": "30d45dd11db923ea52d9f298c0f12a4956861ae1c82a864e858bb8c5c2b2f240",
+    ".q4t-work/serve-native-tts-20261118/codec-build/q4t_tts_utterance": "9a047a78f70c02c67b20f68f9b2446495c6215c89970fa69b698783e3957bf48",
+    ".q4t-work/serve-native-tts-20261118/codec-build/q4t_tts_codec_replay": "e5884d9162513d2668434b0a50dbc86b3a617d83b842f229701e481a3142fc35"
+  },
+  "bytes_saved": 3357714,
+  "available_bytes": 1098596352
+}

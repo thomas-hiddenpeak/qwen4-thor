@@ -1,0 +1,102 @@
+{
+  "schema": "q4t-speech-encoding-content-v1",
+  "limits": {
+    "seconds": 1200,
+    "native_seconds": 60,
+    "asr_seconds": 600,
+    "cases": 8,
+    "gpu_asr_loads": 3,
+    "gpu_talker_loads": 0,
+    "gpu_codec_loads": 0,
+    "main_llm_loads": 0,
+    "http_requests": 0,
+    "cpu_codec_workers": 16,
+    "asr_tokens_per_case": 64,
+    "artifact_mib": 24,
+    "disk_headroom_mib": 1024
+  },
+  "cases": [
+    {
+      "utterance": 0,
+      "format": "mp3",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 0,
+      "format": "aac",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 0,
+      "format": "opus",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 0,
+      "format": "flac",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-0/pcm.f32",
+      "pcm_sha256": "a4759a2e41d18d315b02df9c61dadbaca865130e62c0f7ab4cba6a3429244293"
+    },
+    {
+      "utterance": 1,
+      "format": "mp3",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    },
+    {
+      "utterance": 1,
+      "format": "aac",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    },
+    {
+      "utterance": 1,
+      "format": "opus",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    },
+    {
+      "utterance": 1,
+      "format": "flac",
+      "pcm": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/utterance-01/run/native/case-1/pcm.f32",
+      "pcm_sha256": "e56a13516320cb5aabe1926c7f043a3bc56248d012b4ccdecb69e8609b212d91"
+    }
+  ],
+  "binary_sha256": "326d554e6ce6872504e0227fbbbe46d1cde2a23dadfd50abc7b7573bbd853c3e",
+  "asr_binary_sha256": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+  "runtime_sources": {
+    "include/q4t/server/speech_encode.h": "049cd9cbaeb4c66392ab96260be6e6610ca06847d6fb4d56bbea74fa13cbe5dd",
+    "src/server/speech_encode_protocol.h": "57b31e1999d9f337c1ee76936eba9642e03a6190f1e70e5148c3e30ebe3a90c9",
+    "src/server/speech_encode.cpp": "6c292f99d5fc63c682a13377082cc00d3049840fed2f6e597219a1d3089afa0e",
+    "src/server/speech_encode_worker.cpp": "7a3a40056ef1fd9bec6be44bfd3f055c11533c641df7d7885afdb3403ff7099a",
+    "src/server/media_codec_runtime.h": "8abc4515eae66f2b5d181b738aa142222e967a0d6f7307115ed66057181763f7",
+    "src/audio/pcm_output.cpp": "854f6c19c70b4d5dd98a6850ed8f4c96280900a1280f9d7bae71a13de7468950",
+    "src/server/file_audio.cpp": "7d01152cc4c9944426fb45ae888aef27402f289b57ac8872b3b881b135d9cbd9",
+    "src/server/file_audio_worker.cpp": "93b73196cf962857167e9176edd2f505dcc5b7c886bb085f768b43fae0933d5f",
+    "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
+    "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
+    "src/server/worker_io_broker.cpp": "bb7ead8d038868af5bdca8148bec08d313eeb685fefaf57c502ee97e0a29830a"
+  },
+  "driver_sources": {
+    "encode_replay.cpp": "d0ac6ed8db6e16d22269e8f19782a2d7b8f824f8321979d403ed69befbc7b5fe",
+    "encode_acceptance.py": "03313c81b621a65a25b2f3aa90f11dfb870650b0cc1d72d455d4b69433dfbfb9",
+    "utterance_acceptance.py": "03d2e8cadba8e222537241b1da21751ce9d48a4d0dce2fda3a01f55aa3eb0cd0",
+    "acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "default_before": {
+    "build/q4t": "bcfa0b56c179426ccbba26fec3463d37bd75265fe22e14a7405dac16051ff3b0",
+    "build/q4t.release.json": "0dec7cc86f9f2273bea5e0370c269f7ff9faaa9c8654256756ecce2cb3938951",
+    "build/service/manifest.json": "3c136a5884f87dde06cdd10b8bbc286717361e6bdf397aff4c5f3a37941c06f4",
+    "build/service.release.json": "1d1f025de68a22a259be95f3427c9651bdaf51d2d6f27a04cfb6d825f4c0603a",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "reused": [
+    "10 encoder CPU checks and fixed AAC tail regression",
+    "Original two TTS complete utterances and EOS",
+    "Accepted ASR binary"
+  ],
+  "performance_claim": false
+}

@@ -1,0 +1,149 @@
+{
+  "scope": "Only completed ASR qualification compiler-identification temporary files; accepted ASR program and original build executables untouched",
+  "archive": ".q4t-work/serve-native-tts-20261118/compiler-probe-tmp-archive-03.tar.gz",
+  "archive_sha256": "811ab8a069d531f3dc9e44eae730986f1ad7641fc4de642145aff87e9e796ee6",
+  "files": {
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp1.ii": {
+      "bytes": 1355786,
+      "sha256": "6639466d7a9e8fcbb4768eebdeae5df5bd6e2bdfb1040ce5c6d90b9e7f8f655a"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp4.ii": {
+      "bytes": 1229245,
+      "sha256": "fae1db9f647484ee8e2f927b1784388b4de251b8e22e0940aaa21fdd05521a74"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.c": {
+      "bytes": 3281,
+      "sha256": "87ac80dd10959a13778627d2fcbf1ce64816134900e70ee2b9674191d7040463"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.cpp": {
+      "bytes": 1152648,
+      "sha256": "4da7fec95afce4431f415fa73326130ff2310a4e466a85c33224f95d108f99cf"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.gpu": {
+      "bytes": 7637,
+      "sha256": "3b826ac345e082993c4049b9b3e515275f0e709e3d27ca5d2baaa54fc7de7dfc"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.stub.c": {
+      "bytes": 790,
+      "sha256": "4fae13c08327d281b4834a727193b083ebd081aea5824f197d676ce2451ccaf5"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin": {
+      "bytes": 1696,
+      "sha256": "01e215791d821ada559b31af255d61d725453c266681dfd305fd44eab103debb"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin.c": {
+      "bytes": 5214,
+      "sha256": "bd36b0450951cd9fb311812ad13f73fe7e745db3a0782d027af9635e5670574a"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.module_id": {
+      "bytes": 44,
+      "sha256": "e0d731d45471ff5f181b6b217afbfe6e52b057ae94b7b6cb9d0d86c85102b6f3"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.o": {
+      "bytes": 8536,
+      "sha256": "55555bc3b319d0e38e1a4e74c56ebc8bc09ec963698b0f2f3af7d025d4ecf0af"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.ptx": {
+      "bytes": 201,
+      "sha256": "1f2813c68c4b0b64bbe78df562dd50a60af9b36c7b94a1ef21eee2c2528f3adb"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.sm_75.cubin": {
+      "bytes": 1464,
+      "sha256": "f3e9bd54d7d5303ec96386c5c2abd2afd73c2ef1d796014615d2a9669d1a7065"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin": {
+      "bytes": 1536,
+      "sha256": "4498ba8c0bd09b5872aae556f9d2c8dd87217e94a3e057af6b98faa626b73c8d"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin.c": {
+      "bytes": 4813,
+      "sha256": "5eab5802fbaa3247f41d3462e218fd18b9ac96da6cb38619323bdbce9f44fdfe"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.o": {
+      "bytes": 3816,
+      "sha256": "a414d8ae9b6dc84d4320d43980c0ecaa7fd4c528500ffbb558b4d8aad40c3580"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.reg.c": {
+      "bytes": 32,
+      "sha256": "ee015e094b9cc8117c3fec9ddcb24b480d2a639f70b049cdc43775745c19da89"
+    },
+    ".q4t-work/serve-audio-native-20261117/compute-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.sm_75.cubin": {
+      "bytes": 1456,
+      "sha256": "f5cd887b502102c4af858a8fd0412cc8ac610152b3891af3e272cbbb6837d54e"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp1.ii": {
+      "bytes": 1355786,
+      "sha256": "6639466d7a9e8fcbb4768eebdeae5df5bd6e2bdfb1040ce5c6d90b9e7f8f655a"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp4.ii": {
+      "bytes": 1229245,
+      "sha256": "fae1db9f647484ee8e2f927b1784388b4de251b8e22e0940aaa21fdd05521a74"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.c": {
+      "bytes": 3281,
+      "sha256": "87ac80dd10959a13778627d2fcbf1ce64816134900e70ee2b9674191d7040463"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.cpp": {
+      "bytes": 1152648,
+      "sha256": "79fa49d32dd4bc59a28945c8da8238236d3fb812b0180f96f697c48e43692ef3"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.gpu": {
+      "bytes": 7637,
+      "sha256": "3b826ac345e082993c4049b9b3e515275f0e709e3d27ca5d2baaa54fc7de7dfc"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.stub.c": {
+      "bytes": 790,
+      "sha256": "4fae13c08327d281b4834a727193b083ebd081aea5824f197d676ce2451ccaf5"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin": {
+      "bytes": 1696,
+      "sha256": "01e215791d821ada559b31af255d61d725453c266681dfd305fd44eab103debb"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin.c": {
+      "bytes": 5214,
+      "sha256": "bd36b0450951cd9fb311812ad13f73fe7e745db3a0782d027af9635e5670574a"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.module_id": {
+      "bytes": 44,
+      "sha256": "7d48f03f5b20ff30514120898d3409d69d1af926d5bd799d315e3676304e7124"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.o": {
+      "bytes": 8536,
+      "sha256": "55555bc3b319d0e38e1a4e74c56ebc8bc09ec963698b0f2f3af7d025d4ecf0af"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.ptx": {
+      "bytes": 201,
+      "sha256": "1f2813c68c4b0b64bbe78df562dd50a60af9b36c7b94a1ef21eee2c2528f3adb"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/CMakeCUDACompilerId.sm_75.cubin": {
+      "bytes": 1464,
+      "sha256": "f3e9bd54d7d5303ec96386c5c2abd2afd73c2ef1d796014615d2a9669d1a7065"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin": {
+      "bytes": 1536,
+      "sha256": "4498ba8c0bd09b5872aae556f9d2c8dd87217e94a3e057af6b98faa626b73c8d"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.fatbin.c": {
+      "bytes": 4813,
+      "sha256": "5eab5802fbaa3247f41d3462e218fd18b9ac96da6cb38619323bdbce9f44fdfe"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.o": {
+      "bytes": 3816,
+      "sha256": "a414d8ae9b6dc84d4320d43980c0ecaa7fd4c528500ffbb558b4d8aad40c3580"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.reg.c": {
+      "bytes": 32,
+      "sha256": "ee015e094b9cc8117c3fec9ddcb24b480d2a639f70b049cdc43775745c19da89"
+    },
+    ".q4t-work/serve-audio-native-20261117/trace-build/CMakeFiles/4.4.3/CompilerIdCUDA/tmp/a_dlink.sm_75.cubin": {
+      "bytes": 1456,
+      "sha256": "f5cd887b502102c4af858a8fd0412cc8ac610152b3891af3e272cbbb6837d54e"
+    }
+  },
+  "executables_unchanged": {
+    ".q4t-work/serve-audio-native-20261117/compute-build/q4t_asr_replay": "e1f93133b7e4977d066332b84409ba0c008231612687734522619d141a87a57b",
+    ".q4t-work/serve-audio-native-20261117/trace-build/q4t_asr_replay": "91bb549ea94f327101ba83eebbc97b98849dee92fe66c91db58ac17867b896d6"
+  },
+  "bytes_saved": 6715376,
+  "available_bytes": 1101787136
+}

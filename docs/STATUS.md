@@ -7,11 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speech压缩真实内容8例通过](evidence/serve-speech-encoding-content-20261118/README.md)：
+原中英文经MP3/AAC/Opus/FLAC完整编码解码及无提示ASR，全部
+原文一致。16 CPU worker回收、3 ASR/0 TTS/主LLM、10.644秒，
+租约释放、默认rev306保持停止。继续资产/资源生命周期、生成
+流式/HTTP/SDK/恢复；4倍内容和全部master任务仍待完成。
+
 [Speech六格式编码10项CPU通过](evidence/serve-speech-encoding-cpu-20261118/README.md)：
 PCM/WAV原生，压缩格式隔离编解码回环、故障/预算/取消通过；
 AAC末尾截断已补排空，短尾真实信号对照通过。11次执行/0.478秒，
-889来源/12负控，0GPU。接着真实压缩语音和生成流式/HTTP/
-SDK/恢复；这是完整PCM组件，默认rev306停止且未变。
+889来源/12负控，0GPU。实际压缩内容资格见上项；生成流式/HTTP/
+SDK/恢复继续，这是完整PCM组件，默认rev306停止且未变。
 
 [Speech高速内容仍未解决](evidence/serve-speech-tempo-diagnosis-20261118/README.md)：
 0.25/2倍原中英文通过，4倍原生两级和独立对照均丢词；减速

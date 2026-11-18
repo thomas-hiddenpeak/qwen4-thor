@@ -7370,11 +7370,11 @@
   "native_speech_encoding_20261118": {
     "scope": "Bounded complete-waveform six-format encoder candidate. PCM/WAV native; compressed formats use existing isolated system codec loading. Missing codec/crash/cancel cannot fail core startup.",
     "remaining": [
-      "compressed actual speech content",
       "progressive synthesis and encoding",
       "HTTP/SDK/TLS/recovery delivery",
       "4x tempo content remains unresolved"
     ],
-    "cpu": "10 distinct checks passed: original 8, repaired AAC and partial-tail 2; first failure and build corrections retained. AAC explicit tail padding is disclosed separately from actual source."
+    "cpu": "10 distinct checks passed: original 8, repaired AAC and partial-tail 2; first failure and build corrections retained. AAC explicit tail padding is disclosed separately from actual source.",
+    "actual_content": "Original English/Chinese through MP3/AAC/Opus/FLAC, 8/8 exact normalized ASR, 16 codec workers reaped, 3 ASR loads / 10.644s; runtime source unchanged from accepted CPU group."
   }
 }
