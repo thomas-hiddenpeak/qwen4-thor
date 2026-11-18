@@ -7,6 +7,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Base原始样本→完整语音通过](evidence/serve-custom-voice-base-utterance-20261118/README.md)：
+生产加载/upload后重算声纹逐值一致；两句各3.2秒自然EOS，独立
+ASR完整还原。1声纹/1talker/1codec/1ASR、21.172秒，22次NVML
+正常且租约完成，0主LLM/HTTP，默认保持。接着持久登记、consent、
+客户隔离及ID合成新文本；听感/相似度与参考音频ICL未伪报完成。
+
+[Base真实条件134项数值通过](evidence/serve-custom-voice-base-component-20261118/README.md)：
+完整3.857GB源SHA通过；1GPU/1官方CPU、两例各2帧/49.855秒，
+64音频码一致，最大相对L2 1.328e-5。48次NVML正常，租约完成，
+默认保持。继续生产资产/声纹/完整音频/独立ASR及真实注册API。
+
+Base完整链路程序29.327秒零警告构建，3项驱动反例/0.064秒通过。
+数值阶段冻结1 GPU talker/1 CPU官方参考、2例各2帧、134对照、
+1200秒；完整源SHA通过后执行。随后原始音频→声纹→自然EOS音频
+→独立ASR，注册/consent生命周期与提示词音色仍分别推进。
+
 [Base资产与统一RAM 12项CPU通过](evidence/serve-custom-voice-assets-cpu-20261118/README.md)：
 1.417秒，零checkpoint/模型/GPU；必要host/upload构建零警告。
 实际Base元数据、无codec登记、错误模型拒绝、取消/原子性和精确

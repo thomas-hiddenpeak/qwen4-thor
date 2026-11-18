@@ -8539,13 +8539,13 @@
       }
     },
     "custom_voice": {
-      "state": "BASE_METADATA_CPU_QUALIFIED_RUNTIME_PENDING",
+      "state": "NATIVE_BASE_SAMPLE_TO_SPEECH_CONTENT_QUALIFIED_API_PENDING",
       "plan": "SERVE_CUSTOM_VOICES_2026-11-18.md",
       "evidence": "evidence/serve-custom-voice-metadata-20261118/README.md",
       "cpu_unique": 12,
       "gpu_loads": 0,
       "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
-      "full_asset_verified": false,
+      "full_asset_verified": true,
       "runtime_api_accepted": false,
       "default_changed": false,
       "frontend": {
@@ -8570,18 +8570,38 @@
         "full_task_complete": false
       },
       "base_condition": {
-        "state": "BASE_CONDITION_CPU_QUALIFIED_GPU_PENDING",
-        "evidence": "evidence/serve-custom-voice-conditioning-cpu-20261118/README.md",
+        "state": "NATIVE_BASE_CONDITIONING_NUMERIC_QUALIFIED_SPEECH_PENDING",
+        "evidence": "evidence/serve-custom-voice-base-component-20261118/README.md",
         "cpu_cases": 22,
-        "gpu_loads": 0,
-        "actual_synthesis_pending": true
+        "gpu_loads": 1,
+        "actual_synthesis_pending": false,
+        "cpu_reference_loads": 1,
+        "numerical_comparisons": 134,
+        "identical_codes": 64
       },
       "native_assets": {
         "state": "BASE_ASSETS_METADATA_AND_RAM_CPU_QUALIFIED",
         "evidence": "evidence/serve-custom-voice-assets-cpu-20261118/README.md",
         "cpu_cases": 12,
-        "full_weight_upload_pending": true
-      }
+        "full_weight_upload_pending": false
+      },
+      "api_lifecycle_pending": [
+        "consent create/retrieve/list/update/delete with actual recording validation",
+        "same-scope voice/sample/consent binding and durable atomic publication/revocation",
+        "Speech/Chat voice.id actual Base condition and business recovery",
+        "prompt-generated voice model and Live integration per current official surface"
+      ],
+      "full_utterance_driver": {
+        "state": "NATIVE_BASE_SAMPLE_TO_SPEECH_CONTENT_QUALIFIED_API_PENDING",
+        "evidence": "evidence/serve-custom-voice-base-utterance-20261118/README.md",
+        "cpu_cases": 3,
+        "gpu_model_loads": 4,
+        "utterances": 2,
+        "content_exact": true,
+        "api_qualified": false
+      },
+      "reference_audio_icl_pending": true,
+      "listening_and_speaker_similarity_pending": true
     }
   }
 }

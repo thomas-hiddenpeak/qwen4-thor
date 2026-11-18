@@ -9,7 +9,7 @@ speaker、只保存一个ID或报unsupported代替。内置9音色已实现，�
    官方revision `fd4b254389122332181a7c3db7f27e918eec64e3`，完整权重
    3,857,413,744字节，SHA256为
    `38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c`。
-   已取得68,512字节配置/头部；未下载完整权重，不是资产或运行验收。
+   完整只读权重已取得且全SHA通过，134项Base条件数值对照已验收。
    本组10新CPU+2直接受影响旧合同，120秒、0GPU、产物8MiB、磁盘
    余量256MiB；不接通未完成的HTTP执行，不改默认rev316。
 2. 原生24kHz声纹前端、ECAPA-TDNN和连续speaker向量条件。复用现有
@@ -24,7 +24,7 @@ speaker、只保存一个ID或报unsupported代替。内置9音色已实现，�
    Realtime和其余master，阶段不是总目标终点。
 
 12份同SHA历史head已保留备份与恢复后共享存储，回收约3.42GB；
-完整Base权重正有界获取，原下载中断保持，须全SHA通过后才能使用。
+完整Base权重已通过全SHA，原下载三次中断保持，不覆盖失败。
 库和权重仅启用自定义音色时按需装载，失能不得停止健康文本业务。
 不增加Python推理服务或外部前置依赖。
 
@@ -49,3 +49,22 @@ OpenAI音色ID及服务权限语义作接口参考，不调用外部语音API。
 
 Base独立权重/2048条件接线22项CPU已通过，见[条件证据](evidence/serve-custom-voice-conditioning-cpu-20261118/README.md)。
 实际Base数值/自然EOS、持久注册和客户隔离继续，不改变总目标。
+
+2026-11-18再次核对当前官方指南及SDK：consent有创建、查询、列表、
+名称更新和删除；样本创建默认`type=audio_sample`，返回完整voice
+metadata。样本/consent不超过60秒/10MiB，需同一声音；登记不能
+仅存ID而忽略真实音频与consent关联。客户归属用鉴权scope，不能
+采用请求中的name/user字段；状态用现有有界ObjectStore原子提交，
+删除consent后新请求不可继续使用其音色，未知提交通过原ID核对。
+
+当前官方还包含`type=prompt`、prompt/model/script_hint创建音色，
+其使用入口目前为Live。该输入/backend及相关语音入口保留为后续
+实现子任务，与样本声纹合成分开验收；不得用当前样本路径代替。
+新增依据以本地api-source-02保存的当前官方指南/OpenAPI和SDK为准。
+
+完整Base条件已通过[134项官方数值对照](evidence/serve-custom-voice-base-component-20261118/README.md)。
+本阶段仅2帧，继续自然EOS、真实音频及持久注册业务，不以数值代替交付。
+
+[实际原始样本到完整Base语音已通过](evidence/serve-custom-voice-base-utterance-20261118/README.md)：
+两句自然EOS和独立ASR内容通过；接着持久API与新文本，听感/相似度、
+风格、参考音频ICL及提示词音色仍分别保留，不能由本阶段替代。

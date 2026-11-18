@@ -1,0 +1,385 @@
+{
+  "status": "NATIVE_BASE_SAMPLE_TO_SPEECH_CONTENT_QUALIFIED_API_PENDING",
+  "seconds": 21.17127471184358,
+  "gpu_speaker_loads": 1,
+  "gpu_talker_loads": 1,
+  "gpu_codec_loads": 1,
+  "gpu_asr_loads": 1,
+  "main_llm_loads": 0,
+  "http_requests": 0,
+  "utterances": 2,
+  "cpu_driver_checks": 3,
+  "cpu_driver_seconds": 0.06382521102204919,
+  "native": {
+    "status": "PASS_UTTERANCE_PENDING_CONTENT_CHECK",
+    "gpu_model_loads": 3,
+    "speaker_stages": 94,
+    "cases": 2,
+    "frames": 80,
+    "generation_advances": 9578,
+    "codec_advances": 702,
+    "seconds": 16.2479
+  },
+  "speaker_comparisons": [
+    {
+      "case": 0,
+      "relative_l2": 0.0,
+      "cosine": 1.0,
+      "max_abs": 0.0,
+      "passed": true
+    },
+    {
+      "case": 1,
+      "relative_l2": 0.0,
+      "cosine": 1.0,
+      "max_abs": 0.0,
+      "passed": true
+    }
+  ],
+  "content": [
+    {
+      "case": 0,
+      "expected": "Hello, this is a native speech test.",
+      "transcript": "Hello, this is a native speech test.",
+      "passed": true
+    },
+    {
+      "case": 1,
+      "expected": "你好，会议下午三点开始。",
+      "transcript": "你好，会议下午三点开始。",
+      "passed": true
+    }
+  ],
+  "cases": [
+    {
+      "frames": 40,
+      "eos": true,
+      "at_limit": false,
+      "samples": 76800,
+      "sample_rate": 24000,
+      "rms": 0.0493672,
+      "peak": 0.384435,
+      "generation_seconds": 3.07683,
+      "generation_workspace_bytes": 115218688,
+      "codec_workspace_bytes": 165902336,
+      "seconds": 3.18456
+    },
+    {
+      "frames": 40,
+      "eos": true,
+      "at_limit": false,
+      "samples": 76800,
+      "sample_rate": 24000,
+      "rms": 0.0734399,
+      "peak": 0.371176,
+      "generation_seconds": 3.01334,
+      "generation_workspace_bytes": 116442624,
+      "codec_workspace_bytes": 165902336,
+      "seconds": 3.12026
+    }
+  ],
+  "nvml_queries": 22,
+  "nvml_all_ok": true,
+  "lease_completed": true,
+  "defaults_unchanged": true,
+  "build": {
+    "status": "PASS_BUILD_ONLY",
+    "seconds": 29.3265463989228,
+    "steps": [
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "tools/native_tts/base_utterance_replay.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/0.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_speaker_layout.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/1.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_speaker_features.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/2.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_speaker_model.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/3.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_codec_layout.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/4.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_codec.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/5.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_codec_dense.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/6.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_codec_conv.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/7.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/tts_assets.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/8.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/tts_upload.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/9.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/model_assets.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/10.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/grammar_process.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/11.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/server/worker_io_broker.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/12.o"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/1.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/2.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/3.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/4.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/5.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/6.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/7.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/8.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/9.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/10.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/0.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/1.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/2.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/3.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/4.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/5.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/6.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/7.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/8.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/9.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/10.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/11.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/12.o",
+          "-lcublasLt",
+          "-lpthread",
+          "-licui18n",
+          "-licuuc",
+          "-licudata",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-utterance-build-01/q4t_tts_base_utterance"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "warnings": 0,
+    "binary_sha256": "63c54865649fbdfa0e9ee35a50fa7546a35592966d81c38463d69615a0182ed2"
+  },
+  "archive_sha256": "4d4fcf968fc37ca68ce77929c7a00c77f8db07ea2a4d1dbfd0648c367ae677ca",
+  "archive_files": 150,
+  "registered_voice_api_qualified": false,
+  "subjective_listening_and_speaker_similarity_qualified": false,
+  "reference_audio_icl_pending": true,
+  "full_task_complete": false
+}
