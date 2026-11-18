@@ -1583,14 +1583,15 @@
     },
     "POST /v1/audio/speech": {
       "semantics": "原生TTS实际模型加载/隔离健康、共享GPU准入、真实配额、PCM/WAV/MP3/AAC/Opus/FLAC及speech SSE。",
-      "boundary": "24项CPU已过；当前HTTP/SDK/真实内容待验，未交付默认。4倍内容、注册voice、Chat音频历史仍是必做任务。",
+      "boundary": "24CPU与真实六格式/双SDK/SSE、8条原文内容、隔离恢复/取消已过，速度1；默认未交付。4倍内容、全部voice/style、注册voice、Chat音频历史及TLS/恢复/发行仍是必做任务。",
       "evidence": [
         "docs/SERVE_NATIVE_TTS_2026-11-18.md",
         "src/server/chat_speech.cpp",
         "src/server/chat_tts_backend.cpp",
         "src/server/chat_tts_execution.cpp",
         "tests/server_speech_output_test.cpp",
-        "tests/server_http_session_test.cpp"
+        "tests/server_http_session_test.cpp",
+        "docs/evidence/serve-speech-http-20261118/README.md"
       ]
     }
   },
@@ -7467,7 +7468,10 @@
   "speech_http_development_20261118": {
     "cpu_cases": 24,
     "cpu_seconds": 0.9150665407069027,
-    "http_gpu_accepted": false,
-    "review": "按输入合同/生命周期/流式输出与直接受影响消费者核对；未用来源门禁替代真实HTTP验收。"
+    "http_gpu_accepted": true,
+    "review": "按输入合同/生命周期/流式输出与直接受影响消费者核对；未用来源门禁替代真实HTTP验收。",
+    "evidence": "docs/evidence/serve-speech-http-20261118/README.md",
+    "whole_tts_complete": false,
+    "default_changed": false
   }
 }

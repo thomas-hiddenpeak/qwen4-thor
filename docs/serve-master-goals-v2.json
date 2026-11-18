@@ -2245,7 +2245,8 @@
         "evidence/serve-asr-scope-20261117/README.md",
         "evidence/serve-asr-sdk-values-20261117/README.md",
         "evidence/serve-asr-http-20261117/README.md",
-        "evidence/serve-asr-package-cpu-20261117/README.md"
+        "evidence/serve-asr-package-cpu-20261117/README.md",
+        "evidence/serve-speech-http-20261118/README.md"
       ],
       "release": null,
       "findings": [
@@ -4823,7 +4824,8 @@
       ],
       "evidence": [
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-speech-http-20261118/README.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -7859,7 +7861,7 @@
       }
     }
   ],
-  "next_task": "Complete remaining Speech HTTP/SDK/content with retained transport evidence; then Chat audio/history, 4x content, managed recovery/release and every master task.",
+  "next_task": "Implement Chat audio output/history with real usage and private audio IDs; continue 4x content, all voices/custom voices, managed delivery, Responses/Batch/Realtime and every master task.",
   "next": "PR47 is merged into main at 0f809a0c. rev306 remains STOPPED; TTS is a work-branch candidate with numeric, utterance and compressed-content evidence, not an API delivery. Continue all remaining tasks.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -7916,12 +7918,12 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "incremental_tts_and_http_implemented_cpu_passed_business_in_progress",
+    "state": "speech_http_sdk_content_qualified_chat_and_managed_delivery_pending",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
-      "Complete real TTS/Speech content, all formats/SDK/recovery and resource cleanup acceptance; retain NVML ENV_ABORT, not treat diagnosis as root-cause fix",
+      "Managed Speech profiles/TLS/recovery/publication/main; preserve NVML ENV_ABORT and accepted content evidence",
       "Chat audio output/history and integration of the qualified progressive synthesis/encoding",
       "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
       "SDK/TLS/profiles/recovery/reversible release/main",
@@ -7969,7 +7971,7 @@
       "full_loader_cases": 1,
       "gpu_loads": 0,
       "runtime_integrated": true,
-      "runtime_http_qualified": false
+      "runtime_http_qualified": true
     },
     "incremental_synthesis": {
       "state": "incremental_pcm_and_lifecycle_qualified",
@@ -7977,16 +7979,32 @@
       "cases": 2,
       "cancellation_cases": 1,
       "frame_limit_cases": 1,
-      "actual_http": false
+      "actual_http": true
     },
     "http": {
-      "state": "targeted_cpu_passed_remaining_real_business",
+      "state": "direct_http_sdk_content_accepted_managed_delivery_pending",
       "cpu_unique": 24,
       "cpu_evidence": "evidence/serve-speech-http-cpu-20261118/README.md",
-      "accepted_transport_posts": 4,
-      "content_accepted": false,
+      "accepted_transport_posts": 13,
+      "content_accepted": true,
       "environment_abort_preserved": true,
-      "default_changed": false
+      "default_changed": false,
+      "evidence": "evidence/serve-speech-http-20261118/README.md",
+      "actual_audio_cases": 8,
+      "formats": [
+        "mp3",
+        "aac",
+        "opus",
+        "flac",
+        "wav",
+        "pcm"
+      ],
+      "accepted_speed": 1,
+      "total_core_starts_including_failures": 4,
+      "total_asr_loads": 3,
+      "total_posts_including_failures": 16,
+      "total_seconds": 265.7168065723963,
+      "nvml_root_cause_resolved": false
     }
   }
 }

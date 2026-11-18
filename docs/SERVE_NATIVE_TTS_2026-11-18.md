@@ -233,3 +233,27 @@ POST：六格式+双SDK共8发声，资产缺失/冷却2条、取消1条和
 1200秒，64MiB产物，512MiB磁盘余量；同一严格GPU租约。
 24CPU已过且907来源/12负控通过，不复跑已验数值或性能矩阵。
 本组不认证4倍内容、注册voice或Chat输出；这些继续实施，不删目标。
+
+## 实际Speech结果与下一实施边界
+
+[直接HTTP短验](evidence/serve-speech-http-20261118/README.md)已过：
+8条音频、六格式、双SDK、SSE实际usage、资产失败隔离/同PID
+恢复及取消后核心Chat。速度1；所有首次失败和ENV_ABORT保留，
+默认未替换。TLS/包配置/恢复/发行仍须相应针对性业务。
+
+下一组实现Chat `modalities`、`audio`和assistant `audio.id`历史。
+按已安装官方Python SDK 2.8.1的类型定义，音频响应包含id、data、
+expires_at、transcript；Chat格式名为pcm16，Speech格式名为pcm，
+不直接混用。原文由真实主模型生成，再调用已验TTS，不伪造音频。
+实现按以下依赖推进：
+
+1. 独立Chat音频合同/输出组合和真实token明细；六格式、音频/文本
+   组合、null/必填、工具回合和多个choice逐项保持语义。
+2. 客户端隔离的持久音频ID及到期、重启读取、历史解析；引用必须
+   绑定实际生成的transcript，不能按未知ID猜测或静默丢掉历史。
+3. Chat生成槽释放后进入TTS，避免单槽下嵌套准入死锁；流中失败
+   不发成功终态，JSON在音频和必要持久提交成功后才发布。
+4. 复用Speech业务资格，围绕新合同、JSON/SSE、音频历史、工具/
+   schema/多choice及配额做针对性CPU与对应真实短验；随后受管
+   TLS/恢复/可回退交付。4倍与注册voice仍是并行待解决能力，
+   不用阶段拆分删掉它们，全部master持续执行。

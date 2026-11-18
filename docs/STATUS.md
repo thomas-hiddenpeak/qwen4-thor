@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Speech实际HTTP/SDK/内容短验通过](evidence/serve-speech-http-20261118/README.md)：
+六格式、8音频原文、SSE实际usage、资产故障隔离及同PID恢复、
+取消后核心Chat通过；最终92.491秒/10POST/3ASR，严格租约88
+次NVML正常，全部资源清理。含失败/诊断共4核心启动、16POST、
+3ASR、265.717秒，原FAILED及ENV_ABORT完整保留。默认rev306
+未变，NVML根因尚未定位，未宣称完整TTS或总目标完成。继续
+Chat音频输出/历史、4倍内容、全部voices与注册voice、受管接入/
+恢复/发行及全部master；既有资格按身份复用。
+
 单次加载诊断完成：原候选1启动/1条MP3、52.195秒、238份只读
 栈样本；未复现规整/锁等待，严格NVML全正常，模型退出0且
 CUDA配额归零。49,536音频字节分129块到达，首块先于结束；
