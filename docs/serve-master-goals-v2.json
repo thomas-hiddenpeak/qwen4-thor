@@ -8049,7 +8049,7 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "capacity_starts_but_speaker_composition_failed_cpu_repair_actual_pending",
+      "state": "primary_light_actual_pass_tls_recovery_delivery_pending",
       "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
@@ -8067,7 +8067,7 @@
         "cpu_unique": 24,
         "cpu_executions": 26,
         "evidence": "evidence/serve-auxiliary-capacity-cpu-20261118/README.md",
-        "actual_business_pending": true,
+        "actual_business_pending": false,
         "default_changed": false
       },
       "composition_failure": {
@@ -8078,7 +8078,17 @@
         "source_preserved": true,
         "cpu_contracts": 11,
         "real_waveform_replays": 5,
-        "actual_fix_pending": true
+        "actual_fix_pending": false
+      },
+      "qualified_profiles": {
+        "evidence": "evidence/serve-tts-input-profiles-20261118/README.md",
+        "binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+        "starts": 2,
+        "posts": 26,
+        "seconds": 204.59922144003212,
+        "nvml_queries": 190,
+        "default_changed": false,
+        "managed_composition_pending": true
       }
     }
   }

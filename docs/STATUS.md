@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[输入与TTS组合主轻26条真实业务通过](evidence/serve-tts-input-profiles-20261118/README.md)：
+2核心/26POST/204.599秒，190次NVML全正常，退出0及资源完整清理。
+A/B/A不再多出说话人；双人重叠保留，hurt→hurts按用户决定保留
+原WER并记质量限制。Speech/Chat完整音频、真实usage及输入/TTS
+双向释放/重载通过。默认rev306保持；继续原生TLS/恢复/发行，
+其余语音及全部master任务未结束。远端推送HTTP408仍待处理。
+
 [轮流说话误增说话人修复16项CPU通过](evidence/serve-overlap-alternating-cpu-20261118/README.md)：
 实际容量已降至114.973GB且正常启动，但第11 POST出现多余C／Um，
 原FAILED保留。1核心/11POST/82.969秒，79次NVML正常且完整清理。
