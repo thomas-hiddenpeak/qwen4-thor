@@ -31,6 +31,7 @@ LIMITS = dict(starts=1, chats=13, controls=2000, seconds=1200,
     gpu_talker_loads=1, gpu_codec_loads=1, gpu_asr_loads=3,
     decode_cases=8, asr_tokens_per_case=64, artifact_mib=64,
     disk_headroom_mib=512)
+CONTINUATION_LIMITS = dict(LIMITS, chats=11)
 FORMATS = ['mp3', 'aac', 'opus', 'flac', 'wav', 'pcm', 'pcm', 'mp3']
 UTTERANCES = [0, 1, 0, 0, 0, 0, 1, 1]
 MIMES = dict(mp3='audio/mpeg', aac='audio/aac', opus='audio/ogg',
@@ -78,7 +79,9 @@ def prepare(args):
     binaries = dict(engine=args.binary.absolute(), decoder=args.decoder.absolute(),
         asr=ASR/'validated-binaries/q4t_asr_replay-compute-01')
     tts_assets = WORK/'assets-1b7-01'
-    plan = dict(schema='q4t-speech-http-v1', output=str(out), limits=LIMITS,
+    reused = reuse(args.continue_from) if args.continue_from else None
+    plan = dict(schema='q4t-speech-http-v1', output=str(out),
+        limits=CONTINUATION_LIMITS if reused else LIMITS,
         port=args.port, operations_port=args.port+1, model=str(model),
         model_assets=assets(model), requests=[speech(i) for i in range(8)],
         sources={name: sha(ROOT/name) for name in names},
@@ -97,8 +100,40 @@ def prepare(args):
         mutations=['withhold/reveal private codec config hardlink only',
             'close one owned Speech stream after real bytes',
             'stop only the owned candidate before three ASR processes'])
+    if reused:
+        require(plan['binaries']['engine'] == reused['engine'], 'reused engine drift')
+        plan['continuation'] = reused
     save(out/'plan.json', plan)
-    print(json.dumps(dict(plan=str(out/'plan.json'), limits=LIMITS)))
+    print(json.dumps(dict(plan=str(out/'plan.json'), limits=plan['limits'])))
+
+
+def reuse(path):
+    path = Path(path).resolve(strict=True)
+    require(path.is_relative_to(WORK), 'reuse outside TTS evidence')
+    plan, result = read(path/'plan.json'), read(path/'result.json')
+    require(result['status'] == 'FAILED' and result['counts']['chats'] == 3 and
+        result['counts']['starts'] == 1 and result['defaults_unchanged'] and
+        'owned auxiliary child survived request drain' in result['error'], 'unexpected failure')
+    require(read(path/'lease/exit.json')['status'] == 'COMMAND_FAILED', 'ENV_ABORT cannot be reused')
+    cleanup = read(path/'cleanup.json')
+    require(cleanup['model_exit'] == 0 and not cleanup['remaining'] and cleanup['ports_released'], 'cleanup')
+    for name,h in plan['sources'].items():
+        if name != 'tools/native_tts/http_acceptance.py':
+            require(sha(ROOT/name) == h, 'reused source drift: '+name)
+    for label,code in [('missing-assets','tts_assets_invalid'), ('cooldown','tts_retry_pending')]:
+        require(read(path/(label+'.http.json'))['status'] == 503 and
+            read(path/(label+'.wire'))['error']['code'] == code, 'reused fault')
+    require(read(path/'fault-ready.http.json')['status'] == 200, 'reused readiness')
+    row = read(path/'core-during-fault.wire')['choices'][0]
+    require(read(path/'core-during-fault.http.json')['status'] == 200 and
+        row['finish_reason'] == 'stop' and row['message']['content'].strip() == '42', 'reused core content')
+    require(defaults() == plan['defaults'], 'reused default drift')
+    require(sha(plan['binaries']['engine']['path']) == plan['binaries']['engine']['sha256'], 'reused engine')
+    return dict(directory=str(path), original_status='FAILED_preserved', reused_posts=3,
+        engine=plan['binaries']['engine'],
+        reason='driver confused two expected persistent workers with per-request leaks',
+        files={str(p.relative_to(path)):sha(p) for p in sorted(path.rglob('*'))
+            if p.is_file() and 'tts-assets' not in p.relative_to(path).parts})
 
 
 class Stage(lifecycle.Stage):
@@ -111,8 +146,11 @@ class Stage(lifecycle.Stage):
         self.model = self.model_identity = self.fault_thread = None
         self.history = {}
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
+        self.limits = CONTINUATION_LIMITS if plan.get('continuation') else LIMITS
+        if plan.get('continuation'):
+            require(plan['continuation'] == reuse(plan['continuation']['directory']), 'reuse identity')
         lifecycle.verify_lease(self.lease, lifecycle.guard.common_lock())
-        require(plan['limits'] == LIMITS and plan['schema'] == 'q4t-speech-http-v1'
+        require(plan['limits'] == self.limits and plan['schema'] == 'q4t-speech-http-v1'
             and plan['requests'] == [speech(i) for i in range(8)], 'frozen plan drift')
         for p,h in plan['sources'].items(): require(sha(ROOT/p) == h, 'source drift: '+p)
         for row in plan['binaries'].values(): require(sha(row['path']) == row['sha256'], 'binary drift')
@@ -132,7 +170,7 @@ class Stage(lifecycle.Stage):
 
     def budget(self, kind):
         require(time.monotonic()-self.started < LIMITS['seconds']-40, 'stage deadline')
-        require(self.counts[kind] < LIMITS[kind], 'attempt budget: '+kind)
+        require(self.counts[kind] < self.limits[kind], 'attempt budget: '+kind)
         self.counts[kind] += 1
         save(self.out/'counts.json', self.counts)
 
@@ -147,7 +185,21 @@ class Stage(lifecycle.Stage):
         children = {pid:row for pid,row in lifecycle.guard.processes().items()
                     if row.get('ppid') == self.model.pid}
         save(self.out/(label+'.children.json'), children)
-        require(not children, 'owned auxiliary child survived request drain')
+        # These two existing services intentionally span requests. Still bind
+        # each process to this parent and candidate inode; all others must exit.
+        expected = Path(self.plan['binaries']['engine']['path']).stat()
+        kinds = []
+        for pid,row in children.items():
+            argv = row.get('argv', [])
+            require(len(argv) == 4 and argv[1] in
+                ('--q4t-cache-worker', '--q4t-object-worker') and
+                argv[0] == argv[1][2:] and argv[2] == str(self.model.pid),
+                'unexpected worker survived request drain')
+            image = (Path('/proc')/str(pid)/'exe').stat()
+            require((image.st_dev,image.st_ino) == (expected.st_dev,expected.st_ino),
+                    'persistent worker image differs')
+            kinds.append(argv[1]); self.history[pid] = row
+        require(len(kinds) == len(set(kinds)), 'duplicate persistent workers')
         return result
 
     def start(self):
@@ -252,14 +304,16 @@ class Stage(lifecycle.Stage):
         return raw, result['headers']
 
     def business(self):
-        for label,code in [('missing-assets','tts_assets_invalid'), ('cooldown','tts_retry_pending')]:
+        faults = ([('recovery-bootstrap','tts_assets_invalid')] if self.plan.get('continuation')
+            else [('missing-assets','tts_assets_invalid'), ('cooldown','tts_retry_pending')])
+        for label,code in faults:
             status,raw = self.post(label, speech(0))
             require(status == 503 and json.loads(raw)['error']['code'] == code, 'asset error classification')
         require(self.http('/readyz', label='fault-ready')[0] == 200, 'auxiliary fault poisoned core')
         self.http('/v1/config', label='fault-config')
         health = read(self.out/'fault-config.wire')['native_tts_health']
         require(health['state'] == 'degraded' and health['load_failures'] == 1, 'scoped health')
-        self.core('core-during-fault')
+        if not self.plan.get('continuation'): self.core('core-during-fault')
         hidden = self.out/'tts-assets/speech_tokenizer/config.json.withheld'
         hidden.rename(hidden.with_suffix(''))
         time.sleep(5.1)  # One bounded known cooldown, never an automatic retry.
@@ -396,6 +450,7 @@ def main():
     prepare_parser = sub.add_parser('prepare')
     for name in ('binary', 'decoder', 'output'): prepare_parser.add_argument('--'+name, type=Path, required=True)
     prepare_parser.add_argument('--port', type=int, default=18484)
+    prepare_parser.add_argument('--continue-from', type=Path)
     sub.add_parser('run').add_argument('--plan', type=Path, required=True)
     sub.add_parser('features').add_argument('--output', type=Path, required=True)
     args = parser.parse_args()

@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Speech首轮3POST已满足资产缺失/冷却及核心Chat内容，但驱动
+误将两个正常常驻cache/object worker当泄漏而中止，42.459秒；
+实际退出0、全部回收、租约释放。仅修驱动，保留失败并复用3条
+已验记录；冻结剩余11POST/1次启动/3ASR/1200秒。新增1资产
+失败仅重建同PID恢复前态，随后8发声、1取消、1核心Chat；
+生产程序身份保持，不扩大性能/正确性矩阵。
+
 [Speech HTTP CPU资格](evidence/serve-speech-http-cpu-20261118/README.md)已归档。
 后续实际业务范围固定为同一严格租约1次核心/TTS/codec加载、
 13条POST（8发声、2资产失败、1取消、2核心Chat）、3次独立ASR
