@@ -173,8 +173,9 @@ ObjectReply ChatServer::RunNativeTts(
     }
     work.Completed();
   }
-  audio::TtsSampling sampling;
-  sampling.sample = false;
+  // Use the fixed checkpoint policy for both acoustic code generators.
+  // Forcing greedy here can repeat one sentence without reaching natural EOS.
+  const audio::TtsSampling sampling;
   auto reply = perform(ProgressStage::kPrefill, [&] {
     auto result = synthesis.Begin(tts_weights_.talker, tts_weights_.codec,
                                   prompt, max_frames, 16, sampling, sampling, 0,

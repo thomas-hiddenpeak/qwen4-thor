@@ -2724,7 +2724,7 @@
     "src/server/chat_template.cpp": "891adaf390e59776189f8cf68006a3b8020ece14fbd3882c46f04aec3dcd2b68",
     "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
     "src/server/chat_tts_backend.cpp": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946",
-    "src/server/chat_tts_execution.cpp": "0f8d8b4140fc7d2d0d5a3d01b24a12f115ee49e76383ff3349ee9975b491193f",
+    "src/server/chat_tts_execution.cpp": "0e1e47ef5aa23eee5916ac2bc6ae6cc7f8d13ac98b0ab743811c5c4ad9d16220",
     "src/server/chat_vad_backend.cpp": "6a84890c85d7053c1e94aa027f28b19e3eab1773c5a5dd6d9ab30ac255ea9f80",
     "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",

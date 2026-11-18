@@ -1,0 +1,132 @@
+{
+  "status": "SAMPLING_DEFECT_REPRODUCED_FIXED_CPU_QUALIFIED_HTTP_PENDING",
+  "original_http": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_service_acceptance.py\", line 427, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_tts/voice_service_acceptance.py\", line 355, in business\n    require(status == 200, 'fixture synthesis failed: '+label)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: fixture synthesis failed: sample\n",
+    "counts": {
+      "starts": 1,
+      "posts": 3,
+      "controls": 45
+    },
+    "seconds": 79.34568454092368,
+    "defaults_unchanged": true,
+    "acceptance": {
+      "no_asr_text_or_language_hint": true,
+      "one_core_pid": true,
+      "sample_text_differs_from_both_targets": true,
+      "same_speaker_cosine_minimum": 0.65,
+      "preserve_revocable_owner_scope": true,
+      "listening": "PENDING",
+      "human_identity": "NOT_CLAIMED",
+      "reference_audio_icl": "PENDING",
+      "performance": "NOT_CLAIMED"
+    }
+  },
+  "diagnosis": {
+    "status": "DIAGNOSTIC_OBSERVED_NOT_HTTP_ACCEPTANCE",
+    "steps": [
+      {
+        "name": "native",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-build-01/q4t_tts_eos_diagnostic",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/run/native"
+        ],
+        "returncode": 0,
+        "seconds": 26.09944294206798
+      },
+      {
+        "name": "features",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/refenv/bin/python",
+          "-B",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice_eos_diagnostic_01.py",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/run",
+          "features"
+        ],
+        "returncode": 0,
+        "seconds": 2.0743921170942485
+      },
+      {
+        "name": "asr",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_replay-compute-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/run/features/plan.json",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-eos-diagnostic-01/run/asr"
+        ],
+        "returncode": 0,
+        "seconds": 3.2203654409386218
+      }
+    ],
+    "observations": [
+      {
+        "sample": false,
+        "generation": {
+          "frames": 200,
+          "eos": false,
+          "at_limit": true,
+          "workspace_bytes": 122681600,
+          "seconds": 14.1497
+        },
+        "transcript": "The meeting starts tomorrow morning.",
+        "exact_content": false
+      },
+      {
+        "sample": true,
+        "generation": {
+          "frames": 47,
+          "eos": true,
+          "at_limit": false,
+          "workspace_bytes": 122681600,
+          "seconds": 3.38643
+        },
+        "transcript": "The meeting starts tomorrow morning. Please bring your notebook.",
+        "exact_content": true
+      }
+    ],
+    "greedy_failure_reproduced": true,
+    "checkpoint_sampling_content_passed": true,
+    "seconds": 31.400360811967403,
+    "defaults_unchanged": true
+  },
+  "lease": "COMPLETED",
+  "nvml_queries": 31,
+  "nvml_all_ok": true,
+  "cpu": {
+    "status": "PASS",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-sampling-fix-cpu-01/required.txt"
+    ],
+    "cases": 4,
+    "seconds": 0.009597697760909796,
+    "returncode": 0,
+    "binary_sha256": "38f8094e639b593dd4e95bb95767183d76ec127bfa1e8336f298ca739a71c894",
+    "unchanged_host_binary_reused": true,
+    "gpu": 0
+  },
+  "build": {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+      "--target",
+      "q4t",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "seconds": 17.00978139601648,
+    "warnings": [],
+    "abort": null,
+    "minimum_free_bytes": 650215424,
+    "defaults_unchanged": true,
+    "binary_sha256": "fa2a78e177909747efb0e062f435462493c36e07cb67843bbbb612dfd898af54"
+  },
+  "runtime_http_qualified": false,
+  "default_replaced": false
+}

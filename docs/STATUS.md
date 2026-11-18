@@ -1,4 +1,4 @@
-# 当前状态（2026-11-18）
+# 当前状态（2026-11-19）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -6,6 +6,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证和必要业务短验，长稳实跑由用户负责。
 
 ## 正在推进
+
+[语音贪心缺陷已修复，待HTTP续验](evidence/serve-voice-sampling-fix-20261119/README.md)：
+原句贪心200帧无EOS，checkpoint采样47帧/独立ASR两句完整；31.401秒、
+31次NVML正常。4项CPU/0.0096秒，引擎17.010秒零警告，原失败保留。
+候选714源码一致，默认rev316保持，继续注册与新文本接口清单。
+
+原句有界诊断已完成：贪心200帧无EOS且只读第一句；checkpoint双层
+采样47帧自然EOS、独立ASR完整两句，31.401秒、严格租约完成。修正
+Speech/Chat服务强制贪心覆盖，保持原200帧/seed=0及数值计算；
+冻结4项直接CPU/60秒后继续原18POST接口验收，默认保持。
+
+第三轮真实HTTP核心通过、授权录音自然EOS（8秒），第二份样本在200帧
+未结束，明确502 tts_output_limit；原79.346秒/3POST失败与清理保留。
+源码发现服务强制贪心，而固定checkpoint声明双层采样。先冻结同一失败
+原句、原200帧上限、seed=0的两例对照：贪心与checkpoint采样各一次，
+1talker/1codec/1ASR、0主模型/HTTP、1200秒；未改生产，不以加长预算解围。
 
 [HTTP驱动准入修复2项CPU通过](evidence/serve-voice-driver-admission-20261118/README.md)：
 0.220秒、0GPU；3客户配4槽/3队列且启动前检查，生产候选与默认保持。
