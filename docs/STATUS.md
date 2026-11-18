@@ -7,29 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-原生TLS音色业务驱动与官方SDK 3.55.1已接入：直接调用Consent/Voice
-方法，保留multipart/JSON/SSE原wire，强制证书核验与零重试。SDK仅为
-独立测试依赖。TLS首轮注册/入口重启/Speech通过；Chat在客户端未发出，修正extra_body，冻结2项CPU/90秒/0GPU；通过后1主模型、2原生入口
-启动、原失败原样保留；随后复用注册状态6业务POST/600秒，覆盖入口重启后注册音色、内容及撤销。
-Guardian自动恢复仍另验，听感待验与默认rev316保持。
+[官方SDK与原生TLS音色闭环通过](evidence/serve-voice-sdk-tls-20261119/README.md)：
+固定Python SDK 3.55.1，10项不同CPU通过；首轮客户端参数错误原样保留，
+修正后复用注册状态，6 POST/66.215秒通过Chat/SSE、独立ASR、历史及
+撤销。复用首轮注册、Speech和入口重启；83/63次NVML正常，清理通过。
+默认rev316不变，继续主/轻profile、Guardian恢复、Base-only消费和
+有状态回退；听感与完整音色质量待验，不将入口驱动当作Guardian恢复。
 
 [Orator已纳入只读参考](evidence/serve-orator-reference-20261119/README.md)：
 远端d456d838、14源码文件核对；统一样本时钟、独立流水线、片段终态
 与排空顺序映射到既有A10/R/N任务。缓存上限/SSD仍占位、等待无截止
 等限制单列，未移植AGPL源码或增加依赖。本机脏工作区保持，当前
 SDK/TLS验收继续；参考研究不替代任何必做实现或实际业务证据。
-
-原生TLS音色业务驱动与官方SDK 3.55.1已接入：直接调用Consent/Voice
-方法，保留multipart/JSON/SSE原wire，强制证书核验与零重试。SDK仅为
-独立测试依赖。8项CPU已通过；补入口清理异常须保持FAILED与模型清理，冻结1项CPU/90秒/0GPU；通过后1主模型、2原生入口
-启动、15业务POST/1200秒，覆盖入口重启后注册音色、内容及撤销。
-Guardian自动恢复仍另验，听感待验与默认rev316保持。
-
-原生TLS音色业务驱动与官方SDK 3.55.1已接入：直接调用Consent/Voice
-方法，保留multipart/JSON/SSE原wire，强制证书核验与零重试。SDK仅为
-独立测试依赖。冻结8项针对CPU/90秒/0GPU；通过后1主模型、2原生入口
-启动、15业务POST/1200秒，覆盖入口重启后注册音色、内容及撤销。
-Guardian自动恢复仍另验，听感待验与默认rev316保持。
 
 [已注册音色Speech/Chat持久闭环通过](evidence/serve-voice-chat-fix-20261119/README.md)：
 修复Chat旧入口无条件拒绝ID，5 CPU通过；续验1启动/7POST/69.279秒，

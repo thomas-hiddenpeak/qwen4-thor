@@ -8630,8 +8630,8 @@
         "engine_sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
         "runtime_http_qualified": false,
         "remaining": [
-          "SDK/TLS and primary/light profiles",
-          "managed package and preserved-state compatible rollback",
+          "primary/light profiles and managed recovery",
+          "preserved-state compatible rollback",
           "Base-only existing registered voice qualification",
           "reference audio ICL, prompt voices and Live",
           "listening and speaker similarity"
@@ -8683,6 +8683,14 @@
           "mixed_voice_rejected": true,
           "threshold": 0.65,
           "original_ryan_failure_retained": true
+        },
+        "sdk_tls": {
+          "evidence": "evidence/serve-voice-sdk-tls-20261119/README.md",
+          "python_sdk": "3.55.1",
+          "qualified": true,
+          "entry_restart": true,
+          "guardian_recovery": false,
+          "original_failure_preserved": true
         }
       }
     },

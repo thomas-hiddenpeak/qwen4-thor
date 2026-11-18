@@ -1,0 +1,1698 @@
+{
+  "archive_sha256": "5818dde830a7f04b44aaba6d4acc5da2f9da5ab1a077dcb77aae426b2d5c4992",
+  "files": {
+    ".q4t-work/serve-custom-voices-20261118/archive_voice_sdk_01.py": {
+      "bytes": 9055,
+      "sha256": "96b2a7e75e5c6c122b6fa193cb8c7218c90d50ef53ee2340e52dd9659b473e3c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_sdk_env_01.py": {
+      "bytes": 1251,
+      "sha256": "6b9f6fd74fae07b9cd99b1d035ec6143c3f960336c59eed95ea6c90ad912a4da"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_sdk_tls_01.py": {
+      "bytes": 3472,
+      "sha256": "3fe20390c5df4c457d6702380e429f9419782df6f1686b8f960f9bcfbc7c4ad9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_sdk_tls_02.py": {
+      "bytes": 4454,
+      "sha256": "5c669ff77c00fb3885ce54b2688a6fd19220bccb8dcb27d968d937442ff3afaf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_voice_sdk_cpu_01.py": {
+      "bytes": 2347,
+      "sha256": "077613116c4ba1e8a41628e1a04e70c91d586875d9dda3dace5c07338c7b6ed1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_voice_sdk_cpu_02.py": {
+      "bytes": 2459,
+      "sha256": "a941236d9741b5f653661c703372d1d2d4cdfba7140abf52332c24d3970990c8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/run_voice_sdk_cpu_03.py": {
+      "bytes": 2612,
+      "sha256": "45d376bbe6d00753be175c3ca83325f37befe7cbdc28e42f13fdd5faeb0224c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/sdk-discovery-01.json": {
+      "bytes": 1145,
+      "sha256": "c3c43c0559a5fbf3131c19a389dc6322f5fadd6aa42e053a09b7bb363047196b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-01/plan.json": {
+      "bytes": 712,
+      "sha256": "f3e8df4e43fb8816a1e06fa1aec1db0880dc741b8e5f0cae4f7c280b04657bda"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-01/result.json": {
+      "bytes": 373,
+      "sha256": "de2210f3fea8c88c472d99fb9aa5083dc5c78bdaeae19546eaa5054ccf3a2ee8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-01/tests.log": {
+      "bytes": 1534,
+      "sha256": "fda34aa38e0eb9f32eb30c2b17d7672f8bb57a546ba81ecda58c7486319872f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-02/plan.json": {
+      "bytes": 712,
+      "sha256": "ff6e44b89fefeee9cb1630afe4db42aeed99b3400c52ff4223d830f180da8497"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-02/result.json": {
+      "bytes": 415,
+      "sha256": "b33b6b375741d433dc51f5ab70694f2a16928e4265d3b286f371262e16ef28a4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-02/tests.log": {
+      "bytes": 294,
+      "sha256": "5469e876ef2b87642ba630bd3a36ee193a6b43a4aba4e5f55daf93b49d5f7328"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-03/plan.json": {
+      "bytes": 712,
+      "sha256": "139c07128c2433c885687900d3388f8f3d3e81c0944d0ca99b49d72d6e094630"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-03/result.json": {
+      "bytes": 509,
+      "sha256": "4191e2ba66f86fa7242c20e7e86f4b75d5360dc6d482a177022baefc0db17478"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-03/tests.log": {
+      "bytes": 452,
+      "sha256": "65a7a7ba6b4cacd6865ba71a8ff1d7b1c2ed9c842c167f3351bc4b442b4ce32d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-extension-fix-01/test_voice_sdk.py": {
+      "bytes": 8132,
+      "sha256": "76d1f293b91494d5dc7a00e7e72ea373d3f001cb0c8bab822bcd255209da9cd3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-extension-fix-01/test_voice_sdk_acceptance.py": {
+      "bytes": 4011,
+      "sha256": "123442dc6449e7fd851c174fa91540916f0ee12c50a60b6728b4cdd5da42ba4b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-extension-fix-01/voice_sdk.py": {
+      "bytes": 7521,
+      "sha256": "1b61ab74223b2bdf33e30dd7360bc13a94ed157b7d4c83445bbc98c483a5be64"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-extension-fix-01/voice_sdk_acceptance.py": {
+      "bytes": 14572,
+      "sha256": "665158c24a2b4cb1c642c98a18914df31f7c10228cf1c08efd62add3dedd0fc7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-install-01/install.log": {
+      "bytes": 4641,
+      "sha256": "65b1c98543c0b3ff34a9e3411ff3feee9b0bdb02e88b35323a54c12559e00aef"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-install-01/packages.json": {
+      "bytes": 303496,
+      "sha256": "42567e30396c21107d5777578d4ff010003f56bff2d649b9b16083f041bd922e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-install-01/result.json": {
+      "bytes": 696,
+      "sha256": "0ea4fe5a3b71c592a15f6282110ea9ed42eb9b2d84c81aab8e9b02095b33d4cd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/lease/events.jsonl": {
+      "bytes": 15890,
+      "sha256": "c6639ef0d4b9bd523df7d24836c3a41132cd48157e701b2fd845ab23a00b4995"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/lease/exit.json": {
+      "bytes": 695,
+      "sha256": "41c91842237192de9d0386261405f8edea816dc73ceea8525908a73af3d9c1de"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/lease/nvml-queries.jsonl": {
+      "bytes": 198472,
+      "sha256": "4380e8cb6760eb95c6b0acdccb20c0b2a8f8aafb923305f99c15e56d430a891c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/plan.json": {
+      "bytes": 908961,
+      "sha256": "cfaa29abf6e8e71fe245366dc6349f3f3ed222ed916179ef5a3e322d0f6915df"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.request.json": {
+      "bytes": 667,
+      "sha256": "7a008565aa5a8f5b5cb94ef69f5e0d08e2d028f1363acce6690db142ec0e71ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.sdk.json": {
+      "bytes": 318,
+      "sha256": "c7e81b838ad66522ef7a8f398eaa72286396008a2146d079a4d2393fbb6d8bd7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.wire": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/cleanup.json": {
+      "bytes": 4027,
+      "sha256": "af5ef6287e029845ea0f2a9f5fb803b98d5ea4d55614810b8dad93c9b573bfce"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-config.http.json": {
+      "bytes": 252,
+      "sha256": "eca03d3cffe9d81a2c2a26d1a2644b37cd61a8c27552c8544d3b9589917dc10c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-config.wire": {
+      "bytes": 16039,
+      "sha256": "cad7a292c952cd928a2341a790657a7e25822204d596a4593cf107115d6e3aa6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-drain.metrics.json": {
+      "bytes": 24654,
+      "sha256": "03fadb9398222f57f11fe5342adfe99ba39f64f4b79034f5df82c7a269e20a52"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-ready.http.json": {
+      "bytes": 244,
+      "sha256": "db00a53e6c37a35d872e079d8aae7bec6a0268ff421e19b45edff5327da9de9d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart.request.json": {
+      "bytes": 150,
+      "sha256": "b5cb8d0a9febe31d43667f70351a894c4bbc99dd967acb12d4bfb56edb766002"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart.sdk.json": {
+      "bytes": 925,
+      "sha256": "9eadc986ef16b97177dda44856833076cc66368bb7d64d2cb3cfffc0f3f40a14"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart.wire": {
+      "bytes": 148,
+      "sha256": "ebe13972fc873ff02746b3e5f73620c8e11be7d978c7caefb072514a2715e12b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-after-entry-restart.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-config.http.json": {
+      "bytes": 251,
+      "sha256": "049e80c79f53fcf421e1957e78300bba6c44f991d9de9ea88a6fac9155512ab5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "0ec6299ae78ce49ec95aa546e7768dae1df1722eb4df1efb329018db91c4f3a4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-config.http.json": {
+      "bytes": 251,
+      "sha256": "c5e658e5e0bc5c23de66ebdfce323adcf2d9a7da94c4b7348e68182d4f9e09a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "63326ce5629f13883f3e396e8591db3bac6e5253988299cffc07ab783dae4d31"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-ready.http.json": {
+      "bytes": 246,
+      "sha256": "2403e5f37eed99a1102f3f015e2c7cc13d476c27d585eed71252d4901b86ff66"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list.request.json": {
+      "bytes": 103,
+      "sha256": "b7e61a971923ad236e6eca8b42654de2eef279313f9d012b1ee29852bd916e26"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list.sdk.json": {
+      "bytes": 1109,
+      "sha256": "89d93b7f41bf9d5f5543e2ced3b0762cdc02a40358ac5de2c455a85a63babfed"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list.wire": {
+      "bytes": 293,
+      "sha256": "a729caeeec16d93b6678f023c559c6bd729c8410432a5df38090676ac686b301"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-list.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-config.http.json": {
+      "bytes": 252,
+      "sha256": "e00d961868b640ca720dad26f19b76cd3d32826bc808e21bab28301432f22e0c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "217114b10ce062cc4067fa5172403552ece24522e4b434f22eb7f312419d02b8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-ready.http.json": {
+      "bytes": 246,
+      "sha256": "777065a9ae8bf1e1fe366d2804b700f99c96246bd7e54d780233aaa01fc8cca8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other.request.json": {
+      "bytes": 150,
+      "sha256": "73808dedb40a3b56a760fa6c4126b335b30315b1c7a8c050d9661814a9b400d0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other.sdk.json": {
+      "bytes": 849,
+      "sha256": "4a035c4fb5930868cd1a3658969e69fbecb0e4d2cf35d1c5bfef5a211e802b78"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-other.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-ready.http.json": {
+      "bytes": 245,
+      "sha256": "aa6741935061f3d2db104af0cf7e574023e4f9b50ae69917258c80dfb6b2dee2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent.request.json": {
+      "bytes": 357,
+      "sha256": "2df7c58994a974f7ece9c6239196fec5bc188c017e22c8ca1f510e0370a39f90"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent.sdk.json": {
+      "bytes": 947,
+      "sha256": "c1c41dfd4b72d1bc5e78bd205590fbb82163a901772f8a1927de85b2a0bb8822"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent.wire": {
+      "bytes": 140,
+      "sha256": "ddd1d96785c8ace535ee1592a744afa4d1f50de87dd0dcd4ad5ffecd3ed191f5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/consent.wire.request": {
+      "bytes": 326816,
+      "sha256": "d6c3455f6a1be4fafc90b45ecdbaef3e2404956ff9d79035c1132abd01e4882a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-config.http.json": {
+      "bytes": 252,
+      "sha256": "5f4c21fad89d516165b8cdfb956d12a87a4f5657efc679258150bde96339db11"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-config.wire": {
+      "bytes": 16030,
+      "sha256": "428e650ab219040077023bd37d4512d2eb6caf13a094bb181fdf27b0089b4c67"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-drain.metrics.json": {
+      "bytes": 24642,
+      "sha256": "1328d2c7f8c671047c390c5cd3cd161e6aa354a8e0b9dcbf05ce42eea1f20e60"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-ready.http.json": {
+      "bytes": 245,
+      "sha256": "784ab5d1669dec473025b4d931cbb51f6a8d0284ae031a4bac0713e5f0566667"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before.http.json": {
+      "bytes": 244,
+      "sha256": "29752b3951c4b01498280011db77064d48faebeca83d52c394098eeaf34ecf54"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "891497943b6fca1fc7cf71ad974a500725ec5b6aa945342aece85e1c54d6b353"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/counts.json": {
+      "bytes": 74,
+      "sha256": "ed37779bc737bc3cdd16b6b89e6916a461a57da05146223c6116e27e1eb34845"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-1/closed.json": {
+      "bytes": 76,
+      "sha256": "e6534cc786727f16c547e7607e3123a6b017fbb168e3068e2604667cdf16d246"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-1/entry.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-1/ingress.json": {
+      "bytes": 1518,
+      "sha256": "79adfad5b15253e5b16deb3f4a9b19135ca8226e347291492adfe1a1598343a3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-1/ready.json": {
+      "bytes": 53,
+      "sha256": "b53f53cf12199d11ddf43f5da4637fae91d3012516d272d4377c59152428efaa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-2/closed.json": {
+      "bytes": 76,
+      "sha256": "cca0473394fa9da36624ef4acf6c3e48a203bb5bfe508ccb35caca3e204ffce5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-2/entry.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-2/ingress.json": {
+      "bytes": 1518,
+      "sha256": "c7c40f5e67dc8224e7bd7b4a12c37c0ebfb2a0ed62d22f5fcc5077933d348058"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/entry-2/ready.json": {
+      "bytes": 53,
+      "sha256": "5e35f96b3a43a3c212b4519b196beffff4ea077fde6c2f4f358005980de0ab91"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "8a19e63c0dfeb8627bd9ea0b7396e70c57b7c79bd7cbcf6f5afb5f89803a7b6d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "ca171a5423414e306fcbef6c2c59c8f7115c0e608373e8debaef082719b951b5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/model-command.json": {
+      "bytes": 1601,
+      "sha256": "2f07a313676df51d93bef22177c2c24a2e94d29f8e52a4b9fd98245339e8ef13"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/model-identity.json": {
+      "bytes": 1942,
+      "sha256": "dbafed4cc67968014bb9a128c4b70c4cd0ac339f3dc67e1ab9e1ccd7d9e1870c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/model.log": {
+      "bytes": 28369,
+      "sha256": "6aa71ec2aae4483f69c2620db19d2df39f7a8e8f64adfea7fc2e94955751c9f5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-config.http.json": {
+      "bytes": 251,
+      "sha256": "f21bf45a98e3305adb763209db31c73651f31c8e1d353d0c90420b14706aff29"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-config.wire": {
+      "bytes": 16039,
+      "sha256": "090e171460d029af216e7cb21aa08409984135223b792ddda9223abac9148c43"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-drain.metrics.json": {
+      "bytes": 24645,
+      "sha256": "9db0a133a7520a572649828dc0ccc6098e377303b04b2a0ccfa70b40a5909947"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-ready.http.json": {
+      "bytes": 246,
+      "sha256": "e39a7d91cbd71bc242776578a680b54e4d56f8af0166c8240fa4b892cf533031"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated.request.json": {
+      "bytes": 347,
+      "sha256": "8574e1fc1f2c05d07af3cdfe1860b735234096a28843de02b02124f5cc764a8d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated.sdk.json": {
+      "bytes": 917,
+      "sha256": "6deb6da0493bf364ba6fa7207649c8d02f340ff86dfea73e4948c6c55530254a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated.wire": {
+      "bytes": 152,
+      "sha256": "2088195093b292cc87340761d05c70e6ad4d73771c9b1fcc65bbce87121f74d7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/negated.wire.request": {
+      "bytes": 395938,
+      "sha256": "d10cd7e4a3c36cdbfbb26c4f254290d886cdf3d4103b1a8e961593e20297859d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_0ce7a33648b8b177e123c42c93406084.json": {
+      "bytes": 287216,
+      "sha256": "765ceaaadb0d94ed29d5eac684e0082e892b5d6844129f83cbf79a62a2abd517"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_2558b3a6f63082454967d9baf4c3cf04.json": {
+      "bytes": 435696,
+      "sha256": "aaeade43b003937ba93dd46c4216b533e98281f8a1fc96b6e4d5eee14b50248e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice.voice_d91ef0c25a252f9ae75a631901960d90.json": {
+      "bytes": 48517,
+      "sha256": "44dd1596d259059af834380c30ac40404574bfcd5e030d63fa6cc8a0bf9aa7a1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice_consent.cons_152992b04ee1d2169519b5a25bf7c320.json": {
+      "bytes": 5026,
+      "sha256": "7eeedd9976bb2dc4302d442aba24c9673f6e93f0d3fd7e2efc368ac4e304b862"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-config.http.json": {
+      "bytes": 251,
+      "sha256": "bb0d663e6f73f03cdbfde94f9faf2b9775b53d0285c78579a206523df5073a8f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-config.wire": {
+      "bytes": 16039,
+      "sha256": "cad7a292c952cd928a2341a790657a7e25822204d596a4593cf107115d6e3aa6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-drain.metrics.json": {
+      "bytes": 24654,
+      "sha256": "00ca8ed1a2e3072f1cd2de3dac6a3c6c0916d07163ebe8ca694d073861ea967b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-ready.http.json": {
+      "bytes": 245,
+      "sha256": "88ebb523a1b44b7d3f124d3cf96d48db78494a1516cf4c8663df8325d500a1a7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota.request.json": {
+      "bytes": 356,
+      "sha256": "346c956fb56c2d224272492a1945f5460d7b0cda6a1fe9fb774ceadd9ab7a402"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota.sdk.json": {
+      "bytes": 900,
+      "sha256": "8015829cfd1de147b24d83c0c308c3a4516527bb855ce9162f2055daf0183f43"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota.wire": {
+      "bytes": 129,
+      "sha256": "076c91c8a7e8976a4edb38d258a1aed95d1a2b1a77c87f8a9a6df4b8e03a0701"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/quota.wire.request": {
+      "bytes": 326816,
+      "sha256": "f284262be0e86e8f5cac96bbbb74b9d3dab579e37466d581270d8b5fd3b6ba36"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-config.http.json": {
+      "bytes": 251,
+      "sha256": "d27c24a7bf5730b5bdb2ac7ed62df8bd86b2c7ab45c7ae6882d879d45e59b01f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "2dd21bc83fa79c4128e40a1cb963b650d1a4f031b7df26755a05090246fc82c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-ready.http.json": {
+      "bytes": 244,
+      "sha256": "f1b4f28da7c5bb5b553dc2d3092c5d7d565ea7d9b3e4fa1275e973f62fda241c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename.request.json": {
+      "bytes": 185,
+      "sha256": "8bd52d6a983442bd93c002c5f32939acf9293c9085d622cfc1144827fb9104e8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename.sdk.json": {
+      "bytes": 943,
+      "sha256": "ce32d59727d8226f57b46f6baf722b6ec6bf49c2bf9370d7cb0bd35b14c20045"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename.wire": {
+      "bytes": 148,
+      "sha256": "ebe13972fc873ff02746b3e5f73620c8e11be7d978c7caefb072514a2715e12b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/rename.wire.request": {
+      "bytes": 32,
+      "sha256": "e0965395be03ecee0981beb3f7a7b0e44500e6d3d442789b111fb38f0194119f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/result.json": {
+      "bytes": 1165,
+      "sha256": "882e4a6bd8133296177ff5050f3c5832fb724ead141a77df72760da628b08239"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-config.http.json": {
+      "bytes": 252,
+      "sha256": "4094097a9c28c82f5c4f052326e7fe3b4b90bbf0ba348a0dad7190104728be99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-config.wire": {
+      "bytes": 16047,
+      "sha256": "74bf8f6073634b5b05f1b790a9bdfb8b34bb5d3c44e114735a7a8a0cc61843d0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-drain.metrics.json": {
+      "bytes": 24657,
+      "sha256": "6a064a0484eb496e2100abf467035a9bf848a163c51eafebaef57a9486efc315"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-ready.http.json": {
+      "bytes": 245,
+      "sha256": "92adbc0dfe20a3bd1d5c663c6c5a9048e49cba6c77fbe9f2ef157fab22ecdddf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr.http.json": {
+      "bytes": 244,
+      "sha256": "44409f750aacc9c51173ff486160fb6d1cb3f8174a6e0485702c38110a8bee55"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr.quality.json": {
+      "bytes": 400,
+      "sha256": "e6d5d91865068842d06a27f97412152f940ec5c113a060aac720af2c8277ef48"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr.request.body": {
+      "bytes": 111758,
+      "sha256": "00e312f90109576e02dc3cdd98f00a2f2a28feeae77acaed0de3eeb8aac834ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr.request.json": {
+      "bytes": 270,
+      "sha256": "9d9a134c7b2af45e5e4393b23b9ac6dc35356a8e0a66dd9ef47426af516d3dd4"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-asr.wire": {
+      "bytes": 210,
+      "sha256": "a124b59f754e4d6aab80eccccb171c1a3c891c46a9e79a5c3a85475a148fa23d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-config.http.json": {
+      "bytes": 251,
+      "sha256": "293e2f9107e89cb92f38e01c30b7d1353c101271201d69100259b1e86809a2ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-config.wire": {
+      "bytes": 16047,
+      "sha256": "a49b183fac58ed2a464420735a7edac5d6163e1c4c5e8dfa352a714cf523eb2d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-drain.metrics.json": {
+      "bytes": 24657,
+      "sha256": "48d7654f6416d2d8454a134f956a46aa2d4b03f1deed79181baad03403c5e853"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-config.http.json": {
+      "bytes": 252,
+      "sha256": "7bf7727e139369278a23dfd0a25ef9c23012402d866fb24c6f8dd30bf1165571"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-config.wire": {
+      "bytes": 16039,
+      "sha256": "cad7a292c952cd928a2341a790657a7e25822204d596a4593cf107115d6e3aa6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-drain.metrics.json": {
+      "bytes": 24654,
+      "sha256": "5626010e8cae911b43bc77bcf1bd53180c26af14325396c1651b3adad0af165b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-ready.http.json": {
+      "bytes": 245,
+      "sha256": "387bb2615a60f0c392b20690725842457c9c5b5cbb5c3b0e5d667eb89d3abe93"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other.request.json": {
+      "bytes": 303,
+      "sha256": "21cdc7d34f6641156b3e67f5b8d10e8678930f5cb0f8c1358a8f2b7eacbc41bc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other.sdk.json": {
+      "bytes": 822,
+      "sha256": "d0e0f459ddb24c08b3e465aaf74288a686884d0e4eee1a6c16dee98289ab9f8f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-other.wire.request": {
+      "bytes": 180,
+      "sha256": "5f252a9d916f7f24760b3078e6fd1277a5cb0e957864c29c06422b4a52cfa4dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-ready.http.json": {
+      "bytes": 244,
+      "sha256": "af761e53c2e855e3b06757245808c4d92e77f5d2ccfd9e0497a5b380f34820dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.request.json": {
+      "bytes": 303,
+      "sha256": "c14629fcb45308a7f14c42a385d42c3c926d72eaa025b6a3707e40b903177f67"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.sdk.json": {
+      "bytes": 1073,
+      "sha256": "65c253dec1a9c37efb919ec9c5e90789b54a5a91b47b2425d4f0a60f3ed2aacc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.usage.json": {
+      "bytes": 111,
+      "sha256": "5ec68cd6b09b2749c90678924ffb9bfacd0caa7a9a16caf8bd3a4b29ae8de577"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.wire": {
+      "bytes": 149749,
+      "sha256": "5b0fb23e37ad35ff1c014cee511d921cfecf4d391ec4566078ec985daa3e7072"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/speech.wire.request": {
+      "bytes": 180,
+      "sha256": "5f252a9d916f7f24760b3078e6fd1277a5cb0e957864c29c06422b4a52cfa4dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-config.http.json": {
+      "bytes": 252,
+      "sha256": "4eb54c542148379caa207b878677632501cc320724a2c552432b400d2b98a522"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "428e650ab219040077023bd37d4512d2eb6caf13a094bb181fdf27b0089b4c67"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "18d997fced846f370fcb6f51b0b2a1d8958db53f50a6669740f65c7b18d73adc"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-ready.http.json": {
+      "bytes": 245,
+      "sha256": "8f6f4169bef3ae4bcb81196816af8ba163a348c60f5910380484c8a416268c0e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-config.http.json": {
+      "bytes": 252,
+      "sha256": "71a3a1a52e3de073fce153a1211f91ee5afd53f9cbdd880961b2a86d697d4b26"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-config.wire": {
+      "bytes": 16039,
+      "sha256": "cad7a292c952cd928a2341a790657a7e25822204d596a4593cf107115d6e3aa6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-drain.metrics.json": {
+      "bytes": 24649,
+      "sha256": "238bacf597b32ebe038387b9cdbe4b7fd6686959ca6ca71b4c4a40ef41ca9eb1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-config.http.json": {
+      "bytes": 251,
+      "sha256": "bc35f1ddc49440f53c384d27acc39d3a072c07c4df8d1845cace7e42e26fc9d6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "d15b96971be4e419d2477db8fc46c6e343f4b65662dff5693b8300c5876d8e0e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-ready.http.json": {
+      "bytes": 245,
+      "sha256": "c5c29e0a3d1113cf1ec9831cf57206d2d3d671a92973333f0a781ebb876e0f5b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch.request.json": {
+      "bytes": 408,
+      "sha256": "d613ec3d1c8cf3cbabf943a4569345853013fb147fc6e3d4223430584a6036ca"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch.sdk.json": {
+      "bytes": 907,
+      "sha256": "3b1b424e6243f4c374b1c86a65c1b5905e119a92d29813fec0e9ef085a2dee5a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch.wire": {
+      "bytes": 150,
+      "sha256": "6c02b146eb91db8d0736467848d9231eba0bdc61aa50da4013cde75a10e39ee3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-mismatch.wire.request": {
+      "bytes": 207913,
+      "sha256": "24aa503e0975194be376f8af1a3ceed743681f91c754f271e746cbf881320566"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-config.http.json": {
+      "bytes": 251,
+      "sha256": "8d36650e5ffc66062d239d9a0790e275c22a8b701ace45d5ecf896b3c9c6f2a0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-config.wire": {
+      "bytes": 16037,
+      "sha256": "5d7133bbe39e735e7e42fe123f84facd9554bfb80ae002dfac064388012b0dd5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-drain.children.json": {
+      "bytes": 685,
+      "sha256": "b1a4230ce0939b6e07ecaddc26a32282246bc5f409572dab58f3975d452e3b86"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-drain.metrics.json": {
+      "bytes": 24647,
+      "sha256": "f41c1d268d105b3c5fd3319a968f7f1fa15e8772df566d4f5784fa080dbeaa4f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-ready.http.json": {
+      "bytes": 246,
+      "sha256": "ca23b50b34703ff3fa6eb16726f3e47289c5dd039559f88cfc96cc00ed5f02b9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other.request.json": {
+      "bytes": 415,
+      "sha256": "110a67264146b7efce180df77f9e94aebc5e6579f334f86ab53521783a9ced0f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other.sdk.json": {
+      "bytes": 871,
+      "sha256": "a7a1760c6a4dac85ced2d370662d1c4222685de44e6fcabeec5a851af08ecac6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-other.wire.request": {
+      "bytes": 215588,
+      "sha256": "33b85116213fe507edbdb3d43a446c719721d0670a6a2716e6cdc4af3ab1bf40"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-ready.http.json": {
+      "bytes": 244,
+      "sha256": "912ef4fcd656e08a77dc9ea965efb343436c4a1eb1d73aa081529536802f6323"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice.request.json": {
+      "bytes": 415,
+      "sha256": "69d6f940518cc55a15fad05512023b187d24fc772d807dde179e44536512dcc0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice.sdk.json": {
+      "bytes": 937,
+      "sha256": "c3ca202ed4f9e48851275662e4f4b847b11e9da9925e55cd482b5cebaca17da9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice.wire": {
+      "bytes": 138,
+      "sha256": "cc82f4c127bd2a10b487895b9f3f52f912481019a7146011946a20f80122ea71"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/voice.wire.request": {
+      "bytes": 215588,
+      "sha256": "9b98d8c1bc12042f653d3f91714fe1777292a6d86f25e8de9575016bbc5cc522"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/tls-cpu-check.json": {
+      "bytes": 459,
+      "sha256": "d93c40c12773256b115b566950a1ddb9091c43fa8e78db78bb9ee8538f19a1fa"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/lease/events.jsonl": {
+      "bytes": 12185,
+      "sha256": "c0124e047b27e836b1bc0d12febcbed83b2fef214f6457c6367481ac8c61a40e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/lease/exit.json": {
+      "bytes": 717,
+      "sha256": "44cefb6a9c64dd0efcfd5099e937afcea95b1eb754ddbbdd6bc4b06ca4f213f7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/lease/nvml-queries.jsonl": {
+      "bytes": 150245,
+      "sha256": "f548a0ce34cf9709f73c4cca88cbd4a0a02ef8ff4830b13dd83da74878a422f2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/plan.json": {
+      "bytes": 911356,
+      "sha256": "7e45dbbc92dfe2e5cf178f3253c15fa1661aaa67a3e119ab9cdfacfb2876ebaf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-config.http.json": {
+      "bytes": 252,
+      "sha256": "9829fda51bd64dfc112c96c4d884f6ca359e9a3afd967ea2fab350185d27a85a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "986ec121e77d4b11bec55cc531f5cb0388e52f9737d4ad7882a5676792d3436d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-ready.http.json": {
+      "bytes": 246,
+      "sha256": "65650335a31f2aeb96a5c47d21e2c8c948fd4c3803df95e6642b1007c999945a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr.http.json": {
+      "bytes": 243,
+      "sha256": "5100d39b5e661e8d2016c516c0ae035e796074d590097811823ee30b2d92c32d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr.quality.json": {
+      "bytes": 385,
+      "sha256": "99058e831948b1e249b997a395c239146c2e79447c171d332d026db45a10ef58"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr.request.body": {
+      "bytes": 77198,
+      "sha256": "f67cafcd7a9e15f629ff5b8055826b12a2ac865a6a3abb95735a9d27a8c609ef"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr.request.json": {
+      "bytes": 269,
+      "sha256": "23da1d8a983728caca1496361d751e8ab6f87eeafc994a288620195649e94b06"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-asr.wire": {
+      "bytes": 202,
+      "sha256": "0ade7aaed59f7ad6e2ea7a0c7762ac6148d347de8e968554783282f7b5e57c44"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-config.http.json": {
+      "bytes": 252,
+      "sha256": "42527fa535e8a10cdce55a359e51b665f7a4da77280dd47ab2b93766dd94d440"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-config.wire": {
+      "bytes": 16034,
+      "sha256": "cb3d0b65c29a8e3efeadd877372542177b46ed306ad510ce19955efcb05305fb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "be3e8bc88fb8aca5feaaf00a505baa927a0fb91180778b99763e278324a4bd99"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-config.http.json": {
+      "bytes": 252,
+      "sha256": "7f98af6bd892e275f8fbec6f5737bb00c99281d2786b7bb4a5c50d4559247ebd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "c0ce27c292408d75bfa8c824d67440555ba9f88e982ddb8763499211f1eb05c0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-ready.http.json": {
+      "bytes": 246,
+      "sha256": "a7978c4c5a34f632866ff26286e3d09aea2eada2a9056ad4cf829ab2ae8fa982"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history.request.json": {
+      "bytes": 159,
+      "sha256": "f205d341c9b4ea4382aed709f2bb71dcc3e65268c68fd63e0d2932eff84e48c8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history.sdk.json": {
+      "bytes": 104144,
+      "sha256": "79bf9010af2bddf0520d5c0866db7ddd6be5720613ae6a437ecdef47a60f694c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history.wire": {
+      "bytes": 103078,
+      "sha256": "f505e92a46624678c42047602cd8c9a484eb3bb342b96bb42ddc7adfa3d8596d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-history.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-ready.http.json": {
+      "bytes": 246,
+      "sha256": "649935e86c67b4a3aa7a6a620020846ebb08e326dd764ce30ca5e343251ef751"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat.request.json": {
+      "bytes": 667,
+      "sha256": "7a008565aa5a8f5b5cb94ef69f5e0d08e2d028f1363acce6690db142ec0e71ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat.sdk.json": {
+      "bytes": 114102,
+      "sha256": "1cf3125fde693da23ffad6dee45da947d6fa1a41b489d1e6ff5fd4ad61b2f765"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat.wire": {
+      "bytes": 108738,
+      "sha256": "ad69a5686adb3aa1b3564d97f5d51ca3e979e7bc56c8302fecf6babf8dfeefb5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/chat.wire.request": {
+      "bytes": 412,
+      "sha256": "066d646d1c4fac4dda76d980b712998254b6dbdc97a1224bb394e7cbe41525db"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/cleanup.json": {
+      "bytes": 3532,
+      "sha256": "435deae84b4eeaf32a072c7c67b6f93779faf9854b1a958b2c2ddfdbd87130d6"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/client-policy.json": {
+      "bytes": 936,
+      "sha256": "aed6520a391b218ef8e67525e4470c7240d21cb58cc65b57ee2bba5ff3f4663b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-config.http.json": {
+      "bytes": 251,
+      "sha256": "74a9d31ef6ec252f5a34612cfb72f1514081156faab9c640253dd4941a0067bf"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-drain.children.json": {
+      "bytes": 685,
+      "sha256": "e6808230c2ff54d9f9180031a262d5eccf5f5bd7555127ffbfb3c795236531c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-drain.metrics.json": {
+      "bytes": 24657,
+      "sha256": "106d29809f2eb7aaedb04654cb7d0972e3923e01048a6106820278fa58ac8f8d"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-ready.http.json": {
+      "bytes": 246,
+      "sha256": "acd693c8258b52c5c6ef2e0dcc779f0c358fcd8802b8c293166ec5b4c12a8f14"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after.http.json": {
+      "bytes": 244,
+      "sha256": "a84d4c43cdd700a8e1f317bfb27d8939140c56946aff1de947b4ff7e6998b332"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-after.wire": {
+      "bytes": 337,
+      "sha256": "8f42156cd38778674a98427b17bafa8bb7bb1d1686e1acf871934d1496f1b00a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-config.http.json": {
+      "bytes": 251,
+      "sha256": "48f6ea36f87a01115349474562d3fe70e2e10f8d02da3f9367fc8acb1aaf7274"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-config.wire": {
+      "bytes": 16030,
+      "sha256": "eb37b01289fbd3c7abd9570881fe05086c8f6ba537681d619270d3375a89c203"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-drain.metrics.json": {
+      "bytes": 24639,
+      "sha256": "65a998d89dbde9a42c24b303811fe9e1c26fde6f1aab58381fb6a741ddd4e257"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-ready.http.json": {
+      "bytes": 246,
+      "sha256": "470208ae8e5d711078d5bbf3c65ca41707a21736362dbf7785757d7cbef715af"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before.http.json": {
+      "bytes": 244,
+      "sha256": "299404373f0571cce8261db52464c914f5fa567f79365b273b1e350d7b46268f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before.request.body": {
+      "bytes": 203,
+      "sha256": "47d03d417ca6b426cebd46a020d7e1259957cea9b1ca1d673a8c0a9faba05af9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before.request.json": {
+      "bytes": 222,
+      "sha256": "bc4dc7f0253756dd8dee524d140d4cb9ec495200ce5a4ba46158afd4b58dcf33"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/core-before.wire": {
+      "bytes": 337,
+      "sha256": "c00d832fdb923ca06801192d6278c0cb450c88cf9daede0058485550113980f1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/counts.json": {
+      "bytes": 73,
+      "sha256": "85bc64571184b93fd0ce8f91ffb2b3e877ac5eec09fcbb4d9272415607446ffe"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-config.http.json": {
+      "bytes": 251,
+      "sha256": "95f48bbc14c9f7085a962bb04d45cf9f6d32531cef7fd7092d5062fb6232276c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "272323bc5c4a42e4b65c6b22c1656790524664e8eafccc188dae49791affb6be"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-ready.http.json": {
+      "bytes": 244,
+      "sha256": "6c4cf45b16bdb02ece15b2904fee69b580661ee1acd3ea96296162d9e84597cb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice.request.json": {
+      "bytes": 145,
+      "sha256": "bdc74d85a581ed343d7bcca695a20b779bbf2e0d34dcd1c9e49f65f63583a3f0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice.sdk.json": {
+      "bytes": 860,
+      "sha256": "f61211d3576b1a82a7f56cc02f5e7826c3111578ff3faf24285fb76bba65ece9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice.wire": {
+      "bytes": 85,
+      "sha256": "ef69c36dfcfec55b9781d3d3573788b0e4808acdc7b12091c85995496680efac"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/delete-voice.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/entry-1/closed.json": {
+      "bytes": 76,
+      "sha256": "c54b8d95d8f3500e52eaf5a3431ae94aea0dd1588ac965bf62ed22cfc3ed8b25"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/entry-1/entry.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/entry-1/ingress.json": {
+      "bytes": 1518,
+      "sha256": "0830199cf85c87e6837db5aa13fe71eeb6359eecc660f2831573cfa0ca201e45"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/entry-1/ready.json": {
+      "bytes": 53,
+      "sha256": "236878c27b58353fadc98c32d86b883f1ebe7409df68cfe0676ad869ba0cc5db"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/initial-capabilities.http.json": {
+      "bytes": 251,
+      "sha256": "1413d2cda86b98f0474f388b88ca9fc6d03fa2f144dfc26e226b070d91b84551"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/initial-capabilities.request.json": {
+      "bytes": 153,
+      "sha256": "14f3d0115727fbf232e6eb458b08fab439d6f7fb8e6ab0a67f278af96a81d8b0"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/initial-capabilities.wire": {
+      "bytes": 41791,
+      "sha256": "ca171a5423414e306fcbef6c2c59c8f7115c0e608373e8debaef082719b951b5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/input-state.json": {
+      "bytes": 1192,
+      "sha256": "fe761211ea84ec597ea5378fc299b0c1138762c1bd14647dab9890525ab09309"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/model-command.json": {
+      "bytes": 1601,
+      "sha256": "16d51446aff849c831f902c5ba391d368e3afc5dc81bc001745248662d0cb1c3"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/model-identity.json": {
+      "bytes": 1942,
+      "sha256": "7ec04fbfb1fa45196aefb8a50d8521fcf3ee873c7ba13c59b08a296854b776ff"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/model.log": {
+      "bytes": 18252,
+      "sha256": "91f82307bf66a653f9cef09a1dab5984ad81e529ae7f8e6c0aa7e36dc5f694d5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_44b8cb45174fdee1b99335feb4c4476e.json": {
+      "bytes": 596,
+      "sha256": "d1ac824eca40d0e0e3319fc7cf940bed4def3581e9271835fa231fcaa68cb39f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-c181e975a10598b02cd32b32da64f71b.json": {
+      "bytes": 103711,
+      "sha256": "b2afb2e3b85796224f1812268f9e2061522fed6fe57a8dbbd1e27114a5128c8e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_44b8cb45174fdee1b99335feb4c4476e.json": {
+      "bytes": 596,
+      "sha256": "d1ac824eca40d0e0e3319fc7cf940bed4def3581e9271835fa231fcaa68cb39f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-c181e975a10598b02cd32b32da64f71b.json": {
+      "bytes": 103711,
+      "sha256": "b2afb2e3b85796224f1812268f9e2061522fed6fe57a8dbbd1e27114a5128c8e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_0ce7a33648b8b177e123c42c93406084.json": {
+      "bytes": 287216,
+      "sha256": "765ceaaadb0d94ed29d5eac684e0082e892b5d6844129f83cbf79a62a2abd517"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.tool_run.tool_run_2558b3a6f63082454967d9baf4c3cf04.json": {
+      "bytes": 435696,
+      "sha256": "aaeade43b003937ba93dd46c4216b533e98281f8a1fc96b6e4d5eee14b50248e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice.voice_d91ef0c25a252f9ae75a631901960d90.json": {
+      "bytes": 48517,
+      "sha256": "44dd1596d259059af834380c30ac40404574bfcd5e030d63fa6cc8a0bf9aa7a1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.voice_consent.cons_152992b04ee1d2169519b5a25bf7c320.json": {
+      "bytes": 5026,
+      "sha256": "7eeedd9976bb2dc4302d442aba24c9673f6e93f0d3fd7e2efc368ac4e304b862"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/registered-state.json": {
+      "bytes": 1634,
+      "sha256": "b7b75d0ee358f87ac73cc61e982a8c42319165aec92da34572a982e4d7b2e53f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/result.json": {
+      "bytes": 331,
+      "sha256": "2ffde4e7c857582698671c2abce369fc9b8b733f15e06b92e52e5a956e0fb79e"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-config.http.json": {
+      "bytes": 251,
+      "sha256": "45c4ce2c420ff0002aa89413b2b52009d61f450d0978e66089233364f9cd37b7"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-config.wire": {
+      "bytes": 16030,
+      "sha256": "eb37b01289fbd3c7abd9570881fe05086c8f6ba537681d619270d3375a89c203"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-drain.metrics.json": {
+      "bytes": 24641,
+      "sha256": "dccb5a52dcc99e9306c3eba6d198913509e0df68fba7975f0098fc7f33b16de5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-ready.http.json": {
+      "bytes": 245,
+      "sha256": "e74fb2c6231a7e6e44e092338e7d52faccead95b0208293b7dde6807834427b5"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent.request.json": {
+      "bytes": 150,
+      "sha256": "b5cb8d0a9febe31d43667f70351a894c4bbc99dd967acb12d4bfb56edb766002"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent.sdk.json": {
+      "bytes": 925,
+      "sha256": "8f70fd0be4a99d6ec71963c1932d953519d026520e1d02216787c21b8ca4f20a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent.wire": {
+      "bytes": 148,
+      "sha256": "ebe13972fc873ff02746b3e5f73620c8e11be7d978c7caefb072514a2715e12b"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/retained-consent.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-config.http.json": {
+      "bytes": 251,
+      "sha256": "c77960c9374fff6f439e9664b87b372f8a2271993753f58e50e008e17ef2db38"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "287772328089e6c0abf0a48cf85b3cbccd7a0d9483be9adef385d607df6baae8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-ready.http.json": {
+      "bytes": 245,
+      "sha256": "bb6a1f058f4b70ece8b063467b8e27e299e7f47dd4c1070db24acf885affca24"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke.request.json": {
+      "bytes": 148,
+      "sha256": "2a0daaee29c6637992fdbcfff1d76c0696f3912a4020d6136026c9675cb7c159"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke.sdk.json": {
+      "bytes": 874,
+      "sha256": "636cecae405c37da9c0ed8f4358ed87bcbea1d5c62689c780c28ba3fde31a0bb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke.wire": {
+      "bytes": 92,
+      "sha256": "f38871ed8344e8ab3c49020dedef080a508b0b23aac4fb1b6e8173fde3913727"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoke.wire.request": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-config.http.json": {
+      "bytes": 252,
+      "sha256": "921f05280106ad71734bf67eb5ae2816cccb322f2925ed97d7afa940fc77525f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "33b1dbec3be727330fcb94e0c3c625ea47d733fe92de0e97748f19abc64aac7f"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-ready.http.json": {
+      "bytes": 246,
+      "sha256": "fd8f93a78cd5ae30f6d15275707770de09f1aacb5902c3f7576afcd3370b71b2"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat.request.json": {
+      "bytes": 573,
+      "sha256": "c03ebbfdd8c0d2a293d26287375bd27547db129ec217cd204314ea2f19a23818"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat.sdk.json": {
+      "bytes": 826,
+      "sha256": "d9e8b4f3fb085ca6f817c4269142b17daf63f733af5be51b4bbd161dcafb56c9"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat.wire": {
+      "bytes": 122,
+      "sha256": "ace6807230d5837a4215f2335f67962bdcd57b42f51f174265daa3ce309c1068"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-chat.wire.request": {
+      "bytes": 345,
+      "sha256": "c1c6be567202d5df72efb227cc634b472cda0b578efd678b573250649fa512ec"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-config.http.json": {
+      "bytes": 251,
+      "sha256": "9f2ba25afdbb6565bccaa04db15a6024cecdd15e93d67e118275e05173bb76fd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-config.wire": {
+      "bytes": 16038,
+      "sha256": "48d51170514f6b41095b72735f7cd92d4a5f7e23d82602ba305f27784c71eafb"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "2989e7bbc04a744c98991b1c0f62d4e0424d178d8428745897ceab50b2e46f92"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-ready.http.json": {
+      "bytes": 246,
+      "sha256": "a648ca721e2127c1ec7aa0f69b9267e16ce163e1f7a0b23a5180aa293a65e8e8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech.request.json": {
+      "bytes": 303,
+      "sha256": "c14629fcb45308a7f14c42a385d42c3c926d72eaa025b6a3707e40b903177f67"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech.sdk.json": {
+      "bytes": 822,
+      "sha256": "c3ee32169d85845737355d143e7a14f36f1a101a59da56cd2ed07d5d4d7d7882"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech.sdk.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech.wire": {
+      "bytes": 110,
+      "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/revoked-speech.wire.request": {
+      "bytes": 180,
+      "sha256": "5f252a9d916f7f24760b3078e6fd1277a5cb0e957864c29c06422b4a52cfa4dd"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-config.http.json": {
+      "bytes": 252,
+      "sha256": "f1d1cd80265e46af37ae75c74c0888bf542b857148fc43cbe7a3ce3e78f28687"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-config.request.json": {
+      "bytes": 144,
+      "sha256": "bacebf1839235cffed262c762f78d04ffc7a7f15ea967beddac1998bcc181a8c"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-config.wire": {
+      "bytes": 16030,
+      "sha256": "eb37b01289fbd3c7abd9570881fe05086c8f6ba537681d619270d3375a89c203"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-drain.children.json": {
+      "bytes": 685,
+      "sha256": "2a6cb99f10f62af830f1e960b63fa52fb18812331b8976df4d59ccc24f67c921"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "95fe83b403969652046c39025780c92df03ae903aeff9d9fddf789a0b8c24892"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-ready.http.json": {
+      "bytes": 245,
+      "sha256": "d89772cc44172b8723226e7296b010b71d66f88ea91df1e66d03f62d14499663"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-ready.request.json": {
+      "bytes": 141,
+      "sha256": "36fde24314f22932dbc1d318cb5249b9bf3151d53545cd7afb18e2ca5c0923d8"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-02/run/startup-ready.wire": {
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-05/chat_protocol_sources.json": {
+      "bytes": 76586,
+      "sha256": "3786d36848019ba00aef689de338d8b756988dcc2c75db557adc6b2b7383b234"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice-service-candidate-05/identity.json": {
+      "bytes": 221,
+      "sha256": "49bdf099f8e0cba35e3b066aff85142e4ce37b99229bd9709c97852277f34f0a"
+    },
+    ".q4t-work/serve-custom-voices-20261118/voice_sdk_tls_continue_02.py": {
+      "bytes": 4918,
+      "sha256": "f7505d8d469b40e6c0d104ffbb70eb101b90ba4010cd1e3fdb3576df8baa91b7"
+    },
+    "tools/native_tts/test_voice_sdk.py": {
+      "bytes": 9596,
+      "sha256": "dc6df0604b7fc3950baccfaf90275d4aeaa20c33c480e94175ac83523e4f8059"
+    },
+    "tools/native_tts/test_voice_sdk_acceptance.py": {
+      "bytes": 4011,
+      "sha256": "123442dc6449e7fd851c174fa91540916f0ee12c50a60b6728b4cdd5da42ba4b"
+    },
+    "tools/native_tts/voice_sdk.py": {
+      "bytes": 7866,
+      "sha256": "ad67cc12e8ee870c1a70f1c8f60587fca711bc772c619dd610cb975013636c02"
+    },
+    "tools/native_tts/voice_sdk_acceptance.py": {
+      "bytes": 14572,
+      "sha256": "665158c24a2b4cb1c642c98a18914df31f7c10228cf1c08efd62add3dedd0fc7"
+    }
+  },
+  "original_audio_retained_at_same_local_paths": true
+}

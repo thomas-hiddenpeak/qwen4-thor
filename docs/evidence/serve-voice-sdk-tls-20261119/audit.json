@@ -1,0 +1,24 @@
+{
+  "anchors": 940,
+  "mutations": 17,
+  "errors": [],
+  "source_inventory_unchanged": true,
+  "additional_test_clients_bound_by_plan": {
+    "tools/native_tts/voice_sdk.py": "ad67cc12e8ee870c1a70f1c8f60587fca711bc772c619dd610cb975013636c02",
+    "tools/native_tts/voice_sdk_acceptance.py": "665158c24a2b4cb1c642c98a18914df31f7c10228cf1c08efd62add3dedd0fc7",
+    "tools/native_tts/test_voice_sdk.py": "dc6df0604b7fc3950baccfaf90275d4aeaa20c33c480e94175ac83523e4f8059",
+    "tools/native_tts/test_voice_sdk_acceptance.py": "123442dc6449e7fd851c174fa91540916f0ee12c50a60b6728b4cdd5da42ba4b",
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_sdk_tls_01.py": "3fe20390c5df4c457d6702380e429f9419782df6f1686b8f960f9bcfbc7c4ad9",
+    ".q4t-work/serve-custom-voices-20261118/sdk-discovery-01.json": "c3c43c0559a5fbf3131c19a389dc6322f5fadd6aa42e053a09b7bb363047196b",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-install-01/packages.json": "42567e30396c21107d5777578d4ff010003f56bff2d649b9b16083f041bd922e",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-01/result.json": "de2210f3fea8c88c472d99fb9aa5083dc5c78bdaeae19546eaa5054ccf3a2ee8",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-02/result.json": "b33b6b375741d433dc51f5ab70694f2a16928e4265d3b286f371262e16ef28a4",
+    ".q4t-work/serve-custom-voices-20261118/voice-service-build-02/host-result.json": "6b95bb41fe2fb201fdfcf94a1bf7bbd09b2a6a19fbeee1065f636d6ac62b3ed6",
+    ".q4t-work/serve-custom-voices-20261118/prepare_voice_sdk_tls_02.py": "5c669ff77c00fb3885ce54b2688a6fd19220bccb8dcb27d968d937442ff3afaf",
+    ".q4t-work/serve-custom-voices-20261118/voice_sdk_tls_continue_02.py": "f7505d8d469b40e6c0d104ffbb70eb101b90ba4010cd1e3fdb3576df8baa91b7",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/result.json": "882e4a6bd8133296177ff5050f3c5832fb724ead141a77df72760da628b08239",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/run/chat.sdk.json": "c7e81b838ad66522ef7a8f398eaa72286396008a2146d079a4d2393fbb6d8bd7",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-tls-01/lease/exit.json": "41c91842237192de9d0386261405f8edea816dc73ceea8525908a73af3d9c1de",
+    ".q4t-work/serve-custom-voices-20261118/voice-sdk-cpu-03/result.json": "4191e2ba66f86fa7242c20e7e86f4b75d5360dc6d482a177022baefc0db17478"
+  }
+}
