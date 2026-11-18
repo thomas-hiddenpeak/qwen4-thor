@@ -183,3 +183,27 @@ CPU检查覆盖9项新资产/资源/独立健康及2项直接受影响的ASR资�
 贯通，不能逐块拼接独立编码文件或等待整句PCM完成。WAV的RIFF
 长度须真实；将在自然codes长度已知后流式解码PCM，或采用经
 验证的标准流容器合同，不能用错误头部冒充完整WAV。
+
+## 压缩流验证冻结
+
+Speech压缩流已成组实现并零警告构建：单请求隔离worker、2048样本
+输入/64KiB输出、逐块摘要、显式EOF与正常退出才完成，失败不发布
+成功终态。冻结15项CPU/180秒、0GPU/HTTP，覆盖4格式实际流式
+可解码前缀、AAC尾部、FLAC包边界、预算/取消/超时/故障与畸形
+协议，另增量SHA及旧已知向量。产物≤4MiB、磁盘余量≥512MiB；
+既有模型资格复用，接着推进Speech/Chat真实服务及全部master。
+
+Speech SSE按固定OpenAI官方.NET schema的`audio/models.tsp`接线，
+`a6963436b98060ad8a586b5397fcc4c49c864498`：增量为
+`speech.audio.delta`携带base64 audio，成功终态为
+`speech.audio.done`携带input/output/total tokens。仅作协议依据，
+尚未实现HTTP/SSE；不把来源调查当成功交付。
+
+## 压缩流内容资格
+
+[Speech压缩流资格通过](evidence/serve-speech-codec-stream-20261118/README.md)：
+15唯一CPU/16次1.348秒；8条真实中英文流式解码与已验PCM逐字节
+相同，复用ASR内容证据，1.065秒/16worker回收，0新增GPU/HTTP。
+901来源/12负控、零警告；尾随字节分类修正及首个驱动失败保留。
+默认rev306保持；继续实际Speech/Chat、恢复发行及全部master，
+4倍内容问题仍待解决，组件通过不能替代接口交付。

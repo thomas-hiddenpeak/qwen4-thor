@@ -392,6 +392,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_audio_worker.cpp
   src/server/speech_encode.cpp
   src/server/speech_encode_worker.cpp
+  src/server/speech_codec_stream.cpp
+  src/server/speech_codec_stream_worker.cpp
   src/server/file_video_worker.cpp
   src/server/file_video_sandbox.cpp
   src/server/file_webp_worker.cpp

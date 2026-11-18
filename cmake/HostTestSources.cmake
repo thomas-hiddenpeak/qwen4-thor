@@ -168,6 +168,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_audio_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_encode_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/speech_codec_stream_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_codec_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_video_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
@@ -331,6 +334,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/suffix_drafter_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/router_trace_hash_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/sha256_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/router_trace_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/router_trace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/test_main.cpp

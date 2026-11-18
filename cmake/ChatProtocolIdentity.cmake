@@ -370,6 +370,10 @@ set(protocol_inputs
   include/q4t/server/file_video.h
   include/q4t/server/file_audio.h
   include/q4t/server/speech_encode.h
+  include/q4t/server/speech_codec_stream.h
+  src/server/speech_codec_stream_protocol.h
+  src/server/speech_codec_stream.cpp
+  src/server/speech_codec_stream_worker.cpp
   src/server/speech_encode_protocol.h
   src/server/file_audio_protocol.h
   src/server/file_audio.cpp

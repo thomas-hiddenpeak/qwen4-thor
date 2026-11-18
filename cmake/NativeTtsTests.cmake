@@ -51,8 +51,13 @@ add_executable(q4t_speech_encode_tests EXCLUDE_FROM_ALL
   ${tts_test_root}/tests/speech_encode_test_main.cpp
   ${tts_test_root}/tools/native_tts/encode_replay.cpp
   ${tts_test_root}/tests/server_speech_encode_test.cpp
+  ${tts_test_root}/tests/sha256_stream_test.cpp
+  ${tts_test_root}/tests/router_trace_hash_test.cpp
   ${tts_test_root}/src/server/speech_encode.cpp
   ${tts_test_root}/src/server/speech_encode_worker.cpp
+  ${tts_test_root}/src/server/speech_codec_stream.cpp
+  ${tts_test_root}/src/server/speech_codec_stream_worker.cpp
+  ${tts_test_root}/tests/server_speech_codec_stream_test.cpp
   ${tts_test_root}/src/server/speech_request.cpp
   ${tts_test_root}/src/audio/pcm_output.cpp
   ${tts_test_root}/src/server/file_audio.cpp

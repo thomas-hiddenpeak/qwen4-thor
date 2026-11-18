@@ -2176,8 +2176,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "43cfd4444b8e97de2be0eb14907a8dfcae342b9f92eb641de5649a5fa926a2c4",
-    "cmake/ChatProtocolIdentity.cmake": "fc20f36111e8a7a38ed08bae590e1160f24363b5d5988fdf0e4fc98d08516133",
+    "CMakeLists.txt": "859515f5308b4a9d90ea198589b28786089b59de320cd7f219158b28a43259ba",
+    "cmake/ChatProtocolIdentity.cmake": "d76b9af09f9b17b4364511f5a978d4a988c8776f15021f8670d7a027a7315efe",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2461,7 +2461,7 @@
     "include/q4t/service/ingress_transport.h": "f0f3e3434d054093a3d109aaa5300089a82dbbefb8cd2ee807784d5d62b85e90",
     "include/q4t/service/service_cli.h": "ca8d0ce29ebac6e46d3081c8d0a03513841af9f888b692735d6776a1cac2f692",
     "include/q4t/text/tokenizer.h": "7bb4d249805ab904fb5b8717b983d2dd939cf5421a72e9fa67953bd4ebd59f50",
-    "include/q4t/trace/sha256.h": "274b34fa302c5baccefb99f4f0845d321f46f208054b83c16a5499f879ee8474",
+    "include/q4t/trace/sha256.h": "68a3bb18e5023b7d214cbb66bb96b66b5e9942fbadae6fdf8a30ddfde91a3ae8",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/forward_timing.h": "7c642dbda0b464d333f20390f2ef4426954c23c9f6a48d1ee43ae044ce27a138",
     "include/q4t/vision/forward_timing_core.h": "89bdb2f4db849d0b36122d654d0b6627f879f898a0c6142d549399837fb920de",
@@ -2506,7 +2506,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "c3331cda4d4fc45c9868d3596e6062d4f412efe98cc0a9f6211c41eaa0cc71f0",
+    "src/main.cpp": "99df72f1311e4ba063f68c8f8ac0c978505ddeaac7c5b8ee818c82716e8e96f8",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -2898,7 +2898,7 @@
     "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
-    "src/trace/sha256.cpp": "f135a31a2bde6a2a76d137f733a78d3a234a6659aea08f9cd376479eb939373a",
+    "src/trace/sha256.cpp": "bd5e9f506e90574710cda42adb82efa1e8a32121b3f28b9dbb517633b6de1da7",
     "src/vision/media_plan.cpp": "92c58967a84c96a7786e65deb013502b423375e3ee4f0493d897d0af8917f16e",
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
@@ -3072,7 +3072,11 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "src/server/speech_codec_stream_protocol.h": "b045a80f89747ddc714b653ee703df9ad5fdac45a8517b601aed1c50b0cf2eb1",
+    "include/q4t/server/speech_codec_stream.h": "0d8654f95e9e295c10b85990833a8a10f5850ccd7f13e5f947e2b686bd46d2fe",
+    "src/server/speech_codec_stream.cpp": "84e0a31f766bc55fad2313644e5917123cd803e4159f84fc6e98e522ed3f1d09",
+    "src/server/speech_codec_stream_worker.cpp": "7780c887375426abb294eb04192acf210ec71d09471b4889973a506f48c14946"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -7407,5 +7411,15 @@
     "http_integrated": false,
     "complete": false,
     "evidence": "docs/evidence/serve-tts-incremental-synthesis-20261118/README.md"
+  },
+  "speech_codec_stream_development_20261118": {
+    "implementation": "one isolated request worker; 2048-sample input and 64KiB output; compressed streaming before EOS; incremental source/output SHA; explicit final metadata and normal exit; cancellation, deadlines and child resource caps",
+    "qualification": "15 unique CPU cases / 16 executions; terminal trailing-data error mapping corrected from 413 to 503; original failure preserved",
+    "not_delivery": "actual Speech HTTP/Chat output still in progress; full master and 4x content issue remain required",
+    "evidence": [
+      "tests/server_speech_codec_stream_test.cpp",
+      "tests/sha256_stream_test.cpp",
+      "docs/SERVE_NATIVE_TTS_2026-11-18.md"
+    ]
   }
 }

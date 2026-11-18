@@ -1,14 +1,21 @@
 #include "q4t/server/file_audio.h"
 #include "q4t/server/speech_encode.h"
+#include "q4t/server/speech_codec_stream.h"
 #include "q4t/test.h"
 
 #include <fstream>
 
 int SpeechEncodeFixture(int argc, char** argv);
+int SpeechCodecStreamFixture(int argc, char** argv);
 int SpeechEncodeReplay(int argc, char** argv);
 int main(int argc, char** argv) {
   const int replay = SpeechEncodeReplay(argc, argv);
   if (replay >= 0) return replay;
+  const int speech_stream =
+      q4t::server::MaybeRunSpeechCodecStreamWorker(argc, argv);
+  if (speech_stream >= 0) return speech_stream;
+  const int stream_fixture = SpeechCodecStreamFixture(argc, argv);
+  if (stream_fixture >= 0) return stream_fixture;
   const int encoder = q4t::server::MaybeRunSpeechEncodeWorker(argc, argv);
   if (encoder >= 0) return encoder;
   const int decoder = q4t::server::MaybeRunFileAudioWorker(argc, argv);

@@ -7,6 +7,7 @@
 
 #include "q4t/server/file_audio.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/speech_codec_stream.h"
 #include "q4t/server/speech_encode.h"
 #include "q4t/trace/sha256.h"
 
@@ -39,14 +40,46 @@ void Save(const fs::path& path, std::string_view bytes) {
   output.close();
   Require(output.good(), "output write failed");
 }
-void Run(const fs::path& plan_path, const fs::path& output) {
+ObjectReply Stream(std::span<const float> pcm, SpeechFormat format,
+                   const SpeechEncodeLimits& limits, const BinaryAccess& access,
+                   EncodedSpeech* encoded, GrammarControl control,
+                   size_t* before_final) {
+  SpeechCodecStream stream;
+  auto reply = stream.Start(format, limits, access, control);
+  if (!reply.ok()) return reply;
+  size_t offset = 0;
+  bool final = false;
+  for (size_t step = 0; step < 10000; ++step) {
+    SpeechCodecStep state;
+    std::string_view bytes;
+    reply = stream.Advance(&state, &bytes);
+    if (!reply.ok()) return reply;
+    if (state == SpeechCodecStep::kNeedInput) {
+      const size_t count = std::min<size_t>(997, pcm.size() - offset);
+      final = !count;
+      reply = stream.Append(pcm.subspan(offset, count), final);
+      if (!reply.ok()) return reply;
+      offset += count;
+    } else if (state == SpeechCodecStep::kOutput) {
+      encoded->bytes += bytes;
+      if (!final) *before_final += bytes.size();
+    } else {
+      encoded->encoding = stream.Metadata();
+      return {};
+    }
+  }
+  throw std::runtime_error("stream step budget exhausted");
+}
+void Run(const fs::path& plan_path, const fs::path& output, bool stream) {
   io::Json plan;
   Require(io::ParseJson(Read(plan_path, 65536), &plan, false,
                         {.reject_duplicate_keys = true})
               .ok(),
           "invalid replay plan");
-  Require(plan.GetString("schema") == "q4t-speech-encoding-content-v1",
-          "plan schema");
+  Require(
+      plan.GetString("schema") == (stream ? "q4t-speech-stream-content-v1"
+                                          : "q4t-speech-encoding-content-v1"),
+      "plan schema");
   const auto* cases = plan.GetArray("cases");
   Require(cases && cases->array.size() == 8,
           "eight fixed codec cases required");
@@ -76,9 +109,15 @@ void Run(const fs::path& plan_path, const fs::path& output) {
     SpeechEncodeLimits limits;
     limits.max_samples = samples.size();
     limits.max_output_bytes = 256 << 10;
-    auto reply =
-        EncodeSpeech(samples, format, limits, access, &encoded, control);
+    size_t before_final = 0;
+    auto reply = stream ? Stream(samples, format, limits, access, &encoded,
+                                 control, &before_final)
+                        : EncodeSpeech(samples, format, limits, access,
+                                       &encoded, control);
     Require(reply.ok(), reply.code + ": " + reply.message);
+    if (stream)
+      Require(before_final > 1024 && before_final < encoded.bytes.size(),
+              "real progressive audio required");
     Save(directory / ("audio." + std::string(SpeechFormatName(format))),
          encoded.bytes);
     Save(directory / "encoding.json", OutputJson(encoded.encoding));
@@ -95,26 +134,39 @@ void Run(const fs::path& plan_path, const fs::path& output) {
     Require(control.counters->started == 2 && control.counters->reaped == 2 &&
                 control.counters->active == 0,
             "codec worker cleanup incomplete");
+    const auto decoded_sha =
+        Hash({reinterpret_cast<const char*>(decoded.samples.data()),
+              decoded.samples.size() * 4});
+    if (stream)
+      Require(decoded_sha == item.GetString("accepted_decoded_sha256"),
+              "stream decoded PCM differs from accepted actual content");
     Save(directory / "pcm.f32",
          {reinterpret_cast<const char*>(decoded.samples.data()),
           decoded.samples.size() * 4});
     Save(directory / "decoding.json", OutputJson(decoded.conversion));
     Save(directory / "result.json",
          "{\"samples\":" + std::to_string(decoded.samples.size()) +
-             ",\"sample_rate\":16000,\"worker_starts\":2,\"worker_reaped\":2}"
+             ",\"before_final_bytes\":" + std::to_string(before_final) +
+             ",\"decoded_sha256\":\"" + decoded_sha +
+             "\",\"sample_rate\":16000,\"worker_starts\":2,\"worker_reaped\":2}"
              "\n");
   }
   Save(output / "result.json",
-       "{\"status\":\"PASS_ENCODING_PENDING_CONTENT\",\"cases\":8,"
-       "\"gpu_model_loads\":0,\"worker_starts\":16,\"worker_reaped\":16}\n");
+       std::string("{\"status\":\"") +
+           (stream ? "PASS_STREAM_DECODED_IDENTITY"
+                   : "PASS_ENCODING_PENDING_CONTENT") +
+           "\",\"cases\":8,\"gpu_model_loads\":0,\"worker_starts\":16,\"worker_"
+           "reaped\":16}\n");
 }
 }  // namespace
 int SpeechEncodeReplay(int argc, char** argv) {
-  if (argc < 2 || std::string_view(argv[1]) != "--speech-encode-replay")
+  if (argc < 2 || (std::string_view(argv[1]) != "--speech-encode-replay" &&
+                   std::string_view(argv[1]) != "--speech-stream-replay"))
     return -1;
   try {
     Require(argc == 4, "speech encoding replay PLAN OUTPUT");
-    Run(argv[2], argv[3]);
+    Run(argv[2], argv[3],
+        std::string_view(argv[1]) == "--speech-stream-replay");
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n';
