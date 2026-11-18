@@ -83,9 +83,11 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     }
     audio::TtsPrompt prompt;
     const std::vector<int32_t> ids(tokens.begin(), tokens.end());
+    // The complete utterance is available. Prefill all of its text, matching
+    // CustomVoice's full-text input mode; PCM output remains incremental.
     const auto planned = audio::PlanTtsPrompt(
         audio::TtsVariant::kCustomVoice17B, ids, {}, request.voice, "auto",
-        false, tts_limits_.max_prefill_tokens, &prompt);
+        true, tts_limits_.max_prefill_tokens, &prompt);
     if (!planned ||
         prompt.text_ids.size() > size_t(tts_limits_.max_text_tokens))
       return Error(413, "chat_audio_prompt_capacity",

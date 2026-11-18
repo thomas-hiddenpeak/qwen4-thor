@@ -138,9 +138,11 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
     std::vector<int32_t> text_ids(text.begin(), text.end());
     std::vector<int32_t> instruction_ids(instruction.begin(),
                                          instruction.end());
+    // The complete utterance is available. Prefill all of its text, matching
+    // CustomVoice's full-text input mode; PCM output remains incremental.
     auto planned = audio::PlanTtsPrompt(
         audio::TtsVariant::kCustomVoice17B, text_ids, instruction_ids,
-        request.voice, "auto", false, tts_limits_.max_prefill_tokens, &prompt);
+        request.voice, "auto", true, tts_limits_.max_prefill_tokens, &prompt);
     if (!planned ||
         prompt.text_ids.size() > size_t(tts_limits_.max_text_tokens)) {
       detail::SendError(

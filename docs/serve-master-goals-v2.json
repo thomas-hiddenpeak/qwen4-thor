@@ -7170,7 +7170,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Chat audio PR final-head checks and actual main merge",
+        "Speech/Chat audio candidate qualification, reversible delivery and main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -8007,7 +8007,7 @@
       "nvml_root_cause_resolved": false
     },
     "chat_audio_output": {
-      "state": "targeted_cpu_passed_actual_http_pending",
+      "state": "actual_no_instruction_eos_failure_full_text_repair_pending",
       "evidence": "evidence/serve-chat-audio-output-cpu-20261118/README.md",
       "cpp_cases": 19,
       "driver_negative_controls": 4,
@@ -8017,7 +8017,10 @@
         "asr_loads": 2,
         "seconds": 1200
       },
-      "default_changed": false
+      "default_changed": false,
+      "diagnosis": "1 core/3 POST/75.872s: exact main transcript and2625-token budget; identical Speech without instructions also hit frame limit. Full-text conditioning repair uses official CustomVoice default; incremental PCM and sampler unchanged. Retest actual business before accepting.",
+      "source_failure_retained": ".q4t-work/serve-native-tts-20261118/chat-http-03/result.json",
+      "routing_cpu_cases": 2
     }
   }
 }
