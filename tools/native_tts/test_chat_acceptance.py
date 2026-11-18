@@ -2,8 +2,13 @@ import base64
 import copy
 import json
 import unittest
+import tempfile
+import threading
+from pathlib import Path
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from unittest.mock import patch
 
-from tools.native_tts.chat_acceptance import check_usage, parse_stream
+from tools.native_tts.chat_acceptance import Stage, HEADERS, check_usage, parse_stream
 
 
 def usage():
@@ -61,6 +66,55 @@ class Contract(unittest.TestCase):
             lambda row: row['q4t_audio_synthesis'].update(input_tokens=100)):
             value=usage();change(value)
             with self.assertRaises((AssertionError,RuntimeError,ValueError)): check_usage(value,1)
+
+
+class ObservationRouting(unittest.TestCase):
+    def test_local_operations_and_client_business_are_separate(self):
+        calls = []
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                identity = self.headers.get('X-Q4T-Client-Id')
+                token = self.headers.get('X-Q4T-Gateway-Token')
+                local = self.path in ('/readyz', '/metrics', '/v1/config')
+                allowed = ((self.server.operations and local and not identity and not token)
+                    or (not self.server.operations and not local and identity == 'other'
+                        and token == HEADERS['X-Q4T-Gateway-Token']))
+                calls.append((self.server.operations, self.path, identity))
+                self.send_response(200 if allowed else 403)
+                self.end_headers(); self.wfile.write(b'{}')
+            def log_message(self, *_args): pass
+        servers = [ThreadingHTTPServer(('127.0.0.1', 0), Handler) for _ in range(2)]
+        threads = []
+        stage = Stage.__new__(Stage)
+        stage.plan = dict(port=servers[0].server_port, operations_port=servers[1].server_port)
+        stage.budget = lambda kind: self.assertEqual(kind, 'controls')
+        try:
+            for index, server in enumerate(servers):
+                server.operations = bool(index)
+                thread = threading.Thread(target=server.serve_forever, kwargs={'poll_interval': .01})
+                thread.start(); threads.append(thread)
+            for path in ('/readyz', '/metrics', '/v1/config', '/v1/capabilities',
+                         '/v1/chat/completions/chatcmpl_existing'):
+                self.assertEqual(stage.http(path, client='other')[0], 200)
+            self.assertEqual([row[0] for row in calls], [True, True, True, False, False])
+        finally:
+            for server in servers: server.shutdown(); server.server_close()
+            for thread in threads: thread.join(timeout=2); self.assertFalse(thread.is_alive())
+
+    def test_readiness_denial_is_preserved_and_never_retried(self):
+        with tempfile.TemporaryDirectory(dir='.q4t-work') as directory:
+            stage = Stage.__new__(Stage); stage.out = Path(directory)
+            stage.same_model = lambda: None
+            with patch.object(stage, 'http', side_effect=[(503, b'loading'),
+                     (403, b'{"error":{"code":"client_route_forbidden"}}')]) as http, \
+                 patch('tools.native_tts.chat_acceptance.time.sleep') as sleep:
+                with self.assertRaisesRegex(RuntimeError, 'unexpected readiness status: 403'):
+                    stage.wait_ready()
+                self.assertEqual(http.call_count, 2)
+                self.assertEqual(sleep.call_count, 1)
+            receipt = json.loads((stage.out/'readiness-failure.json').read_text())
+            self.assertEqual(receipt['status'], 403)
+            self.assertIn('client_route_forbidden', receipt['body'])
 
 
 if __name__=='__main__': unittest.main()

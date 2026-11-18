@@ -204,13 +204,17 @@ class Stage(speech.Stage):
 
     def http(self,path,body=None,*,label=None,timeout=180,client='audio',cancel=False):
         if body is None: self.budget('controls')
-        conn=http.client.HTTPConnection('127.0.0.1',self.plan['port'],timeout=timeout)
+        local = body is None and path in (
+            '/healthz', '/livez', '/readyz', '/metrics', '/v1/config')
+        port = self.plan['operations_port'] if local else self.plan['port']
+        headers = {} if local else dict(HEADERS, **{'X-Q4T-Client-Id': client})
+        headers.update({'Content-Type': 'application/json', 'Connection': 'close'})
+        conn=http.client.HTTPConnection('127.0.0.1',port,timeout=timeout)
         started=time.monotonic();raw=b'';chunks=0
         try:
             conn.request('GET' if body is None else 'POST',path,
                 None if body is None else json.dumps(body,ensure_ascii=False).encode(),
-                dict(HEADERS,**{'X-Q4T-Client-Id':client,'Content-Type':'application/json',
-                               'Connection':'close'}))
+                headers)
             response=conn.getresponse()
             while True:
                 part=response.read1(8192)
@@ -260,16 +264,25 @@ class Stage(speech.Stage):
         self.model_identity=lifecycle.guard.processes()[self.model.pid]
         self.history[self.model.pid]=self.model_identity
         save(self.out/(name+'-identity.json'),dict(pid=self.model.pid,**self.model_identity))
+        self.wait_ready()
+        for path, label in (('/v1/capabilities', 'capabilities'), ('/v1/config', 'config')):
+            status, _ = self.http(path, label=name+'-'+label)
+            require(status == 200, 'startup observation failed: '+path)
+
+    def wait_ready(self):
         end=time.monotonic()+180
         while time.monotonic()<end:
             self.same_model()
             try:
-                if self.http('/readyz',timeout=1)[0]==200: break
+                status, raw = self.http('/readyz',timeout=1)
+                if status == 200: return
+                if status != 503:
+                    save(self.out/'readiness-failure.json', dict(status=status,
+                        body=raw[:1024].decode('utf-8', errors='replace')))
+                    raise RuntimeError('unexpected readiness status: '+str(status))
             except (OSError,http.client.HTTPException): pass
             time.sleep(.1)
-        else: raise TimeoutError('readiness')
-        self.http('/v1/capabilities',label=name+'-capabilities')
-        self.http('/v1/config',label=name+'-config')
+        raise TimeoutError('readiness')
 
     def sdk(self,label,body,python):
         self.budget('chats')
