@@ -36,3 +36,7 @@ OpenAI音色ID及服务权限语义作接口参考，不调用外部语音API。
 [官方实现](https://github.com/QwenLM/Qwen3-TTS)。元数据按固定SHA/版本
 保存，许可沿用Apache-2.0记录；本地MIT参考qwen35-thor只读研究，
 不直接复制其缺少原子性/隔离的文件注册实现。
+
+前端阶段证据见[原生计算与舍入诊断](evidence/serve-custom-voice-frontend-20261118/README.md)。
+原FP32 log门失败原样保留；高精度方程通过，模型数值与音色业务仍
+待实际后端验证。checkpoint BF16存储不代表原生激活采用BF16。

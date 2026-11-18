@@ -8495,7 +8495,16 @@
       "model_revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
       "full_asset_verified": false,
       "runtime_api_accepted": false,
-      "default_changed": false
+      "default_changed": false,
+      "frontend": {
+        "state": "FRONTEND_EQUATIONS_CPU_QUALIFIED_MODEL_PENDING",
+        "evidence": "evidence/serve-custom-voice-frontend-20261118/README.md",
+        "unique_cases": 14,
+        "total_case_executions": 22,
+        "gpu_loads": 0,
+        "original_fp32_logmel_gate": "FAIL_RETAINED_3_CASES",
+        "model_numerical_qualified": false
+      }
     }
   }
 }

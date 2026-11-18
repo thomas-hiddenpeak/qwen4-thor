@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[自定义音色前端CPU计算通过](evidence/serve-custom-voice-frontend-20261118/README.md)：
+14独立合同、22执行/0.227秒，0GPU；原FP32 log门3失败保留。
+原生FP64中间值与独立高精度全矩阵一致，官方FP32差异及≤1 BF16
+ULP另记，不能替代完整声纹/业务验收。默认rev316保持，继续后端。
+
+原生24kHz音色前端已实现，冻结8边界/取消/内存合同与6官方数值
+对照、180秒、0GPU/模型，误差门1e-4；尚未执行。只用现有CPU
+PyTorch生成参考，生产不引入Python/librosa。默认rev316保持；
+通过后继续2048维声纹计算与真实注册，不以组件代替业务验收。
+
 [自定义音色Base 12项CPU通过](evidence/serve-custom-voice-metadata-20261118/README.md)，
 0.064秒、构建零警告，917来源/13负控；0GPU，默认rev316保持。
 480张量含76声纹参数，完整权重/计算/持久注册继续；旧八份CPU
