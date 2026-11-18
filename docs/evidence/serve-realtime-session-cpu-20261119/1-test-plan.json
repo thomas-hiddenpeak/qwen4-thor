@@ -1,0 +1,33 @@
+{
+  "scope": "Backend WebSocket loop, fixed mailbox, permanent HTTP handoff, independent client session permits; model protocol still pending",
+  "cpu_tests": 21,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "sources": {
+    "CMakeLists.txt": "72d7f58189cba7a3e95ccf8ccfca139ef111c20066e0bd1cb878acaaaf8b4e6a",
+    "cmake/ChatProtocolIdentity.cmake": "d844b53842e5d8a27ed0c87b778bc7d29df35fd15a2db3a687745e524c831b51",
+    "cmake/HostTestSources.cmake": "dc660f0cd6a8dd335de4bfa156eafabb4ef7a9c18a7e0e7ab2a483d22714c761",
+    "include/q4t/server/application_routes.h": "a6bed04aec2e3ab07034a6b145de9601227f7022931042d9426018e451f0429d",
+    "include/q4t/server/chat_server.h": "e33b0efcbf99c7404b2f7cc39a516e7e742d3c047a42b8651740c33b471b7585",
+    "include/q4t/server/client_policy.h": "1ad5a85950aaca06cc49aecaf3594c6844ad4ab80bcb02350a7ff93d8839cce9",
+    "include/q4t/server/http_connection.h": "e63d6ff4ed531d4430f427b27a1f85c1cf03f9b5d082f75e3113f4cb18ae553c",
+    "include/q4t/server/http_response.h": "5586fcbf2a508b7737cf5199790fb7f5e3b27473bd9bdd4ec0494adaa52c1e1b",
+    "src/server/chat_http.cpp": "756ef8285e9b214695f5680967deb94ad8a4773f4e0b42bea96e95d6bec3616a",
+    "src/server/client_policy.cpp": "47a0e0ed84f9a1dfb632936a435a9512049ab0c4f1d7176b9a53e66f3c4396e2",
+    "src/server/client_request.cpp": "82e6517b21269367c32525128219e44fd659ee333277d4a305918c7e2015be0c",
+    "src/server/http_response.cpp": "3aeddc595625b8a401cc806e09db3894af63b797cfea0cc2f3b94e33ee91e954",
+    "include/q4t/server/websocket_session.h": "1790282b3dfeb49be1e58773413c91ccdec9baf2f15b1632dea91441e17c4735",
+    "src/server/websocket_session.cpp": "3af2970d83ae6d58b18c7e070886ac3ae84e27750f19e91bcf3ea497024a5b66",
+    "tests/server_websocket_session_test.cpp": "3abda2a9aa8e6db3c1692be8aa92998456f6ceea6b822020561cb286c5f6fa00"
+  },
+  "acceptance": [
+    "framing never resumes HTTP after 101",
+    "fixed charged output preserves unsent bytes",
+    "real socket reverse cancellation under backpressure",
+    "write deadline independent of reverse traffic",
+    "partial frame finishes before close; EOF abnormal",
+    "cancellation exactly once; exceptions local",
+    "separate client lanes; every turn retains online rates",
+    "reused HTTP and quota regressions"
+  ]
+}

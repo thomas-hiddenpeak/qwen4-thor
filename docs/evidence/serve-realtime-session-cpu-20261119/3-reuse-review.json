@@ -1,0 +1,20 @@
+{
+  "reused_tests": 19,
+  "comparison": {
+    "CMakeLists.txt": "identical bytes or identical canonical project formatting",
+    "cmake/ChatProtocolIdentity.cmake": "identical bytes or identical canonical project formatting",
+    "cmake/HostTestSources.cmake": "identical bytes or identical canonical project formatting",
+    "include/q4t/server/application_routes.h": "identical bytes or identical canonical project formatting",
+    "include/q4t/server/chat_server.h": "identical bytes or identical canonical project formatting",
+    "include/q4t/server/client_policy.h": "identical bytes or identical canonical project formatting",
+    "include/q4t/server/http_connection.h": "identical bytes or identical canonical project formatting",
+    "include/q4t/server/http_response.h": "identical bytes or identical canonical project formatting",
+    "src/server/chat_http.cpp": "identical bytes or identical canonical project formatting",
+    "src/server/client_policy.cpp": "identical bytes or identical canonical project formatting",
+    "src/server/client_request.cpp": "identical bytes or identical canonical project formatting",
+    "src/server/http_response.cpp": "affected HTTP owner/heartbeat checks rerun in phase03",
+    "include/q4t/server/websocket_session.h": "identical bytes or identical canonical project formatting",
+    "src/server/websocket_session.cpp": "identical bytes or identical canonical project formatting",
+    "tests/server_websocket_session_test.cpp": "affected HTTP owner/heartbeat checks rerun in phase03"
+  }
+}

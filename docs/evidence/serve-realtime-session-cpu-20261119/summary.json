@@ -1,0 +1,17 @@
+{
+  "status": "PASS_WITH_EXPLICIT_EVIDENCE_REUSE",
+  "distinct_cpu_tests": 23,
+  "test_executions": 25,
+  "seconds": 0.22892000852152705,
+  "pretest_selection_failure_seconds": 0.007593297865241766,
+  "pretest_selection_failure_retained": true,
+  "gpu_model_loads": 0,
+  "final_host_sha256": "1bdc7f2b0dfba417536992367caeb91be7a0e43f7bd3e4077a0b4dbd1bda02c6",
+  "final_engine_sha256": "93b135f475f9ff5a01b23b41dbd5dd22d6f3d2cd9d351893709d54816070628c",
+  "routes": 83,
+  "native_routes": 142,
+  "source_anchors": 961,
+  "negative_controls": 17,
+  "api_qualified": false,
+  "delivered": false
+}

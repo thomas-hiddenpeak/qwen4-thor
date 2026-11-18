@@ -552,6 +552,7 @@ class ChatServer {
   std::atomic<int> operations_observation_conns_{0};
   std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
+  std::atomic<int> realtime_conns_{0};
   std::atomic<int> tunnel_poll_conns_{0}, tunnel_response_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};

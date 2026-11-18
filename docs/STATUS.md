@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[后端会话治理23项CPU通过](evidence/serve-realtime-session-cpu-20261119/README.md)：
+独立会话槽、HTTP永久升级隔离、真实socket背压/取消/关闭与每轮配额
+原语通过；25执行/0.229秒/0GPU，host与引擎零警告，961锚点/17负控。
+选测清单执行前失败保留，心跳和退出统计竞态已针对性补齐；默认
+rev326保持。继续实际ASR/session事件，组件通过不代表实时API可用。
+
 [持续输入重采样9项CPU通过](evidence/serve-realtime-resample-cpu-20261119/README.md)：
 实际8/16/24/48k到16k波形、分块逐位不变、精确样本计数、抗混叠、
 取消/排空通过；0.0637秒/0GPU、固定小于4KiB存储、最终零警告。

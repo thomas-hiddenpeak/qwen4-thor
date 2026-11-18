@@ -38,7 +38,8 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   if (identity->Scoped() && headers->content_length > headers->body_limit)
     return fail(413, "client_body_limit_exceeded");
   const auto lane =
-      IsMcpTunnelPoll(method, path)         ? ClientLane::kTunnelPoll
+      IsRealtimeUpgrade(method, path)       ? ClientLane::kRealtime
+      : IsMcpTunnelPoll(method, path)       ? ClientLane::kTunnelPoll
       : IsMcpTunnelResponse(method, path)   ? ClientLane::kTunnelResponse
       : IsCancellationRequest(method, path) ? ClientLane::kCancel
       : ((method == "GET" &&

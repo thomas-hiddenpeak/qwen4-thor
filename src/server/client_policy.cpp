@@ -783,7 +783,9 @@ ClientUsage ClientAdmission::Usage(size_t index) const {
           counters.tunnel_poll.load(),
           counters.tunnel_response.load(),
           counters.tunnel_poll_rejected.load(),
-          counters.tunnel_response_rejected.load()};
+          counters.tunnel_response_rejected.load(),
+          counters.realtime.load(),
+          counters.realtime_rejected.load()};
 }
 
 ClientLease::~ClientLease() {
@@ -829,7 +831,7 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   if (identity.owner_ != &admission || !identity.Allowed() ||
       (lane != ClientLane::kData && lane != ClientLane::kControl &&
        lane != ClientLane::kCancel && lane != ClientLane::kTunnelPoll &&
-       lane != ClientLane::kTunnelResponse))
+       lane != ClientLane::kTunnelResponse && lane != ClientLane::kRealtime))
     return false;
   if (!identity.Scoped()) {
     admitted_ = !admission.Enabled();
@@ -844,27 +846,32 @@ bool ClientLease::Acquire(ClientAdmission& admission,
       identity.Id() != policy->clients[identity.index_].id)
     return false;
   auto& counters = admission.counters_[identity.index_];
+  const bool realtime = lane == ClientLane::kRealtime;
   const bool control = lane == ClientLane::kControl;
   const bool cancel = lane == ClientLane::kCancel;
   const bool tunnel_poll = lane == ClientLane::kTunnelPoll;
   const bool tunnel_response = lane == ClientLane::kTunnelResponse;
-  auto& active = tunnel_poll       ? counters.tunnel_poll
+  auto& active = realtime          ? counters.realtime
+                 : tunnel_poll     ? counters.tunnel_poll
                  : tunnel_response ? counters.tunnel_response
                  : cancel          ? counters.cancel
                  : control         ? counters.control
                                    : counters.data;
-  auto& rejected = tunnel_poll       ? counters.tunnel_poll_rejected
+  auto& rejected = realtime          ? counters.realtime_rejected
+                   : tunnel_poll     ? counters.tunnel_poll_rejected
                    : tunnel_response ? counters.tunnel_response_rejected
                    : cancel          ? counters.cancel_rejected
                    : control         ? counters.control_rejected
                                      : counters.data_rejected;
   const uint32_t limit =
-      tunnel_poll       ? 1
+      realtime          ? 1
+      : tunnel_poll     ? 1
       : tunnel_response ? 2
       : cancel          ? 1
       : control         ? policy->clients[identity.index_].max_control_inflight
                         : policy->clients[identity.index_].max_inflight;
-  auto& finishing = tunnel_poll       ? counters.tunnel_poll_finishing
+  auto& finishing = realtime          ? counters.realtime_finishing
+                    : tunnel_poll     ? counters.tunnel_poll_finishing
                     : tunnel_response ? counters.tunnel_response_finishing
                     : cancel          ? counters.cancel_finishing
                     : control         ? counters.control_finishing
@@ -971,6 +978,13 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
                                 : limits.requests_per_minute) +
              '\n';
     }
+    const auto realtime_label =
+        "{client=\"" + limits.id + "\",lane=\"realtime\"} ";
+    out += "q4t_client_requests_active" + realtime_label +
+           std::to_string(usage.realtime_active) + '\n';
+    out += "q4t_client_requests_limit" + realtime_label + "1\n";
+    out += "q4t_client_capacity_rejected_total" + realtime_label +
+           std::to_string(usage.realtime_rejected) + '\n';
     for (bool response : {false, true}) {
       const auto label = "{client=\"" + limits.id + "\",lane=\"tunnel_" +
                          (response ? "response" : "poll") + "\"} ";

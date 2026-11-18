@@ -31,6 +31,10 @@ WebSocket基础16项CPU、音频队列12项CPU及
 [实际波形重采样9项CPU](evidence/serve-realtime-resample-cpu-20261119/README.md)
 已通过，四种输入率、整数相位和尾部排空待接实际会话/ASR。
 
+[后端会话治理23项CPU](evidence/serve-realtime-session-cpu-20261119/README.md)
+已通过：独立客户/全局会话槽、永久HTTP移交、真实socket背压与反向
+取消、关闭和异常；模型事件调度、实际逐轮配额及ASR仍须接通。
+
 ## 连续实施顺序
 
 1. **传输基础**：共享有界RFC6455解析/编码，严格掩码、分片、UTF-8、

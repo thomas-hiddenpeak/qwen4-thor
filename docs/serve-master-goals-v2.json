@@ -9539,6 +9539,17 @@
       "cpu_tests": 9,
       "seconds": 0.06372455507516861,
       "gpu_model_loads": 0
+    },
+    "backend_session": {
+      "state": "transport_and_admission_cpu_verified_model_event_adapter_pending",
+      "evidence": "evidence/serve-realtime-session-cpu-20261119/README.md",
+      "cpu_tests": 23,
+      "executions": 25,
+      "seconds": 0.22892000852152705,
+      "gpu_model_loads": 0,
+      "api_qualified": false,
+      "delivered": false,
+      "explicit_reuse": true
     }
   }
 }

@@ -1,0 +1,4 @@
+[PASS] websocket_http_handoff_permanently_seals_http_and_exception_writes
+[PASS] websocket_http_handoff_rejects_invalid_protocol_accept_and_http10
+[PASS] websocket_http_active_heartbeat_cannot_be_promoted_to_upgrade
+3 tests, 3 passed, 0 failed, 0 skipped
