@@ -35,6 +35,7 @@ if(TTS_ICU_FOUND)
   add_executable(q4t_tts_execution_tests EXCLUDE_FROM_ALL
     ${tts_test_root}/tests/test_main.cpp
     ${tts_test_root}/tests/tts_generation_test.cpp
+    ${tts_test_root}/tests/tts_base_generation_test.cpp
     ${tts_test_root}/tests/tts_tokenizer_test.cpp
     ${tts_test_root}/tests/asr_tokenizer_test.cpp
     ${tts_test_root}/src/audio/tts_config.cpp

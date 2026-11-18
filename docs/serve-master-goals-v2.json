@@ -8568,6 +8568,13 @@
         "full_source_sha256": "38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c",
         "synthesis_pending": true,
         "full_task_complete": false
+      },
+      "base_condition": {
+        "state": "BASE_CONDITION_CPU_QUALIFIED_GPU_PENDING",
+        "evidence": "evidence/serve-custom-voice-conditioning-cpu-20261118/README.md",
+        "cpu_cases": 22,
+        "gpu_loads": 0,
+        "actual_synthesis_pending": true
       }
     }
   }

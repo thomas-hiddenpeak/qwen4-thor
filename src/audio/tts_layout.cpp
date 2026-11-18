@@ -8,13 +8,15 @@
 #include <utility>
 
 #include "q4t/audio/tts_generation.h"
+#include "q4t/audio/tts_speaker_layout.h"
 
 namespace q4t::audio {
 namespace {
 
 bool Variant(TtsVariant variant) {
   return variant == TtsVariant::kCustomVoice06B ||
-         variant == TtsVariant::kCustomVoice17B;
+         variant == TtsVariant::kCustomVoice17B ||
+         variant == TtsVariant::kBase17B;
 }
 
 Status Pack(const io::Json& header, size_t bytes,
@@ -24,10 +26,10 @@ Status Pack(const io::Json& header, size_t bytes,
   TtsWeightLayout layout;
   layout.file_bytes = bytes;
   for (const auto& spec : tensors) {
-    const auto start = header.Find(spec.name)->GetArray("data_offsets")
-                           ->array[0].AsInt(-1);
-    layout.tensors.push_back({spec.name, static_cast<size_t>(start),
-                               layout.bytes, spec.bytes});
+    const auto start =
+        header.Find(spec.name)->GetArray("data_offsets")->array[0].AsInt(-1);
+    layout.tensors.push_back(
+        {spec.name, static_cast<size_t>(start), layout.bytes, spec.bytes});
     layout.bytes += spec.bytes;
   }
   *out = std::move(layout);
@@ -51,8 +53,8 @@ Status ParseTtsCodecWeightLayout(const io::Json& header, size_t bytes,
 Status ValidateTtsWeightLayout(const TtsWeightLayout& layout,
                                TtsVariant variant, bool codec) {
   if (!Variant(variant)) return Status::Fail("TTS variant differs");
-  const auto specs = codec ? TtsCodecDecoderTensorContracts()
-                           : TtsTensorContracts(variant);
+  const auto specs =
+      codec ? TtsCodecDecoderTensorContracts() : TtsTensorContracts(variant);
   if (layout.tensors.size() != specs.size())
     return Status::Fail("TTS device tensor count differs");
   size_t bytes = 0;
@@ -67,11 +69,14 @@ Status ValidateTtsWeightLayout(const TtsWeightLayout& layout,
     intervals.emplace_back(t.file_offset, t.file_offset + t.bytes);
     bytes += t.bytes;
   }
+  const bool base = !codec && variant == TtsVariant::kBase17B;
+  const size_t prefix = base ? TtsSpeakerConfig::kSourceBytes : 0;
   if (layout.bytes != bytes ||
-      layout.file_bytes != (codec ? TtsConfig::kCodecFileDataBytes : bytes))
+      layout.file_bytes !=
+          (codec ? TtsConfig::kCodecFileDataBytes : bytes + prefix))
     return Status::Fail("TTS weight storage differs");
   std::sort(intervals.begin(), intervals.end());
-  size_t end = 0;
+  size_t end = prefix;
   for (const auto& interval : intervals) {
     if (interval.first < end || (!codec && interval.first != end))
       return Status::Fail("TTS weight overlap or gap");
@@ -114,10 +119,11 @@ Status BindTtsDeviceWeights(const void* data, size_t bytes,
   if (auto s = ValidateTtsWeightLayout(layout, variant); !s) return s;
   std::map<std::string, const float*> pointers;
   for (const auto& t : layout.tensors)
-    pointers.emplace(t.name, reinterpret_cast<const float*>(base + t.offset * 2));
+    pointers.emplace(t.name,
+                     reinterpret_cast<const float*>(base + t.offset * 2));
   const auto affine = [&](const std::string& name) {
     return TtsAffineWeights{pointers.at(name + ".weight"),
-                             pointers.at(name + ".bias")};
+                            pointers.at(name + ".bias")};
   };
   const auto dense = [&](const std::string& name, int layers) {
     TtsDenseWeights result;
@@ -148,21 +154,23 @@ Status BindTtsDeviceWeights(const void* data, size_t bytes,
   w.text_fc2 = affine("talker.text_projection.linear_fc2");
   w.talker = dense("talker.model", 28);
   w.predictor = dense("talker.code_predictor.model", 5);
-  if (variant == TtsVariant::kCustomVoice17B)
-    w.predictor_projection = affine("talker.code_predictor.small_to_mtp_projection");
+  if (variant != TtsVariant::kCustomVoice06B)
+    w.predictor_projection =
+        affine("talker.code_predictor.small_to_mtp_projection");
   for (int i = 0; i < 15; ++i) {
     const auto p = "talker.code_predictor.";
-    w.code_embeddings[i] = pointers.at(
-        p + std::string("model.codec_embedding.") + std::to_string(i) + ".weight");
-    w.code_heads[i] = pointers.at(
-        p + std::string("lm_head.") + std::to_string(i) + ".weight");
+    w.code_embeddings[i] =
+        pointers.at(p + std::string("model.codec_embedding.") +
+                    std::to_string(i) + ".weight");
+    w.code_heads[i] = pointers.at(p + std::string("lm_head.") +
+                                  std::to_string(i) + ".weight");
   }
   *out = w;
   return {};
 }
 
-Status PlanTtsDenseWorkspace(TtsVariant variant, bool predictor,
-                             size_t rows, size_t context, size_t max_bytes,
+Status PlanTtsDenseWorkspace(TtsVariant variant, bool predictor, size_t rows,
+                             size_t context, size_t max_bytes,
                              TtsDenseLayout* out) {
   if (!out || !Variant(variant) || rows == 0 || rows > context ||
       context > (predictor ? 16 : 32768))
@@ -206,17 +214,21 @@ Status PlanTtsDenseWorkspace(TtsVariant variant, bool predictor,
 
 Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
                                   size_t prefill_tokens, size_t max_frames,
-                                  size_t max_bytes,
-                                  TtsGenerationLayout* out) {
-  if (!out || text_tokens < 4 || text_tokens > 32768 ||
-      max_frames < 2 || max_frames > 4096 || prefill_tokens < 8 ||
+                                  size_t max_bytes, TtsGenerationLayout* out) {
+  if (!out || text_tokens < 4 || text_tokens > 32768 || max_frames < 2 ||
+      max_frames > 4096 || prefill_tokens < 8 ||
       prefill_tokens > 32768 - max_frames)
     return Status::Fail("TTS text, prompt or generation budget invalid");
   TtsGenerationLayout w;
   if (auto s = PlanTtsDenseWorkspace(variant, false, prefill_tokens,
-          prefill_tokens + max_frames, max_bytes, &w.talker); !s) return s;
-  if (auto s = PlanTtsDenseWorkspace(variant, true, 2, 16,
-                                     max_bytes, &w.predictor); !s) return s;
+                                     prefill_tokens + max_frames, max_bytes,
+                                     &w.talker);
+      !s)
+    return s;
+  if (auto s =
+          PlanTtsDenseWorkspace(variant, true, 2, 16, max_bytes, &w.predictor);
+      !s)
+    return s;
   const auto carve = [&](size_t bytes) {
     const size_t start = (w.bytes + 255) / 256 * 256;
     w.bytes = start + bytes;
@@ -232,6 +244,7 @@ Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
   w.text_projected = fp32(text_tokens * hidden);
   w.affine_fp32 = carve(text_tokens * 2048 * sizeof(float));
   w.prompt_rows = carve(prefill_tokens * sizeof(TtsPromptRow));
+  if (variant == TtsVariant::kBase17B) w.speaker_condition = fp32(2048);
   w.prefill = fp32(prefill_tokens * hidden);
   w.past_hidden = fp32(hidden);
   w.codec_embeddings = fp32(16 * hidden);

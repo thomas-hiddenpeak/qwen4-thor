@@ -11,7 +11,7 @@
 
 namespace q4t::audio {
 
-enum class TtsVariant { kCustomVoice06B, kCustomVoice17B };
+enum class TtsVariant { kCustomVoice06B, kCustomVoice17B, kBase17B };
 
 struct TtsTensorContract {
   std::string name;

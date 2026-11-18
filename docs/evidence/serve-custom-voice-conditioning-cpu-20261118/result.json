@@ -1,0 +1,270 @@
+{
+  "status": "BASE_CONDITION_CPU_QUALIFIED_GPU_PENDING",
+  "production_contract_cases": 18,
+  "acceptance_input_checks": 4,
+  "cpu_seconds": 0.07952346187084913,
+  "build": {
+    "status": "PASS_BUILD_ONLY",
+    "seconds": 23.43998449575156,
+    "returncode": 0,
+    "warnings": 0,
+    "records": [
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "tools/native_tts/base_replay.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/0.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_config.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/1.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_layout.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/2.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_generation.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/3.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_dense.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/4.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/audio/tts_model.cu",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/5.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/quant/lt_cache.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/6.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/text/tokenizer.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/7.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/io/json.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/8.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/trace/sha256.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/9.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-std=c++23",
+          "-O3",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "-Iinclude",
+          "-Ithird_party",
+          "-DQ4T_TTS_TRACE=1",
+          "-Xcompiler=-Wall,-Wextra,-Werror",
+          "-c",
+          "src/runtime/system_memory.cpp",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/10.o"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "/usr/local/cuda-13.3/bin/nvcc",
+          "-arch=sm_110a",
+          "-ccbin",
+          "g++-14",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/0.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/1.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/2.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/3.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/4.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/5.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/6.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/7.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/8.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/9.o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/10.o",
+          "-lcublasLt",
+          "-lpthread",
+          "-licui18n",
+          "-licuuc",
+          "-licudata",
+          "-o",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-compute-build-01/q4t_tts_base_replay"
+        ],
+        "returncode": 0
+      }
+    ],
+    "binary_sha256": "16fab8e0bb3462b57a06804b1d45ab1f6128e8d27572ddb12b2f2ee384c215d7"
+  },
+  "gpu_actions": 0,
+  "model_loads": 0,
+  "default_changed": false,
+  "full_task_complete": false,
+  "storage_recovery": {
+    "status": "DEDUPLICATED_PATHS_AND_BYTES_PRESERVED",
+    "paths": 12,
+    "independent_backup_sha256": "b3e28221561293ae456d5a85333b118bc7d77dafc0f192dc2378e335c6326ef3",
+    "backup_bytes": 268647411,
+    "free_before": 1073405952,
+    "free_after": 4493942784,
+    "seconds": 22.378382615745068,
+    "original_content_sha256": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+    "shared_archive_inode": true,
+    "restore_script": ".q4t-work/serve-custom-voices-20261118/retained-head-dedup-01/restore.py",
+    "model_or_default_path_changed": false
+  },
+  "archive_sha256": "3caa2f36364ce7b5ad20264eb1dee27aca4c92490fa5929ab9d88f071ec21a1b",
+  "archive_files": 40
+}

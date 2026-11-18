@@ -29,6 +29,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_codec_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_generation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_generation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_base_generation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp

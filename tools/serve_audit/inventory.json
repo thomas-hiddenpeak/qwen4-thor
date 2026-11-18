@@ -2230,9 +2230,9 @@
     "include/q4t/audio/speech_tempo.h": "2a8be41dbe3ce2576b4e097fa9704160fa9f0ee79f2fcfc3b6f28bdc8fd1d29a",
     "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
-    "include/q4t/audio/tts_config.h": "873339447a1a506b246e844bd72eaa8da24b9c3b8cf66dc0fe4bfff4c78203aa",
-    "include/q4t/audio/tts_generation.h": "fb834e5c102945ef8691852790616ad46a428261cc4cf6119457105093e1a125",
-    "include/q4t/audio/tts_layout.h": "da96a7ff39a150b9b84f34d70c05696fbc7418207274420e468044ca9232c447",
+    "include/q4t/audio/tts_config.h": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
+    "include/q4t/audio/tts_generation.h": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c",
+    "include/q4t/audio/tts_layout.h": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7",
     "include/q4t/audio/tts_model.h": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
     "include/q4t/audio/tts_speaker_features.h": "c8d67499a28c4312ddc6d9b5164fc2a97f41f8f7c39e2be5d9335237dae220f1",
     "include/q4t/audio/tts_speaker_layout.h": "41dc3e6d5de9d80ebc0db692ad64570582e327556b62d30690c68ccf2b5787b8",
@@ -2527,13 +2527,13 @@
     "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
     "src/audio/tts_codec_internal.h": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
     "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
-    "src/audio/tts_config.cpp": "d383815f5377dbbeb79a70965c681057ea6b8457e729a46db226aae044cac850",
+    "src/audio/tts_config.cpp": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38",
     "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
     "src/audio/tts_dense.cu": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
-    "src/audio/tts_generation.cpp": "3beead09a42057bd05aa4d52a458e70370cd50790b6662bfc8574a8452ea60f0",
-    "src/audio/tts_layout.cpp": "14d5d3bb84a4313bbfd07ba3c36c37f351c7faffbcc4c5bd2e60d8d39e220141",
+    "src/audio/tts_generation.cpp": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb",
+    "src/audio/tts_layout.cpp": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c",
     "src/audio/tts_math_internal.h": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
-    "src/audio/tts_model.cu": "ba007e4f544fd3adbfd38b86eeeb4cc2169da34d839c48b47c3392a003f456e8",
+    "src/audio/tts_model.cu": "14098c4cbb81a98ad479b39c3861bbb66bdfc2d86077e90d8f9752db5951ecb4",
     "src/audio/tts_speaker_features.cpp": "db8b424d5f90be9011a6a840cbaf57b02881ddc134c2035b0a7c8be3b3503502",
     "src/audio/tts_speaker_layout.cpp": "b79e2d7281a7ec30206e4f54a873844184cfaf013b9678b872b8c13216f885e2",
     "src/audio/tts_speaker_model.cu": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28",
@@ -7793,5 +7793,21 @@
     "runtime_qualified": false,
     "default_changed": false,
     "plan": "docs/SERVE_CUSTOM_VOICES_2026-11-18.md"
+  },
+  "native_custom_voice_conditioning_2026_11_18": {
+    "state": "BASE_CONDITION_CPU_QUALIFIED_GPU_PENDING",
+    "evidence": [
+      "docs/evidence/serve-custom-voice-conditioning-cpu-20261118/README.md"
+    ],
+    "reviewed_sources": [
+      "include/q4t/audio/tts_config.h",
+      "include/q4t/audio/tts_generation.h",
+      "include/q4t/audio/tts_layout.h",
+      "src/audio/tts_config.cpp",
+      "src/audio/tts_generation.cpp",
+      "src/audio/tts_layout.cpp",
+      "src/audio/tts_model.cu"
+    ],
+    "runtime_api_accepted": false
   }
 }

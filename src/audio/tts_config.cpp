@@ -20,7 +20,8 @@ Status Fail(const std::string& path) {
 
 bool ValidVariant(TtsVariant variant) {
   return variant == TtsVariant::kCustomVoice06B ||
-         variant == TtsVariant::kCustomVoice17B;
+         variant == TtsVariant::kCustomVoice17B ||
+         variant == TtsVariant::kBase17B;
 }
 
 // Configuration is a fixed checkpoint contract, not a permissive model-class
@@ -207,6 +208,7 @@ Status Header(const Json& header, uint64_t data_bytes,
 
 Status ValidateTtsConfig(const Json& config, TtsVariant variant) {
   if (!ValidVariant(variant)) return Fail("variant");
+  if (variant == TtsVariant::kBase17B) return ValidateTtsBaseConfig(config);
   return Config(config, variant == TtsVariant::kCustomVoice06B
                             ? tts_detail::kConfig06B
                             : tts_detail::kConfig17B);
@@ -344,6 +346,8 @@ std::vector<TtsTensorContract> TtsCodecDecoderTensorContracts() {
 Status ValidateTtsTensorHeader(const Json& header, uint64_t data_bytes,
                                TtsVariant variant) {
   if (!ValidVariant(variant)) return Fail("variant");
+  if (variant == TtsVariant::kBase17B)
+    return ValidateTtsBaseTensorHeader(header, data_bytes);
   return Header(header, data_bytes, TtsTensorContracts(variant), false);
 }
 
