@@ -257,3 +257,12 @@ expires_at、transcript；Chat格式名为pcm16，Speech格式名为pcm，
    schema/多choice及配额做针对性CPU与对应真实短验；随后受管
    TLS/恢复/可回退交付。4倍与注册voice仍是并行待解决能力，
    不用阶段拆分删掉它们，全部master持续执行。
+
+## TTS05实际业务通过，接续TTS06
+
+[12条业务与六音频原文](evidence/serve-chat-audio-output-http-20261118/README.md)
+已通过，覆盖双SDK、JSON/SSE、n/schema、实际工具、取消、历史
+重启/私有隔离和配额。完整文本条件及步骤用量修复有真实证据；
+所有原失败保持，06/07分开租约。继续受管配置/能力声明、原生TLS、
+主轻/版本恢复和可回退发行；4倍内容及全部voice/style/注册voice
+仍为必须解决项，不以TTS05通过结束总计划。

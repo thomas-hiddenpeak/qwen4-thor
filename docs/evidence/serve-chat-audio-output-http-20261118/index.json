@@ -1,0 +1,1843 @@
+{
+  "summary": {
+    "status": "PASS_CHAT_AUDIO_BUSINESS_CONTENT",
+    "stages": {
+      "chat-http-01": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 6.801071494817734,
+        "counts": {
+          "starts": 1,
+          "chats": 0,
+          "controls": 2,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 0,
+        "nvml_samples": 9,
+        "nvml_failures": [],
+        "model_exit": 1
+      },
+      "chat-http-02": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 117.58445231197402,
+        "counts": {
+          "starts": 1,
+          "chats": 0,
+          "controls": 628,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 0,
+        "nvml_samples": 111,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-http-03": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 60.53020628914237,
+        "counts": {
+          "starts": 1,
+          "chats": 1,
+          "controls": 32,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 1,
+        "nvml_samples": 58,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-diagnosis-01": {
+        "result": "DIAGNOSIS_OBSERVED_NOT_BUSINESS_ACCEPTANCE",
+        "lease": "COMPLETED",
+        "seconds": 75.87235476681963,
+        "counts": {
+          "starts": 1,
+          "chats": 3,
+          "controls": 35,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 3,
+        "nvml_samples": 72,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-http-04": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 53.372757020872086,
+        "counts": {
+          "starts": 1,
+          "chats": 2,
+          "controls": 34,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 1,
+        "nvml_samples": 52,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-http-05": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 60.02858723606914,
+        "counts": {
+          "starts": 1,
+          "chats": 4,
+          "controls": 36,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 4,
+        "nvml_samples": 58,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-http-06": {
+        "result": "FAILED",
+        "lease": "COMMAND_FAILED",
+        "seconds": 75.94417237816378,
+        "counts": {
+          "starts": 1,
+          "chats": 8,
+          "controls": 38,
+          "gpu_asr_loads": 0
+        },
+        "actual_http_posts": 8,
+        "nvml_samples": 72,
+        "nvml_failures": [],
+        "model_exit": 0
+      },
+      "chat-http-07": {
+        "result": "PASS_CHAT_AUDIO_BUSINESS_PENDING_LEASE",
+        "lease": "COMPLETED",
+        "seconds": 49.27528291195631,
+        "counts": {
+          "starts": 1,
+          "chats": 4,
+          "controls": 34,
+          "gpu_asr_loads": 2
+        },
+        "actual_http_posts": 4,
+        "nvml_samples": 48,
+        "nvml_failures": [],
+        "model_exit": 0
+      }
+    },
+    "total_core_process_attempts": 8,
+    "total_core_model_loads": 7,
+    "total_post_attempts": 22,
+    "total_actual_http_posts": 21,
+    "total_asr_loads": 2,
+    "total_seconds": 499.4088844098151,
+    "accepted_unique_business_posts": 12,
+    "accepted_sources": [
+      "chat-http-06: first 8 POSTs",
+      "chat-http-07: remaining 4 POSTs and all 6 content cases"
+    ],
+    "separate_leases": true,
+    "original_failures_preserved": true,
+    "content": [
+      {
+        "case": 0,
+        "expected": "Hello, this is a native speech test.",
+        "transcript": "Hello. This is a native speech test.",
+        "passed": true
+      },
+      {
+        "case": 1,
+        "expected": "你好，会议下午三点开始。",
+        "transcript": "你好，会议下午三点开始。",
+        "passed": true
+      },
+      {
+        "case": 2,
+        "expected": "The speech checks passed.",
+        "transcript": "The speech checks passed.",
+        "passed": true
+      },
+      {
+        "case": 3,
+        "expected": "{\"text\":\"Hello\"}",
+        "transcript": "Text, hello.",
+        "passed": true
+      },
+      {
+        "case": 4,
+        "expected": "{\"text\":\"Hello\"}",
+        "transcript": "Text, hello.",
+        "passed": true
+      },
+      {
+        "case": 5,
+        "expected": "Hello, this is a native speech test.",
+        "transcript": "Hello. This is a native speech test.",
+        "passed": true
+      }
+    ],
+    "additional_cpu_unique": 7,
+    "prior_cpu_unique_reused": 23,
+    "defaults_unchanged": true,
+    "gpu_lease_released": true,
+    "no_automatic_restart": true,
+    "nvml_root_cause_resolved": false,
+    "whole_tts_task_complete": false,
+    "accepted_speed": 1,
+    "remaining": [
+      "Managed TTS profiles/TLS/recovery/publication/main",
+      "4x content, all voices/styles and registered custom voices",
+      "Responses/Batch/Realtime and every remaining master task"
+    ]
+  },
+  "files": {
+    "chat-http-01/cleanup.json": {
+      "bytes": 1985,
+      "sha256": "9c010616902db92748d2ada277ddb6f3de0ff689b4c9f0cce212965b7c89f5c9"
+    },
+    "chat-http-01/client-policy.json": {
+      "bytes": 933,
+      "sha256": "e48fe267762fc5fe75f285ca7ded36d78269a37f3601b606b6e7143cee1ae494"
+    },
+    "chat-http-01/continuation-review.json": {
+      "bytes": 694,
+      "sha256": "2e66b7700173a28fb8996f9ac1e591a5c9729191f2a29c9397b81c1a996d7ed7"
+    },
+    "chat-http-01/counts.json": {
+      "bytes": 71,
+      "sha256": "3ae852f0f55f0074871b97fd22dbb53a3519546aafbc70aa7bbdb8db8ea3034b"
+    },
+    "chat-http-01/driver.log": {
+      "bytes": 1176,
+      "sha256": "b2011e1fe588fb9bb582830c213fa13b07f75bafdf929714e8c3abbee218d5d8"
+    },
+    "chat-http-01/lease/events.jsonl": {
+      "bytes": 2205,
+      "sha256": "3fe8d861628aba54e356366ae628f0abe5fc4657effb927c21f0dc83faba7933"
+    },
+    "chat-http-01/lease/exit.json": {
+      "bytes": 708,
+      "sha256": "aadcc02c99df24bd697a3e21674f2a47de47bc5c1dc03182fd986ee5739a8330"
+    },
+    "chat-http-01/lease/nvml-queries.jsonl": {
+      "bytes": 20556,
+      "sha256": "856646d07111fc339d393374f52a37f30599d11c55af8652aa848795c9ba240a"
+    },
+    "chat-http-01/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "d6619356ddde303069979d2ee779d257a58e9bb0f79547a7eec7ceb652182f78"
+    },
+    "chat-http-01/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "c26821900603f03272f3dedae9e5f1bd9282c79a013d78180d543ee00ec8342a"
+    },
+    "chat-http-01/model-1.log": {
+      "bytes": 1825,
+      "sha256": "5906807fae2988c890a77bd69d5b186a31c0bc5e8ea27e621b4faf23655a93b0"
+    },
+    "chat-http-01/plan.json": {
+      "bytes": 1082052,
+      "sha256": "5b026022abd95fe199fe52c8767c1abebad43d68cc1823dde684dc9f9da2573d"
+    },
+    "chat-http-01/result.json": {
+      "bytes": 991,
+      "sha256": "8e3e5d3e2c7ec0b548becc365b27a1fed07921b551ac42ae78352dcb31a973a6"
+    },
+    "chat-http-02/cleanup.json": {
+      "bytes": 2346,
+      "sha256": "740b3eba71779203421b4d01e59559591ca11262d64ceb3af67a322acd678e64"
+    },
+    "chat-http-02/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-02/continuation-review.json": {
+      "bytes": 9672,
+      "sha256": "0e8d9d2bc3f3a57e4e47b233b1424d63b3f916ec9597bf19f89be63b5efd879c"
+    },
+    "chat-http-02/counts.json": {
+      "bytes": 73,
+      "sha256": "e95d7a62b67eadbf5c6c48923da247f9b7891ad26af087e8f11ddc2e46245f2c"
+    },
+    "chat-http-02/driver.log": {
+      "bytes": 735,
+      "sha256": "2650c9ea2f57adfdb802ddbb54b251c2cf776810ffd10e4019ca477dab035c2d"
+    },
+    "chat-http-02/lease/events.jsonl": {
+      "bytes": 21068,
+      "sha256": "70f67a42fa7b6017be8edb944dda1ec89932279fa7fb4a21c38b9edcaf2adc07"
+    },
+    "chat-http-02/lease/exit.json": {
+      "bytes": 709,
+      "sha256": "6fede12fbd10717bc95b00fb10ecbbf29d53845747631454d29cd3888d304255"
+    },
+    "chat-http-02/lease/nvml-queries.jsonl": {
+      "bytes": 266349,
+      "sha256": "aab6ccd3f3357e40bd3f6c273abb1a84a35de3e33e2d6159c32d4aa6c106e8a0"
+    },
+    "chat-http-02/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "fb1a58ab70e93f3ee6d724aa58e5a65cadf4403119ee291a5e1b02e6685d1378"
+    },
+    "chat-http-02/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "257e9f1a94d2df623d954348b85219199ef523a720d5429e8044ca3ec9dcd077"
+    },
+    "chat-http-02/model-1.log": {
+      "bytes": 135028,
+      "sha256": "22246177ef157b1a359b230035af9025b76c7da5a59f878b46e80ceaa9749470"
+    },
+    "chat-http-02/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-02/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-02/plan.json": {
+      "bytes": 1082052,
+      "sha256": "8cb8d8f8cee7c42d9d01d365db4b0a211e9037e3affdfdafdb73c7cb3dda06be"
+    },
+    "chat-http-02/result.json": {
+      "bytes": 541,
+      "sha256": "886708a49978ed8dca2dc946737990a49253372023b0da89368f680172f971c8"
+    },
+    "chat-http-03/cleanup.json": {
+      "bytes": 1985,
+      "sha256": "0d84913bcd21762dd2d2593d0e152a3659021a54133e223c117985ccb904871b"
+    },
+    "chat-http-03/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-03/counts.json": {
+      "bytes": 72,
+      "sha256": "98c4f83fde379787ebb0eec44a9e8ae5e75402d9359cc5280bc986abbe995935"
+    },
+    "chat-http-03/driver.log": {
+      "bytes": 920,
+      "sha256": "fabc50876a0255c6f224af26e4dcf3ff11bd86a7998836d435831e58a4fe37e7"
+    },
+    "chat-http-03/json.http.json": {
+      "bytes": 280,
+      "sha256": "404c24b324432c69b208dbb0a6b4c8e1eb3244cac65422658407dd020c4128b6"
+    },
+    "chat-http-03/json.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-03/json.wire": {
+      "bytes": 125,
+      "sha256": "466a0aece17dfc030ee5b56999baed123717d5843f74a892e31fc55ae262113e"
+    },
+    "chat-http-03/lease/events.jsonl": {
+      "bytes": 11265,
+      "sha256": "36842ee68ae29f3b60b54f627179da9a4a59b07e491103009b9d633fa1ce795f"
+    },
+    "chat-http-03/lease/exit.json": {
+      "bytes": 708,
+      "sha256": "0edfa4e1a310f2d8c0927da41c7c04b58a840adf66070a8acfe94ff0c3c8a1a3"
+    },
+    "chat-http-03/lease/nvml-queries.jsonl": {
+      "bytes": 138568,
+      "sha256": "a4d5264962b8edf4c77703ae2770fa11a131f250be8dd35970b8c4f49d7217b1"
+    },
+    "chat-http-03/model-1-capabilities.http.json": {
+      "bytes": 286,
+      "sha256": "405daebde76d23ab560b4cf872cde9894c5b35bcbbdcbc594de9e8182d3b1b89"
+    },
+    "chat-http-03/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "c425ac9ef7eb1ddd4c8b4b2f6c70ad25838e2b86244b2edb8de9caaa54e58ead"
+    },
+    "chat-http-03/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "a4bfaeade4a6887c64cc2a5a49f78b6a5d74cda462fff3e760badb0edb77e0f2"
+    },
+    "chat-http-03/model-1-config.http.json": {
+      "bytes": 288,
+      "sha256": "3a11d4295a667f8fbdca19c8bfe68106d8705e620b8d924477d009a2e2799b19"
+    },
+    "chat-http-03/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "b4d75bd8eecf92d849366632a56150ccc4dd3caf5a69f1e0090bfae53c871ef1"
+    },
+    "chat-http-03/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "ac20b1c83545c5b30e5e34ed60b3ae78559aa8c49b249240b7a6ba34cddb6239"
+    },
+    "chat-http-03/model-1.log": {
+      "bytes": 8015,
+      "sha256": "6aeb7c42cd2f39e51a503d259779c15e4c2a24e62ebae2c3ff0f744048143a98"
+    },
+    "chat-http-03/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-03/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-03/plan.json": {
+      "bytes": 1082052,
+      "sha256": "c2888d29940cf0f5e5c2e08b162e707034f9cce75b8c9d60b7af8ee77b6dc155"
+    },
+    "chat-http-03/result.json": {
+      "bytes": 728,
+      "sha256": "4c0662da23e83a554ee5ada5efd5017cd170d6b8d1666caebb17975eb947a5cc"
+    },
+    "chat-diagnosis-01/chat-drain.children.json": {
+      "bytes": 671,
+      "sha256": "eec626a6f18dfcb45b77581a015b05808f4eaf66b48a7e150bb2908b6716c37f"
+    },
+    "chat-diagnosis-01/chat-drain.metrics.json": {
+      "bytes": 24635,
+      "sha256": "6812a7abb14b1f9378f4dcc816ea6b2b10804cb056134e5da85a7dd774bc98d5"
+    },
+    "chat-diagnosis-01/chat-observation.json": {
+      "bytes": 268,
+      "sha256": "f1ea1cfecab7c489a1ebcfcf00f898d1123f2ad934b2e968de818c999b8e16f8"
+    },
+    "chat-diagnosis-01/chat.http.json": {
+      "bytes": 317,
+      "sha256": "a9172d0871d67dcc0b4512c4f2cedd1f06c7be5e185ed09fbec29595ad11566d"
+    },
+    "chat-diagnosis-01/chat.request.json": {
+      "bytes": 462,
+      "sha256": "004012ae7352ffd208d99d4d26e5af37e7f0d7330e8628c4a5fbcf330d547d8d"
+    },
+    "chat-diagnosis-01/chat.wire": {
+      "bytes": 1123,
+      "sha256": "0a6df471415c776e3d93113f41016a61417580805b4a64ab9efbf19a4ff0d750"
+    },
+    "chat-diagnosis-01/cleanup.json": {
+      "bytes": 2356,
+      "sha256": "2774915eaa32542eb3b673941f043f07015cbd41ad345c204dfe77928cdbdba3"
+    },
+    "chat-diagnosis-01/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-diagnosis-01/counts.json": {
+      "bytes": 72,
+      "sha256": "cd9fec9e2b006d86b7558bb9f9121e51a894c8c359c18eda63bba1fcc0c29f8c"
+    },
+    "chat-diagnosis-01/driver.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-diagnosis-01/driver.py": {
+      "bytes": 3168,
+      "sha256": "8e19f0859099f922061996f3a970d77e0349804a5937c6cf6e3670c9fa460ffd"
+    },
+    "chat-diagnosis-01/lease/events.jsonl": {
+      "bytes": 13849,
+      "sha256": "f64c6248ef2a17f6e24bf22d1b24b8a10835c72ef24415d8777b51e53d78b971"
+    },
+    "chat-diagnosis-01/lease/exit.json": {
+      "bytes": 640,
+      "sha256": "58f9496c5d79e5357b57a804f2d464d844ec82abbc3ffc37bf9c920556037d23"
+    },
+    "chat-diagnosis-01/lease/nvml-queries.jsonl": {
+      "bytes": 172216,
+      "sha256": "b3c804a42997924a4dc8a338fc173d27522a95dd0a005782db2734e311c2e184"
+    },
+    "chat-diagnosis-01/model-1-capabilities.http.json": {
+      "bytes": 288,
+      "sha256": "71d911bdd23b67da053fad67c8b1323f464e86973f0ec1321c1aa4cd58a5e80f"
+    },
+    "chat-diagnosis-01/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "c425ac9ef7eb1ddd4c8b4b2f6c70ad25838e2b86244b2edb8de9caaa54e58ead"
+    },
+    "chat-diagnosis-01/model-1-command.json": {
+      "bytes": 1025,
+      "sha256": "f3196f0513c668f4806943443cca32932117aa5e02a322c8d93fdded19a4c5a2"
+    },
+    "chat-diagnosis-01/model-1-config.http.json": {
+      "bytes": 288,
+      "sha256": "92cef31b50ea1b9de6d5e81e450ce7e0e494558564da7b3d70d75c80b1dea847"
+    },
+    "chat-diagnosis-01/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "149072f098bfff653f9bc9c0806c34c003d1a0df7864891af10c188bdbac4d5f"
+    },
+    "chat-diagnosis-01/model-1-identity.json": {
+      "bytes": 1331,
+      "sha256": "5f0bb89d54580daa963509e282174ee6f75f28e325ff5b9902839952fad5353e"
+    },
+    "chat-diagnosis-01/model-1.log": {
+      "bytes": 8958,
+      "sha256": "4580f48b55fc50be08d37cf62eea2f37e0380f94a230b357b5236b0b19717145"
+    },
+    "chat-diagnosis-01/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-diagnosis-01/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-diagnosis-01/plan.json": {
+      "bytes": 1082632,
+      "sha256": "1e03e1a4f0fd837197cb89a03fd5ae5510776ecccdda76948cae999dd391778d"
+    },
+    "chat-diagnosis-01/preflight.http.json": {
+      "bytes": 286,
+      "sha256": "ecd2cc66f7561578ed14453858f76ef3f13688b4f9913faf1f3b6d0910c88a08"
+    },
+    "chat-diagnosis-01/preflight.request.json": {
+      "bytes": 457,
+      "sha256": "33fceafcf3d0d18bc6ede3c6e3303fe638a545267e2a1cb4f3cb813a00096a38"
+    },
+    "chat-diagnosis-01/preflight.wire": {
+      "bytes": 2121,
+      "sha256": "59233cd8de25454e0185bf5ea9e9718aa84fea8b7f6764cf1a7259590aa155b9"
+    },
+    "chat-diagnosis-01/repair-plan.json": {
+      "bytes": 2201,
+      "sha256": "f779f1ceff00003a7459ee10128951185c9c1d3576ae96202a0c9b1837a6e03e"
+    },
+    "chat-diagnosis-01/result.json": {
+      "bytes": 218,
+      "sha256": "47e3b06e3cce469cdf9bbf8d9a10b1efc59828024c2001ebf59809f0ed1b9e05"
+    },
+    "chat-diagnosis-01/speech-drain.children.json": {
+      "bytes": 671,
+      "sha256": "eec626a6f18dfcb45b77581a015b05808f4eaf66b48a7e150bb2908b6716c37f"
+    },
+    "chat-diagnosis-01/speech-drain.metrics.json": {
+      "bytes": 24636,
+      "sha256": "9dde18e34bd152f2ac2c3cff02d715a6c0558101b004a55ba3163912ac0e79d3"
+    },
+    "chat-diagnosis-01/speech-observation.json": {
+      "bytes": 217,
+      "sha256": "f5cac8edc8087d97dea2a3456748ba77c0b7177991ba9d6002ecac5886b2e5e0"
+    },
+    "chat-diagnosis-01/speech.http.json": {
+      "bytes": 281,
+      "sha256": "b3afff4a0652c070b716f7a05adb8c6ce61f5d29e21e4a315d77ab16c8452ee4"
+    },
+    "chat-diagnosis-01/speech.request.json": {
+      "bytes": 147,
+      "sha256": "a6cfd8888ce578f16cb92863553a0a63fd81a80060fa02088cfdc72b66957552"
+    },
+    "chat-diagnosis-01/speech.wire": {
+      "bytes": 122,
+      "sha256": "47a9db1515c4ca05d0e7faf03319c54223cd75d828b129d39048db91cf4f3e60"
+    },
+    "chat-http-04/cleanup.json": {
+      "bytes": 2346,
+      "sha256": "250038809ee43e5fd1139040b0ea37d087bdba6a55ce51553193f40254f72579"
+    },
+    "chat-http-04/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-04/continuation-review.json": {
+      "bytes": 1716,
+      "sha256": "f9fa59a76f588bfe7066b2470941b882ceedb5a44eaa84b5819038c52d1fb1f7"
+    },
+    "chat-http-04/counts.json": {
+      "bytes": 72,
+      "sha256": "67a0d1172c64204dd9c20c19d801ba516fc52238879f80a0a4f5c38adf97f63a"
+    },
+    "chat-http-04/decoded-expectations.json": {
+      "bytes": 45,
+      "sha256": "256119c8f5f9962b82f6d3d442f3a92c8ec933e06c38a88bef2e743ccfa35c28"
+    },
+    "chat-http-04/driver.log": {
+      "bytes": 1154,
+      "sha256": "a19b6da2d23c332fc83fa47f5b09c6c2b10b5f2e169280554014ba3083c169ae"
+    },
+    "chat-http-04/json-0.wav": {
+      "bytes": 115244,
+      "sha256": "4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126"
+    },
+    "chat-http-04/json-drain.children.json": {
+      "bytes": 671,
+      "sha256": "03f88f4b2a4a5f478915035531202d541aadc67cc28f56e9b4ca262f67abaa79"
+    },
+    "chat-http-04/json-drain.metrics.json": {
+      "bytes": 24651,
+      "sha256": "9f7b2f0f0c33ac1e2dd30d794fd849cdb2aabe0151af8981e48d6971fc9409ed"
+    },
+    "chat-http-04/json.http.json": {
+      "bytes": 288,
+      "sha256": "fca38c7bf69bf3dff9cd7a0c9d47028589320d9a275785c61d6cea7d6fbb5283"
+    },
+    "chat-http-04/json.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-04/json.wire": {
+      "bytes": 154268,
+      "sha256": "0bd115616e565f0c3de3207e72dbed425b1a90109ffbd24796aba67a2be5c3ec"
+    },
+    "chat-http-04/lease/events.jsonl": {
+      "bytes": 10151,
+      "sha256": "03d4fee2bc05bbe9f15f1c5754b1a208f84e83d521cfda3e521e58b05ebd96bc"
+    },
+    "chat-http-04/lease/exit.json": {
+      "bytes": 708,
+      "sha256": "fea0aca70100a19f4eaa6d46fb51319a9cac881bfba35bb6afca3b6bebf819ba"
+    },
+    "chat-http-04/lease/nvml-queries.jsonl": {
+      "bytes": 123977,
+      "sha256": "ea720bc48b32ed48c261684e6816ce7a4bef5d2165ca24a56dc079d6304bd6f1"
+    },
+    "chat-http-04/model-1-capabilities.http.json": {
+      "bytes": 288,
+      "sha256": "5a72ec21ad6bfddab7c6fef8fc364246aa40ce9359923e23fd6a658f074e0082"
+    },
+    "chat-http-04/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "29166e8fead0c56197340e43f364eede742006b8751d180ac860e39b641396c6"
+    },
+    "chat-http-04/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "f049f0641c0b35e90e1fcfa4d21b63ad6adb579c23c8d4e5017b1131d88b8c19"
+    },
+    "chat-http-04/model-1-config.http.json": {
+      "bytes": 289,
+      "sha256": "d7616b776683ee3efcd90ad960623970b6f5a591712d0f647d8d21e78499f018"
+    },
+    "chat-http-04/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "923ce3ccdc8843cc703b594c29b2e0ad03efac169e46927285b18a72f43d1dbe"
+    },
+    "chat-http-04/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "f869c0c26d9f8c1094ab14eb345687fd596780cf518a312f0c8390455d63bf78"
+    },
+    "chat-http-04/model-1.log": {
+      "bytes": 7920,
+      "sha256": "05b5d19242ecb6ebc16d0c5ee7abb44d00be74c48bb7cc1ff7f41793841b85a5"
+    },
+    "chat-http-04/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-04/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-04/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_9b79277184c48885cb31ce4512fb6703.json": {
+      "bytes": 609,
+      "sha256": "bac10b4b63a16d260c2abf166bdef8c008749ce1c05cd92ca439e2b2520ed208"
+    },
+    "chat-http-04/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-df75fbf0d98b64877eb27cd87317a8e5.json": {
+      "bytes": 154923,
+      "sha256": "3ae88eca9d2667abb12dadfca44b130ee29b5bc87a331cb6698332469bbaca3a"
+    },
+    "chat-http-04/plan.json": {
+      "bytes": 1082052,
+      "sha256": "2479aabcd94a656812945debec71047bd4ea539ba0da357370dee1bd68e84252"
+    },
+    "chat-http-04/python.request.json": {
+      "bytes": 1037,
+      "sha256": "7e37235084b2a9cd225d79d808e0c98c3181661e8eaaa00c82cf3171792f5116"
+    },
+    "chat-http-04/python.sdk.log": {
+      "bytes": 676,
+      "sha256": "48ee9f542116be343ecb6dd643c73261404080276d157b2faed2a820053391ec"
+    },
+    "chat-http-04/result.json": {
+      "bytes": 968,
+      "sha256": "2c079356256573c2f349f060ad3d6690d9dbdfbfc645eff3ab6876ac1ea1dffc"
+    },
+    "chat-http-05/cleanup.json": {
+      "bytes": 2346,
+      "sha256": "25dde139458d80dc462e7a09859cb77bcaaffd5a78be7cb8adeaf3ab52c753ad"
+    },
+    "chat-http-05/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-05/counts.json": {
+      "bytes": 72,
+      "sha256": "2c412cecb011901f27ed2d6a15660c125d3d3b146dc209ba0d58b25ae2e6fb5a"
+    },
+    "chat-http-05/decoded-expectations.json": {
+      "bytes": 154,
+      "sha256": "ead2fd39b7998af286d60a1bc3b701d5f9d2f62317986bb5e193d4f9ccfac964"
+    },
+    "chat-http-05/driver.log": {
+      "bytes": 950,
+      "sha256": "6a70696e80812df494e55a6a7a3a2e76e03694449c8be72b1150eadb439c9c0a"
+    },
+    "chat-http-05/javascript-0.mp3": {
+      "bytes": 30336,
+      "sha256": "bf72608db94161478f4e381b77a4520683a6435bf58aa7c934392a2f3688a712"
+    },
+    "chat-http-05/javascript-drain.children.json": {
+      "bytes": 671,
+      "sha256": "0eba982f8494985cbe40a9f50c4a53c53fba4da2de8937608f14393e443b991c"
+    },
+    "chat-http-05/javascript-drain.metrics.json": {
+      "bytes": 24680,
+      "sha256": "e265aced008f7eadd614a3091b062c20e84707dc0a365ccfd9be1f4f304ebd80"
+    },
+    "chat-http-05/javascript.request.json": {
+      "bytes": 2065,
+      "sha256": "16786feec0a667dea734a0fba5cae98ecbf706de76e68327dc64e8de54944f23"
+    },
+    "chat-http-05/javascript.sdk.json": {
+      "bytes": 41560,
+      "sha256": "d2e805dd1b0f19ff242e9f88cc18570f302c65ec1d5c549907dd646c218c53eb"
+    },
+    "chat-http-05/javascript.sdk.log": {
+      "bytes": 41205,
+      "sha256": "669bd7a70593e8d1d08b18f867c48db2d68d8bf6905fd037ef5a1553d796b821"
+    },
+    "chat-http-05/javascript.wire": {
+      "bytes": 41052,
+      "sha256": "d65a5c4aae5af560c81ac4207d2c737b6ab5cae23aa6b1733554036e7140421f"
+    },
+    "chat-http-05/json-0.wav": {
+      "bytes": 115244,
+      "sha256": "4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126"
+    },
+    "chat-http-05/json-drain.children.json": {
+      "bytes": 671,
+      "sha256": "9b87a38e3ff1a7323f268d4d6936cb1da11505f23b11b5bed36ba6f0b405d40b"
+    },
+    "chat-http-05/json-drain.metrics.json": {
+      "bytes": 24599,
+      "sha256": "cc7631a51dd5318f8962d8985920a9867318bb21fc07bbe8ea6ea438c527942f"
+    },
+    "chat-http-05/json.http.json": {
+      "bytes": 288,
+      "sha256": "fca38c7bf69bf3dff9cd7a0c9d47028589320d9a275785c61d6cea7d6fbb5283"
+    },
+    "chat-http-05/json.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-05/json.wire": {
+      "bytes": 154268,
+      "sha256": "0bd115616e565f0c3de3207e72dbed425b1a90109ffbd24796aba67a2be5c3ec"
+    },
+    "chat-http-05/lease/events.jsonl": {
+      "bytes": 11269,
+      "sha256": "ec9f4dda64032b1f5a0712614f0e655ccc88c47ab43f81f810c6209ff64c31b3"
+    },
+    "chat-http-05/lease/exit.json": {
+      "bytes": 707,
+      "sha256": "a34ae90cb6c358682231a252fbeae9a7c923bb1b3a7aabc19973b261272214ea"
+    },
+    "chat-http-05/lease/nvml-queries.jsonl": {
+      "bytes": 138444,
+      "sha256": "ef3826b4b51527d50e09f28d90b5628b40c8ddb0cd3ebd88e766b5fdf1e16cc8"
+    },
+    "chat-http-05/model-1-capabilities.http.json": {
+      "bytes": 288,
+      "sha256": "b9d1dfc9c365d65306272cdecfd200a7dbaf7d474320f37145798acf00059dbb"
+    },
+    "chat-http-05/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "29166e8fead0c56197340e43f364eede742006b8751d180ac860e39b641396c6"
+    },
+    "chat-http-05/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "271ebffd767c3155c98b9e9a7d4db9e7b684386cc2bc8bfcf57becc6a71a492a"
+    },
+    "chat-http-05/model-1-config.http.json": {
+      "bytes": 289,
+      "sha256": "52833fe72a36fecd6586dc480087e5970c46f52c70c3cf8a0496f720566ea13d"
+    },
+    "chat-http-05/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "4895b356f839b4375b30a3f7a80b9238462e57f0838e8636824eb287d0a79d38"
+    },
+    "chat-http-05/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "fea29c74c4bad2a36b869ee93d05df968e9c03fb2ca6f8f0fb0c0add61f85748"
+    },
+    "chat-http-05/model-1.log": {
+      "bytes": 18755,
+      "sha256": "94c65c0f087a47c21062f1563e2e03c885f10fd72a57b207b77071933923dc8e"
+    },
+    "chat-http-05/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-05/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-05/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_3c338957f09a1d0c08073c69c01acbd8.json": {
+      "bytes": 597,
+      "sha256": "13e1c2a04955fa1dddc3d642c6d0e91a7fe3e4f68f2884ce56499628acda792a"
+    },
+    "chat-http-05/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_539dacf27db264054ae981d4b630d1db.json": {
+      "bytes": 611,
+      "sha256": "7158ba1deee120c0d04b8af86130ab00ca870e2d5c3ed9c99ac0c75dc79bafac"
+    },
+    "chat-http-05/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_9b79277184c48885cb31ce4512fb6703.json": {
+      "bytes": 609,
+      "sha256": "bac10b4b63a16d260c2abf166bdef8c008749ce1c05cd92ca439e2b2520ed208"
+    },
+    "chat-http-05/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-df75fbf0d98b64877eb27cd87317a8e5.json": {
+      "bytes": 154923,
+      "sha256": "3ae88eca9d2667abb12dadfca44b130ee29b5bc87a331cb6698332469bbaca3a"
+    },
+    "chat-http-05/plan.json": {
+      "bytes": 1083182,
+      "sha256": "aeae346bdcaf6205e7540d740abf879a592934c73cf7c485d351b1ea6190191a"
+    },
+    "chat-http-05/python-0.pcm": {
+      "bytes": 126720,
+      "sha256": "51f6876be6438e8479bfd12ab222e2161fdea9c2f1c06d450d1cef8e9c2a041d"
+    },
+    "chat-http-05/python-drain.children.json": {
+      "bytes": 671,
+      "sha256": "0eba982f8494985cbe40a9f50c4a53c53fba4da2de8937608f14393e443b991c"
+    },
+    "chat-http-05/python-drain.metrics.json": {
+      "bytes": 24656,
+      "sha256": "21155d2760434195596dd1cd3791de5914518b7f815c957533197cd0b4bd8cd2"
+    },
+    "chat-http-05/python.request.json": {
+      "bytes": 1037,
+      "sha256": "b4a9fec81934d2fd95b7bd55dbb5a37f5eb1b54e5d7f74b53771e0ab60b05a83"
+    },
+    "chat-http-05/python.sdk.json": {
+      "bytes": 183094,
+      "sha256": "d88a0cca86a407cfeaffcbe7751c5bf74905fd4b05d69373996385cac4513c03"
+    },
+    "chat-http-05/python.sdk.log": {
+      "bytes": 177496,
+      "sha256": "91e21c37fdddb1930d043493229d38b83db9fcab36a67d5ad53aa758f15a37d5"
+    },
+    "chat-http-05/python.wire": {
+      "bytes": 176894,
+      "sha256": "b44cb402f43f4a7f7966b7b5336a010e406765846acd439736aa9d14fa15b84b"
+    },
+    "chat-http-05/result.json": {
+      "bytes": 758,
+      "sha256": "28efa94b56340326298ac13e9b4a83fc0d816d78c47fd183122dc7338c9181e0"
+    },
+    "chat-http-05/schema.http.json": {
+      "bytes": 281,
+      "sha256": "a88af9ff0d6331fc7d7d7868890964f2cd74be95983b855a2700abf669948a7c"
+    },
+    "chat-http-05/schema.request.json": {
+      "bytes": 795,
+      "sha256": "a3dc1e5adedad34f05ba6f240125c98fc195f967a51c7ca225de7619614a57a1"
+    },
+    "chat-http-05/schema.wire": {
+      "bytes": 117,
+      "sha256": "57f581fe52fb9d4c5fa2b653e6d414aefa622c084900e8c9fa73ca6f1d2da227"
+    },
+    "chat-http-05/tool-result.json": {
+      "bytes": 261,
+      "sha256": "c15ea81293a124f82438112f2f5fa092e98340383696bb83e0089c9305451856"
+    },
+    "chat-http-05/tool.http.json": {
+      "bytes": 281,
+      "sha256": "9d36a52f5f97752b8b20d1d424afd40cabda1e03857f6f6e94ba7b8b16ee3a44"
+    },
+    "chat-http-05/tool.request.json": {
+      "bytes": 834,
+      "sha256": "a52d5fcb180a2a765a0452018dfe58a26c3f1c8ddc1118542658fc33c39ffbdb"
+    },
+    "chat-http-05/tool.wire": {
+      "bytes": 491,
+      "sha256": "0ededc0b0eb093e3043cad15e74ec5df01ba0925df643113db21e09333137081"
+    },
+    "chat-http-06/before-restart.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/before-restart.metrics.json": {
+      "bytes": 24681,
+      "sha256": "75a44a112d27018676a12b1a18e97a15f6c955fa712c39b05348635f5e5cd013"
+    },
+    "chat-http-06/cancel-drain.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/cancel-drain.metrics.json": {
+      "bytes": 24685,
+      "sha256": "c724bfaeaf981a06ec8ec100da337f7077b58e92a11118dafdb01639e8460377"
+    },
+    "chat-http-06/cancel.http.json": {
+      "bytes": 319,
+      "sha256": "7a97b5deef79b6d346604d668c18d21d031cefeece5b45e735b209915dcb6df4"
+    },
+    "chat-http-06/cancel.request.json": {
+      "bytes": 504,
+      "sha256": "a3856293adcc8794f45eae57afe4ce9aa8b4d2af4d2517ddded8da8d70c0a2d7"
+    },
+    "chat-http-06/cancel.wire": {
+      "bytes": 56920,
+      "sha256": "fb6ecc254992fb6ed0e6dfa45737b50d37dd09786e80382564290b972419657c"
+    },
+    "chat-http-06/cleanup.json": {
+      "bytes": 2346,
+      "sha256": "6ba4b49ed2ccc6920318ebb28e6e9a39dfd0fd1feb5a0632fb9d7125e0899e28"
+    },
+    "chat-http-06/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-06/continuation-review.json": {
+      "bytes": 4090,
+      "sha256": "465b5e5982294e81223f2cb1db3679c1f733e3534df11ba0d827df775a6f5a7f"
+    },
+    "chat-http-06/core.http.json": {
+      "bytes": 282,
+      "sha256": "635f0c3b7a6bb736909eaa04eaabcec6fe8013609b052b9ce45ffd30e4a614d1"
+    },
+    "chat-http-06/core.request.json": {
+      "bytes": 242,
+      "sha256": "a10162ffa3ad2cc63926773bcaf08cee9aa2ad46bd1dc18cab7201b0289efa81"
+    },
+    "chat-http-06/core.wire": {
+      "bytes": 337,
+      "sha256": "aab2595d8991cd0aab82bde5b548e0b512e37fc500ab604bea7fdf96e834c538"
+    },
+    "chat-http-06/counts.json": {
+      "bytes": 72,
+      "sha256": "fd54036f3ea11d5bc97070599e39c7daa2e7c8fe51f408809701d6f3ca3ae454"
+    },
+    "chat-http-06/decoded-expectations.json": {
+      "bytes": 206,
+      "sha256": "172fc513d1464a2a1149d9bd1d79634b44b653b8afcb8689ec085600245c0c42"
+    },
+    "chat-http-06/driver.log": {
+      "bytes": 1003,
+      "sha256": "0dcb9e448bd34136df625b250be1ed72852d578e28c5aba72909841533eda11c"
+    },
+    "chat-http-06/javascript-0.mp3": {
+      "bytes": 30336,
+      "sha256": "bf72608db94161478f4e381b77a4520683a6435bf58aa7c934392a2f3688a712"
+    },
+    "chat-http-06/javascript-drain.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/javascript-drain.metrics.json": {
+      "bytes": 24680,
+      "sha256": "b8abf43d770dea1ac95703397a5a82147f7524af27d94bfe0b30a9a8e656ec44"
+    },
+    "chat-http-06/javascript.request.json": {
+      "bytes": 2065,
+      "sha256": "b84cc8aca510a24d2d4ce00e8640bda866c0dd34ab996d006d9fa490705c0566"
+    },
+    "chat-http-06/javascript.sdk.json": {
+      "bytes": 41553,
+      "sha256": "b920072614fe1475d4a2f803e22a31c4911917fa1fd08da42e18fa3154da0065"
+    },
+    "chat-http-06/javascript.sdk.log": {
+      "bytes": 41198,
+      "sha256": "6f4f26c5563113f4a5f81d5fc42b149873b2a20a8a3488f4776c9e28b930db34"
+    },
+    "chat-http-06/javascript.wire": {
+      "bytes": 41052,
+      "sha256": "c60061c8994983cf2b345eeb15180c57a38d9cc8700863efe8e6b8f91897f222"
+    },
+    "chat-http-06/json-0.wav": {
+      "bytes": 115244,
+      "sha256": "4b71ea245be97ca9d2d3f85b0f67594d46a71f9cb2a5bf41cfacaa06efaf0126"
+    },
+    "chat-http-06/json-drain.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/json-drain.metrics.json": {
+      "bytes": 24651,
+      "sha256": "e8186c7d320e52712138b2284fbedf81290a9f14464ae88f76da8fea81ec83ba"
+    },
+    "chat-http-06/json.http.json": {
+      "bytes": 288,
+      "sha256": "136e137338763eebca6a9c22badfff2b12dedfbbaf48695836565b7fe77690b3"
+    },
+    "chat-http-06/json.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-06/json.wire": {
+      "bytes": 154268,
+      "sha256": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4"
+    },
+    "chat-http-06/lease/events.jsonl": {
+      "bytes": 13857,
+      "sha256": "2c9ad63f09e6aea023567d5e6cd83e036c4a64c5bccf3c3acb26b196cdc75d65"
+    },
+    "chat-http-06/lease/exit.json": {
+      "bytes": 708,
+      "sha256": "c1af2ebcd866c99fa27b66a041d7b6b6faf04462d8d15f8cab768607e20da96b"
+    },
+    "chat-http-06/lease/nvml-queries.jsonl": {
+      "bytes": 172183,
+      "sha256": "926f75c06c93a68628652f8b27402358ce4584cf1cb532d06b3e70f89e188e90"
+    },
+    "chat-http-06/model-1-capabilities.http.json": {
+      "bytes": 288,
+      "sha256": "6c80e9ef13abc4a0160e7da8f925923e37823311b33562276f9e1ffd1f5ec356"
+    },
+    "chat-http-06/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "22257bf2c201c3295f1ccebf0a49d37ea82967e26a7f54e0c69861b8fb5b2735"
+    },
+    "chat-http-06/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "dfb08e5df80f3b2e95a8332a2ade8e4673dcceedbe66debee75164e8841b4904"
+    },
+    "chat-http-06/model-1-config.http.json": {
+      "bytes": 288,
+      "sha256": "864c6141e38e0a6b8b6d1a788783ce8812f59c0de449faf4ea210d1c942e2dca"
+    },
+    "chat-http-06/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "5a97aef82e01ac7d4cc2cdfd9643620117d7b8a82fed083480840c7f35d9f180"
+    },
+    "chat-http-06/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "e222c27672aea1f0aeaf852537bc1f4e40e811e007a7ee2c407ede778303810f"
+    },
+    "chat-http-06/model-1.log": {
+      "bytes": 28230,
+      "sha256": "2e886ab486a229fcccfc6840a31a13ecc95ba340e19b23a78cfdaad37f28bba6"
+    },
+    "chat-http-06/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-06/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_46736f7de8bd163bcbe338f2062b979a.json": {
+      "bytes": 611,
+      "sha256": "e5d0499e5e0085592196a007867f46ab781c29999202f33c8d18a23ce0567beb"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_556460ed5e739dcf59ab541f11837eb8.json": {
+      "bytes": 592,
+      "sha256": "ffa4b2dc8e38d46e114f6abd803c67d05ec04a0e60927186c6801fc83964cea8"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_73d52260d9d56f23a4fd72f3e82ae5fe.json": {
+      "bytes": 597,
+      "sha256": "32b62e31877f6ad3411f13262630f33abd51b56d6cf36b2d6260ed72a6151b28"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_d945046af1914f31f43f1b7107465b88.json": {
+      "bytes": 609,
+      "sha256": "6f2b20e2b674adc6846223d928a14320e77ff2511297ef1000f5bb5651482029"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_fa40254a90fc35f5315503ca9645305c.json": {
+      "bytes": 592,
+      "sha256": "6b00312511fc0b08606c87cc31fb10cbba5651fa859f843b9cfe718aa717b2f7"
+    },
+    "chat-http-06/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-b656eae84e39398f0f41111f51a9acfc.json": {
+      "bytes": 154923,
+      "sha256": "b04f7e7fa19ebdaf382ce4299dc4291eed142dc9a9d0e7cf823434114083e1ed"
+    },
+    "chat-http-06/plan.json": {
+      "bytes": 1082166,
+      "sha256": "6049c5fdb16e2ac4b239e99e0f24549d05226ad1189462c2f41d6fa9f12c9942"
+    },
+    "chat-http-06/python-0.pcm": {
+      "bytes": 126720,
+      "sha256": "51f6876be6438e8479bfd12ab222e2161fdea9c2f1c06d450d1cef8e9c2a041d"
+    },
+    "chat-http-06/python-drain.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/python-drain.metrics.json": {
+      "bytes": 24659,
+      "sha256": "363409e35e1133a7c533c7a49bab3156d33b39607ac34c41cc2163a1a54340b1"
+    },
+    "chat-http-06/python.request.json": {
+      "bytes": 1037,
+      "sha256": "d34038366c154f440192a9cd2c9ecbff4bb452bb760860033c25c18453082dbd"
+    },
+    "chat-http-06/python.sdk.json": {
+      "bytes": 183094,
+      "sha256": "10e4eb904d9f1df0a446d5fd8d0a3f440365dfa64b5fd19d1306dfa8173913bc"
+    },
+    "chat-http-06/python.sdk.log": {
+      "bytes": 177496,
+      "sha256": "df98ac4c564f8efea09c22513be7f62f4fc2b24226a570f6d47e8dc5892d5b8c"
+    },
+    "chat-http-06/python.wire": {
+      "bytes": 176878,
+      "sha256": "4df70264d4e84d77aaaa541c6837d7937a5aa625a5fb516ada6f946fe34e313b"
+    },
+    "chat-http-06/restart-cleanup.json": {
+      "bytes": 2346,
+      "sha256": "6ba4b49ed2ccc6920318ebb28e6e9a39dfd0fd1feb5a0632fb9d7125e0899e28"
+    },
+    "chat-http-06/result.json": {
+      "bytes": 812,
+      "sha256": "4bcd07c290da37fa8a67a3b9b0773462026f51b9a14453e716ef2cf579d3d99c"
+    },
+    "chat-http-06/schema-0.mp3": {
+      "bytes": 26496,
+      "sha256": "69ff844b4b890487d58d96eec48f2ae6ca78a4cf12c41c3dc31a29b72c125d75"
+    },
+    "chat-http-06/schema-1.mp3": {
+      "bytes": 26496,
+      "sha256": "69ff844b4b890487d58d96eec48f2ae6ca78a4cf12c41c3dc31a29b72c125d75"
+    },
+    "chat-http-06/schema-drain.children.json": {
+      "bytes": 671,
+      "sha256": "16679639b79f305cd3dee9b40448f0e5fad50274da2456839882b1092e444348"
+    },
+    "chat-http-06/schema-drain.metrics.json": {
+      "bytes": 24685,
+      "sha256": "fbe249cee31fa26c1d9cf200d9855fa38d8940aacf701408670034454b1ee593"
+    },
+    "chat-http-06/schema.http.json": {
+      "bytes": 284,
+      "sha256": "ce9c76f8ba8485154ed1802b8d78bf60632c11fd82f9a4e8cde237a56054c215"
+    },
+    "chat-http-06/schema.request.json": {
+      "bytes": 795,
+      "sha256": "a3dc1e5adedad34f05ba6f240125c98fc195f967a51c7ca225de7619614a57a1"
+    },
+    "chat-http-06/schema.wire": {
+      "bytes": 71491,
+      "sha256": "a074f0026666fdba1383180fcdbaedae5196e73c511206a06d27cf9b5360ac79"
+    },
+    "chat-http-06/speech.http.json": {
+      "bytes": 319,
+      "sha256": "7c2886cfadc79822a58b28a69aaeab33faae5d9e9ad8fb1843dc817d4a67d32a"
+    },
+    "chat-http-06/speech.mp3": {
+      "bytes": 40704,
+      "sha256": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323"
+    },
+    "chat-http-06/speech.request.json": {
+      "bytes": 224,
+      "sha256": "ec9af9c9679ec1be2023a79338a22cdc4d6bf780bea3640428190143db5cca19"
+    },
+    "chat-http-06/speech.wire": {
+      "bytes": 40704,
+      "sha256": "5fc3c9bf612687dbf61badf607046f3fa8157d92246610059a66df6c47e29323"
+    },
+    "chat-http-06/tool-result.json": {
+      "bytes": 261,
+      "sha256": "c15ea81293a124f82438112f2f5fa092e98340383696bb83e0089c9305451856"
+    },
+    "chat-http-06/tool.http.json": {
+      "bytes": 281,
+      "sha256": "ca4b08dde8070c00ced8c1f063ac07900155f7c131679f7bc01d25f514476c97"
+    },
+    "chat-http-06/tool.request.json": {
+      "bytes": 834,
+      "sha256": "a52d5fcb180a2a765a0452018dfe58a26c3f1c8ddc1118542658fc33c39ffbdb"
+    },
+    "chat-http-06/tool.wire": {
+      "bytes": 491,
+      "sha256": "874b6ac5d1bf31ed55b68bf5a878c2e52e847ce635f0543d478c5f08b75dcc33"
+    },
+    "chat-http-07/asr-0/case-0/encoder-input.bf16": {
+      "bytes": 55552,
+      "sha256": "6b62b2b362495e9d9e557129dcb99feb09bcf453629a872555efc7879d751068"
+    },
+    "chat-http-07/asr-0/case-0/encoder.bf16": {
+      "bytes": 63488,
+      "sha256": "ab6d7e43021b4e184898c7fee56e760a8d6e732e789a706c2f4a3e2479c85943"
+    },
+    "chat-http-07/asr-0/case-0/generated.u32": {
+      "bytes": 52,
+      "sha256": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5"
+    },
+    "chat-http-07/asr-0/case-0/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "40194e4f584f166f6a1ccabd2b9f2933cc043a920512c998fe57498fe542198a"
+    },
+    "chat-http-07/asr-0/case-0/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "f8581d3dc86936cf5b128ab1bde910993841e86184c64f2aae73ff2b78ca8774"
+    },
+    "chat-http-07/asr-0/case-0/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "4aa026c068346ad353d17aac5bafc03f7db3140a6d3640ace8f1f1a378b24245"
+    },
+    "chat-http-07/asr-0/case-0/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "d369e50ed1887a74a24829564e2797d2ee45819f5dc0aa5ec8152e906ada071f"
+    },
+    "chat-http-07/asr-0/case-0/native-mel.f32": {
+      "bytes": 122880,
+      "sha256": "c08d52c934360ec5df37721266c63fc6638d751fddf45cf9f8d41361689c4947"
+    },
+    "chat-http-07/asr-0/case-0/result.json": {
+      "bytes": 136,
+      "sha256": "742edad267da5c64e10e4ba35889fde6a471a5fb869eb0e27fdcc1ad51612779"
+    },
+    "chat-http-07/asr-0/case-0/text.txt": {
+      "bytes": 62,
+      "sha256": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af"
+    },
+    "chat-http-07/asr-0/case-1/encoder-input.bf16": {
+      "bytes": 60928,
+      "sha256": "bd0c8c7760e8ce480b71bd20e0333bc3af69dcbf1574c093de05505acb51e28f"
+    },
+    "chat-http-07/asr-0/case-1/encoder.bf16": {
+      "bytes": 69632,
+      "sha256": "11926af909209e8913491985e1bf729dfd4c78935e91be20992044cd82ed3124"
+    },
+    "chat-http-07/asr-0/case-1/generated.u32": {
+      "bytes": 44,
+      "sha256": "b5923b4710a1317b4881a6a3ba7e1f94834e68c3d1d7d6e0165a5194a3d00ea4"
+    },
+    "chat-http-07/asr-0/case-1/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "02267176454ed5368a1bc7dc034e26e77cc8dac0b0b28d9b5e57cda16c4249a5"
+    },
+    "chat-http-07/asr-0/case-1/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "2b3639d44c025fbef747dbd1f72c385d6dd123b8274ca396245ca1e0eb74b954"
+    },
+    "chat-http-07/asr-0/case-1/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "691e2d854a1e27e411bfc92e78694946b9d932147342250e517dbb3f4d7f2031"
+    },
+    "chat-http-07/asr-0/case-1/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "c7b96a0895315efc5955d62500459bfa70cf8be7fbc2326a0cbeeaa28f8dadfa"
+    },
+    "chat-http-07/asr-0/case-1/native-mel.f32": {
+      "bytes": 135168,
+      "sha256": "6a7e5b27a3d1891697407effa3dbe89c61cf63f77dd5bd997210d4a244f10851"
+    },
+    "chat-http-07/asr-0/case-1/result.json": {
+      "bytes": 136,
+      "sha256": "bc7130a3b15eb39a01b3b5f97b593abdab27081025d42dff8d240a646074b201"
+    },
+    "chat-http-07/asr-0/case-1/text.txt": {
+      "bytes": 62,
+      "sha256": "376fb85523c60eddf8c40589e073b9db7626427bc092049ade137c522da51dbb"
+    },
+    "chat-http-07/asr-0/case-2/encoder-input.bf16": {
+      "bytes": 44800,
+      "sha256": "dd79cca9912a3e619789d5b45953f26fdf3c6c2401d06062bd170bb32aa80c2c"
+    },
+    "chat-http-07/asr-0/case-2/encoder.bf16": {
+      "bytes": 51200,
+      "sha256": "c7dac1f49f2706a035f3e9f20f4a26920f00c05038f918132a5259df58a1ef7b"
+    },
+    "chat-http-07/asr-0/case-2/generated.u32": {
+      "bytes": 36,
+      "sha256": "cae518df4bff395d4307e10e1fccb12de0b0d6696f043c5f811da42989ac57bb"
+    },
+    "chat-http-07/asr-0/case-2/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "78c55ab42aa6a439bbd76fa49e02db7700d41a9a1639305109a1a984379b8f7a"
+    },
+    "chat-http-07/asr-0/case-2/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "fb7958e61ce66922867e572a8153ba6a1d112d9ebb9546b10fae735689f7a4d6"
+    },
+    "chat-http-07/asr-0/case-2/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "9aa9625b1236d3f97e2e1403512f587445fccfb7719d7486ff15d8dfa9754f73"
+    },
+    "chat-http-07/asr-0/case-2/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "c97497cf7a7ae948dec8aaf3d4365b0afe8ae9cd3e1e872ddb3ba87f73782ef2"
+    },
+    "chat-http-07/asr-0/case-2/native-mel.f32": {
+      "bytes": 96768,
+      "sha256": "8d358bfce53e7f2ab58af574b0a7bcf6973fe344e13e10ac9166219aeae0825b"
+    },
+    "chat-http-07/asr-0/case-2/result.json": {
+      "bytes": 135,
+      "sha256": "b0b476adb40d5a2bc21dd0ef70ef87e6ab8c745a440fadf28d3c958cea5493a3"
+    },
+    "chat-http-07/asr-0/case-2/text.txt": {
+      "bytes": 51,
+      "sha256": "660d31a765e3b43bff195208bb0ef27c8fb67046fa4f6115c093da177086aacc"
+    },
+    "chat-http-07/asr-0/result.json": {
+      "bytes": 96,
+      "sha256": "a6603a9e30519ea65e141c39de6b2622ea3db5837a3730aaa7e3f32e3a09222c"
+    },
+    "chat-http-07/asr-0.command.json": {
+      "bytes": 484,
+      "sha256": "1b05dc75585c17bc9381227487fc9356fb8d7eaaeeb1395594b96057971ccb0d"
+    },
+    "chat-http-07/asr-0.log": {
+      "bytes": 77,
+      "sha256": "23b45b07cc398408d63d29b5655acaff776069493ee8d25961a4eb12492bf9a2"
+    },
+    "chat-http-07/asr-1/case-0/encoder-input.bf16": {
+      "bytes": 39424,
+      "sha256": "8c8aba86f2ec8672925a1c401e93ce1e568a514f16a6eb176c454eccb92a19ad"
+    },
+    "chat-http-07/asr-1/case-0/encoder.bf16": {
+      "bytes": 45056,
+      "sha256": "2e970da84466872eb4b3bdc0d34bd08701b9d8a0075ea89343f01fd01b97fc36"
+    },
+    "chat-http-07/asr-1/case-0/generated.u32": {
+      "bytes": 32,
+      "sha256": "031d594a2db27c2c4ce34d8207ab9d8f257355b8165bcd38253ea4b40a1a4cd8"
+    },
+    "chat-http-07/asr-1/case-0/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "502924e8459ded0dfc1d915fc2c008059517d992329ccec7322053ba9b26b9ff"
+    },
+    "chat-http-07/asr-1/case-0/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "2818d386624926db3d9040ae521278e403a0de0d3df2332d3c32d10e98f1122c"
+    },
+    "chat-http-07/asr-1/case-0/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "9a92336a2a153dd26f41b2b99762069bc64e1e4ae560afa9cb22322cb07927a6"
+    },
+    "chat-http-07/asr-1/case-0/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "0722d4c633cdd876f6b0bed1a653cc66c33e585d5fec8b727d7138ab48c56412"
+    },
+    "chat-http-07/asr-1/case-0/native-mel.f32": {
+      "bytes": 84480,
+      "sha256": "58175d257aea1950f465b7e06d40cd85ead59255f258fca079584c1f755b62a6"
+    },
+    "chat-http-07/asr-1/case-0/result.json": {
+      "bytes": 135,
+      "sha256": "abd1ab562434f479217bcded69b8b97202a13d6da5ca0727a78d5179e6274626"
+    },
+    "chat-http-07/asr-1/case-0/text.txt": {
+      "bytes": 38,
+      "sha256": "c9065ca8880a609f23dbdee951710b8ef6d39c61a0ba9c0caa5e5cc6d42fb089"
+    },
+    "chat-http-07/asr-1/case-1/encoder-input.bf16": {
+      "bytes": 39424,
+      "sha256": "8c8aba86f2ec8672925a1c401e93ce1e568a514f16a6eb176c454eccb92a19ad"
+    },
+    "chat-http-07/asr-1/case-1/encoder.bf16": {
+      "bytes": 45056,
+      "sha256": "2e970da84466872eb4b3bdc0d34bd08701b9d8a0075ea89343f01fd01b97fc36"
+    },
+    "chat-http-07/asr-1/case-1/generated.u32": {
+      "bytes": 32,
+      "sha256": "031d594a2db27c2c4ce34d8207ab9d8f257355b8165bcd38253ea4b40a1a4cd8"
+    },
+    "chat-http-07/asr-1/case-1/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "502924e8459ded0dfc1d915fc2c008059517d992329ccec7322053ba9b26b9ff"
+    },
+    "chat-http-07/asr-1/case-1/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "2818d386624926db3d9040ae521278e403a0de0d3df2332d3c32d10e98f1122c"
+    },
+    "chat-http-07/asr-1/case-1/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "9a92336a2a153dd26f41b2b99762069bc64e1e4ae560afa9cb22322cb07927a6"
+    },
+    "chat-http-07/asr-1/case-1/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "0722d4c633cdd876f6b0bed1a653cc66c33e585d5fec8b727d7138ab48c56412"
+    },
+    "chat-http-07/asr-1/case-1/native-mel.f32": {
+      "bytes": 84480,
+      "sha256": "58175d257aea1950f465b7e06d40cd85ead59255f258fca079584c1f755b62a6"
+    },
+    "chat-http-07/asr-1/case-1/result.json": {
+      "bytes": 135,
+      "sha256": "abd1ab562434f479217bcded69b8b97202a13d6da5ca0727a78d5179e6274626"
+    },
+    "chat-http-07/asr-1/case-1/text.txt": {
+      "bytes": 38,
+      "sha256": "c9065ca8880a609f23dbdee951710b8ef6d39c61a0ba9c0caa5e5cc6d42fb089"
+    },
+    "chat-http-07/asr-1/case-2/encoder-input.bf16": {
+      "bytes": 59136,
+      "sha256": "c74ddaa60486983b09064dbf0ff225d59a7b0f30bf4ccfaf9430093cb5404c89"
+    },
+    "chat-http-07/asr-1/case-2/encoder.bf16": {
+      "bytes": 67584,
+      "sha256": "36e5da4a1021a1a61e60a4397ccfd741205e0e778f2db301ac13d704d476dd02"
+    },
+    "chat-http-07/asr-1/case-2/generated.u32": {
+      "bytes": 52,
+      "sha256": "5f68ca0f944bedd4d8edf82a1617962f9da7374259a8ae8b94ab955a272c53c5"
+    },
+    "chat-http-07/asr-1/case-2/logits-0.bf16": {
+      "bytes": 303872,
+      "sha256": "e1c85782f0ac2074f4aa7effe354ac2d3af15a67e3cf2a5ea96be296be31a644"
+    },
+    "chat-http-07/asr-1/case-2/logits-1.bf16": {
+      "bytes": 303872,
+      "sha256": "d1c3f97028539c5f2e7d82017510c4463fe5e50b5047fbace4de8c6a53599be2"
+    },
+    "chat-http-07/asr-1/case-2/logits-2.bf16": {
+      "bytes": 303872,
+      "sha256": "1019c7cc1bd72093f6e2ac1ce9b1e084fb12eff912193bbea1201b0ac5d05fe3"
+    },
+    "chat-http-07/asr-1/case-2/logits-3.bf16": {
+      "bytes": 303872,
+      "sha256": "1324ca075156151c9f51479406189bfbefac89df7c0694d673e49dd2a7c6bfad"
+    },
+    "chat-http-07/asr-1/case-2/native-mel.f32": {
+      "bytes": 130048,
+      "sha256": "fed3b16e16e5e6e55ce88c77a83db8e7ee7b804041f380a8dbd0bcac4481e9b3"
+    },
+    "chat-http-07/asr-1/case-2/result.json": {
+      "bytes": 136,
+      "sha256": "3a0ce9a2d1612faa91e7f36a5a292ac25eb1cc2437ce4e28bc0bd0b7c9568381"
+    },
+    "chat-http-07/asr-1/case-2/text.txt": {
+      "bytes": 62,
+      "sha256": "0215aede39a80b2061396314f49e2c555034296609bfe54133037988a28e87af"
+    },
+    "chat-http-07/asr-1/result.json": {
+      "bytes": 96,
+      "sha256": "f14caa63985852439ca6cee18a4582502687df3d2695309533fe5f3abececcd4"
+    },
+    "chat-http-07/asr-1.command.json": {
+      "bytes": 484,
+      "sha256": "fef2052f6dc6828a9a76b49df75d2161861542628dcbc990923929415bb8a5b6"
+    },
+    "chat-http-07/asr-1.log": {
+      "bytes": 76,
+      "sha256": "c8525b8984f46be228ac5b0ed82f5ab63676e17480ca4dc8804532ea05aea493"
+    },
+    "chat-http-07/cleanup.json": {
+      "bytes": 2346,
+      "sha256": "48f77028361ca5c5cbfa4899c10591973ddb1120d53b770fda9af0f3b782d83c"
+    },
+    "chat-http-07/client-policy.json": {
+      "bytes": 933,
+      "sha256": "1357a0c44daca37f10e14514821d8972e355a55f8f0fe6c514cd30571b9d8381"
+    },
+    "chat-http-07/content.json": {
+      "bytes": 915,
+      "sha256": "7e9c44db70dc8045876c3b6962aa90ad70b2320c96a729969143f9acc0da934d"
+    },
+    "chat-http-07/counts.json": {
+      "bytes": 72,
+      "sha256": "fb66843958f21402551a34326c33f65dd763a6218f4eece45f81a16377389723"
+    },
+    "chat-http-07/decode-plan.json": {
+      "bytes": 1447,
+      "sha256": "531d79d6fc4b96c50bef703c92bbc0575bbcb90bc9ba01ed7a3ea93bcb98eab6"
+    },
+    "chat-http-07/decode.command.json": {
+      "bytes": 412,
+      "sha256": "f4ee577143089604a156b691eba1737dd75833f0d6dfa55e6ca622c24569a6c9"
+    },
+    "chat-http-07/decode.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-07/decoded/case-0/decoding.json": {
+      "bytes": 2803,
+      "sha256": "90e707699f8ee1117e3a482daba4f28686b12621b6040de97193ee90518e6e99"
+    },
+    "chat-http-07/decoded/case-0/pcm.f32": {
+      "bytes": 153600,
+      "sha256": "b4625325b5abb930e6a5b3e08820ddc0fe792fff5f1b65b5a65da338b7cc8cd9"
+    },
+    "chat-http-07/decoded/case-0/result.json": {
+      "bytes": 158,
+      "sha256": "e39df28fe944ceb3a29e46beb1c1eec116e4e55d3f3798a22053c6c796ea3de5"
+    },
+    "chat-http-07/decoded/case-1/decoding.json": {
+      "bytes": 2803,
+      "sha256": "c1eaa458d40b52ffb43ed068c7184a9a27a43ed0c67022fa7a768228800b2961"
+    },
+    "chat-http-07/decoded/case-1/pcm.f32": {
+      "bytes": 168960,
+      "sha256": "20e49753a253a8c5d4c265074caf960c7aca64b7ed1202b52c92f492c4f3c7a1"
+    },
+    "chat-http-07/decoded/case-1/result.json": {
+      "bytes": 158,
+      "sha256": "0152130d11096b14ab4078d4a9d26dc751ff2c0051f256421b031ccdd126a841"
+    },
+    "chat-http-07/decoded/case-2/decoding.json": {
+      "bytes": 2802,
+      "sha256": "1ad48e95bc531bd13d06ea2b1169040292658192572501096c4e7fc096d85235"
+    },
+    "chat-http-07/decoded/case-2/pcm.f32": {
+      "bytes": 121344,
+      "sha256": "f52283361dd09e9949eae4e0a30dfb48fce5a3b14cb17090ef1e58f2e4c1dde1"
+    },
+    "chat-http-07/decoded/case-2/result.json": {
+      "bytes": 158,
+      "sha256": "bd1d2692b470da633a7d485b7656b004f398a721c71386830df08e99b070bd2b"
+    },
+    "chat-http-07/decoded/case-3/decoding.json": {
+      "bytes": 2802,
+      "sha256": "f1df688a740812d42b9d235cde8d96fb679614ba820e4d4c070f0a9382fc1f84"
+    },
+    "chat-http-07/decoded/case-3/pcm.f32": {
+      "bytes": 105984,
+      "sha256": "ad141000c47c21943abf2c882e7851962bb63fcbb0ae34e1d1a3530ff4f0e8e5"
+    },
+    "chat-http-07/decoded/case-3/result.json": {
+      "bytes": 158,
+      "sha256": "55b59f5626d799b6ad07ce5a6fe3754cf5de540d8102dc7fb235076d23f1ea25"
+    },
+    "chat-http-07/decoded/case-4/decoding.json": {
+      "bytes": 2802,
+      "sha256": "f1df688a740812d42b9d235cde8d96fb679614ba820e4d4c070f0a9382fc1f84"
+    },
+    "chat-http-07/decoded/case-4/pcm.f32": {
+      "bytes": 105984,
+      "sha256": "ad141000c47c21943abf2c882e7851962bb63fcbb0ae34e1d1a3530ff4f0e8e5"
+    },
+    "chat-http-07/decoded/case-4/result.json": {
+      "bytes": 158,
+      "sha256": "55b59f5626d799b6ad07ce5a6fe3754cf5de540d8102dc7fb235076d23f1ea25"
+    },
+    "chat-http-07/decoded/case-5/decoding.json": {
+      "bytes": 2802,
+      "sha256": "3194a232df2293032cfc77f8391e058499af661de89baf30250162b6c5eef172"
+    },
+    "chat-http-07/decoded/case-5/pcm.f32": {
+      "bytes": 162816,
+      "sha256": "c7f5c8f00d5b4cfa567a35aa8f2dae1ec08f78b9b1e1f328698a39a5b7681480"
+    },
+    "chat-http-07/decoded/case-5/result.json": {
+      "bytes": 158,
+      "sha256": "a73524d2c9a4bfdb7a3c554ed244c5ca8830fee419bba56f7a3efd47fda88b56"
+    },
+    "chat-http-07/decoded/result.json": {
+      "bytes": 76,
+      "sha256": "8e43bf486033e82e20ea29aec47917de23f13a46ff50b9a046685ae6f50738ca"
+    },
+    "chat-http-07/decoded-expectations.json": {
+      "bytes": 248,
+      "sha256": "987e117e603a76affd1906c639d5a572b5e0c62e11e3d76aa5ef49aa08c4ca9a"
+    },
+    "chat-http-07/driver.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-07/features/case-0-mel.f32": {
+      "bytes": 122880,
+      "sha256": "c08d52c934360ec5df37721266c63fc6638d751fddf45cf9f8d41361689c4947"
+    },
+    "chat-http-07/features/case-1-mel.f32": {
+      "bytes": 135168,
+      "sha256": "6a7e5b27a3d1891697407effa3dbe89c61cf63f77dd5bd997210d4a244f10851"
+    },
+    "chat-http-07/features/case-2-mel.f32": {
+      "bytes": 96768,
+      "sha256": "8d358bfce53e7f2ab58af574b0a7bcf6973fe344e13e10ac9166219aeae0825b"
+    },
+    "chat-http-07/features/case-3-mel.f32": {
+      "bytes": 84480,
+      "sha256": "58175d257aea1950f465b7e06d40cd85ead59255f258fca079584c1f755b62a6"
+    },
+    "chat-http-07/features/case-4-mel.f32": {
+      "bytes": 84480,
+      "sha256": "58175d257aea1950f465b7e06d40cd85ead59255f258fca079584c1f755b62a6"
+    },
+    "chat-http-07/features/case-5-mel.f32": {
+      "bytes": 130048,
+      "sha256": "fed3b16e16e5e6e55ce88c77a83db8e7ee7b804041f380a8dbd0bcac4481e9b3"
+    },
+    "chat-http-07/features/plan-0.json": {
+      "bytes": 3857,
+      "sha256": "e5da43012253086dd676764e60313c77f2f45698d8ebd72de82603280e20a9cc"
+    },
+    "chat-http-07/features/plan-1.json": {
+      "bytes": 3649,
+      "sha256": "9e4bf9948d29d24aa428b94026fe95b5ad484b1dba102584b5d57d5364b38c95"
+    },
+    "chat-http-07/features.command.json": {
+      "bytes": 342,
+      "sha256": "1967dfcb29a57a0561c39b23f95eb40af60e7b48b3b7ee3497fbfe58ae9a64f8"
+    },
+    "chat-http-07/features.log": {
+      "bytes": 558,
+      "sha256": "65c2196408f74d94dcf29f58382bce5e891b2c05c17b442dcf2943b24fa1435a"
+    },
+    "chat-http-07/final-drain.children.json": {
+      "bytes": 671,
+      "sha256": "8d6d4db5865be373bb8c5f0e0b49ed4bca3e704882388112e973df83d5be7eb6"
+    },
+    "chat-http-07/final-drain.metrics.json": {
+      "bytes": 24648,
+      "sha256": "d956890e95c833adaac5d1f490bbed2df9991ad4fecfec56ef538c4df1bd383c"
+    },
+    "chat-http-07/foreign-history.http.json": {
+      "bytes": 284,
+      "sha256": "e3d3d8c5ec86e9cf6d299b21ae001ebe49370fb2e2ca0ad4ca3cbc902f445362"
+    },
+    "chat-http-07/foreign-history.request.json": {
+      "bytes": 373,
+      "sha256": "cd6d63514db6cbbd47786d786d9b559e1c29df44a00a4f9bfb9c78641be8f7ab"
+    },
+    "chat-http-07/foreign-history.wire": {
+      "bytes": 148,
+      "sha256": "5d9a2a7dc24c4ac41c5a1c96c4f4641a8235b2ae9ce75a2ec33d7dd24346167e"
+    },
+    "chat-http-07/history-preflight.http.json": {
+      "bytes": 285,
+      "sha256": "cf026c818a028289232890bcc2fab53ab76db7d57c333c374d1fcddc15a77185"
+    },
+    "chat-http-07/history-preflight.request.json": {
+      "bytes": 450,
+      "sha256": "fa5976a5098b5e3aeb932597a1a2a2805fa7d02d87162edb09a27be0e41cf096"
+    },
+    "chat-http-07/history-preflight.wire": {
+      "bytes": 2190,
+      "sha256": "8caa6b680e0c8acdd600058a59b7d51d76547a9d55524bc186cfe67af0504a19"
+    },
+    "chat-http-07/history.http.json": {
+      "bytes": 280,
+      "sha256": "01c3a5d69c27eb8426eb230459deaf6049c45b694c2d7b60c4a4b1ac95d733db"
+    },
+    "chat-http-07/history.request.json": {
+      "bytes": 373,
+      "sha256": "cd6d63514db6cbbd47786d786d9b559e1c29df44a00a4f9bfb9c78641be8f7ab"
+    },
+    "chat-http-07/history.wire": {
+      "bytes": 372,
+      "sha256": "0b482300929a2977f5c6f159986010bc895a296dae7fe8ed8037315c4d63f8b9"
+    },
+    "chat-http-07/json.http.json": {
+      "bytes": 288,
+      "sha256": "136e137338763eebca6a9c22badfff2b12dedfbbaf48695836565b7fe77690b3"
+    },
+    "chat-http-07/json.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-07/json.wire": {
+      "bytes": 154268,
+      "sha256": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4"
+    },
+    "chat-http-07/lease/events.jsonl": {
+      "bytes": 9413,
+      "sha256": "ae78d8ca0e1eef75335de4a18ab02c2b77f965d5632e1d97e49a7afc74f9e8d9"
+    },
+    "chat-http-07/lease/exit.json": {
+      "bytes": 703,
+      "sha256": "6bd7fd76a5638c434a0e4ff12b267137412795a6a22beb6e4d9020352b2c8c21"
+    },
+    "chat-http-07/lease/nvml-queries.jsonl": {
+      "bytes": 113546,
+      "sha256": "25a41457b13cf56abcf07f019201f2558683a25272b539c15088cbe288716737"
+    },
+    "chat-http-07/model-1-capabilities.http.json": {
+      "bytes": 288,
+      "sha256": "c4f8f8432150485540b1ba90a7c84741ac7c8d8fcfddd2fd3eb0f27a40646b49"
+    },
+    "chat-http-07/model-1-capabilities.wire": {
+      "bytes": 40917,
+      "sha256": "22257bf2c201c3295f1ccebf0a49d37ea82967e26a7f54e0c69861b8fb5b2735"
+    },
+    "chat-http-07/model-1-command.json": {
+      "bytes": 1015,
+      "sha256": "d45b0f5ae28005e470dfadf75cd98a602f8d5b1db2824d22e7a052292f673bc6"
+    },
+    "chat-http-07/model-1-config.http.json": {
+      "bytes": 288,
+      "sha256": "b2b9d19eafc95d56d7b323700a8105c6f1b7d65a3243d131462516b2fd7a73a4"
+    },
+    "chat-http-07/model-1-config.wire": {
+      "bytes": 15453,
+      "sha256": "663b8ba39dd67b39bc622e318c611cb7df9c4ce3ba67df39f2e88f09ea18fbc5"
+    },
+    "chat-http-07/model-1-identity.json": {
+      "bytes": 1321,
+      "sha256": "0e2110e4da8899900bfe3ce32ff5041d9c061750ac7c600ba354b6975abf6302"
+    },
+    "chat-http-07/model-1.log": {
+      "bytes": 9726,
+      "sha256": "9384b37231c45681e7c38ef642fb7a12e39ec8a2353fcc6104532f4c20fdbb8d"
+    },
+    "chat-http-07/objects/.q4t-format": {
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    "chat-http-07/objects/.q4t-lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_46736f7de8bd163bcbe338f2062b979a.json": {
+      "bytes": 611,
+      "sha256": "e5d0499e5e0085592196a007867f46ab781c29999202f33c8d18a23ce0567beb"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_556460ed5e739dcf59ab541f11837eb8.json": {
+      "bytes": 592,
+      "sha256": "ffa4b2dc8e38d46e114f6abd803c67d05ec04a0e60927186c6801fc83964cea8"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_73d52260d9d56f23a4fd72f3e82ae5fe.json": {
+      "bytes": 597,
+      "sha256": "32b62e31877f6ad3411f13262630f33abd51b56d6cf36b2d6260ed72a6151b28"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_d945046af1914f31f43f1b7107465b88.json": {
+      "bytes": 609,
+      "sha256": "6f2b20e2b674adc6846223d928a14320e77ff2511297ef1000f5bb5651482029"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.audio.audio_fa40254a90fc35f5315503ca9645305c.json": {
+      "bytes": 592,
+      "sha256": "6b00312511fc0b08606c87cc31fb10cbba5651fa859f843b9cfe718aa717b2f7"
+    },
+    "chat-http-07/objects/67927bf6ad595362fb59ef081c9176b6f691d5047d849bb0555d7696636b6c7d.chat.chatcmpl-auto-b656eae84e39398f0f41111f51a9acfc.json": {
+      "bytes": 154923,
+      "sha256": "b04f7e7fa19ebdaf382ce4299dc4291eed142dc9a9d0e7cf823434114083e1ed"
+    },
+    "chat-http-07/plan.json": {
+      "bytes": 1093481,
+      "sha256": "d42e8d43620a712d872dbd9808ebbcc485ea461f39804ef2a8c61ac8150e9036"
+    },
+    "chat-http-07/quota.http.json": {
+      "bytes": 284,
+      "sha256": "d45cffabeac5533720f5fd836b3d15df798623d173268a621731177cb5bb9a0b"
+    },
+    "chat-http-07/quota.request.json": {
+      "bytes": 376,
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07"
+    },
+    "chat-http-07/quota.wire": {
+      "bytes": 124,
+      "sha256": "b16f85e985e4f659a1dcff14162ef04974bbc1a820665f0602bf8d79516f847d"
+    },
+    "chat-http-07/result.json": {
+      "bytes": 214,
+      "sha256": "072df9a0c450598f570e5195c94a1aad4e3408af661b5ea8f660d3fb27ee1cf4"
+    },
+    "chat-http-07/stored-audio.http.json": {
+      "bytes": 289,
+      "sha256": "ff666dc376e4be42b2d906856157c6ee120d17bdd1f8575c666d6ba0934c62d7"
+    },
+    "chat-http-07/stored-audio.wire": {
+      "bytes": 154268,
+      "sha256": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4"
+    },
+    "chat-routing-cpu-01/plan.json": {
+      "bytes": 93972,
+      "sha256": "df41a6993d3b1099033c36abe4e2f2ad9c75093c2a23c3a4a875bf37688ea19c"
+    },
+    "chat-routing-cpu-01/result.json": {
+      "bytes": 104,
+      "sha256": "135e20834d4e26795ed7da6ed43eedfe59175cca938554955604602501acd6d1"
+    },
+    "chat-routing-cpu-01/test.log": {
+      "bytes": 446,
+      "sha256": "f19143e8e2cbf2861651bd87d0019d17196d0e8e3dbac58b8b42fc9fb6928c11"
+    },
+    "chat-sdk-cpu-01/plan.json": {
+      "bytes": 1103,
+      "sha256": "b678fd164a9288edee838c080c01428bd730b691a47267e656fe64849cfcf178"
+    },
+    "chat-sdk-cpu-01/result.json": {
+      "bytes": 105,
+      "sha256": "910cab1f9782d3047e03455d76c4a9df2255f2b8304663fa74b0334e307a898f"
+    },
+    "chat-sdk-cpu-01/test.log": {
+      "bytes": 285,
+      "sha256": "b6fbd62753b2bd2857a04b77f0996a685979ecf89fdbe8ca7fb8d7beb3904346"
+    },
+    "chat-usage-cpu-01/build.json": {
+      "bytes": 334,
+      "sha256": "ad206af746fc7db9e76f72924e5a31bf17cdacddaddf4ed8098e160821fef043"
+    },
+    "chat-usage-cpu-01/build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chat-usage-cpu-01/plan.json": {
+      "bytes": 1823,
+      "sha256": "64047aaee189def456facebb218a700ba5e9f15622384942d98d17fc4f0fe12c"
+    },
+    "chat-usage-cpu-01/required.txt": {
+      "bytes": 184,
+      "sha256": "e46c205ee2e49be499ddfe9f23787f746a368e58cf72cdb8b1520b053f2c34fa"
+    },
+    "chat-usage-cpu-01/result.json": {
+      "bytes": 195,
+      "sha256": "1da973ebd27e7d21bc142188438e6144c3fc63302ee3b951ba9e0d39c88ec9c7"
+    },
+    "chat-usage-cpu-01/test.log": {
+      "bytes": 244,
+      "sha256": "160009f9aa74c279c0ba37b6d1f364d4585315531f772ae9b13da5b7ab8ad2ac"
+    },
+    "chat-restart-probe-cpu-01/plan.json": {
+      "bytes": 981,
+      "sha256": "0e90f3a30a9832afd9483ebce1c66c0e17bd7d0c1c5fa50242d74933de0e9bd6"
+    },
+    "chat-restart-probe-cpu-01/result.json": {
+      "bytes": 105,
+      "sha256": "cfe8de95e7730e0e838aeb7ac4753f72b718b8e83f9d8a18a0f763fec42ab31b"
+    },
+    "chat-restart-probe-cpu-01/test.log": {
+      "bytes": 293,
+      "sha256": "b635f830c69d235acadee7601e2dd097773b95ef26dbf5da4df10cf78c4dbc31"
+    },
+    "chat-fulltext-build-01/build.log": {
+      "bytes": 1810,
+      "sha256": "450424807aa2079d985416e119bbb868a7b0c0f352c72a7347d8a2df39287d5b"
+    },
+    "chat-fulltext-build-01/cpu-reuse.json": {
+      "bytes": 561,
+      "sha256": "6084155a53ae3a2a4d6524c7e1226dbdc2bff3423f4fe2fe709af3ef07dc2154"
+    },
+    "chat-fulltext-build-01/plan.json": {
+      "bytes": 710,
+      "sha256": "6e0bf0b4dc32225a39540aa7b23eb18e57fe042173d073be897d8921adb37eca"
+    },
+    "chat-fulltext-build-01/result.json": {
+      "bytes": 189,
+      "sha256": "d7d851377af2ca2a482a03e77ca17f6937327046067267254330498f464a4013"
+    },
+    "chat-fulltext-build-01/source-gate.json": {
+      "bytes": 222,
+      "sha256": "bfe302d203915251184a21e8d5ad06081f23112b23af2c34cda45bcf1a8c8512"
+    },
+    "chat-usage-build-01/build.log": {
+      "bytes": 1723,
+      "sha256": "987ed0d11204a21d2e79e9ceab2ba5406d1b4fb94d1fbf0a6095cc99cd5247cb"
+    },
+    "chat-usage-build-01/plan.json": {
+      "bytes": 702,
+      "sha256": "c424f1fdd3a1e02563b6df4141c3b2eaa5cb3ad557c4c88b75fbc188f1743110"
+    },
+    "chat-usage-build-01/result.json": {
+      "bytes": 190,
+      "sha256": "31481f81600eb06d045cb31b8f8f99fb1996cd22e7bd03d7cf218a39d9423b03"
+    },
+    "chat-usage-build-01/source-gate-02.json": {
+      "bytes": 222,
+      "sha256": "23aa3334d16168b4fc23f943f31a8338278c1df88f3e7373d43246664be71877"
+    },
+    "chat-usage-build-01/source-gate.json": {
+      "bytes": 385,
+      "sha256": "ac47d316a19c39029c970bc86bd0ea402d530468a0ed0afefb0a7efac9b290ac"
+    },
+    "chat-http-candidate-03/retention.json": {
+      "bytes": 172,
+      "sha256": "6e068ad00546dc85f205089c19bd47986980302953d9fd2106d59690122a2528"
+    },
+    "intermediate-programs-archive-01/manifest.json": {
+      "bytes": 961,
+      "sha256": "42130b4d7072cd0aceeae8dc928c1d90910a96ddd2a70962b688be9754ea407b"
+    },
+    "retired-build-archive-02/manifest.json": {
+      "bytes": 83839,
+      "sha256": "44a7263be274182ad048658be34bed2f5984e8ec6dd140ea435a80f1e32c8c41"
+    },
+    "retired-build-archive-03/manifest.json": {
+      "bytes": 137684,
+      "sha256": "b3b65ae29d23cd6b7a1d6dfcf2126bc7329360cd9e68fc2292df50ed6185943c"
+    },
+    "retired-build-archive-04/manifest.json": {
+      "bytes": 1083,
+      "sha256": "0deff669f6862f29ad1bed522fee6b30cf70bb117ff33dc8b86ed779e74b6d4d"
+    }
+  },
+  "archive": {
+    "bytes": 13139615,
+    "sha256": "d7f5a4c1bbe1b0aa8057b8e5a291321956fbf9ecc4bcee33304852a9e54eea22"
+  },
+  "candidate": {
+    "q4t": {
+      "sha256": "9e60ef008ac4e7d6d54cb41670372f1981ae92dcf150ccd13472f55f779d126a",
+      "bytes": 28231752
+    },
+    "q4t-speech-decode": {
+      "sha256": "ae2da577061ac3894cdc84d34521cf6f6492ce8734443de0796c2e8dabcf6e6a",
+      "bytes": 602024
+    }
+  }
+}

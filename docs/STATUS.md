@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat音频输出/历史/内容12条业务通过](evidence/serve-chat-audio-output-http-20261118/README.md)。
+双SDK、JSON/SSE、真实工具、n/schema、取消、重启历史、隔离与
+TPM均满足；六完整音频独立ASR全过。所有原失败保留，两个生产
+缺陷已实际验证修复；06/07分别持锁，共2核心/12POST/2ASR完成
+最终业务。含前置失败/诊断累计8进程/7模型/21实际POST/499.409秒。
+新增7 CPU、零警告及来源门通过，默认rev306保持。继续受管TTS
+配置/声明/恢复/发行，并解决4倍内容、voices和全部master剩余项。
+
 用量修复后的前8实际POST均通过，含n=2/schema、取消后核心、
 Speech回归；75.944秒后模型正常退出，重启探测误拒TCP TIME_WAIT。
 只修驱动SO_REUSEADDR；真实CPU套接字复现/修复且活动监听仍被拒，

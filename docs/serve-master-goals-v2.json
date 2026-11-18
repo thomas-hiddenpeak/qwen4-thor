@@ -7918,13 +7918,12 @@
   },
   "native_tts_progress": {
     "date": "2026-11-18",
-    "state": "speech_http_sdk_content_qualified_chat_and_managed_delivery_pending",
+    "state": "speech_chat_audio_business_qualified_managed_delivery_pending",
     "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
     "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
     "full_task_complete": false,
     "remaining": [
       "Managed Speech profiles/TLS/recovery/publication/main; preserve NVML ENV_ABORT and accepted content evidence",
-      "Chat audio output/history and integration of the qualified progressive synthesis/encoding",
       "Solve 4x tempo content; all voices/styles, actual custom voice backend and instruction contract",
       "SDK/TLS/profiles/recovery/reversible release/main",
       "Responses/Batch/Realtime and every remaining master task"
@@ -8007,8 +8006,8 @@
       "nvml_root_cause_resolved": false
     },
     "chat_audio_output": {
-      "state": "actual_transport_8_passed_history_content_continuation_pending",
-      "evidence": "evidence/serve-chat-audio-output-cpu-20261118/README.md",
+      "state": "actual_http_sdk_history_and_content_accepted_managed_delivery_pending",
+      "evidence": "evidence/serve-chat-audio-output-http-20261118/README.md",
       "cpp_cases": 19,
       "driver_negative_controls": 4,
       "gpu_short_scope": {
@@ -8018,18 +8017,23 @@
         "seconds": 1200
       },
       "default_changed": false,
-      "diagnosis": "1 core/3 POST/75.872s: exact main transcript and2625-token budget; identical Speech without instructions also hit frame limit. Full-text conditioning repair uses official CustomVoice default; incremental PCM and sampler unchanged. Retest actual business before accepting.",
+      "diagnosis": "Exact-text/full-budget diagnosis led to official full-text conditioning fix; accepted actual content evidence now verifies repair.",
       "source_failure_retained": ".q4t-work/serve-native-tts-20261118/chat-http-03/result.json",
       "routing_cpu_cases": 2,
-      "actual_progress": "Full-text repair reached natural30-frame EOS. Actual Chinese SSE/Python SDK and real-record tool/JavaScript output passed transport; independent content pending. Multi-choice/schema exposed late RAII observers after EndStep; scoped producer repair3 CPU passed, shared affected Chat lifecycle requires actual retest.",
+      "actual_progress": "All12 business POSTs and6 full audio ASR content checks passed; full-text conditioning and scoped usage repairs qualified. Original failures preserved; managed/native TLS/recovery/release remain required.",
       "usage_repair_cpu_cases": 3,
-      "remaining_short_scope": {
-        "core_starts": 1,
-        "post_requests": 4,
-        "asr_loads": 2,
-        "seconds": 1200
-      },
-      "restart_probe_cpu": 1
+      "restart_probe_cpu": 1,
+      "accepted_unique_business_posts": 12,
+      "actual_audio_cases": 6,
+      "content_accepted": true,
+      "sdk_cpu_cases": 1,
+      "additional_cpu_unique": 7,
+      "separate_leases": true,
+      "total_core_process_attempts": 8,
+      "total_core_model_loads": 7,
+      "total_actual_http_posts": 21,
+      "total_asr_loads": 2,
+      "total_seconds": 499.4088844098151
     }
   }
 }
