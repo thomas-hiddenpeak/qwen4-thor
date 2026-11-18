@@ -8049,7 +8049,7 @@
       "total_seconds": 499.4088844098151
     },
     "managed": {
-      "state": "primary_light_actual_pass_tls_recovery_delivery_pending",
+      "state": "actual_tls_and_version_recovery_pass_publication_main_pending",
       "cpu_unique": 20,
       "evidence": "evidence/serve-tts-managed-cpu-20261118/README.md",
       "profile_short_scope": {
@@ -8089,6 +8089,18 @@
         "nvml_queries": 190,
         "default_changed": false,
         "managed_composition_pending": true
+      },
+      "service_composition": {
+        "status": "ACCEPT_NATIVE_TTS_INPUT_SERVICE_COMPOSITION",
+        "binary_sha256": "5130cae65358f151cbf9c055af9d2c521e6acc46183c32aa70b6581ab39f6fee",
+        "actual_model_starts": 6,
+        "service_requests": 40,
+        "service_probes": 1,
+        "service_seconds": 460.2926034927368,
+        "nvml_queries": 439,
+        "cleanup_complete": true,
+        "default_unchanged": true,
+        "evidence": "evidence/serve-tts-service-20261118/README.md"
       }
     }
   }

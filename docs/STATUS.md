@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生TTS输入/TLS/整包恢复通过](evidence/serve-tts-service-20261118/README.md)：
+含原取消FAIL及针对续验共6核心/40POST/1探测/460.293秒；
+439次NVML全正常，全部清理和finalizer通过。两保留控制、
+网关恢复、整包回退前后都实际收音/发声，原状态/预算保留；
+默认rev306待可回退发布和主线，其余语音与全部master继续。
+
 [TLS取消驱动4项针对检查通过](evidence/serve-tts-tls-cancel-cpu-20261118/README.md)：
 3 CPU/0.715秒，原TLS其余全部业务只读复核0.693秒；原取消FAIL
 保持。同包同二进制续验1核心/3POST，只补实际活动取消及核心，
