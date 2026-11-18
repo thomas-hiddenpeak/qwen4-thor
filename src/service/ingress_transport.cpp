@@ -248,6 +248,27 @@ bool Connection::Send(std::string_view data, Clock::time_point deadline,
               : Write(fd_, data, deadline, nullptr, started);
 }
 
+ssize_t Connection::TryRead(void* data, size_t size, short* wait) {
+  if (tls_) return tls_->TryRead(data, size, wait);
+  *wait = POLLIN;
+  if (!size) {
+    errno = EINVAL;
+    return -1;
+  }
+  const auto count = ::recv(fd_, data, size, MSG_DONTWAIT);
+  if (count < 0 && errno == EINTR) errno = EAGAIN;
+  return count;
+}
+
+ssize_t Connection::TryWrite(std::string_view data, short* wait) {
+  if (tls_) return tls_->TryWrite(data, wait);
+  *wait = POLLOUT;
+  const auto count = ::send(fd_, data.data(), data.size(),
+                             MSG_DONTWAIT | MSG_NOSIGNAL);
+  if (count < 0 && errno == EINTR) errno = EAGAIN;
+  return count;
+}
+
 bool Connection::Cancelled() {
   pollfd peer{fd_, POLLRDHUP, 0};
   if (::poll(&peer, 1, 0) > 0 &&

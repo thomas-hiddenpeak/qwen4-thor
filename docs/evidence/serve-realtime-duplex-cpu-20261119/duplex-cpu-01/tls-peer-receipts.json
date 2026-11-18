@@ -1,0 +1,30 @@
+[
+  {
+    "reason": 1,
+    "client_sent": 12,
+    "upstream_sent": 10,
+    "peak_to_client": 12,
+    "peak_to_upstream": 10
+  },
+  {
+    "reason": 7,
+    "client_sent": 0,
+    "upstream_sent": 0,
+    "peak_to_client": 8128,
+    "peak_to_upstream": 0
+  },
+  {
+    "reason": 1,
+    "client_sent": 524288,
+    "upstream_sent": 0,
+    "peak_to_client": 8064,
+    "peak_to_upstream": 0
+  },
+  {
+    "reason": 1,
+    "client_sent": 12,
+    "upstream_sent": 10,
+    "peak_to_client": 12,
+    "peak_to_upstream": 10
+  }
+]

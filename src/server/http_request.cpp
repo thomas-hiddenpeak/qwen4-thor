@@ -188,6 +188,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   bool seen_client = false, seen_gateway = false;
   bool seen_origin = false, seen_cors_method = false, seen_cors_headers = false;
   bool seen_transfer = false, seen_expect = false;
+  size_t websocket_protocol_bytes = 0;
   std::vector<std::string> connection, declared_trailers;
   size_t pos = line_end + 2;
   while (pos < head.size()) {
@@ -236,6 +237,42 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
     } else if (name == "connection") {
       if (!http::Tokens(value, &connection)) return false;
+    } else if (name == "upgrade" || name == "sec-websocket-key" ||
+               name == "sec-websocket-version") {
+      auto& destination = name == "upgrade" ? headers->upgrade
+                          : name == "sec-websocket-key"
+                              ? headers->websocket_key
+                              : headers->websocket_version;
+      const size_t maximum = name == "upgrade" ? 256
+                             : name == "sec-websocket-key" ? 128 : 16;
+      if (!destination.empty() || value.empty() || value.size() > maximum) {
+        headers->error_code = "invalid_websocket_header";
+        headers->error_param = name;
+        return false;
+      }
+      destination = value;
+    } else if (name == "sec-websocket-protocol") {
+      // RFC6455 permits repeated request protocol fields, but the offered
+      // tokens must be unique and case-sensitive. Never lowercase API keys.
+      if (value.size() > 4096 - websocket_protocol_bytes) return false;
+      websocket_protocol_bytes += value.size();
+      auto remaining = value;
+      for (;;) {
+        const auto comma = remaining.find(',');
+        const auto token = Trim(remaining.substr(0, comma));
+        auto& protocols = headers->websocket_protocols;
+        if (token.empty() || protocols.size() >= 128 ||
+            !std::all_of(token.begin(), token.end(), http::IsToken) ||
+            std::find(protocols.begin(), protocols.end(), token) !=
+                protocols.end()) {
+          headers->error_code = "invalid_websocket_header";
+          headers->error_param = name;
+          return false;
+        }
+        protocols.emplace_back(token);
+        if (comma == remaining.npos) break;
+        remaining.remove_prefix(comma + 1);
+      }
     } else if (name == "trailer") {
       if (!http::Tokens(value, &declared_trailers)) return false;
     } else if (name == "host") {
@@ -346,8 +383,13 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     return std::find(connection.begin(), connection.end(), token) !=
            connection.end();
   };
+  for (const auto& token : connection) {
+    if (!headers->connection.empty()) headers->connection += ',';
+    headers->connection += token;
+  }
   headers->keep_alive =
-      !option("close") && (version == "HTTP/1.1" || option("keep-alive"));
+      !option("close") && !option("upgrade") &&
+      (version == "HTTP/1.1" || option("keep-alive"));
   *method = verb;
   *path = target;
   headers->content_length = length;

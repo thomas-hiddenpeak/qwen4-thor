@@ -47,6 +47,11 @@ class TlsStream {
   bool Accept(TlsDeadline deadline);
   ssize_t Read(void* buffer, size_t size, TlsDeadline deadline);
   bool Write(std::string_view bytes, TlsDeadline deadline, bool* started);
+  // One nonblocking operation on this stream's owning event-loop thread.
+  // -1/EAGAIN sets wait to POLLIN/POLLOUT. Retry with the SAME buffer/size;
+  // do not move, overwrite or append a pending write. Zero means TLS EOF.
+  ssize_t TryRead(void* buffer, size_t size, short* wait);
+  ssize_t TryWrite(std::string_view bytes, short* wait);
   // Consume only TLS control records. EOF or unexpected HTTP data cancels the
   // single in-flight request; a TLS 1.3 key update alone must not cancel SSE.
   bool Cancelled();

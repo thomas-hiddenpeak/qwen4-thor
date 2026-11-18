@@ -12,6 +12,7 @@ option(Q4T_ENABLE_NATIVE_TLS "Build optional native TLS (system OpenSSL 3)" ON)
 add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_duplex.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_tls.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_credentials.cpp
@@ -41,6 +42,20 @@ endif()
 target_compile_features(q4t_ingress PRIVATE cxx_std_23)
 target_compile_options(q4t_ingress PRIVATE -Wall -Wextra -Werror)
 if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)
+  add_executable(q4t_ingress_duplex_tests
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/ingress_duplex_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_duplex.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_transport.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_tls.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp)
+  target_link_libraries(q4t_ingress_duplex_tests PRIVATE
+    q4t_ingress_access Threads::Threads ${CMAKE_DL_LIBS})
+  target_compile_features(q4t_ingress_duplex_tests PRIVATE cxx_std_23)
+  target_compile_options(q4t_ingress_duplex_tests PRIVATE -Wall -Wextra -Werror)
+  target_compile_definitions(q4t_ingress_duplex_tests PRIVATE
+    $<TARGET_PROPERTY:q4t_ingress,COMPILE_DEFINITIONS>)
+  target_include_directories(q4t_ingress_duplex_tests SYSTEM PRIVATE
+    $<TARGET_PROPERTY:q4t_ingress,INCLUDE_DIRECTORIES>)
   add_executable(q4t_ingress_proxy_tests
     ${CMAKE_CURRENT_LIST_DIR}/../tests/ingress_proxy_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp

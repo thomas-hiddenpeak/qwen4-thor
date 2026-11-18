@@ -8654,7 +8654,7 @@
     }
   ],
   "next_task": "Native Realtime HTTP upgrade/duplex transport and session/ASR integration; ICL encoder numeric decision remains pending. Complete actual JS/ICL registration/recovery and all master tasks.",
-  "next": "Reuse accepted 4x content counterexamples and all unchanged evidence, retain listening and long-soak handoff, and complete every remaining A/N/R/Q implementation.",
+  "next": "Continue realtime HTTP/session integration independently of the pending ICL encoder numerical gate; complete every remaining master task.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -9508,13 +9508,22 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": false,
-    "next": "Native HTTP upgrade and duplex transport, session protocol and actual phase-preserving audio/ASR; then model/tools, official clients, recovery and delivery.",
+    "next": "Authenticated upgrade, separate bounded client/session admission, actual Realtime/Live protocol and phase-preserving ASR; then model/tools, official clients, recovery and delivery.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
       "cpu_tests": 12,
       "gpu_model_loads": 0,
       "seconds": 0.007724561262875795
+    },
+    "http_duplex": {
+      "state": "implemented_cpu_verified_auth_upgrade_route_and_sessions_pending",
+      "evidence": "evidence/serve-realtime-duplex-cpu-20261119/README.md",
+      "cpu_tests": 25,
+      "executions": 26,
+      "gpu_model_loads": 0,
+      "original_fixture_failure_retained": true,
+      "api_qualified": false
     }
   }
 }

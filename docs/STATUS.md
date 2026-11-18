@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[HTTP升级与双向TLS的25项CPU通过](evidence/serve-realtime-duplex-cpu-20261119/README.md)：
+握手元数据/原始首帧保留、有界双向缓冲、独立写入截止、TLS1.2/1.3
+半记录与慢消费者反向取消通过；26执行/2.33秒/0GPU、零警告。原
+夹具记录长度假定失败保留，仅改夹具重验1项；默认rev326保持。
+继续实际升级、客户会话治理和真实ASR；ICL原FAIL/待决不变。
+
+原生HTTP升级字段与单线程双向TLS传输开发完成，冻结25项CPU短验：
+7项升级合同、6项旧HTTP/上传/SSE、8项socket及4项真实TLS；180秒/
+0GPU，不宣称Realtime路由或ASR业务完成。默认rev326保持，ICL数值
+待决不变；验证后继续入口治理与真实会话接线。
+
 [实时音频队列12项CPU通过](evidence/serve-realtime-audio-queue-cpu-20261119/README.md)：
 有界实际PCM环形缓冲、整数样本时钟、清空不倒退、提交背压及取消
 后借用回收通过；0.0077秒/0GPU、零警告，953锚点/17负控。

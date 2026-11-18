@@ -1,0 +1,9 @@
+{
+  "cpu_tests": 1,
+  "seconds": 30,
+  "gpu_model_loads": 0,
+  "source_sha256": "deaaa3376700f646a07f1586a2aef5c61386c379ef25d6bd6d1d5230c53a5cef",
+  "binary_sha256": "16c977fdc91669d730c47fcd9bd93cc6763a8da68fa5617771e33b690c708129",
+  "reason": "Correct fixture assumption: blocked TLS output can occur before 16384 bytes. Original observed 16256; preserve original FAIL. Acceptance still requires actual write deadline, reverse cancel and no lost/duplicate data; production unchanged.",
+  "reused_passed_tests": 24
+}

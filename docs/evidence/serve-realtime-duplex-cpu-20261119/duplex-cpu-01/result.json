@@ -1,0 +1,30 @@
+{
+  "status": "FAIL",
+  "cpu_tests": 25,
+  "rows": [
+    {
+      "name": "host",
+      "exit_code": 0,
+      "seconds": 0.03168912697583437
+    },
+    {
+      "name": "socket",
+      "exit_code": 0,
+      "seconds": 1.164983837865293
+    },
+    {
+      "name": "tls",
+      "exit_code": 1,
+      "seconds": 0.6146817710250616
+    }
+  ],
+  "seconds": 1.8119550277478993,
+  "gpu_model_loads": 0,
+  "source_unchanged": true,
+  "binaries": {
+    "q4t_host_tests": "4e907722852da021d627487fc03d572524613bda5dc88e98beb7e4d3433020e1",
+    "q4t_ingress_duplex_tests": "16c977fdc91669d730c47fcd9bd93cc6763a8da68fa5617771e33b690c708129",
+    "q4t-ingress": "78f5bbdbb8b8553273bd9961eb7926360581545c5d9541744ecffea1f7e26620",
+    "q4t-ingress-no-tls": "b0c3894f8fbdf16e4276f5b056cb85b4a07cb0c42fe10e210fb6cb4ce0dfe6a5"
+  }
+}

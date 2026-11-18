@@ -811,6 +811,7 @@ if(Q4T_BUILD_TESTS)
     src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_http_framing_test.cpp

@@ -369,13 +369,14 @@ struct TlsStream::Impl {
   SSL* ssl = nullptr;
   int fd = -1;
   short poll_events = POLLIN;
+  bool failed = false;
   ~Impl() {
     if (ssl) context->impl_->api->SSL_free(ssl);
   }
 };
 TlsStream::TlsStream(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 TlsStream::~TlsStream() {
-  if (!impl_->ssl) return;
+  if (!impl_->ssl || impl_->failed) return;
   auto& api = *impl_->context->impl_->api;
   const auto deadline =
       std::chrono::steady_clock::now() + std::chrono::milliseconds(100);
@@ -457,6 +458,53 @@ bool TlsStream::Write(std::string_view bytes, TlsDeadline deadline,
   return true;
 }
 
+ssize_t TlsStream::TryRead(void* buffer, size_t size, short* wait) {
+  *wait = POLLIN;
+  if (!buffer || !size || impl_->failed) {
+    errno = EINVAL;
+    return -1;
+  }
+  auto& api = *impl_->context->impl_->api;
+  size_t count = 0;
+  api.ERR_clear_error();
+  const int result = api.SSL_read_ex(impl_->ssl, buffer, size, &count);
+  if (result == 1) return static_cast<ssize_t>(count);
+  const int error = api.SSL_get_error(impl_->ssl, result);
+  if (error == SSL_ERROR_ZERO_RETURN) return 0;
+  if (error == SSL_ERROR_WANT_READ || error == SSL_ERROR_WANT_WRITE) {
+    *wait = error == SSL_ERROR_WANT_READ ? POLLIN : POLLOUT;
+    errno = EAGAIN;
+  } else {
+    impl_->failed = true;
+    errno = EPROTO;
+  }
+  return -1;
+}
+
+ssize_t TlsStream::TryWrite(std::string_view bytes, short* wait) {
+  *wait = POLLOUT;
+  if (impl_->failed) {
+    errno = EPROTO;
+    return -1;
+  }
+  if (bytes.empty()) return 0;
+  auto& api = *impl_->context->impl_->api;
+  size_t count = 0;
+  api.ERR_clear_error();
+  const int result = api.SSL_write_ex(
+      impl_->ssl, bytes.data(), std::min<size_t>(bytes.size(), 16384), &count);
+  if (result == 1) return static_cast<ssize_t>(count);
+  const int error = api.SSL_get_error(impl_->ssl, result);
+  if (error == SSL_ERROR_WANT_READ || error == SSL_ERROR_WANT_WRITE) {
+    *wait = error == SSL_ERROR_WANT_READ ? POLLIN : POLLOUT;
+    errno = EAGAIN;
+  } else {
+    impl_->failed = true;
+    errno = EPROTO;
+  }
+  return -1;
+}
+
 bool TlsStream::Cancelled() {
   auto& api = *impl_->context->impl_->api;
   unsigned char byte;
@@ -499,6 +547,14 @@ std::unique_ptr<TlsStream> TlsContext::Stream(int) { return {}; }
 bool TlsStream::Accept(TlsDeadline) { return false; }
 ssize_t TlsStream::Read(void*, size_t, TlsDeadline) { return -1; }
 bool TlsStream::Write(std::string_view, TlsDeadline, bool*) { return false; }
+ssize_t TlsStream::TryRead(void*, size_t, short*) {
+  errno = ENOTSUP;
+  return -1;
+}
+ssize_t TlsStream::TryWrite(std::string_view, short*) {
+  errno = ENOTSUP;
+  return -1;
+}
 bool TlsStream::Cancelled() { return true; }
 short TlsStream::PollEvents() const { return POLLIN; }
 }  // namespace q4t::service::ingress

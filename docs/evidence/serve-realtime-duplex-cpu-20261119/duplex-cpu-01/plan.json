@@ -1,0 +1,43 @@
+{
+  "scope": "HTTP upgrade metadata + raw single-threaded bounded duplex and actual TLS; no routes/session/ASR qualification",
+  "cpu_tests": 25,
+  "host_tests": [
+    "http_upgrade_preserves_metadata_credentials_and_first_frame",
+    "http_upgrade_header_splits_preserve_exact_unread_tail",
+    "http_upgrade_rejects_duplicate_empty_and_oversized_singletons",
+    "http_upgrade_subprotocols_are_case_sensitive_unique_and_bounded",
+    "http_upgrade_security_fields_cannot_be_hop_options_or_trailers",
+    "http_upgrade_admission_rejects_body_before_consumption",
+    "http_upgrade_rejection_never_reuses_socket_for_frame_as_http",
+    "http_rejects_ambiguous_framing",
+    "http_rejects_duplicate_or_empty_authorization",
+    "http_header_identity_and_pre_body_admission",
+    "http_voice_uploads_preserve_binary_fixed_and_chunked_bodies",
+    "http_session_json_error_reuse_has_new_context",
+    "http_session_sse_chunks_serialize_heartbeat_and_terminal"
+  ],
+  "duplex_socket_tests": 8,
+  "tls_tests": 4,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "default_change": false,
+  "source_commit": "43bf3d7e",
+  "sources": {
+    "CMakeLists.txt": "70c1e775fbe0d86a94cfcb61835b188a32ff37d957670acf26ed7338dea4dfe4",
+    "cmake/HostTestSources.cmake": "9dc386e77a158837226b8f08e04e3b5edd0b4b0258d59ca25f731e8f8db515fd",
+    "cmake/NativeIngress.cmake": "3a287b6e3d802dfbb8364d4d16b1d908f75486852dc591c986125a287aa408f4",
+    "include/q4t/server/http_request.h": "39cf2d22a9958d669ab45a863bf859dcc58225887efd95f3b0786b954f4c76c9",
+    "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
+    "src/server/http_request.cpp": "0d59ad26268608540a6285f033909e3867b2bab5631070a64344bb39f8175e85",
+    "include/q4t/service/ingress_tls.h": "267a9ff693a0dadf307aa7bfb96fd9bd5f4973494991c399916ccf7aa2276eb5",
+    "include/q4t/service/ingress_transport.h": "fc1aa3b3bdc42b2bb7349e6bf90fce27b347ae581af94103f0558b25f5059424",
+    "include/q4t/service/ingress_duplex.h": "48d59c9ab60caa46aa5c386d8317ee639795b0ff6b314f8f4f94e72e8e9ad667",
+    "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
+    "src/service/ingress_transport.cpp": "4d5009b03818d057131316376a4062da2d34e15b388000624d727474767dc7f7",
+    "src/service/ingress_duplex.cpp": "b3e74cacab8ff58f8c3a735e2f313ba1aa7c8acf86d4dac0505c68365a9b0701",
+    "tests/server_http_upgrade_test.cpp": "4497a1ff37aa85dccaa3f3682a0656562f793bede0c97c0ee9e4dbc2e9734fe3",
+    "tests/ingress_duplex_test.cpp": "07b8f1d7857fbd23f48db70aab7341f767f838892ef2a3d2c12542ee1dccefa2",
+    "tests/host/CMakeLists.txt": "525447d3ed255834096ce00f2df5ab8baec6f0a0423514cd63ac831aa2860eca",
+    "tools/serve_realtime/test_tls_duplex.py": "13c7acadced273d0f1f92b48e09ee3180844929b6805f0bd9b20a44d1156a9cc"
+  }
+}

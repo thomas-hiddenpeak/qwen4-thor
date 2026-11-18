@@ -32,6 +32,10 @@ class Connection {
   ssize_t Read(void* data, size_t size, Clock::time_point deadline);
   bool Send(std::string_view data, Clock::time_point deadline,
             bool* started = nullptr);
+  // Duplex-only, nonblocking. Keep read and write buffers stable across
+  // -1/EAGAIN and poll the returned direction. Never call concurrently.
+  ssize_t TryRead(void* data, size_t size, short* wait);
+  ssize_t TryWrite(std::string_view data, short* wait);
   bool Cancelled();
   short PollEvents() const;
   std::string extra_headers;

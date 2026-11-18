@@ -1,0 +1,9 @@
+[
+  {
+    "reason": 3,
+    "client_sent": 0,
+    "upstream_sent": 10,
+    "peak_to_client": 8128,
+    "peak_to_upstream": 10
+  }
+]

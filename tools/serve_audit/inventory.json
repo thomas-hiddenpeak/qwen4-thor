@@ -2280,13 +2280,13 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "b47cc892ffcf22398760dda247701d53446d3e7fb494a1ae7cad69c6cfc2d559",
+    "CMakeLists.txt": "70c1e775fbe0d86a94cfcb61835b188a32ff37d957670acf26ed7338dea4dfe4",
     "cmake/ChatProtocolIdentity.cmake": "6dc1415ef9c8b69517220f1ff478f0a81e0c7c2901debbce0f4b7121f9359e0f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
     "cmake/NativeDocuments.cmake": "87135b491c6a07632b8e240f120f3c329b58aa82a0e451966a0c055ee4f29c3e",
-    "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+    "cmake/NativeIngress.cmake": "3a287b6e3d802dfbb8364d4d16b1d908f75486852dc591c986125a287aa408f4",
     "cmake/NativeVideo.cmake": "61e107a022bf88c8d2a22a95d8047b66e18e460cff49feff22a04038ad6af423",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/RustRegex.cmake": "99d9e977c34f48ae74d54ef33b432ce5287d668e7573d0b7bac0b7a5655924c3",
@@ -2437,10 +2437,10 @@
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "2141d40206167017a892efcc93cb42aad8f595fdb5d86609ba65f19f4a094acc",
     "include/q4t/server/http_connection.h": "7423fc1fd4fbd260205a32fff5aa7ae43fbbfe2b0784f3508980dd70f5b0cad2",
-    "include/q4t/server/http_framing.h": "45c8ad999a6b0db13b592c3f08b8a46fdbb9ca3b9261a52da9e50f4f06041a8e",
+    "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "9a2f1e837f0dd118388e83e4fa8608c198eb5f2c3b519f1b419bf3626dfb8879",
+    "include/q4t/server/http_request.h": "39cf2d22a9958d669ab45a863bf859dcc58225887efd95f3b0786b954f4c76c9",
     "include/q4t/server/http_response.h": "c808854a4efb597fddcbce41bba4c5ac7dbbbd957e69bdb652219de1a17eb571",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
@@ -2580,9 +2580,10 @@
     "include/q4t/service/ingress_admin.h": "2e33e97ef00fd363bf08f4ed4cc9235defb84bd070b1e477e465de3a108e7717",
     "include/q4t/service/ingress_cors.h": "0382a8147351fb09bc53e859edd4cee405b8327fb31460603744a171e70ddd7d",
     "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
+    "include/q4t/service/ingress_duplex.h": "48d59c9ab60caa46aa5c386d8317ee639795b0ff6b314f8f4f94e72e8e9ad667",
     "include/q4t/service/ingress_proxy.h": "fab16d371bc73c9f7cfb9407990fc235603e547f3b036121703ef1b1ce39a559",
-    "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
-    "include/q4t/service/ingress_transport.h": "f0f3e3434d054093a3d109aaa5300089a82dbbefb8cd2ee807784d5d62b85e90",
+    "include/q4t/service/ingress_tls.h": "267a9ff693a0dadf307aa7bfb96fd9bd5f4973494991c399916ccf7aa2276eb5",
+    "include/q4t/service/ingress_transport.h": "fc1aa3b3bdc42b2bb7349e6bf90fce27b347ae581af94103f0558b25f5059424",
     "include/q4t/service/service_cli.h": "ca8d0ce29ebac6e46d3081c8d0a03513841af9f888b692735d6776a1cac2f692",
     "include/q4t/text/tokenizer.h": "7bb4d249805ab904fb5b8717b983d2dd939cf5421a72e9fa67953bd4ebd59f50",
     "include/q4t/text/voice_consent.h": "592d6f8c9f9bfdb4b735619609c4ca9a8074ea7da720520d03fcb07917e0d0a9",
@@ -2829,7 +2830,7 @@
     "src/server/grammar_process.cpp": "07c93cb4fa67855335a092725c3f80b81f4feb096153a26bae9ebefc64180ffa",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "06d3d992f6264e1a6b71e84e696714b6020e649ca0917476c266d12c3860fef5",
+    "src/server/http_request.cpp": "0d59ad26268608540a6285f033909e3867b2bab5631070a64344bb39f8175e85",
     "src/server/http_response.cpp": "d446421c9199590ffaa1e7e8e9d9db762fcb5a1fd96e877663cfcaec872b54c5",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -3049,10 +3050,11 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
+    "src/service/ingress_duplex.cpp": "b3e74cacab8ff58f8c3a735e2f313ba1aa7c8acf86d4dac0505c68365a9b0701",
     "src/service/ingress_main.cpp": "a8aff58ee0181dc051eeddaf383c2254cca80fa66e5916fab9eebe00a6ea6956",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
-    "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
-    "src/service/ingress_transport.cpp": "86f6272bd60af08b4be50b373bc137096fe797af02f549b209d827e87325d239",
+    "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
+    "src/service/ingress_transport.cpp": "4d5009b03818d057131316376a4062da2d34e15b388000624d727474767dc7f7",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/text/voice_consent.cpp": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6",
@@ -8167,5 +8169,15 @@
       "tools/serve_recovery/profile_evidence.py": "92ab437f2407a530065c60925827562ff006e3c94d18a9d38db07ee764db8b6c"
     },
     "scope": "Explicit Base-only qualification from accepted persistent voice state; full independent-ASR-proven audio witnesses, no registration dependency, same ownership and live revocation. No default capability removal or automatic profile downgrade."
+  },
+  "native_realtime_duplex_development_20261119": {
+    "review": "Bounded handshake metadata, credential-sensitive subprotocols, late/hop injection rejection; independent deadlines and fixed duplex buffers with TLS WANT retry ownership. No authenticated upgrade route claimed.",
+    "status": "25 targeted CPU contracts passed, original fixture FAIL retained; actual route/session/model remains required",
+    "evidence": [
+      "tests/server_http_upgrade_test.cpp",
+      "tests/ingress_duplex_test.cpp",
+      "tools/serve_realtime/test_tls_duplex.py",
+      "docs/evidence/serve-realtime-duplex-cpu-20261119/README.md"
+    ]
   }
 }

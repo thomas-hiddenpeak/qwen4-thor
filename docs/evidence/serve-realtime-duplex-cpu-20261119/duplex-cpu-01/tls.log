@@ -1,0 +1,17 @@
+test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline) ... FAIL
+test_partial_tls12_and_tls13_record_does_not_block_output (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_partial_tls12_and_tls13_record_does_not_block_output) ... ok
+test_partial_writes_preserve_full_encrypted_payload_and_final_bytes (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_partial_writes_preserve_full_encrypted_payload_and_final_bytes) ... ok
+test_untrusted_tls_never_enters_duplex (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_untrusted_tls_never_enters_duplex) ... ok
+
+======================================================================
+FAIL: test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_tls_duplex.py", line 181, in test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline
+    self.assertGreater(total, 16384)
+AssertionError: 16256 not greater than 16384
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.517s
+
+FAILED (failures=1)
