@@ -1,5 +1,6 @@
 # Standalone service transport; reuses host HTTP/JSON without model libraries.
 include_guard(GLOBAL)
+include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 find_package(Threads REQUIRED)
 add_library(q4t_ingress_access STATIC
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_access.cpp
@@ -13,6 +14,9 @@ add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_duplex.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_websocket.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_tls.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_credentials.cpp
@@ -22,6 +26,7 @@ add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp)
 set_target_properties(q4t_ingress PROPERTIES OUTPUT_NAME q4t-ingress)
 target_link_libraries(q4t_ingress PRIVATE q4t_ingress_access Threads::Threads)
+q4t_link_native_crypto(q4t_ingress)
 target_compile_definitions(q4t_ingress PRIVATE
   Q4T_ENABLE_NATIVE_TLS=$<BOOL:${Q4T_ENABLE_NATIVE_TLS}>)
 if(Q4T_ENABLE_NATIVE_TLS)
@@ -71,6 +76,7 @@ if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)
   set_target_properties(q4t_ingress_no_tls PROPERTIES OUTPUT_NAME q4t-ingress-no-tls)
   target_link_libraries(q4t_ingress_no_tls PRIVATE
     q4t_ingress_access Threads::Threads)
+  q4t_link_native_crypto(q4t_ingress_no_tls)
   target_compile_features(q4t_ingress_no_tls PRIVATE cxx_std_23)
   target_compile_definitions(q4t_ingress_no_tls PRIVATE Q4T_ENABLE_NATIVE_TLS=0)
   target_compile_options(q4t_ingress_no_tls PRIVATE -Wall -Wextra -Werror)

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string_view>
 
 #include "q4t/service/ingress_transport.h"
@@ -26,6 +27,7 @@ enum class DuplexEnd {
   kStopped,
   kIoError,
   kInvalidLimits,
+  kRevoked,
 };
 struct DuplexResult {
   DuplexEnd reason = DuplexEnd::kInvalidLimits;
@@ -40,8 +42,11 @@ struct DuplexResult {
 // Independent write deadlines prevent other-direction traffic hiding a stuck
 // consumer. EOF is a transport result, NEVER a successful WebSocket close.
 // No retries/replay/reconnect, model operations or closing of borrowed fds.
+// Optional policy/binding probe runs before data and at most once per second;
+// it must enforce its own finite deadline. False ends this connection only.
 DuplexResult RelayDuplex(int upstream, Connection& client,
                          std::string_view client_prefix,
                          std::string_view upstream_prefix,
-                         const DuplexLimits& limits = {});
+                         const DuplexLimits& limits = {},
+                         const std::function<bool()>& authorized = {});
 }  // namespace q4t::service::ingress

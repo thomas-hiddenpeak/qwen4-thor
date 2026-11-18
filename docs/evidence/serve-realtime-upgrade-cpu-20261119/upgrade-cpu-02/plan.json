@@ -1,0 +1,11 @@
+{
+  "cpu_tests": 3,
+  "seconds": 90,
+  "gpu_model_loads": 0,
+  "sources": {
+    "src/service/ingress_main.cpp": "b01ed75434d966d2fbb04694b890068b42d06378405a77349e9a2f5adb4a7315",
+    "tools/serve_realtime/test_upgrade_ingress.py": "0986e3dc19a065f74d7423ec2855ca7b425934704932b0499b60797619ccb066"
+  },
+  "reused_cpu_tests": 13,
+  "correction": "Explicit Origin denial for WS without allowlist; add enabled Origin positive; fix generated certificate 0664 to required 0644 in fixture. Keep both original FAIL records and TLS material diagnostic."
+}

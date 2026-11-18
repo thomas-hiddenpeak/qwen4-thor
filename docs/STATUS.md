@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生入口升级16项CPU通过](evidence/serve-realtime-upgrade-cpu-20261119/README.md)：
+鉴权/独立会话连接槽/101严格核对/明文与真实TLS通过，19执行/16.916秒/
+0GPU。补上WebSocket在CORS关闭时的Origin拒绝；证书0664夹具失败
+保留并修复，仅重验3项。默认rev326保持；继续后端会话与真实ASR、
+每轮RPM/TPM及全部master，入口CPU回声不代表模型业务可用。
+
+原生入口已接入Realtime/Live的鉴权后握手、每客户1/全局4个独立
+会话连接槽、密钥与代次复核；后端101必须核对挑战值后才转双向。
+冻结16项CPU入口/socket验证，含真实TLS和显式CPU WebSocket对端；
+后端模型会话尚待接通，不能据此宣称Realtime业务可用。默认保持。
+
 [HTTP升级与双向TLS的25项CPU通过](evidence/serve-realtime-duplex-cpu-20261119/README.md)：
 握手元数据/原始首帧保留、有界双向缓冲、独立写入截止、TLS1.2/1.3
 半记录与慢消费者反向取消通过；26执行/2.33秒/0GPU、零警告。原

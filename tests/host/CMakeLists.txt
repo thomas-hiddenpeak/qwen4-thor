@@ -134,6 +134,12 @@ if(Q4T_ENABLE_NATIVE_TLS)
   set_tests_properties(q4t_ingress_tls_duplex_contracts PROPERTIES
     TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
     ENVIRONMENT "Q4T_DUPLEX_TESTS=$<TARGET_FILE:q4t_ingress_duplex_tests>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
+  add_test(NAME q4t_ingress_websocket_contracts
+    COMMAND ${Python3_EXECUTABLE} -B -m unittest -v
+      tools.serve_realtime.test_upgrade_ingress)
+  set_tests_properties(q4t_ingress_websocket_contracts PROPERTIES
+    TIMEOUT 180 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+    ENVIRONMENT "Q4T_INGRESS=$<TARGET_FILE:q4t_ingress>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
 endif()
 set(journal_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-journal-tests")
 file(MAKE_DIRECTORY "${journal_output}")

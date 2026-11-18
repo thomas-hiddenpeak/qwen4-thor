@@ -24,6 +24,7 @@
 #include "q4t/server/file_limits.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/websocket.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/server/request_limits.h"
 #include "q4t/service/guardian_wire.h"
@@ -33,6 +34,7 @@
 #include "q4t/service/ingress_cors.h"
 #include "q4t/service/ingress_credentials.h"
 #include "q4t/service/ingress_transport.h"
+#include "q4t/service/ingress_websocket.h"
 #include "q4t/service/ingress_proxy.h"
 
 namespace q4t::service::ingress {
@@ -283,10 +285,10 @@ bool HostMatches(std::string_view host, const std::string& expected) {
 }
 
 struct Usage {
-  int active[5] = {};
-  double tokens[5] = {};
-  Clock::time_point updated[5] = {Clock::now(), Clock::now(), Clock::now(),
-                                  Clock::now(), Clock::now()};
+  int active[6] = {};
+  double tokens[6] = {};
+  Clock::time_point updated[6] = {Clock::now(), Clock::now(), Clock::now(),
+                                  Clock::now(), Clock::now(), Clock::now()};
 };
 
 class Capacity {
@@ -296,18 +298,19 @@ class Capacity {
     for (auto& used : usage_) {
       used.tokens[0] = config.burst + 1;
       used.tokens[1] = 21;
-      used.tokens[2] = used.tokens[3] = used.tokens[4] = 21;
+      used.tokens[2] = used.tokens[3] = used.tokens[4] = used.tokens[5] = 21;
     }
   }
   bool Acquire(size_t client, bool control, bool cancel, bool tunnel_poll,
-               bool tunnel_response) {
+               bool tunnel_response, bool websocket) {
     std::lock_guard guard(mutex_);
-    const size_t lane = tunnel_response ? 4
+    const size_t lane = websocket       ? 5
+                        : tunnel_response ? 4
                         : tunnel_poll   ? 3
                         : cancel        ? 2
                         : control       ? 1
                                         : 0;
-    const bool auxiliary = tunnel_poll || tunnel_response;
+    const bool auxiliary = tunnel_poll || tunnel_response || websocket;
     auto& used = usage_[client];
     const auto now = Clock::now();
     const double elapsed =
@@ -317,7 +320,8 @@ class Capacity {
         control || auxiliary ? 21 : config_.burst + 1,
         used.tokens[lane] +
             elapsed * (control || auxiliary ? 10 : config_.rps));
-    if (used.active[lane] >= (tunnel_poll       ? 1
+    if (used.active[lane] >= (websocket         ? 1
+                              : tunnel_poll      ? 1
                               : tunnel_response ? 2
                               : cancel          ? 1
                               : control         ? 4
@@ -334,9 +338,10 @@ class Capacity {
     return true;
   }
   void Release(size_t client, bool control, bool cancel, bool tunnel_poll,
-               bool tunnel_response) {
+               bool tunnel_response, bool websocket) {
     std::lock_guard guard(mutex_);
-    const auto lane = tunnel_response ? 4
+    const auto lane = websocket       ? 5
+                      : tunnel_response ? 4
                       : tunnel_poll   ? 3
                       : cancel        ? 2
                       : control       ? 1
@@ -349,7 +354,7 @@ class Capacity {
   const Config& config_;
   std::mutex mutex_;
   std::vector<Usage> usage_;
-  int active_[5] = {};
+  int active_[6] = {};
 };
 
 struct Lease {
@@ -359,9 +364,11 @@ struct Lease {
   bool cancel = false;
   bool acquired = false;
   bool tunnel_poll = false, tunnel_response = false;
+  bool websocket = false;
   ~Lease() {
     if (acquired)
-      capacity.Release(client, control, cancel, tunnel_poll, tunnel_response);
+      capacity.Release(client, control, cancel, tunnel_poll, tunnel_response,
+                         websocket);
   }
 };
 
@@ -371,6 +378,8 @@ struct RouteSpec {
   bool control;
 };
 constexpr RouteSpec kRoutes[] = {
+    {"GET", "/v1/realtime", false},
+    {"GET", "/v1/live/sessions", false},
     {"POST", "/v1/audio/speech", false},
     {"POST", "/v1/audio/transcriptions", false},
     {"POST", "/v1/moderations", false},
@@ -415,7 +424,12 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     return true;
   }
   for (const auto& route : kRoutes) {
-    if (method == route.method && path == route.path) {
+    const bool realtime = route.path == "/v1/realtime" ||
+                           route.path == "/v1/live/sessions";
+    if (method == route.method &&
+        (path == route.path ||
+         (realtime && std::string_view(path).substr(0, path.find('?')) ==
+                          route.path))) {
       *control = route.control;
       return true;
     }
@@ -446,6 +460,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   bool preflight = false;
   bool streaming = false;
   bool upstream_early = false;
+  std::string websocket_accept, websocket_protocol;
   const auto request_deadline =
       Clock::now() + std::chrono::milliseconds(config.http.request_timeout_ms);
   const auto reject = [&](int code, const char* reason) {
@@ -460,7 +475,15 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   };
   const auto head = [&](const std::string& framing) {
     return method + " " + path +
-           " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: keep-alive\r\n" +
+           " HTTP/1.1\r\nHost: 127.0.0.1\r\n" +
+           (lease.websocket
+                ? "Connection: Upgrade\r\nUpgrade: websocket\r\n"
+                  "Sec-WebSocket-Version: 13\r\nSec-WebSocket-Key: " +
+                      headers.websocket_key + "\r\n" +
+                      (websocket_protocol.empty()
+                           ? "" : "Sec-WebSocket-Protocol: " +
+                                      websocket_protocol + "\r\n")
+                : "Connection: keep-alive\r\n") +
            framing + "\r\nX-Request-Id: " + request_id +
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
@@ -538,6 +561,15 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     }
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
+    const auto base = std::string_view(path).substr(0, path.find('?'));
+    lease.websocket = method == "GET" &&
+        (base == "/v1/realtime" || base == "/v1/live/sessions");
+    // WebSocket browsers do not enforce CORS response headers. An Origin
+    // therefore needs explicit server-side permission even with CORS off.
+    if (lease.websocket && !headers.origin.empty() && !config.cors.Enabled())
+      return reject(403, "cors_origin_denied");
+    if (lease.websocket && !WebSocketCredentials(&headers))
+      return reject(401, "gateway_unauthorized");
     if (!access.Configured()) return reject(503, "access_policy_unavailable");
     identity = access.Authenticate(headers.authorization);
     if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
@@ -546,6 +578,25 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(400, "invalid_client_header");
     if (!Route(method, path, &lease.control))
       return reject(404, "gateway_route_not_found");
+    if (lease.websocket) {
+      const auto upgraded = server::CheckWebSocketUpgrade(
+          {method, headers.connection, headers.upgrade,
+           headers.websocket_version, headers.websocket_key, headers.http11,
+           headers.chunked, headers.content_length}, &websocket_accept);
+      if (upgraded != server::WebSocketUpgradeResult::kOk) {
+        if (upgraded == server::WebSocketUpgradeResult::kWrongVersion) {
+          client.extra_headers += "Sec-WebSocket-Version: 13\r\n";
+          return reject(426, "websocket_version_required");
+        }
+        const bool crypto =
+            upgraded == server::WebSocketUpgradeResult::kCryptoUnavailable ||
+            upgraded == server::WebSocketUpgradeResult::kCryptoFailure;
+        return reject(crypto ? 503 : 400,
+                       crypto ? "websocket_handshake_unavailable"
+                              : "websocket_upgrade_invalid");
+      }
+      websocket_protocol = WebSocketProtocol(headers, path);
+    }
     streaming = server::IsBinaryUpload(method, path);
     headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;
     if (server::IsTranscriptionTarget(path))
@@ -565,7 +616,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (lease.tunnel_poll || lease.tunnel_response)
       body_lease.SelectBudget(tunnel_budget);
     lease.acquired = capacity.Acquire(lease.client, lease.control, lease.cancel,
-                                      lease.tunnel_poll, lease.tunnel_response);
+                                      lease.tunnel_poll, lease.tunnel_response,
+                                      lease.websocket);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
     binding = authorize();
@@ -690,6 +742,17 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
              &client) ||
       !Write(upstream.Get(), body, deadline, &client)) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
+    return false;
+  }
+  if (lease.websocket) {
+    const auto still_authorized = [&] {
+      const auto current_identity = access.Authenticate(headers.authorization);
+      return current_identity.Allowed() &&
+             current_identity.Id() == identity.Id() && authorize() == binding;
+    };
+    RelayWebSocket(upstream.Get(), client, websocket_accept,
+                    websocket_protocol, state->pending, config.idle_seconds,
+                    request_id, started, still_authorized);
     return false;
   }
   return Relay(upstream.Get(), client, config.idle_seconds, request_id, started);

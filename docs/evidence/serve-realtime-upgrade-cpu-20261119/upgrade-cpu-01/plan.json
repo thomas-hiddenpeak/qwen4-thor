@@ -1,0 +1,22 @@
+{
+  "scope": "Actual native entrypoint upgrade/auth/capacity/TLS and CPU WebSocket peer; no ASR/session/LLM qualification",
+  "cpu_tests": 16,
+  "socket_tests": 8,
+  "entrypoint_tests": 8,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "sources": {
+    "include/q4t/service/ingress_duplex.h": "0eb58e09dbc443370dd72b840e568b034f6b3a7d3bbf3ff815caf016a448b6a6",
+    "include/q4t/service/ingress_transport.h": "b2e3f88e797b8ecef3de704d36d5e2ea7721c7f66eb389fa6d8a07e13484f9f7",
+    "include/q4t/service/ingress_websocket.h": "4ce2a165b47d36ef6d6802ee25263b7fea8e8c5adedbaf7d09751a49c45379ee",
+    "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
+    "src/service/ingress_transport.cpp": "334a80728440d22f2c44da68233ae1c77f33a8dacf764ea59f108906076f224a",
+    "src/service/ingress_websocket.cpp": "2005b50b847a14f763825d8912bf5c7c8c56a07bd8355c47728297aca79b53d0",
+    "src/service/ingress_main.cpp": "42f30b892009e80af38f348806ebca07d131ed61d57c1e2fec1bfd9391eb3b1a",
+    "cmake/NativeIngress.cmake": "1bbac5f3b32515aa14a90ab5d772e62889a7d2a198ae90eeff2a413d73484896",
+    "tests/host/CMakeLists.txt": "9c276495fc735758e26a8af347157a71796b5a1bc5010dc2fcd443a078e6da4d",
+    "tools/serve_realtime/test_upgrade_ingress.py": "b72b03e46980d579b989d5b742ffb58e32cb5050fe442caee850b2da4819d2b0",
+    "tools/serve_recovery/test_gateway_nginx.py": "d16f1a42f2c451e5c2e525b3ceffb34a2a62fb58b92a3b21daa4be10a8ef82b3"
+  },
+  "source_commit": "a1b527c0a6853e61ce493aeaa0babd275d86dd81"
+}

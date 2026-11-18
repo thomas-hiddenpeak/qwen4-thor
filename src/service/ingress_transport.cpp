@@ -416,9 +416,10 @@ OwnedFd Connect(int port, Connection& client, Clock::time_point deadline) {
 }
 
 bool Relay(int upstream, Connection& client, int idle_seconds,
-           std::string_view request_id, bool* started, bool error_only) {
+           std::string_view request_id, bool* started, bool error_only,
+           std::string_view initial) {
   std::array<char, 16384> buffer{};
-  std::string head;
+  std::string head(initial);
   size_t end = std::string::npos;
   const auto header_deadline =
       Clock::now() + std::chrono::seconds(idle_seconds);

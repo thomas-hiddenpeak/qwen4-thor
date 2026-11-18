@@ -1,0 +1,12 @@
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 33%] Built target q4t_ingress_access
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 33%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 33%] Built target q4t_ingress_access
+[ 33%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 33%] Linking CXX executable q4t-ingress-no-tls
+[100%] Built target q4t_ingress_no_tls

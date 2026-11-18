@@ -13,8 +13,9 @@ Realtime的`/v1/realtime`和Live的`/v1/live/sessions`具有不同会话
 事件，分别实现，不能拿自定义WebSocket topic冒充官方协议。
 
 现有原生HTTP/TLS、客户准入、ASR/VAD、LLM工具/结构化、TTS与Guardian
-可复用；目前尚无WebSocket升级和真实双向会话，因此尚未提供这些
-接口。输入HTTP上传后的SSE也不等于流式音频输入。
+可复用；入口WebSocket升级及双向转发已通过CPU对端验证，后端真实
+会话仍待接通，因此尚未提供可用的Realtime/Live模型业务。输入HTTP
+上传后的SSE也不等于流式音频输入。
 
 Orator只提供设计参考：统一采样时钟、阶段状态和有序排空；实际
 缓存上限、截止时间、客户隔离、事件合同由q4t独立实现。不复制
@@ -24,7 +25,8 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 WebSocket基础16项CPU、音频队列12项CPU及
 [HTTP字段/双向TLS25项CPU](evidence/serve-realtime-duplex-cpu-20261119/README.md)
-已通过；真实模型与协议路由仍按以下顺序继续。两个64 KiB转发缓冲
+已通过；[原生入口升级16项CPU](evidence/serve-realtime-upgrade-cpu-20261119/README.md)
+也已通过，后端真实会话/模型及每轮配额仍按以下顺序继续。两个64 KiB转发缓冲
 不包含TLS/内核缓冲成本，正式会话准入须计入对应实际RAM。
 
 ## 连续实施顺序

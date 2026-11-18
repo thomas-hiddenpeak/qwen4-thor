@@ -9500,7 +9500,7 @@
     }
   },
   "realtime_progress": {
-    "state": "transport_foundation_cpu_verified_route_and_model_execution_pending",
+    "state": "native_entrypoint_cpu_verified_backend_session_and_model_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -9508,7 +9508,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": false,
-    "next": "Authenticated upgrade, separate bounded client/session admission, actual Realtime/Live protocol and phase-preserving ASR; then model/tools, official clients, recovery and delivery.",
+    "next": "Backend bounded sessions with actual PCM resampling/ASR, per-turn original quotas, Realtime/Live events and actual model/tools; official clients, recovery, reversible delivery.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -9524,6 +9524,14 @@
       "gpu_model_loads": 0,
       "original_fixture_failure_retained": true,
       "api_qualified": false
+    },
+    "entrypoint": {
+      "state": "implemented_cpu_verified_with_explicit_protocol_peer",
+      "evidence": "evidence/serve-realtime-upgrade-cpu-20261119/README.md",
+      "cpu_tests": 16,
+      "executions": 19,
+      "gpu_model_loads": 0,
+      "backend_session_qualified": false
     }
   }
 }

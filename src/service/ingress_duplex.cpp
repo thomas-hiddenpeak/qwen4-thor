@@ -34,7 +34,8 @@ bool Again() {
 DuplexResult RelayDuplex(int upstream, Connection& client,
                          std::string_view client_prefix,
                          std::string_view upstream_prefix,
-                         const DuplexLimits& limits) {
+                         const DuplexLimits& limits,
+                         const std::function<bool()>& authorized) {
   DuplexResult result;
   if (upstream < 0 || client.Fd() < 0 || upstream == client.Fd() ||
       client_prefix.size() > kDuplexBufferBytes ||
@@ -60,13 +61,19 @@ DuplexResult RelayDuplex(int upstream, Connection& client,
   result.client_received = result.peak_to_upstream = client_prefix.size();
   result.upstream_received = result.peak_to_client = upstream_prefix.size();
   bool upstream_eof = false;
+  auto next_authorization = start;
   const auto finish = [&](DuplexEnd reason, int error = 0) {
     result.reason = reason;
     result.system_error = error;
     return result;
   };
   while (!stopped.load(std::memory_order_relaxed)) {
-    const auto now = Clock::now();
+    auto now = Clock::now();
+    if (authorized && now >= next_authorization) {
+      if (!authorized()) return finish(DuplexEnd::kRevoked);
+      now = Clock::now();
+      next_authorization = now + 1s;
+    }
     if (now >= session_deadline) return finish(DuplexEnd::kSessionDeadline);
     if (now >= idle_deadline) return finish(DuplexEnd::kIdleDeadline);
     if ((!to_client.Empty() && now >= to_client.write_deadline) ||

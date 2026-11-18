@@ -64,7 +64,8 @@ void Error(Connection& client, int status, std::string_view code,
 bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started);
 bool Relay(int upstream, Connection& client, int idle_seconds,
-           std::string_view request_id, bool* started, bool error_only = false);
+           std::string_view request_id, bool* started, bool error_only = false,
+           std::string_view initial = {});
 std::string RequestId();
 
 }  // namespace q4t::service::ingress
