@@ -609,3 +609,5 @@
 - [Base-only真实消费与可选封装](evidence/serve-voice-consumer-business-20261119/README.md)：完整音频、无注册后端、原客户授权与两档资格。
 
 - [PR49会话恢复夹具修复](evidence/serve-conversation-recovery-fixture-20261119/README.md)：8项针对CPU，原预演失败保留。
+
+- [ICL编码器合同与预算](evidence/serve-tts-icl-metadata-20261119/README.md)：14项CPU；实际编码、服务和交付继续。

@@ -1,0 +1,44 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1573,
+      "sha256": "abcbf772d916ce624e33f48988f0d50bc785d3be1cf4f8e6bfdfb8e8494e08f2"
+    },
+    "build.log": {
+      "bytes": 1094,
+      "sha256": "6db2fcd1f70bd2c69339416d398b6e63b431a5e1949f7d4550b29edd76a1e16b"
+    },
+    "configure.log": {
+      "bytes": 459,
+      "sha256": "d75f045487e286a6c09bcd9542b0ee2c4fba585ba9a54a7c862758693a0ff489"
+    },
+    "implementation-plan.json": {
+      "bytes": 2278,
+      "sha256": "5a39152d94d49726ee6ea7df6395d7cecce295111bd4294191d7a2efa12048dc"
+    },
+    "inventory-changes.json": {
+      "bytes": 488,
+      "sha256": "57c651d686177fdad618139a549ca91c8fadcaf89de91aa51fe3e94393ebafd7"
+    },
+    "inventory.json": {
+      "bytes": 222,
+      "sha256": "9f08d89171ded502f3cd2074d9f9eb0d882861f0ca639e36adb1df73d386a519"
+    },
+    "plan.json": {
+      "bytes": 1037,
+      "sha256": "03df72b8af73bc16c2ee1bdd56bbc4e76602b3b23cfac34b4f3d07933b712894"
+    },
+    "required.txt": {
+      "bytes": 801,
+      "sha256": "55643335da6c110015fcb988a4ae964ac38b878731545f034f3a857b9d6ac56e"
+    },
+    "result.json": {
+      "bytes": 570,
+      "sha256": "29e0d2fe4b205743c5454e02621b01850ac1cc289e3d27821c969105b6c035d7"
+    },
+    "test.log": {
+      "bytes": 940,
+      "sha256": "0feb3691f9130460f12c57bc19c01ea46addc8869f52d21f91a4bc5b7c30803b"
+    }
+  }
+}

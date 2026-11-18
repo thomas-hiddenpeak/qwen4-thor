@@ -2280,7 +2280,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "d295da73fb9bed8c65963560fac902dfd4d82179c988bff31465cdcfc5ccee61",
+    "CMakeLists.txt": "0c15017e80a3823c0f6b1d155d4150245e5c87df3f95de821d2fcc54d5d22074",
     "cmake/ChatProtocolIdentity.cmake": "493a2ec147fcd9e32379b93cb88c3c71327ea80d6a1a82a0d1fcb7d57a64e5d2",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
@@ -2315,6 +2315,7 @@
     "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
     "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
     "include/q4t/audio/tts_config.h": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
+    "include/q4t/audio/tts_encoder_layout.h": "34a5076bbb714965c3dd50d5632e93f4da27e5a2350353cadb587bfef7e707a7",
     "include/q4t/audio/tts_generation.h": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c",
     "include/q4t/audio/tts_layout.h": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7",
     "include/q4t/audio/tts_model.h": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
@@ -2619,6 +2620,7 @@
     "src/audio/tts_config.cpp": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38",
     "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
     "src/audio/tts_dense.cu": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
+    "src/audio/tts_encoder_layout.cpp": "214715bfcb6ac5e14817241af6cd07007e3a33710fd6d2e616f2c16bda84898d",
     "src/audio/tts_generation.cpp": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb",
     "src/audio/tts_layout.cpp": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c",
     "src/audio/tts_math_internal.h": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",

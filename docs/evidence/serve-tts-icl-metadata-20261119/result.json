@@ -1,0 +1,17 @@
+{
+  "state": "PASS_METADATA_CPU",
+  "tests": 14,
+  "new_tests": 10,
+  "direct_decoder_tests": 4,
+  "seconds": 0.03166752075776458,
+  "returncode": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_tts_encoder_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/metadata-cpu-01/required.txt"
+  ],
+  "binary_sha256": "7bbcfd4671aab0bc3c61ca23a5f083d360a5420cbab9d8f040b29f82081174c4",
+  "gpu_starts": 0,
+  "actual_encoder_execution": false,
+  "default_changed": false
+}

@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL编码器合同14项CPU通过](evidence/serve-tts-icl-metadata-20261119/README.md)：
+225张量/224.94MB、全部extent和独立量化投影、因果卷积尾部、完整
+工作区预算；0.032秒/0GPU，943来源锚点/17负控。实际编码与ICL服务
+尚未接通，默认rev326保持；继续CUDA与固定官方路径数值验证。
+
 [PR49会话故障夹具修复8项CPU通过](evidence/serve-conversation-recovery-fixture-20261119/README.md)：
 原预演恢复查询受200ms注入限制、后续清理槽连锁失败；改为日志出现后
 取消、正常恢复预算与确认回收。0.614秒/0GPU，生产代码和默认rev326

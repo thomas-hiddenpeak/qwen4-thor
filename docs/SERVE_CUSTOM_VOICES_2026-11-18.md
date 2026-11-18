@@ -80,3 +80,5 @@ metadata。样本/consent不超过60秒/10MiB，需同一声音；登记不能
 `--tts-base-model-dir`独立选择固定Base资产；启用登记还需已有ASR、
 VAD和说话人资产。元数据/撤销不依赖模型健康；合成与注册分别按
 真实统一RAM预算准入。候选未发布，真实HTTP与有状态兼容回退继续。
+
+2026-11-19：ICL编码器225张量与预算合同已完成，[14项CPU](evidence/serve-tts-icl-metadata-20261119/README.md)通过；实际编码和参考条件接线继续，不替代已交付x-vector，也不提前更换默认。固定Mimi eager实际为full causal，后续长样本数值覆盖250行之外。

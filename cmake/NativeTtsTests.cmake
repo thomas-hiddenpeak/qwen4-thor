@@ -95,3 +95,17 @@ target_link_libraries(q4t_speech_encode_tests PRIVATE Threads::Threads ${CMAKE_D
 target_compile_options(q4t_speech_encode_tests PRIVATE
   -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
 target_link_options(q4t_speech_encode_tests PRIVATE -Wl,--gc-sections)
+
+# Reference-audio encoder metadata and direct decoder-storage regressions.
+add_executable(q4t_tts_encoder_tests EXCLUDE_FROM_ALL
+  ${tts_test_root}/tests/test_main.cpp
+  ${tts_test_root}/tests/tts_encoder_layout_test.cpp
+  ${tts_test_root}/tests/tts_codec_layout_test.cpp
+  ${tts_test_root}/src/audio/tts_encoder_layout.cpp
+  ${tts_test_root}/src/audio/tts_codec_layout.cpp
+  ${tts_test_root}/src/audio/tts_layout.cpp
+  ${tts_test_root}/src/audio/tts_config.cpp
+  ${tts_test_root}/src/io/json.cpp)
+target_include_directories(q4t_tts_encoder_tests PRIVATE
+  ${tts_test_root}/include)
+target_compile_options(q4t_tts_encoder_tests PRIVATE -Wall -Wextra -Werror)

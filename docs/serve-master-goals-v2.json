@@ -9362,6 +9362,18 @@
       "new_tests": 0,
       "raw_failures_preserved": true,
       "reason": "Top-level progress lagged behind already recorded accepted owner decision and completed counterexamples; reuse unchanged evidence."
+    },
+    "icl": {
+      "state": "encoder_metadata_cpu_passed_execution_pending",
+      "evidence": "evidence/serve-tts-icl-metadata-20261119/README.md",
+      "cpu_new": 10,
+      "cpu_direct_decoder": 4,
+      "tensor_count": 225,
+      "weights_bytes": 224937216,
+      "gpu_tests": 0,
+      "runtime_dependencies_added": [],
+      "reference_attention": "Pinned Transformers4.57.6 non-streaming eager full causal; declared window250 does not prove execution mask",
+      "reference_audio_conditioning_delivered": false
     }
   }
 }

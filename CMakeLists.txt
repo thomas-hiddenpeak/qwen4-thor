@@ -183,6 +183,7 @@ add_library(q4t_model STATIC
   src/audio/speech_tempo.cpp
   src/audio/tts_layout.cpp
   src/audio/tts_codec_layout.cpp
+  src/audio/tts_encoder_layout.cpp
   src/audio/tts_generation.cpp
   src/audio/tts_dense.cu
   src/audio/tts_model.cu
