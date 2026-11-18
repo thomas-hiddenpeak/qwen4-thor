@@ -144,16 +144,26 @@ void Run(const fs::path& directory, const fs::path& plan_file,
   Check(audio::ParseTtsWeightLayout(Json(std::string(
       reinterpret_cast<const char*>(file.data() + 8), header_bytes)),
       file.size() - 8 - header_bytes, variant, &weight_layout));
-  Device device_weights(weight_layout.bytes);
+  Device device_weights(weight_layout.bytes * 2);
+  std::vector<float> expanded(1 << 20);
   for (const auto& tensor : weight_layout.tensors) {
     checkpoint();
-    Cuda(cudaMemcpy(static_cast<uint8_t*>(device_weights.value) + tensor.offset,
-        file.data() + 8 + header_bytes + tensor.file_offset,
-        tensor.bytes, cudaMemcpyHostToDevice));
+    for (size_t offset = 0; offset < tensor.bytes;) {
+      const size_t count = std::min(expanded.size(), (tensor.bytes - offset) / 2);
+      const auto* source = reinterpret_cast<const uint16_t*>(
+          file.data() + 8 + header_bytes + tensor.file_offset + offset);
+      Check(audio::ExpandTtsWeightChunk({source, count},
+                                         {expanded.data(), count}));
+      Cuda(cudaMemcpy(static_cast<uint8_t*>(device_weights.value) +
+          (tensor.offset + offset) * 2, expanded.data(), count * sizeof(float),
+          cudaMemcpyHostToDevice));
+      offset += count * 2;
+    }
   }
   std::vector<uint8_t>().swap(file);
+  std::vector<float>().swap(expanded);
   audio::TtsDeviceWeights weights;
-  Check(audio::BindTtsDeviceWeights(device_weights.value, weight_layout.bytes,
+  Check(audio::BindTtsDeviceWeights(device_weights.value, weight_layout.bytes * 2,
                                      weight_layout, variant, &weights));
   size_t total_advances = 0;
   for (size_t index = 0; index < cases->array.size(); ++index) {
@@ -219,14 +229,14 @@ void Run(const fs::path& directory, const fs::path& plan_file,
 #ifdef Q4T_TTS_TRACE
 namespace q4t::audio {
 void TraceTtsOperand(const char* name, size_t frame, size_t group,
-                     std::span<const uint16_t> device_values) {
+                     std::span<const float> device_values) {
   Require(!trace_directory.empty() && device_values.size() <= 512 * 2048,
           "TTS trace exceeds frozen element budget");
-  std::vector<uint16_t> host(device_values.size());
+  std::vector<float> host(device_values.size());
   Cuda(cudaMemcpy(host.data(), device_values.data(), device_values.size_bytes(),
                     cudaMemcpyDeviceToHost));
-  Save<uint16_t>(trace_directory / (std::string(name) + "-" +
-      std::to_string(frame) + "-" + std::to_string(group) + ".bf16"), host);
+  Save<float>(trace_directory / (std::string(name) + "-" +
+      std::to_string(frame) + "-" + std::to_string(group) + ".f32"), host);
 }
 }  // namespace q4t::audio
 #endif

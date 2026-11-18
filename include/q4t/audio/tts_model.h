@@ -12,7 +12,7 @@ namespace q4t::audio {
 #ifdef Q4T_TTS_TRACE
 // Qualification-only capture; absent from production builds.
 void TraceTtsOperand(const char* name, size_t frame, size_t group,
-                     std::span<const uint16_t> device_values);
+                     std::span<const float> device_values);
 #endif
 
 struct TtsComputeResult {
@@ -30,10 +30,10 @@ class TtsDenseRun {
                         void* workspace, size_t bytes,
                         cudaStream_t stream = nullptr);
   TtsComputeResult Reset(cudaStream_t stream = nullptr);
-  TtsComputeResult Begin(std::span<const uint16_t> input,
+  TtsComputeResult Begin(std::span<const float> input,
                          cudaStream_t stream = nullptr);
   TtsComputeResult NextLayer(cudaStream_t stream = nullptr);
-  TtsComputeResult Finish(std::span<const uint16_t>* last_hidden,
+  TtsComputeResult Finish(std::span<const float>* last_hidden,
                           cudaStream_t stream = nullptr);
   int completed_layers() const { return layer_; }
   int cached_tokens() const { return past_; }
@@ -66,8 +66,8 @@ class TtsGenerationRun {
   std::span<const TtsCodes> codes() const { return state_.completed(); }
 
  private:
-  TtsComputeResult Head(TtsDenseRun& run, const uint16_t* head,
-                        std::span<uint16_t> logits, bool save_hidden,
+  TtsComputeResult Head(TtsDenseRun& run, const float* head,
+                        std::span<float> logits, bool save_hidden,
                         cudaStream_t stream);
   TtsComputeResult BeginPredictor(int32_t code, cudaStream_t stream);
   TtsComputeResult ContinuePredictor(size_t group, int32_t code,

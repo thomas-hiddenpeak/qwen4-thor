@@ -1,7 +1,5 @@
-// Shared scoped GEMM and BF16 primitives for native TTS; no allocation cache.
+// Scoped FP32 GEMM for native TTS. No TF32 or activation re-quantization.
 #pragma once
-
-#include <cuda_bf16.h>
 
 #include <algorithm>
 #include <mutex>
@@ -15,15 +13,7 @@ namespace q4t::audio::tts_detail {
 
 constexpr int kThreads = 256;
 
-__device__ inline float Read(const uint16_t* x, size_t i) {
-  return __bfloat162float(__ushort_as_bfloat16(x[i]));
-}
-__device__ inline uint16_t Write(float x) {
-  return __bfloat16_as_ushort(__float2bfloat16_rn(x));
-}
-__device__ inline float Round(float x) {
-  return __bfloat162float(__float2bfloat16_rn(x));
-}
+__device__ inline float Read(const float* x, size_t i) { return x[i]; }
 
 template <bool kMaximum>
 __device__ float Reduce(float value, float* scratch) {
@@ -70,14 +60,15 @@ struct MatmulPlan {
 
 // Row-major output[M,N] = input[M,K] * weight[N,K]^T. Explicit leading
 // dimension permits a bounded persistent V cache without hidden copies.
-// FP32 output is used for affine operators so bias precedes BF16 rounding.
+// Both weights and all activations remain FP32, including affine bias.
 inline Status Matmul(const void* input, const void* weight, void* output,
                       int m, int n, int k, int weight_stride,
                       cudaDataType_t input_type, cudaDataType_t output_type,
                       void* workspace, size_t workspace_bytes,
                       cudaStream_t stream) {
   if (!input || !weight || !output || m < 1 || n < 1 || k < 1 ||
-      weight_stride < k || !workspace)
+      weight_stride < k || !workspace ||
+      input_type != CUDA_R_32F || output_type != CUDA_R_32F)
     return Status::Fail("TTS GEMM dimensions or buffers invalid");
   std::lock_guard<std::mutex> lock(quant::LtCacheMutex());
   const auto handle = quant::GlobalLtHandle();
@@ -88,8 +79,7 @@ inline Status Matmul(const void* input, const void* weight, void* output,
     if (status == CUBLAS_STATUS_SUCCESS) status = s;
     return s == CUBLAS_STATUS_SUCCESS;
   };
-  const auto compute = input_type == CUDA_R_32F ? CUBLAS_COMPUTE_32F_PEDANTIC
-                                               : CUBLAS_COMPUTE_32F;
+  const auto compute = CUBLAS_COMPUTE_32F_PEDANTIC;
   if (!check(cublasLtMatmulDescCreate(&p.op, compute, CUDA_R_32F)) ||
       !check(cublasLtMatrixLayoutCreate(&p.a, input_type, k, n, weight_stride)) ||
       !check(cublasLtMatrixLayoutCreate(&p.b, input_type, k, m, k)) ||

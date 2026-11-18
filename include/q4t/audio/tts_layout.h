@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <span>
 
 #include "q4t/audio/tts_config.h"
 
@@ -10,7 +11,7 @@ namespace q4t::audio {
 struct TtsTensorExtent {
   std::string name;
   size_t file_offset = 0;  // Relative to the safetensors data region.
-  size_t offset = 0;       // Compact device payload, in contract name order.
+  size_t offset = 0;       // Compact source dtype payload, in contract order.
   size_t bytes = 0;
 };
 
@@ -29,39 +30,45 @@ Status ParseTtsCodecWeightLayout(const io::Json& header, size_t data_bytes,
 Status ValidateTtsWeightLayout(const TtsWeightLayout& layout,
                                TtsVariant variant, bool codec = false);
 
+// BF16 checkpoint values expand exactly to FP32. Each transfer uses at most
+// 2 MiB source plus 4 MiB destination, both charged to unified RAM.
+Status ExpandTtsWeightChunk(std::span<const uint16_t> input,
+                            std::span<float> output);
+
+// Talker payload uses twice layout.bytes, and each source offset doubles.
 struct TtsAffineWeights {
-  const uint16_t* weight = nullptr;
-  const uint16_t* bias = nullptr;
+  const float* weight = nullptr;
+  const float* bias = nullptr;
 };
 
 struct TtsLayerWeights {
-  const uint16_t* input_norm = nullptr;
-  const uint16_t* post_norm = nullptr;
-  const uint16_t* q_norm = nullptr;
-  const uint16_t* k_norm = nullptr;
-  const uint16_t* q = nullptr;
-  const uint16_t* k = nullptr;
-  const uint16_t* v = nullptr;
-  const uint16_t* o = nullptr;
-  const uint16_t* gate = nullptr;
-  const uint16_t* up = nullptr;
-  const uint16_t* down = nullptr;
+  const float* input_norm = nullptr;
+  const float* post_norm = nullptr;
+  const float* q_norm = nullptr;
+  const float* k_norm = nullptr;
+  const float* q = nullptr;
+  const float* k = nullptr;
+  const float* v = nullptr;
+  const float* o = nullptr;
+  const float* gate = nullptr;
+  const float* up = nullptr;
+  const float* down = nullptr;
 };
 
 struct TtsDenseWeights {
-  const uint16_t* norm = nullptr;
+  const float* norm = nullptr;
   // Predictor uses only its first five slots; the talker uses all 28.
   std::array<TtsLayerWeights, 28> layers;
 };
 
 struct TtsDeviceWeights {
   TtsVariant variant = TtsVariant::kCustomVoice17B;
-  const uint16_t* text_embedding = nullptr;
-  const uint16_t* codec_embedding = nullptr;
-  const uint16_t* codec_head = nullptr;
+  const float* text_embedding = nullptr;
+  const float* codec_embedding = nullptr;
+  const float* codec_head = nullptr;
   TtsAffineWeights text_fc1, text_fc2, predictor_projection;
   TtsDenseWeights talker, predictor;
-  std::array<const uint16_t*, 15> code_embeddings{}, code_heads{};
+  std::array<const float*, 15> code_embeddings{}, code_heads{};
 };
 
 Status BindTtsDeviceWeights(const void* data, size_t bytes,

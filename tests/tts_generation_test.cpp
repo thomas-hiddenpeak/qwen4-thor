@@ -136,7 +136,7 @@ Q4T_TEST(tts_dense_workspace_covers_cache_temporaries_and_budget) {
   Q4T_CHECK(PlanTtsDenseWorkspace(kLarge, false, 17, 65, kUnlimited, &w));
   Q4T_CHECK(w.hidden == 2048 && w.layers == 28 && w.intermediate == 6144);
   Q4T_CHECK(w.padded_rows == 32 && w.padded_context == 80);
-  const size_t cache_bytes = 28 * 80 * 1024 * sizeof(uint16_t);
+  const size_t cache_bytes = 28 * 80 * 1024 * sizeof(float);
   Q4T_CHECK(w.cache_v - w.cache_k == cache_bytes);
   Q4T_CHECK(w.gemm - w.cache_v >= cache_bytes);
   Q4T_CHECK(w.bytes == w.gemm + TtsDenseLayout::kGemmBytes);
@@ -162,18 +162,19 @@ Q4T_TEST(tts_device_binding_rejects_bad_payload_and_preserves_projection) {
     // Binding does not dereference this address or initialize CUDA.
     const void* base = reinterpret_cast<const void*>(uintptr_t{0x10000000});
     TtsDeviceWeights w;
-    Q4T_CHECK(BindTtsDeviceWeights(base, bytes, layout, variant, &w));
+    Q4T_CHECK(BindTtsDeviceWeights(base, bytes * 2, layout, variant, &w));
+    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes, layout, variant, &w));
     Q4T_CHECK(w.variant == variant && w.talker.layers[27].down);
     Q4T_CHECK(w.predictor.layers[4].down && !w.predictor.layers[5].down);
     Q4T_CHECK(bool(w.predictor_projection.weight) == (variant == kLarge));
     Q4T_CHECK(bool(w.predictor_projection.bias) == (variant == kLarge));
     Q4T_CHECK(w.code_embeddings[14] && w.code_heads[14]);
     const auto* previous = w.codec_head;
-    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes - 1, layout, variant, &w));
+    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes * 2 - 1, layout, variant, &w));
     Q4T_CHECK(!BindTtsDeviceWeights(reinterpret_cast<const void*>(
-        std::numeric_limits<uintptr_t>::max() - 1), bytes, layout, variant, &w));
+        std::numeric_limits<uintptr_t>::max() - 3), bytes * 2, layout, variant, &w));
     layout.tensors[0].offset += 2;
-    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes, layout, variant, &w));
+    Q4T_CHECK(!BindTtsDeviceWeights(base, bytes * 2, layout, variant, &w));
     Q4T_CHECK(w.codec_head == previous);
   }
   return true;
@@ -187,8 +188,8 @@ Q4T_TEST(tts_generation_workspace_accounts_for_both_models_and_history) {
   Q4T_CHECK(w.ids >= w.predictor_offset + w.predictor.bytes);
   Q4T_CHECK(w.affine_fp32 + 100 * 2048 * 4 <= w.prefill);
   Q4T_CHECK(w.prompt_rows + 9 * sizeof(TtsPromptRow) <= w.prefill);
-  Q4T_CHECK(w.text_projected + 100 * 2048 * 2 <= w.affine_fp32);
-  Q4T_CHECK(w.logits + 3072 * 2 <= w.bytes);
+  Q4T_CHECK(w.text_projected + 100 * 2048 * 4 <= w.affine_fp32);
+  Q4T_CHECK(w.logits + 3072 * 4 <= w.bytes);
   const size_t bytes = w.bytes;
   Q4T_CHECK(!PlanTtsGenerationWorkspace(kLarge, 100, 9, 120, bytes - 1, &w));
   Q4T_CHECK(w.bytes == bytes);
@@ -196,6 +197,43 @@ Q4T_TEST(tts_generation_workspace_accounts_for_both_models_and_history) {
                                         kUnlimited, &w));
   Q4T_CHECK(!PlanTtsGenerationWorkspace(kLarge, 100, 32768, 2, kUnlimited, &w));
   Q4T_CHECK(!PlanTtsGenerationWorkspace(kLarge, 100, 9, 4097, kUnlimited, &w));
+  return true;
+}
+
+Q4T_TEST(tts_weight_expansion_is_exact_bounded_and_transactional) {
+  const std::array<uint16_t, 4> packed{0x3f80, 0xc000, 0x0001, 0x8000};
+  std::array<float, 4> values{};
+  Q4T_CHECK(ExpandTtsWeightChunk(packed, values));
+  for (size_t i = 0; i < packed.size(); ++i)
+    Q4T_CHECK(std::bit_cast<uint32_t>(values[i]) ==
+              static_cast<uint32_t>(packed[i]) << 16);
+  const auto before = values;
+  auto invalid = packed;
+  invalid[3] = 0x7fc0;
+  Q4T_CHECK(!ExpandTtsWeightChunk(invalid, values) && values == before);
+  Q4T_CHECK(!ExpandTtsWeightChunk(packed, std::span<float>(values).first(3)));
+  Q4T_CHECK(!ExpandTtsWeightChunk({}, {}));
+  Q4T_CHECK(!ExpandTtsWeightChunk(
+      {reinterpret_cast<const uint16_t*>(values.data()), values.size()}, values));
+  return true;
+}
+
+Q4T_TEST(tts_float_logits_preserve_close_choices_and_reject_overflow) {
+  std::vector<float> logits(3072, -100);
+  logits[2] = 1.0f;
+  logits[3] = 1.0001f;  // Would collapse to the same BF16 number.
+  TtsCodeSampler sampler;
+  Q4T_CHECK(sampler.Init({.sample = false, .repetition_penalty = 2}, 1));
+  int32_t token = -1;
+  Q4T_CHECK(sampler.Select(logits, true, false, {}, &token) && token == 3);
+  int32_t repeated = 3;
+  Q4T_CHECK(sampler.Select(logits, true, false, {&repeated, 1}, &token));
+  Q4T_CHECK(token == 2);
+  logits[3] = -std::numeric_limits<float>::max();
+  Q4T_CHECK(!sampler.Select(logits, true, false, {&repeated, 1}, &token));
+  Q4T_CHECK(token == 2);
+  logits[3] = std::numeric_limits<float>::quiet_NaN();
+  Q4T_CHECK(!sampler.Select(logits, true, false, {}, &token));
   return true;
 }
 

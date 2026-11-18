@@ -101,7 +101,7 @@ def main():
     config.talker_config._attn_implementation = 'eager'
     config.talker_config.code_predictor_config._attn_implementation = 'eager'
     previous = torch.get_default_dtype()
-    torch.set_default_dtype(torch.bfloat16)
+    torch.set_default_dtype(torch.float32)
     try:
         talker = module.Qwen3TTSTalkerForConditionalGeneration(config.talker_config)
     finally:
@@ -110,11 +110,11 @@ def main():
     assert len(state) == 404 and all(key.startswith('talker.') for key in state)
     loading = talker.load_state_dict(
         {key.removeprefix('talker.'): value for key, value in state.items()},
-        strict=True, assign=True)
+        strict=True, assign=False)
     assert not loading.missing_keys and not loading.unexpected_keys
     del state
     talker.eval()
-    assert all(p.dtype == torch.bfloat16 and p.device.type == 'cpu'
+    assert all(p.dtype == torch.float32 and p.device.type == 'cpu'
                for p in talker.parameters())
     assert talker.model.config._attn_implementation == 'eager'
     assert talker.code_predictor.model.config._attn_implementation == 'eager'
@@ -138,9 +138,9 @@ def main():
         out.mkdir()
 
         def save(name, frame, group, tensor):
-            value = tensor.detach().to(torch.bfloat16).contiguous().view(torch.uint16)
+            value = tensor.detach().to(torch.float32).contiguous()
             assert value.numel() <= 512 * 2048
-            (out / f'{name}-{frame}-{group}.bf16').write_bytes(value.numpy().tobytes())
+            (out / f'{name}-{frame}-{group}.f32').write_bytes(value.numpy().tobytes())
 
         captured = {}
 

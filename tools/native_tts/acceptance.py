@@ -16,8 +16,8 @@ LIMITS = {'seconds': 1200, 'native_seconds': 600, 'reference_seconds': 600,
           'frames_per_case': 2, 'native_advances': 600,
           'reference_talker_forwards': 4, 'reference_predictor_forwards': 60,
           'main_llm_loads': 0, 'http_requests': 0}
-THRESHOLDS = {'conditioning': {'cosine': 0.99995, 'relative_l2': 0.01},
-              'dense': {'cosine': 0.9995, 'relative_l2': 0.04},
+THRESHOLDS = {'conditioning': {'cosine': 0.999999999, 'relative_l2': 0.00001},
+              'dense': {'cosine': 0.99999999, 'relative_l2': 0.0001},
               'identical_teacher_forced_greedy_codes': True}
 CASES = [dict(text='Hello, this is a native speech test.',
               instruction='Speak calmly.', voice='ryan', language='english',
@@ -41,7 +41,7 @@ def defaults():
 
 
 def validate_plan(plan):
-    assert plan['schema'] == 'q4t-native-tts-component-v1'
+    assert plan['schema'] == 'q4t-native-tts-component-fp32-v1'
     assert plan['limits'] == LIMITS and plan['thresholds'] == THRESHOLDS
     assert plan['cases'] == CASES
     assert plan['eos_qualified'] is False and plan['audio_qualified'] is False
@@ -51,24 +51,23 @@ def operands(native_result):
     text, prefill = native_result['text_tokens'], native_result['prefill_tokens']
     assert type(text) is int and 0 < text <= 512
     assert type(prefill) is int and 0 < prefill <= 512
-    names = [('text-projected-0-0.bf16', text * 2048, 'conditioning'),
-             ('prefill-0-0.bf16', prefill * 2048, 'conditioning')]
+    names = [('text-projected-0-0.f32', text * 2048, 'conditioning'),
+             ('prefill-0-0.f32', prefill * 2048, 'conditioning')]
     for frame in range(2):
-        names += [(f'talker-hidden-{frame}-0.bf16', 2048, 'dense'),
-                  (f'talker-logits-{frame}-0.bf16', 3072, 'dense')]
+        names += [(f'talker-hidden-{frame}-0.f32', 2048, 'dense'),
+                  (f'talker-logits-{frame}-0.f32', 3072, 'dense')]
         for group in range(1, 16):
-            names += [(f'predictor-hidden-{frame}-{group}.bf16', 1024, 'dense'),
-                      (f'predictor-logits-{frame}-{group}.bf16', 2048, 'dense')]
+            names += [(f'predictor-hidden-{frame}-{group}.f32', 1024, 'dense'),
+                      (f'predictor-logits-{frame}-{group}.f32', 2048, 'dense')]
     return names
 
 
 def compare_pair(native, reference, count, threshold):
     import numpy as np
-    assert native.stat().st_size == reference.stat().st_size == count * 2
+    assert native.stat().st_size == reference.stat().st_size == count * 4
 
     def read(path):
-        return (np.fromfile(path, '<u2').astype(np.uint32) << 16).view(
-            np.float32).astype(np.float64)
+        return np.fromfile(path, '<f4').astype(np.float64)
 
     a, b = read(native), read(reference)
     assert a.size == b.size == count
@@ -123,7 +122,7 @@ def compare(output, plan):
         names = operands(record)
         assert len(names) == 66
         for directory in (native, reference):
-            assert {p.name for p in directory.glob('*.bf16')} == {n[0] for n in names}
+            assert {p.name for p in directory.glob('*.f32')} == {n[0] for n in names}
         for name, count, kind in names:
             checks.append(dict(case=index, operand=name, elements=count,
                 **compare_pair(native / name, reference / name, count,

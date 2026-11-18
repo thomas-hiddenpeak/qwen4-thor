@@ -1,0 +1,10 @@
+{
+  "warnings": 0,
+  "binary_sha256": "6447709b448a6799855c3fe9ed3b995eb73d9969a5fec474e49702b05dfa0eaa",
+  "cuda_binary_sha256": "ca4bf466f54df5f41f85944309fdb7a5213d92838f4ac9d59726d3873265392b",
+  "logs": [
+    "build.log",
+    "../fp32-build-01.log"
+  ],
+  "builds_succeeded": true
+}

@@ -1,6 +1,8 @@
 #include "q4t/audio/tts_layout.h"
 
 #include <algorithm>
+#include <bit>
+#include <cmath>
 #include <limits>
 #include <map>
 #include <utility>
@@ -78,17 +80,41 @@ Status ValidateTtsWeightLayout(const TtsWeightLayout& layout,
   return {};
 }
 
+Status ExpandTtsWeightChunk(std::span<const uint16_t> input,
+                            std::span<float> output) {
+  const auto source = reinterpret_cast<uintptr_t>(input.data());
+  const auto target = reinterpret_cast<uintptr_t>(output.data());
+  if (input.empty() || input.size() > (1U << 20) ||
+      input.size() != output.size() || !source || !target ||
+      source % alignof(uint16_t) || target % alignof(float) ||
+      source > std::numeric_limits<uintptr_t>::max() - input.size_bytes() ||
+      target > std::numeric_limits<uintptr_t>::max() - output.size_bytes() ||
+      (source < target + output.size_bytes() &&
+       target < source + input.size_bytes()))
+    return Status::Fail("TTS weight expansion buffers invalid");
+  const auto value = [&](size_t i) {
+    return std::bit_cast<float>(static_cast<uint32_t>(input[i]) << 16);
+  };
+  for (size_t i = 0; i < input.size(); ++i)
+    if (!std::isfinite(value(i)))
+      return Status::Fail("TTS weight is not finite");
+  for (size_t i = 0; i < input.size(); ++i) output[i] = value(i);
+  return {};
+}
+
 Status BindTtsDeviceWeights(const void* data, size_t bytes,
                             const TtsWeightLayout& layout, TtsVariant variant,
                             TtsDeviceWeights* out) {
   const auto base = reinterpret_cast<uintptr_t>(data);
-  if (!data || !out || base % 2 || bytes != layout.bytes ||
+  if (!data || !out || base % alignof(float) ||
+      layout.bytes > std::numeric_limits<size_t>::max() / 2 ||
+      bytes != layout.bytes * 2 ||
       base > std::numeric_limits<uintptr_t>::max() - bytes)
     return Status::Fail("TTS device buffer bounds invalid");
   if (auto s = ValidateTtsWeightLayout(layout, variant); !s) return s;
-  std::map<std::string, const uint16_t*> pointers;
+  std::map<std::string, const float*> pointers;
   for (const auto& t : layout.tensors)
-    pointers.emplace(t.name, reinterpret_cast<const uint16_t*>(base + t.offset));
+    pointers.emplace(t.name, reinterpret_cast<const float*>(base + t.offset * 2));
   const auto affine = [&](const std::string& name) {
     return TtsAffineWeights{pointers.at(name + ".weight"),
                              pointers.at(name + ".bias")};
@@ -155,23 +181,23 @@ Status PlanTtsDenseWorkspace(TtsVariant variant, bool predictor,
     w.bytes = start + bytes;
     return start;
   };
-  const auto bf16 = [&](size_t n) { return carve(n * sizeof(uint16_t)); };
-  w.hidden_state = bf16(rows * w.hidden);
-  w.normalized = bf16(rows * w.hidden);
-  w.projected = bf16(rows * w.hidden);
-  w.q = bf16(rows * 2048);
-  w.k = bf16(rows * 1024);
-  w.v = bf16(rows * 1024);
-  w.head_q = bf16(static_cast<size_t>(w.padded_rows) * 2048);
-  w.rope = bf16(rows * 128);
-  w.scores = bf16(rows * w.padded_context);
-  w.head_output = bf16(rows * 128);
-  w.attention = bf16(rows * 2048);
-  w.gate = bf16(rows * w.intermediate);
-  w.up = bf16(rows * w.intermediate);
+  const auto fp32 = [&](size_t n) { return carve(n * sizeof(float)); };
+  w.hidden_state = fp32(rows * w.hidden);
+  w.normalized = fp32(rows * w.hidden);
+  w.projected = fp32(rows * w.hidden);
+  w.q = fp32(rows * 2048);
+  w.k = fp32(rows * 1024);
+  w.v = fp32(rows * 1024);
+  w.head_q = fp32(static_cast<size_t>(w.padded_rows) * 2048);
+  w.rope = fp32(rows * 128);
+  w.scores = fp32(rows * w.padded_context);
+  w.head_output = fp32(rows * 128);
+  w.attention = fp32(rows * 2048);
+  w.gate = fp32(rows * w.intermediate);
+  w.up = fp32(rows * w.intermediate);
   const size_t cache = static_cast<size_t>(w.layers) * w.padded_context * 1024;
-  w.cache_k = bf16(cache);
-  w.cache_v = bf16(cache);
+  w.cache_k = fp32(cache);
+  w.cache_v = fp32(cache);
   w.gemm = carve(TtsDenseLayout::kGemmBytes);
   if (w.bytes > max_bytes) return Status::Fail("TTS dense RAM budget exceeded");
   *out = w;
@@ -196,23 +222,23 @@ Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
     w.bytes = start + bytes;
     return start;
   };
-  const auto bf16 = [&](size_t n) { return carve(n * sizeof(uint16_t)); };
+  const auto fp32 = [&](size_t n) { return carve(n * sizeof(float)); };
   const size_t hidden = w.talker.hidden;
   w.talker_offset = carve(w.talker.bytes);
   w.predictor_offset = carve(w.predictor.bytes);
   w.ids = carve(std::max(text_tokens, size_t{16}) * sizeof(int32_t));
-  w.text_lookup = bf16(text_tokens * 2048);
-  w.text_intermediate = bf16(text_tokens * 2048);
-  w.text_projected = bf16(text_tokens * hidden);
+  w.text_lookup = fp32(text_tokens * 2048);
+  w.text_intermediate = fp32(text_tokens * 2048);
+  w.text_projected = fp32(text_tokens * hidden);
   w.affine_fp32 = carve(text_tokens * 2048 * sizeof(float));
   w.prompt_rows = carve(prefill_tokens * sizeof(TtsPromptRow));
-  w.prefill = bf16(prefill_tokens * hidden);
-  w.past_hidden = bf16(hidden);
-  w.codec_embeddings = bf16(16 * hidden);
-  w.decode_input = bf16(hidden);
-  w.predictor_input = bf16(2 * hidden);
-  w.predictor_projected = bf16(2 * 1024);
-  w.logits = bf16(3072);
+  w.prefill = fp32(prefill_tokens * hidden);
+  w.past_hidden = fp32(hidden);
+  w.codec_embeddings = fp32(16 * hidden);
+  w.decode_input = fp32(hidden);
+  w.predictor_input = fp32(2 * hidden);
+  w.predictor_projected = fp32(2 * 1024);
+  w.logits = fp32(3072);
   if (w.bytes > max_bytes)
     return Status::Fail("TTS generation RAM budget exceeded");
   *out = w;

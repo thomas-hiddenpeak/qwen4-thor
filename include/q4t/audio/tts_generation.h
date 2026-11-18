@@ -39,13 +39,16 @@ struct TtsSampling {
   float repetition_penalty = 1.05f;
 };
 
-// Raw BF16 head logits become FP32 before penalties/temperature, as in the
-// official generation path. Sampling RNG is per request. Returned IDs remain
+// FP32 head logits retain their precision through penalties/temperature.
+// The BF16 overload expands legacy operands exactly. RNG is per request; IDs
 // uncommitted until an entire 16-code frame has been generated successfully.
 class TtsCodeSampler {
  public:
   Status Init(const TtsSampling& options, uint64_t seed);
   Status Select(std::span<const uint16_t> logits, bool group_zero,
+                 bool allow_eos, std::span<const int32_t> history,
+                 int32_t* token);
+  Status Select(std::span<const float> logits, bool group_zero,
                  bool allow_eos, std::span<const int32_t> history,
                  int32_t* token);
 

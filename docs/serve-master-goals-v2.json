@@ -7872,5 +7872,19 @@
       "evidence": "docs/evidence/serve-chat-audio-delivery-20261118/README.md",
       "main_integration_pending": true
     }
+  },
+  "native_tts_progress": {
+    "date": "2026-11-18",
+    "state": "compute_component_qualified_pcm_and_service_in_progress",
+    "plan": "SERVE_NATIVE_TTS_2026-11-18.md",
+    "evidence": "evidence/serve-tts-fp32-component-20261118/README.md",
+    "full_task_complete": false,
+    "remaining": [
+      "native codec/PCM and utterance EOS/quality",
+      "speech API and Chat audio outputs/history",
+      "SDK/TLS/recovery/release",
+      "Responses/Batch/Realtime integration"
+    ],
+    "prior_bf16_numerical_failure_preserved": true
   }
 }

@@ -10,8 +10,8 @@ namespace q4t::audio {
 namespace {
 using namespace tts_detail;
 
-__global__ void Norm(const uint16_t* input, const uint16_t* weight,
-                     uint16_t* output, int hidden) {
+__global__ void Norm(const float* input, const float* weight,
+                     float* output, int hidden) {
   __shared__ float reduction[kThreads];
   const size_t base = static_cast<size_t>(blockIdx.x) * hidden;
   float sum = 0;
@@ -21,40 +21,40 @@ __global__ void Norm(const uint16_t* input, const uint16_t* weight,
   }
   const float rms = rsqrtf(Reduce<false>(sum, reduction) / hidden + 1e-6f);
   for (int d = threadIdx.x; d < hidden; d += blockDim.x)
-    output[base + d] = Write(__fmul_rn(
-        Round(__fmul_rn(Read(input, base + d), rms)), Read(weight, d)));
+    output[base + d] = __fmul_rn(
+        __fmul_rn(Read(input, base + d), rms), Read(weight, d));
 }
 
-__global__ void RopeTable(uint16_t* rope, int rows, int past) {
+__global__ void RopeTable(float* rope, int rows, int past) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= rows * 64) return;
   const int row = i / 64, d = i % 64;
   const float inverse = 1.0f / powf(1000000.0f, 2.0f * d / 128);
   const float angle = __fmul_rn(static_cast<float>(past + row), inverse);
-  rope[row * 128 + d] = Write(cosf(angle));
-  rope[row * 128 + d + 64] = Write(sinf(angle));
+  rope[row * 128 + d] = cosf(angle);
+  rope[row * 128 + d + 64] = sinf(angle);
 }
 
-__global__ void NormRope(const uint16_t* input, const uint16_t* weight,
-                         const uint16_t* rope, uint16_t* output, int heads,
+__global__ void NormRope(const float* input, const float* weight,
+                         const float* rope, float* output, int heads,
                          int stride, int past) {
   __shared__ float reduction[128], normalized[128];
   const int row = blockIdx.x, h = blockIdx.y, d = threadIdx.x;
   const float x = Read(input, (row * heads + h) * 128 + d);
   const float rms = rsqrtf(Reduce<false>(__fmul_rn(x, x), reduction) / 128 +
                             1e-6f);
-  normalized[d] = Round(__fmul_rn(Round(__fmul_rn(x, rms)), Read(weight, d)));
+  normalized[d] = __fmul_rn(__fmul_rn(x, rms), Read(weight, d));
   __syncthreads();
   const int pair = (d + 64) % 128;
   const float rotated = d < 64 ? -normalized[pair] : normalized[pair];
   const float cosine = Read(rope, row * 128 + d % 64);
   const float sine = Read(rope, row * 128 + 64 + d % 64);
   output[(static_cast<size_t>(h) * stride + past + row) * 128 + d] =
-      Write(__fadd_rn(Round(__fmul_rn(normalized[d], cosine)),
-                      Round(__fmul_rn(rotated, sine))));
+      __fadd_rn(__fmul_rn(normalized[d], cosine),
+                 __fmul_rn(rotated, sine));
 }
 
-__global__ void CacheValues(const uint16_t* values, uint16_t* cache,
+__global__ void CacheValues(const float* values, float* cache,
                             int rows, int context, int past) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= rows * 1024) return;
@@ -62,16 +62,16 @@ __global__ void CacheValues(const uint16_t* values, uint16_t* cache,
   cache[(h * 128 + d) * context + past + row] = values[i];
 }
 
-__global__ void Softmax(uint16_t* scores, int stride, int past) {
+__global__ void Softmax(float* scores, int stride, int past) {
   __shared__ float reduction[kThreads];
   const int row = blockIdx.x, last = past + row;
   const size_t base = static_cast<size_t>(row) * stride;
   float maximum = -CUDART_INF_F;
   for (int j = threadIdx.x; j < stride; j += blockDim.x) {
     const float score = j <= last
-        ? Round(__fmul_rn(Read(scores, base + j), 0.08838834764831845f))
+        ? __fmul_rn(Read(scores, base + j), 0.08838834764831845f)
         : -CUDART_INF_F;
-    scores[base + j] = Write(score);
+    scores[base + j] = score;
     maximum = fmaxf(maximum, score);
   }
   maximum = Reduce<true>(maximum, reduction);
@@ -81,25 +81,25 @@ __global__ void Softmax(uint16_t* scores, int stride, int past) {
     sum += expf(Read(scores, base + j) - maximum);
   sum = Reduce<false>(sum, reduction);
   for (int j = threadIdx.x; j < stride; j += blockDim.x)
-    scores[base + j] = Write(j <= last
-        ? expf(Read(scores, base + j) - maximum) / sum : 0.0f);
+    scores[base + j] = j <= last
+        ? expf(Read(scores, base + j) - maximum) / sum : 0.0f;
 }
 
-__global__ void Merge(const uint16_t* head, uint16_t* output, int rows, int h) {
+__global__ void Merge(const float* head, float* output, int rows, int h) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i < rows * 128) output[(i / 128 * 16 + h) * 128 + i % 128] = head[i];
 }
 
-__global__ void Residual(uint16_t* hidden, const uint16_t* update, int count) {
+__global__ void Residual(float* hidden, const float* update, int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (i < count) hidden[i] = Write(__fadd_rn(Read(hidden, i), Read(update, i)));
+  if (i < count) hidden[i] = __fadd_rn(Read(hidden, i), Read(update, i));
 }
 
-__global__ void SwiGlu(uint16_t* gate, const uint16_t* up, int count) {
+__global__ void SwiGlu(float* gate, const float* up, int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= count) return;
   const float x = Read(gate, i);
-  gate[i] = Write(__fmul_rn(Round(x / (1.0f + expf(-x))), Read(up, i)));
+  gate[i] = __fmul_rn(x / (1.0f + expf(-x)), Read(up, i));
 }
 
 bool Present(const TtsLayerWeights& w) {
@@ -140,7 +140,7 @@ TtsComputeResult TtsDenseRun::Reset(cudaStream_t stream) {
   return result;
 }
 
-TtsComputeResult TtsDenseRun::Begin(std::span<const uint16_t> input,
+TtsComputeResult TtsDenseRun::Begin(std::span<const float> input,
                                     cudaStream_t stream) {
   if (!initialized_ || active_ || failed_ || input.empty() ||
       input.size() % layout_.hidden ||
@@ -149,7 +149,7 @@ TtsComputeResult TtsDenseRun::Begin(std::span<const uint16_t> input,
     return Invalid("TTS dense prefix or cache capacity invalid");
   const auto source = reinterpret_cast<uintptr_t>(input.data());
   const auto base = reinterpret_cast<uintptr_t>(workspace_);
-  if (!source || source % 2 || source + input.size_bytes() < source ||
+  if (!source || source % alignof(float) || source + input.size_bytes() < source ||
       (source < base + layout_.bytes && base < source + input.size_bytes()))
     return Invalid("TTS dense input overlaps execution workspace");
   rows_ = static_cast<int>(input.size() / layout_.hidden);
@@ -157,7 +157,7 @@ TtsComputeResult TtsDenseRun::Begin(std::span<const uint16_t> input,
       input.data(), input.size_bytes(), cudaMemcpyDeviceToDevice, stream);
   if (copied == cudaSuccess)
     RopeTable<<<(rows_ * 64 + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
-        reinterpret_cast<uint16_t*>(workspace_ + layout_.rope), rows_, past_);
+        reinterpret_cast<float*>(workspace_ + layout_.rope), rows_, past_);
   auto result = Complete({}, stream, copied);
   failed_ = !result.ok();
   if (result.ok()) { active_ = true; layer_ = 0; }
@@ -172,7 +172,7 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
   const int context = layout_.padded_context;
   const int used = (past_ + rows_ + 15) / 16 * 16;
   const auto at = [&](size_t offset) {
-    return reinterpret_cast<uint16_t*>(workspace_ + offset);
+    return reinterpret_cast<float*>(workspace_ + offset);
   };
   auto* hidden = at(layout_.hidden_state);
   auto* normalized = at(layout_.normalized);
@@ -188,7 +188,7 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
   auto* gate = at(layout_.gate); auto* up = at(layout_.up);
   Status status;
 #ifdef Q4T_TTS_DENSE_TRACE
-  const auto trace = [&](const char* name, const uint16_t* data,
+  const auto trace = [&](const char* name, const float* data,
                           size_t count) {
     if (layout_.layers != 5 || past_ != 0) return;
     const auto result = Complete(status, stream);
@@ -197,13 +197,13 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
                     layer_, 0, {data, count});
   };
 #else
-  const auto trace = [](const char*, const uint16_t*, size_t) {};
+  const auto trace = [](const char*, const float*, size_t) {};
 #endif
-  const auto gemm = [&](const uint16_t* x, const uint16_t* weight,
-                         uint16_t* y, int n, int inner, int stride = 0) {
+  const auto gemm = [&](const float* x, const float* weight,
+                         float* y, int n, int inner, int stride = 0) {
     if (status)
       status = Matmul(x, weight, y, t, n, inner, stride ? stride : inner,
-          CUDA_R_16BF, CUDA_R_16BF, workspace_ + layout_.gemm,
+          CUDA_R_32F, CUDA_R_32F, workspace_ + layout_.gemm,
           TtsDenseLayout::kGemmBytes, stream);
   };
   Norm<<<t, kThreads, 0, stream>>>(hidden, w.input_norm, normalized, h);
@@ -270,14 +270,14 @@ TtsComputeResult TtsDenseRun::NextLayer(cudaStream_t stream) {
   return result;
 }
 
-TtsComputeResult TtsDenseRun::Finish(std::span<const uint16_t>* last_hidden,
+TtsComputeResult TtsDenseRun::Finish(std::span<const float>* last_hidden,
                                      cudaStream_t stream) {
   if (!initialized_ || !active_ || failed_ || layer_ != layout_.layers ||
       !last_hidden)
     return Invalid("TTS dense finish out of order");
-  const auto* last = reinterpret_cast<uint16_t*>(
+  const auto* last = reinterpret_cast<float*>(
       workspace_ + layout_.hidden_state) + (rows_ - 1) * layout_.hidden;
-  auto* out = reinterpret_cast<uint16_t*>(workspace_ + layout_.normalized);
+  auto* out = reinterpret_cast<float*>(workspace_ + layout_.normalized);
   Norm<<<1, kThreads, 0, stream>>>(last, weights_->norm, out, layout_.hidden);
   auto result = Complete({}, stream);
   failed_ = !result.ok();

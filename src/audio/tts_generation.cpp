@@ -134,6 +134,20 @@ Status TtsCodeSampler::Select(std::span<const uint16_t> logits,
                               std::span<const int32_t> history,
                               int32_t* token) {
   const size_t count = group_zero ? 3072 : 2048;
+  if (logits.size() != count)
+    return Status::Fail("TTS logits dimensions invalid");
+  std::array<float, 3072> expanded;
+  for (size_t i = 0; i < count; ++i)
+    expanded[i] = std::bit_cast<float>(static_cast<uint32_t>(logits[i]) << 16);
+  return Select(std::span<const float>(expanded.data(), count),
+                  group_zero, allow_eos, history, token);
+}
+
+Status TtsCodeSampler::Select(std::span<const float> logits,
+                              bool group_zero, bool allow_eos,
+                              std::span<const int32_t> history,
+                              int32_t* token) {
+  const size_t count = group_zero ? 3072 : 2048;
   if (!initialized_ || !token || logits.size() != count || history.size() > 4096)
     return Status::Fail("TTS logits or sampler state invalid");
   std::array<bool, 2048> repeated{};
@@ -145,7 +159,7 @@ Status TtsCodeSampler::Select(std::span<const uint16_t> logits,
   struct Candidate { int32_t id; float score; double mass = 0; };
   std::vector<Candidate> candidates;
   for (size_t i = 0; i < count; ++i) {
-    float score = std::bit_cast<float>(static_cast<uint32_t>(logits[i]) << 16);
+    float score = logits[i];
     if (!std::isfinite(score))
       return Status::Fail("TTS model logits are not finite");
     if (i >= 2048 && !(i == TtsConfig::kCodecEos && allow_eos)) continue;

@@ -9,23 +9,23 @@ namespace q4t::audio {
 namespace {
 using namespace tts_detail;
 
-__global__ void TextLookup(const uint16_t* table, const int32_t* ids,
-                           uint16_t* output, int count) {
+__global__ void TextLookup(const float* table, const int32_t* ids,
+                           float* output, int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i < count)
     output[i] = table[static_cast<size_t>(ids[i / 2048]) * 2048 + i % 2048];
 }
 
-__global__ void AffineOutput(const float* input, const uint16_t* bias,
-                             uint16_t* output, int count, int width, bool silu) {
+__global__ void AffineOutput(const float* input, const float* bias,
+                             float* output, int count, int width, bool silu) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= count) return;
-  const float x = Round(__fadd_rn(input[i], Read(bias, i % width)));
-  output[i] = Write(silu ? x / (1.0f + expf(-x)) : x);
+  const float x = __fadd_rn(input[i], Read(bias, i % width));
+  output[i] = silu ? x / (1.0f + expf(-x)) : x;
 }
 
-__global__ void PromptRows(const uint16_t* text, const uint16_t* codec,
-                           const TtsPromptRow* rows, uint16_t* output,
+__global__ void PromptRows(const float* text, const float* codec,
+                           const TtsPromptRow* rows, float* output,
                            int width, int count) {
   const int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i >= count) return;
@@ -33,25 +33,25 @@ __global__ void PromptRows(const uint16_t* text, const uint16_t* codec,
   const int d = i % width;
   const auto source = static_cast<size_t>(row.text_index) * width + d;
   output[i] = row.codec_id < 0 ? text[source]
-      : Write(__fadd_rn(Read(text, source),
-                        Read(codec, static_cast<size_t>(row.codec_id) * width + d)));
+      : __fadd_rn(Read(text, source),
+                   Read(codec, static_cast<size_t>(row.codec_id) * width + d));
 }
 
-__global__ void SumFrame(const uint16_t* codes, const uint16_t* text,
-                         uint16_t* output, int width) {
+__global__ void SumFrame(const float* codes, const float* text,
+                         float* output, int width) {
   const int d = blockIdx.x * blockDim.x + threadIdx.x;
   if (d >= width) return;
   float sum = 0;
   for (int group = 0; group < 16; ++group)
     sum += Read(codes, group * width + d);
-  output[d] = Write(__fadd_rn(Round(sum), Read(text, d)));
+  output[d] = __fadd_rn(sum, Read(text, d));
 }
 
-Status Affine(const uint16_t* input, TtsAffineWeights weights,
-               uint16_t* output, int m, int n, int k, bool silu,
+Status Affine(const float* input, TtsAffineWeights weights,
+               float* output, int m, int n, int k, bool silu,
                float* temporary, void* gemm, cudaStream_t stream) {
   auto status = Matmul(input, weights.weight, temporary, m, n, k, k,
-      CUDA_R_16BF, CUDA_R_32F, gemm, TtsDenseLayout::kGemmBytes, stream);
+      CUDA_R_32F, CUDA_R_32F, gemm, TtsDenseLayout::kGemmBytes, stream);
   if (status)
     AffineOutput<<<(m * n + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
         temporary, weights.bias, output, m * n, n, silu);
@@ -103,7 +103,7 @@ TtsComputeResult TtsGenerationRun::Begin(const TtsDeviceWeights& weights,
       workspace_ + layout_.predictor_offset, layout_.predictor.bytes, stream);
   if (!result.ok()) return record(result);
   const auto at = [&](size_t offset) {
-    return reinterpret_cast<uint16_t*>(workspace_ + offset);
+    return reinterpret_cast<float*>(workspace_ + offset);
   };
   auto copied = cudaMemcpyAsync(workspace_ + layout_.ids, prompt_.text_ids.data(),
       prompt_.text_ids.size() * sizeof(int32_t), cudaMemcpyHostToDevice, stream);
@@ -150,15 +150,15 @@ TtsComputeResult TtsGenerationRun::Begin(const TtsDeviceWeights& weights,
 }
 
 TtsComputeResult TtsGenerationRun::Head(TtsDenseRun& run,
-    const uint16_t* head, std::span<uint16_t> logits, bool save_hidden,
+    const float* head, std::span<float> logits, bool save_hidden,
     cudaStream_t stream) {
-  std::span<const uint16_t> hidden;
+  std::span<const float> hidden;
   auto result = run.Finish(&hidden, stream);
   if (!result.ok()) return result;
-  auto* device_logits = reinterpret_cast<uint16_t*>(workspace_ + layout_.logits);
+  auto* device_logits = reinterpret_cast<float*>(workspace_ + layout_.logits);
   auto status = Matmul(hidden.data(), head, device_logits, 1,
       static_cast<int>(logits.size()), static_cast<int>(hidden.size()),
-      static_cast<int>(hidden.size()), CUDA_R_16BF, CUDA_R_16BF,
+      static_cast<int>(hidden.size()), CUDA_R_32F, CUDA_R_32F,
       workspace_ + layout_.talker_offset + layout_.talker.gemm,
       TtsDenseLayout::kGemmBytes, stream);
   cudaError_t copied = cudaSuccess;
@@ -182,13 +182,13 @@ TtsComputeResult TtsGenerationRun::Head(TtsDenseRun& run,
 
 TtsComputeResult TtsGenerationRun::ProjectPredictor(int rows,
                                                    cudaStream_t stream) {
-  const auto* input = reinterpret_cast<uint16_t*>(workspace_ + layout_.predictor_input);
-  auto* output = reinterpret_cast<uint16_t*>(workspace_ + layout_.predictor_projected);
+  const auto* input = reinterpret_cast<float*>(workspace_ + layout_.predictor_input);
+  auto* output = reinterpret_cast<float*>(workspace_ + layout_.predictor_projected);
   const int hidden = layout_.talker.hidden;
   TtsComputeResult result;
   if (hidden == 1024) {
     result = Complete({}, stream, cudaMemcpyAsync(output, input,
-        static_cast<size_t>(rows) * 1024 * sizeof(uint16_t),
+        static_cast<size_t>(rows) * 1024 * sizeof(float),
         cudaMemcpyDeviceToDevice, stream));
   } else {
     result = Complete(Affine(input, weights_->predictor_projection, output,
@@ -205,7 +205,7 @@ TtsComputeResult TtsGenerationRun::BeginPredictor(int32_t code,
                                                  cudaStream_t stream) {
   auto result = predictor_.Reset(stream);
   if (!result.ok()) return result;
-  const size_t row_bytes = layout_.talker.hidden * sizeof(uint16_t);
+  const size_t row_bytes = layout_.talker.hidden * sizeof(float);
   auto copied = cudaMemcpyAsync(workspace_ + layout_.predictor_input,
       workspace_ + layout_.past_hidden, row_bytes, cudaMemcpyDeviceToDevice, stream);
   if (copied == cudaSuccess)
@@ -222,7 +222,7 @@ TtsComputeResult TtsGenerationRun::ContinuePredictor(size_t group, int32_t code,
   const auto copied = cudaMemcpyAsync(workspace_ + layout_.predictor_input,
       weights_->code_embeddings[group - 1] +
           static_cast<size_t>(code) * layout_.talker.hidden,
-      layout_.talker.hidden * sizeof(uint16_t), cudaMemcpyDeviceToDevice, stream);
+      layout_.talker.hidden * sizeof(float), cudaMemcpyDeviceToDevice, stream);
   auto result = Complete({}, stream, copied);
   if (!result.ok()) return result;
   return ProjectPredictor(1, stream);
@@ -236,18 +236,18 @@ TtsComputeResult TtsGenerationRun::ContinueTalker(cudaStream_t stream) {
     const auto* table = i == 0 ? weights_->codec_embedding
                                : weights_->code_embeddings[i - 1];
     copied = cudaMemcpyAsync(workspace_ + layout_.codec_embeddings +
-        i * hidden * sizeof(uint16_t), table + static_cast<size_t>(codes[i]) * hidden,
-        hidden * sizeof(uint16_t), cudaMemcpyDeviceToDevice, stream);
+        i * hidden * sizeof(float), table + static_cast<size_t>(codes[i]) * hidden,
+        hidden * sizeof(float), cudaMemcpyDeviceToDevice, stream);
   }
   const size_t frame = state_.frames() - 1;
   const auto index = frame < prompt_.trailing_text.size()
       ? prompt_.trailing_text[frame] : prompt_.pad_index;
-  const auto* text = reinterpret_cast<uint16_t*>(workspace_ + layout_.text_projected) +
+  const auto* text = reinterpret_cast<float*>(workspace_ + layout_.text_projected) +
                      static_cast<size_t>(index) * hidden;
-  auto* output = reinterpret_cast<uint16_t*>(workspace_ + layout_.decode_input);
+  auto* output = reinterpret_cast<float*>(workspace_ + layout_.decode_input);
   if (copied == cudaSuccess)
     SumFrame<<<(hidden + kThreads - 1) / kThreads, kThreads, 0, stream>>>(
-        reinterpret_cast<uint16_t*>(workspace_ + layout_.codec_embeddings),
+        reinterpret_cast<float*>(workspace_ + layout_.codec_embeddings),
         text, output, hidden);
   auto result = Complete({}, stream, copied);
   if (!result.ok()) return result;
@@ -263,7 +263,7 @@ TtsComputeResult TtsGenerationRun::Advance(cudaStream_t stream) {
   };
   if (!predicting_) {
     if (talker_.completed_layers() < 28) return record(talker_.NextLayer(stream));
-    std::array<uint16_t, 3072> logits;
+    std::array<float, 3072> logits;
     auto result = Head(talker_, weights_->codec_head, logits, true, stream);
     if (!result.ok()) return record(result);
     int32_t token;
@@ -279,7 +279,7 @@ TtsComputeResult TtsGenerationRun::Advance(cudaStream_t stream) {
   if (predictor_.completed_layers() < 5)
     return record(predictor_.NextLayer(stream));
   const auto group = state_.next_group();
-  std::array<uint16_t, 2048> logits;
+  std::array<float, 2048> logits;
   auto result = Head(predictor_, weights_->code_heads[group - 1], logits,
                       false, stream);
   if (!result.ok()) return record(result);

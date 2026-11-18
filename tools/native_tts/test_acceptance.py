@@ -20,7 +20,7 @@ class AcceptanceTest(unittest.TestCase):
         values = np.array([1., 2., 3., 4.], dtype=np.float32)
 
         def save(path, value):
-            (value.view(np.uint32) >> 16).astype('<u2').tofile(path)
+            value.astype('<f4').tofile(path)
 
         save(a, values)
         save(b, values)
@@ -53,7 +53,7 @@ class AcceptanceTest(unittest.TestCase):
                 gate.compare_codes(path, record)
 
     def test_plan_and_operand_budget_cannot_expand(self):
-        plan = dict(schema='q4t-native-tts-component-v1', limits=gate.LIMITS,
+        plan = dict(schema='q4t-native-tts-component-fp32-v1', limits=gate.LIMITS,
                     thresholds=gate.THRESHOLDS, cases=gate.CASES,
                     eos_qualified=False, audio_qualified=False)
         gate.validate_plan(plan)

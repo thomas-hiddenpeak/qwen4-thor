@@ -1,0 +1,37 @@
+{
+  "changes": {
+    "include/q4t/audio/tts_generation.h": {
+      "before": "d8a02d72df064101ccf4230bdeb27936d6a7dbc19d55253ec02ea992b6dee744",
+      "after": "9132225a9159b98675e49bf3904005887ade5e6074c23fe16afd300df814190e"
+    },
+    "include/q4t/audio/tts_layout.h": {
+      "before": "cf1c8939437b153f2b0c1b694ac6dcd0f651938c8c6803826cd9cef60bb945fb",
+      "after": "da96a7ff39a150b9b84f34d70c05696fbc7418207274420e468044ca9232c447"
+    },
+    "include/q4t/audio/tts_model.h": {
+      "before": "783a512f6108c43596252bbfe2a3ea15a7f9b20667a143babe10e5f589d98e2c",
+      "after": "06acf6e9e2c75cfabbbb6add859497dc5c1fe2bacda4fc3f8992bfb401a919e2"
+    },
+    "src/audio/tts_dense.cu": {
+      "before": "35081de284ef7aa148a524f66583a8abe45be419d7db857c60ea31de3cd47272",
+      "after": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748"
+    },
+    "src/audio/tts_generation.cpp": {
+      "before": "013f11b66d2228b219d667d2c05ba61400aadc62fa5f6576a8142d35ad35f1a0",
+      "after": "982a508acf131229aa019b687d6dbeb8e652723efa7d2e5867340593bf0aa5cb"
+    },
+    "src/audio/tts_layout.cpp": {
+      "before": "315dfa49860e2517e79dd3723cdc4ecfe6742e55f3a5595ed7283d0cca32231c",
+      "after": "14d5d3bb84a4313bbfd07ba3c36c37f351c7faffbcc4c5bd2e60d8d39e220141"
+    },
+    "src/audio/tts_math_internal.h": {
+      "before": "13efb7e19e3a7b0038f6896166aac85ea289763fdf30c87da3045fbf3cee7528",
+      "after": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f"
+    },
+    "src/audio/tts_model.cu": {
+      "before": "6680904d077b410fff8641094ae231d09180932a976323501693461bc181372b",
+      "after": "ba007e4f544fd3adbfd38b86eeeb4cc2169da34d839c48b47c3392a003f456e8"
+    }
+  },
+  "review": "New unshipped TTS FP32 execution replaces failed BF16 candidate. Weights expand exactly in bounded chunks, no TF32, full 2x payload/KV accounting, float logits preserve distinctions. No published core LLM change."
+}

@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS FP32短验通过](evidence/serve-tts-fp32-component-20261118/README.md)：
+10CPU及零警告构建，1GPU/1CPU、4帧45.295秒，132操作数及64
+code全部满足严格合同；GPU释放、默认rev306保持。继续codec/
+真实PCM、EOS/服务/恢复与全部master，尚未宣称语音交付。
+
+TTS FP32精度改动已成组实现：BF16原权重精确展开、算子禁TF32、
+logits不再降精度；权重7,666,705,408字节及KV全额计RAM。固定
+7C++/3比较门CPU后，原2例各2帧按更严F32合同再验，旧BF16
+失败保留。实际PCM/服务仍继续，默认rev306保持。
+
 [TTS漂移定位](evidence/serve-tts-numerical-diagnosis-20261118/README.md)：
 35实际GEMM均在F32累加/BF16舍入界内，小差异沿注意力放大。
 旧候选仍FAIL；新后端保留权重/公式，提升执行为FP32并计入实际

@@ -1,0 +1,18 @@
+{
+  "status": "PASS_TARGETED_FP32_COMPONENT",
+  "seconds": 45.29468990210444,
+  "operand_count": 132,
+  "all_codes_identical": true,
+  "minimum_cosine": 0.9999999999223208,
+  "maximum_relative_l2": 1.2467384252185796e-05,
+  "gpu_model_loads": 1,
+  "cpu_reference_model_loads": 1,
+  "frames": 4,
+  "http_requests": 0,
+  "eos_qualified": false,
+  "audio_qualified": false,
+  "monitor_samples": 43,
+  "lease_released": true,
+  "defaults_unchanged": true,
+  "original_bf16_failed": true
+}
