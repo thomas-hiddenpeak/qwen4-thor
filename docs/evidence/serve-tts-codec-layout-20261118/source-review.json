@@ -1,0 +1,17 @@
+{
+  "changes": {
+    "CMakeLists.txt": {
+      "before": "6e18bcde50d3c222b09aa21d70f81359f231cf82b36951c59ac25277d0e049f6",
+      "after": "e90a4ee05f33e4f15119df1a0db47dfa9756207db689be7f1922ed3b17bd132a"
+    },
+    "include/q4t/audio/tts_codec_layout.h": {
+      "before": null,
+      "after": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b"
+    },
+    "src/audio/tts_codec_layout.cpp": {
+      "before": null,
+      "after": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395"
+    }
+  },
+  "review": "Codec source graph binds all decoder/vocoder stages. Workspace counts three peak waveform buffers and fixed convolution tiles. No CUDA codec execution yet."
+}

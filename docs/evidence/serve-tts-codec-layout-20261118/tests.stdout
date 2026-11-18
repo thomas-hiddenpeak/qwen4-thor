@@ -1,0 +1,5 @@
+[PASS] tts_codec_binding_preserves_every_vocoder_stage
+[PASS] tts_codec_workspace_covers_wave_residuals_and_bounded_tiles
+[PASS] tts_codec_chunks_preserve_context_trim_and_last_samples
+[PASS] tts_codec_codes_reject_control_tokens_before_gpu_work
+4 tests, 4 passed, 0 failed, 0 skipped

@@ -22,6 +22,8 @@ if(TTS_ICU_FOUND)
     ${tts_test_root}/tests/asr_tokenizer_test.cpp
     ${tts_test_root}/src/audio/tts_config.cpp
     ${tts_test_root}/src/audio/tts_layout.cpp
+    ${tts_test_root}/src/audio/tts_codec_layout.cpp
+    ${tts_test_root}/tests/tts_codec_layout_test.cpp
     ${tts_test_root}/src/audio/tts_generation.cpp
     ${tts_test_root}/src/text/tokenizer.cpp
     ${tts_test_root}/src/io/json.cpp)

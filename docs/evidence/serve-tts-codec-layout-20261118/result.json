@@ -1,0 +1,13 @@
+{
+  "returncode": 0,
+  "seconds": 0.003466462716460228,
+  "tests": 4,
+  "gpu": 0,
+  "build_warnings": 0,
+  "binary_sha256": "b792db45a76f9172b9bab38e5e420db6a7ce6064b0d7150df35a0ee461e09152",
+  "command": [
+    ".q4t-work/serve-native-tts-20261118/codec-layout-cpu-01/q4t_codec_cpu",
+    "--required-list",
+    ".q4t-work/serve-native-tts-20261118/codec-layout-cpu-01/required.txt"
+  ]
+}

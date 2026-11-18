@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TTS codec入口4CPU通过](evidence/serve-tts-codec-layout-20261118/README.md)，
+构建零警告/0GPU，874来源/11负控通过；继续实际RVQ、因果
+卷积/Transformer与PCM，已过talker复用，默认rev306保持。
+
+TTS03 codec权重/分块/RAM合同已成组实现：271项F32解码图、
+300帧块/25上下文、1920采样/帧与固定卷积临时矩阵上限。固定
+4CPU/60秒、0GPU，随后接真实卷积/RVQ/PCM；默认rev306和
+全部master保持，不将合同模块当语音交付。
+
 [TTS FP32短验通过](evidence/serve-tts-fp32-component-20261118/README.md)：
 10CPU及零警告构建，1GPU/1CPU、4帧45.295秒，132操作数及64
 code全部满足严格合同；GPU释放、默认rev306保持。继续codec/
