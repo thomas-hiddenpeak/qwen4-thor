@@ -1,0 +1,8 @@
+{
+  "phase": "Prepare isolated ICL prompt official differential driver",
+  "cpu_tests_max": 10,
+  "seconds": 120,
+  "gpu": 0,
+  "execution": "NOT AUTHORIZED BY THIS PREPARATION; runtime qualification waits for encoder rule decision",
+  "contract": "Same source-bound speaker and complete reference codes on both sides; pinned official generate_icl_prompt, two text alignments, all16groups/two frames, original FP32 and exact teacher-forced code gates; no EOS/audio claim"
+}

@@ -9423,6 +9423,12 @@
         "gpu": 0,
         "engine_sha256": "c85be13417ae89ac3937ae117e913653ba00d2c2ab49cea89dec823b1a8c1111",
         "original_selection_failure_preserved": true
+      },
+      "prompt_driver": {
+        "state": "implemented_cpu_passed_actual_prompt_math_pending",
+        "evidence": "evidence/serve-tts-icl-prompt-driver-cpu-20261119/README.md",
+        "cpu_tests": 7,
+        "gpu": 0
       }
     }
   }

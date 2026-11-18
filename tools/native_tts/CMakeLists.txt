@@ -81,3 +81,8 @@ target_link_options(q4t_tts_synthesis PRIVATE -Wl,--gc-sections)
 add_executable(q4t_tts_encoder_replay encoder_replay.cpp)
 target_link_libraries(q4t_tts_encoder_replay PRIVATE q4t_tts_replay_core)
 target_compile_options(q4t_tts_encoder_replay PRIVATE -Wall -Wextra -Werror)
+
+# Same fixed-reference two-frame differential, with complete ICL prompt codes.
+add_executable(q4t_tts_icl_replay icl_replay.cpp)
+target_link_libraries(q4t_tts_icl_replay PRIVATE q4t_tts_replay_core)
+target_compile_options(q4t_tts_icl_replay PRIVATE -Wall -Wextra -Werror)

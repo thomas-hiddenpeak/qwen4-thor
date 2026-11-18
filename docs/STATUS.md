@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL官方提示驱动7项CPU通过](evidence/serve-tts-icl-prompt-driver-cpu-20261119/README.md)：
+两对齐/全部16组固定参考、官方数学调用和原数值门已接线，0.114秒/
+0GPU，CUDA构建零警告。可先独立核对已知短样本固定输入的提示数学；
+原编码器全码FAIL、验收口径待决及注册业务未验保持，默认rev326不变。
+
 [原生注册编码器接线11项CPU通过](evidence/serve-tts-icl-backend-cpu-20261119/README.md)：
 声纹+全部参考码共用有界工作区，完整资产、预算、坏codec局部失败
 及旧路径通过；1.366秒/0GPU，完整引擎构建零警告。选错测试程序的
