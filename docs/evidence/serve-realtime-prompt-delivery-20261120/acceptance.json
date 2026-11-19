@@ -1,0 +1,58 @@
+{
+  "status": "ACCEPT_NATIVE_REALTIME_PROMPT_DELIVERY",
+  "revision": 366,
+  "current": {
+    "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "engine_release_sha256": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "generation_sha256": "2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7",
+    "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/service-package-01/bundle",
+    "service_acceptance_sha256": "2e9dd83207e3e980ff46b379030c5666e2847fe99db8816d2147a7d5411f6396",
+    "service_release_sha256": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c"
+  },
+  "state": "STOPPED",
+  "successful_commands": 19,
+  "command_attempts": 19,
+  "seconds": 391.7243390721269,
+  "new_gpu_starts": 0,
+  "outer_enabled": true,
+  "outer_charged_total": 0,
+  "persistent_client_limits": {
+    "alpha": {
+      "requests_per_minute": 30,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 3457
+    },
+    "beta": {
+      "requests_per_minute": 1,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 256
+    }
+  },
+  "usage_reset": false,
+  "profile_history_and_cooldown_preserved": true,
+  "version_cycles_preserved": true,
+  "manual_root": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+  "automatic_payload": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+  "candidate_to_retained_automatic_fault_actually_tested": true,
+  "reciprocal_automatic_fault_additionally_injected": false,
+  "reciprocal_registration_and_stopped_rollback_verified": true,
+  "older_engine_fallback": false,
+  "previous_rev356_preserved": true,
+  "retired_intents_archived": 4,
+  "deleted_files": 0,
+  "maintenance_seconds": 5.02901809476316,
+  "original_tls_driver_passed": false,
+  "original_driver_failure_preserved": true,
+  "original_model_quality_failures_preserved": true,
+  "files": 68,
+  "secret_scan_matches": 0,
+  "archive_sha256": "50917251dce05d26df0ec99c57469378169139615a68e8b0851b6815c6d5bc72",
+  "main_integration_pending": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "long_stability_run": false,
+  "full_openai_compatibility": false,
+  "listening_deferred_by_owner": true,
+  "all_master_tasks_active": true
+}

@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev366原生Realtime Prompt已交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：
+19项STOPPED命令/391.724秒，真实回退再前进，0新增GPU。
+默认648d6d68、服务包7be0a6a5；配额/用量/历史/恢复预算保持，前驱
+rev356保留。实际Prompt恢复与主轻资格已验，原质量与驱动FAIL不改写。
+PR #53待最终检查合入；继续音频/MCP/追踪/Live及全部master。
+
+以下阶段记录保留各自时点事实；当前默认以本段和默认身份表为准。
+
 [Prompt原生恢复完成](evidence/serve-prompt-native-recovery-20261120/README.md)：
 含原失败组共7模型/22生成/7WSS/1探测，四次独立租约402.001秒，
 377次NVML正常并清理；七组工具答案均rev356。保留包、网关已验，
@@ -2655,16 +2663,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev356；服务包 `c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd` |
-| Generation | `cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61` |
-| 引擎 | `f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d` |
-| 引擎发布记录 | `90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1` |
+| 发布 | rev366；服务包 `7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce` |
+| Generation | `2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7` |
+| 引擎 | `648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5` |
+| 引擎发布记录 | `1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本与函数工具对话 |
-| 人工整包回退 | 保留控制根 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1`；同已验对话引擎、参考和周期保持；前驱rev346另保留 |
-| 自动payload回退 | 候选→保留控制包 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本/函数工具/持久Prompt |
+| 人工整包回退 | 保留控制根 `f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2`；同已验Prompt引擎、参考和周期保持；前驱rev356另保留 |
+| 自动payload回退 | 候选→保留控制包 `f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)

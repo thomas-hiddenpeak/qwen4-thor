@@ -671,3 +671,7 @@
 - [Prompt构建与证据复用边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)：确切源身份和待执行的针对性资格范围。
 
 - [Prompt证据来源CPU](evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md)：原记录绑定、复用边界及原夹具失败保留。
+
+- [Prompt受影响消费者主轻复核](evidence/serve-refusal-reviewed-profiles-20261120/README.md)：确切新输出、原后端来源与全部失败保留。
+- [Prompt原生恢复](evidence/serve-prompt-native-recovery-20261120/README.md)：持久模板/工具、网关中断、冷控制器与整包回退。
+- [rev366原生Realtime Prompt交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：19项STOPPED检查、可回退默认与实际客户预算保持。
