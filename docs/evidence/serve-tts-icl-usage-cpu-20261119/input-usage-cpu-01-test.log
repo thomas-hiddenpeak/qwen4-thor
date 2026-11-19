@@ -1,0 +1,20 @@
+[PASS] chat_audio_output_usage_adds_actual_codes_without_recounting_text
+[PASS] tts_icl_usage_charges_all_groups_independently_of_workspace_rows
+  CHECK failed: IclPolicy(&admission, prompt_limit ? 10000 : 500, prompt_limit ? 500 : 8192) (line 84)
+[FAIL] tts_icl_rate_rejects_text_only_undercount_for_tpm_and_prompt_limits
+  CHECK failed: IclPolicy(&admission, 10000) (line 104)
+[FAIL] tts_icl_cancel_settles_only_started_reference_and_partial_output
+  CHECK failed: IclPolicy(&admission, scenario == 0 ? 500 : 10000, scenario == 1 ? 900 : 8192) (line 134)
+[FAIL] tts_icl_chat_extension_admits_full_input_without_charging_cancelled_step
+[PASS] tts_icl_actual_usage_agrees_across_speech_chat_and_settlement
+[PASS] tts_icl_nonstreaming_matches_official_two_track_sequence
+[PASS] tts_icl_streaming_short_reference_retains_remaining_target_and_eos
+[PASS] tts_icl_streaming_long_reference_pads_after_text_eos
+[PASS] tts_icl_keeps_instruction_language_and_owned_reference
+[PASS] tts_icl_rejects_missing_and_non_audio_reference_atomically
+[PASS] tts_icl_rejects_control_tokens_and_context_truncation
+[PASS] tts_icl_reference_frames_must_be_complete_ordered_and_base_only
+[PASS] tts_icl_full_reference_limit_is_bounded_without_truncation
+[PASS] tts_icl_workspace_charges_all_groups_and_embeddings_only_when_used
+[PASS] speech_sse_contract_has_real_bytes_and_exact_terminal_usage
+16 tests, 13 passed, 3 failed, 0 skipped

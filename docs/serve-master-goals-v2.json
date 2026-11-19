@@ -429,6 +429,16 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "icl_input_usage_20261119": {
+        "state": "cpu_accepted_business_pending",
+        "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
+        "native_cases": 16,
+        "driver_cases": 6,
+        "initial_fixture_failure_preserved": true,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -653,6 +663,16 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "icl_input_usage_20261119": {
+        "state": "cpu_accepted_business_pending",
+        "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
+        "native_cases": 16,
+        "driver_cases": 6,
+        "initial_fixture_failure_preserved": true,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -4532,6 +4552,16 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "icl_input_usage_20261119": {
+        "state": "cpu_accepted_business_pending",
+        "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
+        "native_cases": 16,
+        "driver_cases": 6,
+        "initial_fixture_failure_preserved": true,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -5812,6 +5842,16 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "icl_input_usage_20261119": {
+        "state": "cpu_accepted_business_pending",
+        "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
+        "native_cases": 16,
+        "driver_cases": 6,
+        "initial_fixture_failure_preserved": true,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {
@@ -7548,6 +7588,16 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "icl_input_usage_20261119": {
+        "state": "cpu_accepted_business_pending",
+        "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
+        "native_cases": 16,
+        "driver_cases": 6,
+        "initial_fixture_failure_preserved": true,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "master_complete": false
       }
     },
     {

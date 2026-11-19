@@ -1,0 +1,8 @@
+{
+  "status": "FAILED",
+  "exit_code": 1,
+  "seconds": 0.007832146249711514,
+  "cases": 16,
+  "gpu_actions": 0,
+  "binary_sha256": "0c2a7b5dfaeee62274c519937f57f0f1654b7e5bf07fbb83108e9defe6060409"
+}

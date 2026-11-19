@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "seconds": 0.007683936972171068,
+  "cases": 3,
+  "gpu_actions": 0,
+  "binary_sha256": "4b1b4ef9002a54991fcc58c26cb282ad7ec9b4c14e2d9c5d5d2981944b7c296f"
+}

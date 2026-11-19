@@ -182,7 +182,7 @@ ObjectReply ChatServer::RunNativeTts(
                                   {generation, resources.generation_bytes},
                                   {codec, resources.codec_bytes}, nullptr,
                                   request.format == SpeechFormat::kWav);
-    if (result.ok()) committed = prompt.text_ids.size();
+    if (result.ok()) committed = prompt.InputTokens();
     return result;
   });
   if (!reply.ok()) return reply;

@@ -1,0 +1,11 @@
+test_attempt_and_time_bounds_precede_every_action (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_attempt_and_time_bounds_precede_every_action) ... ok
+test_entry_cleanup_failure_still_cleans_core_and_never_records_pass (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_entry_cleanup_failure_still_cleans_core_and_never_records_pass) ... ok
+test_plan_cannot_widen_bounds_or_supply_asr_expected_text (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_plan_cannot_widen_bounds_or_supply_asr_expected_text) ... ok
+test_reference_requires_all_groups_bound_to_actual_owner_and_source (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_reference_requires_all_groups_bound_to_actual_owner_and_source) ... ok
+test_settlement_requires_one_request_actual_usage_and_drained_credit (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_settlement_requires_one_request_actual_usage_and_drained_credit) ... ok
+test_usage_rejects_text_only_counts_budget_counts_and_missing_eos (tools.native_tts.test_icl_service_acceptance.IclServiceEvidence.test_usage_rejects_text_only_counts_budget_counts_and_missing_eos) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.010s
+
+OK

@@ -30,6 +30,13 @@ struct TtsPrompt {
   // All groups from the actual reference encoder; empty for x-vector only.
   std::vector<TtsCodes> reference_codes;
   int32_t pad_index = 0;
+  // Actual projected text plus every learned reference code embedding. This
+  // is usage/admission, not the number of prefill rows or workspace text IDs.
+  // Every complete reference frame consumes all 16 groups. ValidateTtsPrompt
+  // separately enforces the finite text/reference/context budgets.
+  size_t InputTokens() const {
+    return text_ids.size() + reference_codes.size() * TtsConfig::kCodeGroups;
+  }
 };
 int TtsBuiltinVoiceId(std::string_view voice);
 

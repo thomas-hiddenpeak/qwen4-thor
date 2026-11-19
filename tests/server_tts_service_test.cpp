@@ -5,9 +5,13 @@
 #include <stdexcept>
 
 #include "q4t/audio/tts_codec_layout.h"
+#include "q4t/audio/tts_generation.h"
 #include "q4t/io/json.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/server/auxiliary_resources.h"
+#include "q4t/server/chat_audio_output.h"
+#include "q4t/server/client_policy.h"
+#include "q4t/server/speech_output.h"
 #include "q4t/server/tts_assets.h"
 #include "q4t/test.h"
 
@@ -21,7 +25,166 @@ q4t::io::Json Parse(const std::string& text) {
   if (!q4t::io::ParseJson(text, &value)) throw std::runtime_error("TTS JSON");
   return value;
 }
+q4t::audio::TtsPrompt IclPrompt(size_t frames = 56) {
+  using namespace q4t::audio;
+  TtsPrompt prompt;
+  const std::array<int32_t, 2> target{201, 202}, reference{101, 102};
+  const std::vector<TtsCodes> codes(frames);
+  const std::vector<float> speaker(2048, .25f);
+  if (!PlanTtsBaseIclPrompt(target, reference, codes, {}, speaker, "auto", true,
+                            1024, &prompt) ||
+      !ValidateTtsPrompt(prompt))
+    throw std::runtime_error("ICL prompt fixture");
+  return prompt;
+}
+bool IclPolicy(ClientAdmission* admission, uint32_t tpm,
+               uint32_t max_prompt = 8192) {
+  GatewayClientPolicy policy;
+  policy.version = 3;
+  policy.gateway_token = std::string(64, 'a');
+  policy.sha256 = std::string(64, '0');  // Owned in-memory fixture identity.
+  policy.clients.push_back({.id = "audio",
+                            .max_inflight = 1,
+                            .max_control_inflight = 1,
+                            .max_prompt_tokens = max_prompt,
+                            .max_output_tokens = 1024,
+                            .max_body_bytes = 1024,
+                            .requests_per_minute = 16,
+                            .tokens_per_minute = tpm});
+  return admission->Configure(std::move(policy)).ok();
+}
 }  // namespace
+
+Q4T_TEST(tts_icl_usage_charges_all_groups_independently_of_workspace_rows) {
+  const auto prompt = IclPrompt();
+  // 56 actual frames, each with 16 separately embedded codes. Reused PAD,
+  // BOS and speaker vectors do not invent more text input IDs.
+  Q4T_CHECK(prompt.text_ids.size() == 10 && prompt.InputTokens() == 906);
+  Q4T_CHECK(prompt.prefill.size() == 70);
+  TtsResourcePlan plan;
+  Q4T_CHECK(PlanTtsServiceResources({}, prompt.text_ids.size(),
+                                    prompt.prefill.size(), 160, &plan,
+                                    q4t::audio::TtsVariant::kBase17B, 56));
+  Q4T_CHECK(plan.generation_bytes > 0);
+  Q4T_CHECK(IclPrompt(750).InputTokens() == 12010);
+  // Existing non-reference prompts retain their prior text-only usage.
+  q4t::audio::TtsPrompt base;
+  const std::array<int32_t, 2> target{201, 202};
+  const std::vector<float> speaker(2048, .25f);
+  Q4T_CHECK(q4t::audio::PlanTtsBasePrompt(target, {}, speaker, "auto", true,
+                                          128, &base));
+  Q4T_CHECK(base.InputTokens() == base.text_ids.size());
+  return true;
+}
+
+Q4T_TEST(tts_icl_rate_rejects_text_only_undercount_for_tpm_and_prompt_limits) {
+  const auto prompt = IclPrompt();
+  const auto now = ClientClock::now();
+  for (bool prompt_limit : {false, true}) {
+    ClientAdmission admission;
+    Q4T_CHECK(IclPolicy(&admission, prompt_limit ? 10000 : 500,
+                        prompt_limit ? 500 : 8192));
+    const auto identity = admission.Authenticate("audio", std::string(64, 'a'));
+    ClientRateLease old_count, complete_count;
+    Q4T_CHECK(old_count.Reserve(admission, identity, prompt.text_ids.size(),
+                                321, now) == ClientRateResult::kAllowed);
+    old_count.Settle(now);
+    Q4T_CHECK(
+        complete_count.Reserve(admission, identity, prompt.InputTokens(), 321,
+                               now) ==
+        (prompt_limit ? ClientRateResult::kInvalid : ClientRateResult::kTpm));
+    const auto rate = admission.RateUsage(0, now);
+    Q4T_CHECK(rate.reserved == 0 && rate.tokens == 0 && rate.requests == 1);
+  }
+  return true;
+}
+
+Q4T_TEST(tts_icl_cancel_settles_only_started_reference_and_partial_output) {
+  const auto prompt = IclPrompt();
+  ClientAdmission admission;
+  Q4T_CHECK(IclPolicy(&admission, 10000));
+  const auto identity = admission.Authenticate("audio", std::string(64, 'a'));
+  const auto now = ClientClock::now();
+  {
+    ClientRateLease queued;
+    Q4T_CHECK(queued.Reserve(admission, identity, prompt.InputTokens(), 321,
+                             now) == ClientRateResult::kAllowed);
+  }
+  Q4T_CHECK(admission.RateUsage(0, now).tokens == 0);
+  {
+    ClientRateLease started;
+    Q4T_CHECK(started.Reserve(admission, identity, prompt.InputTokens(), 321,
+                              now) == ClientRateResult::kAllowed);
+    started.StartPrompt(prompt.InputTokens());
+    started.Completion(7);  // Cancel during the first partially accepted frame.
+    started.Settle(now);
+    started.Settle(now);
+  }
+  const auto rate = admission.RateUsage(0, now);
+  Q4T_CHECK(rate.tokens == 913 && rate.settled_tokens == 913 &&
+            rate.reserved == 0 && rate.requests == 2);
+  return true;
+}
+
+Q4T_TEST(
+    tts_icl_chat_extension_admits_full_input_without_charging_cancelled_step) {
+  const auto prompt = IclPrompt();
+  const auto now = ClientClock::now();
+  for (int scenario = 0; scenario < 4; ++scenario) {
+    ClientAdmission admission;
+    Q4T_CHECK(IclPolicy(&admission, scenario == 0 ? 500 : 10000,
+                        scenario == 1 ? 900 : 8192));
+    const auto identity = admission.Authenticate("audio", std::string(64, 'a'));
+    ClientRateLease rate;
+    Q4T_CHECK(rate.Reserve(admission, identity, 20, 321, now) ==
+              ClientRateResult::kAllowed);
+    rate.Start();
+    rate.Completion(9);
+    const auto extension =
+        rate.ExtendPrompt(admission, identity, prompt.InputTokens(), now);
+    Q4T_CHECK(extension == (scenario == 0   ? ClientRateResult::kTpm
+                            : scenario == 1 ? ClientRateResult::kInvalid
+                                            : ClientRateResult::kAllowed));
+    if (scenario == 3) {
+      rate.StartPrompt(20 + prompt.InputTokens());
+      rate.Completion(9 + 17);
+    }
+    rate.Settle(now);
+    const auto actual = admission.RateUsage(0, now);
+    Q4T_CHECK(actual.requests == 1 && actual.reserved == 0 &&
+              actual.tokens == (scenario == 3 ? 952 : 29));
+  }
+  return true;
+}
+
+Q4T_TEST(tts_icl_actual_usage_agrees_across_speech_chat_and_settlement) {
+  const auto prompt = IclPrompt();
+  ActualUsageCounter actual;
+  actual.Enable();
+  actual.BeginStep();
+  actual.Observe({prompt.InputTokens(), 7});
+  actual.Observe({prompt.InputTokens(), 33});
+  actual.EndStep();
+  const auto total = actual.Total();
+  Q4T_CHECK(total && total->input == 906 && total->output == 33);
+  std::string speech;
+  Q4T_CHECK(SpeechAudioDone(*total, &speech));
+  const auto done = Parse(speech.substr(speech.find("data: ") + 6));
+  const auto* usage = done.Find("usage");
+  Q4T_CHECK(usage && usage->GetInt("input_tokens") == 906 &&
+            usage->GetInt("output_tokens") == 33 &&
+            usage->GetInt("total_tokens") == 939);
+  auto chat = Parse(R"({"prompt_tokens":20,"completion_tokens":9,
+                       "total_tokens":29})");
+  Q4T_CHECK(AddChatAudioUsage(*total, 32, &chat));
+  Q4T_CHECK(chat.GetInt("prompt_tokens") == 926 &&
+            chat.GetInt("completion_tokens") == 42 &&
+            chat.GetInt("total_tokens") == 968);
+  Q4T_CHECK(chat.Find("q4t_audio_synthesis")->GetInt("input_tokens") == 906 &&
+            chat.Find("completion_tokens_details")->GetInt("audio_tokens") ==
+                32);
+  return true;
+}
 
 Q4T_TEST(tts_resources_cover_real_fp32_expansion_and_request_dimensions) {
   TtsServiceLimits limits;
