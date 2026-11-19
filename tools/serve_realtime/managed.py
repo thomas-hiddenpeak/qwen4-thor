@@ -29,11 +29,18 @@ METRICS = dict(
     aborted='q4t_requests_aborted_total', errors='q4t_requests_error_total')
 
 
-def phases(plan):
+def recovery_phases(plan):
     return {'tool_retained': [('primary', 'complete')],
             'tls': [('tls-before', 'hold_stream'), ('tls-after', 'complete')],
             'tool_version': [('primary', 'hold_complete'),
                              ('fallback', 'complete')]}[plan['scenario']]
+
+
+def phases(plan):
+    selected = recovery_phases(plan)
+    # One active request owns the fault point. Native Chat now exercises the
+    # interrupted request; ASR retains complete real turns on both sides.
+    return [(label, 'complete') for label, _ in selected] if 'conversation' in plan else selected
 
 
 def settings(stream=False):
@@ -235,6 +242,11 @@ def check(out, plan, identity, capabilities):
         identifier, tokens = check_session(session, mode, transport)
         require(row['mode'] == mode and clean(row['before']), 'initial Realtime resource leak')
         if previous is not None and plan['scenario'] == 'tls':
+            if 'conversation' in plan:
+                chat = read(Path(out)/'tls-before-conversation-receipt.json')
+                require(same_json(chat['before'], previous),
+                        'ASR-to-Chat fault handoff changed counters')
+                previous = chat['after']
             require(same_json(row['before'], previous),
                     'healthy model counters changed between recovery and explicit reconnect')
         for suffix in ('before', 'after') + (() if mode == 'complete' else ('held',)):
@@ -276,7 +288,7 @@ def check(out, plan, identity, capabilities):
             completed=mode != 'hold_stream', automatic_replay=False)
     require(len(set(identifiers)) == len(identifiers), 'new connection reused old item identity')
     counts = read(Path(out)/'counts.json')['counts']
-    expected = len(result)*(2 if plan.get('semantic_vad') else 1)
+    expected = len(result)*(1+int(bool(plan.get('semantic_vad')))+int('conversation' in plan))
     require(counts['websocket_sessions'] == plan['limits']['websocket_sessions'] == expected,
             'managed connection count differs')
     return result

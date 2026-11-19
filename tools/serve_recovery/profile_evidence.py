@@ -1049,24 +1049,17 @@ def conversation_enabled(capabilities):
     return True
 
 
-def conversation_business(value):
-    """Two actual model turns with a source-bound read-only client tool."""
-    ledger.keys(value, ('source', 'session', 'before', 'after'))
-    source = value['source']
+def conversation_output(source, session, pending_response_id=None):
+    """Validate two complete source-bound tool turns, without claiming lifecycle.
+
+    A managed fault may separately bind one known pending response. Its unknown
+    usage, transport, lifetime and settlement are never inferred here.
+    """
     ledger.keys(source, ('path', 'sha256', 'version'))
     ledger.require(source['path'] == 'docs/STATUS.md' and
         type(source['sha256']) is str and ledger.HASH.fullmatch(source['sha256']) and
         type(source['version']) is str and re.fullmatch(r'rev[0-9]+', source['version']),
         'actual project record identity missing')
-    session = value['session']
-    ledger.require(type(session) is dict and session.get('status') == 'PASS' and
-        session.get('mode') == 'qualification' and
-        session.get('transport') == 'official-openai-wss' and
-        type(session.get('connections')) is int and session['connections'] == 1 and
-        type(session.get('close_code')) is int and session['close_code'] == 1000 and
-        session.get('automatic_replay') is False and
-        type(session.get('response_creates')) is int and session['response_creates'] == 2,
-        'actual conversation SDK boundary differs')
     record = dict(record_key='release', version=source['version'],
                   source=source['path'], source_sha256=source['sha256'])
     ledger.require(session.get('tool_record') == record,
@@ -1083,8 +1076,12 @@ def conversation_business(value):
     ledger.require(all(type(i) is str and i for i in identifiers) and
         len(set(identifiers)) == 2 and
         [e['response'] for e in events if e.get('type') == 'response.done'] == rows and
-        [e['response']['id'] for e in events if e.get('type') == 'response.created'] == identifiers,
+        [e['response']['id'] for e in events if e.get('type') == 'response.created'] ==
+            identifiers + ([pending_response_id] if pending_response_id else []),
         'conversation model terminal omitted or replayed')
+    ledger.require(pending_response_id is None or
+        (type(pending_response_id) is str and pending_response_id and
+         pending_response_id not in identifiers), 'invalid pending response identity')
     total = 0
     for row in rows:
         ledger.require(row['status'] == 'completed' and
@@ -1142,6 +1139,22 @@ def conversation_business(value):
         e.get('type') == 'response.created' and e['response']['id'] == identifiers[1])
     ledger.require(first_done < returned_at < second_created,
                    'tool result did not follow actual completed call')
+    return total
+
+
+def conversation_business(value):
+    """Two actual model turns with a source-bound read-only client tool."""
+    ledger.keys(value, ('source', 'session', 'before', 'after'))
+    session = value['session']
+    ledger.require(type(session) is dict and session.get('status') == 'PASS' and
+        session.get('mode') == 'qualification' and
+        session.get('transport') == 'official-openai-wss' and
+        type(session.get('connections')) is int and session['connections'] == 1 and
+        type(session.get('close_code')) is int and session['close_code'] == 1000 and
+        session.get('automatic_replay') is False and
+        type(session.get('response_creates')) is int and session['response_creates'] == 2,
+        'actual conversation SDK boundary differs')
+    total = conversation_output(value['source'], session)
     before, after = value['before'], value['after']
     keys = ('admitted', 'settled', 'reserved', 'active', 'sessions',
             'host_bytes', 'free_slots')

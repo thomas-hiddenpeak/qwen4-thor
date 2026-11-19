@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Chat Guardian 驱动 24 项 CPU 通过](evidence/serve-realtime-chat-managed-cpu-20261119/README.md)：
+3.869 秒/0GPU，含实际 SDK/TLS 夹具、断连不重放、计数交接与原生
+封装命名空间；20 来源反例通过。已验主轻资格只读复核 0.077 秒，
+原字节和引擎保持，25 项新合同接入 CI。继续封装并实际恢复，默认
+rev346 STOPPED、原质量失败/听感待验和全部 master 保持。
+
+Realtime Chat Guardian 组合驱动已编写：TLS 故障切在实际文本增量
+后的未完成请求，整包切在两轮工具已结算后；旧连接结束、显式新
+连接，禁止重放。ASR/语义在故障前后完整运行并核对计数交接。
+冻结 24 项针对性 CPU/120 秒及来源 20 反例，另只读复核已通过
+主轻资格，不追加模型运行；通过后封装并做实际 Guardian 短验。
+默认 rev346 STOPPED、原质量失败/听感待验与全部 master 保持。
+
 [Realtime Chat 主轻实际资格通过](evidence/serve-realtime-chat-primary-light-20261119/README.md)：
 2 模型/64 业务/8 WSS/368.901 秒，341 次 NVML 正常；主轻两轮
 实际工具各结算 803/817 tokens，流式和来源一致，四个诊断正确记
