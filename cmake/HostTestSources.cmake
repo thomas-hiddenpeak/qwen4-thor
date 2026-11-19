@@ -450,6 +450,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_transcription_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_vad.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_export.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_history.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_audio_history_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_audio_export_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_pcm.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_pcm_test.cpp

@@ -21,6 +21,29 @@ std::string Front(const RealtimeAudioQueue& queue) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_queue_preview_is_atomic_and_matches_actual_wrapped_commit) {
+  RealtimeAudioQueue queue(1, {}, 12, 2);
+  RealtimeAudioItem first, preview, committed;
+  Q4T_CHECK(queue.Append(1, Bytes("abcdefgh")) && queue.Commit(1, &first));
+  Q4T_CHECK(queue.Acknowledge(1, first.sequence));
+  Q4T_CHECK(queue.Append(1, Bytes("ijklmnopqr")));
+  Q4T_CHECK(queue.PreviewPrefix(1, 16, &preview));
+  Q4T_CHECK(preview.begin_ticks == 8 && preview.end_ticks == 16 &&
+            preview.bytes == 8 && preview.sequence == 2);
+  Q4T_CHECK(queue.Items() == 0 && queue.PendingBytes() == 10);
+  const auto pending = queue.PendingFrom(8);
+  Q4T_CHECK(pending[0].size() == 4 && pending[1].size() == 6);
+  const auto unchanged = preview;
+  for (auto end : {8, 9, 20})
+    Q4T_CHECK(!queue.PreviewPrefix(1, end, &preview) && preview == unchanged);
+  Q4T_CHECK(!queue.PreviewPrefix(2, 16, &preview) && preview == unchanged);
+  Q4T_CHECK(queue.CommitPrefix(1, 16, &committed));
+  Q4T_CHECK(committed == preview && Front(queue) == "ijklmnop" &&
+            queue.PendingBytes() == 2);
+  Q4T_CHECK(queue.Cancel(1) && !queue.PreviewPrefix(1, 18, &preview));
+  return true;
+}
+
 Q4T_TEST(realtime_queue_prefix_and_silence_gaps_keep_borrowed_storage) {
   RealtimeAudioQueue q(1, {}, 18);
   RealtimeAudioItem a, b, c;

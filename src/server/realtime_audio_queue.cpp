@@ -77,8 +77,8 @@ Status RealtimeAudioQueue::Commit(uint64_t epoch, RealtimeAudioItem* item) {
         "realtime commit requires complete uncommitted samples");
   return CommitPrefix(epoch, ticks_, item);
 }
-Status RealtimeAudioQueue::CommitPrefix(uint64_t epoch, uint64_t end_ticks,
-                                        RealtimeAudioItem* item) {
+Status RealtimeAudioQueue::PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
+                                         RealtimeAudioItem* item) const {
   if (!Owns(epoch)) return Status::Fail("realtime commit ownership differs");
   const auto step = kRealtimeTicksPerSecond / format_.rate;
   if (!Owns(epoch) || sealed_ || !item || end_ticks <= pending_begin_ ||
@@ -89,15 +89,22 @@ Status RealtimeAudioQueue::CommitPrefix(uint64_t epoch, uint64_t end_ticks,
     return Status::Fail("realtime committed item capacity exhausted");
   const size_t samples = (end_ticks - pending_begin_) / step;
   const size_t bytes = samples * SampleBytes(format_);
-  const RealtimeAudioItem value{epoch_,    sequence_ + 1, pending_begin_,
-                                end_ticks, samples,       bytes,
-                                format_};
+  *item = {epoch_,  sequence_ + 1, pending_begin_, end_ticks,
+           samples, bytes,         format_};
+  return {};
+}
+Status RealtimeAudioQueue::CommitPrefix(uint64_t epoch, uint64_t end_ticks,
+                                        RealtimeAudioItem* item) {
+  if (!item) return Status::Fail("realtime commit output missing");
+  RealtimeAudioItem value;
+  const auto status = PreviewPrefix(epoch, end_ticks, &value);
+  if (!status) return status;
   const auto at = (item_head_ + item_count_) % kRealtimeQueuedItems;
   items_[at] = value;
-  release_bytes_[at] = bytes;
+  release_bytes_[at] = value.bytes;
   ++item_count_;
   ++sequence_;
-  pending_bytes_ -= bytes;
+  pending_bytes_ -= value.bytes;
   pending_begin_ = end_ticks;
   *item = value;
   return {};

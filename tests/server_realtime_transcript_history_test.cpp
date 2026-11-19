@@ -10,6 +10,24 @@ using namespace q4t::server;
 using Ticket = RealtimeTranscriptTicket;
 }  // namespace
 
+Q4T_TEST(realtime_history_retrieval_distinguishes_pending_failure_and_silence) {
+  RealtimeTranscriptHistory history("sess_a");
+  Ticket first, second;
+  std::optional<std::string_view> text = "untouched";
+  Q4T_CHECK(history.Begin("item_a", 100, &first));
+  Q4T_CHECK(!history.Transcript(first, &text) && text == "untouched");
+  Q4T_CHECK(history.Commit(first) && history.Transcript(first, &text) && !text);
+  Q4T_CHECK(history.Fail(first) && history.Transcript(first, &text) && !text);
+  Q4T_CHECK(history.Begin("item_b", 100, &second) && history.Commit(second));
+  Q4T_CHECK(history.Complete(second, "") && history.Transcript(second, &text));
+  Q4T_CHECK(text && text->empty());
+  auto foreign = second;
+  foreign.owner = "sess_other";
+  Q4T_CHECK(!history.Transcript(foreign, &text) && text && text->empty());
+  Q4T_CHECK(history.Erase(second) && !history.Transcript(second, &text));
+  return true;
+}
+
 Q4T_TEST(realtime_history_committed_visibility_and_last_id_follow_deletion) {
   RealtimeTranscriptHistory history("sess_a");
   Ticket first, pending, last;

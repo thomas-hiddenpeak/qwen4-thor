@@ -60,6 +60,10 @@ class RealtimeAudioQueue {
   bool Valid() const { return valid_; }
   Status Append(uint64_t epoch, std::span<const uint8_t> bytes);
   Status Commit(uint64_t epoch, RealtimeAudioItem* item);
+  // Validate and describe the next commit without consuming identity/audio.
+  // The sole owner may reserve/prepare immutable derived PCM before commit.
+  Status PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
+                       RealtimeAudioItem* item) const;
   // Commit a complete-sample prefix, retaining future audio/partial bytes.
   Status CommitPrefix(uint64_t epoch, uint64_t end_ticks,
                       RealtimeAudioItem* item);

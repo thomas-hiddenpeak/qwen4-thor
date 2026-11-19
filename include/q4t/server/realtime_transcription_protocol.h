@@ -28,7 +28,8 @@ enum class RealtimeTranscriptionCommandKind {
   kAppend,
   kClear,
   kCommit,
-  kDelete
+  kDelete,
+  kRetrieve
 };
 struct RealtimeTranscriptionCommand {
   RealtimeTranscriptionCommandKind kind =

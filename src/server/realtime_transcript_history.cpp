@@ -78,6 +78,17 @@ std::string RealtimeTranscriptHistory::LastCommittedId() const {
     if (it->committed) return it->id;
   return {};
 }
+Status RealtimeTranscriptHistory::Transcript(
+    const RealtimeTranscriptTicket& ticket,
+    std::optional<std::string_view>* output) const {
+  const auto index = Position(ticket);
+  if (!output || index == entries_.size() || !entries_[index].committed)
+    return Invalid();
+  *output = entries_[index].state == State::kCompleted
+                ? std::optional<std::string_view>(entries_[index].text)
+                : std::nullopt;
+  return {};
+}
 Status RealtimeTranscriptHistory::Commit(
     const RealtimeTranscriptTicket& ticket) {
   const auto index = Position(ticket);

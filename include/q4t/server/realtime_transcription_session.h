@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "q4t/server/asr_stream_input.h"
+#include "q4t/server/realtime_audio_history.h"
 #include "q4t/server/realtime_transcription_protocol.h"
 #include "q4t/server/realtime_transcript_history.h"
 #include "q4t/server/realtime_noise_input.h"
@@ -15,16 +16,23 @@
 namespace q4t::server {
 // Includes protocol/parser copies, input ring, native PCM/features and output.
 // Model assets/device workspace and ingress/TLS have separate admissions.
-// The original 256MiB work envelope plus explicit retained text/reservations.
-// Processed-audio history and larger wire output require separate additions.
+inline constexpr size_t kRealtimeDeferredOutputBytes = 128ULL << 20;
+// Original work (including live input/features), retained text/audio, output
+// mailbox/deferred controls, and 256MiB for binary/Base64/JSON/frame
+// temporaries. Ingress keeps its independent fixed duplex buffers. No per-item
+// unlimited ownership; both retained audio and pending output charge actual
+// capacity.
 inline constexpr size_t kRealtimeSessionHostBytes =
-    (256ULL << 20) + kRealtimeTranscriptHistoryBytes;
+    (256ULL << 20) + kRealtimeTranscriptHistoryBytes +
+    kRealtimeAudioHistoryBytes + kWebSocketOutputMaximumBytes +
+    kRealtimeDeferredOutputBytes + (256ULL << 20);
 
 struct RealtimeTranscriptionJob {
   RealtimeAudioItem audio;
   RealtimeTranscriptionSettings settings;
   std::string id, previous_id;
   std::shared_ptr<AsrStreamInput> stream;
+  std::shared_ptr<RealtimeAudioRecord> processed_audio;
   RealtimeTranscriptTicket transcript;
   bool deleted =
       false;  // Session owner only; worker cancellation uses control.
@@ -64,15 +72,18 @@ class RealtimeTranscriptionSession {
   void Join() noexcept;
   size_t QueuedItems() const { return jobs_.size(); }
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
+  size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
 
  private:
   bool Emit(io::Json event, bool deferred = false);
+  bool EmitText(std::string text, bool deferred = false);
   bool FlushVadEvents();
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   bool SettingsEvent(bool legacy, bool created = false);
   bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
   bool CommitEvents(const RealtimeTranscriptionJob& job, bool automatic);
   bool DeleteItem(const RealtimeTranscriptionCommand& command);
+  bool RetrieveItem(const RealtimeTranscriptionCommand& command);
   bool DropFrontJob();
   bool StreamMessage(const RealtimeTranscriptionCommand& command);
   bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
@@ -87,6 +98,7 @@ class RealtimeTranscriptionSession {
   const uint64_t max_item_ticks_;
   const size_t message_bytes_;
   RealtimeTranscriptHistory history_;
+  RealtimeAudioHistory audio_history_;
   RealtimeTranscriptionSettings settings_;
   RealtimeAudioQueue queue_{1};
   std::unique_ptr<RealtimeNoiseInput> noise_input_;
@@ -98,7 +110,8 @@ class RealtimeTranscriptionSession {
   bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
   std::string speech_id_;
-  // At most one VAD frame's control events, plus bounded later socket replies.
+  // At most four control events, bounded by actual string capacity, including
+  // a retrieved audio item. One absolute deadline is not extended by arrivals.
   // Do not start the corresponding ASR worker before committed is queued.
   std::deque<std::string> vad_events_;
   size_t vad_event_bytes_ = 0;

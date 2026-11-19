@@ -9,6 +9,7 @@
 #include "q4t/io/base64.h"
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/realtime_audio_export.h"
 #include "q4t/server/realtime_pcm.h"
 #include "q4t/test.h"
 #include "../src/server/object_protocol.h"
@@ -32,7 +33,7 @@ Json Parse(std::string text) {
 }
 std::vector<Json> Drain(WebSocketOutput& output) {
   std::vector<Json> events;
-  WebSocketDecoder decoder(false);
+  WebSocketDecoder decoder(false, kWebSocketMaximumLimit);
   while (!output.Front().empty()) {
     const auto frame = output.Front();
     size_t consumed = 0;
@@ -108,6 +109,21 @@ bool Delete(RealtimeTranscriptionSession& session, const std::string& id) {
               OutputJson(Object({{"type", String("conversation.item.delete")},
                                  {"item_id", String(id)},
                                  {"event_id", String("delete_client")}})));
+}
+bool Retrieve(RealtimeTranscriptionSession& session, const std::string& id) {
+  return Send(session,
+              OutputJson(Object({{"type", String("conversation.item.retrieve")},
+                                 {"item_id", String(id)},
+                                 {"event_id", String("retrieve_client")}})));
+}
+const Json& Content(const Json& event) {
+  const auto* item = event.Find("item");
+  if (!item || event.GetString("type") != "conversation.item.retrieved")
+    throw std::runtime_error("fixture retrieved item missing");
+  const auto* content = item->GetArray("content");
+  if (!content || content->array.size() != 1)
+    throw std::runtime_error("fixture retrieved content missing");
+  return content->array.front();
 }
 }  // namespace
 
@@ -215,7 +231,8 @@ Q4T_TEST(
   Q4T_CHECK(session.Tick() &&
             ready.wait_for(500ms) == std::future_status::ready);
   Q4T_CHECK(Delete(session, id) && session.Tick());
-  Q4T_CHECK(session.AudioBytes() == 4 && session.QueuedItems() == 1);
+  Q4T_CHECK(session.AudioBytes() == 4 && session.QueuedItems() == 1 &&
+            session.RetainedAudioBytes() == 4);
   const auto events = Drain(f.output);
   Q4T_CHECK(events.size() == 1 &&
             events[0].GetString("type") == "conversation.item.deleted");
@@ -223,7 +240,7 @@ Q4T_TEST(
   std::vector<Json> late;
   Q4T_CHECK(Finish(session, f.output, &late));
   Q4T_CHECK(late.empty() && preserved && !late_delta && f.released == 1 &&
-            session.AudioBytes() == 0);
+            session.AudioBytes() == 0 && session.RetainedAudioBytes() == 0);
   return true;
 }
 
@@ -658,7 +675,8 @@ Q4T_TEST(realtime_transcription_cancel_unblocks_producer_and_preserves_borrow) {
   return true;
 }
 
-Q4T_TEST(realtime_transcription_commit_output_overflow_never_launches_worker) {
+Q4T_TEST(
+    realtime_transcription_commit_waits_for_control_capacity_before_launch) {
   Fixture f;
   WebSocketOutput small(4096, 1);
   f.callbacks.execute = [&](const auto&, const auto&, const auto&,
@@ -669,11 +687,19 @@ Q4T_TEST(realtime_transcription_commit_output_overflow_never_launches_worker) {
   RealtimeTranscriptionSession session("sess_test", small, f.callbacks, 30);
   Q4T_CHECK(session.Start());
   Drain(small);
-  // Two commit events need two slots; this constructor's tiny mailbox is
-  // intentionally rejected by the application path, with no worker launched.
+  // Two commit events need two slots. The second remains charged/deferred,
+  // and the model cannot start before both standard events have been queued.
   Q4T_CHECK(Send(session, kAppend));
-  Q4T_CHECK(!Send(session, kCommit));
+  Q4T_CHECK(Send(session, kCommit) && session.Tick());
   Q4T_CHECK(f.calls == 0);
+  const auto committed = Drain(small);
+  Q4T_CHECK(committed.size() == 1 &&
+            committed[0].GetString("type") == "input_audio_buffer.committed");
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, small, &events));
+  Q4T_CHECK(events.size() == 2 &&
+            events.front().GetString("type") == "conversation.item.created");
+  Q4T_CHECK(f.calls == 1);
   return true;
 }
 
@@ -726,6 +752,12 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             continuous->GetString("commit") == "explicit" &&
             continuous->GetArray("delay")->array.size() == 5 &&
             continuous->GetBool("immutable_prefix"));
+  const auto* history = realtime->Find("transcription_history");
+  Q4T_CHECK(history && history->GetBool("retrieve") &&
+            history->GetBool("delete") &&
+            history->GetString("retrieved_audio") == "actual_processed_pcm" &&
+            history->GetInt("session_host_reservation_bytes") ==
+                int64_t(kRealtimeSessionHostBytes));
   Q4T_CHECK(realtime->Find("server_vad")->GetBool("implemented"));
   Q4T_CHECK(!realtime->Find("server_vad")->GetBool("configured"));
   Q4T_CHECK(present.GetBool("implementation_only") &&
@@ -1259,5 +1291,204 @@ Q4T_TEST(
             f.calls == 0);
   s.Cancel();
   s.Join();
+  return true;
+}
+
+Q4T_TEST(realtime_retrieve_parser_preserves_strict_contract_and_error_id) {
+  RealtimeTranscriptionCommand out;
+  Q4T_CHECK(ParseRealtimeTranscriptionCommand(
+                R"({"type":"conversation.item.retrieve","item_id":"item_a"})",
+                4096, &out)
+                .ok());
+  Q4T_CHECK(out.kind == RealtimeTranscriptionCommandKind::kRetrieve &&
+            out.item_id == "item_a");
+  for (
+      const auto text :
+      {R"({"type":"conversation.item.retrieve","event_id":"bad"})",
+       R"({"type":"conversation.item.retrieve","event_id":"bad","item_id":null})",
+       R"({"type":"conversation.item.retrieve","event_id":"bad","item_id":""})",
+       R"({"type":"conversation.item.retrieve","event_id":"bad","item_id":"a","audio":""})"}) {
+    const auto reply = ParseRealtimeTranscriptionCommand(text, 4096, &out);
+    Q4T_CHECK(!reply.ok() && reply.value.GetString("event_id") == "bad" &&
+              out.item_id == "item_a");
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_retrieve_actual_noise_audio_before_and_after_execution) {
+  Fixture f;
+  std::vector<float> actual;
+  const std::string transcript = "Actual \"speech\"\n中文";
+  f.callbacks.execute = [&](const auto& job, const auto& bytes, const auto&,
+                            const auto&) {
+    std::vector<float> legacy;
+    if (!DecodeRealtimePcm(job.audio, bytes, 16000, &legacy) ||
+        !job.processed_audio ||
+        !std::ranges::equal(job.processed_audio->Samples(), legacy))
+      return Error(500, "fixture_audio", "Actual model PCM changed");
+    actual = legacy;
+    ++f.calls;
+    return Completed(transcript);
+  };
+  RealtimeTranscriptionSession s("sess_retrieve", f.output, f.callbacks, 30);
+  const auto raw = Signal(4800);
+  Q4T_CHECK(s.Start() && Send(s, kNoise) && Raw(s, raw, f.output) &&
+            Send(s, kCommit));
+  const auto id = CommitId(Drain(f.output));
+  Q4T_CHECK(Retrieve(s, id));
+  const auto pending = Drain(f.output);
+  Q4T_CHECK(pending.size() == 1 &&
+            Content(pending[0]).Find("transcript")->IsNull());
+  const auto before = Content(pending[0]).GetString("audio");
+  Q4T_CHECK(before != Base64(raw));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events) && f.calls == 1);
+  std::string expected;
+  Q4T_CHECK(EncodeRealtimeAudio(actual, {}, 1 << 20, &expected));
+  Q4T_CHECK(before == Base64(expected) && s.AudioBytes() == 0 &&
+            s.RetainedAudioBytes() == actual.size() * 4);
+  Q4T_CHECK(Retrieve(s, id));
+  const auto complete = Drain(f.output);
+  Q4T_CHECK(complete.size() == 1 &&
+            Content(complete[0]).GetString("audio") == before &&
+            Content(complete[0]).GetString("transcript") == transcript);
+  // Changing the wire configuration must not reinterpret or replace old PCM.
+  Q4T_CHECK(Send(s, R"({"type":"transcription_session.update","session":{
+    "input_audio_format":"g711_ulaw","input_audio_noise_reduction":null}})"));
+  Drain(f.output);
+  Q4T_CHECK(Retrieve(s, id));
+  const auto reformatted = Drain(f.output);
+  Q4T_CHECK(EncodeRealtimeAudio(actual, {RealtimeAudioEncoding::kMuLaw, 8000},
+                                1 << 20, &expected));
+  Q4T_CHECK(Content(reformatted[0]).GetString("audio") == Base64(expected));
+  Q4T_CHECK(Delete(s, id) && s.RetainedAudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_retrieve_failed_item_keeps_audio_and_deleted_or_foreign_is_absent) {
+  Fixture f;
+  f.callbacks.execute = [](const auto&, const auto&, const auto&, const auto&) {
+    return Error(429, "client_tpm_exhausted", "No quota");
+  };
+  RealtimeTranscriptionSession s("sess_retrieve", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kAppend) && Send(s, kCommit));
+  const auto id = CommitId(Drain(f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events) && Retrieve(s, id));
+  auto retrieved = Drain(f.output);
+  Q4T_CHECK(Content(retrieved[0]).Find("transcript")->IsNull() &&
+            !Content(retrieved[0]).GetString("audio").empty());
+  Fixture other;
+  RealtimeTranscriptionSession foreign("sess_other", other.output,
+                                       other.callbacks, 30);
+  Q4T_CHECK(foreign.Start());
+  Drain(other.output);
+  Q4T_CHECK(Retrieve(foreign, id));
+  retrieved = Drain(other.output);
+  Q4T_CHECK(retrieved[0].Find("error")->GetString("code") == "item_not_found");
+  Q4T_CHECK(Delete(s, id) && s.RetainedAudioBytes() == 0);
+  Drain(f.output);
+  Q4T_CHECK(Retrieve(s, id));
+  retrieved = Drain(f.output);
+  Q4T_CHECK(retrieved[0].Find("error")->GetString("code") == "item_not_found" &&
+            retrieved[0].Find("error")->GetString("event_id") ==
+                "retrieve_client");
+  return true;
+}
+
+Q4T_TEST(
+    realtime_retrieve_continuous_hidden_until_commit_then_same_sealed_pcm) {
+  Fixture f;
+  std::vector<float> actual;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto& control,
+                            const auto& emit) {
+    ++f.calls;
+    auto reply = StreamFixture(job, control, emit);
+    if (reply.ok()) {
+      const auto samples = job.processed_audio->Samples();
+      actual.assign(samples.begin(), samples.end());
+    }
+    return reply;
+  };
+  RealtimeTranscriptionSession s("sess_stream_retrieve", f.output, f.callbacks,
+                                 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous) && Pcm(s, 13000));
+  std::vector<Json> events;
+  Q4T_CHECK(Until(s, f.output, &events, [&] {
+    return Events(events,
+                  "conversation.item.input_audio_transcription.delta") == 1;
+  }));
+  const auto id = events.back().GetString("item_id");
+  Q4T_CHECK(Retrieve(s, id));
+  const auto hidden = Drain(f.output);
+  Q4T_CHECK(hidden.size() == 1 &&
+            hidden[0].Find("error")->GetString("code") == "item_not_found");
+  Q4T_CHECK(Pcm(s, 1000) && Send(s, kCommit) && Finish(s, f.output, &events));
+  Q4T_CHECK(actual.size() == 9333 && s.AudioBytes() == 0 &&
+            s.RetainedAudioBytes() == 30 * 16000 * 4 && Retrieve(s, id));
+  std::string expected;
+  Q4T_CHECK(EncodeRealtimeAudio(actual, {}, 1 << 20, &expected));
+  const auto complete = Drain(f.output);
+  Q4T_CHECK(Content(complete[0]).GetString("audio") == Base64(expected) &&
+            Content(complete[0]).GetString("transcript") == "piecepiece");
+  Q4T_CHECK(Delete(s, id) && s.RetainedAudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_retrieve_large_output_uses_explicit_budget_and_deferred_order) {
+  Fixture f;
+  WebSocketOutput output(kWebSocketOutputMaximumBytes, 1,
+                         kWebSocketMaximumLimit);
+  RealtimeTranscriptionSession s("sess_large", output, f.callbacks, 30);
+  Q4T_CHECK(s.Start());
+  Drain(output);
+  Q4T_CHECK(Pcm(s, 20 * 24000) && Send(s, kCommit));
+  const auto id = CommitId(Drain(output));
+  std::vector<Json> completed;
+  Q4T_CHECK(Finish(s, output, &completed));
+  Q4T_CHECK(Retrieve(s, id));
+  Q4T_CHECK(output.Front().size() > kWebSocketOutputMessageBytes);
+  // Keep the first actual response queued. A second retrieval and deletion
+  // remain bounded and ordered; deleting does not corrupt either response.
+  Q4T_CHECK(Retrieve(s, id) && Delete(s, id) && s.RetainedAudioBytes() == 0);
+  Q4T_CHECK(s.Tick());
+  const auto first = Drain(output);
+  Q4T_CHECK(first.size() == 1 && Content(first[0]).GetString("audio").size() ==
+                                     20 * 24000 * 2 * 4 / 3);
+  Q4T_CHECK(s.Tick());
+  const auto second = Drain(output);
+  Q4T_CHECK(second.size() == 1 && Content(second[0]).GetString("audio") ==
+                                      Content(first[0]).GetString("audio"));
+  Q4T_CHECK(s.Tick());
+  const auto deleted = Drain(output);
+  Q4T_CHECK(deleted.size() == 1 &&
+            deleted[0].GetString("type") == "conversation.item.deleted");
+  return true;
+}
+
+Q4T_TEST(realtime_retrieve_full_native_text_budget_keeps_json_escaping) {
+  Fixture f;
+  WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
+                         kWebSocketMaximumLimit);
+  const std::string text(4ULL << 20, '\1');
+  f.callbacks.execute = [&](const auto&, const auto&, const auto&,
+                            const auto&) {
+    ++f.calls;
+    return Completed(text);
+  };
+  RealtimeTranscriptionSession s("sess_full_text", output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kAppend) && Send(s, kCommit));
+  const auto id = CommitId(Drain(output));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, output, &events));
+  Q4T_CHECK(events.back().GetString("type") ==
+                "conversation.item.input_audio_transcription.completed" &&
+            events.back().GetString("transcript") == text);
+  Q4T_CHECK(Retrieve(s, id));
+  const auto result = Drain(output);
+  Q4T_CHECK(result.size() == 1 &&
+            Content(result[0]).GetString("transcript") == text);
   return true;
 }

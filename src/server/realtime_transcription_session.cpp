@@ -4,8 +4,10 @@
 #include <bit>
 
 #include "object_protocol.h"
+#include "q4t/io/base64.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/realtime_audio_export.h"
 #include "q4t/server/realtime_asr_policy.h"
 
 namespace q4t::server {
@@ -36,7 +38,8 @@ RealtimeTranscriptionSession::RealtimeTranscriptionSession(
       callbacks_(std::move(callbacks)),
       max_item_ticks_(uint64_t(max_audio_seconds) * kRealtimeTicksPerSecond),
       message_bytes_(message_bytes),
-      history_(id_, 128, kRealtimeTranscriptHistoryBytes) {}
+      history_(id_, 128, kRealtimeTranscriptHistoryBytes),
+      audio_history_(id_) {}
 
 RealtimeTranscriptionSession::~RealtimeTranscriptionSession() {
   Cancel();
@@ -62,16 +65,21 @@ void RealtimeTranscriptionSession::Join() noexcept {
   Release();
 }
 bool RealtimeTranscriptionSession::Emit(Json event, bool deferred) {
+  return EmitText(OutputJson(event), deferred);
+}
+bool RealtimeTranscriptionSession::EmitText(std::string text, bool deferred) {
   if (cancelled_ || (callbacks_.interrupted && callbacks_.interrupted()))
     return false;
-  auto text = OutputJson(event);
-  if (!deferred && vad_events_.empty())
-    return output_.TryPush(WebSocketOpcode::kText, text);
-  if (vad_events_.size() >= 4 || text.size() > 8192 - vad_event_bytes_)
+  if (output_.Closed() || text.size() > output_.MessageLimit()) return false;
+  if (!deferred && vad_events_.empty() &&
+      output_.TryPush(WebSocketOpcode::kText, text))
+    return true;
+  if (vad_events_.size() >= 4 ||
+      text.capacity() > kRealtimeDeferredOutputBytes - vad_event_bytes_)
     return false;
   if (vad_events_.empty())
     vad_event_deadline_ = Clock::now() + std::chrono::seconds(15);
-  vad_event_bytes_ += text.size();
+  vad_event_bytes_ += text.capacity();
   vad_events_.push_back(std::move(text));
   return true;
 }
@@ -80,7 +88,7 @@ bool RealtimeTranscriptionSession::FlushVadEvents() {
     if (output_.Closed() || Clock::now() >= vad_event_deadline_) return false;
     if (!output_.TryPush(WebSocketOpcode::kText, vad_events_.front()))
       return true;
-    vad_event_bytes_ -= vad_events_.front().size();
+    vad_event_bytes_ -= vad_events_.front().capacity();
     vad_events_.pop_front();
   }
   return true;
@@ -107,10 +115,11 @@ bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
 }
 bool RealtimeTranscriptionSession::Start() {
   if (started_ || cancelled_ || !queue_.Valid() || !history_.Valid() ||
-      id_.empty() || !output_.Valid() || max_item_ticks_ == 0 ||
-      max_item_ticks_ > 600 * kRealtimeTicksPerSecond || message_bytes_ == 0 ||
-      message_bytes_ > kWebSocketMessageLimit || !callbacks_.validate ||
-      !callbacks_.acquire || !callbacks_.release || !callbacks_.execute)
+      !audio_history_.Valid() || id_.empty() || !output_.Valid() ||
+      max_item_ticks_ == 0 || max_item_ticks_ > 600 * kRealtimeTicksPerSecond ||
+      message_bytes_ == 0 || message_bytes_ > kWebSocketMessageLimit ||
+      !callbacks_.validate || !callbacks_.acquire || !callbacks_.release ||
+      !callbacks_.execute)
     return false;
   if (!callbacks_.validate(settings_).ok()) return false;
   started_ = true;
@@ -183,6 +192,7 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
     return SettingsEvent(command.legacy);
   }
   if (command.kind == K::kDelete) return DeleteItem(command);
+  if (command.kind == K::kRetrieve) return RetrieveItem(command);
   if (!settings_.delay.empty()) return StreamMessage(command);
   if (command.kind == K::kAppend) {
     const size_t width =
@@ -316,6 +326,13 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
                                           bool automatic) {
   // Allocate the snapshot and identities before mutating the committed queue.
   RealtimeTranscriptionJob job;
+  auto status = queue_.PreviewPrefix(1, end_ticks, &job.audio);
+  if (!status) {
+    const bool sent = ErrorEvent(
+        Error(400, "input_audio_buffer_commit_failed", status.message()),
+        event_id);
+    return sent && !automatic;
+  }
   job.settings = settings_;
   job.id = speech_id_.empty() ? detail::NewRequestId("item_") : speech_id_;
   job.previous_id = previous_id_;
@@ -326,11 +343,26 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
         event_id);
     return sent && !automatic;
   }
+  auto bytes = queue_.PendingFrom(job.audio.begin_ticks);
+  bytes[0] = bytes[0].first(std::min(bytes[0].size(), job.audio.bytes));
+  bytes[1] = bytes[1].first(job.audio.bytes - bytes[0].size());
+  status = audio_history_.Decode(job.transcript, job.audio, bytes,
+                                 max_item_ticks_ / 3, &job.processed_audio,
+                                 callbacks_.interrupted);
+  if (!status) {
+    if (!history_.Fail(job.transcript)) return false;
+    const bool sent = ErrorEvent(
+        Error(400, "conversation_audio_unavailable", status.message()),
+        event_id);
+    return sent && !automatic;
+  }
   jobs_.push_back(std::move(job));
   auto& last = jobs_.back();
-  const auto status = queue_.CommitPrefix(1, end_ticks, &last.audio);
+  status = queue_.CommitPrefix(1, end_ticks, &last.audio);
   if (!status) {
-    if (!history_.Fail(last.transcript)) return false;
+    if (!history_.Fail(last.transcript) ||
+        !audio_history_.Erase(last.transcript))
+      return false;
     jobs_.pop_back();
     const bool sent = ErrorEvent(
         Error(400, "input_audio_buffer_commit_failed", status.message()),
@@ -381,7 +413,7 @@ bool RealtimeTranscriptionSession::DeleteItem(
     return ErrorEvent(
         Error(400, "item_not_found", "Conversation item not found"),
         command.event_id);
-  if (!history_.Erase(ticket)) return false;
+  if (!history_.Erase(ticket) || !audio_history_.Erase(ticket)) return false;
   for (auto& job : jobs_) {
     if (job.transcript != ticket) continue;
     job.deleted = true;
@@ -396,6 +428,67 @@ bool RealtimeTranscriptionSession::DeleteItem(
   auto event = Event("conversation.item.deleted");
   Set(&event, "item_id", String(command.item_id));
   return Emit(std::move(event));
+}
+
+bool RealtimeTranscriptionSession::RetrieveItem(
+    const RealtimeTranscriptionCommand& command) {
+  RealtimeTranscriptTicket ticket;
+  std::optional<std::string_view> transcript;
+  if (!history_.Find(command.item_id, &ticket) ||
+      !history_.Transcript(ticket, &transcript))
+    return ErrorEvent(
+        Error(400, "item_not_found", "Conversation item not found"),
+        command.event_id);
+  const auto audio = audio_history_.Find(ticket);
+  if (!audio || audio->Samples().empty())
+    return ErrorEvent(
+        Error(500, "conversation_audio_invalid", "Committed audio unavailable"),
+        command.event_id);
+  // A retrieval follows the current effective wire format. Retained source
+  // PCM is unchanged, including after a session audio-format update.
+  std::string encoded;
+  auto status =
+      EncodeRealtimeAudio(audio->Samples(), settings_.format,
+                          600ULL * 24000 * 2, &encoded, callbacks_.interrupted);
+  if (!status) {
+    if (callbacks_.interrupted && callbacks_.interrupted()) return false;
+    return ErrorEvent(
+        Error(500, "conversation_audio_invalid", status.message()),
+        command.event_id);
+  }
+  std::string base64;
+  status = io::EncodeBase64(encoded, output_.MessageLimit(), &base64);
+  std::string{}.swap(encoded);
+  if (!status)
+    return ErrorEvent(
+        Error(400, "conversation_output_capacity", status.message()),
+        command.event_id);
+  // Build the known envelope directly: Base64 cannot contain JSON
+  // metacharacters. Avoid recursive JSON builders making several copies of a
+  // 600-second item.
+  const auto prefix =
+      "{\"type\":\"conversation.item.retrieved\",\"event_id\":" +
+      OutputJson(String(detail::NewRequestId("event_"))) +
+      ",\"item\":{\"id\":" + OutputJson(String(command.item_id)) +
+      ",\"object\":\"realtime.item\",\"type\":\"message\",\"role\":\"user\","
+      "\"status\":\"completed\",\"content\":[{\"type\":\"input_audio\","
+      "\"audio\":\"";
+  const auto suffix =
+      "\",\"transcript\":" +
+      (transcript ? OutputJson(String(std::string(*transcript))) : "null") +
+      "}]}}";
+  const auto total = prefix.size() + base64.size() + suffix.size();
+  if (total > output_.MessageLimit())
+    return ErrorEvent(Error(400, "conversation_output_capacity",
+                            "Retrieved item exceeds output budget"),
+                      command.event_id);
+  std::string text;
+  text.reserve(total);
+  text += prefix;
+  text += base64;
+  std::string{}.swap(base64);
+  text += suffix;
+  return EmitText(std::move(text));
 }
 
 bool RealtimeTranscriptionSession::DropFrontJob() {
@@ -462,8 +555,6 @@ bool RealtimeTranscriptionSession::StreamMessage(
         return fail("realtime_delay_turn_conflict",
                     "Continuous ASR policy invalid");
       const auto epoch = stream_epoch_ + 1;
-      auto input = std::make_shared<AsrStreamInput>(epoch, maximum,
-                                                    policy.chunk_samples);
       using N = RealtimeTranscriptionSettings::Noise;
       using M = audio::NoiseReduction;
       auto processor = std::make_unique<RealtimeNoiseInput>(
@@ -472,7 +563,7 @@ bool RealtimeTranscriptionSession::StreamMessage(
           : settings_.noise == N::kNearField ? M::kNearField
                                              : M::kFarField,
           queue_.AcceptedTicks(), callbacks_.interrupted);
-      if (!input->Valid() || !processor->Valid()) return false;
+      if (!processor->Valid()) return false;
       RealtimeTranscriptionJob job;
       job.settings = settings_;
       job.id = detail::NewRequestId("item_");
@@ -480,10 +571,18 @@ bool RealtimeTranscriptionSession::StreamMessage(
       job.audio.epoch = epoch;
       job.audio.begin_ticks = queue_.AcceptedTicks();
       job.audio.format = {RealtimeAudioEncoding::kFloat32, 16000};
-      job.stream = input;
       if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript))
         return fail("conversation_capacity_exceeded",
                     "Delete prior items before appending more transcription");
+      const auto status = audio_history_.BeginStream(
+          job.transcript, epoch, maximum, policy.chunk_samples,
+          &job.processed_audio);
+      if (!status) {
+        if (!history_.Fail(job.transcript)) return false;
+        return fail("conversation_audio_unavailable", status.message());
+      }
+      auto input = job.processed_audio->Stream();
+      job.stream = input;
       jobs_.push_back(std::move(job));
       stream_storage_ += input->StorageBytes();
       stream_epoch_ = epoch;
@@ -569,7 +668,12 @@ bool RealtimeTranscriptionSession::Tick() {
         !history_.Complete(job.transcript, result_.value.GetString("text")))
       result_ = Error(502, "transcription_history_invalid",
                       "Actual transcription could not be retained");
-    if (!result_.ok() && !history_.Fail(job.transcript)) return false;
+    if (!result_.ok()) {
+      if (!history_.Committed(job.transcript) &&
+          !audio_history_.Erase(job.transcript))
+        return false;
+      if (!history_.Fail(job.transcript)) return false;
+    }
     if (!result_.ok() && job.stream && job.stream == live_input_) {
       job.stream->Cancel(job.audio.epoch);
       stream_fault_ = true;

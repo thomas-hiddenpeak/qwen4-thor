@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[处理后音频取回86项CPU通过](evidence/serve-realtime-history-retrieve-cpu-20261119/README.md)：
+1.415646秒/0GPU，零警告、994来源/18负控；实际PCM同源、删除借用
+持续计费、连续提交可见性、大音频及4MiB文本输出通过。下一步冻结
+真实WSS历史输入计量/删除/取回波形短验，再续恢复交付与全部master。
+默认rev326、已验ICL及原exact-code/听感待验保持。
+
+处理后音频历史/标准retrieve已编写：ASR与取回共用真实PCM，持续输入
+在commit前不可见；删除后的活动借用继续计费。原生出口显式64MiB
+单帧/128MiB队列，控制背压有界排队；完整会话准入1GiB。冻结86项
+针对性CPU/180秒/0GPU，尚未验证；通过后真实WSS短验及恢复交付。
+默认rev326/已验ICL和听感待验保持，全部master继续。
+
 [实际历史与删除CPU验收通过](evidence/serve-realtime-history-context-cpu-20261119/README.md)：
 55项合同已覆盖，原容量FAIL保留，修复后3项复验通过；累计0.287560秒/
 0GPU，构建零警告。32项完整输出预留与384MiB会话准入一致，删除/

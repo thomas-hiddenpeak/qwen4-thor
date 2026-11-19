@@ -26,6 +26,7 @@ Status AsrStreamInput::Append(uint64_t epoch, std::span<const float> samples) {
 Status AsrStreamInput::Seal(uint64_t epoch) {
   const std::lock_guard lock(mutex_);
   const auto status = schedule_.Seal(epoch);
+  if (status) sealed_ = true;
   changed_.notify_one();
   return status;
 }
@@ -72,5 +73,11 @@ size_t AsrStreamInput::Received() const {
 bool AsrStreamInput::Drained() const {
   const std::lock_guard lock(mutex_);
   return schedule_.Drained();
+}
+std::span<const float> AsrStreamInput::SealedSamples(uint64_t epoch) const {
+  const std::lock_guard lock(mutex_);
+  return epoch == epoch_ && sealed_
+             ? std::span<const float>(storage_.get(), schedule_.Received())
+             : std::span<const float>{};
 }
 }  // namespace q4t::server

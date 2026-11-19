@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -47,6 +48,10 @@ class RealtimeTranscriptHistory {
   Status Find(std::string_view id, RealtimeTranscriptTicket* output) const;
   bool Committed(const RealtimeTranscriptTicket& ticket) const;
   std::string LastCommittedId() const;
+  // Owner-thread view, valid until the next ledger mutation. A committed
+  // pending/failed turn has no transcript; successful silence is an empty one.
+  Status Transcript(const RealtimeTranscriptTicket& ticket,
+                    std::optional<std::string_view>* output) const;
   // Preserves output on failure, never truncates or skips pending earlier
   // committed work. Failed/cleared/empty turns add no context. The current
   // turn and all later turns are excluded, even if they already completed.

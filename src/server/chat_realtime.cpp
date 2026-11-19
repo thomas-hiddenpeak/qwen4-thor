@@ -120,7 +120,8 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                           const auto& control, const auto& emit) {
     return RunRealtimeTranscription(client, job, bytes, control, emit);
   };
-  WebSocketOutput output;
+  WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
+                         kWebSocketMaximumLimit);
   RealtimeTranscriptionPump session(
       detail::NewRequestId("sess_"), output, std::move(callbacks),
       asr_limits_.max_audio_seconds, message_bytes);
@@ -164,7 +165,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
 
 ObjectReply ChatServer::RunRealtimeTranscription(
     const ClientIdentity& original, const RealtimeTranscriptionJob& job,
-    const std::array<std::span<const uint8_t>, 2>& bytes,
+    const std::array<std::span<const uint8_t>, 2>& /*bytes*/,
     const std::shared_ptr<RequestControl>& control,
     const RealtimeTranscriptSink& emit) {
   metrics_.requests_total.fetch_add(1);
@@ -238,16 +239,15 @@ ObjectReply ChatServer::RunRealtimeTranscription(
         if (job.stream)
           return RunRealtimeAsrStream(client, job, control, diagnostic,
                                       http.Usage(), emit);
-        std::vector<float> pcm;
         const size_t max_samples =
             size_t(asr_limits_.max_audio_seconds) * 16000;
-        auto status =
-            DecodeRealtimePcm(job.audio, bytes, max_samples, &pcm, cancelled);
-        if (!status || cancelled())
-          return cancelled() ? interrupted()
-                             : Error(400, "audio_invalid", status.message());
+        const auto pcm = job.processed_audio ? job.processed_audio->Samples()
+                                             : std::span<const float>{};
+        if (pcm.empty() || pcm.size() > max_samples)
+          return Error(400, "audio_invalid",
+                       "Committed processed audio missing");
         audio::AsrFeatures features;
-        status = audio::ComputeAsrFeatures(
+        auto status = audio::ComputeAsrFeatures(
             pcm, audio::AsrConfig::kSampleRate,
             {max_samples, size_t(asr_limits_.max_audio_seconds) * 100},
             &features, cancelled);
@@ -255,7 +255,6 @@ ObjectReply ChatServer::RunRealtimeTranscription(
           return cancelled()
                      ? interrupted()
                      : Error(400, "audio_features_invalid", status.message());
-        std::vector<float>().swap(pcm);
         auto limits = asr_limits_;
         if (client.Scoped())
           limits.max_output_tokens = std::min<uint64_t>(

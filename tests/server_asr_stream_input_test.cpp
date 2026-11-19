@@ -1,5 +1,6 @@
 #include "q4t/server/asr_stream_input.h"
 
+#include <algorithm>
 #include <array>
 #include <future>
 #include <limits>
@@ -14,6 +15,23 @@ using namespace q4t::server;
 using namespace std::chrono_literals;
 using Clock = std::chrono::steady_clock;
 }  // namespace
+
+Q4T_TEST(asr_stream_input_sealed_view_is_exact_and_survives_cancellation) {
+  AsrStreamInput input(8, 8, 4);
+  const std::array<float, 5> actual{.25f, -.5f, 1.2f, -1.1f, .75f};
+  Q4T_CHECK(input.SealedSamples(8).empty() && input.Append(8, actual));
+  Q4T_CHECK(input.SealedSamples(8).empty() && !input.Seal(7));
+  Q4T_CHECK(input.Seal(8));
+  const auto view = input.SealedSamples(8);
+  Q4T_CHECK(std::ranges::equal(view, actual) && input.SealedSamples(7).empty());
+  Q4T_CHECK(input.Cancel(8) && !input.Append(8, actual));
+  Q4T_CHECK(input.SealedSamples(8).data() == view.data() &&
+            std::ranges::equal(input.SealedSamples(8), actual));
+  AsrStreamInput uncommitted(9, 8, 4);
+  Q4T_CHECK(uncommitted.Append(9, actual) && uncommitted.Cancel(9));
+  Q4T_CHECK(!uncommitted.Seal(9) && uncommitted.SealedSamples(9).empty());
+  return true;
+}
 
 Q4T_TEST(asr_stream_input_append_during_borrow_never_overwrites_prefix) {
   AsrStreamInput input(1, 12, 4);

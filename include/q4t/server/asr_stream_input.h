@@ -41,6 +41,9 @@ class AsrStreamInput {
   Status Complete(const AsrStreamStep& step);
   size_t Received() const;
   bool Drained() const;
+  // Available only after an actual successful Seal. The caller retains this
+  // owner; later cancellation cannot invalidate/overwrite the sealed samples.
+  std::span<const float> SealedSamples(uint64_t epoch) const;
 
  private:
   const uint64_t epoch_;
@@ -49,5 +52,6 @@ class AsrStreamInput {
   std::condition_variable changed_;
   AsrStreamSchedule schedule_;
   std::unique_ptr<float[]> storage_;
+  bool sealed_ = false;
 };
 }  // namespace q4t::server

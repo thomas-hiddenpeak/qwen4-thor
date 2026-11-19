@@ -185,3 +185,34 @@ conversation.item.delete验证同会话已commit身份。排队项被跳过，
 H2b1 [55项CPU合同已覆盖通过](evidence/serve-realtime-history-context-cpu-20261119/README.md)：
 首轮容量FAIL保留，修复后3项复验通过。真实运行时需与H2b2音频取回
 一并短验；其余S4—S6/整个master持续推进。
+
+### H2b2：实际处理后音频取回、所有权与大响应
+
+手动/VAD通过无副作用的commit预览，先预留并解码实际16k PCM，再
+发布commit。ASR使用这份不可变PCM，消除取回与执行数据不一致；
+原解码数学复用，不改变处理合同。持续输入以别名shared_ptr保留同一
+固定PCM及预算，只有成功Seal后才有可取回的完整视图。失败的已commit
+音频仍可检查，未commit/删除/其他会话ID报标准错误。删除索引不释放
+仍被工作线程/生产者引用的内存，clear也不把旧存储移给新item。
+
+retrieve返回标准conversation.item.retrieved与完整input_audio内容，
+实际转录尚未成功时transcript为null；正常空转录为合法空字符串。
+按当前有效session输入格式（PCM24k/G.7118k）导出实际处理后波形，
+切换线格式不会改写保留的源PCM。较长响应直接拼接固定JSON外壳及
+规范Base64，复用既有转义，避免递归JSON多次复制大音频。
+
+显式预算：原工作区256MiB、历史文本128MiB、历史PCM128MiB、输出
+队列128MiB/64MiB单消息、延迟控制128MiB/4事件、编码/JSON/帧暂存
+256MiB，共1GiB会话准入（独立TLS固定缓冲另计）。实际PCM分配容量
+与延迟字符串capacity计费；没有未声明自动淘汰。控制背压在绝对15秒
+截止内有界排队，commit两事件先排出后才启动执行；新到达不延长截止。
+
+冻结86项针对性CPU/180秒/0GPU：所有权/代次/取消、队列预览、
+已提交历史视图、原会话/泵、真实PCM同源、降噪后导出、当前格式、
+活动删除、连续提交可见性、超过旧1MiB的大帧、完整4MiB转录转义。
+原H2a音频数值与其他未变模型证据复用；通过后与H2b1一起真实短验。
+本组实现尚未验收，不追认整个Realtime或master完成。
+
+H2b2 [86项针对性CPU通过](evidence/serve-realtime-history-retrieve-cpu-20261119/README.md)，
+1.415646秒/0GPU，零警告。下一步H3真实WSS历史/用量/删除/取回，
+尚未进行本身份业务或恢复交付验收，默认rev326保持。

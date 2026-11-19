@@ -254,14 +254,18 @@ ObjectReply ParseRealtimeTranscriptionCommand(
     command.kind = type == "input_audio_buffer.clear"
                        ? RealtimeTranscriptionCommandKind::kClear
                        : RealtimeTranscriptionCommandKind::kCommit;
-  } else if (type == "conversation.item.delete") {
+  } else if (type == "conversation.item.delete" ||
+             type == "conversation.item.retrieve") {
     reply = Fields(value, {"type", "event_id", "item_id"}, "event");
     if (!reply.ok()) return failed(std::move(reply));
     const auto* id = value.Find("item_id");
     if (!id || !Text(*id, 512) || id->str.empty())
-      return failed(Invalid("item_id", "Item deletion requires an identity"));
+      return failed(
+          Invalid("item_id", "Conversation event requires an identity"));
     command.item_id = id->str;
-    command.kind = RealtimeTranscriptionCommandKind::kDelete;
+    command.kind = type == "conversation.item.delete"
+                       ? RealtimeTranscriptionCommandKind::kDelete
+                       : RealtimeTranscriptionCommandKind::kRetrieve;
   } else
     return failed(Invalid("type",
                           "Event is not valid in a transcription session",
