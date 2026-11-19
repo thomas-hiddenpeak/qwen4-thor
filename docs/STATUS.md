@@ -7,34 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-Realtime Chat 首轮真实短验 FAIL 已保留：1 模型、1 WSS、实际首个响应
-及 1 Chat / 40.145 秒；普通 Chat 42 正常，强制工具报 required tool
-call missing。定位为普通非流式快速路径漏判原生输出观察者，导致
-token 未进入 parser；已补 `!native`，冻结 20 项来源反例与必要构建。
-自有模型/入口/锁已释放，默认 rev346 STOPPED 未变；通过后仅续原
-3 WSS / 8 响应 / 1 转写 / 2 Chat 范围，不扩性能或完整质量矩阵。
+[Realtime Chat 原生观察修复与空上下文候选](evidence/serve-realtime-chat-observer-cue-20261119/README.md)：
+真实工具闭环已通过；原生 token 观察遗漏已修复，空上下文质量失败
+继续处理。原两轮 FAIL、2 模型 / 4 响应 / 2 Chat / 83.180 秒完整保留，
+81 次 NVML 正常，自有资源与锁释放，默认 rev346 STOPPED 未变。
 
-[Realtime Chat 业务驱动 10 项 CPU 通过](evidence/serve-realtime-chat-driver-cpu-20261119/README.md)：
-0.378 秒 / 0 GPU；必要构建 345.370 秒、零警告，默认 rev346
-STOPPED 不变。随后限 1 模型、3 WSS、8 响应、1 转写与 2 Chat /
-900 秒，核对真实项目资料工具、取消/限额、实际结算与共享 ASR 回归。
-本轮不是性能或完整模型质量验收，音频/MCP/Live 与全部 master 继续。
-
-[原生 Realtime Chat 51 项 CPU 覆盖通过](evidence/serve-realtime-native-chat-cpu-20261119/README.md)：
-正常鉴权/配额/准入与一次性执行已接线；实际模板计数、工具成组与
-跨轮持久截断、取消后工具隔离通过。首轮两夹具 FAIL 保留，定向补验
-通过；0 GPU。必要构建通过，随后真实 SDK/TLS 模型和工具短验；
-音频/MCP/Live/追踪/Prompt 继续接通，默认 rev346 STOPPED 不变。
-
-[共享 Realtime 队列 8 项 CPU 通过](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)：
-0.114 秒 / 0 GPU，保持原转录合同并覆盖对话顺序、背压、取消与异常
-隔离；独立链接原失败保留。队列、会话与输出基础已验证，正在接
-真实 Chat 执行及工具闭环，公开对话入口/实际模型尚未验收。
-
-[会话 48 项 CPU 覆盖](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
-与[输出 17 项 CPU](evidence/serve-realtime-output-cpu-20261119/README.md)
-已通过，含文档 null 清空与固定 SDK 声明差异、删除迟到隔离、取消和
-不确定接收不重放；原失败保留。音频/MCP/Live 与剩余 master 继续。
+新增生成提示不改变调用者 instructions、采样或对话账本；实际输入
+计量包含提示。10 项针对性 CPU / 0.268 秒、20 项来源反例通过，
+原 51 项 Chat、48 项会话与共享队列证据按未变身份复用。
+下一轮限 1 模型 / 3 WSS / 10 响应 / 1 转写 / 2 Chat / 900 秒，
+含空上下文两种反例。实际模型未通过前不替换默认或宣称交付；
+音频/MCP/Live/追踪/Prompt 及全部 master 继续，原失败与听感待验保持。
 
 [PR #51 已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
 两组 CI 通过，main 合并点 `53808bf52`；后续对话开发未混入。

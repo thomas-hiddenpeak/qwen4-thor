@@ -19,7 +19,7 @@ from tools.serve_service.package import require, save, sha
 
 WORK = ROOT / '.q4t-work/serve-realtime-conversation-20261119'
 LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=3,
-              response_creates=8, committed_items=1, chats=2,
+              response_creates=10, committed_items=1, chats=2,
               controls=2000, seconds=900)
 CONTRACT = dict(actual_model=True, actual_project_tool=True,
                 delta_cancel=True, actual_usage_settled=True,
@@ -49,7 +49,7 @@ def response_usage(response):
 
 def check_receipt(receipt, mode, record):
     expected = ['completed', 'failed'] if mode == 'quota' else [
-        'completed', 'completed', 'completed', 'incomplete',
+        'completed', 'completed', 'completed', 'completed', 'completed', 'incomplete',
         'cancelled', 'completed']
     require(receipt['status'] == 'PASS' and receipt['connections'] == 1 and
             receipt['close_code'] == 1000 and not receipt['automatic_replay'] and
@@ -71,13 +71,13 @@ def check_receipt(receipt, mode, record):
         require(receipt['tool_record'] == dict(record_key='release',
                     version=record['version'], source='docs/STATUS.md',
                     source_sha256=record['sha256']), 'actual tool provenance')
-        require(rows[3]['status_details']['reason'] == 'max_output_tokens' and
-                rows[3]['usage']['output_tokens'] == 1,
+        require(rows[5]['status_details']['reason'] == 'max_output_tokens' and
+                rows[5]['usage']['output_tokens'] == 1,
                 'exact output limit required')
         require(any(e['type'] == 'response.output_text.delta' and
-                    e.get('response_id') == rows[4]['id'] and e.get('delta')
+                    e.get('response_id') == rows[6]['id'] and e.get('delta')
                     for e in events), 'cancel before model output is not proof')
-        require(all(not rows[i].get('conversation_id') for i in (2, 3, 4)),
+        require(all(not rows[i].get('conversation_id') for i in (2, 3, 4, 5, 6)),
                 'out-of-band responses entered default conversation')
     return total
 
@@ -95,7 +95,8 @@ def prepare(args):
     require(sha(binary) == result['binary_sha256'], 'candidate identity changed')
     for name, digest in build_plan['sources'].items():
         require(sha(ROOT / name) == digest, 'built runtime source drift')
-    cpu = WORK / 'business-cpu-01'
+    cpu = args.cpu_record.resolve(strict=True)
+    require(cpu.is_relative_to(WORK), 'private actual CPU record required')
     require(json.loads((cpu / 'result.json').read_text())['status'] == 'PASS',
             'business verifier CPU not qualified')
     previous = base.WORK / 'transcription-business-04/run'
@@ -173,7 +174,7 @@ class Stage(base.Stage):
 
     def conversation(self, mode, client):
         self.budget('websocket_sessions')
-        self.budget('response_creates', 6 if mode == 'main' else 2)
+        self.budget('response_creates', 8 if mode == 'main' else 2)
         record = self.plan['record']
         args = dict(base_url=f"https://127.0.0.1:{self.plan['public_port']}/v1",
             api_key=self.keys[client], ca_file=self.plan['tls']['certificate'],
@@ -198,7 +199,7 @@ class Stage(base.Stage):
         self.snapshot('before')
         self.core('core-before')
         tokens = self.conversation('main', 'alpha')
-        settlement(self.snapshot('main-drained'), 'alpha', tokens, 6)
+        settlement(self.snapshot('main-drained'), 'alpha', tokens, 8)
         tokens = self.conversation('quota', 'beta')
         state = self.snapshot('quota-drained')
         settlement(state, 'beta', tokens, 1)
@@ -230,6 +231,8 @@ if __name__ == '__main__':
     prep.add_argument('--port', type=int, default=18418)
     prep.add_argument('--build-record', type=Path,
                       default=WORK / 'runtime-build-01')
+    prep.add_argument('--cpu-record', type=Path,
+                      default=WORK / 'business-cpu-01')
     run = sub.add_parser('run')
     run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

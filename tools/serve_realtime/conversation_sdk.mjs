@@ -62,7 +62,7 @@ function send(value) {
   check(++sent <= 64, 'client event bound'); rt.send(value);
 }
 async function create(response, expected = 'completed', cancel = false) {
-  check(++creates <= (args.mode === 'main' ? 6 : 2), 'response attempt bound');
+  check(++creates <= (args.mode === 'main' ? 8 : 2), 'response attempt bound');
   const at = events.length;
   const tag = `case_${creates}`;
   send({ type: 'response.create', event_id: tag,
@@ -159,6 +159,14 @@ try {
       instructions: 'Compute 6 * 7. Reply only 42.', tools: [],
       tool_choice: 'none', max_output_tokens: 32 });
     check(text(independent).trim() === '42', 'out-of-band actual quality');
+    for (const [instructions, expected] of [
+      ['Compute 9 * 8. Reply only 72.', '72'],
+      ['Reply only with the word blue.', 'blue'],
+    ]) {
+      const counter = await create({ conversation: 'none', input: [],
+        instructions, tools: [], tool_choice: 'none', max_output_tokens: 32 });
+      check(text(counter).trim() === expected, 'empty-context counterexample');
+    }
     const limited = await create({ conversation: 'none', input: [], tools: [],
       tool_choice: 'none', max_output_tokens: 1,
       instructions: 'Write the numbers from one through twenty in English.' }, 'incomplete');

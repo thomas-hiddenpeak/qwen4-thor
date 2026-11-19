@@ -208,6 +208,26 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
         PrepareResponsesGeneration(candidate.envelope, *request.Find("input"),
                                    config, &candidate.generation, error);
   if (!status) return status;
+  if (candidate.generation.input.items.array.empty()) {
+    // response.create itself asks for a new answer even without a user item.
+    // This text checkpoint expects a user-turn cue. Keep that transport cue
+    // ephemeral: never invent conversation items or replace caller instructions.
+    // The normal template/tokenizer counts its actual input and quota cost.
+    auto& generation = candidate.generation;
+    auto& chat = generation.generation_request;
+    Field(chat, "messages")
+        .array.push_back(Object(
+            {{"role", String("user")},
+             {"content",
+              String("Respond now according to the system instructions.")}}));
+    auto planning = config;
+    planning.async_tool_call_ids = generation.chat.async_tool_call_ids;
+    planning.responses_tool_media = generation.chat.responses_tool_media;
+    planning.header_tools = generation.chat.header_tools;
+    planning.tool_call_formats = generation.chat.tool_call_formats;
+    status = PlanChatRequest(chat, planning, &generation.chat, error);
+    if (!status) return status;
+  }
   size_t retained = 0;
   const std::vector<const Json*> stored{
       &candidate.envelope.request,

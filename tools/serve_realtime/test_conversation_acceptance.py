@@ -9,20 +9,21 @@ def fixture(mode='main'):
     record = dict(path=str(c.ROOT / 'docs/STATUS.md'), version='rev346',
                   sha256='a' * 64)
     states = ['completed', 'failed'] if mode == 'quota' else [
-        'completed', 'completed', 'completed', 'incomplete', 'cancelled',
+        'completed', 'completed', 'completed', 'completed', 'completed',
+        'incomplete', 'cancelled',
         'completed']
     rows = [dict(id=f'resp_{i}', status=s, output=[], usage=dict(
         input_tokens=12, output_tokens=1, total_tokens=13))
         for i, s in enumerate(states)]
     if mode == 'main':
-        rows[3]['status_details'] = dict(reason='max_output_tokens')
+        rows[5]['status_details'] = dict(reason='max_output_tokens')
     else:
         rows[1]['status_details'] = dict(error=dict(code='client_rpm_exhausted'))
         rows[1].pop('usage')
     events = [dict(type='response.done', response=copy.deepcopy(r)) for r in rows]
     if mode == 'main':
-        events.insert(4, dict(type='response.output_text.delta',
-                             response_id=rows[4]['id'], delta='1'))
+        events.insert(6, dict(type='response.output_text.delta',
+                             response_id=rows[6]['id'], delta='1'))
     value = dict(status='PASS', connections=1, close_code=1000,
         automatic_replay=False, transport='official-openai-wss', mode=mode,
         response_creates=len(rows), responses=rows, events=events,
@@ -46,7 +47,7 @@ class Evidence(unittest.TestCase):
 
     def test_real_outcomes_and_project_provenance_cannot_be_claimed(self):
         value, record = fixture()
-        self.assertEqual(c.check_receipt(value, 'main', record), 78)
+        self.assertEqual(c.check_receipt(value, 'main', record), 104)
         for field, replacement in [('connections', 2), ('close_code', 1006),
                 ('automatic_replay', True), ('response_creates', 7)]:
             changed = copy.deepcopy(value); changed[field] = replacement
@@ -81,13 +82,13 @@ class Evidence(unittest.TestCase):
         value['events'][1]['response'] = value['responses'][1]
         with self.assertRaises(Exception): c.check_receipt(value, 'quota', record)
         metrics = {key + '{client="alpha"}': count for key, count in (
-            ('q4t_client_rate_admitted_total', 6),
-            ('q4t_client_rate_settled_tokens_total', 78),
+            ('q4t_client_rate_admitted_total', 8),
+            ('q4t_client_rate_settled_tokens_total', 104),
             ('q4t_client_rate_reserved_tokens', 0))}
-        c.settlement(metrics, 'alpha', 78, 6)
+        c.settlement(metrics, 'alpha', 104, 8)
         for key in metrics:
             changed = dict(metrics); changed[key] += 1
-            with self.assertRaises(Exception): c.settlement(changed, 'alpha', 78, 6)
+            with self.assertRaises(Exception): c.settlement(changed, 'alpha', 104, 8)
 
 
 if __name__ == '__main__': unittest.main()

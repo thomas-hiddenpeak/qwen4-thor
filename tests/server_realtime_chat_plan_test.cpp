@@ -247,3 +247,60 @@ Q4T_TEST(realtime_chat_retention_bounds_and_model_effort_are_validated) {
   }
   return true;
 }
+
+Q4T_TEST(realtime_chat_empty_context_has_ephemeral_creation_cue) {
+  Fixture f;
+  for (const auto* instruction : {"Compute 6 * 7. Reply only 42.",
+                                  "Reply only with the word blue."}) {
+    const auto response = Object({{"instructions", String(instruction)}});
+    Q4T_CHECK(f.Build(response, Array()));
+    const auto& generation = f.plan.generation;
+    Q4T_CHECK(generation.input.items.array.empty() &&
+              generation.input_source_indices.empty());
+    Q4T_CHECK(generation.input.messages.array.size() == 1 &&
+              generation.input.messages.array[0].GetString("content") ==
+                  instruction);
+    const auto& request = generation.chat.Request(generation.generation_request);
+    const auto& messages = request.Find("messages")->array;
+    Q4T_CHECK(messages.size() == 2 &&
+              messages[0].GetString("content") == instruction &&
+              messages[1].GetString("role") == "user" &&
+              messages[1].GetString("content") ==
+                  "Respond now according to the system instructions.");
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_chat_creation_cue_does_not_change_existing_items) {
+  Fixture f;
+  Q4T_CHECK(f.Build());
+  const auto& generation = f.plan.generation;
+  Q4T_CHECK(generation.input.items.array.size() == 1 &&
+            generation.input_source_indices == std::vector<size_t>{0});
+  const auto& messages = generation.generation_request.Find("messages")->array;
+  Q4T_CHECK(messages.size() == 2 &&
+            messages[1].GetString("role") == "user" &&
+            OutputJson(messages[1]) ==
+                OutputJson(generation.input.messages.array[1]));
+  return true;
+}
+
+Q4T_TEST(realtime_chat_creation_cue_is_measured_and_never_truncated_as_history) {
+  Fixture f;
+  f.config.max_len = 100;
+  Q4T_CHECK(f.Build(Object({{"max_output_tokens", Number(20)}}), Array()));
+  size_t calls = 0;
+  Q4T_CHECK(!FitRealtimeChatContext(
+      f.config,
+      [&](const ResponsesGenerationPlan& plan, size_t* count, ChatPlanError*) {
+        ++calls;
+        const auto& request = plan.chat.Request(plan.generation_request);
+        *count = request.Find("messages")->array.size() * 45;
+        return Status{};
+      },
+      &f.plan, &f.error));
+  Q4T_CHECK(calls == 2 && f.error.code == "context_length_exceeded" &&
+            f.plan.generation.input.items.array.empty() &&
+            f.plan.generation.truncated_items == 0);
+  return true;
+}
