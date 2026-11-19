@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生对话候选 f5af36c6 已零警告构建（17.473 秒），保留原合格
+994025c2 和默认 rev346。冻结主轻各一次模型启动，合计 64 项业务、
+8 WSS/6 临时入口/900 秒、同一严格 GPU 租约；新增每配置两轮
+资料工具并保持已配置能力。资格与 Guardian/发行仍待验，不做完整
+性能/模型质量矩阵；全部 master 继续。
+
 [Realtime Chat 资格 19 项 CPU 通过](evidence/serve-realtime-chat-profile-cpu-20261119/README.md)：
 12 Python + 2 原生 + 5 SDK，0GPU；来源登记首轮 FAIL 保留，补三项
 审查登记后 20 反例通过（仅复验来源）。4 项计划交接逐字节一致。
