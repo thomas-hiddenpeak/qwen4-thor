@@ -552,7 +552,39 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     },
     {
@@ -847,6 +879,37 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     },
     {
@@ -4863,7 +4926,39 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     },
     {
@@ -6281,7 +6376,39 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     },
     {
@@ -7094,7 +7221,8 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
       }
     },
     {
@@ -7270,7 +7398,8 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
       }
     },
     {
@@ -8363,7 +8492,39 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     },
     {
@@ -9375,7 +9536,8 @@
       },
       "native_realtime_prompt_delivery_20261120": {
         "revision": 366,
-        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
+        "main_integration_pending": false
       }
     },
     {
@@ -9584,10 +9746,41 @@
         "resources_released": true,
         "default_unchanged": true,
         "complete": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
       }
     }
   ],
-  "next_task": "Realtime Prompt final-head CI/main integration; implement native Realtime audio output, MCP/tracing/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
+  "next_task": "Realtime speech output: affected profile/recovery qualification and reversible delivery; then remaining duplex audio, MCP/tracing/Live and all A/N/R/Q tasks. PR53 merged; PR54 draft.",
   "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -10559,7 +10752,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_transcription_semantic_vad_text_tools_prompts_delivered_rev366_audio_mcp_tracing_live_pending",
+    "state": "native_prompt_delivered_rev366_speech_output_business_accepted_recovery_and_duplex_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -10567,7 +10760,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Implement native Realtime audio output, MCP, tracing and Live, then every remaining master task; preserve original failures and owner-deferred listening.",
+    "next": "Qualify affected primary/light consumers, native recovery and reversible speech delivery; continue duplex audio input/VAD, MCP, tracing, Live and every remaining master task. Preserve original quality failures and owner-deferred listening.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -11719,6 +11912,37 @@
       "output_history_evidence": "evidence/serve-realtime-speech-output-cpu-20261120/README.md",
       "output_history_cpu_tests": 32,
       "output_history_cpu_seconds": 0.5061439340934157
+    },
+    "speech_output": {
+      "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+      "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+      "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+      "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+      "cpu_execution_cases": 110,
+      "cpu_business_cases": 23,
+      "actual_model_starts": 2,
+      "independent_leases": 2,
+      "response_creates": 14,
+      "chat_or_completions": 4,
+      "unprompted_asr": 6,
+      "seconds": 157.91322873625904,
+      "nvml_ok": 150,
+      "actual_formats": [
+        "audio/pcm",
+        "audio/pcmu",
+        "audio/pcma"
+      ],
+      "fractional_speed": 0.75,
+      "original_quality_failures_preserved": true,
+      "new_user_content_pass": true,
+      "sampling_defaults_unchanged": true,
+      "default_revision": 366,
+      "default_changed": false,
+      "profile_recovery_delivery_pending": true,
+      "duplex_input_pending": true,
+      "full_realtime_complete": false,
+      "owner_listening_deferred": true,
+      "pull_request": 54
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -12226,7 +12450,7 @@
     "files": 68,
     "secret_scan_matches": 0,
     "archive_sha256": "50917251dce05d26df0ec99c57469378169139615a68e8b0851b6815c6d5bc72",
-    "main_integration_pending": true,
+    "main_integration_pending": false,
     "full_model_quality": false,
     "performance_claim": false,
     "long_stability_run": false,
@@ -12249,5 +12473,43 @@
     "evidence": "evidence/serve-refusal-reviewed-profiles-20261120/README.md",
     "registry_sha256": "489e6fb65146c24df5cc96e904e67d9777f0d47596716ea91259ec1bf64a78b1",
     "original_failures_preserved": true
+  },
+  "native_realtime_prompt_main_20261120": {
+    "status": "MERGED",
+    "pull_request": 53,
+    "head": "4469b36709a0fc52efada482ce2049dab1a2e354",
+    "merge_commit": "811dadab3e26a0de47e32001c0a4da82dda8938b",
+    "evidence": "evidence/serve-pr53-main-20261120/README.md"
+  },
+  "native_realtime_speech_output_20261120": {
+    "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+    "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+    "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+    "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+    "cpu_execution_cases": 110,
+    "cpu_business_cases": 23,
+    "actual_model_starts": 2,
+    "independent_leases": 2,
+    "response_creates": 14,
+    "chat_or_completions": 4,
+    "unprompted_asr": 6,
+    "seconds": 157.91322873625904,
+    "nvml_ok": 150,
+    "actual_formats": [
+      "audio/pcm",
+      "audio/pcmu",
+      "audio/pcma"
+    ],
+    "fractional_speed": 0.75,
+    "original_quality_failures_preserved": true,
+    "new_user_content_pass": true,
+    "sampling_defaults_unchanged": true,
+    "default_revision": 366,
+    "default_changed": false,
+    "profile_recovery_delivery_pending": true,
+    "duplex_input_pending": true,
+    "full_realtime_complete": false,
+    "owner_listening_deferred": true,
+    "pull_request": 54
   }
 }

@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime语音内容短验通过](evidence/serve-realtime-speech-content-20261120/README.md)：
+明确新user后工具回答rev366，三格式/0.75语速的真实语音与无提示ASR
+均通过。补验1模型/5响应/2固定种子对照/3ASR，76.382秒、73次NVML
+正常并清理；两租约累计157.913秒，原随机/旧轮次FAIL保留。
+复用已过协议/配额/截断，默认rev366不变；继续受影响主轻/恢复/发行
+及双向音频和全部master，未宣称完整Realtime交付。
+
 [Realtime语音输入对照完成](evidence/serve-realtime-speech-input-review-20261120/README.md)：
 6个实际历史重建确认audio/text/native提示逐字节一致；格式场景末项
 仍是旧assistant，明确新user会改变当前询问。补验6项CPU/JS通过，
