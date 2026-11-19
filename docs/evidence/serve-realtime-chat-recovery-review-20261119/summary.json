@@ -1,0 +1,61 @@
+{
+  "status": "RETAINED_ACCEPTED_TLS_MODEL_ANSWER_FAILED",
+  "actual_starts": 2,
+  "work_items": 37,
+  "http_requests": 25,
+  "realtime_work": 12,
+  "websocket_sessions": 8,
+  "seconds": 298.0622326731682,
+  "nvml_queries": 278,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "retained_command_review": {
+    "status": "PASS_RETAINED_COMMAND_IDENTITY_AND_FULL_FINALIZATION",
+    "seconds": 1.0712815150618553,
+    "reused_cpu_checks": 6,
+    "new_gpu_starts": 0,
+    "original_literal_command_failure_preserved": true,
+    "review_initialization_failure_preserved": true,
+    "original_records_unchanged": true,
+    "decision_sha256": "8c536d2c36bdb81f31183f3583aae04d82c847b7a4e2640e8c336c99c98866f8",
+    "service_release_sha256": "5fd90e9d6c27d364c6732137696f7d83653ca2d24ef623b8e683bcf1d09ea13e",
+    "proof_sha256": "d87a4ead95bddbb6bc1469c3bd7bca5384500786b96e62a32427d0231b1ae12a"
+  },
+  "prompt_review": {
+    "status": "PASS_ACTUAL_PROMPT_REVIEW",
+    "seconds": 0.0032123932614922523,
+    "build_seconds": 1.9864261588081717,
+    "measured_executed_identical": true,
+    "before_after_prompt_identical": true,
+    "sampling": [
+      {
+        "label": "tls-before",
+        "temperature": 1,
+        "top_p": 1,
+        "seed_set": false
+      },
+      {
+        "label": "tls-after",
+        "temperature": 1,
+        "top_p": 1,
+        "seed_set": false
+      }
+    ],
+    "prompt_sha256": [
+      "829ca4d9fe862f4669e5b4d4e2df3bfbeb1448e2c6ca4b65d2f9a2a64e38f49e",
+      "829ca4d9fe862f4669e5b4d4e2df3bfbeb1448e2c6ca4b65d2f9a2a64e38f49e"
+    ],
+    "gpu_actions": 0
+  },
+  "tls_original_failed": true,
+  "quality_answer_accepted": false,
+  "remaining_version_stage_started": false,
+  "default_revision": 346,
+  "default_desired": "STOPPED",
+  "archive_sha256": "de59ec5554034fce6a553cab7ac0c012d829d754ef18bc16889341bebb74739a",
+  "archive_files": 66,
+  "all_master_complete": false,
+  "listening": "PENDING_BY_OWNER",
+  "secret_scan_matches": 0
+}
