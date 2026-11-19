@@ -39,6 +39,10 @@ def conditioning(consent_id, voice_id):
 
 def record():
     value = legacy.cpu_record()
+    for health in value['health'].values():
+        health.update(load_failures=0,asset_cleanup_pending=False)
+    value['health']['condition'].update(
+        model=package.NATIVE_TTS_BASE['model']+'-reference',reference_encoder=True)
     value['conditioning'] = conditioning(value['consent']['id'], value['voice']['id'])
     speech = value['speech']['usage']
     speech.update(input_tokens=920, total_tokens=920+speech['output_tokens'])
@@ -86,6 +90,21 @@ class IclEvidence(unittest.TestCase):
         r = value['conditioning']
         self.assertEqual(evidence.voice_reference(r, value['consent']['id'], value['voice']['id']),
                          dict(samples=107520, frames=56, input_codes=896))
+
+    def test_reference_health_is_distinct_and_faults_still_reject(self):
+        value=record()
+        for state in ('ready','metadata_ready'):
+            value['health']['condition']['state']=state
+            evidence.voice_business(value,self.identity,icl=True)
+        for change in (dict(model=package.NATIVE_TTS_BASE['model']+'-speaker'),
+                       dict(reference_encoder=False),dict(reference_encoder=1),
+                       dict(state='configured'),dict(state='failed'),
+                       dict(reason='device_error'),dict(compute_failures=1),
+                       dict(load_failures=1),dict(asset_cleanup_pending=True),
+                       dict(core_readiness_dependency=True)):
+            bad=record();bad['health']['condition'].update(change)
+            with self.subTest(change=change),self.assertRaises(ValueError):
+                evidence.voice_business(bad,self.identity,icl=True)
 
     def test_partial_bad_or_wrong_codec_codes_fail_without_vector_fallback(self):
         for change in (lambda r:r.pop('reference'),

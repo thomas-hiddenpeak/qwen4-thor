@@ -4,6 +4,7 @@ The admission peer here is a PID-bound fixture, not Guardian qualification.
 Model lifecycle stays with the enclosing one-lease driver; no request replay.
 """
 import hashlib
+import copy
 import json
 import math
 import os
@@ -106,6 +107,26 @@ def compact(result):
         ('status', 'connections', 'close_code', 'automatic_replay', 'turns', 'checks')}
 
 
+def retain(value):
+    """Keep the three byte-identical retrieved waveforms once in local evidence.
+
+    Raw SDK events stay untouched. This representation belongs to the profile
+    receipt, not the public Realtime wire protocol.
+    """
+    evidence.realtime_business(value)
+    require('waveform' not in value, 'original complete SDK audio required')
+    result = copy.deepcopy(value)
+    turns = result['session']['turns']
+    waveform = turns[0]['retrieved']['item']['content'][0]['audio']
+    for turn in turns:
+        content = turn['retrieved']['item']['content'][0]
+        require(content['audio'] == waveform, 'retrieved waveform bytes differ between turns')
+        content['audio'] = dict(sha256=evidence.REALTIME_WAVEFORM_SHA)
+    result['waveform'] = waveform
+    evidence.realtime_business(result)
+    return result
+
+
 def run(stage):
     plan = stage.plan['realtime']; label = stage.profile_name+'-realtime'
     require(plan['format'] == 'q4t-profile-realtime-inputs-v2' and
@@ -155,9 +176,8 @@ def run(stage):
         while (after['sessions'] or after['host_bytes']) and time.monotonic() < deadline:
             time.sleep(.02); observation += 1
             after = observe('after-'+str(observation))
-        value = dict(input_sha256=plan['clip']['sha256'], session=compact(result),
-                     before=before, after=after)
-        evidence.realtime_business(value)
+        value = retain(dict(input_sha256=plan['clip']['sha256'], session=compact(result),
+                            before=before, after=after))
         save(stage.out/(label+'-business.json'), value)
         return value
     finally:

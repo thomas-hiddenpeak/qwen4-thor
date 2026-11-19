@@ -134,6 +134,34 @@ class RealtimeEvidence(unittest.TestCase):
         self.assertEqual(evidence.format_for({}, dict(native_asr={}),
             dict(realtime=declaration())), evidence.REALTIME_FORMAT)
 
+    def test_compact_waveform_is_lossless_and_does_not_modify_sdk_record(self):
+        value=record();before=copy.deepcopy(value)
+        packed=realtime.retain(value);evidence.realtime_business(packed)
+        self.assertEqual(value,before)
+        for turn in packed['session']['turns']:
+            audio=turn['retrieved']['item']['content'][0]['audio']
+            self.assertEqual(audio,dict(sha256=hashlib.sha256(PCM).hexdigest()))
+            turn['retrieved']['item']['content'][0]['audio']=packed['waveform']
+        packed.pop('waveform')
+        self.assertEqual(packed,value)
+
+    def test_compact_waveform_wrong_missing_or_unused_reference_rejects(self):
+        value=realtime.retain(record())
+        for replacement in (None,{},dict(sha256='0'*64),value['waveform']):
+            bad=copy.deepcopy(value)
+            bad['session']['turns'][1]['retrieved']['item']['content'][0]['audio']=replacement
+            with self.assertRaises(ValueError):evidence.realtime_business(bad)
+        bad=copy.deepcopy(value);bad.pop('waveform')
+        with self.assertRaises(ValueError):evidence.realtime_business(bad)
+
+    def test_compact_waveform_cannot_hide_changed_audio_or_repeat_compaction(self):
+        value=realtime.retain(record())
+        for replacement in ('not base64',base64.b64encode(b'\x01\x00'+PCM[2:]).decode(),
+                            value['waveform']+'\n','a'*((1<<20)+1)):
+            bad=dict(value,waveform=replacement)
+            with self.assertRaises(ValueError):evidence.realtime_business(bad)
+        with self.assertRaises(RuntimeError):realtime.retain(value)
+
     def test_context_deletion_and_rate_settlement_cannot_be_faked(self):
         for mutate in (
                 lambda r:r['session']['turns'][1]['terminal']['usage'].update(

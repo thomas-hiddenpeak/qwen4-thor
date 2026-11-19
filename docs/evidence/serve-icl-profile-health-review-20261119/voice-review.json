@@ -1,0 +1,72 @@
+{
+  "status": "ACCEPT_COMPLETED_PRIMARY_VOICE_AFTER_HEALTH_NAME_REVIEW",
+  "original_stage_status": "FAILED",
+  "original_failure_preserved": true,
+  "counts": {
+    "starts": 1,
+    "requests": 12,
+    "controls": 54
+  },
+  "seconds": 99.57015987997875,
+  "nvml_queries": 93,
+  "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "health": {
+    "base": {
+      "state": "metadata_ready",
+      "reason": "none",
+      "core_readiness_dependency": false,
+      "model": "qwen3-tts-12hz-1.7b-base",
+      "device_bytes": 0,
+      "load_attempts": 3,
+      "load_failures": 0,
+      "compute_failures": 0,
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "asset_cleanup_pending": false
+    },
+    "condition": {
+      "state": "metadata_ready",
+      "reason": "none",
+      "core_readiness_dependency": false,
+      "model": "qwen3-tts-12hz-1.7b-base-reference",
+      "device_bytes": 0,
+      "load_attempts": 1,
+      "load_failures": 0,
+      "compute_failures": 0,
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "reference_encoder": true,
+      "asset_cleanup_pending": false
+    }
+  },
+  "speech": {
+    "text": "The blue train arrives at noon.",
+    "usage": {
+      "input_tokens": 920,
+      "output_tokens": 609,
+      "total_tokens": 1529
+    }
+  },
+  "chat": {
+    "text": "Please close the window.",
+    "usage": {
+      "prompt_tokens": 1078,
+      "completion_tokens": 487,
+      "total_tokens": 1565,
+      "completion_tokens_details": {
+        "audio_tokens": 480
+      },
+      "q4t_audio_synthesis": {
+        "input_tokens": 918,
+        "output_tokens": 481
+      }
+    }
+  },
+  "source_files": 92,
+  "new_gpu_actions_for_review": 0,
+  "primary_remaining_requests": 16,
+  "light_remaining_requests": 28,
+  "profiles_qualified": false,
+  "guardian_qualified": false,
+  "listening": "PENDING_OWNER_DEFERRED"
+}

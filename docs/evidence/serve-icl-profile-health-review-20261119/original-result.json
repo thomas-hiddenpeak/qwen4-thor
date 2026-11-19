@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 295, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 718, in business\n    self.profile_business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 669, in profile_business\n    early['voice'] = helper.Lifecycle(self).run()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_voice.py\", line 246, in run\n    evidence.voice_business(result, self.stage.plan['identity'],\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py\", line 432, in voice_business\n    ledger.require(type(health) is dict and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py\", line 40, in require\n    raise LedgerError(message)\ntools.serve_recovery.ledger.LedgerError: qualified voice backend failed or depends on core readiness\n",
+  "counts": {
+    "starts": 1,
+    "chats": 12,
+    "controls": 54,
+    "websocket_sessions": 0,
+    "ingress_starts": 0
+  },
+  "seconds": 99.57015987997875,
+  "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d"
+}

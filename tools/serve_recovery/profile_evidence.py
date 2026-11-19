@@ -16,7 +16,7 @@ TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
 VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
 VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
 VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
-REALTIME_FORMAT = 'q4t-profile-business-v14'
+REALTIME_FORMAT = 'q4t-profile-business-v15'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -427,7 +427,8 @@ def voice_business(value, identity, *, icl=False):
             'qualified voice revocation did not retire the registered ID')
     voice_error(revoked['speech'], 404);voice_error(revoked['consent'], 404)
     ledger.keys(value['health'], ('base', 'condition'))
-    for key, model in [('base', fixed['model']), ('condition', fixed['model']+'-speaker')]:
+    condition_model = fixed['model']+('-reference' if icl else '-speaker')
+    for key, model in [('base', fixed['model']), ('condition', condition_model)]:
         health = value['health'][key]
         ledger.require(type(health) is dict and
             health.get('state') in ('ready', 'metadata_ready') and
@@ -435,6 +436,11 @@ def voice_business(value, identity, *, icl=False):
             health.get('reason') == 'none' and type(health.get('compute_failures')) is int and
             health['compute_failures'] == 0,
             'qualified voice backend failed or depends on core readiness')
+        if icl:
+            ledger.require(health.get('asset_cleanup_pending') is False and
+                type(health.get('load_failures')) is int and health['load_failures'] == 0 and
+                (key != 'condition' or health.get('reference_encoder') is True),
+                'qualified ICL reference backend failed or cleanup remains')
 
 
 CHAT_AUDIO_FORMAT = 'q4t-profile-business-v7'
@@ -1021,7 +1027,9 @@ def realtime_business(value):
     Existing independent tokenizer/processed-waveform witnesses are immutable;
     a different engine still needs its own observed session on each profile.
     """
-    ledger.keys(value, ('input_sha256', 'session', 'before', 'after'))
+    shared = 'waveform' in value
+    ledger.keys(value, ('input_sha256', 'session', 'before', 'after') +
+                (('waveform',) if shared else ()))
     ledger.require(value['input_sha256'] == REALTIME_INPUT_SHA,
                    'Realtime fixed input differs')
     session = value['session']
@@ -1051,14 +1059,19 @@ def realtime_business(value):
             'Realtime actual completion/history identity differs')
         content = item['content'][0]
         ledger.keys(content, ('type', 'transcript', 'audio'))
+        encoded = content['audio']
+        if shared:
+            ledger.require(encoded == dict(sha256=REALTIME_WAVEFORM_SHA),
+                           'Realtime waveform reference missing or changed')
+            encoded = value['waveform']
         ledger.require(content['type'] == 'input_audio' and content['transcript'] == ASR_TEXT and
-            type(content['audio']) is str and len(content['audio']) <= 1 << 20,
+            type(encoded) is str and len(encoded) <= 1 << 20,
             'Realtime retained transcript/format differs')
         try:
-            audio = base64.b64decode(content['audio'], validate=True)
+            audio = base64.b64decode(encoded, validate=True)
         except ValueError as error:
             raise ValueError('invalid Realtime retained audio encoding') from error
-        ledger.require(base64.b64encode(audio).decode() == content['audio'] and
+        ledger.require(base64.b64encode(audio).decode() == encoded and
             len(audio) == 201788 and hashlib.sha256(audio).hexdigest() == REALTIME_WAVEFORM_SHA,
             'Realtime retrieved waveform differs from actual processing')
         usage = terminal.get('usage', {})

@@ -1,0 +1,17 @@
+{
+  "cases": [
+    "test_compact_waveform_is_lossless_and_does_not_modify_sdk_record",
+    "test_compact_waveform_wrong_missing_or_unused_reference_rejects",
+    "test_compact_waveform_cannot_hide_changed_audio_or_repeat_compaction",
+    "test_context_deletion_and_rate_settlement_cannot_be_faked",
+    "test_waveform_transcript_and_error_correlation_are_checked"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "actual_preview": "existing original SDK waveforms plus existing receipt only for metadata size; not new model proof",
+  "sources": {
+    "tools/serve_recovery/profile_evidence.py": "e7c37482ddbe6758f945e6211ec13a8e6589683575b388a07b2946004b40c158",
+    "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
+    "tools/serve_recovery/test_profile_realtime.py": "0bd733d686126b3de9ebf3059b5e420b90ff102a08dfaf45dc55eb3b6079d85f"
+  }
+}

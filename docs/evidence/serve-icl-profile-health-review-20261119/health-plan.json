@@ -1,0 +1,19 @@
+{
+  "modules": [
+    "tools.serve_recovery.test_voice_icl_profiles",
+    "tools.serve_recovery.test_profile_voice_review",
+    "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_voice_receipt_requires_ids_audio_asr_usage_negatives_and_revocation",
+    "tools.serve_recovery.test_profile_realtime.RealtimeMigration"
+  ],
+  "cases": 21,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "actual_review": "profiles-04 complete 12 POST voice checklist, original failure preserved",
+  "sources": {
+    "tools/serve_recovery/profile_evidence.py": "5c6042d00d3bf957037dc0c0f56097bf9afe15b12311794dc7fe3e643606863e",
+    "tools/serve_recovery/test_voice_icl_profiles.py": "e332334c6dca6f061c713daf1cfc97e38952dff5adcb3458b00f08124aa0c904",
+    "tools/serve_recovery/profile_voice_review.py": "c776d0554c4af62072d8bbd96c303a512164b137c3ed443ae70facec3ee58574",
+    "tools/serve_recovery/test_profile_voice_review.py": "91a53e3020035415c9a2db657a80afe859b12323ce569774f615acb537a5f333",
+    "tools/serve_recovery/profile_acceptance.py": "61508a3ba745a56c1781518e52a063c88559816e69c4ce752376b345e43fa4de"
+  }
+}

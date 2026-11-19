@@ -7,6 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL健康身份与原件复核通过](evidence/serve-icl-profile-health-review-20261119/README.md)：
+21项CPU及原12POST完整离线复核通过；另5项CPU和实际波形布局复核
+通过，原FAIL/COMMAND_FAILED保留。冻结2模型/2入口/2WSS/44剩余
+业务项/800秒补验，累计3模型/56业务项，不重复已完音色请求；默认
+rev326不变，随后Guardian/交付及全部master，听感待验保持。
+
+21项健康/续验CPU及完整原12POST离线复核通过，0新增GPU。另发现
+原件组合将超出2MiB回执门，已编写相同取回波形单份存储/逐item
+SHA绑定，原SDK线报不变；冻结5项CPU及原件布局复核/60秒。通过后
+2模型/44业务项/800秒补剩余项，总56项不增，累计启动为3次。
+
+主轻首个模型完成12条音色业务后，停在旧健康名称断言：真实ICL为
+base-reference，旧检查仍要求base-speaker。两条无提示ASR精确，
+99.570秒/93次NVML正常，自有模型正常退出；原FAIL保留。已编写
+健康名称分支及原件复核/仅补剩余的驱动；冻结21项CPU和原12POST
+完整离线复核/120秒/0GPU，再冻结补验，不重做已完成音色请求。
+
 [共享SDK计划4项CPU及实际复核通过](evidence/serve-realtime-shared-sdk-20261119/README.md)：
 合计1.124秒/0模型，计划约878KB且保留2MiB元数据门；4087文件
 逐项身份保持。原超限计划/guard失败保留，继续原主轻短验和恢复

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_ORIGINAL_WAVEFORM_STORAGE_ONLY",
+  "seconds": 0.02973146690055728,
+  "original_sdk_sha256": "4bc0962054f53f9ebb824738a555316367c001ff3e4efbd5c0e0a525a5834e9b",
+  "item_audio_count": 3,
+  "lossless": true,
+  "raw_sdk_changed": false,
+  "profile_preview_bytes": 1772473,
+  "metadata_limit": 2097152,
+  "new_model_qualification": false,
+  "model_starts": 0
+}
