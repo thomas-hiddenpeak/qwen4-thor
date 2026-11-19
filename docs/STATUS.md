@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL/Realtime主轻实际资格通过](evidence/serve-icl-realtime-primary-light-20261119/README.md)：
+补验2模型/2入口/2WSS/44项、279.367秒；复用首轮12条音色，累计
+3模型/56项/378.938秒，352次NVML正常。两模式参考码/920与918
+输入、70→81→70历史与删除、实际波形/结算/清理通过。原失败保持，
+默认rev326 STOPPED不变；继续实际Guardian、自监护组合、可回退
+交付及全部master，听感待验保持。
+
 [ICL健康身份与原件复核通过](evidence/serve-icl-profile-health-review-20261119/README.md)：
 21项CPU及原12POST完整离线复核通过；另5项CPU和实际波形布局复核
 通过，原FAIL/COMMAND_FAILED保留。冻结2模型/2入口/2WSS/44剩余

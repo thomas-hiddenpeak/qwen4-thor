@@ -1,0 +1,23 @@
+{
+  "current": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 259,
+    "cleanup_complete": true,
+    "lease_result_sha256": "7397db00521ce7ba4713a5aefefe9e73f1a684cc5e5f333e53aa923fee49e664"
+  },
+  "original": {
+    "status": "ACCEPT_REVIEWED_ENVIRONMENT",
+    "nvml_queries": 93,
+    "model_starts": 1,
+    "requests": 12,
+    "seconds": 99.57015987997875,
+    "lease_result_sha256": "877bab85ba9a6f84f3d27337ed575ec7ef6d16f56a181a093108b0a67cc15a86",
+    "original_command_status": "COMMAND_FAILED",
+    "original_failure_preserved": true
+  },
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-04",
+  "original_failure_preserved": true,
+  "separate_continuous_leases": true
+}

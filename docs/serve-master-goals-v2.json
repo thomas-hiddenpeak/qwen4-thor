@@ -8989,7 +8989,7 @@
       }
     }
   ],
-  "next_task": "Complete Realtime-aware primary/light and actual Guardian recovery composition for ICL/Realtime, reversible delivery, then semantic VAD/conversation/Live and every remaining master task; retain original failures and deferred listening.",
+  "next_task": "Complete actual Guardian recovery composition for qualified ICL/Realtime and reversible delivery; then semantic VAD/conversation/Live and every remaining master task. Preserve original failures and owner-deferred listening.",
   "next": "Complete Realtime-aware primary/light and actual Guardian recovery composition for ICL/Realtime, reversible delivery, then semantic VAD/conversation/Live and every remaining master task; retain original failures and deferred listening.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9874,6 +9874,21 @@
         },
         "gpu_actions": 0,
         "default_replaced": false
+      },
+      "primary_light": {
+        "state": "actual_primary_light_qualified_guardian_delivery_pending",
+        "evidence": "docs/evidence/serve-icl-realtime-primary-light-20261119/README.md",
+        "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+        "source_commit": "e3c358063eb12ea9d56b2d01d54cc8d1deebf2e6",
+        "registry_sha256": "c11d47799b9be00ed81b210d477d122aa7198ab7cd6e49ebde028e06d3b4af1f",
+        "model_starts": 3,
+        "business_work_items": 56,
+        "seconds": 378.93752993503585,
+        "nvml_queries": 352,
+        "original_failed_assertion_preserved": true,
+        "complete_primary_voice_reused": true,
+        "guardian_qualified": false,
+        "default_rev326_stopped_unchanged": true
       }
     }
   },
@@ -10231,6 +10246,21 @@
         "gpu_actions": 0,
         "runtime_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
         "default_replaced": false
+      },
+      "primary_light": {
+        "state": "actual_primary_light_qualified_guardian_delivery_pending",
+        "evidence": "docs/evidence/serve-icl-realtime-primary-light-20261119/README.md",
+        "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+        "source_commit": "e3c358063eb12ea9d56b2d01d54cc8d1deebf2e6",
+        "registry_sha256": "c11d47799b9be00ed81b210d477d122aa7198ab7cd6e49ebde028e06d3b4af1f",
+        "model_starts": 3,
+        "business_work_items": 56,
+        "seconds": 378.93752993503585,
+        "nvml_queries": 352,
+        "original_failed_assertion_preserved": true,
+        "complete_primary_voice_reused": true,
+        "guardian_qualified": false,
+        "default_rev326_stopped_unchanged": true
       }
     }
   }

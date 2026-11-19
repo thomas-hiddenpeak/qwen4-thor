@@ -1,0 +1,234 @@
+{
+  "primary": {
+    "format": "q4t-profile-business-v15",
+    "record_sha256": "e8795f709ee1fe1732808c01d260c034ebe8d20999e52ba61112e576d5fc4638",
+    "record_bytes": 1775169,
+    "capacity": {
+      "name": "native-managed-capacity-v2",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_tokens": 256,
+      "mtp_k": 3,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 3,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": true,
+      "request_deadline_ms": 1200000,
+      "allow_media": true
+    },
+    "voice": {
+      "reference_frames": 56,
+      "input_codes": 896,
+      "speech_text": "The blue train arrives at noon.",
+      "chat_text": "Please close the window.",
+      "speech_usage": {
+        "input_tokens": 920,
+        "output_tokens": 609,
+        "total_tokens": 1529
+      },
+      "chat_usage": {
+        "prompt_tokens": 1078,
+        "completion_tokens": 487,
+        "total_tokens": 1565,
+        "completion_tokens_details": {
+          "audio_tokens": 480
+        },
+        "q4t_audio_synthesis": {
+          "input_tokens": 918,
+          "output_tokens": 481
+        }
+      },
+      "health": {
+        "base": {
+          "state": "metadata_ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-base",
+          "device_bytes": 0,
+          "load_attempts": 3,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "condition": {
+          "state": "metadata_ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-base-reference",
+          "device_bytes": 0,
+          "load_attempts": 1,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "reference_encoder": true,
+          "asset_cleanup_pending": false
+        }
+      },
+      "reused_complete_originals": true
+    },
+    "realtime": {
+      "connections": 1,
+      "close_code": 1000,
+      "automatic_replay": false,
+      "inputs": [
+        70,
+        81,
+        70
+      ],
+      "outputs": [
+        11,
+        11,
+        11
+      ],
+      "transcripts": [
+        "甚至出现交易几乎停滞的情况。",
+        "甚至出现交易几乎停滞的情况。",
+        "甚至出现交易几乎停滞的情况。"
+      ],
+      "retrieved_pcm_sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+      "before": {
+        "admitted": 13,
+        "settled": 5870,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "after": {
+        "admitted": 16,
+        "settled": 6124,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      }
+    },
+    "capabilities_sha256": "5841e9f2c9c5e9b2c0a60ad45a4b60a8b473342ed4e913d247a2360207549454",
+    "configuration_sha256": "5327110eef7917f68691e16446396349d69062c17da72365e619bfa64ce95a26"
+  },
+  "light": {
+    "format": "q4t-profile-business-v15",
+    "record_sha256": "8cadfc20d07319f953032c50c5437d74e26434cca198f295f82df512ec2cab59",
+    "record_bytes": 1775173,
+    "capacity": {
+      "name": "native-managed-capacity-v2",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_tokens": 256,
+      "mtp_k": 3,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 3,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": false,
+      "request_deadline_ms": 1200000,
+      "allow_media": true
+    },
+    "voice": {
+      "reference_frames": 56,
+      "input_codes": 896,
+      "speech_text": "The blue train arrives at noon.",
+      "chat_text": "Please close the window.",
+      "speech_usage": {
+        "input_tokens": 920,
+        "output_tokens": 609,
+        "total_tokens": 1529
+      },
+      "chat_usage": {
+        "prompt_tokens": 1078,
+        "completion_tokens": 487,
+        "total_tokens": 1565,
+        "completion_tokens_details": {
+          "audio_tokens": 480
+        },
+        "q4t_audio_synthesis": {
+          "input_tokens": 918,
+          "output_tokens": 481
+        }
+      },
+      "health": {
+        "base": {
+          "state": "metadata_ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-base",
+          "device_bytes": 0,
+          "load_attempts": 3,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "asset_cleanup_pending": false
+        },
+        "condition": {
+          "state": "metadata_ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-tts-12hz-1.7b-base-reference",
+          "device_bytes": 0,
+          "load_attempts": 1,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "reference_encoder": true,
+          "asset_cleanup_pending": false
+        }
+      },
+      "reused_complete_originals": false
+    },
+    "realtime": {
+      "connections": 1,
+      "close_code": 1000,
+      "automatic_replay": false,
+      "inputs": [
+        70,
+        81,
+        70
+      ],
+      "outputs": [
+        11,
+        11,
+        11
+      ],
+      "transcripts": [
+        "甚至出现交易几乎停滞的情况。",
+        "甚至出现交易几乎停滞的情况。",
+        "甚至出现交易几乎停滞的情况。"
+      ],
+      "retrieved_pcm_sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+      "before": {
+        "admitted": 21,
+        "settled": 9576,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "after": {
+        "admitted": 24,
+        "settled": 9830,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      }
+    },
+    "capabilities_sha256": "f75e90a055f3367be107a1f26e46d149aeb3767ce5b7ce4c9ef1295d3014f754",
+    "configuration_sha256": "585e9d11ac12164b3dd33e1c8b72385985e3d3be8a6b456f1d7b0031a28974d2"
+  }
+}
