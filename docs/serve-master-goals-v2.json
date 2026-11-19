@@ -9706,6 +9706,29 @@
       "alpha_first_live_metrics_missing": true,
       "all_modes_settlement_checked_on_english": true,
       "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
+    },
+    "streaming_plan": {
+      "state": "S1_CPU_ACCEPTED_IMPLEMENTATION_CONTINUES",
+      "plan": "SERVE_REALTIME_STREAMING_2026-11-19.md",
+      "reference": "evidence/serve-realtime-stream-reference-20261119/README.md",
+      "steps": [
+        "S1 bounded sample schedule and immutable UTF8 token prefix",
+        "S2 actual native cumulative audio/prefix execution and usage",
+        "S3 incoming audio ownership, cancellation and truthful waits",
+        "S4 append-only transcript events, context and real delay",
+        "S5 semantic end-of-turn, conversation/tools/TTS and Live",
+        "S6 actual recovery composition and reversible delivery"
+      ],
+      "next": "S2",
+      "no_runtime_vllm_dependency": true,
+      "all_master_tasks_continue": true,
+      "cpu_state": {
+        "evidence": "evidence/serve-realtime-stream-state-cpu-20261119/README.md",
+        "cases": 15,
+        "seconds": 0.007564073894172907,
+        "gpu_actions": 0,
+        "model_and_api_connected": false
+      }
     }
   }
 }

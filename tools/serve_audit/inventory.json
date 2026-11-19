@@ -2291,8 +2291,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "1b88497a5187b0a5a7bd5688f71f6fe00f53076b4d8660770fb07307dcb40dd3",
-    "cmake/ChatProtocolIdentity.cmake": "6ababc7256407692febbe024eae93aa5f94672f84f5c78ba59882202fa651e98",
+    "CMakeLists.txt": "d3fedfce5524170806d90599e72e2df401d0e4057ea9e64a7e84137281eb79d6",
+    "cmake/ChatProtocolIdentity.cmake": "80c8b8d0bd5185e5e56ed20909a5f4c49a5da4511d0fd0038bae7652388fc638",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2375,6 +2375,7 @@
     "include/q4t/server/asr_response.h": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1",
     "include/q4t/server/asr_service.h": "18b98c5ded0851c2f316774c131df9db36bcd85a0dacaaed3299ebfa7d17256f",
     "include/q4t/server/asr_statistics.h": "044c90e1417d93c0c84edaf0e67f67d45705bcde6a2fd11b72a4f4ed7fa9b7ec",
+    "include/q4t/server/asr_stream_state.h": "dc9fccbdb22495f40b92beddd393078d7f51809aa129bd812b18d28dbaaff483",
     "include/q4t/server/auxiliary_resources.h": "ec943f992f3279a656a1668d3d4e718e64e146c19284ce4a538b5e926f28e446",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
@@ -2699,6 +2700,7 @@
     "src/server/asr_response.cpp": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc",
     "src/server/asr_service.cpp": "76bf9ae9a3d7dd491290385ef23d8468f0650beedad58bf2a3de030853162320",
     "src/server/asr_statistics.cpp": "6c0f810beeb2c290f41e5df389448ec55f3539df84e3a722889c2ffffdd9d327",
+    "src/server/asr_stream_state.cpp": "c4a1bb33bf0ce9459ee2f23c9f16bc28c58f22a23af02e17bf307cf145c95cd2",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
     "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
     "src/server/batch_checkpoint.cpp": "77f0c0fded325307c6a65c095dd0fc3aa87fa88e74151a00db0c1e802fbd232e",

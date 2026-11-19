@@ -1,0 +1,40 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "asr_stream_samples_partition_invariant_without_future_audio",
+    "asr_stream_seal_does_not_change_borrow_or_invent_final_step",
+    "asr_stream_tickets_epochs_and_sample_step_limits",
+    "asr_stream_cancel_reclaims_only_matching_borrow_without_success",
+    "asr_stream_invalid_limits_never_become_live",
+    "asr_stream_warmup_and_rollback_keep_actual_immutable_prefix",
+    "asr_stream_prefix_never_splits_or_repairs_utf8",
+    "asr_stream_malformed_suffix_withheld_until_real_finalization",
+    "asr_stream_invalid_hypotheses_fail_sticky_preserve_last_result",
+    "asr_stream_stale_owner_and_eof_cannot_fake_first_result",
+    "asr_stream_cancel_retains_token_storage_and_suppresses_success",
+    "server_utf8_stream_boundaries",
+    "server_utf8_malformed_subparts",
+    "asr_transcript_utf8_repair_partial_scalar_and_single_terminal",
+    "asr_transcript_requires_eos_owner_and_finite_probabilities"
+  ],
+  "cpu_tests": 15,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "S1 cumulative real audio scheduling and immutable selected-token UTF8 prefixes. Not wired to Realtime/model; continue S2-S6 and all master tasks. No performance claim.",
+  "sources": {
+    "CMakeLists.txt": "d3fedfce5524170806d90599e72e2df401d0e4057ea9e64a7e84137281eb79d6",
+    "cmake/HostTestSources.cmake": "2b8e002aab97dd581f98fdb05bf5475454804ae7b8b043fe82ec8347e77d2f57",
+    "cmake/ChatProtocolIdentity.cmake": "80c8b8d0bd5185e5e56ed20909a5f4c49a5da4511d0fd0038bae7652388fc638",
+    "include/q4t/server/asr_stream_state.h": "dc9fccbdb22495f40b92beddd393078d7f51809aa129bd812b18d28dbaaff483",
+    "src/server/asr_stream_state.cpp": "c4a1bb33bf0ce9459ee2f23c9f16bc28c58f22a23af02e17bf307cf145c95cd2",
+    "tests/server_asr_stream_state_test.cpp": "ac5ce416b83af8aa852b14ebad14a70c7d616bdbb1be51980414d38eddfc282b",
+    "tools/serve_audit/inventory.json": "70157ef5cdcc961f0d2098db649cfdbbb687564a589889842abdf36311fe6d27",
+    "docs/STATUS.md": "3ca94eda927d65e9e71f05dee71020eb0e427f4d1d16601f56a76b18e92589c8",
+    "docs/log/2026-11-19.md": "83394b3c384e002280c83cd369cff03359a56e46aea1e221bb5b8e70f566de38",
+    "docs/SERVE_REALTIME_STREAMING_2026-11-19.md": "397dcf563ebd79a6e34146f4510c11de8a1fc689e8055b1de3f67724c6594e97"
+  },
+  "q4t_host_tests_before_sha256": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+  "q4t_before_sha256": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f",
+  "q4t_host_tests_sha256": "2c48eb1d3310e78b348c675568b47872df3f7d8c8792e756d6fcadc728ee6d82",
+  "q4t_sha256": "10eb2890f1cccbd7b3d0b7f9dce996dbcbf068b54683a3c9725cf1dd45495fef"
+}

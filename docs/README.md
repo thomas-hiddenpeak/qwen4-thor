@@ -620,3 +620,5 @@
 - [ICL全部码组提示与预算](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：17 CPU通过，神经合成、解码上下文及持久接线继续。
 
 - [ICL参考解码上下文和精确裁剪](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：10 CPU通过，实际合成待验。
+
+- [Realtime持续输入与对话衔接计划](SERVE_REALTIME_STREAMING_2026-11-19.md)：有界前缀、真实流式ASR、delay/语义断句、对话与交付。

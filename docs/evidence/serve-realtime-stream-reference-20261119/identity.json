@@ -1,0 +1,11 @@
+{
+  "status": "ACQUIRED",
+  "commit": "7c6daf77a2421100f5fb066495372c00129d39ff",
+  "url": "https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/7c6daf77a2421100f5fb066495372c00129d39ff/qwen_asr/inference/qwen3_asr.py",
+  "bytes": 31163,
+  "sha256": "0b1770f8e907b6c5a0a1e9ebce037cb63f48555f3cd15eaf6ea2078e9df41a7b",
+  "fixed_previous_commit": "7c6daf77a2421100f5fb066495372c00129d39ff",
+  "same_as_existing_file": true,
+  "license": "Apache-2.0, existing reference LICENSE retained",
+  "runtime_dependency": false
+}

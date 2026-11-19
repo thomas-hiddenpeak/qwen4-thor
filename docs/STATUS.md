@@ -7,6 +7,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[持续ASR状态15项CPU通过](evidence/serve-realtime-stream-state-cpu-20261119/README.md)：
+0.007564秒/0GPU，零警告、981来源/18负控。真实样本边界、稳定
+UTF8前缀、预算和取消通过；尚未接模型增量，继续S2执行/用量与
+持续输入/协议接线，默认rev326和全部master保持。
+
+持续转录的累计样本计划与稳定前缀已编写，冻结15项CPU/180秒/0GPU：
+11项新合同加4项直接依赖的UTF8/转录边界，覆盖不读取未来、精确尾长、
+借用/取消、旧代次、不可改前缀和有界失败。当前未接实际模型循环，
+组件验证不代表commit前转录已完成；下一步继续S2及全部master。
+
+开始[持续输入与对话衔接](SERVE_REALTIME_STREAMING_2026-11-19.md)：
+官方Qwen3-ASR最新固定源码与既有参考一致；借鉴累计真实音频/可修订
+尾部，先实现有界稳定前缀与样本计划，再接原生执行、活输入所有权、
+真实delay/上下文、语义断句、对话/Live和恢复交付。当前尚未实现
+commit前模型增量，不能以已验转录代替；默认保持、全部master继续。
+
 [Realtime执行诊断真实短验通过](evidence/serve-realtime-diagnostics-business-20261119/README.md)：
 成功/配额/断连正确分类，与2成功/1错误/1中止计数一致；同PID Chat
 正常，1模型/1入口、2会话3提交1Chat、41.626秒/41次NVML正常。
