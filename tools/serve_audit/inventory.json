@@ -3352,9 +3352,10 @@
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
     "tools/serve_recovery/profile_prompt_evidence.py": "7b5ad160b15cc8fa25767c02b0729d0cc0dbb4cf356fd0528f3a30d4d0f24d46",
-    "tools/serve_recovery/profile_prompt_reuse.py": "fd6901ffa140710e0df5c138dc9309c83f899a102be4d1b2db3f5e1fc03829c1",
+    "tools/serve_recovery/profile_prompt_reuse.py": "20362a6f84e671ebbfa9b301d704957991320d08dbd0087f34ae402ff31c9739",
     "tools/serve_recovery/profile_record.py": "3e1b9d3021aa8e50846402233a553b68470c5947cc5b38ffa2892256ae9ae3b9",
-    "tools/serve_recovery/profile_prompt_targeted.py": "c6b0b8017dee1fb0dcebd9de07913d8deb80e96a6adb4e325ee0eed9fb8c76b2"
+    "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
+    "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8499,6 +8500,7 @@
     },
     "evidence_io": "Only v18 with explicit source provenance can exceed 2 MiB; bounded to 8 MiB. Other service metadata stays 2 MiB.",
     "bundle": "v21 adds the three Prompt qualification modules; v20 inventory stays immutable.",
-    "status": "development_pending_targeted_cpu_and_actual_profiles"
+    "status": "development_pending_targeted_cpu_and_actual_profiles",
+    "continuation": "Original primary Chat/schema and Realtime tools retain exact source proof and original failed Prompt output. Only missing Prompt component, legacy Responses and light run again, no retries; 2 starts/15 external generations/3 WSS/10 registry HTTP/900s. Actual original was 8 generations, reserved counter9."
   }
 }

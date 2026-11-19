@@ -1,0 +1,47 @@
+{
+  "status": "QUALIFICATION_FAILED_DIAGNOSTIC_OBSERVED",
+  "actual_model_starts": 2,
+  "actual_external_generations": 11,
+  "profile_external_generations": 8,
+  "profile_reserved_budget_counter": 9,
+  "diagnostic_generations": 3,
+  "internal_csv_steps": 0,
+  "actual_registry_requests": 3,
+  "websocket_sessions": 2,
+  "seconds": 110.50411414820701,
+  "nvml_queries": 107,
+  "all_nvml_ok": true,
+  "cleanup_complete": true,
+  "lock_released": true,
+  "original_qualification_failed": true,
+  "light_not_started": true,
+  "default_unchanged": true,
+  "original_wrong_answer_and_malformed_frame_preserved": true,
+  "cpu_reconstruction": {
+    "status": "PASS_NATIVE_INPUT_RECONSTRUCTION",
+    "cases": 2,
+    "seconds": 0.38291937904432416,
+    "input_prompts_byte_identical": true,
+    "tokens": [
+      174,
+      174
+    ],
+    "sampling": [
+      {
+        "temperature": 1,
+        "top_p": 1,
+        "seed_set": false
+      },
+      {
+        "temperature": 1,
+        "top_p": 1,
+        "seed_set": false
+      }
+    ],
+    "original_parse_failure_preserved": true,
+    "actual_model_correctness": false,
+    "gpu_actions": 0,
+    "lock_released": true
+  },
+  "gpu_qualification_complete": false
+}

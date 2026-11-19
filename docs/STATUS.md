@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[缺项续验7项CPU通过](evidence/serve-realtime-prompt-resume-cpu-20261120/README.md)：
+0.835秒/0GPU，20来源反例通过。确切原主配置5次已通过工作可复用，
+失败Prompt及原FAIL、监控/清理记录完整保留；新Prompt仍须原正确答案
+合同。继续一次2模型/15外部生成+2内部摘要/3WSS/900秒实际续验，
+默认rev356和全部master保持。
+
+[主轻首轮与固定诊断](evidence/serve-realtime-prompt-profile-review-20261120/README.md)已归档：
+原组1模型/实际8生成/64.708秒，删除后快照回答错误且拒答帧不完整，
+原FAIL保留。两提示重建均174 tokens且逐字节相同；单次诊断1模型/
+3HTTP/45.796秒，固定seed/greedy/原始Completion均42。两组107次
+NVML正常、资源释放，默认rev356不变，尚无新资格。仅复用实际通过的
+5次主配置Chat/Realtime工作；冻结7项CPU/20来源反例/120秒，然后
+2模型/15外部生成+2内部摘要/3WSS/10注册HTTP/900秒仅续缺项，
+一次续验失败仍保留候选与失败，不自动循环；全部master继续。
+
 [有界主轻驱动11项CPU通过](evidence/serve-realtime-prompt-targeted-cpu-20261120/README.md)：
 1.410秒/0GPU，20来源反例通过，v21新证据封包和v1～v20历史读取
 保持；一般元数据上限未扩大。继续冻结2模型/20外部生成+2内部摘要/

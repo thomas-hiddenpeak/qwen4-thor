@@ -29,6 +29,11 @@ FORMAT = 'q4t-prompt-targeted-qualification-v1'
 SUCCESS = 'PASS_TARGETED_PROMPT_PRIMARY_LIGHT'
 LIMITS = dict(starts=2, chats=20, controls=2000, seconds=900,
               websocket_sessions=4, ingress_starts=4, prompt_registry_requests=10)
+RESUME_LIMITS = dict(LIMITS, chats=15, websocket_sessions=3, ingress_starts=3)
+
+
+def limits(plan):
+    return RESUME_LIMITS if 'continued_primary_text' in plan else LIMITS
 
 
 def requests():
@@ -49,7 +54,8 @@ def original(plan, name):
 
 
 def check_plan(plan):
-    require(plan['targeted_format'] == FORMAT and plan['limits'] == LIMITS and
+    expected_limits = limits(plan)
+    require(plan['targeted_format'] == FORMAT and plan['limits'] == expected_limits and
         ledger.canonical(plan['requests']) == ledger.canonical(requests()) and
         plan['automatic_retries'] is False and
         plan['binary_sha256'] == reuse.REVIEW['candidate_binary'] and
@@ -74,8 +80,11 @@ def check_plan(plan):
              if k not in ('binary_sha256', 'protocol_sha256')} and
             previous['identity']['binary_sha256'] == reuse.REVIEW['previous_binary'],
             'original backend/model/capacity binding differs')
-    require(plan['planned'] == {k: v for k, v in LIMITS.items()
+    require(plan['planned'] == {k: v for k, v in expected_limits.items()
         if k not in ('controls', 'seconds')}, 'planned affected work differs')
+    if 'continued_primary_text' in plan:
+        from tools.serve_recovery import profile_prompt_resume
+        profile_prompt_resume.verify(plan['continued_primary_text'])
 
 
 def prepare(args):
@@ -87,7 +96,9 @@ def prepare(args):
             'retained settings changed beyond the audited qualification')
     if args.sdk_directory is None:
         args.sdk_directory = Path(previous_plan['sdk']['sdk_directory'])
-    encrypted.foreground.base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    continued = getattr(args, 'continue_primary_text', None)
+    selected_limits = RESUME_LIMITS if continued is not None else LIMITS
+    encrypted.foreground.base.prepare(args, rows=requests(), limits=selected_limits, scope=__doc__)
     out = args.output.resolve(); plan = read(out / 'plan.json')
     base, candidate = full.candidate_build_base(base, args.binary, args.candidate_build)
     plan.update(targeted_format=FORMAT, base=base, candidate_identity=candidate,
@@ -96,7 +107,7 @@ def prepare(args):
         identity=dict(previous_plan['identity'], binary_sha256=plan['binary_sha256'],
                       protocol_sha256=base['protocol_sha256']),
         native_assets=copy.deepcopy(previous_plan['native_assets']), chat_audio=True,
-        planned={k: v for k, v in LIMITS.items() if k not in ('controls', 'seconds')})
+        planned={k: v for k, v in selected_limits.items() if k not in ('controls', 'seconds')})
     require(plan['model_assets'] == plan['identity']['model_assets'] and
         plan['model'] == base['model_dir'] and not base['settings']['application_state']['directory'],
         'qualification assets or private object directory differs')
@@ -116,6 +127,10 @@ def prepare(args):
         plan['sources'][str(path)] = sha(path)
     plan['sources'][full.DOCUMENT] = sha(ROOT / full.DOCUMENT)
     plan['protected'][str(base_path)] = sha(base_path)
+    if continued is not None:
+        from tools.serve_recovery import profile_prompt_resume
+        plan['continued_primary_text'] = profile_prompt_resume.prepare(continued, plan)
+        plan['sources'].update(plan['continued_primary_text']['files'])
     check_plan(plan)
     save(out / 'plan.json', plan)
 
@@ -127,13 +142,18 @@ class Stage(full.Stage):
 
     def __init__(self, plan):
         check_plan(plan)
+        self.limits = limits(plan)
         encrypted.Stage.__init__(self, plan)
         self.counts.update(websocket_sessions=0, ingress_starts=0, prompt_registry_requests=0)
 
-    def profile_business(self):
-        capability = read(self.out / (self.profile_name + '-capabilities.json'))
-        require(profile_evidence.prompt_enabled(capability), 'actual Prompt capability absent')
-        _, previous = original(self.plan, self.profile_name)
+    def text_business(self):
+        if self.profile_name == 'primary' and 'continued_primary_text' in self.plan:
+            from tools.serve_recovery import profile_prompt_resume
+            selected = self.plan['continued_primary_text']
+            profile_prompt_resume.verify(selected)
+            require(selected['proof']['capabilities'] == read(self.out / 'primary-capabilities.json'),
+                    'continued primary actual capabilities changed')
+            return copy.deepcopy(selected['proof']['business'])
         rows = self.plan['requests']
         schema = self.request('schema', rows['schema'])
         call = self.request('tool', rows['tool'])
@@ -150,9 +170,16 @@ class Stage(full.Stage):
         follow = copy.deepcopy(rows['tool']); follow['tool_choice'] = 'none'
         follow['messages'] += [message, reply]
         result = self.request('tool-result', follow)
-        fresh = dict(schema=schema, tool_call=call, tool_result=result,
+        return dict(schema=schema, tool_call=call, tool_result=result,
             tool_reply=reply, tool_source=source,
-            conversation=profile_conversation.run(self), prompt=profile_prompt.run(self))
+            conversation=profile_conversation.run(self))
+
+    def profile_business(self):
+        capability = read(self.out / (self.profile_name + '-capabilities.json'))
+        require(profile_evidence.prompt_enabled(capability), 'actual Prompt capability absent')
+        _, previous = original(self.plan, self.profile_name)
+        fresh = self.text_business()
+        fresh['prompt'] = profile_prompt.run(self)
         value = {k: copy.deepcopy(v) for k, v in previous['business'].items() if k not in reuse.FRESH}
         value.update(fresh)
         profile_evidence.business(value, self.plan['identity'],
@@ -171,18 +198,18 @@ class Stage(full.Stage):
         save(self.out / (self.profile_name + '-legacy.json'), witness)
 
 
-def check_result(result):
+def check_result(result, expected_limits=LIMITS):
     require(result['status'] == SUCCESS and result['binary_sha256'] == reuse.REVIEW['candidate_binary'] and
-        type(result['seconds']) in (int, float) and 0 < result['seconds'] < LIMITS['seconds'] and
+        type(result['seconds']) in (int, float) and 0 < result['seconds'] < expected_limits['seconds'] and
         all(type(result['counts'].get(k)) is int and result['counts'][k] == v
-            for k, v in LIMITS.items() if k not in ('seconds', 'controls')) and
-        type(result['counts'].get('controls')) is int and 0 <= result['counts']['controls'] <= LIMITS['controls'],
+            for k, v in expected_limits.items() if k not in ('seconds', 'controls')) and
+        type(result['counts'].get('controls')) is int and 0 <= result['counts']['controls'] <= expected_limits['controls'],
         'targeted actual work or bounded result incomplete')
 
 
 def finalize(out):
     plan = read(out / 'plan.json'); check_plan(plan)
-    result = read(out / 'result.json'); check_result(result)
+    result = read(out / 'result.json'); check_result(result, limits(plan))
     for name, digest in {**plan['sources'], **plan['protected'], **plan['native_assets']}.items():
         require(sha(ROOT / name) == digest, 'postflight identity drift: ' + name)
     require(sha(plan['binary']) == plan['binary_sha256'], 'candidate engine drift')
@@ -192,6 +219,9 @@ def finalize(out):
     cleanups = [read(out / n) for n in ('primary-cleanup.json', 'cleanup.json')]
     environment = full.environment(read(lease / 'exit.json'), queries, cleanups)
     environment['lease_result_sha256'] = sha(lease / 'exit.json')
+    if 'continued_primary_text' in plan:
+        from tools.serve_recovery import profile_prompt_resume
+        environment = profile_prompt_resume.environment(out, plan['continued_primary_text'], environment)
     guard = encrypted.foreground.base.lifecycle.guard
     processes = guard.processes()
     require(not any(processes.get(int(pid), {}).get('start_ticks') == item['start_ticks']
@@ -216,7 +246,9 @@ def finalize(out):
             configuration=contracts.configuration(config, version=5),
             startup_memory=config['startup_memory']['checks']['before_allocations'],
             business=business, environment=environment)
-        value = reuse.attach(value, previous_registry, previous, read(out / (name + '-legacy.json')))
+        continued = plan.get('continued_primary_text') if name == 'primary' else None
+        value = reuse.attach(value, previous_registry, previous, read(out / (name + '-legacy.json')),
+                             continued=continued['proof'] if continued else None)
         path = qualified / (name + '.json'); profile_record.save(path, value)
         registry['qualifications'][name] = profile_contract.qualification(name,
             value['capacity'], value['identity'], value['capabilities'], value['configuration'],
@@ -230,7 +262,8 @@ def finalize(out):
         environment=environment, counts=result['counts'], seconds=result['seconds'],
         registry_sha256=sha(qualified / 'registry.json'), default_unchanged=True,
         automatic_managed_switching_accepted=False, performance_claim=False,
-        original_quality_failure_preserved=True, reused_backend_keys=sorted(reuse.REUSABLE)))
+        original_quality_failure_preserved=True, reused_backend_keys=sorted(reuse.REUSABLE),
+        continued_primary_actual_generations=5 if 'continued_primary_text' in plan else 0))
 
 
 def main():
@@ -242,6 +275,7 @@ def main():
         prepare_parser.add_argument('--' + key, type=Path, required=True)
     prepare_parser.add_argument('--port', type=int, default=18438)
     prepare_parser.add_argument('--sdk-directory', type=Path)
+    prepare_parser.add_argument('--continue-primary-text', type=Path)
     for mode in ('run', 'finalize'):
         sub.add_parser(mode).add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
@@ -251,8 +285,9 @@ def main():
         def interrupted(_signum, _frame): raise TimeoutError('targeted stage deadline/interruption')
         signal.signal(signal.SIGTERM, interrupted)
         signal.signal(signal.SIGALRM, interrupted)
-        signal.alarm(LIMITS['seconds'])
-        try: Stage(read(args.output / 'plan.json')).run()
+        plan = read(args.output / 'plan.json')
+        signal.alarm(limits(plan)['seconds'])
+        try: Stage(plan).run()
         finally: signal.alarm(0)
 
 

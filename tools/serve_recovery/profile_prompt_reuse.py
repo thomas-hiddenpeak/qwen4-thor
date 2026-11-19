@@ -21,6 +21,19 @@ FRESH = frozenset(('schema', 'tool_call', 'tool_result', 'tool_reply', 'tool_sou
                    'conversation', 'prompt'))
 REUSABLE = frozenset(('embedding', 'media', 'voice', 'speaker', 'separator', 'asr',
                       'asr_auxiliary', 'chat_audio', 'tts', 'realtime', 'semantic_vad'))
+PRIMARY_PARTIAL = '8436ab883ae703972db00607ed6a188808b474c9ab86e48f44e76758950fa0fb'
+
+
+def continued_business(value, proof):
+    ledger.require(value['profile'] == 'primary' and ledger.digest(proof) == PRIMARY_PARTIAL and
+        proof['format'] == 'q4t-prompt-primary-text-continuation-v1' and
+        proof['original_failure_preserved'] is True and
+        proof['identity'] == value['identity'] and proof['capacity'] == value['capacity'] and
+        ledger.canonical(proof['capabilities']) == ledger.canonical(value['capabilities']) and
+        set(proof['business']) == FRESH - {'prompt'}, 'unknown partial observation or profile drift')
+    for key, original in proof['business'].items():
+        ledger.require(ledger.canonical(original) == ledger.canonical(value['business'][key]),
+                       'continued actual primary observation changed: ' + key)
 
 
 def legacy_definition():
@@ -68,7 +81,8 @@ def validate(value):
     """Validate provenance, never mutate or relabel the previous observations."""
     from tools.serve_recovery import profile_evidence as evidence
     reuse = value['reused_business']
-    ledger.keys(reuse, ('format', 'review', 'registry', 'record', 'keys', 'legacy_responses_prompt'))
+    ledger.keys(reuse, ('format', 'review', 'registry', 'record', 'keys', 'legacy_responses_prompt') +
+        (('continued_primary',) if 'continued_primary' in reuse else ()))
     ledger.require(value['format'] == evidence.PROMPT_FORMAT and reuse['format'] == FORMAT and
         ledger.canonical(reuse['review']) == ledger.canonical(REVIEW) and
         len(ledger.canonical(reuse)) <= 8 << 20, 'unknown or oversized source reuse contract')
@@ -102,14 +116,18 @@ def validate(value):
         ledger.require(ledger.canonical(value['business'][key]) ==
             ledger.canonical(previous['business'][key]), 'reused backend observation changed: ' + key)
     legacy_business(reuse['legacy_responses_prompt'])
+    if 'continued_primary' in reuse:
+        continued_business(value, reuse['continued_primary'])
     return reuse
 
 
-def attach(value, registry, previous, legacy):
+def attach(value, registry, previous, legacy, *, continued=None):
     """Construct an explicit retained-source record after fresh work completes."""
     result = copy.deepcopy(value)
     result['reused_business'] = dict(format=FORMAT, review=copy.deepcopy(REVIEW),
         registry=copy.deepcopy(registry), record=copy.deepcopy(previous),
         keys=sorted(set(previous['business']) - FRESH), legacy_responses_prompt=copy.deepcopy(legacy))
+    if continued is not None:
+        result['reused_business']['continued_primary'] = copy.deepcopy(continued)
     validate(result)
     return result
