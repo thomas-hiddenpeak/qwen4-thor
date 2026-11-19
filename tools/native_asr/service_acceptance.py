@@ -820,9 +820,11 @@ class Stage(BASE['Stage']):
         while time.monotonic() < end:
             self.budget.reserve('controls', label)
             response = transport.get(self.policy['upstream_operations_port'], '/metrics', timeout=1)
+            observations.append(dict(response=response))
+            save(self.output/(label+'.json'), observations)
             require(response['http_status'] == 200, 'metrics unavailable')
             values = metric_values(response['body'])
-            observations.append(dict(response=response, values=values))
+            observations[-1]['values'] = values
             save(self.output/(label+'.json'), observations)
             if (values['q4t_seq_slots_free'] == values['q4t_seq_slots_total'] == 1 and
                 all(values[k] == 0 for k in ('q4t_active_chats',

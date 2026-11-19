@@ -1,0 +1,60 @@
+{
+  "status": "PASS_SAME_ENGINE_ORIGINAL_METRICS_REVIEW",
+  "seconds": 0.006070639006793499,
+  "rows": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/primary-realtime-before.wire",
+      "sha256": "423ee19363930faf924c9b2ecc4175e2e769bc6d9e07dc113d364fd21c1d0f65",
+      "old_rejected": "unexpected_or_duplicate_metric",
+      "new_fixed_series": 110,
+      "omitted_series": 308,
+      "realtime": {
+        "q4t_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_operations_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_realtime_sessions": 0,
+        "q4t_realtime_host_reserved_bytes": 0
+      }
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/primary-realtime-after-0.wire",
+      "sha256": "16be76199f480cd8a96bc1daf669dd9cdb9a77f7592958c3163f286d8f6f9f88",
+      "old_rejected": "unexpected_or_duplicate_metric",
+      "new_fixed_series": 110,
+      "omitted_series": 308,
+      "realtime": {
+        "q4t_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_operations_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_realtime_sessions": 0,
+        "q4t_realtime_host_reserved_bytes": 0
+      }
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/light-realtime-before.wire",
+      "sha256": "acaf91b3d928cae0138f496131b92ba37cfcf45355a44955278d378d29d22c95",
+      "old_rejected": "unexpected_or_duplicate_metric",
+      "new_fixed_series": 110,
+      "omitted_series": 308,
+      "realtime": {
+        "q4t_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_operations_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_realtime_sessions": 0,
+        "q4t_realtime_host_reserved_bytes": 0
+      }
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/light-realtime-after-0.wire",
+      "sha256": "ae6d63b8253e2d1c7cddf3e38d1ed364ae2b9f4e4415d13d6dfbe12f2a7df6c4",
+      "old_rejected": "unexpected_or_duplicate_metric",
+      "new_fixed_series": 110,
+      "omitted_series": 308,
+      "realtime": {
+        "q4t_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_operations_connection_rejections_total{kind=\"realtime\"}": 0,
+        "q4t_realtime_sessions": 0,
+        "q4t_realtime_host_reserved_bytes": 0
+      }
+    }
+  ],
+  "original_failure_preserved": true,
+  "gpu_actions": 0
+}

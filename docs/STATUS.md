@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime运维合同修复通过](evidence/serve-realtime-ops-contract-20261119/README.md)：
+10项CPU及4份同引擎原指标复核共0.170秒/0新增GPU；旧错误复现、
+新投影通过，原首组FAIL与48次正常NVML保持。已确认自有进程/
+三端口/锁释放，清理可重建host对象缓存；继续新观察候选和实际
+恢复组合：新增4模型/63HTTP+5Realtime/1500秒，含原失败累计
+5模型/65HTTP+5Realtime/1551秒。两历史夹具无损归档净释放
+约32MiB，默认rev326及听感待验保持，全部master继续。
+
+实际恢复首组停在运维v5解析遗漏realtime连接标签，原模型READY、
+1启动/2HTTP/48.470秒后自有清理完成，NVML正常，后两组未运行。
+已补固定Realtime计数/资源投影，旧v5不造零、缺组/坏值/未知标签
+仍拒绝；drain先留原始响应。冻结10项CPU及4份实际指标复核/60秒/
+0新增GPU，再封装仅观察修复的候选并续验；默认及原FAIL保持。
+
 [恢复计划SDK去重验证通过](evidence/serve-realtime-managed-sdk-binding-20261119/README.md)：
 3项CPU和4087实际文件复核共0.320秒/0GPU；计划约1.69MB，原2MiB
 门与原失败保留。冻结实际恢复三组：累计4次模型启动、63条HTTP

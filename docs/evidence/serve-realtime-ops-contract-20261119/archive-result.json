@@ -1,0 +1,10 @@
+{
+  "status": "LOSSLESS_ARCHIVE_COMPLETE",
+  "archive_sha256": "11f02a94d475d11ecb5da46698fa56e52175c9032dd43784d37aa8fef542afc9",
+  "archive_bytes": 23713301,
+  "restorable_original_files": 2,
+  "reclaimed_bytes": 34056107,
+  "protected_unchanged": true,
+  "gpu_actions": 0,
+  "free_after": 238071808
+}
