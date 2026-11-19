@@ -18,7 +18,8 @@ const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_mod
 const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.search && !url.hash && !url.username &&
-  !url.password && args.ca_file && ['main', 'quota', 'content'].includes(args.mode), 'TLS scope');
+  !url.password && args.ca_file && ['main', 'quota', 'content',
+    'profile_builtin', 'profile_custom', 'profile_foreign'].includes(args.mode), 'TLS scope');
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
 const rt = new OpenAIRealtimeWS({ model: 'qwen3.8-flash-next', options: {
   ca: fs.readFileSync(args.ca_file), maxPayload: 4 << 20, perMessageDeflate: false,
@@ -73,7 +74,8 @@ function judge(label, actual, expected) {
   quality.push({ label, actual, expected, status: actual === expected ? 'PASS' : 'FAIL' });
 }
 async function create(label, response, expected = 'completed', truncate = false) {
-  check(++creates <= ({ main: 7, quota: 2, content: 5 }[args.mode]), 'response attempt bound');
+  check(++creates <= ({ main: 7, quota: 2, content: 5,
+    profile_builtin: 1, profile_custom: 1, profile_foreign: 2 }[args.mode]), 'response attempt bound');
   const at = events.length;
   const created = await action({ type: 'response.create', response: {
     ...response, metadata: { acceptance_case: label } } }, 'response.created');
@@ -122,7 +124,23 @@ try {
     audio: { output: { voice: 'vivian', speed: 1,
       format: { type: 'audio/pcm', rate: 24000 } } },
     output_modalities: ['text'], max_output_tokens: 3457 } }, 'session.updated');
-  if (args.mode === 'quota') {
+  if (args.mode.startsWith('profile_')) {
+    const builtin = args.mode === 'profile_builtin', foreign = args.mode === 'profile_foreign';
+    const voice = builtin ? 'ryan' : { id: 'voice_4018e051d242e842dd9d99218c329edf' };
+    const target = builtin ? phrase : 'Please close the window.';
+    await action({ type: 'session.update', session: { type: 'realtime',
+      audio: { output: { voice, speed: 1 } } } }, 'session.updated');
+    await userTurn('profile', 'Repeat exactly without adding words: ' + target);
+    const spoken = await create(args.mode, { ...audioBase, tools: [], tool_choice: 'none' },
+      foreign ? 'failed' : 'completed');
+    if (foreign) {
+      check(spoken.status_details.error.code === 'object_not_found', 'foreign voice isolation');
+      const healthy = await create('profile_after_foreign', { ...independent,
+        output_modalities: ['text'], max_output_tokens: 32,
+        instructions: 'Compute 6 * 7. Reply only 42.' });
+      judge('profile_after_foreign', text(healthy).trim(), '42');
+    } else judge(args.mode, spoken.output[0].content[0].transcript, target);
+  } else if (args.mode === 'quota') {
     const spoken = await create('quota_audio', { ...audioBase,
       instructions: 'Repeat exactly without adding words: ' + phrase });
     judge('quota_audio', spoken.output[0].content[0].transcript.trim(), phrase);

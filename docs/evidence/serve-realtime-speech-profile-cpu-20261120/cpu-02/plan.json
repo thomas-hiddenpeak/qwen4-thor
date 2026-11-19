@@ -1,0 +1,30 @@
+{
+  "commands": [
+    [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_recovery.test_profile_speech.DriverBudget",
+      "-v"
+    ],
+    [
+      "node",
+      "--check",
+      "tools/serve_realtime/speech_sdk.mjs"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "limits": {
+    "seconds": 120,
+    "new_tests": 1,
+    "source_counterexamples": 20
+  },
+  "previous_failed_sha256": "21ca8449a5b0cdb9d707b279bc1078d6ac942ace7e108726dd015b98cbc277a9",
+  "reused_tests": 27
+}

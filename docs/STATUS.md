@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime语音主轻CPU已闭合](evidence/serve-realtime-speech-profile-cpu-20261120/README.md)：
+28项/29次执行、20来源反例及两份旧主轻完整记录通过，累计2.486秒、
+0GPU。原异常类型夹具与来源清单拒绝均保留；仅补失败项。v19
+显式保留原始摘要，语音能力不可随恢复丢失；默认rev366不变。
+继续冻结2模型/6WSS/10响应尝试/1200秒实际主轻与后续全部master。
+
+语音输出主轻验收进入[来源与有界计划](evidence/serve-realtime-speech-profile-source-20261120/README.md)：
+16改动/6新增均在服务层，771来源保持；旧主轻完整校验通过。
+补v19语音资格及精确来源复用，冻结CPU最多32项/20来源反例/120秒；
+随后同租约2模型/2入口/6WSS/10响应尝试/1200秒，仅受影响路径。
+可逆压缩退役CPU程序释放61158380字节；默认rev366及原FAIL保持。
+继续恢复、发行、双向音频和全部master。
+
 [Realtime语音内容短验通过](evidence/serve-realtime-speech-content-20261120/README.md)：
 明确新user后工具回答rev366，三格式/0.75语速的真实语音与无提示ASR
 均通过。补验1模型/5响应/2固定种子对照/3ASR，76.382秒、73次NVML

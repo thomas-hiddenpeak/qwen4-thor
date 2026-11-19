@@ -13,13 +13,15 @@ LEGACY_BYTES = 2 << 20
 def shape(value, size):
     ledger.require(size <= MAX_BYTES, 'profile evidence size limit')
     if size > LEGACY_BYTES:
-        ledger.require(type(value) is dict and value.get('format') ==
-            'q4t-profile-business-v18' and type(value.get('reused_business')) is dict and
+        ledger.require(type(value) is dict and type(value.get('reused_business')) is dict and
+            ((value.get('format') == 'q4t-profile-business-v18' and
             value['reused_business'].get('format') in (
                 'q4t-prompt-profile-source-reuse-v1',
                 'q4t-prompt-refusal-source-reuse-v1',
-                'q4t-prompt-refusal-source-assembly-v1'),
-            'only explicit Prompt source records have the larger evidence bound')
+                'q4t-prompt-refusal-source-assembly-v1')) or
+             (value.get('format') == 'q4t-profile-business-v19' and
+              value['reused_business'].get('format') == 'q4t-speech-source-reuse-v1')),
+            'only explicit reviewed source records have the larger evidence bound')
 
 
 def read(path):
@@ -70,6 +72,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_PRIMARY_LIGHT_QUALIFICATION': None,
         'ACCEPT_TARGETED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-reuse-v1',
         'ACCEPT_REVIEWED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-assembly-v1',
+        'ACCEPT_SPEECH_PRIMARY_LIGHT': 'q4t-speech-source-reuse-v1',
     }
     status = accepted.get('status')
     ledger.require(status in formats and
