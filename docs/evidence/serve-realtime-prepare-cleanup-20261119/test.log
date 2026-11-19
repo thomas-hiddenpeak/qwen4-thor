@@ -1,0 +1,7 @@
+test_original_reference_cleanup_keeps_explicit_released_ports (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_original_reference_cleanup_keeps_explicit_released_ports) ... ok
+test_boolean_missing_or_different_port_cleanup_cannot_qualify (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_boolean_missing_or_different_port_cleanup_cannot_qualify) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

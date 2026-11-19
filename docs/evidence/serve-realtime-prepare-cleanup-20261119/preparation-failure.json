@@ -1,0 +1,10 @@
+{
+  "status": "PREPARATION_FAILED",
+  "source_commit": "a8e802c09",
+  "error": "prior processed-waveform/history reference was not qualified",
+  "cause": "new preparation helper expected boolean ports_released; original accepted receipt correctly retains explicit list [18378,18379,18380]",
+  "models": 0,
+  "gpu_actions": 0,
+  "business_requests": 0,
+  "partial_plan_sha256": "e353b45979508f1ed3632a732e98f252ad9c246814ded4b4b18eaaa9eda4d0c0"
+}

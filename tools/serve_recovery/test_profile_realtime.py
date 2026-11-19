@@ -2,6 +2,7 @@
 import base64
 import copy
 import hashlib
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -72,6 +73,30 @@ class RealtimeEvidence(unittest.TestCase):
                     dict(realtime=dict(declaration(), **change)))
         with self.assertRaises(ValueError):
             evidence.realtime_enabled({}, dict(realtime=declaration()))
+
+    def test_original_reference_cleanup_keeps_explicit_released_ports(self):
+        accepted=json.loads((realtime.ROOT/
+            'docs/evidence/serve-realtime-history-business-20261119/receipt.json').read_text())
+        prior=dict(schema='q4t-realtime-history-business-v1',port=18378,
+                   operations_port=18379,public_port=18380)
+        before=copy.deepcopy(accepted)
+        realtime.reference_cleanup(prior,dict(status='PASS'),accepted)
+        self.assertEqual(accepted,before)
+
+    def test_boolean_missing_or_different_port_cleanup_cannot_qualify(self):
+        accepted=json.loads((realtime.ROOT/
+            'docs/evidence/serve-realtime-history-business-20261119/receipt.json').read_text())
+        prior=dict(schema='q4t-realtime-history-business-v1',port=18378,
+                   operations_port=18379,public_port=18380)
+        for ports in (True,False,None,[],[18378,18379],[18378,18379,18381]):
+            with self.assertRaises(RuntimeError):
+                realtime.reference_cleanup(prior,dict(status='PASS'),
+                                            dict(accepted,ports_released=ports))
+        with self.assertRaises(RuntimeError):
+            realtime.reference_cleanup(prior,dict(status='FAILED'),accepted)
+        with self.assertRaises(RuntimeError):
+            realtime.reference_cleanup(prior,dict(status='PASS'),
+                                        dict(accepted,owned_processes_gone=False))
 
     def test_complete_actual_usage_and_original_state_are_preserved(self):
         value=record();before=copy.deepcopy(value)

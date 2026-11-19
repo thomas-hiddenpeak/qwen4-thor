@@ -23,6 +23,19 @@ POSTS_PER_PROFILE = 3  # Per-item model work, not HTTP POST or WSS handshakes.
 MAX_RECEIPT_BYTES = 16 << 20
 
 
+def reference_cleanup(prior, result, accepted):
+    ports = [prior[k] for k in ('port', 'operations_port', 'public_port')]
+    require(prior['schema'] == 'q4t-realtime-history-business-v1' and
+        result['status'] == 'PASS' and
+        accepted['status'] == 'PASS_REALTIME_HISTORY_RETRIEVAL_BUSINESS_RECONCILED' and
+        all(accepted[k] is True for k in
+            ('owned_processes_gone', 'gpu_lock_released', 'default_unchanged')) and
+        type(accepted.get('ports_released')) is list and
+        all(type(p) is int for p in accepted['ports_released']) and
+        accepted['ports_released'] == ports,
+        'prior processed-waveform/history reference was not qualified')
+
+
 def prepare(source, output, public_port):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(ROOT/'.q4t-work') and source.stat().st_size <= 4 << 20,
@@ -31,12 +44,7 @@ def prepare(source, output, public_port):
     result = source.parent/'result.json'
     reconciled = source.parent.parent/'reconciled.json'
     accepted = read(reconciled)
-    require(prior['schema'] == 'q4t-realtime-history-business-v1' and
-        read(result)['status'] == 'PASS' and
-        accepted['status'] == 'PASS_REALTIME_HISTORY_RETRIEVAL_BUSINESS_RECONCILED' and
-        all(accepted[k] is True for k in
-            ('owned_processes_gone', 'ports_released', 'gpu_lock_released', 'default_unchanged')),
-        'prior processed-waveform/history reference was not qualified')
+    reference_cleanup(prior, read(result), accepted)
     clip = prior['clips']['zh']
     require(clip['sha256'] == evidence.REALTIME_INPUT_SHA and
         clip['source_sha256'] == evidence.ASR_FILE_SHA and clip['bytes'] == 201790 and

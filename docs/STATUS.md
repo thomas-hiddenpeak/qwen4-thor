@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[清理回执准备修复2项CPU通过](evidence/serve-realtime-prepare-cleanup-20261119/README.md)：
+0.514秒/0GPU；原实际端口列表按计划严格匹配，旧失败保留。继续原
+2模型/2入口/2WSS/56业务项/900秒主轻短验，再续Guardian与交付；
+默认rev326及原exact-code/听感待验保持，全部master继续。
+
 [SDK准备绑定修复通过](evidence/serve-realtime-sdk-binding-20261119/README.md)：
 原准备SDK锁漂移停在0模型/0GPU，原失败保留；4项CPU及实际SDK
 来源复核1.496秒通过。完整锁从本机缓存重建，模块与已验版本精确
