@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-19",
+  "updated": "2026-11-20",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -11239,5 +11239,262 @@
     "nvml_queries": 341,
     "default_changed": false,
     "master_complete": false
+  },
+  "native_realtime_chat_managed_20261120": {
+    "status": "ACCEPT_NATIVE_REALTIME_CHAT_SERVICE_COMPOSITION_WITH_MODEL_QUALITY_LIMITATION",
+    "binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+      "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd"
+    },
+    "automatic_fallback": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/retained-01/bundle",
+      "manifest_sha256": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1"
+    },
+    "modern_retained_root": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/retained-01/bundle",
+      "manifest_sha256": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1"
+    },
+    "tls_package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/tls-package-01/bundle",
+      "manifest_sha256": "d22b19ba26f1d553873db9bc8b0b845de71fae8666137e24926a2c5f353766db"
+    },
+    "conversation_turns": {
+      "retained-service-01": {
+        "primary-conversation": {
+          "mode": "complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 802,
+          "actual_tokens": 802,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 798839,
+            "model_start_ticks": 329308981,
+            "model_generation": 1,
+            "controller_pid": 798825,
+            "controller_start_ticks": 329308750
+          }
+        }
+      },
+      "tls-service-02": {
+        "tls-before-conversation": {
+          "mode": "hold_stream",
+          "transport": "official-openai-wss",
+          "completed_tokens": 803,
+          "actual_tokens": 1011,
+          "interrupted_usage_from_server": true,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_cc571f509b0b79a76f3536eda2573b4b"
+          }
+        },
+        "tls-after-conversation": {
+          "mode": "complete",
+          "transport": "official-openai-wss",
+          "completed_tokens": 803,
+          "actual_tokens": 803,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_e4c0de091fec2164753af7c92bfa3db0"
+          }
+        }
+      },
+      "version-service-02": {
+        "primary-conversation": {
+          "mode": "hold_complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 801,
+          "actual_tokens": 801,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 814827,
+            "model_start_ticks": 329687755,
+            "model_generation": 1,
+            "controller_pid": 814819,
+            "controller_start_ticks": 329687521
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_d75829f48b86c8abe0dedb04478df6b9"
+          }
+        },
+        "fallback-conversation": {
+          "mode": "complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 801,
+          "actual_tokens": 801,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 816201,
+            "model_start_ticks": 329701571,
+            "model_generation": 2,
+            "controller_pid": 816193,
+            "controller_start_ticks": 329701336
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_d5b9fc720bdb8c3b83804f5b754a21a3"
+          }
+        }
+      }
+    },
+    "semantic_turns": {
+      "retained-service-01": {
+        "primary-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 798839,
+            "model_start_ticks": 329308981,
+            "model_generation": 1,
+            "controller_pid": 798825,
+            "controller_start_ticks": 329308750
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      },
+      "tls-service-02": {
+        "tls-before-semantic": {
+          "transport": "openai-realtime-wss",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        },
+        "tls-after-semantic": {
+          "transport": "openai-realtime-wss",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      },
+      "version-service-02": {
+        "primary-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 814827,
+            "model_start_ticks": 329687755,
+            "model_generation": 1,
+            "controller_pid": 814819,
+            "controller_start_ticks": 329687521
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        },
+        "fallback-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 816201,
+            "model_start_ticks": 329701571,
+            "model_generation": 2,
+            "controller_pid": 816193,
+            "controller_start_ticks": 329701336
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      }
+    },
+    "actual_model_starts": 4,
+    "service_requests": 63,
+    "realtime_tasks": 21,
+    "websocket_sessions": 15,
+    "semantic_tasks": 5,
+    "realtime_chat_responses": 11,
+    "service_work_items": 84,
+    "service_probes": 1,
+    "service_seconds": 647.3743365965784,
+    "nvml_queries": 604,
+    "nvml_all_ok": true,
+    "cleanup_complete": true,
+    "strict_finalizers_all_passed": false,
+    "retained_exact_execution_identity_reviewed": true,
+    "original_literal_command_failure_preserved": true,
+    "private_review_initialization_failure_preserved": true,
+    "strict_runtime_environment_checks_passed": true,
+    "original_version_driver_passed": false,
+    "qualified_version_driver_passed": true,
+    "original_version_environment_abort_preserved": true,
+    "original_version_environment_evidence": "docs/evidence/serve-realtime-chat-recovery-followup-20261120/README.md",
+    "candidate_whole_package_gpu_run": true,
+    "default_unchanged": true,
+    "publication_pending": true,
+    "older_engine_fallback": false,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "all_master_tasks_complete": false,
+    "original_failure_relabelled": false,
+    "listening": "PENDING_BY_OWNER",
+    "primary_light_evidence": "docs/evidence/serve-realtime-chat-primary-light-20261119/README.md",
+    "normal_speed_voice_similarity_accepted": false,
+    "strict_fp_boundary_accepted": true,
+    "model_quality_policy": "record_exact_source_answer_separately",
+    "original_sampled_answer_quality": "FAIL",
+    "original_tls_stage": "tls-service-01",
+    "original_tls_stage_passed": false,
+    "user_quality_classification_accepted": "2026-11-20",
+    "original_quality_evidence": "docs/evidence/serve-realtime-chat-recovery-review-20261119/README.md",
+    "bounded_diagnostic_evidence": "docs/evidence/serve-realtime-chat-sampling-20261120/README.md",
+    "archive_sha256": "efd9f768b55d6999fe3b96342f0c86b67b21f1d26be03f247639eef1daa969e9",
+    "archive_files": 113,
+    "secret_scan_matches": 0,
+    "evidence": "evidence/serve-realtime-chat-managed-20261120/README.md"
   }
 }

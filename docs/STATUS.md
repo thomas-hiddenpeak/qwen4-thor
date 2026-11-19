@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生 Realtime Chat 恢复组合通过](evidence/serve-realtime-chat-managed-20261120/README.md)：
+保留/TLS/整包三组采用 4 模型、63 HTTP+21 Realtime/15 WebSocket/
+1 探测/647.374 秒，604 次正常 NVML，严格环境与清理合同通过。
+保留组启动路径精确复核例外保持，原 TLS 回答质量 FAIL、原整包
+NVML ENV_ABORT 和诊断失败均不改写。单次整包续验 2 模型/32 工作/
+275.455 秒通过；归档自检误中自身字面量的原错误也保留，0GPU 修正。
+默认 rev346 STOPPED 尚未替换；下一步最多 20 项/720 秒 STOPPED
+发布检查，实际回退再前进，保持持久 RPM30/TPM6000 及全部历史。
+PR #52 草稿检查中，发行后继续 Prompt 与全部 master，听感仍待验。
+
 [TLS 补验通过，整包组 ENV_ABORT](evidence/serve-realtime-chat-recovery-followup-20261120/README.md)：
 TLS 1 模型/34 工作/230.703 秒、215 次正常 NVML，严格 finalize 通过。
 整包组 2 模型/22 工作/231.219 秒，200 次正常后 NVML init 卡住，

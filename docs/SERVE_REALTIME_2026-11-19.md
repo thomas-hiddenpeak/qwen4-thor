@@ -27,6 +27,12 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
 
+[Chat 实际恢复组合](evidence/serve-realtime-chat-managed-20261120/README.md)：
+保留/TLS/整包共 4 模型、63 HTTP+21 Realtime/647.374 秒通过，
+604 次正常 NVML。原 TLS 回答质量 FAIL 和原整包 ENV_ABORT 保持，
+按用户确认分别记录模型质量与恢复协议；默认交付另记，音频/MCP/
+[Prompt](SERVE_REALTIME_PROMPT_2026-11-20.md)/追踪/Live 与 master 继续。
+
 [Chat 恢复首轮](evidence/serve-realtime-chat-recovery-review-20261119/README.md)：
 保留包实际通过；TLS 组取消与入口恢复正常，新连接的工具后回答
 不符实际资料，原 FAIL 保留。实际前后提示逐字节一致，随机采样
