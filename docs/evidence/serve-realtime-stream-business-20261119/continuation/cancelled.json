@@ -1,0 +1,24 @@
+{
+  "item": "item_1e0fe20e52a5a7d3b554bb7db64f670b",
+  "steps": [
+    {
+      "pass": 1,
+      "samples": 32000,
+      "prefix": 0,
+      "input": 41,
+      "output": 12,
+      "cumulative_output": 12,
+      "final": 0
+    },
+    {
+      "pass": 2,
+      "samples": 64000,
+      "prefix": 0,
+      "input": 67,
+      "output": 20,
+      "cumulative_output": 32,
+      "final": 0
+    }
+  ],
+  "note": "Completed steps only; cancellation during a native step may add actual settled tokens."
+}

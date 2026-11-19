@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[持续转录真实短验通过](evidence/serve-realtime-stream-business-20261119/README.md)：
+5条中英/G.711精确、2306实际token；提交前真实delta、clear后同连接
+继续、取消140token结算和同PID Chat通过。原驱动FAIL保留，续验只补
+缺项；累计2启动/4会话8任务尝试/1Chat、91.372秒/89次NVML正常。
+自有进程/端口/GPU锁释放、默认rev326保持；继续S4上下文/历史、
+语义VAD/对话/Live、恢复交付及全部master。
+
 [持续转录首轮结果与续验](evidence/serve-realtime-stream-business-20261119/README.md)：
 两档中文真实完成、388 token/实际前缀通过；原整体FAIL保留，驱动
 未接住配额拒绝后的在途append错误。41.750秒/41次NVML正常，自有

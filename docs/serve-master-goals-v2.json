@@ -9708,7 +9708,7 @@
       "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
     },
     "streaming_plan": {
-      "state": "TWO_REAL_CHINESE_COMPLETIONS_REUSED_REMAINING_BUSINESS_PENDING",
+      "state": "S2_S3_REAL_BUSINESS_ACCEPTED_S4_HISTORY_PENDING",
       "plan": "SERVE_REALTIME_STREAMING_2026-11-19.md",
       "reference": "evidence/serve-realtime-stream-reference-20261119/README.md",
       "steps": [
@@ -9719,7 +9719,7 @@
         "S5 semantic end-of-turn, conversation/tools/TTS and Live",
         "S6 actual recovery composition and reversible delivery"
       ],
-      "next": "Bounded actual precommit ASR/delay/usage/cancel business, then contextual history and all master tasks",
+      "next": "S4 bounded session transcript history, explicit context/clear/delete lifecycle, then semantic end-of-turn/conversation/Live and recovery/reversible delivery; all master tasks continue",
       "no_runtime_vllm_dependency": true,
       "all_master_tasks_continue": true,
       "cpu_state": {
@@ -9783,6 +9783,38 @@
         "chats": 1,
         "seconds": 900,
         "native_passes_max": 20
+      },
+      "business_accepted": {
+        "status": "PASS_BOUNDED_CONTINUOUS_ASR_BUSINESS",
+        "initial_overall_status": "FAIL_RETAINED",
+        "continuation_status": "PASS",
+        "engine_sha256": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+        "model_starts": 2,
+        "ingress_starts": 2,
+        "sessions": 4,
+        "item_attempts": 8,
+        "completed_items": 5,
+        "completed_tokens": 2306,
+        "cancelled_tokens_settled": 140,
+        "chat_tokens": 167,
+        "chats": 1,
+        "cumulative_seconds": 91.37238550605252,
+        "nvml_ok": 89,
+        "english_wer": 0,
+        "chinese_exact": true,
+        "original_alpha_live_settlement_missing": true,
+        "continuation_settlement_verified": true,
+        "default_unchanged": true,
+        "own_processes_reaped": true,
+        "own_ports_released": true,
+        "shared_lease_released": true,
+        "limitations": [
+          "fixed two real recordings and one G711 derivation, not general ASR quality",
+          "fixed-PID ingress fixture, not Guardian recovery",
+          "server_destroyed retains 6 process CUDA entries/102675456 bytes after Chat; normal process exit verified",
+          "S4 contextual history, semantic VAD, dialogue/Live and delivery remain"
+        ],
+        "evidence": "evidence/serve-realtime-stream-business-20261119/README.md"
       }
     }
   }

@@ -45,8 +45,8 @@ logprobs，无需新增模型权重或引入vLLM运行依赖。原实现的增�
 
 [S2采集/输出18项CPU通过](evidence/serve-realtime-stream-output-cpu-20261119/README.md)。
 累计模型循环已与S3实际输入接通，并完成[58项针对性CPU检查](evidence/serve-realtime-stream-input-cpu-20261119/README.md)。
-共享输出预算、累计输入预留、实际prefix/EOS接线已编译，真实模型
-路径仍待下组短验；S2不据CPU通过标记业务完成，全部master继续。
+共享输出预算、累计输入预留、实际prefix/EOS接线已编译，[真实模型路径已按限定场景通过](evidence/serve-realtime-stream-business-20261119/README.md)；
+原失败保留，缺项续验完成。S4历史、S5/S6及全部master继续。
 
 ## S3：持续输入所有权与状态治理
 
@@ -107,3 +107,11 @@ S2/S3原生47项、控制器8项和官方SDK/TLS夹具3项CPU通过（0GPU）。
 余量；G.711复用实际near_field，另以xhigh整段不足8秒验证单步EOF。
 沿用中文精确/英文WER≤.05；累计原生步数、prefix、实际token用量与
 客户结算共同核对。失败保留，明确待修，不以无测试或披露替代实现。
+
+[S2/S3真实业务结果](evidence/serve-realtime-stream-business-20261119/README.md)：
+5条完成（两条首轮复用）、2306实际token，提交前增量/实际prefix与
+EOF一致，clear后同连接继续/取消结算/逐item配额/同PID Chat通过。
+累计91.372秒/2模型/4会话/1Chat；原失败保持，默认未替换。下一组
+按官方转录上下文与conversation item合同完善有界历史，复用既有
+prompt/keywords/languages实际模型输入与token计量，不用字符串回显
+代替模型衔接，随后继续全部S5/S6与master。
