@@ -259,4 +259,80 @@ class CompletedObservation(unittest.TestCase):
             with self.assertRaises(ValueError): reuse.validate_assembly(wrong)
 
 
+class ManagedSource(unittest.TestCase):
+    """Isolate reader/registry binding; the full validator is separately tested."""
+    def setUp(self):
+        parent = Path(__file__).resolve().parents[2] / 'build/refusal-managed-tests'
+        parent.mkdir(parents=True, exist_ok=True)
+        self.temporary = tempfile.TemporaryDirectory(dir=parent)
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        (self.root/'qualified').mkdir(); (self.root/'payload').mkdir()
+        self.plan = self.root/'plan.json'; package.save(self.plan, dict(sdk='fixed'))
+        self.registry = dict(identity='fixed', qualifications=dict(primary='one', light='two'))
+        package.save(self.root/'qualified/registry.json', self.registry)
+        self.primary = dict(format='q4t-profile-business-v18', profile='primary',
+            reused_business=dict(format=reuse.ASSEMBLED_FORMAT), padding='x'*(3 << 20))
+        self.light = dict(self.primary, profile='light')
+        for name,row in (('primary',self.primary),('light',self.light)):
+            profile_record.save(self.root/'qualified'/(name+'.json'), row)
+        profile_record.save(self.root/'payload/profile-light.json', self.light)
+        self.accepted = dict(status='ACCEPT_REVIEWED_REFUSAL_PRIMARY_LIGHT',
+            registry_sha256=package.sha(self.root/'qualified/registry.json'))
+        package.save(self.root/'acceptance.json', self.accepted)
+        self.manifest = dict(recovery_profiles=self.registry)
+
+    def call(self):
+        return profile_record.accepted_source(
+            self.plan, self.manifest, self.primary, self.root/'payload')
+
+    def test_explicit_large_evidence_uses_special_reader_and_validates_both(self):
+        with mock.patch.object(profile_evidence, 'validate') as validator:
+            self.assertEqual(self.call(), dict(sdk='fixed'))
+            self.assertEqual([c.args[2] for c in validator.call_args_list], ['primary','light'])
+            for call in validator.call_args_list:
+                self.assertEqual(call.args[3], package.sha(
+                    self.root/'qualified'/(call.args[2]+'.json')))
+        with self.assertRaisesRegex(RuntimeError, 'metadata size limit'):
+            package.read(self.root/'qualified/primary.json')
+
+    def test_unknown_or_unaccepted_status_cannot_use_registry_match(self):
+        for status in ('FAILED', 'OBSERVATIONS_COMPLETE_NOT_QUALIFICATION', 'ACCEPT_UNKNOWN'):
+            package.save(self.root/'acceptance.json', dict(self.accepted, status=status))
+            with mock.patch.object(profile_evidence, 'validate') as validator:
+                with self.assertRaises(ValueError): self.call()
+                validator.assert_not_called()
+
+    def test_registry_and_manifest_drift_reject_before_record_validation(self):
+        package.save(self.root/'acceptance.json', dict(self.accepted, registry_sha256='0'*64))
+        with self.assertRaises(ValueError): self.call()
+        package.save(self.root/'acceptance.json', self.accepted)
+        self.manifest = dict(recovery_profiles={})
+        with self.assertRaises(ValueError): self.call()
+
+    def test_real_validator_failure_is_not_swallowed(self):
+        with mock.patch.object(profile_evidence, 'validate', side_effect=ValueError('invalid score')):
+            with self.assertRaisesRegex(ValueError, 'invalid score'): self.call()
+
+    def test_payload_or_declared_source_format_drift_reject(self):
+        profile_record.save(self.root/'payload/profile-light.json', dict(self.light, profile='foreign'))
+        with mock.patch.object(profile_evidence, 'validate'), self.assertRaises(ValueError): self.call()
+        profile_record.save(self.root/'payload/profile-light.json', self.light)
+        package.save(self.root/'acceptance.json', dict(self.accepted,
+            status='ACCEPT_TARGETED_REFUSAL_PRIMARY_LIGHT'))
+        with mock.patch.object(profile_evidence, 'validate'), self.assertRaises(ValueError): self.call()
+
+    def test_legacy_actor_does_not_need_new_reader_in_old_sealed_payload(self):
+        from tools.serve_realtime import managed
+        primary, light = dict(profile='primary'), dict(profile='light')
+        package.save(self.root/'qualified/primary.json', primary)
+        package.save(self.root/'qualified/light.json', light)
+        package.save(self.root/'payload/profile-light.json', light)
+        package.save(self.root/'acceptance.json', dict(self.accepted,
+            status='ACCEPT_PRIMARY_LIGHT_QUALIFICATION'))
+        with mock.patch.object(profile_record, 'accepted_source', side_effect=AssertionError('new reader')):
+            self.assertEqual(managed.accepted_source(
+                self.plan,self.manifest,primary,self.root/'payload'), dict(sdk='fixed'))
+
+
 if __name__ == '__main__': unittest.main()

@@ -34,16 +34,11 @@ def prepare(path, manifest, qualified, package):
     path = Path(path).resolve(strict=True)
     require(path.is_relative_to(managed.ROOT/'.q4t-work'),
             'private qualified conversation plan required')
-    prior = read(path); registry_path = path.parent/'qualified/registry.json'
-    accepted = path.parent/'acceptance.json'; result = read(accepted)
-    require(result['status'] == 'ACCEPT_PRIMARY_LIGHT_QUALIFICATION' and
-        result['registry_sha256'] == sha(registry_path) and
-        same_json(read(registry_path), manifest['recovery_profiles']) and
-        same_json(read(path.parent/'qualified/primary.json'), qualified) and
-        same_json(read(path.parent/'qualified/light.json'),
-                  read(Path(package)/'profile-light.json')) and
-        evidence.conversation_enabled(qualified['capabilities']),
-        'managed conversation requires exact accepted primary/light profiles')
+    registry_path = path.parent/'qualified/registry.json'
+    accepted = path.parent/'acceptance.json'
+    prior = managed.accepted_source(path, manifest, qualified, package)
+    require(evidence.conversation_enabled(qualified['capabilities']),
+            'managed conversation requires accepted conversation capability')
     evidence.conversation_business(qualified['business']['conversation'])
     record = managed.ROOT/'docs/STATUS.md'
     require(record.stat().st_size <= 1 << 20, 'bounded actual project record')

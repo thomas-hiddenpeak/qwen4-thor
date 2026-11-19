@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[恢复资格读取CPU闭合](evidence/serve-managed-profile-reader-20261120/README.md)：
+12项/14次尝试/2.685秒，20来源反例及两份真实资格校验通过，0GPU。
+首轮两项夹具缺环境变量的错误保留，仅补失败项；普通元数据仍2MiB，
+原封包保持。helper构建20.700秒零警告，默认不变；继续Prompt恢复交付。
+
+恢复工具的资格读取已适配显式新来源，普通元数据仍2MiB；新路径
+必须逐份完整校验并绑定registry/实际包，旧封包沿用原入口。冻结12项
+CPU、两份真实记录读取与20来源反例/120秒/0GPU。原生helper零警告
+构建20.700秒，模型/cache/protocol/default保持；随后准备受影响恢复。
+
 [受影响主轻资格严格复核通过](evidence/serve-refusal-reviewed-profiles-20261120/README.md)：
 31项CPU/1.771秒、20来源反例及两份实际完整记录通过，新增GPU为0。
 确切来源组合三次独立租约（4模型/37请求/323次NVML），原格式/冷态
