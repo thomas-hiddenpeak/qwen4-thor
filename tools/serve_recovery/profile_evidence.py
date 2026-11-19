@@ -17,6 +17,7 @@ VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
 VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
 VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
 REALTIME_FORMAT = 'q4t-profile-business-v15'
+SEMANTIC_FORMAT = 'q4t-profile-business-v16'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -571,6 +572,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if semantic_vad_enabled(identity or {}, capabilities):
+        return SEMANTIC_FORMAT
     if realtime_enabled(identity or {}, capabilities):
         return REALTIME_FORMAT
     if voice_icl_enabled(identity or {}, capabilities):
@@ -1020,6 +1023,132 @@ def realtime_enabled(identity, capabilities):
     return declared['transcription_configured']
 
 
+def semantic_vad_enabled(identity, capabilities):
+    declared = (capabilities or {}).get('realtime', {}).get('semantic_vad')
+    if declared is None:
+        return False
+    asr = identity.get('native_asr') or {}
+    expected = ('vad' in asr and
+                (capabilities or {}).get('structured_output', {}).get('available') is True)
+    ledger.require(type(declared) is dict and
+        declared.get('implemented') is True and declared.get('configured') is expected and
+        declared.get('profile') == 'q4t-native-semantic-turn-v1' and
+        declared.get('classifier') == 'native_primary_model' and
+        declared.get('calibrated') is False and
+        declared.get('usage') == 'included_in_item_and_client_tokens' and
+        declared.get('serial_worker') is True and
+        declared.get('maximum_wait_ms') == dict(auto=4000, low=8000, medium=4000, high=2000),
+        'semantic VAD capability or configured dependencies differ')
+    return expected
+
+
+def semantic_settings():
+    return dict(type='transcription', include=['item.input_audio_transcription.logprobs'],
+        audio=dict(input=dict(format=dict(type='audio/pcm', rate=24000),
+            transcription=dict(model='qwen3-asr-0.6b'), noise_reduction=None,
+            turn_detection=dict(type='semantic_vad', eagerness='high'))))
+
+
+def semantic_turn(value, continuation):
+    ledger.require(type(value) is dict and value.get('status') == 'PASS' and
+        ledger.integer(value.get('connections')) and value['connections'] == 1 and
+        ledger.integer(value.get('close_code')) and value['close_code'] == 1000 and
+        value.get('automatic_replay') is False, 'semantic connection not completed')
+    terminal = value['terminal']; use = terminal['usage']
+    ledger.require(type(terminal.get('item_id')) is str and 0 < len(terminal['item_id']) <= 128 and
+        terminal.get('transcript') == ASR_TEXT and value.get('delta') == ASR_TEXT and
+        use.get('type') == 'tokens' and all(ledger.integer(use.get(k), minimum=1)
+        for k in ('input_tokens', 'output_tokens', 'total_tokens')) and
+        use['input_tokens']+use['output_tokens'] == use['total_tokens'],
+        'semantic actual transcript or usage differs')
+    details = use['input_token_details']
+    ledger.require(all(ledger.integer(details.get(k), minimum=1)
+        for k in ('audio_tokens', 'text_tokens')) and
+        details['audio_tokens']+details['text_tokens'] == use['input_tokens'],
+        'semantic input usage differs')
+    observed = terminal['q4t_semantic_vad']
+    counters = ('attempts', 'accepted', 'unavailable', 'invalid', 'stale',
+                'input_tokens', 'output_tokens')
+    ledger.require(all(ledger.integer(observed.get(k)) for k in counters) and
+        observed.get('profile') == 'q4t-native-semantic-turn-v1' and
+        0 < observed['accepted'] <= observed['attempts'] <= 8 and
+        sum(observed[k] for k in counters[1:5]) == observed['attempts'] and
+        observed.get('maximum_wait') is False and observed.get('probability_available') is True and
+        observed.get('included_in_usage') is True and
+        0 < observed['input_tokens'] < use['input_tokens'] and
+        0 < observed['output_tokens'] < use['output_tokens'] and observed['output_tokens'] <= 128,
+        'semantic actual classifier or included work missing')
+    logs = terminal['logprobs']
+    ledger.require(type(logs) is list and 0 < len(logs) <= use['output_tokens'],
+        'semantic actual logprobs missing')
+    for row in logs:
+        ledger.require(type(row.get('token')) is str and
+            type(row.get('logprob')) in (int, float) and math.isfinite(row['logprob']) and
+            row['logprob'] <= 0 and type(row.get('bytes')) is list and row['bytes'] and
+            all(ledger.integer(b) and b <= 255 for b in row['bytes']),
+            'semantic logprob malformed')
+    ledger.require(bytes(b for row in logs for b in row['bytes']) == ASR_TEXT.encode(),
+        'semantic logprobs do not cover the actual transcript')
+    events = value['events']
+    ledger.require(not any(e['type'] in ('error',
+        'conversation.item.input_audio_transcription.failed') for e in events),
+        'semantic completion cannot hide a failure')
+    for kind in ('input_audio_buffer.speech_started', 'input_audio_buffer.speech_stopped',
+                 'input_audio_buffer.committed', 'conversation.item.input_audio_transcription.completed'):
+        rows = [e for e in events if e['type'] == kind]
+        ledger.require(len(rows) == 1 and rows[0]['item_id'] == terminal['item_id'],
+            'semantic item event correlation differs')
+    pause = value.get('continuation')
+    if continuation:
+        ledger.require(type(pause) is dict and pause.get('no_commit') is True and
+            pause.get('original_samples_sent') == 36000 and pause.get('pause_samples') == 12000 and
+            pause.get('total_original_samples') == 100895,
+            'semantic unfinished prefix was not preserved')
+    else:
+        ledger.require(pause is None, 'unexpected semantic continuation')
+    item = value['retrieved']['item']; content = item['content']
+    ledger.require(item['id'] == terminal['item_id'] and len(content) == 1 and
+        content[0]['transcript'] == ASR_TEXT and type(content[0].get('audio')) is str and
+        len(content[0]['audio']) <= 1 << 20 and ledger.integer(value.get('sent_samples'), minimum=1),
+        'semantic retained audio identity/size differs')
+    try:
+        raw = base64.b64decode(content[0]['audio'], validate=True)
+    except (ValueError, TypeError) as error:
+        raise ValueError('semantic retained audio is invalid') from error
+    ledger.require(raw and len(raw) % 2 == 0 and len(raw) <= value['sent_samples']*2 and
+        base64.b64encode(raw).decode() == content[0]['audio'], 'semantic retained PCM differs')
+    return use['total_tokens']
+
+
+def semantic_business(value, identity):
+    from tools.serve_service import package
+    ledger.keys(value, ('input_sha256', 'settings', 'turns', 'before', 'after',
+                        'asr_health', 'vad_health', 'asr_limits', 'vad_limits'))
+    ledger.require(value['input_sha256'] == REALTIME_INPUT_SHA and
+        package.same_json(value['settings'], semantic_settings()) and
+        type(value['turns']) is list and len(value['turns']) == 2,
+        'semantic actual source/settings/turns differ')
+    tokens = sum(semantic_turn(turn, i == 1) for i, turn in enumerate(value['turns']))
+    for name, fixed in (('asr', identity['native_asr']),
+                        ('vad', identity['native_asr']['vad'])):
+        health = value[name+'_health']
+        ledger.require(health.get('state') == 'ready' and health.get('reason') == 'none' and
+            health.get('model') == fixed['model'] and health.get('core_readiness_dependency') is False and
+            ledger.integer(health.get('compute_failures')) and health['compute_failures'] == 0 and
+            package.same_json(value[name+'_limits'], fixed['limits']),
+            'semantic backend health or effective limits differ')
+    for state in (value['before'], value['after']):
+        ledger.keys(state, ('admitted', 'settled', 'reserved', 'active', 'sessions',
+                            'host_bytes', 'free_slots'))
+        ledger.require(all(ledger.integer(n) for n in state.values()) and
+            all(state[k] == 0 for k in ('reserved', 'active', 'sessions', 'host_bytes')) and
+            state['free_slots'] > 0, 'semantic resources not drained')
+    before, after = value['before'], value['after']
+    ledger.require(after['admitted']-before['admitted'] == 2 and
+        after['settled']-before['settled'] == tokens and after['free_slots'] == before['free_slots'],
+        'semantic real client settlement differs')
+
+
 def realtime_business(value):
     """Require real history-conditioned usage, exact waveform and settlement.
 
@@ -1122,9 +1251,12 @@ def business(value, identity, selected=None, capabilities=None):
                        (('chat_audio',) if chat_audio else ()) +
                        (('tts',) if identity.get('native_tts') is not None else ()) +
                        (('voice',) if identity.get('native_tts_base') is not None else ()) +
-                       (('realtime',) if realtime_enabled(identity, capabilities) else ()))
+                       (('realtime',) if realtime_enabled(identity, capabilities) else ()) +
+                       (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()))
     if realtime_enabled(identity, capabilities):
         realtime_business(value['realtime'])
+    if semantic_vad_enabled(identity, capabilities):
+        semantic_business(value['semantic_vad'], identity)
     if identity.get('native_tts') is not None:
         tts_business(value['tts'], identity)
     if identity.get('native_tts_base') is not None:

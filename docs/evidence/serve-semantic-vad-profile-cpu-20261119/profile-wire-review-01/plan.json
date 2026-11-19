@@ -1,0 +1,10 @@
+{
+  "scope": "Read-only validation of two exact previously passed actual SDK receipts with new profile contract; final health remains pending",
+  "seconds": 30,
+  "gpu_actions": 0,
+  "files": {
+    ".q4t-work/serve-semantic-vad-20261119/business-03/run/complete.sdk.json": "878a8813fce3695b32a449aab806797929c0b845fd5a117d851627d56333e855",
+    ".q4t-work/serve-semantic-vad-20261119/business-03/run/continuation.sdk.json": "f53a407896bdbf9db30694921be4de8726af32e64b68fa48e391242754cf379b"
+  },
+  "original_stage_result": "FAIL_RETAINED"
+}

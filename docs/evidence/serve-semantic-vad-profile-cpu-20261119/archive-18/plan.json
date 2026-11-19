@@ -1,0 +1,77 @@
+{
+  "scope": "Six superseded standalone test programs, all hardlinks fully inventoried; exact lossless byte/SHA archive. Current/default/recovery programs, models, source and logs kept.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-01/q4t",
+      "member": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
+      "sha256": "88dc8bf7ebc1d4142d05a224a43274c3eaa3bc9c2abcd7151a446fb15f1e72ab",
+      "bytes": 26418600,
+      "mode": 365,
+      "mtime_ns": 1794920686400237775,
+      "inode": 12088365,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-02/q4t",
+      "member": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+      "sha256": "5920e152f613ff15b1a28783602739abe44beca568b5acd17457ae158da2e14d",
+      "bytes": 26421224,
+      "mode": 365,
+      "mtime_ns": 1794925093353869662,
+      "inode": 12088695,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-03/q4t",
+      "member": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71",
+      "sha256": "f6f3370f481431cf2d0d32bc1f677ab800653edd6a787d5efd3c916b1f3f7c71",
+      "bytes": 26495408,
+      "mode": 365,
+      "mtime_ns": 1794928524790952065,
+      "inode": 12088859,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/engine-04/q4t",
+      "member": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+      "sha256": "bcf1c0f7beef47d21bb29539b498796714fea5d8d209910b9d09d516f5c018d2",
+      "bytes": 26496224,
+      "mode": 365,
+      "mtime_ns": 1794929482194965450,
+      "inode": 12089027,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/capacity-02/generations-archive/b9d80bcd9a0b80b1c856e97dbd6d9989b7be1cc9540818cefdeafc5ee87ee49f/q4t",
+      "member": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+      "sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+      "bytes": 24057624,
+      "mode": 320,
+      "mtime_ns": 1794786550444385552,
+      "inode": 3960322,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/capacity-02/generations-archive/8fefad04c9fd260905a2b6d79bae6b03678d626a96f666744f1d1047206f5478/q4t",
+      "member": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+      "sha256": "a49b577738b704cf85c528735f564dacf5e8d1153a0fe6d3670a22f96a72e885",
+      "bytes": 24057624,
+      "mode": 320,
+      "mtime_ns": 1794786540884455451,
+      "inode": 3960314,
+      "links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809"
+  },
+  "minimum_free_bytes": 25165824,
+  "maximum_member_archive_bytes": 20971520,
+  "physical_payloads": 6
+}

@@ -3189,13 +3189,13 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "278c5f841487ff6a53f1cbdecd889f7b149af787629585e96d26013e6aea6631",
+    "tools/serve_recovery/profile_acceptance.py": "8001b029575e3d7fd59515959e9f2d487dd6e82d68826f6b372c7a4a99992717",
     "tools/serve_recovery/profile_bundle.py": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
     "tools/serve_recovery/profile_controller.py": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba",
-    "tools/serve_recovery/profile_evidence.py": "e7c37482ddbe6758f945e6211ec13a8e6589683575b388a07b2946004b40c158",
+    "tools/serve_recovery/profile_evidence.py": "27c4b8628445bee089dacb465354e2a23574de98590437413207d0ab0df971c8",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
@@ -3293,7 +3293,8 @@
     "src/server/realtime_semantic_score.cpp": "1f6e6a913d4d9d69ae5d636109413edf8381f19c56f2532741d1273d11cb7f4a",
     "src/server/realtime_semantic_session.cpp": "32268b6469618a9a083b71e3ad3adfccaa6971329afdcad2823ddcda2d2e3e40",
     "src/server/realtime_semantic_turn.cpp": "7b8784ffffe44d1e291adec9c6d40a777d32f9e872be2c9b6e682853914b614a",
-    "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891"
+    "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891",
+    "tools/serve_recovery/profile_semantic.py": "bb73ad244bf326f862e4e0ac4d6c5af18030e574ecf35a87e936d75a5180e840"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8397,5 +8398,16 @@
     "evidence": "docs/evidence/serve-semantic-vad-fresh-prefix-20261119/README.md",
     "cases": 21,
     "gpu_qualified": false
+  },
+  "semantic_profile_review_20261119": {
+    "scope": "Semantic v16 evidence required for actual capability, complete/continuation usage and health, both-profile counters and owned entry cleanup; legacy v15 stays readable and cannot masquerade as semantic",
+    "sources": {
+      "tools/serve_recovery/profile_acceptance.py": "8001b029575e3d7fd59515959e9f2d487dd6e82d68826f6b372c7a4a99992717",
+      "tools/serve_recovery/profile_evidence.py": "27c4b8628445bee089dacb465354e2a23574de98590437413207d0ab0df971c8",
+      "tools/serve_recovery/profile_semantic.py": "bb73ad244bf326f862e4e0ac4d6c5af18030e574ecf35a87e936d75a5180e840"
+    },
+    "cases": 15,
+    "gpu_qualification": "PENDING",
+    "evidence": "docs/evidence/serve-semantic-vad-profile-cpu-20261119/README.md"
   }
 }

@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR #50已合入主线](evidence/serve-icl-realtime-main-20261119/README.md)，
+两个CI均通过，main合并点`7d73234b3`；只包含已验ICL/Realtime与
+恢复交付。本地语义VAD后续提交未混入，默认rev336 STOPPED保持。
+
+[语义主轻资格15项CPU通过](evidence/serve-semantic-vad-profile-cpu-20261119/README.md)：
+1.366秒/0GPU，旧证据不可冒充语义能力、恢复不可丢能力，端口和
+清理反例通过；2份真实回合原件复核，原整轮FAIL保持。冻结主轻
+2模型/4入口/6WSS、60项业务/900秒，补最终健康，累计启动上限5；
+实际资格及发行待验，听感待验及全部master继续。
+
+语义主轻资格已接线：v16必须包含两种真实回合、私有评分结算、
+实际ASR/VAD健康和资源清理；旧转录证据不能升级冒充，自动回退
+不能丢能力。冻结15项CPU/120秒/0GPU，验证后再准备主轻实际短验。
+
 [语义回合真实业务与运维查询修复](evidence/serve-semantic-vad-items-20261119/README.md)：
 1模型/2WSS/3Chat/54.724秒，两回合实际语义提前结束、精确转录、
 564/883用量结算和核心42通过；53次NVML正常、清理完成。整轮

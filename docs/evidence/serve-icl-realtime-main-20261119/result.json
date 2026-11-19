@@ -1,0 +1,12 @@
+{
+  "status": "MERGED_EXACT_QUALIFIED_HEAD",
+  "merge_commit": "7d73234b3cd6e9abff389c09d90164729227ffcd",
+  "parents": [
+    "42a428466e258c6a8698fea14418ecf962ae66a6",
+    "c7d6b9c81160132e1b5a629d30c9c393e605663d"
+  ],
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/50",
+  "head": "c7d6b9c81160132e1b5a629d30c9c393e605663d",
+  "gpu_actions": 0,
+  "local_semantic_not_included": true
+}

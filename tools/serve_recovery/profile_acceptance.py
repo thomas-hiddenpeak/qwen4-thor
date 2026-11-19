@@ -31,6 +31,7 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_ops import contracts
 from tools.serve_recovery import bundle, profile_contract, profile_evidence, profile_voice, profile_consumer
 from tools.serve_recovery import profile_realtime
+from tools.serve_recovery import profile_semantic
 from tools.serve_responses import background_acceptance as background
 from tools.serve_responses import encryption_acceptance as encrypted
 from tools.serve_service import capacity, package
@@ -43,7 +44,7 @@ SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
                native_tts_base=None, *, voice_consumer=False, realtime=False,
-               retained_primary_voice=False):
+               retained_primary_voice=False, semantic_vad=False):
     capacity.validate(profile)
     require(type(voice_consumer) is bool and (not voice_consumer or
         native_tts_base is not None and native_asr is None and native_tts is None),
@@ -52,6 +53,9 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
             'Chat audio qualification requires native ASR')
     require(type(realtime) is bool and (not realtime or native_asr is not None),
             'Realtime qualification requires native ASR')
+    require(type(semantic_vad) is bool and (not semantic_vad or realtime and
+        native_asr is not None and 'vad' in native_asr),
+        'semantic qualification requires Realtime and native VAD')
     require(type(retained_primary_voice) is bool and
         (not retained_primary_voice or native_tts_base is not None and not voice_consumer),
         'retained voice requires its actual registration profile')
@@ -64,10 +68,12 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
         require(native_tts is None or package.same_json(native_tts['limits'],
                 native_tts_base['limits']), 'TTS profile families must share effective limits')
     return dict(LIMITS, seconds=800 if retained_primary_voice else LIMITS['seconds'],
-                **(dict(websocket_sessions=2, ingress_starts=2) if realtime else {}),
+                **(dict(websocket_sessions=2+4*semantic_vad,
+                        ingress_starts=2+2*semantic_vad) if realtime else {}),
                 chats=(10 if profile.get('allow_media', False) else 8) +
                 (-profile_voice.POSTS_PER_PROFILE if retained_primary_voice else 0) +
                 (2*profile_realtime.POSTS_PER_PROFILE if realtime else 0) +
+                (2*profile_semantic.POSTS_PER_PROFILE if semantic_vad else 0) +
                 (2*(profile_consumer.POSTS_PER_PROFILE if voice_consumer else
                     profile_voice.POSTS_PER_PROFILE) if native_tts_base is not None else 0) +
                 (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
@@ -234,10 +240,12 @@ def prepare(args):
     media = selected.get('allow_media', False)
     chat_audio = getattr(args, 'chat_audio', False)
     realtime_source = getattr(args, 'realtime_reference', None)
+    semantic_vad = getattr(args, 'semantic_vad', False)
     retained_voice = getattr(args, 'retained_primary_voice', None)
     limits = limits_for(selected, asr, chat_audio, tts, voice,
                         voice_consumer=consumer is not None,
                         realtime=realtime_source is not None,
+                        semantic_vad=semantic_vad,
                         retained_primary_voice=retained_voice is not None)
     fixture_path = getattr(args, 'voice_fixtures', None)
     require((voice is not None and consumer is None) == (fixture_path is not None),
@@ -258,6 +266,9 @@ def prepare(args):
                                                   public_port, plan['sdk'])
         plan['sources'].update(plan['realtime']['files'])
         plan['sources'].update({p:sha(ROOT/p) for p in profile_realtime.SOURCES})
+    if semantic_vad:
+        plan['semantic_vad'] = True
+        plan['sources'].update({p:sha(ROOT/p) for p in profile_semantic.SOURCES})
     if chat_audio: plan['chat_audio'] = True
     voice_icl = getattr(args, 'voice_icl', False)
     require(type(voice_icl) is bool and (not voice_icl or
@@ -419,8 +430,9 @@ def prepare(args):
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
     if realtime_source is not None:
-        plan['planned'].update(realtime_sessions=2, realtime_transcriptions=6,
-                               native_tls_ingress_starts=2)
+        plan['planned'].update(realtime_sessions=limits['websocket_sessions'],
+            realtime_transcriptions=6+4*semantic_vad,
+            native_tls_ingress_starts=limits['ingress_starts'])
     if voice is not None:
         plan['planned']['native_voice_business_requests'] = 2*(profile_consumer.POSTS_PER_PROFILE
             if consumer is not None else profile_voice.POSTS_PER_PROFILE)
@@ -478,6 +490,7 @@ class Stage(encrypted.Stage):
                                  plan['base']['settings'].get('native_tts_base'),
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
+                                 semantic_vad=plan.get('semantic_vad', False),
                                  retained_primary_voice='retained_primary_voice' in plan)
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
@@ -683,6 +696,9 @@ class Stage(encrypted.Stage):
         require(('realtime' in self.plan) == profile_evidence.realtime_enabled(
             self.plan['identity'], capability),
             'actual Realtime needs its explicit session checklist')
+        require(self.plan.get('semantic_vad', False) == profile_evidence.semantic_vad_enabled(
+            self.plan['identity'], capability),
+            'actual semantic VAD needs its explicit classifier/health checklist')
         early = {}
         if self.plan['identity'].get('native_tts_base') is not None:
             if self.profile_name == 'primary' and 'retained_primary_voice' in self.plan:
@@ -734,6 +750,8 @@ class Stage(encrypted.Stage):
             self.tts_family_reload(value['tts'])
         if 'realtime' in self.plan:
             value['realtime'] = profile_realtime.run(self)
+        if self.plan.get('semantic_vad'):
+            value['semantic_vad'] = profile_semantic.run(self)
         profile_evidence.business(value, self.plan['identity'], selected,
             read(self.out/(self.profile_name+'-capabilities.json')))
         save(self.out/(self.profile_name+'-business.json'), value)
@@ -775,12 +793,13 @@ def finalize(out):
                                  plan['base']['settings'].get('native_tts_base'),
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
+                                 semantic_vad=plan.get('semantic_vad', False),
                                  retained_primary_voice='retained_primary_voice' in plan)
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
     if 'realtime' in plan:
-        require(all(result['counts'].get(k) == limits[k] == 2
+        require(all(result['counts'].get(k) == limits[k]
                     for k in ('websocket_sessions', 'ingress_starts')),
                 'Realtime profile sessions/entries incomplete')
     for name, digest in {**plan['sources'], **plan['protected'], **plan['native_assets']}.items():
@@ -869,6 +888,8 @@ def main():
                    help='pinned consent/sample/different/negated WAV manifest; never success evidence')
     p.add_argument('--voice-icl', action='store_true',
                    help='require real persisted reference codes and full ICL input usage')
+    p.add_argument('--semantic-vad', action='store_true',
+                   help='Qualify actual semantic turns and native health on both profiles')
     p.add_argument('--realtime-reference', type=Path,
                    help='qualified real history plan; freeze 3 actual WSS turns per profile')
     p.add_argument('--sdk-directory', type=Path,
