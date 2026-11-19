@@ -1,0 +1,14 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 270, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 230, in business\n    result = self.sdk('alpha', 'alpha', [normal('zh'), normal('en'),\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 218, in sdk\n    require(run.returncode == 0, 'SDK failed: '+label)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: SDK failed: alpha\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "websocket_sessions": 1,
+    "committed_items": 3,
+    "chats": 1,
+    "controls": 32
+  },
+  "seconds": 56.946768044959754,
+  "binary_sha256": "de97cea01c22899aacebdc786ae8988b625ef71f58bb53cbb4c730ffaeaf1b53"
+}

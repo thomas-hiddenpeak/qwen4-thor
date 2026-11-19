@@ -8285,5 +8285,12 @@
     "gpu_model_loads": 0,
     "evidence": "docs/evidence/serve-realtime-transcription-cpu-20261119/README.md",
     "boundary": "Manual committed input wired to native ASR; real model business pending, optional processors and conversation/Live remain implementation tasks; default rev326 unchanged."
+  },
+  "native_realtime_sdk_tls_development_20261119": {
+    "cpu_tests": 3,
+    "seconds": 1.676,
+    "gpu_model_loads": 0,
+    "evidence": "docs/evidence/serve-realtime-sdk-tls-cpu-20261119/README.md",
+    "boundary": "Actual SDK/native ingress with explicit CPU transcript peer; real model retry pending; fixed admission controller is not Guardian recovery."
   }
 }

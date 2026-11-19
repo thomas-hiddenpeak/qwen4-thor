@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "openai": "7.47.0"
+    "openai": "7.47.0",
+    "ws": "8.21.0"
   }
 }

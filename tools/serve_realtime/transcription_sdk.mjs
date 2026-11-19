@@ -18,9 +18,9 @@ check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules/ws/package.json'))
 const { default: OpenAI } = await import(pathToFileURL(path.join(sdk, 'node_modules/openai/index.mjs')));
 const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_modules/openai/realtime/ws.mjs')));
 const url = new URL(args.base_url);
-check(['http:', 'https:'].includes(url.protocol) &&
+check(url.protocol === 'https:' &&
   ['127.0.0.1', 'localhost'].includes(url.hostname) && url.pathname === '/v1' &&
-  !url.username && !url.password && !url.search && !url.hash, 'local acceptance endpoint');
+  !url.username && !url.password && !url.search && !url.hash, 'local HTTPS acceptance endpoint required by official WSS SDK');
 check(Array.isArray(args.clips) && args.clips.length <= 5, 'turn budget');
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key || 'local-acceptance', maxRetries: 0 });
 const options = { maxPayload: MAX, perMessageDeflate: false, followRedirects: false,
@@ -35,7 +35,10 @@ rt.socket.on('open', () => { ++connections; });
 rt.socket.on('close', (code) => { closed = true; closeCode = code; });
 rt.on('error', (error) => {
   if (error.error) errors.push(error.error);
-  else { fatal = new Error('SDK transport failed'); rt.socket.terminate(); }
+  else {
+    fatal = new Error('SDK transport failed: ' + (error.cause?.code || error.name));
+    rt.socket.terminate();
+  }
 });
 rt.on('event', (event) => {
   bytes += Buffer.byteLength(JSON.stringify(event));

@@ -20,10 +20,11 @@ from tools.serve_grammar_reap import acceptance as lifecycle
 from tools.serve_recovery.bundle import assets, check_assets
 from tools.serve_service.package import require, save, sha
 from tools.native_asr.transcription_acceptance import EXPECTED, FILES, quality, usage
+from tools.serve_realtime.ingress_fixture import NativeIngress, certificate
 
 WORK = ROOT / '.q4t-work/serve-realtime-20261119'
 ASR = ROOT / '.q4t-work/serve-audio-native-20261117'
-LIMITS = dict(starts=1, websocket_sessions=3, committed_items=5, chats=2,
+LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=3, committed_items=5, chats=1,
               controls=2000, seconds=600)
 
 
@@ -80,6 +81,16 @@ def prepare(args):
             tokens_per_minute=6000) for name in ('alpha', 'beta', 'gamma')])
     save(out/'client-policy.json', policy)
     (out/'client-policy.json').chmod(0o600)
+    ingress = args.ingress.resolve(strict=True)
+    tls = certificate(out/'credentials')
+    previous = WORK/'transcription-business-03'
+    before = json.loads((previous/'run/core-before.wire').read_bytes())['choices'][0]
+    outcome = json.loads((previous/'run/result.json').read_bytes())
+    environment = json.loads((previous/'lease/exit.json').read_bytes())
+    require(outcome['binary_sha256'] == sha(binary) and outcome['default_unchanged'] and
+            environment['status'] == 'COMMAND_FAILED' and
+            before['finish_reason'] == 'stop' and before['message']['content'].strip() == '42',
+            'before-core reuse is not qualified')
     sources = subprocess.check_output(['git', 'ls-files', 'src', 'include', 'cmake',
         'CMakeLists.txt', 'tools/serve_realtime', 'tools/serve_grammar_reap',
         'tools/serve_recovery', 'tools/serve_service', 'tools/evalscope',
@@ -102,7 +113,10 @@ def prepare(args):
         expected=EXPECTED, acceptance=dict(zh_exact=True,en_word_error_rate_max=0.05,
             actual_usage_matches_client_settlement=True, third_alpha_item='client_rpm_exhausted',
             disconnect_after_real_delta=True, same_core_pid=True, no_automatic_replay=True),
-        scope='Direct native backend + official JS SDK. Native TLS/Guardian composition remains a subsequent task; no performance or full-model quality claim.')
+        ingress=str(ingress), ingress_sha256=sha(ingress), public_port=args.port+2,
+        tls=tls, tls_files={tls[n]:sha(tls[n]) for n in ('certificate','key')},
+        reused_core_before={str(previous/'run/core-before.wire'):sha(previous/'run/core-before.wire')},
+        scope='Native backend + native TLS ingress + official JS SDK; PID-bound fixed admission controller fixture, not Guardian recovery qualification. Before-core result reused; no performance or full-model quality claim.')
     save(out/'plan.json', plan)
     print(json.dumps(dict(plan=str(out/'plan.json'), source_files=len(sources))))
 
@@ -115,6 +129,7 @@ class Stage(lifecycle.Stage):
         self.started = time.monotonic()
         self.counts = {k: 0 for k in LIMITS if k != 'seconds'}
         self.model = self.model_identity = self.fault_thread = None
+        self.ingress = None
         self.history = {}
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
         lifecycle.verify_lease(self.lease, lifecycle.guard.common_lock())
@@ -130,6 +145,11 @@ class Stage(lifecycle.Stage):
         require(sha(self.out/'client-policy.json') == plan['client_policy_sha256'], 'policy drift')
         check_assets(plan['model'], plan['model_assets'])
         self.token = json.loads((self.out/'client-policy.json').read_text())['gateway_token']
+        require(sha(plan['ingress']) == plan['ingress_sha256'], 'ingress drift')
+        for name,digest in {**plan['tls_files'],**plan['reused_core_before']}.items():
+            require(sha(name)==digest, 'TLS or reused evidence drift')
+        self.keys = {name:hashlib.sha256((self.token+name).encode()).hexdigest()
+                     for name in ('alpha','beta','gamma')}
 
     def budget(self, kind, amount=1):
         require(time.monotonic()-self.started < LIMITS['seconds']-40, 'phase deadline')
@@ -163,6 +183,11 @@ class Stage(lifecycle.Stage):
             except (OSError, http.client.HTTPException): pass
             time.sleep(.1)
         else: raise TimeoutError('readiness')
+        self.budget('ingress_starts')
+        self.ingress = NativeIngress(self.out/'ingress', self.plan['ingress'],
+            self.plan['public_port'], self.plan['port'], self.plan['operations_port'],
+            self.token, self.keys, self.plan['tls'], lambda:self.model.poll() is None)
+        self.history[self.ingress.process.pid] = lifecycle.guard.processes()[self.ingress.process.pid]
 
     def same_model(self):
         current = lifecycle.guard.processes().get(self.model.pid, {})
@@ -206,8 +231,8 @@ class Stage(lifecycle.Stage):
     def sdk(self, label, client, clips, probes=False):
         self.budget('websocket_sessions')
         self.budget('committed_items', len(clips))
-        args = dict(base_url=f"http://127.0.0.1:{self.plan['port']}/v1",
-            headers={'X-Q4T-Client-Id':client, 'X-Q4T-Gateway-Token':self.token},
+        args = dict(base_url=f"https://127.0.0.1:{self.plan['public_port']}/v1",
+            api_key=self.keys[client], ca_file=self.plan['tls']['certificate'],
             clips=clips, probes=probes)
         env = {k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
         env['Q4T_NODE_SDK_DIR'] = self.plan['sdk_directory']
@@ -223,7 +248,6 @@ class Stage(lifecycle.Stage):
         return result
 
     def business(self):
-        self.core('core-before')
         clips = self.plan['clips']
         normal = lambda name: dict(file=clips[name]['path'], settings=settings())
         before = self.snapshot('before')
@@ -260,6 +284,12 @@ class Stage(lifecycle.Stage):
         require(health['state'] == 'ready' and health['load_attempts'] <= 2 and
                 health['compute_failures'] == 0, 'ASR health/reload bound')
 
+    def cleanup(self):
+        try:
+            if self.ingress is not None:self.ingress.close()
+        finally:
+            super().cleanup()
+
     def run(self):
         result = dict(status='FAIL')
         previous = signal.getsignal(signal.SIGALRM)
@@ -289,6 +319,7 @@ if __name__ == '__main__':
     sub = parser.add_subparsers(dest='action', required=True)
     prep = sub.add_parser('prepare');prep.add_argument('--binary',type=Path,required=True)
     prep.add_argument('--output',type=Path,required=True);prep.add_argument('--port',type=int,default=18318)
+    prep.add_argument('--ingress',type=Path,default=ROOT/'.q4t-work/serve-file-search-20261112/host/q4t-ingress')
     run = sub.add_parser('run');run.add_argument('--plan',type=Path,required=True)
     args = parser.parse_args()
     if args.action == 'prepare': prepare(args)

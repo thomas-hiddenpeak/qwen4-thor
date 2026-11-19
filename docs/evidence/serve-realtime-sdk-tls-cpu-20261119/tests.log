@@ -1,0 +1,8 @@
+test_actual_sdk_wss_native_auth_errors_audio_and_close (tools.serve_realtime.test_transcription_sdk.SdkTls.test_actual_sdk_wss_native_auth_errors_audio_and_close) ... ok
+test_invalid_api_key_never_reaches_backend (tools.serve_realtime.test_transcription_sdk.SdkTls.test_invalid_api_key_never_reaches_backend) ... ok
+test_untrusted_tls_never_reaches_backend (tools.serve_realtime.test_transcription_sdk.SdkTls.test_untrusted_tls_never_reaches_backend) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.676s
+
+OK
