@@ -319,6 +319,11 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
   const auto event_id = event.GetString("event_id");
   const auto* parameters = event.Find("response");
   const Json response = parameters ? *parameters : Object();
+  if (const auto* metadata = response.Find("metadata");
+      metadata && !RealtimeMetadataBounded(*metadata))
+    return ErrorEvent(Invalid("invalid_metadata", "Invalid response metadata",
+                              "response.metadata"),
+                      event_id);
   const auto conversation = response.GetString("conversation", "auto");
   if (conversation != "auto" && conversation != "none" &&
       conversation != conversation_id_)
@@ -520,6 +525,16 @@ bool RealtimeConversationSession::Tick() {
       // Local mismatch can still close honestly; a failed sink refuses this
       // call without replaying any already-published callback or event.
       terminal = work.output->Finish(end);
+    }
+    if (Accepted(terminal) && end.state != RealtimeResponseEnd::State::kFailed &&
+        end.state != RealtimeResponseEnd::State::kCancelled &&
+        work.job.in_conversation && work.job.snapshot.default_context &&
+        work.result.retained_input_indices) {
+      const auto truncated = history_.TruncateDefault(
+          work.job.snapshot, *work.result.retained_input_indices);
+      if (!truncated)
+        terminal = object_detail::Error(500, "realtime_context_commit_failed",
+                                         truncated.message());
     }
     Release(work);
     it = work_.erase(it);

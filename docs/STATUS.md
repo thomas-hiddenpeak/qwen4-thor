@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生 Realtime Chat 51 项 CPU 覆盖通过](evidence/serve-realtime-native-chat-cpu-20261119/README.md)：
+正常鉴权/配额/准入与一次性执行已接线；实际模板计数、工具成组与
+跨轮持久截断、取消后工具隔离通过。首轮两夹具 FAIL 保留，定向补验
+通过；0 GPU。正在必要构建，随后真实 SDK/TLS 模型和工具短验；
+音频/MCP/Live/追踪/Prompt 继续接通，默认 rev346 STOPPED 不变。
+
 [共享 Realtime 队列 8 项 CPU 通过](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)：
 0.114 秒 / 0 GPU，保持原转录合同并覆盖对话顺序、背压、取消与异常
 隔离；独立链接原失败保留。队列、会话与输出基础已验证，正在接

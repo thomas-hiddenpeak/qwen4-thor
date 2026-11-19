@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -22,6 +23,8 @@ struct RealtimeConversationSnapshot {
   std::string owner;
   uint64_t revision = 0;
   io::Json items;
+  std::vector<RealtimeItemTicket> tickets = {};
+  bool default_context = false;
 };
 
 // One session thread owns mutations. Workers receive independent snapshots
@@ -64,17 +67,25 @@ class RealtimeConversation {
   // Null selects the default conversation; [] selects an empty context.
   // Explicit item_reference resolves only this session's completed entries.
   // Pending server output fails rather than silently dropping partial tools.
+  // A terminal incomplete server tool remains retrievable but is not executable
+  // context. Default snapshots omit it; an explicit reference fails. Client
+  // status fields have no such authority and cannot hide submitted history.
   // Failure leaves output and history untouched; deleting an entry later does
   // not alter a snapshot already handed to a worker.
   Status Snapshot(const io::Json* input,
                   RealtimeConversationSnapshot* output) const;
+  // Persist a successful default response's context cut without deleting its
+  // retrievable history. Generation tickets protect entries recreated meanwhile.
+  Status TruncateDefault(const RealtimeConversationSnapshot& snapshot,
+                         std::span<const size_t> retained);
 
  private:
   struct Entry {
     io::Json item;
     uint64_t generation = 0;
     size_t charge = 0;
-    bool in_conversation = true, pending = false;
+    bool in_conversation = true, pending = false, server_output = false;
+    bool in_context = true;
   };
   size_t Position(const RealtimeItemTicket& ticket) const;
   Status Insert(const io::Json& item, std::string_view generated_id,

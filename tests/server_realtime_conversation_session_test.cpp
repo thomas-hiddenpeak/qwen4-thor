@@ -388,6 +388,59 @@ Q4T_TEST(realtime_session_invalid_commands_do_not_mutate_or_start_model) {
   return true;
 }
 
+Q4T_TEST(realtime_session_bad_metadata_is_error_before_publication_or_owner) {
+  Fixture f;
+  Q4T_CHECK(f.Start());
+  auto metadata = Object({{"key", String(std::string(513, 'x'))}});
+  Q4T_CHECK(f.Send(Object({{"type", String("response.create")},
+                            {"event_id", String("bad_metadata")},
+                            {"response", Object({{"metadata", metadata}})}})));
+  Q4T_CHECK(f.Count("error") == 1 && f.Count("response.created") == 0 &&
+            f.calls == 0 && f.released == 0);
+  const auto received = f.Last("error");
+  const auto* error = received.Find("error");
+  Q4T_CHECK(error && error->GetString("event_id") == "bad_metadata" &&
+            error->GetString("param") == "response.metadata");
+  Q4T_CHECK(f.Create() && f.Finish());
+  return true;
+}
+
+Q4T_TEST(realtime_session_successful_context_cut_is_used_by_next_response) {
+  Fixture f;
+  const auto original = f.cb.execute;
+  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit) {
+    auto result = original(job, control, emit);
+    if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
+    return result;
+  };
+  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) && f.Add(User("current", "current")));
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.Create() && f.Finish());
+  const auto second = f.Snapshot(1);
+  Q4T_CHECK(second.snapshot.items.array.size() == 2);
+  Q4T_CHECK(second.snapshot.items.array[0].Find("content")
+                ->array[0].GetString("text") == "current");
+  return true;
+}
+
+Q4T_TEST(realtime_session_out_of_band_context_cut_does_not_change_default) {
+  Fixture f;
+  const auto original = f.cb.execute;
+  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit) {
+    auto result = original(job, control, emit);
+    if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
+    return result;
+  };
+  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) && f.Add(User("current", "current")));
+  Q4T_CHECK(f.Create(Object({{"conversation", String("none")}})) && f.Finish());
+  Q4T_CHECK(f.Create() && f.Finish());
+  const auto second = f.Snapshot(1);
+  Q4T_CHECK(second.snapshot.items.array.size() == 2);
+  Q4T_CHECK(second.snapshot.items.array[0].Find("content")
+                ->array[0].GetString("text") == "old");
+  return true;
+}
+
 Q4T_TEST(
     realtime_session_cancel_wakes_a_backpressured_worker_and_releases_owner) {
   Fixture f;

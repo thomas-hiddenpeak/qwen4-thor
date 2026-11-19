@@ -33,8 +33,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   if (path != "/v1/realtime?intent=transcription") {
-    detail::SendError(fd, 400, "This route requires intent=transcription", {},
-                      "realtime_session_type_invalid", "intent");
+    HandleRealtimeConversation(fd, path, headers, initial, accept);
     return;
   }
   if (asr_model_dir_.empty()) {

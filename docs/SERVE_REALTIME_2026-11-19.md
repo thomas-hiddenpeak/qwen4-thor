@@ -27,6 +27,10 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
 
+[原生 Chat 51 项 CPU](evidence/serve-realtime-native-chat-cpu-20261119/README.md)
+已验正常主请求所有权、工具回填与跨轮持久截断；已接对话入口，
+实际 SDK/模型/恢复尚未验收，默认 rev346 保持，剩余能力继续。
+
 [共享消息泵 8 项 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)
 通过，保持原转录队列合同；真实对话执行/工具/音频仍继续接通。
 

@@ -77,6 +77,10 @@ void Category(Json* object, std::string_view name,
 }
 }  // namespace
 
+bool RealtimeMetadataBounded(const Json& metadata) {
+  return MetadataBounded(metadata);
+}
+
 RealtimeResponseOutput::RealtimeResponseOutput(
     RealtimeResponseOutputOptions options, EventSink emit, ItemSink item,
     IdFactory ids)

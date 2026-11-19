@@ -10,6 +10,7 @@
 #include "q4t/server/object_store.h"
 
 namespace q4t::server {
+bool RealtimeMetadataBounded(const io::Json& metadata);
 struct RealtimeResponseUsage {
   ActualUsage total;
   // Missing categories remain unknown, not fabricated zeros or text tokens.

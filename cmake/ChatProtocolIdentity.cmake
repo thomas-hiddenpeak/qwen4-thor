@@ -724,6 +724,11 @@ set(protocol_inputs
   src/server/realtime_session_pump.cpp
   include/q4t/server/realtime_conversation_pump.h
   src/server/realtime_conversation_pump.cpp
+  include/q4t/server/realtime_chat_plan.h
+  src/server/realtime_chat_plan.cpp
+  include/q4t/server/realtime_chat_execution.h
+  src/server/realtime_chat_execution.cpp
+  src/server/chat_realtime_conversation.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp

@@ -60,6 +60,18 @@ def current_surface(root):
                 not re.search(r'\brate\.Reserve\(\s*clients_,\s*client\b', realtime):
             raise ValueError('review realtime upgrade/native execution/per-turn admission')
         routes.append(("/v1/realtime?intent=transcription", "GET"))
+        if 'HandleRealtimeConversation(fd, path, headers, initial, accept)' in realtime:
+            conversation = (root / 'src/server/chat_realtime_conversation.cpp').read_text()
+            execution = (root / 'src/server/realtime_chat_execution.cpp').read_text()
+            if not all(marker in conversation for marker in (
+                    'ParseRealtimeChatTarget(', 'PlanRealtimeChat(',
+                    'FitRealtimeChatContext(', 'ExecuteRealtimeChat(',
+                    'ClientLane::kData', 'requests_.Register(',
+                    'HandleChat(-1, {}, GenerationApi::kChat')) or \
+                    'ClaimInvocation()' not in execution or \
+                    'ClientRateDomain::kBatch' in execution:
+                raise ValueError('review Realtime conversation native ownership')
+            routes.append(("/v1/realtime", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)

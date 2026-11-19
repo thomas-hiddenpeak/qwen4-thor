@@ -11087,6 +11087,20 @@
       "gpu_actions": 0,
       "actual_business_accepted": false,
       "master_complete": false
+    },
+    "native_chat_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-native-chat-cpu-20261119/README.md",
+      "unique_contracts": 51,
+      "original_failures_retained": true,
+      "gpu_actions": 0,
+      "actual_business_accepted": false,
+      "remaining": [
+        "Actual SDK/WSS model and tool loop",
+        "audio/MCP/Live/tracing/prompt execution",
+        "profile and recovery qualification"
+      ],
+      "master_complete": false
     }
   },
   "semantic_vad_primary_light_20261119": {

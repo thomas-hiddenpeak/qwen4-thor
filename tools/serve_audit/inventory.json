@@ -1687,13 +1687,25 @@
     },
     "GET /v1/realtime?intent=transcription": {
       "semantics": "鉴权后WebSocket转录会话，手动append/clear/commit，真实原生ASR增量/终态，逐轮原准入与实际RPM/TPM。",
-      "boundary": "手动转录真实官方JS/WSS/原生TLS/原生ASR业务通过；逐轮配额与取消回收通过，默认rev326保持。VAD/降噪/延迟、对话/Live与实际Guardian恢复仍继续。",
+      "boundary": "固定rev346已验手动/流式转录、VAD/降噪/语义回合与Guardian恢复。当前共享队列重构CPU已验，随对话候选补直接受影响的真实业务短验；对话/Live仍继续。",
       "evidence": [
         "src/server/chat_realtime.cpp",
         "src/server/realtime_transcription_session.cpp",
         "tests/server_realtime_transcription_test.cpp",
         "docs/evidence/serve-realtime-transcription-cpu-20261119/README.md",
         "docs/evidence/serve-realtime-transcription-business-20261119/README.md"
+      ]
+    },
+    "GET /v1/realtime": {
+      "semantics": "鉴权后原生对话会话，文本/函数增量、实际Chat配额与准入、一次性执行、实际模板计数及成组持久截断。",
+      "boundary": "开发阶段51项唯一CPU合同覆盖；尚未进行真实模型/SDK网络对话验收或替换默认。音频/MCP/Live/追踪等继续接通；处理器暂未连接的明确错误不表示目标完成。",
+      "evidence": [
+        "src/server/chat_realtime_conversation.cpp",
+        "src/server/realtime_chat_plan.cpp",
+        "src/server/realtime_chat_execution.cpp",
+        "tests/server_realtime_chat_plan_test.cpp",
+        "tests/server_realtime_chat_execution_test.cpp",
+        "docs/SERVE_REALTIME_2026-11-19.md"
       ]
     }
   },
@@ -2291,8 +2303,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "e5df54478df2e3bde0dd9c11c5f638575d56b499800e02836a51970d9f75a240",
-    "cmake/ChatProtocolIdentity.cmake": "3ad45a66eb6395f11906541c8a9c4b46f3e91193591972b06b4f00deafca9ab0",
+    "CMakeLists.txt": "e0163a923489a5df5be8c249b62d89ddf8202c9e7a5b54711d097da450fd1375",
+    "cmake/ChatProtocolIdentity.cmake": "50f8b4b9065cbadf82ee584b4056e0eacd661187f28a8144518ac66e39265874",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2407,7 +2419,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "c2454ab2a4ec456eb656e938def12e7891581faa17950348bc81610c0474ca96",
+    "include/q4t/server/chat_server.h": "004d6e73293e3e37705139db238ecd45534c08f2611994e11eeb887ae1700f61",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2501,12 +2513,14 @@
     "include/q4t/server/realtime_audio_export.h": "4c1401c4178788d87daa0cce920c442f0633e2d7841858b69fb32b26db78f21f",
     "include/q4t/server/realtime_audio_history.h": "8a6148ba9787add7334c65482f7f4b375695e1b5d4c2bc5810c3ba904d22ffa9",
     "include/q4t/server/realtime_audio_queue.h": "ac37b24170663e23ce04e57a861dcbd17048e3d6cf46bbf914f4fb247af03f16",
-    "include/q4t/server/realtime_conversation.h": "7094fd8449b90106fc85bd56e841b5d4684170b9555284f6a8c3dbfd82d67bec",
+    "include/q4t/server/realtime_chat_execution.h": "e9d94bd0ca49a9382bf1750895ddd0e1fd75046aa9d3ad16f1ca990faed68a55",
+    "include/q4t/server/realtime_chat_plan.h": "d686d4c8ee50cf806c618cb6c50abe48a5604a14d9c0c3414bb2dd6385175b10",
+    "include/q4t/server/realtime_conversation.h": "5e9031c2d56da9ed9dd91c9223206bcc75d5b8fe50fcdd51e4b165505956561d",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
-    "include/q4t/server/realtime_conversation_session.h": "1ca7e01adec88389182085c7509fc4270778ee503ed3799358cc7d5122d6541e",
+    "include/q4t/server/realtime_conversation_session.h": "036293fb558047841a48429d4f042172e1c48d21b25f7f1706d523a732f848e5",
     "include/q4t/server/realtime_noise_input.h": "b53079e7bb6441067ea0da9a6b48744fce42cfcad48cc4cf72270450eed0ad53",
     "include/q4t/server/realtime_pcm.h": "ad711d43176381aa6a0240a95b0486ee93ef200739207dec7e5dabe9924d4136",
-    "include/q4t/server/realtime_response_output.h": "4d317cb67fe50235a980d3cb649953e253e0cc4e140cdb21a16d6aec2e3836df",
+    "include/q4t/server/realtime_response_output.h": "d0b7772b229e5969649d519f5ceb146014d5fbe0a03cc0113b4e881693940b64",
     "include/q4t/server/realtime_semantic_score.h": "d3096f9d74b124334d5069af083eeba7847a3e21270f1b9c85c171cabb7a9857",
     "include/q4t/server/realtime_semantic_turn.h": "29b50168cb363f3e84af1754f25b93680b328e962973c2cf0fe12cdec6515871",
     "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
@@ -2520,7 +2534,7 @@
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
-    "include/q4t/server/request_control.h": "19b02b49fe61f27ec893191319110190fa9d3fd1e43960a3287533c39e18f85b",
+    "include/q4t/server/request_control.h": "0d67e522678ff38ad843f44334f31a259d092fd6499c59761356a88b97d1d25d",
     "include/q4t/server/request_diagnostics.h": "a5dcc79f556c929f0659b74ed6de342dd19a363f12a59f6c3e42ffd90e04c5ae",
     "include/q4t/server/request_json.h": "db921e7c75126b370d7dcde14ee6ed8108f5eb89618289b2564e4062783e3e3b",
     "include/q4t/server/request_limits.h": "8d18fe37312d7bb75a7ef9411dabae7fa6ffd6d23ccbb010c4af2a5b1ad8e905",
@@ -2770,7 +2784,8 @@
     "src/server/chat_plan.cpp": "b2927a8d44b51250a7360027410350d50ad3fb9058bc39b7c85309094c16ba04",
     "src/server/chat_preflight.cpp": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
-    "src/server/chat_realtime.cpp": "cf9d9a9b34e1324f45e27f36033bb179900f6a8cfd23082095fba9b60a9e729b",
+    "src/server/chat_realtime.cpp": "954c09464745e02b2bdc412202ed9c7c687877ab733f5645952d2bab27129e6e",
+    "src/server/chat_realtime_conversation.cpp": "eb8cd88a97b02fcf9aec35af174cd25b97a42ccd3e017b67b2e1ae62bd057291",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "1a9afce7b98fd79db487c681a50620beeb523d6bf62d051fb2132ddce0e7ef71",
@@ -2956,12 +2971,14 @@
     "src/server/realtime_audio_export.cpp": "7a8f2c6f437452debd09f7e321374e136b1d3347213844d733c98c5b51e8cd95",
     "src/server/realtime_audio_history.cpp": "194b4db93486087c53710ba55560b6249f0edb94850fab72afa285e79b574232",
     "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
-    "src/server/realtime_conversation.cpp": "7ec4f26f02a9a9f38ff0f2ac528eedad80d785a6853f407fa60b3b0be18a502d",
+    "src/server/realtime_chat_execution.cpp": "05d10d833671231ab982cee2f0d8b2136c2d2d82d1dc6764002a3f3177d719eb",
+    "src/server/realtime_chat_plan.cpp": "c025e84cb71470f55ab6e2602edb341079fed08ab4cb8d9dcd6fc22ce54c8885",
+    "src/server/realtime_conversation.cpp": "a0993cd2329fe4455bf42214c7933402c8fca392b91ddbf2bc758847e8f8cb19",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
-    "src/server/realtime_conversation_session.cpp": "3340be885fbf59ea4d500c68981e5af828c792b246ad62fb0959378983188d76",
+    "src/server/realtime_conversation_session.cpp": "89f4367555486e0e4ab6efcf7783e7b35ae2e5a23961ee6c5090c5eb7a922a88",
     "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
     "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
-    "src/server/realtime_response_output.cpp": "2704aaea8335a2fd2b372854517bb8709671ad22e37f47cfe9a82ae8b2a5e7ea",
+    "src/server/realtime_response_output.cpp": "0699db832ee44d3cc6b32bbf1fa1383b42e4c6f5bbaa15819f20a8dc247c4baa",
     "src/server/realtime_semantic_score.cpp": "1f6e6a913d4d9d69ae5d636109413edf8381f19c56f2532741d1273d11cb7f4a",
     "src/server/realtime_semantic_session.cpp": "32268b6469618a9a083b71e3ad3adfccaa6971329afdcad2823ddcda2d2e3e40",
     "src/server/realtime_semantic_turn.cpp": "7b8784ffffe44d1e291adec9c6d40a777d32f9e872be2c9b6e682853914b614a",
@@ -5319,7 +5336,7 @@
     },
     "OPTIONS /v1/realtime": {
       "semantics": "原生入口鉴权后WebSocket升级及双向转发；Origin、Key、独立会话连接容量和绑定复核。",
-      "boundary": "入口CPU协议对端已验；后端实际Realtime/Live会话、模型执行与每轮RPM/TPM仍待实现，未发行。",
+      "boundary": "原生TLS入口与转录已随rev346交付。后续对话接线完成CPU验证，真实模型/SDK网络与恢复资格仍待验；Live继续实现。",
       "evidence": [
         "src/service/ingress_websocket.cpp",
         "src/service/ingress_main.cpp",
@@ -5329,7 +5346,7 @@
     },
     "GET /v1/realtime": {
       "semantics": "原生入口鉴权后WebSocket升级及双向转发；Origin、Key、独立会话连接容量和绑定复核。",
-      "boundary": "入口CPU协议对端已验；后端实际Realtime/Live会话、模型执行与每轮RPM/TPM仍待实现，未发行。",
+      "boundary": "原生TLS入口与转录已随rev346交付。后续对话接线完成CPU验证，真实模型/SDK网络与恢复资格仍待验；Live继续实现。",
       "evidence": [
         "src/service/ingress_websocket.cpp",
         "src/service/ingress_main.cpp",

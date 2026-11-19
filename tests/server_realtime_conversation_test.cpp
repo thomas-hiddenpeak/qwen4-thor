@@ -160,6 +160,110 @@ Q4T_TEST(realtime_conversation_partial_model_output_does_not_enter_prompt) {
   return true;
 }
 
+Q4T_TEST(realtime_conversation_incomplete_server_tool_is_retained_not_reexecuted) {
+  RealtimeConversation history("sess_a");
+  Ticket user, tool;
+  Q4T_CHECK(history.Create(Message(), "user", {}, &user));
+  auto call = Object({{"type", String("function_call")},
+                      {"name", String("lookup")},
+                      {"call_id", String("call_a")},
+                      {"arguments", String("{")}});
+  Q4T_CHECK(history.BeginOutput(call, "tool", true, 8192, &tool));
+  Q4T_CHECK(history.Get(tool, &call));
+  Set(&call, "status", String("incomplete"));
+  Q4T_CHECK(history.Update(tool, call, true));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1 && history.Items() == 2);
+  Json retained;
+  Q4T_CHECK(history.Get(tool, &retained) &&
+            retained.GetString("arguments") == "{");
+  auto explicit_input = Array({Reference("tool")});
+  Q4T_CHECK(!history.Snapshot(&explicit_input, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_conversation_client_status_cannot_hide_call_or_incomplete_text) {
+  RealtimeConversation history("sess_a");
+  Ticket tool, text;
+  const auto call = Object({{"type", String("function_call")},
+                            {"name", String("lookup")},
+                            {"call_id", String("call_a")},
+                            {"status", String("incomplete")},
+                            {"arguments", String("{}")}});
+  Q4T_CHECK(history.Create(call, "tool", {}, &tool));
+  auto message = Message("partial text", "assistant");
+  Q4T_CHECK(history.BeginOutput(message, "text", true, 8192, &text));
+  Q4T_CHECK(history.Get(text, &message));
+  Set(&message, "status", String("incomplete"));
+  Q4T_CHECK(history.Update(text, message, true));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 2);
+  auto explicit_input = Array({Reference("tool")});
+  Q4T_CHECK(history.Snapshot(&explicit_input, &snapshot));
+  return true;
+}
+
+Q4T_TEST(realtime_conversation_context_cut_persists_but_history_is_retrievable) {
+  RealtimeConversation history("sess_a");
+  Ticket old, current, next;
+  Q4T_CHECK(history.Create(Message("old"), "old", {}, &old));
+  Q4T_CHECK(history.Create(Message("current"), "current", {}, &current));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  const size_t keep[] = {1};
+  Q4T_CHECK(history.TruncateDefault(snapshot, keep));
+  Q4T_CHECK(history.Create(Message("next"), "next", {}, &next));
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 2 &&
+            snapshot.items.array[0].GetString("id") == "current");
+  Json retained;
+  Q4T_CHECK(history.Get(old, &retained));
+  auto reference = Array({Reference("old")});
+  Q4T_CHECK(history.Snapshot(&reference, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1 && !snapshot.default_context);
+  Q4T_CHECK(!history.TruncateDefault(snapshot, {}));
+  return true;
+}
+
+Q4T_TEST(realtime_conversation_context_cut_never_hides_recreated_generation) {
+  RealtimeConversation history("sess_a");
+  Ticket old, current, replacement;
+  Q4T_CHECK(history.Create(Message("old"), "same", {}, &old));
+  Q4T_CHECK(history.Create(Message("current"), "current", {}, &current));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(history.Erase(old));
+  Q4T_CHECK(history.Create(Message("old"), "same", {}, &replacement));
+  const size_t keep[] = {1};
+  Q4T_CHECK(history.TruncateDefault(snapshot, keep));
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 2 &&
+            snapshot.items.array[1].GetString("id") == "same");
+  return true;
+}
+
+Q4T_TEST(realtime_conversation_context_cut_invalid_selection_is_atomic) {
+  RealtimeConversation history("sess_a");
+  Ticket a, b;
+  Q4T_CHECK(history.Create(Message(), "a", {}, &a));
+  Q4T_CHECK(history.Create(Message(), "b", {}, &b));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  const auto revision = history.Revision();
+  const size_t duplicates[] = {1, 1}, outside[] = {2};
+  Q4T_CHECK(!history.TruncateDefault(snapshot, duplicates));
+  Q4T_CHECK(!history.TruncateDefault(snapshot, outside));
+  snapshot.tickets[0].owner = "other_session";
+  Q4T_CHECK(!history.TruncateDefault(snapshot, {}));
+  Q4T_CHECK(history.Revision() == revision);
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot) &&
+            snapshot.items.array.size() == 2);
+  return true;
+}
+
 Q4T_TEST(realtime_conversation_reservation_and_terminal_release) {
   RealtimeConversation history("sess_a", 3, 32768);
   Ticket item;

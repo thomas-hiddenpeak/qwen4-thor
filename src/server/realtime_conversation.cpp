@@ -1,6 +1,7 @@
 #include "q4t/server/realtime_conversation.h"
 
 #include <algorithm>
+#include <array>
 #include <limits>
 
 #include "q4t/server/input_contract.h"
@@ -200,6 +201,7 @@ Status RealtimeConversation::Insert(const Json& input,
                    &entry.charge);
   if (!status) return status;
   entry.pending = reserved_bytes != 0;
+  entry.server_output = entry.pending;
   if (entry.pending) entry.charge = reserved_bytes;
   entry.in_conversation = in_conversation;
   entry.generation = generation_ + 1;
@@ -249,8 +251,15 @@ Status RealtimeConversation::Snapshot(
       (input && (!input->IsArray() || input->array.size() > maximum_items_)))
     return Invalid("invalid snapshot input");
   RealtimeConversationSnapshot snapshot{owner_, revision_, Array()};
+  snapshot.default_context = !input;
   size_t remaining = maximum_bytes_;
-  auto append = [&](const Json& item, bool pending) -> Status {
+  const auto incomplete_tool = [](const Entry& entry) {
+    return entry.server_output && !entry.pending &&
+           entry.item.GetString("type") == "function_call" &&
+           entry.item.GetString("status") == "incomplete";
+  };
+  auto append = [&](const Json& item, bool pending,
+                    uint64_t generation = 0) -> Status {
     if (pending) return Invalid("output item is still pending");
     if (snapshot.items.array.size() == maximum_items_)
       return Invalid("snapshot item limit exceeded");
@@ -261,13 +270,15 @@ Status RealtimeConversation::Snapshot(
     status = Measure(copy, remaining, &bytes);
     if (!status) return status;
     snapshot.items.array.push_back(std::move(copy));
+    snapshot.tickets.push_back({owner_, item.GetString("id"), generation});
     remaining -= bytes;
     return {};
   };
   if (!input) {
     for (const auto& entry : entries_) {
-      if (!entry.in_conversation) continue;
-      auto status = append(entry.item, entry.pending);
+      if (!entry.in_conversation || !entry.in_context || incomplete_tool(entry))
+        continue;
+      auto status = append(entry.item, entry.pending, entry.generation);
       if (!status) return status;
     }
   } else {
@@ -281,7 +292,9 @@ Status RealtimeConversation::Snapshot(
             !Find(id->str, &ticket))
           return Invalid("item reference is not in this session");
         const auto& entry = entries_[Position(ticket)];
-        status = append(entry.item, entry.pending);
+        if (incomplete_tool(entry))
+          return Invalid("incomplete server tool is not executable context");
+        status = append(entry.item, entry.pending, entry.generation);
       } else {
         status = append(item, false);
       }
@@ -289,6 +302,41 @@ Status RealtimeConversation::Snapshot(
     }
   }
   *output = std::move(snapshot);
+  return {};
+}
+
+Status RealtimeConversation::TruncateDefault(
+    const RealtimeConversationSnapshot& snapshot,
+    std::span<const size_t> retained) {
+  if (!valid_ || snapshot.owner != owner_ || !snapshot.default_context ||
+      !snapshot.items.IsArray() || snapshot.items.array.size() > maximum_items_ ||
+      snapshot.tickets.size() != snapshot.items.array.size() ||
+      revision_ == UINT64_MAX)
+    return Invalid("invalid context truncation owner");
+  std::array<bool, kMaximumItems> keep{};
+  for (const auto index : retained) {
+    if (index >= snapshot.items.array.size() || keep[index])
+      return Invalid("invalid retained context index");
+    keep[index] = true;
+  }
+  for (size_t i = 0; i < snapshot.tickets.size(); ++i) {
+    const auto& ticket = snapshot.tickets[i];
+    if (ticket.owner != owner_ || !ticket.generation ||
+        ticket.id != snapshot.items.array[i].GetString("id"))
+      return Invalid("invalid context generation ticket");
+  }
+  bool changed = false;
+  for (size_t i = 0; i < snapshot.tickets.size(); ++i) {
+    if (keep[i]) continue;
+    const auto position = Position(snapshot.tickets[i]);
+    if (position == entries_.size()) continue;
+    auto& entry = entries_[position];
+    if (entry.in_conversation && entry.in_context) {
+      entry.in_context = false;
+      changed = true;
+    }
+  }
+  if (changed) ++revision_;
   return {};
 }
 }  // namespace q4t::server

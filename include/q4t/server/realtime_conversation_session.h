@@ -11,10 +11,12 @@
 #include "q4t/server/websocket_session.h"
 
 namespace q4t::server {
-// Four bounded input/settings snapshots, retained history, delta mailboxes,
-// deferred events and JSON/frame transaction copies. Model/media workspaces
-// retain their own existing admissions; this is protocol storage only.
-inline constexpr size_t kRealtimeConversationHostBytes = 512ULL << 20;
+// Four workers: at most 384MiB each for snapshots, normalization/context-cut
+// transaction copies, finite output and framing; 512MiB for the session's
+// retained history, parser, mailboxes and deferred events. Each executable plan
+// separately caps its retained JSON at 64MiB. Model/media workspaces retain
+// their existing admissions; this reservation is protocol storage only.
+inline constexpr size_t kRealtimeConversationHostBytes = 2ULL << 30;
 struct RealtimeConversationJob {
   std::string response_id;
   io::Json settings, response;
@@ -27,6 +29,8 @@ struct RealtimeGenerationResult {
   RealtimeResponseEnd::State state = RealtimeResponseEnd::State::kCompleted;
   std::string reason;
   std::optional<RealtimeResponseUsage> usage;
+  // Only an actually completed default-context generation may publish a cut.
+  std::optional<std::vector<size_t>> retained_input_indices;
 };
 using RealtimeDeltaSink = std::function<ObjectReply(const ResponseDelta&)>;
 struct RealtimeConversationCallbacks {

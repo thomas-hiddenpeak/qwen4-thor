@@ -54,6 +54,7 @@
 #include "q4t/server/speech_output.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/server/realtime_transcription_session.h"
+#include "q4t/server/realtime_conversation_session.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -325,6 +326,14 @@ class ChatServer {
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
+  void HandleRealtimeConversation(int fd, std::string_view path,
+                                   const HttpRequestHeaders& headers,
+                                   std::string_view initial,
+                                   std::string_view accept);
+  RealtimeGenerationResult RunRealtimeConversation(
+      const ClientIdentity& client, const RealtimeConversationJob& job,
+      const std::shared_ptr<RequestControl>& control,
+      const RealtimeDeltaSink& emit);
   ObjectReply RunRealtimeTranscription(
       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
       const std::array<std::span<const uint8_t>, 2>& bytes,
@@ -564,7 +573,7 @@ class ChatServer {
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
   HttpBodyBudget tunnel_body_budget_{17U << 20};
-  HttpBodyBudget realtime_host_budget_{4 * kRealtimeSessionHostBytes};
+  HttpBodyBudget realtime_host_budget_{4 * kRealtimeConversationHostBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};
