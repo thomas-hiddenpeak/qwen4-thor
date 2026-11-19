@@ -9383,7 +9383,7 @@
       "reason": "Top-level progress lagged behind already recorded accepted owner decision and completed counterexamples; reuse unchanged evidence."
     },
     "icl": {
-      "state": "owner_authorized_strict_float_boundary_and_counterexamples_actual_registration_business_pending",
+      "state": "strict_float_boundary_numeric_qualified_actual_registration_business_pending",
       "evidence": "evidence/serve-tts-icl-metadata-20261119/README.md",
       "cpu_new": 10,
       "cpu_direct_decoder": 4,
@@ -9502,11 +9502,30 @@
         "boundary_rule_authorized": true,
         "counterexamples_required": true,
         "original_exact_code_failure_preserved": true,
-        "numeric_qualified": false,
+        "numeric_qualified": true,
         "business_qualified": false,
         "listening": "PENDING_OWNER_DEFERRED",
         "machine_voice_identity_failure_preserved": true,
         "next": "Finish current Realtime audio-export prerequisites, freeze strict boundary validation and negative controls, then native registration/synthesis business and remaining master tasks"
+      },
+      "boundary_review": {
+        "state": "PASS_FIXED_ENCODER_FLOAT_BOUNDARY",
+        "cpu_cases": 14,
+        "raw_reviews": 1,
+        "seconds": 180,
+        "gpu_actions": 0,
+        "original_failure_preserved": true,
+        "business_qualified": false,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "cpu_seconds": 0.2640649159438908,
+        "review_seconds": 0.738926388323307,
+        "nearest_checks": 32,
+        "exact_residual_checks": 32,
+        "original_float_checks": 222,
+        "exact_code_cases": 2,
+        "different_codes": 4,
+        "frame": 94,
+        "evidence": "evidence/serve-tts-icl-boundary-20261119/README.md"
       }
     }
   },
