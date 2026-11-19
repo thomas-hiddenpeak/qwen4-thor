@@ -19,6 +19,7 @@ from tools.serve_service.package import require, save, sha
 
 LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=3,
               committed_items=7, chats=1, controls=2000, seconds=600)
+CONTINUATION_LIMITS = dict(LIMITS, websocket_sessions=2, committed_items=4)
 MODES = ('off', 'near_field', 'far_field')
 
 
@@ -88,6 +89,112 @@ def waveform_probe(binary, clip, name, out):
     return results
 
 
+def automatic_clock(start, end, origin_ticks, clip):
+    extent = clip['bytes'] // clip['width'] * (48000 // clip['rate'])
+    # Events use the whole session clock, including prior committed/cleared
+    # clips. Do not compare a later turn's absolute timestamp to one clip's size.
+    require((origin_ticks + 48000) // 48 <= start < end <=
+            (origin_ticks + extent) // 48,
+            'noise-only prefix or automatic item sample extent')
+
+
+def review_session(result, clip, name, modes, rows):
+    require(result['status'] == 'PASS' and result['connections'] == 1 and
+            not result['automatic_replay'], 'SDK boundary')
+    require(len(result['turns']) == len(rows), 'actual turn count')
+    quality, total, origin_ticks = {}, 0, 0
+    for mode, row, turn in zip(modes, rows, result['turns']):
+        actual = turn['update']['session']['audio']['input']
+        require(actual['noise_reduction'] == row['settings']['audio']['input']['noise_reduction'],
+                'effective noise setting')
+        terminal = turn['terminal']
+        require(turn['delta'] == terminal['transcript'], 'delta/final identity')
+        quality[name + '/' + mode] = base.quality(terminal['transcript'],
+                                                'en' if name == 'en' else 'zh')
+        base.usage(terminal, sdk=True)
+        total += terminal['usage']['total_tokens']
+        if row.get('auto_items'):
+            starts = [e for e in result['events'] if
+                      e['type'] == 'input_audio_buffer.speech_started' and
+                      e['item_id'] == turn['item_id']]
+            stops = [e for e in result['events'] if
+                     e['type'] == 'input_audio_buffer.speech_stopped' and
+                     e['item_id'] == turn['item_id']]
+            require(len(starts) == len(stops) == 1, 'automatic noise item identity')
+            automatic_clock(starts[0]['audio_start_ms'], stops[0]['audio_end_ms'],
+                            origin_ticks, clip)
+        origin_ticks += clip['bytes'] // clip['width'] * (48000 // clip['rate'])
+    return quality, total
+
+
+def session_rows(clip, name):
+    modes = MODES if name != 'mulaw' else ('near_field',)
+    rows = []
+    for mode in modes:
+        settings = base.settings('audio/pcmu' if name == 'mulaw' else 'audio/pcm')
+        settings['audio']['input']['noise_reduction'] = (
+            None if mode == 'off' else dict(type=mode))
+        row = dict(file=clip['path'], settings=settings)
+        if name in ('zh', 'mulaw') and mode == 'near_field':
+            settings['audio']['input']['turn_detection'] = dict(type='server_vad',
+                threshold=.5, prefix_padding_ms=300, silence_duration_ms=700)
+            row['auto_items'] = 1
+        rows.append(row)
+    return modes, rows
+
+
+def prepare_continuation(args):
+    require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
+            'commit reviewed sources before freezing')
+    previous = args.continue_from.resolve(strict=True)
+    require(previous.is_relative_to(base.WORK), 'private previous phase')
+    plan = json.loads((previous / 'plan.json').read_text())
+    result = json.loads((previous / 'result.json').read_text())
+    guard = json.loads((previous.parent / 'lease/exit.json').read_text())
+    require(result['status'] == 'FAIL' and result['default_unchanged'] and
+            'noise-only prefix must not generate a speech item' in result['error'] and
+            result['counts']['websocket_sessions'] == 1 and
+            result['counts']['committed_items'] == 3 and
+            guard['status'] == 'COMMAND_FAILED', 'only known verifier failure is reusable')
+    binary = args.binary.resolve(strict=True)
+    require(sha(binary) == plan['binary_sha256'], 'continuation runtime changed')
+    for name, digest in plan['protected'].items():
+        require(sha(name) == digest, 'default drift')
+    for name, digest in plan['sources'].items():
+        if name.startswith(('src/', 'include/', 'cmake/')) or name == 'CMakeLists.txt':
+            require(sha(ROOT / name) == digest, 'runtime source drift')
+    for modes in plan['waveforms'].values():
+        for waveform in modes.values():
+            require(sha(waveform['path']) == waveform['sha256'], 'waveform evidence drift')
+    clip = plan['clips']['zh']
+    modes, rows = session_rows(clip, 'zh')
+    quality, total = review_session(json.loads((previous / 'zh.sdk.json').read_text()),
+                                    clip, 'zh', modes, rows)
+    out = args.output.resolve()
+    require(out.is_relative_to(base.WORK), 'private phase directory required')
+    out.mkdir(mode=0o700, parents=True, exist_ok=False)
+    policy = json.loads((previous / 'client-policy.json').read_text())
+    policy['gateway_token'] = hashlib.sha256(os.urandom(32)).hexdigest()
+    save(out / 'client-policy.json', policy)
+    (out / 'client-policy.json').chmod(0o600)
+    tls = certificate(out / 'credentials')
+    sources = dict(plan['sources'])
+    for name in sources:
+        sources[name] = sha(ROOT / name)
+    plan.update(limits=CONTINUATION_LIMITS, output=str(out), port=args.port,
+        operations_port=args.port + 1, public_port=args.port + 2,
+        client_policy_sha256=sha(out / 'client-policy.json'), sources=sources,
+        source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        tls=tls, tls_files={tls[n]: sha(tls[n]) for n in ('certificate', 'key')},
+        continuation=dict(previous=str(previous), quality=quality, tokens=total,
+            evidence={str(previous / f): sha(previous / f) for f in
+                      ('plan.json', 'result.json', 'zh.sdk.json', 'cleanup.json')},
+            reused='Three actual Chinese transcripts, original-clock events and actual usage; live alpha metric snapshot was not reached. Continuation checks unchanged settlement path with English all modes and G.711. Original FAIL remains.'))
+    save(out / 'plan.json', plan)
+    print(json.dumps(dict(plan=str(out / 'plan.json'), reused_items=3,
+                         remaining_items=4, new_cpu_waveform_captures=0)))
+
+
 def prepare(args):
     require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
             'commit reviewed sources before freezing')
@@ -146,55 +253,28 @@ class Stage(base.Stage):
     limits = LIMITS
 
     def __init__(self, plan):
+        self.limits = CONTINUATION_LIMITS if plan.get('continuation') else LIMITS
         super().__init__(plan)
         require(plan['schema'] == 'q4t-realtime-noise-business-v1', 'phase schema')
         require(sha(Path(plan['vad_directory']) / vad.WEIGHT) == vad.DIGEST,
                 'fixed VAD asset drift')
+        for name, digest in plan.get('continuation', {}).get('evidence', {}).items():
+            require(sha(name) == digest, 'reused evidence drift')
 
     def extra_model_args(self):
         return ['--vad-model-dir', self.plan['vad_directory']]
 
     def business(self):
         self.snapshot('before')
-        quality = {}
+        quality = dict(self.plan.get('continuation', {}).get('quality', {}))
         for name, client in [('zh', 'alpha'), ('en', 'beta'), ('mulaw', 'gamma')]:
+            if name == 'zh' and self.plan.get('continuation'):
+                continue
             clip = self.plan['clips'][name]
-            modes = MODES if name != 'mulaw' else ('near_field',)
-            rows = []
-            for mode in modes:
-                settings = base.settings('audio/pcmu' if name == 'mulaw' else 'audio/pcm')
-                settings['audio']['input']['noise_reduction'] = (
-                    None if mode == 'off' else dict(type=mode))
-                auto = name in ('zh', 'mulaw') and mode == 'near_field'
-                row = dict(file=clip['path'], settings=settings)
-                if auto:
-                    settings['audio']['input']['turn_detection'] = dict(type='server_vad',
-                        threshold=.5, prefix_padding_ms=300, silence_duration_ms=700)
-                    row['auto_items'] = 1
-                rows.append(row)
+            modes, rows = session_rows(clip, name)
             result = self.sdk(name, client, rows)
-            require(len(result['turns']) == len(rows), 'actual turn count')
-            total = 0
-            for mode, row, turn in zip(modes, rows, result['turns']):
-                actual = turn['update']['session']['audio']['input']
-                require(actual['noise_reduction'] == row['settings']['audio']['input']['noise_reduction'],
-                        'effective noise setting')
-                terminal = turn['terminal']
-                quality[name + '/' + mode] = base.quality(terminal['transcript'],
-                                                        'en' if name == 'en' else 'zh')
-                base.usage(terminal, sdk=True)
-                total += terminal['usage']['total_tokens']
-                if row.get('auto_items'):
-                    starts = [e for e in result['events'] if
-                              e['type'] == 'input_audio_buffer.speech_started' and
-                              e['item_id'] == turn['item_id']]
-                    stops = [e for e in result['events'] if
-                             e['type'] == 'input_audio_buffer.speech_stopped' and
-                             e['item_id'] == turn['item_id']]
-                    require(len(starts) == len(stops) == 1, 'automatic noise item identity')
-                    require(1000 <= starts[0]['audio_start_ms'] < stops[0]['audio_end_ms'] <=
-                            clip['bytes'] * 1000 / (clip['width'] * clip['rate']),
-                            'noise-only prefix must not generate a speech item')
+            checked, total = review_session(result, clip, name, modes, rows)
+            quality.update(checked)
             state = self.snapshot(name + '-drained')
             key = lambda metric: metric + '{client="' + client + '"}'
             require(state[key('q4t_client_rate_admitted_total')] == len(rows) and
@@ -220,11 +300,15 @@ if __name__ == '__main__':
     prep.add_argument('--probe', type=Path, required=True)
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--port', type=int, default=18338)
+    prep.add_argument('--continue-from', type=Path)
     run = sub.add_parser('run')
     run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
     if args.action == 'prepare':
-        prepare(args)
+        if args.continue_from:
+            prepare_continuation(args)
+        else:
+            prepare(args)
     else:
         with base.lifecycle.child_subreaper():
             Stage(json.loads(args.plan.read_text())).run()

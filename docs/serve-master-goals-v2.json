@@ -9638,6 +9638,35 @@
       "cpu_waveform_captures": 9,
       "scene": "Retained real zh/en + labeled 125Hz hum at 10dB, frozen before execution",
       "status": "FROZEN"
+    },
+    "noise_business_first": {
+      "status": "DRIVER_CLOCK_FAILURE_RETAINED",
+      "seconds": 41.929982241243124,
+      "nvml_ok": 41,
+      "model_starts": 1,
+      "sessions": 1,
+      "actual_items": 3,
+      "quality": "All Chinese exact; real SDK delta/final and 326 actual tokens",
+      "clock_review_cpu": 3,
+      "alpha_live_metrics_collected": false,
+      "cleanup": true,
+      "evidence": ".q4t-work/serve-realtime-20261119/noise-business-01"
+    },
+    "noise_business_continuation": {
+      "state": "FROZEN",
+      "model_starts": 1,
+      "ingress_starts": 1,
+      "sessions": 2,
+      "items": 4,
+      "chats": 1,
+      "seconds": 600,
+      "reused_items": 3,
+      "new_waveform_captures": 0
+    },
+    "diagnostic_completion_gap": {
+      "state": "IMPLEMENTATION_REQUIRED",
+      "finding": "RunRealtimeTranscription succeeds and updates success metrics but does not close RequestDiagnostics outcome; actual successful item end events retain error/handler_error.",
+      "next": "Bind diagnostics to actual success/failure/cancel result, targeted direct checks and applicable upcoming business; never use observation labels to restart healthy model."
     }
   }
 }
