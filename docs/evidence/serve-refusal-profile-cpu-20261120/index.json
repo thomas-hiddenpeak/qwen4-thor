@@ -1,0 +1,62 @@
+{
+  "profile-cpu-01/check-1.log": {
+    "bytes": 223,
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c"
+  },
+  "profile-cpu-01/result.json": {
+    "bytes": 1698,
+    "sha256": "210b09ba0a1a7756ed04a8a9485b4242112ce0a66881520a8b1ab6872fe188e2"
+  },
+  "profile-cpu-01/plan.json": {
+    "bytes": 6198,
+    "sha256": "14718bbd73be2634485f5279785418b179db5e2c2815acc7debb8d2ca6ad2296"
+  },
+  "profile-cpu-01/check-0.log": {
+    "bytes": 5340,
+    "sha256": "e618a71895a3e98183ee6fff84d038b7536dd56381ef0032ac152deb5981da63"
+  },
+  "source/.github/workflows/host-checks.yml": {
+    "bytes": 15018,
+    "sha256": "51c5fb54e0dde8454b849ee610b2bff70232bcefecd0283f0970262ee76fb7f8"
+  },
+  "source/tools/serve_audit/inventory.json": {
+    "bytes": 509794,
+    "sha256": "420696c9fd5369c9c62769ebeec49f899b2d4e7597827320a2e4200e2d6b0776"
+  },
+  "source/tools/serve_recovery/bundle.py": {
+    "bytes": 24593,
+    "sha256": "ac3fd74ce9bbdf6fe300aee76fb1a02b33dc901548d15595b9d99f54eb635161"
+  },
+  "source/tools/serve_recovery/profile_evidence.py": {
+    "bytes": 89964,
+    "sha256": "8c9c545da6f50581f096d2f7824f0b7206bb604a3145fd24222b29c914014bea"
+  },
+  "source/tools/serve_recovery/profile_record.py": {
+    "bytes": 2072,
+    "sha256": "743d0246edc2e5be6d9002b3ca96c76a7093f5ed78fa98c3fcb63a9cecb90d69"
+  },
+  "source/tools/serve_recovery/test_native_bundle.py": {
+    "bytes": 38372,
+    "sha256": "a7bbef2c744d6a684ee6e7bf359f585688fa89b456a2e8052d4263b868c992cc"
+  },
+  "source/tools/serve_recovery/profile_refusal_reuse.py": {
+    "bytes": 7475,
+    "sha256": "e05884f489e504054d13880e883ee7c69082beb61490a68c74a8833f9d67429d"
+  },
+  "source/tools/serve_recovery/profile_refusal_targeted.py": {
+    "bytes": 18369,
+    "sha256": "3bc266ebeb56455ee9b710a7360f4c1cbf8d0804d2fdf7f75cc47df12cf3dfff"
+  },
+  "source/tools/serve_recovery/test_profile_refusal.py": {
+    "bytes": 8353,
+    "sha256": "6870fb471d3b637afd85022b5206cc322432188dbb63b4a0a718ff0b5323c0a8"
+  },
+  "prepare_profile_cpu_01.py": {
+    "bytes": 4206,
+    "sha256": "595fd724f64279ec6a83ebf8042f608267db515062f406a28b1ddf9297d39d53"
+  },
+  "archive_profile_cpu_01.py": {
+    "bytes": 3576,
+    "sha256": "56b7006ffc1c01f0d55a09b6b1b0584e4023a5516766a42bf8480f997c350b84"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "first": {
+    "api": "realtime",
+    "variables": {
+      "left": "string",
+      "right": "string"
+    },
+    "request": {
+      "output_modalities": [
+        "text"
+      ],
+      "max_output_tokens": 128,
+      "instructions": "Compute the arithmetic requested in the supplied input. Reply only with its integer result.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Compute {{left}} + {{right}}."
+        }
+      ]
+    }
+  },
+  "second": {
+    "api": "realtime",
+    "variables": {
+      "left": "string",
+      "right": "string"
+    },
+    "request": {
+      "output_modalities": [
+        "text"
+      ],
+      "max_output_tokens": 96,
+      "instructions": "Compute the arithmetic requested in the supplied input. Reply only with its integer result.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Compute {{left}} * {{right}}."
+        }
+      ]
+    }
+  },
+  "file": {
+    "api": "realtime",
+    "variables": {
+      "source": "input_file"
+    },
+    "request": {
+      "output_modalities": [
+        "text"
+      ],
+      "max_output_tokens": 128,
+      "instructions": "Read the supplied source and answer the current question. Reply only with the requested value.",
+      "input": [
+        {
+          "role": "user",
+          "content": "{{source}}"
+        }
+      ]
+    }
+  },
+  "image": {
+    "api": "realtime",
+    "variables": {
+      "picture": "input_image"
+    },
+    "request": {
+      "output_modalities": [
+        "text"
+      ],
+      "max_output_tokens": 128,
+      "instructions": "Inspect the supplied image. Reply only with the color requested.",
+      "input": [
+        {
+          "role": "user",
+          "content": "{{picture}}"
+        }
+      ]
+    }
+  },
+  "tool": {
+    "api": "realtime",
+    "variables": {},
+    "request": {
+      "output_modalities": [
+        "text"
+      ],
+      "max_output_tokens": 128,
+      "instructions": "Use the actual project record tool. Return exact source values.",
+      "tools": [
+        {
+          "type": "function",
+          "name": "lookup_project_record",
+          "description": "Read the actual local project release record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_key": {
+                "type": "string",
+                "enum": [
+                  "release"
+                ]
+              }
+            },
+            "required": [
+              "record_key"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  }
+}

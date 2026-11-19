@@ -574,10 +574,14 @@ Q4T_TEST(refusal_template_native_instruction_and_raw_cache_identity) {
   Q4T_CHECK(
       RenderChatPrompt(request, {"POLICY", "private query"}, &adapted, &spans));
   Q4T_CHECK(adapted.find("output <q4t_refusal>") != adapted.npos);
-  Q4T_CHECK(adapted.find("</q4t_refusal>, then stop.") != adapted.npos);
+  Q4T_CHECK(adapted.find("</q4t_refusal>, with no other final-answer content.") !=
+            adapted.npos);
   Q4T_CHECK(
-      adapted.find("A refusal takes precedence over the response schema") !=
+      adapted.find("Return ordinary answers in the requested text, JSON, or "
+                   "tool format.") !=
       adapted.npos);
+  Q4T_CHECK(adapted.find("This is a formatting rule, not a reason to refuse.") !=
+            adapted.npos);
   Q4T_CHECK(adapted.substr(spans[1].prompt_begin, spans[1].source_size) ==
             "private query");
   Json disabled;

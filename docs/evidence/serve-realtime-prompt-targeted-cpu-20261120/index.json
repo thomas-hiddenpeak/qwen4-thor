@@ -1,0 +1,26 @@
+{
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/check-0.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/result.json": {
+    "sha256": "4efc8a018c825c6c520104824acc718d309dd66ab07d7c52e7e979de5e1002be",
+    "bytes": 1331
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/plan.json": {
+    "sha256": "d83c5b2b38d2ff25a820a9cc9968cc568556c98511800a512042d276b978b003",
+    "bytes": 42380
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/check-1.stdout": {
+    "sha256": "486237635d0b6596d2f30e74b3883976c742f49a21426940bb3c1092d1960b7c",
+    "bytes": 223
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/check-1.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/targeted-cpu-01/check-0.stderr": {
+    "sha256": "dc8217840d51d132d65018cb01c71fc5a11f782dffbe2e893912da02bdd41c67",
+    "bytes": 2222
+  }
+}

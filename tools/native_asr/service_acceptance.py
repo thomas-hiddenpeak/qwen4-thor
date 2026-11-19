@@ -151,8 +151,8 @@ def prepare(args):
         policy['listen_host'] == '127.0.0.1' and
         manifest['recovery_profiles']['identity'].get('native_asr'),
         'exact native ASR qualified payload/TLS mode required')
-    from tools.serve_recovery import profile_contract, profile_evidence
-    qualified = engine.read(pack/'profile-primary.json')
+    from tools.serve_recovery import profile_contract, profile_evidence, profile_record
+    qualified = profile_record.read(pack/'profile-primary.json')
     chat_audio = profile_evidence.chat_audio_enabled(
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
     native_tts = manifest['recovery_profiles']['identity'].get('native_tts')
@@ -206,7 +206,7 @@ def prepare(args):
     if native_tts is not None:
         plan['native_tts'] = native_tts
         sampling = profile_evidence.tts_sampling(qualified['business']['tts'])
-        other = engine.read(pack/'profile-light.json')
+        other = profile_record.read(pack/'profile-light.json')
         require(profile_evidence.tts_sampling(other['business']['tts']) == sampling,
                 'managed primary/light sampling witnesses differ')
         if sampling is not None: plan['tts_sampling_profile'] = sampling

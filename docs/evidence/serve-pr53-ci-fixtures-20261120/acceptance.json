@@ -1,0 +1,50 @@
+{
+  "status": "ACCEPT_TARGETED_FIXTURE_CORRECTION",
+  "parent": "7585a0eca892ea24b9e7a6681728c27a2cc7b974",
+  "cpu": {
+    "status": "PASS",
+    "seconds": 7.462203562259674,
+    "commands": [
+      {
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+          "--required-list",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pr53-ci-20261120/required-01.txt"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "tests": 10,
+    "source_counterexamples": 20,
+    "binary_sha256": "43c03dda107a8b816cbe45ea3ed4acd2406843131d578de97030683aa83d72a2",
+    "default_unchanged": true,
+    "gpu_actions": 0,
+    "original_ci_failure_preserved": true
+  },
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 37.9710629186593,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "43c03dda107a8b816cbe45ea3ed4acd2406843131d578de97030683aa83d72a2",
+    "free_bytes_after": 536932352
+  },
+  "runtime_sources_unchanged": true,
+  "retained_audio_tip": "0052c20a2",
+  "original_failure": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/44623488732",
+  "original_success": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/44623477879",
+  "final_head_ci": "pending",
+  "all_master_tasks_active": true
+}

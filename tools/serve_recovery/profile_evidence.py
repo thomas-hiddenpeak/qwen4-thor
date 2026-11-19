@@ -20,6 +20,7 @@ VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
 REALTIME_FORMAT = 'q4t-profile-business-v15'
 SEMANTIC_FORMAT = 'q4t-profile-business-v16'
 CONVERSATION_FORMAT = 'q4t-profile-business-v17'
+PROMPT_FORMAT = 'q4t-profile-business-v18'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -574,6 +575,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if prompt_enabled(capabilities):
+        return PROMPT_FORMAT
     if conversation_enabled(capabilities):
         return CONVERSATION_FORMAT
     if semantic_vad_enabled(identity or {}, capabilities):
@@ -1043,10 +1046,20 @@ def conversation_enabled(capabilities):
         max_responses=4, default_conversation_writers=1, max_items=128,
         history_bytes=16 << 20, session_host_reservation_bytes=2 << 30,
         pending_execution=['audio', 'mcp', 'prompt', 'tracing'])
+    if type(value) is dict and value.get('profile') == 'q4t-native-realtime-chat-v2':
+        from tools.serve_recovery.profile_prompt_evidence import DECLARATION
+        expected.update(profile='q4t-native-realtime-chat-v2', prompt=DECLARATION,
+                        pending_execution=['audio', 'mcp', 'tracing'])
     ledger.require(type(value) is dict and
         ledger.canonical(value) == ledger.canonical(expected),
         'native Realtime Chat capability differs')
     return True
+
+
+def prompt_enabled(capabilities):
+    if not conversation_enabled(capabilities):
+        return False
+    return capabilities['realtime']['conversation']['profile'] == 'q4t-native-realtime-chat-v2'
 
 
 def conversation_output(source, session, pending_response_id=None):
@@ -1144,16 +1157,29 @@ def conversation_output(source, session, pending_response_id=None):
 
 def conversation_business(value):
     """Two actual model turns with a source-bound read-only client tool."""
-    ledger.keys(value, ('source', 'session', 'before', 'after'))
+    observed = value.get('format') == 'q4t-completed-conversation-observation-v1'
+    ledger.keys(value, ('source', 'session', 'before', 'after') +
+                (('format',) if observed else ()))
     session = value['session']
-    ledger.require(type(session) is dict and session.get('status') == 'PASS' and
-        session.get('mode') == 'qualification' and
+    ledger.require(type(session) is dict and
+        session.get('status') == ('PROTOCOL_PASS' if observed else 'PASS') and
+        session.get('mode') == ('complete' if observed else 'qualification') and
         session.get('transport') == 'official-openai-wss' and
         type(session.get('connections')) is int and session['connections'] == 1 and
         type(session.get('close_code')) is int and session['close_code'] == 1000 and
         session.get('automatic_replay') is False and
         type(session.get('response_creates')) is int and session['response_creates'] == 2,
         'actual conversation SDK boundary differs')
+    if observed:
+        # This alternate actor collected lifecycle observations. Only a new
+        # strict review of the actual answer below may qualify its output.
+        # Wrong answers keep failing; no status or wire content is rewritten.
+        ledger.require(session.get('phase') == 'result' and session.get('partial') is None and
+            session.get('quality_policy') == 'record_exact_source_answer_separately' and
+            session.get('model_quality') == dict(status='PASS',
+                expected=value['source']['version'], actual=value['source']['version'],
+                criterion='exact_source_version', response_id=session['responses'][1]['id']),
+            'observed conversation has not met the exact answer criterion')
     total = conversation_output(value['source'], session)
     before, after = value['before'], value['after']
     keys = ('admitted', 'settled', 'reserved', 'active', 'sessions',
@@ -1232,6 +1258,25 @@ def semantic_turn(value, continuation):
         ledger.integer(value.get('connections')) and value['connections'] == 1 and
         ledger.integer(value.get('close_code')) and value['close_code'] == 1000 and
         value.get('automatic_replay') is False, 'semantic connection not completed')
+    return semantic_success_output(value, continuation)
+
+
+def semantic_observed_success(value, continuation):
+    """Review a collected observation against the same successful-score gate."""
+    ledger.require(type(value) is dict and
+        value.get('status') == 'OBSERVED_NOT_QUALIFIED' and
+        value.get('observation_policy') == 'record_bounded_semantic_fallback_v1' and
+        value.get('transport') == 'openai-realtime-wss' and
+        type(value.get('connections')) is int and value['connections'] == 1 and
+        type(value.get('close_code')) is int and value['close_code'] == 1000 and
+        value.get('automatic_replay') is False, 'observed semantic lifecycle differs')
+    return semantic_success_output(value, continuation)
+
+
+def semantic_success_output(value, continuation):
+    # Both actors must have an actual accepted classifier, early completion,
+    # exact transcript, usage, retained audio and correlated events. A bounded
+    # unknown-probability fallback is never accepted by this helper.
     terminal = value['terminal']; use = terminal['usage']
     ledger.require(type(terminal.get('item_id')) is str and 0 < len(terminal['item_id']) <= 128 and
         terminal.get('transcript') == ASR_TEXT and value.get('delta') == ASR_TEXT and
@@ -1296,13 +1341,16 @@ def semantic_turn(value, continuation):
 
 def semantic_business(value, identity):
     from tools.serve_service import package
+    observed = value.get('format') == 'q4t-completed-semantic-observation-v1'
     ledger.keys(value, ('input_sha256', 'settings', 'turns', 'before', 'after',
-                        'asr_health', 'vad_health', 'asr_limits', 'vad_limits'))
+        'asr_health', 'vad_health', 'asr_limits', 'vad_limits') +
+        (('format',) if observed else ()))
     ledger.require(value['input_sha256'] == REALTIME_INPUT_SHA and
         package.same_json(value['settings'], semantic_settings()) and
         type(value['turns']) is list and len(value['turns']) == 2,
         'semantic actual source/settings/turns differ')
-    tokens = sum(semantic_turn(turn, i == 1) for i, turn in enumerate(value['turns']))
+    verify = semantic_observed_success if observed else semantic_turn
+    tokens = sum(verify(turn, i == 1) for i, turn in enumerate(value['turns']))
     for name, fixed in (('asr', identity['native_asr']),
                         ('vad', identity['native_asr']['vad'])):
         health = value[name+'_health']
@@ -1427,7 +1475,11 @@ def business(value, identity, selected=None, capabilities=None):
                        (('voice',) if identity.get('native_tts_base') is not None else ()) +
                        (('realtime',) if realtime_enabled(identity, capabilities) else ()) +
                        (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()) +
-                       (('conversation',) if conversation_enabled(capabilities) else ()))
+                       (('conversation',) if conversation_enabled(capabilities) else ()) +
+                       (('prompt',) if prompt_enabled(capabilities) else ()))
+    if prompt_enabled(capabilities):
+        from tools.serve_recovery.profile_prompt_evidence import business as prompt_business
+        prompt_business(value['prompt'])
     if conversation_enabled(capabilities):
         conversation_business(value['conversation'])
     if realtime_enabled(identity, capabilities):
@@ -1498,7 +1550,8 @@ def business(value, identity, selected=None, capabilities=None):
 
 def validate(value, registry, name, digest):
     ledger.keys(value, ('format', 'profile', 'identity', 'capacity', 'capabilities',
-        'configuration', 'startup_memory', 'business', 'environment'))
+        'configuration', 'startup_memory', 'business', 'environment') +
+        (('reused_business',) if 'reused_business' in value else ()))
     profile_contract.validate(registry)
     ledger.require(value['format'] == format_for(registry['profiles'][name],
                                                 registry['identity'], value['capabilities'],
@@ -1511,6 +1564,14 @@ def validate(value, registry, name, digest):
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
+    if 'reused_business' in value:
+        if value['reused_business'].get('format') in (
+                'q4t-prompt-refusal-source-reuse-v1',
+                'q4t-prompt-refusal-source-assembly-v1'):
+            from tools.serve_recovery import profile_refusal_reuse as verifier
+        else:
+            from tools.serve_recovery import profile_prompt_reuse as verifier
+        verifier.validate(value)
     environment = value['environment']
     ledger.keys(environment, ('status', 'env_abort', 'all_queries_ok',
         'nvml_queries', 'lease_result_sha256', 'cleanup_complete'))

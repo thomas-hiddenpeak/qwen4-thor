@@ -645,3 +645,33 @@
 - [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。
 
 - [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)：实际根回退、配额/恢复预算保持及原质量失败分开记录。
+
+- [Realtime Prompt注册表CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：固定版本快照与类型定义；实际会话接线继续。
+
+- [Realtime Prompt设置CPU](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：覆盖与不可变选择事务；实际会话继续。
+
+- [原生Realtime文本/工具主线合入](evidence/serve-realtime-chat-main-20261120/README.md)：PR #52双CI通过，rev356交付进main；后续master继续。
+
+- [Realtime Prompt会话CPU](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：实际owner/对象worker/计划接线；文件与真实业务继续。
+
+- [Realtime Prompt文件CPU](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)：实际文件准备；模型步骤/配额交接与业务继续。
+
+- [Realtime Prompt运行时CPU](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：请求、配额、完整计划及失败用量交接；真实业务继续。
+
+- [Realtime Prompt业务驱动CPU](evidence/serve-realtime-prompt-driver-cpu-20261120/README.md)：候选已构建，真实文件/模板/SDK业务待验。
+
+- [Realtime Prompt定义修正](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：原注册失败保留，真实模板原生CPU校验。
+
+- [Prompt实际业务原失败与续验](evidence/serve-realtime-prompt-business-review-20261120/README.md)：原错误答案、输入复核和固定剩余范围。
+
+- [Prompt剩余场景短验](evidence/serve-realtime-prompt-followup-20261120/README.md)：取消/隔离/配额通过，原质量FAIL保持。
+
+- [Prompt资格与迁移CPU](evidence/serve-realtime-prompt-profile-cpu-20261120/README.md)：25项合同、显式升级和自动回退能力保持。
+
+- [Prompt构建与证据复用边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)：确切源身份和待执行的针对性资格范围。
+
+- [Prompt证据来源CPU](evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md)：原记录绑定、复用边界及原夹具失败保留。
+
+- [Prompt受影响消费者主轻复核](evidence/serve-refusal-reviewed-profiles-20261120/README.md)：确切新输出、原后端来源与全部失败保留。
+- [Prompt原生恢复](evidence/serve-prompt-native-recovery-20261120/README.md)：持久模板/工具、网关中断、冷控制器与整包回退。
+- [rev366原生Realtime Prompt交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：19项STOPPED检查、可回退默认与实际客户预算保持。

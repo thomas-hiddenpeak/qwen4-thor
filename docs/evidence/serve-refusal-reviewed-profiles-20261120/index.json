@@ -1,0 +1,118 @@
+{
+  "assembly-cpu-01/command-0.stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "assembly-cpu-01/result.json": {
+    "bytes": 1252,
+    "sha256": "749b3d83259d2f66da810146220c9ee1f99b78e5406fb8b4556fa0193895d1f8"
+  },
+  "assembly-cpu-01/command-1.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "assembly-cpu-01/plan.json": {
+    "bytes": 5894,
+    "sha256": "3f437410e7457229313d1733429715ee05fedaf9e8357e34bc33272debff73e4"
+  },
+  "assembly-cpu-01/command-1.stdout": {
+    "bytes": 223,
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c"
+  },
+  "assembly-cpu-01/command-0.stderr": {
+    "bytes": 6099,
+    "sha256": "d1ffdd9e43d14705196a200dcb27ff6dc2d0025a8f39b461c5a1e6040c632427"
+  },
+  "assembly-cpu-01/source/tools/serve_recovery/profile_refusal_reuse.py": {
+    "bytes": 9925,
+    "sha256": "712e0014726be188bb677e9d65238898a1b7e2700d892fc52a770dbc3c984e78"
+  },
+  "assembly-cpu-01/source/tools/serve_recovery/profile_evidence.py": {
+    "bytes": 92188,
+    "sha256": "2726994d3ce551878098f96ca75af7d473ac87f18425a01583c90df224e677dc"
+  },
+  "assembly-cpu-01/source/tools/serve_recovery/test_profile_refusal.py": {
+    "bytes": 16043,
+    "sha256": "03a880f937ab7cf2d803c19d1e3afb555b915b043f582bb80b925e6ced95442b"
+  },
+  "assembly-cpu-01/source/tools/serve_recovery/profile_record.py": {
+    "bytes": 2129,
+    "sha256": "b14bacec7676fd9616582b1ea4c6ccf528f6b377bd6c715a6a178d83b4cad3ec"
+  },
+  "assembly-cpu-01/source/tools/serve_audit/inventory.json": {
+    "bytes": 510206,
+    "sha256": "29afa96485dcbeaf01def675c94dd3e08ea43a788b87a91b8e47ec7d231cd119"
+  },
+  "assembly-inputs-01/primary-fresh.json": {
+    "bytes": 2023022,
+    "sha256": "6c92bcdcbb5a912ac8fc7f62007a13ea562b6ceb7263697e3045c408147a56d2"
+  },
+  "assembly-inputs-01/light-fresh.json": {
+    "bytes": 1015361,
+    "sha256": "18d3ea751d6676bd3310745f8dce9e382b456a36210054abc2187dfad8fd9527"
+  },
+  "assembly-inputs-01/proof.json": {
+    "bytes": 101699,
+    "sha256": "67df6a9624e5512ff850cb471ff36944bc2d6a149f4720e7d7b0c924f6058c39"
+  },
+  "profiles-reviewed-01/acceptance.json": {
+    "bytes": 1073,
+    "sha256": "95396ea1f7f941380b0e3ab64496abfbfa4c996c7404de7e8cd31213202d3ef8"
+  },
+  "profiles-reviewed-01/review-plan.json": {
+    "bytes": 2159,
+    "sha256": "8f7c3fc8b58c2d0feffaab713303deb6ada8a38e330fa085f0e4a9dddf357d34"
+  },
+  "profiles-reviewed-01/combined-environment.json": {
+    "bytes": 101699,
+    "sha256": "67df6a9624e5512ff850cb471ff36944bc2d6a149f4720e7d7b0c924f6058c39"
+  },
+  "profiles-reviewed-01/primary-capabilities.json": {
+    "bytes": 58202,
+    "sha256": "c5d01ce072d40873ed1be60df15d5294b3e071bc75fce096df7a99e2716aeae9"
+  },
+  "profiles-reviewed-01/light-config.json": {
+    "bytes": 20883,
+    "sha256": "75099ab6096477e1fd6570df446a00484b1a4e01622ecc8c616369e6e9a6461b"
+  },
+  "profiles-reviewed-01/plan.json": {
+    "bytes": 1022349,
+    "sha256": "48a5a9c7a489de39dd94eae79fce39cf9a840ebecd2b28dd7811f90eebccca34"
+  },
+  "profiles-reviewed-01/primary-config.json": {
+    "bytes": 20878,
+    "sha256": "eac1f42cf7d148c4283656a9131f81b6d06ef82749160dd1bf04b8a95b2fee8f"
+  },
+  "profiles-reviewed-01/light-capabilities.json": {
+    "bytes": 58203,
+    "sha256": "c3124245075b5c07ff954b2ffac2a475818c60594bd97fde15deb8b23a76c458"
+  },
+  "profiles-reviewed-01/qualified/light.json": {
+    "bytes": 4596484,
+    "sha256": "9fa847221198a1919d0dfd9373a6983800174a30e37f5da575de5bbc44cfe460"
+  },
+  "profiles-reviewed-01/qualified/registry.json": {
+    "bytes": 54228,
+    "sha256": "489e6fb65146c24df5cc96e904e67d9777f0d47596716ea91259ec1bf64a78b1"
+  },
+  "profiles-reviewed-01/qualified/primary.json": {
+    "bytes": 5604135,
+    "sha256": "f464a70fe3362fb3843c814c32b604e6ff972470f65e2b8c6853ab087a581365"
+  },
+  "prepare_assembly_inputs_01.py": {
+    "bytes": 4351,
+    "sha256": "93493d1004f16c59288f9f652b86a8247aa87e4c20052b2931bf1d3062eec7e1"
+  },
+  "assemble_profiles_01.py": {
+    "bytes": 5895,
+    "sha256": "882943777312d6398930ab1c4ccb48d58961474df323eb3278ca8266145b5d0a"
+  },
+  "assembly_cpu_01.py": {
+    "bytes": 4676,
+    "sha256": "d3c71a65a9e2eb14705ada8906b64630fa9732bb174980f5047ddda307306884"
+  },
+  "archive_assembly_01.py": {
+    "bytes": 4973,
+    "sha256": "2edab3bc39d06201d72d5f061937a6d4a676ef168491d1c8f36ef178ce5c5ec3"
+  }
+}

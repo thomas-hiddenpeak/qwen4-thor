@@ -32,21 +32,6 @@ ObjectReply Shape(const Json& event, RealtimeShape kind) {
   return status ? ObjectReply{}
                 : Invalid(error.code, status.message(), error.param);
 }
-void MergeAudio(Json* current, const Json& update) {
-  if (!current->IsObject() || !update.IsObject() ||
-      (update.Has("type") &&
-       current->GetString("type") != update.GetString("type"))) {
-    *current = update;
-    return;
-  }
-  for (const auto& [key, value] : update.object) {
-    auto* old = current->Has(key) ? &Field(*current, key) : nullptr;
-    if (old && old->IsObject() && value.IsObject())
-      MergeAudio(old, value);
-    else
-      Set(current, key, value);
-  }
-}
 }  // namespace
 
 struct RealtimeConversationSession::Work {
@@ -185,27 +170,55 @@ bool RealtimeConversationSession::ErrorEvent(ObjectReply reply,
   return Event("error", Object({{"error", std::move(error)}}));
 }
 bool RealtimeConversationSession::Start() {
+  const auto& settings = settings_.Current().settings;
   size_t storage = 0;
   if (started_ || cancelled_ || !history_.Valid() || !output_.Valid() ||
-      !ValidRequestId(conversation_id_) || !callbacks_.validate ||
+      !ValidRequestId(conversation_id_) ||
+      (!callbacks_.validate && !callbacks_.validate_prompt) ||
       !callbacks_.prepare || !callbacks_.execute || !callbacks_.acquire ||
       !callbacks_.release || !message_bytes_ ||
       message_bytes_ > kWebSocketMessageLimit ||
-      !MeasureRealtimeStorage(settings_, kWebSocketMessageLimit, &storage))
+      !MeasureRealtimeStorage(settings, kWebSocketMessageLimit, &storage))
     return false;
   auto event =
-      Object({{"type", String("session.update")}, {"session", settings_}});
+      Object({{"type", String("session.update")}, {"session", settings}});
   if (!Accepted(Shape(event, RealtimeShape::kClientEvent)) ||
-      settings_.GetString("type") != "realtime" ||
-      !Accepted(callbacks_.validate(settings_)))
+      settings.GetString("type") != "realtime" ||
+      !Accepted(ValidateSelection(settings_.Current())))
     return false;
   started_ = true;
-  return Event("session.created", Object({{"session", settings_}})) &&
+  return Event("session.created", Object({{"session", settings}})) &&
          Event(
              "conversation.created",
              Object({{"conversation",
                       Object({{"id", String(conversation_id_)},
                               {"object", String("realtime.conversation")}})}}));
+}
+ObjectReply RealtimeConversationSession::ValidateSelection(
+    const RealtimePromptSelection& selection) {
+  if (callbacks_.validate_prompt) return callbacks_.validate_prompt(selection);
+  if (selection.prompt)
+    return object_detail::Error(503, "realtime_prompt_owner_unavailable",
+                                "Prompt execution owner unavailable");
+  return callbacks_.validate(selection.settings);
+}
+RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
+  return [this](const Json& reference, size_t budget, PromptSnapshot* out) {
+    const auto cancelled = [this] {
+      return cancelled_ || output_.Closed() ||
+             (callbacks_.interrupted && callbacks_.interrupted());
+    };
+    const auto stopped = [] {
+      return object_detail::Error(499, "request_cancelled",
+                                  "Prompt lookup cancelled");
+    };
+    if (cancelled()) return stopped();
+    if (!callbacks_.resolve_prompt)
+      return object_detail::Error(503, "prompt_registry_unavailable",
+                                  "Prompt lookup unavailable");
+    auto reply = callbacks_.resolve_prompt(reference, budget, cancelled, out);
+    return cancelled() ? stopped() : reply;
+  };
 }
 bool RealtimeConversationSession::Settings(const Json& update,
                                            std::string_view event_id) {
@@ -213,38 +226,12 @@ bool RealtimeConversationSession::Settings(const Json& update,
     return ErrorEvent(Invalid("realtime_session_type_invalid",
                               "Session type cannot change", "session.type"),
                       event_id);
-  if (update.Has("model") &&
-      update.GetString("model") != settings_.GetString("model"))
-    return ErrorEvent(Invalid("realtime_model_immutable",
-                              "Session model cannot change", "session.model"),
-                      event_id);
-  if (const auto* tracing = settings_.Find("tracing");
-      tracing && !tracing->IsNull() && update.Has("tracing") &&
-      OutputJson(*tracing) != OutputJson(*update.Find("tracing")))
-    return ErrorEvent(
-        Invalid("realtime_tracing_immutable", "Enabled tracing cannot change",
-                "session.tracing"),
-        event_id);
-  auto next = settings_;
-  for (const auto& [key, value] : update.object) {
-    if ((key == "audio" || key == "reasoning") && next.Has(key))
-      MergeAudio(&Field(next, key), value);
-    else
-      Set(&next, key, value);
-  }
-  size_t storage = 0;
-  if (!MeasureRealtimeStorage(next, kWebSocketMessageLimit, &storage))
-    return ErrorEvent(
-        Invalid("realtime_settings_too_large",
-                "Session settings exceed their storage limit", "session"),
-        event_id);
-  auto reply =
-      Shape(Object({{"type", String("session.update")}, {"session", next}}),
-            RealtimeShape::kClientEvent);
-  if (Accepted(reply)) reply = callbacks_.validate(next);
+  auto reply = settings_.Update(
+      update, PromptResolver(),
+      [this](const auto& selection) { return ValidateSelection(selection); });
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
-  settings_ = std::move(next);
-  return Event("session.updated", Object({{"session", settings_}}));
+  return Event("session.updated",
+               Object({{"session", settings_.Current().settings}}));
 }
 bool RealtimeConversationSession::CreateItem(const Json& event) {
   RealtimeItemTicket ticket;
@@ -318,7 +305,7 @@ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
 bool RealtimeConversationSession::CreateResponse(const Json& event) {
   const auto event_id = event.GetString("event_id");
   const auto* parameters = event.Find("response");
-  const Json response = parameters ? *parameters : Object();
+  Json response = parameters ? *parameters : Object();
   if (const auto* metadata = response.Find("metadata");
       metadata && !RealtimeMetadataBounded(*metadata))
     return ErrorEvent(Invalid("invalid_metadata", "Invalid response metadata",
@@ -340,18 +327,27 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
         object_detail::Error(429, "realtime_response_capacity_exhausted",
                              "Active response capacity exhausted"),
         event_id);
+  RealtimePromptSelection selection;
+  auto reply = settings_.Response(response, PromptResolver(), {}, &selection);
+  if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  if (response.Has("prompt") && selection.prompt)
+    Set(&response, "prompt", selection.prompt->reference);
   auto work = std::make_unique<Work>();
   ScopeExit unpublished([&] {
     if (work) Release(*work);
   });
-  work->job = {
-      detail::NewRequestId("resp_"), settings_, response, {}, in_conversation};
+  work->job = {detail::NewRequestId("resp_"),
+               std::move(selection.settings),
+               response,
+               {},
+               in_conversation,
+               std::move(selection.prompt)};
   auto status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
   if (!status)
     return ErrorEvent(
         Invalid("realtime_input_invalid", status.message(), "response.input"),
         event_id);
-  auto reply = callbacks_.prepare(work->job);
+  reply = callbacks_.prepare(work->job);
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
   work->control = callbacks_.acquire(work->job.response_id);
   if (work->control && work->control->id() != work->job.response_id) {
@@ -526,7 +522,8 @@ bool RealtimeConversationSession::Tick() {
       // call without replaying any already-published callback or event.
       terminal = work.output->Finish(end);
     }
-    if (Accepted(terminal) && end.state != RealtimeResponseEnd::State::kFailed &&
+    if (Accepted(terminal) &&
+        end.state != RealtimeResponseEnd::State::kFailed &&
         end.state != RealtimeResponseEnd::State::kCancelled &&
         work.job.in_conversation && work.job.snapshot.default_context &&
         work.result.retained_input_indices) {
@@ -534,7 +531,7 @@ bool RealtimeConversationSession::Tick() {
           work.job.snapshot, *work.result.retained_input_indices);
       if (!truncated)
         terminal = object_detail::Error(500, "realtime_context_commit_failed",
-                                         truncated.message());
+                                        truncated.message());
     }
     Release(work);
     it = work_.erase(it);

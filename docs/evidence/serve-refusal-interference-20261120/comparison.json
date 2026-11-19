@@ -1,0 +1,114 @@
+{
+  "prompt_tool_failure_original": {
+    "http_status": 200,
+    "answer": "<q4t_refusal>\nI cannot return only the version value as requested, because the required output format for this task is a JSON object containing the keys \"record_key\", \"version\", \"source\", and \"source_sha256\". Returning only the version would violate the schema requirements.\n</q4t_refusal>",
+    "raw": {
+      "id": "cmpl-auto-6c8857aeb3a1fa07283122649bcfac32",
+      "object": "text_completion",
+      "created": 1795118978,
+      "model": "qwen3.8-flash-next",
+      "choices": [
+        {
+          "index": 0,
+          "text": "<q4t_refusal>\nI cannot return only the version value as requested, because the required output format for this task is a JSON object containing the keys \"record_key\", \"version\", \"source\", and \"source_sha256\". Returning only the version would violate the schema requirements.\n</q4t_refusal>",
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 305,
+        "completion_tokens": 70,
+        "total_tokens": 375
+      }
+    },
+    "model_quality": "FAIL",
+    "input_tokens": 305,
+    "fixed_temperature": 0,
+    "fixed_seed": 0,
+    "default_changed": false
+  },
+  "prompt_tool_failure_neutral": {
+    "http_status": 200,
+    "answer": "rev356",
+    "raw": {
+      "id": "cmpl-auto-49319cf5349ddfa98f51fd1e5d95d131",
+      "object": "text_completion",
+      "created": 1795118982,
+      "model": "qwen3.8-flash-next",
+      "choices": [
+        {
+          "index": 0,
+          "text": "rev356",
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 240,
+        "completion_tokens": 5,
+        "total_tokens": 245
+      }
+    },
+    "model_quality": "PASS",
+    "input_tokens": 240,
+    "fixed_temperature": 0,
+    "fixed_seed": 0,
+    "default_changed": false
+  },
+  "light_tool_failure_original": {
+    "http_status": 200,
+    "answer": "rev356",
+    "raw": {
+      "id": "cmpl-auto-d88fb52c5c0fee8dcb3dd5d476f42e0e",
+      "object": "text_completion",
+      "created": 1795118983,
+      "model": "qwen3.8-flash-next",
+      "choices": [
+        {
+          "index": 0,
+          "text": "rev356",
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 308,
+        "completion_tokens": 5,
+        "total_tokens": 313
+      }
+    },
+    "model_quality": "PASS",
+    "input_tokens": 308,
+    "fixed_temperature": 0,
+    "fixed_seed": 0,
+    "default_changed": false
+  },
+  "light_tool_failure_neutral": {
+    "http_status": 200,
+    "answer": "rev356",
+    "raw": {
+      "id": "cmpl-auto-a4399de7d672c6c887a8247382dbcd50",
+      "object": "text_completion",
+      "created": 1795118984,
+      "model": "qwen3.8-flash-next",
+      "choices": [
+        {
+          "index": 0,
+          "text": "rev356",
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 243,
+        "completion_tokens": 5,
+        "total_tokens": 248
+      }
+    },
+    "model_quality": "PASS",
+    "input_tokens": 243,
+    "fixed_temperature": 0,
+    "fixed_seed": 0,
+    "default_changed": false
+  }
+}

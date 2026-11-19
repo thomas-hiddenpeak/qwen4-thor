@@ -20,7 +20,16 @@ QUALITY_POLICY = 'record_exact_source_answer_separately'
 
 
 def phases(plan):
-    return managed.recovery_phases(plan)
+    if 'prompt_recovery' in plan:
+        require(plan['prompt_recovery']['format'] == 'q4t-prompt-recovery-v1',
+                'unknown Prompt recovery contract')
+        if plan['scenario'] == 'tls_controller':
+            return [('controller-before','complete'), ('controller-after','complete')]
+    result = managed.recovery_phases(plan)
+    if 'prompt_recovery' in plan:
+        if plan['scenario'] == 'tls':
+            result = [*result, ('tls-controller', 'complete')]
+    return result
 
 
 def owner(value):
@@ -34,16 +43,11 @@ def prepare(path, manifest, qualified, package):
     path = Path(path).resolve(strict=True)
     require(path.is_relative_to(managed.ROOT/'.q4t-work'),
             'private qualified conversation plan required')
-    prior = read(path); registry_path = path.parent/'qualified/registry.json'
-    accepted = path.parent/'acceptance.json'; result = read(accepted)
-    require(result['status'] == 'ACCEPT_PRIMARY_LIGHT_QUALIFICATION' and
-        result['registry_sha256'] == sha(registry_path) and
-        same_json(read(registry_path), manifest['recovery_profiles']) and
-        same_json(read(path.parent/'qualified/primary.json'), qualified) and
-        same_json(read(path.parent/'qualified/light.json'),
-                  read(Path(package)/'profile-light.json')) and
-        evidence.conversation_enabled(qualified['capabilities']),
-        'managed conversation requires exact accepted primary/light profiles')
+    registry_path = path.parent/'qualified/registry.json'
+    accepted = path.parent/'acceptance.json'
+    prior = managed.accepted_source(path, manifest, qualified, package)
+    require(evidence.conversation_enabled(qualified['capabilities']),
+            'managed conversation requires accepted conversation capability')
     evidence.conversation_business(qualified['business']['conversation'])
     record = managed.ROOT/'docs/STATUS.md'
     require(record.stat().st_size <= 1 << 20, 'bounded actual project record')
@@ -136,7 +140,7 @@ def check(out, plan, identity, capabilities):
     if not enabled: return {}
     policy = quality_policy(plan)
     out = Path(out); result = {}; identifiers = []
-    transport = 'official-openai-wss' if plan['scenario'] == 'tls' else 'ws-loopback'
+    transport = 'official-openai-wss' if plan['scenario'].startswith('tls') else 'ws-loopback'
     for label,mode in phases(plan):
         prefix = label+'-conversation'
         row = read(out/(prefix+'-receipt.json'))
@@ -191,6 +195,14 @@ def check(out, plan, identity, capabilities):
 
 
 class Actor(managed.Actor):
+    def client_arguments(self, args):
+        return args
+
+    def verify_result(self, value, mode):
+        return check_session(value,mode,'official-openai-wss' if
+            self.stage.plan['scenario'].startswith('tls') else 'ws-loopback',
+            self.stage.plan['conversation']['source'],quality_policy(self.stage.plan))
+
     def start(self,label):
         expected = phases(self.stage.plan)
         require(self.current is None and len(self.attempted) < len(expected) and
@@ -205,7 +217,7 @@ class Actor(managed.Actor):
         fixed = self.stage.plan['conversation']; source = fixed['source']
         require(sha(managed.ROOT/source['path']) == source['sha256'],
                 'actual managed conversation source changed')
-        tls = self.stage.plan['scenario'] == 'tls'
+        tls = self.stage.plan['scenario'].startswith('tls')
         args = dict(base_url=f"{'https' if tls else 'http'}://127.0.0.1:{self.stage.port}/v1",
             api_key=self.stage.keys['alpha'], mode=mode,
             record_file=str(managed.ROOT/source['path']),record_sha256=source['sha256'],
@@ -221,7 +233,8 @@ class Actor(managed.Actor):
             str(managed.ROOT/'tools/serve_realtime/conversation_recovery_sdk.mjs')],
             stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr,env=env)
         self.buffer.clear(); self.total_bytes = 0
-        self.process.stdin.write(json.dumps(args).encode()); self.process.stdin.close()
+        self.process.stdin.write(json.dumps(self.client_arguments(args)).encode())
+        self.process.stdin.close()
         self.process.stdin = None
         if mode == 'complete':
             self.finish()
@@ -244,9 +257,7 @@ class Actor(managed.Actor):
         self.process.wait(timeout=5); extra = self.process.stdout.read(1)
         require(self.process.returncode == 0 and not self.buffer and not extra,
                 'managed conversation failed or repeated receipt')
-        check_session(value,mode,'official-openai-wss' if
-            self.stage.plan['scenario'] == 'tls' else 'ws-loopback',
-            self.stage.plan['conversation']['source'],quality_policy(self.stage.plan))
+        self.verify_result(value,mode)
         self.current['after'] = None if mode == 'hold_complete' else self.observe('after',managed.clean)
         if mode != 'hold_complete':
             save(self.stage.output/(prefix+'-core-after.json'),self.stage.sample())

@@ -1,0 +1,11 @@
+{
+  "status": "PASS_MANAGED_PROFILE_READER",
+  "unique_tests": 12,
+  "test_attempts": 14,
+  "original_fixture_errors": 2,
+  "actual_profile_reader_checks": 2,
+  "source_counterexamples": 20,
+  "new_gpu_starts": 0,
+  "seconds": 2.6851905435323715,
+  "archive_sha256": "65ba37a2bf104479c4ef47636680b78af7a179ef2e8ba65a93e82660fde0d438"
+}

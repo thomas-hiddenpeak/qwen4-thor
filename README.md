@@ -908,11 +908,12 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付；当前rev356包含Realtime手动/
-自动转录、语义VAD和文本/函数工具对话，支持原生WebSocket/TLS、
-工具回填、逐轮配额与取消结算，已完成[实际恢复和可回退交付](docs/evidence/serve-realtime-chat-delivery-20261120/README.md)。
-原TLS随机回答的模型质量失败单独保留，默认采样未改。Realtime
-Prompt、音频输出、MCP、追踪及Live继续按总计划实现。
+语音输出及assistant音频历史已交付；当前rev366包含Realtime手动/
+自动转录、语义VAD、文本/函数工具对话及持久Prompt。支持原生
+WebSocket/TLS、固定模板快照、文件前缀、工具回填、逐轮配额及取消
+结算，已完成[实际恢复和可回退交付](docs/evidence/serve-realtime-prompt-delivery-20261120/README.md)。
+原错误答案和失败记录单独保留，默认采样未改。Realtime音频输出、
+MCP、追踪及Live继续按总计划实现。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、

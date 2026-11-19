@@ -1,0 +1,277 @@
+{
+  "status": "MISSING_CONSUMERS_OBSERVED_NOT_QUALIFIED",
+  "counts": {
+    "starts": 2,
+    "chats": 28,
+    "controls": 134,
+    "websocket_sessions": 6,
+    "ingress_starts": 5,
+    "prompt_registry_requests": 10
+  },
+  "seconds": 223.41634381422773,
+  "passed_groups": 15,
+  "failed_groups": 1,
+  "nvml_ok": 208,
+  "default_unchanged": true,
+  "strict_profile_status": "FAIL",
+  "observations": [
+    {
+      "profile": "primary",
+      "label": "prompt",
+      "status": "PASS",
+      "seconds": 13.412444354966283,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-prompt-observation.json",
+      "sha256": "2b8feee2092409fdc879e8ea5a79d1382975159f6c5c5f2991a0cd7063ad2d96"
+    },
+    {
+      "profile": "primary",
+      "label": "media",
+      "status": "PASS",
+      "seconds": 1.9041805057786405,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-media-observation.json",
+      "sha256": "a60a69a2b367b9935bc9085bbc056be9c5fff1808eef968f65014b19aaa1c08f"
+    },
+    {
+      "profile": "primary",
+      "label": "chat-audio",
+      "status": "PASS",
+      "seconds": 5.058730338234454,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-chat-audio-observation.json",
+      "sha256": "eee0dc5c801ee94c7966342772913529b67973923513eeb1562093fa12f28781"
+    },
+    {
+      "profile": "primary",
+      "label": "voice-chat",
+      "status": "PASS",
+      "seconds": 18.426958519034088,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-voice-chat-observation.json",
+      "sha256": "9831ba77b7f084a178888059cb18ba183784f2271de1843f3a019b5e81fa7600"
+    },
+    {
+      "profile": "primary",
+      "label": "tts-chat",
+      "status": "PASS",
+      "seconds": 13.853874658234417,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-tts-chat-observation.json",
+      "sha256": "9c9bdbccb5c8ef7987ac629487434277d2e4ff99f34c57aab064ccc47a54fbd1"
+    },
+    {
+      "profile": "primary",
+      "label": "semantic-vad",
+      "status": "FAIL",
+      "seconds": 7.973309861961752,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-semantic-vad-observation.json",
+      "sha256": "ab584cd5282df315bdd732da0631918ea7a2caa832592cd5b3520002b88d280b"
+    },
+    {
+      "profile": "primary",
+      "label": "legacy-responses",
+      "status": "PASS",
+      "seconds": 0.4599825721234083,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/primary-legacy-responses-observation.json",
+      "sha256": "3f44b5f3059ff70f0f11eb6587f8e524905df9907b498332110476f7a38f0e9d"
+    },
+    {
+      "profile": "light",
+      "label": "text",
+      "status": "PASS",
+      "seconds": 5.534025731962174,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-text-observation.json",
+      "sha256": "2e00ba637945ab0e87a7c5bcc1e90ebfdbdb0d82fccbd0a3d50938e768401f5f"
+    },
+    {
+      "profile": "light",
+      "label": "conversation",
+      "status": "PASS",
+      "seconds": 3.6280460306443274,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-conversation-observation.json",
+      "sha256": "2fa68e1864bf7c812c296a34d88c273ebd4c7254aba3833062eeab3b30a4ccd3"
+    },
+    {
+      "profile": "light",
+      "label": "prompt",
+      "status": "PASS",
+      "seconds": 13.277685072273016,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-prompt-observation.json",
+      "sha256": "72b37bcd5b696e83527212c29603293cabdac203c1528335b6e87b7fc9905daa"
+    },
+    {
+      "profile": "light",
+      "label": "media",
+      "status": "PASS",
+      "seconds": 1.9171474678441882,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-media-observation.json",
+      "sha256": "e0809288a4144aa118fbc18979fa26ecef7c2eb4e7a0353334fa0ef0cff9fba7"
+    },
+    {
+      "profile": "light",
+      "label": "chat-audio",
+      "status": "PASS",
+      "seconds": 4.970254031009972,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-chat-audio-observation.json",
+      "sha256": "224324665414e0f05325ef0a1b0bf5bb999e0a9c9ed6a81fd5565d9148bfaa38"
+    },
+    {
+      "profile": "light",
+      "label": "voice-chat",
+      "status": "PASS",
+      "seconds": 17.81631797319278,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-voice-chat-observation.json",
+      "sha256": "428452d8de601edb5f45ba472872a6b5c8a91d04f0bf8c05f79b2122703f6dda"
+    },
+    {
+      "profile": "light",
+      "label": "tts-chat",
+      "status": "PASS",
+      "seconds": 13.434706167783588,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-tts-chat-observation.json",
+      "sha256": "76ba62845d460b4fbd9a3750c7eb0018bf6df1fbb4b4bb39e6eb6772d28d8816"
+    },
+    {
+      "profile": "light",
+      "label": "semantic-vad",
+      "status": "PASS",
+      "seconds": 16.59004116570577,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-semantic-vad-observation.json",
+      "sha256": "f16c8d61f338fb7af5acd3ad520c3d1537e1bf779c26c3bc004da0a2ef51c4a5"
+    },
+    {
+      "profile": "light",
+      "label": "legacy-responses",
+      "status": "PASS",
+      "seconds": 0.4323405772447586,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/consumers-01/light-legacy-responses-observation.json",
+      "sha256": "bfefb23daef86dcc36222b23b4d5b7ed1456ecb2233b1daa60d5d5e386db5793"
+    }
+  ],
+  "semantic_failure": {
+    "sdk_error": "Error: real classifier and included work required",
+    "terminal": {
+      "type": "conversation.item.input_audio_transcription.completed",
+      "event_id": "event_07853728c5e221e47c01b49a7c6ce4f9",
+      "item_id": "item_d006ca1a5ed485d8de054bf7491d3029",
+      "content_index": 0,
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 477,
+        "output_tokens": 24,
+        "total_tokens": 501,
+        "input_token_details": {
+          "audio_tokens": 137,
+          "text_tokens": 340
+        }
+      },
+      "logprobs": [
+        {
+          "token": "甚至",
+          "logprob": -2.7511109676994835e-06,
+          "bytes": [
+            231,
+            148,
+            154,
+            232,
+            135,
+            179
+          ]
+        },
+        {
+          "token": "出现",
+          "logprob": -7.852756884223611e-06,
+          "bytes": [
+            229,
+            135,
+            186,
+            231,
+            142,
+            176
+          ]
+        },
+        {
+          "token": "交易",
+          "logprob": -3.011903333791613e-05,
+          "bytes": [
+            228,
+            186,
+            164,
+            230,
+            152,
+            147
+          ]
+        },
+        {
+          "token": "几乎",
+          "logprob": -2.8542526014863325e-05,
+          "bytes": [
+            229,
+            135,
+            160,
+            228,
+            185,
+            142
+          ]
+        },
+        {
+          "token": "停滞",
+          "logprob": -0.011305659649036615,
+          "bytes": [
+            229,
+            129,
+            156,
+            230,
+            187,
+            158
+          ]
+        },
+        {
+          "token": "的情况",
+          "logprob": -8.810971870450615e-05,
+          "bytes": [
+            231,
+            154,
+            132,
+            230,
+            131,
+            133,
+            229,
+            134,
+            181
+          ]
+        },
+        {
+          "token": "。",
+          "logprob": -2.8843644176661264e-07,
+          "bytes": [
+            227,
+            128,
+            130
+          ]
+        }
+      ],
+      "q4t_semantic_vad": {
+        "profile": "q4t-native-semantic-turn-v1",
+        "attempts": 1,
+        "accepted": 0,
+        "unavailable": 0,
+        "invalid": 0,
+        "stale": 1,
+        "maximum_wait": true,
+        "probability_available": false,
+        "input_tokens": 287,
+        "output_tokens": 4,
+        "included_in_usage": true
+      }
+    },
+    "diagnosis": "Cold ASR load 3627.018 ms; classifier cancelled at absolute silence deadline, stale=1; complete actual ASR and accounted score. No normal-close or retained-audio receipt because strict SDK stopped. Warm light both turns scored successfully."
+  },
+  "next": {
+    "scope": "Separate bounded cold fallback and warm actual classification; finish missing main conversation lifecycle with quality separately retained",
+    "starts": 1,
+    "external_requests": 4,
+    "websocket_sessions": 3,
+    "seconds": 600,
+    "automatic_retries": false
+  },
+  "cleanup": "owned processes, ports and cooperative GPU lease released",
+  "archive_sha256": "be9079abb3bb0cec256aadf5ca96d572dc0579a6bdfd55b7d959bf0c23c79d1b"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS_REFUSAL_CONSUMER_QUALIFICATION_CPU",
+  "tests": 27,
+  "source_counterexamples": 20,
+  "seconds": 2.3807671694085,
+  "new_gpu_starts": 0,
+  "runtime_binary": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+  "runtime_unchanged": true,
+  "default_unchanged": true,
+  "actual_profile_qualification": false,
+  "archive_sha256": "faca5c242da5ae11571c0b0bfa8402c7fa7091790116117b3ead86edac806a87"
+}

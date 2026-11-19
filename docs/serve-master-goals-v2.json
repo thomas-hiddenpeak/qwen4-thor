@@ -549,6 +549,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -2710,7 +2714,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement automatic Realtime server VAD using actual native Silero probabilities and absolute sample boundaries; then remaining processors, conversation/Live, Guardian composition/delivery and every master task. ICL numeric decision remains pending.",
+      "next": "Implement native Realtime audio output, MCP/tracing and Live; remaining multimodal format/backends and actual acceptance continue. ICL floating-boundary decision is accepted with original numeric failures preserved; listening remains owner-deferred.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -4856,6 +4860,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -6270,6 +6278,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -7079,6 +7091,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -7251,6 +7267,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -7351,7 +7371,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev356 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -8340,12 +8360,16 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev356_delivered_pr52_final_checks_pending_remaining_master_active",
+      "state": "rev366_delivered_pr53_final_checks_pending_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8379,21 +8403,21 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_REALTIME_CHAT_DELIVERY",
-        "revision": 356,
+        "status": "ACCEPT_NATIVE_REALTIME_PROMPT_DELIVERY",
+        "revision": 366,
         "current": {
-          "engine_binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
-          "engine_release_sha256": "90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1",
-          "generation_sha256": "cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61",
-          "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
-          "service_acceptance_sha256": "2d5b66bfd859c551717bb4ac9d2cf21628b32fb27c8f58973c9cf23f51d37e2a",
-          "service_release_sha256": "08573cda3827e0a57744cb812d0ae5b9dae84bb7f9b0cd9507429a6532e9844d"
+          "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+          "engine_release_sha256": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+          "generation_sha256": "2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7",
+          "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/service-package-01/bundle",
+          "service_acceptance_sha256": "2e9dd83207e3e980ff46b379030c5666e2847fe99db8816d2147a7d5411f6396",
+          "service_release_sha256": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c"
         },
         "state": "STOPPED",
         "successful_commands": 19,
-        "command_attempts": 20,
-        "seconds": 314.0861754543148,
+        "command_attempts": 19,
+        "seconds": 391.7243390721269,
         "new_gpu_starts": 0,
         "outer_enabled": true,
         "outer_charged_total": 0,
@@ -8411,34 +8435,31 @@
         },
         "usage_reset": false,
         "profile_history_and_cooldown_preserved": true,
-        "original_capacity_failure_preserved": true,
-        "original_request_reused": "861e69c7-d216-43da-9e81-cc8ea4fa462c",
-        "retired_intents_archived": 8,
-        "deleted_files": 0,
-        "maintenance_seconds": 7.073299048002809,
-        "manual_root": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
-        "automatic_payload": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+        "version_cycles_preserved": true,
+        "manual_root": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+        "automatic_payload": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
         "candidate_to_retained_automatic_fault_actually_tested": true,
         "reciprocal_automatic_fault_additionally_injected": false,
         "reciprocal_registration_and_stopped_rollback_verified": true,
         "older_engine_fallback": false,
-        "previous_rev346_preserved": true,
-        "original_tls_answer_quality": "FAIL",
-        "model_quality_policy": "record_exact_source_answer_separately",
-        "original_version_environment_abort_preserved": true,
-        "original_failures_preserved": true,
-        "files": 95,
+        "previous_rev356_preserved": true,
+        "retired_intents_archived": 4,
+        "deleted_files": 0,
+        "maintenance_seconds": 5.02901809476316,
+        "original_tls_driver_passed": false,
+        "original_driver_failure_preserved": true,
+        "original_model_quality_failures_preserved": true,
+        "files": 68,
         "secret_scan_matches": 0,
-        "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
+        "archive_sha256": "50917251dce05d26df0ec99c57469378169139615a68e8b0851b6815c6d5bc72",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
-        "listening_and_similarity_accepted": false,
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -8605,7 +8626,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Realtime Chat final-head CI and actual main merge",
+        "Realtime Prompt final-head CI and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -9248,14 +9269,14 @@
         "merged": false
       },
       "latest_mainline_merge": {
-        "headRefOid": "0febc4f58e5b6ad70f163a3aa5a0ab2acdad7ac9",
+        "headRefOid": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
         "mergeCommit": {
-          "oid": "42a428466e258c6a8698fea14418ecf962ae66a6"
+          "oid": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
         },
-        "mergedAt": "2026-11-18T20:30:00Z",
+        "mergedAt": "2026-11-19T17:51:43Z",
         "state": "MERGED",
-        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/49",
-        "evidence": "evidence/serve-voice-mainline-20261119/README.md"
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
+        "evidence": "evidence/serve-realtime-chat-main-20261120/README.md"
       },
       "realtime_history_business_20261119": {
         "state": "business_qualified_recovery_delivery_pending",
@@ -9351,6 +9372,10 @@
       "native_realtime_chat_delivery_20261120": {
         "revision": 356,
         "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+      },
+      "native_realtime_prompt_delivery_20261120": {
+        "revision": 366,
+        "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
       }
     },
     {
@@ -9562,7 +9587,7 @@
       }
     }
   ],
-  "next_task": "Realtime Chat final-head CI/main integration; implement native Prompt lookup/snapshots, audio/MCP/tracing/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
+  "next_task": "Realtime Prompt final-head CI/main integration; implement native Realtime audio output, MCP/tracing/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
   "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9993,7 +10018,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
       },
-      "latest_service_revision": 356
+      "latest_service_revision": 366
     },
     "custom_voice": {
       "state": "REGISTERED_SAMPLE_VOICE_HTTP_AND_MANAGED_DELIVERED_REV326",
@@ -10534,7 +10559,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_transcription_semantic_vad_text_tools_delivered_rev356_audio_mcp_prompt_tracing_live_pending",
+    "state": "native_transcription_semantic_vad_text_tools_prompts_delivered_rev366_audio_mcp_tracing_live_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -10542,7 +10567,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Implement actual native Prompt lookup and immutable snapshots, then audio/MCP/tracing/Live; continue every remaining master task and preserve owner-deferred listening.",
+    "next": "Implement native Realtime audio output, MCP, tracing and Live, then every remaining master task; preserve original failures and owner-deferred listening.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -11213,6 +11238,470 @@
       "listening_deferred_by_owner": true,
       "all_master_tasks_active": true,
       "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+    },
+    "prompt_registry_20261120": {
+      "status": "PASS_REALTIME_TYPED_PROMPT_REGISTRY_CPU",
+      "tests": 24,
+      "existing_tests": 16,
+      "new_tests": 8,
+      "seconds": 2.466728097759187,
+      "source_mutations": 20,
+      "build_seconds": 246.35001098783687,
+      "build_warnings": 0,
+      "new_gpu_starts": 0,
+      "actual_realtime_session_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "main_pr52_head_excludes_this_change": true,
+      "original_source_precheck_failure_preserved": true,
+      "original_readonly_maintenance_limit_failure_preserved": true,
+      "frozen_evidence_shared_files": 22553,
+      "logical_duplicate_bytes_reclaimed": 668911071,
+      "all_evidence_paths_preserved": true,
+      "files": 25,
+      "archive_sha256": "949563b588b15df61efc0e9e81206cbcbaa9eb7acb94b38955f82c7e0b51aee1",
+      "all_master_tasks_active": true,
+      "evidence": "evidence/serve-realtime-prompt-registry-cpu-20261120/README.md",
+      "next": "Wire session overrides, bounded lookup/cancellation, actual execution and prefix-safe truncation; then actual SDK business and delivery."
+    },
+    "prompt_settings_20261120": {
+      "status": "PASS_REALTIME_PROMPT_SETTINGS_CPU",
+      "tests": 34,
+      "settings_tests": 10,
+      "registry_tests": 24,
+      "seconds": 2.5686758747324347,
+      "source_mutations": 20,
+      "build_seconds": 8.68609646288678,
+      "build_warnings": 0,
+      "original_build_failure_preserved": true,
+      "shared_original_restored": true,
+      "maximum_expansion_bytes": 16777216,
+      "maximum_retained_bytes": 67108864,
+      "new_gpu_starts": 0,
+      "actual_realtime_session_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "files": 29,
+      "archive_sha256": "b93bc8349fa3c62dd9c02aa840c6bd38863b206aa6d387cc7902943d28388cd2",
+      "evidence": "evidence/serve-realtime-prompt-settings-cpu-20261120/README.md",
+      "next": "Connect actual session ownership, bounded lookup/cancel, execution and prefix-safe truncation."
+    },
+    "prompt_session_20261120": {
+      "status": "PASS_REALTIME_PROMPT_SESSION_CPU",
+      "tests": 57,
+      "new_tests": 11,
+      "seconds": 0.9151437589898705,
+      "source_mutations": 20,
+      "final_build_seconds": 18.601455529686064,
+      "build_warnings": 0,
+      "original_build_failure_preserved": true,
+      "lookup_deadline_milliseconds": 250,
+      "worker_timeout_and_disconnect_tested": true,
+      "prefix_history_indices_projected": true,
+      "new_gpu_starts": 0,
+      "actual_realtime_business_accepted": false,
+      "file_media_preparation_pending": true,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "pr52_merged_excludes_prompt": true,
+      "evidence_paths_preserved": true,
+      "duplicate_bytes_reclaimed": 395872316,
+      "files": 35,
+      "archive_sha256": "2a99ced7fb577d32f3b39faab7add59ef4451f5f2438426067100e5cd4df009e",
+      "evidence": "evidence/serve-realtime-prompt-session-cpu-20261120/README.md",
+      "next": "Complete file/media prefix preparation and runtime build; actual SDK business and profile/recovery delivery."
+    },
+    "prompt_files_20261120": {
+      "status": "PASS_REALTIME_PROMPT_FILES_CPU",
+      "tests": 30,
+      "new_tests": 7,
+      "seconds": 0.1640400062315166,
+      "build_seconds": 22.88762547215447,
+      "build_warnings": 0,
+      "source_mutations": 20,
+      "new_gpu_starts": 0,
+      "actual_text_png_csv_extraction": true,
+      "model_sheet_receipts": "CPU fixtures only, not generated summaries or quality acceptance",
+      "runtime_model_preparation_and_quota_handoff_pending": true,
+      "actual_realtime_business_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "pr": 53,
+      "pr_draft": true,
+      "files": 21,
+      "archive_sha256": "f23cc0a1eed459f6ea349bae9d8e2f7b466de5a2e864511e85cb878950915a20",
+      "evidence": "evidence/serve-realtime-prompt-files-cpu-20261120/README.md"
+    },
+    "prompt_runtime_cpu_20261120": {
+      "status": "PASS_REALTIME_PROMPT_RUNTIME_OWNERSHIP_CPU",
+      "tests": 22,
+      "new_tests": 8,
+      "test_attempts": 23,
+      "seconds": 0.015461551956832409,
+      "initial_passed": 21,
+      "retry_passed": 1,
+      "reused_tests": 21,
+      "original_failure": "Missing mandatory fair_queue in CPU fixture; retained unchanged",
+      "production_sources_unchanged_for_retry": true,
+      "build_seconds": [
+        151.92628164216876,
+        9.05915205925703
+      ],
+      "build_warnings": 0,
+      "source_mutations": 20,
+      "new_gpu_starts": 0,
+      "cpu_model_receipts_only": true,
+      "runtime_business_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "pr": 53,
+      "pr_draft": true,
+      "archive_sha256": "4c8f5ef67b7e46df5c0edeb347ec0496f2e66595f2bb3f3505bc99e39ad85282",
+      "evidence": "evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md"
+    },
+    "prompt_driver_cpu_20261120": {
+      "status": "PASS_REALTIME_PROMPT_BUSINESS_DRIVER_CPU",
+      "python_tests": 6,
+      "javascript_syntax_checks": 1,
+      "seconds": 0.296031195204705,
+      "build": {
+        "status": "BUILD_PASS",
+        "exit_code": 0,
+        "seconds": 332.10741796623915,
+        "warnings": 0,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "prior_unchanged": true,
+        "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+        "free_bytes_after": 311447552
+      },
+      "proposed_business": {
+        "model_starts": 1,
+        "response_creates": 13,
+        "chats": 2,
+        "websockets": 2,
+        "http_operations": 32,
+        "seconds": 900,
+        "actual_primary_and_file_model_usage": true,
+        "full_performance_or_model_quality_matrix": false
+      },
+      "actual_business_accepted": false,
+      "new_gpu_starts": 0,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "archive_sha256": "75d4b55dbb85ca68354ea89da341d84314b7bc869f24ba42b8d103ac20ddc52a",
+      "evidence": "evidence/serve-realtime-prompt-driver-cpu-20261120/README.md"
+    },
+    "prompt_definition_fix_20261120": {
+      "status": "FAIL_ORIGINAL_PROMPT_BUSINESS_WITH_DRIVER_FIX_CPU_PASS",
+      "original_failure": "Realtime template used Responses-only effort=none; invalid_prompt correctly rejected",
+      "launch_failure": "Original invocation omitted --inherit-lease; zero starts; preserved",
+      "model_starts": 1,
+      "actual_chat_requests": 1,
+      "actual_realtime_creates": 0,
+      "actual_registry_requests": 1,
+      "seconds": 36.140284973196685,
+      "nvml_queries": 36,
+      "cleanup_confirmed": true,
+      "lock_released": true,
+      "cpu": {
+        "status": "PASS",
+        "native_exit_code": 0,
+        "javascript_exit_code": 0,
+        "native_tests": 1,
+        "actual_definitions": 5,
+        "original_invalid_counterexamples": 5,
+        "javascript_syntax_checks": 1,
+        "seconds": 0.06348678097128868,
+        "new_gpu_starts": 0,
+        "binary_sha256": "e838800902c7b8025385d8b282db49db19fdc0c107441d6f3c4b61272936a329",
+        "plan_sha256": "6d42e2e49fa6e5d4c37d3ac87892bc68c4b16f2b04bd8b2107038506d079eef3"
+      },
+      "build": {
+        "exit_code": 0,
+        "command": [
+          "cmake",
+          "--build",
+          ".q4t-work/serve-file-search-20261112/host",
+          "--target",
+          "q4t_host_tests",
+          "--parallel",
+          "8"
+        ],
+        "seconds": 11.037089481018484,
+        "new_gpu_starts": 0
+      },
+      "runtime_changed": false,
+      "candidate_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+      "default_unchanged": true,
+      "default_revision": 356,
+      "next": "One bounded stage, same binary, at most 13 Realtime + 2 Chat / 900s; no completed Prompt request is replayed",
+      "archive_sha256": "778efc03e235d90e57146913d6c78fe415da29dcf9bb0ceba49f459ff7a8ff42",
+      "evidence": "evidence/serve-realtime-prompt-definition-fix-20261120/README.md"
+    },
+    "prompt_business_review_20261120": {
+      "status": "ORIGINAL_BUSINESS_FAIL_INPUT_REVIEW_PASS",
+      "model_starts": 1,
+      "actual_chat_requests": 1,
+      "actual_realtime_creates": 8,
+      "actual_registry_file_http": 7,
+      "seconds": 56.92502120696008,
+      "actual_tokens": 3382,
+      "successful_prefix_cases": 7,
+      "original_answer": "No version key exists in the tool result.",
+      "original_model_quality": "FAIL",
+      "original_stage_reclassified": false,
+      "nvml_queries": 55,
+      "cleanup_confirmed": true,
+      "lock_released": true,
+      "input_review": {
+        "status": "PASS",
+        "same_prompt_bytes": true,
+        "actual_tool_value_retained": true,
+        "counts": [
+          305,
+          305
+        ],
+        "seconds": 0.36432922491803765,
+        "new_gpu_starts": 0,
+        "original_model_quality": "FAIL",
+        "new_model_answers": 0
+      },
+      "continuation_cpu": {
+        "status": "PASS",
+        "tests": 6,
+        "syntax_checks": 1,
+        "seconds": 0.2958074528723955,
+        "new_gpu_starts": 0,
+        "commands": [
+          {
+            "command": [
+              "python3",
+              "-B",
+              "-m",
+              "unittest",
+              "tools.serve_realtime.test_prompt_followup",
+              "-v"
+            ],
+            "exit_code": 0
+          },
+          {
+            "command": [
+              "node",
+              "--check",
+              "tools/serve_realtime/prompt_sdk.mjs"
+            ],
+            "exit_code": 0
+          }
+        ]
+      },
+      "binary_archive": {
+        "status": "LOSSLESS_ARCHIVE_VERIFIED",
+        "files": 7,
+        "original_bytes": 269579624,
+        "archive_bytes": 114617131,
+        "archive_sha256": "d99ea4f30889402ec88efda614e876f0e4ff7cf16adb362d390d4390a5b5c289",
+        "seconds": 12.9988316828385,
+        "unique_evidence_deleted": 0,
+        "exact_restore": true
+      },
+      "runtime_changed": false,
+      "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+      "default_unchanged": true,
+      "default_revision": 356,
+      "master_complete": false,
+      "archive_sha256": "69d0078e5550e42a1c3662bd96da79cdf8c007e956819b16a51df68eef1638fb",
+      "evidence": "evidence/serve-realtime-prompt-business-review-20261120/README.md"
+    },
+    "prompt_followup_20261120": {
+      "status": "PASS_REMAINING_PROTOCOL_AND_ACCOUNTING_ORIGINAL_QUALITY_FAIL",
+      "model_starts": 1,
+      "realtime_requests": 5,
+      "chat_requests": 3,
+      "registry_http": 1,
+      "websocket_sessions": 2,
+      "seconds": 53.51116859074682,
+      "alpha_tokens": 362,
+      "beta_tokens": 1273,
+      "beta_rpm": 1,
+      "beta_second_request": "client_rpm_exhausted",
+      "diagnostics": [
+        {
+          "answer": "rev356",
+          "expected": "rev356",
+          "quality": "PASS",
+          "protocol": "PASS",
+          "usage": {
+            "prompt_tokens": 305,
+            "completion_tokens": 5,
+            "total_tokens": 310
+          }
+        },
+        {
+          "answer": "\nThe tool result does not contain a version field.\n",
+          "expected": "rev356",
+          "quality": "FAIL",
+          "protocol": "PASS",
+          "usage": {
+            "prompt_tokens": 305,
+            "completion_tokens": 27,
+            "total_tokens": 332
+          }
+        }
+      ],
+      "original_quality": "FAIL",
+      "original_stage_reclassified": false,
+      "original_files_unchanged": true,
+      "nvml_queries": 52,
+      "cleanup_confirmed": true,
+      "lock_released": true,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+      "master_complete": false,
+      "archive_sha256": "d32a7fc22a1e19d501910c7722120fe6225bae4231198ee3ca0c73984fc3938c",
+      "evidence": "evidence/serve-realtime-prompt-followup-20261120/README.md"
+    },
+    "prompt_profile_cpu_20261120": {
+      "status": "PASS_TARGETED_PROMPT_PROFILE_CPU",
+      "distinct_tests": 25,
+      "python_tests": 23,
+      "native_tests": 2,
+      "attempts": 28,
+      "original_python_pass": 21,
+      "original_python_attempts": 22,
+      "affected_retry_python": 4,
+      "reused_python": 19,
+      "javascript_syntax_checks": 1,
+      "source_mutations": 40,
+      "seconds": 2.198075174819678,
+      "build": {
+        "status": "BUILD_PASS",
+        "exit_code": 0,
+        "seconds": 21.7606470878236,
+        "warnings": 0,
+        "new_gpu_starts": 0,
+        "binary_sha256": "c89ed64ad605a57af2773b76c1fb6826fd01f0a7bff1031f3e671678ef0ec1ec"
+      },
+      "source_preparation_failure_preserved": true,
+      "original_migration_failure_preserved": true,
+      "new_gpu_starts": 0,
+      "new_runtime_built": false,
+      "actual_profile_qualification": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "original_model_quality": "FAIL",
+      "master_complete": false,
+      "archive_sha256": "f187dfc8907ee2466660567b96d35ab8f55b5e69b562600acb2849e48f9bb741",
+      "evidence": "evidence/serve-realtime-prompt-profile-cpu-20261120/README.md"
+    },
+    "prompt_build_source_review_20261120": {
+      "status": "BUILD_PASS_SOURCE_BOUNDARY_REVIEWED_NOT_QUALIFIED",
+      "build": {
+        "status": "BUILD_PASS",
+        "exit_code": 0,
+        "seconds": 15.976220104377717,
+        "warnings": 0,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "prior_unchanged": true,
+        "binary_sha256": "0d1e2ef1f765a725c91225c8f2a8b435d4809508bf1040da9001f6bf6bfedf20",
+        "free_bytes_after": 186564608
+      },
+      "changed_runtime_sources": 23,
+      "unchanged_runtime_sources": 950,
+      "previous_head": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
+      "source_review_sha256": "30c5634ea0fc86ccfceb18f1e346a6144a9eca8d51f3b21d9acfabbbd4995bb2",
+      "runtime_diff_sha256": "cf6a4c4aaac6f535b2647c03df6914e6a70347629161fd017a26c6b757f51419",
+      "default_revision": 356,
+      "default_unchanged": true,
+      "new_gpu_starts": 0,
+      "original_model_quality": "FAIL",
+      "master_complete": false,
+      "archive_sha256": "6534684fd193e63283ffb9c723fb778777a2f9646aa896947e2aec4a3fb88ff8",
+      "evidence": "evidence/serve-realtime-prompt-build-review-20261120/README.md"
+    },
+    "prompt_reuse_cpu_20261120": {
+      "status": "PASS_EXACT_SOURCE_REUSE_CPU",
+      "tests": 6,
+      "attempts": 9,
+      "seconds": 2.6726396130397916,
+      "original_fixture_failures": 3,
+      "failed_observation_fields": [
+        "mtp_enabled",
+        "mtp_k",
+        "startup_memory"
+      ],
+      "production_unchanged_during_retries": true,
+      "reused_passed_tests": 5,
+      "source_mutations": 20,
+      "new_gpu_starts": 0,
+      "actual_profile_qualification": false,
+      "default_unchanged": true,
+      "default_revision": 356,
+      "master_complete": false,
+      "archive_sha256": "b54540ae4b49c7b44086cb51a273b36f8c483b40aeca96f97c1c4daca532907a",
+      "evidence": "evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md"
+    },
+    "prompt_delivered": true,
+    "prompt_delivery": {
+      "status": "ACCEPT_NATIVE_REALTIME_PROMPT_DELIVERY",
+      "revision": 366,
+      "current": {
+        "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+        "engine_release_sha256": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+        "generation_sha256": "2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7",
+        "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/service-package-01/bundle",
+        "service_acceptance_sha256": "2e9dd83207e3e980ff46b379030c5666e2847fe99db8816d2147a7d5411f6396",
+        "service_release_sha256": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c"
+      },
+      "state": "STOPPED",
+      "successful_commands": 19,
+      "command_attempts": 19,
+      "seconds": 391.7243390721269,
+      "new_gpu_starts": 0,
+      "outer_enabled": true,
+      "outer_charged_total": 0,
+      "persistent_client_limits": {
+        "alpha": {
+          "requests_per_minute": 30,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 3457
+        },
+        "beta": {
+          "requests_per_minute": 1,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 256
+        }
+      },
+      "usage_reset": false,
+      "profile_history_and_cooldown_preserved": true,
+      "version_cycles_preserved": true,
+      "manual_root": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+      "automatic_payload": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+      "candidate_to_retained_automatic_fault_actually_tested": true,
+      "reciprocal_automatic_fault_additionally_injected": false,
+      "reciprocal_registration_and_stopped_rollback_verified": true,
+      "older_engine_fallback": false,
+      "previous_rev356_preserved": true,
+      "retired_intents_archived": 4,
+      "deleted_files": 0,
+      "maintenance_seconds": 5.02901809476316,
+      "original_tls_driver_passed": false,
+      "original_driver_failure_preserved": true,
+      "original_model_quality_failures_preserved": true,
+      "files": 68,
+      "secret_scan_matches": 0,
+      "archive_sha256": "50917251dce05d26df0ec99c57469378169139615a68e8b0851b6815c6d5bc72",
+      "main_integration_pending": true,
+      "full_model_quality": false,
+      "performance_claim": false,
+      "long_stability_run": false,
+      "full_openai_compatibility": false,
+      "listening_deferred_by_owner": true,
+      "all_master_tasks_active": true,
+      "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -11641,7 +12130,7 @@
     "files": 95,
     "secret_scan_matches": 0,
     "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
-    "main_integration_pending": true,
+    "main_integration_pending": false,
     "full_model_quality": false,
     "performance_claim": false,
     "long_stability_run": false,
@@ -11649,6 +12138,99 @@
     "listening_and_similarity_accepted": false,
     "listening_deferred_by_owner": true,
     "all_master_tasks_active": true,
-    "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+    "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md",
+    "main_merge_commit": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
+  },
+  "native_realtime_chat_main_20261120": {
+    "status": "PASS_NATIVE_REALTIME_CHAT_MAIN_MERGED",
+    "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
+    "head": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
+    "merge": "0c8d7a1076574010d9753f556fa22ae745cb68fc",
+    "merged_at": "2026-11-19T17:51:43Z",
+    "ci_runs": [
+      44574396311,
+      44574379603
+    ],
+    "default_revision": 356,
+    "default_unchanged": true,
+    "new_gpu_starts": 0,
+    "prompt_development_merged": false,
+    "branch_retained_for_unique_prompt_commits_and_uncommitted_integration": true,
+    "all_master_tasks_active": true,
+    "evidence": "evidence/serve-realtime-chat-main-20261120/README.md"
+  },
+  "native_realtime_prompt_delivery_20261120": {
+    "status": "ACCEPT_NATIVE_REALTIME_PROMPT_DELIVERY",
+    "revision": 366,
+    "current": {
+      "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+      "engine_release_sha256": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+      "generation_sha256": "2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7",
+      "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/service-package-01/bundle",
+      "service_acceptance_sha256": "2e9dd83207e3e980ff46b379030c5666e2847fe99db8816d2147a7d5411f6396",
+      "service_release_sha256": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c"
+    },
+    "state": "STOPPED",
+    "successful_commands": 19,
+    "command_attempts": 19,
+    "seconds": 391.7243390721269,
+    "new_gpu_starts": 0,
+    "outer_enabled": true,
+    "outer_charged_total": 0,
+    "persistent_client_limits": {
+      "alpha": {
+        "requests_per_minute": 30,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 3457
+      },
+      "beta": {
+        "requests_per_minute": 1,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 256
+      }
+    },
+    "usage_reset": false,
+    "profile_history_and_cooldown_preserved": true,
+    "version_cycles_preserved": true,
+    "manual_root": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+    "automatic_payload": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+    "candidate_to_retained_automatic_fault_actually_tested": true,
+    "reciprocal_automatic_fault_additionally_injected": false,
+    "reciprocal_registration_and_stopped_rollback_verified": true,
+    "older_engine_fallback": false,
+    "previous_rev356_preserved": true,
+    "retired_intents_archived": 4,
+    "deleted_files": 0,
+    "maintenance_seconds": 5.02901809476316,
+    "original_tls_driver_passed": false,
+    "original_driver_failure_preserved": true,
+    "original_model_quality_failures_preserved": true,
+    "files": 68,
+    "secret_scan_matches": 0,
+    "archive_sha256": "50917251dce05d26df0ec99c57469378169139615a68e8b0851b6815c6d5bc72",
+    "main_integration_pending": true,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "long_stability_run": false,
+    "full_openai_compatibility": false,
+    "listening_deferred_by_owner": true,
+    "all_master_tasks_active": true,
+    "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+  },
+  "native_realtime_prompt_recovery_20261120": {
+    "evidence": "evidence/serve-prompt-native-recovery-20261120/README.md",
+    "status": "ACCEPT_NATIVE_REALTIME_PROMPT_SERVICE_COMPOSITION",
+    "model_starts": 7,
+    "counted_generations": 22,
+    "websocket_sessions": 7,
+    "seconds": 402.00060847308487,
+    "nvml_queries": 377,
+    "original_tls_driver_passed": false
+  },
+  "native_realtime_prompt_primary_light_20261120": {
+    "evidence": "evidence/serve-refusal-reviewed-profiles-20261120/README.md",
+    "registry_sha256": "489e6fb65146c24df5cc96e904e67d9777f0d47596716ea91259ec1bf64a78b1",
+    "original_failures_preserved": true
   }
 }

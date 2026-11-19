@@ -1,0 +1,110 @@
+{
+  "prompt-recovery-cpu-01/command-0.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "prompt-recovery-cpu-01/result.json": {
+    "sha256": "232ee0adb550a71cc686d4b68a1c13c818bfd78791f35b4b140235a5298b3ad7",
+    "bytes": 1092
+  },
+  "prompt-recovery-cpu-01/command-1.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "prompt-recovery-cpu-01/command-2.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "prompt-recovery-cpu-01/plan.json": {
+    "sha256": "ac7e72c327fc233d480c8882fe3de782125ff91238d233c2a35ff24a5f1eb64d",
+    "bytes": 4214
+  },
+  "prompt-recovery-cpu-01/command-1.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "prompt-recovery-cpu-01/command-2.stdout": {
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c",
+    "bytes": 223
+  },
+  "prompt-recovery-cpu-01/command-0.stderr": {
+    "sha256": "3bbd41fa8c6e3f9485fdc5fb5efaa35d0f81503270291dcd3b63124a2fee6292",
+    "bytes": 2954
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_audit/inventory.json": {
+    "sha256": "c1f53bbf1bdd993fd9e767d2bcca43bdb47d02fbbca7421ae68a8c54ff173797",
+    "bytes": 569244
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_realtime/test_prompt_service.py": {
+    "sha256": "fc2befe26a3339042ae25b5e4672afba112da6a1e70ee5e3eb9935ac0b2ef603",
+    "bytes": 2865
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_realtime/test_conversation_recovery_sdk.py": {
+    "sha256": "1f143d509723c2158ecc51a0fa165a1cb81955226a928093d84f9eedd6b1554f",
+    "bytes": 12564
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_realtime/conversation_recovery_sdk.mjs": {
+    "sha256": "b68eed58e5fbad7f9cd3001235abfe9305f033e8968237c4166178721580b32c",
+    "bytes": 10497
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_realtime/prompt_service_acceptance.py": {
+    "sha256": "8d8404c44ff9d95379a7351f96f90dbfa22da810d656072ecaf3ac7f3ddb4210",
+    "bytes": 14661
+  },
+  "prompt-recovery-cpu-01/source/tools/serve_realtime/conversation_managed.py": {
+    "sha256": "f9b404c5ebd87c61236478599e6ce481b797b959a89582773bcf2cd70dbc0bb1",
+    "bytes": 14841
+  },
+  "prompt-recovery-cpu-01/source/.github/workflows/host-checks.yml": {
+    "sha256": "95884981f7319d07fd7da9294a5f7c701801c094133529116ed2ba4ff86e36b9",
+    "bytes": 15134
+  },
+  "prepare_prompt_package_01.py": {
+    "sha256": "1f0441f490e6ad5f4822e6316e3cbff05014130bfe4c236605831a9ac1d768f2",
+    "bytes": 12738
+  },
+  "prepare_prompt_retained_01.py": {
+    "sha256": "b2cf5a6b3547d422d6d3205d4fa1975c4a6ae0ed4aadfee96eece188da7eee29",
+    "bytes": 3750
+  },
+  "prepare_prompt_tls_01.py": {
+    "sha256": "7edb0a182640b606834bd4dd5ba8246ef3e476ad1ce0e8356fb049eee2aefab7",
+    "bytes": 3986
+  },
+  "prepare_prompt_tls_02.py": {
+    "sha256": "dddd0469f594863edffc2737eab8b175a178dba2f7fbf635fe4c007db2e0d577",
+    "bytes": 3986
+  },
+  "service-package-01/receipt.json": {
+    "sha256": "c45a07f7bec625a8db30107e769fb2fd96d2b5efce229ffd7095eccfa134e813",
+    "bytes": 337
+  },
+  "service-package-01/decision.json": {
+    "sha256": "8220d89052f778f9eaa1c0a7b55bffd6553bc1dd30eb70f4456679f52596d2ba",
+    "bytes": 4391
+  },
+  "retained-01/receipt.json": {
+    "sha256": "46b57d643b4a87284f430b60dc0600bc2cc93e5fec276a5a6d96bf7d90a935fe",
+    "bytes": 206
+  },
+  "retained-01/review.json": {
+    "sha256": "d17586b27c7fc56b0b21814f0181beadb57e8fcee33e378795ebbce24b27209d",
+    "bytes": 2234
+  },
+  "retained-01/preparation-failure.json": {
+    "sha256": "38a4f006e0c67c8f515bd517bcce95e2d542b3633e640a1c1611a621e6e20a02",
+    "bytes": 242
+  },
+  "tls-package-01/preparation-failure.json": {
+    "sha256": "e77d47756e72c35a88532c99b894c726ba8aeb20e557c3698f2328ed940eb9de",
+    "bytes": 144
+  },
+  "tls-package-02/receipt.json": {
+    "sha256": "0d946b0b465dfa7ed7c9cf2f8db0c3dd6740d720ac8af1c00437bb426e5d28d5",
+    "bytes": 333
+  },
+  "tls-package-02/review.json": {
+    "sha256": "cabe9d8c6067a5d77d930b2439f99d02c5a11de0a0404c2cc0a73f1d93e451d3",
+    "bytes": 535
+  }
+}

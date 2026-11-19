@@ -1,0 +1,18 @@
+{
+  "status": "OBSERVED_REPRODUCIBLE_PROMPT_INTERFERENCE",
+  "model_starts": 1,
+  "raw_completions": 4,
+  "seconds": 46.321767893154174,
+  "nvml_queries": 45,
+  "all_nvml_ok": true,
+  "cleanup_complete": true,
+  "lock_released": true,
+  "temperature": 0,
+  "seed": 0,
+  "mtp_enabled": false,
+  "default_unchanged": true,
+  "source_implementation_changed": false,
+  "full_quality_claim": false,
+  "qualification_pass": false,
+  "root_cause_scope": "One input changes FAIL to PASS when only the refusal-format note changes; other input is PASS with both notes. No unique explanation for all prior failures."
+}

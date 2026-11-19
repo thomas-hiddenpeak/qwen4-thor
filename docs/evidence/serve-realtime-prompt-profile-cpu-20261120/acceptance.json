@@ -1,0 +1,32 @@
+{
+  "status": "PASS_TARGETED_PROMPT_PROFILE_CPU",
+  "distinct_tests": 25,
+  "python_tests": 23,
+  "native_tests": 2,
+  "attempts": 28,
+  "original_python_pass": 21,
+  "original_python_attempts": 22,
+  "affected_retry_python": 4,
+  "reused_python": 19,
+  "javascript_syntax_checks": 1,
+  "source_mutations": 40,
+  "seconds": 2.198075174819678,
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 21.7606470878236,
+    "warnings": 0,
+    "new_gpu_starts": 0,
+    "binary_sha256": "c89ed64ad605a57af2773b76c1fb6826fd01f0a7bff1031f3e671678ef0ec1ec"
+  },
+  "source_preparation_failure_preserved": true,
+  "original_migration_failure_preserved": true,
+  "new_gpu_starts": 0,
+  "new_runtime_built": false,
+  "actual_profile_qualification": false,
+  "default_revision": 356,
+  "default_unchanged": true,
+  "original_model_quality": "FAIL",
+  "master_complete": false,
+  "archive_sha256": "f187dfc8907ee2466660567b96d35ab8f55b5e69b562600acb2849e48f9bb741"
+}

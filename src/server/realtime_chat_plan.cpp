@@ -5,6 +5,8 @@
 
 #include "q4t/server/application_query.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/file_expansion.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/realtime_shape.h"
@@ -32,6 +34,31 @@ const Json* Option(const Json& settings, const Json& response,
 Status Overflow(ChatPlanError* error) {
   return Invalid(error, "input", "Realtime input exceeds its context budget",
                  "context_length_exceeded");
+}
+Status Storage(const RealtimeChatPlan& candidate, ChatPlanError* error) {
+  size_t retained = 0, bytes = 0;
+  const std::vector<const Json*> stored{
+      &candidate.envelope.request,
+      &candidate.envelope.options,
+      &candidate.generation.input.items,
+      &candidate.generation.input.messages,
+      &candidate.generation.generation_request,
+      &candidate.generation.effective_tools,
+      &candidate.generation.active_tools,
+      candidate.generation.chat.normalized_request
+          ? &*candidate.generation.chat.normalized_request
+          : nullptr,
+      candidate.generation.chat.HeaderTools()};
+  for (const auto* value : stored) {
+    if (!value) continue;
+    if (!MeasureRealtimeStorage(*value, RealtimeConversation::kMaximumBytes,
+                                &bytes) ||
+        bytes > (64ULL << 20) - retained)
+      return Invalid(error, "input", "Native request storage limit exceeded",
+                     "realtime_input_capacity", 413);
+    retained += bytes;
+  }
+  return {};
 }
 }  // namespace
 
@@ -75,7 +102,8 @@ Status ParseRealtimeChatTarget(std::string_view target,
 
 Status PlanRealtimeChat(const Json& settings, const Json& response,
                         const Json& items, const ChatPlanConfig& config,
-                        RealtimeChatPlan* plan, ChatPlanError* error) {
+                        RealtimeChatPlan* plan, ChatPlanError* error,
+                        const PromptSnapshot* prompt) {
   if (!plan || !error) return Status::Fail("Missing Realtime plan owner");
   *error = {};
   auto status = ValidateRealtimeWireShape(
@@ -100,12 +128,25 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
       metadata && !RealtimeMetadataBounded(*metadata))
     return Invalid(error, "response.metadata", "Invalid response metadata");
   // These processors are connected separately. Never acknowledge a setting
-  // here and silently drop its actual audio, prompt, trace or remote tool work.
-  for (const auto* field : {"audio", "prompt"}) {
+  // here and silently drop its actual audio, trace or remote tool work.
+  for (const auto* field : {"audio"}) {
     if (const auto* value = Option(settings, response, field);
         value && !value->IsNull() &&
         (!value->IsObject() || !value->object.empty()))
       return Processor(error, field);
+  }
+  const auto* reference = Option(settings, response, "prompt");
+  if (reference && !reference->IsNull()) {
+    if (!prompt) return Processor(error, "prompt");
+    if (prompt->api != PromptApi::kRealtime || prompt->scope.empty() ||
+        !prompt->request.IsObject() ||
+        prompt->reference.GetString("version").empty() ||
+        OutputJson(*reference) != OutputJson(prompt->reference))
+      return Invalid(error, "prompt", "Prompt snapshot identity differs",
+                     "prompt_snapshot_mismatch", 500);
+  } else if (prompt) {
+    return Invalid(error, "prompt", "Unexpected prompt snapshot",
+                   "prompt_snapshot_mismatch", 500);
   }
   if (const auto* trace = settings.Find("tracing"); trace && !trace->IsNull())
     return Processor(error, "tracing");
@@ -178,6 +219,20 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
                                              : "auto"));
 
   auto mapped = Array();
+  if (prompt) {
+    const auto* prefix = prompt->request.Find("input");
+    if (prefix && !prefix->IsNull()) {
+      if (prefix->IsString())
+        mapped.array.push_back(
+            Object({{"role", String("user")}, {"content", *prefix}}));
+      else if (prefix->IsArray())
+        mapped = *prefix;
+      else
+        return Invalid(error, "prompt", "Invalid prompt input snapshot",
+                       "prompt_snapshot_mismatch", 500);
+    }
+  }
+  candidate.prompt_items = mapped.array.size();
   for (size_t i = 0; i < items.array.size(); ++i) {
     const auto& original = items.array[i];
     const auto path = "input[" + std::to_string(i) + ']';
@@ -203,10 +258,34 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   }
   Set(&request, "input", std::move(mapped));
   status = ParseResponsesEnvelope(request, config, &candidate.envelope, error);
-  if (status)
-    status =
-        PrepareResponsesGeneration(candidate.envelope, *request.Find("input"),
-                                   config, &candidate.generation, error);
+  if (!status) return status;
+  if (HasFileInputs(*request.Find("input"))) {
+    Json tools;
+    status = ValidateResponsesPreparation(
+        candidate.envelope, *request.Find("input"), config, &tools, error);
+    if (status) status = Storage(candidate, error);
+  } else {
+    status = CompleteRealtimeChatInput(config, *request.Find("input"), false,
+                                       &candidate, error);
+  }
+  if (!status) return status;
+  *plan = std::move(candidate);
+  return {};
+}
+
+Status CompleteRealtimeChatInput(const ChatPlanConfig& config,
+                                 const Json& resolved, bool prepared_file_media,
+                                 RealtimeChatPlan* plan, ChatPlanError* error) {
+  if (!plan || !error) return Status::Fail("Missing Realtime input owner");
+  const auto* original = plan->envelope.request.GetArray("input");
+  if (!original || !resolved.IsArray() ||
+      original->array.size() != resolved.array.size())
+    return Invalid(error, "input", "Prepared input ownership changed",
+                   "realtime_input_owner_invalid", 500);
+  auto candidate = *plan;
+  candidate.envelope.prepared_file_media = prepared_file_media;
+  auto status = PrepareResponsesGeneration(candidate.envelope, resolved, config,
+                                           &candidate.generation, error);
   if (!status) return status;
   if (candidate.generation.input.items.array.empty()) {
     // response.create itself asks for a new answer even without a user item.
@@ -216,11 +295,11 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     // The normal template/tokenizer counts its actual input and quota cost.
     auto& generation = candidate.generation;
     auto& chat = generation.generation_request;
-    auto task = request.GetString("instructions");
+    auto task = candidate.envelope.request.GetString("instructions");
     if (task.empty()) task = "Generate the next assistant response.";
     Field(chat, "messages")
-        .array.push_back(Object({{"role", String("user")},
-                                 {"content", String(task)}}));
+        .array.push_back(
+            Object({{"role", String("user")}, {"content", String(task)}}));
     auto planning = config;
     planning.async_tool_call_ids = generation.chat.async_tool_call_ids;
     planning.responses_tool_media = generation.chat.responses_tool_media;
@@ -229,30 +308,19 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     status = PlanChatRequest(chat, planning, &generation.chat, error);
     if (!status) return status;
   }
-  size_t retained = 0;
-  const std::vector<const Json*> stored{
-      &candidate.envelope.request,
-      &candidate.envelope.options,
-      &candidate.generation.input.items,
-      &candidate.generation.input.messages,
-      &candidate.generation.generation_request,
-      &candidate.generation.effective_tools,
-      &candidate.generation.active_tools,
-      candidate.generation.chat.normalized_request
-          ? &*candidate.generation.chat.normalized_request
-          : nullptr,
-      candidate.generation.chat.HeaderTools()};
-  for (const auto* value : stored) {
-    if (!value) continue;
-    if (!MeasureRealtimeStorage(*value, RealtimeConversation::kMaximumBytes,
-                                &bytes) ||
-        bytes > (64ULL << 20) - retained)
-      return Invalid(error, "input", "Native request storage limit exceeded",
-                     "realtime_input_capacity", 413);
-    retained += bytes;
-  }
+  status = Storage(candidate, error);
+  if (!status) return status;
+  candidate.input_ready = true;
   *plan = std::move(candidate);
   return {};
+}
+
+std::vector<size_t> RealtimeRetainedHistory(const RealtimeChatPlan& plan) {
+  std::vector<size_t> retained;
+  for (const auto index : plan.generation.input_source_indices)
+    if (index >= plan.prompt_items)
+      retained.push_back(index - plan.prompt_items);
+  return retained;
 }
 
 Status FitRealtimeChatContext(const ChatPlanConfig& config,
@@ -260,6 +328,9 @@ Status FitRealtimeChatContext(const ChatPlanConfig& config,
                               RealtimeChatPlan* plan, ChatPlanError* error) {
   if (!measure || !plan || !error)
     return Status::Fail("Missing Realtime context owner");
+  if (!plan->input_ready)
+    return Invalid(error, "input", "Owned file preparation is pending",
+                   "realtime_input_preparation_pending", 503);
   const auto maximum = config.max_len;
   const auto output = plan->envelope.options.GetInt("max_output_tokens");
   if (maximum <= output || output < 1) return Overflow(error);

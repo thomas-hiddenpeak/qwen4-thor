@@ -1,0 +1,53 @@
+{
+  "status": "PASS_CHANGED_DOCUMENTATION",
+  "new_local_links": [
+    [
+      "README.md",
+      "docs/evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    ],
+    [
+      "docs/README.md",
+      "evidence/serve-refusal-reviewed-profiles-20261120/README.md"
+    ],
+    [
+      "docs/README.md",
+      "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    ],
+    [
+      "docs/README.md",
+      "evidence/serve-prompt-native-recovery-20261120/README.md"
+    ],
+    [
+      "docs/SERVE_REALTIME_PROMPT_2026-11-20.md",
+      "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    ],
+    [
+      "docs/STATUS.md",
+      "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    ],
+    [
+      "docs/log/2026-11-20.md",
+      "../evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    ],
+    [
+      "docs/evidence/serve-realtime-prompt-delivery-20261120/README.md",
+      "../serve-prompt-native-recovery-20261120/README.md"
+    ],
+    [
+      "docs/evidence/serve-realtime-prompt-delivery-20261120/README.md",
+      "../serve-refusal-reviewed-profiles-20261120/README.md"
+    ]
+  ],
+  "master_tasks": 33,
+  "goal_state": "active",
+  "unchanged_historical_log_link_issue": {
+    "file": "docs/log/2026-11-20.md",
+    "original_target": "evidence/serve-realtime-prompt-business-review-20261120/README.md",
+    "actual_target": "../evidence/serve-realtime-prompt-business-review-20261120/README.md",
+    "present_in_previous_commit": true,
+    "original_log_not_rewritten": true
+  },
+  "original_full_file_link_scan": "FAILED_ON_PREEXISTING_LOG_LINK",
+  "runtime_changes": 0,
+  "new_gpu_starts": 0
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "tests": 7,
+  "source_counterexamples": 20,
+  "seconds": 0.8347541382536292,
+  "gpu_actions": 0,
+  "original_failure_preserved": true,
+  "new_business_qualified": false
+}

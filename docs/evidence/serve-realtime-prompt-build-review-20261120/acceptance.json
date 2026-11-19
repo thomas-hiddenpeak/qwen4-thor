@@ -1,0 +1,25 @@
+{
+  "status": "BUILD_PASS_SOURCE_BOUNDARY_REVIEWED_NOT_QUALIFIED",
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 15.976220104377717,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "0d1e2ef1f765a725c91225c8f2a8b435d4809508bf1040da9001f6bf6bfedf20",
+    "free_bytes_after": 186564608
+  },
+  "changed_runtime_sources": 23,
+  "unchanged_runtime_sources": 950,
+  "previous_head": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
+  "source_review_sha256": "30c5634ea0fc86ccfceb18f1e346a6144a9eca8d51f3b21d9acfabbbd4995bb2",
+  "runtime_diff_sha256": "cf6a4c4aaac6f535b2647c03df6914e6a70347629161fd017a26c6b757f51419",
+  "default_revision": 356,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "original_model_quality": "FAIL",
+  "master_complete": false,
+  "archive_sha256": "6534684fd193e63283ffb9c723fb778777a2f9646aa896947e2aec4a3fb88ff8"
+}

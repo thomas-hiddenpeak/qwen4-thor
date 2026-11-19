@@ -33,6 +33,7 @@ from tools.serve_recovery import bundle, profile_contract, profile_evidence, pro
 from tools.serve_recovery import profile_realtime
 from tools.serve_recovery import profile_semantic
 from tools.serve_recovery import profile_conversation
+from tools.serve_recovery import profile_prompt
 from tools.serve_responses import background_acceptance as background
 from tools.serve_responses import encryption_acceptance as encrypted
 from tools.serve_service import capacity, package
@@ -46,7 +47,7 @@ SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
                native_tts_base=None, *, voice_consumer=False, realtime=False,
                retained_primary_voice=False, semantic_vad=False,
-               retained_primary_business=False, conversation=False):
+               retained_primary_business=False, conversation=False, prompt=False):
     capacity.validate(profile)
     require(type(voice_consumer) is bool and (not voice_consumer or
         native_tts_base is not None and native_asr is None and native_tts is None),
@@ -56,6 +57,8 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
     require(type(realtime) is bool and (not realtime or native_asr is not None),
             'Realtime qualification requires native ASR')
     require(type(conversation) is bool, 'explicit conversation checklist required')
+    require(type(prompt) is bool and (not prompt or conversation),
+            'Prompt qualification requires actual Chat conversation checks')
     require(type(semantic_vad) is bool and (not semantic_vad or realtime and
         native_asr is not None and 'vad' in native_asr),
         'semantic qualification requires Realtime and native VAD')
@@ -75,14 +78,16 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
         require(native_tts is None or package.same_json(native_tts['limits'],
                 native_tts_base['limits']), 'TTS profile families must share effective limits')
     result = dict(LIMITS, seconds=800 if retained_primary_voice else LIMITS['seconds'],
-                **(dict(websocket_sessions=2*realtime+4*semantic_vad+2*conversation,
-                        ingress_starts=2*realtime+2*semantic_vad+2*conversation)
+                **(dict(websocket_sessions=2*realtime+4*semantic_vad+2*conversation+2*prompt,
+                        ingress_starts=2*realtime+2*semantic_vad+2*conversation+2*prompt)
                    if realtime or conversation else {}),
+                **(dict(prompt_registry_requests=8) if prompt else {}),
                 chats=(10 if profile.get('allow_media', False) else 8) +
                 (-profile_voice.POSTS_PER_PROFILE if retained_primary_voice else 0) +
                 (2*profile_realtime.POSTS_PER_PROFILE if realtime else 0) +
                 (2*profile_semantic.POSTS_PER_PROFILE if semantic_vad else 0) +
                 (2*profile_conversation.POSTS_PER_PROFILE if conversation else 0) +
+                (2*profile_prompt.POSTS_PER_PROFILE if prompt else 0) +
                 (2*(profile_consumer.POSTS_PER_PROFILE if voice_consumer else
                     profile_voice.POSTS_PER_PROFILE) if native_tts_base is not None else 0) +
                 (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
@@ -95,6 +100,7 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
         result.update(starts=1, seconds=600, chats=result['chats']//2,
                       websocket_sessions=result['websocket_sessions']//2,
                       ingress_starts=result['ingress_starts']//2)
+        if prompt: result['prompt_registry_requests'] //= 2
     return result
 
 
@@ -255,6 +261,7 @@ def prepare(args):
     chat_audio = getattr(args, 'chat_audio', False)
     realtime_source = getattr(args, 'realtime_reference', None)
     conversation_source = getattr(args, 'conversation_reference', None)
+    prompt_source = getattr(args, 'prompt_reference', None)
     semantic_vad = getattr(args, 'semantic_vad', False)
     retained_voice = getattr(args, 'retained_primary_voice', None)
     retained_business = getattr(args, 'retained_primary_business', None)
@@ -262,6 +269,7 @@ def prepare(args):
                         voice_consumer=consumer is not None,
                         realtime=realtime_source is not None,
                         conversation=conversation_source is not None,
+                        prompt=prompt_source is not None,
                         semantic_vad=semantic_vad,
                         retained_primary_business=retained_business is not None,
                         retained_primary_voice=retained_voice is not None)
@@ -295,6 +303,13 @@ def prepare(args):
             conversation_source, path.parent, public_port, plan['sdk'])
         plan['sources'].update(plan['conversation']['files'])
         plan['sources'].update({p:sha(ROOT/p) for p in profile_conversation.SOURCES})
+    if prompt_source is not None:
+        public_port = plan['port']+2
+        require(public_port <= 65535 and public_port != plan['operations_port'],
+                'Prompt public port conflicts with another listener')
+        plan['prompt'] = profile_prompt.prepare(prompt_source, path.parent, public_port, plan['sdk'])
+        plan['sources'].update(plan['prompt']['files'])
+        plan['sources'].update({p:sha(ROOT/p) for p in profile_prompt.SOURCES})
     if chat_audio: plan['chat_audio'] = True
     voice_icl = getattr(args, 'voice_icl', False)
     require(type(voice_icl) is bool and (not voice_icl or
@@ -464,8 +479,10 @@ def prepare(args):
     if realtime_source is not None or conversation_source is not None:
         plan['planned'].update(realtime_sessions=limits['websocket_sessions'],
             realtime_transcriptions=6*(realtime_source is not None)+4*semantic_vad,
-            realtime_chat_responses=4*(conversation_source is not None),
+            realtime_chat_responses=4*(conversation_source is not None)+8*(prompt_source is not None),
             native_tls_ingress_starts=limits['ingress_starts'])
+    if prompt_source is not None:
+        plan['planned']['prompt_registry_requests'] = limits['prompt_registry_requests']
     if voice is not None:
         plan['planned']['native_voice_business_requests'] = 2*(profile_consumer.POSTS_PER_PROFILE
             if consumer is not None else profile_voice.POSTS_PER_PROFILE)
@@ -534,6 +551,7 @@ class Stage(encrypted.Stage):
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
                                  conversation='conversation' in plan,
+                                 prompt='prompt' in plan,
                                  semantic_vad=plan.get('semantic_vad', False),
                                  retained_primary_business='retained_primary_business' in plan,
                                  retained_primary_voice='retained_primary_voice' in plan)
@@ -541,6 +559,8 @@ class Stage(encrypted.Stage):
         super().__init__(plan)
         if 'realtime' in plan or 'conversation' in plan:
             self.counts.update(websocket_sessions=0, ingress_starts=0)
+        if 'prompt' in plan:
+            self.counts['prompt_registry_requests'] = 0
 
     @staticmethod
     def client_policy_base():
@@ -748,6 +768,8 @@ class Stage(encrypted.Stage):
         require(('conversation' in self.plan) ==
                 profile_evidence.conversation_enabled(capability),
                 'actual native Realtime Chat needs its explicit tool checklist')
+        require(('prompt' in self.plan) == profile_evidence.prompt_enabled(capability),
+                'actual native Prompt needs its explicit snapshot/file checklist')
         early = {}
         if self.plan['identity'].get('native_tts_base') is not None:
             if self.profile_name == 'primary' and 'retained_primary_voice' in self.plan:
@@ -803,6 +825,8 @@ class Stage(encrypted.Stage):
             value['semantic_vad'] = profile_semantic.run(self)
         if 'conversation' in self.plan:
             value['conversation'] = profile_conversation.run(self)
+        if 'prompt' in self.plan:
+            value['prompt'] = profile_prompt.run(self)
         profile_evidence.business(value, self.plan['identity'], selected,
             read(self.out/(self.profile_name+'-capabilities.json')))
         writer = profile_semantic.save_receipt if self.plan.get('semantic_vad') else save
@@ -854,6 +878,7 @@ def finalize(out):
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
                                  conversation='conversation' in plan,
+                                 prompt='prompt' in plan,
                                  semantic_vad=plan.get('semantic_vad', False),
                                  retained_primary_business='retained_primary_business' in plan,
                                  retained_primary_voice='retained_primary_voice' in plan)
@@ -864,6 +889,9 @@ def finalize(out):
         require(all(result['counts'].get(k) == limits[k]
                     for k in ('websocket_sessions', 'ingress_starts')),
                 'Realtime profile sessions/entries incomplete')
+    if 'prompt' in plan:
+        require(result['counts'].get('prompt_registry_requests') == limits['prompt_registry_requests'],
+                'Prompt registry operations incomplete')
     for name, digest in {**plan['sources'], **plan['protected'], **plan['native_assets']}.items():
         require(sha(ROOT/name) == digest, 'postflight identity drift: '+name)
     require(sha(plan['binary']) == plan['binary_sha256'], 'engine drift')
@@ -890,6 +918,8 @@ def finalize(out):
         background.probe_ports((plan['realtime']['public_port'],))
     if 'conversation' in plan:
         background.probe_ports((plan['conversation']['public_port'],))
+    if 'prompt' in plan:
+        background.probe_ports((plan['prompt']['public_port'],))
     with guard.common_lock().open('r+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     qualified = out/'qualified'
@@ -968,6 +998,8 @@ def main():
                    help='Qualify actual semantic turns and native health on both profiles')
     p.add_argument('--conversation-reference', type=Path,
                    help='Qualify native text/tool Realtime without an ASR dependency')
+    p.add_argument('--prompt-reference', type=Path,
+                   help='Qualify actual Prompt snapshot/version/deletion and CSV preparation')
     p.add_argument('--realtime-reference', type=Path,
                    help='qualified real history plan; freeze 3 actual WSS turns per profile')
     p.add_argument('--sdk-directory', type=Path,

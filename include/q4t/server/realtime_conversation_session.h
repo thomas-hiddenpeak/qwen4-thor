@@ -7,6 +7,7 @@
 #include <unordered_set>
 
 #include "q4t/server/realtime_conversation.h"
+#include "q4t/server/realtime_prompt_settings.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/websocket_session.h"
 
@@ -22,6 +23,7 @@ struct RealtimeConversationJob {
   io::Json settings, response;
   RealtimeConversationSnapshot snapshot;
   bool in_conversation = true;
+  std::optional<PromptSnapshot> prompt = {};
 };
 struct RealtimeGenerationResult {
   ObjectReply reply;
@@ -36,9 +38,15 @@ using RealtimeDeltaSink = std::function<ObjectReply(const ResponseDelta&)>;
 struct RealtimeConversationCallbacks {
   std::function<bool()> interrupted;
   // Session-thread, bounded/pure validation. Do not acknowledge settings that
-  // the connected execution owner cannot honor. I/O belongs to execute.
+  // the connected execution owner cannot honor.
   std::function<ObjectReply(const io::Json&)> validate;
   std::function<ObjectReply(const RealtimeConversationJob&)> prepare;
+  RealtimePromptValidator validate_prompt;
+  // A separate bounded lookup. The session supplies the pump's stop signal;
+  // implementations must propagate it and a finite deadline to object I/O.
+  std::function<ObjectReply(const io::Json&, size_t,
+                            const std::function<bool()>&, PromptSnapshot*)>
+      resolve_prompt;
   std::function<std::shared_ptr<RequestControl>(const std::string&)> acquire;
   std::function<void(const std::shared_ptr<RequestControl>&)> release;
   // Cooperative worker. Normal client admission/quota/model accounting is
@@ -72,6 +80,8 @@ class RealtimeConversationSession {
   bool Flush();
   bool Event(std::string_view type, io::Json fields);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
+  ObjectReply ValidateSelection(const RealtimePromptSelection& selection);
+  RealtimePromptResolver PromptResolver();
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
@@ -81,7 +91,7 @@ class RealtimeConversationSession {
                     bool terminal);
   void Release(Work& work) noexcept;
   const std::string id_, conversation_id_;
-  io::Json settings_;
+  RealtimePromptSettings settings_;
   WebSocketOutput& output_;
   const RealtimeConversationCallbacks callbacks_;
   const size_t message_bytes_;

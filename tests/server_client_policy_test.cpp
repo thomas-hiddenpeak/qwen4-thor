@@ -1815,6 +1815,49 @@ Q4T_TEST(model_preparation_total_exhaustion_does_not_refill_reservation) {
   return true;
 }
 
+Q4T_TEST(model_preparation_primary_handoff_requires_current_closed_owned_rate) {
+  ClientAdmission admission, foreign;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(2, 200)));
+  Q4T_CHECK(foreign.Configure(DynamicPolicy(2, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto other = admission.Authenticate("beta", kSecret);
+  const auto copied_id = foreign.Authenticate("alpha", kSecret);
+  ClientRateLease rate;
+  ModelPreparation preparation(admission, client, rate, 16, 0, 64);
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 16));
+  Q4T_CHECK(preparation.ReservePrompt(20).ok());
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 16));
+  Q4T_CHECK(preparation.StartStep());
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 16));
+  preparation.ObserveOutput(7);
+  preparation.CloseStep();
+  Q4T_CHECK(preparation.ReadyForPrimary(client, 16) &&
+            preparation.ReadyForPrimary(client, 1));
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 17) &&
+            !preparation.ReadyForPrimary(client, 0) &&
+            !preparation.ReadyForPrimary(other, 16) &&
+            !preparation.ReadyForPrimary(copied_id, 16));
+  rate.Settle();
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 16));
+  return true;
+}
+
+Q4T_TEST(model_preparation_over_budget_cannot_handoff_or_hide_actual_usage) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(2, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate;
+  ModelPreparation preparation(admission, client, rate, 16, 0, 64);
+  Q4T_CHECK(preparation.ReservePrompt(20).ok() && preparation.StartStep());
+  preparation.ObserveOutput(65);
+  preparation.CloseStep();
+  Q4T_CHECK(!preparation.ReadyForPrimary(client, 16));
+  rate.Settle();
+  Q4T_CHECK(admission.RateUsage(0).tokens == 85 &&
+            admission.RateUsage(0).reserved == 0);
+  return true;
+}
+
 Q4T_TEST(internal_model_wrapper_preserves_parent_owner_and_quota_on_success) {
   using namespace q4t::server::detail;
   ClientAdmission admission;

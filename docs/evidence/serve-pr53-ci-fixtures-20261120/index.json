@@ -1,0 +1,95 @@
+{
+  "records": [
+    {
+      "path": "build_01.py",
+      "bytes": 2730,
+      "sha256": "37701d44ffd040244613f5e35de24dd9355205d54034fd11b381ad84e973f238"
+    },
+    {
+      "path": "cpu_01.py",
+      "bytes": 2178,
+      "sha256": "700c5ac6149c4b651de53f2abb7b3f284555887556fc9dd1a18a73186fad0555"
+    },
+    {
+      "path": "scope-01.json",
+      "bytes": 2126,
+      "sha256": "f9d3b0cc676d6410a015c6b79f1d25c90c21fc737b40c6bdb05b3dd8a04c5bf9"
+    },
+    {
+      "path": "required-01.txt",
+      "bytes": 649,
+      "sha256": "c98d08c80627ded681eabb0d19fa90c07c577976598cd3658af4ea2fd2f2f5ff"
+    },
+    {
+      "path": "preparation-01.json",
+      "bytes": 201,
+      "sha256": "19af6a392f51256640423a4385b3cc2aa51228367dd6bd4b3c0c30204e47f258"
+    },
+    {
+      "path": "failed.log",
+      "bytes": 1129074,
+      "sha256": "07485ff67c11a0d2eaea93b2e807cc88c9470105da2f7b0d8155028725a1926a"
+    },
+    {
+      "path": "failed-run.json",
+      "bytes": 6339,
+      "sha256": "82baa3e1aa1e76a8ba61667e6595840573a920ed93a82b7f745e101d338190a3"
+    },
+    {
+      "path": "passed-run.json",
+      "bytes": 6331,
+      "sha256": "01254801f1bb5fe714999de85693953310154db311cf357cf9c1bfc0792432f5"
+    },
+    {
+      "path": "fixture.patch",
+      "bytes": 2924,
+      "sha256": "36921307fff44882ec89abe8c3f065fde8d0209df2ac0c175a7dcebd9ede7349"
+    },
+    {
+      "path": "build-01/plan.json",
+      "bytes": 175253,
+      "sha256": "e591f72be40be081417f306d7a8082eeb402d0d4aabd605b01932e408d170416"
+    },
+    {
+      "path": "build-01/result.json",
+      "bytes": 291,
+      "sha256": "eb6c12f2d62b9a31a1a43ee50e310b5e2c0add823d01696dd4b32c9e2eca1401"
+    },
+    {
+      "path": "build-01/build.log",
+      "bytes": 3253,
+      "sha256": "3774c98b63138044c8bda2c2cecba6a0393235378445cc451a3611f411348f41"
+    },
+    {
+      "path": "cpu-01/plan.json",
+      "bytes": 2654,
+      "sha256": "ec03fa35c4b55add45644a335517f4ecdd661d1d1f63e4c9a53c379559b476dc"
+    },
+    {
+      "path": "cpu-01/result.json",
+      "bytes": 747,
+      "sha256": "1b20eed2fc1c6f98f0d58901b529b23c6f20f593434f47e885b81b277663e1ca"
+    },
+    {
+      "path": "cpu-01/command-0.stdout",
+      "bytes": 760,
+      "sha256": "f0199fb5e91088a57be0e74610a5a49b41adf2df805a91fb975f9a151cfd5aa4"
+    },
+    {
+      "path": "cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c"
+    },
+    {
+      "path": "cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "archive_sha256": "1bc6987a80a1c53d6ff954eba30cabacd78402b03d4ce5b2a81bf4a6c7f4dfd4"
+}

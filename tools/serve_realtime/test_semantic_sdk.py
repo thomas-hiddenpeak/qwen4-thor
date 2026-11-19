@@ -29,7 +29,7 @@ class SemanticSdk(unittest.TestCase):
         cls.tls = certificate(cls.root/'credentials')
         cls.ingress = Path(os.environ['Q4T_INGRESS']).resolve()
 
-    def call(self, mode='complete', *, plain=False, wrong_ca=False):
+    def call(self, mode='complete', *, plain=False, wrong_ca=False, observe=False):
         directory = Path(tempfile.mkdtemp(prefix=mode+'-', dir=self.root))
         clip = directory/'fixture.pcm'
         clip.write_bytes(struct.pack('<h', 1000) * 14400)
@@ -120,6 +120,8 @@ class SemanticSdk(unittest.TestCase):
                     split_samples=split, settings=dict(type='transcription',
                         audio=dict(input=dict(turn_detection=dict(
                             type='semantic_vad', eagerness='high')))))
+                if observe:
+                    args['observation_policy'] = 'record_bounded_semantic_fallback_v1'
                 result = subprocess.run(['node', str(ROOT/'tools/serve_realtime/semantic_sdk.mjs')],
                     input=json.dumps(args), text=True, capture_output=True,
                     timeout=15, env=os.environ)
@@ -177,6 +179,19 @@ class SemanticSdk(unittest.TestCase):
         code, value = self.call('missing_score')
         self.assertNotEqual(code, 0)
         self.assertIn('real classifier', value['error'])
+
+    def test_explicit_observation_keeps_fallback_and_completes_lifecycle(self):
+        code, value = self.call('missing_score', observe=True)
+        self.assertEqual(code, 0, value)
+        self.assertEqual(value['status'], 'OBSERVED_NOT_QUALIFIED')
+        self.assertEqual(value['close_code'], 1000)
+        self.assertEqual(value['terminal']['q4t_semantic_vad']['accepted'], 0)
+        self.assertEqual(value['retrieved']['item']['id'], 'cpu-item')
+
+    def test_explicit_observation_still_rejects_protocol_failure(self):
+        code, value = self.call('late_error', observe=True)
+        self.assertNotEqual(code, 0)
+        self.assertIn('fixture_failure', value['error'])
 
     def test_error_alongside_completed_event_is_not_hidden(self):
         code, value = self.call('late_error')

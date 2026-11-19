@@ -1,0 +1,19 @@
+{
+  "status": "QUALIFICATION_FAILED_LIGHT_TOOL_INCOMPLETE",
+  "model_starts": 2,
+  "actual_external_generations": 10,
+  "actual_internal_csv_steps": 1,
+  "actual_prompt_registry_requests": 5,
+  "websocket_sessions": 2,
+  "seconds": 118.99682651413605,
+  "nvml_queries": 112,
+  "all_nvml_ok": true,
+  "cleanup_complete": true,
+  "lock_released": true,
+  "primary_prompt_component_pass": true,
+  "primary_legacy_responses_prompt_pass": true,
+  "light_prompt_not_started": true,
+  "default_unchanged": true,
+  "qualification_complete": false,
+  "automatic_retry": false
+}

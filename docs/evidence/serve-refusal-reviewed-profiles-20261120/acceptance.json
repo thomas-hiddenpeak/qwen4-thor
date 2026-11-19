@@ -1,0 +1,32 @@
+{
+  "status": "ACCEPT_REVIEWED_REFUSAL_PRIMARY_LIGHT",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 323,
+    "lease_result_sha256": "67df6a9624e5512ff850cb471ff36944bc2d6a149f4720e7d7b0c924f6058c39",
+    "cleanup_complete": true
+  },
+  "new_gpu_starts": 0,
+  "source_stage_model_starts": 4,
+  "source_stage_external_requests": 37,
+  "source_stage_nvml_observations": 323,
+  "separate_continuous_leases": true,
+  "original_failed_stages_preserved": true,
+  "observation_statuses_unchanged": true,
+  "strict_exact_answer": true,
+  "strict_actual_classifier": true,
+  "actual_review_seconds": 1.0705943698994815,
+  "registry_sha256": "489e6fb65146c24df5cc96e904e67d9777f0d47596716ea91259ec1bf64a78b1",
+  "binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+  "protocol_sha256": "d4a96aa1a71ed2b8af455e626ff69de0f5db88634bc5bd31e16af768f417595b",
+  "default_unchanged": true,
+  "managed_switching_accepted": false,
+  "performance_claim": false,
+  "full_model_quality": false,
+  "cpu_tests": 31,
+  "cpu_seconds": 1.7709923926740885,
+  "source_counterexamples": 20,
+  "archive_sha256": "7fbb339d25cff257d6c841ba7b8b4ab457c58b474577df1755bee06500d6b081"
+}

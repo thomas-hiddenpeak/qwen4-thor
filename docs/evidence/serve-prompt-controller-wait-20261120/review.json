@@ -1,0 +1,92 @@
+{
+  "status": "RETAINED_ACCEPTED_GATEWAY_REVIEWED_CONTROLLER_CONTINUATION_PENDING",
+  "stages": {
+    "retained-service-01": {
+      "raw_status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "guard_status": "COMPLETED",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 155,
+        "websocket_sessions": 1
+      },
+      "seconds": 47.953502408228815,
+      "nvml_ok": 47,
+      "cleanup_confirmed": true,
+      "default_unchanged": true
+    },
+    "tls-service-01": {
+      "raw_status": "FAILED",
+      "guard_status": "COMMAND_FAILED",
+      "counts": {
+        "starts": 2,
+        "chats": 7,
+        "probes": 0,
+        "controls": 429,
+        "websocket_sessions": 2
+      },
+      "seconds": 120.36105807311833,
+      "nvml_ok": 114,
+      "cleanup_confirmed": true,
+      "default_unchanged": true,
+      "gateway_segments_checked": {
+        "tls-before-conversation": {
+          "mode": "hold_stream",
+          "transport": "official-openai-wss",
+          "completed_tokens": 673,
+          "actual_tokens": 816,
+          "interrupted_usage_from_server": true,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 881568,
+            "model_start_ticks": 331372799,
+            "model_generation": 1,
+            "controller_pid": 881554,
+            "controller_start_ticks": 331372520
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev356",
+            "actual": "rev356",
+            "criterion": "exact_source_version",
+            "response_id": "resp_1aca8668d9231369249e64e4b32f7054"
+          }
+        },
+        "tls-after-conversation": {
+          "mode": "complete",
+          "transport": "official-openai-wss",
+          "completed_tokens": 673,
+          "actual_tokens": 673,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 881568,
+            "model_start_ticks": 331372799,
+            "model_generation": 1,
+            "controller_pid": 881554,
+            "controller_start_ticks": 331372520
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev356",
+            "actual": "rev356",
+            "criterion": "exact_source_version",
+            "response_id": "resp_755a63cf1207fadde4fccd5bc756f02d"
+          }
+        }
+      },
+      "gateway_core_preserved": true,
+      "actual_cold_wait_observed": true,
+      "original_failure_preserved": true,
+      "full_tls_stage_qualified": false,
+      "controller_after_prompt_business_pending": true
+    }
+  },
+  "cpu_tests": 6,
+  "cpu_seconds": 1.0624904008582234,
+  "source_counterexamples": 20,
+  "archive_sha256": "f47e4c63dc32182c54993968e3946db850a86abf6b930f06bee8aaf92c40fe4e"
+}

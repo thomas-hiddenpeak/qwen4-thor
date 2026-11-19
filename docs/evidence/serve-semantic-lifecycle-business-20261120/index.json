@@ -1,0 +1,230 @@
+{
+  "files": {
+    "semantic_lifecycle_01.py": {
+      "bytes": 7242,
+      "sha256": "c430b8e553262cdeeccc34f0ea39d8924d827532a9084dfd5b396eb2d84376ff"
+    },
+    "archive_semantic_lifecycle_01.py": {
+      "bytes": 5024,
+      "sha256": "dfab763a4363d078f5a425f9298b8a09128cd43c61915f911cec1c6f31f05090"
+    },
+    "semantic-lifecycle-01/primary-capabilities.http.json": {
+      "bytes": 238,
+      "sha256": "2035fc5a62e3710b6eb17fc838457d0f9e084b12d0ee93c2c7a19842f5d49a8a"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-drain.metrics.json": {
+      "bytes": 23255,
+      "sha256": "9f9911abdc5f1041b795e6e9a0ee8e48b214525cd6d22e207b388fd1b85a386b"
+    },
+    "semantic-lifecycle-01/warm-continuation.sdk.json": {
+      "bytes": 660603,
+      "sha256": "594c0d0899ace7c1491603961b16f656fbf127632411e409af7583d80aa41eb1"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-after-0.http.json": {
+      "bytes": 246,
+      "sha256": "0f2dd6dd8fea60115088cb702b1fd85393788dacc308f213f371007f5284760a"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-after-0.wire": {
+      "bytes": 33670,
+      "sha256": "9aefe7c7477f831ae1cdb84780d444c226305dcc5247adcde9420fa9540a6ce0"
+    },
+    "semantic-lifecycle-01/cold-complete-after-0.wire": {
+      "bytes": 33663,
+      "sha256": "9b6e15662201fc4d6fb2478af221d6460ffe1d454cf02d171f8cdddf797437e3"
+    },
+    "semantic-lifecycle-01/cold-complete-health-before.wire": {
+      "bytes": 16005,
+      "sha256": "9d2cbe5b570b5e90d67eb707eee783e0a59d81f9021853e31b432c9e8801c349"
+    },
+    "semantic-lifecycle-01/semantic-entry-cleanup.json": {
+      "bytes": 63,
+      "sha256": "1034c1bc6bd00c65465a9d7aea1384bb896e29e01d8fb4919dcf8435d01e60bd"
+    },
+    "semantic-lifecycle-01/business-observation.json": {
+      "bytes": 7315,
+      "sha256": "b0c090ff62aa9d6f67fc2a4dfe0364da102f0bbfac374772443d29c061175b17"
+    },
+    "semantic-lifecycle-01/warm-continuation-before.http.json": {
+      "bytes": 247,
+      "sha256": "3eeec873daa1d15ee4240b9face61c5498dad9f809efc903c35249b04076533c"
+    },
+    "semantic-lifecycle-01/cold-complete-receipt.json": {
+      "bytes": 2865,
+      "sha256": "dad70afa2b86f63ffccd0b7ee0923dacd5104989ca69cdfab92750a72e64db83"
+    },
+    "semantic-lifecycle-01/primary-config.wire": {
+      "bytes": 16011,
+      "sha256": "2d509286549e08f69f10f202301ad7917b409d933aaf6877410bcb3a3a3192e2"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation.sdk.json": {
+      "bytes": 13776,
+      "sha256": "3e65995cc236eba223c738179906d8378cb7cf942c6040c8bc6dfeaa31b5e02e"
+    },
+    "semantic-lifecycle-01/primary-config.http.json": {
+      "bytes": 238,
+      "sha256": "682d3056e6f7eb7242601bf0bd3ad2adb503195cb49e2bd7c240c5eaadd0e2b9"
+    },
+    "semantic-lifecycle-01/conversation-observation.json": {
+      "bytes": 21076,
+      "sha256": "788e265e275ed78ae74bbe9aaef3e18fd9449a6889b6eb608d0cddff5c64b3e9"
+    },
+    "semantic-lifecycle-01/cold-complete-drain.metrics.json": {
+      "bytes": 23240,
+      "sha256": "0604b4344b5a00872a0993f25e983fe057c861c7e50184ec6dbde4915aab4007"
+    },
+    "semantic-lifecycle-01/cold-complete-health-after.wire": {
+      "bytes": 16010,
+      "sha256": "35623bda84aa06e551e96ab6773a246818182e5ce1788a187667193d0f8d27e3"
+    },
+    "semantic-lifecycle-01/warm-continuation.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "semantic-lifecycle-01/primary-capabilities.json": {
+      "bytes": 58202,
+      "sha256": "c5d01ce072d40873ed1be60df15d5294b3e071bc75fce096df7a99e2716aeae9"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "semantic-lifecycle-01/warm-continuation-drain.metrics.json": {
+      "bytes": 23248,
+      "sha256": "f303d0045acc3589a4ac8835b4073f7f9c05460ee1607d2dbf78043dd4213a6c"
+    },
+    "semantic-lifecycle-01/result.json": {
+      "bytes": 336,
+      "sha256": "20681043693c6dad3cf678eded3f70914ac1ecb48fcd7e1bfd986a0ab3313fc2"
+    },
+    "semantic-lifecycle-01/primary-command.json": {
+      "bytes": 2890,
+      "sha256": "a56f25231942d60a53c4b8ae7246d3367397b68e062f741735cdf78d2b7e94c4"
+    },
+    "semantic-lifecycle-01/cold-complete-before.http.json": {
+      "bytes": 247,
+      "sha256": "d210f634da6ad31ee2ba07481f9514095d72c8543d5059a738df099dcce09362"
+    },
+    "semantic-lifecycle-01/warm-continuation-receipt.json": {
+      "bytes": 2877,
+      "sha256": "0a6f2a77c3eb1ce63ef1a9c34a4a5388878feebc1fb4b9ac4577528c05ae1f0c"
+    },
+    "semantic-lifecycle-01/counts.json": {
+      "bytes": 133,
+      "sha256": "a0686b11c4f6fadd83b07274176c618fd09c39db69c4f468bd765448915d3f5a"
+    },
+    "semantic-lifecycle-01/cold-complete.sdk.json": {
+      "bytes": 717680,
+      "sha256": "38bc45c3ceb2fd015283fcf93e19b9eeeed44b315d5a8a366fc5013bb8065310"
+    },
+    "semantic-lifecycle-01/plan.json": {
+      "bytes": 1022871,
+      "sha256": "0ac22dee65bfe386f83fdbe14dc91a46386431a732090e7455f2661585001489"
+    },
+    "semantic-lifecycle-01/primary-identity.json": {
+      "bytes": 3326,
+      "sha256": "ed8e2829f8ca2d203a625a7a42d366f38f9d3cd2185ea1e74de66c691abefec5"
+    },
+    "semantic-lifecycle-01/warm-continuation-health-after.http.json": {
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    "semantic-lifecycle-01/cold-complete-after-0.http.json": {
+      "bytes": 247,
+      "sha256": "af0330615bfacdbee072712ca16391f080279bc6b6ace34273f0546f067fd94a"
+    },
+    "semantic-lifecycle-01/warm-continuation-health-before.wire": {
+      "bytes": 16010,
+      "sha256": "35623bda84aa06e551e96ab6773a246818182e5ce1788a187667193d0f8d27e3"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-entry-cleanup.json": {
+      "bytes": 63,
+      "sha256": "03768b1286f72ed71a66ecb33f4dfbf666c28ab71ffd1f66b5894ac3ddd42900"
+    },
+    "semantic-lifecycle-01/review.json": {
+      "bytes": 1202,
+      "sha256": "e87f54f35d9562221b4f0892ab594955bc04f05b2b369478f9c117facba20988"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-before.http.json": {
+      "bytes": 247,
+      "sha256": "b92243e1c47ec52daa23c981fa749732372a66bbd451b3b821d8f4847fc4b7b6"
+    },
+    "semantic-lifecycle-01/primary-config.json": {
+      "bytes": 20878,
+      "sha256": "34d8723c375df54aa4e0e70ae4d970d3dc6a6bd66c50df1f76ee96a74407c4c9"
+    },
+    "semantic-lifecycle-01/primary-capabilities.wire": {
+      "bytes": 45149,
+      "sha256": "7e66932109e4e051a9e2c70c2da32c02a38d32e5d5d67b8830efd2f7fc94e7b0"
+    },
+    "semantic-lifecycle-01/cold-complete-health-after.http.json": {
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    "semantic-lifecycle-01/warm-continuation-after-0.http.json": {
+      "bytes": 247,
+      "sha256": "472ebc78d9e54a93c1f06d565b63acd49f3e30a8dc4a73b2016b630efd162ed0"
+    },
+    "semantic-lifecycle-01/primary-model.log": {
+      "bytes": 36467,
+      "sha256": "758f955088b52a4966e4348baf9291dbcbcad83a108da3955f4c9409c7208208"
+    },
+    "semantic-lifecycle-01/warm-continuation-before.wire": {
+      "bytes": 33663,
+      "sha256": "07fe470e05d25492b6292bb644b0441bc3d0211d2bfcff1ef8d048b89219c18d"
+    },
+    "semantic-lifecycle-01/semantic-observations.json": {
+      "bytes": 6215,
+      "sha256": "045e49e47f39ce0512039c758dfb24142ae0e2adc828502ea98c859f2b75769f"
+    },
+    "semantic-lifecycle-01/cold-complete-before.wire": {
+      "bytes": 33632,
+      "sha256": "d8888387c63e958fee3037a53e0774d43b9098074c24343b20d1dd3857a99958"
+    },
+    "semantic-lifecycle-01/cold-complete-health-before.http.json": {
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    "semantic-lifecycle-01/cleanup.json": {
+      "bytes": 4945,
+      "sha256": "f3c29db7f978f3afe25ca9d447b197e781cd4863e3c75c17c7f9e6f65cd20d24"
+    },
+    "semantic-lifecycle-01/primary-conversation-observation-before.wire": {
+      "bytes": 33669,
+      "sha256": "7332a3a489631c7eb45a030c65ac71ee3e22e0a2f923a89afbad9827c065d689"
+    },
+    "semantic-lifecycle-01/cold-complete.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "semantic-lifecycle-01/warm-continuation-after-0.wire": {
+      "bytes": 33669,
+      "sha256": "b8d5b4e496a00ccdbd565132dcd10961e98bf97c0ed4d4001f28d6200112eeaf"
+    },
+    "semantic-lifecycle-01/warm-continuation-health-after.wire": {
+      "bytes": 16010,
+      "sha256": "35623bda84aa06e551e96ab6773a246818182e5ce1788a187667193d0f8d27e3"
+    },
+    "semantic-lifecycle-01/warm-continuation-health-before.http.json": {
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    "semantic-lifecycle-01/lease/nvml-queries.jsonl": {
+      "bytes": 147697,
+      "sha256": "db9ca40cc813afded79e088ea89f7fcb26748b46a1690974ff7f5b607c7768cc"
+    },
+    "semantic-lifecycle-01/lease/events.jsonl": {
+      "bytes": 12004,
+      "sha256": "24e937761317354dc04e371549002d45d27bef32b945f92b4f06adabad0a28d6"
+    },
+    "semantic-lifecycle-01/lease/exit.json": {
+      "bytes": 658,
+      "sha256": "f0deefa6af952ed30362b7983fee4258752088de8a574ddecf48b2fc7a720c25"
+    }
+  },
+  "omitted": {
+    "semantic-lifecycle-01/client-policy.json": {
+      "sha256": "709c495c921edf96f9ed1a23ddb0902810c24b4f9f2613bd35750ef14525895e",
+      "reason": "private test authentication; original retained"
+    }
+  }
+}

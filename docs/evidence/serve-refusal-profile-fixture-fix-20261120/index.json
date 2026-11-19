@@ -1,0 +1,62 @@
+{
+  "profiles-01/result.json": {
+    "bytes": 1203,
+    "sha256": "b67a1bbbd7cf4ff0e5591faf0a9fe90144d770ce83ce9331abb7cba364316231"
+  },
+  "profiles-01/plan.json": {
+    "bytes": 1020817,
+    "sha256": "2f36adb5d9d6b112daaa62f6ed8c8f4f844fde9d865168ab655b0bf28d3ec7aa"
+  },
+  "profiles-01/cleanup.json": {
+    "bytes": 120,
+    "sha256": "5989dfbcd15813c54a90b8657da0809f33f09f57fa7b08c7bec8baf1612414ba"
+  },
+  "profiles-01/lease/nvml-queries.jsonl": {
+    "bytes": 29680,
+    "sha256": "de5028ddd2e9f205d0a566059ec50f006ad71de8daa4b139a9cf5d7677056450"
+  },
+  "profiles-01/lease/events.jsonl": {
+    "bytes": 2944,
+    "sha256": "f2831ee5b94838937eb54b68ab1f72780c43868364962bb3ef8a6eb0e203f861"
+  },
+  "profiles-01/lease/exit.json": {
+    "bytes": 722,
+    "sha256": "e798ad7940da7e87fab2058309bba2f646a84974bc399668dc6465952c5f124c"
+  },
+  "profile-cpu-02/original-inventory.json": {
+    "bytes": 509794,
+    "sha256": "420696c9fd5369c9c62769ebeec49f899b2d4e7597827320a2e4200e2d6b0776"
+  },
+  "profile-cpu-02/check-1.log": {
+    "bytes": 223,
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c"
+  },
+  "profile-cpu-02/original-test_profile_refusal.py": {
+    "bytes": 8353,
+    "sha256": "6870fb471d3b637afd85022b5206cc322432188dbb63b4a0a718ff0b5323c0a8"
+  },
+  "profile-cpu-02/result.json": {
+    "bytes": 743,
+    "sha256": "2ac17960245a9ce1af1a56426ccc744c52dde41824e2253cbe66f0f08fae2e94"
+  },
+  "profile-cpu-02/plan.json": {
+    "bytes": 740,
+    "sha256": "5a1ac0067dc17a0c8e05898f3c31b5294211a583ff0bb695f8bf144b8e24a1ca"
+  },
+  "profile-cpu-02/check-0.log": {
+    "bytes": 486,
+    "sha256": "6b8c03da9250efdb8f1ea519d280a8bb7c7d9a61baccaa8b1247da832c385b46"
+  },
+  "profile-cpu-02/original-profile_refusal_targeted.py": {
+    "bytes": 18369,
+    "sha256": "3bc266ebeb56455ee9b710a7360f4c1cbf8d0804d2fdf7f75cc47df12cf3dfff"
+  },
+  "source/tools/serve_recovery/profile_refusal_targeted.py": {
+    "bytes": 18701,
+    "sha256": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac"
+  },
+  "source/tools/serve_recovery/test_profile_refusal.py": {
+    "bytes": 9327,
+    "sha256": "a9fa0a87cb59e948507b4f5697214b26b984d03cebb57b9de44697925e7dbb95"
+  }
+}

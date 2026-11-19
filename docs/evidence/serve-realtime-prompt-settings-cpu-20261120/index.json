@@ -1,0 +1,118 @@
+{
+  "settings-cpu-01/source-check.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "settings-cpu-01/source-result.json": {
+    "bytes": 55,
+    "sha256": "0208aa1d33fe51e36a175589d603acbdd2d75ec6db1b5efb7358101c2ba0bd5b"
+  },
+  "settings-cpu-01/result.json": {
+    "bytes": 594,
+    "sha256": "c556e669599f0deab7273726731988ba0884be65e30f32fef7f6307ee26898da"
+  },
+  "settings-cpu-01/stdout.log": {
+    "bytes": 2375,
+    "sha256": "17ae6a38e25263dfffa075c61b721252d9099994190d10b6e642baed500283a1"
+  },
+  "settings-cpu-01/source-check.stdout": {
+    "bytes": 223,
+    "sha256": "174160117cf2b70e66380c33e4bca4c42ce6a2d5836327509af85e36c57c5a89"
+  },
+  "settings-build-01/result.json": {
+    "bytes": 270,
+    "sha256": "cd1860b24a1130e725530983e8377208aaeb3e552f37d44ef70b288fc9247a34"
+  },
+  "settings-build-01/build.log": {
+    "bytes": 8159,
+    "sha256": "be54a4936b4eb0f153fcd4abe470fb5170730e91be0dfab89d4cc4bca775e323"
+  },
+  "settings-build-01/server_realtime_prompt_settings_test.cpp": {
+    "bytes": 11676,
+    "sha256": "41525618e6798c7a54fd59e66b83e427b29c4157895471ee5d029dbf34bb16d5"
+  },
+  "settings-build-01/failure-review.json": {
+    "bytes": 225,
+    "sha256": "594b023359c6e1eac936b2d35dd419d208a58781a0eea8235d54f55ecc7dcf14"
+  },
+  "settings-build-02/result.json": {
+    "bytes": 236,
+    "sha256": "d3f56d179bbbd49be7860384d60f250a6d36bb339fe491c7873033f0f91a0ebb"
+  },
+  "settings-build-02/build.log": {
+    "bytes": 326,
+    "sha256": "ccfa689261ddbe7e3d06c3bffd9bdb647dbc6f92435c90ad1d5239db019a5994"
+  },
+  "settings-plan-01.json": {
+    "bytes": 4150,
+    "sha256": "1b7110061ac4abdd356af048b8d4be952ec0d5b9a9d7bf6f6728a7bbc05d6f4c"
+  },
+  "settings-plan-02.json": {
+    "bytes": 4238,
+    "sha256": "a51c9012040b75ea7f526136a110cb5811646b69b244b3d79debf5b4db78ce79"
+  },
+  "settings-required-tests.txt": {
+    "bytes": 2096,
+    "sha256": "3514901c85e93c3f42067aaf9e21165202d5bf4b741cdd931ae4422882b17bc5"
+  },
+  "prepare_settings_cpu.py": {
+    "bytes": 3453,
+    "sha256": "dfd6f8d52cb9dc9a5a2300e37edd113e1a6026c2bffbb22caadb96dc5fa50cbf"
+  },
+  "private-header-detach-review.json": {
+    "bytes": 411,
+    "sha256": "b71e76be39d894bb83f55cfe33271233321a9234bdbb42a8b5307db74f5cf5ee"
+  },
+  "private-header-restored-verification.json": {
+    "bytes": 400,
+    "sha256": "16a2114119134c1e78b52c6bfdd589503270061216942dc964eabd763cf26084"
+  },
+  "archive_settings_cpu.py": {
+    "bytes": 5963,
+    "sha256": "eaee98a1aac3a51b5b3a399940bdb80c07d5306120f8b16afa4ce3302185641f"
+  },
+  "source/include/q4t/server/prompt_registry.h": {
+    "bytes": 2886,
+    "sha256": "99ad0514ec7036f205a1cc0913b979630b0f4aa500e24f1905c7fcce115e2178"
+  },
+  "source/src/server/prompt_internal.h": {
+    "bytes": 764,
+    "sha256": "b665ef3b0b166e4e336e6d7637a9c0456f0e715e2ecacd75b207d3d643cbbc25"
+  },
+  "source/src/server/prompt_registry.cpp": {
+    "bytes": 12709,
+    "sha256": "37473a7cd1b9f11fa84aed58fafce0f58f9085ac07850af4fee31451a49d5639"
+  },
+  "source/src/server/prompt_template.cpp": {
+    "bytes": 15680,
+    "sha256": "5bec7acb14639e4062e0ff3370c770912acb177e5e6acae683de89acc3be1238"
+  },
+  "source/include/q4t/server/realtime_prompt_settings.h": {
+    "bytes": 2084,
+    "sha256": "7091a38541cd9afbc689e7f82031ed5fb9161815d868d9c9f8ff78fb1af76e5b"
+  },
+  "source/src/server/realtime_prompt_settings.cpp": {
+    "bytes": 7562,
+    "sha256": "ad987b4b4a50b1c6107fea454f7d5b7b4f3b685b7c86dfecd117e6c304383140"
+  },
+  "source/tests/server_realtime_prompt_settings_test.cpp": {
+    "bytes": 11696,
+    "sha256": "c8298f096c60086b6af6e4cd38c342c8aabb320fff0b19e540bd1b47bae77449"
+  },
+  "source/tests/server_prompt_registry_test.cpp": {
+    "bytes": 32935,
+    "sha256": "8fcd645185a52144945fa7047fc2a8e7bf89c1dc1309cac53f43d7afcf55baa8"
+  },
+  "source/CMakeLists.txt": {
+    "bytes": 61849,
+    "sha256": "6dc83c434be6ac650a789b0cbaff6bb142d02dbe6f9e23f7bc2ac8217ba27419"
+  },
+  "source/cmake/HostTestSources.cmake": {
+    "bytes": 38355,
+    "sha256": "15201e73f288f8d5225d7ab27084f13d1ac344f1ff458a333ae04316a5985e90"
+  },
+  "source/cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 30777,
+    "sha256": "62e3f90b776746c50f4a7bc553e08620fdd779282c8b6a201ca2b805ca279879"
+  }
+}

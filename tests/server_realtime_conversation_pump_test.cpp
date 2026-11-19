@@ -1,6 +1,8 @@
 #include "q4t/server/realtime_conversation_pump.h"
 
 #include <stdexcept>
+#include <cstdlib>
+#include <filesystem>
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/lifetime.h"
@@ -161,5 +163,57 @@ Q4T_TEST(
   Q4T_CHECK(good.calls == 1 && healthy.Alive());
   healthy.Stop();
   healthy.Join();
+  return true;
+}
+
+Q4T_TEST(realtime_conversation_prompt_lookup_disconnect_cancels_object_worker) {
+  ObjectWorkerEntryForTesting("--grammar-fixture-silent");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  for (const bool disconnect : {true, false}) {
+    Fixture f;
+    const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+    auto root = std::filesystem::absolute(output ? output : ".q4t-work/prompt");
+    std::filesystem::create_directories(root);
+    auto path = (root / "prompt-pump-XXXXXX").string();
+    Q4T_CHECK(mkdtemp(path.data()));
+    ObjectStoreOptions options;
+    options.directory = path + "/objects";
+    ObjectStore store(options);
+    std::atomic<bool> entered{false}, returned{false};
+    std::atomic<int> http_status{0};
+    f.cb.resolve_prompt = [&](const auto& reference, size_t budget,
+                              const auto& cancelled, auto* out) {
+      entered = true;
+      auto reply = ResolveRealtimePrompt(
+          &store, reference, {"client:pump", Clock::now() + 5s, cancelled},
+          budget, out);
+      http_status = reply.http_status;
+      returned = true;
+      return reply;
+    };
+    RealtimeConversationPump pump("sess_pump", "conv_pump", f.settings,
+                                  f.output, f.cb);
+    Q4T_CHECK(pump.Start());
+    Q4T_CHECK(pump.Message(
+        WebSocketOpcode::kText,
+        R"({"type":"session.update","session":{"type":"realtime","prompt":{"id":"prompt_missing"}}})"));
+    Q4T_CHECK(Wait([&] { return entered && store.Health().workers_started; }));
+    Q4T_CHECK(pump.InputMessages() == 1 && !returned);
+    Q4T_CHECK(pump.Message(WebSocketOpcode::kText, kResponse));
+    const auto begin = Clock::now();
+    if (disconnect) {
+      pump.Stop();
+      pump.Join();
+      Q4T_CHECK(returned && http_status == 499 && f.calls == 0);
+    } else {
+      Q4T_CHECK(Wait([&] { return f.released == 1; }));
+      Q4T_CHECK(returned && http_status >= 400 && pump.Alive());
+      Q4T_CHECK(f.calls == 1);
+      pump.Stop();
+      pump.Join();
+    }
+    Q4T_CHECK(Clock::now() - begin < 1s);
+    Q4T_CHECK(pump.InputBytes() == 0 && pump.InputMessages() == 0);
+  }
   return true;
 }

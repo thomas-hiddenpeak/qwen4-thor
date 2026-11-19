@@ -7,6 +7,308 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR #53夹具修正CPU通过](evidence/serve-pr53-ci-fixtures-20261120/README.md)：
+10项/7.462秒和20来源反例通过，构建37.971秒零警告，0GPU。
+正常准备改用既有默认期限，实际丢回执/超时保护断言保持；原CI
+失败与脚本匹配拒绝保留。生产/default rev366不变，音频提交保留；
+继续最终head CI合入与全部master。
+
+PR #53最终CI保留一成功、一失败原记录：失败均在故障注入前正常
+存储准备阶段撞到100/250ms夹具期限。仅修正这两类测试，使用现有
+默认I/O期限，第二次写入丢回执和禁止重放断言保持；补子进程原因。
+冻结10项针对CPU及20来源反例/120秒/0GPU；生产/default rev366不变。
+音频两提交保留在原分支，本修复从PR原head隔离，全部master继续。
+
+[rev366原生Realtime Prompt已交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：
+19项STOPPED命令/391.724秒，真实回退再前进，0新增GPU。
+默认648d6d68、服务包7be0a6a5；配额/用量/历史/恢复预算保持，前驱
+rev356保留。实际Prompt恢复与主轻资格已验，原质量与驱动FAIL不改写。
+PR #53待最终检查合入；继续音频/MCP/追踪/Live及全部master。
+
+以下阶段记录保留各自时点事实；当前默认以本段和默认身份表为准。
+
+[Prompt原生恢复完成](evidence/serve-prompt-native-recovery-20261120/README.md)：
+含原失败组共7模型/22生成/7WSS/1探测，四次独立租约402.001秒，
+377次NVML正常并清理；七组工具答案均rev356。保留包、网关已验，
+控制器按完整配额窗口恢复，整包回退保留Prompt。原TLS断言FAIL及
+历史质量FAIL保持，默认未改；继续STOPPED可回退发行、合入与总目标。
+
+[控制器等待断言修正CPU通过](evidence/serve-prompt-controller-wait-20261120/README.md)：
+6项/1.062秒与20来源反例通过。保留包正式接受，原TLS FAILED保留；
+已完成网关段独立复核通过，控制器恢复后Prompt业务仍待补。两个原组
+共161次NVML正常并清理，默认不变；继续控制器专组和整包回退，总
+GPU时间仍不超过1200秒，全部master继续。
+
+TLS网关前后真实工具均rev356且取消结算完成；随后控制器恢复已READY，
+驱动误用正常交接的非空usage.source断言，原组FAIL保留（2模型/7生成）。
+已改为核对强杀后的实际完整配额等待，冻结6项CPU/20来源反例/120秒；
+仅补控制器2模型/6生成/2WSS/360秒，网关不重跑。连同已用租约与
+尚未跑的整包回退，累计GPU仍限1200秒，默认不变，全部master继续。
+
+[Prompt恢复驱动CPU通过](evidence/serve-prompt-recovery-cpu-20261120/README.md)：
+15项/7.292秒，JS语法与20来源反例通过，0GPU；固定SDK/原生TLS对
+CPU对端验证引用、工具、流、正常关闭及反例。三种包准备完成，私有
+策略硬链接准备失败保留并修复。继续5模型/18生成/6WSS/1200秒恢复，
+默认rev356不变，实际恢复尚待验收，全部master继续。
+
+Prompt恢复驱动已实现：同一真实工具通过持久模板运行，原生网关中断、
+控制器所属模型重建与确切整包回退分别检查；质量FAIL仍独立保留。
+冻结15项CPU/20来源反例/120秒/0GPU，随后最多5模型/18生成/6WSS/
+1200秒的三组恢复；不重放独立后端全矩阵，默认rev356不变。
+
+[恢复资格读取CPU闭合](evidence/serve-managed-profile-reader-20261120/README.md)：
+12项/14次尝试/2.685秒，20来源反例及两份真实资格校验通过，0GPU。
+首轮两项夹具缺环境变量的错误保留，仅补失败项；普通元数据仍2MiB，
+原封包保持。helper构建20.700秒零警告，默认不变；继续Prompt恢复交付。
+
+恢复工具的资格读取已适配显式新来源，普通元数据仍2MiB；新路径
+必须逐份完整校验并绑定registry/实际包，旧封包沿用原入口。冻结12项
+CPU、两份真实记录读取与20来源反例/120秒/0GPU。原生helper零警告
+构建20.700秒，模型/cache/protocol/default保持；随后准备受影响恢复。
+
+[受影响主轻资格严格复核通过](evidence/serve-refusal-reviewed-profiles-20261120/README.md)：
+31项CPU/1.771秒、20来源反例及两份实际完整记录通过，新增GPU为0。
+确切来源组合三次独立租约（4模型/37请求/323次NVML），原格式/冷态
+FAIL与观察状态保持；成功输出仍须精确版本和有效早停分类。新registry
+489e6fb6，候选648d6d68；默认rev356不变，继续恢复组合与可回退发行。
+
+分组证据复核读取器已实现；新观察仍须原精确答案与有效早停分类，
+确切来源摘要绑定各消费者及原失败，三个独立租约不冒充一组。
+冻结31项CPU/20来源反例/120秒/0GPU，随后离线核对两配置实际记录。
+原严格组FAIL和默认保持，无新增推理，恢复及全部master继续。
+
+[主配置生命周期补验完成](evidence/serve-semantic-lifecycle-business-20261120/README.md)：
+1模型/4请求/64.650秒，62次NVML正常并清理完成；冷/热两轮均实际
+分类，工具准确返回rev356，历史/正常关闭/结算完整。本次未复现未知
+概率降级；原冷态及格式FAIL保持。继续CPU核对确切成功输出、各次
+来源和独立租约，不改写旧观察状态、不重放模型；恢复和总计划继续。
+
+[语义降级观察器CPU通过](evidence/serve-semantic-lifecycle-cpu-20261120/README.md)：
+11项/16.663秒/0GPU，20来源反例通过；含原生TLS与官方SDK的CPU对端。
+观察模式保留实际降级并完整关闭，原严格资格继续拒绝缺失分类。
+运行时/默认与原FAIL不变，继续1模型/4请求/3WSS/600秒生命周期补验。
+
+冷态语义观察器已实现，显式OBSERVED_NOT_QUALIFIED状态与原严格资格隔离；
+不改运行时、采样或默认。冻结11项CPU（含原生TLS/官方SDK的CPU对端）
+与20来源反例/120秒/0GPU，之后按已冻结1模型/4请求补完整生命周期。
+原格式及语义FAIL保留，全部master继续。
+
+[缺项消费者观察已完成](evidence/serve-refusal-consumers-observation-20261120/README.md)：
+2模型/28外部请求/223.416秒，208次NVML正常并完成清理；16组15通过。
+主配置冷ASR使语义评分触及绝对停顿期限，转写/计费完整但未采信概率；
+轻配置两轮实际分类通过。原格式FAIL与本组语义FAIL不改写，默认rev356保持。
+固定1模型/4请求/3WSS/600秒补冷态降级、热态分类和主配置正常关闭结算；
+先做对应观察器CPU，全部master继续。
+
+[主配置格式失败保留](evidence/serve-refusal-profile-format-review-20261120/README.md)：
+1模型/5生成/54.366秒，53次NVML正常，清理完成。Realtime返回
+`<version>rev356</version>`，实际值正确但原严格精确格式FAIL；
+消息/流式/用量复核不补写缺失正常关闭与结算。停止同题随机重采样，
+继续尚未执行的消费者观察：2新模型/29外部请求/7WSS/5入口/900秒，
+不将缺项观察当作原资格通过。默认rev356及全部master保持。
+
+[消费者夹具容量拒绝已修正](evidence/serve-refusal-profile-fixture-fix-20261120/README.md)：
+原组0模型/0请求，公平准入正确拒绝4客户超过3队列；只保留实际
+2客户并前移容量检查。2项CPU/0.929秒与20来源反例通过，原FAIL保留。
+候选/默认未变，继续原预算2模型/34请求/900秒未执行业务，全部master继续。
+
+[受影响消费者27项CPU通过](evidence/serve-refusal-profile-cpu-20261120/README.md)：
+2.381秒/0GPU，20来源反例通过，v22与v1～v21历史封包合同保持。
+候选648d6d68不变；继续冻结2模型/34外部请求/8WSS/6入口/900秒
+实际主轻短验，显式保留旧后端与新消费者，默认rev356及原FAIL保持。
+随后恢复和可回退交付，全部master继续。
+
+主模型消费者的有界资格驱动已编写：2模型/34外部请求/8WSS/6入口/
+10注册操作/900秒，另记录2个CSV与既有有界语义评分内部步骤。
+旧独立后端保留原身份；媒体/音频问答/语义停顿重验，内置Chat语音
+与已验声线快照的Chat/ASR取得新证据。v22封包保留v1～v21来源合同。
+先冻结27项CPU和20来源反例/120秒/0GPU；默认rev356及原FAIL保持，
+随后短验和交付，全部master继续。
+
+[拒答说明修正真实短验通过](evidence/serve-refusal-format-business-20261120/README.md)：
+候选648d6d68，1模型/8生成/53.803秒，52次NVML正常且清理完成。
+两历史工具输入及真实Realtime均rev356；Chat/Responses拒答、流式、
+存储和正常schema/拒答后问答保持。默认rev356及原FAIL不变。
+来源审计新增仅全局说明，继续补主模型消费者受影响资格、恢复和交付，
+独立后端原证据复用，全部master保持。
+
+[拒答说明修正18项CPU通过](evidence/serve-refusal-format-cpu-20261120/README.md)：
+0.480秒/0GPU，20来源反例通过；候选648d6d68零警告构建。
+冻结1模型/8生成/1WSS/1入口/600秒，验证两条真实工具输入、
+实际拒答及正常schema/历史与Realtime工具；不自动循环或更新默认。
+原FAIL、rev356及全部master保持，随后继续受影响资格与交付。
+
+[拒答提示干扰对照](evidence/serve-refusal-interference-20261120/README.md)：
+同一轻配置/greedy/seed0，原说明在一条实际工具输入上误称需要JSON
+并拒答，仅替换中性格式说明后返回rev356；另一输入两版均正确。
+1模型/4原始Completion/46.322秒，45次NVML正常、清理完成。
+新说明已按实测文本接入，保留拒答帧/解析/流式/schema合同；冻结18项
+直接相关CPU及20来源反例/120秒/0GPU，再做实际拒答与正常路径短验。
+当前未构建/发行新候选，默认rev356及全部原FAIL保持，全部master继续。
+
+[Prompt缺项续验未通过](evidence/serve-realtime-prompt-continuation-review-20261120/README.md)：
+2模型/10外部生成+1内部摘要/118.997秒，112次NVML正常，清理完成。
+主配置Prompt四轮及旧Responses通过；轻配置工具回填却被模型解释为
+拒答并耗尽128 tokens，返回incomplete。轻配置Prompt未跑，新资格
+仍FAIL，默认rev356不变。资格续验停止；转查全局拒答模板干扰假设，
+须保留拒答能力及全部原失败，不以分类替代修复，全部master继续。
+
+[缺项续验7项CPU通过](evidence/serve-realtime-prompt-resume-cpu-20261120/README.md)：
+0.835秒/0GPU，20来源反例通过。确切原主配置5次已通过工作可复用，
+失败Prompt及原FAIL、监控/清理记录完整保留；新Prompt仍须原正确答案
+合同。继续一次2模型/15外部生成+2内部摘要/3WSS/900秒实际续验，
+默认rev356和全部master保持。
+
+[主轻首轮与固定诊断](evidence/serve-realtime-prompt-profile-review-20261120/README.md)已归档：
+原组1模型/实际8生成/64.708秒，删除后快照回答错误且拒答帧不完整，
+原FAIL保留。两提示重建均174 tokens且逐字节相同；单次诊断1模型/
+3HTTP/45.796秒，固定seed/greedy/原始Completion均42。两组107次
+NVML正常、资源释放，默认rev356不变，尚无新资格。仅复用实际通过的
+5次主配置Chat/Realtime工作；冻结7项CPU/20来源反例/120秒，然后
+2模型/15外部生成+2内部摘要/3WSS/10注册HTTP/900秒仅续缺项，
+一次续验失败仍保留候选与失败，不自动循环；全部master继续。
+
+[有界主轻驱动11项CPU通过](evidence/serve-realtime-prompt-targeted-cpu-20261120/README.md)：
+1.410秒/0GPU，20来源反例通过，v21新证据封包和v1～v20历史读取
+保持；一般元数据上限未扩大。继续冻结2模型/20外部生成+2内部摘要/
+10注册HTTP/4WSS/900秒实际主轻短验；默认rev356和原质量FAIL保持。
+
+有界主轻驱动及资格读取已编写：2模型/20外部生成（另2个CSV内部摘要）/10注册HTTP/4WSS/900秒；严格复用来源，仅重验受影响路径。完整旧记录需要独立8MiB资格边界，普通元数据仍2MiB；v21补齐封包所需3个模块，v20保持。冻结11项CPU与20来源反例/120秒/0GPU，随后实际短验；默认rev356和原质量FAIL不变，全部master继续。
+
+[来源复用6项CPU闭合](evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md)：
+9次尝试/2.673秒/0GPU，3次夹具容量观测失败保留，仅失败项
+补验；生产校验未放宽，20来源反例通过。复用绑定确切旧资格与当前
+候选、原后端记录可见；仍须新实跑的受影响路径不被省略。有界主轻
+驱动继续，默认rev356、原质量FAIL与全部master保持。
+
+主轻资格的来源复用校验已编写：仅允许已审查的f5af36c6→0d1e2ef1
+与确切旧registry，完整保留原v17记录，拒绝递归复用、模型/后端/
+容量漂移及改写旧观察；Chat/Realtime/Prompt与旧Responses模板须
+重新取得实际证据。冻结6项CPU+20来源反例/120秒/0GPU，实际有界
+驱动继续实现；默认rev356、原质量FAIL与全部master保持。
+
+[Prompt新候选与源码边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)
+已核对：0d1e2ef1构建15.976秒零警告，旧资格23个变化/950个不变
+源文件已逐一对照。继续为未变后端证据增加可核验来源，并准备仅
+受影响的主轻短验（2模型/20生成/900秒，尚未执行）；不机械重跑
+原64项组合。默认rev356与原质量FAIL保持，全部master继续。
+
+[Prompt资格25项CPU闭合](evidence/serve-realtime-prompt-profile-cpu-20261120/README.md)：
+23 Python+2原生，28次尝试/2.198秒/0GPU，构建零警告。修复显式
+v1→v2升级误拒绝，自动回退仍不能丢Prompt；原失败保留，未受影响
+证据复用。新v18必须有实际模板/CSV与单RPM证据；默认rev356、原
+质量FAIL保持。继续必要构建、受影响主轻/恢复与交付及全部master。
+
+Prompt能力声明与v18资格检查已编写：旧v17证据保持原合同，新增
+模板快照/文件/单次RPM的真实检查，自动回退不能丢Prompt能力。
+冻结22项Python+2项原生CPU、JS语法与20来源反例/120秒/0GPU。
+当前未构建新运行时或完成主轻/恢复资格；默认rev356、原质量FAIL
+保持，针对性验证后继续有界业务与可回退交付及全部master。
+
+[Prompt剩余场景短验通过](evidence/serve-realtime-prompt-followup-20261120/README.md)：
+1模型/5 Realtime+3 Chat/53.511秒，52次NVML正常；实际取消、
+跨客户隔离、CSV一次RPM和全部结算/清理通过。固定seed回答rev356，
+greedy仍答错，原质量FAIL与原整组FAIL不改写。默认rev356保持，
+继续能力声明、主轻/恢复与可回退交付，全部master保持active。
+
+[Prompt真实业务与输入复核](evidence/serve-realtime-prompt-business-review-20261120/README.md)：
+1模型/8 Realtime+1 Chat/56.925秒；前7项真实场景通过，第8项工具
+答案未返回rev356，原整组FAIL保留。实际提示含来源值，带模板与
+等效Chat逐字节一致、均305 tokens；2项CPU复核0.364秒/0GPU。
+续验6项CPU+JS语法通过（0.296秒）；仅补取消/跨客户/一次RPM
+与2条固定条件诊断：1模型/5 Realtime+3 Chat/900秒。不重复已通过文件场景，
+默认rev356、原质量失败及全部master保持。
+
+[Prompt注册失败已定位并修正驱动](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：
+首轮1模型/1 Chat/0 Realtime/36.140秒，注册400原件保留，
+自有资源与锁释放。脚本误用了Responses的effort=none；服务正确
+拒绝，5份真实模板+5个原错误反例经原生注册表CPU通过（0.063秒），
+JS语法通过；运行时不变。接下来同候选单模型/13 Realtime+2 Chat/
+900秒继续未执行业务，默认rev356和全部master保持。
+
+[Prompt业务驱动CPU通过](evidence/serve-realtime-prompt-driver-cpu-20261120/README.md)：
+6项反例+1项JS语法、0.296秒/0GPU，候选`f20c3b76`零警告构建。
+继续冻结单模型/13 Realtime+2 Chat/2WSS/32原生HTTP/900秒的
+真实业务短验，包含CSV内部模型步骤与一次RPM、真实PNG/文本、
+跨客户模板/文件隔离、版本和工具/取消。默认rev356保持，
+尚无Prompt实际业务资格；全部master继续。
+
+Prompt实际推理候选`f20c3b76`已零警告构建（332.107秒），
+原`f5af36c6`和默认rev356身份保持。真实SDK驱动已编写，先冻结
+6项Python反例+1项JS语法/120秒/0GPU；通过后冻结单模型、13次
+Realtime+2次Chat、2WSS/32原生HTTP/900秒，覆盖模板固定/覆盖/
+删除、真实文件/PNG/CSV、跨客户隔离、工具闭环、取消和一次RPM
+实际结算。不做完整性能/质量矩阵；实际资格及可回退交付继续。
+
+[Prompt运行时22项CPU闭合](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：
+8项新合同，首轮21/22、夹具必填字段修正后仅补验1项；原失败
+保留，生产源码未变，23次尝试共0.016秒/0GPU。两次构建零警告、
+20来源反例通过；实际模型准备与主生成共用一次RPM、累计TPM/用量
+交接具备CPU证据。继续必要运行时构建与真实SDK业务；当前无Prompt
+业务资格，草稿PR #53、默认rev356及全部master保持。
+
+Realtime输入准备已接运行时：表格内部模型步骤与最终回答共享
+一次请求凭据和RPM/TPM租约，原生媒体/工具计划直接交接，取消、
+异常和主生成准入失败保留并结算实际预处理用量。冻结22项针对性
+CPU/120秒/0GPU及来源检查；尚未构建新运行时或取得Prompt业务
+资格，默认rev356保持。随后必要构建与真实SDK短验，全部master继续。
+
+[Prompt文件30项CPU通过](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)：
+0.164秒/0GPU，真实文本/PNG/CSV解析、租户权限、取消与
+预算、删除后快照及前缀下标通过；构建22.888秒零警告，20来源反例
+通过。表格CPU回执不代表真实摘要；继续运行时模型准备、RPM/用量
+交接和实际SDK业务。草稿PR #53、默认rev356及全部master保持。
+
+Realtime文件前缀准备owner已编写：实际文本/图像走原生文件通道，
+未完成的表格预处理不进入生成；保留输入顺序、权限与取消，资源
+上限为32MiB来源/64MiB文件保留/16MiB展开并遵循更严配置。冻结
+30项针对性CPU/120秒/0GPU；运行时模型预处理、单次RPM与实际用量
+交接继续实现，尚无Prompt业务资格。草稿PR #53已建立，默认rev356
+保持；PR #52已合入，全部master继续。
+
+[Prompt会话57项CPU通过](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：
+0.915秒/0GPU，11项新合同覆盖真实对象worker超时/断连、
+版本/租户/并发快照与前缀安全截断；20来源反例通过，原编译失败保留。
+继续文件/媒体前缀和实际SDK业务，尚未构建新运行时或取得Prompt
+业务资格；默认rev356不变，PR #52已合入，全部master保持active。
+
+[PR #52已合入主线](evidence/serve-realtime-chat-main-20261120/README.md)：两组最终CI通过，main合并点
+`0c8d7a107`；已验文本/工具服务与rev356交付入主线，后续
+Prompt开发未混入。默认rev356 STOPPED、原模型质量/环境失败及
+听感待验保持；继续Prompt及全部master，工作分支因独有开发保留。
+
+Prompt已接入会话更新、单轮选择与执行计划；250ms上限的对象读取
+沿用断连取消，旧快照不重新查库，模板前缀进入实际输入并将截断索引
+投影回公开历史。冻结57项针对性CPU/120秒/0GPU，覆盖实际对象
+工作线程、会话事务、并发和断连。文件/媒体前缀准备与真实业务继续
+完成；默认rev356不变，尚无Prompt业务资格，全部master保持active。
+
+[Prompt设置34项CPU通过](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：
+2.569秒/0GPU，版本固定/覆盖/null/失败事务与展开预算通过，
+20来源反例通过；构建8.686秒零警告，首轮测试语法失败保留。
+继续真实会话/权限/取消/前缀截断接线，尚无Prompt业务资格；
+默认rev356及PR #52交付不变，全部master保持active。
+
+Prompt 会话设置组件已编写：服务默认值、模板与显式覆盖分别保存，
+普通更新复用固定版本，单轮 Prompt/null 不改会话，失败不提交；
+展开由调用方限16MiB、保留状态限64MiB。冻结34项针对性CPU/
+120秒/0GPU（注册表24+设置10），随后继续实际会话/取消/上下文
+接线；尚无 Prompt 业务资格，默认rev356保持，PR #52未混入此开发。
+
+[Prompt注册表24项CPU通过](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：
+2.467秒/0GPU，原16项与8项新合同通过，来源20反例通过；
+构建246.350秒零警告。类型定义、权限范围和不可变版本快照已具备，
+继续会话覆盖/取消/执行/前缀截断接线与实际SDK业务；目前尚无
+Realtime Prompt业务资格。默认rev356、PR #52冻结head与原失败保持。
+
+Realtime Prompt 的类型化注册表与不可变解析快照已编写：默认兼容旧
+Responses 定义，新增显式 `api=realtime`；版本/租户身份固定，失败不
+改写旧快照，MCP 凭证不得持久化。冻结 24 项 CPU/120 秒/0GPU，
+包含原 16 项与 8 项新快照/类型/取消/隔离反例；会话与实际执行接线
+继续完成，当前不能宣称 Prompt 对话已可用。默认 rev356 保持，
+PR #52 最终提交检查中，后续代码未推入该 PR。已完成工作区的重复
+证据共享释放 668,911,071 字节，原路径/SHA/干净状态保持。
+
 [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)
 完成：19项STOPPED检查、20次命令尝试/314.086秒，实际整根
 回退再前进，0新增GPU。首轮intent容量拒绝保留；8条退休记录
@@ -2373,16 +2675,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev356；服务包 `c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd` |
-| Generation | `cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61` |
-| 引擎 | `f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d` |
-| 引擎发布记录 | `90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1` |
+| 发布 | rev366；服务包 `7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce` |
+| Generation | `2b472b2d6dc0d5ad2c9d74176236411d3ec606d99b276dadf3879de0dee5a6c7` |
+| 引擎 | `648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5` |
+| 引擎发布记录 | `1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本与函数工具对话 |
-| 人工整包回退 | 保留控制根 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1`；同已验对话引擎、参考和周期保持；前驱rev346另保留 |
-| 自动payload回退 | 候选→保留控制包 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本/函数工具/持久Prompt |
+| 人工整包回退 | 保留控制根 `f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2`；同已验Prompt引擎、参考和周期保持；前驱rev356另保留 |
+| 自动payload回退 | 候选→保留控制包 `f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)

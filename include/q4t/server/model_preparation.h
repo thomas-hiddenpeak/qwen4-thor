@@ -33,6 +33,16 @@ class ModelPreparation {
   uint64_t InputTokens() const { return input_; }
   uint64_t OutputTokens() const { return output_; }
   ClientRateLease& Rate() { return rate_; }
+  bool ReadyForPrimary(const ClientIdentity& identity,
+                       uint64_t output_limit) const {
+    return reserved_ && !pending_ && !started_ && input_ &&
+           output_ <= preparation_output_ &&
+           rate_.StartedFor(clients_, identity) && output_limit &&
+           output_limit <= public_output_ && clients_.OwnsIdentity(identity_) &&
+           clients_.OwnsIdentity(identity) &&
+           identity_.Index() == identity.Index() &&
+           identity_.Id() == identity.Id();
+  }
 
  private:
   ClientAdmission& clients_;

@@ -1,0 +1,130 @@
+{
+  "managed-reader-cpu-01/command-0.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "managed-reader-cpu-01/result.json": {
+    "sha256": "f8ea8921829684e195e7a1543c370bb336b8af156a2ade37118c1289cdcbe7ed",
+    "bytes": 1151
+  },
+  "managed-reader-cpu-01/plan.json": {
+    "sha256": "ab4641ac37799779f05570e99cf72d22b35417fcf52e06864b22eba01f50184d",
+    "bytes": 3590
+  },
+  "managed-reader-cpu-01/command-0.stderr": {
+    "sha256": "05449bbec5d670a7c68c518121b3f23dc63cd08212c1ddf47707f5479e7c6847",
+    "bytes": 3761
+  },
+  "managed-reader-cpu-01/source/tools/serve_recovery/test_profile_refusal.py": {
+    "sha256": "7164c323edf636bd539d1c2cc5193b5a954ea97a3c62148bea71de634760d3c7",
+    "bytes": 20789
+  },
+  "managed-reader-cpu-01/source/tools/serve_recovery/profile_record.py": {
+    "sha256": "163a6df302fa9fb15dd74e4d1d39f95ca22af05f34cb40e0d43f2c2fbd83ff08",
+    "bytes": 3811
+  },
+  "managed-reader-cpu-01/source/tools/serve_audit/inventory.json": {
+    "sha256": "7cbb6fd50bb64f05fc5d0bfc66e8510796cf402e62cb3a84dc26f9ac6c4e07d5",
+    "bytes": 510417
+  },
+  "managed-reader-cpu-01/source/tools/serve_realtime/managed.py": {
+    "sha256": "40f4c86e6910555cf5138c1d6e68b1f63954530d793ac0a0a0e330fee17ba1fc",
+    "bytes": 22069
+  },
+  "managed-reader-cpu-01/source/tools/serve_realtime/conversation_managed.py": {
+    "sha256": "2b239216d78a2474ee35e563e4540fd30898e7845d164af39780b1f04df299cd",
+    "bytes": 14377
+  },
+  "managed-reader-cpu-01/source/tools/native_asr/service_acceptance.py": {
+    "sha256": "a70d93f37593b780b993af836cff079c62704d24ca672583aa2973f8856a3066",
+    "bytes": 58980
+  },
+  "managed-reader-cpu-02/command-0.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "managed-reader-cpu-02/result.json": {
+    "sha256": "9e8b47ec3465fd194a6714052c0342e8b25288314260b0521340ab97381308e9",
+    "bytes": 828
+  },
+  "managed-reader-cpu-02/command-1.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "managed-reader-cpu-02/plan.json": {
+    "sha256": "2a1c583076552c3496ee980ea9e93cc53e97cefe0b495a70637b94503ddbc693",
+    "bytes": 1853
+  },
+  "managed-reader-cpu-02/command-1.stdout": {
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c",
+    "bytes": 223
+  },
+  "managed-reader-cpu-02/command-0.stderr": {
+    "sha256": "20758b165c31821cce71ddc6f704066b118a729a9eb4a925d644f32c1b0ef1d2",
+    "bytes": 492
+  },
+  "managed-reader-cpu-02/source/tools/serve_recovery/test_profile_refusal.py": {
+    "sha256": "7164c323edf636bd539d1c2cc5193b5a954ea97a3c62148bea71de634760d3c7",
+    "bytes": 20789
+  },
+  "managed-reader-cpu-02/source/tools/serve_recovery/profile_record.py": {
+    "sha256": "163a6df302fa9fb15dd74e4d1d39f95ca22af05f34cb40e0d43f2c2fbd83ff08",
+    "bytes": 3811
+  },
+  "managed-reader-cpu-02/source/tools/serve_audit/inventory.json": {
+    "sha256": "ffbee6714acf87609867416b66d9b1262be47908dcaa280e1072c481d83c4aa1",
+    "bytes": 568921
+  },
+  "managed-reader-cpu-02/source/tools/serve_realtime/managed.py": {
+    "sha256": "40f4c86e6910555cf5138c1d6e68b1f63954530d793ac0a0a0e330fee17ba1fc",
+    "bytes": 22069
+  },
+  "managed-reader-cpu-02/source/tools/serve_realtime/conversation_managed.py": {
+    "sha256": "2b239216d78a2474ee35e563e4540fd30898e7845d164af39780b1f04df299cd",
+    "bytes": 14377
+  },
+  "managed-reader-cpu-02/source/tools/native_asr/service_acceptance.py": {
+    "sha256": "2a6580a16ea46460ad26a40b0a90349173d3dd9f87d290bf6885c146bf0aeb77",
+    "bytes": 58988
+  },
+  "native-build-01/result.json": {
+    "sha256": "537d06b67fad7710bbdc4d4ae8889dd50df4bcb292c481e84fe325c62ce5892c",
+    "bytes": 571
+  },
+  "native-build-01/plan.json": {
+    "sha256": "715d24953eaf87f65414f8623ce13c9b1a162cd350b237a76178549b5095a6ff",
+    "bytes": 9716
+  },
+  "native-build-01/build.log": {
+    "sha256": "4819f57a0598344d390e05bf6244afe7b1dd692b79aa89e31841fcaea8510e57",
+    "bytes": 3645
+  },
+  "dependency-sharing-02/restore.py": {
+    "sha256": "70cbed781fbec55bc846a5851b82f101e843c6f780eda2cb7cb85d1b004179aa",
+    "bytes": 521
+  },
+  "dependency-sharing-02/result.json": {
+    "sha256": "2fe1817f5e767327c482e009d183d48d56f46ef2b96dd7c498b8b196f573bc78",
+    "bytes": 144
+  },
+  "dependency-sharing-02/plan.json": {
+    "sha256": "b199ec5611bf727bcd46ae5372716a379c2c4a7abb422b2c4971aa7a09c00104",
+    "bytes": 12847
+  },
+  "managed_reader_cpu_01.py": {
+    "sha256": "2e29d41cf676b23e44f5152717d63b6b2b738680dd6eab98783472b02a0ef15b",
+    "bytes": 5586
+  },
+  "managed_reader_cpu_02.py": {
+    "sha256": "6c9afe93bd3cdbe0432d237279bc57ff1c56d210bd694e1108f02eb4ea7fd356",
+    "bytes": 3368
+  },
+  "build_native_helpers_01.py": {
+    "sha256": "80cfaf4e9ddc7507be50b0120aec72e4ad1097b7841a8a633c937d814377c52a",
+    "bytes": 2642
+  },
+  "share_dependencies_02.py": {
+    "sha256": "1fffb9c756578ef11441ef53e3e631a25bb3c01f918e770a88f01916bccf82b0",
+    "bytes": 1949
+  }
+}

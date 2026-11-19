@@ -5,6 +5,7 @@ import uuid
 from tools.serve_recovery import access_store, ledger, profile_contract
 from tools.serve_recovery import deployment_policy, profile_migration
 from tools.serve_recovery import profile_policy, profile_store
+from tools.serve_recovery import profile_record
 from tools.serve_service import package as engine
 
 
@@ -28,7 +29,7 @@ def evidence(package, manifest):
         digest = engine.sha(path)
         ledger.require(digest == manifest['files'][filename],
                        'migration qualification file changed')
-        result[name] = dict(record=engine.read(path), sha256=digest)
+        result[name] = dict(record=profile_record.read(path), sha256=digest)
     return result
 
 

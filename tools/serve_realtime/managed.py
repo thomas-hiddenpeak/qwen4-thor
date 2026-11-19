@@ -55,22 +55,30 @@ def settings(stream=False):
             noise_reduction=dict(type='near_field') if stream else None)))
 
 
+def accepted_source(path, manifest, primary, package):
+    accepted = read(path.parent/'acceptance.json')
+    if accepted.get('status') != 'ACCEPT_PRIMARY_LIGHT_QUALIFICATION':
+        # Older sealed payloads do not ship profile_record. Load the larger
+        # evidence reader only for the new, explicitly reviewed source forms.
+        from tools.serve_recovery import profile_record
+        return profile_record.accepted_source(path, manifest, primary, package)
+    registry_path = path.parent/'qualified/registry.json'
+    require(accepted['registry_sha256'] == sha(registry_path) and
+        same_json(read(registry_path), manifest['recovery_profiles']) and
+        same_json(read(path.parent/'qualified/primary.json'), primary) and
+        same_json(read(path.parent/'qualified/light.json'),
+                  read(Path(package)/'profile-light.json')),
+        'managed Realtime requires exact accepted primary/light identities')
+    return read(path)
+
+
 def prepare(path, manifest, qualified, package):
     require(path is not None, 'declared Realtime requires managed verification')
     path = Path(path).resolve(strict=True)
     require(path.is_relative_to(ROOT/'.q4t-work'), 'private qualified plan required')
-    prior = read(path)
     registry_path = path.parent/'qualified/registry.json'
-    registry = read(registry_path)
     acceptance_path = path.parent/'acceptance.json'
-    accepted = read(acceptance_path)
-    require(accepted['status'] == 'ACCEPT_PRIMARY_LIGHT_QUALIFICATION' and
-        accepted['registry_sha256'] == sha(registry_path) and
-        same_json(registry, manifest['recovery_profiles']) and
-        same_json(read(path.parent/'qualified/primary.json'), qualified) and
-        same_json(read(path.parent/'qualified/light.json'),
-                  read(Path(package)/'profile-light.json')),
-        'managed Realtime requires exact accepted primary/light identities')
+    prior = accepted_source(path, manifest, qualified, package)
     original_path = Path(prior['realtime']['source_plan'])
     original = read(original_path)
     require(original['schema'] == 'q4t-realtime-history-business-v1' and

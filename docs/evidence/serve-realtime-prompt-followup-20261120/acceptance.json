@@ -1,0 +1,48 @@
+{
+  "status": "PASS_REMAINING_PROTOCOL_AND_ACCOUNTING_ORIGINAL_QUALITY_FAIL",
+  "model_starts": 1,
+  "realtime_requests": 5,
+  "chat_requests": 3,
+  "registry_http": 1,
+  "websocket_sessions": 2,
+  "seconds": 53.51116859074682,
+  "alpha_tokens": 362,
+  "beta_tokens": 1273,
+  "beta_rpm": 1,
+  "beta_second_request": "client_rpm_exhausted",
+  "diagnostics": [
+    {
+      "answer": "rev356",
+      "expected": "rev356",
+      "quality": "PASS",
+      "protocol": "PASS",
+      "usage": {
+        "prompt_tokens": 305,
+        "completion_tokens": 5,
+        "total_tokens": 310
+      }
+    },
+    {
+      "answer": "\nThe tool result does not contain a version field.\n",
+      "expected": "rev356",
+      "quality": "FAIL",
+      "protocol": "PASS",
+      "usage": {
+        "prompt_tokens": 305,
+        "completion_tokens": 27,
+        "total_tokens": 332
+      }
+    }
+  ],
+  "original_quality": "FAIL",
+  "original_stage_reclassified": false,
+  "original_files_unchanged": true,
+  "nvml_queries": 52,
+  "cleanup_confirmed": true,
+  "lock_released": true,
+  "default_revision": 356,
+  "default_unchanged": true,
+  "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+  "master_complete": false,
+  "archive_sha256": "d32a7fc22a1e19d501910c7722120fe6225bae4231198ee3ca0c73984fc3938c"
+}
