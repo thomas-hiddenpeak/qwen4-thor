@@ -626,3 +626,6 @@
 - [ICL/Realtime实际Guardian恢复](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：TLS中断结算、整包恢复、持久参考与显式新会话。
 
 - [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)：原生实时转录、持久参考、预算保持与整包回退。
+
+- [语义VAD实际恢复](evidence/serve-semantic-vad-managed-recovery-20261119/README.md)：真实分类、计量、入口与整包恢复。
+- [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。

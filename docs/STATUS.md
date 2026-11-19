@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
+完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
+0新增GPU，原配额/用量/恢复历史/预算保持。发布超时原FAIL保留，原ID
+续办完成；19项成功检查共20次尝试。当前三组组合证据4模型、
+63HTTP+10Realtime/628.911秒、586次NVML正常，
+5个真实语义回合通过；含原候选组合累计6模型/87HTTP+14Realtime。
+默认仍STOPPED；继续PR #51检查合入及全部
+master，原exact-code/声纹失败与用户延期听感保持。
+
 [语义迁移修复5项CPU与真实资格复核通过](evidence/serve-semantic-vad-migration-20261119/README.md)：
 原发布预检失败保留，3种自动许可逐字节不变、历史/预算保持；
 新候选仅更新迁移判定，私有复制保护失败已按原字节分离修复。
@@ -2245,16 +2254,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev336；服务包 `37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32` |
-| Generation | `5e3eb2a40f14fd5f998c41a02055ad6e20685b68f79a9f2c15edf06757c6f783` |
-| 引擎 | `6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d` |
-| 引擎发布记录 | `06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f` |
+| 发布 | rev346；服务包 `38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb` |
+| Generation | `37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0` |
+| 引擎 | `945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2` |
+| 引擎发布记录 | `51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL与Realtime转录 |
-| 人工整包回退 | 保留控制根 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e`；同已验ICL/Realtime引擎，参考和周期保持；前驱rev326另保留 |
-| 自动payload回退 | 候选→保留控制包 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录与实际语义VAD |
+| 人工整包回退 | 保留控制根 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca`；同已验语义引擎、参考和周期保持；前驱rev336另保留 |
+| 自动payload回退 | 候选→保留控制包 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
