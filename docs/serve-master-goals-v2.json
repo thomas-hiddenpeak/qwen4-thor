@@ -9603,6 +9603,18 @@
       "nvml_ok": 43,
       "automatic_items": 3,
       "settled_tokens": 245
+    },
+    "noise_reduction": {
+      "state": "PRIMITIVE_CPU_PASS_ROUTE_PENDING",
+      "cpu_tests": 6,
+      "gpu_actions": 0,
+      "route_connected": false,
+      "business_qualified": false,
+      "runtime_dependencies_added": false,
+      "next": "Targeted numeric/stream CPU; shared processed PCM for VAD+ASR; bounded real noisy speech WSS acceptance; continue complete master",
+      "cpu_seconds": 0.11387177184224129,
+      "evidence": "evidence/serve-realtime-noise-cpu-20261119/README.md",
+      "plan": "SERVE_REALTIME_NOISE_2026-11-19.md"
     }
   }
 }

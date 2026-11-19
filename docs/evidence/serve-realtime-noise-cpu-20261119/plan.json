@@ -1,0 +1,37 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "noise_fft_matches_independent_direct_complex_dft_and_inverse",
+    "noise_stream_partition_and_backpressure_are_bit_exact",
+    "noise_stream_bypass_exact_and_finish_never_adds_samples",
+    "noise_stream_stationary_hum_attenuation_and_speech_tone_retention",
+    "noise_stream_silence_and_connection_state_do_not_leak",
+    "noise_stream_invalid_input_budget_and_cancel_never_drain_success"
+  ],
+  "cpu_tests": 6,
+  "seconds": 180,
+  "gpu_actions": 0,
+  "scope": "NoiseStream primitive only: independent direct DFT, partition/backpressure exactness, strict sample extent, bypass, analytical stationary hum plus separate tone, cancellation and finite/budget guards. Not real speech, ASR or API qualification.",
+  "algorithm": "512 FFT sqrt-Hann WOLA/hop256, rolling eight 8-frame spectral minima, smoothed noise power, decision-directed Wiener gain; gain floors near .18/far .35; finite clamp; no extra output samples",
+  "signal_gate": "Stationary 125Hz hum residual <.5 near / .65 far, near residual < far; separate 1000Hz onset projection retains >.8 during frozen early speech interval. Does not claim general speech quality or competing-speaker removal.",
+  "sources": {
+    "CMakeLists.txt": "7787a28e4a28b5d8eb4ab8e66416829949385ef204634bbb4df55eb3bf13cac9",
+    "README.md": "b766524ff8bfc300c8b65e6b0d58ba515611a6c443a9407a4143590831f03b62",
+    "cmake/ChatProtocolIdentity.cmake": "85b9d518d5c269e055585948c9aee177da6c450e9b061c03003e144471333436",
+    "cmake/HostTestSources.cmake": "491fdff4bbdb0479d4a538eb5f64c35f04e01c1e2dc3d7b6923b078fba91a0f0",
+    "docs/REFERENCE.md": "529754de722b02ad8f045f64453cc3e241a87943d881e8536a3a9718825c0da8",
+    "docs/STATUS.md": "11e229c802a93f9b2dcf7a89f4d2418203e9b2eb68b60095cbdb8e3ee8325f39",
+    "docs/log/2026-11-19.md": "1e3ff9dfc617547f9d9cbeb304cde5e1bbf6ca2ff39fa31a180d68f189e1a697",
+    "docs/serve-master-goals-v2.json": "0f3c98a45e4af4be701861eb6a8ba031cef172ea611dd175c455beb270b0df0d",
+    "tools/serve_audit/inventory.json": "a2b487b430d44bccfae701621c5cc8dc705aaaefe4528ec1ce7a36260f5f51e3",
+    "docs/evidence/serve-noise-reference-20261119/README.md": "26712f33448c5481f3398fca26bb32cb3e0005d5525667a6e69fc90ba983c22d",
+    "docs/evidence/serve-noise-reference-20261119/sources.json": "7b4b58b6496e33dbab8b3aa34aa6fa9006832d7bafe8e48e39a35b1ab3ac4876",
+    "include/q4t/audio/noise_reduction.h": "51bd6454339c33d11195f96c01dbb11f84596d3e51cf5ba9ecd4d9711963b725",
+    "src/audio/noise_fft.cpp": "55b8e0731aea4d7700503ae23d6f6d57ddebb955e17cac2c38cd12137b9f3f68",
+    "src/audio/noise_fft.h": "a2c8729852de2d3ad53fb7cf8562eef09e68a98e8292f2f78ac99a7c578dc10c",
+    "src/audio/noise_reduction.cpp": "fb411aa1f6ce80f6072b0595976f99b036767f29160632fe993fe4b17b23c981",
+    "tests/noise_reduction_test.cpp": "6368150610d5f837dae4b8f160c240b0c9615fe3c210976995092b008b4c4b9d"
+  },
+  "host_sha256": "de1dc766854dd705d32000286c3d141c888d5277470bc1885899881f46d67221",
+  "engine_sha256": "2bbf105f541db6184a8e23fbaa7b2102fc15e5c7789838f4ed5ff3dcbff62435"
+}

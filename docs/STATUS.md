@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生噪声抑制基础6项CPU通过](evidence/serve-realtime-noise-cpu-20261119/README.md)：
+0.114秒/0GPU，独立DFT、分块/背压、尾长、解析信号和取消通过；
+host/引擎零警告，974来源/18负控。尚未接noise_reduction接口，
+继续[会话线程与同源PCM接线](SERVE_REALTIME_NOISE_2026-11-19.md)，
+随后真实噪声语音短验；默认保持，全部master目标继续。
+
 [自动server VAD真实WSS业务通过](evidence/serve-realtime-vad-business-20261119/README.md)：
 连续PCM两句与G.711一句均自动提交且转录正确，245实际token结算，
 同PID Chat通过；1模型/1入口、2会话3item/1Chat、44.180秒、43次

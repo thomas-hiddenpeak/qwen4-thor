@@ -2291,8 +2291,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "1f8f79eab7ea82df2ac5e00a0d7e6d12ed3213dc039513f7495d74b102cda54c",
-    "cmake/ChatProtocolIdentity.cmake": "0726ee3407fb7f207ea777e83d414eb539f9fbf1abbd3eb9e19be565bd22159d",
+    "CMakeLists.txt": "7787a28e4a28b5d8eb4ab8e66416829949385ef204634bbb4df55eb3bf13cac9",
+    "cmake/ChatProtocolIdentity.cmake": "85b9d518d5c269e055585948c9aee177da6c450e9b061c03003e144471333436",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2312,6 +2312,7 @@
     "include/q4t/audio/asr_model.h": "7806defb9a81583df571107e40fecefe8a33b926ef84596679085ec79d7448f8",
     "include/q4t/audio/diarization.h": "154b107107f098f76070a5ae556da4b3cecd194d71c72889da3451da3a0f86cb",
     "include/q4t/audio/features.h": "36b981978ad7750b8f4ede9712abbc8ccebdf12d99aadc503a36e348b68a88c5",
+    "include/q4t/audio/noise_reduction.h": "51bd6454339c33d11195f96c01dbb11f84596d3e51cf5ba9ecd4d9711963b725",
     "include/q4t/audio/pcm_output.h": "2e2328ebc982b52b9cca166cf45bf620315ec3949288e9f781032fda4d1d7da8",
     "include/q4t/audio/separator_config.h": "7375b95971dfb57d315f1d0bb0cdad1e099cf25ca0c8b81edf4604ea96cdae7e",
     "include/q4t/audio/separator_layout.h": "7548353ef57a7a6418a3719c51ea50bf2a1a92c493891f3b0e8b6373de8992d4",
@@ -2623,6 +2624,9 @@
     "src/audio/asr_model.cu": "46a318e0194f44f2775e8a514eff33b174c99d894977b573d0f6faf44ea24a18",
     "src/audio/diarization.cpp": "3cb74aafaa25f51ca617bddcaf9a087271a9f34c1ad47f7b13f1ff6b47e669d4",
     "src/audio/features.cpp": "a498a97c6445f4562372f3260a1a856bfb915469424c3e7bb15613ed579b99fc",
+    "src/audio/noise_fft.cpp": "55b8e0731aea4d7700503ae23d6f6d57ddebb955e17cac2c38cd12137b9f3f68",
+    "src/audio/noise_fft.h": "a2c8729852de2d3ad53fb7cf8562eef09e68a98e8292f2f78ac99a7c578dc10c",
+    "src/audio/noise_reduction.cpp": "fb411aa1f6ce80f6072b0595976f99b036767f29160632fe993fe4b17b23c981",
     "src/audio/pcm_output.cpp": "d533dd81f9e3ee0e8bffbe8bd49a4a0e29476369a47c4ee8e4d6837eec2c81cd",
     "src/audio/separator_config.cpp": "02b894aad525b38991e65e06aaa8e21af29319a0ba437b863fbf5d6881d47545",
     "src/audio/separator_layout.cpp": "8e2a9dfdd15dbe3fa4fbba5fa6b284ee3aef4e2ae597a5515370534bd46cbaaf",

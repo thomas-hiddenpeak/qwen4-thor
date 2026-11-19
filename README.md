@@ -1042,3 +1042,9 @@ schema v2已完成针对性业务验收并安装本机默认；工作分支尚�
 本地执行以`q4t_access_program.authority=q4t-local`标识，不能当作
 OpenAI Daybreak批准或私有模型。配置、恢复边界与验收进展见
 [原生执行策略](docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md#原生策略可选配置)。
+
+实时噪声抑制基础模块的频域处理方向参考
+[SpeexDSP固定源码](https://github.com/xiph/speexdsp/tree/7a158783df74efe7c2d1c6ee8363c1e695c71226)，
+q4t独立实现固定缓冲FFT/谱估计/Wiener处理，未复制或链接该项目。
+[参考记录与使用边界](docs/evidence/serve-noise-reference-20261119/README.md)
+区分基础模块与后续真实语音/接口验收，不增加运行依赖。

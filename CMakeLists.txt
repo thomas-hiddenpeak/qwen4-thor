@@ -213,6 +213,8 @@ add_library(q4t_model STATIC
   src/audio/separator_resample.cpp
   src/audio/separator_tracks.cpp
   src/audio/features.cpp
+  src/audio/noise_fft.cpp
+  src/audio/noise_reduction.cpp
   src/audio/stream_resample.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
@@ -821,6 +823,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
     tests/server_realtime_pcm_test.cpp
+    tests/noise_reduction_test.cpp
     tests/server_realtime_vad_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_audio_queue_test.cpp

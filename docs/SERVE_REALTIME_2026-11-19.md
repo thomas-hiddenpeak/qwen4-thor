@@ -99,3 +99,6 @@ Guardian恢复组合，默认rev326仍保持；继续下列未完成项目。
 [转录指南](https://developers.openai.com/api/docs/guides/realtime-transcription)、
 [会话指南](https://developers.openai.com/api/docs/guides/realtime-conversations)、
 [RFC6455](https://www.rfc-editor.org/rfc/rfc6455.html)。
+
+噪声抑制继续按[同源PCM与工作线程接线计划](SERVE_REALTIME_NOISE_2026-11-19.md)
+实施，已有基础CPU证据不替代接口或真实语音通过。

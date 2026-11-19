@@ -111,7 +111,11 @@ set(protocol_inputs
   src/audio/asr_model.cu
   include/q4t/audio/features.h
   src/audio/features.cpp
+  src/audio/noise_fft.cpp
+  src/audio/noise_reduction.cpp
   src/audio/stream_resample.cpp
+  src/audio/noise_fft.h
+  include/q4t/audio/noise_reduction.h
   include/q4t/audio/stream_resample.h
   include/q4t/runtime/prefill_kernels.h
   include/q4t/model/linear.h
