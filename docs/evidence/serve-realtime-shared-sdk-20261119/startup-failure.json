@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_BEFORE_MODEL_START",
+  "error": "metadata size limit",
+  "plan_bytes": 2537998,
+  "plan_sha256": "83e64d2df2547d85a81201d1b56e0415c12a8ff03a85f3ce5b496cb140ef9746",
+  "model_starts": 0,
+  "business_requests": 0,
+  "nvml_queries": 3,
+  "original_lease": "lease/exit.json"
+}

@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[共享SDK计划4项CPU及实际复核通过](evidence/serve-realtime-shared-sdk-20261119/README.md)：
+合计1.124秒/0模型，计划约878KB且保留2MiB元数据门；4087文件
+逐项身份保持。原超限计划/guard失败保留，继续原主轻短验和恢复
+交付，默认rev326、听感待验及全部master保持。
+
+计划重复SDK清单超出2MiB元数据门，第三次尝试在模型启动前停止，
+原guard/计划保留、0模型/0业务、3次NVML正常。已编写共享SDK身份：
+所有执行模块精确匹配既有资格，完整锁仍逐文件冻结；准备末尾加入
+可读性门。冻结4项CPU及1组实际准备复核/120秒，通过后续原主轻预算。
+
 [清理回执准备修复2项CPU通过](evidence/serve-realtime-prepare-cleanup-20261119/README.md)：
 0.514秒/0GPU；原实际端口列表按计划严格匹配，旧失败保留。继续原
 2模型/2入口/2WSS/56业务项/900秒主轻短验，再续Guardian与交付；

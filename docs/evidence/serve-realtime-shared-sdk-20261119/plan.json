@@ -1,0 +1,16 @@
+{
+  "cases": [
+    "test_shared_sdk_keeps_exact_modules_with_new_installation_metadata",
+    "test_shared_sdk_cannot_omit_add_or_change_executed_files",
+    "test_shared_sdk_cannot_claim_qualification_from_empty_packages",
+    "test_sdk_timeout_still_releases_only_the_owned_native_entry"
+  ],
+  "actual_reconciliation": "full pinned SDK modules and readable reconstructed preparation",
+  "seconds": 120,
+  "model_starts": 0,
+  "sources": {
+    "tools/serve_recovery/profile_realtime.py": "257c111ac1e2cf1e633512125eb6ec7c10200e52b6f244070982eddbf38939c7",
+    "tools/serve_recovery/profile_acceptance.py": "e242d21e599f8277aa0a9ea53821e74bf7674e402d10624d7a1ccc10cd6d27a5",
+    "tools/serve_recovery/test_profile_realtime.py": "2b5f2f994af1a816153f3587c225ced94a12b5a823bd15048604ffe634551048"
+  }
+}

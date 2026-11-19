@@ -246,7 +246,8 @@ def prepare(args):
         public_port = plan['port']+2
         require(public_port <= 65535 and public_port != plan['operations_port'],
                 'Realtime public port conflicts with another listener')
-        plan['realtime'] = profile_realtime.prepare(realtime_source, path.parent, public_port)
+        plan['realtime'] = profile_realtime.prepare(realtime_source, path.parent,
+                                                  public_port, plan['sdk'])
         plan['sources'].update(plan['realtime']['files'])
         plan['sources'].update({p:sha(ROOT/p) for p in profile_realtime.SOURCES})
     if chat_audio: plan['chat_audio'] = True
@@ -438,6 +439,7 @@ def prepare(args):
         'final conversation uses actual call ID and result, no request retries',
         'qualification only after strict guard completed and both models cleaned']
     save(path, plan)
+    require(read(path) == plan, 'prepared profile plan must be readable before GPU work')
 
 
 class Stage(encrypted.Stage):

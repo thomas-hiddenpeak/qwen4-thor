@@ -36,7 +36,23 @@ def reference_cleanup(prior, result, accepted):
         'prior processed-waveform/history reference was not qualified')
 
 
-def prepare(source, output, public_port):
+def reuse_sdk(prior, sdk):
+    # Root installation metadata changed when the two packages were combined.
+    # Executed package files must still equal the complete qualified modules.
+    prefixes = ('node_modules/openai/', 'node_modules/ws/')
+    directory = Path(prior['sdk_directory'])
+    previous = {str(Path(path).relative_to(directory)):digest
+                for path, digest in prior['sdk_files'].items()}
+    previous = {p:d for p,d in previous.items() if p.startswith(prefixes)}
+    current = {p:d for p,d in sdk['files'].items() if p.startswith(prefixes)}
+    require(prior['sdk_versions'] == dict(openai='7.47.0', ws='8.21.0') and
+        sdk['sdk_version'] == '7.47.0' and sdk['node_version'] == 'v24.18.0' and
+        all(any(p.startswith(prefix) for p in previous) for prefix in prefixes) and
+        previous == current, 'qualified Realtime SDK module drift')
+    return sdk['sdk_directory']
+
+
+def prepare(source, output, public_port, sdk):
     source = Path(source).resolve(strict=True)
     require(source.is_relative_to(ROOT/'.q4t-work') and source.stat().st_size <= 4 << 20,
             'bounded private qualified Realtime plan required')
@@ -45,6 +61,7 @@ def prepare(source, output, public_port):
     reconciled = source.parent.parent/'reconciled.json'
     accepted = read(reconciled)
     reference_cleanup(prior, read(result), accepted)
+    sdk_directory = reuse_sdk(prior, sdk)
     clip = prior['clips']['zh']
     require(clip['sha256'] == evidence.REALTIME_INPUT_SHA and
         clip['source_sha256'] == evidence.ASR_FILE_SHA and clip['bytes'] == 201790 and
@@ -52,16 +69,16 @@ def prepare(source, output, public_port):
         prior['reference']['base_input_tokens'] == 70 and
         prior['reference']['history_tokens'] == 11,
         'fixed Realtime input/independent reference differs')
-    files = {**prior['sdk_files'], str(source):sha(source), str(result):sha(result),
+    files = {str(source):sha(source), str(result):sha(result),
              str(reconciled):sha(reconciled), clip['path']:clip['sha256'],
              clip['source']:clip['source_sha256'], prior['ingress']:prior['ingress_sha256']}
     for path, digest in files.items():
         require(sha(path) == digest, 'Realtime fixture identity differs: '+path)
     tls = certificate(Path(output)/'realtime-credentials')
     for key in ('certificate', 'key'): files[tls[key]] = sha(tls[key])
-    return dict(format='q4t-profile-realtime-inputs-v1',
+    return dict(format='q4t-profile-realtime-inputs-v2',
         source_plan=str(source), files=files, clip=clip,
-        sdk_directory=prior['sdk_directory'], ingress=prior['ingress'],
+        sdk_directory=sdk_directory, ingress=prior['ingress'],
         tls=tls, public_port=public_port, settings=prior['settings']['manual'])
 
 
@@ -91,7 +108,9 @@ def compact(result):
 
 def run(stage):
     plan = stage.plan['realtime']; label = stage.profile_name+'-realtime'
-    require(plan['format'] == 'q4t-profile-realtime-inputs-v1', 'Realtime input format')
+    require(plan['format'] == 'q4t-profile-realtime-inputs-v2' and
+            plan['sdk_directory'] == stage.plan['sdk']['sdk_directory'],
+            'Realtime must use the frozen shared SDK identity')
     for path, digest in plan['files'].items():
         require(sha(path) == digest, 'Realtime fixture drift: '+path)
     client = encrypted.CLIENT

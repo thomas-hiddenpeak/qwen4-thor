@@ -83,6 +83,35 @@ class RealtimeEvidence(unittest.TestCase):
         realtime.reference_cleanup(prior,dict(status='PASS'),accepted)
         self.assertEqual(accepted,before)
 
+    @staticmethod
+    def sdk_pair():
+        files={'node_modules/openai/index.js':'a'*64,
+               'node_modules/ws/index.js':'b'*64}
+        prior=dict(sdk_directory='/old',sdk_versions=dict(openai='7.47.0',ws='8.21.0'),
+            sdk_files={'/old/'+p:d for p,d in
+                       dict(files, **{'node_modules/.package-lock.json':'c'*64}).items()})
+        sdk=dict(sdk_directory='/new',sdk_version='7.47.0',node_version='v24.18.0',
+            files=dict(files,**{'node_modules/.package-lock.json':'d'*64}))
+        return prior,sdk
+
+    def test_shared_sdk_keeps_exact_modules_with_new_installation_metadata(self):
+        prior,sdk=self.sdk_pair();original=copy.deepcopy((prior,sdk))
+        self.assertEqual(realtime.reuse_sdk(prior,sdk),'/new')
+        self.assertEqual((prior,sdk),original)
+
+    def test_shared_sdk_cannot_omit_add_or_change_executed_files(self):
+        prior,sdk=self.sdk_pair()
+        for mutate in (lambda s:s['files'].pop('node_modules/ws/index.js'),
+                       lambda s:s['files'].update({'node_modules/openai/extra.js':'e'*64}),
+                       lambda s:s['files'].update({'node_modules/ws/index.js':'f'*64}),
+                       lambda s:s.update(node_version='v0.0.0')):
+            wrong=copy.deepcopy(sdk);mutate(wrong)
+            with self.assertRaises(RuntimeError):realtime.reuse_sdk(prior,wrong)
+
+    def test_shared_sdk_cannot_claim_qualification_from_empty_packages(self):
+        prior,sdk=self.sdk_pair();prior['sdk_files']={};sdk['files']={}
+        with self.assertRaises(RuntimeError):realtime.reuse_sdk(prior,sdk)
+
     def test_boolean_missing_or_different_port_cleanup_cannot_qualify(self):
         accepted=json.loads((realtime.ROOT/
             'docs/evidence/serve-realtime-history-business-20261119/receipt.json').read_text())
@@ -172,8 +201,9 @@ class RealtimeEvidence(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=parent) as tmp:
             out=Path(tmp);counts=[]
             stage=SimpleNamespace(out=out,profile_name='primary',history={},
-                plan=dict(port=18090,operations_port=18091,sdk=dict(node=dict(path='/node')),
-                    realtime=dict(format='q4t-profile-realtime-inputs-v1',files={},
+                plan=dict(port=18090,operations_port=18091,
+                    sdk=dict(node=dict(path='/node'),sdk_directory='/sdk'),
+                    realtime=dict(format='q4t-profile-realtime-inputs-v2',files={},
                         clip=dict(path='/fixed.pcm'),sdk_directory='/sdk',ingress='/ingress',
                         public_port=18092,tls=dict(certificate='/ca'),settings={})),
                 budget=counts.append,model=SimpleNamespace(poll=lambda:None))
