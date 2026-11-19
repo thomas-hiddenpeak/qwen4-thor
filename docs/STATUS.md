@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt缺项续验未通过](evidence/serve-realtime-prompt-continuation-review-20261120/README.md)：
+2模型/10外部生成+1内部摘要/118.997秒，112次NVML正常，清理完成。
+主配置Prompt四轮及旧Responses通过；轻配置工具回填却被模型解释为
+拒答并耗尽128 tokens，返回incomplete。轻配置Prompt未跑，新资格
+仍FAIL，默认rev356不变。资格续验停止；转查全局拒答模板干扰假设，
+须保留拒答能力及全部原失败，不以分类替代修复，全部master继续。
+
 [缺项续验7项CPU通过](evidence/serve-realtime-prompt-resume-cpu-20261120/README.md)：
 0.835秒/0GPU，20来源反例通过。确切原主配置5次已通过工作可复用，
 失败Prompt及原FAIL、监控/清理记录完整保留；新Prompt仍须原正确答案

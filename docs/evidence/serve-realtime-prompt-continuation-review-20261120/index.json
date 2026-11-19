@@ -1,0 +1,242 @@
+{
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-capabilities.http.json": {
+    "sha256": "42e014b7553529bf6a7210e56df0699fcbddeac265384745f80e989fc926e878",
+    "bytes": 238
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-fresh.json": {
+    "sha256": "fa46cf95d15f34be37cc5aaac5a1f7f69cf9a167b6159670a79277e1cfb44cf8",
+    "bytes": 61289
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-schema-drain.metrics.json": {
+    "sha256": "c617165f4f29996845d8cdbdf059cc514b4c129345473a75fb2719985a60d62d",
+    "bytes": 26410
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-responses.request.json": {
+    "sha256": "cbf4563c089ee95868567a8a37e536a0872621a0099c0b0e0f3e64fb65af2ac1",
+    "bytes": 173
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-before.wire": {
+    "sha256": "ebfd7f04e1054b7dbee465c54736d669e1a10b3c6e5dd02b1950bccca229e53d",
+    "bytes": 36291
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-after-0.wire": {
+    "sha256": "74336d009fb9dd1f430afa8c8d0b2db26ee1df9db72f044b2a90dc7401bf35e6",
+    "bytes": 36326
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-config.http.json": {
+    "sha256": "d01e120bcc78fbd1abdb88f40f6783175c472ac3b1b27a330edf7be9a3107526",
+    "bytes": 239
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool-result.request.json": {
+    "sha256": "f9751229e4c7c170900711ff14ab0968eb504767874265332c884be0f3f29123",
+    "bytes": 1614
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-schema.wire": {
+    "sha256": "bddb80c23c02a881622ad7eb1de2c6fa68b0ae7ea36836e6f8096f89435250af",
+    "bytes": 350
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-entry-cleanup.json": {
+    "sha256": "1b68823ff17aa05c7cdeb5e8848d21e4db7ae81836e159fd3457538fc0675c0b",
+    "bytes": 94
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool-result.wire": {
+    "sha256": "1f8838fc379ee880dd0cf528d8d097f5b8d93408fcd4bcc19ac04b9661b170ae",
+    "bytes": 348
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-responses.wire": {
+    "sha256": "b2308340a611f1a6e10c6417946577d1578357aed70ba060502c953411026d07",
+    "bytes": 1233
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-responses.http.json": {
+    "sha256": "b09abd9d0f2634614a788621119af4052fae2f002e91945b672d6188254f7c78",
+    "bytes": 235
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-schema.http.json": {
+    "sha256": "e3e519a97b535f0348a3e264b0fbfe71bf10996300917b16a1549490d0611820",
+    "bytes": 233
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-config.wire": {
+    "sha256": "2f2fc0e4054a4f5698675f4ee4d4a57abae5a4a32478b2fc9020454109b9acc3",
+    "bytes": 16030
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-conversation.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-config.http.json": {
+    "sha256": "c7e1545dbd0b891b059e854df3d8a51b74e0eb613e1f22ac4994ea4cf2547eb0",
+    "bytes": 238
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-drain.metrics.json": {
+    "sha256": "06dec5f5b891a9f30a676f283107ec973c753376ef1b17e3cd3e7c17d3700559",
+    "bytes": 26417
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-conversation.sdk.json": {
+    "sha256": "a4a1ae443d5fdc5166788442e972d203602b772370f20398ab5e8d0dd2a8cf63",
+    "bytes": 42244
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-capabilities.json": {
+    "sha256": "d98ab240f0364490375383f424535e34347102fe20eddbb5bfc0ab089205cc65",
+    "bytes": 58202
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/result.json": {
+    "sha256": "7cca450f289ec913818558a012cc422b3df4cb13622c398059ea4d7b553831cc",
+    "bytes": 1446
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy.json": {
+    "sha256": "e2b50006f7035c19339b5ea074cbb04b73dab63939e2fca29317b716489cfbe0",
+    "bytes": 2745
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt.sdk.json": {
+    "sha256": "d997792bf469b0689776c106d4238c859f05ed5bd60ee3d49aed82f1e33b85d1",
+    "bytes": 16612
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-config.json": {
+    "sha256": "8b7cfec250967fadbd8b00209df66e272d72fd4c6ce81f28a68fb6a53af2cfd8",
+    "bytes": 20909
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-command.json": {
+    "sha256": "a49c8aba8ad583effa5aad1e8a40a24a33a19e2dc0a4d33b106cb3f1791c16c1",
+    "bytes": 2860
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool-result-drain.metrics.json": {
+    "sha256": "90996c19b831031e39325c3ab4bb97a652015f7b1bd571abc323d4041736d626",
+    "bytes": 26415
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool.http.json": {
+    "sha256": "da1684fc87fd205de95154afdb37c6a9b685fc746e04aa8d015d9474f43e4fdd",
+    "bytes": 232
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/counts.json": {
+    "sha256": "3e6793f3486feeea8f306afd37dbe9e43df4e25e0bcdc20e077ea2224618913f",
+    "bytes": 134
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/plan.json": {
+    "sha256": "ecc8b6f77c70365ac21316adeb7a00e8540929a6c3c013df48a732372c8e6040",
+    "bytes": 1317874
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-business.json": {
+    "sha256": "59e1eefa7be94a47055d1e571976a7dda65029ab200cdf41085e930e9f49ebaf",
+    "bytes": 27582
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-identity.json": {
+    "sha256": "c74a6f3a83dfc86b88a7312b4cadfdcb73dea4c3eb73e835374ecfdbe56210cc",
+    "bytes": 3296
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-conversation-before.http.json": {
+    "sha256": "d12d773ebbd7abf8a53523541dbe3d6ddfd35a2c31f36005d0f1dce96a5d4847",
+    "bytes": 247
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-conversation-before.wire": {
+    "sha256": "2a7727e8e333611922fbfe4ae0af8d4253e75a5f191ebfccfa3e24b226347618",
+    "bytes": 36324
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-command.json": {
+    "sha256": "d1ad5502bae6273b2728ffc4aa7e9946afe1c45cea5804a279277792fdac9c34",
+    "bytes": 2863
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-schema.request.json": {
+    "sha256": "0d7018592efcb8e7c41ff511b0c9a5fb77aa1388d51bc9b5f0689347d2a60628",
+    "bytes": 611
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-after-0.http.json": {
+    "sha256": "56c3c592eded2d7ac7665a1f042283b096a95b97bdabfa9c51afcd0f6f4b7c35",
+    "bytes": 247
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool.request.json": {
+    "sha256": "f777d2d6e9b89efcb6df0ebde6c7c8f01c99bdb26a2acd806906b1cb5494126d",
+    "bytes": 948
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-config.wire": {
+    "sha256": "c467a6a666e1ebc04279b9dceea617ff92c1d3032f74eb961a48204cccaedf13",
+    "bytes": 16035
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool.wire": {
+    "sha256": "4d3c338105076f564eab226fd1fdf731f9dcb7240a5b52477aa2d244df9706b1",
+    "bytes": 546
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-identity.json": {
+    "sha256": "65363bf5a2bb9dd45807fe0af24935cb88b2ca66a7c6322bb5f4c30d76a413cd",
+    "bytes": 3299
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-config.json": {
+    "sha256": "1b6906d6b4f8b10bdfc8fc43e0bf84b5f74f8da2213ebf24338a7c95a7192587",
+    "bytes": 20904
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-capabilities.wire": {
+    "sha256": "1f326b70f3356f8948fddc97c31664c0032e57c3ec508f83bdb470a78af568fa",
+    "bytes": 45149
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-cleanup.json": {
+    "sha256": "3ede913f95bbb740a0d7f75168626d3e9dd6786cd7d42842b72b634e9c9efc33",
+    "bytes": 4372
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-model.log": {
+    "sha256": "69034e47519ada34b8eed46b01812e4732e0b5b829dc932e2aea9bd25f71f68c",
+    "bytes": 23654
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-prompt-before.http.json": {
+    "sha256": "124fe2c75da04cdb687a5a0bd546aa6ddc9cf4e3b7707d619e4983af43108a7c",
+    "bytes": 247
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-capabilities.json": {
+    "sha256": "573672c070dd4c03b6a5c9b17ae918c082a11f5915f482fa2c4117e872eb566b",
+    "bytes": 58203
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-register.http.json": {
+    "sha256": "6094ae61cd832a935471f1ebaa42dabf95f7f633463c2a0835e69c806f2117e1",
+    "bytes": 585
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool-result.http.json": {
+    "sha256": "637a1ffa01c7589a88526defcf9ecff72d188bdfc4327f55bff9a2029f575a1e",
+    "bytes": 233
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/cleanup.json": {
+    "sha256": "6ba5ed815183baa97ec5a7a05acaffb3399ab927bbe0a6547a4a678e3f96b78d",
+    "bytes": 8632
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-capabilities.http.json": {
+    "sha256": "3d42c5e344116e473d2ad54b951df3766909b7a0b727fd4e7814e57db8f46312",
+    "bytes": 238
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-responses-drain.metrics.json": {
+    "sha256": "e5f394ee1293e6e447574f65fcba12c9e60ce3d397008a462c129c52fca41f8f",
+    "bytes": 26418
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-tool-drain.metrics.json": {
+    "sha256": "6ed7e4fc960bd48ef33523e5ff8d7dbc99ad9df6f7179e601a706a787413a358",
+    "bytes": 26411
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/primary-legacy-register.wire": {
+    "sha256": "c04419e55c8b7a665c49f49fb1fac5ebf91cdddcfc42a9ee824f22ba2b64f2a9",
+    "bytes": 178
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-capabilities.wire": {
+    "sha256": "4cfe45775dbc666e69402c55a33fd4788cbfecbd7b2a32c876c0ae8abf59f5cf",
+    "bytes": 45150
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-model.log": {
+    "sha256": "ca18c14c219ef0e8d0bd341915615fa1b4028d1d06ba03aa9b75cb2a568d300f",
+    "bytes": 20354
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/light-conversation-entry-cleanup.json": {
+    "sha256": "7b3d0c4901753a7ffb31b89f18a6c84ab289980fbcc9293641d2e3f83943c233",
+    "bytes": 94
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/lease/nvml-queries.jsonl": {
+    "sha256": "50d8ca811f937ab7ebe4d3c2f4262966c80427e1325adeb7f89aa2c876316724",
+    "bytes": 266834
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/lease/events.jsonl": {
+    "sha256": "2e9acda18a19228ee8291fff638a14a7a6075453406512effc5d8b4cd820df45",
+    "bytes": 21249
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/profiles-02/lease/exit.json": {
+    "sha256": "d52fce0f71600bae8ba295ecbcd073634a9f571472ad33025114ecf4b069eb45",
+    "bytes": 716
+  }
+}
