@@ -3357,7 +3357,7 @@
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
     "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f",
     "tools/serve_recovery/profile_refusal_reuse.py": "e05884f489e504054d13880e883ee7c69082beb61490a68c74a8833f9d67429d",
-    "tools/serve_recovery/profile_refusal_targeted.py": "3bc266ebeb56455ee9b710a7360f4c1cbf8d0804d2fdf7f75cc47df12cf3dfff"
+    "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

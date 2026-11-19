@@ -99,6 +99,9 @@ def check_plan(plan):
         require(sha(ROOT / name) == digest, 'compiled source drift: ' + name)
     require(plan['voice_snapshot'] == voice_inputs(plan['voice_snapshot']['manifest']),
             'saved voice fixture drift')
+    actor = object.__new__(Stage)
+    actor.plan = plan
+    policy = actor.client_policy()
     for name in profile_contract.NAMES:
         registry, record = original(plan, name)
         require(plan['profiles'] == registry['profiles'] and
@@ -106,6 +109,7 @@ def check_plan(plan):
              if k not in ('binary_sha256', 'protocol_sha256')} ==
             {k: v for k, v in registry['identity'].items()
              if k not in ('binary_sha256', 'protocol_sha256')}, 'backend identity/capacity drift')
+        full.capacity.check_clients(plan['profiles'][name], policy)
         require(all(ledger.canonical(plan['voice_snapshot']['records']['voice']['data'][k]) ==
             ledger.canonical(record['business']['voice']['conditioning']['voice']['data'][k])
             for k in reuse.CONDITION_FIELDS), 'saved voice does not match qualified condition')
@@ -166,7 +170,9 @@ class Stage(full.Stage):
     def client_policy(self):
         value = super().client_policy()
         require('audio' not in [r['id'] for r in value['clients']], 'saved client collision')
-        value['clients'].append(dict(value['clients'][0], id='audio'))
+        # This stage consumes an accepted snapshot. Registration-only negative
+        # clients are not used and must not consume its fair queue capacity.
+        value['clients'] = [value['clients'][0], dict(value['clients'][0], id='audio')]
         return value
 
     def start(self):

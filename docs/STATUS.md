@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[消费者夹具容量拒绝已修正](evidence/serve-refusal-profile-fixture-fix-20261120/README.md)：
+原组0模型/0请求，公平准入正确拒绝4客户超过3队列；只保留实际
+2客户并前移容量检查。2项CPU/0.929秒与20来源反例通过，原FAIL保留。
+候选/默认未变，继续原预算2模型/34请求/900秒未执行业务，全部master继续。
+
 [受影响消费者27项CPU通过](evidence/serve-refusal-profile-cpu-20261120/README.md)：
 2.381秒/0GPU，20来源反例通过，v22与v1～v21历史封包合同保持。
 候选648d6d68不变；继续冻结2模型/34外部请求/8WSS/6入口/900秒

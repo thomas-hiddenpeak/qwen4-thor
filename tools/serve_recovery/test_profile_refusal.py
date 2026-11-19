@@ -63,6 +63,20 @@ class RefusalSource(unittest.TestCase):
 
 
 class ConsumerBoundary(unittest.TestCase):
+    def test_only_actual_consumers_fit_the_qualified_fair_queue(self):
+        actor = object.__new__(stage.Stage)
+        selected = dict(max_tokens=256, max_queued_requests=3, max_inflight_requests=8)
+        actor.plan = dict(base=dict(settings=dict(native_tts_base=dict(limits=dict(max_frames=200)))),
+                          profiles=dict(primary=selected, light=selected))
+        policy = actor.client_policy()
+        self.assertEqual([r['id'] for r in policy['clients']], [stage.encrypted.CLIENT, 'audio'])
+        for profile in actor.plan['profiles'].values(): stage.full.capacity.check_clients(profile, policy)
+        self.assertTrue(policy['fair_queue'])
+        invalid = copy.deepcopy(policy)
+        invalid['clients'] += [dict(policy['clients'][0], id=n) for n in ('unused-one', 'unused-two')]
+        with self.assertRaisesRegex(RuntimeError, 'client fairness exceeds global capacity'):
+            stage.full.capacity.check_clients(selected, invalid)
+
     def fixture(self):
         # Isolate the new source/owner/ID projection. Audio and native reference
         # validators are existing separately tested contracts, spied on below.
