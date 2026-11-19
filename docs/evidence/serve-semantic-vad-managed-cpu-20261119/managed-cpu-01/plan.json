@@ -1,0 +1,30 @@
+{
+  "scope": "15 focused CPU cases; no models or GPU",
+  "maximum_seconds": 120,
+  "tests": [
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged",
+    "tools.serve_realtime.test_managed.Evidence.test_all_managed_modes_and_new_process_counter_reset",
+    "tools.serve_realtime.test_managed.Evidence.test_exact_work_budgets_and_no_partial_tls_bypass",
+    "tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_complete_turn_requires_classifier_and_orderly_close",
+    "tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_explicit_plain_loopback_semantics_without_automatic_tls_downgrade",
+    "tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_explicit_plain_loopback_still_requires_actual_classifier",
+    "tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_untrusted_tls_does_not_fall_back_to_plaintext"
+  ],
+  "sources": {
+    "tools/serve_realtime/semantic_managed.py": "222a29f548fa89ed39cee8476a4453633c78361a8da6e6fabaff3906cb07eb8e",
+    "tools/serve_realtime/test_semantic_managed.py": "4dbfb66b56f2235a160fd159150d5afc75b27b767115b41a2cd4fb3cece7a765",
+    "tools/serve_realtime/semantic_sdk.mjs": "694e2bba3f71f73a1674c4d1b90e3ab6e8a7b0015a2b5fcb128da17df3381106",
+    "tools/serve_realtime/test_semantic_sdk.py": "a11dbf8a90e80f5f9a1aeb26bc3da394f3b51c641ad3b2fbc6be7874b8e314e4",
+    "tools/serve_realtime/managed.py": "8db7ce331de588fd50a828dfbb7fd08c2a1aade3c2cb6e899a0b7dd072f4d75e",
+    "tools/native_asr/service_acceptance.py": "7b9b3594dabd669a9cfe92944743c0fb0ee30af632998bfe4755527f1f562509"
+  },
+  "node": {
+    "path": "/home/rm01/.nvm/versions/node/v24.18.0/bin/node",
+    "sha256": "6bf69d0eda41a12030d5f28d958cd09ce323bc0c13f1ab4d8bb426933aa08812"
+  },
+  "ingress": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01"
+}

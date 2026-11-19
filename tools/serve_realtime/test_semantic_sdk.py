@@ -29,7 +29,7 @@ class SemanticSdk(unittest.TestCase):
         cls.tls = certificate(cls.root/'credentials')
         cls.ingress = Path(os.environ['Q4T_INGRESS']).resolve()
 
-    def call(self, mode='complete'):
+    def call(self, mode='complete', *, plain=False, wrong_ca=False):
         directory = Path(tempfile.mkdtemp(prefix=mode+'-', dir=self.root))
         clip = directory/'fixture.pcm'
         clip.write_bytes(struct.pack('<h', 1000) * 14400)
@@ -112,10 +112,11 @@ class SemanticSdk(unittest.TestCase):
         try:
             ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
                 server.server_port, free_port(), 'e'*64, {'alpha': 'A'*40},
-                self.tls, lambda: worker.is_alive())
+                None if plain else self.tls, lambda: worker.is_alive())
             try:
-                args = dict(base_url=f'https://127.0.0.1:{ingress.port}/v1',
-                    api_key='A'*40, ca_file=self.tls['certificate'], file=str(clip),
+                ca = certificate(directory/'untrusted')['certificate'] if wrong_ca else self.tls['certificate']
+                args = dict(base_url=f"{'http' if plain else 'https'}://127.0.0.1:{ingress.port}/v1",
+                    api_key='A'*40, ca_file=None if plain else ca, file=str(clip),
                     split_samples=split, settings=dict(type='transcription',
                         audio=dict(input=dict(turn_detection=dict(
                             type='semantic_vad', eagerness='high')))))
@@ -132,10 +133,28 @@ class SemanticSdk(unittest.TestCase):
             server.shutdown(); server.server_close(); worker.join(2)
         self.assertFalse(worker.is_alive())
         self.assertEqual(errors, [])
-        self.assertEqual(rows, [dict(path='/v1/realtime?intent=transcription', client='alpha')])
-        self.assertEqual(value['connections'], 1)
+        self.assertEqual(rows, [] if wrong_ca else
+                         [dict(path='/v1/realtime?intent=transcription', client='alpha')])
+        self.assertEqual(value['connections'], 0 if wrong_ca else 1)
         self.assertFalse(value['automatic_replay'])
+        self.assertEqual(value['transport'], 'ws-loopback' if plain else 'openai-realtime-wss')
         return result.returncode, value
+
+    def test_explicit_plain_loopback_semantics_without_automatic_tls_downgrade(self):
+        code,value=self.call(plain=True)
+        self.assertEqual(code,0,value)
+        self.assertEqual(value['status'],'PASS')
+
+    def test_explicit_plain_loopback_still_requires_actual_classifier(self):
+        code,value=self.call('missing_score',plain=True)
+        self.assertNotEqual(code,0)
+        self.assertIn('real classifier',value['error'])
+
+    def test_untrusted_tls_does_not_fall_back_to_plaintext(self):
+        code,value=self.call(wrong_ca=True)
+        self.assertNotEqual(code,0)
+        self.assertEqual(value['connections'],0)
+        self.assertIn('SDK transport',value['error'])
 
     def test_complete_turn_requires_classifier_and_orderly_close(self):
         code, value = self.call()

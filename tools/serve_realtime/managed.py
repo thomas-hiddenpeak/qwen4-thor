@@ -276,7 +276,8 @@ def check(out, plan, identity, capabilities):
             completed=mode != 'hold_stream', automatic_replay=False)
     require(len(set(identifiers)) == len(identifiers), 'new connection reused old item identity')
     counts = read(Path(out)/'counts.json')['counts']
-    require(counts['websocket_sessions'] == plan['limits']['websocket_sessions'] == len(result),
+    expected = len(result)*(2 if plan.get('semantic_vad') else 1)
+    require(counts['websocket_sessions'] == plan['limits']['websocket_sessions'] == expected,
             'managed connection count differs')
     return result
 

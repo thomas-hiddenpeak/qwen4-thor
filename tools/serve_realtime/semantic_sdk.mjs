@@ -1,6 +1,7 @@
 // Actual OpenAI WSS SDK actor. It never supplies a transcript to the server.
 import fs from 'node:fs';
 import path from 'node:path';
+import { EventEmitter } from 'node:events';
 import { pathToFileURL } from 'node:url';
 const check = (ok, message) => { if (!ok) throw new Error(message); };
 const MAX = 4 * 1024 * 1024;
@@ -17,9 +18,12 @@ for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
 const { default: OpenAI } = await import(pathToFileURL(path.join(sdk, 'node_modules/openai/index.mjs')));
 const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_modules/openai/realtime/ws.mjs')));
 const url = new URL(args.base_url);
-check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
+check(['http:', 'https:'].includes(url.protocol) && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.search && !url.hash && !url.username &&
-  !url.password, 'explicit loopback TLS required');
+  !url.password, 'explicit loopback endpoint required');
+check((url.protocol === 'https:') === Boolean(args.ca_file), 'TLS mode must not change');
+check(fs.statSync(args.file).size > 0 && fs.statSync(args.file).size <= 15 * 48000,
+  'bounded audio file required');
 const audio = fs.readFileSync(args.file);
 check(audio.length > 0 && audio.length <= 15 * 48000 && audio.length % 2 === 0,
   'bounded actual mono 24k PCM16');
@@ -28,9 +32,40 @@ check(Number.isInteger(args.split_samples) && args.split_samples >= 0 &&
 check(args.settings?.audio?.input?.turn_detection?.type === 'semantic_vad',
   'semantic policy required');
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
-const rt = new OpenAIRealtimeWS({ intent: 'transcription', options: {
+const options = {
   maxPayload: MAX, perMessageDeflate: false, followRedirects: false,
-  handshakeTimeout: 10000, ca: fs.readFileSync(args.ca_file) } }, client);
+  handshakeTimeout: 10000 };
+const transport = args.ca_file ? 'openai-realtime-wss' : 'ws-loopback';
+let rt;
+if (args.ca_file) {
+  rt = new OpenAIRealtimeWS({ intent: 'transcription', options: {
+    ...options, ca: fs.readFileSync(args.ca_file) } }, client);
+} else {
+  // The pinned SDK always constructs wss:. Explicit loopback plaintext uses
+  // the same pinned ws peer; it is not labeled official SDK TLS coverage.
+  const { default: WebSocket } = await import(pathToFileURL(
+    path.join(sdk, 'node_modules/ws/wrapper.mjs')));
+  const plain = new URL(url);
+  plain.protocol = 'ws:'; plain.pathname += '/realtime';
+  plain.searchParams.set('intent', 'transcription');
+  rt = new EventEmitter();
+  rt.socket = new WebSocket(plain, { ...options,
+    headers: { Authorization: `Bearer ${args.api_key}` } });
+  rt.send = (event) => rt.socket.send(JSON.stringify(event));
+  rt.close = () => rt.socket.close(1000);
+  rt.socket.on('error', (cause) => rt.emit('error', { cause, name: 'TransportError' }));
+  rt.socket.on('message', (data) => {
+    try {
+      const value = JSON.parse(data.toString());
+      check(value && !Array.isArray(value) && typeof value.type === 'string',
+        'invalid event shape');
+      rt.emit('event', value);
+    } catch {
+      rt.emit('event', { type: 'error', error: { code: 'invalid_event' } });
+      rt.socket.terminate();
+    }
+  });
+}
 let fatal = null, closed = false, closeCode = null, connections = 0;
 let bytes = 0, sent = 0, samples = 0;
 const events = [], feed = [];
@@ -126,12 +161,12 @@ try {
     retrieved.item.content[0].audio.length > 0, 'retained real turn');
   rt.close(); await until(() => closed, true);
   check(closeCode === 1000 && connections === 1, 'single orderly connection');
-  process.stdout.write(JSON.stringify({ status: 'PASS', connections,
+  process.stdout.write(JSON.stringify({ status: 'PASS', transport, connections,
     close_code: closeCode, automatic_replay: false, events, feed,
     continuation, terminal, delta, retrieved, sent_samples: samples }) + '\n');
 } catch (error) {
   rt.socket.terminate();
-  process.stdout.write(JSON.stringify({ status: 'FAIL', error: String(error),
+  process.stdout.write(JSON.stringify({ status: 'FAIL', transport, error: String(error),
     connections, close_code: closeCode, events, feed, continuation,
     sent_samples: samples, automatic_replay: false }) + '\n');
   process.exitCode = 1;

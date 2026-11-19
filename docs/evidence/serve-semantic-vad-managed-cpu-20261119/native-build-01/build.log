@@ -1,0 +1,49 @@
+[  0%] Building CXX object CMakeFiles/q4t_guardian_process.dir/src/service/guardian_process.cpp.o
+[  0%] Linking CXX static library libq4t_guardian_process.a
+[  0%] Built target q4t_guardian_process
+[100%] Building CXX object CMakeFiles/q4t_device_filter.dir/src/service/device_filter.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_journal.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_wire.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/src/io/json.cpp.o
+[100%] Linking CXX static library libq4t_guardian_journal.a
+[100%] Built target q4t_guardian_journal
+[100%] Linking CXX static library libq4t_device_filter.a
+[100%] Built target q4t_device_filter
+[100%] Building CXX object CMakeFiles/q4t_device_admission.dir/src/service/device_admission.cpp.o
+[100%] Linking CXX static library libq4t_device_admission.a
+[100%] Built target q4t_device_admission
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/service/guardian_main.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/service/guardian_version.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_guardian.dir/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian
+Linking CUDA executable q4t-cuda-probe
+Built target q4t_cuda_probe
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[100%] Building CXX object CMakeFiles/q4t_ingress_access.dir/src/trace/sha256.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_access.dir/src/service/ingress_access.cpp.o
+[100%] Linking CXX static library libq4t_ingress_access.a
+[100%] Built target q4t_ingress_access
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/native_crypto.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/websocket.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_access_admin.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_admin.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_cors.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_credentials.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_duplex.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_proxy.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_tls.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_transport.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_websocket.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[100%] Built target q4t_device_filter
+[100%] Built target q4t_device_admission
+[100%] Building CXX object CMakeFiles/q4t_device_control.dir/src/service/device_control_main.cpp.o
+[100%] Linking CXX executable q4t-device-control
+[100%] Built target q4t_device_control

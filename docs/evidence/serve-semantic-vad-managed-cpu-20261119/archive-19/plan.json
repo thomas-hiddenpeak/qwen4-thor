@@ -1,0 +1,47 @@
+{
+  "scope": "Three superseded test paths (two physical programs), all hardlinks fully inventoried; exact lossless byte/SHA archive. Current/default/recovery programs, models, source and logs kept.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/runtime-build-01/q4t-before",
+      "member": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+      "sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+      "bytes": 29276992,
+      "mode": 509,
+      "mtime_ns": 1795068305008514610,
+      "inode": 7105347,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-health-build-01/q4t",
+      "member": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+      "sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+      "bytes": 29276992,
+      "mode": 509,
+      "mtime_ns": 1795068305008514610,
+      "inode": 7105347,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/runtime-build-02/q4t-before",
+      "member": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40",
+      "sha256": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40",
+      "bytes": 29348808,
+      "mode": 509,
+      "mtime_ns": 1795078608960243699,
+      "inode": 7105304,
+      "links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809"
+  },
+  "minimum_free_bytes": 25165824,
+  "maximum_member_archive_bytes": 20971520,
+  "physical_payloads": 2
+}

@@ -8416,5 +8416,11 @@
     "evidence": "docs/evidence/serve-semantic-vad-config-20261119/README.md",
     "runtime_unchanged": true,
     "original_failure_preserved": true
+  },
+  "semantic_managed_review_20261119": {
+    "scope": "Actual semantic turns around native Guardian recovery, explicit transport, metering and native health",
+    "evidence": "docs/evidence/serve-semantic-vad-managed-cpu-20261119/README.md",
+    "core_engine_unchanged": true,
+    "actual_recovery_pending": true
   }
 }
