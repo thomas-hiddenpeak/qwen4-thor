@@ -1,0 +1,20 @@
+{
+  "modules": [
+    "tools.serve_realtime.test_managed.Evidence",
+    "tools.native_tts.test_managed_voice.ManagedVoice.test_frozen_service_budget_covers_posts_without_changing_restart_counts",
+    "tools.native_tts.test_managed_voice.SealedVoiceImports",
+    "tools.native_tts.test_managed_service.ManagedSpeech.test_output_budgets_count_every_phase_and_reject_partial_tls"
+  ],
+  "cases": 15,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/managed.py": "18ad112e63c152173d1414a81e786beb4739a2798eb1d6ac3bfac153c97eb027",
+    "tools/serve_realtime/test_managed.py": "f1263b00d6b97401a120576394731a72457afcbf734c0c9ab1a183f027a381c4",
+    "tools/serve_realtime/recovery_sdk.mjs": "0132155c758dffedb74d56dfe71cfac2ff08795ca7ba446f62461663cbf06536",
+    "tools/native_asr/service_acceptance.py": "8cf3121e3d9f44a15a170a8b0ad1ce7ac6f9f8f175561b3523657ba02e1a0d0a",
+    "tools/native_tts/test_managed_voice.py": "9f6d34564044dc71911332e28d6fea0cae6d2797df8fc38605d66b8d20515c85",
+    "tools/native_tts/test_managed_service.py": "92e37e0f378b243415f8064bacb7541575d265ae7c0e3f23af8f33bf019a8e26"
+  },
+  "scope": "Actual recovery actor/evidence: session cancellation, explicit reconnect, raw metrics, token settlement, identity, exact budget, sealed imports. Synthetic CPU witnesses only; new model/package acceptance pending."
+}

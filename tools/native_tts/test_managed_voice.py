@@ -227,6 +227,7 @@ except ImportError:
 else:
     raise AssertionError('unexpected helper inside sealed namespace')
 from tools.native_tts import managed_voice
+from tools.serve_realtime import managed as managed_realtime
 assert pathlib.Path(managed_voice.profile_voice.__file__)==root/'tools/serve_recovery/profile_voice.py'
 body,mime=managed_voice.profile_voice.multipart({'name':'CPU'},'recording',b'CPU')
 assert b'CPU' in body and 'multipart/form-data' in mime

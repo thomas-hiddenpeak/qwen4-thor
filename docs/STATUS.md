@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime恢复驱动15项CPU通过](evidence/serve-realtime-managed-driver-cpu-20261119/README.md)：
+1.215秒/0GPU，覆盖取消/结算、原始指标、完整波形与显式新连接反例，
+以及预算/封装导入。继续准备实际Guardian资格包与组合短验，默认
+rev326保持；这组CPU不替代真实恢复证据，全部master继续。
+
+实际Guardian的Realtime验收接线已编写：TLS中断未完成输入并核对
+取消/结算/资源释放，整包切换前完成任务并保持连接，新实例必须
+显式建立新会话。冻结15项CPU/120秒/0GPU，覆盖原始指标与反例、
+工作预算及封装导入；通过后准备资格包并冻结实际组合，默认保持。
+
 [恢复客户端CPU检查通过](evidence/serve-realtime-recovery-sdk-cpu-20261119/README.md)：
 首轮3项与受影响2项复验覆盖4项合同，原明文超时保留；累计15.0秒/
 0GPU。HTTPS官方SDK与显式回环ws分开记录，不自动降级/重放。

@@ -1,0 +1,11 @@
+{
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/test.log": "283f8f93c307b44aaef54426408cee59491ec1fd9c96fd79947878caa544b8fb",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/result.json": "dbcb8f303fac37111dae7690a5aa39f36ab52f2d90f2695d13dc1b9e0c6e76b9",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/plan.json": "2b2bb1f811fb8831da8bb999bfc36fca97faab34d9bdc74430dd6a3da3842bf0",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/native_tts/test_managed_voice.py": "9f6d34564044dc71911332e28d6fea0cae6d2797df8fc38605d66b8d20515c85",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/native_tts/test_managed_service.py": "92e37e0f378b243415f8064bacb7541575d265ae7c0e3f23af8f33bf019a8e26",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/serve_realtime/recovery_sdk.mjs": "0132155c758dffedb74d56dfe71cfac2ff08795ca7ba446f62461663cbf06536",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/serve_realtime/managed.py": "18ad112e63c152173d1414a81e786beb4739a2798eb1d6ac3bfac153c97eb027",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/serve_realtime/test_managed.py": "f1263b00d6b97401a120576394731a72457afcbf734c0c9ab1a183f027a381c4",
+  ".q4t-work/serve-realtime-20261119/managed-cpu-01/sources/tools/native_asr/service_acceptance.py": "8cf3121e3d9f44a15a170a8b0ad1ce7ac6f9f8f175561b3523657ba02e1a0d0a"
+}

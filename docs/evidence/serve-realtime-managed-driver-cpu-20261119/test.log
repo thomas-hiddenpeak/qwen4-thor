@@ -1,0 +1,20 @@
+test_actual_accounting_rejects_replay_unsettled_and_false_success (tools.serve_realtime.test_managed.Evidence.test_actual_accounting_rejects_replay_unsettled_and_false_success) ... ok
+test_actual_wire_completion_history_and_waveform_required (tools.serve_realtime.test_managed.Evidence.test_actual_wire_completion_history_and_waveform_required) ... ok
+test_all_managed_modes_and_new_process_counter_reset (tools.serve_realtime.test_managed.Evidence.test_all_managed_modes_and_new_process_counter_reset) ... ok
+test_bounded_reader_rejects_oversize_and_early_eof (tools.serve_realtime.test_managed.Evidence.test_bounded_reader_rejects_oversize_and_early_eof) ... ok
+test_declared_capability_cannot_silently_skip_actual_work (tools.serve_realtime.test_managed.Evidence.test_declared_capability_cannot_silently_skip_actual_work) ... ok
+test_effective_hints_and_fabricated_partial_reject (tools.serve_realtime.test_managed.Evidence.test_effective_hints_and_fabricated_partial_reject) ... ok
+test_exact_work_budgets_and_no_partial_tls_bypass (tools.serve_realtime.test_managed.Evidence.test_exact_work_budgets_and_no_partial_tls_bypass) ... ok
+test_failed_connection_cannot_be_replayed_or_skip_order (tools.serve_realtime.test_managed.Evidence.test_failed_connection_cannot_be_replayed_or_skip_order) ... ok
+test_missing_duplicate_noninteger_metrics_never_become_zero (tools.serve_realtime.test_managed.Evidence.test_missing_duplicate_noninteger_metrics_never_become_zero) ... ok
+test_payload_cannot_claim_old_counters_after_restart_or_omit_new_session (tools.serve_realtime.test_managed.Evidence.test_payload_cannot_claim_old_counters_after_restart_or_omit_new_session) ... ok
+test_raw_observations_and_clean_reservations_cannot_be_faked (tools.serve_realtime.test_managed.Evidence.test_raw_observations_and_clean_reservations_cannot_be_faked) ... ok
+test_transport_retries_and_withheld_input_reject (tools.serve_realtime.test_managed.Evidence.test_transport_retries_and_withheld_input_reject) ... ok
+test_frozen_service_budget_covers_posts_without_changing_restart_counts (tools.native_tts.test_managed_voice.ManagedVoice.test_frozen_service_budget_covers_posts_without_changing_restart_counts) ... ok
+test_acceptance_helper_keeps_all_production_imports_in_sealed_source (tools.native_tts.test_managed_voice.SealedVoiceImports.test_acceptance_helper_keeps_all_production_imports_in_sealed_source) ... ok
+test_output_budgets_count_every_phase_and_reject_partial_tls (tools.native_tts.test_managed_service.ManagedSpeech.test_output_budgets_count_every_phase_and_reject_partial_tls) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.611s
+
+OK
