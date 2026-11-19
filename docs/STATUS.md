@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[恢复客户端CPU检查通过](evidence/serve-realtime-recovery-sdk-cpu-20261119/README.md)：
+首轮3项与受影响2项复验覆盖4项合同，原明文超时保留；累计15.0秒/
+0GPU。HTTPS官方SDK与显式回环ws分开记录，不自动降级/重放。
+继续接实际Guardian的中断、重连和整包恢复；默认rev326保持。
+
+恢复SDK首轮4项为3通过/1明文超时，13.132秒/0GPU；原件保持。
+已定位固定OpenAI SDK会强制wss，显式回环明文改用同锁ws客户端并
+单列传输身份；TLS仍走官方SDK。冻结2项受影响CPU/60秒（3连接），
+包含明文正常/故障关闭与TLS回归；随后继续实际Guardian与交付。
+
+WSS恢复SDK演员已编写：单连接，持续输入缺尾时等待明确故障，完整
+任务也可保持连接等待整包切换；重连必须由外层显式新建。冻结4项
+实际SDK/原生入口CPU夹具/60秒/0GPU（含显式回环HTTP与TLS），
+随后接Guardian驱动/真实组合；当前尚未验收这组，默认保持。
+
 [Guardian ICL驱动16项CPU通过](evidence/serve-managed-icl-reference-cpu-20261119/README.md)：
 2.016秒/0GPU；持久参考跨恢复保持、丢失/改码/错身份/少计输入负控
 及旧声音合同通过。继续WSS中断/显式重连，再实际Guardian组合及
