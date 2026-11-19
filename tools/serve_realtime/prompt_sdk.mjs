@@ -21,7 +21,7 @@ const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.username && !url.password &&
   !url.search && !url.hash && args.ca_file, 'verified loopback TLS required');
-check(['alpha', 'beta'].includes(args.mode), 'bounded client mode');
+check(['alpha', 'beta', 'remaining'].includes(args.mode), 'bounded client mode');
 const ca = fs.readFileSync(args.ca_file);
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
 let rt, fatal = null, closed = false, closeCode = null, connections = 0;
@@ -92,7 +92,7 @@ async function update(session, label, expectedError = null) {
   return rows.find((e) => e.type === 'session.updated').session;
 }
 async function create(label, response, expected = 'completed', cancel = false) {
-  check(++creates <= (args.mode === 'alpha' ? 10 : 3), 'response bound');
+  check(++creates <= ({ alpha: 10, beta: 3, remaining: 2 }[args.mode]), 'response bound');
   const at = events.length;
   send({ type: 'response.create', event_id: label,
     response: { ...response, metadata: { acceptance_case: label } } });
@@ -160,7 +160,19 @@ try {
   const csv = fs.readFileSync(args.csv_file);
   check(digest(csv) === args.csv_sha256 && csv.length <= 4096, 'actual CSV source');
   const inlineCsv = { type: 'input_file', filename: 'acceptance-counts.csv', file_data: csv.toString('base64') };
-  if (args.mode === 'beta') {
+  if (args.mode === 'remaining') {
+    const pinned = await update({ prompt: { id: args.foreign_prompt, version: '1',
+      variables: { left: '13', right: '29' } } }, 'pin-retained-first');
+    check(pinned.prompt.id === args.foreign_prompt && pinned.prompt.version === '1',
+      'retained owned template missing');
+    await create('cancel-after-delta', { ...independent(null), tools: [], tool_choice: 'none', max_output_tokens: 256,
+      instructions: 'Write a long numbered list of integers from 1 to 200, one per line.' }, 'cancelled', true);
+    exact(await create('new-request-after-cancel', { ...independent(null, 'Compute 8 * 7. Reply only with its integer value.'),
+      tools: [], tool_choice: 'none', max_output_tokens: 32 }), '56', 'new request after cancellation');
+    const retained = await update({}, 'retained-after-cancel');
+    check(retained.prompt.id === args.foreign_prompt && retained.prompt.version === '1',
+      'cancellation changed retained template');
+  } else if (args.mode === 'beta') {
     await update({ prompt: { id: args.foreign_prompt, variables: { left: '13', right: '29' } } },
       'foreign-prompt-denied', 'object_not_found');
     const files = await register('register-beta-file', fileDefinition);

@@ -11414,6 +11414,80 @@
       "next": "One bounded stage, same binary, at most 13 Realtime + 2 Chat / 900s; no completed Prompt request is replayed",
       "archive_sha256": "778efc03e235d90e57146913d6c78fe415da29dcf9bb0ceba49f459ff7a8ff42",
       "evidence": "evidence/serve-realtime-prompt-definition-fix-20261120/README.md"
+    },
+    "prompt_business_review_20261120": {
+      "status": "ORIGINAL_BUSINESS_FAIL_INPUT_REVIEW_PASS",
+      "model_starts": 1,
+      "actual_chat_requests": 1,
+      "actual_realtime_creates": 8,
+      "actual_registry_file_http": 7,
+      "seconds": 56.92502120696008,
+      "actual_tokens": 3382,
+      "successful_prefix_cases": 7,
+      "original_answer": "No version key exists in the tool result.",
+      "original_model_quality": "FAIL",
+      "original_stage_reclassified": false,
+      "nvml_queries": 55,
+      "cleanup_confirmed": true,
+      "lock_released": true,
+      "input_review": {
+        "status": "PASS",
+        "same_prompt_bytes": true,
+        "actual_tool_value_retained": true,
+        "counts": [
+          305,
+          305
+        ],
+        "seconds": 0.36432922491803765,
+        "new_gpu_starts": 0,
+        "original_model_quality": "FAIL",
+        "new_model_answers": 0
+      },
+      "continuation_cpu": {
+        "status": "PASS",
+        "tests": 6,
+        "syntax_checks": 1,
+        "seconds": 0.2958074528723955,
+        "new_gpu_starts": 0,
+        "commands": [
+          {
+            "command": [
+              "python3",
+              "-B",
+              "-m",
+              "unittest",
+              "tools.serve_realtime.test_prompt_followup",
+              "-v"
+            ],
+            "exit_code": 0
+          },
+          {
+            "command": [
+              "node",
+              "--check",
+              "tools/serve_realtime/prompt_sdk.mjs"
+            ],
+            "exit_code": 0
+          }
+        ]
+      },
+      "binary_archive": {
+        "status": "LOSSLESS_ARCHIVE_VERIFIED",
+        "files": 7,
+        "original_bytes": 269579624,
+        "archive_bytes": 114617131,
+        "archive_sha256": "d99ea4f30889402ec88efda614e876f0e4ff7cf16adb362d390d4390a5b5c289",
+        "seconds": 12.9988316828385,
+        "unique_evidence_deleted": 0,
+        "exact_restore": true
+      },
+      "runtime_changed": false,
+      "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+      "default_unchanged": true,
+      "default_revision": 356,
+      "master_complete": false,
+      "archive_sha256": "69d0078e5550e42a1c3662bd96da79cdf8c007e956819b16a51df68eef1638fb",
+      "evidence": "evidence/serve-realtime-prompt-business-review-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {

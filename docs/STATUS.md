@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt真实业务与输入复核](evidence/serve-realtime-prompt-business-review-20261120/README.md)：
+1模型/8 Realtime+1 Chat/56.925秒；前7项真实场景通过，第8项工具
+答案未返回rev356，原整组FAIL保留。实际提示含来源值，带模板与
+等效Chat逐字节一致、均305 tokens；2项CPU复核0.364秒/0GPU。
+续验6项CPU+JS语法通过（0.296秒）；仅补取消/跨客户/一次RPM
+与2条固定条件诊断：1模型/5 Realtime+3 Chat/900秒。不重复已通过文件场景，
+默认rev356、原质量失败及全部master保持。
+
 [Prompt注册失败已定位并修正驱动](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：
 首轮1模型/1 Chat/0 Realtime/36.140秒，注册400原件保留，
 自有资源与锁释放。脚本误用了Responses的effort=none；服务正确
