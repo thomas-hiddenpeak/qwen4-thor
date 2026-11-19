@@ -180,6 +180,21 @@ class Stage(base.Stage):
     def extra_model_args(self):
         return ['--vad-model-dir', self.plan['vad_directory'], '--asr-max-output-tokens', '256']
 
+    def metadata(self, path, label):
+        self.budget('controls')
+        conn = http.client.HTTPConnection('127.0.0.1', self.plan['port'], timeout=15)
+        try:
+            conn.request('GET', path, headers={'X-Q4T-Client-Id':'gamma',
+                'X-Q4T-Gateway-Token':self.token})
+            response = conn.getresponse(); raw = response.read((1 << 20)+1)
+            (self.out/(label+'.wire')).write_bytes(raw)
+            save(self.out/(label+'.http.json'), dict(status=response.status))
+            require(response.status == 200, 'authenticated metadata HTTP status: '+str(response.status))
+            require(len(raw) <= 1 << 20, 'metadata response bound')
+            return json.loads(raw)
+        finally:
+            conn.close()
+
     def contrast(self, name):
         self.budget('chats')
         request = self.plan['contrast_requests'][name]
@@ -214,8 +229,8 @@ class Stage(base.Stage):
 
     def business(self):
         self.snapshot('before')
-        status,raw=self.http('/v1/capabilities',label='capabilities')
-        require(status==200 and json.loads(raw)['realtime']['semantic_vad']['configured'],
+        capabilities=self.metadata('/v1/capabilities','capabilities')
+        require(capabilities['realtime']['semantic_vad']['configured'],
                 'semantic classifier not configured')
         self.contrast_tokens=0
         scores={name:self.contrast(name) for name in CONTRAST}
@@ -229,8 +244,8 @@ class Stage(base.Stage):
             history.settlement(self.snapshot(name+'-drained'),'alpha',total,index)
         save(self.out/'observed.json',observed)
         self.core('core-after'); self.snapshot('final-drained')
-        status,raw=self.http('/v1/config',label='final-config')
-        require(status==200 and json.loads(raw)['native_asr_health']['compute_failures']==0,
+        config=self.metadata('/v1/config','final-config')
+        require(config['native_asr_health']['compute_failures']==0,
                 'native ASR failure')
 
 

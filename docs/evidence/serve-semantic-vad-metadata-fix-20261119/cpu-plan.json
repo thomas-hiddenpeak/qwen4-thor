@@ -1,0 +1,10 @@
+{
+  "scope": "Only new authenticated metadata helper, original 401 preserved; production engine unchanged",
+  "cases": 3,
+  "cpu_seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/semantic_acceptance.py": "a6aaaac5b672ad834312cdeb0490af2fa2ed533314c3a779f75bebfb26709e07",
+    "tools/serve_realtime/test_semantic_acceptance.py": "c68073c1b8809745037534e2f52c9005ceb44d0b7290de1f55ec58fb17cc9974"
+  }
+}

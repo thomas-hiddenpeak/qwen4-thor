@@ -1,6 +1,12 @@
 """Counterexamples for semantic business evidence; no models or network."""
 import base64
 import copy
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+import os
+from pathlib import Path
+import tempfile
+import threading
 import unittest
 from tools.serve_realtime import semantic_acceptance as s
 
@@ -77,6 +83,52 @@ class Evidence(unittest.TestCase):
                         '{"p":0.9,"extra":1}','{"p":0.8,"p":0.9}','{}'):
             with self.assertRaises(Exception):s.check_score(wire(content))
         with self.assertRaises(Exception):s.check_score(wire(finish='length'))
+
+
+class Metadata(unittest.TestCase):
+    def call(self, status, payload):
+        received=[]
+        class Peer(BaseHTTPRequestHandler):
+            def log_message(self,*_):pass
+            def do_GET(self):
+                received.append((self.path,self.headers.get('X-Q4T-Client-Id'),
+                                 self.headers.get('X-Q4T-Gateway-Token')))
+                self.send_response(status);self.send_header('Content-Length',str(len(payload)))
+                self.end_headers();self.wfile.write(payload)
+        root=Path(os.environ.get('Q4T_TEST_OUTPUT_DIR',s.WORK/'metadata-cpu-fixtures'))
+        root.mkdir(parents=True,exist_ok=True)
+        out=Path(tempfile.mkdtemp(prefix='metadata-',dir=root))
+        server=ThreadingHTTPServer(('127.0.0.1',0),Peer)
+        worker=threading.Thread(target=server.serve_forever);worker.start()
+        stage=s.Stage.__new__(s.Stage);stage.plan={'port':server.server_port}
+        stage.token='cpu-only-token';stage.out=out;charged=[]
+        stage.budget=lambda kind:charged.append(kind)
+        try:
+            if status != 200:
+                with self.assertRaisesRegex(RuntimeError,'metadata HTTP status: 401'):
+                    stage.metadata('/v1/capabilities','observed')
+            elif len(payload)>1<<20:
+                with self.assertRaisesRegex(RuntimeError,'metadata response bound'):
+                    stage.metadata('/v1/config','observed')
+            else:
+                self.assertEqual(stage.metadata('/v1/capabilities','observed'),{'configured':True})
+        finally:
+            server.shutdown();server.server_close();worker.join(2)
+        self.assertFalse(worker.is_alive())
+        self.assertEqual(len(received),1)
+        self.assertEqual(received[0][1:],('gamma','cpu-only-token'))
+        self.assertEqual(charged,['controls'])
+        self.assertEqual((out/'observed.wire').read_bytes(),payload[:(1<<20)+1])
+        self.assertEqual(json.loads((out/'observed.http.json').read_text())['status'],status)
+
+    def test_metadata_sends_bound_client_identity(self):
+        self.call(200,b'{"configured":true}')
+
+    def test_metadata_preserves_unauthorized_response_without_misdiagnosis(self):
+        self.call(401,b'{"error":{"code":"client_authentication_failed"}}')
+
+    def test_metadata_response_has_explicit_byte_limit(self):
+        self.call(200,b' ' *((1<<20)+1))
 
 
 if __name__=='__main__':unittest.main()

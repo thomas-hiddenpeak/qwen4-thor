@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义短验鉴权修复](evidence/serve-semantic-vad-metadata-fix-20261119/README.md)：
+首轮1模型/0业务/35.566秒在能力查询401处停止，35次NVML正常，
+自有资源与锁已释放；3项CPU修复检查通过，原引擎不变。补验原
+2WSS+2评分对照+1Chat，新增1模型/600秒、累计启动上限2；原失败
+与默认rev336 STOPPED保持，真实语义/发行待验，全部master继续。
+
 [原生语义VAD接入CPU与构建通过](evidence/serve-semantic-vad-integration-cpu-20261119/README.md)：
 91项原生合同覆盖、5项官方SDK/TLS、6项证据反例通过；实际程序
 零警告构建，全部原失败保留。冻结1模型/1入口/2WSS回合、2评分

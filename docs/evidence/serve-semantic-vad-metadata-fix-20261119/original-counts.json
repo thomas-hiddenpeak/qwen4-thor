@@ -1,0 +1,8 @@
+{
+  "starts": 1,
+  "ingress_starts": 1,
+  "websocket_sessions": 0,
+  "committed_items": 0,
+  "chats": 0,
+  "controls": 32
+}
