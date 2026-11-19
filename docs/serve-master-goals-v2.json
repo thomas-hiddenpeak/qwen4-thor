@@ -11702,6 +11702,20 @@
       "listening_deferred_by_owner": true,
       "all_master_tasks_active": true,
       "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
+    },
+    "audio_output_20261120": {
+      "state": "continuous_encoder_cpu_accepted_protocol_execution_pending",
+      "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+      "cpu_new": 8,
+      "cpu_existing_protection": 5,
+      "source_counterexamples": 20,
+      "cpu_seconds_bound": 120,
+      "new_gpu_starts": 0,
+      "endpoint_connected": false,
+      "default_revision": 366,
+      "evidence": "evidence/serve-realtime-speech-encoder-cpu-20261120/README.md",
+      "cpu_tests": 13,
+      "cpu_seconds": 0.5536518231965601
     }
   },
   "semantic_vad_primary_light_20261119": {

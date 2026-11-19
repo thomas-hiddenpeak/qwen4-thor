@@ -2320,8 +2320,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "84f009005bda8d7b119586784f6ba5a8d0eaef4ac320855ad6b0abd484b5b083",
-    "cmake/ChatProtocolIdentity.cmake": "c5353f96ff4e42ea03bbbfb78c9298c4f5eb958744cb0b054a91ae5b97f83fc1",
+    "CMakeLists.txt": "4d1822085844479e7890fe75ddc16477ecfeca67b5b3c548d956e56f0ff9070f",
+    "cmake/ChatProtocolIdentity.cmake": "f551a656b25cd4b393aa1ed71c160ea4b061a49a15faa9ca2805c00ea7e21602",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3357,7 +3357,9 @@
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
     "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f",
     "tools/serve_recovery/profile_refusal_reuse.py": "712e0014726be188bb677e9d65238898a1b7e2700d892fc52a770dbc3c984e78",
-    "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac"
+    "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac",
+    "include/q4t/server/realtime_speech_encoder.h": "44c81c5252df13aa5609f2de8dd4341c2bcf6a67294913afd3be62009728fec8",
+    "src/server/realtime_speech_encoder.cpp": "930869c4ef9defc61c9a4c585efa67183c646d3fec47fc76f1fb5ddfd099cd13"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

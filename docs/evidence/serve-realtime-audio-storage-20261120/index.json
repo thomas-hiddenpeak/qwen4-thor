@@ -1,0 +1,18 @@
+{
+  "retired-notify-sharing-01/restore.py": {
+    "bytes": 648,
+    "sha256": "0fbc28eb08954cdf5eccfb453ec56cbc5d5fa4503d92b1f126baf1fc684c49a4"
+  },
+  "retired-notify-sharing-01/result.json": {
+    "bytes": 372,
+    "sha256": "60fe13b9ee738583d7ce8c9823eb7a58bef1a6995cfd45b0b851b06ecf698735"
+  },
+  "retired-notify-sharing-01/plan.json": {
+    "bytes": 9618,
+    "sha256": "c9294deaa4290d0c0503544a7c04d50e1eb807d555b1a8c0233b68a3ce7cf4ea"
+  },
+  "share_retired_notify_binaries.py": {
+    "bytes": 4139,
+    "sha256": "5f1544d36735d925aab525820cd15fd0d80a0bb8f6d7c5b5f5bbd909ac44090f"
+  }
+}

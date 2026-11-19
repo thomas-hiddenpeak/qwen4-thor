@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "seconds": 0.5536518231965601,
+  "commands": [
+    {
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/required-encoder-01.txt"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "tests": 13,
+  "new_tests": 8,
+  "existing_protection": 5,
+  "source_counterexamples": 20,
+  "binary_sha256": "655f37b4d3faf1fb8f8cc78416b62c8dbf0f4cdfd5c52699a6ef146fc19eb311",
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "endpoint_connected": false,
+  "all_master_tasks_active": true,
+  "archive_sha256": "00f74b4dd0a7a12369c63e165e96c48b0437a564a82a228bde6b8f3758ef355c"
+}

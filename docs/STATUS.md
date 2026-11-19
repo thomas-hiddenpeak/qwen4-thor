@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime连续语音编码CPU通过](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：
+8项新用例+5项保护/0.554秒，20来源反例通过，0GPU；最终构建
+26.086秒零警告。PCM全码值、G.711相位/尾长和失败归属已验，
+尚未接音频入口；继续协议/历史/原生TTS和全部master。默认rev366
+及原失败保持，PR #53仍待最终CI合入。
+
+Realtime音频输出已进入[连续编码与接线计划](SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md)：
+24k PCM分块转PCM/G.711组件已写入，跨块相位、尾部、取消和背压
+归属有界；冻结8项新CPU+5项已有保护用例/20来源反例/120秒/0GPU。
+组件尚未验证或接入口，不宣称音频已可用；默认rev366 STOPPED保持，
+PR #53最终CI继续，随后推进协议/历史/真实TTS与全部master。
+[旧测试只读程序共享](evidence/serve-realtime-audio-storage-20261120/README.md)释放750592000字节，原路径/字节/恢复入口保留。
+
 [rev366原生Realtime Prompt已交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：
 19项STOPPED命令/391.724秒，真实回退再前进，0新增GPU。
 默认648d6d68、服务包7be0a6a5；配额/用量/历史/恢复预算保持，前驱
