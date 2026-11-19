@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime执行诊断真实短验通过](evidence/serve-realtime-diagnostics-business-20261119/README.md)：
+成功/配额/断连正确分类，与2成功/1错误/1中止计数一致；同PID Chat
+正常，1模型/1入口、2会话3提交1Chat、41.626秒/41次NVML正常。
+进程/端口/GPU锁清理通过、默认rev326保持；继续流式转录与实时
+对话衔接、未完成处理器/Live、恢复组合及整个master。
+
 [执行诊断5项CPU通过](evidence/serve-realtime-diagnostics-cpu-20261119/README.md)：
 0.007659秒/0GPU，零警告、979来源/18负控。成功/配额/取消/异常与
 标签寿命检查通过；来源脚本格式假定失败保留并修正。冻结1模型/

@@ -9664,7 +9664,7 @@
       "new_waveform_captures": 0
     },
     "diagnostic_completion_gap": {
-      "state": "CPU_ACCEPTED_REAL_BUSINESS_PENDING",
+      "state": "REAL_BUSINESS_ACCEPTED_DELIVERY_PENDING",
       "finding": "RunRealtimeTranscription succeeds and updates success metrics but does not close RequestDiagnostics outcome; actual successful item end events retain error/handler_error.",
       "next": "Bind diagnostics to actual success/failure/cancel result, targeted direct checks and applicable upcoming business; never use observation labels to restart healthy model.",
       "cpu_cases": 5,
@@ -9679,7 +9679,15 @@
         "items": 3,
         "chats": 1,
         "seconds": 600
-      }
+      },
+      "business_evidence": "evidence/serve-realtime-diagnostics-business-20261119/README.md",
+      "business_seconds": 41.625771902967244,
+      "nvml_ok": 41,
+      "model_starts": 1,
+      "sessions": 2,
+      "items": 3,
+      "chats": 1,
+      "default_unchanged": true
     },
     "noise_business_accepted": {
       "state": "REAL_STATIONARY_NOISE_SCENE_ACCEPTED_DELIVERY_PENDING",
