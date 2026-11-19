@@ -1,0 +1,6 @@
+test_managed_fallback_requires_real_alignment_and_preserved_profile_history (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.234s
+
+OK
