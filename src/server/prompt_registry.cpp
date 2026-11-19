@@ -210,9 +210,12 @@ ObjectReply PromptRegistry::List(ObjectRequest request,
 
 ObjectReply PromptRegistry::Resolve(const Json& reference,
                                     const StateAccess& access,
-                                    PromptSnapshot* snapshot) {
+                                    PromptSnapshot* snapshot,
+                                    size_t maximum_bytes) {
   if (!snapshot)
     return Error(500, "prompt_owner_missing", "Prompt snapshot owner missing");
+  if (!maximum_bytes || maximum_bytes > pd::kExpandedBytes)
+    return Error(500, "prompt_budget_invalid", "Invalid prompt owner budget");
   std::string bad;
   if (!InputFields(reference, {"id", "version", "variables"}, &bad, "prompt"))
     return pd::Invalid("Invalid prompt reference",
@@ -240,7 +243,8 @@ ObjectReply PromptRegistry::Resolve(const Json& reference,
     return Corrupt();
   const auto* variables = reference.Find("variables");
   auto result = pd::Render(
-      definition, variables && !variables->IsNull() ? *variables : Object());
+      definition, variables && !variables->IsNull() ? *variables : Object(),
+      maximum_bytes);
   if (!result.ok()) return result;
   PromptSnapshot next;
   next.api = api && api->str == "realtime" ? PromptApi::kRealtime

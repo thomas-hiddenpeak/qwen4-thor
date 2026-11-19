@@ -48,13 +48,14 @@ ObjectReply Shape(const Json& part, const std::string& path) {
 // scanned again. Output expansion is charged before each append.
 class Renderer {
  public:
-  explicit Renderer(const Json& variables) : variables_(variables) {}
+  Renderer(const Json& variables, size_t maximum_bytes)
+      : variables_(variables), maximum_bytes_(maximum_bytes) {}
   ObjectReply StringParts(std::string_view text, Json* parts,
                           const std::string& path) {
     *parts = Array();
     const auto append = [&](Json value) -> ObjectReply {
       const size_t size = OutputJson(value).size();
-      if (parts->array.size() >= 1024 || size > kExpandedBytes - bytes_)
+      if (parts->array.size() >= 1024 || size > maximum_bytes_ - bytes_)
         return Error(413, "prompt_expansion_limit", "Prompt expansion limit");
       bytes_ += size;
       parts->array.push_back(std::move(value));
@@ -173,12 +174,14 @@ class Renderer {
 
  private:
   const Json& variables_;
+  const size_t maximum_bytes_;
   size_t bytes_ = 0;
   std::set<std::string> used_;
 };
 }  // namespace
 
-ObjectReply Render(const Json& definition, const Json& variables) {
+ObjectReply Render(const Json& definition, const Json& variables,
+                   size_t maximum_bytes) {
   const auto* types = definition.Find("variables");
   const auto* base = definition.Find("request");
   if (!types || !types->IsObject() || !base || !base->IsObject() ||
@@ -203,7 +206,7 @@ ObjectReply Render(const Json& definition, const Json& variables) {
       if (!result.ok()) return result;
     }
   }
-  Renderer render(variables);
+  Renderer render(variables, maximum_bytes);
   ObjectReply result;
   result.value = *base;
   if (result.value.Has("instructions")) {
@@ -217,7 +220,7 @@ ObjectReply Render(const Json& definition, const Json& variables) {
   if (render.Used().size() != types->object.size())
     return Invalid("Declared variable is unused in instructions or input",
                    "definition.variables");
-  if (OutputJson(result.value).size() > kExpandedBytes)
+  if (OutputJson(result.value).size() > maximum_bytes)
     return Error(413, "prompt_expansion_limit", "Expanded prompt is too large");
   return result;
 }

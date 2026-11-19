@@ -1,6 +1,7 @@
 #pragma once
 
 #include "q4t/server/responses_state.h"
+#include "q4t/server/request_limits.h"
 
 namespace q4t::server {
 
@@ -34,7 +35,8 @@ class PromptRegistry {
   // Bounded object-worker lookup and single-pass rendering only. On failure
   // the caller's snapshot is unchanged. No model, quota or tool is acquired.
   ObjectReply Resolve(const io::Json& reference, const StateAccess& access,
-                      PromptSnapshot* snapshot);
+                      PromptSnapshot* snapshot,
+                      size_t maximum_bytes = kExpandedApplicationBytes);
   // Returns an effective Responses request with a pinned public prompt
   // reference. This executes no model/tool. Restore uses the saved effective
   // request, never expands it again or depends on the live registry.

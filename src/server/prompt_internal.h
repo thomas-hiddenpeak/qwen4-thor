@@ -11,7 +11,8 @@ inline constexpr size_t kVersions = 64;
 ObjectReply Invalid(std::string message, std::string param);
 ObjectReply ValidateDefinition(const io::Json& definition,
                                const ChatPlanConfig& config);
-ObjectReply Render(const io::Json& definition, const io::Json& variables);
+ObjectReply Render(const io::Json& definition, const io::Json& variables,
+                   size_t maximum_bytes = kExpandedBytes);
 bool Version(std::string_view version);
 io::Json Public(const io::Json& record);
 }  // namespace q4t::server::prompt_detail

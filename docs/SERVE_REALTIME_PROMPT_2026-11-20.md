@@ -15,6 +15,10 @@
 Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)；
 尚未接会话或执行路径，仍按下列总合同继续。
 
+设置组件另通过[34项CPU](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：
+默认/模板/显式覆盖、固定版本与单轮选择、失败事务和展开资源预算
+已具备；实际会话和执行仍待接线。
+
 ## 已核实的依据
 
 固定的 OpenAI JS 7.47.0 在会话和 `response.create` 中均接受

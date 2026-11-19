@@ -1,0 +1,20 @@
+{
+  "status": "PASS_REALTIME_PROMPT_SETTINGS_CPU",
+  "tests": 34,
+  "settings_tests": 10,
+  "registry_tests": 24,
+  "seconds": 2.5686758747324347,
+  "source_mutations": 20,
+  "build_seconds": 8.68609646288678,
+  "build_warnings": 0,
+  "original_build_failure_preserved": true,
+  "shared_original_restored": true,
+  "maximum_expansion_bytes": 16777216,
+  "maximum_retained_bytes": 67108864,
+  "new_gpu_starts": 0,
+  "actual_realtime_session_accepted": false,
+  "default_revision": 356,
+  "default_unchanged": true,
+  "files": 29,
+  "archive_sha256": "b93bc8349fa3c62dd9c02aa840c6bd38863b206aa6d387cc7902943d28388cd2"
+}

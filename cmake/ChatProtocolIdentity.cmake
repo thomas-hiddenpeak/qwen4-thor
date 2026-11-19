@@ -725,6 +725,8 @@ set(protocol_inputs
   include/q4t/server/realtime_conversation_pump.h
   src/server/realtime_conversation_pump.cpp
   include/q4t/server/realtime_chat_plan.h
+  include/q4t/server/realtime_prompt_settings.h
+  src/server/realtime_prompt_settings.cpp
   src/server/realtime_chat_plan.cpp
   include/q4t/server/realtime_chat_execution.h
   src/server/realtime_chat_execution.cpp

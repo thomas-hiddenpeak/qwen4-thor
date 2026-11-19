@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt设置34项CPU通过](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：
+2.569秒/0GPU，版本固定/覆盖/null/失败事务与展开预算通过，
+20来源反例通过；构建8.686秒零警告，首轮测试语法失败保留。
+继续真实会话/权限/取消/前缀截断接线，尚无Prompt业务资格；
+默认rev356及PR #52交付不变，全部master保持active。
+
+Prompt 会话设置组件已编写：服务默认值、模板与显式覆盖分别保存，
+普通更新复用固定版本，单轮 Prompt/null 不改会话，失败不提交；
+展开由调用方限16MiB、保留状态限64MiB。冻结34项针对性CPU/
+120秒/0GPU（注册表24+设置10），随后继续实际会话/取消/上下文
+接线；尚无 Prompt 业务资格，默认rev356保持，PR #52未混入此开发。
+
 [Prompt注册表24项CPU通过](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：
 2.467秒/0GPU，原16项与8项新合同通过，来源20反例通过；
 构建246.350秒零警告。类型定义、权限范围和不可变版本快照已具备，

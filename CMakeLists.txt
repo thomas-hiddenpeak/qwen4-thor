@@ -596,6 +596,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/realtime_prompt_settings.cpp
   src/server/realtime_chat_execution.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
@@ -864,6 +865,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_conversation_session_test.cpp
     tests/server_realtime_conversation_pump_test.cpp
     tests/server_realtime_chat_plan_test.cpp
+    tests/server_realtime_prompt_settings_test.cpp
     tests/server_realtime_chat_execution_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_semantic_vad_test.cpp
@@ -1008,6 +1010,7 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/realtime_prompt_settings.cpp
   src/server/realtime_chat_execution.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
