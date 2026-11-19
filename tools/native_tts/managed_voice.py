@@ -74,10 +74,24 @@ def clip(plan, name):
     return path.read_bytes()
 
 
+def reference_records(directory, consent, voice):
+    records = {}
+    for name, kind, identifier in (('consent','voice_consent',consent),
+                                   ('voice','voice',voice)):
+        paths = list(Path(directory).glob('*.'+kind+'.'+identifier+'.json'))
+        require(len(paths) == 1 and not paths[0].is_symlink() and
+            paths[0].stat().st_size <= profile_voice.MAX_RESPONSE_BYTES,
+            'one actual managed ICL record required')
+        records[name] = read(paths[0])['record']
+    evidence.voice_reference(records, consent, voice)
+    return records
+
+
 class Actor:
     def __init__(self, stage):
         self.stage=stage;self.consent=self.voice=None;self.completed=[];self.count=0
         self.attempted=[];self.finished=False
+        self.reference = None
 
     def call(self, name, path, body=None, *, method=None, client='alpha',
              status=200, content_type='application/json', raw=False):
@@ -116,6 +130,13 @@ class Actor:
                 'audio_sample',clip(self.stage.plan,'sample'))
             profile_voice.Lifecycle.created((200,json.dumps(self.voice).encode()),'voice')
         rows=evidence.voice_requests(self.consent['id'],self.voice['id']);prefix=label+'-voice'
+        if self.stage.plan.get('voice_icl'):
+            records = reference_records(self.stage.output/'state/application-objects',
+                                        self.consent['id'], self.voice['id'])
+            require(self.reference is None or same_json(records, self.reference),
+                    'persisted ICL reference changed during recovery')
+            self.reference = records
+            save(self.stage.output/(prefix+'-conditioning.json'), records)
         self.call(prefix+'-consent',profile_voice.CONSENTS+'/'+self.consent['id'])
         self.call(prefix+'-cross-consent',profile_voice.CONSENTS+'/'+self.consent['id'],
                   client='beta',status=404)
@@ -169,7 +190,7 @@ def check(out, plan, configured):
         evidence.voice_error(dict(status=404,body=json_response(out,name,404)),404)
     upload('voice-consent',profile_voice.CONSENTS,rows['consent'],'recording',clip(plan,'consent'))
     upload('voice-create',profile_voice.VOICES,rows['voice'],'audio_sample',clip(plan,'sample'))
-    result={};previous=None
+    result={};previous=None;reference=None
     for label in phases:
         prefix=label+'-voice'
         request(prefix+'-consent',profile_voice.CONSENTS+'/'+consent['id'])
@@ -200,8 +221,18 @@ def check(out, plan, configured):
             chat=chat,speech_transcript=json_response(out,prefix+'-speech-asr'),
             chat_transcript=json_response(out,prefix+'-chat-asr'))
         evidence.voice_synthesis(value,fixed)
+        icl = plan.get('voice_icl', False)
+        require(type(icl) is bool, 'invalid managed ICL declaration')
+        if icl:
+            records = read(out/(prefix+'-conditioning.json'))
+            evidence.voice_icl_business(dict(value,consent=consent,voice=voice,
+                                             conditioning=records))
+            require(reference is None or same_json(reference,records),
+                    'managed ICL reference was not preserved exactly')
+            reference = records
+        condition_model = fixed['model']+('-reference' if icl else '-speaker')
         for key,model in [('native_tts_base_health',fixed['model']),
-                          ('native_voice_health',fixed['model']+'-speaker')]:
+                          ('native_voice_health',condition_model)]:
             health=config[key]
             fresh_condition = (key == 'native_voice_health' and
                 plan['scenario'] == 'tool_version' and label == 'fallback' and
@@ -220,11 +251,22 @@ def check(out, plan, configured):
                 health.get('core_readiness_dependency') is False and
                 type(health.get('compute_failures')) is int and health['compute_failures']==0,
                 'managed voice lost healthy isolated backend')
+            if icl:
+                require(health.get('asset_cleanup_pending') is False and
+                    type(health.get('load_failures')) is int and health['load_failures'] == 0 and
+                    (key != 'native_voice_health' or health.get('reference_encoder') is True),
+                    'managed ICL backend failed or lost reference identity')
         result[prefix]=dict(consent_id=consent['id'],voice_id=voice['id'],chat_id=chat['id'],
             speech_sha256=hashlib.sha256(audio).hexdigest(),
             chat_audio_sha256=hashlib.sha256(chat_audio).hexdigest(),
             speech_transcript=value['speech_transcript']['text'],
             chat_transcript=value['chat_transcript']['text'])
+        if icl:
+            result[prefix].update(reference_sha256=hashlib.sha256(
+                json.dumps(reference,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+                reference_frames=len(reference['voice']['data']['reference']['codes']),
+                speech_input_tokens=value['speech']['usage']['input_tokens'],
+                chat_input_tokens=chat['usage']['q4t_audio_synthesis']['input_tokens'])
         previous=chat
     for name,path,item in [('voice-revoke',profile_voice.CONSENTS+'/'+consent['id'],consent),
                             ('voice-delete',profile_voice.VOICES+'/'+voice['id'],voice)]:

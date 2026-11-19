@@ -1,0 +1,15 @@
+{
+  "modules": [
+    "tools.native_tts.test_managed_icl",
+    "tools.native_tts.test_managed_voice"
+  ],
+  "cases": 16,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_tts/managed_voice.py": "15ffbb583fce9983e20dcb5359207dd606c4e614f610ab2bfe6f95cc2367838f",
+    "tools/native_tts/test_managed_icl.py": "b9c30887c54166f2c08bd293a638ece5cf195e96c6bdadb83e8000422ded47fa",
+    "tools/native_asr/service_acceptance.py": "6363842669d4cc3e8d53af59dd633642e6f162cb691fc9a526eefb3e047179ca",
+    "tools/native_tts/test_managed_voice.py": "deaae7b1fd96ce3034f9d2bb1500d387d75ffefc0f33ab546c9bd9dc324f0326"
+  }
+}

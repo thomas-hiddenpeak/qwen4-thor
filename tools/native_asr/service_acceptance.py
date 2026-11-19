@@ -128,6 +128,9 @@ def prepare(args):
         require(fixture is not None, 'managed registered voice needs fixed recordings')
         fixture = fixture.resolve(strict=True)
         plan['native_voice'] = native_voice
+        if profile_evidence.voice_icl_enabled(
+                manifest['recovery_profiles']['identity'], qualified['capabilities']):
+            plan['voice_icl'] = True
         plan['voice_clips'] = profile_voice.fixtures(fixture)
         plan['sources'][str(fixture)] = engine.sha(fixture)
         for row in plan['voice_clips'].values():plan['sources'][row['path']] = row['sha256']

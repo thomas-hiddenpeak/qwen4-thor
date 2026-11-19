@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Guardian ICL驱动16项CPU通过](evidence/serve-managed-icl-reference-cpu-20261119/README.md)：
+2.016秒/0GPU；持久参考跨恢复保持、丢失/改码/错身份/少计输入负控
+及旧声音合同通过。继续WSS中断/显式重连，再实际Guardian组合及
+可回退交付；默认rev326、已验主轻、听感待验与全部master保持。
+
+实际Guardian驱动已补ICL持久参考检查：同一Consent/Voice与完整码本
+输入跨入口/整包恢复保持；缺失、改码或旧声纹身份不能回退通过。
+冻结16项针对性CPU/120秒/0GPU，尚未验证；随后补WSS中断/显式
+重连，再实际组合和可回退交付。主轻资格与默认rev326保持。
+
 [ICL/Realtime主轻实际资格通过](evidence/serve-icl-realtime-primary-light-20261119/README.md)：
 补验2模型/2入口/2WSS/44项、279.367秒；复用首轮12条音色，累计
 3模型/56项/378.938秒，352次NVML正常。两模式参考码/920与918
