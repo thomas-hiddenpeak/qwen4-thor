@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[控制器等待断言修正CPU通过](evidence/serve-prompt-controller-wait-20261120/README.md)：
+6项/1.062秒与20来源反例通过。保留包正式接受，原TLS FAILED保留；
+已完成网关段独立复核通过，控制器恢复后Prompt业务仍待补。两个原组
+共161次NVML正常并清理，默认不变；继续控制器专组和整包回退，总
+GPU时间仍不超过1200秒，全部master继续。
+
+TLS网关前后真实工具均rev356且取消结算完成；随后控制器恢复已READY，
+驱动误用正常交接的非空usage.source断言，原组FAIL保留（2模型/7生成）。
+已改为核对强杀后的实际完整配额等待，冻结6项CPU/20来源反例/120秒；
+仅补控制器2模型/6生成/2WSS/360秒，网关不重跑。连同已用租约与
+尚未跑的整包回退，累计GPU仍限1200秒，默认不变，全部master继续。
+
 [Prompt恢复驱动CPU通过](evidence/serve-prompt-recovery-cpu-20261120/README.md)：
 15项/7.292秒，JS语法与20来源反例通过，0GPU；固定SDK/原生TLS对
 CPU对端验证引用、工具、流、正常关闭及反例。三种包准备完成，私有

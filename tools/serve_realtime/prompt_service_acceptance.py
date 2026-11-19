@@ -28,6 +28,8 @@ LIMITS = dict(
                        websocket_sessions=1, seconds=300),
     tls=dict(starts=2, chats=9, probes=0, controls=2000,
              websocket_sessions=3, seconds=360),
+    tls_controller=dict(starts=2, chats=6, probes=0, controls=2000,
+                        websocket_sessions=2, seconds=360),
     tool_version=dict(starts=2, chats=6, probes=1, controls=2500,
                       websocket_sessions=2, seconds=540))
 
@@ -43,6 +45,15 @@ def check_prompt(value, reference, definition):
         'resolved Prompt did not provide exact instructions/tools/budget')
 
 
+def cold_controller_usage(usage, generation, deadline, now):
+    require(usage['phase']=='active' and usage['generation']==generation and
+        usage['source'] is None and usage['snapshot'] is None and
+        type(deadline) in (int,float) and deadline > 0 and now >= deadline-.05,
+        'controller crash needs actual full quota wait, not an invented handoff')
+    return dict(mode='full_window_after_unsealed_controller_death',
+                generation=generation,observed_deadline=deadline,checked_at=now)
+
+
 def prepare(args):
     bundle, _, _, _, _, engine = LEGACY['load_modules']()
     from tools.serve_recovery import profile_evidence, profile_record
@@ -56,7 +67,7 @@ def prepare(args):
     digest = engine.sha(pack/'manifest.json'); manifest = bundle.verify(pack, digest)
     policy = engine.read(pack/'gateway-policy.json')
     require(manifest['ingress_mode'] == 'native' and
-        bool(manifest['tls']) == (args.scenario == 'tls') and
+        bool(manifest['tls']) == args.scenario.startswith('tls') and
         policy['listen_host'] == '127.0.0.1', 'exact native loopback/TLS payload required')
     qualified = profile_record.read(pack/'profile-primary.json')
     require(profile_evidence.prompt_enabled(qualified['capabilities']),
@@ -88,7 +99,7 @@ def prepare(args):
     # Keep one exact SDK inventory. Ordinary plan reading retains its 2 MiB cap.
     del plan['sdk']['files']
     plan['sdk']['source_inventory_count'] = len(sdk['files'])
-    if args.scenario == 'tls':
+    if args.scenario.startswith('tls'):
         plan['tls_inputs'] = {}
         for key in ('certificate','key'):
             path = Path(manifest['tls_configuration'][key]).resolve(strict=True)
@@ -140,7 +151,7 @@ class Stage(BASE['Stage']):
         time.sleep(.22);self.budget.reserve('controls',label)
         raw = None if body is None else json.dumps(body).encode()
         if body is not None:save(self.output/(label+'-request.json'),body)
-        if self.plan['scenario'] == 'tls':
+        if self.plan['scenario'].startswith('tls'):
             context = ssl.create_default_context(cafile=self.plan['tls_inputs']['ca']['path'])
             connection = http.client.HTTPSConnection('127.0.0.1',self.port,timeout=30,context=context)
         else:connection = http.client.HTTPConnection('127.0.0.1',self.port,timeout=30)
@@ -159,8 +170,31 @@ class Stage(BASE['Stage']):
         current=self.request(label,path='/v1/prompts/'+self.prompt_reference['id'])
         require(current==self.prompt_baseline,'durable Prompt changed during recovery')
 
+    def controller_ready(self):
+        from tools.serve_recovery import ledger
+        # Hard controller death has no sealed handoff. The existing generic
+        # recovery gate requires an observed full quota window before READY.
+        ready=LEGACY['Stage'].ready(self,2)
+        require(ready['model_capacity_sha256']==ledger.digest(
+            self.registry['profiles']['primary']),'unqualified recovered model')
+        usage=self.family('usage')
+        checked=cold_controller_usage(usage,2,self.quota_deadlines.get(2),time.monotonic())
+        save(self.output/'controller-usage.json',dict(usage=usage,verification=checked))
+        return ready
+
+    def recover_controller_prompt(self,previous,actor,label):
+        self.kill(previous,'controller','prompt-controller-exit')
+        current=self.controller_ready()
+        require(current['controller_generation']==previous['controller_generation']+1 and
+            current['model_pid']!=previous['model_pid'] and all(current[k]==previous[k]
+                for k in ('guardian_pid','gateway_pid','gateway_start_ticks')),
+            'controller death did not recover its owned model exactly once')
+        self.retained_prompt('prompt-after-controller');actor.start(label)
+        save(self.output/'controller-continuity.json',dict(before=previous,after=current))
+
     def exercise(self):
         version=self.plan['scenario']=='tool_version';tls=self.plan['scenario']=='tls'
+        controller_only=self.plan['scenario']=='tls_controller'
         first=self.version_ready(1,'primary') if version else self.ready(1,'primary')
         self.request('capabilities',path='/v1/capabilities')
         definition=self.plan['prompt_recovery']['definition']
@@ -171,8 +205,10 @@ class Stage(BASE['Stage']):
         self.request('prompt-other-client',client='beta',path='/v1/prompts/'+created['id'],expected=404)
         actor=prompt_actor(self)
         try:
-            actor.start('tls-before' if tls else 'primary')
-            if tls:
+            actor.start('controller-before' if controller_only else 'tls-before' if tls else 'primary')
+            if controller_only:
+                self.recover_controller_prompt(first,actor,'controller-after')
+            elif tls:
                 self.kill(first,'gateway','prompt-gateway-exit');actor.finish()
                 second=self.wait(lambda s:s['business_ready'] and
                     s['gateway_generation']==first['gateway_generation']+1)
@@ -180,16 +216,8 @@ class Stage(BASE['Stage']):
                     'model_start_ticks','model_generation','controller_pid','controller_start_ticks')),
                     'gateway recovery changed healthy core')
                 self.retained_prompt('prompt-after-gateway');actor.start('tls-after')
-                self.kill(second,'controller','prompt-controller-exit')
-                third=self.ready(2,'primary')
-                require(third['controller_generation']==second['controller_generation']+1 and
-                    third['model_pid']!=second['model_pid'] and
-                    all(third[k]==second[k] for k in
-                        ('guardian_pid','gateway_pid','gateway_start_ticks')),
-                    'controller death did not recover its owned model exactly once')
-                self.retained_prompt('prompt-after-controller');actor.start('tls-controller')
+                self.recover_controller_prompt(second,actor,'tls-controller')
                 save(self.output/'gateway-continuity.json',dict(before=first,after=second))
-                save(self.output/'controller-continuity.json',dict(before=second,after=third))
             elif version:
                 before=self.family('profiles');save(self.output/'profiles-before.json',before)
                 self.fatal_gateway(first);actor.finish()
@@ -230,10 +258,15 @@ def check_business(out):
         check_prompt(engine.read(out/(label+'-conversation.sdk.json')),reference,
                      plan['prompt_recovery']['definition'])
     paths={'tool_retained':[], 'tls':['prompt-after-gateway','prompt-after-controller'],
+           'tls_controller':['prompt-after-controller'],
            'tool_version':['prompt-after-fallback']}[plan['scenario']]
     for name in paths:
         require(json.loads((out/(name+'.wire')).read_bytes())==before,
                 'saved Prompt differs after recovery')
+    if plan['scenario'] in ('tls','tls_controller'):
+        row=engine.read(out/'controller-usage.json');v=row['verification']
+        require(cold_controller_usage(row['usage'],2,v['observed_deadline'],v['checked_at'])==v,
+                'cold controller quota receipt differs')
     return dict(conversations=rows,prompt_reference=reference,persistent_phases=paths,
                 model_quality_separate=True,automatic_replay=False)
 

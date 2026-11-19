@@ -8536,5 +8536,12 @@
     "maximum_gpu_model_starts": 5,
     "maximum_gpu_generations": 18,
     "maximum_gpu_seconds": 1200
+  },
+  "prompt_controller_wait_20261120": {
+    "scope": "Unsealed hard controller death requires actual expired quota window; only missing controller business gets a new run",
+    "cpu_checks_pending": 6,
+    "new_targeted_model_starts": 2,
+    "new_targeted_generations": 6,
+    "new_targeted_seconds": 360
   }
 }
