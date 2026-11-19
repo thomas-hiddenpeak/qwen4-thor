@@ -1,0 +1,16 @@
+{
+  "scope": "Repair preparation-only fixed SDK-directory drift; do not weaken package/lock/file identity checks",
+  "cpu_cases": 4,
+  "actual_sdk_identity_reviews": 1,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "failed_preparation": ".q4t-work/serve-realtime-20261119/profiles-01/preparation-failure.json",
+  "sources": {
+    "tools/serve_protocol/stage.py": "d0a6cd984945581d1d41e410620ca5d00e126da76d7a82491f2d9020664e2d7e",
+    "tools/serve_protocol/test_sdk_selection.py": "12ce463d79c9901807ada335ecc25d9d8dd99d16e9766bf2964876b102f5b11b",
+    "tools/serve_schema_v2/acceptance.py": "27c7722f90d8d6fcbcf63c4df40ad7408542e04f72196a82dae71a432871f420",
+    "tools/serve_recovery/profile_acceptance.py": "fcf37d3a44442e1a29c570584c25adafde16f7f0d243e41457a4d0f9b0fab7a6"
+  },
+  "sdk_directory": ".q4t-work/serve-realtime-20261119/profile-sdk-01",
+  "new_network": false
+}

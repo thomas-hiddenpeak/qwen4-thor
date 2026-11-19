@@ -1,0 +1,10 @@
+{
+  "status": "PREPARATION_FAILED",
+  "source_commit": "e30f248d9",
+  "failure": "RuntimeError: SDK lock drift",
+  "site": "tools/serve_protocol/stage.py:sdk_identity hardcodes historical serve-protocol-20261103/sdk while current pinned package adds ws 8.21.0",
+  "model_starts": 0,
+  "gpu_actions": 0,
+  "http_requests": 0,
+  "next": "explicitly bind already-qualified Realtime SDK directory; preserve original failed preparation"
+}

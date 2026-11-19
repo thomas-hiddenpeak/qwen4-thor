@@ -150,7 +150,8 @@ def prepare(args, *, rows=None, limits=LIMITS, scope=None):
         requests=requests() if rows is None else rows,
         sources={name:sha(ROOT/name) for name in names},
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-        protected={str(p):sha(p) for p in protected},sdk=sdk_identity(),
+        protected={str(p):sha(p) for p in protected},
+        sdk=sdk_identity(getattr(args,'sdk_directory',None)),
         planned=dict(starts=limits['starts'],chats=limits['chats']),automatic_retries=False,
         scope=scope or "Rich schema JSON/SSE, exact data, shared/private target cache, real document tool/JSON closure, failure nonpublication and same-PID MTP. No full correctness/performance matrix.")
     save(out/'plan.json',plan)
@@ -174,7 +175,7 @@ class Stage(lifecycle.Stage):
         for name,digest in plan['sources'].items():require(sha(ROOT/name)==digest,'source drift: '+name)
         for name,digest in plan['protected'].items():require(sha(name)==digest,'default drift: '+name)
         require(sha(plan['binary'])==plan['binary_sha256'],'binary drift')
-        require(sdk_identity()==plan['sdk'],'SDK drift')
+        require(sdk_identity(plan['sdk']['sdk_directory'])==plan['sdk'],'SDK drift')
         check_assets(plan['model'],plan['model_assets'])
         self.client=JsSdkClient(f"http://127.0.0.1:{plan['port']}/v1",
             plan['sdk']['sdk_directory'],timeout=180)

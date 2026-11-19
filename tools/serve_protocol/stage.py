@@ -35,11 +35,12 @@ a = module("protocol_shared_delivery", ROOT / "tools/application_service/stage.p
 h = a.h
 
 
-def sdk_identity():
+def sdk_identity(directory=None):
     node = Path(shutil.which("node")).resolve(strict=True)
     version = subprocess.check_output([str(node), "--version"], text=True).strip()
     h.require(version == "v24.18.0", "Node version drift")
-    directory = BASE / "sdk"
+    directory = (BASE / "sdk" if directory is None else
+                 Path(directory).resolve(strict=True))
     metadata = h.read(directory / "node_modules/openai/package.json")
     h.require(metadata["version"] == "7.47.0", "SDK version drift")
     for name in ("package.json", "package-lock.json"):

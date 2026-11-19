@@ -1,0 +1,22 @@
+{
+  "status": "PASS_EXACT_COMBINED_LOCK_AND_INSTALLED_SDK_MODULES",
+  "seconds": 1.0819489168934524,
+  "gpu_actions": 0,
+  "network": false,
+  "modules": {
+    "openai": {
+      "version": "7.47.0",
+      "files": 4062,
+      "contents_sha256": "0044a97a02a76a72e3c4481d8937f85ef6c0bee03d7d040ccbc7b4b97bf3b09f",
+      "same_as_previously_qualified": true
+    },
+    "ws": {
+      "version": "8.21.0",
+      "files": 19,
+      "contents_sha256": "c1335ff7e7401d4b593892f37d3f18f667704b78cb7b0e4e16290e00ab26df4a",
+      "same_as_previously_qualified": true
+    }
+  },
+  "sdk_identity_sha256": "9412c1a47f0e1da08bd1e898be86a532d801b0a96671925666029ead82a5207d",
+  "old_sdk_mutated": false
+}

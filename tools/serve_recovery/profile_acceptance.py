@@ -832,6 +832,8 @@ def main():
                    help='require real persisted reference codes and full ICL input usage')
     p.add_argument('--realtime-reference', type=Path,
                    help='qualified real history plan; freeze 3 actual WSS turns per profile')
+    p.add_argument('--sdk-directory', type=Path,
+                   help='explicit installed SDK matching the pinned package and lock files')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,

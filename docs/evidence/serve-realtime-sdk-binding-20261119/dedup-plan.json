@@ -1,0 +1,6 @@
+{
+  "scope": "Reuse byte-identical installed modules after actual SDK audit; root package/lock remain separate, no library contents change",
+  "files": 4081,
+  "identity_sha256": "9412c1a47f0e1da08bd1e898be86a532d801b0a96671925666029ead82a5207d",
+  "gpu_actions": 0
+}

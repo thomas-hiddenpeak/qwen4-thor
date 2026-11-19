@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[SDK准备绑定修复通过](evidence/serve-realtime-sdk-binding-20261119/README.md)：
+原准备SDK锁漂移停在0模型/0GPU，原失败保留；4项CPU及实际SDK
+来源复核1.496秒通过。完整锁从本机缓存重建，模块与已验版本精确
+一致，旧目录保持；核心程序6c6857c8不变。继续原2模型/2入口/2WSS/
+56业务项/900秒主轻预算，再做Guardian与交付，全部master继续。
+
 [Realtime主轻合同CPU通过](evidence/serve-realtime-profile-contract-cpu-20261119/README.md)：
 12项CPU及1项真实原件复核，1.135秒/0GPU、零警告；旧资格不能
 缺省新增会话证据，实际波形/上下文/删除/用量及清理进入检查。

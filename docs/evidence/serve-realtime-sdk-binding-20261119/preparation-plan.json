@@ -1,0 +1,18 @@
+{
+  "scope": "Isolated qualification-only JS SDK from exact combined OpenAI/ws lock, local npm cache only; historical SDKs unchanged",
+  "command": [
+    "npm",
+    "ci",
+    "--offline",
+    "--ignore-scripts",
+    "--omit=optional",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "network": false,
+  "model_actions": false,
+  "files": {
+    "package.json": "a0a0a89565dde89d66cb03d513f0f0dabe8ecdcb191a1a8a1abe23a389ec6681",
+    "package-lock.json": "43bc8635a13863855baf97c43373b62f80b00ff0c59ead02a7a4927f74db3e0c"
+  }
+}
