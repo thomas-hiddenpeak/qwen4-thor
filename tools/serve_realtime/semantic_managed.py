@@ -11,7 +11,7 @@ import subprocess
 from tools.serve_ops import transport
 from tools.serve_realtime import managed
 from tools.serve_recovery import profile_evidence as evidence
-from tools.serve_recovery import profile_semantic as semantic
+from tools.serve_realtime import semantic_evidence as semantic
 from tools.serve_service.package import read, require, same_json, save, sha
 
 OWNER = ('model_pid', 'model_start_ticks', 'model_generation',

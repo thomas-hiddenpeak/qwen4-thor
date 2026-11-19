@@ -1,0 +1,13 @@
+test_production_scalar_vad_limit_uses_existing_native_adapter (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter) ... ok
+test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default) ... ok
+test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk) ... ok
+test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs) ... ok
+test_compact_audio_is_idempotent_and_keeps_all_turn_assertions (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compact_audio_is_idempotent_and_keeps_all_turn_assertions) ... ok
+test_actual_pinned_package_namespace_uses_only_shipped_recovery_modules (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_pinned_package_namespace_uses_only_shipped_recovery_modules) ... ok
+test_all_recovery_phases_require_real_semantics_and_metered_work (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work) ... ok
+test_actual_backend_health_and_core_owner_must_survive (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.349s
+
+OK

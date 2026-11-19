@@ -3212,7 +3212,7 @@
     "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
     "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
-    "tools/serve_recovery/profile_semantic.py": "10b68fef406cf9cfd1da2c7d4936a6006a623e05df3b92e74a7b7bfef0a30566",
+    "tools/serve_recovery/profile_semantic.py": "bfff43586fb05120acb009d0a003999c52f8da46f4a82f1352853499e5832bf9",
     "tools/serve_recovery/profile_store.py": "def0e975bc61814efec4a8930a09011c3efd970231399b7b259bb895bb2c739b",
     "tools/serve_recovery/profile_voice.py": "589e1903a9c4228e20aced18a297a4e02296af02fd3162c6b6aa6fd81f72a94f",
     "tools/serve_recovery/profile_voice_review.py": "c776d0554c4af62072d8bbd96c303a512164b137c3ed443ae70facec3ee58574",
@@ -8422,5 +8422,10 @@
     "evidence": "docs/evidence/serve-semantic-vad-managed-cpu-20261119/README.md",
     "core_engine_unchanged": true,
     "actual_recovery_pending": true
+  },
+  "semantic_pinned_acceptance_review_20261119": {
+    "scope": "Acceptance projection outside pinned production namespace; package and core bytes unchanged",
+    "evidence": "docs/evidence/serve-semantic-vad-managed-import-20261119/README.md",
+    "original_premodel_failure_preserved": true
   }
 }

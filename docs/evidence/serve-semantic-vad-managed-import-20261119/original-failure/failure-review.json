@@ -1,0 +1,22 @@
+{
+  "status": "PRESERVED_PREMODEL_DRIVER_IMPORT_FAILURE",
+  "models_started": 0,
+  "business_requests": 0,
+  "nvml_queries": 4,
+  "nvml_all_ok": true,
+  "remaining_owned": [],
+  "ports_released": [
+    18161,
+    18162,
+    18163
+  ],
+  "lock_reacquired": true,
+  "private_desired": "STOPPED",
+  "private_active": {
+    "controller": null,
+    "gateway": null,
+    "model": null
+  },
+  "default_unchanged": true,
+  "original_result_preserved": true
+}

@@ -1,6 +1,4 @@
 """Actual semantic VAD turns and health on each primary/light profile."""
-import base64
-import copy
 import hashlib
 import http.client
 import json
@@ -8,35 +6,18 @@ import os
 from pathlib import Path
 import subprocess
 import time
-import zlib
 
 from tools.serve_realtime.ingress_fixture import NativeIngress
+from tools.serve_realtime.semantic_evidence import compact, configuration
 from tools.serve_recovery import profile_evidence as evidence
 from tools.serve_recovery import profile_realtime as realtime
-from tools.serve_service.package import asr_auxiliary_observed_limits, read, require, save, sha
+from tools.serve_service.package import read, require, save, sha
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = ('tools/serve_recovery/profile_semantic.py',
+           'tools/serve_realtime/semantic_evidence.py',
            'tools/serve_realtime/semantic_sdk.mjs')
 POSTS_PER_PROFILE = 2
-
-
-def compact(result, continuation):
-    # Retrieved PCM is retained once. The complete untouched SDK event stream
-    # stays beside the qualification receipt, including the retrieval event.
-    value = copy.deepcopy(result)
-    value['events'] = [e for e in value['events']
-                       if e['type'] != 'conversation.item.retrieved']
-    value.pop('feed', None)
-    evidence.semantic_turn(value, continuation)
-    content = value['retrieved']['item']['content'][0]
-    raw = evidence.semantic_pcm(content['audio'])
-    content['audio'] = dict(encoding='zlib-base64', pcm_bytes=len(raw),
-        sha256=hashlib.sha256(raw).hexdigest(),
-        data=base64.b64encode(zlib.compress(raw, 9)).decode())
-    require(evidence.semantic_pcm(content['audio']) == raw,
-            'semantic receipt compression changed original PCM')
-    return value
 
 
 def save_receipt(path, value):
@@ -71,15 +52,6 @@ def health(stage, label):
         return json.loads(raw)
     finally:
         conn.close()
-
-
-def configuration(config):
-    vad = asr_auxiliary_observed_limits(config, 'vad')
-    require(type(vad['max_chunks']) is int and 0 < vad['max_chunks'] < 2**64,
-            'native VAD chunk limit missing or invalid')
-    return dict(asr_health=config['native_asr_health'],
-        vad_health=config['native_vad_health'], asr_limits=config['native_asr_limits'],
-        vad_limits=vad)
 
 
 def run(stage):

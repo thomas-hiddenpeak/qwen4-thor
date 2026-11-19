@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -28,6 +30,37 @@ class SemanticManaged(unittest.TestCase):
         parent.mkdir(parents=True,exist_ok=True)
         temporary=tempfile.TemporaryDirectory(dir=parent);self.addCleanup(temporary.cleanup)
         self.out=Path(temporary.name)
+
+    def test_actual_pinned_package_namespace_uses_only_shipped_recovery_modules(self):
+        from tools.serve_recovery import bundle
+        source=self.out/'sealed/source'
+        for name in bundle.SOURCES:
+            target=source/name;target.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(m.managed.ROOT/name,target)
+        row=record()['turns'][0];save(self.out/'turn.json',row)
+        sources=[source]
+        actual=os.environ.get('Q4T_SEMANTIC_PACKAGE_SOURCE')
+        if actual:sources.append(Path(actual))
+        script='''import json,runpy,sys
+from pathlib import Path
+root,source,record=map(Path,sys.argv[1:]);sys.path.insert(0,str(root))
+driver=runpy.run_path(str(root/'tools/serve_recovery/acceptance.py'))
+driver['pin_packaged_modules'](source)
+from tools.serve_realtime import semantic_managed as managed
+assert Path(managed.evidence.__file__).resolve().is_relative_to(source.resolve())
+try:
+ from tools.serve_recovery import profile_semantic
+except ImportError:pass
+else:raise AssertionError('acceptance helper leaked into sealed recovery namespace')
+row=json.loads(record.read_text());projected=managed.semantic.compact(row,False)
+assert managed.evidence.semantic_turn(projected,False)==195
+assert managed.semantic.configuration(dict(native_asr_health={},native_vad_health={},native_asr_limits={},native_vad_max_chunks=64))['vad_limits']==dict(max_chunks=64)
+print('PASS pinned production modules with acceptance-only shared projection')
+'''
+        for selected in sources:
+            result=subprocess.run([sys.executable,'-I','-B','-c',script,str(m.managed.ROOT),str(selected),str(self.out/'turn.json')],capture_output=True,text=True,timeout=15)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertIn('PASS pinned production',result.stdout)
 
     def fixture(self,scenario='tls'):
         self.identity=identity();self.identity['native_asr']['vad']['limits']=dict(max_chunks=64)
