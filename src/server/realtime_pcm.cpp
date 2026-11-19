@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 
 #include "q4t/audio/stream_resample.h"
 
@@ -23,7 +24,11 @@ int DecodeALaw(uint8_t value) {
 }  // namespace
 
 float DecodeRealtimeSample(RealtimeAudioEncoding encoding, uint8_t first,
-                           uint8_t second) {
+                           uint8_t second, uint8_t third, uint8_t fourth) {
+  if (encoding == RealtimeAudioEncoding::kFloat32)
+    return std::bit_cast<float>(uint32_t(first) | (uint32_t(second) << 8) |
+                                (uint32_t(third) << 16) |
+                                (uint32_t(fourth) << 24));
   int value;
   if (encoding == RealtimeAudioEncoding::kPcm16) {
     const unsigned word = first | (unsigned(second) << 8);
@@ -41,12 +46,14 @@ Status DecodeRealtimePcm(const RealtimeAudioItem& item,
                          const std::function<bool()>& cancelled) {
   const auto format = item.format;
   const bool pcm16 = format.encoding == RealtimeAudioEncoding::kPcm16;
+  const bool f32 = format.encoding == RealtimeAudioEncoding::kFloat32;
   const bool g711 = format.encoding == RealtimeAudioEncoding::kMuLaw ||
                     format.encoding == RealtimeAudioEncoding::kALaw;
-  const bool rate = pcm16 ? (format.rate == 8000 || format.rate == 16000 ||
-                             format.rate == 24000 || format.rate == 48000)
-                          : g711 && format.rate == 8000;
-  const size_t sample_bytes = pcm16 ? 2 : 1;
+  const bool rate =
+      pcm16 ? (format.rate == 8000 || format.rate == 16000 ||
+               format.rate == 24000 || format.rate == 48000)
+            : (g711 && format.rate == 8000) || (f32 && format.rate == 16000);
+  const size_t sample_bytes = f32 ? 4 : pcm16 ? 2 : 1;
   if (!output || !rate || !item.epoch || !item.sequence || !item.samples ||
       item.bytes > kRealtimeAudioBytes ||
       item.samples > kRealtimeAudioBytes / sample_bytes ||
@@ -80,7 +87,9 @@ Status DecodeRealtimePcm(const RealtimeAudioItem& item,
     for (size_t i = 0; i < count; ++i) {
       const auto offset = (position + i) * sample_bytes;
       input[i] = DecodeRealtimeSample(format.encoding, byte(offset),
-                                      pcm16 ? byte(offset + 1) : 0);
+                                      sample_bytes > 1 ? byte(offset + 1) : 0,
+                                      f32 ? byte(offset + 2) : 0,
+                                      f32 ? byte(offset + 3) : 0);
     }
     audio::ResampleProgress progress;
     auto status =

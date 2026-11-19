@@ -32,8 +32,10 @@ Status RealtimeVad::Advance(const RealtimeAudioQueue& queue,
     return Status::Fail("realtime VAD lifecycle or sample cursor differs");
   *out = {};
   const auto bytes = queue.PendingFrom(CursorTicks());
-  const size_t width =
-      format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  const bool f32 = format_.encoding == RealtimeAudioEncoding::kFloat32;
+  const size_t width = f32                                                 ? 4
+                       : format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2
+                                                                           : 1;
   const auto count =
       std::min<size_t>(1024, (bytes[0].size() + bytes[1].size()) / width);
   const auto byte = [&](size_t at) {
@@ -41,8 +43,9 @@ Status RealtimeVad::Advance(const RealtimeAudioQueue& queue,
   };
   std::array<float, 1024> input;
   for (size_t i = 0; i < count; ++i)
-    input[i] = DecodeRealtimeSample(format_.encoding, byte(i * width),
-                                    width == 2 ? byte(i * width + 1) : 0);
+    input[i] = DecodeRealtimeSample(
+        format_.encoding, byte(i * width), width > 1 ? byte(i * width + 1) : 0,
+        f32 ? byte(i * width + 2) : 0, f32 ? byte(i * width + 3) : 0);
   audio::ResampleProgress progress;
   auto status =
       resampler_.Process(std::span(input).first(count),

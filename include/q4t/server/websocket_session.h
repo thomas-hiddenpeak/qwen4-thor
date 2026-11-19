@@ -86,6 +86,10 @@ struct WebSocketSessionCallbacks {
   // Service completed work and queue transitions even without new input.
   // False requests the same bounded application close as message failure.
   std::function<bool()> tick = {};
+  // Optional receiver backpressure. A complete data message stays owned by
+  // the decoder until accepted. Authorization/output/stop remain serviced;
+  // a sustained wait has the same bounded duration as an output write.
+  std::function<bool(size_t)> message_ready = {};
 };
 
 // Borrowed plain backend socket, no fd flag changes and no ownership transfer.

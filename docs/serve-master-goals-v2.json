@@ -9605,16 +9605,39 @@
       "settled_tokens": 245
     },
     "noise_reduction": {
-      "state": "PRIMITIVE_CPU_PASS_ROUTE_PENDING",
+      "state": "SESSION_DEVELOPED_CPU_PENDING",
       "cpu_tests": 6,
       "gpu_actions": 0,
-      "route_connected": false,
+      "route_connected": true,
       "business_qualified": false,
       "runtime_dependencies_added": false,
       "next": "Targeted numeric/stream CPU; shared processed PCM for VAD+ASR; bounded real noisy speech WSS acceptance; continue complete master",
       "cpu_seconds": 0.11387177184224129,
       "evidence": "evidence/serve-realtime-noise-cpu-20261119/README.md",
-      "plan": "SERVE_REALTIME_NOISE_2026-11-19.md"
+      "plan": "SERVE_REALTIME_NOISE_2026-11-19.md",
+      "session_cpu_tests": 50
+    },
+    "noise_session_cpu": {
+      "state": "CPU_ACCEPTED_REAL_BUSINESS_PENDING",
+      "distinct_cases": 51,
+      "executions": 62,
+      "gpu_actions": 0,
+      "first_passed": 47,
+      "first_failed": 3,
+      "repair_passed": 9,
+      "evidence": "evidence/serve-realtime-noise-session-cpu-20261119/README.md",
+      "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
+    },
+    "noise_business_plan": {
+      "model_starts": 1,
+      "ingress_starts": 1,
+      "sessions": 3,
+      "items": 7,
+      "chats": 1,
+      "seconds": 600,
+      "cpu_waveform_captures": 9,
+      "scene": "Retained real zh/en + labeled 125Hz hum at 10dB, frozen before execution",
+      "status": "FROZEN"
     }
   }
 }

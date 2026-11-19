@@ -16,7 +16,13 @@ inline constexpr uint64_t kRealtimeSessionTicks =
 inline constexpr size_t kRealtimeAudioBytes = 16ULL << 20;
 inline constexpr size_t kRealtimeQueuedItems = 32;
 
-enum class RealtimeAudioEncoding { kPcm16, kMuLaw, kALaw };
+enum class RealtimeAudioEncoding {
+  kPcm16,
+  kMuLaw,
+  kALaw,
+  // Internal normalized samples only. Never a JSON/wire format option.
+  kFloat32
+};
 struct RealtimeAudioFormat {
   RealtimeAudioEncoding encoding = RealtimeAudioEncoding::kPcm16;
   uint32_t rate = 24000;
@@ -68,6 +74,9 @@ class RealtimeAudioQueue {
   // absolute clock survives the change; protocol-level format support belongs
   // to the session adapter, not to this storage class.
   Status ChangeFormat(uint64_t epoch, RealtimeAudioFormat format);
+  // Skip an explicitly cleared input interval or a fractional resampling tail.
+  // Pending audio must be empty; already committed items retain their clocks.
+  Status AdvanceEmptyClock(uint64_t epoch, uint64_t ticks);
   const RealtimeAudioItem* Front() const;
   std::array<std::span<const uint8_t>, 2> FrontBytes() const;
   Status Acknowledge(uint64_t epoch, uint64_t sequence);

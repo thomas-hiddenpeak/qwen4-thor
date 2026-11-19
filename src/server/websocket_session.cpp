@@ -137,11 +137,12 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
   std::string control_frame, next_control;
   std::string_view writing;
   size_t sent = 0;
-  bool application_frame = false, closing = false;
+  bool application_frame = false, closing = false, message_waiting = false;
   auto now = Clock::now(), active = now;
   const auto deadline = now + limits.session;
   auto write_deadline = Clock::time_point::max();
   auto close_deadline = Clock::time_point::max();
+  auto input_deadline = Clock::time_point::max();
   const auto close = [&](WebSocketSessionEnd end, uint16_t code,
                          std::string_view peer_payload = {}) {
     if (closing) return;
@@ -178,6 +179,8 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
           close(WebSocketSessionEnd::kIdleDeadline, 1001);
         else if (cb.tick && !cb.tick())
           close(WebSocketSessionEnd::kApplication, 1011);
+        else if (message_waiting && now >= input_deadline)
+          close(WebSocketSessionEnd::kApplication, 1011);
       }
       if (closing && now >= close_deadline) return finish();
       if (!writing.empty() && now >= write_deadline) {
@@ -185,10 +188,13 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
         return finish();
       }
       // Bounded batches keep input floods from starving output or cancellation.
-      for (int events = 0; !closing && !pending.empty() && events < 8;
+      for (int events = 0;
+           !closing && (!pending.empty() || message_waiting) && events < 8;
            ++events) {
         size_t consumed = 0;
-        const auto state = decoder.Consume(pending, &consumed);
+        const auto state = message_waiting
+                               ? WebSocketRead::kEvent
+                               : decoder.Consume(pending, &consumed);
         pending = pending.subspan(consumed);
         if (state == WebSocketRead::kFailed) {
           close(WebSocketSessionEnd::kProtocol, decoder.FailureCode());
@@ -208,6 +214,12 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
           EncodeWebSocketFrame(WebSocketOpcode::kPong, event.payload,
                                std::nullopt, &next_control);
         } else if (event.opcode != WebSocketOpcode::kPong) {
+          if (cb.message_ready && !cb.message_ready(event.payload.size())) {
+            if (!message_waiting) input_deadline = Clock::now() + limits.write;
+            message_waiting = true;
+            break;
+          }
+          message_waiting = false;
           ++result.messages;
           if (!cb.message(event.opcode, event.payload))
             close(WebSocketSessionEnd::kApplication, 1011);
@@ -254,7 +266,7 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
           return finish();
         }
       }
-      if (!closing && pending.empty()) {
+      if (!closing && !message_waiting && pending.empty()) {
         const auto count = ::recv(fd, input.data(), input.size(), MSG_DONTWAIT);
         if (count > 0) {
           pending = std::span(input).first(count);
@@ -273,13 +285,26 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
           return finish();
         }
       }
-      if (!pending.empty() && !closing) continue;
-      pollfd poller{
-          fd, short((closing ? 0 : POLLIN) | (writing.empty() ? 0 : POLLOUT)),
-          0};
+      if (!pending.empty() && !closing && !message_waiting) continue;
+      pollfd poller{fd,
+                    short((closing || message_waiting ? 0 : POLLIN) |
+                          (writing.empty() ? 0 : POLLOUT)),
+                    0};
+#ifdef POLLRDHUP
+      if (!closing) poller.events |= POLLRDHUP;
+#endif
       const auto ready = ::poll(&poller, 1, 5);
       if (ready < 0 && errno != EINTR) {
         result.end = WebSocketSessionEnd::kIo;
+        return finish();
+      }
+      short hangup = POLLHUP;
+#ifdef POLLRDHUP
+      hangup |= POLLRDHUP;
+#endif
+      if (message_waiting && (poller.revents & hangup)) {
+        result.end = WebSocketSessionEnd::kPeerEof;
+        result.close_code = 1006;
         return finish();
       }
     }

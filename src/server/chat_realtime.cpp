@@ -5,6 +5,7 @@
 #include "object_protocol.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/realtime_pcm.h"
+#include "q4t/server/realtime_transcription_pump.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/request_diagnostics.h"
 
@@ -68,6 +69,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   RealtimeTranscriptionCallbacks callbacks;
+  callbacks.interrupted = [&] { return stop_requested_.load(); };
   callbacks.validate = [&](const RealtimeTranscriptionSettings& settings) {
     if (settings.request.model != audio::AsrConfig::kModelId)
       return Error(404, "model_not_found",
@@ -83,7 +85,6 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     // These remain scheduled execution tasks. Never acknowledge a processing
     // setting while silently running a different signal/turn policy.
     if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad ||
-        settings.noise != RealtimeTranscriptionSettings::Noise::kNone ||
         !settings.delay.empty())
       return Error(400, "realtime_processor_unavailable",
                    "Requested audio processor is not connected");
@@ -114,7 +115,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     return RunRealtimeTranscription(client, job, bytes, control, emit);
   };
   WebSocketOutput output;
-  RealtimeTranscriptionSession session(
+  RealtimeTranscriptionPump session(
       detail::NewRequestId("sess_"), output, std::move(callbacks),
       asr_limits_.max_audio_seconds, message_bytes);
   if (!session.Start()) {
@@ -142,8 +143,11 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     return current.Allowed() && current.Id() == client.Id();
   };
   connection.stopped = [&] { return stop_requested_.load(); };
-  connection.cancel = [&] { session.Cancel(); };
-  connection.tick = [&] { return session.Tick(); };
+  connection.cancel = [&] { session.Stop(); };
+  connection.tick = [&] { return session.Alive(); };
+  connection.message_ready = [&](size_t bytes) {
+    return session.CanAccept(bytes);
+  };
   WebSocketSessionLimits limits;
   limits.message_bytes = message_bytes;
   RunWebSocketSession(fd, initial, output, connection, limits);

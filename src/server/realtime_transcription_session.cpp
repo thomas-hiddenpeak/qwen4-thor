@@ -1,5 +1,7 @@
 #include "q4t/server/realtime_transcription_session.h"
 
+#include <bit>
+
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
 
@@ -54,6 +56,8 @@ void RealtimeTranscriptionSession::Join() noexcept {
   Release();
 }
 bool RealtimeTranscriptionSession::Emit(Json event, bool deferred) {
+  if (cancelled_ || (callbacks_.interrupted && callbacks_.interrupted()))
+    return false;
   auto text = OutputJson(event);
   if (!deferred && vad_events_.empty())
     return output_.TryPush(WebSocketOpcode::kText, text);
@@ -108,7 +112,9 @@ bool RealtimeTranscriptionSession::Start() {
 }
 bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                                            std::string_view message) {
-  if (!started_ || cancelled_) return false;
+  if (!started_ || cancelled_ ||
+      (callbacks_.interrupted && callbacks_.interrupted()))
+    return false;
   if (opcode != WebSocketOpcode::kText)
     return ErrorEvent(Error(400, "invalid_event", "JSON text event required"));
   RealtimeTranscriptionCommand command;
@@ -128,7 +134,9 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
     if (!reply.ok()) return ErrorEvent(std::move(reply), command.event_id);
     const auto& a = settings_.request.chunking;
     const auto& b = next.request.chunking;
-    const bool vad_changed = next.turn != settings_.turn ||
+    const bool pipeline_changed =
+        next.format != settings_.format || next.noise != settings_.noise;
+    const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
                              next.format != settings_.format ||
                              a.threshold != b.threshold ||
                              a.prefix_padding_ms != b.prefix_padding_ms ||
@@ -137,21 +145,51 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
         !callbacks_.vad_step)
       return fail("realtime_processor_unavailable",
                   "VAD processor unavailable");
-    if (vad_changed && queue_.PendingBytes())
+    const bool pending = queue_.PendingBytes() ||
+                         (noise_input_ && (noise_input_->PartialSample() ||
+                                           noise_input_->AcceptedTicks() !=
+                                               queue_.PendingBeginTicks()));
+    if (vad_changed && pending)
       return fail("input_audio_buffer_not_empty",
                   "Clear or commit pending audio before changing turn policy");
-    if (next.format != settings_.format) {
-      const auto status = queue_.ChangeFormat(1, next.format);
+    if (pipeline_changed) {
+      const auto format =
+          next.noise == RealtimeTranscriptionSettings::Noise::kNone
+              ? next.format
+              : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
+      const auto status = queue_.ChangeFormat(1, format);
       if (!status)
         return fail("input_audio_buffer_not_empty", status.message());
     }
     settings_ = std::move(next);
+    if (pipeline_changed) ResetNoise(queue_.AcceptedTicks());
     if (vad_changed) ResetVad();
     return SettingsEvent(command.legacy);
   }
   if (command.kind == K::kAppend) {
     const size_t width =
         settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+    if (noise_input_) {
+      const auto samples =
+          (command.audio.size() + size_t(noise_input_->PartialSample())) /
+          width;
+      const auto ticks =
+          samples * (kRealtimeTicksPerSecond / settings_.format.rate);
+      if (noise_input_->AcceptedTicks() - queue_.PendingBeginTicks() + ticks >
+          max_item_ticks_)
+        return fail("audio_duration_limit",
+                    "Uncommitted audio duration exceeded");
+      const auto status = noise_input_->Append(
+          {reinterpret_cast<const uint8_t*>(command.audio.data()),
+           command.audio.size()},
+          [&](auto samples) { return ProcessedAudio(samples, true); });
+      if (!status) {
+        ErrorEvent(Error(503, "audio_processing_failed", status.message()),
+                   command.event_id);
+        return false;
+      }
+      return true;
+    }
     const auto samples = (queue_.PendingBytes() + command.audio.size()) / width;
     if (samples >
         max_item_ticks_ / (kRealtimeTicksPerSecond / settings_.format.rate))
@@ -165,16 +203,60 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
   if (command.kind == K::kClear) {
     const auto status = queue_.Clear(1);
     if (!status) return fail("input_audio_buffer_invalid", status.message());
+    if (noise_input_) {
+      const auto ticks = noise_input_->AcceptedTicks();
+      if (!queue_.AdvanceEmptyClock(1, ticks)) return false;
+      ResetNoise(ticks);
+    }
     ResetVad();
     return Emit(Event("input_audio_buffer.cleared"));
   }
   // Explicit commit owns the complete pending tail, including any samples not
   // yet analyzed by VAD. It starts a new detector epoch at the accepted clock.
-  if (queue_.PendingBytes() %
-      (settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1))
+  if (noise_input_) {
+    if (noise_input_->PartialSample() || noise_input_->FinalSamples() == 0 ||
+        queue_.Items() == kRealtimeQueuedItems)
+      return fail(
+          "input_audio_buffer_commit_failed",
+          "Commit requires complete samples and available item capacity");
+    const auto status = noise_input_->Finish(
+        [&](auto samples) { return ProcessedAudio(samples, false); });
+    if (!status) {
+      ErrorEvent(Error(503, "audio_processing_failed", status.message()),
+                 command.event_id);
+      return false;
+    }
+  } else if (queue_.PendingBytes() %
+             (settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2
+                                                                         : 1))
     return fail("input_audio_buffer_commit_failed",
                 "Commit requires complete uncommitted samples");
   return Commit(queue_.AcceptedTicks(), command.event_id, false);
+}
+
+void RealtimeTranscriptionSession::ResetNoise(uint64_t ticks) {
+  noise_input_.reset();
+  using N = RealtimeTranscriptionSettings::Noise;
+  if (settings_.noise == N::kNone) return;
+  noise_input_ = std::make_unique<RealtimeNoiseInput>(
+      settings_.format,
+      settings_.noise == N::kNearField ? audio::NoiseReduction::kNearField
+                                       : audio::NoiseReduction::kFarField,
+      ticks, callbacks_.interrupted);
+}
+Status RealtimeTranscriptionSession::ProcessedAudio(
+    std::span<const float> samples, bool advance) {
+  if (samples.size() > 512)
+    return Status::Fail("Realtime processed block exceeds its fixed bound");
+  std::array<uint8_t, 2048> bytes;
+  for (size_t i = 0; i < samples.size(); ++i) {
+    const auto bits = std::bit_cast<uint32_t>(samples[i]);
+    for (size_t b = 0; b < 4; ++b) bytes[i * 4 + b] = uint8_t(bits >> (8 * b));
+  }
+  auto status = queue_.Append(1, std::span(bytes).first(samples.size() * 4));
+  if (status && advance && !Tick())
+    return Status::Fail("Realtime processed audio consumer stopped");
+  return status;
 }
 
 void RealtimeTranscriptionSession::ResetVad() {
@@ -183,7 +265,7 @@ void RealtimeTranscriptionSession::ResetVad() {
   if (settings_.turn != RealtimeTranscriptionSettings::Turn::kServerVad) return;
   const auto& options = settings_.request.chunking;
   vad_ = std::make_unique<RealtimeVad>(
-      settings_.format, queue_.AcceptedTicks(),
+      queue_.Format(), queue_.AcceptedTicks(),
       RealtimeVadOptions{options.threshold, uint32_t(options.prefix_padding_ms),
                          uint32_t(options.silence_duration_ms)},
       callbacks_.vad_step);
@@ -234,8 +316,14 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     return false;
   if (automatic)
     speech_id_.clear();
-  else
+  else {
+    if (noise_input_) {
+      const auto ticks = noise_input_->AcceptedTicks();
+      if (!queue_.AdvanceEmptyClock(1, ticks)) return false;
+      ResetNoise(ticks);
+    }
     ResetVad();
+  }
   auto committed = Event("input_audio_buffer.committed");
   Set(&committed, "item_id", String(last.id));
   Set(&committed, "previous_item_id",
@@ -256,7 +344,9 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
 }
 
 bool RealtimeTranscriptionSession::Tick() {
-  if (!started_ || cancelled_) return false;
+  if (!started_ || cancelled_ ||
+      (callbacks_.interrupted && callbacks_.interrupted()))
+    return false;
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
   if (!AdvanceVad()) return false;

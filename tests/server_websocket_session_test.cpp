@@ -10,6 +10,7 @@
 #include <future>
 #include <stdexcept>
 #include <thread>
+#include <vector>
 
 #include "q4t/server/client_request.h"
 #include "q4t/server/http_response.h"
@@ -393,6 +394,98 @@ Q4T_TEST(
       Limits());
   Q4T_CHECK(result.end == WebSocketSessionEnd::kApplication && cancelled == 1);
   Q4T_CHECK(result.sent_bytes == 0 && output.Closed() && output.Bytes() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    websocket_session_receiver_backpressure_keeps_message_and_output_live) {
+  Sockets s;
+  WebSocketOutput output;
+  std::atomic<bool> accept{false};
+  std::atomic<int> ticks{0}, waits{0};
+  std::vector<std::string> messages;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto text) {
+    messages.emplace_back(text);
+    return true;
+  };
+  cb.message_ready = [&](size_t) {
+    ++waits;
+    return accept.load();
+  };
+  cb.tick = [&] {
+    ++ticks;
+    return true;
+  };
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "alive"));
+  auto task = std::async(std::launch::async, [&] {
+    return RunWebSocketSession(s.f[0], Frame("one") + Frame("two") + Close(),
+                               output, cb, Limits());
+  });
+  const auto alive = Frame("alive", WebSocketOpcode::kText, false);
+  Q4T_CHECK(Read(s.f[1], alive.size()) == alive);
+  Q4T_CHECK(Eventually([&] { return waits >= 2 && ticks >= 2; }));
+  accept = true;
+  Q4T_CHECK(task.wait_for(1s) == std::future_status::ready);
+  const auto result = task.get();
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kPeerClose &&
+            result.messages == 2);
+  Q4T_CHECK(messages == std::vector<std::string>({"one", "two"}));
+  return true;
+}
+
+Q4T_TEST(websocket_session_receiver_wait_has_deadline_and_rechecks_authority) {
+  for (bool revoke : {false, true}) {
+    Sockets s;
+    WebSocketOutput output;
+    std::atomic<bool> authorized{true}, waited{false};
+    int delivered = 0;
+    WebSocketSessionCallbacks cb;
+    cb.message = [&](auto, auto) {
+      ++delivered;
+      return true;
+    };
+    cb.message_ready = [&](size_t) {
+      waited = true;
+      return false;
+    };
+    cb.authorized = [&] { return authorized.load(); };
+    auto limits = Limits();
+    limits.write = 50ms;
+    auto task = std::async(std::launch::async, [&] {
+      return RunWebSocketSession(s.f[0], Frame("retained"), output, cb, limits);
+    });
+    Q4T_CHECK(Eventually([&] { return waited.load(); }));
+    if (revoke) authorized = false;
+    Q4T_CHECK(task.wait_for(1s) == std::future_status::ready);
+    const auto result = task.get();
+    Q4T_CHECK(delivered == 0 && result.messages == 0);
+    Q4T_CHECK(result.end == (revoke ? WebSocketSessionEnd::kRevoked
+                                    : WebSocketSessionEnd::kApplication));
+  }
+  return true;
+}
+
+Q4T_TEST(websocket_session_receiver_wait_observes_peer_eof_without_delivery) {
+  Sockets s;
+  WebSocketOutput output;
+  std::atomic<bool> waited{false};
+  WebSocketSessionCallbacks cb;
+  cb.message = [](auto, auto) { return false; };
+  cb.message_ready = [&](size_t) {
+    waited = true;
+    return false;
+  };
+  auto task = std::async(std::launch::async, [&] {
+    return RunWebSocketSession(s.f[0], Frame("retained"), output, cb, Limits());
+  });
+  Q4T_CHECK(Eventually([&] { return waited.load(); }));
+  Q4T_CHECK(shutdown(s.f[1], SHUT_WR) == 0);
+  Q4T_CHECK(task.wait_for(1s) == std::future_status::ready);
+  const auto result = task.get();
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kPeerEof &&
+            result.close_code == 1006);
+  Q4T_CHECK(result.messages == 0);
   return true;
 }
 

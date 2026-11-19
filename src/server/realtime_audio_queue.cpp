@@ -20,6 +20,8 @@ Status ProjectRealtimeSamples(uint64_t ticks, uint32_t rate,
   return {};
 }
 bool RealtimeAudioQueue::FormatValid(RealtimeAudioFormat format) {
+  if (format.encoding == RealtimeAudioEncoding::kFloat32)
+    return format.rate == 16000;
   if (format.encoding == RealtimeAudioEncoding::kPcm16)
     return RateValid(format.rate);
   return (format.encoding == RealtimeAudioEncoding::kMuLaw ||
@@ -27,6 +29,7 @@ bool RealtimeAudioQueue::FormatValid(RealtimeAudioFormat format) {
          format.rate == 8000;
 }
 size_t RealtimeAudioQueue::SampleBytes(RealtimeAudioFormat format) {
+  if (format.encoding == RealtimeAudioEncoding::kFloat32) return 4;
   return format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
 }
 RealtimeAudioQueue::RealtimeAudioQueue(uint64_t epoch,
@@ -148,6 +151,13 @@ Status RealtimeAudioQueue::ChangeFormat(uint64_t epoch,
       capacity_bytes_ < SampleBytes(format))
     return Status::Fail("realtime format change requires drained audio");
   format_ = format;
+  return {};
+}
+Status RealtimeAudioQueue::AdvanceEmptyClock(uint64_t epoch, uint64_t ticks) {
+  if (!Owns(epoch) || sealed_ || pending_bytes_ || ticks < ticks_ ||
+      ticks > duration_ticks_)
+    return Status::Fail("realtime clock advance requires empty pending audio");
+  ticks_ = pending_begin_ = ticks;
   return {};
 }
 const RealtimeAudioItem* RealtimeAudioQueue::Front() const {

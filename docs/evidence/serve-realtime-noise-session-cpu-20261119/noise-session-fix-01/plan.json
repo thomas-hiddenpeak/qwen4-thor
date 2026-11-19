@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN_DIAGNOSIS_3_FAILURES_ONLY",
+  "cases": [
+    "realtime_transcription_noise_manual_drain_preserves_fractional_clock_and_settings",
+    "realtime_transcription_noise_vad_and_asr_borrow_identical_processed_samples",
+    "realtime_transcription_noise_partial_commit_clear_and_wire_format_are_explicit"
+  ],
+  "seconds": 180,
+  "gpu_actions": 0,
+  "original": "../noise-session-cpu-01/result.json"
+}

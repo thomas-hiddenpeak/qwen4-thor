@@ -62,7 +62,10 @@ std::string ChatCapabilitiesJson(
          (native_asr && native_vad ? "true" : "false") +
          R"(,"profile":"q4t-native-silero-vad-v1","frame_samples":512,)"
          R"("analysis_rate":16000,"clock_hz":48000,"idle_padding":false},)"
-         R"("pending_execution":["semantic_vad","noise_reduction",)"
+         R"("noise_reduction":{"implemented":true,"modes":["near_field","far_field"],)"
+         R"("processing":"shared_16k_f32","fft":512,"hop":256,)"
+         R"("external_dependencies":false},)"
+         R"("pending_execution":["semantic_vad",)"
          R"("transcription_delay","conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +

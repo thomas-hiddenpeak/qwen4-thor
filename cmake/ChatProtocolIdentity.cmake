@@ -626,6 +626,8 @@ set(protocol_inputs
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
   include/q4t/server/realtime_transcription_protocol.h
+  include/q4t/server/realtime_transcription_pump.h
+  include/q4t/server/realtime_noise_input.h
   include/q4t/server/realtime_transcription_session.h
   include/q4t/server/realtime_vad.h
   include/q4t/server/realtime_pcm.h
@@ -686,6 +688,8 @@ set(protocol_inputs
   src/server/http_request.cpp
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_pump.cpp
+  src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_vad.cpp
   src/server/realtime_pcm.cpp

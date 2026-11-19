@@ -502,7 +502,7 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 5);
+  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 4);
   Q4T_CHECK(realtime->Find("server_vad")->GetBool("implemented"));
   Q4T_CHECK(!realtime->Find("server_vad")->GetBool("configured"));
   Q4T_CHECK(present.GetBool("implementation_only") &&
@@ -660,5 +660,145 @@ Q4T_TEST(realtime_transcription_vad_compute_failure_never_commits_success) {
   s.Cancel();
   s.Join();
   Q4T_CHECK(f.calls == 0 && s.QueuedItems() == 0 && Drain(f.output).empty());
+  return true;
+}
+
+namespace {
+constexpr auto kNoise = R"({"type":"transcription_session.update",
+  "session":{"input_audio_noise_reduction":{"type":"near_field"}}})";
+std::string Signal(size_t count) {
+  std::string result(count * 2, '\0');
+  for (size_t i = 0; i < count; ++i) {
+    const auto word = uint16_t((i * 31) % 30000);
+    result[i * 2] = char(word);
+    result[i * 2 + 1] = char(word >> 8);
+  }
+  return result;
+}
+bool Raw(RealtimeTranscriptionSession& session, const std::string& raw,
+         WebSocketOutput& output) {
+  const bool ok = Send(
+      session, OutputJson(Object({{"type", String("input_audio_buffer.append")},
+                                  {"audio", String(Base64(raw))}})));
+  if (!ok) {
+    for (const auto& event : Drain(output))
+      std::fprintf(stderr, "Noise append failure: %s\n",
+                   OutputJson(event).c_str());
+  }
+  return ok;
+}
+std::vector<float> ExpectedNoise(const std::string& raw) {
+  RealtimeNoiseInput pipe({}, q4t::audio::NoiseReduction::kNearField, 0);
+  std::vector<float> out;
+  const auto sink = [&](auto samples) {
+    out.insert(out.end(), samples.begin(), samples.end());
+    return q4t::Status{};
+  };
+  if (!pipe.Append({reinterpret_cast<const uint8_t*>(raw.data()), raw.size()},
+                   sink) ||
+      !pipe.Finish(sink))
+    throw std::runtime_error("fixture noise source");
+  return out;
+}
+}  // namespace
+
+Q4T_TEST(
+    realtime_transcription_noise_manual_drain_preserves_fractional_clock_and_settings) {
+  Fixture f;
+  std::vector<RealtimeAudioItem> items;
+  std::vector<std::vector<float>> samples;
+  f.callbacks.execute = [&](const auto& job, const auto& bytes, const auto&,
+                            const auto&) {
+    std::vector<float> value;
+    if (!DecodeRealtimePcm(job.audio, bytes, 16000, &value))
+      return Error(500, "fixture_decode", "decode");
+    items.push_back(job.audio);
+    samples.push_back(std::move(value));
+    ++f.calls;
+    return Completed();
+  };
+  RealtimeTranscriptionSession s("sess_noise", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kNoise));
+  const auto a = Signal(1025), b = Signal(2048);
+  Q4T_CHECK(Raw(s, a, f.output) && Send(s, kCommit) && Raw(s, b, f.output) &&
+            Send(s, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(items.size() == 2 && samples[0] == ExpectedNoise(a) &&
+            samples[1] == ExpectedNoise(b));
+  Q4T_CHECK(items[0].format.encoding == RealtimeAudioEncoding::kFloat32);
+  Q4T_CHECK(items[0].begin_ticks == 0 && items[0].end_ticks == 2049);
+  Q4T_CHECK(items[1].begin_ticks == 2050 && items[1].end_ticks == 6145);
+  Q4T_CHECK(Send(s, R"({"type":"transcription_session.update",
+    "session":{"input_audio_noise_reduction":null}})"));
+  Q4T_CHECK(Send(s, kAppend) && Send(s, kCommit) &&
+            Finish(s, f.output, &events));
+  Q4T_CHECK(items.size() == 3 && items[2].begin_ticks == 6146);
+  Q4T_CHECK(items[2].format.encoding == RealtimeAudioEncoding::kPcm16);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_transcription_noise_vad_and_asr_borrow_identical_processed_samples) {
+  Fixture f;
+  std::vector<float> vad_samples, asr_samples;
+  RealtimeAudioItem actual;
+  size_t frames = 0;
+  f.callbacks.vad_step = [&](auto samples, auto*, float* p) {
+    vad_samples.insert(vad_samples.end(), samples.begin(), samples.end());
+    *p = frames == 1 || frames == 2 ? 1 : 0;
+    ++frames;
+    return q4t::Status{};
+  };
+  f.callbacks.execute = [&](const auto& job, const auto& bytes, const auto&,
+                            const auto&) {
+    actual = job.audio;
+    if (!DecodeRealtimePcm(job.audio, bytes, 16000, &asr_samples))
+      return Error(500, "fixture_decode", "decode");
+    ++f.calls;
+    return Completed();
+  };
+  RealtimeTranscriptionSession s("sess_noise", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kNoise) && Send(s, kServerVad));
+  Q4T_CHECK(Raw(s, Signal(6 * 768 + 49), f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events) && f.calls == 1);
+  Q4T_CHECK(actual.begin_ticks == 768 && actual.end_ticks == 6144);
+  Q4T_CHECK(asr_samples.size() == 1792 && vad_samples.size() >= 2048);
+  Q4T_CHECK(std::equal(asr_samples.begin(), asr_samples.end(),
+                       vad_samples.begin() + 256));
+  Q4T_CHECK(actual.format ==
+            RealtimeAudioFormat(RealtimeAudioEncoding::kFloat32, 16000));
+  return true;
+}
+
+Q4T_TEST(
+    realtime_transcription_noise_partial_commit_clear_and_wire_format_are_explicit) {
+  Fixture f;
+  RealtimeAudioItem actual;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    actual = job.audio;
+    ++f.calls;
+    return Completed();
+  };
+  RealtimeTranscriptionSession s("sess_noise", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kNoise) &&
+            Raw(s, Signal(1025) + char(17), f.output));
+  Drain(f.output);
+  Q4T_CHECK(Send(s, kCommit));
+  auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 && events[0].GetString("type") == "error");
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{"audio":{"input":{
+    "format":{"type":"audio/f32","rate":16000}}}}})"));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 && events[0].GetString("type") == "error");
+  Q4T_CHECK(Send(s, R"({"type":"input_audio_buffer.clear"})"));
+  Q4T_CHECK(s.AudioBytes() == 0 && f.calls == 0);
+  Q4T_CHECK(Send(s, R"({"type":"transcription_session.update",
+    "session":{"input_audio_noise_reduction":null}})"));
+  Q4T_CHECK(Send(s, kAppend) && Send(s, kCommit) &&
+            Finish(s, f.output, &events));
+  Q4T_CHECK(actual.begin_ticks == 2050 && actual.end_ticks == 2054);
   return true;
 }

@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "q4t/server/realtime_transcription_protocol.h"
+#include "q4t/server/realtime_noise_input.h"
 #include "q4t/server/realtime_vad.h"
 #include "q4t/server/websocket_session.h"
 
@@ -21,7 +22,9 @@ struct RealtimeTranscriptionJob {
 };
 using RealtimeTranscriptSink = std::function<bool(const io::Json&)>;
 struct RealtimeTranscriptionCallbacks {
-  // Socket-thread, bounded. Validate every effective setting before ack.
+  // Cooperative stop from the socket owner; checked between CPU blocks.
+  std::function<bool()> interrupted;
+  // Session-owner, bounded. Validate every effective setting before ack.
   std::function<ObjectReply(const RealtimeTranscriptionSettings&)> validate;
   std::function<std::shared_ptr<RequestControl>(const std::string&)> acquire;
   std::function<void(const std::shared_ptr<RequestControl>&)> release;
@@ -47,7 +50,7 @@ class RealtimeTranscriptionSession {
   bool Start();
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
-  // Socket-thread only. No join here: the socket can still send its close.
+  // Session-owner only. The separate socket owner signals the pump to cancel.
   void Cancel() noexcept;
   void Join() noexcept;
   size_t QueuedItems() const { return queue_.Items(); }
@@ -62,6 +65,8 @@ class RealtimeTranscriptionSession {
   bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
   bool AdvanceVad();
   void ResetVad();
+  void ResetNoise(uint64_t ticks);
+  Status ProcessedAudio(std::span<const float> samples, bool advance);
   void Release() noexcept;
   const std::string id_;
   WebSocketOutput& output_;
@@ -70,6 +75,7 @@ class RealtimeTranscriptionSession {
   const size_t message_bytes_;
   RealtimeTranscriptionSettings settings_;
   RealtimeAudioQueue queue_{1};
+  std::unique_ptr<RealtimeNoiseInput> noise_input_;
   std::unique_ptr<RealtimeVad> vad_;
   std::string speech_id_;
   // At most one VAD frame's control events, plus bounded later socket replies.
