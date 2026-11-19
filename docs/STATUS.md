@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[拒答说明修正18项CPU通过](evidence/serve-refusal-format-cpu-20261120/README.md)：
+0.480秒/0GPU，20来源反例通过；候选648d6d68零警告构建。
+冻结1模型/8生成/1WSS/1入口/600秒，验证两条真实工具输入、
+实际拒答及正常schema/历史与Realtime工具；不自动循环或更新默认。
+原FAIL、rev356及全部master保持，随后继续受影响资格与交付。
+
+[拒答提示干扰对照](evidence/serve-refusal-interference-20261120/README.md)：
+同一轻配置/greedy/seed0，原说明在一条实际工具输入上误称需要JSON
+并拒答，仅替换中性格式说明后返回rev356；另一输入两版均正确。
+1模型/4原始Completion/46.322秒，45次NVML正常、清理完成。
+新说明已按实测文本接入，保留拒答帧/解析/流式/schema合同；冻结18项
+直接相关CPU及20来源反例/120秒/0GPU，再做实际拒答与正常路径短验。
+当前未构建/发行新候选，默认rev356及全部原FAIL保持，全部master继续。
+
 [Prompt缺项续验未通过](evidence/serve-realtime-prompt-continuation-review-20261120/README.md)：
 2模型/10外部生成+1内部摘要/118.997秒，112次NVML正常，清理完成。
 主配置Prompt四轮及旧Responses通过；轻配置工具回填却被模型解释为

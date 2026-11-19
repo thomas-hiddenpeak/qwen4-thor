@@ -1,0 +1,202 @@
+{
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/probe-restoration.json": {
+    "sha256": "24199381faf89a948bcb1c59aaa91199db9148f02126e83c7019171327a68a21",
+    "bytes": 535
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/inputs.json": {
+    "sha256": "ea02a688e04dfc87d454ef84c2cccbfc47058e0cfb0cc375241acea5b892b379",
+    "bytes": 5482
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/result.json": {
+    "sha256": "eac2ea1c0f6c67df33080933fef7a44b0d68e2080edbec2a62069252e2180cfb",
+    "bytes": 314
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/requests.json": {
+    "sha256": "b79b1e677a0eec2c9fe27e27b3a8db64b42ec4f57412fdf675b0829dc0b510f6",
+    "bytes": 5303
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/plan.json": {
+    "sha256": "e790bbee25f8592e84c524cc1f971ab4abba4d5e393a7292414d63fe3c35487b",
+    "bytes": 1845
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/observed.json": {
+    "sha256": "e32d5daa9b7a2713e11a42032584f63e92bbd8b1a897ccf516ca0c2ccc0466f7",
+    "bytes": 7454
+  },
+  ".q4t-work/serve-refusal-interference-20261120/input-review-01/stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-preparation-01/plan.json": {
+    "sha256": "9bba7ab8ce58cd21558b8fcdbee3fa0b403bd3c0b1c45665ca89559f36eae76f",
+    "bytes": 907055
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-preparation-01/review.json": {
+    "sha256": "16c5bd4b6e09ffee165dce84343be97ba63b6d5f5be8959c93804181e051a3ee",
+    "bytes": 157
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-preparation-01/original-driver.py": {
+    "sha256": "5bc28d5552377a571e082e405c49e16a6be63bff9376b356e635e27f7dac68c9",
+    "bytes": 4069
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-capabilities.http.json": {
+    "sha256": "9899dbc8368bfac3119807fb86aa551663087a5ab669b4159c8000f189ee3325",
+    "bytes": 238
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_original.http.json": {
+    "sha256": "cbc8a440482270de6734421af4b0ea90d9d16a35f4e78bd1ba449a5d09b7cc5c",
+    "bytes": 231
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_neutral.http.json": {
+    "sha256": "70324f92b8941914811314bccb3b108342100d584e9ef45229187f3f272e7340",
+    "bytes": 233
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_neutral.wire": {
+    "sha256": "0aa37086a6cec05784a92c7147434ed557f3df105bc1efd8c28869709f572556",
+    "bytes": 278
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_original.request.json": {
+    "sha256": "77010c78418fe750ed57079ee3e408a820e1335afe163251fd3aad7785d2ece7",
+    "bytes": 1436
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-config.wire": {
+    "sha256": "687c514b3bb96ded1256c574fb59e5b12d3907ed586a1d142e8c66553fef54b0",
+    "bytes": 16035
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_neutral-drain.metrics.json": {
+    "sha256": "bf597e5e25ededf43c276e641a2e90f4958326eca529d12d1b1f0eed44fd58a4",
+    "bytes": 26394
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-config.http.json": {
+    "sha256": "73b3a3445bea799d17a1cbd5db262d6fb912e0730e42f489902d94b24e0aa85b",
+    "bytes": 237
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_original.wire": {
+    "sha256": "581db7a20be1666801be3889b996183a0f8fdc3f734d4b907b84f7fb65733f50",
+    "bytes": 278
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_original.wire": {
+    "sha256": "7c46a5053163fc9639b2c4ab6070514b159f6420ce8fd650686fb3049f18d49c",
+    "bytes": 572
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_neutral-drain.metrics.json": {
+    "sha256": "d057b3524afa18e560a71c1e173843587fe53be05f988e51a6b7c4ba55ca93dd",
+    "bytes": 26390
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-capabilities.json": {
+    "sha256": "573672c070dd4c03b6a5c9b17ae918c082a11f5915f482fa2c4117e872eb566b",
+    "bytes": 58203
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/result.json": {
+    "sha256": "6fe882309a94c5d221f1df6541e95314a9b805b8865c1fc1daf291b5c011782e",
+    "bytes": 249
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-command.json": {
+    "sha256": "03838922ca0df8fdf1429245f05f877f444a8e52e351b698b21666b256a306a3",
+    "bytes": 2901
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/counts.json": {
+    "sha256": "e71c3a92e7ad7335f3a2b395966036c288dcecec449c4312f1f24f0b0b47e4ba",
+    "bytes": 50
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/plan.json": {
+    "sha256": "23b20416f117ca9ae7205c456cc12e9d88d8cde85cc869d1d53e5d07ff55e5bf",
+    "bytes": 907055
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_original.http.json": {
+    "sha256": "2fccc919e74f22b319427a199fcfacfb97015718450445e60f1ffafc28f89c35",
+    "bytes": 233
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_original-drain.metrics.json": {
+    "sha256": "faea0d89aa61f4b3733a6c63035511e0e0dfa312bb3826efe6eef6236c683e7e",
+    "bytes": 26388
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-identity.json": {
+    "sha256": "8e08afb18fcf31aaa6fcefeb396f75fb4cf6d1767ab5321a08f3304b9b1904e4",
+    "bytes": 3337
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_neutral.request.json": {
+    "sha256": "3245cf536b511e675977386bf27b19c8e633997fe195716f678ce2e664dc1007",
+    "bytes": 1127
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_original-drain.metrics.json": {
+    "sha256": "4cae623b8bab900a298de328917ed5ab254467cc9b23750ec8266665aca798bc",
+    "bytes": 26391
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_neutral.http.json": {
+    "sha256": "ecea19f4302abf320c179603f2fcdb45d15ec5c16518145a1ffca8f511e03bfe",
+    "bytes": 233
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_original.request.json": {
+    "sha256": "06d531b40f64c66cdfa3e425fac6998e0039748abdd591ea04339aeae709af90",
+    "bytes": 1423
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-config.json": {
+    "sha256": "19bdd04713f98c271ebe305d9c2169e79afabd9f43edb4f98b468727d38da6c3",
+    "bytes": 20909
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-capabilities.wire": {
+    "sha256": "4cfe45775dbc666e69402c55a33fd4788cbfecbd7b2a32c876c0ae8abf59f5cf",
+    "bytes": 45150
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/observed.json": {
+    "sha256": "17a575d67726d68fe347ac54edbd2a5d7a81e0d1e13002d6beac98c13adc9f9a",
+    "bytes": 3286
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/primary-model.log": {
+    "sha256": "0b21f759ee2f44a5c71547ef2c6a5644d9569e883c14d2b4e68e3fecf678fe0a",
+    "bytes": 12339
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/cleanup.json": {
+    "sha256": "2999eedd192230b2e510c5da307e1db91ce6b9a06aeae72d9fd09e036f8b003c",
+    "bytes": 3918
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/light_tool_failure_neutral.wire": {
+    "sha256": "5187b8c9cb97bd89e01edda56c2186216c3ffc5b70ab3cdd50ec0f26e186f6cd",
+    "bytes": 278
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/prompt_tool_failure_neutral.request.json": {
+    "sha256": "e289f26b6e39f007c84a4bbada67be7ccd2fe33191679dd2a8dd2468c79f23e8",
+    "bytes": 1114
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/lease/nvml-queries.jsonl": {
+    "sha256": "1a089b461ef2d9b4393190b20e4a70284e9b87558bca8eb95cf39f452e5dd864",
+    "bytes": 106701
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/lease/events.jsonl": {
+    "sha256": "d8c3758746df1b63becc4b862f1984247630428673e362baf55e1f07a9ec3b2c",
+    "bytes": 8855
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/lease/exit.json": {
+    "sha256": "7694d0748a8974f759536e7aefcd9a7d5348800e2e9a4f2fd4898dd98ab669c1",
+    "bytes": 659
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/application-objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-refusal-interference-20261120/instruction-comparison-01/application-objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-refusal-interference-20261120/compare_instruction_01.py": {
+    "sha256": "f27d37f02b333dac6a30cc7908ef245789e3b6ec95d3b30dadbd822c78935a66",
+    "bytes": 4080
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/cpu-binary-archive-02/plan.json": {
+    "sha256": "d0bf251ba330cc0fc8fa10b2d6f45bc971e7cf0bc1743838d2c1a8acecc6f43e",
+    "bytes": 371
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/cpu-binary-archive-02/result.json": {
+    "sha256": "d68e4cd541e8010a0c0452e3f63f3bc5d4aa21bfdc81b4b80307559676c95f24",
+    "bytes": 366
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/cpu-binary-archive-02/restore.py": {
+    "sha256": "b1db2e49eba7118f01770f60adc580522921ca2957aff5043746593607f54b6b",
+    "bytes": 483
+  },
+  ".q4t-work/serve-realtime-prompt-20261120/qualification-input-review-01/probe-restoration.json": {
+    "sha256": "fd2b16f332ea5e16804b0bac8a805020c2e8cec2f9bd03eb9ffb11cde5376932",
+    "bytes": 531
+  }
+}

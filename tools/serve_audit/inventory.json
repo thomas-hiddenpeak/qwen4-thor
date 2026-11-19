@@ -2549,7 +2549,7 @@
     "include/q4t/server/realtime_transcription_session.h": "8d22fa8f57fe4c2f4d96945ad4727454625f6f3cbe3a39378563919075c91281",
     "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
-    "include/q4t/server/refusal_frame.h": "d6dd7ebe38e1e003b08188da4bd1607d6aee8575524f0207e6380bcfd211982f",
+    "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
     "include/q4t/server/request_control.h": "0d67e522678ff38ad843f44334f31a259d092fd6499c59761356a88b97d1d25d",
     "include/q4t/server/request_diagnostics.h": "a5dcc79f556c929f0659b74ed6de342dd19a363f12a59f6c3e42ffd90e04c5ae",
@@ -8502,5 +8502,12 @@
     "bundle": "v21 adds the three Prompt qualification modules; v20 inventory stays immutable.",
     "status": "development_pending_targeted_cpu_and_actual_profiles",
     "continuation": "Original primary Chat/schema and Realtime tools retain exact source proof and original failed Prompt output. Only missing Prompt component, legacy Responses and light run again, no retries; 2 starts/15 external generations/3 WSS/10 registry HTTP/900s. Actual original was 8 generations, reserved counter9."
+  },
+  "refusal_instruction_interference_20261120": {
+    "scope": "Same explicit frames/parser/grammar, neutral formatting-only instruction replaces global precedence-heavy note.",
+    "evidence": "docs/evidence/serve-refusal-interference-20261120/README.md",
+    "original_failure_preserved": true,
+    "candidate_implementation": "CPU and actual rejection/ordinary paths pending",
+    "model_quality_claim": "One controlled failure reproduced and corrected by prompt-only replacement; no claim for all previous failures."
   }
 }

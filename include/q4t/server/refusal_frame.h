@@ -11,15 +11,11 @@ inline constexpr std::string_view kRefusalClose = "</q4t_refusal>";
 inline constexpr size_t kRefusalWhitespace = 16;
 
 inline constexpr std::string_view kRefusalInstruction =
-    "# Refusal output\n\nFor a final answer that refuses the user's request, "
-    "output <q4t_refusal> followed by a nonempty refusal message and "
-    "</q4t_refusal>, then stop. Start this frame at the beginning of the "
-    "final answer, after </think> if reasoning is enabled. Do not add normal "
-    "text, JSON or tool calls to a refusal. This is an output control frame, "
-    "not a tool. A refusal takes precedence over the response schema or "
-    "required tool choice. For all other answers, use the normal response "
-    "format and tool protocol. Do not use this frame merely to report a "
-    "tool error, an empty result or uncertainty.";
+    "# Response encoding\n\nReturn ordinary answers in the requested text, "
+    "JSON, or tool format. Only when you choose to refuse the task, "
+    "output <q4t_refusal> followed by your refusal and </q4t_refusal>, "
+    "with no other final-answer content. This is a formatting rule, "
+    "not a reason to refuse.";
 
 enum class RefusalPrefix { kOrdinary, kPending, kRefusal };
 

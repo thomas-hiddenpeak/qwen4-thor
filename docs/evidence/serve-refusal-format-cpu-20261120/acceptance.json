@@ -1,0 +1,32 @@
+{
+  "status": "PASS_REFUSAL_FORMAT_TARGETED_CPU",
+  "native_tests": 18,
+  "source_counterexamples": 20,
+  "seconds": 0.4801541422493756,
+  "cpu_build": {
+    "status": "BUILD_PASS",
+    "seconds": 31.037342259194702,
+    "exit_code": 0,
+    "warnings": 0,
+    "default_unchanged": true,
+    "previous_unchanged": true,
+    "binary_sha256": "8ddea6c05ff004a28f730ea01ba73d4ed57b24f7767ec410403348a6368bff64",
+    "gpu_actions": 0
+  },
+  "runtime_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 19.082486839033663,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "free_bytes_after": 265265152
+  },
+  "new_gpu_starts": 0,
+  "actual_business_qualified": false,
+  "default_unchanged": true,
+  "default_revision": 356,
+  "raw_sha256": "98f32b69f21df852ac16c198b09762b49cee9f6723fc03ff818fc691c5d41c27"
+}

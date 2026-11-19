@@ -1,0 +1,90 @@
+{
+  "cpu-01/build-result.json": {
+    "bytes": 263,
+    "sha256": "50c03104e4f48a2687778e77ce368f26e76f547a91df51389cc1b7a6e0cbdfbb"
+  },
+  "cpu-01/check-1.log": {
+    "bytes": 223,
+    "sha256": "3d6f68bb6a7807ccd78d634356d3d84abf752d9ef2f85265d93cbc5c506927ef"
+  },
+  "cpu-01/result.json": {
+    "bytes": 804,
+    "sha256": "fc759c3f6c3c4a7f98fc64ea3bd98a210c910cdc6cbbe12d95ca44799bbf0061"
+  },
+  "cpu-01/plan.json": {
+    "bytes": 176816,
+    "sha256": "de719fcf72bb2b82ab11e2efb89a7ad2b095ecdf1519020c1a702837af949642"
+  },
+  "cpu-01/build.log": {
+    "bytes": 2800,
+    "sha256": "a88743ce38c992c9db289885574bb714971b9a92bb639585426116f1f67da3f2"
+  },
+  "cpu-01/check-0.log": {
+    "bytes": 1333,
+    "sha256": "ed149a19471bf32ea8fa582155b8e9cd0e8dfccf1247f9eefbca5cf797d4d19d"
+  },
+  "cpu-01/required.txt": {
+    "bytes": 1030,
+    "sha256": "9b0c0ccd42589df3030c175cfb54010005bf850a93870b8023328cf5460cdbf3"
+  },
+  "engine-build-01/result.json": {
+    "bytes": 293,
+    "sha256": "5ac792279189204d1dc08c462610df42aff239fa932295ad359b3e1edcf5cc4c"
+  },
+  "engine-build-01/plan.json": {
+    "bytes": 106400,
+    "sha256": "7cdef4b4a20f80498aebccd1d6918a8e1624b17f3394f70a8d9d65a8d9485f6a"
+  },
+  "engine-build-01/build.log": {
+    "bytes": 2326,
+    "sha256": "598751fb10bfd36561f9b562003cb22ffe6ece5f9a7abe7e81f96614ffe28f2d"
+  },
+  "engine-build-01/previous-chat_protocol_sources.json": {
+    "bytes": 84824,
+    "sha256": "85ece2cf3029df76d4ca89b73262052eb0e7411eeeebc57879a5e4afde77d9fa"
+  },
+  "engine-build-01/previous-CMakeCache.txt": {
+    "bytes": 54898,
+    "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+  },
+  "dependency-sharing-01/restore.py": {
+    "bytes": 521,
+    "sha256": "70cbed781fbec55bc846a5851b82f101e843c6f780eda2cb7cb85d1b004179aa"
+  },
+  "dependency-sharing-01/result.json": {
+    "bytes": 144,
+    "sha256": "6f72b26d5793545c51601648a4048977af99c3ed93727e3f1858611952609219"
+  },
+  "dependency-sharing-01/plan.json": {
+    "bytes": 1821,
+    "sha256": "60c70b00fb30f90ddba7abc9cb588de79b0db6d739b6acbf6495875cd97975a2"
+  },
+  "archive_cpu_01.py": {
+    "bytes": 4228,
+    "sha256": "70e4688f956a39fe2a28bf58a083e729b27d5b209061572d7eca66c0fce42252"
+  },
+  "build_cpu_01.py": {
+    "bytes": 5038,
+    "sha256": "6dbcdbfbf23d2fd06cee0a193c86c99169a54719fd9b5652a53e486c0fe6c200"
+  },
+  "build_engine_01.py": {
+    "bytes": 2641,
+    "sha256": "3cfe909aded0e0ca61f20c643a0343e7c8481b90bd8437297787e712ac543d6b"
+  },
+  "source/include/q4t/server/refusal_frame.h": {
+    "bytes": 1602,
+    "sha256": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123"
+  },
+  "source/tests/server_chat_message_profile_test.cpp": {
+    "bytes": 30798,
+    "sha256": "593aeab8b3b1ed7a2bf98c92793fd58887f5580a0871fc07a306a088a8a99ebf"
+  },
+  "source/src/server/chat_template.cpp": {
+    "bytes": 38421,
+    "sha256": "891adaf390e59776189f8cf68006a3b8020ece14fbd3882c46f04aec3dcd2b68"
+  },
+  "source/src/server/chat_response_parser.cpp": {
+    "bytes": 43302,
+    "sha256": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20"
+  }
+}
