@@ -1,0 +1,58 @@
+{
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/group-0.log": {
+    "sha256": "c6a2d1661a790598a6a133761107bf511b993250712807c9127779903e5efa60",
+    "bytes": 491
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/group-1.log": {
+    "sha256": "c90e3ca28987442bd8a3d13cf656b38a7efdee00ac1c9599e6f178be379eae26",
+    "bytes": 958
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/plan.json": {
+    "sha256": "4efc0e3a9b75425e419dd373b2737dd17c24979466aa86b8c5cc1f52d3363c69",
+    "bytes": 1196
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/result.json": {
+    "sha256": "71cb647f5cc55df53e3b0bd33ad7b1d67e1988e2c4807feeb54ee076c1475964",
+    "bytes": 468
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/conversation_acceptance.py": {
+    "sha256": "24012d57c5876df7c2c3e4120314477cbdb7fbd7ebfe261ea1de1dfbdb5be615",
+    "bytes": 11940
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/conversation_checks.mjs": {
+    "sha256": "343e01c809e3b4c911fa06ad710f21c2988ea09deb40c8d6f37b2dea415b61b5",
+    "bytes": 2600
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/conversation_checks.test.mjs": {
+    "sha256": "bbe18d2a35412578fdfcebefcee5c84c67d8107532ae464c3c7dc5e2e1e6b588",
+    "bytes": 2844
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/conversation_sdk.mjs": {
+    "sha256": "b64311590a15235f963f150f47dfe8dbf6ea20c8f70de4e42883390a385ac5e7",
+    "bytes": 10097
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/history_acceptance.py": {
+    "sha256": "cc58357157f247796e6bff3bd37951561f51c364cfe7699837869a26d610d8d0",
+    "bytes": 13687
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/test_conversation_acceptance.py": {
+    "sha256": "eb30d22bc4caadf184861f7c31fd7d08ee8f3387989edafc3d5ea0fb361f6a6d",
+    "bytes": 4899
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/business-cpu-01/source/transcription_acceptance.py": {
+    "sha256": "d64aa9003993b3b82a544277f2282594e3b46fed28dd9ba3d4a6bc1ffc1514c2",
+    "bytes": 18686
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/runtime-build-01/build.log": {
+    "sha256": "ad54ba894d1bef56cd0eba74a0f2c8a4fe102268ed94b2cbeb553b5b5784555f",
+    "bytes": 44621
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/runtime-build-01/plan.json": {
+    "sha256": "d6a72b4e59008eb3c299684cffaff1b14e75c03b6e39e8bde0c5c8dbe98c2ab4",
+    "bytes": 105937
+  },
+  ".q4t-work/serve-realtime-conversation-20261119/runtime-build-01/result.json": {
+    "sha256": "56c3d9858223ae3b86bf206a4037eb4ec52e96ba8deacc3da7b40793d95919c4",
+    "bytes": 292
+  }
+}

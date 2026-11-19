@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "groups": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "tools/serve_realtime/conversation_checks.test.mjs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_realtime.test_conversation_acceptance",
+        "-v"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "tests": 10,
+  "seconds": 0.3780211629346013,
+  "gpu_actions": 0
+}
