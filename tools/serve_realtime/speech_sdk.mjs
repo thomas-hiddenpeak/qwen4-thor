@@ -18,7 +18,7 @@ const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_mod
 const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.search && !url.hash && !url.username &&
-  !url.password && args.ca_file && ['main', 'quota'].includes(args.mode), 'TLS scope');
+  !url.password && args.ca_file && ['main', 'quota', 'content'].includes(args.mode), 'TLS scope');
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
 const rt = new OpenAIRealtimeWS({ model: 'qwen3.8-flash-next', options: {
   ca: fs.readFileSync(args.ca_file), maxPayload: 4 << 20, perMessageDeflate: false,
@@ -73,7 +73,7 @@ function judge(label, actual, expected) {
   quality.push({ label, actual, expected, status: actual === expected ? 'PASS' : 'FAIL' });
 }
 async function create(label, response, expected = 'completed', truncate = false) {
-  check(++creates <= (args.mode === 'main' ? 7 : 2), 'response attempt bound');
+  check(++creates <= ({ main: 7, quota: 2, content: 5 }[args.mode]), 'response attempt bound');
   const at = events.length;
   const created = await action({ type: 'response.create', response: {
     ...response, metadata: { acceptance_case: label } } }, 'response.created');
@@ -108,6 +108,12 @@ async function create(label, response, expected = 'completed', truncate = false)
 const phrase = 'Hello, this is a native speech test.';
 const independent = { conversation: 'none', input: [], tools: [], tool_choice: 'none' };
 const audioBase = { output_modalities: ['audio'], max_output_tokens: 3457 };
+async function userTurn(label, task) {
+  const id = 'user_' + label;
+  await action({ type: 'conversation.item.create', item: { id,
+    type: 'message', role: 'user', content: [{ type: 'input_text', text: task }] } },
+  'conversation.item.done', (e) => e.item?.id === id);
+}
 let toolRecord = null;
 try {
   await until(() => events.some((e) => e.type === 'session.created') &&
@@ -145,25 +151,32 @@ try {
       type: 'function_call_output', call_id: call.call_id,
       output: JSON.stringify(toolRecord) } }, 'conversation.item.done',
     (e) => e.item?.id === 'tool_result');
+    if (args.mode === 'content') await userTurn('tool_answer',
+      'What is the version in the preceding tool result? Reply only with the version.');
     const answer = await create('tool_audio', { ...audioBase, tools: [], tool_choice: 'none',
       instructions: 'Reply only with the exact version field in the actual tool result.' });
     judge('tool_audio', answer.output[0].content[0].transcript.trim(), version);
-    const denied = await action({ type: 'session.update', event_id: 'locked_voice',
-      session: { type: 'realtime', audio: { output: { voice: 'ryan' } } } }, 'error');
-    check(denied.error.event_id === 'locked_voice', 'voice error ownership');
-    checks.push({ type: 'locked_voice', error: denied.error });
+    if (args.mode === 'main') {
+      const denied = await action({ type: 'session.update', event_id: 'locked_voice',
+        session: { type: 'realtime', audio: { output: { voice: 'ryan' } } } }, 'error');
+      check(denied.error.event_id === 'locked_voice', 'voice error ownership');
+      checks.push({ type: 'locked_voice', error: denied.error });
+    }
     for (const [label, format, speed] of [['pcm', 'audio/pcm', 1],
       ['mulaw', 'audio/pcmu', 1], ['alaw', 'audio/pcma', .75]]) {
       const updated = await action({ type: 'session.update', session: {
         type: 'realtime', audio: { output: { speed } } } }, 'session.updated');
       check(updated.session.audio.output.speed === speed, 'effective fractional speed');
       checks.push({ type: 'speed', label, speed });
+      if (args.mode === 'content') await userTurn(label,
+        'Repeat exactly without adding words: ' + phrase);
       const value = await create(label, { ...audioBase, tools: [], tool_choice: 'none',
         audio: { output: { format: format === 'audio/pcm' ?
           { type: format, rate: 24000 } : { type: format } } },
         instructions: 'Ignore earlier questions. Repeat exactly without adding words: ' + phrase });
       judge(label, value.output[0].content[0].transcript.trim(), phrase);
     }
+    if (args.mode === 'main') {
     const item = results.find((v) => v.label === 'pcm').response.output[0].id;
     await action({ type: 'conversation.item.truncate', item_id: item,
       content_index: 0, audio_end_ms: 100 }, 'conversation.item.truncated');
@@ -182,6 +195,7 @@ try {
       output_modalities: ['text'], max_output_tokens: 32,
       instructions: 'Compute 6 * 7. Reply only 42.' });
     judge('after_cancel', text(last).trim(), '42');
+    }
   }
   rt.close(); await until(() => closed, true); clearTimeout(guard);
   check(closeCode === 1000 && connections === 1, 'one clean SDK connection');

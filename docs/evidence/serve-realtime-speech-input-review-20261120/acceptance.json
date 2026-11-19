@@ -1,0 +1,73 @@
+{
+  "status": "ACCEPT_OFFLINE_INPUT_REVIEW_AND_CONTENT_DRIVER_CPU",
+  "input_review": {
+    "status": "PASS_OFFLINE_INPUT_IDENTITY",
+    "cases": 6,
+    "gpu_starts": 0,
+    "observations": [
+      {
+        "label": "tool_audio-audio",
+        "audio_text_identical": true,
+        "native_text_identical": true,
+        "actual_tokens": 243,
+        "new_user_tokens": 264,
+        "last_actual_role": "tool",
+        "prompt_sha256": "986cc057042fe275ed3456ad794975a3d992e1cc1dec78475801eeb08935e314",
+        "temperature": 1,
+        "seed_set": false
+      },
+      {
+        "label": "pcm-audio",
+        "audio_text_identical": true,
+        "native_text_identical": true,
+        "actual_tokens": 272,
+        "new_user_tokens": 292,
+        "last_actual_role": "assistant",
+        "prompt_sha256": "a9754cfee6bd45fe74f43afe8fc1f976991a98fe0ef9051d851e9d32bb61cf15",
+        "temperature": 1,
+        "seed_set": false
+      }
+    ],
+    "original_quality_unchanged": true
+  },
+  "cpu": {
+    "status": "PASS",
+    "tests": 6,
+    "seconds": 0.3462333930656314,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "tools.serve_realtime.test_speech_followup",
+          "-v"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/speech_sdk.mjs"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "gpu_starts": 0,
+    "original_quality_failure_preserved": true
+  },
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "next": {
+    "starts": 1,
+    "websocket_sessions": 1,
+    "response_creates": 5,
+    "fixed_seed_completions": 2,
+    "unprompted_asr": 3,
+    "seconds": 600
+  },
+  "original_business_status": "FAIL",
+  "business_accepted": false
+}
