@@ -9708,7 +9708,7 @@
       "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
     },
     "streaming_plan": {
-      "state": "S2_S3_CPU_ACCEPTED_REAL_CONTINUOUS_BUSINESS_PENDING",
+      "state": "TWO_REAL_CHINESE_COMPLETIONS_REUSED_REMAINING_BUSINESS_PENDING",
       "plan": "SERVE_REALTIME_STREAMING_2026-11-19.md",
       "reference": "evidence/serve-realtime-stream-reference-20261119/README.md",
       "steps": [
@@ -9759,6 +9759,30 @@
         "chats": 1,
         "seconds": 900,
         "native_passes_max": 28
+      },
+      "business_initial": {
+        "evidence": "evidence/serve-realtime-stream-business-20261119/README.md",
+        "overall_status": "FAIL",
+        "reason": "SDK did not recognize correlated in-flight appends rejected after actual quota failure",
+        "seconds": 41.750476968009025,
+        "nvml_ok": 41,
+        "reused_completed_items": 2,
+        "reused_actual_tokens": 388,
+        "live_settlement_missing": true,
+        "engine_changed": false,
+        "default_unchanged": true
+      },
+      "business_continuation_frozen": {
+        "model_starts": 1,
+        "ingress_starts": 1,
+        "sessions": 3,
+        "item_attempts": 5,
+        "successful_commits": 3,
+        "precommit_clear": 1,
+        "precommit_quota": 1,
+        "chats": 1,
+        "seconds": 900,
+        "native_passes_max": 20
       }
     }
   }

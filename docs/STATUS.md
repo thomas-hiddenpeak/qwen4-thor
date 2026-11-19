@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[持续转录首轮结果与续验](evidence/serve-realtime-stream-business-20261119/README.md)：
+两档中文真实完成、388 token/实际前缀通过；原整体FAIL保留，驱动
+未接住配额拒绝后的在途append错误。41.750秒/41次NVML正常，自有
+进程/端口/锁清理且默认保持。驱动严格关联修复及4项离线复核通过，
+SDK负控夹具清理失败保留并仅复验2项通过。冻结1模型/1入口、3会话
+5任务尝试/1Chat/900秒续验，复用两条中文，全部master继续。
+
 [持续输入58项CPU通过](evidence/serve-realtime-stream-input-cpu-20261119/README.md)：
 原生47/控制器8项共0.378秒、真实SDK/TLS流程3项2.166秒，0GPU，
 零警告、988来源/18负控。已接模型循环、固定借用、输入等待与逐轮

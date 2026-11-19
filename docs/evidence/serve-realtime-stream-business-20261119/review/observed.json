@@ -1,0 +1,108 @@
+[
+  {
+    "item": "item_36fbb39e913dc783ae814ad112ef23b2",
+    "label": "zh",
+    "delay": "low",
+    "quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "before_commit": {
+      "item_id": "item_36fbb39e913dc783ae814ad112ef23b2",
+      "sent_bytes": 144000,
+      "total_bytes": 201790,
+      "delta": "\u751a\u81f3",
+      "event": "conversation.item.input_audio_transcription.delta"
+    },
+    "steps": [
+      {
+        "pass": 1,
+        "samples": 16000,
+        "prefix": 0,
+        "input": 28,
+        "output": 6,
+        "cumulative_output": 6,
+        "final": 0
+      },
+      {
+        "pass": 2,
+        "samples": 32000,
+        "prefix": 0,
+        "input": 41,
+        "output": 8,
+        "cumulative_output": 14,
+        "final": 0
+      },
+      {
+        "pass": 3,
+        "samples": 48000,
+        "prefix": 4,
+        "input": 58,
+        "output": 7,
+        "cumulative_output": 21,
+        "final": 0
+      },
+      {
+        "pass": 4,
+        "samples": 64000,
+        "prefix": 7,
+        "input": 74,
+        "output": 4,
+        "cumulative_output": 25,
+        "final": 0
+      },
+      {
+        "pass": 5,
+        "samples": 67263,
+        "prefix": 7,
+        "input": 77,
+        "output": 4,
+        "cumulative_output": 29,
+        "final": 1
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 278,
+      "output_tokens": 29,
+      "total_tokens": 307,
+      "input_token_details": {
+        "audio_tokens": 185,
+        "text_tokens": 93
+      }
+    }
+  },
+  {
+    "item": "item_fae04bbf56d4fc23315548b81f1a5f74",
+    "label": "zh",
+    "delay": "xhigh",
+    "quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "before_commit": null,
+    "steps": [
+      {
+        "pass": 1,
+        "samples": 67263,
+        "prefix": 0,
+        "input": 70,
+        "output": 11,
+        "cumulative_output": 11,
+        "final": 1
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 70,
+      "output_tokens": 11,
+      "total_tokens": 81,
+      "input_token_details": {
+        "audio_tokens": 55,
+        "text_tokens": 15
+      }
+    }
+  }
+]

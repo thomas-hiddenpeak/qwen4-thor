@@ -1,0 +1,18 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection",
+    "test_sdk_precommit_failure_clears_without_sending_future_or_replay",
+    "test_sdk_precommit_failure_does_not_mask_unrelated_append_error",
+    "test_sdk_precommit_buffer_error_before_failure_is_rejected"
+  ],
+  "cpu_cases": 4,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/transcription_sdk.mjs": "2ece1941ccf2e3763dd70c49f02ec6fef36aab8a68572cd50d2e2b991a2e80e5",
+    "tools/serve_realtime/test_transcription_sdk.py": "c665d4e0c668d63ec734f7988ba50d467a7982a07e853227bec2f57deadb8fd1",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "scope": "Only expected item quota failure followed by correlated in-flight append buffer errors may be acknowledged; unrelated error or wrong event order must fail. Actual WSS SDK and native TLS, CPU peer only."
+}

@@ -57,6 +57,10 @@ class SdkTls(unittest.TestCase):
         self.directory = Path(tempfile.mkdtemp(prefix='case-',dir=self.root))
         self.rows,self.audio,self.errors = [],[],[]
         self.discarded = []
+        self.arrived = bytearray()
+        self.append_error = 'input_audio_buffer_failed'
+        self.error_before_failure = False
+        self.expected_client_abort = False
         self.streaming = self.reject_stream = False
         owner = self
         class Peer(BaseHTTPRequestHandler):
@@ -92,6 +96,12 @@ class SdkTls(unittest.TestCase):
                         if kind=='session.update':emit('session.updated',session=event['session'])
                         elif kind=='input_audio_buffer.append':
                             raw=base64.b64decode(event['audio'],validate=True)
+                            owner.arrived.extend(raw)
+                            if partial and owner.reject_stream:
+                                emit('error',error=dict(code=owner.append_error,
+                                    message='CPU in-flight append fixture',type='invalid_request_error',
+                                    event_id=event.get('event_id')))
+                                continue
                             if base64.b64encode(raw).decode()!=event['audio']:
                                 emit('error',error=dict(code='bad_audio',message='CPU invalid base64',
                                     type='invalid_request_error',event_id=event.get('event_id')))
@@ -101,6 +111,10 @@ class SdkTls(unittest.TestCase):
                                     partial=True
                                     item='cpu-item-'+str(item_number)
                                     if owner.reject_stream:
+                                        if owner.error_before_failure:
+                                            emit('error',error=dict(code='input_audio_buffer_failed',
+                                                message='CPU invalid ordering fixture',
+                                                type='invalid_request_error',event_id=event.get('event_id')))
                                         emit('conversation.item.input_audio_transcription.failed',
                                             item_id=item,content_index=0,error=dict(
                                                 code='client_rpm_exhausted',message='CPU quota fixture',
@@ -132,6 +146,9 @@ class SdkTls(unittest.TestCase):
                                  usage=dict(type='tokens',input_tokens=12,output_tokens=4,total_tokens=16))
                             partial=False;item_number+=1
                         else:raise ValueError('fixture event')
+                except (BrokenPipeError, ConnectionResetError) as error:
+                    if not owner.expected_client_abort:
+                        owner.errors.append(type(error).__name__)
                 except BaseException as error:owner.errors.append(type(error).__name__)
         self.server=ThreadingHTTPServer(('127.0.0.1',0),Peer)
         self.server.daemon_threads=True
@@ -192,8 +209,8 @@ class SdkTls(unittest.TestCase):
 
     def test_sdk_precommit_failure_clears_without_sending_future_or_replay(self):
         self.streaming=self.reject_stream=True
-        prefix=4096
-        code,result=self.call(clips=[dict(file=str(self.clip),prefix_bytes=prefix,
+        prefix=24000
+        code,result=self.call(probes=False,clips=[dict(file=str(self.clip),prefix_bytes=prefix,
             expect_precommit_failure='client_rpm_exhausted')])
         self.assertEqual(code,0,result)
         self.assertEqual(result['connections'],1)
@@ -201,9 +218,30 @@ class SdkTls(unittest.TestCase):
         turn=result['turns'][0]
         self.assertTrue(turn['cleared'])
         self.assertEqual(turn['before_commit']['sent_bytes'],prefix)
-        self.assertEqual(self.discarded[-1],self.clip.read_bytes()[:prefix])
+        self.assertEqual(bytes(self.arrived),self.clip.read_bytes()[:prefix])
+        self.assertEqual(self.discarded[-1],self.clip.read_bytes()[:16389])
+        self.assertEqual(len(turn['rejected_inflight_appends']),1)
         self.assertEqual(self.audio,[])
         self.assertFalse(result['automatic_replay'])
+
+    def test_sdk_precommit_failure_does_not_mask_unrelated_append_error(self):
+        self.streaming=self.reject_stream=True
+        self.expected_client_abort=True
+        self.append_error='fixture_unrelated_error'
+        code,result=self.call(probes=False,clips=[dict(file=str(self.clip),prefix_bytes=24000,
+            expect_precommit_failure='client_rpm_exhausted')])
+        self.assertNotEqual(code,0)
+        self.assertEqual(result['error'],'server error: fixture_unrelated_error')
+        self.assertEqual(self.audio,[])
+
+    def test_sdk_precommit_buffer_error_before_failure_is_rejected(self):
+        self.streaming=self.reject_stream=self.error_before_failure=True
+        self.expected_client_abort=True
+        code,result=self.call(probes=False,clips=[dict(file=str(self.clip),prefix_bytes=24000,
+            expect_precommit_failure='client_rpm_exhausted')])
+        self.assertNotEqual(code,0)
+        self.assertEqual(result['error'],'server error: input_audio_buffer_failed')
+        self.assertEqual(self.audio,[])
 
     def test_untrusted_tls_never_reaches_backend(self):
         code,result=self.call(ca_file=self.untrusted['certificate'])

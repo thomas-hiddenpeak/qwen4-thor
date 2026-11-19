@@ -104,15 +104,36 @@ try {
     check(audio.length > 0, 'empty fixture');
     const start = events.length;
     let at = 0, part = 0;
+    const appendIds = new Set();
     const sizes = [1, 7, 16381, 16000];
     const sendUntil = async (limit) => {
       while (at < limit) {
         check(part < 1024, 'append count');
         await until(() => rt.socket.bufferedAmount <= 1024 * 1024);
         const end = Math.min(at + sizes[part++ % sizes.length], limit);
-        rt.send({ type: 'input_audio_buffer.append', audio: audio.subarray(at, end).toString('base64') });
+        const id = `append-${start}-${part}`;
+        appendIds.add(id);
+        rt.send({ type: 'input_audio_buffer.append', event_id: id,
+          audio: audio.subarray(at, end).toString('base64') });
         at = end;
       }
+    };
+    const prefixEvents = () => {
+      const recent = events.slice(start);
+      const failure = recent.findIndex((v) =>
+        v.type === 'conversation.item.input_audio_transcription.failed' &&
+        v.error.code === clip.expect_precommit_failure);
+      for (let i = 0; i < recent.length; ++i) {
+        const v = recent[i];
+        if (v.type !== 'error') continue;
+        // Appends already in flight may be rejected after the item fails.
+        // Accept only this code, after the expected failure, correlated to
+        // a prefix append that this client actually sent. Keep all evidence.
+        check(clip.expect_precommit_failure && failure >= 0 && i > failure &&
+          v.error.code === 'input_audio_buffer_failed' &&
+          appendIds.has(v.error.event_id), 'server error: ' + v.error.code);
+      }
+      return recent;
     };
     let beforeCommit = null;
     if (clip.prefix_bytes !== undefined) {
@@ -122,9 +143,7 @@ try {
       await sendUntil(clip.prefix_bytes);
       let observed;
       await until(() => {
-        const recent = events.slice(start);
-        const error = recent.find((v) => v.type === 'error');
-        if (error) throw new Error('server error: ' + error.error.code);
+        const recent = prefixEvents();
         const failed = recent.find((v) => v.type === 'conversation.item.input_audio_transcription.failed');
         if (failed && !clip.expect_precommit_failure)
           throw new Error('early transcription failure: ' + failed.error.code);
@@ -141,13 +160,15 @@ try {
           check(observed.error.code === clip.expect_precommit_failure, 'precommit failure code');
         const clearing = events.length;
         rt.send({ type: 'input_audio_buffer.clear' });
-        await event('input_audio_buffer.cleared', clearing);
+        await until(() => prefixEvents().some((v, i) =>
+          start + i >= clearing && v.type === 'input_audio_buffer.cleared'));
         const failed = clip.expect_precommit_failure ? observed :
           await event('conversation.item.input_audio_transcription.failed', start, observed.item_id);
         if (clip.clear_after_delta)
           check(failed.error.code === 'explicit_cancel', 'clear did not cancel actual work');
         turns.push({ item_id: observed.item_id, before_commit: beforeCommit,
-          cleared: true, terminal: failed, update });
+          cleared: true, terminal: failed, update,
+          rejected_inflight_appends: prefixEvents().filter((v) => v.type === 'error') });
         continue;
       }
     }
