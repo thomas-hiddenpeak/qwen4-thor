@@ -1,0 +1,43 @@
+{
+  "status": "PASS_NATIVE_REALTIME_MANUAL_TRANSCRIPTION",
+  "seconds": 44.37782511906698,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 3,
+    "committed_items": 5,
+    "chats": 1,
+    "controls": 37
+  },
+  "quality": {
+    "zh": {
+      "text": "甚至出现交易几乎停滞的情况。",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "en": {
+      "text": "Hmm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "exact": false,
+      "word_error_rate": 0.027777777777777776
+    },
+    "mulaw_zh": {
+      "text": "甚至出现交易几乎停滞的情况。",
+      "exact": true,
+      "word_error_rate": 0
+    }
+  },
+  "nvml_ok": 44,
+  "events": 84,
+  "committed_items": 5,
+  "terminal_successes": 3,
+  "quota_failed_items": 1,
+  "disconnected_items": 1,
+  "alpha_settled_tokens": 340.0,
+  "owned_processes_gone": true,
+  "lock_free": true,
+  "default_unchanged": true,
+  "baseline_reused": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-03/run/core-before.wire": "483c581a7a9a380376de994cc4ca2533dedd83aea9bfb1d94e12dc44bd89c7ed"
+  },
+  "boundary": "Native TLS with PID-bound fixed controller fixture; Guardian recovery and automatic VAD/noise/delay/conversation/Live not qualified; default rev326 unchanged."
+}

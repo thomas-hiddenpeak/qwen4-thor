@@ -12,11 +12,12 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_recovery import control, journal, store
+from tools.serve_recovery import control, fixture_model, journal, store
 
 BINARY = Path(os.environ.get('Q4T_GUARDIAN_BINARY', ROOT/'build/q4t-guardian'))
 
@@ -315,6 +316,33 @@ class RuntimeTests(unittest.TestCase):
                             for row in observations))
         self.assertTrue(service.stop()['cleanup_confirmed'])
         service.assert_lease_free()
+
+    def test_capacity_receipt_publishes_only_complete_json(self):
+        directory = Path(tempfile.mkdtemp(prefix='receipt-', dir=self.output))
+        target = directory/'capacity-binding.json'
+        # A killed actor can leave a temporary file; neither an absent nor a
+        # previously published final receipt may become empty or partial.
+        for previous in (None, {'ok': False, 'generation': 1}):
+            if previous is not None:
+                target.write_text(json.dumps(previous))
+            expected = {'ok': False, 'generation': 2}
+            def interrupted(source, destination):
+                self.assertEqual(destination, target)
+                self.assertEqual(json.loads(source.read_text()), expected)
+                self.assertEqual(json.loads(target.read_text())
+                                 if target.exists() else None, previous)
+                raise OSError('fixture interrupted before publication')
+            with mock.patch.object(fixture_model.os, 'replace', interrupted):
+                with self.assertRaisesRegex(OSError, 'fixture interrupted'):
+                    fixture_model.publish_receipt(target, expected)
+            self.assertEqual(json.loads(target.read_text())
+                             if target.exists() else None, previous)
+            pending = list(directory.glob('.*.pending'))
+            self.assertEqual(len(pending), 1)
+            pending[0].unlink()
+        fixture_model.publish_receipt(target, expected)
+        self.assertEqual(json.loads(target.read_text()), expected)
+        self.assertFalse(list(directory.glob('.*.pending')))
 
     def test_gateway_failure_preserves_controller_and_model(self):
         service = self.launch(models=True, gateway=True)

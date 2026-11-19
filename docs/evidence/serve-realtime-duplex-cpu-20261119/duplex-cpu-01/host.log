@@ -1,0 +1,15 @@
+[PASS] http_rejects_duplicate_or_empty_authorization
+[PASS] http_rejects_ambiguous_framing
+[PASS] http_header_identity_and_pre_body_admission
+[PASS] http_voice_uploads_preserve_binary_fixed_and_chunked_bodies
+[PASS] http_upgrade_preserves_metadata_credentials_and_first_frame
+[PASS] http_upgrade_header_splits_preserve_exact_unread_tail
+[PASS] http_upgrade_rejects_duplicate_empty_and_oversized_singletons
+[PASS] http_upgrade_subprotocols_are_case_sensitive_unique_and_bounded
+[PASS] http_upgrade_security_fields_cannot_be_hop_options_or_trailers
+[PASS] http_upgrade_admission_rejects_body_before_consumption
+[PASS] http_upgrade_rejection_never_reuses_socket_for_frame_as_http
+[q4t][http] trace_id=req-24bd94e0c7c7a2a3ef7822cef8d450f6 status=429 error=client_rpm_exhausted
+[PASS] http_session_json_error_reuse_has_new_context
+[PASS] http_session_sse_chunks_serialize_heartbeat_and_terminal
+13 tests, 13 passed, 0 failed, 0 skipped

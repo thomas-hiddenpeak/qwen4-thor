@@ -1,0 +1,24 @@
+test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection) ... ok
+test_sdk_precommit_failure_clears_without_sending_future_or_replay (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_precommit_failure_clears_without_sending_future_or_replay) ... ok
+test_sdk_precommit_failure_does_not_mask_unrelated_append_error (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_precommit_failure_does_not_mask_unrelated_append_error) ... ok
+test_sdk_precommit_buffer_error_before_failure_is_rejected (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_precommit_buffer_error_before_failure_is_rejected) ... FAIL
+
+======================================================================
+FAIL: test_sdk_precommit_buffer_error_before_failure_is_rejected (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_precommit_buffer_error_before_failure_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_transcription_sdk.py", line 164, in close
+    self.assertEqual(self.errors,[])
+AssertionError: Lists differ: ['BrokenPipeError'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'BrokenPipeError'
+
+- ['BrokenPipeError']
++ []
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.657s
+
+FAILED (failures=1)

@@ -1,0 +1,8 @@
+{
+  "tests": 8,
+  "seconds": 60,
+  "gpu": 0,
+  "model_loads": 0,
+  "module": "tools.native_tts.test_encoder_acceptance",
+  "meaning": "synthetic validator contracts, not actual numerical evidence"
+}

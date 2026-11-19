@@ -1,0 +1,7 @@
+{
+  "status": "PREPARE_FAILED",
+  "gpu_model_loads": 0,
+  "reason": "local FFmpeg has no s16le raw muxer; WAV PCM16 codec available",
+  "source_commit": "3a3060fb",
+  "log_sha256": "b6cc4b3520e525675decec8668952c2263098ff83a848902a178cc2584b360c2"
+}

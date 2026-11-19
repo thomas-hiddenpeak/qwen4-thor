@@ -1,0 +1,9 @@
+test_shared_sdk_keeps_exact_modules_with_new_installation_metadata (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_shared_sdk_keeps_exact_modules_with_new_installation_metadata) ... ok
+test_shared_sdk_cannot_omit_add_or_change_executed_files (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_shared_sdk_cannot_omit_add_or_change_executed_files) ... ok
+test_shared_sdk_cannot_claim_qualification_from_empty_packages (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_shared_sdk_cannot_claim_qualification_from_empty_packages) ... ok
+test_sdk_timeout_still_releases_only_the_owned_native_entry (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_sdk_timeout_still_releases_only_the_owned_native_entry) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.006s
+
+OK

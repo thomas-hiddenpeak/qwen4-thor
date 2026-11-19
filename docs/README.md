@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。
+
 [原生语音输出与历史实施](SERVE_NATIVE_TTS_2026-11-18.md)：固定TTS模型/codec、实际合成及标准接口持续推进。
 
 [Chat音频输入与执行计划](SERVE_CHAT_AUDIO_2026-11-18.md)：复用原生ASR，协议/计费/状态与真实业务持续接线。
@@ -609,3 +611,18 @@
 - [Base-only真实消费与可选封装](evidence/serve-voice-consumer-business-20261119/README.md)：完整音频、无注册后端、原客户授权与两档资格。
 
 - [PR49会话恢复夹具修复](evidence/serve-conversation-recovery-fixture-20261119/README.md)：8项针对CPU，原预演失败保留。
+
+- [ICL编码器合同与预算](evidence/serve-tts-icl-metadata-20261119/README.md)：14项CPU；实际编码、服务和交付继续。
+
+- [注册音色实际合入主线](evidence/serve-voice-mainline-20261119/README.md)：PR49双CI通过、42a42846。
+- [ICL编码器末层修复与量化边界](evidence/serve-tts-icl-encoder-20261119/README.md)：原全码一致FAIL保留，独立诊断和验收决定待续。
+
+- [ICL全部码组提示与预算](evidence/serve-tts-icl-prompt-cpu-20261119/README.md)：17 CPU通过，神经合成、解码上下文及持久接线继续。
+
+- [ICL参考解码上下文和精确裁剪](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：10 CPU通过，实际合成待验。
+
+- [Realtime持续输入与对话衔接计划](SERVE_REALTIME_STREAMING_2026-11-19.md)：有界前缀、真实流式ASR、delay/语义断句、对话与交付。
+
+- [ICL/Realtime实际Guardian恢复](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：TLS中断结算、整包恢复、持久参考与显式新会话。
+
+- [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)：原生实时转录、持久参考、预算保持与整包回退。

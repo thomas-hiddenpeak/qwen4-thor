@@ -33,11 +33,17 @@ TtsComputeResult TtsSynthesisRun::Begin(
       chunk_frames > TtsCodecConfig::kChunkFrames ||
       !Disjoint(generation_workspace, codec_workspace))
     return Invalid("TTS streaming synthesis buffers or chunk size invalid");
+  if (max_frames < 2 || max_frames > 4096)
+    return Invalid("TTS synthesis frame budget invalid");
+  if (auto status = ValidateTtsPrompt(prompt); !status)
+    return {status, cudaSuccess};
   TtsCodecLayout layout;
   const auto status = PlanTtsCodecWorkspace(
-      std::min(max_frames, chunk_frames + TtsCodecConfig::kLeftContext),
+      std::min(max_frames + prompt.reference_codes.size(),
+               chunk_frames + TtsCodecConfig::kLeftContext),
       codec_workspace.size(), &layout);
   if (!status) return {status, cudaSuccess};
+  reference_codes_ = prompt.reference_codes;
   const auto started = generation_.Begin(
       weights, prompt, max_frames, sampling, predictor_sampling, seed,
       generation_workspace.data(), generation_workspace.size(), stream);
@@ -69,19 +75,21 @@ TtsComputeResult TtsSynthesisRun::Advance(cudaStream_t stream) {
   // termination even if previous chunks have already been sent to the client.
   if (generation_.at_limit() && !generation_.ended())
     return Record(Invalid("TTS output frame budget exhausted before EOS"));
-  const size_t pending = generation_.frames() - emitted_frames_;
-  if ((!defer_decode_until_eos_ && pending >= chunk_frames_) ||
-      (generation_.ended() && pending)) {
-    pending_frames_ = std::min(pending, chunk_frames_);
-    const size_t history =
-        std::min(emitted_frames_, TtsCodecConfig::kLeftContext);
-    discard_samples_ = history * TtsConfig::kSamplesPerFrame;
+  TtsSynthesisChunk chunk;
+  auto planned = PlanTtsSynthesisChunk(
+      reference_codes_.size(), generation_.frames(), emitted_frames_,
+      chunk_frames_, generation_.ended(), defer_decode_until_eos_, &chunk);
+  if (!planned) return Record({planned, cudaSuccess});
+  if (chunk.ready) {
+    planned = BuildTtsSynthesisChunk(reference_codes_, generation_.codes(),
+                                     chunk, &decoder_codes_);
+    if (!planned) return Record({planned, cudaSuccess});
+    pending_frames_ = chunk.output_frames;
+    discard_samples_ = chunk.discard_frames * TtsConfig::kSamplesPerFrame;
     decoder_ = TtsCodecRun{};
-    const auto result = decoder_.Begin(
-        *codec_weights_,
-        generation_.codes().subspan(emitted_frames_ - history,
-                                    history + pending_frames_),
-        codec_workspace_.data(), codec_workspace_.size(), stream);
+    const auto result =
+        decoder_.Begin(*codec_weights_, decoder_codes_, codec_workspace_.data(),
+                       codec_workspace_.size(), stream);
     if (!result.ok()) return Record(result);
     stage_ = Stage::kDecode;
     return {};

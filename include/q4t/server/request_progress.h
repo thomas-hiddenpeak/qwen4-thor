@@ -26,7 +26,7 @@ enum class ProgressStage : uint64_t {
 };
 enum class ProgressWait : uint64_t {
   kNone, kSlot, kModel, kTokenizer, kScheduler, kWrite, kGrammar, kMedia,
-  kStorage, kCache, kCount
+  kStorage, kCache, kInput, kCount
 };
 enum class ProgressWork : uint64_t {
   kNone, kLoad, kPleRead, kMedia, kCache, kPrefill, kDecode, kDraft,

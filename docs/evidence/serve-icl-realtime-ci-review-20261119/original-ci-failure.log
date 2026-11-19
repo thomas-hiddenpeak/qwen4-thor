@@ -1,0 +1,18 @@
+host-contracts	Check serve surface inventory freshness	﻿2026-11-19T08:09:45.0401051Z ##[group]Run python3 -B tools/serve_audit/check_inventory.py --self-check
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.0401455Z ^[[36;1mpython3 -B tools/serve_audit/check_inventory.py --self-check^[[0m
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.0427923Z shell: /usr/bin/bash -e {0}
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.0428148Z ##[endgroup]
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3986342Z {
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3986698Z   "inventory_current": false,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3986991Z   "semantics_certified": false,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3987184Z   "fields": 53,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3987352Z   "completion_fields": 21,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3987532Z   "routes": 84,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3987699Z   "native_routes": 142,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3987878Z   "reviewed_source_anchors": 996,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3988071Z   "mutation_checks": 18,
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3988240Z   "errors": [
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3988955Z     "sources_sha256 requires renewed review: ['tools/serve_recovery/bundle.py', 'tools/serve_recovery/profile_acceptance.py', 'tools/serve_recovery/profile_evidence.py', 'tools/serve_recovery/profile_realtime.py', 'tools/serve_recovery/profile_voice_review.py', 'tools/serve_service/package.py']"
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3989802Z   ]
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.3989943Z }
+host-contracts	Check serve surface inventory freshness	2026-11-19T08:09:45.4043456Z ##[error]Process completed with exit code 1.

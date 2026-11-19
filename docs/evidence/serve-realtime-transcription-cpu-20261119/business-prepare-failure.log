@@ -1,0 +1,4 @@
+[AVFormatContext @ 0xaaab10609a90] Requested output format 's16le' is not known.
+[out#0 @ 0xaaab106099a0] Error initializing the muxer for /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-01/run/zh.pcm: Invalid argument
+Error opening output file /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-01/run/zh.pcm.
+Error opening output files: Invalid argument

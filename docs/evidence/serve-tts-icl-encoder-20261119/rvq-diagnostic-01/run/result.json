@@ -1,0 +1,752 @@
+{
+  "status": "DIAGNOSIS_COMPLETED_NOT_QUALIFICATION",
+  "loads": [
+    "native",
+    "reference"
+  ],
+  "checks": [
+    {
+      "group": 0,
+      "native": {
+        "code": 1252,
+        "nearest": [
+          1252,
+          1668,
+          374
+        ],
+        "distances": [
+          34039.85427839422,
+          39527.75449522149,
+          41328.502350284136
+        ],
+        "selected_distance": 34039.85427839422,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1252,
+        "nearest": [
+          1252,
+          1668,
+          374
+        ],
+        "distances": [
+          34039.83769732361,
+          39527.722426049295,
+          41328.51750445122
+        ],
+        "selected_distance": 34039.83769732361,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 1.6526349414453865e-06
+    },
+    {
+      "group": 1,
+      "native": {
+        "code": 1915,
+        "nearest": [
+          1915,
+          257,
+          1176
+        ],
+        "distances": [
+          377.4415415701576,
+          523.9740119810797,
+          531.7094544426764
+        ],
+        "selected_distance": 377.4415415701576,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1915,
+        "nearest": [
+          1915,
+          257,
+          1176
+        ],
+        "distances": [
+          377.4398650908231,
+          523.9702990673179,
+          531.7066065186542
+        ],
+        "selected_distance": 377.4398650908231,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 4.642440335919892e-06
+    },
+    {
+      "group": 2,
+      "native": {
+        "code": 243,
+        "nearest": [
+          243,
+          852,
+          294
+        ],
+        "distances": [
+          246.09164054749866,
+          289.60090175132365,
+          292.0053236632371
+        ],
+        "selected_distance": 246.09164054749866,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 243,
+        "nearest": [
+          243,
+          852,
+          294
+        ],
+        "distances": [
+          246.09083810835708,
+          289.600236864012,
+          292.0048890433079
+        ],
+        "selected_distance": 246.09083810835708,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 1.543687473304088e-05
+    },
+    {
+      "group": 3,
+      "native": {
+        "code": 481,
+        "nearest": [
+          481,
+          374,
+          90
+        ],
+        "distances": [
+          183.03127083278164,
+          203.5462747000032,
+          212.12882784838752
+        ],
+        "selected_distance": 183.03127083278164,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 481,
+        "nearest": [
+          481,
+          374,
+          90
+        ],
+        "distances": [
+          183.03084092718746,
+          203.5457597469549,
+          212.1283118382391
+        ],
+        "selected_distance": 183.03084092718746,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 1.9117409423164598e-05
+    },
+    {
+      "group": 4,
+      "native": {
+        "code": 1866,
+        "nearest": [
+          1866,
+          1170,
+          964
+        ],
+        "distances": [
+          161.60884948831182,
+          164.42846968335994,
+          165.27988079493193
+        ],
+        "selected_distance": 161.60884948831182,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1866,
+        "nearest": [
+          1866,
+          1170,
+          964
+        ],
+        "distances": [
+          161.60860335996057,
+          164.42787864235902,
+          165.27983614328633
+        ],
+        "selected_distance": 161.60860335996057,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 2.2165792086164737e-05
+    },
+    {
+      "group": 5,
+      "native": {
+        "code": 190,
+        "nearest": [
+          190,
+          687,
+          1183
+        ],
+        "distances": [
+          139.93305221014666,
+          143.22450158967777,
+          144.2860523733188
+        ],
+        "selected_distance": 139.93305221014666,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 190,
+        "nearest": [
+          190,
+          687,
+          1183
+        ],
+        "distances": [
+          139.93246004374785,
+          143.2240999477528,
+          144.28600372220208
+        ],
+        "selected_distance": 139.93246004374785,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 2.3588850384414865e-05
+    },
+    {
+      "group": 6,
+      "native": {
+        "code": 1690,
+        "nearest": [
+          1690,
+          890,
+          1949
+        ],
+        "distances": [
+          125.13925861027367,
+          126.12837345768716,
+          127.56783255407531
+        ],
+        "selected_distance": 125.13925861027367,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1690,
+        "nearest": [
+          1690,
+          890,
+          1949
+        ],
+        "distances": [
+          125.13875086833238,
+          126.12863042397976,
+          127.56715966495656
+        ],
+        "selected_distance": 125.13875086833238,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 2.535172342515944e-05
+    },
+    {
+      "group": 7,
+      "native": {
+        "code": 1510,
+        "nearest": [
+          1510,
+          290,
+          1331
+        ],
+        "distances": [
+          100.50325172366027,
+          112.82819079364134,
+          115.36604431671047
+        ],
+        "selected_distance": 100.50325172366027,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1510,
+        "nearest": [
+          1510,
+          290,
+          1331
+        ],
+        "distances": [
+          100.50299845172026,
+          112.8280828020853,
+          115.3653631528025
+        ],
+        "selected_distance": 100.50299845172026,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 2.680814615958296e-05
+    },
+    {
+      "group": 8,
+      "native": {
+        "code": 1058,
+        "nearest": [
+          1058,
+          307,
+          1681
+        ],
+        "distances": [
+          92.35856028311807,
+          93.07216912052094,
+          93.38281987106653
+        ],
+        "selected_distance": 92.35856028311807,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1058,
+        "nearest": [
+          1058,
+          307,
+          1681
+        ],
+        "distances": [
+          92.35828148896775,
+          93.07217147140011,
+          93.38259761512515
+        ],
+        "selected_distance": 92.35828148896775,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 2.9913775269297103e-05
+    },
+    {
+      "group": 9,
+      "native": {
+        "code": 1713,
+        "nearest": [
+          1713,
+          680,
+          1064
+        ],
+        "distances": [
+          86.42559933000794,
+          86.80555325778201,
+          86.85554011748185
+        ],
+        "selected_distance": 86.42559933000794,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1713,
+        "nearest": [
+          1713,
+          680,
+          1064
+        ],
+        "distances": [
+          86.42537982119498,
+          86.80560649683065,
+          86.85537301939988
+        ],
+        "selected_distance": 86.42537982119498,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 3.120490124253455e-05
+    },
+    {
+      "group": 10,
+      "native": {
+        "code": 1895,
+        "nearest": [
+          1895,
+          1756,
+          967
+        ],
+        "distances": [
+          77.74434855003497,
+          78.46157040330178,
+          80.21078946827367
+        ],
+        "selected_distance": 77.74434855003497,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1895,
+        "nearest": [
+          1895,
+          1756,
+          967
+        ],
+        "distances": [
+          77.74421412796008,
+          78.46107246408188,
+          80.21099991359542
+        ],
+        "selected_distance": 77.74421412796008,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 3.225949118287744e-05
+    },
+    {
+      "group": 11,
+      "native": {
+        "code": 1975,
+        "nearest": [
+          1975,
+          639,
+          132
+        ],
+        "distances": [
+          71.14587072767178,
+          71.14590550286047,
+          71.6003136230189
+        ],
+        "selected_distance": 71.14587072767178,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 639,
+        "nearest": [
+          639,
+          1975,
+          132
+        ],
+        "distances": [
+          71.14570340908551,
+          71.14601035401422,
+          71.60010645676812
+        ],
+        "selected_distance": 71.14570340908551,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 3.401333330038094e-05
+    },
+    {
+      "group": 12,
+      "native": {
+        "code": 107,
+        "nearest": [
+          107,
+          885,
+          1597
+        ],
+        "distances": [
+          62.84315580972408,
+          64.86600714416427,
+          65.46275033539206
+        ],
+        "selected_distance": 62.84315580972408,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 511,
+        "nearest": [
+          511,
+          107,
+          1577
+        ],
+        "distances": [
+          63.71541974378923,
+          64.15942169974835,
+          64.92248422732177
+        ],
+        "selected_distance": 63.71541974378923,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 0.5400434545896197
+    },
+    {
+      "group": 13,
+      "native": {
+        "code": 2011,
+        "nearest": [
+          2011,
+          1725,
+          517
+        ],
+        "distances": [
+          56.15669584213632,
+          56.38785558958069,
+          56.53130598883317
+        ],
+        "selected_distance": 56.15669584213632,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 829,
+        "nearest": [
+          829,
+          1779,
+          1231
+        ],
+        "distances": [
+          58.77891986495598,
+          58.90848299340546,
+          58.97575352296172
+        ],
+        "selected_distance": 58.77891986495598,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 0.7482830605659343
+    },
+    {
+      "group": 14,
+      "native": {
+        "code": 1838,
+        "nearest": [
+          1838,
+          1737,
+          869
+        ],
+        "distances": [
+          45.727813846140684,
+          50.69985144396905,
+          50.800535355963646
+        ],
+        "selected_distance": 45.727813846140684,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 1838,
+        "nearest": [
+          1838,
+          756,
+          511
+        ],
+        "distances": [
+          53.56975955744373,
+          55.104891265543344,
+          55.450627933013536
+        ],
+        "selected_distance": 53.56975955744373,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 0.8489604915911363
+    },
+    {
+      "group": 15,
+      "native": {
+        "code": 1483,
+        "nearest": [
+          1483,
+          889,
+          440
+        ],
+        "distances": [
+          41.56548329491159,
+          41.65634514900868,
+          42.54133326210689
+        ],
+        "selected_distance": 41.56548329491159,
+        "selected_excess": 0.0
+      },
+      "reference": {
+        "code": 889,
+        "nearest": [
+          889,
+          1910,
+          366
+        ],
+        "distances": [
+          47.1094504089687,
+          48.04469803390246,
+          48.337713171422905
+        ],
+        "selected_distance": 47.1094504089687,
+        "selected_excess": 0.0
+      },
+      "input_relative_l2": 0.8892798103329942
+    }
+  ],
+  "seconds": 11.252115091308951,
+  "defaults_unchanged": true,
+  "runtime_sources_unchanged": true,
+  "artifacts": {
+    "native/case-2/codes.i32": "c448e9284388c43f1f43d8b91974c2f17e0563936ff147d0ccb34485e87196bc",
+    "native/case-2/encoder-downsample-0-0.f32": "63a3a207c801d4ccde5ca831d872f15db5149a35142e9e1bccd5a3a79a474f70",
+    "native/case-2/encoder-downsample-0-1.f32": "1b040c134bc14cea079e5984e3b79c8226aab6a8cc0a8a140e6c77bdea4b1f33",
+    "native/case-2/encoder-downsample-1-0.f32": "fddef7581f1bfa118b09ec4ab93aeed7494830a5779b77e8879bfa9c452a7101",
+    "native/case-2/encoder-downsample-1-1.f32": "fe46512e7fcdc1b9d7d4d2ee8eb1d37ccb42d3fd99e76f52f8035e1792a2a80e",
+    "native/case-2/encoder-downsample-2-0.f32": "1e609cca722ad412d003b4c88f2805d4c1ac37703ea7beafc6a8ceb4822d5ddf",
+    "native/case-2/encoder-downsample-2-1.f32": "e9c00d78e7976be8af2fe97b5a878b5febf68c65e2202a4007bdb16e4f9290c3",
+    "native/case-2/encoder-downsample-3-0.f32": "21601ff480f8916f554a7de84589958b3339bdf5df8fee8cd0f45fe77ea57fb8",
+    "native/case-2/encoder-downsample-3-1.f32": "f029b55870493e415d88eb08fb2a29387b1ebea3c6220f4ae8c3ac0fb93698f9",
+    "native/case-2/encoder-input-0-0.f32": "09076d9616b8bedf964c27b7509d6eee5ffebbc95b821762c683699fac7d0693",
+    "native/case-2/encoder-input-0-1.f32": "ad55c5bdf1ce64b809c1396bfa86e8a868f829e2d37bf3ff7db29106cc632734",
+    "native/case-2/encoder-latent-0-0.f32": "8e1049fa3192ec945c328060b6f977beedca95044bc6bed997bae110abbe0cf1",
+    "native/case-2/encoder-latent-0-1.f32": "9062e7c27259122b5da5b32663916967e0ff585140264628a7b592aa5d0c5241",
+    "native/case-2/encoder-latent-0-2.f32": "dd18ecc653f063807935cfec6f0518644fccc281208b7c99e172115294a2f765",
+    "native/case-2/encoder-projection-0-0.f32": "55440d1933bbf3800d01a481864473836745745882988034e1a1991b23d0015d",
+    "native/case-2/encoder-projection-0-1.f32": "58e965d0356133f381589be0fc99180bd884e7d5da31b27e28b2a0133c053bf3",
+    "native/case-2/encoder-projection-0-2.f32": "c0d465c4550c44375e8f544c3f6e0e6e75eed209128e1ce993f8074869868d4e",
+    "native/case-2/encoder-projection-1-0.f32": "f38b5b7ee8e8af88d5e3fde4f6479106302958ff518f7c4ad72e1f7e2b83fe96",
+    "native/case-2/encoder-projection-1-1.f32": "d1371606009c007e551596f352b9d96a6880adb67733826a3e6021bf364f6f7c",
+    "native/case-2/encoder-projection-1-2.f32": "8f2695753a8b461df5802c06db91d695dee4a513537322a671d48bea3f37015f",
+    "native/case-2/encoder-residual-0-0.f32": "ef90ea3278586979091ef4bef480c6de079da758fd7bec31369e94521dc30c9b",
+    "native/case-2/encoder-residual-0-1.f32": "2676c24a78b687872862a88faa1dd4af1e2566b581e1d299879d3c561aa8c5a6",
+    "native/case-2/encoder-residual-1-0.f32": "df83ad063a48288698295697e1a9b2b30fd56ff925033d87ea8afc5655c89db0",
+    "native/case-2/encoder-residual-1-1.f32": "47388e7f3b649e9854d981066aabc5b54b5bfa5e3c578ee3c7b2b83b109766ca",
+    "native/case-2/encoder-residual-2-0.f32": "7aab5c7f160f131064399d98b562e78f4412c9bc281fe272202ab8970d4310f3",
+    "native/case-2/encoder-residual-2-1.f32": "fe4ed35367be13a7308f4869b79637eab97e64ff0eb2f49c2746e4ba211d9da1",
+    "native/case-2/encoder-residual-3-0.f32": "206f0c98a7323ff5d206b1b542add2b0b9822269538626796460a6df7e7c3e85",
+    "native/case-2/encoder-residual-3-1.f32": "c4cee1fe3c4f9e355fa137457f401c2e949e37d580f5c6734e654769935cca12",
+    "native/case-2/encoder-rvq-residual-0-0.f32": "2ec1dc6f93a4aa8b1ee7500f8934181fd5a0e7ed60299c984bb8c5c31d2b93b0",
+    "native/case-2/encoder-rvq-residual-0-1.f32": "49006ddbdec887b3763bdc743c04d1618e4e32040537c2e998826fde5adb552b",
+    "native/case-2/encoder-rvq-residual-0-2.f32": "0debbc555fffc982c999d45bb6c93cf8cd664f4d50a596e58a08a3f146fed7a5",
+    "native/case-2/encoder-rvq-residual-1-0.f32": "af9d9109e91d4a0a83b4e4732e9bf39bdb51a4c54707ca4610ef8de714771cd3",
+    "native/case-2/encoder-rvq-residual-1-1.f32": "a459ba2dc9fcd09e3512c599ae85e843f622c6ae9002de023bb0fee7f1088622",
+    "native/case-2/encoder-rvq-residual-1-2.f32": "ce6834f58f96f8f83ca40569b7429bd6f519e1675a35aac6189a77229e52ffb9",
+    "native/case-2/encoder-rvq-residual-10-0.f32": "e8637c57332f99e6f4608afcac818eb68e18c6f8f82d0dccd106e9f9a57e70c7",
+    "native/case-2/encoder-rvq-residual-10-1.f32": "eabdf8a4b31aa60e84f65685e96698d1f108c019fad373c57b49c1868ca053cc",
+    "native/case-2/encoder-rvq-residual-10-2.f32": "a8d0511854efa8ea16fc4024d971a6bfb066fefacc402ef05bb8dba0d06f6f71",
+    "native/case-2/encoder-rvq-residual-11-0.f32": "4cae105665a0e0136c122af1012e9a5c96304ed6e10d7340ce61eb37b5c76350",
+    "native/case-2/encoder-rvq-residual-11-1.f32": "8c1fdc771208c30c73d5667f35645277df0ac4ffef8b4d553f99bf14320cec97",
+    "native/case-2/encoder-rvq-residual-11-2.f32": "b1ba6eeca749f924e43e1675b14c0f6516c1c5c259602be27cdf3dca79b15bcc",
+    "native/case-2/encoder-rvq-residual-12-0.f32": "1360385016137a2e6af5d90e59192888c40d7b00bb1a93e8d5bce657cf8a7168",
+    "native/case-2/encoder-rvq-residual-12-1.f32": "40954012499401be5bc801a87cfdcc1b90ee4951f385b4452eca2995dfe85060",
+    "native/case-2/encoder-rvq-residual-12-2.f32": "b1b3b2f55baa3163f86d63d8efb9c4318f40a69f3209dfea89041ff36a37a6c7",
+    "native/case-2/encoder-rvq-residual-13-0.f32": "ad1b9858d03d6e7f4a3c79ad0a486668d4dcb6bf4a91ed2fb99632f47a456224",
+    "native/case-2/encoder-rvq-residual-13-1.f32": "f6134ef0949b0813b23c3fcb376e607ab9214f713ef7574d3bb5c7c95ce2ff56",
+    "native/case-2/encoder-rvq-residual-13-2.f32": "96e4a1d819b8b63d46e6712e82d437ed7ba8fd565167e4e4813f8d16df320c1b",
+    "native/case-2/encoder-rvq-residual-14-0.f32": "bf051932bbabff4fcdbabfbc55eb87536c65b9a73417e73566f5e99066a23515",
+    "native/case-2/encoder-rvq-residual-14-1.f32": "7fc865538e4a866700daf149af3792400cfb57126d1a6a14e72b7e2834774945",
+    "native/case-2/encoder-rvq-residual-14-2.f32": "79a8d68ab51171eebf74e5be368ec80cb255744c208bd6736dacf346a5a4b072",
+    "native/case-2/encoder-rvq-residual-15-0.f32": "872d7c30ca8ea645dab5d18f387bb5e9530a2126d23534b5bd475bb85f089582",
+    "native/case-2/encoder-rvq-residual-15-1.f32": "dffc9e2166e52f272700d3bb1c9cdcd0f394d2434fe3a6eccf1b6eb0c2480285",
+    "native/case-2/encoder-rvq-residual-15-2.f32": "ee8f891df7e1d73f081b8f5283211f16090953a7a8563ff76d2d3354c1432665",
+    "native/case-2/encoder-rvq-residual-2-0.f32": "4102b72afc1bbf268e83d412717529d47534f998818f5a5159308f025b1abf2e",
+    "native/case-2/encoder-rvq-residual-2-1.f32": "234f7cb50e08057c504de636c8e61afa3de121087a9df43b9f46db72c2483e59",
+    "native/case-2/encoder-rvq-residual-2-2.f32": "edf84ad01a7c2a0aef7eaabfbd8ac2457908d44194eafd01fac762abbdd59a2b",
+    "native/case-2/encoder-rvq-residual-3-0.f32": "7f34ff6f60db7f50e16ec8bd32aa0f70aaedd2eeb56df3cdf2532d131e858e13",
+    "native/case-2/encoder-rvq-residual-3-1.f32": "484c6f4e9c3d4690e374b7e690bf5088f30018a82ccfa6f0922266284669f655",
+    "native/case-2/encoder-rvq-residual-3-2.f32": "7278253b1d9326f89ca0372c693ebcee0bd9362cae24b7e3ed6d7d94a1c8cebe",
+    "native/case-2/encoder-rvq-residual-4-0.f32": "bde4bfa4629d74fde738cb201f5b16c63d1b4b0add7a2c91772656a4c4d7e384",
+    "native/case-2/encoder-rvq-residual-4-1.f32": "b2b5f03b3fd1e85b46d68776937764b711cc3b0ec5ac3de6997fef7e672432b1",
+    "native/case-2/encoder-rvq-residual-4-2.f32": "83312a9151ae0d778548076e0c1b98eb2af3a1aa01991908284bbf0f1faeabc5",
+    "native/case-2/encoder-rvq-residual-5-0.f32": "6f9d925d5d3c0b0b1a78455cb68c9d10945dde6138c9fd12a294fe1d49b91901",
+    "native/case-2/encoder-rvq-residual-5-1.f32": "519ce216654ca58594fa482887b2631622ce244c3ae3f9ab1e8ee8549be4a95c",
+    "native/case-2/encoder-rvq-residual-5-2.f32": "ef7b35f4ac03f319d20570df26618b2f6480b61f59a51d7649c0da23438e2595",
+    "native/case-2/encoder-rvq-residual-6-0.f32": "89918f7fba448fb8a6cbb50346257da68615e5b9446709c6a293384d870b2474",
+    "native/case-2/encoder-rvq-residual-6-1.f32": "8c791b8ad95c3b686fe3c72f1a0f56b81f1ce1346dfd8f2c986712975d966047",
+    "native/case-2/encoder-rvq-residual-6-2.f32": "5523e5dec24de7aeb9ef4b19f2cce1ae410231f8eddfc82eb4f3c9501eb4729e",
+    "native/case-2/encoder-rvq-residual-7-0.f32": "19f6b25fdd237779965fd06b028ebeadd9d1d06fa087f5730618c23da536764d",
+    "native/case-2/encoder-rvq-residual-7-1.f32": "26127ce185c53fe0eca56ba34feac2d1b364e89ca434b0102b6016f911b13f58",
+    "native/case-2/encoder-rvq-residual-7-2.f32": "9eff23f1669136e3a9a020b024218c8fcc73675fcbe0c6387f36cf29d558ee36",
+    "native/case-2/encoder-rvq-residual-8-0.f32": "7c7ed3748c22a6eb3df54a3af01056384ca0d26734acf76ada3d3ac888d8b264",
+    "native/case-2/encoder-rvq-residual-8-1.f32": "3582d426b587d96dd63092be5a1d79a81e3a40f20f420dc562b41f9dfc985d57",
+    "native/case-2/encoder-rvq-residual-8-2.f32": "1dc2258cd9ef0de0c3ae9ac41122e8c99c908dfe884d4793519f02d7f020b424",
+    "native/case-2/encoder-rvq-residual-9-0.f32": "fd6b3cc8cfcb2bc166c34d89ade672971eb840816c219272e7492a6ab0506621",
+    "native/case-2/encoder-rvq-residual-9-1.f32": "44fcf3bf8311c280707697d1761bbf1bd185cfc662b88b9026a79d5ec56f9cbd",
+    "native/case-2/encoder-rvq-residual-9-2.f32": "bccbfd3e85b242f9d31bb0b0112294331ce18080ba3f5888e7eb22b6759582c4",
+    "native/case-2/encoder-seanet-0-0.f32": "e25e2202c1dbad391019167bc8e02fd293ee896d2a49dca25b03b8bd681fce1f",
+    "native/case-2/encoder-seanet-0-1.f32": "183cb37a186ae9782ce4184b114334c95ec6a6d037726803bca1a9f1ca2d2904",
+    "native/case-2/encoder-transformer-0-0.f32": "d7c4f2bb0876464cfc0a22156d6af2beadc309028dca1053001d51a07036432f",
+    "native/case-2/encoder-transformer-0-1.f32": "5f83763433729531dd40788312db139bcf6fed854ef87d4ea9c580574c0558d7",
+    "native/case-2/encoder-transformer-1-0.f32": "f3461f7d49765cc8ecc6e19a3d0b6056d41951c99858ce9a27af3acf6b40e7db",
+    "native/case-2/encoder-transformer-1-1.f32": "10b01de1225e705bd634ad5285f3cb06c37d282e60e1b84af6caaa2e80bb5753",
+    "native/case-2/encoder-transformer-2-0.f32": "6a6fc8e167e04931afc490ea1a0e18db32703aa5a5b1d2a82fd716371f81e5c4",
+    "native/case-2/encoder-transformer-2-1.f32": "8e5b8ec780e2894341d890009daad723ab6f75328ba50562155b58f8f13619a1",
+    "native/case-2/encoder-transformer-3-0.f32": "c792c55b7e3cbac532f6705012e2f6d4bcdda6ffe03fb083cf24e8bf8e5d4366",
+    "native/case-2/encoder-transformer-3-1.f32": "483295cd4e5647a1b86e2b2a7ed9dc48d6101a4fcb6bd0d0a1e983cc1aaee783",
+    "native/case-2/encoder-transformer-4-0.f32": "97a95d1c146e78c9bb7b26ef1026807be2dacfcd33ba01228d9562ab5dcc298e",
+    "native/case-2/encoder-transformer-4-1.f32": "b0adaf0df412e497dad9745b9f75378fe7a244d8d55fc413b522762d6322bf90",
+    "native/case-2/encoder-transformer-5-0.f32": "374c2217302c2d7b7d140a4b082734a3dd78c9a23cd460748c0f8dc137adf679",
+    "native/case-2/encoder-transformer-5-1.f32": "ee2e46afcefcc7c7a53778c394851ffab2dbc3a022605e5fb4daeb215c774fab",
+    "native/case-2/encoder-transformer-6-0.f32": "d86c74c93446665acb2e192468c16b68ac3c72d4c93b9a81fb3b276e29278185",
+    "native/case-2/encoder-transformer-6-1.f32": "de968b877eeb14f0c166c1c05a6b89c7f8302481f9969e6369c940283ce6c409",
+    "native/case-2/encoder-transformer-7-0.f32": "5bd908b936a490da8d42dd4fb77fb9a7348dbfb44f27bff0e6ddfb1f1c87afff",
+    "native/case-2/encoder-transformer-7-1.f32": "cc5c1f5dd11791a0216e5103620315428e575a5a7fdc966a022503ae50874d96",
+    "native/case-2/result.json": "24ca4bf6bf883c0279b66fde17388a571dc04cc4b93cbb20cb4bb7e234386593",
+    "native/result.json": "b09cf5ae8a735fea784693014231a438432b39b60afb5103b87287de6f2056fe",
+    "native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reference/case-2/codes.i32": "f50ed3a5976f675bf9c2a307ab21cf5ce341b1008ecd639dbf26b11223951a63",
+    "reference/case-2/encoder-downsample-0-0.f32": "2c972d1b6bdd9e8bf52dc1988764d3b2d58eecb6a0946e9f947c0c34708a416e",
+    "reference/case-2/encoder-downsample-0-1.f32": "cf6f22e224291b668b503fce4d565c053af6042c1d2279c85063c5889730bed1",
+    "reference/case-2/encoder-downsample-1-0.f32": "c2011fe5783904498215f0ec6a9696040f53480a618dce92d1d9265a336a42d8",
+    "reference/case-2/encoder-downsample-1-1.f32": "6603d6fd4b99724d089df491b7fb143d3d2f72341747c7d8b6d63c89c3360b49",
+    "reference/case-2/encoder-downsample-2-0.f32": "1c00351286c4021348b664c28291a8fce08bed3ccd6be8db3a0b618bc038468f",
+    "reference/case-2/encoder-downsample-2-1.f32": "e4d4e6b3b0c1b398d7f1da0d9b41f81fdc4a24d1624aa91d473a192a644139da",
+    "reference/case-2/encoder-downsample-3-0.f32": "c1ff4c0de1700437eb331ff22572867e7c023786a1ac982d73d9e4dea47cad31",
+    "reference/case-2/encoder-downsample-3-1.f32": "c5eb53d19a423d1c4088848d0fdde075a9ea28069e86638bba7d30eb1998a5c9",
+    "reference/case-2/encoder-input-0-0.f32": "c0417b2de1166cf429a43886ce3f6610cd2975f577fd919930f7b6f6307188e4",
+    "reference/case-2/encoder-input-0-1.f32": "ad55c5bdf1ce64b809c1396bfa86e8a868f829e2d37bf3ff7db29106cc632734",
+    "reference/case-2/encoder-latent-0-0.f32": "1842a847c4d600425b80c3fadd9606462a4c65e0af8f6eaa2dddc92941ece908",
+    "reference/case-2/encoder-latent-0-1.f32": "e44814849ee037af6c3da047d25e64e26a16afcca98217bc2ef1e649d0a1cb74",
+    "reference/case-2/encoder-latent-0-2.f32": "2488ba47e809d7ec7acff1e8b7c2d63d4edbeeffff150ca5ef2fe96b4466c942",
+    "reference/case-2/encoder-projection-0-0.f32": "e53bfce38e900b96b5dc44d149c7aed5937c41f675b9688e6d6d67342bd0f8e5",
+    "reference/case-2/encoder-projection-0-1.f32": "6b9e830646de339f9fc58ae48e07073b090c526dd2484399f390f297dd0ade8d",
+    "reference/case-2/encoder-projection-0-2.f32": "cb5c7e0acdfe977cc2ff906e7dda18a02cce4ce7786c6303e67a681f182cc13e",
+    "reference/case-2/encoder-projection-1-0.f32": "768d50d0f3e08793d28c6ab3a767aafbc46bc526edd5ae673c2ee6a0fcca44c8",
+    "reference/case-2/encoder-projection-1-1.f32": "f7ba74ae8f412202f851adf60ea81748517bdd50610bea928905a5a288b99b4d",
+    "reference/case-2/encoder-projection-1-2.f32": "c376e7c00799caadda0a44d0246cadde1ed812601b7a9342bf3c548a3314df2f",
+    "reference/case-2/encoder-residual-0-0.f32": "659b3b9a2839ae0dfcdce37dec1535f06b60163b9510be4439fce7af3e4e85e1",
+    "reference/case-2/encoder-residual-0-1.f32": "dd5af2440487ce77415a21f43c13237d92adcd408c032d26846b1e278fed968b",
+    "reference/case-2/encoder-residual-1-0.f32": "5c472f196ff6560ca4bc00ed089ac35f4e9f304ac5e7852e31479c909cd84910",
+    "reference/case-2/encoder-residual-1-1.f32": "932deac8f1d00f8346bf7d5672c1e468d67279c9fcfb37b82eb900b67b95a988",
+    "reference/case-2/encoder-residual-2-0.f32": "398778546cabacf91257ac0fd30468162b1d9f48e53610090a317b4547622b04",
+    "reference/case-2/encoder-residual-2-1.f32": "2cb7179dd7237f649f0482a063a7876c48e4e5bf2ecd30eb37e723f7e2dd16a5",
+    "reference/case-2/encoder-residual-3-0.f32": "f11224b0b300556d50cbac419a03fc8104d8ec7e31dd53403fdcc3805e785058",
+    "reference/case-2/encoder-residual-3-1.f32": "4a15a505fd78cff18b323edda5d8dbfa0b0227b32843820ba08ae8e6862ee235",
+    "reference/case-2/encoder-rvq-residual-0-0.f32": "d8b62ad35d17ea40962d7a65ce919c1ebb35b1d21bf676d06de76f77d9c4be2a",
+    "reference/case-2/encoder-rvq-residual-0-1.f32": "609cb4cf739720c3c2ed3845cbaaa23007f21b4fa4ee2ec1eda86a0376c70d81",
+    "reference/case-2/encoder-rvq-residual-0-2.f32": "f1e7b7fdca68b10727f265b1691f8e3e141228ed9e359fe873a432b9eca12223",
+    "reference/case-2/encoder-rvq-residual-1-0.f32": "37e3b7b0f427a12afbac99421b673d1adede3f622888b85f885e91dfa1f29a58",
+    "reference/case-2/encoder-rvq-residual-1-1.f32": "d3dddb4a303d7dd50fff1edcc9dd724b89a0fcec94c7617ceeb2db922e510c21",
+    "reference/case-2/encoder-rvq-residual-1-2.f32": "53327d3935ad76250d13b21294d96656ee20bde88a49aba3ddc19cc129c67892",
+    "reference/case-2/encoder-rvq-residual-10-0.f32": "29a5015d12b89378749f0e39650a0edf4b10121bd695f5f5ca2bca561337bf0a",
+    "reference/case-2/encoder-rvq-residual-10-1.f32": "7a78786f4478a9ba000418effc47eb65aa908cd86d7fe3a717f162ddde7cec33",
+    "reference/case-2/encoder-rvq-residual-10-2.f32": "daa3aee10a795acf7294503d765c555fa2c3f949b30141fab86d150dfc7d6eef",
+    "reference/case-2/encoder-rvq-residual-11-0.f32": "ccdabf84e0c2796ad42b676eceb00200b4547057bee7897b3e4080aa1c633f09",
+    "reference/case-2/encoder-rvq-residual-11-1.f32": "ffd2ba3c7cfca1b6833818a6b6a7800e646fa5cbd6de82a021860ba6fe07aab8",
+    "reference/case-2/encoder-rvq-residual-11-2.f32": "cba862c5018f26678d4a4eaef803438c9d7dca44924d5437de91fb4da17d404d",
+    "reference/case-2/encoder-rvq-residual-12-0.f32": "a77dc060c7e768fabc06af8b802c0bb561e4588ef5dee2e5dc2a6d5f3ae8efc8",
+    "reference/case-2/encoder-rvq-residual-12-1.f32": "f7a7508867ec82e7a706b0a6d161693a78cfedb8dfcd0050188908da257a4a39",
+    "reference/case-2/encoder-rvq-residual-12-2.f32": "95159e9539116f369ca93c54194b14691f33156cadd2d2363044db10428bacfb",
+    "reference/case-2/encoder-rvq-residual-13-0.f32": "9ba05d9faf047a13fefcd59816fd2b8d7cd3188136fd2d735fa178785c1816ff",
+    "reference/case-2/encoder-rvq-residual-13-1.f32": "bb7dcd3727324f64ef021f74042628eefbbb0d99c93a56736a83ab49afaaedc9",
+    "reference/case-2/encoder-rvq-residual-13-2.f32": "f9dca4795fd413de9e30647cdade1956602fb82464a456cf7462c91f50d60730",
+    "reference/case-2/encoder-rvq-residual-14-0.f32": "49942b320de36cf0cca134fbf45baa2f706c10c7f1d814c74f1c284f354d2ded",
+    "reference/case-2/encoder-rvq-residual-14-1.f32": "332a3d9db1b0a83b9d95a658db54e74bfb0e1bb38092ae11105e7e9182677cd0",
+    "reference/case-2/encoder-rvq-residual-14-2.f32": "2d879f7e6abce3e5dd24dbf766eb8f8f16a5e6792c0df34cb0ad9de56481641d",
+    "reference/case-2/encoder-rvq-residual-15-0.f32": "a003e34d1620908cb42d03c47e5e9e4d1907aab02821d87bb532ca1190405e44",
+    "reference/case-2/encoder-rvq-residual-15-1.f32": "f8139c637019e6389e9f4f919c7f178054a0da40b27ca1f3ced2f6c5361207b9",
+    "reference/case-2/encoder-rvq-residual-15-2.f32": "08905723366ae23bbb1cba8867827be50f15e283699a4db597f61c7f42213615",
+    "reference/case-2/encoder-rvq-residual-2-0.f32": "84a2db0ff9a549f83b149dfcaa57f59a2cf72c481dc10a82fa3c93851fd69543",
+    "reference/case-2/encoder-rvq-residual-2-1.f32": "fe1d50ed2b2fe15238cb9a1e80030ac443880abd834e7996da6f7e1104f46cd6",
+    "reference/case-2/encoder-rvq-residual-2-2.f32": "40b9479c28dcd7e765b727417eb62b26536b4d3f6fadbfcc4b585f40ef973325",
+    "reference/case-2/encoder-rvq-residual-3-0.f32": "6ee854e67919fced8460d3b6d3b91b9a51387966857c044078ecafea285e7823",
+    "reference/case-2/encoder-rvq-residual-3-1.f32": "35d36b28cc93ba610aeb1ed28e2e578dc8975f5782ef5efe0267e8552845cea0",
+    "reference/case-2/encoder-rvq-residual-3-2.f32": "fee7acfe28e0332197ea0e99c30773a682fea9658f816896b9b6805569d86b03",
+    "reference/case-2/encoder-rvq-residual-4-0.f32": "03b030d96b7a3208da24f61d51ae5e33fe52bc0a33d2625dd61d919848afc016",
+    "reference/case-2/encoder-rvq-residual-4-1.f32": "8c668ecb59a5b375237100250e71ac6ae7bdc9c4bfeecf3983d606d6a7b525c9",
+    "reference/case-2/encoder-rvq-residual-4-2.f32": "530bc02fcfda7c0e078389ba235b83a42d4f53cdb3b84a880135e3e5b2211582",
+    "reference/case-2/encoder-rvq-residual-5-0.f32": "5d6a2e11fa12816a054053ffa0e425ffa54fe53b9560199820ef8f12aaebf40e",
+    "reference/case-2/encoder-rvq-residual-5-1.f32": "afdcf8a117266d485b43e83e173c15124fb0bf8303de18f6215202dfa0d5d445",
+    "reference/case-2/encoder-rvq-residual-5-2.f32": "e44df9d85ed134d1b7f0985fd13529db31981b7e3fb117ada87502f943860eff",
+    "reference/case-2/encoder-rvq-residual-6-0.f32": "201c93f148b6bd95e382b84ca4330b297c1d440cf2db301a69815c8c3975f155",
+    "reference/case-2/encoder-rvq-residual-6-1.f32": "880233ddbbe64f59745f79fdc6c4a6ada8361860f32992d2efadf0518d7825bf",
+    "reference/case-2/encoder-rvq-residual-6-2.f32": "78b6a9ed26093649891455ce1aadf7d82909011d94abd4ec956a462c7fa5ba66",
+    "reference/case-2/encoder-rvq-residual-7-0.f32": "40ed6d90deac7b05194b3744324c73fced691edcd53357178c412ce7238d3f86",
+    "reference/case-2/encoder-rvq-residual-7-1.f32": "978a3ecd33b97490bff482e70ab917452cb53bd833c411ed13fceffbc6f86046",
+    "reference/case-2/encoder-rvq-residual-7-2.f32": "4b55106dce93ec8ceccc2e2296e5469a3dc1d577c271ab3f410a09c3a4d27938",
+    "reference/case-2/encoder-rvq-residual-8-0.f32": "3cab60dd992dfb9039b45496e7fdccdd467ef063b47b2f0efdabed9eee6de4f5",
+    "reference/case-2/encoder-rvq-residual-8-1.f32": "5ea3c97afa013bf7ddbd26d3e8bbefbb7d26c1b52c75b892537a3057816dc724",
+    "reference/case-2/encoder-rvq-residual-8-2.f32": "11002033f251e3bd20913ab052e225e708f9dcd9d01ad0fe0b814434381a830d",
+    "reference/case-2/encoder-rvq-residual-9-0.f32": "21fad208c78c3b6d200b441c78de28e3864256d2a5cc0d7fc0ff9bb23d7732f9",
+    "reference/case-2/encoder-rvq-residual-9-1.f32": "9e2f434af41bc59fdfecddec4cd90a39e710c5e2f295347e2c35bf076aae783a",
+    "reference/case-2/encoder-rvq-residual-9-2.f32": "f37516ab5f9a012ce2371d3fd033545e80a62bab2a4667cf55184fa9abc09e77",
+    "reference/case-2/encoder-seanet-0-0.f32": "ec81fd4fa5f388f064abc31bfede89f5c351e8904a13adbc91cc7b81fd12c9a5",
+    "reference/case-2/encoder-seanet-0-1.f32": "9378937419dbecb13ea33721ded89d390d9903177b4de5af2744961899d1bda3",
+    "reference/case-2/encoder-transformer-0-0.f32": "0cb7f5c38f59148338105502d19d4f33b187f6e14572bd9a7ca584c93cb6ed4a",
+    "reference/case-2/encoder-transformer-0-1.f32": "0b4994fea6fecb0401815d3b5c5406bf024004c62e0b31bd4105552f163c3e42",
+    "reference/case-2/encoder-transformer-1-0.f32": "fcbd1ab6b07e310fd85352fe9c62d019b8a4996760f663f6bf9af25504f7fee7",
+    "reference/case-2/encoder-transformer-1-1.f32": "588e06eb9cbeaabf2a7a3d666f9800d10e6142c29aed7d87159b988f7fc6535e",
+    "reference/case-2/encoder-transformer-2-0.f32": "af49520ea4fe6d6af53a94f39734d7fb6eb9825603bf878784e119b39b217aeb",
+    "reference/case-2/encoder-transformer-2-1.f32": "37bed91eb5a76f096e1d02b28f9bc91b5d1eb2639279f386c6ab33d94742ccf1",
+    "reference/case-2/encoder-transformer-3-0.f32": "8224023fefd54e5c94a72fcc817c5b31433c7e46c15ed62265db32d97a670afd",
+    "reference/case-2/encoder-transformer-3-1.f32": "2d18848560151a6361a8fbe04a79f50da5af23752e4f3332cc8d22b33358e8da",
+    "reference/case-2/encoder-transformer-4-0.f32": "8e6915a9bcc0a52d9d7cd59992184bb8a263e56b21e02535d921cba24d408273",
+    "reference/case-2/encoder-transformer-4-1.f32": "b49501d319395cc72b45f7c0fe55f700cc0f9deefbfb841ee1e0ee22b49b2d9f",
+    "reference/case-2/encoder-transformer-5-0.f32": "b301e1e9f5a3d620384904d854829a00c5bea1dc04e006a40e25a6ce1085fab0",
+    "reference/case-2/encoder-transformer-5-1.f32": "b26954fd28f1c77bef516b75e67a3c63d56d292fd685da576a44e47d7a626e18",
+    "reference/case-2/encoder-transformer-6-0.f32": "99c40a92bb0bc0acaaa3881ae2fab30704e1ddb07c14bdc9f96096b866134b63",
+    "reference/case-2/encoder-transformer-6-1.f32": "a92ab2ae0054a077487b0bcdf1c2fdf73a752f44c3b03a394e52cbfcc79ec157",
+    "reference/case-2/encoder-transformer-7-0.f32": "665fac084ed5c637f2539d47c83fba3f71c5e80eb37dffc93ecc661ce724ca1c",
+    "reference/case-2/encoder-transformer-7-1.f32": "af5466705ada2a2b44d2775181fbee283646b4cacda02afafa7c6c028e1f53f3",
+    "reference/case-2/result.json": "177e25930a2fff8d8237227c0faa8ba15b227f95c92e4e738d02853f5172cb95",
+    "reference/result.json": "d77a420f67d7a69927a6194a209ab3b1de48eff822744a5cb29e82da6880e0dc",
+    "reference.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

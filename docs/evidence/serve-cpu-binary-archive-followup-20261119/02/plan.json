@@ -1,0 +1,51 @@
+{
+  "scope": "Only the 4 remaining closed CPU payloads from archive-01 original plan; source/runtime/model/default/evidence records retained",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/audio-export-cpu-01/q4t_host_tests",
+      "member": "7100d2c0093d3c02f8827ec1c15e05aa6bc19c25deb24812aa83c6d36cf6de2f",
+      "sha256": "7100d2c0093d3c02f8827ec1c15e05aa6bc19c25deb24812aa83c6d36cf6de2f",
+      "bytes": 39695744,
+      "mode": 509,
+      "mtime_ns": 1795059200387403565,
+      "inode": 8035852,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/input-usage-cpu-01/q4t_host_tests-before",
+      "member": "7100d2c0093d3c02f8827ec1c15e05aa6bc19c25deb24812aa83c6d36cf6de2f",
+      "sha256": "7100d2c0093d3c02f8827ec1c15e05aa6bc19c25deb24812aa83c6d36cf6de2f",
+      "bytes": 39695744,
+      "mode": 509,
+      "mtime_ns": 1795059200387403565,
+      "inode": 8035852,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-cpu-01/q4t_host_tests",
+      "member": "a9609c61aa048354cae314b8f197372a52338c22dcf15d45038f52f992ad1b8b",
+      "sha256": "a9609c61aa048354cae314b8f197372a52338c22dcf15d45038f52f992ad1b8b",
+      "bytes": 39297024,
+      "mode": 509,
+      "mtime_ns": 1795051493542645297,
+      "inode": 8035820,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-fix-01/q4t_host_tests-diagnosis",
+      "member": "fda06d063162e3eb6a4a8733a4ce6eb4c91b5c52757839a2c20e62a2ead0ada5",
+      "sha256": "fda06d063162e3eb6a4a8733a4ce6eb4c91b5c52757839a2c20e62a2ead0ada5",
+      "bytes": 39296624,
+      "mode": 509,
+      "mtime_ns": 1795051825748772842,
+      "inode": 8016030,
+      "links": 1
+    }
+  ],
+  "unique_payloads": 3,
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 94371840,
+  "previous_plan_sha256": "9d6f8b80d41091e0a1239345edb370dc2b070aedd05eab83026b0c8b9b910284",
+  "retained_unarchived_payloads": 1,
+  "original_plan_sha256": "497b20a53cc895594d51667357160bda49c4e78dc7f831a5093fe7135ed108b2"
+}

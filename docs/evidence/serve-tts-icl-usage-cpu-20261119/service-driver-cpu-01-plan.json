@@ -1,0 +1,10 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "tests": 6,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_tts/icl_service_acceptance.py": "1b4c9e905eb0c2c24a44d3633328cc6e94dd0780b9bbe4a5052db96a5653214c",
+    "tools/native_tts/test_icl_service_acceptance.py": "efd8bffa297ec550964644650ff3fffd81f260c8bd1011ed8dfb9470da755384"
+  }
+}

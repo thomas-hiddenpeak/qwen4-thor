@@ -66,6 +66,7 @@ inline bool Protected(std::string_view name) {
     if (name == field) return true;
   return name == "x-tunnel-client-instance-id" ||
          name == "x-tunnel-shard-token" || name.starts_with("x-q4t-") ||
+         name.starts_with("sec-websocket-") ||
          name.starts_with("x-forwarded-") ||
          name.starts_with("access-control-");
 }

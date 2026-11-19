@@ -1,0 +1,19 @@
+test_acoustic_reset_cannot_inherit_semantic_branch_permission (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_acoustic_reset_cannot_inherit_semantic_branch_permission) ... ok
+test_all_centroids_are_checked_not_only_reported_top_two (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_all_centroids_are_checked_not_only_reported_top_two) ... ok
+test_ambiguous_midpoint_and_duplicate_centroids_do_not_pass (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_ambiguous_midpoint_and_duplicate_centroids_do_not_pass) ... ok
+test_changed_or_incomplete_artifacts_cannot_be_reused (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_changed_or_incomplete_artifacts_cannot_be_reused) ... ok
+test_classifier_never_changes_input_codes_or_operands (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_classifier_never_changes_input_codes_or_operands) ... ok
+test_different_frames_require_their_own_complete_trace (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_different_frames_require_their_own_complete_trace) ... ok
+test_exact_nearest_requires_no_exception_to_code_equality (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_exact_nearest_requires_no_exception_to_code_equality) ... ok
+test_exact_zero_and_opposite_vectors_keep_original_float_gate (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_exact_zero_and_opposite_vectors_keep_original_float_gate) ... ok
+test_large_correct_nearest_change_fails_original_float_gate (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_large_correct_nearest_change_fails_original_float_gate) ... ok
+test_later_non_nearest_is_not_excused_by_valid_prior_branch (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_later_non_nearest_is_not_excused_by_valid_prior_branch) ... ok
+test_nonfinite_and_wrong_shape_or_dtype_are_rejected (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_nonfinite_and_wrong_shape_or_dtype_are_rejected) ... ok
+test_single_bit_residual_corruption_is_rejected (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_single_bit_residual_corruption_is_rejected) ... ok
+test_small_crossing_and_causal_residual_are_separately_proved (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_small_crossing_and_causal_residual_are_separately_proved) ... ok
+test_wrong_nearest_code_cannot_hide_behind_small_input_error (tools.native_tts.test_encoder_boundary.EncoderBoundaryTests.test_wrong_nearest_code_cannot_hide_behind_small_input_error) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.007s
+
+OK

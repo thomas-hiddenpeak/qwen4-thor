@@ -398,3 +398,232 @@ Q4T_TEST(voice_registry_uncertain_staging_keeps_ids_without_replaying) {
   Q4T_CHECK(store.Health().workers_started == 2);
   return true;
 }
+
+namespace {
+VoiceSampleEvidence ReferenceEvidence(std::string_view bytes,
+                                      size_t samples = 3841) {
+  auto result = Evidence(bytes);
+  result.reference_samples = samples;
+  result.duration_ns = samples * 1000000000ULL / 24000;
+  result.reference_codes.resize((samples + 1919) / 1920);
+  for (size_t i = 0; i < result.reference_codes.size(); ++i)
+    for (size_t group = 0; group < 16; ++group)
+      result.reference_codes[i][group] = (i * 37 + group * 61) % 2048;
+  return result;
+}
+bool BindNewConsent(VoiceRegistry& registry, VoiceConsentBinding* out) {
+  const auto consent = Create(registry);
+  return Ok(consent) &&
+         Ok(registry.BindConsent(consent.value.GetString("id"), Access(), out));
+}
+q4t::io::Json* Mutable(q4t::io::Json& value, const std::string& key) {
+  for (auto& [name, field] : value.object)
+    if (name == key) return &field;
+  throw std::runtime_error("voice fixture missing field");
+}
+void SetNumber(q4t::io::Json* out, double number) {
+  // A parsed number retains its original spelling; replace both forms.
+  *out = {};
+  out->type = q4t::io::Json::Type::kNumber;
+  out->number = number;
+}
+ObjectReply Replace(ObjectStore& store, const std::string& id,
+                    const q4t::io::Json& data) {
+  const auto saved = Stored(store, ObjectKind::kVoice, id);
+  if (!saved.ok()) return saved;
+  ObjectRequest request;
+  request.operation = ObjectOperation::kPut;
+  request.kind = ObjectKind::kVoice;
+  request.scope = Access().scope;
+  request.id = id;
+  request.expected_revision = saved.value.GetInt("revision");
+  request.data = data;
+  request.ttl_seconds = 0;
+  return store.Execute(request, Access().deadline);
+}
+}  // namespace
+
+Q4T_TEST(
+    voice_icl_persists_exact_reference_with_legacy_vector_and_private_metadata) {
+  Fixture f;
+  std::string id;
+  const auto expected = ReferenceEvidence("fixture sample");
+  {
+    ObjectStore store(f.options);
+    VoiceRegistry registry(store);
+    VoiceConsentBinding consent;
+    Q4T_CHECK(BindNewConsent(registry, &consent));
+    const auto request = Sample(consent.id);
+    const auto created =
+        registry.CreateSampleVoice(request, expected, consent, Access());
+    Q4T_CHECK(Ok(created) && created.value.object.size() == 5 &&
+              !created.value.Find("reference") &&
+              !created.value.Find("condition"));
+    id = created.value.GetString("id");
+    const auto record = Stored(store, ObjectKind::kVoice, id);
+    Q4T_CHECK(Ok(record));
+    const auto* data = record.value.Find("data");
+    Q4T_CHECK(data->GetString("format") == "q4t.voice.v1" &&
+              data->GetArray("condition")->array.size() == 2048);
+    const auto* reference = data->Find("reference");
+    Q4T_CHECK(reference &&
+              reference->GetString("format") == "q4t.tts-reference.v1" &&
+              reference->GetInt("sample_rate") == 24000 &&
+              reference->GetInt("samples") == 3841 &&
+              reference->GetArray("codes")->array.size() == 3);
+  }
+  ObjectStore reopened(f.options);
+  VoiceRegistry registry(reopened);
+  VoiceSynthesisBinding result;
+  Q4T_CHECK(Ok(registry.Resolve(id, Access(), &result)));
+  Q4T_CHECK(result.reference_codes == expected.reference_codes &&
+            result.reference_samples == 3841 &&
+            result.reference_transcript == expected.transcript &&
+            result.condition == expected.condition);
+  return true;
+}
+
+Q4T_TEST(voice_icl_absent_reference_keeps_existing_xvector_records) {
+  Fixture f;
+  ObjectStore store(f.options);
+  VoiceRegistry registry(store);
+  VoiceConsentBinding consent;
+  Q4T_CHECK(BindNewConsent(registry, &consent));
+  const auto request = Sample(consent.id);
+  const auto expected = Evidence(request.audio_sample.bytes);
+  const auto created =
+      registry.CreateSampleVoice(request, expected, consent, Access());
+  Q4T_CHECK(Ok(created));
+  VoiceSynthesisBinding result;
+  result.reference_codes = ReferenceEvidence("fixture").reference_codes;
+  result.reference_samples = 3841;
+  result.reference_transcript = "previous request";
+  Q4T_CHECK(
+      Ok(registry.Resolve(created.value.GetString("id"), Access(), &result)));
+  Q4T_CHECK(result.reference_codes.empty() && !result.reference_samples &&
+            result.reference_transcript.empty() &&
+            result.condition == expected.condition);
+  return true;
+}
+
+Q4T_TEST(
+    voice_icl_invalid_encoder_evidence_never_publishes_or_changes_consent) {
+  Fixture f;
+  ObjectStore store(f.options);
+  VoiceRegistry registry(store);
+  VoiceConsentBinding consent;
+  Q4T_CHECK(BindNewConsent(registry, &consent));
+  const auto request = Sample(consent.id);
+  for (int mutation = 0; mutation < 7; ++mutation) {
+    auto evidence = ReferenceEvidence(request.audio_sample.bytes);
+    if (mutation == 0) evidence.reference_samples = 0;
+    if (mutation == 1) evidence.reference_samples = 1440001;
+    if (mutation == 2) evidence.reference_codes.pop_back();
+    if (mutation == 3) evidence.reference_codes[0][15] = 2048;
+    if (mutation == 4) evidence.reference_codes[2][15] = -1;
+    if (mutation == 5) evidence.duration_ns += 1;
+    if (mutation == 6) evidence.reference_codes.clear();
+    const auto result =
+        registry.CreateSampleVoice(request, evidence, consent, Access());
+    Q4T_CHECK(result.http_status == 400 &&
+              result.code == "invalid_voice_evidence");
+  }
+  const auto saved = Stored(store, ObjectKind::kVoiceConsent, consent.id);
+  Q4T_CHECK(Ok(saved) && saved.value.GetInt("revision") == consent.revision);
+  ObjectRequest list;
+  list.operation = ObjectOperation::kList;
+  list.kind = ObjectKind::kVoice;
+  list.scope = Access().scope;
+  const auto result = store.Execute(list, Access().deadline);
+  Q4T_CHECK(Ok(result) && result.value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    voice_icl_malformed_saved_reference_fails_locally_without_silent_downgrade) {
+  Fixture f;
+  ObjectStore store(f.options);
+  VoiceRegistry registry(store);
+  VoiceConsentBinding consent;
+  Q4T_CHECK(BindNewConsent(registry, &consent));
+  const auto request = Sample(consent.id);
+  const auto created = registry.CreateSampleVoice(
+      request, ReferenceEvidence(request.audio_sample.bytes), consent,
+      Access());
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  const auto saved = Stored(store, ObjectKind::kVoice, id);
+  Q4T_CHECK(Ok(saved));
+  const auto data = *saved.value.Find("data");
+  for (int mutation = 0; mutation < 10; ++mutation) {
+    auto bad = data;
+    auto* reference = Mutable(bad, "reference");
+    if (mutation == 0) *reference = {};
+    if (mutation == 1) Mutable(*reference, "format")->str = "unknown";
+    if (mutation == 2) Mutable(*reference, "codec_sha256")->str[0] = '0';
+    if (mutation == 3) SetNumber(Mutable(*reference, "sample_rate"), 16000);
+    if (mutation == 4) SetNumber(Mutable(*reference, "samples"), 3841.5);
+    if (mutation == 5) Mutable(*reference, "codes")->array[0].array.pop_back();
+    if (mutation == 6)
+      SetNumber(&Mutable(*reference, "codes")->array[0].array[15], 2048);
+    if (mutation == 7)
+      SetNumber(&Mutable(*reference, "codes")->array[0].array[15], .5);
+    if (mutation == 8) Mutable(*reference, "codes")->array.clear();
+    if (mutation == 9)
+      SetNumber(Mutable(bad, "duration_ns"), data.GetNumber("duration_ns") + 1);
+    Q4T_CHECK(Ok(Replace(store, id, bad)));
+    VoiceSynthesisBinding out;
+    out.id = "unchanged";
+    const auto reply = registry.Resolve(id, Access(), &out);
+    if (reply.code != "voice_state_invalid")
+      std::fprintf(stderr, "reference mutation %d: %d %s\n", mutation,
+                   reply.http_status, reply.code.c_str());
+    Q4T_CHECK(reply.http_status == 503 && reply.code == "voice_state_invalid");
+    Q4T_CHECK(out.id == "unchanged" && out.reference_codes.empty());
+    Q4T_CHECK(Ok(registry.RetrieveConsent(consent.id, Access())));
+  }
+  Q4T_CHECK(Ok(registry.DeleteVoice(id, Access())));
+  return true;
+}
+
+Q4T_TEST(voice_icl_keeps_owner_isolation_revocation_and_owned_condition) {
+  Fixture f;
+  ObjectStore store(f.options);
+  VoiceRegistry registry(store);
+  VoiceConsentBinding consent;
+  Q4T_CHECK(BindNewConsent(registry, &consent));
+  const auto request = Sample(consent.id);
+  const auto expected = ReferenceEvidence(request.audio_sample.bytes);
+  const auto created =
+      registry.CreateSampleVoice(request, expected, consent, Access());
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  VoiceSynthesisBinding out;
+  Q4T_CHECK(registry.Resolve(id, Access("other"), &out).http_status == 404);
+  Q4T_CHECK(out.reference_codes.empty());
+  Q4T_CHECK(Ok(registry.Resolve(id, Access(), &out)));
+  Q4T_CHECK(Ok(registry.DeleteConsent(consent.id, Access())));
+  Q4T_CHECK(registry.Resolve(id, Access(), &out).http_status == 404);
+  Q4T_CHECK(out.reference_codes == expected.reference_codes &&
+            out.reference_transcript == expected.transcript);
+  return true;
+}
+
+Q4T_TEST(voice_icl_full_minute_reference_roundtrips_without_dropping_groups) {
+  Fixture f;
+  ObjectStore store(f.options);
+  VoiceRegistry registry(store);
+  VoiceConsentBinding consent;
+  Q4T_CHECK(BindNewConsent(registry, &consent));
+  const auto request = Sample(consent.id);
+  const auto expected = ReferenceEvidence(request.audio_sample.bytes, 1440000);
+  const auto created =
+      registry.CreateSampleVoice(request, expected, consent, Access());
+  Q4T_CHECK(Ok(created));
+  VoiceSynthesisBinding out;
+  Q4T_CHECK(
+      Ok(registry.Resolve(created.value.GetString("id"), Access(), &out)));
+  Q4T_CHECK(out.reference_codes.size() == 750 &&
+            out.reference_codes == expected.reference_codes);
+  return true;
+}

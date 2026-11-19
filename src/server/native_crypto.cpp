@@ -10,6 +10,8 @@
 #include <openssl/crypto.h>
 #include <openssl/evp.h>
 
+#include "q4t/io/base64.h"
+
 namespace q4t::server {
 namespace {
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
@@ -206,6 +208,55 @@ CryptoResult CryptoMd5::Finish(std::string* hex) {
   }
   *hex = std::move(result);
   return CryptoResult::kOk;
+}
+
+CryptoResult CryptoWebSocketAccept(std::string_view key, std::string* accept) {
+  if (!accept || key.size() != 24 || key.substr(22) != "==")
+    return CryptoResult::kInvalid;
+  for (size_t i = 0; i < 22; ++i) {
+    const auto value = io::kBase64Alphabet.find(key[i]);
+    if (value == std::string_view::npos || (i == 21 && value % 16 != 0))
+      return CryptoResult::kInvalid;
+  }
+  const auto* api = Api();
+  if (!api || !api->EVP_MD_fetch || !api->EVP_MD_free || !api->EVP_MD_CTX_new ||
+      !api->EVP_MD_CTX_free || !api->EVP_DigestInit_ex2 ||
+      !api->EVP_DigestUpdate || !api->EVP_DigestFinal_ex)
+    return CryptoResult::kUnavailable;
+  struct Operation {
+    const Library& api;
+    OSSL_LIB_CTX* library = nullptr;
+    EVP_MD* digest = nullptr;
+    EVP_MD_CTX* context = nullptr;
+    ~Operation() {
+      api.EVP_MD_CTX_free(context);
+      api.EVP_MD_free(digest);
+      if (library) {
+        api.OPENSSL_thread_stop_ex(library);
+        api.OSSL_LIB_CTX_free(library);
+      }
+    }
+  } operation{*api};
+  operation.library = api->OSSL_LIB_CTX_new();
+  if (operation.library)
+    operation.digest = api->EVP_MD_fetch(operation.library, "SHA1",
+                                        "provider=default");
+  if (operation.digest) operation.context = api->EVP_MD_CTX_new();
+  if (!operation.context) return CryptoResult::kUnavailable;
+  const std::string challenge =
+      std::string(key) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+  unsigned char bytes[EVP_MAX_MD_SIZE];
+  unsigned int size = 0;
+  if (api->EVP_DigestInit_ex2(operation.context, operation.digest, nullptr) != 1 ||
+      api->EVP_DigestUpdate(operation.context, challenge.data(),
+                             challenge.size()) != 1 ||
+      api->EVP_DigestFinal_ex(operation.context, bytes, &size) != 1 || size != 20)
+    return CryptoResult::kFailure;
+  return io::EncodeBase64(
+             {reinterpret_cast<const char*>(bytes), size}, 28, accept)
+                 .ok()
+             ? CryptoResult::kOk
+             : CryptoResult::kFailure;
 }
 
 void CryptoWipe(std::span<uint8_t> out) noexcept {

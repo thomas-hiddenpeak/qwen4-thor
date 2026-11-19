@@ -1,0 +1,93 @@
+// Minimal JSON parser + value type for q4t.
+//
+// A compact recursive-descent parser covering the JSON grammar (objects,
+// arrays, strings with \u escapes, numbers, true/false/null). It is
+// deliberately small and dependency-free, and is reused for every JSON file in
+// the model directory (safetensors headers, config.json, tokenizer_config.json,
+// ...). No streaming; numbers are stored as double. Duplicate keys retain
+// first-match lookup unless explicitly rejected by the parse limits.
+#pragma once
+
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <span>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+#include "q4t/status.h"
+
+namespace q4t {
+namespace io {
+
+struct Json {
+  enum class Type { kNull, kBool, kNumber, kString, kArray, kObject };
+
+  Type type = Type::kNull;
+  bool boolean = false;
+  double number = 0.0;
+  // String value; for numbers, optional original spelling requested at parse.
+  std::string str;
+  std::vector<Json> array;
+  // Object members in insertion order.
+  std::vector<std::pair<std::string, Json>> object;
+
+  bool IsNull() const { return type == Type::kNull; }
+  bool IsBool() const { return type == Type::kBool; }
+  bool IsNumber() const { return type == Type::kNumber; }
+  bool IsString() const { return type == Type::kString; }
+  bool IsArray() const { return type == Type::kArray; }
+  bool IsObject() const { return type == Type::kObject; }
+
+  // Object accessors.
+  const Json* Find(const std::string& key) const;
+  bool Has(const std::string& key) const { return Find(key) != nullptr; }
+  // Returns 0 for a missing/non-number key.
+  double GetNumber(const std::string& key, double def = 0.0) const;
+  int64_t GetInt(const std::string& key, int64_t def = 0) const;
+  std::string GetString(const std::string& key,
+                        const std::string& def = "") const;
+  bool GetBool(const std::string& key, bool def = false) const;
+  const Json* GetArray(const std::string& key) const;
+
+  // Integer conversion returns def for non-finite, fractional or out-of-range
+  // values. AsDouble preserves a stored number.
+  int64_t AsInt(int64_t def = 0) const;
+  double AsDouble(double def = 0.0) const;
+};
+
+struct JsonParseLimits {
+  size_t max_depth = 64;
+  size_t max_values = 4 * 1024 * 1024;  // Includes object keys.
+  size_t max_string_bytes = 256 * 1024 * 1024;  // Total decoded bytes.
+  bool reject_duplicate_keys = false;
+  // Schema/value readers can preserve finite decimal values outside binary64.
+  // Requires preserve_number_text; number is NaN when conversion is out of
+  // range, so ordinary numeric controls must still require std::isfinite.
+  // Model/config readers retain the default finite-binary64 contract.
+  bool allow_exact_number_text = false;
+};
+
+// Parse a JSON document. Returns a failure Status with a message on error.
+// Ordinary model/config parsing does not retain numeric spelling. Chat tool
+// rendering opts in to preserve integers without changing numeric accessors.
+Status ParseJson(const std::string& text, Json* out,
+                 bool preserve_number_text = false,
+                 const JsonParseLimits& limits = {});
+
+// Validate the entire document but retain only selected subtrees. Paths are
+// decoded object keys and "*" for array elements. A rejected subtree becomes
+// null in the projection, while grammar/UTF-8/duplicates and all input budgets
+// are still checked. Never serialize this metadata projection as the original
+// document. Discarded numeric arrays require constant auxiliary space.
+using JsonProjection =
+    std::function<bool(std::span<const std::string_view>)>;
+Status ParseJsonProjection(const std::string& text, Json* out,
+                           const JsonProjection& retain,
+                           const JsonParseLimits& limits,
+                           size_t max_retained_values = 65536);
+
+}  // namespace io
+}  // namespace q4t

@@ -1,0 +1,34 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "tts_icl_usage_charges_all_groups_independently_of_workspace_rows",
+    "tts_icl_rate_rejects_text_only_undercount_for_tpm_and_prompt_limits",
+    "tts_icl_cancel_settles_only_started_reference_and_partial_output",
+    "tts_icl_chat_extension_admits_full_input_without_charging_cancelled_step",
+    "tts_icl_actual_usage_agrees_across_speech_chat_and_settlement",
+    "tts_icl_nonstreaming_matches_official_two_track_sequence",
+    "tts_icl_streaming_short_reference_retains_remaining_target_and_eos",
+    "tts_icl_streaming_long_reference_pads_after_text_eos",
+    "tts_icl_keeps_instruction_language_and_owned_reference",
+    "tts_icl_rejects_missing_and_non_audio_reference_atomically",
+    "tts_icl_rejects_control_tokens_and_context_truncation",
+    "tts_icl_reference_frames_must_be_complete_ordered_and_base_only",
+    "tts_icl_full_reference_limit_is_bounded_without_truncation",
+    "tts_icl_workspace_charges_all_groups_and_embeddings_only_when_used",
+    "chat_audio_output_usage_adds_actual_codes_without_recounting_text",
+    "speech_sse_contract_has_real_bytes_and_exact_terminal_usage"
+  ],
+  "seconds": 120,
+  "gpu_actions": 0,
+  "before_commit": "bcd80696176850c0ed3313f53872802c2d00c490",
+  "sources": {
+    "docs/STATUS.md": "26b7e376450839217fb35143c42828286c5a5ce3866a944bc0e6322734f55af0",
+    "docs/log/2026-11-19.md": "38d19a58d84446741cdf6738f05502c62535fe3d337b405497296d521f240a15",
+    "include/q4t/audio/tts_generation.h": "2004ee22858dc0b673933a6b87bc39747ddb898df3f016303ea2f14809e4ae61",
+    "src/server/chat_audio_synthesis.cpp": "83d603da83bd6236da09f39e716414bf8d90fd7577c81860bef07aba0a4a1aea",
+    "src/server/chat_speech.cpp": "040556a6e3ddc3db73023027845c109002a55d675748b2ce603e851c941721e9",
+    "src/server/chat_tts_execution.cpp": "8adb04490a52a5d353ba3e3497ad1acc252bd057b9eee7220942bd354cf64f1f",
+    "tests/server_tts_service_test.cpp": "a6b66499e3681b3f049a8fbbaba229d27569c0035f44892559321425727780b8",
+    "tools/serve_audit/inventory.json": "82209a2d931b04d5ec294bb4a665224ea4193a70c265aff3cc66afa7347c1d04"
+  }
+}

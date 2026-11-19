@@ -1,0 +1,14 @@
+{
+  "phase": "Durable ICL condition under existing same-owner voice consent",
+  "new_cpu_tests_max": 8,
+  "direct_existing_tests_max": 4,
+  "seconds": 120,
+  "gpu": 0,
+  "contracts": [
+    "Store complete reference codes/sample count and fixed codec identity atomically with legacy Base vector",
+    "Reopen exact transcript/codes; never disclose private condition through public metadata",
+    "Absent reference preserves existing voice behavior; malformed/present reference fails request rather than silently downgrading",
+    "Every resolution keeps same-owner live-consent CAS and revocation, old vector representation remains intact",
+    "Actual old-binary rollback and neural synthesis remain required"
+  ]
+}

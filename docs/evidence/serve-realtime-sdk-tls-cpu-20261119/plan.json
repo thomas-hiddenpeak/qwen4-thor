@@ -1,0 +1,13 @@
+{
+  "scope": "Actual OpenAI 7.47.0 WSS client and native TLS ingress with explicit CPU transcription peer; no model qualification",
+  "cpu_tests": 3,
+  "seconds": 60,
+  "gpu_model_loads": 0,
+  "sources": {
+    "tools/serve_realtime/test_transcription_sdk.py": "6591549a405d5e790d532bc28f970a42a55f16f8f0c2f2d4eb9bb5a4d15fbedb",
+    "tools/serve_realtime/transcription_sdk.mjs": "9df45725a32d222a0040134b03c1939aa5148a4b1fb2f2d39e56a95eda4ef6fa",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d",
+    "tools/serve_recovery/native_ingress.py": "99bdfa02800e38215e58d189d2ad91fe440a94ef582bf6ac4b69bb17ff4cb4cc"
+  },
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826"
+}

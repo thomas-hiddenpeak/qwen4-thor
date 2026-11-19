@@ -201,8 +201,9 @@ Q4T_TEST(progress_service_loop_counts_own_cycle_not_publisher_heartbeats) {
   {
     ProgressExecution cycle(ProgressWork::kServiceLoop);
     for (uint64_t sequence = 1; sequence <= 3; ++sequence)
-      Q4T_CHECK(EncodeProgress(progress.Read(), Identity(), sequence, 0, 0)
-                    .size == 280);
+      Q4T_CHECK(
+          EncodeProgress(progress.Read(), Identity(), sequence, 0, 0).size ==
+          280);
     Q4T_CHECK(progress.Read().rows[0].completed == 0);
     ProgressExecution::Completed();
   }
@@ -260,7 +261,7 @@ Q4T_TEST(progress_device_copy_exposes_execution_inside_cache_wait) {
                                       RequestDiagnostics::Wait::kCache);
     {
       RequestDiagnostics::ExecutionScope copying(diagnostic,
-                                                  ProgressStage::kCache);
+                                                 ProgressStage::kCache);
       auto row = progress.Read().rows[0];
       Q4T_CHECK(row.work == ProgressWork::kPrefill && row.work_id == 1 &&
                 row.stage == ProgressStage::kCache &&
@@ -292,7 +293,7 @@ Q4T_TEST(progress_resource_exception_never_reports_success_and_restores_state) {
   diagnostic.Stage("response");
   try {
     RequestDiagnostics::ExecutionScope freeing(diagnostic,
-                                                ProgressStage::kCleanup);
+                                               ProgressStage::kCleanup);
     const auto row = progress.Read().rows[0];
     Q4T_CHECK(row.work == ProgressWork::kCache &&
               row.stage == ProgressStage::kCleanup && row.completed == 0);
@@ -305,7 +306,7 @@ Q4T_TEST(progress_resource_exception_never_reports_success_and_restores_state) {
             row.stage == ProgressStage::kOutput);
   {
     RequestDiagnostics::ExecutionScope allocating(diagnostic,
-                                                 ProgressStage::kCache);
+                                                  ProgressStage::kCache);
     allocating.Completed();
   }
   row = progress.Read().rows[0];
@@ -366,6 +367,29 @@ Q4T_TEST(progress_scheduler_handoff_keeps_one_writer) {
   return true;
 }
 
+Q4T_TEST(progress_client_input_wait_is_explicit_without_fake_completion) {
+  RequestProgress progress;
+  auto lease = progress.Acquire(900, 1);
+  Q4T_CHECK(lease.Handle().Stage(ProgressStage::kInput, 2));
+  Q4T_CHECK(lease.Handle().Wait(ProgressWait::kInput, 3));
+  const auto state = progress.Read(5);
+  Q4T_CHECK(state.complete && state.rows[0].wait == ProgressWait::kInput &&
+            state.rows[0].work == ProgressWork::kNone &&
+            state.rows[0].completed == 0 && state.rows[0].deadline_ns == 900);
+  const auto packet = EncodeProgress(state, Identity(), 9, 2, 7);
+  Q4T_CHECK(std::string(reinterpret_cast<const char*>(packet.data.data()), 8) ==
+            "Q4TPR003");
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto directory =
+      std::filesystem::path(output ? output : ".q4t-work/progress-cpu");
+  std::filesystem::create_directories(directory);
+  std::ofstream file(directory / "native-progress-input.bin", std::ios::binary);
+  file.write(reinterpret_cast<const char*>(packet.data.data()), packet.size);
+  file.close();
+  Q4T_CHECK(file.good());
+  return true;
+}
+
 Q4T_TEST(progress_packet_identity_and_exact_wire) {
   RequestProgress progress;
   auto lease = progress.Acquire(900, 1);
@@ -376,7 +400,7 @@ Q4T_TEST(progress_packet_identity_and_exact_wire) {
   const auto packet = EncodeProgress(progress.Read(5), identity, 9, 2, 7);
   Q4T_CHECK(identity.Valid() && packet.size == 280);
   Q4T_CHECK(std::string(reinterpret_cast<const char*>(packet.data.data()), 8) ==
-            "Q4TPR002");
+            "Q4TPR003");
   Q4T_CHECK(Number(packet, 0) == 9 && Number(packet, 1) == 5 &&
             Number(packet, 2) == 1 && Number(packet, 3) == uint64_t(getpid()) &&
             Number(packet, 4) == identity.start_ticks &&

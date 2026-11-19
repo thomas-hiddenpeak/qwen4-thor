@@ -183,6 +183,11 @@ add_library(q4t_model STATIC
   src/audio/speech_tempo.cpp
   src/audio/tts_layout.cpp
   src/audio/tts_codec_layout.cpp
+  src/audio/tts_synthesis_plan.cpp
+  src/audio/tts_encoder_layout.cpp
+  src/audio/tts_encoder_conv.cu
+  src/audio/tts_encoder_dense.cu
+  src/audio/tts_encoder.cu
   src/audio/tts_generation.cpp
   src/audio/tts_dense.cu
   src/audio/tts_model.cu
@@ -208,6 +213,9 @@ add_library(q4t_model STATIC
   src/audio/separator_resample.cpp
   src/audio/separator_tracks.cpp
   src/audio/features.cpp
+  src/audio/noise_fft.cpp
+  src/audio/noise_reduction.cpp
+  src/audio/stream_resample.cpp
   src/model/embedding_config.cpp
   src/model/embedding_layout.cpp
   src/model/embedding_model.cu
@@ -360,11 +368,18 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_audio_inputs.cpp
   src/server/chat_audio_execution.cpp
   src/server/asr_response.cpp
+  src/server/asr_stream_state.cpp
+  src/server/asr_stream_output.cpp
+  src/server/asr_stream_input.cpp
+  src/server/realtime_asr_policy.cpp
+  src/server/realtime_transcript_history.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
+  src/server/chat_realtime.cpp
+  src/server/chat_realtime_stream.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
   src/server/chat_aligner_backend.cpp
@@ -569,6 +584,17 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/cache_worker.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
+  src/server/websocket.cpp
+  src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_pump.cpp
+  src/server/realtime_noise_input.cpp
+  src/server/realtime_transcription_session.cpp
+  src/server/realtime_vad.cpp
+  src/server/realtime_audio_export.cpp
+  src/server/realtime_audio_history.cpp
+  src/server/realtime_pcm.cpp
+  src/server/realtime_audio_queue.cpp
+  src/server/websocket_session.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/sampling.cpp
@@ -804,6 +830,23 @@ if(Q4T_BUILD_TESTS)
     src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_upgrade_test.cpp
+    tests/server_websocket_test.cpp
+    tests/server_realtime_audio_export_test.cpp
+    tests/server_realtime_audio_history_test.cpp
+    tests/server_realtime_pcm_test.cpp
+    tests/noise_reduction_test.cpp
+    tests/server_realtime_vad_test.cpp
+    tests/server_realtime_noise_test.cpp
+    tests/server_realtime_pump_test.cpp
+    tests/server_object_diagnostics_test.cpp
+    tests/server_asr_stream_state_test.cpp
+    tests/server_asr_stream_output_test.cpp
+    tests/server_asr_stream_input_test.cpp
+    tests/server_realtime_transcript_history_test.cpp
+    tests/server_realtime_transcription_test.cpp
+    tests/server_realtime_audio_queue_test.cpp
+    tests/server_websocket_session_test.cpp
     tests/server_http_framing_test.cpp
     tests/server_http_session_test.cpp
     tests/server_http_observation_test.cpp
@@ -936,6 +979,17 @@ if(Q4T_BUILD_TESTS)
   src/server/finite_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
+    src/server/websocket.cpp
+    src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_pump.cpp
+  src/server/realtime_noise_input.cpp
+  src/server/realtime_transcription_session.cpp
+    src/server/realtime_vad.cpp
+    src/server/realtime_audio_export.cpp
+  src/server/realtime_audio_history.cpp
+  src/server/realtime_pcm.cpp
+    src/server/realtime_audio_queue.cpp
+    src/server/websocket_session.cpp
     tests/io_safetensors_test.cpp
     tests/io_model_config_test.cpp
     tests/io_weight_loader_test.cpp

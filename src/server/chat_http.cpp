@@ -113,6 +113,7 @@ void ChatServer::StartConnection(int fd, bool operations) {
       operations
           ? kOperationsConnections
           : conn_cap_ + kControlConnections + kObservationConnections +
+                kRealtimeConnections +
                 (mcp_tunnels_enabled_
                      ? kTunnelPollConnections + kTunnelResponseConnections
                      : 0);
@@ -306,6 +307,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     std::string method, path, body;
     HttpBodyLease lease(body_budget_);
     HttpRequestHeaders headers;
+    std::string websocket_accept;
     HttpBodyStream body_stream;
     std::unique_ptr<FileHttpRequest> file_request;
     ObjectReply file_preparation;
@@ -329,6 +331,28 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
+      if (IsRealtimeTarget(path)) {
+        if (!headers.origin.empty()) {
+          // The optional ingress validates browser origins before forwarding.
+          // Direct backend access has no configured browser-origin policy.
+          failure_status = 403;
+          headers.error_code = "origin_forbidden";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+        const auto upgrade = CheckWebSocketUpgrade(
+            {method, headers.connection, headers.upgrade,
+             headers.websocket_version, headers.websocket_key, headers.http11,
+             headers.chunked, headers.content_length}, &websocket_accept);
+        if (upgrade != WebSocketUpgradeResult::kOk) {
+          failure_status = upgrade == WebSocketUpgradeResult::kCryptoUnavailable ||
+                                   upgrade == WebSocketUpgradeResult::kCryptoFailure
+                               ? 503 : 400;
+          headers.error_code = "websocket_upgrade_invalid";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+      }
       if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
       if (IsCancellationRequest(method, path))
@@ -336,6 +360,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
         lease.SelectBudget(tunnel_body_budget_);
       if ((kind == HttpConnectionClass::kBusiness ||
+           kind == HttpConnectionClass::kRealtime ||
            kind == HttpConnectionClass::kTunnelPoll ||
            kind == HttpConnectionClass::kTunnelResponse) &&
           stop_requested_.load()) {
@@ -348,14 +373,16 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       auto& observation =
           operations ? operations_observation_conns_ : observation_conns_;
       auto& counter =
-          kind == HttpConnectionClass::kTunnelPoll ? tunnel_poll_conns_
+          kind == HttpConnectionClass::kRealtime     ? realtime_conns_
+          : kind == HttpConnectionClass::kTunnelPoll ? tunnel_poll_conns_
           : kind == HttpConnectionClass::kTunnelResponse
               ? tunnel_response_conns_
           : kind == HttpConnectionClass::kControl     ? control
           : kind == HttpConnectionClass::kObservation ? observation
                                                       : business_conns_;
       const int cap =
-          kind == HttpConnectionClass::kTunnelPoll
+          kind == HttpConnectionClass::kRealtime ? kRealtimeConnections
+          : kind == HttpConnectionClass::kTunnelPoll
               ? (mcp_tunnels_enabled_ ? kTunnelPollConnections : 0)
           : kind == HttpConnectionClass::kTunnelResponse
               ? (mcp_tunnels_enabled_ ? kTunnelResponseConnections : 0)
@@ -491,7 +518,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (file_request)
+    if (IsRealtimeTarget(path))
+      HandleRealtime(fd, path, headers, state->pending, websocket_accept);
+    else if (file_request)
       file_request->Serve(fd);
     else if (IsVoiceTarget(path)) {
       HandleVoices(fd, method, path, headers.content_type, body);

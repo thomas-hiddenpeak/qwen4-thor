@@ -1,0 +1,60 @@
+{
+  "scope": "ICL recovery declaration/evidence and durable reference continuity",
+  "kind": "nonperformance_correctness",
+  "reference": {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      ".q4t-work/serve-tts-icl-20261119/recovery-contract-cpu-01/tokenizer-reference.py"
+    ],
+    "script_sha256": "cc01b5528587c7caf0fbd811f007f9eb91d55a7b8f4a1b351352313fe8af27dc",
+    "encodings": 3,
+    "seconds": 60,
+    "gpu_actions": 0
+  },
+  "cpu_suite": {
+    "python": [
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_declaration_is_exact_and_legacy_remains_readable",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_old_receipt_cannot_qualify_actual_icl_registration",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_complete_fixed_reference_and_input_accounting_are_required",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_partial_bad_or_wrong_codec_codes_fail_without_vector_fallback",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_owner_consent_source_and_model_condition_are_bound",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_text_only_input_cannot_pass_even_with_consistent_totals",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_consumer_registration_and_disabled_backend_are_distinct",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_driver_snapshots_actual_persisted_records_and_rejects_missing_or_link",
+      "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_profile_driver_requires_explicit_icl_plan_before_any_business",
+      "tools.serve_recovery.test_voice_icl_profiles.IclMigration.test_explicit_upgrade_retains_old_qualification_and_refuses_auto_downgrade",
+      "tools.serve_recovery.test_voice_icl_profiles.IclMigration.test_old_business_relabelled_with_icl_capability_is_rejected",
+      "tools.serve_recovery.test_voice_icl_profiles.IclMigration.test_same_icl_contract_allows_qualified_automatic_recovery",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_old_builtin_evidence_cannot_qualify_registered_voices",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_capability_binding_requires_correct_families_and_registration_context",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_voice_receipt_requires_ids_audio_asr_usage_negatives_and_revocation",
+      "tools.serve_recovery.test_voice_profiles.VoiceProfiles.test_both_families_migrate_shared_limits_and_automatic_recovery_keeps_features"
+    ],
+    "host": [
+      "tts_capability_pins_the_actual_talker_and_codec_independently_of_health",
+      "tts_icl_capability_preserves_reference_and_legacy_recovery_contracts"
+    ],
+    "total": 18,
+    "seconds": 120,
+    "gpu_actions": 0
+  },
+  "defaults": "rev326 STOPPED unchanged",
+  "original_failures_preserved": true,
+  "source_commit": "f83a05915fa4795d9d8c69ae09ddd95c0b358c8d",
+  "sources": {
+    "src/server/chat_capabilities.cpp": "6544feb47dfa5d77b2575f59f93914f3cabce14ec810dbce82fb819ad5a9a883",
+    "tests/server_chat_capabilities_test.cpp": "0f3ac5f3ce7537c4d64648a1d449e8756adf68adc1d9d0595343f5c4771c2b05",
+    "tools/serve_service/package.py": "e17ff7f815c9c916881526b8b0f354cff43d0764ebe1e00c9ebb8dbedfb77536",
+    "tools/serve_recovery/profile_evidence.py": "022a38913f36563f361f9f7e6a1767ce3f9bd50bc7e7699297e1e33301efe6d8",
+    "tools/serve_recovery/profile_voice.py": "589e1903a9c4228e20aced18a297a4e02296af02fd3162c6b6aa6fd81f72a94f",
+    "tools/serve_recovery/profile_acceptance.py": "a90f78dcce2acb07c7f2f8452908b7d884b697da2c3453445af886761149eef7",
+    "tools/serve_recovery/test_voice_icl_profiles.py": "c06030a59d44ab5735d7dc3ec48d22b1a0db867bb25e1fe1d54b382bb18d8fc0",
+    "tools/serve_audit/inventory.json": "840b6a172bf40fa6ccbfb1ff6a9233bf3c39e9bb9363cf47c9dfbd150a3739c4"
+  },
+  "reuse": [
+    "unchanged registered ICL GPU business and numeric proof",
+    "unchanged realtime history actual GPU proof"
+  ],
+  "next": "actual primary/light and Guardian composition; not certified by these CPU checks"
+}

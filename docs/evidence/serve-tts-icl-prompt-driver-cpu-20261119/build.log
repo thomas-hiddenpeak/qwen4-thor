@@ -1,0 +1,25 @@
+[  4%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_config.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_layout.cpp.o
+[ 13%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_layout.cpp.o
+[ 17%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis_plan.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_layout.cpp.o
+[ 26%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_conv.cu.o
+[ 30%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_dense.cu.o
+[ 34%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder.cu.o
+[ 39%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_generation.cpp.o
+[ 43%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_dense.cu.o
+[ 47%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_model.cu.o
+[ 52%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_conv.cu.o
+[ 56%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_dense.cu.o
+[ 60%] Building CUDA object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec.cu.o
+[ 65%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis.cpp.o
+[ 69%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/quant/lt_cache.cpp.o
+[ 73%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 82%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_tts_replay_core.dir/home/rm01/models/dev/qwen4-thor/src/runtime/system_memory.cpp.o
+[ 91%] Linking CXX static library libq4t_tts_replay_core.a
+[ 91%] Built target q4t_tts_replay_core
+[ 95%] Building CXX object CMakeFiles/q4t_tts_icl_replay.dir/icl_replay.cpp.o
+[100%] Linking CXX executable q4t_tts_icl_replay
+[100%] Built target q4t_tts_icl_replay

@@ -26,7 +26,8 @@ enum class ResponseState {
   kHeadersStarted,
   kStreaming,
   kTerminal,
-  kComplete
+  kComplete,
+  kUpgraded
 };
 // Allocation-free best effort after an exception; never adds a second terminal.
 enum class ExceptionKind { kInternal, kHostMemory };
@@ -208,6 +209,7 @@ class HttpResponseContext {
     http11_ = http11;
   }
   bool KeepAlive() const { return keep_alive_; }
+  bool Upgraded() const { return websocket_; }
   // Enable chunking only after the unencoded response headers were written.
   void StartChunkedBody() { chunked_ = keep_alive_ && http11_; }
   // Binary HTTP/1.1 uses chunking even with Connection: close, so a failed
@@ -218,6 +220,10 @@ class HttpResponseContext {
   // Join heartbeats and terminate framing only after a complete logical
   // response. False means the owner must close, never parse another request.
   bool FinishResponse();
+  // Transfers framing to a single WebSocket owner. Even a later exception
+  // cannot emit HTTP/SSE or make this connection reusable.
+  bool BeginWebSocket(std::string_view accept, std::string_view protocol,
+                      const WriteOptions& options = {});
   bool Write(const char* data, size_t size, const WriteOptions& options,
              ResponseState* header_state = nullptr);
 
@@ -231,6 +237,7 @@ class HttpResponseContext {
   void RecordWriteFailure(HttpWriteObservation value, HttpWriteOrigin origin);
   const int fd_;
   bool detached_ = false;
+  bool websocket_ = false;
   FiniteResponse* captured_ = nullptr;
   bool keep_alive_ = false;
   bool http11_ = true;

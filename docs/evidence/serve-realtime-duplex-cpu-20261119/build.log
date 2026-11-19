@@ -1,0 +1,88 @@
+[  0%] Built target q4t_regex_build
+[  1%] Built target q4t_program_javascript
+[  7%] Built target xgrammar
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_execution.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_request.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_fetch_http.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_fetch_policy.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_source.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/files_http.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_response.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_dropbox.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_transport.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_page_html.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_search_contract.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/files_api_fixture.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_execution_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_client_policy_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_conversation_api_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_files_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_body_stream_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_framing_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_observation_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_request_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_session_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_api_test.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_api_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_uploads_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_jobs_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_search_execution_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_upgrade_test.cpp.o
+[ 12%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  0%] Built target q4t_guardian_process
+[100%] Built target q4t_guardian_journal
+[100%] Built target q4t_ingress_access
+[100%] Building CXX object CMakeFiles/q4t_ingress_duplex_tests.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_duplex.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_duplex_tests.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_duplex_tests.dir/home/rm01/models/dev/qwen4-thor/tests/ingress_duplex_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_duplex_tests.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_duplex_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t_ingress_duplex_tests
+[100%] Built target q4t_ingress_duplex_tests
+[  0%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 50%] Built target q4t_ingress_access
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_proxy.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_duplex.cpp.o
+[ 50%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[  0%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 50%] Built target q4t_ingress_access
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_access_admin.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_cors.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_proxy.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_duplex.cpp.o
+[100%] Linking CXX executable q4t-ingress-no-tls
+[100%] Built target q4t_ingress_no_tls

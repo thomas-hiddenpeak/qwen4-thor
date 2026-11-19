@@ -1,0 +1,10 @@
+{
+  "status": "STOPPED_HEADROOM_BEFORE_LAST_PAYLOAD",
+  "minimum_free_bytes": 134217728,
+  "free_bytes": 125542400,
+  "archive_bytes": 65920723,
+  "archive_sha256": "362447715fd7d74b4adbd11b75a69c4c3317d0f0fdb3c817aaf771d15185d265",
+  "all_original_paths_present": true,
+  "no_original_removed": true,
+  "gpu_actions": 0
+}

@@ -103,6 +103,8 @@ target_link_libraries(q4t_client_policy_fixture PRIVATE Threads::Threads)
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
 include(../../cmake/NativeIngress.cmake)
+add_test(NAME q4t_ingress_duplex_contracts COMMAND q4t_ingress_duplex_tests)
+set_tests_properties(q4t_ingress_duplex_contracts PROPERTIES TIMEOUT 20)
 include(../../cmake/ServiceCLI.cmake)
 set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
 file(MAKE_DIRECTORY "${guardian_output}")
@@ -123,6 +125,22 @@ add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE ../../include)
 target_compile_options(q4t_router_trace_check PRIVATE -Wall -Wextra -Werror)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+if(Q4T_ENABLE_NATIVE_TLS)
+  set(duplex_output "${CMAKE_CURRENT_BINARY_DIR}/duplex-tests")
+  file(MAKE_DIRECTORY "${duplex_output}")
+  add_test(NAME q4t_ingress_tls_duplex_contracts
+    COMMAND ${Python3_EXECUTABLE} -B -m unittest -v
+      tools.serve_realtime.test_tls_duplex)
+  set_tests_properties(q4t_ingress_tls_duplex_contracts PROPERTIES
+    TIMEOUT 30 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+    ENVIRONMENT "Q4T_DUPLEX_TESTS=$<TARGET_FILE:q4t_ingress_duplex_tests>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
+  add_test(NAME q4t_ingress_websocket_contracts
+    COMMAND ${Python3_EXECUTABLE} -B -m unittest -v
+      tools.serve_realtime.test_upgrade_ingress)
+  set_tests_properties(q4t_ingress_websocket_contracts PROPERTIES
+    TIMEOUT 180 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+    ENVIRONMENT "Q4T_INGRESS=$<TARGET_FILE:q4t_ingress>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
+endif()
 set(journal_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-journal-tests")
 file(MAKE_DIRECTORY "${journal_output}")
 add_test(NAME q4t_guardian_journal_contracts
@@ -258,6 +276,12 @@ q4t_add_python_contract(q4t_native_ingress_contracts
 if(Q4T_ENABLE_NATIVE_TLS)
   set(Q4T_NODE_SDK_DIR "${CMAKE_CURRENT_BINARY_DIR}/sdk" CACHE PATH
     "Official pinned SDK installed from tools/serve_protocol/package-lock.json")
+  add_test(NAME q4t_realtime_sdk_tls_contracts
+    COMMAND ${Python3_EXECUTABLE} -B -m unittest -v
+      tools.serve_realtime.test_transcription_sdk)
+  set_tests_properties(q4t_realtime_sdk_tls_contracts PROPERTIES
+    TIMEOUT 60 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+    ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR};Q4T_INGRESS=$<TARGET_FILE:q4t_ingress>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
   q4t_add_python_contract(q4t_native_access_contracts
     tools/serve_recovery/test_native_access.py --ingress $<TARGET_FILE:q4t_ingress>
     --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>

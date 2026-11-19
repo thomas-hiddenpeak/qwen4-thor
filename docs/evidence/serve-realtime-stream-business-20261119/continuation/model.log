@@ -1,0 +1,215 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":124026978304}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 311 ms
+[q4t][auxiliary-budget] resident=2412962616 pending_host=2200297472 sequence=1876091704 weight_io=verified_direct execution=serialized_shared_slot residency=input_or_tts
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=98.01 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   auxiliary_sequence=1876091704
+[q4t][budget]   per_request=1.88 GB (peak admitted primary/auxiliary allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=101750656896 runtime_peak=100271305400 estimated_total=101750656896
+[q4t][startup] budget 493 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=3 policy=client_round_robin_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":101750656896,"headroom_bytes":2147483648,"required_bytes":103898140544,"observed_total_bytes":131920637952,"observed_available_bytes":123604525056}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2900 ms
+[q4t][startup] model_load 27058 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2810 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-memory] {"checkpoint":"before_ready","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":33424314368}}
+[q4t][startup] startup_total 33574 ms
+[q4t] serving on port 18368 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] operations on port 18369 (host 127.0.0.1)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=registered stage=validation seq=-1 elapsed_ms=0.031 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=-1 elapsed_ms=273.304 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=-1 elapsed_ms=273.349 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=-1 elapsed_ms=292.320 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=292.373 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=3555.467 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=3595.295 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=1 samples=32000 prefix=0 input=41 output=12 cumulative_output=12 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=4109.002 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=4109.014 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=4142.390 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=4142.453 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=4144.132 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=4155.542 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=2 samples=64000 prefix=0 input=67 output=20 cumulative_output=32 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=4924.232 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=4932.449 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=4982.394 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=4982.447 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=4983.624 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=4997.434 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=3 samples=96000 prefix=14 input=107 output=11 cumulative_output=43 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=5418.799 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=5418.824 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=5485.407 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=5485.458 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=5487.508 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=5504.069 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=4 samples=128000 prefix=19 input=138 output=12 cumulative_output=55 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=5979.446 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=5979.454 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=6062.595 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=6062.660 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=6064.153 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=6085.541 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=5 samples=160000 prefix=25 input=170 output=10 cumulative_output=65 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=6479.225 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=6479.234 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=6579.065 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=6579.127 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=6580.419 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=6604.336 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=6 samples=192000 prefix=29 input=200 output=11 cumulative_output=76 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=7055.385 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=7055.394 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=7171.763 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=7171.826 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=7173.141 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=7201.003 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=7 samples=224000 prefix=34 input=231 output=14 cumulative_output=90 final=0
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=stream_input seq=0 elapsed_ms=7776.364 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=media seq=0 elapsed_ms=7776.375 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=slot_admission seq=0 elapsed_ms=7901.516 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=admitted stage=slot_admission seq=0 elapsed_ms=7901.573 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=prefill seq=0 elapsed_ms=7903.669 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=stage stage=decode seq=0 elapsed_ms=7932.302 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb
+[asr-stream] id=item_f345e4eaec5d83bd3e3bd0077329d0eb pass=8 samples=240820 prefix=42 input=253 output=7 cumulative_output=97 final=1
+[q4t][request] instance=0 id=item_f345e4eaec5d83bd3e3bd0077329d0eb event=end stage=decode seq=0 released=1 outcome=success reason=execution_complete elapsed_ms=8227.765 slot_wait_ms=0.356 model_lock_ms=1.866 tokenizer_lock_ms=0.638 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=8.224 scheduler_waits=0 trace_id=item_f345e4eaec5d83bd3e3bd0077329d0eb safety_identifier_sha256=-
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7
+[q4t][request] instance=1 id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7 event=registered stage=validation seq=-1 elapsed_ms=0.045 trace_id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7
+[q4t][request] instance=1 id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7 event=stage stage=stream_input seq=-1 elapsed_ms=0.103 trace_id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7
+[q4t][request] instance=1 id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7 event=stage stage=media seq=-1 elapsed_ms=2.451 trace_id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7
+[q4t][request] instance=1 id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7 event=end stage=media seq=-1 released=0 outcome=error reason=client_rpm_exhausted elapsed_ms=11.216 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.087 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=2.345 scheduler_waits=0 trace_id=item_0277f5fd00a9b6c02d36cc0eafa7b2c7 safety_identifier_sha256=-
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=registered stage=validation seq=-1 elapsed_ms=0.028 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=stream_input seq=-1 elapsed_ms=0.082 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=media seq=-1 elapsed_ms=9.875 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=slot_admission seq=-1 elapsed_ms=26.889 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=admitted stage=slot_admission seq=0 elapsed_ms=26.916 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=prefill seq=0 elapsed_ms=28.206 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=decode seq=0 elapsed_ms=33.511 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[asr-stream] id=item_1e0fe20e52a5a7d3b554bb7db64f670b pass=1 samples=32000 prefix=0 input=41 output=12 cumulative_output=12 final=0
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=stream_input seq=0 elapsed_ms=477.443 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=media seq=0 elapsed_ms=477.454 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=slot_admission seq=0 elapsed_ms=510.831 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=admitted stage=slot_admission seq=0 elapsed_ms=510.888 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=prefill seq=0 elapsed_ms=512.146 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=decode seq=0 elapsed_ms=520.042 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[asr-stream] id=item_1e0fe20e52a5a7d3b554bb7db64f670b pass=2 samples=64000 prefix=0 input=67 output=20 cumulative_output=32 final=0
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=stage stage=stream_input seq=0 elapsed_ms=1257.239 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b
+[q4t][request] instance=2 id=item_1e0fe20e52a5a7d3b554bb7db64f670b event=end stage=stream_input seq=0 released=1 outcome=aborted reason=explicit_cancel elapsed_ms=1262.600 slot_wait_ms=0.062 model_lock_ms=0.575 tokenizer_lock_ms=0.158 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=15.136 scheduler_waits=0 trace_id=item_1e0fe20e52a5a7d3b554bb7db64f670b safety_identifier_sha256=-
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=registered stage=validation seq=-1 elapsed_ms=0.018 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=stream_input seq=-1 elapsed_ms=0.076 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=media seq=-1 elapsed_ms=2.891 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=slot_admission seq=-1 elapsed_ms=11.712 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=admitted stage=slot_admission seq=0 elapsed_ms=11.750 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=prefill seq=0 elapsed_ms=13.041 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=decode seq=0 elapsed_ms=20.474 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[asr-stream] id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 pass=1 samples=16000 prefix=0 input=28 output=6 cumulative_output=6 final=0
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=stream_input seq=0 elapsed_ms=254.709 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=media seq=0 elapsed_ms=254.720 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=slot_admission seq=0 elapsed_ms=272.088 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=admitted stage=slot_admission seq=0 elapsed_ms=272.147 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=prefill seq=0 elapsed_ms=273.466 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=decode seq=0 elapsed_ms=278.800 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[asr-stream] id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 pass=2 samples=32000 prefix=0 input=41 output=8 cumulative_output=14 final=0
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=stream_input seq=0 elapsed_ms=572.366 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=media seq=0 elapsed_ms=614.245 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=slot_admission seq=0 elapsed_ms=639.358 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=admitted stage=slot_admission seq=0 elapsed_ms=639.405 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=prefill seq=0 elapsed_ms=640.616 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=decode seq=0 elapsed_ms=650.786 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[asr-stream] id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 pass=3 samples=48000 prefix=4 input=58 output=7 cumulative_output=21 final=0
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=stream_input seq=0 elapsed_ms=917.802 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=media seq=0 elapsed_ms=917.812 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=slot_admission seq=0 elapsed_ms=951.219 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=admitted stage=slot_admission seq=0 elapsed_ms=951.279 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=prefill seq=0 elapsed_ms=952.519 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=decode seq=0 elapsed_ms=960.378 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[asr-stream] id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 pass=4 samples=64000 prefix=7 input=74 output=4 cumulative_output=25 final=0
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=stream_input seq=0 elapsed_ms=1108.139 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=media seq=0 elapsed_ms=1108.147 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=slot_admission seq=0 elapsed_ms=1143.280 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=admitted stage=slot_admission seq=0 elapsed_ms=1143.332 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=prefill seq=0 elapsed_ms=1144.544 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=stage stage=decode seq=0 elapsed_ms=1153.611 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7
+[asr-stream] id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 pass=5 samples=67263 prefix=7 input=77 output=4 cumulative_output=29 final=1
+[q4t][request] instance=3 id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 event=end stage=decode seq=0 released=1 outcome=success reason=execution_complete elapsed_ms=1302.860 slot_wait_ms=0.194 model_lock_ms=0.587 tokenizer_lock_ms=0.399 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=44.683 scheduler_waits=0 trace_id=item_d1afc8c60efaaa1ae97f27c07e9ab2e7 safety_identifier_sha256=-
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=registered stage=validation seq=-1 elapsed_ms=0.028 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=stream_input seq=-1 elapsed_ms=0.084 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=media seq=-1 elapsed_ms=47.202 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=slot_admission seq=-1 elapsed_ms=55.705 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=admitted stage=slot_admission seq=0 elapsed_ms=55.736 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=prefill seq=0 elapsed_ms=56.990 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=decode seq=0 elapsed_ms=60.754 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[asr-stream] id=item_235ea9135fa7a03f95a5d196c9e88740 pass=1 samples=16000 prefix=0 input=28 output=6 cumulative_output=6 final=0
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=stream_input seq=0 elapsed_ms=282.029 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=media seq=0 elapsed_ms=282.039 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=slot_admission seq=0 elapsed_ms=298.742 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=admitted stage=slot_admission seq=0 elapsed_ms=298.806 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=prefill seq=0 elapsed_ms=300.036 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=decode seq=0 elapsed_ms=305.317 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[asr-stream] id=item_235ea9135fa7a03f95a5d196c9e88740 pass=2 samples=32000 prefix=0 input=41 output=8 cumulative_output=14 final=0
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=stream_input seq=0 elapsed_ms=599.169 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=media seq=0 elapsed_ms=602.147 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=slot_admission seq=0 elapsed_ms=627.182 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=admitted stage=slot_admission seq=0 elapsed_ms=627.231 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=prefill seq=0 elapsed_ms=629.228 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=decode seq=0 elapsed_ms=635.692 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[asr-stream] id=item_235ea9135fa7a03f95a5d196c9e88740 pass=3 samples=48000 prefix=4 input=58 output=7 cumulative_output=21 final=0
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=stream_input seq=0 elapsed_ms=894.424 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=media seq=0 elapsed_ms=894.451 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=slot_admission seq=0 elapsed_ms=927.806 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=admitted stage=slot_admission seq=0 elapsed_ms=927.869 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=prefill seq=0 elapsed_ms=929.381 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=decode seq=0 elapsed_ms=937.234 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[asr-stream] id=item_235ea9135fa7a03f95a5d196c9e88740 pass=4 samples=64000 prefix=7 input=74 output=4 cumulative_output=25 final=0
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=stream_input seq=0 elapsed_ms=1085.086 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=media seq=0 elapsed_ms=1085.095 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=slot_admission seq=0 elapsed_ms=1120.070 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=admitted stage=slot_admission seq=0 elapsed_ms=1120.126 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=prefill seq=0 elapsed_ms=1121.356 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=stage stage=decode seq=0 elapsed_ms=1129.852 trace_id=item_235ea9135fa7a03f95a5d196c9e88740
+[asr-stream] id=item_235ea9135fa7a03f95a5d196c9e88740 pass=5 samples=67264 prefix=7 input=77 output=4 cumulative_output=29 final=1
+[q4t][request] instance=4 id=item_235ea9135fa7a03f95a5d196c9e88740 event=end stage=decode seq=0 released=1 outcome=success reason=execution_complete elapsed_ms=1278.069 slot_wait_ms=0.203 model_lock_ms=0.571 tokenizer_lock_ms=0.387 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=50.087 scheduler_waits=0 trace_id=item_235ea9135fa7a03f95a5d196c9e88740 safety_identifier_sha256=-
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=registered stage=validation seq=-1 elapsed_ms=0.186 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][http] trace_id=req-31165424be5c2db891c003fc614ca3fb completion_id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=encode seq=-1 elapsed_ms=0.213 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[sampling] request=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc choice=0/1 temperature=0 top_p=1 logprobs=0 path=greedy
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=slot_admission seq=-1 elapsed_ms=0.954 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=admitted stage=slot_admission seq=0 elapsed_ms=0.963 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=encode seq=0 elapsed_ms=0.967 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=prefill seq=0 elapsed_ms=1.335 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=decode seq=0 elapsed_ms=335.364 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc draft_counts=0,1,0,0
+[q4t][mem] phase=request_end id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc dev_used_gb=115.854 dev_total_gb=131.921 rss_mb=1010.6 mem_free_gb=15.687 mem_avail_gb=31.482 cached_gb=14.561
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=stage stage=response seq=0 elapsed_ms=482.338 trace_id=req-31165424be5c2db891c003fc614ca3fb
+[q4t][request] instance=5 id=chatcmpl-auto-e9b34f4868d99d98f4b0f535e444b2dc event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=482.503 slot_wait_ms=0.007 model_lock_ms=0.001 tokenizer_lock_ms=0.003 scheduler_completion_ms=103.978 stream_write_ms=0.000 input_wait_ms=0.000 scheduler_waits=1 trace_id=req-31165424be5c2db891c003fc614ca3fb safety_identifier_sha256=-
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=1
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":102675456,"live_bytes":102675456,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":87634821592,"entries":6,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

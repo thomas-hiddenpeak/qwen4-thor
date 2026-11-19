@@ -1,0 +1,15 @@
+{
+  "purpose": "Independent development-only G.711 decoded signed PCM16 values, all 256 byte codes",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "byteorder": "little",
+  "module": "/usr/lib/python3.12/lib-dynload/audioop.cpython-312-aarch64-linux-gnu.so",
+  "module_sha256": "606989b18df702c34f74fa77fba8b794c7f7c625601015c1bf2c47409d06d592",
+  "fixture": "tests/server_realtime_pcm_g711.inc",
+  "fixture_sha256": "e36924eb5f22bcbca464a3df80a5350ed8b280ad7fbffd26df6480a552e4971c",
+  "codes": 256,
+  "formats": [
+    "G.711 mu-law",
+    "G.711 A-law"
+  ],
+  "production_dependency": false
+}

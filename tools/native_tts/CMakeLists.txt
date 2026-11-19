@@ -15,6 +15,11 @@ add_library(q4t_tts_replay_core STATIC
   ${Q4T_ROOT}/src/audio/tts_config.cpp
   ${Q4T_ROOT}/src/audio/tts_layout.cpp
   ${Q4T_ROOT}/src/audio/tts_codec_layout.cpp
+  ${Q4T_ROOT}/src/audio/tts_synthesis_plan.cpp
+  ${Q4T_ROOT}/src/audio/tts_encoder_layout.cpp
+  ${Q4T_ROOT}/src/audio/tts_encoder_conv.cu
+  ${Q4T_ROOT}/src/audio/tts_encoder_dense.cu
+  ${Q4T_ROOT}/src/audio/tts_encoder.cu
   ${Q4T_ROOT}/src/audio/tts_generation.cpp
   ${Q4T_ROOT}/src/audio/tts_dense.cu
   ${Q4T_ROOT}/src/audio/tts_model.cu
@@ -72,3 +77,28 @@ target_link_libraries(q4t_tts_synthesis PRIVATE q4t_tts_replay_core Threads::Thr
 target_compile_options(q4t_tts_synthesis PRIVATE
   -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
 target_link_options(q4t_tts_synthesis PRIVATE -Wl,--gc-sections)
+
+add_executable(q4t_tts_encoder_replay encoder_replay.cpp)
+target_link_libraries(q4t_tts_encoder_replay PRIVATE q4t_tts_replay_core)
+target_compile_options(q4t_tts_encoder_replay PRIVATE -Wall -Wextra -Werror)
+
+# Same fixed-reference two-frame differential, with complete ICL prompt codes.
+add_executable(q4t_tts_icl_replay icl_replay.cpp)
+target_link_libraries(q4t_tts_icl_replay PRIVATE q4t_tts_replay_core)
+target_compile_options(q4t_tts_icl_replay PRIVATE -Wall -Wextra -Werror)
+
+# Production no-trace composition with fixed ICL input; no reference encoder.
+add_executable(q4t_tts_icl_synthesis icl_synthesis_replay.cpp
+  ${Q4T_ROOT}/src/server/tts_assets.cpp
+  ${Q4T_ROOT}/src/server/tts_upload.cpp
+  ${Q4T_ROOT}/src/server/tts_service.cpp
+  ${Q4T_ROOT}/src/server/model_assets.cpp
+  ${Q4T_ROOT}/src/server/grammar_process.cpp
+  ${Q4T_ROOT}/src/server/worker_io_broker.cpp
+  ${Q4T_ROOT}/src/audio/tts_speaker_layout.cpp
+  ${Q4T_ROOT}/src/audio/tts_speaker_features.cpp)
+target_link_libraries(q4t_tts_icl_synthesis PRIVATE
+  q4t_tts_replay_core Threads::Threads)
+target_compile_options(q4t_tts_icl_synthesis PRIVATE
+  -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+target_link_options(q4t_tts_icl_synthesis PRIVATE -Wl,--gc-sections)

@@ -1,0 +1,6 @@
+test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline (tools.serve_realtime.test_tls_duplex.NativeTlsDuplex.test_blocked_tls_consumer_still_delivers_cancel_then_hits_write_deadline) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.414s
+
+OK

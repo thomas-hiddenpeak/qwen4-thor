@@ -1,0 +1,19 @@
+{
+  "records": [
+    {
+      "path": "README.md",
+      "sha256": "8e70e25e8ede8ee3c32838cc7ca9ca6dcf0d7e3996096bed31c857c85ec8393b",
+      "bytes": 847
+    },
+    {
+      "path": "pr49-final-checks.json",
+      "sha256": "bdce372523fc6bab586648253659e97bf73c67396036a69609d2691be7a8531d",
+      "bytes": 742
+    },
+    {
+      "path": "pr49-merged.json",
+      "sha256": "687257b71ddd986afeeb0f2cd993ee07b6f07c84979f7f2db75ff90ae9c7088e",
+      "bytes": 238
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "realtime_transcription_queue_full_and_duration_are_bounded",
+    "realtime_history_invalid_limits_and_ids_never_admit",
+    "realtime_history_explicit_native_output_budget_is_fully_reserved"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "reuse_passed_cases": 54,
+  "original_failure": "../history-context-cpu-01/result.json",
+  "sources": {
+    "docs/SERVE_REALTIME_STREAMING_2026-11-19.md": "474ce62fb5875e6976b626c9d47db9393002265000837b2391ca6e71494aee4a",
+    "docs/STATUS.md": "d28360c8e9c57d8510528907d7a1db3c58bb74624fe97fdac4985ad96da4c125",
+    "docs/log/2026-11-19.md": "d599a86425912601a8712aa61bd569804ab6ba6be317694c3038eb3d80b7ef7e",
+    "include/q4t/server/asr_request.h": "ddd06862668e1f1fac26154e247a5bc249215986e99c1c762a89252f3bd29bb9",
+    "include/q4t/server/realtime_transcript_history.h": "0be71f146a61c93fb9bd6a54bef25f51de2ded98f1fd669d45c76165c7df324d",
+    "include/q4t/server/realtime_transcription_protocol.h": "78489b76d7861cf7ea99f0e96c31f2fc62e26d14bb394b220268fe90bf7fdecf",
+    "include/q4t/server/realtime_transcription_session.h": "d94383cb1ef912c6598ef73b06e32cfa02c38fed22989d24f7fde8118992fc01",
+    "src/server/asr_request.cpp": "e700869db6ed0758fe4ca20edf46afe7b3667659bb7bcb4c803c91a744299c15",
+    "src/server/realtime_transcript_history.cpp": "704e20a611b7a94a5a9068989e9dcddd14cda67b3b1832e5a7bb0090a7f92961",
+    "src/server/realtime_transcription_protocol.cpp": "72616aac081c3a491630cfcf40750340de82f2fcb2e451bde6dc6c2e13291239",
+    "src/server/realtime_transcription_session.cpp": "8dd1f43abf53537660dda2bb906c421395ebba3b7e9873122dcae21bf6d1d5e4",
+    "tests/server_asr_protocol_test.cpp": "f22dc507e9523edd078c42ffc8d636c4bd32728f4375f481fcf257722942904c",
+    "tests/server_realtime_transcript_history_test.cpp": "e6af16f530003f49cad60d174713c9939537e2412973f6f6b73bf42b911dcc2f",
+    "tests/server_realtime_transcription_test.cpp": "3f50d8dd8166914620acad2fa3ef14d435a40f3f47639f9f017eb754f1ce6d5b",
+    "tools/serve_audit/inventory.json": "eba6c9a97c43ad1827c6d88bc855d7b0709ece36e4d523d7cc4f6013aab7f7c0"
+  }
+}

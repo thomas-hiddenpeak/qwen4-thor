@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "seconds": 0.4500677092000842,
+  "mutation_checks": 18,
+  "reviewed_source_anchors": 996,
+  "fields": 53,
+  "completion_fields": 21,
+  "routes": 84,
+  "native_routes": 142,
+  "source_changes": {
+    "tools/serve_recovery/bundle.py": "6689a049a2951ae2f80cad801dcfd28cc6d4b6fd3b8cccce9899fbe5db1960cc",
+    "tools/serve_recovery/profile_acceptance.py": "278c5f841487ff6a53f1cbdecd889f7b149af787629585e96d26013e6aea6631",
+    "tools/serve_recovery/profile_evidence.py": "e7c37482ddbe6758f945e6211ec13a8e6589683575b388a07b2946004b40c158",
+    "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
+    "tools/serve_recovery/profile_voice_review.py": "c776d0554c4af62072d8bbd96c303a512164b137c3ed443ae70facec3ee58574",
+    "tools/serve_service/package.py": "48b7af4fdc85e553c1f3ab46288f350da5823e5ea37367b5b3eb650417a36bf5"
+  },
+  "runtime_changed": false,
+  "gpu_actions": 0,
+  "engine_evidence_reused": true,
+  "full_semantics_certified": false
+}

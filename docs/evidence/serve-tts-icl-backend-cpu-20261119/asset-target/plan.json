@@ -1,0 +1,18 @@
+{
+  "reason": "First selection was rejected before execution because real-asset cases belong to opt-in q4t_model_asset_tests, not public host registry. Use unchanged 11-case selection; add its required encoder layout link source.",
+  "cases": [
+    "tts_voice_icl_resource_peak_covers_both_sources_and_graphs",
+    "tts_voice_icl_workspace_is_sequential_max_for_actual_pcm",
+    "tts_voice_icl_budget_and_sample_failures_leave_plan_unchanged",
+    "tts_icl_assets_metadata_requires_explicit_base_and_codec",
+    "tts_icl_assets_impossible_selection_rejected_before_worker",
+    "tts_icl_assets_combined_raw_budget_rejects_before_any_read",
+    "tts_icl_assets_bad_codec_preserves_owner_then_recovers",
+    "tts_voice_registration_resources_bound_features_without_talker",
+    "tts_base_assets_metadata_selects_actual_profile_without_weights",
+    "tts_base_registration_metadata_needs_no_codec_directory",
+    "tts_base_cross_profile_and_codec_failure_preserve_atomic_output"
+  ],
+  "seconds": 120,
+  "gpu": 0
+}

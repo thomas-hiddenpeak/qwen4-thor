@@ -1,0 +1,21 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "review_actual_low_completion",
+    "review_actual_xhigh_completion",
+    "reject_false_usage",
+    "reject_false_delay"
+  ],
+  "cpu_cases": 4,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-01/run/model.log": "b5150fd665ba8ce36a3c0b14ad8c6a3c581bff38dc4d89945667999bce666970",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-01/run/plan.json": "1fabe8bce0857bd0d44e5076a346c15acd35ecbfaa41f450415aa30821856625",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-01/run/alpha.sdk.json": "f86d26acba0cf1ff85208b7a7bb6501f7ac011e35cc6901137dc22b66634b8f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-01/run/result.json": "64d1efbe3003e1f032a7eba0923166976c8f10d256ff304edb78c6fd8ad79700",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-01/run/cleanup.json": "2a0988669f1fcb05d0c8d99f1734e0b6a15ee9bfd5834ef110e1e039d77a5ef4"
+  },
+  "driver_sha256": "2a849078c7d8084144bb97a761ec2e571ca27a9ff6a54642dc96370fc790e572",
+  "scope": "Offline assessment of actual retained two completions; original run remains FAIL. Missing live client settlement cannot be inferred."
+}

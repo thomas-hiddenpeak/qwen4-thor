@@ -1,0 +1,21 @@
+test_changed_persisted_code_rejects_before_next_generation_request (tools.native_tts.test_managed_icl.ManagedIcl.test_changed_persisted_code_rejects_before_next_generation_request) ... ok
+test_fresh_unloaded_reference_only_after_actual_payload_restart (tools.native_tts.test_managed_icl.ManagedIcl.test_fresh_unloaded_reference_only_after_actual_payload_restart) ... ok
+test_missing_link_or_wrong_owner_reference_cannot_fall_back_to_vector (tools.native_tts.test_managed_icl.ManagedIcl.test_missing_link_or_wrong_owner_reference_cannot_fall_back_to_vector) ... ok
+test_recorded_condition_health_and_usage_cannot_be_substituted (tools.native_tts.test_managed_icl.ManagedIcl.test_recorded_condition_health_and_usage_cannot_be_substituted) ... ok
+test_same_reference_and_full_input_usage_survive_each_recovery_phase (tools.native_tts.test_managed_icl.ManagedIcl.test_same_reference_and_full_input_usage_survive_each_recovery_phase) ... ok
+test_complete_audio_usage_content_and_isolated_health_are_required (tools.native_tts.test_managed_voice.ManagedVoice.test_complete_audio_usage_content_and_isolated_health_are_required) ... ok
+test_frozen_service_budget_covers_posts_without_changing_restart_counts (tools.native_tts.test_managed_voice.ManagedVoice.test_frozen_service_budget_covers_posts_without_changing_restart_counts) ... ok
+test_missing_second_phase_or_changed_http_status_cannot_pass (tools.native_tts.test_managed_voice.ManagedVoice.test_missing_second_phase_or_changed_http_status_cannot_pass) ... ok
+test_one_registration_persists_across_entry_and_whole_payload_phases (tools.native_tts.test_managed_voice.ManagedVoice.test_one_registration_persists_across_entry_and_whole_payload_phases) ... ok
+test_package_binding_and_changed_recording_fail_before_service_acceptance (tools.native_tts.test_managed_voice.ManagedVoice.test_package_binding_and_changed_recording_fail_before_service_acceptance) ... ok
+test_partial_or_repeated_phase_cannot_retry_a_mutating_request (tools.native_tts.test_managed_voice.ManagedVoice.test_partial_or_repeated_phase_cannot_retry_a_mutating_request) ... ok
+test_retained_request_body_prevents_hint_and_owner_substitution (tools.native_tts.test_managed_voice.ManagedVoice.test_retained_request_body_prevents_hint_and_owner_substitution) ... ok
+test_revocation_must_retire_original_ids_and_both_generation_routes (tools.native_tts.test_managed_voice.ManagedVoice.test_revocation_must_retire_original_ids_and_both_generation_routes) ... ok
+test_synthesis_backend_cannot_be_unloaded_before_actual_output (tools.native_tts.test_managed_voice.ManagedVoice.test_synthesis_backend_cannot_be_unloaded_before_actual_output) ... ok
+test_unloaded_registration_encoder_only_after_whole_payload_restart (tools.native_tts.test_managed_voice.ManagedVoice.test_unloaded_registration_encoder_only_after_whole_payload_restart) ... ok
+test_acceptance_helper_keeps_all_production_imports_in_sealed_source (tools.native_tts.test_managed_voice.SealedVoiceImports.test_acceptance_helper_keeps_all_production_imports_in_sealed_source) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 1.472s
+
+OK

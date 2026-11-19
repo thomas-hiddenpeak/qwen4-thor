@@ -1,0 +1,23 @@
+{
+  "modules": [
+    "tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_explicit_loopback_plaintext_mode_does_not_require_tls",
+    "tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_one_complete_connection_has_actual_input_and_normal_close"
+  ],
+  "cases": 2,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "max_native_ingress_starts": 3,
+  "max_sdk_connections": 3,
+  "sources": {
+    "tools/serve_realtime/recovery_sdk.mjs": "0132155c758dffedb74d56dfe71cfac2ff08795ca7ba446f62461663cbf06536",
+    "tools/serve_realtime/test_recovery_sdk.py": "4a41ae3f9ac1493ffc9fc8e60dcd1b7bb392d0a5049ece9e463c4e20334cae79",
+    "tools/serve_realtime/test_history_sdk.py": "132dfe15a07fd8515cc7101f37ab3772720696e3affb6381ab8f005a6cd32eb3",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "ingress": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01",
+  "qualified_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/plan.json",
+  "qualified_plan_sha256": "3395dc11ee78dd8c18c141bd2de4b0fb6cdbf15f1445dfdc049d360fab614bee",
+  "reason": "OpenAI SDK forces wss even for http; explicit loopback uses pinned ws peer, with separate transport identity; preserve original 3 PASS/1 timeout"
+}

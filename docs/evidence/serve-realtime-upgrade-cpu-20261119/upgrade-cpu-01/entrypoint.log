@@ -1,0 +1,43 @@
+test_authentication_origin_body_and_version_fail_before_backend (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_authentication_origin_body_and_version_fail_before_backend) ... FAIL
+test_binding_rotation_closes_existing_session_without_reconnect (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_binding_rotation_closes_existing_session_without_reconnect) ... ok
+test_browser_subprotocol_auth_keeps_case_and_never_echoes_key (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_browser_subprotocol_auth_keeps_case_and_never_echoes_key) ... ok
+test_finite_upstream_error_retains_http_body_without_replay (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_finite_upstream_error_retains_http_body_without_replay) ... ok
+test_invalid_upstream_101_never_publishes_upgrade (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_invalid_upstream_101_never_publishes_upgrade) ... ok
+test_real_tls_live_upgrade_and_binary_frame (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_real_tls_live_upgrade_and_binary_frame) ... FAIL
+test_session_capacity_is_separate_from_generation_and_other_client (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_session_capacity_is_separate_from_generation_and_other_client) ... ok
+test_upgrade_preserves_both_coalesced_first_frames_and_internal_owner (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_upgrade_preserves_both_coalesced_first_frames_and_internal_owner) ... ok
+
+======================================================================
+FAIL: test_authentication_origin_body_and_version_fail_before_backend (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_authentication_origin_body_and_version_fail_before_backend)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_upgrade_ingress.py", line 193, in test_authentication_origin_body_and_version_fail_before_backend
+    self.assertEqual(status, expected)
+AssertionError: 101 != 403
+
+======================================================================
+FAIL: test_real_tls_live_upgrade_and_binary_frame (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_real_tls_live_upgrade_and_binary_frame)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_upgrade_ingress.py", line 278, in test_real_tls_live_upgrade_and_binary_frame
+    self.ready()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_gateway_nginx.py", line 492, in ready
+    self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_gateway_nginx.py", line 345, in wait
+    raise AssertionError('gateway worker exited: '+
+AssertionError: gateway worker exited: Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/native_ingress.py", line 242, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/native_ingress.py", line 238, in main
+    run(files.parse(files.read_file(args.config, private=True)), control.GatewayChannel())
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/native_ingress.py", line 178, in run
+    ledger.require(not tick(), 'native ingress exited during startup')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: native ingress exited during startup
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 11.177s
+
+FAILED (failures=2)

@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED_LOSSLESS_CPU_BINARY_ARCHIVE",
+  "archive_sha256": "ac88c1b58a3a271dbf7c731a811d4ab299bbd2ca007347b093de5eabc8300548",
+  "archive_bytes": 100771938,
+  "raw_unique_bytes": 236434072,
+  "files": 9,
+  "unique_payloads": 6,
+  "restore_sha256": "3e6d68f1808364187da19f6cc434e6a93300d1d15a7e32d0145754cc9ff67adf",
+  "removed": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/recovery-contract-cpu-01/q4t_host_tests-before",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-retrieve-cpu-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/input-usage-cpu-02/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-context-cpu-01/q4t_host_tests-before",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/input-usage-cpu-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/voice-legacy-reader-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-context-cpu-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-context-cpu-02/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-retrieve-cpu-01/q4t_host_tests-before"
+  ],
+  "verification_release_seconds": 12.661114247981459,
+  "free_bytes": 377446400
+}

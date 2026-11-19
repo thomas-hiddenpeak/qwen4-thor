@@ -1,0 +1,167 @@
+{
+  "status": "PASS_REGISTERED_ICL_BUSINESS_RECONCILED",
+  "phase": ".q4t-work/serve-tts-icl-20261119/service-business-01",
+  "seconds": 104.53717705886811,
+  "counts": {
+    "starts": 1,
+    "posts": 9,
+    "controls": 78,
+    "ingress_starts": 1
+  },
+  "engine_sha256": "771c6a2a50b7d7f30c624e32abfb9ae1220821d3c365ffe2fc8ba9a6082c6681",
+  "reference": {
+    "samples": 107520,
+    "frames": 56,
+    "codes": 896,
+    "source_sha256": "a0edb0a022ae9e22d57e3a710654a2cfb13f5cea070abddf2a78b663e3b6ad88",
+    "codec_sha256": "836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258",
+    "transcript": "The meeting starts tomorrow morning. Please bring your notebook."
+  },
+  "speech": {
+    "samples": 72960,
+    "rate": 24000,
+    "seconds": 3.04,
+    "peak": 0.60614013671875,
+    "rms": 0.09190269002280818,
+    "sha256": "4619806fca459450a68f802cdb2e56cf9573dc227f6105fb33b3d154d9c3702b",
+    "events": 19,
+    "usage": {
+      "input_tokens": 920,
+      "output_tokens": 609,
+      "total_tokens": 1529
+    }
+  },
+  "chat": {
+    "samples": 84480,
+    "rate": 24000,
+    "seconds": 3.52,
+    "peak": 0.47991943359375,
+    "rms": 0.075557645373408,
+    "sha256": "c47ab122899bedc8691bb76458c4092d991cdd9caa4ed37cf73b092770d045c7",
+    "usage": {
+      "prompt_tokens": 1087,
+      "completion_tokens": 713,
+      "total_tokens": 1800,
+      "completion_tokens_details": {
+        "audio_tokens": 704
+      },
+      "q4t_audio_synthesis": {
+        "input_tokens": 920,
+        "output_tokens": 705
+      }
+    }
+  },
+  "unprompted_asr": [
+    {
+      "expected": "The blue train arrives at noon.",
+      "response": {
+        "text": "The blue train arrives at noon.",
+        "languages": [
+          {
+            "code": "en"
+          }
+        ],
+        "usage": {
+          "type": "tokens",
+          "input_tokens": 55,
+          "output_tokens": 11,
+          "total_tokens": 66,
+          "input_token_details": {
+            "audio_tokens": 40,
+            "text_tokens": 15
+          }
+        }
+      }
+    },
+    {
+      "expected": "你好，会议下午三点开始。",
+      "response": {
+        "text": "你好，会议下午三点开始。",
+        "languages": [
+          {
+            "code": "zh"
+          }
+        ],
+        "usage": {
+          "type": "tokens",
+          "input_tokens": 61,
+          "output_tokens": 11,
+          "total_tokens": 72,
+          "input_token_details": {
+            "audio_tokens": 46,
+            "text_tokens": 15
+          }
+        }
+      }
+    }
+  ],
+  "independent_tokenizer": {
+    "status": "VALID_FIXED_INPUT_ROUNDTRIP",
+    "ids": {
+      "speech": [
+        785,
+        6303,
+        5426,
+        29682,
+        518,
+        37145,
+        13
+      ],
+      "chat": [
+        108386,
+        3837,
+        99903,
+        102172,
+        112055,
+        55286,
+        1773
+      ],
+      "reference": [
+        785,
+        6438,
+        8471,
+        16577,
+        6556,
+        13,
+        5209,
+        4446,
+        697,
+        37166,
+        13
+      ]
+    },
+    "input_tokens": {
+      "speech": 920,
+      "chat": 920
+    },
+    "versions": {
+      "transformers": "5.16.1",
+      "tokenizers": "0.23.2"
+    },
+    "source": {
+      "path": "/home/rm01/.local/lib/python3.12/site-packages/transformers/models/qwen2/tokenization_qwen2.py",
+      "sha256": "fac4e6576bfe2369731be147a4e530f262bdf32f2ac50436f96f0d8bdd2fc628"
+    },
+    "assets": {
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "tokenizer_config.json": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670"
+    },
+    "model_loads": 0,
+    "gpu_actions": 0
+  },
+  "nvml_queries": 96,
+  "all_queries_ok": true,
+  "owned_cleanup": true,
+  "ports_released": true,
+  "lock_released": true,
+  "default_unchanged": true,
+  "default_revision": 326,
+  "source_commit": "a5816422e222ef09c7f8560ca3885331cccc8964",
+  "registered_state_snapshot": "d34ff45646382226ef95631d556f3d498a3ae3b2af0cf44af3a8b47772f125f2",
+  "listening": "PENDING_OWNER_DEFERRED",
+  "guardian_recovery_retested": false,
+  "performance": "NOT_CLAIMED",
+  "master_complete": false,
+  "original_exact_code_failure_preserved": true
+}

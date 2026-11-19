@@ -1,0 +1,36 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "realtime_history_only_completed_prior_turns_enter_context",
+    "realtime_history_requires_commit_and_one_terminal",
+    "realtime_history_clear_and_id_reuse_cannot_resurrect_old_result",
+    "realtime_history_snapshot_survives_deletion_without_borrow",
+    "realtime_history_reservations_and_item_capacity_never_evict",
+    "realtime_history_rejects_invalid_text_without_repair_or_mutation",
+    "realtime_history_context_bound_preserves_full_original_or_fails",
+    "realtime_history_failure_and_empty_success_have_distinct_lifetimes",
+    "realtime_history_identity_checks_include_session_and_generation",
+    "realtime_history_invalid_limits_and_ids_never_admit"
+  ],
+  "cpu_cases": 10,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "CMakeLists.txt": "1e9d268b2f5e9484144196934dd70c34bb0effc7cad14cc3c132981f8ea835ec",
+    "cmake/ChatProtocolIdentity.cmake": "336a9d73418fe3249f36013e52f4e024894963e523c16dc2aef2eb2b7bc04894",
+    "cmake/HostTestSources.cmake": "ccc9024b126d6aad118f42060341cb47167c5c3b08fb7ffa0b3b497df552cb1d",
+    "docs/SERVE_REALTIME_STREAMING_2026-11-19.md": "90c7732262732b57529539e608ab2403e85342f876f5aec46de8583001d87b87",
+    "docs/STATUS.md": "d32cbc6f2b78a2c2ee81a75815064117b47252be8b54964a464a75a4a03c41c7",
+    "docs/log/2026-11-19.md": "97a247f1362848abde850c257285c49746174b21aef8bc9463fd6f362657f407",
+    "docs/serve-master-goals-v2.json": "99655e67cbb34335c9612d96ce0d6bccaedbdc727553f33a41811d9176a74520",
+    "tools/serve_audit/inventory.json": "90c9aa83ad272772a1e56e74b8957df9437c9758c2affaaa74919513712dc36c",
+    "include/q4t/server/realtime_transcript_history.h": "3d88a7a9bd38de5a954b859c643a46d64cb7e0006030113ac5ce0a19bcabb81a",
+    "src/server/realtime_transcript_history.cpp": "0ce3e04f05e5532065dd1f0240bccfc574818d1e3b4217b0ee0706328f10d561",
+    "tests/server_realtime_transcript_history_test.cpp": "2899e82f27b3aad8170a2c76cbd5717c4310c7794f38616868bd9d5fa83340d0"
+  },
+  "scope": "H1 actual-transcript provenance, pending output reservations, atomic snapshots and stale-deletion fences. Not yet connected to model/API; unchanged UTF8 helper and previous ASR business reused.",
+  "q4t_host_tests_before_sha256": "e05d53618c3e7826f2340b624c3d5c80a3da8c3b60360c244f7f054c40d8d8c1",
+  "q4t_before_sha256": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+  "q4t_host_tests_sha256": "3df014278dd088011993e7116e324aaad682044b1d9c4fe9d678c4950524967c",
+  "q4t_sha256": "cc92166592cd1409daad92695e7a38fd173f9e53d33d7f2ddf1e2c6228e3977c"
+}

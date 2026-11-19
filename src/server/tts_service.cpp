@@ -22,7 +22,8 @@ bool TtsServiceLimits::Valid() const {
 Status PlanTtsServiceResources(const TtsServiceLimits& limits,
                                size_t text_tokens, size_t prefill_tokens,
                                size_t max_frames, TtsResourcePlan* out,
-                               audio::TtsVariant variant) {
+                               audio::TtsVariant variant,
+                               size_t reference_frames) {
   if (!out ||
       (variant != audio::TtsVariant::kCustomVoice17B &&
        variant != audio::TtsVariant::kBase17B) ||
@@ -33,12 +34,14 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
   const size_t budget = uint64_t(limits.workspace_mib) * kMiB;
   audio::TtsGenerationLayout generation;
   auto status = audio::PlanTtsGenerationWorkspace(
-      variant, text_tokens, prefill_tokens, max_frames, budget, &generation);
+      variant, text_tokens, prefill_tokens, max_frames, budget, &generation,
+      reference_frames);
   if (!status) return status;
   audio::TtsCodecLayout codec;
   // Bound any qualified chunk size up to the official 300 + 25 history.
   status = audio::PlanTtsCodecWorkspace(
-      std::min(max_frames, audio::TtsCodecConfig::kMaxInputFrames),
+      std::min(max_frames + reference_frames,
+               audio::TtsCodecConfig::kMaxInputFrames),
       budget - generation.bytes, &codec);
   if (!status) return status;
   TtsResourcePlan next;
@@ -76,12 +79,21 @@ Status PlanTtsServiceResources(const TtsServiceLimits& limits,
       16 * kMiB + next.encoder_address_space_limit;
   if (variant == audio::TtsVariant::kBase17B)
     next.request_host_bytes += 2 * 2048 * sizeof(float);
+  if (reference_frames) {
+    // Planning prompt, generation prompt and synthesis reference ownership;
+    // one bounded code slice is retained while its decoder/output is active.
+    next.reference_host_bytes =
+        (3 * reference_frames + audio::TtsCodecConfig::kMaxInputFrames) *
+        sizeof(audio::TtsCodes);
+    next.request_host_bytes += next.reference_host_bytes;
+  }
   *out = next;
   return {};
 }
 
 Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
-                             TtsVoiceResourcePlan* out) {
+                             TtsVoiceResourcePlan* out,
+                             bool include_reference) {
   constexpr audio::TtsSpeakerFeatureLimits limits;
   if (!out || pcm_samples > limits.max_samples)
     return Status::Fail("TTS voice PCM exceeds feature capacity");
@@ -97,9 +109,24 @@ Status PlanTtsVoiceResources(size_t pcm_samples, size_t max_workspace_bytes,
   TtsVoiceResourcePlan next;
   next.frames = frames;
   next.device_weight_bytes = audio::TtsSpeakerConfig::kDeviceBytes;
+  next.speaker_workspace_bytes = workspace.bytes;
   next.device_workspace_bytes = workspace.bytes;
   next.host_feature_bytes = host + 2 * 2048 * sizeof(float);
   next.source_staging_bytes = kNativeTtsBaseFileBytes;
+  if (include_reference) {
+    audio::TtsEncoderWorkspace encoder;
+    status = audio::PlanTtsEncoderWorkspace(pcm_samples, max_workspace_bytes,
+                                           &encoder);
+    if (!status) return status;
+    next.device_weight_bytes = kNativeTtsVoiceWeightBytes;
+    next.encoder_workspace_bytes = encoder.bytes;
+    next.device_workspace_bytes = std::max(workspace.bytes, encoder.bytes);
+    next.reference_frames = encoder.frames;
+    // Encoder output and the committed evidence owner coexist until return.
+    next.reference_host_bytes = 2 * encoder.frames * sizeof(audio::TtsCodes);
+    next.host_feature_bytes += next.reference_host_bytes;
+    next.source_staging_bytes += kNativeTtsCodecFileBytes;
+  }
   next.load_peak_bytes = next.device_weight_bytes + next.source_staging_bytes +
                          kHostMargin + 6 * kMiB;
   *out = next;

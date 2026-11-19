@@ -747,3 +747,10 @@ TileKernels核对的是[PyPI 2.1.0 wheel][deepinfer-tile-wheel]，SHA-256：
 - Qwen3x-Orin 的治理机制 (SDD / constitution / proof contract /
   evidence chain)。用户明确不采用。仅其 tokenizer 算法与 API 设计思路
   可借鉴。
+
+## 实时噪声抑制参考（2026-11-19）
+
+SpeexDSP官方镜像的频域处理/噪声估计只作设计参考，固定提交、哈希、
+许可和实际使用范围见[记录](evidence/serve-noise-reference-20261119/README.md)。
+q4t采用独立的固定状态Wiener实现，没有引入该库、服务或额外权重；
+基础模块CPU通过不能替代处理后PCM一致性和真实语音业务验收。

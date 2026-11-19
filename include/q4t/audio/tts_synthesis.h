@@ -2,6 +2,7 @@
 #pragma once
 
 #include "q4t/audio/tts_codec.h"
+#include "q4t/audio/tts_synthesis_plan.h"
 
 namespace q4t::audio {
 class TtsSynthesisRun {
@@ -41,6 +42,7 @@ class TtsSynthesisRun {
   TtsCodecRun decoder_;
   const TtsCodecDeviceWeights* codec_weights_ = nullptr;
   std::span<uint8_t> codec_workspace_;
+  std::vector<TtsCodes> reference_codes_, decoder_codes_;
   size_t chunk_frames_ = 0, emitted_frames_ = 0, pending_frames_ = 0;
   size_t discard_samples_ = 0;
   bool defer_decode_until_eos_ = false;

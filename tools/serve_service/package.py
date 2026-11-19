@@ -32,6 +32,15 @@ V11_SOURCES = (*V10_SOURCES, 'tools/serve_service/capacity.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
     max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
+# Absent in historical x-vector-only releases. Keep this behavior declaration
+# in the recovery contract: an older engine must not silently discard ICL.
+VOICE_CONDITIONING = dict(profile='q4t-registered-voice-icl-v1',
+    reference_format='q4t.tts-reference.v1', reference_sample_rate=24000,
+    max_reference_frames=750, code_groups=16, codebook_size=2048,
+    reference_transcript='literal_context',
+    input_usage='text_and_all_reference_codes',
+    legacy_records='speaker_embedding_only',
+    invalid_reference='reject_without_fallback')
 NOTICE_ROOT = next((p for p in (ROOT/'third_party/licenses',
     ROOT.parent/'engine/licenses', ROOT.parent/'licenses') if p.is_dir()),
     ROOT/'third_party/licenses')
@@ -1024,6 +1033,9 @@ def check_tts_capabilities(capabilities, selected, base=None, asr=None):
     registration = capabilities.get('voice_registration', {})
     require(all(type(v) is dict for v in (speech, chat, registration)),
             'invalid native TTS capabilities')
+    if 'registered_voice_conditioning' in speech:
+        require(same_json(speech['registered_voice_conditioning'], VOICE_CONDITIONING),
+                'registered voice conditioning contract differs')
     enabled = selected is not None or base is not None
     if not enabled:
         require(speech.get('enabled') is not True and chat.get('enabled') is not True,
@@ -1078,7 +1090,13 @@ def check_tts_declaration(metadata, selected, base=None, asr=None):
         require(voice.get('state', 'disabled') == 'disabled',
                 'package drops configured native voice condition backend')
     else:
-        require(voice.get('model') == NATIVE_TTS_BASE['model']+'-speaker' and
+        icl = 'registered_voice_conditioning' in metadata['chat_protocol']['speech']
+        # Old accepted engines retain their speaker-only declaration. Current
+        # ICL engines must bind the reference encoder; neither may impersonate
+        # the other by only changing a model name or dropping the capability.
+        require(voice.get('model') == NATIVE_TTS_BASE['model']+
+                    ('-reference' if icl else '-speaker') and
+                voice.get('reference_encoder', False) is icl and
                 voice.get('core_readiness_dependency') is False and
                 voice.get('state') in ('configured', 'loading', 'metadata_ready',
                                        'ready', 'degraded'),

@@ -52,7 +52,34 @@ std::string ChatCapabilitiesJson(
          R"("implementation_only":true,"release_attestation":false,"model":)" +
          Quote(model) + R"(,"protocol_source_sha256":)" +
          Quote(identity::kProtocol) +
-         R"(,"transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
+         R"(,"realtime":{"endpoint":"/v1/realtime?intent=transcription",)"
+         R"("transport":"websocket","transcription_configured":)" +
+         (native_asr ? "true" : "false") +
+         R"(,"manual_commit":true,"formats":["audio/pcm","audio/pcmu","audio/pcma"],)"
+         R"("pcm_rate":24000,"logprobs":true,"usage":"actual_tokens_per_item",)"
+         R"("per_turn_client_admission":true,"automatic_replay":false,)"
+         R"("server_vad":{"implemented":true,"configured":)" +
+         (native_asr && native_vad ? "true" : "false") +
+         R"(,"profile":"q4t-native-silero-vad-v1","frame_samples":512,)"
+         R"("analysis_rate":16000,"clock_hz":48000,"idle_padding":false},)"
+         R"("noise_reduction":{"implemented":true,"modes":["near_field","far_field"],)"
+         R"("processing":"shared_16k_f32","fft":512,"hop":256,)"
+         R"("external_dependencies":false},)"
+         R"("continuous_input":{"implemented":true,)"
+         R"("profile":"q4t-qwen-asr-continuous-v1","commit":"explicit",)"
+         R"("delay":["minimal","low","medium","high","xhigh"],)"
+         R"("chunk_samples_16k":[8000,16000,32000,64000,128000],)"
+         R"("rollback_tokens":[2,3,5,7,9],"unfixed_passes":2,)"
+         R"("immutable_prefix":true,"sample_storage_bytes":67108864},)"
+         R"("transcription_history":{"context":"actual_completed_transcripts",)"
+         R"("snapshot":"worker_launch","delete":true,"retrieve":true,)"
+         R"("retrieved_audio":"actual_processed_pcm","wire_format":"current_session",)"
+         R"("max_items":128,"text_bytes":134217728,"audio_bytes":134217728,)"
+         R"("output_message_bytes":67108864,"output_queue_bytes":134217728,)"
+         R"("session_host_reservation_bytes":1073741824,"silent_eviction":false},)"
+         R"("pending_execution":["semantic_vad",)"
+         R"("conversation","live"]},)"
+         R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
          Quote(kNativeAsrProfile) + R"(,"revision":)" +
          Quote(kNativeAsrRevision) + R"(,"weight_sha256":)" +
@@ -763,7 +790,17 @@ std::string ChatCapabilitiesJson(
          R"(,"registered_voice_model":)" + Quote(kNativeTtsBaseModel) +
          R"(,"base_revision":)" + Quote(kNativeTtsBaseRevision) +
          R"(,"base_weight_sha256":)" + Quote(kNativeTtsBaseWeightSha256) +
-         R"(,"builtin_enabled":)" + (native_tts ? "true" : "false") + "}," +
+         R"(,"registered_voice_conditioning":{)"
+         R"("profile":"q4t-registered-voice-icl-v1",)"
+         R"("reference_format":"q4t.tts-reference.v1",)"
+         R"("reference_sample_rate":24000,"max_reference_frames":750,)"
+         R"("code_groups":16,"codebook_size":2048,)"
+         R"("reference_transcript":"literal_context",)"
+         R"("input_usage":"text_and_all_reference_codes",)"
+         R"("legacy_records":"speaker_embedding_only",)"
+         R"("invalid_reference":"reject_without_fallback"},)"
+         R"("builtin_enabled":)" +
+         (native_tts ? "true" : "false") + "}," +
          R"("voice_registration":{"enabled":)" +
          (native_tts_base && native_asr && native_speaker && native_vad
               ? "true"

@@ -1,0 +1,27 @@
+{
+  "repository": "https://github.com/xiph/speexdsp",
+  "revision": "7a158783df74efe7c2d1c6ee8363c1e695c71226",
+  "files": {
+    "COPYING": {
+      "url": "https://raw.githubusercontent.com/xiph/speexdsp/7a158783df74efe7c2d1c6ee8363c1e695c71226/COPYING",
+      "bytes": 1773,
+      "sha256": "2654a4264b2bfe298dedc508748d140111840c315cc8eb646a3a68c13fa75b01"
+    },
+    "README": {
+      "url": "https://raw.githubusercontent.com/xiph/speexdsp/7a158783df74efe7c2d1c6ee8363c1e695c71226/README",
+      "bytes": 129,
+      "sha256": "446f5683eaed88e73c4dc881898b46ee0cc5cba78b92b1b3dfcd3148d802a2de"
+    },
+    "libspeexdsp/preprocess.c": {
+      "url": "https://raw.githubusercontent.com/xiph/speexdsp/7a158783df74efe7c2d1c6ee8363c1e695c71226/libspeexdsp/preprocess.c",
+      "bytes": 41405,
+      "sha256": "f2579e284dc4ec49e2252901966fa4a93e62245969617e740affe8fda5051a7a"
+    },
+    "include/speex/speex_preprocess.h": {
+      "url": "https://raw.githubusercontent.com/xiph/speexdsp/7a158783df74efe7c2d1c6ee8363c1e695c71226/include/speex/speex_preprocess.h",
+      "bytes": 8598,
+      "sha256": "87066ed01639bbc8d3297bb58dbd55bfe1b9cd6e26fc68a1b7f87aa9b61fa9c3"
+    }
+  },
+  "usage": "Design reference only; no copied code, linked library or new runtime dependency"
+}

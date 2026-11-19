@@ -1,0 +1,7 @@
+{
+  "owned_processes_absent": true,
+  "production_equivalent_ports_bindable": true,
+  "gpu_lock_reacquired_released": true,
+  "nvml_samples": 41,
+  "nvml_all_ok": true
+}

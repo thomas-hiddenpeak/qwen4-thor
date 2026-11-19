@@ -1,0 +1,14 @@
+{
+  "include/q4t/audio/tts_encoder_layout.h": {
+    "before": null,
+    "after": "34a5076bbb714965c3dd50d5632e93f4da27e5a2350353cadb587bfef7e707a7"
+  },
+  "CMakeLists.txt": {
+    "before": "d295da73fb9bed8c65963560fac902dfd4d82179c988bff31465cdcfc5ccee61",
+    "after": "0c15017e80a3823c0f6b1d155d4150245e5c87df3f95de821d2fcc54d5d22074"
+  },
+  "src/audio/tts_encoder_layout.cpp": {
+    "before": null,
+    "after": "214715bfcb6ac5e14817241af6cd07007e3a33710fd6d2e616f2c16bda84898d"
+  }
+}

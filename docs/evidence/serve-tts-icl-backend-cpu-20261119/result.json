@@ -1,0 +1,10 @@
+{
+  "status": "FAIL",
+  "returncode": 2,
+  "new": 7,
+  "direct_existing": 4,
+  "tests": 11,
+  "seconds": 0.007610863074660301,
+  "gpu": 0,
+  "binary_sha256": "52d16205f27974131e44dfcb4323fe7a70773707dd90d7706ecf4116381b1496"
+}

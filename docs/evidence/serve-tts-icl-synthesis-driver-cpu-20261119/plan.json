@@ -1,0 +1,13 @@
+{
+  "phase": "Fixed-reference ICL complete synthesis and lifecycle driver preparation",
+  "cpu_tests_max": 10,
+  "seconds": 120,
+  "gpu": 0,
+  "contracts": [
+    "Same proven fixed speaker/reference inputs as prompt component; registration encoder not run or reclassified",
+    "Actual production sampling seed0 and16-frame global decoder grid; exact reference-only cropping",
+    "Two complete outputs: incremental and deferred, independent full-audio ASR without target text",
+    "First pending mixed output cancellation, output acknowledgement backpressure, streaming and deferred frame-limit failures",
+    "Explicit allocation/release counts and model-asset worker cleanup; no main model, HTTP or public qualification yet"
+  ]
+}

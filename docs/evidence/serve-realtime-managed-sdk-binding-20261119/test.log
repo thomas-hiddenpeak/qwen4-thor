@@ -1,0 +1,8 @@
+test_bound_inventory_mutation_and_duplicate_claim_reject (tools.native_asr.test_managed_sdk_binding.Binding.test_bound_inventory_mutation_and_duplicate_claim_reject) ... ok
+test_complete_files_preserved_once_in_frozen_sources (tools.native_asr.test_managed_sdk_binding.Binding.test_complete_files_preserved_once_in_frozen_sources) ... ok
+test_missing_changed_or_extra_module_cannot_be_compacted (tools.native_asr.test_managed_sdk_binding.Binding.test_missing_changed_or_extra_module_cannot_be_compacted) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK

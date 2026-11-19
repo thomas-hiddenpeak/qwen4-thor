@@ -907,8 +907,11 @@ print(reply.choices[0].message.content)
 每请求最多8段、解码前源字节合计25MiB；所有片段共享配置的音频
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
-多choice只计一次。当前路径识别语音内容；非语言声学信息、语音
-输出、assistant音频历史和Realtime仍是总计划中的待实现能力。
+多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
+语音输出及assistant音频历史已交付rev326；Realtime工作分支候选的
+手动转录现已通过[官方SDK/原生WSS真实业务](docs/evidence/serve-realtime-transcription-business-20261119/README.md)，
+支持实际PCM/G.711、逐轮配额与取消回收。默认rev326尚不包含该候选，
+自动分段、对话/Live及完整恢复组合继续按总计划推进。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
@@ -1039,3 +1042,9 @@ schema v2已完成针对性业务验收并安装本机默认；工作分支尚�
 本地执行以`q4t_access_program.authority=q4t-local`标识，不能当作
 OpenAI Daybreak批准或私有模型。配置、恢复边界与验收进展见
 [原生执行策略](docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md#原生策略可选配置)。
+
+实时噪声抑制基础模块的频域处理方向参考
+[SpeexDSP固定源码](https://github.com/xiph/speexdsp/tree/7a158783df74efe7c2d1c6ee8363c1e695c71226)，
+q4t独立实现固定缓冲FFT/谱估计/Wiener处理，未复制或链接该项目。
+[参考记录与使用边界](docs/evidence/serve-noise-reference-20261119/README.md)
+区分基础模块与后续真实语音/接口验收，不增加运行依赖。

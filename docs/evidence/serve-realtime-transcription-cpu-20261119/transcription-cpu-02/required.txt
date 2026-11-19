@@ -1,0 +1,1 @@
+realtime_transcription_capabilities_separate_configured_and_pending

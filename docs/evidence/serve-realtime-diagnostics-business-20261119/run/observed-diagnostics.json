@@ -1,0 +1,9 @@
+{
+  "rows": [
+    "[q4t][request] instance=0 id=item_75ff8b131aa89b175fdea34bef901917 event=end stage=decode seq=0 released=1 outcome=success reason=execution_complete elapsed_ms=4051.929 slot_wait_ms=0.038 model_lock_ms=0.213 tokenizer_lock_ms=0.082 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=item_75ff8b131aa89b175fdea34bef901917 safety_identifier_sha256=-",
+    "[q4t][request] instance=1 id=item_53d853082fc27b346b279e40d34e7577 event=end stage=validation seq=-1 released=0 outcome=error reason=client_rpm_exhausted elapsed_ms=62.606 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.079 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=item_53d853082fc27b346b279e40d34e7577 safety_identifier_sha256=-",
+    "[q4t][request] instance=2 id=item_d58fcb52b595d4dfc5a99b9993e79b18 event=end stage=decode seq=0 released=1 outcome=aborted reason=client_disconnected elapsed_ms=369.709 slot_wait_ms=0.032 model_lock_ms=0.096 tokenizer_lock_ms=0.076 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=item_d58fcb52b595d4dfc5a99b9993e79b18 safety_identifier_sha256=-"
+  ],
+  "scope": "Executor outcome, not final socket delivery or automatic recovery.",
+  "success_tokens": 122
+}

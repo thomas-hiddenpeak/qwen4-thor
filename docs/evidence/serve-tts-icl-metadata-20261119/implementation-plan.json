@@ -1,0 +1,34 @@
+{
+  "phase": "Native reference-audio ICL",
+  "base_commit": "ae6fce02e3c06b1a9282d561d132ba6bc9b9e1bc",
+  "sources": {
+    "tests/fixtures/tts/codec-config.json": "ee65bb901c876664ab8707c487157aa1a6ee57c65969b28fb5ec9dc211e68167",
+    "tests/fixtures/tts/codec-header.json": "2ba4e8dcbacb8aca087f1f8cfd8b7a2ab144d32486e635afaf2b3f6918b8cb65",
+    ".q4t-work/serve-audio-native-20261117/reference-deps/transformers/models/mimi/modeling_mimi.py": "3da418c597831a612961117fc6a26b98da4d51cf43b464323534f90f2587acc4",
+    ".q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py": "844e8dd8c0182ef9c6463c874631c22ef3c5a4fd1899dd657016164cc5379628",
+    ".q4t-work/serve-native-tts-20261118/source-01/official/qwen_tts/core/models/modeling_qwen3_tts.py": "25c42656bcf810f06ef6bc1839bd7083f3c8cfedac3a147c4060b4262b1c96a0"
+  },
+  "stages": [
+    "Complete 225-tensor codec encoder contract, request-owned bounded workspace and PCM length rules; targeted CPU negatives, no model/GPU",
+    "Native causal SEANet, 8 LayerNorm/GELU/8-head transformer layers, 2x downsample and split 1+15 RVQ; compare actual pinned unmodified official encoder at stage boundaries and final code IDs under one frozen strict lease",
+    "Reference transcript + all 16 codec embeddings in Base ICL prompt, preserve x-vector legacy; numerical prompt/generation and actual utterance content",
+    "Persist exact reference condition with consent/owner, Speech/Chat/SDK and cancellation, resource isolation; actual managed qualification and reversible delivery before default adoption"
+  ],
+  "metadata_cpu_budget": {
+    "new_contracts_max": 12,
+    "direct_existing_contracts_max": 4,
+    "wall_seconds": 120,
+    "gpu": 0
+  },
+  "gpu_budget": "Freeze exact operands/cases/numerical gates after source and CPU; do not launch ad hoc model work",
+  "source_only_until_qualified": true,
+  "codec_file_already_present": true,
+  "new_runtime_dependencies": [],
+  "reference_license": "Pinned official Qwen3-TTS and Transformers Apache-2.0; original native implementation, no Orator AGPL source copied",
+  "open_quality": [
+    "normal playback listening",
+    "speaker similarity",
+    "remaining styles and languages"
+  ],
+  "default_unchanged": 326
+}

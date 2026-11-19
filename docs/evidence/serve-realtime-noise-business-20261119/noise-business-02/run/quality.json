@@ -1,0 +1,37 @@
+{
+  "zh/off": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  },
+  "zh/near_field": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  },
+  "zh/far_field": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  },
+  "en/off": {
+    "text": "Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+    "exact": false,
+    "word_error_rate": 0.027777777777777776
+  },
+  "en/near_field": {
+    "text": "Hmm. Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+    "exact": false,
+    "word_error_rate": 0.027777777777777776
+  },
+  "en/far_field": {
+    "text": "Hmm. Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+    "exact": false,
+    "word_error_rate": 0.027777777777777776
+  },
+  "mulaw/near_field": {
+    "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+    "exact": true,
+    "word_error_rate": 0
+  }
+}

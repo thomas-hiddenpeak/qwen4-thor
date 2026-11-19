@@ -1,0 +1,15 @@
+{
+  "phase": "ICL reference transcript and all16 code-group prompt tracks",
+  "base": "f96e28af",
+  "cpu_tests_max": 14,
+  "direct_existing_tests_max": 8,
+  "seconds": 120,
+  "gpu": 0,
+  "acceptance": [
+    "Reference then target literal tokens and official streaming/nonstreaming track lengths",
+    "Own all16 bounded code groups and speaker vector; reject controls, missing, duplicated and reordered rows before GPU",
+    "Workspace charges actual reference IDs/embeddings only for explicit Base ICL; legacy zero-reference layouts retain bytes",
+    "Actual native prompt and utterance qualification remain required after independent encoder gate decision"
+  ],
+  "default_unchanged": 326
+}

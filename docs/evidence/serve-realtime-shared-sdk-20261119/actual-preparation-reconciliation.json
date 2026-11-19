@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "seconds": 0.6097852569073439,
+  "original_bytes": 2537998,
+  "new_bytes": 877565,
+  "source_count": 1706,
+  "sdk_file_count": 4087,
+  "shared_sdk": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01",
+  "metadata_limit_unchanged": 2097152,
+  "original_sha256": "83e64d2df2547d85a81201d1b56e0415c12a8ff03a85f3ce5b496cb140ef9746",
+  "new_sha256": "c850faefb061d6350b8c670d019576fecabc0a621606550275309f1bafa1ecb1",
+  "model_starts": 0
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS_TARGETED_HTTP_DUPLEX_TRANSPORT",
+  "distinct_tests": 25,
+  "executions": 26,
+  "passed_on_first_run": 24,
+  "failed_original": 1,
+  "passed_after_fixture_correction": 1,
+  "seconds": 2.326237154658884,
+  "gpu_model_loads": 0,
+  "production_sources_changed_after_first_run": false,
+  "realtime_route_or_model_qualification": false,
+  "default_rev326_unchanged": true
+}

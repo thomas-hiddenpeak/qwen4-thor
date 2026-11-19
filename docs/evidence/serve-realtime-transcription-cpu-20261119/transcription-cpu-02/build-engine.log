@@ -1,0 +1,36 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.6s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  3%] Built target q4t_guardian_process
+[  7%] Built target q4t_trace
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_io
+[  7%] Built target q4t_runtime
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_service_tools
+[  7%] Built target q4t_program_javascript
+[  7%] Built target q4t_text
+[ 14%] Built target q4t_quant
+[ 17%] Built target xgrammar
+[ 17%] Built target q4t_service_cli
+[ 32%] Built target q4t_model
+[ 32%] Built target q4t_startup_plan
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_program.cpp.o
+[ 39%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

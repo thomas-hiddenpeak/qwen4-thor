@@ -1,0 +1,14 @@
+{
+  "sources": {
+    "tools/native_tts/icl_replay.cpp": "ff2902e15677f22d7e3abfc9e4c75c3209432fdf1170ef00cce749c6908894cc",
+    "tools/native_tts/icl_reference.py": "991366c64f5f76fb83a59feb6c55bdcbf12d6744e2ef9a2a00699cde10f70af8",
+    "tools/native_tts/icl_acceptance.py": "29742bb72885b4fcc34a5c055142053438cf0e2006ca041746cca2c594040b91",
+    "tools/native_tts/test_icl_acceptance.py": "ab50323f5cdbb6c8e6670976a7f5ce22cfe95bd82c800478ad65ffcc4988f359",
+    "tools/native_tts/base_reference.py": "a07e40bebf0ccd2d7c899c1e9e9210c5d559c0827b825c10ac02cec0219cbb16",
+    "tools/native_tts/acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f",
+    "tools/native_tts/CMakeLists.txt": "d126f1115ae3eb0ea4197113fc7f5eda6f98259196abf8bc64877efb096db865"
+  },
+  "binary_sha256": "0077a53be7ce96581c25a59f6533f7dfb18100ecde001c9428306964aa5dcd5f",
+  "gpu": 0,
+  "actual_prompt_math_qualified": false
+}

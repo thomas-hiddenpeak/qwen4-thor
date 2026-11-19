@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "mutation_checks": 18,
+  "source_changes": [
+    "tools/serve_recovery/fixture_model.py"
+  ],
+  "source_sha256": "a2a23f6871dab8c1f2776d3a7496d1bb4211d30943d1e63f930ed32551645a03",
+  "seconds": 0.4281692700460553,
+  "gpu_actions": 0,
+  "semantic_drafts_excluded": true
+}

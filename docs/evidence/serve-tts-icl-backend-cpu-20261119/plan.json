@@ -1,0 +1,14 @@
+{
+  "phase": "Native registration speaker plus reference encoder integration",
+  "new_cpu_tests_max": 10,
+  "direct_existing_tests_max": 6,
+  "seconds": 120,
+  "gpu": 0,
+  "contracts": [
+    "Explicit Base+codec source selection, fixed SHA/full layouts and combined staging checked before worker",
+    "One request-owned shared GPU allocation with sequential workspace, finite whole codes, no silent xvector fallback",
+    "Shared execution admission, cancellation every bounded stage, stream draining and actual device failure protection",
+    "Only publish both embeddings and complete reference after cleanup; old voice consumption needs no registration backend",
+    "Actual numerical boundary decision, ICL waveform/SDK/recovery and old-binary rollback remain unqualified"
+  ]
+}

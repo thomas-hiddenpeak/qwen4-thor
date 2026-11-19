@@ -1,0 +1,25 @@
+{
+  "scope": "Permanent upgrade also excludes a misbehaving SSE heartbeat owner; format changed C++ ranges",
+  "cpu_tests": 3,
+  "seconds": 60,
+  "gpu_model_loads": 0,
+  "reused_tests": 19,
+  "sources": {
+    "CMakeLists.txt": "9958dd3d07377199e8d09e2e837f1561b7175123147dbaede59738fb67b722b1",
+    "cmake/ChatProtocolIdentity.cmake": "d844b53842e5d8a27ed0c87b778bc7d29df35fd15a2db3a687745e524c831b51",
+    "cmake/HostTestSources.cmake": "dc660f0cd6a8dd335de4bfa156eafabb4ef7a9c18a7e0e7ab2a483d22714c761",
+    "include/q4t/server/application_routes.h": "7c9e3e7230d855e6f0aa05632c7e668bc7531419c3f33f3be94ff87b1af0beef",
+    "include/q4t/server/chat_server.h": "e33b0efcbf99c7404b2f7cc39a516e7e742d3c047a42b8651740c33b471b7585",
+    "include/q4t/server/client_policy.h": "1ad5a85950aaca06cc49aecaf3594c6844ad4ab80bcb02350a7ff93d8839cce9",
+    "include/q4t/server/http_connection.h": "addf7a5e00d887ffb6062686b57e24764f8d659fddee9caf7bdd65e17f8fc4be",
+    "include/q4t/server/http_response.h": "5586fcbf2a508b7737cf5199790fb7f5e3b27473bd9bdd4ec0494adaa52c1e1b",
+    "src/server/chat_http.cpp": "1df78b53425b56879a7a8fd4ce9038e8809bcccaa2cba5cffa84f6f97c0e15c8",
+    "src/server/client_policy.cpp": "e1ea34a3a4a6028920edc35dfe2e6246d6b0d48e78183e418ccd0e66159a50ac",
+    "src/server/client_request.cpp": "0bc1e1fad8140d11b705fa1343cd1d166f76d3afa406c11bd42b305c9c411f69",
+    "src/server/http_response.cpp": "a4440e6475209458f1f175110956f6ace7fea7ac1fdd8aaedb1e7c5f1980a4fc",
+    "include/q4t/server/websocket_session.h": "1790282b3dfeb49be1e58773413c91ccdec9baf2f15b1632dea91441e17c4735",
+    "src/server/websocket_session.cpp": "3af2970d83ae6d58b18c7e070886ac3ae84e27750f19e91bcf3ea497024a5b66",
+    "tests/server_websocket_session_test.cpp": "e36754e21d8c05fc33a05afcc5343a303d9ec23b1f03f78e7ae658e423022199"
+  },
+  "reason": "Review found heartbeat writes bypass the general Write helper; reject StartHeartbeats after upgrade and reject promotion while a prior heartbeat remains joinable. Original 21 checks passed; rerun only directly affected HTTP checks plus one new ownership case."
+}

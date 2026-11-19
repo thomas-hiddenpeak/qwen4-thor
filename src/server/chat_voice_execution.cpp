@@ -5,6 +5,7 @@
 #include "cuda_memory_backend.h"
 #include "object_protocol.h"
 #include "q4t/audio/tts_speaker_features.h"
+#include "q4t/audio/tts_encoder.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/request_diagnostics.h"
 
@@ -12,13 +13,14 @@ namespace q4t::server {
 ObjectReply ChatServer::RunNativeVoiceCondition(
     int fd, std::span<const float> pcm,
     const std::shared_ptr<RequestControl>& control,
-    RequestDiagnostics& diagnostic, std::vector<float>* condition) {
+    RequestDiagnostics& diagnostic, std::vector<float>* condition,
+    std::vector<audio::TtsCodes>* reference_codes) {
   using Clock = std::chrono::steady_clock;
   using object_detail::Error;
   TtsVoiceResourcePlan resources;
-  if (!condition ||
+  if (!condition || !reference_codes ||
       !PlanTtsVoiceResources(
-          pcm.size(), uint64_t(tts_limits_.workspace_mib) << 20, &resources))
+          pcm.size(), uint64_t(tts_limits_.workspace_mib) << 20, &resources, true))
     return Error(400, "voice_input_limit",
                  "Voice condition input exceeds capacity");
   const auto cancelled = [&] {
@@ -154,8 +156,8 @@ ObjectReply ChatServer::RunNativeVoiceCondition(
     audio::TtsSpeakerRun run;
     diagnostic.Stage("voice_condition_embedding");
     auto reply = perform([&] {
-      return run.Begin(voice_weights_, features.mel, features.frames, memory,
-                       resources.device_workspace_bytes);
+      return run.Begin(voice_weights_.speaker, features.mel, features.frames,
+                       memory, resources.speaker_workspace_bytes);
     });
     if (!reply.ok()) return reply;
     for (int stage = 0; stage < audio::TtsSpeakerRun::kStages; ++stage) {
@@ -165,12 +167,31 @@ ObjectReply ChatServer::RunNativeVoiceCondition(
     std::vector<float> output(2048);
     reply = perform([&] { return run.Finish(output); });
     if (!reply.ok()) return reply;
+    audio::TtsEncoderRun encoder;
+    diagnostic.Stage("voice_reference_codes");
+    reply = perform([&] {
+      return encoder.Begin(voice_weights_.encoder, pcm, 24000, memory,
+                            resources.encoder_workspace_bytes);
+    });
+    if (!reply.ok()) return reply;
+    size_t advances = 0;
+    while (!encoder.done()) {
+      if (++advances > 8192)
+        return failed(AsrFailure::kCompute, "Voice encoder progress limit");
+      reply = perform([&] { return encoder.Advance(); });
+      if (!reply.ok()) return reply;
+    }
+    if (encoder.codes().size() != resources.reference_frames)
+      return failed(AsrFailure::kCompute, "Voice encoder frame count differs");
+    std::vector<audio::TtsCodes> codes(encoder.codes().begin(),
+                                      encoder.codes().end());
     release.Run();
     if (!cleaned)
       return Error(503, "gpu_unhealthy", "Voice workspace cleanup failed");
     if (cancelled()) return interrupted();
     voice_health_.ComputeSucceeded();
     *condition = std::move(output);
+    *reference_codes = std::move(codes);
     return {};
   } catch (const std::bad_alloc&) {
     return failed(AsrFailure::kResource, "Voice host allocation exhausted");

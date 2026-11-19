@@ -30,6 +30,9 @@ struct AsrRequest {
   std::string model;
   std::string language;
   std::string prompt;
+  // Internal snapshot of earlier completed native transcriptions. Public
+  // request parsers never populate this field; encode as literal context.
+  std::string previous_transcript;
   std::vector<std::string> languages, keywords;
   std::vector<std::string> speaker_names, speaker_references;
   AsrChunking chunking;
@@ -58,6 +61,9 @@ struct AsrPrompt {
   size_t audio_start = 0;
   size_t audio_tokens = 0;
   size_t output_tokens = 0;
+  // Actual previously selected suffix forced into a later streaming prompt.
+  // Private executor metadata, never a client-provided count or usage value.
+  size_t continuation_tokens = 0;
 };
 // special=false is required for the user context. The callback serializes
 // the actual tokenizer and supplies request cancellation checkpoints.

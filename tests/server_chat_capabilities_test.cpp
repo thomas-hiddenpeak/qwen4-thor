@@ -577,3 +577,31 @@ Q4T_TEST(tts_capability_pins_the_actual_talker_and_codec_independently_of_health
   }
   return true;
 }
+
+Q4T_TEST(tts_icl_capability_preserves_reference_and_legacy_recovery_contracts) {
+  using namespace q4t::server;
+  for (bool enabled : {false, true}) {
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(
+        ChatCapabilitiesJson("chat", false, true, 0, nullptr, false, false,
+                             false, false, 64, false, false, false, enabled),
+        &value));
+    const auto* speech = value.Find("speech");
+    Q4T_CHECK(speech && speech->GetBool("registered_custom_voices") == enabled);
+    const auto* icl = speech->Find("registered_voice_conditioning");
+    Q4T_CHECK(icl && icl->object.size() == 10);
+    Q4T_CHECK(icl->GetString("profile") == "q4t-registered-voice-icl-v1" &&
+              icl->GetString("reference_format") == "q4t.tts-reference.v1");
+    Q4T_CHECK(icl->GetInt("reference_sample_rate") == 24000 &&
+              icl->GetInt("max_reference_frames") == 750 &&
+              icl->GetInt("code_groups") == 16 &&
+              icl->GetInt("codebook_size") == 2048);
+    Q4T_CHECK(icl->GetString("reference_transcript") == "literal_context" &&
+              icl->GetString("input_usage") == "text_and_all_reference_codes");
+    Q4T_CHECK(icl->GetString("legacy_records") == "speaker_embedding_only" &&
+              icl->GetString("invalid_reference") == "reject_without_fallback");
+    Q4T_CHECK(value.GetBool("implementation_only") &&
+              !value.GetBool("release_attestation", true));
+  }
+  return true;
+}

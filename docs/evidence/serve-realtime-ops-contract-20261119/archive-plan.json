@@ -1,0 +1,36 @@
+{
+  "scope": "Lossless archive of two inactive historical engine fixtures; exact restoration by original absolute path. No default/current engine/source/log/model changes.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-01/q4t-before",
+      "member": "c85be13417ae89ac3937ae117e913653ba00d2c2ab49cea89dec823b1a8c1111",
+      "sha256": "c85be13417ae89ac3937ae117e913653ba00d2c2ab49cea89dec823b1a8c1111",
+      "bytes": 28884984,
+      "mode": 509,
+      "mtime_ns": 1795036182910249308,
+      "inode": 7103126,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-03/q4t-before",
+      "member": "3f97f4312e92f939839eadee36aa5b3a7a4d78f57cc51dfec2f35e077c85024e",
+      "sha256": "3f97f4312e92f939839eadee36aa5b3a7a4d78f57cc51dfec2f35e077c85024e",
+      "bytes": 28884424,
+      "mode": 509,
+      "mtime_ns": 1795043717216674182,
+      "inode": 7090090,
+      "links": 1
+    }
+  ],
+  "unique_payloads": 2,
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d"
+  },
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 41943040
+}

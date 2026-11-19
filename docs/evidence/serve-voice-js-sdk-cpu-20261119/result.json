@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "tools/native_tts/test_voice_sdk.mjs"
+  ],
+  "exit_code": 0,
+  "seconds": 1.0150566967204213,
+  "gpu_model_loads": 0,
+  "defaults_unchanged": true,
+  "sources_unchanged": true
+}

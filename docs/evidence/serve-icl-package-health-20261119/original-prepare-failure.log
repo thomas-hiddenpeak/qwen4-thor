@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/prepare_realtime_package.py", line 199, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/prepare_realtime_package.py", line 169, in main
+    receipt=bundle.prepare(engine/'q4t',engine/'q4t.release.json',plan['model'],
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/bundle.py", line 258, in prepare
+    receipt = engine.prepare(binary, release, model, target/'engine',
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 698, in prepare
+    check_tts_declaration(metadata, config.get('native_tts'),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 1093, in check_tts_declaration
+    require(voice.get('model') == NATIVE_TTS_BASE['model']+'-speaker' and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 72, in require
+    raise RuntimeError(message)
+RuntimeError: accepted engine does not declare isolated native voice condition

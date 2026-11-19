@@ -1,0 +1,17 @@
+test_configuration_binds_asr_and_forbids_replay (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_configuration_binds_asr_and_forbids_replay) ... ok
+test_complete_actual_usage_and_original_state_are_preserved (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_complete_actual_usage_and_original_state_are_preserved) ... ok
+test_context_deletion_and_rate_settlement_cannot_be_faked (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_context_deletion_and_rate_settlement_cannot_be_faked) ... ok
+test_waveform_transcript_and_error_correlation_are_checked (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_waveform_transcript_and_error_correlation_are_checked) ... ok
+test_reconnect_partial_receipt_or_leaked_resources_cannot_qualify (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_reconnect_partial_receipt_or_leaked_resources_cannot_qualify) ... ok
+test_metric_projection_cannot_turn_missing_or_invalid_values_into_zero (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_metric_projection_cannot_turn_missing_or_invalid_values_into_zero) ... ok
+test_fixed_limits_and_cli_reserve_every_actual_session_and_turn (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_fixed_limits_and_cli_reserve_every_actual_session_and_turn) ... ok
+test_sdk_timeout_still_releases_only_the_owned_native_entry (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_sdk_timeout_still_releases_only_the_owned_native_entry) ... ok
+test_realtime_requires_new_observations_and_cannot_disappear_at_fallback (tools.serve_recovery.test_profile_realtime.RealtimeMigration.test_realtime_requires_new_observations_and_cannot_disappear_at_fallback) ... ok
+test_old_receipt_cannot_qualify_actual_icl_registration (tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_old_receipt_cannot_qualify_actual_icl_registration) ... ok
+test_explicit_upgrade_retains_old_qualification_and_refuses_auto_downgrade (tools.serve_recovery.test_voice_icl_profiles.IclMigration.test_explicit_upgrade_retains_old_qualification_and_refuses_auto_downgrade) ... ok
+test_registration_budget_and_both_commands_keep_actual_base_dependencies (tools.serve_recovery.test_profile_voice.VoiceDriver.test_registration_budget_and_both_commands_keep_actual_base_dependencies) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.344s
+
+OK

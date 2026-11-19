@@ -1,0 +1,24 @@
+{
+  "cases": 10,
+  "modules": [
+    "tools.serve_ops.test_realtime_metrics.RealtimeMetrics",
+    "tools.serve_ops.test_ops.MetricContract.test_current_archived_v5_upload_and_tunnel_reasons",
+    "tools.serve_ops.test_ops.MetricContract.test_old_v5_does_not_fabricate_absent_additions",
+    "tools.serve_ops.test_ops.MetricContract.test_v5_additions_preserve_required_labels_and_value_rejections"
+  ],
+  "seconds": 60,
+  "actual_archived_metrics": 4,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_ops/contracts.py": "aa3ee2bb080bdbd2032492cf715dde13238236356b888bae3681e147ae392c78",
+    "tools/serve_ops/test_realtime_metrics.py": "d9fa9ac6c4afd3490dc7828a4e0edee701035a2ad2c1dd177fafa649d4da10e5",
+    "tools/serve_ops/test_ops.py": "9716c742df561b4872ae8917951007bdd823ee4bd2f0ab89e997e93ae4792d45",
+    "tools/serve_ops/fixtures/native-v5-realtime-20261119.prom": "98cf19dd0535df40787726d0c6d37997e3cf820423c9c45b771065f1cb71196f",
+    "tools/native_asr/service_acceptance.py": "b13dcb7714099fc20754c255e7d8be28e5c9ac89f2760b955013c96c3d5cf805"
+  },
+  "source_projection": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/primary-realtime-before.wire",
+    "sha256": "423ee19363930faf924c9b2ecc4175e2e769bc6d9e07dc113d364fd21c1d0f65"
+  },
+  "original_gpu_failure": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/retained-service-02/execution/result.json"
+}

@@ -12,6 +12,9 @@ namespace {
 using namespace object_detail;
 constexpr auto kConditionModel = "Qwen3-TTS-12Hz-1.7B-Base";
 constexpr auto kConditionRevision = "fd4b254389122332181a7c3db7f27e918eec64e3";
+constexpr auto kReferenceFormat = "q4t.tts-reference.v1";
+constexpr auto kReferenceCodecSha256 =
+    "836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258";
 // Same-speaker reference threshold already used by native diarization. Real
 // voice registration still requires a positive/different-speaker business gate.
 constexpr double kIdentityCosine = .65;
@@ -69,6 +72,71 @@ bool ReadVector(const Json& data, const char* key, size_t size,
   *out = std::move(next);
   return true;
 }
+bool Reference(uint64_t samples, std::span<const audio::TtsCodes> codes,
+               uint64_t duration_ns) {
+  if (codes.empty()) return samples == 0;
+  if (!samples || samples > 1440000 ||
+      codes.size() != (samples + 1919) / 1920 ||
+      duration_ns != samples * 1000000000ULL / 24000)
+    return false;
+  for (const auto& frame : codes)
+    for (const auto code : frame)
+      if (code < 0 || code >= audio::TtsConfig::kCodebook) return false;
+  return true;
+}
+Json ReferenceJson(const VoiceSampleEvidence& evidence) {
+  auto frames = Array();
+  for (const auto& frame : evidence.reference_codes) {
+    auto codes = Array();
+    for (const auto code : frame) codes.array.push_back(Number(code));
+    frames.array.push_back(std::move(codes));
+  }
+  return Object({{"format", String(kReferenceFormat)},
+                 {"codec_sha256", String(kReferenceCodecSha256)},
+                 {"sample_rate", Number(24000)},
+                 {"samples", Number(evidence.reference_samples)},
+                 {"codes", std::move(frames)}});
+}
+bool ReadReference(const Json& data, uint64_t* samples,
+                   std::vector<audio::TtsCodes>* codes) {
+  const auto* value = data.Find("reference");
+  if (!value) {
+    *samples = 0;
+    codes->clear();
+    return true;
+  }
+  if (!value->IsObject() || value->object.size() != 5 ||
+      value->GetString("format") != kReferenceFormat ||
+      value->GetString("codec_sha256") != kReferenceCodecSha256 ||
+      value->GetNumber("sample_rate", -1) != 24000)
+    return false;
+  const double count = value->GetNumber("samples", -1);
+  const auto* frames = value->GetArray("codes");
+  if (!std::isfinite(count) || count < 1 || count > 1440000 ||
+      std::floor(count) != count || !frames || frames->array.empty() ||
+      frames->array.size() > audio::TtsPrompt::kMaxReferenceFrames)
+    return false;
+  std::vector<audio::TtsCodes> next;
+  next.reserve(frames->array.size());
+  for (const auto& frame : frames->array) {
+    if (!frame.IsArray() || frame.array.size() != 16) return false;
+    audio::TtsCodes row;
+    for (size_t i = 0; i < row.size(); ++i) {
+      const auto& code = frame.array[i];
+      if (!code.IsNumber() || !std::isfinite(code.number) || code.number < 0 ||
+          code.number >= 2048 || std::floor(code.number) != code.number)
+        return false;
+      row[i] = static_cast<int32_t>(code.number);
+    }
+    next.push_back(row);
+  }
+  const auto size = static_cast<uint64_t>(count);
+  if (!Reference(size, next, data.GetInt("duration_ns"))) return false;
+  *samples = size;
+  *codes = std::move(next);
+  return true;
+}
+
 bool Evidence(std::string_view bytes, const VoiceSampleEvidence& evidence,
               bool condition) {
   return !bytes.empty() && bytes.size() <= kVoiceAudioBytes &&
@@ -76,6 +144,9 @@ bool Evidence(std::string_view bytes, const VoiceSampleEvidence& evidence,
          evidence.duration_ns >= 53333333 &&
          evidence.duration_ns <= 60000000000ULL &&
          Text(evidence.transcript, 16384) && Vector(evidence.identity, 192) &&
+         Reference(evidence.reference_samples, evidence.reference_codes,
+                   evidence.duration_ns) &&
+         (condition || evidence.reference_codes.empty()) &&
          (!condition || Vector(evidence.condition, 2048));
 }
 bool SameVoice(std::span<const float> a, std::span<const float> b) {
@@ -152,7 +223,10 @@ ObjectReply VoiceRegistry::Read(ObjectKind kind, const std::string& id,
       !Text(data->GetString("transcript"), 16384))
     return Corrupt();
   if (voice) {
-    if (data->GetString("type") != "audio_sample" ||
+    uint64_t reference_samples = 0;
+    std::vector<audio::TtsCodes> reference_codes;
+    if (!ReadReference(*data, &reference_samples, &reference_codes) ||
+        data->GetString("type") != "audio_sample" ||
         !ValidId(data->GetString("consent")) ||
         !Hash(data->GetString("consent_source_sha256")) ||
         data->GetString("condition_model") != kConditionModel ||
@@ -307,6 +381,8 @@ ObjectReply VoiceRegistry::CreateSampleVoice(
   Set(&root.data, "condition", VectorJson(evidence.condition));
   Set(&root.data, "condition_model", String(kConditionModel));
   Set(&root.data, "condition_revision", String(kConditionRevision));
+  if (!evidence.reference_codes.empty())
+    Set(&root.data, "reference", ReferenceJson(evidence));
   return Publish(std::move(root), request.audio_sample.bytes, access,
                  {&parent, 1});
 }
@@ -330,7 +406,11 @@ ObjectReply VoiceRegistry::Resolve(const std::string& id,
                              data.GetString("source_sha256"),
                              saved.value.GetInt("revision"),
                              {}};
-  if (!ReadVector(data, "condition", 2048, &next.condition)) return Corrupt();
+  if (!ReadVector(data, "condition", 2048, &next.condition) ||
+      !ReadReference(data, &next.reference_samples, &next.reference_codes))
+    return Corrupt();
+  if (!next.reference_codes.empty())
+    next.reference_transcript = data.GetString("transcript");
   *out = std::move(next);
   saved.value = Metadata(saved.value, ObjectKind::kVoice);
   return saved;

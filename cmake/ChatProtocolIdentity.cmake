@@ -83,6 +83,17 @@ set(protocol_inputs
   src/server/chat_audio_execution.cpp
   src/server/asr_request.cpp
   include/q4t/server/asr_response.h
+  include/q4t/server/asr_stream_state.h
+  src/server/asr_stream_state.cpp
+  include/q4t/server/asr_stream_output.h
+  src/server/asr_stream_output.cpp
+  include/q4t/server/asr_stream_input.h
+  src/server/asr_stream_input.cpp
+  include/q4t/server/realtime_asr_policy.h
+  src/server/realtime_asr_policy.cpp
+  include/q4t/server/realtime_transcript_history.h
+  src/server/realtime_transcript_history.cpp
+  src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
   src/server/asr_statistics.cpp
@@ -90,6 +101,7 @@ set(protocol_inputs
   src/server/asr_alignment_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
+  src/server/chat_realtime.cpp
   src/server/chat_asr_execution.cpp
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
@@ -110,6 +122,12 @@ set(protocol_inputs
   src/audio/asr_model.cu
   include/q4t/audio/features.h
   src/audio/features.cpp
+  src/audio/noise_fft.cpp
+  src/audio/noise_reduction.cpp
+  src/audio/stream_resample.cpp
+  src/audio/noise_fft.h
+  include/q4t/audio/noise_reduction.h
+  include/q4t/audio/stream_resample.h
   include/q4t/runtime/prefill_kernels.h
   include/q4t/model/linear.h
   src/model/full_attention.cu
@@ -617,6 +635,20 @@ set(protocol_inputs
   include/q4t/server/http_response.h
   include/q4t/server/finite_response.h
   include/q4t/server/http_request.h
+  include/q4t/server/websocket.h
+  include/q4t/server/realtime_transcription_protocol.h
+  include/q4t/server/object_diagnostics.h
+  include/q4t/server/realtime_transcription_pump.h
+  include/q4t/server/realtime_noise_input.h
+  include/q4t/server/realtime_transcription_session.h
+  include/q4t/server/realtime_vad.h
+  include/q4t/server/realtime_audio_export.h
+  include/q4t/server/realtime_audio_history.h
+  src/server/realtime_audio_history.cpp
+  src/server/realtime_audio_export.cpp
+  include/q4t/server/realtime_pcm.h
+  include/q4t/server/realtime_audio_queue.h
+  include/q4t/server/websocket_session.h
   include/q4t/server/http_framing.h
   include/q4t/server/http_connection.h
   include/q4t/server/http_listener.h
@@ -670,6 +702,15 @@ set(protocol_inputs
   src/server/http_response.cpp
   src/server/finite_response.cpp
   src/server/http_request.cpp
+  src/server/websocket.cpp
+  src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_pump.cpp
+  src/server/realtime_noise_input.cpp
+  src/server/realtime_transcription_session.cpp
+  src/server/realtime_vad.cpp
+  src/server/realtime_pcm.cpp
+  src/server/realtime_audio_queue.cpp
+  src/server/websocket_session.cpp
   src/server/chat_server.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_admission.cpp

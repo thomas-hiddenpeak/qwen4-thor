@@ -1,0 +1,8 @@
+{
+  "new_cpu_cases": 14,
+  "existing_crypto_cases": 2,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "scope": "RFC6455 bounded codec and optional cryptographic challenge only; no HTTP upgrade route or Realtime service qualification",
+  "prior_host_sha256": "52d16205f27974131e44dfcb4323fe7a70773707dd90d7706ecf4116381b1496"
+}

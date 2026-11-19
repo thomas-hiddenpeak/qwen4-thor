@@ -1,0 +1,12 @@
+{
+  "status": "PASS_NATIVE_ENTRYPOINT_UPGRADE_WITH_CPU_PEER",
+  "distinct_tests": 16,
+  "executions": 19,
+  "seconds": 16.915915332734585,
+  "original_failures": 2,
+  "affected_retest": 3,
+  "reused_tests": 13,
+  "gpu_model_loads": 0,
+  "default_rev326_unchanged": true,
+  "backend_session_and_model_qualified": false
+}

@@ -95,7 +95,7 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
     }
     size_t max_frames = tts_limits_.max_frames;
     if (const auto* limits = http->Client().Limits()) {
-      if (prompt.text_ids.size() > limits->max_prompt_tokens ||
+      if (prompt.InputTokens() > limits->max_prompt_tokens ||
           limits->max_output_tokens < 2 * audio::TtsConfig::kCodeGroups + 1) {
         detail::SendError(fd, 400, "Speech exceeds client token limits", {},
                           "client_token_limit_exceeded");
@@ -108,7 +108,7 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
     ClientRateLease rate(http->RateDomain());
     ScopeExit settle([&] { rate.Settle(); });
     const auto reserved =
-        rate.Reserve(clients_, http->Client(), prompt.text_ids.size(),
+        rate.Reserve(clients_, http->Client(), prompt.InputTokens(),
                      max_frames * audio::TtsConfig::kCodeGroups + 1);
     if (reserved != ClientRateResult::kAllowed) {
       const bool rpm = reserved == ClientRateResult::kRpm;

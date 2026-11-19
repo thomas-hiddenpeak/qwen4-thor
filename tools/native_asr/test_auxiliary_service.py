@@ -80,6 +80,10 @@ class AuxiliaryService(unittest.TestCase):
             def save(name,value):
                 (out/name).write_text(json.dumps(value))
             (pack/'manifest.json').write_text(json.dumps(dict(settings=dict(native_asr=self.identity['native_asr']))))
+            (pack.parent/'manifest.json').write_text(json.dumps(dict(
+                recovery_profiles=dict(identity=self.identity))))
+            capabilities = json.loads((RECORDED/'primary-capabilities.json').read_text())
+            save('capabilities.wire', capabilities)
             plan = dict(scenario='tool_version', audio_auxiliary=self.identity,
                 auxiliary_clip=dict(path=str(clip),sha256=audio.evidence.AUDIO_PAIR_SHA),
                 package=dict(package=str(pack.parent)))
@@ -97,6 +101,15 @@ class AuxiliaryService(unittest.TestCase):
             for label in ['stored-before','stored-after']:save(label+'.wire',dict(choices=['kept']))
             result = service.check_business(out)
             self.assertEqual(result['results']['fallback-asr']['words'],26)
+            # This historical fixture predates Realtime. If it claims a new
+            # capability, it must supply the corresponding real evidence.
+            claimed = copy.deepcopy(capabilities)
+            claimed['realtime'] = dict(transcription_configured=True,
+                automatic_replay=False, per_turn_client_admission=True)
+            save('capabilities.wire', claimed)
+            with self.assertRaisesRegex(RuntimeError, 'managed Realtime capability omitted'):
+                service.check_business(out)
+            save('capabilities.wire', capabilities)
             bad = copy.deepcopy(self.response);bad['words'] = []
             save('fallback-asr.wire',bad)
             with self.assertRaises(ValueError):service.check_business(out)

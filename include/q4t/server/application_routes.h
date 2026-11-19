@@ -4,6 +4,16 @@
 
 namespace q4t::server {
 
+// Exact WebSocket targets; adapters validate their own query semantics.
+inline bool IsRealtimeTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/realtime" || path == "/v1/live/sessions";
+}
+inline bool IsRealtimeUpgrade(std::string_view method,
+                              std::string_view target) {
+  return method == "GET" && IsRealtimeTarget(target);
+}
+
 inline bool ValidApplicationId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
   for (const char c : id)

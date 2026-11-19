@@ -1,0 +1,11 @@
+[  0%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_synthesis_plan_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_codec_layout_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis_plan.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tts_service.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_layout.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_layout.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_config.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tts_synthesis_plan_tests.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Linking CXX executable q4t_tts_synthesis_plan_tests
+[100%] Built target q4t_tts_synthesis_plan_tests

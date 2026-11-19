@@ -32,6 +32,10 @@ class Connection {
   ssize_t Read(void* data, size_t size, Clock::time_point deadline);
   bool Send(std::string_view data, Clock::time_point deadline,
             bool* started = nullptr);
+  // Duplex-only, nonblocking. Keep read and write buffers stable across
+  // -1/EAGAIN and poll the returned direction. Never call concurrently.
+  ssize_t TryRead(void* data, size_t size, short* wait);
+  ssize_t TryWrite(std::string_view data, short* wait);
   bool Cancelled();
   short PollEvents() const;
   std::string extra_headers;
@@ -60,7 +64,8 @@ void Error(Connection& client, int status, std::string_view code,
 bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started);
 bool Relay(int upstream, Connection& client, int idle_seconds,
-           std::string_view request_id, bool* started, bool error_only = false);
+           std::string_view request_id, bool* started, bool error_only = false,
+           std::string_view initial = {});
 std::string RequestId();
 
 }  // namespace q4t::service::ingress

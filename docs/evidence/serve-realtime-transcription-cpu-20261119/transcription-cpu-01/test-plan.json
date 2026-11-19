@@ -1,0 +1,43 @@
+{
+  "scope": "Native manual-commit realtime transcription session, strict input, job ownership, cancellation, actual ASR callback and per-turn admission; CPU fixtures are not model qualification",
+  "cpu_tests": 20,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "sources": {
+    "CMakeLists.txt": "17bbd9ccca7d70be172b31fcc0b40bbb945fafeda60aac78d344944d7c1bd04c",
+    "cmake/ChatProtocolIdentity.cmake": "98bb12bc794bade238b5a3238d1b61a3cac274cfd3f1c384537bd033a1438535",
+    "cmake/HostTestSources.cmake": "ad11600bc3439c5c03a7c75ea0df9d887a6637395234b49f570fcb166dbf774c",
+    "include/q4t/server/asr_response.h": "9d264675009cdc8d6cb9170c66442599f29238adc04398f568b7bc41ff8761a1",
+    "include/q4t/server/chat_server.h": "dde5c9560ba058c772635843e78b30c3059570512259a6c4ce4a68521092ddda",
+    "include/q4t/server/realtime_audio_queue.h": "af1d83113fae79f49e057068f4583e10f809e90ea9e2c00b32115b02410705a9",
+    "include/q4t/server/realtime_pcm.h": "3b46f993ebe332a0afcbc446dc657ea9b5aa19631df60bf429d12f21e0dde73c",
+    "include/q4t/server/realtime_transcription_protocol.h": "3192ad17f63177faf2d71eb4563d250c730601530c0ca5a147b1ecd17cb3ccbe",
+    "include/q4t/server/realtime_transcription_session.h": "93f8618cf1c086b9ef47a8c6282c9b1631658614c6fc89a6aba57a9d87ec6f74",
+    "include/q4t/server/websocket_session.h": "4f5286ae668a0d3f3e64ef6c829ebe34cc35bfbfafd3f05741f909e19605be3f",
+    "src/server/asr_response.cpp": "966aa0b6553b671dd4644171ca9f084d925882bd2ae88264ee91df97164769dc",
+    "src/server/chat_asr.cpp": "91a1c4d1b210eeef45d4f6badf5274237f656e63314a2edc5eb7cd7c7c317c26",
+    "src/server/chat_asr_execution.cpp": "3ec5edf6b97dcdfd0289dfc934f3e0d9f118e58f6c9e21862e8e8b6887d94ae5",
+    "src/server/chat_http.cpp": "265f934457700379b31d91a59760714cde3042bf9ffb5924c9558abad9360b3e",
+    "src/server/chat_metrics.cpp": "8bb61e9a86fb3d9984ba3dd7f02bb78190d2a3baf603a45ffae12f07bd50f20d",
+    "src/server/chat_realtime.cpp": "e941cf575c01d3b622b44c9e2d8209b4169ac81e3d087324f569b1f055bf6007",
+    "src/server/client_policy.cpp": "e1ea34a3a4a6028920edc35dfe2e6246d6b0d48e78183e418ccd0e66159a50ac",
+    "src/server/client_request.cpp": "0bc1e1fad8140d11b705fa1343cd1d166f76d3afa406c11bd42b305c9c411f69",
+    "src/server/realtime_audio_queue.cpp": "e8c55eed7dbfde11e1ca6fe11b579af838e6c5caecf587f4a804437858043a05",
+    "src/server/realtime_pcm.cpp": "54673dbfa6336ab153da502be8a9bf276652017f54c157bec28875bf22b17e7f",
+    "src/server/realtime_transcription_protocol.cpp": "abd58c97859958b626bb0b1a98d98bfb1ee71771e4e93dcd3b6f3d2f71599d05",
+    "src/server/realtime_transcription_session.cpp": "8439eb688fbd342921b073fa8026e8624d0cefff720b66f34b27ea64cab36250",
+    "src/server/websocket_session.cpp": "d317bc2250743156c7baaed80dbdf83c7e91297382ef5ecee4de83478ec26374",
+    "tests/server_asr_protocol_test.cpp": "d6f9661074ba75a32e10bf2bf7df2afb15bcfc5146eeb04f11982f6ed8e11f25",
+    "tests/server_realtime_transcription_test.cpp": "29b5b49d4d1a3c1b7d8c623c0ddb5f1ac8914778763e24c22a4db0c3f7b57412",
+    "tests/server_websocket_session_test.cpp": "62c8326801b4e0cd16e1cf79368ab2b0aaf06b0397f11be742d0bb69be85f0b0"
+  },
+  "acceptance": [
+    "strict GA/legacy settings and canonical base64 with error identity",
+    "item order and immutable settings/audio while worker runs",
+    "quota and actual usage preserved by native executor, no loopback HTTP",
+    "exception/malformed/deadline failure never completed",
+    "bounded input/output, cancel/join, real socket tick without peer input",
+    "affected existing ASR SSE/UTF8/probability contracts"
+  ],
+  "original_build_failure": "explicit string_view conversion; no tests ran; log/source retained"
+}

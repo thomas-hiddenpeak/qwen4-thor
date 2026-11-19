@@ -40,6 +40,7 @@ void SendExceptionResponse(int fd, ResponseState state,
   // If the transport itself throws, abandon this response without retrying.
   try {
     auto* context = HttpResponseContext::Current(fd);
+    if (context && context->Upgraded()) return;
     const bool memory = kind == ExceptionKind::kHostMemory;
     const char* code = memory ? "host_memory_exhausted" : "internal_error";
     const char* type = memory ? "service_unavailable_error" : "server_error";
@@ -51,7 +52,8 @@ void SendExceptionResponse(int fd, ResponseState state,
                    context->TraceId().c_str(), code);
     }
     if (state == ResponseState::kHeadersStarted ||
-        state == ResponseState::kTerminal || state == ResponseState::kComplete)
+        state == ResponseState::kTerminal ||
+        state == ResponseState::kComplete || state == ResponseState::kUpgraded)
       return;
     char body[256];
     const int body_size = std::snprintf(
@@ -435,7 +437,8 @@ bool HttpResponseContext::WritePayload(
 bool HttpResponseContext::FinishResponse() {
   StopHeartbeats();
   const std::lock_guard<std::mutex> lock(write_mu_);
-  if (framing_finished_ || write_failure_.reason != HttpWriteFailure::kNone ||
+  if (websocket_ || framing_finished_ ||
+      write_failure_.reason != HttpWriteFailure::kNone ||
       (state_ != ResponseState::kComplete &&
        !(state_ == ResponseState::kTerminal && terminal_written_)))
     return false;
@@ -453,10 +456,38 @@ bool HttpResponseContext::FinishResponse() {
   return keep_alive_;
 }
 
+bool HttpResponseContext::BeginWebSocket(std::string_view accept,
+                                         std::string_view protocol,
+                                         const WriteOptions& options) {
+  if (detached_ || websocket_ || !http11_ || state_ != ResponseState::kUnsent ||
+      chunked_ || heartbeat_.joinable() || accept.size() != 28 ||
+      accept.back() != '=' ||
+      (!protocol.empty() && protocol != "realtime" && protocol != "live"))
+    return false;
+  for (const char c : accept.substr(0, 27))
+    if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+          (c >= '0' && c <= '9') || c == '+' || c == '/'))
+      return false;
+  SetKeepAlive(false);
+  const auto head =
+      std::string("HTTP/1.1 101 Switching Protocols\r\n") +
+      "Upgrade: websocket\r\nConnection: Upgrade\r\n" +
+      "Sec-WebSocket-Accept: " + std::string(accept) + "\r\n" +
+      (protocol.empty()
+           ? ""
+           : "Sec-WebSocket-Protocol: " + std::string(protocol) + "\r\n") +
+      "X-Request-Id: " + trace_id_ + "\r\n\r\n";
+  if (!Write(head.data(), head.size(), options, &state_)) return false;
+  websocket_ = true;
+  state_ = ResponseState::kUpgraded;
+  return true;
+}
+
 bool HttpResponseContext::Write(const char* data, size_t size,
                                 const WriteOptions& options,
                                 ResponseState* header_state) {
   const std::lock_guard<std::mutex> lock(write_mu_);
+  if (websocket_) return false;
   if (detached_) {
     // Captured executions must use a typed finite response. Raw/SSE/binary
     // writes cannot silently succeed and manufacture an incomplete result.
@@ -489,8 +520,8 @@ void HttpResponseContext::StartHeartbeats(
     std::shared_ptr<RequestControl> control,
     std::chrono::milliseconds interval) {
   if (detached_) return;
-  if (state_ != ResponseState::kStreaming || heartbeat_.joinable() ||
-      interval.count() <= 0)
+  if (websocket_ || state_ != ResponseState::kStreaming ||
+      heartbeat_.joinable() || interval.count() <= 0)
     throw std::logic_error("invalid heartbeat state");
   control_ = std::move(control);
   interval_ = interval;
@@ -614,6 +645,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
                 std::string_view allow) {
   auto* context = HttpResponseContext::Current(fd);
+  if (context && context->Upgraded()) return false;
   if (context && context->CapturesJson()) {
     context->LengthResponse();
     context->BeforeTerminal();

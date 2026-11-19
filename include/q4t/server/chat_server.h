@@ -53,6 +53,7 @@
 #include "q4t/server/voice_registry.h"
 #include "q4t/server/speech_output.h"
 #include "q4t/server/asr_response.h"
+#include "q4t/server/realtime_transcription_session.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -88,6 +89,7 @@ namespace q4t {
 namespace server {
 struct EmbeddingStepResult;
 class RequestDiagnostics;
+class AsrStreamPass;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -254,7 +256,8 @@ class ChatServer {
   ObjectReply RunNativeVoiceCondition(
       int fd, std::span<const float> pcm,
       const std::shared_ptr<RequestControl>& control,
-      RequestDiagnostics& diagnostic, std::vector<float>* condition);
+      RequestDiagnostics& diagnostic, std::vector<float>* condition,
+      std::vector<audio::TtsCodes>* reference_codes);
   ObjectReply PrepareVoiceEvidence(
       int fd, const VoiceAudio& audio, std::string_view consent_language,
       const std::shared_ptr<RequestControl>& control,
@@ -319,12 +322,27 @@ class ChatServer {
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
+  void HandleRealtime(int fd, std::string_view path,
+                       const HttpRequestHeaders& headers,
+                       std::string_view initial, std::string_view accept);
+  ObjectReply RunRealtimeTranscription(
+      const ClientIdentity& client, const RealtimeTranscriptionJob& job,
+      const std::array<std::span<const uint8_t>, 2>& bytes,
+      const std::shared_ptr<RequestControl>& control,
+      const RealtimeTranscriptSink& emit);
+  ObjectReply RunRealtimeAsrStream(
+      const ClientIdentity& client, const RealtimeTranscriptionJob& job,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ActualUsageCounter& usage,
+      const RealtimeTranscriptSink& emit);
   ObjectReply RunNativeAsr(
       int fd, const AsrRequest& request, const audio::AsrFeatures& features,
       const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       ActualUsageCounter& usage, AsrTranscript* transcript,
-      std::string_view leading_text = {});
+      std::string_view leading_text = {},
+      const std::function<bool(const AsrTextDelta&)>& emit_delta = {},
+      AsrStreamPass* captured_pass = nullptr);
   ObjectReply PrepareNativeChatAudio(
       int fd, const io::Json& source_request, const io::Json& request,
       const std::shared_ptr<RequestControl>& control,
@@ -544,6 +562,7 @@ class ChatServer {
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
   HttpBodyBudget tunnel_body_budget_{17U << 20};
+  HttpBodyBudget realtime_host_budget_{4 * kRealtimeSessionHostBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};
@@ -551,6 +570,7 @@ class ChatServer {
   std::atomic<int> operations_observation_conns_{0};
   std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
+  std::atomic<int> realtime_conns_{0};
   std::atomic<int> tunnel_poll_conns_{0}, tunnel_response_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};
@@ -640,7 +660,7 @@ class ChatServer {
   std::mutex voice_mu_;
   AsrHealth voice_health_;
   uint8_t* d_voice_weights_ = nullptr;
-  audio::TtsSpeakerDeviceWeights voice_weights_;
+  TtsVoiceBoundWeights voice_weights_;
   ModelCatalog asr_catalog_;
   std::string asr_model_dir_;
   AsrServiceLimits asr_limits_;

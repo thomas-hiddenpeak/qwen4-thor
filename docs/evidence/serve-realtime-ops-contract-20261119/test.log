@@ -1,0 +1,15 @@
+test_actual_archived_snapshot_projects_complete_realtime_group (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_actual_archived_snapshot_projects_complete_realtime_group) ... ok
+test_all_native_connection_classes_are_in_the_fixed_projection (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_all_native_connection_classes_are_in_the_fixed_projection) ... ok
+test_failed_drain_keeps_original_response_before_parsing (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_failed_drain_keeps_original_response_before_parsing) ... ok
+test_live_resource_values_and_uint64_counter_precision_preserved (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_live_resource_values_and_uint64_counter_precision_preserved) ... ok
+test_new_resource_group_cannot_be_partial_or_duplicated (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_new_resource_group_cannot_be_partial_or_duplicated) ... ok
+test_old_v5_does_not_fabricate_realtime_zeroes (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_old_v5_does_not_fabricate_realtime_zeroes) ... ok
+test_unknown_labels_and_malformed_values_still_reject (tools.serve_ops.test_realtime_metrics.RealtimeMetrics.test_unknown_labels_and_malformed_values_still_reject) ... ok
+test_current_archived_v5_upload_and_tunnel_reasons (tools.serve_ops.test_ops.MetricContract.test_current_archived_v5_upload_and_tunnel_reasons) ... ok
+test_old_v5_does_not_fabricate_absent_additions (tools.serve_ops.test_ops.MetricContract.test_old_v5_does_not_fabricate_absent_additions) ... ok
+test_v5_additions_preserve_required_labels_and_value_rejections (tools.serve_ops.test_ops.MetricContract.test_v5_additions_preserve_required_labels_and_value_rejections) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.061s
+
+OK

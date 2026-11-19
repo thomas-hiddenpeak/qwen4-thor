@@ -1,0 +1,19 @@
+{
+  "cases": 5,
+  "modules": [
+    "tools.serve_service.test_voice_package.VoicePackage.test_icl_declaration_requires_actual_reference_encoder_identity",
+    "tools.serve_service.test_voice_package.VoicePackage.test_icl_declaration_cannot_hide_or_rewrite_reference_contract",
+    "tools.serve_service.test_voice_package.VoicePackage.test_legacy_speaker_identity_cannot_claim_reference_encoder",
+    "tools.serve_service.test_voice_package.VoicePackage.test_observed_base_condition_health_and_registration_cannot_be_dropped",
+    "tools.serve_service.test_voice_package.VoicePackage.test_base_only_package_roundtrip_preserves_optional_assets_and_command"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_service/package.py": "48b7af4fdc85e553c1f3ab46288f350da5823e5ea37367b5b3eb650417a36bf5",
+    "tools/serve_service/test_voice_package.py": "58384e76fc18047935ab7e1e139b54aba674b14996815014035e995908ed2b5a",
+    "tools/serve_service/test_tts_package.py": "235b03286b6739d00e7adcad16cd10a8058e56d3cff04a3fd42908940b030652"
+  },
+  "original_failure": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/package-prepare-01.stderr",
+  "original_failure_sha256": "eab78ca4fb5ea501c9465b48e3069fe14a3915eedf132ea057fa37e45f4b0d2c"
+}

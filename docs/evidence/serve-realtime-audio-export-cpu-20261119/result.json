@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "native",
+      "exit_code": 0,
+      "seconds": 0.3141955020837486,
+      "cases": 40
+    },
+    {
+      "name": "default_resampler_bitwise",
+      "passed": true,
+      "seconds": 0.005673449020832777,
+      "bytes": 69404,
+      "float_values": 17351,
+      "prior_sha256": "160974a8e837cb5b60a1c0070b994578064b0daa7800115c6fb0ff01043bbdb6",
+      "current_sha256": "160974a8e837cb5b60a1c0070b994578064b0daa7800115c6fb0ff01043bbdb6"
+    }
+  ],
+  "seconds": 0.32003627391532063,
+  "gpu_actions": 0
+}

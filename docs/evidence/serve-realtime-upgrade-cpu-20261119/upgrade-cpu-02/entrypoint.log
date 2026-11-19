@@ -1,0 +1,8 @@
+test_authentication_origin_body_and_version_fail_before_backend (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_authentication_origin_body_and_version_fail_before_backend) ... ok
+test_browser_subprotocol_auth_keeps_case_and_never_echoes_key (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_browser_subprotocol_auth_keeps_case_and_never_echoes_key) ... ok
+test_real_tls_live_upgrade_and_binary_frame (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_real_tls_live_upgrade_and_binary_frame) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.201s
+
+OK

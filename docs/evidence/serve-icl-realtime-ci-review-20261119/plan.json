@@ -1,0 +1,32 @@
+{
+  "head": "0b0321471e2f4ef9fc4f74cae38a99fe3bb64c8d",
+  "reviews": {
+    "tools/serve_recovery/bundle.py": "New native packages bind all 74 build inputs, including 12 WebSocket/duplex/crypto inputs. Existing package byte identities remain immutable; verified actual 63 compiler dependencies and 24 omission/drift controls.",
+    "tools/serve_recovery/profile_acceptance.py": "Explicit ICL and actual Realtime capability-to-checklist equality; bounded two profiles/entries/sessions, actual ports and SDK identities; only exact completed primary voice evidence may be reused, with original failed process and cumulative starts/requests/time retained.",
+    "tools/serve_recovery/profile_evidence.py": "Reference geometry, codebook, consent ownership, codec SHA and full reference token usage required. Realtime requires three genuine turns, actual 70/81/70 input, waveform hash, deletion/history and all resource settlement. Old qualification cannot acquire new capability by relabeling.",
+    "tools/serve_recovery/profile_realtime.py": "Frozen actual clip, TLS credentials, pinned complete SDK modules, one explicit WebSocket connection per profile; no automatic replay. Exact processed waveform shared only after byte equality; ingress cleanup always in finally. Fixed budget and actual counters retained.",
+    "tools/serve_recovery/profile_voice_review.py": "Read-only reuse exclusively for the named old health-assertion failure: exact binary/config/assets/requests/wires and complete checklist, strict original NVML/cleanup and failed-status retention; other failures or identity changes rejected. No inference or network in review.",
+    "tools/serve_service/package.py": "Full registered ICL declaration and reference_encoder/base-reference identity bound together. Historical base-speaker declarations keep their old checks; omitted or changed conditioning cannot pass as reference ICL."
+  },
+  "sources": {
+    "tools/serve_recovery/bundle.py": "6689a049a2951ae2f80cad801dcfd28cc6d4b6fd3b8cccce9899fbe5db1960cc",
+    "tools/serve_recovery/profile_acceptance.py": "278c5f841487ff6a53f1cbdecd889f7b149af787629585e96d26013e6aea6631",
+    "tools/serve_recovery/profile_evidence.py": "e7c37482ddbe6758f945e6211ec13a8e6589683575b388a07b2946004b40c158",
+    "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
+    "tools/serve_recovery/profile_voice_review.py": "c776d0554c4af62072d8bbd96c303a512164b137c3ed443ae70facec3ee58574",
+    "tools/serve_service/package.py": "48b7af4fdc85e553c1f3ab46288f350da5823e5ea37367b5b3eb650417a36bf5"
+  },
+  "evidence_reused": [
+    "docs/evidence/serve-realtime-native-inventory-20261119/README.md",
+    "docs/evidence/serve-icl-profile-health-review-20261119/README.md",
+    "docs/evidence/serve-icl-package-health-20261119/README.md",
+    "docs/evidence/serve-icl-realtime-primary-light-20261119/README.md",
+    "docs/evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+    "docs/evidence/serve-icl-realtime-delivery-20261119/README.md"
+  ],
+  "cpu_commands": 1,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "draft_semantic_sources_excluded": true,
+  "runtime_changed": false
+}

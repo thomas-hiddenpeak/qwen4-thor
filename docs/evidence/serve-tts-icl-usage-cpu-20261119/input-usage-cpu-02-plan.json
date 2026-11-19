@@ -1,0 +1,17 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "tts_icl_rate_rejects_text_only_undercount_for_tpm_and_prompt_limits",
+    "tts_icl_cancel_settles_only_started_reference_and_partial_output",
+    "tts_icl_chat_extension_admits_full_input_without_charging_cancelled_step"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tests/server_tts_service_test.cpp": "6bc36bc136c6e27c1dca38bc6cebc49df00c702b9cc2417720adc96ae7449c4d",
+    "docs/STATUS.md": "27bd0adf05a7aebaf91f0969f85b1cd05837049255260b26e18de6044ac2a4d9",
+    "docs/log/2026-11-19.md": "6bbab5f2b660ee8e0478343b77c2691ef44ace5f39b6a386a71a1bbe8928f2f1"
+  },
+  "reuse_passed_cases": 13,
+  "original_failed_result": "../input-usage-cpu-01/result.json"
+}

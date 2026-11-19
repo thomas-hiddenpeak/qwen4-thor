@@ -1,0 +1,43 @@
+{
+  "scope": "Remaining single closed CPU fixture, three complete hardlinks; preserve all runtime/model/log/source/default files",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-01/q4t_host_tests",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-02/q4t_host_tests",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-03/host-before",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    }
+  ],
+  "unique_payloads": 1,
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f"
+  },
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 25165824
+}

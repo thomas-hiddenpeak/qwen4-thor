@@ -1,0 +1,6 @@
+{
+  "status": "PREPARATION_FAIL",
+  "cpu_tests": 0,
+  "gpu_actions": 0,
+  "reason": "Preparation compared annotated inventory dict to extracted field-name list; source checker itself was unchanged. Corrected to check() against renewed source map."
+}

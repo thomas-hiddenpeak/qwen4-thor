@@ -37,6 +37,11 @@ CryptoResult CryptoOpen(const CryptoKey& key, const CryptoNonce& nonce,
                         std::string_view aad, std::string_view ciphertext,
                         const CryptoTag& tag, std::string* plaintext);
 
+// RFC6455 challenge response only, not authentication or an integrity MAC.
+// Requires a canonical Base64 16-byte client key; output changes on success.
+// Uses the existing optional libcrypto; failure is local to the handshake.
+CryptoResult CryptoWebSocketAccept(std::string_view key, std::string* accept);
+
 // Uploads' optional wire checksum, never used for authentication. Streaming
 // updates keep file-sized buffers out of memory. Begin alone loads libcrypto;
 // missing MD5 affects only the request explicitly asking for this checksum.

@@ -1,0 +1,102 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.6s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  3%] Built target q4t_guardian_process
+[  3%] Built target q4t_runtime
+[  7%] Built target q4t_trace
+[  7%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_program_javascript
+[  7%] Built target q4t_service_tools
+[  7%] Built target q4t_text
+[ 10%] Built target q4t_quant
+[ 10%] Built target q4t_service_cli
+[ 17%] Built target xgrammar
+[ 32%] Built target q4t_model
+[ 32%] Built target q4t_startup_plan
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_speaker_backend.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_speaker_execution.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_speaker_turns.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_separator_execution.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_separator_backend.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_audio_synthesis.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_audio_execution.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_alignment.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_realtime.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_execution.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_asr_backend.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_aligner_backend.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vad_backend.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_aligner_execution.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_tts_backend.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_tts_execution.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_speech.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_speech_prompt.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_voice_backend.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_voice_execution.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_voice_evidence.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_voices.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 39%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input_tokens.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_responses.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_moderations.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embeddings.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_embedding_backend.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vector_ingestion.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_vector_search.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/realtime_transcription_protocol.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/realtime_transcription_session.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/websocket_session.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp: In function ‘q4t::io::Json q4t::server::{anonymous}::Failure(const q4t::server::ObjectReply&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp:18:40: error: could not convert ‘(& reply)->q4t::server::ObjectReply::ClientCode()’ from ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’}
+   18 |        {"code", String(reply.ClientCode())},
+      |                        ~~~~~~~~~~~~~~~~^~
+      |                                        |
+      |                                        std::string_view {aka std::basic_string_view<char>}
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp:15:16: error: could not convert ‘{{"type", q4t::server::responses_detail::String(std::string)()}, {"code", <expression error>}, {"message", q4t::server::responses_detail::String(std::string)()}, {"param", (reply.q4t::server::ObjectReply::value.q4t::io::Json::Has(std::__cxx11::basic_string<char>(((const char*)"param"), std::allocator<char>())) ? q4t::io::Json((* reply.q4t::server::ObjectReply::value.q4t::io::Json::Find(std::__cxx11::basic_string<char>(((const char*)"param"), std::allocator<char>())))) : q4t::io::Json{q4t::io::Json::Type::kNull, false, 0.0, std::__cxx11::basic_string<char>(), std::vector<q4t::io::Json>{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >::_Vector_impl{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >::_Vector_impl_data{0, 0, 0}}}}, std::vector<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >::_Vector_impl{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >::_Vector_impl_data{0, 0, 0}}}}})}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   15 |   return Object(
+      |          ~~~~~~^
+      |                |
+      |                <brace-enclosed initializer list>
+   16 |       {{"type", String(reply.http_status >= 500 ? "server_error"
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   17 |                                                 : "invalid_request_error")},
+      |                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   18 |        {"code", String(reply.ClientCode())},
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   19 |        {"message", String(reply.ClientMessage())},
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   20 |        {"param",
+      |        ~~~~~~~~~
+   21 |         reply.value.Has("param") ? *reply.value.Find("param") : Json{}}});
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 46%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:3551: CMakeFiles/q4t_server.dir/src/server/realtime_transcription_session.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1516: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1696: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:662: q4t] Error 2

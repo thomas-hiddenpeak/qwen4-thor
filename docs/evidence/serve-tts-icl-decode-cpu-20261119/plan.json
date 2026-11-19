@@ -1,0 +1,14 @@
+{
+  "phase": "ICL reference-conditioned decoder global chunk schedule",
+  "new_cpu_tests_max": 8,
+  "direct_existing_tests_max": 4,
+  "seconds": 120,
+  "gpu": 0,
+  "contracts": [
+    "Keep official global chunk grid over reference+generated codes",
+    "Skip fully discarded reference chunks but replay exactly the same left25 and mixed block",
+    "Never expose reference PCM; hold output until acknowledgement and release no unconsumed buffer",
+    "Charge actual reference frames and decoder context; no reference change to legacy generation-only output",
+    "Cancellation and malformed bounds preserve owned buffers and error contract"
+  ]
+}

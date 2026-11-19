@@ -35,10 +35,15 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_layout.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_codec_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_synthesis_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_codec_layout_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_encoder_layout.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_encoder_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/tts_generation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_generation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_base_generation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_icl_prompt_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/tts_synthesis_plan_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_tracks_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/separator_tracks.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/separator_resample_test.cpp
@@ -81,6 +86,15 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_asr_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcript_history.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_transcript_history_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_output_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_state_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_statistics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_statistics_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_alignment_output.cpp
@@ -97,6 +111,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_layout_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_config_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/features.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/noise_fft.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/noise_reduction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/noise_reduction_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/audio/stream_resample.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/stream_resample_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_features_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program.cpp
@@ -367,6 +386,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_scheduler_submission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_diagnostics_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_diagnostics_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_progress_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_progress_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_admission_test.cpp
@@ -379,6 +399,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_forward_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_upgrade_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_framing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_body_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_session_test.cpp
@@ -417,6 +438,27 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/structured_decoder.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_output_constraints_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_websocket_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_protocol.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_pump.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_noise_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_vad_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_noise_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_pump_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_transcription_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_vad.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_export.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_history.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_audio_history_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_audio_export_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_pcm.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_pcm_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_queue.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_websocket_session_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_audio_queue_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_contract.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sampling.cpp

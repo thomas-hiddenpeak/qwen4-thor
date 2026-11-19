@@ -1,0 +1,29 @@
+{
+  "status": "PASS_REVIEW_ORIGINAL_FAIL_RETAINED",
+  "cpu_cases": 3,
+  "seconds": 8.68597999215126e-05,
+  "gpu_actions": 0,
+  "quality": {
+    "zh/off": {
+      "text": "甚至出现交易几乎停滞的情况。",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "zh/near_field": {
+      "text": "甚至出现交易几乎停滞的情况。",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "zh/far_field": {
+      "text": "甚至出现交易几乎停滞的情况。",
+      "exact": true,
+      "word_error_rate": 0
+    }
+  },
+  "total_tokens": 326,
+  "absolute_start_ms": 9631,
+  "absolute_end_ms": 13895,
+  "origin_ticks": 355390,
+  "negative_rejections": 2,
+  "alpha_live_metrics_collected": false
+}

@@ -1,0 +1,13 @@
+test_complete_codes_compare_and_detect_single_difference (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_complete_codes_compare_and_detect_single_difference) ... ok
+test_complete_stage_set_required (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_complete_stage_set_required) ... ok
+test_control_or_negative_codes_rejected_on_both_sides (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_control_or_negative_codes_rejected_on_both_sides) ... ok
+test_incompatible_reference_mask_cannot_certify_native (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_incompatible_reference_mask_cannot_certify_native) ... ok
+test_operands_keep_both_tails_and_all_quantizers (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_operands_keep_both_tails_and_all_quantizers) ... ok
+test_partial_code_file_never_counts_as_complete (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_partial_code_file_never_counts_as_complete) ... ok
+test_plan_rejects_larger_budget_and_missing_long_case (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_plan_rejects_larger_budget_and_missing_long_case) ... ok
+test_plan_rejects_scope_precision_and_attention_substitution (tools.native_tts.test_encoder_acceptance.EncoderAcceptance.test_plan_rejects_scope_precision_and_attention_substitution) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.102s
+
+OK

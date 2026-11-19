@@ -76,7 +76,7 @@ ObjectReply ChatServer::SynthesizeChatAudio(
         std::min<uint64_t>(tts_limits_.max_frames,
                            (remaining - 1) / audio::TtsConfig::kCodeGroups);
     const auto reserved =
-        rate.ExtendPrompt(clients_, http->Client(), prompt.text_ids.size());
+        rate.ExtendPrompt(clients_, http->Client(), prompt.InputTokens());
     if (reserved != ClientRateResult::kAllowed)
       return Error(reserved == ClientRateResult::kTpm      ? 429
                    : reserved == ClientRateResult::kFrozen ? 503

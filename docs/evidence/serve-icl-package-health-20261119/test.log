@@ -1,0 +1,10 @@
+test_icl_declaration_requires_actual_reference_encoder_identity (tools.serve_service.test_voice_package.VoicePackage.test_icl_declaration_requires_actual_reference_encoder_identity) ... ok
+test_icl_declaration_cannot_hide_or_rewrite_reference_contract (tools.serve_service.test_voice_package.VoicePackage.test_icl_declaration_cannot_hide_or_rewrite_reference_contract) ... ok
+test_legacy_speaker_identity_cannot_claim_reference_encoder (tools.serve_service.test_voice_package.VoicePackage.test_legacy_speaker_identity_cannot_claim_reference_encoder) ... ok
+test_observed_base_condition_health_and_registration_cannot_be_dropped (tools.serve_service.test_voice_package.VoicePackage.test_observed_base_condition_health_and_registration_cannot_be_dropped) ... ok
+test_base_only_package_roundtrip_preserves_optional_assets_and_command (tools.serve_service.test_voice_package.VoicePackage.test_base_only_package_roundtrip_preserves_optional_assets_and_command) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.124s
+
+OK

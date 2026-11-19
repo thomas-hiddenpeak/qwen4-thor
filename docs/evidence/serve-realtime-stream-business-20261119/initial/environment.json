@@ -1,0 +1,12 @@
+{
+  "nvml_ok": 41,
+  "query_log_sha256": "39a06c5c9f0db047bd47340b12e19880eba890975c1c124ddbcf3a09ac372032",
+  "own_ports": [
+    18368,
+    18369,
+    18370
+  ],
+  "ports_released": true,
+  "shared_lock_obtained_after_cleanup": true,
+  "default_unchanged": true
+}

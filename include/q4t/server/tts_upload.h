@@ -26,4 +26,13 @@ audio::TtsComputeResult UploadTtsSpeakerWeights(
     const TtsHostAssets& assets, std::span<uint8_t> speaker_device,
     audio::TtsSpeakerDeviceWeights* out,
     const std::function<bool()>& cancelled = {}, cudaStream_t stream = nullptr);
+// One allocation owns both registration graphs; subranges never overlap.
+struct TtsVoiceBoundWeights {
+  audio::TtsSpeakerDeviceWeights speaker;
+  audio::TtsEncoderDeviceWeights encoder;
+};
+audio::TtsComputeResult UploadTtsVoiceWeights(
+    const TtsHostAssets& assets, std::span<uint8_t> device,
+    TtsVoiceBoundWeights* out, const std::function<bool()>& cancelled = {},
+    cudaStream_t stream = nullptr);
 }  // namespace q4t::server

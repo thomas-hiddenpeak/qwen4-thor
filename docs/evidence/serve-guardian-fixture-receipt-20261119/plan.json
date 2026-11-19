@@ -1,0 +1,15 @@
+{
+  "scope": "CPU-only fixture atomic reply; production Guardian unchanged; no skipped malformed-binding checks",
+  "cases": [
+    "RuntimeTests.test_capacity_receipt_publishes_only_complete_json",
+    "RuntimeTests.test_qualified_capacity_binding_survives_independent_gateway_admission",
+    "RuntimeTests.test_malformed_capacity_cannot_open_model_and_recovery_spends_budget"
+  ],
+  "cpu_seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_recovery/fixture_model.py": "a2a23f6871dab8c1f2776d3a7496d1bb4211d30943d1e63f930ed32551645a03",
+    "tools/serve_recovery/test_runtime.py": "7f1cf3893caeb94a2893502625d355e80169856dc0bd620b0c05e0ee56ca901f"
+  },
+  "guardian_sha256": "e126f48a54dc75c61439a2367dc519c4412c4b7dc311b7a830c2e08b4b8fda22"
+}

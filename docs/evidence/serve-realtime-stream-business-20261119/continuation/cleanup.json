@@ -1,0 +1,60 @@
+{
+  "owned": {
+    "598073": {
+      "state": "R",
+      "ppid": 598067,
+      "pgid": 598067,
+      "start_ticks": 324753683,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18368",
+        "--operations-port",
+        "18369",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "64",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "3",
+        "--asr-model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "--asr-max-output-tokens",
+        "128",
+        "--client-policy-file",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-02/run/client-policy.json",
+        "--asr-max-output-tokens",
+        "256"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t"
+    },
+    "598875": {
+      "state": "S",
+      "ppid": 598067,
+      "pgid": 598067,
+      "start_ticks": 324757056,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-business-02/run/ingress/ingress.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true
+}

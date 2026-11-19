@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "seconds": 0.003074819687753916,
+  "cpu_cases": 4,
+  "gpu_actions": 0,
+  "reused_completions": 2,
+  "reused_actual_tokens": 388,
+  "original_status": "FAIL",
+  "missing": [
+    "alpha live settled metrics",
+    "quota clear and connection close",
+    "remaining beta/gamma/Chat"
+  ],
+  "negatives": [
+    {
+      "case": "usage",
+      "rejected": "actual repeated work differs from protocol usage"
+    },
+    {
+      "case": "delay",
+      "rejected": "actual cumulative audio extents differ from delay/real length"
+    }
+  ]
+}

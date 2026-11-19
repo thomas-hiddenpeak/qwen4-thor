@@ -1,0 +1,34 @@
+{
+  "status": "PASS_ICL_RECOVERY_CONTRACT_CPU",
+  "cases": 18,
+  "gpu_actions": 0,
+  "seconds": 2.375856244470924,
+  "independent_tokenizer_seconds": 0.20793085219338536,
+  "sources": {
+    "src/server/chat_capabilities.cpp": "6544feb47dfa5d77b2575f59f93914f3cabce14ec810dbce82fb819ad5a9a883",
+    "tests/server_chat_capabilities_test.cpp": "0f3ac5f3ce7537c4d64648a1d449e8756adf68adc1d9d0595343f5c4771c2b05",
+    "tools/serve_service/package.py": "e17ff7f815c9c916881526b8b0f354cff43d0764ebe1e00c9ebb8dbedfb77536",
+    "tools/serve_recovery/profile_evidence.py": "022a38913f36563f361f9f7e6a1767ce3f9bd50bc7e7699297e1e33301efe6d8",
+    "tools/serve_recovery/profile_voice.py": "589e1903a9c4228e20aced18a297a4e02296af02fd3162c6b6aa6fd81f72a94f",
+    "tools/serve_recovery/profile_acceptance.py": "a90f78dcce2acb07c7f2f8452908b7d884b697da2c3453445af886761149eef7",
+    "tools/serve_recovery/test_voice_icl_profiles.py": "c06030a59d44ab5735d7dc3ec48d22b1a0db867bb25e1fe1d54b382bb18d8fc0",
+    "tools/serve_audit/inventory.json": "840b6a172bf40fa6ccbfb1ff6a9233bf3c39e9bb9363cf47c9dfbd150a3739c4"
+  },
+  "runtime_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "host_sha256": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f",
+  "defaults": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "build_warnings": 0,
+  "model_math_changed": false,
+  "model_generation_retested": false,
+  "guardian_business_qualified": false,
+  "default_replaced": false,
+  "original_failures_preserved": true,
+  "listening": "PENDING_OWNER_DEFERRED",
+  "master_complete": false
+}

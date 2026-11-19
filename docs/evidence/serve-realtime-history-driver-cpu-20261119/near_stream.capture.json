@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-driver-cpu-01/history-waveform-fixture",
+    "near_stream",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-04/run/mulaw.pcm",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-driver-cpu-01/near_stream.expected.pcm"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"input_bytes\":33632,\"processed_samples\":67264,\"output_bytes\":33632}\n",
+  "stderr": ""
+}

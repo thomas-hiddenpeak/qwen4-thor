@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-18T21:53:56.239078+00:00",
+  "sdk_version": "7.47.0",
+  "sources": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/reference-docs/transcription.md",
+      "url": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+      "bytes": 13051,
+      "sha256": "8a37098626f3afa745c71e01054bb6a0105ae046cfed9aecdecc30215c9f163a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/reference-docs/conversations.md",
+      "url": "https://developers.openai.com/api/docs/guides/realtime-conversations",
+      "bytes": 80468,
+      "sha256": "3c10765c3345ceecb3bdb4c008399f208d094e0ff5a92c0e79d81e0545caad05"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/reference-docs/websocket.md",
+      "url": "https://developers.openai.com/api/docs/guides/realtime-websocket",
+      "bytes": 38495,
+      "sha256": "f30f0c89dcd79e71ad6629d13a23e3c9e72966efc55a1b33b298f96f5210e35c"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/reference-docs/rfc6455.txt",
+      "url": "https://www.rfc-editor.org/rfc/rfc6455.txt",
+      "bytes": 162067,
+      "sha256": "765775326aee0ecca9b04bde3fd1f52932d498e33e34e428bd61b8a24da0fa3b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/resources/realtime/realtime.d.ts",
+      "source": "locally pinned official JS SDK",
+      "bytes": 190401,
+      "sha256": "dbcc2f219a22f575f840adafe1da3f9d3fcf2929952e0d71672bc9b17daafda2"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/package.json",
+      "source": "locally pinned official JS SDK",
+      "bytes": 7425,
+      "sha256": "74cc41a9572343007d6fc1450225778ed7ccdae68ba79fbbcc674e450b9d765b"
+    }
+  ]
+}

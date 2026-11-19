@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "name": "native",
+      "exit_code": 0,
+      "seconds": 0.16404337203130126
+    },
+    {
+      "name": "python",
+      "exit_code": 0,
+      "seconds": 0.21416258718818426
+    }
+  ],
+  "seconds": 0.37828637612983584,
+  "cpu_cases": 55,
+  "gpu_actions": 0
+}

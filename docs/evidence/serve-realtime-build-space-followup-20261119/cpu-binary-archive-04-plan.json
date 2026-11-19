@@ -1,0 +1,93 @@
+{
+  "scope": "Five fully closed CPU-only fixture payloads; every hardlink accounted. Runtime/model/default/source/original logs unchanged",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transport-cpu-01/prior-host-tests",
+      "member": "52d16205f27974131e44dfcb4323fe7a70773707dd90d7706ecf4116381b1496",
+      "sha256": "52d16205f27974131e44dfcb4323fe7a70773707dd90d7706ecf4116381b1496",
+      "bytes": 38421048,
+      "mode": 509,
+      "mtime_ns": 1795036219890027828,
+      "inode": 8035679,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/audio-queue-cpu-01/prior-host-tests",
+      "member": "26ea575fc3ac9c27f7718801d47e1fbe39021edcaf8c0e49c9edea03e70610f5",
+      "sha256": "26ea575fc3ac9c27f7718801d47e1fbe39021edcaf8c0e49c9edea03e70610f5",
+      "bytes": 38490464,
+      "mode": 509,
+      "mtime_ns": 1795039393400110880,
+      "inode": 8035645,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/resample-cpu-01/prior-host-tests",
+      "member": "4e907722852da021d627487fc03d572524613bda5dc88e98beb7e4d3433020e1",
+      "sha256": "4e907722852da021d627487fc03d572524613bda5dc88e98beb7e4d3433020e1",
+      "bytes": 38628472,
+      "mode": 509,
+      "mtime_ns": 1795040980269165954,
+      "inode": 8035732,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/duplex-cpu-01/q4t_host_tests",
+      "member": "4e907722852da021d627487fc03d572524613bda5dc88e98beb7e4d3433020e1",
+      "sha256": "4e907722852da021d627487fc03d572524613bda5dc88e98beb7e4d3433020e1",
+      "bytes": 38628472,
+      "mode": 509,
+      "mtime_ns": 1795040980269165954,
+      "inode": 8035732,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/duplex-cpu-01/prior-q4t_host_tests",
+      "member": "239ee5c1d7b121084acba46800d14e752604cc0bacd8ffb024482f86b3d07253",
+      "sha256": "239ee5c1d7b121084acba46800d14e752604cc0bacd8ffb024482f86b3d07253",
+      "bytes": 38493464,
+      "mode": 509,
+      "mtime_ns": 1795039981747935504,
+      "inode": 8035626,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-01/q4t_host_tests",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-02/q4t_host_tests",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-03/host-before",
+      "member": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "sha256": "4800decad0d2d2c0e267b0b5a9a6f9f13368cea41b72c51a3893e6eb8b4c84f5",
+      "bytes": 38861056,
+      "mode": 509,
+      "mtime_ns": 1795043490086032188,
+      "inode": 8035784,
+      "links": 3
+    }
+  ],
+  "unique_payloads": 5,
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f"
+  },
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 41943040
+}

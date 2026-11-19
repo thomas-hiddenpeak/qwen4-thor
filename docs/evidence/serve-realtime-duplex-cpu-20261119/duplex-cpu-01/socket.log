@@ -1,0 +1,9 @@
+[PASS] duplex_preserves_upgrade_tails_and_bidirectional_bytes
+[PASS] duplex_final_upstream_bytes_drain_before_eof
+[PASS] duplex_idle_and_absolute_session_deadlines_are_distinct
+[PASS] duplex_stuck_consumer_does_not_block_other_direction
+[PASS] duplex_stuck_backend_does_not_block_downstream_delivery
+[PASS] duplex_byte_limit_never_forwards_over_budget_tail
+[PASS] duplex_client_eof_and_shutdown_do_not_replay_or_own_fds
+[PASS] duplex_invalid_limits_do_not_consume_input
+8 tests, 8 passed, 0 failed, 0 skipped

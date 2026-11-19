@@ -1,0 +1,28 @@
+test_explicit_loopback_plaintext_mode_does_not_require_tls (tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_explicit_loopback_plaintext_mode_does_not_require_tls) ... ERROR
+test_interrupted_stream_does_not_commit_or_retry_withheld_input (tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_interrupted_stream_does_not_commit_or_retry_withheld_input) ... ok
+test_one_complete_connection_has_actual_input_and_normal_close (tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_one_complete_connection_has_actual_input_and_normal_close) ... ok
+test_payload_connection_loss_needs_a_separate_explicit_new_connection (tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_payload_connection_loss_needs_a_separate_explicit_new_connection) ... ok
+
+======================================================================
+ERROR: test_explicit_loopback_plaintext_mode_does_not_require_tls (tools.serve_realtime.test_recovery_sdk.RecoverySdk.test_explicit_loopback_plaintext_mode_does_not_require_tls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_recovery_sdk.py", line 62, in test_explicit_loopback_plaintext_mode_does_not_require_tls
+    value=self.finish(self.start('complete',secure=False))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_recovery_sdk.py", line 39, in finish
+    stdout,stderr = process.communicate(timeout=10)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2116, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/usr/lib/python3.12/subprocess.py", line 1253, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['node', '/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/recovery_sdk.mjs']' timed out after 10 seconds
+
+----------------------------------------------------------------------
+Ran 4 tests in 12.855s
+
+FAILED (errors=1)

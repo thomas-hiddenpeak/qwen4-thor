@@ -1,0 +1,19 @@
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_io
+[  0%] Built target q4t_ple
+[  3%] Built target q4t_regex_build
+[  3%] Built target q4t_runtime
+[ 10%] Built target xgrammar
+[ 10%] Built target q4t_trace
+[ 14%] Built target q4t_program_javascript
+[ 14%] Generating service-tools/snapshot.done
+[ 17%] Built target q4t_text
+[ 17%] Built target q4t_quant
+[ 32%] Built target q4t_model
+[ 32%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/9582e75a30f1464aa1e0d8b41b09fe76b0badce21abf02b3a8a5e73ce982a0ef", "manifest_sha256": "9582e75a30f1464aa1e0d8b41b09fe76b0badce21abf02b3a8a5e73ce982a0ef", "model_actions": false}
+[ 32%] Built target q4t_service_tools
+[ 32%] Built target q4t_service_cli
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

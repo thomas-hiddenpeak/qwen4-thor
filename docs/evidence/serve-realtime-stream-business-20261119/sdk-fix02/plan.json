@@ -1,0 +1,16 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "test_sdk_precommit_failure_does_not_mask_unrelated_append_error",
+    "test_sdk_precommit_buffer_error_before_failure_is_rejected"
+  ],
+  "cpu_cases": 2,
+  "seconds": 30,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/transcription_sdk.mjs": "2ece1941ccf2e3763dd70c49f02ec6fef36aab8a68572cd50d2e2b991a2e80e5",
+    "tools/serve_realtime/test_transcription_sdk.py": "2bd63dd24142f8d8157c93c3352fee822fb78dbf55c80fa25c8f61ffcfb15a4b",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "scope": "Retest only intentional negative client abort fixture cleanup; prior actual driver rejection held. Original CPU failure retained, no engine or SDK behavior change."
+}

@@ -1,0 +1,248 @@
+{
+  "scope": "Closed Realtime/ICL CPU executables only, exact compressed bytes and restore paths. No runtime/default/source/model/log/result changes. Partial completed archive verified; remaining four payloads retained at original paths.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-output-cpu-01/q4t_host_tests-before",
+      "member": "2c48eb1d3310e78b348c675568b47872df3f7d8c8792e756d6fcadc728ee6d82",
+      "sha256": "2c48eb1d3310e78b348c675568b47872df3f7d8c8792e756d6fcadc728ee6d82",
+      "bytes": 39369064,
+      "mode": 509,
+      "mtime_ns": 1795054187830180726,
+      "inode": 8035830,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-state-cpu-01/q4t_host_tests",
+      "member": "2c48eb1d3310e78b348c675568b47872df3f7d8c8792e756d6fcadc728ee6d82",
+      "sha256": "2c48eb1d3310e78b348c675568b47872df3f7d8c8792e756d6fcadc728ee6d82",
+      "bytes": 39369064,
+      "mode": 509,
+      "mtime_ns": 1795054187830180726,
+      "inode": 8035830,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-output-cpu-01/q4t_host_tests",
+      "member": "c546662467907a759f22cc57b1543d2be26d3dbaa00f990e1dbe602698506f71",
+      "sha256": "c546662467907a759f22cc57b1543d2be26d3dbaa00f990e1dbe602698506f71",
+      "bytes": 39507104,
+      "mode": 509,
+      "mtime_ns": 1795054808611539815,
+      "inode": 8035835,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t_host_tests-before",
+      "member": "c546662467907a759f22cc57b1543d2be26d3dbaa00f990e1dbe602698506f71",
+      "sha256": "c546662467907a759f22cc57b1543d2be26d3dbaa00f990e1dbe602698506f71",
+      "bytes": 39507104,
+      "mode": 509,
+      "mtime_ns": 1795054808611539815,
+      "inode": 8035835,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-state-cpu-01/q4t_host_tests-before",
+      "member": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+      "sha256": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+      "bytes": 39365864,
+      "mode": 509,
+      "mtime_ns": 1795052860168379481,
+      "inode": 8035825,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/diagnostics-cpu-01/q4t_host_tests",
+      "member": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+      "sha256": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+      "bytes": 39365864,
+      "mode": 509,
+      "mtime_ns": 1795052860168379481,
+      "inode": 8035825,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/resample-cpu-01/q4t_host_tests",
+      "member": "a335f0703cf432cee957ea6304099f539726fafe71d08e4e3309ae5bb2fb5764",
+      "sha256": "a335f0703cf432cee957ea6304099f539726fafe71d08e4e3309ae5bb2fb5764",
+      "bytes": 38563952,
+      "mode": 509,
+      "mtime_ns": 1795042410000495426,
+      "inode": 8035715,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-cpu-02/q4t_host_tests",
+      "member": "27a56239400d20a76e77428205f1d3a8968a42675ce96210a6df189bb5d1a297",
+      "sha256": "27a56239400d20a76e77428205f1d3a8968a42675ce96210a6df189bb5d1a297",
+      "bytes": 39016216,
+      "mode": 509,
+      "mtime_ns": 1795046252881050139,
+      "inode": 8035611,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/vad-cpu-01/q4t_host_tests-before",
+      "member": "27a56239400d20a76e77428205f1d3a8968a42675ce96210a6df189bb5d1a297",
+      "sha256": "27a56239400d20a76e77428205f1d3a8968a42675ce96210a6df189bb5d1a297",
+      "bytes": 39016216,
+      "mode": 509,
+      "mtime_ns": 1795046252881050139,
+      "inode": 8035611,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/diagnostics-cpu-01/q4t_host_tests-before",
+      "member": "394ca274494ce4d940fe2e7a41a3a9461c6ee9c1a450fc829f1dfd7adc5fbbbf",
+      "sha256": "394ca274494ce4d940fe2e7a41a3a9461c6ee9c1a450fc829f1dfd7adc5fbbbf",
+      "bytes": 39365160,
+      "mode": 509,
+      "mtime_ns": 1795051960040002278,
+      "inode": 8035819,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-fix-01/q4t_host_tests",
+      "member": "394ca274494ce4d940fe2e7a41a3a9461c6ee9c1a450fc829f1dfd7adc5fbbbf",
+      "sha256": "394ca274494ce4d940fe2e7a41a3a9461c6ee9c1a450fc829f1dfd7adc5fbbbf",
+      "bytes": 39365160,
+      "mode": 509,
+      "mtime_ns": 1795051960040002278,
+      "inode": 8035819,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-04/q4t_host_tests",
+      "member": "1bdc7f2b0dfba417536992367caeb91be7a0e43f7bd3e4077a0b4dbd1bda02c6",
+      "sha256": "1bdc7f2b0dfba417536992367caeb91be7a0e43f7bd3e4077a0b4dbd1bda02c6",
+      "bytes": 38795752,
+      "mode": 509,
+      "mtime_ns": 1795044037543820458,
+      "inode": 8035670,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-state-cpu-01/q4t_host_tests-before",
+      "member": "e05d53618c3e7826f2340b624c3d5c80a3da8c3b60360c244f7f054c40d8d8c1",
+      "sha256": "e05d53618c3e7826f2340b624c3d5c80a3da8c3b60360c244f7f054c40d8d8c1",
+      "bytes": 39610512,
+      "mode": 509,
+      "mtime_ns": 1795056463855431381,
+      "inode": 8035842,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t_host_tests",
+      "member": "e05d53618c3e7826f2340b624c3d5c80a3da8c3b60360c244f7f054c40d8d8c1",
+      "sha256": "e05d53618c3e7826f2340b624c3d5c80a3da8c3b60360c244f7f054c40d8d8c1",
+      "bytes": 39610512,
+      "mode": 509,
+      "mtime_ns": 1795056463855431381,
+      "inode": 8035842,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-state-cpu-01/q4t_host_tests",
+      "member": "3df014278dd088011993e7116e324aaad682044b1d9c4fe9d678c4950524967c",
+      "sha256": "3df014278dd088011993e7116e324aaad682044b1d9c4fe9d678c4950524967c",
+      "bytes": 39680424,
+      "mode": 509,
+      "mtime_ns": 1795058060253979601,
+      "inode": 8035847,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/audio-export-cpu-01/q4t_host_tests-before",
+      "member": "3df014278dd088011993e7116e324aaad682044b1d9c4fe9d678c4950524967c",
+      "sha256": "3df014278dd088011993e7116e324aaad682044b1d9c4fe9d678c4950524967c",
+      "bytes": 39680424,
+      "mode": 509,
+      "mtime_ns": 1795058060253979601,
+      "inode": 8035847,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/vad-cpu-01/q4t_host_tests",
+      "member": "0dbc2629a1b4b79b13c1dc6a798a04c2202e32216c7e92539282d427e7954dba",
+      "sha256": "0dbc2629a1b4b79b13c1dc6a798a04c2202e32216c7e92539282d427e7954dba",
+      "bytes": 39160176,
+      "mode": 509,
+      "mtime_ns": 1795048449979986386,
+      "inode": 8035804,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-cpu-01/q4t_host_tests-before",
+      "member": "0dbc2629a1b4b79b13c1dc6a798a04c2202e32216c7e92539282d427e7954dba",
+      "sha256": "0dbc2629a1b4b79b13c1dc6a798a04c2202e32216c7e92539282d427e7954dba",
+      "bytes": 39160176,
+      "mode": 509,
+      "mtime_ns": 1795048449979986386,
+      "inode": 8035804,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-cpu-01/q4t_host_tests",
+      "member": "de1dc766854dd705d32000286c3d141c888d5277470bc1885899881f46d67221",
+      "sha256": "de1dc766854dd705d32000286c3d141c888d5277470bc1885899881f46d67221",
+      "bytes": 39164744,
+      "mode": 509,
+      "mtime_ns": 1795049483467159261,
+      "inode": 8035811,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-cpu-01/q4t_host_tests-before",
+      "member": "de1dc766854dd705d32000286c3d141c888d5277470bc1885899881f46d67221",
+      "sha256": "de1dc766854dd705d32000286c3d141c888d5277470bc1885899881f46d67221",
+      "bytes": 39164744,
+      "mode": 509,
+      "mtime_ns": 1795049483467159261,
+      "inode": 8035811,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-cpu-01/q4t_host_tests-before",
+      "member": "2cadbac71e41cd9d5f5e48c5c0a8d66cc5be59042be0c1d3f10f9a647b8677b5",
+      "sha256": "2cadbac71e41cd9d5f5e48c5c0a8d66cc5be59042be0c1d3f10f9a647b8677b5",
+      "bytes": 38931928,
+      "mode": 509,
+      "mtime_ns": 1795044335974799429,
+      "inode": 8035791,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/pcm-cpu-01/q4t_host_tests",
+      "member": "2cadbac71e41cd9d5f5e48c5c0a8d66cc5be59042be0c1d3f10f9a647b8677b5",
+      "sha256": "2cadbac71e41cd9d5f5e48c5c0a8d66cc5be59042be0c1d3f10f9a647b8677b5",
+      "bytes": 38931928,
+      "mode": 509,
+      "mtime_ns": 1795044335974799429,
+      "inode": 8035791,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-cpu-01/q4t_host_tests",
+      "member": "734a737a502a3e6acdb0dc27a1669247e75b6100b2f5f4dd23e63d83e66d32b6",
+      "sha256": "734a737a502a3e6acdb0dc27a1669247e75b6100b2f5f4dd23e63d83e66d32b6",
+      "bytes": 39083928,
+      "mode": 509,
+      "mtime_ns": 1795045965990710502,
+      "inode": 8035798,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/session-cpu-03/q4t_host_tests",
+      "member": "4f75a9091d96258dc2a879a742631a9ef7ceeef564a190504f254fa12739410d",
+      "sha256": "4f75a9091d96258dc2a879a742631a9ef7ceeef564a190504f254fa12739410d",
+      "bytes": 38794264,
+      "mode": 509,
+      "mtime_ns": 1795043932164087954,
+      "inode": 8035675,
+      "links": 1
+    }
+  ],
+  "unique_payloads": 14,
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 268435456
+}

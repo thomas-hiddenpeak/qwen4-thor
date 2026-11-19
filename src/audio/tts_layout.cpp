@@ -214,10 +214,14 @@ Status PlanTtsDenseWorkspace(TtsVariant variant, bool predictor, size_t rows,
 
 Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
                                   size_t prefill_tokens, size_t max_frames,
-                                  size_t max_bytes, TtsGenerationLayout* out) {
+                                  size_t max_bytes, TtsGenerationLayout* out,
+                                  size_t reference_frames) {
   if (!out || text_tokens < 4 || text_tokens > 32768 || max_frames < 2 ||
       max_frames > 4096 || prefill_tokens < 8 ||
-      prefill_tokens > 32768 - max_frames)
+      prefill_tokens > 32768 - max_frames ||
+      reference_frames > TtsPrompt::kMaxReferenceFrames ||
+      reference_frames >= prefill_tokens ||
+      (reference_frames && variant != TtsVariant::kBase17B))
     return Status::Fail("TTS text, prompt or generation budget invalid");
   TtsGenerationLayout w;
   if (auto s = PlanTtsDenseWorkspace(variant, false, prefill_tokens,
@@ -245,6 +249,10 @@ Status PlanTtsGenerationWorkspace(TtsVariant variant, size_t text_tokens,
   w.affine_fp32 = carve(text_tokens * 2048 * sizeof(float));
   w.prompt_rows = carve(prefill_tokens * sizeof(TtsPromptRow));
   if (variant == TtsVariant::kBase17B) w.speaker_condition = fp32(2048);
+  if (reference_frames) {
+    w.reference_codes = carve(reference_frames * sizeof(TtsCodes));
+    w.reference_embeddings = fp32(reference_frames * hidden);
+  }
   w.prefill = fp32(prefill_tokens * hidden);
   w.past_hidden = fp32(hidden);
   w.codec_embeddings = fp32(16 * hidden);

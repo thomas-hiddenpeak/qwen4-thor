@@ -38,6 +38,13 @@ struct HttpRequestHeaders {
   std::string origin;
   std::string cors_method;
   std::string cors_headers;
+  // Validated HTTP metadata, not an authorization or an accepted upgrade.
+  // Protocol tokens retain case (browser credentials can be carried in one).
+  std::string connection;
+  std::string upgrade;
+  std::string websocket_key;
+  std::string websocket_version;
+  std::vector<std::string> websocket_protocols;
   // Untrusted until an explicit ingress proxy policy validates the TCP peer.
   std::string forwarded;
   std::string forwarded_for;

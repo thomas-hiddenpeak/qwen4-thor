@@ -1,0 +1,6 @@
+{
+  "requests": 2,
+  "timeout_seconds_each": 15,
+  "max_response_bytes_each": 131072,
+  "scope": "Official Qwen3-ASR current revision and one streaming reference source; read-only reference, no model loading"
+}

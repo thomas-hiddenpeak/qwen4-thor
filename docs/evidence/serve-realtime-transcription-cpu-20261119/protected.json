@@ -1,0 +1,10 @@
+{
+  "unchanged": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "builds_zero_warning": true
+}

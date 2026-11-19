@@ -1,0 +1,376 @@
+{
+  "status": "PASS_FIXED_ENCODER_FLOAT_BOUNDARY",
+  "original_exact_code_status": "FAIL_PRESERVED",
+  "original_float_checks": 222,
+  "exact_code_cases": 2,
+  "different_codes": 4,
+  "captured_rows": [
+    94
+  ],
+  "checks": [
+    {
+      "group": 0,
+      "native": {
+        "code": 1252,
+        "runner_up": 1668,
+        "distance": 34039.85427839422,
+        "margin": 5487.900216827271,
+        "fp64_error_bound": 9.268432409771673e-09
+      },
+      "reference": {
+        "code": 1252,
+        "runner_up": 1668,
+        "distance": 34039.83769732361,
+        "margin": 5487.884728725687,
+        "fp64_error_bound": 9.26842489022095e-09
+      },
+      "continuous_input": {
+        "relative_l2": 1.6526349414453865e-06,
+        "cosine": 0.9999999999986584,
+        "absolute_l2": 0.00037376453797332784
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 1,
+      "native": {
+        "code": 1915,
+        "runner_up": 257,
+        "distance": 377.4415415701576,
+        "margin": 146.5324704109221,
+        "fp64_error_bound": 1.2286095622028371e-10
+      },
+      "reference": {
+        "code": 1915,
+        "runner_up": 257,
+        "distance": 377.4398650908231,
+        "margin": 146.5304339764948,
+        "fp64_error_bound": 1.2286008561959606e-10
+      },
+      "continuous_input": {
+        "relative_l2": 4.6424403359198914e-06,
+        "cosine": 0.9999999999898029,
+        "absolute_l2": 0.0002999218562775121
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 2,
+      "native": {
+        "code": 243,
+        "runner_up": 852,
+        "distance": 246.09164054749866,
+        "margin": 43.50926120382499,
+        "fp64_error_bound": 6.790535961296655e-11
+      },
+      "reference": {
+        "code": 243,
+        "runner_up": 852,
+        "distance": 246.09083810835708,
+        "margin": 43.50939875565493,
+        "fp64_error_bound": 6.790520371078625e-11
+      },
+      "continuous_input": {
+        "relative_l2": 1.5436874733040873e-05,
+        "cosine": 0.999999999883318,
+        "absolute_l2": 0.0002999046949880643
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 3,
+      "native": {
+        "code": 481,
+        "runner_up": 374,
+        "distance": 183.03127083278164,
+        "margin": 20.515003867221566,
+        "fp64_error_bound": 4.7727347870111454e-11
+      },
+      "reference": {
+        "code": 481,
+        "runner_up": 374,
+        "distance": 183.03084092718746,
+        "margin": 20.514918819767445,
+        "fp64_error_bound": 4.7727227124382704e-11
+      },
+      "continuous_input": {
+        "relative_l2": 1.9117409423164588e-05,
+        "cosine": 0.9999999998185887,
+        "absolute_l2": 0.00029990020785792664
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 4,
+      "native": {
+        "code": 1866,
+        "runner_up": 1170,
+        "distance": 161.60884948831182,
+        "margin": 2.819620195048117,
+        "fp64_error_bound": 3.8555040046270474e-11
+      },
+      "reference": {
+        "code": 1866,
+        "runner_up": 1170,
+        "distance": 161.60860335996057,
+        "margin": 2.8192752823984506,
+        "fp64_error_bound": 3.855490145950686e-11
+      },
+      "continuous_input": {
+        "relative_l2": 2.2165792086164716e-05,
+        "cosine": 0.9999999997550337,
+        "absolute_l2": 0.00029987854311862224
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 5,
+      "native": {
+        "code": 190,
+        "runner_up": 687,
+        "distance": 139.93305221014666,
+        "margin": 3.291449379531116,
+        "fp64_error_bound": 3.35831526318461e-11
+      },
+      "reference": {
+        "code": 190,
+        "runner_up": 687,
+        "distance": 139.93246004374785,
+        "margin": 3.2916399040049384,
+        "fp64_error_bound": 3.3583058455207886e-11
+      },
+      "continuous_input": {
+        "relative_l2": 2.358885038441485e-05,
+        "cosine": 0.9999999997220723,
+        "absolute_l2": 0.000299874138528621
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 6,
+      "native": {
+        "code": 1690,
+        "runner_up": 890,
+        "distance": 125.13925861027367,
+        "margin": 0.9891148474134894,
+        "fp64_error_bound": 2.9574467846088625e-11
+      },
+      "reference": {
+        "code": 1690,
+        "runner_up": 890,
+        "distance": 125.13875086833238,
+        "margin": 0.9898795556473772,
+        "fp64_error_bound": 2.9574528099314365e-11
+      },
+      "continuous_input": {
+        "relative_l2": 2.5351723425159422e-05,
+        "cosine": 0.9999999996808879,
+        "absolute_l2": 0.00029989327138744726
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 7,
+      "native": {
+        "code": 1510,
+        "runner_up": 290,
+        "distance": 100.50325172366027,
+        "margin": 12.32493906998107,
+        "fp64_error_bound": 2.6455852947935784e-11
+      },
+      "reference": {
+        "code": 1510,
+        "runner_up": 290,
+        "distance": 100.50299845172026,
+        "margin": 12.325084350365046,
+        "fp64_error_bound": 2.6455827626172615e-11
+      },
+      "continuous_input": {
+        "relative_l2": 2.6808146159582956e-05,
+        "cosine": 0.9999999996427207,
+        "absolute_l2": 0.0002998904874250533
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 8,
+      "native": {
+        "code": 1058,
+        "runner_up": 307,
+        "distance": 92.35856028311807,
+        "margin": 0.7136088374028731,
+        "fp64_error_bound": 2.182347871110843e-11
+      },
+      "reference": {
+        "code": 1058,
+        "runner_up": 307,
+        "distance": 92.35828148896775,
+        "margin": 0.713889982432363,
+        "fp64_error_bound": 2.1823479262340467e-11
+      },
+      "continuous_input": {
+        "relative_l2": 2.9913775269297093e-05,
+        "cosine": 0.9999999995533758,
+        "absolute_l2": 0.00029988913689781645
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 9,
+      "native": {
+        "code": 1713,
+        "runner_up": 680,
+        "distance": 86.42559933000794,
+        "margin": 0.3799539277740678,
+        "fp64_error_bound": 2.0354088246015848e-11
+      },
+      "reference": {
+        "code": 1713,
+        "runner_up": 680,
+        "distance": 86.42537982119498,
+        "margin": 0.3802266756356687,
+        "fp64_error_bound": 2.0354100729460207e-11
+      },
+      "continuous_input": {
+        "relative_l2": 3.120490124253455e-05,
+        "cosine": 0.999999999514267,
+        "absolute_l2": 0.00029988913689781645
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 10,
+      "native": {
+        "code": 1895,
+        "runner_up": 1756,
+        "distance": 77.74434855003497,
+        "margin": 0.7172218532668069,
+        "fp64_error_bound": 1.8397598632511677e-11
+      },
+      "reference": {
+        "code": 1895,
+        "runner_up": 1756,
+        "distance": 77.74421412796008,
+        "margin": 0.7168583361218026,
+        "fp64_error_bound": 1.8397481876170144e-11
+      },
+      "continuous_input": {
+        "relative_l2": 3.2259491182877436e-05,
+        "cosine": 0.9999999994804618,
+        "absolute_l2": 0.00029990117296121505
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 11,
+      "native": {
+        "code": 1975,
+        "runner_up": 639,
+        "distance": 71.14587072767178,
+        "margin": 3.4775188694879944e-05,
+        "fp64_error_bound": 1.6682228090264554e-11
+      },
+      "reference": {
+        "code": 639,
+        "runner_up": 1975,
+        "distance": 71.14570340908551,
+        "margin": 0.0003069449287096404,
+        "fp64_error_bound": 1.668225267566901e-11
+      },
+      "continuous_input": {
+        "relative_l2": 3.4013333300380935e-05,
+        "cosine": 0.9999999994219213,
+        "absolute_l2": 0.0002999046735169307
+      },
+      "classification": "BOUNDED_FLOAT_BOUNDARY_CROSSING",
+      "boundary": {
+        "native_gap": 3.4775188694879944e-05,
+        "reference_gap": -0.0003069449287096404,
+        "measured_change": 0.0003417201174102935,
+        "cauchy_bound": 0.0027322463082750693,
+        "fp64_error_bound": 1.3345802140534428e-10
+      }
+    },
+    {
+      "group": 12,
+      "native": {
+        "code": 107,
+        "runner_up": 885,
+        "distance": 62.84315580972408,
+        "margin": 2.0228513344401904,
+        "fp64_error_bound": 1.5209723157436956e-11
+      },
+      "reference": {
+        "code": 511,
+        "runner_up": 107,
+        "distance": 63.71541974378923,
+        "margin": 0.4440019559591235,
+        "fp64_error_bound": 1.5044043636378174e-11
+      },
+      "classification": "EXACT_CAUSAL_RESIDUAL_BRANCH"
+    },
+    {
+      "group": 13,
+      "native": {
+        "code": 2011,
+        "runner_up": 1725,
+        "distance": 56.15669584213632,
+        "margin": 0.23115974744436585,
+        "fp64_error_bound": 1.3221773787508594e-11
+      },
+      "reference": {
+        "code": 829,
+        "runner_up": 1779,
+        "distance": 58.77891986495598,
+        "margin": 0.12956312844947604,
+        "fp64_error_bound": 1.3812808239652653e-11
+      },
+      "classification": "EXACT_CAUSAL_RESIDUAL_BRANCH"
+    },
+    {
+      "group": 14,
+      "native": {
+        "code": 1838,
+        "runner_up": 1737,
+        "distance": 45.727813846140684,
+        "margin": 4.972037597828368,
+        "fp64_error_bound": 1.188805567871808e-11
+      },
+      "reference": {
+        "code": 1838,
+        "runner_up": 756,
+        "distance": 53.56975955744373,
+        "margin": 1.5351317080996125,
+        "fp64_error_bound": 1.2920945463882823e-11
+      },
+      "classification": "SAME_CODE_ON_VALID_OWN_INPUT"
+    },
+    {
+      "group": 15,
+      "native": {
+        "code": 1483,
+        "runner_up": 889,
+        "distance": 41.56548329491159,
+        "margin": 0.09086185409709202,
+        "fp64_error_bound": 9.767542436501962e-12
+      },
+      "reference": {
+        "code": 889,
+        "runner_up": 1910,
+        "distance": 47.1094504089687,
+        "margin": 0.9352476249337656,
+        "fp64_error_bound": 1.1265477689327057e-11
+      },
+      "classification": "EXACT_CAUSAL_RESIDUAL_BRANCH"
+    }
+  ],
+  "gpu_actions": 0,
+  "model_loads": 0,
+  "reused_monitor_queries": 17,
+  "original_evidence_unchanged": true,
+  "defaults_unchanged": true,
+  "live_registration_or_business_qualified": false,
+  "listening": "PENDING_OWNER_DEFERRED",
+  "seconds": 0.738926388323307,
+  "plan_sha256": "ef97ab4f36f24a78e50ffdd8e6f0fc026a219fadcc62b6454e5b3292b0ce7cbe"
+}

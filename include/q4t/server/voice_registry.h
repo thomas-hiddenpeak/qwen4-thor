@@ -4,6 +4,7 @@
 
 #include <vector>
 
+#include "q4t/audio/tts_generation.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/voice_request.h"
 
@@ -13,6 +14,9 @@ struct VoiceSampleEvidence {
   uint64_t duration_ns = 0;
   std::vector<float> identity;   // Independent 192-dimensional speaker model.
   std::vector<float> condition;  // Actual 2048-dimensional Base condition.
+  uint64_t reference_samples =
+      0;  // Actual 24kHz encoder input, not a duration estimate.
+  std::vector<audio::TtsCodes> reference_codes{};
 };
 struct VoiceConsentBinding {
   std::string scope, id, source_sha256;
@@ -23,6 +27,9 @@ struct VoiceSynthesisBinding {
   std::string scope, id, consent, source_sha256;
   int64_t revision = 0;
   std::vector<float> condition;
+  uint64_t reference_samples = 0;
+  std::string reference_transcript{};
+  std::vector<audio::TtsCodes> reference_codes{};
 };
 
 class VoiceRegistry {

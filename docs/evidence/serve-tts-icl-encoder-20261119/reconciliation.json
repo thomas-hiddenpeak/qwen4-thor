@@ -1,0 +1,37 @@
+{
+  "phases": [
+    {
+      "phase": "component-01",
+      "lease_status": "COMMAND_FAILED",
+      "child_exit": 1,
+      "nvml_queries": 14,
+      "nvml_all_ok": true,
+      "no_observed_competition": true,
+      "lease_released": true,
+      "monitor_workers_reaped": true
+    },
+    {
+      "phase": "component-02",
+      "lease_status": "COMMAND_FAILED",
+      "child_exit": 1,
+      "nvml_queries": 4,
+      "nvml_all_ok": true,
+      "no_observed_competition": true,
+      "lease_released": true,
+      "monitor_workers_reaped": true
+    },
+    {
+      "phase": "rvq-diagnostic-01",
+      "lease_status": "COMPLETED",
+      "child_exit": 0,
+      "nvml_queries": 13,
+      "nvml_all_ok": true,
+      "no_observed_competition": true,
+      "lease_released": true,
+      "monitor_workers_reaped": true
+    }
+  ],
+  "lock_available": true,
+  "limitation": "Polling does not exclude transient external contention",
+  "qualification": false
+}

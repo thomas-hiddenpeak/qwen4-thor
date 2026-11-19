@@ -1,0 +1,19 @@
+{
+  "cases": [
+    "tts_synthesis_reference_schedule_matches_full_decode_then_crop",
+    "tts_synthesis_reference_deferred_output_waits_for_natural_eos",
+    "tts_synthesis_reference_streaming_respects_global_chunk_boundary",
+    "tts_synthesis_reference_slice_copies_every_group_and_hides_reference",
+    "tts_synthesis_reference_invalid_bounds_never_overwrite_owner",
+    "tts_synthesis_reference_slice_rejects_controls_and_preserves_aliases",
+    "tts_synthesis_reference_resources_charge_context_and_owned_copies",
+    "tts_synthesis_without_reference_keeps_legacy_resource_contract",
+    "tts_codec_chunks_preserve_context_trim_and_last_samples",
+    "tts_codec_codes_reject_control_tokens_before_gpu_work"
+  ],
+  "new": 8,
+  "direct_existing": 2,
+  "seconds": 120,
+  "gpu": 0,
+  "binary_sha256": "f9322ca0be538711f0f502ccebe12db4ff2ba890beb1d7ca5af0d7205fc6ca88"
+}

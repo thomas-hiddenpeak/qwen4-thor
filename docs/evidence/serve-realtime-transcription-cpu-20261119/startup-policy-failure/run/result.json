@@ -1,0 +1,14 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 264, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n    ^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 160, in start\n    self.same_model()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_grammar_reap/acceptance.py\", line 176, in same_model\n    require(self.model.poll() is None and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 63, in require\n    raise RuntimeError(message)\nRuntimeError: core model changed during grammar fault\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "websocket_sessions": 0,
+    "committed_items": 0,
+    "chats": 0,
+    "controls": 2
+  },
+  "seconds": 2.696994719095528,
+  "binary_sha256": "de97cea01c22899aacebdc786ae8988b625ef71f58bb53cbb4c730ffaeaf1b53"
+}

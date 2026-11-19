@@ -1,0 +1,42 @@
+{
+  "scope": "Realtime history/processed waveform/counters become mandatory per-profile recovery qualification; PID fixture is not Guardian",
+  "kind": "nonperformance_correctness",
+  "source_commit": "0a18b208a588727af797d4a15a8c898572ba8e51",
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "d090e338ebc6676c24a0455e4027b19aee48bc92ead4a3b16a3ba122019c4fd1",
+    "tools/serve_recovery/profile_evidence.py": "37affdb24558e4f13dd972f7100dcd38dd63d4990cbb3add603dd9660420e920",
+    "tools/serve_recovery/profile_realtime.py": "b6e1ee600568caa2bcbf7bfe22d43c4d66dfd71505cea01e23024e21ac45cf20",
+    "tools/serve_recovery/test_profile_realtime.py": "38c9a6963762bcf1b8f4cf99e162e314bd651f75ec2826849475d38d6d941727"
+  },
+  "python_cases": [
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_configuration_binds_asr_and_forbids_replay",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_complete_actual_usage_and_original_state_are_preserved",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_context_deletion_and_rate_settlement_cannot_be_faked",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_waveform_transcript_and_error_correlation_are_checked",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_reconnect_partial_receipt_or_leaked_resources_cannot_qualify",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_metric_projection_cannot_turn_missing_or_invalid_values_into_zero",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_fixed_limits_and_cli_reserve_every_actual_session_and_turn",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_sdk_timeout_still_releases_only_the_owned_native_entry",
+    "tools.serve_recovery.test_profile_realtime.RealtimeMigration.test_realtime_requires_new_observations_and_cannot_disappear_at_fallback",
+    "tools.serve_recovery.test_voice_icl_profiles.IclEvidence.test_old_receipt_cannot_qualify_actual_icl_registration",
+    "tools.serve_recovery.test_voice_icl_profiles.IclMigration.test_explicit_upgrade_retains_old_qualification_and_refuses_auto_downgrade",
+    "tools.serve_recovery.test_profile_voice.VoiceDriver.test_registration_budget_and_both_commands_keep_actual_base_dependencies"
+  ],
+  "retained_review": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-business-01/run/manual.sdk.json": "4bc0962054f53f9ebb824738a555316367c001ff3e4efbd5c0e0a525a5834e9b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-business-01/run/before.json": "af0ce3019c3e4966c031256ad33e6c850ea85aa2ff7c067ffb332bd039ec5dcc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-business-01/run/manual-drained.json": "1dde91e1fc469bcd81cb033c16eacbbfc2add0ea4686c63020c577b131e67670"
+  },
+  "limits": {
+    "cpu_cases": 12,
+    "retained_reviews": 1,
+    "seconds": 120,
+    "gpu_actions": 0
+  },
+  "reuse": [
+    "unchanged ICL CPU proof beyond affected format/limits cases",
+    "unchanged pinned OpenAI JS/native TLS client and actual history/waveform proof"
+  ],
+  "default_replacement": false,
+  "master_complete": false
+}

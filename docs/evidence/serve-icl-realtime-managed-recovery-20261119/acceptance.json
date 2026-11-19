@@ -1,0 +1,57 @@
+{
+  "status": "ACCEPT_NATIVE_ICL_REALTIME_SERVICE_COMPOSITION",
+  "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/service-package-03/bundle",
+    "manifest_sha256": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/retained-02/bundle",
+    "manifest_sha256": "c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/retained-02/bundle",
+    "manifest_sha256": "c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e"
+  },
+  "tls_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/tls-package-02/bundle",
+    "manifest_sha256": "a3f6dbf9c6cfdead9b73dc6343b2def5ea776105eaa6d6520da28ac2bc48c695"
+  },
+  "actual_model_starts": 4,
+  "service_requests": 63,
+  "realtime_tasks": 5,
+  "service_work_items": 68,
+  "service_probes": 1,
+  "service_seconds": 595.1960149179213,
+  "nvml_queries": 554,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "strict_finalizers_all_passed": true,
+  "strict_runtime_environment_checks_passed": true,
+  "original_version_driver_passed": true,
+  "candidate_whole_package_gpu_run": true,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "original_failed_stage": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/retained-service-02",
+    "starts": 1,
+    "http_requests": 2,
+    "seconds": 48.46963898604736,
+    "nvml_ok": 48,
+    "evidence": "docs/evidence/serve-realtime-ops-contract-20261119/README.md"
+  },
+  "original_failure_relabelled": false,
+  "cumulative_model_starts": 5,
+  "cumulative_http_requests": 65,
+  "cumulative_work_items": 70,
+  "listening": "PENDING_BY_OWNER",
+  "primary_light_evidence": "docs/evidence/serve-icl-realtime-primary-light-20261119/README.md",
+  "normal_speed_voice_similarity_accepted": false,
+  "strict_fp_boundary_accepted": true,
+  "archive_sha256": "345c9a73b58871c358eb0f634459db05ee4df66cbfa6d3a985bd3f1f030825a4",
+  "archive_files": 62
+}

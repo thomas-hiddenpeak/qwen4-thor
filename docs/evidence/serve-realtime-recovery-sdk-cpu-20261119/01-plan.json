@@ -1,0 +1,21 @@
+{
+  "modules": [
+    "tools.serve_realtime.test_recovery_sdk.RecoverySdk"
+  ],
+  "cases": 4,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "max_native_ingress_starts": 6,
+  "max_sdk_connections": 5,
+  "sources": {
+    "tools/serve_realtime/recovery_sdk.mjs": "27577579bb1c30410d3bb6e3b475c1eefcb42d965a918baceb7c596d1cd338b8",
+    "tools/serve_realtime/test_recovery_sdk.py": "1c95933135aa0593ef056ccc85d6b63ef6288a31921853311b3ba7ea155c5eb1",
+    "tools/serve_realtime/test_history_sdk.py": "132dfe15a07fd8515cc7101f37ab3772720696e3affb6381ab8f005a6cd32eb3",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "ingress": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01",
+  "qualified_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-05/plan.json",
+  "qualified_plan_sha256": "3395dc11ee78dd8c18c141bd2de4b0fb6cdbf15f1445dfdc049d360fab614bee"
+}

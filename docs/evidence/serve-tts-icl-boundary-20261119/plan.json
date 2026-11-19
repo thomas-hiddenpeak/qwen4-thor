@@ -1,0 +1,148 @@
+{
+  "schema": "q4t-encoder-float-boundary-review-v1",
+  "limits": {
+    "seconds": 180,
+    "gpu_actions": 0,
+    "model_loads": 0,
+    "frames": 1,
+    "groups": 16,
+    "centroids": 2048,
+    "dimensions": 256
+  },
+  "thresholds": {
+    "cosine": 0.999999,
+    "relative_l2": 0.001
+  },
+  "owner_authorized_boundary_rule": true,
+  "preserve_original_exact_failure": true,
+  "component": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02",
+  "diagnostic": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01",
+  "model": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01/speech_tokenizer/model.safetensors",
+  "defaults": {
+    "build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "captured_rows": [
+    94
+  ],
+  "sources": {
+    "tools/native_tts/encoder_boundary.py": "3c785fddfb07d9f7f4612fe006b0c7ab5d0f939d13be6d3077d4b8420c3ee454",
+    "tools/native_tts/encoder_boundary_review.py": "9f36620f3cb2a138a59011e90f674222a327420f1ba1495d3d199e3122392df0",
+    "tools/native_tts/test_encoder_boundary.py": "d61fce019d512c729c531032755f9a34ce1bbc4f1bf53c344704cf75b5cf6494",
+    "tools/native_tts/encoder_acceptance.py": "e948d80cea7d85f5affd39e295638d1e74052ecdebb4afb308d7a3f8e6401e55",
+    "tools/native_tts/acceptance.py": "e850927469ebf0f1fedd05f1850be890e68f745df9c6fa0093bb804c439e1e7f"
+  },
+  "evidence_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02/plan.json": "eb0c38be6ae73c3e361fb9f0dd55f27145fb256fa806c9a2d765525cce73ec4a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02/run/result.json": "458447f15ee34026884c21ccfa2c5b1f846c0cc6f31ad1012bdb5ef9095a26cb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02/lease/exit.json": "f3e5d52308c75a408fc80cb7ee0e749c129d07c0de6b438e2cfcff9230f95fc2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02/lease/events.jsonl": "2083f68b1d0db31b0b31884163748ec945cebb9bd61c73468cf320698f537d70",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/component-02/lease/nvml-queries.jsonl": "61112e04cdf4500eee2b25f88fa11fdcf57ad3d0c14ac18b3e62b0dd223c28d2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01/plan.json": "80ec5fe0e0ddee13429dfcfe1afc9cc56db345664712e5f9ab7b75bbf665e3cc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01/run/result.json": "ba7b840306c87c5d13498005f0726a57e483924f2b2d9ed7d49868e2bca66ab3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01/lease/exit.json": "9e97386419b069f28d023e201f636b172699cf04efe5f351d0e59cad29b304ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01/lease/events.jsonl": "ce139eb619741b45027356467a011b6c3a3ac2d84ac354ca331e6ac1d656dbba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/rvq-diagnostic-01/lease/nvml-queries.jsonl": "04224e31f93f8f54689db0faa8b15d082d6f569d8b776a4eaf1f3a3e4796069d"
+  },
+  "current_runtime_sources": {
+    "src/audio/tts_speaker_layout.cpp": "b79e2d7281a7ec30206e4f54a873844184cfaf013b9678b872b8c13216f885e2",
+    "src/audio/tts_speaker_model.cu": "cb2f466059e00d21ff88d9b0dbabf33e2b1ad82dfcebca000d66d0f3e71a2f28",
+    "src/audio/tts_codec_conv.cu": "93e5e61780f36f7a2be6523179f1dd4fc2cc7e31b239e70b796b4305b56bd2bd",
+    "src/audio/tts_codec.cu": "3b7f5bb748c1d80343f7f92156d28bc8524c30ca3110705568ccdcd530cbee4c",
+    "src/audio/tts_dense.cu": "8cc133ed45336d6c538633ae1dcbe8dba043d8bfb6eefb3f4af812eb09ac9748",
+    "src/audio/tts_codec_dense.cu": "9a3889959ed9de3daf26dbc97fc4d1b000077bb4d5ef9a665dca6bd2694a2ad3",
+    "src/audio/tts_encoder_layout.cpp": "214715bfcb6ac5e14817241af6cd07007e3a33710fd6d2e616f2c16bda84898d",
+    "src/audio/tts_codec_layout.cpp": "813e54c57d8d69e5abda9abb24fda8e5613865fa69b18bda7ce074427ce83395",
+    "src/audio/tts_generation.cpp": "b15ab893d560e8890654f4d353ccf4e21fe3206db46b9977a9ed030f937a4d1c",
+    "src/audio/tts_speaker_features.cpp": "db8b424d5f90be9011a6a840cbaf57b02881ddc134c2035b0a7c8be3b3503502",
+    "src/audio/tts_encoder_conv.cu": "4d7698b3331de724dd4617935ad6db7e3d7aced56fc1895c9f6f9b58cc1ecc97",
+    "src/audio/tts_model.cu": "eafae3d7c541631e1ede12c9348f1f1a498cd3920c50d9317adfa7c0b98c0afc",
+    "src/audio/tts_synthesis.cpp": "19b854c2b7e2fe9a830672e02b7f162d9756c4a37390088bd101b0786318739f",
+    "src/audio/tts_math_internal.h": "682b07359b5184accfcf427d931bda69472abc590668fdc00da8dbee7ca1ff8f",
+    "src/audio/tts_encoder_dense.cu": "c8faa1b19432b797ca1675da82fdc155453746476fc5ff3d35b647db6e9f265b",
+    "src/audio/tts_base_config_data.h": "60a46749968b7f6de39f6dfc6f248863ce0bd1cd60bd7987ff19b47732e29a08",
+    "src/audio/tts_layout.cpp": "d442296d64c2a78b050dc3f7af1714723df697486ed5e878a34bb984e5237fcc",
+    "src/audio/tts_codec_internal.h": "f7613caff26595c6fea0b027b421d6560af3caa3466a3009c7954c13185f3380",
+    "src/audio/tts_config.cpp": "10948f47e035d45cbe2ce14e64ddab4377d0d9e2a973f7c3b3c06c638fc82b38",
+    "src/audio/tts_encoder.cu": "fe52ad0b73f48482f2dd2c5286746bbb6b4d71efc87efabb37284e5ef9e4a96f",
+    "src/audio/tts_config_data.h": "33cff8f27c6f27db3574e22ac898fb69fc0ac53945620c80b51767c733e3b7fb",
+    "include/q4t/audio/tts_speaker_model.h": "0d44c547cba8b1b424d84ed6e804ae2e6eab90c31d0b956ad21f09e5a9bf9db1",
+    "include/q4t/audio/tts_speaker_features.h": "c8d67499a28c4312ddc6d9b5164fc2a97f41f8f7c39e2be5d9335237dae220f1",
+    "include/q4t/audio/tts_model.h": "cbafb77b6d294f4e5a4c5bb66ae4a649328a4443a48bc7a9b9cb512c645b60ea",
+    "include/q4t/audio/tts_encoder.h": "9dc0865669c71ce33ba4d932b23804666c5513c6c0018f3a8587bbb0dc71f449",
+    "include/q4t/audio/tts_codec.h": "c675c2dd4e3f13a275c07f2713c9fe413b0aa7826acb7e6601047bdc0802ad91",
+    "include/q4t/audio/tts_codec_layout.h": "aa4b5d1937b99af4b48c3c01950afd91e579c0cf8bdb3213f6014f57edbb6e4b",
+    "include/q4t/audio/tts_synthesis.h": "d8c5edd655dfcf83cfb66b843b0c840d3905828869bcc6a4b0a87735a818d06b",
+    "include/q4t/audio/tts_generation.h": "77ec384cb4096ea22fa4629c0a21ab145fe7b0227f3dd9528c3e1382fef9de51",
+    "include/q4t/audio/tts_config.h": "dc5754e0e8ebd194165658c3164120ef73655d853f1218c7b4e82d009d9b0ef9",
+    "include/q4t/audio/tts_encoder_layout.h": "34a5076bbb714965c3dd50d5632e93f4da27e5a2350353cadb587bfef7e707a7",
+    "include/q4t/audio/tts_speaker_layout.h": "41dc3e6d5de9d80ebc0db692ad64570582e327556b62d30690c68ccf2b5787b8",
+    "include/q4t/audio/tts_layout.h": "19cbac06fdd86ed3e9f792fc41c7680ced17cfceaac4b0e5aad8cafc6035644b",
+    "CMakeLists.txt": "8107364480ad9357217ac7544fbfb8af016ea74a4fe23138d9d6d39b3e2209df",
+    "tools/native_tts/CMakeLists.txt": "1be84c8baf48a7f5e464df4546845d99cacbedd44a56efbfe644e98c20b84d26",
+    "src/quant/lt_cache.cpp": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+    "include/q4t/quant/lt_cache.h": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
+    "include/q4t/io/json.h": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072",
+    "src/trace/sha256.cpp": "bd5e9f506e90574710cda42adb82efa1e8a32121b3f28b9dbb517633b6de1da7",
+    "include/q4t/trace/sha256.h": "68a3bb18e5023b7d214cbb66bb96b66b5e9942fbadae6fdf8a30ddfde91a3ae8"
+  },
+  "integration_changes": {
+    "src/audio/tts_generation.cpp": {
+      "old": "bbff4b18da3e03a76b9fe3d0fadccdcc03267a7a5137c04474f512d88e8a79cb",
+      "current": "b15ab893d560e8890654f4d353ccf4e21fe3206db46b9977a9ed030f937a4d1c"
+    },
+    "src/audio/tts_model.cu": {
+      "old": "14098c4cbb81a98ad479b39c3861bbb66bdfc2d86077e90d8f9752db5951ecb4",
+      "current": "eafae3d7c541631e1ede12c9348f1f1a498cd3920c50d9317adfa7c0b98c0afc"
+    },
+    "src/audio/tts_synthesis.cpp": {
+      "old": "43ba44cf8de79517af5bebfd5a30bcd96d70414e232b1a668acc7cadbdf62e98",
+      "current": "19b854c2b7e2fe9a830672e02b7f162d9756c4a37390088bd101b0786318739f"
+    },
+    "src/audio/tts_layout.cpp": {
+      "old": "1544cf7089c01afe974e7eed840585b09e258d3789035dc4f07ab50e3d57ce5c",
+      "current": "d442296d64c2a78b050dc3f7af1714723df697486ed5e878a34bb984e5237fcc"
+    },
+    "include/q4t/audio/tts_synthesis.h": {
+      "old": "a213244a9ebb4585b51727ed083d65cbd40a603c7ecc4b936b0b331765443c55",
+      "current": "d8c5edd655dfcf83cfb66b843b0c840d3905828869bcc6a4b0a87735a818d06b"
+    },
+    "include/q4t/audio/tts_generation.h": {
+      "old": "86ca6eed62208110a398102ba484418f4eea77c14389525857f39fdfced3373c",
+      "current": "77ec384cb4096ea22fa4629c0a21ab145fe7b0227f3dd9528c3e1382fef9de51"
+    },
+    "include/q4t/audio/tts_layout.h": {
+      "old": "bb700be54c7393cea9eb66dfe656d37bdab336f03663e81659534e4f9a078ea7",
+      "current": "19cbac06fdd86ed3e9f792fc41c7680ced17cfceaac4b0e5aad8cafc6035644b"
+    },
+    "CMakeLists.txt": {
+      "old": "67df16529e71a799cb09fb971b787907f245ec95f1ba902143da0d9eded6df0c",
+      "current": "8107364480ad9357217ac7544fbfb8af016ea74a4fe23138d9d6d39b3e2209df"
+    },
+    "tools/native_tts/CMakeLists.txt": {
+      "old": "031e59c99536735fb593dced2f1f4b22d87a2a03f14a604fa3ecab288e8a09d6",
+      "current": "1be84c8baf48a7f5e464df4546845d99cacbedd44a56efbfe644e98c20b84d26"
+    }
+  },
+  "cpu_cases": [
+    "test_exact_nearest_requires_no_exception_to_code_equality",
+    "test_small_crossing_and_causal_residual_are_separately_proved",
+    "test_wrong_nearest_code_cannot_hide_behind_small_input_error",
+    "test_large_correct_nearest_change_fails_original_float_gate",
+    "test_later_non_nearest_is_not_excused_by_valid_prior_branch",
+    "test_single_bit_residual_corruption_is_rejected",
+    "test_ambiguous_midpoint_and_duplicate_centroids_do_not_pass",
+    "test_nonfinite_and_wrong_shape_or_dtype_are_rejected",
+    "test_all_centroids_are_checked_not_only_reported_top_two",
+    "test_acoustic_reset_cannot_inherit_semantic_branch_permission",
+    "test_exact_zero_and_opposite_vectors_keep_original_float_gate",
+    "test_classifier_never_changes_input_codes_or_operands",
+    "test_changed_or_incomplete_artifacts_cannot_be_reused",
+    "test_different_frames_require_their_own_complete_trace"
+  ],
+  "scope": "Read-only reuse of fixed encoder operands; original exact-code failure remains. Mathematical boundary and own-code residual checks only; actual registration/ICL HTTP and listening remain unqualified."
+}

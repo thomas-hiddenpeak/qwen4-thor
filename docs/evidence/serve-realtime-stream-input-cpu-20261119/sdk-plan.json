@@ -1,0 +1,22 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "test_actual_sdk_wss_native_auth_errors_audio_and_close",
+    "test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection",
+    "test_sdk_precommit_failure_clears_without_sending_future_or_replay"
+  ],
+  "cpu_cases": 3,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/transcription_sdk.mjs": "abe126ec1cea8a6aadf0fc25ad62bdfb4dd629fb3de533689989fd7743cd39b1",
+    "tools/serve_realtime/test_transcription_sdk.py": "9cb2e1412acfbaeb5e8173af08b925e0424a6468f22ac01526857ccca36ba900",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "sdk_versions": {
+    "openai": "7.47.0",
+    "ws": "8.21.0"
+  },
+  "scope": "Actual official WSS SDK and native TLS ingress; explicitly synthetic CPU backend. Prove withholding future audio until delta, clear/error with no replay and same connection; not actual model quality."
+}

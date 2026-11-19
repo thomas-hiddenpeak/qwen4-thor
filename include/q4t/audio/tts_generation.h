@@ -10,19 +10,33 @@
 
 namespace q4t::audio {
 
+using TtsCodes = std::array<int32_t, TtsConfig::kCodeGroups>;
+
 struct TtsPromptRow {
   static constexpr int32_t kSpeakerCondition = -2;
+  // Frame i is kReferenceFrame - i; existing two-int row layout is retained.
+  static constexpr int32_t kReferenceFrame = -3;
   int32_t text_index = 0;
   int32_t codec_id = -1;  // -1 means pure projected text.
 };
 
 struct TtsPrompt {
+  static constexpr size_t kMaxReferenceFrames = 750;
   std::vector<int32_t> text_ids;
   std::vector<TtsPromptRow> prefill;
   std::vector<int32_t> trailing_text;
   // Base-only trained 2048-vector. Empty for built-in voices.
   std::vector<float> speaker_embedding;
+  // All groups from the actual reference encoder; empty for x-vector only.
+  std::vector<TtsCodes> reference_codes;
   int32_t pad_index = 0;
+  // Actual projected text plus every learned reference code embedding. This
+  // is usage/admission, not the number of prefill rows or workspace text IDs.
+  // Every complete reference frame consumes all 16 groups. ValidateTtsPrompt
+  // separately enforces the finite text/reference/context budgets.
+  size_t InputTokens() const {
+    return text_ids.size() + reference_codes.size() * TtsConfig::kCodeGroups;
+  }
 };
 int TtsBuiltinVoiceId(std::string_view voice);
 
@@ -40,6 +54,16 @@ Status PlanTtsBasePrompt(std::span<const int32_t> text,
                          std::span<const float> speaker_embedding,
                          std::string_view language, bool non_streaming,
                          size_t max_context, TtsPrompt* out);
+// Reference transcript precedes target text; frame rows sum all16 learned
+// embeddings and retain official streaming/nonstreaming alignment. Reference
+// content is copied; caller cannot change an admitted request after planning.
+Status PlanTtsBaseIclPrompt(std::span<const int32_t> text,
+                            std::span<const int32_t> reference_text,
+                            std::span<const TtsCodes> reference_codes,
+                            std::span<const int32_t> instruction,
+                            std::span<const float> speaker_embedding,
+                            std::string_view language, bool non_streaming,
+                            size_t max_context, TtsPrompt* out);
 Status ValidateTtsPrompt(const TtsPrompt& prompt);
 
 struct TtsSampling {
@@ -67,8 +91,6 @@ class TtsCodeSampler {
   std::mt19937_64 random_;
   bool initialized_ = false;
 };
-
-using TtsCodes = std::array<int32_t, TtsConfig::kCodeGroups>;
 
 class TtsGenerationState {
  public:

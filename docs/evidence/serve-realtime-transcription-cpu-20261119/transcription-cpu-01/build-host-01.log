@@ -1,0 +1,54 @@
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host
+[  0%] Built target q4t_regex_build
+[  1%] Built target q4t_program_javascript
+[  7%] Built target xgrammar
+[  7%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/websocket_session.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_websocket_session_test.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_protocol.cpp.o
+[ 10%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp: In function ‘q4t::io::Json q4t::server::{anonymous}::Failure(const q4t::server::ObjectReply&)’:
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp:18:40: error: could not convert ‘(& reply)->q4t::server::ObjectReply::ClientCode()’ from ‘std::string_view’ {aka ‘std::basic_string_view<char>’} to ‘std::string’ {aka ‘std::__cxx11::basic_string<char>’}
+   18 |        {"code", String(reply.ClientCode())},
+      |                        ~~~~~~~~~~~~~~~~^~
+      |                                        |
+      |                                        std::string_view {aka std::basic_string_view<char>}
+/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp:15:16: error: could not convert ‘{{"type", q4t::server::responses_detail::String(std::string)()}, {"code", <expression error>}, {"message", q4t::server::responses_detail::String(std::string)()}, {"param", (reply.q4t::server::ObjectReply::value.q4t::io::Json::Has(std::__cxx11::basic_string<char>(((const char*)"param"), std::allocator<char>())) ? q4t::io::Json((* reply.q4t::server::ObjectReply::value.q4t::io::Json::Find(std::__cxx11::basic_string<char>(((const char*)"param"), std::allocator<char>())))) : q4t::io::Json{q4t::io::Json::Type::kNull, false, 0.0, std::__cxx11::basic_string<char>(), std::vector<q4t::io::Json>{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >::_Vector_impl{std::_Vector_base<q4t::io::Json, std::allocator<q4t::io::Json> >::_Vector_impl_data{0, 0, 0}}}}, std::vector<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >::_Vector_impl{std::_Vector_base<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json>, std::allocator<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> > >::_Vector_impl_data{0, 0, 0}}}}})}}’ from ‘<brace-enclosed initializer list>’ to ‘std::initializer_list<std::pair<std::__cxx11::basic_string<char>, q4t::io::Json> >’
+   15 |   return Object(
+      |          ~~~~~~^
+      |                |
+      |                <brace-enclosed initializer list>
+   16 |       {{"type", String(reply.http_status >= 500 ? "server_error"
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   17 |                                                 : "invalid_request_error")},
+      |                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   18 |        {"code", String(reply.ClientCode())},
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   19 |        {"message", String(reply.ClientMessage())},
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   20 |        {"param",
+      |        ~~~~~~~~~
+   21 |         reply.value.Has("param") ? *reply.value.Find("param") : Json{}}});
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:6015: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:746: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:753: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:356: q4t_host_tests] Error 2

@@ -1,0 +1,22 @@
+{
+  "status": "ORIGINAL_FAILURE_PRESERVED_CLEANUP_CONFIRMED",
+  "execution_status": "FAILED",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "probes": 0,
+    "controls": 149,
+    "websocket_sessions": 0
+  },
+  "seconds": 48.46963898604736,
+  "lease_status": "COMMAND_FAILED",
+  "nvml_ok": 48,
+  "ports_released": [
+    18161,
+    18162,
+    18163
+  ],
+  "model_pid_absent": 647889,
+  "lock_released": true,
+  "gpu_actions": 0
+}

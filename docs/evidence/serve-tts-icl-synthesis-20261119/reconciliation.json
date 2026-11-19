@@ -1,0 +1,29 @@
+{
+  "status": "PASS_FIXED_REFERENCE_ICL_AUDIO",
+  "seconds": 22.00082286586985,
+  "complete_utterances": 2,
+  "independent_asr_exact": 2,
+  "cancellation_cases": 1,
+  "frame_limit_cases": 2,
+  "gpu_talker_loads": 1,
+  "gpu_codec_loads": 1,
+  "gpu_asr_loads": 1,
+  "reference_encoder_loads": 0,
+  "nvml_queries": 23,
+  "nvml_all_ok": true,
+  "monitor_workers_reaped": true,
+  "lease_released": true,
+  "lock_available": true,
+  "defaults_unchanged": true,
+  "source_identity_unchanged": true,
+  "encoder_gate_unchanged": true,
+  "registered_voice_api_qualified": false,
+  "listening_qualified": false,
+  "limitation": "Polling cannot exclude subinterval external contention; this fixed-reference component does not qualify registration, HTTP or listening.",
+  "owned_model_and_driver_pids_reaped": [
+    518970,
+    518973,
+    519069
+  ],
+  "no_observed_competition": true
+}

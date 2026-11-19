@@ -1,0 +1,6 @@
+[PASS] request_diagnostics_owns_labels_past_mutation_and_error_lifetime
+[PASS] request_diagnostics_label_overflow_is_bounded_and_does_not_throw
+[PASS] object_diagnostics_success_and_quota_preserve_result_and_control
+[PASS] object_diagnostics_cancellation_and_failure_are_distinct
+[PASS] object_diagnostics_exception_has_no_fake_completion_or_cancellation
+5 tests, 5 passed, 0 failed, 0 skipped

@@ -89,7 +89,7 @@ ObjectReply ChatServer::RunNativeTts(
   TtsResourcePlan resources;
   if (!PlanTtsServiceResources(tts_limits_, prompt.text_ids.size(),
                                prompt.prefill.size(), max_frames, &resources,
-                               variant))
+                               variant, prompt.reference_codes.size()))
     return Error(400, "tts_workspace_limit", "TTS workspace budget exceeded");
   uint8_t* generation = nullptr;
   uint8_t* codec = nullptr;
@@ -182,7 +182,7 @@ ObjectReply ChatServer::RunNativeTts(
                                   {generation, resources.generation_bytes},
                                   {codec, resources.codec_bytes}, nullptr,
                                   request.format == SpeechFormat::kWav);
-    if (result.ok()) committed = prompt.text_ids.size();
+    if (result.ok()) committed = prompt.InputTokens();
     return result;
   });
   if (!reply.ok()) return reply;

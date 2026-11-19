@@ -381,7 +381,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
             opts.tts_limits.max_prefill_tokens, opts.tts_limits.max_frames,
             &tts,
             opts.tts_base_model_dir.empty() ? audio::TtsVariant::kCustomVoice17B
-                                            : audio::TtsVariant::kBase17B);
+                                            : audio::TtsVariant::kBase17B,
+            opts.tts_base_model_dir.empty()
+                ? 0
+                : std::min(audio::TtsPrompt::kMaxReferenceFrames,
+                           size_t(opts.tts_limits.max_prefill_tokens - 8)));
         if (!s) return s;
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);
@@ -408,7 +412,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (!opts.tts_base_model_dir.empty()) {
         TtsVoiceResourcePlan voice;
         s = PlanTtsVoiceResources(
-            60 * 24000, uint64_t(opts.tts_limits.workspace_mib) << 20, &voice);
+            60 * 24000, uint64_t(opts.tts_limits.workspace_mib) << 20, &voice,
+            true);
         if (!s) return s;
         AdmissionLimits admission;
         s = ResolveAdmissionLimits(opts, opts.max_seq, &admission);

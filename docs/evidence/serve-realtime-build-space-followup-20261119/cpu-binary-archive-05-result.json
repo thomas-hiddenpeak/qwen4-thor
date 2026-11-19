@@ -1,0 +1,12 @@
+{
+  "status": "PASS_EXACT_ARCHIVE_AND_CLEANUP",
+  "archive_sha256": "f910e5f737ee395f524b706ebe6dbf723f0c59327caadc36a0f97072d0e13b1d",
+  "archive_bytes": 16575245,
+  "files": 3,
+  "unique_payloads": 1,
+  "seconds": 2.0046382881700993,
+  "gpu_actions": 0,
+  "protected_unchanged": true,
+  "net_bytes_released": 22263027,
+  "free_bytes": 218361856
+}

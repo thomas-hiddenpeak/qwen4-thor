@@ -15,6 +15,10 @@ VOICE_FORMAT = 'q4t-profile-business-v9'
 TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
 VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
 VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
+VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
+REALTIME_FORMAT = 'q4t-profile-business-v15'
+REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
+REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
 # Both full WAVs were independently transcribed, then reproduced byte for byte
 # by both registered-voice profiles. These are content witnesses, not new ASR.
@@ -288,10 +292,99 @@ def voice_consumer_business(value, identity):
                                'consumer registration encoder identity differs')
 
 
-def voice_business(value, identity):
+def voice_icl_enabled(identity, capabilities):
+    """Only actual registration requires new reference-encoding evidence.
+
+    Base-only consumption of legacy saved vectors has its own receipt. The
+    full conditioning declaration still participates in capability equality.
+    """
+    from tools.serve_service import package
+    caps = capabilities or {}
+    speech = caps.get('speech', {})
+    if 'registered_voice_conditioning' not in speech:
+        return False
+    ledger.require(package.same_json(speech['registered_voice_conditioning'],
+                                    package.VOICE_CONDITIONING),
+                   'unknown registered voice conditioning contract')
+    return (identity.get('native_tts_base') is not None and
+            caps.get('voice_registration', {}).get('enabled') is True)
+
+
+def voice_reference(records, consent_id, voice_id):
+    """Validate complete persisted records, usable before/after recovery.
+
+    This validates provenance and capacity, not acoustic similarity or native
+    encoder mathematics. Those need their own retained numerical/real proofs.
+    """
+    from tools.serve_service import package
+    ledger.keys(records, ('consent', 'voice'))
+    consent, voice = records['consent'], records['voice']
+    for record, kind, identifier in ((consent, 'voice_consent', consent_id),
+                                      (voice, 'voice', voice_id)):
+        ledger.require(type(record) is dict and record.get('kind') == kind and
+            record.get('id') == identifier and type(record.get('owner')) is str and
+            ledger.HASH.fullmatch(record['owner']) and
+            ledger.integer(record.get('revision'), minimum=1) and
+            type(record.get('expires_at')) is int and record['expires_at'] == 0 and
+            type(record.get('data')) is dict,
+            'persisted reference identity or lifetime differs')
+    data, origin = voice['data'], consent['data']
+    ledger.require(voice['owner'] == consent['owner'] and
+        data.get('consent') == consent_id and
+        data.get('consent_source_sha256') == origin.get('source_sha256') and
+        all(type(v) is str and ledger.HASH.fullmatch(v) for v in (
+            data.get('source_sha256'), origin.get('source_sha256'))) and
+        type(data.get('transcript')) is str and
+        0 < len(data['transcript'].encode()) <= 16384 and
+        '\0' not in data['transcript'], 'persisted reference provenance differs')
+    reference = data.get('reference')
+    ledger.keys(reference, ('format', 'codec_sha256', 'sample_rate', 'samples', 'codes'))
+    samples, codes = reference['samples'], reference['codes']
+    ledger.require(reference['format'] == 'q4t.tts-reference.v1' and
+        reference['codec_sha256'] == package.NATIVE_TTS_BASE['codec_weight_sha256'] and
+        type(reference['sample_rate']) is int and reference['sample_rate'] == 24000 and
+        ledger.integer(samples, minimum=1) and samples <= 1440000 and
+        type(data.get('duration_ns')) is int and
+        data['duration_ns'] == samples*1000000000//24000 and
+        type(codes) is list and len(codes) == (samples+1919)//1920 and
+        len(codes) <= 750 and all(type(row) is list and len(row) == 16 and
+            all(ledger.integer(v) and v < 2048 for v in row) for row in codes),
+        'persisted reference codes or geometry differs')
+    condition = data.get('condition')
+    ledger.require(type(condition) is list and len(condition) == 2048 and
+        all(type(v) in (int, float) and math.isfinite(v) for v in condition) and
+        0 < sum(v*v for v in condition) < math.inf and
+        data.get('condition_model') == 'Qwen3-TTS-12Hz-1.7B-Base' and
+        data.get('condition_revision') == package.NATIVE_TTS_BASE['revision'],
+        'persisted speaker condition differs')
+    return dict(samples=samples, frames=len(codes), input_codes=len(codes)*16)
+
+
+def voice_icl_business(value):
+    records = value['conditioning']
+    checked = voice_reference(records, value['consent']['id'], value['voice']['id'])
+    data, consent = records['voice']['data'], records['consent']['data']
+    # Pinned real fixtures and an independent local Qwen2Tokenizer roundtrip:
+    # 11 reference tokens, 7/5 target tokens, 6 structural tokens, 56*16 codes.
+    # Original v9/v11 observations remain valid only for their old declaration.
+    ledger.require(checked == dict(samples=107520, frames=56, input_codes=896) and
+        data['source_sha256'] ==
+            'a0edb0a022ae9e22d57e3a710654a2cfb13f5cea070abddf2a78b663e3b6ad88' and
+        consent['source_sha256'] ==
+            'f07f5bb483a614d5edc4ad29f786c58963c816c40a3d590c3aca3b5d09713dd1' and
+        data['transcript'] ==
+            'The meeting starts tomorrow morning. Please bring your notebook.',
+        'qualified ICL fixed reference differs')
+    ledger.require(value['speech']['usage']['input_tokens'] == 920 and
+        value['chat']['usage']['q4t_audio_synthesis']['input_tokens'] == 918,
+        'qualified ICL omitted actual reference input tokens')
+
+
+def voice_business(value, identity, *, icl=False):
     """Validate retained actual results, not proof that a helper ran HTTP."""
     ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
-        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits'))
+        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits') +
+        (('conditioning',) if icl else ()))
     fixed = identity['native_tts_base']
     profile_contract.tts_configuration(fixed, base=True)
     asr = identity.get('native_asr')
@@ -315,6 +408,8 @@ def voice_business(value, identity):
     ledger.require(ledger.canonical(value['requests']) == ledger.canonical(expected),
                    'qualified voice requests lost the actual ID or supplied ASR hints')
     voice_synthesis(value, fixed)
+    if icl:
+        voice_icl_business(value)
     negatives = {'negated_consent': (400, 'voice_consent_mismatch'),
                  'different_speaker': (400, 'voice_speaker_mismatch'),
                  'cross_consent': (404, None), 'cross_voice': (404, None),
@@ -332,7 +427,8 @@ def voice_business(value, identity):
             'qualified voice revocation did not retire the registered ID')
     voice_error(revoked['speech'], 404);voice_error(revoked['consent'], 404)
     ledger.keys(value['health'], ('base', 'condition'))
-    for key, model in [('base', fixed['model']), ('condition', fixed['model']+'-speaker')]:
+    condition_model = fixed['model']+('-reference' if icl else '-speaker')
+    for key, model in [('base', fixed['model']), ('condition', condition_model)]:
         health = value['health'][key]
         ledger.require(type(health) is dict and
             health.get('state') in ('ready', 'metadata_ready') and
@@ -340,6 +436,11 @@ def voice_business(value, identity):
             health.get('reason') == 'none' and type(health.get('compute_failures')) is int and
             health['compute_failures'] == 0,
             'qualified voice backend failed or depends on core readiness')
+        if icl:
+            ledger.require(health.get('asset_cleanup_pending') is False and
+                type(health.get('load_failures')) is int and health['load_failures'] == 0 and
+                (key != 'condition' or health.get('reference_encoder') is True),
+                'qualified ICL reference backend failed or cleanup remains')
 
 
 CHAT_AUDIO_FORMAT = 'q4t-profile-business-v7'
@@ -470,6 +571,10 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if realtime_enabled(identity or {}, capabilities):
+        return REALTIME_FORMAT
+    if voice_icl_enabled(identity or {}, capabilities):
+        return VOICE_ICL_FORMAT
     checkpoint = ((identity or {}).get('native_tts') is not None and
         tts_sampling((business_value or {}).get('tts', {})) is not None)
     if (identity or {}).get('native_tts_base') is not None:
@@ -902,6 +1007,109 @@ def message(response, finish):
     return value
 
 
+def realtime_enabled(identity, capabilities):
+    declared = (capabilities or {}).get('realtime')
+    if declared is None:
+        return False
+    ledger.require(type(declared) is dict and
+        declared.get('transcription_configured') is
+            (identity.get('native_asr') is not None) and
+        declared.get('automatic_replay') is False and
+        declared.get('per_turn_client_admission') is True,
+        'Realtime registration or replay contract differs')
+    return declared['transcription_configured']
+
+
+def realtime_business(value):
+    """Require real history-conditioned usage, exact waveform and settlement.
+
+    The whole original SDK stream is retained beside this compact projection.
+    Existing independent tokenizer/processed-waveform witnesses are immutable;
+    a different engine still needs its own observed session on each profile.
+    """
+    shared = 'waveform' in value
+    ledger.keys(value, ('input_sha256', 'session', 'before', 'after') +
+                (('waveform',) if shared else ()))
+    ledger.require(value['input_sha256'] == REALTIME_INPUT_SHA,
+                   'Realtime fixed input differs')
+    session = value['session']
+    ledger.keys(session, ('status', 'connections', 'close_code', 'automatic_replay',
+                         'turns', 'checks'))
+    ledger.require(session['status'] == 'PASS' and
+        type(session['connections']) is int and session['connections'] == 1 and
+        session['close_code'] == 1000 and session['automatic_replay'] is False and
+        type(session['turns']) is list and len(session['turns']) == 3,
+        'Realtime session failed or replayed')
+    identifiers = []
+    for i, turn in enumerate(session['turns']):
+        identifier = turn['item_id']; identifiers.append(identifier)
+        terminal, committed = turn['terminal'], turn['committed']
+        item = turn['retrieved']['item']
+        ledger.require(type(identifier) is str and identifier and
+            terminal.get('item_id') == committed.get('item_id') == item.get('id') == identifier and
+            terminal.get('type') == 'conversation.item.input_audio_transcription.completed' and
+            turn['retrieved'].get('type') == 'conversation.item.retrieved' and
+            committed.get('type') == 'input_audio_buffer.committed' and
+            committed.get('previous_item_id') == (identifiers[0] if i == 1 else None) and
+            turn.get('before_commit') is None and
+            terminal.get('transcript') == turn.get('delta') == ASR_TEXT and
+            item.get('object') == 'realtime.item' and item.get('type') == 'message' and
+            item.get('role') == 'user' and item.get('status') == 'completed' and
+            type(item.get('content')) is list and len(item['content']) == 1,
+            'Realtime actual completion/history identity differs')
+        content = item['content'][0]
+        ledger.keys(content, ('type', 'transcript', 'audio'))
+        encoded = content['audio']
+        if shared:
+            ledger.require(encoded == dict(sha256=REALTIME_WAVEFORM_SHA),
+                           'Realtime waveform reference missing or changed')
+            encoded = value['waveform']
+        ledger.require(content['type'] == 'input_audio' and content['transcript'] == ASR_TEXT and
+            type(encoded) is str and len(encoded) <= 1 << 20,
+            'Realtime retained transcript/format differs')
+        try:
+            audio = base64.b64decode(encoded, validate=True)
+        except ValueError as error:
+            raise ValueError('invalid Realtime retained audio encoding') from error
+        ledger.require(base64.b64encode(audio).decode() == encoded and
+            len(audio) == 201788 and hashlib.sha256(audio).hexdigest() == REALTIME_WAVEFORM_SHA,
+            'Realtime retrieved waveform differs from actual processing')
+        usage = terminal.get('usage', {})
+        initial = 81 if i == 1 else 70
+        ledger.require(type(usage) is dict and usage.get('type') == 'tokens' and
+            all(type(usage.get(k)) is int for k in
+                ('input_tokens', 'output_tokens', 'total_tokens')) and
+            usage['input_tokens'] == initial and usage['output_tokens'] == 11 and
+            usage['total_tokens'] == initial+11,
+            'Realtime actual history/deletion input or output usage differs')
+    ledger.require(len(set(identifiers)) == 3 and type(session['checks']) is list and
+                   len(session['checks']) == 4, 'Realtime item/delete count differs')
+    for i, check in enumerate(session['checks']):
+        identifier = identifiers[i//2]; event = check['event']
+        ledger.require(check['item_id'] == identifier and
+            check['type'] == ('deleted' if i % 2 == 0 else 'absent'),
+            'Realtime deletion identity differs')
+        if i % 2 == 0:
+            ledger.require(event.get('type') == 'conversation.item.deleted' and
+                event.get('item_id') == identifier, 'Realtime delete acknowledgement differs')
+        else:
+            ledger.require(event.get('type') == 'error' and
+                event.get('error', {}).get('code') == 'item_not_found' and
+                event['error'].get('event_id') == check.get('label') and
+                type(check.get('label')) is str and check['label'],
+                'Realtime deleted-item lookup/correlation differs')
+    for side in ('before', 'after'):
+        state = value[side]
+        ledger.keys(state, ('admitted', 'settled', 'reserved', 'active', 'sessions',
+                            'host_bytes', 'free_slots'))
+        ledger.require(all(ledger.integer(v) for v in state.values()) and
+            all(state[k] == 0 for k in ('reserved', 'active', 'sessions', 'host_bytes')) and
+            state['free_slots'] == 1, 'Realtime session/admission resources not released')
+    ledger.require(value['after']['admitted']-value['before']['admitted'] == 3 and
+        value['after']['settled']-value['before']['settled'] == 254,
+        'Realtime actual rate settlement differs')
+
+
 def business(value, identity, selected=None, capabilities=None):
     media = (selected or {}).get('allow_media', False)
     chat_audio = chat_audio_enabled(identity, capabilities)
@@ -913,14 +1121,18 @@ def business(value, identity, selected=None, capabilities=None):
                        (('separator',) if has_separator(identity) else ()) +
                        (('chat_audio',) if chat_audio else ()) +
                        (('tts',) if identity.get('native_tts') is not None else ()) +
-                       (('voice',) if identity.get('native_tts_base') is not None else ()))
+                       (('voice',) if identity.get('native_tts_base') is not None else ()) +
+                       (('realtime',) if realtime_enabled(identity, capabilities) else ()))
+    if realtime_enabled(identity, capabilities):
+        realtime_business(value['realtime'])
     if identity.get('native_tts') is not None:
         tts_business(value['tts'], identity)
     if identity.get('native_tts_base') is not None:
         if identity.get('native_asr') is None and identity.get('native_tts') is None:
             voice_consumer_business(value['voice'], identity)
         else:
-            voice_business(value['voice'], identity)
+            voice_business(value['voice'], identity,
+                           icl=voice_icl_enabled(identity, capabilities))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:

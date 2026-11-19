@@ -1,0 +1,29 @@
+{
+  "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 352,
+    "cleanup_complete": true,
+    "lease_result_sha256": "f59d3d71a5cc387b2afddc80b9dd37f21247ef415c114f77e5a33e64d25ea75a"
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 44,
+    "controls": 132,
+    "websocket_sessions": 2,
+    "ingress_starts": 2
+  },
+  "seconds": 279.3673700550571,
+  "registry_sha256": "c11d47799b9be00ed81b210d477d122aa7198ab7cd6e49ebde028e06d3b4af1f",
+  "default_unchanged": true,
+  "automatic_managed_switching_accepted": false,
+  "performance_claim": false,
+  "reused_primary_voice": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profiles-04",
+  "cumulative_starts": 3,
+  "cumulative_requests": 56,
+  "cumulative_seconds": 378.93752993503585,
+  "original_failure_preserved": true,
+  "separate_continuous_leases": true
+}

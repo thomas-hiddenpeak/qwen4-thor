@@ -1,0 +1,6 @@
+{
+  "source_commit": "e3c358063eb12ea9d56b2d01d54cc8d1deebf2e6",
+  "plan_sha256": "3395dc11ee78dd8c18c141bd2de4b0fb6cdbf15f1445dfdc049d360fab614bee",
+  "binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "scope": "ICL reference registration and actual Realtime primary/light; Guardian recovery and delivery pending"
+}

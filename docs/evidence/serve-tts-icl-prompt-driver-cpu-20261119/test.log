@@ -1,0 +1,12 @@
+test_adapter_preserves_speaker_text_instruction_and_source_owner (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_adapter_preserves_speaker_text_instruction_and_source_owner) ... ok
+test_adapter_rejects_drift_in_expected_reference_call (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_adapter_rejects_drift_in_expected_reference_call) ... ok
+test_changed_alignment_budget_gate_or_quality_claim_rejected (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_changed_alignment_budget_gate_or_quality_claim_rejected) ... ok
+test_code_corruption_shape_and_reserved_ids_rejected (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_code_corruption_shape_and_reserved_ids_rejected) ... ok
+test_missing_changed_or_fractional_reference_rejected (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_missing_changed_or_fractional_reference_rejected) ... ok
+test_valid_complete_owned_reference_and_two_alignments (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_valid_complete_owned_reference_and_two_alignments) ... ok
+test_zero_nonfinite_or_truncated_speaker_rejected (tools.native_tts.test_icl_acceptance.IclAcceptanceTests.test_zero_nonfinite_or_truncated_speaker_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.008s
+
+OK

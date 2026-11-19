@@ -1,0 +1,33 @@
+host-contracts	Check qualified audio auxiliary recovery and migrations	﻿2026-11-19T09:15:14.1180178Z ##[group]Run python3 -B -m unittest tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles tools.serve_recovery.test_speaker_profiles.SpeakerProfiles tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage tools.serve_recovery.test_asr_profiles.AsrProfiles tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles tools.native_asr.test_auxiliary_service tools.native_asr.test_recovery_profiles.RecoveryProfiles tools.native_speaker.test_service
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:14.1182738Z ^[[36;1mpython3 -B -m unittest tools.serve_recovery.test_audio_auxiliary_profiles.AudioAuxiliaryProfiles tools.serve_recovery.test_speaker_profiles.SpeakerProfiles tools.serve_service.test_audio_auxiliary_package.AudioAuxiliaryPackage tools.serve_recovery.test_asr_profiles.AsrProfiles tools.serve_recovery.test_chat_audio_profiles.ChatAudioProfiles tools.native_asr.test_auxiliary_service tools.native_asr.test_recovery_profiles.RecoveryProfiles tools.native_speaker.test_service^[[0m
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:14.1208294Z shell: /usr/bin/bash -e {0}
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:14.1208666Z env:
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:14.1208949Z   Q4T_TEST_OUTPUT_DIR: /home/runner/work/qwen4-thor/qwen4-thor/.q4t-work/audio-recovery-cpu
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:14.1209266Z ##[endgroup]
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2508025Z ............................................E..........
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2508484Z ======================================================================
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2509131Z ERROR: test_managed_fallback_requires_real_alignment_and_preserved_profile_history (tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2509777Z ----------------------------------------------------------------------
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2510041Z Traceback (most recent call last):
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2510535Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tools/native_asr/test_auxiliary_service.py", line 98, in test_managed_fallback_requires_real_alignment_and_preserved_profile_history
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2511083Z     result = service.check_business(out)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2511288Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2511638Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tools/native_asr/service_acceptance.py", line 576, in check_business
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2512017Z     qualified = read('capabilities.wire')
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2512223Z                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2512819Z   File "/home/runner/work/qwen4-thor/qwen4-thor/tools/native_asr/service_acceptance.py", line 472, in <lambda>
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2513210Z     read = lambda n: json.loads((out/n).read_text())
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2513440Z                                 ^^^^^^^^^^^^^^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2513698Z   File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2514008Z     with self.open(mode='r', encoding=encoding, errors=errors) as f:
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2514273Z          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2514536Z   File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2514821Z     return io.open(self, mode, buffering, encoding, errors, newline)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2515088Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2515615Z FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/qwen4-thor/qwen4-thor/.q4t-work/audio-recovery-cpu/tmp1uc8_3i5/execution/capabilities.wire'
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2516021Z 
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2516143Z ----------------------------------------------------------------------
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2516386Z Ran 55 tests in 1.719s
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2516489Z 
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2516563Z FAILED (errors=1)
+host-contracts	Check qualified audio auxiliary recovery and migrations	2026-11-19T09:15:16.2801162Z ##[error]Process completed with exit code 1.

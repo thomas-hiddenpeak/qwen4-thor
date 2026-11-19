@@ -1,0 +1,251 @@
+[
+  {
+    "item": "item_f345e4eaec5d83bd3e3bd0077329d0eb",
+    "label": "en",
+    "delay": "medium",
+    "quality": {
+      "text": "Mhm. Oh yeah, yeah. He wasn't even that big when I started listening to him, but and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "exact": true,
+      "word_error_rate": 0.0
+    },
+    "before_commit": {
+      "item_id": "item_f345e4eaec5d83bd3e3bd0077329d0eb",
+      "sent_bytes": 288000,
+      "total_bytes": 722460,
+      "delta": "M",
+      "event": "conversation.item.input_audio_transcription.delta"
+    },
+    "steps": [
+      {
+        "pass": 1,
+        "samples": 32000,
+        "prefix": 0,
+        "input": 41,
+        "output": 12,
+        "cumulative_output": 12,
+        "final": 0
+      },
+      {
+        "pass": 2,
+        "samples": 64000,
+        "prefix": 0,
+        "input": 67,
+        "output": 20,
+        "cumulative_output": 32,
+        "final": 0
+      },
+      {
+        "pass": 3,
+        "samples": 96000,
+        "prefix": 14,
+        "input": 107,
+        "output": 11,
+        "cumulative_output": 43,
+        "final": 0
+      },
+      {
+        "pass": 4,
+        "samples": 128000,
+        "prefix": 19,
+        "input": 138,
+        "output": 12,
+        "cumulative_output": 55,
+        "final": 0
+      },
+      {
+        "pass": 5,
+        "samples": 160000,
+        "prefix": 25,
+        "input": 170,
+        "output": 10,
+        "cumulative_output": 65,
+        "final": 0
+      },
+      {
+        "pass": 6,
+        "samples": 192000,
+        "prefix": 29,
+        "input": 200,
+        "output": 11,
+        "cumulative_output": 76,
+        "final": 0
+      },
+      {
+        "pass": 7,
+        "samples": 224000,
+        "prefix": 34,
+        "input": 231,
+        "output": 14,
+        "cumulative_output": 90,
+        "final": 0
+      },
+      {
+        "pass": 8,
+        "samples": 240820,
+        "prefix": 42,
+        "input": 253,
+        "output": 7,
+        "cumulative_output": 97,
+        "final": 1
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 1207,
+      "output_tokens": 97,
+      "total_tokens": 1304,
+      "input_token_details": {
+        "audio_tokens": 924,
+        "text_tokens": 283
+      }
+    }
+  },
+  {
+    "item": "item_d1afc8c60efaaa1ae97f27c07e9ab2e7",
+    "label": "zh",
+    "delay": "low",
+    "quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "before_commit": {
+      "item_id": "item_d1afc8c60efaaa1ae97f27c07e9ab2e7",
+      "sent_bytes": 144000,
+      "total_bytes": 201790,
+      "delta": "\u751a\u81f3",
+      "event": "conversation.item.input_audio_transcription.delta"
+    },
+    "steps": [
+      {
+        "pass": 1,
+        "samples": 16000,
+        "prefix": 0,
+        "input": 28,
+        "output": 6,
+        "cumulative_output": 6,
+        "final": 0
+      },
+      {
+        "pass": 2,
+        "samples": 32000,
+        "prefix": 0,
+        "input": 41,
+        "output": 8,
+        "cumulative_output": 14,
+        "final": 0
+      },
+      {
+        "pass": 3,
+        "samples": 48000,
+        "prefix": 4,
+        "input": 58,
+        "output": 7,
+        "cumulative_output": 21,
+        "final": 0
+      },
+      {
+        "pass": 4,
+        "samples": 64000,
+        "prefix": 7,
+        "input": 74,
+        "output": 4,
+        "cumulative_output": 25,
+        "final": 0
+      },
+      {
+        "pass": 5,
+        "samples": 67263,
+        "prefix": 7,
+        "input": 77,
+        "output": 4,
+        "cumulative_output": 29,
+        "final": 1
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 278,
+      "output_tokens": 29,
+      "total_tokens": 307,
+      "input_token_details": {
+        "audio_tokens": 185,
+        "text_tokens": 93
+      }
+    }
+  },
+  {
+    "item": "item_235ea9135fa7a03f95a5d196c9e88740",
+    "label": "mulaw",
+    "delay": "low",
+    "quality": {
+      "text": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "exact": true,
+      "word_error_rate": 0
+    },
+    "before_commit": {
+      "item_id": "item_235ea9135fa7a03f95a5d196c9e88740",
+      "sent_bytes": 24000,
+      "total_bytes": 33632,
+      "delta": "\u751a\u81f3",
+      "event": "conversation.item.input_audio_transcription.delta"
+    },
+    "steps": [
+      {
+        "pass": 1,
+        "samples": 16000,
+        "prefix": 0,
+        "input": 28,
+        "output": 6,
+        "cumulative_output": 6,
+        "final": 0
+      },
+      {
+        "pass": 2,
+        "samples": 32000,
+        "prefix": 0,
+        "input": 41,
+        "output": 8,
+        "cumulative_output": 14,
+        "final": 0
+      },
+      {
+        "pass": 3,
+        "samples": 48000,
+        "prefix": 4,
+        "input": 58,
+        "output": 7,
+        "cumulative_output": 21,
+        "final": 0
+      },
+      {
+        "pass": 4,
+        "samples": 64000,
+        "prefix": 7,
+        "input": 74,
+        "output": 4,
+        "cumulative_output": 25,
+        "final": 0
+      },
+      {
+        "pass": 5,
+        "samples": 67264,
+        "prefix": 7,
+        "input": 77,
+        "output": 4,
+        "cumulative_output": 29,
+        "final": 1
+      }
+    ],
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 278,
+      "output_tokens": 29,
+      "total_tokens": 307,
+      "input_token_details": {
+        "audio_tokens": 185,
+        "text_tokens": 93
+      }
+    }
+  }
+]
