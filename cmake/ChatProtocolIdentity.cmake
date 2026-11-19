@@ -95,6 +95,10 @@ set(protocol_inputs
   src/server/realtime_transcript_history.cpp
   include/q4t/server/realtime_conversation.h
   src/server/realtime_conversation.cpp
+  include/q4t/server/native_chat_generation.h
+  src/server/native_chat_generation.cpp
+  include/q4t/server/realtime_response_output.h
+  src/server/realtime_response_output.cpp
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp

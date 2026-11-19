@@ -363,13 +363,15 @@ class ChatServer {
                   GenerationApi api = GenerationApi::kChat,
                   std::shared_ptr<RequestControl> owner = {},
                   const io::Json* frozen_inputs = nullptr,
-                  const BatchResponseLink* batch_parent = nullptr);
+                  const BatchResponseLink* batch_parent = nullptr,
+                  class NativeChatGeneration* native = nullptr);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
                       class ResponsesExecution* responses,
                       std::shared_ptr<RequestControl> background = {},
                       struct InternalModelStep* internal = nullptr,
-                      const io::Json* frozen_inputs = nullptr);
+                      const io::Json* frozen_inputs = nullptr,
+                      NativeChatGeneration* native = nullptr);
   BatchRowResult RunBatchRequest(const std::string& endpoint,
                                  const BatchInputRow& row,
                                  const io::Json& frozen_inputs,

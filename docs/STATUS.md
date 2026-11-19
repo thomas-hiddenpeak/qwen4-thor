@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime响应增量17项CPU通过](evidence/serve-realtime-output-cpu-20261119/README.md)：
+真实解析器、SDK事件、历史与最终消息一致，截断/取消/背压及
+不确定接收不重放通过；用量缺失不连累回答，0GPU、零警告构建。
+主请求接线编译通过，尚未接公开对话端点或验收模型；继续会话、
+工具回填、音频/MCP/Live。默认rev346 STOPPED和听感待验保持。
+
+Realtime原生主请求执行接线正在开发：类型化输入与共享解析器
+增量复用正常Chat配额/调度/取消，不借用预处理豁免。此私有桥接
+尚未路由或验收；后续接有界响应事件与会话，再统一针对性CPU及
+实际模型短验，音频/MCP/Live仍为必做。默认rev346保持，PR #51
+只等待已推送c388fb254的检查，本地开发不混入。
+
 [语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
 PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
 PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认

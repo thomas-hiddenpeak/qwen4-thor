@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [Realtime响应增量CPU验证](evidence/serve-realtime-output-cpu-20261119/README.md)
+
 - [语义验收脚本入口修复](evidence/serve-semantic-vad-ci-entry-20261119/README.md)
 
 - [Realtime统一schema与有界历史基础](evidence/serve-realtime-conversation-foundation-20261119/README.md)

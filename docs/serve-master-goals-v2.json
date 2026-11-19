@@ -11061,6 +11061,14 @@
       "raw_files": 73,
       "evidence": "evidence/serve-realtime-conversation-foundation-20261119/README.md",
       "next": "Native model deltas, tool results, per-response quotas and cancellation; audio/Live remain required."
+    },
+    "response_output_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-output-cpu-20261119/README.md",
+      "tests": 17,
+      "gpu_actions": 0,
+      "actual_conversation_execution_accepted": false,
+      "master_complete": false
     }
   },
   "semantic_vad_primary_light_20261119": {
