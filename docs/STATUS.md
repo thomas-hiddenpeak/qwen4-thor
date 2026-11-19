@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt剩余场景短验通过](evidence/serve-realtime-prompt-followup-20261120/README.md)：
+1模型/5 Realtime+3 Chat/53.511秒，52次NVML正常；实际取消、
+跨客户隔离、CSV一次RPM和全部结算/清理通过。固定seed回答rev356，
+greedy仍答错，原质量FAIL与原整组FAIL不改写。默认rev356保持，
+继续能力声明、主轻/恢复与可回退交付，全部master保持active。
+
 [Prompt真实业务与输入复核](evidence/serve-realtime-prompt-business-review-20261120/README.md)：
 1模型/8 Realtime+1 Chat/56.925秒；前7项真实场景通过，第8项工具
 答案未返回rev356，原整组FAIL保留。实际提示含来源值，带模板与

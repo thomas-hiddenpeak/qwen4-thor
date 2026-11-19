@@ -31,6 +31,11 @@ Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidenc
 实际表格模型入口、单次RPM/TPM租约及完整Chat计划已接线，失败用量
 交接和反例通过；原夹具失败保留。继续必要运行时构建与真实SDK业务。
 
+实际业务前7项及[剩余五场景](evidence/serve-realtime-prompt-followup-20261120/README.md)
+已有真实SDK证据；模板/文件/CSV/取消/客户隔离/配额通过，工具结果
+已正确传入，但原答案及greedy诊断仍有模型质量FAIL，全部保留。
+下一步补能力声明、主轻与恢复组合、可回退交付，尚无Prompt发行资格。
+
 ## 已核实的依据
 
 固定的 OpenAI JS 7.47.0 在会话和 `response.create` 中均接受

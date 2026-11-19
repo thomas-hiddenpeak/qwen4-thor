@@ -663,3 +663,5 @@
 - [Realtime Prompt定义修正](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：原注册失败保留，真实模板原生CPU校验。
 
 - [Prompt实际业务原失败与续验](evidence/serve-realtime-prompt-business-review-20261120/README.md)：原错误答案、输入复核和固定剩余范围。
+
+- [Prompt剩余场景短验](evidence/serve-realtime-prompt-followup-20261120/README.md)：取消/隔离/配额通过，原质量FAIL保持。
