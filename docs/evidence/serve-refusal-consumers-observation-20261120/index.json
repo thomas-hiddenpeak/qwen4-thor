@@ -1,0 +1,786 @@
+{
+  "files": {
+    "observe_remaining_01.py": {
+      "sha256": "8568cd9f851d553613bab1fb736b41c19b013397d61093abd8bea5b4335d0648",
+      "bytes": 10417
+    },
+    "archive_consumers_01.py": {
+      "sha256": "0202c0aaf1714c76dcad5ea93a4c79da24e1c149bd7e6ff2f7955d4128291ee7",
+      "bytes": 6405
+    },
+    "consumers-01/primary-fresh-voice-health.http.json": {
+      "sha256": "e3ab8345d6bec3e872b73511ec81cac29d423d32575348875aee599dfb54d124",
+      "bytes": 239
+    },
+    "consumers-01/primary-capabilities.http.json": {
+      "sha256": "421dfecd1076f263bf8fe411f5403c30b8053b28cbe8048f229bc84081618a8a",
+      "bytes": 238
+    },
+    "consumers-01/primary-prompt-observation.json": {
+      "sha256": "2b8feee2092409fdc879e8ea5a79d1382975159f6c5c5f2991a0cd7063ad2d96",
+      "bytes": 17698
+    },
+    "consumers-01/light-conversation-observation.json": {
+      "sha256": "2fa68e1864bf7c812c296a34d88c273ebd4c7254aba3833062eeab3b30a4ccd3",
+      "bytes": 14662
+    },
+    "consumers-01/primary-tts-chat-observation-drain.metrics.json": {
+      "sha256": "98e5551e0dd657366ccf48f7339b1025d14e9c8fed4b91b5f291d8284c9db132",
+      "bytes": 23267
+    },
+    "consumers-01/primary-chat-audio.request.json": {
+      "sha256": "cecda8a01ce29c15b7babfe1db1d99da17d42ccbf322af70bcd9613233c0ce3b",
+      "bytes": 180102
+    },
+    "consumers-01/light-chat-audio-drain.metrics.json": {
+      "sha256": "4769331632fcb85593e241d6a5ffd0a59c7c37c937fe466b9a5fdf39e18360d7",
+      "bytes": 23322
+    },
+    "consumers-01/light-schema-drain.metrics.json": {
+      "sha256": "4d9de0dbacc36a8b116d553e1e7dc72cce42c3191fca8dce900dcf0e6720ccb7",
+      "bytes": 23242
+    },
+    "consumers-01/light-voice-fresh-stored.wire": {
+      "sha256": "083ed447c54839b37a1dbd3d277b050da9fcc41ba5e24c01bd4133c6a3ff0564",
+      "bytes": 154281
+    },
+    "consumers-01/light-text-observation.json": {
+      "sha256": "2e00ba637945ab0e87a7c5bcc1e90ebfdbdb0d82fccbd0a3d50938e768401f5f",
+      "bytes": 9776
+    },
+    "consumers-01/primary-legacy-responses.request.json": {
+      "sha256": "5fff232a7e452c83b59cc1d7823c7a284a6edeaad701a7979fbf1a9639a40fc6",
+      "bytes": 173
+    },
+    "consumers-01/primary-semantic-complete.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/primary-semantic-vad-observation-drain.metrics.json": {
+      "sha256": "7fab424e0970a4b86d574a690ad3257513a20fae97a5d7b2cd54090b1269285e",
+      "bytes": 23309
+    },
+    "consumers-01/light-voice-fresh-stored.http.json": {
+      "sha256": "7686c70bf1c09cf9829354a1d571d557b153e758dffc4f47ee11e12dd9a2ad13",
+      "bytes": 233
+    },
+    "consumers-01/primary-prompt-before.wire": {
+      "sha256": "6655905e94cb62ca96bdc5331a7cf85fc4dfe3b694190df197c7add8b284a276",
+      "bytes": 33632
+    },
+    "consumers-01/primary-fresh-voice-health.wire": {
+      "sha256": "9da41cf2506c6573b76f694e53dd71ce510606873a2c44b5b1c54f68973f96ca",
+      "bytes": 16013
+    },
+    "consumers-01/primary-prompt-after-0.wire": {
+      "sha256": "556cdd31ed9dbad584226484212d0dcc00e84cb397ccbb273526dc0c43077ad0",
+      "bytes": 33667
+    },
+    "consumers-01/light-config.http.json": {
+      "sha256": "4389598c420f8d6318652e6ea109ef9e0b95e5e6071b08bbc90564a53ddf2802",
+      "bytes": 238
+    },
+    "consumers-01/light-chat-audio-config.http.json": {
+      "sha256": "6e3decfb6b15f30356a753de742c59151773d8a2667ee0d8765335234a90d0fb",
+      "bytes": 238
+    },
+    "consumers-01/light-legacy-register.http.json": {
+      "sha256": "07c9d2cc78df960d0a2f11c84b3cbd6912aeab109085d8eeae7539e4a23f68fd",
+      "bytes": 585
+    },
+    "consumers-01/light-tool-result.request.json": {
+      "sha256": "4a36e134c2cc93d50f17ffad2bb4ab403ae7808b48299f1121a4c33ab52565d1",
+      "bytes": 1614
+    },
+    "consumers-01/light-prompt-after-0.wire": {
+      "sha256": "2a4e3b57d8dd9faa9b21faeaacc9a51ab07662dea54e900f696053395080bbd1",
+      "bytes": 33709
+    },
+    "consumers-01/light-semantic-health.http.json": {
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e",
+      "bytes": 20
+    },
+    "consumers-01/primary-semantic-complete.sdk.json": {
+      "sha256": "e1b5c95ed359da3637c8c48260d8fc196ad0416edf1f0d31d10ed95bfcc0daa1",
+      "bytes": 5550
+    },
+    "consumers-01/light-schema.wire": {
+      "sha256": "204f81bb6102fe368684b5eca93c7f9ea5ee9145103dd510bc71d77962665171",
+      "bytes": 351
+    },
+    "consumers-01/primary-prompt-entry-cleanup.json": {
+      "sha256": "73e6076b2d8a83c572db7c48849355f3dc39280a712b17d000a0d6d8fe9129bd",
+      "bytes": 94
+    },
+    "consumers-01/light-tool-result.wire": {
+      "sha256": "a6b1a084655941e95a14a4d1c383ec1127c810831c9e5348ca2c1975b2792257",
+      "bytes": 348
+    },
+    "consumers-01/primary-chat-audio-observation.json": {
+      "sha256": "eee0dc5c801ee94c7966342772913529b67973923513eeb1562093fa12f28781",
+      "bytes": 1509
+    },
+    "consumers-01/primary-legacy-responses.wire": {
+      "sha256": "adf7e270be674bd506248c0416febd5c67f50bba46f852ea6562fac0a91d88e9",
+      "bytes": 1232
+    },
+    "consumers-01/primary-legacy-responses.http.json": {
+      "sha256": "d6b3ed1fba61d8e2417d2ff6585c26b273961ab645a432f0c29b14425e4aa17d",
+      "bytes": 235
+    },
+    "consumers-01/light-schema.http.json": {
+      "sha256": "b9c9b9b0593d7a0d0f3bc64827c87d146488016e9e80147cc2ab34d6d58fc9bc",
+      "bytes": 233
+    },
+    "consumers-01/light-prompt-before.http.json": {
+      "sha256": "a0c1625d57ae7be2b617e26aedad08a481eccccfea491ea8356dd96af534bc02",
+      "bytes": 246
+    },
+    "consumers-01/primary-config.wire": {
+      "sha256": "9f3377eeb654216a65021e0d233c95be083ca50cfaf65efea44afe5a5a0eb3dd",
+      "bytes": 16011
+    },
+    "consumers-01/primary-voice-fresh-chat-drain.metrics.json": {
+      "sha256": "68e44dd4bcd48fa3c6300ab5082c57c6675b8d14eb37e00da4b9301205cd50c4",
+      "bytes": 23267
+    },
+    "consumers-01/light-semantic-continuation-drain.metrics.json": {
+      "sha256": "8da55e69d705152a343b98184ce41dcb60da2ab8250bacb5fcf0239d2d4e4516",
+      "bytes": 23351
+    },
+    "consumers-01/light-semantic-health.wire": {
+      "sha256": "45955f61b72152586b84f93cd375743c31dfdd152e9ca93fb6cb9373c1015170",
+      "bytes": 16023
+    },
+    "consumers-01/light-fresh-voice-health.wire": {
+      "sha256": "ecc64f1e93a62714caccdda9fd354bb8a7171cb73c30985331be1db48500375f",
+      "bytes": 16018
+    },
+    "consumers-01/primary-config.http.json": {
+      "sha256": "1b7a0a89d5635ae59ae54eda33a39684ee54eebeae3a65f6d466712f0554bbc5",
+      "bytes": 239
+    },
+    "consumers-01/primary-prompt-drain.metrics.json": {
+      "sha256": "90554c2ea2a054b77b9513623969d9f0da353e7625de048d4ce47b7aa3debcca",
+      "bytes": 23250
+    },
+    "consumers-01/primary-semantic-before.http.json": {
+      "sha256": "3dd22497cf00803bb886b9cdd6662011cb04a16bc146c765242eaf3fcaab312b",
+      "bytes": 247
+    },
+    "consumers-01/light-semantic-continuation.sdk.json": {
+      "sha256": "fa094667618aa1ed918d01fff923c054911fe9bb274f1d04e9b75b8a81c3a0b6",
+      "bytes": 656427
+    },
+    "consumers-01/light-fresh-voice-health.http.json": {
+      "sha256": "5209898a42fe870617cda6b2a2e1f724b4739b2d0f309eefce9e6d502b85d039",
+      "bytes": 239
+    },
+    "consumers-01/primary-media.wire": {
+      "sha256": "5abf5f7062000fd0fbaab43d32f2cca0b07e69d68c6725d980ef417a238aa0cd",
+      "bytes": 1497
+    },
+    "consumers-01/light-chat-output.request.json": {
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+      "bytes": 376
+    },
+    "consumers-01/light-semantic-complete-drain.metrics.json": {
+      "sha256": "fb040a65535615ee54bcffc59da15c86052ceaccea44d23c441f62a016b2a516",
+      "bytes": 23337
+    },
+    "consumers-01/primary-voice-fresh-stored.http.json": {
+      "sha256": "689690289e43aa50292a64e26fb8f0c12119bd08f6f4e60759be8878f50dcaf7",
+      "bytes": 234
+    },
+    "consumers-01/light-voice-fresh-stored-drain.metrics.json": {
+      "sha256": "e4e9d250c7c5f92902f023ea4aa20fee3601b390dad96efcca11a514e4f20146",
+      "bytes": 23336
+    },
+    "consumers-01/light-text-observation-drain.metrics.json": {
+      "sha256": "e4b0d486f0606149064df137671592f0353095409142d57973171b1b358d60b7",
+      "bytes": 23245
+    },
+    "consumers-01/light-legacy-responses-observation.json": {
+      "sha256": "bfefb23daef86dcc36222b23b4d5b7ed1456ecb2233b1daa60d5d5e386db5793",
+      "bytes": 2200
+    },
+    "consumers-01/light-prompt-observation-drain.metrics.json": {
+      "sha256": "c690a8565d791671244187a69027196056090c541c71d2868fc7b3cff4601c11",
+      "bytes": 23294
+    },
+    "consumers-01/light-prompt-observation.json": {
+      "sha256": "72b37bcd5b696e83527212c29603293cabdac203c1528335b6e87b7fc9905daa",
+      "bytes": 17703
+    },
+    "consumers-01/light-conversation-observation.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/primary-chat-audio.http.json": {
+      "sha256": "e7f62732f0129b6eb9950ea472874ff07db2b8151191d36f91c0ed6cd305e9a8",
+      "bytes": 232
+    },
+    "consumers-01/primary-capabilities.json": {
+      "sha256": "c5d01ce072d40873ed1be60df15d5294b3e071bc75fce096df7a99e2716aeae9",
+      "bytes": 58202
+    },
+    "consumers-01/result.json": {
+      "sha256": "d359423241a4ccda4342ec8b5149b3a384bbf0f7be2c96832c9ddbe872e75b9d",
+      "bytes": 341
+    },
+    "consumers-01/light-media-observation-drain.metrics.json": {
+      "sha256": "078a78ce988264a3481e08d88db2d417d3a449bf7e0d7fca3db19fa311088d60",
+      "bytes": 23323
+    },
+    "consumers-01/light-legacy-responses-drain.metrics.json": {
+      "sha256": "2840f33bc12c9bc847a34a4783a3b5972b3e3e877d30d7001a739c01efcaf0f4",
+      "bytes": 23350
+    },
+    "consumers-01/primary-prompt.sdk.json": {
+      "sha256": "be8c9b481ee34cbe5e37d54724753d0b60acc62c78d556929097ec4ed07b5305",
+      "bytes": 16610
+    },
+    "consumers-01/primary-voice-fresh-chat-asr.request.json": {
+      "sha256": "75a8a6003af8b01b13dfa91a4a6275b65eb7d0cef6a0eca11f169ccff8f4dcef",
+      "bytes": 271
+    },
+    "consumers-01/primary-tts-chat-observation.json": {
+      "sha256": "9c9bdbccb5c8ef7987ac629487434277d2e4ff99f34c57aab064ccc47a54fbd1",
+      "bytes": 228316
+    },
+    "consumers-01/primary-semantic-vad-observation.json": {
+      "sha256": "ab584cd5282df315bdd732da0631918ea7a2caa832592cd5b3520002b88d280b",
+      "bytes": 1331
+    },
+    "consumers-01/light-config.json": {
+      "sha256": "75099ab6096477e1fd6570df446a00484b1a4e01622ecc8c616369e6e9a6461b",
+      "bytes": 20883
+    },
+    "consumers-01/light-semantic-before.wire": {
+      "sha256": "3fd0468d4785f4cadc8654e214e9e4e0850726bc095a121244cb1389d907f066",
+      "bytes": 33753
+    },
+    "consumers-01/primary-prompt-observation-drain.metrics.json": {
+      "sha256": "24b37e247eb5c15a958d420b62a6c206f69ff3bd402ae1da5a8a6f3012fe582d",
+      "bytes": 23250
+    },
+    "consumers-01/primary-command.json": {
+      "sha256": "022528aa174972aa0029d241e8422d3345130af889682bccd657e8387c22247d",
+      "bytes": 2872
+    },
+    "consumers-01/light-prompt-before.wire": {
+      "sha256": "5cc700645d22c6c14c3466fd541a57f3499c02c8e33dce45927ca892bdd0ba5e",
+      "bytes": 33667
+    },
+    "consumers-01/light-tool-result-drain.metrics.json": {
+      "sha256": "2327c6dd12262a1b6e5b7449af851fc81075006a7162c5309b6abbb267835162",
+      "bytes": 23245
+    },
+    "consumers-01/light-legacy-responses.request.json": {
+      "sha256": "b0445f0167e6c1ef6ccd0857f0c31aa3b23c2990002c86a904c9aae792365f79",
+      "bytes": 173
+    },
+    "consumers-01/primary-voice-fresh-stored.wire": {
+      "sha256": "66968bbb70a6ee16cec2f18b58044f2ab7ce94ed05241c69dee8fd7a4925509b",
+      "bytes": 154281
+    },
+    "consumers-01/light-chat-audio.http.json": {
+      "sha256": "77789b774f41a3d1d6e89fcc696e4a173a2c7b80160c80ae137ed1365c5461d9",
+      "bytes": 232
+    },
+    "consumers-01/light-tool.http.json": {
+      "sha256": "35c39d344b8848af614a4cf20bfc76fc4822e8cff5ad1d91a47ef1d8a5452b37",
+      "bytes": 233
+    },
+    "consumers-01/counts.json": {
+      "sha256": "562d75747a4b227fdf4281dbb2190da9c4f7d00b083b2b53982ac739013b7aba",
+      "bytes": 136
+    },
+    "consumers-01/light-conversation-observation-after-0.wire": {
+      "sha256": "fbd1dd2393c9948085992acaa07e84ba0731b920a2802b3042c2b7006fb3a03a",
+      "bytes": 33667
+    },
+    "consumers-01/light-semantic-before.http.json": {
+      "sha256": "e5007178178ab4b20dc3c32456c942c3b5e6b4ccc5b35db1cbdd13aaabe9dde8",
+      "bytes": 247
+    },
+    "consumers-01/plan.json": {
+      "sha256": "fbf8b63bce5b21b28930ef243d1fa37b0266db8e202c3e57a5f53d4c40dbfde9",
+      "bytes": 1021834
+    },
+    "consumers-01/primary-voice-prompt.json": {
+      "sha256": "f42889d8eed5f3e9354098662079aac8e2f543b2425f0f8111f71b879e0d2d4e",
+      "bytes": 409267
+    },
+    "consumers-01/light-voice-chat-observation-drain.metrics.json": {
+      "sha256": "1cbd2d34dc9b54f05ef653dc369a38f02e65808dc26b2095eda3539523c5455b",
+      "bytes": 23338
+    },
+    "consumers-01/light-semantic-entry-cleanup.json": {
+      "sha256": "dcd8e56e5ef59198ff3068d395ce61624b745fd211aa60ed23a2cf836078d513",
+      "bytes": 94
+    },
+    "consumers-01/primary-voice-fresh-chat.request.json": {
+      "sha256": "98edc5d813e6a1f73022df0ac32cecdaf4783daba0a791ef89c60ca99df59175",
+      "bytes": 222
+    },
+    "consumers-01/light-tts-chat-observation-drain.metrics.json": {
+      "sha256": "14cbb42491d9752e0700b5fe79aa7cb6620f020dafbf3c212960dfca6e6c6c8f",
+      "bytes": 23337
+    },
+    "consumers-01/primary-chat-output-drain.metrics.json": {
+      "sha256": "a57cd0a96f3252343e7ac445f3fb32d26c62ce26fb62ba0a0cbc4c493af31423",
+      "bytes": 23267
+    },
+    "consumers-01/light-prompt-after-0.http.json": {
+      "sha256": "bdceb95d1a3ee41b193895b18eefb0463067c737da2f1fe7b0f50b3c448513fa",
+      "bytes": 247
+    },
+    "consumers-01/primary-chat-output.wire": {
+      "sha256": "1c370b02711dd981625d86e378c7aee45b371b6032afc72f915e9794e290495b",
+      "bytes": 149148
+    },
+    "consumers-01/primary-voice-chat-observation-drain.metrics.json": {
+      "sha256": "f1af77551faf20c0c3078f0c616651c79e07fe56bf75f6f29d42732cee94a185",
+      "bytes": 23267
+    },
+    "consumers-01/light-media-observation.json": {
+      "sha256": "e0809288a4144aa118fbc18979fa26ecef7c2eb4e7a0353334fa0ef0cff9fba7",
+      "bytes": 5077
+    },
+    "consumers-01/primary-prompt-business.json": {
+      "sha256": "7a6525aa519eb1382ed9e81fc6fa231899ca38bf7defafc053fee483ad72fbd3",
+      "bytes": 27580
+    },
+    "consumers-01/primary-identity.json": {
+      "sha256": "f8420c75a8d02c967af1c95143af6739aca1e3e0c8b1ba97b170d6f176ef790a",
+      "bytes": 3308
+    },
+    "consumers-01/light-conversation-observation-after-0.http.json": {
+      "sha256": "45f3aa00483a297d63998d2360802326e5942bd1ca1fad3bd6a18026e730be39",
+      "bytes": 247
+    },
+    "consumers-01/light-chat-audio-observation.json": {
+      "sha256": "224324665414e0f05325ef0a1b0bf5bb999e0a9c9ed6a81fd5565d9148bfaa38",
+      "bytes": 1511
+    },
+    "consumers-01/plan-before-receipt-index.json": {
+      "sha256": "8a9597f14738b4b2f137755516a11f3aa46c61c4e459e45668ed47845ae3558b",
+      "bytes": 1021834
+    },
+    "consumers-01/primary-voice-fresh-chat-asr-drain.metrics.json": {
+      "sha256": "126613e31c7f1b726e30866122302e3074e4c62d23be54177ca71b06ff762cdf",
+      "bytes": 23267
+    },
+    "consumers-01/light-prompt-entry-cleanup.json": {
+      "sha256": "4eeb0bed67a8df5138946fcd2409e24db8fc686874c69feab3e47372fd3f8881",
+      "bytes": 94
+    },
+    "consumers-01/primary-media-observation-drain.metrics.json": {
+      "sha256": "cb01acf4ffb088ce4bb465d86800835740fdf205e3f5212019ee4f9d7017b94d",
+      "bytes": 23251
+    },
+    "consumers-01/primary-chat-audio-config.wire": {
+      "sha256": "a9012993d1eb55b8b346e055ed86bd8d60111343e7806b92a78cbffdc72e2c55",
+      "bytes": 16009
+    },
+    "consumers-01/light-media.wire": {
+      "sha256": "0660ada37c32d2f2f2a01ccfe46b0943d1abc515623bccf68ec02f38ac657144",
+      "bytes": 1497
+    },
+    "consumers-01/light-command.json": {
+      "sha256": "c69aa9ebe721dcc9bfdc7d6ed6986270df8b180489ddd8a82b7bb89cc5fb708f",
+      "bytes": 2875
+    },
+    "consumers-01/light-schema.request.json": {
+      "sha256": "0d7018592efcb8e7c41ff511b0c9a5fb77aa1388d51bc9b5f0689347d2a60628",
+      "bytes": 611
+    },
+    "consumers-01/primary-prompt-after-0.http.json": {
+      "sha256": "95ba7291a66e8e7f2eed0bb89dc5b30e177be7466edc0f3f12eac2a8684353c5",
+      "bytes": 247
+    },
+    "consumers-01/light-prompt-drain.metrics.json": {
+      "sha256": "c3957bb1cb1027464198573b97dc08c7787a620fe2295e2b73880967da497840",
+      "bytes": 23294
+    },
+    "consumers-01/primary-media.http.json": {
+      "sha256": "140a318f4b5ac88692505722f786403b631dd6cd5f89d70053373def10897310",
+      "bytes": 234
+    },
+    "consumers-01/light-voice-fresh-stored.request.json": {
+      "sha256": "18e8095515b3a7c4bee041603c3b144bc82599640f642f363009f9f43e226a39",
+      "bytes": 204
+    },
+    "consumers-01/light-chat-output.http.json": {
+      "sha256": "cd432f643a1f6054d8d3df8a2e23bd7b50c74a10fc1e4b342969e3f575a8e035",
+      "bytes": 236
+    },
+    "consumers-01/light-chat-audio-observation-drain.metrics.json": {
+      "sha256": "211d03f84159262dd5130bc232265f66e8621fa01197e440331443308450fe64",
+      "bytes": 23322
+    },
+    "consumers-01/primary-voice-fresh-chat-asr.http.json": {
+      "sha256": "f6aeec5221f6c965250f3cecb67135200aa8b1bf6c8b5274c8ecc300e12ffcc8",
+      "bytes": 227
+    },
+    "consumers-01/primary-prompt.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/light-voice-fresh-chat-asr.http.json": {
+      "sha256": "ec8f3d86fa0a7919d27b6638c7b87cb4de44909c413a942ed379e76987a1ed69",
+      "bytes": 228
+    },
+    "consumers-01/light-semantic-after-0.http.json": {
+      "sha256": "6d4aac1fd3168a1c4cbd5d61177f4923f01b20b25cd48f6d36530e42496d09d0",
+      "bytes": 248
+    },
+    "consumers-01/primary-chat-audio-config.http.json": {
+      "sha256": "0598a3acabc7c8b5bd1c2ec1f3d035ecb0231b308cc17b8a5822f6747f3ea822",
+      "bytes": 238
+    },
+    "consumers-01/light-tool.request.json": {
+      "sha256": "f777d2d6e9b89efcb6df0ebde6c7c8f01c99bdb26a2acd806906b1cb5494126d",
+      "bytes": 948
+    },
+    "consumers-01/light-config.wire": {
+      "sha256": "35c51b3184ec8f8bc8a6596e1de2ec9626716021f98f20fdd3bfa740a420f273",
+      "bytes": 16016
+    },
+    "consumers-01/primary-legacy-responses-observation-drain.metrics.json": {
+      "sha256": "6795ecd70bf3b5314257de800965c2eb99df46bc6399b745a259e11947f572da",
+      "bytes": 23319
+    },
+    "consumers-01/light-prompt.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/primary-voice-fresh-chat.http.json": {
+      "sha256": "40b59db9bedcbd1fe2f1f07b5aac30feb16de0bf32f694c4ec6ed8cef2c77130",
+      "bytes": 231
+    },
+    "consumers-01/light-voice-fresh-chat-asr.wire": {
+      "sha256": "459e399797f11b54ce71ecd5396493246ec8e5e33bff8039d777738c4c3c67bc",
+      "bytes": 202
+    },
+    "consumers-01/light-media.request.json": {
+      "sha256": "d895319bbd8b5259bffb9194bb8b93aedec6376d5ea2f0dc7b78971e278aab00",
+      "bytes": 3882
+    },
+    "consumers-01/light-tool.wire": {
+      "sha256": "ff3245d11ca8128ce43f19e6575cd6c7edfc46d49a1ea14324daedfdbdcbde2d",
+      "bytes": 546
+    },
+    "consumers-01/light-legacy-responses.wire": {
+      "sha256": "35c29934df03ba402da610e2b0fc3ab92de76c01baa5f50439f5887ebb3ae3bf",
+      "bytes": 1232
+    },
+    "consumers-01/light-conversation-observation-entry-cleanup.json": {
+      "sha256": "49ead8461359976c795fee7e8152dd15ebc117ef66f1de7ea7a0e2adc8d6ed17",
+      "bytes": 63
+    },
+    "consumers-01/primary-tts-config.wire": {
+      "sha256": "82706c7c6db069a2ff9ae1d248c100f4c52eb3cd8d8edd037f7e497b8a327db0",
+      "bytes": 16017
+    },
+    "consumers-01/light-voice-fresh-chat.wire": {
+      "sha256": "083ed447c54839b37a1dbd3d277b050da9fcc41ba5e24c01bd4133c6a3ff0564",
+      "bytes": 154281
+    },
+    "consumers-01/light-chat-audio.request.json": {
+      "sha256": "cecda8a01ce29c15b7babfe1db1d99da17d42ccbf322af70bcd9613233c0ce3b",
+      "bytes": 180102
+    },
+    "consumers-01/light-conversation-observation-before.wire": {
+      "sha256": "234b05d077fca95aa313753c893331f770595663aa412742b8d52b2da895029b",
+      "bytes": 33662
+    },
+    "consumers-01/light-tts-config.wire": {
+      "sha256": "d6c5e447d6c23ef10fc7c234fc469229d640c6ba6ea153baadbce8cb5b3cf83b",
+      "bytes": 16022
+    },
+    "consumers-01/light-conversation-observation.sdk.json": {
+      "sha256": "e800c3ef67e806ff7e2bad8dc9e2443d2e9d6416c253c7ea396d12a710920e99",
+      "bytes": 13776
+    },
+    "consumers-01/primary-semantic-entry-cleanup.json": {
+      "sha256": "4907bedbe4194b413154131888b8bbba06fc11853939f1f363c47f5292bd8aed",
+      "bytes": 94
+    },
+    "consumers-01/review.json": {
+      "sha256": "869935cb425ae8e91bc1f09366087d44b99f1d6215ccc3c3668b7dc4d5a45de0",
+      "bytes": 9360
+    },
+    "consumers-01/light-conversation-observation-before.http.json": {
+      "sha256": "867b1c1606b96471093b6b15bc19a66103f136097fba95e3090d8849f6394cc3",
+      "bytes": 248
+    },
+    "consumers-01/light-media.http.json": {
+      "sha256": "11784dff5621d419f9b7e65c3eacaefe7ab05ab8a2ddb1e34b538abc704b5d02",
+      "bytes": 234
+    },
+    "consumers-01/light-identity.json": {
+      "sha256": "42d55ab7ef30a2968cb54356da1841dd7b60add94551d8891906e7c0d4053d99",
+      "bytes": 3311
+    },
+    "consumers-01/light-chat-audio.wire": {
+      "sha256": "a29dcd688b0cad4e7183c2af05b0f6e722d4efe7d12c9440709e591bd67689e5",
+      "bytes": 602
+    },
+    "consumers-01/light-semantic-continuation.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/light-tts-config.http.json": {
+      "sha256": "a3bb567958773bcd8f6c50068fc5f73720344c328f8bcf4bcb5bd5169f024229",
+      "bytes": 238
+    },
+    "consumers-01/primary-config.json": {
+      "sha256": "eac1f42cf7d148c4283656a9131f81b6d06ef82749160dd1bf04b8a95b2fee8f",
+      "bytes": 20878
+    },
+    "consumers-01/primary-capabilities.wire": {
+      "sha256": "7e66932109e4e051a9e2c70c2da32c02a38d32e5d5d67b8830efd2f7fc94e7b0",
+      "bytes": 45149
+    },
+    "consumers-01/primary-chat-output.request.json": {
+      "sha256": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+      "bytes": 376
+    },
+    "consumers-01/light-voice-fresh-chat-asr.request.json": {
+      "sha256": "75a8a6003af8b01b13dfa91a4a6275b65eb7d0cef6a0eca11f169ccff8f4dcef",
+      "bytes": 271
+    },
+    "consumers-01/light-legacy-responses-observation-drain.metrics.json": {
+      "sha256": "3c12fafa0309f65049071619709e89e03a57b780e9299ae24b6b132de434c536",
+      "bytes": 23350
+    },
+    "consumers-01/primary-cleanup.json": {
+      "sha256": "e91cffa677df8cb7b8e5204a26df162a8adc7eea5abcc3f3c231b42ecedb043f",
+      "bytes": 4893
+    },
+    "consumers-01/primary-chat-audio-drain.metrics.json": {
+      "sha256": "67a99ada9b4e82892f705070d58bd33c7ed5d97fcd2f730f06ca1386f491c500",
+      "bytes": 23251
+    },
+    "consumers-01/primary-voice-chat-observation.json": {
+      "sha256": "9831ba77b7f084a178888059cb18ba183784f2271de1843f3a019b5e81fa7600",
+      "bytes": 366228
+    },
+    "consumers-01/primary-voice-fresh-chat.wire": {
+      "sha256": "66968bbb70a6ee16cec2f18b58044f2ab7ce94ed05241c69dee8fd7a4925509b",
+      "bytes": 154281
+    },
+    "consumers-01/primary-voice-fresh-stored-drain.metrics.json": {
+      "sha256": "84cff3181ac83c29df7062e0f28292a3d4793220ee3faadc1b66771530ea2ef8",
+      "bytes": 23267
+    },
+    "consumers-01/primary-model.log": {
+      "sha256": "22658bd39b21ab179acb6ddc5ba295b493ce9b91f13be5b0a45002f4d8bc1fff",
+      "bytes": 45725
+    },
+    "consumers-01/primary-voice-fresh-chat-asr.wire": {
+      "sha256": "459e399797f11b54ce71ecd5396493246ec8e5e33bff8039d777738c4c3c67bc",
+      "bytes": 202
+    },
+    "consumers-01/light-tts-chat-observation.json": {
+      "sha256": "76ba62845d460b4fbd9a3750c7eb0018bf6df1fbb4b4bb39e6eb6772d28d8816",
+      "bytes": 228318
+    },
+    "consumers-01/light-legacy-responses.http.json": {
+      "sha256": "c10eccd521d2a5dcd1202acdfa21bd4ae158cc1a64e549e5a6fc7df9dfbf54a0",
+      "bytes": 234
+    },
+    "consumers-01/light-semantic-vad-observation.json": {
+      "sha256": "f16c8d61f338fb7af5acd3ad520c3d1537e1bf779c26c3bc004da0a2ef51c4a5",
+      "bytes": 373027
+    },
+    "consumers-01/light-semantic-business.json": {
+      "sha256": "702cbf745c57c19a71db3d9735a02c4b7f71c2a93581dca1608f8d434f5aca75",
+      "bytes": 387385
+    },
+    "consumers-01/primary-chat-audio.wire": {
+      "sha256": "f52fed656a9d2ea21e26fa2bc378d066fb24b7fb0ea9f07f94e86a1b00e8c76a",
+      "bytes": 602
+    },
+    "consumers-01/primary-prompt-before.http.json": {
+      "sha256": "7535ea8d0a2fb814f3dc127ee27936ff239e227928d1a9cc705146ae9b26e6c1",
+      "bytes": 247
+    },
+    "consumers-01/light-voice-chat-observation.json": {
+      "sha256": "428452d8de601edb5f45ba472872a6b5c8a91d04f0bf8c05f79b2122703f6dda",
+      "bytes": 366229
+    },
+    "consumers-01/primary-chat-audio-observation-drain.metrics.json": {
+      "sha256": "164cbb4cb158bd8e3b31150a5d6d1106d833f13c23fcd8aa70136a521d880f4a",
+      "bytes": 23251
+    },
+    "consumers-01/light-capabilities.json": {
+      "sha256": "c3124245075b5c07ff954b2ffac2a475818c60594bd97fde15deb8b23a76c458",
+      "bytes": 58203
+    },
+    "consumers-01/light-chat-output-drain.metrics.json": {
+      "sha256": "9071f0e9f0ce4addd0b47bb58f9807dc299c1ed4be2b406bfe5fe40febc08ac1",
+      "bytes": 23337
+    },
+    "consumers-01/light-semantic-vad-observation-drain.metrics.json": {
+      "sha256": "304b0ed2dd9e24540e6e74f4b6af547413cb3a4153f988e03d72a17f928c6d0b",
+      "bytes": 23351
+    },
+    "consumers-01/primary-media-observation.json": {
+      "sha256": "a60a69a2b367b9935bc9085bbc056be9c5fff1808eef968f65014b19aaa1c08f",
+      "bytes": 5075
+    },
+    "consumers-01/light-prompt.sdk.json": {
+      "sha256": "ebf43601eb591dcf264ea9324bdaffcb78c1c83059dc873b5c05ff179e32f4d0",
+      "bytes": 16610
+    },
+    "consumers-01/light-semantic-complete.sdk.json": {
+      "sha256": "16c83b5d381b4f15405e843d4dae80892b292dc78d64dba952561254131771f4",
+      "bytes": 717603
+    },
+    "consumers-01/primary-legacy-register.http.json": {
+      "sha256": "a2e84d51c807f042a6a124997f393cb4ff2240d168b7273737e9547db3a50160",
+      "bytes": 586
+    },
+    "consumers-01/light-voice-prompt.json": {
+      "sha256": "3db68883490a44a2570a4bef48e5d8ad9c0497995d1b5229c75812c512c86fbc",
+      "bytes": 409267
+    },
+    "consumers-01/primary-voice-fresh-stored.request.json": {
+      "sha256": "61f92b766d11f16c72fa582ca048e3aadfe6dd3d40fd50c62f1cb26714f01fde",
+      "bytes": 204
+    },
+    "consumers-01/light-chat-audio-config.wire": {
+      "sha256": "55e99883f4855f9588beb12d422da96d7261834cc5ccc0f0f21a639d9f893432",
+      "bytes": 16014
+    },
+    "consumers-01/light-tool-result.http.json": {
+      "sha256": "1b7dcccc65a914d7da254291478851af7fb4aecd6d10dde43b5473e4062f343d",
+      "bytes": 232
+    },
+    "consumers-01/cleanup.json": {
+      "sha256": "26fdef57fc8c64ed8b0ae373150a2fa483992fd913b240c6f34a95cdaa20e8dd",
+      "bytes": 10183
+    },
+    "consumers-01/light-capabilities.http.json": {
+      "sha256": "f74362e034b2919451f50eda172103ad713561bdbdd7749263c2a1f5daf67d21",
+      "bytes": 238
+    },
+    "consumers-01/light-media-drain.metrics.json": {
+      "sha256": "4de58455eb353a802c1df0657fbc5c075d5bcc7cde5c5ce57694912b997bde9c",
+      "bytes": 23323
+    },
+    "consumers-01/primary-legacy-responses-observation.json": {
+      "sha256": "3f44b5f3059ff70f0f11eb6587f8e524905df9907b498332110476f7a38f0e9d",
+      "bytes": 2199
+    },
+    "consumers-01/primary-media.request.json": {
+      "sha256": "d895319bbd8b5259bffb9194bb8b93aedec6376d5ea2f0dc7b78971e278aab00",
+      "bytes": 3882
+    },
+    "consumers-01/primary-legacy-responses-drain.metrics.json": {
+      "sha256": "f03eae4aee458766a1e883ce8dfaaf38e212c727296243311267b29fb566ce60",
+      "bytes": 23319
+    },
+    "consumers-01/primary-semantic-before.wire": {
+      "sha256": "216b6c512e6d0dab45b4701beece3cdeedca4b0b3bf9c6d2710268b3e6fe471b",
+      "bytes": 33682
+    },
+    "consumers-01/light-voice-fresh-chat-asr-drain.metrics.json": {
+      "sha256": "340ecc4e05e9cc2b9956ffe02292760e64097061089ce0ee18174db1ab04b412",
+      "bytes": 23338
+    },
+    "consumers-01/source-before-receipt-index.py": {
+      "sha256": "324a513b021141334585a255605d311fef8244384ba56a61aa50349a9eb9f037",
+      "bytes": 10175
+    },
+    "consumers-01/light-voice-fresh-chat.http.json": {
+      "sha256": "33a98e3b1406f4c6c92b72b56c08a13b23252155fa7959ad6ee4a120b41cd177",
+      "bytes": 231
+    },
+    "consumers-01/primary-chat-output.http.json": {
+      "sha256": "9c4cae3329a6f7503422f83e51700fb75b27abbad4adcfd0d8f7a86147e89005",
+      "bytes": 236
+    },
+    "consumers-01/light-conversation-observation-drain.metrics.json": {
+      "sha256": "2336d4b082027ea362ccc5220e567c69587c7e7cd27728f7efe2ae696161ba21",
+      "bytes": 23252
+    },
+    "consumers-01/primary-media-drain.metrics.json": {
+      "sha256": "00778dc7c87d540c2ad83da0674f6113e4e94b28ee5126c82ac1208445ab4451",
+      "bytes": 23251
+    },
+    "consumers-01/light-tool-drain.metrics.json": {
+      "sha256": "fe21f41a64458f14e9faef225dd0aee70bc2df66fd79c00c05c97d934c7ce2c6",
+      "bytes": 23246
+    },
+    "consumers-01/light-semantic-complete.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "consumers-01/primary-legacy-register.wire": {
+      "sha256": "3c2e7be8a6151263feeea6698e01999780657262c7742e9d43cc5b75fb0a173d",
+      "bytes": 178
+    },
+    "consumers-01/light-prompt-business.json": {
+      "sha256": "c0ad0be4cf54c6e223d2e733233d0e33faa48b3168dbf4c50b5424d65a788a79",
+      "bytes": 27583
+    },
+    "consumers-01/primary-tts-config.http.json": {
+      "sha256": "d1a66b0df369c9dfcacfabace229cfe2f5466eb093b2cdece95e149531b29ad3",
+      "bytes": 238
+    },
+    "consumers-01/light-semantic-after-0.wire": {
+      "sha256": "0e15d09539a42d5e9ca190b0c91ae6e8dd53b21b0b4abca350a9e1182732d402",
+      "bytes": 33768
+    },
+    "consumers-01/light-voice-fresh-chat.request.json": {
+      "sha256": "98edc5d813e6a1f73022df0ac32cecdaf4783daba0a791ef89c60ca99df59175",
+      "bytes": 222
+    },
+    "consumers-01/light-capabilities.wire": {
+      "sha256": "33d74e9a5539e29bf1ad6be9b02b3147045559f5aaf432c53a4b3e4ac2b97907",
+      "bytes": 45150
+    },
+    "consumers-01/light-voice-fresh-chat-drain.metrics.json": {
+      "sha256": "5c15ea7161c838805261d74439a11f4b9def2e0236b48fd4cf9de5654b3c0595",
+      "bytes": 23336
+    },
+    "consumers-01/light-model.log": {
+      "sha256": "3bd04e9e255b1f1a6309b352560f8b295c45ee137f31d0f1512c89c40e36c16b",
+      "bytes": 77573
+    },
+    "consumers-01/light-chat-output.wire": {
+      "sha256": "77cab04666d146fae25d40fa932f77911967a6f68fde153765091c1034d8d837",
+      "bytes": 149148
+    },
+    "consumers-01/light-legacy-register.wire": {
+      "sha256": "22fa78b999b2013786e28b3f2a0cacd09fdb56785248d11db15d3f39d83525c5",
+      "bytes": 178
+    },
+    "consumers-01/observations.json": {
+      "sha256": "55afaad0adb8ef55236e1ff80045b1375d6d26c89de0a3d9a331377072cd7a6d",
+      "bytes": 5429
+    },
+    "consumers-01/lease/nvml-queries.jsonl": {
+      "sha256": "b4907b526804488055711c0d55f91a1796507adb951c002e8e61dbb3aa06d5be",
+      "bytes": 498310
+    },
+    "consumers-01/lease/events.jsonl": {
+      "sha256": "2cfa68b8fe77aabedf5f44cfacd4e92c259132517e8a1f1e7ddfb75d6040521d",
+      "bytes": 38993
+    },
+    "consumers-01/lease/exit.json": {
+      "sha256": "3e39fafbfe41a4a72d08b4e7623c8646d83a478a002d46c2ad420a0d819d5ce1",
+      "bytes": 657
+    }
+  },
+  "omitted": {
+    "consumers-01/client-policy.json": {
+      "sha256": "709c495c921edf96f9ed1a23ddb0902810c24b4f9f2613bd35750ef14525895e",
+      "reason": "private test authentication; original retained"
+    }
+  }
+}

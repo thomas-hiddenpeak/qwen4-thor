@@ -1,0 +1,66 @@
+{
+  "command-0.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "result.json": {
+    "sha256": "33b73667c78a7cd9578784bc4b8224f74928e234cdb2590cfe10ae7977cf507f",
+    "bytes": 1324
+  },
+  "command-1.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "command-2.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "plan.json": {
+    "sha256": "dcbfdb7753b6bd60bf552362669788b88933e2d00f49cf86e0cc7699fc44abbf",
+    "bytes": 3856
+  },
+  "command-1.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "command-2.stdout": {
+    "sha256": "93aa54aeffc09b91c61579fd026bcbbf137d86df5f78f49d2acf9a3105305f5c",
+    "bytes": 223
+  },
+  "command-0.stderr": {
+    "sha256": "dbda19c0327075cebfb8b0a7cf6ae5ea3032347089beb140c54d3dd8e6ba7957",
+    "bytes": 2133
+  },
+  "source/tools/serve_recovery/profile_evidence.py": {
+    "sha256": "8c9c545da6f50581f096d2f7824f0b7206bb604a3145fd24222b29c914014bea",
+    "bytes": 89964
+  },
+  "source/tools/serve_audit/inventory.json": {
+    "sha256": "5aeca5f6fa50abb9fcd4da63f4af59c5eeb57ac68aa6b26bb8c6e916d86bcd66",
+    "bytes": 509966
+  },
+  "source/tools/serve_realtime/test_semantic_observation.py": {
+    "sha256": "08b2a53d804547151078cddfd63513fb12647c30dccddbbb5e8c61606eab2695",
+    "bytes": 4535
+  },
+  "source/tools/serve_realtime/semantic_sdk.mjs": {
+    "sha256": "e716b423c25fe9c542794600cdc6fe095540ace4e624e3ed08bef0b1fbf7ae39",
+    "bytes": 9222
+  },
+  "source/tools/serve_realtime/semantic_observation.py": {
+    "sha256": "80a37eb61fa49ccbb7354e41e0b7d62036b5ca8ebd915f354558d381e04ce819",
+    "bytes": 6631
+  },
+  "source/tools/serve_realtime/test_semantic_sdk.py": {
+    "sha256": "452f1c27796e6f46296d6fc9c6ab49063fec1354bc28d8f9fafda942e77dca3a",
+    "bytes": 10569
+  },
+  "source/.github/workflows/host-checks.yml": {
+    "sha256": "6f622cc50674bce17367b6f5f2427efc83501c9866aa3c6ab466355b6cf62366",
+    "bytes": 15079
+  },
+  "semantic_lifecycle_cpu_01.py": {
+    "sha256": "e8506a7e49b4ac57cc9047673bcec75696bd533c87e84c62be1358137a632526",
+    "bytes": 4774
+  }
+}

@@ -7,6 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义降级观察器CPU通过](evidence/serve-semantic-lifecycle-cpu-20261120/README.md)：
+11项/16.663秒/0GPU，20来源反例通过；含原生TLS与官方SDK的CPU对端。
+观察模式保留实际降级并完整关闭，原严格资格继续拒绝缺失分类。
+运行时/默认与原FAIL不变，继续1模型/4请求/3WSS/600秒生命周期补验。
+
+冷态语义观察器已实现，显式OBSERVED_NOT_QUALIFIED状态与原严格资格隔离；
+不改运行时、采样或默认。冻结11项CPU（含原生TLS/官方SDK的CPU对端）
+与20来源反例/120秒/0GPU，之后按已冻结1模型/4请求补完整生命周期。
+原格式及语义FAIL保留，全部master继续。
+
+[缺项消费者观察已完成](evidence/serve-refusal-consumers-observation-20261120/README.md)：
+2模型/28外部请求/223.416秒，208次NVML正常并完成清理；16组15通过。
+主配置冷ASR使语义评分触及绝对停顿期限，转写/计费完整但未采信概率；
+轻配置两轮实际分类通过。原格式FAIL与本组语义FAIL不改写，默认rev356保持。
+固定1模型/4请求/3WSS/600秒补冷态降级、热态分类和主配置正常关闭结算；
+先做对应观察器CPU，全部master继续。
+
 [主配置格式失败保留](evidence/serve-refusal-profile-format-review-20261120/README.md)：
 1模型/5生成/54.366秒，53次NVML正常，清理完成。Realtime返回
 `<version>rev356</version>`，实际值正确但原严格精确格式FAIL；

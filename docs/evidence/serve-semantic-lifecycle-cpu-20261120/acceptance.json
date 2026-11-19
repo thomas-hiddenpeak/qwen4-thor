@@ -1,0 +1,10 @@
+{
+  "status": "PASS_SEMANTIC_OBSERVATION_CPU",
+  "tests": 11,
+  "source_counterexamples": 20,
+  "seconds": 16.66259607905522,
+  "new_gpu_starts": 0,
+  "strict_qualification_unchanged": true,
+  "runtime_unchanged": true,
+  "archive_sha256": "06c48cfda51c6436c643c03fbb20b73e38fcc5614778d984ef005f90f4b010b6"
+}

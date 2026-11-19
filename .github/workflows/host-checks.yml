@@ -235,6 +235,7 @@ jobs:
             tools.serve_recovery.test_profile_primary_review \
             tools.serve_realtime.test_managed.Evidence \
             tools.serve_realtime.test_semantic_managed.SemanticManaged \
+            tools.serve_realtime.test_semantic_observation \
             tools.serve_realtime.test_conversation_managed \
             tools.serve_realtime.test_prompt_acceptance \
             tools.serve_realtime.test_prompt_followup \

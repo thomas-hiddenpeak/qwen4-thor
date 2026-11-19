@@ -8516,5 +8516,10 @@
     "scope": "Exact reviewed main-model consumers fresh; standalone backends and original voice registration visible; fresh saved-voice Chat/ASR required; v22 keeps old sealed inventories",
     "runtime_binary": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
     "cpu_checks_pending": 27
+  },
+  "semantic_lifecycle_observation_20261120": {
+    "strict_profile_unchanged": true,
+    "policy": "record_bounded_semantic_fallback_v1",
+    "cpu_checks_pending": 11
   }
 }

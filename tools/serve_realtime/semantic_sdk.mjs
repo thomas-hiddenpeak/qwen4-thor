@@ -11,6 +11,10 @@ for await (const part of process.stdin) {
   check(Buffer.byteLength(input) <= 65536, 'input bound');
 }
 const args = JSON.parse(input);
+const observationPolicy = 'record_bounded_semantic_fallback_v1';
+check(args.observation_policy === undefined ||
+  args.observation_policy === observationPolicy, 'unknown observation policy');
+const observeFallback = args.observation_policy === observationPolicy;
 const sdk = path.resolve(process.env.Q4T_NODE_SDK_DIR);
 for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
   check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules', name,
@@ -152,7 +156,8 @@ try {
   check(delta === terminal.transcript && delta.length > 0, 'actual transcript stream');
   const semantic = terminal.q4t_semantic_vad;
   check(semantic?.profile === 'q4t-native-semantic-turn-v1' &&
-    semantic.accepted > 0 && semantic.input_tokens > 0 && semantic.output_tokens > 0 &&
+    (observeFallback || semantic.accepted > 0) &&
+    semantic.input_tokens > 0 && semantic.output_tokens > 0 &&
     semantic.included_in_usage === true, 'real classifier and included work required');
   send({ type: 'conversation.item.retrieve', item_id: id });
   await until(() => events.some((v) => v.type === 'conversation.item.retrieved' && v.item.id === id));
@@ -161,7 +166,12 @@ try {
     retrieved.item.content[0].audio.length > 0, 'retained real turn');
   rt.close(); await until(() => closed, true);
   check(closeCode === 1000 && connections === 1, 'single orderly connection');
-  process.stdout.write(JSON.stringify({ status: 'PASS', transport, connections,
+  // Observation mode completes the lifecycle even for a bounded fallback.
+  // Its distinct status cannot pass the existing strict qualification reader.
+  process.stdout.write(JSON.stringify({
+    status: observeFallback ? 'OBSERVED_NOT_QUALIFIED' : 'PASS',
+    ...(observeFallback ? { observation_policy: observationPolicy } : {}),
+    transport, connections,
     close_code: closeCode, automatic_replay: false, events, feed,
     continuation, terminal, delta, retrieved, sent_samples: samples }) + '\n');
 } catch (error) {
