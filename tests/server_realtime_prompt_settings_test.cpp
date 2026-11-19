@@ -6,6 +6,7 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/realtime_chat_plan.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/test.h"
 
 namespace {
@@ -268,5 +269,50 @@ Q4T_TEST(realtime_prompt_lookup_failures_and_mismatched_identity_are_atomic) {
   };
   Q4T_CHECK(f.Select(reference).commit_unknown);
   Q4T_CHECK(OutputJson(f.settings.Current().settings) == before);
+  return true;
+}
+
+Q4T_TEST(realtime_prompt_bounded_lookup_preserves_output_on_cancel_or_expiry) {
+  Fixture f;
+  const auto reference = f.Create(f.Definition("actual registry"));
+  PromptSnapshot snapshot;
+  Q4T_CHECK(
+      ResolveRealtimePrompt(f.store.get(), reference, Access(), 4096, &snapshot)
+          .ok());
+  const auto before = OutputJson(snapshot.request);
+  auto access = Access();
+  access.cancelled = [] { return true; };
+  auto reply =
+      ResolveRealtimePrompt(f.store.get(), reference, access, 4096, &snapshot);
+  Q4T_CHECK(reply.http_status == 499 && OutputJson(snapshot.request) == before);
+  access = Access();
+  access.deadline = Clock::now();
+  reply =
+      ResolveRealtimePrompt(f.store.get(), reference, access, 4096, &snapshot);
+  Q4T_CHECK(reply.http_status == 408 && OutputJson(snapshot.request) == before);
+  reply = ResolveRealtimePrompt(nullptr, reference, Access(), 4096, &snapshot);
+  Q4T_CHECK(reply.http_status == 503 && OutputJson(snapshot.request) == before);
+  access = Access();
+  access.scope = "client:other";
+  reply =
+      ResolveRealtimePrompt(f.store.get(), reference, access, 4096, &snapshot);
+  Q4T_CHECK(reply.http_status == 404 && OutputJson(snapshot.request) == before);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_prompt_stalled_object_worker_respects_session_lookup_deadline) {
+  ObjectWorkerEntryForTesting("--grammar-fixture-silent");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  Fixture f;
+  PromptSnapshot out;
+  out.request = Object({{"retained", String("unchanged")}});
+  auto reference = Object({{"id", String("prompt_missing")}});
+  const auto begin = Clock::now();
+  const auto reply =
+      ResolveRealtimePrompt(f.store.get(), reference, Access(), 4096, &out);
+  Q4T_CHECK(!reply.ok() && !reply.commit_unknown);
+  Q4T_CHECK(Clock::now() - begin < std::chrono::seconds(1));
+  Q4T_CHECK(out.request.GetString("retained") == "unchanged");
   return true;
 }

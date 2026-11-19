@@ -1,10 +1,13 @@
 #include "q4t/server/realtime_conversation_session.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <filesystem>
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/realtime_chat_plan.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/test.h"
 
@@ -197,6 +200,77 @@ struct Fixture {
   RealtimeConversationJob Snapshot(size_t index) {
     std::lock_guard lock(mutex);
     return snapshots.at(index);
+  }
+};
+struct PromptFixture : Fixture {
+  ObjectStoreOptions options;
+  ChatPlanConfig config;
+  std::unique_ptr<ObjectStore> objects;
+  std::unique_ptr<PromptRegistry> prompts;
+  size_t lookups = 0;
+  std::string scope = "client:session";
+  bool authorized = true;
+  StateAccess Access() const { return {scope, Clock::now() + 5s, {}}; }
+  PromptFixture() {
+    config.model = "q4t-test";
+    config.structured = true;
+    const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+    auto root = std::filesystem::absolute(output ? output : ".q4t-work/prompt");
+    std::filesystem::create_directories(root);
+    auto path = (root / "prompt-session-XXXXXX").string();
+    if (!mkdtemp(path.data())) throw std::runtime_error("Prompt test path");
+    options.directory = path + "/objects";
+    objects = std::make_unique<ObjectStore>(options);
+    prompts = std::make_unique<PromptRegistry>(*objects);
+    cb.resolve_prompt = [&](const auto& reference, size_t budget,
+                            const auto& cancelled, auto* out) {
+      ++lookups;
+      auto access = Access();
+      access.cancelled = cancelled;
+      return ResolveRealtimePrompt(objects.get(), reference, access, budget,
+                                   out);
+    };
+    const auto validate = [this](const Json& selected, const Json& response,
+                                 const Json& items,
+                                 const PromptSnapshot* prompt) {
+      if (!authorized || (prompt && prompt->scope != scope))
+        return object_detail::Error(401, "client_authentication_failed",
+                                    "Fixture identity revoked");
+      RealtimeChatPlan plan;
+      ChatPlanError error;
+      const auto status = PlanRealtimeChat(selected, response, items, config,
+                                           &plan, &error, prompt);
+      return status ? ObjectReply{}
+                    : object_detail::Error(error.http_status, error.code,
+                                           status.message());
+    };
+    cb.validate_prompt = [validate](const auto& selection) {
+      return validate(selection.settings, Object(), Array(),
+                      selection.prompt ? &*selection.prompt : nullptr);
+    };
+    cb.prepare = [validate](const auto& job) {
+      return validate(job.settings, job.response, job.snapshot.items,
+                      job.prompt ? &*job.prompt : nullptr);
+    };
+  }
+  Json Definition(std::string text, std::string prefix) {
+    return Object({{"api", String("realtime")},
+                   {"variables", Object()},
+                   {"request", Object({{"instructions", String(text)},
+                                       {"input", String(prefix)},
+                                       {"max_output_tokens", Number(32)}})}});
+  }
+  Json Register(std::string text, std::string prefix = "private prefix") {
+    const auto result =
+        prompts->Create(Definition(text, prefix), config, Access());
+    if (!result.ok()) throw std::runtime_error(result.message);
+    return Object({{"id", String(result.value.GetString("id"))}});
+  }
+  bool Update(Json update) {
+    Set(&update, "type", String("realtime"));
+    return Send(Object({{"type", String("session.update")},
+                        {"event_id", String("event_prompt")},
+                        {"session", std::move(update)}}));
   }
 };
 }  // namespace
@@ -393,8 +467,8 @@ Q4T_TEST(realtime_session_bad_metadata_is_error_before_publication_or_owner) {
   Q4T_CHECK(f.Start());
   auto metadata = Object({{"key", String(std::string(513, 'x'))}});
   Q4T_CHECK(f.Send(Object({{"type", String("response.create")},
-                            {"event_id", String("bad_metadata")},
-                            {"response", Object({{"metadata", metadata}})}})));
+                           {"event_id", String("bad_metadata")},
+                           {"response", Object({{"metadata", metadata}})}})));
   Q4T_CHECK(f.Count("error") == 1 && f.Count("response.created") == 0 &&
             f.calls == 0 && f.released == 0);
   const auto received = f.Last("error");
@@ -413,13 +487,14 @@ Q4T_TEST(realtime_session_successful_context_cut_is_used_by_next_response) {
     if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
     return result;
   };
-  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) && f.Add(User("current", "current")));
+  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) &&
+            f.Add(User("current", "current")));
   Q4T_CHECK(f.Create() && f.Finish());
   Q4T_CHECK(f.Create() && f.Finish());
   const auto second = f.Snapshot(1);
   Q4T_CHECK(second.snapshot.items.array.size() == 2);
-  Q4T_CHECK(second.snapshot.items.array[0].Find("content")
-                ->array[0].GetString("text") == "current");
+  Q4T_CHECK(second.snapshot.items.array[0].Find("content")->array[0].GetString(
+                "text") == "current");
   return true;
 }
 
@@ -431,13 +506,14 @@ Q4T_TEST(realtime_session_out_of_band_context_cut_does_not_change_default) {
     if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
     return result;
   };
-  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) && f.Add(User("current", "current")));
+  Q4T_CHECK(f.Start() && f.Add(User("old", "old")) &&
+            f.Add(User("current", "current")));
   Q4T_CHECK(f.Create(Object({{"conversation", String("none")}})) && f.Finish());
   Q4T_CHECK(f.Create() && f.Finish());
   const auto second = f.Snapshot(1);
   Q4T_CHECK(second.snapshot.items.array.size() == 2);
-  Q4T_CHECK(second.snapshot.items.array[0].Find("content")
-                ->array[0].GetString("text") == "old");
+  Q4T_CHECK(second.snapshot.items.array[0].Find("content")->array[0].GetString(
+                "text") == "old");
   return true;
 }
 
@@ -545,5 +621,98 @@ Q4T_TEST(realtime_wire_null_projection_never_hides_duplicates_or_other_errors) {
         !ValidateRealtimeWireShape(value, RealtimeShape::kClientEvent, &error));
     Q4T_CHECK(OutputJson(value) == original);
   }
+  return true;
+}
+
+Q4T_TEST(
+    realtime_session_prompt_pins_actual_registry_version_and_private_input) {
+  PromptFixture f;
+  auto reference = f.Register("template instruction");
+  Q4T_CHECK(f.Start() && f.Update(Object({{"prompt", reference}})));
+  const auto selected = *f.Last("session.updated").Find("session");
+  Q4T_CHECK(selected.GetString("instructions") == "template instruction" &&
+            selected.Find("prompt")->GetString("version") == "1" &&
+            !selected.Has("input") && f.session->HistoryBytes() == 0);
+  Q4T_CHECK(f.prompts
+                ->Append(reference.GetString("id"), 1,
+                         f.Definition("new", "new prefix"), f.config,
+                         f.Access())
+                .ok());
+  Q4T_CHECK(f.prompts->Erase(reference.GetString("id"), f.Access()).ok());
+  Q4T_CHECK(f.Update(Object({{"max_output_tokens", Number(28)}})) &&
+            f.Create() && f.Finish());
+  const auto job = f.Snapshot(0);
+  Q4T_CHECK(f.lookups == 1 && job.prompt &&
+            job.prompt->scope == "client:session" &&
+            job.prompt->reference.GetString("version") == "1");
+  Q4T_CHECK(job.settings.GetString("instructions") == "template instruction" &&
+            job.settings.GetInt("max_output_tokens") == 28 &&
+            job.snapshot.items.array.empty());
+  Q4T_CHECK(OutputJson(job.prompt->request).find("private prefix") !=
+            std::string::npos);
+  Q4T_CHECK(f.Update(Object({{"prompt", Json{}}})) && f.Create() && f.Finish());
+  Q4T_CHECK(!f.Snapshot(1).prompt &&
+            f.Snapshot(1).settings.GetString("instructions") == "old");
+  return true;
+}
+
+Q4T_TEST(realtime_session_prompt_per_response_selection_and_null_do_not_leak) {
+  PromptFixture f;
+  const auto first = f.Register("first"), second = f.Register("second");
+  Q4T_CHECK(f.Start() && f.Update(Object({{"prompt", first}})));
+  Q4T_CHECK(f.Create(Object({{"prompt", second}})) && f.Finish());
+  Q4T_CHECK(f.Snapshot(0).settings.GetString("instructions") == "second" &&
+            f.Snapshot(0).response.Find("prompt")->GetString("version") == "1");
+  Q4T_CHECK(f.Create(Object({{"prompt", Json{}}})) && f.Finish());
+  Q4T_CHECK(!f.Snapshot(1).prompt &&
+            f.Snapshot(1).settings.GetString("instructions") == "old");
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.Snapshot(2).settings.GetString("instructions") == "first" &&
+            f.Snapshot(2).prompt->reference.GetString("id") ==
+                first.GetString("id"));
+  Q4T_CHECK(f.Count("session.updated") == 1 && f.lookups == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_session_prompt_tenant_failure_and_revocation_keep_old_state) {
+  PromptFixture f;
+  const auto first = f.Register("owned");
+  f.scope = "client:other";
+  const auto other = f.Register("not yours");
+  f.scope = "client:session";
+  Q4T_CHECK(f.Start() && f.Update(Object({{"prompt", first}})));
+  Q4T_CHECK(f.Update(Object(
+      {{"prompt", other}, {"instructions", String("must not persist")}})));
+  Q4T_CHECK(f.Count("session.updated") == 1 && f.Count("error") == 1);
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("event_id") ==
+            "event_prompt");
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.Snapshot(0).settings.GetString("instructions") == "owned");
+  f.authorized = false;
+  Q4T_CHECK(f.Create() && f.calls == 1 && f.Count("response.created") == 1);
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "client_authentication_failed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_prompt_inflight_snapshots_survive_update_and_delete) {
+  PromptFixture f;
+  const auto first = f.Register("first", "first prefix");
+  const auto second = f.Register("second", "second prefix");
+  f.hold = true;
+  Q4T_CHECK(f.Start() && f.Update(Object({{"prompt", first}})) && f.Create());
+  Q4T_CHECK(f.Wait([&] { return f.calls == 1; }));
+  Q4T_CHECK(f.Update(Object({{"prompt", second}})));
+  Q4T_CHECK(f.prompts->Erase(first.GetString("id"), f.Access()).ok());
+  Q4T_CHECK(
+      f.Create(Object({{"conversation", String("none")}, {"input", Array()}})));
+  Q4T_CHECK(f.Wait([&] { return f.calls == 2; }));
+  f.hold = false;
+  Q4T_CHECK(f.Finish());
+  Q4T_CHECK(f.Snapshot(0).settings.GetString("instructions") == "first" &&
+            f.Snapshot(1).settings.GetString("instructions") == "second");
+  Q4T_CHECK(OutputJson(f.Snapshot(0).prompt->request).find("first prefix") !=
+            std::string::npos);
+  Q4T_CHECK(f.released == 2 && f.lookups == 2);
   return true;
 }

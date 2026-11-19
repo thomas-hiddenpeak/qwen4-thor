@@ -73,6 +73,36 @@ ObjectReply Bounded(const Json& defaults, const Json& overrides,
 }
 }  // namespace
 
+ObjectReply ResolveRealtimePrompt(ObjectStore* objects, const Json& reference,
+                                  StateAccess access, size_t maximum_bytes,
+                                  PromptSnapshot* snapshot) {
+  using Clock = std::chrono::steady_clock;
+  if (!snapshot)
+    return Error(500, "prompt_owner_missing", "Prompt owner missing");
+  access.deadline =
+      std::min(access.deadline, Clock::now() + std::chrono::milliseconds(250));
+  const auto active = [&]() -> ObjectReply {
+    if (access.cancelled && access.cancelled())
+      return Error(499, "request_cancelled", "Prompt lookup cancelled");
+    if (Clock::now() >= access.deadline)
+      return Error(408, "prompt_lookup_expired", "Prompt lookup expired");
+    return {};
+  };
+  auto reply = active();
+  if (!Accepted(reply)) return reply;
+  if (!objects)
+    return Error(503, "prompt_registry_unavailable",
+                 "Prompt storage unavailable");
+  PromptSnapshot selected;
+  reply = PromptRegistry(*objects).Resolve(reference, access, &selected,
+                                           maximum_bytes);
+  if (!Accepted(reply)) return reply;
+  reply = active();
+  if (!Accepted(reply)) return reply;
+  *snapshot = std::move(selected);
+  return {};
+}
+
 RealtimePromptSettings::RealtimePromptSettings(Json defaults)
     : defaults_(std::move(defaults)), overrides_(Object()) {
   current_.settings = defaults_;

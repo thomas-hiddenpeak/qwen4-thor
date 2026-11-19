@@ -1,0 +1,23 @@
+{
+  "status": "PASS_REALTIME_PROMPT_SESSION_CPU",
+  "tests": 57,
+  "new_tests": 11,
+  "seconds": 0.9151437589898705,
+  "source_mutations": 20,
+  "final_build_seconds": 18.601455529686064,
+  "build_warnings": 0,
+  "original_build_failure_preserved": true,
+  "lookup_deadline_milliseconds": 250,
+  "worker_timeout_and_disconnect_tested": true,
+  "prefix_history_indices_projected": true,
+  "new_gpu_starts": 0,
+  "actual_realtime_business_accepted": false,
+  "file_media_preparation_pending": true,
+  "default_revision": 356,
+  "default_unchanged": true,
+  "pr52_merged_excludes_prompt": true,
+  "evidence_paths_preserved": true,
+  "duplicate_bytes_reclaimed": 395872316,
+  "files": 35,
+  "archive_sha256": "2a99ced7fb577d32f3b39faab7add59ef4451f5f2438426067100e5cd4df009e"
+}

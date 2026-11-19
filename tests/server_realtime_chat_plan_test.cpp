@@ -44,6 +44,11 @@ struct Fixture {
     return status.ok();
   }
 };
+PromptSnapshot Prompt(Json input) {
+  return {PromptApi::kRealtime, "client:plan",
+          Object({{"id", String("pmpt_fixture")}, {"version", String("1")}}),
+          Object({{"input", std::move(input)}})};
+}
 }  // namespace
 
 Q4T_TEST(realtime_chat_defaults_and_per_response_override_are_effective) {
@@ -77,8 +82,8 @@ Q4T_TEST(
     Q4T_CHECK(
         !f.Build(Parse(std::string("{\"max_output_tokens\":") + value + '}')));
   Json underflow;
-  Q4T_CHECK(!q4t::io::ParseJson(R"({"max_output_tokens":1e-999})", &underflow,
-                               true));
+  Q4T_CHECK(
+      !q4t::io::ParseJson(R"({"max_output_tokens":1e-999})", &underflow, true));
   return true;
 }
 
@@ -252,8 +257,8 @@ Q4T_TEST(realtime_chat_retention_bounds_and_model_effort_are_validated) {
 
 Q4T_TEST(realtime_chat_empty_context_has_ephemeral_creation_cue) {
   Fixture f;
-  for (const auto* instruction : {"Compute 6 * 7. Reply only 42.",
-                                  "Reply only with the word blue."}) {
+  for (const auto* instruction :
+       {"Compute 6 * 7. Reply only 42.", "Reply only with the word blue."}) {
     const auto response = Object({{"instructions", String(instruction)}});
     Q4T_CHECK(f.Build(response, Array()));
     const auto& generation = f.plan.generation;
@@ -262,7 +267,8 @@ Q4T_TEST(realtime_chat_empty_context_has_ephemeral_creation_cue) {
     Q4T_CHECK(generation.input.messages.array.size() == 1 &&
               generation.input.messages.array[0].GetString("content") ==
                   instruction);
-    const auto& request = generation.chat.Request(generation.generation_request);
+    const auto& request =
+        generation.chat.Request(generation.generation_request);
     const auto& messages = request.Find("messages")->array;
     Q4T_CHECK(messages.size() == 2 &&
               messages[0].GetString("content") == instruction &&
@@ -279,14 +285,14 @@ Q4T_TEST(realtime_chat_creation_cue_does_not_change_existing_items) {
   Q4T_CHECK(generation.input.items.array.size() == 1 &&
             generation.input_source_indices == std::vector<size_t>{0});
   const auto& messages = generation.generation_request.Find("messages")->array;
-  Q4T_CHECK(messages.size() == 2 &&
-            messages[1].GetString("role") == "user" &&
+  Q4T_CHECK(messages.size() == 2 && messages[1].GetString("role") == "user" &&
             OutputJson(messages[1]) ==
                 OutputJson(generation.input.messages.array[1]));
   return true;
 }
 
-Q4T_TEST(realtime_chat_creation_cue_is_measured_and_never_truncated_as_history) {
+Q4T_TEST(
+    realtime_chat_creation_cue_is_measured_and_never_truncated_as_history) {
   Fixture f;
   f.config.max_len = 100;
   Q4T_CHECK(f.Build(Object({{"max_output_tokens", Number(20)}}), Array()));
@@ -338,5 +344,101 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
   Q4T_CHECK(chat->GetBool("cancel") && chat->GetBool("out_of_band") &&
             chat->GetBool("persistent_context_truncation") &&
             chat->GetString("usage") == "actual_tokens");
+  return true;
+}
+
+Q4T_TEST(realtime_chat_prompt_prefix_is_real_input_before_public_history) {
+  Fixture f;
+  auto prompt = Prompt(Array({Message("private prefix")}));
+  Set(&f.settings, "prompt", prompt.reference);
+  Set(&f.settings, "instructions", String("template instruction"));
+  const auto response = Object({{"instructions", String("one response")},
+                                {"max_output_tokens", Number(31)}});
+  Q4T_CHECK(PlanRealtimeChat(f.settings, response, Array({Message("public")}),
+                             f.config, &f.plan, &f.error, &prompt));
+  const auto& messages =
+      f.plan.generation.generation_request.Find("messages")->array;
+  Q4T_CHECK(messages.size() == 3 &&
+            messages[0].GetString("content") == "one response");
+  Q4T_CHECK(OutputJson(messages[1]).find("private prefix") !=
+                std::string::npos &&
+            OutputJson(messages[2]).find("public") != std::string::npos);
+  Q4T_CHECK(f.plan.prompt_items == 1 &&
+            f.plan.generation.input.items.array.size() == 2 &&
+            RealtimeRetainedHistory(f.plan) == std::vector<size_t>{0});
+  Q4T_CHECK(f.plan.generation.generation_request.GetInt(
+                "max_completion_tokens") == 31);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_chat_prompt_context_cut_projects_only_actual_history_indices) {
+  for (const int max_len : {300, 200}) {
+    Fixture f;
+    f.config.max_len = max_len;
+    auto prompt = Prompt(Array({Message("prefix one"), Message("prefix two")}));
+    Set(&f.settings, "prompt", prompt.reference);
+    Set(&f.settings, "max_output_tokens", Number(20));
+    Q4T_CHECK(PlanRealtimeChat(f.settings, Object(),
+                               Array({Message("old"), Message("current")}),
+                               f.config, &f.plan, &f.error, &prompt));
+    size_t first_count = 0;
+    Q4T_CHECK(FitRealtimeChatContext(
+        f.config,
+        [&](const auto& generation, size_t* count, auto*) {
+          *count = generation.input.items.array.size() * 100;
+          if (!first_count) first_count = *count;
+          return Status{};
+        },
+        &f.plan, &f.error));
+    Q4T_CHECK(first_count == 400 && f.plan.generation.truncated_items >= 2);
+    const auto expected =
+        max_len == 300 ? std::vector<size_t>{0, 1} : std::vector<size_t>{1};
+    Q4T_CHECK(RealtimeRetainedHistory(f.plan) == expected);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_chat_prompt_rejects_unbound_mismatched_or_extra_snapshots) {
+  Fixture f;
+  auto prompt = Prompt(Array({Message()}));
+  Set(&f.settings, "prompt", prompt.reference);
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array(), f.config, &f.plan,
+                              &f.error));
+  Q4T_CHECK(f.error.code == "realtime_processor_unavailable");
+  for (int mode = 0; mode < 4; ++mode) {
+    auto wrong = prompt;
+    if (mode == 0) wrong.scope.clear();
+    if (mode == 1) wrong.api = PromptApi::kResponses;
+    if (mode == 2) Set(&wrong.reference, "version", String("2"));
+    if (mode == 3)
+      Set(&wrong.reference, "variables", Object({{"x", String("x")}}));
+    Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array(), f.config,
+                                &f.plan, &f.error, &wrong));
+    Q4T_CHECK(f.error.code == "prompt_snapshot_mismatch");
+  }
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object({{"prompt", Json{}}}), Array(),
+                              f.config, &f.plan, &f.error, &prompt));
+  Q4T_CHECK(f.error.code == "prompt_snapshot_mismatch");
+  return true;
+}
+
+Q4T_TEST(
+    realtime_chat_prompt_cannot_bypass_client_budget_or_tool_history_checks) {
+  Fixture f;
+  ClientLimits limits;
+  limits.max_output_tokens = 16;
+  f.config.client_limits = &limits;
+  auto prompt = Prompt(Array({Message("private")}));
+  Set(&f.settings, "prompt", prompt.reference);
+  Set(&f.settings, "max_output_tokens", Number(17));
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array(), f.config, &f.plan,
+                              &f.error, &prompt));
+  Q4T_CHECK(f.error.code == "client_output_limit_exceeded");
+  Set(&f.settings, "max_output_tokens", Number(16));
+  Set(&prompt.request, "input", Parse(R"([{"type":"function_call_output",
+    "call_id":"missing","output":"unowned tool output"}])"));
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array(), f.config, &f.plan,
+                              &f.error, &prompt));
   return true;
 }

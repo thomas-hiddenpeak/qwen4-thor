@@ -13,6 +13,15 @@ using RealtimePromptResolver =
 using RealtimePromptValidator =
     std::function<ObjectReply(const RealtimePromptSelection&)>;
 
+// Lookup through the existing object worker, capped at 250ms and the caller's
+// earlier deadline. Cancelled/late results never replace the accepted value.
+// Client identity is rechecked by the connection owner before and after this
+// operation; only its authenticated StateAccess may select the namespace.
+ObjectReply ResolveRealtimePrompt(ObjectStore* objects,
+                                  const io::Json& reference, StateAccess access,
+                                  size_t maximum_bytes,
+                                  PromptSnapshot* snapshot);
+
 // The session owner supplies a bounded lookup; workers receive value copies.
 // Defaults are not explicit overrides. Ordinary updates never re-read a
 // selected template. Validation precedes the only commit of any new state.

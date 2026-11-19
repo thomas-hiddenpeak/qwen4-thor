@@ -57,27 +57,62 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   const auto prepare = [&](const Json& current_settings, const Json& response,
-                           const Json& items) {
+                           const Json& items, const PromptSnapshot* prompt) {
     const auto current = clients_.RecoveryIdentity(client.Index());
     if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
         current.Id() != client.Id())
       return Error(401, "client_authentication_failed",
                    "Client no longer authorized");
+    const auto scope = current.Scoped() ? "client:" + std::string(current.Id())
+                                        : "local:anonymous";
+    if (prompt && prompt->scope != scope)
+      return Error(401, "prompt_scope_mismatch",
+                   "Prompt belongs to another client");
     auto planning = PlanningConfig(-1);
     planning.client_limits = current.Limits();
     RealtimeChatPlan plan;
     ChatPlanError failure;
     const auto status = PlanRealtimeChat(current_settings, response, items,
-                                         planning, &plan, &failure);
+                                         planning, &plan, &failure, prompt);
     return status ? ObjectReply{} : Failure(status, failure);
   };
   RealtimeConversationCallbacks callbacks;
   callbacks.interrupted = [&] { return stop_requested_.load(); };
-  callbacks.validate = [&](const Json& current_settings) {
-    return prepare(current_settings, Object(), Array());
+  callbacks.validate_prompt = [&](const RealtimePromptSelection& selected) {
+    return prepare(selected.settings, Object(), Array(),
+                   selected.prompt ? &*selected.prompt : nullptr);
   };
   callbacks.prepare = [&](const RealtimeConversationJob& job) {
-    return prepare(job.settings, job.response, job.snapshot.items);
+    return prepare(job.settings, job.response, job.snapshot.items,
+                   job.prompt ? &*job.prompt : nullptr);
+  };
+  callbacks.resolve_prompt = [&](const Json& reference, size_t budget,
+                                 const std::function<bool()>& cancelled,
+                                 PromptSnapshot* snapshot) {
+    const auto current = clients_.RecoveryIdentity(client.Index());
+    if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
+        current.Id() != client.Id())
+      return Error(401, "client_authentication_failed",
+                   "Client no longer authorized");
+    // The socket reader remains independent. Do not hold the session owner
+    // through unbounded object I/O or inherit a model-length deadline here.
+    const auto deadline =
+        Clock::now() + std::chrono::milliseconds(request_deadline_ms_);
+    const StateAccess access{current.Scoped()
+                                 ? "client:" + std::string(current.Id())
+                                 : "local:anonymous",
+                             deadline, cancelled};
+    PromptSnapshot selected;
+    auto reply = ResolveRealtimePrompt(objects_.get(), reference, access,
+                                       budget, &selected);
+    if (!reply.ok() || reply.commit_unknown) return reply;
+    const auto latest = clients_.RecoveryIdentity(client.Index());
+    if (!clients_.OwnsIdentity(client) || !latest.Allowed() ||
+        latest.Id() != current.Id())
+      return Error(401, "client_authentication_failed",
+                   "Client no longer authorized");
+    *snapshot = std::move(selected);
+    return reply;
   };
   callbacks.acquire = [&](const std::string& id) {
     return requests_.Register(
@@ -140,6 +175,13 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
                          "Client no longer authorized");
     return result;
   }
+  const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
+                                     : "local:anonymous";
+  if (job.prompt && job.prompt->scope != scope) {
+    result.reply =
+        Error(401, "prompt_scope_mismatch", "Prompt belongs to another client");
+    return result;
+  }
   ClientLease permit;
   if (!permit.Acquire(clients_, client, ClientLane::kData)) {
     result.reply = Error(429, "client_capacity_exhausted",
@@ -150,8 +192,9 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
   config.client_limits = client.Limits();
   RealtimeChatPlan plan;
   ChatPlanError error;
-  auto status = PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
-                                 config, &plan, &error);
+  auto status =
+      PlanRealtimeChat(job.settings, job.response, job.snapshot.items, config,
+                       &plan, &error, job.prompt ? &*job.prompt : nullptr);
   RequestDiagnostics diagnostic(stderr, control->id());
   diagnostic.Bind(control->id());
   diagnostic.Stage("context_prepare");
@@ -220,16 +263,15 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
                    &native);
       },
       body_budget_);
-  diagnostic.Outcome(
-      control->Cancelled() ? "cancelled"
-      : result.reply.ok()  ? "success"
-                           : "error",
-      control->Cancelled() ? control->Reason()
-      : result.reply.ok()  ? "completed"
-                           : result.reply.ClientCode());
+  diagnostic.Outcome(control->Cancelled() ? "cancelled"
+                     : result.reply.ok()  ? "success"
+                                          : "error",
+                     control->Cancelled() ? control->Reason()
+                     : result.reply.ok()  ? "completed"
+                                          : result.reply.ClientCode());
   if (result.reply.ok() && plan.generation.truncated_items &&
       job.in_conversation && job.snapshot.default_context)
-    result.retained_input_indices = plan.generation.input_source_indices;
+    result.retained_input_indices = RealtimeRetainedHistory(plan);
   return result;
 }
 }  // namespace q4t::server

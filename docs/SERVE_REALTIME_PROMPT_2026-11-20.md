@@ -19,6 +19,10 @@ Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidenc
 默认/模板/显式覆盖、固定版本与单轮选择、失败事务和展开资源预算
 已具备；实际会话和执行仍待接线。
 
+会话与计划接线另通过[57项CPU](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：
+对象读取有界取消、版本与并发快照、前缀计量及历史下标投影已接线；
+文件/媒体准备、运行时构建和真实SDK业务仍须完成。
+
 ## 已核实的依据
 
 固定的 OpenAI JS 7.47.0 在会话和 `response.create` 中均接受

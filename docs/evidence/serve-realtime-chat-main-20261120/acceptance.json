@@ -1,0 +1,18 @@
+{
+  "status": "PASS_NATIVE_REALTIME_CHAT_MAIN_MERGED",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
+  "head": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
+  "merge": "0c8d7a1076574010d9753f556fa22ae745cb68fc",
+  "merged_at": "2026-11-19T17:51:43Z",
+  "ci_runs": [
+    44574396311,
+    44574379603
+  ],
+  "default_revision": 356,
+  "default_unchanged": true,
+  "new_gpu_starts": 0,
+  "prompt_development_merged": false,
+  "branch_retained_for_unique_prompt_commits_and_uncommitted_integration": true,
+  "all_master_tasks_active": true,
+  "archive_sha256": "75d198576d014e7b2a6fb1c27f472a458d367840741d537751c90eabfc51c1a2"
+}

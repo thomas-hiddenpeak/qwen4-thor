@@ -7,6 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt会话57项CPU通过](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：
+0.915秒/0GPU，11项新合同覆盖真实对象worker超时/断连、
+版本/租户/并发快照与前缀安全截断；20来源反例通过，原编译失败保留。
+继续文件/媒体前缀和实际SDK业务，尚未构建新运行时或取得Prompt
+业务资格；默认rev356不变，PR #52已合入，全部master保持active。
+
+[PR #52已合入主线](evidence/serve-realtime-chat-main-20261120/README.md)：两组最终CI通过，main合并点
+`0c8d7a107`；已验文本/工具服务与rev356交付入主线，后续
+Prompt开发未混入。默认rev356 STOPPED、原模型质量/环境失败及
+听感待验保持；继续Prompt及全部master，工作分支因独有开发保留。
+
+Prompt已接入会话更新、单轮选择与执行计划；250ms上限的对象读取
+沿用断连取消，旧快照不重新查库，模板前缀进入实际输入并将截断索引
+投影回公开历史。冻结57项针对性CPU/120秒/0GPU，覆盖实际对象
+工作线程、会话事务、并发和断连。文件/媒体前缀准备与真实业务继续
+完成；默认rev356不变，尚无Prompt业务资格，全部master保持active。
+
 [Prompt设置34项CPU通过](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：
 2.569秒/0GPU，版本固定/覆盖/null/失败事务与展开预算通过，
 20来源反例通过；构建8.686秒零警告，首轮测试语法失败保留。

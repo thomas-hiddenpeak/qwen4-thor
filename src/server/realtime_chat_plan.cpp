@@ -5,6 +5,7 @@
 
 #include "q4t/server/application_query.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/realtime_shape.h"
@@ -75,7 +76,8 @@ Status ParseRealtimeChatTarget(std::string_view target,
 
 Status PlanRealtimeChat(const Json& settings, const Json& response,
                         const Json& items, const ChatPlanConfig& config,
-                        RealtimeChatPlan* plan, ChatPlanError* error) {
+                        RealtimeChatPlan* plan, ChatPlanError* error,
+                        const PromptSnapshot* prompt) {
   if (!plan || !error) return Status::Fail("Missing Realtime plan owner");
   *error = {};
   auto status = ValidateRealtimeWireShape(
@@ -100,12 +102,25 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
       metadata && !RealtimeMetadataBounded(*metadata))
     return Invalid(error, "response.metadata", "Invalid response metadata");
   // These processors are connected separately. Never acknowledge a setting
-  // here and silently drop its actual audio, prompt, trace or remote tool work.
-  for (const auto* field : {"audio", "prompt"}) {
+  // here and silently drop its actual audio, trace or remote tool work.
+  for (const auto* field : {"audio"}) {
     if (const auto* value = Option(settings, response, field);
         value && !value->IsNull() &&
         (!value->IsObject() || !value->object.empty()))
       return Processor(error, field);
+  }
+  const auto* reference = Option(settings, response, "prompt");
+  if (reference && !reference->IsNull()) {
+    if (!prompt) return Processor(error, "prompt");
+    if (prompt->api != PromptApi::kRealtime || prompt->scope.empty() ||
+        !prompt->request.IsObject() ||
+        prompt->reference.GetString("version").empty() ||
+        OutputJson(*reference) != OutputJson(prompt->reference))
+      return Invalid(error, "prompt", "Prompt snapshot identity differs",
+                     "prompt_snapshot_mismatch", 500);
+  } else if (prompt) {
+    return Invalid(error, "prompt", "Unexpected prompt snapshot",
+                   "prompt_snapshot_mismatch", 500);
   }
   if (const auto* trace = settings.Find("tracing"); trace && !trace->IsNull())
     return Processor(error, "tracing");
@@ -178,6 +193,20 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
                                              : "auto"));
 
   auto mapped = Array();
+  if (prompt) {
+    const auto* prefix = prompt->request.Find("input");
+    if (prefix && !prefix->IsNull()) {
+      if (prefix->IsString())
+        mapped.array.push_back(
+            Object({{"role", String("user")}, {"content", *prefix}}));
+      else if (prefix->IsArray())
+        mapped = *prefix;
+      else
+        return Invalid(error, "prompt", "Invalid prompt input snapshot",
+                       "prompt_snapshot_mismatch", 500);
+    }
+  }
+  candidate.prompt_items = mapped.array.size();
   for (size_t i = 0; i < items.array.size(); ++i) {
     const auto& original = items.array[i];
     const auto path = "input[" + std::to_string(i) + ']';
@@ -219,8 +248,8 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     auto task = request.GetString("instructions");
     if (task.empty()) task = "Generate the next assistant response.";
     Field(chat, "messages")
-        .array.push_back(Object({{"role", String("user")},
-                                 {"content", String(task)}}));
+        .array.push_back(
+            Object({{"role", String("user")}, {"content", String(task)}}));
     auto planning = config;
     planning.async_tool_call_ids = generation.chat.async_tool_call_ids;
     planning.responses_tool_media = generation.chat.responses_tool_media;
@@ -253,6 +282,14 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   }
   *plan = std::move(candidate);
   return {};
+}
+
+std::vector<size_t> RealtimeRetainedHistory(const RealtimeChatPlan& plan) {
+  std::vector<size_t> retained;
+  for (const auto index : plan.generation.input_source_indices)
+    if (index >= plan.prompt_items)
+      retained.push_back(index - plan.prompt_items);
+  return retained;
 }
 
 Status FitRealtimeChatContext(const ChatPlanConfig& config,

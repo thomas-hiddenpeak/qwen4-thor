@@ -649,3 +649,7 @@
 - [Realtime Prompt注册表CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：固定版本快照与类型定义；实际会话接线继续。
 
 - [Realtime Prompt设置CPU](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：覆盖与不可变选择事务；实际会话继续。
+
+- [原生Realtime文本/工具主线合入](evidence/serve-realtime-chat-main-20261120/README.md)：PR #52双CI通过，rev356交付进main；后续master继续。
+
+- [Realtime Prompt会话CPU](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：实际owner/对象worker/计划接线；文件与真实业务继续。

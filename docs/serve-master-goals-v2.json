@@ -8345,7 +8345,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev356_delivered_pr52_final_checks_pending_remaining_master_active",
+      "state": "rev356_delivered_pr52_merged_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8430,7 +8430,7 @@
         "files": 95,
         "secret_scan_matches": 0,
         "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
-        "main_integration_pending": true,
+        "main_integration_pending": false,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
@@ -8438,7 +8438,8 @@
         "listening_and_similarity_accepted": false,
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md",
+        "main_merge_commit": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
       },
       "merged_foundation": {
         "pr": 22,
@@ -9248,14 +9249,14 @@
         "merged": false
       },
       "latest_mainline_merge": {
-        "headRefOid": "0febc4f58e5b6ad70f163a3aa5a0ab2acdad7ac9",
+        "headRefOid": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
         "mergeCommit": {
-          "oid": "42a428466e258c6a8698fea14418ecf962ae66a6"
+          "oid": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
         },
-        "mergedAt": "2026-11-18T20:30:00Z",
+        "mergedAt": "2026-11-19T17:51:43Z",
         "state": "MERGED",
-        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/49",
-        "evidence": "evidence/serve-voice-mainline-20261119/README.md"
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
+        "evidence": "evidence/serve-realtime-chat-main-20261120/README.md"
       },
       "realtime_history_business_20261119": {
         "state": "business_qualified_recovery_delivery_pending",
@@ -11260,6 +11261,31 @@
       "archive_sha256": "b93bc8349fa3c62dd9c02aa840c6bd38863b206aa6d387cc7902943d28388cd2",
       "evidence": "evidence/serve-realtime-prompt-settings-cpu-20261120/README.md",
       "next": "Connect actual session ownership, bounded lookup/cancel, execution and prefix-safe truncation."
+    },
+    "prompt_session_20261120": {
+      "status": "PASS_REALTIME_PROMPT_SESSION_CPU",
+      "tests": 57,
+      "new_tests": 11,
+      "seconds": 0.9151437589898705,
+      "source_mutations": 20,
+      "final_build_seconds": 18.601455529686064,
+      "build_warnings": 0,
+      "original_build_failure_preserved": true,
+      "lookup_deadline_milliseconds": 250,
+      "worker_timeout_and_disconnect_tested": true,
+      "prefix_history_indices_projected": true,
+      "new_gpu_starts": 0,
+      "actual_realtime_business_accepted": false,
+      "file_media_preparation_pending": true,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "pr52_merged_excludes_prompt": true,
+      "evidence_paths_preserved": true,
+      "duplicate_bytes_reclaimed": 395872316,
+      "files": 35,
+      "archive_sha256": "2a99ced7fb577d32f3b39faab7add59ef4451f5f2438426067100e5cd4df009e",
+      "evidence": "evidence/serve-realtime-prompt-session-cpu-20261120/README.md",
+      "next": "Complete file/media prefix preparation and runtime build; actual SDK business and profile/recovery delivery."
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -11688,7 +11714,7 @@
     "files": 95,
     "secret_scan_matches": 0,
     "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
-    "main_integration_pending": true,
+    "main_integration_pending": false,
     "full_model_quality": false,
     "performance_claim": false,
     "long_stability_run": false,
@@ -11696,6 +11722,25 @@
     "listening_and_similarity_accepted": false,
     "listening_deferred_by_owner": true,
     "all_master_tasks_active": true,
-    "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+    "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md",
+    "main_merge_commit": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
+  },
+  "native_realtime_chat_main_20261120": {
+    "status": "PASS_NATIVE_REALTIME_CHAT_MAIN_MERGED",
+    "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
+    "head": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
+    "merge": "0c8d7a1076574010d9753f556fa22ae745cb68fc",
+    "merged_at": "2026-11-19T17:51:43Z",
+    "ci_runs": [
+      44574396311,
+      44574379603
+    ],
+    "default_revision": 356,
+    "default_unchanged": true,
+    "new_gpu_starts": 0,
+    "prompt_development_merged": false,
+    "branch_retained_for_unique_prompt_commits_and_uncommitted_integration": true,
+    "all_master_tasks_active": true,
+    "evidence": "evidence/serve-realtime-chat-main-20261120/README.md"
   }
 }
