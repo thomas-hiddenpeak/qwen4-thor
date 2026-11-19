@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_ops import contracts
 from tools.serve_recovery import bundle, profile_contract, profile_evidence, profile_voice, profile_consumer
+from tools.serve_recovery import profile_realtime
 from tools.serve_responses import background_acceptance as background
 from tools.serve_responses import encryption_acceptance as encrypted
 from tools.serve_service import capacity, package
@@ -41,13 +42,15 @@ SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 
 def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
-               native_tts_base=None, *, voice_consumer=False):
+               native_tts_base=None, *, voice_consumer=False, realtime=False):
     capacity.validate(profile)
     require(type(voice_consumer) is bool and (not voice_consumer or
         native_tts_base is not None and native_asr is None and native_tts is None),
         'saved voice qualification requires explicit Base-only backends')
     require(type(chat_audio) is bool and (not chat_audio or native_asr is not None),
             'Chat audio qualification requires native ASR')
+    require(type(realtime) is bool and (not realtime or native_asr is not None),
+            'Realtime qualification requires native ASR')
     if native_tts_base is not None:
         package.tts_settings(native_tts_base, base=True)
         if not voice_consumer:
@@ -56,7 +59,9 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
             package.asr_settings(native_asr, voice_registration=True)
         require(native_tts is None or package.same_json(native_tts['limits'],
                 native_tts_base['limits']), 'TTS profile families must share effective limits')
-    return dict(LIMITS, chats=(10 if profile.get('allow_media', False) else 8) +
+    return dict(LIMITS, **(dict(websocket_sessions=2, ingress_starts=2) if realtime else {}),
+                chats=(10 if profile.get('allow_media', False) else 8) +
+                (2*profile_realtime.POSTS_PER_PROFILE if realtime else 0) +
                 (2*(profile_consumer.POSTS_PER_PROFILE if voice_consumer else
                     profile_voice.POSTS_PER_PROFILE) if native_tts_base is not None else 0) +
                 (2 if chat_audio else 0) + (4 if native_tts is not None else 0) +
@@ -222,8 +227,10 @@ def prepare(args):
     profiles = profile_contract.profiles(selected)
     media = selected.get('allow_media', False)
     chat_audio = getattr(args, 'chat_audio', False)
+    realtime_source = getattr(args, 'realtime_reference', None)
     limits = limits_for(selected, asr, chat_audio, tts, voice,
-                        voice_consumer=consumer is not None)
+                        voice_consumer=consumer is not None,
+                        realtime=realtime_source is not None)
     fixture_path = getattr(args, 'voice_fixtures', None)
     require((voice is not None and consumer is None) == (fixture_path is not None),
             'Base registration qualification needs its explicit voice fixture manifest')
@@ -235,6 +242,13 @@ def prepare(args):
     background.prepare(args, rows=requests(media), limits=limits, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
+    if realtime_source is not None:
+        public_port = plan['port']+2
+        require(public_port <= 65535 and public_port != plan['operations_port'],
+                'Realtime public port conflicts with another listener')
+        plan['realtime'] = profile_realtime.prepare(realtime_source, path.parent, public_port)
+        plan['sources'].update(plan['realtime']['files'])
+        plan['sources'].update({p:sha(ROOT/p) for p in profile_realtime.SOURCES})
     if chat_audio: plan['chat_audio'] = True
     voice_icl = getattr(args, 'voice_icl', False)
     require(type(voice_icl) is bool and (not voice_icl or
@@ -391,6 +405,9 @@ def prepare(args):
                                  (2 if voice is not None else 0),
                            native_embeddings=2, media_requests=2 if media else 0,
                            native_embedding_steps=60)
+    if realtime_source is not None:
+        plan['planned'].update(realtime_sessions=2, realtime_transcriptions=6,
+                               native_tls_ingress_starts=2)
     if voice is not None:
         plan['planned']['native_voice_business_requests'] = 2*(profile_consumer.POSTS_PER_PROFILE
             if consumer is not None else profile_voice.POSTS_PER_PROFILE)
@@ -438,9 +455,12 @@ class Stage(encrypted.Stage):
         self.limits = limits_for(selected, plan['base']['settings'].get('native_asr'),
                                  plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'),
                                  plan['base']['settings'].get('native_tts_base'),
-                                 voice_consumer=plan.get('voice_consumer') is not None)
+                                 voice_consumer=plan.get('voice_consumer') is not None,
+                                 realtime='realtime' in plan)
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
+        if 'realtime' in plan:
+            self.counts.update(websocket_sessions=0, ingress_starts=0)
 
     @staticmethod
     def client_policy_base():
@@ -638,6 +658,9 @@ class Stage(encrypted.Stage):
         require(self.plan.get('voice_icl', False) == profile_evidence.voice_icl_enabled(
             self.plan['identity'], capability),
             'actual ICL registration needs its explicit conditioning checklist')
+        require(('realtime' in self.plan) == profile_evidence.realtime_enabled(
+            self.plan['identity'], capability),
+            'actual Realtime needs its explicit session checklist')
         early = {}
         if self.plan['identity'].get('native_tts_base') is not None:
             helper = profile_consumer if self.plan.get('voice_consumer') else profile_voice
@@ -683,6 +706,8 @@ class Stage(encrypted.Stage):
             value['asr_auxiliary'] = self.audio_request(auxiliary=True)
         if self.plan['identity'].get('native_tts') and self.plan['identity'].get('native_asr'):
             self.tts_family_reload(value['tts'])
+        if 'realtime' in self.plan:
+            value['realtime'] = profile_realtime.run(self)
         profile_evidence.business(value, self.plan['identity'], selected,
             read(self.out/(self.profile_name+'-capabilities.json')))
         save(self.out/(self.profile_name+'-business.json'), value)
@@ -722,10 +747,15 @@ def finalize(out):
     limits = limits_for(plan['profiles']['primary'], plan['base']['settings'].get('native_asr'),
                          plan.get('chat_audio', False), plan['base']['settings'].get('native_tts'),
                                  plan['base']['settings'].get('native_tts_base'),
-                                 voice_consumer=plan.get('voice_consumer') is not None)
+                                 voice_consumer=plan.get('voice_consumer') is not None,
+                                 realtime='realtime' in plan)
     require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
+    if 'realtime' in plan:
+        require(all(result['counts'].get(k) == limits[k] == 2
+                    for k in ('websocket_sessions', 'ingress_starts')),
+                'Realtime profile sessions/entries incomplete')
     for name, digest in {**plan['sources'], **plan['protected'], **plan['native_assets']}.items():
         require(sha(ROOT/name) == digest, 'postflight identity drift: '+name)
     require(sha(plan['binary']) == plan['binary_sha256'], 'engine drift')
@@ -740,6 +770,8 @@ def finalize(out):
     require(not any(records.get(int(pid), {}).get('start_ticks') == row['start_ticks']
         for c in cleanups for pid,row in c['owned'].items()), 'owned process still alive')
     background.probe_ports((plan['port'], plan['operations_port']))
+    if 'realtime' in plan:
+        background.probe_ports((plan['realtime']['public_port'],))
     with guard.common_lock().open('r+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     qualified = out/'qualified'
@@ -798,6 +830,8 @@ def main():
                    help='pinned consent/sample/different/negated WAV manifest; never success evidence')
     p.add_argument('--voice-icl', action='store_true',
                    help='require real persisted reference codes and full ICL input usage')
+    p.add_argument('--realtime-reference', type=Path,
+                   help='qualified real history plan; freeze 3 actual WSS turns per profile')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,

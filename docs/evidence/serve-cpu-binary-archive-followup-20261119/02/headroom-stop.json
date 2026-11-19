@@ -1,0 +1,7 @@
+{
+  "status": "STOPPED_BEFORE_ALL_PAYLOADS_COMPRESSED",
+  "reason": "minimum 128 MiB headroom reached before next payload",
+  "originals_removed": 0,
+  "archive_bytes": 50441249,
+  "free_bytes": 129740800
+}

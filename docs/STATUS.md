@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime主轻合同CPU通过](evidence/serve-realtime-profile-contract-cpu-20261119/README.md)：
+12项CPU及1项真实原件复核，1.135秒/0GPU、零警告；旧资格不能
+缺省新增会话证据，实际波形/上下文/删除/用量及清理进入检查。
+[旧CPU程序无损归档](evidence/serve-cpu-binary-archive-followup-20261119/README.md)
+释放约194MiB，保护停止原件保留。准备实际主轻/Guardian及可回退
+交付；默认rev326不变，语义VAD/对话/Live与全部master继续。
+
 [ICL恢复合同18项CPU通过](evidence/serve-icl-recovery-contract-cpu-20261119/README.md)：
 2.376秒/0GPU、零警告，旧资格不能重标ICL，自动回退不得丢失参考
 条件；缺码/损坏/错误授权与少计参考输入均拒绝。原生能力与持久记录

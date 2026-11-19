@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED_COMPLETE_ARCHIVE_PREFIX_AFTER_HEADROOM_STOP",
+  "archive_sha256": "49b423a2f866184a46b2ef8abb8e1ddba5b4cdc405f49ff904fba88da60b6885",
+  "archive_bytes": 50441249,
+  "raw_unique_bytes": 118289392,
+  "files": 4,
+  "unique_payloads": 3,
+  "restore_sha256": "3e6d68f1808364187da19f6cc434e6a93300d1d15a7e32d0145754cc9ff67adf",
+  "removed": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/audio-export-cpu-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/input-usage-cpu-01/q4t_host_tests-before",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-cpu-01/q4t_host_tests",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-fix-01/q4t_host_tests-diagnosis"
+  ],
+  "original_failure_preserved": true,
+  "verification_release_seconds": 1.43693462992087,
+  "free_bytes": 247906304
+}

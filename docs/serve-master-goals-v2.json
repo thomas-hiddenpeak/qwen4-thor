@@ -10221,6 +10221,16 @@
           "api_connected": false,
           "evidence": "evidence/serve-realtime-audio-export-cpu-20261119/README.md"
         }
+      },
+      "profile_contract": {
+        "state": "cpu_qualified_actual_profiles_and_guardian_pending",
+        "evidence": "docs/evidence/serve-realtime-profile-contract-cpu-20261119/README.md",
+        "cpu_cases": 12,
+        "retained_reviews": 1,
+        "seconds": 1.1345472042448819,
+        "gpu_actions": 0,
+        "runtime_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+        "default_replaced": false
       }
     }
   }

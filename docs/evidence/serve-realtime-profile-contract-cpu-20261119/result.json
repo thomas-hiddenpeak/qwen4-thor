@@ -1,0 +1,20 @@
+{
+  "status": "PASS_REALTIME_PROFILE_CONTRACT_CPU",
+  "cpu_cases": 12,
+  "retained_reviews": 1,
+  "seconds": 1.1345472042448819,
+  "gpu_actions": 0,
+  "source_sha256": {
+    "tools/serve_recovery/profile_acceptance.py": "d090e338ebc6676c24a0455e4027b19aee48bc92ead4a3b16a3ba122019c4fd1",
+    "tools/serve_recovery/profile_evidence.py": "37affdb24558e4f13dd972f7100dcd38dd63d4990cbb3add603dd9660420e920",
+    "tools/serve_recovery/profile_realtime.py": "b6e1ee600568caa2bcbf7bfe22d43c4d66dfd71505cea01e23024e21ac45cf20",
+    "tools/serve_recovery/test_profile_realtime.py": "38c9a6963762bcf1b8f4cf99e162e314bd651f75ec2826849475d38d6d941727"
+  },
+  "runtime_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "build_warnings": 0,
+  "original_real_receipt_unchanged": true,
+  "primary_light_business_pending": true,
+  "guardian_business_pending": true,
+  "default_replaced": false,
+  "master_complete": false
+}

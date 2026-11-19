@@ -1,0 +1,13 @@
+{
+  "status": "PASS_ORIGINAL_REALTIME_RECEIPT_UNCHANGED",
+  "gpu_actions": 0,
+  "new_business_acceptance": false,
+  "actual_inputs": [
+    70,
+    81,
+    70
+  ],
+  "settled_delta": 254,
+  "waveform_sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+  "seconds": 0.26991125801578164
+}
