@@ -370,12 +370,15 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_response.cpp
   src/server/asr_stream_state.cpp
   src/server/asr_stream_output.cpp
+  src/server/asr_stream_input.cpp
+  src/server/realtime_asr_policy.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
+  src/server/chat_realtime_stream.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
   src/server/chat_aligner_backend.cpp
@@ -834,6 +837,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_object_diagnostics_test.cpp
     tests/server_asr_stream_state_test.cpp
     tests/server_asr_stream_output_test.cpp
+    tests/server_asr_stream_input_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_websocket_session_test.cpp

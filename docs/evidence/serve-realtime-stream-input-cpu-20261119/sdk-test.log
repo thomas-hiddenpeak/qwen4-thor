@@ -1,0 +1,8 @@
+test_actual_sdk_wss_native_auth_errors_audio_and_close (tools.serve_realtime.test_transcription_sdk.SdkTls.test_actual_sdk_wss_native_auth_errors_audio_and_close) ... ok
+test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection) ... ok
+test_sdk_precommit_failure_clears_without_sending_future_or_replay (tools.serve_realtime.test_transcription_sdk.SdkTls.test_sdk_precommit_failure_clears_without_sending_future_or_replay) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.992s
+
+OK

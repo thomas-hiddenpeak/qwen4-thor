@@ -55,6 +55,48 @@ std::vector<float> Filter(std::span<const float> values, NoiseReduction mode) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_continuous_off_keeps_original_decoder_values_and_tail) {
+  for (auto format :
+       {RealtimeAudioFormat{},
+        RealtimeAudioFormat{RealtimeAudioEncoding::kMuLaw, 8000},
+        RealtimeAudioFormat{RealtimeAudioEncoding::kALaw, 8000}}) {
+    std::vector<uint8_t> raw(4096);
+    for (size_t i = 0; i < raw.size(); ++i) raw[i] = uint8_t(i);
+    if (format.encoding == RealtimeAudioEncoding::kPcm16) {
+      for (size_t i = 0; i < raw.size() / 2; ++i) {
+        const uint16_t bits = (i / 97) % 2 ? 32767 : 32768;
+        raw[2 * i] = uint8_t(bits);
+        raw[2 * i + 1] = uint8_t(bits >> 8);
+      }
+    }
+    const auto expected = Wave(format, raw);
+    if (format.encoding == RealtimeAudioEncoding::kPcm16)
+      Q4T_CHECK(std::ranges::any_of(expected,
+                                    [](float x) { return std::abs(x) > 1; }));
+    for (size_t fragment : {1, 103, 4096}) {
+      RealtimeNoiseInput stream(format, NoiseReduction::kOff, 13);
+      std::vector<float> actual;
+      const auto sink = [&](std::span<const float> samples) {
+        actual.insert(actual.end(), samples.begin(), samples.end());
+        return Status{};
+      };
+      for (size_t at = 0; at < raw.size();) {
+        const auto count = std::min(fragment, raw.size() - at);
+        Q4T_CHECK(stream.Append(std::span(raw).subspan(at, count), sink));
+        at += count;
+      }
+      Q4T_CHECK(stream.Finish(sink) && actual == expected);
+      Q4T_CHECK(stream.DeliveredSamples() == expected.size() &&
+                stream.FinalSamples() == expected.size());
+      const auto bytes =
+          format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+      Q4T_CHECK(stream.AcceptedTicks() ==
+                13 + raw.size() / bytes * (48000 / format.rate));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(realtime_noise_resample_overshoot_is_saturated_once_before_filter) {
   std::vector<uint8_t> raw(4096);
   for (size_t i = 0; i < raw.size() / 2; ++i) {

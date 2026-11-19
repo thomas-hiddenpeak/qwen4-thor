@@ -1,5 +1,6 @@
 #include "q4t/server/realtime_transcription_session.h"
 
+#include <algorithm>
 #include <chrono>
 #include <future>
 #include <stdexcept>
@@ -7,6 +8,7 @@
 
 #include "q4t/io/base64.h"
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_pcm.h"
 #include "q4t/test.h"
 #include "../src/server/object_protocol.h"
@@ -502,7 +504,12 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 4);
+  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 3);
+  const auto* continuous = realtime->Find("continuous_input");
+  Q4T_CHECK(continuous && continuous->GetBool("implemented") &&
+            continuous->GetString("commit") == "explicit" &&
+            continuous->GetArray("delay")->array.size() == 5 &&
+            continuous->GetBool("immutable_prefix"));
   Q4T_CHECK(realtime->Find("server_vad")->GetBool("implemented"));
   Q4T_CHECK(!realtime->Find("server_vad")->GetBool("configured"));
   Q4T_CHECK(present.GetBool("implementation_only") &&
@@ -800,5 +807,241 @@ Q4T_TEST(
   Q4T_CHECK(Send(s, kAppend) && Send(s, kCommit) &&
             Finish(s, f.output, &events));
   Q4T_CHECK(actual.begin_ticks == 2050 && actual.end_ticks == 2054);
+  return true;
+}
+
+namespace {
+constexpr auto kContinuous = R"({"type":"session.update","session":{
+  "audio":{"input":{"transcription":{"delay":"minimal","prompt":"first"},
+  "turn_detection":null,"noise_reduction":null}}}})";
+constexpr auto kClear = R"({"type":"input_audio_buffer.clear"})";
+bool Pcm(RealtimeTranscriptionSession& s, size_t samples,
+         int16_t value = 8192) {
+  std::string raw;
+  raw.reserve(samples * 2);
+  for (size_t i = 0; i < samples; ++i) {
+    raw += char(uint16_t(value) & 255);
+    raw += char(uint16_t(value) >> 8);
+  }
+  return Send(s,
+              OutputJson(Object({{"type", String("input_audio_buffer.append")},
+                                 {"audio", String(Base64(raw))}})));
+}
+bool Until(RealtimeTranscriptionSession& s, WebSocketOutput& output,
+           std::vector<Json>* events, const std::function<bool()>& ready) {
+  const auto end = Clock::now() + 1s;
+  while (Clock::now() < end) {
+    if (!s.Tick()) return false;
+    auto next = Drain(output);
+    for (auto& item : next) events->push_back(std::move(item));
+    if (ready()) return true;
+    std::this_thread::sleep_for(1ms);
+  }
+  return false;
+}
+size_t Events(const std::vector<Json>& events, std::string_view type) {
+  return std::ranges::count_if(events, [&](const auto& event) {
+    return event.GetString("type") == type;
+  });
+}
+// Deliberately CPU protocol fixture. This is not model/quality evidence.
+ObjectReply StreamFixture(const RealtimeTranscriptionJob& job,
+                          const std::shared_ptr<RequestControl>& control,
+                          const RealtimeTranscriptSink& emit,
+                          std::vector<uint64_t>* extents = nullptr) {
+  if (!job.stream) return Error(500, "fixture_owner", "Missing input owner");
+  std::string text;
+  for (;;) {
+    const auto read = job.stream->Read(control->deadline(),
+                                       [&] { return control->Cancelled(); });
+    if (read.kind == AsrStreamReadKind::kEnd) return Completed(text);
+    if (read.kind != AsrStreamReadKind::kReady)
+      return Error(409, "fixture_cancelled", "CPU fixture cancelled");
+    if (extents) extents->push_back(read.samples.size());
+    if (!job.stream->Complete(read.step))
+      return Error(500, "fixture_ticket", "CPU fixture ticket invalid");
+    text += "piece";
+    if (!emit(Object({{"delta", String("piece")}})))
+      return Error(409, "fixture_cancelled", "CPU fixture output cancelled");
+  }
+}
+}  // namespace
+
+Q4T_TEST(realtime_continuous_executes_before_commit_and_finalizes_same_item) {
+  Fixture f;
+  std::vector<uint64_t> extents;
+  std::string prompt;
+  f.callbacks.execute = [&](const auto& job, const auto& bytes,
+                            const auto& control, const auto& emit) {
+    ++f.calls;
+    if (!bytes[0].empty() || !bytes[1].empty())
+      return Error(500, "fixture_bytes", "Old ring must not be borrowed");
+    prompt = job.settings.request.prompt;
+    return StreamFixture(job, control, emit, &extents);
+  };
+  RealtimeTranscriptionSession s("sess_continuous", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous) && Pcm(s, 13000));
+  std::vector<Json> events;
+  Q4T_CHECK(Until(s, f.output, &events, [&] {
+    return Events(events,
+                  "conversation.item.input_audio_transcription.delta") == 1;
+  }));
+  Q4T_CHECK(
+      Events(events, "input_audio_buffer.committed") == 0 &&
+      Events(events, "conversation.item.input_audio_transcription.completed") ==
+          0);
+  Q4T_CHECK(s.QueuedItems() == 1 && s.AudioBytes() == 30 * 16000 * 4);
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{"audio":{"input":{
+    "transcription":{"prompt":"next"}}}}})"));
+  Q4T_CHECK(Pcm(s, 1000) && Send(s, kCommit) && Finish(s, f.output, &events));
+  Q4T_CHECK((extents == std::vector<uint64_t>{8000, 9333}));
+  Q4T_CHECK(prompt == "first" && f.calls == 1 && f.released == 1);
+  Q4T_CHECK(
+      Events(events, "input_audio_buffer.committed") == 1 &&
+      Events(events, "conversation.item.created") == 1 &&
+      Events(events, "conversation.item.input_audio_transcription.completed") ==
+          1);
+  const auto id = events.back().GetString("item_id");
+  Q4T_CHECK(events.back().GetString("transcript") == "piecepiece");
+  for (const auto& event : events)
+    if (event.Has("item_id")) Q4T_CHECK(event.GetString("item_id") == id);
+  Q4T_CHECK(s.AudioBytes() == 0 && s.QueuedItems() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_continuous_clear_preserves_old_borrow_and_starts_fresh_owner) {
+  Fixture f;
+  std::atomic<bool> borrowing{false}, preserved{false};
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto& control,
+                            const auto& emit) {
+    const auto ordinal = ++f.calls;
+    if (ordinal != 1) return StreamFixture(job, control, emit);
+    const auto read = job.stream->Read(control->deadline());
+    if (read.kind != AsrStreamReadKind::kReady)
+      return Error(500, "fixture_read", "Borrow not ready");
+    ScopeExit release([&] { job.stream->Complete(read.step); });
+    const float first = read.samples[100];
+    borrowing.store(true);
+    while (!control->Cancelled()) std::this_thread::sleep_for(1ms);
+    preserved = read.samples[100] == first && first == .25f &&
+                job.stream->StorageBytes() == 30 * 16000 * 4;
+    return Error(409, "fixture_cancelled", "Old CPU fixture cancelled");
+  };
+  RealtimeTranscriptionSession s("sess_clear", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous) && Pcm(s, 13000));
+  std::vector<Json> events;
+  Q4T_CHECK(Until(s, f.output, &events, [&] { return borrowing.load(); }));
+  Q4T_CHECK(Send(s, kClear) && s.AudioBytes() == 30 * 16000 * 4);
+  Q4T_CHECK(Pcm(s, 13000, -8192) && s.AudioBytes() == 2 * 30 * 16000 * 4);
+  Q4T_CHECK(Send(s, kCommit) && Finish(s, f.output, &events));
+  Q4T_CHECK(preserved && f.calls == 2 && f.released == 2 &&
+            s.AudioBytes() == 0);
+  Q4T_CHECK(
+      Events(events, "input_audio_buffer.cleared") == 1 &&
+      Events(events, "conversation.item.input_audio_transcription.failed") ==
+          1 &&
+      Events(events, "conversation.item.input_audio_transcription.completed") ==
+          1);
+  return true;
+}
+
+Q4T_TEST(realtime_continuous_early_failure_requires_clear_without_auto_replay) {
+  Fixture f;
+  f.callbacks.execute = [&](const auto&, const auto&, const auto&,
+                            const auto&) {
+    ++f.calls;
+    return Error(429, "client_rpm_exhausted", "CPU quota fixture");
+  };
+  RealtimeTranscriptionSession s("sess_failed", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous) && Pcm(s, 13000));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(f.calls == 1 &&
+            Events(events,
+                   "conversation.item.input_audio_transcription.failed") == 1);
+  Q4T_CHECK(Pcm(s, 13000) && Send(s, kCommit));
+  const auto errors = Drain(f.output);
+  Q4T_CHECK(errors.size() == 2 && s.QueuedItems() == 0 && f.calls == 1);
+  for (const auto& event : errors)
+    Q4T_CHECK(event.Find("error")->GetString("code") ==
+              "input_audio_buffer_failed");
+  Q4T_CHECK(Send(s, kClear) && Pcm(s, 13000) && Send(s, kCommit));
+  Q4T_CHECK(Finish(s, f.output, &events) && f.calls == 2);
+  Q4T_CHECK(
+      Events(events, "conversation.item.input_audio_transcription.completed") ==
+      0);
+  return true;
+}
+
+Q4T_TEST(realtime_continuous_rejects_success_before_input_eof) {
+  Fixture f;
+  f.callbacks.execute = [&](const auto&, const auto&, const auto&,
+                            const auto&) {
+    ++f.calls;
+    return Completed("cannot be final before EOF");
+  };
+  RealtimeTranscriptionSession s("sess_bad_executor", f.output, f.callbacks,
+                                 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous) && Pcm(s, 13000));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(
+      Events(events, "conversation.item.input_audio_transcription.failed") ==
+          1 &&
+      Events(events, "conversation.item.input_audio_transcription.completed") ==
+          0);
+  Q4T_CHECK(events.back().Find("error")->GetString("code") ==
+            "transcription_result_invalid");
+  return true;
+}
+
+Q4T_TEST(realtime_continuous_pipeline_changes_and_partial_commit_are_explicit) {
+  Fixture f;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto& control,
+                            const auto& emit) {
+    ++f.calls;
+    return StreamFixture(job, control, emit);
+  };
+  RealtimeTranscriptionSession s("sess_policy", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous));
+  Drain(f.output);
+  Q4T_CHECK(Send(s, R"({"type":"input_audio_buffer.append","audio":"AQ=="})"));
+  Q4T_CHECK(Send(s, kCommit));
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{"audio":{"input":{
+    "transcription":{"delay":"high"}}}}})"));
+  auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 2 && events[0].GetString("type") == "error" &&
+            events[1].GetString("type") == "error");
+  Q4T_CHECK(Send(s, kClear) && Finish(s, f.output, &events));
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{"audio":{"input":{
+    "turn_detection":{"type":"server_vad"}}}}})"));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 && events[0].Find("error")->GetString("code") ==
+                                      "realtime_delay_turn_conflict");
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{"audio":{"input":{
+    "transcription":{"delay":"high"}}}}})"));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 &&
+            events[0].GetString("type") == "session.updated");
+  return true;
+}
+
+Q4T_TEST(
+    realtime_continuous_aggregate_storage_includes_cancelled_pending_jobs) {
+  Fixture f;
+  RealtimeTranscriptionSession s("sess_capacity", f.output, f.callbacks, 600);
+  Q4T_CHECK(s.Start() && Send(s, kContinuous));
+  Q4T_CHECK(Pcm(s, 1) && s.AudioBytes() == 600 * 16000 * 4);
+  Q4T_CHECK(Send(s, kClear));
+  Drain(f.output);
+  Q4T_CHECK(Pcm(s, 1));
+  const auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 && events[0].Find("error")->GetString("code") ==
+                                      "input_audio_buffer_full");
+  Q4T_CHECK(s.QueuedItems() == 1 && s.AudioBytes() == 600 * 16000 * 4 &&
+            f.calls == 0);
+  s.Cancel();
+  s.Join();
   return true;
 }

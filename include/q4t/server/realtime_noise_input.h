@@ -1,4 +1,4 @@
-// Continuous wire PCM/G.711 -> one shared denoised native ASR/VAD waveform.
+// Continuous wire PCM/G.711 -> one shared native ASR/VAD waveform.
 #pragma once
 
 #include "q4t/audio/noise_reduction.h"
@@ -17,7 +17,8 @@ class RealtimeNoiseInput {
   // Serial session-owner calls. CPU work checks cancellation between fixed
   // chunks; caller keeps the socket reader independent and bounds its inbox.
   // Finite resampler overshoot is saturated to [-1,1] before noise reduction;
-  // the original no-noise decoder/resampler contract is unchanged.
+  // kOff bypasses noise reduction and saturation, preserving the original
+  // no-noise decoder/resampler values (including finite sinc overshoot).
   Status Append(std::span<const uint8_t> bytes, const Sink& sink);
   Status Finish(const Sink& sink);
   bool PartialSample() const { return partial_; }
@@ -32,6 +33,7 @@ class RealtimeNoiseInput {
   Status Reduce(std::span<const float> input, const Sink& sink);
   bool Interrupted() const;
   const RealtimeAudioFormat format_;
+  const audio::NoiseReduction mode_;
   const uint64_t origin_;
   const std::function<bool()> cancelled_;
   audio::AsrStreamResampler resampler_;

@@ -56,6 +56,8 @@ class SdkTls(unittest.TestCase):
     def setUp(self):
         self.directory = Path(tempfile.mkdtemp(prefix='case-',dir=self.root))
         self.rows,self.audio,self.errors = [],[],[]
+        self.discarded = []
+        self.streaming = self.reject_stream = False
         owner = self
         class Peer(BaseHTTPRequestHandler):
             protocol_version='HTTP/1.1'
@@ -71,6 +73,7 @@ class SdkTls(unittest.TestCase):
                 self.wfile.write(('HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\n'
                     'Upgrade: websocket\r\nSec-WebSocket-Accept: '+accept+'\r\n\r\n').encode())
                 number=0; audio=bytearray()
+                item_number=0; partial=False
                 def emit(kind,**fields):
                     nonlocal number
                     number+=1
@@ -92,21 +95,42 @@ class SdkTls(unittest.TestCase):
                             if base64.b64encode(raw).decode()!=event['audio']:
                                 emit('error',error=dict(code='bad_audio',message='CPU invalid base64',
                                     type='invalid_request_error',event_id=event.get('event_id')))
-                            else:audio.extend(raw)
+                            else:
+                                audio.extend(raw)
+                                if owner.streaming and not partial and len(audio)>=1024:
+                                    partial=True
+                                    item='cpu-item-'+str(item_number)
+                                    if owner.reject_stream:
+                                        emit('conversation.item.input_audio_transcription.failed',
+                                            item_id=item,content_index=0,error=dict(
+                                                code='client_rpm_exhausted',message='CPU quota fixture',
+                                                type='invalid_request_error',param=None))
+                                    else:
+                                        emit('conversation.item.input_audio_transcription.delta',
+                                            item_id=item,content_index=0,delta='CPU ')
                         elif kind=='input_audio_buffer.clear':
+                            owner.discarded.append(bytes(audio))
                             audio.clear();emit('input_audio_buffer.cleared')
+                            if partial and not owner.reject_stream:
+                                emit('conversation.item.input_audio_transcription.failed',
+                                    item_id='cpu-item-'+str(item_number),content_index=0,error=dict(
+                                        code='explicit_cancel',message='CPU cleared fixture',
+                                        type='invalid_request_error',param=None))
+                            partial=False;item_number+=1
                         elif kind=='input_audio_buffer.commit':
                             if not audio:
                                 emit('error',error=dict(code='empty',message='CPU empty audio',
                                     type='invalid_request_error',event_id=event.get('event_id')))
                                 continue
                             owner.audio.append(bytes(audio));audio.clear()
-                            emit('input_audio_buffer.committed',item_id='cpu-item',previous_item_id=None)
-                            emit('conversation.item.input_audio_transcription.delta',item_id='cpu-item',
-                                 content_index=0,delta='CPU fixture only')
-                            emit('conversation.item.input_audio_transcription.completed',item_id='cpu-item',
+                            item='cpu-item-'+str(item_number)
+                            emit('input_audio_buffer.committed',item_id=item,previous_item_id=None)
+                            emit('conversation.item.input_audio_transcription.delta',item_id=item,
+                                 content_index=0,delta='fixture only' if partial else 'CPU fixture only')
+                            emit('conversation.item.input_audio_transcription.completed',item_id=item,
                                  content_index=0,transcript='CPU fixture only',
                                  usage=dict(type='tokens',input_tokens=12,output_tokens=4,total_tokens=16))
+                            partial=False;item_number+=1
                         else:raise ValueError('fixture event')
                 except BaseException as error:owner.errors.append(type(error).__name__)
         self.server=ThreadingHTTPServer(('127.0.0.1',0),Peer)
@@ -147,6 +171,39 @@ class SdkTls(unittest.TestCase):
         self.assertEqual(self.rows[0],dict(path='/v1/realtime?intent=transcription',client='alpha',
             token='e'*64,authorization=None))
         self.assertEqual(len(result['errors']),2)
+
+    def test_sdk_withholds_future_audio_until_delta_and_clear_retains_connection(self):
+        self.streaming=True
+        prefix=4096
+        code,result=self.call(clips=[
+            dict(file=str(self.clip),prefix_bytes=prefix,clear_after_delta=True),
+            dict(file=str(self.clip),prefix_bytes=prefix)])
+        self.assertEqual(code,0,result)
+        self.assertEqual(result['connections'],1)
+        first,second=result['turns']
+        self.assertTrue(first['cleared'])
+        self.assertEqual(first['before_commit']['sent_bytes'],prefix)
+        self.assertEqual(first['terminal']['error']['code'],'explicit_cancel')
+        self.assertEqual(second['delta'],'CPU fixture only')
+        self.assertEqual(second['before_commit']['sent_bytes'],prefix)
+        self.assertNotEqual(first['item_id'],second['item_id'])
+        self.assertEqual(self.discarded[-1],self.clip.read_bytes()[:prefix])
+        self.assertEqual(self.audio,[self.clip.read_bytes()])
+
+    def test_sdk_precommit_failure_clears_without_sending_future_or_replay(self):
+        self.streaming=self.reject_stream=True
+        prefix=4096
+        code,result=self.call(clips=[dict(file=str(self.clip),prefix_bytes=prefix,
+            expect_precommit_failure='client_rpm_exhausted')])
+        self.assertEqual(code,0,result)
+        self.assertEqual(result['connections'],1)
+        self.assertEqual(len(result['turns']),1)
+        turn=result['turns'][0]
+        self.assertTrue(turn['cleared'])
+        self.assertEqual(turn['before_commit']['sent_bytes'],prefix)
+        self.assertEqual(self.discarded[-1],self.clip.read_bytes()[:prefix])
+        self.assertEqual(self.audio,[])
+        self.assertFalse(result['automatic_replay'])
 
     def test_untrusted_tls_never_reaches_backend(self):
         code,result=self.call(ca_file=self.untrusted['certificate'])

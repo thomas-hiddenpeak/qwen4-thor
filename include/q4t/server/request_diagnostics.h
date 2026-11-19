@@ -29,6 +29,7 @@ class RequestDiagnostics {
     kMedia,
     kStorage,
     kCache,
+    kInput,
     kCount
   };
   class Scope {
@@ -97,11 +98,11 @@ class RequestDiagnostics {
         "[q4t][request] instance=%llu id=%s event=end stage=%s seq=%d "
         "released=%d outcome=%s reason=%s elapsed_ms=%.3f "
         "slot_wait_ms=%.3f model_lock_ms=%.3f tokenizer_lock_ms=%.3f "
-        "scheduler_completion_ms=%.3f stream_write_ms=%.3f "
+        "scheduler_completion_ms=%.3f stream_write_ms=%.3f input_wait_ms=%.3f "
         "scheduler_waits=%llu trace_id=%s safety_identifier_sha256=%s\n",
         instance_, id_.c_str(), stage_, seq_, released_, outcome_, reason_,
         Milliseconds(Clock::now() - start_), totals_[0], totals_[1], totals_[2],
-        totals_[3], totals_[4], counts_[3], trace_id_.c_str(),
+        totals_[3], totals_[4], totals_[9], counts_[3], trace_id_.c_str(),
         attribution_.c_str());
   }
   void Bind(const std::string& id) { id_ = id; Event("registered"); }
@@ -196,6 +197,8 @@ class RequestDiagnostics {
         return ProgressWait::kStorage;
       case Wait::kCache:
         return ProgressWait::kCache;
+      case Wait::kInput:
+        return ProgressWait::kInput;
       case Wait::kCount:
         return ProgressWait::kNone;
     }

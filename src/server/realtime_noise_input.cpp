@@ -14,6 +14,7 @@ RealtimeNoiseInput::RealtimeNoiseInput(RealtimeAudioFormat format,
                                        uint64_t begin_ticks,
                                        std::function<bool()> cancelled)
     : format_(format),
+      mode_(mode),
       origin_(begin_ticks),
       cancelled_(std::move(cancelled)),
       resampler_(format.rate, uint64_t(format.rate) * 3600),
@@ -32,6 +33,12 @@ bool RealtimeNoiseInput::Interrupted() const {
 }
 Status RealtimeNoiseInput::Reduce(std::span<const float> input,
                                   const Sink& sink) {
+  if (mode_ == audio::NoiseReduction::kOff) {
+    if (input.empty()) return {};
+    const auto status = sink(input);
+    if (status) delivered_ += input.size();
+    return status;
+  }
   // The unchanged sinc resampler can overshoot normalized PCM at sharp edges.
   // Saturate once at the optional processor boundary; both VAD and ASR then
   // consume the same processed waveform. Never turn NaN/Inf into valid audio.
@@ -134,7 +141,7 @@ Status RealtimeNoiseInput::Finish(const Sink& sink) {
       return status;
     }
   }
-  while (!noise_.Drained()) {
+  while (mode_ != audio::NoiseReduction::kOff && !noise_.Drained()) {
     if (Interrupted()) {
       failed_ = true;
       return Invalid();
@@ -149,7 +156,9 @@ Status RealtimeNoiseInput::Finish(const Sink& sink) {
     delivered_ += count;
   }
   if (resampler_.InputSamples() != received_ ||
-      noise_.InputSamples() != FinalSamples() || delivered_ != FinalSamples()) {
+      (mode_ != audio::NoiseReduction::kOff &&
+       noise_.InputSamples() != FinalSamples()) ||
+      delivered_ != FinalSamples()) {
     failed_ = true;
     return Invalid();
   }

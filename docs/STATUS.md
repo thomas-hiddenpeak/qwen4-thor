@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[持续输入58项CPU通过](evidence/serve-realtime-stream-input-cpu-20261119/README.md)：
+原生47/控制器8项共0.378秒、真实SDK/TLS流程3项2.166秒，0GPU，
+零警告、988来源/18负控。已接模型循环、固定借用、输入等待与逐轮
+用量；SDK夹具证明保留后缀到delta及清空后同连接继续，尚非模型质量。
+冻结1模型/1入口、3会话7任务尝试（5提交+1clear+1拒绝）、1Chat/
+900秒真实短验；默认rev326保持，S4上下文/对话/恢复及全部master继续。
+
+持续音频已接入原生累计ASR循环：固定存储/借用、真实分块delay、
+逐步实际输入配额/共享输出上限、commit前稳定delta与明确EOF；
+Q4TPR003单列客户端输入等待，保留旧帧与真实设备执行保护。冻结
+47项原生CPU及8项控制器CPU/180秒/0GPU，之后真实语音短验；
+当前尚未验证该组运行时接线，默认rev326及全部master继续。
+
 [累计ASR采集/输出18项CPU通过](evidence/serve-realtime-stream-output-cpu-20261119/README.md)：
 0.007558秒/0GPU、零警告、983来源/18负控。实际prompt绑定、原概率
 和只增文本/共享预算通过；下一组接S2模型循环与S3持续输入，再做

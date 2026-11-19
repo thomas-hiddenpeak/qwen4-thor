@@ -9708,7 +9708,7 @@
       "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
     },
     "streaming_plan": {
-      "state": "S2_COMPONENTS_CPU_ACCEPTED_EXECUTION_LOOP_PENDING",
+      "state": "S2_S3_CPU_ACCEPTED_REAL_CONTINUOUS_BUSINESS_PENDING",
       "plan": "SERVE_REALTIME_STREAMING_2026-11-19.md",
       "reference": "evidence/serve-realtime-stream-reference-20261119/README.md",
       "steps": [
@@ -9719,7 +9719,7 @@
         "S5 semantic end-of-turn, conversation/tools/TTS and Live",
         "S6 actual recovery composition and reversible delivery"
       ],
-      "next": "S2 execution loop + S3 input ownership",
+      "next": "Bounded actual precommit ASR/delay/usage/cancel business, then contextual history and all master tasks",
       "no_runtime_vllm_dependency": true,
       "all_master_tasks_continue": true,
       "cpu_state": {
@@ -9735,6 +9735,30 @@
         "seconds": 0.007558153942227364,
         "gpu_actions": 0,
         "actual_realtime_invocation": false
+      },
+      "cpu_input": {
+        "evidence": "evidence/serve-realtime-stream-input-cpu-20261119/README.md",
+        "native_cases": 47,
+        "controller_cases": 8,
+        "sdk_cases": 3,
+        "native_controller_seconds": 0.37828637612983584,
+        "sdk_seconds": 2.1664335997775197,
+        "gpu_actions": 0,
+        "engine_sha256": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+        "actual_api_source_connected": true,
+        "model_quality_accepted": false
+      },
+      "business_frozen": {
+        "model_starts": 1,
+        "ingress_starts": 1,
+        "sessions": 3,
+        "item_attempts": 7,
+        "successful_commits": 5,
+        "precommit_clear": 1,
+        "precommit_quota": 1,
+        "chats": 1,
+        "seconds": 900,
+        "native_passes_max": 28
       }
     }
   }

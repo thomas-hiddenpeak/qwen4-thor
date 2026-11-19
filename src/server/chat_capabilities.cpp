@@ -65,8 +65,14 @@ std::string ChatCapabilitiesJson(
          R"("noise_reduction":{"implemented":true,"modes":["near_field","far_field"],)"
          R"("processing":"shared_16k_f32","fft":512,"hop":256,)"
          R"("external_dependencies":false},)"
+         R"("continuous_input":{"implemented":true,)"
+         R"("profile":"q4t-qwen-asr-continuous-v1","commit":"explicit",)"
+         R"("delay":["minimal","low","medium","high","xhigh"],)"
+         R"("chunk_samples_16k":[8000,16000,32000,64000,128000],)"
+         R"("rollback_tokens":[2,3,5,7,9],"unfixed_passes":2,)"
+         R"("immutable_prefix":true,"sample_storage_bytes":67108864},)"
          R"("pending_execution":["semantic_vad",)"
-         R"("transcription_delay","conversation","live"]},)"
+         R"("conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
          Quote(kNativeAsrProfile) + R"(,"revision":)" +

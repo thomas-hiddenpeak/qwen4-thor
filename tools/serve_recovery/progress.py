@@ -89,9 +89,10 @@ def decode(packet):
     (magic, sequence, observed, complete, pid, start, namespace, controller,
      model, active, untracked, count, successes, steps, boot, service) = \
         HEADER.unpack_from(packet)
-    require(magic in (b'Q4TPR001', b'Q4TPR002') and sequence > 0 and observed > 0 and
+    require(magic in (b'Q4TPR001', b'Q4TPR002', b'Q4TPR003') and
+            sequence > 0 and observed > 0 and
             complete in (0, 1), 'invalid progress header')
-    version = 1 if magic == b'Q4TPR001' else 2
+    version = {b'Q4TPR001': 1, b'Q4TPR002': 2, b'Q4TPR003': 3}[magic]
     require(count <= CAPACITY and len(packet) == HEADER.size + count * ROW.size,
             'progress rows bound or trailing bytes')
     identity = Identity(pid, start, namespace, controller, model,
@@ -103,7 +104,8 @@ def decode(packet):
         row = Work(*ROW.unpack_from(packet, offset))
         require(0 < row.ticket < (1 << 64)-1 and row.ticket not in tickets,
                 'invalid or duplicate request ticket')
-        require(row.stage < (10 if version == 1 else 21) and row.wait < 10 and
+        require(row.stage < (10 if version == 1 else 21) and
+                row.wait < (11 if version == 3 else 10) and
                 row.work < (8 if version == 1 else 9),
                 'unknown progress phase')
         require(0 < row.stage_since_ns <= row.updated_ns and
@@ -274,7 +276,7 @@ class Detector:
             # I/O remains wait 9 and cannot be labelled a device execution stall.
             budget = {3: 300 * NS, 4: 120 * NS, 5: 300 * NS, 6: 120 * NS,
                       7: 120 * NS, 8: 30 * NS}.get(row.work)
-            loop = (value.wire_version == 2 and row.work == 8 and
+            loop = (value.wire_version in (2, 3) and row.work == 8 and
                     row.stage == 10 and row.deadline_ns == 0 and row.wait == 0)
             if (budget is None or row.wait not in (0, 4) or
                     (not row.deadline_ns and not loop) or

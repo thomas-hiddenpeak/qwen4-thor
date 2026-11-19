@@ -87,6 +87,10 @@ try {
     await event('input_audio_buffer.cleared', start);
   }
   for (const clip of args.clips) {
+    check(!(clip.clear_after_delta || clip.expect_precommit_failure) ||
+      clip.prefix_bytes !== undefined, 'precommit action needs a withheld suffix');
+    check(!(clip.clear_after_delta && clip.expect_precommit_failure),
+      'conflicting precommit actions');
     if (clip.auto_items !== undefined) check(Number.isInteger(clip.auto_items) &&
       clip.auto_items >= 1 && clip.auto_items <= 3 && !clip.cancel_after_delta,
       'automatic turn budget');
@@ -101,13 +105,53 @@ try {
     const start = events.length;
     let at = 0, part = 0;
     const sizes = [1, 7, 16381, 16000];
-    while (at < audio.length) {
-      check(part < 1024, 'append count');
-      await until(() => rt.socket.bufferedAmount <= 1024 * 1024);
-      const end = Math.min(at + sizes[part++ % sizes.length], audio.length);
-      rt.send({ type: 'input_audio_buffer.append', audio: audio.subarray(at, end).toString('base64') });
-      at = end;
+    const sendUntil = async (limit) => {
+      while (at < limit) {
+        check(part < 1024, 'append count');
+        await until(() => rt.socket.bufferedAmount <= 1024 * 1024);
+        const end = Math.min(at + sizes[part++ % sizes.length], limit);
+        rt.send({ type: 'input_audio_buffer.append', audio: audio.subarray(at, end).toString('base64') });
+        at = end;
+      }
+    };
+    let beforeCommit = null;
+    if (clip.prefix_bytes !== undefined) {
+      check(Number.isInteger(clip.prefix_bytes) && clip.prefix_bytes > 0 &&
+        clip.prefix_bytes < audio.length && clip.auto_items === undefined &&
+        !clip.cancel_after_delta, 'continuous prefix budget');
+      await sendUntil(clip.prefix_bytes);
+      let observed;
+      await until(() => {
+        const recent = events.slice(start);
+        const error = recent.find((v) => v.type === 'error');
+        if (error) throw new Error('server error: ' + error.error.code);
+        const failed = recent.find((v) => v.type === 'conversation.item.input_audio_transcription.failed');
+        if (failed && !clip.expect_precommit_failure)
+          throw new Error('early transcription failure: ' + failed.error.code);
+        observed = clip.expect_precommit_failure ? failed : recent.find((v) =>
+          v.type === 'conversation.item.input_audio_transcription.delta' && v.delta.length > 0);
+        return observed;
+      });
+      check(!events.slice(start).some((v) => v.type === 'input_audio_buffer.committed' ||
+        v.type === 'conversation.item.input_audio_transcription.completed'), 'premature commit/completion');
+      beforeCommit = { item_id: observed.item_id, sent_bytes: at,
+        total_bytes: audio.length, delta: observed.delta || '', event: observed.type };
+      if (clip.clear_after_delta || clip.expect_precommit_failure) {
+        if (clip.expect_precommit_failure)
+          check(observed.error.code === clip.expect_precommit_failure, 'precommit failure code');
+        const clearing = events.length;
+        rt.send({ type: 'input_audio_buffer.clear' });
+        await event('input_audio_buffer.cleared', clearing);
+        const failed = clip.expect_precommit_failure ? observed :
+          await event('conversation.item.input_audio_transcription.failed', start, observed.item_id);
+        if (clip.clear_after_delta)
+          check(failed.error.code === 'explicit_cancel', 'clear did not cancel actual work');
+        turns.push({ item_id: observed.item_id, before_commit: beforeCommit,
+          cleared: true, terminal: failed, update });
+        continue;
+      }
     }
+    await sendUntil(audio.length);
     if (clip.auto_items === undefined) rt.send({ type: 'input_audio_buffer.commit' });
     for (let ordinal = 0; ordinal < (clip.auto_items || 1); ++ordinal) {
       let committed;
@@ -138,7 +182,8 @@ try {
         v.type === 'conversation.item.input_audio_transcription.delta').map((v) => v.delta).join('');
       if (!clip.expect_failure) check(delta === terminal.transcript, 'delta/final mismatch');
       else check(terminal.error.code === clip.expect_failure, 'unexpected failed item');
-      turns.push({ item_id: item, terminal, delta, update });
+      if (beforeCommit) check(beforeCommit.item_id === item, 'prefix/final item differs');
+      turns.push({ item_id: item, terminal, delta, update, before_commit: beforeCommit });
     }
     if (clip.cancel_after_delta) break;
     if (clip.auto_items !== undefined) {

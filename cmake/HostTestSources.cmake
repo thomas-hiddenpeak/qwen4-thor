@@ -88,6 +88,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_asr_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_input_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_asr_stream_state_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_statistics.cpp

@@ -30,7 +30,8 @@ def sample(sequence=1, seconds=131, rows=None, **changes):
 
 def packet(value):
     identity = value.identity
-    return p.HEADER.pack(b'Q4TPR001' if value.wire_version == 1 else b'Q4TPR002',
+    magic = {1: b'Q4TPR001', 2: b'Q4TPR002', 3: b'Q4TPR003'}[value.wire_version]
+    return p.HEADER.pack(magic,
         value.sequence, value.observed_ns,
         int(value.complete), identity.pid, identity.start_ticks,
         identity.pid_namespace, identity.controller_generation,
@@ -118,6 +119,43 @@ class ProgressTests(unittest.TestCase):
                        last_completed_ns=64*p.NS, updated_ns=64*p.NS)
         value = sample(5, 64, (loop,), wire_version=2)
         self.assertIsNone(detector.assess(value, value.observed_ns))
+
+    def test_actual_cpp_v3_input_wait_frame_preserves_deadline_and_no_work(self):
+        directory = os.environ.get('Q4T_PROGRESS_V3_DIR', str(ROOT /
+            'docs/evidence/serve-realtime-stream-input-cpu-20261119/work'))
+        value = p.decode((Path(directory) / 'native-progress-input.bin').read_bytes())
+        self.assertEqual(value.wire_version, 3)
+        self.assertEqual(value.rows[0].wait, 10)
+        self.assertEqual((value.rows[0].deadline_ns, value.rows[0].work,
+                          value.rows[0].completed), (900, 0, 0))
+        ordinary = p.decode((Path(directory) / 'native-progress.bin').read_bytes())
+        self.assertEqual(ordinary.wire_version, 3)
+        self.assertEqual((ordinary.rows[0].work, ordinary.rows[0].completed), (6, 1))
+
+    def test_input_wait_cannot_confirm_device_stall_but_real_execution_still_can(self):
+        detector = p.Detector()
+        waiting = row(wait=10)
+        for sequence, seconds in ((1, 900), (2, 902), (3, 904)):
+            value = sample(sequence, seconds, (waiting,), wire_version=3)
+            self.assertEqual(p.decode(packet(value)), value)
+            self.assertIsNone(detector.assess(value, value.observed_ns))
+        for version in (1, 2):
+            with self.assertRaises(ValueError):
+                p.decode(packet(replace(value, wire_version=version)))
+        work = replace(waiting, wait=0, wait_since_ns=905*p.NS,
+                       updated_ns=905*p.NS)
+        value = sample(4, 905, (work,), wire_version=3)
+        self.assertIsNone(detector.assess(value, value.observed_ns))
+        value = sample(5, 907, (work,), wire_version=3)
+        self.assertEqual(detector.assess(value, value.observed_ns).work, 6)
+
+    def test_v3_service_loop_stall_protection_is_unchanged(self):
+        detector = p.Detector()
+        loop = row(deadline_ns=0, stage=10, wait=0, work=8)
+        value = sample(1, 61, (loop,), wire_version=3)
+        self.assertIsNone(detector.assess(value, value.observed_ns))
+        value = sample(2, 63, (loop,), wire_version=3)
+        self.assertEqual(detector.assess(value, value.observed_ns).work, 8)
 
     def test_actual_media_work_respects_deadline_and_completed_substages(self):
         detector = p.Detector()

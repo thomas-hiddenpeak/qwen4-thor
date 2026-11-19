@@ -5,6 +5,7 @@
 #include <deque>
 #include <thread>
 
+#include "q4t/server/asr_stream_input.h"
 #include "q4t/server/realtime_transcription_protocol.h"
 #include "q4t/server/realtime_noise_input.h"
 #include "q4t/server/realtime_vad.h"
@@ -19,6 +20,7 @@ struct RealtimeTranscriptionJob {
   RealtimeAudioItem audio;
   RealtimeTranscriptionSettings settings;
   std::string id, previous_id;
+  std::shared_ptr<AsrStreamInput> stream;
 };
 using RealtimeTranscriptSink = std::function<bool(const io::Json&)>;
 struct RealtimeTranscriptionCallbacks {
@@ -53,8 +55,8 @@ class RealtimeTranscriptionSession {
   // Session-owner only. The separate socket owner signals the pump to cancel.
   void Cancel() noexcept;
   void Join() noexcept;
-  size_t QueuedItems() const { return queue_.Items(); }
-  size_t AudioBytes() const { return queue_.UsedBytes(); }
+  size_t QueuedItems() const { return jobs_.size(); }
+  size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
 
  private:
   bool Emit(io::Json event, bool deferred = false);
@@ -62,6 +64,8 @@ class RealtimeTranscriptionSession {
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   bool SettingsEvent(bool legacy, bool created = false);
   bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
+  bool CommitEvents(const RealtimeTranscriptionJob& job, bool automatic);
+  bool StreamMessage(const RealtimeTranscriptionCommand& command);
   bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
   bool AdvanceVad();
   void ResetVad();
@@ -76,6 +80,12 @@ class RealtimeTranscriptionSession {
   RealtimeTranscriptionSettings settings_;
   RealtimeAudioQueue queue_{1};
   std::unique_ptr<RealtimeNoiseInput> noise_input_;
+  std::shared_ptr<AsrStreamInput> live_input_;
+  std::unique_ptr<RealtimeNoiseInput> stream_processor_;
+  std::string live_id_;
+  size_t stream_storage_ = 0;
+  uint64_t stream_epoch_ = 0;
+  bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
   std::string speech_id_;
   // At most one VAD frame's control events, plus bounded later socket replies.

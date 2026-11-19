@@ -330,6 +330,11 @@ class ChatServer {
       const std::array<std::span<const uint8_t>, 2>& bytes,
       const std::shared_ptr<RequestControl>& control,
       const RealtimeTranscriptSink& emit);
+  ObjectReply RunRealtimeAsrStream(
+      const ClientIdentity& client, const RealtimeTranscriptionJob& job,
+      const std::shared_ptr<RequestControl>& control,
+      RequestDiagnostics& diagnostic, ActualUsageCounter& usage,
+      const RealtimeTranscriptSink& emit);
   ObjectReply RunNativeAsr(
       int fd, const AsrRequest& request, const audio::AsrFeatures& features,
       const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,

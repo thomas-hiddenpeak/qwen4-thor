@@ -6,6 +6,7 @@
 #include "q4t/server/object_diagnostics.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/realtime_pcm.h"
+#include "q4t/server/realtime_asr_policy.h"
 #include "q4t/server/realtime_transcription_pump.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/request_diagnostics.h"
@@ -85,10 +86,14 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                    "Transcription language unavailable");
     // These remain scheduled execution tasks. Never acknowledge a processing
     // setting while silently running a different signal/turn policy.
-    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad ||
-        !settings.delay.empty())
+    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad)
       return Error(400, "realtime_processor_unavailable",
                    "Requested audio processor is not connected");
+    if (!settings.delay.empty() &&
+        (!RealtimeAsrDelayPolicy(settings.delay).Valid() ||
+         settings.turn != RealtimeTranscriptionSettings::Turn::kManual))
+      return Error(400, "realtime_delay_turn_conflict",
+                   "Continuous transcription uses explicit audio commits");
     if (settings.turn == RealtimeTranscriptionSettings::Turn::kServerVad &&
         !vad_ready.ok())
       return vad_ready;
@@ -230,6 +235,9 @@ ObjectReply ChatServer::RunRealtimeTranscription(
         const BinaryAccess access{scope, control->deadline(), cancelled};
         auto reply = EnsureNativeAsr(false, access, &diagnostic);
         if (!reply.ok()) return reply;
+        if (job.stream)
+          return RunRealtimeAsrStream(client, job, control, diagnostic,
+                                      http.Usage(), emit);
         std::vector<float> pcm;
         const size_t max_samples =
             size_t(asr_limits_.max_audio_seconds) * 16000;
