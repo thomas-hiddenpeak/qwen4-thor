@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[历史语音恢复夹具补齐](evidence/serve-auxiliary-fixture-capability-20261119/README.md)：
+PR #50全部62组host合同已过；后续旧夹具缺少新版能力/身份记录，
+已补真实历史声明并验证新能力缺证据仍拒绝，单项CPU0.414秒/0GPU
+通过。原CI失败保留；生产/default不变，修订后继续CI及主线合入。
+
 [语义短验鉴权修复](evidence/serve-semantic-vad-metadata-fix-20261119/README.md)：
 首轮1模型/0业务/35.566秒在能力查询401处停止，35次NVML正常，
 自有资源与锁已释放；3项CPU修复检查通过，原引擎不变。补验原

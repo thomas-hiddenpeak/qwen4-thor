@@ -1,0 +1,11 @@
+{
+  "scope": "Only old synthetic managed auxiliary fixture gains actual historical capability/profile identity and new-claim omission counterexample; production code and assertions unchanged",
+  "cases": [
+    "tools.native_asr.test_auxiliary_service.AuxiliaryService.test_managed_fallback_requires_real_alignment_and_preserved_profile_history"
+  ],
+  "cpu_seconds": 60,
+  "gpu_actions": 0,
+  "source": "tools/native_asr/test_auxiliary_service.py",
+  "source_sha256": "57d98629b4d983950b84df0a20f236349b3c84af9a702a361d2d29cf414e882e",
+  "pr_head": "d25e535ceb1807e3e3c3b39fa6222a339c95070d"
+}

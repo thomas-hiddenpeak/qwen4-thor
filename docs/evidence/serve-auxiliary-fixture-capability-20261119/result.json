@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "cases": 1,
+  "exit_code": 0,
+  "seconds": 0.41433797404170036,
+  "gpu_actions": 0,
+  "production_unchanged": true
+}
