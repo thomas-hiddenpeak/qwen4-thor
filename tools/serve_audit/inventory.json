@@ -3181,7 +3181,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "748555c32802321f48e16e23257aaf7afbaca6e20e2502b959b590f7771e85cd",
+    "tools/serve_recovery/bundle.py": "ac3fd74ce9bbdf6fe300aee76fb1a02b33dc901548d15595b9d99f54eb635161",
     "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
     "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -3251,7 +3251,7 @@
     "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
     "tools/serve_recovery/profile_controller.py": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba",
-    "tools/serve_recovery/profile_evidence.py": "763067f43142f61348ca05df57d8d97dd88d55d5661ea6dd5e27931d0da7c57e",
+    "tools/serve_recovery/profile_evidence.py": "8c9c545da6f50581f096d2f7824f0b7206bb604a3145fd24222b29c914014bea",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "373a66c2587587fd7335b1f166e06c6037e14e9702f6dcdbc50221320a00af9b",
@@ -3353,9 +3353,11 @@
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
     "tools/serve_recovery/profile_prompt_evidence.py": "7b5ad160b15cc8fa25767c02b0729d0cc0dbb4cf356fd0528f3a30d4d0f24d46",
     "tools/serve_recovery/profile_prompt_reuse.py": "20362a6f84e671ebbfa9b301d704957991320d08dbd0087f34ae402ff31c9739",
-    "tools/serve_recovery/profile_record.py": "3e1b9d3021aa8e50846402233a553b68470c5947cc5b38ffa2892256ae9ae3b9",
+    "tools/serve_recovery/profile_record.py": "743d0246edc2e5be6d9002b3ca96c76a7093f5ed78fa98c3fcb63a9cecb90d69",
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
-    "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f"
+    "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f",
+    "tools/serve_recovery/profile_refusal_reuse.py": "e05884f489e504054d13880e883ee7c69082beb61490a68c74a8833f9d67429d",
+    "tools/serve_recovery/profile_refusal_targeted.py": "3bc266ebeb56455ee9b710a7360f4c1cbf8d0804d2fdf7f75cc47df12cf3dfff"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8509,5 +8511,10 @@
     "original_failure_preserved": true,
     "candidate_implementation": "CPU and actual rejection/ordinary paths pending",
     "model_quality_claim": "One controlled failure reproduced and corrected by prompt-only replacement; no claim for all previous failures."
+  },
+  "refusal_consumer_qualification_20261120": {
+    "scope": "Exact reviewed main-model consumers fresh; standalone backends and original voice registration visible; fresh saved-voice Chat/ASR required; v22 keeps old sealed inventories",
+    "runtime_binary": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "cpu_checks_pending": 27
   }
 }

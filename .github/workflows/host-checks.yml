@@ -230,6 +230,7 @@ jobs:
             tools.serve_recovery.test_profile_prompt \
             tools.serve_recovery.test_profile_prompt_reuse \
             tools.serve_recovery.test_profile_prompt_targeted \
+            tools.serve_recovery.test_profile_refusal \
             tools.serve_recovery.test_profile_prompt_resume \
             tools.serve_recovery.test_profile_primary_review \
             tools.serve_realtime.test_managed.Evidence \

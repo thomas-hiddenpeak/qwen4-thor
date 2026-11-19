@@ -1,0 +1,59 @@
+{
+  "status": "PASS_NEUTRAL_REFUSAL_FOCUSED_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 8,
+    "controls": 45,
+    "websocket_sessions": 1,
+    "ingress_starts": 1
+  },
+  "seconds": 53.80274201789871,
+  "binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+  "protocol_sha256": "d4a96aa1a71ed2b8af455e626ff69de0f5db88634bc5bd31e16af768f417595b",
+  "historical_tool_answers": [
+    "rev356",
+    "rev356"
+  ],
+  "actual_chat_refusal": {
+    "role": "assistant",
+    "content": null,
+    "refusal": "I cannot disclose or reproduce the private demo marker."
+  },
+  "actual_response_refusal": [
+    {
+      "id": "msg_2d0b28429e379fbfd118a34927a8599c",
+      "type": "message",
+      "content": [
+        {
+          "type": "refusal",
+          "refusal": "I cannot disclose or reproduce the private demo marker."
+        }
+      ],
+      "role": "assistant",
+      "status": "completed"
+    }
+  ],
+  "realtime_answer": [
+    {
+      "id": "item_b96864b34538275651a719fbee837b74",
+      "object": "realtime.item",
+      "type": "message",
+      "role": "assistant",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "rev356"
+        }
+      ]
+    }
+  ],
+  "nvml_queries": 52,
+  "strict_environment_pass": true,
+  "cleanup_pass": true,
+  "lease_released": true,
+  "default_unchanged": true,
+  "original_failures_preserved": true,
+  "full_profile_qualification": false,
+  "archive_sha256": "bece57de29f6860dff303477211dd33917bb603b82cee5a5aadb1df7a7170c0a"
+}

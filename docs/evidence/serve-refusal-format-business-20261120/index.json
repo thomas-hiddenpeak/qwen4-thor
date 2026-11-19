@@ -1,0 +1,306 @@
+{
+  "files": {
+    "business_01.py": {
+      "sha256": "7b5f641fea3def3503970e9e1ece96bd6c9a8245ebb48ff5a2e999b02f6c7297",
+      "bytes": 7315
+    },
+    "business-01/primary-capabilities.http.json": {
+      "sha256": "e2cbf20bcb50420be9a60e3e8de37fa3a5d5ad25a72714702f9fadf793339649",
+      "bytes": 238
+    },
+    "business-01/refusal-stored.wire": {
+      "sha256": "724ef3c790da53e0f1112ea36b10c7f90102f7842726be7fbc933cd42dca95db",
+      "bytes": 1517
+    },
+    "business-01/history-inputs.wire": {
+      "sha256": "815534fe78f344ae70fe5477d51503b5b4e47df20ce44c559b5b4a1383b4f103",
+      "bytes": 753
+    },
+    "business-01/refusal-stored.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/primary-conversation-before.wire": {
+      "sha256": "2d0d87334af71d2bb04741e145ee99b8266608cdc97aaa1c35f0341c09b6aaac",
+      "bytes": 36324
+    },
+    "business-01/primary-prompt_tool_failure.wire": {
+      "sha256": "50af0421036729b36dfe125d2c0afbf9101ca6ecd465c6f9e553b39df763b67e",
+      "bytes": 341
+    },
+    "business-01/ordinary-schema.wire": {
+      "sha256": "4665053813eb49f46283d0478db863bc9a14698764770fdb2cd44c655c3de3ff",
+      "bytes": 1309
+    },
+    "business-01/primary-light_tool_failure-drain.metrics.json": {
+      "sha256": "dfea9dcf843cac735a0398eafe0d8e052868fc1186f526d850c272bc3451f2f4",
+      "bytes": 26411
+    },
+    "business-01/refusal-replay-drain.metrics.json": {
+      "sha256": "680af77d44594b2b1b1b4811e79ee097372bedd62f6006181f2cde85bbaec18f",
+      "bytes": 26419
+    },
+    "business-01/primary-conversation-after-0.wire": {
+      "sha256": "2af6796376346871ce8dd0c215fe27cd55cad411a5480344ed6e5ae0e8b81e86",
+      "bytes": 36329
+    },
+    "business-01/acceptance.json": {
+      "sha256": "08c88cb3a0c14e673dbc7fdd46e5f035bad201790660676af2dd104a86cc3a3e",
+      "bytes": 1467
+    },
+    "business-01/primary-chat-refusal.wire": {
+      "sha256": "0b6a01d6e2f5d585e4422ee20e38fdbceb4d657e8406182d857a1c54caa230f5",
+      "bytes": 3069
+    },
+    "business-01/primary-config.wire": {
+      "sha256": "ba0b3b2a1d74c0a96171b16234ee30b0ae430b6c84400299ad5abcf60c33b325",
+      "bytes": 16035
+    },
+    "business-01/response-refusal-drain.metrics.json": {
+      "sha256": "6be437ee99c76a3c8ac9746a0de1474f5298910ba4f0bc2a0d0a2fd0398e13eb",
+      "bytes": 26419
+    },
+    "business-01/response-refusal.wire": {
+      "sha256": "4a9b046dfda78de59de31583d6783695542121edb2c6107b1768c7369cc48138",
+      "bytes": 7375
+    },
+    "business-01/primary-config.http.json": {
+      "sha256": "6522d933a3e5d9cb16ef322b9c8760f554ff1ab09dbd53e500b8846156ea4dfd",
+      "bytes": 238
+    },
+    "business-01/primary-conversation-after-0.http.json": {
+      "sha256": "9fb079373e9f1a2b422cd427e3d75d656879fb3c09853f8562941929a3655622",
+      "bytes": 247
+    },
+    "business-01/refusal-history.sdk.json": {
+      "sha256": "3b8519678b09aa38d5ea2a2824f63634304e3617094f40d984eb6a9eee5b9510",
+      "bytes": 2262
+    },
+    "business-01/primary-prompt_tool_failure.http.json": {
+      "sha256": "ddbfa333f18b976c6b5d16b19c03f74c7963e45c08f1c439051ff0886b5c57fe",
+      "bytes": 233
+    },
+    "business-01/refusal-history.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/ordinary-schema-drain.metrics.json": {
+      "sha256": "6af224d97dd6dede26ab5e8defa8e45bee112a8e2ff46eede06be66a3ded5e30",
+      "bytes": 26419
+    },
+    "business-01/primary-conversation-business.json": {
+      "sha256": "230ca63793d22159fede94b5bcccf216654b01c310167996c13a063ff581807a",
+      "bytes": 20424
+    },
+    "business-01/primary-prompt_tool_failure-drain.metrics.json": {
+      "sha256": "5283893de35c4e3a048cfcbff8068e15da805205ba671c9ca8c7e71c8514072c",
+      "bytes": 26409
+    },
+    "business-01/primary-capabilities.json": {
+      "sha256": "c3124245075b5c07ff954b2ffac2a475818c60594bd97fde15deb8b23a76c458",
+      "bytes": 58203
+    },
+    "business-01/primary-conversation.sdk.json": {
+      "sha256": "2b76f2765ae76d63d76164f52e40b3ce6f77b7d55d5413801bfb1cf120e68d19",
+      "bytes": 13439
+    },
+    "business-01/result.json": {
+      "sha256": "9780aee1ed6ac99cd605d904a699cb20a884ac6c10bab5cf6625fc9f3234cbd2",
+      "bytes": 300
+    },
+    "business-01/history-inputs.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/primary-command.json": {
+      "sha256": "1f3ab72bbdf9ba069d7825569c0c6c12dc2e50f1f82e96d9422baeaa01f65729",
+      "bytes": 2873
+    },
+    "business-01/primary-conversation-drain.metrics.json": {
+      "sha256": "7fa1829e4aa383542c6106d3faa396b4bc2fa331a9fe588f92912e01e43b50d0",
+      "bytes": 26426
+    },
+    "business-01/primary-chat-refusal-drain.metrics.json": {
+      "sha256": "25938ff37d9fc187fedfcd3f060fdf91f51b5a2f7bc28f4d619d447119c1ffb3",
+      "bytes": 26413
+    },
+    "business-01/counts.json": {
+      "sha256": "9525d942c183ec1b794ce05f105b467801116916dedda627b5c541dbbab31616",
+      "bytes": 100
+    },
+    "business-01/plan.json": {
+      "sha256": "efb59789f3ded6660f55a598df40c1c5cf200cb530215fae5ed86ccab33f8bca",
+      "bytes": 909273
+    },
+    "business-01/primary-light_tool_failure.request.json": {
+      "sha256": "278560958cf493498fa6ae6b744b8749d96f90674c35f3b1eeee18f76bacd44a",
+      "bytes": 1344
+    },
+    "business-01/response-refusal.sdk.json": {
+      "sha256": "2fda96198b1d28c89a19d3ca54adec54e043a5cccab16d02b6456a2daa81a633",
+      "bytes": 13364
+    },
+    "business-01/refusal-replay.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/primary-conversation-entry-cleanup.json": {
+      "sha256": "d2a6c9716e3d093a6491e5ac8525f4e0c5fa61d29ccff6c7e8526439779d6f60",
+      "bytes": 94
+    },
+    "business-01/primary-identity.json": {
+      "sha256": "c10723dfc57950b51e3a1b33d8a80fe6da3a6fce4748b241fb6aa6393449edbd",
+      "bytes": 3309
+    },
+    "business-01/primary-chat-refusal.request.json": {
+      "sha256": "970cb770a5f16a09cd574c2db6d7b1ad60e2d27439d109c18c4f1370b3a69ce6",
+      "bytes": 582
+    },
+    "business-01/final.metrics.json": {
+      "sha256": "d7911112c32baa306fc05ab20061ff216d29fb1c3edf4f55207d39e974858071",
+      "bytes": 26426
+    },
+    "business-01/refusal-replay.sdk.json": {
+      "sha256": "7d8d75b9db1584aedefcc29fce88184eb8ece32f9e6de68ccd06fdeae051b958",
+      "bytes": 12674
+    },
+    "business-01/response-refusal.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/refusal-history.wire": {
+      "sha256": "14bd174bf8385cede9826f7421040086750628dc1a5eb0c52b8a7b2ab9a10dad",
+      "bytes": 1199
+    },
+    "business-01/refusal-stored.sdk.json": {
+      "sha256": "33ebcabcdd8a8abefebe9db73e88eb6a89d4c7a51f4b0fa32d77246d36a57526",
+      "bytes": 2421
+    },
+    "business-01/ordinary-schema.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/history-inputs-drain.metrics.json": {
+      "sha256": "8c2db91139ed49879edec55d66f936b614d54c64ee8c0e94b06e2d8c60e0dd56",
+      "bytes": 26421
+    },
+    "business-01/primary-config.json": {
+      "sha256": "50bcd424f4c9276eaa72c96b8040ab70b894bf888457c39da039b0138577caf7",
+      "bytes": 20909
+    },
+    "business-01/primary-capabilities.wire": {
+      "sha256": "33d74e9a5539e29bf1ad6be9b02b3147045559f5aaf432c53a4b3e4ac2b97907",
+      "bytes": 45150
+    },
+    "business-01/refusal-replay.wire": {
+      "sha256": "4a9b046dfda78de59de31583d6783695542121edb2c6107b1768c7369cc48138",
+      "bytes": 7375
+    },
+    "business-01/business-summary.json": {
+      "sha256": "5ba59cb49c91605b0adddd9846a4960380247943098613fcff53aec952d99f2c",
+      "bytes": 40016
+    },
+    "business-01/primary-prompt_tool_failure.request.json": {
+      "sha256": "c61fc4996b3f05ee94c07518fb09ede57b6a1b0a0792beac0019a97bdceb63d6",
+      "bytes": 1331
+    },
+    "business-01/observed.json": {
+      "sha256": "bca4e0c1e5f131ce70a547cc17f516b62fe0b83283e26058e89ddcb79c7fc6fc",
+      "bytes": 16763
+    },
+    "business-01/primary-model.log": {
+      "sha256": "91c0e56074f7b2f12ec0bdeeef47acb39e76a6a1a96e48af281993b702175011",
+      "bytes": 28044
+    },
+    "business-01/refusal-stored-drain.metrics.json": {
+      "sha256": "5a3e4def1b7feeecd2e4ceed90f94def2666c95ca3cca2d95a3c863f8b30558d",
+      "bytes": 26419
+    },
+    "business-01/primary-conversation.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "business-01/cleanup.json": {
+      "sha256": "f6ee46eca95ace3a5b148ec562e2aad98deb36660484f98b212c1576bcb51d7e",
+      "bytes": 4396
+    },
+    "business-01/primary-conversation-before.http.json": {
+      "sha256": "230fea644b8d9a8179068064f81ccca20e51fc429286ca61f72e2193637af5d2",
+      "bytes": 247
+    },
+    "business-01/primary-chat-refusal.http.json": {
+      "sha256": "e5c89dc834185f2181904cb6ae15ccdfddf6e10d57785119558b2e0561669fdc",
+      "bytes": 233
+    },
+    "business-01/history-inputs.sdk.json": {
+      "sha256": "ff0b6e4f6d79a9b75dfd2e69a291a895677f5e3e69824319a2c4c286b8236f53",
+      "bytes": 1396
+    },
+    "business-01/ordinary-schema.sdk.json": {
+      "sha256": "1183a0637acfbc685cb599ee4925098fa648d605dab42d48806b6b4ecc073398",
+      "bytes": 2675
+    },
+    "business-01/refusal-history-drain.metrics.json": {
+      "sha256": "22d763542cc536dd5835121303a60cdc4465bcfe4e1b28681b066a6ae6121a3d",
+      "bytes": 26421
+    },
+    "business-01/primary-light_tool_failure.http.json": {
+      "sha256": "337ec7079dd5215d018a4e428ea98d76104c8162ab9c9820f93410393fc70e43",
+      "bytes": 233
+    },
+    "business-01/primary-light_tool_failure.wire": {
+      "sha256": "df30d045b6b64c8618597b5d5c7d8c809904f23966dd2af52e40f969c1f43689",
+      "bytes": 341
+    },
+    "business-01/lease/nvml-queries.jsonl": {
+      "sha256": "b2c00fde522d89ff8e543bc7d7ecea4a62bcbdebf86365f766712e11792bdfea",
+      "bytes": 123717
+    },
+    "business-01/lease/events.jsonl": {
+      "sha256": "9b3d9f89a047bf47331d81c98f0261e167f1b95bf55f31b33350755d8941e9e0",
+      "bytes": 10149
+    },
+    "business-01/lease/exit.json": {
+      "sha256": "7516a29770df30a8d9470dcbf6be1c5c5de541fb934c9613dfa02e897e4a3106",
+      "bytes": 648
+    },
+    "profile-source-review-01/runtime.diff": {
+      "sha256": "f50623b8840df461a9ecc417d6558523a7868ee12db7a709c23692ba74a568bd",
+      "bytes": 94239
+    },
+    "profile-source-review-01/source-review.json": {
+      "sha256": "09c80db683fc69aa0540122832f3fa8c9cca7f8e479e11124744f01d008dbf88",
+      "bytes": 194686
+    }
+  },
+  "omitted": {
+    "business-01/ordinary-schema.request.json": {
+      "sha256": "c9ef290864c2dca86a8c2e597692f5a22e246bd23e04e497d3eaf742a3ef2eb1",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/refusal-stored.request.json": {
+      "sha256": "72461ef5f42f13a9f635c10919e6505d321c8179466f777affc11b4e743c52e8",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/history-inputs.request.json": {
+      "sha256": "05c273c57f056b60500652c473d4ad8acaf191947727440034d4dbbe41247eb7",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/response-refusal.request.json": {
+      "sha256": "1d4a1b27a39683676a0b71dcb67561f2da9d3564f264e1c574d705149d804921",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/client-policy.json": {
+      "sha256": "0992994a8100d227ba155305d8e18623f3fd6a52b573ef491638bc4b5bf3c6f9",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/refusal-history.request.json": {
+      "sha256": "173aa7939d0432b9db21c1b93dc78e0031cd5f4099622b4f2d5ddcabad3c6a48",
+      "reason": "private test authentication; original retained"
+    },
+    "business-01/refusal-replay.request.json": {
+      "sha256": "5dc72d3963241bed565bd7bde8e67992b2bc84c9706521a23a200d1bfeac9b98",
+      "reason": "private test authentication; original retained"
+    }
+  }
+}

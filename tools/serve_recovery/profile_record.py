@@ -15,7 +15,9 @@ def shape(value, size):
     if size > LEGACY_BYTES:
         ledger.require(type(value) is dict and value.get('format') ==
             'q4t-profile-business-v18' and type(value.get('reused_business')) is dict and
-            value['reused_business'].get('format') == 'q4t-prompt-profile-source-reuse-v1',
+            value['reused_business'].get('format') in (
+                'q4t-prompt-profile-source-reuse-v1',
+                'q4t-prompt-refusal-source-reuse-v1'),
             'only explicit Prompt source records have the larger evidence bound')
 
 

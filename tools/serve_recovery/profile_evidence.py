@@ -1530,8 +1530,11 @@ def validate(value, registry, name, digest):
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
     if 'reused_business' in value:
-        from tools.serve_recovery import profile_prompt_reuse
-        profile_prompt_reuse.validate(value)
+        if value['reused_business'].get('format') == 'q4t-prompt-refusal-source-reuse-v1':
+            from tools.serve_recovery import profile_refusal_reuse as verifier
+        else:
+            from tools.serve_recovery import profile_prompt_reuse as verifier
+        verifier.validate(value)
     environment = value['environment']
     ledger.keys(environment, ('status', 'env_abort', 'all_queries_ok',
         'nvml_queries', 'lease_result_sha256', 'cleanup_complete'))
