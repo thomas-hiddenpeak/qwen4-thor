@@ -1,0 +1,28 @@
+{
+  "status": "ORIGINAL_STRICT_QUALIFICATION_FAIL",
+  "actual_model_starts": 1,
+  "actual_generations": 5,
+  "seconds": 54.365972442086786,
+  "nvml_queries": 53,
+  "environment_normal": true,
+  "cleanup_complete": true,
+  "lease_released": true,
+  "actual_answer": "\n<version>rev356</version>\n",
+  "expected": "rev356",
+  "exact_answer_quality": "FAIL",
+  "source_value_present": true,
+  "strict_qualification_reclassified": false,
+  "default_unchanged": true,
+  "completed_output_observation": {
+    "total_tokens": 694,
+    "model_quality": {
+      "status": "FAIL",
+      "expected": "rev356",
+      "actual": "\n<version>rev356</version>\n",
+      "criterion": "exact_source_version",
+      "response_id": "resp_141f0dea1af38ef2cecc8152c836ecac"
+    }
+  },
+  "scope": "CPU recheck of completed actual tool/stream/terminal events only; no observed normal close or post-session accounting and no profile qualification",
+  "archive_sha256": "14771759eebc5dab05c0abbd34000aa1306283515e3bfadc9bc86307f270a077"
+}

@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[主配置格式失败保留](evidence/serve-refusal-profile-format-review-20261120/README.md)：
+1模型/5生成/54.366秒，53次NVML正常，清理完成。Realtime返回
+`<version>rev356</version>`，实际值正确但原严格精确格式FAIL；
+消息/流式/用量复核不补写缺失正常关闭与结算。停止同题随机重采样，
+继续尚未执行的消费者观察：2新模型/29外部请求/7WSS/5入口/900秒，
+不将缺项观察当作原资格通过。默认rev356及全部master保持。
+
 [消费者夹具容量拒绝已修正](evidence/serve-refusal-profile-fixture-fix-20261120/README.md)：
 原组0模型/0请求，公平准入正确拒绝4客户超过3队列；只保留实际
 2客户并前移容量检查。2项CPU/0.929秒与20来源反例通过，原FAIL保留。
