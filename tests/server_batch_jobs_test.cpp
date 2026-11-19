@@ -1587,6 +1587,9 @@ Q4T_TEST(batch_background_binding_is_private_immutable_and_retains_result) {
 namespace {
 bool RecoverBackground(const std::string& mode) {
   Fixture fixture(10, 100);
+  // Owner recovery is not an I/O timeout test. Normal durable setup and
+  // recovery use the production deadline, including cold worker startup.
+  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   int channel[2];
   Q4T_CHECK(pipe(channel) == 0);
   const auto pid = fork();
@@ -1624,7 +1627,13 @@ bool RecoverBackground(const std::string& mode) {
       if (write(channel[1], text.data(), text.size()) !=
           static_cast<ssize_t>(text.size()))
         throw std::runtime_error("child identity channel");
+    } catch (const std::exception& error) {
+      std::fprintf(stderr, "dead owner fixture (%s): %s\n", mode.c_str(),
+                   error.what());
+      status = 2;
     } catch (...) {
+      std::fprintf(stderr, "dead owner fixture (%s): unknown exception\n",
+                   mode.c_str());
       status = 2;
     }
     close(channel[1]);
