@@ -1,0 +1,38 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.7s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_ple
+[  7%] Built target xgrammar
+[  7%] Built target q4t_io
+[  7%] Built target q4t_trace
+[  7%] Built target q4t_runtime
+[ 10%] Built target q4t_regex_build
+[ 14%] Built target q4t_program_javascript
+[ 14%] Generating service-tools/snapshot.done
+[ 17%] Built target q4t_text
+[ 17%] Built target q4t_quant
+[ 32%] Built target q4t_model
+[ 32%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/ab415be0d5d7165630eab408a19a5f4fe0099905686968510ee30d6b0134f6e9", "manifest_sha256": "ab415be0d5d7165630eab408a19a5f4fe0099905686968510ee30d6b0134f6e9", "model_actions": false}
+[ 32%] Built target q4t_service_tools
+[ 32%] Built target q4t_service_cli
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_mcp_state.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_crypto.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_compaction.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_server.dir/src/server/responses_program.cpp.o
+[ 32%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

@@ -1,0 +1,54 @@
+{
+  "status": "PASS_FIXED_TOKENIZER_ROUNDTRIP",
+  "texts": {
+    "reference": "The meeting starts tomorrow morning. Please bring your notebook.",
+    "speech": "The blue train arrives at noon.",
+    "chat": "Please close the window."
+  },
+  "ids": {
+    "reference": [
+      785,
+      6438,
+      8471,
+      16577,
+      6556,
+      13,
+      5209,
+      4446,
+      697,
+      37166,
+      13
+    ],
+    "speech": [
+      785,
+      6303,
+      5426,
+      29682,
+      518,
+      37145,
+      13
+    ],
+    "chat": [
+      5501,
+      3265,
+      279,
+      3241,
+      13
+    ]
+  },
+  "input_tokens": {
+    "speech": 920,
+    "chat": 918
+  },
+  "assets": {
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "tokenizer_config.json": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670"
+  },
+  "versions": {
+    "transformers": "5.16.1",
+    "tokenizers": "0.23.2"
+  },
+  "seconds": 0.20793085219338536,
+  "gpu_actions": 0
+}

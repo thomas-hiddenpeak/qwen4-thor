@@ -790,7 +790,17 @@ std::string ChatCapabilitiesJson(
          R"(,"registered_voice_model":)" + Quote(kNativeTtsBaseModel) +
          R"(,"base_revision":)" + Quote(kNativeTtsBaseRevision) +
          R"(,"base_weight_sha256":)" + Quote(kNativeTtsBaseWeightSha256) +
-         R"(,"builtin_enabled":)" + (native_tts ? "true" : "false") + "}," +
+         R"(,"registered_voice_conditioning":{)"
+         R"("profile":"q4t-registered-voice-icl-v1",)"
+         R"("reference_format":"q4t.tts-reference.v1",)"
+         R"("reference_sample_rate":24000,"max_reference_frames":750,)"
+         R"("code_groups":16,"codebook_size":2048,)"
+         R"("reference_transcript":"literal_context",)"
+         R"("input_usage":"text_and_all_reference_codes",)"
+         R"("legacy_records":"speaker_embedding_only",)"
+         R"("invalid_reference":"reject_without_fallback"},)"
+         R"("builtin_enabled":)" +
+         (native_tts ? "true" : "false") + "}," +
          R"("voice_registration":{"enabled":)" +
          (native_tts_base && native_asr && native_speaker && native_vad
               ? "true"

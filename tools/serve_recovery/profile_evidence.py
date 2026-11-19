@@ -15,6 +15,7 @@ VOICE_FORMAT = 'q4t-profile-business-v9'
 TTS_CHECKPOINT_FORMAT = 'q4t-profile-business-v10'
 VOICE_CHECKPOINT_FORMAT = 'q4t-profile-business-v11'
 VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
+VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
 # Both full WAVs were independently transcribed, then reproduced byte for byte
 # by both registered-voice profiles. These are content witnesses, not new ASR.
@@ -288,10 +289,99 @@ def voice_consumer_business(value, identity):
                                'consumer registration encoder identity differs')
 
 
-def voice_business(value, identity):
+def voice_icl_enabled(identity, capabilities):
+    """Only actual registration requires new reference-encoding evidence.
+
+    Base-only consumption of legacy saved vectors has its own receipt. The
+    full conditioning declaration still participates in capability equality.
+    """
+    from tools.serve_service import package
+    caps = capabilities or {}
+    speech = caps.get('speech', {})
+    if 'registered_voice_conditioning' not in speech:
+        return False
+    ledger.require(package.same_json(speech['registered_voice_conditioning'],
+                                    package.VOICE_CONDITIONING),
+                   'unknown registered voice conditioning contract')
+    return (identity.get('native_tts_base') is not None and
+            caps.get('voice_registration', {}).get('enabled') is True)
+
+
+def voice_reference(records, consent_id, voice_id):
+    """Validate complete persisted records, usable before/after recovery.
+
+    This validates provenance and capacity, not acoustic similarity or native
+    encoder mathematics. Those need their own retained numerical/real proofs.
+    """
+    from tools.serve_service import package
+    ledger.keys(records, ('consent', 'voice'))
+    consent, voice = records['consent'], records['voice']
+    for record, kind, identifier in ((consent, 'voice_consent', consent_id),
+                                      (voice, 'voice', voice_id)):
+        ledger.require(type(record) is dict and record.get('kind') == kind and
+            record.get('id') == identifier and type(record.get('owner')) is str and
+            ledger.HASH.fullmatch(record['owner']) and
+            ledger.integer(record.get('revision'), minimum=1) and
+            type(record.get('expires_at')) is int and record['expires_at'] == 0 and
+            type(record.get('data')) is dict,
+            'persisted reference identity or lifetime differs')
+    data, origin = voice['data'], consent['data']
+    ledger.require(voice['owner'] == consent['owner'] and
+        data.get('consent') == consent_id and
+        data.get('consent_source_sha256') == origin.get('source_sha256') and
+        all(type(v) is str and ledger.HASH.fullmatch(v) for v in (
+            data.get('source_sha256'), origin.get('source_sha256'))) and
+        type(data.get('transcript')) is str and
+        0 < len(data['transcript'].encode()) <= 16384 and
+        '\0' not in data['transcript'], 'persisted reference provenance differs')
+    reference = data.get('reference')
+    ledger.keys(reference, ('format', 'codec_sha256', 'sample_rate', 'samples', 'codes'))
+    samples, codes = reference['samples'], reference['codes']
+    ledger.require(reference['format'] == 'q4t.tts-reference.v1' and
+        reference['codec_sha256'] == package.NATIVE_TTS_BASE['codec_weight_sha256'] and
+        type(reference['sample_rate']) is int and reference['sample_rate'] == 24000 and
+        ledger.integer(samples, minimum=1) and samples <= 1440000 and
+        type(data.get('duration_ns')) is int and
+        data['duration_ns'] == samples*1000000000//24000 and
+        type(codes) is list and len(codes) == (samples+1919)//1920 and
+        len(codes) <= 750 and all(type(row) is list and len(row) == 16 and
+            all(ledger.integer(v) and v < 2048 for v in row) for row in codes),
+        'persisted reference codes or geometry differs')
+    condition = data.get('condition')
+    ledger.require(type(condition) is list and len(condition) == 2048 and
+        all(type(v) in (int, float) and math.isfinite(v) for v in condition) and
+        0 < sum(v*v for v in condition) < math.inf and
+        data.get('condition_model') == 'Qwen3-TTS-12Hz-1.7B-Base' and
+        data.get('condition_revision') == package.NATIVE_TTS_BASE['revision'],
+        'persisted speaker condition differs')
+    return dict(samples=samples, frames=len(codes), input_codes=len(codes)*16)
+
+
+def voice_icl_business(value):
+    records = value['conditioning']
+    checked = voice_reference(records, value['consent']['id'], value['voice']['id'])
+    data, consent = records['voice']['data'], records['consent']['data']
+    # Pinned real fixtures and an independent local Qwen2Tokenizer roundtrip:
+    # 11 reference tokens, 7/5 target tokens, 6 structural tokens, 56*16 codes.
+    # Original v9/v11 observations remain valid only for their old declaration.
+    ledger.require(checked == dict(samples=107520, frames=56, input_codes=896) and
+        data['source_sha256'] ==
+            'a0edb0a022ae9e22d57e3a710654a2cfb13f5cea070abddf2a78b663e3b6ad88' and
+        consent['source_sha256'] ==
+            'f07f5bb483a614d5edc4ad29f786c58963c816c40a3d590c3aca3b5d09713dd1' and
+        data['transcript'] ==
+            'The meeting starts tomorrow morning. Please bring your notebook.',
+        'qualified ICL fixed reference differs')
+    ledger.require(value['speech']['usage']['input_tokens'] == 920 and
+        value['chat']['usage']['q4t_audio_synthesis']['input_tokens'] == 918,
+        'qualified ICL omitted actual reference input tokens')
+
+
+def voice_business(value, identity, *, icl=False):
     """Validate retained actual results, not proof that a helper ran HTTP."""
     ledger.keys(value, ('requests', 'consent', 'voice', 'speech', 'speech_transcript',
-        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits'))
+        'chat', 'chat_transcript', 'negative', 'revocation', 'health', 'limits') +
+        (('conditioning',) if icl else ()))
     fixed = identity['native_tts_base']
     profile_contract.tts_configuration(fixed, base=True)
     asr = identity.get('native_asr')
@@ -315,6 +405,8 @@ def voice_business(value, identity):
     ledger.require(ledger.canonical(value['requests']) == ledger.canonical(expected),
                    'qualified voice requests lost the actual ID or supplied ASR hints')
     voice_synthesis(value, fixed)
+    if icl:
+        voice_icl_business(value)
     negatives = {'negated_consent': (400, 'voice_consent_mismatch'),
                  'different_speaker': (400, 'voice_speaker_mismatch'),
                  'cross_consent': (404, None), 'cross_voice': (404, None),
@@ -470,6 +562,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if voice_icl_enabled(identity or {}, capabilities):
+        return VOICE_ICL_FORMAT
     checkpoint = ((identity or {}).get('native_tts') is not None and
         tts_sampling((business_value or {}).get('tts', {})) is not None)
     if (identity or {}).get('native_tts_base') is not None:
@@ -920,7 +1014,8 @@ def business(value, identity, selected=None, capabilities=None):
         if identity.get('native_asr') is None and identity.get('native_tts') is None:
             voice_consumer_business(value['voice'], identity)
         else:
-            voice_business(value['voice'], identity)
+            voice_business(value['voice'], identity,
+                           icl=voice_icl_enabled(identity, capabilities))
     if media:
         media_business(value['media'])
     if identity.get('native_asr') is not None:

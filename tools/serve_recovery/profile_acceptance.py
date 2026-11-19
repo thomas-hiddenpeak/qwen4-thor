@@ -236,6 +236,11 @@ def prepare(args):
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     if chat_audio: plan['chat_audio'] = True
+    voice_icl = getattr(args, 'voice_icl', False)
+    require(type(voice_icl) is bool and (not voice_icl or
+        voice is not None and consumer is None),
+        'ICL qualification requires actual voice registration')
+    if voice_icl: plan['voice_icl'] = True
     if checkpoint: plan['tts_sampling_profile'] = profile_evidence.TTS_CHECKPOINT_SAMPLING
     if consumer is not None:
         plan['voice_consumer'] = consumer
@@ -629,6 +634,10 @@ class Stage(encrypted.Stage):
 
     def profile_business(self):
         # Qualify the affected speech cases before unrelated model requests.
+        capability = read(self.out/(self.profile_name+'-capabilities.json'))
+        require(self.plan.get('voice_icl', False) == profile_evidence.voice_icl_enabled(
+            self.plan['identity'], capability),
+            'actual ICL registration needs its explicit conditioning checklist')
         early = {}
         if self.plan['identity'].get('native_tts_base') is not None:
             helper = profile_consumer if self.plan.get('voice_consumer') else profile_voice
@@ -787,6 +796,8 @@ def main():
                    help='explicit Base-only deployment: qualified saved voice receipt; disables ASR and builtin TTS in this private plan only')
     p.add_argument('--voice-fixtures', type=Path,
                    help='pinned consent/sample/different/negated WAV manifest; never success evidence')
+    p.add_argument('--voice-icl', action='store_true',
+                   help='require real persisted reference codes and full ICL input usage')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,

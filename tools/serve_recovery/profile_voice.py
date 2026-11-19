@@ -139,6 +139,20 @@ class Lifecycle:
         body, content_type = multipart(fields, field, audio)
         return self.http(label, path, body, content_type=content_type, **options)
 
+    def conditioning(self, consent, voice):
+        records = {}
+        for name, kind, identifier in (('consent', 'voice_consent', consent),
+                                        ('voice', 'voice', voice)):
+            paths = list((self.stage.out/'application-objects').glob(
+                '*.'+kind+'.'+identifier+'.json'))
+            require(len(paths) == 1 and not paths[0].is_symlink() and
+                paths[0].stat().st_size <= MAX_RESPONSE_BYTES,
+                'one bounded actual persisted voice record required')
+            records[name] = read(paths[0])['record']
+        evidence.voice_reference(records, consent, voice)
+        save(self.stage.out/(self.stage.profile_name+'-voice-conditioning.json'), records)
+        return records
+
     @staticmethod
     def rejected(result, status, code=None):
         value = dict(status=result[0], body=json.loads(result[1]))
@@ -181,6 +195,8 @@ class Lifecycle:
             rows['voice'], 'audio_sample', self.clips['different']), 400, 'voice_speaker_mismatch')
         voice = self.created(self.form('create', VOICES, rows['voice'],
             'audio_sample', self.clips['sample']), 'voice')
+        conditioning = (self.conditioning(consent_id, voice['id'])
+                        if self.stage.plan.get('voice_icl') else None)
         rows = evidence.voice_requests(consent_id, voice['id'])
         negative['quota'] = self.rejected(self.form('quota', CONSENTS, fields,
             'recording', self.clips['consent'], client='voice-tiny'), 429, 'client_tpm_exhausted')
@@ -224,6 +240,9 @@ class Lifecycle:
             negative=negative, revocation=revoked, limits=config['native_tts_limits'],
             health=dict(base=config['native_tts_base_health'],
                         condition=config['native_voice_health']))
+        if conditioning is not None:
+            result['conditioning'] = conditioning
         require(self.requests == POSTS_PER_PROFILE, 'incomplete voice business checklist')
-        evidence.voice_business(result, self.stage.plan['identity'])
+        evidence.voice_business(result, self.stage.plan['identity'],
+                                icl=conditioning is not None)
         return result

@@ -8989,8 +8989,8 @@
       }
     }
   ],
-  "next_task": "Complete Realtime audio-export prerequisites; strict ICL float-boundary classification and negative controls under owner authorization, actual registration/synthesis business, then Realtime history/prompt/delete/retrieve, semantic VAD/conversation/Live, recovery/delivery and every master task. Listening pending.",
-  "next": "Complete Realtime audio-export prerequisites; strict ICL float-boundary classification and negative controls under owner authorization, actual registration/synthesis business, then Realtime history/prompt/delete/retrieve, semantic VAD/conversation/Live, recovery/delivery and every master task. Listening pending.",
+  "next_task": "Complete Realtime-aware primary/light and actual Guardian recovery composition for ICL/Realtime, reversible delivery, then semantic VAD/conversation/Live and every remaining master task; retain original failures and deferred listening.",
+  "next": "Complete Realtime-aware primary/light and actual Guardian recovery composition for ICL/Realtime, reversible delivery, then semantic VAD/conversation/Live and every remaining master task; retain original failures and deferred listening.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -9861,6 +9861,19 @@
         "different_codes": 4,
         "frame": 94,
         "evidence": "evidence/serve-tts-icl-boundary-20261119/README.md"
+      },
+      "recovery_contract": {
+        "state": "cpu_qualified_managed_business_pending",
+        "evidence": "docs/evidence/serve-icl-recovery-contract-cpu-20261119/README.md",
+        "cases": 18,
+        "seconds": 2.375856244470924,
+        "runtime_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+        "full_reference_usage": {
+          "speech": 920,
+          "chat": 918
+        },
+        "gpu_actions": 0,
+        "default_replaced": false
       }
     }
   },

@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL恢复合同18项CPU通过](evidence/serve-icl-recovery-contract-cpu-20261119/README.md)：
+2.376秒/0GPU、零警告，旧资格不能重标ICL，自动回退不得丢失参考
+条件；缺码/损坏/错误授权与少计参考输入均拒绝。原生能力与持久记录
+合同已纳入资格检查。下一步Realtime主轻与Guardian组合、可回退
+交付及全部master；默认rev326和原失败/听感待验保持。
+
 [真实Realtime历史/取回短验通过](evidence/serve-realtime-history-business-20261119/README.md)：
 实际输入70→81→70、删除及处理后音频逐字节吻合；连续提交可见性/
 跨会话隔离、561实际转录token结算及同PID Chat通过。1模型/1入口、
