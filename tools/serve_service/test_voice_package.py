@@ -124,6 +124,44 @@ class VoicePackage(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'registration dependencies'):
             pkg.check_tts_capabilities(caps, None, selected())
 
+    def icl_metadata(self):
+        _, release, _ = self.voice_fixture()
+        metadata = pkg.read(release)
+        metadata['chat_protocol']['speech']['registered_voice_conditioning'] = dict(pkg.VOICE_CONDITIONING)
+        metadata['observed_configuration']['native_voice_health'].update(
+            model=pkg.NATIVE_TTS_BASE['model']+'-reference', reference_encoder=True)
+        return metadata
+
+    def test_icl_declaration_requires_actual_reference_encoder_identity(self):
+        metadata = self.icl_metadata()
+        pkg.check_tts_declaration(metadata, None, selected())
+        for change in (dict(model=pkg.NATIVE_TTS_BASE['model']+'-speaker'),
+                       dict(reference_encoder=False), dict(reference_encoder=1),
+                       dict(core_readiness_dependency=True), dict(state='failed')):
+            altered = copy.deepcopy(metadata)
+            altered['observed_configuration']['native_voice_health'].update(change)
+            with self.assertRaises(RuntimeError):
+                pkg.check_tts_declaration(altered, None, selected())
+
+    def test_icl_declaration_cannot_hide_or_rewrite_reference_contract(self):
+        metadata = self.icl_metadata()
+        for field, value in (('code_groups', 15), ('input_usage', 'text_only'),
+                             ('invalid_reference', 'speaker_fallback')):
+            altered = copy.deepcopy(metadata)
+            altered['chat_protocol']['speech']['registered_voice_conditioning'][field] = value
+            with self.assertRaises(RuntimeError):
+                pkg.check_tts_declaration(altered, None, selected())
+        del metadata['chat_protocol']['speech']['registered_voice_conditioning']
+        with self.assertRaises(RuntimeError): pkg.check_tts_declaration(metadata, None, selected())
+
+    def test_legacy_speaker_identity_cannot_claim_reference_encoder(self):
+        _, release, _ = self.voice_fixture()
+        metadata = pkg.read(release)
+        metadata['observed_configuration']['native_voice_health']['reference_encoder'] = False
+        pkg.check_tts_declaration(metadata, None, selected())
+        metadata['observed_configuration']['native_voice_health']['reference_encoder'] = True
+        with self.assertRaises(RuntimeError): pkg.check_tts_declaration(metadata, None, selected())
+
     def test_both_explicit_clis_forward_base_and_shared_limits(self):
         args = ['service.py', 'prepare', '--model-dir', '/model', '--output', str(self.root/'package'),
             '--tts-base-model-dir', '/base', '--tts-max-frames', '160']

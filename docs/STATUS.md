@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL包健康声明5项CPU通过](evidence/serve-icl-package-health-20261119/README.md)：
+0.364秒/0GPU；原准备失败保留，参考编码器/完整能力绑定正确，旧
+speaker身份仍独立校验。继续新包、实际Guardian组合和可回退交付；
+模型/主轻身份与默认rev326保持，听感待验和全部master继续。
+
+首个新服务包准备在旧speaker健康断言处拒绝，0模型/0GPU，原件
+保留。已修正包声明校验：ICL必须绑定reference_encoder及完整能力
+合同，旧speaker资格不能冒充；冻结5项针对性CPU/60秒，再续封装
+和实际Guardian恢复，默认rev326及已验主轻保持。
+
 [原生构建来源补齐并通过](evidence/serve-realtime-native-inventory-20261119/README.md)：
 3项CPU/24负控0.415秒，四组件构建7.573秒零警告；63个实际编译
 输入全部纳入74项清单，入口与已验SDK摘要一致、核心程序不变。

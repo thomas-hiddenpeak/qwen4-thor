@@ -1090,7 +1090,13 @@ def check_tts_declaration(metadata, selected, base=None, asr=None):
         require(voice.get('state', 'disabled') == 'disabled',
                 'package drops configured native voice condition backend')
     else:
-        require(voice.get('model') == NATIVE_TTS_BASE['model']+'-speaker' and
+        icl = 'registered_voice_conditioning' in metadata['chat_protocol']['speech']
+        # Old accepted engines retain their speaker-only declaration. Current
+        # ICL engines must bind the reference encoder; neither may impersonate
+        # the other by only changing a model name or dropping the capability.
+        require(voice.get('model') == NATIVE_TTS_BASE['model']+
+                    ('-reference' if icl else '-speaker') and
+                voice.get('reference_encoder', False) is icl and
                 voice.get('core_readiness_dependency') is False and
                 voice.get('state') in ('configured', 'loading', 'metadata_ready',
                                        'ready', 'degraded'),
