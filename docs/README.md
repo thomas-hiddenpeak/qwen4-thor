@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [Realtime统一schema与有界历史基础](evidence/serve-realtime-conversation-foundation-20261119/README.md)
+
 [原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。
 
 [原生语音输出与历史实施](SERVE_NATIVE_TTS_2026-11-18.md)：固定TTS模型/codec、实际合成及标准接口持续推进。

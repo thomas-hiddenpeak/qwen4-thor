@@ -7,6 +7,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime对话基础20项CPU通过](evidence/serve-realtime-conversation-foundation-20261119/README.md)：
+476份Realtime/647份Responses官方类型差分零分歧，18项来源反例及
+CMake生成身份通过，0GPU；原裸ID夹具失败保留。仅基础已验证，
+继续真实LLM增量、工具回填、音频/Live；默认rev346 STOPPED、
+PR #51冻结head与听感待验保持，总目标继续。
+
+Realtime对话基础首轮19项CPU通过，476份官方SDK差分零分歧，
+原Responses图逐字节保持；原裸ID引用夹具失败保留。审查另补MCP
+可空审批身份的输出更新，只续3项相关CPU，复用未影响项；尚未
+接模型对话，默认rev346/PR #51已验head与听感待验保持。
+
+Realtime对话基础正在开发：复用官方SDK类型图与原生校验器，补齐
+有界会话历史、工具条目、会话内引用、输出预留及迟到结果隔离。
+本组冻结最多60项CPU/120秒/0GPU，尚未接入真实对话模型或发行；
+PR #51最终head保持隔离，默认rev346 STOPPED和原失败/听感待验保持。
+
 [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
 完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
 0新增GPU，原配额/用量/恢复历史/预算保持。发布超时原FAIL保留，原ID

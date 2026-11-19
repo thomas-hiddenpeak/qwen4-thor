@@ -1,6 +1,7 @@
 # OpenAI SDK type-derived contract
 
-`src/server/contracts/openai_item_types_v1.json` is generated from the official
+`src/server/contracts/openai_item_types_v1.json` and
+`src/server/contracts/openai_realtime_types_v1.json` are generated from the official
 OpenAI Node SDK **7.47.0** type declarations. The SDK is licensed under
 Apache-2.0; its original [LICENSE](LICENSE) is preserved unchanged. Source
 paths and SHA256 values are recorded in the generated graph.

@@ -5,6 +5,8 @@
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/responses_item_types_data.h"
+#include "q4t/server/realtime_shape.h"
+#include "q4t/server/realtime_types_data.h"
 
 namespace q4t::server {
 namespace {
@@ -12,23 +14,28 @@ using io::Json;
 struct Graph {
   Json value;
   Status status;
-  Graph() {
+  Graph(std::string_view data, std::string_view profile) {
     io::JsonParseLimits limits;
     limits.max_values = 100000;
     limits.max_string_bytes = 1024 * 1024;
     limits.reject_duplicate_keys = true;
     status =
-        io::ParseJson(std::string(item_types::kData), &value, false, limits);
+        io::ParseJson(std::string(data), &value, false, limits);
     const auto* nodes = value.GetArray("nodes");
     if (status &&
-        (value.GetString("profile") != "q4t-openai-item-types-v1" || !nodes ||
+        (value.GetString("profile") != profile || !nodes ||
          nodes->array.empty() || nodes->array.size() > 4096 ||
          !value.Find("roots") || !value.Find("roots")->IsObject()))
       status = Status::Fail("invalid compiled item contract");
   }
 };
 const Graph& Types() {
-  static const Graph graph;
+  static const Graph graph(item_types::kData, "q4t-openai-item-types-v1");
+  return graph;
+}
+const Graph& RealtimeTypes() {
+  static const Graph graph(realtime_types::kData,
+                            "q4t-openai-realtime-types-v1");
   return graph;
 }
 std::string FieldPath(std::string_view path, std::string_view name) {
@@ -157,21 +164,14 @@ class Validator {
   const std::vector<Json>& nodes_;
   size_t work_ = 0;
 };
-}  // namespace
-
-Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
-                                  ChatPlanError* error, std::string_view path) {
+Status Validate(const Graph& graph, const Json& item, const char* root,
+                ChatPlanError* error, std::string_view path) {
+  if (!error) return Status::Fail("Missing item validation error owner");
   *error = {};
-  const auto& graph = Types();
   if (!graph.status) {
     *error = {"item_contract_unavailable", std::string(path), 503};
     return graph.status;
   }
-  const char* root = shape == ResponsesItemShape::kInput    ? "input_item"
-                     : shape == ResponsesItemShape::kOutput ? "output_item"
-                     : shape == ResponsesItemShape::kConversation
-                         ? "conversation_item"
-                         : "";
   Validator validator(*graph.value.GetArray("nodes"));
   Failure failure;
   if (validator.Match(graph.value.Find("roots")->GetInt(root, -1), item,
@@ -183,5 +183,29 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
             std::move(failure.path),
             failure.internal || failure.resource ? 503 : 400};
   return Status::Fail(std::move(failure.message));
+}
+}  // namespace
+
+Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
+                                  ChatPlanError* error, std::string_view path) {
+  const char* root = shape == ResponsesItemShape::kInput    ? "input_item"
+                     : shape == ResponsesItemShape::kOutput ? "output_item"
+                     : shape == ResponsesItemShape::kConversation
+                         ? "conversation_item"
+                         : "";
+  return Validate(Types(), item, root, error, path);
+}
+Status ValidateRealtimeShape(const Json& value, RealtimeShape shape,
+                             ChatPlanError* error, std::string_view path) {
+  const char* root = "";
+  switch (shape) {
+    case RealtimeShape::kItem: root = "conversation_item"; break;
+    case RealtimeShape::kClientEvent: root = "client_event"; break;
+    case RealtimeShape::kServerEvent: root = "server_event"; break;
+    case RealtimeShape::kResponseCreate: root = "response_create"; break;
+    case RealtimeShape::kSession: root = "session"; break;
+    case RealtimeShape::kResponse: root = "response"; break;
+  }
+  return Validate(RealtimeTypes(), value, root, error, path);
 }
 }  // namespace q4t::server

@@ -1010,7 +1010,7 @@ Charlie Gordon）；保留[来源和逐文件身份](third_party/quickjs/SOURCE.
 [原始许可](third_party/licenses/quickjs/LICENSE)。只在隔离worker内运行，
 不携带qjs/Node或OS模块；实现与验收见[实施计划](docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)。
 
-Responses/Conversations的原生item形状合同派生自OpenAI Node
+Responses/Conversations的item与Realtime消息/事件/会话形状合同派生自OpenAI Node
 SDK 7.47.0类型声明，遵循Apache-2.0，保留[原始许可与来源说明](third_party/licenses/openai-node/README.md)。
 提取器使用固定TypeScript5.9.3，仅为开发工具；发行程序不携带或
 运行Node、TypeScript或SDK服务。类型合同不代表对应业务接口已交付，
