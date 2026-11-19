@@ -11334,6 +11334,39 @@
       "pr_draft": true,
       "archive_sha256": "4c8f5ef67b7e46df5c0edeb347ec0496f2e66595f2bb3f3505bc99e39ad85282",
       "evidence": "evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md"
+    },
+    "prompt_driver_cpu_20261120": {
+      "status": "PASS_REALTIME_PROMPT_BUSINESS_DRIVER_CPU",
+      "python_tests": 6,
+      "javascript_syntax_checks": 1,
+      "seconds": 0.296031195204705,
+      "build": {
+        "status": "BUILD_PASS",
+        "exit_code": 0,
+        "seconds": 332.10741796623915,
+        "warnings": 0,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "prior_unchanged": true,
+        "binary_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+        "free_bytes_after": 311447552
+      },
+      "proposed_business": {
+        "model_starts": 1,
+        "response_creates": 13,
+        "chats": 2,
+        "websockets": 2,
+        "http_operations": 32,
+        "seconds": 900,
+        "actual_primary_and_file_model_usage": true,
+        "full_performance_or_model_quality_matrix": false
+      },
+      "actual_business_accepted": false,
+      "new_gpu_starts": 0,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "archive_sha256": "75d4b55dbb85ca68354ea89da341d84314b7bc869f24ba42b8d103ac20ddc52a",
+      "evidence": "evidence/serve-realtime-prompt-driver-cpu-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {

@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt业务驱动CPU通过](evidence/serve-realtime-prompt-driver-cpu-20261120/README.md)：
+6项反例+1项JS语法、0.296秒/0GPU，候选`f20c3b76`零警告构建。
+继续冻结单模型/13 Realtime+2 Chat/2WSS/32原生HTTP/900秒的
+真实业务短验，包含CSV内部模型步骤与一次RPM、真实PNG/文本、
+跨客户模板/文件隔离、版本和工具/取消。默认rev356保持，
+尚无Prompt实际业务资格；全部master继续。
+
+Prompt实际推理候选`f20c3b76`已零警告构建（332.107秒），
+原`f5af36c6`和默认rev356身份保持。真实SDK驱动已编写，先冻结
+6项Python反例+1项JS语法/120秒/0GPU；通过后冻结单模型、13次
+Realtime+2次Chat、2WSS/32原生HTTP/900秒，覆盖模板固定/覆盖/
+删除、真实文件/PNG/CSV、跨客户隔离、工具闭环、取消和一次RPM
+实际结算。不做完整性能/质量矩阵；实际资格及可回退交付继续。
+
 [Prompt运行时22项CPU闭合](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：
 8项新合同，首轮21/22、夹具必填字段修正后仅补验1项；原失败
 保留，生产源码未变，23次尝试共0.016秒/0GPU。两次构建零警告、
