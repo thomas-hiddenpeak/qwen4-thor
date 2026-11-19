@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime Chat 主轻实际资格通过](evidence/serve-realtime-chat-primary-light-20261119/README.md)：
+2 模型/64 业务/8 WSS/368.901 秒，341 次 NVML 正常；主轻两轮
+实际工具各结算 803/817 tokens，流式和来源一致，四个诊断正确记
+成功，自有资源与 GPU 锁释放。候选 f5af36c6 已保留，默认 rev346
+STOPPED 不变；继续 Guardian 组合/可回退交付及全部 master，原
+质量失败与听感待验保持。本阶段不等于实际恢复已验收。
+
 原生对话候选 f5af36c6 已零警告构建（17.473 秒），保留原合格
 994025c2 和默认 rev346。冻结主轻各一次模型启动，合计 64 项业务、
 8 WSS/6 临时入口/900 秒、同一严格 GPU 租约；新增每配置两轮

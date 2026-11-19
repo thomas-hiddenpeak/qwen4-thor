@@ -1,0 +1,102 @@
+{
+  "status": "PASS_ACTUAL_PRIMARY_LIGHT_NATIVE_REALTIME_CHAT",
+  "engine_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+  "acceptance": {
+    "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 341,
+      "cleanup_complete": true,
+      "lease_result_sha256": "8760991087ec0ef402a06483042a1091e0b7144921dc50cf884378e781e6466c"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 64,
+      "controls": 170,
+      "websocket_sessions": 8,
+      "ingress_starts": 6
+    },
+    "seconds": 368.90083494596183,
+    "registry_sha256": "e6d867b78293a7379233783a5f531c8f746409c673347882aaa250b82cf9b91f",
+    "default_unchanged": true,
+    "automatic_managed_switching_accepted": false,
+    "performance_claim": false
+  },
+  "profiles": {
+    "primary": {
+      "response_ids": [
+        "resp_6bab125548124425807043cad174fb3b",
+        "resp_c3dc541beb89135ba94692d0f9c924f0"
+      ],
+      "actual_tokens": 803,
+      "before": {
+        "admitted": 26,
+        "settled": 11600,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "after": {
+        "admitted": 28,
+        "settled": 12403,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "source": {
+        "path": "docs/STATUS.md",
+        "sha256": "7dc1f5eff6f5e9d21b7345e3c5c25918f30af26c97c448cd7b97d6ae0e3fa0d1",
+        "version": "rev346"
+      },
+      "diagnostics": [
+        "[q4t][request] instance=37 id=resp_6bab125548124425807043cad174fb3b event=end stage=execute seq=-1 released=0 outcome=success reason=completed elapsed_ms=2270.069 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=0.000 scheduler_waits=0 trace_id=resp_6bab125548124425807043cad174fb3b safety_identifier_sha256=-",
+        "[q4t][request] instance=39 id=resp_c3dc541beb89135ba94692d0f9c924f0 event=end stage=execute seq=-1 released=0 outcome=success reason=completed elapsed_ms=974.994 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=0.000 scheduler_waits=0 trace_id=resp_c3dc541beb89135ba94692d0f9c924f0 safety_identifier_sha256=-"
+      ],
+      "qualification_sha256": "5ac854af8f2c53d840ee64f0f9ac509e25336cd5f24cb09521050c1fbfb4a637"
+    },
+    "light": {
+      "response_ids": [
+        "resp_018bd59ee8dd8ea32d357816594aca77",
+        "resp_aea19859b499b0dcc8a5187ce3062764"
+      ],
+      "actual_tokens": 817,
+      "before": {
+        "admitted": 26,
+        "settled": 11600,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "after": {
+        "admitted": 28,
+        "settled": 12417,
+        "reserved": 0,
+        "active": 0,
+        "sessions": 0,
+        "host_bytes": 0,
+        "free_slots": 1
+      },
+      "source": {
+        "path": "docs/STATUS.md",
+        "sha256": "7dc1f5eff6f5e9d21b7345e3c5c25918f30af26c97c448cd7b97d6ae0e3fa0d1",
+        "version": "rev346"
+      },
+      "diagnostics": [
+        "[q4t][request] instance=37 id=resp_018bd59ee8dd8ea32d357816594aca77 event=end stage=execute seq=-1 released=0 outcome=success reason=completed elapsed_ms=2297.335 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=0.000 scheduler_waits=0 trace_id=resp_018bd59ee8dd8ea32d357816594aca77 safety_identifier_sha256=-",
+        "[q4t][request] instance=39 id=resp_aea19859b499b0dcc8a5187ce3062764 event=end stage=execute seq=-1 released=0 outcome=success reason=completed elapsed_ms=2193.938 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=0.000 stream_write_ms=0.000 input_wait_ms=0.000 scheduler_waits=0 trace_id=resp_aea19859b499b0dcc8a5187ce3062764 safety_identifier_sha256=-"
+      ],
+      "qualification_sha256": "5eee2005e66ff250abe029bbe6fd20656311527399ee3eee98eec57a5c7cfb4b"
+    }
+  },
+  "default": "rev346 STOPPED unchanged",
+  "guardian_qualified": false,
+  "master_complete": false
+}

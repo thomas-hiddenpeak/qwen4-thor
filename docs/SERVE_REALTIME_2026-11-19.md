@@ -27,6 +27,11 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
 
+[Chat 主轻真实资格](evidence/serve-realtime-chat-primary-light-20261119/README.md)
+通过：2 模型/64 业务/8 WSS/368.901 秒，原已配置能力与新增两轮
+资料工具的流式/实际结算均通过。候选 f5af36c6 保留；Guardian
+组合/可回退交付待验，默认 rev346 STOPPED 与其余计划保持。
+
 [原生 Chat 实际 SDK/TLS 业务](evidence/serve-realtime-chat-business-20261119/README.md)
 通过：真实资料工具、空上下文不同指令、限额/取消/RPM、实际结算和
 共享 ASR 回归，50.325 秒 / 1 模型 / 3 WSS。原三轮失败保留，默认
