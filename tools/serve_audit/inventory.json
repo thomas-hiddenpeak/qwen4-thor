@@ -2770,7 +2770,7 @@
     "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "6a273bb55dd5492ac17f2a12419b5fa41ccdb0482f4f86dc3f0c45cd2cae8410",
+    "src/server/chat_generation.cpp": "993c2ea971f729dcbd2266b1cb7c3cc74c406fdf73b659cc1e75f5f9b3f67b40",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "265f934457700379b31d91a59760714cde3042bf9ffb5924c9558abad9360b3e",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",

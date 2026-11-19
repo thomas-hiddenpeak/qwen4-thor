@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Realtime Chat 首轮真实短验 FAIL 已保留：1 模型、1 WSS、实际首个响应
+及 1 Chat / 40.145 秒；普通 Chat 42 正常，强制工具报 required tool
+call missing。定位为普通非流式快速路径漏判原生输出观察者，导致
+token 未进入 parser；已补 `!native`，冻结 20 项来源反例与必要构建。
+自有模型/入口/锁已释放，默认 rev346 STOPPED 未变；通过后仅续原
+3 WSS / 8 响应 / 1 转写 / 2 Chat 范围，不扩性能或完整质量矩阵。
+
 [Realtime Chat 业务驱动 10 项 CPU 通过](evidence/serve-realtime-chat-driver-cpu-20261119/README.md)：
 0.378 秒 / 0 GPU；必要构建 345.370 秒、零警告，默认 rev346
 STOPPED 不变。随后限 1 模型、3 WSS、8 响应、1 转写与 2 Chat /

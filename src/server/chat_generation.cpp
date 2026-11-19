@@ -3596,8 +3596,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // tokens. Model history is never reconstructed from parsed response text.
     const auto consume_token = [&](int32_t token) {
       if (completion && is_stop_token(token)) return true;
-      if (!responses && !completion && !stream && !thinking_budget.Tracking() &&
-          !text_stop.Enabled() && !sampling.logprobs && !prediction_enabled)
+      if (!responses && !completion && !stream && !native &&
+          !thinking_budget.Tracking() && !text_stop.Enabled() &&
+          !sampling.logprobs && !prediction_enabled)
         return true;
       std::string piece;
       {

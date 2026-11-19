@@ -85,7 +85,8 @@ def check_receipt(receipt, mode, record):
 def prepare(args):
     require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
             'commit reviewed source before freezing actual business')
-    build = WORK / 'runtime-build-01'
+    build = args.build_record.resolve(strict=True)
+    require(build.is_relative_to(WORK), 'private actual build record required')
     result = json.loads((build / 'result.json').read_text())
     build_plan = json.loads((build / 'plan.json').read_text())
     require(result['status'] == 'BUILD_PASS' and result['warnings'] == 0 and
@@ -227,6 +228,8 @@ if __name__ == '__main__':
     prep.add_argument('--binary', type=Path, required=True)
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--port', type=int, default=18418)
+    prep.add_argument('--build-record', type=Path,
+                      default=WORK / 'runtime-build-01')
     run = sub.add_parser('run')
     run.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()
