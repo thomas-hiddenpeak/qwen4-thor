@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py", line 896, in <module>
+    BASE['main']()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py", line 334, in main
+    prepare(args); return
+    ^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py", line 247, in prepare
+    require(engine.read(out/'plan.json') == plan, 'managed plan exceeds metadata reader')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 95, in read
+    require(Path(path).stat().st_size <= 2*1024**2, 'metadata size limit')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 72, in require
+    raise RuntimeError(message)
+RuntimeError: metadata size limit

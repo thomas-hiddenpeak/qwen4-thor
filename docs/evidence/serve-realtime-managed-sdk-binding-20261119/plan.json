@@ -1,0 +1,16 @@
+{
+  "modules": [
+    "tools.native_asr.test_managed_sdk_binding.Binding"
+  ],
+  "cases": 3,
+  "actual_plan_review": 1,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/native_asr/service_acceptance.py": "293c7d1c17f3c346cbecc256a481a12b195ec998ef2bf277c9b07c9b0b68d630",
+    "tools/native_asr/test_managed_sdk_binding.py": "4c9a95b4a670120b33523a70c1f9b1681b8f30e169c9b9de3294db7f0c8d142c"
+  },
+  "original_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/retained-service-01/plan.json",
+  "original_plan_sha256": "d5f40df158bc38dc1868f0b30cea259218f4cbfbd128a662528e599571e92ca3",
+  "original_failed_size": 2239632
+}

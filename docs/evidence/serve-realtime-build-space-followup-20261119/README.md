@@ -13,3 +13,8 @@ host 程序、核心运行时与默认包保持。
 `cpu-binary-archive-04-prefix/payloads.tar.gz`；同目录 `restore.py`
 以 plan.json 中的原绝对路径恢复，不启动进程。原测试结论不变，
 本组 0 GPU，无模型或服务动作。
+
+后续完成剩余会话 CPU 载荷（三路径）及另一已结束的对话 CPU 载荷
+（一条路径）的无损归档，净释放 22263027 与 21839268 字节。
+归档分别位于同一私有根下 cpu-binary-archive-05/06，各自保留
+plan.json/result.json/restore.py 和完整压缩载荷；原停止记录不变。

@@ -1,0 +1,23 @@
+{
+  "scope": "One inactive historical CPU conversation test, lossless archive; no runtime/default/model/log/source change",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/ci-conversation-01/original-host-tests",
+      "member": "713409d59b6a43a47a70cfea306244e1426ff76070a39ec5f8ab59ca0e3e148d",
+      "sha256": "713409d59b6a43a47a70cfea306244e1426ff76070a39ec5f8ab59ca0e3e148d",
+      "bytes": 38212984,
+      "mode": 509,
+      "mtime_ns": 1795022700690985132,
+      "inode": 8019404,
+      "links": 1
+    }
+  ],
+  "unique_payloads": 1,
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f"
+  },
+  "minimum_free_bytes": 134217728,
+  "maximum_archive_bytes": 25165824
+}

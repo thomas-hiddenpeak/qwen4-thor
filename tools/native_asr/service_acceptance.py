@@ -69,9 +69,49 @@ def configure_plan_limits(plan):
                           plan.get('native_voice') is not None,
                           'realtime' in plan)
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
+    if 'sdk' in plan and 'files_binding' in plan['sdk']:
+        verify_sdk_binding(plan)
     # Reused actors/verifiers share this process-local namespace, never a live
     # service policy. Only the fixed feature-specific increment is accepted.
     GLOBALS['LIMITS'] = dict(LIMITS, **{plan['scenario']: expected})
+
+
+def sdk_sources(plan):
+    directory = Path(plan['sdk']['sdk_directory'])
+    require(directory.is_absolute() and directory == directory.resolve() and
+        directory.is_relative_to(ROOT/'.q4t-work'), 'fixed local SDK directory required')
+    prefix = str(directory)+'/'
+    files = {name[len(prefix):]:digest for name, digest in plan['sources'].items()
+             if name.startswith(prefix)}
+    require(files and all(not Path(name).is_absolute() and
+        '..' not in Path(name).parts and type(digest) is str and
+        re.fullmatch('[0-9a-f]{64}', digest) for name, digest in files.items()),
+        'invalid SDK source identity')
+    return files
+
+
+def sdk_binding(files):
+    raw = json.dumps(files, sort_keys=True, separators=(',', ':')).encode()
+    return dict(format='q4t-sdk-in-frozen-sources-v1', files=len(files),
+                sha256=hashlib.sha256(raw).hexdigest())
+
+
+def compact_sdk(plan):
+    # Full module/lock identities already live in sources and are verified by
+    # the managed launcher. Bind that exact inventory instead of storing it
+    # twice and exceeding the production metadata reader's 2 MiB limit.
+    files = sdk_sources(plan)
+    require(plan['sdk'].get('files') == files and
+            'files_binding' not in plan['sdk'], 'SDK inventory omitted or changed')
+    plan['sdk']['files_binding'] = sdk_binding(files)
+    del plan['sdk']['files']
+    verify_sdk_binding(plan)
+
+
+def verify_sdk_binding(plan):
+    require('files' not in plan['sdk'] and
+        plan['sdk']['files_binding'] == sdk_binding(sdk_sources(plan)),
+        'frozen SDK inventory binding differs')
 
 
 def direct():
@@ -243,6 +283,8 @@ def prepare(args):
             '\nrunpy.run_path(sys.argv[0],run_name="__main__")\n')
         helper.chmod(0o500)
         plan['probe_wrapper'] = dict(path=str(helper), sha256=engine.sha(helper))
+    if realtime:
+        compact_sdk(plan)
     save(out/'plan.json', plan)
     require(engine.read(out/'plan.json') == plan, 'managed plan exceeds metadata reader')
     print(json.dumps(dict(plan=str(out/'plan.json'), limits=plan['limits'])))

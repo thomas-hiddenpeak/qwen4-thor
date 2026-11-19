@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[恢复计划SDK去重验证通过](evidence/serve-realtime-managed-sdk-binding-20261119/README.md)：
+3项CPU和4087实际文件复核共0.320秒/0GPU；计划约1.69MB，原2MiB
+门与原失败保留。冻结实际恢复三组：累计4次模型启动、63条HTTP
+（含4自检）+5次Realtime转录、1设备探测/1500秒；每组全程单独
+严格租约，任一失败即停，分别独立运行/TLS网关/整包恢复。默认保持，
+通过后可回退交付；听感待验与全部master继续。
+
+恢复计划重复保存完整SDK清单，2239632字节触及2MiB读取门，模型
+启动前停止，0GPU且原失败保留。已改为完整文件身份只存冻结sources，
+SDK以数量/规范哈希绑定；冻结3项CPU及实际4087文件计划复核/60秒，
+保持原元数据上限，再继续实际Guardian短验，默认保持。
+
 [ICL包健康声明5项CPU通过](evidence/serve-icl-package-health-20261119/README.md)：
 0.364秒/0GPU；原准备失败保留，参考编码器/完整能力绑定正确，旧
 speaker身份仍独立校验。继续新包、实际Guardian组合和可回退交付；

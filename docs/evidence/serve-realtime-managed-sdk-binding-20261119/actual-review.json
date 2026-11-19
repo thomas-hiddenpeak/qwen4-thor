@@ -1,0 +1,14 @@
+{
+  "status": "PASS_ACTUAL_COMPLETE_SDK_BINDING_AND_READABLE_PLAN",
+  "seconds": 0.15570801589637995,
+  "actual_files": 4087,
+  "before_bytes": 2239632,
+  "after_bytes": 1694729,
+  "binding": {
+    "format": "q4t-sdk-in-frozen-sources-v1",
+    "files": 4087,
+    "sha256": "fcb55610d4cb703fdefb7a4241ee4560438fb2449166b9de0fe5ca1d74203879"
+  },
+  "original_unchanged": true,
+  "gpu_actions": 0
+}
