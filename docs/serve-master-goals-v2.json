@@ -2486,7 +2486,8 @@
         "evidence/serve-asr-sdk-values-20261117/README.md",
         "evidence/serve-asr-http-20261117/README.md",
         "evidence/serve-asr-package-cpu-20261117/README.md",
-        "evidence/serve-speech-http-20261118/README.md"
+        "evidence/serve-speech-http-20261118/README.md",
+        "evidence/serve-realtime-transcription-business-20261119/README.md"
       ],
       "release": null,
       "findings": [
@@ -2519,7 +2520,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement native instruction-capable TTS, then speech/Chat output and audio history/Realtime. Preserve unresolved overlap recognition quality and every remaining master task.",
+      "next": "Implement automatic Realtime server VAD using actual native Silero probabilities and absolute sample boundaries; then remaining processors, conversation/Live, Guardian composition/delivery and every master task. ICL numeric decision remains pending.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -8653,8 +8654,8 @@
       }
     }
   ],
-  "next_task": "Native Realtime HTTP upgrade/duplex transport and session/ASR integration; ICL encoder numeric decision remains pending. Complete actual JS/ICL registration/recovery and all master tasks.",
-  "next": "Continue realtime HTTP/session integration independently of the pending ICL encoder numerical gate; complete every remaining master task.",
+  "next_task": "Implement automatic Realtime server VAD using actual native Silero probabilities and absolute sample boundaries; then remaining processors, conversation/Live, Guardian composition/delivery and every master task. ICL numeric decision remains pending.",
+  "next": "Implement automatic Realtime server VAD using actual native Silero probabilities and absolute sample boundaries; then remaining processors, conversation/Live, Guardian composition/delivery and every master task. ICL numeric decision remains pending.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -9500,7 +9501,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_entrypoint_cpu_verified_backend_session_and_model_pending",
+    "state": "manual_transcription_real_sdk_native_tls_qualified_automatic_turns_and_conversation_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -9508,7 +9509,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": false,
-    "next": "Backend bounded sessions with actual PCM resampling/ASR, per-turn original quotas, Realtime/Live events and actual model/tools; official clients, recovery, reversible delivery.",
+    "next": "Implement actual automatic server VAD then noise/delay/semantic turns, conversation/tool/TTS and Live; compose real Guardian recovery and reversible delivery. Keep pending ICL decision and all master tasks.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -9559,6 +9560,26 @@
       "gpu_model_loads": 0,
       "api_qualified": false,
       "delivered": false
+    },
+    "manual_transcription_api_qualified": true,
+    "full_realtime_api_qualified": false,
+    "manual_transcription": {
+      "evidence": "evidence/serve-realtime-transcription-business-20261119/README.md",
+      "cpu_tests": 21,
+      "sdk_tls_cpu_tests": 3,
+      "gpu_stage_seconds": 44.37782511906698,
+      "model_starts": 1,
+      "ingress_starts": 1,
+      "websocket_sessions": 3,
+      "committed_items": 5,
+      "successful_transcriptions": 3,
+      "quota_failed_items": 1,
+      "cancelled_items": 1,
+      "chat_after": 1,
+      "nvml_ok": 44,
+      "original_startup_and_wss_failures_retained": true,
+      "default": "rev326 unchanged",
+      "scope": "Real WSS/OpenAI JS7.47.0/native ingress + native ASR, actual per-turn quota and cancellation; fixed PID-bound admission fixture, not Guardian recovery."
     }
   }
 }

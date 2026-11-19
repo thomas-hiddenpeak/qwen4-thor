@@ -13,9 +13,11 @@ Realtime的`/v1/realtime`和Live的`/v1/live/sessions`具有不同会话
 事件，分别实现，不能拿自定义WebSocket topic冒充官方协议。
 
 现有原生HTTP/TLS、客户准入、ASR/VAD、LLM工具/结构化、TTS与Guardian
-可复用；入口WebSocket升级及双向转发已通过CPU对端验证，后端真实
-会话仍待接通，因此尚未提供可用的Realtime/Live模型业务。输入HTTP
-上传后的SSE也不等于流式音频输入。
+可复用；入口WebSocket升级及双向转发、实际原生ASR手动提交会话现已通过
+[真实官方SDK/WSS业务](evidence/serve-realtime-transcription-business-20261119/README.md)。
+自动分段/可选处理器、对话与Live仍继续实现，实际Guardian组合和
+可回退交付尚待完成；默认rev326保持。不能把手动转录当作完整
+Realtime/Live，也不能把HTTP上传后的SSE当作持续音频输入。
 
 Orator只提供设计参考：统一采样时钟、阶段状态和有序排空；实际
 缓存上限、截止时间、客户隔离、事件合同由q4t独立实现。不复制
@@ -43,6 +45,12 @@ WebSocket基础16项CPU、音频队列12项CPU及
 已通过：GA/旧版设置、实际原生ASR回调与当前客户逐轮准入/结算、
 有界输入/输出、取消与完整终态。尚未完成真实模型/SDK业务，VAD/
 降噪/延迟、对话/Live和TLS/恢复组合继续实施，默认rev326保持。
+
+[手动转录真实业务](evidence/serve-realtime-transcription-business-20261119/README.md)
+已通过：中英PCM/G.711、官方JS/WSS、实际逐轮配额与取消后业务。
+21项原生CPU+3项SDK/TLS CPU、1模型/1入口启动、3会话5有效提交/
+1Chat，44.378秒，44次NVML正常。固定准入控制夹具不能代替实际
+Guardian恢复组合，默认rev326仍保持；继续下列未完成项目。
 
 ## 连续实施顺序
 

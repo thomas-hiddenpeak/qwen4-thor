@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime手动转录真实业务通过](evidence/serve-realtime-transcription-business-20261119/README.md)：
+官方JS7.47.0经原生TLS/API Key接原生ASR，1模型/1入口启动、3会话/
+5有效提交/1Chat，44.378秒，44次NVML正常。中英PCM与G.711、340
+实际token结算、第三轮RPM拒绝、取消后再业务及同PID Chat通过；
+进程/端口/GPU锁已清理，前置Chat复用，原两次失败保持。默认rev326
+不变，继续自动VAD/降噪/延迟、对话/Live、Guardian组合与总计划；
+当前准入为明确私有固定控制夹具，不能当作完整恢复验收。
+
 [官方WSS与原生TLS入口3项CPU通过](evidence/serve-realtime-sdk-tls-cpu-20261119/README.md)：
 1.676秒/0GPU，真实SDK错误/字节/关闭及坏CA/Key隔离通过。首次模型
 短验保留握手失败，实际0转录；普通Chat通过、55次NVML正常并完整

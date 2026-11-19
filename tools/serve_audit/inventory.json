@@ -1687,12 +1687,13 @@
     },
     "GET /v1/realtime?intent=transcription": {
       "semantics": "鉴权后WebSocket转录会话，手动append/clear/commit，真实原生ASR增量/终态，逐轮原准入与实际RPM/TPM。",
-      "boundary": "21项CPU通过，模型/SDK业务待验；VAD/降噪/延迟、对话/Live、TLS/恢复组合继续，不代表总Realtime已交付。",
+      "boundary": "手动转录真实官方JS/WSS/原生TLS/原生ASR业务通过；逐轮配额与取消回收通过，默认rev326保持。VAD/降噪/延迟、对话/Live与实际Guardian恢复仍继续。",
       "evidence": [
         "src/server/chat_realtime.cpp",
         "src/server/realtime_transcription_session.cpp",
         "tests/server_realtime_transcription_test.cpp",
-        "docs/evidence/serve-realtime-transcription-cpu-20261119/README.md"
+        "docs/evidence/serve-realtime-transcription-cpu-20261119/README.md",
+        "docs/evidence/serve-realtime-transcription-business-20261119/README.md"
       ]
     }
   },
@@ -8292,5 +8293,19 @@
     "gpu_model_loads": 0,
     "evidence": "docs/evidence/serve-realtime-sdk-tls-cpu-20261119/README.md",
     "boundary": "Actual SDK/native ingress with explicit CPU transcript peer; real model retry pending; fixed admission controller is not Guardian recovery."
+  },
+  "native_realtime_transcription_business_20261119": {
+    "evidence": "docs/evidence/serve-realtime-transcription-business-20261119/README.md",
+    "status": "PASS_NATIVE_MANUAL_TRANSCRIPTION_NOT_DELIVERED",
+    "seconds": 44.37782511906698,
+    "counts": {
+      "model_starts": 1,
+      "ingress_starts": 1,
+      "websocket_sessions": 3,
+      "items": 5,
+      "chat": 1
+    },
+    "default": "rev326 unchanged",
+    "remaining": "Automatic VAD/processors, conversation/Live, Guardian recovery, reversible delivery and master plan"
   }
 }
