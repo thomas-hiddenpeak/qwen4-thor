@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt资格25项CPU闭合](evidence/serve-realtime-prompt-profile-cpu-20261120/README.md)：
+23 Python+2原生，28次尝试/2.198秒/0GPU，构建零警告。修复显式
+v1→v2升级误拒绝，自动回退仍不能丢Prompt；原失败保留，未受影响
+证据复用。新v18必须有实际模板/CSV与单RPM证据；默认rev356、原
+质量FAIL保持。继续必要构建、受影响主轻/恢复与交付及全部master。
+
+Prompt能力声明与v18资格检查已编写：旧v17证据保持原合同，新增
+模板快照/文件/单次RPM的真实检查，自动回退不能丢Prompt能力。
+冻结22项Python+2项原生CPU、JS语法与20来源反例/120秒/0GPU。
+当前未构建新运行时或完成主轻/恢复资格；默认rev356、原质量FAIL
+保持，针对性验证后继续有界业务与可回退交付及全部master。
+
 [Prompt剩余场景短验通过](evidence/serve-realtime-prompt-followup-20261120/README.md)：
 1模型/5 Realtime+3 Chat/53.511秒，52次NVML正常；实际取消、
 跨客户隔离、CSV一次RPM和全部结算/清理通过。固定seed回答rev356，

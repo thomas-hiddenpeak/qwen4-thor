@@ -21,7 +21,7 @@ const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.username && !url.password &&
   !url.search && !url.hash && args.ca_file, 'verified loopback TLS required');
-check(['alpha', 'beta', 'remaining'].includes(args.mode), 'bounded client mode');
+check(['alpha', 'beta', 'remaining', 'qualification'].includes(args.mode), 'bounded client mode');
 const ca = fs.readFileSync(args.ca_file);
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
 let rt, fatal = null, closed = false, closeCode = null, connections = 0;
@@ -92,7 +92,7 @@ async function update(session, label, expectedError = null) {
   return rows.find((e) => e.type === 'session.updated').session;
 }
 async function create(label, response, expected = 'completed', cancel = false) {
-  check(++creates <= ({ alpha: 10, beta: 3, remaining: 2 }[args.mode]), 'response bound');
+  check(++creates <= ({ alpha: 10, beta: 3, remaining: 2, qualification: 4 }[args.mode]), 'response bound');
   const at = events.length;
   send({ type: 'response.create', event_id: label,
     response: { ...response, metadata: { acceptance_case: label } } });
@@ -160,7 +160,28 @@ try {
   const csv = fs.readFileSync(args.csv_file);
   check(digest(csv) === args.csv_sha256 && csv.length <= 4096, 'actual CSV source');
   const inlineCsv = { type: 'input_file', filename: 'acceptance-counts.csv', file_data: csv.toString('base64') };
-  if (args.mode === 'remaining') {
+  if (args.mode === 'qualification') {
+    const prompt = await register('register-qualified-arithmetic', definitions.first);
+    owned.prompt = prompt.id;
+    const reference = { id: prompt.id, variables: { left: '13', right: '29' } };
+    const pinned = await update({ prompt: reference }, 'pin-qualified-first');
+    check(pinned.prompt.version === '1' && pinned.max_output_tokens === 128, 'qualified template defaults');
+    const second = await http('append-qualified-second', 'POST', `/v1/prompts/${prompt.id}/versions`,
+      { definition: definitions.second, expected_revision: 1 });
+    check(second.default_version === '2', 'qualified actual second version');
+    exact(await create('qualified-pinned-first', { conversation: 'none', input: [] }), '42', 'qualified pinned template');
+    exact(await create('qualified-one-response-second', independent({ ...reference, version: '2' })),
+      '377', 'qualified one response override');
+    await http('delete-qualified-arithmetic', 'DELETE', `/v1/prompts/${prompt.id}`);
+    const kept = await update({}, 'qualified-session-after-delete');
+    check(kept.prompt.version === '1' && kept.max_output_tokens === 128, 'qualified retained snapshot');
+    exact(await create('qualified-pinned-after-delete', { conversation: 'none', input: [] }),
+      '42', 'qualified snapshot after registry deletion');
+    const files = await register('register-qualified-file', fileDefinition);
+    exact(await create('qualified-actual-csv', independent({ id: files.id,
+      variables: { source: inlineCsv } }, 'What is the sum of the tests column? Reply only with the integer.')),
+    String(args.csv_sum), 'qualified actual spreadsheet');
+  } else if (args.mode === 'remaining') {
     const pinned = await update({ prompt: { id: args.foreign_prompt, version: '1',
       variables: { left: '13', right: '29' } } }, 'pin-retained-first');
     check(pinned.prompt.id === args.foreign_prompt && pinned.prompt.version === '1',

@@ -356,6 +356,20 @@ def realtime_pending_capabilities(value):
     realtime['pending_execution'] = expected
 
 
+def realtime_prompt_capabilities(value):
+    """Allow only the reviewed v1-to-v2 addition on explicit qualification.
+
+    Keep the real Prompt declaration in the semantic contract. Normalizing
+    its old pending label and the protocol revision must never make automatic
+    recovery to a profile without Prompt appear equivalent.
+    """
+    if not profile_evidence.conversation_enabled(value):
+        return
+    chat = value['realtime']['conversation']
+    chat['profile'] = 'q4t-native-realtime-chat-v1'
+    chat['pending_execution'] = ['audio', 'mcp', 'tracing']
+
+
 def semantic_capabilities(value):
     """Separate reviewed implementation identities from promised behavior.
 
@@ -373,6 +387,7 @@ def semantic_capabilities(value):
     tts_capabilities(result)
     asr_capabilities(result)
     realtime_pending_capabilities(result)
+    realtime_prompt_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']

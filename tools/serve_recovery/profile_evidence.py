@@ -20,6 +20,7 @@ VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
 REALTIME_FORMAT = 'q4t-profile-business-v15'
 SEMANTIC_FORMAT = 'q4t-profile-business-v16'
 CONVERSATION_FORMAT = 'q4t-profile-business-v17'
+PROMPT_FORMAT = 'q4t-profile-business-v18'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -574,6 +575,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if prompt_enabled(capabilities):
+        return PROMPT_FORMAT
     if conversation_enabled(capabilities):
         return CONVERSATION_FORMAT
     if semantic_vad_enabled(identity or {}, capabilities):
@@ -1043,10 +1046,20 @@ def conversation_enabled(capabilities):
         max_responses=4, default_conversation_writers=1, max_items=128,
         history_bytes=16 << 20, session_host_reservation_bytes=2 << 30,
         pending_execution=['audio', 'mcp', 'prompt', 'tracing'])
+    if type(value) is dict and value.get('profile') == 'q4t-native-realtime-chat-v2':
+        from tools.serve_recovery.profile_prompt_evidence import DECLARATION
+        expected.update(profile='q4t-native-realtime-chat-v2', prompt=DECLARATION,
+                        pending_execution=['audio', 'mcp', 'tracing'])
     ledger.require(type(value) is dict and
         ledger.canonical(value) == ledger.canonical(expected),
         'native Realtime Chat capability differs')
     return True
+
+
+def prompt_enabled(capabilities):
+    if not conversation_enabled(capabilities):
+        return False
+    return capabilities['realtime']['conversation']['profile'] == 'q4t-native-realtime-chat-v2'
 
 
 def conversation_output(source, session, pending_response_id=None):
@@ -1427,7 +1440,11 @@ def business(value, identity, selected=None, capabilities=None):
                        (('voice',) if identity.get('native_tts_base') is not None else ()) +
                        (('realtime',) if realtime_enabled(identity, capabilities) else ()) +
                        (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()) +
-                       (('conversation',) if conversation_enabled(capabilities) else ()))
+                       (('conversation',) if conversation_enabled(capabilities) else ()) +
+                       (('prompt',) if prompt_enabled(capabilities) else ()))
+    if prompt_enabled(capabilities):
+        from tools.serve_recovery.profile_prompt_evidence import business as prompt_business
+        prompt_business(value['prompt'])
     if conversation_enabled(capabilities):
         conversation_business(value['conversation'])
     if realtime_enabled(identity, capabilities):

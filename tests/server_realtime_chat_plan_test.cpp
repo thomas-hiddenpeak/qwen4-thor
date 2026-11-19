@@ -321,7 +321,7 @@ Q4T_TEST(realtime_chat_capabilities_do_not_require_transcription_backend) {
             !chat->GetBool("requires_asr", true));
   Q4T_CHECK(OutputJson(*chat) ==
             OutputJson(*present.Find("realtime")->Find("conversation")));
-  Q4T_CHECK(chat->GetString("profile") == "q4t-native-realtime-chat-v1" &&
+  Q4T_CHECK(chat->GetString("profile") == "q4t-native-realtime-chat-v2" &&
             chat->GetString("endpoint") == "/v1/realtime");
   Q4T_CHECK(chat->GetBool("function_calls") &&
             chat->GetBool("per_response_client_admission") &&
@@ -340,7 +340,16 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
                 static_cast<int64_t>(kRealtimeConversationHostBytes));
   Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) == "[\"text\"]" &&
             OutputJson(*chat->Find("pending_execution")) ==
-                "[\"audio\",\"mcp\",\"prompt\",\"tracing\"]");
+                "[\"audio\",\"mcp\",\"tracing\"]");
+  const auto* prompt = chat->Find("prompt");
+  Q4T_CHECK(prompt && prompt->IsObject() &&
+            prompt->GetString("profile") == "q4t-realtime-prompt-v1" &&
+            prompt->GetString("scope") == "authenticated_client" &&
+            prompt->GetString("snapshot") == "immutable_version" &&
+            prompt->GetString("rpm") == "once_per_response" &&
+            prompt->GetString("usage") == "includes_preparation" &&
+            prompt->GetInt("maximum_retained_bytes") == (64LL << 20) &&
+            prompt->GetInt("maximum_expansion_bytes") == (16LL << 20));
   Q4T_CHECK(chat->GetBool("cancel") && chat->GetBool("out_of_band") &&
             chat->GetBool("persistent_context_truncation") &&
             chat->GetString("usage") == "actual_tokens");
