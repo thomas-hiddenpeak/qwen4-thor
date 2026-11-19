@@ -99,6 +99,9 @@ set(protocol_inputs
   src/server/native_chat_generation.cpp
   include/q4t/server/realtime_response_output.h
   src/server/realtime_response_output.cpp
+  include/q4t/server/realtime_conversation_session.h
+  src/server/realtime_conversation_session.cpp
+  src/server/realtime_wire_shape.cpp
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp

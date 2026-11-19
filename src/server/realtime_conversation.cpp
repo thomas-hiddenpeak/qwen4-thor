@@ -94,6 +94,11 @@ bool SameIdentity(const Json& left, const Json& right) {
 }
 }  // namespace
 
+Status MeasureRealtimeStorage(const Json& value, size_t maximum, size_t* bytes) {
+  if (!bytes) return Invalid("storage result is missing");
+  return Measure(value, maximum, bytes);
+}
+
 RealtimeConversation::RealtimeConversation(std::string owner,
                                            size_t maximum_items,
                                            size_t maximum_bytes)
@@ -208,13 +213,15 @@ Status RealtimeConversation::Insert(const Json& input,
   return {};
 }
 Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
-                                    const Json& item, bool terminal) {
+                                    const Json& item, bool terminal, bool grow) {
   const auto index = Position(ticket);
   if (index == entries_.size() || !entries_[index].pending ||
       revision_ == UINT64_MAX)
     return Invalid("output ticket is stale or already terminal");
   auto& entry = entries_[index];
-  auto status = Shape(item, entry.charge);
+  const auto available =
+      entry.charge + (grow ? maximum_bytes_ - charged_ : 0);
+  auto status = Shape(item, available);
   if (!status) return status;
   if (!SameIdentity(entry.item, item))
     return Invalid("output identity changed");
@@ -226,14 +233,13 @@ Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
   }
   auto copy = item;
   size_t bytes = 0;
-  status = Measure(copy, entry.charge, &bytes);
+  status = Measure(copy, available, &bytes);
   if (!status) return status;
   entry.item = std::move(copy);
-  if (terminal) {
-    charged_ -= entry.charge - bytes;
-    entry.charge = bytes;
-    entry.pending = false;
-  }
+  const auto charge = terminal ? bytes : std::max(entry.charge, bytes);
+  charged_ = charged_ - entry.charge + charge;
+  entry.charge = charge;
+  if (terminal) entry.pending = false;
   ++revision_;
   return {};
 }

@@ -10,6 +10,9 @@
 #include "q4t/io/json.h"
 
 namespace q4t::server {
+// Actual allocated JSON capacities, with the same depth/node bound as history.
+Status MeasureRealtimeStorage(const io::Json& value, size_t maximum,
+                               size_t* bytes);
 struct RealtimeItemTicket {
   std::string owner, id;
   uint64_t generation = 0;
@@ -55,7 +58,9 @@ class RealtimeConversation {
                      bool in_conversation, size_t reserved_bytes,
                      RealtimeItemTicket* output);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
-                bool terminal);
+                bool terminal, bool grow = false);
+  // grow opts into atomic growth within this ledger's already bounded global
+  // reservation. Existing fixed-reservation callers keep their old contract.
   // Null selects the default conversation; [] selects an empty context.
   // Explicit item_reference resolves only this session's completed entries.
   // Pending server output fails rather than silently dropping partial tools.

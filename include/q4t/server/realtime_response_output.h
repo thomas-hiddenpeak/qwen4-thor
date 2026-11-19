@@ -54,6 +54,7 @@ class RealtimeResponseOutput {
     io::Json value;
     std::string previous;
     std::optional<size_t> call_index;
+    bool deleted = false;
   };
   ObjectReply Fail(std::string_view code, std::string_view message);
   bool AcceptSink(ObjectReply reply);

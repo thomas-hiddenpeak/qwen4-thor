@@ -1,5 +1,9 @@
 # docs/ — 开发记录文档体系
 
+- [Realtime会话CPU与空值合同](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
+
+- [语义VAD与恢复PR #51合入主线](evidence/serve-semantic-vad-main-20261119/README.md)
+
 - [Realtime响应增量CPU验证](evidence/serve-realtime-output-cpu-20261119/README.md)
 
 - [语义验收脚本入口修复](evidence/serve-semantic-vad-ci-entry-20261119/README.md)

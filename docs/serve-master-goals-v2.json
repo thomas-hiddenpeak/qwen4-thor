@@ -8317,7 +8317,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev326_delivered_pr49_merged_remaining_master_active",
+      "state": "rev346_delivered_pr51_merged_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8582,7 +8582,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Semantic VAD final-head CI and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -9535,7 +9534,7 @@
       }
     }
   ],
-  "next_task": "Merge frozen qualified PR #51 after CI; continue native Realtime conversation/model/tool execution and all master tasks.",
+  "next_task": "Continue native Realtime conversation/model/tool execution, then audio/MCP/Live and every remaining master task; PR #51 is merged.",
   "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -11069,6 +11068,17 @@
       "gpu_actions": 0,
       "actual_conversation_execution_accepted": false,
       "master_complete": false
+    },
+    "conversation_session_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-conversation-session-cpu-20261119/README.md",
+      "tested": 46,
+      "reused": 2,
+      "unique_contracts": 48,
+      "gpu_actions": 0,
+      "original_failures_retained": true,
+      "actual_business_accepted": false,
+      "master_complete": false
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -11166,5 +11176,15 @@
     "runtime_identity_changed": false,
     "ci_after_fix_pending": true,
     "evidence": "evidence/serve-semantic-vad-ci-entry-20261119/README.md"
+  },
+  "semantic_vad_main_20261119": {
+    "state": "main_merged",
+    "pull_request": 51,
+    "main_commit": "53808bf5211058515ff20999eadac7ba95d3d4ea",
+    "head": "c388fb254d1fc5887417f080472b776a28fc3aa4",
+    "evidence": "evidence/serve-semantic-vad-main-20261119/README.md",
+    "default_revision": 346,
+    "gpu_actions": 0,
+    "master_complete": false
   }
 }

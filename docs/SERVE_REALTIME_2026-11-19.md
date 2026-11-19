@@ -27,6 +27,10 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
 
+[会话/输出48项CPU合同](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
+通过，含文档null清空与固定SDK声明差异；原失败保留。真实对话入口、
+模型、音频/MCP/Live与恢复仍按下列顺序继续，不用CPU夹具替代。
+
 以下保留各阶段当时的验证边界；当前发行与剩余工作以上节及STATUS为准。
 
 WebSocket基础16项CPU、音频队列12项CPU及

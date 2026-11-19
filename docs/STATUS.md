@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime会话48项CPU覆盖通过](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)：
+补46项2.717秒，复用首两项；原SIGSEGV/单项FAIL保留。修复SDK遗漏
+文档null清空语义，保持严格SDK图及反例；有界响应/背压取消/删除
+迟到隔离通过，0GPU。尚未接对话端点和实际模型，继续消息泵与业务闭环。
+
+[PR #51已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
+两组CI通过，main合并点`53808bf52`；固定已验语义VAD/恢复/交付
+进入main，本地后续对话代码未混入。默认rev346 STOPPED保持。
+
+Realtime会话命令、最多4个有界响应、默认对话单写者、取消和
+迟到输出删除隔离已编写，正在针对性CPU验证；尚未路由或模型验收。
+
 [Realtime响应增量17项CPU通过](evidence/serve-realtime-output-cpu-20261119/README.md)：
 真实解析器、SDK事件、历史与最终消息一致，截断/取消/背压及
 不确定接收不重放通过；用量缺失不连累回答，0GPU、零警告构建。

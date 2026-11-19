@@ -244,6 +244,7 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
     Field(Field(next, "content").array[0], "text").str += piece;
   const auto stored = item_(next, false, false);
   if (!AcceptSink(stored)) return error_;
+  items_[index].deleted |= stored.value.GetBool("deleted");
   items_[index].value = std::move(next);
   bytes_ += piece.size();
   auto event = Position(index, !tool);
@@ -352,6 +353,7 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
     Set(&final, "status", String(status));
     const auto stored = item_(final, false, true);
     if (!AcceptSink(stored)) return error_;
+    item.deleted |= stored.value.GetBool("deleted");
     item.value = std::move(final);
     auto event = Position(i, !item.call_index);
     if (item.call_index) {
@@ -375,7 +377,7 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
                               {"output_index", Number(i)},
                               {"item", item.value}}));
     if (!reply.ok()) return reply;
-    if (options_.in_conversation) {
+    if (options_.in_conversation && !item.deleted) {
       event = Object({{"item", item.value}});
       if (!item.previous.empty())
         Set(&event, "previous_item_id", String(item.previous));
