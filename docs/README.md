@@ -643,3 +643,5 @@
 
 - [语义VAD实际恢复](evidence/serve-semantic-vad-managed-recovery-20261119/README.md)：真实分类、计量、入口与整包恢复。
 - [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。
+
+- [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)：实际根回退、配额/恢复预算保持及原质量失败分开记录。

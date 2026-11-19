@@ -3,7 +3,8 @@
 属于Serve master的A10/A01/A12/N05/R03/Q01—Q03，不新增独立终点。
 用户已接受严格浮点边界判定并保留原exact-code失败，声纹机器质量
 失败与正常听感待验保持。当前参考ICL、Realtime转录和语义VAD已完成
-真实业务、恢复及可回退交付；对话/工具/音频输出与Live继续实现。
+真实业务、恢复及可回退交付；文本/函数工具对话现已交付rev356，
+Prompt、音频输出、MCP、追踪与Live继续实现。
 
 ## 固定依据与已有实现
 
@@ -26,6 +27,10 @@ Orator只提供设计参考：统一采样时钟、阶段状态和有序排空�
 AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
+
+[rev356文本/工具可回退交付](evidence/serve-realtime-chat-delivery-20261120/README.md)：
+19项STOPPED成功检查、原容量失败保留，实际回退再前进；默认
+STOPPED、配额/历史/预算保持。PR #52合入另记，其余master继续。
 
 [Chat 实际恢复组合](evidence/serve-realtime-chat-managed-20261120/README.md)：
 保留/TLS/整包共 4 模型、63 HTTP+21 Realtime/647.374 秒通过，

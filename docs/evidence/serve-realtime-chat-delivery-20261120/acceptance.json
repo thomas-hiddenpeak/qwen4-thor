@@ -1,0 +1,61 @@
+{
+  "status": "ACCEPT_NATIVE_REALTIME_CHAT_DELIVERY",
+  "revision": 356,
+  "current": {
+    "engine_binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+    "engine_release_sha256": "90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1",
+    "generation_sha256": "cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61",
+    "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+    "service_acceptance_sha256": "2d5b66bfd859c551717bb4ac9d2cf21628b32fb27c8f58973c9cf23f51d37e2a",
+    "service_release_sha256": "08573cda3827e0a57744cb812d0ae5b9dae84bb7f9b0cd9507429a6532e9844d"
+  },
+  "state": "STOPPED",
+  "successful_commands": 19,
+  "command_attempts": 20,
+  "seconds": 314.0861754543148,
+  "new_gpu_starts": 0,
+  "outer_enabled": true,
+  "outer_charged_total": 0,
+  "persistent_client_limits": {
+    "alpha": {
+      "requests_per_minute": 30,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 3457
+    },
+    "beta": {
+      "requests_per_minute": 1,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 256
+    }
+  },
+  "usage_reset": false,
+  "profile_history_and_cooldown_preserved": true,
+  "original_capacity_failure_preserved": true,
+  "original_request_reused": "861e69c7-d216-43da-9e81-cc8ea4fa462c",
+  "retired_intents_archived": 8,
+  "deleted_files": 0,
+  "maintenance_seconds": 7.073299048002809,
+  "manual_root": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+  "automatic_payload": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+  "candidate_to_retained_automatic_fault_actually_tested": true,
+  "reciprocal_automatic_fault_additionally_injected": false,
+  "reciprocal_registration_and_stopped_rollback_verified": true,
+  "older_engine_fallback": false,
+  "previous_rev346_preserved": true,
+  "original_tls_answer_quality": "FAIL",
+  "model_quality_policy": "record_exact_source_answer_separately",
+  "original_version_environment_abort_preserved": true,
+  "original_failures_preserved": true,
+  "files": 95,
+  "secret_scan_matches": 0,
+  "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
+  "main_integration_pending": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "long_stability_run": false,
+  "full_openai_compatibility": false,
+  "listening_and_similarity_accepted": false,
+  "listening_deferred_by_owner": true,
+  "all_master_tasks_active": true
+}

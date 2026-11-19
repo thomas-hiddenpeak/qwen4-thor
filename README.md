@@ -908,10 +908,11 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付rev326；Realtime工作分支候选的
-手动转录现已通过[官方SDK/原生WSS真实业务](docs/evidence/serve-realtime-transcription-business-20261119/README.md)，
-支持实际PCM/G.711、逐轮配额与取消回收。默认rev326尚不包含该候选，
-自动分段、对话/Live及完整恢复组合继续按总计划推进。
+语音输出及assistant音频历史已交付；当前rev356包含Realtime手动/
+自动转录、语义VAD和文本/函数工具对话，支持原生WebSocket/TLS、
+工具回填、逐轮配额与取消结算，已完成[实际恢复和可回退交付](docs/evidence/serve-realtime-chat-delivery-20261120/README.md)。
+原TLS随机回答的模型质量失败单独保留，默认采样未改。Realtime
+Prompt、音频输出、MCP、追踪及Live继续按总计划实现。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
@@ -929,8 +930,8 @@ Speech候选的压缩输出复用同一隔离机制：MP3用LAME、AAC用
 VisualOn AAC、Opus/FLAC使用对应系统插件；PCM/WAV保持原生。
 这些库只在选择压缩格式时由子进程加载，其缺失/失败不影响健康
 核心或原生PCM/WAV，不增加nginx、FFmpeg命令行或Python服务依赖。
-当前只是编码组件候选，真实Speech HTTP、生成流式和4倍语速
-内容仍须完成，不能据此宣称语音输出已交付。
+真实Speech HTTP及生成流式已完成针对性验收；4倍语速保留直接
+ASR质量限制，并按用户确认做速度归一化内容复核，正常听感仍待验。
 原生对齐与VAD不增加PyTorch/ONNX运行依赖。Qwen3-ASR和ForcedAligner
 的固定来源及Apache-2.0许可见[声明](third_party/licenses/qwen3-asr/README.md)，
 Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。

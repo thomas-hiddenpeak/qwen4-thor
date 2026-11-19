@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)
+完成：19项STOPPED检查、20次命令尝试/314.086秒，实际整根
+回退再前进，0新增GPU。首轮intent容量拒绝保留；8条退休记录
+可逆归档后沿原请求完成，全部配额/用量/恢复历史和预算保持。
+默认rev356 STOPPED，PR #52待最终检查合入；随后继续Prompt、
+音频/MCP/追踪/Live与全部master。原TLS质量FAIL、NVML ENV_ABORT、
+数值/声纹失败及用户延期听感保持，不将阶段交付当总目标完成。
+
 [原生 Realtime Chat 恢复组合通过](evidence/serve-realtime-chat-managed-20261120/README.md)：
 保留/TLS/整包三组采用 4 模型、63 HTTP+21 Realtime/15 WebSocket/
 1 探测/647.374 秒，604 次正常 NVML，严格环境与清理合同通过。
@@ -2365,16 +2373,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev346；服务包 `38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb` |
-| Generation | `37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0` |
-| 引擎 | `945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2` |
-| 引擎发布记录 | `51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25` |
+| 发布 | rev356；服务包 `c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd` |
+| Generation | `cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61` |
+| 引擎 | `f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d` |
+| 引擎发布记录 | `90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录与实际语义VAD |
-| 人工整包回退 | 保留控制根 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca`；同已验语义引擎、参考和周期保持；前驱rev336另保留 |
-| 自动payload回退 | 候选→保留控制包 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本与函数工具对话 |
+| 人工整包回退 | 保留控制根 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1`；同已验对话引擎、参考和周期保持；前驱rev346另保留 |
+| 自动payload回退 | 候选→保留控制包 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
