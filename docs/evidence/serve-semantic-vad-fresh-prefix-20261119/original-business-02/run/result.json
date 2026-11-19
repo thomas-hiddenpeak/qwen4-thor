@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 304, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_acceptance.py\", line 242, in business\n    result=self.semantic_sdk(name,split)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_acceptance.py\", line 227, in semantic_sdk\n    require(run.returncode == 0 and len(run.stdout.encode()) <= 6 << 20, 'semantic SDK failed: '+name)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: semantic SDK failed: complete\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "committed_items": 1,
+    "chats": 2,
+    "controls": 33
+  },
+  "seconds": 45.6949563389644,
+  "binary_sha256": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40"
+}

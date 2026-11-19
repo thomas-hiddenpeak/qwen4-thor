@@ -1,0 +1,29 @@
+{
+  "scope": "Repair the actual failed semantic freshness behavior; no performance acceptance or full-model quality matrix",
+  "limits": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 2,
+    "chats": 3,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "cumulative_model_start_limit": 3,
+  "previous_actual_model_starts": 2,
+  "previous_seconds": 81.260691028,
+  "expected": [
+    "actual full and paused-continuation Chinese utterances",
+    "classifier completes before maximum wait",
+    "actual private usage included in same parent client settlement",
+    "2 native-prompt meaning contrasts and core Chat",
+    "owned cleanup and strict NVML guard"
+  ],
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+  "unchanged": [
+    "default rev336 STOPPED",
+    "original exact-code and speaker similarity failures",
+    "listening PENDING"
+  ],
+  "master_complete": false
+}

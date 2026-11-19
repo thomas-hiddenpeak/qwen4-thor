@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义前缀新鲜度修复](evidence/serve-semantic-vad-fresh-prefix-20261119/README.md)：
+原第二轮真实FAIL保留，45次NVML正常；仅语义路径读取最新完整
+前缀，21项CPU/3项构建资格/18项来源反例通过，原生251.737秒
+零警告构建。冻结补验1模型/2WSS、2评分+1Chat/600秒，累计启动
+上限3；实际语义与发行待验，默认rev336 STOPPED/听感待验保持。
+
 [历史语音恢复夹具补齐](evidence/serve-auxiliary-fixture-capability-20261119/README.md)：
 PR #50全部62组host合同已过；后续旧夹具缺少新版能力/身份记录，
 已补真实历史声明并验证新能力缺证据仍拒绝，单项CPU0.414秒/0GPU

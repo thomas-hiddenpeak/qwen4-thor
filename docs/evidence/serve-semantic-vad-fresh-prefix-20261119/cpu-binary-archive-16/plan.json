@@ -1,0 +1,37 @@
+{
+  "scope": "Two superseded capacity-generation programs, all hardlinks fully inventoried; exact lossless byte/SHA archive. Current/default/recovery programs, models, source and logs kept.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/capacity-01/generations-1-archive/23e8ae921e58973e82ecc71b35ce06bbd9748d030d3f578dd661a8f375a80246/q4t",
+      "member": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+      "sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+      "bytes": 24821224,
+      "mode": 320,
+      "mtime_ns": 1794826659038137302,
+      "inode": 3960407,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/capacity-01/generations-1-archive/a79d2257a030165833b1ef142910f62570bf01ba9c677000aef0804483fa440c/q4t",
+      "member": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+      "sha256": "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be",
+      "bytes": 24821224,
+      "mode": 320,
+      "mtime_ns": 1794826649310110033,
+      "inode": 3960399,
+      "links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809"
+  },
+  "minimum_free_bytes": 25165824,
+  "maximum_member_archive_bytes": 20971520,
+  "physical_payloads": 2
+}

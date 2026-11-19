@@ -1,0 +1,239 @@
+{
+  "status": "FAIL_RETAINED",
+  "nvml_samples": 45,
+  "all_nvml_ok": true,
+  "last_pids": [],
+  "terminal": {
+    "type": "conversation.item.input_audio_transcription.completed",
+    "event_id": "event_b6acd5d915e294821cf40eddc7d58496",
+    "item_id": "item_198a163132a78bd84764ab4448b5b3bb",
+    "content_index": 0,
+    "transcript": "甚至出现交易几乎停滞的情况。",
+    "usage": {
+      "type": "tokens",
+      "input_tokens": 755,
+      "output_tokens": 48,
+      "total_tokens": 803,
+      "input_token_details": {
+        "audio_tokens": 505,
+        "text_tokens": 250
+      }
+    },
+    "logprobs": [
+      {
+        "token": "甚至",
+        "logprob": -4.629595705185163e-06,
+        "bytes": [
+          231,
+          148,
+          154,
+          232,
+          135,
+          179
+        ]
+      },
+      {
+        "token": "出现",
+        "logprob": -3.819129274556548e-06,
+        "bytes": [
+          229,
+          135,
+          186,
+          231,
+          142,
+          176
+        ]
+      },
+      {
+        "token": "交易",
+        "logprob": -0.0002574225179362229,
+        "bytes": [
+          228,
+          186,
+          164,
+          230,
+          152,
+          147
+        ]
+      },
+      {
+        "token": "几乎",
+        "logprob": -0.0024917962953302044,
+        "bytes": [
+          229,
+          135,
+          160,
+          228,
+          185,
+          142
+        ]
+      },
+      {
+        "token": "停滞",
+        "logprob": -0.015273774680351708,
+        "bytes": [
+          229,
+          129,
+          156,
+          230,
+          187,
+          158
+        ]
+      },
+      {
+        "token": "的情况",
+        "logprob": -8.810971870450615e-05,
+        "bytes": [
+          231,
+          154,
+          132,
+          230,
+          131,
+          133,
+          229,
+          134,
+          181
+        ]
+      },
+      {
+        "token": "。",
+        "logprob": -2.8843644176661264e-07,
+        "bytes": [
+          227,
+          128,
+          130
+        ]
+      }
+    ],
+    "q4t_semantic_vad": {
+      "profile": "q4t-native-semantic-turn-v1",
+      "attempts": 1,
+      "accepted": 0,
+      "unavailable": 0,
+      "invalid": 0,
+      "stale": 1,
+      "maximum_wait": true,
+      "probability_available": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "included_in_usage": true
+    }
+  },
+  "sdk_error": "Error: real classifier and included work required",
+  "raw_files": {
+    "driver.log": {
+      "bytes": 1103,
+      "sha256": "e0406565bf7189d6edbbb8fd8885b8ad4bea418d0a6e7b15d0ab3b892f9acf30"
+    },
+    "lease/nvml-queries.jsonl": {
+      "bytes": 107606,
+      "sha256": "b34b40f9f87d096af7a1401028dbc2abef6ae5a42c0ebf041cbea65cb2d8e96d"
+    },
+    "lease/events.jsonl": {
+      "bytes": 8863,
+      "sha256": "782435a0d82ffd4089ed10832f4f519fca268b821b92fcac08e7924b22a6de66"
+    },
+    "lease/exit.json": {
+      "bytes": 721,
+      "sha256": "9114f96df21bd99cc27ffd19148d64c460e70295d65a7eb8b013c6858e9f993a"
+    },
+    "run/contrast-drained.json": {
+      "bytes": 24735,
+      "sha256": "bb61e57007c1593cd6f79dd3b395f0cb395b04a71bdd41b14f205f16171c3cc2"
+    },
+    "run/complete.wire": {
+      "bytes": 344,
+      "sha256": "f9612fcfbc2b40f53f7bb2e3347ff6a6857446b76f6a42191f4358a41d1e7587"
+    },
+    "run/complete.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run/complete.request.json": {
+      "bytes": 1180,
+      "sha256": "4351e1b8432e97b6b40edc20c06d84c594b06c712bb67662348e98be289e7c13"
+    },
+    "run/model-identity.json": {
+      "bytes": 1183,
+      "sha256": "d14d2c14e0231b3634adace4cf98151f2390b1251216b4f7c0c2bce696b02f41"
+    },
+    "run/result.json": {
+      "bytes": 1172,
+      "sha256": "ab33c9dbe331854190cea455238f03d775d6c17e48b631a791c22ae0aca4cb6a"
+    },
+    "run/incomplete.wire": {
+      "bytes": 346,
+      "sha256": "f1cdb767beea927bad8fd7a3b536c822a49e609f09d2a51d701f7a8151da8eb5"
+    },
+    "run/contrast-scores.json": {
+      "bytes": 41,
+      "sha256": "3030c540e03bce1f098910e12738be60281b8e4040fb27c2f49dab077ca6eec3"
+    },
+    "run/counts.json": {
+      "bytes": 124,
+      "sha256": "ebebbcc0939389e13742ecb86224b3aed1195efddfa190c1227da06d27a9159f"
+    },
+    "run/plan.json": {
+      "bytes": 1091987,
+      "sha256": "927441938309a1c02c3ee321c12064034b3b8680a53a02e78896df35e1ea243b"
+    },
+    "run/model-command.json": {
+      "bytes": 897,
+      "sha256": "2868a3292c8f6c1c32c7a98786779f7f697ca2c7e09c797913426b58076d01d7"
+    },
+    "run/model.log": {
+      "bytes": 27546,
+      "sha256": "8b799e550f87fc225d4ea7dc5cafeba7f4698d9af71698232f01eb64b594be73"
+    },
+    "run/capabilities.wire": {
+      "bytes": 44055,
+      "sha256": "effc3420a5b8b4da3ca2a1e0daf596858eef0d350eca21b3da0e0d81eef05dde"
+    },
+    "run/client-policy.json": {
+      "bytes": 934,
+      "sha256": "261ca54a0151f3bb56dfc1ccd87666e7b9344f51af67ccd6602914c4dde3895f"
+    },
+    "run/incomplete.request.json": {
+      "bytes": 1144,
+      "sha256": "777895c1a10a3d9dbca52d45699a62b3446bcd7a2f16e89361b6f1632c09598b"
+    },
+    "run/before.json": {
+      "bytes": 24666,
+      "sha256": "2914aa2aacad3956789204f08e730ca3c4580ddd071233f87d223cafcac14e19"
+    },
+    "run/capabilities.http.json": {
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    "run/complete.sdk.json": {
+      "bytes": 5506,
+      "sha256": "24d2773abe133a23d12e0bca566c1d95c2a8b214693cd8bd028dfdcf58406759"
+    },
+    "run/cleanup.json": {
+      "bytes": 1953,
+      "sha256": "77acde1b59da7d3d51d7c7087f31ca9c60d3ff83b4333c70f1d82573fe653b50"
+    },
+    "run/ingress/ingress.json": {
+      "bytes": 1136,
+      "sha256": "24ab30f44f3e70f99ba15d67a4fd4d176da0ecbc0dd8ced3a98e368fee32dca8"
+    },
+    "run/ingress/ingress.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run/credentials/certificate.pem": {
+      "bytes": 623,
+      "sha256": "88976acfa929c1e41c09ef21ee5d6f8fe216bd4230d14496ded811bea7a7e902"
+    },
+    "run/credentials/key.pem": {
+      "bytes": 241,
+      "sha256": "ff8ee721efd327dcc65935212c6e986f550b6dff2e5c8d1e32dd2b720cf09cdb"
+    },
+    "run/credentials/openssl.log": {
+      "bytes": 6,
+      "sha256": "c50a939cb5df0f354df7e34da4deaaa0031cb068f9d9090c306642cd10287cfa"
+    }
+  },
+  "diagnosis": "ASR cold loading plus repeated intermediate prefixes delayed the first actual semantic scoring until the absolute quiet maximum; classification was canceled, not counted as passed.",
+  "cuda_snapshot_boundary": "server_destroyed retains 104902656 bytes in six entries before final process teardown; this record does not claim zero in-process allocations. Model exit 0, owned descendants and final NVML compute pids empty."
+}

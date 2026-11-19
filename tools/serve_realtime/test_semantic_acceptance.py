@@ -8,6 +8,7 @@ from pathlib import Path
 import tempfile
 import threading
 import unittest
+from unittest import mock
 from tools.serve_realtime import semantic_acceptance as s
 
 
@@ -83,6 +84,42 @@ class Evidence(unittest.TestCase):
                         '{"p":0.9,"extra":1}','{"p":0.8,"p":0.9}','{}'):
             with self.assertRaises(Exception):s.check_score(wire(content))
         with self.assertRaises(Exception):s.check_score(wire(finish='length'))
+
+
+class BuildRecord(unittest.TestCase):
+    def setUp(self):
+        root=Path(os.environ.get('Q4T_TEST_OUTPUT_DIR',s.WORK/'build-record-fixtures'))
+        root.mkdir(parents=True,exist_ok=True)
+        self.directory=Path(tempfile.mkdtemp(prefix='build-',dir=root))
+        self.binary=self.directory/'q4t';self.binary.write_bytes(b'explicit CPU actor')
+        self.source=self.directory/'source.cpp';self.source.write_text('// old source\n')
+        self.plan=self.directory/'plan.json'
+        self.plan.write_text(json.dumps(dict(sources={str(self.source):s.sha(self.source)})))
+        self.record=self.directory/'result.json'
+        self.record.write_text(json.dumps(dict(status='BUILD_PASS',warnings=0,
+            binary_sha256=s.sha(self.binary))))
+        self.patch=mock.patch.object(s,'WORK',self.directory);self.patch.start()
+        self.addCleanup(self.patch.stop)
+
+    def test_matching_build_binds_both_immutable_records(self):
+        self.assertEqual(s.qualified_build(self.binary,self.record),
+            {str(p):s.sha(p) for p in (self.record,self.plan)})
+
+    def test_old_build_cannot_qualify_modified_binary_or_source(self):
+        self.binary.write_bytes(b'changed')
+        with self.assertRaisesRegex(RuntimeError,'build identity'):
+            s.qualified_build(self.binary,self.record)
+        self.binary.write_bytes(b'explicit CPU actor')
+        self.source.write_text('// changed source\n')
+        with self.assertRaisesRegex(RuntimeError,'source drift'):
+            s.qualified_build(self.binary,self.record)
+
+    def test_failed_build_or_warning_cannot_be_relabelled(self):
+        value=json.loads(self.record.read_text())
+        for key,changed in (('status','BUILD_FAIL'),('warnings',1)):
+            self.record.write_text(json.dumps(dict(value,**{key:changed})))
+            with self.assertRaisesRegex(RuntimeError,'build identity'):
+                s.qualified_build(self.binary,self.record)
 
 
 class Metadata(unittest.TestCase):

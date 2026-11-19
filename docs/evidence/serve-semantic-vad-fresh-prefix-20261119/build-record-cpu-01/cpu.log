@@ -1,0 +1,8 @@
+test_failed_build_or_warning_cannot_be_relabelled (tools.serve_realtime.test_semantic_acceptance.BuildRecord.test_failed_build_or_warning_cannot_be_relabelled) ... ok
+test_matching_build_binds_both_immutable_records (tools.serve_realtime.test_semantic_acceptance.BuildRecord.test_matching_build_binds_both_immutable_records) ... ok
+test_old_build_cannot_qualify_modified_binary_or_source (tools.serve_realtime.test_semantic_acceptance.BuildRecord.test_old_build_cannot_qualify_modified_binary_or_source) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.005s
+
+OK

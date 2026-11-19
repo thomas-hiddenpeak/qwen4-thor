@@ -1,0 +1,9 @@
+{
+  "status": "BUILD_PASS",
+  "seconds": 251.73664816934615,
+  "exit_code": 0,
+  "warnings": 0,
+  "gpu_actions": 0,
+  "prior_unchanged": true,
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2"
+}

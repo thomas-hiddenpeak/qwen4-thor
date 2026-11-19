@@ -1,0 +1,12 @@
+{
+  "status": "LOSSLESS_ARCHIVE_COMPLETE",
+  "archived_members": [
+    "7a23cb3038cdfeac55abd90d05861061642c7abb6663a27efd793798e54129be"
+  ],
+  "archive_sha256": "b52a00f4b8f61cdeacfd359507593efe2e3839f9daaf9c0edefa861a321ead85",
+  "archive_bytes": 10169061,
+  "freed_payload_bytes": 49642448,
+  "default_unchanged": true,
+  "free": 185708544,
+  "gpu_actions": 0
+}

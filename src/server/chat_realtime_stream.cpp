@@ -134,7 +134,11 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
     {
       RequestDiagnostics::Scope waiting(diagnostic,
                                         RequestDiagnostics::Wait::kInput);
-      input = job.stream->Read(control->deadline(), cancelled);
+      // Cold ASR loading can leave several pending audio boundaries. Semantic
+      // scoring needs a fresh full hypothesis before its absolute silence
+      // deadline; all samples and the published token prefix stay intact.
+      input = job.stream->Read(control->deadline(), cancelled,
+                               job.semantic != nullptr);
     }
     if (input.kind == AsrStreamReadKind::kCancelled ||
         input.kind == AsrStreamReadKind::kDeadline) {

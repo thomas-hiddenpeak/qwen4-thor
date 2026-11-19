@@ -111,16 +111,27 @@ def check_turn(result, continuation):
         actual_usage=use, retained_bytes=len(raw), retained_sha256=hashlib.sha256(raw).hexdigest())
 
 
+def qualified_build(binary, record):
+    record = record.resolve(strict=True)
+    require(record.is_relative_to(WORK), 'private build record required')
+    build = json.loads(record.read_text())
+    require(build['status'] == 'BUILD_PASS' and build['warnings'] == 0 and
+            sha(binary) == build['binary_sha256'], 'native build identity differs')
+    source_plan = record.with_name('plan.json')
+    sources = json.loads(source_plan.read_text())['sources']
+    require(sources and all(sha(ROOT/name) == digest for name, digest in sources.items()),
+            'native build source drift')
+    return {str(p):sha(p) for p in (record, source_plan)}
+
+
 def prepare(args):
     require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
             'commit reviewed semantic source before GPU freeze')
     for name in ('integration-cpu-03', 'sdk-cpu-02', 'driver-cpu-01'):
         require(json.loads((WORK/name/'result.json').read_text())['status'] == 'PASS',
                 'semantic targeted CPU not qualified: '+name)
-    build = json.loads((WORK/'runtime-build-01/result.json').read_text())
     binary = args.binary.resolve(strict=True)
-    require(build['status'] == 'BUILD_PASS' and sha(binary) == build['binary_sha256'],
-            'native build identity differs')
+    build_records = qualified_build(binary, args.build_record)
     previous = base.WORK/'transcription-business-04/run'
     require(json.loads((previous/'result.json').read_text())['status'] == 'PASS', 'real audio unqualified')
     plan = json.loads((previous/'plan.json').read_text())
@@ -142,7 +153,7 @@ def prepare(args):
     requests = {key:json.loads((reference/(key+'.json')).read_text()) for key in CONTRAST}
     plan.update(schema='q4t-semantic-turn-business-v1', limits=LIMITS, output=str(out),
         port=args.port, operations_port=args.port+1, public_port=args.port+2,
-        binary=str(binary), binary_sha256=sha(binary),
+        binary=str(binary), binary_sha256=sha(binary), build_records=build_records,
         sources={n:sha(ROOT/n) for n in sources},
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         protected={str(ROOT/n):sha(ROOT/n) for n in ('build/q4t','build/q4t.release.json',
@@ -170,6 +181,8 @@ class Stage(base.Stage):
                 sha(Path(plan['vad_directory'])/vad.WEIGHT) == vad.DIGEST, 'VAD asset drift')
         for name, digest in plan['references'].items():
             require(sha(name) == digest, 'production request reference drift')
+        for name, digest in plan['build_records'].items():
+            require(sha(name) == digest, 'native build record drift')
 
     def budget(self, kind, amount=1):
         require(shutil.disk_usage(self.out).free >= 128 << 20, 'disk headroom')
@@ -253,6 +266,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest='action',required=True)
     prep=sub.add_parser('prepare');prep.add_argument('--binary',type=Path,required=True)
+    prep.add_argument('--build-record',type=Path,required=True)
     prep.add_argument('--output',type=Path,required=True);prep.add_argument('--port',type=int,default=18388)
     run=sub.add_parser('run');run.add_argument('--plan',type=Path,required=True)
     args=parser.parse_args()

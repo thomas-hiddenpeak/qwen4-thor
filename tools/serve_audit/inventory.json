@@ -2375,9 +2375,9 @@
     "include/q4t/server/asr_response.h": "a6c17318b1e8d9871ae45e9bdcf2559dcab58000b41363eeaf9db8a8b61b8703",
     "include/q4t/server/asr_service.h": "18b98c5ded0851c2f316774c131df9db36bcd85a0dacaaed3299ebfa7d17256f",
     "include/q4t/server/asr_statistics.h": "044c90e1417d93c0c84edaf0e67f67d45705bcde6a2fd11b72a4f4ed7fa9b7ec",
-    "include/q4t/server/asr_stream_input.h": "59b284da3831769612fc18efbe1f8ddb3cb8000d9c6107d7734bd73d21000d5c",
+    "include/q4t/server/asr_stream_input.h": "65105c2bb4a4a2ab048d91db624fd4ef58c4777c3002e42e7e26a63634272d3a",
     "include/q4t/server/asr_stream_output.h": "6f461eca473fa7201e85a62796e40e82e0a8b67281c9ee18f3767f5bbdea530d",
-    "include/q4t/server/asr_stream_state.h": "dc9fccbdb22495f40b92beddd393078d7f51809aa129bd812b18d28dbaaff483",
+    "include/q4t/server/asr_stream_state.h": "11a06cb19a779217414460ba2c4a8208e514938df5da733c256753de5551621b",
     "include/q4t/server/auxiliary_resources.h": "ec943f992f3279a656a1668d3d4e718e64e146c19284ce4a538b5e926f28e446",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
     "include/q4t/server/batch_budget.h": "f562b1bc2be5ef78f05a3c0c77a7a3e554006d50850be5d1b7948564321c3bec",
@@ -2706,9 +2706,9 @@
     "src/server/asr_response.cpp": "70803946fde2811beff29b1ca35c752cc2e8f2e0fc66677e40a8513ec9be6ade",
     "src/server/asr_service.cpp": "76bf9ae9a3d7dd491290385ef23d8468f0650beedad58bf2a3de030853162320",
     "src/server/asr_statistics.cpp": "6c0f810beeb2c290f41e5df389448ec55f3539df84e3a722889c2ffffdd9d327",
-    "src/server/asr_stream_input.cpp": "929556360e6878a026ed70104b8b6f90ba6150e2b510f4a8fb96e471c3450685",
+    "src/server/asr_stream_input.cpp": "b26c426d39bdcd368aac85c683036bc5ff6fce3f052ef81cbd676abde3b9f0a1",
     "src/server/asr_stream_output.cpp": "fddf40917715bda507c78d7dd2382a143c14ca0f84a261d2921e700b1aff0230",
-    "src/server/asr_stream_state.cpp": "c4a1bb33bf0ce9459ee2f23c9f16bc28c58f22a23af02e17bf307cf145c95cd2",
+    "src/server/asr_stream_state.cpp": "6084539816415b2f681f1c9762821461b35a35c379455acc91ba23e83c5801b3",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
     "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
     "src/server/batch_checkpoint.cpp": "77f0c0fded325307c6a65c095dd0fc3aa87fa88e74151a00db0c1e802fbd232e",
@@ -2761,7 +2761,7 @@
     "src/server/chat_preflight.cpp": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_realtime.cpp": "cf9d9a9b34e1324f45e27f36033bb179900f6a8cfd23082095fba9b60a9e729b",
-    "src/server/chat_realtime_stream.cpp": "e11f03178c660dd5c2fb80e1f680649eb5e0efbd71b800da85ca6cc2f7e995ab",
+    "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "1a9afce7b98fd79db487c681a50620beeb523d6bf62d051fb2132ddce0e7ef71",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
@@ -8384,5 +8384,18 @@
     "status": "CPU_ACCEPTED_REAL_BUSINESS_PENDING",
     "release_attestation": false,
     "default_revision": 336
+  },
+  "semantic_fresh_prefix_review_20261119": {
+    "scope": "Semantic-only newest cumulative prefix selection; readiness, full audio, committed text, epoch/borrow/cancel/actual-step limits retained. Default fixed chunk policy unchanged.",
+    "sources": {
+      "include/q4t/server/asr_stream_input.h": "65105c2bb4a4a2ab048d91db624fd4ef58c4777c3002e42e7e26a63634272d3a",
+      "include/q4t/server/asr_stream_state.h": "11a06cb19a779217414460ba2c4a8208e514938df5da733c256753de5551621b",
+      "src/server/asr_stream_input.cpp": "b26c426d39bdcd368aac85c683036bc5ff6fce3f052ef81cbd676abde3b9f0a1",
+      "src/server/asr_stream_state.cpp": "6084539816415b2f681f1c9762821461b35a35c379455acc91ba23e83c5801b3",
+      "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab"
+    },
+    "evidence": "docs/evidence/serve-semantic-vad-fresh-prefix-20261119/README.md",
+    "cases": 21,
+    "gpu_qualified": false
   }
 }
