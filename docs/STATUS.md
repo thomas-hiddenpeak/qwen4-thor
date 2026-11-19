@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+恢复打包审查发现12个原生编译输入未进入构建来源清单（双向传输、
+WebSocket及密码适配等）；已补齐，新包准备拒绝遗漏/摘要漂移，
+旧封装仍按原文件摘要校验。冻结3项CPU/60秒/0GPU，再构建四组件
+并准备实际Guardian组合；已验模型数值与主轻证据复用，默认保持。
+
 [Realtime恢复驱动15项CPU通过](evidence/serve-realtime-managed-driver-cpu-20261119/README.md)：
 1.215秒/0GPU，覆盖取消/结算、原始指标、完整波形与显式新连接反例，
 以及预算/封装导入。继续准备实际Guardian资格包与组合短验，默认

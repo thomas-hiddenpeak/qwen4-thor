@@ -92,6 +92,31 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(cfg['version'], 2)
         self.assertNotIn('nginx', cfg)
 
+    def test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt(self):
+        original = json.loads(self.build.read_text())
+        names = ('cmake/NativeCrypto.cmake', 'include/q4t/io/base64.h',
+            'include/q4t/server/chat_plan_error.h', 'include/q4t/server/voice_request.h',
+            'include/q4t/server/native_crypto.h', 'src/server/native_crypto.cpp',
+            'include/q4t/server/websocket.h', 'src/server/websocket.cpp',
+            'include/q4t/service/ingress_duplex.h', 'src/service/ingress_duplex.cpp',
+            'include/q4t/service/ingress_websocket.h', 'src/service/ingress_websocket.cpp')
+        for name in names:
+            self.assertIn(name, bundle.NATIVE_SOURCES)
+            missing = json.loads(json.dumps(original))
+            missing['source_files'].pop(name)
+            self.save(self.build, missing)
+            with self.assertRaisesRegex(ValueError, 'native build receipt mismatch'):
+                self.prepare()
+            changed = json.loads(json.dumps(original))
+            changed['source_files'][name] = 'f'*64
+            self.save(self.build, changed)
+            with self.assertRaisesRegex(ValueError, 'native source changed since build'):
+                self.prepare()
+            self.assertFalse((self.directory/'package').exists())
+        self.save(self.build, original)
+        receipt = self.prepare()
+        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 20)
+
     def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
         deployment = self.directory/'deployment';deployment.mkdir()
         subprocess.run(['git','init','-q',str(deployment)],check=True,timeout=5)

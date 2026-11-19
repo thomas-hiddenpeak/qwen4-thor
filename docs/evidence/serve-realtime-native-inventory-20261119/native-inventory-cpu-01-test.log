@@ -1,0 +1,8 @@
+test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt (tools.serve_recovery.test_native_bundle.BundleTests.test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_explicit_deployment_repository_keeps_actual_builder_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_explicit_deployment_repository_keeps_actual_builder_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.226s
+
+OK

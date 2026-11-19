@@ -1,0 +1,8 @@
+{
+  "status": "PASS_COMPLETE_NATIVE_COMPILE_INPUT_INVENTORY",
+  "local_compile_inputs": 63,
+  "frozen_sources": 74,
+  "missing": [],
+  "all_sources_current": true,
+  "actual_ingress_matches_qualified_sdk_fixture": true
+}
