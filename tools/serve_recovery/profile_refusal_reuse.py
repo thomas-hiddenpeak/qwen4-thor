@@ -9,6 +9,9 @@ import hashlib
 from tools.serve_recovery import ledger, profile_prompt_reuse as previous
 
 FORMAT = 'q4t-prompt-refusal-source-reuse-v1'
+ASSEMBLED_FORMAT = 'q4t-prompt-refusal-source-assembly-v1'
+ASSEMBLY_DIGEST = '23d3a56705570977cb3571aabcf01220131d36ec0644c18377259b3215e0ba46'
+ASSEMBLY_FILE = '67df6a9624e5512ff850cb471ff36944bc2d6a149f4720e7d7b0c924f6058c39'
 REVIEW = dict(previous.REVIEW,
     candidate_binary='648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5',
     candidate_protocol='d4a96aa1a71ed2b8af455e626ff69de0f5db88634bc5bd31e16af768f417595b',
@@ -62,10 +65,12 @@ def voice_business(witness, original, identity):
 def validate(value):
     from tools.serve_recovery import profile_evidence as evidence
     reuse = value['reused_business']
+    assembled = reuse.get('format') == ASSEMBLED_FORMAT
     ledger.keys(reuse, ('format', 'review', 'registry', 'record', 'keys',
-                        'partial_keys', 'legacy_responses_prompt', 'voice_prompt'))
+        'partial_keys', 'legacy_responses_prompt', 'voice_prompt') +
+        (('assembly',) if assembled else ()))
     ledger.require(value['format'] == evidence.PROMPT_FORMAT and
-        reuse['format'] == FORMAT and
+        reuse['format'] == (ASSEMBLED_FORMAT if assembled else FORMAT) and
         ledger.canonical(reuse['review']) == ledger.canonical(REVIEW) and
         len(ledger.canonical(reuse)) <= 8 << 20,
         'unknown refusal source review or oversized record')
@@ -111,16 +116,53 @@ def validate(value):
     else:
         ledger.require(reuse['voice_prompt'] is None, 'unexpected saved voice evidence')
     previous.legacy_business(reuse['legacy_responses_prompt'])
+    if assembled:
+        validate_assembly(value)
     return reuse
 
 
-def attach(value, registry, original, legacy, voice):
+def validate_assembly(value):
+    """Bind exact successful fragments and preserve every failed source stage.
+
+    This source review is deliberately fixed to one completed collection. It
+    cannot accept an arbitrary later successful sample, discard the original
+    failures, or pretend three independent leases were one continuous run.
+    """
+    reuse = value['reused_business']; proof = reuse['assembly']
+    ledger.require(ledger.digest(proof) == ASSEMBLY_DIGEST and
+        proof.get('format') == 'q4t-completed-consumer-assembly-v1' and
+        proof['identity'] == value['identity'] and
+        proof['profiles'][value['profile']] == value['capacity'],
+        'unreviewed consumer source assembly')
+    selected = proof['profiles_receipts'][value['profile']]
+    ledger.require(set(selected['fresh']) == FRESH | {'tts'} and
+        all(ledger.digest(value['business'][k]) == digest
+            for k, digest in selected['fresh'].items()) and
+        ledger.digest(reuse['voice_prompt']) == selected['voice'] and
+        ledger.digest(reuse['legacy_responses_prompt']) == selected['legacy'] and
+        ledger.digest(value['capabilities']) == selected['capabilities'] and
+        ledger.digest(value['configuration']) == selected['configuration'] and
+        ledger.digest(value['startup_memory']) == selected['startup_memory'],
+        'actual successful consumer or observed capacity changed')
+    # This digest names the retained combined source document, as in the
+    # existing partial-primary review. Its individual lease hashes remain in
+    # the proof; it is explicitly not the hash of a fictitious single run.
+    ledger.require(value['environment'] == dict(status='PASS', env_abort=False,
+        all_queries_ok=True, cleanup_complete=True, nvml_queries=323,
+        lease_result_sha256=ASSEMBLY_FILE), 'combined source environment differs')
+
+
+def attach(value, registry, original, legacy, voice, *, assembly=None):
     result = copy.deepcopy(value)
     partial = {'tts'} & original['business'].keys()
-    result['reused_business'] = dict(format=FORMAT, review=copy.deepcopy(REVIEW),
+    result['reused_business'] = dict(
+        format=ASSEMBLED_FORMAT if assembly is not None else FORMAT,
+        review=copy.deepcopy(REVIEW),
         registry=copy.deepcopy(registry), record=copy.deepcopy(original),
         keys=sorted(set(original['business']) - FRESH - partial),
         partial_keys=sorted(partial), legacy_responses_prompt=copy.deepcopy(legacy),
         voice_prompt=copy.deepcopy(voice))
+    if assembly is not None:
+        result['reused_business']['assembly'] = copy.deepcopy(assembly)
     validate(result)
     return result

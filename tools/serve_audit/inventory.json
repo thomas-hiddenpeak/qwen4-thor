@@ -3251,7 +3251,7 @@
     "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
     "tools/serve_recovery/profile_controller.py": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba",
-    "tools/serve_recovery/profile_evidence.py": "8c9c545da6f50581f096d2f7824f0b7206bb604a3145fd24222b29c914014bea",
+    "tools/serve_recovery/profile_evidence.py": "2726994d3ce551878098f96ca75af7d473ac87f18425a01583c90df224e677dc",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "373a66c2587587fd7335b1f166e06c6037e14e9702f6dcdbc50221320a00af9b",
@@ -3353,10 +3353,10 @@
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
     "tools/serve_recovery/profile_prompt_evidence.py": "7b5ad160b15cc8fa25767c02b0729d0cc0dbb4cf356fd0528f3a30d4d0f24d46",
     "tools/serve_recovery/profile_prompt_reuse.py": "20362a6f84e671ebbfa9b301d704957991320d08dbd0087f34ae402ff31c9739",
-    "tools/serve_recovery/profile_record.py": "743d0246edc2e5be6d9002b3ca96c76a7093f5ed78fa98c3fcb63a9cecb90d69",
+    "tools/serve_recovery/profile_record.py": "b14bacec7676fd9616582b1ea4c6ccf528f6b377bd6c715a6a178d83b4cad3ec",
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
     "tools/serve_recovery/profile_prompt_resume.py": "0126fd5ca9d4310e10440ff331495f398eaed7981a68f961401becbbae3b329f",
-    "tools/serve_recovery/profile_refusal_reuse.py": "e05884f489e504054d13880e883ee7c69082beb61490a68c74a8833f9d67429d",
+    "tools/serve_recovery/profile_refusal_reuse.py": "712e0014726be188bb677e9d65238898a1b7e2700d892fc52a770dbc3c984e78",
     "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
@@ -8521,5 +8521,9 @@
     "strict_profile_unchanged": true,
     "policy": "record_bounded_semantic_fallback_v1",
     "cpu_checks_pending": 11
+  },
+  "consumer_assembly_review_20261120": {
+    "scope": "Exact reviewed successful fragments, strict answer and actual classifier, immutable failures and independent leases; no observation status rewritten",
+    "cpu_checks_pending": 31
   }
 }

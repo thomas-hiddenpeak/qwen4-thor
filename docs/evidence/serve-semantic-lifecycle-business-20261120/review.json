@@ -1,0 +1,35 @@
+{
+  "status": "PASS_TARGETED_LIFECYCLE_OBSERVATIONS",
+  "profile_qualified": false,
+  "result": {
+    "status": "OBSERVATIONS_COMPLETE_NOT_QUALIFICATION",
+    "counts": {
+      "starts": 1,
+      "chats": 4,
+      "controls": 47,
+      "websocket_sessions": 3,
+      "ingress_starts": 2,
+      "prompt_registry_requests": 0
+    },
+    "seconds": 64.6502715437673,
+    "binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5"
+  },
+  "nvml_ok": 62,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "cold_degradation_reproduced": false,
+  "cold_classifier": "scored_early_end",
+  "warm_classifier": "scored_early_end",
+  "warm_resumption_stale_rejected": 1,
+  "conversation": {
+    "status": "PASS",
+    "expected": "rev356",
+    "actual": "rev356",
+    "criterion": "exact_source_version",
+    "response_id": "resp_1250a2e44734f6173f7c510e195132f2"
+  },
+  "original_quality_failure_preserved": true,
+  "original_cold_score_timeout_preserved": true,
+  "followup": "Independently verify exact successful wire outputs and all frozen source identities; do not relabel original failed stages or observation statuses. No further model replay needed for these consumers.",
+  "archive_sha256": "43c5ff0d4c83c0f25fee6c28e985c8f9f0269619b500eb26fe14c0955a9597a7"
+}

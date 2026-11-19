@@ -10,6 +10,8 @@ from tools.serve_recovery import profile_refusal_reuse as reuse
 from tools.serve_recovery import profile_refusal_targeted as stage
 from tools.serve_recovery import test_profile_prompt_reuse as previous
 from tools.serve_service import package
+from tools.serve_recovery.test_profile_conversation import record as conversation_record
+from tools.serve_recovery.test_profile_semantic import record as semantic_record
 
 
 class RefusalSource(unittest.TestCase):
@@ -143,12 +145,118 @@ class ConsumerBoundary(unittest.TestCase):
         parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=parent) as directory:
             path = Path(directory) / 'record.json'
-            value = dict(format='q4t-profile-business-v18',
-                reused_business=dict(format=reuse.FORMAT, record='x' * (3 << 20)))
-            profile_record.save(path, value); self.assertEqual(profile_record.read(path), value)
-            with self.assertRaisesRegex(RuntimeError, 'metadata size limit'): package.read(path)
+            for source_format in (reuse.FORMAT, reuse.ASSEMBLED_FORMAT):
+                value = dict(format='q4t-profile-business-v18',
+                    reused_business=dict(format=source_format, record='x' * (3 << 20)))
+                profile_record.save(path, value)
+                self.assertEqual(profile_record.read(path), value)
+                with self.assertRaisesRegex(RuntimeError, 'metadata size limit'): package.read(path)
             value['reused_business']['format'] = 'unreviewed-source'
             with self.assertRaises(ValueError): profile_record.save(path, value)
+
+
+class CompletedObservation(unittest.TestCase):
+    def conversation(self):
+        value = conversation_record()
+        value['format'] = 'q4t-completed-conversation-observation-v1'
+        value['session'].update(status='PROTOCOL_PASS', mode='complete', phase='result',
+            partial=None, quality_policy='record_exact_source_answer_separately',
+            model_quality=dict(status='PASS', expected=value['source']['version'],
+                actual=value['source']['version'], criterion='exact_source_version',
+                response_id=value['session']['responses'][1]['id']))
+        return value
+
+    def semantic(self):
+        value = semantic_record()
+        value['format'] = 'q4t-completed-semantic-observation-v1'
+        for row in value['turns']:
+            row.update(status='OBSERVED_NOT_QUALIFIED',
+                observation_policy='record_bounded_semantic_fallback_v1',
+                transport='openai-realtime-wss')
+        return value
+
+    def test_exact_output_review_never_rewrites_observation_status(self):
+        value = self.conversation(); original = copy.deepcopy(value)
+        self.assertEqual(profile_evidence.conversation_business(value), 220)
+        self.assertEqual(value, original)
+        value = self.semantic(); original = copy.deepcopy(value)
+        profile_evidence.semantic_business(value, dict(native_asr=dict(
+            model='qwen3-asr-0.6b', limits=dict(max_output_tokens=128),
+            vad=dict(model='silero-vad-16k', limits=dict(max_seconds=600)))))
+        self.assertEqual(value, original)
+
+    def test_wrong_answer_cannot_be_qualified_by_a_fabricated_quality_pass(self):
+        value = self.conversation()
+        session = value['session']; answer = session['responses'][1]
+        answer['output'][0]['content'][0]['text'] = '<version>rev346</version>'
+        session['events'][-2]['delta'] = '<version>rev346</version>'
+        session['events'][-1]['response'] = copy.deepcopy(answer)
+        with self.assertRaises(ValueError): profile_evidence.conversation_business(value)
+        for change in (dict(close_code=None), dict(status='FAIL'), dict(partial={}),
+                       dict(quality_policy='unknown'), dict(model_quality=dict(status='FAIL'))):
+            value = self.conversation(); value['session'].update(change)
+            with self.assertRaises(ValueError): profile_evidence.conversation_business(value)
+
+    def test_cold_timeout_and_missing_lifecycle_never_meet_successful_score_gate(self):
+        for change in (dict(accepted=0, stale=1, maximum_wait=True, probability_available=False),
+                       dict(maximum_wait=True), dict(probability_available=False),
+                       dict(included_in_usage=False), dict(input_tokens=0)):
+            value = self.semantic()['turns'][0]
+            value['terminal']['q4t_semantic_vad'].update(change)
+            with self.assertRaises(ValueError): profile_evidence.semantic_observed_success(value, False)
+        for change in (dict(close_code=None), dict(connections=True),
+                       dict(status='FAIL'), dict(observation_policy='unknown')):
+            value = self.semantic()['turns'][0]; value.update(change)
+            with self.assertRaises(ValueError): profile_evidence.semantic_observed_success(value, False)
+
+    def assembly(self):
+        body = {key: dict(actual=key) for key in reuse.FRESH | {'tts'}}
+        value = dict(profile='primary', identity=dict(binary_sha256='1'*64),
+            capacity=dict(max_tokens=256), capabilities=dict(implemented=True),
+            configuration=dict(mtp=True), startup_memory=dict(status='PASS'), business=body,
+            environment=dict(status='PASS', env_abort=False, all_queries_ok=True,
+                cleanup_complete=True, nvml_queries=323, lease_result_sha256=reuse.ASSEMBLY_FILE),
+            reused_business=dict(voice_prompt=dict(actual='voice'),
+                                 legacy_responses_prompt=dict(actual='legacy')))
+        selected = dict(fresh={k: ledger.digest(v) for k,v in body.items()},
+            voice=ledger.digest(value['reused_business']['voice_prompt']),
+            legacy=ledger.digest(value['reused_business']['legacy_responses_prompt']),
+            **{k:ledger.digest(value[k]) for k in
+               ('capabilities', 'configuration', 'startup_memory')})
+        proof = dict(format='q4t-completed-consumer-assembly-v1', identity=value['identity'],
+            profiles=dict(primary=value['capacity']), profiles_receipts=dict(primary=selected),
+            failed_observations=dict(exact_format=dict(status='FAIL', answer='<version>rev346</version>')),
+            stages=dict(original=dict(status='FAILED'), consumers=dict(status='OBSERVATIONS_COMPLETE_NOT_QUALIFICATION')))
+        value['reused_business']['assembly'] = copy.deepcopy(proof)
+        patch = mock.patch.object(reuse, 'ASSEMBLY_DIGEST', ledger.digest(proof))
+        patch.start(); self.addCleanup(patch.stop)
+        return value
+
+    def test_review_binds_successful_fragments_and_keeps_original_failures(self):
+        value = self.assembly(); original = copy.deepcopy(value)
+        reuse.validate_assembly(value); self.assertEqual(value, original)
+        for change in (
+            lambda v: v['business']['prompt'].update(actual='replayed'),
+            lambda v: v['business'].pop('media'),
+            lambda v: v['reused_business']['voice_prompt'].update(actual='foreign'),
+            lambda v: v['capabilities'].update(implemented=False),
+            lambda v: v['configuration'].update(mtp=False),
+            lambda v: v['startup_memory'].update(status='FAILED'),
+            lambda v: v['environment'].update(nvml_queries=1),
+        ):
+            wrong = copy.deepcopy(value); change(wrong)
+            with self.assertRaises((ValueError, KeyError)): reuse.validate_assembly(wrong)
+
+    def test_unknown_identity_or_discarded_failed_source_cannot_be_reviewed(self):
+        value = self.assembly()
+        for change in (
+            lambda v: v['identity'].update(binary_sha256='0'*64),
+            lambda v: v['capacity'].update(max_tokens=128),
+            lambda v: v['reused_business']['assembly'].pop('failed_observations'),
+            lambda v: v['reused_business']['assembly']['stages']['original'].update(status='PASS'),
+        ):
+            wrong = copy.deepcopy(value); change(wrong)
+            with self.assertRaises(ValueError): reuse.validate_assembly(wrong)
 
 
 if __name__ == '__main__': unittest.main()
