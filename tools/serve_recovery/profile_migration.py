@@ -333,6 +333,29 @@ def audio_change(before, after, *, before_voice=False, after_voice=False):
     return bool(new-old), capacity
 
 
+def realtime_pending_capabilities(value):
+    """Normalize only the reviewed semantic-VAD todo transition.
+
+    The actual semantic declaration and its qualified business stay intact.
+    Other pending features cannot disappear through this metadata adapter.
+    Raw declarations still bind permit hashes and historical receipts.
+    """
+    realtime = value.get('realtime')
+    if type(realtime) is not dict or 'pending_execution' not in realtime:
+        return
+    semantic = realtime.get('semantic_vad')
+    declared = 'semantic_vad' in realtime
+    ledger.require(not declared or (type(semantic) is dict and
+        semantic.get('implemented') is True and
+        semantic.get('profile') == 'q4t-native-semantic-turn-v1'),
+        'pending Realtime metadata lacks semantic implementation')
+    expected = ['conversation', 'live']
+    ledger.require(realtime['pending_execution'] ==
+        (expected if declared else ['semantic_vad', *expected]),
+        'pending Realtime metadata contradicts qualified capabilities')
+    realtime['pending_execution'] = expected
+
+
 def semantic_capabilities(value):
     """Separate reviewed implementation identities from promised behavior.
 
@@ -349,6 +372,7 @@ def semantic_capabilities(value):
     web_search_capabilities(result)
     tts_capabilities(result)
     asr_capabilities(result)
+    realtime_pending_capabilities(result)
     responses = result.get('responses')
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']

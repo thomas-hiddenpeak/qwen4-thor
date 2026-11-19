@@ -1,0 +1,36 @@
+{
+  "status": "CPU_AND_ACTUAL_METADATA_REVIEW_PASS_CANDIDATE_RECOVERY_PENDING",
+  "cpu_cases": 5,
+  "cpu_seconds": 1.215047862380743,
+  "inventory_mutations": 18,
+  "actual_registry_review_seconds": 1.092946468386799,
+  "automatic_permits_byte_identical": 3,
+  "protected_history_unchanged": true,
+  "new_gpu_starts": 0,
+  "candidate_manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb",
+  "changed_payload_sources": [
+    "source/tools/serve_recovery/profile_migration.py"
+  ],
+  "retained_tls_main_light_reused": true,
+  "default_revision": 336,
+  "default_state": "STOPPED",
+  "original_publication_failure_preserved": true,
+  "clone_private_link_failure_preserved": true,
+  "clone_repaired_exact_bytes": true,
+  "remaining_gpu_budget": {
+    "starts": 2,
+    "http": 24,
+    "websocket_sessions": 4,
+    "probes": 1,
+    "seconds": 600
+  },
+  "cumulative_after_remaining": {
+    "starts": 6,
+    "http": 87,
+    "websocket_sessions": 14,
+    "probes": 2
+  },
+  "listening": "PENDING_BY_OWNER",
+  "archive_sha256": "f31539a25599bbee3f8c0c745eb48f66445f831d990ddbc1efa16e97f7d04dc9",
+  "secret_scan_matches": 0
+}

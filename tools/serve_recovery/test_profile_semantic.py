@@ -239,6 +239,90 @@ class SemanticMigration(unittest.TestCase):
     voice_registry=realtime.RealtimeMigration.voice_registry
     extended=realtime.RealtimeMigration.extended
 
+    def pending_pair(self):
+        _,_,old,first=self.extended()
+        rows={n:copy.deepcopy(row['record']) for n,row in first.items()}
+        for row in rows.values():
+            row['format']=evidence.REALTIME_FORMAT
+            row['capabilities']['realtime']=dict(realtime.declaration(),
+                pending_execution=['semantic_vad','conversation','live'])
+            row['business']['realtime']=realtime.record()
+        first=previous.bind_records(old,rows)
+        new=copy.deepcopy(old)
+        new['identity'].update(binary_sha256='3'*64,protocol_sha256='4'*64)
+        rows=copy.deepcopy(rows)
+        for row in rows.values():
+            row['format']=evidence.SEMANTIC_FORMAT
+            row['capabilities']['realtime'].update(semantic_vad=declaration(),
+                pending_execution=['conversation','live'])
+            row['capabilities'].setdefault('structured_output',{})['available']=True
+            row['business']['semantic_vad']=record(new['identity'])
+        return old,first,new,previous.bind_records(new,rows)
+
+    def pending_permit(self,old,first,new,second,**kwargs):
+        with mock.patch.object(evidence,'REALTIME_WAVEFORM_SHA',
+                               hashlib.sha256(realtime.PCM).hexdigest()):
+            return migration.permit(old,new,first,second,self.config,self.config,
+                                    **kwargs)
+
+    def pending_observations(self,registry,observations):
+        with mock.patch.object(evidence,'REALTIME_WAVEFORM_SHA',
+                               hashlib.sha256(realtime.PCM).hexdigest()):
+            return migration.observations(registry,observations)
+
+    def test_actual_pending_transition_preserves_raw_receipts_and_budgets(self):
+        old,first,new,second=self.pending_pair()
+        original=copy.deepcopy((old,first,new,second))
+        grant=self.pending_permit(old,first,new,second,
+                                  allow_capability_extension=True)
+        self.assertFalse(grant['automatic'])
+        self.assertEqual((old,first,new,second),original)
+        self.assertEqual(grant['capabilities_sha256'],migration.ledger.digest(
+            self.pending_observations(old,first)))
+        self.assertEqual(grant['target_capabilities_sha256'],
+            migration.ledger.digest(self.pending_observations(new,second)))
+        before=migration.policy.initial(old,self.stamp(0),self.config)
+        before=migration.policy.prepare(before,'light','sustained_memory_pressure',
+            '00000000-0000-4000-8000-000000000001',7,self.stamp(1))
+        after=migration.candidate(before,grant,self.stamp(30))
+        for field in ('history','pending','selected','not_before_ns','light_since_ns'):
+            self.assertEqual(after[field],before[field])
+
+    def test_pending_transition_cannot_authorize_automatic_feature_change(self):
+        old,first,new,second=self.pending_pair()
+        for a,x,b,y,flags in ((old,first,new,second,{}),
+                (old,first,new,second,dict(automatic=True,allow_capability_extension=True)),
+                (new,second,old,first,dict(automatic=True)),
+                (new,second,old,first,dict(allow_capability_extension=True))):
+            with self.subTest(flags=flags):
+                with self.assertRaisesRegex(ValueError,'capabilities'):
+                    self.pending_permit(a,x,b,y,**flags)
+
+    def test_pending_metadata_cannot_hide_missing_or_unknown_work(self):
+        for declared,correct in ((False,['semantic_vad','conversation','live']),
+                                 (True,['conversation','live'])):
+            valid=dict(realtime=dict(realtime.declaration(),pending_execution=correct))
+            if declared:valid['realtime']['semantic_vad']=declaration()
+            for pending in (None,False,'conversation',[],['live'],
+                    ['conversation','conversation','live'],['conversation','future'],
+                    ['semantic_vad','conversation','live'] if declared else ['conversation','live']):
+                wrong=copy.deepcopy(valid);wrong['realtime']['pending_execution']=pending
+                with self.subTest(declared=declared,pending=pending):
+                    with self.assertRaisesRegex(ValueError,'pending Realtime'):
+                        migration.semantic_capabilities(wrong)
+        invalid=dict(realtime=dict(pending_execution=['conversation','live'],semantic_vad=None))
+        with self.assertRaisesRegex(ValueError,'pending Realtime'):
+            migration.semantic_capabilities(invalid)
+
+    def test_same_semantic_registry_keeps_automatic_permit_identity(self):
+        _,_,new,second=self.pending_pair()
+        grant=self.pending_permit(new,second,new,second,automatic=True)
+        self.assertEqual(grant['format'],migration.FORMAT)
+        self.assertEqual(grant['from_registry'],grant['to_registry'])
+        self.assertNotIn('target_capabilities_sha256',grant)
+        self.assertEqual(grant['capabilities_sha256'],migration.ledger.digest(
+            self.pending_observations(new,second)))
+
     def test_semantic_upgrade_requires_actual_business_and_cannot_auto_drop_it(self):
         _,_,old,first=self.extended();new=copy.deepcopy(old)
         new['identity'].update(binary_sha256='3'*64,protocol_sha256='4'*64)
