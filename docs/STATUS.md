@@ -7,25 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-空上下文通用提示的真实补验仍 FAIL：1 模型 / 3 实际响应 / 1 Chat /
-43.648 秒，模型讨论拒绝格式并达输出上限，未放宽验收。候选改为
-仅在执行输入中原样呈现调用者 instructions，保留原指令角色、空历史
-和真实计量；同 5 项原生合同 / 0.003 秒复验通过，驱动未变的 5 项
-直接复用，20 项来源反例通过。
-之后仍按 3 WSS / 10 响应 / 1 转写 / 2 Chat / 900 秒续验；原三轮
-失败保留，默认 rev346 STOPPED 不变，全部 master 继续。
+[原生 Realtime Chat 真实业务通过](evidence/serve-realtime-chat-business-20261119/README.md)：
+1 模型 / 3 WSS / 10 响应 / 1 转写 / 2 Chat / 50.325 秒，官方 SDK/TLS、
+真实资料工具、三种空上下文指令、限额/取消/RPM 与实际结算通过；
+49 次 NVML 正常、自有资源与锁释放。3 轮原 FAIL 完整保留，累计
+4 模型 / 177.153 秒 / 173 次正常 NVML，未反向改写失败结论。
 
-[Realtime Chat 原生观察修复与空上下文候选](evidence/serve-realtime-chat-observer-cue-20261119/README.md)：
-真实工具闭环已通过；原生 token 观察遗漏已修复，空上下文质量失败
-继续处理。原两轮 FAIL、2 模型 / 4 响应 / 2 Chat / 83.180 秒完整保留，
-81 次 NVML 正常，自有资源与锁释放，默认 rev346 STOPPED 未变。
-
-新增生成提示不改变调用者 instructions、采样或对话账本；实际输入
-计量包含提示。10 项针对性 CPU / 0.268 秒、20 项来源反例通过，
-原 51 项 Chat、48 项会话与共享队列证据按未变身份复用。
-下一轮限 1 模型 / 3 WSS / 10 响应 / 1 转写 / 2 Chat / 900 秒，
-含空上下文两种反例。实际模型未通过前不替换默认或宣称交付；
-音频/MCP/Live/追踪/Prompt 及全部 master 继续，原失败与听感待验保持。
+候选 994025c2 已保留，默认 rev346 STOPPED 未替换。继续核对计划
+交接与能力声明、补主轻/Guardian 恢复和可回退交付；音频/MCP/Live/
+追踪/Prompt 与全部 master 继续，原量化/声纹失败和听感待验保持。
 
 [PR #51 已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
 两组 CI 通过，main 合并点 `53808bf52`；后续对话开发未混入。
