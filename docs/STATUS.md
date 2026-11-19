@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)
+完成：19项STOPPED检查/320.450秒，实际整根回退再前进，
+0新增GPU，原配额/用量/恢复历史/预算保持，默认仍STOPPED。62项
+恢复合同接入CI；接着主线合入、语义VAD/对话/Live及全部master。
+原exact-code/声纹失败与用户延期听感保持。
+
 [ICL/Realtime实际Guardian三组通过](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：
 修复后4模型、63HTTP+5Realtime、1探测、595.196秒，554次NVML正常；
 TLS同核心PID中断结算/清理，整包实际回退后新连接与同一参考音色
@@ -2101,17 +2107,17 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev326；服务包 `cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1` |
-| Generation | `f668a05b9cb84cb19ef9d6d12a4e8791a650608205ef8c48cded2597f34e2da1` |
-| 引擎 | `943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9` |
-| 引擎发布记录 | `fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b` |
+| 发布 | rev336；服务包 `37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32` |
+| Generation | `5e3eb2a40f14fd5f998c41a02055ad6e20685b68f79a9f2c15edf06757c6f783` |
+| 引擎 | `6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d` |
+| 引擎发布记录 | `06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
-| 原生入口 | `37400ff86f00b7f0ecc7345d768e020057acd1e7fce70ed07370a05f15e14211` |
+| 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha合计输出3457/RPM30/TPM6000；媒体已启用 |
-| 人工整包回退 | 保留控制根 `db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793`；同C05/实际输入和音色/原周期已验，前驱rev316另保留 |
-| 自动payload回退 | 候选→保留控制包 `db8155e9b770aa2c22a9db987263ec47f0bf518b22672e54681c3d5f7a7cf793` 实际故障恢复已验；反向登记和STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
-| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/内置及Base TTS按部署启用，注册校验依赖ASR/VAD/speaker，健康核心业务与辅助故障隔离 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL与Realtime转录 |
+| 人工整包回退 | 保留控制根 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e`；同已验ICL/Realtime引擎，参考和周期保持；前驱rev326另保留 |
+| 自动payload回退 | 候选→保留控制包 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)
 19项STOPPED发布/整根回退/再前进通过，273.956秒，0新增GPU。

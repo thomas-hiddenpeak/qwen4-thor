@@ -624,3 +624,5 @@
 - [Realtime持续输入与对话衔接计划](SERVE_REALTIME_STREAMING_2026-11-19.md)：有界前缀、真实流式ASR、delay/语义断句、对话与交付。
 
 - [ICL/Realtime实际Guardian恢复](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：TLS中断结算、整包恢复、持久参考与显式新会话。
+
+- [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)：原生实时转录、持久参考、预算保持与整包回退。
