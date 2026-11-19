@@ -1,0 +1,36 @@
+{
+  "native_asr_health": {
+    "state": "ready",
+    "reason": "none",
+    "core_readiness_dependency": false,
+    "model": "qwen3-asr-0.6b",
+    "device_bytes": 1876017152,
+    "load_attempts": 6,
+    "load_failures": 0,
+    "compute_failures": 0,
+    "recovery": "request_driven",
+    "retry_delay_ms": 5000,
+    "asset_cleanup_pending": false
+  },
+  "native_asr_limits": {
+    "max_audio_seconds": 30,
+    "max_context_tokens": 4096,
+    "max_output_tokens": 1024,
+    "workspace_mib": 1024
+  },
+  "native_vad_health": {
+    "state": "ready",
+    "reason": "none",
+    "core_readiness_dependency": false,
+    "model": "silero-vad-16k",
+    "device_bytes": 0,
+    "load_attempts": 1,
+    "load_failures": 0,
+    "compute_failures": 0,
+    "recovery": "request_driven",
+    "retry_delay_ms": 5000,
+    "host_weight_bytes": 1238532,
+    "asset_cleanup_pending": false
+  },
+  "native_vad_max_chunks": 64
+}

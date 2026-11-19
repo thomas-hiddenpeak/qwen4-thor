@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[主配置原件复核与续验CPU通过](evidence/serve-semantic-vad-config-20261119/README.md)：
+13项CPU/0.614秒、18来源反例/0.435秒；完整主配置只读复核10.563秒、
+0GPU通过，原FAILED保持。完整PCM可还原，资格布局2036214字节，
+原2MiB门保持；仅续轻配置1模型/30业务/3WSS/2入口/600秒，累计
+启动上限仍5。默认rev336 STOPPED不变，之后继续Guardian与全部master。
+
+主轻资格首轮完成主配置30项业务/3WSS/185.107秒，实际ASR/VAD
+健康正常；随后回执读取不存在的`native_vad_limits`失败，原FAILED
+及172次正常NVML记录保持，自有模型/入口/锁已释放。已改用实际
+`native_vad_max_chunks`适配器，并编写只读复核与仅续轻配置的驱动。
+新增完整音频回执超过2MiB的问题以有界无损压缩及紧凑JSON处理，
+原SDK线报不变。冻结13项CPU/120秒和原主配置完整只读复核，0GPU；
+通过后只补1模型/30项业务/3WSS/2入口/600秒，累计启动上限仍5。
+默认rev336 STOPPED、原exact-code失败、声纹失败及听感待验保持。
+
 [PR #50已合入主线](evidence/serve-icl-realtime-main-20261119/README.md)，
 两个CI均通过，main合并点`7d73234b3`；只包含已验ICL/Realtime与
 恢复交付。本地语义VAD后续提交未混入，默认rev336 STOPPED保持。

@@ -44,7 +44,8 @@ SUCCESS = 'PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS'
 
 def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
                native_tts_base=None, *, voice_consumer=False, realtime=False,
-               retained_primary_voice=False, semantic_vad=False):
+               retained_primary_voice=False, semantic_vad=False,
+               retained_primary_business=False):
     capacity.validate(profile)
     require(type(voice_consumer) is bool and (not voice_consumer or
         native_tts_base is not None and native_asr is None and native_tts is None),
@@ -59,6 +60,10 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
     require(type(retained_primary_voice) is bool and
         (not retained_primary_voice or native_tts_base is not None and not voice_consumer),
         'retained voice requires its actual registration profile')
+    require(type(retained_primary_business) is bool and
+        (not retained_primary_business or semantic_vad and native_tts_base is not None and
+         not retained_primary_voice and not voice_consumer),
+        'retained primary requires complete semantic registration business')
     if native_tts_base is not None:
         package.tts_settings(native_tts_base, base=True)
         if not voice_consumer:
@@ -67,7 +72,7 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
             package.asr_settings(native_asr, voice_registration=True)
         require(native_tts is None or package.same_json(native_tts['limits'],
                 native_tts_base['limits']), 'TTS profile families must share effective limits')
-    return dict(LIMITS, seconds=800 if retained_primary_voice else LIMITS['seconds'],
+    result = dict(LIMITS, seconds=800 if retained_primary_voice else LIMITS['seconds'],
                 **(dict(websocket_sessions=2+4*semantic_vad,
                         ingress_starts=2+2*semantic_vad) if realtime else {}),
                 chats=(10 if profile.get('allow_media', False) else 8) +
@@ -82,6 +87,10 @@ def limits_for(profile, native_asr=None, chat_audio=False, native_tts=None,
                 (2 if profile_evidence.audio_auxiliaries(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_speaker(dict(native_asr=native_asr or {})) else 0) +
                 (2 if profile_evidence.has_separator(dict(native_asr=native_asr or {})) else 0))
+    if retained_primary_business:
+        result.update(starts=1, seconds=600, chats=result['chats']//2,
+                      websocket_sessions=3, ingress_starts=2)
+    return result
 
 
 
@@ -242,10 +251,12 @@ def prepare(args):
     realtime_source = getattr(args, 'realtime_reference', None)
     semantic_vad = getattr(args, 'semantic_vad', False)
     retained_voice = getattr(args, 'retained_primary_voice', None)
+    retained_business = getattr(args, 'retained_primary_business', None)
     limits = limits_for(selected, asr, chat_audio, tts, voice,
                         voice_consumer=consumer is not None,
                         realtime=realtime_source is not None,
                         semantic_vad=semantic_vad,
+                        retained_primary_business=retained_business is not None,
                         retained_primary_voice=retained_voice is not None)
     fixture_path = getattr(args, 'voice_fixtures', None)
     require((voice is not None and consumer is None) == (fixture_path is not None),
@@ -424,6 +435,12 @@ def prepare(args):
         from tools.serve_recovery import profile_voice_review
         plan['retained_primary_voice'] = profile_voice_review.prepare(retained_voice, plan)
         plan['sources'].update(plan['retained_primary_voice']['files'])
+    if retained_business is not None:
+        from tools.serve_recovery import profile_primary_review
+        plan['retained_primary_business'] = profile_primary_review.prepare(retained_business, plan)
+        plan['sources'].update(plan['retained_primary_business']['files'])
+        source = Path(profile_primary_review.__file__).resolve()
+        plan['sources'][str(source)] = sha(source)
     plan['planned'] = dict(starts=2, requests=limits['chats'],
                            chats=6 + 2 * chat_audio + (2 if tts is not None else 0) +
                                  (2 if voice is not None else 0),
@@ -463,9 +480,19 @@ def prepare(args):
         plan['planned']['native_speaker_transcriptions'] = 2
     if profile_evidence.has_separator(plan['identity']):
         plan['planned']['native_separator_transcriptions'] = 2
+    if retained_business is not None:
+        for key in plan['planned']:
+            if key not in ('requests', 'realtime_sessions', 'native_tls_ingress_starts'):
+                require(plan['planned'][key] % 2 == 0, 'retained primary budget is not separable')
+                plan['planned'][key] //= 2
+        plan['planned']['reused_primary_requests'] = plan['retained_primary_business']['environment']['requests']
     plan['mutations'] = ['gracefully stop owned primary after its bounded business',
         'start only qualified light command in same lease/private directory',
         'default deployment and its state remain untouched']
+    if retained_business is not None:
+        plan['mutations'] = ['read-only reuse of completed original primary and preserved failure',
+            'start only light in one new strict lease, then clean up owned processes',
+            'default deployment and its state remain untouched']
     plan['derived_requests'] = ['tool results computed from actual fixed project file',
         'final conversation uses actual call ID and result, no request retries',
         'qualification only after strict guard completed and both models cleaned']
@@ -491,6 +518,7 @@ class Stage(encrypted.Stage):
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
                                  semantic_vad=plan.get('semantic_vad', False),
+                                 retained_primary_business='retained_primary_business' in plan,
                                  retained_primary_voice='retained_primary_voice' in plan)
         self.request_templates = lambda: requests(selected.get('allow_media', False))
         super().__init__(plan)
@@ -519,7 +547,8 @@ class Stage(encrypted.Stage):
         return value
 
     def start(self):
-        name = profile_contract.NAMES[self.counts['starts']]
+        offset = int('retained_primary_business' in self.plan)
+        name = profile_contract.NAMES[self.counts['starts']+offset]
         self.profile_name = name
         background.probe_ports((self.plan['port'], self.plan['operations_port']))
         for path, digest in self.plan['native_assets'].items():
@@ -754,9 +783,18 @@ class Stage(encrypted.Stage):
             value['semantic_vad'] = profile_semantic.run(self)
         profile_evidence.business(value, self.plan['identity'], selected,
             read(self.out/(self.profile_name+'-capabilities.json')))
-        save(self.out/(self.profile_name+'-business.json'), value)
+        writer = profile_semantic.save_receipt if self.plan.get('semantic_vad') else save
+        writer(self.out/(self.profile_name+'-business.json'), value)
 
     def business(self):
+        if 'retained_primary_business' in self.plan:
+            from tools.serve_recovery import profile_primary_review
+            profile_primary_review.verify(self.plan['retained_primary_business'])
+            require(self.profile_name == 'light', 'retained primary must run only light')
+            self.profile_business()
+            profile_contract.capability_pair(read(self.out/'primary-capabilities.json'),
+                                             read(self.out/'light-capabilities.json'))
+            return
         self.profile_business()
         self.cleanup()
         first = read(self.out/'cleanup.json')
@@ -794,8 +832,9 @@ def finalize(out):
                                  voice_consumer=plan.get('voice_consumer') is not None,
                                  realtime='realtime' in plan,
                                  semantic_vad=plan.get('semantic_vad', False),
+                                 retained_primary_business='retained_primary_business' in plan,
                                  retained_primary_voice='retained_primary_voice' in plan)
-    require(result['status'] == SUCCESS and result['counts']['starts'] == 2 and
+    require(result['status'] == SUCCESS and result['counts']['starts'] == limits['starts'] and
         result['counts']['chats'] == limits['chats'] and result['seconds'] < limits['seconds'],
         'business result or budget not accepted')
     if 'realtime' in plan:
@@ -815,6 +854,10 @@ def finalize(out):
         from tools.serve_recovery import profile_voice_review
         env = profile_voice_review.combined_environment(
             out, plan['retained_primary_voice'], env)
+    if 'retained_primary_business' in plan:
+        from tools.serve_recovery import profile_primary_review
+        env = profile_primary_review.combined_environment(
+            out, plan['retained_primary_business'], env)
     guard = encrypted.foreground.base.lifecycle.guard
     records = guard.processes()
     require(not any(records.get(int(pid), {}).get('start_ticks') == row['start_ticks']
@@ -840,7 +883,8 @@ def finalize(out):
             startup_memory=config['startup_memory']['checks']['before_allocations'],
             business=business_value, environment=env)
         path = qualified/(name+'.json')
-        save(path, value)
+        writer = profile_semantic.save_receipt if plan.get('semantic_vad') else save
+        writer(path, value)
         registry['qualifications'][name] = profile_contract.qualification(name,
             value['capacity'], value['identity'], value['capabilities'],
             value['configuration'], value['startup_memory'], sha(path))
@@ -856,6 +900,13 @@ def finalize(out):
     if 'retained_primary_voice' in plan:
         prior = plan['retained_primary_voice']['environment']
         receipt.update(reused_primary_voice=plan['retained_primary_voice']['source'],
+            cumulative_starts=result['counts']['starts']+prior['model_starts'],
+            cumulative_requests=result['counts']['chats']+prior['requests'],
+            cumulative_seconds=result['seconds']+prior['seconds'],
+            original_failure_preserved=True, separate_continuous_leases=True)
+    if 'retained_primary_business' in plan:
+        prior = plan['retained_primary_business']['environment']
+        receipt.update(reused_primary_business=plan['retained_primary_business']['source'],
             cumulative_starts=result['counts']['starts']+prior['model_starts'],
             cumulative_requests=result['counts']['chats']+prior['requests'],
             cumulative_seconds=result['seconds']+prior['seconds'],
@@ -896,6 +947,8 @@ def main():
                    help='explicit installed SDK matching the pinned package and lock files')
     p.add_argument('--retained-primary-voice', type=Path,
                    help='review completed original voice exchanges after the old health-name failure')
+    p.add_argument('--retained-primary-business', type=Path,
+                   help='review completed primary after VAD metadata-name failure; run only light')
     p.add_argument('--asr-config', type=Path,
                    help='explicit native ASR identity, asset directory and limits')
     p.add_argument('--asr-audio', type=Path,

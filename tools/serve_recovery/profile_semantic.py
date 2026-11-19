@@ -1,4 +1,5 @@
 """Actual semantic VAD turns and health on each primary/light profile."""
+import base64
 import copy
 import hashlib
 import http.client
@@ -7,11 +8,12 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import zlib
 
 from tools.serve_realtime.ingress_fixture import NativeIngress
 from tools.serve_recovery import profile_evidence as evidence
 from tools.serve_recovery import profile_realtime as realtime
-from tools.serve_service.package import read, require, save, sha
+from tools.serve_service.package import asr_auxiliary_observed_limits, read, require, save, sha
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = ('tools/serve_recovery/profile_semantic.py',
@@ -27,7 +29,33 @@ def compact(result, continuation):
                        if e['type'] != 'conversation.item.retrieved']
     value.pop('feed', None)
     evidence.semantic_turn(value, continuation)
+    content = value['retrieved']['item']['content'][0]
+    raw = evidence.semantic_pcm(content['audio'])
+    content['audio'] = dict(encoding='zlib-base64', pcm_bytes=len(raw),
+        sha256=hashlib.sha256(raw).hexdigest(),
+        data=base64.b64encode(zlib.compress(raw, 9)).decode())
+    require(evidence.semantic_pcm(content['audio']) == raw,
+            'semantic receipt compression changed original PCM')
     return value
+
+
+def save_receipt(path, value):
+    """Use compact JSON for audio receipts; keep the same durable 2 MiB gate."""
+    path = Path(path)
+    raw = evidence.ledger.canonical(value)+b'\n'
+    require(len(raw) <= 2 << 20, 'semantic receipt exceeds metadata size limit')
+    temporary = path.with_name(path.name+'.new')
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    try:
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try: os.fsync(directory)
+        finally: os.close(directory)
+    finally:
+        temporary.unlink(missing_ok=True)
+    require(read(path) == value, 'semantic receipt did not round trip')
 
 
 def health(stage, label):
@@ -43,6 +71,15 @@ def health(stage, label):
         return json.loads(raw)
     finally:
         conn.close()
+
+
+def configuration(config):
+    vad = asr_auxiliary_observed_limits(config, 'vad')
+    require(type(vad['max_chunks']) is int and 0 < vad['max_chunks'] < 2**64,
+            'native VAD chunk limit missing or invalid')
+    return dict(asr_health=config['native_asr_health'],
+        vad_health=config['native_vad_health'], asr_limits=config['native_asr_limits'],
+        vad_limits=vad)
 
 
 def run(stage):
@@ -93,8 +130,7 @@ def run(stage):
         config = health(stage, label+'-health')
         value = dict(input_sha256=plan['clip']['sha256'], settings=evidence.semantic_settings(),
             turns=turns, before=before, after=after,
-            **{name+'_'+kind:config['native_'+name+'_'+kind]
-               for name in ('asr', 'vad') for kind in ('health', 'limits')})
+            **configuration(config))
         evidence.semantic_business(value, stage.plan['identity'])
         save(stage.out/(label+'-business.json'), value)
         return value

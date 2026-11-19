@@ -7,6 +7,7 @@ import json
 import math
 import re
 import wave
+import zlib
 
 from tools.serve_recovery import ledger, profile_contract
 
@@ -1049,6 +1050,37 @@ def semantic_settings():
             turn_detection=dict(type='semantic_vad', eagerness='high'))))
 
 
+def semantic_pcm(encoded):
+    """Decode private receipt audio losslessly, within the existing 1 MiB bound."""
+    packed = type(encoded) is dict
+    if packed:
+        ledger.keys(encoded, ('encoding', 'pcm_bytes', 'sha256', 'data'))
+        ledger.require(encoded['encoding'] == 'zlib-base64' and
+            ledger.integer(encoded['pcm_bytes'], minimum=1) and
+            encoded['pcm_bytes'] <= 1 << 20 and
+            type(encoded['sha256']) is str and
+            re.fullmatch('[0-9a-f]{64}', encoded['sha256']) is not None,
+            'semantic compressed PCM declaration differs')
+    text = encoded['data'] if packed else encoded
+    ledger.require(type(text) is str and len(text) <= 1 << 20,
+                   'semantic retained audio encoding/size differs')
+    try:
+        raw = base64.b64decode(text, validate=True)
+        ledger.require(base64.b64encode(raw).decode() == text,
+                       'semantic noncanonical audio encoding')
+        if packed:
+            decoder = zlib.decompressobj()
+            raw = decoder.decompress(raw, encoded['pcm_bytes']+1)
+            ledger.require(len(raw) == encoded['pcm_bytes'] and decoder.eof and
+                not decoder.unused_data and not decoder.unconsumed_tail and
+                hashlib.sha256(raw).hexdigest() == encoded['sha256'],
+                'semantic compressed PCM length/digest differs')
+    except (ValueError, TypeError, zlib.error) as error:
+        raise ValueError('semantic retained audio is invalid') from error
+    ledger.require(raw and len(raw) % 2 == 0, 'semantic retained PCM differs')
+    return raw
+
+
 def semantic_turn(value, continuation):
     ledger.require(type(value) is dict and value.get('status') == 'PASS' and
         ledger.integer(value.get('connections')) and value['connections'] == 1 and
@@ -1108,15 +1140,11 @@ def semantic_turn(value, continuation):
         ledger.require(pause is None, 'unexpected semantic continuation')
     item = value['retrieved']['item']; content = item['content']
     ledger.require(item['id'] == terminal['item_id'] and len(content) == 1 and
-        content[0]['transcript'] == ASR_TEXT and type(content[0].get('audio')) is str and
-        len(content[0]['audio']) <= 1 << 20 and ledger.integer(value.get('sent_samples'), minimum=1),
+        content[0]['transcript'] == ASR_TEXT and
+        ledger.integer(value.get('sent_samples'), minimum=1),
         'semantic retained audio identity/size differs')
-    try:
-        raw = base64.b64decode(content[0]['audio'], validate=True)
-    except (ValueError, TypeError) as error:
-        raise ValueError('semantic retained audio is invalid') from error
-    ledger.require(raw and len(raw) % 2 == 0 and len(raw) <= value['sent_samples']*2 and
-        base64.b64encode(raw).decode() == content[0]['audio'], 'semantic retained PCM differs')
+    raw = semantic_pcm(content[0]['audio'])
+    ledger.require(len(raw) <= value['sent_samples']*2, 'semantic retained PCM differs')
     return use['total_tokens']
 
 

@@ -1,0 +1,21 @@
+{
+  "scope": "13 focused CPU cases; no model/HTTP/GPU work",
+  "maximum_seconds": 120,
+  "tests": [
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compact_audio_is_idempotent_and_keeps_all_turn_assertions",
+    "tools.serve_recovery.test_profile_semantic.SemanticDriver.test_compact_receipt_preserves_complete_json_and_original_size_bound",
+    "tools.serve_recovery.test_profile_primary_review.PrimaryReview"
+  ],
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "560a89692582ba565256550b610292675ca4c0fc9aeca86d4b236d9e422a3069",
+    "tools/serve_recovery/profile_evidence.py": "45f41a064030e6ff68302d53c263b2d50fe8209e38b4b83c9670b4f2a12a8172",
+    "tools/serve_recovery/profile_semantic.py": "10b68fef406cf9cfd1da2c7d4936a6006a623e05df3b92e74a7b7bfef0a30566",
+    "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
+    "tools/serve_recovery/test_profile_semantic.py": "0d5e45f0a862ebb5d694a38d0817fc056a3cbb8fc023e3e704158ca7477d3800",
+    "tools/serve_recovery/test_profile_primary_review.py": "5db0595ce3cdc8a76b450c6972c1322e4f10a6bd1ea99ee132cdfbae4bec9b1c"
+  }
+}

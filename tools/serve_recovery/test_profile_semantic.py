@@ -1,4 +1,5 @@
 """Synthetic semantic qualification negatives; no native model execution."""
+import base64
 import copy
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -10,6 +11,7 @@ import tempfile
 import threading
 from types import SimpleNamespace
 import unittest
+import zlib
 from unittest import mock
 
 from tools.serve_realtime.test_semantic_acceptance import evidence as sdk_fixture
@@ -53,6 +55,24 @@ def record(fixed=None):
 
 
 class SemanticEvidence(unittest.TestCase):
+    def test_production_scalar_vad_limit_uses_existing_native_adapter(self):
+        config=json.loads((semantic.ROOT/'docs/evidence/serve-semantic-vad-config-20261119/native-health.json').read_text())
+        original=copy.deepcopy(config);value=semantic.configuration(config)
+        self.assertEqual(config,original)
+        self.assertEqual(value['vad_limits'],dict(max_chunks=64))
+        self.assertEqual(value['asr_health']['state'],'ready')
+        self.assertEqual(value['vad_health']['state'],'ready')
+        self.assertEqual(value['asr_limits'],config['native_asr_limits'])
+
+    def test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default(self):
+        config=dict(native_asr_health={},native_vad_health={},native_asr_limits={},
+                    native_vad_limits=dict(max_chunks=64))
+        with self.assertRaisesRegex(RuntimeError,'native VAD chunk limit'):
+            semantic.configuration(config)
+        for value in (None,False,0,-1,1.5):
+            with self.assertRaisesRegex(RuntimeError,'native VAD chunk limit'):
+                semantic.configuration(dict(config,native_vad_max_chunks=value))
+
     def test_actual_turns_usage_health_and_format_are_bound(self):
         value=record(); before=copy.deepcopy(value)
         evidence.semantic_business(value,identity());self.assertEqual(value,before)
@@ -110,9 +130,35 @@ class SemanticEvidence(unittest.TestCase):
     def test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk(self):
         value=record()['turns'][0];value['events'].append(dict(type='conversation.item.retrieved'))
         original=copy.deepcopy(value);result=semantic.compact(value,False)
-        self.assertEqual(value,original);self.assertEqual(result['retrieved'],value['retrieved'])
+        self.assertEqual(value,original)
+        self.assertEqual(evidence.semantic_pcm(result['retrieved']['item']['content'][0]['audio']),
+                         base64.b64decode(value['retrieved']['item']['content'][0]['audio']))
         result['events'].append(dict(type='error'))
         with self.assertRaises(ValueError):semantic.compact(result,False)
+
+    def test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs(self):
+        row=semantic.compact(record()['turns'][0],False)
+        encoded=row['retrieved']['item']['content'][0]['audio']
+        packed=base64.b64decode(encoded['data'])
+        changes=[dict(sha256='0'*64),dict(pcm_bytes=encoded['pcm_bytes']+2),
+            dict(pcm_bytes=True),dict(pcm_bytes=(1<<20)+1),dict(encoding='unknown'),
+            dict(data=base64.b64encode(packed[:-1]).decode()),
+            dict(data=base64.b64encode(packed+b'trailing').decode()),
+            dict(data=base64.b64encode(packed+packed).decode()),
+            dict(data=base64.b64encode(zlib.compress(b'\0'*(1<<21))).decode()),
+            dict(data='not-base64')]
+        for change in changes:
+            with self.subTest(change=tuple(change)),self.assertRaises(ValueError):
+                evidence.semantic_pcm(dict(encoded,**change))
+        with self.assertRaises(ValueError):evidence.semantic_pcm(dict(encoded,extra=True))
+
+    def test_compact_audio_is_idempotent_and_keeps_all_turn_assertions(self):
+        original=record();value=copy.deepcopy(original)
+        value['turns']=[semantic.compact(t,i==1) for i,t in enumerate(value['turns'])]
+        evidence.semantic_business(value,identity())
+        self.assertEqual(semantic.compact(value['turns'][0],False),value['turns'][0])
+        value['turns'][1]['terminal']['q4t_semantic_vad']['included_in_usage']=False
+        with self.assertRaises(ValueError):evidence.semantic_business(value,identity())
 
 
 class SemanticDriver(unittest.TestCase):
@@ -121,6 +167,16 @@ class SemanticDriver(unittest.TestCase):
         root.mkdir(parents=True,exist_ok=True)
         tmp=tempfile.TemporaryDirectory(dir=root);self.addCleanup(tmp.cleanup)
         return Path(tmp.name)
+
+    def test_compact_receipt_preserves_complete_json_and_original_size_bound(self):
+        out=self.directory();path=out/'receipt.json'
+        value=dict(audio='a'*((2<<20)-40))
+        semantic.save_receipt(path,value)
+        self.assertEqual(semantic.read(path),value)
+        original=path.read_bytes()
+        with self.assertRaises(RuntimeError):semantic.save_receipt(path,dict(audio='a'*(2<<20)))
+        self.assertEqual(path.read_bytes(),original)
+        self.assertFalse(path.with_name('receipt.json.new').exists())
 
     def test_limits_charge_both_profiles_and_require_real_vad(self):
         profile=capacity.normalize(dict(version=1))

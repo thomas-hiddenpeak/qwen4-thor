@@ -1,0 +1,13 @@
+{
+  "scope": "Strict missing/invalid scalar rejection after original CPU mismatch; reuse unaffected health checker pass",
+  "tests": [
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_recovery/profile_semantic.py": "8cddc8789060aaaaa9a811cc7e3c0bd00378fb0aa34c4c003bf455a2ee9e5553",
+    "tools/serve_recovery/test_profile_semantic.py": "24a08e0691e619c857871af97a78c4395dc31c306082f4ac406c08b4958fb8f9"
+  }
+}

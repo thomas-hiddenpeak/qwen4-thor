@@ -226,6 +226,7 @@ jobs:
             tools.serve_recovery.test_profile_realtime.RealtimeEvidence \
             tools.serve_recovery.test_profile_realtime.RealtimeMigration \
             tools.serve_recovery.test_profile_semantic \
+            tools.serve_recovery.test_profile_primary_review \
             tools.serve_realtime.test_managed.Evidence \
             tools.native_asr.test_managed_sdk_binding.Binding \
             tools.serve_ops.test_realtime_metrics.RealtimeMetrics \

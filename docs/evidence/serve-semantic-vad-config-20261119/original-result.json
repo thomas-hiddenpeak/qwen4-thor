@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 295, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 760, in business\n    self.profile_business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 754, in profile_business\n    value['semantic_vad'] = profile_semantic.run(self)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py\", line 96, in run\n    **{name+'_'+kind:config['native_'+name+'_'+kind]\n                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyError: 'native_vad_limits'\n",
+  "counts": {
+    "starts": 1,
+    "chats": 30,
+    "controls": 84,
+    "websocket_sessions": 3,
+    "ingress_starts": 2
+  },
+  "seconds": 185.10734699806198,
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2"
+}

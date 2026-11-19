@@ -1,0 +1,16 @@
+test_production_scalar_vad_limit_uses_existing_native_adapter (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter) ... ok
+test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default) ... FAIL
+test_backend_health_and_limits_are_required_after_actual_turns (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_backend_health_and_limits_are_required_after_actual_turns) ... ok
+
+======================================================================
+FAIL: test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_semantic.py", line 68, in test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default
+    with self.assertRaises(KeyError):semantic.configuration(config)
+AssertionError: KeyError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (failures=1)
