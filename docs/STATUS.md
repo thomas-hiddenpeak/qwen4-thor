@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR #50恢复来源清单复核](evidence/serve-icl-realtime-ci-review-20261119/README.md)
+完成：六项来源与已验业务/封装证据重新对齐，完整静态检查及18项
+反例通过，0.450秒/0新增GPU；原CI失败保留，等待修订后CI。
+默认rev336 STOPPED与下一阶段语义VAD草稿保持，全部master继续。
+
 [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)
 完成：19项STOPPED检查/320.450秒，实际整根回退再前进，
 0新增GPU，原配额/用量/恢复历史/预算保持，默认仍STOPPED。62项

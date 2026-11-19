@@ -1,0 +1,8 @@
+{
+  "status": "MIRROR_OMITTED_NESTED_FILES_BEFORE_MUTATION",
+  "missing": [
+    "src/server/contracts/openai_item_types_v1.json",
+    "src/server/regex_syntax/schema_regex.rs"
+  ],
+  "gpu_actions": 0
+}

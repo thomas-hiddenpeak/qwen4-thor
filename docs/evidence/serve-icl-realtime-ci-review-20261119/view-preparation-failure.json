@@ -1,0 +1,7 @@
+{
+  "status": "ENOSPC_BEFORE_REVIEW_OR_SOURCE_MUTATION",
+  "error": "symlink mirror exhausted available space",
+  "removed_only_created_symlinks": 29660,
+  "gpu_actions": 0,
+  "original_ci_failure_preserved": true
+}

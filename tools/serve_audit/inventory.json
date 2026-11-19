@@ -3125,7 +3125,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "56ec0c3d6d4fa45f1115708517a5ca0dc7abed490661c30540cb7d6683c98728",
+    "tools/serve_recovery/bundle.py": "6689a049a2951ae2f80cad801dcfd28cc6d4b6fd3b8cccce9899fbe5db1960cc",
     "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
     "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -3189,13 +3189,13 @@
     "tools/serve_recovery/outer_tree.py": "da8d9c718cadccbcbf187e2a3fa267042b64e16247e859665319274fc300e50c",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
-    "tools/serve_recovery/profile_acceptance.py": "a90f78dcce2acb07c7f2f8452908b7d884b697da2c3453445af886761149eef7",
+    "tools/serve_recovery/profile_acceptance.py": "278c5f841487ff6a53f1cbdecd889f7b149af787629585e96d26013e6aea6631",
     "tools/serve_recovery/profile_bundle.py": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
     "tools/serve_recovery/profile_controller.py": "b0495f939f79f8f8b9988fcd313fbcf3ea35b67ee54520b17b22778219003cba",
-    "tools/serve_recovery/profile_evidence.py": "022a38913f36563f361f9f7e6a1767ce3f9bd50bc7e7699297e1e33301efe6d8",
+    "tools/serve_recovery/profile_evidence.py": "e7c37482ddbe6758f945e6211ec13a8e6589683575b388a07b2946004b40c158",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
@@ -3268,7 +3268,7 @@
     "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "e17ff7f815c9c916881526b8b0f354cff43d0764ebe1e00c9ebb8dbedfb77536",
+    "tools/serve_service/package.py": "48b7af4fdc85e553c1f3ab46288f350da5823e5ea37367b5b3eb650417a36bf5",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
@@ -3284,7 +3284,9 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
+    "tools/serve_recovery/profile_voice_review.py": "c776d0554c4af62072d8bbd96c303a512164b137c3ed443ae70facec3ee58574"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8333,5 +8335,29 @@
     },
     "default": "rev326 unchanged",
     "remaining": "Automatic VAD/processors, conversation/Live, Guardian recovery, reversible delivery and master plan"
+  },
+  "icl_realtime_delivery_review_20261119": {
+    "reviewed_head": "0b0321471e2f4ef9fc4f74cae38a99fe3bb64c8d",
+    "source_review": {
+      "tools/serve_recovery/bundle.py": "New native packages bind all 74 build inputs, including 12 WebSocket/duplex/crypto inputs. Existing package byte identities remain immutable; verified actual 63 compiler dependencies and 24 omission/drift controls.",
+      "tools/serve_recovery/profile_acceptance.py": "Explicit ICL and actual Realtime capability-to-checklist equality; bounded two profiles/entries/sessions, actual ports and SDK identities; only exact completed primary voice evidence may be reused, with original failed process and cumulative starts/requests/time retained.",
+      "tools/serve_recovery/profile_evidence.py": "Reference geometry, codebook, consent ownership, codec SHA and full reference token usage required. Realtime requires three genuine turns, actual 70/81/70 input, waveform hash, deletion/history and all resource settlement. Old qualification cannot acquire new capability by relabeling.",
+      "tools/serve_recovery/profile_realtime.py": "Frozen actual clip, TLS credentials, pinned complete SDK modules, one explicit WebSocket connection per profile; no automatic replay. Exact processed waveform shared only after byte equality; ingress cleanup always in finally. Fixed budget and actual counters retained.",
+      "tools/serve_recovery/profile_voice_review.py": "Read-only reuse exclusively for the named old health-assertion failure: exact binary/config/assets/requests/wires and complete checklist, strict original NVML/cleanup and failed-status retention; other failures or identity changes rejected. No inference or network in review.",
+      "tools/serve_service/package.py": "Full registered ICL declaration and reference_encoder/base-reference identity bound together. Historical base-speaker declarations keep their old checks; omitted or changed conditioning cannot pass as reference ICL."
+    },
+    "evidence": [
+      "docs/evidence/serve-realtime-native-inventory-20261119/README.md",
+      "docs/evidence/serve-icl-profile-health-review-20261119/README.md",
+      "docs/evidence/serve-icl-package-health-20261119/README.md",
+      "docs/evidence/serve-icl-realtime-primary-light-20261119/README.md",
+      "docs/evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+      "docs/evidence/serve-icl-realtime-delivery-20261119/README.md"
+    ],
+    "result": "source identities reconciled with qualified native business and recovery",
+    "inventory_does_not_certify_all_semantics": true,
+    "default_revision": 336,
+    "no_new_gpu_work": true,
+    "master_complete": false
   }
 }
