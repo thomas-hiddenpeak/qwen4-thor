@@ -1,0 +1,47 @@
+{
+  "result": {
+    "status": "PASS",
+    "exit_code": 0,
+    "seconds": 5.590113563928753,
+    "expected_tests": 27,
+    "gpu_actions": 0
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 85,
+    "native_routes": 142,
+    "reviewed_source_anchors": 1026,
+    "mutation_checks": 20,
+    "errors": []
+  },
+  "actual_original": {
+    "status": "OBSERVED_ORIGINAL_PROTOCOL_ONLY",
+    "observation": {
+      "total_tokens": 830,
+      "model_quality": {
+        "status": "FAIL",
+        "expected": "rev346",
+        "actual": "<before_tool_call>\n{\"tool_name\": \"lookup_project_record\", \"tool_input\": {\"record_key\": \"release\"}}\n</after_tool_call>",
+        "criterion": "exact_source_version",
+        "response_id": "resp_8be5ee4edc2495313f0fc55d0cc4b333"
+      }
+    },
+    "original_sdk_status": "FAIL",
+    "original_stage_status": "FAILED",
+    "original_unchanged": true,
+    "service_qualified": false,
+    "seconds": 0.0005007232539355755,
+    "gpu_actions": 0,
+    "files": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/tls-service-01/plan.json": "50cc6881fe24dd6f152556a1fcb80155b5e61c7f9265b25ff716d5049f972d56",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/tls-service-01/execution/tls-after-conversation.sdk.json": "50588da07fbe7f9fb40d7726782f38e9654a96b6e946e9ea64fcd6b6afe76d8e"
+    }
+  },
+  "archive_sha256": "c3058a0d9149b5fdd05f8ca9e89ea2149a14000330ef32e890dcc48a425eb006",
+  "files": 15,
+  "new_gpu_starts": 0,
+  "strict_primary_light_unchanged": true
+}

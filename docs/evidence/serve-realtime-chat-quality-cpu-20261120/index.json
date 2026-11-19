@@ -1,0 +1,77 @@
+[
+  {
+    "path": "managed-quality-cpu-01/actual-original-review.json",
+    "sha256": "d44c3d504b48906cb0310527bd64cb9a51c99f1fa624b1df08ba1412ce8cb2f8",
+    "bytes": 1028
+  },
+  {
+    "path": "managed-quality-cpu-01/inventory-result.json",
+    "sha256": "f64584422c77380da314b7073df31c157e2edadc794f6125ca33cfdb98e62f44",
+    "bytes": 75
+  },
+  {
+    "path": "managed-quality-cpu-01/inventory.json",
+    "sha256": "3f8c7226902513b4c4626a9fea33d03243921c8df1174da8917a4e76a6e6f09d",
+    "bytes": 223
+  },
+  {
+    "path": "managed-quality-cpu-01/inventory.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "managed-quality-cpu-01/plan.json",
+    "sha256": "53b4f67dee6511fc4b04e8aa15020ffe4d2e131c1a4c9741a419da50decef52e",
+    "bytes": 1274
+  },
+  {
+    "path": "managed-quality-cpu-01/result.json",
+    "sha256": "daf557509b7ab094fb867dcf5dfe385b13e591d49ae18b1bff4d64c7906a11de",
+    "bytes": 117
+  },
+  {
+    "path": "managed-quality-cpu-01/stderr.log",
+    "sha256": "a1494a6715c053d88d2514e188d180e7d526a10623887da4961eaf2be4bd73ec",
+    "bytes": 5314
+  },
+  {
+    "path": "managed-quality-cpu-01/stdout.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "source/tools/serve_realtime/conversation_managed.py",
+    "sha256": "d7f31ef5b35ead3e53873a7f21d4c8556ee0f234ce97a99f84ee4cf4f4642098",
+    "bytes": 14755
+  },
+  {
+    "path": "source/tools/serve_realtime/conversation_observation.py",
+    "sha256": "705c0376a22e4b45743ef73df549c4f9d6186c74e5462ca4e0b472b36a8c216d",
+    "bytes": 6466
+  },
+  {
+    "path": "source/tools/serve_realtime/conversation_recovery_sdk.mjs",
+    "sha256": "0145a9aebe4fb7d2d4d53a478e9628ebfca767f4bf7fb62cd888219244dcbd03",
+    "bytes": 10020
+  },
+  {
+    "path": "source/tools/serve_realtime/test_conversation_managed.py",
+    "sha256": "12ab42ee435aa97a80b170dbf2ef9a87f238a18d2942550386e19feef3b01add",
+    "bytes": 15226
+  },
+  {
+    "path": "source/tools/serve_realtime/test_conversation_recovery_sdk.py",
+    "sha256": "602a9f5949bfb7e996e51af12c372c9018e9aed6cbe5459fd707c9da36117341",
+    "bytes": 11133
+  },
+  {
+    "path": "source/tools/serve_recovery/profile_evidence.py",
+    "sha256": "b0a45a232e94592039db3f23560c5e281bc25b99cf733cd4966f77e060cb7b1e",
+    "bytes": 88687
+  },
+  {
+    "path": "source/tools/serve_recovery/test_profile_conversation.py",
+    "sha256": "edd602e25dfed3dbf26764bce8576fed48b5abb3a5a3a3802aa30c6f4bc54478",
+    "bytes": 13308
+  }
+]

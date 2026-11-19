@@ -10,11 +10,13 @@ import re
 import subprocess
 
 from tools.serve_realtime import managed
+from tools.serve_realtime import conversation_observation
 from tools.serve_recovery import profile_evidence as evidence
 from tools.serve_service.package import read, require, same_json, save, sha
 
 OWNER = ('model_pid', 'model_start_ticks', 'model_generation',
          'controller_pid', 'controller_start_ticks')
+QUALITY_POLICY = 'record_exact_source_answer_separately'
 
 
 def phases(plan):
@@ -49,15 +51,18 @@ def prepare(path, manifest, qualified, package):
     require(version is not None, 'actual current release record missing')
     files = {str(p):sha(p) for p in (path, registry_path, accepted, record,
         path.parent/'qualified/primary.json', path.parent/'qualified/light.json')}
-    return dict(format='q4t-managed-conversation-v1', files=files,
+    return dict(format='q4t-managed-conversation-v2', files=files,
+        quality_policy=QUALITY_POLICY,
         source=dict(path='docs/STATUS.md', sha256=sha(record), version='rev'+version[1])), prior['sdk']
 
 
-def check_session(value, mode, transport, source):
+def check_session(value, mode, transport, source, quality_policy=None):
+    require(quality_policy in (None, QUALITY_POLICY), 'unknown conversation quality policy')
     require(mode in ('complete','hold_stream','hold_complete') and
         transport in ('official-openai-wss','ws-loopback') and
         type(value) is dict and value.get('phase') == 'result' and
-        value.get('status') == 'PASS' and value.get('mode') == mode and
+        value.get('status') == ('PROTOCOL_PASS' if quality_policy else 'PASS') and
+        value.get('mode') == mode and
         value.get('transport') == transport and value.get('automatic_replay') is False and
         type(value.get('connections')) is int and value['connections'] == 1 and
         type(value.get('close_code')) is int and value['close_code'] in
@@ -88,8 +93,25 @@ def check_session(value, mode, transport, source):
     else:
         require(partial is None, 'unexpected incomplete managed response')
         pending = None
-    total = evidence.conversation_output(source, value, pending)
+    if quality_policy:
+        observed = conversation_observation.observe(source, value, pending)
+        require(value.get('quality_policy') == quality_policy and
+            value.get('model_quality') == observed['model_quality'],
+            'model answer quality receipt differs from actual wire')
+        total = observed['total_tokens']
+    else:
+        total = evidence.conversation_output(source, value, pending)
     return total
+
+
+def quality_policy(plan):
+    fixed = plan['conversation']
+    if fixed['format'] == 'q4t-managed-conversation-v1':
+        require('quality_policy' not in fixed, 'old strict plan cannot change policy')
+        return None
+    require(fixed['format'] == 'q4t-managed-conversation-v2' and
+        fixed.get('quality_policy') == QUALITY_POLICY, 'managed conversation source contract')
+    return QUALITY_POLICY
 
 
 def accounting(before, after, total, interrupted=False):
@@ -112,15 +134,14 @@ def check(out, plan, identity, capabilities):
     require(('conversation' in plan) is enabled,
             'declared managed conversation capability omitted')
     if not enabled: return {}
-    require(plan['conversation']['format'] == 'q4t-managed-conversation-v1',
-            'managed conversation source contract')
+    policy = quality_policy(plan)
     out = Path(out); result = {}; identifiers = []
     transport = 'official-openai-wss' if plan['scenario'] == 'tls' else 'ws-loopback'
     for label,mode in phases(plan):
         prefix = label+'-conversation'
         row = read(out/(prefix+'-receipt.json'))
         raw = read(out/(prefix+'.sdk.json'))
-        total = check_session(raw,mode,transport,plan['conversation']['source'])
+        total = check_session(raw,mode,transport,plan['conversation']['source'],policy)
         require(row['mode'] == mode and managed.clean(row['before']),
                 'initial managed conversation resources leaked')
         for suffix in ('before','after') + (() if mode == 'complete' else ('held',)):
@@ -159,6 +180,8 @@ def check(out, plan, identity, capabilities):
         result[prefix] = dict(mode=mode,transport=transport,completed_tokens=total,
             actual_tokens=used,interrupted_usage_from_server=mode == 'hold_stream',
             automatic_replay=False,core_owner=owner(first))
+        if policy:
+            result[prefix].update(quality_policy=policy,model_quality=raw['model_quality'])
     require(len(identifiers) == len(set(identifiers)), 'managed response identity replay')
     count = len(result)*(1+int('realtime' in plan)+int(plan.get('semantic_vad',False)))
     require(read(out/'counts.json')['counts']['websocket_sessions'] ==
@@ -187,6 +210,7 @@ class Actor(managed.Actor):
             api_key=self.stage.keys['alpha'], mode=mode,
             record_file=str(managed.ROOT/source['path']),record_sha256=source['sha256'],
             expected_version=source['version'],
+            quality_policy=quality_policy(self.stage.plan),
             ca_file=self.stage.plan['tls_inputs']['ca']['path'] if tls else None)
         env = {k:v for k,v in os.environ.items() if k not in
             ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD','HTTP_PROXY','HTTPS_PROXY',
@@ -222,7 +246,7 @@ class Actor(managed.Actor):
                 'managed conversation failed or repeated receipt')
         check_session(value,mode,'official-openai-wss' if
             self.stage.plan['scenario'] == 'tls' else 'ws-loopback',
-            self.stage.plan['conversation']['source'])
+            self.stage.plan['conversation']['source'],quality_policy(self.stage.plan))
         self.current['after'] = None if mode == 'hold_complete' else self.observe('after',managed.clean)
         if mode != 'hold_complete':
             save(self.stage.output/(prefix+'-core-after.json'),self.stage.sample())

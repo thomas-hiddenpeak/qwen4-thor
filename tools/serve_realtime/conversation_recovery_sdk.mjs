@@ -12,6 +12,8 @@ for await (const part of process.stdin) {
 }
 const args = JSON.parse(input);
 check(['complete', 'hold_stream', 'hold_complete'].includes(args.mode), 'fixed recovery mode');
+const qualityPolicy = args.quality_policy ?? null;
+check([null, 'record_exact_source_answer_separately'].includes(qualityPolicy), 'fixed quality policy');
 const sdk = path.resolve(process.env.Q4T_NODE_SDK_DIR);
 for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
   check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules', name,
@@ -58,6 +60,7 @@ if (args.ca_file) {
 }
 let fatal = null, closed = false, closeCode = null, connections = 0, armed = false;
 let bytes = 0, sent = 0, creates = 0, partial = null, toolRecord = null;
+let modelQuality = null;
 const events = [], responses = [], transportErrors = [];
 const deadline = Date.now() + 180000;
 const timer = setTimeout(() => { fatal = new Error('absolute deadline'); rt.socket.terminate(); }, 180000);
@@ -117,6 +120,7 @@ async function create(value, hold = false) {
 }
 function result(status, error) {
   return { phase: 'result', status, ...(error ? { error } : {}), mode: args.mode,
+    quality_policy: qualityPolicy, model_quality: modelQuality,
     transport, connections, close_code: closeCode, automatic_replay: false,
     response_creates: creates, partial, tool_record: toolRecord, responses,
     sent_events: sent, event_bytes: bytes, events, transport_errors: transportErrors };
@@ -150,7 +154,11 @@ try {
     call_id: call.call_id, output: JSON.stringify(toolRecord) });
   const answer = await create({ tools: [], tool_choice: 'none',
     instructions: 'Reply only with the exact version field from the actual tool result.' });
-  check(text(answer).trim() === toolRecord.version, 'actual source-bound model answer');
+  const actual = text(answer);
+  modelQuality = { status: actual === toolRecord.version ? 'PASS' : 'FAIL',
+    expected: toolRecord.version, actual, criterion: 'exact_source_version',
+    response_id: answer.id };
+  if (!qualityPolicy) check(modelQuality.status === 'PASS', 'actual source-bound model answer');
   if (args.mode === 'hold_stream') {
     await create({ conversation: 'none', input: [], tools: [], tool_choice: 'none',
       max_output_tokens: 2048,
@@ -170,7 +178,7 @@ try {
   check(connections === 1, 'automatic reconnect detected');
   if (partial) check(!events.some((e) => e.type === 'response.done' &&
     e.response?.id === partial.response_id), 'interrupted request produced a terminal before disconnect');
-  process.stdout.write(JSON.stringify(result('PASS')) + '\n');
+  process.stdout.write(JSON.stringify(result(qualityPolicy ? 'PROTOCOL_PASS' : 'PASS')) + '\n');
 } catch (error) {
   rt.socket.terminate(); process.exitCode = 1;
   process.stdout.write(JSON.stringify(result('FAIL', error.message)) + '\n');

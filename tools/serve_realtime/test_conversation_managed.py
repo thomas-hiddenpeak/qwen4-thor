@@ -11,6 +11,7 @@ import unittest
 from unittest import mock
 
 from tools.serve_realtime import conversation_managed as m
+from tools.serve_recovery import profile_evidence
 from tools.serve_realtime.test_managed import state, wire
 from tools.serve_recovery.test_profile_conversation import record, declaration
 from tools.native_asr import service_acceptance as service
@@ -44,6 +45,20 @@ def core(index=0):
                 model_generation=1+index,controller_pid=10+index,controller_start_ticks=20+index)
 
 
+def quality_session(answer='wrong version'):
+    value=session()
+    row=value['responses'][1]
+    row['output'][0]['content'][0]['text']=answer
+    for event in value['events']:
+        if event['type']=='response.done' and event['response']['id']==row['id']:
+            event['response']=copy.deepcopy(row)
+        if event['type']=='response.output_text.delta' and event['response_id']==row['id']:
+            event['delta']=answer
+    value.update(status='PROTOCOL_PASS',quality_policy=m.QUALITY_POLICY,
+        model_quality=m.conversation_observation.observe(record()['source'],value)['model_quality'])
+    return value
+
+
 class Evidence(unittest.TestCase):
     def setUp(self):
         parent=Path(os.environ['Q4T_TEST_OUTPUT_DIR'])
@@ -55,6 +70,52 @@ class Evidence(unittest.TestCase):
             raw=session(mode);original=copy.deepcopy(raw)
             self.assertEqual(m.check_session(raw,mode,'official-openai-wss',record()['source']),220)
             self.assertEqual(raw,original)
+
+    def test_wrong_answer_is_preserved_and_cannot_qualify_primary_light(self):
+        raw=quality_session();original=copy.deepcopy(raw)
+        self.assertEqual(m.check_session(raw,'complete','official-openai-wss',
+            record()['source'],m.QUALITY_POLICY),220)
+        self.assertEqual(raw,original)
+        self.assertEqual(raw['model_quality']['status'],'FAIL')
+        with self.assertRaises(ValueError):
+            profile_evidence.conversation_output(record()['source'],raw)
+        correct=quality_session('rev346')
+        self.assertEqual(profile_evidence.conversation_output(record()['source'],correct),220)
+
+    def test_quality_policy_cannot_hide_stream_source_usage_or_tool_errors(self):
+        for mutate in (lambda r:r['events'][-2].update(delta='rev346'),
+            lambda r:r['tool_record'].update(version='rev0'),
+            lambda r:r['responses'][1]['usage'].update(total_tokens=999),
+            lambda r:r['events'][3]['item'].update(call_id='foreign'),
+            lambda r:r['responses'][0]['output'][0].update(name='other_tool'),
+            lambda r:r['model_quality'].update(status='PASS'),
+            lambda r:r.update(status='PASS'),
+            lambda r:r.update(quality_policy='ignore')):
+            raw=quality_session();mutate(raw)
+            with self.assertRaises((ValueError,RuntimeError)):
+                m.check_session(raw,'complete','official-openai-wss',
+                    record()['source'],m.QUALITY_POLICY)
+
+    def test_old_plan_stays_strict_and_unknown_quality_modes_reject(self):
+        old=dict(conversation=dict(format='q4t-managed-conversation-v1'))
+        self.assertIsNone(m.quality_policy(old))
+        with self.assertRaises(RuntimeError):
+            m.check_session(quality_session(),'complete','official-openai-wss',record()['source'])
+        for fixed in (dict(format='q4t-managed-conversation-v1',quality_policy=m.QUALITY_POLICY),
+            dict(format='q4t-managed-conversation-v2'),
+            dict(format='q4t-managed-conversation-v2',quality_policy='ignore')):
+            with self.assertRaises(RuntimeError):m.quality_policy(dict(conversation=fixed))
+
+    def test_managed_receipt_exports_recomputed_model_quality(self):
+        self.fixture('tool_retained')
+        self.plan['conversation'].update(format='q4t-managed-conversation-v2',
+                                         quality_policy=m.QUALITY_POLICY)
+        raw=quality_session();raw.update(transport='ws-loopback')
+        save(self.out/'primary-conversation.sdk.json',raw)
+        result=m.check(self.out,self.plan,{},self.caps)
+        observed=result['primary-conversation']['model_quality']
+        self.assertEqual(observed,raw['model_quality'])
+        self.assertEqual(observed['status'],'FAIL')
 
     def test_transport_replay_missing_partial_and_false_terminal_reject(self):
         for change in (lambda v:v.update(connections=2),

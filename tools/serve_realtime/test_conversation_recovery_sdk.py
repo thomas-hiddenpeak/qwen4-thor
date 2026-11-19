@@ -28,6 +28,7 @@ class RecoverySdk(unittest.TestCase):
         self.out=Path(tempfile.mkdtemp(prefix='case-',dir=self.root))
         self.record=self.out/'record.txt';self.record.write_text('CPU fixture: 默认 rev346\n')
         self.commands=[];self.errors=[];self.outputs=[];owner=self
+        self.answer='rev346';self.stream_answer=None
         class Peer(BaseHTTPRequestHandler):
             protocol_version='HTTP/1.1'
             def log_message(self,*_):pass
@@ -64,10 +65,11 @@ class RecoverySdk(unittest.TestCase):
                                           name='lookup_project_record',arguments='{"record_key":"release"}')
                                 emit('response.function_call_arguments.delta',response_id=identifier,item_id=item_id,delta=item['arguments'])
                             else:
-                                value='rev346' if turn==2 else '1'
+                                value=owner.answer if turn==2 else '1'
                                 item=dict(id=item_id,type='message',role='assistant',status='completed',
                                           content=[dict(type='output_text',text=value)])
-                                emit('response.output_text.delta',response_id=identifier,item_id=item_id,delta=value)
+                                emit('response.output_text.delta',response_id=identifier,item_id=item_id,
+                                     delta=owner.stream_answer if turn==2 and owner.stream_answer is not None else value)
                             if turn!=3:
                                 emit('response.done',response=dict(id=identifier,status='completed',
                                     output=[item],conversation_id='cpu-conversation',output_modalities=['text'],
@@ -86,12 +88,12 @@ class RecoverySdk(unittest.TestCase):
         self.server.shutdown();self.server.server_close();self.thread.join(2)
         self.assertFalse(self.thread.is_alive());self.assertEqual(self.errors,[])
 
-    def start(self,mode,*,plain=False,wrong_ca=False):
+    def start(self,mode,*,plain=False,wrong_ca=False,quality_policy=None):
         args=dict(base_url=f"{'http' if plain else 'https'}://127.0.0.1:{self.front.port}/v1",
             api_key='A'*40,ca_file=None if plain else
                 (self.untrusted if wrong_ca else self.tls)['certificate'],mode=mode,
             record_file=str(self.record),record_sha256=hashlib.sha256(self.record.read_bytes()).hexdigest(),
-            expected_version='rev346')
+            expected_version='rev346',quality_policy=quality_policy)
         env={k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
         process=subprocess.Popen(['node',str(ROOT/'tools/serve_realtime/conversation_recovery_sdk.mjs')],
             stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
@@ -102,12 +104,12 @@ class RecoverySdk(unittest.TestCase):
         process.stdin.write(json.dumps(args).encode());process.stdin.close();process.stdin=None
         return process
 
-    def finish(self,process,success=True):
+    def finish(self,process,success=True,expected_status=None):
         stdout,stderr=process.communicate(timeout=10)
         (self.out/('stdout-'+str(process.pid)+'.json')).write_bytes(stdout)
         (self.out/('stderr-'+str(process.pid)+'.log')).write_bytes(stderr)
         value=json.loads(stdout);self.assertEqual(process.returncode==0,success,stderr.decode()+stdout.decode())
-        self.assertEqual(value['status'],'PASS' if success else 'FAIL')
+        self.assertEqual(value['status'],expected_status or ('PASS' if success else 'FAIL'))
         self.assertFalse(value['automatic_replay'])
         return value
 
@@ -151,6 +153,27 @@ class RecoverySdk(unittest.TestCase):
         value=self.finish(self.start('complete',wrong_ca=True),False)
         self.assertEqual(value['connections'],0);self.assertEqual(self.commands,[])
         self.assertEqual(value['transport'],'official-openai-wss')
+
+    def test_recorded_wrong_answer_keeps_original_text_and_normal_close(self):
+        self.answer='The wrong answer is preserved.'
+        value=self.finish(self.start('complete',
+            quality_policy='record_exact_source_answer_separately'),expected_status='PROTOCOL_PASS')
+        self.assertEqual(value['model_quality']['status'],'FAIL')
+        self.assertEqual(value['model_quality']['actual'],self.answer)
+        self.assertEqual(value['responses'][1]['output'][0]['content'][0]['text'],self.answer)
+        self.assertEqual(value['close_code'],1000)
+
+    def test_strict_old_mode_still_rejects_the_same_wrong_answer(self):
+        self.answer='The wrong answer is preserved.'
+        value=self.finish(self.start('complete'),False)
+        self.assertEqual(value['model_quality']['status'],'FAIL')
+        self.assertEqual(value['model_quality']['actual'],self.answer)
+
+    def test_quality_observation_does_not_accept_inconsistent_stream(self):
+        self.answer='The wrong answer is preserved.';self.stream_answer='rev346'
+        value=self.finish(self.start('complete',
+            quality_policy='record_exact_source_answer_separately'),False)
+        self.assertIn('deltas differ',value['error'])
 
 
 if __name__ == '__main__':unittest.main()
