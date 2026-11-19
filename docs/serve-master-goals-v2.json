@@ -448,22 +448,44 @@
         "guardian_recovery_retested": false
       },
       "realtime_history_context_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
         "cases": 55,
         "initial_failure_preserved": true,
         "repair_cases": 3,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "complete": false
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
       },
       "realtime_history_retrieve_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-retrieve-cpu-20261119/README.md",
         "cases": 86,
         "seconds": 1.4156458186917007,
         "gpu_actions": 0,
         "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "default_unchanged": true,
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
         "default_unchanged": true,
         "complete": false
       }
@@ -4605,22 +4627,44 @@
         "guardian_recovery_retested": false
       },
       "realtime_history_context_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
         "cases": 55,
         "initial_failure_preserved": true,
         "repair_cases": 3,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "complete": false
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
       },
       "realtime_history_retrieve_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-retrieve-cpu-20261119/README.md",
         "cases": 86,
         "seconds": 1.4156458186917007,
         "gpu_actions": 0,
         "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "default_unchanged": true,
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
         "default_unchanged": true,
         "complete": false
       }
@@ -5922,22 +5966,44 @@
         "guardian_recovery_retested": false
       },
       "realtime_history_context_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
         "cases": 55,
         "initial_failure_preserved": true,
         "repair_cases": 3,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "complete": false
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
       },
       "realtime_history_retrieve_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-retrieve-cpu-20261119/README.md",
         "cases": 86,
         "seconds": 1.4156458186917007,
         "gpu_actions": 0,
         "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "default_unchanged": true,
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
         "default_unchanged": true,
         "complete": false
       }
@@ -6149,22 +6215,44 @@
         "existing_evidence_reviewed": true
       },
       "realtime_history_context_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
         "cases": 55,
         "initial_failure_preserved": true,
         "repair_cases": 3,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "complete": false
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
       },
       "realtime_history_retrieve_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-retrieve-cpu-20261119/README.md",
         "cases": 86,
         "seconds": 1.4156458186917007,
         "gpu_actions": 0,
         "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "default_unchanged": true,
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
         "default_unchanged": true,
         "complete": false
       }
@@ -7715,22 +7803,44 @@
         "guardian_recovery_retested": false
       },
       "realtime_history_context_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
         "cases": 55,
         "initial_failure_preserved": true,
         "repair_cases": 3,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "complete": false
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
       },
       "realtime_history_retrieve_20261119": {
-        "state": "targeted_cpu_passed_business_pending",
+        "state": "business_qualified_recovery_delivery_pending",
         "evidence": "evidence/serve-realtime-history-retrieve-cpu-20261119/README.md",
         "cases": 86,
         "seconds": 1.4156458186917007,
         "gpu_actions": 0,
         "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "default_unchanged": true,
+        "complete": false,
+        "business_evidence": "evidence/serve-realtime-history-business-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
         "default_unchanged": true,
         "complete": false
       }
@@ -8648,6 +8758,26 @@
         "state": "MERGED",
         "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/49",
         "evidence": "evidence/serve-voice-mainline-20261119/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {
@@ -8836,6 +8966,26 @@
         "revision": 244,
         "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
         "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
+        "default_unchanged": true,
+        "complete": false
       }
     }
   ],

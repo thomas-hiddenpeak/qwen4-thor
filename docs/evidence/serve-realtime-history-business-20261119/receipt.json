@@ -1,0 +1,180 @@
+{
+  "status": "PASS_REALTIME_HISTORY_RETRIEVAL_BUSINESS_RECONCILED",
+  "seconds": 45.34753486327827,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 4,
+    "chats": 1,
+    "controls": 37
+  },
+  "runtime_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+  "manual_input_tokens": [
+    70,
+    81,
+    70
+  ],
+  "independent_history_delta": 11,
+  "transcription_tokens": 561,
+  "audio": [
+    {
+      "mode": "manual",
+      "item": "item_576f47156bfe1f50be924ca329a0db49",
+      "bytes": 201788,
+      "sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 70,
+        "output_tokens": 11,
+        "total_tokens": 81,
+        "input_token_details": {
+          "audio_tokens": 55,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "mode": "manual",
+      "item": "item_5345e5c32664d7fd401815cf04a9c20c",
+      "bytes": 201788,
+      "sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 81,
+        "output_tokens": 11,
+        "total_tokens": 92,
+        "input_token_details": {
+          "audio_tokens": 55,
+          "text_tokens": 26
+        }
+      }
+    },
+    {
+      "mode": "manual",
+      "item": "item_cc35194b07a559597ab113c3f68f801a",
+      "bytes": 201788,
+      "sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 70,
+        "output_tokens": 11,
+        "total_tokens": 81,
+        "input_token_details": {
+          "audio_tokens": 55,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "mode": "near_stream",
+      "item": "item_b7fec4e8dc037b98830c0766d4219ea2",
+      "bytes": 33632,
+      "sha256": "e1dbe05ed07a0166f565bcbe6d6a64128a594a4f29a9c397a7b25f4e7c065334",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 278,
+        "output_tokens": 29,
+        "total_tokens": 307,
+        "input_token_details": {
+          "audio_tokens": 185,
+          "text_tokens": 93
+        }
+      }
+    }
+  ],
+  "continuous_actual_steps": [
+    {
+      "item": "item_b7fec4e8dc037b98830c0766d4219ea2",
+      "label": "mulaw",
+      "delay": "low",
+      "quality": {
+        "text": "甚至出现交易几乎停滞的情况。",
+        "exact": true,
+        "word_error_rate": 0
+      },
+      "before_commit": {
+        "item_id": "item_b7fec4e8dc037b98830c0766d4219ea2",
+        "sent_bytes": 24000,
+        "total_bytes": 33632,
+        "delta": "甚至"
+      },
+      "steps": [
+        {
+          "pass": 1,
+          "samples": 16000,
+          "prefix": 0,
+          "input": 28,
+          "output": 6,
+          "cumulative_output": 6,
+          "final": 0
+        },
+        {
+          "pass": 2,
+          "samples": 32000,
+          "prefix": 0,
+          "input": 41,
+          "output": 8,
+          "cumulative_output": 14,
+          "final": 0
+        },
+        {
+          "pass": 3,
+          "samples": 48000,
+          "prefix": 4,
+          "input": 58,
+          "output": 7,
+          "cumulative_output": 21,
+          "final": 0
+        },
+        {
+          "pass": 4,
+          "samples": 64000,
+          "prefix": 7,
+          "input": 74,
+          "output": 4,
+          "cumulative_output": 25,
+          "final": 0
+        },
+        {
+          "pass": 5,
+          "samples": 67264,
+          "prefix": 7,
+          "input": 77,
+          "output": 4,
+          "cumulative_output": 29,
+          "final": 1
+        }
+      ],
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 278,
+        "output_tokens": 29,
+        "total_tokens": 307,
+        "input_token_details": {
+          "audio_tokens": 185,
+          "text_tokens": 93
+        }
+      }
+    }
+  ],
+  "core_reply": "42",
+  "nvml_queries": 44,
+  "nvml_errors": 0,
+  "owned_processes_gone": true,
+  "ports_released": [
+    18378,
+    18379,
+    18380
+  ],
+  "gpu_lock_released": true,
+  "default_revision": 326,
+  "default_unchanged": true,
+  "guardian_recovery_qualified": false,
+  "master_complete": false,
+  "polling_limitation": "Cooperative lease plus sampled /proc/NVML; does not prove absence of interference shorter than the polling interval."
+}

@@ -226,3 +226,8 @@ H2b2 [86项针对性CPU通过](evidence/serve-realtime-history-retrieve-cpu-2026
 隐藏、跨会话隔离及实际处理后波形精确取回。全部实际用量需与live
 配额结算一致，并保留同PID核心Chat和自有进程/端口/锁清理证据。
 本阶段不替代Guardian/profile恢复及可回退交付，全部master继续。
+
+H3 [真实WSS业务已通过](evidence/serve-realtime-history-business-20261119/README.md)：
+实际输入70→81→70、561转录token、两种处理后波形精确相同；1启动/
+2会话/4转录/1Chat，45.347535秒，清理完成且默认保持。下一步继续
+S5/S6及整个master，固定PID短验不代替受管理恢复/发行。

@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真实Realtime历史/取回短验通过](evidence/serve-realtime-history-business-20261119/README.md)：
+实际输入70→81→70、删除及处理后音频逐字节吻合；连续提交可见性/
+跨会话隔离、561实际转录token结算及同PID Chat通过。1模型/1入口、
+2WSS/4转录/1Chat、45.348秒/44次NVML正常；进程/端口/锁释放，默认
+rev326保持STOPPED。继续Guardian/profile/可回退交付、语义VAD/对话/
+Live与全部master，原exact-code/声纹失败及听感待验保持。
+
 [真实历史/取回驱动CPU通过](evidence/serve-realtime-history-driver-cpu-20261119/README.md)：
 8证据反例+3真实SDK/TLS夹具+2原生波形+1独立tokenizer复核，3.763秒/
 0GPU。冻结真实输入70→81→70，取回须逐字节等于处理后波形；下一步
