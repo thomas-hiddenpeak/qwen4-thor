@@ -265,8 +265,7 @@ Q4T_TEST(realtime_chat_empty_context_has_ephemeral_creation_cue) {
     Q4T_CHECK(messages.size() == 2 &&
               messages[0].GetString("content") == instruction &&
               messages[1].GetString("role") == "user" &&
-              messages[1].GetString("content") ==
-                  "Respond now according to the system instructions.");
+              messages[1].GetString("content") == instruction);
   }
   return true;
 }

@@ -210,16 +210,17 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   if (!status) return status;
   if (candidate.generation.input.items.array.empty()) {
     // response.create itself asks for a new answer even without a user item.
-    // This text checkpoint expects a user-turn cue. Keep that transport cue
-    // ephemeral: never invent conversation items or replace caller instructions.
+    // This text checkpoint expects the task in a user turn. Mirror the actual
+    // caller instructions without a meta-instruction to follow adapter rules.
+    // Keep this transport cue ephemeral and the instruction role unchanged.
     // The normal template/tokenizer counts its actual input and quota cost.
     auto& generation = candidate.generation;
     auto& chat = generation.generation_request;
+    auto task = request.GetString("instructions");
+    if (task.empty()) task = "Generate the next assistant response.";
     Field(chat, "messages")
-        .array.push_back(Object(
-            {{"role", String("user")},
-             {"content",
-              String("Respond now according to the system instructions.")}}));
+        .array.push_back(Object({{"role", String("user")},
+                                 {"content", String(task)}}));
     auto planning = config;
     planning.async_tool_call_ids = generation.chat.async_tool_call_ids;
     planning.responses_tool_media = generation.chat.responses_tool_media;

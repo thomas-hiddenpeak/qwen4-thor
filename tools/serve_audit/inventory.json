@@ -2972,7 +2972,7 @@
     "src/server/realtime_audio_history.cpp": "194b4db93486087c53710ba55560b6249f0edb94850fab72afa285e79b574232",
     "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
     "src/server/realtime_chat_execution.cpp": "05d10d833671231ab982cee2f0d8b2136c2d2d82d1dc6764002a3f3177d719eb",
-    "src/server/realtime_chat_plan.cpp": "a8592ce4ebaea38db3257334d6494931e48f3e9b3b268d5329444c3e7af3382b",
+    "src/server/realtime_chat_plan.cpp": "8a9d380555926255d3c7db0a530ddb395453f65a34780cd4ffca5906e133f1aa",
     "src/server/realtime_conversation.cpp": "a0993cd2329fe4455bf42214c7933402c8fca392b91ddbf2bc758847e8f8cb19",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "89f4367555486e0e4ab6efcf7783e7b35ae2e5a23961ee6c5090c5eb7a922a88",
