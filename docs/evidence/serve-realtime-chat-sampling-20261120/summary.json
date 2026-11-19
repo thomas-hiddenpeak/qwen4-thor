@@ -1,0 +1,109 @@
+{
+  "status": "DIAGNOSTIC_ONLY_NOT_SERVICE_QUALIFICATION",
+  "original_failures_preserved": true,
+  "service_qualified": false,
+  "model_starts": 3,
+  "chat_requests": 3,
+  "seconds": 127.03400461561978,
+  "nvml_ok": 124,
+  "observations": [
+    {
+      "stage": "recovery-sampling-diagnostic-02",
+      "result": {
+        "status": "FAILED",
+        "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 192, in run\n    self.start();self.exercise()\n                 ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 167, in exercise\n    before = self.answer('seeded_before')\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 124, in answer\n    require(len(body['choices']) == 1 and choice['finish_reason'] == 'stop' and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: actual response terminal\n",
+        "cleanup_failure": null,
+        "seconds": 44.969743069726974,
+        "counts": {
+          "starts": 1,
+          "chats": 1,
+          "controls": 32
+        },
+        "default_unchanged": true,
+        "original_quality_failure_preserved": true,
+        "service_qualified": false
+      },
+      "guard_status": "COMMAND_FAILED",
+      "nvml_ok": 44
+    },
+    {
+      "stage": "recovery-sampling-diagnostic-03",
+      "result": {
+        "status": "FAILED",
+        "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 224, in run\n    self.start();self.exercise()\n                 ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 198, in exercise\n    self.cancel()\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/recovery_sampling_diagnostic.py\", line 182, in cancel\n    require(choice['finish_reason'] is None,'response completed before cancel')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: response completed before cancel\n",
+        "cleanup_failure": null,
+        "seconds": 45.50499742012471,
+        "counts": {
+          "starts": 1,
+          "chats": 1,
+          "controls": 37
+        },
+        "default_unchanged": true,
+        "original_quality_failure_preserved": true,
+        "service_qualified": false
+      },
+      "guard_status": "COMMAND_FAILED",
+      "nvml_ok": 44
+    },
+    {
+      "stage": "recovery-greedy-control-01",
+      "result": {
+        "status": "OBSERVED_DIAGNOSTIC",
+        "failure": null,
+        "cleanup_failure": null,
+        "seconds": 36.559264125768095,
+        "counts": {
+          "starts": 1,
+          "chats": 1,
+          "controls": 34
+        },
+        "default_unchanged": true,
+        "original_quality_failure_preserved": true,
+        "service_qualified": false
+      },
+      "guard_status": "COMPLETED",
+      "nvml_ok": 36
+    }
+  ],
+  "greedy": {
+    "actual": {
+      "choice": {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "rev346"
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      },
+      "usage": {
+        "prompt_tokens": 311,
+        "completion_tokens": 5,
+        "total_tokens": 316
+      },
+      "source_answer_matches": true,
+      "refused": false
+    },
+    "original_failures_preserved": true,
+    "service_qualified": false,
+    "scope": "Single greedy control; not a within-process cancellation comparison"
+  },
+  "pool_maintenance": {
+    "status": "PASS_REVERSIBLE_RETIRED_POOL_MAINTENANCE",
+    "seconds": 84.10379000008106,
+    "steps": [
+      "generations-prepared",
+      "generations-applied",
+      "cycles-prepared",
+      "cycles-applied"
+    ],
+    "active_generations": 27,
+    "active_registrations": 12,
+    "protected_unchanged": true,
+    "new_gpu_starts": 0,
+    "deleted_files": 0
+  },
+  "files": 56,
+  "secret_scan_matches": 0,
+  "archive_sha256": "1ecc742310a934e1e68430a549f03b97dd9b02ce345e864283c03d08e1acfff9"
+}

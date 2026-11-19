@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[回答诊断与发布池维护](evidence/serve-realtime-chat-sampling-20261120/README.md)
+已归档：三组 3 模型/3 Chat/127.034 秒，124 次 NVML 正常、资源释放。
+冷启动固定 seed 拒答，greedy 对实际失败提示返回 rev346；两个诊断
+脚本原 FAIL 保留，取消对照未完成，不能据此追认 TLS 恢复验收通过。
+本轮采样停止，语义错误交付分类仍待反馈；继续独立的
+[Prompt 原生接入](SERVE_REALTIME_PROMPT_2026-11-20.md)，当前仅有方案。
+4 个历史 generation/4 个退休注册已可逆归档，活动池 27/12，0 删除。
+默认 rev346 STOPPED、原质量失败/听感待验及全部 master 保持。
+
 [Chat 恢复首轮与原失败](evidence/serve-realtime-chat-recovery-review-20261119/README.md)
 已保留：保留包 1 模型/18 工作/141.216 秒通过；TLS 组恢复与取消
 结算正常，但新连接第二轮实际回答未返回资料版本，原整组 FAIL。
