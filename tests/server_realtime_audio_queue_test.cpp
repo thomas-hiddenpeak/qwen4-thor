@@ -21,6 +21,54 @@ std::string Front(const RealtimeAudioQueue& queue) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_queue_prefix_and_silence_gaps_keep_borrowed_storage) {
+  RealtimeAudioQueue q(1, {}, 18);
+  RealtimeAudioItem a, b, c;
+  Q4T_CHECK(q.Append(1, Bytes("abcdefghijklmn")));
+  Q4T_CHECK(q.CommitPrefix(1, 4, &a));
+  const auto borrowed = q.FrontBytes()[0];
+  Q4T_CHECK(q.TrimPendingBefore(1, 8));
+  Q4T_CHECK(q.UsedBytes() == 14 && q.PendingBytes() == 6);
+  Q4T_CHECK(q.CommitPrefix(1, 10, &b));
+  Q4T_CHECK(q.TrimPendingBefore(1, 12));
+  Q4T_CHECK(Front(q) == "abcd" && q.FrontBytes()[0].data() == borrowed.data());
+  Q4T_CHECK(q.Acknowledge(1, a.sequence));
+  Q4T_CHECK(q.UsedBytes() == 6 && Front(q) == "ij");
+  // Wrap a later suffix while the second committed item is borrowed.
+  Q4T_CHECK(q.Append(1, Bytes("opqrstuvwx")));
+  Q4T_CHECK(q.CommitPrefix(1, 24, &c));
+  Q4T_CHECK(q.Acknowledge(1, b.sequence));
+  Q4T_CHECK(Front(q) == "mnopqrstuvwx" && q.UsedBytes() == 12);
+  Q4T_CHECK(q.Acknowledge(1, c.sequence) && q.UsedBytes() == 0);
+  Q4T_CHECK(q.AcceptedTicks() == 24);
+  return true;
+}
+
+Q4T_TEST(realtime_queue_prefix_atomic_bounds_partial_tail_and_cancel) {
+  RealtimeAudioQueue q(1, {}, 8);
+  RealtimeAudioItem item;
+  Q4T_CHECK(q.Append(1, Bytes("abcdefg")));
+  const auto unchanged = item;
+  for (uint64_t end : {0, 1, 3, 8}) {
+    Q4T_CHECK(!q.CommitPrefix(1, end, &item));
+    Q4T_CHECK(item == unchanged && q.UsedBytes() == 7);
+  }
+  Q4T_CHECK(!q.TrimPendingBefore(2, 2));
+  Q4T_CHECK(!q.TrimPendingBefore(1, 3));
+  Q4T_CHECK(q.TrimPendingBefore(1, 2));
+  Q4T_CHECK(q.UsedBytes() == 5 && q.PendingBeginTicks() == 2);
+  Q4T_CHECK(q.CommitPrefix(1, 4, &item));
+  Q4T_CHECK(Front(q) == "cd" && q.PendingBytes() == 3);
+  Q4T_CHECK(q.PendingFrom(4)[0].size() == 2);
+  Q4T_CHECK(q.PendingFrom(5)[0].empty());
+  Q4T_CHECK(q.Cancel(1) && q.UsedBytes() == 2);
+  Q4T_CHECK(Front(q) == "cd" && q.PendingFrom(4)[0].empty());
+  RealtimeAudioQueue invalid(0, {RealtimeAudioEncoding::kPcm16, 0});
+  Q4T_CHECK(!invalid.CommitPrefix(0, 2, &item));
+  Q4T_CHECK(!invalid.TrimPendingBefore(0, 2));
+  return true;
+}
+
 Q4T_TEST(realtime_clock_exact_fraction_and_overflow_free_projection) {
   for (const uint64_t ticks : std::array<uint64_t, 7>{
            0, 1, 2, 3, 5, 6, std::numeric_limits<uint64_t>::max()}) {

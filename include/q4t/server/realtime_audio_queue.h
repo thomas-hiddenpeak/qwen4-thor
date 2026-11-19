@@ -54,6 +54,14 @@ class RealtimeAudioQueue {
   bool Valid() const { return valid_; }
   Status Append(uint64_t epoch, std::span<const uint8_t> bytes);
   Status Commit(uint64_t epoch, RealtimeAudioItem* item);
+  // Commit a complete-sample prefix, retaining future audio/partial bytes.
+  Status CommitPrefix(uint64_t epoch, uint64_t end_ticks,
+                      RealtimeAudioItem* item);
+  // Discard analyzed silence only. Borrowed items never move; when an item is
+  // in flight, discarded storage remains charged until that item is acked.
+  Status TrimPendingBefore(uint64_t epoch, uint64_t begin_ticks);
+  std::array<std::span<const uint8_t>, 2> PendingFrom(
+      uint64_t begin_ticks) const;
   // Clear only the uncommitted tail; accepted sample time is never refunded.
   Status Clear(uint64_t epoch);
   // Changing format requires all prior audio to have been acknowledged. The
@@ -73,6 +81,8 @@ class RealtimeAudioQueue {
   size_t Items() const { return item_count_; }
   size_t StorageBytes() const { return storage_ ? capacity_bytes_ : 0; }
   uint64_t AcceptedTicks() const { return ticks_; }
+  uint64_t PendingBeginTicks() const { return pending_begin_; }
+  RealtimeAudioFormat Format() const { return format_; }
 
  private:
   bool Owns(uint64_t epoch) const { return valid_ && epoch == epoch_; }
@@ -84,6 +94,7 @@ class RealtimeAudioQueue {
   RealtimeAudioFormat format_;
   std::unique_ptr<uint8_t[]> storage_;
   std::array<RealtimeAudioItem, kRealtimeQueuedItems> items_{};
+  std::array<size_t, kRealtimeQueuedItems> release_bytes_{};
   size_t head_ = 0, used_bytes_ = 0, pending_bytes_ = 0;
   size_t item_head_ = 0, item_count_ = 0;
   uint64_t ticks_ = 0, pending_begin_ = 0, sequence_ = 0;

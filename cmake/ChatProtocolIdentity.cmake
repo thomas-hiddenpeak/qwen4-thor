@@ -623,6 +623,7 @@ set(protocol_inputs
   include/q4t/server/websocket.h
   include/q4t/server/realtime_transcription_protocol.h
   include/q4t/server/realtime_transcription_session.h
+  include/q4t/server/realtime_vad.h
   include/q4t/server/realtime_pcm.h
   include/q4t/server/realtime_audio_queue.h
   include/q4t/server/websocket_session.h
@@ -682,6 +683,7 @@ set(protocol_inputs
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_session.cpp
+  src/server/realtime_vad.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp
   src/server/websocket_session.cpp

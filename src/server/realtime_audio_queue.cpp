@@ -69,27 +69,70 @@ Status RealtimeAudioQueue::Append(uint64_t epoch,
   return {};
 }
 Status RealtimeAudioQueue::Commit(uint64_t epoch, RealtimeAudioItem* item) {
-  if (!Owns(epoch) || sealed_ || !item || !pending_bytes_ ||
-      pending_bytes_ % SampleBytes(format_))
+  if (pending_bytes_ % SampleBytes(format_))
     return Status::Fail(
         "realtime commit requires complete uncommitted samples");
+  return CommitPrefix(epoch, ticks_, item);
+}
+Status RealtimeAudioQueue::CommitPrefix(uint64_t epoch, uint64_t end_ticks,
+                                        RealtimeAudioItem* item) {
+  if (!Owns(epoch)) return Status::Fail("realtime commit ownership differs");
+  const auto step = kRealtimeTicksPerSecond / format_.rate;
+  if (!Owns(epoch) || sealed_ || !item || end_ticks <= pending_begin_ ||
+      end_ticks > ticks_ || (end_ticks - pending_begin_) % step)
+    return Status::Fail("realtime commit requires an aligned pending prefix");
   if (item_count_ == item_limit_ ||
       sequence_ == std::numeric_limits<uint64_t>::max())
     return Status::Fail("realtime committed item capacity exhausted");
-  const RealtimeAudioItem value{epoch_,
-                                sequence_ + 1,
-                                pending_begin_,
-                                ticks_,
-                                pending_bytes_ / SampleBytes(format_),
-                                pending_bytes_,
+  const size_t samples = (end_ticks - pending_begin_) / step;
+  const size_t bytes = samples * SampleBytes(format_);
+  const RealtimeAudioItem value{epoch_,    sequence_ + 1, pending_begin_,
+                                end_ticks, samples,       bytes,
                                 format_};
-  items_[(item_head_ + item_count_) % kRealtimeQueuedItems] = value;
+  const auto at = (item_head_ + item_count_) % kRealtimeQueuedItems;
+  items_[at] = value;
+  release_bytes_[at] = bytes;
   ++item_count_;
   ++sequence_;
-  pending_bytes_ = 0;
-  pending_begin_ = ticks_;
+  pending_bytes_ -= bytes;
+  pending_begin_ = end_ticks;
   *item = value;
   return {};
+}
+Status RealtimeAudioQueue::TrimPendingBefore(uint64_t epoch,
+                                             uint64_t begin_ticks) {
+  if (!Owns(epoch)) return Status::Fail("realtime trim ownership differs");
+  const auto step = kRealtimeTicksPerSecond / format_.rate;
+  if (!Owns(epoch) || sealed_ || begin_ticks < pending_begin_ ||
+      begin_ticks > ticks_ || (begin_ticks - pending_begin_) % step)
+    return Status::Fail("realtime trim requires an aligned pending prefix");
+  const size_t bytes =
+      (begin_ticks - pending_begin_) / step * SampleBytes(format_);
+  if (item_count_) {
+    release_bytes_[(item_head_ + item_count_ - 1) % kRealtimeQueuedItems] +=
+        bytes;
+  } else {
+    head_ = (head_ + bytes) % capacity_bytes_;
+    used_bytes_ -= bytes;
+  }
+  pending_bytes_ -= bytes;
+  pending_begin_ = begin_ticks;
+  return {};
+}
+std::array<std::span<const uint8_t>, 2> RealtimeAudioQueue::PendingFrom(
+    uint64_t begin_ticks) const {
+  if (!valid_ || cancelled_ || begin_ticks < pending_begin_ ||
+      begin_ticks >= ticks_)
+    return {};
+  const auto step = kRealtimeTicksPerSecond / format_.rate;
+  if ((begin_ticks - pending_begin_) % step) return {};
+  const auto width = SampleBytes(format_);
+  const size_t offset = (begin_ticks - pending_begin_) / step * width;
+  const size_t bytes = (ticks_ - begin_ticks) / step * width;
+  const auto start =
+      (head_ + used_bytes_ - pending_bytes_ + offset) % capacity_bytes_;
+  const auto first = std::min(bytes, capacity_bytes_ - start);
+  return {{{storage_.get() + start, first}, {storage_.get(), bytes - first}}};
 }
 Status RealtimeAudioQueue::Clear(uint64_t epoch) {
   if (!Owns(epoch) || sealed_)
@@ -119,10 +162,11 @@ std::array<std::span<const uint8_t>, 2> RealtimeAudioQueue::FrontBytes() const {
 Status RealtimeAudioQueue::Acknowledge(uint64_t epoch, uint64_t sequence) {
   if (!Owns(epoch) || !item_count_ || items_[item_head_].sequence != sequence)
     return Status::Fail("realtime audio completion ownership differs");
-  const auto bytes = items_[item_head_].bytes;
+  const auto bytes = release_bytes_[item_head_];
   head_ = (head_ + bytes) % capacity_bytes_;
   used_bytes_ -= bytes;
   items_[item_head_] = {};
+  release_bytes_[item_head_] = 0;
   item_head_ = (item_head_ + 1) % kRealtimeQueuedItems;
   --item_count_;
   return {};

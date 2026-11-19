@@ -87,6 +87,9 @@ try {
     await event('input_audio_buffer.cleared', start);
   }
   for (const clip of args.clips) {
+    if (clip.auto_items !== undefined) check(Number.isInteger(clip.auto_items) &&
+      clip.auto_items >= 1 && clip.auto_items <= 3 && !clip.cancel_after_delta,
+      'automatic turn budget');
     const update = await settings(clip.settings || { type: 'transcription',
       include: ['item.input_audio_transcription.logprobs'],
       audio: { input: { format: { type: 'audio/pcm', rate: 24000 },
@@ -105,29 +108,50 @@ try {
       rt.send({ type: 'input_audio_buffer.append', audio: audio.subarray(at, end).toString('base64') });
       at = end;
     }
-    rt.send({ type: 'input_audio_buffer.commit' });
-    const committed = await event('input_audio_buffer.committed', start);
-    const item = committed.item_id;
-    if (clip.cancel_after_delta) {
-      await event('conversation.item.input_audio_transcription.delta', start, item);
-      rt.close();
-      await until(() => closed, true);
-      check(!events.slice(start).some((v) => v.item_id === item &&
-        v.type === 'conversation.item.input_audio_transcription.completed'), 'cancel fabricated success');
-      turns.push({ item_id: item, cancelled: true });
-      break;
+    if (clip.auto_items === undefined) rt.send({ type: 'input_audio_buffer.commit' });
+    for (let ordinal = 0; ordinal < (clip.auto_items || 1); ++ordinal) {
+      let committed;
+      await until(() => {
+        const recent = events.slice(start);
+        const error = recent.find((v) => v.type === 'error');
+        if (error) throw new Error('server error: ' + error.error.code);
+        return (committed = recent.filter((v) =>
+          v.type === 'input_audio_buffer.committed')[ordinal]);
+      });
+      const item = committed.item_id;
+      if (clip.cancel_after_delta) {
+        await event('conversation.item.input_audio_transcription.delta', start, item);
+        rt.close();
+        await until(() => closed, true);
+        check(!events.slice(start).some((v) => v.item_id === item &&
+          v.type === 'conversation.item.input_audio_transcription.completed'), 'cancel fabricated success');
+        turns.push({ item_id: item, cancelled: true });
+        break;
+      }
+      let terminal;
+      await until(() => (terminal = events.slice(start).find((v) => v.item_id === item &&
+        ['conversation.item.input_audio_transcription.completed',
+          'conversation.item.input_audio_transcription.failed'].includes(v.type))));
+      check(terminal.type.endsWith(clip.expect_failure ? '.failed' : '.completed'),
+        'item terminal: ' + (terminal.error?.code || terminal.type));
+      const delta = events.slice(start).filter((v) => v.item_id === item &&
+        v.type === 'conversation.item.input_audio_transcription.delta').map((v) => v.delta).join('');
+      if (!clip.expect_failure) check(delta === terminal.transcript, 'delta/final mismatch');
+      else check(terminal.error.code === clip.expect_failure, 'unexpected failed item');
+      turns.push({ item_id: item, terminal, delta, update });
     }
-    let terminal;
-    await until(() => (terminal = events.slice(start).find((v) => v.item_id === item &&
-      ['conversation.item.input_audio_transcription.completed',
-        'conversation.item.input_audio_transcription.failed'].includes(v.type))));
-    check(terminal.type.endsWith(clip.expect_failure ? '.failed' : '.completed'),
-      'item terminal: ' + (terminal.error?.code || terminal.type));
-    const delta = events.slice(start).filter((v) => v.item_id === item &&
-      v.type === 'conversation.item.input_audio_transcription.delta').map((v) => v.delta).join('');
-    if (!clip.expect_failure) check(delta === terminal.transcript, 'delta/final mismatch');
-    else check(terminal.error.code === clip.expect_failure, 'unexpected failed item');
-    turns.push({ item_id: item, terminal, delta, update });
+    if (clip.cancel_after_delta) break;
+    if (clip.auto_items !== undefined) {
+      // Bounded observation after the actual trailing-silence fixture. Exact
+      // sample/idle correctness is independently covered by native CPU tests.
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      check(events.slice(start).filter((v) =>
+        v.type === 'input_audio_buffer.committed').length === clip.auto_items,
+        'automatic item count differs');
+      const end = events.length;
+      rt.send({ type: 'input_audio_buffer.clear' });
+      await event('input_audio_buffer.cleared', end);
+    }
   }
   if (!closed) { rt.close(); await until(() => closed, true); }
   check(connections === 1 && closeCode === 1000, 'connection/close boundary');

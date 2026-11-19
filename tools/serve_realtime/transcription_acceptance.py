@@ -127,13 +127,13 @@ class Stage(lifecycle.Stage):
     def __init__(self, plan):
         self.plan, self.out = plan, Path(plan['output'])
         self.started = time.monotonic()
-        self.counts = {k: 0 for k in LIMITS if k != 'seconds'}
+        self.counts = {k: 0 for k in self.limits if k != 'seconds'}
         self.model = self.model_identity = self.fault_thread = None
         self.ingress = None
         self.history = {}
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
         lifecycle.verify_lease(self.lease, lifecycle.guard.common_lock())
-        require(plan['limits'] == LIMITS and plan['expected'] == EXPECTED, 'plan drift')
+        require(plan['limits'] == self.limits and plan['expected'] == EXPECTED, 'plan drift')
         for name, digest in plan['sources'].items(): require(sha(ROOT/name) == digest, 'source drift')
         for name, digest in plan['protected'].items(): require(sha(name) == digest, 'default drift')
         for name, digest in plan['sdk_files'].items(): require(sha(name) == digest, 'SDK drift')
@@ -152,8 +152,8 @@ class Stage(lifecycle.Stage):
                      for name in ('alpha','beta','gamma')}
 
     def budget(self, kind, amount=1):
-        require(time.monotonic()-self.started < LIMITS['seconds']-40, 'phase deadline')
-        require(self.counts[kind]+amount <= LIMITS[kind], 'attempt limit: '+kind)
+        require(time.monotonic()-self.started < self.limits['seconds']-40, 'phase deadline')
+        require(self.counts[kind]+amount <= self.limits[kind], 'attempt limit: '+kind)
         self.counts[kind] += amount
         save(self.out/'counts.json', self.counts)
 
@@ -167,6 +167,7 @@ class Stage(lifecycle.Stage):
             '--max-tokens', '64', '--max-inflight-requests', '8',
             '--max-queued-requests', '3', '--asr-model-dir', self.plan['asr_directory'],
             '--asr-max-output-tokens', '128', '--client-policy-file', str(self.out/'client-policy.json')]
+        args += self.extra_model_args()
         save(self.out/'model-command.json', args)
         self.budget('starts')
         with (self.out/'model.log').open('xb', buffering=0) as log:
@@ -188,6 +189,9 @@ class Stage(lifecycle.Stage):
             self.plan['public_port'], self.plan['port'], self.plan['operations_port'],
             self.token, self.keys, self.plan['tls'], lambda:self.model.poll() is None)
         self.history[self.ingress.process.pid] = lifecycle.guard.processes()[self.ingress.process.pid]
+
+    def extra_model_args(self):
+        return []
 
     def same_model(self):
         current = lifecycle.guard.processes().get(self.model.pid, {})
@@ -230,7 +234,7 @@ class Stage(lifecycle.Stage):
 
     def sdk(self, label, client, clips, probes=False):
         self.budget('websocket_sessions')
-        self.budget('committed_items', len(clips))
+        self.budget('committed_items', sum(v.get('auto_items', 1) for v in clips))
         args = dict(base_url=f"https://127.0.0.1:{self.plan['public_port']}/v1",
             api_key=self.keys[client], ca_file=self.plan['tls']['certificate'],
             clips=clips, probes=probes)
@@ -295,7 +299,7 @@ class Stage(lifecycle.Stage):
         previous = signal.getsignal(signal.SIGALRM)
         def expired(_signal, _frame): raise TimeoutError('stage deadline')
         signal.signal(signal.SIGALRM, expired)
-        signal.setitimer(signal.ITIMER_REAL, max(.01, LIMITS['seconds']-40-(time.monotonic()-self.started)))
+        signal.setitimer(signal.ITIMER_REAL, max(.01, self.limits['seconds']-40-(time.monotonic()-self.started)))
         try:
             self.start(); self.business(); result['status'] = 'PASS'
         except BaseException:

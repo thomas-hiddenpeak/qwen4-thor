@@ -579,6 +579,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_session.cpp
+  src/server/realtime_vad.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp
   src/server/websocket_session.cpp
@@ -820,6 +821,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
     tests/server_realtime_pcm_test.cpp
+    tests/server_realtime_vad_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_websocket_session_test.cpp
@@ -958,6 +960,7 @@ if(Q4T_BUILD_TESTS)
     src/server/websocket.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_session.cpp
+    src/server/realtime_vad.cpp
     src/server/realtime_pcm.cpp
     src/server/realtime_audio_queue.cpp
     src/server/websocket_session.cpp

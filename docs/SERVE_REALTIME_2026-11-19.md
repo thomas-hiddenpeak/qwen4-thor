@@ -52,6 +52,9 @@ WebSocket基础16项CPU、音频队列12项CPU及
 1Chat，44.378秒，44次NVML正常。固定准入控制夹具不能代替实际
 Guardian恢复组合，默认rev326仍保持；继续下列未完成项目。
 
+[在线server VAD的29项CPU与3项SDK回归](evidence/serve-realtime-vad-cpu-20261119/README.md)
+通过；真实连续语音短验已冻结，尚未据此声明自动转录业务通过。
+
 ## 连续实施顺序
 
 1. **传输基础**：共享有界RFC6455解析/编码，严格掩码、分片、UTF-8、

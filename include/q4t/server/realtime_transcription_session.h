@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "q4t/server/realtime_transcription_protocol.h"
+#include "q4t/server/realtime_vad.h"
 #include "q4t/server/websocket_session.h"
 
 namespace q4t::server {
@@ -24,6 +25,9 @@ struct RealtimeTranscriptionCallbacks {
   std::function<ObjectReply(const RealtimeTranscriptionSettings&)> validate;
   std::function<std::shared_ptr<RequestControl>(const std::string&)> acquire;
   std::function<void(const std::shared_ptr<RequestControl>&)> release;
+  // Optional fixed-frame CPU processor, prepared before socket upgrade. An
+  // absent callback never acknowledges server_vad. No asset I/O in this call.
+  RealtimeVad::Step vad_step;
   // Worker-thread, synchronous and cooperative. Actual per-turn admission,
   // accounting and cleanup precede returning text/logprobs/usage in value.
   std::function<ObjectReply(const RealtimeTranscriptionJob&,
@@ -50,9 +54,14 @@ class RealtimeTranscriptionSession {
   size_t AudioBytes() const { return queue_.UsedBytes(); }
 
  private:
-  bool Emit(io::Json event);
+  bool Emit(io::Json event, bool deferred = false);
+  bool FlushVadEvents();
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   bool SettingsEvent(bool legacy, bool created = false);
+  bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
+  bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
+  bool AdvanceVad();
+  void ResetVad();
   void Release() noexcept;
   const std::string id_;
   WebSocketOutput& output_;
@@ -61,6 +70,13 @@ class RealtimeTranscriptionSession {
   const size_t message_bytes_;
   RealtimeTranscriptionSettings settings_;
   RealtimeAudioQueue queue_{1};
+  std::unique_ptr<RealtimeVad> vad_;
+  std::string speech_id_;
+  // At most one VAD frame's control events, plus bounded later socket replies.
+  // Do not start the corresponding ASR worker before committed is queued.
+  std::deque<std::string> vad_events_;
+  size_t vad_event_bytes_ = 0;
+  std::chrono::steady_clock::time_point vad_event_deadline_;
   std::deque<RealtimeTranscriptionJob> jobs_;
   std::string previous_id_, terminal_;
   std::shared_ptr<RequestControl> control_;

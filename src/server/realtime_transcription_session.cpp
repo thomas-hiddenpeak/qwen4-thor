@@ -53,8 +53,27 @@ void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
   Release();
 }
-bool RealtimeTranscriptionSession::Emit(Json event) {
-  return output_.TryPush(WebSocketOpcode::kText, OutputJson(event));
+bool RealtimeTranscriptionSession::Emit(Json event, bool deferred) {
+  auto text = OutputJson(event);
+  if (!deferred && vad_events_.empty())
+    return output_.TryPush(WebSocketOpcode::kText, text);
+  if (vad_events_.size() >= 4 || text.size() > 8192 - vad_event_bytes_)
+    return false;
+  if (vad_events_.empty())
+    vad_event_deadline_ = Clock::now() + std::chrono::seconds(15);
+  vad_event_bytes_ += text.size();
+  vad_events_.push_back(std::move(text));
+  return true;
+}
+bool RealtimeTranscriptionSession::FlushVadEvents() {
+  while (!vad_events_.empty()) {
+    if (output_.Closed() || Clock::now() >= vad_event_deadline_) return false;
+    if (!output_.TryPush(WebSocketOpcode::kText, vad_events_.front()))
+      return true;
+    vad_event_bytes_ -= vad_events_.front().size();
+    vad_events_.pop_front();
+  }
+  return true;
 }
 bool RealtimeTranscriptionSession::ErrorEvent(ObjectReply reply,
                                               std::string_view event_id) {
@@ -107,12 +126,27 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                                                 settings_, &next);
     if (reply.ok()) reply = callbacks_.validate(next);
     if (!reply.ok()) return ErrorEvent(std::move(reply), command.event_id);
+    const auto& a = settings_.request.chunking;
+    const auto& b = next.request.chunking;
+    const bool vad_changed = next.turn != settings_.turn ||
+                             next.format != settings_.format ||
+                             a.threshold != b.threshold ||
+                             a.prefix_padding_ms != b.prefix_padding_ms ||
+                             a.silence_duration_ms != b.silence_duration_ms;
+    if (next.turn == RealtimeTranscriptionSettings::Turn::kServerVad &&
+        !callbacks_.vad_step)
+      return fail("realtime_processor_unavailable",
+                  "VAD processor unavailable");
+    if (vad_changed && queue_.PendingBytes())
+      return fail("input_audio_buffer_not_empty",
+                  "Clear or commit pending audio before changing turn policy");
     if (next.format != settings_.format) {
       const auto status = queue_.ChangeFormat(1, next.format);
       if (!status)
         return fail("input_audio_buffer_not_empty", status.message());
     }
     settings_ = std::move(next);
+    if (vad_changed) ResetVad();
     return SettingsEvent(command.legacy);
   }
   if (command.kind == K::kAppend) {
@@ -131,26 +165,82 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
   if (command.kind == K::kClear) {
     const auto status = queue_.Clear(1);
     if (!status) return fail("input_audio_buffer_invalid", status.message());
+    ResetVad();
     return Emit(Event("input_audio_buffer.cleared"));
   }
+  // Explicit commit owns the complete pending tail, including any samples not
+  // yet analyzed by VAD. It starts a new detector epoch at the accepted clock.
+  if (queue_.PendingBytes() %
+      (settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1))
+    return fail("input_audio_buffer_commit_failed",
+                "Commit requires complete uncommitted samples");
+  return Commit(queue_.AcceptedTicks(), command.event_id, false);
+}
+
+void RealtimeTranscriptionSession::ResetVad() {
+  speech_id_.clear();
+  vad_.reset();
+  if (settings_.turn != RealtimeTranscriptionSettings::Turn::kServerVad) return;
+  const auto& options = settings_.request.chunking;
+  vad_ = std::make_unique<RealtimeVad>(
+      settings_.format, queue_.AcceptedTicks(),
+      RealtimeVadOptions{options.threshold, uint32_t(options.prefix_padding_ms),
+                         uint32_t(options.silence_duration_ms)},
+      callbacks_.vad_step);
+}
+bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
+                                               bool deferred) {
+  auto event = Event(started ? "input_audio_buffer.speech_started"
+                             : "input_audio_buffer.speech_stopped");
+  Set(&event, "item_id", String(speech_id_));
+  // Wire milliseconds follow OpenAI's integer convention. Queue/processor
+  // ownership always uses exact integer sample ticks, not this projection.
+  Set(&event, started ? "audio_start_ms" : "audio_end_ms", Number(ticks / 48));
+  return Emit(std::move(event), deferred);
+}
+bool RealtimeTranscriptionSession::AdvanceVad() {
+  if (!vad_) return true;
+  RealtimeVadProgress progress;
+  const auto status = vad_->Advance(queue_, &progress);
+  if (!status) return false;
+  if (!progress.frame) return true;
+  if (progress.started) {
+    speech_id_ = detail::NewRequestId("item_");
+    if (!SpeechEvent(true, progress.begin_ticks, true)) return false;
+  }
+  if (progress.stopped) return Commit(progress.end_ticks, {}, true);
+  return bool(queue_.TrimPendingBefore(1, progress.trim_before));
+}
+bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
+                                          std::string_view event_id,
+                                          bool automatic) {
   // Allocate the snapshot and identities before mutating the committed queue.
   RealtimeTranscriptionJob job;
   job.settings = settings_;
-  job.id = detail::NewRequestId("item_");
+  job.id = speech_id_.empty() ? detail::NewRequestId("item_") : speech_id_;
   job.previous_id = previous_id_;
   jobs_.push_back(std::move(job));
   auto& last = jobs_.back();
-  const auto status = queue_.Commit(1, &last.audio);
+  const auto status = queue_.CommitPrefix(1, end_ticks, &last.audio);
   if (!status) {
     jobs_.pop_back();
-    return fail("input_audio_buffer_commit_failed", status.message());
+    const bool sent = ErrorEvent(
+        Error(400, "input_audio_buffer_commit_failed", status.message()),
+        event_id);
+    return sent && !automatic;
   }
   previous_id_ = last.id;
+  if (!speech_id_.empty() && !SpeechEvent(false, end_ticks, automatic))
+    return false;
+  if (automatic)
+    speech_id_.clear();
+  else
+    ResetVad();
   auto committed = Event("input_audio_buffer.committed");
   Set(&committed, "item_id", String(last.id));
   Set(&committed, "previous_item_id",
       last.previous_id.empty() ? Json{} : String(last.previous_id));
-  if (!Emit(std::move(committed))) return false;
+  if (!Emit(std::move(committed), automatic)) return false;
   auto created = Event("conversation.item.created");
   Set(&created, "previous_item_id",
       last.previous_id.empty() ? Json{} : String(last.previous_id));
@@ -162,11 +252,16 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
               {"status", String("completed")},
               {"content", Array({Object({{"type", String("input_audio")},
                                          {"transcript", Json{}}})})}}));
-  return Emit(std::move(created));
+  return Emit(std::move(created), automatic);
 }
 
 bool RealtimeTranscriptionSession::Tick() {
   if (!started_ || cancelled_) return false;
+  if (!FlushVadEvents()) return false;
+  if (!vad_events_.empty()) return true;
+  if (!AdvanceVad()) return false;
+  if (!FlushVadEvents()) return false;
+  if (!vad_events_.empty()) return true;
   if (worker_.joinable() && done_.load(std::memory_order_acquire)) {
     worker_.join();
     if (result_.ok() && (!result_.value.Find("text") ||

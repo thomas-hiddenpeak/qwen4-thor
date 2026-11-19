@@ -9580,6 +9580,24 @@
       "original_startup_and_wss_failures_retained": true,
       "default": "rev326 unchanged",
       "scope": "Real WSS/OpenAI JS7.47.0/native ingress + native ASR, actual per-turn quota and cancellation; fixed PID-bound admission fixture, not Guardian recovery."
+    },
+    "server_vad": {
+      "status": "CPU_PASS_REAL_BUSINESS_PENDING",
+      "cpu_scope": 29,
+      "gpu_actions": 0,
+      "default_changed": false,
+      "next": "Targeted CPU then bounded real automatic transcription, continue all remaining processors/conversation/Live and master tasks",
+      "cpu_seconds": 0.1639299439266324,
+      "sdk_cpu_tests": 3,
+      "evidence": "evidence/serve-realtime-vad-cpu-20261119/README.md",
+      "business_limits": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 2,
+        "automatic_items": 3,
+        "chats": 1,
+        "seconds": 600
+      }
     }
   }
 }

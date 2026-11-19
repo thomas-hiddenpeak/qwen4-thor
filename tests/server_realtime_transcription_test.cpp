@@ -502,8 +502,163 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 6);
+  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 5);
+  Q4T_CHECK(realtime->Find("server_vad")->GetBool("implemented"));
+  Q4T_CHECK(!realtime->Find("server_vad")->GetBool("configured"));
   Q4T_CHECK(present.GetBool("implementation_only") &&
             !present.GetBool("release_attestation"));
+  return true;
+}
+
+namespace {
+constexpr auto kServerVad = R"({"type":"transcription_session.update",
+  "session":{"turn_detection":{"type":"server_vad","threshold":0.5,
+    "prefix_padding_ms":16,"silence_duration_ms":32}}})";
+bool Audio(RealtimeTranscriptionSession& session, size_t samples) {
+  const std::string raw(samples * 2, '\0');
+  return Send(session,
+              OutputJson(Object({{"type", String("input_audio_buffer.append")},
+                                 {"audio", String(Base64(raw))}})));
+}
+}  // namespace
+
+Q4T_TEST(
+    realtime_transcription_vad_commits_actual_prefix_without_client_commit) {
+  Fixture f;
+  size_t frames = 0;
+  f.callbacks.vad_step = [&](auto, auto*, float* p) {
+    *p = frames == 1 || frames == 2 ? 1 : 0;
+    ++frames;
+    return q4t::Status{};
+  };
+  RealtimeAudioItem actual;
+  f.callbacks.execute = [&](const auto& job, const auto& bytes, const auto&,
+                            const auto&) {
+    ++f.calls;
+    actual = job.audio;
+    if (bytes[0].size() + bytes[1].size() != actual.bytes)
+      return Error(500, "fixture_audio", "Audio byte identity differs");
+    return Completed("actual prefix fixture");
+  };
+  RealtimeTranscriptionSession s("sess_vad", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kServerVad) && Audio(s, 6 * 768 + 48));
+  std::vector<Json> events;
+  const auto deadline = Clock::now() + 1s;
+  while (Clock::now() < deadline && (frames < 6 || f.released < 1)) {
+    Q4T_CHECK(s.Tick());
+    for (auto& event : Drain(f.output)) events.push_back(std::move(event));
+    std::this_thread::sleep_for(1ms);
+  }
+  s.Join();
+  Q4T_CHECK(frames == 6 && f.calls == 1 && f.released == 1);
+  Q4T_CHECK(actual.begin_ticks == 768 && actual.end_ticks == 6144);
+  Q4T_CHECK(actual.samples == 2688 && actual.bytes == 5376);
+  std::string id;
+  int started = 0, stopped = 0, committed = 0, completed = 0;
+  for (const auto& e : events) {
+    const auto type = e.GetString("type");
+    if (type == "input_audio_buffer.speech_started") {
+      ++started;
+      id = e.GetString("item_id");
+      Q4T_CHECK(e.GetInt("audio_start_ms") == 16);
+    } else if (type == "input_audio_buffer.speech_stopped") {
+      ++stopped;
+      Q4T_CHECK(e.GetString("item_id") == id &&
+                e.GetInt("audio_end_ms") == 128);
+    } else if (type == "input_audio_buffer.committed") {
+      ++committed;
+      Q4T_CHECK(stopped == 1 && e.GetString("item_id") == id);
+    } else if (type ==
+               "conversation.item.input_audio_transcription.completed") {
+      ++completed;
+      Q4T_CHECK(committed == 1 && e.GetString("item_id") == id);
+    }
+  }
+  Q4T_CHECK(started == 1 && stopped == 1 && committed == 1 && completed == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_transcription_vad_backpressure_clear_and_cancel_are_bounded) {
+  Fixture f;
+  int frames = 0;
+  f.callbacks.vad_step = [&](auto, auto*, float* p) {
+    ++frames;
+    *p = 1;
+    return q4t::Status{};
+  };
+  RealtimeTranscriptionSession s("sess_vad", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kServerVad) && Audio(s, 3 * 768));
+  Drain(f.output);
+  for (int i = 0; i < 64; ++i)
+    Q4T_CHECK(f.output.TryPush(WebSocketOpcode::kText, R"({"type":"busy"})"));
+  Q4T_CHECK(s.Tick() && frames == 1 && f.calls == 0);
+  for (int i = 0; i < 10; ++i) Q4T_CHECK(s.Tick());
+  Q4T_CHECK(frames == 1 && f.calls == 0);
+  Q4T_CHECK(Send(s, R"({"type":"input_audio_buffer.clear"})"));
+  Q4T_CHECK(s.AudioBytes() == 0 && Drain(f.output).size() == 64);
+  Q4T_CHECK(s.Tick());
+  const auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 2);
+  Q4T_CHECK(events[0].GetString("type") == "input_audio_buffer.speech_started");
+  Q4T_CHECK(events[1].GetString("type") == "input_audio_buffer.cleared");
+  Q4T_CHECK(Audio(s, 768 + 48) && s.Tick());
+  const auto next = Drain(f.output);
+  Q4T_CHECK(next.size() == 1 && next[0].GetInt("audio_start_ms") == 96);
+  Q4T_CHECK(next[0].GetString("item_id") != events[0].GetString("item_id"));
+  s.Cancel();
+  s.Join();
+  Q4T_CHECK(!s.Tick() && f.calls == 0 && s.QueuedItems() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_transcription_vad_policy_change_and_manual_override) {
+  Fixture f;
+  RealtimeTranscriptionSession missing("sess_missing", f.output, f.callbacks,
+                                       30);
+  Q4T_CHECK(missing.Start() && Send(missing, kServerVad));
+  auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 2 && events.back().GetString("type") == "error");
+  f.callbacks.vad_step = [](auto, auto*, float* p) {
+    *p = 1;
+    return q4t::Status{};
+  };
+  RealtimeTranscriptionSession s("sess_vad", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kServerVad) && Audio(s, 768 + 49) && s.Tick());
+  events = Drain(f.output);
+  const auto id = events.back().GetString("item_id");
+  Q4T_CHECK(!id.empty());
+  Q4T_CHECK(
+      Send(s, R"({"type":"transcription_session.update","event_id":"policy",
+    "session":{"turn_detection":null}})"));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 && events[0].GetString("type") == "error");
+  Q4T_CHECK(events[0].Find("error")->GetString("event_id") == "policy");
+  Q4T_CHECK(Send(s, kCommit));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 3 && events[0].GetString("item_id") == id);
+  Q4T_CHECK(events[0].GetInt("audio_end_ms") == 34);
+  Q4T_CHECK(events[1].GetString("item_id") == id);
+  std::vector<Json> done;
+  Q4T_CHECK(Finish(s, f.output, &done) && f.calls == 1);
+  Q4T_CHECK(Send(s, R"({"type":"transcription_session.update",
+    "session":{"turn_detection":null}})"));
+  events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 &&
+            events[0].GetString("type") == "transcription_session.updated");
+  return true;
+}
+
+Q4T_TEST(realtime_transcription_vad_compute_failure_never_commits_success) {
+  Fixture f;
+  f.callbacks.vad_step = [](auto, auto*, float*) {
+    return q4t::Status::Fail("injected VAD CPU failure");
+  };
+  RealtimeTranscriptionSession s("sess_vad", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kServerVad) && Audio(s, 768 + 48));
+  Drain(f.output);
+  Q4T_CHECK(!s.Tick());
+  s.Cancel();
+  s.Join();
+  Q4T_CHECK(f.calls == 0 && s.QueuedItems() == 0 && Drain(f.output).empty());
   return true;
 }

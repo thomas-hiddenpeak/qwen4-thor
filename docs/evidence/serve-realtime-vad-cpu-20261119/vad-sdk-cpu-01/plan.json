@@ -1,0 +1,14 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cpu_tests": 3,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "scope": "Regress actual official SDK WSS/native TLS/auth/manual exchange after adding automatic-event collection. Actual automatic model behavior separately frozen for GPU business.",
+  "sources": {
+    "tools/serve_realtime/transcription_sdk.mjs": "cf62a04b583654fe4005485c6bc793acf11d7e50d9266fd45d2c246691161de3",
+    "tools/serve_realtime/transcription_acceptance.py": "d64aa9003993b3b82a544277f2282594e3b46fed28dd9ba3d4a6bc1ffc1514c2",
+    "tools/serve_realtime/vad_acceptance.py": "033c03b52fbef28ce940c6df3ad39a2d3dc0214007faf32fbf8c0f3471a55a20",
+    "tools/serve_realtime/test_transcription_sdk.py": "6591549a405d5e790d532bc28f970a42a55f16f8f0c2f2d4eb9bb5a4d15fbedb",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  }
+}

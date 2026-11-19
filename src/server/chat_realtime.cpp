@@ -51,6 +51,18 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     return;
   }
   const auto client = http->Client();
+  // Optional CPU VAD preparation happens before 101, never inside the socket
+  // event loop. A failed optional backend still permits healthy manual ASR.
+  std::shared_ptr<const audio::SileroVad> vad;
+  auto vad_ready =
+      Error(503, "vad_not_configured", "Native VAD assets not configured");
+  if (!vad_model_dir_.empty()) {
+    BinaryAccess access;
+    access.scope = client.Id();
+    access.deadline = Clock::now() + std::chrono::seconds(3);
+    access.cancelled = [&] { return stop_requested_.load(); };
+    vad_ready = EnsureNativeVad(access, &vad);
+  }
   const size_t message_bytes =
       client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
                                          client.Limits()->max_body_bytes)
@@ -70,13 +82,27 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                    "Transcription language unavailable");
     // These remain scheduled execution tasks. Never acknowledge a processing
     // setting while silently running a different signal/turn policy.
-    if (settings.turn != RealtimeTranscriptionSettings::Turn::kManual ||
+    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad ||
         settings.noise != RealtimeTranscriptionSettings::Noise::kNone ||
         !settings.delay.empty())
       return Error(400, "realtime_processor_unavailable",
                    "Requested audio processor is not connected");
+    if (settings.turn == RealtimeTranscriptionSettings::Turn::kServerVad &&
+        !vad_ready.ok())
+      return vad_ready;
     return ObjectReply{};
   };
+  if (vad) {
+    callbacks.vad_step = [&](auto samples, auto* state, auto* probability) {
+      const auto status = vad->Step(samples, state, probability,
+                                    [&] { return stop_requested_.load(); });
+      if (!status && !stop_requested_.load())
+        vad_health_.ComputeFailed(AsrFailure::kCompute, Clock::now());
+      else if (status)
+        vad_health_.ComputeSucceeded();
+      return status;
+    };
+  }
   callbacks.acquire = [&](const std::string& id) {
     return requests_.Register(
         id, "", Clock::now() + std::chrono::milliseconds(request_deadline_ms_),

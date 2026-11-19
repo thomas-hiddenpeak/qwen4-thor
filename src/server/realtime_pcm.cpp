@@ -22,6 +22,19 @@ int DecodeALaw(uint8_t value) {
 }
 }  // namespace
 
+float DecodeRealtimeSample(RealtimeAudioEncoding encoding, uint8_t first,
+                           uint8_t second) {
+  int value;
+  if (encoding == RealtimeAudioEncoding::kPcm16) {
+    const unsigned word = first | (unsigned(second) << 8);
+    value = word >= 32768 ? int(word) - 65536 : int(word);
+  } else {
+    value = encoding == RealtimeAudioEncoding::kMuLaw ? DecodeMuLaw(first)
+                                                      : DecodeALaw(first);
+  }
+  return float(value) / 32768.0f;
+}
+
 Status DecodeRealtimePcm(const RealtimeAudioItem& item,
                          const std::array<std::span<const uint8_t>, 2>& bytes,
                          size_t max_output_samples, std::vector<float>* output,
@@ -65,18 +78,9 @@ Status DecodeRealtimePcm(const RealtimeAudioItem& item,
       return Status::Fail("Realtime audio decoding cancelled");
     const auto count = std::min(input.size(), item.samples - position);
     for (size_t i = 0; i < count; ++i) {
-      int value;
-      if (pcm16) {
-        const auto offset = (position + i) * 2;
-        const unsigned word = byte(offset) | (unsigned(byte(offset + 1)) << 8);
-        value = word >= 32768 ? int(word) - 65536 : int(word);
-      } else {
-        const auto code = byte(position + i);
-        value = format.encoding == RealtimeAudioEncoding::kMuLaw
-                    ? DecodeMuLaw(code)
-                    : DecodeALaw(code);
-      }
-      input[i] = float(value) / 32768.0f;
+      const auto offset = (position + i) * sample_bytes;
+      input[i] = DecodeRealtimeSample(format.encoding, byte(offset),
+                                      pcm16 ? byte(offset + 1) : 0);
     }
     audio::ResampleProgress progress;
     auto status =

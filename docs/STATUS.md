@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[在线server VAD的29项CPU和3项SDK回归通过](evidence/serve-realtime-vad-cpu-20261119/README.md)：
+原生0.164秒、SDK驱动1.816秒/0GPU，host/引擎零警告，970来源/
+17负控。冻结1模型/1入口启动、2会话3自动item/1Chat/600秒实际
+语音短验；默认rev326保持，其他处理器、对话/Live和master继续。
+
 [Realtime手动转录真实业务通过](evidence/serve-realtime-transcription-business-20261119/README.md)：
 官方JS7.47.0经原生TLS/API Key接原生ASR，1模型/1入口启动、3会话/
 5有效提交/1Chat，44.378秒，44次NVML正常。中英PCM与G.711、340

@@ -58,7 +58,11 @@ std::string ChatCapabilitiesJson(
          R"(,"manual_commit":true,"formats":["audio/pcm","audio/pcmu","audio/pcma"],)"
          R"("pcm_rate":24000,"logprobs":true,"usage":"actual_tokens_per_item",)"
          R"("per_turn_client_admission":true,"automatic_replay":false,)"
-         R"("pending_execution":["server_vad","semantic_vad","noise_reduction",)"
+         R"("server_vad":{"implemented":true,"configured":)" +
+         (native_asr && native_vad ? "true" : "false") +
+         R"(,"profile":"q4t-native-silero-vad-v1","frame_samples":512,)"
+         R"("analysis_rate":16000,"clock_hz":48000,"idle_padding":false},)"
+         R"("pending_execution":["semantic_vad","noise_reduction",)"
          R"("transcription_delay","conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
