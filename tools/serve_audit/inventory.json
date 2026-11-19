@@ -3181,7 +3181,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "6689a049a2951ae2f80cad801dcfd28cc6d4b6fd3b8cccce9899fbe5db1960cc",
+    "tools/serve_recovery/bundle.py": "748555c32802321f48e16e23257aaf7afbaca6e20e2502b959b590f7771e85cd",
     "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
     "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -3246,7 +3246,7 @@
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
     "tools/serve_recovery/profile_acceptance.py": "5ba08f693264a7891d8340ca30204ad73a84b4542bde1299e33a749fb70dc7fd",
-    "tools/serve_recovery/profile_bundle.py": "fee747604d0646b1eb3521f49488247237ef4fed6888d8d108555de8d8399fb9",
+    "tools/serve_recovery/profile_bundle.py": "75060ad0955c12c59469ef9d2a87fc7077d86bbd03a13c6baee8efd89207c1f5",
     "tools/serve_recovery/profile_compat.py": "0ed7d43fe56abfdbd1ef83986c10f09d2050cc7dd9947b7590ac4a2c51db62f6",
     "tools/serve_recovery/profile_consumer.py": "cd9712dcacccbe0719067bdf540ff36b6339ae5f60ca21cbe1f60000e2c12bcd",
     "tools/serve_recovery/profile_contract.py": "b46a33dec411c99b2a4173685120aa4b8d421ebf2d9fbf120957e7e18ff254a3",
@@ -3254,7 +3254,7 @@
     "tools/serve_recovery/profile_evidence.py": "763067f43142f61348ca05df57d8d97dd88d55d5661ea6dd5e27931d0da7c57e",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
-    "tools/serve_recovery/profile_manager.py": "a6575db5e4f81c1a18366b3c4390876f814f5d57269dd9be3f719d6fd0f06d96",
+    "tools/serve_recovery/profile_manager.py": "373a66c2587587fd7335b1f166e06c6037e14e9702f6dcdbc50221320a00af9b",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
     "tools/serve_recovery/profile_migration.py": "c5dcab003bc733e171a973bce058ec52003e6e2b3f405545ae7d74ded535b8b6",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
@@ -3352,7 +3352,9 @@
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
     "tools/serve_recovery/profile_prompt_evidence.py": "7b5ad160b15cc8fa25767c02b0729d0cc0dbb4cf356fd0528f3a30d4d0f24d46",
-    "tools/serve_recovery/profile_prompt_reuse.py": "0dc9b3e89c69512f2ac901ba741fc5d43c70c556c3c9187c0175b67ee73c5aba"
+    "tools/serve_recovery/profile_prompt_reuse.py": "fd6901ffa140710e0df5c138dc9309c83f899a102be4d1b2db3f5e1fc03829c1",
+    "tools/serve_recovery/profile_record.py": "3e1b9d3021aa8e50846402233a553b68470c5947cc5b38ffa2892256ae9ae3b9",
+    "tools/serve_recovery/profile_prompt_targeted.py": "c6b0b8017dee1fb0dcebd9de07913d8deb80e96a6adb4e325ee0eed9fb8c76b2"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8484,5 +8486,19 @@
     "scope": "Acceptance projection outside pinned production namespace; package and core bytes unchanged",
     "evidence": "docs/evidence/serve-semantic-vad-managed-import-20261119/README.md",
     "original_premodel_failure_preserved": true
+  },
+  "prompt_targeted_qualification_20261120": {
+    "scope": "Exact audited runtime only, fresh affected Chat/Realtime/Prompt and legacy Responses; unchanged backend observations have explicit original source.",
+    "limits": {
+      "model_starts": 2,
+      "external_generations": 20,
+      "internal_csv_steps": 2,
+      "registry_requests": 10,
+      "websockets": 4,
+      "seconds": 900
+    },
+    "evidence_io": "Only v18 with explicit source provenance can exceed 2 MiB; bounded to 8 MiB. Other service metadata stays 2 MiB.",
+    "bundle": "v21 adds the three Prompt qualification modules; v20 inventory stays immutable.",
+    "status": "development_pending_targeted_cpu_and_actual_profiles"
   }
 }

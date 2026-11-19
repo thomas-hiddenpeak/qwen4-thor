@@ -1,0 +1,10 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "tests": 11,
+  "source_counterexamples": 20,
+  "seconds": 1.410332830157131,
+  "gpu_actions": 0,
+  "default_unchanged": true,
+  "business_qualified": false,
+  "raw_sha256": "2a04e13f4526c92dcc117744ff7bf1be5f8f005ec6b8ff1b94be745aa6a7c7c5"
+}

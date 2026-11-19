@@ -229,6 +229,7 @@ jobs:
             tools.serve_recovery.test_profile_conversation \
             tools.serve_recovery.test_profile_prompt \
             tools.serve_recovery.test_profile_prompt_reuse \
+            tools.serve_recovery.test_profile_prompt_targeted \
             tools.serve_recovery.test_profile_primary_review \
             tools.serve_realtime.test_managed.Evidence \
             tools.serve_realtime.test_semantic_managed.SemanticManaged \

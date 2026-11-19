@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 
 from tools.serve_recovery import ledger, profile_contract, profile_evidence, profile_policy
+from tools.serve_recovery import profile_record
 from tools.serve_service import package as engine
 
 
@@ -30,7 +31,7 @@ def prepare(target, base, assets, path, configuration):
     for name in profile_contract.NAMES:
         source = path.parent/(name+'.json')
         digest = engine.sha(source)
-        profile_evidence.validate(engine.read(source), registry, name, digest)
+        profile_evidence.validate(profile_record.read(source), registry, name, digest)
         filename = 'profile-'+name+'.json'
         destination = Path(target)/filename
         shutil.copyfile(source, destination)
@@ -52,4 +53,4 @@ def verify(package, manifest, base):
     profile_policy.configuration(configuration)
     for name in profile_contract.NAMES:
         path = Path(package)/('profile-'+name+'.json')
-        profile_evidence.validate(engine.read(path), registry, name, engine.sha(path))
+        profile_evidence.validate(profile_record.read(path), registry, name, engine.sha(path))

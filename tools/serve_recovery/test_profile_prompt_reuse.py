@@ -100,6 +100,8 @@ class SourceReuse(unittest.TestCase):
     def test_legacy_responses_requires_actual_source_version_answer_and_usage(self):
         value = legacy(); reuse.legacy_business(value)
         for mutate in [lambda v: v['definition'].update(api='realtime'),
+                       lambda v: v['definition']['request'].update(temperature=False),
+                       lambda v: v['registered'].update(revision=True),
                        lambda v: v['response']['prompt'].update(version='2'),
                        lambda v: v['request']['prompt'].update(id='foreign'),
                        lambda v: v['response']['output'][0]['content'][0].update(text='43'),

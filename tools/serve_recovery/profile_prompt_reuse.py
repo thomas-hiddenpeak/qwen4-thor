@@ -38,13 +38,16 @@ def legacy_request(identifier):
 
 def legacy_business(value):
     ledger.keys(value, ('definition', 'registered', 'request', 'response'))
-    ledger.require(value['definition'] == legacy_definition(), 'legacy Prompt definition changed')
+    ledger.require(ledger.canonical(value['definition']) == ledger.canonical(legacy_definition()),
+                   'legacy Prompt definition changed')
     registered = value['registered']
     identifier = registered.get('id')
     ledger.require(type(identifier) is str and identifier.startswith('prompt_') and
-        registered.get('object') == 'prompt' and registered.get('revision') == 1 and
+        registered.get('object') == 'prompt' and type(registered.get('revision')) is int and
+        registered['revision'] == 1 and
         registered.get('default_version') == '1' and
-        value['request'] == legacy_request(identifier), 'legacy Prompt actual registration differs')
+        ledger.canonical(value['request']) == ledger.canonical(legacy_request(identifier)),
+        'legacy Prompt actual registration differs')
     response = value['response']
     ledger.require(response.get('object') == 'response' and response.get('status') == 'completed' and
         response.get('error') is None and response.get('incomplete_details') is None and
