@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[ICL/Realtime实际Guardian三组通过](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：
+修复后4模型、63HTTP+5Realtime、1探测、595.196秒，554次NVML正常；
+TLS同核心PID中断结算/清理，整包实际回退后新连接与同一参考音色
+通过。原首组FAIL保持，累计5模型/65HTTP+5Realtime；默认rev326
+STOPPED不变。62项ICL/Realtime恢复合同接入CI，仅核对名称不重跑
+已验CPU；继续可回退交付/main及全部master，用户延期听感保持。
+
 [Realtime运维合同修复通过](evidence/serve-realtime-ops-contract-20261119/README.md)：
 10项CPU及4份同引擎原指标复核共0.170秒/0新增GPU；旧错误复现、
 新投影通过，原首组FAIL与48次正常NVML保持。已确认自有进程/

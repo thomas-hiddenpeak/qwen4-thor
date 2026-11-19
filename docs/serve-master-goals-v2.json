@@ -4667,6 +4667,20 @@
         "resources_released": true,
         "default_unchanged": true,
         "complete": false
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -6006,6 +6020,20 @@
         "resources_released": true,
         "default_unchanged": true,
         "complete": false
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -6336,6 +6364,20 @@
         "main_commit": "9956e882b24e37320bfc448c7545d2e51ccbc245",
         "main_evidence": "evidence/serve-pr34-merged-20261116/README.md",
         "pull_request": 34
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -6829,6 +6871,20 @@
         "retired_cycles": 2,
         "original_policy_unchanged": true,
         "new_gpu_starts": 0
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -7843,6 +7899,20 @@
         "resources_released": true,
         "default_unchanged": true,
         "complete": false
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -8778,6 +8848,20 @@
         "resources_released": true,
         "default_unchanged": true,
         "complete": false
+      },
+      "icl_realtime_managed_20261119": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     {
@@ -8989,7 +9073,7 @@
       }
     }
   ],
-  "next_task": "Complete actual Guardian recovery composition for qualified ICL/Realtime and reversible delivery; then semantic VAD/conversation/Live and every remaining master task. Preserve original failures and owner-deferred listening.",
+  "next_task": "Publish accepted native ICL/Realtime composition reversibly and integrate main; continue semantic VAD/conversation/Live and every remaining master task. Preserve original failures and owner-deferred listening.",
   "next": "Complete Realtime-aware primary/light and actual Guardian recovery composition for ICL/Realtime, reversible delivery, then semantic VAD/conversation/Live and every remaining master task; retain original failures and deferred listening.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9352,6 +9436,20 @@
         "listening_and_similarity_accepted": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
+      },
+      "reference_icl_realtime_composition": {
+        "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+        "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+        "model_starts": 4,
+        "http_requests": 63,
+        "realtime_tasks": 5,
+        "seconds": 595.1960149179213,
+        "nvml_queries": 554,
+        "original_failed_stage_preserved": true,
+        "cumulative_model_starts": 5,
+        "cumulative_http_requests": 65,
+        "default_rev326_unchanged": true,
+        "listening_deferred_by_owner": true
       }
     },
     "custom_voice": {
@@ -10262,6 +10360,20 @@
         "guardian_qualified": false,
         "default_rev326_stopped_unchanged": true
       }
+    },
+    "managed_composition": {
+      "status": "ACTUAL_MANAGED_ICL_REALTIME_ACCEPTED_DELIVERY_PENDING",
+      "evidence": "evidence/serve-icl-realtime-managed-recovery-20261119/README.md",
+      "model_starts": 4,
+      "http_requests": 63,
+      "realtime_tasks": 5,
+      "seconds": 595.1960149179213,
+      "nvml_queries": 554,
+      "original_failed_stage_preserved": true,
+      "cumulative_model_starts": 5,
+      "cumulative_http_requests": 65,
+      "default_rev326_unchanged": true,
+      "listening_deferred_by_owner": true
     }
   }
 }

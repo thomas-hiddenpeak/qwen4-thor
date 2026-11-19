@@ -622,3 +622,5 @@
 - [ICL参考解码上下文和精确裁剪](evidence/serve-tts-icl-decode-cpu-20261119/README.md)：10 CPU通过，实际合成待验。
 
 - [Realtime持续输入与对话衔接计划](SERVE_REALTIME_STREAMING_2026-11-19.md)：有界前缀、真实流式ASR、delay/语义断句、对话与交付。
+
+- [ICL/Realtime实际Guardian恢复](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：TLS中断结算、整包恢复、持久参考与显式新会话。
