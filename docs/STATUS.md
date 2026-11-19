@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义VAD主轻实际资格通过](evidence/serve-semantic-vad-primary-light-20261119/README.md)：
+新补1模型/30业务/3WSS/178.770秒，复用已完成主配置原件；主轻共
+2模型/60业务/6WSS/363.877秒，338次NVML正常、自有资源与锁释放。
+四回合实际评分、精确转录、私有用量结算及ASR/VAD健康通过，原FAIL
+保持；累计启动5次未超原预算。默认rev336 STOPPED不变，继续语义
+Guardian组合、可回退交付及全部master；原声纹失败/听感待验保持。
+
 [主配置原件复核与续验CPU通过](evidence/serve-semantic-vad-config-20261119/README.md)：
 13项CPU/0.614秒、18来源反例/0.435秒；完整主配置只读复核10.563秒、
 0GPU通过，原FAILED保持。完整PCM可还原，资格布局2036214字节，

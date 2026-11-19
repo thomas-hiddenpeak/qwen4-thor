@@ -1,0 +1,29 @@
+{
+  "status": "ACCEPT_PRIMARY_LIGHT_QUALIFICATION",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 338,
+    "cleanup_complete": true,
+    "lease_result_sha256": "e3754ca4fa172713aaead842a28130e2c1230080c2c293e270ae8299b0415f44"
+  },
+  "counts": {
+    "starts": 1,
+    "chats": 30,
+    "controls": 81,
+    "websocket_sessions": 3,
+    "ingress_starts": 2
+  },
+  "seconds": 178.7697540880181,
+  "registry_sha256": "79be24087a91c7ee77ebcc73c3a3495d81da5a71e98439b4c580c51117b750ad",
+  "default_unchanged": true,
+  "automatic_managed_switching_accepted": false,
+  "performance_claim": false,
+  "reused_primary_business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/profiles-01",
+  "cumulative_starts": 2,
+  "cumulative_requests": 60,
+  "cumulative_seconds": 363.8771010860801,
+  "original_failure_preserved": true,
+  "separate_continuous_leases": true
+}

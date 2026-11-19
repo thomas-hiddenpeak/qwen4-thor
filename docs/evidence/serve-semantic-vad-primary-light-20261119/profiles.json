@@ -1,0 +1,298 @@
+{
+  "primary": {
+    "qualification_sha256": "a21b650c3c2f8b2be3e86e9ccd753139669ebba379691beff4ad934c92dfec72",
+    "qualification_bytes": 2036111,
+    "format": "q4t-profile-business-v16",
+    "capacity": {
+      "allow_media": true,
+      "host": "127.0.0.1",
+      "max_inflight_requests": 8,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_queued_requests": 3,
+      "max_seq": 1,
+      "max_tokens": 256,
+      "memory_recovery_margin_mib": 512,
+      "min_available_memory_mib": 2048,
+      "mtp_enabled": true,
+      "mtp_k": 3,
+      "name": "native-managed-capacity-v2",
+      "request_deadline_ms": 1200000,
+      "startup_memory_headroom_mib": 2048
+    },
+    "before": {
+      "active": 0,
+      "admitted": 24,
+      "free_slots": 1,
+      "host_bytes": 0,
+      "reserved": 0,
+      "sessions": 0,
+      "settled": 9830
+    },
+    "after": {
+      "active": 0,
+      "admitted": 26,
+      "free_slots": 1,
+      "host_bytes": 0,
+      "reserved": 0,
+      "sessions": 0,
+      "settled": 11600
+    },
+    "asr_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 1876017152,
+      "load_attempts": 6,
+      "load_failures": 0,
+      "model": "qwen3-asr-0.6b",
+      "reason": "none",
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "state": "ready"
+    },
+    "vad_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 0,
+      "host_weight_bytes": 1238532,
+      "load_attempts": 1,
+      "load_failures": 0,
+      "model": "silero-vad-16k",
+      "reason": "none",
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "state": "ready"
+    },
+    "asr_limits": {
+      "max_audio_seconds": 30,
+      "max_context_tokens": 4096,
+      "max_output_tokens": 1024,
+      "workspace_mib": 1024
+    },
+    "vad_limits": {
+      "max_chunks": 64
+    },
+    "turns": [
+      {
+        "transcript": "甚至出现交易几乎停滞的情况。",
+        "usage": {
+          "input_token_details": {
+            "audio_tokens": 310,
+            "text_tokens": 533
+          },
+          "input_tokens": 843,
+          "output_tokens": 44,
+          "total_tokens": 887,
+          "type": "tokens"
+        },
+        "classifier": {
+          "accepted": 1,
+          "attempts": 1,
+          "included_in_usage": true,
+          "input_tokens": 352,
+          "invalid": 0,
+          "maximum_wait": false,
+          "output_tokens": 6,
+          "probability_available": true,
+          "profile": "q4t-native-semantic-turn-v1",
+          "stale": 0,
+          "unavailable": 0
+        },
+        "continuation": null,
+        "audio": {
+          "encoding": "zlib-base64",
+          "pcm_bytes": 247872,
+          "sha256": "f2b536eaad52f17a47a41045f11d45f45aa43ae2dbc66c9fab141b15e6ae27cf"
+        }
+      },
+      {
+        "transcript": "甚至出现交易几乎停滞的情况。",
+        "usage": {
+          "input_token_details": {
+            "audio_tokens": 310,
+            "text_tokens": 529
+          },
+          "input_tokens": 839,
+          "output_tokens": 44,
+          "total_tokens": 883,
+          "type": "tokens"
+        },
+        "classifier": {
+          "accepted": 1,
+          "attempts": 2,
+          "included_in_usage": true,
+          "input_tokens": 352,
+          "invalid": 0,
+          "maximum_wait": false,
+          "output_tokens": 6,
+          "probability_available": true,
+          "profile": "q4t-native-semantic-turn-v1",
+          "stale": 1,
+          "unavailable": 0
+        },
+        "continuation": {
+          "event_count": 4,
+          "no_commit": true,
+          "original_samples_sent": 36000,
+          "pause_samples": 12000,
+          "total_original_samples": 100895
+        },
+        "audio": {
+          "encoding": "zlib-base64",
+          "pcm_bytes": 247872,
+          "sha256": "2e8636494a9db6ebcf8958b7a4fe6690ce8d4142f40895d060cca6f8d7344fa2"
+        }
+      }
+    ]
+  },
+  "light": {
+    "qualification_sha256": "77e7c06a719af167deb2dfb6e1a56378d52729ba17366c18730ae918c6a410cd",
+    "qualification_bytes": 2036112,
+    "format": "q4t-profile-business-v16",
+    "capacity": {
+      "allow_media": true,
+      "host": "127.0.0.1",
+      "max_inflight_requests": 8,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_queued_requests": 3,
+      "max_seq": 1,
+      "max_tokens": 256,
+      "memory_recovery_margin_mib": 512,
+      "min_available_memory_mib": 2048,
+      "mtp_enabled": false,
+      "mtp_k": 3,
+      "name": "native-managed-capacity-v2",
+      "request_deadline_ms": 1200000,
+      "startup_memory_headroom_mib": 2048
+    },
+    "before": {
+      "active": 0,
+      "admitted": 24,
+      "free_slots": 1,
+      "host_bytes": 0,
+      "reserved": 0,
+      "sessions": 0,
+      "settled": 9830
+    },
+    "after": {
+      "active": 0,
+      "admitted": 26,
+      "free_slots": 1,
+      "host_bytes": 0,
+      "reserved": 0,
+      "sessions": 0,
+      "settled": 11602
+    },
+    "asr_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 1876017152,
+      "load_attempts": 6,
+      "load_failures": 0,
+      "model": "qwen3-asr-0.6b",
+      "reason": "none",
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "state": "ready"
+    },
+    "vad_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 0,
+      "host_weight_bytes": 1238532,
+      "load_attempts": 1,
+      "load_failures": 0,
+      "model": "silero-vad-16k",
+      "reason": "none",
+      "recovery": "request_driven",
+      "retry_delay_ms": 5000,
+      "state": "ready"
+    },
+    "asr_limits": {
+      "max_audio_seconds": 30,
+      "max_context_tokens": 4096,
+      "max_output_tokens": 1024,
+      "workspace_mib": 1024
+    },
+    "vad_limits": {
+      "max_chunks": 64
+    },
+    "turns": [
+      {
+        "transcript": "甚至出现交易几乎停滞的情况。",
+        "usage": {
+          "input_token_details": {
+            "audio_tokens": 310,
+            "text_tokens": 533
+          },
+          "input_tokens": 843,
+          "output_tokens": 44,
+          "total_tokens": 887,
+          "type": "tokens"
+        },
+        "classifier": {
+          "accepted": 1,
+          "attempts": 1,
+          "included_in_usage": true,
+          "input_tokens": 352,
+          "invalid": 0,
+          "maximum_wait": false,
+          "output_tokens": 6,
+          "probability_available": true,
+          "profile": "q4t-native-semantic-turn-v1",
+          "stale": 0,
+          "unavailable": 0
+        },
+        "continuation": null,
+        "audio": {
+          "encoding": "zlib-base64",
+          "pcm_bytes": 247872,
+          "sha256": "f2b536eaad52f17a47a41045f11d45f45aa43ae2dbc66c9fab141b15e6ae27cf"
+        }
+      },
+      {
+        "transcript": "甚至出现交易几乎停滞的情况。",
+        "usage": {
+          "input_token_details": {
+            "audio_tokens": 312,
+            "text_tokens": 529
+          },
+          "input_tokens": 841,
+          "output_tokens": 44,
+          "total_tokens": 885,
+          "type": "tokens"
+        },
+        "classifier": {
+          "accepted": 1,
+          "attempts": 2,
+          "included_in_usage": true,
+          "input_tokens": 352,
+          "invalid": 0,
+          "maximum_wait": false,
+          "output_tokens": 6,
+          "probability_available": true,
+          "profile": "q4t-native-semantic-turn-v1",
+          "stale": 1,
+          "unavailable": 0
+        },
+        "continuation": {
+          "event_count": 4,
+          "no_commit": true,
+          "original_samples_sent": 36000,
+          "pause_samples": 12000,
+          "total_original_samples": 100895
+        },
+        "audio": {
+          "encoding": "zlib-base64",
+          "pcm_bytes": 247872,
+          "sha256": "2e8636494a9db6ebcf8958b7a4fe6690ce8d4142f40895d060cca6f8d7344fa2"
+        }
+      }
+    ]
+  }
+}

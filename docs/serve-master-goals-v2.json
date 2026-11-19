@@ -10924,5 +10924,17 @@
         "seconds": 600
       }
     }
+  },
+  "semantic_vad_primary_light_20261119": {
+    "state": "qualified_primary_light_managed_delivery_pending",
+    "record": "evidence/serve-semantic-vad-primary-light-20261119/README.md",
+    "starts": 2,
+    "requests": 60,
+    "websocket_sessions": 6,
+    "seconds": 363.8771010860801,
+    "nvml_queries": 338,
+    "engine_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+    "default_unchanged": true,
+    "full_task_complete": false
   }
 }
