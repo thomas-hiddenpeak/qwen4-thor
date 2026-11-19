@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真实注册ICL短验通过](evidence/serve-tts-icl-business-20261119/README.md)：
+原生注册保留56帧/896参考码，英文Speech和中文Chat无提示ASR逐字
+一致；两条TTS实际输入920，SSE/Chat/配额结算吻合。隔离/撤销及
+同PID Chat通过，1模型/1入口/9POST、104.537秒/96次NVML正常，
+进程/端口/锁释放、默认rev326保持。听感待验、原exact-code与原录音
+声纹失败保留；继续Realtime历史、恢复组合及整个master。
+
 [ICL输入计量与驱动CPU通过](evidence/serve-tts-icl-usage-cpu-20261119/README.md)：
 16项原生合同及6项驱动反例已覆盖，原夹具失败保留，零GPU；引擎
 771c6a2a、host零警告。下一步冻结1模型/1原生TLS入口、9业务请求/

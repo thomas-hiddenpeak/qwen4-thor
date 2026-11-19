@@ -315,3 +315,13 @@ TPM已使用量、其他客户及核心/outer历史不变，再续办原发布�
 自定义音色接续见[Base与注册实施计划](SERVE_CUSTOM_VOICES_2026-11-18.md)。
 [12项元数据CPU证据](evidence/serve-custom-voice-metadata-20261118/README.md)
 已过，实际权重/声纹/条件合成与HTTP注册仍待实施，不关闭TTS总项。
+
+## 2026-11-19：实际注册ICL闭环
+
+[真实注册ICL短验通过](evidence/serve-tts-icl-business-20261119/README.md)：
+原生注册保留56帧/896参考码，英文Speech和中文Chat无提示ASR逐字
+一致；两条TTS实际输入920，SSE/Chat/配额结算吻合。隔离/撤销及
+同PID Chat通过，1模型/1入口/9POST、104.537秒/96次NVML正常，
+进程/端口/锁释放、默认rev326保持。听感待验、原exact-code与原录音
+声纹失败保留；继续Realtime历史、恢复组合及整个master。
+

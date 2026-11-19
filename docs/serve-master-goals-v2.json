@@ -431,14 +431,21 @@
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
       },
       "icl_input_usage_20261119": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_recovery_delivery_pending",
         "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
         "native_cases": 16,
         "driver_cases": 6,
         "initial_fixture_failure_preserved": true,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "master_complete": false
+        "master_complete": false,
+        "business_evidence": "evidence/serve-tts-icl-business-20261119/README.md",
+        "runtime_accepted": true,
+        "model_starts": 1,
+        "business_posts": 9,
+        "seconds": 104.53717705886811,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "guardian_recovery_retested": false
       }
     },
     {
@@ -665,14 +672,21 @@
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
       },
       "icl_input_usage_20261119": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_recovery_delivery_pending",
         "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
         "native_cases": 16,
         "driver_cases": 6,
         "initial_fixture_failure_preserved": true,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "master_complete": false
+        "master_complete": false,
+        "business_evidence": "evidence/serve-tts-icl-business-20261119/README.md",
+        "runtime_accepted": true,
+        "model_starts": 1,
+        "business_posts": 9,
+        "seconds": 104.53717705886811,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "guardian_recovery_retested": false
       }
     },
     {
@@ -4554,14 +4568,21 @@
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
       },
       "icl_input_usage_20261119": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_recovery_delivery_pending",
         "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
         "native_cases": 16,
         "driver_cases": 6,
         "initial_fixture_failure_preserved": true,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "master_complete": false
+        "master_complete": false,
+        "business_evidence": "evidence/serve-tts-icl-business-20261119/README.md",
+        "runtime_accepted": true,
+        "model_starts": 1,
+        "business_posts": 9,
+        "seconds": 104.53717705886811,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "guardian_recovery_retested": false
       }
     },
     {
@@ -5844,14 +5865,21 @@
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
       },
       "icl_input_usage_20261119": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_recovery_delivery_pending",
         "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
         "native_cases": 16,
         "driver_cases": 6,
         "initial_fixture_failure_preserved": true,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "master_complete": false
+        "master_complete": false,
+        "business_evidence": "evidence/serve-tts-icl-business-20261119/README.md",
+        "runtime_accepted": true,
+        "model_starts": 1,
+        "business_posts": 9,
+        "seconds": 104.53717705886811,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "guardian_recovery_retested": false
       }
     },
     {
@@ -7590,14 +7618,21 @@
         "evidence": "evidence/serve-voice-delivery-20261119/README.md"
       },
       "icl_input_usage_20261119": {
-        "state": "cpu_accepted_business_pending",
+        "state": "business_accepted_recovery_delivery_pending",
         "evidence": "evidence/serve-tts-icl-usage-cpu-20261119/README.md",
         "native_cases": 16,
         "driver_cases": 6,
         "initial_fixture_failure_preserved": true,
         "gpu_actions": 0,
         "default_unchanged": true,
-        "master_complete": false
+        "master_complete": false,
+        "business_evidence": "evidence/serve-tts-icl-business-20261119/README.md",
+        "runtime_accepted": true,
+        "model_starts": 1,
+        "business_posts": 9,
+        "seconds": 104.53717705886811,
+        "listening": "PENDING_OWNER_DEFERRED",
+        "guardian_recovery_retested": false
       }
     },
     {
