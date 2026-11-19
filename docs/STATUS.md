@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime音频事件与历史CPU通过](evidence/serve-realtime-speech-output-cpu-20261120/README.md)：
+32项/0.506秒及20来源反例通过，构建33.643秒零警告，0GPU。
+实际夹具字节/标准事件/历史/截断/EOF闭合；原清单缩进拒绝保留，
+修正前0用例执行。尚未接真实会话/TTS；继续线程、模型、配额和
+双向输入接线，默认rev366及全部master保持，PR #53待最终CI。
+
+音频输出组首轮在执行前被严格测试入口拒绝：清单生成器保留了
+格式化后的用例名换行缩进，0用例进入。原FAILED记录保留；仅修正
+清单空白，沿同一零警告程序继续原32项和来源检查，0GPU。
+
+Realtime音频下一组补输出字节历史、标准事件和播放截断，按
+session/item/generation绑定真实样本，预留后写入，取消/删除不复活。
+冻结对应CPU及旧文字/工具保护最多40项/120秒/20来源反例/0GPU；
+成组完成后统一验证，默认rev366与PR #53提交保持，全部master继续。
+
 [Realtime连续语音编码CPU通过](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：
 8项新用例+5项保护/0.554秒，20来源反例通过，0GPU；最终构建
 26.086秒零警告。PCM全码值、G.711相位/尾长和失败归属已验，

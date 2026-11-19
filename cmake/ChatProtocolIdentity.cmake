@@ -660,6 +660,8 @@ set(protocol_inputs
   include/q4t/server/realtime_audio_export.h
   include/q4t/server/realtime_speech_encoder.h
   src/server/realtime_speech_encoder.cpp
+  include/q4t/server/realtime_speech_history.h
+  src/server/realtime_speech_history.cpp
   include/q4t/server/realtime_audio_history.h
   src/server/realtime_audio_history.cpp
   src/server/realtime_audio_export.cpp

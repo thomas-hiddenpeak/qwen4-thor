@@ -11704,7 +11704,7 @@
       "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md"
     },
     "audio_output_20261120": {
-      "state": "continuous_encoder_cpu_accepted_protocol_execution_pending",
+      "state": "encoder_output_history_cpu_accepted_session_execution_pending",
       "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
       "cpu_new": 8,
       "cpu_existing_protection": 5,
@@ -11715,7 +11715,10 @@
       "default_revision": 366,
       "evidence": "evidence/serve-realtime-speech-encoder-cpu-20261120/README.md",
       "cpu_tests": 13,
-      "cpu_seconds": 0.5536518231965601
+      "cpu_seconds": 0.5536518231965601,
+      "output_history_evidence": "evidence/serve-realtime-speech-output-cpu-20261120/README.md",
+      "output_history_cpu_tests": 32,
+      "output_history_cpu_seconds": 0.5061439340934157
     }
   },
   "semantic_vad_primary_light_20261119": {
