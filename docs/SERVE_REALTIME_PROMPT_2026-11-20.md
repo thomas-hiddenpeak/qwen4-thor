@@ -1,7 +1,7 @@
 # Realtime Prompt 原生接入方案
 
-本项属于 Serve master A10/A12/Q01，不另设总任务终点。当前
-`PlanRealtimeChat` 对非空 `prompt` 返回处理器未接入；既有
+本项属于 Serve master A10/A12/Q01，不另设总任务终点。初始缺口是
+`PlanRealtimeChat` 对非空 `prompt` 未接处理器；既有
 `/v1/prompts`、不可变版本、变量渲染、客户隔离和对象工作线程已经
 存在。待解决的是实际会话与执行接线，不能以 schema 接受或文档
 说明代替。本文是实施方案，尚未表示 Prompt 对话可用。
@@ -13,11 +13,11 @@
 `api=responses`，Realtime 专有定义显式使用 `api=realtime`，
 `request` 保存会话设置及 Responses 形状的输入前缀；不允许递归
 Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)；
-尚未接会话或执行路径，仍按下列总合同继续。
+此为注册表阶段结论；后续会话/执行进度见下文，仍按总合同继续。
 
 设置组件另通过[34项CPU](evidence/serve-realtime-prompt-settings-cpu-20261120/README.md)：
 默认/模板/显式覆盖、固定版本与单轮选择、失败事务和展开资源预算
-已具备；实际会话和执行仍待接线。
+已具备；该设置阶段未表示实际会话和业务已接通。
 
 会话与计划接线另通过[57项CPU](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：
 对象读取有界取消、版本与并发快照、前缀计量及历史下标投影已接线；
@@ -26,6 +26,10 @@ Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidenc
 文件/媒体准备另通过[30项CPU](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)，
 文本/PNG/CSV解析与权限/取消/事务已具备，表格仅CPU回执。接下来
 补运行时模型步骤及共享RPM/实际用量交接，再完成真实SDK业务。
+
+运行时所有权另通过[22项CPU](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：
+实际表格模型入口、单次RPM/TPM租约及完整Chat计划已接线，失败用量
+交接和反例通过；原夹具失败保留。继续必要运行时构建与真实SDK业务。
 
 ## 已核实的依据
 

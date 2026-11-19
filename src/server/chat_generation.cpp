@@ -301,9 +301,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               "batch_execution_rate_invalid");
     return;
   }
-  auto& rate_lease = internal     ? internal->accounting.Rate()
-                     : batch_rate ? *batch_rate
-                                  : owned_rate;
+  auto* native_preparation = native ? native->Preparation() : nullptr;
+  auto& rate_lease = internal             ? internal->accounting.Rate()
+                     : batch_rate         ? *batch_rate
+                     : native_preparation ? native_preparation->Rate()
+                                          : owned_rate;
   struct TerminalLeases {
     StructuredRequestLease& structured;
     ClientRateLease& rate;
@@ -534,6 +536,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     original_request = responses->Generation().generation_request;
     request_plan = responses->Generation().chat;
+  } else if (native && native->PreparedPlan()) {
+    // The Realtime owner already resolved files and measured the complete
+    // plan. Keep its private media/tool rendering proofs; public JSON cannot
+    // grant them, and no second file acquisition or model preparation occurs.
+    request_plan = *native->PreparedPlan();
   } else if (completion) {
     s = PlanCompletionRequest(original_request, planning_config,
                               &completion_plan, &planning_error);
@@ -1136,9 +1143,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
   uint64_t prepared_input =
-      (preparation ? preparation->InputTokens() : 0) + audio_preparation.input;
+      (preparation ? preparation->InputTokens() : 0) +
+      (native_preparation ? native_preparation->InputTokens() : 0) +
+      audio_preparation.input;
   uint64_t prepared_output =
-      (preparation ? preparation->OutputTokens() : 0) + audio_preparation.output;
+      (preparation ? preparation->OutputTokens() : 0) +
+      (native_preparation ? native_preparation->OutputTokens() : 0) +
+      audio_preparation.output;
   if (internal) {
     auto reply = internal->accounting.ReservePrompt(prompt_u32.size());
     if (reply.ok()) reply = internal->before_model();
@@ -1147,17 +1158,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 reply.ClientCode(), reply.value.GetString("param"));
       return;
     }
-  } else if (planning_config.client_limits || chat_moderation.Enabled() ||
-             has_audio || audio_output.enabled) {
+  } else if (planning_config.client_limits || native_preparation ||
+             chat_moderation.Enabled() || has_audio || audio_output.enabled) {
     if (planning_config.client_limits &&
         prepared_input + prompt_u32.size() >
             planning_config.client_limits->max_prompt_tokens) {
       SendError(fd, 400, "Initial step exceeds client input limit", {},
-                "client_prompt_limit_exceeded", has_audio ? "messages" : "moderation");
+                "client_prompt_limit_exceeded",
+                has_audio ? "messages" : "moderation");
       return;
     }
     const auto result =
-        (preparation && preparation->Reserved()) || has_audio
+        (preparation && preparation->Reserved()) || native_preparation ||
+                has_audio
             ? rate_lease.ExtendPrompt(clients_, http->Client(),
                                       prompt_u32.size())
             : rate_lease.Reserve(clients_, http->Client(),

@@ -299,6 +299,12 @@ class ClientRateLease {
   void Completion(uint64_t count) noexcept { completion_ = count; }
   uint64_t AdmittedPromptTokens() const noexcept { return admitted_prompt_; }
   uint64_t CompletionTokens() const noexcept { return completion_; }
+  bool StartedFor(const ClientAdmission& admission,
+                  const ClientIdentity& identity) const {
+    return started_ && admission_ == &admission &&
+           domain_ == ClientRateDomain::kOnline &&
+           admission.OwnsIdentity(identity) && identity.Index() == client_;
+  }
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:

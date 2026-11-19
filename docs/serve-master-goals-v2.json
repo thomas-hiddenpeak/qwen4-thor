@@ -11307,6 +11307,33 @@
       "files": 21,
       "archive_sha256": "f23cc0a1eed459f6ea349bae9d8e2f7b466de5a2e864511e85cb878950915a20",
       "evidence": "evidence/serve-realtime-prompt-files-cpu-20261120/README.md"
+    },
+    "prompt_runtime_cpu_20261120": {
+      "status": "PASS_REALTIME_PROMPT_RUNTIME_OWNERSHIP_CPU",
+      "tests": 22,
+      "new_tests": 8,
+      "test_attempts": 23,
+      "seconds": 0.015461551956832409,
+      "initial_passed": 21,
+      "retry_passed": 1,
+      "reused_tests": 21,
+      "original_failure": "Missing mandatory fair_queue in CPU fixture; retained unchanged",
+      "production_sources_unchanged_for_retry": true,
+      "build_seconds": [
+        151.92628164216876,
+        9.05915205925703
+      ],
+      "build_warnings": 0,
+      "source_mutations": 20,
+      "new_gpu_starts": 0,
+      "cpu_model_receipts_only": true,
+      "runtime_business_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "pr": 53,
+      "pr_draft": true,
+      "archive_sha256": "4c8f5ef67b7e46df5c0edeb347ec0496f2e66595f2bb3f3505bc99e39ad85282",
+      "evidence": "evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {

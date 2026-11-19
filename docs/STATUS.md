@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt运行时22项CPU闭合](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：
+8项新合同，首轮21/22、夹具必填字段修正后仅补验1项；原失败
+保留，生产源码未变，23次尝试共0.016秒/0GPU。两次构建零警告、
+20来源反例通过；实际模型准备与主生成共用一次RPM、累计TPM/用量
+交接具备CPU证据。继续必要运行时构建与真实SDK业务；当前无Prompt
+业务资格，草稿PR #53、默认rev356及全部master保持。
+
+Realtime输入准备已接运行时：表格内部模型步骤与最终回答共享
+一次请求凭据和RPM/TPM租约，原生媒体/工具计划直接交接，取消、
+异常和主生成准入失败保留并结算实际预处理用量。冻结22项针对性
+CPU/120秒/0GPU及来源检查；尚未构建新运行时或取得Prompt业务
+资格，默认rev356保持。随后必要构建与真实SDK短验，全部master继续。
+
 [Prompt文件30项CPU通过](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)：
 0.164秒/0GPU，真实文本/PNG/CSV解析、租户权限、取消与
 预算、删除后快照及前缀下标通过；构建22.888秒零警告，20来源反例

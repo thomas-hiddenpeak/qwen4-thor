@@ -5,6 +5,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/model_preparation.h"
 
 namespace q4t::server {
 RealtimeGenerationResult ExecuteRealtimeChat(
@@ -12,7 +13,8 @@ RealtimeGenerationResult ExecuteRealtimeChat(
     const std::shared_ptr<RequestControl>& control,
     const RealtimeDeltaSink& emit,
     const std::function<void(NativeChatGeneration&)>& execute,
-    HttpBodyBudget& input_budget) {
+    HttpBodyBudget& input_budget, NativeChatInputs inputs,
+    RealtimeInvocation* invocation) {
   using namespace object_detail;
   RealtimeGenerationResult result;
   const auto fail = [&](int http, std::string code, std::string message) {
@@ -20,13 +22,25 @@ RealtimeGenerationResult ExecuteRealtimeChat(
     result.state = RealtimeResponseEnd::State::kFailed;
     return result;
   };
-  NativeChatGeneration native(request, emit);
+  NativeChatGeneration native(request, emit, kChatBodyBytes, inputs);
   if (!client.Allowed() || !permit.Holds(client, ClientLane::kData) ||
       !control || !control->OwnedBy(client.Id()) || !execute || !native.Valid())
     return fail(500, "realtime_execution_owner_invalid",
                 "Invalid native Realtime execution owner");
+  // The prepared owner knows that no primary work has happened yet. Preserve
+  // that observation if admission fails, so earlier preparation is not lost.
+  if (invocation) result.usage = RealtimeResponseUsage{};
+  if ((inputs.plan && !invocation) ||
+      (inputs.preparation &&
+       !inputs.preparation->ReadyForPrimary(
+           client, request.GetInt("max_completion_tokens"))))
+    return fail(500, "realtime_preparation_owner_invalid",
+                "Native input preparation owner changed");
   if (control->Cancelled())
     return fail(409, control->Reason(), "Response cancelled before execution");
+  if (invocation && !invocation->Consume(control))
+    return fail(409, "realtime_execution_already_claimed",
+                "Response execution cannot be replayed");
   const auto wire = OutputJson(request);
   const auto limit =
       client.Scoped()
@@ -39,7 +53,7 @@ RealtimeGenerationResult ExecuteRealtimeChat(
   if (!input.Acquire(wire.size()))
     return fail(503, "body_capacity_exhausted",
                 "Aggregate request body capacity exhausted");
-  if (!control->ClaimInvocation())
+  if (!invocation && !control->ClaimInvocation())
     return fail(409, "realtime_execution_already_claimed",
                 "Response execution cannot be replayed");
   FiniteResponse captured(kWebSocketMessageLimit);
@@ -59,6 +73,7 @@ RealtimeGenerationResult ExecuteRealtimeChat(
   }
   native.Seal();
   context.RefreshUsage();
+  result.usage.reset();
   if (auto usage = context.Usage().Total()) {
     RealtimeResponseUsage observed;
     observed.total = *usage;
