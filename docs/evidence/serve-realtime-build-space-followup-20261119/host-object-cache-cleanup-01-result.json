@@ -1,0 +1,8 @@
+{
+  "status": "PASS_CACHE_ONLY_CLEANUP",
+  "objects": 682,
+  "allocated_bytes": 80412672,
+  "final_free": 187772928,
+  "protected_unchanged": true,
+  "gpu_actions": 0
+}

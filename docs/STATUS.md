@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生构建来源补齐并通过](evidence/serve-realtime-native-inventory-20261119/README.md)：
+3项CPU/24负控0.415秒，四组件构建7.573秒零警告；63个实际编译
+输入全部纳入74项清单，入口与已验SDK摘要一致、核心程序不变。
+[本任务缓存与CPU归档](evidence/serve-realtime-build-space-followup-20261119/README.md)
+保留原失败与可恢复原件，释放约161MiB。继续实际恢复候选封装与
+有界组合；默认rev326/听感待验和全部master保持。
+
 恢复打包审查发现12个原生编译输入未进入构建来源清单（双向传输、
 WebSocket及密码适配等）；已补齐，新包准备拒绝遗漏/摘要漂移，
 旧封装仍按原文件摘要校验。冻结3项CPU/60秒/0GPU，再构建四组件
