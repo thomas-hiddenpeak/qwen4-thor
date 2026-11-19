@@ -1,0 +1,7 @@
+test_production_scalar_vad_limit_uses_existing_native_adapter (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter) ... ok
+test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK

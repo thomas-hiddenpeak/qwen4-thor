@@ -1,0 +1,21 @@
+{
+  "scope": "8 focused cases including fresh interpreter with actual pinned package; no GPU",
+  "maximum_seconds": 60,
+  "tests": [
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compact_audio_is_idempotent_and_keeps_all_turn_assertions",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_pinned_package_namespace_uses_only_shipped_recovery_modules",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive"
+  ],
+  "sources": {
+    "tools/serve_recovery/profile_semantic.py": "bfff43586fb05120acb009d0a003999c52f8da46f4a82f1352853499e5832bf9",
+    "tools/serve_realtime/semantic_evidence.py": "645646139eb66fedbf5b97648be565ec06717ece44faea7cb9de84fb031590c4",
+    "tools/serve_realtime/semantic_managed.py": "22a62710749ff8dbdcf150b401f9898dd6188aa4377915af398435cafae4df51",
+    "tools/serve_realtime/test_semantic_managed.py": "05e7adcb9f809cda57dbc8af17a9eca61142fb921c7b4773ec2a62efa7c46dc8"
+  },
+  "actual_package_manifest_sha256": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca"
+}

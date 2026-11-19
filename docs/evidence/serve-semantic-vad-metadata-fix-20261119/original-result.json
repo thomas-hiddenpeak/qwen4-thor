@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 304, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_acceptance.py\", line 218, in business\n    require(status==200 and json.loads(raw)['realtime']['semantic_vad']['configured'],\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: semantic classifier not configured\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 0,
+    "committed_items": 0,
+    "chats": 0,
+    "controls": 32
+  },
+  "seconds": 35.565734690986574,
+  "binary_sha256": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40"
+}

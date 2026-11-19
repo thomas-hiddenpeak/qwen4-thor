@@ -10,6 +10,7 @@
 #include "q4t/server/realtime_transcription_protocol.h"
 #include "q4t/server/realtime_transcript_history.h"
 #include "q4t/server/realtime_noise_input.h"
+#include "q4t/server/realtime_semantic_turn.h"
 #include "q4t/server/realtime_vad.h"
 #include "q4t/server/websocket_session.h"
 
@@ -33,6 +34,7 @@ struct RealtimeTranscriptionJob {
   std::string id, previous_id;
   std::shared_ptr<AsrStreamInput> stream;
   std::shared_ptr<RealtimeAudioRecord> processed_audio;
+  std::shared_ptr<RealtimeSemanticTurn> semantic;
   RealtimeTranscriptTicket transcript;
   bool deleted =
       false;  // Session owner only; worker cancellation uses control.
@@ -48,6 +50,8 @@ struct RealtimeTranscriptionCallbacks {
   // Optional fixed-frame CPU processor, prepared before socket upgrade. An
   // absent callback never acknowledges server_vad. No asset I/O in this call.
   RealtimeVad::Step vad_step;
+  // True only with a connected native content classifier, not just a parser.
+  bool semantic_ready = false;
   // Worker-thread, synchronous and cooperative. Actual per-turn admission,
   // accounting and cleanup precede returning text/logprobs/usage in value.
   std::function<ObjectReply(const RealtimeTranscriptionJob&,
@@ -88,6 +92,9 @@ class RealtimeTranscriptionSession {
   bool StreamMessage(const RealtimeTranscriptionCommand& command);
   bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
   bool AdvanceVad();
+  bool StartSemantic(uint64_t begin_ticks);
+  bool FeedSemantic(uint64_t end_ticks);
+  bool FinishSemantic(uint64_t end_ticks, bool automatic);
   void ResetVad();
   void ResetNoise(uint64_t ticks);
   Status ProcessedAudio(std::span<const float> samples, bool advance);
@@ -109,6 +116,8 @@ class RealtimeTranscriptionSession {
   uint64_t stream_epoch_ = 0;
   bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
+  std::shared_ptr<RealtimeSemanticTurn> semantic_;
+  uint64_t semantic_audio_end_ = 0;
   std::string speech_id_;
   // At most four control events, bounded by actual string capacity, including
   // a retrieved audio item. One absolute deadline is not extended by arrivals.

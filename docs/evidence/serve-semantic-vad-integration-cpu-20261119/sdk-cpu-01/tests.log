@@ -1,0 +1,114 @@
+test_complete_turn_requires_classifier_and_orderly_close (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_complete_turn_requires_classifier_and_orderly_close) ... ERROR
+test_error_alongside_completed_event_is_not_hidden (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_error_alongside_completed_event_is_not_hidden) ... ERROR
+test_premature_commit_rejected_without_replay (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_premature_commit_rejected_without_replay) ... ERROR
+test_transcript_without_actual_classifier_is_not_acceptance (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_transcript_without_actual_classifier_is_not_acceptance) ... /usr/lib/python3.12/traceback.py:369: ResourceWarning: unclosed <socket.socket fd=5, family=1, type=5, proto=0, laddr=b'\x00q4t-realtime-test-05f1b9fda4ad652cc9f24b87'>
+  return next(itertools.islice(positions_gen, instruction_index // 2, None))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.12/traceback.py:369: ResourceWarning: unclosed <socket.socket fd=7, family=1, type=5, proto=0, laddr=b'\x00q4t-realtime-test-d732e2d1c2351475b7a63dcf'>
+  return next(itertools.islice(positions_gen, instruction_index // 2, None))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib/python3.12/traceback.py:369: ResourceWarning: unclosed <socket.socket fd=9, family=1, type=5, proto=0, laddr=b'\x00q4t-realtime-test-eb77b27619a45b8bbc58ae60'>
+  return next(itertools.islice(positions_gen, instruction_index // 2, None))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ERROR
+test_unfinished_prefix_preserves_one_connection_and_actual_suffix (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_unfinished_prefix_preserves_one_connection_and_actual_suffix) ... ERROR
+
+======================================================================
+ERROR: test_complete_turn_requires_classifier_and_orderly_close (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_complete_turn_requires_classifier_and_orderly_close)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 141, in test_complete_turn_requires_classifier_and_orderly_close
+    code, value = self.call()
+                  ^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 113, in call
+    ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 49, in __init__
+    policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 389, in policy
+    require(type(port) is int and 1024 <= port <= 65535 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 96, in require
+    raise ValueError(message)
+ValueError: invalid operations upstream port
+
+======================================================================
+ERROR: test_error_alongside_completed_event_is_not_hidden (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_error_alongside_completed_event_is_not_hidden)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 163, in test_error_alongside_completed_event_is_not_hidden
+    code, value = self.call('late_error')
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 113, in call
+    ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 49, in __init__
+    policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 389, in policy
+    require(type(port) is int and 1024 <= port <= 65535 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 96, in require
+    raise ValueError(message)
+ValueError: invalid operations upstream port
+
+======================================================================
+ERROR: test_premature_commit_rejected_without_replay (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_premature_commit_rejected_without_replay)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 153, in test_premature_commit_rejected_without_replay
+    code, value = self.call('premature')
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 113, in call
+    ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 49, in __init__
+    policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 389, in policy
+    require(type(port) is int and 1024 <= port <= 65535 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 96, in require
+    raise ValueError(message)
+ValueError: invalid operations upstream port
+
+======================================================================
+ERROR: test_transcript_without_actual_classifier_is_not_acceptance (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_transcript_without_actual_classifier_is_not_acceptance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 158, in test_transcript_without_actual_classifier_is_not_acceptance
+    code, value = self.call('missing_score')
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 113, in call
+    ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 49, in __init__
+    policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 389, in policy
+    require(type(port) is int and 1024 <= port <= 65535 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 96, in require
+    raise ValueError(message)
+ValueError: invalid operations upstream port
+
+======================================================================
+ERROR: test_unfinished_prefix_preserves_one_connection_and_actual_suffix (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_unfinished_prefix_preserves_one_connection_and_actual_suffix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 147, in test_unfinished_prefix_preserves_one_connection_and_actual_suffix
+    code, value = self.call('continuation')
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_sdk.py", line 113, in call
+    ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 49, in __init__
+    policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 389, in policy
+    require(type(port) is int and 1024 <= port <= 65535 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py", line 96, in require
+    raise ValueError(message)
+ValueError: invalid operations upstream port
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.523s
+
+FAILED (errors=5)

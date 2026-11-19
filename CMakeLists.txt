@@ -589,6 +589,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
+  src/server/realtime_semantic_vad.cpp
+  src/server/realtime_semantic_turn.cpp
+  src/server/realtime_semantic_score.cpp
+  src/server/realtime_semantic_session.cpp
   src/server/realtime_vad.cpp
   src/server/realtime_audio_export.cpp
   src/server/realtime_audio_history.cpp
@@ -845,6 +849,8 @@ if(Q4T_BUILD_TESTS)
     tests/server_asr_stream_input_test.cpp
     tests/server_realtime_transcript_history_test.cpp
     tests/server_realtime_transcription_test.cpp
+    tests/server_realtime_semantic_vad_test.cpp
+    tests/server_realtime_semantic_turn_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_websocket_session_test.cpp
     tests/server_http_framing_test.cpp
@@ -984,6 +990,10 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
+  src/server/realtime_semantic_vad.cpp
+  src/server/realtime_semantic_turn.cpp
+  src/server/realtime_semantic_score.cpp
+  src/server/realtime_semantic_session.cpp
     src/server/realtime_vad.cpp
     src/server/realtime_audio_export.cpp
   src/server/realtime_audio_history.cpp

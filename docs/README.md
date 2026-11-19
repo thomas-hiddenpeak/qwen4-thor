@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [语义验收脚本入口修复](evidence/serve-semantic-vad-ci-entry-20261119/README.md)
+
 [原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。
 
 [原生语音输出与历史实施](SERVE_NATIVE_TTS_2026-11-18.md)：固定TTS模型/codec、实际合成及标准接口持续推进。
@@ -626,3 +628,6 @@
 - [ICL/Realtime实际Guardian恢复](evidence/serve-icl-realtime-managed-recovery-20261119/README.md)：TLS中断结算、整包恢复、持久参考与显式新会话。
 
 - [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)：原生实时转录、持久参考、预算保持与整包回退。
+
+- [语义VAD实际恢复](evidence/serve-semantic-vad-managed-recovery-20261119/README.md)：真实分类、计量、入口与整包恢复。
+- [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。

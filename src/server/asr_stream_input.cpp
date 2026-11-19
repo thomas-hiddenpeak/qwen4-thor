@@ -37,7 +37,8 @@ Status AsrStreamInput::Cancel(uint64_t epoch) {
   return status;
 }
 AsrStreamRead AsrStreamInput::Read(Clock::time_point deadline,
-                                   const std::function<bool()>& cancelled) {
+                                   const std::function<bool()>& cancelled,
+                                   bool latest_prefix) {
   for (;;) {
     if (cancelled && cancelled())
       return {AsrStreamReadKind::kCancelled, {}, {}};
@@ -51,7 +52,7 @@ AsrStreamRead AsrStreamInput::Read(Clock::time_point deadline,
       AsrStreamStep step;
       // Epoch is fixed by the owned scheduler; no data from a previous item
       // can be installed into this object's storage.
-      if (!schedule_.Next(epoch_, &step)) return {};
+      if (!schedule_.Next(epoch_, &step, latest_prefix)) return {};
       return {AsrStreamReadKind::kReady,
               step,
               {storage_.get(), size_t(step.samples)}};

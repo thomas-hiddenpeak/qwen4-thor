@@ -1,0 +1,7 @@
+{
+  "status": "STORAGE_GUARD_BEFORE_ARCHIVE",
+  "archived": 0,
+  "deleted": 0,
+  "reason": "free below 40 MiB before first member",
+  "followup": "remove own rebuildable host object cache then exact new archive 14"
+}

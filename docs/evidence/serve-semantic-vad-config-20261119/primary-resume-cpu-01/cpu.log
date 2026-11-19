@@ -1,0 +1,18 @@
+test_production_scalar_vad_limit_uses_existing_native_adapter (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter) ... ok
+test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default) ... ok
+test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk) ... ok
+test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compressed_audio_rejects_corruption_truncation_trailing_data_and_bombs) ... ok
+test_compact_audio_is_idempotent_and_keeps_all_turn_assertions (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compact_audio_is_idempotent_and_keeps_all_turn_assertions) ... ok
+test_compact_receipt_preserves_complete_json_and_original_size_bound (tools.serve_recovery.test_profile_semantic.SemanticDriver.test_compact_receipt_preserves_complete_json_and_original_size_bound) ... ok
+test_evidence_binding_rejects_changed_original (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_evidence_binding_rejects_changed_original) ... ok
+test_only_complete_primary_preserves_original_failure_and_counts (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_only_complete_primary_preserves_original_failure_and_counts) ... ok
+test_original_request_body_and_http_status_are_required (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_original_request_body_and_http_status_are_required) ... ok
+test_partial_work_engine_failure_or_invalid_environment_cannot_be_reused (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_partial_work_engine_failure_or_invalid_environment_cannot_be_reused) ... ok
+test_resume_business_runs_light_once_without_starting_another_model (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_resume_business_runs_light_once_without_starting_another_model) ... ok
+test_resume_counts_only_light_and_rejects_incompatible_reuse_modes (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_resume_counts_only_light_and_rejects_incompatible_reuse_modes) ... ok
+test_resume_start_selects_light_before_any_process_can_launch (tools.serve_recovery.test_profile_primary_review.PrimaryReview.test_resume_start_selects_light_before_any_process_can_launch) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.043s
+
+OK

@@ -541,6 +541,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -4840,6 +4844,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -6246,6 +6254,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -6643,6 +6655,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -7039,6 +7055,10 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -7203,6 +7223,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -7303,7 +7327,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev336 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev346 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -8284,6 +8308,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -8323,20 +8351,20 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_ICL_REALTIME_DELIVERY",
-        "revision": 336,
+        "status": "ACCEPT_NATIVE_SEMANTIC_VAD_DELIVERY",
+        "revision": 346,
         "current": {
-          "engine_binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
-          "engine_release_sha256": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
-          "generation_sha256": "5e3eb2a40f14fd5f998c41a02055ad6e20685b68f79a9f2c15edf06757c6f783",
-          "manifest_sha256": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/service-package-03/bundle",
-          "service_acceptance_sha256": "2d51eb505387fcea74628538391aa0f4452aedb329891d64bbad0785c4a84f8e",
-          "service_release_sha256": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8"
+          "engine_binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+          "engine_release_sha256": "51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25",
+          "generation_sha256": "37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0",
+          "manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-02/bundle",
+          "service_acceptance_sha256": "7c356cc940b0e518afe7bebec8353d6b7b641213bc142c5de472d51bc7c48278",
+          "service_release_sha256": "61726cd901fea17079486e4c8d41f5a8890dd8ae04fa36de71bc6554bf320c5e"
         },
         "state": "STOPPED",
         "commands": 19,
-        "seconds": 320.44984506769106,
+        "seconds": 364.24277599016204,
         "new_gpu_starts": 0,
         "outer_enabled": true,
         "outer_charged_total": 0,
@@ -8345,13 +8373,13 @@
         "alpha_output_limit": 3457,
         "usage_reset": false,
         "fixture_tpm_not_installed_to_existing_state": true,
-        "manual_root": "c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e",
-        "automatic_payload": "c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e",
+        "manual_root": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
+        "automatic_payload": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
         "candidate_to_retained_automatic_fault_actually_tested": true,
         "reciprocal_automatic_fault_additionally_injected": false,
         "reciprocal_registration_and_stopped_rollback_verified": true,
         "older_engine_fallback": false,
-        "previous_rev326_preserved": true,
+        "previous_rev336_preserved": true,
         "strict_actual_finalizers_all_passed": true,
         "original_failures_preserved": true,
         "profile_history_and_cooldown_preserved": true,
@@ -8359,12 +8387,10 @@
         "retired_generations_archived": 2,
         "retired_versions_archived": 2,
         "deleted_files": 0,
-        "maintenance_seconds": 112.03873377479613,
-        "ci_contracts_discovered": 62,
-        "ci_local_reexecutions": 0,
-        "files": 99,
+        "maintenance_seconds": 116.45242266310379,
+        "files": 96,
         "secret_scan_matches": 0,
-        "archive_sha256": "51f6ab057bd2ffd15b55796489af8ed46b0d8cad0a8dca41d46d7d9c73fd41b0",
+        "archive_sha256": "86d0b7caf0935c0edfd015e39178302194d5d34380fc420e1a83ed34b0ddf4c2",
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
@@ -8373,7 +8399,23 @@
         "listening_and_similarity_accepted": false,
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+        "persistent_client_limits": {
+          "alpha": {
+            "requests_per_minute": 30,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 3457
+          },
+          "beta": {
+            "requests_per_minute": 1,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 256
+          }
+        },
+        "command_attempts": 20,
+        "original_publication_timeout_preserved": true,
+        "original_intent_resumed": "b1396231-0a95-4edc-85f0-2f5db54c4e70",
+        "continuation_seconds": 173.37305559078231,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -8540,7 +8582,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "ICL/Realtime final-head CI and actual main merge",
+        "Semantic VAD final-head CI and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -9278,6 +9320,10 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+      },
+      "semantic_vad_delivery_20261119": {
+        "revision": 346,
+        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
       }
     },
     {
@@ -9489,7 +9535,7 @@
       }
     }
   ],
-  "next_task": "ICL/Realtime final-head CI/main integration; implement semantic VAD, conversation/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
+  "next_task": "Semantic VAD final-head CI/main integration; implement conversation/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
   "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9919,7 +9965,8 @@
         "listening_deferred_by_owner": true,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
-      }
+      },
+      "latest_service_revision": 346
     },
     "custom_voice": {
       "state": "REGISTERED_SAMPLE_VOICE_HTTP_AND_MANAGED_DELIVERED_REV326",
@@ -10460,7 +10507,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_transcription_delivered_rev336_conversation_live_semantic_pending",
+    "state": "native_transcription_semantic_vad_delivered_rev346_conversation_live_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -10468,7 +10515,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Continue noise reduction, actual context/delay, semantic turns, conversation/tool/TTS and Live, Guardian composition and reversible delivery",
+    "next": "Implement actual conversational Realtime, tool/TTS output and Live; continue remaining master work and preserve owner-deferred listening.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -10897,6 +10944,199 @@
       "listening_deferred_by_owner": true,
       "all_master_tasks_active": true,
       "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+    },
+    "semantic_vad": {
+      "state": "DELIVERED_REV346_MAIN_PENDING",
+      "evidence": "docs/evidence/serve-semantic-vad-integration-cpu-20261119/README.md",
+      "native_cpu_cases": 91,
+      "sdk_cpu_cases": 5,
+      "evidence_cpu_cases": 6,
+      "native_binary_sha256": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40",
+      "private_model_steps": 8,
+      "private_output_tokens": 128,
+      "shared_actual_waveform": true,
+      "serial_worker": true,
+      "actual_score_usage_in_parent": true,
+      "calibrated": false,
+      "real_business_accepted": false,
+      "delivered": true,
+      "original_failures_retained": true,
+      "business_limits": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 2,
+        "committed_items": 2,
+        "chats": 3,
+        "controls": 2000,
+        "seconds": 600
+      },
+      "actual_primary_light_qualified": true,
+      "actual_managed_recovery_qualified": true,
+      "delivery_evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+    },
+    "semantic_vad_delivered": true,
+    "semantic_vad_delivery": {
+      "status": "ACCEPT_NATIVE_SEMANTIC_VAD_DELIVERY",
+      "revision": 346,
+      "current": {
+        "engine_binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+        "engine_release_sha256": "51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25",
+        "generation_sha256": "37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0",
+        "manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-02/bundle",
+        "service_acceptance_sha256": "7c356cc940b0e518afe7bebec8353d6b7b641213bc142c5de472d51bc7c48278",
+        "service_release_sha256": "61726cd901fea17079486e4c8d41f5a8890dd8ae04fa36de71bc6554bf320c5e"
+      },
+      "state": "STOPPED",
+      "commands": 19,
+      "seconds": 364.24277599016204,
+      "new_gpu_starts": 0,
+      "outer_enabled": true,
+      "outer_charged_total": 0,
+      "persistent_rpm": 30,
+      "persistent_tpm": 6000,
+      "alpha_output_limit": 3457,
+      "usage_reset": false,
+      "fixture_tpm_not_installed_to_existing_state": true,
+      "manual_root": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
+      "automatic_payload": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
+      "candidate_to_retained_automatic_fault_actually_tested": true,
+      "reciprocal_automatic_fault_additionally_injected": false,
+      "reciprocal_registration_and_stopped_rollback_verified": true,
+      "older_engine_fallback": false,
+      "previous_rev336_preserved": true,
+      "strict_actual_finalizers_all_passed": true,
+      "original_failures_preserved": true,
+      "profile_history_and_cooldown_preserved": true,
+      "retired_intents_archived": 5,
+      "retired_generations_archived": 2,
+      "retired_versions_archived": 2,
+      "deleted_files": 0,
+      "maintenance_seconds": 116.45242266310379,
+      "files": 96,
+      "secret_scan_matches": 0,
+      "archive_sha256": "86d0b7caf0935c0edfd015e39178302194d5d34380fc420e1a83ed34b0ddf4c2",
+      "main_integration_pending": true,
+      "full_model_quality": false,
+      "performance_claim": false,
+      "long_stability_run": false,
+      "full_openai_compatibility": false,
+      "listening_and_similarity_accepted": false,
+      "listening_deferred_by_owner": true,
+      "all_master_tasks_active": true,
+      "persistent_client_limits": {
+        "alpha": {
+          "requests_per_minute": 30,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 3457
+        },
+        "beta": {
+          "requests_per_minute": 1,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 256
+        }
+      },
+      "command_attempts": 20,
+      "original_publication_timeout_preserved": true,
+      "original_intent_resumed": "b1396231-0a95-4edc-85f0-2f5db54c4e70",
+      "continuation_seconds": 173.37305559078231,
+      "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
     }
+  },
+  "semantic_vad_primary_light_20261119": {
+    "state": "qualified_primary_light_managed_delivery_pending",
+    "record": "evidence/serve-semantic-vad-primary-light-20261119/README.md",
+    "starts": 2,
+    "requests": 60,
+    "websocket_sessions": 6,
+    "seconds": 363.8771010860801,
+    "nvml_queries": 338,
+    "engine_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+    "default_unchanged": true,
+    "full_task_complete": false
+  },
+  "semantic_vad_delivery_20261119": {
+    "status": "ACCEPT_NATIVE_SEMANTIC_VAD_DELIVERY",
+    "revision": 346,
+    "current": {
+      "engine_binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+      "engine_release_sha256": "51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25",
+      "generation_sha256": "37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0",
+      "manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-02/bundle",
+      "service_acceptance_sha256": "7c356cc940b0e518afe7bebec8353d6b7b641213bc142c5de472d51bc7c48278",
+      "service_release_sha256": "61726cd901fea17079486e4c8d41f5a8890dd8ae04fa36de71bc6554bf320c5e"
+    },
+    "state": "STOPPED",
+    "commands": 19,
+    "seconds": 364.24277599016204,
+    "new_gpu_starts": 0,
+    "outer_enabled": true,
+    "outer_charged_total": 0,
+    "persistent_rpm": 30,
+    "persistent_tpm": 6000,
+    "alpha_output_limit": 3457,
+    "usage_reset": false,
+    "fixture_tpm_not_installed_to_existing_state": true,
+    "manual_root": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
+    "automatic_payload": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
+    "candidate_to_retained_automatic_fault_actually_tested": true,
+    "reciprocal_automatic_fault_additionally_injected": false,
+    "reciprocal_registration_and_stopped_rollback_verified": true,
+    "older_engine_fallback": false,
+    "previous_rev336_preserved": true,
+    "strict_actual_finalizers_all_passed": true,
+    "original_failures_preserved": true,
+    "profile_history_and_cooldown_preserved": true,
+    "retired_intents_archived": 5,
+    "retired_generations_archived": 2,
+    "retired_versions_archived": 2,
+    "deleted_files": 0,
+    "maintenance_seconds": 116.45242266310379,
+    "files": 96,
+    "secret_scan_matches": 0,
+    "archive_sha256": "86d0b7caf0935c0edfd015e39178302194d5d34380fc420e1a83ed34b0ddf4c2",
+    "main_integration_pending": true,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "long_stability_run": false,
+    "full_openai_compatibility": false,
+    "listening_and_similarity_accepted": false,
+    "listening_deferred_by_owner": true,
+    "all_master_tasks_active": true,
+    "persistent_client_limits": {
+      "alpha": {
+        "requests_per_minute": 30,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 3457
+      },
+      "beta": {
+        "requests_per_minute": 1,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 256
+      }
+    },
+    "command_attempts": 20,
+    "original_publication_timeout_preserved": true,
+    "original_intent_resumed": "b1396231-0a95-4edc-85f0-2f5db54c4e70",
+    "continuation_seconds": 173.37305559078231,
+    "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+  },
+  "semantic_vad_ci_entry_20261119": {
+    "status": "PASS",
+    "tests": 13,
+    "seconds": 2.3162291389890015,
+    "exit_code": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "production_unchanged": true,
+    "original_ci_run": 44517542218,
+    "original_head": "67cbec7ab16e65826c781d5eee19b795011131ec",
+    "original_ci_passed_groups": 63,
+    "original_ci_failed_groups": 1,
+    "excluded_local_commit": "30bf750d0e267ef222e5dc6e8638e88f1df5d72f",
+    "runtime_identity_changed": false,
+    "ci_after_fix_pending": true,
+    "evidence": "evidence/serve-semantic-vad-ci-entry-20261119/README.md"
   }
 }

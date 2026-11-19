@@ -27,7 +27,11 @@ class AsrStreamSchedule {
   Status Append(uint64_t epoch, uint64_t samples);
   Status Seal(uint64_t epoch);
   bool Ready() const;
-  Status Next(uint64_t epoch, AsrStreamStep* step);
+  // A semantic consumer may evaluate the newest complete cumulative prefix
+  // after falling behind. It skips only unevaluated intermediate boundaries,
+  // never samples or an outstanding borrow. Ordinary chunk scheduling stays
+  // the default; readiness and the actual execution-step limit still apply.
+  Status Next(uint64_t epoch, AsrStreamStep* step, bool latest_prefix = false);
   Status Complete(const AsrStreamStep& step);
   Status Cancel(uint64_t epoch);
   bool Drained() const;

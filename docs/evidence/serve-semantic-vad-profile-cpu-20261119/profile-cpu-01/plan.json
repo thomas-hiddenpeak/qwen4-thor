@@ -1,0 +1,19 @@
+{
+  "scope": "Semantic v16 qualified evidence/health/settlement, both-profile bounded driver and old v15 migration protection",
+  "tests": [
+    "tools.serve_recovery.test_profile_semantic",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_fixed_limits_and_cli_reserve_every_actual_session_and_turn",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_sdk_timeout_still_releases_only_the_owned_native_entry",
+    "tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_complete_actual_usage_and_original_state_are_preserved",
+    "tools.serve_recovery.test_profile_realtime.RealtimeMigration.test_realtime_requires_new_observations_and_cannot_disappear_at_fallback"
+  ],
+  "cases": 15,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "8001b029575e3d7fd59515959e9f2d487dd6e82d68826f6b372c7a4a99992717",
+    "tools/serve_recovery/profile_evidence.py": "27c4b8628445bee089dacb465354e2a23574de98590437413207d0ab0df971c8",
+    "tools/serve_recovery/profile_semantic.py": "bb73ad244bf326f862e4e0ac4d6c5af18030e574ecf35a87e936d75a5180e840",
+    "tools/serve_recovery/test_profile_semantic.py": "3528c68b406e43ccd4a7b4b8b66720b0e8fd8e4cd3806a59dac3b9d48c04ea8b"
+  }
+}

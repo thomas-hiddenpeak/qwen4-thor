@@ -7,10 +7,134 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
+PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
+PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认
+rev346不变，本地后续对话基础不混入；等待修复head检查后合入。
+
+[rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
+完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
+0新增GPU，原配额/用量/恢复历史/预算保持。发布超时原FAIL保留，原ID
+续办完成；19项成功检查共20次尝试。当前三组组合证据4模型、
+63HTTP+10Realtime/628.911秒、586次NVML正常，
+5个真实语义回合通过；含原候选组合累计6模型/87HTTP+14Realtime。
+默认仍STOPPED；继续PR #51检查合入及全部
+master，原exact-code/声纹失败与用户延期听感保持。
+
+[语义迁移修复5项CPU与真实资格复核通过](evidence/serve-semantic-vad-migration-20261119/README.md)：
+原发布预检失败保留，3种自动许可逐字节不变、历史/预算保持；
+新候选仅更新迁移判定，私有复制保护失败已按原字节分离修复。
+仅补候选2模型/24HTTP+4Realtime/600秒，保留/TLS和主轻直接复用；
+默认rev336 STOPPED与听感待验保持，之后完成发行和全部master。
+
+语义VAD发布预检发现待办元数据迁移遗漏，默认rev336尚未改变；
+三组实际恢复4模型/63HTTP+10Realtime/627.685秒已通过，586次NVML正常。
+已限定规范化已核验的semantic_vad待办移除，实际能力和原回执哈希保持；
+冻结5项CPU及真实旧/新资格只读迁移复核，禁止自动增减能力。
+通过后仅更新候选控制包并补其实际版本恢复，复用未改的保留/TLS组；
+原失败及听感待验保持，总任务继续。
+
+[封装命名空间修复8项CPU通过](evidence/serve-semantic-vad-managed-import-20261119/README.md)：
+0.915秒/0GPU，实际封装命名空间与同一投影函数覆盖，18来源反例
+通过；引擎、服务包、主轻资格未变，原0模型启动失败保持。复用已
+验SDK，续原4模型/63HTTP+10WSS/1500秒三组，默认rev336与听感待验保持。
+
+首组语义恢复在模型启动前因验收助手从封装恢复命名空间导入失败，
+原FAILED/清理连接拒绝记录保持，实际0模型/0业务、4次NVML正常；
+已复核无残留进程、私有状态STOPPED、端口和锁释放，默认未变。
+已将公共投影移至验收命名空间，仅引用已发行的证据/配置读取器；
+冻结8项针对性CPU/60秒，含真实封装命名空间复现；通过后仍按原
+4模型/63HTTP+10WSS/1500秒续三组，不扩大模型预算。
+
+[语义Guardian驱动15项CPU合同通过](evidence/serve-semantic-vad-managed-cpu-20261119/README.md)：
+原6项夹具错误保持，受影响复验通过并复用9项；实际SDK/TLS与明文
+身份、证书失败拒绝和原件/结算/健康反例覆盖。四原生辅助程序
+20.809秒零警告构建、字节身份不变，18来源反例通过，0GPU。
+下一步三组严格租约共4模型/63HTTP+10WSS/1探测/1500秒，实际验证
+恢复后语义能力；默认rev336 STOPPED与听感待验保持，全部master继续。
+
+语义恢复CPU首轮15项为9PASS/6夹具ERROR，原件保留；4项实际
+SDK/TLS/显式明文检查均通过。六项错误来自夹具用字符串替换item
+身份时误改JSON字段名，已改为只更新身份值；冻结仅6项受影响
+CPU/60秒，复用其余9项。随后补原生辅助程序构建来源与实际恢复。
+
+语义Guardian接线已编写：独立运行1回合、TLS恢复前后2回合、整包
+恢复前后2回合，实际SDK线报、原生健康、完整结算与核心PID连续性
+须同时通过；显式回环明文与官方SDK/TLS分开记录。冻结15项针对性
+CPU/120秒/0GPU，随后实际恢复短验。为后续封装，仅清理本任务可
+重建C++对象缓存34350272字节，并无损归档3个旧程序路径（2实体）；
+当前/默认程序、恢复包、原件与原失败保持，全部master继续。
+
+[语义VAD主轻实际资格通过](evidence/serve-semantic-vad-primary-light-20261119/README.md)：
+新补1模型/30业务/3WSS/178.770秒，复用已完成主配置原件；主轻共
+2模型/60业务/6WSS/363.877秒，338次NVML正常、自有资源与锁释放。
+四回合实际评分、精确转录、私有用量结算及ASR/VAD健康通过，原FAIL
+保持；累计启动5次未超原预算。默认rev336 STOPPED不变，继续语义
+Guardian组合、可回退交付及全部master；原声纹失败/听感待验保持。
+
+[主配置原件复核与续验CPU通过](evidence/serve-semantic-vad-config-20261119/README.md)：
+13项CPU/0.614秒、18来源反例/0.435秒；完整主配置只读复核10.563秒、
+0GPU通过，原FAILED保持。完整PCM可还原，资格布局2036214字节，
+原2MiB门保持；仅续轻配置1模型/30业务/3WSS/2入口/600秒，累计
+启动上限仍5。默认rev336 STOPPED不变，之后继续Guardian与全部master。
+
+主轻资格首轮完成主配置30项业务/3WSS/185.107秒，实际ASR/VAD
+健康正常；随后回执读取不存在的`native_vad_limits`失败，原FAILED
+及172次正常NVML记录保持，自有模型/入口/锁已释放。已改用实际
+`native_vad_max_chunks`适配器，并编写只读复核与仅续轻配置的驱动。
+新增完整音频回执超过2MiB的问题以有界无损压缩及紧凑JSON处理，
+原SDK线报不变。冻结13项CPU/120秒和原主配置完整只读复核，0GPU；
+通过后只补1模型/30项业务/3WSS/2入口/600秒，累计启动上限仍5。
+默认rev336 STOPPED、原exact-code失败、声纹失败及听感待验保持。
+
+[PR #50已合入主线](evidence/serve-icl-realtime-main-20261119/README.md)，
+两个CI均通过，main合并点`7d73234b3`；只包含已验ICL/Realtime与
+恢复交付。本地语义VAD后续提交未混入，默认rev336 STOPPED保持。
+
+[语义主轻资格15项CPU通过](evidence/serve-semantic-vad-profile-cpu-20261119/README.md)：
+1.366秒/0GPU，旧证据不可冒充语义能力、恢复不可丢能力，端口和
+清理反例通过；2份真实回合原件复核，原整轮FAIL保持。冻结主轻
+2模型/4入口/6WSS、60项业务/900秒，补最终健康，累计启动上限5；
+实际资格及发行待验，听感待验及全部master继续。
+
+语义主轻资格已接线：v16必须包含两种真实回合、私有评分结算、
+实际ASR/VAD健康和资源清理；旧转录证据不能升级冒充，自动回退
+不能丢能力。冻结15项CPU/120秒/0GPU，验证后再准备主轻实际短验。
+
+[语义回合真实业务与运维查询修复](evidence/serve-semantic-vad-items-20261119/README.md)：
+1模型/2WSS/3Chat/54.724秒，两回合实际语义提前结束、精确转录、
+564/883用量结算和核心42通过；53次NVML正常、清理完成。整轮
+末尾健康查询错用业务身份403，原FAIL保留；4项CPU修复通过。
+最终健康随主轻资格补齐，复用已通过同身份业务；默认rev336
+STOPPED及听感待验保持，继续恢复、交付和全部master。
+
+[语义前缀新鲜度修复](evidence/serve-semantic-vad-fresh-prefix-20261119/README.md)：
+原第二轮真实FAIL保留，45次NVML正常；仅语义路径读取最新完整
+前缀，21项CPU/3项构建资格/18项来源反例通过，原生251.737秒
+零警告构建。冻结补验1模型/2WSS、2评分+1Chat/600秒，累计启动
+上限3；实际语义与发行待验，默认rev336 STOPPED/听感待验保持。
+
 [历史语音恢复夹具补齐](evidence/serve-auxiliary-fixture-capability-20261119/README.md)：
 PR #50全部62组host合同已过；后续旧夹具缺少新版能力/身份记录，
 已补真实历史声明并验证新能力缺证据仍拒绝，单项CPU0.414秒/0GPU
 通过。原CI失败保留；生产/default不变，修订后继续CI及主线合入。
+
+[语义短验鉴权修复](evidence/serve-semantic-vad-metadata-fix-20261119/README.md)：
+首轮1模型/0业务/35.566秒在能力查询401处停止，35次NVML正常，
+自有资源与锁已释放；3项CPU修复检查通过，原引擎不变。补验原
+2WSS+2评分对照+1Chat，新增1模型/600秒、累计启动上限2；原失败
+与默认rev336 STOPPED保持，真实语义/发行待验，全部master继续。
+
+[原生语义VAD接入CPU与构建通过](evidence/serve-semantic-vad-integration-cpu-20261119/README.md)：
+91项原生合同覆盖、5项官方SDK/TLS、6项证据反例通过；实际程序
+零警告构建，全部原失败保留。冻结1模型/1入口/2WSS回合、2评分
+对照+1Chat/600秒；真实业务及发行尚未验收，默认rev336 STOPPED
+保持。PR #50固定已验head仍在CI；本阶段只作本地提交，不混入该PR。
+
+语义VAD CPU整合覆盖91项通过：复用80项未影响通过项、11项
+受影响项闭合，原89项首轮4FAIL及复验事件收集竞态1FAIL均保留。
+真实语义SDK驱动已编写，冻结5项官方SDK/原生TLS CPU夹具检查/60秒；
+实际模型质量与业务尚未验收，原生程序正在必要构建，总任务继续。
 
 [Guardian测试回执修复](evidence/serve-guardian-fixture-receipt-20261119/README.md)
 完成：3项CPU/6.824秒、18项来源反例/0.428秒/0GPU；测试演员的
@@ -18,10 +142,22 @@ JSON改为原子发布，非法绑定与恢复预算断言保持，原CI失败�
 生产程序/默认rev336 STOPPED不变；等待PR #50新head检查后合入，
 语义VAD草稿另行验证，全部master继续。
 
+语义VAD首轮89项为85通过/4失败，原件保留；最小复现定位为
+重采样有限过冲被后级误拒绝（峰值1.00744641）。已修正内部FP32
+接入，冻结4失败项与VAD/非有限值及共享降噪波形共11项/180秒/0GPU。
+本任务旧CPU程序第三组无损归档净释放88855032字节，保留恢复器；
+默认rev336 STOPPED与PR #50已验范围保持，继续实际语义验证。
+
 [PR #50恢复来源清单复核](evidence/serve-icl-realtime-ci-review-20261119/README.md)
 完成：六项来源与已验业务/封装证据重新对齐，完整静态检查及18项
 反例通过，0.450秒/0新增GPU；原CI失败保留，等待修订后CI。
 默认rev336 STOPPED与下一阶段语义VAD草稿保持，全部master继续。
+
+[语义VAD回合状态机12项CPU通过](evidence/serve-semantic-vad-gate-cpu-20261119/README.md)，
+尚未接入ASR/实际语义模型或发行：
+显式概率与绝对音频时钟、2/4/8秒上限、续说/换回合迟到结果隔离、
+旧worker未回收时保留占槽。独立CPU零警告构建，0GPU；
+PR #50继续检查固定已验head，当前新源码暂不纳入该PR或默认rev336。
 
 [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)
 完成：19项STOPPED检查/320.450秒，实际整根回退再前进，
@@ -2123,16 +2259,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev336；服务包 `37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32` |
-| Generation | `5e3eb2a40f14fd5f998c41a02055ad6e20685b68f79a9f2c15edf06757c6f783` |
-| 引擎 | `6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d` |
-| 引擎发布记录 | `06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f` |
+| 发布 | rev346；服务包 `38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb` |
+| Generation | `37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0` |
+| 引擎 | `945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2` |
+| 引擎发布记录 | `51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL与Realtime转录 |
-| 人工整包回退 | 保留控制根 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e`；同已验ICL/Realtime引擎，参考和周期保持；前驱rev326另保留 |
-| 自动payload回退 | 候选→保留控制包 `c995e9ca583d0401bee4af7445dceadbbfde8bfef86f82136f7ac285e208dc5e` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录与实际语义VAD |
+| 人工整包回退 | 保留控制根 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca`；同已验语义引擎、参考和周期保持；前驱rev336另保留 |
+| 自动payload回退 | 候选→保留控制包 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)

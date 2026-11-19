@@ -1,0 +1,29 @@
+{
+  "status": "ORIGINAL_FAILURE_RETAINED_DRIVER_AUTH_FIXED",
+  "cause": "Unauthenticated metadata request returned 401 before any business request; not evidence of absent native classifier",
+  "model_starts": 1,
+  "chats": 0,
+  "realtime_sessions": 0,
+  "seconds": 35.565734690986574,
+  "nvml_queries": 35,
+  "nvml_all_ok": true,
+  "owned_cleanup_confirmed": true,
+  "lease_released": true,
+  "engine_unchanged": true,
+  "continuation_limits": {
+    "model_starts": 1,
+    "realtime_sessions": 2,
+    "chat_requests": 3,
+    "seconds": 600
+  },
+  "cumulative_model_starts_limit": 2,
+  "original_evidence": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/run/plan.json": "a32f541b674f5f973fe353f17e0cbae67224e2b48cb48f79cde8f940b0c808de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/run/result.json": "3c70ca5d1a6c2926276635e585f9555c9561439c2a1025b6ef6dd919c99d7c54",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/run/cleanup.json": "bc606a92cee71560621c9ceb8960b676f5c32d0b87e75289f7cb9325c5fd7f39",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/run/model.log": "ed99b5d9d3d19253a32ddac1527d50dc304d25d2b00247ae7958fe087ed5ac37",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/lease/exit.json": "cc2d3fac4a43e76e0e1071b3054dbed0cc6757cd754eb2ea0550a9726d1fb059",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/lease/events.jsonl": "aec4f3b45cf93bd0aab882022a510a824fe34025f26d11a6b65d3bb90f21c87c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/business-01/lease/nvml-queries.jsonl": "d7762d5bd496f889c757aeaf528d6b8a9ac1857485eb12f9d393ee0752ae9697"
+  }
+}

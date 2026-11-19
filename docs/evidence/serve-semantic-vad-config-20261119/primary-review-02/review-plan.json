@@ -1,0 +1,12 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/profiles-01",
+  "limits": {
+    "seconds": 60,
+    "gpu_starts": 0
+  },
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py": "45f41a064030e6ff68302d53c263b2d50fe8209e38b4b83c9670b4f2a12a8172",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py": "10b68fef406cf9cfd1da2c7d4936a6006a623e05df3b92e74a7b7bfef0a30566"
+  }
+}

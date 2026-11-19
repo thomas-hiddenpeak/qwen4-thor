@@ -15,6 +15,35 @@ Tokens Words() {
 }
 }  // namespace
 
+Q4T_TEST(asr_stream_latest_prefix_catches_up_without_skipping_audio_or_borrow) {
+  AsrStreamSchedule state(1, 4, 20, 2);
+  Q4T_CHECK(state.Append(1, 11));
+  AsrStreamStep first;
+  Q4T_CHECK(state.Next(1, &first, true));
+  Q4T_CHECK(first.samples == 11 && first.sequence == 1 && !first.final);
+  Q4T_CHECK(state.Append(1, 9) && state.Seal(1));
+  AsrStreamStep rejected;
+  Q4T_CHECK(!state.Next(1, &rejected, true));
+  Q4T_CHECK(state.Complete(first) && state.Evaluated() == 11);
+  AsrStreamStep last;
+  Q4T_CHECK(state.Next(1, &last, true));
+  Q4T_CHECK(last.samples == 20 && last.sequence == 2 && last.final);
+  Q4T_CHECK(state.Complete(last) && state.Drained() && state.Steps() == 2);
+  return true;
+}
+
+Q4T_TEST(asr_stream_latest_prefix_keeps_readiness_epoch_and_actual_step_bound) {
+  AsrStreamSchedule state(1, 4, 20, 1);
+  AsrStreamStep step;
+  Q4T_CHECK(state.Append(1, 3) && !state.Next(1, &step, true));
+  Q4T_CHECK(state.Append(1, 1) && !state.Next(2, &step, true));
+  Q4T_CHECK(state.Next(1, &step, true) && state.Complete(step));
+  Q4T_CHECK(state.Append(1, 10) && state.Seal(1));
+  Q4T_CHECK(!state.Next(1, &step, true) && !state.Drained());
+  Q4T_CHECK(state.Received() == 14 && state.Evaluated() == 4);
+  return true;
+}
+
 Q4T_TEST(asr_stream_samples_partition_invariant_without_future_audio) {
   constexpr uint64_t total = 70001;
   for (const uint64_t fragment : {1ULL, 137ULL, 16001ULL, 70001ULL}) {

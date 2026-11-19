@@ -1,0 +1,6 @@
+{
+  "status": "REJECTED_BEFORE_MUTATION",
+  "reason": "historical immutable identities differ",
+  "deleted_files": 0,
+  "gpu_actions": 0
+}

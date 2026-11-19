@@ -35,16 +35,20 @@ WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
 def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False,
-               native_voice=False, realtime=False):
+               native_voice=False, realtime=False, semantic_vad=False):
     require(all(type(v) is bool for v in
-                (chat_audio, native_tts, retained_tts, native_voice, realtime)),
+                (chat_audio, native_tts, retained_tts, native_voice, realtime, semantic_vad)),
             'invalid managed audio budget flags')
+    require(not semantic_vad or realtime, 'semantic recovery requires Realtime')
     limits = dict(LIMITS[scenario])
     if realtime:
         require(scenario != 'tls_remaining', 'Realtime needs complete recovery phases')
         count = 1 if scenario == 'tool_retained' else 2
         limits['websocket_sessions'] = count
         limits['chats'] += count
+        if semantic_vad:
+            limits['websocket_sessions'] += count
+            limits['chats'] += count
     if native_voice:
         require(scenario != 'tls_remaining' and not retained_tts,
                 'registered voice needs its complete recovery phases')
@@ -67,7 +71,7 @@ def configure_plan_limits(plan):
                           plan.get('native_tts') is not None,
                           plan.get('reused_tls', {}).get('tts_complete', False),
                           plan.get('native_voice') is not None,
-                          'realtime' in plan)
+                          'realtime' in plan, plan.get('semantic_vad', False))
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
     if 'sdk' in plan and 'files_binding' in plan['sdk']:
         verify_sdk_binding(plan)
@@ -148,11 +152,13 @@ def prepare(args):
     native_voice = manifest['recovery_profiles']['identity'].get('native_tts_base')
     realtime = profile_evidence.realtime_enabled(
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
+    semantic_vad = profile_evidence.semantic_vad_enabled(
+        manifest['recovery_profiles']['identity'], qualified['capabilities'])
     profile_contract.tts_capability_binding(native_tts, qualified['capabilities'],
         native_voice, manifest['recovery_profiles']['identity'].get('native_asr'))
     limits = limits_for(args.scenario, chat_audio, native_tts is not None,
         args.scenario == 'tls_remaining' and native_tts is not None and
-        args.retained is not None, native_voice is not None, realtime)
+        args.retained is not None, native_voice is not None, realtime, semantic_vad)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
@@ -173,6 +179,7 @@ def prepare(args):
             counted_post_requests=limits['chats']-limits.get('websocket_sessions', 0),
             counted_model_work=limits['chats']), scope=__doc__)
     if chat_audio: plan['chat_audio'] = True
+    if semantic_vad: plan['semantic_vad'] = True
     if native_voice is not None:
         from tools.serve_recovery import profile_voice
         fixture = getattr(args, 'voice_fixtures', None)
@@ -576,6 +583,8 @@ def check_business(out, *, verify_cancel=True):
     qualified = read('capabilities.wire')
     identity = json.loads((package/'manifest.json').read_text())['recovery_profiles']['identity']
     results.update(realtime.check(out, plan, identity, qualified))
+    from tools.serve_realtime import semantic_managed
+    results.update(semantic_managed.check(out, plan, identity, qualified))
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -856,7 +865,9 @@ class Stage(BASE['Stage']):
 
     def exercise_audio(self, realtime):
         from tools.native_tts import managed_service, managed_voice
+        from tools.serve_realtime import semantic_managed
         voice = managed_voice.Actor(self) if self.plan.get('native_voice') is not None else None
+        semantic = semantic_managed.Actor(self) if self.plan.get('semantic_vad') else None
         version, tls = self.plan['scenario'] == 'tool_version', self.plan['scenario'].startswith('tls')
         first = self.version_ready(1, 'primary') if version else self.ready(1, 'primary')
         self.request('capabilities', path='/v1/capabilities')
@@ -867,12 +878,14 @@ class Stage(BASE['Stage']):
                 managed_service.observe(self, 'tls-before')
                 self.sdk('python-zh-json', 'zh', python=True)
                 if self.plan.get('chat_audio'): self.chat_audio('chat-python', sdk=True)
+                if semantic: semantic.observe('tls-before')
                 if realtime: realtime.start('tls-before')
                 self.kill(first, 'gateway', 'native-asr-gateway-exit')
                 if realtime: realtime.finish()
                 self.wait(lambda s:s['business_ready'] and
                           s['gateway_generation'] == first['gateway_generation']+1)
                 if realtime: realtime.start('tls-after')
+                if semantic: semantic.observe('tls-after')
                 if voice:voice.observe('tls-after')
                 managed_service.observe(self, 'tls-after')
                 self.sdk('js-en-stream', 'en')
@@ -889,6 +902,7 @@ class Stage(BASE['Stage']):
             self.audio('primary-asr')
             if self.plan.get('chat_audio'): self.chat_audio('primary-chat-audio')
             if realtime and not version: realtime.start('primary')
+            if semantic: semantic.observe('primary')
         if version:
             self.request('stored-before', dict(self.plan['requests']['chat'], store=True),
                          path='/v1/chat/completions', model_work=True)
@@ -902,6 +916,7 @@ class Stage(BASE['Stage']):
             if realtime: realtime.finish()
             self.version_ready(2, 'fallback')
             if realtime: realtime.start('fallback')
+            if semantic: semantic.observe('fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
             # scenario separately verifies actual VAD SSE through the SDK.
             if voice:voice.observe('fallback')
@@ -915,6 +930,7 @@ class Stage(BASE['Stage']):
                 save(self.output/'profile-continuity.json', dict(
                     before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
         if voice:voice.finish()
+        if semantic:semantic.finish()
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
         self.configuration()

@@ -282,6 +282,12 @@ if(Q4T_ENABLE_NATIVE_TLS)
   set_tests_properties(q4t_realtime_sdk_tls_contracts PROPERTIES
     TIMEOUT 60 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
     ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR};Q4T_INGRESS=$<TARGET_FILE:q4t_ingress>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
+  add_test(NAME q4t_realtime_semantic_sdk_contracts
+    COMMAND ${Python3_EXECUTABLE} -B -m unittest -v
+      tools.serve_realtime.test_semantic_sdk)
+  set_tests_properties(q4t_realtime_semantic_sdk_contracts PROPERTIES
+    TIMEOUT 60 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+    ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR};Q4T_INGRESS=$<TARGET_FILE:q4t_ingress>;Q4T_TEST_OUTPUT_DIR=${duplex_output}")
   q4t_add_python_contract(q4t_native_access_contracts
     tools/serve_recovery/test_native_access.py --ingress $<TARGET_FILE:q4t_ingress>
     --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>
@@ -289,6 +295,8 @@ if(Q4T_ENABLE_NATIVE_TLS)
   set_property(TEST q4t_native_access_contracts APPEND PROPERTY
     ENVIRONMENT "Q4T_NODE_SDK_DIR=${Q4T_NODE_SDK_DIR}")
 endif()
+q4t_add_python_contract(q4t_realtime_semantic_acceptance_contracts
+  tools/serve_realtime/test_semantic_acceptance.py)
 q4t_add_python_contract(q4t_native_bundle_contracts
   tools/serve_recovery/test_native_bundle.py)
 q4t_add_python_contract(q4t_native_admission_contracts

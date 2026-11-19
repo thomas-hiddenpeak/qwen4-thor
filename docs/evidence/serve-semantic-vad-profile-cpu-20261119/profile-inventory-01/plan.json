@@ -1,0 +1,11 @@
+{
+  "scope": "Semantic v16 evidence required for actual capability, complete/continuation usage and health, both-profile counters and owned entry cleanup; legacy v15 stays readable and cannot masquerade as semantic",
+  "sources": {
+    "tools/serve_recovery/profile_acceptance.py": "8001b029575e3d7fd59515959e9f2d487dd6e82d68826f6b372c7a4a99992717",
+    "tools/serve_recovery/profile_evidence.py": "27c4b8628445bee089dacb465354e2a23574de98590437413207d0ab0df971c8",
+    "tools/serve_recovery/profile_semantic.py": "bb73ad244bf326f862e4e0ac4d6c5af18030e574ecf35a87e936d75a5180e840"
+  },
+  "cases": 15,
+  "gpu_qualification": "PENDING",
+  "evidence": "docs/evidence/serve-semantic-vad-profile-cpu-20261119/README.md"
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Three CPU native VAD config mapping checks, using exact original production health projection; no model changes",
+  "tests": [
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_production_scalar_vad_limit_uses_existing_native_adapter",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_native_vad_limit_cannot_use_a_fabricated_nested_default",
+    "tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_backend_health_and_limits_are_required_after_actual_turns"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "raw_health_sha256": "a2aee8801adc44e9772215eaeee8b76d80959b9ce5f88dd578c18787b2507078",
+  "sources": {
+    "tools/serve_recovery/profile_semantic.py": "4286bce1f907fc5dda2ca50620d653a952daba0b002cd8ff65baedd96089c0a3",
+    "tools/serve_recovery/test_profile_semantic.py": "acb4520453bb4aa7c8ee4d8f81c8f2d62c531407425bf97b1a84c7b9f26aa9bb"
+  }
+}

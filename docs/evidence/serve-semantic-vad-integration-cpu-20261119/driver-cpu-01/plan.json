@@ -1,0 +1,10 @@
+{
+  "scope": "Six evidence contracts including bounded plan, actual classifier, private usage, real continuation and counterexamples; no model",
+  "cases": 6,
+  "cpu_seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/semantic_acceptance.py": "d8984fb878bb439818b98c1e16ca06d6393edf01272395da94c2b8563c9c850f",
+    "tools/serve_realtime/test_semantic_acceptance.py": "0f3d88644796359a3779f1d43fb49d6aadae278eb46d1753459c71a5c29c9056"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "scope": "Semantic-only newest cumulative prefix selection; readiness, full audio, committed text, epoch/borrow/cancel/actual-step limits retained. Default fixed chunk policy unchanged.",
+  "sources": {
+    "include/q4t/server/asr_stream_input.h": "65105c2bb4a4a2ab048d91db624fd4ef58c4777c3002e42e7e26a63634272d3a",
+    "include/q4t/server/asr_stream_state.h": "11a06cb19a779217414460ba2c4a8208e514938df5da733c256753de5551621b",
+    "src/server/asr_stream_input.cpp": "b26c426d39bdcd368aac85c683036bc5ff6fce3f052ef81cbd676abde3b9f0a1",
+    "src/server/asr_stream_state.cpp": "6084539816415b2f681f1c9762821461b35a35c379455acc91ba23e83c5801b3",
+    "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab"
+  },
+  "evidence": "docs/evidence/serve-semantic-vad-fresh-prefix-20261119/README.md",
+  "cases": 21,
+  "gpu_qualified": false
+}

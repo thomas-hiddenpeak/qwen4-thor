@@ -56,10 +56,13 @@ bool AsrStreamSchedule::Ready() const {
   return valid_ && !cancelled_ && !InFlight() && received_ > evaluated_ &&
          (sealed_ || received_ - evaluated_ >= chunk_);
 }
-Status AsrStreamSchedule::Next(uint64_t epoch, AsrStreamStep* step) {
+Status AsrStreamSchedule::Next(uint64_t epoch, AsrStreamStep* step,
+                               bool latest_prefix) {
   if (!step || epoch != epoch_ || !Ready() || sequence_ == maximum_steps_)
     return Invalid();
-  const auto end = evaluated_ + std::min(chunk_, received_ - evaluated_);
+  const auto end = latest_prefix
+                       ? received_
+                       : evaluated_ + std::min(chunk_, received_ - evaluated_);
   active_ = {epoch_, ++sequence_, end, sealed_ && end == received_};
   *step = active_;
   return {};

@@ -1,0 +1,8 @@
+{
+  "scope": "Merge only PR50 exact tested remote head, no local semantic commits or default changes",
+  "head": "c7d6b9c81160132e1b5a629d30c9c393e605663d",
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/50",
+  "method": "merge",
+  "delete_branch": false,
+  "gpu_actions": 0
+}

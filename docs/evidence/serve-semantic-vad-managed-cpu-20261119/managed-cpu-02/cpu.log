@@ -1,0 +1,11 @@
+test_actual_backend_health_and_core_owner_must_survive (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive) ... ok
+test_all_recovery_phases_require_real_semantics_and_metered_work (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work) ... ok
+test_declared_capability_or_missing_real_phase_cannot_be_skipped (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_declared_capability_or_missing_real_phase_cannot_be_skipped) ... ok
+test_no_transport_downgrade_replay_or_recognition_hints (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_no_transport_downgrade_replay_or_recognition_hints) ... ok
+test_raw_audio_classifier_and_receipt_cannot_be_fabricated (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_audio_classifier_and_receipt_cannot_be_fabricated) ... ok
+test_raw_metrics_require_complete_settlement_and_resource_release (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_metrics_require_complete_settlement_and_resource_release) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.141s
+
+OK

@@ -1,0 +1,28 @@
+{
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Iinclude",
+    ".q4t-work/serve-semantic-vad-20261119/overshoot-diagnosis-01/main.cpp",
+    "src/audio/stream_resample.cpp",
+    "src/server/realtime_vad.cpp",
+    "src/server/realtime_audio_queue.cpp",
+    "src/server/realtime_pcm.cpp",
+    "-o",
+    ".q4t-work/serve-semantic-vad-20261119/overshoot-diagnosis-01/diagnose"
+  ],
+  "cases": 1,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "source_sha256": {
+    ".q4t-work/serve-semantic-vad-20261119/overshoot-diagnosis-01/main.cpp": "f05278420e5d5164174d2db50068802a8af836ba9bd30871cc779a82c08c00ac",
+    "src/audio/stream_resample.cpp": "047e891a87a410fcd8fae5c6d508f2cc11c0a0f86b15a86fc31a5407c784ce2c",
+    "src/server/realtime_vad.cpp": "9cbbcc7d58c8943aba4dc67e72f0227bdfba26daeb220fd7818c5c028761f0bf",
+    "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
+    "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a"
+  }
+}

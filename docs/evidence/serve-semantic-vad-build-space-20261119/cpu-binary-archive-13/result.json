@@ -1,0 +1,10 @@
+{
+  "status": "PARTIAL_ARCHIVE_PRESERVED",
+  "archived_members": [],
+  "archive_sha256": null,
+  "archive_bytes": 0,
+  "freed_payload_bytes": 0,
+  "default_unchanged": true,
+  "free": 41611264,
+  "gpu_actions": 0
+}

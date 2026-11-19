@@ -1,0 +1,444 @@
+{
+  "status": "ACCEPT_NATIVE_SEMANTIC_VAD_SERVICE_COMPOSITION",
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-02/bundle",
+    "manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-01/bundle",
+    "manifest_sha256": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-01/bundle",
+    "manifest_sha256": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca"
+  },
+  "tls_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/tls-package-01/bundle",
+    "manifest_sha256": "42eb465ed94450f7478e8fc1b2c820158b6e9c17b530bb5ee3395e6da8410456"
+  },
+  "semantic_turns": {
+    "retained-service-02": {
+      "primary-semantic": {
+        "transport": "ws-loopback",
+        "actual_tokens": 887,
+        "actual_classifier": true,
+        "core_owner": {
+          "model_pid": 747018,
+          "model_start_ticks": 327569394,
+          "model_generation": 1,
+          "controller_pid": 747010,
+          "controller_start_ticks": 327569165
+        },
+        "resources_released": true,
+        "automatic_replay": false
+      }
+    },
+    "tls-service-02": {
+      "tls-before-semantic": {
+        "transport": "openai-realtime-wss",
+        "actual_tokens": 887,
+        "actual_classifier": true,
+        "core_owner": {
+          "model_pid": 748386,
+          "model_start_ticks": 327587419,
+          "model_generation": 1,
+          "controller_pid": 748378,
+          "controller_start_ticks": 327587182
+        },
+        "resources_released": true,
+        "automatic_replay": false
+      },
+      "tls-after-semantic": {
+        "transport": "openai-realtime-wss",
+        "actual_tokens": 887,
+        "actual_classifier": true,
+        "core_owner": {
+          "model_pid": 748386,
+          "model_start_ticks": 327587419,
+          "model_generation": 1,
+          "controller_pid": 748378,
+          "controller_start_ticks": 327587182
+        },
+        "resources_released": true,
+        "automatic_replay": false
+      }
+    },
+    "version-service-02": {
+      "primary-semantic": {
+        "transport": "ws-loopback",
+        "actual_tokens": 887,
+        "actual_classifier": true,
+        "core_owner": {
+          "model_pid": 756756,
+          "model_start_ticks": 327753544,
+          "model_generation": 1,
+          "controller_pid": 756748,
+          "controller_start_ticks": 327753310
+        },
+        "resources_released": true,
+        "automatic_replay": false
+      },
+      "fallback-semantic": {
+        "transport": "ws-loopback",
+        "actual_tokens": 887,
+        "actual_classifier": true,
+        "core_owner": {
+          "model_pid": 758106,
+          "model_start_ticks": 327767085,
+          "model_generation": 2,
+          "controller_pid": 758098,
+          "controller_start_ticks": 327766852
+        },
+        "resources_released": true,
+        "automatic_replay": false
+      }
+    }
+  },
+  "actual_model_starts": 4,
+  "service_requests": 63,
+  "realtime_tasks": 10,
+  "semantic_tasks": 5,
+  "service_work_items": 73,
+  "service_probes": 1,
+  "service_seconds": 628.9108174866997,
+  "nvml_queries": 586,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "strict_finalizers_all_passed": true,
+  "strict_runtime_environment_checks_passed": true,
+  "original_version_driver_passed": true,
+  "candidate_whole_package_gpu_run": true,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "original_failed_stage": {
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-service-01",
+    "starts": 0,
+    "http_requests": 0,
+    "seconds": 0.5257797329686582,
+    "nvml_ok": 4,
+    "evidence": "docs/evidence/serve-semantic-vad-managed-import-20261119/README.md"
+  },
+  "original_failure_relabelled": false,
+  "cumulative_model_starts": 6,
+  "cumulative_http_requests": 87,
+  "cumulative_work_items": 73,
+  "listening": "PENDING_BY_OWNER",
+  "primary_light_evidence": "docs/evidence/serve-semantic-vad-primary-light-20261119/README.md",
+  "normal_speed_voice_similarity_accepted": false,
+  "strict_fp_boundary_accepted": true,
+  "artifact_bytes": 29855556,
+  "original_candidate_version": {
+    "name": "version-service-01",
+    "counts": {
+      "starts": 2,
+      "chats": 28,
+      "probes": 1,
+      "controls": 388,
+      "websocket_sessions": 4
+    },
+    "actual_model_execs": 2,
+    "seconds": 271.0348695628345,
+    "strict_lease_seconds": 272.50246425531805,
+    "nvml_queries": 252,
+    "business": {
+      "results": {
+        "primary-asr": {
+          "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "auxiliaries": [
+            "alignment",
+            "vad",
+            "speaker",
+            "separator"
+          ],
+          "stream": false,
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+          "segments": 2,
+          "labels": [
+            "B",
+            "A"
+          ]
+        },
+        "fallback-asr": {
+          "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "auxiliaries": [
+            "alignment",
+            "vad",
+            "speaker",
+            "separator"
+          ],
+          "stream": false,
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+          "segments": 2,
+          "labels": [
+            "B",
+            "A"
+          ]
+        },
+        "primary-chat-audio": {
+          "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+          "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+          "usage": {
+            "prompt_tokens": 280,
+            "completion_tokens": 15,
+            "total_tokens": 295,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 55
+            },
+            "q4t_audio_preparation": {
+              "input_tokens": 70,
+              "output_tokens": 11,
+              "audio_tokens": 55
+            }
+          }
+        },
+        "fallback-chat-audio": {
+          "request_sha256": "529e71ba587cd6fd5e3574c6806c1b4d99fc4ae08627e098afbace6fea4c1312",
+          "source_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+          "usage": {
+            "prompt_tokens": 280,
+            "completion_tokens": 15,
+            "total_tokens": 295,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 55
+            },
+            "q4t_audio_preparation": {
+              "input_tokens": 70,
+              "output_tokens": 11,
+              "audio_tokens": 55
+            }
+          }
+        },
+        "primary-tts": {
+          "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+          "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+          "usage": {
+            "prompt_tokens": 180,
+            "completion_tokens": 475,
+            "total_tokens": 655,
+            "completion_tokens_details": {
+              "audio_tokens": 464
+            },
+            "q4t_audio_synthesis": {
+              "input_tokens": 15,
+              "output_tokens": 465
+            }
+          },
+          "health": {
+            "state": "ready",
+            "reason": "none",
+            "core_readiness_dependency": false,
+            "model": "qwen3-tts-12hz-1.7b-customvoice",
+            "device_bytes": 8123997956,
+            "load_attempts": 2,
+            "load_failures": 0,
+            "compute_failures": 0,
+            "recovery": "request_driven",
+            "retry_delay_ms": 5000,
+            "asset_cleanup_pending": false
+          },
+          "limits": {
+            "max_text_tokens": 512,
+            "max_prefill_tokens": 512,
+            "max_frames": 200,
+            "workspace_mib": 2048,
+            "max_output_mib": 16
+          }
+        },
+        "fallback-tts": {
+          "actual_speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+          "actual_chat_audio_sha256": "2f2d4f92ccd99c0b55e2aeb18a30fce82b74d1d434c540038c931d1e080246b9",
+          "usage": {
+            "prompt_tokens": 180,
+            "completion_tokens": 475,
+            "total_tokens": 655,
+            "completion_tokens_details": {
+              "audio_tokens": 464
+            },
+            "q4t_audio_synthesis": {
+              "input_tokens": 15,
+              "output_tokens": 465
+            }
+          },
+          "health": {
+            "state": "ready",
+            "reason": "none",
+            "core_readiness_dependency": false,
+            "model": "qwen3-tts-12hz-1.7b-customvoice",
+            "device_bytes": 8123997956,
+            "load_attempts": 2,
+            "load_failures": 0,
+            "compute_failures": 0,
+            "recovery": "request_driven",
+            "retry_delay_ms": 5000,
+            "asset_cleanup_pending": false
+          },
+          "limits": {
+            "max_text_tokens": 512,
+            "max_prefill_tokens": 512,
+            "max_frames": 200,
+            "workspace_mib": 2048,
+            "max_output_mib": 16
+          }
+        },
+        "primary-voice": {
+          "consent_id": "cons_9e44ecba4b186d415854f6e716a2eb03",
+          "voice_id": "voice_4b78dee289e1d1ffd569f4cf69f67948",
+          "chat_id": "chatcmpl-auto-a5c86b377de9e292fb15b4b32f950549",
+          "speech_sha256": "4619806fca459450a68f802cdb2e56cf9573dc227f6105fb33b3d154d9c3702b",
+          "chat_audio_sha256": "8b3d03132be825df86c3bed9e8dd00c9e1f57e021f0cc7d8e00bdb5e1f706ce9",
+          "speech_transcript": "The blue train arrives at noon.",
+          "chat_transcript": "Please close the window.",
+          "reference_sha256": "f74e9994eeed1fdadf4a04cc798a9172e0637a62543c7f755c11033cd0ad727a",
+          "reference_frames": 56,
+          "speech_input_tokens": 920,
+          "chat_input_tokens": 918
+        },
+        "fallback-voice": {
+          "consent_id": "cons_9e44ecba4b186d415854f6e716a2eb03",
+          "voice_id": "voice_4b78dee289e1d1ffd569f4cf69f67948",
+          "chat_id": "chatcmpl-auto-356ca57f2c779be7d4d9c9d673e3e113",
+          "speech_sha256": "4619806fca459450a68f802cdb2e56cf9573dc227f6105fb33b3d154d9c3702b",
+          "chat_audio_sha256": "8b3d03132be825df86c3bed9e8dd00c9e1f57e021f0cc7d8e00bdb5e1f706ce9",
+          "speech_transcript": "The blue train arrives at noon.",
+          "chat_transcript": "Please close the window.",
+          "reference_sha256": "f74e9994eeed1fdadf4a04cc798a9172e0637a62543c7f755c11033cd0ad727a",
+          "reference_frames": 56,
+          "speech_input_tokens": 920,
+          "chat_input_tokens": 918
+        },
+        "primary-realtime": {
+          "mode": "hold_complete",
+          "transport": "ws-loopback",
+          "close_code": 1006,
+          "actual_tokens": 81,
+          "completed": true,
+          "automatic_replay": false
+        },
+        "fallback-realtime": {
+          "mode": "complete",
+          "transport": "ws-loopback",
+          "close_code": 1000,
+          "actual_tokens": 81,
+          "completed": true,
+          "automatic_replay": false
+        },
+        "primary-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 751661,
+            "model_start_ticks": 327616779,
+            "model_generation": 1,
+            "controller_pid": 751625,
+            "controller_start_ticks": 327616548
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        },
+        "fallback-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 754219,
+            "model_start_ticks": 327630453,
+            "model_generation": 2,
+            "controller_pid": 754183,
+            "controller_start_ticks": 327630220
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      },
+      "native_tls": false,
+      "version_recovery": true,
+      "health": {
+        "state": "ready",
+        "reason": "none",
+        "core_readiness_dependency": false,
+        "model": "qwen3-asr-0.6b",
+        "device_bytes": 1876017152,
+        "load_attempts": 5,
+        "load_failures": 0,
+        "compute_failures": 0,
+        "recovery": "request_driven",
+        "retry_delay_ms": 5000,
+        "asset_cleanup_pending": false
+      },
+      "actual_core_text": "42",
+      "default_replaced": false,
+      "reused_completed": null,
+      "cancellation": "not_applicable"
+    },
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    },
+    "artifact_bytes": 11886237
+  },
+  "cumulative_websocket_sessions": 14,
+  "cumulative_service_seconds": 899.9456870495342,
+  "publication_migration_failure_preserved": true,
+  "original_candidate_version_passed": true,
+  "changed_candidate_sources": [
+    "source/tools/serve_recovery/profile_migration.py"
+  ],
+  "archive_sha256": "07890a294deebabb2a0b0bf887a2441d8a2fec241d5a5eb1686a03e42b71530a",
+  "archive_files": 54,
+  "secret_scan_matches": 0
+}

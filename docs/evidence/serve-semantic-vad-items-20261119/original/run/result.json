@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 304, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_acceptance.py\", line 260, in business\n    config=self.metadata('/v1/config','final-config')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_acceptance.py\", line 205, in metadata\n    require(response.status == 200, 'authenticated metadata HTTP status: '+str(response.status))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: authenticated metadata HTTP status: 403\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 2,
+    "chats": 3,
+    "controls": 37
+  },
+  "seconds": 54.72399792307988,
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2"
+}

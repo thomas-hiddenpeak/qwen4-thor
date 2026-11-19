@@ -1,0 +1,20 @@
+test_health_uses_only_operations_port_and_retains_failure (tools.serve_recovery.test_profile_semantic.SemanticDriver.test_health_uses_only_operations_port_and_retains_failure) ... ok
+test_limits_charge_both_profiles_and_require_real_vad (tools.serve_recovery.test_profile_semantic.SemanticDriver.test_limits_charge_both_profiles_and_require_real_vad) ... ok
+test_owned_entry_closes_on_sdk_failure_without_business_receipt (tools.serve_recovery.test_profile_semantic.SemanticDriver.test_owned_entry_closes_on_sdk_failure_without_business_receipt) ... ok
+test_actual_turns_usage_health_and_format_are_bound (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_actual_turns_usage_health_and_format_are_bound) ... ok
+test_backend_health_and_limits_are_required_after_actual_turns (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_backend_health_and_limits_are_required_after_actual_turns) ... ok
+test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_compaction_keeps_audio_and_errors_without_mutating_raw_sdk) ... ok
+test_missing_dependency_or_changed_claim_cannot_qualify (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_dependency_or_changed_claim_cannot_qualify) ... ok
+test_missing_metric_or_private_work_and_leaked_resources_reject (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_missing_metric_or_private_work_and_leaked_resources_reject) ... ok
+test_pause_transcript_audio_and_event_correlation_cannot_disappear (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_pause_transcript_audio_and_event_correlation_cannot_disappear) ... ok
+test_unknown_timeout_or_unbilled_classifier_rejects (tools.serve_recovery.test_profile_semantic.SemanticEvidence.test_unknown_timeout_or_unbilled_classifier_rejects) ... ok
+test_semantic_upgrade_requires_actual_business_and_cannot_auto_drop_it (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_semantic_upgrade_requires_actual_business_and_cannot_auto_drop_it) ... ok
+test_fixed_limits_and_cli_reserve_every_actual_session_and_turn (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_fixed_limits_and_cli_reserve_every_actual_session_and_turn) ... ok
+test_sdk_timeout_still_releases_only_the_owned_native_entry (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_sdk_timeout_still_releases_only_the_owned_native_entry) ... ok
+test_complete_actual_usage_and_original_state_are_preserved (tools.serve_recovery.test_profile_realtime.RealtimeEvidence.test_complete_actual_usage_and_original_state_are_preserved) ... ok
+test_realtime_requires_new_observations_and_cannot_disappear_at_fallback (tools.serve_recovery.test_profile_realtime.RealtimeMigration.test_realtime_requires_new_observations_and_cannot_disappear_at_fallback) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.806s
+
+OK

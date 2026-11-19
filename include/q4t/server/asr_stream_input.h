@@ -37,7 +37,8 @@ class AsrStreamInput {
   // deadline and cooperative cancellation bound the wait; arrivals do not
   // extend it or fabricate execution progress.
   AsrStreamRead Read(Clock::time_point deadline,
-                     const std::function<bool()>& cancelled = {});
+                     const std::function<bool()>& cancelled = {},
+                     bool latest_prefix = false);
   Status Complete(const AsrStreamStep& step);
   size_t Received() const;
   bool Drained() const;

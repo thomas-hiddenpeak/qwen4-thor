@@ -1,0 +1,122 @@
+test_actor_rejects_wrong_phase_or_missing_completion (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actor_rejects_wrong_phase_or_missing_completion) ... ok
+test_actual_backend_health_and_core_owner_must_survive (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive) ... ERROR
+test_all_recovery_phases_require_real_semantics_and_metered_work (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work) ... ERROR
+test_declared_capability_or_missing_real_phase_cannot_be_skipped (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_declared_capability_or_missing_real_phase_cannot_be_skipped) ... ERROR
+test_exact_added_work_budget_and_no_partial_tls_bypass (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_exact_added_work_budget_and_no_partial_tls_bypass) ... ok
+test_no_transport_downgrade_replay_or_recognition_hints (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_no_transport_downgrade_replay_or_recognition_hints) ... ERROR
+test_raw_audio_classifier_and_receipt_cannot_be_fabricated (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_audio_classifier_and_receipt_cannot_be_fabricated) ... ERROR
+test_raw_metrics_require_complete_settlement_and_resource_release (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_metrics_require_complete_settlement_and_resource_release) ... ERROR
+test_sdk_failure_keeps_wire_without_success_or_retry (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_sdk_failure_keeps_wire_without_success_or_retry) ... ok
+test_all_managed_modes_and_new_process_counter_reset (tools.serve_realtime.test_managed.Evidence.test_all_managed_modes_and_new_process_counter_reset) ... ok
+test_exact_work_budgets_and_no_partial_tls_bypass (tools.serve_realtime.test_managed.Evidence.test_exact_work_budgets_and_no_partial_tls_bypass) ... ok
+test_complete_turn_requires_classifier_and_orderly_close (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_complete_turn_requires_classifier_and_orderly_close) ... ok
+test_explicit_plain_loopback_semantics_without_automatic_tls_downgrade (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_explicit_plain_loopback_semantics_without_automatic_tls_downgrade) ... ok
+test_explicit_plain_loopback_still_requires_actual_classifier (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_explicit_plain_loopback_still_requires_actual_classifier) ... ok
+test_untrusted_tls_does_not_fall_back_to_plaintext (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_untrusted_tls_does_not_fall_back_to_plaintext) ... ok
+
+======================================================================
+ERROR: test_actual_backend_health_and_core_owner_must_survive (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 99, in test_actual_backend_health_and_core_owner_must_survive
+    self.fixture();prefix='tls-before-semantic'
+    ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+======================================================================
+ERROR: test_all_recovery_phases_require_real_semantics_and_metered_work (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 71, in test_all_recovery_phases_require_real_semantics_and_metered_work
+    self.fixture(scenario);result=self.check()
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+======================================================================
+ERROR: test_declared_capability_or_missing_real_phase_cannot_be_skipped (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_declared_capability_or_missing_real_phase_cannot_be_skipped)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 77, in test_declared_capability_or_missing_real_phase_cannot_be_skipped
+    self.fixture();self.plan.pop('semantic_vad')
+    ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+======================================================================
+ERROR: test_no_transport_downgrade_replay_or_recognition_hints (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_no_transport_downgrade_replay_or_recognition_hints)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 111, in test_no_transport_downgrade_replay_or_recognition_hints
+    self.fixture();prefix='tls-before-semantic'
+    ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+======================================================================
+ERROR: test_raw_audio_classifier_and_receipt_cannot_be_fabricated (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_audio_classifier_and_receipt_cannot_be_fabricated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 85, in test_raw_audio_classifier_and_receipt_cannot_be_fabricated
+    self.fixture();prefix='tls-before-semantic'
+    ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+======================================================================
+ERROR: test_raw_metrics_require_complete_settlement_and_resource_release (tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_metrics_require_complete_settlement_and_resource_release)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 92, in test_raw_metrics_require_complete_settlement_and_resource_release
+    self.fixture();prefix='tls-before-semantic'
+    ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_semantic_managed.py", line 51, in fixture
+    row=dict(turn=m.semantic.compact(raw,False),before=before,after=after,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_semantic.py", line 31, in compact
+    evidence.semantic_turn(value, continuation)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_evidence.py", line 1141, in semantic_turn
+    item = value['retrieved']['item']; content = item['content']
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'item'
+
+----------------------------------------------------------------------
+Ran 15 tests in 14.531s
+
+FAILED (errors=6)

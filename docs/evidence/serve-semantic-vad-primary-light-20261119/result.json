@@ -1,0 +1,12 @@
+{
+  "status": "PASS_QUALIFIED_PRIMARY_LIGHT_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 30,
+    "controls": 81,
+    "websocket_sessions": 3,
+    "ingress_starts": 2
+  },
+  "seconds": 178.7697540880181,
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2"
+}

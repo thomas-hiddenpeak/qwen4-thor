@@ -746,7 +746,13 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 3);
+  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 2);
+  const auto* semantic = realtime->Find("semantic_vad");
+  Q4T_CHECK(semantic && semantic->GetBool("implemented") &&
+            !semantic->GetBool("configured") &&
+            !semantic->GetBool("calibrated") &&
+            semantic->GetInt("max_model_steps") == 8 &&
+            semantic->GetString("usage") == "included_in_item_and_client_tokens");
   const auto* continuous = realtime->Find("continuous_input");
   Q4T_CHECK(continuous && continuous->GetBool("implemented") &&
             continuous->GetString("commit") == "explicit" &&
@@ -1490,5 +1496,189 @@ Q4T_TEST(realtime_retrieve_full_native_text_budget_keeps_json_escaping) {
   const auto result = Drain(output);
   Q4T_CHECK(result.size() == 1 &&
             Content(result[0]).GetString("transcript") == text);
+  return true;
+}
+
+
+namespace {
+constexpr auto kSemanticVad = R"({"type":"session.update","session":{
+  "type":"transcription","audio":{"input":{
+    "turn_detection":{"type":"semantic_vad","eagerness":"high"}}}}})";
+struct SemanticFixture : Fixture {
+  std::atomic<bool> allow_score{true}, score_entered{false};
+  std::atomic<bool> hold_cleanup{false}, score_cancelled{false};
+  std::atomic<int> accepted{0};
+  bool score = true, all_voiced = false;
+  size_t frames = 0;
+  std::vector<float> final_samples;
+  SemanticFixture() {
+    callbacks.semantic_ready = true;
+    callbacks.acquire = [&](const auto& id) {
+      return requests.Register(id, "", Clock::now() + 5s);
+    };
+    callbacks.vad_step = [&](auto, auto*, float* p) {
+      *p = all_voiced || frames < 5 ? 1 : 0;
+      ++frames;
+      return q4t::Status{};
+    };
+    callbacks.execute = [&](const auto& job, const auto&, const auto& control,
+                            const auto&) {
+      ++calls;
+      if (!job.stream || !job.semantic)
+        return Error(500, "fixture_owner", "Missing semantic stream");
+      for (;;) {
+        auto input = job.stream->Read(control->deadline(),
+                                       [&] { return control->Cancelled(); });
+        if (input.kind == AsrStreamReadKind::kEnd) break;
+        if (input.kind != AsrStreamReadKind::kReady)
+          return Error(409, "fixture_cancelled", "Cancelled");
+        if (!job.stream->Complete(input.step))
+          return Error(500, "fixture_complete", "Complete");
+        if (!score || input.step.final) continue;
+        auto child = std::make_shared<RequestControl>("child", "",
+                                                       control->deadline());
+        RealtimeSemanticTicket ticket;
+        if (!job.semantic->TryScore(input.step.sequence,
+                                    job.audio.begin_ticks + input.step.samples * 3,
+                                    child, &ticket))
+          continue;
+        score_entered = true;
+        const auto deadline = Clock::now() + 2s;
+        while ((!allow_score || hold_cleanup) && Clock::now() < deadline) {
+          if (child->Cancelled()) score_cancelled = true;
+          std::this_thread::sleep_for(1ms);
+        }
+        if (job.semantic->Complete(ticket, 1) ==
+            RealtimeSemanticScore::kAccepted)
+          ++accepted;
+      }
+      const auto samples = job.stream->SealedSamples(job.audio.epoch);
+      final_samples.assign(samples.begin(), samples.end());
+      return Completed("Explicit CPU stream fixture");
+    };
+  }
+};
+bool AwaitScore(RealtimeTranscriptionSession& s, SemanticFixture& f,
+                std::vector<Json>* events) {
+  const auto deadline = Clock::now() + 1s;
+  while (Clock::now() < deadline && !f.score_entered) {
+    if (!s.Tick()) return false;
+    auto pending = Drain(f.output);
+    events->insert(events->end(), pending.begin(), pending.end());
+    std::this_thread::sleep_for(1ms);
+  }
+  // The worker can enter before this helper's first poll. Preserve already
+  // queued speech/start events in that schedule as well as the delayed one.
+  auto pending = Drain(f.output);
+  events->insert(events->end(), pending.begin(), pending.end());
+  return f.score_entered;
+}
+size_t EventsOf(const std::vector<Json>& events, std::string_view type) {
+  return std::count_if(events.begin(), events.end(), [&](const auto& event) {
+    return event.GetString("type") == type;
+  });
+}
+}  // namespace
+
+Q4T_TEST(realtime_semantic_session_waits_for_content_score_then_commits_once) {
+  SemanticFixture f;
+  f.allow_score = false;
+  RealtimeTranscriptionSession s("sess_semantic", f.output, f.callbacks, 30);
+  ScopeExit release([&] { f.allow_score = true; f.hold_cleanup = false; });
+  Q4T_CHECK(s.Start() && Send(s, kSemanticVad));
+  Q4T_CHECK(Raw(s, Signal(30 * 768), f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(AwaitScore(s, f, &events));
+  Q4T_CHECK(EventsOf(events, "input_audio_buffer.committed") == 0 &&
+            EventsOf(events, "input_audio_buffer.speech_started") == 1);
+  f.allow_score = true;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(f.calls == 1 && f.accepted == 1 && f.released == 1);
+  Q4T_CHECK(EventsOf(events, "input_audio_buffer.committed") == 1 &&
+            EventsOf(events, "input_audio_buffer.speech_stopped") == 1 &&
+            EventsOf(events,
+                     "conversation.item.input_audio_transcription.completed") == 1);
+  Q4T_CHECK(!f.final_samples.empty() && f.final_samples.size() < 16000);
+  const auto id = CommitId(events);
+  Q4T_CHECK(Retrieve(s, id));
+  const auto retrieved = Drain(f.output);
+  Q4T_CHECK(retrieved.size() == 1 &&
+            Content(retrieved[0]).GetString("transcript") ==
+                "Explicit CPU stream fixture");
+  return true;
+}
+
+Q4T_TEST(realtime_semantic_session_unknown_score_uses_real_audio_maximum) {
+  SemanticFixture f;
+  f.score = false;
+  RealtimeTranscriptionSession s("sess_semantic_bound", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kSemanticVad));
+  Q4T_CHECK(Raw(s, Signal(30 * 768), f.output));
+  std::vector<Json> events = Drain(f.output);
+  for (int i = 0; i < 5; ++i) Q4T_CHECK(s.Tick());
+  auto pending = Drain(f.output);
+  events.insert(events.end(), pending.begin(), pending.end());
+  Q4T_CHECK(EventsOf(events, "input_audio_buffer.committed") == 0);
+  Q4T_CHECK(Raw(s, Signal(45 * 768), f.output));
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(f.calls == 1 && f.accepted == 0 && f.released == 1);
+  // Five 32-ms voiced frames followed by the configured two real seconds.
+  Q4T_CHECK(f.final_samples.size() >= 2160 * 16 &&
+            f.final_samples.size() <= 2192 * 16);
+  Q4T_CHECK(EventsOf(events, "input_audio_buffer.committed") == 1 &&
+            EventsOf(events,
+                     "conversation.item.input_audio_transcription.completed") == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_semantic_session_clear_cancels_score_but_retains_worker_audio) {
+  SemanticFixture f;
+  f.allow_score = false;
+  f.hold_cleanup = true;
+  RealtimeTranscriptionSession s("sess_semantic_clear", f.output, f.callbacks, 30);
+  ScopeExit release([&] { f.allow_score = true; f.hold_cleanup = false; });
+  Q4T_CHECK(s.Start() && Send(s, kSemanticVad) &&
+            Raw(s, Signal(30 * 768), f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(AwaitScore(s, f, &events));
+  const auto held = s.AudioBytes();
+  Q4T_CHECK(held > 0 && Send(s, R"({"type":"input_audio_buffer.clear"})"));
+  const auto deadline = Clock::now() + 500ms;
+  while (!f.score_cancelled && Clock::now() < deadline)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(f.score_cancelled && s.AudioBytes() > 0 && s.QueuedItems() == 1);
+  f.allow_score = true;
+  f.hold_cleanup = false;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(s.AudioBytes() == 0 && s.RetainedAudioBytes() == 0 && f.accepted == 0);
+  Q4T_CHECK(EventsOf(events, "input_audio_buffer.committed") == 0 &&
+            EventsOf(events,
+                     "conversation.item.input_audio_transcription.completed") == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_semantic_session_explicit_commit_preserves_exact_tail) {
+  SemanticFixture f;
+  f.all_voiced = true;
+  RealtimeTranscriptionSession s("sess_semantic_explicit", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kSemanticVad));
+  const auto raw = Signal(1025);
+  Q4T_CHECK(Raw(s, raw, f.output) && Send(s, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  std::vector<float> expected;
+  RealtimeNoiseInput processor({}, q4t::audio::NoiseReduction::kOff, 0);
+  const auto sink = [&](auto samples) {
+    expected.insert(expected.end(), samples.begin(), samples.end());
+    return q4t::Status{};
+  };
+  Q4T_CHECK(processor.Append({reinterpret_cast<const uint8_t*>(raw.data()),
+                              raw.size()}, sink) && processor.Finish(sink));
+  Q4T_CHECK(f.calls == 1 && f.final_samples == expected &&
+            EventsOf(events, "input_audio_buffer.committed") == 1);
+  Q4T_CHECK(Send(s, R"({"type":"session.update","session":{
+    "type":"transcription","audio":{"input":{"turn_detection":null}}}})"));
+  auto updated = Drain(f.output);
+  Q4T_CHECK(updated.size() == 1 && updated[0].GetString("type") == "session.updated");
   return true;
 }

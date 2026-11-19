@@ -1,0 +1,70 @@
+{
+  "migration-cpu-01/plan.json": {
+    "bytes": 559,
+    "sha256": "fff0898d670dfbbf63e61f8d1e3efe2cd3a8d0abbc64fd2a430affc25696f779"
+  },
+  "migration-cpu-01/result.json": {
+    "bytes": 93,
+    "sha256": "4730019618a30fd889e543d6e2ee9e5986589c4b8296b15b3a37a73ce3b0ac8e"
+  },
+  "migration-cpu-01/stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "migration-cpu-01/stderr": {
+    "bytes": 1090,
+    "sha256": "68ef3256a84c512ac9dbc36e4b763df985b612628dd20bd066b51938ba0aab33"
+  },
+  "migration-review-01/plan.json": {
+    "bytes": 1665,
+    "sha256": "192e0e5b882ea55c515bd253245af988f3af708b00bdad1ab3a46dff2a7a47d1"
+  },
+  "migration-review-01/result.json": {
+    "bytes": 8582,
+    "sha256": "9d4dec36ebfe020eb769e24dc199d3ac197f641b26007f239e19a0fa4c0885f9"
+  },
+  "migration-inventory-01/result.json": {
+    "bytes": 96,
+    "sha256": "43e4e564cd3217aff2d201df36bab050966c3b9f90152a5d1e15181aa4d0d8a4"
+  },
+  "migration-inventory-01/stdout.json": {
+    "bytes": 223,
+    "sha256": "66c8df9b5ddf215a9777644cabe945600c627fbcee529bbb049c0153a72ed65a"
+  },
+  "migration-inventory-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "service-package-02/receipt.json": {
+    "bytes": 329,
+    "sha256": "7e3f9d1b9f79526efd642078c8179a1479b7218812db3d9318dfe002a588b2a7"
+  },
+  "service-package-02/delta-review.json": {
+    "bytes": 2219,
+    "sha256": "725bcf0867d54ac49bcba07986c0a5b30a3d34b04aa67a06c0d551bf7594ffc2"
+  },
+  "service-package-02/clone-failure-01.json": {
+    "bytes": 260,
+    "sha256": "7e0632c21124cb6001957f226ca68b880b4e6bf4826c0a3202eb3fbf5a68d25f"
+  },
+  "service-package-02/private-copy-repair.json": {
+    "bytes": 38943,
+    "sha256": "517085737b9025fad016da22b92176ca407059290e572041275c86a7073a32df"
+  },
+  "delivery-prepare-failure-01.json": {
+    "bytes": 34186,
+    "sha256": "4c3e3338688be9111532e365f55558e15b43f2557392c55037001b68a15fcf10"
+  },
+  "review_actual_migration.py": {
+    "bytes": 3016,
+    "sha256": "73d8f140e53c09cb9a5464c6f0d2aa84c2cf8d53c474798ce236e90e7a864af4"
+  },
+  "prepare_migration_package.py": {
+    "bytes": 2763,
+    "sha256": "add96f866ed05f71b7cd1c617fbe34bc0873f216f239ac71979df32f1bcf71c9"
+  },
+  "finish_migration_package.py": {
+    "bytes": 1947,
+    "sha256": "474144157e8b9befca27d8ef598a145c811395884e2bdd70a90197ce163c288a"
+  }
+}

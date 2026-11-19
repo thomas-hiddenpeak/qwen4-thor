@@ -1,0 +1,11 @@
+test_actual_classifier_usage_and_both_turn_modes (tools.serve_realtime.test_semantic_acceptance.Evidence.test_actual_classifier_usage_and_both_turn_modes) ... ok
+test_classifier_requires_finite_probability_and_completed_generation (tools.serve_realtime.test_semantic_acceptance.Evidence.test_classifier_requires_finite_probability_and_completed_generation) ... ok
+test_continuation_events_errors_and_retained_identity_are_required (tools.serve_realtime.test_semantic_acceptance.Evidence.test_continuation_events_errors_and_retained_identity_are_required) ... ok
+test_plan_fixes_budget_no_asr_prompt_and_local_model_scope (tools.serve_realtime.test_semantic_acceptance.Evidence.test_plan_fixes_budget_no_asr_prompt_and_local_model_scope) ... ok
+test_private_work_must_be_in_actual_parent_usage (tools.serve_realtime.test_semantic_acceptance.Evidence.test_private_work_must_be_in_actual_parent_usage) ... ok
+test_silent_fallback_or_unfinished_classifier_cannot_pass (tools.serve_realtime.test_semantic_acceptance.Evidence.test_silent_fallback_or_unfinished_classifier_cannot_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK

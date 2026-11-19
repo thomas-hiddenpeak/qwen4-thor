@@ -1,0 +1,13 @@
+[PASS] realtime_vad_processed_float_overshoot_is_bit_exact
+[PASS] realtime_vad_processed_nonfinite_fails_before_callback
+[PASS] realtime_vad_continuous_frames_are_message_partition_invariant
+[PASS] realtime_vad_sample_boundaries_include_prefix_and_exact_silence
+[PASS] realtime_vad_idle_ticks_do_not_invent_silence_or_finish
+[PASS] realtime_vad_invalid_probability_poison_and_epoch_reset
+[PASS] realtime_transcription_noise_vad_and_asr_borrow_identical_processed_samples
+  CHECK failed: EventsOf(events, "input_audio_buffer.committed") == 0 && EventsOf(events, "input_audio_buffer.speech_started") == 1 (line 1588)
+[FAIL] realtime_semantic_session_waits_for_content_score_then_commits_once
+[PASS] realtime_semantic_session_unknown_score_uses_real_audio_maximum
+[PASS] realtime_semantic_session_clear_cancels_score_but_retains_worker_audio
+[PASS] realtime_semantic_session_explicit_commit_preserves_exact_tail
+11 tests, 10 passed, 1 failed, 0 skipped

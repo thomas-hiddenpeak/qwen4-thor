@@ -1,0 +1,10 @@
+{
+  "scope": "Three CPU build-record checks before next actual semantic run; previous failures immutable",
+  "cases": 3,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/semantic_acceptance.py": "2cfea828d3757be987ab61803cc9c6558d3887912ddb6f5e6cecde47bad2544f",
+    "tools/serve_realtime/test_semantic_acceptance.py": "6de9fb6f59bb417bdd983841f87f7520c04871293fd35566c5031d8711c5a764"
+  }
+}

@@ -444,10 +444,16 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_pump.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_noise_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_semantic_vad.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_semantic_turn.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_semantic_score.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_semantic_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_vad_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_noise_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_pump_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_transcription_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_semantic_vad_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_semantic_turn_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_vad.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_export.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_history.cpp

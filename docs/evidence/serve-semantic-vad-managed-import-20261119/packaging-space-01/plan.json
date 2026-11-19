@@ -1,0 +1,168 @@
+{
+  "scope": "deduplicate byte-identical inactive build engine onto immutable newly qualified candidate; remove only newly rebuilt host object cache",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-01/engine/q4t",
+  "target": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+  "sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+  "previous_mode": 509,
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_device_admission.dir/src/service/device_admission.cpp.o",
+      "bytes": 88952,
+      "inode": 7474827,
+      "sha256": "32926c3069e40ebf2e938fe9af94adcb61416dc09fa92653183eafc4eba4102b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian_journal.dir/src/io/json.cpp.o",
+      "bytes": 61400,
+      "inode": 7091802,
+      "sha256": "7caf6278ffd1338f51b98374e47b3eb9bec330343d9cbf02ee02f40d0652683c"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_journal.cpp.o",
+      "bytes": 62576,
+      "inode": 7091800,
+      "sha256": "9f4184a14cfbcc0d777ab3177a87fff4a21945a551fff311f2e03f7f46f5527f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian_journal.dir/src/service/guardian_wire.cpp.o",
+      "bytes": 37232,
+      "inode": 7091798,
+      "sha256": "907790b988aec99e943d2393f426ac6086d154dc05d592ef31f296a94798d685"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_device_filter.dir/src/service/device_filter.cpp.o",
+      "bytes": 81208,
+      "inode": 7474829,
+      "sha256": "d88ea34aa019655fb5f0728442608278809f2872967236841edc0915572ed4ec"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_device_control.dir/src/service/device_control_main.cpp.o",
+      "bytes": 52256,
+      "inode": 7474843,
+      "sha256": "c6101f97932977d6b092683450382784bacf82b234313daa3e3ab209d0437294"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress_access.dir/src/trace/sha256.cpp.o",
+      "bytes": 31816,
+      "inode": 7243088,
+      "sha256": "c96b0bde31619d41d1d3054a5a99fdcbbda566e094e4bf5719c59d277f23017a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress_access.dir/src/service/ingress_access.cpp.o",
+      "bytes": 90952,
+      "inode": 7243134,
+      "sha256": "99466a7c4e01322e12780966b1709f3c62d2456f02f4a20ef292fb0788f117b4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian.dir/src/trace/sha256.cpp.o",
+      "bytes": 31816,
+      "inode": 7475114,
+      "sha256": "c96b0bde31619d41d1d3054a5a99fdcbbda566e094e4bf5719c59d277f23017a"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian.dir/src/service/guardian_main.cpp.o",
+      "bytes": 298696,
+      "inode": 7091907,
+      "sha256": "d602b8c7b4abba1f532f6b893df1cd8b80d3c71a6850c1866ffb2611bddf510e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian.dir/src/service/guardian_version.cpp.o",
+      "bytes": 137064,
+      "inode": 7090073,
+      "sha256": "95743359f0707edabb0375a0b61ee9feea284ff30fbece98f0ec2e22c48fdde6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_guardian_process.dir/src/service/guardian_process.cpp.o",
+      "bytes": 65584,
+      "inode": 7091460,
+      "sha256": "4a8e0c6ef9aaec5ca2ccfc87a8a5e2052cd0bf676af71de62b743119d44b399b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/server/websocket.cpp.o",
+      "bytes": 17848,
+      "inode": 7090087,
+      "sha256": "21dbddec1cf967880ffb5f46a6db0f1b481185b94bac10a5fdedc445cd386fc7"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o",
+      "bytes": 86080,
+      "inode": 7098190,
+      "sha256": "46977df9a3b9dc5dea917ec220910b4dafd55652bcf6d8c38ff26b5954891bb1"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/server/native_crypto.cpp.o",
+      "bytes": 33120,
+      "inode": 7098160,
+      "sha256": "7bec65dee4fc5b0bebff0849dc36100dc9d2b5d8822679e4b5f7e56ca4239f45"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_transport.cpp.o",
+      "bytes": 93536,
+      "inode": 7098288,
+      "sha256": "5412d20a837f4124d7cbd3a9728d87a36394fbc6d118703bcf8c22a08fa9a947"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_duplex.cpp.o",
+      "bytes": 5368,
+      "inode": 7098211,
+      "sha256": "2a4cb32c952fe8f5df87e1674e13f287ffcf56f29cc669daf545d14e9eff4458"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_cors.cpp.o",
+      "bytes": 41456,
+      "inode": 7098170,
+      "sha256": "a2cc40594c08e40544367c3926de1489b304a9ec3078dd80beda8ab013a44f7d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_proxy.cpp.o",
+      "bytes": 47128,
+      "inode": 7098226,
+      "sha256": "bf3b2ec6286aab9ac0c2e166c8dc35455808a5b27dc2d2cdb22cac48aec08eba"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_websocket.cpp.o",
+      "bytes": 39136,
+      "inode": 7098309,
+      "sha256": "6209cbd8665af720cfe89d0220935dd790f37593f72f64df9c73310e6645eaf0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_access_admin.cpp.o",
+      "bytes": 29840,
+      "inode": 7098166,
+      "sha256": "c9347d1404aa9f783438af44cddb5a3c95c69a46951a33de8f412b298eef6428"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_admin.cpp.o",
+      "bytes": 16336,
+      "inode": 7098181,
+      "sha256": "e216b965d1311e984807166f559698577e223e3ff32131e58f5a6ae7850e5586"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_credentials.cpp.o",
+      "bytes": 55784,
+      "inode": 7098195,
+      "sha256": "09be63cf7c6e0b2a91a06340837f8c71fd97b7aaf0df8c5d8a4645a026ecf02b"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_tls.cpp.o",
+      "bytes": 76160,
+      "inode": 7098279,
+      "sha256": "dcf6f3dfc2ef5ae16addb52f4aadf15fe5afad191eef4afcc83ff015fce85cab"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o",
+      "bytes": 197768,
+      "inode": 7098307,
+      "sha256": "4346010ad91ef8b11f35065d1ec4db91bed934eaaa58d86bcb13b0f4e3e162a8"
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "build_rule": "Always unlink linked build output before any future linker invocation",
+  "gpu_actions": 0
+}

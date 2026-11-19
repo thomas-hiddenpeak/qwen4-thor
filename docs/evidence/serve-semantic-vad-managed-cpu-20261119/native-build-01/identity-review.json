@@ -1,0 +1,8 @@
+{
+  "status": "PASS_REBUILT_IDENTICAL_HELPERS",
+  "all_four_helpers_byte_identical": true,
+  "cpu_sdk_ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "current_ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "engine_unchanged": true,
+  "build_cache_unchanged": true
+}

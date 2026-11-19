@@ -1,0 +1,26 @@
+{
+  "cpu/candidate.py": {
+    "bytes": 10229,
+    "sha256": "6bf53ffa2a521e4c4b432f11bdbd2240a876cb1f9cf50ee42a025b76d69df8aa"
+  },
+  "cpu/freeze.json": {
+    "bytes": 1435,
+    "sha256": "d5445e851f13bcfaa42ed9e5f32509a0e90586d153edf8e3f7259c136f17a1f4"
+  },
+  "cpu/original.py": {
+    "bytes": 9987,
+    "sha256": "d83c650c2eb5b7fe93359d10957375316ab320654b52bbe4ac80e6393ad9c008"
+  },
+  "cpu/result.json": {
+    "bytes": 170,
+    "sha256": "848c46062f38e6bdd708fe4e56dfb1771cfff959c4dd7580ef4479919b7a3b87"
+  },
+  "cpu/tests.log": {
+    "bytes": 1915,
+    "sha256": "ee330eb799e4943b1ef4abbc5b8ecc61181a39bd96542521a66d369a3a0caac1"
+  },
+  "ci/failed.log": {
+    "bytes": 617787,
+    "sha256": "a3848b1d99e58d1051f314911e32dae184ccdddc7710995fb90014051d305f17"
+  }
+}

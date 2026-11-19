@@ -16,6 +16,42 @@ using namespace std::chrono_literals;
 using Clock = std::chrono::steady_clock;
 }  // namespace
 
+Q4T_TEST(asr_stream_latest_reader_preserves_every_sample_and_sealed_tail) {
+  AsrStreamInput input(1, 16, 4);
+  const std::array<float, 16> samples{0, .1f, -.2f, 1.1f, -1.2f, 5,  6,  7,
+                                      8, 9,   10,   11,   12,    13, 14, 15};
+  Q4T_CHECK(input.Append(1, std::span(samples).first(11)));
+  const auto first = input.Read(Clock::now() + 1s, {}, true);
+  Q4T_CHECK(first.kind == AsrStreamReadKind::kReady &&
+            first.samples.size() == 11 && !first.step.final);
+  Q4T_CHECK(input.Append(1, std::span(samples).subspan(11)) && input.Seal(1));
+  Q4T_CHECK(
+      std::equal(first.samples.begin(), first.samples.end(), samples.begin()));
+  Q4T_CHECK(input.Complete(first.step));
+  const auto last = input.Read(Clock::now() + 1s, {}, true);
+  Q4T_CHECK(last.kind == AsrStreamReadKind::kReady && last.step.final &&
+            last.samples.size() == 16 &&
+            last.samples.data() == first.samples.data());
+  Q4T_CHECK(
+      std::equal(last.samples.begin(), last.samples.end(), samples.begin()));
+  Q4T_CHECK(input.Complete(last.step) && input.Drained());
+  Q4T_CHECK(input.SealedSamples(1).size() == 16);
+  return true;
+}
+
+Q4T_TEST(asr_stream_latest_reader_cancel_keeps_exact_borrow_and_no_success) {
+  AsrStreamInput input(1, 8, 4);
+  Q4T_CHECK(input.Append(1, std::array<float, 7>{0, 1, 2, 3, 4, 5, 6}));
+  const auto first = input.Read(Clock::now() + 1s, {}, true);
+  Q4T_CHECK(first.kind == AsrStreamReadKind::kReady &&
+            first.samples.size() == 7);
+  Q4T_CHECK(input.Cancel(1) && first.samples[6] == 6);
+  Q4T_CHECK(input.Complete(first.step) && !input.Drained());
+  Q4T_CHECK(input.Read(Clock::now() + 1s, {}, true).kind ==
+            AsrStreamReadKind::kCancelled);
+  return true;
+}
+
 Q4T_TEST(asr_stream_input_sealed_view_is_exact_and_survives_cancellation) {
   AsrStreamInput input(8, 8, 4);
   const std::array<float, 5> actual{.25f, -.5f, 1.2f, -1.1f, .75f};

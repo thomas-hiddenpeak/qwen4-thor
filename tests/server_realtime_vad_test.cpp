@@ -1,6 +1,7 @@
 #include "q4t/server/realtime_vad.h"
 
 #include <algorithm>
+#include <bit>
 #include <limits>
 #include <stdexcept>
 
@@ -44,6 +45,44 @@ std::vector<float> Frames(RealtimeAudioFormat format,
   return values;
 }
 }  // namespace
+
+Q4T_TEST(realtime_vad_processed_float_overshoot_is_bit_exact) {
+  const RealtimeAudioFormat format{RealtimeAudioEncoding::kFloat32, 16000};
+  std::vector<float> expected(1024);
+  std::vector<uint8_t> bytes(expected.size() * 4);
+  for (size_t i = 0; i < expected.size(); ++i) {
+    expected[i] = i % 2 ? -1.00744641f : 1.00744641f;
+    const auto bits = std::bit_cast<uint32_t>(expected[i]);
+    for (size_t b = 0; b < 4; ++b) bytes[4 * i + b] = bits >> (8 * b);
+  }
+  for (size_t chunk : {1, 17, 513, 4096})
+    Q4T_CHECK(Frames(format, bytes, chunk) == expected);
+  return true;
+}
+
+Q4T_TEST(realtime_vad_processed_nonfinite_fails_before_callback) {
+  const RealtimeAudioFormat format{RealtimeAudioEncoding::kFloat32, 16000};
+  for (float invalid : {std::numeric_limits<float>::quiet_NaN(),
+                        std::numeric_limits<float>::infinity(),
+                        -std::numeric_limits<float>::infinity()}) {
+    RealtimeAudioQueue queue(1, format);
+    std::vector<uint8_t> bytes(512 * 4);
+    const auto bits = std::bit_cast<uint32_t>(invalid);
+    for (size_t b = 0; b < 4; ++b) bytes[4 * 511 + b] = bits >> (8 * b);
+    Q4T_CHECK(queue.Append(1, bytes));
+    int calls = 0;
+    RealtimeVad vad(format, 0, {}, [&](auto, auto*, float* p) {
+      ++calls;
+      *p = 1;
+      return Status{};
+    });
+    RealtimeVadProgress progress;
+    Q4T_CHECK(!vad.Advance(queue, &progress));
+    Q4T_CHECK(!vad.Advance(queue, &progress));
+    Q4T_CHECK(calls == 0 && vad.CursorTicks() == 0 && !vad.Active());
+  }
+  return true;
+}
 
 Q4T_TEST(realtime_vad_continuous_frames_are_message_partition_invariant) {
   for (auto format : {RealtimeAudioFormat{RealtimeAudioEncoding::kPcm16, 8000},

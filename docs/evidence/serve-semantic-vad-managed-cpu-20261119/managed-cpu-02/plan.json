@@ -1,0 +1,14 @@
+{
+  "scope": "only six failed fixture cases; nine unchanged passes reused",
+  "maximum_seconds": 60,
+  "tests": [
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_actual_backend_health_and_core_owner_must_survive",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_all_recovery_phases_require_real_semantics_and_metered_work",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_declared_capability_or_missing_real_phase_cannot_be_skipped",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_no_transport_downgrade_replay_or_recognition_hints",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_audio_classifier_and_receipt_cannot_be_fabricated",
+    "tools.serve_realtime.test_semantic_managed.SemanticManaged.test_raw_metrics_require_complete_settlement_and_resource_release"
+  ],
+  "source_sha256": "845473c7638203a3c2ff6894397021ff5ee15858f64ee6e5c9bc67653e652778",
+  "gpu_actions": 0
+}

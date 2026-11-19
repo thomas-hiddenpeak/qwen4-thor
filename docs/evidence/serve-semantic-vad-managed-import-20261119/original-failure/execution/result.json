@@ -1,0 +1,24 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 861, in exercise\n    self.exercise_audio(realtime)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/native_asr/service_acceptance.py\", line 868, in exercise_audio\n    from tools.serve_realtime import semantic_managed\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/semantic_managed.py\", line 14, in <module>\n    from tools.serve_recovery import profile_semantic as semantic\nImportError: cannot import name 'profile_semantic' from 'tools.serve_recovery' (unknown location)\n",
+  "cleanup_failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 205, in run\n    try:self.stop()\n        ^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 788, in stop\n    result=self.control.request(self.service_id,'stop',timeout=45)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-01/bundle/source/tools/serve_recovery/control.py\", line 26, in request\n    return _request(service_id, operation, timeout=timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-01/bundle/source/tools/serve_recovery/control.py\", line 42, in _request\n    sock.connect(address(service_id))\nConnectionRefusedError: [Errno 111] Connection refused\n",
+  "seconds": 0.5257797329686582,
+  "budget": {
+    "counts": {
+      "starts": 0,
+      "chats": 0,
+      "probes": 0,
+      "controls": 0,
+      "websocket_sessions": 0
+    },
+    "events": []
+  },
+  "models": {},
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/retained-01/bundle",
+    "manifest_sha256": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca"
+  },
+  "scenario": "tool_retained",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

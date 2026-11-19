@@ -1,8 +1,9 @@
 # 原生Realtime与Live实施计划
 
 属于Serve master的A10/A01/A12/N05/R03/Q01—Q03，不新增独立终点。
-注册音色ICL的encoder数值口径仍待决定；此处先推进不依赖该决定的
-传输与会话实现。两者最后都须完成真实业务、恢复和可回退交付。
+用户已接受严格浮点边界判定并保留原exact-code失败，声纹机器质量
+失败与正常听感待验保持。当前参考ICL、Realtime转录和语义VAD已完成
+真实业务、恢复及可回退交付；对话/工具/音频输出与Live继续实现。
 
 ## 固定依据与已有实现
 
@@ -15,8 +16,9 @@ Realtime的`/v1/realtime`和Live的`/v1/live/sessions`具有不同会话
 现有原生HTTP/TLS、客户准入、ASR/VAD、LLM工具/结构化、TTS与Guardian
 可复用；入口WebSocket升级及双向转发、实际原生ASR手动提交会话现已通过
 [真实官方SDK/WSS业务](evidence/serve-realtime-transcription-business-20261119/README.md)。
-自动分段/可选处理器、对话与Live仍继续实现，实际Guardian组合和
-可回退交付尚待完成；默认rev326保持。不能把手动转录当作完整
+自动分段、降噪、连续转录、历史及语义VAD现已完成实际Guardian组合和
+[rev346可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)，
+默认STOPPED；主线检查另记，对话和Live继续实现。不能把转录当作完整
 Realtime/Live，也不能把HTTP上传后的SSE当作持续音频输入。
 
 Orator只提供设计参考：统一采样时钟、阶段状态和有序排空；实际
@@ -24,6 +26,8 @@ Orator只提供设计参考：统一采样时钟、阶段状态和有序排空�
 AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
+
+以下保留各阶段当时的验证边界；当前发行与剩余工作以上节及STATUS为准。
 
 WebSocket基础16项CPU、音频队列12项CPU及
 [HTTP字段/双向TLS25项CPU](evidence/serve-realtime-duplex-cpu-20261119/README.md)

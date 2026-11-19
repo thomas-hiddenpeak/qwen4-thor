@@ -1,0 +1,37 @@
+{
+  "scope": "only three reproducible static build archives; retain linked programs, native/CUDA objects, source, models, packages and all evidence",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/libq4t_server.a",
+      "bytes": 31939822,
+      "inode": 7100894,
+      "sha256": "74dee2d1b7d65448d0bf94059456a2ba77ff4b2f3d6b6a5d1501b92560be1769"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-regex/libq4t_regex.a",
+      "bytes": 27431810,
+      "inode": 8018952,
+      "sha256": "8c3725a0b8a313831ce493f7758a65d67b6e44044eb89f1e931f7fc818bd4694"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/_deps/q4t_xgrammar-build/libxgrammar.a",
+      "bytes": 26040420,
+      "inode": 8019089,
+      "sha256": "565484fa335267b8dab3eedfb586999a00be17a40e5ab37dc597fe36fa6a6fa5"
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809"
+  },
+  "rebuild": [
+    "cmake --build .q4t-work/serve-custom-tools-20261108/engine-build --parallel 4",
+    "cmake --build .q4t-work/serve-file-search-20261112/host --parallel 4"
+  ],
+  "gpu_actions": 0
+}

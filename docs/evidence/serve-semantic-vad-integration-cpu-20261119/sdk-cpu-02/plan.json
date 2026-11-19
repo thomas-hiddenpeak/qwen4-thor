@@ -1,0 +1,15 @@
+{
+  "scope": "Acceptance client only: actual pinned SDK/native TLS against explicit CPU peer, no model/semantic quality claim; corrected distinct synthetic operations/backend ports, old five preparation errors retained",
+  "cases": 5,
+  "cpu_seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/semantic_sdk.mjs": "a8c404c07aeeb98001bde2158ee897a47a5fc9767f1d6d27c23a5f4ade4034a0",
+    "tools/serve_realtime/test_semantic_sdk.py": "60bea875a8a9bf4616e1e525a2cf16d21f69ff8950f445eb2803209178163595",
+    "tools/serve_realtime/test_transcription_sdk.py": "2bd63dd24142f8d8157c93c3352fee822fb78dbf55c80fa25c8f61ffcfb15a4b",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01",
+  "ingress": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826"
+}

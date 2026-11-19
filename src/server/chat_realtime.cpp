@@ -71,6 +71,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   RealtimeTranscriptionCallbacks callbacks;
+  callbacks.semantic_ready = PlanningConfig(fd).structured;
   callbacks.interrupted = [&] { return stop_requested_.load(); };
   callbacks.validate = [&](const RealtimeTranscriptionSettings& settings) {
     if (settings.request.model != audio::AsrConfig::kModelId)
@@ -84,17 +85,16 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
         AsrLanguageName(settings.request.language).empty())
       return Error(400, "invalid_language",
                    "Transcription language unavailable");
-    // These remain scheduled execution tasks. Never acknowledge a processing
-    // setting while silently running a different signal/turn policy.
-    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad)
+    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+        !PlanningConfig(-1).structured)
       return Error(400, "realtime_processor_unavailable",
-                   "Requested audio processor is not connected");
+                   "Native semantic turn decoding is not configured");
     if (!settings.delay.empty() &&
         (!RealtimeAsrDelayPolicy(settings.delay).Valid() ||
          settings.turn != RealtimeTranscriptionSettings::Turn::kManual))
       return Error(400, "realtime_delay_turn_conflict",
                    "Continuous transcription uses explicit audio commits");
-    if (settings.turn == RealtimeTranscriptionSettings::Turn::kServerVad &&
+    if (settings.turn != RealtimeTranscriptionSettings::Turn::kManual &&
         !vad_ready.ok())
       return vad_ready;
     return ObjectReply{};

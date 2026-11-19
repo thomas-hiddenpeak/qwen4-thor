@@ -1,0 +1,9 @@
+{
+  "status": "SPACE_RECLAIMED_IDENTITIES_PRESERVED",
+  "engine_bytes": 29348664,
+  "object_bytes": 1779112,
+  "object_files": 25,
+  "default_unchanged": true,
+  "free": 38764544,
+  "gpu_actions": 0
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS_REVIEWED_ORIGINAL_PRIMARY",
+  "seconds": 10.562874740920961,
+  "gpu_starts": 0,
+  "environment": {
+    "status": "ACCEPT_REVIEWED_PRIMARY_ENVIRONMENT",
+    "model_starts": 1,
+    "requests": 30,
+    "websocket_sessions": 3,
+    "ingress_starts": 2,
+    "seconds": 185.10734699806198,
+    "nvml_queries": 172,
+    "original_failure_preserved": true,
+    "lease_result_sha256": "9d3435257f75943e4faae08d39aa3bc6f4fa36585f5fdabf7ad67ab8a6fb60d7"
+  },
+  "business_bytes": 1953765,
+  "qualification_bytes": 2036214,
+  "original_failure_preserved": true
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "Necessary native semantic integration build; not GPU validation",
+  "previous_binary_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "sources": {
+    "CMakeLists.txt": "4c30f4f8c8d3fab67c80f7e7d54588612db22875a01668c997d6f177eee529d9",
+    "cmake/ChatProtocolIdentity.cmake": "de7025bcea39be3158282fa6638087d5dabc9c472968d62a7ee046da2bbee76c",
+    "cmake/HostTestSources.cmake": "a3c69762c69c7653c0a80fdc35a5b01658ac01a53f047b6d4ee21d97451362f8",
+    "include/q4t/server/realtime_transcription_session.h": "8d22fa8f57fe4c2f4d96945ad4727454625f6f3cbe3a39378563919075c91281",
+    "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
+    "src/server/chat_capabilities.cpp": "b9472ff160d859b1eb0db8c5c938e313fcdb08c3373d6069226da500f623b864",
+    "src/server/chat_realtime.cpp": "cf9d9a9b34e1324f45e27f36033bb179900f6a8cfd23082095fba9b60a9e729b",
+    "src/server/chat_realtime_stream.cpp": "e11f03178c660dd5c2fb80e1f680649eb5e0efbd71b800da85ca6cc2f7e995ab",
+    "src/server/realtime_transcription_session.cpp": "1abb2f065d68df0247e1e33940c2d46a6b7fc1090db9dc47097379a838fe44b0",
+    "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
+    "tests/server_realtime_transcription_test.cpp": "5b00e6c3208637f8e471ed0add2d849f3d2732f7a3ebec870944c7ce0b104e73",
+    "include/q4t/server/realtime_semantic_score.h": "d3096f9d74b124334d5069af083eeba7847a3e21270f1b9c85c171cabb7a9857",
+    "include/q4t/server/realtime_semantic_turn.h": "29b50168cb363f3e84af1754f25b93680b328e962973c2cf0fe12cdec6515871",
+    "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
+    "src/server/realtime_semantic_score.cpp": "1f6e6a913d4d9d69ae5d636109413edf8381f19c56f2532741d1273d11cb7f4a",
+    "src/server/realtime_semantic_session.cpp": "32268b6469618a9a083b71e3ad3adfccaa6971329afdcad2823ddcda2d2e3e40",
+    "src/server/realtime_semantic_turn.cpp": "7b8784ffffe44d1e291adec9c6d40a777d32f9e872be2c9b6e682853914b614a",
+    "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891",
+    "tests/server_realtime_semantic_turn_test.cpp": "e4e5765c62d15b1e0e63412da93c433c6eae3b3c12cddd4f77d273391ff76928",
+    "tests/server_realtime_semantic_vad_test.cpp": "b69cf315e776259b85e02649af47bd178b84d680d51e4a1c3338d76b2339a6c0",
+    "tests/server_realtime_vad_test.cpp": "5701c89f0fa512790d154f8adfc2eb1f65551d25253b94b9fbed17c4ad58729c"
+  },
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "4"
+  ],
+  "gpu_actions": 0
+}

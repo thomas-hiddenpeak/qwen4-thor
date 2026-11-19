@@ -1,0 +1,3400 @@
+{
+  "scope": "Only inactive local q4t_host_tests object cache, not binaries/evidence/source/models",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_config.cpp.o",
+      "bytes": 137632,
+      "sha256": "981b2b3bd908fa3304470e4ae12dc00f399f1236e323754969bfdbac8e6deca3",
+      "inode": 8018936
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/aligner_layout.cpp.o",
+      "bytes": 24416,
+      "sha256": "dc05c395b20d98eb3d3f9a38e333818465f1b65a03048bfaec38ddbf8ea70680",
+      "inode": 8016248
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_config.cpp.o",
+      "bytes": 138072,
+      "sha256": "3603624e0e0533ccc4386925980766deb56cea51abed3db4d2ee481514a2997c",
+      "inode": 8018839
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/asr_layout.cpp.o",
+      "bytes": 20912,
+      "sha256": "70e01ee49719c3fd6eb3c8f63cbe577425fb7b4c758579e9f3306e7213837510",
+      "inode": 8016241
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/diarization.cpp.o",
+      "bytes": 29136,
+      "sha256": "938b44c21b276c15d27f5c10b59ce725469abbadcbf17e57add6ab40b4727e37",
+      "inode": 8016252
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/features.cpp.o",
+      "bytes": 11256,
+      "sha256": "3cb20e4f7bb3531c4eeea5f0bf0eaf78431c7fa86c32f2227572015c2f4a8372",
+      "inode": 8016108
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/noise_fft.cpp.o",
+      "bytes": 2552,
+      "sha256": "528e40e97a6e3fd63476e4baf3d954289a3572d9c1b4e50eeb28948576266398",
+      "inode": 8016243
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/noise_reduction.cpp.o",
+      "bytes": 9928,
+      "sha256": "c6982428eddb85326596d8ec9bac1c737ac9021cd0e6a451612bdfbf9b252b99",
+      "inode": 8016250
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/pcm_output.cpp.o",
+      "bytes": 16624,
+      "sha256": "e440fd2dc8e49bc2e5a2e207f67cccec17e7cd44166f471d8990e5c72e18186f",
+      "inode": 8016254
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/separator_config.cpp.o",
+      "bytes": 70504,
+      "sha256": "4e98837cd55642355f31ac47cab349755c495f21d86d89b18393cfc65a0fb141",
+      "inode": 8018723
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/separator_layout.cpp.o",
+      "bytes": 32624,
+      "sha256": "e6e2a17fa3cca1bffd0fa1135c122a1e44ea54419bd337418b1a6fcbe20f9fff",
+      "inode": 8016281
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/separator_resample.cpp.o",
+      "bytes": 9848,
+      "sha256": "b472ffef94e0cfa0a481a4c63e91351b8bd3eadf0fb8e6a136cc525d9827c0db",
+      "inode": 8016257
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/separator_tracks.cpp.o",
+      "bytes": 5112,
+      "sha256": "89d7da29f81d69800923706da75b9edea733de5886017966f5a0437ef6ac13f7",
+      "inode": 8016268
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/speaker_config.cpp.o",
+      "bytes": 81192,
+      "sha256": "d724c619070e33c52d9a34ce54832d841b25052402bace43d6a1af3e0451a9b5",
+      "inode": 8018945
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/speaker_features.cpp.o",
+      "bytes": 14168,
+      "sha256": "7a6a6b3ecbed7b8891136a40c1f516a5db75bceaed39672c0f5aaacf1ec5a4c3",
+      "inode": 8016286
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/speaker_layout.cpp.o",
+      "bytes": 30976,
+      "sha256": "917de4ba30eb30382a7fa10df14cb7af6c927e27e1dbdb9380b823c247f71bef",
+      "inode": 8016302
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/speech_tempo.cpp.o",
+      "bytes": 13176,
+      "sha256": "4bc6e5822bd06c00453cea5a1f7330706314dee10617a10c7ccc6c3837465b9c",
+      "inode": 8016296
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/stream_resample.cpp.o",
+      "bytes": 6088,
+      "sha256": "d170992461905a0cac119dbeda8ec20fb89fb8a7c45d15183e8b66c455c01be2",
+      "inode": 8016298
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_codec_layout.cpp.o",
+      "bytes": 49424,
+      "sha256": "226d65e2e9c427ead90639ba7eec9963d4eabf6165d03a248d6b2c475a1c2d5f",
+      "inode": 8018986
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_config.cpp.o",
+      "bytes": 143368,
+      "sha256": "b74b45310945b6ed6e5e759761e634464264f45689668a718669891def79f7dc",
+      "inode": 8019115
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_encoder_layout.cpp.o",
+      "bytes": 91464,
+      "sha256": "4424782ea8d1be70d721403a090f2b107cd89f43735b3a02d839ba1b57dc907a",
+      "inode": 8019114
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_generation.cpp.o",
+      "bytes": 45808,
+      "sha256": "43cd55ba50b9e67a326fde282c28384583685ac2bef48b73b7c8dfae0c855fc7",
+      "inode": 8019110
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_layout.cpp.o",
+      "bytes": 60656,
+      "sha256": "017550f0d93b4b51292c9fad42995a174f17c5c14b5f06cfec2e2722206c1037",
+      "inode": 8019111
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_speaker_features.cpp.o",
+      "bytes": 10736,
+      "sha256": "7dd5141528f0a4e81155cb520da56feefa54440643bbde6b4aa447ef7f3e2b59",
+      "inode": 8018997
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_speaker_layout.cpp.o",
+      "bytes": 42032,
+      "sha256": "5a32caaea89c1c5cd6a0d1093fe42884cea391b21913fb5a9e6366648afbda06",
+      "inode": 8019109
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/tts_synthesis_plan.cpp.o",
+      "bytes": 6272,
+      "sha256": "03580c7fe837f98fd381e3a88d5bca3fa6cb947b56a006212f3130f86b988295",
+      "inode": 8019059
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad.cpp.o",
+      "bytes": 28096,
+      "sha256": "b06fc79f6a59e401891976a5bcf7ea049544597192b79ebbae37af54b06624b4",
+      "inode": 8019112
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/audio/vad_chunks.cpp.o",
+      "bytes": 10296,
+      "sha256": "821f3e7a8ffff8b7aa53041e43f7f0c2b9c11179e712909cb5497910aba93a91",
+      "inode": 8019095
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o",
+      "bytes": 61400,
+      "sha256": "7caf6278ffd1338f51b98374e47b3eb9bec330343d9cbf02ee02f40d0652683c",
+      "inode": 8019118
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_config.cpp.o",
+      "bytes": 44520,
+      "sha256": "64b2c4c7b6a9c34054fd97f720ef178031b25dfbe6ce1bc11e8531ed3ae68149",
+      "inode": 8019117
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/model/embedding_layout.cpp.o",
+      "bytes": 25232,
+      "sha256": "0166cfe7f5b6777441d2b26fc04ad84ffc56fb590022df77eddaa8a1dfadd6fa",
+      "inode": 8019116
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/mtp/suffix_drafter.cpp.o",
+      "bytes": 12040,
+      "sha256": "7239ab93ed93d8e35f16344ca78c5755255f47a2ba7d56ebb4dd9212879b47bf",
+      "inode": 8019119
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/runtime/memory_budget.cpp.o",
+      "bytes": 38856,
+      "sha256": "836282db5ead28a499ecc2b53352aded934b01149d158eb08610106104ab27ca",
+      "inode": 8019122
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/runtime/system_memory.cpp.o",
+      "bytes": 3976,
+      "sha256": "c9b4723de8e24c628dd977d4c90df68ba2f5ef1610ac24c56e8789beda7f59c0",
+      "inode": 8019113
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/access_program.cpp.o",
+      "bytes": 85096,
+      "sha256": "233805675807ec226781e41b3d643938ff46890fb1400ea1455ea5ebe3c7c6fc",
+      "inode": 8019155
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/aligner_service.cpp.o",
+      "bytes": 35600,
+      "sha256": "42eabedd86ab14586fa01aa12d085e113ffb0e0f0222e415ba6f425af86423f4",
+      "inode": 8019151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/application_owner.cpp.o",
+      "bytes": 20400,
+      "sha256": "6668124162dcbc217f506e1a309296795d40f3cdebe522d0c3546ed37d62b056",
+      "inode": 8019123
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/application_payload.cpp.o",
+      "bytes": 138672,
+      "sha256": "61f4424d4ccf23ad1721d98393ffcee0f1bdcbeceaef735671b535328d78d124",
+      "inode": 8019166
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/application_query.cpp.o",
+      "bytes": 50024,
+      "sha256": "16b0abe118a6bc3da4d9c563f3416bb974c1533e0b6f9e8b520975ca872ffcee",
+      "inode": 8019153
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_alignment_output.cpp.o",
+      "bytes": 73136,
+      "sha256": "1af03cc48cf5deca84da076c9c4eab1756e2eb15368623bdf5f37a1135848a8b",
+      "inode": 8019160
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_chunk_output.cpp.o",
+      "bytes": 73456,
+      "sha256": "ee9bde64a63005cabe1b0e7b74ad0d04c5cbd9f620244f7a0d9aaa4e2684c4b8",
+      "inode": 8019164
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_request.cpp.o",
+      "bytes": 108296,
+      "sha256": "0d5012f25255bd06a73c50bcc2549814c85031ee00566fb8b8ffab68c289b2d9",
+      "inode": 8019173
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_response.cpp.o",
+      "bytes": 71056,
+      "sha256": "388a86be7242c718b23caca40057c4ed067884098f93a84f0ae27fadd67bcbac",
+      "inode": 8019171
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_service.cpp.o",
+      "bytes": 39832,
+      "sha256": "3fccadf4b77023c6ccb26bc7057260f94e567d9472e8536fab4cf2f87b265d42",
+      "inode": 8019162
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_statistics.cpp.o",
+      "bytes": 21624,
+      "sha256": "e26b7a152672ffd632246a273c762b7e5b000f10afb79741042cf1812dfed5ed",
+      "inode": 8019169
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_stream_input.cpp.o",
+      "bytes": 11200,
+      "sha256": "7d941b7a98c18495cda63e11f3167baf154a3c652190e9a8ba070ba5e8a1a8fc",
+      "inode": 8019178
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_stream_output.cpp.o",
+      "bytes": 30912,
+      "sha256": "53c7efc7f43f96b1de4f6fe5ad42e9581b88be28a5010ef64814b92e063ff01f",
+      "inode": 8019182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/asr_stream_state.cpp.o",
+      "bytes": 14152,
+      "sha256": "df1959c0b0a3f5546d0d9d2bab8341daa0a13561c6d3c709d6ad10998bc4445c",
+      "inode": 8019179
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_api.cpp.o",
+      "bytes": 48744,
+      "sha256": "d3ca6eb32fc771718b0f19ef8a9da51caeb67140d560a77ccb5129707fb0563c",
+      "inode": 8019185
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_budget.cpp.o",
+      "bytes": 148056,
+      "sha256": "71aba23238485d1aa5efc213a78ba9cdd4dac33a355612c2ee9759c39102d25a",
+      "inode": 8019195
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_checkpoint.cpp.o",
+      "bytes": 52160,
+      "sha256": "f9266d010354bb62df6d20b42d1f656dc8630075a227ed030171cac22c232c2a",
+      "inode": 8019188
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_execution.cpp.o",
+      "bytes": 35776,
+      "sha256": "ddbea8e10df9a238994144641a14be54201b7adb51652d88cc537fb5ef644d50",
+      "inode": 8019191
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_finalization.cpp.o",
+      "bytes": 39736,
+      "sha256": "ad1f12bb46418e2a28a8bfd9ad9286381f01ee60ca51fcede0af3f5b0f244abb",
+      "inode": 8019183
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_input.cpp.o",
+      "bytes": 101816,
+      "sha256": "25ebc2f3e128283c91c087794653469e69790352e8e2f1d4c9314e98c38a91b9",
+      "inode": 8019192
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_jobs.cpp.o",
+      "bytes": 191968,
+      "sha256": "4a0dd91bda140cb88b5edf920108010a6cf5bea8c4113cbd8c7dd23366fde097",
+      "inode": 8019205
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_preparation.cpp.o",
+      "bytes": 143560,
+      "sha256": "550f1d6eab2b0ebff7b3a4fd1e4e9c44c04ecdae672502900601c8a76e845c5a",
+      "inode": 8019206
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_quota.cpp.o",
+      "bytes": 67896,
+      "sha256": "f0d0a0b98c7da3957725b3003fb36769273852893f7ba4999a2a3a6fdd561907",
+      "inode": 8019203
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_response_link.cpp.o",
+      "bytes": 43320,
+      "sha256": "310d7915aaabf570db1004df04c01e084655a5f02f79e6776c4b37a0a7ef02ce",
+      "inode": 8019200
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_results.cpp.o",
+      "bytes": 230536,
+      "sha256": "131d5bc1dcef3db06669ec09b6b4d6cd5e8bd6cdc4e49f0df1cb3ec1d53d9a1b",
+      "inode": 8019221
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_state.cpp.o",
+      "bytes": 187488,
+      "sha256": "8961b8ffc2b06b01d01ee2dd39357df998c286b4ee105c65978a0f50abf636e8",
+      "inode": 8019217
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_usage.cpp.o",
+      "bytes": 68272,
+      "sha256": "0f45cb104cd03584600f5ba222a5834e20e97ca9f33bc53924198d340af9fb3b",
+      "inode": 8019215
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/batch_validation.cpp.o",
+      "bytes": 128720,
+      "sha256": "c10e5257b37897a8546419864255127ff4be121431115357ff27bc48c1399927",
+      "inode": 8019226
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/binary_store.cpp.o",
+      "bytes": 134424,
+      "sha256": "0536f06c0e0c0b1ed54dced7618e3429aa070409cc6cd6dc154ef57327189353",
+      "inode": 8019223
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/cache_io.cpp.o",
+      "bytes": 79864,
+      "sha256": "e225564c97c827f2df1c801b582f2418f52620b1fb21a3632dd8a491e6abbd6d",
+      "inode": 8019216
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/cache_worker.cpp.o",
+      "bytes": 11480,
+      "sha256": "8adc11cf6274de0aa532e6acbd7882ea0b260e62c0c41e29553c5c824e8cd125",
+      "inode": 8019213
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_history.cpp.o",
+      "bytes": 90736,
+      "sha256": "d25d102ae221f7ac43761c1e710ea0ad9eb6b734e195ffe10af1aceff663d4c4",
+      "inode": 8019228
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_inputs.cpp.o",
+      "bytes": 135360,
+      "sha256": "4adee9e268a551e1674bc072317a8f554e3bf3f8e817e02f46ae6aac40499dba",
+      "inode": 8019242
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_audio_output.cpp.o",
+      "bytes": 98408,
+      "sha256": "525f5ec574ff85ee3c8756c0a88d8e1cb1428bb896b814e4e10c3c79653e812e",
+      "inode": 8019230
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_capabilities.cpp.o",
+      "bytes": 128544,
+      "sha256": "87cc78b2311d20f17c20d435f459e4e5662ae759cd5960cf5a8efa2033a8cb97",
+      "inode": 8018995
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_choices.cpp.o",
+      "bytes": 67064,
+      "sha256": "694e46b7154ca32d0d289c99e24325bc75fdb20ea473abd87013b3efcde0a6c0",
+      "inode": 8019234
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp.o",
+      "bytes": 100160,
+      "sha256": "a372d6a75690fc74600cea984c349350ee7fbd32febf694f8bb844c3249d15d0",
+      "inode": 8019240
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_file_inputs.cpp.o",
+      "bytes": 87696,
+      "sha256": "9858a1f2f9160c3bed1418785aa786b4cd078c02d94da007ce8a56bb4711dec0",
+      "inode": 8019243
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_model_step.cpp.o",
+      "bytes": 27304,
+      "sha256": "fe3d65133a8cbb49cf5e1b6c623666f7dbd23ed1677091d132061715689b27c9",
+      "inode": 8019236
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_moderation.cpp.o",
+      "bytes": 75320,
+      "sha256": "44ba7579667d2f4fbbe4aeaefdb9928c3b8f776fd7fe67013cb58dc0826ad270",
+      "inode": 8019245
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_plan.cpp.o",
+      "bytes": 198464,
+      "sha256": "746cef82642b94e1da10900352b63ebd07d97827241d846bcc320a57a92b5cda",
+      "inode": 8019260
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_prompt.cpp.o",
+      "bytes": 84008,
+      "sha256": "3433d989198402f59054a5846ded79745e4c846432da901cab428abfccb940e1",
+      "inode": 8019251
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_response_parser.cpp.o",
+      "bytes": 157280,
+      "sha256": "5b2ccf1f1a18d597244d26ac8996b1fa5fe1ca78c77f78b886b98f6317e501dc",
+      "inode": 8019261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_storage.cpp.o",
+      "bytes": 122184,
+      "sha256": "3d4f2a288524a04e7eb959e4f6561eed6c698598ed7f85eb8f215d3b864db3fc",
+      "inode": 8019263
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_storage_options.cpp.o",
+      "bytes": 26104,
+      "sha256": "8589e2b60b785e45edd60590da91d024580e9342250ef0a89df051b34f10a0c8",
+      "inode": 8019259
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_template.cpp.o",
+      "bytes": 165448,
+      "sha256": "a109d7f0e75e0bc55a3da70321a3fad048af7d1b76cd07487a4150a98775076f",
+      "inode": 8019267
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_tool_history.cpp.o",
+      "bytes": 54672,
+      "sha256": "239d438a11c08f09757cb254635e09ff04e732d8243eb275cb4b85dd4cefc740",
+      "inode": 8019256
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_web_search.cpp.o",
+      "bytes": 125360,
+      "sha256": "234c0a200b703428c63cb1b03e0181477d9019a419fe84f6e8d31144358424a0",
+      "inode": 8019276
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_policy.cpp.o",
+      "bytes": 157136,
+      "sha256": "d1e00467b18ea69d59dbaf8c30a05c35fe80af6752d39d17d261db032fb957be",
+      "inode": 8019272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_policy_admin.cpp.o",
+      "bytes": 114640,
+      "sha256": "bb57989febcf4e16145d64b512970e4daf310abcbd86bc72b44cc9648da63082",
+      "inode": 8019278
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_rate_state.cpp.o",
+      "bytes": 73464,
+      "sha256": "6a4658a4a3be1b6f70d0d1f669a5fcafeceb8fb2b14fab8cb73510c2bd03174b",
+      "inode": 8019269
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/client_request.cpp.o",
+      "bytes": 37576,
+      "sha256": "4fd996e313126a98b888c25d15ca378446166324392d0aa50bd8ba05c08c424b",
+      "inode": 8019274
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/completion_plan.cpp.o",
+      "bytes": 91880,
+      "sha256": "0242b4c0fcbd94d9f21833b2df938ec29c4aaf945757a56833079c3bae76b997",
+      "inode": 8019281
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/completion_response.cpp.o",
+      "bytes": 111408,
+      "sha256": "3b0b982c02521712d93cb0f4f30d085b85a5bb99df426a38fcf310a57250149e",
+      "inode": 8019285
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/conversation_api.cpp.o",
+      "bytes": 62256,
+      "sha256": "2b2106ad022ffaa2e0494b11811237324f709f7406bd8dcb4e3f165da513cdc2",
+      "inode": 8019288
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/conversation_state.cpp.o",
+      "bytes": 152416,
+      "sha256": "dcb61d4e4dd3c60d41ab52e5ba8048c0f61778cb4ccd5fc304c0dc39e862aded",
+      "inode": 8019297
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/custom_grammar.cpp.o",
+      "bytes": 239232,
+      "sha256": "6b33c611983cc0169de6d8252174494f7888c084cb4a67ff18d0e3b172f5917d",
+      "inode": 8019303
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/custom_regex.cpp.o",
+      "bytes": 50800,
+      "sha256": "87cff4193da0d3165bdfd6487a5d25168ce48ca7b5a30a91995172bf04817659",
+      "inode": 8019290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/custom_tools.cpp.o",
+      "bytes": 40040,
+      "sha256": "c19aa0d54728e636d6310abf83aa9982c016c72d1e05e04185f25721d14a6184",
+      "inode": 8019283
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/diarized_output.cpp.o",
+      "bytes": 77416,
+      "sha256": "b0c7fedae4df58564a46d665e595a309bd7b28c5c9d569c4d21acd0806e6f10c",
+      "inode": 8019292
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/embedding_metadata.cpp.o",
+      "bytes": 17688,
+      "sha256": "bfa6aeb3a80f89fed20593952b428a9e63ab92f0ffe991f7955915784e81f4e4",
+      "inode": 8019294
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/embeddings_execution.cpp.o",
+      "bytes": 24768,
+      "sha256": "8e74c9cfe49f8cd32cca3024941dca7c12257d45c5f410847dd3dd6ae468eb80",
+      "inode": 8019299
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/embeddings_plan.cpp.o",
+      "bytes": 111480,
+      "sha256": "2bf2ebcfd26a601c5f98742975301d2ce48bd15971f639856f94ac1d1bc299da",
+      "inode": 8019308
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_audio.cpp.o",
+      "bytes": 51912,
+      "sha256": "98c5d1603632cd20bcd6327a2c323177db76beaac14ed5e4df008f713fbde2c1",
+      "inode": 8019301
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_audio_worker.cpp.o",
+      "bytes": 106992,
+      "sha256": "20c81c09dc2ce0a289781bfd1b526f89ed2a7c7c5046f435915480e581cc249c",
+      "inode": 8019306
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document.cpp.o",
+      "bytes": 69576,
+      "sha256": "a955c8a288ebca654823d271e97ea091eb27043f3f9e36b4f7b0330afafa1708",
+      "inode": 8019310
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document_sandbox.cpp.o",
+      "bytes": 8152,
+      "sha256": "365997a152152f620c23e60251b17d509d3cd9026ef8ca5b105d5045f0d8e49b",
+      "inode": 8019305
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_document_worker.cpp.o",
+      "bytes": 130720,
+      "sha256": "7beb16ed934bef037e1972583ba66caca90e6480cc12b6566a1c042b7ef30e95",
+      "inode": 8019312
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_expansion.cpp.o",
+      "bytes": 274120,
+      "sha256": "60c6db95c672c2dba01cb1c249ff64d3d440fe51b4e76dbc87da4d819d01b16d",
+      "inode": 8019344
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp.o",
+      "bytes": 107304,
+      "sha256": "a29603f61096d191d3f1362edf847259c0fdf08a79b97f12e38846ea2db613c6",
+      "inode": 8019314
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_fetch.cpp.o",
+      "bytes": 109544,
+      "sha256": "369cf51644aee43188107105342cb8de93f2fcab73496f59ae7795544ca459e0",
+      "inode": 8019317
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_fetch_http.cpp.o",
+      "bytes": 154616,
+      "sha256": "5e0fdbe6c70a33d34b4bf67c34900e62480f3cd96c37936083df9a8585b7db84",
+      "inode": 8019319
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_fetch_policy.cpp.o",
+      "bytes": 107248,
+      "sha256": "823ffa36aaba9b84d4a87d5b2a171ad7ac59e7263c541f6ae55bbf62e91e411d",
+      "inode": 8019323
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_image.cpp.o",
+      "bytes": 103280,
+      "sha256": "72fc0cc594b25fa7ded10f3e16556a7a55eaaa638296bb4940b44585a371fcee",
+      "inode": 8019326
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_input.cpp.o",
+      "bytes": 119768,
+      "sha256": "cf79fd0b2ea74860d2fbf91fb466d3a9aeca3cc70a74e9b01e6a426e6c3f8dc2",
+      "inode": 8019330
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_input_policy.cpp.o",
+      "bytes": 125696,
+      "sha256": "ee50e2ac8d2ce3b4908ef41cf556267a30a8a09eaabbe7c3548f5cfe0258a7dd",
+      "inode": 8019346
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_legacy.cpp.o",
+      "bytes": 74696,
+      "sha256": "f2055b2bdc5cdc14075dd302392700461c1af4776fd84329da6b34143e4761af",
+      "inode": 8019337
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_legacy_sandbox.cpp.o",
+      "bytes": 31120,
+      "sha256": "4ac8b74451fb25992b8aef68a31eec0137827da41680e50bfe1d568595756581",
+      "inode": 8019328
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_legacy_worker.cpp.o",
+      "bytes": 34400,
+      "sha256": "3252127b225e5e2d12555be833ea988ecead00e71fb351cf6cf88baecb7879c3",
+      "inode": 8019339
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_legacy_workspace.cpp.o",
+      "bytes": 28824,
+      "sha256": "dfd29e4205fc094a064bb39e4b8401dea964862a50be692865b0a4358fd6dbaa",
+      "inode": 8019335
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office.cpp.o",
+      "bytes": 118240,
+      "sha256": "8fa517368c0ef3e84269d4da4ec4940df30b21651d35cb92d67543a0f8526b10",
+      "inode": 8019364
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office_common.cpp.o",
+      "bytes": 63776,
+      "sha256": "a462fe11aa3a8a9253e597770e4293f1c628ad572ca9bdb4e674b46feb09035f",
+      "inode": 8019353
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office_odf.cpp.o",
+      "bytes": 74008,
+      "sha256": "26ed1064a1f3c7835dda0d774762dee36611f1bc0b1cb0886552c64f9009b3ea",
+      "inode": 8019357
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office_sheet.cpp.o",
+      "bytes": 116784,
+      "sha256": "6c0b83aac795cd05b1d6c37ea394f9cbca2ae81dbe3a400d3c3761ce18c33972",
+      "inode": 8019368
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office_text.cpp.o",
+      "bytes": 104064,
+      "sha256": "9666c380bda3278cb186332fa18ea60aaa7893b48a36cb0bdc9dfc784c1a6cbf",
+      "inode": 8019371
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_office_xml.cpp.o",
+      "bytes": 27776,
+      "sha256": "6b50ead593439a707ba3bc96fd9d9c8e949fc89538b04aced7e51480c195e331",
+      "inode": 8019350
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_package.cpp.o",
+      "bytes": 41368,
+      "sha256": "79f82cbd16cd42f4ddbe564d1a2877c9d11ac9cd28a53c6d59605edda2050e9a",
+      "inode": 8019359
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_package_runtime.cpp.o",
+      "bytes": 13392,
+      "sha256": "815f9f17e73ba02b3d2af081e2b01f4d65614d89a8b5be97f3f2e461f5adfe24",
+      "inode": 8019362
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_pdf.cpp.o",
+      "bytes": 59064,
+      "sha256": "a804062bff8dc4652ec61ce0220203a928756ee8c38f29295e5281da38f3d88f",
+      "inode": 8019375
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_pdf_sandbox.cpp.o",
+      "bytes": 8008,
+      "sha256": "b009b9728bcd366df40f2b6aaa1753c2fc57c1403d854f1ba4222d46d224b5ef",
+      "inode": 8019366
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_pdf_worker.cpp.o",
+      "bytes": 18328,
+      "sha256": "6398525776098565dce62bf6a9ecfb0fbde42e298549204a59b160271f54795a",
+      "inode": 8019373
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_rtf.cpp.o",
+      "bytes": 60160,
+      "sha256": "d1b0e36afb2ade75d2df2f3a27c67a448fd21c923adc08da94af20094b2f208b",
+      "inode": 8019384
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_rtf_encoding.cpp.o",
+      "bytes": 26096,
+      "sha256": "5b218557075a3939ca8364afd90c246298fcb76cd1971240559fceab6ad71929",
+      "inode": 8019380
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_snapshot.cpp.o",
+      "bytes": 146728,
+      "sha256": "a082346eed56de613990a4c38696a8f252be5a16814ca3e904834e71dea2d234",
+      "inode": 8019398
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_source.cpp.o",
+      "bytes": 102216,
+      "sha256": "82766be32e4ba6a984d71ea9630794c506e389cc0556b779f829afee552a8121",
+      "inode": 8019386
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_video.cpp.o",
+      "bytes": 139480,
+      "sha256": "271c5f3a4614d74314763ede8035d62ec37a735ef32b073cd8a097d789af84c7",
+      "inode": 8019407
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_video_sandbox.cpp.o",
+      "bytes": 15176,
+      "sha256": "088d183d12c08984c6b2ff9d257e78d1423eca049835cc36ac84970313edd015",
+      "inode": 8019382
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_video_worker.cpp.o",
+      "bytes": 154392,
+      "sha256": "3aa1b183907f94d7128ac086ec54af6cac17124c8f1ede20f02f345e085f61b7",
+      "inode": 8019404
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_webp.cpp.o",
+      "bytes": 73984,
+      "sha256": "dff9c6ad45d80a67ab23470abad241d10d97aafb4f390624bfa85bdec467cf5a",
+      "inode": 8019393
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/file_webp_worker.cpp.o",
+      "bytes": 30360,
+      "sha256": "d23ccedf250c1035ec9a9a0c6cfa99fe37c9e7127985fbc27d620c4903f83d54",
+      "inode": 8019389
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/files.cpp.o",
+      "bytes": 142792,
+      "sha256": "f99594ec20b07731c5da5ac842347753536dacd58b3723d2155bd10de2adeb3e",
+      "inode": 8019403
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/files_http.cpp.o",
+      "bytes": 133168,
+      "sha256": "efb829218aaadd09d31b5e36a955f5b8e8c30a610d733cf7eaf56b337c54453e",
+      "inode": 8019412
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/finite_response.cpp.o",
+      "bytes": 10728,
+      "sha256": "7d727360afaea8f6287770b1d84ae59c8560b898cc309009211a643d2f81dc9a",
+      "inode": 8019395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/grammar_process.cpp.o",
+      "bytes": 54080,
+      "sha256": "72cfbdc89fc0b198bda58ecf0ae3cd905d52f6a1b65e20e0840132cdaeccca0b",
+      "inode": 8019400
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/grammar_worker.cpp.o",
+      "bytes": 64456,
+      "sha256": "fc34321488136364d4724145fa01edaf9135bb27e9182e09275c985e2bb56cc7",
+      "inode": 8019409
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o",
+      "bytes": 86080,
+      "sha256": "46977df9a3b9dc5dea917ec220910b4dafd55652bcf6d8c38ff26b5954891bb1",
+      "inode": 8019415
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_response.cpp.o",
+      "bytes": 164432,
+      "sha256": "5643cf8db8b38f011f4408b80413762e2a096369a6057768587a43afe777e03f",
+      "inode": 8019427
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/input_contract.cpp.o",
+      "bytes": 68744,
+      "sha256": "897787eb15ca01526cc39e2374a798efd28648cc11efdc5c0c13cc58b3554e36",
+      "inode": 8019424
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/input_snapshot.cpp.o",
+      "bytes": 124808,
+      "sha256": "5000b421f444c24486dd35a1c8077903f90bb396ebe6227466482552e4fc87e8",
+      "inode": 8019433
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/input_snapshot_bindings.cpp.o",
+      "bytes": 85616,
+      "sha256": "bb5dd74ec58c42c2ae28b653272fe09e7eb33ed251980e0f935baf9c6cbb9f64",
+      "inode": 8019436
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/legacy_tools.cpp.o",
+      "bytes": 81424,
+      "sha256": "4ba3f26243a7df10f7814b8d16a871450b21d936a83c5afebab0e892a2021d07",
+      "inode": 8019429
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_content.cpp.o",
+      "bytes": 18256,
+      "sha256": "9c700a048e9c349eaa81f7aaa0abe466229b3f48f2a5cd5c6c4bf9ad84434785",
+      "inode": 8019422
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_http.cpp.o",
+      "bytes": 187080,
+      "sha256": "976b8dfe77c10da181453f3c6e93b95d0f41a9b59b87c7ef843d9d3cc4da0ef8",
+      "inode": 8019438
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_policy.cpp.o",
+      "bytes": 123328,
+      "sha256": "23a549da67c1772d5879b879e64914dfc7356c70a22604cb20a2d1b639a33d22",
+      "inode": 8019445
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_projection.cpp.o",
+      "bytes": 104864,
+      "sha256": "d0cf011f54bce0f9b4cbdfc09064bf26e59dad52f922e0eb86074d8c9e817602",
+      "inode": 8019442
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider.cpp.o",
+      "bytes": 133832,
+      "sha256": "5fc3402b89d9aff701d682ad1e17c414bd300097b08d1c176884903933a7357d",
+      "inode": 8019451
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_calendar.cpp.o",
+      "bytes": 128568,
+      "sha256": "2ed43206b2e645ab5d0b1c81818a53a52c1a5595b6c7095f65920e291b700973",
+      "inode": 8019456
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_common.cpp.o",
+      "bytes": 98616,
+      "sha256": "9b9e533acf501c98dc6b70baec704f942aba60908d953c01cc25597db50fef3b",
+      "inode": 8019447
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_drive.cpp.o",
+      "bytes": 131048,
+      "sha256": "bedf51adc6d0c0fcd0ca1a3caeaa68426fb84cce5ca0c0293b2554009f2ef4cf",
+      "inode": 8019463
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_drive_lro.cpp.o",
+      "bytes": 77848,
+      "sha256": "fd1f9165ad1b7351b091143038e4415d6cebe2f93b6bb32fd052997dc84df69d",
+      "inode": 8019454
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_dropbox.cpp.o",
+      "bytes": 129496,
+      "sha256": "89070f37d5e0962f14ea6cf321101ca176bb28d461d0ad7247bb559651da40a2",
+      "inode": 8019476
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_gmail.cpp.o",
+      "bytes": 96808,
+      "sha256": "41ce523dc221fdc2d5d33c9accbb1b2473c3c812e98429e77863a1e994e56b98",
+      "inode": 8019472
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_graph.cpp.o",
+      "bytes": 108656,
+      "sha256": "51a9a137e34237dd6e922b9fd3cb46bdd17758e967ac173634ccf9fe165e3209",
+      "inode": 8019474
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_graph_cursor.cpp.o",
+      "bytes": 56840,
+      "sha256": "d9f8861247f64baf7069ee5fe7c843242b7cbf3c5057018fb90bd4c24e7d5d12",
+      "inode": 8019465
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_mail.cpp.o",
+      "bytes": 79208,
+      "sha256": "83e518739ccd061c9c36526d606acb994ef0bd1c80384460240440dc9ae2be96",
+      "inode": 8019467
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_outlook.cpp.o",
+      "bytes": 130280,
+      "sha256": "94ee284d51e63141e9b5501b73c6df0fa3029aab1c1ec93d2ecb947b3ca1ac3d",
+      "inode": 8019485
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_sharepoint.cpp.o",
+      "bytes": 100584,
+      "sha256": "5cb4cc5531bb717624bcd225e9f05c2fcee4213a6cf7e52ef5b74dc204ed87f8",
+      "inode": 8019478
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_teams.cpp.o",
+      "bytes": 66664,
+      "sha256": "676ffc27be755da41ebf73189e272a911c7e9863074cf1d75555073b59892d74",
+      "inode": 8019483
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_provider_time.cpp.o",
+      "bytes": 277864,
+      "sha256": "a442bc660100cd03605aabc8f04a33ac4ce061956c17e66cfc889fc749990c90",
+      "inode": 8019499
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_transport.cpp.o",
+      "bytes": 151696,
+      "sha256": "c8defc327023080eaf405c2f3d07cfff3780ff312120e0a2e03bc3114254cb9c",
+      "inode": 8019494
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel.cpp.o",
+      "bytes": 166696,
+      "sha256": "47430b20a2aff9cb5f9f569430b3a1dd02cbd0971518e523fef19ed6e41c0613",
+      "inode": 8019496
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent.cpp.o",
+      "bytes": 122672,
+      "sha256": "d179c4a7740e5975a852e5540f683c9e18dc467ec374af59b5c422d1c6b8b303",
+      "inode": 8019492
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_config.cpp.o",
+      "bytes": 83720,
+      "sha256": "b6fe68d7e50c85d4dee54d87e2d078c5d2c26e47c9504c3d692be90ec24e1612",
+      "inode": 8019487
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_agent_http.cpp.o",
+      "bytes": 176576,
+      "sha256": "7339f6c1cd7d9caebfc7e7b9882810435ddb324d2424586376ac765faa5a3d92",
+      "inode": 8019510
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_api.cpp.o",
+      "bytes": 37312,
+      "sha256": "5fd13c589865083768535c5e25e17248bfcafa0434bc670ab2cda98f5cbc0c47",
+      "inode": 8019490
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/mcp_tunnel_transport.cpp.o",
+      "bytes": 126024,
+      "sha256": "ddedd7ad85ca9e6689bbb2b90a3997fc2004d26ccbc0736812bbb71588175db9",
+      "inode": 8019508
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/media_admission.cpp.o",
+      "bytes": 186400,
+      "sha256": "d77907b7de0b108d69df955c5c6aebffd6e738fec0bf339b9ffbe726434b0003",
+      "inode": 8019525
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/media_cache.cpp.o",
+      "bytes": 29440,
+      "sha256": "5cc3d2aa12f071bba74dd3c30077bf0b02479f0d76a2acf3f69230e586731e44",
+      "inode": 8019503
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/memory_admission.cpp.o",
+      "bytes": 3680,
+      "sha256": "1a618bfbe2db657a6c1b04a50a2f13d672f7b61af6be6cdc4b606fed668a3705",
+      "inode": 8019501
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/model_catalog.cpp.o",
+      "bytes": 25024,
+      "sha256": "236a55dbdfbe26bb4ae0c8595ded015d2921b642fc775a2827cfa0954aaac5b8",
+      "inode": 8019514
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/model_preparation.cpp.o",
+      "bytes": 9128,
+      "sha256": "2d2dc98474d298d7405ae246787468a4c34cb404fcebaf4fc4afb0305a58fc27",
+      "inode": 8019512
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/moderation.cpp.o",
+      "bytes": 157024,
+      "sha256": "c992e24560aeddc50b0ddb363bfea0d4f5b39696794ce67aabada3550ef8b56b",
+      "inode": 8019532
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/moderations_execution.cpp.o",
+      "bytes": 31216,
+      "sha256": "bcd5df26111d63f602b6ceeb3ad1738cf1e73d61bdacaa81f57dc13722882992",
+      "inode": 8019521
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/moderations_plan.cpp.o",
+      "bytes": 84792,
+      "sha256": "7f89c71d77c8fe5379646e6f38b0448d24b0e33171c58cbb9ec7e93653e0d665",
+      "inode": 8019530
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/multipart.cpp.o",
+      "bytes": 65824,
+      "sha256": "1da36f8bdc98ea3512478bd806f0239376ed12ed4417502545d158d0bb09ac6f",
+      "inode": 8019519
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/native_crypto.cpp.o",
+      "bytes": 32624,
+      "sha256": "15a80fbee96a8586a703adbc09b57d63b28f383415fd3df12b2cdba76c29773a",
+      "inode": 8019517
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_retention.cpp.o",
+      "bytes": 135400,
+      "sha256": "9f0deede39a2fce71d5fbf5bbb614f8aaacc6b54a3da4093219b9b4030c16054",
+      "inode": 8019544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_store.cpp.o",
+      "bytes": 199488,
+      "sha256": "fd76638495b8397bd0c70bacf678d0a23f3a9bbaac0375e28695887d4a50dd56",
+      "inode": 8019539
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_store_options.cpp.o",
+      "bytes": 11040,
+      "sha256": "febb15e2fe2f0ad9cae269c024b317b1571487755d92d22ca46bb32526055acb",
+      "inode": 8019528
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/object_worker.cpp.o",
+      "bytes": 390840,
+      "sha256": "208ca06603ae0318e78d60899cc81ec27af4c9ed58b479a7bf6874ee1b39854e",
+      "inode": 8019609
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/output_constraints.cpp.o",
+      "bytes": 140776,
+      "sha256": "90663cc7bee76b6de2baa82cd2a7cab911a803f62fbf5a8a2358f7836aa51170",
+      "inode": 8019546
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/output_schema.cpp.o",
+      "bytes": 79168,
+      "sha256": "768bc650f85754ced34370c74bdccf9fc6899a3eba4d74eef2d3e6681507d974",
+      "inode": 8019537
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/overlapping_output.cpp.o",
+      "bytes": 101008,
+      "sha256": "a2b3ec0cba25b96d80dbde798ffc38ef43a8915d35f84b8d22fa5bed4d1f4133",
+      "inode": 8019555
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prediction.cpp.o",
+      "bytes": 25952,
+      "sha256": "6b02bd9c5c6575802aa5274d55647e6216e793024e217a0f630868c1de30e9cb",
+      "inode": 8019535
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/program_vm.cpp.o",
+      "bytes": 115312,
+      "sha256": "6c17f26088fe7c95e981816256401ca50cbb7f42aa91c06585c01b8275140a4f",
+      "inode": 8019566
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/program_worker.cpp.o",
+      "bytes": 24120,
+      "sha256": "7fab34220493079e08663d882782b2d405cd23ae76a6e4999f7e002f9aa3bed0",
+      "inode": 8019548
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/progress_transport.cpp.o",
+      "bytes": 31984,
+      "sha256": "aae21092646db77bd581e77faec26b22a28c2044fb148aa5cf927fcdec7d1532",
+      "inode": 8019557
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prompt_api.cpp.o",
+      "bytes": 49704,
+      "sha256": "b408b8238a65264c7aa98b40fa8d73eb06abec1d6320512841cf25391ae45ce7",
+      "inode": 8019564
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prompt_cache_diagnostics.cpp.o",
+      "bytes": 55672,
+      "sha256": "fef32f40bad5bdcd3a76fd4a079193d60c41d818a848561b4d3a95965bfce480",
+      "inode": 8019562
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prompt_cache_policy.cpp.o",
+      "bytes": 87560,
+      "sha256": "8c21df8d82be607e540d2151c58477ed8b7628725a12eb5e051ec8957508d1c5",
+      "inode": 8019575
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prompt_registry.cpp.o",
+      "bytes": 120472,
+      "sha256": "c357da1a5c3b862998f12527d660b03abf1f55e6a0f294f7ed5c737d6a88c3e3",
+      "inode": 8019589
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/prompt_template.cpp.o",
+      "bytes": 125208,
+      "sha256": "0ba5c83b277bdd6cfd916c582eb49049d1c2e8f6425011b53e5ac85a4bdddcc5",
+      "inode": 8019593
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_asr_policy.cpp.o",
+      "bytes": 2512,
+      "sha256": "2394377460d1927f9f8f216f1c12d715a88e8f8b396480310a52d492e6e59df2",
+      "inode": 8019559
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_audio_export.cpp.o",
+      "bytes": 14232,
+      "sha256": "2a68dd0f5614743f1e6ed5b809cbbce1703f4d0707bc9898a7c2802806b40b6a",
+      "inode": 8019568
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_audio_history.cpp.o",
+      "bytes": 41160,
+      "sha256": "d9a46c954c6929f977ef57c6e1eccff57b73dd3d3f554881dacb6bc9e68379e8",
+      "inode": 8019586
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_audio_queue.cpp.o",
+      "bytes": 15328,
+      "sha256": "d040368cadffdce08438b6b8eba3418589ec661dae03e946fd23f0ae49020a99",
+      "inode": 8019571
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_noise_input.cpp.o",
+      "bytes": 15192,
+      "sha256": "ff8aab73e5c242aebda5e1dcff4d98b5bcc729f9c68fb5eff2ec45a917043588",
+      "inode": 8019584
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_pcm.cpp.o",
+      "bytes": 10824,
+      "sha256": "45a97e361108adb2587b1a7f21a72bcb9562a33a8fcabcf386863a1f3d735da6",
+      "inode": 8019582
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_semantic_score.cpp.o",
+      "bytes": 42648,
+      "sha256": "89eb18b71bcf5a4fd5680a06c63ebe6fb33d21006bec45397cd27f651105fa43",
+      "inode": 8019622
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_semantic_session.cpp.o",
+      "bytes": 50104,
+      "sha256": "20e4cc88a616af145688cb5d3ed9090856ce114be545a710494ded74017062e7",
+      "inode": 8035463
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_semantic_turn.cpp.o",
+      "bytes": 9128,
+      "sha256": "707b6cd2cc98c75d8ce888246ef9e84100f73af693a0a6418c05f19237f40a19",
+      "inode": 8035408
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_semantic_vad.cpp.o",
+      "bytes": 3968,
+      "sha256": "52fdeb234ea3d1a6c0981c0f6c565118cb9eef5f8745c2bd8dc9ed3a674e1ce8",
+      "inode": 8035377
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcript_history.cpp.o",
+      "bytes": 24496,
+      "sha256": "567dd6150b61e21aebcf40170aa08cba0fc9394f979f5ca2fd0025397c5dd808",
+      "inode": 8019595
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_protocol.cpp.o",
+      "bytes": 125480,
+      "sha256": "a179fdaa19b20823ecb2d6b7da2cc3f10c4f17598ae1aa348daeb04f6bcdf659",
+      "inode": 8019613
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_pump.cpp.o",
+      "bytes": 24160,
+      "sha256": "445175f9173496afcdf93fe5b1674caae6140f3ab7066e8c7f87c10609124f29",
+      "inode": 8019611
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_transcription_session.cpp.o",
+      "bytes": 177024,
+      "sha256": "cfb273af573c70dee01f4237335496ab71e579cfd831365dada3dd70036fce45",
+      "inode": 8019616
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/realtime_vad.cpp.o",
+      "bytes": 8904,
+      "sha256": "a9eb2b4f91f26a50560f41b2f0926025ebd478a4f4335ba00bb277379556e1fb",
+      "inode": 8019602
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/reasoning_options.cpp.o",
+      "bytes": 18856,
+      "sha256": "92440447ffa2fc392f47d35b7c129e88fb7edc23b9546da2454b36ed6b56f246",
+      "inode": 8019607
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_api.cpp.o",
+      "bytes": 165760,
+      "sha256": "3c383f78af5b9b263dc05e32077d20eaa2181e05add1b02ff61c62754770c06d",
+      "inode": 8019625
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_compaction.cpp.o",
+      "bytes": 149192,
+      "sha256": "ca876ff862a19ed6123daaf9e268cea043790926913d13e5912437cd8265fa5b",
+      "inode": 8019620
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_crypto.cpp.o",
+      "bytes": 104736,
+      "sha256": "bc3dc791f6f2b82b1b9f2feeb00881d02d0e1ca22be5188d3d86c917a660e17f",
+      "inode": 8019238
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution.cpp.o",
+      "bytes": 199664,
+      "sha256": "1a1d7d8d69b630b1caf1bd3714f91e441c8d983cc180767c3136f3936b12d86b",
+      "inode": 8019634
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_compaction.cpp.o",
+      "bytes": 112712,
+      "sha256": "bac23aa6576744ec39d94f32d706122bba0ff9751a8e324f1fb809e7878a4ed8",
+      "inode": 8019629
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_files.cpp.o",
+      "bytes": 67544,
+      "sha256": "35efa20fa4b2d31171b48cafea2832582d1d0e0df485abf79b6d0a6ee10d0ccd",
+      "inode": 8019618
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_inputs.cpp.o",
+      "bytes": 76160,
+      "sha256": "710f655ef5d3d0657c6779b6966b68998abba07c56dda63ed7daad1faa687bcb",
+      "inode": 8019637
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_mcp_media.cpp.o",
+      "bytes": 94360,
+      "sha256": "ab561162bf4057d9f3165b74c1c540bc079c7ca1ea4cee2e5306f6fc6bb6d94d",
+      "inode": 8019649
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_execution_moderation.cpp.o",
+      "bytes": 70080,
+      "sha256": "48df16b25fd3aa702fefb3721c59ff72044c707ba7680701a36745537e1c62bf",
+      "inode": 8019647
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_file_citations.cpp.o",
+      "bytes": 56168,
+      "sha256": "7d1effe353cb3f976c4990f02d44f6b56c616d2b1d3fedc8f106391eb78a5b86",
+      "inode": 8019643
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_file_search.cpp.o",
+      "bytes": 135776,
+      "sha256": "2360b4789cf7082cc89213e37909385e34e2b82d931dc3e17b48b376c97ff499",
+      "inode": 8019656
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_file_search_execution.cpp.o",
+      "bytes": 141960,
+      "sha256": "68a0b4a8f8520ac3f8db847d917acba6b043daa11ec52be77b8bb8ed6082e89e",
+      "inode": 8019658
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_file_search_output.cpp.o",
+      "bytes": 81776,
+      "sha256": "f792d3202d85c7a4e3ca546b808f04077a70e21264e0b674aa6804c5bfb44504",
+      "inode": 8019650
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_file_search_view.cpp.o",
+      "bytes": 38440,
+      "sha256": "77d9346de8da600b633ccd1eaf9c535fb88b20573e593746538654a40ddd027d",
+      "inode": 8019652
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_input.cpp.o",
+      "bytes": 412120,
+      "sha256": "9801a4d83f2dfebe79d6fda200e0e179f94212418949dec5d7869500d9979d07",
+      "inode": 8019701
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_item_shape.cpp.o",
+      "bytes": 209896,
+      "sha256": "7e63afc69ed86e9958c80bbf7811eb2b98fb6c3a114d0238ab9a8b803923454a",
+      "inode": 8019663
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_jobs.cpp.o",
+      "bytes": 248456,
+      "sha256": "b7ff844a3f3aaca9d66cafe5fb33ff37dd5d944123748444b693121ddc64037b",
+      "inode": 8019686
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp.cpp.o",
+      "bytes": 138536,
+      "sha256": "21d1f996f23adfcffbfa6d743b803b6c9fea9ef428a39b5c8bed721bf3207467",
+      "inode": 8019667
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_binding.cpp.o",
+      "bytes": 138984,
+      "sha256": "f980d9b3511bc5d2e66f923668560e267dea00236930577267c4654263ea849a",
+      "inode": 8019679
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_execution.cpp.o",
+      "bytes": 147152,
+      "sha256": "e69004652766954a7566774b9e4c3a393966b8847ac0185df04a29bc22885d59",
+      "inode": 8019674
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_media.cpp.o",
+      "bytes": 101936,
+      "sha256": "9c41c2ec9bceb9f4e9686063fa3d66c821c1eff431f6ee20ebded07d86eead27",
+      "inode": 8019672
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_output.cpp.o",
+      "bytes": 99880,
+      "sha256": "88990e91c39ab93bf3e5ad63e7dd002a2ba588ce844a95dea29a982f879fe5cc",
+      "inode": 8019681
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_preparation.cpp.o",
+      "bytes": 123248,
+      "sha256": "4633271b786b40490b5aa184967e48bff31da6313bad6f40ad0135ff1d7ee302",
+      "inode": 8019690
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_mcp_state.cpp.o",
+      "bytes": 342832,
+      "sha256": "8754b34a9e68ddcc14152b8e914103bda3790087f4ce41c179df2bb0495fdae9",
+      "inode": 8019710
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_output.cpp.o",
+      "bytes": 205408,
+      "sha256": "8fc38ac49f9687ca62a98d13baebe71e06139b60d2eb1ba57307cfc29dec879c",
+      "inode": 8019703
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_owner.cpp.o",
+      "bytes": 31832,
+      "sha256": "f6eff6a46df43ccdfe092071dc98a43b080aa1e75db39e1a53e4bed71ce39c07",
+      "inode": 8019694
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_plan.cpp.o",
+      "bytes": 209456,
+      "sha256": "514b312e5f1411676a6deb20f92e630b9964758549ec50bb670a36a628460ef5",
+      "inode": 8019712
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program.cpp.o",
+      "bytes": 269056,
+      "sha256": "e836a0494acbf3cff93a5b1e8981bf7d16f8f2da33683cd4cee6c14e76c99444",
+      "inode": 8019676
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program_execution.cpp.o",
+      "bytes": 131080,
+      "sha256": "e67438785fafc581d4c1d3db002fc80820187495b6ac01b33b9aea7a4cf46031",
+      "inode": 8019706
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program_output.cpp.o",
+      "bytes": 69008,
+      "sha256": "b81585b8d914e11d08873268f5470e73d24940d1e127d82e886135cf170d46e4",
+      "inode": 8019699
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_program_plan.cpp.o",
+      "bytes": 68504,
+      "sha256": "2ccf4f134582b1ada7ceb437229ae17490535da59d43b0f526e3f728bbc34cea",
+      "inode": 8019697
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_reasoning.cpp.o",
+      "bytes": 123792,
+      "sha256": "6cc2af18f7ce89f467704c7c36b96531ff1f4543200505128497ffb09f4f4745",
+      "inode": 8019719
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_state.cpp.o",
+      "bytes": 231640,
+      "sha256": "41d6848507c721b77062d8668729bba49477001710938bcfec96c70675324a46",
+      "inode": 8019737
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_summary.cpp.o",
+      "bytes": 57568,
+      "sha256": "5dbd31b5f9b3241c2bc2f8eaf09c40b9959ae74a2702bc2ee3133bfedcce9029",
+      "inode": 8019717
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tokens.cpp.o",
+      "bytes": 131080,
+      "sha256": "743094fcf6fba6ead523375873894e2aa4cae60bbff24ea5216b1d4678f6fa3b",
+      "inode": 8019724
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_catalog_history.cpp.o",
+      "bytes": 113136,
+      "sha256": "d83a70b7c3795cf6eac8dc6944c90409a9b56757aea42d34a6c0f2f728ff9cd8",
+      "inode": 8019721
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search.cpp.o",
+      "bytes": 138272,
+      "sha256": "6f3b496d01b9cc4b6843c92dfbfa8f1caef19f2aa134c34db2f5fdba5bcfce73",
+      "inode": 8019730
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_execution.cpp.o",
+      "bytes": 102944,
+      "sha256": "d67519e7eb7675bf5fff0f02cbbdf779970d089a21fb7c72a4468add5e6c223a",
+      "inode": 8019735
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_tool_search_output.cpp.o",
+      "bytes": 73312,
+      "sha256": "c356ae5d9b72253d7e171253f08372d868eee1c9e4f90ab8f9980132a159d906",
+      "inode": 8019741
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_web_context.cpp.o",
+      "bytes": 74528,
+      "sha256": "7ae2ef0e19be8a0730c13b75089b4d6d30645a43abdb1dd5e4e88b0ee4c8b64e",
+      "inode": 8019742
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_web_execution.cpp.o",
+      "bytes": 78152,
+      "sha256": "8481e7e4141d05b239840dc1a02b896ada01f64451c8f9ec6c81de936256528d",
+      "inode": 8019753
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_web_output.cpp.o",
+      "bytes": 98944,
+      "sha256": "dee4ed2a5142f562ed33c0ed17ce1d11c55467f36dc7f0c85658daab4614fadc",
+      "inode": 8019759
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/responses_web_search.cpp.o",
+      "bytes": 125368,
+      "sha256": "4dc772cb86ef4d4375081e18cb700b2c0c9e195faa75b0512b94c21918dc420f",
+      "inode": 8019768
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp.o",
+      "bytes": 37632,
+      "sha256": "bcef3fe87cf155a49d5d366c8d707488cb22ac36d56ccf90e4d0d4f8aa44da69",
+      "inode": 8019748
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_decimal.cpp.o",
+      "bytes": 31336,
+      "sha256": "3d69ef9bd8ee5edcfc2f3ab439994d895a500fb894abd64e688b39cb049baa7a",
+      "inode": 8019745
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_grammar.cpp.o",
+      "bytes": 148072,
+      "sha256": "bfe2626c0cb38473f3d730aba2b561128cf25469eb467f033688d8e5bfa38965",
+      "inode": 8019777
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_graph.cpp.o",
+      "bytes": 167872,
+      "sha256": "c686e3b9e22630baf2af636842a5917b47295eba8e6ac11946482506c35f1d4f",
+      "inode": 8019775
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_idna.cpp.o",
+      "bytes": 12536,
+      "sha256": "1925d4c5655b3f816bacc55591e0564d4e23d0e77e6bb50cd04a6db3c96e633d",
+      "inode": 8019746
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_number_grammar.cpp.o",
+      "bytes": 71024,
+      "sha256": "7c6575ee865e65ba006eb723c313f8285081ccf982350189a878bc5e69bd5279",
+      "inode": 8019757
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_prefix.cpp.o",
+      "bytes": 53560,
+      "sha256": "e90bdcf9ea1ea19085e2fb422f997628ac7871c6fb2afbda4d8cc4476a965b50",
+      "inode": 8019762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_receipt.cpp.o",
+      "bytes": 20704,
+      "sha256": "2ffc7b8815f5a13d0983a72c93d92caf51cdacc7c89ebecb1ec8686e257c26e2",
+      "inode": 8019755
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_string.cpp.o",
+      "bytes": 27432,
+      "sha256": "46fb8d9cdf1328b94726baaf3f31adb38c7745e5ed349730d600df477708879c",
+      "inode": 8019766
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_string_grammar.cpp.o",
+      "bytes": 117168,
+      "sha256": "95ce4264fa311f6635341d46b912ad57e26049ca46240dcc9df194dd691f25a3",
+      "inode": 8019782
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/schema_token_guard.cpp.o",
+      "bytes": 82880,
+      "sha256": "f63c20ee0eb7934885c81d8bc17c27d096b8b2dd2367986a496bfde746c0f6bb",
+      "inode": 8019786
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/separator_service.cpp.o",
+      "bytes": 14320,
+      "sha256": "acfb3c8d19e4438a8e704c43e5efa425f20426defce52fd6d0923bf41a8f41d3",
+      "inode": 8019773
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/server_options.cpp.o",
+      "bytes": 76120,
+      "sha256": "133a30628e07a3927762c5de7db50cae315cd154397bfa96c0f6c519c00f4319",
+      "inode": 8019793
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/session_cache.cpp.o",
+      "bytes": 85736,
+      "sha256": "440d33be3c4bb1184d93a7ca9bd941db85dabaee6a8770bf8713c97b0ca79531",
+      "inode": 8019802
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speaker_reference.cpp.o",
+      "bytes": 42144,
+      "sha256": "52756e7392f6cbf5b172fae5061e855957e9e06cde4044f238bc0e833db0d931",
+      "inode": 8019789
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speaker_service.cpp.o",
+      "bytes": 22016,
+      "sha256": "3e00e70a48913cefd172fc858110f1d124302b68f6040f46297baff16aebc079",
+      "inode": 8019784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_codec_stream.cpp.o",
+      "bytes": 59656,
+      "sha256": "5d0ac79e94baec6d29e11f15e2cff41f4b302e8c90c773feff104efa0532e93e",
+      "inode": 8019804
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_codec_stream_worker.cpp.o",
+      "bytes": 96176,
+      "sha256": "b8ca24e9572b3c51137bbc1758d5741fed4252ad7cd27c3ae1adc3290a78f77d",
+      "inode": 8019813
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_encode.cpp.o",
+      "bytes": 59912,
+      "sha256": "616fa17a0ef738fb90b4e1e05a17512e0607c3e386453cbb04e7d5eb3c5abd4e",
+      "inode": 8019811
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_encode_worker.cpp.o",
+      "bytes": 94016,
+      "sha256": "e5cbf93914631fd66598dd6cd2bb6bca90b73d0631466b16786c3b34f76e0717",
+      "inode": 8019818
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_output.cpp.o",
+      "bytes": 80536,
+      "sha256": "bf970ecf4ea966a012b40620431e558a29cdd21d4e5b319fe04c964d4dc43674",
+      "inode": 8019816
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/speech_request.cpp.o",
+      "bytes": 30680,
+      "sha256": "0072caa723a2b6d9e8db4fc27561a52e4c16ad55235d0124a7cf88f8b3ceb280",
+      "inode": 8019809
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/state_cipher.cpp.o",
+      "bytes": 117632,
+      "sha256": "9f4c7146dee093e74af31086d918e84e295e32583e7075811b770f009ed85530",
+      "inode": 8019838
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/state_key_admin.cpp.o",
+      "bytes": 81688,
+      "sha256": "788766ede7fe48d87991feee251f9dcfeb1263e2b41df0faa2a916f0a5f5be53",
+      "inode": 8019834
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/state_key_cli.cpp.o",
+      "bytes": 51352,
+      "sha256": "8262d2efeb3a6a1a2b7831f82a61bd64953b438dd3738310a0ce47da664637b1",
+      "inode": 8019822
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/state_retention_cli.cpp.o",
+      "bytes": 55288,
+      "sha256": "90c47e7bfa22dcc5493d4f86ef9a4616dd044c4626ea6c03b6ee7a66b5aebcae",
+      "inode": 8019827
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/structured_decoder.cpp.o",
+      "bytes": 30176,
+      "sha256": "05d90cadd590bc53679344f8a71cde9327fe384246b3db2c5ff6fcd7efa8e655",
+      "inode": 8019820
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/text_stop.cpp.o",
+      "bytes": 13896,
+      "sha256": "bfc720e7ae62018a40844c76f7d81af4a4ee9837952ae9e16e7f0f9f2a2b8ee9",
+      "inode": 8019825
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/thinking_budget.cpp.o",
+      "bytes": 40160,
+      "sha256": "27297ea0f4ff8fef338985733cceae0038138dce2637ab9090b7130e3bc4a923",
+      "inode": 8019831
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/token_logprobs.cpp.o",
+      "bytes": 59288,
+      "sha256": "8a81f56ae66ffb165aecaa06c5107b70c37cfd778f56e0b96fd86265a95d367b",
+      "inode": 8019843
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tool_result_contracts.cpp.o",
+      "bytes": 128312,
+      "sha256": "c0ab8e70b1e0865d4bf9b64c6d1d99d771d9402d0b823e218da7ef57e1fdb8f4",
+      "inode": 8019852
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tool_result_schema.cpp.o",
+      "bytes": 95320,
+      "sha256": "8da32f3eae2742c9c5281c81b2a7857329a112cc681fa90c0e0b3568167b33d9",
+      "inode": 8019847
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/tts_service.cpp.o",
+      "bytes": 25680,
+      "sha256": "b34529df5f34331fc7eab5394a2f6029f039753ae49aa23110d81ab24705c2ab",
+      "inode": 8019840
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/uploads.cpp.o",
+      "bytes": 172560,
+      "sha256": "ea1378a81d500533029a71f5a45d532c9e3c22f83b6505b530e4e1331c358793",
+      "inode": 8019854
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_embedding_execution.cpp.o",
+      "bytes": 31600,
+      "sha256": "28a54873c830ab37c08cc53a8897a51b9a406138075d54f1faae8c534984da6a",
+      "inode": 8019845
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_file_page.cpp.o",
+      "bytes": 72832,
+      "sha256": "22bd5c0a7849ddecf16170ef8ac3c3f52ec2682dde38df01d43763e53cfa6185",
+      "inode": 8019849
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_index.cpp.o",
+      "bytes": 130848,
+      "sha256": "265aaeadd1bf03bd2b2f1c3cc3ecb649082560769d38cd478d8bdbaf0e4aac6c",
+      "inode": 8019860
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_ingestion.cpp.o",
+      "bytes": 106552,
+      "sha256": "54b3b58fb2ccd4455a4f01932ccaa95c05817def78835eb1225d584e2a2408f3",
+      "inode": 8019864
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_ingestion_state.cpp.o",
+      "bytes": 116488,
+      "sha256": "e04c3d92ecfd6fd5f7cecb85d5cac1c4faae4280eb595d57d6fc5d0aca3a924e",
+      "inode": 8019868
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_jobs.cpp.o",
+      "bytes": 159888,
+      "sha256": "85bb2794dea41d80acde36210a2105e41abaab48091920f59a331e75341d6824",
+      "inode": 8019934
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_query_rewrite.cpp.o",
+      "bytes": 53168,
+      "sha256": "449f4a724bbde241e634a29832177db92490c678a3d4505faa5816bb2e0ab0a3",
+      "inode": 8019856
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_search_api.cpp.o",
+      "bytes": 66720,
+      "sha256": "4750556957eac881878c3d41031c1422b466a97ee43aff7b6df5308574fdea82",
+      "inode": 8019870
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_search_corpus.cpp.o",
+      "bytes": 59096,
+      "sha256": "ccc0734625bddb6df25ef6d43e3127281de5f1bd7fec826cd6a961f53d1dba22",
+      "inode": 8019955
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_search_execution.cpp.o",
+      "bytes": 102968,
+      "sha256": "79278835306186a9cb921249659296f9be89a93eb26dd1834009db86063b31f4",
+      "inode": 8019960
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_search_plan.cpp.o",
+      "bytes": 99856,
+      "sha256": "fb154ae197610a05f2bfe82b1580590309726df81b764a31ce21bb66060c4d9e",
+      "inode": 8019963
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_search_rank.cpp.o",
+      "bytes": 61160,
+      "sha256": "7a43ae10e9596fc515371e593fb497c86509df6bfa592b71d71a13d81adbba74",
+      "inode": 8019965
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_store_api.cpp.o",
+      "bytes": 70928,
+      "sha256": "791521ca054f4823f082b73da5ee59d3e07441ef80421734f1baaacb0dab0c84",
+      "inode": 8019961
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_store_batches.cpp.o",
+      "bytes": 155296,
+      "sha256": "0c291fab9cb1d45383b868c0277ed7c759e4763a89990730e2de103166e3f050",
+      "inode": 8020363
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_store_content.cpp.o",
+      "bytes": 45376,
+      "sha256": "1a00c6248301be1d141505f180e4ebcedea94221794485ce3f8beea88f3f54db",
+      "inode": 8019967
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_store_files.cpp.o",
+      "bytes": 111304,
+      "sha256": "2d65e97cff8b234c1e41ad46b3148df410a011ac42d4307c25a6712d96f0a3c8",
+      "inode": 8020365
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_stores.cpp.o",
+      "bytes": 120448,
+      "sha256": "56a1f97cea801dcb008037780e6a0cec85b1b1ed45959b7cceba2e8c495691be",
+      "inode": 8020627
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/vector_stores_internal.cpp.o",
+      "bytes": 163088,
+      "sha256": "0c3185a2c30eac66f5e0019dfbd9d738fd8b2d248a68dffee3193d338f7df9bf",
+      "inode": 8033811
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/voice_api.cpp.o",
+      "bytes": 63072,
+      "sha256": "b54a780dcf2b10881af4644a5cc0983b6a5c8cbf2320b1fd18bf2fc09b99fc6a",
+      "inode": 8020631
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/voice_language.cpp.o",
+      "bytes": 11344,
+      "sha256": "4913319f8f35cc3ff5fd7117921c4d931105c73925fe2e1d24260efe2883e4da",
+      "inode": 8020097
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/voice_registry.cpp.o",
+      "bytes": 131472,
+      "sha256": "b9ce03d709e03bc8755530041a7571ca2c286ad300aacac4b144c45480de20fb",
+      "inode": 8033818
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/voice_request.cpp.o",
+      "bytes": 93616,
+      "sha256": "27f2ab358aa620f6d9b64f98be4add52dfd8ebdad4d014c65266e76ed370c193",
+      "inode": 8020633
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/voice_verification.cpp.o",
+      "bytes": 16072,
+      "sha256": "61450d86876ece4529a4e4a80732d05dc3ac7ad4730ea845846335f1303c8db7",
+      "inode": 8020314
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_execution.cpp.o",
+      "bytes": 134784,
+      "sha256": "4a2bf765104335fc40aede79a0a601a90719cc46819e61915794a3a220d6ea8d",
+      "inode": 8034107
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_index.cpp.o",
+      "bytes": 87160,
+      "sha256": "2cce416891851e08b197e6b32fce2a40b6c7fa6b6834a209449c3f2ecad3a089",
+      "inode": 8033850
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_page_html.cpp.o",
+      "bytes": 58968,
+      "sha256": "32f69e9ec62868838df722c15e8fc7f034c090201b89d46ea3640f85be8b9b16",
+      "inode": 8033838
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_page_record.cpp.o",
+      "bytes": 45720,
+      "sha256": "3b9e59d74bb8435cf05ebbdcbb3112a07081d41498d25d10c878e927c28eb976",
+      "inode": 8033819
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_page_worker.cpp.o",
+      "bytes": 92904,
+      "sha256": "061c051aac14d5dd92348bc9a47c24145112b4187e24d8ddcdb783367df46a7d",
+      "inode": 8034109
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_policy.cpp.o",
+      "bytes": 95024,
+      "sha256": "69ba6c6051574d29fcbe59907f74a649a87011d248a86af4b3427fb6cc7be897",
+      "inode": 8034519
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_search_contract.cpp.o",
+      "bytes": 84656,
+      "sha256": "4ba447b8d2d962c4d7fee5f9256b182d5eecd6e2abeadd17661c1f42e63ac16f",
+      "inode": 8034413
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_search_fetch.cpp.o",
+      "bytes": 38912,
+      "sha256": "204b7c66efa1d02741ae69e1a6978d206181736ebdadfbc79ebaf4cadf615672",
+      "inode": 8034177
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/web_search_rank.cpp.o",
+      "bytes": 63432,
+      "sha256": "d56cd1b40135cc27a5a64a9a00adbca998a1d89481078d5966fe6c0c79d86ce9",
+      "inode": 8034747
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/websocket.cpp.o",
+      "bytes": 17848,
+      "sha256": "21dbddec1cf967880ffb5f46a6db0f1b481185b94bac10a5fdedc445cd386fc7",
+      "inode": 8034176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/websocket_session.cpp.o",
+      "bytes": 24208,
+      "sha256": "c6bec5ec8acbefce591b2c5ce275f4f6ba89dd05c527c971decff4efc27a0dac",
+      "inode": 8034433
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/worker_io_broker.cpp.o",
+      "bytes": 11992,
+      "sha256": "f6b82f056f3dd1b3f005c17b1d2830bc40c4436a5a60c7161b171349471bec28",
+      "inode": 8034431
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_process.cpp.o",
+      "bytes": 65584,
+      "sha256": "4a8e0c6ef9aaec5ca2ccfc87a8a5e2052cd0bf676af71de62b743119d44b399b",
+      "inode": 8034671
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/trace/router_trace.cpp.o",
+      "bytes": 39048,
+      "sha256": "3da40181980c3e99904bceed0f2742379d8f41984d7ae0bad096bfc0efeb23a7",
+      "inode": 8034583
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o",
+      "bytes": 31816,
+      "sha256": "c96b0bde31619d41d1d3054a5a99fdcbbda566e094e4bf5719c59d277f23017a",
+      "inode": 8034749
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/vision/media_plan.cpp.o",
+      "bytes": 14776,
+      "sha256": "2bc5c65303bd3d1bb81f94f3534f6a26c3a6593ab02787a214940c676672db5d",
+      "inode": 8034565
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/src/vision/processor.cpp.o",
+      "bytes": 191136,
+      "sha256": "84b1e066eab68ee9fbe31b34665c9881d857d940cc82efec835d1f5d436a14d5",
+      "inode": 8034806
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/actual_usage_step_test.cpp.o",
+      "bytes": 17976,
+      "sha256": "31b4eda828d6eaca64c95e844680811c81968d9ce2ae60b48a7a3272a3ece50d",
+      "inode": 8034567
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/aligner_config_test.cpp.o",
+      "bytes": 118912,
+      "sha256": "9b7482620e78d190d428e64c29e760bc748ba67d348c5052bf421ccc072646de",
+      "inode": 8034759
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/aligner_layout_test.cpp.o",
+      "bytes": 49896,
+      "sha256": "ea4b430613a548988d7a720f43f773824615d02038b7f5cc75f63033f573ba1a",
+      "inode": 8034751
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/asr_config_test.cpp.o",
+      "bytes": 126952,
+      "sha256": "632d967e350b4939ffc7289d590291a22630816d9258a4cb38573e3ffd410745",
+      "inode": 8034770
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/asr_features_test.cpp.o",
+      "bytes": 49040,
+      "sha256": "c36cb6edee6d31e00b538a50d7159794883a730080e9dfaf3469aabd209160ee",
+      "inode": 8034755
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/asr_layout_test.cpp.o",
+      "bytes": 54720,
+      "sha256": "7c9ed1bdf561c0a1dd5d31d8f2a0817226658fea665bf112c1a8cd1bf73911ab",
+      "inode": 8034758
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/diarization_test.cpp.o",
+      "bytes": 71288,
+      "sha256": "2f0f9469496b1ed3e87a43f20dfb23e6982ed5950e366a454416e9dcdcb55724",
+      "inode": 8034763
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/files_api_fixture.cpp.o",
+      "bytes": 164792,
+      "sha256": "f4e3139443c5600143603325de82aaf5775d9ecc5f33bf69d44cb130ce11c2fb",
+      "inode": 8034808
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/guardian_quota_test.cpp.o",
+      "bytes": 12920,
+      "sha256": "cbbac38959ad3b3feadc72abb7e68dd99497166e5dd5538da687b31c51aa2cd7",
+      "inode": 8034765
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/io_json_test.cpp.o",
+      "bytes": 65928,
+      "sha256": "d61e89b899d35d9cbe9f537c053c879589ef8c36d46a6da516a3259655ea0191",
+      "inode": 8034772
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/model_sequence_test.cpp.o",
+      "bytes": 53320,
+      "sha256": "a5ea9f8448180a4ac7d47b753602d04295d09d7e68a23d7751b5793ee42380f2",
+      "inode": 8034782
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/model_vision_positions_test.cpp.o",
+      "bytes": 30272,
+      "sha256": "ed68eb914c1179175af0a4615703eaf1903c6dea1003dc5ace96bc4c0d49925f",
+      "inode": 8034780
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/noise_reduction_test.cpp.o",
+      "bytes": 39408,
+      "sha256": "83d7d08117f5ca4aae8767e2c0a3e49b35c699700507e39da6c118e4f28505c2",
+      "inode": 8034789
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/overlapping_diarization_test.cpp.o",
+      "bytes": 45016,
+      "sha256": "6c59004c76d37a6e24e7613b95cbae23f42e23706aaf42fad49110ab67aa44a6",
+      "inode": 8034784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/pcm_output_test.cpp.o",
+      "bytes": 18840,
+      "sha256": "2641fff7ed5d79011ded3223a8f5a3b88b7c1aeb9b343c8a9a216affc0e6d609",
+      "inode": 8034788
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/router_trace_hash_test.cpp.o",
+      "bytes": 17616,
+      "sha256": "12995c99e946e1f44e0584e8fb2daf374f7007e04aa5d47d961fd18bff7ff530",
+      "inode": 8034791
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/router_trace_test.cpp.o",
+      "bytes": 76320,
+      "sha256": "9f79ed9857a38bb0a6c1cdeeac28fc7573fae59e5fc8157c9b156528b8bf41ca",
+      "inode": 8034804
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/runtime_cleanup_test.cpp.o",
+      "bytes": 25024,
+      "sha256": "8beb964a7717ecb43ef5034ea03cd3d4b30b693c575f3381a133978b54af3df6",
+      "inode": 8034794
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/separator_config_test.cpp.o",
+      "bytes": 112592,
+      "sha256": "af85b1d4ece4eea45685695efa67766d4615fccbb3c5170ba3b618083d370a9a",
+      "inode": 8034820
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/separator_layout_test.cpp.o",
+      "bytes": 46800,
+      "sha256": "79eae2fc4fd3c9c6707f2e7910f05b7be99d6b705e95eb5fc921ba3768916b39",
+      "inode": 8034800
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/separator_resample_test.cpp.o",
+      "bytes": 72488,
+      "sha256": "9713b956793733560441ede255fb7f2934676a44218ff0a0da61612e83892b83",
+      "inode": 8034826
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/separator_tracks_test.cpp.o",
+      "bytes": 48192,
+      "sha256": "e1512315bcde8253704c3abfce8d7a48d69678b6312ca1e312f0df602537c135",
+      "inode": 8034810
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_access_program_test.cpp.o",
+      "bytes": 198424,
+      "sha256": "0bdf1a4d17101e26b516b71501a46a18d56adc0c694496056d039b7dcc6dbc2f",
+      "inode": 8034842
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_aligner_service_test.cpp.o",
+      "bytes": 85576,
+      "sha256": "c84b6bc8e4e2b3ddf51e4056ddf183ff32240558e6c15e7a49dd42aed98ee859",
+      "inode": 8034827
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_application_owner_test.cpp.o",
+      "bytes": 65928,
+      "sha256": "22f4e360cbd390b77ffc3bfe100339aaa61b10480ab1f2cb68eb9f9a6d4c72ad",
+      "inode": 8034822
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_application_payload_test.cpp.o",
+      "bytes": 256912,
+      "sha256": "f968db2931f3ecf37c440e383736b32336c73033ac72eac8a10032418e7b0f62",
+      "inode": 8034850
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_alignment_output_test.cpp.o",
+      "bytes": 106504,
+      "sha256": "546bf7dfce1f4666730b71887ea609c2ab948d12bb066a33535049fdbca9e5b8",
+      "inode": 8034829
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_chunk_output_test.cpp.o",
+      "bytes": 130184,
+      "sha256": "a992bf0db1f4c5304f941f60a0ddc9fc196580e3f794691b4d654a00d7f887d0",
+      "inode": 8034836
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_protocol_test.cpp.o",
+      "bytes": 227656,
+      "sha256": "5b51a8484852a751a41d02eef5f8164e80292f7d0049a23c148bbe4680e690b3",
+      "inode": 8034860
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_service_test.cpp.o",
+      "bytes": 79528,
+      "sha256": "ff986cd6cfec3ae1b4ebf36325c6e94908443947a5bf3de0d340a38e325171b5",
+      "inode": 8034833
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_statistics_test.cpp.o",
+      "bytes": 97072,
+      "sha256": "5ceeca09c36eaef3537391064158a22eb674c4ca0b30a34f70f0f87630ea9002",
+      "inode": 8034856
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_stream_input_test.cpp.o",
+      "bytes": 137784,
+      "sha256": "126894c79a6c54d5521f3e4c5e6d6de26a9fffc0df3d38e6083ffcb54d4992fc",
+      "inode": 8034846
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_stream_output_test.cpp.o",
+      "bytes": 112640,
+      "sha256": "7ef5c07b6a9294d04fc3068e935e7b2149883287da28555e5cff636dcaea62c9",
+      "inode": 8034864
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_asr_stream_state_test.cpp.o",
+      "bytes": 89280,
+      "sha256": "3d0cc3b31ff0033e56dc1d5f212f158e0ba7b01d0cdced6b1100ff796fe82ca6",
+      "inode": 8034858
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_execution_test.cpp.o",
+      "bytes": 369544,
+      "sha256": "9569406086029cf9fa4572c0483952fd6fa21f68a58c6b33838aff9878cd4810",
+      "inode": 8034874
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_input_test.cpp.o",
+      "bytes": 188592,
+      "sha256": "2f3cec0555a2c9ffafca8e0d229de8d25aaae5b729abce4b1f1e57816d64fefd",
+      "inode": 8034866
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o",
+      "bytes": 876048,
+      "sha256": "29c26edb64b64723f04aeb906c80332217cbaed3c41911c8783fd5c004c77659",
+      "inode": 8034890
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_preparation_test.cpp.o",
+      "bytes": 874232,
+      "sha256": "12fa2fd42a10b32e6d6a3584ae374d18169ef3964aaffb9e55df2bda6ce4f695",
+      "inode": 8034921
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_quota_test.cpp.o",
+      "bytes": 287192,
+      "sha256": "4e4ae9c50d00d77fffad5310519fa6b544a4f44659438b830e9db389b7f32fa5",
+      "inode": 8034870
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_results_test.cpp.o",
+      "bytes": 761608,
+      "sha256": "296c1d93b44b0e9ceb3cf6daeaac998b0af5ca3aa37396dcf90f860f1684546c",
+      "inode": 8034894
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_state_test.cpp.o",
+      "bytes": 517072,
+      "sha256": "85681798ac8b5758fc5cc955d668897503363eee12cd17a6e3a597230e114368",
+      "inode": 8034878
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_binary_store_test.cpp.o",
+      "bytes": 167744,
+      "sha256": "1cbb207c6dd322e9bdb584f977999b399662ca2528ff2de41ad407391d35feac",
+      "inode": 8034868
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_cache_io_test.cpp.o",
+      "bytes": 197288,
+      "sha256": "368a631051da3b128f8cb20c3e2ae9ff7b96aab5c23346df1a8e3b80173a4178",
+      "inode": 8034876
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_inputs_test.cpp.o",
+      "bytes": 237232,
+      "sha256": "8f6276defe7ebb79e45fc1679864fd3f5c0db85962a1f5255356553ff17a1389",
+      "inode": 8034886
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_audio_output_test.cpp.o",
+      "bytes": 165824,
+      "sha256": "13df8b0a402af2a6a01e6ae0825d3b20bd760bdd3fb062cafbc65831536cbe9c",
+      "inode": 8034882
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_capabilities_test.cpp.o",
+      "bytes": 215312,
+      "sha256": "a35016e3bd08fffbf0cdf2cf28cf7dd6f2ca891769a5d6abde7e0d7afa95f1f1",
+      "inode": 8019523
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_contract_test.cpp.o",
+      "bytes": 161016,
+      "sha256": "91db4c8cc5ac85ff568290cb948fb8e6015b33f8a96d4b72d22fa576a4664a98",
+      "inode": 8034881
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_file_inputs_test.cpp.o",
+      "bytes": 187144,
+      "sha256": "81310e02297a2359ea3b7ef6c3ef6f562ab6132206c636ee851c00366bfaee8c",
+      "inode": 8034902
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_message_profile_test.cpp.o",
+      "bytes": 212360,
+      "sha256": "d807ef4b706fb1a2f3160b49d39a9c4ececbb9be66114867e0c1ec001b9e213b",
+      "inode": 8034887
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_moderation_test.cpp.o",
+      "bytes": 127224,
+      "sha256": "92b8e338d2ba44df1557812cd91277b0a994a4dc9ff9618cb953090cc6818433",
+      "inode": 8034896
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_plan_test.cpp.o",
+      "bytes": 180640,
+      "sha256": "d4a724a350ed36f2fa0f4eec69fd5a76683bdf4fbb585cc64661bd19a38c46dd",
+      "inode": 8034905
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_response_parser_test.cpp.o",
+      "bytes": 235736,
+      "sha256": "f2abf198da5df625027fd2fa10e73cfa1c500f811aafe492abdd65a2ab66fb93",
+      "inode": 8034910
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_sampling_response_test.cpp.o",
+      "bytes": 118968,
+      "sha256": "a6386c559046d6380b519a9d6084d6f3aa0c5268e1ffaa0fcb6da15d58a144d8",
+      "inode": 8034911
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_storage_test.cpp.o",
+      "bytes": 312904,
+      "sha256": "260fdaaef6e200ddf24e68a2cd667bf1afeac537d838e58269782e5511d1ef80",
+      "inode": 8034941
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_tool_history_test.cpp.o",
+      "bytes": 179904,
+      "sha256": "689524ca8b74c15b7a7dda54f237c7d8f844143bd20bbd30a1dba66f9ca06f9e",
+      "inode": 8034914
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_client_policy_test.cpp.o",
+      "bytes": 984824,
+      "sha256": "a9c84e95019ff2245afac3ea8943ad5ed4b602777987ea770ca25aadc995e820",
+      "inode": 8034963
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_completion_test.cpp.o",
+      "bytes": 155672,
+      "sha256": "d49435a5ac9ab3004f4031b4a621cdf1b5cb8f35a0e855fba3c6c073c88427ac",
+      "inode": 8034929
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_conversation_api_test.cpp.o",
+      "bytes": 123080,
+      "sha256": "3cb18d5119c4ac4d8be0083ac30e2cba2f4c04b100c1647cf7711fc1a51514e0",
+      "inode": 8034930
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_conversation_state_test.cpp.o",
+      "bytes": 252176,
+      "sha256": "76d68d5314341d589755ca30eeffd88d588872602d0a722a26b825c6e2dbc331",
+      "inode": 8034943
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_cuda_quota_test.cpp.o",
+      "bytes": 88664,
+      "sha256": "81a63d74c4528c404c9784d71bf164c8544887a332e3804e90ceb2bd07aee2a0",
+      "inode": 8034934
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_custom_tools_test.cpp.o",
+      "bytes": 191352,
+      "sha256": "d4ef2e7ae22e0e1e9672ab889ef4058de6020a87800966c90507134ab7c982d2",
+      "inode": 8034945
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_device_memory_test.cpp.o",
+      "bytes": 16968,
+      "sha256": "a9196b495f3732f5ee42ac9e2e220cc94d660554fbec1e00bb615ebda85c47ea",
+      "inode": 8034925
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_diarized_output_test.cpp.o",
+      "bytes": 85544,
+      "sha256": "c086ac6611ee09ccaf71a10f1de9f7140db03bd30952683403c1fdd1030dfc1a",
+      "inode": 8034933
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_embeddings_api_test.cpp.o",
+      "bytes": 243400,
+      "sha256": "f244a2aba721bc5755df697a2f3052ee0baf4906119236367cb2ed453314d719",
+      "inode": 8034956
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_audio_rate_test.cpp.o",
+      "bytes": 98024,
+      "sha256": "75e135a3efa259fdb0121338b55c45c0598ad15bd94ca6bf266af1458e239252",
+      "inode": 8034947
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_audio_test.cpp.o",
+      "bytes": 158448,
+      "sha256": "edd32d3797d0c1122140be6eccc38df16e1daea1d67d2b9bfa891a038a4a8a64",
+      "inode": 8034953
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_document_test.cpp.o",
+      "bytes": 119096,
+      "sha256": "5107ce69d10fa4827bbde208a5d0ca12153e84f02e89981ae6c57b84eae382ef",
+      "inode": 8034948
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_document_worker_test.cpp.o",
+      "bytes": 107296,
+      "sha256": "a3ed99d075efa6fdde8884d3a3a36eb2a6c4f7d546c968f3deb3eb458c808b47",
+      "inode": 8034952
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_expansion_test.cpp.o",
+      "bytes": 306248,
+      "sha256": "d08040491192d3919e4ba29b556c6454349f5c84d7133ce2c4e97dd562a00059",
+      "inode": 8034966
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_extract_test.cpp.o",
+      "bytes": 102248,
+      "sha256": "586476cc1c29ed53383bfd751786e49c7f4f4f4fd955e5a6a44623d4b4b92584",
+      "inode": 8034959
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_fetch_test.cpp.o",
+      "bytes": 211024,
+      "sha256": "d6497d6bab6b2bc4e882cee514085b5bc35face7e8f8d9dddbf3fd4560e667de",
+      "inode": 8034960
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_image_test.cpp.o",
+      "bytes": 225672,
+      "sha256": "eb7ec8c02367d1d5f015ddc7a2de08d6bee249bdabd7a4ead4f29ed1f15671c0",
+      "inode": 8034977
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_input_policy_test.cpp.o",
+      "bytes": 119896,
+      "sha256": "87107ffd18903cdfe561cc850d9bd8df5ed31269595c0074b43dfed5493248bc",
+      "inode": 8034961
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_input_test.cpp.o",
+      "bytes": 154544,
+      "sha256": "9496d288768eb45cffaf146aea1e2d2c9cb81370d01a345adaa9e7d4244bb93e",
+      "inode": 8034970
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_legacy_test.cpp.o",
+      "bytes": 153328,
+      "sha256": "9b4bc131f14d79173ae1fd65d2d89e809a837cbf015eca82e3dc78d4a391c7b1",
+      "inode": 8034972
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_nested_test.cpp.o",
+      "bytes": 156408,
+      "sha256": "62203702fb3d7f6795646e0d4e1f888f1fd3b88fccac0b9ae788cbcbf76e68cd",
+      "inode": 8034975
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_office_test.cpp.o",
+      "bytes": 95456,
+      "sha256": "7792ecc5bc067bb74942ac483ae864ea79abaaa008da9190e11be94e5b1f4d69",
+      "inode": 8034980
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_package_test.cpp.o",
+      "bytes": 113368,
+      "sha256": "b0ed0c05bd1e07311a5a6bb1be7b95495d780ee4c734dba4b7209aff575c07a6",
+      "inode": 8034983
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_pdf_test.cpp.o",
+      "bytes": 156352,
+      "sha256": "af1acdc46a4d610f13bdc81c3163fdca670aa00b01a2a4209bf6cf88649eed27",
+      "inode": 8034993
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_rtf_test.cpp.o",
+      "bytes": 68400,
+      "sha256": "b45707524569c2b739ed1214d031ab66a4f705b501389c9753b133492cb97c5e",
+      "inode": 8034981
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_snapshot_test.cpp.o",
+      "bytes": 237880,
+      "sha256": "ac65d5b599f3b5b39e26bd56ac5c6662df8bf1e33fdb47af504f40a40233b1ee",
+      "inode": 8034997
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_source_test.cpp.o",
+      "bytes": 133896,
+      "sha256": "f676a266d76dfa9624ff2461b3ca37369e7bff7ca0633c06173e8bb6ee0a3869",
+      "inode": 8034990
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_video_affine_test.cpp.o",
+      "bytes": 141584,
+      "sha256": "b1cd64bb176abffead7b215fc05a2c46469911daf32e9b4415f76224599d71a1",
+      "inode": 8034995
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_video_projective_test.cpp.o",
+      "bytes": 183656,
+      "sha256": "c6cf0797081c598b2d57858c5321e808132d29994eeb9ae83e1cce9fd4c54540",
+      "inode": 8035002
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_video_test.cpp.o",
+      "bytes": 181976,
+      "sha256": "5c983a45d5ce52064f5719f55a48314c02b212c52ed66ca370e51f14bf97b747",
+      "inode": 8035003
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_file_webp_test.cpp.o",
+      "bytes": 179128,
+      "sha256": "2b8dfde301f4b6b55f4d0a942d4a672b15d87e9042329846f494957c6fa1c67a",
+      "inode": 8035005
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_files_test.cpp.o",
+      "bytes": 259792,
+      "sha256": "44039189dca87b6e714dc05d92ea75834fa0a690a70f877d6dfb0ce43f286aef",
+      "inode": 8035010
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_finite_response_test.cpp.o",
+      "bytes": 58536,
+      "sha256": "c5d9d3a7dc0b2c00b1892d059b2755c4e891ef4a38031b7dcaff291a350b6730",
+      "inode": 8034999
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_grammar_process_test.cpp.o",
+      "bytes": 153424,
+      "sha256": "b428cbbe8867aa21118a51ed72c8409bd91d1793e79568df9031b6191ed067c5",
+      "inode": 8035009
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_body_stream_test.cpp.o",
+      "bytes": 112256,
+      "sha256": "78828e5c2c0912abe67546d5e4f88b57ce633df3c6f3977e243c9e3ab16e8a53",
+      "inode": 8035013
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_framing_test.cpp.o",
+      "bytes": 148968,
+      "sha256": "8f4bfbdeafbbcd5205040f6fbc58355dbede97751230b958b1482b1c59c74de3",
+      "inode": 8035019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_observation_test.cpp.o",
+      "bytes": 69040,
+      "sha256": "003ace2cf34ba44c2e5090d0fcb2d80d1031bc433ad15816e249112176f48400",
+      "inode": 8035015
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_request_test.cpp.o",
+      "bytes": 208640,
+      "sha256": "86b4ee133ec20d40fcbd59f1921a3a467272d97b3fffd249674c81f9154a73e9",
+      "inode": 8035025
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_response_test.cpp.o",
+      "bytes": 289384,
+      "sha256": "f3e838b212ecdd30171c0573929397ab376cdb5ac488923d3c4d281e5e9e42fb",
+      "inode": 8035033
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_session_test.cpp.o",
+      "bytes": 101576,
+      "sha256": "3f5988ac8c660131617a5d66471ffbc1d24b2105c5f99e652ffd44de12da1143",
+      "inode": 8035024
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_http_upgrade_test.cpp.o",
+      "bytes": 120544,
+      "sha256": "f7dd378149288ea18079fb53f3729d68041aa0612e9b50964785f4a4c88bce09",
+      "inode": 8035032
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_input_snapshot_bindings_test.cpp.o",
+      "bytes": 184776,
+      "sha256": "affa505ff5434d5405abe496dabc04e1c3b1c44971fda6bb6c8f1a325cf5963c",
+      "inode": 8035037
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_input_snapshot_test.cpp.o",
+      "bytes": 227464,
+      "sha256": "db81c9ed0dca6a0606096fbc50ed799cf166e4211e38007271644c5c3f09500e",
+      "inode": 8035040
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_legacy_tools_test.cpp.o",
+      "bytes": 116024,
+      "sha256": "c12f8af31b3b238775d29572f73a6a8177084cacc4fefe15575b9ca7c7652d59",
+      "inode": 8035035
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_content_test.cpp.o",
+      "bytes": 81728,
+      "sha256": "e0fa92dcb6e73738ea1fdc49ea5e83cf4eb6dd1d344942d046148992cd6d2adb",
+      "inode": 8035036
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_policy_test.cpp.o",
+      "bytes": 158376,
+      "sha256": "795adf1afa63c875fdd610a05a5e9a7e691f38eaa1f0b2a90ab12112ec74a9f3",
+      "inode": 8035042
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_provider_test.cpp.o",
+      "bytes": 1185032,
+      "sha256": "e1f0f3d416411d92804b7875bad86e63155c467ca05decb22b872175b0832290",
+      "inode": 8035145
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_transport_test.cpp.o",
+      "bytes": 1985408,
+      "sha256": "b8d7cf390d136677e3748b836f4476776232366f96fea2398571b2d4748038e2",
+      "inode": 8035170
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_api_test.cpp.o",
+      "bytes": 139544,
+      "sha256": "074e09994e5549e213950a47e25be60a857939d789e2253120dac489e572bee3",
+      "inode": 8035044
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mcp_tunnel_test.cpp.o",
+      "bytes": 423256,
+      "sha256": "ccf25ca7c7b30dd16601de92c75cbfe5193faafe390fcb591ba910fad14b943a",
+      "inode": 8035059
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_media_admission_test.cpp.o",
+      "bytes": 173776,
+      "sha256": "a3be713a71e6ce96780a71eacef9767d64d5bf2c36d839d1beeb1b01e6d11120",
+      "inode": 8035053
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_media_cache_test.cpp.o",
+      "bytes": 133904,
+      "sha256": "3ff15706babbd9d49ce8bf82e66bc764b21a1959478e96eaf97dfa0e3e1415a2",
+      "inode": 8035052
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_memory_admission_test.cpp.o",
+      "bytes": 83968,
+      "sha256": "aa7a191fbf3a357dbd07db99e4ea541e3735b3ccc6b101691c5562aebb99180f",
+      "inode": 8035046
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_moderation_test.cpp.o",
+      "bytes": 116016,
+      "sha256": "eb79b352976b0833315476e720caedc77c3af40f8c7066eb33df27493dd2a2bd",
+      "inode": 8035054
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_moderations_api_test.cpp.o",
+      "bytes": 153920,
+      "sha256": "93cf52959b9f2108cbe66df1141366ce1e3bcf55964e9a1c63195bd98333c19f",
+      "inode": 8035065
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_mtp_policy_test.cpp.o",
+      "bytes": 15800,
+      "sha256": "f7c8eb9bd33dfffa437a06b22951199e45219f419843cb4233babe285c41931f",
+      "inode": 8035051
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_multipart_test.cpp.o",
+      "bytes": 134896,
+      "sha256": "041e6a8e29f1421424ddd2d4fa69fa1b5d8e8e42cf0fb04f30194a655124aaba",
+      "inode": 8035066
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_native_crypto_test.cpp.o",
+      "bytes": 40672,
+      "sha256": "63e0c7d44b0e9cda39469ccebf95d0b3afa12bd6ebd0fac3cec6c9c73d735b3b",
+      "inode": 8035055
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_object_diagnostics_test.cpp.o",
+      "bytes": 64544,
+      "sha256": "1cdb8acca621a74312c5604eccac49d8605f5585d5d7cebb40fa87fb8c91bc4a",
+      "inode": 8035064
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_object_retention_test.cpp.o",
+      "bytes": 156168,
+      "sha256": "8a802a439e231b117cd42a6c49665b4818ec9dc6c9f8ce04551a2a18cd62ed24",
+      "inode": 8035071
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_object_store_test.cpp.o",
+      "bytes": 410528,
+      "sha256": "44274c0ddc8f5dae3849b6c8fa1c66077ee1e850fcca9ad3689694fb90bc9c9f",
+      "inode": 8035078
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_options_test.cpp.o",
+      "bytes": 141792,
+      "sha256": "d26b4eb0632f468eb78ef1da51599585db59ff13779e91dfd5735ab75388646a",
+      "inode": 8035070
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_output_constraints_test.cpp.o",
+      "bytes": 201928,
+      "sha256": "7ed383576c8fcd7de1f0e3f779c5d74c3552b17abf5d08ba0b8e1d0bfbc5e567",
+      "inode": 8035076
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_overlapping_output_test.cpp.o",
+      "bytes": 69368,
+      "sha256": "75e7aca54a9750b92c7ae003b0eb65c1375cd8f2c4e568ac7868e52485c2f609",
+      "inode": 8035068
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prediction_test.cpp.o",
+      "bytes": 71240,
+      "sha256": "260e4da13328cf8541744b0083a4bd92b62206e40a2be4b28bd6589d14a0d4bd",
+      "inode": 8035072
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_program_worker_test.cpp.o",
+      "bytes": 141328,
+      "sha256": "551c76170e480a5618762b9f69c4b2fdb11f3253c57be52c29e0fc137a1f7541",
+      "inode": 8035080
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_progress_context_test.cpp.o",
+      "bytes": 144528,
+      "sha256": "3d97089976681ab87302c55996f532a355ecf8380b1fd61a454ff8b13bef2600",
+      "inode": 8035090
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prompt_cache_test.cpp.o",
+      "bytes": 182640,
+      "sha256": "6135b0ebcc8abb76ace7d045b56c8b8a78007369535e8eac3963ad0ab6e16042",
+      "inode": 8035099
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_prompt_registry_test.cpp.o",
+      "bytes": 325544,
+      "sha256": "50717a8840c7687d6198f39375e70820b0bf48af57f5ece17c9f7a7597d8ed68",
+      "inode": 8035132
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_audio_export_test.cpp.o",
+      "bytes": 40304,
+      "sha256": "664985ccf47ab5aed0c2ab08c74da36b5801700ea1444281f2b32234fcc86575",
+      "inode": 8035086
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_audio_history_test.cpp.o",
+      "bytes": 63912,
+      "sha256": "9f9ba1a3d3593ba4c04d33caa228326d1b6bac1f0cb3194e9778724080ab4fc8",
+      "inode": 8035095
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_audio_queue_test.cpp.o",
+      "bytes": 87928,
+      "sha256": "ce46e5af16e5907ab2046999af56723deb0921f52ff6a595b0110d4948f7b8af",
+      "inode": 8035097
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_noise_test.cpp.o",
+      "bytes": 73688,
+      "sha256": "ea93b1221613af688738c9e27219d864f0ed93b61dd477e2eaaca82758a34130",
+      "inode": 8035127
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_pcm_test.cpp.o",
+      "bytes": 45072,
+      "sha256": "4187fd4e99fcd63ba4c656046acaec7bb5a04ce69ae4715e620c9b92c757f2da",
+      "inode": 8035104
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_pump_test.cpp.o",
+      "bytes": 105040,
+      "sha256": "a8ef276ba27025597d51044e0be8b0ae5f21066b6204190007efbc9d157f9e1d",
+      "inode": 8035139
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_semantic_turn_test.cpp.o",
+      "bytes": 63856,
+      "sha256": "bd1de5dd36855dd0c9a187558d9eef15e52a2e654a7c5c19300402d9e4b2b145",
+      "inode": 8035424
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_semantic_vad_test.cpp.o",
+      "bytes": 53344,
+      "sha256": "2ca5650581d15719fe6063d4b463e9e9e36db8deda3e1085be0d457dd040e93d",
+      "inode": 8035418
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_transcript_history_test.cpp.o",
+      "bytes": 103536,
+      "sha256": "fcf5c7f8f736a670a3ad745193d567ff67e459a401a0d92bbd019f895d89aea3",
+      "inode": 8035134
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_transcription_test.cpp.o",
+      "bytes": 596712,
+      "sha256": "4c3908a1a1cfcdaf568ec4bc8c49e93147aa2e9dc96956005d1ac21fe191f502",
+      "inode": 8016236
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_realtime_vad_test.cpp.o",
+      "bytes": 52928,
+      "sha256": "5433bdb272b3e8841eaf16c1a069438b05021a9b2f4aa0d08cf6c7020784eaa0",
+      "inode": 8035130
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_request_diagnostics_test.cpp.o",
+      "bytes": 170272,
+      "sha256": "e859cb50abd35a408132f69d1f73d9e34d5eb4dd273165a4b644c40a68c20297",
+      "inode": 8035143
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_request_progress_test.cpp.o",
+      "bytes": 72008,
+      "sha256": "776c6a39bd7e8f18743e1f78f7b4b217d6bb28d05432998e95623b32dc2f11b9",
+      "inode": 8035166
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_api_test.cpp.o",
+      "bytes": 252384,
+      "sha256": "029531f1c2a123470a0dd5696c6883d0ffb5e9ba96b6600f13a1afcce85c9e18",
+      "inode": 8035167
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_async_test.cpp.o",
+      "bytes": 297576,
+      "sha256": "24dbc0a4981ab024df34ceef55b550f7044f4455d14a358bb7819e295dd432d9",
+      "inode": 8035168
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_background_test.cpp.o",
+      "bytes": 225064,
+      "sha256": "bfccf5ce9ca210267a7611546bb2e5eba3176c1d9574a5d5c1094edc6d109e82",
+      "inode": 8019220
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_compaction_test.cpp.o",
+      "bytes": 357560,
+      "sha256": "6869067dfca321ca545693fe656424a2b6a432d13f57b65d6a527e30aefe1817",
+      "inode": 8019233
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp.o",
+      "bytes": 137448,
+      "sha256": "406a5355d7bf2ba5c11d70bf874c5614eaefe8a1380c9e64af2dcb3953bee5d9",
+      "inode": 8016238
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_crypto_test.cpp.o",
+      "bytes": 202800,
+      "sha256": "0edf15eb785246bafcf9fd5988f1e1b930d674318b4117ee520b3ac0551892c9",
+      "inode": 8019210
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_execution_test.cpp.o",
+      "bytes": 543928,
+      "sha256": "5d1fbc7a91d7ddd4e7313bbcb7250754a6dd09e262f2e45d7154d79c0c3d9fbf",
+      "inode": 8019391
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_file_search_test.cpp.o",
+      "bytes": 169120,
+      "sha256": "f61dffd775040bef65f4392957b8132250a68c5af0b84a4ef8681a1c8c682ddd",
+      "inode": 8019175
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_files_test.cpp.o",
+      "bytes": 314304,
+      "sha256": "8f0fef17d7f767d9d8ff4056d1dbe4a81502147643be35c5d5d7f0cca44d412e",
+      "inode": 8019249
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_input_test.cpp.o",
+      "bytes": 192096,
+      "sha256": "0ac184903f5426dc62b38a9a377a75df73d91f9a01e927388982253addb6ffee",
+      "inode": 8019348
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_item_shape_test.cpp.o",
+      "bytes": 186928,
+      "sha256": "4b20ee4036c3c3f404b9c70fb8d62eefaa622c00fb25c04cf32dd1d8f167a2e6",
+      "inode": 8019321
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_jobs_test.cpp.o",
+      "bytes": 686104,
+      "sha256": "3c84b271e754477b2c550642143cec166b81b3866a05f4116e132bc4abbe6597",
+      "inode": 8019573
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_binding_test.cpp.o",
+      "bytes": 226968,
+      "sha256": "cca5d1c79a9d8cb2bc1ba58e91f464f8cec1c149fe93071c6a934cdf0db43443",
+      "inode": 8019418
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_output_test.cpp.o",
+      "bytes": 155136,
+      "sha256": "d3b89fed2fe3c9a57ecf881dcfd3a17f8474ce62207746df3025c21dcfb5d773",
+      "inode": 8019449
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_state_test.cpp.o",
+      "bytes": 918280,
+      "sha256": "1726508fee60b7aa6deae30053fdd633ac0e97e51658f944b03e79564c1daec7",
+      "inode": 8019715
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_mcp_test.cpp.o",
+      "bytes": 132288,
+      "sha256": "ec09cedad2750f4a9f9e00c4049afe6fc5f14fb7e494a90ed89a1f796473d470",
+      "inode": 8019469
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_output_test.cpp.o",
+      "bytes": 302408,
+      "sha256": "0cec2adf50edbeea6eac379f4714174934397b1178f0b9030187652e72c73677",
+      "inode": 8019505
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_plan_test.cpp.o",
+      "bytes": 200152,
+      "sha256": "bdd8cd4398aae4477eb28c4414ff348c8497d5080ea4e6fdb1b9fc4823516fde",
+      "inode": 8019481
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_execution_test.cpp.o",
+      "bytes": 332184,
+      "sha256": "6d28a758264a0d1debc481ce8006b26633e6f61d04e0d71f283b766cf8b013c3",
+      "inode": 8019638
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_program_test.cpp.o",
+      "bytes": 162296,
+      "sha256": "6a3c0b1c35115e5542f8d33ac5b8e95a60cb92f6c47625ba81b67cd5404f7b3a",
+      "inode": 8019541
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_reasoning_test.cpp.o",
+      "bytes": 129832,
+      "sha256": "4496d96d0a992fe8e6fdef78b468fce5a562be2d20f92144100a8f39dd95725b",
+      "inode": 8019580
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_state_test.cpp.o",
+      "bytes": 231168,
+      "sha256": "6c81cad56712ba05153210781dfbe5c60450a1b6dd5f7856e899a7d636db3b65",
+      "inode": 8019627
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_tokens_test.cpp.o",
+      "bytes": 255352,
+      "sha256": "b1b80d63493439448816fe48a265187fd2e8d14b2326291c86ddbf864bef7daa",
+      "inode": 8019739
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_tool_discovery_test.cpp.o",
+      "bytes": 343208,
+      "sha256": "b4171b9a73479917755292f032d7b2711302b259d42e8d22b7e5b024c6f6c1ed",
+      "inode": 8020086
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_tool_search_test.cpp.o",
+      "bytes": 108512,
+      "sha256": "c9f1bd9c11e13c3f83c23af5d174168c7a4a1e6cdffd42696f518213c40be31f",
+      "inode": 8019666
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_web_test.cpp.o",
+      "bytes": 397304,
+      "sha256": "ad9a0cc02b560ad8b13b303b36fa8f048dbf72bed6b2ff2b70df6b78c9953297",
+      "inode": 8034844
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_sampling_test.cpp.o",
+      "bytes": 63600,
+      "sha256": "a94b490681a1fdba635f354bb3514c10684f42901cd06342206d28f24c64bf81",
+      "inode": 8019726
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_scheduler_submission_test.cpp.o",
+      "bytes": 39672,
+      "sha256": "f9b467a99594cefd92fda1385777942f7c9404a8fdda83481c6ec4eabd545101",
+      "inode": 8019685
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_grammar_test.cpp.o",
+      "bytes": 131136,
+      "sha256": "a661c58708c0457502653d80e8acbfbef8afef2f004ec1685ae795df16ff894e",
+      "inode": 8019732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_graph_test.cpp.o",
+      "bytes": 129832,
+      "sha256": "d25abc1cfbc180b856f5e9058b7c2f0af75d18adfa5c6b772bb23daee69bc7f0",
+      "inode": 8019780
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_language_test.cpp.o",
+      "bytes": 97256,
+      "sha256": "effa36457519de7724aedd10a31f6af504398940e9786d2f57bf9d145ee01ae3",
+      "inode": 8019795
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_prefix_test.cpp.o",
+      "bytes": 89304,
+      "sha256": "2db49c7857842f3b43b012260bb5360767a5aef76488cd2fb3c573a5a422354a",
+      "inode": 8019923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_string_grammar_test.cpp.o",
+      "bytes": 95480,
+      "sha256": "84068511e906909c049252c215699605b9767e4e8ad11cd761874efcae4982dd",
+      "inode": 8034776
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_string_test.cpp.o",
+      "bytes": 72520,
+      "sha256": "3217a4da1a0338039847174e4e31ca5f7f789d83acbd5b023471caf7137159d0",
+      "inode": 8034569
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_schema_token_guard_test.cpp.o",
+      "bytes": 278120,
+      "sha256": "83f0685e12c2acd0b09277ac2e1cd57cfb68c18e5464ad6d436ce5d041640d4d",
+      "inode": 8034919
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_separator_runtime_test.cpp.o",
+      "bytes": 43352,
+      "sha256": "b3ff2f0d61ed75dabed59413142d3dd739d3dc8b0879a57c6ba2a1271c911c8c",
+      "inode": 8034760
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_separator_service_test.cpp.o",
+      "bytes": 38352,
+      "sha256": "2e9b8778181159ae04f31a0f6735b8d3ad6998a795ae6aa6bee027217baebb30",
+      "inode": 8034786
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_sequence_admission_test.cpp.o",
+      "bytes": 40536,
+      "sha256": "b17c77e011d307627bb9ee3ec2738d49ca5c693b2374e9951f75f3a58a9ee2ab",
+      "inode": 8034792
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_service_health_test.cpp.o",
+      "bytes": 48064,
+      "sha256": "077f261e64f121c9cdbb7434ec43694ecf292f4358bd3909e87cf7608d6e5b68",
+      "inode": 8034801
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_session_isolation_test.cpp.o",
+      "bytes": 180424,
+      "sha256": "3c9a6962d56aa8c96ec96ee673c2bede7ae4964ef159ae9029b649d609563e20",
+      "inode": 8034937
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speaker_runtime_test.cpp.o",
+      "bytes": 69512,
+      "sha256": "e0f8b4afd223d3933e593743d73704c69948a5e690971038a46e3c29ecbe90b4",
+      "inode": 8034898
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speaker_service_test.cpp.o",
+      "bytes": 38424,
+      "sha256": "df106e7101e85c066f81523ad6406627afd5954611bfb9bde3990c5c57ab3165",
+      "inode": 8034814
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speech_codec_stream_test.cpp.o",
+      "bytes": 155344,
+      "sha256": "61f032f1fe10264e097ba42057e83427e3b606db84892772c882775d4fbcf205",
+      "inode": 8035014
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speech_encode_test.cpp.o",
+      "bytes": 125304,
+      "sha256": "0569124b0dbe456a18bf2949d7d90fa24486c2741016e3ccf827126e4526f00f",
+      "inode": 8034986
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speech_output_test.cpp.o",
+      "bytes": 101920,
+      "sha256": "029c4263e7fd0b0a11398fc73838e0e4f96ce4348c8de3b405d9536580ea0df7",
+      "inode": 8034974
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_speech_request_test.cpp.o",
+      "bytes": 42944,
+      "sha256": "5bdf6f44e47fede5f7ba5bb7fb5944da15f9f7229811b90299f1db4ce4a131ce",
+      "inode": 8034900
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_startup_memory_test.cpp.o",
+      "bytes": 71672,
+      "sha256": "c3f9d9c0b72eb25437027a6e8bbbaec68d6fe863f9491d0b1c3fd44f607a6ac5",
+      "inode": 8035001
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_state_cipher_test.cpp.o",
+      "bytes": 297120,
+      "sha256": "7124de7c451b80360a55d73235a6426afa0100d8336024e439fb105cc34aa6cd",
+      "inode": 8035077
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_state_contract_test.cpp.o",
+      "bytes": 106352,
+      "sha256": "b44f33e61a547910d17773ab58a23b86b2474aa1649d3c0d2c238a5e8f8605af",
+      "inode": 8035057
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_state_key_admin_test.cpp.o",
+      "bytes": 385936,
+      "sha256": "15f583eb9b4161aac05a35e4209b0227b75711767cc7a58488b48d150864549e",
+      "inode": 8035194
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_structured_admission_test.cpp.o",
+      "bytes": 147176,
+      "sha256": "005bdb5244eb0fbdcbdf58228f1fcd57b04c4311749815d600819ee713453ac9",
+      "inode": 8035073
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_structured_decoder_test.cpp.o",
+      "bytes": 153064,
+      "sha256": "1c257f0e32296931081e7c3ab1c1ffe4fe83f3ee304c00a31951931a0ffa8f35",
+      "inode": 8035175
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_text_stop_test.cpp.o",
+      "bytes": 127112,
+      "sha256": "12837e40cd92571c7e885db2f7935b4c8ddfe24d349fb23efe2e62ec837eca4a",
+      "inode": 8035129
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_thinking_budget_test.cpp.o",
+      "bytes": 128936,
+      "sha256": "11f26eb2bd81db558275c00ecfaac93615893db80c70acb275797261ae7a190c",
+      "inode": 8035087
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tool_result_test.cpp.o",
+      "bytes": 188272,
+      "sha256": "d515ebf093b7af2ed1541bb960849d27c07a356c02677a4f039c46b768f66847",
+      "inode": 8035196
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_tts_service_test.cpp.o",
+      "bytes": 109208,
+      "sha256": "496da9df601036eb8cc20ab093da20882505de9b6267e857e143265cd8df0662",
+      "inode": 8035172
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_uploads_test.cpp.o",
+      "bytes": 398320,
+      "sha256": "fa00a996a594a4b7269b50fd4a600e47560deabda0e89190adacfc309286b9ac",
+      "inode": 8035212
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_index_test.cpp.o",
+      "bytes": 143824,
+      "sha256": "e4925153dd04d12586719f744c5a6a396cb5599f9f4a83c26869923916c847fe",
+      "inode": 8035199
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_ingestion_test.cpp.o",
+      "bytes": 225688,
+      "sha256": "af532348dd82310b1854c223220d153f5688d741ed9c0f883a1fcbe8041c033e",
+      "inode": 8035203
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_jobs_test.cpp.o",
+      "bytes": 490112,
+      "sha256": "e655a36d6cbc1f5df88d8e8a2786db967194503d6b12022972667132aa51d817",
+      "inode": 8035255
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_search_execution_test.cpp.o",
+      "bytes": 782816,
+      "sha256": "cb1e43041f94c5701f6dbf0e80895684531c1a7677305159ec2f26ea2f64536e",
+      "inode": 8035298
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_search_test.cpp.o",
+      "bytes": 167832,
+      "sha256": "91d513f7eccb1ed5403aba706052ef2b694a8dfcdc12095bb55eb90ffcdddb53",
+      "inode": 8035206
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_vector_stores_test.cpp.o",
+      "bytes": 251384,
+      "sha256": "b9c15b6bd267c54642827cf49a46a9f545dc2db11c8aa4b24f74ceea54b8a822",
+      "inode": 8035236
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_video_detail_test.cpp.o",
+      "bytes": 93744,
+      "sha256": "41a28064f74c40a156abedced99892c96881a1e4dbb6e71834f9aaca3f83e398",
+      "inode": 8035210
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_voice_api_test.cpp.o",
+      "bytes": 167896,
+      "sha256": "ebfe3e872fcc48e2ff73410b8047608789b06d5b991136c3da53c4716bfad4db",
+      "inode": 8035240
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_voice_registry_test.cpp.o",
+      "bytes": 222016,
+      "sha256": "1b82256f19a7572740ba9f1a0ad89a33e371f92b6758904ddde49a07a664276b",
+      "inode": 8035261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_voice_request_test.cpp.o",
+      "bytes": 137472,
+      "sha256": "eb673be603a6a6da1aeac40fe41bb17da4fef730ec0497a9fa731cd185d5c8c7",
+      "inode": 8035232
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_voice_verification_test.cpp.o",
+      "bytes": 32768,
+      "sha256": "30a14c7208b74502580fbac2960b144e87dfe830a2183550a55e480bd6f65c55",
+      "inode": 8035218
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_web_execution_test.cpp.o",
+      "bytes": 254904,
+      "sha256": "539ae1bd8eaaf8448c222a7baaa7116020d09bd4fe7263e1f26edb99931e3422",
+      "inode": 8035285
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_web_index_test.cpp.o",
+      "bytes": 153496,
+      "sha256": "04797ecf9823e296b83f63f669987ba6ec2e842d326dfe2397748eff3b8ad3cc",
+      "inode": 8035278
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_web_search_test.cpp.o",
+      "bytes": 191600,
+      "sha256": "efdef713379c091751331c7e8970adc99e9c804ef1ac6a8ffdadbfd5919cd2f3",
+      "inode": 8035282
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_websocket_session_test.cpp.o",
+      "bytes": 528392,
+      "sha256": "711ec94edc3c52b35b2d8a52c3a6cf75199061c285a316d3c1f75b9a307e3d11",
+      "inode": 8035321
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_websocket_test.cpp.o",
+      "bytes": 93392,
+      "sha256": "51164b1d603deebc7b84ac246661938f74aaf9ebafcc730e3c6a3ace0f9380da",
+      "inode": 8035263
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_worker_io_budget_test.cpp.o",
+      "bytes": 106144,
+      "sha256": "58c66af1242d19bc76ef24cceacb6d7d35cbfa5043b02219b566efeae07397b4",
+      "inode": 8035272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/sha256_stream_test.cpp.o",
+      "bytes": 24720,
+      "sha256": "5f6a6f47c7c1e8d241073b1aa8ae6f28fe502de7cb1f1db2275d8b4dbf364179",
+      "inode": 8035267
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/speaker_config_test.cpp.o",
+      "bytes": 112272,
+      "sha256": "288d118c3f64cf7ebe1ae0316a639a439abe8f644bc719986027376fa685ca12",
+      "inode": 8035302
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/speaker_features_test.cpp.o",
+      "bytes": 50248,
+      "sha256": "c0d2cef4e702801770fd6c26a1fddcf4805eabd560f996950f747e44a8163d40",
+      "inode": 8035289
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/speaker_layout_test.cpp.o",
+      "bytes": 97592,
+      "sha256": "fa658a2985ceaedfa57344d123352bce898e6ac51553d2abd116b675df7f9d73",
+      "inode": 8035314
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/speech_tempo_test.cpp.o",
+      "bytes": 36288,
+      "sha256": "2cde4da173dd54e264edf7270b3fda648088716919dcb1070df7ec91cfdae397",
+      "inode": 8035293
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/stream_resample_test.cpp.o",
+      "bytes": 58928,
+      "sha256": "353610083df67a6753c186e60e03095af2beb58d22828f1fd1646b952fc86bc8",
+      "inode": 8035311
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/suffix_drafter_test.cpp.o",
+      "bytes": 130848,
+      "sha256": "43b9ef1d5e6088fe6252e06be447b32915f5d585a8ea04ee3a8e39f168a9dbc6",
+      "inode": 8035323
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o",
+      "bytes": 35512,
+      "sha256": "a142826460b192bc112eb0d1b0afaf6e8fcd29fb6c73ea256d98889ac2465bc6",
+      "inode": 8035325
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_base_config_test.cpp.o",
+      "bytes": 106328,
+      "sha256": "381316d3ed982178f4b5b16826e40bc4e05b96d4a67e106237673d0d19b06a92",
+      "inode": 8035334
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_base_generation_test.cpp.o",
+      "bytes": 70856,
+      "sha256": "11d1a7242621269bec9c555bec0c778a9e92f0aba8af7afc362481ef30d7fc06",
+      "inode": 8035332
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_codec_layout_test.cpp.o",
+      "bytes": 48864,
+      "sha256": "11ddaee522ad1a42424cc5972cf70852ca80fbff675b810be15196f9f6f865cd",
+      "inode": 8035330
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_config_test.cpp.o",
+      "bytes": 134304,
+      "sha256": "c8d7701cf7ed071a6bbd98059f32ff810f5f0e2a3f50b5e18f1ee342bc773da6",
+      "inode": 8035369
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_encoder_layout_test.cpp.o",
+      "bytes": 115464,
+      "sha256": "23c68045ecf2d07cb3ec813a59ec128e2b242380808db2310fe3c3e4972cc26a",
+      "inode": 8035361
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_generation_test.cpp.o",
+      "bytes": 100328,
+      "sha256": "193fa5b9c8d18811563c23a92bacc2bbb52e05dfeb1fbe952323395e2c08fc17",
+      "inode": 8035371
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_icl_prompt_test.cpp.o",
+      "bytes": 59344,
+      "sha256": "aef345b84855f5c08b82b4a029c7db27c99d0b930984f14d736ed6b7a8214a60",
+      "inode": 8035339
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_speaker_features_test.cpp.o",
+      "bytes": 59872,
+      "sha256": "ccdab1d45abd2bddf7113ea64c51655b65be3f18d6be29bf2a8868fc31cf333a",
+      "inode": 8035366
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_speaker_layout_test.cpp.o",
+      "bytes": 92840,
+      "sha256": "9cfcc8562b73f4709516a8f3eb7cc9f353bc8af1e2dee4e3b172f257d49cad39",
+      "inode": 8035379
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/tts_synthesis_plan_test.cpp.o",
+      "bytes": 42048,
+      "sha256": "adf17977babdcaceda8b35c2a8a1bd66eb45761bd93fb8843960636628188e9e",
+      "inode": 8035373
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_chunks_test.cpp.o",
+      "bytes": 36816,
+      "sha256": "2424dad9eceeb39b7e276269a12d2ff1d448d2366683acbe95409bed9d348207",
+      "inode": 8035341
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vad_test.cpp.o",
+      "bytes": 64240,
+      "sha256": "af1d68f1928517c09169625b5791aba1acbbe459a993ae48052df4662e0f0fc4",
+      "inode": 8035381
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vision_configuration_test.cpp.o",
+      "bytes": 44472,
+      "sha256": "37ec0adf0fbd4aec138bb0046a5ba58b9118f08cf53da960e5d1e12e79eb7221",
+      "inode": 8035401
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vision_forward_timing_test.cpp.o",
+      "bytes": 50512,
+      "sha256": "b50f87a3a5b81fb88a6ec9b886f819b26e037c6dbe7b45dc40242bde891ee09f",
+      "inode": 8035387
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vision_image_detail_test.cpp.o",
+      "bytes": 103608,
+      "sha256": "46b48edbb0e6adc7987f481bdc9a71c3f864c61ee40738fcfad08f1cce1b6d85",
+      "inode": 8035429
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/vision_timing_test.cpp.o",
+      "bytes": 32248,
+      "sha256": "2b0dcf09e03dac44658d22cffdda5bcb2b2481d4555711dd257ec9636190f7a5",
+      "inode": 8035404
+    }
+  ],
+  "host_binary_sha256": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809",
+  "rebuild": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host",
+    "--target",
+    "q4t_host_tests",
+    "--parallel",
+    "2"
+  ],
+  "gpu_actions": 0
+}

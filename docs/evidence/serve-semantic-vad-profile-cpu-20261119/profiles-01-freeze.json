@@ -1,0 +1,22 @@
+{
+  "scope": "Primary/light qualification including actual semantic early completion, continuation, native health, full per-profile capability preservation and owned cleanup",
+  "limits": {
+    "starts": 2,
+    "chats": 60,
+    "controls": 2000,
+    "seconds": 900,
+    "websocket_sessions": 6,
+    "ingress_starts": 4
+  },
+  "realtime_items": 10,
+  "semantic_items": 4,
+  "strict_shared_lease": true,
+  "cumulative_model_start_limit": 5,
+  "earlier_models": 3,
+  "earlier_seconds": 135.984688951,
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+  "final_health_from_business03": "PENDING_THIS_QUALIFICATION",
+  "default": "rev336 STOPPED unchanged",
+  "performance_claim": false,
+  "long_soak": false
+}

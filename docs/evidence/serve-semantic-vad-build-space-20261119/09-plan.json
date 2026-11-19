@@ -1,0 +1,136 @@
+{
+  "scope": "Six ended CPU fixture engines, both hardlinks fully inventoried; exact lossless byte/SHA archive. Current/default/recovery programs, models, source and logs kept.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-output-cpu-01/q4t",
+      "member": "88537e041eebf174e6194078fb7f4cb83b940e62eb382843891c02eaf5319959",
+      "sha256": "88537e041eebf174e6194078fb7f4cb83b940e62eb382843891c02eaf5319959",
+      "bytes": 29191920,
+      "mode": 509,
+      "mtime_ns": 1795054892990766971,
+      "inode": 7091772,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t-before",
+      "member": "88537e041eebf174e6194078fb7f4cb83b940e62eb382843891c02eaf5319959",
+      "sha256": "88537e041eebf174e6194078fb7f4cb83b940e62eb382843891c02eaf5319959",
+      "bytes": 29191920,
+      "mode": 509,
+      "mtime_ns": 1795054892990766971,
+      "inode": 7091772,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-output-cpu-01/q4t-before",
+      "member": "10eb2890f1cccbd7b3d0b7f9dce996dbcbf068b54683a3c9725cf1dd45495fef",
+      "sha256": "10eb2890f1cccbd7b3d0b7f9dce996dbcbf068b54683a3c9725cf1dd45495fef",
+      "bytes": 29188064,
+      "mode": 509,
+      "mtime_ns": 1795054206241946361,
+      "inode": 7090062,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-state-cpu-01/q4t",
+      "member": "10eb2890f1cccbd7b3d0b7f9dce996dbcbf068b54683a3c9725cf1dd45495fef",
+      "sha256": "10eb2890f1cccbd7b3d0b7f9dce996dbcbf068b54683a3c9725cf1dd45495fef",
+      "bytes": 29188064,
+      "mode": 509,
+      "mtime_ns": 1795054206241946361,
+      "inode": 7090062,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-state-cpu-01/q4t-before",
+      "member": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f",
+      "sha256": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f",
+      "bytes": 29188064,
+      "mode": 509,
+      "mtime_ns": 1795052852684433325,
+      "inode": 7091766,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/diagnostics-cpu-01/q4t",
+      "member": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f",
+      "sha256": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f",
+      "bytes": 29188064,
+      "mode": 509,
+      "mtime_ns": 1795052852684433325,
+      "inode": 7091766,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/diagnostics-cpu-01/q4t-before",
+      "member": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+      "sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+      "bytes": 29187896,
+      "mode": 509,
+      "mtime_ns": 1795051981171786396,
+      "inode": 7090068,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-session-fix-01/q4t",
+      "member": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+      "sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+      "bytes": 29187896,
+      "mode": 509,
+      "mtime_ns": 1795051981171786396,
+      "inode": 7090068,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-state-cpu-01/q4t",
+      "member": "cc92166592cd1409daad92695e7a38fd173f9e53d33d7f2ddf1e2c6228e3977c",
+      "sha256": "cc92166592cd1409daad92695e7a38fd173f9e53d33d7f2ddf1e2c6228e3977c",
+      "bytes": 29204632,
+      "mode": 509,
+      "mtime_ns": 1795058078561880975,
+      "inode": 7098094,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/audio-export-cpu-01/q4t-before",
+      "member": "cc92166592cd1409daad92695e7a38fd173f9e53d33d7f2ddf1e2c6228e3977c",
+      "sha256": "cc92166592cd1409daad92695e7a38fd173f9e53d33d7f2ddf1e2c6228e3977c",
+      "bytes": 29204632,
+      "mode": 509,
+      "mtime_ns": 1795058078561880975,
+      "inode": 7098094,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-state-cpu-01/q4t-before",
+      "member": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+      "sha256": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+      "bytes": 29204632,
+      "mode": 509,
+      "mtime_ns": 1795056633823545076,
+      "inode": 7091764,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/stream-input-cpu-01/q4t",
+      "member": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+      "sha256": "4838a0c352504544069ebbcd0a05cb5b6f60ffa71ad10d6c9e6c1fc83d13afa5",
+      "bytes": 29204632,
+      "mode": 509,
+      "mtime_ns": 1795056633823545076,
+      "inode": 7091764,
+      "links": 2
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d"
+  },
+  "minimum_free_bytes": 67108864,
+  "maximum_member_archive_bytes": 25165824,
+  "physical_payloads": 6
+}
