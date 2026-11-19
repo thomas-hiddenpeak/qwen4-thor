@@ -136,15 +136,24 @@ try {
   const version = record.toString().match(/默认\s*rev(\d+)/)?.[1];
   check(digest === args.record_sha256 && version && `rev${version}` === args.expected_version,
     'source-bound actual current project record');
-  send({ type: 'session.update', session: { type: 'realtime',
+  const session = args.prompt_reference ? { type: 'realtime',
+    prompt: args.prompt_reference } : { type: 'realtime',
     instructions: 'Use project records exactly. Only execute the declared lookup tool when requested.',
     output_modalities: ['text'], max_output_tokens: 128,
     tools: [{ type: 'function', name: 'lookup_project_record',
       description: 'Read the actual local project release record.', parameters: {
         type: 'object', properties: { record_key: { type: 'string', enum: ['release'] } },
         required: ['record_key'], additionalProperties: false } }],
-  } });
+  };
+  send({ type: 'session.update', session });
   await until(() => events.some((e) => e.type === 'session.updated'));
+  if (args.prompt_reference) {
+    const resolved = events.find((e) => e.type === 'session.updated').session;
+    check(resolved.prompt?.id === args.prompt_reference.id &&
+      resolved.prompt.version === args.prompt_reference.version &&
+      resolved.max_output_tokens === 128 &&
+      resolved.tools?.[0]?.name === 'lookup_project_record', 'stored Prompt resolution');
+  }
   await add({ type: 'message', id: 'user_lookup', role: 'user', content: [{
     type: 'input_text', text: 'Call lookup_project_record with record_key release. After receiving the result reply only with its version value.' }] });
   const call = functionCall(await create({ tool_choice: { type: 'function', name: 'lookup_project_record' } }));

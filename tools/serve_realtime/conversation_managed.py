@@ -20,7 +20,13 @@ QUALITY_POLICY = 'record_exact_source_answer_separately'
 
 
 def phases(plan):
-    return managed.recovery_phases(plan)
+    result = managed.recovery_phases(plan)
+    if 'prompt_recovery' in plan:
+        require(plan['prompt_recovery']['format'] == 'q4t-prompt-recovery-v1',
+                'unknown Prompt recovery contract')
+        if plan['scenario'] == 'tls':
+            result = [*result, ('tls-controller', 'complete')]
+    return result
 
 
 def owner(value):
@@ -186,6 +192,14 @@ def check(out, plan, identity, capabilities):
 
 
 class Actor(managed.Actor):
+    def client_arguments(self, args):
+        return args
+
+    def verify_result(self, value, mode):
+        return check_session(value,mode,'official-openai-wss' if
+            self.stage.plan['scenario'] == 'tls' else 'ws-loopback',
+            self.stage.plan['conversation']['source'],quality_policy(self.stage.plan))
+
     def start(self,label):
         expected = phases(self.stage.plan)
         require(self.current is None and len(self.attempted) < len(expected) and
@@ -216,7 +230,8 @@ class Actor(managed.Actor):
             str(managed.ROOT/'tools/serve_realtime/conversation_recovery_sdk.mjs')],
             stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr,env=env)
         self.buffer.clear(); self.total_bytes = 0
-        self.process.stdin.write(json.dumps(args).encode()); self.process.stdin.close()
+        self.process.stdin.write(json.dumps(self.client_arguments(args)).encode())
+        self.process.stdin.close()
         self.process.stdin = None
         if mode == 'complete':
             self.finish()
@@ -239,9 +254,7 @@ class Actor(managed.Actor):
         self.process.wait(timeout=5); extra = self.process.stdout.read(1)
         require(self.process.returncode == 0 and not self.buffer and not extra,
                 'managed conversation failed or repeated receipt')
-        check_session(value,mode,'official-openai-wss' if
-            self.stage.plan['scenario'] == 'tls' else 'ws-loopback',
-            self.stage.plan['conversation']['source'],quality_policy(self.stage.plan))
+        self.verify_result(value,mode)
         self.current['after'] = None if mode == 'hold_complete' else self.observe('after',managed.clean)
         if mode != 'hold_complete':
             save(self.stage.output/(prefix+'-core-after.json'),self.stage.sample())

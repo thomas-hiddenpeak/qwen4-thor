@@ -240,6 +240,7 @@ jobs:
             tools.serve_realtime.test_prompt_acceptance \
             tools.serve_realtime.test_prompt_followup \
             tools.serve_realtime.test_conversation_recovery_sdk \
+            tools.serve_realtime.test_prompt_service \
             tools.native_asr.test_managed_sdk_binding.Binding \
             tools.serve_ops.test_realtime_metrics.RealtimeMetrics \
             tools.serve_recovery.test_native_bundle.BundleTests.test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt \

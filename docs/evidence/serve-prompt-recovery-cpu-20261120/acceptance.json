@@ -1,0 +1,9 @@
+{
+  "status": "PASS_PROMPT_RECOVERY_CPU",
+  "tests": 15,
+  "seconds": 7.291812379844487,
+  "source_counterexamples": 20,
+  "new_gpu_starts": 0,
+  "actual_recovery_pending": true,
+  "archive_sha256": "bf8b1462232a805b8804fc0926474a28eb6adc1a8eb76ec58bb977ca089b3d0e"
+}

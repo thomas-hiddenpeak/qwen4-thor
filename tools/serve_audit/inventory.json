@@ -8529,5 +8529,12 @@
   "managed_profile_reader_20261120": {
     "scope": "New accepted-source reader with full validation and exact payload/registry identity; legacy sealed actors keep old reader",
     "cpu_checks_pending": 12
+  },
+  "prompt_recovery_20261120": {
+    "scope": "Actual stored Prompt and tool closure under gateway/controller/payload faults; unchanged independent backends reuse existing evidence",
+    "new_cpu_checks_pending": 15,
+    "maximum_gpu_model_starts": 5,
+    "maximum_gpu_generations": 18,
+    "maximum_gpu_seconds": 1200
   }
 }

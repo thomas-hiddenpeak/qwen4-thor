@@ -28,7 +28,7 @@ class RecoverySdk(unittest.TestCase):
         self.out=Path(tempfile.mkdtemp(prefix='case-',dir=self.root))
         self.record=self.out/'record.txt';self.record.write_text('CPU fixture: 默认 rev346\n')
         self.commands=[];self.errors=[];self.outputs=[];owner=self
-        self.answer='rev346';self.stream_answer=None
+        self.answer='rev346';self.stream_answer=None;self.resolve_prompt=True
         class Peer(BaseHTTPRequestHandler):
             protocol_version='HTTP/1.1'
             def log_message(self,*_):pass
@@ -52,7 +52,12 @@ class RecoverySdk(unittest.TestCase):
                         if opcode==8:
                             self.wfile.write(frame(payload,8));self.wfile.flush();return
                         event=json.loads(payload);owner.commands.append(event['type'])
-                        if event['type']=='session.update':emit('session.updated',session=event['session'])
+                        if event['type']=='session.update':
+                            session=event['session']
+                            if session.get('prompt') and owner.resolve_prompt:
+                                definition=json.loads((ROOT/'tools/serve_realtime/prompt_definitions.json').read_text())['tool']
+                                session=dict(session,**definition['request'])
+                            emit('session.updated',session=session)
                         elif event['type']=='conversation.item.create':
                             item=event['item']
                             if item['type']=='function_call_output':owner.outputs.append(json.loads(item['output']))
@@ -88,12 +93,12 @@ class RecoverySdk(unittest.TestCase):
         self.server.shutdown();self.server.server_close();self.thread.join(2)
         self.assertFalse(self.thread.is_alive());self.assertEqual(self.errors,[])
 
-    def start(self,mode,*,plain=False,wrong_ca=False,quality_policy=None):
+    def start(self,mode,*,plain=False,wrong_ca=False,quality_policy=None,prompt_reference=None):
         args=dict(base_url=f"{'http' if plain else 'https'}://127.0.0.1:{self.front.port}/v1",
             api_key='A'*40,ca_file=None if plain else
                 (self.untrusted if wrong_ca else self.tls)['certificate'],mode=mode,
             record_file=str(self.record),record_sha256=hashlib.sha256(self.record.read_bytes()).hexdigest(),
-            expected_version='rev346',quality_policy=quality_policy)
+            expected_version='rev346',quality_policy=quality_policy,prompt_reference=prompt_reference)
         env={k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
         process=subprocess.Popen(['node',str(ROOT/'tools/serve_realtime/conversation_recovery_sdk.mjs')],
             stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
@@ -174,6 +179,23 @@ class RecoverySdk(unittest.TestCase):
         value=self.finish(self.start('complete',
             quality_policy='record_exact_source_answer_separately'),False)
         self.assertIn('deltas differ',value['error'])
+
+    def test_prompt_reference_executes_tool_pair_and_closes_tls(self):
+        from tools.serve_realtime.prompt_service_acceptance import check_prompt
+        reference=dict(id='prompt_cpu_only',version='1',variables={})
+        value=self.finish(self.start('complete',prompt_reference=reference))
+        definition=json.loads((ROOT/'tools/serve_realtime/prompt_definitions.json').read_text())['tool']
+        check_prompt(value,reference,definition)
+        self.assertEqual(value['close_code'],1000)
+        self.assertEqual(self.commands.count('response.create'),2)
+        self.assertEqual(len(self.outputs),1)
+
+    def test_unresolved_prompt_cannot_silently_use_inline_instructions(self):
+        self.resolve_prompt=False
+        value=self.finish(self.start('complete',prompt_reference=dict(
+            id='prompt_cpu_only',version='1',variables={})),False)
+        self.assertIn('stored Prompt resolution',value['error'])
+        self.assertNotIn('response.create',self.commands)
 
 
 if __name__ == '__main__':unittest.main()
