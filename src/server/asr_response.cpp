@@ -28,7 +28,6 @@ bool AsrSegmentTemperature::Retry(std::span<const AsrTextToken> tokens) {
   return true;
 }
 namespace {
-constexpr size_t kMaxTextBytes = 4ULL << 20;
 constexpr std::string_view kTextMarker = "<asr_text>";
 constexpr std::string_view kLanguagePrefix = "language ";
 bool Space(char c) {
@@ -64,7 +63,7 @@ Status AsrTranscript::Append(const SampledToken& token, std::string_view bytes,
   *delta = {};
   if (!status_) return status_;
   if (complete_) return Fail("Transcription already complete");
-  if (bytes.size() > kMaxTextBytes - raw_bytes_)
+  if (bytes.size() > kAsrTranscriptBytes - raw_bytes_)
     return Fail("Transcription exceeds byte budget");
   if (statistics_) {
     if (selected_tokens_ >= 8192 || token.token < 0 ||
@@ -93,7 +92,7 @@ Status AsrTranscript::Append(const SampledToken& token, std::string_view bytes,
   }
   std::vector<detail::Utf8Span> spans;
   pending_ += utf8_.Append(bytes, logprobs_ || statistics_ ? &spans : nullptr);
-  if (pending_.size() + text_.size() > kMaxTextBytes)
+  if (pending_.size() + text_.size() > kAsrTranscriptBytes)
     return Fail("Normalized transcription exceeds byte budget");
   if (logprobs_) probabilities_.Map(spans);
   if (statistics_) MapStatistics(spans);

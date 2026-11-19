@@ -6,7 +6,6 @@
 
 namespace q4t::audio {
 namespace {
-constexpr uint32_t kOutputRate = 16000;
 constexpr int kRadius = 48;
 bool Overlap(std::span<const float> input, std::span<float> output) {
   if (input.empty() || output.empty()) return false;
@@ -17,17 +16,24 @@ bool Overlap(std::span<const float> input, std::span<float> output) {
 }  // namespace
 
 AsrStreamResampler::AsrStreamResampler(uint32_t input_rate,
-                                       uint64_t maximum_input_samples)
-    : rate_(input_rate), maximum_(maximum_input_samples) {
+                                       uint64_t maximum_input_samples,
+                                       uint32_t output_rate,
+                                       bool normalized_input)
+    : rate_(input_rate),
+      output_rate_(output_rate),
+      maximum_(maximum_input_samples),
+      normalized_input_(normalized_input) {
   valid_ =
       (rate_ == 8000 || rate_ == 16000 || rate_ == 24000 || rate_ == 48000) &&
+      (output_rate_ == 8000 || output_rate_ == 16000 || output_rate_ == 24000) &&
       maximum_ && maximum_ <= uint64_t(rate_) * 3600;
-  if (!valid_ || rate_ == kOutputRate) return;
-  const double cutoff = .45 * std::min(rate_, kOutputRate) / rate_;
-  for (size_t phase = 0; phase < weights_.size(); ++phase) {
+  if (!valid_ || rate_ == output_rate_) return;
+  const double cutoff = .45 * std::min(rate_, output_rate_) / rate_;
+  const size_t phases = output_rate_ / 8000;
+  for (size_t phase = 0; phase < phases; ++phase) {
     double total = 0;
     for (int tap = -kRadius; tap <= kRadius; ++tap) {
-      const double x = tap - .5 * phase;
+      const double x = tap - double(phase) / phases;
       if (std::abs(x) >= kRadius) continue;
       const double angle = 2 * std::numbers::pi * cutoff * x;
       const double sinc = x == 0 ? 1. : std::sin(angle) / angle;
@@ -43,19 +49,19 @@ AsrStreamResampler::AsrStreamResampler(uint32_t input_rate,
 }
 
 uint64_t AsrStreamResampler::FinalCount() const {
-  return received_ * kOutputRate / rate_;
+  return received_ * output_rate_ / rate_;
 }
 bool AsrStreamResampler::Ready() const {
   if (!valid_ || cancelled_ || emitted_ >= FinalCount()) return false;
   if (sealed_) return true;
-  const auto center = emitted_ * rate_ / kOutputRate;
-  return center + (rate_ == kOutputRate ? 0 : kRadius) < received_;
+  const auto center = emitted_ * rate_ / output_rate_;
+  return center + (rate_ == output_rate_ ? 0 : kRadius) < received_;
 }
 float AsrStreamResampler::Sample() const {
   const uint64_t position = emitted_ * rate_;
-  const auto center = static_cast<int64_t>(position / kOutputRate);
-  if (rate_ == kOutputRate) return history_[center % history_.size()];
-  const auto phase = (position % kOutputRate) / 8000;
+  const auto center = static_cast<int64_t>(position / output_rate_);
+  if (rate_ == output_rate_) return history_[center % history_.size()];
+  const auto phase = (position % output_rate_) / 8000;
   double sum = 0;
   for (int tap = -kRadius; tap <= kRadius; ++tap) {
     const int64_t source = center + tap;
@@ -73,8 +79,9 @@ Status AsrStreamResampler::Process(std::span<const float> input,
   if (!progress || !valid_ || sealed_ || cancelled_ ||
       input.size() > (1ULL << 20) || input.size() > maximum_ - received_ ||
       Overlap(input, output) ||
-      !std::all_of(input.begin(), input.end(), [](float value) {
-        return std::isfinite(value) && std::abs(value) <= 1;
+      !std::all_of(input.begin(), input.end(), [&](float value) {
+        return std::isfinite(value) &&
+               (!normalized_input_ || std::abs(value) <= 1);
       }))
     return Status::Fail("stream resampling input/state invalid");
   while (progress->produced < output.size()) {

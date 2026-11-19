@@ -15,6 +15,7 @@
 namespace q4t::server {
 inline constexpr size_t kWebSocketOutputBytes = 4ULL << 20;
 inline constexpr size_t kWebSocketOutputMessageBytes = 1ULL << 20;
+inline constexpr size_t kWebSocketOutputMaximumBytes = 128ULL << 20;
 
 // One model producer, one socket consumer. Frames, including a partially sent
 // front, remain charged until acknowledgement. No overwrite or implicit replay.
@@ -22,8 +23,10 @@ inline constexpr size_t kWebSocketOutputMessageBytes = 1ULL << 20;
 class WebSocketOutput {
  public:
   explicit WebSocketOutput(size_t bytes = kWebSocketOutputBytes,
-                           size_t frames = 64);
+                           size_t frames = 64,
+                           size_t message_bytes = kWebSocketOutputMessageBytes);
   bool Valid() const { return valid_; }
+  size_t MessageLimit() const { return max_message_bytes_; }
   bool TryPush(WebSocketOpcode opcode, std::string_view payload);
   // A slow consumer blocks only the producer, never the socket reader. The
   // supplied control must outlive this call; cancellation is polled every 5ms.
@@ -42,7 +45,7 @@ class WebSocketOutput {
   bool Prepare(WebSocketOpcode opcode, std::string_view payload,
                std::string* frame) const;
   bool Fits(size_t bytes) const;
-  const size_t max_bytes_, max_frames_;
+  const size_t max_bytes_, max_frames_, max_message_bytes_;
   const bool valid_;
   mutable std::mutex mutex_;
   std::condition_variable changed_;

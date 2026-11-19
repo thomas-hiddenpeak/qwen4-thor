@@ -9,11 +9,14 @@
 
 namespace q4t::server {
 using Clock = std::chrono::steady_clock;
-WebSocketOutput::WebSocketOutput(size_t bytes, size_t frames)
+WebSocketOutput::WebSocketOutput(size_t bytes, size_t frames,
+                                 size_t message_bytes)
     : max_bytes_(bytes),
       max_frames_(frames),
-      valid_(bytes >= 128 && bytes <= kWebSocketOutputBytes && frames >= 1 &&
-             frames <= 64) {}
+      max_message_bytes_(message_bytes),
+      valid_(bytes >= 128 && bytes <= kWebSocketOutputMaximumBytes &&
+             frames >= 1 && frames <= 64 && message_bytes >= 1 &&
+             message_bytes <= kWebSocketMaximumLimit) {}
 
 bool WebSocketOutput::Prepare(WebSocketOpcode opcode, std::string_view payload,
                               std::string* frame) const {
@@ -23,7 +26,7 @@ bool WebSocketOutput::Prepare(WebSocketOpcode opcode, std::string_view payload,
           opcode == WebSocketOpcode::kBinary) &&
          payload.size() <= max_bytes_ &&
          EncodeWebSocketFrame(opcode, payload, std::nullopt, frame,
-                              kWebSocketOutputMessageBytes) &&
+                              max_message_bytes_) &&
          frame->capacity() <= max_bytes_;
 }
 bool WebSocketOutput::Fits(size_t bytes) const {

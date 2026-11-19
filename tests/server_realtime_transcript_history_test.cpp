@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "q4t/server/asr_response.h"
 #include "q4t/test.h"
 
 namespace {
@@ -158,7 +159,7 @@ Q4T_TEST(realtime_history_invalid_limits_and_ids_never_admit) {
   for (const auto& limits : {std::pair<size_t, size_t>{0, 10},
                              {129, 10},
                              {1, 0},
-                             {1, (1ULL << 20) + 1}}) {
+                             {1, kRealtimeTranscriptHistoryBytes + 1}}) {
     RealtimeTranscriptHistory invalid("sess_a", limits.first, limits.second);
     Ticket ticket;
     Q4T_CHECK(!invalid.Valid() && !invalid.Begin("item_a", 1, &ticket));
@@ -171,8 +172,28 @@ Q4T_TEST(realtime_history_invalid_limits_and_ids_never_admit) {
                          std::string("../item"), std::string(129, 'x')})
     Q4T_CHECK(!history.Begin(id, 10, &ticket));
   Q4T_CHECK(!history.Begin("item_a", 0, &ticket));
-  Q4T_CHECK(!history.Begin("item_a", (64ULL << 10) + 1, &ticket));
+  Q4T_CHECK(!history.Begin("item_a", kAsrTranscriptBytes + 1, &ticket));
   Q4T_CHECK(!history.Begin("item_a", 10, nullptr));
   Q4T_CHECK(history.Items() == 0 && history.ChargedBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_history_explicit_native_output_budget_is_fully_reserved) {
+  RealtimeTranscriptHistory history("sess_a", 128,
+                                      kRealtimeTranscriptHistoryBytes);
+  Ticket ticket, first;
+  for (size_t i = 0; i < 16; ++i) {
+    Q4T_CHECK(history.Begin("item_" + std::to_string(i),
+                            kAsrTranscriptBytes, &ticket));
+    if (!i) first = ticket;
+  }
+  Q4T_CHECK(history.ChargedBytes() == kRealtimeTranscriptHistoryBytes);
+  Q4T_CHECK(!history.Begin("item_extra", 1, &ticket));
+  Q4T_CHECK(history.Commit(first));
+  Q4T_CHECK(history.Complete(first, std::string(kAsrTranscriptBytes, 'x')));
+  Q4T_CHECK(history.ChargedBytes() == kRealtimeTranscriptHistoryBytes);
+  Q4T_CHECK(history.Erase(first));
+  Q4T_CHECK(history.Begin("item_extra", kAsrTranscriptBytes, &ticket));
+  Q4T_CHECK(history.ChargedBytes() == kRealtimeTranscriptHistoryBytes);
   return true;
 }

@@ -10,6 +10,7 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
+inline constexpr size_t kRealtimeTranscriptHistoryBytes = 64ULL << 20;
 struct RealtimeTranscriptTicket {
   std::string owner, id;
   uint64_t generation = 0;

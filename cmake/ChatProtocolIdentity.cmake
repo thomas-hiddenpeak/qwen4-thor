@@ -642,6 +642,8 @@ set(protocol_inputs
   include/q4t/server/realtime_noise_input.h
   include/q4t/server/realtime_transcription_session.h
   include/q4t/server/realtime_vad.h
+  include/q4t/server/realtime_audio_export.h
+  src/server/realtime_audio_export.cpp
   include/q4t/server/realtime_pcm.h
   include/q4t/server/realtime_audio_queue.h
   include/q4t/server/websocket_session.h

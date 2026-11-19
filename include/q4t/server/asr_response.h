@@ -9,6 +9,7 @@
 #include "q4t/server/token_logprobs.h"
 
 namespace q4t::server {
+inline constexpr size_t kAsrTranscriptBytes = 4ULL << 20;
 // The API's temperature=0 uses confidence adaptation. These explicit native
 // thresholds are implementation policy, not claimed OpenAI internal values.
 class AsrTemperature {

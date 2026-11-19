@@ -1,0 +1,10 @@
+{
+  "reference": "CPython audioop lin2ulaw/lin2alaw signed S16 little-endian all 65536 samples",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "module": "/usr/lib/python3.12/lib-dynload/audioop.cpython-312-aarch64-linux-gnu.so",
+  "module_sha256": "606989b18df702c34f74fa77fba8b794c7f7c625601015c1bf2c47409d06d592",
+  "fixture": "tests/server_realtime_audio_export_g711.inc",
+  "fixture_sha256": "3fe3ebc65204119be15e76c0853de36c9cce1d0b4292f6e59becc371cd073180",
+  "gpu_actions": 0,
+  "note": "Expected data prepared before native tests. No codec source copied, not a runtime dependency."
+}

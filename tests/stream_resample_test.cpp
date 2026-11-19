@@ -13,8 +13,10 @@
 namespace {
 using namespace q4t::audio;
 std::vector<float> Convert(uint32_t rate, std::span<const float> input,
-                           size_t chunk = 2048, size_t output_chunk = 2048) {
-  AsrStreamResampler stream(rate, std::max<size_t>(1, input.size()));
+                           size_t chunk = 2048, size_t output_chunk = 2048,
+                           uint32_t output_rate = 16000) {
+  AsrStreamResampler stream(rate, std::max<size_t>(1, input.size()),
+                             output_rate);
   std::vector<float> output, buffer(output_chunk);
   size_t position = 0;
   while (position < input.size()) {
@@ -198,5 +200,73 @@ Q4T_TEST(stream_resample_fixed_storage_and_configuration_bounds) {
     Q4T_CHECK(!AsrStreamResampler(rate, uint64_t(rate) * 3600 + 1).Valid());
     Q4T_CHECK(AsrStreamResampler(rate, uint64_t(rate) * 3600).Valid());
   }
+  return true;
+}
+
+Q4T_TEST(stream_resample_export_rates_preserve_partition_and_tail) {
+  for (const uint32_t out_rate : {8000, 24000}) {
+    for (const uint32_t rate : {8000, 16000, 24000, 48000}) {
+      const auto input = Tone(rate, 1000);
+      const auto expected = Convert(rate, input, 2048, 2048, out_rate);
+      Q4T_CHECK(expected.size() == out_rate);
+      Q4T_CHECK(Convert(rate, input, 1, 3, out_rate) == expected);
+      Q4T_CHECK(Convert(rate, input, 511, 1, out_rate) == expected);
+      for (size_t count = 0; count < 101; ++count) {
+        const auto result =
+            Convert(rate, std::span(input).first(count), 7, 2, out_rate);
+        Q4T_CHECK(result.size() == count * out_rate / rate);
+      }
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(stream_resample_export_matches_independent_centered_convolution) {
+  // Direct long-double convolution over the whole signal, no phase table,
+  // ring, lookahead or streamed state shared with the implementation.
+  const auto input = Tone(16000, 1700);
+  for (const uint32_t out_rate : {8000, 24000}) {
+    const auto output = Convert(16000, input, 13, 7, out_rate);
+    for (const size_t at : {0, 1, 2, 3, 47, 48, 49, 101, 3001, 7999}) {
+      const long double position = (long double)at * 16000 / out_rate;
+      const auto center = static_cast<int64_t>(std::floor(position));
+      long double sum = 0, weights = 0;
+      const long double cutoff = .45L * std::min(out_rate, 16000u) / 16000;
+      for (int64_t source = center - 48; source <= center + 48; ++source) {
+        const long double x = source - position;
+        if (std::abs(x) >= 48) continue;
+        const auto angle = 2 * std::numbers::pi_v<long double> * cutoff * x;
+        const auto sinc = x == 0 ? 1.L : std::sin(angle) / angle;
+        const auto window = .42L +
+                            .5L * std::cos(std::numbers::pi_v<long double> *
+                                           x / 48) +
+                            .08L * std::cos(2 * std::numbers::pi_v<long double> *
+                                            x / 48);
+        const auto weight = 2 * cutoff * sinc * window;
+        weights += weight;
+        if (source >= 0 && uint64_t(source) < input.size())
+          sum += input[source] * weight;
+      }
+      Q4T_CHECK(std::abs(output[at] - sum / weights) < 2e-7);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(stream_resample_export_accepts_finite_overshoot_only_when_explicit) {
+  AsrStreamResampler strict(16000, 1), export_pcm(16000, 1, 16000, false);
+  const float value = 2;
+  float out = 123;
+  ResampleProgress progress;
+  Q4T_CHECK(!strict.Process({&value, 1}, {&out, 1}, &progress));
+  Q4T_CHECK(!strict.InputSamples() && out == 123);
+  Q4T_CHECK(export_pcm.Process({&value, 1}, {&out, 1}, &progress));
+  Q4T_CHECK(out == value && progress.consumed == 1 && progress.produced == 1);
+  AsrStreamResampler invalid(16000, 1, 24000, false);
+  const float nonfinite = std::numeric_limits<float>::infinity();
+  Q4T_CHECK(!invalid.Process({&nonfinite, 1}, {&out, 1}, &progress));
+  Q4T_CHECK(!invalid.InputSamples());
+  for (const uint32_t rate : {0u, 1u, 44100u, 48000u, UINT32_MAX})
+    Q4T_CHECK(!AsrStreamResampler(16000, 1, rate).Valid());
   return true;
 }

@@ -118,6 +118,45 @@ Q4T_TEST(websocket_output_boundaries_are_atomic_and_charge_capacity) {
   return true;
 }
 
+Q4T_TEST(websocket_output_explicit_large_message_keeps_byte_and_frame_bounds) {
+  WebSocketOutput original;
+  const std::string payload((1ULL << 20) + 17, 'x');
+  Q4T_CHECK(!original.TryPush(WebSocketOpcode::kText, payload));
+  WebSocketOutput output(4ULL << 20, 1, 2ULL << 20);
+  Q4T_CHECK(output.Valid() && output.MessageLimit() == 2ULL << 20);
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, payload));
+  const auto front = output.Front();
+  Q4T_CHECK(front == Frame(payload, WebSocketOpcode::kText, false));
+  const auto charge = output.Bytes();
+  Q4T_CHECK(charge >= front.size() && charge <= 4ULL << 20);
+  Q4T_CHECK(!output.TryPush(WebSocketOpcode::kText, "later"));
+  Q4T_CHECK(output.Bytes() == charge && output.Front().data() == front.data());
+  output.Acknowledge();
+  Q4T_CHECK(output.Bytes() == 0);
+  Q4T_CHECK(!output.TryPush(WebSocketOpcode::kBinary,
+                           std::string((2ULL << 20) + 1, 'x')));
+  Q4T_CHECK(output.Bytes() == 0 && output.Front().empty());
+  return true;
+}
+
+Q4T_TEST(websocket_output_explicit_limits_reject_without_allocating_queue) {
+  WebSocketOutput full(kWebSocketOutputMaximumBytes, 64,
+                        kWebSocketMaximumLimit);
+  Q4T_CHECK(full.Valid() && !full.Bytes());
+  Q4T_CHECK(!WebSocketOutput(kWebSocketOutputMaximumBytes + 1).Valid());
+  Q4T_CHECK(!WebSocketOutput(1024, 0, 1024).Valid());
+  Q4T_CHECK(!WebSocketOutput(1024, 65, 1024).Valid());
+  Q4T_CHECK(!WebSocketOutput(1024, 1, 0).Valid());
+  Q4T_CHECK(!WebSocketOutput(1024, 1, kWebSocketMaximumLimit + 1).Valid());
+  // A small mailbox may use the unchanged larger default message limit;
+  // the actual encoded frame still must fit its own smaller byte budget.
+  WebSocketOutput small(256);
+  Q4T_CHECK(small.Valid() && !small.TryPush(WebSocketOpcode::kBinary,
+                                          std::string(256, 'x')));
+  Q4T_CHECK(!small.Bytes());
+  return true;
+}
+
 Q4T_TEST(websocket_output_producer_waits_for_ack_and_observes_cancel) {
   WebSocketOutput output(256, 1);
   RequestControl control("turn", "", Clock::now() + 2s);

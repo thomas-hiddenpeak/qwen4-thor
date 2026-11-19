@@ -136,3 +136,20 @@ H1先实现独立的实际转录账本，不复制通用Conversations持久服�
 与[官方Realtime客户端事件](https://developers.openai.com/api/reference/resources/realtime/client-events)。
 前轮上下文应来自实际转录；客户端自行提供的input_audio.transcript
 仅为引用元数据，不能冒充模型已听见的音频或自动加入ASR历史。
+
+### H2a：处理后音频与输出容量
+
+处理后音频导出、显式大帧预算与转录历史容量已编写：复用97抽头
+重采样，支持PCM24k/G.7118k，只在最终S16编码时限幅；原默认
+ASR输入保持严格合同。历史上限可显式预留完整4MiB原生输出，
+总文本上限64MiB，默认1MiB保持；输出大帧需明确配置。冻结40项
+针对性原生CPU加1项旧/新默认逐位对照、180秒/0GPU。当前尚未
+接历史API/模型prompt；验证后按用户新授权先续ICL边界与业务，再
+回到历史接线和全部master，默认rev326保持。
+
+H1的64KiB单项是原组件限制，H2a改为复用原生ASR的4MiB边界，
+显式总预留可到64MiB；H1原证据保持。本阶段不启用扩大后的API
+队列，后续须把音频所有者、Base64/JSON/帧复制与背景借用一起纳入
+会话准入预算。外层原生TLS仅使用既有固定双向缓冲传输帧，不新增
+运行时编解码程序。G.711采用独立CPython audioop全S16范围作为
+开发验证参考，生产实现不依赖Python。

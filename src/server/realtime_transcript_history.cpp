@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <limits>
 
+#include "q4t/server/asr_response.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 
 namespace q4t::server {
 namespace {
-constexpr size_t kTranscriptBytes = 64ULL << 10;
 Status Invalid() {
   return Status::Fail("Realtime transcript history identity or state invalid");
 }
@@ -21,7 +21,7 @@ RealtimeTranscriptHistory::RealtimeTranscriptHistory(std::string owner,
       maximum_items_(maximum_items),
       maximum_bytes_(transcript_bytes) {
   valid_ = ValidRequestId(owner_) && maximum_items_ && maximum_items_ <= 128 &&
-           maximum_bytes_ && maximum_bytes_ <= (1ULL << 20);
+           maximum_bytes_ && maximum_bytes_ <= kRealtimeTranscriptHistoryBytes;
   if (valid_) entries_.reserve(maximum_items_);
 }
 size_t RealtimeTranscriptHistory::Position(
@@ -49,7 +49,7 @@ Status RealtimeTranscriptHistory::Begin(std::string_view id,
                                         RealtimeTranscriptTicket* output) {
   if (!valid_ || !output || !ValidRequestId(id) || id == "root" ||
       !maximum_transcript_bytes ||
-      maximum_transcript_bytes > kTranscriptBytes ||
+      maximum_transcript_bytes > kAsrTranscriptBytes ||
       entries_.size() == maximum_items_ ||
       maximum_transcript_bytes > maximum_bytes_ - charged_ ||
       generation_ == std::numeric_limits<uint64_t>::max() ||
