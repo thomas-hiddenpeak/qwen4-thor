@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "source": "3bc55c44054e26c0e5955ec05bcbba7e87edb0eb",
+  "engine_sha256": "ce5212b74cbccdf0903670cfc6cbb99c03b1ad3f23c8103ba0842bcb8084389e",
+  "seconds": 44.18040733411908,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 3,
+    "chats": 1,
+    "controls": 35
+  },
+  "rows": [
+    {
+      "case": "zh",
+      "item_id": "item_a48248efca61cf7251e1dac9c7e6f8b0",
+      "start_ms": 820,
+      "end_ms": 5084,
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 71,
+        "output_tokens": 11,
+        "total_tokens": 82,
+        "input_token_details": {
+          "audio_tokens": 56,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "zh",
+      "item_id": "item_35f0e3eaff065303813bc28123c15e8e",
+      "start_ms": 6196,
+      "end_ms": 10460,
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 71,
+        "output_tokens": 11,
+        "total_tokens": 82,
+        "input_token_details": {
+          "audio_tokens": 56,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "mulaw",
+      "item_id": "item_6970b335d7a0cc35abac1010402b950b",
+      "start_ms": 852,
+      "end_ms": 5084,
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 70,
+        "output_tokens": 11,
+        "total_tokens": 81,
+        "input_token_details": {
+          "audio_tokens": 55,
+          "text_tokens": 15
+        }
+      }
+    }
+  ],
+  "event_ids_unique": 42,
+  "nvml_samples": 43,
+  "nvml_all_ok": true,
+  "default_unchanged": true,
+  "owned_processes_absent": true,
+  "three_ports_bindable_with_production_socket_policy": true,
+  "gpu_lock_reacquired_and_released": true,
+  "cleanup_note": "Initial independent bind without SO_REUSEADDR returned EADDRINUSE; ss showed only TCP TIME_WAIT, no listeners. Production-equivalent SO_REUSEADDR bind passed on all three ports. No service restart or test rerun.",
+  "scope": "Native automatic VAD/ASR/WSS with explicit fixed admission controller; not Guardian/soak/performance qualification"
+}

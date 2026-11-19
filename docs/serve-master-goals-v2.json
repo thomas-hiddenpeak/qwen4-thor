@@ -9509,7 +9509,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": false,
-    "next": "Implement actual automatic server VAD then noise/delay/semantic turns, conversation/tool/TTS and Live; compose real Guardian recovery and reversible delivery. Keep pending ICL decision and all master tasks.",
+    "next": "Continue noise reduction, actual context/delay, semantic turns, conversation/tool/TTS and Live, Guardian composition and reversible delivery",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -9582,11 +9582,11 @@
       "scope": "Real WSS/OpenAI JS7.47.0/native ingress + native ASR, actual per-turn quota and cancellation; fixed PID-bound admission fixture, not Guardian recovery."
     },
     "server_vad": {
-      "status": "CPU_PASS_REAL_BUSINESS_PENDING",
+      "status": "REAL_WSS_BUSINESS_PASS_NOT_DELIVERED",
       "cpu_scope": 29,
       "gpu_actions": 0,
       "default_changed": false,
-      "next": "Targeted CPU then bounded real automatic transcription, continue all remaining processors/conversation/Live and master tasks",
+      "next": "Continue noise reduction, actual context/delay, semantic turns, conversation/tool/TTS and Live, Guardian composition and reversible delivery",
       "cpu_seconds": 0.1639299439266324,
       "sdk_cpu_tests": 3,
       "evidence": "evidence/serve-realtime-vad-cpu-20261119/README.md",
@@ -9597,7 +9597,12 @@
         "automatic_items": 3,
         "chats": 1,
         "seconds": 600
-      }
+      },
+      "business_evidence": "evidence/serve-realtime-vad-business-20261119/README.md",
+      "business_seconds": 44.18040733411908,
+      "nvml_ok": 43,
+      "automatic_items": 3,
+      "settled_tokens": 245
     }
   }
 }

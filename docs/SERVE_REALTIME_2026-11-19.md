@@ -53,7 +53,9 @@ WebSocket基础16项CPU、音频队列12项CPU及
 Guardian恢复组合，默认rev326仍保持；继续下列未完成项目。
 
 [在线server VAD的29项CPU与3项SDK回归](evidence/serve-realtime-vad-cpu-20261119/README.md)
-通过；真实连续语音短验已冻结，尚未据此声明自动转录业务通过。
+通过；[自动转录真实业务](evidence/serve-realtime-vad-business-20261119/README.md)
+也通过：连续PCM两句及G.711一句，实际计费/同PID Chat与清理正常。
+默认保持，继续剩余处理器/会话能力和总计划。
 
 ## 连续实施顺序
 

@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[自动server VAD真实WSS业务通过](evidence/serve-realtime-vad-business-20261119/README.md)：
+连续PCM两句与G.711一句均自动提交且转录正确，245实际token结算，
+同PID Chat通过；1模型/1入口、2会话3item/1Chat、44.180秒、43次
+NVML正常。进程/入口/租约已清理，默认rev326不变；继续剩余处理器、
+对话/Live、Guardian组合及全部master，不据此宣称完整Realtime完成。
+
 [在线server VAD的29项CPU和3项SDK回归通过](evidence/serve-realtime-vad-cpu-20261119/README.md)：
 原生0.164秒、SDK驱动1.816秒/0GPU，host/引擎零警告，970来源/
 17负控。冻结1模型/1入口启动、2会话3自动item/1Chat/600秒实际
