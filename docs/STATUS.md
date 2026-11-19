@@ -1,4 +1,4 @@
-# 当前状态（2026-11-19）
+# 当前状态（2026-11-20）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)推进全部33项任务；阶段验证与
@@ -7,10 +7,124 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
-PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
-PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认
-rev346不变，本地后续对话基础不混入；等待修复head检查后合入。
+[rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)
+完成：19项STOPPED检查、20次命令尝试/314.086秒，实际整根
+回退再前进，0新增GPU。首轮intent容量拒绝保留；8条退休记录
+可逆归档后沿原请求完成，全部配额/用量/恢复历史和预算保持。
+默认rev356 STOPPED，PR #52待最终检查合入；随后继续Prompt、
+音频/MCP/追踪/Live与全部master。原TLS质量FAIL、NVML ENV_ABORT、
+数值/声纹失败及用户延期听感保持，不将阶段交付当总目标完成。
+
+[原生 Realtime Chat 恢复组合通过](evidence/serve-realtime-chat-managed-20261120/README.md)：
+保留/TLS/整包三组采用 4 模型、63 HTTP+21 Realtime/15 WebSocket/
+1 探测/647.374 秒，604 次正常 NVML，严格环境与清理合同通过。
+保留组启动路径精确复核例外保持，原 TLS 回答质量 FAIL、原整包
+NVML ENV_ABORT 和诊断失败均不改写。单次整包续验 2 模型/32 工作/
+275.455 秒通过；归档自检误中自身字面量的原错误也保留，0GPU 修正。
+默认 rev346 STOPPED 尚未替换；下一步最多 20 项/720 秒 STOPPED
+发布检查，实际回退再前进，保持持久 RPM30/TPM6000 及全部历史。
+PR #52 草稿检查中，发行后继续 Prompt 与全部 master，听感仍待验。
+
+[TLS 补验通过，整包组 ENV_ABORT](evidence/serve-realtime-chat-recovery-followup-20261120/README.md)：
+TLS 1 模型/34 工作/230.703 秒、215 次正常 NVML，严格 finalize 通过。
+整包组 2 模型/22 工作/231.219 秒，200 次正常后 NVML init 卡住，
+开发守卫按独占合同中止；实际前后工具通过但后续语音未完成，整组
+不记通过。事后进程/端口/锁清理确认，独立监控查询已恢复正常。
+仅续一次整包组 2 模型/32 工作/6 WSS/1 探测/600 秒；再次 ENV_ABORT
+停止该组，继续独立开发。默认 rev346 STOPPED、原失败/听感待验保持。
+
+[恢复质量分类 27 项 CPU 通过](evidence/serve-realtime-chat-quality-cpu-20261120/README.md)：
+5.590 秒/0GPU，20 来源反例通过；原 TLS 原件只读复核 830 tokens、
+答案质量仍 FAIL，不补写未执行行为。驱动 v2 明确 PROTOCOL_PASS
+与独立质量结果，旧策略/严格主轻资格和程序/服务包保持。继续已冻结
+TLS 与整包回退 3 模型/66 工作/12 WSS/1 探测/1200 秒；默认 rev346
+STOPPED、原失败与听感待验不变，随后 Prompt 和全部 master 继续。
+
+用户已允许把原 TLS 指令不遵循单列为模型质量失败并续验。恢复
+驱动 v2 已编写：实际回答与期望值原样记录，协议通过与质量 FAIL
+分别输出；工具来源、调用、流式、用量、所有权和清理仍严格检查，
+原 v1 及主轻正确答案门不变。冻结 27 项针对性 CPU/120 秒及来源
+20 反例；通过后仅补 TLS 与整包回退共 3 模型/66 工作/12 WSS/
+1 探测/1200 秒，复用保留包、主轻和现有诊断，不增加采样轮次。
+当前仅修改验收工具，程序/服务包/default 不变，全部 master 继续。
+
+[回答诊断与发布池维护](evidence/serve-realtime-chat-sampling-20261120/README.md)
+已归档：三组 3 模型/3 Chat/127.034 秒，124 次 NVML 正常、资源释放。
+冷启动固定 seed 拒答，greedy 对实际失败提示返回 rev346；两个诊断
+脚本原 FAIL 保留，取消对照未完成，不能据此追认 TLS 恢复验收通过。
+本轮采样停止，语义错误交付分类仍待反馈；继续独立的
+[Prompt 原生接入](SERVE_REALTIME_PROMPT_2026-11-20.md)，当前仅有方案。
+4 个历史 generation/4 个退休注册已可逆归档，活动池 27/12，0 删除。
+默认 rev346 STOPPED、原质量失败/听感待验及全部 master 保持。
+
+[Chat 恢复首轮与原失败](evidence/serve-realtime-chat-recovery-review-20261119/README.md)
+已保留：保留包 1 模型/18 工作/141.216 秒通过；TLS 组恢复与取消
+结算正常，但新连接第二轮实际回答未返回资料版本，原整组 FAIL。
+两组累计 2 模型/37 工作/298.062 秒、278 次正常 NVML，清理完成。
+离线实际提示前后逐字节一致（0.003 秒/0GPU），均随机采样 1/无
+seed；继续固定条件定位，不能据此认定唯一原因或把错误答案记正确。
+版本组尚未启动，默认 rev346 STOPPED/主轻资格/听感待验及 master 保持。
+保留组的相对路径 finalize 拒绝经 6 项 CPU 和精确身份复核闭合，
+原拒绝、复核初始化错误和辅助构建失败均保留，没有为此重跑模型。
+
+Chat 候选/保留/TLS 包已封装但尚未取得实际恢复资格。原辅助构建
+目标名错误 FAIL 保留，修正后 19.541 秒零警告，推理程序与默认
+不变。冻结三组实际恢复共 4 模型、63 HTTP + 21 Realtime 工作、
+15 WSS/1 CUDA 探测/1500 秒，每组完整驱动持同一严格锁，失败即停；
+配置与配额保持，默认 rev346 STOPPED、听感待验及全部 master 继续。
+
+[Chat Guardian 驱动 24 项 CPU 通过](evidence/serve-realtime-chat-managed-cpu-20261119/README.md)：
+3.869 秒/0GPU，含实际 SDK/TLS 夹具、断连不重放、计数交接与原生
+封装命名空间；20 来源反例通过。已验主轻资格只读复核 0.077 秒，
+原字节和引擎保持，25 项新合同接入 CI。继续封装并实际恢复，默认
+rev346 STOPPED、原质量失败/听感待验和全部 master 保持。
+
+Realtime Chat Guardian 组合驱动已编写：TLS 故障切在实际文本增量
+后的未完成请求，整包切在两轮工具已结算后；旧连接结束、显式新
+连接，禁止重放。ASR/语义在故障前后完整运行并核对计数交接。
+冻结 24 项针对性 CPU/120 秒及来源 20 反例，另只读复核已通过
+主轻资格，不追加模型运行；通过后封装并做实际 Guardian 短验。
+默认 rev346 STOPPED、原质量失败/听感待验与全部 master 保持。
+
+[Realtime Chat 主轻实际资格通过](evidence/serve-realtime-chat-primary-light-20261119/README.md)：
+2 模型/64 业务/8 WSS/368.901 秒，341 次 NVML 正常；主轻两轮
+实际工具各结算 803/817 tokens，流式和来源一致，四个诊断正确记
+成功，自有资源与 GPU 锁释放。候选 f5af36c6 已保留，默认 rev346
+STOPPED 不变；继续 Guardian 组合/可回退交付及全部 master，原
+质量失败与听感待验保持。本阶段不等于实际恢复已验收。
+
+原生对话候选 f5af36c6 已零警告构建（17.473 秒），保留原合格
+994025c2 和默认 rev346。冻结主轻各一次模型启动，合计 64 项业务、
+8 WSS/6 临时入口/900 秒、同一严格 GPU 租约；新增每配置两轮
+资料工具并保持已配置能力。资格与 Guardian/发行仍待验，不做完整
+性能/模型质量矩阵；全部 master 继续。
+
+[Realtime Chat 资格 19 项 CPU 通过](evidence/serve-realtime-chat-profile-cpu-20261119/README.md)：
+12 Python + 2 原生 + 5 SDK，0GPU；来源登记首轮 FAIL 保留，补三项
+审查登记后 20 反例通过（仅复验来源）。4 项计划交接逐字节一致。
+继续必要构建与主轻/Guardian 短验，默认 rev346 STOPPED、听感待验
+和全部 master 保持；实际新资格与发行尚未验收。
+
+原生对话能力声明与 v17 主轻资格已接线：实际两轮资料工具、完整流式
+事件、来源/用量/资源绑定；自动回退不得丢已发布能力。修正外层诊断
+把健康请求误记默认错误的问题。冻结 12 项 Python、2 项原生能力、
+5 项 SDK 反例及 20 项来源反例，CPU 限 120 秒/0GPU；必要构建另计。
+计划交接离线 4 项逐字节一致，复用实际业务 04；默认 rev346 STOPPED
+保持，资格/Guardian/发行尚未通过，听感待验与全部 master 继续。
+
+[原生 Realtime Chat 真实业务通过](evidence/serve-realtime-chat-business-20261119/README.md)：
+1 模型 / 3 WSS / 10 响应 / 1 转写 / 2 Chat / 50.325 秒，官方 SDK/TLS、
+真实资料工具、三种空上下文指令、限额/取消/RPM 与实际结算通过；
+49 次 NVML 正常、自有资源与锁释放。3 轮原 FAIL 完整保留，累计
+4 模型 / 177.153 秒 / 173 次正常 NVML，未反向改写失败结论。
+
+候选 994025c2 已保留，默认 rev346 STOPPED 未替换。继续核对计划
+交接与能力声明、补主轻/Guardian 恢复和可回退交付；音频/MCP/Live/
+追踪/Prompt 与全部 master 继续，原量化/声纹失败和听感待验保持。
+
+[PR #51 已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
+两组 CI 通过，main 合并点 `53808bf52`；后续对话开发未混入。
+默认 rev346 STOPPED、原 exact-code/声纹失败与用户延期听感保持。
 
 [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
 完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
@@ -18,7 +132,7 @@ rev346不变，本地后续对话基础不混入；等待修复head检查后合�
 续办完成；19项成功检查共20次尝试。当前三组组合证据4模型、
 63HTTP+10Realtime/628.911秒、586次NVML正常，
 5个真实语义回合通过；含原候选组合累计6模型/87HTTP+14Realtime。
-默认仍STOPPED；继续PR #51检查合入及全部
+默认仍STOPPED；PR #51已合入，继续全部
 master，原exact-code/声纹失败与用户延期听感保持。
 
 [语义迁移修复5项CPU与真实资格复核通过](evidence/serve-semantic-vad-migration-20261119/README.md)：
@@ -2259,16 +2373,16 @@ CI通过，[已实际合main](evidence/serve-pr43-merged-20261117/README.md)
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev346；服务包 `38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb` |
-| Generation | `37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0` |
-| 引擎 | `945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2` |
-| 引擎发布记录 | `51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25` |
+| 发布 | rev356；服务包 `c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd` |
+| Generation | `cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61` |
+| 引擎 | `f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d` |
+| 引擎发布记录 | `90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1` |
 | Guardian | `35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 服务状态 | `STOPPED`；原生外层监护已配置enabled，累计启动0次 |
-| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录与实际语义VAD |
-| 人工整包回退 | 保留控制根 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca`；同已验语义引擎、参考和周期保持；前驱rev336另保留 |
-| 自动payload回退 | 候选→保留控制包 `101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
+| 默认容量 | 单流、ctx8192、prefill2048、主文本输出256、MTP k=3；inflight8/queue3；TTS 200帧、alpha输出3457/RPM30/TPM6000；参考ICL、Realtime转录/语义VAD/文本与函数工具对话 |
+| 人工整包回退 | 保留控制根 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1`；同已验对话引擎、参考和周期保持；前驱rev346另保留 |
+| 自动payload回退 | 候选→保留控制包 `b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1` 实际恢复已验；反向登记与STOPPED回退已验，未另注入反向故障；不是旧引擎回退 |
 | 外部依赖 | 原生入口/自监护不要求nginx/systemd；ASR/对齐/VAD/speaker/分离/TTS及参考编码器按部署启用；健康核心与辅助故障隔离；SDK仅客户端/验收依赖 |
 
 [rev276原生ASR交付](evidence/serve-asr-delivery-20261117/README.md)

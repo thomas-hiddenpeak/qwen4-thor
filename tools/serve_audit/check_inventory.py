@@ -10,6 +10,17 @@ ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = ROOT / "tools/serve_audit/inventory.json"
 
 
+def native_token_observer(generation):
+    """Review the actual fast-path gate, not only the final output adapter."""
+    body = generation.split('const auto consume_token =', 1)[1].split(
+        'std::vector<int32_t> generated;', 1)[0]
+    gates = re.findall(r'if\s*\((.*?)\)\s*return true;', body, re.DOTALL)
+    buffered = [gate for gate in gates if '!responses' in gate]
+    if len(buffered) != 1 or not re.search(r'!native\s*&&', buffered[0]) or \
+            'native->Emit(delta)' not in generation:
+        raise ValueError('native output skipped token observation')
+
+
 def missing_protocol_sources(root, manifest=None):
     if manifest is None:
         manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
@@ -60,6 +71,19 @@ def current_surface(root):
                 not re.search(r'\brate\.Reserve\(\s*clients_,\s*client\b', realtime):
             raise ValueError('review realtime upgrade/native execution/per-turn admission')
         routes.append(("/v1/realtime?intent=transcription", "GET"))
+        if 'HandleRealtimeConversation(fd, path, headers, initial, accept)' in realtime:
+            native_token_observer((root / 'src/server/chat_generation.cpp').read_text())
+            conversation = (root / 'src/server/chat_realtime_conversation.cpp').read_text()
+            execution = (root / 'src/server/realtime_chat_execution.cpp').read_text()
+            if not all(marker in conversation for marker in (
+                    'ParseRealtimeChatTarget(', 'PlanRealtimeChat(',
+                    'FitRealtimeChatContext(', 'ExecuteRealtimeChat(',
+                    'ClientLane::kData', 'requests_.Register(',
+                    'HandleChat(-1, {}, GenerationApi::kChat')) or \
+                    'ClaimInvocation()' not in execution or \
+                    'ClientRateDomain::kBatch' in execution:
+                raise ValueError('review Realtime conversation native ownership')
+            routes.append(("/v1/realtime", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
@@ -431,7 +455,17 @@ def mutation_checks(inventory, actual):
         changed.pop(name)
         if not check(inventory, dict(actual, sources_sha256=changed)):
             raise ValueError("text source omission escaped: " + name)
-    return len(cases) + 2 + len(private_headers) + len(text_paths)
+    generation = (ROOT / 'src/server/chat_generation.cpp').read_text()
+    native_token_observer(generation)
+    for broken in (generation.replace('!stream && !native &&', '!stream &&'),
+                   generation.replace('native->Emit(delta)', 'Status()')):
+        try:
+            native_token_observer(broken)
+        except ValueError:
+            pass
+        else:
+            raise ValueError('native output omission escaped review')
+    return len(cases) + 4 + len(private_headers) + len(text_paths)
 
 
 def main():

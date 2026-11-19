@@ -82,7 +82,8 @@ def check(out, plan, identity, capabilities):
             automatic_replay=False)
     require(len(set(identifiers))==len(identifiers), 'semantic new connection reused item identity')
     counts=read(out/'counts.json')['counts']
-    require(counts['websocket_sessions']==plan['limits']['websocket_sessions']==2*len(results),
+    count = len(results)*(2+int('conversation' in plan))
+    require(counts['websocket_sessions']==plan['limits']['websocket_sessions']==count,
             'semantic managed session budget incomplete')
     return results
 

@@ -93,6 +93,15 @@ set(protocol_inputs
   src/server/realtime_asr_policy.cpp
   include/q4t/server/realtime_transcript_history.h
   src/server/realtime_transcript_history.cpp
+  include/q4t/server/realtime_conversation.h
+  src/server/realtime_conversation.cpp
+  include/q4t/server/native_chat_generation.h
+  src/server/native_chat_generation.cpp
+  include/q4t/server/realtime_response_output.h
+  src/server/realtime_response_output.cpp
+  include/q4t/server/realtime_conversation_session.h
+  src/server/realtime_conversation_session.cpp
+  src/server/realtime_wire_shape.cpp
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
@@ -605,6 +614,9 @@ set(protocol_inputs
   src/server/responses_item_shape.cpp
   src/server/contracts/openai_item_types_v1.json
   cmake/responses_item_types.h.in
+  include/q4t/server/realtime_shape.h
+  src/server/contracts/openai_realtime_types_v1.json
+  cmake/realtime_types.h.in
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h
@@ -708,6 +720,15 @@ set(protocol_inputs
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
+  include/q4t/server/realtime_session_pump.h
+  src/server/realtime_session_pump.cpp
+  include/q4t/server/realtime_conversation_pump.h
+  src/server/realtime_conversation_pump.cpp
+  include/q4t/server/realtime_chat_plan.h
+  src/server/realtime_chat_plan.cpp
+  include/q4t/server/realtime_chat_execution.h
+  src/server/realtime_chat_execution.cpp
+  src/server/chat_realtime_conversation.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp
@@ -803,3 +824,11 @@ if(NOT item_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/responses_item_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/responses_item_types_data.h" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_realtime_types_v1.json"
+  Q4T_REALTIME_TYPES)
+string(FIND "${Q4T_REALTIME_TYPES}" ")q4t_types\"" realtime_delimiter)
+if(NOT realtime_delimiter EQUAL -1)
+  message(FATAL_ERROR "realtime type graph contains its C++ literal delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/realtime_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/realtime_types_data.h" @ONLY)

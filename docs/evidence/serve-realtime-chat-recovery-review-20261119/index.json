@@ -1,0 +1,266 @@
+{
+  "retained-service-01/plan.json": {
+    "sha256": "76b111ce48268ddbb46d801c7b0040134421ffde270a4771bf18e9e9802fad96",
+    "bytes": 1699651
+  },
+  "retained-service-01/execution/result.json": {
+    "sha256": "65fa191f623f51cc868b55bb98e6ba4fb1be95afdb4e5deff61deaf1c63bf21c",
+    "bytes": 3905
+  },
+  "retained-service-01/execution/counts.json": {
+    "sha256": "7971e0d4d559d48d4d436236cd2bc8b3c4ca4714c0f09987b162a38a35228d14",
+    "bytes": 3072
+  },
+  "retained-service-01/execution/stop.json": {
+    "sha256": "8a52b6ae6b8c27220341983fa947bd626def6527e8f4bfcd5e931693f8be4c41",
+    "bytes": 1654
+  },
+  "retained-service-01/lease/exit.json": {
+    "sha256": "d41a342cf77a0f9fde7b4209d8cb7bf5a289403366b96c92bd67d27fecc79b2e",
+    "bytes": 743
+  },
+  "retained-service-01/lease/events.jsonl": {
+    "sha256": "1ee133f45478ec0f40d14a42ed9d98402d77ee476b1305f69cf0908647999c1a",
+    "bytes": 25124
+  },
+  "retained-service-01/lease/nvml-queries.jsonl": {
+    "sha256": "7ce4af069c4c0de126a53c87516da635a7379fe1ace326c53ba95b0ca429a563",
+    "bytes": 319404
+  },
+  "retained-service-01/execution/primary-conversation-receipt.json": {
+    "sha256": "791bf9fea5caf61e34c7b1854dcfda05b1d418c3dd01af631ac65eff8298756a",
+    "bytes": 514
+  },
+  "retained-service-01/execution/primary-conversation-before-metrics.json": {
+    "sha256": "8ccc9ff7c05fbbefdc4340b7a932cd75fc3a9df8e1e8528d3a9d399a9361d9ab",
+    "bytes": 34670
+  },
+  "retained-service-01/execution/primary-conversation-after-metrics.json": {
+    "sha256": "139ddeb360f375bf7c18f7e483ffd688fb589d304e195337e4cd7b4fa3bcd950",
+    "bytes": 34672
+  },
+  "retained-service-01/execution/primary-conversation.sdk.json": {
+    "sha256": "d37b32ba0368d95b29f999b5c4f46dafb01966404f9184edb8ac46f480b4a9f1",
+    "bytes": 18878
+  },
+  "retained-service-01/execution/primary-conversation-core-before.json": {
+    "sha256": "e846d1a3f8429265ee2ae894f764a0f51dbbeea21779070ccd1d4482ad47b83c",
+    "bytes": 2231
+  },
+  "retained-service-01/execution/primary-conversation.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "retained-service-01/execution/primary-conversation-core-after.json": {
+    "sha256": "1c10fd7b5013fce590a56102193d21ca91b36b5b6c1164c23cad39f9e08b6759",
+    "bytes": 2231
+  },
+  "tls-service-01/plan.json": {
+    "sha256": "50cc6881fe24dd6f152556a1fcb80155b5e61c7f9265b25ff716d5049f972d56",
+    "bytes": 1700374
+  },
+  "tls-service-01/execution/result.json": {
+    "sha256": "71e8a4d33ea0f34a8c04674e83376d7c9ba945091d6e74aae577775684c785cd",
+    "bytes": 5572
+  },
+  "tls-service-01/execution/counts.json": {
+    "sha256": "f6d53e0e9b13dc37585cb9b1c4e8b1e3de3bea3dff291c5ded865ba05a671ec7",
+    "bytes": 3553
+  },
+  "tls-service-01/execution/stop.json": {
+    "sha256": "225a65aede7b70d3c381f0e77f4b50736791d033064dbe9d7ea1a7644f6e6f50",
+    "bytes": 1654
+  },
+  "tls-service-01/lease/exit.json": {
+    "sha256": "a2c5fe8028f3c80526ed5bee33a334cc3e54fcc5968a1ced28c18b12a87e4600",
+    "bytes": 808
+  },
+  "tls-service-01/lease/events.jsonl": {
+    "sha256": "6fae985b69ec7ff0c903d80520d0ad1a16caf6b9ff39bbbba6096f0a0f80267f",
+    "bytes": 27351
+  },
+  "tls-service-01/lease/nvml-queries.jsonl": {
+    "sha256": "77eb92fc71817219eb68b4d8925727205de0e8bfe3e59bff9df57cb5b464a21f",
+    "bytes": 348228
+  },
+  "tls-service-01/execution/tls-before-conversation-held-metrics.json": {
+    "sha256": "e041fb72e1f8184ba0ef9f7aab8765411cd189c098d940eb15b44af02ef247c7",
+    "bytes": 34691
+  },
+  "tls-service-01/execution/tls-before-conversation-core-before.json": {
+    "sha256": "f551edd5ddb3dd82d9bcb4ab8a6153fac0dec48413a539cbfd79298d50a68071",
+    "bytes": 2231
+  },
+  "tls-service-01/execution/tls-after-conversation.sdk.json": {
+    "sha256": "50588da07fbe7f9fb40d7726782f38e9654a96b6e946e9ea64fcd6b6afe76d8e",
+    "bytes": 28058
+  },
+  "tls-service-01/execution/tls-before-conversation-receipt.json": {
+    "sha256": "fd0c61bdc3820466821ba79504d39a80af1060d1a9eb7a3d8ebf5c7157c11b80",
+    "bytes": 757
+  },
+  "tls-service-01/execution/tls-before-conversation.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "tls-service-01/execution/tls-after-conversation-core-before.json": {
+    "sha256": "4d15bb769ebc4781c3778cd215cc4e71f1b16beae4fb635a97b8fb8dc70c7a9b",
+    "bytes": 2229
+  },
+  "tls-service-01/execution/tls-before-conversation-before-metrics.json": {
+    "sha256": "93f63bd6e18568a02189888d00c48a05088b80935e92c42945c101b915dab677",
+    "bytes": 34670
+  },
+  "tls-service-01/execution/tls-after-conversation.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "tls-service-01/execution/tls-before-conversation-core-held.json": {
+    "sha256": "bf13a183095dfe04a91f23f926307d091db821b6311e9b3ce82e8e613772544d",
+    "bytes": 2231
+  },
+  "tls-service-01/execution/tls-after-conversation-before-metrics.json": {
+    "sha256": "285b915bcb65d622e3e038dac039e3e961b3ba27bb87b21c0f3547c73ca71715",
+    "bytes": 34672
+  },
+  "tls-service-01/execution/tls-before-conversation-core-after.json": {
+    "sha256": "197edba77f593d255d20e78c39ca98a39248ad301f032ab49853a12cd08e18a8",
+    "bytes": 2333
+  },
+  "tls-service-01/execution/tls-before-conversation-ready.json": {
+    "sha256": "49dbff1dc836f49c16d48f3a90024eb7e530c664845642428e661ec2b47d1890",
+    "bytes": 399
+  },
+  "tls-service-01/execution/tls-before-conversation-after-metrics.json": {
+    "sha256": "7d293e1b3169a3ab0afae9a725174ce4f1937a9456ef301f3a514521c5a57aa4",
+    "bytes": 69351
+  },
+  "tls-service-01/execution/tls-before-conversation.sdk.json": {
+    "sha256": "46bef1b5e1803a7dbe0b4414be1ffa41dfe05a4eb5f7f343c01ce386b8e32031",
+    "bytes": 20623
+  },
+  "retained-service-01/decision.json": {
+    "sha256": "8c536d2c36bdb81f31183f3583aae04d82c847b7a4e2640e8c336c99c98866f8",
+    "bytes": 1781
+  },
+  "retained-service-01/service-release.json": {
+    "sha256": "5fd90e9d6c27d364c6732137696f7d83653ca2d24ef623b8e683bcf1d09ea13e",
+    "bytes": 1326
+  },
+  "retained-command-review-01/cpu.log": {
+    "sha256": "3aecf8829c0473ed8cc7c96879df092d45b959b552cac019c12dc9c61ed6318c",
+    "bytes": 604
+  },
+  "retained-command-review-01/result.json": {
+    "sha256": "802697e960990b890727a9ffe6d3aa62ea7796795717518da2a38071d73172ca",
+    "bytes": 372
+  },
+  "retained-command-review-01/plan.json": {
+    "sha256": "3359973b2a139fa7ae299eeba9ddd2ce5f6e3fb0f7d9b8c7bfbef7089ee115a1",
+    "bytes": 1556
+  },
+  "retained-command-review-01/proof.json": {
+    "sha256": "d87a4ead95bddbb6bc1469c3bd7bca5384500786b96e62a32427d0231b1ae12a",
+    "bytes": 2415
+  },
+  "retained-command-review-01/original-finalize.stderr": {
+    "sha256": "01254770fa008714ce0bd17d2f7bcb64bafe3af6db860349b0845dabe6dbd890",
+    "bytes": 1251
+  },
+  "retained-command-review-01/original-finalize.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "retained-command-review-02/result.json": {
+    "sha256": "b61680cd899c63497451e9f665150944322880b78e646d90fe6a32d1f06f4e26",
+    "bytes": 567
+  },
+  "retained-command-review-02/plan.json": {
+    "sha256": "862c3274beb711568b363b5add26f425f3606779eb0bd0a19dd7f59280f4b010",
+    "bytes": 577
+  },
+  "retained-command-review-02/finalize.stdout": {
+    "sha256": "aab2b27b965e23bb0abdd040fc206ac03131b7ab76daea4ecc659e849e87480c",
+    "bytes": 756
+  },
+  "recovery-prompt-review-01/inputs.json": {
+    "sha256": "5278fffe2973cb90f7f23ec7cd96e8c9cf991684d687142dbc4d0b9f89975612",
+    "bytes": 3321
+  },
+  "recovery-prompt-review-01/stderr.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "recovery-prompt-review-01/result.json": {
+    "sha256": "00e9e0822135d899a3a18308cce2713383a8c27c8e463ba6ba98f2d061042b93",
+    "bytes": 622
+  },
+  "recovery-prompt-review-01/plan.json": {
+    "sha256": "935f13295138bf28149563179a42f025e9ee75f7c7efa1cc4cfc1723ceb7a505",
+    "bytes": 23490
+  },
+  "recovery-prompt-review-01/build.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "recovery-prompt-review-01/observed.json": {
+    "sha256": "bf9fe18e93b2949edb7131f8a095504c07205b638aed44a5a359940b150e99f2",
+    "bytes": 7449
+  },
+  "native-build-01/result.json": {
+    "sha256": "d5ba854fc8ae803566945213136c10875751637c644a60e3269b517f8fc66ce0",
+    "bytes": 221
+  },
+  "native-build-01/plan.json": {
+    "sha256": "786ddbb099cf5d42aae25e3ee4d76b0954a5f15a31db939fcfee7b38c9b9393b",
+    "bytes": 9589
+  },
+  "native-build-01/build.log": {
+    "sha256": "22c0325246b1049a11e3559926a105c8147fdd8f523924d87cddf03e5d367a41",
+    "bytes": 57
+  },
+  "native-build-02/result.json": {
+    "sha256": "232e5566bf881e9ff602a8bd2b2df21393906d50683564d4af29b17135302253",
+    "bytes": 582
+  },
+  "native-build-02/plan.json": {
+    "sha256": "6a7ae2d4ac9890a5d89d526193c6368eb223f61180457565ba864c0d80194e9b",
+    "bytes": 9589
+  },
+  "native-build-02/build.log": {
+    "sha256": "0399bbba48f994f4cc48c68a64cc7c4e32bfeb6e40fcdbdd0228c1aab65a9758",
+    "bytes": 3137
+  },
+  "failed-binaries-archive-01/restore.py": {
+    "sha256": "fbcb380ba4bed2d3d0644db9f948e6365f5ff30acd111400c2efa3f65b5678c8",
+    "bytes": 873
+  },
+  "failed-binaries-archive-01/result.json": {
+    "sha256": "2ca61b60acc4697b8601ab8721047097bf2e00820952544be95d26476bbb5ddf",
+    "bytes": 209
+  },
+  "failed-binaries-archive-01/manifest.json": {
+    "sha256": "31d31e1a91190c281230ba8dd2f356aab67327b697e98dc5eabd08ebd8002cb6",
+    "bytes": 2139
+  },
+  "review_retained_command.py": {
+    "sha256": "7cf82b0f1d31d677f84b95460299352b5768564736cede144a0e462d83b14ad4",
+    "bytes": 7402
+  },
+  "resume_retained_command_review.py": {
+    "sha256": "ff599bbb71f211b12badce168c6bb5b784834047b268830e6cacab4b6021e320",
+    "bytes": 3603
+  },
+  "recovery_prompt_probe.cpp": {
+    "sha256": "711791f2ac05d7cc008d65077862181328f7138f3b96e37b01fbdec8a40c9970",
+    "bytes": 2732
+  },
+  "managed-freeze-01/plan.json": {
+    "sha256": "6906d51cc61cd0d1bc503a06b9cad305b25a76da145f83d9a6104f00f480377e",
+    "bytes": 1927
+  },
+  "frozen-STATUS.md": {
+    "sha256": "c896b6bbf357236147576c5d6986211178ddf10ffdd736afaa42d4b63f88f4ca",
+    "bytes": 285905
+  }
+}

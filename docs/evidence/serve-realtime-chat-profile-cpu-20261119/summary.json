@@ -1,0 +1,14 @@
+{
+  "status": "PASS_TARGETED_CPU_WITH_ORIGINAL_INVENTORY_FAILURE_RETAINED",
+  "python_tests": 12,
+  "native_tests": 2,
+  "sdk_tests": 5,
+  "source_mutations": 20,
+  "gpu_actions": 0,
+  "original": ".q4t-work/serve-realtime-conversation-20261119/profile-cpu-01",
+  "source_followup": ".q4t-work/serve-realtime-conversation-20261119/profile-inventory-02",
+  "plan_handoff": ".q4t-work/serve-realtime-conversation-20261119/plan-handoff-review-01",
+  "default": "rev346 STOPPED unchanged",
+  "actual_qualification": false,
+  "master_complete": false
+}

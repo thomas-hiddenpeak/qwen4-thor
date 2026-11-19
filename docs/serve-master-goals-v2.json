@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-19",
+  "updated": "2026-11-20",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -545,6 +545,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -4848,6 +4852,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -6258,6 +6266,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -6659,6 +6671,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -7059,6 +7075,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -7227,6 +7247,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -7327,7 +7351,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev346 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev356 or then-current default; pending host/camera maintenance handoff remains required."
     },
     {
       "id": "R08",
@@ -8312,12 +8336,16 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev326_delivered_pr49_merged_remaining_master_active",
+      "state": "rev356_delivered_pr52_final_checks_pending_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8351,54 +8379,24 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "ACCEPT_NATIVE_SEMANTIC_VAD_DELIVERY",
-        "revision": 346,
+        "status": "ACCEPT_NATIVE_REALTIME_CHAT_DELIVERY",
+        "revision": 356,
         "current": {
-          "engine_binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
-          "engine_release_sha256": "51ad0fd5dc3fa02fd09ad8f57a82499cab8237663c5ec108c3c257c43315ab25",
-          "generation_sha256": "37e1fee70dae2a361bc7cba361ddc509fc4d43e42cea1a66ade8b39bba9d40a0",
-          "manifest_sha256": "38a8fcf6f3b1bebb05a96b25b0c072871d64b5e033f70e0a26f6dc32725c30eb",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/service-package-02/bundle",
-          "service_acceptance_sha256": "7c356cc940b0e518afe7bebec8353d6b7b641213bc142c5de472d51bc7c48278",
-          "service_release_sha256": "61726cd901fea17079486e4c8d41f5a8890dd8ae04fa36de71bc6554bf320c5e"
+          "engine_binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+          "engine_release_sha256": "90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1",
+          "generation_sha256": "cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61",
+          "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+          "service_acceptance_sha256": "2d5b66bfd859c551717bb4ac9d2cf21628b32fb27c8f58973c9cf23f51d37e2a",
+          "service_release_sha256": "08573cda3827e0a57744cb812d0ae5b9dae84bb7f9b0cd9507429a6532e9844d"
         },
         "state": "STOPPED",
-        "commands": 19,
-        "seconds": 364.24277599016204,
+        "successful_commands": 19,
+        "command_attempts": 20,
+        "seconds": 314.0861754543148,
         "new_gpu_starts": 0,
         "outer_enabled": true,
         "outer_charged_total": 0,
-        "persistent_rpm": 30,
-        "persistent_tpm": 6000,
-        "alpha_output_limit": 3457,
-        "usage_reset": false,
-        "fixture_tpm_not_installed_to_existing_state": true,
-        "manual_root": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
-        "automatic_payload": "101d0cf1406a083b6d69bf37ec737eca42270cd1e34dc65c33282dbeab42b7ca",
-        "candidate_to_retained_automatic_fault_actually_tested": true,
-        "reciprocal_automatic_fault_additionally_injected": false,
-        "reciprocal_registration_and_stopped_rollback_verified": true,
-        "older_engine_fallback": false,
-        "previous_rev336_preserved": true,
-        "strict_actual_finalizers_all_passed": true,
-        "original_failures_preserved": true,
-        "profile_history_and_cooldown_preserved": true,
-        "retired_intents_archived": 5,
-        "retired_generations_archived": 2,
-        "retired_versions_archived": 2,
-        "deleted_files": 0,
-        "maintenance_seconds": 116.45242266310379,
-        "files": 96,
-        "secret_scan_matches": 0,
-        "archive_sha256": "86d0b7caf0935c0edfd015e39178302194d5d34380fc420e1a83ed34b0ddf4c2",
-        "main_integration_pending": true,
-        "full_model_quality": false,
-        "performance_claim": false,
-        "long_stability_run": false,
-        "full_openai_compatibility": false,
-        "listening_and_similarity_accepted": false,
-        "listening_deferred_by_owner": true,
-        "all_master_tasks_active": true,
         "persistent_client_limits": {
           "alpha": {
             "requests_per_minute": 30,
@@ -8411,11 +8409,36 @@
             "max_output_tokens": 256
           }
         },
-        "command_attempts": 20,
-        "original_publication_timeout_preserved": true,
-        "original_intent_resumed": "b1396231-0a95-4edc-85f0-2f5db54c4e70",
-        "continuation_seconds": 173.37305559078231,
-        "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+        "usage_reset": false,
+        "profile_history_and_cooldown_preserved": true,
+        "original_capacity_failure_preserved": true,
+        "original_request_reused": "861e69c7-d216-43da-9e81-cc8ea4fa462c",
+        "retired_intents_archived": 8,
+        "deleted_files": 0,
+        "maintenance_seconds": 7.073299048002809,
+        "manual_root": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+        "automatic_payload": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+        "candidate_to_retained_automatic_fault_actually_tested": true,
+        "reciprocal_automatic_fault_additionally_injected": false,
+        "reciprocal_registration_and_stopped_rollback_verified": true,
+        "older_engine_fallback": false,
+        "previous_rev346_preserved": true,
+        "original_tls_answer_quality": "FAIL",
+        "model_quality_policy": "record_exact_source_answer_separately",
+        "original_version_environment_abort_preserved": true,
+        "original_failures_preserved": true,
+        "files": 95,
+        "secret_scan_matches": 0,
+        "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "listening_and_similarity_accepted": false,
+        "listening_deferred_by_owner": true,
+        "all_master_tasks_active": true,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -8582,7 +8605,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Semantic VAD final-head CI and actual main merge",
+        "Realtime Chat final-head CI and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -9324,6 +9347,10 @@
       "semantic_vad_delivery_20261119": {
         "revision": 346,
         "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+      },
+      "native_realtime_chat_delivery_20261120": {
+        "revision": 356,
+        "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
       }
     },
     {
@@ -9535,7 +9562,7 @@
       }
     }
   ],
-  "next_task": "Semantic VAD final-head CI/main integration; implement conversation/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
+  "next_task": "Realtime Chat final-head CI/main integration; implement native Prompt lookup/snapshots, audio/MCP/tracing/Live and every remaining A/N/R/Q task. Preserve original failures and owner-deferred listening.",
   "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -9966,7 +9993,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
       },
-      "latest_service_revision": 346
+      "latest_service_revision": 356
     },
     "custom_voice": {
       "state": "REGISTERED_SAMPLE_VOICE_HTTP_AND_MANAGED_DELIVERED_REV326",
@@ -10507,7 +10534,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_transcription_semantic_vad_delivered_rev346_conversation_live_pending",
+    "state": "native_transcription_semantic_vad_text_tools_delivered_rev356_audio_mcp_prompt_tracing_live_pending",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -10515,7 +10542,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Implement actual conversational Realtime, tool/TTS output and Live; continue remaining master work and preserve owner-deferred listening.",
+    "next": "Implement actual native Prompt lookup and immutable snapshots, then audio/MCP/tracing/Live; continue every remaining master task and preserve owner-deferred listening.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -11041,6 +11068,151 @@
       "original_intent_resumed": "b1396231-0a95-4edc-85f0-2f5db54c4e70",
       "continuation_seconds": 173.37305559078231,
       "evidence": "evidence/serve-semantic-vad-delivery-20261119/README.md"
+    },
+    "conversation_foundation_20261119": {
+      "status": "PASS_REALTIME_SCHEMA_HISTORY_FOUNDATION",
+      "contract_tests": 20,
+      "first_cpu_tests": 19,
+      "targeted_followup_tests": 3,
+      "reused_tests": 17,
+      "realtime_sdk_vectors": 476,
+      "responses_sdk_vectors": 647,
+      "sdk_differences": 0,
+      "source_mutation_checks": 18,
+      "cmake_headers_match": true,
+      "gpu_actions": 0,
+      "runtime_route_integrated": false,
+      "default": "rev346 STOPPED unchanged",
+      "prior_reference_fixture_failure_preserved": true,
+      "archive_sha256": "bf5a74502d2539da5acfcbf78cac4ba9809754eacb3be6028f307a41123793da",
+      "raw_files": 73,
+      "evidence": "evidence/serve-realtime-conversation-foundation-20261119/README.md",
+      "next": "Native model deltas, tool results, per-response quotas and cancellation; audio/Live remain required."
+    },
+    "response_output_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-output-cpu-20261119/README.md",
+      "tests": 17,
+      "gpu_actions": 0,
+      "actual_conversation_execution_accepted": false,
+      "master_complete": false
+    },
+    "conversation_session_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-conversation-session-cpu-20261119/README.md",
+      "tested": 46,
+      "reused": 2,
+      "unique_contracts": 48,
+      "gpu_actions": 0,
+      "original_failures_retained": true,
+      "actual_business_accepted": false,
+      "master_complete": false
+    },
+    "shared_pump_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-shared-pump-cpu-20261119/README.md",
+      "tests": 8,
+      "gpu_actions": 0,
+      "actual_business_accepted": false,
+      "master_complete": false
+    },
+    "native_chat_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-native-chat-cpu-20261119/README.md",
+      "unique_contracts": 51,
+      "original_failures_retained": true,
+      "gpu_actions": 0,
+      "actual_business_accepted": false,
+      "remaining": [
+        "Actual SDK/WSS model and tool loop",
+        "audio/MCP/Live/tracing/prompt execution",
+        "profile and recovery qualification"
+      ],
+      "master_complete": false
+    },
+    "native_chat_business_20261119": {
+      "state": "actual_sdk_tls_business_pass_profile_recovery_delivery_pending",
+      "evidence": "evidence/serve-realtime-chat-business-20261119/README.md",
+      "source_commit": "502480d4c",
+      "binary_sha256": "994025c25c8a58bcd7186dd227d979b01a47c3c368e5e360076af11d19805332",
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 3,
+        "response_creates": 10,
+        "committed_items": 1,
+        "chats": 2,
+        "controls": 36
+      },
+      "seconds": 50.32459380431101,
+      "nvml_queries": 49,
+      "original_failures_preserved": true,
+      "default_rev346_stopped_unchanged": true,
+      "master_complete": false
+    },
+    "text_conversation_delivered": true,
+    "tool_conversation_delivered": true,
+    "conversation_delivery": {
+      "status": "ACCEPT_NATIVE_REALTIME_CHAT_DELIVERY",
+      "revision": 356,
+      "current": {
+        "engine_binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+        "engine_release_sha256": "90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1",
+        "generation_sha256": "cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61",
+        "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+        "service_acceptance_sha256": "2d5b66bfd859c551717bb4ac9d2cf21628b32fb27c8f58973c9cf23f51d37e2a",
+        "service_release_sha256": "08573cda3827e0a57744cb812d0ae5b9dae84bb7f9b0cd9507429a6532e9844d"
+      },
+      "state": "STOPPED",
+      "successful_commands": 19,
+      "command_attempts": 20,
+      "seconds": 314.0861754543148,
+      "new_gpu_starts": 0,
+      "outer_enabled": true,
+      "outer_charged_total": 0,
+      "persistent_client_limits": {
+        "alpha": {
+          "requests_per_minute": 30,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 3457
+        },
+        "beta": {
+          "requests_per_minute": 1,
+          "tokens_per_minute": 6000,
+          "max_output_tokens": 256
+        }
+      },
+      "usage_reset": false,
+      "profile_history_and_cooldown_preserved": true,
+      "original_capacity_failure_preserved": true,
+      "original_request_reused": "861e69c7-d216-43da-9e81-cc8ea4fa462c",
+      "retired_intents_archived": 8,
+      "deleted_files": 0,
+      "maintenance_seconds": 7.073299048002809,
+      "manual_root": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+      "automatic_payload": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+      "candidate_to_retained_automatic_fault_actually_tested": true,
+      "reciprocal_automatic_fault_additionally_injected": false,
+      "reciprocal_registration_and_stopped_rollback_verified": true,
+      "older_engine_fallback": false,
+      "previous_rev346_preserved": true,
+      "original_tls_answer_quality": "FAIL",
+      "model_quality_policy": "record_exact_source_answer_separately",
+      "original_version_environment_abort_preserved": true,
+      "original_failures_preserved": true,
+      "files": 95,
+      "secret_scan_matches": 0,
+      "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
+      "main_integration_pending": true,
+      "full_model_quality": false,
+      "performance_claim": false,
+      "long_stability_run": false,
+      "full_openai_compatibility": false,
+      "listening_and_similarity_accepted": false,
+      "listening_deferred_by_owner": true,
+      "all_master_tasks_active": true,
+      "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -11138,5 +11310,345 @@
     "runtime_identity_changed": false,
     "ci_after_fix_pending": true,
     "evidence": "evidence/serve-semantic-vad-ci-entry-20261119/README.md"
+  },
+  "semantic_vad_main_20261119": {
+    "state": "main_merged",
+    "pull_request": 51,
+    "main_commit": "53808bf5211058515ff20999eadac7ba95d3d4ea",
+    "head": "c388fb254d1fc5887417f080472b776a28fc3aa4",
+    "evidence": "evidence/serve-semantic-vad-main-20261119/README.md",
+    "default_revision": 346,
+    "gpu_actions": 0,
+    "master_complete": false
+  },
+  "native_realtime_chat_primary_light_20261119": {
+    "state": "actual_primary_light_pass_guardian_delivery_pending",
+    "evidence": "evidence/serve-realtime-chat-primary-light-20261119/README.md",
+    "starts": 2,
+    "requests": 64,
+    "websocket_sessions": 8,
+    "seconds": 368.90083494596183,
+    "nvml_queries": 341,
+    "default_changed": false,
+    "master_complete": false
+  },
+  "native_realtime_chat_managed_20261120": {
+    "status": "ACCEPT_NATIVE_REALTIME_CHAT_SERVICE_COMPOSITION_WITH_MODEL_QUALITY_LIMITATION",
+    "binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+      "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd"
+    },
+    "automatic_fallback": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/retained-01/bundle",
+      "manifest_sha256": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1"
+    },
+    "modern_retained_root": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/retained-01/bundle",
+      "manifest_sha256": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1"
+    },
+    "tls_package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/tls-package-01/bundle",
+      "manifest_sha256": "d22b19ba26f1d553873db9bc8b0b845de71fae8666137e24926a2c5f353766db"
+    },
+    "conversation_turns": {
+      "retained-service-01": {
+        "primary-conversation": {
+          "mode": "complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 802,
+          "actual_tokens": 802,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 798839,
+            "model_start_ticks": 329308981,
+            "model_generation": 1,
+            "controller_pid": 798825,
+            "controller_start_ticks": 329308750
+          }
+        }
+      },
+      "tls-service-02": {
+        "tls-before-conversation": {
+          "mode": "hold_stream",
+          "transport": "official-openai-wss",
+          "completed_tokens": 803,
+          "actual_tokens": 1011,
+          "interrupted_usage_from_server": true,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_cc571f509b0b79a76f3536eda2573b4b"
+          }
+        },
+        "tls-after-conversation": {
+          "mode": "complete",
+          "transport": "official-openai-wss",
+          "completed_tokens": 803,
+          "actual_tokens": 803,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_e4c0de091fec2164753af7c92bfa3db0"
+          }
+        }
+      },
+      "version-service-02": {
+        "primary-conversation": {
+          "mode": "hold_complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 801,
+          "actual_tokens": 801,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 814827,
+            "model_start_ticks": 329687755,
+            "model_generation": 1,
+            "controller_pid": 814819,
+            "controller_start_ticks": 329687521
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_d75829f48b86c8abe0dedb04478df6b9"
+          }
+        },
+        "fallback-conversation": {
+          "mode": "complete",
+          "transport": "ws-loopback",
+          "completed_tokens": 801,
+          "actual_tokens": 801,
+          "interrupted_usage_from_server": false,
+          "automatic_replay": false,
+          "core_owner": {
+            "model_pid": 816201,
+            "model_start_ticks": 329701571,
+            "model_generation": 2,
+            "controller_pid": 816193,
+            "controller_start_ticks": 329701336
+          },
+          "quality_policy": "record_exact_source_answer_separately",
+          "model_quality": {
+            "status": "PASS",
+            "expected": "rev346",
+            "actual": "rev346",
+            "criterion": "exact_source_version",
+            "response_id": "resp_d5b9fc720bdb8c3b83804f5b754a21a3"
+          }
+        }
+      }
+    },
+    "semantic_turns": {
+      "retained-service-01": {
+        "primary-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 798839,
+            "model_start_ticks": 329308981,
+            "model_generation": 1,
+            "controller_pid": 798825,
+            "controller_start_ticks": 329308750
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      },
+      "tls-service-02": {
+        "tls-before-semantic": {
+          "transport": "openai-realtime-wss",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        },
+        "tls-after-semantic": {
+          "transport": "openai-realtime-wss",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 810133,
+            "model_start_ticks": 329604923,
+            "model_generation": 1,
+            "controller_pid": 810125,
+            "controller_start_ticks": 329604692
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      },
+      "version-service-02": {
+        "primary-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 814827,
+            "model_start_ticks": 329687755,
+            "model_generation": 1,
+            "controller_pid": 814819,
+            "controller_start_ticks": 329687521
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        },
+        "fallback-semantic": {
+          "transport": "ws-loopback",
+          "actual_tokens": 887,
+          "actual_classifier": true,
+          "core_owner": {
+            "model_pid": 816201,
+            "model_start_ticks": 329701571,
+            "model_generation": 2,
+            "controller_pid": 816193,
+            "controller_start_ticks": 329701336
+          },
+          "resources_released": true,
+          "automatic_replay": false
+        }
+      }
+    },
+    "actual_model_starts": 4,
+    "service_requests": 63,
+    "realtime_tasks": 21,
+    "websocket_sessions": 15,
+    "semantic_tasks": 5,
+    "realtime_chat_responses": 11,
+    "service_work_items": 84,
+    "service_probes": 1,
+    "service_seconds": 647.3743365965784,
+    "nvml_queries": 604,
+    "nvml_all_ok": true,
+    "cleanup_complete": true,
+    "strict_finalizers_all_passed": false,
+    "retained_exact_execution_identity_reviewed": true,
+    "original_literal_command_failure_preserved": true,
+    "private_review_initialization_failure_preserved": true,
+    "strict_runtime_environment_checks_passed": true,
+    "original_version_driver_passed": false,
+    "qualified_version_driver_passed": true,
+    "original_version_environment_abort_preserved": true,
+    "original_version_environment_evidence": "docs/evidence/serve-realtime-chat-recovery-followup-20261120/README.md",
+    "candidate_whole_package_gpu_run": true,
+    "default_unchanged": true,
+    "publication_pending": true,
+    "older_engine_fallback": false,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "all_master_tasks_complete": false,
+    "original_failure_relabelled": false,
+    "listening": "PENDING_BY_OWNER",
+    "primary_light_evidence": "docs/evidence/serve-realtime-chat-primary-light-20261119/README.md",
+    "normal_speed_voice_similarity_accepted": false,
+    "strict_fp_boundary_accepted": true,
+    "model_quality_policy": "record_exact_source_answer_separately",
+    "original_sampled_answer_quality": "FAIL",
+    "original_tls_stage": "tls-service-01",
+    "original_tls_stage_passed": false,
+    "user_quality_classification_accepted": "2026-11-20",
+    "original_quality_evidence": "docs/evidence/serve-realtime-chat-recovery-review-20261119/README.md",
+    "bounded_diagnostic_evidence": "docs/evidence/serve-realtime-chat-sampling-20261120/README.md",
+    "archive_sha256": "efd9f768b55d6999fe3b96342f0c86b67b21f1d26be03f247639eef1daa969e9",
+    "archive_files": 113,
+    "secret_scan_matches": 0,
+    "evidence": "evidence/serve-realtime-chat-managed-20261120/README.md"
+  },
+  "native_realtime_chat_delivery_20261120": {
+    "status": "ACCEPT_NATIVE_REALTIME_CHAT_DELIVERY",
+    "revision": 356,
+    "current": {
+      "engine_binary_sha256": "f5af36c6c5d7232f9b180be8c9100616d0cfbe73b30f77135cb4b91a12eb609d",
+      "engine_release_sha256": "90d4bce535ebb08600049aeb104410cac442d60d23a992ac5124cae2037f28f1",
+      "generation_sha256": "cde8f4b2547f092b9987358d55f12b27c13ace69522a47b526ac66463bfb3a61",
+      "manifest_sha256": "c292e8049b1cba76e3596faa7b7b0c2b135abe258458abfafded3434107fc1fd",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/service-package-01/bundle",
+      "service_acceptance_sha256": "2d5b66bfd859c551717bb4ac9d2cf21628b32fb27c8f58973c9cf23f51d37e2a",
+      "service_release_sha256": "08573cda3827e0a57744cb812d0ae5b9dae84bb7f9b0cd9507429a6532e9844d"
+    },
+    "state": "STOPPED",
+    "successful_commands": 19,
+    "command_attempts": 20,
+    "seconds": 314.0861754543148,
+    "new_gpu_starts": 0,
+    "outer_enabled": true,
+    "outer_charged_total": 0,
+    "persistent_client_limits": {
+      "alpha": {
+        "requests_per_minute": 30,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 3457
+      },
+      "beta": {
+        "requests_per_minute": 1,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 256
+      }
+    },
+    "usage_reset": false,
+    "profile_history_and_cooldown_preserved": true,
+    "original_capacity_failure_preserved": true,
+    "original_request_reused": "861e69c7-d216-43da-9e81-cc8ea4fa462c",
+    "retired_intents_archived": 8,
+    "deleted_files": 0,
+    "maintenance_seconds": 7.073299048002809,
+    "manual_root": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+    "automatic_payload": "b78dd188b68513e48035270fbcd25ae5b8640bb5c130a0dee312654a2f0010f1",
+    "candidate_to_retained_automatic_fault_actually_tested": true,
+    "reciprocal_automatic_fault_additionally_injected": false,
+    "reciprocal_registration_and_stopped_rollback_verified": true,
+    "older_engine_fallback": false,
+    "previous_rev346_preserved": true,
+    "original_tls_answer_quality": "FAIL",
+    "model_quality_policy": "record_exact_source_answer_separately",
+    "original_version_environment_abort_preserved": true,
+    "original_failures_preserved": true,
+    "files": 95,
+    "secret_scan_matches": 0,
+    "archive_sha256": "9b60959acd5f301c5824b9a917832fd36cea853e36b7ba0db3c24347da078afa",
+    "main_integration_pending": true,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "long_stability_run": false,
+    "full_openai_compatibility": false,
+    "listening_and_similarity_accepted": false,
+    "listening_deferred_by_owner": true,
+    "all_master_tasks_active": true,
+    "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
   }
 }

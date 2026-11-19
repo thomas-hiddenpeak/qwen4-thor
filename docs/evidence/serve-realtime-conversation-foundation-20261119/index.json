@@ -1,0 +1,294 @@
+{
+  "cpu-01/oracle/sdk-shape-cases.mts": {
+    "bytes": 63011,
+    "sha256": "82c6f3355ae9aff64aac0ec125d4d6c0c5695821bae42436f2b5a9ffe31b4d5b"
+  },
+  "cpu-01/oracle-result.json": {
+    "bytes": 392,
+    "sha256": "f6fc9d5c7b215e9074ffe43c7f03b315deb045cf43a46fc91cb5c11729fbb873"
+  },
+  "cpu-01/oracle.log": {
+    "bytes": 951,
+    "sha256": "840be82774e2247022f9b693249f5211152bd840a309554375e702f594396212"
+  },
+  "cpu-01/source/src/server/realtime_conversation.cpp": {
+    "bytes": 11525,
+    "sha256": "80610124eaec3390e049bdb86be8d89db0a72a5c6b37f591c8a148b7cd9b4195"
+  },
+  "cpu-01/source/tests/server_realtime_conversation_test.cpp": {
+    "bytes": 13119,
+    "sha256": "976ba3efaeaf672e359526ede1ed5caefdb2efe7ffae4f11053c9934106c9573"
+  },
+  "cpu-02/build-00-result.json": {
+    "bytes": 533,
+    "sha256": "abfedef656b9f2aa0183421114a17ee6caa6df5bcbd2128dafb44375aca5e6f0"
+  },
+  "cpu-02/build-00.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-01-result.json": {
+    "bytes": 526,
+    "sha256": "d11f79e7aaaf3f1ab0ea0bcd7567c8e2f9c62b647203727db2b68e71b3aafdb6"
+  },
+  "cpu-02/build-01.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-02-result.json": {
+    "bytes": 532,
+    "sha256": "0954408fd4429a0cd73503b95c6e01f294bde84345b3f611e03b2b91a6ae5fe0"
+  },
+  "cpu-02/build-02.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-03-result.json": {
+    "bytes": 526,
+    "sha256": "531d1eb974f0aa27d5cdbab60c240b8bc86bc31bfda64dbc543441a1f7b360eb"
+  },
+  "cpu-02/build-03.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-04-result.json": {
+    "bytes": 524,
+    "sha256": "64ccff316cbf3e26f5a8dfd4bf53327dc6ee6cccf2fb8f10bbb178bd931c0264"
+  },
+  "cpu-02/build-04.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-05-result.json": {
+    "bytes": 519,
+    "sha256": "13ed90429932dad0b2ab9ed03dbf27f4e9b7ed265620fa226bc78b6d580c55ef"
+  },
+  "cpu-02/build-05.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-06-result.json": {
+    "bytes": 517,
+    "sha256": "a159853491034eaf689c052ffcdc684c9c691ce74acb5a6a6e80f288c6cb2512"
+  },
+  "cpu-02/build-06.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-07-result.json": {
+    "bytes": 518,
+    "sha256": "358ab940631f4ccaa75d27873bfceb913b386ae6d71b11fca0957fc3a3421cd1"
+  },
+  "cpu-02/build-07.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-08-result.json": {
+    "bytes": 509,
+    "sha256": "88d1c55c6dae5c84b2e7c2348de80560dbf9bee0c19788741a2950d1d17a84b7"
+  },
+  "cpu-02/build-08.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-09-result.json": {
+    "bytes": 505,
+    "sha256": "9d4537dcc755bc98609b7862aa9c7070807baaea505341df4a21ccdbdc912ed0"
+  },
+  "cpu-02/build-09.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-10-result.json": {
+    "bytes": 586,
+    "sha256": "3d9bab604d9ac5b4b1825148e75a91fceec74f16170361e145dee565c7825007"
+  },
+  "cpu-02/build-10.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/build-result.json": {
+    "bytes": 157,
+    "sha256": "b978323f1af37edc482c6f79b176540b1f979dde59ebd55e54aa1592b61339d8"
+  },
+  "cpu-02/contracts-result.json": {
+    "bytes": 178,
+    "sha256": "33a170cc01ee509390e86cef592faae60ec7b2c6cf2f19765c286e00f158cc96"
+  },
+  "cpu-02/contracts.log": {
+    "bytes": 1372,
+    "sha256": "9da1e04dc6034b0944a1b6b73bbd135825d68f56b8bbdd4da35f8b17a8b49c14"
+  },
+  "cpu-02/freeze.json": {
+    "bytes": 1563,
+    "sha256": "9012dc2b556e811a831776868b375a5481fd7eaa0694ced52350689e6958b77a"
+  },
+  "cpu-02/generated/q4t/server/realtime_types_data.h": {
+    "bytes": 100202,
+    "sha256": "9f9db5ce0e7a4c8a257d1d3f38a73ebf535bea0e5c587873e43e3c30affd202c"
+  },
+  "cpu-02/generated/q4t/server/responses_item_types_data.h": {
+    "bytes": 148692,
+    "sha256": "05fce06bf37855317fdf97236fc6f64cc9f8351e87444918a6c2c75a2eef4376"
+  },
+  "cpu-02/link-result.json": {
+    "bytes": 1432,
+    "sha256": "ca59c8157a5dabb63c950e0b9e80424fd24ca3adc607bbd69aeeca13d1bdc35f"
+  },
+  "cpu-02/link.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-02/main.cpp": {
+    "bytes": 70,
+    "sha256": "2d939893e113d91feb0394cfde276173ecedef00be4bd5aa9101df9d8f2e5e20"
+  },
+  "cpu-02/old-graph-result.json": {
+    "bytes": 367,
+    "sha256": "ae0142edf5960ba5e37979b646663914b92e5b4dda4c62962d89cb0536bd050f"
+  },
+  "cpu-02/old-graph.log": {
+    "bytes": 292,
+    "sha256": "0c5365864ec0ac00a6e9ab684220b13f7ccfe5d9ba76ef3d9d75e336ffa75794"
+  },
+  "cpu-02/oracle/sdk-concrete-cases.mts": {
+    "bytes": 767393,
+    "sha256": "5f54e5c481caa35209c0d3af79aa06483d260253b3ec75a165689d23d5cb31d0"
+  },
+  "cpu-02/oracle/sdk-shape-cases.mts": {
+    "bytes": 63096,
+    "sha256": "d1ccab31de5e6d8f3312d3b4f147eadaf2f29b3645d6cd86a6456e010802f74b"
+  },
+  "cpu-02/oracle/vectors.json": {
+    "bytes": 325637,
+    "sha256": "b33b10893a2917d964b09037e4301a3787d33cc0fea969d425bb9cb2e3319e49"
+  },
+  "cpu-02/oracle-result.json": {
+    "bytes": 405,
+    "sha256": "050c969ac033176da72501c3a69a84a0ec1cb6b9ce084d4645c5682e67f6a8a9"
+  },
+  "cpu-02/oracle.log": {
+    "bytes": 199,
+    "sha256": "f870d6d07744550729127e9154bc9e44b7f92f312437e0f6b25f32503fd4acf1"
+  },
+  "cpu-02/original-item-graph.json": {
+    "bytes": 148479,
+    "sha256": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81"
+  },
+  "cpu-02/result.json": {
+    "bytes": 332,
+    "sha256": "09ab6bc763ac362581e8ca564ac7e29453c9093ef3d8aa8f851ccad4ea57b72f"
+  },
+  "cpu-02/source/include/q4t/server/realtime_conversation.h": {
+    "bytes": 3735,
+    "sha256": "51f3edde6e98b1cb5e8e312f1c4d56445f4d139bdea6e1e73056c0602affba26"
+  },
+  "cpu-02/source/include/q4t/server/realtime_shape.h": {
+    "bytes": 480,
+    "sha256": "0389527f9a67297a77a1f894cf53f3f93afb2a8fed90afe1243370bab5409bd7"
+  },
+  "cpu-02/source/src/server/contracts/openai_realtime_types_v1.json": {
+    "bytes": 99985,
+    "sha256": "802bd77ff3c9650052a8239c3ef530b50710909b12bf822f7632de92dbbf0aac"
+  },
+  "cpu-02/source/src/server/realtime_conversation.cpp": {
+    "bytes": 11449,
+    "sha256": "e5e450ca4d35f320cc448b04d63a6e14810cfbfeca62edee465ef3618ed0ba4d"
+  },
+  "cpu-02/source/src/server/responses_item_shape.cpp": {
+    "bytes": 8841,
+    "sha256": "3861030a86c009f07049f07cb5999c9c275bb8034d6de88865e3c6f911e2aeb1"
+  },
+  "cpu-02/source/tests/fixtures/responses_items/sdk_vectors.json": {
+    "bytes": 560742,
+    "sha256": "a55a6a42f4718baf5dd77c8f04809cfc4543f19ca8fd542493cb7d08e7e01682"
+  },
+  "cpu-02/source/tests/server_realtime_conversation_test.cpp": {
+    "bytes": 13258,
+    "sha256": "3eb364a5a681ad443206d8e2c43a07d1b46ab128a44c4e6eb63b62f7800e3f4e"
+  },
+  "cpu-02/source/tests/server_realtime_shape_test.cpp": {
+    "bytes": 3015,
+    "sha256": "8ed87291697633ad12a0b0c80160d92b9c7f64b7b7a5c283392c44798d9a521a"
+  },
+  "cpu-02/source/tests/server_responses_item_shape_test.cpp": {
+    "bytes": 2799,
+    "sha256": "d987d95c5140e0d376c9794589f56429c4fd0db2d9928f28a3a9160e6904a354"
+  },
+  "cpu-02/test-selection.json": {
+    "bytes": 1380,
+    "sha256": "94681c33dba4331cb56a8a0230059c1bf1f6631ba53a884b6483ff43160da706"
+  },
+  "cpu-03/build-0.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-03/build-1.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-03/build-2.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-03/build-result.json": {
+    "bytes": 2907,
+    "sha256": "84c3451bd2f487563601bafb16de1695d7e5336d9237b6b3d886d5f3023b2b2c"
+  },
+  "cpu-03/contracts.log": {
+    "bytes": 245,
+    "sha256": "78c24ba49b0b41b1baad7c67bc3c78448afa65e3c4c0a33b885d8dd3aabd3a22"
+  },
+  "cpu-03/freeze.json": {
+    "bytes": 546,
+    "sha256": "cb2079b924c050774d7ac4985d93ffb9f568764f6bcce8cf2bfaa8fb92c4507a"
+  },
+  "cpu-03/link.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "cpu-03/main.cpp": {
+    "bytes": 259,
+    "sha256": "91706d94ddc56cae5f0d0f30086d106585f4cf3c1f37c02037f1f0c174695f32"
+  },
+  "cpu-03/result.json": {
+    "bytes": 150,
+    "sha256": "395b5d3741ad142de786a5504c57d8d98d38fe1822d9a158014cd8452d3e1292"
+  },
+  "cpu-03/source/src/server/realtime_conversation.cpp": {
+    "bytes": 11500,
+    "sha256": "bd8fcda55e3d93dd65b28a8107836b1944d147d251c0ac51c51d4804d12875aa"
+  },
+  "cpu-03/source/tests/server_realtime_conversation_test.cpp": {
+    "bytes": 14248,
+    "sha256": "2a7ea5b89962d62c9d52ab3780c87a6bf8827ac43499518159ade12a321e89cd"
+  },
+  "cmake-01/configure.log": {
+    "bytes": 185,
+    "sha256": "18df45e0adaa8c9265687b1d4cb86ad56c24050d403c1159749eb9f25e027b40"
+  },
+  "cmake-01/result.json": {
+    "bytes": 147,
+    "sha256": "f74eff018e8dd7061abafe2ce8cf6d2543389ed84cfb300d2c48e0ca78ad430e"
+  },
+  "scope-01.json": {
+    "bytes": 778,
+    "sha256": "28ffa1dbdb2ee9f0112f94329f40ababeffe23df6190f0e02f91455efefa63c6"
+  },
+  "cpu-freeze-01.json": {
+    "bytes": 1472,
+    "sha256": "ae12a7767611d730c87065d071d21fcb8ec6970b2bc9805a4197e49d7c8c611b"
+  },
+  "source-detach-01.json": {
+    "bytes": 1433,
+    "sha256": "d30946465176790fb2eaa501a996ca5a269999cf21b31119e405c853f6f0525a"
+  },
+  "inventory-01.json": {
+    "bytes": 223,
+    "sha256": "c5fe9f6be0ec1fa7667cb729f9d6f8c6541af0d0adbd253e92d06775bc9960c8"
+  },
+  "run_cpu_02.py": {
+    "bytes": 4698,
+    "sha256": "f2bd6ad27ae5d8c72f598dcc3704e5bc5d57b2ee5072ad8cb3076060dab65956"
+  }
+}

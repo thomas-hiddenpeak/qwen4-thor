@@ -44,6 +44,9 @@ class RequestControl {
       : id_(std::move(id)), key_(std::move(key)),
         registry_key_(ClientScopedKey(client, id_)), deadline_(deadline) {}
   const std::string& id() const { return id_; }
+  bool OwnedBy(std::string_view client) const {
+    return registry_key_ == ClientScopedKey(client, id_);
+  }
   // Bind before publishing to the scheduler; read only during borrowed work.
   void BindProgress(ProgressHandle progress) { progress_ = progress; }
   ProgressHandle Progress() const { return progress_; }

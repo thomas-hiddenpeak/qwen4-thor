@@ -1,0 +1,43 @@
+{
+  "tls-service-02": {
+    "status": "PASS_BOUNDED_FEATURE_SERVICE",
+    "guard": "COMPLETED",
+    "seconds": 230.70326204085723,
+    "counts": {
+      "starts": 1,
+      "chats": 34,
+      "probes": 0,
+      "controls": 245,
+      "websocket_sessions": 6
+    },
+    "nvml_ok": 215,
+    "nvml_failed": [],
+    "cleanup_failure": null
+  },
+  "version-service-01": {
+    "status": "FAILED",
+    "guard": "ENV_ABORT",
+    "seconds": 231.21904971962795,
+    "counts": {
+      "starts": 2,
+      "chats": 22,
+      "probes": 1,
+      "controls": 382,
+      "websocket_sessions": 6
+    },
+    "nvml_ok": 200,
+    "nvml_failed": [
+      {
+        "status": "CLEANUP_FAILED",
+        "worker_pid": 814497
+      }
+    ],
+    "cleanup_failure": null
+  },
+  "status": "TLS_ACCEPTED_VERSION_ENV_ABORT_PRESERVED",
+  "default_unchanged": true,
+  "service_composition_accepted": false,
+  "archive_sha256": "ccf768828bbb2be2f5f0ad85cb0a81b957a193837424a963d2ef4f96cc452838",
+  "files": 67,
+  "secret_scan_matches": 0
+}

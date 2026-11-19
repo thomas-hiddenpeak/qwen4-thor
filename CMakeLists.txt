@@ -373,12 +373,18 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_stream_input.cpp
   src/server/realtime_asr_policy.cpp
   src/server/realtime_transcript_history.cpp
+  src/server/realtime_conversation.cpp
+  src/server/native_chat_generation.cpp
+  src/server/realtime_response_output.cpp
+  src/server/realtime_conversation_session.cpp
+  src/server/realtime_wire_shape.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
+  src/server/chat_realtime_conversation.cpp
   src/server/chat_realtime_stream.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
@@ -587,6 +593,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
+  src/server/realtime_session_pump.cpp
+  src/server/realtime_conversation_pump.cpp
+  src/server/realtime_chat_plan.cpp
+  src/server/realtime_chat_execution.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp
@@ -848,6 +858,13 @@ if(Q4T_BUILD_TESTS)
     tests/server_asr_stream_output_test.cpp
     tests/server_asr_stream_input_test.cpp
     tests/server_realtime_transcript_history_test.cpp
+    tests/server_realtime_conversation_test.cpp
+    tests/server_realtime_shape_test.cpp
+    tests/server_realtime_response_output_test.cpp
+    tests/server_realtime_conversation_session_test.cpp
+    tests/server_realtime_conversation_pump_test.cpp
+    tests/server_realtime_chat_plan_test.cpp
+    tests/server_realtime_chat_execution_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_semantic_vad_test.cpp
     tests/server_realtime_semantic_turn_test.cpp
@@ -988,6 +1005,10 @@ if(Q4T_BUILD_TESTS)
     src/server/websocket.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
+  src/server/realtime_session_pump.cpp
+  src/server/realtime_conversation_pump.cpp
+  src/server/realtime_chat_plan.cpp
+  src/server/realtime_chat_execution.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp

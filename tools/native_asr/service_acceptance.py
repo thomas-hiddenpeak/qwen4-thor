@@ -35,9 +35,10 @@ WORK = ROOT/'.q4t-work/serve-audio-native-20261117'
 
 
 def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False,
-               native_voice=False, realtime=False, semantic_vad=False):
+               native_voice=False, realtime=False, semantic_vad=False, conversation=False):
     require(all(type(v) is bool for v in
-                (chat_audio, native_tts, retained_tts, native_voice, realtime, semantic_vad)),
+                (chat_audio, native_tts, retained_tts, native_voice, realtime,
+                 semantic_vad, conversation)),
             'invalid managed audio budget flags')
     require(not semantic_vad or realtime, 'semantic recovery requires Realtime')
     limits = dict(LIMITS[scenario])
@@ -49,6 +50,11 @@ def limits_for(scenario, chat_audio=False, native_tts=False, retained_tts=False,
         if semantic_vad:
             limits['websocket_sessions'] += count
             limits['chats'] += count
+    if conversation:
+        require(scenario != 'tls_remaining', 'conversation needs complete recovery phases')
+        count = 1 if scenario == 'tool_retained' else 2
+        limits['websocket_sessions'] = limits.get('websocket_sessions',0)+count
+        limits['chats'] += 2*count+int(scenario == 'tls')
     if native_voice:
         require(scenario != 'tls_remaining' and not retained_tts,
                 'registered voice needs its complete recovery phases')
@@ -71,7 +77,8 @@ def configure_plan_limits(plan):
                           plan.get('native_tts') is not None,
                           plan.get('reused_tls', {}).get('tts_complete', False),
                           plan.get('native_voice') is not None,
-                          'realtime' in plan, plan.get('semantic_vad', False))
+                          'realtime' in plan, plan.get('semantic_vad', False),
+                          'conversation' in plan)
     require(plan['limits'] == expected, 'managed audio frozen budget differs')
     if 'sdk' in plan and 'files_binding' in plan['sdk']:
         verify_sdk_binding(plan)
@@ -154,11 +161,13 @@ def prepare(args):
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
     semantic_vad = profile_evidence.semantic_vad_enabled(
         manifest['recovery_profiles']['identity'], qualified['capabilities'])
+    conversation = profile_evidence.conversation_enabled(qualified['capabilities'])
     profile_contract.tts_capability_binding(native_tts, qualified['capabilities'],
         native_voice, manifest['recovery_profiles']['identity'].get('native_asr'))
     limits = limits_for(args.scenario, chat_audio, native_tts is not None,
         args.scenario == 'tls_remaining' and native_tts is not None and
-        args.retained is not None, native_voice is not None, realtime, semantic_vad)
+        args.retained is not None, native_voice is not None, realtime, semantic_vad,
+        conversation)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_host', 'tools/serve_service', 'tools/serve_ops', 'tools/serve_gateway',
         'tools/evalscope', 'tools/examples', 'tools/release', 'tools/serve_responses',
@@ -176,7 +185,9 @@ def prepare(args):
                  'run', '--plan', str(out/'plan.json')], requests=requests(),
         default_replacement=False, automatic_request_replay=False,
         planned=dict(starts=limits['starts'], self_checks=limits['starts'],
-            counted_post_requests=limits['chats']-limits.get('websocket_sessions', 0),
+            counted_post_requests=limits['chats']-limits.get('websocket_sessions', 0)-
+                ((1 if args.scenario == 'tool_retained' else 2)+
+                 int(args.scenario == 'tls') if conversation else 0),
             counted_model_work=limits['chats']), scope=__doc__)
     if chat_audio: plan['chat_audio'] = True
     if semantic_vad: plan['semantic_vad'] = True
@@ -214,6 +225,17 @@ def prepare(args):
             getattr(args, 'realtime_reference', None), manifest, qualified, pack)
         plan['sources'].update(plan['realtime']['files'])
         plan['planned']['websocket_sessions'] = limits['websocket_sessions']
+    if conversation:
+        from tools.serve_realtime import conversation_managed
+        plan['conversation'], chat_sdk = conversation_managed.prepare(
+            getattr(args, 'conversation_reference', None), manifest, qualified, pack)
+        if realtime:
+            require(plan['sdk'] == chat_sdk, 'managed Chat/ASR SDK identity differs')
+        plan['sdk'] = chat_sdk
+        plan['sources'].update(plan['conversation']['files'])
+        plan['planned']['websocket_sessions'] = limits['websocket_sessions']
+        plan['planned']['realtime_chat_responses'] = (
+            2 if args.scenario == 'tool_retained' else 4)+int(args.scenario == 'tls')
     plan['python_sdk'] = direct().python_identity()
     for row in plan['clips'].values():
         require(engine.sha(row['path']) == row['sha256'], 'real audio changed')
@@ -290,7 +312,7 @@ def prepare(args):
             '\nrunpy.run_path(sys.argv[0],run_name="__main__")\n')
         helper.chmod(0o500)
         plan['probe_wrapper'] = dict(path=str(helper), sha256=engine.sha(helper))
-    if realtime:
+    if realtime or conversation:
         compact_sdk(plan)
     save(out/'plan.json', plan)
     require(engine.read(out/'plan.json') == plan, 'managed plan exceeds metadata reader')
@@ -463,7 +485,7 @@ ORIGINAL_ACCEPTED_RUN = BASE['accepted_run']
 def accepted_run(plan, *args):
     configure_plan_limits(plan)
     result = ORIGINAL_ACCEPTED_RUN(plan, *args)
-    if 'realtime' in plan:
+    if 'realtime' in plan or 'conversation' in plan:
         require(args[0]['budget']['counts']['websocket_sessions'] ==
                 plan['limits']['websocket_sessions'], 'managed Realtime work incomplete')
     if 'reused_tls' in plan:
@@ -585,6 +607,8 @@ def check_business(out, *, verify_cancel=True):
     results.update(realtime.check(out, plan, identity, qualified))
     from tools.serve_realtime import semantic_managed
     results.update(semantic_managed.check(out, plan, identity, qualified))
+    from tools.serve_realtime import conversation_managed
+    results.update(conversation_managed.check(out, plan, identity, qualified))
     continuity = read('core-continuity.json')
     before, after = continuity['before'], continuity['after']
     fields = ('model_pid', 'model_start_ticks', 'controller_pid', 'controller_start_ticks')
@@ -855,15 +879,18 @@ class Stage(BASE['Stage']):
         require(response['http_status'] == 200, 'private configuration unavailable')
 
     def exercise(self):
-        from tools.serve_realtime import managed
+        from tools.serve_realtime import managed, conversation_managed
         realtime = managed.Actor(self) if 'realtime' in self.plan else None
+        conversation = conversation_managed.Actor(self) if 'conversation' in self.plan else None
         try:
-            self.exercise_audio(realtime)
+            self.exercise_audio(realtime, conversation)
         finally:
             if realtime:
                 realtime.close()
+            if conversation:
+                conversation.close()
 
-    def exercise_audio(self, realtime):
+    def exercise_audio(self, realtime, conversation=None):
         from tools.native_tts import managed_service, managed_voice
         from tools.serve_realtime import semantic_managed
         voice = managed_voice.Actor(self) if self.plan.get('native_voice') is not None else None
@@ -880,11 +907,14 @@ class Stage(BASE['Stage']):
                 if self.plan.get('chat_audio'): self.chat_audio('chat-python', sdk=True)
                 if semantic: semantic.observe('tls-before')
                 if realtime: realtime.start('tls-before')
+                if conversation: conversation.start('tls-before')
                 self.kill(first, 'gateway', 'native-asr-gateway-exit')
-                if realtime: realtime.finish()
+                if realtime and realtime.current is not None: realtime.finish()
+                if conversation: conversation.finish()
                 self.wait(lambda s:s['business_ready'] and
                           s['gateway_generation'] == first['gateway_generation']+1)
                 if realtime: realtime.start('tls-after')
+                if conversation: conversation.start('tls-after')
                 if semantic: semantic.observe('tls-after')
                 if voice:voice.observe('tls-after')
                 managed_service.observe(self, 'tls-after')
@@ -903,6 +933,7 @@ class Stage(BASE['Stage']):
             if self.plan.get('chat_audio'): self.chat_audio('primary-chat-audio')
             if realtime and not version: realtime.start('primary')
             if semantic: semantic.observe('primary')
+            if conversation and not version: conversation.start('primary')
         if version:
             self.request('stored-before', dict(self.plan['requests']['chat'], store=True),
                          path='/v1/chat/completions', model_work=True)
@@ -912,10 +943,13 @@ class Stage(BASE['Stage']):
                 self.profile_before = before
                 save(self.output/'profile-before-recovery.json', before)
             if realtime: realtime.start('primary')
+            if conversation: conversation.start('primary')
             self.fatal_gateway(first)
-            if realtime: realtime.finish()
+            if realtime and realtime.current is not None: realtime.finish()
+            if conversation: conversation.finish()
             self.version_ready(2, 'fallback')
             if realtime: realtime.start('fallback')
+            if conversation: conversation.start('fallback')
             if semantic: semantic.observe('fallback')
             # Exercise alignment after a whole-tree fallback as well. The TLS
             # scenario separately verifies actual VAD SSE through the SDK.
@@ -931,6 +965,7 @@ class Stage(BASE['Stage']):
                     before={k:before[k] for k in fields}, after={k:after[k] for k in fields}))
         if voice:voice.finish()
         if semantic:semantic.finish()
+        if conversation:conversation.finish_phases()
         self.request('core-after', self.plan['requests']['chat'], path='/v1/chat/completions',
                      client='beta' if tls else 'alpha', model_work=True)
         self.configuration()
@@ -943,7 +978,8 @@ class Stage(BASE['Stage']):
 GLOBALS.update(__file__=__file__, LIMITS=LIMITS, requests=requests, prepare=prepare,
                Stage=Stage, check_business=check_business, business_record=business_record,
                accepted_run=accepted_run,
-               PREPARE_PATH_ARGUMENTS=('separator-audio', 'voice-fixtures', 'realtime-reference'),
+               PREPARE_PATH_ARGUMENTS=('separator-audio', 'voice-fixtures',
+                                       'realtime-reference', 'conversation-reference'),
                ACCEPTANCE_PREFIX='NATIVE_ASR_SERVICE_')
 for function in (VERSION['launcher'], MANAGED['launcher']):
     function.__globals__['__file__'] = __file__

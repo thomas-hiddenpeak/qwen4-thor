@@ -19,6 +19,7 @@ VOICE_CONSUMER_FORMAT = 'q4t-profile-business-v12'
 VOICE_ICL_FORMAT = 'q4t-profile-business-v13'
 REALTIME_FORMAT = 'q4t-profile-business-v15'
 SEMANTIC_FORMAT = 'q4t-profile-business-v16'
+CONVERSATION_FORMAT = 'q4t-profile-business-v17'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -573,6 +574,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if conversation_enabled(capabilities):
+        return CONVERSATION_FORMAT
     if semantic_vad_enabled(identity or {}, capabilities):
         return SEMANTIC_FORMAT
     if realtime_enabled(identity or {}, capabilities):
@@ -1024,6 +1027,149 @@ def realtime_enabled(identity, capabilities):
     return declared['transcription_configured']
 
 
+def conversation_enabled(capabilities):
+    declared = (capabilities or {}).get('realtime', {})
+    ledger.require(type(declared) is dict, 'invalid Realtime capabilities')
+    value = declared.get('conversation')
+    if value is None:
+        return False
+    expected = dict(implemented=True, endpoint='/v1/realtime',
+        profile='q4t-native-realtime-chat-v1', requires_asr=False,
+        output_modalities=['text'], function_calls=True,
+        per_response_client_admission=True, usage='actual_tokens',
+        automatic_replay=False, out_of_band=True, cancel=True,
+        persistent_context_truncation=True, max_output_tokens=4096,
+        empty_context='literal_instructions_ephemeral_model_turn',
+        max_responses=4, default_conversation_writers=1, max_items=128,
+        history_bytes=16 << 20, session_host_reservation_bytes=2 << 30,
+        pending_execution=['audio', 'mcp', 'prompt', 'tracing'])
+    ledger.require(type(value) is dict and
+        ledger.canonical(value) == ledger.canonical(expected),
+        'native Realtime Chat capability differs')
+    return True
+
+
+def conversation_output(source, session, pending_response_id=None):
+    """Validate two complete source-bound tool turns, without claiming lifecycle.
+
+    A managed fault may separately bind one known pending response. Its unknown
+    usage, transport, lifetime and settlement are never inferred here.
+    """
+    ledger.keys(source, ('path', 'sha256', 'version'))
+    ledger.require(source['path'] == 'docs/STATUS.md' and
+        type(source['sha256']) is str and ledger.HASH.fullmatch(source['sha256']) and
+        type(source['version']) is str and re.fullmatch(r'rev[0-9]+', source['version']),
+        'actual project record identity missing')
+    record = dict(record_key='release', version=source['version'],
+                  source=source['path'], source_sha256=source['sha256'])
+    ledger.require(session.get('tool_record') == record,
+                   'actual read-only tool source differs')
+    rows, events = session['responses'], session['events']
+    ledger.require(type(rows) is list and len(rows) == 2 and
+        all(type(row) is dict for row in rows) and
+        type(events) is list and 0 < len(events) <= 4096 and
+        all(type(e) is dict for e in events) and
+        len(ledger.canonical(session)) <= 4 << 20 and
+        not any(e.get('type') == 'error' for e in events),
+        'conversation output bounds or errors')
+    identifiers = [row['id'] for row in rows]
+    ledger.require(all(type(i) is str and i for i in identifiers) and
+        len(set(identifiers)) == 2 and
+        [e['response'] for e in events if e.get('type') == 'response.done'] == rows and
+        [e['response']['id'] for e in events if e.get('type') == 'response.created'] ==
+            identifiers + ([pending_response_id] if pending_response_id else []),
+        'conversation model terminal omitted or replayed')
+    ledger.require(pending_response_id is None or
+        (type(pending_response_id) is str and pending_response_id and
+         pending_response_id not in identifiers), 'invalid pending response identity')
+    total = 0
+    for row in rows:
+        ledger.require(row['status'] == 'completed' and
+            type(row.get('output')) is list and len(row['output']) == 1 and
+            row.get('output_modalities') == ['text'],
+            'incomplete conversation model response')
+        usage = row['usage']
+        ledger.require(all(type(usage[k]) is int and usage[k] > 0 for k in
+            ('input_tokens', 'output_tokens', 'total_tokens')) and
+            usage['total_tokens'] == usage['input_tokens'] + usage['output_tokens'],
+            'conversation actual model usage differs')
+        total += usage['total_tokens']
+    call, answer = rows[0]['output'][0], rows[1]['output'][0]
+    ledger.require(all(type(item.get('id')) is str and item['id']
+                       for item in (call, answer)) and call['id'] != answer['id'],
+                   'conversation output item identity missing or repeated')
+    ledger.require(call.get('type') == 'function_call' and
+        call.get('status') == 'completed' and
+        call.get('name') == 'lookup_project_record' and
+        type(call.get('call_id')) is str and call['call_id'] and
+        json.loads(call['arguments']) == dict(record_key='release'),
+        'actual complete allowlisted function missing')
+    ledger.require(answer.get('type') == 'message' and
+        answer.get('role') == 'assistant' and answer.get('status') == 'completed' and
+        answer.get('content') == [dict(type='output_text', text=source['version'])] and
+        rows[0].get('conversation_id') == rows[1].get('conversation_id') and
+        type(rows[0].get('conversation_id')) is str and rows[0]['conversation_id'],
+        'source-bound answer or shared context differs')
+    for row, kind, item, expected in (
+        (rows[0], 'response.function_call_arguments.delta', call, call['arguments']),
+        (rows[1], 'response.output_text.delta', answer, source['version'])):
+        deltas = [e for e in events if e.get('type') == kind and
+                  e.get('response_id') == row['id']]
+        ledger.require(deltas and all(e.get('item_id') == item['id'] for e in deltas) and
+            ''.join(e['delta'] for e in deltas) == expected,
+            'conversation actual stream differs from terminal')
+        created = next(i for i,e in enumerate(events) if
+            e.get('type') == 'response.created' and e['response']['id'] == row['id'])
+        done = next(i for i,e in enumerate(events) if
+            e.get('type') == 'response.done' and e['response']['id'] == row['id'])
+        ledger.require(all(created < i < done for i,e in enumerate(events)
+                           if e in deltas), 'conversation stream event order differs')
+    returned = [e['item'] for e in events if
+        e.get('type') == 'conversation.item.done' and
+        e.get('item', {}).get('type') == 'function_call_output']
+    ledger.require(len(returned) == 1 and
+        returned[0].get('call_id') == call['call_id'] and
+        json.loads(returned[0]['output']) == record,
+        'actual client tool return missing or unrelated')
+    first_done = next(i for i,e in enumerate(events) if
+        e.get('type') == 'response.done' and e['response']['id'] == identifiers[0])
+    returned_at = next(i for i,e in enumerate(events) if
+        e.get('type') == 'conversation.item.done' and e.get('item') == returned[0])
+    second_created = next(i for i,e in enumerate(events) if
+        e.get('type') == 'response.created' and e['response']['id'] == identifiers[1])
+    ledger.require(first_done < returned_at < second_created,
+                   'tool result did not follow actual completed call')
+    return total
+
+
+def conversation_business(value):
+    """Two actual model turns with a source-bound read-only client tool."""
+    ledger.keys(value, ('source', 'session', 'before', 'after'))
+    session = value['session']
+    ledger.require(type(session) is dict and session.get('status') == 'PASS' and
+        session.get('mode') == 'qualification' and
+        session.get('transport') == 'official-openai-wss' and
+        type(session.get('connections')) is int and session['connections'] == 1 and
+        type(session.get('close_code')) is int and session['close_code'] == 1000 and
+        session.get('automatic_replay') is False and
+        type(session.get('response_creates')) is int and session['response_creates'] == 2,
+        'actual conversation SDK boundary differs')
+    total = conversation_output(value['source'], session)
+    before, after = value['before'], value['after']
+    keys = ('admitted', 'settled', 'reserved', 'active', 'sessions',
+            'host_bytes', 'free_slots')
+    for state in (before, after):
+        ledger.keys(state, keys)
+        ledger.require(all(type(state[k]) is int and state[k] >= 0 for k in keys) and
+            state['free_slots'] == 1 and all(state[k] == 0 for k in
+                ('reserved', 'active', 'sessions', 'host_bytes')),
+            'conversation request/session resources did not drain')
+    ledger.require(after['admitted'] - before['admitted'] == 2 and
+        after['settled'] - before['settled'] == total,
+        'conversation actual admission or settlement differs')
+    return total
+
+
 def semantic_vad_enabled(identity, capabilities):
     declared = (capabilities or {}).get('realtime', {}).get('semantic_vad')
     if declared is None:
@@ -1280,7 +1426,10 @@ def business(value, identity, selected=None, capabilities=None):
                        (('tts',) if identity.get('native_tts') is not None else ()) +
                        (('voice',) if identity.get('native_tts_base') is not None else ()) +
                        (('realtime',) if realtime_enabled(identity, capabilities) else ()) +
-                       (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()))
+                       (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()) +
+                       (('conversation',) if conversation_enabled(capabilities) else ()))
+    if conversation_enabled(capabilities):
+        conversation_business(value['conversation'])
     if realtime_enabled(identity, capabilities):
         realtime_business(value['realtime'])
     if semantic_vad_enabled(identity, capabilities):

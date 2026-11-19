@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "seconds": 3.868769850116223,
+  "expected_tests": 24,
+  "gpu_actions": 0,
+  "source_mutations": 20,
+  "actual_profile_review": {
+    "status": "PASS_READ_ONLY_ACTUAL_PRIMARY_LIGHT",
+    "seconds": 0.07691010599955916,
+    "original_bytes_unchanged": true,
+    "qualifications": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/profiles-01/qualified/registry.json": "e6d867b78293a7379233783a5f531c8f746409c673347882aaa250b82cf9b91f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/profiles-01/qualified/primary.json": "5ac854af8f2c53d840ee64f0f9ac509e25336cd5f24cb09521050c1fbfb4a637",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/profiles-01/qualified/light.json": "5eee2005e66ff250abe029bbe6fd20656311527399ee3eee98eec57a5c7cfb4b"
+    },
+    "verifier_sha256": "b0a45a232e94592039db3f23560c5e281bc25b99cf733cd4966f77e060cb7b1e",
+    "gpu_actions": 0,
+    "engine_unchanged": true
+  },
+  "new_managed_cpu": 9,
+  "actual_sdk_transport_cpu": 4,
+  "affected_profile_contracts": 9,
+  "legacy_composition": 2,
+  "default_changed": false,
+  "actual_guardian": false,
+  "master_complete": false
+}

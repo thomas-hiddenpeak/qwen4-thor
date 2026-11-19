@@ -4,6 +4,7 @@
 #include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_audio_history.h"
 #include "chat_model_step.h"
+#include "q4t/server/native_chat_generation.h"
 #include "responses_json.h"
 #include "object_protocol.h"
 
@@ -113,7 +114,11 @@ using detail::WriteAll;
 void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                             std::shared_ptr<RequestControl> owner,
                             const io::Json* frozen_inputs,
-                            const BatchResponseLink* batch_parent) {
+                            const BatchResponseLink* batch_parent,
+                            NativeChatGeneration* native) {
+  ScopeExit seal_native([&] {
+    if (native) native->Seal();
+  });
   detail::ResponseState response = detail::ResponseState::kUnsent;
   auto* context = detail::HttpResponseContext::Current(fd);
   if (context) context->Usage().Enable();
@@ -142,6 +147,16 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
     }
   });
   try {
+    if (native &&
+        (api != GenerationApi::kChat || frozen_inputs || batch_parent ||
+         !owner || !context || !context->Client().Allowed() ||
+         !context->CapturesJson() || !native->Valid() ||
+         native->Request().GetBool("stream") ||
+         native->Request().GetInt("n", 1) != 1)) {
+      SendError(fd, 500, "Native Chat execution owner is invalid", {},
+                "native_execution_owner_invalid");
+      return;
+    }
     if (api == GenerationApi::kResponse || api == GenerationApi::kCompact) {
       if (!frozen_inputs && api == GenerationApi::kResponse &&
           TryHandleBackgroundResponse(fd, body))
@@ -199,7 +214,8 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
       context->SetErrorObserver(&ResponsesExecution::ObserveError, &*responses);
     }
     HandleChatImpl(fd, body, state, api == GenerationApi::kCompletion,
-                   responses.get(), std::move(owner), nullptr, frozen_inputs);
+                   responses.get(), std::move(owner), nullptr, frozen_inputs,
+                   native);
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(fd, *state,
                                   detail::ExceptionKind::kHostMemory);
@@ -226,7 +242,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 bool completion, ResponsesExecution* responses,
                                 std::shared_ptr<RequestControl> background,
                                 InternalModelStep* internal,
-                                const io::Json* frozen_inputs) {
+                                const io::Json* frozen_inputs,
+                                NativeChatGeneration* native) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (http) http->Usage().Enable();
   ScopeExit observe_usage([&] {
@@ -306,6 +323,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   Status s;
   if (internal)
     original_request = internal->request;
+  else if (native)
+    original_request = native->Request();
   else if (!responses || !responses->Prepared())
     s = io::ParseJson(
         body, &original_request, true,
@@ -3496,6 +3515,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
     const auto write_deltas = [&](const std::vector<ResponseDelta>& deltas) {
       for (const auto& delta : deltas) {
+        if (native) {
+          response_status = native->Emit(delta);
+          if (!response_status) return false;
+        }
         std::string logprobs = "null";
         if (visible_logprobs) {
           response_status = token_logprobs.Emit(delta, &logprobs);
@@ -3573,8 +3596,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // tokens. Model history is never reconstructed from parsed response text.
     const auto consume_token = [&](int32_t token) {
       if (completion && is_stop_token(token)) return true;
-      if (!responses && !completion && !stream && !thinking_budget.Tracking() &&
-          !text_stop.Enabled() && !sampling.logprobs && !prediction_enabled)
+      if (!responses && !completion && !stream && !native &&
+          !thinking_budget.Tracking() && !text_stop.Enabled() &&
+          !sampling.logprobs && !prediction_enabled)
         return true;
       std::string piece;
       {
@@ -3597,7 +3621,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           http->Usage().Merge(std::nullopt);
         return false;
       }
-      if (responses || completion || stream || text_stop.Enabled() ||
+      if (responses || completion || stream || native || text_stop.Enabled() ||
           sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto normalized =
@@ -4580,7 +4604,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // Both transports use the same parser. Never publish a successful terminal
     // (or a session snapshot) for malformed/truncated model tool output.
     if (!prewarm && response_status.ok()) {
-      if (responses || completion || stream || text_stop.Enabled() ||
+      if (responses || completion || stream || native || text_stop.Enabled() ||
           sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto tail = utf8.Finish(visible_logprobs ? &spans : nullptr);
@@ -4604,14 +4628,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     if (!prewarm && response_status && structured &&
         !structured->Terminated() &&
-        !((text_stop.Matched() || (responses && finish_reason == "length")) &&
+        !((text_stop.Matched() ||
+           ((responses || native) && finish_reason == "length")) &&
           structured->Failure() == GrammarFailure::kNone))
       response_status = Status::Fail(
           "constrained response did not reach a grammar-accepted stop token");
     if (!prewarm && response_status.ok()) {
       std::vector<ResponseDelta> deltas;
       response_status =
-          responses && finish_reason == "length"
+          (responses || native) && finish_reason == "length"
               ? response_parser.FinishIncomplete(&deltas)
               : response_parser.Finish(finish_reason == "length", &deltas,
                                        text_stop.Matched());
@@ -4627,6 +4652,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     if (!response_status.ok()) {
       err_guard.ok = false;
+      if (native && !native->Error().ok()) {
+        const auto& failure = native->Error();
+        diagnostic.Outcome("error", failure.ClientCode());
+        SendError(fd, failure.http_status, failure.ClientMessage(), {},
+                  failure.ClientCode(), failure.value.GetString("param"));
+        cleanup();
+        return;
+      }
       const char* code = !structured ? "response_parse_failed"
                          : finish_reason == "length"
                              ? "structured_output_incomplete"

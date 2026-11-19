@@ -1,6 +1,18 @@
 # docs/ — 开发记录文档体系
 
+- [原生 Realtime Chat CPU](evidence/serve-realtime-native-chat-cpu-20261119/README.md)
+
+- [共享 Realtime 消息泵 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)
+
+- [Realtime会话CPU与空值合同](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
+
+- [语义VAD与恢复PR #51合入主线](evidence/serve-semantic-vad-main-20261119/README.md)
+
+- [Realtime响应增量CPU验证](evidence/serve-realtime-output-cpu-20261119/README.md)
+
 - [语义验收脚本入口修复](evidence/serve-semantic-vad-ci-entry-20261119/README.md)
+
+- [Realtime统一schema与有界历史基础](evidence/serve-realtime-conversation-foundation-20261119/README.md)
 
 [原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。
 
@@ -631,3 +643,5 @@
 
 - [语义VAD实际恢复](evidence/serve-semantic-vad-managed-recovery-20261119/README.md)：真实分类、计量、入口与整包恢复。
 - [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。
+
+- [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)：实际根回退、配额/恢复预算保持及原质量失败分开记录。

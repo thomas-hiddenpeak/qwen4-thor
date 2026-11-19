@@ -18,6 +18,7 @@ if (JSON.parse(read(resolve(sdk, 'package.json'))).version !== '7.47.0' ||
   throw new Error('pinned compiler/SDK identity mismatch');
 const ts = createRequire(resolve(compiler, 'package.json'))(resolve(compiler, 'lib/typescript.js'));
 const graph = JSON.parse(read(graphFile));
+const realtime = graph.profile === 'q4t-openai-realtime-types-v1';
 for (const [file, expected] of Object.entries(graph.sources_sha256))
   if (hash(resolve(sdk, file)) !== expected) throw new Error(`source drift: ${file}`);
 function value(index, active = new Set()) {
@@ -51,7 +52,7 @@ function value(index, active = new Set()) {
 }
 const vectors = [];
 for (const [shape, root] of Object.entries(graph.roots)) {
-  for (const [i, member] of graph.nodes[root].variants.entries()) {
+  for (const [i, member] of (graph.nodes[root].variants ?? [root]).entries()) {
     const input = value(member);
     vectors.push({ name: `${shape}_${i}_valid`, shape, input, positive: true });
     vectors.push({ name: `${shape}_${i}_extra`, shape, input: { ...input, q4t_unknown_item_field: 1 } });
@@ -65,7 +66,7 @@ for (const [shape, root] of Object.entries(graph.roots)) {
   }
 }
 // Independent, explicit shapes exercise optional/null/open-map boundaries.
-vectors.push(
+if (!realtime) vectors.push(
   { name: 'manual_pending_tool', shape: 'input_item', input: { type: 'function_call', call_id: 'call_1', name: 'lookup', arguments: '{' } },
   { name: 'manual_missing_tool_name', shape: 'input_item', input: { type: 'function_call', call_id: 'call_1', arguments: '{}' } },
   { name: 'manual_refusal', shape: 'conversation_item', input: { type: 'message', id: 'msg_1', role: 'assistant', status: 'completed', content: [{ type: 'refusal', refusal: 'No' }] } },
@@ -73,11 +74,29 @@ vectors.push(
   { name: 'manual_image_unknown_detail', shape: 'input_item', input: { type: 'message', role: 'user', content: [{ type: 'input_image', image_url: 'data:image/png;base64,AA==', detail: 'wrong' }] } },
   { name: 'manual_open_map', shape: 'input_item', input: { type: 'tool_search_output', call_id: 'call_1', tools: [{ type: 'function', name: 'lookup', parameters: { arbitrary: [1, { keep: true }] }, strict: false }] } },
 );
-const types = { input_item: 'ResponseInputItem', output_item: 'ResponseOutputItem', conversation_item: 'ConversationItem' };
+if (realtime) vectors.push(
+  { name: 'manual_empty_tool_output', shape: 'conversation_item', input: { type: 'function_call_output', call_id: 'call_1', output: '' }, positive: true },
+  { name: 'manual_partial_call_history', shape: 'conversation_item', input: { type: 'function_call', name: 'lookup', arguments: '{', status: 'incomplete' }, positive: true },
+  { name: 'manual_user_mixed_media', shape: 'conversation_item', input: { type: 'message', role: 'user', content: [{ type: 'input_text', text: 'describe' }, { type: 'input_audio', audio: 'AA==', transcript: 'reference only' }, { type: 'input_image', image_url: 'data:image/png;base64,AA==', detail: 'high' }] }, positive: true },
+  { name: 'manual_output_audio', shape: 'conversation_item', input: { type: 'message', role: 'assistant', content: [{ type: 'output_audio', audio: 'AA==', transcript: 'hello' }] }, positive: true },
+  { name: 'manual_role_mismatch', shape: 'conversation_item', input: { type: 'message', role: 'system', content: [{ type: 'input_audio', audio: 'AA==' }] } },
+  { name: 'manual_response_empty_context', shape: 'response_create', input: { conversation: 'none', input: [], output_modalities: ['text'], tool_choice: 'none', max_output_tokens: 'inf' }, positive: true },
+  { name: 'manual_response_reference', shape: 'response_create', input: { input: [{ type: 'item_reference', id: 'item_2' }] }, positive: true },
+  { name: 'manual_response_reference_missing_type', shape: 'response_create', input: { input: [{ id: 'item_1' }] } },
+  { name: 'manual_update_turn_null', shape: 'client_event', input: { type: 'session.update', session: { type: 'realtime', audio: { input: { turn_detection: null } } } }, positive: true },
+  { name: 'manual_argument_delta', shape: 'server_event', input: { type: 'response.function_call_arguments.delta', event_id: 'e_1', response_id: 'r_1', item_id: 'i_1', output_index: 0, call_id: 'c_1', delta: '{' }, positive: true },
+);
+const types = realtime ? {
+  conversation_item: 'ConversationItem', client_event: 'RealtimeClientEvent',
+  server_event: 'RealtimeServerEvent',
+  response_create: 'RealtimeResponseCreateParamsWithReferencesParam',
+  session: 'RealtimeSessionCreateRequest', response: 'RealtimeResponse',
+} : { input_item: 'ResponseInputItem', output_item: 'ResponseOutputItem', conversation_item: 'ConversationItem' };
 const directory = resolve(outputDir); mkdirSync(directory, { recursive: true });
 const fixture = resolve(directory, 'sdk-shape-cases.mts');
-let source = `import type { ResponseInputItem, ResponseOutputItem } from ${JSON.stringify(resolve(sdk, 'src/resources/responses/responses.ts'))};\n`;
-source += `import type { ConversationItem } from ${JSON.stringify(resolve(sdk, 'src/resources/conversations/items.ts'))};\n`;
+let source = realtime ? `import type { ${Object.values(types).join(', ')} } from ${JSON.stringify(resolve(sdk, 'src/resources/realtime/realtime.ts'))};\n` :
+  `import type { ResponseInputItem, ResponseOutputItem } from ${JSON.stringify(resolve(sdk, 'src/resources/responses/responses.ts'))};\n` +
+  `import type { ConversationItem } from ${JSON.stringify(resolve(sdk, 'src/resources/conversations/items.ts'))};\n`;
 const ranges = [];
 for (const [i, item] of vectors.entries()) {
   const begin = source.length;
@@ -102,12 +121,13 @@ for (let i = 0; i < vectors.length; ++i) {
 const checker = program.getTypeChecker();
 const memberNames = {};
 for (const [shape, name] of Object.entries(types)) {
-  const file = resolve(sdk, shape === 'conversation_item'
+  const file = resolve(sdk, realtime ? 'src/resources/realtime/realtime.ts' : shape === 'conversation_item'
     ? 'src/resources/conversations/items.ts' : 'src/resources/responses/responses.ts');
   const module = checker.getSymbolAtLocation(program.getSourceFile(file));
   const symbol = checker.getExportsOfModule(module).find(x => x.name === name);
-  const members = checker.getDeclaredTypeOfSymbol(symbol).types;
-  if (!members || members.length !== graph.nodes[graph.roots[shape]].variants.length)
+  const declared = checker.getDeclaredTypeOfSymbol(symbol);
+  const members = declared.isUnion() ? declared.types : [declared];
+  if (members.length !== (graph.nodes[graph.roots[shape]].variants ?? [graph.roots[shape]]).length)
     throw new Error(`SDK member count changed: ${shape}`);
   memberNames[shape] = members.map(member => {
     const symbol = member.aliasSymbol ?? member.symbol;
@@ -153,7 +173,7 @@ for (const [i, item] of vectors.entries()) {
   if (item.union_accepted && !item.accepted)
     item.concrete_rejections = rejectedMembers.get(i);
 }
-const result = { profile: 'q4t-sdk-item-shape-oracle-v1', sdk_version: '7.47.0',
+const result = { profile: realtime ? 'q4t-sdk-realtime-shape-oracle-v1' : 'q4t-sdk-item-shape-oracle-v1', sdk_version: '7.47.0',
   compiler_version: '5.9.3', validation_mode: 'concrete-sdk-union-members',
   graph_sha256: hash(graphFile), fixture_sha256: hash(fixture),
   concrete_fixture_sha256: hash(concreteFixture), member_names: memberNames,

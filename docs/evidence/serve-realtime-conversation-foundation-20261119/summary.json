@@ -1,0 +1,18 @@
+{
+  "status": "PASS_REALTIME_SCHEMA_HISTORY_FOUNDATION",
+  "contract_tests": 20,
+  "first_cpu_tests": 19,
+  "targeted_followup_tests": 3,
+  "reused_tests": 17,
+  "realtime_sdk_vectors": 476,
+  "responses_sdk_vectors": 647,
+  "sdk_differences": 0,
+  "source_mutation_checks": 18,
+  "cmake_headers_match": true,
+  "gpu_actions": 0,
+  "runtime_route_integrated": false,
+  "default": "rev346 STOPPED unchanged",
+  "prior_reference_fixture_failure_preserved": true,
+  "archive_sha256": "bf5a74502d2539da5acfcbf78cac4ba9809754eacb3be6028f307a41123793da",
+  "raw_files": 73
+}
