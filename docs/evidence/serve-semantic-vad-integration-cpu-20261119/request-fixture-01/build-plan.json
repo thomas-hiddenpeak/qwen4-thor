@@ -1,0 +1,30 @@
+{
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Iinclude",
+    "-Isrc/server",
+    "tools/serve_realtime/semantic_request_fixture.cpp",
+    "src/server/realtime_semantic_score.cpp",
+    "src/server/output_schema.cpp",
+    "src/server/http_response.cpp",
+    "src/io/json.cpp",
+    "-Wl,--gc-sections",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/request-fixture-01/export-request"
+  ],
+  "sources": {
+    "tools/serve_realtime/semantic_request_fixture.cpp": "88e5ff8c10404415a6a84e724858d64eaae42f559867bc14df50e337a1c78aac",
+    "src/server/realtime_semantic_score.cpp": "1f6e6a913d4d9d69ae5d636109413edf8381f19c56f2532741d1273d11cb7f4a",
+    "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
+    "src/server/http_response.cpp": "a4440e6475209458f1f175110956f6ace7fea7ac1fdd8aaedb1e7c5f1980a4fc",
+    "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7"
+  },
+  "gpu_actions": 0
+}

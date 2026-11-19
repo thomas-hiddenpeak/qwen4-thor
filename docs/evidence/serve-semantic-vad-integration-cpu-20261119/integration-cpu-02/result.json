@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "seconds": 0.06369421072304249,
+  "exit_code": 1,
+  "cases": 11,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/integration-cpu-02/required.txt"
+  ],
+  "host_binary_sha256": "c70700ff6b8dbd8546eec98bd3f4e93e26e42b03aba0d43fcf000b2a7f098047",
+  "gpu_actions": 0
+}

@@ -1,10 +1,13 @@
 #include "chat_server_internal.h"
 
 #include <algorithm>
+#include <limits>
 
+#include "chat_model_step.h"
 #include "object_protocol.h"
 #include "q4t/server/asr_stream_output.h"
 #include "q4t/server/realtime_asr_policy.h"
+#include "q4t/server/realtime_semantic_score.h"
 #include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
@@ -14,7 +17,8 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
     RequestDiagnostics& diagnostic, ActualUsageCounter& usage,
     const RealtimeTranscriptSink& emit) {
   using object_detail::Error;
-  const auto policy = RealtimeAsrDelayPolicy(job.settings.delay);
+  const auto policy =
+      RealtimeAsrDelayPolicy(job.semantic ? "minimal" : job.settings.delay);
   if (!job.stream || !job.stream->Valid() || !policy.Valid() || !emit)
     return Error(500, "asr_stream_state_invalid",
                  "Streaming ASR owner invalid");
@@ -43,6 +47,76 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
   bool reserved = false;
   size_t admitted_output_budget = output_budget;
   uint64_t audio_tokens = 0;
+  uint64_t semantic_input = 0, semantic_output = 0;
+  const auto score_turn = [&](const AsrStreamStep& pass,
+                               const AsrTranscript& hypothesis) {
+    if (!job.semantic || pass.final || !hypothesis.Complete() ||
+        hypothesis.Text().empty() || cancelled())
+      return;
+    auto classifier = std::make_shared<RequestControl>(
+        control->id() + "-semantic-" + std::to_string(pass.sequence), "",
+        std::min(control->deadline(),
+                 std::chrono::steady_clock::now() + std::chrono::seconds(2)),
+        client.Id());
+    RealtimeSemanticTicket ticket;
+    if (!job.semantic->TryScore(pass.sequence,
+                                job.audio.begin_ticks + pass.samples * 3,
+                                classifier, &ticket))
+      return;
+    std::optional<double> probability;
+    ScopeExit complete([&] { job.semantic->Complete(ticket, probability); });
+    const auto previous = usage.Total();
+    if (!previous) return;
+    // The ASR invocation has released its slot/workspace. This serial native
+    // model step borrows the existing client/RPM lease, with a separately
+    // reserved finite output allowance. No loopback request or new worker.
+    try {
+      io::Json request;
+      auto config = PlanningConfig(-1);
+      if (!BuildRealtimeSemanticRequest(config.model, hypothesis.Text(),
+                                          &request))
+        return;
+      const auto current = clients_.RecoveryIdentity(client.Index());
+      if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
+          current.Id() != client.Id())
+        return;
+      ModelPreparation accounting(clients_, current, rate,
+                                   admitted_output_budget, 0,
+                                   kRealtimeSemanticStepTokens);
+      ScopeExit observe([&] {
+        semantic_input += accounting.InputTokens();
+        semantic_output += accounting.OutputTokens();
+      });
+      if (!accounting.ContinueReservation(previous->input, previous->output))
+        return;
+      // The parent output limit applies to its ASR answer. The private 128
+      // tokens were explicitly reserved in the same client TPM lease below.
+      config.client_limits = nullptr;
+      InternalModelStep step{request,
+                             config,
+                             accounting,
+                             [&] {
+                               return cancelled() || classifier->Cancelled()
+                                          ? Error(409, "explicit_cancel",
+                                                   "Semantic score cancelled")
+                                          : ObjectReply{};
+                             },
+                             {}, false, {}, {}, 0, 0};
+      diagnostic.Stage("semantic_turn");
+      RequestDiagnostics::Scope waiting(diagnostic,
+                                        RequestDiagnostics::Wait::kModel);
+      const auto executed = RunInternalModelStep(-1, &step, classifier);
+      if (!executed.ok() || classifier->Cancelled() || cancelled()) return;
+      double value = 0;
+      if (ParseRealtimeSemanticScore(step.content, step.finish_reason, &value))
+        probability = value;
+      else
+        probability = std::numeric_limits<double>::quiet_NaN();
+    } catch (...) {
+      // Genuine device failures retain the normal core health/progress path;
+      // a missing auxiliary score itself cannot stop a healthy ASR invocation.
+    }
+  };
   const auto delta = [&](const AsrTextDelta& part) {
     io::Json value;
     return !cancelled() &&
@@ -150,7 +224,9 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
     const auto admission =
         reserved ? rate.ExtendPrompt(clients_, current, prompt.tokens.size())
                  : rate.Reserve(clients_, current, prompt.tokens.size(),
-                                admitted_output_budget);
+                                admitted_output_budget, ClientClock::now(), 0,
+                                job.semantic ? kRealtimeSemanticOutputTokens
+                                             : 0);
     if (admission != ClientRateResult::kAllowed) {
       const bool rpm = admission == ClientRateResult::kRpm;
       const bool tpm = admission == ClientRateResult::kTpm;
@@ -183,6 +259,10 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
                  captured.Generated(), output.Generated(),
                  int(input.step.final));
     borrowed.Run();
+    score_turn(input.step, hypothesis);
+    if (RejectUnhealthy(-1))
+      return Error(503, "service_unhealthy",
+                   "Native execution health protection activated");
     if (input.step.final) break;
   }
   if (cancelled()) return interrupted();
@@ -194,6 +274,23 @@ ObjectReply ChatServer::RunRealtimeAsrStream(
       !io::ParseJson(json, &result.value))
     return Error(502, "asr_output_invalid",
                  "Streaming transcription incomplete");
+  if (job.semantic) {
+    using namespace object_detail;
+    const auto observed = job.semantic->Inspect();
+    Set(&result.value, "q4t_semantic_vad",
+        Object({{"profile", String("q4t-native-semantic-turn-v1")},
+                {"attempts", Number(observed.attempts)},
+                {"accepted", Number(observed.accepted)},
+                {"unavailable", Number(observed.unavailable)},
+                {"invalid", Number(observed.invalid)},
+                {"stale", Number(observed.stale)},
+                {"maximum_wait", Boolean(observed.decision.maximum_wait)},
+                {"probability_available",
+                 Boolean(observed.decision.probability_available)},
+                {"input_tokens", Number(semantic_input)},
+                {"output_tokens", Number(semantic_output)},
+                {"included_in_usage", Boolean(true)}}));
+  }
   return result;
 }
 }  // namespace q4t::server

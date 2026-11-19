@@ -641,6 +641,9 @@ set(protocol_inputs
   include/q4t/server/realtime_transcription_pump.h
   include/q4t/server/realtime_noise_input.h
   include/q4t/server/realtime_transcription_session.h
+  include/q4t/server/realtime_semantic_vad.h
+  include/q4t/server/realtime_semantic_turn.h
+  include/q4t/server/realtime_semantic_score.h
   include/q4t/server/realtime_vad.h
   include/q4t/server/realtime_audio_export.h
   include/q4t/server/realtime_audio_history.h
@@ -707,6 +710,10 @@ set(protocol_inputs
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
+  src/server/realtime_semantic_vad.cpp
+  src/server/realtime_semantic_turn.cpp
+  src/server/realtime_semantic_score.cpp
+  src/server/realtime_semantic_session.cpp
   src/server/realtime_vad.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp

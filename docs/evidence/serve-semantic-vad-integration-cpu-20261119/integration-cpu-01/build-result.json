@@ -1,0 +1,8 @@
+{
+  "status": "BUILD_FAILED_BEFORE_TESTS",
+  "exit_code": 2,
+  "error": "missing anonymous namespace closing brace in new fixture",
+  "test_executions": 0,
+  "gpu_actions": 0,
+  "source_sha256": "00487b6d2590ac3428bdf3fd305964600127cd4941a65565a6425d1e729b3a7d"
+}

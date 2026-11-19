@@ -1,0 +1,10 @@
+test_complete_turn_requires_classifier_and_orderly_close (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_complete_turn_requires_classifier_and_orderly_close) ... ok
+test_error_alongside_completed_event_is_not_hidden (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_error_alongside_completed_event_is_not_hidden) ... ok
+test_premature_commit_rejected_without_replay (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_premature_commit_rejected_without_replay) ... ok
+test_transcript_without_actual_classifier_is_not_acceptance (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_transcript_without_actual_classifier_is_not_acceptance) ... ok
+test_unfinished_prefix_preserves_one_connection_and_actual_suffix (tools.serve_realtime.test_semantic_sdk.SemanticSdk.test_unfinished_prefix_preserves_one_connection_and_actual_suffix) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 17.873s
+
+OK

@@ -1,0 +1,44 @@
+{
+  "scope": "CPU state gate only: observed audio time, scalar model score, actual ownership tickets and failure/continuation boundaries. No ASR/LLM execution or API qualification.",
+  "cases": [
+    "semantic_vad_eagerness_enforces_actual_maximum_audio_wait",
+    "semantic_vad_finished_content_still_requires_observed_silence",
+    "semantic_vad_incomplete_content_waits_without_repeated_model_work",
+    "semantic_vad_intermediate_score_has_one_absolute_deadline",
+    "semantic_vad_idle_and_unvoiced_audio_never_invent_a_turn_end",
+    "semantic_vad_score_requires_current_hypothesis_coverage",
+    "semantic_vad_resumed_speech_fences_late_score_without_worker_growth",
+    "semantic_vad_finished_turn_retains_unreaped_score_slot",
+    "semantic_vad_malformed_ticket_cannot_release_actual_worker",
+    "semantic_vad_failed_or_invalid_model_score_keeps_unknown_bounded",
+    "semantic_vad_invalid_settings_and_clock_mutations_preserve_state",
+    "semantic_vad_absolute_clock_and_supported_sample_grids_are_kept"
+  ],
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
+    "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891",
+    "tests/server_realtime_semantic_vad_test.cpp": "b69cf315e776259b85e02649af47bd178b84d680d51e4a1c3338d76b2339a6c0",
+    "include/q4t/server/realtime_audio_queue.h": "ac37b24170663e23ce04e57a861dcbd17048e3d6cf46bbf914f4fb247af03f16",
+    "include/q4t/test.h": "f05dbdf42ade9bf49b657fee973be8905b8f4d48e01d4e3480ce04221edee9ac"
+  },
+  "build_command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I/home/rm01/models/dev/qwen4-thor/include",
+    "/home/rm01/models/dev/qwen4-thor/src/server/realtime_semantic_vad.cpp",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_realtime_semantic_vad_test.cpp",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/gate-cpu-01/main.cpp",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/gate-cpu-01/semantic-gate-tests"
+  ],
+  "default_engine_sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+  "default_manifest_sha256": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+  "pr50_head": "0b0321471e2f4ef9fc4f74cae38a99fe3bb64c8d",
+  "new_work_not_in_pr50": true
+}

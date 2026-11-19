@@ -10468,7 +10468,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Continue noise reduction, actual context/delay, semantic turns, conversation/tool/TTS and Live, Guardian composition and reversible delivery",
+    "next": "Validate actual native semantic turns, then conversation/tool/TTS and Live, managed recovery and reversible delivery; all master tasks continue",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -10897,6 +10897,32 @@
       "listening_deferred_by_owner": true,
       "all_master_tasks_active": true,
       "evidence": "evidence/serve-icl-realtime-delivery-20261119/README.md"
+    },
+    "semantic_vad": {
+      "state": "CPU_ACCEPTED_REAL_BUSINESS_PENDING",
+      "evidence": "docs/evidence/serve-semantic-vad-integration-cpu-20261119/README.md",
+      "native_cpu_cases": 91,
+      "sdk_cpu_cases": 5,
+      "evidence_cpu_cases": 6,
+      "native_binary_sha256": "1e444cf4a2c919290e67410eac67d624a32938aca6c244da749fb04e45934d40",
+      "private_model_steps": 8,
+      "private_output_tokens": 128,
+      "shared_actual_waveform": true,
+      "serial_worker": true,
+      "actual_score_usage_in_parent": true,
+      "calibrated": false,
+      "real_business_accepted": false,
+      "delivered": false,
+      "original_failures_retained": true,
+      "business_limits": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 2,
+        "committed_items": 2,
+        "chats": 3,
+        "controls": 2000,
+        "seconds": 600
+      }
     }
   }
 }

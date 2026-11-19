@@ -57,8 +57,10 @@ void RealtimeTranscriptionSession::Cancel() noexcept {
   cancelled_ = true;
   if (control_) control_->Cancel(RequestControl::State::kDisconnect);
   queue_.Cancel(1);
-  for (auto& job : jobs_)
+  for (auto& job : jobs_) {
+    if (job.semantic) job.semantic->Close();
     if (job.stream) job.stream->Cancel(job.audio.epoch);
+  }
 }
 void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
@@ -154,18 +156,27 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                   "Continuous transcription uses explicit audio commits");
     const auto& a = settings_.request.chunking;
     const auto& b = next.request.chunking;
-    const bool pipeline_changed = next.format != settings_.format ||
+    const bool semantic_changed =
+        (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad) !=
+        (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad);
+    const bool pipeline_changed = semantic_changed ||
+                                  next.format != settings_.format ||
                                   next.noise != settings_.noise ||
                                   next.delay != settings_.delay;
     const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
+                             next.eagerness != settings_.eagerness ||
                              next.format != settings_.format ||
                              a.threshold != b.threshold ||
                              a.prefix_padding_ms != b.prefix_padding_ms ||
                              a.silence_duration_ms != b.silence_duration_ms;
-    if (next.turn == RealtimeTranscriptionSettings::Turn::kServerVad &&
+    if (next.turn != RealtimeTranscriptionSettings::Turn::kManual &&
         !callbacks_.vad_step)
       return fail("realtime_processor_unavailable",
                   "VAD processor unavailable");
+    if (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+        !callbacks_.semantic_ready)
+      return fail("realtime_processor_unavailable",
+                  "Semantic turn model unavailable");
     const bool pending =
         live_input_ || stream_fault_ || queue_.PendingBytes() ||
         (noise_input_ &&
@@ -179,7 +190,8 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
         return fail("input_audio_buffer_not_empty",
                     "Finish prior items before changing the audio pipeline");
       const auto format =
-          next.noise == RealtimeTranscriptionSettings::Noise::kNone
+          next.noise == RealtimeTranscriptionSettings::Noise::kNone &&
+                  next.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad
               ? next.format
               : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
       const auto status = queue_.ChangeFormat(1, format);
@@ -194,6 +206,9 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
   if (command.kind == K::kDelete) return DeleteItem(command);
   if (command.kind == K::kRetrieve) return RetrieveItem(command);
   if (!settings_.delay.empty()) return StreamMessage(command);
+  if (stream_fault_ && command.kind != K::kClear)
+    return fail("input_audio_buffer_failed",
+                "Clear the failed streaming item before appending new audio");
   if (command.kind == K::kAppend) {
     const size_t width =
         settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
@@ -203,7 +218,9 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
           width;
       const auto ticks =
           samples * (kRealtimeTicksPerSecond / settings_.format.rate);
-      if (noise_input_->AcceptedTicks() - queue_.PendingBeginTicks() + ticks >
+      const auto begin = semantic_ ? jobs_.back().audio.begin_ticks
+                                   : queue_.PendingBeginTicks();
+      if (noise_input_->AcceptedTicks() - begin + ticks >
           max_item_ticks_)
         return fail("audio_duration_limit",
                     "Uncommitted audio duration exceeded");
@@ -237,6 +254,7 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
       ResetNoise(ticks);
     }
     ResetVad();
+    stream_fault_ = false;
     return Emit(Event("input_audio_buffer.cleared"));
   }
   // Explicit commit owns the complete pending tail, including any samples not
@@ -259,17 +277,31 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                                                                          : 1))
     return fail("input_audio_buffer_commit_failed",
                 "Commit requires complete uncommitted samples");
+  if (semantic_) {
+    if (!FinishSemantic(queue_.AcceptedTicks(), false)) return false;
+    if (noise_input_) {
+      const auto ticks = noise_input_->AcceptedTicks();
+      if (!queue_.AdvanceEmptyClock(1, ticks)) return false;
+      ResetNoise(ticks);
+    }
+    ResetVad();
+    return true;
+  }
   return Commit(queue_.AcceptedTicks(), command.event_id, false);
 }
 
 void RealtimeTranscriptionSession::ResetNoise(uint64_t ticks) {
   noise_input_.reset();
   using N = RealtimeTranscriptionSettings::Noise;
-  if (settings_.noise == N::kNone || !settings_.delay.empty()) return;
+  if (!settings_.delay.empty() ||
+      (settings_.noise == N::kNone &&
+       settings_.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad))
+    return;
   noise_input_ = std::make_unique<RealtimeNoiseInput>(
       settings_.format,
-      settings_.noise == N::kNearField ? audio::NoiseReduction::kNearField
-                                       : audio::NoiseReduction::kFarField,
+      settings_.noise == N::kNone        ? audio::NoiseReduction::kOff
+      : settings_.noise == N::kNearField ? audio::NoiseReduction::kNearField
+                                         : audio::NoiseReduction::kFarField,
       ticks, callbacks_.interrupted);
 }
 Status RealtimeTranscriptionSession::ProcessedAudio(
@@ -288,14 +320,27 @@ Status RealtimeTranscriptionSession::ProcessedAudio(
 }
 
 void RealtimeTranscriptionSession::ResetVad() {
+  if (semantic_) {
+    semantic_->Close();
+    if (live_input_) live_input_->Cancel(stream_epoch_);
+    if (control_ && !jobs_.empty() && jobs_.front().semantic == semantic_)
+      control_->Cancel();
+    semantic_.reset();
+    live_input_.reset();
+    live_id_.clear();
+  }
   speech_id_.clear();
   vad_.reset();
-  if (settings_.turn != RealtimeTranscriptionSettings::Turn::kServerVad) return;
+  if (settings_.turn == RealtimeTranscriptionSettings::Turn::kManual) return;
   const auto& options = settings_.request.chunking;
+  const auto silence =
+      settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad
+          ? RealtimeSemanticMaximumWaitMs(settings_.eagerness)
+          : uint32_t(options.silence_duration_ms);
   vad_ = std::make_unique<RealtimeVad>(
       queue_.Format(), queue_.AcceptedTicks(),
       RealtimeVadOptions{options.threshold, uint32_t(options.prefix_padding_ms),
-                         uint32_t(options.silence_duration_ms)},
+                         silence},
       callbacks_.vad_step);
 }
 bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
@@ -310,6 +355,16 @@ bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
 }
 bool RealtimeTranscriptionSession::AdvanceVad() {
   if (!vad_) return true;
+  const auto finish_semantic = [&] {
+    if (!semantic_) return true;
+    const auto decision = semantic_->Inspect().decision;
+    if (decision.kind != RealtimeSemanticDecision::Kind::kEnd) return true;
+    // A classifier may return after more real silence was already borrowed
+    // by ASR. Keep that exact waveform; never truncate an in-flight prefix.
+    return FinishSemantic(std::max(decision.end_ticks, semantic_audio_end_),
+                           true);
+  };
+  if (!finish_semantic()) return false;
   RealtimeVadProgress progress;
   const auto status = vad_->Advance(queue_, &progress);
   if (!status) return false;
@@ -317,6 +372,15 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
   if (progress.started) {
     speech_id_ = detail::NewRequestId("item_");
     if (!SpeechEvent(true, progress.begin_ticks, true)) return false;
+    if (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+        !StartSemantic(progress.begin_ticks))
+      return false;
+  }
+  if (semantic_) {
+    if (!semantic_->Observe(progress.analyzed_end_ticks, progress.voiced) ||
+        !FeedSemantic(progress.analyzed_end_ticks))
+      return false;
+    return finish_semantic();
   }
   if (progress.stopped) return Commit(progress.end_ticks, {}, true);
   return bool(queue_.TrimPendingBefore(1, progress.trim_before));
@@ -633,6 +697,9 @@ bool RealtimeTranscriptionSession::Tick() {
   if (!started_ || cancelled_ ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return false;
+  if (control_ && control_->Cancelled() && !jobs_.empty() &&
+      jobs_.front().semantic)
+    jobs_.front().semantic->CancelScore();
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
   // Deletion releases identity/context immediately, but audio borrowed by an
@@ -680,6 +747,12 @@ bool RealtimeTranscriptionSession::Tick() {
       live_input_.reset();
       stream_processor_.reset();
       live_id_.clear();
+      if (semantic_) {
+        semantic_->Close();
+        semantic_.reset();
+        vad_.reset();
+        speech_id_.clear();
+      }
     }
     auto event =
         Event(std::string("conversation.item.input_audio_transcription.") +
@@ -688,7 +761,7 @@ bool RealtimeTranscriptionSession::Tick() {
     Set(&event, "content_index", Number(0));
     if (result_.ok()) {
       Set(&event, "transcript", String(result_.value.GetString("text")));
-      for (const auto key : {"usage", "logprobs"})
+      for (const auto key : {"usage", "logprobs", "q4t_semantic_vad"})
         if (const auto* value = result_.value.Find(key))
           Set(&event, key, *value);
     } else {

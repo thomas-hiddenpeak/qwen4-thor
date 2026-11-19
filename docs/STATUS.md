@@ -7,16 +7,39 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[原生语义VAD接入CPU与构建通过](evidence/serve-semantic-vad-integration-cpu-20261119/README.md)：
+91项原生合同覆盖、5项官方SDK/TLS、6项证据反例通过；实际程序
+零警告构建，全部原失败保留。冻结1模型/1入口/2WSS回合、2评分
+对照+1Chat/600秒；真实业务及发行尚未验收，默认rev336 STOPPED
+保持。PR #50固定已验head仍在CI；本阶段只作本地提交，不混入该PR。
+
+语义VAD CPU整合覆盖91项通过：复用80项未影响通过项、11项
+受影响项闭合，原89项首轮4FAIL及复验事件收集竞态1FAIL均保留。
+真实语义SDK驱动已编写，冻结5项官方SDK/原生TLS CPU夹具检查/60秒；
+实际模型质量与业务尚未验收，原生程序正在必要构建，总任务继续。
+
 [Guardian测试回执修复](evidence/serve-guardian-fixture-receipt-20261119/README.md)
 完成：3项CPU/6.824秒、18项来源反例/0.428秒/0GPU；测试演员的
 JSON改为原子发布，非法绑定与恢复预算断言保持，原CI失败保留。
 生产程序/默认rev336 STOPPED不变；等待PR #50新head检查后合入，
 语义VAD草稿另行验证，全部master继续。
 
+语义VAD首轮89项为85通过/4失败，原件保留；最小复现定位为
+重采样有限过冲被后级误拒绝（峰值1.00744641）。已修正内部FP32
+接入，冻结4失败项与VAD/非有限值及共享降噪波形共11项/180秒/0GPU。
+本任务旧CPU程序第三组无损归档净释放88855032字节，保留恢复器；
+默认rev336 STOPPED与PR #50已验范围保持，继续实际语义验证。
+
 [PR #50恢复来源清单复核](evidence/serve-icl-realtime-ci-review-20261119/README.md)
 完成：六项来源与已验业务/封装证据重新对齐，完整静态检查及18项
 反例通过，0.450秒/0新增GPU；原CI失败保留，等待修订后CI。
 默认rev336 STOPPED与下一阶段语义VAD草稿保持，全部master继续。
+
+[语义VAD回合状态机12项CPU通过](evidence/serve-semantic-vad-gate-cpu-20261119/README.md)，
+尚未接入ASR/实际语义模型或发行：
+显式概率与绝对音频时钟、2/4/8秒上限、续说/换回合迟到结果隔离、
+旧worker未回收时保留占槽。独立CPU零警告构建，0GPU；
+PR #50继续检查固定已验head，当前新源码暂不纳入该PR或默认rev336。
 
 [rev336参考ICL/Realtime可回退交付](evidence/serve-icl-realtime-delivery-20261119/README.md)
 完成：19项STOPPED检查/320.450秒，实际整根回退再前进，

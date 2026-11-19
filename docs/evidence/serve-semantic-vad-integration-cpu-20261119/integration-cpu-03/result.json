@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "seconds": 0.0637273471802473,
+  "exit_code": 0,
+  "cases": 2,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/integration-cpu-03/required.txt"
+  ],
+  "host_binary_sha256": "a0142c6e4207e9b647c2bb8b834316987a48df3227e5c0255d0ed0e60fadc809",
+  "gpu_actions": 0
+}

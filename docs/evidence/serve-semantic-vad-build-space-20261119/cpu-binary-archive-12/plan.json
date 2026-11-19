@@ -1,0 +1,67 @@
+{
+  "scope": "Four ended CPU host-test programs, all hardlinks fully inventoried; exact lossless byte/SHA archive. Current/default/recovery programs, models, source and logs kept.",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/registry-cpu-01/prior-host-tests",
+      "member": "9861fac5dca38a73cf8d3d4e7e5de6290a363ce43938cff70fe399ff159aa142",
+      "sha256": "9861fac5dca38a73cf8d3d4e7e5de6290a363ce43938cff70fe399ff159aa142",
+      "bytes": 38280152,
+      "mode": 509,
+      "mtime_ns": 1795032033017151624,
+      "inode": 8035473,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/registry-cpu-01/failed-host-tests",
+      "member": "bf8147e0881e7bf8bf1d9a6a69592ff6fdbb6da413e5b79f5f7a95f986714c49",
+      "sha256": "bf8147e0881e7bf8bf1d9a6a69592ff6fdbb6da413e5b79f5f7a95f986714c49",
+      "bytes": 38420488,
+      "mode": 509,
+      "mtime_ns": 1795035509978505401,
+      "inode": 8035713,
+      "links": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/recovery-contract-cpu-01/q4t_host_tests",
+      "member": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f",
+      "sha256": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f",
+      "bytes": 39917384,
+      "mode": 509,
+      "mtime_ns": 1795065200205059173,
+      "inode": 8035783,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-semantic-vad-20261119/integration-cpu-01/host-tests-before",
+      "member": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f",
+      "sha256": "2314402139b676f58ef44838ebf84f1e74dd7077f02f616f95db26f210c5955f",
+      "bytes": 39917384,
+      "mode": 509,
+      "mtime_ns": 1795065200205059173,
+      "inode": 8035783,
+      "links": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tts-icl-20261119/backend-cpu-01/prior-q4t_host_tests",
+      "member": "2499dd462d6b7d681d846571dd134702c3ca3a1fa03540b505236645e5d4c3ac",
+      "sha256": "2499dd462d6b7d681d846571dd134702c3ca3a1fa03540b505236645e5d4c3ac",
+      "bytes": 38487912,
+      "mode": 509,
+      "mtime_ns": 1795035613365893363,
+      "inode": 8035602,
+      "links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "06f2868a4d3db93a8ecb98eec5dc59842bec7c79dabe55d3f89c28dc7d87636f",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "37d329881968020f00bfedbbe48c0e856c5a288f767b84a2fbe1d16e21a7bd32",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6a75cebba133ad9f741b449d7609c9dc13654b0047b89314feada962412126d8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "16b3c32e80f9e1b15b55ae0c4f5a1d95e03177b9d3575185b246bb1444bda563"
+  },
+  "minimum_free_bytes": 25165824,
+  "maximum_member_archive_bytes": 20971520,
+  "physical_payloads": 4
+}

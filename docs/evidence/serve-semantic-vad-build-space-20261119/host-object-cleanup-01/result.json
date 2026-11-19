@@ -1,0 +1,9 @@
+{
+  "status": "REBUILDABLE_CACHE_REMOVED",
+  "files": 564,
+  "bytes": 70568184,
+  "free_before": 40603648,
+  "free_after": 112099328,
+  "host_binary_unchanged": true,
+  "gpu_actions": 0
+}

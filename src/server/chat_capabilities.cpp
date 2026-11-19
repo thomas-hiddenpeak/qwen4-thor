@@ -62,6 +62,17 @@ std::string ChatCapabilitiesJson(
          (native_asr && native_vad ? "true" : "false") +
          R"(,"profile":"q4t-native-silero-vad-v1","frame_samples":512,)"
          R"("analysis_rate":16000,"clock_hz":48000,"idle_padding":false},)"
+         R"("semantic_vad":{"implemented":true,"configured":)" +
+         (native_asr && native_vad && constrained ? "true" : "false") +
+         R"(,"profile":"q4t-native-semantic-turn-v1",)"
+         R"("classifier":"native_primary_model","calibrated":false,)"
+         R"("eagerness":["auto","low","medium","high"],)"
+         R"("maximum_wait_ms":{"auto":4000,"low":8000,"medium":4000,"high":2000},)"
+         R"("max_model_steps":8,"step_output_tokens":16,)"
+         R"("input":"actual_full_asr_hypothesis","serial_worker":true,)"
+         R"("usage":"included_in_item_and_client_tokens",)"
+         R"("score_failure":"unknown_with_bounded_silence",)"
+         R"("resumption":"cancel_and_fence_old_score"},)"
          R"("noise_reduction":{"implemented":true,"modes":["near_field","far_field"],)"
          R"("processing":"shared_16k_f32","fft":512,"hop":256,)"
          R"("external_dependencies":false},)"
@@ -77,8 +88,7 @@ std::string ChatCapabilitiesJson(
          R"("max_items":128,"text_bytes":134217728,"audio_bytes":134217728,)"
          R"("output_message_bytes":67108864,"output_queue_bytes":134217728,)"
          R"("session_host_reservation_bytes":1073741824,"silent_eviction":false},)"
-         R"("pending_execution":["semantic_vad",)"
-         R"("conversation","live"]},)"
+         R"("pending_execution":["conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
          Quote(kNativeAsrProfile) + R"(,"revision":)" +

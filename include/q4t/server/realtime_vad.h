@@ -13,6 +13,8 @@ struct RealtimeVadOptions {
 struct RealtimeVadProgress {
   bool frame = false, started = false, stopped = false;
   uint64_t begin_ticks = 0, end_ticks = 0, trim_before = 0;
+  bool voiced = false;
+  uint64_t analyzed_end_ticks = 0;
 };
 // Event-loop owned. One call consumes <=1024 input samples and scores <=one
 // 512-sample frame. Immutable model weights may be shared; recurrent state,

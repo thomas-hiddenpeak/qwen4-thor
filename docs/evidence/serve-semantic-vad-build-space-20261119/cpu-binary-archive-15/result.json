@@ -1,0 +1,15 @@
+{
+  "status": "LOSSLESS_ARCHIVE_COMPLETE",
+  "archived_members": [
+    "5eb2e4660c37a3cac95637e181dd190c6de583d1451ce813f163b70bfb80ea7e",
+    "100a490bc62fcc879da209d52c7f27e3d8af23da14b5f2011b3db7a752c8a85a",
+    "fa2a78e177909747efb0e062f435462493c36e07cb67843bbbb612dfd898af54",
+    "0d1ca22b5268c9fef7965cef8f6140370077a04b28c42a111290155d2c67e1be"
+  ],
+  "archive_sha256": "920461a87bff57e8655be019ed08fdcefb5d40c2fbee7289ee028fed005b4599",
+  "archive_bytes": 47054694,
+  "freed_payload_bytes": 114674216,
+  "default_unchanged": true,
+  "free": 208285696,
+  "gpu_actions": 0
+}

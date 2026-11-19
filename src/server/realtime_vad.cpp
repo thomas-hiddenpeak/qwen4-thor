@@ -12,7 +12,11 @@ RealtimeVad::RealtimeVad(RealtimeAudioFormat format, uint64_t begin_ticks,
       origin_(begin_ticks),
       options_(options),
       step_(std::move(step)),
-      resampler_(format.rate, 3600ULL * format.rate) {
+      resampler_(format.rate, 3600ULL * format.rate, 16000,
+                 format.encoding != RealtimeAudioEncoding::kFloat32) {
+  // Shared processed FP32 can contain finite sinc overshoot. Preserve those
+  // exact samples for VAD and ASR; the resampler still rejects NaN and
+  // infinity.
   valid_ = RealtimeAudioQueue(1, format).Valid() && resampler_.Valid() &&
            origin_ <= kRealtimeSessionTicks && step_ &&
            std::isfinite(options.threshold) && options.threshold >= 0 &&
@@ -74,6 +78,8 @@ Status RealtimeVad::Advance(const RealtimeAudioQueue& queue,
   filled_ = 0;
   ++frames_;
   out->frame = true;
+  out->voiced = probability >= options_.threshold;
+  out->analyzed_end_ticks = end;
   if (probability >= options_.threshold) {
     silent_ = false;
     if (!active_) {

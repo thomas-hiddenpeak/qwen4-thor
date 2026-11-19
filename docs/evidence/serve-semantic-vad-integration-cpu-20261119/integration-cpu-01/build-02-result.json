@@ -1,0 +1,7 @@
+{
+  "status": "BUILD_FAILED_BEFORE_TESTS",
+  "exit_code": 2,
+  "error": "bounded string_view requires explicit std::string for existing JSON parser",
+  "test_executions": 0,
+  "gpu_actions": 0
+}
