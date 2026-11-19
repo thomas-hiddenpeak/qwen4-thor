@@ -1,0 +1,10 @@
+{
+  "scope": "Metadata chooses native business vs operations port; no client credentials sent to operations; unchanged rejection and byte bound",
+  "cases": 4,
+  "seconds": 60,
+  "gpu_actions": 0,
+  "sources": {
+    "tools/serve_realtime/semantic_acceptance.py": "96513f0ee0fa3d58eaf6ce3d97cd4df91f154b68399053e6078d0f5fd3d5ee72",
+    "tools/serve_realtime/test_semantic_acceptance.py": "d83c650c2eb5b7fe93359d10957375316ab320654b52bbe4ac80e6393ad9c008"
+  }
+}

@@ -123,7 +123,7 @@ class BuildRecord(unittest.TestCase):
 
 
 class Metadata(unittest.TestCase):
-    def call(self, status, payload):
+    def call(self, status, payload, operations=False):
         received=[]
         class Peer(BaseHTTPRequestHandler):
             def log_message(self,*_):pass
@@ -137,23 +137,29 @@ class Metadata(unittest.TestCase):
         out=Path(tempfile.mkdtemp(prefix='metadata-',dir=root))
         server=ThreadingHTTPServer(('127.0.0.1',0),Peer)
         worker=threading.Thread(target=server.serve_forever);worker.start()
-        stage=s.Stage.__new__(s.Stage);stage.plan={'port':server.server_port}
+        unused=ThreadingHTTPServer(('127.0.0.1',0),Peer)
+        self.addCleanup(unused.server_close)
+        stage=s.Stage.__new__(s.Stage)
+        stage.plan={'port':unused.server_port if operations else server.server_port,
+                    'operations_port':server.server_port if operations else unused.server_port}
         stage.token='cpu-only-token';stage.out=out;charged=[]
         stage.budget=lambda kind:charged.append(kind)
+        path='/v1/config' if operations else '/v1/capabilities'
         try:
             if status != 200:
                 with self.assertRaisesRegex(RuntimeError,'metadata HTTP status: 401'):
-                    stage.metadata('/v1/capabilities','observed')
+                    stage.metadata(path,'observed')
             elif len(payload)>1<<20:
                 with self.assertRaisesRegex(RuntimeError,'metadata response bound'):
-                    stage.metadata('/v1/config','observed')
+                    stage.metadata(path,'observed')
             else:
-                self.assertEqual(stage.metadata('/v1/capabilities','observed'),{'configured':True})
+                self.assertEqual(stage.metadata(path,'observed'),{'configured':True})
         finally:
             server.shutdown();server.server_close();worker.join(2)
         self.assertFalse(worker.is_alive())
         self.assertEqual(len(received),1)
-        self.assertEqual(received[0][1:],('gamma','cpu-only-token'))
+        self.assertEqual(received[0][0],path)
+        self.assertEqual(received[0][1:],(None,None) if operations else ('gamma','cpu-only-token'))
         self.assertEqual(charged,['controls'])
         self.assertEqual((out/'observed.wire').read_bytes(),payload[:(1<<20)+1])
         self.assertEqual(json.loads((out/'observed.http.json').read_text())['status'],status)
@@ -165,7 +171,10 @@ class Metadata(unittest.TestCase):
         self.call(401,b'{"error":{"code":"client_authentication_failed"}}')
 
     def test_metadata_response_has_explicit_byte_limit(self):
-        self.call(200,b' ' *((1<<20)+1))
+        self.call(200,b' ' *((1<<20)+1),operations=True)
+
+    def test_configuration_uses_operations_port_without_business_identity(self):
+        self.call(200,b'{"configured":true}',operations=True)
 
 
 if __name__=='__main__':unittest.main()

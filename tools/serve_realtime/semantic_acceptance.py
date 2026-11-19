@@ -195,10 +195,13 @@ class Stage(base.Stage):
 
     def metadata(self, path, label):
         self.budget('controls')
-        conn = http.client.HTTPConnection('127.0.0.1', self.plan['port'], timeout=15)
+        operations = path == '/v1/config'
+        port = self.plan['operations_port' if operations else 'port']
+        headers = {} if operations else {'X-Q4T-Client-Id':'gamma',
+            'X-Q4T-Gateway-Token':self.token}
+        conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
         try:
-            conn.request('GET', path, headers={'X-Q4T-Client-Id':'gamma',
-                'X-Q4T-Gateway-Token':self.token})
+            conn.request('GET', path, headers=headers)
             response = conn.getresponse(); raw = response.read((1 << 20)+1)
             (self.out/(label+'.wire')).write_bytes(raw)
             save(self.out/(label+'.http.json'), dict(status=response.status))

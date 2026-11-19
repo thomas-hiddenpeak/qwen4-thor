@@ -1,0 +1,9 @@
+test_configuration_uses_operations_port_without_business_identity (tools.serve_realtime.test_semantic_acceptance.Metadata.test_configuration_uses_operations_port_without_business_identity) ... ok
+test_metadata_preserves_unauthorized_response_without_misdiagnosis (tools.serve_realtime.test_semantic_acceptance.Metadata.test_metadata_preserves_unauthorized_response_without_misdiagnosis) ... ok
+test_metadata_response_has_explicit_byte_limit (tools.serve_realtime.test_semantic_acceptance.Metadata.test_metadata_response_has_explicit_byte_limit) ... ok
+test_metadata_sends_bound_client_identity (tools.serve_realtime.test_semantic_acceptance.Metadata.test_metadata_sends_bound_client_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.009s
+
+OK

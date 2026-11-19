@@ -1,0 +1,88 @@
+{
+  "status": "PASS_COMPLETED_ITEMS_WITH_FINAL_HEALTH_PENDING",
+  "original_stage_status": "FAIL_RETAINED",
+  "binary_sha256": "945775bbbdeadf6d6f008409f7b3daf5d5b3db628481a23f6a53b51622602dd2",
+  "observed": {
+    "complete": {
+      "actual_classifier": {
+        "profile": "q4t-native-semantic-turn-v1",
+        "attempts": 1,
+        "accepted": 1,
+        "unavailable": 0,
+        "invalid": 0,
+        "stale": 0,
+        "maximum_wait": false,
+        "probability_available": true,
+        "input_tokens": 352,
+        "output_tokens": 6,
+        "included_in_usage": true
+      },
+      "actual_usage": {
+        "type": "tokens",
+        "input_tokens": 538,
+        "output_tokens": 26,
+        "total_tokens": 564,
+        "input_token_details": {
+          "audio_tokens": 133,
+          "text_tokens": 405
+        }
+      },
+      "retained_bytes": 261696,
+      "retained_sha256": "95b4c0694e96a3504c512715c09328bd239a8e7554c48cf654638907d8cf5177",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "connections": 1,
+      "close_code": 1000,
+      "continuation": null
+    },
+    "continuation": {
+      "actual_classifier": {
+        "profile": "q4t-native-semantic-turn-v1",
+        "attempts": 2,
+        "accepted": 1,
+        "unavailable": 0,
+        "invalid": 0,
+        "stale": 1,
+        "maximum_wait": false,
+        "probability_available": true,
+        "input_tokens": 352,
+        "output_tokens": 6,
+        "included_in_usage": true
+      },
+      "actual_usage": {
+        "type": "tokens",
+        "input_tokens": 839,
+        "output_tokens": 44,
+        "total_tokens": 883,
+        "input_token_details": {
+          "audio_tokens": 310,
+          "text_tokens": 529
+        }
+      },
+      "retained_bytes": 247872,
+      "retained_sha256": "2e8636494a9db6ebcf8958b7a4fe6690ce8d4142f40895d060cca6f8d7344fa2",
+      "transcript": "甚至出现交易几乎停滞的情况。",
+      "connections": 1,
+      "close_code": 1000,
+      "continuation": {
+        "original_samples_sent": 36000,
+        "total_original_samples": 100895,
+        "pause_samples": 12000,
+        "no_commit": true,
+        "event_count": 4
+      }
+    }
+  },
+  "contrast": {
+    "complete": 1,
+    "incomplete": 0.1
+  },
+  "core": "42",
+  "native_final_health": "PENDING_NEXT_PROFILE_QUALIFICATION",
+  "guard_status": "COMMAND_FAILED",
+  "nvml_samples": 53,
+  "all_nvml_ok": true,
+  "cleanup_complete": true,
+  "seconds": 54.72399792307988,
+  "default_unchanged": true,
+  "master_complete": false
+}

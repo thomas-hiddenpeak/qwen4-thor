@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义回合真实业务与运维查询修复](evidence/serve-semantic-vad-items-20261119/README.md)：
+1模型/2WSS/3Chat/54.724秒，两回合实际语义提前结束、精确转录、
+564/883用量结算和核心42通过；53次NVML正常、清理完成。整轮
+末尾健康查询错用业务身份403，原FAIL保留；4项CPU修复通过。
+最终健康随主轻资格补齐，复用已通过同身份业务；默认rev336
+STOPPED及听感待验保持，继续恢复、交付和全部master。
+
 [语义前缀新鲜度修复](evidence/serve-semantic-vad-fresh-prefix-20261119/README.md)：
 原第二轮真实FAIL保留，45次NVML正常；仅语义路径读取最新完整
 前缀，21项CPU/3项构建资格/18项来源反例通过，原生251.737秒
