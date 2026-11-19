@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
+PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
+PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认
+rev346不变，本地后续对话基础不混入；等待修复head检查后合入。
+
 [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
 完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
 0新增GPU，原配额/用量/恢复历史/预算保持。发布超时原FAIL保留，原ID

@@ -5,10 +5,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 from pathlib import Path
+import sys
 import tempfile
 import threading
 import unittest
 from unittest import mock
+
+# CTest executes this file directly, possibly from an external build tree.
+# Resolve this checkout explicitly instead of relying on an inherited PYTHONPATH.
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
 from tools.serve_realtime import semantic_acceptance as s
 
 
