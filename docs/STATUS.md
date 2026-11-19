@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Guardian测试回执修复](evidence/serve-guardian-fixture-receipt-20261119/README.md)
+完成：3项CPU/6.824秒、18项来源反例/0.428秒/0GPU；测试演员的
+JSON改为原子发布，非法绑定与恢复预算断言保持，原CI失败保留。
+生产程序/默认rev336 STOPPED不变；等待PR #50新head检查后合入，
+语义VAD草稿另行验证，全部master继续。
+
 [PR #50恢复来源清单复核](evidence/serve-icl-realtime-ci-review-20261119/README.md)
 完成：六项来源与已验业务/封装证据重新对齐，完整静态检查及18项
 反例通过，0.450秒/0新增GPU；原CI失败保留，等待修订后CI。

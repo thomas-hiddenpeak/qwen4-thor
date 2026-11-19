@@ -3157,7 +3157,7 @@
     "tools/serve_recovery/feature_acceptance.py": "77833b5dbf1e6212759d35e3db63f50c402f6bcdd50b6132b14e5e463c006429",
     "tools/serve_recovery/fixture_controller.py": "1b3790ff118396f02e7aab6f12a6f0e750912931f22c893fae20d9a2ea866cc6",
     "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
-    "tools/serve_recovery/fixture_model.py": "6a6c64f2b1742b08f1b58dd740ea28f553816edd5b613bb5b46071511bc3066c",
+    "tools/serve_recovery/fixture_model.py": "a2a23f6871dab8c1f2776d3a7496d1bb4211d30943d1e63f930ed32551645a03",
     "tools/serve_recovery/fixture_production.py": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18",
     "tools/serve_recovery/gateway.py": "8fed57e0e6fc515928f40e26c5a46081fc767961fdf992a42bd6dada65ba7eaf",
     "tools/serve_recovery/gateway_config.py": "ac84b61eb867ec32ba75ab95cdd6c0ba7378382da92f04a156dddf0fe5746888",
@@ -8359,5 +8359,11 @@
     "default_revision": 336,
     "no_new_gpu_work": true,
     "master_complete": false
+  },
+  "fixture_receipt_review_20261119": {
+    "source": "tools/serve_recovery/fixture_model.py",
+    "scope": "CPU-only actor publishes complete capacity reply by temporary sibling and atomic replace; interruption never exposes partial final JSON. Invalid binding still rejected and recovery budget charged; production code/binary unchanged.",
+    "evidence": "docs/evidence/serve-guardian-fixture-receipt-20261119/README.md",
+    "original_ci_failure_retained": true
   }
 }

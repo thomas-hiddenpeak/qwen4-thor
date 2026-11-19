@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "seconds": 6.824413996189833,
+  "cases": 3,
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_recovery/test_runtime.py",
+    "--guardian",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-guardian",
+    "RuntimeTests.test_capacity_receipt_publishes_only_complete_json",
+    "RuntimeTests.test_qualified_capacity_binding_survives_independent_gateway_admission",
+    "RuntimeTests.test_malformed_capacity_cannot_open_model_and_recovery_spends_budget",
+    "-v"
+  ],
+  "exit_code": 0,
+  "gpu_actions": 0,
+  "production_runtime_unchanged": true
+}

@@ -17,6 +17,15 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import journal, ledger
 
 
+def publish_receipt(path, value):
+    # Guardian can retire this fixture at any instruction after a rejected
+    # request. Readers may observe no reply, but never a half-written JSON.
+    temporary = path.with_name(f'.{path.name}.{os.getpid()}.pending')
+    with temporary.open('x') as output:
+        output.write(json.dumps(value))
+    os.replace(temporary, path)
+
+
 def idle(channel, seconds=None):
     end = time.monotonic()+seconds if seconds is not None else float('inf')
     while time.monotonic() < end:
@@ -134,7 +143,7 @@ def controller(channel, args):
                     json.dumps(dict(capacity_sha256=args.capacity_fingerprint,
                         controller_generation=channel.generation, owner=owner)))
                 reply = channel.transact('bind', dict(role='model', ticket=grant['ticket'], binding=value))
-                (args.model_fixture/'capacity-binding.json').write_text(json.dumps(reply))
+                publish_receipt(args.model_fixture/'capacity-binding.json', reply)
                 if not reply['ok']: idle(channel)
             else:
                 transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'], binding=value))

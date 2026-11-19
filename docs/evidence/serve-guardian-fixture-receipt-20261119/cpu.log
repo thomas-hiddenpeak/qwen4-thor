@@ -1,0 +1,8 @@
+test_capacity_receipt_publishes_only_complete_json (__main__.RuntimeTests.test_capacity_receipt_publishes_only_complete_json) ... ok
+test_qualified_capacity_binding_survives_independent_gateway_admission (__main__.RuntimeTests.test_qualified_capacity_binding_survives_independent_gateway_admission) ... ok
+test_malformed_capacity_cannot_open_model_and_recovery_spends_budget (__main__.RuntimeTests.test_malformed_capacity_cannot_open_model_and_recovery_spends_budget) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 6.677s
+
+OK
