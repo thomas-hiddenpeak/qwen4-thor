@@ -1,0 +1,16 @@
+test_complete_actual_evidence_and_exact_reference (tools.serve_realtime.test_history_acceptance.Evidence.test_complete_actual_evidence_and_exact_reference) ... ok
+test_foreign_identity_and_fabricated_transcript_do_not_pass (tools.serve_realtime.test_history_acceptance.Evidence.test_foreign_identity_and_fabricated_transcript_do_not_pass) ... ok
+test_frozen_limits_and_no_prompt_hint_cannot_drift (tools.serve_realtime.test_history_acceptance.Evidence.test_frozen_limits_and_no_prompt_hint_cannot_drift) ... ok
+test_history_usage_cannot_be_unchanged_or_only_claimed_deleted (tools.serve_realtime.test_history_acceptance.Evidence.test_history_usage_cannot_be_unchanged_or_only_claimed_deleted) ... ok
+test_live_settlement_must_include_all_work_and_release_reservation (tools.serve_realtime.test_history_acceptance.Evidence.test_live_settlement_must_include_all_work_and_release_reservation) ... ok
+test_noncanonical_base64_and_malformed_usage_reject (tools.serve_realtime.test_history_acceptance.Evidence.test_noncanonical_base64_and_malformed_usage_reject) ... ok
+test_original_or_wrong_waveform_does_not_pass_retrieval (tools.serve_realtime.test_history_acceptance.Evidence.test_original_or_wrong_waveform_does_not_pass_retrieval) ... ok
+test_prior_transcript_and_predecessor_must_be_actual (tools.serve_realtime.test_history_acceptance.Evidence.test_prior_transcript_and_predecessor_must_be_actual) ... ok
+test_continuous_pending_is_hidden_until_actual_commit (tools.serve_realtime.test_history_sdk.HistorySdk.test_continuous_pending_is_hidden_until_actual_commit) ... ok
+test_manual_history_delete_and_same_connection_with_actual_sdk (tools.serve_realtime.test_history_sdk.HistorySdk.test_manual_history_delete_and_same_connection_with_actual_sdk) ... ok
+test_wrong_deleted_identity_is_not_certified (tools.serve_realtime.test_history_sdk.HistorySdk.test_wrong_deleted_identity_is_not_certified) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 1.990s
+
+OK

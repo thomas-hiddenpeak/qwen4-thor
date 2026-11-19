@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "gpu_actions": 0,
+  "tests_exit": 0,
+  "checks": {
+    "evidence_controls": 8,
+    "official_sdk_tls_fixtures": 3,
+    "actual_cpu_waveforms": 2,
+    "independent_tokenizer": 1
+  },
+  "history_tokens": 11,
+  "waveforms": {
+    "manual": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+    "near_stream": "e1dbe05ed07a0166f565bcbe6d6a64128a594a4f29a9c397a7b25f4e7c065334"
+  },
+  "seconds": 3.763329813722521
+}

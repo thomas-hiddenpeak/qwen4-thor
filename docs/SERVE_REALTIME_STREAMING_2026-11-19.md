@@ -216,3 +216,13 @@ retrieve返回标准conversation.item.retrieved与完整input_audio内容，
 H2b2 [86项针对性CPU通过](evidence/serve-realtime-history-retrieve-cpu-20261119/README.md)，
 1.415646秒/0GPU，零警告。下一步H3真实WSS历史/用量/删除/取回，
 尚未进行本身份业务或恢复交付验收，默认rev326保持。
+
+### H3：有界真实历史/取回短验
+
+[驱动CPU正反例与SDK夹具通过](evidence/serve-realtime-history-driver-cpu-20261119/README.md)。
+冻结1模型/1原生TLS入口、2WSS/4转录/1Chat/600秒。三次相同真实
+中文语音在第二次后删除前两条历史，独立tokenizer要求实际输入
+70→81→70；客户端不注入原文提示。连续G.711近场路径验证commit前
+隐藏、跨会话隔离及实际处理后波形精确取回。全部实际用量需与live
+配额结算一致，并保留同PID核心Chat和自有进程/端口/锁清理证据。
+本阶段不替代Guardian/profile恢复及可回退交付，全部master继续。

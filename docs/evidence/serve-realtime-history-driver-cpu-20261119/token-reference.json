@@ -1,0 +1,29 @@
+{
+  "prior_transcript": "甚至出现交易几乎停滞的情况。",
+  "context": "\nPrevious transcription:\n甚至出现交易几乎停滞的情况。",
+  "base_input_tokens": 70,
+  "history_tokens": 11,
+  "token_ids": [
+    198,
+    21291,
+    45840,
+    510,
+    100636,
+    100347,
+    99886,
+    100740,
+    118083,
+    102072,
+    1773
+  ],
+  "versions": {
+    "transformers": "5.16.1",
+    "tokenizers": "0.23.2"
+  },
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-04/run/alpha.sdk.json": "1dd21e34ce5be9a866bd0202941bfbc3c2cbe51fe436d449fc4dae39a13846fd",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01/tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+  }
+}

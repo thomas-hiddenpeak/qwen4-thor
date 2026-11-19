@@ -1,0 +1,47 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "seconds": 120,
+  "gpu_actions": 0,
+  "checks": {
+    "evidence_controls": 8,
+    "official_sdk_tls_fixtures": 3,
+    "actual_cpu_waveforms": 2,
+    "independent_tokenizer": 1
+  },
+  "sources": {
+    "tools/serve_realtime/history_acceptance.py": "cc58357157f247796e6bff3bd37951561f51c364cfe7699837869a26d610d8d0",
+    "tools/serve_realtime/history_sdk.mjs": "b5d81cff8bf3318e3d5861a75c9b714fbbae2f259d655b552da96f5dda9eb431",
+    "tools/serve_realtime/history_waveform_fixture.cpp": "ef93d895fa6233411a8e589168830a686394f4286a95646ad4bcbcc6a1d65f2a",
+    "tools/serve_realtime/test_history_acceptance.py": "bb2e219af1718b638d7a5132b3a763cc63e9f86bfa8ef58d243affed8b9432ab",
+    "tools/serve_realtime/test_history_sdk.py": "132dfe15a07fd8515cc7101f37ab3772720696e3affb6381ab8f005a6cd32eb3",
+    "tools/serve_realtime/test_transcription_sdk.py": "2bd63dd24142f8d8157c93c3352fee822fb78dbf55c80fa25c8f61ffcfb15a4b",
+    "tools/serve_realtime/streaming_acceptance.py": "c172a0e9bb1fc62f3cd14fde87fbc09219ac3632816c116a8ea63a1eb0b1e82d",
+    "tools/serve_realtime/ingress_fixture.py": "9f347b6c974c2349e079613b020fc3efba68ac2d6d19496eba40965e7d4da32d",
+    "tools/serve_realtime/transcription_acceptance.py": "d64aa9003993b3b82a544277f2282594e3b46fed28dd9ba3d4a6bc1ffc1514c2",
+    "src/server/realtime_audio_export.cpp": "7a8f2c6f437452debd09f7e321374e136b1d3347213844d733c98c5b51e8cd95",
+    "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
+    "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
+    "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
+    "src/audio/stream_resample.cpp": "047e891a87a410fcd8fae5c6d508f2cc11c0a0f86b15a86fc31a5407c784ce2c",
+    "src/audio/noise_reduction.cpp": "fb411aa1f6ce80f6072b0595976f99b036767f29160632fe993fe4b17b23c981",
+    "src/audio/noise_fft.cpp": "55b8e0731aea4d7700503ae23d6f6d57ddebb955e17cac2c38cd12137b9f3f68"
+  },
+  "ingress": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+    "sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/sdk",
+  "sdk_versions": {
+    "openai": "7.47.0",
+    "ws": "8.21.0"
+  },
+  "business_limits": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 4,
+    "chats": 1,
+    "controls": 2000,
+    "seconds": 600
+  }
+}

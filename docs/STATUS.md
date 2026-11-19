@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[真实历史/取回驱动CPU通过](evidence/serve-realtime-history-driver-cpu-20261119/README.md)：
+8证据反例+3真实SDK/TLS夹具+2原生波形+1独立tokenizer复核，3.763秒/
+0GPU。冻结真实输入70→81→70，取回须逐字节等于处理后波形；下一步
+1模型/1入口、2WSS/4转录/1Chat/600秒。默认rev326保持，恢复交付及
+全部master继续，原exact-code失败和听感待验不改写。
+
+真实历史/取回短验驱动已编写，冻结8项证据反例、3项真实SDK/TLS
+CPU夹具、2次实际CPU波形及1次独立tokenizer复核/120秒/0GPU。
+通过后1模型/1原生TLS入口、2WSS会话/4转录/1Chat/600秒，验证真实
+历史输入量增减、标准删除、处理后取回与连续提交可见性。默认保持，
+恢复交付与全部master继续；不会把固定PID开发入口当Guardian验收。
+
 [处理后音频取回86项CPU通过](evidence/serve-realtime-history-retrieve-cpu-20261119/README.md)：
 1.415646秒/0GPU，零警告、994来源/18负控；实际PCM同源、删除借用
 持续计费、连续提交可见性、大音频及4MiB文本输出通过。下一步冻结

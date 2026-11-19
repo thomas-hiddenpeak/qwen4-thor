@@ -1,0 +1,18 @@
+{
+  "manual": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-driver-cpu-01/manual.expected.pcm",
+    "sha256": "7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f",
+    "bytes": 201788,
+    "input_bytes": 201790,
+    "processed_samples": 67263,
+    "output_bytes": 201788
+  },
+  "near_stream": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-driver-cpu-01/near_stream.expected.pcm",
+    "sha256": "e1dbe05ed07a0166f565bcbe6d6a64128a594a4f29a9c397a7b25f4e7c065334",
+    "bytes": 33632,
+    "input_bytes": 33632,
+    "processed_samples": 67264,
+    "output_bytes": 33632
+  }
+}

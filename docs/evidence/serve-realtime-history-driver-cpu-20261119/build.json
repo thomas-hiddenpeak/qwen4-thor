@@ -1,0 +1,23 @@
+{
+  "exit_code": 0,
+  "seconds": 6.267709132749587,
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Iinclude",
+    "tools/serve_realtime/history_waveform_fixture.cpp",
+    "src/server/realtime_audio_export.cpp",
+    "src/server/realtime_noise_input.cpp",
+    "src/server/realtime_pcm.cpp",
+    "src/server/realtime_audio_queue.cpp",
+    "src/audio/stream_resample.cpp",
+    "src/audio/noise_reduction.cpp",
+    "src/audio/noise_fft.cpp",
+    "-o",
+    ".q4t-work/serve-realtime-20261119/history-driver-cpu-01/history-waveform-fixture"
+  ]
+}
