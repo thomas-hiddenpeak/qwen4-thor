@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[TLS 补验通过，整包组 ENV_ABORT](evidence/serve-realtime-chat-recovery-followup-20261120/README.md)：
+TLS 1 模型/34 工作/230.703 秒、215 次正常 NVML，严格 finalize 通过。
+整包组 2 模型/22 工作/231.219 秒，200 次正常后 NVML init 卡住，
+开发守卫按独占合同中止；实际前后工具通过但后续语音未完成，整组
+不记通过。事后进程/端口/锁清理确认，独立监控查询已恢复正常。
+仅续一次整包组 2 模型/32 工作/6 WSS/1 探测/600 秒；再次 ENV_ABORT
+停止该组，继续独立开发。默认 rev346 STOPPED、原失败/听感待验保持。
+
 [恢复质量分类 27 项 CPU 通过](evidence/serve-realtime-chat-quality-cpu-20261120/README.md)：
 5.590 秒/0GPU，20 来源反例通过；原 TLS 原件只读复核 830 tokens、
 答案质量仍 FAIL，不补写未执行行为。驱动 v2 明确 PROTOCOL_PASS
