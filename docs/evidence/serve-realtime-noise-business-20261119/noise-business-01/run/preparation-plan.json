@@ -1,0 +1,17 @@
+{
+  "native_cpu_waveform_captures": 9,
+  "gpu_actions": 0,
+  "seconds_per_capture": 30,
+  "limits": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 3,
+    "committed_items": 7,
+    "chats": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "scene": "Unmodified retained real Chinese/English source, labeled 125 Hz hum at 10 dB SNR; 2s prefix/1.2s tail. Fixed before any waveform or model result.",
+  "signal_gate": "1.2-1.8s noise-only RMS near<.5 original, far<.65 original, near<far; exact sample count; finite waveform. Not general denoising quality.",
+  "quality_gate": "Original Chinese exact and English WER<=.05 for all three settings; one Chinese G.711 near-field auto turn."
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "q4t-realtime-noise-business-v1",
+  "source_commit": "16981091a8c62affc1937528685c3489d3f0aee7",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+  "binary_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+  "ingress_sha256": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+  "sdk_versions": {
+    "openai": "7.47.0",
+    "ws": "8.21.0"
+  },
+  "asr_assets": {
+    "config.json": "76d3ae4601ce939830b2517f4a6cadb86cc51316c3900af6b020b051c21a478c",
+    "preprocessor_config.json": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d",
+    "generation_config.json": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+    "model.safetensors": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+  },
+  "vad_assets": {
+    "silero_vad_16k.safetensors": "c59271c284ae9c8335d795d60e0bfdb71aaaceec578d9bd9ffc1b8153c319ea1"
+  },
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "fef7f1d7f396d85d75aae9882c7dbca4c47571f3fcb98da42c0405b802c76e7b",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "cee2c0be1d130c4fd2d106d2f52ed1171be8c08ce39e8722cf1053224a98f9e1",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6cee0dbea9881a2a3425f98070b1fb82311e425335bb5628b8ddf47034555c97",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "limits": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 4,
+    "chats": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "clips": {
+    "zh": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/zh.pcm",
+      "sha256": "9d5a5ccf7c2364bb20da6a822382a597155f27749e296563da4a9753fe47a55d",
+      "bytes": 355390,
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-04/run/zh.pcm",
+      "source_sha256": "1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc",
+      "rate": 24000,
+      "width": 2,
+      "original_recording": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_zh.wav",
+      "original_recording_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+      "clean_scale": 1.0,
+      "hum_peak": 0.0045074615003754806,
+      "target_snr_db": 10,
+      "hum_hz": 125,
+      "prefix_noise_ms": 2000,
+      "tail_noise_ms": 1200,
+      "codec_reference": "/usr/lib/python3.12/lib-dynload/audioop.cpython-312-aarch64-linux-gnu.so",
+      "codec_reference_sha256": "606989b18df702c34f74fa77fba8b794c7f7c625601015c1bf2c47409d06d592"
+    },
+    "en": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/en.pcm",
+      "sha256": "a2afe8d5ce59f82125a7eb080107a3b042b60b87f54d98087679cffd4ce12705",
+      "bytes": 876060,
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-04/run/en.pcm",
+      "source_sha256": "d40c1d7632357bb961e6118dd56c56a79090e668bce45fd8dfcbab3036f1a70d",
+      "rate": 24000,
+      "width": 2,
+      "original_recording": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_en.wav",
+      "original_recording_sha256": "f9b4440ac8393e47c14a6240e9739dea09b645bb1592b8f2dd48feb9666cea7f",
+      "clean_scale": 0.593494167934507,
+      "hum_peak": 0.02082292282837921,
+      "target_snr_db": 10,
+      "hum_hz": 125,
+      "prefix_noise_ms": 2000,
+      "tail_noise_ms": 1200,
+      "codec_reference": "/usr/lib/python3.12/lib-dynload/audioop.cpython-312-aarch64-linux-gnu.so",
+      "codec_reference_sha256": "606989b18df702c34f74fa77fba8b794c7f7c625601015c1bf2c47409d06d592"
+    },
+    "mulaw": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/mulaw.pcm",
+      "sha256": "983c9dfc0ae1e178820db18287bb3efb9f61180bd0d88776b56db8619b9822f3",
+      "bytes": 59232,
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/transcription-business-04/run/mulaw.pcm",
+      "source_sha256": "42d2b524d9f7d1b52640c00b99f55360556a128903e860bc47c86fc064adeca7",
+      "rate": 8000,
+      "width": 1,
+      "original_recording": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/real-audio-01/asr_zh.wav",
+      "original_recording_sha256": "46dbc998c9d1d48111267c40741dd3200f2e5bcf4075f8c4c97f4451160dce50",
+      "clean_scale": 1.0,
+      "hum_peak": 0.004500159677317221,
+      "target_snr_db": 10,
+      "hum_hz": 125,
+      "prefix_noise_ms": 2000,
+      "tail_noise_ms": 1200,
+      "codec_reference": "/usr/lib/python3.12/lib-dynload/audioop.cpython-312-aarch64-linux-gnu.so",
+      "codec_reference_sha256": "606989b18df702c34f74fa77fba8b794c7f7c625601015c1bf2c47409d06d592"
+    }
+  },
+  "acceptance": {
+    "zh_exact": true,
+    "en_word_error_rate_max": 0.05,
+    "modes": [
+      "off",
+      "near_field",
+      "far_field"
+    ],
+    "auto_items": 2,
+    "manual_items": 5,
+    "actual_usage_matches_client_settlement": true,
+    "same_core_pid": true
+  },
+  "private_plan_sha256": "2f18ff7672d8f4fe3238a6c25c2b002d23ed67aed84fe7a75df3eb8cd590101c",
+  "source_files": 1424
+}

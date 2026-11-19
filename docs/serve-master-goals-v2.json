@@ -9667,6 +9667,24 @@
       "state": "IMPLEMENTATION_REQUIRED",
       "finding": "RunRealtimeTranscription succeeds and updates success metrics but does not close RequestDiagnostics outcome; actual successful item end events retain error/handler_error.",
       "next": "Bind diagnostics to actual success/failure/cancel result, targeted direct checks and applicable upcoming business; never use observation labels to restart healthy model."
+    },
+    "noise_business_accepted": {
+      "state": "REAL_STATIONARY_NOISE_SCENE_ACCEPTED_DELIVERY_PENDING",
+      "evidence": "evidence/serve-realtime-noise-business-20261119/README.md",
+      "actual_items": 7,
+      "actual_tokens": 1308,
+      "english_wer": 0.027777777777777776,
+      "chinese_exact": true,
+      "model_starts": 2,
+      "sessions": 3,
+      "chats": 1,
+      "seconds": 90.25700291851535,
+      "nvml_ok": 88,
+      "default_unchanged": true,
+      "original_clock_driver_fail_retained": true,
+      "alpha_first_live_metrics_missing": true,
+      "all_modes_settlement_checked_on_english": true,
+      "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
     }
   }
 }

@@ -1,0 +1,160 @@
+{
+  "status": "PASS_NOISE_RUNTIME_COMPOSITION_WITH_ORIGINAL_VERIFIER_FAIL_RETAINED",
+  "source": "16981091a8c62affc1937528685c3489d3f0aee7",
+  "engine_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286",
+  "continuation_seconds": 48.32702067727223,
+  "first_seconds": 41.929982241243124,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 4,
+    "chats": 1,
+    "controls": 36
+  },
+  "cumulative_model_starts": 2,
+  "cumulative_ingress_starts": 2,
+  "cumulative_sessions": 3,
+  "cumulative_actual_items": 7,
+  "cumulative_chats": 1,
+  "rows": [
+    {
+      "case": "zh/off",
+      "item_id": "item_e3c92d19ea3e13f9450b4fa8c1c74ea2",
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 111,
+        "output_tokens": 11,
+        "total_tokens": 122,
+        "input_token_details": {
+          "audio_tokens": 96,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "zh/near_field",
+      "item_id": "item_70ba6f138252183e4b1086ff65315691",
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 71,
+        "output_tokens": 11,
+        "total_tokens": 82,
+        "input_token_details": {
+          "audio_tokens": 56,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "zh/far_field",
+      "item_id": "item_320691f539b26bfd64a952e0c6298667",
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 111,
+        "output_tokens": 11,
+        "total_tokens": 122,
+        "input_token_details": {
+          "audio_tokens": 96,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "en/off",
+      "item_id": "item_1d9eca54ee8d325abb1210f8eab024fb",
+      "text": "Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 253,
+        "output_tokens": 46,
+        "total_tokens": 299,
+        "input_token_details": {
+          "audio_tokens": 238,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "en/near_field",
+      "item_id": "item_6096935309ff3d958c15ba55e3caaddd",
+      "text": "Hmm. Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 253,
+        "output_tokens": 48,
+        "total_tokens": 301,
+        "input_token_details": {
+          "audio_tokens": 238,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "en/far_field",
+      "item_id": "item_095424130c9a941ef085041beb5f522e",
+      "text": "Hmm. Oh yeah, yeah. He wasn't even that big when I started listening to him. But and his solo music didn't do overly well, but he did very well when he started writing for other people.",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 253,
+        "output_tokens": 48,
+        "total_tokens": 301,
+        "input_token_details": {
+          "audio_tokens": 238,
+          "text_tokens": 15
+        }
+      }
+    },
+    {
+      "case": "mulaw/near_field",
+      "item_id": "item_eeec9a28a4dcfb8ef7969efdcf3eb0ee",
+      "text": "甚至出现交易几乎停滞的情况。",
+      "usage": {
+        "type": "tokens",
+        "input_tokens": 70,
+        "output_tokens": 11,
+        "total_tokens": 81,
+        "input_token_details": {
+          "audio_tokens": 55,
+          "text_tokens": 15
+        }
+      }
+    }
+  ],
+  "actual_total_tokens": 1308,
+  "reused_zh_usage": 326,
+  "alpha_first_live_metrics_missing": true,
+  "all_noise_modes_settlement_covered_by_english": true,
+  "default_unchanged": true,
+  "owned_processes_absent": true,
+  "ports_bindable": true,
+  "gpu_lock_reacquired_released": true,
+  "nvml_samples": 47,
+  "nvml_all_ok": true,
+  "event_ids_unique": 195,
+  "startup_allocations_freed": 1606,
+  "remaining": "Success diagnostics label repair, other Realtime settings/conversation/Live, Guardian composition and delivery still required. Not general denoising, listening or performance qualification.",
+  "continuation_client_settled_tokens_after_chat": {
+    "alpha": 0.0,
+    "beta": 901.0,
+    "gamma": 248.0
+  },
+  "continuation_transcription_settled_tokens": {
+    "beta": 901.0,
+    "gamma": 81.0
+  },
+  "final_request_outcomes": {
+    "q4t_requests_success_total": 5.0,
+    "q4t_requests_error_total": 0.0,
+    "q4t_requests_aborted_total": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0.0,
+    "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0.0
+  }
+}

@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime降噪真实场景通过](evidence/serve-realtime-noise-business-20261119/README.md)：
+7转录1308token，中/G.711精确、英文三档WER=.027778；近/远场固定
+嗡声RMS残留.18/.35，同PID Chat与实际配额通过。原时钟脚本FAIL保留，
+只续验未执行4条，累计2启动/3会话/1Chat、90.257秒，88次NVML正常，
+进程/端口/锁已清理、默认rev326保持。继续修复成功item诊断标签，
+再推进剩余实时处理器/对话/Live、Guardian组合与全部master。
+
 有噪真实业务首轮完成中文3档且文本正确（326实际token），驱动在
 自动段把累计会话时钟与单段长度比较而失败；41.930秒/41次NVML正常，
 自有进程/端口/锁已清理、默认保持。原FAIL保留，3项离线复核含两项

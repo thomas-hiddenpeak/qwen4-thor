@@ -1,0 +1,68 @@
+{
+  "zh": {
+    "off": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/zh-off.f32",
+      "sha256": "58d4dca1d2c6ebc3a0d02e67e5be8c379fefba4d3ca81169ec96a2e83e7cb840",
+      "samples": 118463,
+      "quiet_rms": 0.0031864059907032558
+    },
+    "near_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/zh-near_field.f32",
+      "sha256": "a2feb2ddaffe858715b27080235f23648dfe28536cf12d7b84c5a3f436769575",
+      "samples": 118463,
+      "quiet_rms": 0.0005735530749391386,
+      "quiet_rms_ratio": 0.17999999893690652
+    },
+    "far_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/zh-far_field.f32",
+      "sha256": "2499e49a75ea0f063f63936a517d2f0e3dbf7667f04f88c950760115fe664a87",
+      "samples": 118463,
+      "quiet_rms": 0.0011152421006609657,
+      "quiet_rms_ratio": 0.3500000012286024
+    }
+  },
+  "en": {
+    "off": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/en-off.f32",
+      "sha256": "9f78289738729aa8fe22ae477ab0083d0d12533206f8ca4e3e397d0d49a85be5",
+      "samples": 292020,
+      "quiet_rms": 0.014720789785495476
+    },
+    "near_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/en-near_field.f32",
+      "sha256": "80f0ecf6849329a5c0fccadb1a66695d7fc19999eecd3d2063b19dac81d776a0",
+      "samples": 292020,
+      "quiet_rms": 0.0026497421446282443,
+      "quiet_rms_ratio": 0.1799999988614102
+    },
+    "far_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/en-far_field.f32",
+      "sha256": "0983f13f85a0039705f0c8bc5df10ce660796bbdcd1b872584a17ae8778fdf78",
+      "samples": 292020,
+      "quiet_rms": 0.0051522763900689345,
+      "quiet_rms_ratio": 0.3499999976322954
+    }
+  },
+  "mulaw": {
+    "off": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/mulaw-off.f32",
+      "sha256": "f6d797574500211b08d2f4e342305de159f145e3eabe469db763dd67b9d0e5dc",
+      "samples": 118464,
+      "quiet_rms": 0.0032327051647445502
+    },
+    "near_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/mulaw-near_field.f32",
+      "sha256": "ff54cee2ea2bb0eb2802ac7540b5ec99ffbae3d0fa4d211808800592c5e6fe91",
+      "samples": 118464,
+      "quiet_rms": 0.0005818869307719691,
+      "quiet_rms_ratio": 0.18000000034582495
+    },
+    "far_field": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/noise-business-01/run/mulaw-far_field.f32",
+      "sha256": "7b0851b51f3dff011bcadc99165a65a107f37d3089586127be3a16e7a95e66e3",
+      "samples": 118464,
+      "quiet_rms": 0.0011314468063508925,
+      "quiet_rms_ratio": 0.3499999995948594
+    }
+  }
+}

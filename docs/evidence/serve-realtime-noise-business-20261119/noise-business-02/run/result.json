@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "committed_items": 4,
+    "chats": 1,
+    "controls": 36
+  },
+  "seconds": 48.32702067727223,
+  "binary_sha256": "1aa8899564790a816128b9673bcf93c391e795d126d63ffad58a0db90282b286"
+}
