@@ -19,6 +19,7 @@
 #include "q4t/server/text_stop.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/realtime_conversation_session.h"
 #include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
@@ -88,6 +89,21 @@ std::string ChatCapabilitiesJson(
          R"("max_items":128,"text_bytes":134217728,"audio_bytes":134217728,)"
          R"("output_message_bytes":67108864,"output_queue_bytes":134217728,)"
          R"("session_host_reservation_bytes":1073741824,"silent_eviction":false},)"
+         R"("conversation":{"implemented":true,"endpoint":"/v1/realtime",)"
+         R"("profile":"q4t-native-realtime-chat-v1","requires_asr":false,)"
+         R"("output_modalities":["text"],"function_calls":true,)"
+         R"("per_response_client_admission":true,"usage":"actual_tokens",)"
+         R"("automatic_replay":false,"out_of_band":true,"cancel":true,)"
+         R"("persistent_context_truncation":true,"max_output_tokens":4096,)"
+         R"("empty_context":"literal_instructions_ephemeral_model_turn",)"
+         R"("max_responses":4,"default_conversation_writers":1,)"
+         R"("max_items":)" +
+         std::to_string(RealtimeConversation::kMaximumItems) +
+         R"(,"history_bytes":)" +
+         std::to_string(RealtimeConversation::kMaximumBytes) +
+         R"(,"session_host_reservation_bytes":)" +
+         std::to_string(kRealtimeConversationHostBytes) +
+         R"(,"pending_execution":["audio","mcp","prompt","tracing"]},)"
          R"("pending_execution":["conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +

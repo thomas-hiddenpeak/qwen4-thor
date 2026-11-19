@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime Chat 资格 19 项 CPU 通过](evidence/serve-realtime-chat-profile-cpu-20261119/README.md)：
+12 Python + 2 原生 + 5 SDK，0GPU；来源登记首轮 FAIL 保留，补三项
+审查登记后 20 反例通过（仅复验来源）。4 项计划交接逐字节一致。
+继续必要构建与主轻/Guardian 短验，默认 rev346 STOPPED、听感待验
+和全部 master 保持；实际新资格与发行尚未验收。
+
+原生对话能力声明与 v17 主轻资格已接线：实际两轮资料工具、完整流式
+事件、来源/用量/资源绑定；自动回退不得丢已发布能力。修正外层诊断
+把健康请求误记默认错误的问题。冻结 12 项 Python、2 项原生能力、
+5 项 SDK 反例及 20 项来源反例，CPU 限 120 秒/0GPU；必要构建另计。
+计划交接离线 4 项逐字节一致，复用实际业务 04；默认 rev346 STOPPED
+保持，资格/Guardian/发行尚未通过，听感待验与全部 master 继续。
+
 [原生 Realtime Chat 真实业务通过](evidence/serve-realtime-chat-business-20261119/README.md)：
 1 模型 / 3 WSS / 10 响应 / 1 转写 / 2 Chat / 50.325 秒，官方 SDK/TLS、
 真实资料工具、三种空上下文指令、限额/取消/RPM 与实际结算通过；

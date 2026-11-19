@@ -1,4 +1,6 @@
 #include "q4t/server/realtime_chat_plan.h"
+#include "q4t/server/chat_capabilities.h"
+#include "q4t/server/realtime_conversation_session.h"
 
 #include "../src/server/responses_json.h"
 #include "q4t/server/output_schema.h"
@@ -301,5 +303,40 @@ Q4T_TEST(realtime_chat_creation_cue_is_measured_and_never_truncated_as_history) 
   Q4T_CHECK(calls == 2 && f.error.code == "context_length_exceeded" &&
             f.plan.generation.input.items.array.empty() &&
             f.plan.generation.truncated_items == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_chat_capabilities_do_not_require_transcription_backend) {
+  const auto absent = Parse(ChatCapabilitiesJson("primary", false, false));
+  const auto present = Parse(
+      ChatCapabilitiesJson("primary", false, false, 0, nullptr, false, true));
+  const auto* chat = absent.Find("realtime")->Find("conversation");
+  Q4T_CHECK(chat && chat->GetBool("implemented") &&
+            !chat->GetBool("requires_asr", true));
+  Q4T_CHECK(OutputJson(*chat) ==
+            OutputJson(*present.Find("realtime")->Find("conversation")));
+  Q4T_CHECK(chat->GetString("profile") == "q4t-native-realtime-chat-v1" &&
+            chat->GetString("endpoint") == "/v1/realtime");
+  Q4T_CHECK(chat->GetBool("function_calls") &&
+            chat->GetBool("per_response_client_admission") &&
+            !chat->GetBool("automatic_replay", true));
+  return true;
+}
+
+Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
+  const auto value = Parse(ChatCapabilitiesJson("primary", false, false));
+  const auto* chat = value.Find("realtime")->Find("conversation");
+  Q4T_CHECK(chat->GetInt("max_items") ==
+                static_cast<int64_t>(RealtimeConversation::kMaximumItems) &&
+            chat->GetInt("history_bytes") ==
+                static_cast<int64_t>(RealtimeConversation::kMaximumBytes) &&
+            chat->GetInt("session_host_reservation_bytes") ==
+                static_cast<int64_t>(kRealtimeConversationHostBytes));
+  Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) == "[\"text\"]" &&
+            OutputJson(*chat->Find("pending_execution")) ==
+                "[\"audio\",\"mcp\",\"prompt\",\"tracing\"]");
+  Q4T_CHECK(chat->GetBool("cancel") && chat->GetBool("out_of_band") &&
+            chat->GetBool("persistent_context_truncation") &&
+            chat->GetString("usage") == "actual_tokens");
   return true;
 }

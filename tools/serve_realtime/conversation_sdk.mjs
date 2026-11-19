@@ -21,7 +21,7 @@ const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' &&
   url.pathname === '/v1' && !url.search && !url.hash &&
   !url.username && !url.password && args.ca_file, 'explicit verified TLS loopback');
-check(['main', 'quota'].includes(args.mode), 'bounded scenario required');
+check(['main', 'quota', 'qualification'].includes(args.mode), 'bounded scenario required');
 const client = new OpenAI({ baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0 });
 const rt = new OpenAIRealtimeWS({ model: 'qwen3.8-flash-next', options: {
   ca: fs.readFileSync(args.ca_file), maxPayload: 4 << 20,
@@ -148,38 +148,40 @@ try {
     const answer = await create({ tools: [], tool_choice: 'none',
       instructions: 'Reply only with the exact version field from the actual tool result.' });
     check(text(answer).trim() === toolRecord.version, 'real project tool round trip quality');
-    const before = events.filter((event) => event.type === 'response.created').length;
-    send({ type: 'response.create', event_id: 'invalid_metadata',
-      response: { metadata: { bad: 'x'.repeat(513) } } });
-    await until(() => events.some((event) => event.type === 'error' &&
-      event.error?.event_id === 'invalid_metadata'));
-    check(events.filter((event) => event.type === 'response.created').length === before,
-      'invalid metadata published response');
-    const independent = await create({ conversation: 'none', input: [],
-      instructions: 'Compute 6 * 7. Reply only 42.', tools: [],
-      tool_choice: 'none', max_output_tokens: 32 });
-    check(text(independent).trim() === '42', 'out-of-band actual quality');
-    for (const [instructions, expected] of [
-      ['Compute 9 * 8. Reply only 72.', '72'],
-      ['Reply only with the word blue.', 'blue'],
-    ]) {
-      const counter = await create({ conversation: 'none', input: [],
-        instructions, tools: [], tool_choice: 'none', max_output_tokens: 32 });
-      check(text(counter).trim() === expected, 'empty-context counterexample');
+    if (args.mode === 'main') {
+      const before = events.filter((event) => event.type === 'response.created').length;
+      send({ type: 'response.create', event_id: 'invalid_metadata',
+        response: { metadata: { bad: 'x'.repeat(513) } } });
+      await until(() => events.some((event) => event.type === 'error' &&
+        event.error?.event_id === 'invalid_metadata'));
+      check(events.filter((event) => event.type === 'response.created').length === before,
+        'invalid metadata published response');
+      const independent = await create({ conversation: 'none', input: [],
+        instructions: 'Compute 6 * 7. Reply only 42.', tools: [],
+        tool_choice: 'none', max_output_tokens: 32 });
+      check(text(independent).trim() === '42', 'out-of-band actual quality');
+      for (const [instructions, expected] of [
+        ['Compute 9 * 8. Reply only 72.', '72'],
+        ['Reply only with the word blue.', 'blue'],
+      ]) {
+        const counter = await create({ conversation: 'none', input: [],
+          instructions, tools: [], tool_choice: 'none', max_output_tokens: 32 });
+        check(text(counter).trim() === expected, 'empty-context counterexample');
+      }
+      const limited = await create({ conversation: 'none', input: [], tools: [],
+        tool_choice: 'none', max_output_tokens: 1,
+        instructions: 'Write the numbers from one through twenty in English.' }, 'incomplete');
+      check(limited.status_details?.reason === 'max_output_tokens', 'explicit token exhaustion');
+      await create({ conversation: 'none', input: [], tools: [], tool_choice: 'none',
+        max_output_tokens: 256,
+        instructions: 'Write a long numbered list of the integers from 1 to 200, one per line.' },
+      'cancelled', true);
+      await add(user('user_followup', 'What was the version in the project tool result? Reply only with the version.'));
+      const followup = await create({ tools: [], tool_choice: 'none', max_output_tokens: 32 });
+      check(text(followup).trim() === toolRecord.version, 'default history after independent cancellation');
+      check(events.filter((event) => event.type === 'error').length === 1,
+        'unexpected connection error');
     }
-    const limited = await create({ conversation: 'none', input: [], tools: [],
-      tool_choice: 'none', max_output_tokens: 1,
-      instructions: 'Write the numbers from one through twenty in English.' }, 'incomplete');
-    check(limited.status_details?.reason === 'max_output_tokens', 'explicit token exhaustion');
-    await create({ conversation: 'none', input: [], tools: [], tool_choice: 'none',
-      max_output_tokens: 256,
-      instructions: 'Write a long numbered list of the integers from 1 to 200, one per line.' },
-    'cancelled', true);
-    await add(user('user_followup', 'What was the version in the project tool result? Reply only with the version.'));
-    const followup = await create({ tools: [], tool_choice: 'none', max_output_tokens: 32 });
-    check(text(followup).trim() === toolRecord.version, 'default history after independent cancellation');
-    check(events.filter((event) => event.type === 'error').length === 1,
-      'unexpected connection error');
   }
   rt.close();
   await until(() => closed, true);

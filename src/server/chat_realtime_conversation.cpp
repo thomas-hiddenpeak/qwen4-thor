@@ -153,6 +153,8 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
   auto status = PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
                                  config, &plan, &error);
   RequestDiagnostics diagnostic(stderr, control->id());
+  diagnostic.Bind(control->id());
+  diagnostic.Stage("context_prepare");
   const auto cancelled = [&] {
     if (stop_requested_.load())
       control->Cancel(RequestControl::State::kShutdown);
@@ -205,9 +207,12 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
         },
         &plan, &error);
   if (!status) {
+    diagnostic.Outcome(control->Cancelled() ? "cancelled" : "error",
+                       error.code);
     result.reply = Failure(status, error);
     return result;
   }
+  diagnostic.Stage("execute");
   result = ExecuteRealtimeChat(
       plan.generation.generation_request, client, permit, control, emit,
       [&](NativeChatGeneration& native) {
@@ -215,6 +220,13 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
                    &native);
       },
       body_budget_);
+  diagnostic.Outcome(
+      control->Cancelled() ? "cancelled"
+      : result.reply.ok()  ? "success"
+                           : "error",
+      control->Cancelled() ? control->Reason()
+      : result.reply.ok()  ? "completed"
+                           : result.reply.ClientCode());
   if (result.reply.ok() && plan.generation.truncated_items &&
       job.in_conversation && job.snapshot.default_context)
     result.retained_input_indices = plan.generation.input_source_indices;
