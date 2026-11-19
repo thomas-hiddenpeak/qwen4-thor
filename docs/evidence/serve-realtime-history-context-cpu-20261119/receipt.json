@@ -1,0 +1,27 @@
+{
+  "status": "PASS_TARGETED_CPU_AFTER_CAPACITY_REPAIR",
+  "unique_cases": 55,
+  "initial_passed": 54,
+  "initial_failed": 1,
+  "repair_cases": 3,
+  "cpu_seconds": 0.2875597826205194,
+  "gpu_actions": 0,
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/history-context-cpu-02/source",
+  "runtime_sha256": "f6a24c1dde3120e6a85c68d7318e06491290eb6c0640b512983f0db6bccdc799",
+  "host_sha256": "13d238cebf0fc305c0ec91c0ff9e7ea6e5f57b1ab74bacc1bc2a30049e5f4ca0",
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 84,
+    "native_routes": 142,
+    "reviewed_source_anchors": 992,
+    "mutation_checks": 18,
+    "errors": []
+  },
+  "default_revision": 326,
+  "default_unchanged": true,
+  "business_accepted": false,
+  "master_complete": false
+}

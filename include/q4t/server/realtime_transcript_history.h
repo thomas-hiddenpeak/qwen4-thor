@@ -10,7 +10,7 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
-inline constexpr size_t kRealtimeTranscriptHistoryBytes = 64ULL << 20;
+inline constexpr size_t kRealtimeTranscriptHistoryBytes = 128ULL << 20;
 struct RealtimeTranscriptTicket {
   std::string owner, id;
   uint64_t generation = 0;
@@ -45,6 +45,8 @@ class RealtimeTranscriptHistory {
   Status Fail(const RealtimeTranscriptTicket& ticket);
   Status Erase(const RealtimeTranscriptTicket& ticket);
   Status Find(std::string_view id, RealtimeTranscriptTicket* output) const;
+  bool Committed(const RealtimeTranscriptTicket& ticket) const;
+  std::string LastCommittedId() const;
   // Preserves output on failure, never truncates or skips pending earlier
   // committed work. Failed/cleared/empty turns add no context. The current
   // turn and all later turns are excluded, even if they already completed.

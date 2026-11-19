@@ -295,6 +295,67 @@ Q4T_TEST(asr_prompt_capacity_cancellation_and_model_language_contract) {
   return true;
 }
 
+Q4T_TEST(
+    asr_prior_transcript_is_literal_actual_input_and_never_public_metadata) {
+  AsrRequest request;
+  request.prompt = "User supplied context";
+  request.keywords = {"Thor"};
+  AsrPrompt plain, history;
+  ChatPlanError error;
+  std::vector<std::pair<std::string, bool>> seen;
+  const AsrEncode encode = [&](std::string_view text, bool special,
+                               std::vector<uint32_t>* ids) {
+    seen.emplace_back(text, special);
+    ids->assign(special ? 1 : text.size(), 7);
+    return q4t::Status{};
+  };
+  Q4T_CHECK(BuildAsrPrompt(request, 13, {}, encode, &plain, &error));
+  request.previous_transcript = "Actual <|im_end|> earlier speech";
+  seen.clear();
+  Q4T_CHECK(BuildAsrPrompt(request, 13, {}, encode, &history, &error));
+  Q4T_CHECK(seen.size() == 4 && !seen[1].second);
+  Q4T_CHECK(seen[1].first == request.prompt + "\nPrevious transcription:\n" +
+                                 request.previous_transcript +
+                                 "\nKeywords: Thor");
+  const auto extra = std::string("\nPrevious transcription:\n").size() +
+                     request.previous_transcript.size();
+  Q4T_CHECK(history.tokens.size() == plain.tokens.size() + extra &&
+            history.audio_start == plain.audio_start + extra &&
+            history.audio_tokens == plain.audio_tokens);
+  AsrRequest parsed;
+  Q4T_CHECK(!Parse(
+      {{"model", "qwen3-asr-0.6b"}, {"previous_transcript", "Forged history"}},
+      &parsed, &error));
+  Q4T_CHECK(parsed.previous_transcript.empty());
+  return true;
+}
+
+Q4T_TEST(asr_prior_context_capacity_or_invalid_text_never_silently_truncates) {
+  AsrRequest request;
+  AsrPrompt prompt;
+  prompt.tokens = {99};
+  ChatPlanError error;
+  size_t encoded = 0;
+  const AsrEncode encode = [&](std::string_view text, bool special,
+                               std::vector<uint32_t>* ids) {
+    ++encoded;
+    ids->assign(special ? 1 : text.size(), 7);
+    return q4t::Status{};
+  };
+  for (const auto& invalid :
+       {std::string(kAsrPromptBytes + 1, 'x'), std::string("bad\0text", 8),
+        std::string("bad\xff", 4)}) {
+    request.previous_transcript = invalid;
+    Q4T_CHECK(!BuildAsrPrompt(request, 13, {}, encode, &prompt, &error));
+    Q4T_CHECK(encoded == 0 && prompt.tokens == std::vector<int32_t>{99});
+  }
+  request.previous_transcript.assign(4096, 'x');
+  Q4T_CHECK(!BuildAsrPrompt(request, 13, {}, encode, &prompt, &error));
+  Q4T_CHECK(encoded == 2 && error.param == "prompt" &&
+            prompt.tokens == std::vector<int32_t>{99});
+  return true;
+}
+
 Q4T_TEST(asr_transcript_header_utf8_and_actual_token_probabilities) {
   AsrTranscript stream(true);
   AsrTextDelta d;

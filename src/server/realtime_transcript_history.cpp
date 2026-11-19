@@ -68,6 +68,16 @@ Status RealtimeTranscriptHistory::Begin(std::string_view id,
   *output = std::move(ticket);
   return {};
 }
+bool RealtimeTranscriptHistory::Committed(
+    const RealtimeTranscriptTicket& ticket) const {
+  const auto index = Position(ticket);
+  return index != entries_.size() && entries_[index].committed;
+}
+std::string RealtimeTranscriptHistory::LastCommittedId() const {
+  for (auto it = entries_.rbegin(); it != entries_.rend(); ++it)
+    if (it->committed) return it->id;
+  return {};
+}
 Status RealtimeTranscriptHistory::Commit(
     const RealtimeTranscriptTicket& ticket) {
   const auto index = Position(ticket);

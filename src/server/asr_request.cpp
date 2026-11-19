@@ -295,6 +295,13 @@ Status BuildAsrPrompt(const AsrRequest& request, size_t audio_tokens,
   if (!request.language.empty() && language.empty())
     return Invalid(error, "language", "Language unavailable in selected model");
   std::string context = request.prompt;
+  if (request.previous_transcript.size() > kAsrPromptBytes ||
+      request.previous_transcript.find('\0') != std::string::npos ||
+      detail::NormalizeUtf8(request.previous_transcript) !=
+          request.previous_transcript)
+    return Invalid(error, "prompt", "Invalid prior transcription context");
+  if (!request.previous_transcript.empty())
+    context += "\nPrevious transcription:\n" + request.previous_transcript;
   if (!request.languages.empty()) {
     if (!request.language.empty() &&
         std::find(request.languages.begin(), request.languages.end(),

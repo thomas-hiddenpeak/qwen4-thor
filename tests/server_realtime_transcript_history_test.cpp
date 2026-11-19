@@ -10,6 +10,26 @@ using namespace q4t::server;
 using Ticket = RealtimeTranscriptTicket;
 }  // namespace
 
+Q4T_TEST(realtime_history_committed_visibility_and_last_id_follow_deletion) {
+  RealtimeTranscriptHistory history("sess_a");
+  Ticket first, pending, last;
+  Q4T_CHECK(history.Begin("item_a", 100, &first));
+  Q4T_CHECK(!history.Committed(first) && history.LastCommittedId().empty());
+  Q4T_CHECK(history.Commit(first));
+  Q4T_CHECK(history.Begin("item_b", 100, &pending));
+  Q4T_CHECK(history.LastCommittedId() == "item_a");
+  Q4T_CHECK(history.Begin("item_c", 100, &last) && history.Commit(last));
+  Q4T_CHECK(history.Fail(last) && history.Committed(last));
+  Q4T_CHECK(history.LastCommittedId() == "item_c");
+  Q4T_CHECK(history.Erase(last) && !history.Committed(last));
+  Q4T_CHECK(history.LastCommittedId() == "item_a");
+  auto other = first;
+  other.owner = "sess_other";
+  Q4T_CHECK(!history.Committed(other));
+  Q4T_CHECK(history.Erase(first) && history.LastCommittedId().empty());
+  return true;
+}
+
 Q4T_TEST(realtime_history_only_completed_prior_turns_enter_context) {
   RealtimeTranscriptHistory history("sess_a");
   Ticket first, current, future;
@@ -182,7 +202,7 @@ Q4T_TEST(realtime_history_explicit_native_output_budget_is_fully_reserved) {
   RealtimeTranscriptHistory history("sess_a", 128,
                                       kRealtimeTranscriptHistoryBytes);
   Ticket ticket, first;
-  for (size_t i = 0; i < 16; ++i) {
+  for (size_t i = 0; i < 32; ++i) {
     Q4T_CHECK(history.Begin("item_" + std::to_string(i),
                             kAsrTranscriptBytes, &ticket));
     if (!i) first = ticket;

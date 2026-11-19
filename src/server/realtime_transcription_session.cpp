@@ -4,6 +4,7 @@
 #include <bit>
 
 #include "object_protocol.h"
+#include "q4t/server/asr_response.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/realtime_asr_policy.h"
 
@@ -34,7 +35,8 @@ RealtimeTranscriptionSession::RealtimeTranscriptionSession(
       output_(output),
       callbacks_(std::move(callbacks)),
       max_item_ticks_(uint64_t(max_audio_seconds) * kRealtimeTicksPerSecond),
-      message_bytes_(message_bytes) {}
+      message_bytes_(message_bytes),
+      history_(id_, 128, kRealtimeTranscriptHistoryBytes) {}
 
 RealtimeTranscriptionSession::~RealtimeTranscriptionSession() {
   Cancel();
@@ -104,8 +106,8 @@ bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
   return Emit(std::move(event));
 }
 bool RealtimeTranscriptionSession::Start() {
-  if (started_ || cancelled_ || !queue_.Valid() || id_.empty() ||
-      !output_.Valid() || max_item_ticks_ == 0 ||
+  if (started_ || cancelled_ || !queue_.Valid() || !history_.Valid() ||
+      id_.empty() || !output_.Valid() || max_item_ticks_ == 0 ||
       max_item_ticks_ > 600 * kRealtimeTicksPerSecond || message_bytes_ == 0 ||
       message_bytes_ > kWebSocketMessageLimit || !callbacks_.validate ||
       !callbacks_.acquire || !callbacks_.release || !callbacks_.execute)
@@ -180,6 +182,7 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
     if (vad_changed) ResetVad();
     return SettingsEvent(command.legacy);
   }
+  if (command.kind == K::kDelete) return DeleteItem(command);
   if (!settings_.delay.empty()) return StreamMessage(command);
   if (command.kind == K::kAppend) {
     const size_t width =
@@ -316,16 +319,25 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
   job.settings = settings_;
   job.id = speech_id_.empty() ? detail::NewRequestId("item_") : speech_id_;
   job.previous_id = previous_id_;
+  if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript)) {
+    const bool sent = ErrorEvent(
+        Error(400, "conversation_capacity_exceeded",
+              "Delete prior items before committing more transcription"),
+        event_id);
+    return sent && !automatic;
+  }
   jobs_.push_back(std::move(job));
   auto& last = jobs_.back();
   const auto status = queue_.CommitPrefix(1, end_ticks, &last.audio);
   if (!status) {
+    if (!history_.Fail(last.transcript)) return false;
     jobs_.pop_back();
     const bool sent = ErrorEvent(
         Error(400, "input_audio_buffer_commit_failed", status.message()),
         event_id);
     return sent && !automatic;
   }
+  if (!history_.Commit(last.transcript)) return false;
   previous_id_ = last.id;
   if (!speech_id_.empty() && !SpeechEvent(false, end_ticks, automatic))
     return false;
@@ -360,6 +372,40 @@ bool RealtimeTranscriptionSession::CommitEvents(
               {"content", Array({Object({{"type", String("input_audio")},
                                          {"transcript", Json{}}})})}}));
   return Emit(std::move(created), automatic);
+}
+
+bool RealtimeTranscriptionSession::DeleteItem(
+    const RealtimeTranscriptionCommand& command) {
+  RealtimeTranscriptTicket ticket;
+  if (!history_.Find(command.item_id, &ticket) || !history_.Committed(ticket))
+    return ErrorEvent(
+        Error(400, "item_not_found", "Conversation item not found"),
+        command.event_id);
+  if (!history_.Erase(ticket)) return false;
+  for (auto& job : jobs_) {
+    if (job.transcript != ticket) continue;
+    job.deleted = true;
+    if (job.stream) job.stream->Cancel(job.audio.epoch);
+    if (&job == &jobs_.front() && control_)
+      control_->Cancel(RequestControl::State::kExplicit);
+    break;
+  }
+  // Already running requests retain their independent context snapshots.
+  // Queued/future requests resolve context only when they actually start.
+  previous_id_ = history_.LastCommittedId();
+  auto event = Event("conversation.item.deleted");
+  Set(&event, "item_id", String(command.item_id));
+  return Emit(std::move(event));
+}
+
+bool RealtimeTranscriptionSession::DropFrontJob() {
+  const auto& job = jobs_.front();
+  if (job.stream)
+    stream_storage_ -= job.stream->StorageBytes();
+  else if (!queue_.Acknowledge(job.audio.epoch, job.audio.sequence))
+    return false;
+  jobs_.pop_front();
+  return true;
 }
 
 bool RealtimeTranscriptionSession::StreamMessage(
@@ -435,6 +481,9 @@ bool RealtimeTranscriptionSession::StreamMessage(
       job.audio.begin_ticks = queue_.AcceptedTicks();
       job.audio.format = {RealtimeAudioEncoding::kFloat32, 16000};
       job.stream = input;
+      if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript))
+        return fail("conversation_capacity_exceeded",
+                    "Delete prior items before appending more transcription");
       jobs_.push_back(std::move(job));
       stream_storage_ += input->StorageBytes();
       stream_epoch_ = epoch;
@@ -471,6 +520,7 @@ bool RealtimeTranscriptionSession::StreamMessage(
   }
   // Queue both standard commit/item events before EOF permits final output.
   if (jobs_.empty() || jobs_.back().id != live_id_ ||
+      !history_.Commit(jobs_.back().transcript) ||
       !CommitEvents(jobs_.back(), false) || !live_input_->Seal(stream_epoch_))
     return false;
   previous_id_ = live_id_;
@@ -486,11 +536,23 @@ bool RealtimeTranscriptionSession::Tick() {
     return false;
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
+  // Deletion releases identity/context immediately, but audio borrowed by an
+  // active worker remains alive until it joins. No late delta/terminal may
+  // resurrect that item after the deletion event has been queued.
+  while (!jobs_.empty() && jobs_.front().deleted) {
+    if (worker_.joinable()) {
+      if (!done_.load(std::memory_order_acquire)) return true;
+      worker_.join();
+    }
+    terminal_.clear();
+    Release();
+    if (!DropFrontJob()) return false;
+  }
   if (!AdvanceVad()) return false;
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
-  if (worker_.joinable() && done_.load(std::memory_order_acquire)) {
-    worker_.join();
+  if (control_ && done_.load(std::memory_order_acquire)) {
+    if (worker_.joinable()) worker_.join();
     const auto& job = jobs_.front();
     if (result_.ok() && job.stream && !job.stream->Drained())
       result_ = Error(502, "transcription_result_invalid",
@@ -503,6 +565,11 @@ bool RealtimeTranscriptionSession::Tick() {
                       "Transcription text or accounting missing");
     if (result_.ok() && (control_->Cancelled() || !control_->Finish()))
       result_ = Error(409, control_->Reason(), "Transcription cancelled");
+    if (result_.ok() &&
+        !history_.Complete(job.transcript, result_.value.GetString("text")))
+      result_ = Error(502, "transcription_history_invalid",
+                      "Actual transcription could not be retained");
+    if (!result_.ok() && !history_.Fail(job.transcript)) return false;
     if (!result_.ok() && job.stream && job.stream == live_input_) {
       job.stream->Cancel(job.audio.epoch);
       stream_fault_ = true;
@@ -528,19 +595,14 @@ bool RealtimeTranscriptionSession::Tick() {
     Release();
   }
   if (!terminal_.empty()) {
-    if (terminal_.size() > kWebSocketOutputMessageBytes || output_.Closed() ||
+    if (terminal_.size() > output_.MessageLimit() || output_.Closed() ||
         Clock::now() >= terminal_deadline_)
       return false;
     if (!output_.TryPush(WebSocketOpcode::kText, terminal_)) return true;
     terminal_.clear();
-    const auto& job = jobs_.front();
-    if (job.stream)
-      stream_storage_ -= job.stream->StorageBytes();
-    else if (!queue_.Acknowledge(job.audio.epoch, job.audio.sequence))
-      return false;
-    jobs_.pop_front();
+    if (!DropFrontJob()) return false;
   }
-  if (worker_.joinable() || jobs_.empty()) return true;
+  if (worker_.joinable() || jobs_.empty() || jobs_.front().deleted) return true;
   if (!jobs_.front().stream) {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;
@@ -552,6 +614,14 @@ bool RealtimeTranscriptionSession::Tick() {
   result_ =
       Error(500, "transcription_failed", "Transcription execution failed");
   done_.store(false, std::memory_order_relaxed);
+  auto& next = jobs_.front();
+  if (!history_.ContextBefore(next.transcript, kAsrPromptBytes,
+                              &next.settings.request.previous_transcript)) {
+    result_ = Error(400, "transcription_context_capacity",
+                    "Delete prior items to fit the transcription context");
+    done_.store(true, std::memory_order_release);
+    return true;
+  }
   const auto bytes = jobs_.front().stream
                          ? std::array<std::span<const uint8_t>, 2>{}
                          : queue_.FrontBytes();

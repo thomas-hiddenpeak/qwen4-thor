@@ -27,12 +27,13 @@ enum class RealtimeTranscriptionCommandKind {
   kUpdate,
   kAppend,
   kClear,
-  kCommit
+  kCommit,
+  kDelete
 };
 struct RealtimeTranscriptionCommand {
   RealtimeTranscriptionCommandKind kind =
       RealtimeTranscriptionCommandKind::kClear;
-  std::string event_id, audio;
+  std::string event_id, audio, item_id;
   io::Json session;
   bool legacy = false;
 };

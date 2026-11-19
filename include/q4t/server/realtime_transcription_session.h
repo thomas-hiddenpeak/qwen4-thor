@@ -7,6 +7,7 @@
 
 #include "q4t/server/asr_stream_input.h"
 #include "q4t/server/realtime_transcription_protocol.h"
+#include "q4t/server/realtime_transcript_history.h"
 #include "q4t/server/realtime_noise_input.h"
 #include "q4t/server/realtime_vad.h"
 #include "q4t/server/websocket_session.h"
@@ -14,13 +15,19 @@
 namespace q4t::server {
 // Includes protocol/parser copies, input ring, native PCM/features and output.
 // Model assets/device workspace and ingress/TLS have separate admissions.
-inline constexpr size_t kRealtimeSessionHostBytes = 256ULL << 20;
+// The original 256MiB work envelope plus explicit retained text/reservations.
+// Processed-audio history and larger wire output require separate additions.
+inline constexpr size_t kRealtimeSessionHostBytes =
+    (256ULL << 20) + kRealtimeTranscriptHistoryBytes;
 
 struct RealtimeTranscriptionJob {
   RealtimeAudioItem audio;
   RealtimeTranscriptionSettings settings;
   std::string id, previous_id;
   std::shared_ptr<AsrStreamInput> stream;
+  RealtimeTranscriptTicket transcript;
+  bool deleted =
+      false;  // Session owner only; worker cancellation uses control.
 };
 using RealtimeTranscriptSink = std::function<bool(const io::Json&)>;
 struct RealtimeTranscriptionCallbacks {
@@ -65,6 +72,8 @@ class RealtimeTranscriptionSession {
   bool SettingsEvent(bool legacy, bool created = false);
   bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
   bool CommitEvents(const RealtimeTranscriptionJob& job, bool automatic);
+  bool DeleteItem(const RealtimeTranscriptionCommand& command);
+  bool DropFrontJob();
   bool StreamMessage(const RealtimeTranscriptionCommand& command);
   bool SpeechEvent(bool started, uint64_t ticks, bool deferred);
   bool AdvanceVad();
@@ -77,6 +86,7 @@ class RealtimeTranscriptionSession {
   const RealtimeTranscriptionCallbacks callbacks_;
   const uint64_t max_item_ticks_;
   const size_t message_bytes_;
+  RealtimeTranscriptHistory history_;
   RealtimeTranscriptionSettings settings_;
   RealtimeAudioQueue queue_{1};
   std::unique_ptr<RealtimeNoiseInput> noise_input_;

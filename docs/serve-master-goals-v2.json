@@ -446,6 +446,16 @@
         "seconds": 104.53717705886811,
         "listening": "PENDING_OWNER_DEFERRED",
         "guardian_recovery_retested": false
+      },
+      "realtime_history_context_20261119": {
+        "state": "targeted_cpu_passed_business_pending",
+        "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
+        "cases": 55,
+        "initial_failure_preserved": true,
+        "repair_cases": 3,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {
@@ -4583,6 +4593,16 @@
         "seconds": 104.53717705886811,
         "listening": "PENDING_OWNER_DEFERRED",
         "guardian_recovery_retested": false
+      },
+      "realtime_history_context_20261119": {
+        "state": "targeted_cpu_passed_business_pending",
+        "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
+        "cases": 55,
+        "initial_failure_preserved": true,
+        "repair_cases": 3,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {
@@ -5880,6 +5900,16 @@
         "seconds": 104.53717705886811,
         "listening": "PENDING_OWNER_DEFERRED",
         "guardian_recovery_retested": false
+      },
+      "realtime_history_context_20261119": {
+        "state": "targeted_cpu_passed_business_pending",
+        "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
+        "cases": 55,
+        "initial_failure_preserved": true,
+        "repair_cases": 3,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {
@@ -6087,6 +6117,16 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "realtime_history_context_20261119": {
+        "state": "targeted_cpu_passed_business_pending",
+        "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
+        "cases": 55,
+        "initial_failure_preserved": true,
+        "repair_cases": 3,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {
@@ -7633,6 +7673,16 @@
         "seconds": 104.53717705886811,
         "listening": "PENDING_OWNER_DEFERRED",
         "guardian_recovery_retested": false
+      },
+      "realtime_history_context_20261119": {
+        "state": "targeted_cpu_passed_business_pending",
+        "evidence": "evidence/serve-realtime-history-context-cpu-20261119/README.md",
+        "cases": 55,
+        "initial_failure_preserved": true,
+        "repair_cases": 3,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "complete": false
       }
     },
     {

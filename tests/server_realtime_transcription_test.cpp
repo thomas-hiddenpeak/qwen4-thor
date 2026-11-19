@@ -97,7 +97,223 @@ bool Finish(RealtimeTranscriptionSession& session, WebSocketOutput& output,
   }
   return false;
 }
+std::string CommitId(const std::vector<Json>& events) {
+  for (const auto& event : events)
+    if (event.GetString("type") == "input_audio_buffer.committed")
+      return event.GetString("item_id");
+  throw std::runtime_error("missing actual commit identity");
+}
+bool Delete(RealtimeTranscriptionSession& session, const std::string& id) {
+  return Send(session,
+              OutputJson(Object({{"type", String("conversation.item.delete")},
+                                 {"item_id", String(id)},
+                                 {"event_id", String("delete_client")}})));
+}
 }  // namespace
+
+Q4T_TEST(realtime_history_delete_parser_is_strict_and_preserves_error_id) {
+  RealtimeTranscriptionCommand out;
+  Q4T_CHECK(ParseRealtimeTranscriptionCommand(
+                R"({"type":"conversation.item.delete","item_id":"item_a"})",
+                4096, &out)
+                .ok());
+  Q4T_CHECK(out.kind == RealtimeTranscriptionCommandKind::kDelete &&
+            out.item_id == "item_a");
+  for (
+      const auto text :
+      {R"({"type":"conversation.item.delete","event_id":"bad"})",
+       R"({"type":"conversation.item.delete","event_id":"bad","item_id":null})",
+       R"({"type":"conversation.item.delete","event_id":"bad","item_id":""})",
+       R"({"type":"conversation.item.delete","event_id":"bad","item_id":"a","audio":""})"}) {
+    const auto reply = ParseRealtimeTranscriptionCommand(text, 4096, &out);
+    Q4T_CHECK(!reply.ok() && reply.value.GetString("event_id") == "bad" &&
+              out.item_id == "item_a");
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_history_queued_turn_uses_actual_prior_completion_at_launch) {
+  Fixture f;
+  std::vector<std::string> contexts;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    contexts.push_back(job.settings.request.previous_transcript);
+    ++f.calls;
+    return Completed(f.calls == 1 ? "First actual speech" : "Second speech");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  Q4T_CHECK(session.Start());
+  for (int i = 0; i < 2; ++i)
+    Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(contexts == std::vector<std::string>({"", "First actual speech"}));
+  Q4T_CHECK(f.calls == 2 && f.released == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_history_queued_delete_skips_execution_and_future_context) {
+  Fixture f;
+  std::vector<std::string> called, contexts, ids;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    called.push_back(job.id);
+    contexts.push_back(job.settings.request.previous_transcript);
+    ++f.calls;
+    return Completed("Kept speech");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  Q4T_CHECK(session.Start());
+  Drain(f.output);
+  for (int i = 0; i < 3; ++i) {
+    Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+    ids.push_back(CommitId(Drain(f.output)));
+  }
+  Q4T_CHECK(Delete(session, ids[1]));
+  auto deleted = Drain(f.output);
+  Q4T_CHECK(deleted.size() == 1 &&
+            deleted[0].GetString("type") == "conversation.item.deleted");
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(called == std::vector<std::string>({ids[0], ids[2]}) &&
+            contexts == std::vector<std::string>({"", "Kept speech"}));
+  for (const auto& event : events)
+    Q4T_CHECK(event.GetString("item_id") != ids[1]);
+  Q4T_CHECK(session.AudioBytes() == 0 && Delete(session, ids[1]));
+  deleted = Drain(f.output);
+  Q4T_CHECK(deleted.size() == 1 && deleted[0].Find("error") &&
+            deleted[0].Find("error")->GetString("code") == "item_not_found" &&
+            deleted[0].Find("error")->GetString("event_id") == "delete_client");
+  return true;
+}
+
+Q4T_TEST(
+    realtime_history_active_delete_keeps_borrow_until_join_and_fences_output) {
+  Fixture f;
+  std::promise<void> entered;
+  auto ready = entered.get_future();
+  std::atomic<bool> resume{false}, preserved{false}, late_delta{true};
+  f.callbacks.execute = [&](const auto&, const auto& bytes, const auto&,
+                            const auto& emit) {
+    ++f.calls;
+    entered.set_value();
+    const auto end = Clock::now() + 1s;
+    while (!resume.load() && Clock::now() < end)
+      std::this_thread::sleep_for(1ms);
+    preserved = bytes[0].size() == 4 && bytes[0][0] == 1;
+    late_delta = emit(Object({{"delta", String("Late text")}}));
+    return Completed("Late success must not revive a deleted item");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  ScopeExit unblock([&] { resume = true; });
+  Q4T_CHECK(session.Start() && Send(session, kAppend) &&
+            Send(session, kCommit));
+  const auto id = CommitId(Drain(f.output));
+  Q4T_CHECK(session.Tick() &&
+            ready.wait_for(500ms) == std::future_status::ready);
+  Q4T_CHECK(Delete(session, id) && session.Tick());
+  Q4T_CHECK(session.AudioBytes() == 4 && session.QueuedItems() == 1);
+  const auto events = Drain(f.output);
+  Q4T_CHECK(events.size() == 1 &&
+            events[0].GetString("type") == "conversation.item.deleted");
+  resume = true;
+  std::vector<Json> late;
+  Q4T_CHECK(Finish(session, f.output, &late));
+  Q4T_CHECK(late.empty() && preserved && !late_delta && f.released == 1 &&
+            session.AudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_history_deletion_changes_future_but_not_running_snapshot) {
+  Fixture f;
+  std::promise<void> entered;
+  auto ready = entered.get_future();
+  std::atomic<bool> resume{false}, stable{false};
+  std::vector<std::string> contexts;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    const int step = ++f.calls;
+    contexts.push_back(job.settings.request.previous_transcript);
+    if (step == 2) {
+      entered.set_value();
+      const auto end = Clock::now() + 1s;
+      while (!resume.load() && Clock::now() < end)
+        std::this_thread::sleep_for(1ms);
+      stable = job.settings.request.previous_transcript == "First";
+    }
+    return Completed(step == 1 ? "First" : "Second");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  ScopeExit unblock([&] { resume = true; });
+  Q4T_CHECK(session.Start() && Send(session, kAppend) &&
+            Send(session, kCommit));
+  const auto first = CommitId(Drain(f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit) && session.Tick());
+  Q4T_CHECK(ready.wait_for(500ms) == std::future_status::ready);
+  Q4T_CHECK(Delete(session, first));
+  resume = true;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(stable &&
+            contexts == std::vector<std::string>({"", "First", "Second"}));
+  return true;
+}
+
+Q4T_TEST(realtime_history_capacity_is_explicit_and_delete_unblocks_next_turn) {
+  Fixture f;
+  std::vector<std::string> contexts;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    contexts.push_back(job.settings.request.previous_transcript);
+    return Completed(++f.calls == 1 ? std::string(kAsrPromptBytes + 1, 'x')
+                                    : "After deletion");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  Q4T_CHECK(session.Start() && Send(session, kAppend) &&
+            Send(session, kCommit));
+  const auto first = CommitId(Drain(f.output));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  events.clear();
+  Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(f.calls == 1 && events.back().Find("error") &&
+            events.back().Find("error")->GetString("code") ==
+                "transcription_context_capacity");
+  Q4T_CHECK(Delete(session, first));
+  Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(f.calls == 2 && contexts == std::vector<std::string>({"", ""}));
+  return true;
+}
+
+Q4T_TEST(realtime_history_failed_turn_never_becomes_successful_context) {
+  Fixture f;
+  std::vector<std::string> contexts;
+  f.callbacks.execute = [&](const auto& job, const auto&, const auto&,
+                            const auto&) {
+    contexts.push_back(job.settings.request.previous_transcript);
+    return ++f.calls == 1 ? Error(503, "fixture_failed", "No successful text")
+                          : Completed("Actual successful speech");
+  };
+  RealtimeTranscriptionSession session("sess_history", f.output, f.callbacks,
+                                       30);
+  Q4T_CHECK(session.Start());
+  for (int i = 0; i < 2; ++i)
+    Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(contexts == std::vector<std::string>({"", ""}));
+  return true;
+}
 
 Q4T_TEST(realtime_transcription_strict_event_and_error_identity) {
   for (const auto text :

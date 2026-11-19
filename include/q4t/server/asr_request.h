@@ -30,6 +30,9 @@ struct AsrRequest {
   std::string model;
   std::string language;
   std::string prompt;
+  // Internal snapshot of earlier completed native transcriptions. Public
+  // request parsers never populate this field; encode as literal context.
+  std::string previous_transcript;
   std::vector<std::string> languages, keywords;
   std::vector<std::string> speaker_names, speaker_references;
   AsrChunking chunking;
