@@ -1,0 +1,14 @@
+{
+  "scope": "capabilities reports implemented manual transcription and actual pending execution; previous 20 CPU checks reused unchanged",
+  "cpu_tests": 1,
+  "seconds": 180,
+  "gpu_model_loads": 0,
+  "reused_phase": "../transcription-cpu-01",
+  "sources": {
+    "src/server/chat_capabilities.cpp": "df2c94b2c49485f078f433a9787aa0a3e6c73d89a220c226cf8548e16ade33e4",
+    "tests/server_realtime_transcription_test.cpp": "917c66b44b39e43622871d3d89e7dc48d4a6aa78164bc025afc96842ade9ace4",
+    "tools/serve_audit/check_inventory.py": "893948e4e819cae37bc3631d840a3d39eb2e43a7ed1da1048f7e75ab0bf5145e",
+    "tools/serve_realtime/transcription_sdk.mjs": "8644317f442c06335e286fa4dedcd8f32462bad119e814c1a2542cbb66e03dda",
+    "tools/serve_realtime/transcription_acceptance.py": "3d923f4ca9bd6a9e2dd3763cfd58eaad908b8fd57021c2ffbadb09d405810892"
+  }
+}

@@ -371,6 +371,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
+  src/server/chat_realtime.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
   src/server/chat_aligner_backend.cpp
@@ -576,6 +577,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/websocket.cpp
+  src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_session.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp
   src/server/websocket_session.cpp
@@ -817,6 +820,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
     tests/server_realtime_pcm_test.cpp
+    tests/server_realtime_transcription_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_websocket_session_test.cpp
     tests/server_http_framing_test.cpp
@@ -952,6 +956,8 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     src/server/websocket.cpp
+    src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_session.cpp
     src/server/realtime_pcm.cpp
     src/server/realtime_audio_queue.cpp
     src/server/websocket_session.cpp

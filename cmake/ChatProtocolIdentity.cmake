@@ -90,6 +90,7 @@ set(protocol_inputs
   src/server/asr_alignment_output.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
+  src/server/chat_realtime.cpp
   src/server/chat_asr_execution.cpp
   include/q4t/audio/asr_config.h
   src/audio/asr_config.cpp
@@ -620,6 +621,8 @@ set(protocol_inputs
   include/q4t/server/finite_response.h
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
+  include/q4t/server/realtime_transcription_protocol.h
+  include/q4t/server/realtime_transcription_session.h
   include/q4t/server/realtime_pcm.h
   include/q4t/server/realtime_audio_queue.h
   include/q4t/server/websocket_session.h
@@ -677,6 +680,8 @@ set(protocol_inputs
   src/server/finite_response.cpp
   src/server/http_request.cpp
   src/server/websocket.cpp
+  src/server/realtime_transcription_protocol.cpp
+  src/server/realtime_transcription_session.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp
   src/server/websocket_session.cpp

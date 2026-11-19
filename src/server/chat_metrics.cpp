@@ -265,6 +265,11 @@ void ChatServer::HandleMetrics(int fd) {
         operations_control_conns_.load());
   gauge("q4t_request_body_bytes", "Reserved application body bytes (48 MiB cap).",
         body_budget_.Used());
+  gauge("q4t_realtime_host_reserved_bytes",
+        "Reserved session protocol/audio/features/output host bytes.",
+        realtime_host_budget_.Used());
+  gauge("q4t_realtime_sessions", "Active backend WebSocket sessions.",
+        realtime_conns_.load());
   gauge("q4t_cancel_body_bytes", "Reserved cancellation bytes (32 MiB cap).",
         cancel_body_budget_.Used());
   gauge("q4t_tunnel_poll_connections",

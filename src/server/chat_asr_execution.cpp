@@ -23,7 +23,8 @@ ObjectReply ChatServer::RunNativeAsr(
     const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
     ActualUsageCounter& usage, AsrTranscript* transcript,
-    std::string_view leading_text) {
+    std::string_view leading_text,
+    const std::function<bool(const AsrTextDelta&)>& emit_delta) {
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto previous = usage.Total();
   if (!previous || !http || !transcript)
@@ -263,6 +264,8 @@ ObjectReply ChatServer::RunNativeAsr(
   const detail::WriteOptions write{control->deadline(), control.get()};
   bool first_delta = true;
   const auto emit = [&](const AsrTextDelta& delta) -> bool {
+    if (emit_delta)
+      return !cancelled() && (delta.text.empty() || emit_delta(delta));
     if (!request.stream || request.format == AsrFormat::kDiarizedJson ||
         delta.text.empty())
       return !cancelled();

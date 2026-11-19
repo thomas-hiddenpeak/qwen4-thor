@@ -52,6 +52,13 @@ def current_surface(root):
             'HandleModel(fd, method, path)' not in dispatch:
         raise ValueError("review dynamic model backend route extractor")
     routes.extend(("/v1/models/{model}", method) for method in ("GET", "DELETE"))
+    if 'HandleRealtime(fd, path, headers, state->pending, websocket_accept)' in dispatch:
+        realtime = (root / 'src/server/chat_realtime.cpp').read_text()
+        if 'IsRealtimeTarget(path)' not in dispatch or 'CheckWebSocketUpgrade(' not in dispatch or \
+                'RunRealtimeTranscription(client, job, bytes, control, emit)' not in realtime or \
+                'ClientLane::kData' not in realtime or 'rate.Reserve(clients_, client' not in realtime:
+            raise ValueError('review realtime upgrade/native execution/per-turn admission')
+        routes.append(("/v1/realtime?intent=transcription", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)

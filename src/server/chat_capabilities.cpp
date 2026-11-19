@@ -52,7 +52,15 @@ std::string ChatCapabilitiesJson(
          R"("implementation_only":true,"release_attestation":false,"model":)" +
          Quote(model) + R"(,"protocol_source_sha256":)" +
          Quote(identity::kProtocol) +
-         R"(,"transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
+         R"(,"realtime":{"endpoint":"/v1/realtime?intent=transcription",)"
+         R"("transport":"websocket","transcription_configured":)" +
+         (native_asr ? "true" : "false") +
+         R"(,"manual_commit":true,"formats":["audio/pcm","audio/pcmu","audio/pcma"],)"
+         R"("pcm_rate":24000,"logprobs":true,"usage":"actual_tokens_per_item",)"
+         R"("per_turn_client_admission":true,"automatic_replay":false,)"
+         R"("pending_execution":["server_vad","semantic_vad","noise_reduction",)"
+         R"("transcription_delay","conversation","live"]},)"
+         R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
          Quote(kNativeAsrProfile) + R"(,"revision":)" +
          Quote(kNativeAsrRevision) + R"(,"weight_sha256":)" +

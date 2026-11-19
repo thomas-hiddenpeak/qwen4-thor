@@ -83,6 +83,9 @@ struct WebSocketSessionCallbacks {
   // Runs exactly once, before abandoning output, including exception paths.
   // Signal cancellation here; the caller owns subsequent worker join/drain.
   std::function<void()> cancel;
+  // Service completed work and queue transitions even without new input.
+  // False requests the same bounded application close as message failure.
+  std::function<bool()> tick = {};
 };
 
 // Borrowed plain backend socket, no fd flag changes and no ownership transfer.

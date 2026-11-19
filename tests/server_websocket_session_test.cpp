@@ -542,3 +542,29 @@ Q4T_TEST(websocket_session_final_peak_includes_producer_racing_cancellation) {
   Q4T_CHECK(result.peak_output_bytes == output.PeakBytes());
   return true;
 }
+
+Q4T_TEST(
+    websocket_session_ticks_without_peer_input_and_closes_on_tick_failure) {
+  for (const bool throws : {false, true}) {
+    Sockets sockets;
+    WebSocketOutput output;
+    int ticks = 0, cancels = 0;
+    WebSocketSessionCallbacks cb;
+    cb.message = [](auto, auto) { return true; };
+    cb.cancel = [&] { ++cancels; };
+    cb.tick = [&]() -> bool {
+      ++ticks;
+      if (ticks == 1) return output.TryPush(WebSocketOpcode::kText, "ready");
+      if (throws) throw std::runtime_error("tick fixture");
+      return false;
+    };
+    const auto result =
+        RunWebSocketSession(sockets.f[0], {}, output, cb, Limits());
+    Q4T_CHECK(ticks == 2 && cancels == 1);
+    Q4T_CHECK(result.end == WebSocketSessionEnd::kApplication);
+    Q4T_CHECK(Read(sockets.f[1],
+                   Frame("ready", WebSocketOpcode::kText, false).size()) ==
+              Frame("ready", WebSocketOpcode::kText, false));
+  }
+  return true;
+}

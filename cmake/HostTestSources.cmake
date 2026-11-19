@@ -427,6 +427,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_websocket_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_protocol.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_transcription_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_pcm.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_pcm_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_audio_queue.cpp

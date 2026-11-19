@@ -176,6 +176,8 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
           close(WebSocketSessionEnd::kSessionDeadline, 1001);
         else if (now - active >= limits.idle)
           close(WebSocketSessionEnd::kIdleDeadline, 1001);
+        else if (cb.tick && !cb.tick())
+          close(WebSocketSessionEnd::kApplication, 1011);
       }
       if (closing && now >= close_deadline) return finish();
       if (!writing.empty() && now >= write_deadline) {

@@ -53,6 +53,7 @@
 #include "q4t/server/voice_registry.h"
 #include "q4t/server/speech_output.h"
 #include "q4t/server/asr_response.h"
+#include "q4t/server/realtime_transcription_session.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -320,12 +321,21 @@ class ChatServer {
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
+  void HandleRealtime(int fd, std::string_view path,
+                       const HttpRequestHeaders& headers,
+                       std::string_view initial, std::string_view accept);
+  ObjectReply RunRealtimeTranscription(
+      const ClientIdentity& client, const RealtimeTranscriptionJob& job,
+      const std::array<std::span<const uint8_t>, 2>& bytes,
+      const std::shared_ptr<RequestControl>& control,
+      const RealtimeTranscriptSink& emit);
   ObjectReply RunNativeAsr(
       int fd, const AsrRequest& request, const audio::AsrFeatures& features,
       const AsrPrompt& prompt, const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       ActualUsageCounter& usage, AsrTranscript* transcript,
-      std::string_view leading_text = {});
+      std::string_view leading_text = {},
+      const std::function<bool(const AsrTextDelta&)>& emit_delta = {});
   ObjectReply PrepareNativeChatAudio(
       int fd, const io::Json& source_request, const io::Json& request,
       const std::shared_ptr<RequestControl>& control,
@@ -545,6 +555,7 @@ class ChatServer {
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
   HttpBodyBudget tunnel_body_budget_{17U << 20};
+  HttpBodyBudget realtime_host_budget_{4 * kRealtimeSessionHostBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};
