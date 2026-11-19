@@ -720,6 +720,10 @@ set(protocol_inputs
   src/server/websocket.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
+  include/q4t/server/realtime_session_pump.h
+  src/server/realtime_session_pump.cpp
+  include/q4t/server/realtime_conversation_pump.h
+  src/server/realtime_conversation_pump.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp

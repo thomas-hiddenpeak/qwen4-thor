@@ -27,6 +27,9 @@ AGPL源码，不增加Orator、nginx、Python网络服务等运行时依赖。
 
 ## 已有阶段证据
 
+[共享消息泵 8 项 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)
+通过，保持原转录队列合同；真实对话执行/工具/音频仍继续接通。
+
 [会话/输出48项CPU合同](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
 通过，含文档null清空与固定SDK声明差异；原失败保留。真实对话入口、
 模型、音频/MCP/Live与恢复仍按下列顺序继续，不用CPU夹具替代。

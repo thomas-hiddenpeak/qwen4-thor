@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [共享 Realtime 消息泵 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)
+
 - [Realtime会话CPU与空值合同](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
 
 - [语义VAD与恢复PR #51合入主线](evidence/serve-semantic-vad-main-20261119/README.md)

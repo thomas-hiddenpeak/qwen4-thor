@@ -7,50 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[Realtime会话48项CPU覆盖通过](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)：
-补46项2.717秒，复用首两项；原SIGSEGV/单项FAIL保留。修复SDK遗漏
-文档null清空语义，保持严格SDK图及反例；有界响应/背压取消/删除
-迟到隔离通过，0GPU。尚未接对话端点和实际模型，继续消息泵与业务闭环。
+[共享 Realtime 队列 8 项 CPU 通过](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)：
+0.114 秒 / 0 GPU，保持原转录合同并覆盖对话顺序、背压、取消与异常
+隔离；独立链接原失败保留。队列、会话与输出基础已验证，正在接
+真实 Chat 执行及工具闭环，公开对话入口/实际模型尚未验收。
 
-[PR #51已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
-两组CI通过，main合并点`53808bf52`；固定已验语义VAD/恢复/交付
-进入main，本地后续对话代码未混入。默认rev346 STOPPED保持。
+[会话 48 项 CPU 覆盖](evidence/serve-realtime-conversation-session-cpu-20261119/README.md)
+与[输出 17 项 CPU](evidence/serve-realtime-output-cpu-20261119/README.md)
+已通过，含文档 null 清空与固定 SDK 声明差异、删除迟到隔离、取消和
+不确定接收不重放；原失败保留。音频/MCP/Live 与剩余 master 继续。
 
-Realtime会话命令、最多4个有界响应、默认对话单写者、取消和
-迟到输出删除隔离已编写，正在针对性CPU验证；尚未路由或模型验收。
-
-[Realtime响应增量17项CPU通过](evidence/serve-realtime-output-cpu-20261119/README.md)：
-真实解析器、SDK事件、历史与最终消息一致，截断/取消/背压及
-不确定接收不重放通过；用量缺失不连累回答，0GPU、零警告构建。
-主请求接线编译通过，尚未接公开对话端点或验收模型；继续会话、
-工具回填、音频/MCP/Live。默认rev346 STOPPED和听感待验保持。
-
-Realtime原生主请求执行接线正在开发：类型化输入与共享解析器
-增量复用正常Chat配额/调度/取消，不借用预处理豁免。此私有桥接
-尚未路由或验收；后续接有界响应事件与会话，再统一针对性CPU及
-实际模型短验，音频/MCP/Live仍为必做。默认rev346保持，PR #51
-只等待已推送c388fb254的检查，本地开发不混入。
-
-[语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
-PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
-PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认
-rev346不变，本地后续对话基础不混入；等待修复head检查后合入。
-
-[Realtime对话基础20项CPU通过](evidence/serve-realtime-conversation-foundation-20261119/README.md)：
-476份Realtime/647份Responses官方类型差分零分歧，18项来源反例及
-CMake生成身份通过，0GPU；原裸ID夹具失败保留。仅基础已验证，
-继续真实LLM增量、工具回填、音频/Live；默认rev346 STOPPED、
-PR #51冻结head与听感待验保持，总目标继续。
-
-Realtime对话基础首轮19项CPU通过，476份官方SDK差分零分歧，
-原Responses图逐字节保持；原裸ID引用夹具失败保留。审查另补MCP
-可空审批身份的输出更新，只续3项相关CPU，复用未影响项；尚未
-接模型对话，默认rev346/PR #51已验head与听感待验保持。
-
-Realtime对话基础正在开发：复用官方SDK类型图与原生校验器，补齐
-有界会话历史、工具条目、会话内引用、输出预留及迟到结果隔离。
-本组冻结最多60项CPU/120秒/0GPU，尚未接入真实对话模型或发行；
-PR #51最终head保持隔离，默认rev346 STOPPED和原失败/听感待验保持。
+[PR #51 已合入主线](evidence/serve-semantic-vad-main-20261119/README.md)：
+两组 CI 通过，main 合并点 `53808bf52`；后续对话开发未混入。
+默认 rev346 STOPPED、原 exact-code/声纹失败与用户延期听感保持。
 
 [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)
 完成：19项STOPPED检查/364.243秒，实际整根回退再前进，
@@ -58,7 +27,7 @@ PR #51最终head保持隔离，默认rev346 STOPPED和原失败/听感待验保�
 续办完成；19项成功检查共20次尝试。当前三组组合证据4模型、
 63HTTP+10Realtime/628.911秒、586次NVML正常，
 5个真实语义回合通过；含原候选组合累计6模型/87HTTP+14Realtime。
-默认仍STOPPED；继续PR #51检查合入及全部
+默认仍STOPPED；PR #51已合入，继续全部
 master，原exact-code/声纹失败与用户延期听感保持。
 
 [语义迁移修复5项CPU与真实资格复核通过](evidence/serve-semantic-vad-migration-20261119/README.md)：

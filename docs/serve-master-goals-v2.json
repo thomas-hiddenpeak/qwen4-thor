@@ -11079,6 +11079,14 @@
       "original_failures_retained": true,
       "actual_business_accepted": false,
       "master_complete": false
+    },
+    "shared_pump_cpu_20261119": {
+      "state": "cpu_validated_runtime_pending",
+      "evidence": "evidence/serve-realtime-shared-pump-cpu-20261119/README.md",
+      "tests": 8,
+      "gpu_actions": 0,
+      "actual_business_accepted": false,
+      "master_complete": false
     }
   },
   "semantic_vad_primary_light_20261119": {
