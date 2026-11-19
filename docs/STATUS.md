@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[PR #53夹具修正CPU通过](evidence/serve-pr53-ci-fixtures-20261120/README.md)：
+10项/7.462秒和20来源反例通过，构建37.971秒零警告，0GPU。
+正常准备改用既有默认期限，实际丢回执/超时保护断言保持；原CI
+失败与脚本匹配拒绝保留。生产/default rev366不变，音频提交保留；
+继续最终head CI合入与全部master。
+
+PR #53最终CI保留一成功、一失败原记录：失败均在故障注入前正常
+存储准备阶段撞到100/250ms夹具期限。仅修正这两类测试，使用现有
+默认I/O期限，第二次写入丢回执和禁止重放断言保持；补子进程原因。
+冻结10项针对CPU及20来源反例/120秒/0GPU；生产/default rev366不变。
+音频两提交保留在原分支，本修复从PR原head隔离，全部master继续。
+
 [rev366原生Realtime Prompt已交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：
 19项STOPPED命令/391.724秒，真实回退再前进，0新增GPU。
 默认648d6d68、服务包7be0a6a5；配额/用量/历史/恢复预算保持，前驱

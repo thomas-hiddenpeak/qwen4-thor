@@ -232,7 +232,8 @@ Q4T_TEST(responses_moderation_lost_approval_receipt_cannot_leak_or_replay) {
   } reset;
   ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
   Fixture fixture;
-  fixture.options.io_timeout_ms = 100;
+  // The worker deliberately loses the second Put receipt. Its first Put and
+  // cold startup use the default deadline, not an unrelated 100 ms race.
   ObjectStore store(fixture.options);
   ResponsesExecution run(store);
   Q4T_CHECK(Prepare(&run));
@@ -624,7 +625,8 @@ Q4T_TEST(
   } reset;
   ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
   Fixture fixture;
-  fixture.options.io_timeout_ms = 100;
+  // The worker deliberately loses the second Put receipt. Its first Put and
+  // cold startup use the default deadline, not an unrelated 100 ms race.
   ObjectStore store(fixture.options);
   ResponsesExecution run(store);
   Q4T_CHECK(Prepare(&run));
@@ -896,7 +898,8 @@ Q4T_TEST(responses_checkpoint_failure_delivers_original_prefix_before_error) {
   } reset;
   ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
   Fixture f;
-  f.options.io_timeout_ms = 100;
+  // Inject a lost second Put receipt, not a cold-start timeout at Begin.
+  // Keep the default I/O deadline for normal setup and the bounded lost ack.
   ObjectStore store(f.options);
   ResponsesExecution run(store);
   Q4T_CHECK(Prepare(&run));
