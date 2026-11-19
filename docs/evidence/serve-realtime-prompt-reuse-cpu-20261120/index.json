@@ -1,0 +1,82 @@
+{
+  "reuse-cpu-01/command-1.log": {
+    "bytes": 223,
+    "sha256": "086ad35e5715fc578718a941f71f5ae384355147f319cbca0063e8da79b26acc"
+  },
+  "reuse-cpu-01/original-test_profile_prompt_reuse.py": {
+    "bytes": 7058,
+    "sha256": "8dc2ccf72146da6b594a9657e5862b0fb6bdd41201a8a39b30f0111b51dda5bd"
+  },
+  "reuse-cpu-01/result.json": {
+    "bytes": 505,
+    "sha256": "2f0bd0d17680478cb7770e1385372fb5fd9fa70d5e4e828a5854c7cf7583eb74"
+  },
+  "reuse-cpu-01/plan.json": {
+    "bytes": 1110,
+    "sha256": "ba51b027745e8eab36c4ff4f2400c16874aa4712b8d227fda69ab833348491bd"
+  },
+  "reuse-cpu-01/command-0.log": {
+    "bytes": 2740,
+    "sha256": "7e14a7b3e7aeb314f8c61b5c01f043aebd9ef138994477539eec0aa019536203"
+  },
+  "reuse-cpu-02/original-test_profile_prompt_reuse.py": {
+    "bytes": 7123,
+    "sha256": "40e1cf0553abe27ef7c8b55956e53ea65d33f6bd1393e6491c35de34c59ec495"
+  },
+  "reuse-cpu-02/check.log": {
+    "bytes": 1871,
+    "sha256": "01c11786e4cbd747bfdad03af03102d1f897ee2aff60bc24cfbef952b4a48dd1"
+  },
+  "reuse-cpu-02/result.json": {
+    "bytes": 179,
+    "sha256": "98b06f39f794e2ffe5d44c4c8dec968dcb853aaefa6ee6df5d58af4dc09b9ee7"
+  },
+  "reuse-cpu-02/plan.json": {
+    "bytes": 593,
+    "sha256": "be01ad78dbe4861c038a3cd61720a429616ba1a71a88d43b7f7242de59028737"
+  },
+  "reuse-cpu-03/original-test_profile_prompt_reuse.py": {
+    "bytes": 7236,
+    "sha256": "197241c63d58aa9eeb6f9ab7ec1ff29dd1374f444cbe03b940e0a67b80bf8a5e"
+  },
+  "reuse-cpu-03/check.log": {
+    "bytes": 1497,
+    "sha256": "94c78fb69eea83f60fb5f89fb87754f791589a3e357e942f10831b74202fb97b"
+  },
+  "reuse-cpu-03/result.json": {
+    "bytes": 180,
+    "sha256": "cd4fb634a28d07f6430d28ff6338a419f95bbc6c7eb3755100e70439e6059741"
+  },
+  "reuse-cpu-03/plan.json": {
+    "bytes": 580,
+    "sha256": "687e55ec5ae24cea97e2c998ae67502e22e29501bda850edd0b676ae07388e61"
+  },
+  "reuse-cpu-04/check.log": {
+    "bytes": 301,
+    "sha256": "6f1ce27f57930c4bd9dc6bd01df3483538b972843b83ca59ed292ae6fbb5d73e"
+  },
+  "reuse-cpu-04/result.json": {
+    "bytes": 180,
+    "sha256": "3ec8a74c764f20257652fea07455c5a0ed66fda9d6969619d95a01020d8c647c"
+  },
+  "reuse-cpu-04/plan.json": {
+    "bytes": 623,
+    "sha256": "9ae24bdad021d3e37e2274c77b5a1f29042aa42626d81d829e3d9f88dcf130ad"
+  },
+  "source/tools/serve_recovery/profile_prompt_reuse.py": {
+    "bytes": 6807,
+    "sha256": "0dc9b3e89c69512f2ac901ba741fc5d43c70c556c3c9187c0175b67ee73c5aba"
+  },
+  "source/tools/serve_recovery/profile_evidence.py": {
+    "bytes": 89776,
+    "sha256": "763067f43142f61348ca05df57d8d97dd88d55d5661ea6dd5e27931d0da7c57e"
+  },
+  "source/tools/serve_recovery/test_profile_prompt_reuse.py": {
+    "bytes": 7250,
+    "sha256": "734a8d70e10b6507f92a670229c5e7272d77cf863125577fd8428430ae23700e"
+  },
+  "source/tools/serve_audit/inventory.json": {
+    "bytes": 507272,
+    "sha256": "67cc6d56d39db03d61106de37c85fa7ef7c6a6505d30a424e2781bf08afa0dc6"
+  }
+}

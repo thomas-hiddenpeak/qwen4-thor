@@ -669,3 +669,5 @@
 - [Prompt资格与迁移CPU](evidence/serve-realtime-prompt-profile-cpu-20261120/README.md)：25项合同、显式升级和自动回退能力保持。
 
 - [Prompt构建与证据复用边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)：确切源身份和待执行的针对性资格范围。
+
+- [Prompt证据来源CPU](evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md)：原记录绑定、复用边界及原夹具失败保留。

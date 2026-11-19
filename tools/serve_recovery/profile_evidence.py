@@ -1515,7 +1515,8 @@ def business(value, identity, selected=None, capabilities=None):
 
 def validate(value, registry, name, digest):
     ledger.keys(value, ('format', 'profile', 'identity', 'capacity', 'capabilities',
-        'configuration', 'startup_memory', 'business', 'environment'))
+        'configuration', 'startup_memory', 'business', 'environment') +
+        (('reused_business',) if 'reused_business' in value else ()))
     profile_contract.validate(registry)
     ledger.require(value['format'] == format_for(registry['profiles'][name],
                                                 registry['identity'], value['capabilities'],
@@ -1528,6 +1529,9 @@ def validate(value, registry, name, digest):
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
+    if 'reused_business' in value:
+        from tools.serve_recovery import profile_prompt_reuse
+        profile_prompt_reuse.validate(value)
     environment = value['environment']
     ledger.keys(environment, ('status', 'env_abort', 'all_queries_ok',
         'nvml_queries', 'lease_result_sha256', 'cleanup_complete'))

@@ -11596,6 +11596,28 @@
       "master_complete": false,
       "archive_sha256": "6534684fd193e63283ffb9c723fb778777a2f9646aa896947e2aec4a3fb88ff8",
       "evidence": "evidence/serve-realtime-prompt-build-review-20261120/README.md"
+    },
+    "prompt_reuse_cpu_20261120": {
+      "status": "PASS_EXACT_SOURCE_REUSE_CPU",
+      "tests": 6,
+      "attempts": 9,
+      "seconds": 2.6726396130397916,
+      "original_fixture_failures": 3,
+      "failed_observation_fields": [
+        "mtp_enabled",
+        "mtp_k",
+        "startup_memory"
+      ],
+      "production_unchanged_during_retries": true,
+      "reused_passed_tests": 5,
+      "source_mutations": 20,
+      "new_gpu_starts": 0,
+      "actual_profile_qualification": false,
+      "default_unchanged": true,
+      "default_revision": 356,
+      "master_complete": false,
+      "archive_sha256": "b54540ae4b49c7b44086cb51a273b36f8c483b40aeca96f97c1c4daca532907a",
+      "evidence": "evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {

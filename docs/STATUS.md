@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[来源复用6项CPU闭合](evidence/serve-realtime-prompt-reuse-cpu-20261120/README.md)：
+9次尝试/2.673秒/0GPU，3次夹具容量观测失败保留，仅失败项
+补验；生产校验未放宽，20来源反例通过。复用绑定确切旧资格与当前
+候选、原后端记录可见；仍须新实跑的受影响路径不被省略。有界主轻
+驱动继续，默认rev356、原质量FAIL与全部master保持。
+
+主轻资格的来源复用校验已编写：仅允许已审查的f5af36c6→0d1e2ef1
+与确切旧registry，完整保留原v17记录，拒绝递归复用、模型/后端/
+容量漂移及改写旧观察；Chat/Realtime/Prompt与旧Responses模板须
+重新取得实际证据。冻结6项CPU+20来源反例/120秒/0GPU，实际有界
+驱动继续实现；默认rev356、原质量FAIL与全部master保持。
+
 [Prompt新候选与源码边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)
 已核对：0d1e2ef1构建15.976秒零警告，旧资格23个变化/950个不变
 源文件已逐一对照。继续为未变后端证据增加可核验来源，并准备仅
