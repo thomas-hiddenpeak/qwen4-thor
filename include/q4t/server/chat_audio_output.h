@@ -19,6 +19,11 @@ struct ChatAudioOptions {
 // generation; the parser never invents spoken content or maps voice identities.
 Status ParseChatAudioOptions(const io::Json& request, ChatAudioOptions* out,
                              ChatPlanError* error);
+// Validate the actual generated utterance without losing resolved native
+// voice/tempo options. Atomic; fractional speed must survive serialization.
+Status ValidateChatSpeechRequest(const SpeechRequest& request,
+                                 SpeechRequest* validated,
+                                 ChatPlanError* error);
 std::string_view ChatAudioFormatName(SpeechFormat format);
 
 // Input history accepts only an assistant audio reference. Retrieval and

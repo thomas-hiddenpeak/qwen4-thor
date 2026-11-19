@@ -8,6 +8,7 @@
 #include "q4t/server/chat_audio_output.h"
 #include "q4t/server/chat_choices.h"
 #include "q4t/server/request_diagnostics.h"
+#include "q4t/server/native_chat_generation.h"
 
 namespace q4t::server {
 ObjectReply ChatServer::SynthesizeChatAudio(
@@ -16,12 +17,16 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     const std::shared_ptr<RequestControl>& control,
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
     const std::function<bool(int, const std::string&, bool)>& delta,
-    io::Json* completion) {
+    io::Json* completion, const NativeChatSpeech* native) {
   using namespace object_detail;
   auto* http = detail::HttpResponseContext::Current(fd);
-  if (!completion || !http || !objects_ || !http->Client().Allowed() ||
-      !options.enabled || !completion->GetArray("choices") ||
-      completion->GetArray("choices")->array.size() != choice_tokens.size())
+  if (!completion || !http || (!objects_ && !native) ||
+      !http->Client().Allowed() || !options.enabled ||
+      !completion->GetArray("choices") ||
+      completion->GetArray("choices")->array.size() != choice_tokens.size() ||
+      (native && (!native->append || !native->complete ||
+                  options.speech.format != SpeechFormat::kPcm ||
+                  !options.text || choice_tokens.size() != 1)))
     return Error(503, "chat_audio_state_unavailable",
                  "Authenticated audio state unavailable");
   auto next = *completion;
@@ -50,15 +55,8 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     SpeechRequest request = options.speech;
     request.input = transcript;
     request.model = request.voice_id ? kNativeTtsBaseModel : kNativeTtsModel;
-    const auto wire = Object(
-        {{"model", String(request.model)},
-         {"input", String(request.input)},
-         {"voice", request.voice_id ? Object({{"id", String(request.voice)}})
-                                    : String(request.voice)},
-         {"response_format",
-          String(std::string(SpeechFormatName(request.format)))}});
     ChatPlanError error;
-    if (!ParseSpeechRequest(OutputJson(wire), &request, &error))
+    if (!ValidateChatSpeechRequest(request, &request, &error))
       return Error(502, "chat_audio_text_invalid",
                    "Generated utterance exceeds speech input contract");
     audio::TtsPrompt prompt;
@@ -89,6 +87,38 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     const auto previous = http->Usage().Total();
     if (!previous)
       return Error(500, "tts_usage_invalid", "Prior Chat usage unavailable");
+    if (native) {
+      SpeechEncodingReceipt receipt;
+      auto reply =
+          RunNativeTts(fd, request, prompt, frames, control, diagnostic, rate,
+                       http->Usage(), native->append, &receipt);
+      if (!reply.ok() || reply.commit_unknown) return reply;
+      const auto actual = http->Usage().Total();
+      if (!actual || actual->input < previous->input ||
+          actual->output < previous->output)
+        return Error(502, "tts_usage_invalid", "Native speech usage invalid");
+      const ActualUsage synthesis{actual->input - previous->input,
+                                  actual->output - previous->output};
+      const auto status = AddChatAudioUsage(
+          synthesis,
+          receipt.input_samples / audio::TtsConfig::kSamplesPerFrame *
+              audio::TtsConfig::kCodeGroups,
+          &Field(next, "usage"));
+      if (!status) return Error(502, "tts_usage_invalid", status.message());
+      reply = native->complete(transcript, receipt, synthesis);
+      if (!reply.ok() || reply.commit_unknown || reply.http_status < 200 ||
+          reply.http_status >= 300) {
+        if (reply.code.empty()) {
+          reply.code = "native_speech_receipt_unconfirmed";
+          reply.message = "Native speech completion was not confirmed";
+          reply.http_status = 503;
+        }
+        return reply;
+      }
+      // Realtime owns waveform/history; retain the actual text/tool message
+      // without duplicate Chat base64, audio IDs, or persistent audio objects.
+      continue;
+    }
     const auto audio_id = NewObjectId(ObjectKind::kAudio);
     std::string event;
     if (!ChatAudioIdDelta(audio_id, &event))

@@ -320,3 +320,27 @@ Q4T_TEST(
   Q4T_CHECK(!info.uncertain && !info.active);
   return true;
 }
+
+Q4T_TEST(chat_audio_actual_utterance_keeps_fractional_tempo_and_voice) {
+  for (double speed : {0.25, 0.5, 1.0, 1.5}) {
+    SpeechRequest request;
+    request.model = "native-fixture";
+    request.input = "Actual generated text.";
+    request.voice = "voice_cpu";
+    request.voice_id = true;
+    request.format = SpeechFormat::kPcm;
+    request.speed = speed;
+    request.instructions = "Read clearly.";
+    SpeechRequest parsed;
+    ChatPlanError error;
+    Q4T_CHECK(ValidateChatSpeechRequest(request, &parsed, &error));
+    Q4T_CHECK(parsed.input == request.input && parsed.voice_id &&
+              parsed.voice == request.voice && parsed.model == request.model &&
+              parsed.speed == speed && parsed.format == SpeechFormat::kPcm &&
+              parsed.instructions == request.instructions);
+    request.speed = 0;
+    Q4T_CHECK(!ValidateChatSpeechRequest(request, &parsed, &error));
+    Q4T_CHECK(parsed.speed == speed && parsed.input == request.input);
+  }
+  return true;
+}

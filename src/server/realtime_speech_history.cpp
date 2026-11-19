@@ -85,6 +85,20 @@ Status RealtimeSpeechHistory::Append(const RealtimeItemTicket& ticket,
   return {};
 }
 
+void RealtimeSpeechHistory::Compact(Entry& entry) noexcept {
+  // One bounded transient copy is covered by the session reservation. Failure
+  // keeps the existing charge and valid audio; it cannot fail healthy output.
+  if (entry.bytes.size() >= entry.bytes.capacity() / 2) return;
+  try {
+    std::string compact(entry.bytes);
+    if (compact.capacity() < entry.bytes.capacity()) {
+      charged_ -= entry.bytes.capacity() - compact.capacity();
+      entry.bytes.swap(compact);
+    }
+  } catch (...) {
+  }
+}
+
 Status RealtimeSpeechHistory::Complete(const RealtimeItemTicket& ticket) {
   const auto position = Position(ticket);
   if (position == entries_.size()) return Invalid("stale audio ticket");
@@ -93,6 +107,7 @@ Status RealtimeSpeechHistory::Complete(const RealtimeItemTicket& ticket) {
       entry.bytes.empty())
     return Invalid("audio cannot complete in its current state");
   entry.complete = true;
+  Compact(entry);
   return {};
 }
 
@@ -101,7 +116,10 @@ Status RealtimeSpeechHistory::Interrupt(const RealtimeItemTicket& ticket) {
   if (position == entries_.size()) return Invalid("stale audio ticket");
   auto& entry = entries_[position];
   // An earlier client truncate or a verified EOF remains the stronger fact.
-  if (!entry.complete && !entry.truncated) entry.interrupted = true;
+  if (!entry.complete) {
+    if (!entry.truncated) entry.interrupted = true;
+    Compact(entry);
+  }
   return {};
 }
 

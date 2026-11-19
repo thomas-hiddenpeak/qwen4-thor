@@ -9,6 +9,8 @@
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_prompt_settings.h"
 #include "q4t/server/realtime_response_output.h"
+#include "q4t/server/realtime_speech_execution.h"
+#include "q4t/server/realtime_speech_history.h"
 #include "q4t/server/websocket_session.h"
 
 namespace q4t::server {
@@ -51,9 +53,9 @@ struct RealtimeConversationCallbacks {
   std::function<void(const std::shared_ptr<RequestControl>&)> release;
   // Cooperative worker. Normal client admission/quota/model accounting is
   // owned here; no secondary model or RPM reservation in the session.
-  std::function<RealtimeGenerationResult(const RealtimeConversationJob&,
-                                         const std::shared_ptr<RequestControl>&,
-                                         const RealtimeDeltaSink&)>
+  std::function<RealtimeGenerationResult(
+      const RealtimeConversationJob&, const std::shared_ptr<RequestControl>&,
+      const RealtimeDeltaSink&, const RealtimeSpeechSink&)>
       execute;
 };
 
@@ -73,6 +75,7 @@ class RealtimeConversationSession {
   void Join() noexcept;
   size_t ActiveResponses() const { return work_.size(); }
   size_t HistoryBytes() const { return history_.ChargedBytes(); }
+  size_t SpeechBytes() const { return speech_.ChargedBytes(); }
 
  private:
   struct Work;
@@ -85,10 +88,14 @@ class RealtimeConversationSession {
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
+  bool TruncateItem(const io::Json& event);
+  ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
   bool CreateResponse(const io::Json& event);
   bool CancelResponse(const io::Json& event);
   ObjectReply Store(Work& work, const io::Json& item, bool begin,
                     bool terminal);
+  ObjectReply StoreAudio(Work& work, std::string_view id,
+                         std::string_view bytes, RealtimeAudioCommit commit);
   void Release(Work& work) noexcept;
   const std::string id_, conversation_id_;
   RealtimePromptSettings settings_;
@@ -96,6 +103,8 @@ class RealtimeConversationSession {
   const RealtimeConversationCallbacks callbacks_;
   const size_t message_bytes_;
   RealtimeConversation history_;
+  RealtimeSpeechHistory speech_;
+  std::optional<RealtimeSpeechOptions> locked_voice_;
   std::deque<std::unique_ptr<Work>> work_;
   std::deque<std::string> events_;
   size_t event_bytes_ = 0;

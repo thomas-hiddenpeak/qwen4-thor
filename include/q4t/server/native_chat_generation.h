@@ -8,14 +8,24 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/request_limits.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/speech_output.h"
 
 namespace q4t::server {
 class ModelPreparation;
+// Borrowed synchronous PCM observer. The ordinary Chat owner performs the TTS
+// step and settles its original rate lease; this observer never runs a model.
+struct NativeChatSpeech {
+  std::function<ObjectReply(std::string_view)> append;
+  std::function<ObjectReply(std::string_view, const SpeechEncodingReceipt&,
+                            const ActualUsage&)>
+      complete;
+};
 // Borrowed native proofs. The execution owner keeps the prepared plan and
 // accounting alive through generation; no HTTP field may construct these.
 struct NativeChatInputs {
   const ChatRequestPlan* plan = nullptr;
   ModelPreparation* preparation = nullptr;
+  const NativeChatSpeech* speech = nullptr;
 };
 class NativeChatGeneration {
  public:
@@ -34,11 +44,19 @@ class NativeChatGeneration {
   const io::Json& Request() const { return request_; }
   const ChatRequestPlan* PreparedPlan() const { return inputs_.plan; }
   ModelPreparation* Preparation() const { return inputs_.preparation; }
+  const NativeChatSpeech* Speech() const { return inputs_.speech; }
   bool Valid() const {
-    // Realtime's model step emits text/functions. Output audio and hosted MCP
-    // belong to their own native owners. Do not stream private Chat web-tool
-    // or moderation steps through this primary-output observer.
+    // Public JSON cannot grant a native speech observer or prepared proofs.
+    // Speech keeps the primary transcript for final message verification.
+    const bool speech =
+        inputs_.speech && inputs_.plan && inputs_.speech->append &&
+        inputs_.speech->complete && inputs_.plan->audio_output.enabled &&
+        inputs_.plan->audio_output.text &&
+        inputs_.plan->audio_output.speech.format == SpeechFormat::kPcm;
     return (!inputs_.preparation || inputs_.plan) && sink_ && maximum_bytes_ &&
+           (inputs_.speech
+                ? speech
+                : !inputs_.plan || !inputs_.plan->audio_output.enabled) &&
            maximum_bytes_ <= kChatBodyBytes && request_.IsObject() &&
            !request_.Has("moderation") && !request_.Has("web_search_options") &&
            !request_.Has("modalities") && !request_.Has("audio");

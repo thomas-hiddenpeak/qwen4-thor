@@ -1,0 +1,27 @@
+{
+  "status": "MERGED_AND_MAIN_CONTAINS_ACCEPTED_HEAD",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/53",
+  "accepted_head": "4469b36709a0fc52efada482ce2049dab1a2e354",
+  "merge_commit": "811dadab3e26a0de47e32001c0a4da82dda8938b",
+  "fetched_main": "811dadab3e26a0de47e32001c0a4da82dda8938b",
+  "merged_at": "2026-11-19T23:02:00Z",
+  "ci": [
+    {
+      "run": 44629564738,
+      "event": "pull_request",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "run": 44629554400,
+      "event": "push",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "default_revision": 366,
+  "runtime_changed_by_ci_fix": false,
+  "local_audio_tip_before_integration": "0052c20a2",
+  "local_branch_retained": "codex/serve-resilience-cd",
+  "reason": "Unique audio commits, uncommitted native audio work and preserved evidence paths remain; no branch/workspace cleanup.",
+  "gpu_actions": 0,
+  "all_master_tasks_active": true
+}

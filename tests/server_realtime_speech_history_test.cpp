@@ -168,3 +168,24 @@ Q4T_TEST(realtime_speech_history_empty_and_duplicate_completion_keep_owner) {
   Q4T_CHECK(history.ChargedBytes() == 0);
   return true;
 }
+
+Q4T_TEST(realtime_speech_history_settlement_releases_unused_reservation) {
+  RealtimeSpeechHistory history("sess_a", 131072);
+  Q4T_CHECK(history.Begin(kItem, {}, 65536));
+  Q4T_CHECK(history.Append(kItem, std::string(480, '\0')));
+  Q4T_CHECK(history.Complete(kItem));
+  const auto completed = history.ChargedBytes();
+  Q4T_CHECK(completed >= 480 && completed < 65536);
+  const RealtimeItemTicket next{"sess_a", "item_b", 2};
+  Q4T_CHECK(history.Begin(next, {}, 65536));
+  Q4T_CHECK(history.Append(next, std::string(4800, '\0')));
+  Q4T_CHECK(history.Truncate(next, 10));
+  Q4T_CHECK(history.ChargedBytes() >= 65536 + completed);
+  Q4T_CHECK(history.Interrupt(next));
+  Q4T_CHECK(history.ChargedBytes() >= completed + 480 &&
+            history.ChargedBytes() < completed + 65536);
+  RealtimeSpeechView view;
+  Q4T_CHECK(history.Get(next, &view) && view.truncated && !view.complete &&
+            view.bytes.size() == 480 && view.generated_samples == 2400);
+  return true;
+}

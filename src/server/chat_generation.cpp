@@ -646,8 +646,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
   const auto& audio_output = request_plan.audio_output;
-  if (audio_output.enabled &&
-      (!objects_ || !http || !http->Client().Allowed())) {
+  if (audio_output.enabled && ((!objects_ && (!native || !native->Speech() ||
+                                              audio_output.speech.voice_id)) ||
+                               !http || !http->Client().Allowed())) {
     SendError(fd, 503, "Authenticated audio history unavailable", {},
               "object_scope_unavailable", "audio");
     return;
@@ -1397,10 +1398,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (stream) emit = emit_audio;
       const auto synthesized = SynthesizeChatAudio(
           fd, audio_output, prompt_budget.available_output, audio_choice_tokens,
-          control, diagnostic, rate_lease, emit, &completed);
-      if (!synthesized.ok()) {
-        SendError(fd, synthesized.http_status, synthesized.ClientMessage(), {},
-                  synthesized.ClientCode(), "audio");
+          control, diagnostic, rate_lease, emit, &completed,
+          native ? native->Speech() : nullptr);
+      if (!synthesized.ok() || synthesized.commit_unknown ||
+          synthesized.http_status < 200 || synthesized.http_status >= 300) {
+        SendError(
+            fd, synthesized.http_status >= 400 ? synthesized.http_status : 503,
+            synthesized.ClientMessage(), {}, synthesized.ClientCode(), "audio");
         return false;
       }
       result = OutputJson(completed);

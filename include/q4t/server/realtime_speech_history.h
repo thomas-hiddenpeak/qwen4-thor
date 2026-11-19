@@ -15,8 +15,8 @@ struct RealtimeSpeechView {
 // Views are synchronous borrows: no worker may retain one across a mutation.
 // Reserve binary capacity before publishing the first chunk. JSON/transcript,
 // metadata, retrieval encoding and transient construction have separate bounds
-// in the session owner. Truncation retains its allocation and charge until
-// deletion; the generated extent remains distinct from the retained waveform.
+// in the session owner. Truncation itself retains its allocation; EOF or owner
+// settlement may compact it. Generated extent is distinct from retained audio.
 class RealtimeSpeechHistory {
  public:
   static constexpr size_t kMaximumBytes = 128ULL << 20;
@@ -49,6 +49,7 @@ class RealtimeSpeechHistory {
     bool complete = false, truncated = false, interrupted = false;
   };
   size_t Position(const RealtimeItemTicket& ticket) const;
+  void Compact(Entry& entry) noexcept;
   const std::string owner_;
   const size_t maximum_bytes_, maximum_items_;
   bool valid_ = false;

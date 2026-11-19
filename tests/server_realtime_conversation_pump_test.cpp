@@ -40,7 +40,8 @@ struct Fixture {
       requests.Remove(value);
       ++released;
     };
-    cb.execute = [&](const auto& job, const auto&, const auto& emit) {
+    cb.execute = [&](const auto& job, const auto&, const auto& emit,
+                     const RealtimeSpeechSink&) {
       ++calls;
       context = OutputJson(job.snapshot.items);
       ResponseDelta delta;
@@ -122,7 +123,8 @@ Q4T_TEST(realtime_conversation_pump_active_parse_stays_charged_until_done) {
 
 Q4T_TEST(realtime_conversation_pump_stop_cancels_and_joins_actual_owner_once) {
   Fixture f;
-  f.cb.execute = [&](const auto&, const auto& control, const auto&) {
+  f.cb.execute = [&](const auto&, const auto& control, const auto&,
+                     const RealtimeSpeechSink&) {
     ++f.calls;
     while (!control->Cancelled()) std::this_thread::sleep_for(1ms);
     RealtimeGenerationResult result;

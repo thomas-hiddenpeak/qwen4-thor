@@ -10,6 +10,8 @@
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/test.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/realtime_transcription_protocol.h"
 
 namespace {
 using namespace q4t::server;
@@ -70,7 +72,7 @@ struct Fixture {
       ++released;
     };
     cb.execute = [&](const RealtimeConversationJob& job, const auto& control,
-                     const RealtimeDeltaSink& emit) {
+                     const RealtimeDeltaSink& emit, const RealtimeSpeechSink&) {
       ++calls;
       {
         std::lock_guard lock(mutex);
@@ -402,7 +404,7 @@ Q4T_TEST(realtime_session_deleted_output_is_not_resurrected_by_late_deltas) {
   Fixture f;
   std::atomic<bool> first{false}, resume{false};
   f.cb.execute = [&](const auto&, const auto& control,
-                     const RealtimeDeltaSink& emit) {
+                     const RealtimeDeltaSink& emit, const RealtimeSpeechSink&) {
     RealtimeGenerationResult result;
     ResponseDelta delta;
     delta.text = "first";
@@ -482,8 +484,9 @@ Q4T_TEST(realtime_session_bad_metadata_is_error_before_publication_or_owner) {
 Q4T_TEST(realtime_session_successful_context_cut_is_used_by_next_response) {
   Fixture f;
   const auto original = f.cb.execute;
-  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit) {
-    auto result = original(job, control, emit);
+  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit,
+                     const RealtimeSpeechSink& speech) {
+    auto result = original(job, control, emit, speech);
     if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
     return result;
   };
@@ -501,8 +504,9 @@ Q4T_TEST(realtime_session_successful_context_cut_is_used_by_next_response) {
 Q4T_TEST(realtime_session_out_of_band_context_cut_does_not_change_default) {
   Fixture f;
   const auto original = f.cb.execute;
-  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit) {
-    auto result = original(job, control, emit);
+  f.cb.execute = [&](const auto& job, const auto& control, const auto& emit,
+                     const RealtimeSpeechSink& speech) {
+    auto result = original(job, control, emit, speech);
     if (f.calls == 1) result.retained_input_indices = std::vector<size_t>{1};
     return result;
   };
@@ -714,5 +718,328 @@ Q4T_TEST(realtime_session_prompt_inflight_snapshots_survive_update_and_delete) {
   Q4T_CHECK(OutputJson(f.Snapshot(0).prompt->request).find("first prefix") !=
             std::string::npos);
   Q4T_CHECK(f.released == 2 && f.lookups == 2);
+  return true;
+}
+
+namespace {
+Json SpeechNumber(double value) {
+  Json result;
+  result.type = Json::Type::kNumber;
+  result.number = value;
+  return result;
+}
+// Deterministic CPU speech source. The runtime TTS model is exercised
+// separately.
+struct SpeechFixture : Fixture {
+  std::atomic<bool> hold_audio{false};
+  std::atomic<bool> native_finished{false};
+  bool finish_native = false;
+  size_t samples = 2400;
+  std::atomic<int> fault{
+      0};  // 1=missing EOF, 2=bad EOF, 3=final text mismatch.
+  SpeechFixture() {
+    Set(&settings, "output_modalities", Array({String("audio")}));
+    Set(&settings, "audio",
+        Object({{"output", Object({{"voice", String("vivian")},
+                                   {"speed", Number(1)}})}}));
+    cb.execute = [&](const auto& job, const auto& control,
+                     const RealtimeDeltaSink& emit,
+                     const RealtimeSpeechSink& audio) {
+      ++calls;
+      {
+        std::lock_guard lock(mutex);
+        snapshots.push_back(job);
+      }
+      RealtimeGenerationResult result;
+      ResponseDelta text;
+      text.text = "spoken";
+      result.reply = emit(text);
+      if (!result.reply.ok()) return result;
+      RealtimeSpeechOptions options;
+      ChatPlanError error;
+      if (!PlanRealtimeSpeech(job.settings, job.response, &options, &error)) {
+        result.reply = object_detail::Error(400, error.code, "CPU options");
+        return result;
+      }
+      result.message = OutputMessage("spoken");
+      if (!options.enabled) return result;
+      RealtimeSpeechExecution delivery(options, audio,
+                                       [&] { return control->Cancelled(); });
+      const std::string pcm(samples * 2, '\0');
+      result.reply = delivery.Append(pcm);
+      ++emitted;
+      if (!result.reply.ok()) return result;
+      while (hold_audio && !control->Cancelled())
+        std::this_thread::sleep_for(1ms);
+      if (control->Cancelled()) {
+        result.reply =
+            object_detail::Error(409, control->Reason(), "CPU cancel");
+        return result;
+      }
+      if (fault != 1) {
+        SpeechEncodingReceipt receipt;
+        receipt.input_samples = receipt.output_samples = samples;
+        receipt.bytes = pcm.size() + (fault == 2 ? 1 : 0);
+        receipt.sha256 = q4t::trace::HexDigest(q4t::trace::Sha256(
+            {reinterpret_cast<const uint8_t*>(pcm.data()), pcm.size()}));
+        result.reply = delivery.Finish("spoken", receipt, {5, 33});
+      }
+      if (fault == 3) result.message = OutputMessage("invented");
+      RealtimeResponseUsage usage;
+      usage.total = {9, 35};
+      usage.output_audio = 33;
+      usage.output_text = 2;
+      result.usage = usage;
+      if (finish_native) {
+        control->Finish();
+        native_finished = true;
+      }
+      return result;
+    };
+  }
+  ~SpeechFixture() {
+    if (session) {
+      session->Cancel();
+      session->Join();
+    }
+  }
+  std::string Item() {
+    return Last("conversation.item.added").Find("item")->GetString("id");
+  }
+  bool Retrieve(const std::string& id) {
+    return Send(Object({{"type", String("conversation.item.retrieve")},
+                        {"item_id", String(id)}}));
+  }
+  bool Truncate(const std::string& id, double time, double index = 0) {
+    return Send(Object({{"type", String("conversation.item.truncate")},
+                        {"item_id", String(id)},
+                        {"audio_end_ms", SpeechNumber(time)},
+                        {"content_index", SpeechNumber(index)}}));
+  }
+  bool UpdateOutput(Json output) {
+    return Send(Object(
+        {{"type", String("session.update")},
+         {"session",
+          Object({{"type", String("realtime")},
+                  {"audio", Object({{"output", std::move(output)}})}})}}));
+  }
+};
+std::string RetrievedAudio(const Fixture& fixture) {
+  const auto item = fixture.Last("conversation.item.retrieved");
+  const auto& part = item.Find("item")->GetArray("content")->array[0];
+  const auto encoded = part.GetString("audio");
+  if (encoded.empty()) return {};
+  RealtimeTranscriptionCommand command;
+  const auto input =
+      OutputJson(Object({{"type", String("input_audio_buffer.append")},
+                         {"audio", String(encoded)}}));
+  if (!ParseRealtimeTranscriptionCommand(input, kWebSocketMessageLimit,
+                                         &command)
+           .ok())
+    throw std::runtime_error("CPU audio retrieval");
+  return command.audio;
+}
+}  // namespace
+
+Q4T_TEST(realtime_session_audio_events_retrieve_delete_and_text_followup) {
+  SpeechFixture f;
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.Count("response.output_audio.delta") > 0 &&
+            f.Count("response.output_audio.done") == 1 &&
+            f.Count("response.output_audio_transcript.done") == 1);
+  const auto done = *f.Last("response.done").Find("response");
+  Q4T_CHECK(done.GetString("status") == "completed" &&
+            done.Find("usage")->GetInt("output_tokens") == 35 &&
+            done.Find("usage")
+                    ->Find("output_token_details")
+                    ->GetInt("audio_tokens") == 33 &&
+            OutputJson(done).find("delta") == std::string::npos);
+  const auto id = f.Item();
+  Q4T_CHECK(f.Retrieve(id) && RetrievedAudio(f) == std::string(4800, '\0'));
+  Q4T_CHECK(f.session->SpeechBytes() < kRealtimeAudioBytes);
+  Q4T_CHECK(
+      f.Create(Object({{"output_modalities", Array({String("text")})}})) &&
+      f.Finish());
+  const auto saved = f.Snapshot(1);
+  ChatPlanConfig config;
+  config.model = "q4t-test";
+  RealtimeChatPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(PlanRealtimeChat(saved.settings, saved.response,
+                             saved.snapshot.items, config, &plan, &error));
+  Q4T_CHECK(OutputJson(plan.generation.generation_request).find("spoken") !=
+            std::string::npos);
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.delete")},
+                           {"item_id", String(id)}})));
+  Q4T_CHECK(f.session->SpeechBytes() == 0 && f.released == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_session_g711_retrieves_actual_bytes_and_playback_clock) {
+  for (const auto& [format, code] : std::vector<std::pair<std::string, char>>{
+           {"audio/pcmu", char(255)}, {"audio/pcma", char(213)}}) {
+    SpeechFixture f;
+    Q4T_CHECK(f.Start());
+    Q4T_CHECK(f.UpdateOutput(
+        Object({{"format", Object({{"type", String(format)}})}})));
+    Q4T_CHECK(f.Create() && f.Finish());
+    const auto id = f.Item();
+    Q4T_CHECK(f.Retrieve(id) && RetrievedAudio(f) == std::string(800, code));
+    Q4T_CHECK(f.Truncate(id, 37) && f.Retrieve(id));
+    Q4T_CHECK(RetrievedAudio(f) == std::string(296, code));
+    const auto part = f.Last("conversation.item.retrieved")
+                          .Find("item")
+                          ->GetArray("content")
+                          ->array[0];
+    Q4T_CHECK(part.GetString("transcript").empty());
+    Q4T_CHECK(
+        f.Create(Object({{"output_modalities", Array({String("text")})}})) &&
+        f.Finish());
+    ChatPlanConfig config;
+    config.model = "q4t-test";
+    RealtimeChatPlan plan;
+    ChatPlanError error;
+    const auto next = f.Snapshot(1);
+    Q4T_CHECK(PlanRealtimeChat(next.settings, next.response,
+                               next.snapshot.items, config, &plan, &error));
+    Q4T_CHECK(OutputJson(plan.generation.generation_request).find("spoken") ==
+              std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_session_active_audio_truncate_cancels_without_late_revival) {
+  SpeechFixture f;
+  f.hold_audio = true;
+  Q4T_CHECK(f.Start() && f.Create());
+  Q4T_CHECK(
+      f.Wait([&] { return f.Count("response.output_audio.delta") == 3; }));
+  const auto id = f.Item();
+  Q4T_CHECK(f.Truncate(id, 37, 0.5));
+  Q4T_CHECK(f.Count("conversation.item.truncated") == 0);
+  Q4T_CHECK(f.Truncate(id, 101));
+  Q4T_CHECK(f.Count("conversation.item.truncated") == 0);
+  Q4T_CHECK(f.Retrieve(id) && RetrievedAudio(f).size() == 4800);
+  Q4T_CHECK(f.Truncate(id, 37) && f.Finish());
+  Q4T_CHECK(f.Count("conversation.item.truncated") == 1 && f.released == 1 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "cancelled");
+  Q4T_CHECK(f.Retrieve(id) && RetrievedAudio(f).size() == 1776);
+  Q4T_CHECK(f.Last("conversation.item.retrieved")
+                .Find("item")
+                ->GetArray("content")
+                ->array[0]
+                .GetString("transcript")
+                .empty());
+  f.hold_audio = false;
+  Q4T_CHECK(f.Create() && f.Finish() && f.released == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_session_audio_delete_cancels_owner_and_releases_waveform) {
+  SpeechFixture f;
+  f.hold_audio = true;
+  Q4T_CHECK(f.Start() && f.Create() &&
+            f.Wait([&] { return f.Count("response.output_audio.delta") > 0; }));
+  const auto id = f.Item();
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.delete")},
+                           {"item_id", String(id)}})) &&
+            f.Finish());
+  Q4T_CHECK(f.session->SpeechBytes() == 0 && f.released == 1);
+  Q4T_CHECK(f.Retrieve(id) && f.Last("error").Find("error")->GetString(
+                                  "code") == "realtime_item_not_found");
+  Q4T_CHECK(f.Add(User(id, "recreated without old audio")) && f.Retrieve(id));
+  Q4T_CHECK(f.Last("conversation.item.retrieved")
+                .Find("item")
+                ->GetArray("content")
+                ->array[0]
+                .GetString("text") == "recreated without old audio");
+  return true;
+}
+
+Q4T_TEST(realtime_session_audio_voice_and_speed_changes_respect_active_owner) {
+  SpeechFixture f;
+  f.hold_audio = true;
+  Q4T_CHECK(f.Start() && f.Create() &&
+            f.Wait([&] { return f.Count("response.output_audio.delta") > 0; }));
+  Q4T_CHECK(f.UpdateOutput(Object({{"speed", SpeechNumber(0.5)}})));
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "realtime_speed_locked");
+  Q4T_CHECK(f.UpdateOutput(Object({{"voice", String("serena")}})));
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "realtime_voice_locked");
+  Q4T_CHECK(f.Create(
+      Object({{"conversation", String("none")},
+              {"audio",
+               Object({{"output", Object({{"voice", String("serena")}})}})}})));
+  Q4T_CHECK(f.session->ActiveResponses() == 1 && f.calls == 1);
+  f.hold_audio = false;
+  Q4T_CHECK(f.Finish());
+  Q4T_CHECK(f.UpdateOutput(Object({{"voice", String("serena")}})));
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "realtime_voice_locked");
+  Q4T_CHECK(f.UpdateOutput(Object({{"speed", SpeechNumber(0.5)}})));
+  Q4T_CHECK(f.Last("session.updated")
+                .Find("session")
+                ->Find("audio")
+                ->Find("output")
+                ->Find("speed")
+                ->number == 0.5);
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.Snapshot(1)
+                .settings.Find("audio")
+                ->Find("output")
+                ->Find("speed")
+                ->number == 0.5);
+  return true;
+}
+
+Q4T_TEST(realtime_session_audio_missing_or_invalid_eof_never_claims_success) {
+  for (int fault : {1, 2, 3}) {
+    SpeechFixture f;
+    f.fault = fault;
+    Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+    Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+              "failed");
+    Q4T_CHECK(f.Count("response.done") == 1 && f.released == 1);
+    Q4T_CHECK(f.Retrieve(f.Item()) && RetrievedAudio(f).size() == 4800);
+    f.fault = 0;
+    Q4T_CHECK(
+        f.Create(Object({{"output_modalities", Array({String("text")})}})) &&
+        f.Finish());
+    Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+                  "completed" &&
+              f.released == 2);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_session_audio_cancel_after_native_finish_keeps_public_owner) {
+  for (bool truncate : {true, false}) {
+    SpeechFixture f;
+    f.samples = 24000;
+    f.finish_native = true;
+    Q4T_CHECK(f.Start() && f.Create() &&
+              f.Wait([&] { return f.native_finished.load(); }, false));
+    // One drain cannot consume all audio; native ownership is already Finished.
+    Q4T_CHECK(f.session->Tick() && f.Read());
+    Q4T_CHECK(f.session->ActiveResponses() == 1 &&
+              f.Count("response.output_audio.delta") > 0);
+    const auto id = f.Item();
+    if (truncate) {
+      Q4T_CHECK(f.Truncate(id, 37));
+    } else {
+      const auto response =
+          f.Last("response.created").Find("response")->GetString("id");
+      Q4T_CHECK(f.Send(Object({{"type", String("response.cancel")},
+                               {"response_id", String(response)}})));
+    }
+    Q4T_CHECK(f.Finish());
+    const auto done = *f.Last("response.done").Find("response");
+    Q4T_CHECK(done.GetString("status") == "cancelled" && f.released == 1 &&
+              done.Find("usage")->GetInt("total_tokens") == 44);
+    Q4T_CHECK(f.Retrieve(id) &&
+              RetrievedAudio(f).size() == (truncate ? 1776 : 48000));
+  }
   return true;
 }

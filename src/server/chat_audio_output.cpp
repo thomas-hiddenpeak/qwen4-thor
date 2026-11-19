@@ -94,6 +94,26 @@ Status ParseChatAudioOptions(const io::Json& request, ChatAudioOptions* out,
   return {};
 }
 
+Status ValidateChatSpeechRequest(const SpeechRequest& request,
+                                 SpeechRequest* validated,
+                                 ChatPlanError* error) {
+  if (!std::isfinite(request.speed))
+    return Invalid(error, "speed", "Speech speed must be finite");
+  Json speed;
+  speed.type = Json::Type::kNumber;
+  speed.number = request.speed;
+  auto wire = Object(
+      {{"model", String(request.model)},
+       {"input", String(request.input)},
+       {"voice", request.voice_id ? Object({{"id", String(request.voice)}})
+                                  : String(request.voice)},
+       {"response_format", String(std::string(SpeechFormatName(request.format)))},
+       {"speed", std::move(speed)}});
+  if (!request.instructions.empty())
+    Set(&wire, "instructions", String(request.instructions));
+  return ParseSpeechRequest(OutputJson(wire), validated, error);
+}
+
 Status ChatAudioHistoryId(const io::Json& message, std::string* id,
                           ChatPlanError* error) {
   if (!id || !message.IsObject())

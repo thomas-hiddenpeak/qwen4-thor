@@ -92,7 +92,7 @@ std::string ChatCapabilitiesJson(
          R"("session_host_reservation_bytes":1073741824,"silent_eviction":false},)"
          R"("conversation":{"implemented":true,"endpoint":"/v1/realtime",)"
          R"("profile":"q4t-native-realtime-chat-v2","requires_asr":false,)"
-         R"("output_modalities":["text"],"function_calls":true,)"
+         R"("output_modalities":["text","audio"],"function_calls":true,)"
          R"("per_response_client_admission":true,"usage":"actual_tokens",)"
          R"("automatic_replay":false,"out_of_band":true,"cancel":true,)"
          R"("persistent_context_truncation":true,"max_output_tokens":4096,)"
@@ -116,7 +116,13 @@ std::string ChatCapabilitiesJson(
          std::to_string(RealtimePromptSettings::kMaximumBytes) +
          R"(,"maximum_expansion_bytes":)" +
          std::to_string(RealtimePromptSettings::kMaximumExpansionBytes) +
-         R"(},"pending_execution":["audio","mcp","tracing"]},)"
+         R"(},"speech_output":{"profile":"q4t-realtime-speech-v1",)"
+         R"("backend":"native_tts_same_chat_owner","default_voice":"vivian",)"
+         R"("formats":["audio/pcm","audio/pcmu","audio/pcma"],)"
+         R"("speed_min":0.25,"speed_max":1.5,"rpm":"once_per_response",)"
+         R"("voice_lock":"first_audio","retrieve":true,"truncate":true,)"
+         R"("audio_history_bytes":134217728,"silent_eviction":false},)"
+         R"("pending_execution":["audio_input","mcp","tracing"]},)"
          R"("pending_execution":["conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +

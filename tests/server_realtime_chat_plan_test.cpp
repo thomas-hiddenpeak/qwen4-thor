@@ -149,8 +149,7 @@ Q4T_TEST(realtime_chat_invalid_metadata_or_unconnected_work_is_never_ignored) {
   Q4T_CHECK(f.error.param == "response.metadata");
   for (
       const auto* response :
-      {R"({"output_modalities":["audio"]})",
-       R"({"prompt":{"id":"pmpt_fixture"}})",
+      {R"({"prompt":{"id":"pmpt_fixture"}})",
        R"({"tools":[{"type":"mcp","server_label":"x","server_url":"https://example.invalid"}]})"}) {
     Q4T_CHECK(!f.Build(Parse(response)));
     Q4T_CHECK(f.error.code == "realtime_processor_unavailable");
@@ -338,9 +337,10 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
                 static_cast<int64_t>(RealtimeConversation::kMaximumBytes) &&
             chat->GetInt("session_host_reservation_bytes") ==
                 static_cast<int64_t>(kRealtimeConversationHostBytes));
-  Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) == "[\"text\"]" &&
+  Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) ==
+                "[\"text\",\"audio\"]" &&
             OutputJson(*chat->Find("pending_execution")) ==
-                "[\"audio\",\"mcp\",\"tracing\"]");
+                "[\"audio_input\",\"mcp\",\"tracing\"]");
   const auto* prompt = chat->Find("prompt");
   Q4T_CHECK(prompt && prompt->IsObject() &&
             prompt->GetString("profile") == "q4t-realtime-prompt-v1" &&
@@ -449,5 +449,27 @@ Q4T_TEST(
     "call_id":"missing","output":"unowned tool output"}])"));
   Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array(), f.config, &f.plan,
                               &f.error, &prompt));
+  return true;
+}
+
+Q4T_TEST(realtime_chat_audio_output_preserves_native_preparation_plan) {
+  Fixture f;
+  Q4T_CHECK(f.Build(Parse(
+      R"({"output_modalities":["audio"],"audio":{"output":{"format":{"type":"audio/pcmu"},"voice":"serena"}}})")));
+  Q4T_CHECK(f.plan.speech.enabled && f.plan.speech.chat.text &&
+            f.plan.speech.format.rate == 8000 &&
+            f.plan.speech.chat.speech.voice == "serena");
+  // Only the authenticated execution owner may attach the native observer.
+  Q4T_CHECK(!f.plan.generation.chat.audio_output.enabled &&
+            !f.plan.generation.generation_request.Has("audio"));
+  const auto items = Parse(
+      R"([{"type":"message","role":"assistant","content":[{"type":"output_audio","transcript":"retained speech"}]}])");
+  Q4T_CHECK(f.Build(Object(), items));
+  Q4T_CHECK(OutputJson(f.plan.generation.generation_request)
+                .find("retained speech") != std::string::npos);
+  auto raw = items;
+  Set(&Field(raw.array[0], "content").array[0], "audio", String("AAAA"));
+  Q4T_CHECK(!f.Build(Object(), raw));
+  Q4T_CHECK(f.error.code == "realtime_processor_unavailable");
   return true;
 }
