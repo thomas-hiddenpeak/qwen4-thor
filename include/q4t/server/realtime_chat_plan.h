@@ -10,6 +10,7 @@ struct RealtimeChatPlan {
   ResponsesGenerationPlan generation;
   io::Json truncation;
   size_t prompt_items = 0;
+  bool input_ready = false;
 };
 // Pure preparation. References have already been resolved by the session owner.
 // No model, network, file access, token reservation or response publication.
@@ -17,6 +18,13 @@ Status PlanRealtimeChat(const io::Json& settings, const io::Json& response,
                         const io::Json& items, const ChatPlanConfig& config,
                         RealtimeChatPlan* plan, ChatPlanError* error,
                         const PromptSnapshot* prompt = nullptr);
+// Complete an envelope using owned, resolved content. File preparation must
+// preserve the outer item ordering and count, so history indices remain valid.
+// The media proof is internal and never parsed from a client's JSON.
+Status CompleteRealtimeChatInput(const ChatPlanConfig& config,
+                                 const io::Json& resolved,
+                                 bool prepared_file_media,
+                                 RealtimeChatPlan* plan, ChatPlanError* error);
 // Project combined prefix/history indices back onto the public history.
 // Hidden template items never address or delete conversation items.
 std::vector<size_t> RealtimeRetainedHistory(const RealtimeChatPlan& plan);

@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt文件30项CPU通过](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)：
+0.164秒/0GPU，真实文本/PNG/CSV解析、租户权限、取消与
+预算、删除后快照及前缀下标通过；构建22.888秒零警告，20来源反例
+通过。表格CPU回执不代表真实摘要；继续运行时模型准备、RPM/用量
+交接和实际SDK业务。草稿PR #53、默认rev356及全部master保持。
+
+Realtime文件前缀准备owner已编写：实际文本/图像走原生文件通道，
+未完成的表格预处理不进入生成；保留输入顺序、权限与取消，资源
+上限为32MiB来源/64MiB文件保留/16MiB展开并遵循更严配置。冻结
+30项针对性CPU/120秒/0GPU；运行时模型预处理、单次RPM与实际用量
+交接继续实现，尚无Prompt业务资格。草稿PR #53已建立，默认rev356
+保持；PR #52已合入，全部master继续。
+
 [Prompt会话57项CPU通过](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：
 0.915秒/0GPU，11项新合同覆盖真实对象worker超时/断连、
 版本/租户/并发快照与前缀安全截断；20来源反例通过，原编译失败保留。

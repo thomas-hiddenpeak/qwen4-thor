@@ -1,0 +1,20 @@
+{
+  "status": "PASS_REALTIME_PROMPT_FILES_CPU",
+  "tests": 30,
+  "new_tests": 7,
+  "seconds": 0.1640400062315166,
+  "build_seconds": 22.88762547215447,
+  "build_warnings": 0,
+  "source_mutations": 20,
+  "new_gpu_starts": 0,
+  "actual_text_png_csv_extraction": true,
+  "model_sheet_receipts": "CPU fixtures only, not generated summaries or quality acceptance",
+  "runtime_model_preparation_and_quota_handoff_pending": true,
+  "actual_realtime_business_accepted": false,
+  "default_revision": 356,
+  "default_unchanged": true,
+  "pr": 53,
+  "pr_draft": true,
+  "files": 21,
+  "archive_sha256": "f23cc0a1eed459f6ea349bae9d8e2f7b466de5a2e864511e85cb878950915a20"
+}

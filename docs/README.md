@@ -653,3 +653,5 @@
 - [原生Realtime文本/工具主线合入](evidence/serve-realtime-chat-main-20261120/README.md)：PR #52双CI通过，rev356交付进main；后续master继续。
 
 - [Realtime Prompt会话CPU](evidence/serve-realtime-prompt-session-cpu-20261120/README.md)：实际owner/对象worker/计划接线；文件与真实业务继续。
+
+- [Realtime Prompt文件CPU](evidence/serve-realtime-prompt-files-cpu-20261120/README.md)：实际文件准备；模型步骤/配额交接与业务继续。
