@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Chat 候选/保留/TLS 包已封装但尚未取得实际恢复资格。原辅助构建
+目标名错误 FAIL 保留，修正后 19.541 秒零警告，推理程序与默认
+不变。冻结三组实际恢复共 4 模型、63 HTTP + 21 Realtime 工作、
+15 WSS/1 CUDA 探测/1500 秒，每组完整驱动持同一严格锁，失败即停；
+配置与配额保持，默认 rev346 STOPPED、听感待验及全部 master 继续。
+
 [Chat Guardian 驱动 24 项 CPU 通过](evidence/serve-realtime-chat-managed-cpu-20261119/README.md)：
 3.869 秒/0GPU，含实际 SDK/TLS 夹具、断连不重放、计数交接与原生
 封装命名空间；20 来源反例通过。已验主轻资格只读复核 0.077 秒，
