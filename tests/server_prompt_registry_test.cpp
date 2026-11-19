@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <thread>
 
 #include "q4t/server/chat_prompt.h"
@@ -98,6 +99,31 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              access);
 }
 }  // namespace
+
+Q4T_TEST(prompt_realtime_actual_business_definitions_follow_native_wire_schema) {
+  const auto path = std::filesystem::path(__FILE__).parent_path().parent_path() /
+                    "tools/serve_realtime/prompt_definitions.json";
+  std::ifstream file(path);
+  Q4T_CHECK(file.good());
+  std::ostringstream bytes;
+  bytes << file.rdbuf();
+  auto definitions = Parse(bytes.str());
+  Q4T_CHECK(definitions.IsObject() && definitions.object.size() == 5);
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  for (const auto& [name, definition] : definitions.object) {
+    (void)name;
+    Q4T_CHECK(Ok(registry.Create(definition, Config(), Access())));
+    auto bad = definition;
+    SetRequest(&bad, "reasoning", Parse(R"({"effort":"none"})"));
+    // Retain the actual original business failure as a negative: the Realtime
+    // wire enum differs from internal Responses' default no-reasoning mapping.
+    const auto result = registry.Create(bad, Config(), Access());
+    Q4T_CHECK(result.http_status == 400 && result.code == "invalid_prompt");
+  }
+  return true;
+}
 
 Q4T_TEST(prompt_versions_are_immutable_and_default_selection_is_cas) {
   Fixture f;

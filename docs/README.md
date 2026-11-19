@@ -659,3 +659,5 @@
 - [Realtime Prompt运行时CPU](evidence/serve-realtime-prompt-runtime-cpu-20261120/README.md)：请求、配额、完整计划及失败用量交接；真实业务继续。
 
 - [Realtime Prompt业务驱动CPU](evidence/serve-realtime-prompt-driver-cpu-20261120/README.md)：候选已构建，真实文件/模板/SDK业务待验。
+
+- [Realtime Prompt定义修正](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：原注册失败保留，真实模板原生CPU校验。

@@ -69,15 +69,13 @@ async function http(label, method, route, body, status = 200, contentType = 'app
   check(value.status === status, `HTTP ${label}: ${value.status}`);
   return value.body;
 }
-const define = (request, variables = {}) => ({ api: 'realtime', variables,
-  request: { output_modalities: ['text'], max_output_tokens: 128,
-    reasoning: { effort: 'none' }, ...request } });
-const message = (content) => ({ role: 'user', content });
+// Shared exact definitions are validated by the actual CPU Prompt registry
+// before any model launch; Realtime and Responses have different effort enums.
+const definitions = JSON.parse(fs.readFileSync(new URL('./prompt_definitions.json', import.meta.url)));
 const user = (id, value) => ({ type: 'message', id, role: 'user',
   content: [{ type: 'input_text', text: value }] });
 const register = (label, definition) => http(label, 'POST', '/v1/prompts', { definition });
-const fileDefinition = define({ instructions: 'Read the supplied source and answer the current question. Reply only with the requested value.',
-  input: [message('{{source}}')] }, { source: 'input_file' });
+const fileDefinition = definitions.file;
 function send(value) { check(++sent <= 64, 'event count bound'); rt.send(value); }
 async function update(session, label, expectedError = null) {
   const at = events.length;
@@ -182,14 +180,12 @@ try {
     const version = record.toString().match(/默认\s*rev(\d+)/)?.[1];
     check(`rev${version}` === args.expected_version, 'actual release extraction');
     sourceRecord = { version: `rev${version}`, source: 'docs/STATUS.md', source_sha256: digest(record) };
-    const first = define({ instructions: 'Compute the arithmetic requested in the supplied input. Reply only with its integer result.',
-      input: [message('Compute {{left}} + {{right}}.')] }, { left: 'string', right: 'string' });
+    const first = definitions.first;
     const prompt = await register('register-arithmetic', first); owned.prompt = prompt.id;
     const reference = { id: prompt.id, variables: { left: '13', right: '29' } };
     const pinned = await update({ prompt: reference }, 'pin-first');
     check(pinned.prompt.version === '1' && pinned.max_output_tokens === 128, 'template defaults masked');
-    const second = define({ instructions: first.request.instructions,
-      max_output_tokens: 96, input: [message('Compute {{left}} * {{right}}.')] }, first.variables);
+    const second = definitions.second;
     const appended = await http('append-second', 'POST', `/v1/prompts/${prompt.id}/versions`,
       { definition: second, expected_revision: 1 });
     check(appended.default_version === '2', 'append actual version');
@@ -213,9 +209,7 @@ try {
     'Return only the version field in the supplied JSON.')), sourceRecord.version, 'actual uploaded project record');
     const picture = fs.readFileSync(args.image_file);
     check(digest(picture) === args.image_sha256, 'fixed actual image');
-    const imagePrompt = await register('register-image', define({
-      instructions: 'Inspect the supplied image. Reply only with the color requested.',
-      input: [message('{{picture}}')] }, { picture: 'input_image' }));
+    const imagePrompt = await register('register-image', definitions.image);
     const imageReply = await create('actual-image', independent({ id: imagePrompt.id,
       variables: { picture: { type: 'input_image', detail: 'low',
         image_url: 'data:image/png;base64,' + picture.toString('base64') } } },
@@ -223,11 +217,7 @@ try {
     exact(imageReply, 'red', 'actual image');
     exact(await create('actual-csv', independent({ id: files.id, variables: { source: inlineCsv } },
       'What is the sum of the tests column? Reply only with the integer.')), String(args.csv_sum), 'actual spreadsheet');
-    const tool = await register('register-tool', define({
-      instructions: 'Use the actual project record tool. Return exact source values.',
-      tools: [{ type: 'function', name: 'lookup_project_record', description: 'Read the actual local project release record.',
-        parameters: { type: 'object', properties: { record_key: { type: 'string', enum: ['release'] } },
-          required: ['record_key'], additionalProperties: false } }] }));
+    const tool = await register('register-tool', definitions.tool);
     await update({ prompt: { id: tool.id } }, 'select-tool-template');
     await add(user('lookup_user', 'Call lookup_project_record with record_key release. After receiving its result, return only its version.'));
     const call = functionCall(await create('actual-tool-call', { tool_choice: { type: 'function', name: 'lookup_project_record' } }));

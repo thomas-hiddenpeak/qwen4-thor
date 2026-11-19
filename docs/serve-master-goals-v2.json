@@ -11367,6 +11367,53 @@
       "default_unchanged": true,
       "archive_sha256": "75d4b55dbb85ca68354ea89da341d84314b7bc869f24ba42b8d103ac20ddc52a",
       "evidence": "evidence/serve-realtime-prompt-driver-cpu-20261120/README.md"
+    },
+    "prompt_definition_fix_20261120": {
+      "status": "FAIL_ORIGINAL_PROMPT_BUSINESS_WITH_DRIVER_FIX_CPU_PASS",
+      "original_failure": "Realtime template used Responses-only effort=none; invalid_prompt correctly rejected",
+      "launch_failure": "Original invocation omitted --inherit-lease; zero starts; preserved",
+      "model_starts": 1,
+      "actual_chat_requests": 1,
+      "actual_realtime_creates": 0,
+      "actual_registry_requests": 1,
+      "seconds": 36.140284973196685,
+      "nvml_queries": 36,
+      "cleanup_confirmed": true,
+      "lock_released": true,
+      "cpu": {
+        "status": "PASS",
+        "native_exit_code": 0,
+        "javascript_exit_code": 0,
+        "native_tests": 1,
+        "actual_definitions": 5,
+        "original_invalid_counterexamples": 5,
+        "javascript_syntax_checks": 1,
+        "seconds": 0.06348678097128868,
+        "new_gpu_starts": 0,
+        "binary_sha256": "e838800902c7b8025385d8b282db49db19fdc0c107441d6f3c4b61272936a329",
+        "plan_sha256": "6d42e2e49fa6e5d4c37d3ac87892bc68c4b16f2b04bd8b2107038506d079eef3"
+      },
+      "build": {
+        "exit_code": 0,
+        "command": [
+          "cmake",
+          "--build",
+          ".q4t-work/serve-file-search-20261112/host",
+          "--target",
+          "q4t_host_tests",
+          "--parallel",
+          "8"
+        ],
+        "seconds": 11.037089481018484,
+        "new_gpu_starts": 0
+      },
+      "runtime_changed": false,
+      "candidate_sha256": "f20c3b764137d5511221398c09732c8b32d87490799022fe989340eb2b82a3be",
+      "default_unchanged": true,
+      "default_revision": 356,
+      "next": "One bounded stage, same binary, at most 13 Realtime + 2 Chat / 900s; no completed Prompt request is replayed",
+      "archive_sha256": "778efc03e235d90e57146913d6c78fe415da29dcf9bb0ceba49f459ff7a8ff42",
+      "evidence": "evidence/serve-realtime-prompt-definition-fix-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {

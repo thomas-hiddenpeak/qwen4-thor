@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt注册失败已定位并修正驱动](evidence/serve-realtime-prompt-definition-fix-20261120/README.md)：
+首轮1模型/1 Chat/0 Realtime/36.140秒，注册400原件保留，
+自有资源与锁释放。脚本误用了Responses的effort=none；服务正确
+拒绝，5份真实模板+5个原错误反例经原生注册表CPU通过（0.063秒），
+JS语法通过；运行时不变。接下来同候选单模型/13 Realtime+2 Chat/
+900秒继续未执行业务，默认rev356和全部master保持。
+
 [Prompt业务驱动CPU通过](evidence/serve-realtime-prompt-driver-cpu-20261120/README.md)：
 6项反例+1项JS语法、0.296秒/0GPU，候选`f20c3b76`零警告构建。
 继续冻结单模型/13 Realtime+2 Chat/2WSS/32原生HTTP/900秒的
