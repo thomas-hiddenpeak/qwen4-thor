@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 import traceback
+import wave
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
@@ -46,15 +47,28 @@ def prepare(args):
     sdk = WORK/'sdk'
     fixed = {str(p): sha(p) for p in sorted((sdk/'node_modules').rglob('*')) if p.is_file()}
     clips = {}
-    for label, language, fmt, rate in [('zh', 'zh', 's16le', 24000),
-                                      ('en', 'en', 's16le', 24000),
-                                      ('mulaw', 'zh', 'mulaw', 8000)]:
+    for label, language, rate in [('zh', 'zh', 24000),
+                                  ('en', 'en', 24000),
+                                  ('mulaw', 'zh', 8000)]:
         source = ASR/'real-audio-01'/('asr_'+language+'.wav')
         target = out/(label+'.pcm')
+        container = out/(label+'.wav')
         command = ['ffmpeg', '-nostdin', '-v', 'error', '-i', str(source),
-                   '-ac', '1', '-ar', str(rate), '-f', fmt, str(target)]
+                   '-ac', '1', '-ar', str(rate), '-c:a', 'pcm_s16le',
+                   '-f', 'wav', str(container)]
         with (out/(label+'-conversion.log')).open('xb') as log:
-            subprocess.run(command, check=True, timeout=30, stdout=log, stderr=log)
+            subprocess.run(command, check=True, timeout=30, stdout=log, stderr=log,
+                           env=dict(os.environ, CUDA_VISIBLE_DEVICES=''))
+        require(container.stat().st_size <= 2*1024*1024, 'container bound')
+        with wave.open(str(container)) as audio:
+            require(audio.getnchannels() == 1 and audio.getsampwidth() == 2 and
+                    audio.getframerate() == rate, 'converted audio contract')
+            raw = audio.readframes(audio.getnframes())
+        if label == 'mulaw':
+            # Fixed local CPython 3.12 oracle, development-only, no runtime CLI.
+            import audioop
+            raw = audioop.lin2ulaw(raw, 2)
+        target.write_bytes(raw)
         require(0 < target.stat().st_size <= 2*1024*1024, 'audio fixture bound')
         clips[label] = dict(path=str(target), sha256=sha(target), bytes=target.stat().st_size,
                            source=str(source), source_sha256=sha(source), command=command)
@@ -81,6 +95,8 @@ def prepare(args):
         sources={n: sha(ROOT/n) for n in sources}, protected={str(p):sha(p) for p in protected},
         sdk_directory=str(sdk), sdk_files=fixed,
         sdk_versions=dict(openai='7.47.0', ws='8.21.0'), clips=clips,
+        fixture_tools={str(Path('/usr/bin/ffmpeg')):sha('/usr/bin/ffmpeg'),
+                       str(Path(audioop.__file__)):sha(audioop.__file__)},
         client_policy_sha256=sha(out/'client-policy.json'),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         expected=EXPECTED, acceptance=dict(zh_exact=True,en_word_error_rate_max=0.05,

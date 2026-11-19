@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+真实转录短验准备发现本机FFmpeg无s16le原始muxer，0GPU/0启动，
+原转换失败保留。改用已有WAV PCM16输出并校验单声道/位宽/率后提取
+数据；G.711由已固定CPython audioop开发参考编码。生产服务不依赖
+这些测试工具，原21项CPU证据复用；下一步继续同上限真实业务短验。
+
 [真实转录执行接线21项CPU通过](evidence/serve-realtime-transcription-cpu-20261119/README.md)：
 严格会话/音频输入、顺序与快照、背压、取消和终态通过；0.1213秒/
 0GPU，host/引擎零警告，原构建失败保留。已接原生ASR与逐轮配额，
