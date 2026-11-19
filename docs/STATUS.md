@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+旧CPU测试可执行文件已[无损归档](evidence/serve-cpu-binary-archive-20261119/README.md)：
+14个独有载荷/24路径逐字节与SHA复核后释放净约300MiB，原始证据
+与恢复入口保留；默认、运行时、模型和测试结论不变。继续Realtime
+实际历史接线、删除及处理后音频取回，全部master保持active。
+
 [真实注册ICL短验通过](evidence/serve-tts-icl-business-20261119/README.md)：
 原生注册保留56帧/896参考码，英文Speech和中文Chat无提示ASR逐字
 一致；两条TTS实际输入920，SSE/Chat/配额结算吻合。隔离/撤销及

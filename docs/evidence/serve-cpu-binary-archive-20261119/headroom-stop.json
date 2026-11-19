@@ -1,0 +1,7 @@
+{
+  "status": "ARCHIVE_STOPPED_BEFORE_RELEASE_AT_FROZEN_HEADROOM",
+  "original_payloads": 18,
+  "completed_payloads": 14,
+  "source_paths_still_present": 29,
+  "original_plan_sha256": "9d6f8b80d41091e0a1239345edb370dc2b070aedd05eab83026b0c8b9b910284"
+}
