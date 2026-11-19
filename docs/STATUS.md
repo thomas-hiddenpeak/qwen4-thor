@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt新候选与源码边界](evidence/serve-realtime-prompt-build-review-20261120/README.md)
+已核对：0d1e2ef1构建15.976秒零警告，旧资格23个变化/950个不变
+源文件已逐一对照。继续为未变后端证据增加可核验来源，并准备仅
+受影响的主轻短验（2模型/20生成/900秒，尚未执行）；不机械重跑
+原64项组合。默认rev356与原质量FAIL保持，全部master继续。
+
 [Prompt资格25项CPU闭合](evidence/serve-realtime-prompt-profile-cpu-20261120/README.md)：
 23 Python+2原生，28次尝试/2.198秒/0GPU，构建零警告。修复显式
 v1→v2升级误拒绝，自动回退仍不能丢Prompt；原失败保留，未受影响
