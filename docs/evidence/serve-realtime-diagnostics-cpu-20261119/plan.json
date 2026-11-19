@@ -1,0 +1,29 @@
+{
+  "status": "FROZEN_BEFORE_CPU",
+  "cases": [
+    "object_diagnostics_success_and_quota_preserve_result_and_control",
+    "object_diagnostics_cancellation_and_failure_are_distinct",
+    "object_diagnostics_exception_has_no_fake_completion_or_cancellation",
+    "request_diagnostics_owns_labels_past_mutation_and_error_lifetime",
+    "request_diagnostics_label_overflow_is_bounded_and_does_not_throw"
+  ],
+  "cpu_tests": 5,
+  "seconds": 120,
+  "gpu_actions": 0,
+  "scope": "Native object executor diagnostics only: actual reply error code, exception fallback, explicit abort/failure, success counter shares the observation; never finish/cancel/deadline-refresh/restart. Subsequent affected business success/quota/cancel required.",
+  "sources": {
+    "CMakeLists.txt": "1b88497a5187b0a5a7bd5688f71f6fe00f53076b4d8660770fb07307dcb40dd3",
+    "cmake/ChatProtocolIdentity.cmake": "6ababc7256407692febbe024eae93aa5f94672f84f5c78ba59882202fa651e98",
+    "cmake/HostTestSources.cmake": "9622a30d4bbf20055b43f9e5f170bcbb13825d6a19ba0373571fa9b9c5cb4198",
+    "docs/STATUS.md": "4f13d23de2b6cb4b0c8beaae1fddda840e0c7417fcba7a4cf3099062b44ef7e2",
+    "docs/log/2026-11-19.md": "62873639848f1c352f7b79365499225af8138ed16c13aa8f1486fce8024d4200",
+    "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
+    "src/server/chat_realtime.cpp": "b3cc989a520f516f8523e7c0e310a4e7c71be54ba7c3fedab0f1e05e8cc71f0b",
+    "tests/server_object_diagnostics_test.cpp": "6a060977775b958d46c5fe839eaa8f90223b61858b8d361dc3edcad33e7c554f",
+    "tools/serve_audit/check_inventory.py": "b4afec6ccbc3730007e9368f6bec2c9efc298004225f5fa1875fd5d5ccb2552c",
+    "tools/serve_audit/inventory.json": "8ba90e9b6813b5d4fc341779ef17487c9e31f65fe1974381d361ad32b0f7ade9",
+    "tools/serve_realtime/diagnostics_acceptance.py": "8bd02ea217e1b6bc2ab68dee5a31d4e60a8477e4a696f87f7ef53ddf009f5cac"
+  },
+  "q4t_host_tests_sha256": "9cf3549573e38c17d3703cc7f938902bbb38b7d02b6192e87fe7b73ee0da4cfb",
+  "q4t_sha256": "c5d0f8a4c884cbc019f74cc9a4a257a3f29ee656be71563ccf1278a61e815a2f"
+}

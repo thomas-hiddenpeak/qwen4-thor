@@ -56,7 +56,8 @@ def current_surface(root):
         realtime = (root / 'src/server/chat_realtime.cpp').read_text()
         if 'IsRealtimeTarget(path)' not in dispatch or 'CheckWebSocketUpgrade(' not in dispatch or \
                 'RunRealtimeTranscription(client, job, bytes, control, emit)' not in realtime or \
-                'ClientLane::kData' not in realtime or 'rate.Reserve(clients_, client' not in realtime:
+                'ClientLane::kData' not in realtime or \
+                not re.search(r'\brate\.Reserve\(\s*clients_,\s*client\b', realtime):
             raise ValueError('review realtime upgrade/native execution/per-turn admission')
         routes.append(("/v1/realtime?intent=transcription", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()

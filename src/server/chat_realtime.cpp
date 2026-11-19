@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "q4t/server/object_diagnostics.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/realtime_pcm.h"
 #include "q4t/server/realtime_transcription_pump.h"
@@ -163,6 +164,8 @@ ObjectReply ChatServer::RunRealtimeTranscription(
     const RealtimeTranscriptSink& emit) {
   metrics_.requests_total.fetch_add(1);
   const auto started = Clock::now();
+  RequestDiagnostics diagnostic(stderr, control->id());
+  diagnostic.Bind(control->id());
   bool success = false;
   ScopeExit finish([&] {
     if (success) {
@@ -176,130 +179,139 @@ ObjectReply ChatServer::RunRealtimeTranscription(
       metrics_.requests_error.fetch_add(1);
     }
   });
-  const auto client = clients_.RecoveryIdentity(original.Index());
-  if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
-      client.Id() != original.Id())
-    return Error(401, "client_authentication_failed",
-                 "Client no longer authorized");
-  ClientLease permit;
-  if (!permit.Acquire(clients_, client, ClientLane::kData))
-    return Error(429, "client_capacity_exhausted",
-                 "Client request capacity exhausted");
-  FiniteResponse captured(65536);
-  detail::HttpResponseContext http(
-      detail::HttpResponseContext::Detached{-1, &captured});
-  http.SetClient(client, &permit);
-  http.SetTraceId(control->id());
-  http.Usage().Enable();
-  if (RejectUnhealthy(-1) ||
-      !CheckMemoryAdmission(-1, MemoryCheckpoint::kPrepare))
-    return CapturedFailure(captured);
-  RequestAdmissionLease admitted(active_chats_, admission_limits_.inflight);
-  if (!admitted.TryAcquire()) {
-    metrics_.text_admission_rejected.fetch_add(1);
-    return Error(503, "capacity_exhausted", "Request capacity exhausted");
-  }
-  auto progress =
-      progress_.Acquire(std::chrono::duration_cast<std::chrono::nanoseconds>(
-                            control->deadline().time_since_epoch())
-                            .count());
-  control->BindProgress(progress.Handle());
-  RequestDiagnostics diagnostic(stderr, control->id());
-  diagnostic.BindProgress(progress.Handle());
-  diagnostic.Bind(control->id());
-  ProgressContext progress_context(progress.Handle());
-  const auto cancelled = [&] {
-    if (stop_requested_.load())
-      control->Cancel(RequestControl::State::kShutdown);
-    return control->Cancelled();
-  };
-  const auto interrupted = [&] {
-    return Error(409, control->Reason(), "Transcription cancelled");
-  };
-  if (cancelled()) return interrupted();
-  OnException failure(
-      [&] { control->Cancel(RequestControl::State::kFailure); });
-  const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
-                                     : "local:anonymous";
-  const BinaryAccess access{scope, control->deadline(), cancelled};
-  auto reply = EnsureNativeAsr(false, access, &diagnostic);
-  if (!reply.ok()) return reply;
-  std::vector<float> pcm;
-  const size_t max_samples = size_t(asr_limits_.max_audio_seconds) * 16000;
-  auto status =
-      DecodeRealtimePcm(job.audio, bytes, max_samples, &pcm, cancelled);
-  if (!status || cancelled())
-    return cancelled() ? interrupted()
-                       : Error(400, "audio_invalid", status.message());
-  audio::AsrFeatures features;
-  status = audio::ComputeAsrFeatures(
-      pcm, audio::AsrConfig::kSampleRate,
-      {max_samples, size_t(asr_limits_.max_audio_seconds) * 100}, &features,
-      cancelled);
-  if (!status || cancelled())
-    return cancelled() ? interrupted()
-                       : Error(400, "audio_features_invalid", status.message());
-  std::vector<float>().swap(pcm);
-  auto limits = asr_limits_;
-  if (client.Scoped())
-    limits.max_output_tokens = std::min<uint64_t>(
-        limits.max_output_tokens, client.Limits()->max_output_tokens);
-  AsrPrompt prompt;
-  ChatPlanError error;
-  const auto& request = job.settings.request;
-  status = BuildAsrPrompt(
-      request, audio::AsrEncodedFrames(features.frames), limits,
-      [&](std::string_view text, bool special, std::vector<uint32_t>* ids) {
-        RequestDiagnostics::Scope waiting(diagnostic,
-                                          RequestDiagnostics::Wait::kTokenizer);
-        auto lock = LockUnlessCancelled(asr_tok_mu_, cancelled);
-        if (!lock.owns_lock())
-          return Status::Fail("ASR tokenization cancelled");
-        return asr_tok_->Encode(
-            text, ids,
-            {.cancelled = cancelled, .recognize_special_tokens = special});
+  return RunDiagnosedObjectRequest(
+      diagnostic, *control,
+      [&]() -> ObjectReply {
+        const auto client = clients_.RecoveryIdentity(original.Index());
+        if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
+            client.Id() != original.Id())
+          return Error(401, "client_authentication_failed",
+                       "Client no longer authorized");
+        ClientLease permit;
+        if (!permit.Acquire(clients_, client, ClientLane::kData))
+          return Error(429, "client_capacity_exhausted",
+                       "Client request capacity exhausted");
+        FiniteResponse captured(65536);
+        detail::HttpResponseContext http(
+            detail::HttpResponseContext::Detached{-1, &captured});
+        http.SetClient(client, &permit);
+        http.SetTraceId(control->id());
+        http.Usage().Enable();
+        if (RejectUnhealthy(-1) ||
+            !CheckMemoryAdmission(-1, MemoryCheckpoint::kPrepare))
+          return CapturedFailure(captured);
+        RequestAdmissionLease admitted(active_chats_,
+                                       admission_limits_.inflight);
+        if (!admitted.TryAcquire()) {
+          metrics_.text_admission_rejected.fetch_add(1);
+          return Error(503, "capacity_exhausted", "Request capacity exhausted");
+        }
+        auto progress = progress_.Acquire(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(
+                control->deadline().time_since_epoch())
+                .count());
+        control->BindProgress(progress.Handle());
+        diagnostic.BindProgress(progress.Handle());
+        ProgressContext progress_context(progress.Handle());
+        const auto cancelled = [&] {
+          if (stop_requested_.load())
+            control->Cancel(RequestControl::State::kShutdown);
+          return control->Cancelled();
+        };
+        const auto interrupted = [&] {
+          return Error(409, control->Reason(), "Transcription cancelled");
+        };
+        if (cancelled()) return interrupted();
+        OnException failure(
+            [&] { control->Cancel(RequestControl::State::kFailure); });
+        const auto scope = client.Scoped()
+                               ? "client:" + std::string(client.Id())
+                               : "local:anonymous";
+        const BinaryAccess access{scope, control->deadline(), cancelled};
+        auto reply = EnsureNativeAsr(false, access, &diagnostic);
+        if (!reply.ok()) return reply;
+        std::vector<float> pcm;
+        const size_t max_samples =
+            size_t(asr_limits_.max_audio_seconds) * 16000;
+        auto status =
+            DecodeRealtimePcm(job.audio, bytes, max_samples, &pcm, cancelled);
+        if (!status || cancelled())
+          return cancelled() ? interrupted()
+                             : Error(400, "audio_invalid", status.message());
+        audio::AsrFeatures features;
+        status = audio::ComputeAsrFeatures(
+            pcm, audio::AsrConfig::kSampleRate,
+            {max_samples, size_t(asr_limits_.max_audio_seconds) * 100},
+            &features, cancelled);
+        if (!status || cancelled())
+          return cancelled()
+                     ? interrupted()
+                     : Error(400, "audio_features_invalid", status.message());
+        std::vector<float>().swap(pcm);
+        auto limits = asr_limits_;
+        if (client.Scoped())
+          limits.max_output_tokens = std::min<uint64_t>(
+              limits.max_output_tokens, client.Limits()->max_output_tokens);
+        AsrPrompt prompt;
+        ChatPlanError error;
+        const auto& request = job.settings.request;
+        status = BuildAsrPrompt(
+            request, audio::AsrEncodedFrames(features.frames), limits,
+            [&](std::string_view text, bool special,
+                std::vector<uint32_t>* ids) {
+              RequestDiagnostics::Scope waiting(
+                  diagnostic, RequestDiagnostics::Wait::kTokenizer);
+              auto lock = LockUnlessCancelled(asr_tok_mu_, cancelled);
+              if (!lock.owns_lock())
+                return Status::Fail("ASR tokenization cancelled");
+              return asr_tok_->Encode(text, ids,
+                                      {.cancelled = cancelled,
+                                       .recognize_special_tokens = special});
+            },
+            &prompt, &error);
+        if (!status || cancelled())
+          return cancelled()
+                     ? interrupted()
+                     : Error(error.http_status, error.code, status.message());
+        if (client.Scoped() &&
+            prompt.tokens.size() > client.Limits()->max_prompt_tokens)
+          return Error(400, "client_prompt_limit_exceeded",
+                       "Transcription input limit exceeded");
+        ClientRateLease rate;
+        ScopeExit settle([&] { rate.Settle(); });
+        const auto reserved = rate.Reserve(
+            clients_, client, prompt.tokens.size(), limits.max_output_tokens);
+        if (reserved != ClientRateResult::kAllowed) {
+          const bool rpm = reserved == ClientRateResult::kRpm;
+          const bool tpm = reserved == ClientRateResult::kTpm;
+          return Error(rpm || tpm ? 429 : 503,
+                       rpm   ? "client_rpm_exhausted"
+                       : tpm ? "client_tpm_exhausted"
+                       : reserved == ClientRateResult::kFrozen
+                           ? "service_draining"
+                           : "client_rate_invalid",
+                       "Transcription quota unavailable");
+        }
+        AsrTranscript transcript(request.logprobs, request.language);
+        reply = RunNativeAsr(
+            -1, request, features, prompt, control, diagnostic, rate,
+            http.Usage(), &transcript, {}, [&](const AsrTextDelta& delta) {
+              Json value;
+              return io::ParseJson(transcript.DeltaJson(delta), &value) &&
+                     emit(value);
+            });
+        if (!reply.ok()) return reply;
+        if (cancelled()) return interrupted();
+        const auto usage = http.Usage().Total();
+        std::string result;
+        if (!usage ||
+            !transcript.ResultJson(*usage, prompt.audio_tokens, false,
+                                   &result) ||
+            !io::ParseJson(result, &reply.value))
+          return Error(502, "asr_usage_invalid",
+                       "Transcription accounting unavailable");
+        return reply;
       },
-      &prompt, &error);
-  if (!status || cancelled())
-    return cancelled() ? interrupted()
-                       : Error(error.http_status, error.code, status.message());
-  if (client.Scoped() &&
-      prompt.tokens.size() > client.Limits()->max_prompt_tokens)
-    return Error(400, "client_prompt_limit_exceeded",
-                 "Transcription input limit exceeded");
-  ClientRateLease rate;
-  ScopeExit settle([&] { rate.Settle(); });
-  const auto reserved = rate.Reserve(clients_, client, prompt.tokens.size(),
-                                     limits.max_output_tokens);
-  if (reserved != ClientRateResult::kAllowed) {
-    const bool rpm = reserved == ClientRateResult::kRpm;
-    const bool tpm = reserved == ClientRateResult::kTpm;
-    return Error(rpm || tpm ? 429 : 503,
-                 rpm   ? "client_rpm_exhausted"
-                 : tpm ? "client_tpm_exhausted"
-                 : reserved == ClientRateResult::kFrozen
-                     ? "service_draining"
-                     : "client_rate_invalid",
-                 "Transcription quota unavailable");
-  }
-  AsrTranscript transcript(request.logprobs, request.language);
-  reply = RunNativeAsr(
-      -1, request, features, prompt, control, diagnostic, rate, http.Usage(),
-      &transcript, {}, [&](const AsrTextDelta& delta) {
-        Json value;
-        return io::ParseJson(transcript.DeltaJson(delta), &value) &&
-               emit(value);
-      });
-  if (!reply.ok()) return reply;
-  if (cancelled()) return interrupted();
-  const auto usage = http.Usage().Total();
-  std::string result;
-  if (!usage ||
-      !transcript.ResultJson(*usage, prompt.audio_tokens, false, &result) ||
-      !io::ParseJson(result, &reply.value))
-    return Error(502, "asr_usage_invalid",
-                 "Transcription accounting unavailable");
-  success = true;
-  return reply;
+      &success);
 }
 }  // namespace q4t::server

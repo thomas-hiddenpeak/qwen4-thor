@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[执行诊断5项CPU通过](evidence/serve-realtime-diagnostics-cpu-20261119/README.md)：
+0.007659秒/0GPU，零警告、979来源/18负控。成功/配额/取消/异常与
+标签寿命检查通过；来源脚本格式假定失败保留并修正。冻结1模型/
+1入口、2会话3提交1Chat/600秒真实受影响行为短验；默认保持。
+
+成功item诊断接线修复已编写：按实际对象返回和取消状态记录success/
+error/aborted，异常保留有界handler_exception，日志和执行成功计数
+使用同一观察结果。观察不修改请求终态、截止或模型健康。冻结5项
+针对性CPU/120秒/0GPU，之后补实际成功/配额拒绝/断连短验；默认保持。
+
 [Realtime降噪真实场景通过](evidence/serve-realtime-noise-business-20261119/README.md)：
 7转录1308token，中/G.711精确、英文三档WER=.027778；近/远场固定
 嗡声RMS残留.18/.35，同PID Chat与实际配额通过。原时钟脚本FAIL保留，

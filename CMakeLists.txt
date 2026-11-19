@@ -829,6 +829,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_vad_test.cpp
     tests/server_realtime_noise_test.cpp
     tests/server_realtime_pump_test.cpp
+    tests/server_object_diagnostics_test.cpp
     tests/server_realtime_transcription_test.cpp
     tests/server_realtime_audio_queue_test.cpp
     tests/server_websocket_session_test.cpp

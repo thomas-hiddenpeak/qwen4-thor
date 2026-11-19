@@ -2291,8 +2291,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "0e824d95717f42313df1ba1e625824c6668e07a3646c992669d40e07b9af5384",
-    "cmake/ChatProtocolIdentity.cmake": "97a050426af96a134b3790ca7cfd34c4787e25b1ec122b57640b2f9f23c703f0",
+    "CMakeLists.txt": "1b88497a5187b0a5a7bd5688f71f6fe00f53076b4d8660770fb07307dcb40dd3",
+    "cmake/ChatProtocolIdentity.cmake": "6ababc7256407692febbe024eae93aa5f94672f84f5c78ba59882202fa651e98",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2478,6 +2478,7 @@
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
     "include/q4t/server/native_crypto.h": "c163b07a2a70ab6081733ff9b259357d2d4b70df8db03307d4faeb43df41a78d",
+    "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
     "include/q4t/server/object_store.h": "4c16f4afa7e301b13e475597f699d6d44cd457f1ded3ca98142b129c135364e1",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
@@ -2749,7 +2750,7 @@
     "src/server/chat_plan.cpp": "b2927a8d44b51250a7360027410350d50ad3fb9058bc39b7c85309094c16ba04",
     "src/server/chat_preflight.cpp": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
-    "src/server/chat_realtime.cpp": "c85f1a8b459ce9b67beefb92e19063ad1ef28a9ed5ec5d8bf0c67a62b1bf2061",
+    "src/server/chat_realtime.cpp": "b3cc989a520f516f8523e7c0e310a4e7c71be54ba7c3fedab0f1e05e8cc71f0b",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
     "src/server/chat_responses.cpp": "1a9afce7b98fd79db487c681a50620beeb523d6bf62d051fb2132ddce0e7ef71",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
