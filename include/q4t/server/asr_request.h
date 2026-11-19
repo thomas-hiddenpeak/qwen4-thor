@@ -58,6 +58,9 @@ struct AsrPrompt {
   size_t audio_start = 0;
   size_t audio_tokens = 0;
   size_t output_tokens = 0;
+  // Actual previously selected suffix forced into a later streaming prompt.
+  // Private executor metadata, never a client-provided count or usage value.
+  size_t continuation_tokens = 0;
 };
 // special=false is required for the user context. The callback serializes
 // the actual tokenizer and supplies request cancellation checkpoints.

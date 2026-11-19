@@ -85,6 +85,8 @@ set(protocol_inputs
   include/q4t/server/asr_response.h
   include/q4t/server/asr_stream_state.h
   src/server/asr_stream_state.cpp
+  include/q4t/server/asr_stream_output.h
+  src/server/asr_stream_output.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
   src/server/asr_statistics.cpp

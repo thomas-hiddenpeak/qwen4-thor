@@ -8,6 +8,7 @@
 #include "cuda_memory_backend.h"
 #include "object_protocol.h"
 #include "q4t/runtime/system_memory.h"
+#include "q4t/server/asr_stream_output.h"
 #include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
@@ -24,11 +25,16 @@ ObjectReply ChatServer::RunNativeAsr(
     RequestDiagnostics& diagnostic, ClientRateLease& rate,
     ActualUsageCounter& usage, AsrTranscript* transcript,
     std::string_view leading_text,
-    const std::function<bool(const AsrTextDelta&)>& emit_delta) {
+    const std::function<bool(const AsrTextDelta&)>& emit_delta,
+    AsrStreamPass* captured_pass) {
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto previous = usage.Total();
   if (!previous || !http || !transcript)
     return Error(500, "asr_usage_invalid", "ASR prior usage unavailable");
+  if (captured_pass &&
+      (request.segment_timestamps || !captured_pass->Begin(prompt)))
+    return Error(500, "asr_stream_state_invalid",
+                 "ASR captured invocation differs from the actual prompt");
   const auto cancelled = [&] {
     if (stop_requested_.load())
       control->Cancel(RequestControl::State::kShutdown);
@@ -309,12 +315,19 @@ ObjectReply ChatServer::RunNativeAsr(
       rate.Completion(previous->output + generated);
       usage.Observe({committed, generated});
       if (token.token == C::kEos || token.token == C::kImEnd) {
+        if (captured_pass) {
+          sampled = captured_pass->Observe(token, {}, selected_temperature);
+          if (!sampled)
+            return Error(502, "asr_output_invalid", sampled.message());
+        }
         eos = true;
         break;
       }
       std::string bytes;
       sampled =
           asr_tok_->Decode({static_cast<uint32_t>(token.token)}, false, &bytes);
+      if (sampled && captured_pass)
+        sampled = captured_pass->Observe(token, bytes, selected_temperature);
       AsrTextDelta delta;
       if (sampled)
         sampled =

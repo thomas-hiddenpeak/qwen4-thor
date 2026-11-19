@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[累计ASR采集/输出18项CPU通过](evidence/serve-realtime-stream-output-cpu-20261119/README.md)：
+0.007558秒/0GPU、零警告、983来源/18负控。实际prompt绑定、原概率
+和只增文本/共享预算通过；下一组接S2模型循环与S3持续输入，再做
+实际用户路径短验，当前未启用新API。默认rev326、全部master保持。
+
+累计ASR输出接线已编写：实际decoder绑定完整prompt，保留原选中
+token/概率/EOS，强制前缀参与下一步输入，只发布稳定增量并共用输出
+预算。冻结18项针对性CPU/180秒/0GPU；当前仍未启用持续音频API，
+下一步继续输入所有权/模型循环，不把采集接口当真实业务验收。
+
 [持续ASR状态15项CPU通过](evidence/serve-realtime-stream-state-cpu-20261119/README.md)：
 0.007564秒/0GPU，零警告、981来源/18负控。真实样本边界、稳定
 UTF8前缀、预算和取消通过；尚未接模型增量，继续S2执行/用量与

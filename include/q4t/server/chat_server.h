@@ -89,6 +89,7 @@ namespace q4t {
 namespace server {
 struct EmbeddingStepResult;
 class RequestDiagnostics;
+class AsrStreamPass;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -335,7 +336,8 @@ class ChatServer {
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       ActualUsageCounter& usage, AsrTranscript* transcript,
       std::string_view leading_text = {},
-      const std::function<bool(const AsrTextDelta&)>& emit_delta = {});
+      const std::function<bool(const AsrTextDelta&)>& emit_delta = {},
+      AsrStreamPass* captured_pass = nullptr);
   ObjectReply PrepareNativeChatAudio(
       int fd, const io::Json& source_request, const io::Json& request,
       const std::shared_ptr<RequestControl>& control,
