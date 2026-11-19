@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [语义验收脚本入口修复](evidence/serve-semantic-vad-ci-entry-20261119/README.md)
+
 - [Realtime统一schema与有界历史基础](evidence/serve-realtime-conversation-foundation-20261119/README.md)
 
 [原生Realtime与Live实施](SERVE_REALTIME_2026-11-19.md)：有界WebSocket、采样时钟、真实双向模型与恢复持续推进。

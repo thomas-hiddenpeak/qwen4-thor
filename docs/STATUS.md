@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语义验收脚本入口13项CPU通过](evidence/serve-semantic-vad-ci-entry-20261119/README.md)：
+PR #51原CI的64组中63通过、1组导入失败；按CTest直接脚本/无
+PYTHONPATH方式修复并补验2.316秒/0GPU。原CI失败保留，生产与默认
+rev346不变，本地后续对话基础不混入；等待修复head检查后合入。
+
 [Realtime对话基础20项CPU通过](evidence/serve-realtime-conversation-foundation-20261119/README.md)：
 476份Realtime/647份Responses官方类型差分零分歧，18项来源反例及
 CMake生成身份通过，0GPU；原裸ID夹具失败保留。仅基础已验证，
