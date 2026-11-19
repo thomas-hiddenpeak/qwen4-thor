@@ -145,7 +145,7 @@ class Stage(lifecycle.Stage):
             '--operations-port', str(self.plan['operations_port']), '--mtp',
             '--max-seq', '1', '--max-len', '8192', '--max-prefill', '2048',
             '--max-tokens', '64', '--max-inflight-requests', '8',
-            '--max-queued-requests', '2', '--asr-model-dir', self.plan['asr_directory'],
+            '--max-queued-requests', '3', '--asr-model-dir', self.plan['asr_directory'],
             '--asr-max-output-tokens', '128', '--client-policy-file', str(self.out/'client-policy.json')]
         save(self.out/'model-command.json', args)
         self.budget('starts')
@@ -163,6 +163,12 @@ class Stage(lifecycle.Stage):
             except (OSError, http.client.HTTPException): pass
             time.sleep(.1)
         else: raise TimeoutError('readiness')
+
+    def same_model(self):
+        current = lifecycle.guard.processes().get(self.model.pid, {})
+        require(self.model.poll() is None and
+                current.get('start_ticks') == self.model_identity['start_ticks'],
+                'owned realtime model exited or changed; inspect retained model.log')
 
     def core(self, label):
         self.budget('chats')

@@ -1,0 +1,9 @@
+{"utc": "2026-11-19T00:04:04.636538+00:00", "monotonic": 3236727.153416468, "pid": 554441, "event": "lease_acquired"}
+{"utc": "2026-11-19T00:04:04.636578+00:00", "monotonic": 3236727.153455153, "pid": 554441, "event": "cleanup_capabilities", "pidfd": true}
+{"utc": "2026-11-19T00:04:04.723926+00:00", "monotonic": 3236727.240813039, "pid": 554441, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-19T00:04:04.724431+00:00", "monotonic": 3236727.24131223, "pid": 554441, "event": "child_started", "child_pid": 554446}
+{"utc": "2026-11-19T00:04:04.811337+00:00", "monotonic": 3236727.328222185, "pid": 554441, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-19T00:04:05.892954+00:00", "monotonic": 3236728.409845897, "pid": 554441, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-19T00:04:06.982007+00:00", "monotonic": 3236729.498897673, "pid": 554441, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-19T00:04:08.063646+00:00", "monotonic": 3236730.580534382, "pid": 554441, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-19T00:04:08.092303+00:00", "monotonic": 3236730.609180075, "pid": 554441, "event": "lease_released", "status": "COMMAND_FAILED"}
