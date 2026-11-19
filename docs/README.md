@@ -645,3 +645,5 @@
 - [rev346语义VAD可回退交付](evidence/serve-semantic-vad-delivery-20261119/README.md)：保留配额、参考音色和恢复预算。
 
 - [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)：实际根回退、配额/恢复预算保持及原质量失败分开记录。
+
+- [Realtime Prompt注册表CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：固定版本快照与类型定义；实际会话接线继续。

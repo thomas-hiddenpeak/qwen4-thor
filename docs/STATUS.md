@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt注册表24项CPU通过](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)：
+2.467秒/0GPU，原16项与8项新合同通过，来源20反例通过；
+构建246.350秒零警告。类型定义、权限范围和不可变版本快照已具备，
+继续会话覆盖/取消/执行/前缀截断接线与实际SDK业务；目前尚无
+Realtime Prompt业务资格。默认rev356、PR #52冻结head与原失败保持。
+
+Realtime Prompt 的类型化注册表与不可变解析快照已编写：默认兼容旧
+Responses 定义，新增显式 `api=realtime`；版本/租户身份固定，失败不
+改写旧快照，MCP 凭证不得持久化。冻结 24 项 CPU/120 秒/0GPU，
+包含原 16 项与 8 项新快照/类型/取消/隔离反例；会话与实际执行接线
+继续完成，当前不能宣称 Prompt 对话已可用。默认 rev356 保持，
+PR #52 最终提交检查中，后续代码未推入该 PR。已完成工作区的重复
+证据共享释放 668,911,071 字节，原路径/SHA/干净状态保持。
+
 [rev356原生Realtime文本/工具交付](evidence/serve-realtime-chat-delivery-20261120/README.md)
 完成：19项STOPPED检查、20次命令尝试/314.086秒，实际整根
 回退再前进，0新增GPU。首轮intent容量拒绝保留；8条退休记录

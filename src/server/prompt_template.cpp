@@ -4,6 +4,7 @@
 #include <set>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/realtime_shape.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_mcp.h"
 
@@ -223,8 +224,14 @@ ObjectReply Render(const Json& definition, const Json& variables) {
 
 ObjectReply ValidateDefinition(const Json& definition,
                                const ChatPlanConfig& config) {
-  auto result = Fields(definition, {"request", "variables"}, "definition");
+  auto result =
+      Fields(definition, {"api", "request", "variables"}, "definition");
   if (!result.ok()) return result;
+  const auto* api = definition.Find("api");
+  if (api &&
+      (!api->IsString() || (api->str != "responses" && api->str != "realtime")))
+    return Invalid("Expected responses or realtime", "definition.api");
+  const bool realtime = api && api->str == "realtime";
   if (OutputJson(definition).size() > kDefinitionBytes)
     return Error(413, "prompt_definition_limit",
                  "Prompt definition is too large");
@@ -232,29 +239,36 @@ ObjectReply ValidateDefinition(const Json& definition,
   const auto* types = definition.Find("variables");
   if (!request || !types || !types->IsObject() || types->object.size() > 64)
     return Invalid("Prompt requires request and variable types", "definition");
-  result = Fields(*request,
-                  {"model",
-                   "instructions",
-                   "input",
-                   "reasoning",
-                   "text",
-                   "tools",
-                   "tool_choice",
-                   "parallel_tool_calls",
-                   "temperature",
-                   "top_p",
-                   "top_logprobs",
-                   "max_output_tokens",
-                   "max_tool_calls",
-                   "truncation",
-                   "include",
-                   "context_management",
-                   "prompt_cache_key",
-                   "prompt_cache_retention",
-                   "prompt_cache_options",
-                   "moderation",
-                   "access_programs"},
-                  "definition.request");
+  result = realtime
+               ? Fields(*request,
+                        {"type", "model", "instructions", "input", "audio",
+                         "include", "max_output_tokens", "output_modalities",
+                         "parallel_tool_calls", "reasoning", "tools",
+                         "tool_choice", "tracing", "truncation"},
+                        "definition.request")
+               : Fields(*request,
+                        {"model",
+                         "instructions",
+                         "input",
+                         "reasoning",
+                         "text",
+                         "tools",
+                         "tool_choice",
+                         "parallel_tool_calls",
+                         "temperature",
+                         "top_p",
+                         "top_logprobs",
+                         "max_output_tokens",
+                         "max_tool_calls",
+                         "truncation",
+                         "include",
+                         "context_management",
+                         "prompt_cache_key",
+                         "prompt_cache_retention",
+                         "prompt_cache_options",
+                         "moderation",
+                         "access_programs"},
+                        "definition.request");
   if (!result.ok()) return result;
   auto dummy = Object();
   for (const auto& [name, type] : types->object) {
@@ -277,6 +291,37 @@ ObjectReply ValidateDefinition(const Json& definition,
   }
   auto rendered = Render(definition, dummy);
   if (!rendered.ok()) return rendered;
+  if (realtime) {
+    auto session = rendered.value;
+    std::erase_if(session.object,
+                  [](const auto& field) { return field.first == "input"; });
+    if (!session.Has("type")) Set(&session, "type", String("realtime"));
+    ChatPlanError error;
+    auto status = ValidateRealtimeWireShape(
+        Object({{"type", String("session.update")}, {"session", session}}),
+        RealtimeShape::kClientEvent, &error);
+    if (!status || session.GetString("type") != "realtime")
+      return Invalid(status ? "Expected realtime session" : status.message(),
+                     "definition.request");
+    // A persisted template can configure the tool, but must not contain its
+    // per-request credentials. Use the actual Responses credential scanner
+    // for both the MCP tools and any declared prefix tool-search outputs.
+    auto clean = Object();
+    for (const auto* key : {"tools", "input"})
+      if (const auto* field = rendered.value.Find(key))
+        Set(&clean, key, *field);
+    std::vector<ResponsesMcpDefinition> credentials;
+    status = CaptureResponsesMcpCredentials(&clean, &credentials, &error);
+    if (!status || !credentials.empty())
+      return Invalid("MCP credentials require a live request",
+                     "definition.request");
+    const auto* limit = session.Find("max_output_tokens");
+    if (limit && !(limit->IsString() && limit->str == "inf") &&
+        (!IsInputInteger(*limit) || limit->number < 1 || limit->number > 4096))
+      return Invalid("Expected 1..4096 or inf",
+                     "definition.request.max_output_tokens");
+    return {};
+  }
   // A reusable template is public persistent configuration, not a secret
   // store. Callers bind MCP credentials through the request's tools override.
   // The typed capture also checks additional_tools/tool_search_output inputs.
@@ -288,9 +333,10 @@ ObjectReply ValidateDefinition(const Json& definition,
   if (!status)
     return Invalid(status.message(), "definition.request." + error.param);
   if (!credentials.empty())
-    return Invalid("MCP credentials must be supplied in each request, not "
-                   "stored in a reusable prompt",
-                   "definition.request");
+    return Invalid(
+        "MCP credentials must be supplied in each request, not "
+        "stored in a reusable prompt",
+        "definition.request");
   status = ParseResponsesEnvelope(rendered.value, config, &envelope, &error);
   if (!status)
     return Invalid(status.message(), "definition.request." + error.param);

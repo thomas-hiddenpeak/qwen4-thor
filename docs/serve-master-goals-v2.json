@@ -11213,6 +11213,31 @@
       "listening_deferred_by_owner": true,
       "all_master_tasks_active": true,
       "evidence": "evidence/serve-realtime-chat-delivery-20261120/README.md"
+    },
+    "prompt_registry_20261120": {
+      "status": "PASS_REALTIME_TYPED_PROMPT_REGISTRY_CPU",
+      "tests": 24,
+      "existing_tests": 16,
+      "new_tests": 8,
+      "seconds": 2.466728097759187,
+      "source_mutations": 20,
+      "build_seconds": 246.35001098783687,
+      "build_warnings": 0,
+      "new_gpu_starts": 0,
+      "actual_realtime_session_accepted": false,
+      "default_revision": 356,
+      "default_unchanged": true,
+      "main_pr52_head_excludes_this_change": true,
+      "original_source_precheck_failure_preserved": true,
+      "original_readonly_maintenance_limit_failure_preserved": true,
+      "frozen_evidence_shared_files": 22553,
+      "logical_duplicate_bytes_reclaimed": 668911071,
+      "all_evidence_paths_preserved": true,
+      "files": 25,
+      "archive_sha256": "949563b588b15df61efc0e9e81206cbcbaa9eb7acb94b38955f82c7e0b51aee1",
+      "all_master_tasks_active": true,
+      "evidence": "evidence/serve-realtime-prompt-registry-cpu-20261120/README.md",
+      "next": "Wire session overrides, bounded lookup/cancellation, actual execution and prefix-safe truncation; then actual SDK business and delivery."
     }
   },
   "semantic_vad_primary_light_20261119": {

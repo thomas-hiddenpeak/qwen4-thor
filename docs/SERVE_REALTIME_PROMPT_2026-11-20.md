@@ -6,6 +6,15 @@
 存在。待解决的是实际会话与执行接线，不能以 schema 接受或文档
 说明代替。本文是实施方案，尚未表示 Prompt 对话可用。
 
+## 当前实现进度
+
+注册表增加 `PromptSnapshot` 和有界 `Resolve`：快照包含实际租户
+范围、固定版本引用和一次渲染后的完整请求。原定义默认
+`api=responses`，Realtime 专有定义显式使用 `api=realtime`，
+`request` 保存会话设置及 Responses 形状的输入前缀；不允许递归
+Prompt 或持久化 MCP 凭证。此类型化基础已通过[24 项 CPU](evidence/serve-realtime-prompt-registry-cpu-20261120/README.md)；
+尚未接会话或执行路径，仍按下列总合同继续。
+
 ## 已核实的依据
 
 固定的 OpenAI JS 7.47.0 在会话和 `response.create` 中均接受

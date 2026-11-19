@@ -208,17 +208,17 @@ ObjectReply PromptRegistry::List(ObjectRequest request,
   return result;
 }
 
-ObjectReply PromptRegistry::Expand(const Json& request,
-                                   const ChatPlanConfig& config,
-                                   const StateAccess& access) {
-  const auto* reference = request.Find("prompt");
+ObjectReply PromptRegistry::Resolve(const Json& reference,
+                                    const StateAccess& access,
+                                    PromptSnapshot* snapshot) {
+  if (!snapshot)
+    return Error(500, "prompt_owner_missing", "Prompt snapshot owner missing");
   std::string bad;
-  if (!reference ||
-      !InputFields(*reference, {"id", "version", "variables"}, &bad, "prompt"))
+  if (!InputFields(reference, {"id", "version", "variables"}, &bad, "prompt"))
     return pd::Invalid("Invalid prompt reference",
                        bad.empty() ? "prompt" : bad);
-  const auto* identity = reference->Find("id");
-  const auto* version = reference->Find("version");
+  const auto* identity = reference.Find("id");
+  const auto* version = reference.Find("version");
   if (!identity || !identity->IsString() || !ValidId(identity->str))
     return pd::Invalid("Invalid prompt ID", "prompt.id");
   if (version && !version->IsNull() &&
@@ -233,11 +233,40 @@ ObjectReply PromptRegistry::Expand(const Json& request,
   const auto* found = FindVersion(data, selected);
   if (!found)
     return Error(404, "prompt_version_not_found", "Prompt version not found");
-  const auto* variables = reference->Find("variables");
-  auto result =
-      pd::Render(*found->Find("definition"),
-                 variables && !variables->IsNull() ? *variables : Object());
+  const auto& definition = *found->Find("definition");
+  const auto* api = definition.Find("api");
+  if (api &&
+      (!api->IsString() || (api->str != "responses" && api->str != "realtime")))
+    return Corrupt();
+  const auto* variables = reference.Find("variables");
+  auto result = pd::Render(
+      definition, variables && !variables->IsNull() ? *variables : Object());
   if (!result.ok()) return result;
+  PromptSnapshot next;
+  next.api = api && api->str == "realtime" ? PromptApi::kRealtime
+                                           : PromptApi::kResponses;
+  next.scope = access.scope;
+  next.reference = reference;
+  Set(&next.reference, "version", String(selected));
+  next.request = std::move(result.value);
+  if (next.api == PromptApi::kRealtime && !next.request.Has("type"))
+    Set(&next.request, "type", String("realtime"));
+  *snapshot = std::move(next);
+  return {};
+}
+
+ObjectReply PromptRegistry::Expand(const Json& request,
+                                   const ChatPlanConfig& config,
+                                   const StateAccess& access) {
+  const auto* reference = request.Find("prompt");
+  if (!reference) return pd::Invalid("Invalid prompt reference", "prompt");
+  PromptSnapshot snapshot;
+  auto result = Resolve(*reference, access, &snapshot);
+  if (!result.ok()) return result;
+  if (snapshot.api != PromptApi::kResponses)
+    return pd::Invalid("A Realtime prompt requires a Realtime session",
+                       "prompt.id");
+  result.value = std::move(snapshot.request);
   const auto template_input = InputItems(result.value.Find("input"));
   auto current_input = InputItems(request.Find("input"));
   if (!current_input.IsArray()) return pd::Invalid("Invalid input", "input");
@@ -252,9 +281,7 @@ ObjectReply PromptRegistry::Expand(const Json& request,
   for (const auto& [name, value] : request.object)
     Set(&result.value, name, value);
   Set(&result.value, "input", std::move(current_input));
-  auto pinned = *reference;
-  Set(&pinned, "version", String(selected));
-  Set(&result.value, "prompt", std::move(pinned));
+  Set(&result.value, "prompt", std::move(snapshot.reference));
   if (OutputJson(result.value).size() > pd::kExpandedBytes)
     return Error(413, "prompt_expansion_limit",
                  "Expanded request is too large");

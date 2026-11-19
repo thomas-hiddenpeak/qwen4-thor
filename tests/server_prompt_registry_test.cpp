@@ -30,6 +30,11 @@ void Set(Json* object, const std::string& key, Json value) {
     }
   object->object.emplace_back(key, std::move(value));
 }
+void SetRequest(Json* definition, const std::string& key, Json value) {
+  auto request = *definition->Find("request");
+  Set(&request, key, std::move(value));
+  Set(definition, "request", std::move(request));
+}
 bool Ok(const ObjectReply& result) {
   if (!result.ok())
     std::fprintf(stderr, "%s %s %s\n", result.code.c_str(),
@@ -370,8 +375,9 @@ Q4T_TEST(prompt_effective_request_uses_overrides_and_actual_context) {
             prompt.find("{{") == prompt.npos);
   Q4T_CHECK(run.Envelope().options.Find("prompt")->GetString("version") == "1");
   const auto* reference = run.Output().Snapshot().Find("prompt");
-  Q4T_CHECK(reference && OutputJson(*reference) ==
-                            OutputJson(*run.Envelope().options.Find("prompt")));
+  Q4T_CHECK(reference &&
+            OutputJson(*reference) ==
+                OutputJson(*run.Envelope().options.Find("prompt")));
   return true;
 }
 
@@ -459,7 +465,8 @@ Q4T_TEST(
   for (const auto& event : record.value.GetArray("events")->array) {
     if (const auto* response = event.Find("response")) {
       Q4T_CHECK(response->Find("prompt") &&
-                OutputJson(*response->Find("prompt")) == OutputJson(*reference));
+                OutputJson(*response->Find("prompt")) ==
+                    OutputJson(*reference));
     }
     Record(event);
   }
@@ -563,5 +570,213 @@ Q4T_TEST(prompt_management_route_partitions_reads_and_writes) {
   Q4T_CHECK(!PromptMethodAllowed("GET", "/v1/prompts/../versions/1"));
   Q4T_CHECK(
       !PromptMethodAllowed("GET", "/v1/prompts/prompt_a/versions/1/extra"));
+  return true;
+}
+
+Q4T_TEST(prompt_snapshot_pins_version_and_survives_registry_deletion) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  auto created = registry.Create(Definition(), Config(), Access());
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  const auto reference = *Request(id).Find("prompt");
+  PromptSnapshot original;
+  Q4T_CHECK(Ok(registry.Resolve(reference, Access(), &original)));
+  const auto bytes = OutputJson(original.request);
+  Q4T_CHECK(original.api == PromptApi::kResponses &&
+            original.scope == Access().scope &&
+            original.reference.GetString("version") == "1");
+  Q4T_CHECK(Ok(
+      registry.Append(id, 1, Definition("new {{value}}"), Config(), Access())));
+  PromptSnapshot latest;
+  Q4T_CHECK(Ok(registry.Resolve(reference, Access(), &latest)));
+  Q4T_CHECK(latest.reference.GetString("version") == "2" &&
+            OutputJson(latest.request) != bytes);
+  Q4T_CHECK(Ok(registry.Select(id, 2, "1", Access())));
+  Q4T_CHECK(Ok(registry.Erase(id, Access())));
+  Q4T_CHECK(OutputJson(original.request) == bytes &&
+            original.reference.GetString("version") == "1");
+  Q4T_CHECK(registry.Resolve(reference, Access(), &original).http_status ==
+            404);
+  Q4T_CHECK(OutputJson(original.request) == bytes);
+  return true;
+}
+
+Q4T_TEST(prompt_snapshot_scope_cancellation_and_deadline_are_atomic) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  auto created = registry.Create(Definition(), Config(), Access());
+  Q4T_CHECK(Ok(created));
+  const auto reference = *Request(created.value.GetString("id")).Find("prompt");
+  PromptSnapshot snapshot;
+  Q4T_CHECK(Ok(registry.Resolve(reference, Access(), &snapshot)));
+  const auto before = OutputJson(snapshot.request);
+  Q4T_CHECK(registry.Resolve(reference, Access("client:other"), &snapshot)
+                .http_status == 404);
+  auto cancelled = Access();
+  cancelled.cancelled = [] { return true; };
+  Q4T_CHECK(!registry.Resolve(reference, cancelled, &snapshot).ok());
+  auto expired = Access();
+  expired.deadline = Clock::now() - 1ms;
+  Q4T_CHECK(!registry.Resolve(reference, expired, &snapshot).ok());
+  Q4T_CHECK(snapshot.scope == Access().scope &&
+            OutputJson(snapshot.request) == before &&
+            snapshot.reference.GetString("version") == "1");
+  Q4T_CHECK(registry.Resolve(reference, Access(), nullptr).http_status == 500);
+  return true;
+}
+
+Q4T_TEST(prompt_realtime_definition_keeps_session_fields_and_hidden_prefix) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  const auto definition = Parse(R"({"api":"realtime","variables":{
+    "name":"string","task":"string"},"request":{
+    "instructions":"Address {{name}}", "input":[{"role":"user",
+    "content":"{{task}}"}], "output_modalities":["text"],
+    "max_output_tokens":45,"parallel_tool_calls":false,
+    "reasoning":{"effort":"low"},"truncation":"disabled",
+    "tools":[{"type":"function","name":"lookup","parameters":{
+      "type":"object","properties":{"key":{"type":"string"}}}}],
+    "tool_choice":{"type":"function","name":"lookup"},
+    "audio":{"input":{"noise_reduction":null,"transcription":null}},
+    "tracing":null}})");
+  auto created = registry.Create(definition, Config(), Access());
+  Q4T_CHECK(Ok(created));
+  auto reference = Parse("{\"id\":\"" + created.value.GetString("id") +
+                         R"(","variables":{"name":"reader",
+                             "task":"{{name}} stays literal"}})");
+  PromptSnapshot snapshot;
+  Q4T_CHECK(Ok(registry.Resolve(reference, Access(), &snapshot)));
+  Q4T_CHECK(snapshot.api == PromptApi::kRealtime &&
+            snapshot.request.GetString("type") == "realtime" &&
+            snapshot.request.GetString("instructions") == "Address reader");
+  Q4T_CHECK(snapshot.request.GetArray("input")
+                ->array[0]
+                .GetArray("content")
+                ->array[0]
+                .GetString("text") == "{{name}} stays literal");
+  for (const auto* key :
+       {"output_modalities", "max_output_tokens", "parallel_tool_calls",
+        "reasoning", "truncation", "tools", "tool_choice", "audio", "tracing"})
+    Q4T_CHECK(OutputJson(*snapshot.request.Find(key)) ==
+              OutputJson(*definition.Find("request")->Find(key)));
+  return true;
+}
+
+Q4T_TEST(prompt_realtime_management_persists_api_across_restart) {
+  Fixture f;
+  std::string id;
+  {
+    ObjectStore store(f.options);
+    auto created = Api(store, "POST", "/v1/prompts", Parse(R"({
+      "definition":{"api":"realtime","request":{
+        "instructions":"Use the actual tool result","max_output_tokens":"inf"
+      },"variables":{}}})"));
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+  }
+  ObjectStore restored(f.options);
+  auto version = Api(restored, "GET", "/v1/prompts/" + id + "/versions/1");
+  Q4T_CHECK(Ok(version) &&
+            version.value.Find("definition")->GetString("api") == "realtime");
+  PromptRegistry registry(restored);
+  PromptSnapshot snapshot;
+  Q4T_CHECK(Ok(
+      registry.Resolve(Parse("{\"id\":\"" + id + "\"}"), Access(), &snapshot)));
+  Q4T_CHECK(snapshot.api == PromptApi::kRealtime &&
+            snapshot.request.GetString("max_output_tokens") == "inf");
+  return true;
+}
+
+Q4T_TEST(prompt_api_types_do_not_silently_reinterpret_templates) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  auto definition = Parse(R"({"api":"realtime","request":{
+    "instructions":"template"},"variables":{}})");
+  auto created = registry.Create(definition, Config(), Access());
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  auto request = Parse("{\"prompt\":{\"id\":\"" + id + "\"}}");
+  Q4T_CHECK(registry.Expand(request, Config(), Access()).http_status == 400);
+  auto responses = Definition();
+  Set(&responses, "api", Parse("\"responses\""));
+  auto response_prompt = registry.Create(responses, Config(), Access());
+  Q4T_CHECK(Ok(response_prompt));
+  Q4T_CHECK(Ok(registry.Expand(Request(response_prompt.value.GetString("id")),
+                               Config(), Access())));
+  for (const auto* api : {"null", "false", "7", "\"other\""}) {
+    Set(&definition, "api", Parse(api));
+    Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
+              400);
+  }
+  return true;
+}
+
+Q4T_TEST(prompt_realtime_rejects_authority_recursive_prompt_and_bad_shape) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  const auto base = Parse(R"({"api":"realtime","request":{},"variables":{}})");
+  for (const auto* field : {"prompt", "store", "background", "conversation",
+                            "client_id", "request_timeout_ms", "id"}) {
+    auto definition = base;
+    SetRequest(&definition, field, Parse("null"));
+    Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
+              400);
+  }
+  for (const auto* request : {R"({"type":"transcription"})",
+                              R"({"audio":{"input":{"unknown":true}}})",
+                              R"({"output_modalities":["video"]})"}) {
+    auto definition = base;
+    Set(&definition, "request", Parse(request));
+    Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
+              400);
+  }
+  return true;
+}
+
+Q4T_TEST(prompt_realtime_credentials_cannot_be_persisted_in_tools_or_prefix) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  const auto base = Parse(R"({"api":"realtime","request":{"tools":[{
+    "type":"mcp","server_label":"docs","server_url":"https://example.test/mcp"
+  }]},"variables":{}})");
+  Q4T_CHECK(Ok(registry.Create(base, Config(), Access())));
+  for (const auto* field : {"authorization", "headers"}) {
+    auto definition = base;
+    auto tools = *definition.Find("request")->Find("tools");
+    Set(&tools.array[0], field,
+        Parse(std::string(field) == "headers"
+                  ? R"({"Authorization":"fixture-credential"})"
+                  : R"("fixture-credential")"));
+    SetRequest(&definition, "tools", tools);
+    Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
+              400);
+  }
+  auto definition = base;
+  SetRequest(&definition, "input", Parse(R"([{
+    "type":"tool_search_output","tools":[{"type":"mcp",
+    "server_label":"other","server_url":"https://example.test/mcp",
+    "authorization":"fixture-credential"}]}])"));
+  Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status == 400);
+  return true;
+}
+
+Q4T_TEST(prompt_realtime_token_limit_does_not_accept_fraction_or_overflow) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  for (const auto* value : {"0", "1.5", "4097", "null", "true"}) {
+    auto definition =
+        Parse(R"({"api":"realtime","variables":{},"request":{}})");
+    SetRequest(&definition, "max_output_tokens", Parse(value));
+    Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
+              400);
+  }
   return true;
 }

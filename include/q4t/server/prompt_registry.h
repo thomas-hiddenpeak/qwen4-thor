@@ -4,6 +4,17 @@
 
 namespace q4t::server {
 
+enum class PromptApi { kResponses, kRealtime };
+// A value snapshot, bound to the lookup authority and an immutable version.
+// Later registry writes/deletion cannot retarget an accepted request. Owners
+// must still check current client authority before executing the snapshot.
+struct PromptSnapshot {
+  PromptApi api = PromptApi::kResponses;
+  std::string scope;
+  io::Json reference;
+  io::Json request;
+};
+
 // Local immutable prompt versions. HTTP credentials supply StateAccess; a
 // prompt ID/variable/metadata value is never an authority or filesystem path.
 class PromptRegistry {
@@ -20,6 +31,10 @@ class PromptRegistry {
                        const StateAccess& access);
   ObjectReply Erase(const std::string& id, const StateAccess& access);
   ObjectReply List(ObjectRequest request, const StateAccess& access);
+  // Bounded object-worker lookup and single-pass rendering only. On failure
+  // the caller's snapshot is unchanged. No model, quota or tool is acquired.
+  ObjectReply Resolve(const io::Json& reference, const StateAccess& access,
+                      PromptSnapshot* snapshot);
   // Returns an effective Responses request with a pinned public prompt
   // reference. This executes no model/tool. Restore uses the saved effective
   // request, never expands it again or depends on the live registry.
