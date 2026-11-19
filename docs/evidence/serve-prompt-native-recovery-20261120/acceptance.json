@@ -1,0 +1,280 @@
+{
+  "status": "ACCEPT_NATIVE_REALTIME_PROMPT_SERVICE_COMPOSITION",
+  "binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/service-package-01/bundle",
+    "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/retained-01/bundle",
+    "manifest_sha256": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2"
+  },
+  "modern_retained_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/retained-01/bundle",
+    "manifest_sha256": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2"
+  },
+  "tls_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/tls-package-02/bundle",
+    "manifest_sha256": "9291a75ef174b11a066a072115eca5159bf2965b21cbc4ec5782c6016438f3e6"
+  },
+  "stages": [
+    {
+      "name": "retained-service-01",
+      "result_sha256": "ca80bc33e5669ca98a9850961628336398faf17ad98f0573c405b0186cbcb997",
+      "guard_sha256": "bb375fcb0a898324b575d428696f02fe5ae175a0f20a6b565245d9809c79e445",
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 155,
+        "websocket_sessions": 1
+      },
+      "raw_status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "guard_status": "COMPLETED",
+      "nvml_queries": 47,
+      "strict_lease_seconds": 49.12123985495418,
+      "decision_sha256": "8a59bbe4339fbe74b2666071e6d7d4ffac823bd6ba497e050e2e7c2934029c3d"
+    },
+    {
+      "name": "tls-service-01",
+      "result_sha256": "873771c79a9642aaf9eaa5a664f2bdfb39cc9fbfebafb06de8d747516f19cc3a",
+      "guard_sha256": "c8ca0dfbea6f0853dc3d6d948cdf96b92cf943a8e330b24f065d84d98be7aa87",
+      "counts": {
+        "starts": 2,
+        "chats": 7,
+        "probes": 0,
+        "controls": 429,
+        "websocket_sessions": 2
+      },
+      "raw_status": "FAILED",
+      "guard_status": "COMMAND_FAILED",
+      "nvml_queries": 114,
+      "strict_lease_seconds": 122.01335571100935
+    },
+    {
+      "name": "controller-service-01",
+      "result_sha256": "5c543dccfb6daf84d9142f1627bd6444bef9e5c8735d199d5140b4d0c97023e6",
+      "guard_sha256": "2a1807224df93b440011b9f6477f7cc4a5b0fecd80e171ee77c0230aac91be83",
+      "counts": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 0,
+        "controls": 400,
+        "websocket_sessions": 2
+      },
+      "raw_status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "guard_status": "COMPLETED",
+      "nvml_queries": 109,
+      "strict_lease_seconds": 116.31087592802942,
+      "decision_sha256": "b966ccc219b7274a5392b2e1d7bf4ba0942435145bc6ec04713dcd66bb8676d7"
+    },
+    {
+      "name": "version-service-01",
+      "result_sha256": "50ace92ab4964687771cf431a7fbaef67798c4ce0c9b38890e692a78e55b5dda",
+      "guard_sha256": "e564c389f354b4dbdedf8d094f60794d8f4219fbd9900aa2a68f55182793e455",
+      "counts": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 1,
+        "controls": 367,
+        "websocket_sessions": 2
+      },
+      "raw_status": "PASS_BOUNDED_FEATURE_SERVICE",
+      "guard_status": "COMPLETED",
+      "nvml_queries": 107,
+      "strict_lease_seconds": 114.55513697909191,
+      "decision_sha256": "9dc3ebc781181e3bab366257b93f4489cba61fcec91e356f1438ee6487440968"
+    }
+  ],
+  "actual_model_starts": 7,
+  "service_work_items": 22,
+  "websocket_sessions": 7,
+  "service_seconds": 402.00060847308487,
+  "nvml_queries": 377,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "successful_current_stage_finalizers_passed": true,
+  "original_tls_driver_passed": false,
+  "original_driver_failure_preserved": true,
+  "tls_composition": {
+    "status": "ACCEPT_PROMPT_TLS_GATEWAY_AND_CONTROLLER_COMPOSITION",
+    "gateway_partial_review": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-prompt-controller-wait-20261120/review.json",
+      "sha256": "0ed923d6a93ee716f07da67ef4cbd9611f6e18544c23b3a05978369554eddbc2"
+    },
+    "controller_decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/controller-service-01/decision.json",
+      "sha256": "b966ccc219b7274a5392b2e1d7bf4ba0942435145bc6ec04713dcd66bb8676d7"
+    },
+    "original_tls_failed": true,
+    "original_failure_preserved": true,
+    "exact_same_package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/tls-package-02/bundle",
+      "manifest_sha256": "9291a75ef174b11a066a072115eca5159bf2965b21cbc4ec5782c6016438f3e6"
+    },
+    "default_unchanged": true
+  },
+  "candidate_service_acceptance": {
+    "status": "PASS_REALTIME_PROMPT_SERVICE_VERSION",
+    "acceptance": "ACCEPT_REALTIME_PROMPT_SERVICE_VERSION",
+    "manifest_sha256": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "actual_business": {
+      "status": "ACCEPT_REALTIME_PROMPT_SERVICE_VERSION",
+      "strict_lease_seconds": 114.55513697909191,
+      "nvml_queries": 107,
+      "env_abort": false,
+      "counts": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 1,
+        "controls": 367,
+        "websocket_sessions": 2
+      },
+      "source_commit": "0ce08a04ed3e93be493b261771067f45b32b2b81",
+      "plan_sha256": "459e89f9cd682cc12e6c51872fe3e99a319b20e451f9fb5407d0a75cc426c2d5",
+      "result_sha256": "50ace92ab4964687771cf431a7fbaef67798c4ce0c9b38890e692a78e55b5dda",
+      "lease_result_sha256": "e564c389f354b4dbdedf8d094f60794d8f4219fbd9900aa2a68f55182793e455",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "modern_service_acceptance": {
+    "status": "PASS_REALTIME_PROMPT_SERVICE_RETAINED",
+    "acceptance": "ACCEPT_REALTIME_PROMPT_SERVICE_RETAINED",
+    "manifest_sha256": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2",
+    "engine_binary_sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "actual_business": {
+      "status": "ACCEPT_REALTIME_PROMPT_SERVICE_RETAINED",
+      "strict_lease_seconds": 49.12123985495418,
+      "nvml_queries": 47,
+      "env_abort": false,
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 155,
+        "websocket_sessions": 1
+      },
+      "source_commit": "a37e21b4f5bb132fdc3380827315a73ffdd11e11",
+      "plan_sha256": "22029e4f25bfb887b9d9a3895c6ecdc4145ebcd5acfeb1249f96864afd852139",
+      "result_sha256": "ca80bc33e5669ca98a9850961628336398faf17ad98f0573c405b0186cbcb997",
+      "lease_result_sha256": "bb375fcb0a898324b575d428696f02fe5ae175a0f20a6b565245d9809c79e445",
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true,
+        "default_unchanged": true
+      }
+    },
+    "default_replaced": false,
+    "performance_acceptance": false,
+    "long_stability_accepted": false
+  },
+  "candidate_whole_package_gpu_run": true,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "older_engine_fallback": false,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "all_master_tasks_complete": false,
+  "actual_source_bound_tool_answers": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/retained-service-01/execution/primary-conversation.sdk.json",
+      "sha256": "9460f7e4faf613b46872f60f6d37164cd9053694f3bdbe02d58a8dd55f1288ea",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_ccca520ebe8588217ec827be480fd64d"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/tls-service-01/execution/tls-after-conversation.sdk.json",
+      "sha256": "464880d871f173857526788e5d6307c915b601c0f1663a4dfd3fb6308fe7bdbb",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_755a63cf1207fadde4fccd5bc756f02d"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/tls-service-01/execution/tls-before-conversation.sdk.json",
+      "sha256": "6185d000f2bc5a62fe2e79b7e6478306f02843c0d2171371f96e6aa51406334c",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_1aca8668d9231369249e64e4b32f7054"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/controller-service-01/execution/controller-after-conversation.sdk.json",
+      "sha256": "c5a98c8d25d07dca4c36c334004830d1fc0bb64d1512d187a31d59fe20ea408f",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_fd48fe86c5efc1cb57b8810ee092da02"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/controller-service-01/execution/controller-before-conversation.sdk.json",
+      "sha256": "1530ea0cd0faf6744b79f671947ceb7acc7bd14f6fcb26cda5cbbd752e425ce0",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_8f4ebfa9a6d562ef63e97e91e88f3cc3"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/version-service-01/execution/fallback-conversation.sdk.json",
+      "sha256": "5c1e5451a47913acae12241f5edb36d7cc2f253eb3599753f3f755659eab3a4e",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_456cfa547020b9548a8e55f975689ebe"
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/version-service-01/execution/primary-conversation.sdk.json",
+      "sha256": "5327abe43906425da4a39d8fa5bfe44ce33f0c62193fe7d984bba5f7ea41c7bd",
+      "model_quality": {
+        "status": "PASS",
+        "expected": "rev356",
+        "actual": "rev356",
+        "criterion": "exact_source_version",
+        "response_id": "resp_04c1e6a9cd629a846a35516f7fd0bd79"
+      }
+    }
+  ],
+  "primary_light_evidence": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/profiles-reviewed-01/acceptance.json",
+    "sha256": "95396ea1f7f941380b0e3ab64496abfbfa4c996c7404de7e8cd31213202d3ef8"
+  },
+  "unchanged_backend_recovery_source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-conversation-20261119/publication-composition.json",
+    "sha256": "6a3b5411027265f1683dffa5912389614796b54dbd50d9a6e362c7766c70685a"
+  },
+  "original_model_quality_failures_preserved": true,
+  "listening_deferred": true,
+  "archive_sha256": "ed7fca6989648da6516088e7e19fec279cb6cb994c4c5ef62f0376538731b23a"
+}

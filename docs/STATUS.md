@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Prompt原生恢复完成](evidence/serve-prompt-native-recovery-20261120/README.md)：
+含原失败组共7模型/22生成/7WSS/1探测，四次独立租约402.001秒，
+377次NVML正常并清理；七组工具答案均rev356。保留包、网关已验，
+控制器按完整配额窗口恢复，整包回退保留Prompt。原TLS断言FAIL及
+历史质量FAIL保持，默认未改；继续STOPPED可回退发行、合入与总目标。
+
 [控制器等待断言修正CPU通过](evidence/serve-prompt-controller-wait-20261120/README.md)：
 6项/1.062秒与20来源反例通过。保留包正式接受，原TLS FAILED保留；
 已完成网关段独立复核通过，控制器恢复后Prompt业务仍待补。两个原组
