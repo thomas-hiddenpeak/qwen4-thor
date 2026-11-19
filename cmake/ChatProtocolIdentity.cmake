@@ -91,6 +91,8 @@ set(protocol_inputs
   src/server/asr_stream_input.cpp
   include/q4t/server/realtime_asr_policy.h
   src/server/realtime_asr_policy.cpp
+  include/q4t/server/realtime_transcript_history.h
+  src/server/realtime_transcript_history.cpp
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp

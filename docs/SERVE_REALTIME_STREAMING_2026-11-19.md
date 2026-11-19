@@ -115,3 +115,24 @@ EOF一致，clear后同连接继续/取消结算/逐item配额/同PID Chat通过
 按官方转录上下文与conversation item合同完善有界历史，复用既有
 prompt/keywords/languages实际模型输入与token计量，不用字符串回显
 代替模型衔接，随后继续全部S5/S6与master。
+
+## S4当前实施组：转录上下文的来源与删除边界
+
+H1先实现独立的实际转录账本，不复制通用Conversations持久服务。
+会话身份+item ID+单调代次识别异步结果；输入commit与ASR成功分别
+登记，失败/清空不能变成空的成功文本。最多128项、1MiB实际文本/
+待输出预留；每项最多64KiB，容量满报错而非淘汰。上下文只取目标
+之前已完成的转录，之前已commit但未完成须明确等待/拒绝，不能忽略。
+已有prompt/keywords/languages仍由实际BuildAsrPrompt编码和计量。
+
+本组件只是后续同一conversation item身份的ASR来源索引，音频与通用
+对话对象仍由各自所有者管理。H2接会话生命周期和真实prompt，完成
+标准删除/取回及处理后音频保留；H3按实质改变的上下文做短验。当前
+仅H1源码和10项CPU清单，不据此声称历史API或模型上下文已完成。
+音频取回不能用原始有噪波形冒充处理后波形，较长item输出要解决
+当前1MiB单帧上限，不能把接口永远留为unsupported。
+
+依据：[官方转录上下文](https://developers.openai.com/api/docs/guides/realtime-transcription)
+与[官方Realtime客户端事件](https://developers.openai.com/api/reference/resources/realtime/client-events)。
+前轮上下文应来自实际转录；客户端自行提供的input_audio.transcript
+仅为引用元数据，不能冒充模型已听见的音频或自动加入ASR历史。

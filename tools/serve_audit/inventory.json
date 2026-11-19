@@ -2291,8 +2291,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "52d3b1ba69eaebc8598af55bde5e74f287077e8470b266f2d3e95f7995054df8",
-    "cmake/ChatProtocolIdentity.cmake": "5c9ddab55b7cfc6440f3a83ace78646e21e5b05ef28f854bd958a34980882742",
+    "CMakeLists.txt": "1e9d268b2f5e9484144196934dd70c34bb0effc7cad14cc3c132981f8ea835ec",
+    "cmake/ChatProtocolIdentity.cmake": "336a9d73418fe3249f36013e52f4e024894963e523c16dc2aef2eb2b7bc04894",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2500,6 +2500,7 @@
     "include/q4t/server/realtime_audio_queue.h": "061fd747097fb73c858b665ad305229f213692d692d865ab11dd215ee06399b9",
     "include/q4t/server/realtime_noise_input.h": "b53079e7bb6441067ea0da9a6b48744fce42cfcad48cc4cf72270450eed0ad53",
     "include/q4t/server/realtime_pcm.h": "ad711d43176381aa6a0240a95b0486ee93ef200739207dec7e5dabe9924d4136",
+    "include/q4t/server/realtime_transcript_history.h": "3d88a7a9bd38de5a954b859c643a46d64cb7e0006030113ac5ce0a19bcabb81a",
     "include/q4t/server/realtime_transcription_protocol.h": "3192ad17f63177faf2d71eb4563d250c730601530c0ca5a147b1ecd17cb3ccbe",
     "include/q4t/server/realtime_transcription_pump.h": "9802a902a7340ecbb7c0b91ab55c7bc70e33707d2b0fc74e154ef40421a0a80c",
     "include/q4t/server/realtime_transcription_session.h": "fd0d241312eeb59141f3894bd1ea2a308010dd952c1aac8cd512117868fa8d2a",
@@ -2941,6 +2942,7 @@
     "src/server/realtime_audio_queue.cpp": "9136c9c6c4614b3c3d698737bfd510fb9b910092709c7855060fd8be6af77669",
     "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
     "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
+    "src/server/realtime_transcript_history.cpp": "0ce3e04f05e5532065dd1f0240bccfc574818d1e3b4217b0ee0706328f10d561",
     "src/server/realtime_transcription_protocol.cpp": "abd58c97859958b626bb0b1a98d98bfb1ee71771e4e93dcd3b6f3d2f71599d05",
     "src/server/realtime_transcription_pump.cpp": "198728abb5d7f802c953d4a9b017e47b62d700db7dc9c0a5ed93dbf82dadb54a",
     "src/server/realtime_transcription_session.cpp": "9f5d5d17029d4bd68963b4c56bb73fd310a4754bf5c2e90262d87632df792c8c",

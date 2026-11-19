@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[实际转录历史10项CPU通过](evidence/serve-realtime-history-state-cpu-20261119/README.md)：
+0.007786秒/0GPU，零警告、990来源/18负控；完成来源、独立快照、
+容量预留/明确超限及删除代次通过。组件尚未接API/模型prompt，下一组
+H2完善会话历史/真实上下文/标准删除取回与处理后音频所有权，随后
+业务短验与全部master；默认rev326及已验持续转录候选保持。
+
+开始有界转录历史组件：只收实际完成文本、先预留结果容量，保留
+commit/失败/删除与会话代次；背景任务使用独立上下文快照，迟到结果
+不能复活已删除条目。上下文超限明确失败，不截断历史。本组冻结10项
+针对性CPU/60秒/0GPU，尚未接入API或改变当前模型上下文；后续仍需
+接prompt与会话删除/取回、处理后音频保留，并推进全部master。
+
 [持续转录真实短验通过](evidence/serve-realtime-stream-business-20261119/README.md)：
 5条中英/G.711精确、2306实际token；提交前真实delta、clear后同连接
 继续、取消140token结算和同PID Chat通过。原驱动FAIL保留，续验只补
