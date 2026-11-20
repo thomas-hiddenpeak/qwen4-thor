@@ -741,8 +741,10 @@ set(protocol_inputs
   src/server/realtime_mcp_definitions.cpp
   include/q4t/server/realtime_mcp_catalog.h
   include/q4t/server/realtime_mcp_imports.h
+  include/q4t/server/realtime_mcp_item.h
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp
+  src/server/realtime_mcp_item.cpp
   include/q4t/server/realtime_prompt_settings.h
   src/server/realtime_prompt_settings.cpp
   include/q4t/server/realtime_file_inputs.h

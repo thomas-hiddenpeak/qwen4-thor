@@ -1,0 +1,17 @@
+{
+  "status": "PASS_REALTIME_MCP_RESULT_AND_APPROVAL_HISTORY_CPU",
+  "cases": 16,
+  "passed": 16,
+  "failed": 0,
+  "cpu_seconds": 0.06386043597012758,
+  "build_seconds": 50.08756549889222,
+  "build_warnings": 0,
+  "binary_sha256": "585d3a9ccbd7b14be2c93c54e7b9b6c2d1bc96e623fa0764e977cef0de05a296",
+  "runtime_connected": false,
+  "gpu_actions": 0,
+  "llm_requests": 0,
+  "default_revision": 396,
+  "default_unchanged": true,
+  "service_state": "STOPPED",
+  "all_master_tasks_active": true
+}

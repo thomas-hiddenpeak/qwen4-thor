@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "definitions_catalog_import_ownership_and_argument_handoff_cpu_accepted_native_execution_integration_next",
+      "state": "result_projection_and_approval_history_cpu_accepted_native_execution_integration_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14693,7 +14693,25 @@
         "service_state": "STOPPED",
         "all_master_tasks_active": true
       },
-      "output_evidence": "evidence/serve-realtime-mcp-output-cpu-20261120/README.md"
+      "output_evidence": "evidence/serve-realtime-mcp-output-cpu-20261120/README.md",
+      "item_cpu": {
+        "status": "PASS_REALTIME_MCP_RESULT_AND_APPROVAL_HISTORY_CPU",
+        "cases": 16,
+        "passed": 16,
+        "failed": 0,
+        "cpu_seconds": 0.06386043597012758,
+        "build_seconds": 50.08756549889222,
+        "build_warnings": 0,
+        "binary_sha256": "585d3a9ccbd7b14be2c93c54e7b9b6c2d1bc96e623fa0764e977cef0de05a296",
+        "runtime_connected": false,
+        "gpu_actions": 0,
+        "llm_requests": 0,
+        "default_revision": 396,
+        "default_unchanged": true,
+        "service_state": "STOPPED",
+        "all_master_tasks_active": true
+      },
+      "item_evidence": "evidence/serve-realtime-mcp-item-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

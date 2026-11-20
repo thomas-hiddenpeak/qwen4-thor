@@ -83,11 +83,16 @@ Status Canonical(const Json& input, std::string_view generated_id, bool pending,
   if (status) *output = std::move(item);
   return status;
 }
-bool SameIdentity(const Json& left, const Json& right) {
+bool SameIdentity(const Json& left, const Json& right,
+                  bool bind_mcp_approval = false) {
   for (const char* key : {"id", "type", "role", "call_id", "name",
                           "server_label", "approval_request_id"}) {
     const auto* a = left.Find(key);
     const auto* b = right.Find(key);
+    if (bind_mcp_approval && left.GetString("type") == "mcp_call" &&
+        std::string_view(key) == "approval_request_id" &&
+        (!a || a->IsNull()))
+      continue;
     if ((a == nullptr) != (b == nullptr)) return false;
     if (!a || (a->IsNull() && b->IsNull())) continue;
     if (!a->IsString() || !b->IsString() || a->str != b->str) return false;
@@ -458,9 +463,34 @@ Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
     return Invalid("native input requires its ASR completion owner");
   return UpdateEntry(ticket, item, terminal, grow);
 }
+Status RealtimeConversation::BindMcpApproval(const RealtimeItemTicket& ticket,
+                                             const Json& approval) {
+  const auto index = Position(ticket);
+  if (index == entries_.size() || !entries_[index].server_output ||
+      !entries_[index].pending ||
+      entries_[index].item.GetString("type") != "mcp_call")
+    return Invalid("MCP approval has no pending native call owner");
+  auto status = Shape(approval, maximum_bytes_);
+  if (!status) return status;
+  const auto id = approval.GetString("id");
+  if (approval.GetString("type") != "mcp_approval_request" ||
+      !id.starts_with("mcpr_") || !ValidRequestId(id))
+    return Invalid("invalid native MCP approval identity");
+  const auto& item = entries_[index].item;
+  for (const auto* field : {"name", "server_label", "arguments"})
+    if (approval.GetString(field) != item.GetString(field))
+      return Invalid("MCP approval differs from the generated call");
+  if (const auto* old = item.Find("approval_request_id"); old && !old->IsNull())
+    return old->IsString() && old->str == id
+               ? Status{}
+               : Invalid("MCP approval identity already bound");
+  auto bound = item;
+  Set(&bound, "approval_request_id", String(id));
+  return UpdateEntry(ticket, bound, false, true, true);
+}
 Status RealtimeConversation::UpdateEntry(const RealtimeItemTicket& ticket,
                                          const Json& item, bool terminal,
-                                         bool grow) {
+                                         bool grow, bool bind_mcp_approval) {
   const auto index = Position(ticket);
   if (index == entries_.size() || !entries_[index].pending ||
       revision_ == UINT64_MAX)
@@ -469,7 +499,7 @@ Status RealtimeConversation::UpdateEntry(const RealtimeItemTicket& ticket,
   const auto available = entry.charge + (grow ? maximum_bytes_ - charged_ : 0);
   auto status = Shape(item, available);
   if (!status) return status;
-  if (!SameIdentity(entry.item, item))
+  if (!SameIdentity(entry.item, item, bind_mcp_approval))
     return Invalid("output identity changed");
   if (Ordinary(item)) {
     const auto state = item.GetString("status");
@@ -635,7 +665,7 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       return Invalid("pending output generation was deleted");
     const auto& entry = entries_[position];
     if (!entry.server_output || entry.native_input ||
-        !SameIdentity(snapshot->items.array[index], entry.item))
+        !SameIdentity(snapshot->items.array[index], entry.item, true))
       return Invalid("pending output lost its native owner");
     if (!entry.pending && entry.item.GetString("type") == "function_call" &&
         entry.item.GetString("status") == "incomplete") {

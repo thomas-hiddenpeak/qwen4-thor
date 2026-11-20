@@ -98,6 +98,13 @@ class RealtimeConversation {
   Status FailAudioPart(const RealtimeItemTicket& ticket, size_t index);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
                 bool terminal, bool grow = false);
+  // Attach a durable native approval proposal to its pending server call.
+  // This is not authentication or dispatch permission. The caller must own
+  // the native proposal; its arguments/name/server must exactly match here.
+  // A previously attached ID is immutable, and client-created items cannot
+  // acquire this server-owned transition through ordinary Update.
+  Status BindMcpApproval(const RealtimeItemTicket& ticket,
+                         const io::Json& approval);
   // grow opts into atomic growth within this ledger's already bounded global
   // reservation. Existing fixed-reservation callers keep their old contract.
   // Null selects the default conversation; [] selects an empty context.
@@ -153,7 +160,7 @@ class RealtimeConversation {
   Status FinishAudioPart(const RealtimeItemTicket& ticket, size_t index,
                          std::optional<std::string_view> transcript);
   Status UpdateEntry(const RealtimeItemTicket& ticket, const io::Json& item,
-                     bool terminal, bool grow);
+                     bool terminal, bool grow, bool bind_mcp_approval = false);
   size_t Position(const RealtimeItemTicket& ticket) const;
   Status Insert(const io::Json& item, std::string_view generated_id,
                 std::optional<std::string_view> previous, bool in_conversation,
