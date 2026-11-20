@@ -1745,6 +1745,16 @@
         "docs/SERVE_REALTIME_TRACING_2026-11-20.md",
         "docs/evidence/serve-realtime-tracing-cpu-20261120/README.md"
       ]
+    },
+    "GET /v1/live/sessions": {
+      "semantics": "原生Live主WebSocket，SDK合同、启动配置与客户端上下文，复用实际tokenizer及原生ASR/LLM/TTS执行入口。",
+      "boundary": "开发中：客户端委派及主连接组合已有针对性CPU；真实SDK/WSS业务尚待验。录制、Responses/Decisions、fixture、旁路与媒体继续实现，未发行；不宣称完整Live兼容。",
+      "evidence": [
+        "src/server/chat_live.cpp",
+        "src/server/live_native_backend.cpp",
+        "tests/server_live_frontend_test.cpp",
+        "docs/evidence/serve-live-binding-cpu-20261121/README.md"
+      ]
     }
   },
   "whitelists": {
@@ -2358,8 +2368,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "8d66bb2ed16366789079a039103f693509facaffbf05d5eb3aaa17495322829d",
-    "cmake/ChatProtocolIdentity.cmake": "a035455b3e142939a2d06bf23cb988dff9244b7c8a2fbd641021c86eb40ac9bc",
+    "CMakeLists.txt": "20127bda81288d977c60973538ac7be38897d070c6aecb45a630b2019df699ca",
+    "cmake/ChatProtocolIdentity.cmake": "7010ef52df31276bc450b9276b68fa60d4f98a86c22da823a3e150a769e42dc4",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2475,7 +2485,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "3da4bab3e48a22428456f5efb4b899659ebc4d07133dab7ea324460ca9e6a589",
+    "include/q4t/server/chat_server.h": "5d4418a8dda8e2dcf909001a7fe628fc3b12f669b619237d16b70467a9b90a20",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2860,7 +2870,7 @@
     "src/server/chat_plan.cpp": "b2927a8d44b51250a7360027410350d50ad3fb9058bc39b7c85309094c16ba04",
     "src/server/chat_preflight.cpp": "c909efea0af86bdf14725169bdb2165eb9bb993efec48848ad3038f17eca938c",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
-    "src/server/chat_realtime.cpp": "a23978826758ff3ed673eb20f2be5ae65898ad40082fb99352190532bc3772c1",
+    "src/server/chat_realtime.cpp": "639643f6caa27abae7e961932ee70108956855a7bad5d0dc05a0fd448faf91ea",
     "src/server/chat_realtime_conversation.cpp": "9d9031ecb4b4c6f11a48ab07360bb54f696f76825c778931fa8ee697ab4be3a8",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
@@ -3461,7 +3471,7 @@
     "include/q4t/server/live_shape.h": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "include/q4t/server/live_configuration.h": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
-    "src/server/live_configuration.cpp": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79",
+    "src/server/live_configuration.cpp": "86b5a02d1da53b67affb498ad525f989bf5c255636af0488adf42565b0360882",
     "include/q4t/server/live_session.h": "0f81caf3594acc2d67459e4c314a7178de99ac189e1f3a9166330e810b547711",
     "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
     "src/server/live_session.cpp": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
@@ -3475,7 +3485,10 @@
     "include/q4t/server/live_frontend.h": "11d02427c04e386d4915b6e3c407e4938382d7c70cc6b77078bacef0080570f9",
     "src/server/live_frontend.cpp": "7518303eea9ec4efdbab4a493b637225397a6b787fa61fcc70e92af7f10815ba",
     "include/q4t/server/live_client_context.h": "288eb2626e404495826789cfded9fff961ad368fdbd3388276d6d83d2e515840",
-    "src/server/live_client_context.cpp": "c4652e148cc5ec4b23714e887fd6c4b35ca68b3d8b4c5a6f45cc1dd2c49c76c7"
+    "src/server/live_client_context.cpp": "c4652e148cc5ec4b23714e887fd6c4b35ca68b3d8b4c5a6f45cc1dd2c49c76c7",
+    "include/q4t/server/live_native_backend.h": "a47a8a8975bfe1b6de1f6a755c0232decf96f672d4a335a55ad47ac1edd1f254",
+    "src/server/chat_live.cpp": "081d56af3d469917eff39ba5686fa59b0bf69c2f395660b7a193ae24bd4ca1f6",
+    "src/server/live_native_backend.cpp": "64a24ed9c619bb0029b8e7051edbbc59320f3ac0596256ddc5d0e4354484df2e"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -5512,12 +5525,13 @@
     },
     "GET /v1/live/sessions": {
       "semantics": "原生入口鉴权后WebSocket升级及双向转发；Origin、Key、独立会话连接容量和绑定复核。",
-      "boundary": "入口CPU协议对端已验；后端实际Realtime/Live会话、模型执行与每轮RPM/TPM仍待实现，未发行。",
+      "boundary": "开发中：客户端委派及主连接组合已有针对性CPU；真实SDK/WSS业务尚待验。录制、Responses/Decisions、fixture、旁路与媒体继续实现，未发行；不宣称完整Live兼容。",
       "evidence": [
         "src/service/ingress_websocket.cpp",
         "src/service/ingress_main.cpp",
         "tools/serve_realtime/test_upgrade_ingress.py",
-        "docs/evidence/serve-realtime-upgrade-cpu-20261119/README.md"
+        "docs/evidence/serve-realtime-upgrade-cpu-20261119/README.md",
+        "docs/evidence/serve-live-binding-cpu-20261121/README.md"
       ]
     },
     "OPTIONS /v1/live/sessions": {
@@ -9614,5 +9628,20 @@
     "evidence": "docs/evidence/serve-live-context-cpu-20261121/README.md",
     "status": "CPU verified client context/delegation with actual native frontend workers and controlled model/tokenizer callbacks; actual model/route binding pending",
     "no_route_accepted": true
+  },
+  "live_binding_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/live_native_backend.h",
+      "src/server/chat_live.cpp",
+      "src/server/chat_realtime.cpp",
+      "src/server/live_configuration.cpp",
+      "src/server/live_native_backend.cpp"
+    ],
+    "evidence": "docs/evidence/serve-live-binding-cpu-20261121/README.md",
+    "status": "Concrete native binding CPU preparation, actual model HTTP pending; default unchanged",
+    "real_business_accepted": false
   }
 }

@@ -1,0 +1,22 @@
+{
+  "status": "BUILD_PASS",
+  "commands": [
+    {
+      "index": 0,
+      "returncode": 0,
+      "warnings": 0
+    },
+    {
+      "index": 1,
+      "returncode": 0,
+      "warnings": 0
+    }
+  ],
+  "seconds": 163.3304464230314,
+  "default_unchanged": true,
+  "sources_unchanged": true,
+  "new_gpu_starts": 0,
+  "binary_sha256": "43683066aa79cbd70504eb1acbb63b8347d82a49f095866bd65593446d7506bf",
+  "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+  "archive_sha256": "9304504ab0a88dc3955c7917c4830434c494fe862940fbe7ed592496637dc337"
+}

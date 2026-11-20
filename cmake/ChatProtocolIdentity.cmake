@@ -645,6 +645,8 @@ set(protocol_inputs
   src/server/live_frontend.cpp
   include/q4t/server/live_client_context.h
   src/server/live_client_context.cpp
+  include/q4t/server/live_native_backend.h
+  src/server/live_native_backend.cpp
   src/server/contracts/openai_live_types_v1.json
   cmake/live_types.h.in
   src/server/grammar_worker.cpp
@@ -789,6 +791,7 @@ set(protocol_inputs
   include/q4t/server/realtime_chat_execution.h
   src/server/realtime_chat_execution.cpp
   src/server/chat_realtime_conversation.cpp
+  src/server/chat_live.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp

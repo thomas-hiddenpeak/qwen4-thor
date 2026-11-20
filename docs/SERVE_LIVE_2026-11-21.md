@@ -72,3 +72,10 @@ Live累计83项不同CPU，不等于模型业务验收。继续前台调度、�
 指令、静默/可说上下文、实际前台队列、完整工具交接和延迟确认取消
 已准备；实际tokenizer/model仍需绑定。内部工具成功只表示创建交接，
 不表示外部任务完成；继续WSS、Responses/Decisions、fixture与其余子项。
+
+[主WSS原生绑定12项CPU](evidence/serve-live-binding-cpu-20261121/README.md)
+通过，累计112项不同CPU。SDK合法省略启动历史type已兼容，开发者
+角色映射为内部应用指令角色，实际提示保留文本与顺序。主连接已绑定
+现有tokenizer、当前客户身份与ASR/LLM/TTS原生入口；正式引擎构建与
+真实业务短验继续，不把受控CPU执行当实际模型验收。录制/其他委派
+及媒体尚待实现；默认rev426保持。

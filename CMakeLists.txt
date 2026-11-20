@@ -391,6 +391,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
   src/server/chat_realtime_conversation.cpp
+  src/server/chat_live.cpp
   src/server/chat_realtime_stream.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
@@ -612,6 +613,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/live_frontend_work.cpp
   src/server/live_frontend.cpp
   src/server/live_client_context.cpp
+  src/server/live_native_backend.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp
@@ -1062,6 +1064,7 @@ if(Q4T_BUILD_TESTS)
   src/server/live_frontend_work.cpp
   src/server/live_frontend.cpp
   src/server/live_client_context.cpp
+  src/server/live_native_backend.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp

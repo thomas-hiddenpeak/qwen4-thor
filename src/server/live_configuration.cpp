@@ -69,8 +69,8 @@ Status History(const Json& next, ChatPlanError* error) {
     const auto& part = content->array[0];
     const auto type = part.GetString("type");
     const bool assistant = item.GetString("role") == "assistant";
-    if (assistant ? type != "text" && type != "output_text"
-                  : type != "input_text")
+    if (!type.empty() && (assistant ? type != "text" && type != "output_text"
+                                   : type != "input_text"))
       return Invalid(error, path + ".content[0].type",
                      "Text part does not match its message role");
   }

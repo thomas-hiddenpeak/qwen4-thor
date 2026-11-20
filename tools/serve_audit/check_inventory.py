@@ -21,6 +21,25 @@ def native_token_observer(generation):
         raise ValueError('native output skipped token observation')
 
 
+def native_live_binding(realtime, live):
+    """Review concrete primary ownership; wire shapes alone are not execution."""
+    if 'HandleLive(fd, path, headers, initial, accept)' not in realtime or \
+            'path.substr(0, path.find(\'?\')) == "/v1/live/sessions"' not in realtime or \
+            not all(marker in live for marker in (
+                'path != "/v1/live/sessions"', 'PrepareRealtimeInput(client)',
+                'clients_.RecoveryIdentity(client.Index())',
+                'clients_.OwnsIdentity(client)', 'identity->Limits()',
+                'LockUnlessCancelled(tok_mu_, cancelled)', 'tok_->Encode(',
+                'MapLiveStartupHistory(', 'PrepareChatPrompt(',
+                'PlanNativeLiveClient(', 'requests_.Register(',
+                'requests_.Remove(control)',
+                'RunRealtimeConversation(client, job, control, delta, speech)',
+                'std::make_unique<NativeLiveClientBackend>',
+                'clients_.Authenticate(headers.client_id, headers.gateway_token)',
+                'return session.Finalized()', 'session.Join()')):
+        raise ValueError('review native Live primary execution and ownership')
+
+
 def missing_protocol_sources(root, manifest=None):
     if manifest is None:
         manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
@@ -84,6 +103,10 @@ def current_surface(root):
                     'ClientRateDomain::kBatch' in execution:
                 raise ValueError('review Realtime conversation native ownership')
             routes.append(("/v1/realtime", "GET"))
+        if 'HandleLive(fd, path, headers, initial, accept)' in realtime:
+            live = (root / 'src/server/chat_live.cpp').read_text()
+            native_live_binding(realtime, live)
+            routes.append(("/v1/live/sessions", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
@@ -441,6 +464,11 @@ def mutation_checks(inventory, actual):
             raise ValueError("trace deletion escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != trace]}))
+        live = "GET /v1/live/sessions"
+        if live not in actual[group]:
+            raise ValueError("Live primary route escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group]
+                                            if route != live]}))
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")
@@ -480,7 +508,18 @@ def mutation_checks(inventory, actual):
             pass
         else:
             raise ValueError('native output omission escaped review')
-    return len(cases) + 4 + len(private_headers) + len(text_paths)
+    realtime = (ROOT / 'src/server/chat_realtime.cpp').read_text()
+    live = (ROOT / 'src/server/chat_live.cpp').read_text()
+    for marker in ('RunRealtimeConversation(client, job, control, delta, speech)',
+                   'clients_.OwnsIdentity(client)', 'tok_->Encode(',
+                   'return session.Finalized()'):
+        try:
+            native_live_binding(realtime, live.replace(marker, 'omitted'))
+        except ValueError:
+            pass
+        else:
+            raise ValueError('native Live binding omission escaped review')
+    return len(cases) + 8 + len(private_headers) + len(text_paths)
 
 
 def main():

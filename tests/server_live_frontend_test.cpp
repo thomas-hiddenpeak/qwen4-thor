@@ -1,5 +1,7 @@
 #include "q4t/server/live_frontend.h"
 #include "q4t/server/live_client_context.h"
+#include "q4t/server/live_native_backend.h"
+#include "q4t/server/chat_prompt.h"
 
 #include <algorithm>
 
@@ -279,7 +281,365 @@ struct ContextFixture {
     return {};
   }
 };
+
+ChatPlanConfig NativeConfig() {
+  ChatPlanConfig config;
+  config.model = "q4t-test";
+  config.max_len = 8192;
+  config.structured = true;
+  config.native_tts_enabled = true;
+  config.native_asr_enabled = true;
+  return config;
+}
+struct NativeFixture {
+  Fixture f;
+  ChatPlanConfig planning = NativeConfig();
+  WebSocketOutput output{1ULL << 20, 64};
+  LiveSessionCallbacks callbacks;
+  std::unique_ptr<LiveSession> session;
+  std::vector<Json> events;
+  size_t creations = 0, publications = 0;
+  bool fail_publish = false;
+  NativeFixture() {
+    callbacks.configuration.default_voice = String("vivian");
+    callbacks.configuration.default_instructions = "BASE instructions";
+    callbacks.configuration.count_text = [](auto, size_t* count, auto*) {
+      *count = 4;
+      return q4t::Status{};
+    };
+    callbacks.configuration.count_history = [](const auto&, size_t* count,
+                                               auto*) {
+      *count = 10;
+      return q4t::Status{};
+    };
+    callbacks.configuration.validate = [this](const auto& value, auto* error) {
+      NativeLivePlan plan;
+      return PlanNativeLiveClient(value, planning, &plan, error);
+    };
+    callbacks.create = [this](const Json& configuration,
+                              const LiveEventSink& emit,
+                              std::unique_ptr<ILiveSessionBackend>* out) {
+      ++creations;
+      NativeLivePlan plan;
+      ChatPlanError error;
+      const auto status =
+          PlanNativeLiveClient(configuration, planning, &plan, &error);
+      if (!status)
+        return Error(error.http_status, error.code, status.message());
+      auto native = f.native;
+      native.emit = emit;
+      const auto previous = native.prepare;
+      native.prepare = [this, previous](const auto& job) {
+        RealtimeChatPlan prepared;
+        ChatPlanError failure;
+        const auto checked =
+            PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
+                             planning, &prepared, &failure, nullptr, true);
+        return checked ? previous(job)
+                       : Error(failure.http_status, failure.code,
+                               checked.message());
+      };
+      LiveClientContextCallbacks context;
+      context.count_text = callbacks.configuration.count_text;
+      context.emit = [this, emit](Json event) {
+        ++publications;
+        return fail_publish
+                   ? Error(503, "fixture_sink", "Publication uncertain", true)
+                   : emit(std::move(event));
+      };
+      auto selected = std::make_unique<NativeLiveClientBackend>(
+          "live_bound", std::move(native), std::move(context), 30);
+      auto* owner = selected.get();
+      *out = std::move(selected);
+      return owner->Prepare(configuration, std::move(plan));
+    };
+  }
+  bool Read() {
+    while (!output.Front().empty()) {
+      const auto frame = output.Front();
+      WebSocketDecoder decoder(false);
+      size_t consumed = 0;
+      Q4T_CHECK(decoder.Consume({reinterpret_cast<const uint8_t*>(frame.data()),
+                                 frame.size()},
+                                &consumed) == WebSocketRead::kEvent);
+      Q4T_CHECK(consumed == frame.size());
+      Json event;
+      Q4T_CHECK(q4t::io::ParseJson(std::string(decoder.Event().payload), &event,
+                                   true));
+      ChatPlanError error;
+      Q4T_CHECK(ValidateLiveShape(event, LiveShape::kServerEvent, &error));
+      events.push_back(std::move(event));
+      output.Acknowledge();
+    }
+    return true;
+  }
+  bool Start(Json configuration = Object({{"model", String("q4t-test")}})) {
+    if (!session) {
+      session = std::make_unique<LiveSession>("live_bound", 1795200000, output,
+                                              callbacks);
+      Q4T_CHECK(session->Start());
+    }
+    return Send(Object({{"type", String("session.start")},
+                        {"session", std::move(configuration)}}));
+  }
+  bool Send(Json event) {
+    return session->Message(WebSocketOpcode::kText, OutputJson(event)) &&
+           Read();
+  }
+  bool Command(std::string type) {
+    return Send(Object({{"type", String(std::move(type))}}));
+  }
+  bool Append(std::string kind, std::string text, std::string delegation = {}) {
+    return Send(Object(
+        {{"type", String("session." + kind + ".append")},
+         {"content", String(std::move(text))},
+         {"delegation_id",
+          delegation.empty() ? Json() : String(std::move(delegation))}}));
+  }
+  bool Tone() {
+    f.frames = 0;
+    f.voiced = true;
+    return Send(
+        Object({{"type", String("session.input_audio.append")},
+                {"audio", String(Base64(std::string(24000, '\x15')))}}));
+  }
+  bool Wait(const std::function<bool()>& predicate) {
+    const auto deadline = Clock::now() + 2s;
+    while (Clock::now() < deadline) {
+      Q4T_CHECK(session->Tick() && Read());
+      if (predicate()) return true;
+      std::this_thread::sleep_for(1ms);
+    }
+    return false;
+  }
+  size_t Count(std::string_view type) const {
+    return std::ranges::count_if(events, [&](const auto& event) {
+      return event.GetString("type") == type;
+    });
+  }
+  Json Last(std::string_view type) const {
+    for (auto it = events.rbegin(); it != events.rend(); ++it)
+      if (it->GetString("type") == type) return *it;
+    return {};
+  }
+  bool Close() {
+    return Command("session.close") &&
+           Wait([&] { return session->Finalized(); }) &&
+           Count("session.closed") == 1;
+  }
+};
 }  // namespace
+
+Q4T_TEST(live_native_optional_startup_types_preserve_roles_and_prompt_order) {
+  NativeFixture f;
+  auto initial = Array();
+  for (const auto* role : {"developer", "user", "assistant"}) {
+    initial.array.push_back(Object(
+        {{"role", String(role)},
+         {"content", Array({Object({{"text", String(std::string(role) +
+                                                    " unique text")}})})}}));
+  }
+  Json config;
+  ChatPlanError error;
+  Q4T_CHECK(ResolveLiveConfiguration(
+      Object({{"model", String("q4t-test")}, {"input", initial}}),
+      f.callbacks.configuration, &config, &error));
+  NativeLivePlan mapped;
+  Q4T_CHECK(PlanNativeLiveClient(config, f.planning, &mapped, &error));
+  Q4T_CHECK(mapped.input.array.size() == 3);
+  Q4T_CHECK(mapped.input.array[0].GetString("role") == "system");
+  Q4T_CHECK(mapped.input.array[1].GetString("role") == "user");
+  Q4T_CHECK(mapped.input.array[2].GetString("role") == "assistant");
+  RealtimeChatPlan plan;
+  Q4T_CHECK(PlanRealtimeChat(mapped.settings, Object(), mapped.input,
+                             f.planning, &plan, &error, nullptr, true));
+  const auto& generation = plan.generation;
+  std::string prompt;
+  std::vector<VisionItem> media;
+  Q4T_CHECK(PrepareChatPrompt(
+      generation.chat.Request(generation.generation_request),
+      generation.chat.constraints, &prompt, &media, &error.param, &error.code,
+      nullptr, true, generation.chat.async_tool_call_ids,
+      generation.chat.responses_tool_media, generation.chat.HeaderTools(),
+      generation.chat.tool_call_formats, generation.chat.prepared_source_data));
+  Q4T_CHECK(media.empty());
+  const auto developer = prompt.find("developer unique text");
+  const auto user = prompt.find("user unique text");
+  const auto assistant = prompt.find("assistant unique text");
+  Q4T_CHECK(developer != prompt.npos && developer < user && user < assistant &&
+            assistant != prompt.npos);
+  const auto accepted = OutputJson(config);
+  Set(&Field(initial.array[1], "content").array[0], "type",
+      String("output_text"));
+  Q4T_CHECK(!ResolveLiveConfiguration(
+      Object({{"model", String("q4t-test")}, {"input", initial}}),
+      f.callbacks.configuration, &config, &error));
+  Q4T_CHECK(OutputJson(config) == accepted);
+  return true;
+}
+
+Q4T_TEST(live_native_wire_audio_mapping_preserves_native_speech_contract) {
+  NativeFixture f;
+  for (const auto* type : {"audio/pcm", "audio/pcmu", "audio/pcma"}) {
+    for (const int rate : {8000, 16000, 24000}) {
+      Json configuration;
+      ChatPlanError error;
+      const auto requested = Object(
+          {{"model", String("q4t-test")},
+           {"audio", Object({{"format", Object({{"type", String(type)},
+                                                {"rate", Number(rate)}})}})}});
+      const bool allowed =
+          std::string(type) == "audio/pcm" ? rate != 8000 : rate == 8000;
+      Q4T_CHECK(ResolveLiveConfiguration(requested, f.callbacks.configuration,
+                                         &configuration, &error)
+                    .ok() == allowed);
+      if (!allowed) continue;
+      NativeLivePlan plan;
+      Q4T_CHECK(PlanNativeLiveClient(configuration, f.planning, &plan, &error));
+      Q4T_CHECK(plan.format.rate == uint32_t(rate));
+      const auto* audio = plan.settings.Find("audio")->Find("output");
+      Q4T_CHECK(audio->Find("format")->GetInt("rate") == 24000);
+      Q4T_CHECK(audio->Find("format")->GetString("type") == "audio/pcm");
+      Q4T_CHECK(audio->GetString("voice") == "vivian");
+      Q4T_CHECK(plan.settings.GetArray("tools")->array.size() == 1);
+      Q4T_CHECK(plan.settings.GetArray("tools")->array[0].GetString("name") ==
+                kLiveDelegateTool);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(live_native_unconnected_selection_never_starts_or_publishes) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start(
+      Object({{"model", String("q4t-test")}, {"store", Boolean(true)}})));
+  Q4T_CHECK(f.creations == 0 && f.Count("session.started") == 0);
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "live_processor_unavailable");
+  Q4T_CHECK(f.Start(Object({{"model", String("unknown-native-model")}})));
+  Q4T_CHECK(f.creations == 0 && f.Count("session.started") == 0);
+  Q4T_CHECK(f.Start() && f.Count("session.started") == 1 && f.creations == 1);
+  Q4T_CHECK(f.f.asr == 0 && f.f.models == 0 && f.Close());
+  return true;
+}
+
+Q4T_TEST(live_native_concrete_session_runs_input_speech_mute_and_close) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start() && f.Count("session.started") == 1);
+  Q4T_CHECK(f.Command("session.input_audio.mute"));
+  Q4T_CHECK(f.Count("session.input_audio.muted") == 1);
+  Q4T_CHECK(f.Tone() && f.f.asr == 0);
+  Q4T_CHECK(f.Command("session.input_audio.unmute"));
+  Q4T_CHECK(f.Count("session.input_audio.unmuted") == 1);
+  Q4T_CHECK(f.Tone() && f.Wait([&] { return f.f.model_released == 1; }));
+  Q4T_CHECK(f.f.asr_released == 1 && f.f.models == 1);
+  Q4T_CHECK(f.Count("session.input_transcript.delta") == 1);
+  Q4T_CHECK(f.Count("session.output_audio.delta") > 0);
+  Q4T_CHECK(f.Count("session.output_transcript.delta") == 1);
+  Q4T_CHECK(f.Close());
+  Q4T_CHECK(!f.f.overlap && !f.f.early_release && f.f.owner_thread);
+  Q4T_CHECK(!f.f.model_alive && !f.f.asr_alive);
+  return true;
+}
+
+Q4T_TEST(live_native_update_keeps_appended_instructions_and_snapshot_context) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  Q4T_CHECK(f.Append("instructions", "APPENDED instruction"));
+  Q4T_CHECK(f.Wait([&] { return f.f.model_released == 1; }));
+  Q4T_CHECK(f.Send(Object(
+      {{"type", String("session.update")},
+       {"session", Object({{"delegation", Object({{"type", String("client")},
+                                                  {"acknowledgement_delay_ms",
+                                                   Number(1000)}})}})}})));
+  Q4T_CHECK(f.Count("session.updated") == 1);
+  Q4T_CHECK(f.Append("thinking", "FACT checked silently"));
+  Q4T_CHECK(f.f.models == 1);
+  Q4T_CHECK(f.Append("commentary", "Say the checked fact"));
+  Q4T_CHECK(f.Wait([&] { return f.f.model_released == 2; }));
+  Q4T_CHECK(f.f.snapshots.size() == 2);
+  for (const auto& job : f.f.snapshots) {
+    const auto instructions = job.settings.GetString("instructions");
+    Q4T_CHECK(instructions.find("BASE instructions") != std::string::npos);
+    Q4T_CHECK(instructions.find("APPENDED instruction") != std::string::npos);
+    Q4T_CHECK(job.response.GetString("tool_choice") == "none");
+  }
+  Q4T_CHECK(OutputJson(f.f.snapshots[0].snapshot.items).find("FACT checked") ==
+            std::string::npos);
+  Q4T_CHECK(OutputJson(f.f.snapshots[1].snapshot.items).find("FACT checked") !=
+            std::string::npos);
+  Q4T_CHECK(f.Close());
+  return true;
+}
+
+Q4T_TEST(live_native_client_delegation_has_real_handoff_and_result_context) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  f.f.delegate_next = true;
+  Q4T_CHECK(f.Tone() && f.Wait([&] { return f.f.model_released == 1; }));
+  Q4T_CHECK(f.Count("session.delegation.created") == 1);
+  const auto delegation = f.Last("session.delegation.created");
+  const auto id = delegation.Find("delegation")->GetString("id");
+  Q4T_CHECK(!id.empty());
+  Q4T_CHECK(OutputJson(delegation).find("Read project resources") ==
+            std::string::npos);
+  Q4T_CHECK(f.Append("thinking", "Actual project result", id));
+  Q4T_CHECK(f.Append("commentary", "Summarize the real result", id));
+  Q4T_CHECK(f.Wait([&] { return f.f.model_released == 2; }));
+  const auto& items = f.f.snapshots[1].snapshot.items;
+  bool found = false;
+  for (const auto& item : items.array) {
+    if (item.GetString("type") != "function_call_output") continue;
+    Json receipt;
+    Q4T_CHECK(q4t::io::ParseJson(item.GetString("output"), &receipt, true));
+    Q4T_CHECK(!receipt.GetBool("task_completed"));
+    Q4T_CHECK(receipt.GetString("delegation_id") == id);
+    found = true;
+  }
+  Q4T_CHECK(found && OutputJson(items).find("Actual project result") !=
+                         std::string::npos);
+  Q4T_CHECK(f.Close() && f.f.models == 2);
+  return true;
+}
+
+Q4T_TEST(live_native_partial_prepare_is_cleaned_before_known_retry) {
+  NativeFixture f;
+  f.f.bad_input = true;
+  Q4T_CHECK(f.Start() && f.creations == 1);
+  Q4T_CHECK(f.Count("session.started") == 0 && f.Count("error") == 1);
+  Q4T_CHECK(f.f.models == 0 && f.f.asr == 0);
+  f.f.bad_input = false;
+  Q4T_CHECK(f.Start() && f.creations == 2);
+  Q4T_CHECK(f.Count("session.started") == 1 && f.Close());
+  return true;
+}
+
+Q4T_TEST(live_native_uncertain_publication_terminates_without_replay) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  f.fail_publish = true;
+  Q4T_CHECK(!f.Append("instructions", "Durable but uncertain publication"));
+  f.session->Join();
+  Q4T_CHECK(f.publications == 1 && f.f.models == 0);
+  Q4T_CHECK(!f.session->Tick() && !f.session->Finalized());
+  Q4T_CHECK(f.Count("session.closed") == 0 && f.creations == 1);
+  Q4T_CHECK(!f.Command("session.close") && f.publications == 1);
+  return true;
+}
+
+Q4T_TEST(live_native_disconnect_joins_the_active_borrower_without_completion) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  f.f.hold_model = true;
+  Q4T_CHECK(f.Append("commentary", "Native active generation"));
+  Q4T_CHECK(f.Wait([&] { return f.f.model_alive.load(); }));
+  f.session->Cancel();
+  f.session->Join();
+  Q4T_CHECK(f.f.model_released == 1 && !f.f.model_alive);
+  Q4T_CHECK(!f.f.early_release && !f.session->Finalized());
+  Q4T_CHECK(f.Count("session.closed") == 0);
+  return true;
+}
 
 Q4T_TEST(live_frontend_composes_actual_input_history_and_speech_workers) {
   Fixture f;

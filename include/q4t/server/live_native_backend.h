@@ -1,0 +1,47 @@
+// Concrete native Live frontend and client delegation backend.
+#pragma once
+
+#include "q4t/server/live_client_context.h"
+#include "q4t/server/realtime_chat_plan.h"
+
+namespace q4t::server {
+struct NativeLivePlan {
+  io::Json settings, input;
+  RealtimeAudioFormat format;
+};
+Status MapLiveStartupHistory(const io::Json& input, io::Json* output,
+                             ChatPlanError* error);
+// Input is the resolved Live configuration. Required yet unconnected native
+// processors fail preparation; their remaining implementation is tracked in
+// the Live plan, never certified by accepting a wire shape.
+Status PlanNativeLiveClient(const io::Json& configuration,
+                            const ChatPlanConfig& planning,
+                            NativeLivePlan* output, ChatPlanError* error);
+
+class NativeLiveClientBackend final : public ILiveSessionBackend {
+ public:
+  NativeLiveClientBackend(std::string id, LiveFrontendNative native,
+                          LiveClientContextCallbacks context,
+                          uint32_t max_audio_seconds,
+                          size_t message_bytes = kWebSocketMessageLimit);
+  ~NativeLiveClientBackend() override;
+  ObjectReply Prepare(io::Json configuration, NativeLivePlan plan);
+  ObjectReply Update(const io::Json& configuration) override;
+  ObjectReply Command(const io::Json& event) override;
+  ObjectReply Tick() override;
+  ObjectReply Close() override;
+  bool Drained() const override;
+  void Cancel() noexcept override;
+  void Join() noexcept override;
+
+ private:
+  LiveFrontendNative Bind(LiveFrontendNative native);
+  const std::string id_;
+  const LiveClientContextCallbacks context_callbacks_;
+  LiveFrontend frontend_;
+  std::unique_ptr<LiveClientContext> context_;
+  io::Json configuration_;
+  bool attempted_ = false, prepared_ = false, closing_ = false;
+  bool cancelled_ = false, failed_ = false;
+};
+}  // namespace q4t::server

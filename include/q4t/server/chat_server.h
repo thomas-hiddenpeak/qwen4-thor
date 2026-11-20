@@ -331,6 +331,9 @@ class ChatServer {
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
                                    std::string_view accept);
+  void HandleLive(int fd, std::string_view path,
+                    const HttpRequestHeaders& headers,
+                    std::string_view initial, std::string_view accept);
   RealtimeGenerationResult RunRealtimeConversation(
       const ClientIdentity& client, const RealtimeConversationJob& job,
       const std::shared_ptr<RequestControl>& control,

@@ -1,0 +1,37 @@
+{
+  "status": "PASS_NATIVE_LIVE_PRIMARY_BINDING_CPU_PREPARATION",
+  "returncode": 0,
+  "build_seconds": 35.79086441034451,
+  "cpu_seconds": 0.11377752292901278,
+  "tests": 12,
+  "commands": [
+    {
+      "command": 0,
+      "returncode": 0
+    },
+    {
+      "command": 1,
+      "returncode": 0
+    }
+  ],
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-20261121/binding-plan-01/required-01.txt"
+  ],
+  "binary_sha256": "830d50407718c2cd9dfd8c6dc13e4948983a2e8e9e5c6e1849f75a1ea98f1b60",
+  "sources_unchanged": true,
+  "protected_unchanged": true,
+  "gpu_actions": 0,
+  "distinct_tests": 12,
+  "new_tests": 9,
+  "direct_existing_tests": 3,
+  "inventory_reviewed_sources": 8,
+  "inventory_mutation_checks": 28,
+  "real_model_business_accepted": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_active": true,
+  "archive_sha256": "da7b1d96185153dfac90233a253e8d5f4ae8ce179aa869222a971f949353fa47"
+}
