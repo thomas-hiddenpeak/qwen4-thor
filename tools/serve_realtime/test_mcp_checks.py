@@ -25,6 +25,11 @@ def fixture(mode=c.MODES[0]):
                   approve=mode==c.MODES[1])
     events=[]
     for n,row in enumerate(rows):
+        if n==3:
+            events.append(dict(type='conversation.item.done',item=dict(type='message',
+                id='user_mcp_after_fault',role='user',
+                content=[dict(type='input_text',text=c.ORDINARY_PROMPT)])))
+        events.append(dict(type='response.created',response=dict(id=row['id'])))
         if n in (0,2):
             events.append(dict(type='response.mcp_call_arguments.delta',response_id=row['id'],
                 item_id=row['output'][0]['id'],delta=row['output'][0]['arguments']))
@@ -74,17 +79,17 @@ class McpEvidence(unittest.TestCase):
 
     def test_generation_cannot_claim_tool_completion(self):
         sample=fixture();sample[0]['responses'][0]['output'][0]['output']='invented'
-        sample[0]['events'][1]['response']=copy.deepcopy(sample[0]['responses'][0]);reject(self,sample)
-        sample=fixture();events=sample[0]['events'];events[1],events[2]=events[2],events[1]
+        sample[0]['events'][2]['response']=copy.deepcopy(sample[0]['responses'][0]);reject(self,sample)
+        sample=fixture();events=sample[0]['events'];events[2],events[3]=events[3],events[2]
         reject(self,sample)
 
     def test_duplicate_terminal_and_different_journal_rejected(self):
-        sample=fixture();sample[0]['events'].append(copy.deepcopy(sample[0]['events'][2]));reject(self,sample)
+        sample=fixture();sample[0]['events'].append(copy.deepcopy(sample[0]['events'][3]));reject(self,sample)
         sample=fixture();sample[1].pop()
         with self.assertRaises(Exception):c.observe(*sample)
 
     def test_stream_or_durable_source_forgery_rejected(self):
-        sample=fixture();sample[0]['events'][0]['delta']='{}';reject(self,sample)
+        sample=fixture();sample[0]['events'][1]['delta']='{}';reject(self,sample)
         sample=fixture();sample[3]['sha256']='b'*64;reject(self,sample)
         sample=fixture();sample[2]['calls'].append(copy.deepcopy(sample[2]['calls'][0]));reject(self,sample)
 
@@ -108,6 +113,61 @@ class McpEvidence(unittest.TestCase):
         sample[1]=copy.deepcopy(sample[0]['events'])
         observed=c.observe(*sample);self.assertEqual(observed['protocol'],'PASS');self.assertEqual(observed['quality'][0]['status'],'FAIL')
         sample[0]['status']='PASS';reject(self,sample)
+
+    def test_new_question_is_an_actual_user_turn_before_admission(self):
+        for change in ('missing','late','content'):
+            sample=fixture();events=sample[0]['events'];question=next(e for e in events if
+                e.get('item',{}).get('id')=='user_mcp_after_fault')
+            if change=='content':question['item']['content'][0]['text']='irrelevant'
+            else:
+                events.remove(question)
+                if change=='late':events.append(question)
+            reject(self,sample)
+
+    def test_budget_terminal_is_protocol_valid_but_quality_incomplete(self):
+        sample=fixture();row=sample[0]['responses'][3];row['status']='incomplete'
+        row['status_details']=dict(reason='max_output_tokens')
+        row['usage']=dict(input_tokens=12,output_tokens=256,total_tokens=268)
+        row['output'][0]['content'][0]['text']='42'
+        for e in sample[0]['events']:
+            if e['type']=='response.done' and e['response']['id']==row['id']:e['response']=copy.deepcopy(row)
+        sample[0]['quality'][1]['status']='FAIL';sample[0]['status']='QUALITY_FAIL'
+        sample[5]['settled']=310;sample[1]=copy.deepcopy(sample[0]['events'])
+        observed=c.observe(*sample);self.assertEqual(observed['protocol'],'PASS')
+        self.assertEqual(observed['quality'][1]['status'],'FAIL')
+        sample[0]['status']='PASS';reject(self,sample)
+
+
+class RetainedRepair(unittest.TestCase):
+    @staticmethod
+    def sample():
+        original=fixture(); receipt,events,remote,source,before,after=original
+        retained=copy.deepcopy(receipt['tools']);row=receipt['responses'][-1]
+        events=[dict(type='conversation.item.done',item=copy.deepcopy(i)) for i in retained]+[
+            dict(type='mcp_list_tools.failed',item_id='broken'),
+            dict(type='conversation.item.done',item=dict(type='message',id='user_mcp_after_fault',
+                role='user',content=[dict(type='input_text',text=c.ORDINARY_PROMPT)])),
+            dict(type='response.created',response=dict(id=row['id'])),
+            dict(type='response.done',response=copy.deepcopy(row))]
+        receipt.update(mode='ordinary-repair',responses=[row],tools=[],events=events,
+                       quality=receipt['quality'][1:])
+        return [receipt,copy.deepcopy(events),dict(calls=[],methods=[]),retained,before,
+                dict(after,admitted=1,settled=14)]
+
+    def test_authentic_history_cannot_replay_or_change(self):
+        sample=self.sample();self.assertTrue(c.observe_repair(*sample)['retained_history_authenticated'])
+        sample=self.sample();sample[2]['methods'].append('tools/call')
+        with self.assertRaises(Exception):c.observe_repair(*sample)
+        sample=self.sample();sample[3][0]['output']='invented'
+        with self.assertRaises(Exception):c.observe_repair(*sample)
+
+    def test_one_real_user_job_and_complete_cleanup(self):
+        for key in ('admitted','settled','reserved','sessions','host_bytes'):
+            sample=self.sample();sample[5][key]+=1
+            with self.assertRaises(Exception):c.observe_repair(*sample)
+        sample=self.sample();sample[0]['events'][3]['item']['content'][0]['text']='old task'
+        sample[1]=copy.deepcopy(sample[0]['events'])
+        with self.assertRaises(Exception):c.observe_repair(*sample)
 
 
 if __name__=='__main__':unittest.main()

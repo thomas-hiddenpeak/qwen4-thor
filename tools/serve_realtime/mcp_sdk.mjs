@@ -11,7 +11,7 @@ for await (const part of process.stdin) {
   check(Buffer.byteLength(input) <= 65536, 'actor input bound');
 }
 const args = JSON.parse(input);
-check(['direct-deny-import', 'approve-unknown'].includes(args.mode), 'fixed MCP scenario');
+check(['direct-deny-import', 'approve-unknown', 'ordinary-repair'].includes(args.mode), 'fixed MCP scenario');
 const sdk = path.resolve(process.env.Q4T_NODE_SDK_DIR);
 for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
   check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules', name,
@@ -63,8 +63,8 @@ const definition = (approval, broken = false) => ({ type: 'mcp',
   authorization: args.mcp_token, allowed_tools: ['read_project_record'], require_approval: approval });
 const choice = { type: 'mcp', server_label: 'project', name: 'read_project_record' };
 const request = 'Call read_project_record with path="docs/MODEL.md", start_line=1, line_count=3. Read the actual project document. Do not answer before receiving the tool result.';
-async function create(response) {
-  check(responses.length < 4, 'four generation attempts per connection');
+async function create(response, ordinary = false) {
+  check(responses.length < (args.mode === 'ordinary-repair' ? 1 : 4), 'generation attempt bound');
   const at = events.length;
   send({ type: 'response.create', response: { max_output_tokens: 256,
     output_modalities: ['text'], ...response } });
@@ -72,7 +72,11 @@ async function create(response) {
   const done = events.slice(at).find((e) => e.type === 'response.done').response;
   // Retain the real terminal even when a later protocol or quality check fails.
   responses.push(done);
-  terminal(events, done.id, 'completed'); usage(done); streamAgrees(events, done);
+  const status = ordinary && done.status === 'incomplete' ? 'incomplete' : 'completed';
+  terminal(events, done.id, status); usage(done); streamAgrees(events, done);
+  if (status === 'incomplete')
+    check(done.status_details?.reason === 'max_output_tokens' &&
+      done.usage.output_tokens === (response.max_output_tokens || 256), 'actual output budget exhausted');
   return done;
 }
 function generated(response) {
@@ -119,7 +123,17 @@ let status = 'FAIL', error;
 try {
   await until(() => events.some((e) => e.type === 'session.created') &&
     events.some((e) => e.type === 'conversation.created'));
-  if (args.mode === 'direct-deny-import') {
+  if (args.mode === 'ordinary-repair') {
+    check(Array.isArray(args.retained_history) && args.retained_history.length === 2,
+      'exact actual successful/denied history required');
+    for (const item of args.retained_history) {
+      check(item.type === 'mcp_call' && (item.output || item.error), 'terminal history only');
+      send({ type: 'conversation.item.create', item });
+      await until(() => events.some((e) => e.type === 'conversation.item.done' && e.item?.id === item.id));
+    }
+    send({ type: 'session.update', session: { type: 'realtime', tools: [definition('never', true)] } });
+    await until(() => events.some((e) => e.type === 'mcp_list_tools.failed'));
+  } else if (args.mode === 'direct-deny-import') {
     // No prior session tools: this response must import and freeze its own catalog.
     const first = generated(await create({ tools: [definition('never')], tool_choice: choice,
       instructions: request }));
@@ -139,13 +153,16 @@ try {
     const failed = await result(lost, true);
     check(JSON.stringify(failed.error).includes('mcp_result_unknown'), 'unknown receipt failure must be preserved');
   }
-  const ordinary = await create({ tools: [], tool_choice: 'none', max_output_tokens: 32,
-    instructions: 'Compute 6 * 7. Reply only with the decimal number.' });
+  const question = { type: 'message', id: 'user_mcp_after_fault', role: 'user',
+    content: [{ type: 'input_text', text: 'Compute 6 * 7. Reply only with the decimal number.' }] };
+  send({ type: 'conversation.item.create', item: question });
+  await until(() => events.some((e) => e.type === 'conversation.item.done' && e.item?.id === question.id));
+  const ordinary = await create({ tools: [], tool_choice: 'none' }, true);
   quality.push({ case: 'ordinary_after_fault', answer: text(ordinary).trim(),
-    status: text(ordinary).trim() === '42' ? 'PASS' : 'FAIL' });
+    status: ordinary.status === 'completed' && text(ordinary).trim() === '42' ? 'PASS' : 'FAIL' });
   rt.close(); await until(() => closed, true);
-  check(connections === 1 && closeCode === 1000 && responses.length === 4,
-    'one clean connection and four generations');
+  check(connections === 1 && closeCode === 1000 &&
+    responses.length === (args.mode === 'ordinary-repair' ? 1 : 4), 'one clean connection and bounded generations');
   status = quality.every((row) => row.status === 'PASS') ? 'PASS' : 'QUALITY_FAIL';
 } catch (e) { error = e.message; rt.socket.terminate(); }
 finally {

@@ -1,0 +1,129 @@
+{
+  "files": {
+    "archive_sdk_failure_01.py": {
+      "bytes": 4723,
+      "sha256": "842c6d74ef88050ec314e754ceb7c640fa2c152311dc7dd6b66e75af885df644"
+    },
+    "sdk-cpu-02/plan.json": {
+      "bytes": 717,
+      "sha256": "59b5f9413055e66c366b0aa67feafbb53503471d1c131ae55967f290434ae378"
+    },
+    "sdk-cpu-02/result.json": {
+      "bytes": 575,
+      "sha256": "b52a17bf39a8b27ca665e0548bb46177585082a06b94c6128085dfff4544d223"
+    },
+    "sdk-cpu-02/stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-cpu-02/stderr.txt": {
+      "bytes": 2251,
+      "sha256": "6eca25b0e79e417b3a5c350d4fdf96900be08afdb25e27c97aa49f1b42dc9fd4"
+    },
+    "source/tools/serve_realtime/mcp_sdk.mjs": {
+      "bytes": 10378,
+      "sha256": "edc5cde45fe9e5ab87c81e8af82d6ce8ce9cc3b771571938862eafee225bf0f3"
+    },
+    "source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 16566,
+      "sha256": "762e0dc397ec62e25b150bbf3d2aed120554ba585df54341178cb4c3292165f1"
+    },
+    "source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 10955,
+      "sha256": "2953fa89d5c4a6cc76c7e188e46620a748b7de4aa9294f4398b77f7d8931b08e"
+    },
+    "source/tools/serve_realtime/test_mcp_checks.py": {
+      "bytes": 10493,
+      "sha256": "e64f29a88984b6a96bb84e867817bbb1f6b0166d9c39625511eafe03bd075a27"
+    },
+    "sdk-business-01/plan.json": {
+      "bytes": 997548,
+      "sha256": "7e82a05e8ac927fccaa5a013354b948d5d79a5781007f70552337c43571a8899"
+    },
+    "sdk-business-01/lease/exit.json": {
+      "bytes": 637,
+      "sha256": "8476ee233ab0872d06084c50c8e6ba0aa58d7b742aaa1ac5ad2ce336cf6c6bf7"
+    },
+    "sdk-business-01/lease/events.jsonl": {
+      "bytes": 1105,
+      "sha256": "1ebbb9b40119ac04242a27766b5119bdb6f75a9e619091de2716722d64c632b3"
+    },
+    "sdk-business-01/lease/nvml-queries.jsonl": {
+      "bytes": 6847,
+      "sha256": "02f87e72ef1daa7f6ef8366dc374da7a362602e0aa6ff8f04f31dc82013796f1"
+    },
+    "sdk-business-01/preflight-failure.json": {
+      "bytes": 1023,
+      "sha256": "ebd300c14376f06f2adf7bab0f116b3daf1eb32b65d4dff0e1b73dcfab426240"
+    },
+    "sdk-business-02/plan.json": {
+      "bytes": 997548,
+      "sha256": "3ecee81c59e291ecc08fce558d94a2e15a3f638b0debc7299d601f76daafc094"
+    },
+    "sdk-business-02/lease/exit.json": {
+      "bytes": 709,
+      "sha256": "53120fb1fd8cce8b37f18bd7173d0b11820c5740d425927120b1121fd9d09892"
+    },
+    "sdk-business-02/lease/events.jsonl": {
+      "bytes": 10399,
+      "sha256": "02593c71b858c5a02bc3c425f3d3415128896164b7618620d27d5444ef9083c5"
+    },
+    "sdk-business-02/lease/nvml-queries.jsonl": {
+      "bytes": 127533,
+      "sha256": "34557e142fff81c5ae4fba2ee71fc5f33f2f4ffbac79af53cc7256a7826a116f"
+    },
+    "sdk-business-02/result.json": {
+      "bytes": 1213,
+      "sha256": "e0cff5e1e9e1ad4907910ba2f615d576a2abd49eb666f507f359f69cdf060c5f"
+    },
+    "sdk-business-02/counts.json": {
+      "bytes": 100,
+      "sha256": "86f7cbc7820ba97b3af7cc2381ead55313d2b91773b0e9d9affc9be218d9f75f"
+    },
+    "sdk-business-02/cleanup.json": {
+      "bytes": 4529,
+      "sha256": "00dc740f509fda805851853b3724c52db6e4282662a80947fb885fb53556abe8"
+    },
+    "sdk-business-02/primary-mcp.sdk.json": {
+      "bytes": 52745,
+      "sha256": "4d69c160a4b35adb9f6f7066e919fcbeb9b5d0f6115d1af650ddf789d88769d7"
+    },
+    "sdk-business-02/primary-mcp.events.jsonl": {
+      "bytes": 48346,
+      "sha256": "ab988c036b36cec90492fe729b8e48a4ab871514c58de114121b458261193007"
+    },
+    "sdk-business-02/primary-mcp.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-business-02/primary-peer-results.json": {
+      "bytes": 818,
+      "sha256": "72f91de0ecd3a81b81675f1eb1a8ed64b8f10e4064165a71031d22de2aae7a8d"
+    },
+    "sdk-business-02/primary-config.json": {
+      "bytes": 20965,
+      "sha256": "b3046cd153f000f413b14bd55775305f541932b4d3c44413030b1759ea1e7746"
+    },
+    "sdk-business-02/primary-capabilities.json": {
+      "bytes": 60183,
+      "sha256": "3250fa9d8a032f40bfac42e1d6163f6ab530e20b6733975aec9eb8d9ac62a6d3"
+    },
+    "original-source/tools/serve_realtime/mcp_sdk.mjs": {
+      "bytes": 9001,
+      "sha256": "76b7bc89d76cb644d76e8560dfb2be3c1c39cf0b51334e6cda73b2ee221bba1d"
+    },
+    "original-source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 14635,
+      "sha256": "841c770d7151f9f598189c41bf4666766fa12061d1570022de27874b46247632"
+    },
+    "original-source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 6529,
+      "sha256": "8d9c514e55c2a787c962715a9fcf18da0e1eabffd9d97208e70ea470ffb6ce89"
+    },
+    "original-source/tools/serve_realtime/test_mcp_checks.py": {
+      "bytes": 6876,
+      "sha256": "7d85616739646856044fa5614cdb5a2b509f1b5995d49f7bb2db79f7de021817"
+    }
+  },
+  "archive_sha256": "9371afeb848f11e902d55f3eb4a177a3065c3353646050650e67e4f0496b4fe0"
+}

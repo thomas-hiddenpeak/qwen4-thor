@@ -5,6 +5,7 @@ from tools.serve_responses import mcp_business_peer as peer
 from tools.serve_service.package import require
 
 MODES = ('direct-deny-import', 'approve-unknown')
+ORDINARY_PROMPT = 'Compute 6 * 7. Reply only with the decimal number.'
 
 
 def observe(receipt, journal, remote, source, before, after):
@@ -19,9 +20,14 @@ def observe(receipt, journal, remote, source, before, after):
     responses, tools = receipt['responses'], receipt['tools']
     require(len(responses) == 4 and len(tools) == 2 and
             len({r['id'] for r in responses}) == 4 and
-            all(r['status'] == 'completed' for r in responses) and
+            all(r['status'] == 'completed' for r in responses[:3]) and
+            responses[3]['status'] in ('completed', 'incomplete') and
             [e['response'] for e in events if e['type'] == 'response.done'] == responses,
             'actual generation terminals missing or duplicated')
+    if responses[3]['status'] == 'incomplete':
+        require(responses[3]['status_details']['reason'] == 'max_output_tokens' and
+                responses[3]['usage']['output_tokens'] == 256,
+                'incomplete response did not reach its actual frozen budget')
     tokens = sum(response_usage(r) for r in responses)
     require(after['admitted'] - before['admitted'] == 4 and
             after['settled'] - before['settled'] == tokens and
@@ -85,15 +91,69 @@ def observe(receipt, journal, remote, source, before, after):
     if mode == MODES[0]:
         require(any(e['type'] == 'mcp_list_tools.failed' for e in events),
                 'actual catalog fault not exercised')
+    question = [e for e in events if e['type'] == 'conversation.item.done' and
+                e.get('item', {}).get('id') == 'user_mcp_after_fault']
+    require(len(question) == 1 and question[0]['item']['role'] == 'user' and
+            question[0]['item']['content'] == [dict(type='input_text', text=ORDINARY_PROMPT)],
+            'ordinary task needs its own actual user turn')
+    created = [e for e in events if e['type'] == 'response.created' and
+               e.get('response', {}).get('id') == responses[3]['id']]
+    require(len(created) == 1 and events.index(question[0]) < events.index(created[0]),
+            'new user task was not present when the ordinary response started')
     text = lambda r: ''.join(p['text'] for i in r['output'] if i['type'] == 'message'
                             for p in i['content'] if p['type'] == 'output_text').strip()
     title = source['text'].splitlines()[0].split(': ', 1)[1].lstrip('# ')
     quality = [dict(case='document', answer=text(responses[1]), status='PASS' if
                     title in text(responses[1]) and source['citation'] in text(responses[1]) else 'FAIL'),
                dict(case='ordinary_after_fault', answer=text(responses[3]),
-                    status='PASS' if text(responses[3]) == '42' else 'FAIL')]
+                    status='PASS' if responses[3]['status'] == 'completed' and
+                    text(responses[3]) == '42' else 'FAIL')]
     require(quality == receipt['quality'] and receipt['status'] ==
             ('PASS' if all(r['status'] == 'PASS' for r in quality) else 'QUALITY_FAIL'),
             'model quality evidence was changed or misclassified')
     return dict(protocol='PASS', quality=quality, model_jobs=4, settled_tokens=tokens,
                 actual_reads=len(reads), automatic_tool_replays=0, resources_released=True)
+
+
+def observe_repair(receipt, journal, remote, retained, before, after):
+    """One new user turn after an actual fault, using sealed retained history."""
+    require(receipt['mode']=='ordinary-repair' and receipt['status'] in ('PASS','QUALITY_FAIL') and
+            receipt['transport']=='official-openai-wss' and receipt['connections']==1 and
+            receipt['close_code']==1000 and receipt['automatic_replay'] is False and
+            receipt['tools']==[] and len(receipt['responses'])==1 and receipt['events']==journal,
+            'bounded repair SDK identity')
+    events=journal;response=receipt['responses'][0]
+    require(not remote['calls'] and 'tools/call' not in remote['methods'] and
+            not any(e['type'] in ('error','response.mcp_call.in_progress') for e in events) and
+            any(e['type']=='mcp_list_tools.failed' for e in events),
+            'history repair dispatched a tool or skipped the real catalog fault')
+    require([e['response'] for e in events if e['type']=='response.done']==[response] and
+            response['status'] in ('completed','incomplete'), 'one actual repair terminal')
+    if response['status']=='incomplete':
+        require(response['status_details']['reason']=='max_output_tokens' and
+                response['usage']['output_tokens']==256,'actual repair budget exhausted')
+    require(len(retained)==2 and retained[0].get('output') and retained[1].get('error'),
+            'exact successful and denied history required')
+    for item in retained:
+        copied=[e['item'] for e in events if e['type']=='conversation.item.done' and
+                e.get('item',{}).get('id')==item['id']]
+        require(copied==[item], 'actual sealed MCP history was altered')
+    question=[e for e in events if e['type']=='conversation.item.done' and
+              e.get('item',{}).get('id')=='user_mcp_after_fault']
+    created=[e for e in events if e['type']=='response.created' and
+             e.get('response',{}).get('id')==response['id']]
+    require(len(question)==len(created)==1 and question[0]['item']['role']=='user' and
+            question[0]['item']['content']==[dict(type='input_text',text=ORDINARY_PROMPT)] and
+            events.index(question[0])<events.index(created[0]),'new user task absent or late')
+    tokens=response_usage(response)
+    require(after['admitted']-before['admitted']==1 and after['settled']-before['settled']==tokens and
+            all(after[k]==0 for k in ('reserved','active','sessions','host_bytes')) and
+            after['free_slots']==1,'actual repair settlement or release differs')
+    answer=''.join(p['text'] for i in response['output'] if i['type']=='message'
+                   for p in i['content'] if p['type']=='output_text').strip()
+    quality=[dict(case='ordinary_after_fault',answer=answer,
+        status='PASS' if response['status']=='completed' and answer=='42' else 'FAIL')]
+    require(receipt['quality']==quality and receipt['status']==
+            ('PASS' if quality[0]['status']=='PASS' else 'QUALITY_FAIL'), 'repair quality misclassified')
+    return dict(protocol='PASS',quality=quality,model_jobs=1,settled_tokens=tokens,
+        actual_reads=0,automatic_tool_replays=0,retained_history_authenticated=True,resources_released=True)

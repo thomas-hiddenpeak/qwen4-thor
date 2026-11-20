@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import subprocess
 import sys
 import time
@@ -32,13 +33,16 @@ REFERENCE = ROOT/'.q4t-work/serve-realtime-duplex-20261120/cancel-usage-business
 LIMITS = dict(starts=2, chats=8, controls=1200, seconds=900,
               websocket_sessions=2, ingress_starts=2)
 FORMAT = 'q4t-realtime-mcp-business-v1'
+FOLLOWUP_FORMAT = 'q4t-realtime-mcp-business-followup-v1'
+FOLLOWUP_LIMITS = dict(LIMITS, chats=5)
 SUCCESS = 'PASS_REALTIME_MCP_PRIMARY_LIGHT'
 
 
 def check_plan(plan):
-    require(plan['format'] == FORMAT and plan['limits'] == LIMITS and
+    limits = FOLLOWUP_LIMITS if plan['format'] == FOLLOWUP_FORMAT else LIMITS
+    require(plan['format'] in (FORMAT, FOLLOWUP_FORMAT) and plan['limits'] == limits and
             plan['requests'] == {} and plan['automatic_retries'] is False and
-            plan['planned'] == {k:v for k,v in LIMITS.items() if k not in ('seconds','controls')},
+            plan['planned'] == {k:v for k,v in limits.items() if k not in ('seconds','controls')},
             'frozen MCP scope differs')
     built = read(WORK/'session-runtime-01/result.json')
     require(built['status'] == 'BUILD_PASS' and built['warnings'] == 0 and
@@ -51,11 +55,13 @@ def check_plan(plan):
         require(sha(ROOT/name) == digest, 'compiled source drift: '+name)
 
 
-def prepare(out):
+def prepare(out, followup=False):
     require(not subprocess.check_output(['git','status','--porcelain'], cwd=ROOT),
             'commit source and targeted verifier checks before GPU')
-    cpu = read(WORK/'sdk-cpu-01/result.json')
+    cpu_dir = WORK/('sdk-cpu-02' if followup else 'sdk-cpu-01')
+    cpu = read(cpu_dir/'result.json')
     require(cpu['status'] == 'PASS', 'targeted verifier checks missing')
+    for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'verifier CPU source drift')
     accepted = read(ROOT/'docs/evidence/serve-realtime-mcp-session-cpu-20261120/acceptance.json')
     require(accepted['distinct_cases'] == 38 and accepted['production_sources_identical_across_cpu_runs'],
             'public MCP source CPU evidence incomplete')
@@ -67,13 +73,14 @@ def prepare(out):
     current.update(read(build/'generated/q4t/server/chat_protocol_sources.json'))
     for key in ('duplex', 'realtime', 'conversation', 'prompt', 'repair_source_review', 'targeted_format'):
         plan.pop(key, None)
-    plan.update(format=FORMAT, limits=LIMITS, output=str(out), port=18618,
+    limits = FOLLOWUP_LIMITS if followup else LIMITS
+    plan.update(format=FOLLOWUP_FORMAT if followup else FORMAT, limits=limits, output=str(out), port=18618,
         operations_port=18619, public_port=18620, private_peer_port=18621,
         scope=__doc__, binary=str(build/'q4t'), binary_sha256=sha(build/'q4t'),
         base=base, candidate_identity=binding, reviewed_sources=current,
         identity=dict(plan['identity'], binary_sha256=sha(build/'q4t'),
                       protocol_sha256=base['protocol_sha256']),
-        planned={k:v for k,v in LIMITS.items() if k not in ('seconds','controls')},
+        planned={k:v for k,v in limits.items() if k not in ('seconds','controls')},
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         ingress=str(ROOT/'.q4t-work/serve-file-search-20261112/host/q4t-ingress'),
         tls=certificate(out/'credentials'))
@@ -85,13 +92,28 @@ def prepare(out):
         'tools/evalscope','tools/release','docs/MODEL.md'],cwd=ROOT,text=True).splitlines()
     plan['sources'] = {n:sha(ROOT/n) for n in paths}
     for p in [REFERENCE,Path(plan['ingress']),Path(plan['tls']['certificate']),
-              Path(plan['tls']['key']),WORK/'sdk-cpu-01/result.json',
+              Path(plan['tls']['key']),cpu_dir/'result.json',
               WORK/'session-runtime-01/result.json',WORK/'session-runtime-01/plan.json']:
         plan['sources'][str(p)] = sha(p)
+    if followup:
+        previous = WORK/'sdk-business-02'
+        require(read(previous/'result.json')['counts']['starts']==1 and
+                read(previous/'cleanup.json')['model_exit']==0 and
+                read(previous/'primary-mcp.sdk.json')['quality'][0]['status']=='PASS',
+                'exact retained primary result required')
+        receipt = previous/'primary-mcp.sdk.json'
+        plan['retained_receipt'] = str(receipt)
+        plan['sources'][str(receipt)] = sha(receipt)
+        original = previous/'application-objects'
+        files = [p for p in original.rglob('*') if p.is_file()]
+        require(not any(p.is_symlink() for p in original.rglob('*')) and
+                sum(p.stat().st_size for p in files)<=32<<20, 'bounded owned state copy')
+        for p in files:plan['sources'][str(p)] = sha(p)
+        shutil.copytree(original,out/'application-objects')
     plan['protected'] = {str(ROOT/n):sha(ROOT/n) for n in ('build/q4t','build/q4t.release.json',
         'build/service/manifest.json','build/service.release.json','build/service-native-state/ledger.json')}
     check_plan(plan); save(out/'plan.json',plan)
-    print(json.dumps(dict(plan=str(out/'plan.json'),limits=LIMITS)),flush=True)
+    print(json.dumps(dict(plan=str(out/'plan.json'),limits=limits)),flush=True)
 
 
 class Stage(full.Stage):
@@ -101,7 +123,7 @@ class Stage(full.Stage):
     requests_per_minute = 30
 
     def __init__(self, plan):
-        check_plan(plan); encrypted.Stage.__init__(self, plan)
+        check_plan(plan); self.limits=plan['limits']; encrypted.Stage.__init__(self, plan)
         self.counts.update(websocket_sessions=0, ingress_starts=0)
         self.peer = self.edge = None
         self.observed = {}
@@ -111,6 +133,8 @@ class Stage(full.Stage):
         self.profile_name = name
         full.background.probe_ports(tuple(self.plan[k] for k in
             ('port','operations_port','public_port','private_peer_port')))
+        for path,digest in self.plan['native_assets'].items():
+            require(sha(path)==digest,'qualified native asset drift')
         stage = self
         class Source(peer.DocumentSource):
             def read(self):
@@ -167,13 +191,15 @@ class Stage(full.Stage):
             require(status==200,'MCP actual metrics missing')
             return profile_realtime.state(encrypted.foreground.base.lifecycle.parse_metrics(raw),encrypted.CLIENT)
         before=observe('before'); self.budget('websocket_sessions')
-        for _ in range(4): self.budget('chats')
+        repair = plan['format']==FOLLOWUP_FORMAT and name=='primary'
+        for _ in range(1 if repair else 4): self.budget('chats')
         source=plan['document_source']
-        args=dict(mode=mcp_checks.MODES[0 if name=='primary' else 1],
+        args=dict(mode='ordinary-repair' if repair else mcp_checks.MODES[0 if name=='primary' else 1],
             base_url=f"https://127.0.0.1:{plan['public_port']}/v1",api_key=key,
             ca_file=plan['tls']['certificate'],mcp_url=self.peer.url,mcp_token=self.peer.secret,
             arguments=peer.ARGUMENTS,title=source['text'].splitlines()[0].split(': ',1)[1],
             citation=source['citation'],journal_file=str(self.out/(label+'.events.jsonl')))
+        if repair:args['retained_history']=read(Path(plan['retained_receipt']))['tools']
         env={k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
         env['Q4T_NODE_SDK_DIR']=plan['sdk']['sdk_directory']
         receipt=self.out/(label+'.sdk.json')
@@ -181,8 +207,6 @@ class Stage(full.Stage):
             str(ROOT/'tools/serve_realtime/mcp_sdk.mjs')],args,receipt,self.out/(label+'.stderr'),env,330)
         require(receipt.stat().st_size<=8<<20,'SDK receipt storage bound')
         observed=read(receipt)
-        require(process.returncode in (0,1) and observed['status'] in ('PASS','QUALITY_FAIL'),
-                'actual SDK protocol failure; keep original journal')
         self.same_model(); self.drained(label+'-drain')
         after=observe('after-0'); end=time.monotonic()+5; index=0
         while (after['sessions'] or after['host_bytes']) and time.monotonic()<end:
@@ -191,8 +215,12 @@ class Stage(full.Stage):
         remote=self.peer.snapshot()
         value=dict(session=observed,remote=remote,before=before,after=after)
         save(self.out/(label+'-observed.json'),value)
-        self.observed[name]=mcp_checks.observe(observed,[json.loads(l) for l in journal.read_text().splitlines()],
-                                               remote,source,before,after)
+        require(process.returncode in (0,1) and observed['status'] in ('PASS','QUALITY_FAIL'),
+                'actual SDK protocol failure; keep original journal and settlement')
+        original_events=[json.loads(l) for l in journal.read_text().splitlines()]
+        self.observed[name]=(mcp_checks.observe_repair(observed,original_events,remote,
+            args['retained_history'],before,after) if repair else
+            mcp_checks.observe(observed,original_events,remote,source,before,after))
         save(self.out/'observations.json',self.observed)
         for p in [receipt,journal,self.out/(name+'-model.log'),
                   *(p for p in (self.out/'application-objects').rglob('*') if p.is_file())]:
@@ -220,7 +248,7 @@ class Stage(full.Stage):
 def finalize(out):
     plan=read(out/'plan.json'); check_plan(plan); result=read(out/'result.json')
     require(result['status']==SUCCESS and 0<result['seconds']<=900 and
-            all(result['counts'][k]==v for k,v in LIMITS.items() if k not in ('seconds','controls')),
+            all(result['counts'][k]==v for k,v in plan['limits'].items() if k not in ('seconds','controls')),
             'bounded MCP business incomplete')
     for n,h in {**plan['sources'],**plan['protected'],**plan['native_assets']}.items():
         require(sha(ROOT/n)==h,'postflight source/default drift')
@@ -240,9 +268,10 @@ def finalize(out):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','run','finalize'))
+    parser.add_argument('--followup',action='store_true')
     parser.add_argument('--output',type=Path,required=True);args=parser.parse_args();out=args.output.resolve()
     require(out.is_relative_to(WORK),'private MCP stage directory')
-    if args.mode=='prepare':prepare(out)
+    if args.mode=='prepare':prepare(out,args.followup)
     elif args.mode=='finalize':finalize(out)
     else:
         def interrupted(_signum,_frame):raise TimeoutError('bounded MCP stage interrupted')
