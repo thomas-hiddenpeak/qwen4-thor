@@ -5335,6 +5335,60 @@ Q4T_TEST(realtime_mcp_native_import_preserves_actual_authority_and_secrets) {
   return true;
 }
 
+Q4T_TEST(realtime_mcp_catalog_seals_finite_session_across_owner_restart) {
+  StatefulMcp remote;
+  ExecutionFixture fixture;
+  const auto config = ExecutionConfig(remote.server);
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      ExecutionRequest(remote.server).GetArray("tools")->array[0], &definition,
+      &error));
+  RealtimeMcpCatalog imported;
+  Json original;
+  {
+    ObjectStore objects(fixture.options);
+    Q4T_CHECK(ExecutionOk(ImportRealtimeMcpCatalog(
+        objects, config, definition, ExecutionAccess(), "mcpl_restart",
+        &imported)));
+    Q4T_CHECK(imported.loaded && remote.initialized == 1);
+    ResponsesMcpState state(objects, config);
+    const auto sealed = state.Session("mcpl_restart", definition,
+                                      ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(sealed));
+    original = *sealed.value.Find("session");
+  }
+  const auto created = original.GetInt("created_ms");
+  const auto expires = original.GetInt("expires_ms");
+  Q4T_CHECK(created > 0 && expires > created &&
+            expires - created <= 3600000 &&
+            original.GetInt("idle_ms") > 0 &&
+            original.GetInt("idle_ms") <= 300000);
+  Q4T_CHECK(CloseMcpSessions(false) && remote.closed == 0);
+  ObjectStore reopened(fixture.options);
+  ResponsesMcpState state(reopened, config);
+  const auto restored = state.Session("mcpl_restart", definition,
+                                      ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(restored) &&
+            OutputJson(*restored.value.Find("session")) == OutputJson(original));
+  auto foreign = ExecutionAccess();
+  foreign.scope = "client:foreign";
+  Q4T_CHECK(!state.Session("mcpl_restart", definition, foreign).ok());
+  McpSession session;
+  session.state = *restored.value.Find("session");
+  session.allow_new = false;
+  const auto access = ExecutionAccess();
+  McpTransportReceipt receipt;
+  Q4T_CHECK(InvokeMcp({access.scope, access.deadline, access.cancelled},
+                      definition.credentials, remote.server.Options(),
+                      "tools/list", Object(), {}, &receipt, {}, &session).ok());
+  Q4T_CHECK(remote.initialized == 1 && remote.dispatched == 0 &&
+            session.state.GetInt("created_ms") == created &&
+            session.state.GetInt("expires_ms") == expires);
+  Q4T_CHECK(CloseMcpSessions() && remote.closed == 1);
+  return true;
+}
+
 Q4T_TEST(realtime_mcp_native_import_records_remote_failure_without_callables) {
   Server server;
   server.handler = [](const Request& request, int fd, std::stop_token) {

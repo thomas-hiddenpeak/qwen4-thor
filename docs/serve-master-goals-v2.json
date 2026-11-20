@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "real_primary_tool_loop_observed_ordinary_quality_failed_targeted_followup_prepared",
+      "state": "primary_repair_and_light_approved_read_observed_unknown_receipt_remaining",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14881,7 +14881,31 @@
         },
         "master_goal_active": true
       },
-      "first_sdk_evidence": "evidence/serve-realtime-mcp-sdk-followup-cpu-20261120/README.md"
+      "first_sdk_evidence": "evidence/serve-realtime-mcp-sdk-followup-cpu-20261120/README.md",
+      "lifecycle_cpu": {
+        "status": "PASS_TARGETED_CPU_REMAINING_BUSINESS_PENDING",
+        "native_tests": 5,
+        "verifier_tests": 21,
+        "native_seconds": 0.6648498098365963,
+        "verifier_seconds": 0.26429393514990807,
+        "build_seconds": 36.440482921898365,
+        "build_warnings": 0,
+        "original_business_status": "FAILED",
+        "original_starts": 2,
+        "original_actual_model_jobs": 4,
+        "original_reserved_model_jobs": 5,
+        "original_seconds": 106.49669171171263,
+        "nvml_ok_samples": 101,
+        "primary_settled_tokens": 816,
+        "light_settled_tokens": 3048,
+        "cumulative_actual_starts": 3,
+        "cumulative_actual_model_jobs": 8,
+        "model_refusal_preserved": true,
+        "remote_session_initial_diagnosis_corrected": true,
+        "runtime_changed": false,
+        "master_goal_active": true
+      },
+      "lifecycle_evidence": "evidence/serve-realtime-mcp-lifecycle-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

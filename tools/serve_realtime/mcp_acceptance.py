@@ -21,7 +21,7 @@ import time
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_realtime import duplex_acceptance, mcp_checks
+from tools.serve_realtime import duplex_acceptance, mcp_checks, mcp_lifecycle
 from tools.serve_realtime.ingress_fixture import NativeIngress, certificate
 from tools.serve_recovery import profile_acceptance as full, profile_realtime
 from tools.serve_responses import encryption_acceptance as encrypted
@@ -35,12 +35,15 @@ LIMITS = dict(starts=2, chats=8, controls=1200, seconds=900,
 FORMAT = 'q4t-realtime-mcp-business-v1'
 FOLLOWUP_FORMAT = 'q4t-realtime-mcp-business-followup-v1'
 FOLLOWUP_LIMITS = dict(LIMITS, chats=5)
+FINISH_FORMAT = 'q4t-realtime-mcp-business-unknown-v1'
+FINISH_LIMITS = dict(LIMITS, starts=1, chats=2, websocket_sessions=1, ingress_starts=1)
 SUCCESS = 'PASS_REALTIME_MCP_PRIMARY_LIGHT'
 
 
 def check_plan(plan):
-    limits = FOLLOWUP_LIMITS if plan['format'] == FOLLOWUP_FORMAT else LIMITS
-    require(plan['format'] in (FORMAT, FOLLOWUP_FORMAT) and plan['limits'] == limits and
+    limits = {FORMAT: LIMITS, FOLLOWUP_FORMAT: FOLLOWUP_LIMITS,
+              FINISH_FORMAT: FINISH_LIMITS}.get(plan['format'])
+    require(limits is not None and plan['limits'] == limits and
             plan['requests'] == {} and plan['automatic_retries'] is False and
             plan['planned'] == {k:v for k,v in limits.items() if k not in ('seconds','controls')},
             'frozen MCP scope differs')
@@ -55,10 +58,10 @@ def check_plan(plan):
         require(sha(ROOT/name) == digest, 'compiled source drift: '+name)
 
 
-def prepare(out, followup=False):
+def prepare(out, followup=False, finish=False):
     require(not subprocess.check_output(['git','status','--porcelain'], cwd=ROOT),
             'commit source and targeted verifier checks before GPU')
-    cpu_dir = WORK/('sdk-cpu-02' if followup else 'sdk-cpu-01')
+    cpu_dir = WORK/'sdk-cpu-03'
     cpu = read(cpu_dir/'result.json')
     require(cpu['status'] == 'PASS', 'targeted verifier checks missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'verifier CPU source drift')
@@ -73,8 +76,9 @@ def prepare(out, followup=False):
     current.update(read(build/'generated/q4t/server/chat_protocol_sources.json'))
     for key in ('duplex', 'realtime', 'conversation', 'prompt', 'repair_source_review', 'targeted_format'):
         plan.pop(key, None)
-    limits = FOLLOWUP_LIMITS if followup else LIMITS
-    plan.update(format=FOLLOWUP_FORMAT if followup else FORMAT, limits=limits, output=str(out), port=18618,
+    limits = FINISH_LIMITS if finish else FOLLOWUP_LIMITS if followup else LIMITS
+    plan.update(format=FINISH_FORMAT if finish else FOLLOWUP_FORMAT if followup else FORMAT,
+        limits=limits, output=str(out), port=18618,
         operations_port=18619, public_port=18620, private_peer_port=18621,
         scope=__doc__, binary=str(build/'q4t'), binary_sha256=sha(build/'q4t'),
         base=base, candidate_identity=binding, reviewed_sources=current,
@@ -95,6 +99,13 @@ def prepare(out, followup=False):
               Path(plan['tls']['key']),cpu_dir/'result.json',
               WORK/'session-runtime-01/result.json',WORK/'session-runtime-01/plan.json']:
         plan['sources'][str(p)] = sha(p)
+    if finish:
+        require(not followup, 'one explicit followup mode')
+        plan['scope'] = ('Only the previously unexecuted lost-receipt and ordinary jobs; '
+                         'fresh explicit user task; original quality failures preserved')
+        for stage in ('sdk-business-02', 'sdk-business-03'):
+            for p in (WORK/stage).glob('*.sdk.json'):
+                plan['sources'][str(p)] = sha(p)
     if followup:
         previous = WORK/'sdk-business-02'
         require(read(previous/'result.json')['counts']['starts']==1 and
@@ -129,7 +140,8 @@ class Stage(full.Stage):
         self.observed = {}
 
     def start(self, selected=None):
-        name = selected or ('primary' if self.counts['starts'] == 0 else 'light')
+        name = selected or ('light' if self.plan['format'] == FINISH_FORMAT else
+                            'primary' if self.counts['starts'] == 0 else 'light')
         self.profile_name = name
         full.background.probe_ports(tuple(self.plan[k] for k in
             ('port','operations_port','public_port','private_peer_port')))
@@ -148,6 +160,8 @@ class Stage(full.Stage):
         (self.out/(name+'-peer')).mkdir(mode=0o700)
         self.peer = peer.ProjectMcp(ROOT, self.out/(name+'-peer'),
                                     self.plan['private_peer_port'], source=Source(ROOT))
+        if self.plan['format'] == FINISH_FORMAT:
+            self.peer.drop_next = True
         save(self.out/'mcp-private-policy.json',dict(version=1,fetch=self.peer.fetch(),targets=[]))
         policy = self.client_policy(); full.capacity.check_clients(self.plan['profiles'][name],policy)
         save(self.out/'client-policy.json',policy)
@@ -192,9 +206,11 @@ class Stage(full.Stage):
             return profile_realtime.state(encrypted.foreground.base.lifecycle.parse_metrics(raw),encrypted.CLIENT)
         before=observe('before'); self.budget('websocket_sessions')
         repair = plan['format']==FOLLOWUP_FORMAT and name=='primary'
-        for _ in range(1 if repair else 4): self.budget('chats')
+        finish = plan['format'] == FINISH_FORMAT
+        for _ in range(2 if finish else 1 if repair else 4): self.budget('chats')
         source=plan['document_source']
-        args=dict(mode='ordinary-repair' if repair else mcp_checks.MODES[0 if name=='primary' else 1],
+        args=dict(mode='unknown-only' if finish else 'ordinary-repair' if repair else
+            mcp_checks.MODES[0 if name=='primary' else 1],
             base_url=f"https://127.0.0.1:{plan['public_port']}/v1",api_key=key,
             ca_file=plan['tls']['certificate'],mcp_url=self.peer.url,mcp_token=self.peer.secret,
             arguments=peer.ARGUMENTS,title=source['text'].splitlines()[0].split(': ',1)[1],
@@ -218,7 +234,8 @@ class Stage(full.Stage):
         require(process.returncode in (0,1) and observed['status'] in ('PASS','QUALITY_FAIL'),
                 'actual SDK protocol failure; keep original journal and settlement')
         original_events=[json.loads(l) for l in journal.read_text().splitlines()]
-        self.observed[name]=(mcp_checks.observe_repair(observed,original_events,remote,
+        self.observed[name]=(mcp_checks.observe_unknown(observed,original_events,remote,
+            source,before,after) if finish else mcp_checks.observe_repair(observed,original_events,remote,
             args['retained_history'],before,after) if repair else
             mcp_checks.observe(observed,original_events,remote,source,before,after))
         save(self.out/'observations.json',self.observed)
@@ -231,7 +248,10 @@ class Stage(full.Stage):
         self.edge=None
 
     def business(self):
-        full.Stage.business(self)
+        if self.plan['format'] == FINISH_FORMAT:
+            self.profile_business()
+        else:
+            full.Stage.business(self)
         require(all(q['status']=='PASS' for r in self.observed.values() for q in r['quality']),
                 'model quality failure retained separately from protocol observations')
 
@@ -252,26 +272,35 @@ def finalize(out):
             'bounded MCP business incomplete')
     for n,h in {**plan['sources'],**plan['protected'],**plan['native_assets']}.items():
         require(sha(ROOT/n)==h,'postflight source/default drift')
-    lease=out/'lease'; clean=[read(out/n) for n in ('primary-cleanup.json','cleanup.json')]
+    finish = plan['format'] == FINISH_FORMAT
+    lease=out/'lease'
+    clean=[read(out/n) for n in (('cleanup.json',) if finish else
+                               ('primary-cleanup.json','cleanup.json'))]
     environment=full.environment(read(lease/'exit.json'),
         [json.loads(l) for l in (lease/'nvml-queries.jsonl').read_text().splitlines()],clean)
-    for name in ('primary','light'):
-        require(read(out/(name+'-entry-cleanup.json'))['exit_code']==0 and
-                read(out/(name+'-peer-results.json'))['live_sessions']==0,'entry/MCP session cleanup')
+    lifecycle = {}
+    for name in (('light',) if finish else ('primary','light')):
+        require(read(out/(name+'-entry-cleanup.json'))['exit_code']==0, 'entry cleanup')
+        lifecycle[name] = mcp_lifecycle.retained(
+            read(out/(name+'-mcp.sdk.json'))['events'],
+            read(out/(name+'-peer-results.json')), out/'application-objects',
+            'client:' + encrypted.CLIENT)
     full.background.probe_ports(tuple(plan[k] for k in ('port','operations_port','public_port','private_peer_port')))
     guard=encrypted.foreground.base.lifecycle.guard
     with guard.common_lock().open('r+') as lock:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     save(out/'acceptance.json',dict(status=SUCCESS,environment=environment,counts=result['counts'],
         seconds=result['seconds'],default_unchanged=True,managed_recovery=False,
-        qualification_issued=False,observations=read(out/'observations.json')))
+        qualification_issued=False,observations=read(out/'observations.json'),
+        mcp_lifecycle=lifecycle))
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','run','finalize'))
     parser.add_argument('--followup',action='store_true')
+    parser.add_argument('--finish',action='store_true')
     parser.add_argument('--output',type=Path,required=True);args=parser.parse_args();out=args.output.resolve()
     require(out.is_relative_to(WORK),'private MCP stage directory')
-    if args.mode=='prepare':prepare(out,args.followup)
+    if args.mode=='prepare':prepare(out,args.followup,args.finish)
     elif args.mode=='finalize':finalize(out)
     else:
         def interrupted(_signum,_frame):raise TimeoutError('bounded MCP stage interrupted')

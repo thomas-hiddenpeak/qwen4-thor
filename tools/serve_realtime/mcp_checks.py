@@ -6,6 +6,9 @@ from tools.serve_service.package import require
 
 MODES = ('direct-deny-import', 'approve-unknown')
 ORDINARY_PROMPT = 'Compute 6 * 7. Reply only with the decimal number.'
+READ_PROMPT = ('Call read_project_record with path="docs/MODEL.md", start_line=1, '
+               'line_count=3. Read the actual project document. '
+               'Do not answer before receiving the tool result.')
 
 
 def observe(receipt, journal, remote, source, before, after):
@@ -157,3 +160,76 @@ def observe_repair(receipt, journal, remote, retained, before, after):
             ('PASS' if quality[0]['status']=='PASS' else 'QUALITY_FAIL'), 'repair quality misclassified')
     return dict(protocol='PASS',quality=quality,model_jobs=1,settled_tokens=tokens,
         actual_reads=0,automatic_tool_replays=0,retained_history_authenticated=True,resources_released=True)
+
+
+def observe_unknown(receipt, journal, remote, source, before, after):
+    """The two previously unexecuted jobs, on a fresh explicit user turn."""
+    require(receipt['mode'] == 'unknown-only' and
+            receipt['status'] in ('PASS', 'QUALITY_FAIL') and
+            receipt['transport'] == 'official-openai-wss' and
+            receipt['connections'] == 1 and receipt['close_code'] == 1000 and
+            receipt['automatic_replay'] is False and receipt['events'] == journal,
+            'unknown-result SDK connection contract')
+    events = journal
+    responses, tools = receipt['responses'], receipt['tools']
+    require(len(responses) == 2 and len(tools) == 1 and
+            responses[0]['id'] != responses[1]['id'] and
+            responses[0]['status'] == 'completed' and
+            responses[1]['status'] in ('completed', 'incomplete') and
+            [e['response'] for e in events if e['type'] == 'response.done'] == responses and
+            not any(e['type'] == 'error' for e in events), 'actual two response terminals')
+    ordinary = responses[1]
+    if ordinary['status'] == 'incomplete':
+        require(ordinary['status_details']['reason'] == 'max_output_tokens' and
+                ordinary['usage']['output_tokens'] == 256, 'actual output limit')
+    for index, identity, prompt in ((0, 'user_mcp_read', READ_PROMPT),
+                                   (1, 'user_mcp_after_fault', ORDINARY_PROMPT)):
+        question = [e for e in events if e['type'] == 'conversation.item.done' and
+                    e.get('item', {}).get('id') == identity]
+        created = [e for e in events if e['type'] == 'response.created' and
+                   e.get('response', {}).get('id') == responses[index]['id']]
+        require(len(question) == len(created) == 1 and
+                question[0]['item']['role'] == 'user' and
+                question[0]['item']['content'] == [dict(type='input_text', text=prompt)] and
+                events.index(question[0]) < events.index(created[0]), 'new user turn absent or late')
+    generated = [i for i in responses[0]['output'] if i['type'] == 'mcp_call']
+    require(len(generated) == 1, 'one generated MCP call required')
+    call, actual = generated[0], tools[0]
+    require(not call.get('output') and not call.get('error') and
+            not actual.get('output') and not actual.get('approval_request_id') and
+            'mcp_result_unknown' in json.dumps(actual.get('error')),
+            'unknown remote outcome cannot be success')
+    for item in (call, actual):
+        require(item['id'] == call['id'] and item['name'] == 'read_project_record' and
+                item['server_label'] == 'project' and
+                json.loads(item['arguments']) == peer.ARGUMENTS, 'exact generated call identity')
+    deltas = [e['delta'] for e in events if e['type'] == 'response.mcp_call_arguments.delta' and
+              e.get('response_id') == responses[0]['id'] and e.get('item_id') == call['id']]
+    terminal = [e for e in events if e['type'] == 'response.output_item.done' and
+                e.get('item', {}).get('id') == call['id']]
+    sent = [e for e in events if e['type'] == 'response.mcp_call.in_progress' and
+            e.get('item_id') == call['id']]
+    done = next(e for e in events if e['type'] == 'response.done')
+    require(''.join(deltas) == call['arguments'] and len(terminal) == len(sent) == 1 and
+            terminal[0]['item'] == actual and
+            events.index(done) < events.index(sent[0]) < events.index(terminal[0]) and
+            any(e['type'] == 'conversation.item.done' and e.get('item') == actual for e in events),
+            'single dispatch and durable result must follow actual generation')
+    reads = remote['calls']
+    require(len(reads) == remote['methods'].count('tools/call') == 1 and
+            reads[0]['ok'] and reads[0]['source'] == source,
+            'actual project read missing or repeated')
+    tokens = sum(response_usage(r) for r in responses)
+    require(after['admitted'] - before['admitted'] == 2 and
+            after['settled'] - before['settled'] == tokens and
+            all(after[k] == 0 for k in ('reserved', 'active', 'sessions', 'host_bytes')) and
+            after['free_slots'] == 1, 'two-job usage and resources must settle')
+    answer = ''.join(p['text'] for i in ordinary['output'] if i['type'] == 'message'
+                     for p in i['content'] if p['type'] == 'output_text').strip()
+    quality = [dict(case='ordinary_after_fault', answer=answer,
+        status='PASS' if ordinary['status'] == 'completed' and answer == '42' else 'FAIL')]
+    require(receipt['quality'] == quality and receipt['status'] ==
+            ('PASS' if quality[0]['status'] == 'PASS' else 'QUALITY_FAIL'), 'quality misclassified')
+    return dict(protocol='PASS', quality=quality, model_jobs=2, settled_tokens=tokens,
+                actual_reads=1, unknown_outcomes=1, automatic_tool_replays=0,
+                resources_released=True)

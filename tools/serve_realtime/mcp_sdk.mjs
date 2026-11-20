@@ -11,7 +11,8 @@ for await (const part of process.stdin) {
   check(Buffer.byteLength(input) <= 65536, 'actor input bound');
 }
 const args = JSON.parse(input);
-check(['direct-deny-import', 'approve-unknown', 'ordinary-repair'].includes(args.mode), 'fixed MCP scenario');
+check(['direct-deny-import', 'approve-unknown', 'ordinary-repair', 'unknown-only'].includes(args.mode), 'fixed MCP scenario');
+const jobs = args.mode === 'ordinary-repair' ? 1 : args.mode === 'unknown-only' ? 2 : 4;
 const sdk = path.resolve(process.env.Q4T_NODE_SDK_DIR);
 for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
   check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules', name,
@@ -64,7 +65,7 @@ const definition = (approval, broken = false) => ({ type: 'mcp',
 const choice = { type: 'mcp', server_label: 'project', name: 'read_project_record' };
 const request = 'Call read_project_record with path="docs/MODEL.md", start_line=1, line_count=3. Read the actual project document. Do not answer before receiving the tool result.';
 async function create(response, ordinary = false) {
-  check(responses.length < (args.mode === 'ordinary-repair' ? 1 : 4), 'generation attempt bound');
+  check(responses.length < jobs, 'generation attempt bound');
   const at = events.length;
   send({ type: 'response.create', response: { max_output_tokens: 256,
     output_modalities: ['text'], ...response } });
@@ -123,7 +124,15 @@ let status = 'FAIL', error;
 try {
   await until(() => events.some((e) => e.type === 'session.created') &&
     events.some((e) => e.type === 'conversation.created'));
-  if (args.mode === 'ordinary-repair') {
+  if (args.mode === 'unknown-only') {
+    const question = { type: 'message', id: 'user_mcp_read', role: 'user',
+      content: [{ type: 'input_text', text: request }] };
+    send({ type: 'conversation.item.create', item: question });
+    await until(() => events.some((e) => e.type === 'conversation.item.done' && e.item?.id === question.id));
+    const lost = generated(await create({ tools: [definition('never')], tool_choice: choice }));
+    const failed = await result(lost, true);
+    check(JSON.stringify(failed.error).includes('mcp_result_unknown'), 'unknown receipt failure must be preserved');
+  } else if (args.mode === 'ordinary-repair') {
     check(Array.isArray(args.retained_history) && args.retained_history.length === 2,
       'exact actual successful/denied history required');
     for (const item of args.retained_history) {
@@ -162,7 +171,7 @@ try {
     status: ordinary.status === 'completed' && text(ordinary).trim() === '42' ? 'PASS' : 'FAIL' });
   rt.close(); await until(() => closed, true);
   check(connections === 1 && closeCode === 1000 &&
-    responses.length === (args.mode === 'ordinary-repair' ? 1 : 4), 'one clean connection and bounded generations');
+    responses.length === jobs, 'one clean connection and bounded generations');
   status = quality.every((row) => row.status === 'PASS') ? 'PASS' : 'QUALITY_FAIL';
 } catch (e) { error = e.message; rt.socket.terminate(); }
 finally {
