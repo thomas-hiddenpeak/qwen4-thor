@@ -1,0 +1,334 @@
+#include "q4t/server/realtime_conversation_input.h"
+
+#include "object_protocol.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/asr_response.h"
+#include "q4t/server/http_response.h"
+#include "q4t/server/realtime_audio_export.h"
+
+namespace q4t::server {
+namespace {
+using namespace object_detail;
+bool Accepted(const ObjectReply& reply) {
+  return reply.ok() && !reply.commit_unknown && reply.http_status >= 200 &&
+         reply.http_status < 300;
+}
+Json Event(std::string type) {
+  return Object({{"type", String(std::move(type))},
+                 {"event_id", String(detail::NewRequestId("event_"))}});
+}
+ObjectReply Missing() {
+  return Error(400, "realtime_audio_item_not_found", "Audio item not found");
+}
+}  // namespace
+
+RealtimeConversationInput::RealtimeConversationInput(
+    std::string id, RealtimeConversation& history,
+    RealtimeTranscriptionCallbacks native,
+    RealtimeConversationInputCallbacks callbacks, uint32_t max_audio_seconds,
+    size_t message_bytes)
+    : history_(history),
+      callbacks_(std::move(callbacks)),
+      message_bytes_(message_bytes),
+      processor_(std::move(id), output_, Bind(std::move(native)),
+                 max_audio_seconds, message_bytes) {}
+RealtimeConversationInput::~RealtimeConversationInput() {
+  Cancel();
+  Join();
+}
+RealtimeTranscriptionCallbacks RealtimeConversationInput::Bind(
+    RealtimeTranscriptionCallbacks native) {
+  interrupted_ = native.interrupted;
+  native.owner = this;
+  return native;
+}
+ObjectReply RealtimeConversationInput::Configure(RealtimeDuplexInput next) {
+  if (cancelled_)
+    return Error(409, "realtime_connection_closed", "Input owner stopped");
+  if (!next.enabled) {
+    if (!failed_ && (processor_.QueuedItems() || processor_.AudioBytes()))
+      return Error(400, "input_audio_buffer_not_empty",
+                   "Commit or clear pending audio before disabling input");
+    settings_ = std::move(next);
+    return {};
+  }
+  if (failed_)
+    return Error(503, "realtime_input_failed",
+                 "The input pipeline failed; reconnect for new audio");
+  if (!callbacks_.emit || !callbacks_.ready || !callbacks_.speech ||
+      !callbacks_.committed || !history_.Valid())
+    return Error(503, "realtime_processor_unavailable",
+                 "Conversation input owner is not connected");
+  auto reply = processor_.Configure(next.processing);
+  if (!Accepted(reply)) return reply;
+  if (!started_) {
+    if (!processor_.Start())
+      return Error(503, "realtime_processor_unavailable",
+                   "Native input processor could not start");
+    started_ = true;
+  }
+  retrieval_format_ = next.processing.format;
+  settings_ = std::move(next);
+  return {};
+}
+bool RealtimeConversationInput::ErrorEvent(ObjectReply reply,
+                                           std::string_view event_id) {
+  if (reply.code.empty())
+    reply = Error(503, "realtime_input_unconfirmed",
+                  "Native input operation was not confirmed");
+  auto error = Object(
+      {{"type", String(reply.http_status >= 500 ? "server_error"
+                                                : "invalid_request_error")},
+       {"code", String(std::string(reply.ClientCode()))},
+       {"message", String(reply.ClientMessage())}});
+  if (!event_id.empty()) Set(&error, "event_id", String(std::string(event_id)));
+  if (const auto* param = reply.value.Find("param"))
+    Set(&error, "param", *param);
+  auto event = Event("error");
+  Set(&event, "error", std::move(error));
+  return callbacks_.emit && Accepted(callbacks_.emit(event));
+}
+bool RealtimeConversationInput::Message(std::string_view message) {
+  if (cancelled_ || message.size() > message_bytes_) return false;
+  Json parsed;
+  if (!io::ParseJson(std::string(message), &parsed, true,
+                     {64, 65536, message_bytes_, true}))
+    return ErrorEvent(Error(400, "invalid_json", "Invalid input event"));
+  const auto type = parsed.GetString("type");
+  const auto event_id = parsed.GetString("event_id");
+  if (type != "input_audio_buffer.append" &&
+      type != "input_audio_buffer.commit" && type != "input_audio_buffer.clear")
+    return ErrorEvent(Error(400, "realtime_input_event_invalid",
+                            "Expected an audio buffer event"),
+                      event_id);
+  if (!started_ || !settings_.enabled || failed_)
+    return ErrorEvent(Error(503, "realtime_input_unavailable",
+                            "Native audio input is not available"),
+                      event_id);
+  if (!Drain()) return false;
+  const bool alive = processor_.Message(WebSocketOpcode::kText, message);
+  if (!Drain()) return false;
+  return alive || StopInput();
+}
+bool RealtimeConversationInput::Tick() {
+  if (cancelled_) return false;
+  if (!started_ || failed_) return true;
+  if (!Drain()) return false;
+  const bool alive = processor_.Tick();
+  if (!Drain()) return false;
+  return alive || StopInput();
+}
+void RealtimeConversationInput::FailPending() noexcept {
+  for (auto& [id, binding] : bindings_) {
+    (void)id;
+    if (binding.settled) continue;
+    try {
+      history_.FailAudioInput(binding.conversation);
+    } catch (...) {
+    }
+    binding.settled = true;
+    binding.notice.reset();
+  }
+}
+bool RealtimeConversationInput::StopInput() {
+  failed_ = true;
+  processor_.Cancel();
+  FailPending();
+  return ErrorEvent(Error(503, "realtime_input_failed",
+                          "Native audio input stopped; text remains usable"));
+}
+void RealtimeConversationInput::Cancel() noexcept {
+  cancelled_ = true;
+  processor_.Cancel();
+  FailPending();
+}
+void RealtimeConversationInput::Join() noexcept { processor_.Join(); }
+
+ObjectReply RealtimeConversationInput::Reserve(
+    const RealtimeTranscriptionJob& job) {
+  if (!settings_.enabled || failed_ || cancelled_ || !job.processed_audio ||
+      bindings_.size() == RealtimeConversation::kMaximumItems ||
+      bindings_.contains(job.id))
+    return Error(503, "realtime_input_owner_unavailable",
+                 "Native input owner is unavailable");
+  Binding binding;
+  binding.input = job.transcript;
+  binding.audio = job.processed_audio;
+  binding.settings = settings_;
+  const auto [found, inserted] = bindings_.emplace(job.id, std::move(binding));
+  if (!inserted) return Missing();
+  const auto status = history_.ReserveAudioInput(
+      job.id, settings_.transcript_events, kAsrTranscriptBytes + 8192,
+      &found->second.conversation);
+  if (!status) {
+    bindings_.erase(found);
+    return Error(429, "conversation_capacity_exceeded", status.message());
+  }
+  return {};
+}
+ObjectReply RealtimeConversationInput::Commit(
+    const RealtimeTranscriptionJob& job, bool automatic,
+    std::string* previous_id) {
+  const auto found = bindings_.find(job.id);
+  if (found == bindings_.end() || found->second.input != job.transcript ||
+      found->second.committed || !previous_id)
+    return Missing();
+  auto& binding = found->second;
+  RealtimeInputCommit notice;
+  notice.ticket = binding.conversation;
+  notice.settings = binding.settings;
+  notice.automatic = automatic;
+  auto previous = history_.LastId();
+  const auto status = history_.CommitAudioInput(binding.conversation);
+  if (!status)
+    return Error(400, "realtime_input_commit_failed", status.message());
+  binding.committed = true;
+  if (notice.settings.RespondOnCommit(automatic)) {
+    const auto captured = history_.Capture(nullptr, &notice.context, true);
+    if (!captured)
+      notice.context_status =
+          Error(400, "realtime_input_context_invalid", captured.message());
+  }
+  binding.notice = std::move(notice);
+  *previous_id = std::move(previous);
+  return {};
+}
+ObjectReply RealtimeConversationInput::Finish(
+    const RealtimeTranscriptionJob& job, const ObjectReply& result) {
+  const auto found = bindings_.find(job.id);
+  if (found == bindings_.end() || found->second.input != job.transcript ||
+      found->second.settled)
+    return Missing();
+  auto& binding = found->second;
+  auto status = Accepted(result)
+                    ? history_.CompleteAudioInput(
+                          binding.conversation, result.value.GetString("text"))
+                    : history_.FailAudioInput(binding.conversation);
+  if (!status && Accepted(result))
+    history_.FailAudioInput(binding.conversation);
+  binding.settled = true;
+  return status
+             ? ObjectReply{}
+             : Error(503, "realtime_input_retention_failed", status.message());
+}
+void RealtimeConversationInput::Discard(
+    const RealtimeTranscriptionJob& job) noexcept {
+  const auto found = bindings_.find(job.id);
+  if (found == bindings_.end() || found->second.input != job.transcript) return;
+  // A pipeline abort already settled committed input as failed. Keep its
+  // retrievable item/audio; it must not disappear after a delayed join.
+  if (found->second.settled && found->second.committed) return;
+  try {
+    history_.Erase(found->second.conversation);
+  } catch (...) {
+  }
+  bindings_.erase(found);
+}
+bool RealtimeConversationInput::Speech(bool started, std::string_view id,
+                                       uint64_t ticks) {
+  return callbacks_.speech(started, id, ticks,
+                           started && settings_.InterruptOnSpeechStart());
+}
+bool RealtimeConversationInput::Ready(const RealtimeTranscriptionJob&) {
+  return !failed_ && !cancelled_ && callbacks_.ready();
+}
+
+bool RealtimeConversationInput::Drain() {
+  for (size_t i = 0; i < 64; ++i) {
+    const auto frame = output_.Front();
+    if (frame.empty()) return true;
+    size_t consumed = 0;
+    if (decoder_.Consume(
+            {reinterpret_cast<const uint8_t*>(frame.data()), frame.size()},
+            &consumed) != WebSocketRead::kEvent ||
+        consumed != frame.size())
+      return false;
+    Json event;
+    if (!io::ParseJson(std::string(decoder_.Event().payload), &event, true,
+                       {64, 65536, kWebSocketMaximumLimit, true}))
+      return false;
+    const bool forwarded = Forward(std::move(event));
+    decoder_.Acknowledge();
+    output_.Acknowledge();
+    if (!forwarded) return false;
+  }
+  return true;
+}
+bool RealtimeConversationInput::Forward(Json event) {
+  const auto type = event.GetString("type");
+  if (type == "session.created" || type == "session.updated") return true;
+  if (type == "conversation.item.created") {
+    const auto* item = event.Find("item");
+    const auto found =
+        item ? bindings_.find(item->GetString("id")) : bindings_.end();
+    if (found == bindings_.end() || found->second.published) return true;
+    auto& binding = found->second;
+    Json public_item;
+    if (!binding.committed || !history_.Get(binding.conversation, &public_item))
+      return false;
+    Set(&event, "item", std::move(public_item));
+    Set(&event, "type", String("conversation.item.added"));
+    if (!Accepted(callbacks_.emit(event))) return false;
+    Set(&event, "type", String("conversation.item.done"));
+    Set(&event, "event_id", String(detail::NewRequestId("event_")));
+    if (!Accepted(callbacks_.emit(event))) return false;
+    binding.published = true;
+    if (!binding.notice) return false;
+    auto notice = std::move(*binding.notice);
+    binding.notice.reset();
+    const auto reply = callbacks_.committed(std::move(notice));
+    return Accepted(reply) || ErrorEvent(reply);
+  }
+  if (type.starts_with("conversation.item.input_audio_transcription.")) {
+    const auto found = bindings_.find(event.GetString("item_id"));
+    if (found == bindings_.end()) return true;  // Deleted/abandoned generation.
+    const auto& binding = found->second;
+    const bool failed = type.ends_with(".failed");
+    const bool terminal = failed || type.ends_with(".completed");
+    bool sent = true;
+    if (binding.settings.transcript_events)
+      sent = Accepted(callbacks_.emit(event));
+    else if (failed) {
+      auto error = Event("error");
+      Set(&error, "error", *event.Find("error"));
+      sent = Accepted(callbacks_.emit(error));
+    }
+    if (terminal && !binding.committed) bindings_.erase(found);
+    return sent;
+  }
+  return Accepted(callbacks_.emit(event));
+}
+bool RealtimeConversationInput::Owns(const RealtimeItemTicket& ticket) const {
+  const auto found = bindings_.find(ticket.id);
+  return found != bindings_.end() && found->second.conversation == ticket &&
+         found->second.committed;
+}
+ObjectReply RealtimeConversationInput::Retrieve(
+    const RealtimeItemTicket& ticket, Json* item) const {
+  if (!item || !Owns(ticket)) return Missing();
+  const auto& binding = bindings_.find(ticket.id)->second;
+  Json copy;
+  if (!history_.Get(ticket, &copy)) return Missing();
+  std::string encoded, base64;
+  auto status = EncodeRealtimeAudio(binding.audio->Samples(), retrieval_format_,
+                                    600ULL * 24000 * 2, &encoded, interrupted_);
+  if (status)
+    status = io::EncodeBase64(encoded, kWebSocketMaximumLimit, &base64);
+  if (!status)
+    return Error(503, "realtime_audio_retrieval_failed", status.message());
+  Set(&Field(copy, "content").array[0], "audio", String(std::move(base64)));
+  *item = std::move(copy);
+  return {};
+}
+ObjectReply RealtimeConversationInput::Erase(const RealtimeItemTicket& ticket) {
+  if (!Owns(ticket)) return Missing();
+  const auto found = bindings_.find(ticket.id);
+  auto reply = processor_.EraseInput(found->second.input);
+  if (!Accepted(reply)) return reply;
+  const auto status = history_.Erase(ticket);
+  if (!status)
+    return Error(500, "realtime_input_history_invalid", status.message());
+  bindings_.erase(found);
+  return {};
+}
+}  // namespace q4t::server

@@ -391,14 +391,15 @@ Status RealtimeConversation::TruncateAudioTranscript(
 
 Status RealtimeConversation::Snapshot(
     const Json* input, RealtimeConversationSnapshot* output) const {
-  return SnapshotImpl(input, false, output);
+  return SnapshotImpl(input, false, false, output);
 }
-Status RealtimeConversation::Capture(
-    const Json* input, RealtimeConversationSnapshot* output) const {
-  return SnapshotImpl(input, true, output);
+Status RealtimeConversation::Capture(const Json* input,
+                                     RealtimeConversationSnapshot* output,
+                                     bool wait_for_output) const {
+  return SnapshotImpl(input, true, wait_for_output, output);
 }
 Status RealtimeConversation::SnapshotImpl(
-    const Json* input, bool allow_pending,
+    const Json* input, bool allow_pending, bool wait_for_output,
     RealtimeConversationSnapshot* output) const {
   if (!valid_ || !output ||
       (input && (!input->IsArray() || input->array.size() > maximum_items_)))
@@ -414,7 +415,7 @@ Status RealtimeConversation::SnapshotImpl(
   };
   auto append = [&](const Json& item, bool pending, uint64_t generation = 0,
                     bool native_input = false) -> Status {
-    if (pending && (!allow_pending || !native_input))
+    if (pending && (!allow_pending || (!native_input && !wait_for_output)))
       return Invalid("input or output item is still pending");
     if (snapshot.items.array.size() == maximum_items_)
       return Invalid("snapshot item limit exceeded");
@@ -426,7 +427,9 @@ Status RealtimeConversation::SnapshotImpl(
     size_t bytes = 0;
     status = Measure(copy, remaining, &bytes);
     if (!status) return status;
-    if (pending) snapshot.pending_inputs.push_back(snapshot.items.array.size());
+    if (pending)
+      (native_input ? snapshot.pending_inputs : snapshot.pending_outputs)
+          .push_back(snapshot.items.array.size());
     snapshot.items.array.push_back(std::move(copy));
     snapshot.tickets.push_back({owner_, item.GetString("id"), generation});
     remaining -= bytes;
@@ -472,9 +475,11 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       snapshot->revision > revision_ || !snapshot->items.IsArray() ||
       snapshot->items.array.size() > maximum_items_ ||
       snapshot->tickets.size() != snapshot->items.array.size() ||
-      snapshot->pending_inputs.size() > snapshot->items.array.size())
+      snapshot->pending_inputs.size() > snapshot->items.array.size() ||
+      snapshot->pending_outputs.size() > snapshot->items.array.size())
     return Invalid("invalid pending input snapshot");
   std::array<bool, kMaximumItems> waiting{};
+  std::array<bool, kMaximumItems> waiting_output{}, omit{};
   bool pending = false;
   for (const auto index : snapshot->pending_inputs) {
     if (index >= snapshot->items.array.size() || waiting[index])
@@ -491,23 +496,52 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       return Invalid("pending input failed or lost its native owner");
     pending |= entry.pending;
   }
+  for (const auto index : snapshot->pending_outputs) {
+    if (index >= snapshot->items.array.size() || waiting[index] ||
+        waiting_output[index])
+      return Invalid("invalid pending output position");
+    waiting_output[index] = true;
+    const auto& ticket = snapshot->tickets[index];
+    const auto position = Position(ticket);
+    if (position == entries_.size())
+      return Invalid("pending output generation was deleted");
+    const auto& entry = entries_[position];
+    if (!entry.server_output || entry.native_input ||
+        !SameIdentity(snapshot->items.array[index], entry.item))
+      return Invalid("pending output lost its native owner");
+    if (!entry.pending && entry.item.GetString("type") == "function_call" &&
+        entry.item.GetString("status") == "incomplete") {
+      if (!snapshot->default_context)
+        return Invalid("explicit output reference is an incomplete tool");
+      omit[index] = true;
+    }
+    pending |= entry.pending;
+  }
   if (pending) return {};
-  if (!snapshot->pending_inputs.empty()) {
+  if (!snapshot->pending_inputs.empty() || !snapshot->pending_outputs.empty()) {
     auto copy = *snapshot;
     size_t remaining = maximum_bytes_;
     for (size_t i = 0; i < copy.items.array.size(); ++i) {
       auto& item = copy.items.array[i];
+      if (omit[i]) continue;
       if (waiting[i]) {
         const auto& entry = entries_[Position(copy.tickets[i])];
         auto status = InputText(entry.item, &item);
         if (!status) return status;
       }
+      if (waiting_output[i]) item = entries_[Position(copy.tickets[i])].item;
       size_t bytes = 0;
       auto status = Measure(item, remaining, &bytes);
       if (!status) return status;
       remaining -= bytes;
     }
+    for (size_t i = copy.items.array.size(); i-- > 0;) {
+      if (!omit[i]) continue;
+      copy.items.array.erase(copy.items.array.begin() + i);
+      copy.tickets.erase(copy.tickets.begin() + i);
+    }
     copy.pending_inputs.clear();
+    copy.pending_outputs.clear();
     *snapshot = std::move(copy);
   }
   *ready = true;
@@ -519,6 +553,7 @@ Status RealtimeConversation::TruncateDefault(
     std::span<const size_t> retained) {
   if (!valid_ || snapshot.owner != owner_ || !snapshot.default_context ||
       !snapshot.items.IsArray() || !snapshot.pending_inputs.empty() ||
+      !snapshot.pending_outputs.empty() ||
       snapshot.items.array.size() > maximum_items_ ||
       snapshot.tickets.size() != snapshot.items.array.size() ||
       revision_ == UINT64_MAX)

@@ -560,11 +560,23 @@ bool RealtimeTranscriptionSession::CommitEvents(
 bool RealtimeTranscriptionSession::DeleteItem(
     const RealtimeTranscriptionCommand& command) {
   RealtimeTranscriptTicket ticket;
-  if (!history_.Find(command.item_id, &ticket) || !history_.Committed(ticket))
+  if (!history_.Find(command.item_id, &ticket))
     return ErrorEvent(
         Error(400, "item_not_found", "Conversation item not found"),
         command.event_id);
-  if (!history_.Erase(ticket) || !audio_history_.Erase(ticket)) return false;
+  auto reply = EraseInput(ticket);
+  if (!Accepted(reply)) return ErrorEvent(std::move(reply), command.event_id);
+  auto event = Event("conversation.item.deleted");
+  Set(&event, "item_id", String(command.item_id));
+  return Emit(std::move(event));
+}
+ObjectReply RealtimeTranscriptionSession::EraseInput(
+    const RealtimeTranscriptTicket& ticket) {
+  if (!history_.Committed(ticket))
+    return Error(400, "item_not_found", "Conversation item not found");
+  if (!history_.Erase(ticket) || !audio_history_.Erase(ticket))
+    return Error(500, "transcription_history_invalid",
+                 "Native input histories lost their shared owner");
   for (auto& job : jobs_) {
     if (job.transcript != ticket) continue;
     job.deleted = true;
@@ -576,9 +588,7 @@ bool RealtimeTranscriptionSession::DeleteItem(
   // Already running requests retain their independent context snapshots.
   // Queued/future requests resolve context only when they actually start.
   previous_id_ = history_.LastCommittedId();
-  auto event = Event("conversation.item.deleted");
-  Set(&event, "item_id", String(command.item_id));
-  return Emit(std::move(event));
+  return {};
 }
 
 bool RealtimeTranscriptionSession::RetrieveItem(

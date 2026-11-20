@@ -693,3 +693,5 @@
 - [PR #54实际合main](evidence/serve-pr54-merged-20261120/README.md)：精确head两份CI通过与主线祖先确认。
 
 - [2026-11-20状态历史原件](HISTORY_STATUS_2026-11-20.md)：整理前逐字保留；当前事实以STATUS为准。
+
+- [同一会话输入事件组合CPU](evidence/serve-realtime-duplex-composition-cpu-20261120/README.md)：GA事件、转写隐私、真实音频检索/删除、上下文冻结及原失败；实际入口继续。

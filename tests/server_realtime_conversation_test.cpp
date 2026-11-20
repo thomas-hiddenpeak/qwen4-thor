@@ -266,6 +266,87 @@ Q4T_TEST(realtime_audio_capture_invalid_positions_cannot_mutate_snapshot) {
   return true;
 }
 
+Q4T_TEST(realtime_barge_capture_waits_exact_output_and_input_generations) {
+  RealtimeConversation history("sess_input");
+  Ticket output, spoken, later;
+  Q4T_CHECK(history.BeginOutput(Message("", "assistant"), "answer", true, 8192,
+                                &output));
+  Q4T_CHECK(history.BeginAudioInput("spoken", {}, false, 8192, &spoken));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(!history.Capture(nullptr, &snapshot));
+  Q4T_CHECK(history.Capture(nullptr, &snapshot, true));
+  Q4T_CHECK(snapshot.pending_outputs == std::vector<size_t>{0} &&
+            snapshot.pending_inputs == std::vector<size_t>{1});
+  Q4T_CHECK(history.Create(Message("later"), "later", {}, &later));
+  Q4T_CHECK(history.CompleteAudioInput(spoken, "interrupting words"));
+  bool ready = true;
+  Q4T_CHECK(history.Resolve(&snapshot, &ready) && !ready);
+  auto terminal = Message("actual prior output", "assistant");
+  Set(&terminal, "id", String("answer"));
+  Set(&terminal, "status", String("incomplete"));
+  Q4T_CHECK(history.Update(output, terminal, true));
+  Q4T_CHECK(history.Resolve(&snapshot, &ready) && ready);
+  Q4T_CHECK(snapshot.tickets == std::vector<Ticket>({output, spoken}));
+  Q4T_CHECK(snapshot.pending_outputs.empty() &&
+            snapshot.pending_inputs.empty());
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "actual prior output");
+  return true;
+}
+
+Q4T_TEST(realtime_barge_capture_incomplete_tool_never_becomes_executable) {
+  RealtimeConversation history("sess_input");
+  auto tool = Object({{"type", String("function_call")},
+                      {"name", String("lookup")},
+                      {"arguments", String("{")}});
+  Ticket ticket;
+  Q4T_CHECK(history.BeginOutput(tool, "call", true, 8192, &ticket));
+  RealtimeConversationSnapshot normal, explicit_reference;
+  auto input = Array({Reference("call")});
+  Q4T_CHECK(history.Capture(nullptr, &normal, true));
+  Q4T_CHECK(history.Capture(&input, &explicit_reference, true));
+  Q4T_CHECK(history.Get(ticket, &tool));
+  Set(&tool, "status", String("incomplete"));
+  Q4T_CHECK(history.Update(ticket, tool, true));
+  bool ready = false;
+  Q4T_CHECK(history.Resolve(&normal, &ready) && ready);
+  Q4T_CHECK(normal.items.array.empty() && normal.tickets.empty());
+  Q4T_CHECK(!history.Resolve(&explicit_reference, &ready) && !ready);
+  Q4T_CHECK(explicit_reference.items.array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_barge_capture_deleted_output_cannot_bind_replacement) {
+  RealtimeConversation history("sess_input");
+  Ticket old, replacement;
+  Q4T_CHECK(
+      history.BeginOutput(Message("", "assistant"), "same", true, 8192, &old));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Capture(nullptr, &snapshot, true));
+  const auto saved = OutputJson(snapshot.items);
+  Q4T_CHECK(history.Erase(old));
+  Q4T_CHECK(history.Create(Message("replacement", "assistant"), "same", {},
+                           &replacement));
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&snapshot, &ready) && !ready);
+  Q4T_CHECK(OutputJson(snapshot.items) == saved && snapshot.tickets[0] == old);
+  return true;
+}
+
+Q4T_TEST(realtime_barge_capture_rejects_forged_output_and_overlap) {
+  RealtimeConversation history("sess_input");
+  Ticket spoken;
+  Q4T_CHECK(history.BeginAudioInput("spoken", {}, true, 8192, &spoken));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Capture(nullptr, &snapshot, true));
+  snapshot.pending_outputs = {0};
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&snapshot, &ready) && !ready);
+  snapshot.pending_inputs.clear();
+  Q4T_CHECK(!history.Resolve(&snapshot, &ready) && !ready);
+  return true;
+}
+
 Q4T_TEST(realtime_audio_input_pending_commit_cannot_become_empty_prompt) {
   RealtimeConversation history("sess_input");
   Ticket ticket;

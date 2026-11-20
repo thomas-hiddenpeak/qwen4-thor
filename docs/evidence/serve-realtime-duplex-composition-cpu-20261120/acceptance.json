@@ -1,0 +1,49 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_INPUT_EVENT_COMPOSITION_CPU",
+  "unique_cases": 33,
+  "case_executions": 34,
+  "new_cases": 14,
+  "original_cpu_failures": 1,
+  "original_source_gate_failures": 1,
+  "failed_case_repaired": true,
+  "unchanged_passes_reused": 31,
+  "changed_compiled_sources_for_repair": [
+    "tests/server_realtime_conversation_input_test.cpp"
+  ],
+  "source_counterexamples": 20,
+  "final_source_gate": "PASS",
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 9.211099139880389,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "33fb543b5f77de9a937c3a04caa4409ccf824a29ca1358baacb57a452bf9b1c2",
+    "free_bytes_after": 37982208
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_chat_entry": "pending",
+  "actual_duplex_business": "pending",
+  "remaining_master_active": true,
+  "maintenance": {
+    "status": "EXACT_HISTORICAL_HEADS_SHARED_READONLY",
+    "paths": 14,
+    "content_sha256": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+    "original_paths_and_bytes_preserved": true,
+    "permissions_changed_to_readonly": true,
+    "shared_links": 15,
+    "duplicate_allocated_bytes_released": 4362113024,
+    "free_before": 24113152,
+    "free_after": 4386205696,
+    "actual_independent_restore_and_rededup_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/artifact/head.bf16",
+    "original_metadata_in_plan": true,
+    "protected_unchanged": true,
+    "models_and_reference_untouched": true,
+    "gpu_actions": 0,
+    "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/dedup-historical-heads-06/restore.py"
+  }
+}

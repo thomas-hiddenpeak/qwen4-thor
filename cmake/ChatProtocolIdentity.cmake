@@ -650,6 +650,8 @@ set(protocol_inputs
   include/q4t/server/websocket.h
   include/q4t/server/realtime_duplex_input.h
   src/server/realtime_duplex_input.cpp
+  include/q4t/server/realtime_conversation_input.h
+  src/server/realtime_conversation_input.cpp
   include/q4t/server/realtime_transcription_protocol.h
   include/q4t/server/object_diagnostics.h
   include/q4t/server/realtime_transcription_pump.h

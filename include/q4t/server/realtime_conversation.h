@@ -28,6 +28,7 @@ struct RealtimeConversationSnapshot {
   // Captured positions awaiting their exact native ASR generation. A worker
   // must not execute until Resolve has cleared these positions.
   std::vector<size_t> pending_inputs = {};
+  std::vector<size_t> pending_outputs = {};
 };
 
 // One session thread owns mutations. Workers receive independent snapshots
@@ -101,12 +102,14 @@ class RealtimeConversation {
                   RealtimeConversationSnapshot* output) const;
   // Capture freezes all existing executable items and the exact generations
   // of committed, pending native inputs. Later context changes are excluded.
-  // Pending model output still fails. Resolve waits only for those native
-  // inputs; deletion/reuse/failure fails instead of selecting another turn.
+  // Pending model output normally fails. An internal turn scheduler may opt
+  // into waiting for those exact output generations, e.g. during barge-in.
+  // Incomplete default tool calls are omitted only after a terminal update;
+  // explicit references fail. Deletion/reuse never selects another turn.
   // Waiting and failure leave the captured snapshot unchanged; ready is set
   // false on failure. Successful resolution preserves the capture revision.
-  Status Capture(const io::Json* input,
-                 RealtimeConversationSnapshot* output) const;
+  Status Capture(const io::Json* input, RealtimeConversationSnapshot* output,
+                 bool wait_for_output = false) const;
   Status Resolve(RealtimeConversationSnapshot* snapshot, bool* ready) const;
   // Persist a successful default response's context cut without deleting its
   // retrievable history. Generation tickets protect entries recreated
@@ -129,6 +132,7 @@ class RealtimeConversation {
                           bool committed, bool transcript_visible,
                           size_t reserved_bytes, RealtimeItemTicket* output);
   Status SnapshotImpl(const io::Json* input, bool allow_pending,
+                      bool wait_for_output,
                       RealtimeConversationSnapshot* output) const;
   Status FinishAudioInput(const RealtimeItemTicket& ticket,
                           std::optional<std::string_view> transcript);

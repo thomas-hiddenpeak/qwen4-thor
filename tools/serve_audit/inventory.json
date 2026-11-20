@@ -2320,8 +2320,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "26430afa05783048da05a8cd8ad8a0b09a03a9fe62e424da5b590313f3979a6c",
-    "cmake/ChatProtocolIdentity.cmake": "e3fffd94cd6984bbfa87cb9564ac8abf338d34c4cdd41eff6c88e60d03c64895",
+    "CMakeLists.txt": "6a710903f0d55aca5113a0437691e390a632165359cff257b9d35c62b5a6a2fd",
+    "cmake/ChatProtocolIdentity.cmake": "2132345cf6ce8ca095eb34f8d07d88560f855999797c96957ddf969e9fd5812a",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2532,7 +2532,7 @@
     "include/q4t/server/realtime_audio_queue.h": "ac37b24170663e23ce04e57a861dcbd17048e3d6cf46bbf914f4fb247af03f16",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "07d76483c0a7c11975a4f850b0dd92d048a0be36af85f73d34d521b54d3db144",
-    "include/q4t/server/realtime_conversation.h": "7fd37109d8108494ce644c9e17268c161dfb7d1150e6f27e93ae8bb80fddb2c3",
+    "include/q4t/server/realtime_conversation.h": "21c351ec2a513795a37a6aa3642dfc2afe24cf25f2cf3632590f7f30f62fc9bd",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
     "include/q4t/server/realtime_conversation_session.h": "3d25784d9e8dfeeeaaa18e58ca33b7aa95d2a3062d72e888cd7ae8dfec03268b",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
@@ -2552,7 +2552,7 @@
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "4f3b71b06eda567b69efb84b48877627dea9b459eeccbda1ac1136b72a5b8c56",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
-    "include/q4t/server/realtime_transcription_session.h": "743e30a08a1ec2b26a37fe2ffb00ac2221a83bd2899620c4f4538c3d2aa5bd9f",
+    "include/q4t/server/realtime_transcription_session.h": "dfb2b915c695793b3d4aee8c59cf8adf7a3433747144f89d2eea22e1aa817c87",
     "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
@@ -2996,7 +2996,7 @@
     "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "87d6e3382a04a001cf5646b46dc1fdf1df2634c9728fd1e659e5c13d9736763c",
-    "src/server/realtime_conversation.cpp": "9fddee229bb5ad06ee8f38a0de6844812f6e5233292793f614873899f361e73e",
+    "src/server/realtime_conversation.cpp": "b90719e04bb5b373c22116d65ecd4194dfcb6fdcee02ded0345f3a93aeb5e111",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "fa9ede927b5c979bdb3fc2d65533216ec377ecf99e585667385d45cc30a26a1a",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
@@ -3016,7 +3016,7 @@
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
     "src/server/realtime_transcription_protocol.cpp": "8956463f9d5ef83e99cc68005aeafa3f6846b6e4cbff99a999f8a24fad613a08",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
-    "src/server/realtime_transcription_session.cpp": "0ed77a60b8f70a1682ad5ece28e57d7e02e1dbe325e2144e82fa2dd6c11399d3",
+    "src/server/realtime_transcription_session.cpp": "2378d5b3af5af5959ef46c45a2d287368021ff4b18e74f0693ab9ad82f5a5bf0",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
     "src/server/realtime_wire_shape.cpp": "aa29b64a79f703cfde4a8fceef94d89c0a61b56e61aa00949636306132300da2",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
@@ -3371,7 +3371,9 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/server/realtime_conversation_input.h": "ad43e75602c6cb6a716d6203a08263bcd525bf8d81b591f84ef14fdfa940b4c5",
+    "src/server/realtime_conversation_input.cpp": "adfb694659979793b903b265adae2e89a2c83049ff63ad89cfbe39860f32914d"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8621,5 +8623,23 @@
     "gpu_actions": 0,
     "default_revision": 376,
     "state": "development_targeted_cpu_pending"
+  },
+  "duplex_public_input_composition_20261120": {
+    "scope": "Same-owner native ASR composition, GA item events and no duplicate session acknowledgement; optional public transcript privacy, actual PCM retrieval and exact typed deletion, frozen automatic context including explicitly awaited output generations. Fatal input pipeline isolation preserves healthy text history.",
+    "new_cases": 14,
+    "affected_existing_cases": 18,
+    "cpu_seconds": 120,
+    "source_counterexamples": 20,
+    "gpu_actions": 0,
+    "actual_chat_entry": "pending",
+    "actual_duplex_business": "pending",
+    "remaining": [
+      "direct native Chat scheduling and backend binding",
+      "direct client-created mixed audio input",
+      "automatic/idle response and barge-in integration",
+      "real business/recovery/delivery and remaining master"
+    ],
+    "original_failure": "31/32 passed. Fatal VAD fixture supplied 768 samples without 48 resampler lookahead samples, so the intended fault callback was never invoked. Preserve original failure; corrected fixture asserts zero calls before lookahead, one failing call afterward. Runtime sources unchanged; rerun only the failed case plus one direct protection.",
+    "source_gate_failure": "Corrected VAD fixture and direct old protection passed. Source audit then rejected stale CMakeLists.txt and cmake/ChatProtocolIdentity.cmake SHA anchors after registering the new input component. Reviewed exactly the runtime/host/test and protocol-source additions; refresh only those anchors, rerun only the source audit."
   }
 }

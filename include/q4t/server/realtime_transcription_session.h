@@ -98,6 +98,10 @@ class RealtimeTranscriptionSession {
   // session acknowledgement and never starts an ASR worker. The by-value
   // snapshot is allocated before any live pipeline mutation.
   ObjectReply Configure(RealtimeTranscriptionSettings settings);
+  // Same-owner typed deletion for a composed conversation. Exact generation;
+  // emits no duplicate public item.deleted. Outstanding audio is kept through
+  // the actual worker join, exactly as for the standalone wire command.
+  ObjectReply EraseInput(const RealtimeTranscriptTicket& ticket);
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
   // Session-owner only. The separate socket owner signals the pump to cancel.
