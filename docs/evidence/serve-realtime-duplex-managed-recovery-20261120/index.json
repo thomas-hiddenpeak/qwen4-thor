@@ -866,11 +866,6 @@
       "sha256": "998975f49bdd25e8425872f9402a11f183634a91aee2c03c66f176bf271793dd"
     },
     {
-      "path": "service-package-01/clients.json",
-      "bytes": 657,
-      "sha256": "87264b5cc81c014ad665b0cfe6271c9dd84f4b10c076206d87a224aab43974c7"
-    },
-    {
       "path": "service-package-01/decision.json",
       "bytes": 5262,
       "sha256": "edc03da4a7560014ff2b9bb4ba978f29ac690057cdf67085c73523587185e70b"
@@ -879,11 +874,6 @@
       "path": "service-package-01/native-build.json",
       "bytes": 8404,
       "sha256": "76a1fddcc3bcd657e5d53bfec777486057eafa671bb0aa25b044bfd8d8c2986e"
-    },
-    {
-      "path": "service-package-01/prepare-review.json",
-      "bytes": 4615,
-      "sha256": "a1cd27b27b0db01c494a66e5b54743248937c2f99c6d8b3d02f2548b27991ef0"
     },
     {
       "path": "service-package-01/receipt.json",
@@ -911,5 +901,19 @@
       "sha256": "f63304a67a00d190d74353dde3bcf218a68c27a9d7e62aef2258edccdcaa2f3a"
     }
   ],
-  "archive_sha256": "a5defeb08e88c54a9ea60a212cad52c49fede4cbc64e06f693b4dc078fc2e514"
+  "archive_sha256": "74948d958d588aad0ee46a4a4d89fa4c86685d20d983c34e75656f1787e40e5b",
+  "withheld_private_configuration_records": [
+    {
+      "path": "service-package-01/clients.json",
+      "bytes": 657,
+      "sha256": "87264b5cc81c014ad665b0cfe6271c9dd84f4b10c076206d87a224aab43974c7"
+    },
+    {
+      "path": "service-package-01/prepare-review.json",
+      "bytes": 4615,
+      "sha256": "a1cd27b27b0db01c494a66e5b54743248937c2f99c6d8b3d02f2548b27991ef0"
+    }
+  ],
+  "original_unredacted_archive_sha256": "a5defeb08e88c54a9ea60a212cad52c49fede4cbc64e06f693b4dc078fc2e514",
+  "redaction_reason": "Remove exposed immutable bootstrap gateway credential; runtime/quality/failure records unchanged"
 }

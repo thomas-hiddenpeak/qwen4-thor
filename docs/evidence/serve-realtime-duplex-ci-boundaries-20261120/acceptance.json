@@ -1,0 +1,40 @@
+{
+  "result": {
+    "status": "PASS",
+    "tests": 10,
+    "exit_code": 0,
+    "seconds": 0.09639851516112685,
+    "binary_sha256": "d8c94da962965ac21f4e0d328e0e19d81e19f5923e0b53b717fd5ab75f9c2e4f",
+    "sources_after": {
+      "tests/server_realtime_conversation_input_test.cpp": "573cf2ba75937e8fcd5388926718884b132c83ddcd14a9963c1b51ede3dd05e6",
+      "tests/server_realtime_conversation_session_test.cpp": "edf6972d5114171b4faf325bc56784d2a08cc61e360519f61eab4e8099780925",
+      "tests/audio_transcript_test_util.h": "c09c2a81e3fa5ee34e0c9c69115f22020b22d84ea7bd62d2961c9ad69c6e3bd8",
+      "src/server/realtime_conversation.cpp": "d53b6c95559a8615bc0dfe8f6a1fe281336a7394ba6bbd3322e0207e2fcb3c90",
+      "src/server/audio_transcript.cpp": "f1767cedd29fe01888671de6f7cb5b926203508345d47d882e2b7b55bff7a2a7"
+    },
+    "runtime_source_unchanged": true,
+    "default_unchanged": true,
+    "gpu_starts": 0
+  },
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 18.116875962819904,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "d8c94da962965ac21f4e0d328e0e19d81e19f5923e0b53b717fd5ab75f9c2e4f",
+    "free_bytes_after": 2168840192
+  },
+  "original": {
+    "status": "ORIGINAL_FAILURE_REPRODUCED",
+    "exit_code": 1,
+    "seconds": 0.04022676032036543,
+    "tests": 5,
+    "failed": 5
+  },
+  "original_ci_run": 44695775555,
+  "default_revision": 386,
+  "phase_pr": 55
+}

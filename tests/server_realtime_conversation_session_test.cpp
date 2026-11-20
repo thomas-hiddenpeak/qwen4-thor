@@ -1806,11 +1806,13 @@ Q4T_TEST(realtime_direct_session_empty_reference_keeps_actual_text_only) {
             f.Count("conversation.item.input_audio_transcription.completed") ==
                 0);
   const auto job = f.Snapshot(0);
-  Q4T_CHECK(job.snapshot.items.array[0]
-                .GetArray("content")
-                ->array[1]
-                .GetString("text", "missing")
-                .empty());
+  const auto data = AudioTranscriptData(
+      job.snapshot.items.array[0].GetArray("content")->array[1].GetString(
+          "text"));
+  Q4T_CHECK(data.GetString("transcript", "missing").empty() &&
+            data.GetString("source") == "conversation.item[empty].content[1]");
+  Q4T_CHECK(OutputJson(job.snapshot.items).find("do not use reference") ==
+            std::string::npos);
   Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.retrieve")},
                            {"item_id", String("empty")}})));
   const auto part = f.Last("conversation.item.retrieved")

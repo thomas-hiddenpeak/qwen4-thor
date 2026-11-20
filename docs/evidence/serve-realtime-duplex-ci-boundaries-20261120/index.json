@@ -1,0 +1,105 @@
+{
+  "records": [
+    {
+      "path": "ci-boundary-repair-01/original.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ci-boundary-repair-01/realtime_conversation.cpp",
+      "bytes": 30925,
+      "sha256": "d53b6c95559a8615bc0dfe8f6a1fe281336a7394ba6bbd3322e0207e2fcb3c90"
+    },
+    {
+      "path": "ci-boundary-repair-01/result.json",
+      "bytes": 867,
+      "sha256": "37ea2d46c75b382565f4d29445a0b1f55dba63f746c3bd4f0e0923a32b35c983"
+    },
+    {
+      "path": "ci-boundary-repair-01/plan.json",
+      "bytes": 3156,
+      "sha256": "02d3226d73776bb2eb0fbe14187e709c9cee88bd568c7699418c5d40d7c82b7a"
+    },
+    {
+      "path": "ci-boundary-repair-01/original.stdout",
+      "bytes": 1054,
+      "sha256": "de0d1f9ef855e6ea621010d69ef8e3be9e70a286cbfd17e20f641b83d633d053"
+    },
+    {
+      "path": "ci-boundary-repair-01/original-required.txt",
+      "bytes": 323,
+      "sha256": "5a22ae4e4a4442fd786fb29f680afa4537c40c30d31434405bd611165ab9ba94"
+    },
+    {
+      "path": "ci-boundary-repair-01/original-result.json",
+      "bytes": 127,
+      "sha256": "06e78efeab77cca0c3ecb56445b72f8754af9b2edaa2df5d865f7139dff43088"
+    },
+    {
+      "path": "ci-boundary-repair-01/repaired.stdout",
+      "bytes": 764,
+      "sha256": "d39828bc916c1c3ec3d02ff7746cd77e5634b9dab2174ea81d71c649a544ae19"
+    },
+    {
+      "path": "ci-boundary-repair-01/server_realtime_conversation_session_test.cpp",
+      "bytes": 82019,
+      "sha256": "adcea7f7b49357db16e7fb709dd21c133fc8bc06c396033413542a2e58466b1a"
+    },
+    {
+      "path": "ci-boundary-repair-01/server_realtime_conversation_input_test.cpp",
+      "bytes": 41803,
+      "sha256": "1d64458508a8231f356af39a6f0f7adea5cd7b620cabfcfd865ad12d0a8c8c01"
+    },
+    {
+      "path": "ci-boundary-repair-01/audio_transcript.cpp",
+      "bytes": 1169,
+      "sha256": "f1767cedd29fe01888671de6f7cb5b926203508345d47d882e2b7b55bff7a2a7"
+    },
+    {
+      "path": "ci-boundary-repair-01/audio_transcript_test_util.h",
+      "bytes": 1031,
+      "sha256": "c09c2a81e3fa5ee34e0c9c69115f22020b22d84ea7bd62d2961c9ad69c6e3bd8"
+    },
+    {
+      "path": "ci-boundary-repair-01/required.txt",
+      "bytes": 653,
+      "sha256": "86ba525cf738a3a78da94b5d9f45396d9ca4aa2203a8d01efda87839ef33cf51"
+    },
+    {
+      "path": "ci-boundary-repair-01/repaired.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ci-c3a-failed.log",
+      "bytes": 1194703,
+      "sha256": "682582b09fbd7f435adc41d40ee9ec296203725cdf2e9b2df60ee3de838bb531"
+    },
+    {
+      "path": "build_ci_boundary_host_01.py",
+      "bytes": 2901,
+      "sha256": "0ae24143ab25247c317aa1424f2b8d6366a71ea5897799b9364706bf88dbc3ae"
+    },
+    {
+      "path": "archive_ci_boundary_01.py",
+      "bytes": 4199,
+      "sha256": "e78a64b2755fea113f4f1e867fd5a833698d478b7d81601d9e9d8140b68ca30a"
+    },
+    {
+      "path": "ci-boundary-build-01/plan.json",
+      "bytes": 177599,
+      "sha256": "f62164a94663083c7d27f26bfe57b4e20891fe7ee541f7f49dac43dedb648cb7"
+    },
+    {
+      "path": "ci-boundary-build-01/result.json",
+      "bytes": 294,
+      "sha256": "8f062e132169c1538179bd59fbe7b0af5335cd8183cf183b2902a2eb63c294ed"
+    },
+    {
+      "path": "ci-boundary-build-01/build.log",
+      "bytes": 931,
+      "sha256": "4ee204054006274407d27addeed72405d5a60ae4ae4215fd353995ab088e17ec"
+    }
+  ],
+  "archive_sha256": "0607aac69e6626fb2f14a216cb87eb83d9ed6a490e1adc892d8b4b14300b3dbe"
+}

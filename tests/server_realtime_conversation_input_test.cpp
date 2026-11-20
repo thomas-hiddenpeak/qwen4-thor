@@ -160,8 +160,12 @@ Q4T_TEST(realtime_composed_input_private_transcript_still_drives_context) {
         "conversation.item.input_audio_transcription."));
   RealtimeConversationSnapshot snapshot;
   Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot));
-  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
-                "text") == "actual CPU audio fixture");
+  const auto data = AudioTranscriptData(
+      snapshot.items.array[0].GetArray("content")->array[0].GetString("text"));
+  Q4T_CHECK(data.GetString("transcript") == "actual CPU audio fixture" &&
+            data.GetString("source") ==
+                "conversation.item[" + snapshot.items.array[0].GetString("id") +
+                    "].content[0]");
   Json item;
   Q4T_CHECK(input.Retrieve(f.commits[0].ticket, &item).ok());
   const auto& part = item.GetArray("content")->array[0];
@@ -639,8 +643,13 @@ Q4T_TEST(realtime_input_idle_retains_actual_silent_audio_for_native_asr) {
             f.events[0].GetInt("audio_end_ms") == 2000);
   RealtimeConversationSnapshot snapshot;
   Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot));
-  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
-                "text") == "quiet speech missed by the CPU VAD fixture");
+  const auto data = AudioTranscriptData(
+      snapshot.items.array[0].GetArray("content")->array[0].GetString("text"));
+  Q4T_CHECK(data.GetString("transcript") ==
+                "quiet speech missed by the CPU VAD fixture" &&
+            data.GetString("source") ==
+                "conversation.item[" + snapshot.items.array[0].GetString("id") +
+                    "].content[0]");
   Q4T_CHECK(f.Count("conversation.item.input_audio_transcription.completed") ==
             0);
   return true;
@@ -803,8 +812,14 @@ Q4T_TEST(realtime_direct_input_reference_is_public_metadata_not_model_text) {
               item.GetArray("content")->array[1].Has("audio"));
     RealtimeConversationSnapshot snapshot;
     Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot));
-    Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[1].GetString(
-                  "text") == "actual CPU audio fixture");
+    const auto data = AudioTranscriptData(
+        snapshot.items.array[0].GetArray("content")->array[1].GetString(
+            "text"));
+    Q4T_CHECK(data.GetString("transcript") == "actual CPU audio fixture" &&
+              data.GetString("source") ==
+                  "conversation.item[direct].content[1]");
+    Q4T_CHECK(OutputJson(snapshot.items).find("untrusted") ==
+              std::string::npos);
     Q4T_CHECK(
         f.Count("conversation.item.input_audio_transcription.completed") ==
         size_t(visible));
@@ -830,16 +845,19 @@ Q4T_TEST(realtime_direct_input_empty_parts_do_not_invent_asr_or_idle_prompt) {
   Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
             input.Retrieve(ticket, &item).ok());
   for (size_t i : {1U, 3U}) {
-    Q4T_CHECK(snapshot.items.array[0]
-                  .GetArray("content")
-                  ->array[i]
-                  .GetString("text", "missing")
-                  .empty());
+    const auto data = AudioTranscriptData(
+        snapshot.items.array[0].GetArray("content")->array[i].GetString(
+            "text"));
+    Q4T_CHECK(data.GetString("transcript", "missing").empty() &&
+              data.GetString("source") == "conversation.item[direct].content[" +
+                                              std::to_string(i) + ']');
     Q4T_CHECK(item.GetArray("content")
                   ->array[i]
                   .GetString("audio", "missing")
                   .empty());
   }
+  Q4T_CHECK(OutputJson(snapshot.items).find("reference only") ==
+            std::string::npos);
   Q4T_CHECK(f.calls == 0 && f.released == 0 && f.events.empty());
   return true;
 }

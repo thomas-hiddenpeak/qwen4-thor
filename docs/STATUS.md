@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
+[10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，
+运行时未改。另发现恢复证据误含内部网关初始凭据，公共副本已清理；
+历史值按已披露处理，当前服务STOPPED，重新签发候选/回退包凭据与
+发布完成前不合入。原验证和错误回答均保留，不用归档清理改写结果。
+
 [rev386双向音频已可回退交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)，
 服务保持STOPPED。19条原生CLI完成升级、登记、整根回退和再前进，
 新增GPU启动0，客户配额、用量、profile历史与恢复预算保持。主线

@@ -14296,7 +14296,14 @@
         "secret_scan_matches": 0,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
       },
-      "model_quality_status": "FAIL"
+      "model_quality_status": "FAIL",
+      "ci_boundary_repair": {
+        "evidence": "docs/evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md",
+        "tests": 10,
+        "original_ci_run": 44695775555,
+        "runtime_unchanged": true,
+        "credential_reissue_pending": true
+      }
     },
     "duplex_input_delivered": true
   },
