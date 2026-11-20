@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live第二轮真实关闭缺陷](evidence/serve-live-close-tail-failed-20261121/README.md)：
+明确查询录音的ASR、真实委派/资料读取/回填及语音rev426均通过；
+关闭把剩余静音再提交ASR，触发RPM拒绝，整轮仍FAIL。77.921秒/
+1启动/实际4项工作，资源清理与默认保持。正在针对关闭尾部修复，
+不提高配额绕过，原失败保留。
+
 [Live短验驱动修复4项CPU](evidence/serve-live-client-followup-cpu-20261121/README.md)
 通过；另5项受影响音频片段/结果关联检查通过，等待逻辑按SHA复用。
 接着用原生TTS生成明确项目查询录音，
