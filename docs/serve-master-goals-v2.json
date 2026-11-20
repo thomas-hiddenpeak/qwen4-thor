@@ -16226,7 +16226,7 @@
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 118,
+    "distinct_native_cpu_tests": 130,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16294,6 +16294,10 @@
     "business_evidence": "evidence/serve-live-client-http-20261121/README.md",
     "original_health_assertion_failure_retained": true,
     "original_business_failures_retained": true,
-    "release_pending": true
+    "release_pending": true,
+    "fixture_cpu_tests": 21,
+    "fixture_cpu_new": 12,
+    "fixture_cpu_evidence": "evidence/serve-live-fixture-cpu-20261121/README.md",
+    "fixture_state": "native_cpu_and_build_pass_actual_sdk_business_pending"
   }
 }

@@ -208,21 +208,24 @@ ObjectReply NativeLiveClientBackend::Command(const Json& event) {
       type == "session.input_audio.unmute")
     return frontend_.Mute(type == "session.input_audio.mute",
                           event.GetString("event_id"));
+  if (type == "session.output_audio.fixture.play")
+    return frontend_.PlayFixture(event.GetString("audio"),
+                                 event.GetString("event_id"));
   if (type == "session.instructions.append" ||
       type == "session.thinking.append" || type == "session.commentary.append")
     return context_->Append(event);
   if (type == "response.create" || type == "response.item.create")
     return Error(400, "invalid_delegation_mode",
                  "Response commands require Responses delegation");
-  // Fixture/Decisions execution owners are the next implementation groups.
-  // Do not issue playing/played or response success for unexecuted commands.
+  // Decisions execution remains a required implementation group.
   return Missing(
       "type", "The requested native Live command processor is not connected");
 }
 ObjectReply NativeLiveClientBackend::Tick() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   auto reply = frontend_.Tick();
-  if (Accepted(reply) && !closing_) reply = context_->Tick();
+  if (Accepted(reply) && !closing_ && !frontend_.FixtureActive())
+    reply = context_->Tick();
   if (!Accepted(reply)) {
     failed_ = true;
     Cancel();

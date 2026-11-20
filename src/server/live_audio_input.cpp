@@ -228,10 +228,16 @@ ObjectReply LiveAudioInput::Mute(bool muted, std::string_view event_id) {
   auto reply = callbacks_.emit(std::move(event));
   return Accepted(reply) ? ObjectReply{} : Fail();
 }
-ObjectReply LiveAudioInput::Tick() {
+ObjectReply LiveAudioInput::DiscardPending() {
+  if (!prepared_ || closing_ || cancelled_ || failed_) return Unavailable();
+  auto reply = Command(Object({{"type", String("input_audio_buffer.clear")}}));
+  if (Accepted(reply)) partial_ = false;
+  return reply;
+}
+ObjectReply LiveAudioInput::Tick(bool allow_work) {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
-  if (!input_.Tick() || input_.Failed()) return Fail();
-  return closing_ ? FinishTail() : ObjectReply{};
+  if (!input_.Tick(allow_work) || input_.Failed()) return Fail();
+  return closing_ && allow_work ? FinishTail() : ObjectReply{};
 }
 ObjectReply LiveAudioInput::Close() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();

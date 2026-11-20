@@ -208,9 +208,11 @@ void ChatServer::HandleLive(int fd, std::string_view path,
                          kWebSocketMaximumLimit);
   LiveSessionLimits session_limits;
   session_limits.message_bytes = message_bytes;
-  // A 59 minute native lifetime leaves room for its 30s drain and 15s output
+  // A 59 minute native lifetime leaves room for its 45s drain and 15s output
   // deadline before the outer transport's independent one-hour hard bound.
   session_limits.lifetime = std::chrono::seconds(3540);
+  // A full 30s fixture may follow an interrupted borrower's bounded cleanup.
+  session_limits.drain = std::chrono::seconds(45);
   const auto expires =
       uint64_t(std::chrono::duration_cast<std::chrono::seconds>(
                    std::chrono::system_clock::now().time_since_epoch())

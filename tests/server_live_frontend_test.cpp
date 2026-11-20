@@ -1110,3 +1110,185 @@ Q4T_TEST(live_frontend_response_options_and_context_queue_are_atomic) {
     Q4T_CHECK(f.snapshots[i].settings.GetString("instructions") == "old");
   return true;
 }
+
+Q4T_TEST(live_fixture_frontend_validates_before_cancel_and_keeps_usage) {
+  Fixture f;
+  auto now = Clock::now();
+  f.native.now = [&] { return now; };
+  f.hold_model = true;
+  Q4T_CHECK(f.Start().ok() && f.frontend->Respond().ok());
+  Q4T_CHECK(f.Wait([&] { return f.model_alive.load(); }));
+  Q4T_CHECK(f.frontend->Respond().ok());
+  for (const auto& bad : {std::string("%bad"), Base64("abc")}) {
+    Q4T_CHECK(!f.frontend->PlayFixture(bad, "bad").ok());
+    Q4T_CHECK(f.frontend->Tick().ok() && f.model_alive);
+    Q4T_CHECK(f.frontend->QueuedTurns() == 1 && !f.frontend->FixtureActive());
+  }
+  Q4T_CHECK(
+      f.frontend->PlayFixture(Base64(std::string(960, '\x15')), "play").ok());
+  Q4T_CHECK(f.frontend->FixtureActive() && f.frontend->QueuedTurns() == 0);
+  Q4T_CHECK(f.Wait([&] { return f.model_released == 1; }));
+  Q4T_CHECK(f.results.size() == 1 &&
+            f.results[0].state == RealtimeResponseEnd::State::kCancelled);
+  Q4T_CHECK(f.results[0].usage && f.results[0].usage->total.input == 11);
+  Q4T_CHECK(!f.early_release && !f.overlap && !f.model_alive);
+  Q4T_CHECK(!f.frontend->PlayFixture(Base64("abcd"), "second").ok());
+  Q4T_CHECK(f.Count("session.output_audio.fixture.playing") == 1);
+  now += 20ms;
+  Q4T_CHECK(f.frontend->Tick().ok() && !f.frontend->FixtureActive());
+  Q4T_CHECK(f.Count("session.output_audio.fixture.played") == 1 &&
+            f.models == 1);
+  Q4T_CHECK(f.frontend->Close().ok() &&
+            f.Wait([&] { return f.frontend->Drained(); }));
+  return true;
+}
+
+Q4T_TEST(live_fixture_waits_asr_borrower_and_pauses_new_model_work) {
+  Fixture f;
+  auto now = Clock::now();
+  f.native.now = [&] { return now; };
+  f.hold_asr = true;
+  Q4T_CHECK(f.Start().ok() && f.Tone());
+  Q4T_CHECK(f.Wait([&] { return f.asr_alive.load(); }));
+  Q4T_CHECK(f.frontend->PlayFixture(Base64(std::string(960, '\x15'))).ok());
+  Q4T_CHECK(f.frontend->AppendAudio(Base64(std::string(24000, '\x42'))).ok());
+  now += 1s;
+  for (int i = 0; i < 20; ++i) Q4T_CHECK(f.frontend->Tick().ok());
+  Q4T_CHECK(f.asr == 1 && f.asr_released == 0 && f.models == 0);
+  Q4T_CHECK(!f.Count("session.output_audio.delta"));
+  f.hold_asr = false;
+  Q4T_CHECK(f.Wait([&] { return f.asr_released == 1; }));
+  Q4T_CHECK(f.frontend->FixtureActive() &&
+            !f.Count("session.output_audio.fixture.played"));
+  now += 20ms;
+  Q4T_CHECK(f.frontend->Tick().ok() && !f.frontend->FixtureActive());
+  Q4T_CHECK(f.frontend->Tick().ok() && f.asr == 1 && f.models == 0);
+  Q4T_CHECK(!f.overlap && !f.early_release);
+  Q4T_CHECK(f.frontend->Close().ok() &&
+            f.Wait([&] { return f.frontend->Drained(); }));
+  return true;
+}
+
+Q4T_TEST(live_fixture_drops_input_preserves_user_mute_and_resumes) {
+  Fixture f;
+  auto now = Clock::now();
+  f.native.now = [&] { return now; };
+  f.native.input.vad_step = [](auto samples, auto*, float* probability) {
+    *probability =
+        std::ranges::any_of(
+            samples, [](float value) { return value > .01f || value < -.01f; })
+            ? 1.f
+            : 0.f;
+    return q4t::Status{};
+  };
+  std::string captured;
+  auto execute = f.native.input.execute;
+  f.native.input.execute = [&](const auto& job, const auto& spans,
+                               const auto& control, const auto& emit) {
+    for (auto span : spans)
+      captured.append(reinterpret_cast<const char*>(span.data()), span.size());
+    return execute(job, spans, control, emit);
+  };
+  Q4T_CHECK(f.Start().ok() && f.frontend->Mute(true, "user_mute").ok());
+  Q4T_CHECK(f.frontend->AppendAudio(Base64("\x42")).ok());
+  Q4T_CHECK(f.frontend->PlayFixture(Base64(std::string(960, '\x33'))).ok());
+  Q4T_CHECK(f.frontend->AppendAudio(Base64(std::string(24000, '\x42'))).ok());
+  Q4T_CHECK(f.frontend->Tick().ok());
+  now += 20ms;
+  Q4T_CHECK(f.frontend->Tick().ok() && !f.frontend->FixtureActive());
+  std::string speech(6000, '\x15');
+  speech.append(18000, '\0');
+  Q4T_CHECK(f.frontend->AppendAudio(Base64(speech)).ok());
+  for (int i = 0; i < 60; ++i) Q4T_CHECK(f.frontend->Tick().ok());
+  Q4T_CHECK(f.asr == 0 && f.models == 0);
+  Q4T_CHECK(f.Count("session.input_audio.muted") == 1 &&
+            !f.Count("session.input_audio.unmuted"));
+  Q4T_CHECK(f.frontend->Mute(false, "user_unmute").ok());
+  Q4T_CHECK(f.frontend->AppendAudio(Base64(speech)).ok());
+  Q4T_CHECK(f.Wait([&] { return f.model_released == 1; }));
+  Q4T_CHECK(f.asr == 1 && f.asr_released == 1);
+  Q4T_CHECK(captured.find('\x15') != std::string::npos);
+  Q4T_CHECK(captured.find('\x42') == std::string::npos &&
+            captured.find('\x33') == std::string::npos);
+  Q4T_CHECK(f.frontend->Close().ok() &&
+            f.Wait([&] { return f.frontend->Drained(); }));
+  Q4T_CHECK(f.asr == 1 && f.models == 1);
+  return true;
+}
+
+Q4T_TEST(live_fixture_context_rejection_is_atomic_and_ack_waits) {
+  ContextFixture c;
+  c.f.native.now = [&] { return c.now; };
+  Q4T_CHECK(c.Start() && c.context->AcknowledgementDelay(5).ok());
+  Q4T_CHECK(c.Delegate());
+  const auto history = c.f.frontend->HistoryItems();
+  const auto counters = c.count_calls;
+  Q4T_CHECK(c.f.frontend->PlayFixture(Base64(std::string(960, '\x15'))).ok());
+  Q4T_CHECK(c.f.frontend->Tick().ok());
+  c.now += 10ms;
+  for (auto kind : {"instructions", "thinking", "commentary"})
+    Q4T_CHECK(!c.Append(kind, "Do not accept during fixture").ok());
+  Q4T_CHECK(c.f.frontend->HistoryItems() == history &&
+            c.count_calls == counters);
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 0);
+  Q4T_CHECK(c.f.models == 1 && c.f.frontend->FixtureActive());
+  c.now += 10ms;
+  Q4T_CHECK(c.f.frontend->Tick().ok() && !c.f.frontend->FixtureActive());
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 1);
+  Q4T_CHECK(c.f.Wait([&] { return c.f.completions == 2; }));
+  Q4T_CHECK(c.f.models == 2 &&
+            c.f.Count("session.output_audio.fixture.played") == 1);
+  return true;
+}
+
+Q4T_TEST(live_fixture_native_wire_formats_and_normal_close_are_real) {
+  for (const auto& format :
+       {Object({{"type", String("audio/pcm")}, {"rate", Number(24000)}}),
+        Object({{"type", String("audio/pcm")}, {"rate", Number(16000)}}),
+        Object({{"type", String("audio/pcmu")}, {"rate", Number(8000)}}),
+        Object({{"type", String("audio/pcma")}, {"rate", Number(8000)}})}) {
+    NativeFixture f;
+    Q4T_CHECK(f.Start(Object({{"model", String("q4t-test")},
+                              {"audio", Object({{"format", format}})}})));
+    Q4T_CHECK(
+        f.Send(Object({{"type", String("session.output_audio.fixture.play")},
+                       {"audio", String(Base64(std::string(960, '\x15')))},
+                       {"event_id", String("native_fixture")}})));
+    Q4T_CHECK(f.Close());
+    Q4T_CHECK(f.Count("session.output_audio.fixture.playing") == 1 &&
+              f.Count("session.output_audio.fixture.played") == 1);
+    std::string output;
+    for (const auto& event : f.events) {
+      if (event.GetString("type") != "session.output_audio.delta") continue;
+      std::string bytes;
+      Q4T_CHECK(
+          DecodeRealtimeAudioBase64(event.GetString("delta"), &bytes).ok());
+      output += bytes;
+    }
+    const auto width = format.GetString("type") == "audio/pcm" ? 2 : 1;
+    Q4T_CHECK(output.size() == size_t(format.GetInt("rate") / 50 * width));
+    Q4T_CHECK(f.events.back().GetString("type") == "session.closed");
+    Q4T_CHECK(f.Last("session.output_audio.fixture.played")
+                  .GetString("client_event_id") == "native_fixture");
+    Q4T_CHECK(f.f.asr == 0 && f.f.models == 0 && !f.Count("error"));
+  }
+  return true;
+}
+
+Q4T_TEST(live_fixture_disconnect_has_no_played_or_closed_claim) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  Q4T_CHECK(
+      f.Send(Object({{"type", String("session.output_audio.fixture.play")},
+                     {"audio", String(Base64(std::string(48000, '\x15')))}})));
+  Q4T_CHECK(f.session->Tick() && f.Read());
+  Q4T_CHECK(f.Count("session.output_audio.fixture.playing") == 1 &&
+            f.Count("session.output_audio.delta") > 0);
+  f.session->Cancel();
+  f.session->Join();
+  Q4T_CHECK(!f.session->Finalized());
+  Q4T_CHECK(!f.Count("session.output_audio.fixture.played") &&
+            !f.Count("session.closed"));
+  Q4T_CHECK(f.f.asr == 0 && f.f.models == 0);
+  return true;
+}

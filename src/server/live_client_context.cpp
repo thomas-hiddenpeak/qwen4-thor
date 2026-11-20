@@ -115,6 +115,8 @@ void LiveClientContext::CancelAcknowledgements() {
 }
 ObjectReply LiveClientContext::Append(const Json& event) {
   if (!valid_ || closed_ || failed_) return Unavailable();
+  if (frontend_.FixtureActive())
+    return Error(409, "live_fixture_active", "Audio fixture is active");
   ChatPlanError error;
   const auto type = event.GetString("type");
   if ((type != "session.instructions.append" &&
@@ -269,6 +271,7 @@ ObjectReply LiveClientContext::Complete(const RealtimeConversationJob& job,
 ObjectReply LiveClientContext::Tick() {
   if (!valid_ || failed_) return Unavailable();
   if (closed_) return {};
+  if (frontend_.FixtureActive()) return {};
   try {
     const auto now = Now();
     for (auto& [id, entry] : entries_) {

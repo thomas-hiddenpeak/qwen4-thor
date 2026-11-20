@@ -22,6 +22,9 @@ ObjectReply Invalid(std::string_view message) {
 ObjectReply Capacity() {
   return Error(429, "live_frontend_capacity", "Frontend queue is full");
 }
+ObjectReply FixtureBusy() {
+  return Error(409, "live_fixture_active", "Audio fixture is active");
+}
 }  // namespace
 
 LiveFrontend::LiveFrontend(std::string id, LiveFrontendNative native,
@@ -141,6 +144,7 @@ ObjectReply LiveFrontend::Capture(Turn* turn, const Json& settings) {
 ObjectReply LiveFrontend::Settings(Json settings, bool respond,
                                    std::string client_event, Json response) {
   if (!Active()) return Unavailable();
+  if (fixture_) return FixtureBusy();
   if (respond && queue_.size() >= kQueuedTurns) return Capacity();
   if (!response.IsNull() && !response.IsObject())
     return Invalid("Expected native response settings");
@@ -181,6 +185,7 @@ ObjectReply LiveFrontend::Enqueue(Turn turn) {
 }
 ObjectReply LiveFrontend::Respond(std::string client_event, Json response) {
   if (!Active()) return Unavailable();
+  if (fixture_) return FixtureBusy();
   if (queue_.size() >= kQueuedTurns) return Capacity();
   if (!response.IsNull() && !response.IsObject())
     return Invalid("Expected native response settings");
@@ -210,6 +215,7 @@ bool LiveFrontend::CancelResponse(std::string_view response_id) {
 ObjectReply LiveFrontend::Create(Json item, bool respond,
                                  std::string client_event, Json response) {
   if (!Active()) return Unavailable();
+  if (fixture_) return FixtureBusy();
   if (respond && queue_.size() >= kQueuedTurns) return Capacity();
   if (client_event.size() > 256) return Invalid("Client event ID too long");
   RealtimeItemTicket ticket;
@@ -230,7 +236,8 @@ ObjectReply LiveFrontend::Create(Json item, bool respond,
   return reply;
 }
 ObjectReply LiveFrontend::Committed(RealtimeInputCommit notice) {
-  if (!Active() || !notice.settings.RespondOnCommit(notice.automatic))
+  if (!Active() || fixture_ ||
+      !notice.settings.RespondOnCommit(notice.automatic))
     return {};
   if (!Accepted(notice.context_status)) return notice.context_status;
   if (!notice.response)
@@ -246,10 +253,39 @@ ObjectReply LiveFrontend::Committed(RealtimeInputCommit notice) {
 }
 ObjectReply LiveFrontend::AppendAudio(std::string_view audio,
                                       std::string_view client_event) {
-  return Active() ? input_.Append(audio, client_event) : Unavailable();
+  if (!Active()) return Unavailable();
+  return fixture_ ? ObjectReply{} : input_.Append(audio, client_event);
 }
 ObjectReply LiveFrontend::Mute(bool muted, std::string_view client_event) {
   return Active() ? input_.Mute(muted, client_event) : Unavailable();
+}
+ObjectReply LiveFrontend::PlayFixture(std::string_view audio,
+                                      std::string client_event) {
+  if (!Active()) return Unavailable();
+  if (fixture_) return FixtureBusy();
+  auto next =
+      std::make_unique<LiveAudioFixture>(format_, native_.emit, native_.now);
+  auto reply = next->Prepare(audio, std::move(client_event));
+  if (!Accepted(reply)) return reply;
+  // The whole payload is valid. Clear partial old input before dropping new
+  // audio, so samples cannot be spliced across the fixture interval.
+  reply = input_.DiscardPending();
+  if (!Accepted(reply)) return reply;
+  fixture_ = std::move(next);
+  if (work_) work_->Cancel();
+  DropQueued();
+  reply = fixture_->Accept();
+  return Accepted(reply) ? ObjectReply{} : Fail(reply);
+}
+ObjectReply LiveFrontend::AdvanceFixture() {
+  if (!fixture_ || work_ || input_.Executing()) return {};
+  const auto reply = fixture_->Tick(Timeline());
+  if (!Accepted(reply)) return reply;
+  if (fixture_->Completed()) {
+    output_ticks_ = std::max(output_ticks_, fixture_->EndTicks());
+    fixture_.reset();
+  }
+  return {};
 }
 ObjectReply LiveFrontend::Item(const Json& item, bool begin, bool terminal) {
   if (!active_) return Unavailable();
@@ -284,7 +320,7 @@ ObjectReply LiveFrontend::Audio(std::string_view id, std::string_view,
   return history_.Get(found->second, &item) ? ObjectReply{} : Unavailable();
 }
 ObjectReply LiveFrontend::StartWork() {
-  if (work_ || queue_.empty() || closing_ || input_.Executing() ||
+  if (work_ || fixture_ || queue_.empty() || closing_ || input_.Executing() ||
       input_.PendingItems())
     return {};
   auto& next = queue_.front();
@@ -361,6 +397,7 @@ ObjectReply LiveFrontend::Report(const ObjectReply& reply,
 ObjectReply LiveFrontend::Fail(const ObjectReply& reply) {
   failed_ = true;
   if (work_) work_->Cancel();
+  if (fixture_) fixture_->Cancel();
   input_.Cancel();
   DropQueued();
   return reply;
@@ -369,7 +406,8 @@ ObjectReply LiveFrontend::Tick() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   try {
     auto reply = AdvanceWork();
-    if (Accepted(reply)) reply = input_.Tick();
+    if (Accepted(reply)) reply = input_.Tick(!fixture_);
+    if (Accepted(reply)) reply = AdvanceFixture();
     if (Accepted(reply)) reply = StartWork();
     return Accepted(reply) ? ObjectReply{} : Fail(reply);
   } catch (...) {
@@ -391,11 +429,12 @@ ObjectReply LiveFrontend::Close() {
 }
 bool LiveFrontend::Drained() const {
   return prepared_ && closing_ && !cancelled_ && !failed_ && !work_ &&
-         queue_.empty() && input_.Drained();
+         !fixture_ && queue_.empty() && input_.Drained();
 }
 void LiveFrontend::Cancel() noexcept {
   cancelled_ = true;
   if (work_) work_->Cancel();
+  if (fixture_) fixture_->Cancel();
   input_.Cancel();
   DropQueued();
 }

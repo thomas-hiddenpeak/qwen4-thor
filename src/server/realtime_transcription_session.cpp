@@ -1069,7 +1069,7 @@ bool RealtimeTranscriptionSession::StreamMessage(
   return true;
 }
 
-bool RealtimeTranscriptionSession::Tick() {
+bool RealtimeTranscriptionSession::Tick(bool allow_work) {
   if (!started_ || cancelled_ ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return false;
@@ -1090,7 +1090,7 @@ bool RealtimeTranscriptionSession::Tick() {
     Release();
     if (!DropFrontJob()) return false;
   }
-  if (!AdvanceVad()) return false;
+  if (allow_work && !AdvanceVad()) return false;
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
   if (control_ && done_.load(std::memory_order_acquire)) {
@@ -1169,7 +1169,9 @@ bool RealtimeTranscriptionSession::Tick() {
     terminal_.clear();
     if (!DropFrontJob()) return false;
   }
-  if (worker_.joinable() || jobs_.empty() || jobs_.front().deleted) return true;
+  if (!allow_work || worker_.joinable() || jobs_.empty() ||
+      jobs_.front().deleted)
+    return true;
   if (!jobs_.front().stream && !jobs_.front().Finite()) {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;

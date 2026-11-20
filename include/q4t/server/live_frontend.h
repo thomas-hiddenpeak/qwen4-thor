@@ -3,6 +3,7 @@
 
 #include <map>
 
+#include "q4t/server/live_audio_fixture.h"
 #include "q4t/server/live_audio_input.h"
 #include "q4t/server/live_frontend_work.h"
 
@@ -44,6 +45,9 @@ class LiveFrontend {
   ObjectReply AppendAudio(std::string_view audio,
                           std::string_view client_event = {});
   ObjectReply Mute(bool muted, std::string_view client_event = {});
+  ObjectReply PlayFixture(std::string_view audio,
+                          std::string client_event = {});
+  bool FixtureActive() const { return fixture_ != nullptr; }
   ObjectReply Tick();
   ObjectReply Close();
   bool Drained() const;
@@ -69,6 +73,7 @@ class LiveFrontend {
   ObjectReply Enqueue(Turn turn);
   ObjectReply StartWork();
   ObjectReply AdvanceWork();
+  ObjectReply AdvanceFixture();
   ObjectReply Item(const io::Json& item, bool begin, bool terminal);
   ObjectReply Audio(std::string_view id, std::string_view bytes,
                     RealtimeAudioCommit commit);
@@ -89,6 +94,7 @@ class LiveFrontend {
   size_t queued_bytes_ = 0;
   std::optional<Turn> active_;
   std::unique_ptr<LiveFrontendWork> work_;
+  std::unique_ptr<LiveAudioFixture> fixture_;
   std::map<std::string, RealtimeItemTicket> outputs_;
   uint64_t output_ticks_ = 0;
   bool attempted_ = false, prepared_ = false, closing_ = false;

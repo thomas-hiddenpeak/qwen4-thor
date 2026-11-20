@@ -639,6 +639,8 @@ set(protocol_inputs
   src/server/live_audio_input.cpp
   include/q4t/server/live_audio_output.h
   src/server/live_audio_output.cpp
+  include/q4t/server/live_audio_fixture.h
+  src/server/live_audio_fixture.cpp
   include/q4t/server/live_frontend_work.h
   src/server/live_frontend_work.cpp
   include/q4t/server/live_frontend.h

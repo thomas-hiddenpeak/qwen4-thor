@@ -110,7 +110,9 @@ class RealtimeTranscriptionSession {
   // the actual worker join, exactly as for the standalone wire command.
   ObjectReply EraseInput(const RealtimeTranscriptTicket& ticket);
   bool Message(WebSocketOpcode opcode, std::string_view message);
-  bool Tick();
+  // A composed playback owner may pause new VAD/admission while continuing
+  // to reap real borrowers and drain their output. Ordinary callers run work.
+  bool Tick(bool allow_work = true);
   // Session-owner only. The separate socket owner signals the pump to cancel.
   void Cancel() noexcept;
   void Join() noexcept;

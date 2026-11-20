@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live音频片段21项CPU](evidence/serve-live-fixture-cpu-20261121/README.md)
+通过，另5项专用驱动反例通过；实际引擎构建零警告。累计130项不同
+原生Live CPU，播放/输入丢弃/静音保持/实际排空已准备，正在推进
+1启动/1片段/4工作/600秒真实SDK短验。默认未改，不把CPU当业务通过。
+
 [Live主WSS客户端真实闭环已验](evidence/serve-live-client-http-20261121/README.md)：
 正确ASR、真实资料委派/回填、语音rev426、正常closed/1000及后续Chat=42。
 1启动/4工作/64.040秒，原RPM3下无额外ASR，1730 tokens结算/预留归零，
@@ -15,7 +20,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 3启动/10实际工作/255.282秒。继续fixture、服务端委派及其余Live/master
 任务；默认rev426保持STOPPED，尚未发行本候选。
 
-Live已有118项不同原生CPU场景；[主连接绑定](evidence/serve-live-binding-cpu-20261121/README.md)
+主连接及关闭修复已有118项不同原生CPU场景；[主连接绑定](evidence/serve-live-binding-cpu-20261121/README.md)
 与[关闭尾部18项针对性验证](evidence/serve-live-close-tail-cpu-20261121/README.md)
 通过，实际引擎68bcc25e构建零警告。SDK合同、生命周期、连续输入、
 输出/工作线程、调度及客户端上下文的逐组原件见

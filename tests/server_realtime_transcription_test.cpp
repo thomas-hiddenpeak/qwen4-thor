@@ -2402,3 +2402,27 @@ Q4T_TEST(realtime_finite_input_lifetime_survives_local_recovery) {
             f.calls == 3 && f.released == 3);
   return true;
 }
+
+Q4T_TEST(realtime_transcription_paused_tick_drains_without_new_admission) {
+  Fixture f;
+  RealtimeTranscriptionSession session("sess_pause", f.output, f.callbacks, 30);
+  Q4T_CHECK(session.Start());
+  for (int i = 0; i < 2; ++i)
+    Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  Drain(f.output);
+  Q4T_CHECK(session.Tick());
+  const auto deadline = Clock::now() + 1s;
+  while (f.released == 0 && Clock::now() < deadline) {
+    Q4T_CHECK(session.Tick(false));
+    Drain(f.output);
+    std::this_thread::sleep_for(1ms);
+  }
+  Q4T_CHECK(f.calls == 1 && f.released == 1 && !session.Executing());
+  Q4T_CHECK(session.QueuedItems() == 1 && session.AudioBytes() == 4);
+  for (int i = 0; i < 20; ++i) Q4T_CHECK(session.Tick(false));
+  Q4T_CHECK(f.calls == 1 && f.released == 1 && session.QueuedItems() == 1);
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(f.calls == 2 && f.released == 2 && session.AudioBytes() == 0);
+  return true;
+}

@@ -1,0 +1,98 @@
+{
+  "status": "PASS_LIVE_FIXTURE_CPU_PREPARATION",
+  "native_tests": 21,
+  "new_native_tests": 12,
+  "direct_protections": 9,
+  "native_cpu": {
+    "status": "PASS",
+    "returncode": 0,
+    "build_seconds": 99.55687516601756,
+    "cpu_seconds": 0.3640593057498336,
+    "tests": 21,
+    "commands": [
+      {
+        "command": 0,
+        "returncode": 0
+      },
+      {
+        "command": 1,
+        "returncode": 0
+      }
+    ],
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-20261121/fixture-plan-01/required-01.txt"
+    ],
+    "binary_sha256": "e3f3f43d62fede4776cb15ece2f8686588f28b5af51d5161ef849db254a51527",
+    "sources_unchanged": true,
+    "protected_unchanged": true,
+    "gpu_actions": 0
+  },
+  "driver_cpu": {
+    "status": "PASS",
+    "commands": [
+      {
+        "index": 0,
+        "returncode": 0
+      },
+      {
+        "index": 1,
+        "returncode": 0
+      },
+      {
+        "index": 2,
+        "returncode": 0
+      }
+    ],
+    "seconds": 0.20943788485601544,
+    "sources": {
+      "tools/serve_live/checks.py": "78b63c4b334a68dd378b0d3cf88baee5ae13dc037ef523e3f4e9c23abcef7142",
+      "tools/serve_live/client_acceptance.py": "c292b963968ecddc8464071879f702dcd2a370d4531128fa875d82df1211a303",
+      "tools/serve_live/client_sdk.mjs": "c48fddeea184786f0cd8bce5e4a8b8336a536304a731d49c889bb2237c561781",
+      "tools/serve_live/client_wait.mjs": "874d3d58e72e391aced1dfd79acad1c9f9eaa67c9e3b0730bbbab7a32097ba52",
+      "tools/serve_live/fixture_acceptance.py": "291ed8a68f9b962515147dc2d3cd053e36f1ebf822e7be3a41fe54b8aee8858d",
+      "tools/serve_live/fixture_checks.py": "b7122bb19d0c8ab51abd4cb49b4432f2d9446be072f734762e26f8ea732e3327",
+      "tools/serve_live/fixture_sdk.mjs": "003c8e9ff6c4902524bae818558fa8793a316f413e0dd467286e1ae22275ef48",
+      "tools/serve_live/test_checks.py": "1d2903fcb5908c8353a8d69575aecfe555ad1142bfcd1ad873f0c13b88eb12a9",
+      "tools/serve_live/test_client_wait.mjs": "e03b5f71ce4e5157cb1aa922faa3e5cbeedc08e271a914c1cd284a652001a2ad",
+      "tools/serve_live/test_fixture_checks.py": "ea6bd1dc63ff0ba7ecb251ab486427dd764f0da0580006dc2d0cf0491e94ee23",
+      "tools/serve_live/test_health.py": "1ae82bec72e3a3c2e2eacf9c0b31e972c0d6c1c54229cdb5361353c093866676",
+      "tools/serve_live/test_retained_query.py": "cc1e2685cde82368da553debdd1f1360734cb898235795deab40c926a9ba7cd3"
+    },
+    "sources_unchanged": true,
+    "tests": 5,
+    "reused_node_tests": 4,
+    "reused_observation_tests": 5,
+    "gpu_actions": 0
+  },
+  "native_build": {
+    "status": "BUILD_PASS",
+    "commands": [
+      {
+        "index": 0,
+        "returncode": 0,
+        "warnings": 0
+      },
+      {
+        "index": 1,
+        "returncode": 0,
+        "warnings": 0
+      }
+    ],
+    "seconds": 147.06891274265945,
+    "default_unchanged": true,
+    "sources_unchanged": true,
+    "new_gpu_starts": 0,
+    "binary_sha256": "8bba3d11d617931043bc3894623bea08d579914add78d93b52c8f158274d5b93",
+    "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
+  },
+  "reviewed_sources": 15,
+  "inventory_mutation_checks": 28,
+  "new_gpu_starts": 0,
+  "default_changed": false,
+  "real_fixture_business_pending": true,
+  "distinct_live_native_tests": 130,
+  "master_active": true,
+  "archive_sha256": "128ea1b0e6500e9ab91531c16022a53ddfa208d9427d3b5cf19bf6d96cfb9c67"
+}

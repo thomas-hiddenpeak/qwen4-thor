@@ -56,7 +56,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   // settings are copied before the processor transaction commits.
   ObjectReply Configure(RealtimeDuplexInput settings);
   bool Message(std::string_view message);
-  bool Tick();
+  bool Tick(bool allow_work = true);
   bool Owns(const RealtimeItemTicket& ticket) const;
   ObjectReply Retrieve(const RealtimeItemTicket& ticket, io::Json* item) const;
   ObjectReply Erase(const RealtimeItemTicket& ticket);

@@ -140,10 +140,10 @@ bool RealtimeConversationInput::Message(std::string_view message) {
   if (!Drain()) return false;
   return alive || StopInput();
 }
-bool RealtimeConversationInput::Tick() {
+bool RealtimeConversationInput::Tick(bool allow_work) {
   if (cancelled_) return false;
   if (failed_) {
-    if (!processor_.TryJoinCancelled() || !settings_.enabled ||
+    if (!processor_.TryJoinCancelled() || !allow_work || !settings_.enabled ||
         Now() < retry_after_)
       return true;
     const auto recovered = RecoverInput(settings_);
@@ -155,10 +155,10 @@ bool RealtimeConversationInput::Tick() {
   }
   if (!started_) return true;
   if (!Drain()) return false;
-  StartIdleCapture();
-  const bool alive = processor_.Tick();
+  if (allow_work) StartIdleCapture();
+  const bool alive = processor_.Tick(allow_work);
   if (!Drain()) return false;
-  return alive ? TickIdle() : StopInput();
+  return alive ? (!allow_work || TickIdle()) : StopInput();
 }
 void RealtimeConversationInput::ResponseFinished(uint64_t playback_ticks) {
   CancelIdle();

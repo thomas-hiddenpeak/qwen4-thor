@@ -24,7 +24,10 @@ class LiveAudioInput {
   ObjectReply Prepare(RealtimeAudioFormat format);
   ObjectReply Append(std::string_view base64, std::string_view event_id = {});
   ObjectReply Mute(bool muted, std::string_view event_id = {});
-  ObjectReply Tick();
+  ObjectReply Tick(bool allow_work = true);
+  // Typed output interruption: discard only the uncommitted prefix/partial
+  // sample, keep accepted ASR borrowers, absolute clock and user mute setting.
+  ObjectReply DiscardPending();
   ObjectReply Close();
   bool Drained() const;
   void Cancel() noexcept;
