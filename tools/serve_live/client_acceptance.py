@@ -1,6 +1,7 @@
-"""One native model, one official Live TLS connection, four actual work items.
+"""One native model, one official Live TLS connection, five actual work items.
 
-Existing actual ASR audio triggers client delegation; the client reads the real
+An explicitly synthetic query is produced by actual native TTS, then ASR
+receives only its audio to trigger client delegation; the client reads the real
 project record and supplies it as context, then receives native speech. One
 ordinary Chat after drain protects healthy core service. No automatic replay,
 model restart, performance claim or production default change.
@@ -8,6 +9,7 @@ model restart, performance claim or production default change.
 import argparse
 import fcntl
 import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -28,8 +30,9 @@ from tools.serve_service.package import read, require, save, sha
 
 WORK = ROOT/'.q4t-work/serve-live-20261121'
 LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=1,
-              audio_inputs=1, responses=2, chats=1, controls=2000, seconds=600)
-FORMAT = 'q4t-live-client-business-v1'
+              speech_fixture=1, audio_inputs=1, responses=2, chats=1, controls=2000, seconds=600)
+FORMAT = 'q4t-live-client-query-business-v2'
+QUERY = '请查询当前项目版本号。'
 
 
 def prepare(out):
@@ -41,7 +44,7 @@ def prepare(out):
             'formal warning-free runtime build')
     for n,h in read(WORK/'native-build-01/plan.json')['sources'].items():
         require(sha(ROOT/n)==h,'built native source drift')
-    cpu=read(WORK/'client-driver-cpu-01/result.json')
+    cpu=read(WORK/'client-driver-cpu-02/result.json')
     require(cpu['status']=='PASS','driver negative checks missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'driver source drift')
     require(read(WORK/'binding-cpu-01/result.json')['status']=='PASS','binding CPU')
@@ -80,6 +83,10 @@ def prepare(out):
         client_policy_sha256=sha(out/'client-policy.json'),tls=tls,
         tls_files={tls[n]:sha(tls[n]) for n in ('certificate','key')},reused_core_before={},
         record=dict(path='docs/STATUS.md',sha256=sha(record),version='rev'+version[1]),
+        synthetic_query=dict(model='qwen3-tts-12hz-1.7b-customvoice',voice='vivian',
+            input=QUERY,response_format='pcm',stream_format='audio',speed=1),
+        prior_attempt=dict(directory=str(WORK/'client-business-01'),status='FAIL',
+            starts=1,actual_work=2,seconds=113.32063404517248,original_answer='明白。'),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save(out/'plan.json',plan)
     print(json.dumps(dict(plan=str(out/'plan.json'),limits=LIMITS)),flush=True)
@@ -101,13 +108,44 @@ class Stage(base.Stage):
         for key,value in tts['limits'].items():args+=['--tts-'+key.replace('_','-'),str(value)]
         return args
 
+    def query_audio(self):
+        before=self.snapshot('fixture-before');self.budget('speech_fixture')
+        body=self.plan['synthetic_query']
+        require(body['input']==QUERY and body['response_format']=='pcm',
+                'frozen explicit query fixture')
+        save(self.out/'query-speech.request.json',body)
+        conn=http.client.HTTPConnection('127.0.0.1',self.plan['port'],timeout=150)
+        try:
+            conn.request('POST','/v1/audio/speech',json.dumps(body,ensure_ascii=False).encode(),
+                {'Content-Type':'application/json','X-Q4T-Client-Id':'beta',
+                 'X-Q4T-Gateway-Token':self.token})
+            response=conn.getresponse();raw=response.read((1<<20)+1)
+            (self.out/'query-speech.wire').write_bytes(raw)
+            save(self.out/'query-speech.http.json',dict(status=response.status,
+                headers=dict(response.getheaders()),bytes=len(raw)))
+            require(response.status==200 and response.getheader('Content-Type')=='audio/pcm'
+                    and 0<len(raw)<=1<<20 and len(raw)%2==0 and any(raw),
+                    'actual complete PCM query synthesis')
+        finally:conn.close()
+        path=self.out/'query.pcm';path.write_bytes(raw)
+        after=self.snapshot('fixture-drained')
+        key=lambda name:name+'{client="beta"}'
+        require(after[key('q4t_client_rate_admitted_total')]-before[key('q4t_client_rate_admitted_total')]==1
+                and after[key('q4t_client_rate_settled_tokens_total')]>before[key('q4t_client_rate_settled_tokens_total')]
+                and after[key('q4t_client_rate_reserved_tokens')]==0,'actual query synthesis settlement')
+        save(self.out/'query-fixture.json',dict(path=str(path),sha256=sha(path),bytes=len(raw),
+            origin='actual_native_tts_synthetic_query',expected_transcript=QUERY,
+            transcript_supplied_to_asr=False,rate=24000))
+        return dict(path=str(path),sha256=sha(path))
+
     def business(self):
+        clip=self.query_audio()
         before=self.snapshot('before')
         self.budget('websocket_sessions');self.budget('audio_inputs');self.budget('responses',2)
-        record=self.plan['record'];clip=self.plan['clips']['zh']
+        record=self.plan['record']
         args=dict(base_url=f"https://127.0.0.1:{self.plan['public_port']}/v1",
             api_key=self.keys['alpha'],ca_file=self.plan['tls']['certificate'],
-            clip=clip['path'],clip_sha256=clip['sha256'],expected_input=self.plan['expected']['zh'],
+            clip=clip['path'],clip_sha256=clip['sha256'],expected_input=QUERY,
             record_file=str(ROOT/record['path']),record_sha256=record['sha256'],
             expected_version=record['version'],journal_file=str(self.out/'client.events.jsonl'))
         env={k:v for k,v in os.environ.items() if k not in
@@ -125,6 +163,8 @@ class Stage(base.Stage):
                 try:actor.wait(5)
                 except subprocess.TimeoutExpired:actor.kill();actor.wait(3)
         self.same_model();after=self.snapshot('live-drained')
+        require((self.out/'client.sdk.json').stat().st_size>0,
+                'actor did not publish its final receipt; retain raw journal and exit code '+str(code))
         receipt=read(self.out/'client.sdk.json')
         require(code==0 and receipt['status']=='PASS','actual SDK protocol failed; preserve original journal')
         journal=self.out/'client.events.jsonl'

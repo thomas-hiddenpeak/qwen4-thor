@@ -4,6 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { check } from '../serve_realtime/conversation_checks.mjs';
+import { clientHandoff } from './client_wait.mjs';
 import { openJournal } from '../serve_realtime/bounded_journal.mjs';
 let input = '';
 for await (const part of process.stdin) {
@@ -60,9 +61,9 @@ const result = {status:'FAIL',events,automatic_replay:false,expected_input:args.
 try {
   await until(()=>connections===1);
   await action({type:'session.start',event_id:'start',session:{model:'qwen3.8-flash-next',
-    instructions:'这是项目资料查询服务。每当收到用户语音，先使用 q4t_live_delegate 将查询当前项目版本号的任务交给客户端。在收到客户端的真实项目记录之前不要回答版本号，不要朗读输入语音。收到应用提供的结果后，只说版本号一次，不要解释，不要再次委派。',
+    instructions:'这是项目资料查询服务。用户询问项目资料时，先使用 q4t_live_delegate 委派客户端读取真实项目记录。收到客户端结果前不要回答或编造版本号。收到应用提供的真实结果后，只说版本号一次，不要解释，不要再次委派。',
     input:[{role:'developer',content:[{text:'保持项目查询任务和真实结果的关联。'}]},
-      {role:'user',content:[{text:'接下来的语音是开始查询的口令。'}]},
+      {role:'user',content:[{text:'接下来的录音包含我的问题，请先使用客户端查询。'}]},
       {role:'assistant',content:[{text:'明白。'}]}],
     audio:{format:{type:'audio/pcm',rate:24000},output:{voice:'vivian'}},
     delegation:{type:'client',acknowledgement_delay_ms:600000},store:false,
@@ -77,7 +78,9 @@ try {
     for (let offset=0;offset<raw.length;offset+=24000)
       send({type:'session.input_audio.append',audio:raw.subarray(offset,offset+24000).toString('base64')});
   await eventSince(at,'session.input_transcript.delta');
-  const delegated = await eventSince(at,'session.delegation.created');
+  const handoffDeadline = Date.now()+30000;
+  let delegated;
+  await until(()=>{delegated=clientHandoff(events.slice(at),Date.now(),handoffDeadline);return !!delegated;});
   result.delegation_id = delegated.delegation.id;
   // The application now performs a real read; no task text/result fabricated by the server.
   const raw = fs.readFileSync(args.record_file);
