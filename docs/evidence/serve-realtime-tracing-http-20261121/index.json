@@ -1,0 +1,190 @@
+{
+  "archive_sha256": "a95e565dc458cf6847b1826fa1cd40a882edcef035b5d98ba1a14b18f0c5f7c2",
+  "files": [
+    {
+      "path": "sdk-business-06/acceptance.json",
+      "bytes": 1624,
+      "sha256": "5bcd86e91c82ac53b62d3126c5e7e25d85eb95bbbd0efa6084cfcfa037be3d1c"
+    },
+    {
+      "path": "sdk-business-06/result.json",
+      "bytes": 308,
+      "sha256": "e1cc6093bfaa6917f9f313deec4a6efb80573235e5df9d15b267a87804a9a40f"
+    },
+    {
+      "path": "sdk-business-06/observations.json",
+      "bytes": 995,
+      "sha256": "eb93c6edfaf2f12fe4e1eb650cb2766c82bd799e496846848009f42fae2a6c86"
+    },
+    {
+      "path": "sdk-business-06/faults.json",
+      "bytes": 17285,
+      "sha256": "282bfe51941c4c21e788a0f0b844de081f5b66322bb664641735477afceff05a"
+    },
+    {
+      "path": "sdk-business-06/cleanup.json",
+      "bytes": 9330,
+      "sha256": "61d9fd305ba723f7fcb17ace27523d362e682c9b917f09ec6c338bc300c84059"
+    },
+    {
+      "path": "sdk-business-06/primary-cleanup.json",
+      "bytes": 4549,
+      "sha256": "f00d644903a0c5bdc4c348156449e6961ac7644e6f0d48ae8414abb9911e8241"
+    },
+    {
+      "path": "sdk-business-06/lease/exit.json",
+      "bytes": 712,
+      "sha256": "1cad26cf2b731925484264c5267fc16ca8e032ef3ebbd62079790af0ad0a1dd8"
+    },
+    {
+      "path": "sdk-business-06/lease/nvml-queries.jsonl",
+      "bytes": 356706,
+      "sha256": "9bfc83765fcf80a6bddefe30c7d63c8ee7dfbeb9d78bcbbb1ab6a89b7cb4edad"
+    },
+    {
+      "path": "sdk-business-06/primary-identity.json",
+      "bytes": 3456,
+      "sha256": "ca2b3daf223cc1a0da19bab81afc61b1219b57c3efd04d88f9a4ec2e9683bc82"
+    },
+    {
+      "path": "sdk-business-06/primary-config.json",
+      "bytes": 21636,
+      "sha256": "0a574907cf0b72f8fb292bb319106eda092f251e14e164f2e0d371a1b3fea186"
+    },
+    {
+      "path": "sdk-business-06/primary-capabilities.json",
+      "bytes": 60782,
+      "sha256": "6d879fb02b10002ea4a23b44439b9e18eec9cc9f2921640e1d11c6962945acd7"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing.sdk.json",
+      "bytes": 68909,
+      "sha256": "6e05ea0a509a7ceaceb59aef008bf8ed378c178de8abef61382b598e69c96dc4"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing.events.jsonl",
+      "bytes": 31349,
+      "sha256": "fb5fa2c6f77edd7e3e318997de745c373efa670212fdc90489f41f8d3143100e"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing-observed.json",
+      "bytes": 106925,
+      "sha256": "2218877b4e534289dd74a0972d5defcc54be3160cdd7ca00c8c70b10e7e85a84"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing-final-health.json",
+      "bytes": 408,
+      "sha256": "6b96a923d62b4ab021cdcac2fffd024a3178bfa08f46b7e0fc342fd849dbf059"
+    },
+    {
+      "path": "sdk-business-06/primary-entry-cleanup.json",
+      "bytes": 64,
+      "sha256": "d1391ed10fab3927854d10705971cfa8acd99b531e7110b05e6520dcba81192b"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing-before.wire",
+      "bytes": 37734,
+      "sha256": "a285692957d939eda68efd1bbc8e0396d3b7e52c8196cd906d59df3caba9c735"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing-after-0.wire",
+      "bytes": 37768,
+      "sha256": "8f1b5e2654d7806d4da2464416d1aa5062585264c38086c47e978cc3c093dc24"
+    },
+    {
+      "path": "sdk-business-06/primary-tracing-drain.metrics.json",
+      "bytes": 26830,
+      "sha256": "8c7495c9f2da5ff5497231539d92ad840cb184c218fcca3d7d2294a610d49b9c"
+    },
+    {
+      "path": "sdk-business-06/primary-fault-before.wire",
+      "bytes": 16593,
+      "sha256": "e645e3ba832a482b95204be86ba50405935117e6bb92d9579752b212ae54fa33"
+    },
+    {
+      "path": "sdk-business-06/primary-fault-ready.wire",
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    {
+      "path": "sdk-business-06/light-identity.json",
+      "bytes": 3459,
+      "sha256": "5f91b66e0cf45b45ec0826b19a495d18ea085fb1a5789c4019b7ef73ba5123fe"
+    },
+    {
+      "path": "sdk-business-06/light-config.json",
+      "bytes": 21641,
+      "sha256": "2cae4331733018ef0d2b2f839a84ee0537849d84dbd609c2408dca61f9800b23"
+    },
+    {
+      "path": "sdk-business-06/light-capabilities.json",
+      "bytes": 60783,
+      "sha256": "3ddccd253886d3b8152ff522d9594bb5c3851bcdf3f976488a17ea09c9763311"
+    },
+    {
+      "path": "sdk-business-06/light-tracing.sdk.json",
+      "bytes": 56741,
+      "sha256": "a6da53da70125ebfeeb80180208b477a94efe80f2326c1cdbdb374c75dbd60e6"
+    },
+    {
+      "path": "sdk-business-06/light-tracing.events.jsonl",
+      "bytes": 31328,
+      "sha256": "b8debe22b23a40523c8e824d6862714dadcea6760e1e1f08295daabcec748a25"
+    },
+    {
+      "path": "sdk-business-06/light-tracing-observed.json",
+      "bytes": 87923,
+      "sha256": "877f666fd97701d9189d90a9414cdf7653b8b86c24c1d880b791947a456efd2c"
+    },
+    {
+      "path": "sdk-business-06/light-tracing-final-health.json",
+      "bytes": 405,
+      "sha256": "fb396fe797c5056663a76961396988b9f78f9b36a72c385273c72a5c0e78fcbf"
+    },
+    {
+      "path": "sdk-business-06/light-entry-cleanup.json",
+      "bytes": 64,
+      "sha256": "435acf4a59881abeb9b88749c4f5891b1df53940f9457a55d598844c85a4c1e4"
+    },
+    {
+      "path": "sdk-business-06/light-tracing.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-business-06/light-tracing-before.wire",
+      "bytes": 37734,
+      "sha256": "fb160ce88a308665fcb572eff88015bb1218e480f19b9c85e4cd3c04e4580a28"
+    },
+    {
+      "path": "sdk-business-06/light-tracing-after-0.wire",
+      "bytes": 37772,
+      "sha256": "c2b5b75f2e74b97d5d41ec517f92a1aa00c524b3f5249607934558ede3c76005"
+    },
+    {
+      "path": "sdk-business-06/light-tracing-drain.metrics.json",
+      "bytes": 26834,
+      "sha256": "b185386ce04e70c9675e85b6381c2cc2902f60d836d81f9e784f4c3301ef71b7"
+    },
+    {
+      "path": "sdk-business-06/light-fault-before.wire",
+      "bytes": 16598,
+      "sha256": "55850338dba77084788990fd4d437576b754e62af3c6015ccacc58ecef2572da"
+    },
+    {
+      "path": "sdk-business-06/light-fault-ready.wire",
+      "bytes": 43,
+      "sha256": "12d380882f15867e9bea57bd0b56f1bf9c61b3804e93f6ad6a04a5953acde1ba"
+    },
+    {
+      "path": "reviewed-plan.json",
+      "bytes": 163090,
+      "sha256": "36045db5a3d8b679b791db0a46b70a47fae23c5fdd96487528275b99c8e2ed2d"
+    }
+  ]
+}

@@ -7,19 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[原生Realtime追踪源码接入](SERVE_REALTIME_TRACING_2026-11-20.md)正在验证：
-会话采集、独立存储/删除、原生查询与诊断已接入源码；
-[40项不同CPU场景通过](evidence/serve-realtime-tracing-cpu-20261120/README.md)，
-其中接入组26项一次通过、构建零警告，原边界/夹具失败保留。
-[实际服务/入口已零警告构建](evidence/serve-realtime-tracing-build-driver-20261121/README.md)，
-会话身份修复已有[针对性证据](evidence/serve-realtime-session-identity-20261121/README.md)。
-实际主档三次生成及工具资料回答通过、1746 tokens结算，追踪查询因
-恢复退避返回503而中断。已补齐失败快照的空闲自动恢复：23项受影响
-CPU闭合，原两项夹具失败保留；另4项针对性CPU验证线程创建失败
-也可由空闲会话恢复。3项只读轮询边界通过，[最终原生重建通过](evidence/serve-realtime-tracing-idle-recovery-20261121/README.md)。
-累计2模型启动/3实际生成，默认rev416未改。新补验最多2启动/6生成/
-900秒，累计上限4启动/9实际生成，原正确回答与失败记录同时保留。
-辅助采集初始化有界重试，取样缺失保持unknown，不进入核心readiness。
+[原生Realtime追踪](SERVE_REALTIME_TRACING_2026-11-20.md)已通过
+[主轻实际TLS/SDK业务](evidence/serve-realtime-tracing-http-20261121/README.md)：
+2模型启动、6实际生成、159.604秒，149次NVML正常，租约与资源清理完成。
+两次真实资料读取、引用回答、持久化、独立scope和删除不复活通过；
+写入目录失效与追踪子进程退出均有界恢复，健康核心PID不变。
+含前两次原始失败累计4启动/9实际生成/260.147秒，原失败保持。
+[资格与封包15项CPU闭合](evidence/serve-realtime-tracing-qualification-cpu-20261121/README.md)，
+两档完整历史记录可逐字重构，新增追踪见证仍满足8 MiB上限。
+原会话身份、空闲重试修复及原夹具失败均保留；模型质量旧FAIL不改写。
+正在签发资格、可回退封包和main收尾，随后继续Live及全部总任务。
+默认rev416保持STOPPED，尚未替换。本阶段不扩展性能/全模型质量矩阵。
 
 PR #56的CI容量回归及旧版封包清单已修复，
 [24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、

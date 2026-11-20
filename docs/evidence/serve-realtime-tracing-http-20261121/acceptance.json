@@ -1,0 +1,73 @@
+{
+  "status": "PASS_REALTIME_TRACING_PRIMARY_LIGHT_PROTOCOL",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 149,
+    "cleanup_complete": true
+  },
+  "counts": {
+    "starts": 2,
+    "chats": 6,
+    "controls": 73,
+    "websocket_sessions": 2,
+    "ingress_starts": 2
+  },
+  "seconds": 159.60364232305437,
+  "default_unchanged": true,
+  "observations": {
+    "primary": {
+      "protocol": "PASS",
+      "quality": [
+        {
+          "case": "ordinary",
+          "answer": "42",
+          "status": "PASS"
+        },
+        {
+          "case": "document",
+          "answer": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\n\n[docs/MODEL.md:L1-L3]",
+          "status": "PASS"
+        }
+      ],
+      "model_jobs": 3,
+      "settled_tokens": 1766,
+      "spans": 6,
+      "actual_reads": 1,
+      "automatic_replays": 0,
+      "resources_released": true
+    },
+    "light": {
+      "protocol": "PASS",
+      "quality": [
+        {
+          "case": "document",
+          "answer": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\n[docs/MODEL.md:L1-L3]",
+          "status": "PASS"
+        },
+        {
+          "case": "ordinary",
+          "answer": "42",
+          "status": "PASS"
+        }
+      ],
+      "model_jobs": 3,
+      "settled_tokens": 2491,
+      "spans": 5,
+      "actual_reads": 1,
+      "automatic_replays": 0,
+      "resources_released": true
+    }
+  },
+  "managed_recovery": false,
+  "qualification_issued": false,
+  "healthy_models_restarted": 0,
+  "model_quality": "PASS",
+  "cumulative": {
+    "starts": 4,
+    "actual_generations": 9,
+    "seconds": 260.14675557706505,
+    "prior_failures_preserved": true
+  }
+}

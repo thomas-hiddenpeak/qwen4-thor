@@ -264,6 +264,9 @@ jobs:
             tools.serve_realtime.test_mcp_recovery_sdk \
             tools.serve_responses.test_mcp_business_peer \
             tools.serve_recovery.test_profile_mcp \
+            tools.serve_recovery.test_profile_trace \
+            tools.serve_recovery.test_native_bundle.BundleTests.test_v26_trace_closure_and_v25_compatibility \
+            tools.serve_recovery.test_native_bundle.BundleTests.test_v26_relocated_trace_verifiers_have_no_repository_dependency \
             tools.serve_recovery.test_native_bundle.BundleTests.test_mcp_verifier_is_self_contained_and_v24_remains_valid \
             tools.serve_realtime.test_idle_acceptance \
             tools.serve_realtime.test_speech_followup \
