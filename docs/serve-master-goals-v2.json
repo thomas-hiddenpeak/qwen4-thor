@@ -14379,14 +14379,14 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "definitions_and_native_catalog_cpu_accepted_session_integration_next",
+      "state": "definitions_native_catalog_and_async_ownership_cpu_accepted_session_integration_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
       "runtime_connected": false,
       "default_revision": 396,
       "remaining": [
-        "async actual catalog import",
+        "connect transactional session/response configuration to native async imports and immutable generation snapshots",
         "owned invocation and approval lifecycle",
         "actual SDK business and recovery",
         "reversible delivery and main integration"
@@ -14445,7 +14445,39 @@
         "all_master_tasks_active": true,
         "public_secret_scan_matches": 0
       },
-      "catalog_evidence": "evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md"
+      "catalog_evidence": "evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md",
+      "imports_cpu": {
+        "status": "PASS_REALTIME_MCP_ASYNC_IMPORT_OWNERSHIP_CPU",
+        "distinct_cases": 20,
+        "new_async_cases": 14,
+        "new_history_cases": 2,
+        "affected_existing_cases": 4,
+        "case_executions": 20,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 0.0639171339571476,
+        "build_seconds": 46.76401847274974,
+        "warnings": 0,
+        "binary_sha256": "b678ac5de5ef2d36761a88966f76e4a91459cdc1df8a0ccb14b82df6d6250464",
+        "runtime_connected": false,
+        "actual_mcp_http_import_evidence_reused": "serve-realtime-mcp-catalog-cpu-20261120",
+        "maximum_workers": 4,
+        "maximum_retained_entries": 64,
+        "maximum_private_bytes": 16777216,
+        "maximum_history_bytes": 16777216,
+        "maximum_deadline_ms": 30000,
+        "late_results_cannot_replace_deleted_generation": true,
+        "pending_owned_catalog_omitted_from_default_snapshot": true,
+        "pending_function_contract_preserved": true,
+        "failed_and_unknown_catalogs_grant_no_authority": true,
+        "gpu_actions": 0,
+        "llm_requests": 0,
+        "default_unchanged": true,
+        "default_revision": 396,
+        "service_state": "STOPPED",
+        "all_master_tasks_active": true
+      },
+      "imports_evidence": "evidence/serve-realtime-mcp-imports-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

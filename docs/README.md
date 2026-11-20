@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [Realtime MCP异步目录与历史隔离CPU](evidence/serve-realtime-mcp-imports-cpu-20261120/README.md)
+
 - [双向音频及凭据更正PR #55合入主线](evidence/serve-pr55-merged-20261120/README.md)
 
 - [双向输入预留与上下文冻结CPU](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)

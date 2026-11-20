@@ -103,6 +103,8 @@ class RealtimeConversation {
   // Null selects the default conversation; [] selects an empty context.
   // Explicit item_reference resolves only this session's completed entries.
   // Pending server output fails rather than silently dropping partial tools.
+  // Owned pending MCP catalogs alone are omitted from default context, so an
+  // auxiliary tools/list cannot block an unrelated ordinary response.
   // A terminal incomplete server tool remains retrievable but is not executable
   // context. Default snapshots omit it; an explicit reference fails. Client
   // status fields have no such authority and cannot hide submitted history.

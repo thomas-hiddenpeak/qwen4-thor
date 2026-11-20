@@ -561,6 +561,12 @@ Status RealtimeConversation::SnapshotImpl(
     for (const auto& entry : entries_) {
       if (!entry.in_conversation || !entry.in_context || unexecutable(entry))
         continue;
+      // Metadata import is independent of ordinary generation. Only owned
+      // pending catalogs are omitted; client items do not acquire authority
+      // from their type/status. Explicit references still wait or fail below.
+      if (entry.server_output && entry.pending &&
+          entry.item.GetString("type") == "mcp_list_tools")
+        continue;
       auto status = append(entry.item, entry.pending, entry.generation,
                            entry.native_input, entry.idle_timeout);
       if (!status) return status;
