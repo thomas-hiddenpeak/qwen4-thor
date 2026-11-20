@@ -50,8 +50,7 @@ def check_session(value, mode, transport, journal):
         'duplex session reconfigured or restarted')
     settings = updates[0]['session']
     expected_input = dict(format=dict(type='audio/pcm', rate=24000),
-        transcription=dict(model='qwen3-asr-0.6b', language='', prompt='',
-                           languages=[], keywords=[]),
+        transcription=dict(model='qwen3-asr-0.6b'),
         turn_detection=None, noise_reduction=None)
     require(settings['output_modalities'] == ['text'] and
         settings['max_output_tokens'] == 128 and
@@ -81,9 +80,12 @@ def check_session(value, mode, transport, journal):
     delta = ''.join(e['delta'] for e in events if
         e['type'] == 'response.output_text.delta' and e['response_id'] == row['id'])
     require(delta == c.text(row), 'stream differs from terminal')
-    quality.append(c.judgment('response', c.text(row), PHRASE))
     require(all(q['status'] == 'PASS' for q in quality),
-            'actual duplex task quality failed: ' + json.dumps(quality, ensure_ascii=False))
+            'actual native input differs: ' + json.dumps(quality, ensure_ascii=False))
+    # The user explicitly separates instruction following from recovery.
+    # Keep the raw answer and computed FAIL; neither a successful transport
+    # nor a healthy restarted owner repairs model quality.
+    quality.append(c.judgment('response', c.text(row), PHRASE))
     client = [r['event'] for r in journal if r['direction'] == 'client']
     creates = [e['response'] for e in client if e['type'] == 'response.create']
     require(len(creates) == 1 and creates[0]['conversation'] == 'auto' and
@@ -128,7 +130,7 @@ def check_session(value, mode, transport, journal):
         (mode != 'complete' or not value['transport_errors']), 'transport failure')
     return dict(tokens=input_tokens + c.speech_checks.usage(row),
                 ids=[item_id, row['id']] + ([partial['item_id']] if partial else []),
-                quality=quality)
+                quality=quality, model_quality_status=quality[-1]['status'])
 
 
 def accounting(before, after, total, interrupted=False):
@@ -162,6 +164,9 @@ def check(out, plan):
         receipt = read(out/(prefix+'-receipt.json'))
         raw = read(out/(prefix+'.sdk.json'))
         observed = check_session(raw, mode, transport, journal(out, prefix))
+        require(receipt.get('observed') == observed and
+                receipt.get('verification_failure') is None,
+                'recorded observation or original failure changed')
         require(receipt['mode'] == mode and managed.clean(receipt['before']),
                 'unclean initial duplex state')
         for suffix in ('before', 'after') + (() if mode == 'complete' else ('held',)):
@@ -199,7 +204,8 @@ def check(out, plan):
         identifiers += observed['ids']
         result[prefix] = dict(mode=mode, transport=transport, actual_tokens=used,
             completed_tokens=observed['tokens'], interrupted_usage_from_server=mode == 'hold_stream',
-            automatic_replay=False, core_owner=owner(first), quality=observed['quality'])
+            automatic_replay=False, core_owner=owner(first), quality=observed['quality'],
+            model_quality_status=observed['model_quality_status'])
     require(len(identifiers) == len(set(identifiers)) and
         read(out/'counts.json')['counts']['websocket_sessions'] ==
         plan['limits']['websocket_sessions'] == len(result), 'session count or identity replay')
@@ -262,18 +268,29 @@ class Actor(managed.Actor):
         save(self.stage.output/(prefix+'.sdk.json'), value)
         self.process.wait(timeout=5)
         extra = self.process.stdout.read(1)
-        require(self.process.returncode == 0 and not self.buffer and not extra,
-                'duplex SDK failed/repeated receipt')
-        check_session(value, mode, 'official-openai-wss' if
-            self.stage.plan['scenario'] == 'tls' else 'ws-loopback',
-            journal(self.stage.output, prefix))
-        self.current['after'] = None if mode == 'hold_complete' else self.observe('after', managed.clean)
-        if mode != 'hold_complete':
-            save(self.stage.output/(prefix+'-core-after.json'), self.stage.sample())
-        save(self.stage.output/(prefix+'-receipt.json'), self.current)
-        self.process.stdout.close()
-        self.stderr.close()
-        self.process = self.stderr = self.current = None
+        failure = None
+        try:
+            require(self.process.returncode == 0 and not self.buffer and not extra,
+                    'duplex SDK failed/repeated receipt')
+            self.current['observed'] = check_session(value, mode,
+                'official-openai-wss' if self.stage.plan['scenario'] == 'tls' else
+                'ws-loopback', journal(self.stage.output, prefix))
+        except (KeyError, TypeError, ValueError, RuntimeError) as error:
+            failure = error
+            self.current['verification_failure'] = str(error)
+        # Observation failures must not discard actual settlement evidence.
+        try:
+            self.current['after'] = (None if mode == 'hold_complete' else
+                                    self.observe('after', managed.clean))
+            if mode != 'hold_complete':
+                save(self.stage.output/(prefix+'-core-after.json'), self.stage.sample())
+        finally:
+            save(self.stage.output/(prefix+'-receipt.json'), self.current)
+            self.process.stdout.close()
+            self.stderr.close()
+            self.process = self.stderr = self.current = None
+        if failure is not None:
+            raise failure
 
     def finish_phases(self):
         require(self.current is None and self.attempted == [n for n,_ in phases(self.stage.plan)],

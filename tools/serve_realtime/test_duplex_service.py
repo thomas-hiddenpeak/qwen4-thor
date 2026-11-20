@@ -3,6 +3,9 @@ import base64
 import copy
 import hashlib
 import json
+import os
+from pathlib import Path
+import tempfile
 import unittest
 from unittest import mock
 from tools.serve_realtime import duplex_managed as m, managed
@@ -15,8 +18,7 @@ def fixture(mode='complete'):
     settings = dict(type='realtime', instructions=m.duplex_task_checks.INSTRUCTIONS,
         output_modalities=['text'], max_output_tokens=128,
         audio=dict(input=dict(format=dict(type='audio/pcm', rate=24000),
-        transcription=dict(model='qwen3-asr-0.6b', language='', prompt='',
-                           languages=[], keywords=[]), turn_detection=None, noise_reduction=None)))
+        transcription=dict(model='qwen3-asr-0.6b'), turn_detection=None, noise_reduction=None)))
     usage = dict(input_tokens=10, output_tokens=5, total_tokens=15)
     item = dict(id='input', role='user', type='message', content=[dict(type='input_audio',
         transcript=m.PHRASE, audio=base64.b64encode(RAW[:-2]).decode())])
@@ -84,7 +86,13 @@ class Contracts(unittest.TestCase):
         for stream in (False,True):
             value,journal=fixture();value['responses'][0]['output'][0]['content'][0]['text']='wrong'
             if stream:next(e for e in value['events'] if e['type']=='response.output_text.delta')['delta']='wrong'
-            with self.assertRaises(RuntimeError):self.check((value,journal))
+            if stream:
+                result=self.check((value,journal))
+                self.assertEqual(result['model_quality_status'],'FAIL')
+                self.assertEqual(result['quality'][-1]['actual'],'wrong')
+                self.assertEqual(result['quality'][-1]['status'],'FAIL')
+            else:
+                with self.assertRaises(RuntimeError):self.check((value,journal))
 
     def test_changed_sent_audio_and_missing_terminal_cannot_pass(self):
         for mutate in ('sent','terminal'):
@@ -118,7 +126,7 @@ class Contracts(unittest.TestCase):
         self.assertEqual(sum(v['starts'] for v in service.LIMITS.values()),5)
         self.assertEqual(sum(v['chats'] for v in service.LIMITS.values()),18)
         self.assertEqual(sum(v['websocket_sessions'] for v in service.LIMITS.values()),6)
-        self.assertEqual(sum(v['seconds'] for v in service.LIMITS.values()),1200)
+        self.assertEqual(sum(v['seconds'] for v in service.LIMITS.values()),1020)
         plan=dict(scenario='tls',duplex_recovery=dict(format=m.FORMAT))
         self.assertEqual(m.phases(plan),[('tls-before','hold_stream'),('tls-after','complete'),('tls-controller','complete')])
         with self.assertRaises(RuntimeError):m.phases(dict(plan,duplex_recovery={"format":"unknown"}))
@@ -129,6 +137,29 @@ class Contracts(unittest.TestCase):
             if key=='status':value['status']='FAIL'
             else:value['responses'][0]['usage']['total_tokens']=0
             with self.assertRaises(RuntimeError):self.check((value,journal))
+
+    def test_verification_failure_still_saves_actual_final_accounting(self):
+        root=Path(os.environ.get('Q4T_TEST_OUTPUT_DIR','.q4t-work/duplex-recovery-cpu'))
+        root.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=root) as directory:
+            stage=mock.Mock(output=Path(directory),plan=dict(scenario='tool_retained'))
+            stage.sample.return_value=dict(model_pid=123)
+            actor=m.Actor(stage)
+            actor.current=dict(prefix='failed',mode='complete')
+            actor.process=mock.Mock(returncode=0)
+            actor.process.stdout.read.return_value=b''
+            actor.stderr=mock.Mock()
+            actor.line=mock.Mock(return_value=fixture()[0])
+            actor.observe=mock.Mock(return_value=dict(actual_settled=30))
+            with mock.patch.object(m,'journal',return_value=[]),mock.patch.object(
+                m,'check_session',side_effect=RuntimeError('original checker error')):
+                with self.assertRaisesRegex(RuntimeError,'original checker error'):
+                    actor.finish()
+            receipt=json.loads((Path(directory)/'failed-receipt.json').read_text())
+            self.assertEqual(receipt['after'],dict(actual_settled=30))
+            self.assertEqual(receipt['verification_failure'],'original checker error')
+            self.assertNotIn('observed',receipt)
+            self.assertIsNone(actor.current)
 
 
 if __name__=='__main__':unittest.main()

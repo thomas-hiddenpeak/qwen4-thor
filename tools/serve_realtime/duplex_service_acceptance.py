@@ -23,7 +23,7 @@ require,save=P['require'],P['save']
 # Each complete WSS task owns one ASR and one response. TLS also holds one
 # continuous ASR. Counts include one startup selfcheck for each of five models.
 LIMITS=dict(
-    tool_retained=dict(starts=1,chats=3,probes=0,controls=1500,websocket_sessions=1,seconds=300),
+    tool_retained=dict(starts=1,chats=3,probes=0,controls=1500,websocket_sessions=1,seconds=120),
     tls=dict(starts=2,chats=9,probes=0,controls=2000,websocket_sessions=3,seconds=360),
     tool_version=dict(starts=2,chats=6,probes=1,controls=2500,websocket_sessions=2,seconds=540))
 
@@ -156,13 +156,16 @@ def check_business(out):
         row=package.read(out/'controller-usage.json');v=row['verification']
         require(P['cold_controller_usage'](row['usage'],2,v['observed_deadline'],v['checked_at'])==v,
                 'actual full-window controller quota receipt differs')
-    return dict(duplex=rows,automatic_replay=False,actual_asr_response_and_waveform=True)
+    return dict(duplex=rows,automatic_replay=False,actual_asr_response_and_waveform=True,
+        model_quality_separate=True,model_quality_status='PASS' if all(
+            r['model_quality_status']=='PASS' for r in rows.values()) else 'FAIL')
 
 
 def business_record(version):
     return dict(status='PASS',native_realtime_duplex=True,actual_audio_bytes=True,
         normal_close_and_settlement=True,version_switch=version,default_replaced=False,
-        automatic_request_or_tool_replay=False)
+        automatic_request_or_tool_replay=False,model_quality_separate=True,
+        acceptance_scope='native input, protocol, recovery ownership and actual settlement')
 
 
 GLOBALS.update(__file__=__file__,LIMITS=LIMITS,prepare=prepare,Stage=Stage,
