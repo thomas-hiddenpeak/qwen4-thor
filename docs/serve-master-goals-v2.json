@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "public_session_cpu_accepted_native_build_and_sdk_business_next",
+      "state": "native_runtime_built_sdk_verifier_cpu_accepted_bounded_business_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14837,7 +14837,30 @@
         "default_unchanged": true,
         "master_goal_active": true
       },
-      "session_evidence": "evidence/serve-realtime-mcp-session-cpu-20261120/README.md"
+      "session_evidence": "evidence/serve-realtime-mcp-session-cpu-20261120/README.md",
+      "runtime_build": {
+        "status": "BUILD_PASS",
+        "exit_code": 0,
+        "seconds": 152.37639655312523,
+        "warnings": 0,
+        "gpu_actions": 0,
+        "default_unchanged": true,
+        "prior_unchanged": true,
+        "binary_sha256": "a84fda9519bdc19d20a725e9c259a74bea89c8c6e70d133876b3e2007c1ebf7b",
+        "free_bytes_after": 615096320
+      },
+      "sdk_verifier_cpu": {
+        "tests": 10,
+        "status": "PASS",
+        "evidence": "evidence/serve-realtime-mcp-runtime-sdk-cpu-20261120/README.md"
+      },
+      "business_budget": {
+        "starts": 2,
+        "model_jobs": 8,
+        "seconds": 900,
+        "websocket_sessions": 2,
+        "ingress_starts": 2
+      }
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",
