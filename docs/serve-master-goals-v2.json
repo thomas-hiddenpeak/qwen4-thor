@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "shared_capability_gate_repaired_retrying_offline_qualification",
+      "state": "primary_light_mcp_profiles_qualified_preparing_managed_recovery",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -15010,7 +15010,39 @@
         "runtime_changed": false,
         "default_unchanged": true
       },
-      "qualification_gate_evidence": "evidence/serve-realtime-mcp-qualification-gate-20261120/README.md"
+      "qualification_gate_evidence": "evidence/serve-realtime-mcp-qualification-gate-20261120/README.md",
+      "qualified_profiles": {
+        "status": "ACCEPT_MCP_PRIMARY_LIGHT",
+        "registry_sha256": "5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3",
+        "source_composition_sha256": "ad91ca7e8c8b9f430f6caa0cd7925f48f40bc5989312602f4142933c383fe70a",
+        "environment": {
+          "status": "PASS",
+          "env_abort": false,
+          "all_queries_ok": true,
+          "nvml_queries": 202,
+          "lease_result_sha256": "196584af1aa1f99ee96da9a07be2f2d83f33092fd8c6bd2e7c90b96f27e659ef",
+          "cleanup_complete": true
+        },
+        "new_gpu_starts": 0,
+        "actual_model_starts": 4,
+        "actual_jobs": 10,
+        "original_failures_preserved": true,
+        "original_model_quality_status": "FAIL",
+        "model_quality_repaired": false,
+        "original_primary_final_metrics_missing": true,
+        "default_unchanged": true,
+        "managed_recovery_accepted": false,
+        "full_matrix": false,
+        "master_active": true,
+        "profile_bytes": {
+          "primary": 5631868,
+          "light": 8340821
+        },
+        "native_build_seconds": 1.7680168449878693,
+        "native_build_warnings": 0,
+        "native_binaries_unchanged": true
+      },
+      "qualified_profiles_evidence": "evidence/serve-realtime-mcp-qualified-profiles-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

@@ -69,7 +69,10 @@ helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidenc
 首次完整资格生成在共用Realtime声明校验处失败：旧门遗漏新增MCP，
 尚未签发registry、原中间记录不获准使用。已补能力门和严格类型检查，
 [11项针对性CPU通过](evidence/serve-realtime-mcp-qualification-gate-20261120/README.md)，
-接着重新离线生成；不重跑GPU，恢复/发行继续。
+[主轻完整资格已签发](evidence/serve-realtime-mcp-qualified-profiles-20261120/README.md)，
+registry为`5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3`。
+主/轻5631868/8340821字节，仍限8MiB；原失败保持，新增GPU 0。
+原生helper重建零警告、二进制未改；接着同能力封包和恢复/发行。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

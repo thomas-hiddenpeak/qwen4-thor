@@ -244,3 +244,8 @@ v25封包包含纯验证模块、保持v24读取兼容，不携带本机MCP测�
 [42项不同CPU已完成](evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md)，
 原NameError夹具错误保留，修复2项补验通过；43次执行，0GPU。
 接着生成实际资格与服务恢复包，默认保持。
+
+[完整主轻资格已签发](evidence/serve-realtime-mcp-qualified-profiles-20261120/README.md)，
+registry 5a44b4a3，当前MCP引擎/协议/实际配置绑定；原失败继续保留。
+原生helper必要构建零警告且二进制不变，新增GPU 0。继续封包、
+服务恢复与发行，不在资格阶段停止总目标。
