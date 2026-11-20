@@ -8819,5 +8819,18 @@
       "gpu_starts": 0
     },
     "default_revision": 376
+  },
+  "duplex_business_driver_20261120": {
+    "evidence": "docs/evidence/serve-realtime-duplex-runtime-ready-20261120/README.md",
+    "sources_sha256": {
+      "tools/serve_realtime/duplex_acceptance.py": "e9bb70212140b5eca57bf18ae008d974688671a6016e63b254e8604e2c3b385d",
+      "tools/serve_realtime/duplex_checks.py": "7827733b9ad32cc351c9bfbbb247f9d57497504f1b003710270646e8544caa9e",
+      "tools/serve_realtime/duplex_sdk.mjs": "ea4097257423d14d0d5b1a73a594f3edd334e05df34b3fe8379b9e9d85ab49bd",
+      "tools/serve_realtime/test_duplex_acceptance.py": "4f197eeb96382109d9cb33c1f7e5d7bdf5efeec6ffe1ace1b1ac9f03b2179b15",
+      ".github/workflows/host-checks.yml": "875b43138e0c750b775e566bde81155918318880a907593f529ce4c8053c286f"
+    },
+    "negative_tests": 10,
+    "sdk_syntax": true,
+    "actual_business": "pending"
   }
 }

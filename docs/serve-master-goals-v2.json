@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "direct_mixed_audio_entries_cpu_accepted_runtime_business_pending",
+      "state": "complete_duplex_runtime_and_driver_ready_real_business_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 227,
@@ -12471,7 +12471,6 @@
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
-        "grouped native runtime build",
         "real WSS/native ASR/TTS and affected recovery/delivery",
         "all master tasks"
       ],
@@ -12820,6 +12819,57 @@
           "default_revision": 376,
           "default_unchanged": true,
           "actual_direct_audio_entry": "connected_cpu_accepted",
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "runtime_ready": {
+        "evidence": "docs/evidence/serve-realtime-duplex-runtime-ready-20261120/README.md",
+        "result": {
+          "status": "RUNTIME_BUILD_AND_BUSINESS_DRIVER_CPU_READY",
+          "runtime_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 147.167845972348,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+            "free_bytes_after": 3621777408
+          },
+          "driver_cpu": {
+            "status": "PASS",
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_realtime.test_duplex_acceptance"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--check",
+                  "tools/serve_realtime/duplex_sdk.mjs"
+                ],
+                "returncode": 0
+              }
+            ],
+            "seconds": 0.26243093609809875,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "negative_cpu_cases": 10,
+          "sdk_syntax": true,
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
           "actual_duplex_business": "pending",
           "master_active": true
         }

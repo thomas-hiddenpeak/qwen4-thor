@@ -51,10 +51,10 @@ conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回�
 测试名去重为227个不同用例/373次执行，保留20次原CPU失败与
 1次来源门禁失败；之前前五组92的误计已纠正为91，原记录不改。
 host为`83f8fe997fc00f08ea319f178c5bc43a624c69b8249865d5b45dad4e389be3e6`，
-已构建q4t候选为`1f01ec621cd7a79ca037e3f5308325c0b3e10d9f00c66da04896ea03f6c5e577`，
-保存在`.q4t-work/serve-realtime-duplex-20261120/backend-runtime-01/q4t`。
+已构建q4t候选为`fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11`，
+保存在`.q4t-work/serve-realtime-duplex-20261120/mixed-entry-runtime-01/q4t`。
 两者都不是当前默认。实际HTTP后端已接线，**尚未执行真实双向业务**。
-继续必要runtime构建，然后统一WSS/
+继续统一WSS/
 ASR/TTS短验、受影响恢复与可回退交付。
 [同会话本地输入恢复CPU](evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md)
 18项（6新+12相关）/0.637秒和20来源反例通过，host构建55.597秒零警告。
@@ -86,6 +86,12 @@ item.create逐段真实处理/检索/删除，response.create临时输入按请�
 清理、保留默认历史；用户transcript独立限额、仅公开参考，模型使用
 实际处理结果。空波形不伪造ASR或空闲提示。继续runtime构建与统一
 WSS/ASR/TTS、受影响恢复/交付，全部master继续；0GPU、默认rev376保持。
+
+[完整运行候选与短验驱动就绪](evidence/serve-realtime-duplex-runtime-ready-20261120/README.md)：
+q4t构建147.168秒、零警告，10项驱动CPU反例与SDK语法0.262秒通过。
+真实短验固定同一租约最多1模型/2WSS/9回答/7音频输入/2Chat/1200秒，
+覆盖ASR→回答→TTS→ASR、真实工具、VAD打断及空闲。下一步执行该组
+真实业务并记录所有失败，然后受影响恢复/交付。当前0GPU，默认rev376保持。
 
 ## 当前实际默认
 
