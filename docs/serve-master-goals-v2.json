@@ -12461,11 +12461,11 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "idle_and_recovery_cpu_accepted_direct_input_business_pending",
+      "state": "mixed_history_cpu_accepted_direct_execution_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 190,
-      "case_executions": 297,
+      "unique_cpu_cases": 196,
+      "case_executions": 315,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
@@ -12734,6 +12734,35 @@
           "default_unchanged": true,
           "actual_duplex_business": "pending",
           "native_runtime_build": "pending",
+          "master_active": true
+        }
+      },
+      "mixed_audio_history": {
+        "evidence": "docs/evidence/serve-realtime-duplex-mixed-history-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_MIXED_AUDIO_HISTORY_CPU",
+          "unique_cases": 18,
+          "case_executions": 18,
+          "new_cases": 6,
+          "affected_cases": 12,
+          "seconds": 0.5147111918777227,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 43.258791075088084,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "b1207ef300e6d99b1a3d123678eb7976ff8d5bf0ea2db0dc4bee5df317aa0c03",
+            "free_bytes_after": 3825922048
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_direct_audio_execution": "pending",
+          "actual_duplex_business": "pending",
           "master_active": true
         }
       }

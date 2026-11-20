@@ -955,3 +955,184 @@ Q4T_TEST(
   Q4T_CHECK(OutputJson(current.items).find(cue) == std::string::npos);
   return true;
 }
+
+namespace {
+Json MixedAudio() {
+  return Object(
+      {{"type", String("message")},
+       {"role", String("user")},
+       {"content",
+        Array({Object({{"type", String("input_text")},
+                       {"text", String("before")}}),
+               Object({{"type", String("input_audio")},
+                       {"audio", String("AQACAA==")},
+                       {"transcript", String("untrusted first")}}),
+               Object({{"type", String("input_text")},
+                       {"text", String("between")}}),
+               Object({{"type", String("input_audio")},
+                       {"audio", String("AwAEAA==")},
+                       {"transcript", String("untrusted second")}})})}});
+}
+}  // namespace
+
+Q4T_TEST(realtime_mixed_audio_history_preserves_order_and_partial_ownership) {
+  RealtimeConversation history("sess_mixed");
+  Ticket ticket;
+  Q4T_CHECK(
+      history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384, &ticket));
+  Json item;
+  Q4T_CHECK(!history.Get(ticket, &item) && history.LastId().empty());
+  Q4T_CHECK(history.CommitAudioInput(ticket));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Capture(nullptr, &snapshot));
+  const auto pending = OutputJson(snapshot.items);
+  Q4T_CHECK(pending.find("untrusted") == std::string::npos &&
+            pending.find("AQACAA==") == std::string::npos);
+  const auto charge = history.ChargedBytes();
+  Q4T_CHECK(history.CompleteAudioPart(ticket, 3, "second real transcript"));
+  bool ready = true;
+  Q4T_CHECK(history.Resolve(&snapshot, &ready) && !ready &&
+            OutputJson(snapshot.items) == pending &&
+            history.ChargedBytes() == charge);
+  Q4T_CHECK(!history.CompleteAudioPart(ticket, 3, "duplicate") &&
+            !history.CompleteAudioPart(ticket, 2, "text overwrite"));
+  Q4T_CHECK(history.CompleteAudioPart(ticket, 1, "first real transcript") &&
+            history.Resolve(&snapshot, &ready) && ready);
+  const auto& parts = snapshot.items.array[0].GetArray("content")->array;
+  Q4T_CHECK(parts.size() == 4 && parts[0].GetString("text") == "before" &&
+            parts[1].GetString("text") == "first real transcript" &&
+            parts[2].GetString("text") == "between" &&
+            parts[3].GetString("text") == "second real transcript");
+  Q4T_CHECK(history.ChargedBytes() < charge);
+  return true;
+}
+
+Q4T_TEST(realtime_mixed_audio_history_private_filters_every_audio_part) {
+  RealtimeConversation history("sess_mixed");
+  Ticket ticket;
+  Q4T_CHECK(
+      history.ReserveAudioInput(MixedAudio(), "mixed", false, 16384, &ticket) &&
+      history.CommitAudioInput(ticket));
+  Q4T_CHECK(history.CompleteAudioPart(ticket, 1, "private first"));
+  Json item;
+  Q4T_CHECK(history.Get(ticket, &item));
+  for (const auto index : {1, 3})
+    Q4T_CHECK(!item.GetArray("content")->array[index].Has("transcript"));
+  Q4T_CHECK(history.CompleteAudioPart(ticket, 3, "private second") &&
+            history.Get(ticket, &item));
+  Q4T_CHECK(OutputJson(item).find("private") == std::string::npos &&
+            item.GetArray("content")->array[2].GetString("text") == "between");
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(
+      OutputJson(snapshot.items).find("private first") != std::string::npos &&
+      OutputJson(snapshot.items).find("private second") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(realtime_mixed_audio_history_failure_never_becomes_partial_success) {
+  RealtimeConversation history("sess_mixed");
+  Ticket ticket, text;
+  Q4T_CHECK(history.Create(Message("prior"), "prior", {}, &text));
+  Q4T_CHECK(
+      history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384, &ticket) &&
+      history.CommitAudioInput(ticket));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  Q4T_CHECK(history.FailAudioPart(ticket, 1));
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(history.CompleteAudioPart(ticket, 3, "valid second part"));
+  Q4T_CHECK(!history.CompleteAudioPart(ticket, 1, "invented recovery"));
+  RealtimeConversationSnapshot current;
+  Q4T_CHECK(history.Snapshot(nullptr, &current) &&
+            current.items.array.size() == 1 &&
+            current.items.array[0].GetString("id") == "prior");
+  const auto reference = Array({Reference("mixed")});
+  Q4T_CHECK(!history.Snapshot(&reference, &current));
+  Json item;
+  Q4T_CHECK(history.Get(ticket, &item) &&
+            item.GetArray("content")->array[3].GetString("transcript") ==
+                "valid second part");
+  return true;
+}
+
+Q4T_TEST(realtime_mixed_audio_history_stale_part_cannot_update_reused_item) {
+  RealtimeConversation history("sess_mixed");
+  Ticket first, replacement;
+  Q4T_CHECK(
+      history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384, &first) &&
+      history.CommitAudioInput(first));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured) &&
+            history.CompleteAudioPart(first, 1, "first") &&
+            history.Erase(first));
+  Q4T_CHECK(history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384,
+                                      &replacement) &&
+            replacement.generation > first.generation &&
+            history.CommitAudioInput(replacement));
+  Q4T_CHECK(!history.CompleteAudioPart(first, 3, "late old result") &&
+            !history.FailAudioPart(first, 3));
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(history.CompleteAudioPart(replacement, 3, "new second") &&
+            history.CompleteAudioPart(replacement, 1, "new first"));
+  RealtimeConversationSnapshot current;
+  Q4T_CHECK(history.Snapshot(nullptr, &current) &&
+            OutputJson(current.items).find("late old result") ==
+                std::string::npos);
+  return true;
+}
+
+Q4T_TEST(realtime_mixed_audio_history_reservation_and_completion_are_atomic) {
+  RealtimeConversation history("sess_mixed", 2, 32768);
+  Ticket ticket;
+  auto input = MixedAudio();
+  const auto revision = history.Revision();
+  Q4T_CHECK(!history.ReserveAudioInput(input, "mixed", true, 128, &ticket));
+  Field(input, "role").str = "assistant";
+  Q4T_CHECK(!history.ReserveAudioInput(input, "mixed", true, 16384, &ticket));
+  Q4T_CHECK(
+      !history.ReserveAudioInput(Message(), "text", true, 16384, &ticket));
+  Q4T_CHECK(history.Revision() == revision && history.ChargedBytes() == 0);
+  Q4T_CHECK(
+      history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384, &ticket));
+  Ticket untouched = ticket;
+  const auto reserved_revision = history.Revision();
+  Q4T_CHECK(!history.ReserveAudioInput(MixedAudio(), "mixed", true, 16384,
+                                       &untouched) &&
+            untouched == ticket && history.Revision() == reserved_revision);
+  Q4T_CHECK(history.CommitAudioInput(ticket));
+  const auto committed_revision = history.Revision();
+  Q4T_CHECK(!history.CompleteAudioPart(ticket, 1, std::string(16384, 'x')) &&
+            !history.CompleteAudioInput(ticket, "wrong single-item owner") &&
+            history.Revision() == committed_revision &&
+            history.ChargedBytes() == 16384);
+  Q4T_CHECK(history.FailAudioInput(ticket) && history.ChargedBytes() < 16384);
+  Q4T_CHECK(!history.CompleteAudioPart(ticket, 3, "late result"));
+  return true;
+}
+
+Q4T_TEST(realtime_mixed_audio_client_transcripts_never_gain_native_authority) {
+  RealtimeConversation history("sess_mixed");
+  Ticket supplied, native;
+  const auto input = MixedAudio();
+  Q4T_CHECK(history.Create(input, "supplied", {}, &supplied));
+  Q4T_CHECK(history.ReserveAudioInput(input, "native", true, 16384, &native) &&
+            history.CommitAudioInput(native, "root"));
+  Q4T_CHECK(history.CompleteAudioPart(native, 1, "actual first") &&
+            history.CompleteAudioPart(native, 3, "actual second"));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array[0].GetString("id") == "native" &&
+            snapshot.items.array[0].GetArray("content")->array[1].GetString(
+                "type") == "input_text" &&
+            snapshot.items.array[1].GetArray("content")->array[1].GetString(
+                "type") == "input_audio");
+  Q4T_CHECK(!history.CompleteAudioPart(supplied, 1, "forged native result"));
+  const auto direct = Array({input});
+  Q4T_CHECK(history.Snapshot(&direct, &snapshot) &&
+            snapshot.items.array[0].GetArray("content")->array[3].GetString(
+                "type") == "input_audio");
+  return true;
+}

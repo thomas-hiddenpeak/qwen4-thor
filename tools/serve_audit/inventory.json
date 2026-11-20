@@ -2532,7 +2532,7 @@
     "include/q4t/server/realtime_audio_queue.h": "d4e004092c8e157c157c6a3bfd3acedbe1a49f77cd8d0215bc2b6cbab732202d",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "60f0c427ca28dee60e9ba862b21161c3b1d8e101089dd34a6263e62de8346500",
-    "include/q4t/server/realtime_conversation.h": "0471054fd8e1c453affaa2fe1aca78ea6d2e0e5ecbe0d08a3ed9dfb36d823b76",
+    "include/q4t/server/realtime_conversation.h": "ea09f7a3e536fb0cfea9eab357ff0cdb0d34d3f1f4ad262bc5c441148f465637",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
     "include/q4t/server/realtime_conversation_session.h": "3e0466e2b4ea61a262790e6a7e6acfd41a0673dd32956215f06d7599fc08a419",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
@@ -2996,7 +2996,7 @@
     "src/server/realtime_audio_queue.cpp": "4e7b582330cd3d00c6568777b30e39706c084d1d39b95039126442eeec58b5ee",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "9c3f9704cc05cb58a9e32c651591c1ae72a0eb1282b0000dfbbab2b479ce5658",
-    "src/server/realtime_conversation.cpp": "87bffda89e66380a371ee36f4ceabafe14b94f63487f4effb089f534ad273cb9",
+    "src/server/realtime_conversation.cpp": "72377490276c51eaf45928a33aced86b6cb9816235e7ead516be28558b345fdb",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "2c7ae3a727ccdc4698e8174b7b88425e134a4412be0c415f99b9245bf5e361d8",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
@@ -8738,6 +8738,26 @@
     "limits": {
       "new_cpu_cases": 10,
       "affected_cpu_cases": 16,
+      "source_counterexamples": 20,
+      "seconds": 120,
+      "gpu_starts": 0
+    },
+    "default_revision": 376
+  },
+  "duplex_mixed_audio_history_20261120": {
+    "state": "development_targeted_cpu_pending",
+    "scope": "Native multi-part conversation input history: ordered text/audio content, hidden reservation, real per-part transcript ownership, immutable pending snapshots, private transcript filtering, failure/deletion/generation isolation and shared bounded reservation",
+    "tests": [
+      "realtime_mixed_audio_history_preserves_order_and_partial_ownership",
+      "realtime_mixed_audio_history_private_filters_every_audio_part",
+      "realtime_mixed_audio_history_failure_never_becomes_partial_success",
+      "realtime_mixed_audio_history_stale_part_cannot_update_reused_item",
+      "realtime_mixed_audio_history_reservation_and_completion_are_atomic",
+      "realtime_mixed_audio_client_transcripts_never_gain_native_authority"
+    ],
+    "limits": {
+      "new_cpu_cases": 6,
+      "affected_cpu_cases": 12,
       "source_counterexamples": 20,
       "seconds": 120,
       "gpu_starts": 0

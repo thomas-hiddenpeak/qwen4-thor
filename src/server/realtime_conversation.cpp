@@ -95,21 +95,25 @@ bool SameIdentity(const Json& left, const Json& right) {
 }
 Status InputText(const Json& item, Json* copy, bool idle_timeout = false) {
   const auto* content = item.GetArray("content");
-  const auto* transcript = content && content->array.size() == 1
-                               ? content->array[0].Find("transcript")
-                               : nullptr;
-  if (!transcript || !transcript->IsString())
-    return Invalid("native input has no completed ASR transcript");
-  // Execution snapshot only. Client transcripts never receive this authority.
-  const auto text = idle_timeout && transcript->str.empty()
-                        ? String(
-                              "[No speech was detected during the idle "
-                              "interval. Invite the user to continue.]")
-                        : *transcript;
-  Set(copy, "content",
-      Array({Object({{"type", String("input_text")}, {"text", text}})}));
+  if (!content) return Invalid("native input has no content");
+  auto parts = *content;
+  for (auto& part : parts.array) {
+    if (part.GetString("type") != "input_audio") continue;
+    const auto* transcript = part.Find("transcript");
+    if (!transcript || !transcript->IsString())
+      return Invalid("native input has no completed ASR transcript");
+    // Execution snapshot only. Client transcripts never gain this authority.
+    const auto text = idle_timeout && transcript->str.empty()
+                          ? String(
+                                "[No speech was detected during the idle "
+                                "interval. Invite the user to continue.]")
+                          : *transcript;
+    part = Object({{"type", String("input_text")}, {"text", text}});
+  }
+  Set(copy, "content", std::move(parts));
   return {};
 }
+
 }  // namespace
 
 Status MeasureRealtimeStorage(const Json& value, size_t maximum,
@@ -162,9 +166,11 @@ Status RealtimeConversation::Get(const RealtimeItemTicket& ticket,
     return Invalid("input has not been committed");
   auto copy = entries_[index].item;
   if (entries_[index].native_input && !entries_[index].transcript_visible)
-    std::erase_if(
-        Field(copy, "content").array[0].object,
-        [](const auto& field) { return field.first == "transcript"; });
+    for (auto& part : Field(copy, "content").array)
+      if (part.GetString("type") == "input_audio")
+        std::erase_if(part.object, [](const auto& field) {
+          return field.first == "transcript";
+        });
   *output = std::move(copy);
   return {};
 }
@@ -206,6 +212,47 @@ Status RealtimeConversation::ReserveAudioInput(std::string_view id,
   return InsertAudioInput(id, {}, false, transcript_visible, reserved_bytes,
                           output);
 }
+Status RealtimeConversation::ReserveAudioInput(const Json& input,
+                                               std::string_view generated_id,
+                                               bool transcript_visible,
+                                               size_t reserved_bytes,
+                                               RealtimeItemTicket* output) {
+  if (input.GetString("type") != "message" ||
+      input.GetString("role") != "user" || !reserved_bytes)
+    return Invalid("native audio input requires a reserved user message");
+  auto status = Shape(input, maximum_bytes_);
+  if (!status) return status;
+  auto item = input;
+  auto* content = item.Has("content") ? &Field(item, "content") : nullptr;
+  if (!content || !content->IsArray() || content->array.size() > 128)
+    return Invalid("native audio content exceeds its part limit");
+  std::vector<size_t> parts;
+  for (size_t index = 0; index < content->array.size(); ++index) {
+    auto& part = content->array[index];
+    if (part.GetString("type") != "input_audio") continue;
+    parts.push_back(index);
+    std::erase_if(part.object, [](const auto& field) {
+      return field.first == "audio" || field.first == "transcript";
+    });
+  }
+  if (parts.empty()) return Invalid("native audio part is missing");
+  Json canonical;
+  status = Canonical(item, generated_id, true, reserved_bytes, &canonical);
+  if (!status) return status;
+  size_t bytes = 0;
+  status = Measure(canonical, reserved_bytes, &bytes);
+  if (!status || parts.capacity() * sizeof(size_t) > reserved_bytes - bytes)
+    return Invalid("native audio part reservation is insufficient");
+  status = Insert(canonical, generated_id, {}, false, reserved_bytes, output);
+  if (!status) return status;
+  auto& entry = entries_[Position(*output)];
+  entry.native_input = true;
+  entry.transcript_visible = transcript_visible;
+  entry.server_output = false;
+  entry.pending_input_parts = std::move(parts);
+  Field(entry.item, "status").str = "completed";
+  return {};
+}
 Status RealtimeConversation::InsertAudioInput(
     std::string_view id, std::optional<std::string_view> previous,
     bool committed, bool transcript_visible, size_t reserved_bytes,
@@ -215,14 +262,21 @@ Status RealtimeConversation::InsertAudioInput(
       Object({{"type", String("message")},
               {"role", String("user")},
               {"content", Array({Object({{"type", String("input_audio")}})})}});
-  const auto status =
-      Insert(item, id, previous, committed, reserved_bytes, output);
+  std::vector<size_t> parts{0};
+  Json canonical;
+  auto status = Canonical(item, id, true, reserved_bytes, &canonical);
+  size_t bytes = 0;
+  if (status) status = Measure(canonical, reserved_bytes, &bytes);
+  if (!status || parts.capacity() * sizeof(size_t) > reserved_bytes - bytes)
+    return Invalid("native audio part reservation is insufficient");
+  status = Insert(canonical, id, previous, committed, reserved_bytes, output);
   if (!status) return status;
   auto& entry = entries_[Position(*output)];
   entry.native_input = true;
   entry.input_committed = committed;
   entry.transcript_visible = transcript_visible;
   entry.server_output = false;
+  entry.pending_input_parts = std::move(parts);
   // Public status on eventual commit is independent of the pending ASR.
   Field(entry.item, "status").str = "completed";
   return {};
@@ -264,12 +318,60 @@ Status RealtimeConversation::CommitAudioInput(
 Status RealtimeConversation::CompleteAudioInput(
     const RealtimeItemTicket& ticket, std::string_view transcript,
     bool idle_timeout) {
-  const auto status = FinishAudioInput(ticket, transcript);
+  const auto position = Position(ticket);
+  if (position == entries_.size() || !entries_[position].native_input ||
+      entries_[position].item.GetArray("content")->array.size() != 1)
+    return Invalid("single audio completion requires one content part");
+  const auto status = FinishAudioPart(ticket, 0, transcript);
   if (status) entries_[Position(ticket)].idle_timeout = idle_timeout;
   return status;
 }
 Status RealtimeConversation::FailAudioInput(const RealtimeItemTicket& ticket) {
   return FinishAudioInput(ticket, std::nullopt);
+}
+Status RealtimeConversation::CompleteAudioPart(const RealtimeItemTicket& ticket,
+                                               size_t index,
+                                               std::string_view transcript) {
+  return FinishAudioPart(ticket, index, transcript);
+}
+Status RealtimeConversation::FailAudioPart(const RealtimeItemTicket& ticket,
+                                           size_t index) {
+  return FinishAudioPart(ticket, index, std::nullopt);
+}
+Status RealtimeConversation::FinishAudioPart(
+    const RealtimeItemTicket& ticket, size_t index,
+    std::optional<std::string_view> transcript) {
+  const auto position = Position(ticket);
+  if (position == entries_.size()) return Invalid("native input is stale");
+  auto& entry = entries_[position];
+  const auto pending = std::ranges::find(entry.pending_input_parts, index);
+  if (!entry.native_input || !entry.input_committed || !entry.pending ||
+      pending == entry.pending_input_parts.end() || revision_ == UINT64_MAX ||
+      (transcript && transcript->size() > entry.charge))
+    return Invalid("native audio part is stale or exceeds its reservation");
+  auto item = entry.item;
+  if (transcript)
+    Set(&Field(item, "content").array[index], "transcript",
+        String(std::string(*transcript)));
+  auto status = Shape(item, entry.charge);
+  size_t bytes = 0;
+  if (status) status = Measure(item, entry.charge, &bytes);
+  if (!status) return status;
+  const bool terminal = entry.pending_input_parts.size() == 1;
+  if (!terminal && entry.pending_input_parts.capacity() * sizeof(size_t) >
+                       entry.charge - bytes)
+    return Invalid("native input exceeds its retained reservation");
+  entry.item = std::move(item);
+  entry.pending_input_parts.erase(pending);
+  entry.input_failed |= !transcript;
+  if (terminal) {
+    charged_ -= entry.charge - bytes;
+    entry.charge = bytes;
+    entry.pending = false;
+    std::vector<size_t>{}.swap(entry.pending_input_parts);
+  }
+  ++revision_;
+  return {};
 }
 Status RealtimeConversation::FinishAudioInput(
     const RealtimeItemTicket& ticket,
@@ -288,7 +390,10 @@ Status RealtimeConversation::FinishAudioInput(
     Set(&Field(item, "content").array[0], "transcript",
         String(std::string(*transcript)));
   auto status = UpdateEntry(ticket, item, true, false);
-  if (status) entries_[index].input_failed = !transcript;
+  if (status) {
+    entries_[index].input_failed = !transcript;
+    std::vector<size_t>{}.swap(entries_[index].pending_input_parts);
+  }
   return status;
 }
 Status RealtimeConversation::Insert(const Json& input,

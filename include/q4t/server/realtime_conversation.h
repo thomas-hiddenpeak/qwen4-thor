@@ -81,12 +81,20 @@ class RealtimeConversation {
   // the reservation intact. Failure before commit releases the reservation.
   Status ReserveAudioInput(std::string_view id, bool transcript_visible,
                            size_t reserved_bytes, RealtimeItemTicket* output);
+  // Ordered user content with native audio parts. Supplied audio/transcripts
+  // are stripped; actual per-part completions own all execution provenance.
+  Status ReserveAudioInput(const io::Json& item, std::string_view generated_id,
+                           bool transcript_visible, size_t reserved_bytes,
+                           RealtimeItemTicket* output);
   Status CommitAudioInput(const RealtimeItemTicket& ticket,
                           std::optional<std::string_view> previous = {});
   Status CompleteAudioInput(const RealtimeItemTicket& ticket,
                             std::string_view transcript,
                             bool idle_timeout = false);
   Status FailAudioInput(const RealtimeItemTicket& ticket);
+  Status CompleteAudioPart(const RealtimeItemTicket& ticket, size_t index,
+                           std::string_view transcript);
+  Status FailAudioPart(const RealtimeItemTicket& ticket, size_t index);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
                 bool terminal, bool grow = false);
   // grow opts into atomic growth within this ledger's already bounded global
@@ -128,6 +136,7 @@ class RealtimeConversation {
     bool native_input = false, transcript_visible = false, input_failed = false;
     bool idle_timeout = false;
     bool input_committed = false;
+    std::vector<size_t> pending_input_parts;
   };
   Status InsertAudioInput(std::string_view id,
                           std::optional<std::string_view> previous,
@@ -138,6 +147,8 @@ class RealtimeConversation {
                       RealtimeConversationSnapshot* output) const;
   Status FinishAudioInput(const RealtimeItemTicket& ticket,
                           std::optional<std::string_view> transcript);
+  Status FinishAudioPart(const RealtimeItemTicket& ticket, size_t index,
+                         std::optional<std::string_view> transcript);
   Status UpdateEntry(const RealtimeItemTicket& ticket, const io::Json& item,
                      bool terminal, bool grow);
   size_t Position(const RealtimeItemTicket& ticket) const;

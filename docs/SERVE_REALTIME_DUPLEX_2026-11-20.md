@@ -129,3 +129,11 @@ ChatServer健康门的runtime构建仍待完成，全部master继续。
 执行快照。旁路/失败不重置，清除/语音/故障/取消解除计时，恢复不
 重放。0GPU、默认rev376保持；继续直接混合输入、runtime与统一
 WSS/ASR/TTS短验、受影响恢复与交付，全部master继续。
+
+## 混合音频历史CPU结果
+
+[混合历史CPU](evidence/serve-realtime-duplex-mixed-history-cpu-20261120/README.md)
+18项和20来源反例通过，host零警告。文字/音频顺序、逐段真实转写、
+部分完成预算、隐私、失败与generation保护已具备组件证据；直接
+原生音频处理及item/response.create入口继续，随后统一业务短验与
+恢复交付，全部master继续。0GPU、默认rev376保持。
