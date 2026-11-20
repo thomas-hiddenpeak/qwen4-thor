@@ -668,14 +668,15 @@
     },
     "DELETE /v1/models/{model}": {
       "semantics": "标准Models DELETE按真实资产权限处理：未知404，加载的只读基础模型403。",
-      "boundary": "没有伪造删除成功；用户自有训练模型管理归G00/A10未决/后续任务，模型目录只读。",
+      "boundary": "没有伪造删除成功；2026-11-20用户排除平台训练管理API。推理模型查询/权限仍属A06/A10，模型目录只读。",
       "evidence": [
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "docs/evidence/serve-completions-20261108/README.md",
         "src/server/chat_metrics.cpp",
-        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "docs/evidence/serve-scope-decision-20261120/README.md"
       ]
     },
     "DELETE /v1/prompts/{prompt_id}": {
@@ -8977,5 +8978,11 @@
     "cpu_pending": true,
     "gpu_starts": 0,
     "default_changed": false
+  },
+  "scope_decision_20261120": {
+    "report": "docs/evidence/serve-scope-decision-20261120/README.md",
+    "runtime_changed": false,
+    "platform_management_excluded_by_user": true,
+    "inference_application_and_native_governance_remain_required": true
   }
 }

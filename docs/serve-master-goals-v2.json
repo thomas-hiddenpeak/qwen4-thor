@@ -23,12 +23,13 @@
     {
       "id": "G00",
       "required": true,
-      "state": "scope_clarification_pending",
+      "state": "completed_user_scope_decision",
       "implementation": "确认推理与应用服务之外的组织/账单/训练管理等平台API范围",
       "acceptance": "记录用户决定和端点分类；不阻塞已确定任务，不自行删项",
       "depends_on": [],
       "evidence": [
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-scope-decision-20261120/README.md"
       ],
       "current_audit": {
         "date": "2026-11-16",
@@ -40,9 +41,16 @@
         ],
         "existing_evidence_reviewed": true
       },
-      "remaining_required": [
-        "User scope decision for organization/billing/training APIs; all determined independent work continues"
-      ]
+      "remaining_required": [],
+      "user_decision": {
+        "date": "2026-11-20",
+        "answer": "完整实现推理与应用服务，平台管理 API 不纳入（推荐）",
+        "endpoint_mapping": "evidence/serve-scope-decision-20261120/endpoints.json",
+        "counts": {
+          "required_inference_or_application_service": 157,
+          "excluded_platform_management_by_user": 88
+        }
+      }
     },
     {
       "id": "A01",
@@ -2540,6 +2548,52 @@
         "pull_request": 32,
         "main_commit": "14221d391d95e2e9e9a3fd0edbff1cdd89d281b8",
         "main_evidence": "evidence/serve-pr32-merged-20261116/README.md"
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/agents",
+          "/agents/automations",
+          "/agents/automations/{automation_id}",
+          "/agents/automations/{automation_id}/invocations",
+          "/agents/automations/{automation_id}/invocations/{invocation_id}",
+          "/agents/automations/{automation_id}/pause",
+          "/agents/automations/{automation_id}/resume",
+          "/agents/environments",
+          "/agents/environments/templates",
+          "/agents/environments/templates/{environment_template_id}",
+          "/agents/environments/{environment_id}",
+          "/agents/environments/{environment_id}/files",
+          "/agents/sessions",
+          "/agents/sessions/{session_id}",
+          "/agents/sessions/{session_id}/artifacts",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+          "/agents/sessions/{session_id}/events",
+          "/agents/sessions/{session_id}/items",
+          "/agents/sessions/{session_id}/subagents",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+          "/agents/sessions/{session_id}/traces",
+          "/agents/sessions/{session_id}/turns",
+          "/agents/sessions/{session_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/turns/{turn_id}/items",
+          "/agents/{agent_id}",
+          "/chatkit/sessions",
+          "/chatkit/sessions/{session_id}/cancel",
+          "/chatkit/threads",
+          "/chatkit/threads/{thread_id}",
+          "/chatkit/threads/{thread_id}/items",
+          "/webhook_endpoints",
+          "/webhook_endpoints/{webhook_endpoint_id}",
+          "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+          "/webhook_endpoints/{webhook_endpoint_id}/test",
+          "/webhook_event_types"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -5177,6 +5231,24 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/content_provenance_checks",
+          "/decisions",
+          "/evals",
+          "/evals/{eval_id}",
+          "/evals/{eval_id}/runs",
+          "/evals/{eval_id}/runs/{run_id}",
+          "/evals/{eval_id}/runs/{run_id}/cancel",
+          "/evals/{eval_id}/runs/{run_id}/output_items",
+          "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+          "/moderations",
+          "/safety/alerts/{id}",
+          "/safety/cases/{id}"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -5826,6 +5898,54 @@
         "head": "36bf7de93ad9772d01efb52a71023fd6c132839d",
         "main_commit": "6319018993b4d16ef0066dcc49325de6feb89984",
         "evidence": "docs/evidence/serve-pr40-merged-20261117/README.md"
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/agents",
+          "/agents/automations",
+          "/agents/automations/{automation_id}",
+          "/agents/automations/{automation_id}/invocations",
+          "/agents/automations/{automation_id}/invocations/{invocation_id}",
+          "/agents/automations/{automation_id}/pause",
+          "/agents/automations/{automation_id}/resume",
+          "/agents/environments",
+          "/agents/environments/templates",
+          "/agents/environments/templates/{environment_template_id}",
+          "/agents/environments/{environment_id}",
+          "/agents/environments/{environment_id}/files",
+          "/agents/sessions",
+          "/agents/sessions/{session_id}",
+          "/agents/sessions/{session_id}/artifacts",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+          "/agents/sessions/{session_id}/events",
+          "/agents/sessions/{session_id}/items",
+          "/agents/sessions/{session_id}/subagents",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+          "/agents/sessions/{session_id}/traces",
+          "/agents/sessions/{session_id}/turns",
+          "/agents/sessions/{session_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/turns/{turn_id}/items",
+          "/agents/{agent_id}",
+          "/safety/alerts/{id}",
+          "/safety/cases/{id}",
+          "/skills",
+          "/skills/{skill_id}",
+          "/skills/{skill_id}/content",
+          "/skills/{skill_id}/versions",
+          "/skills/{skill_id}/versions/{version}",
+          "/skills/{skill_id}/versions/{version}/content",
+          "/vaults",
+          "/vaults/{vault_id}",
+          "/vaults/{vault_id}/credentials",
+          "/vaults/{vault_id}/credentials/{credential_id}"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -6656,6 +6776,52 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/agents",
+          "/agents/automations",
+          "/agents/automations/{automation_id}",
+          "/agents/automations/{automation_id}/invocations",
+          "/agents/automations/{automation_id}/invocations/{invocation_id}",
+          "/agents/automations/{automation_id}/pause",
+          "/agents/automations/{automation_id}/resume",
+          "/agents/environments",
+          "/agents/environments/templates",
+          "/agents/environments/templates/{environment_template_id}",
+          "/agents/environments/{environment_id}",
+          "/agents/environments/{environment_id}/files",
+          "/agents/sessions",
+          "/agents/sessions/{session_id}",
+          "/agents/sessions/{session_id}/artifacts",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+          "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+          "/agents/sessions/{session_id}/events",
+          "/agents/sessions/{session_id}/items",
+          "/agents/sessions/{session_id}/subagents",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+          "/agents/sessions/{session_id}/traces",
+          "/agents/sessions/{session_id}/turns",
+          "/agents/sessions/{session_id}/turns/{turn_id}",
+          "/agents/sessions/{session_id}/turns/{turn_id}/items",
+          "/agents/{agent_id}",
+          "/chatkit/sessions",
+          "/chatkit/sessions/{session_id}/cancel",
+          "/chatkit/threads",
+          "/chatkit/threads/{thread_id}",
+          "/chatkit/threads/{thread_id}/items",
+          "/webhook_endpoints",
+          "/webhook_endpoints/{webhook_endpoint_id}",
+          "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+          "/webhook_endpoints/{webhook_endpoint_id}/test",
+          "/webhook_event_types"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -6804,6 +6970,16 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/vaults",
+          "/vaults/{vault_id}",
+          "/vaults/{vault_id}/credentials",
+          "/vaults/{vault_id}/credentials/{credential_id}"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -8825,6 +9001,19 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "scope_mapping_20261120": {
+        "report": "evidence/serve-scope-decision-20261120/README.md",
+        "required_paths": [
+          "/evals",
+          "/evals/{eval_id}",
+          "/evals/{eval_id}/runs",
+          "/evals/{eval_id}/runs/{run_id}",
+          "/evals/{eval_id}/runs/{run_id}/cancel",
+          "/evals/{eval_id}/runs/{run_id}/output_items",
+          "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}"
+        ],
+        "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       }
     },
     {
@@ -15257,5 +15446,10 @@
     "active_branch_retained_for_unique_mcp_work": true,
     "remaining_master_active": true,
     "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+  },
+  "scope_decision_20261120": {
+    "report": "evidence/serve-scope-decision-20261120/README.md",
+    "goal_state": "active",
+    "g00_state": "completed_user_scope_decision"
   }
 }
