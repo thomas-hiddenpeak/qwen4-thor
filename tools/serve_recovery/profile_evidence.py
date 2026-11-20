@@ -23,6 +23,7 @@ CONVERSATION_FORMAT = 'q4t-profile-business-v17'
 PROMPT_FORMAT = 'q4t-profile-business-v18'
 SPEECH_FORMAT = 'q4t-profile-business-v19'
 DUPLEX_FORMAT = 'q4t-profile-business-v20'
+MCP_FORMAT = 'q4t-profile-business-v21'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -576,7 +577,14 @@ MEDIA_FILE = 'tests/fixtures/file_video/transition-vp8.webm'
 MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
+def mcp_enabled(capabilities):
+    return ((capabilities or {}).get('realtime', {}).get('conversation', {})
+            .get('mcp', {}).get('enabled') is True)
+
+
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if mcp_enabled(capabilities):
+        return MCP_FORMAT
     if duplex_enabled(capabilities):
         return DUPLEX_FORMAT
     if speech_enabled(capabilities):
@@ -1506,7 +1514,13 @@ def business(value, identity, selected=None, capabilities=None):
                        (('conversation',) if conversation_enabled(capabilities) else ()) +
                        (('prompt',) if prompt_enabled(capabilities) else ()) +
                        (('realtime_speech',) if speech_enabled(capabilities) else ()) +
-                       (('realtime_duplex',) if duplex_enabled(capabilities) else ()))
+                       (('realtime_duplex',) if duplex_enabled(capabilities) else ()) +
+                       (('realtime_mcp',) if mcp_enabled(capabilities) else ()))
+    if mcp_enabled(capabilities):
+        from tools.serve_recovery import profile_mcp_evidence as mcp
+        ledger.require(capabilities['realtime']['conversation']['mcp'] == mcp.CAPABILITY,
+                       'qualified MCP capability differs')
+        mcp.business(value['realtime_mcp'])
     if duplex_enabled(capabilities):
         from tools.serve_recovery.profile_duplex_evidence import business as duplex_business
         duplex_business(value['realtime_duplex'])
@@ -1601,7 +1615,9 @@ def validate(value, registry, name, digest):
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
     if 'reused_business' in value:
-        if value['reused_business'].get('format') == 'q4t-duplex-composed-source-reuse-v1':
+        if value['reused_business'].get('format') == 'q4t-mcp-profile-source-reuse-v1':
+            from tools.serve_recovery import profile_mcp_reuse as verifier
+        elif value['reused_business'].get('format') == 'q4t-duplex-composed-source-reuse-v1':
             from tools.serve_recovery import profile_duplex_composed_reuse as verifier
         elif value['reused_business'].get('format') == 'q4t-duplex-source-reuse-v1':
             from tools.serve_recovery import profile_duplex_reuse as verifier

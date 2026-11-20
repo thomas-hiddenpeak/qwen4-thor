@@ -10,7 +10,7 @@ def fixture(mode=c.MODES[0]):
                 text='1: # Actual title\n2: \n3: Note',start_line=1,end_line=3,truncated=False)
     record=dict(ok=True,source=copy.deepcopy(source),total_lines=20)
     call=lambda n:dict(id='call_'+str(n),type='mcp_call',server_label='project',
-                       name='read_project_record',arguments=json.dumps(c.peer.ARGUMENTS))
+                       name='read_project_record',arguments=json.dumps(c.ARGUMENTS))
     message=lambda value:dict(type='message',content=[dict(type='output_text',text=value)])
     rows=[dict(id='response_'+str(n),status='completed',usage=dict(input_tokens=12,
         output_tokens=2,total_tokens=14),output=[call(n) if n in (0,2) else

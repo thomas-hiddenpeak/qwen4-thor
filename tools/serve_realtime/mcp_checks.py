@@ -1,14 +1,22 @@
 """Independent checks of actual Realtime MCP wire, peer reads and settlement."""
 import json
-from tools.serve_realtime.conversation_acceptance import response_usage
-from tools.serve_responses import mcp_business_peer as peer
 from tools.serve_service.package import require
 
+ARGUMENTS = dict(path='docs/MODEL.md', start_line=1, line_count=3)
 MODES = ('direct-deny-import', 'approve-unknown')
 ORDINARY_PROMPT = 'Compute 6 * 7. Reply only with the decimal number.'
 READ_PROMPT = ('Call read_project_record with path="docs/MODEL.md", start_line=1, '
                'line_count=3. Read the actual project document. '
                'Do not answer before receiving the tool result.')
+
+
+def response_usage(response):
+    value = response['usage']
+    require(all(type(value[k]) is int and value[k] > 0 for k in
+                ('input_tokens', 'output_tokens', 'total_tokens')) and
+            value['total_tokens'] == value['input_tokens'] + value['output_tokens'],
+            'actual positive model usage and arithmetic required')
+    return value['total_tokens']
 
 
 def observe(receipt, journal, remote, source, before, after):
@@ -45,7 +53,7 @@ def observe(receipt, journal, remote, source, before, after):
         for item in (call, actual):
             require(item['name'] == 'read_project_record' and
                     item['server_label'] == 'project' and
-                    json.loads(item['arguments']) == peer.ARGUMENTS and
+                    json.loads(item['arguments']) == ARGUMENTS and
                     item['id'] == call['id'], 'MCP call identity changed')
         deltas = [e['delta'] for e in events if
                   e['type'] == 'response.mcp_call_arguments.delta' and
@@ -202,7 +210,7 @@ def observe_unknown(receipt, journal, remote, source, before, after):
     for item in (call, actual):
         require(item['id'] == call['id'] and item['name'] == 'read_project_record' and
                 item['server_label'] == 'project' and
-                json.loads(item['arguments']) == peer.ARGUMENTS, 'exact generated call identity')
+                json.loads(item['arguments']) == ARGUMENTS, 'exact generated call identity')
     deltas = [e['delta'] for e in events if e['type'] == 'response.mcp_call_arguments.delta' and
               e.get('response_id') == responses[0]['id'] and e.get('item_id') == call['id']]
     terminal = [e for e in events if e['type'] == 'response.output_item.done' and

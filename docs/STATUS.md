@@ -62,6 +62,11 @@ CPU模型夹具不作为GPU/SDK业务通过证据。首个业务入口遗漏租�
 helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidence/serve-realtime-mcp-remaining-http-20261120/README.md)，
 原执行记录保持、未重跑GPU。累计4启动/10生成/210.102秒；资格/恢复
 及可回退发行继续，默认保持。
+已冻结新MCP资格与v25封包实现：970份未改运行时来源复用，15份修改/
+16份新增逐项绑定；保留原失败。新增证据使用有界压缩，资格文件仍
+限8MiB、解压上限2MiB；原v24与旧资格继续兼容。[42项不同CPU完成](evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md)，
+43次执行含原夹具失败及2项修复补验；不重复GPU或音频/视觉矩阵。
+正在生成主轻资格，尚未完成服务恢复或发行。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "required_sdk_tasks_observed_original_model_failures_preserved_qualification_recovery_pending",
+      "state": "mcp_qualification_and_bundle_contracts_verified_issuing_profiles",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14979,7 +14979,26 @@
         "original_model_quality_failures_preserved": true,
         "all_master_tasks_complete": false
       },
-      "remaining_http_evidence": "evidence/serve-realtime-mcp-remaining-http-20261120/README.md"
+      "remaining_http_evidence": "evidence/serve-realtime-mcp-remaining-http-20261120/README.md",
+      "qualification_cpu": {
+        "status": "PASS_MCP_QUALIFICATION_CPU",
+        "distinct_cases": 42,
+        "executions": 43,
+        "first_passed": 40,
+        "first_failed": 1,
+        "repair_passed": 2,
+        "seconds": 1.930285207927227,
+        "runtime_changed": false,
+        "gpu_actions": 0,
+        "original_fixture_failure_preserved": true,
+        "qualification_issued": false,
+        "profile_bytes_bound": 8388608,
+        "mcp_witness_decoded_bound": 2097152,
+        "old_v24_compatible": true,
+        "isolated_package_import": true,
+        "master_goal_active": true
+      },
+      "qualification_cpu_evidence": "evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",
