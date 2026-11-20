@@ -1402,6 +1402,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           native ? native->Speech() : nullptr);
       if (!synthesized.ok() || synthesized.commit_unknown ||
           synthesized.http_status < 200 || synthesized.http_status >= 300) {
+        if (ChatAudioWasCancelled(synthesized, control.get(),
+                                  ObserveHealth().Healthy()))
+          count_abort();
         SendError(
             fd, synthesized.http_status >= 400 ? synthesized.http_status : 503,
             synthesized.ClientMessage(), {}, synthesized.ClientCode(), "audio");

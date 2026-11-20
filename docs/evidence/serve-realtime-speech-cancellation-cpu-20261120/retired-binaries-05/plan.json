@@ -1,0 +1,43 @@
+{
+  "scope": "Two historical backup executable identities, two paths of this same Serve master; current accepted host/engine/default and retained release package stay intact. Current host/engine/default/model/reference are protected. Exact bytes, links, mode and timestamps recoverable; no test or GPU execution.",
+  "files": [
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/../serve-semantic-vad-20261119/delivery-02/previous/q4t"
+      ],
+      "sha256": "6c6857c859716efba3039784bf3964f39ec759ba956ca497799b9da4ccdc653d",
+      "bytes": 29276992,
+      "mode": 384,
+      "atime_ns": 1795087764972011149,
+      "mtime_ns": 1795087764988011059,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-05/binary-0.gz",
+      "archive_sha256": "ad8a33501ad22e6df5d3d875bb38cf1dd59cb02986108b77576284cb05a51b6f",
+      "archive_bytes": 12025676,
+      "original_links": 1
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/../serve-tts-icl-20261119/backend-cpu-01/prior-q4t"
+      ],
+      "sha256": "943964c4208b1b802ca04562155e203e797d891196978881031e36e588e71ab9",
+      "bytes": 28669064,
+      "mode": 509,
+      "atime_ns": 1795022726658837807,
+      "mtime_ns": 1795022726182840510,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-05/binary-1.gz",
+      "archive_sha256": "6db7d02d2bec414d1664ad6e757e7ffd570c55bf08c7e11bf8d34052fea92e38",
+      "archive_bytes": 11765201,
+      "original_links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87"
+  },
+  "free_before": 123285504
+}

@@ -9,6 +9,14 @@
 #include "q4t/server/actual_usage.h"
 
 namespace q4t::server {
+struct ObjectReply;
+class RequestControl;
+
+// A cancelled synthesis belongs to the existing Chat request's abort counter.
+// Backend failures and unconfirmed mutations must retain their error outcome.
+bool ChatAudioWasCancelled(const ObjectReply& reply, RequestControl* control,
+                           bool shared_backend_healthy);
+
 struct ChatAudioOptions {
   bool enabled = false;
   bool text = true;

@@ -5,7 +5,9 @@
 #include <utility>
 
 #include "q4t/io/base64.h"
+#include "q4t/server/object_store.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/request_control.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -28,6 +30,13 @@ Status Delta(io::Json fields, std::string* out) {
   return {};
 }
 }  // namespace
+
+bool ChatAudioWasCancelled(const ObjectReply& reply, RequestControl* control,
+                           bool shared_backend_healthy) {
+  return shared_backend_healthy && control && reply.http_status == 409 &&
+         !reply.commit_unknown && control->Cancelled() && !control->Failed() &&
+         (reply.code == control->Reason() || reply.code == "tts_cancelled");
+}
 
 std::string_view ChatAudioFormatName(SpeechFormat format) {
   return format == SpeechFormat::kPcm ? "pcm16" : SpeechFormatName(format);

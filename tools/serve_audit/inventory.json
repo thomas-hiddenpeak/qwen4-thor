@@ -2426,7 +2426,7 @@
     "include/q4t/server/cache_io.h": "8974bc25da0a18ab8485118bf250ae3f18965e708e63d74ca335a296e1c6ee20",
     "include/q4t/server/chat_audio_history.h": "97daf37c6b31941fbc43dae7f53c33c2eb2851d55cf7d89fae11a5472691707f",
     "include/q4t/server/chat_audio_inputs.h": "138e38da74c637674ccb75dd41e8f97bca9c9a9c4040df7f96d2a5a529259c20",
-    "include/q4t/server/chat_audio_output.h": "37b720cbab0b2c2de680528369992643d4ac4412b91e0711f30b329a336ade95",
+    "include/q4t/server/chat_audio_output.h": "2dfb777c8fe18063f558fa426f699c01de3a325dc73c0a04f177f7c8a298dded",
     "include/q4t/server/chat_capabilities.h": "69aca057846046d6bfd422fad0910ed2aa1329f1ba5fb259736fb40f92dbaf20",
     "include/q4t/server/chat_choices.h": "882951fb4d6c8a4b9311a0459baaf5c19e0cf6e579e2126441da9ced3bae4c64",
     "include/q4t/server/chat_contract.h": "12e17922a8190301e97ec227996f33fbce04e2276ae6b2d64e1599825b2b9d62",
@@ -2783,7 +2783,7 @@
     "src/server/chat_audio_execution.cpp": "9a7ded7af79c0915ed9cc2179c1aed3bb41223677b11df681da52c76f3eedb4b",
     "src/server/chat_audio_history.cpp": "1fa4824f3e5580a872523ec1fa689694552dd5e40acd5b8316894bc59103ab4b",
     "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
-    "src/server/chat_audio_output.cpp": "60f5ffe8f01d5e576f022e6882123c626f5996730bb5ea61c91bc5accfaf9815",
+    "src/server/chat_audio_output.cpp": "3186aeeadc4f7d21a195e606de150c700649414672b3ddceb26eeb6fa20b6bf0",
     "src/server/chat_audio_synthesis.cpp": "946e3a54442de4b05df6011696342355dae63f85946f09a4ae26889a61258ab3",
     "src/server/chat_capabilities.cpp": "c6016ea4b81b15df2dab5c677a87a73b2683638800b7602895011a34bcaed157",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
@@ -2792,7 +2792,7 @@
     "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "64207ac1bed3289d322b01a0bb9989a7b526baad469f22424a711c5c8a3b1362",
+    "src/server/chat_generation.cpp": "0fbf93be755a1e874dec81140401a9018ab6df7b22e46d23ce33b6b802a2783d",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "265f934457700379b31d91a59760714cde3042bf9ffb5924c9558abad9360b3e",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -8560,5 +8560,11 @@
     "change": "v23 includes exact native speech qualification dependencies; v1-v22 inventories unchanged. Bounded actual audio actor checks gateway, controller and whole-payload recovery with no replay.",
     "state": "source prepared, targeted CPU and actual recovery pending",
     "default_changed": false
+  },
+  "speech_cancel_accounting_review_20261120": {
+    "change": "Actual native TLS recovery exposed cancelled TTS counted as request error. Classify only owned cancellation replies with healthy shared backend as abort; preserve backend/device errors and ambiguous mutations.",
+    "state": "source prepared; targeted CPU and real cancellation pending",
+    "candidate_not_released": true,
+    "original_failed_evidence_preserved": true
   }
 }

@@ -7,6 +7,21 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[音频取消计数CPU修复通过](evidence/serve-realtime-speech-cancellation-cpu-20261120/README.md)：
+4新+4保护/0.471秒与20来源反例通过，独立构建4.746秒零警告。
+原TLS FAILED保持，runtime尚待新构建与真实取消补验；设备/合成
+错误和未知提交保护保持。默认rev366不动，整包回退尚未执行。
+
+实际TLS恢复发现音频取消计数缺陷：网关和控制器恢复、真实语音、
+完整配额等待及清理均完成，但断连误计error而非aborted，原FAILED
+保持，尚不发行。已补合成取消分类，只将409且真实取消的健康后端
+请求纳入abort，设备/合成错误与未知提交仍保留错误；先做针对CPU
+最多12项及20来源反例/120秒，再规划新身份的直接业务短验。
+
+构建中间产物已可逆归档至`.q4t-work/serve-realtime-audio-20261120/`
+`build-intermediates-01`；完整host构建前须用其restore.py恢复591个
+单链接对象，运行时构建前恢复2个库。当前执行程序和发行包保持。
+
 [语音恢复语速修正CPU通过](evidence/serve-realtime-speech-speed-recovery-20261120/README.md)：
 14项/4.640秒及JS/20来源反例通过，原非法请求FAIL保留。保留包
 实际接受，61.107秒/58次NVML正常；原命令断言有单独路径复核。

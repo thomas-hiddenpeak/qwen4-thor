@@ -1,0 +1,22 @@
+{
+  "usage": {
+    "generation": 2,
+    "owner": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "pid": 922388,
+      "start_ticks": 332524771
+    },
+    "phase": "active",
+    "revision": 2,
+    "snapshot": null,
+    "source": null,
+    "started_ns": "3325282918164401",
+    "version": 1
+  },
+  "verification": {
+    "mode": "full_window_after_unsealed_controller_death",
+    "generation": 2,
+    "observed_deadline": 3325300.314621604,
+    "checked_at": 3325301.123452301
+  }
+}

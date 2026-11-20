@@ -1,0 +1,30 @@
+{
+  "command": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Wl,--gc-sections",
+    "-pthread",
+    "-Iinclude",
+    "tests/test_main.cpp",
+    "tests/server_chat_audio_cancellation_test.cpp",
+    "src/server/chat_audio_output.cpp",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-build-02/cancellation-tests"
+  ],
+  "sources": {
+    "tests/test_main.cpp": "c061cf340494a37f6bcf66aa68382c655ad5bb19447d85c957f1e82665e064dc",
+    "tests/server_chat_audio_cancellation_test.cpp": "29b05f2f06143b9fb20d14c29464abb512977af02b36fc8bca994552998e4421",
+    "src/server/chat_audio_output.cpp": "3186aeeadc4f7d21a195e606de150c700649414672b3ddceb26eeb6fa20b6bf0",
+    "include/q4t/server/chat_audio_output.h": "2dfb777c8fe18063f558fa426f699c01de3a325dc73c0a04f177f7c8a298dded",
+    "include/q4t/server/request_control.h": "0d67e522678ff38ad843f44334f31a259d092fd6499c59761356a88b97d1d25d",
+    "include/q4t/server/object_store.h": "4c16f4afa7e301b13e475597f699d6d44cd457f1ded3ca98142b129c135364e1"
+  },
+  "scope": "Necessary directly linked cancellation classifier CPU build, no GPU or model build; no test execution",
+  "seconds": 120
+}

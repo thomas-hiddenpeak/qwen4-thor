@@ -1,0 +1,5 @@
+[PASS] chat_audio_cancellation_keeps_disconnect_explicit_shutdown_and_deadline
+[PASS] chat_audio_cancellation_requires_actual_owner_and_cancelled_reply
+[PASS] chat_audio_cancellation_does_not_hide_device_or_backend_failure
+[PASS] chat_audio_cancellation_keeps_unknown_commit_and_finished_owner
+4 tests, 4 passed, 0 failed, 0 skipped
