@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[取消补验驱动CPU通过](evidence/serve-realtime-speech-cancel-driver-cpu-20261120/README.md)：
+5项/0.625秒及JS通过；原误分类、未计实际工作或核心重启均拒绝。
+继续冻结单模型直接补验，原FAILED和默认rev366不变。
+
+取消缺陷短验驱动已写入：先验5个证据反例与JS语法/120秒，随后
+同一严格租约最多1模型/2连接/3响应/2入口/420秒，断连后显式新
+连接仍用原模型；不补跑控制器或完整后端矩阵。全恢复累计上限
+含旧失败及未跑整包为7模型/18生成/9连接/1探测/1200秒。
+
 [音频取消计数CPU修复通过](evidence/serve-realtime-speech-cancellation-cpu-20261120/README.md)：
 4新+4保护/0.471秒与20来源反例通过，独立构建4.746秒零警告。
 原TLS FAILED保持，runtime尚待新构建与真实取消补验；设备/合成
