@@ -103,6 +103,15 @@ set(protocol_inputs
   src/server/realtime_response_output.cpp
   include/q4t/server/realtime_conversation_session.h
   src/server/realtime_conversation_session.cpp
+  include/q4t/server/realtime_trace.h
+  include/q4t/server/realtime_trace_store.h
+  include/q4t/server/realtime_trace_session.h
+  include/q4t/server/realtime_trace_api.h
+  src/server/realtime_trace.cpp
+  src/server/realtime_trace_store.cpp
+  src/server/realtime_trace_session.cpp
+  src/server/realtime_trace_api.cpp
+  src/server/realtime_trace_events.cpp
   src/server/realtime_wire_shape.cpp
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h

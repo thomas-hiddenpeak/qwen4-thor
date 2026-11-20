@@ -30,9 +30,12 @@ enum class ObjectKind {
   kVectorStoreBatch,
   kAudio,
   kVoiceConsent,
-  kVoice
+  kVoice,
+  kTrace
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
+
+enum class ObjectStoreDomain { kApplication, kTracing };
 
 struct ObjectStoreOptions {
   std::string directory;
@@ -52,6 +55,9 @@ struct ObjectStoreOptions {
   // model across clients, and per authenticated client/model respectively.
   uint64_t batch_model_queue_tokens = 1ULL << 30;
   uint64_t batch_client_model_queue_tokens = 1ULL << 28;
+  // Internal fixed domain, with independent controller and process ownership.
+  // Tracing cannot reserve application-state storage or cleanup capacity.
+  ObjectStoreDomain domain = ObjectStoreDomain::kApplication;
 };
 
 struct ObjectRequest {

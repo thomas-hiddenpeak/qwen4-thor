@@ -60,6 +60,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* tool_results = new WorkerOwner;
   static auto* programs = new WorkerOwner;
   static auto* mcp = new WorkerOwner;
+  static auto* traces = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
@@ -71,6 +72,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
       return *tool_results;
     case IsolatedWorkerDomain::kPrograms: return *programs;
     case IsolatedWorkerDomain::kMcp: return *mcp;
+    case IsolatedWorkerDomain::kTraces: return *traces;
     default: return *grammar;
   }
 }
@@ -206,7 +208,8 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.domain != IsolatedWorkerDomain::kEmbeddingAssets &&
       control.domain != IsolatedWorkerDomain::kToolResults &&
       control.domain != IsolatedWorkerDomain::kPrograms &&
-      control.domain != IsolatedWorkerDomain::kMcp)
+      control.domain != IsolatedWorkerDomain::kMcp &&
+      control.domain != IsolatedWorkerDomain::kTraces)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -261,6 +264,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     char tool_result_name[] = "q4t-tool-results";
     char program_name[] = "q4t-program";
     char mcp_name[] = "q4t-mcp";
+    char traces_name[] = "q4t-traces";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
     if (control.domain == IsolatedWorkerDomain::kSessionCache ||
@@ -270,6 +274,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       name = tool_result_name;
     if (control.domain == IsolatedWorkerDomain::kPrograms) name = program_name;
     if (control.domain == IsolatedWorkerDomain::kMcp) name = mcp_name;
+    if (control.domain == IsolatedWorkerDomain::kTraces) name = traces_name;
     if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     if (control.domain == IsolatedWorkerDomain::kFileParse) name = document_name;
     if (control.domain == IsolatedWorkerDomain::kEmbeddingAssets)

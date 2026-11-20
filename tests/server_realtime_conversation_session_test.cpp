@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
@@ -16,6 +17,7 @@
 #include "q4t/test.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/realtime_transcription_protocol.h"
+#include "q4t/server/realtime_trace_api.h"
 
 namespace {
 using namespace q4t::server;
@@ -2355,5 +2357,112 @@ Q4T_TEST(realtime_session_mcp_forged_result_rejected_before_next_execution) {
   Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
                 "failed" &&
             f.dispatches == 0);
+  return true;
+}
+
+namespace {
+RealtimeTraceStoreOptions TraceOptions(bool broken = false) {
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  auto root = std::filesystem::absolute(
+      output ? output : ".q4t-work/realtime-session-tracing");
+  std::filesystem::create_directories(root);
+  auto name = (root / "session-tracing-XXXXXX").string();
+  if (!mkdtemp(name.data())) throw std::runtime_error("trace fixture directory");
+  auto options = ResolveRealtimeTraceStoreOptions(name + "/objects");
+  if (broken) std::ofstream(options.objects.directory) << "fixture IO failure";
+  return options;
+}
+ObjectReply SessionTraceRead(RealtimeTraceStore& store) {
+  StateAccess access{"client:trace-session", Clock::now() + 2s, {}};
+  return HandleRealtimeTraceRequest(
+      store, "GET", "/v1/realtime/traces/trace_" + Digest("sess_fixture"), {},
+      access);
+}
+}  // namespace
+
+Q4T_TEST(realtime_session_trace_observes_function_generation_without_payloads) {
+  RealtimeTraceStore traces(TraceOptions());
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  f.mode = 1;
+  Q4T_CHECK(f.Start());
+  Q4T_CHECK(f.Add(User("user_one", "PRIVATE_REQUEST_CONTENT")));
+  Q4T_CHECK(f.Create() && f.Finish());
+  ObjectReply record;
+  Q4T_CHECK(f.Wait([&] {
+    record = SessionTraceRead(traces);
+    return record.ok() && record.value.GetArray("spans") &&
+           record.value.GetArray("spans")->array.size() == 2 &&
+           record.value.GetArray("spans")->array.front().GetString("status") ==
+               "completed";
+  }));
+  Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1);
+  const auto* spans = record.value.GetArray("spans");
+  Q4T_CHECK(std::ranges::any_of(spans->array, [](const auto& span) {
+    return span.GetString("kind") == "function_arguments";
+  }));
+  Q4T_CHECK(std::ranges::none_of(spans->array, [](const auto& span) {
+    return span.GetString("kind") == "mcp_call";
+  }));
+  Q4T_CHECK(OutputJson(record.value).find("PRIVATE_REQUEST_CONTENT") ==
+            std::string::npos);
+  f.session->Cancel();
+  f.session->Join();
+  record = SessionTraceRead(traces);
+  Q4T_CHECK(record.ok() && record.value.GetString("status") == "closed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_storage_failure_preserves_response_terminal) {
+  RealtimeTraceStore traces(TraceOptions(true));
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Add(User("user_one", "healthy request")));
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(!SessionTraceRead(traces).ok());
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.calls == 2 && f.released == 2 && f.Count("response.done") == 2);
+  Q4T_CHECK(f.Count("error") == 0);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "completed");
+  Q4T_CHECK(traces.Health().failures > 0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_delete_does_not_cancel_later_generation) {
+  RealtimeTraceStore traces(TraceOptions());
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.Wait([&] { return SessionTraceRead(traces).ok(); }));
+  StateAccess access{"client:trace-session", Clock::now() + 2s, {}};
+  const auto erased = HandleRealtimeTraceRequest(
+      traces, "DELETE", "/v1/realtime/traces/trace_" + Digest("sess_fixture"),
+      {}, access);
+  Q4T_CHECK(erased.ok());
+  Q4T_CHECK(f.Create() && f.Finish());
+  f.session->Cancel();
+  f.session->Join();
+  Q4T_CHECK(f.calls == 2 && f.Count("response.done") == 2);
+  Q4T_CHECK(SessionTraceRead(traces).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_owner_exception_does_not_escape_protocol) {
+  Fixture f;
+  f.cb.traces = []() -> RealtimeTraceStore* {
+    throw std::bad_alloc();
+  };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1 &&
+            f.Count("error") == 0);
   return true;
 }

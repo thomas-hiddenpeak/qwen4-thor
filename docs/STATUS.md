@@ -1,4 +1,4 @@
-# 当前状态（2026-11-20）
+# 当前状态（2026-11-21）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
@@ -6,6 +6,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+[原生Realtime追踪源码接入](SERVE_REALTIME_TRACING_2026-11-20.md)正在验证：
+会话采集、独立存储/删除、原生查询与诊断已接入源码；
+[40项不同CPU场景通过](evidence/serve-realtime-tracing-cpu-20261120/README.md)，
+其中接入组26项一次通过、构建零警告，原边界/夹具失败保留。
+[实际服务/入口已零警告构建](evidence/serve-realtime-tracing-build-driver-20261121/README.md)，
+19项驱动CPU和22项清单负控通过。随后最多2启动/6生成/2 TLS SDK会话/
+900秒验证主轻工具查询与追踪故障隔离。默认rev416未改，新增GPU0。
+辅助采集初始化有界重试，取样缺失保持unknown，不进入核心readiness。
 
 PR #56的CI容量回归及旧版封包清单已修复，
 [24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、
@@ -155,4 +164,4 @@ CPU夹具和退役构建库的可逆归档、SHA和恢复脚本保留在
 SHA256：`af362f9c1ec4e7df087d577c7922e0414e606bf94e57fd6e7f16c1c0aa9c1d85`。更早原件见[2026-11-12快照](HISTORY_STATUS_2026-11-12.md)。
 本次精简前的完整状态保留在提交`aafa4a63e`；历史版本与“待合入”
 描述不代表当前默认。开发日志按日期追加，见
-[当日日志](log/2026-11-20.md)。
+[当日日志](log/2026-11-21.md)。

@@ -256,6 +256,8 @@ jobs:
             tools.serve_realtime.test_duplex_acceptance \
             tools.serve_realtime.test_duplex_task_checks \
             tools.serve_realtime.test_mcp_checks \
+            tools.serve_realtime.test_tracing_checks \
+            tools.serve_realtime.test_tracing_acceptance \
             tools.serve_realtime.test_mcp_finish \
             tools.serve_realtime.test_mcp_service \
             tools.serve_realtime.test_mcp_finalizer \

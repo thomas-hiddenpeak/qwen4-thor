@@ -7,6 +7,7 @@
 #include <unordered_set>
 
 #include "q4t/server/realtime_conversation.h"
+#include "q4t/server/realtime_trace_session.h"
 #include "q4t/server/realtime_conversation_input.h"
 #include "q4t/server/realtime_prompt_settings.h"
 #include "q4t/server/realtime_mcp_context.h"
@@ -75,6 +76,10 @@ struct RealtimeConversationCallbacks {
   // The session binds publication and IDs; worker callbacks bind fresh scope.
   std::optional<RealtimeMcpImportCallbacks> mcp_import = {};
   std::optional<RealtimeMcpCallCallbacks> mcp_call = {};
+  // Trusted native observer binding; never sourced from JSON metadata/user.
+  std::function<RealtimeTraceStore*()> traces = {};
+  std::string trace_scope = {};
+
 };
 
 class RealtimeConversationSession {
@@ -105,6 +110,7 @@ class RealtimeConversationSession {
 
  private:
   struct Work;
+  void ConfigureTracing() noexcept;
   ObjectReply Emit(io::Json event);
   bool Flush();
   bool Event(std::string_view type, io::Json fields);
@@ -151,6 +157,7 @@ class RealtimeConversationSession {
   std::unique_ptr<RealtimeMcpImports> mcp_imports_;
   std::unique_ptr<RealtimeMcpCalls> mcp_calls_;
   std::optional<RealtimeSpeechOptions> locked_voice_;
+  std::optional<RealtimeSessionTrace> trace_;
   std::deque<std::unique_ptr<Work>> work_;
   std::deque<std::string> events_;
   size_t event_bytes_ = 0;

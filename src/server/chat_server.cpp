@@ -56,6 +56,7 @@ ChatServer::~ChatServer() {
   batches_.RequestStop();
   vector_jobs_.RequestStop();
   background_.RequestStop();
+  realtime_traces_.RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -69,6 +70,7 @@ ChatServer::~ChatServer() {
   batches_.Join();
   vector_jobs_.Join();
   background_.Join();
+  realtime_traces_.Join();
   // Drop the auxiliary owner without deleting modern sessions still held by
   // sealed catalogs/approvals. Their fresh credentials are required on resume.
   CloseMcpSessions(false);
@@ -199,6 +201,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
   file_inputs_ = std::move(file_inputs);
   file_input_policy_sha256_ = std::move(file_policy.sha256);
   objects_ = std::make_unique<ObjectStore>(object_options);
+  realtime_trace_options_ =
+      ResolveRealtimeTraceStoreOptions(object_options.directory);
   state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);
   if (opts.allow_media) {
     const auto status = vision::CheckVisionConfiguration(opts.model_dir);
@@ -1041,6 +1045,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
 
 void ChatServer::RecoverApplicationJobs() noexcept {
   if (stop_requested_.load() || !model_ready_.load() || !objects_) return;
+  // The publish-once auxiliary owner retries initialization independently of
+  // the model, at most three failures per minute. Existing sessions obtain
+  // its stable address lazily; unavailable capture never changes readiness.
+  realtime_traces_.TryStart([this] {
+    if (!runtime::ReadSystemMemory().CanAllocate(640ULL << 20))
+      throw std::bad_alloc();
+    return std::make_unique<RealtimeTraceStore>(realtime_trace_options_);
+  });
+
   if (!embedding_model_dir_.empty()) {
     vector_jobs_.TryStart([this] {
       return std::make_unique<VectorJobs>(

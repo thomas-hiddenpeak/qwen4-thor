@@ -194,6 +194,39 @@ Q4T_TEST(realtime_prompt_immutable_model_and_tracing_apply_to_templates) {
   return true;
 }
 
+Q4T_TEST(realtime_tracing_configuration_is_atomic_and_order_independent) {
+  Fixture f;
+  Q4T_CHECK(Ok(f.Update(Parse(R"({"tracing":{"workflow_name":"query",
+    "metadata":{"a":1,"b":2}}})"))));
+  Q4T_CHECK(Ok(f.Update(Parse(R"({"tracing":{"metadata":{"b":2,"a":1},
+    "workflow_name":"query"}})"))));
+  const auto before = OutputJson(f.settings.Current().settings);
+  Q4T_CHECK(f.Update(Parse(R"({"tracing":null})")).code ==
+            "realtime_tracing_immutable");
+  Q4T_CHECK(f.Update(Parse(R"({"tracing":{"workflow_name":"different"}})"))
+                .code == "realtime_tracing_immutable");
+  Q4T_CHECK(OutputJson(f.settings.Current().settings) == before);
+  auto huge = Parse(R"({"tracing":{"metadata":"x"}})");
+  Field(Field(huge, "tracing"), "metadata").str.assign(65536, 'x');
+  Q4T_CHECK(f.Update(huge).http_status == 413);
+  Q4T_CHECK(OutputJson(f.settings.Current().settings) == before);
+  return true;
+}
+
+Q4T_TEST(realtime_response_prompt_cannot_change_session_capture) {
+  Fixture f;
+  auto traced = f.Create(f.Definition("query", Parse(R"({"tracing":"auto"})")));
+  RealtimePromptSelection selected;
+  Q4T_CHECK(f.settings.Response(Object({{"prompt", traced}}), f.resolve, {},
+                                 &selected).code == "realtime_tracing_session_only");
+  const auto* tracing = f.settings.Current().settings.Find("tracing");
+  Q4T_CHECK(!tracing || tracing->IsNull());
+  Q4T_CHECK(Ok(f.Select(traced)));
+  Q4T_CHECK(Ok(f.settings.Response(Object({{"prompt", traced}}), f.resolve, {},
+                                    &selected)));
+  return true;
+}
+
 Q4T_TEST(
     realtime_prompt_nested_explicit_audio_does_not_freeze_template_defaults) {
   Fixture f;

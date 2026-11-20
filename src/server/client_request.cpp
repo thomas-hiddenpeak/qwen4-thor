@@ -50,7 +50,8 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
          IsVectorStoreObservation(method, path) ||
          IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
          IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||
-         IsStoredChatManagement(method, path))
+         IsStoredChatManagement(method, path) ||
+         RealtimeTraceMethodAllowed(method, path))
           ? ClientLane::kControl
           : ClientLane::kData;
   if (!lease->Acquire(admission, *identity, lane))

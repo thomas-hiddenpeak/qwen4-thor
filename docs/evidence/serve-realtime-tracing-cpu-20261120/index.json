@@ -1,0 +1,617 @@
+{
+  "archive_sha256": "157176bedd9b7af54acfe267ca0c997af4d6c7eeb5ee67ee27c5bb73b7398cf7",
+  "files": {
+    "collector-cpu-01/build.json": {
+      "bytes": 54,
+      "sha256": "b949b8c414d6a2880c3a314458b5988a6aaae7d2ccf03523f4c7f451c10aca7e"
+    },
+    "collector-cpu-01/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-cpu-01/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-cpu-01/plan.json": {
+      "bytes": 3432,
+      "sha256": "ebd4ddb3ceabcfb7058bc7d6348e6ff17ad955059bbd70d23fc0281931bde25d"
+    },
+    "collector-cpu-01/result.json": {
+      "bytes": 232,
+      "sha256": "d0bd928743b7787e0927a39ab859e3e94b2ab631fcd79c3aa23c49db274c4b9b"
+    },
+    "collector-cpu-01/run.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-cpu-01/run.stdout": {
+      "bytes": 830,
+      "sha256": "00bdb47c9afcdace6d6027ececb6b51f2240342ec2ff4ee34b3ccea1d78d3212"
+    },
+    "collector-cpu-01/sources/.q4t-work/serve-realtime-tracing-20261120/draft/main.cpp": {
+      "bytes": 70,
+      "sha256": "2d939893e113d91feb0394cfde276173ecedef00be4bd5aa9101df9d8f2e5e20"
+    },
+    "collector-cpu-01/sources/.q4t-work/serve-realtime-tracing-20261120/draft/realtime_trace.cpp": {
+      "bytes": 13513,
+      "sha256": "c4a72e96de906e1427c926ca570fb1e692935aa51c9dfc19621b2bb800e4ecd8"
+    },
+    "collector-cpu-01/sources/.q4t-work/serve-realtime-tracing-20261120/draft/realtime_trace.h": {
+      "bytes": 3508,
+      "sha256": "421a56e6d3df20e1586400d2a0a2531616a02a954b1ec439c4777f8eab616fee"
+    },
+    "collector-cpu-01/sources/.q4t-work/serve-realtime-tracing-20261120/draft/realtime_trace_events.cpp": {
+      "bytes": 5735,
+      "sha256": "99fac3b03a0fecaa0661c2516d1b1f1e09086588873b28b557614743ab462bce"
+    },
+    "collector-cpu-01/sources/.q4t-work/serve-realtime-tracing-20261120/draft/realtime_trace_test.cpp": {
+      "bytes": 10938,
+      "sha256": "3767adb5349a53f9d5c512cc8ad24846d14ce0a3ad0c1393e9bc289d834428a0"
+    },
+    "collector-cpu-01/sources/include/q4t/io/json.h": {
+      "bytes": 3919,
+      "sha256": "65d9c93b44b2b53d70eac642d60819aae7f29c1c893ac08ca2fad49e51e53072"
+    },
+    "collector-cpu-01/sources/include/q4t/test.h": {
+      "bytes": 4965,
+      "sha256": "f05dbdf42ade9bf49b657fee973be8905b8f4d48e01d4e3480ce04221edee9ac"
+    },
+    "collector-cpu-01/sources/src/io/json.cpp": {
+      "bytes": 13289,
+      "sha256": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7"
+    },
+    "collector-cpu-01/sources/src/server/input_contract.cpp": {
+      "bytes": 8191,
+      "sha256": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80"
+    },
+    "collector-cpu-01/sources/src/server/object_protocol.h": {
+      "bytes": 4271,
+      "sha256": "cd7c4b69ab00b6ae6b7f348f669748de10e885cbab68302cca37b2109eeb7f40"
+    },
+    "collector-cpu-01/sources/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "collector-cpu-01/sources/src/server/responses_json.h": {
+      "bytes": 1585,
+      "sha256": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2"
+    },
+    "collector-boundaries-01/build.json": {
+      "bytes": 55,
+      "sha256": "1eddcc71bf694691cb279dd71519a5d11c50db711a134105e58b8859daf4f421"
+    },
+    "collector-boundaries-01/build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-boundaries-01/plan.json": {
+      "bytes": 2196,
+      "sha256": "d5cff652e5a0b5ab15fff228c00026d8c9ec508a789df23c16ce692c363c43bb"
+    },
+    "collector-boundaries-01/result.json": {
+      "bytes": 76,
+      "sha256": "9c5af9547fc3c88ecbb687ccc7eb588440225646f9de49afcd10f46394f5b65b"
+    },
+    "collector-boundaries-01/run.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-boundaries-01/run.stdout": {
+      "bytes": 304,
+      "sha256": "ffe5f7aeb141a3e7b3d2ed81af8c103f4a2c1731515f94ba48ac25a0e9ce84fb"
+    },
+    "collector-boundaries-01/sources/input_contract.cpp": {
+      "bytes": 8191,
+      "sha256": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80"
+    },
+    "collector-boundaries-01/sources/json.cpp": {
+      "bytes": 13289,
+      "sha256": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7"
+    },
+    "collector-boundaries-01/sources/main.cpp": {
+      "bytes": 70,
+      "sha256": "2d939893e113d91feb0394cfde276173ecedef00be4bd5aa9101df9d8f2e5e20"
+    },
+    "collector-boundaries-01/sources/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "collector-boundaries-01/sources/realtime_trace.cpp": {
+      "bytes": 13513,
+      "sha256": "c4a72e96de906e1427c926ca570fb1e692935aa51c9dfc19621b2bb800e4ecd8"
+    },
+    "collector-boundaries-01/sources/realtime_trace.h": {
+      "bytes": 3508,
+      "sha256": "421a56e6d3df20e1586400d2a0a2531616a02a954b1ec439c4777f8eab616fee"
+    },
+    "collector-boundaries-01/sources/realtime_trace_events.cpp": {
+      "bytes": 5735,
+      "sha256": "99fac3b03a0fecaa0661c2516d1b1f1e09086588873b28b557614743ab462bce"
+    },
+    "collector-boundaries-01/sources/trace_boundaries_test.cpp": {
+      "bytes": 2664,
+      "sha256": "9708a9b64601166b14830c19fa0ad660c91218452e5960d4baebcb09b62068e9"
+    },
+    "collector-boundaries-02/build.json": {
+      "bytes": 55,
+      "sha256": "b10a412d12e43c112b5dc832255f6dc720bbda0d86b1db9a65a8de2f13ddd1e2"
+    },
+    "collector-boundaries-02/build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-boundaries-02/plan.json": {
+      "bytes": 2516,
+      "sha256": "e93bf4f41c1e675cc65a67bde7ac52f2cc762ec508cb6b34e0577c7cb9265577"
+    },
+    "collector-boundaries-02/result.json": {
+      "bytes": 154,
+      "sha256": "09468aad2498fd496ee840dc224bb518dde38769285059087bf8d674ba58efc7"
+    },
+    "collector-boundaries-02/run.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "collector-boundaries-02/run.stdout": {
+      "bytes": 224,
+      "sha256": "e6d99bb686afc414d13ab35ecbf1267be9f6e5b61b5b0d468fb4445d415bb37d"
+    },
+    "store-cpu-01/build.stderr": {
+      "bytes": 162,
+      "sha256": "c4753e947fc67d27bdbc40bdffd39f7580579b7d97c37ee3d6865600499aa72a"
+    },
+    "store-cpu-01/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-01/plan.json": {
+      "bytes": 79592,
+      "sha256": "058dc82f9296c3f312f63a9e07b2e7139f5cce2994744e470c828a8938ecbd9b"
+    },
+    "store-cpu-01/result.json": {
+      "bytes": 115,
+      "sha256": "7c67a70eb2ba2ebd6b65b69497e535052a50a0bbd6bb82ad7f13d31cbaf9be8d"
+    },
+    "store-cpu-01/sources/include/q4t/server/grammar_process.h": {
+      "bytes": 6131,
+      "sha256": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447"
+    },
+    "store-cpu-01/sources/include/q4t/server/object_store.h": {
+      "bytes": 7904,
+      "sha256": "13698d74c59e7b7fa91c85702100edb26cad4520403a6ad5e9d281084c97c24b"
+    },
+    "store-cpu-01/sources/realtime_trace.cpp": {
+      "bytes": 13521,
+      "sha256": "9c2c65477ed399ce317ed37e3925b2e5ad3ca28529df0e8d22eb8c2fc1f2c8b8"
+    },
+    "store-cpu-01/sources/realtime_trace.h": {
+      "bytes": 3691,
+      "sha256": "4638b19c0c57b2e84fa163fcac927e4e1b169618bcd0f997746eb5f721ece609"
+    },
+    "store-cpu-01/sources/realtime_trace_store.cpp": {
+      "bytes": 19704,
+      "sha256": "827cb63ebe12dd83cd37b33619c6a85af189092c111d6a6704ed47fef31349d0"
+    },
+    "store-cpu-01/sources/realtime_trace_store.h": {
+      "bytes": 2689,
+      "sha256": "799d9f26951fba4ad2bd4f352535037b4e7edc49880db8f8a5c7e3e9404407ee"
+    },
+    "store-cpu-01/sources/realtime_trace_store_test.cpp": {
+      "bytes": 15037,
+      "sha256": "1b1997ca9a768ed1e35590b09fe058961cebc890f032a752446fbed45c34c747"
+    },
+    "store-cpu-01/sources/src/server/grammar_process.cpp": {
+      "bytes": 22119,
+      "sha256": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0"
+    },
+    "store-cpu-01/sources/src/server/object_protocol.h": {
+      "bytes": 4322,
+      "sha256": "b6e0620bd55a0aea78489cb8024daf5e1bdca9b2fb898f0f86ba28f533a757a8"
+    },
+    "store-cpu-01/sources/src/server/object_store.cpp": {
+      "bytes": 33916,
+      "sha256": "70dc8cb8fa8ad4dcaec01dfb1453bd169924fa91c0617f109bc3fbfe0d1d4e79"
+    },
+    "store-cpu-01/sources/src/server/object_worker.cpp": {
+      "bytes": 72574,
+      "sha256": "213201b91752f1dae82fd08b49072df9d73541c1c3139011ef706072c1f8fbb7"
+    },
+    "store-cpu-01/sources/store_main.cpp": {
+      "bytes": 232,
+      "sha256": "d7a4d85dfde64cf914a845967fb42dc4b5025c3fb65b1217f832ee83d10256a4"
+    },
+    "store-cpu-02/build.stderr": {
+      "bytes": 146,
+      "sha256": "34732efd6f20765c70339b949d3ff7b49dd1c7cb493de67cbe29ccfed93509b2"
+    },
+    "store-cpu-02/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-02/plan.json": {
+      "bytes": 79730,
+      "sha256": "190f7880eb3652ce9649174c13ba1710393d8246d32991118e1f8c9cd529dd4b"
+    },
+    "store-cpu-02/result.json": {
+      "bytes": 248,
+      "sha256": "5116080b4e78293bbe019690b568fcb4a22dbf4643ddbc803e6e5c7c184b325f"
+    },
+    "store-cpu-02/sources/include/q4t/server/grammar_process.h": {
+      "bytes": 6131,
+      "sha256": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447"
+    },
+    "store-cpu-02/sources/include/q4t/server/object_store.h": {
+      "bytes": 7904,
+      "sha256": "13698d74c59e7b7fa91c85702100edb26cad4520403a6ad5e9d281084c97c24b"
+    },
+    "store-cpu-02/sources/realtime_trace.cpp": {
+      "bytes": 13521,
+      "sha256": "9c2c65477ed399ce317ed37e3925b2e5ad3ca28529df0e8d22eb8c2fc1f2c8b8"
+    },
+    "store-cpu-02/sources/realtime_trace.h": {
+      "bytes": 3691,
+      "sha256": "4638b19c0c57b2e84fa163fcac927e4e1b169618bcd0f997746eb5f721ece609"
+    },
+    "store-cpu-02/sources/realtime_trace_store.cpp": {
+      "bytes": 19704,
+      "sha256": "827cb63ebe12dd83cd37b33619c6a85af189092c111d6a6704ed47fef31349d0"
+    },
+    "store-cpu-02/sources/realtime_trace_store.h": {
+      "bytes": 2689,
+      "sha256": "799d9f26951fba4ad2bd4f352535037b4e7edc49880db8f8a5c7e3e9404407ee"
+    },
+    "store-cpu-02/sources/realtime_trace_store_test.cpp": {
+      "bytes": 15037,
+      "sha256": "1b1997ca9a768ed1e35590b09fe058961cebc890f032a752446fbed45c34c747"
+    },
+    "store-cpu-02/sources/src/server/grammar_process.cpp": {
+      "bytes": 22119,
+      "sha256": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0"
+    },
+    "store-cpu-02/sources/src/server/object_protocol.h": {
+      "bytes": 4322,
+      "sha256": "b6e0620bd55a0aea78489cb8024daf5e1bdca9b2fb898f0f86ba28f533a757a8"
+    },
+    "store-cpu-02/sources/src/server/object_store.cpp": {
+      "bytes": 33916,
+      "sha256": "70dc8cb8fa8ad4dcaec01dfb1453bd169924fa91c0617f109bc3fbfe0d1d4e79"
+    },
+    "store-cpu-02/sources/src/server/object_worker.cpp": {
+      "bytes": 72574,
+      "sha256": "213201b91752f1dae82fd08b49072df9d73541c1c3139011ef706072c1f8fbb7"
+    },
+    "store-cpu-02/sources/store_main.cpp": {
+      "bytes": 232,
+      "sha256": "d7a4d85dfde64cf914a845967fb42dc4b5025c3fb65b1217f832ee83d10256a4"
+    },
+    "store-cpu-02/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-02/stdout": {
+      "bytes": 1089,
+      "sha256": "f5969ade897597e0859c66c7756f8408750f66886551823293ebb77cd97c2bbb"
+    },
+    "store-cpu-03/build.stderr": {
+      "bytes": 162,
+      "sha256": "c4753e947fc67d27bdbc40bdffd39f7580579b7d97c37ee3d6865600499aa72a"
+    },
+    "store-cpu-03/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-03/plan.json": {
+      "bytes": 79363,
+      "sha256": "be6f4986ed65240a63c0887a77cb2bbce80922ba58e0fac94c17ad17be510298"
+    },
+    "store-cpu-03/result.json": {
+      "bytes": 116,
+      "sha256": "3ec9a7e5581d2c72ad35d620e799ef3ae42988884db3ebc4fd41c8a1d1930e60"
+    },
+    "store-cpu-03/sources/include/q4t/server/grammar_process.h": {
+      "bytes": 6131,
+      "sha256": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447"
+    },
+    "store-cpu-03/sources/include/q4t/server/object_store.h": {
+      "bytes": 7904,
+      "sha256": "13698d74c59e7b7fa91c85702100edb26cad4520403a6ad5e9d281084c97c24b"
+    },
+    "store-cpu-03/sources/realtime_trace.cpp": {
+      "bytes": 13521,
+      "sha256": "9c2c65477ed399ce317ed37e3925b2e5ad3ca28529df0e8d22eb8c2fc1f2c8b8"
+    },
+    "store-cpu-03/sources/realtime_trace.h": {
+      "bytes": 3691,
+      "sha256": "4638b19c0c57b2e84fa163fcac927e4e1b169618bcd0f997746eb5f721ece609"
+    },
+    "store-cpu-03/sources/realtime_trace_store.cpp": {
+      "bytes": 19704,
+      "sha256": "827cb63ebe12dd83cd37b33619c6a85af189092c111d6a6704ed47fef31349d0"
+    },
+    "store-cpu-03/sources/realtime_trace_store.h": {
+      "bytes": 2689,
+      "sha256": "799d9f26951fba4ad2bd4f352535037b4e7edc49880db8f8a5c7e3e9404407ee"
+    },
+    "store-cpu-03/sources/realtime_trace_store_test.cpp": {
+      "bytes": 15400,
+      "sha256": "a30ef54f9bb9a056ec76dca758377b38cbbee050b35c8f5e67ee901760d12c03"
+    },
+    "store-cpu-03/sources/src/server/grammar_process.cpp": {
+      "bytes": 22119,
+      "sha256": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0"
+    },
+    "store-cpu-03/sources/src/server/object_protocol.h": {
+      "bytes": 4322,
+      "sha256": "b6e0620bd55a0aea78489cb8024daf5e1bdca9b2fb898f0f86ba28f533a757a8"
+    },
+    "store-cpu-03/sources/src/server/object_store.cpp": {
+      "bytes": 33916,
+      "sha256": "70dc8cb8fa8ad4dcaec01dfb1453bd169924fa91c0617f109bc3fbfe0d1d4e79"
+    },
+    "store-cpu-03/sources/src/server/object_worker.cpp": {
+      "bytes": 72574,
+      "sha256": "213201b91752f1dae82fd08b49072df9d73541c1c3139011ef706072c1f8fbb7"
+    },
+    "store-cpu-03/sources/store_main.cpp": {
+      "bytes": 326,
+      "sha256": "97c0b2f0af1d3c3f76e379c8ece004affe1cf78100665ab71c9e387f1e3bc238"
+    },
+    "store-cpu-04/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-04/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-04/plan.json": {
+      "bytes": 79490,
+      "sha256": "991b72934693dbb6a6d0490f1cfc157e280dd92c6fb0d2af4ab2ca10c8def502"
+    },
+    "store-cpu-04/result.json": {
+      "bytes": 248,
+      "sha256": "5bdf33cbcd511ad5314d956e4896e2cbc04f62f4b320983d3fde8f0f6590ffaf"
+    },
+    "store-cpu-04/sources/include/q4t/server/grammar_process.h": {
+      "bytes": 6131,
+      "sha256": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447"
+    },
+    "store-cpu-04/sources/include/q4t/server/object_store.h": {
+      "bytes": 7904,
+      "sha256": "13698d74c59e7b7fa91c85702100edb26cad4520403a6ad5e9d281084c97c24b"
+    },
+    "store-cpu-04/sources/realtime_trace.cpp": {
+      "bytes": 13521,
+      "sha256": "9c2c65477ed399ce317ed37e3925b2e5ad3ca28529df0e8d22eb8c2fc1f2c8b8"
+    },
+    "store-cpu-04/sources/realtime_trace.h": {
+      "bytes": 3691,
+      "sha256": "4638b19c0c57b2e84fa163fcac927e4e1b169618bcd0f997746eb5f721ece609"
+    },
+    "store-cpu-04/sources/realtime_trace_store.cpp": {
+      "bytes": 19704,
+      "sha256": "827cb63ebe12dd83cd37b33619c6a85af189092c111d6a6704ed47fef31349d0"
+    },
+    "store-cpu-04/sources/realtime_trace_store.h": {
+      "bytes": 2689,
+      "sha256": "799d9f26951fba4ad2bd4f352535037b4e7edc49880db8f8a5c7e3e9404407ee"
+    },
+    "store-cpu-04/sources/realtime_trace_store_test.cpp": {
+      "bytes": 15400,
+      "sha256": "a30ef54f9bb9a056ec76dca758377b38cbbee050b35c8f5e67ee901760d12c03"
+    },
+    "store-cpu-04/sources/src/server/grammar_process.cpp": {
+      "bytes": 22119,
+      "sha256": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0"
+    },
+    "store-cpu-04/sources/src/server/object_protocol.h": {
+      "bytes": 4322,
+      "sha256": "b6e0620bd55a0aea78489cb8024daf5e1bdca9b2fb898f0f86ba28f533a757a8"
+    },
+    "store-cpu-04/sources/src/server/object_store.cpp": {
+      "bytes": 33916,
+      "sha256": "70dc8cb8fa8ad4dcaec01dfb1453bd169924fa91c0617f109bc3fbfe0d1d4e79"
+    },
+    "store-cpu-04/sources/src/server/object_worker.cpp": {
+      "bytes": 72574,
+      "sha256": "213201b91752f1dae82fd08b49072df9d73541c1c3139011ef706072c1f8fbb7"
+    },
+    "store-cpu-04/sources/store_main.cpp": {
+      "bytes": 326,
+      "sha256": "97c0b2f0af1d3c3f76e379c8ece004affe1cf78100665ab71c9e387f1e3bc238"
+    },
+    "store-cpu-04/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "store-cpu-04/stdout": {
+      "bytes": 306,
+      "sha256": "2f6cd826104ab55a73137ca1192d7318f95e85819019a2686c5b086fef407b80"
+    },
+    "native-integration-cpu-01/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native-integration-cpu-01/build.stdout": {
+      "bytes": 48678,
+      "sha256": "b61a38f7d073f8bcf7ae37030c388a495727d218d328b83c32ee092b98d3998f"
+    },
+    "native-integration-cpu-01/plan.json": {
+      "bytes": 6985,
+      "sha256": "82dfd21a7be114e9514d14e8bed48bf1ca6337b635763b022a5ca1b353c121f4"
+    },
+    "native-integration-cpu-01/required.txt": {
+      "bytes": 1593,
+      "sha256": "99492546b5c512b7fa7c5126bf769e8bffe92c7085cf7f1d1fc7b8e225496728"
+    },
+    "native-integration-cpu-01/result.json": {
+      "bytes": 302,
+      "sha256": "40924e5041cf9595e09d3f892a0bdca7421f1ddf3e5d293d58097fee0292d014"
+    },
+    "native-integration-cpu-01/sources/CMakeLists.txt": {
+      "bytes": 63853,
+      "sha256": "eee0a8a42edd7ac9d03e881f7e9cf08e1a70e84d4368f117eb59d956f5a35688"
+    },
+    "native-integration-cpu-01/sources/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32394,
+      "sha256": "a8f3915b698db8e8189b39dc7827fefd1584c12593bcf91443655bb03209026e"
+    },
+    "native-integration-cpu-01/sources/cmake/HostTestSources.cmake": {
+      "bytes": 41059,
+      "sha256": "2a5b3db0abc9555cdc37a3e77cca593aaae9c780a0e4df0e0e307fc18b18d84b"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/application_routes.h": {
+      "bytes": 18387,
+      "sha256": "d7240f74ceb9cbdddbec0bfd5f9801e51598ec97a8a62f6417fde175a7ae9d6c"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/chat_server.h": {
+      "bytes": 39325,
+      "sha256": "3da4bab3e48a22428456f5efb4b899659ebc4d07133dab7ea324460ca9e6a589"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/grammar_process.h": {
+      "bytes": 6131,
+      "sha256": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/http_connection.h": {
+      "bytes": 2785,
+      "sha256": "68c9988c6346c41390e972587df2942311efa29cd671b45ec57d2b97d1acb8ba"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/object_store.h": {
+      "bytes": 7904,
+      "sha256": "13698d74c59e7b7fa91c85702100edb26cad4520403a6ad5e9d281084c97c24b"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7829,
+      "sha256": "b0f4703230da703d7c43d5f1dc001ff505188f17de8ce2db005e64ec1344f89d"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/realtime_trace.h": {
+      "bytes": 3687,
+      "sha256": "7e70111a950b9698f82f2594edb7b4e5928baa671899b7072b5f4fdc01499720"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/realtime_trace_api.h": {
+      "bytes": 699,
+      "sha256": "6827e0485ea61ddbb5c7f67ed0a72d75ae289848fceaed1e148416bcd9d62e5c"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/realtime_trace_session.h": {
+      "bytes": 1343,
+      "sha256": "0e70216e48a10046d4f0584e33b4c65d492b9001c2943220415cc26a5e27d248"
+    },
+    "native-integration-cpu-01/sources/include/q4t/server/realtime_trace_store.h": {
+      "bytes": 2956,
+      "sha256": "a628572f37524d50388271ed66e2b176066fee6767e3247e4eb90663e67f0026"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_capabilities.cpp": {
+      "bytes": 62001,
+      "sha256": "4689344a8a4118db0d0af18f747345de88f297dbeaba4c040216528e7219c292"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_http.cpp": {
+      "bytes": 35087,
+      "sha256": "ac411bbc19eefb9012edcdbca6a0239f827e0764f9d2fc547e14ddd464f83420"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_metrics.cpp": {
+      "bytes": 21262,
+      "sha256": "5a8180107c91ae158386c74e6662fe02570e7e8bff4367b038784bc604dc42f2"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_preflight.cpp": {
+      "bytes": 15817,
+      "sha256": "c909efea0af86bdf14725169bdb2165eb9bb993efec48848ad3038f17eca938c"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 24208,
+      "sha256": "9d9031ecb4b4c6f11a48ab07360bb54f696f76825c778931fa8ee697ab4be3a8"
+    },
+    "native-integration-cpu-01/sources/src/server/chat_server.cpp": {
+      "bytes": 50800,
+      "sha256": "22530053671c558f16e447d9c3e17ad507c11e5d31fa83fa51b2605b5b94e1f2"
+    },
+    "native-integration-cpu-01/sources/src/server/client_request.cpp": {
+      "bytes": 2666,
+      "sha256": "b55a19476f6293b72aa99ca726b01a12f44410399301e823fb4cc6f1269d7875"
+    },
+    "native-integration-cpu-01/sources/src/server/grammar_process.cpp": {
+      "bytes": 22119,
+      "sha256": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0"
+    },
+    "native-integration-cpu-01/sources/src/server/object_protocol.h": {
+      "bytes": 4322,
+      "sha256": "b6e0620bd55a0aea78489cb8024daf5e1bdca9b2fb898f0f86ba28f533a757a8"
+    },
+    "native-integration-cpu-01/sources/src/server/object_store.cpp": {
+      "bytes": 33916,
+      "sha256": "70dc8cb8fa8ad4dcaec01dfb1453bd169924fa91c0617f109bc3fbfe0d1d4e79"
+    },
+    "native-integration-cpu-01/sources/src/server/object_worker.cpp": {
+      "bytes": 72574,
+      "sha256": "213201b91752f1dae82fd08b49072df9d73541c1c3139011ef706072c1f8fbb7"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19734,
+      "sha256": "08c7e69f2dee04d63268dc20a9dab523743ec2625542d6ba05f5c5751e139ce9"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_conversation_session.cpp": {
+      "bytes": 51018,
+      "sha256": "3e7d34beac15a6018775d4b943eec6c10e7e004580520d07490c09d48e074212"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_prompt_settings.cpp": {
+      "bytes": 9807,
+      "sha256": "591965204e4d1f2202d811e734779a5a5fdd5e0e21bb2378a5180d67c4eb46b3"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_trace.cpp": {
+      "bytes": 13532,
+      "sha256": "0bb1d2576e4f5121ffc14e323b08359cf1fc58d7603482490853225d98a96c7c"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_trace_api.cpp": {
+      "bytes": 5129,
+      "sha256": "9e23142b9fd7c013c0e648bf81b57dfb5a067527363e7861363b5c8ef8763c2c"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_trace_events.cpp": {
+      "bytes": 5746,
+      "sha256": "c42d30f27fadc4e39539ee380110dddb2c351571a487c59a99886f2b1170e5b0"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_trace_session.cpp": {
+      "bytes": 3039,
+      "sha256": "d2f55826705a65c367ba0b366e67dd381c8251ef7ab133024033d6b60c8fe03b"
+    },
+    "native-integration-cpu-01/sources/src/server/realtime_trace_store.cpp": {
+      "bytes": 20074,
+      "sha256": "bb0054cd567074ef852ceec6f89f6b404709eb0607b4d67cc7c5171019b0dfb8"
+    },
+    "native-integration-cpu-01/sources/src/service/ingress_main.cpp": {
+      "bytes": 38853,
+      "sha256": "75da01ee7a823b692745b3ef16b47aad47c31c6f4ec92a919d9796c6f710ceea"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 29948,
+      "sha256": "a872361c27daea5cbf21248ccfef1a594575fdab3f2cc590e9371a1c3868284e"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 103596,
+      "sha256": "27e6f78752bb7d32d88b20108f8e7fa93dda04807c9ac3ad19c9c19fef16197c"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_prompt_settings_test.cpp": {
+      "bytes": 15230,
+      "sha256": "924483326db5960e463c3db0197a9078eb4ecd037ee72c165d2d991007c02e8a"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_trace_boundaries_test.cpp": {
+      "bytes": 2689,
+      "sha256": "1de044c3bfd61e888f36cd455c526a8ab6163f075a35c620a110a57abfdaeb0e"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_trace_store_test.cpp": {
+      "bytes": 21448,
+      "sha256": "5042996a9d38cc2f0999ad4c0f701ac903677e34e0022e70fea75aa43f68ee49"
+    },
+    "native-integration-cpu-01/sources/tests/server_realtime_trace_test.cpp": {
+      "bytes": 10963,
+      "sha256": "b32b7ad54d780bf6a8737119ada47f1ee868ea8b480eed7fc81d11a91fc17f91"
+    },
+    "native-integration-cpu-01/stderr": {
+      "bytes": 236,
+      "sha256": "1741cc63bc7f85a4240ffd91fd7699b1121c5ec19a271bb2be565dd0c9c54561"
+    },
+    "native-integration-cpu-01/stdout": {
+      "bytes": 1816,
+      "sha256": "a32ea4d0cfe38ef4ac60e4f41b810dfb013fc656379a64f5253862c58e6a52cc"
+    }
+  }
+}

@@ -103,6 +103,30 @@ void ChatServer::HandleMetrics(int fd) {
     b += '\n';
   };
 
+  const auto traces = realtime_traces_ ? realtime_traces_->Health()
+                                       : RealtimeTraceStoreHealth{};
+  gauge("q4t_realtime_trace_configured", "Native auxiliary trace owner exists.",
+        bool(realtime_traces_));
+  gauge("q4t_realtime_trace_snapshot_available",
+        "Queue observation available; absence is not an observed zero.",
+        traces.snapshot_available);
+  if (traces.snapshot_available) {
+    gauge("q4t_realtime_trace_exporter_running", "Auxiliary exporter running.",
+          traces.running);
+    gauge("q4t_realtime_trace_pending", "Bounded pending trace operations.",
+          traces.pending);
+    gauge("q4t_realtime_trace_queue_bytes", "Charged trace queue allocations.",
+          traces.queued_bytes);
+  }
+  counter("q4t_realtime_trace_accepted_total", "Accepted snapshots, not durability.",
+          traces.accepted);
+  counter("q4t_realtime_trace_confirmed_writes_total", "Confirmed durable writes.",
+          traces.persisted);
+  counter("q4t_realtime_trace_dropped_total", "Rejected auxiliary snapshots.",
+          traces.dropped);
+  counter("q4t_realtime_trace_failures_total", "Auxiliary capture/storage failures.",
+          traces.failures);
+
   gauge("q4t_memory_admission_enabled", "Global memory admission enabled.",
         memory.state != MemoryState::kDisabled);
   gauge("q4t_memory_observation_valid", "Validity of the latest observation.",
