@@ -63,10 +63,10 @@ class RealtimeAudioQueue {
   // Validate and describe the next commit without consuming identity/audio.
   // The sole owner may reserve/prepare immutable derived PCM before commit.
   Status PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
-                       RealtimeAudioItem* item) const;
+                       RealtimeAudioItem* item, bool allow_empty = false) const;
   // Commit a complete-sample prefix, retaining future audio/partial bytes.
   Status CommitPrefix(uint64_t epoch, uint64_t end_ticks,
-                      RealtimeAudioItem* item);
+                      RealtimeAudioItem* item, bool allow_empty = false);
   // Discard analyzed silence only. Borrowed items never move; when an item is
   // in flight, discarded storage remains charged until that item is acked.
   Status TrimPendingBefore(uint64_t epoch, uint64_t begin_ticks);
@@ -87,6 +87,9 @@ class RealtimeAudioQueue {
   // Normal drain requires the caller to explicitly commit/clear the tail first.
   Status FinishInput(uint64_t epoch);
   Status Cancel(uint64_t epoch);
+  // The caller must join all borrowers first. Reopens only a cancelled,
+  // acknowledged ring; neither sequence nor the lifetime sample clock resets.
+  Status ResumeCancelled(uint64_t epoch, uint64_t consumed_ticks);
   bool Cancelled() const { return cancelled_; }
   bool Drained() const { return sealed_ && used_bytes_ == 0; }
   size_t PendingBytes() const { return pending_bytes_; }

@@ -1,0 +1,175 @@
+{
+  "records": [
+    {
+      "path": "profile-duplex-cpu-01/command-0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-duplex-cpu-01/result.json",
+      "bytes": 572,
+      "sha256": "69b7342317f8fc71b9e6d8112439deb556dea32220decd6670c28191bdc68a3d"
+    },
+    {
+      "path": "profile-duplex-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-duplex-cpu-01/plan.json",
+      "bytes": 3192,
+      "sha256": "e958ce109c0f8836f932177f9f9083864fab7f4b59bc6bfa9a8a6f85464e4fcc"
+    },
+    {
+      "path": "profile-duplex-cpu-01/command-1.stdout",
+      "bytes": 515,
+      "sha256": "2fda5924bb93751b61ca78d35c902c0abf83aa6a2f879b69f6577c3f2f66d4b2"
+    },
+    {
+      "path": "profile-duplex-cpu-01/original-profile_duplex_targeted.py",
+      "bytes": 11936,
+      "sha256": "c190204a06ff091247002a14f28ace23945e74b2926642d75663d9f1a7594b8b"
+    },
+    {
+      "path": "profile-duplex-cpu-01/command-0.stderr",
+      "bytes": 3023,
+      "sha256": "b88e31ee327666901d7c504543c4ca2c5beb33be5052e67bfeab697fde27cf73"
+    },
+    {
+      "path": "profile-duplex-cpu-02/source.stdout",
+      "bytes": 223,
+      "sha256": "df6cc4cb24c33a8a2b427de4619d510d2cc916243fc08e621b11d89bb713b5d8"
+    },
+    {
+      "path": "profile-duplex-cpu-02/result.json",
+      "bytes": 241,
+      "sha256": "3c0f519f6fbeed5a34316574d068328a79b11249b34cffa1a471acbb81071743"
+    },
+    {
+      "path": "profile-duplex-cpu-02/plan.json",
+      "bytes": 2880,
+      "sha256": "11588ca4863267a6bd3d1ffbf8d85a663295ee8a01c552f145051d0dd275fe1d"
+    },
+    {
+      "path": "profile-duplex-cpu-02/source.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-source-04/preparation-corrections.json",
+      "bytes": 662,
+      "sha256": "f1f7e8ddffee7167b38f0226df9c924c5d2bfad2ceba573d1b79fe541b0e0613"
+    },
+    {
+      "path": "profile-source-04/sources.json",
+      "bytes": 4341,
+      "sha256": "c2a2463aad7aa6505ab14b9c35e5b137d5d02a9c2591d6b48decb568818a9336"
+    },
+    {
+      "path": "profile-source-04/runtime.diff",
+      "bytes": 174552,
+      "sha256": "f0d8490404d183b501542f5ad0f9e20f4e46150d34c4e9a362d1db197e80b156"
+    },
+    {
+      "path": "profile-source-04/review.json",
+      "bytes": 112947,
+      "sha256": "a2c7bab8cbbdbb3286ec91c161a475901cbde6e373b44d19ba416d62b97b007c"
+    },
+    {
+      "path": "profile-duplex-scope-01.json",
+      "bytes": 692,
+      "sha256": "52053ef44deebae491f08a788a7fdaa69641e350d1e70a4556299001f43b0886"
+    },
+    {
+      "path": "prepare_profile_duplex_cpu_01.py",
+      "bytes": 3485,
+      "sha256": "f5c8e696029cfa31921c4fac86eb3d64dc5e004ff7ed5e1d28bdbc4177096f3f"
+    },
+    {
+      "path": "run_profile_duplex_cpu_01.py",
+      "bytes": 2013,
+      "sha256": "3ec65d444a7e7c4edb3ad0c39c61e984ec53cf2fcbf367e6a87536daecf462b1"
+    },
+    {
+      "path": "run_profile_duplex_cpu_02.py",
+      "bytes": 2213,
+      "sha256": "bee642eeb726ebbf39240cd9738c7904167d334c2134a9ad83deb18849e8d503"
+    },
+    {
+      "path": "review_profile_sources_02.py",
+      "bytes": 2319,
+      "sha256": "bf9ea66a38932a05f33ee500d383f1f4a1d36fa3eb3eaea663e1a1867ced2122"
+    },
+    {
+      "path": "review_profile_sources_03.py",
+      "bytes": 2407,
+      "sha256": "6ea5a9548ee69e48ed5dea793b80713e22b2065db4e68523353acf402dbfa66e"
+    },
+    {
+      "path": "freeze_profile_sources_04.py",
+      "bytes": 4634,
+      "sha256": "0275e3bf4eb846c504505e07aab66a8d4c651b25bfe02fcee2ff5bfa08e1e2bc"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_evidence.py",
+      "bytes": 94485,
+      "sha256": "36d72aca19bd7fc78348ca85244e74e7bc8ef82cb2bf75e7c03bb38546f87e6b"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_migration.py",
+      "bytes": 43678,
+      "sha256": "8c57661b8b033b4a87e534f8b56463da35bdc30d8fd40ab4b8dfc9ed987e7c67"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_record.py",
+      "bytes": 4458,
+      "sha256": "8836eb7f17e017401433109926bcb49644f218b76d6a0ff5a50781a2f6fb2ec3"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex.py",
+      "bytes": 5522,
+      "sha256": "1fd67631f3bcfa2ae1b1e64a3d3f5976197dbe81a24e5d45b350a00050395caf"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex_evidence.py",
+      "bytes": 3335,
+      "sha256": "e8372a23c2932686a823e94adaca5789838188594d008a448ad811ff2b4b3941"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex_reuse.py",
+      "bytes": 2709,
+      "sha256": "0d6c2471452b65fd27478360eaab2720ef3d2166f0a5fc9b520ac45eab741156"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex_source.py",
+      "bytes": 5800,
+      "sha256": "b05094553f2aa4db55da549e5c08e3cb3a038726fa101610745ecd3b26d8da13"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex_targeted.py",
+      "bytes": 11936,
+      "sha256": "5e50d2fbd64f411d8e7f80c706ad72dcf6a342b94bd3fbfb4c68f36ed75e091a"
+    },
+    {
+      "path": "source/tools/serve_recovery/test_profile_duplex.py",
+      "bytes": 10113,
+      "sha256": "761d3ef8ba8b3f96f34e5ec1db3fcda6bca088dbcb2f4b8fb3a7fe15e05c3ef3"
+    },
+    {
+      "path": "source/tools/serve_recovery/test_profile_speech.py",
+      "bytes": 15853,
+      "sha256": "5ca9d50b934af93e9aa07b0c746c6c19e4b69834991e9546bc915a1797bc9d98"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 592106,
+      "sha256": "ac3cf55925c08ccb7ddf441a2d9c5c43226cc975a24a7f8867120e9c50bb88cf"
+    },
+    {
+      "path": "source/.github/workflows/host-checks.yml",
+      "bytes": 15955,
+      "sha256": "3cf0bf300b9f90fa9bcd5f32be976a76a26b13c0ad74fe671b1ca119009b0fb0"
+    }
+  ],
+  "archive_sha256": "278481acdf53d0393236c2b77955cf77a1e91b7ed4d1a5e87d17a87af8461811"
+}

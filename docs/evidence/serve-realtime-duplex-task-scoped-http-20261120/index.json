@@ -1,0 +1,171 @@
+{
+  "records": [
+    {
+      "path": "task-scoped-business-01/light-duplex-barge_in.events.jsonl",
+      "bytes": 4853060,
+      "sha256": "1e11d163bd8f00fab2b76b1b7aa3ef79585d0d1ab43a0edc1f033d36c7486084"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-entry-cleanup.json",
+      "bytes": 63,
+      "sha256": "634a48bfe4f30ad7e6ef7787dd6eed90e9ff86859611086f3ccf0ffc615e9e4c"
+    },
+    {
+      "path": "task-scoped-business-01/light-config.http.json",
+      "bytes": 239,
+      "sha256": "6e88190662a44c9eaaf4a79646d7c1596cd9c2d3e1bcfe16b9a92ef7ac8843b8"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool-after-0.http.json",
+      "bytes": 247,
+      "sha256": "d422a789cea86f8bdf22702cf03ac3dba598fd9d622b72c33cb66e4112daef1b"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool.events.jsonl",
+      "bytes": 1202562,
+      "sha256": "092119e0f43df351b1b88a833a9443f97ec39994273ee15d6c194ff1dc7bd718"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-barge_in.sdk.json",
+      "bytes": 4350991,
+      "sha256": "1d9f42070f3c8a415d10caf0071fa4cf18367e103ca4dafd04c3c33f6398ff03"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-business-01/result.json",
+      "bytes": 1176,
+      "sha256": "e0582092cdab67946933cf6edc6c166180cdb36e155672664c73726986fb3a38"
+    },
+    {
+      "path": "task-scoped-business-01/light-config.json",
+      "bytes": 20883,
+      "sha256": "b33774e83d1ed77402149e29bf6486befb03c05b29fddcb712cdfb4efea1642e"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-barge_in-before.wire",
+      "bytes": 33671,
+      "sha256": "b9d9bb543a1c8bbcf21a69ffcbc7902a4f7a2894d3b1bf1c3a6c676abe35492a"
+    },
+    {
+      "path": "task-scoped-business-01/counts.json",
+      "bytes": 100,
+      "sha256": "dbc86f7252099e84b4d358d6be6458a2a89fc6b900a26edccb8d11a5e6d83d61"
+    },
+    {
+      "path": "task-scoped-business-01/plan.json",
+      "bytes": 1085142,
+      "sha256": "319630021170b904a1a338582b27035bd92d6053181343798125fc364159d99d"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool-before.wire",
+      "bytes": 33632,
+      "sha256": "fbc954c45f3695bb99ff1ebf7829f96efde9a043457c027e235e18bdaefd8008"
+    },
+    {
+      "path": "task-scoped-business-01/light-command.json",
+      "bytes": 2887,
+      "sha256": "fb87e1455b5910c26618fb46fa2b1b4ab3619f4fd025124bec1589bec3f4533a"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool-after-0.wire",
+      "bytes": 33671,
+      "sha256": "57fb3ba9cb611cfd15815d97e3d3e9ecf3764d194e26b126ac2bd71b8b13a81d"
+    },
+    {
+      "path": "task-scoped-business-01/light-config.wire",
+      "bytes": 16016,
+      "sha256": "d0802a53966c0fee5810dd0edc7f57969ef764b74e1e65a85f5edd410887db7e"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-barge_in.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-barge_in-before.http.json",
+      "bytes": 247,
+      "sha256": "d656348ba00b2a478d493dcfab3ad463dd958b90a027735931910d0c03f37ef9"
+    },
+    {
+      "path": "task-scoped-business-01/light-identity.json",
+      "bytes": 3323,
+      "sha256": "31de8996f2779ccc0805799136cd4f33cdb80796418e5f7f6edfce2e2b8882db"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool-before.http.json",
+      "bytes": 247,
+      "sha256": "f7be578e155648f4867e576ceae062dc7294d76a9f4eade0584f3da7ab031f78"
+    },
+    {
+      "path": "task-scoped-business-01/speech-tool-reviewed.json",
+      "bytes": 1429,
+      "sha256": "75895cb84b4dca04d171d616f4826dc99cb5aadeefbb6eb7d8aa1c5339155702"
+    },
+    {
+      "path": "task-scoped-business-01/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "b1758f2a987912ad1d36ddd89c41f682fe3a41cfc2f60ffe9dabcf9a8bb4efbb"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool-drain.metrics.json",
+      "bytes": 23255,
+      "sha256": "0432f21da38053f8b65cbbd939233cb64e28a132da37ec1a39e769c3c4e379ca"
+    },
+    {
+      "path": "task-scoped-business-01/light-duplex-speech_tool.sdk.json",
+      "bytes": 919438,
+      "sha256": "0c467f68d6cf4fb87999b253d2601964b8798c248297257e78e38b4ef629dff1"
+    },
+    {
+      "path": "task-scoped-business-01/cleanup.json",
+      "bytes": 4409,
+      "sha256": "871763a2f878bca03cc96d3f1a0da1cc636e0e90b6e952e6e83b2583b52593ca"
+    },
+    {
+      "path": "task-scoped-business-01/light-capabilities.http.json",
+      "bytes": 239,
+      "sha256": "98c5d40aa2a8479d15f862d77fa2f0221b4c406440ce338817eee83498295e68"
+    },
+    {
+      "path": "task-scoped-business-01/light-capabilities.wire",
+      "bytes": 46235,
+      "sha256": "1c85d20baed4067c0272e395ed6fa7740be496666bd1d17a0f3e105cf7156727"
+    },
+    {
+      "path": "task-scoped-business-01/light-model.log",
+      "bytes": 27619,
+      "sha256": "f3e1e7463aafc976797ac8dc207cb77189a3985e0632058fac693ffb7ade4d92"
+    },
+    {
+      "path": "task-scoped-business-01/lease/nvml-queries.jsonl",
+      "bytes": 234511,
+      "sha256": "e3180bc70e97b1827f67db563a7dba1b8c1529eaea4c88b81281db5717aecc58"
+    },
+    {
+      "path": "task-scoped-business-01/lease/events.jsonl",
+      "bytes": 18662,
+      "sha256": "fd08e02bc429c52005aa3b06f8cc586dbfa5d0c72c4a23c0c2c93e577a74f450"
+    },
+    {
+      "path": "task-scoped-business-01/lease/exit.json",
+      "bytes": 748,
+      "sha256": "5097a9d70335b627ff95e8b330d0b9227d6ef3a908084b39abf2eb5cbb81c8a4"
+    },
+    {
+      "path": "task_scoped_business_01.py",
+      "bytes": 6434,
+      "sha256": "18fe5da0c4f418e850b4628196fb29c87dd3adf6ee2ebde3ec35e4098d7ac60a"
+    },
+    {
+      "path": "archive_task_scoped_business_01.py",
+      "bytes": 6471,
+      "sha256": "e0e61d8d6a611967d1eceef71efad78416bbbd708108eb42515d657097bf0dab"
+    }
+  ],
+  "omitted": [],
+  "archive_sha256": "1132fb9b459046bf482da16667c0a2ce53c87c4286a0dff21c62bbcba4172e57"
+}

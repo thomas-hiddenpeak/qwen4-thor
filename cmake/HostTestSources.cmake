@@ -85,6 +85,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_aligner_service_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_audio_inputs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/audio_transcript.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_audio_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/asr_stream_state.cpp
@@ -455,6 +456,10 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_websocket_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_duplex_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_duplex_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_conversation_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_input_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_protocol.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_pump.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_session_pump.cpp

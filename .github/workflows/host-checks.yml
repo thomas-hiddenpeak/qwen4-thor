@@ -230,6 +230,10 @@ jobs:
             tools.serve_recovery.test_profile_prompt \
             tools.serve_recovery.test_profile_prompt_reuse \
             tools.serve_recovery.test_profile_speech \
+            tools.serve_recovery.test_profile_duplex \
+            tools.serve_recovery.test_profile_duplex_followup \
+            tools.serve_recovery.test_profile_duplex_resume \
+            tools.serve_recovery.test_profile_duplex_composed \
             tools.serve_recovery.test_profile_speech_cancel \
             tools.serve_recovery.test_profile_prompt_targeted \
             tools.serve_recovery.test_profile_refusal \
@@ -245,8 +249,13 @@ jobs:
             tools.serve_realtime.test_prompt_service \
             tools.serve_realtime.test_speech_service \
             tools.serve_realtime.test_speech_recovery_sdk \
+            tools.serve_realtime.test_duplex_service \
+            tools.serve_realtime.test_duplex_recovery_sdk \
             tools.serve_realtime.test_speech_cancel_acceptance \
             tools.serve_realtime.test_speech_acceptance \
+            tools.serve_realtime.test_duplex_acceptance \
+            tools.serve_realtime.test_duplex_task_checks \
+            tools.serve_realtime.test_idle_acceptance \
             tools.serve_realtime.test_speech_followup \
             tools.native_asr.test_managed_sdk_binding.Binding \
             tools.serve_ops.test_realtime_metrics.RealtimeMetrics \
@@ -260,6 +269,11 @@ jobs:
         run: python3 -B -m unittest tools.serve_soak.test_native_soak
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs
+      - name: Realtime interrupted evidence journal
+        run: |
+          mkdir -p .q4t-work/realtime-journal-ci
+          Q4T_TEST_OUTPUT_DIR="$PWD/.q4t-work/realtime-journal-ci" node --test tools/serve_realtime/bounded_journal.test.mjs
+          node --test tools/serve_realtime/duplex_task_requests.test.mjs
       - name: Check Chat citation history schemas and clients
         run: >-
           build/public-host/schema-venv/bin/python -B -m unittest

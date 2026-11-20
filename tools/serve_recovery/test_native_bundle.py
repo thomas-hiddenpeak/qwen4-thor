@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 23)
+        self.assertEqual(value['version'], 24)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -115,7 +115,7 @@ class BundleTests(unittest.TestCase):
             self.assertFalse((self.directory/'package').exists())
         self.save(self.build, original)
         receipt = self.prepare()
-        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 23)
+        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 24)
 
     def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
         deployment = self.directory/'deployment';deployment.mkdir()
@@ -227,10 +227,49 @@ class BundleTests(unittest.TestCase):
                          {'tools/serve_recovery/profile_refusal_reuse.py'})
 
     def test_v23_seals_speech_dependencies_and_preserves_v22(self):
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V22_SOURCES),
+        self.assertEqual(set(bundle.V23_SOURCES)-set(bundle.V22_SOURCES),
             {'tools/serve_realtime/speech_checks.py',
              *('tools/serve_recovery/'+name+'.py' for name in
                ('profile_speech_evidence', 'profile_speech_reuse', 'profile_speech_source'))})
+
+    def test_v24_duplex_validator_closure_is_sealed(self):
+        added = set(bundle.SOURCES) - set(bundle.V23_SOURCES)
+        self.assertEqual(added, {
+            *('tools/serve_realtime/'+n+'.py' for n in
+              ('duplex_checks', 'duplex_quality_checks', 'duplex_task_checks')),
+            *('tools/serve_recovery/'+n+'.py' for n in
+              ('profile_duplex_evidence', 'profile_duplex_reuse',
+               'profile_duplex_source', 'profile_duplex_followup',
+               'profile_duplex_followup_source', 'profile_duplex_composed',
+               'profile_duplex_composed_reuse', 'profile_duplex_composed_source'))})
+        receipt = self.prepare()
+        directory = Path(receipt['package'])
+        original = bundle.engine.read(directory/'manifest.json')
+        for name in added:
+            changed = dict(original, files=dict(original['files']))
+            del changed['files']['source/'+name]
+            bundle.engine.save(directory/'manifest.json', changed)
+            with self.assertRaisesRegex(ValueError, 'source inventory'):
+                bundle.verify(directory, bundle.engine.sha(directory/'manifest.json'))
+
+    def test_relocated_v24_imports_actual_duplex_validators_without_repository(self):
+        receipt = self.prepare()
+        code = '''import sys
+sys.path.insert(0, sys.argv[1])
+from tools.serve_recovery import profile_evidence, profile_duplex_evidence
+from tools.serve_recovery import profile_duplex_followup, profile_duplex_composed
+from tools.serve_recovery import profile_duplex_composed_reuse, profile_record
+from tools.serve_realtime import duplex_task_checks
+assert profile_duplex_evidence.DECLARATION['same_conversation'] is True
+assert profile_duplex_composed.REVIEW['model_quality_repaired'] is False
+assert duplex_task_checks.POLICY == 'task_scoped_v2'
+print('sealed duplex imports passed')
+'''
+        result = subprocess.run([sys.executable, '-I', '-B', '-c', code,
+            str(Path(receipt['package'])/'source')], cwd=self.directory, env={},
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(result.stdout, b'sealed duplex imports passed\n')
 
     def test_relocated_v23_can_import_speech_evidence_without_repository(self):
         receipt=self.prepare()
@@ -266,7 +305,7 @@ print('sealed speech imports passed')
                 (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
                 (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES),
                 (17, bundle.V17_SOURCES), (18, bundle.V18_SOURCES),
-                (19, bundle.V19_SOURCES), (20, bundle.V20_SOURCES), (21, bundle.V21_SOURCES), (22, bundle.V22_SOURCES)):
+                (19, bundle.V19_SOURCES), (20, bundle.V20_SOURCES), (21, bundle.V21_SOURCES), (22, bundle.V22_SOURCES), (23, bundle.V23_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -311,7 +350,7 @@ print('sealed speech imports passed')
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 23)
+        self.assertEqual(value['version'], 24)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -337,7 +376,7 @@ print('sealed speech imports passed')
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 23)
+        self.assertEqual(value['version'], 24)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

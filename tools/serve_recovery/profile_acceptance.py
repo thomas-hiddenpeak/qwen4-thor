@@ -583,9 +583,10 @@ class Stage(encrypted.Stage):
             value['clients'][0]['max_output_tokens'] = max(512, primary + frames*16+1)
         return value
 
-    def start(self):
+    def start(self, selected=None):
         offset = int('retained_primary_business' in self.plan)
-        name = profile_contract.NAMES[self.counts['starts']+offset]
+        name = profile_contract.NAMES[self.counts['starts']+offset] if selected is None else selected
+        require(name in profile_contract.NAMES, 'unknown qualified profile')
         self.profile_name = name
         background.probe_ports((self.plan['port'], self.plan['operations_port']))
         for path, digest in self.plan['native_assets'].items():

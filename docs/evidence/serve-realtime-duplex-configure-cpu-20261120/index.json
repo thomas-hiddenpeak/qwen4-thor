@@ -1,0 +1,140 @@
+{
+  "records": [
+    {
+      "path": "configure-plan-01.json",
+      "bytes": 1577,
+      "sha256": "0e664576138203bd84cbb28c2c6e32abce067794481cdb3b4850e800ead83159"
+    },
+    {
+      "path": "build_configure_01.py",
+      "bytes": 2809,
+      "sha256": "2cf71e359e97e0b6c7911f717b8a52538a4251240b50e92e106200778aeffe40"
+    },
+    {
+      "path": "run_configure_cpu_01.py",
+      "bytes": 2472,
+      "sha256": "28bf6fd1ab59fd73c020ed508be288d03d54154ad566bb469082ba6fd449ca30"
+    },
+    {
+      "path": "restore_host_objects_01.py",
+      "bytes": 2273,
+      "sha256": "11dd83bc0037c9fbefe023d1383ebc7236937a015bbf73f107c54c7f9b561e48"
+    },
+    {
+      "path": "archive_retired_libraries_02.py",
+      "bytes": 2625,
+      "sha256": "a014b652cd9bedc69191e5fc59decb77a5157b1bab6cf38fa4967dde856a0f56"
+    },
+    {
+      "path": "cold-static-libraries-02.json",
+      "bytes": 567,
+      "sha256": "63047319e1fb7948f233956b56bef3852724926b9833de5838fd783d58ac8c58"
+    },
+    {
+      "path": "configure-build-01/result.json",
+      "bytes": 292,
+      "sha256": "db947a9446fbc5e5b406180bed315a3142529c17f4de0d405063e84107980357"
+    },
+    {
+      "path": "configure-build-01/plan.json",
+      "bytes": 176921,
+      "sha256": "e3d07f7264d468e06b94a5b448a68380a1905f0f60cb93ade05fcf8de8bb9a37"
+    },
+    {
+      "path": "configure-build-01/build.log",
+      "bytes": 32162,
+      "sha256": "3719f292787fb8050cf08899da5939e257a9d7bd7e28b6b36652f25db5a85ce3"
+    },
+    {
+      "path": "configure-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85524,
+      "sha256": "32c19b68094768386c30a3d6e3e21d76e01a862580a269c9aeb45852786eccd0"
+    },
+    {
+      "path": "configure-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "configure-cpu-01/command-0.stdout",
+      "bytes": 1123,
+      "sha256": "7d49ee949803dfdbbf5c5b4b77f7d3e199fa684f3f7dcdf8d32ae511940f1145"
+    },
+    {
+      "path": "configure-cpu-01/result.json",
+      "bytes": 606,
+      "sha256": "10946de63aadd017af03f7e09a010f073fe5b4af235c728b31a9bc0e5d2aafb1"
+    },
+    {
+      "path": "configure-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "configure-cpu-01/plan.json",
+      "bytes": 3540,
+      "sha256": "7f2692fcbde1766d4be376123acbbd5de5849cd335edafe7297c6a548fa9ad7e"
+    },
+    {
+      "path": "configure-cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "944b5aa6826e5a6c2c56bd09743560dd53978893fdb49db7efc9d31a2baa5ca4"
+    },
+    {
+      "path": "configure-cpu-01/new.txt",
+      "bytes": 977,
+      "sha256": "24714f63b152d0f94fc191f801962b12cde317a7e664592c74574f2cd28af190"
+    },
+    {
+      "path": "configure-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "configure-cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "retired-static-libraries-02/restore.py",
+      "bytes": 927,
+      "sha256": "c389edfa507fb1051a6f1290eb02acd46dbfa6e109f2b94cc2ada1ce3a2a2318"
+    },
+    {
+      "path": "retired-static-libraries-02/result.json",
+      "bytes": 338,
+      "sha256": "792aebf619ff7ba384d02098f15c2eb2ee95170ca3697279b5f20874576ffa9a"
+    },
+    {
+      "path": "retired-static-libraries-02/plan.json",
+      "bytes": 5144,
+      "sha256": "e9dd9be8d98384f6b6fdcd8bcf4694665c75e0f5d8583654ed9151db9c2eb697"
+    },
+    {
+      "path": "host-objects-01/result.json",
+      "bytes": 232,
+      "sha256": "65ab3c05fdc7a3f5acfac93ca3a17e60f77d05bc6b356eba104507d5b483e796"
+    },
+    {
+      "path": "host-objects-01/plan.json",
+      "bytes": 1682,
+      "sha256": "21231d74edc1f82ba9f100b26d591006e0b5bc8a6ae13257b15d9b54361fdb58"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_transcription_session.h",
+      "bytes": 6594,
+      "sha256": "a29398a7260f516032ed25a82c255dbea7f80981d05f2ebd89620cbe7c1d7f1f"
+    },
+    {
+      "path": "source/src/server/realtime_transcription_session.cpp",
+      "bytes": 35877,
+      "sha256": "54dc5ffea011655af17b45ed9b017f51300c9e45e91a548b020906982af3ef87"
+    },
+    {
+      "path": "source/tests/server_realtime_transcription_test.cpp",
+      "bytes": 78471,
+      "sha256": "cfbfc3d960ac81ea023fa3bfd97d1466ccf570755e264cae19cd9268c2fd0873"
+    }
+  ],
+  "archive_sha256": "2701cfbd702e9c80dffa3b082b20ac576a17afade8033765a0f22ac519700f22"
+}

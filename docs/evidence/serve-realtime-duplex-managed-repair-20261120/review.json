@@ -1,0 +1,216 @@
+{
+  "original_status": "FAILED",
+  "original_result": {
+    "status": "FAILED",
+    "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_service_acceptance.py\", line 109, in exercise\n    actor.start('tls-before' if tls else 'primary')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 246, in start\n    self.finish()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 267, in finish\n    check_session(value, mode, 'official-openai-wss' if\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 56, in check_session\n    require(settings['output_modalities'] == ['text'] and\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle/source/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: effective input settings changed or transcription hinted\n",
+    "cleanup_failure": null,
+    "seconds": 54.04178322805092,
+    "budget": {
+      "counts": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 0,
+        "controls": 151,
+        "websocket_sessions": 1
+      },
+      "events": [
+        {
+          "kind": "starts",
+          "label": "managed-model",
+          "ordinal": 1,
+          "monotonic_ns": 3350168611534572
+        },
+        {
+          "kind": "chats",
+          "label": "managed-self-check",
+          "ordinal": 1,
+          "monotonic_ns": 3350201078724837
+        },
+        {
+          "kind": "websocket_sessions",
+          "label": "primary-duplex",
+          "ordinal": 1,
+          "monotonic_ns": 3350203350491762
+        },
+        {
+          "kind": "chats",
+          "label": "primary-duplex",
+          "ordinal": 2,
+          "monotonic_ns": 3350203350720853
+        },
+        {
+          "kind": "chats",
+          "label": "primary-duplex",
+          "ordinal": 3,
+          "monotonic_ns": 3350203350895463
+        }
+      ]
+    },
+    "models": {
+      "1": {
+        "pid": 1005873,
+        "start_ticks": 335016861
+      }
+    },
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+      "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+    },
+    "scenario": "tool_retained",
+    "default_replaced": false,
+    "performance_acceptance": false
+  },
+  "original_observed": {
+    "tokens": 333,
+    "ids": [
+      "item_bdd6ccd43a9332c098e8fdd984047481",
+      "resp_9e7d8587051bed73df4c8f89fa51f5d6"
+    ],
+    "quality": [
+      {
+        "label": "asr_item_bdd6ccd43a9332c098e8fdd984047481_0",
+        "actual": "甚至出现交易几乎停滞的情况。",
+        "expected": "甚至出现交易几乎停滞的情况。",
+        "status": "PASS"
+      },
+      {
+        "label": "response",
+        "actual": "作为人工智能助手，我无法提供关于非法或风险交易活动的播放或复述服务。建议您合法合规地参与证券市场，参与的股票投资者具有风险意识，应该遵守相关宝宝的弊端，注意自身行为、 محاول rethink这个的有必要is servicios dataan假押未客\n",
+        "expected": "甚至出现交易几乎停滞的情况。",
+        "status": "FAIL"
+      }
+    ],
+    "model_quality_status": "FAIL"
+  },
+  "original_final_metrics_missing": true,
+  "environment": {
+    "status": "PASS",
+    "all_queries_ok": true,
+    "nvml_queries": 53,
+    "cleanup_complete": true
+  },
+  "original_sources_retained_in_commit": "c3aecd25a93074991cd2037bce9f779813cf5af3",
+  "changed_tool_sources": [
+    "tools/serve_realtime/duplex_managed.py",
+    "tools/serve_realtime/duplex_service_acceptance.py",
+    "tools/serve_realtime/test_duplex_service.py"
+  ],
+  "repair_cpu": {
+    "status": "PASS",
+    "tests": 9,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_complete_and_held_connection_require_both_actual_work_units",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_continuous_prefix_is_distinct_and_cannot_complete_or_publish",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_wrong_model_answer_and_hidden_stream_mismatch_are_failures",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_hinted_asr_or_replayed_connection_is_rejected",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_fixed_budget_counts_startup_and_every_native_input",
+          "tools.serve_realtime.test_duplex_service.Contracts.test_verification_failure_still_saves_actual_final_accounting",
+          "tools.serve_realtime.test_duplex_recovery_sdk"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_recovery_sdk.mjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "seconds": 3.1065837400965393,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "scope": {
+    "scope": "Native same-conversation ASR and response across actual Guardian gateway/controller/whole-package recovery. Only exact owned test services are faulted. No production default mutation.",
+    "phase": "targeted_checker_repair_with_original_failure_preserved",
+    "planned_scenarios": {
+      "tool_retained": {
+        "starts": 1,
+        "native_work": 3,
+        "wss": 1,
+        "probes": 0,
+        "seconds": 120
+      },
+      "tls": {
+        "starts": 2,
+        "native_work": 9,
+        "wss": 3,
+        "probes": 0,
+        "seconds": 360
+      },
+      "tool_version": {
+        "starts": 2,
+        "native_work": 6,
+        "wss": 2,
+        "probes": 1,
+        "seconds": 540
+      }
+    },
+    "counts_include_startup_self_checks": true,
+    "actual_business": [
+      "same conversation actual PCM commit -> public native ASR -> model text response",
+      "retrieve processed real audio and clean final usage",
+      "TLS gateway fault during continuous ASR after real public delta, withholding commit to keep ownership",
+      "same healthy model after gateway recovery; old request cancelled and actual usage settled",
+      "explicit new connection, no reconnect or automatic request replay",
+      "controller restart waits complete original quota interval, new ASR response works",
+      "actual whole-payload fallback to qualified same-duplex-capability retained controller",
+      "all owned models, ingress, ports, lock and reservations cleaned"
+    ],
+    "validation": [
+      "targeted CPU actor/protocol/receipt/packaging counterexamples",
+      "each full GPU scenario holds one strict lease",
+      "use original accepted unchanged backend and recovery evidence by exact source identity",
+      "do not extend to full performance or model-quality matrices"
+    ],
+    "delivery": [
+      "default remains STOPPED through preparation",
+      "preserve alpha RPM30 TPM6000 output3457 and beta RPM1 TPM6000 output256",
+      "native bundle v24 must seal all duplex evidence dependencies; v23 remains readable",
+      "old no-input engine is not an automatic fallback for new declared capability",
+      "preserve model quality failures and user-deferred listening",
+      "reversible package/metadata/state publication after actual recovery acceptance",
+      "commit/push, PR merge and continue every remaining master task"
+    ],
+    "original_attempt": {
+      "path": "recovery-retained-01",
+      "starts": 1,
+      "chats": 3,
+      "websocket_sessions": 1,
+      "seconds": 54.04178322805092,
+      "status": "FAILED",
+      "model_quality_status": "FAIL",
+      "cause": "checker expanded unset transcription fields and lost final metrics on early exception"
+    },
+    "cumulative_limits": {
+      "starts": 6,
+      "native_work": 21,
+      "websocket_sessions": 7,
+      "probes": 1,
+      "seconds": 1200
+    },
+    "remaining_maximum_seconds": 1020,
+    "quality_policy": "User-authorized separate instruction-following quality from recovery protocol; retain every original answer and derived FAIL, require native ASR content and all resource/settlement/ownership checks. No seed or sampling changes."
+  },
+  "model_quality_repaired": false,
+  "default_unchanged": true,
+  "master_active": true
+}

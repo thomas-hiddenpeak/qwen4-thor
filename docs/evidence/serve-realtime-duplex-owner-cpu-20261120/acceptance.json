@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_INPUT_LIFECYCLE_CPU",
+  "new_cases": 11,
+  "affected_existing_cases": 17,
+  "seconds": 0.8958885432220995,
+  "source_counterexamples": 20,
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 42.65759042277932,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "9b357f066366235185678cbd47b1869e42728b688b7c7a19e9b73930ae4de4ef",
+    "free_bytes_after": 138682368
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "native_conversation_entry": "pending",
+  "actual_duplex_business": "pending",
+  "remaining_master_active": true
+}

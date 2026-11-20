@@ -1,0 +1,42 @@
+{
+  "status": "ENV_ABORT_NOT_BUSINESS_ACCEPTANCE",
+  "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+  "driver_status": "FAIL",
+  "lease_status": "ENV_ABORT",
+  "seconds": 90.48527272697538,
+  "model_starts": 1,
+  "pre_model_launch_failure": {
+    "status": "LAUNCH_CONFIGURATION_FAILED_BEFORE_MODEL",
+    "reason": "Initial wrapper invocation omitted --inherit-lease; existing driver requires Q4T_MANAGED_LEASE_FD during construction",
+    "model_starts": 0,
+    "http_requests": 0,
+    "websocket_sessions": 0,
+    "default_unchanged": true,
+    "repair": "Keep original failed lease; correct command by adding --inherit-lease; identical frozen plan and binary; no model attempt consumed"
+  },
+  "reserved_attempt_counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "responses": 6,
+    "audio_inputs": 5,
+    "chats": 1,
+    "controls": 31
+  },
+  "actual_ws_transcript_available": false,
+  "actual_generated_answer_quality": "unverified_missing_actor_receipt",
+  "core_before": "42",
+  "nvml": {
+    "OK": 59,
+    "CLEANUP_FAILED": 1
+  },
+  "last_query_api": "init",
+  "model_exit": -9,
+  "owned_processes_remaining": [],
+  "ports_released": true,
+  "cooperative_lock_available": true,
+  "default_unchanged": true,
+  "default_revision": 376,
+  "automatic_retry": false,
+  "master_active": true
+}

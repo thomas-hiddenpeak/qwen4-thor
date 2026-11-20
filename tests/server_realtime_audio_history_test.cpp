@@ -5,6 +5,7 @@
 #include <limits>
 
 #include "q4t/test.h"
+#include "q4t/server/realtime_noise_input.h"
 
 namespace {
 using namespace q4t::server;
@@ -153,5 +154,105 @@ Q4T_TEST(realtime_audio_history_invalid_ticket_capacity_and_stream_are_atomic) {
   Q4T_CHECK(!history.Decode(kTicket, kItem, Split(4), 16, &output) &&
             !history.Decode(kNext, kItem, Split(4), 16, &output));
   Q4T_CHECK(output == original && history.ChargedBytes() == 16);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_history_finite_normalization_matches_streamed_input) {
+  using N = q4t::audio::NoiseReduction;
+  for (const auto format :
+       {RealtimeAudioFormat{},
+        RealtimeAudioFormat{RealtimeAudioEncoding::kMuLaw, 8000},
+        RealtimeAudioFormat{RealtimeAudioEncoding::kALaw, 8000}}) {
+    for (const auto noise : {N::kOff, N::kNearField, N::kFarField}) {
+      std::vector<uint8_t> bytes(4096);
+      for (size_t i = 0; i < bytes.size(); ++i) bytes[i] = (i * 37) % 256;
+      const size_t width =
+          format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+      RealtimeAudioItem item{1,
+                             7,
+                             0,
+                             bytes.size() / width * (48000 / format.rate),
+                             bytes.size() / width,
+                             bytes.size(),
+                             format};
+      RealtimeAudioHistory history("sess_audio");
+      std::shared_ptr<RealtimeAudioRecord> result;
+      Q4T_CHECK(
+          history.DecodeFinite(kTicket, item, bytes, noise, 16384, &result));
+      RealtimeNoiseInput stream(format, noise, 0);
+      std::vector<float> expected;
+      const auto sink = [&](auto block) {
+        expected.insert(expected.end(), block.begin(), block.end());
+        return q4t::Status{};
+      };
+      for (size_t begin = 0; begin < bytes.size(); begin += 197)
+        Q4T_CHECK(stream.Append(
+            std::span(bytes).subspan(
+                begin, std::min<size_t>(197, bytes.size() - begin)),
+            sink));
+      Q4T_CHECK(stream.Finish(sink));
+      Q4T_CHECK(std::ranges::equal(result->Samples(), expected) &&
+                !result->Stream());
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_audio_history_finite_faults_release_all_new_storage) {
+  using N = q4t::audio::NoiseReduction;
+  RealtimeAudioHistory history("sess_audio", 32);
+  std::shared_ptr<RealtimeAudioRecord> first;
+  Q4T_CHECK(history.Decode(kTicket, kItem, Split(0), 16, &first));
+  auto result = first;
+  for (bool cancel : {false, true}) {
+    auto item = kItem;
+    if (!cancel) ++item.end_ticks;
+    Q4T_CHECK(!history.DecodeFinite(kNext, item, kBytes, N::kNearField, 16,
+                                    &result, [=] { return cancel; }));
+    Q4T_CHECK(result == first && history.ChargedBytes() == 16 &&
+              history.Items() == 1);
+  }
+  Q4T_CHECK(
+      history.DecodeFinite(kNext, kItem, kBytes, N::kNearField, 16, &result));
+  Q4T_CHECK(result != first && history.ChargedBytes() == 32);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_history_finite_and_stream_share_borrow_budget) {
+  RealtimeAudioHistory history("sess_audio", 16);
+  std::shared_ptr<RealtimeAudioRecord> finite, stream;
+  Q4T_CHECK(history.DecodeFinite(kTicket, kItem, kBytes,
+                                 q4t::audio::NoiseReduction::kNearField, 16,
+                                 &finite));
+  Q4T_CHECK(history.Erase(kTicket) && history.ChargedBytes() == 16);
+  Q4T_CHECK(!history.BeginStream(kNext, 1, 4, 2, &stream));
+  finite.reset();
+  Q4T_CHECK(history.BeginStream(kNext, 1, 4, 2, &stream));
+  Q4T_CHECK(history.ChargedBytes() == 16 && !finite);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_history_finite_owns_readonly_source_and_extent) {
+  using N = q4t::audio::NoiseReduction;
+  RealtimeAudioHistory history("sess_audio", 64);
+  auto bytes = kBytes;
+  std::shared_ptr<RealtimeAudioRecord> result;
+  Q4T_CHECK(
+      history.DecodeFinite(kTicket, kItem, bytes, N::kFarField, 16, &result) &&
+      bytes == kBytes);
+  const std::vector<float> expected(result->Samples().begin(),
+                                    result->Samples().end());
+  bytes.fill(0);
+  Q4T_CHECK(history.Erase(kTicket) &&
+            std::ranges::equal(result->Samples(), expected));
+  const auto retained = result;
+  auto bad = kItem;
+  bad.format.rate = 0;
+  Q4T_CHECK(
+      !history.DecodeFinite(kNext, bad, kBytes, N::kFarField, 16, &result) &&
+      result == retained);
+  Q4T_CHECK(!history.DecodeFinite(kNext, kItem, kBytes, static_cast<N>(99), 16,
+                                  &result));
+  Q4T_CHECK(result == retained && history.ChargedBytes() == 16);
   return true;
 }

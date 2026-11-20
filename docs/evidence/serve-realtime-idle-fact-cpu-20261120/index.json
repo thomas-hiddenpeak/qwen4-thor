@@ -1,0 +1,275 @@
+{
+  "records": [
+    {
+      "path": "idle-fact-cpu-01/command-0.stdout",
+      "bytes": 600,
+      "sha256": "1878f279cfc56440f763da32b71cda6248a841261d4ae8a3b963166487397fb3"
+    },
+    {
+      "path": "idle-fact-cpu-01/result.json",
+      "bytes": 945,
+      "sha256": "8abfb40ff96ba55e9523ab58f496eb14b895a26308e4ea866be809fbb6c244f5"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-3.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-2.stderr",
+      "bytes": 788,
+      "sha256": "b7dae9bfe1e6ed698ddeb6f31cd82ea3a07487b98def35263b1f7ffcf1e1bb2a"
+    },
+    {
+      "path": "idle-fact-cpu-01/plan.json",
+      "bytes": 179179,
+      "sha256": "cb843debadbb4166dc1f560dbe8b98d4adbb6c29dd745a009f5280418cc7d80a"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "04e63a3fd266ce6c5de1c3aa38c513028be085e4b535f9e5c396776fbb9cf72f"
+    },
+    {
+      "path": "idle-fact-cpu-01/new.txt",
+      "bytes": 505,
+      "sha256": "964db00164d74b7b17f968a28ef063978d8df8e67b14ef00c05cea9d70eb3a10"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-3.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-fact-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-fact-cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-fact-build-01/result.json",
+      "bytes": 294,
+      "sha256": "a2c0112b9496e4779b08984b4e7d8e6c6c92b24294e6c8d41e4c7d5bdab7d206"
+    },
+    {
+      "path": "idle-fact-build-01/plan.json",
+      "bytes": 177296,
+      "sha256": "65a46a45c9592d4eab790ea8d65e43fd3c84973ca42fbe56a3239f4682726882"
+    },
+    {
+      "path": "idle-fact-build-01/build.log",
+      "bytes": 2189,
+      "sha256": "25da438ca781b7bbfe548ff983b0fcccbf2e66f62afd06e76293494695d804b1"
+    },
+    {
+      "path": "idle-fact-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "b009ae0a6056930ba878f52926b1f56683a52d82603425204766d23a873ac698"
+    },
+    {
+      "path": "idle-fact-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "idle-fact-runtime-01/result.json",
+      "bytes": 294,
+      "sha256": "1545290eafe6ad6e8f1e60afaa2e868207a262a7daa9c7134fd80c229a77b852"
+    },
+    {
+      "path": "idle-fact-runtime-01/plan.json",
+      "bytes": 107633,
+      "sha256": "fc1588ecf9049506bda214458493a031cd05b0329e9e2623ed51a7cbb2e4984b"
+    },
+    {
+      "path": "idle-fact-runtime-01/build.log",
+      "bytes": 1729,
+      "sha256": "062a4407fb9ba3d91607be5d87f7e8941fa9f1c7db12c975a7262ad725fe936f"
+    },
+    {
+      "path": "idle-fact-runtime-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "b009ae0a6056930ba878f52926b1f56683a52d82603425204766d23a873ac698"
+    },
+    {
+      "path": "idle-fact-runtime-01/previous-CMakeCache.txt",
+      "bytes": 54898,
+      "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+    },
+    {
+      "path": "idle-prompt-01/before-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/before.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/after.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/after-build-plan.json",
+      "bytes": 147345,
+      "sha256": "9f1ae6cf5d1a47a026cee0f2815babff4f85a23f3d86423f5b90ab928b6272b4"
+    },
+    {
+      "path": "idle-prompt-01/before-build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/after.json",
+      "bytes": 2212,
+      "sha256": "08f22bc2a598b7ad0e38c112a7a0bdab813f124efe45458d77ab04f7d2813b74"
+    },
+    {
+      "path": "idle-prompt-01/fixture.json",
+      "bytes": 1504,
+      "sha256": "8b1a0ceb8f92f870426828f8931cc00748400b9e1765b5430739d8d75a1a548f"
+    },
+    {
+      "path": "idle-prompt-01/probe.cpp",
+      "bytes": 2100,
+      "sha256": "cf3571f2ffd2e5136a2ddf807c8f8e8133de792639e0636413749f509d657d54"
+    },
+    {
+      "path": "idle-prompt-01/after-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/before.json",
+      "bytes": 2299,
+      "sha256": "7df50579df77ad07490d644c65fbc144f8713238693ab4758299bb86d834e3a3"
+    },
+    {
+      "path": "idle-prompt-01/build_run.py",
+      "bytes": 2534,
+      "sha256": "b3188bb7512c1187cc99525fe6a3c907545ab25a37281894a8a7cf8f21ca513b"
+    },
+    {
+      "path": "idle-prompt-01/before-build-plan.json",
+      "bytes": 147346,
+      "sha256": "2e51c6457b3d5dda8a7650d91757d949bf97986ea619770324e28d587a8c761a"
+    },
+    {
+      "path": "idle-prompt-01/after-build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-prompt-01/after.prompt",
+      "bytes": 763,
+      "sha256": "80805bd535d876cdccc7028502a34bdbddfebf2e047cfaf9001a8b3d2fc7542b"
+    },
+    {
+      "path": "idle-prompt-01/before.prompt",
+      "bytes": 792,
+      "sha256": "a7559072edd02e9a37fd2116cb9e11dd5c2722d7ff91c5349fca7186905c62a4"
+    },
+    {
+      "path": "idle-fact-plan-01.json",
+      "bytes": 1433,
+      "sha256": "1b41d97852e957bdcd7379f5611fc7a7bd57ac03fa14a93c4304bb8192655499"
+    },
+    {
+      "path": "prepare_idle_fact_01.py",
+      "bytes": 4646,
+      "sha256": "08966e985ae21ba8f047b45541c8df0a53bab1d509116f34db45e8b99ec71cd0"
+    },
+    {
+      "path": "build_idle_fact_host_01.py",
+      "bytes": 2816,
+      "sha256": "c305546222a4ebb11fc25fc5fc24730cb1a0606b8a4e4f7814569a3b77e2e0c3"
+    },
+    {
+      "path": "build_idle_fact_runtime_01.py",
+      "bytes": 2757,
+      "sha256": "d16220f5d6ba1200cf5d5ff6a1b54d9f3084c67b70782f1acc980ab9abf02f87"
+    },
+    {
+      "path": "run_idle_fact_cpu_01.py",
+      "bytes": 2453,
+      "sha256": "84121143d9f9648dbe02ae9360092d4bd6314027b9fa11d5b4e6bf6e736bb8d0"
+    },
+    {
+      "path": "source/src/server/realtime_conversation.cpp",
+      "bytes": 30592,
+      "sha256": "6fabdb045164a939499429ad10467e1d30701bf5a3c0deb10f4c50f4381f1081"
+    },
+    {
+      "path": "source/tests/server_realtime_chat_plan_test.cpp",
+      "bytes": 26509,
+      "sha256": "20d2fdb4f033fa5a280aeda5cd309a99f86a620f9f210422624b645ffb2189cd"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_test.cpp",
+      "bytes": 52927,
+      "sha256": "43eba607af7c364c8f98f26e426e553e8c92395c56e0b641d8f783bb959e984c"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_session_test.cpp",
+      "bytes": 81877,
+      "sha256": "f3dc43056a13263733cb72cc3a77a141161eab0e9aafd0f1c4974b83fa74e29a"
+    },
+    {
+      "path": "source/tools/release/required_host_tests.txt",
+      "bytes": 32353,
+      "sha256": "b230aad2cf0ec14cf6d2167a83c999177edc918e448ac04f376e9e93f78e271e"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 590689,
+      "sha256": "9fe6fc7c562248bf62342b4a7e49b91d426bfdd80d494b279cf7caf42113913a"
+    },
+    {
+      "path": "source/.github/workflows/host-checks.yml",
+      "bytes": 15900,
+      "sha256": "6d79af5d1adba8b0fc7ab97587b8d4080280753382323f62a4aeb40b3955c06a"
+    },
+    {
+      "path": "source/tools/serve_realtime/idle_acceptance.py",
+      "bytes": 10122,
+      "sha256": "95aa8564a4de65b8569d682a82ffa4a6322f74d1534bf935b9bd3186496c3bf3"
+    },
+    {
+      "path": "source/tools/serve_realtime/idle_checks.py",
+      "bytes": 3395,
+      "sha256": "b9f4d8bd043b1eec85c2b393fc9a64edd341dc571afb7235c905d11fe048ba9d"
+    },
+    {
+      "path": "source/tools/serve_realtime/test_idle_acceptance.py",
+      "bytes": 4124,
+      "sha256": "e6767ac4528e8b1eba7372ae5bdf93a9dd39889639a34e9b0cd3aed1bfd8fe93"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_sdk.mjs",
+      "bytes": 13762,
+      "sha256": "0a96e6a98d871218e4bca77b581a177fbcf4a2749438d75ab7d3d4a426767142"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_checks.py",
+      "bytes": 9822,
+      "sha256": "68cea6615375b3a38eb452be2fb6c37bc118bcd8ab2befde7637faf41a63efe7"
+    }
+  ],
+  "archive_sha256": "ba20f6b2b3f041a92447b50f07695699f74a7ddbd97bbed8171a4911af7a19d3"
+}

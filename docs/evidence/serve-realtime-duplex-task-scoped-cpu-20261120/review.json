@@ -1,0 +1,71 @@
+{
+  "result": {
+    "status": "PASS",
+    "tests": 5,
+    "reused_unaffected_tests": 14,
+    "original_failed_tests": 1,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_task_checks.AudioBoundary"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_sdk.mjs"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "seconds": 0.5647634598426521,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "initial_result": {
+    "status": "FAIL",
+    "tests": 19,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_task_checks",
+          "tools.serve_realtime.test_duplex_acceptance"
+        ],
+        "exit_code": 1
+      }
+    ],
+    "seconds": 1.2452152078039944,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "gpu_limits": {
+    "starts": 1,
+    "chats": 8,
+    "websocket_sessions": 2,
+    "ingress_starts": 1,
+    "seconds": 600
+  },
+  "runtime_changed": false,
+  "quality_accepted": false
+}

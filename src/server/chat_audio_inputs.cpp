@@ -5,6 +5,7 @@
 #include "file_audio_protocol.h"
 #include "object_protocol.h"
 #include "q4t/server/file_audio.h"
+#include "q4t/server/audio_transcript.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/chat_plan.h"
@@ -38,31 +39,6 @@ bool Audio(const Json& part) {
 std::string Path(size_t message, size_t part) {
   return "messages[" + std::to_string(message) + "].content[" +
          std::to_string(part) + ']';
-}
-std::string TranscriptText(const ChatAudioInput& source,
-                           const std::string& transcript) {
-  // Keep the source modality and part boundary visible to the text model.
-  // JSON quoting and escaped angle brackets keep recognized control-like
-  // strings as user data. Public storage retains the original audio part.
-  const auto data = OutputJson(Object(
-      {{"source", String(source.param)}, {"transcript", String(transcript)}}));
-  std::string escaped;
-  for (const auto c : data) {
-    if (c == '<')
-      escaped += "\\u003c";
-    else if (c == '>')
-      escaped += "\\u003e";
-    else
-      escaped += c;
-  }
-  const std::string heading =
-      transcript.empty()
-          ? "[Audio input transcript: no speech recognized in the supplied "
-            "recording; accompanying user text still applies]"
-          : "[Audio input transcript: recognized speech from the supplied "
-            "recording]";
-  return "\n\n" + heading + "\n" + escaped +
-         "\n[End audio input transcript]\n\n";
 }
 }  // namespace
 
@@ -219,9 +195,10 @@ ObjectReply ChatAudioInputs::RenderBound(const Json& request,
             message.GetString("role") != "user" ||
             source.part_sha256 != Digest(OutputJson(part)))
           return State();
-        Json projected = Object(
-            {{"type", String("text")},
-             {"text", String(TranscriptText(source, *transcripts_[index]))}});
+        Json projected =
+            Object({{"type", String("text")},
+                    {"text", String(RenderAudioTranscript(
+                                 source.param, *transcripts_[index]))}});
         if (const auto* cache = part.Find("prompt_cache_breakpoint"))
           Set(&projected, "prompt_cache_breakpoint", *cache);
         part = std::move(projected);

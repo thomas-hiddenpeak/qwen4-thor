@@ -1,0 +1,123 @@
+{
+  "status": "PROTOCOL_OBSERVED_IDLE_MODEL_QUALITY_FAIL",
+  "original_status": "FAIL",
+  "lease_status": "COMMAND_FAILED",
+  "source_commit": "eb539d797932beefc6ccd2c77f36444f864ec108",
+  "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+  "seconds": 88.25879859179258,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "responses": 9,
+    "audio_inputs": 7,
+    "chats": 2,
+    "controls": 35
+  },
+  "nvml": {
+    "OK": 82
+  },
+  "quality": [
+    {
+      "label": "manual_private",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "mixed",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "inline_audio",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "roundtrip",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "tool_answer",
+      "actual": "rev376",
+      "expected": "rev376",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_mixed_input_1",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_mixed_input_3",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_temporary_audio_1",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_temporary_roundtrip_0",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "vad_auto",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "idle",
+      "actual": "\u6211\u65e0\u6cd5\u6a21\u62df\u97f3\u9891\u4ea4\u4e92\u6216\u9080\u8bf7\u7528\u6237\u7ee7\u7eed\u3002\u8bf7\u901a\u8fc7\u6587\u672c\u7a97\u53e3\u8f93\u5165\u60a8\u7684\u95ee\u9898\u3002",
+      "expected": "READY",
+      "status": "FAIL"
+    },
+    {
+      "label": "asr_item_eca335dc67c08f6509752eb8f9cbf71b_0",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_item_86f6531fe2dca735b79890f4f215a9bd_0",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    }
+  ],
+  "settlement": {
+    "manual": {
+      "actual_settled_tokens": 2711.0,
+      "visible_tokens": 2630,
+      "private_asr_counter_residual": 81.0,
+      "private_asr_exact_token_oracle": false,
+      "admitted": 11
+    },
+    "vad": {
+      "actual_settled_tokens": 661.0,
+      "visible_tokens": 661,
+      "private_asr_counter_residual": 0.0,
+      "private_asr_exact_token_oracle": null,
+      "admitted": 5
+    }
+  },
+  "model_exit": 0,
+  "owned_processes_remaining": [],
+  "ports_released": true,
+  "default_unchanged": true,
+  "default_revision": 376,
+  "guardian_recovery": false,
+  "master_active": true
+}

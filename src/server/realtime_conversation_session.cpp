@@ -35,6 +35,12 @@ ObjectReply Shape(const Json& event, RealtimeShape kind) {
   return status ? ObjectReply{}
                 : Invalid(error.code, status.message(), error.param);
 }
+bool HasInputAudio(const Json& item) {
+  const auto* content = item.GetArray("content");
+  return content && std::ranges::any_of(content->array, [](const auto& part) {
+           return part.GetString("type") == "input_audio";
+         });
+}
 }  // namespace
 
 struct RealtimeConversationSession::Work {
@@ -43,9 +49,11 @@ struct RealtimeConversationSession::Work {
   std::shared_ptr<RequestControl> control;
   std::unique_ptr<RealtimeResponseOutput> output;
   std::map<std::string, RealtimeItemTicket> tickets;
+  std::vector<RealtimeItemTicket> temporary_inputs;
   std::unordered_set<std::string> deleted;
   std::thread worker;
   std::atomic<bool> done{false};
+  bool prepared = false;
   // Native generation may already be Finished while its output is queued.
   // The public response still belongs to this session until response.done.
   bool cancelled_after_generation = false;
@@ -122,12 +130,50 @@ RealtimeConversationSession::RealtimeConversationSession(
       callbacks_(std::move(callbacks)),
       message_bytes_(message_bytes),
       history_(id_),
-      speech_(id_) {}
+      speech_(id_) {
+  if (callbacks_.input) {
+    RealtimeConversationInputCallbacks input;
+    input.now = callbacks_.now;
+    input.emit = [this](const Json& event) { return Emit(event); };
+    input.ready = [this] { return InputReady(); };
+    input.speech = [this](bool started, auto, auto, bool interrupt) {
+      return InputSpeech(started, interrupt);
+    };
+    input.capture_response = [this](RealtimePromptSelection* selected) {
+      *selected = settings_.Current();
+      return ObjectReply{};
+    };
+    input.committed = [this](RealtimeInputCommit notice) {
+      if (!notice.settings.RespondOnCommit(notice.automatic))
+        return ObjectReply{};
+      return CreateResponse(Object(), &notice)
+                 ? ObjectReply{}
+                 : object_detail::Error(503, "realtime_output_failed",
+                                        "Automatic response output failed");
+    };
+    auto native = *callbacks_.input;
+    const auto original = native.interrupted;
+    native.interrupted = [this, original] {
+      return (callbacks_.interrupted && callbacks_.interrupted()) ||
+             (original && original());
+    };
+    input_ = std::make_unique<RealtimeConversationInput>(
+        id_, history_, std::move(native), std::move(input),
+        callbacks_.max_audio_seconds, message_bytes_);
+  }
+}
 RealtimeConversationSession::~RealtimeConversationSession() {
   Cancel();
   Join();
 }
 void RealtimeConversationSession::Release(Work& work) noexcept {
+  for (const auto& ticket : work.temporary_inputs) {
+    try {
+      if (input_) input_->Erase(ticket);
+    } catch (...) {
+    }
+  }
+  work.temporary_inputs.clear();
   if (!work.control) return;
   try {
     callbacks_.release(work.control);
@@ -137,6 +183,7 @@ void RealtimeConversationSession::Release(Work& work) noexcept {
 }
 void RealtimeConversationSession::Cancel() noexcept {
   cancelled_ = true;
+  if (input_) input_->Cancel();
   for (auto& work : work_) {
     if (work->control)
       work->control->Cancel(RequestControl::State::kDisconnect);
@@ -149,6 +196,7 @@ void RealtimeConversationSession::Join() noexcept {
     Release(*work);
   }
   work_.clear();
+  if (input_) input_->Join();
 }
 ObjectReply RealtimeConversationSession::Emit(Json event) {
   if (cancelled_ || output_.Closed() ||
@@ -234,11 +282,42 @@ ObjectReply RealtimeConversationSession::ValidateSelection(
   if (!status) return Invalid(error.code, status.message(), error.param);
   auto reply = ValidateSpeech(speech);
   if (!Accepted(reply)) return reply;
-  if (callbacks_.validate_prompt) return callbacks_.validate_prompt(selection);
-  if (selection.prompt)
+  if (callbacks_.validate_prompt) {
+    reply = callbacks_.validate_prompt(selection);
+  } else if (selection.prompt) {
     return object_detail::Error(503, "realtime_prompt_owner_unavailable",
                                 "Prompt execution owner unavailable");
-  return callbacks_.validate(selection.settings);
+  } else {
+    reply = callbacks_.validate(selection.settings);
+  }
+  if (!Accepted(reply)) return reply;
+  RealtimeDuplexInput input;
+  reply = PlanRealtimeDuplexInput(selection.settings, &input);
+  if (!Accepted(reply)) return reply;
+  if (!input_)
+    return input.enabled
+               ? object_detail::Error(503, "realtime_input_unavailable",
+                                      "Native input is not connected")
+               : ObjectReply{};
+  // Configuration is the final validating transaction. Response-only settings
+  // never call this method. A failed optional processor does not prevent text
+  // settings updates that leave that processor's effective settings alone.
+  if (input_->Failed()) {
+    RealtimeDuplexInput current;
+    const auto planned =
+        PlanRealtimeDuplexInput(settings_.Current().settings, &current);
+    if (Accepted(planned) && input.enabled == current.enabled &&
+        input.transcript_events == current.transcript_events &&
+        input.create_response == current.create_response &&
+        input.interrupt_response == current.interrupt_response &&
+        input.idle_timeout_ms == current.idle_timeout_ms &&
+        OutputJson(
+            RealtimeTranscriptionSettingsJson(input.processing, false)) ==
+            OutputJson(
+                RealtimeTranscriptionSettingsJson(current.processing, false)))
+      return {};
+  }
+  return input_->Configure(std::move(input));
 }
 ObjectReply RealtimeConversationSession::ValidateSpeech(
     const RealtimeSpeechOptions& speech) const {
@@ -292,16 +371,29 @@ bool RealtimeConversationSession::CreateItem(const Json& event) {
   RealtimeItemTicket ticket;
   const auto* previous = event.Find("previous_item_id");
   const auto predecessor = previous ? previous->str : history_.LastId();
-  const auto status = history_.Create(
-      *event.Find("item"), detail::NewRequestId("item_"),
-      previous ? std::optional<std::string_view>(previous->str) : std::nullopt,
-      &ticket);
-  if (!status)
-    return ErrorEvent(
-        Invalid("realtime_item_invalid", status.message(), "item"),
-        event.GetString("event_id"));
+  const auto before =
+      previous ? std::optional<std::string_view>(previous->str) : std::nullopt;
+  const auto& source = *event.Find("item");
   Json item;
-  if (!history_.Get(ticket, &item)) return false;
+  if (HasInputAudio(source)) {
+    if (!input_)
+      return ErrorEvent(object_detail::Error(503, "realtime_input_unavailable",
+                                             "Native input is not connected"),
+                        event.GetString("event_id"));
+    auto reply = input_->CreateDirect(source, detail::NewRequestId("item_"),
+                                      before, true, &ticket);
+    if (Accepted(reply)) reply = input_->PublicItem(ticket, &item);
+    if (!Accepted(reply))
+      return ErrorEvent(std::move(reply), event.GetString("event_id"));
+  } else {
+    const auto status =
+        history_.Create(source, detail::NewRequestId("item_"), before, &ticket);
+    if (!status)
+      return ErrorEvent(
+          Invalid("realtime_item_invalid", status.message(), "item"),
+          event.GetString("event_id"));
+    if (!history_.Get(ticket, &item)) return false;
+  }
   auto fields = Object({{"item", std::move(item)}});
   if (!predecessor.empty() && predecessor != "root")
     Set(&fields, "previous_item_id", String(predecessor));
@@ -313,8 +405,16 @@ bool RealtimeConversationSession::ItemCommand(const Json& event, bool erase) {
   RealtimeItemTicket ticket;
   auto status = history_.Find(id, &ticket);
   Json item;
-  if (status)
-    status = erase ? history_.Erase(ticket) : history_.Get(ticket, &item);
+  if (status) {
+    if (input_ && input_->Owns(ticket)) {
+      const auto reply =
+          erase ? input_->Erase(ticket) : input_->Retrieve(ticket, &item);
+      if (!Accepted(reply))
+        return ErrorEvent(reply, event.GetString("event_id"));
+    } else {
+      status = erase ? history_.Erase(ticket) : history_.Get(ticket, &item);
+    }
+  }
   if (!status)
     return ErrorEvent(
         Invalid("realtime_item_not_found", status.message(), "item_id"),
@@ -439,7 +539,8 @@ ObjectReply RealtimeConversationSession::StoreAudio(
                 : object_detail::Error(503, "realtime_audio_history_failed",
                                        status.message());
 }
-bool RealtimeConversationSession::CreateResponse(const Json& event) {
+bool RealtimeConversationSession::CreateResponse(
+    const Json& event, RealtimeInputCommit* automatic) {
   const auto event_id = event.GetString("event_id");
   const auto* parameters = event.Find("response");
   Json response = parameters ? *parameters : Object();
@@ -457,15 +558,26 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
         event_id);
   const bool in_conversation = conversation != "none";
   if (work_.size() == kResponses ||
-      (in_conversation && std::ranges::any_of(work_, [](const auto& work) {
-         return work->job.in_conversation;
-       })))
+      (!automatic && in_conversation &&
+       std::ranges::any_of(
+           work_, [](const auto& work) { return work->job.in_conversation; })))
     return ErrorEvent(
         object_detail::Error(429, "realtime_response_capacity_exhausted",
                              "Active response capacity exhausted"),
         event_id);
   RealtimePromptSelection selection;
-  auto reply = settings_.Response(response, PromptResolver(), {}, &selection);
+  ObjectReply reply;
+  if (automatic) {
+    if (!Accepted(automatic->context_status))
+      return ErrorEvent(automatic->context_status);
+    if (!automatic->response)
+      return ErrorEvent(
+          object_detail::Error(500, "realtime_response_capture_missing",
+                               "Automatic response settings owner missing"));
+    selection = std::move(*automatic->response);
+  } else {
+    reply = settings_.Response(response, PromptResolver(), {}, &selection);
+  }
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
   if (response.Has("prompt") && selection.prompt)
     Set(&response, "prompt", selection.prompt->reference);
@@ -479,6 +591,7 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
                {},
                in_conversation,
                std::move(selection.prompt)};
+  work->job.native_input = bool(input_);
   ChatPlanError speech_error;
   auto status = PlanRealtimeSpeech(work->job.settings, response, &work->speech,
                                    &speech_error);
@@ -488,12 +601,49 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
         event_id);
   reply = ValidateSpeech(work->speech);
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
-  status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
+  if (!automatic && response.GetArray("input")) {
+    auto& items = Field(response, "input").array;
+    work->temporary_inputs.reserve(items.size());
+    for (auto& item : items) {
+      if (!HasInputAudio(item)) continue;
+      if (!input_)
+        return ErrorEvent(
+            object_detail::Error(503, "realtime_input_unavailable",
+                                 "Native input is not connected"),
+            event_id);
+      RealtimeItemTicket ticket;
+      reply = input_->CreateDirect(item, detail::NewRequestId("item_"), {},
+                                   false, &ticket);
+      if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+      // Register cleanup before allocating a replacement JSON reference.
+      work->temporary_inputs.push_back(std::move(ticket));
+      item = Object({{"type", String("item_reference")},
+                     {"id", String(work->temporary_inputs.back().id)}});
+    }
+    work->job.response = response;
+  }
+  if (automatic) {
+    work->job.snapshot = std::move(automatic->context);
+  } else {
+    status = history_.Capture(response.Find("input"), &work->job.snapshot);
+  }
   if (!status)
     return ErrorEvent(
         Invalid("realtime_input_invalid", status.message(), "response.input"),
         event_id);
-  reply = callbacks_.prepare(work->job);
+  const bool pending = !work->job.snapshot.pending_inputs.empty() ||
+                       !work->job.snapshot.pending_outputs.empty();
+  if (pending) {
+    // Validate response options now without presenting pending audio as text.
+    // The resolved immutable input is validated before starting actual work.
+    auto preview = work->job;
+    preview.snapshot = {};
+    preview.snapshot.items = Array();
+    reply = callbacks_.prepare(preview);
+  } else {
+    reply = callbacks_.prepare(work->job);
+    work->prepared = Accepted(reply);
+  }
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
   work->control = callbacks_.acquire(work->job.response_id);
   if (work->control && work->control->id() != work->job.response_id) {
@@ -534,11 +684,18 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
   // paths.
   work_.push_back(std::move(work));
   if (!Accepted(active->output->Begin())) return false;
+  if (input_ && active->job.in_conversation) input_->CancelIdle();
+  AdvanceWork(*active);
+  return true;
+}
+void RealtimeConversationSession::StartWork(Work& work) {
+  auto* active = &work;
   try {
     active->worker = std::thread([this, active] {
       try {
         active->result = callbacks_.execute(
-            active->job, active->control, [active](const ResponseDelta& delta) {
+            active->job, active->control,
+            [active](const ResponseDelta& delta) {
               return active->Push(delta);
             },
             [active](const RealtimeSpeechEvent& audio) {
@@ -555,17 +712,75 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
         503, "realtime_worker_unavailable", "Response worker unavailable");
     active->done.store(true);
   }
+}
+void RealtimeConversationSession::AdvanceWork(Work& work) {
+  if (work.worker.joinable() || work.done.load()) return;
+  if (work.control->Cancelled()) {
+    work.done = true;  // No executor or model admission to cancel/replay.
+    return;
+  }
+  bool ready = false;
+  const auto status = history_.Resolve(&work.job.snapshot, &ready);
+  if (!status) {
+    work.local_error =
+        Invalid("realtime_input_invalid", status.message(), "response.input");
+    work.done = true;
+    return;
+  }
+  if (!ready || (input_ && input_->Executing())) return;
+  for (const auto& other : work_) {
+    if (other.get() == &work) break;
+    if (work.job.in_conversation && other->job.in_conversation) return;
+  }
+  if (input_ && std::ranges::any_of(work_, [&](const auto& other) {
+        return other.get() != &work && other->worker.joinable();
+      }))
+    return;
+  if (!work.prepared) {
+    work.local_error = callbacks_.prepare(work.job);
+    if (!Accepted(work.local_error)) {
+      work.done = true;
+      return;
+    }
+    work.prepared = true;
+  }
+  StartWork(work);
+}
+bool RealtimeConversationSession::InputReady() {
+  if (std::ranges::any_of(
+          work_, [](const auto& work) { return work->worker.joinable(); }))
+    return false;
+  // The input processor calls this after settling its previous job and before
+  // starting the next one. Give an already-ready response its turn; pending
+  // responses that still need ASR must never block their own input work.
+  for (const auto& work : work_) {
+    if (work->done.load() || work->control->Cancelled()) continue;
+    bool ready = false;
+    if (history_.Resolve(&work->job.snapshot, &ready) && ready) return false;
+  }
+  return true;
+}
+bool RealtimeConversationSession::InputSpeech(bool started, bool interrupt) {
+  if (!started || !interrupt) return true;
+  for (auto& work : work_) {
+    if (!work->job.in_conversation) continue;
+    work->cancelled_after_generation |= !work->control->Cancel();
+    work->changed.notify_all();
+  }
   return true;
 }
 bool RealtimeConversationSession::CancelResponse(const Json& event) {
   const auto id = event.GetString("response_id");
+  bool matched = false;
   for (auto& work : work_) {
     if (id.empty() ? !work->job.in_conversation : id != work->job.response_id)
       continue;
     work->cancelled_after_generation |= !work->control->Cancel();
     work->changed.notify_all();
-    return true;
+    matched = true;
+    if (!id.empty()) break;
   }
+  if (matched) return true;
   return ErrorEvent(Invalid("realtime_response_not_active",
                             "Response is not active", "response_id"),
                     event.GetString("event_id"));
@@ -600,6 +815,10 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
   if (type == "conversation.item.truncate") return TruncateItem(event);
   if (type == "response.create") return CreateResponse(event);
   if (type == "response.cancel") return CancelResponse(event);
+  if (input_ && (type == "input_audio_buffer.append" ||
+                 type == "input_audio_buffer.commit" ||
+                 type == "input_audio_buffer.clear"))
+    return input_->Message(message);
   return ErrorEvent(
       object_detail::Error(503, "realtime_processor_unavailable",
                            "The required native processor is not connected"),
@@ -614,6 +833,7 @@ bool RealtimeConversationSession::Tick() {
   if (!events_.empty()) return true;
   for (auto it = work_.begin(); it != work_.end();) {
     auto& work = **it;
+    AdvanceWork(work);
     for (size_t i = 0; i < 16; ++i) {
       Work::Queued queued;
       {
@@ -699,10 +919,32 @@ bool RealtimeConversationSession::Tick() {
         terminal = object_detail::Error(500, "realtime_context_commit_failed",
                                         truncated.message());
     }
+    if (Accepted(terminal) && input_ && work.job.in_conversation &&
+        (end.state == RealtimeResponseEnd::State::kCompleted ||
+         end.state == RealtimeResponseEnd::State::kIncomplete) &&
+        std::ranges::none_of(work_, [&](const auto& other) {
+          return other.get() != &work && other->job.in_conversation;
+        })) {
+      uint64_t playback = 0;
+      for (const auto& [id, ticket] : work.tickets) {
+        (void)id;
+        RealtimeSpeechView view;
+        if (!speech_.Get(ticket, &view)) continue;
+        const size_t width =
+            view.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+        playback += view.bytes.size() / width *
+                    (kRealtimeTicksPerSecond / view.format.rate);
+      }
+      input_->ResponseFinished(playback);
+    }
     Release(work);
     it = work_.erase(it);
     if (!Accepted(terminal)) return false;
   }
+  // Finishes ASR and may enqueue automatic responses. It never mutates work_
+  // during the response iteration above. Ready arbitration prevents a second
+  // ASR from stealing admission from a now-runnable response.
+  if (input_ && !input_->Tick()) return false;
   return Flush();
 }
 }  // namespace q4t::server

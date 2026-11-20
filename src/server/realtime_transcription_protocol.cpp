@@ -202,6 +202,11 @@ ObjectReply Turn(const Json& value, RealtimeTranscriptionSettings* settings,
 }
 }  // namespace
 
+ObjectReply DecodeRealtimeAudioBase64(std::string_view text,
+                                      std::string* output) {
+  return output ? DecodeAudio(text, output)
+                : Invalid("audio", "Audio output owner is missing");
+}
 ObjectReply ParseRealtimeTranscriptionCommand(
     std::string_view message, size_t message_bytes,
     RealtimeTranscriptionCommand* output) {

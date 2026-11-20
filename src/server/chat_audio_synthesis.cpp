@@ -24,7 +24,7 @@ ObjectReply ChatServer::SynthesizeChatAudio(
       !http->Client().Allowed() || !options.enabled ||
       !completion->GetArray("choices") ||
       completion->GetArray("choices")->array.size() != choice_tokens.size() ||
-      (native && (!native->append || !native->complete ||
+      (native && (!native->append || !native->complete || !native->usage ||
                   options.speech.format != SpeechFormat::kPcm ||
                   !options.text || choice_tokens.size() != 1)))
     return Error(503, "chat_audio_state_unavailable",
@@ -88,6 +88,12 @@ ObjectReply ChatServer::SynthesizeChatAudio(
     if (!previous)
       return Error(500, "tts_usage_invalid", "Prior Chat usage unavailable");
     if (native) {
+      // RunNativeTts unwinds its actual accounting before this observer,
+      // including cancellation, partial output and exceptions. Delivery EOF
+      // is independent and must never decide whether compute work happened.
+      ScopeExit observed([&] {
+        ObserveChatSpeechUsage(previous, http->Usage().Total(), native->usage);
+      });
       SpeechEncodingReceipt receipt;
       auto reply =
           RunNativeTts(fd, request, prompt, frames, control, diagnostic, rate,

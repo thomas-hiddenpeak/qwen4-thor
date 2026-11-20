@@ -6,6 +6,7 @@
 
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/realtime_speech_history.h"
+#include "q4t/server/chat_audio_output.h"
 #include "q4t/test.h"
 #include "../src/server/object_protocol.h"
 
@@ -228,6 +229,38 @@ Q4T_TEST(realtime_speech_output_missing_eof_fails_without_fake_completion) {
   RealtimeSpeechView view;
   Q4T_CHECK(f.speech.Get(f.tickets.at(f.AudioId()), &view));
   Q4T_CHECK(view.bytes.size() == 1000 && view.interrupted && !view.complete);
+  return true;
+}
+
+Q4T_TEST(realtime_interrupted_speech_usage_keeps_categories_without_eof) {
+  for (const auto state : {RealtimeResponseEnd::State::kCancelled,
+                           RealtimeResponseEnd::State::kFailed}) {
+    Fixture f;
+    Q4T_CHECK(f.output.Begin().ok() && f.output.Append(Text("partial")).ok());
+    Q4T_CHECK(f.output.AppendAudio(std::string(480, '\0')).ok());
+    ActualUsageCounter speech;
+    speech.Enable();
+    const ActualUsage before{100, 21}, after{112, 53};
+    ObserveChatSpeechUsage(before, after, &speech);
+    auto end = End();
+    end.state = state;
+    end.reason = "client_cancelled";
+    end.error_code = "cpu_partial_speech_failure";
+    end.error_message = "CPU fixture";
+    end.usage->total = after;
+    end.usage->output_audio = speech.Total()->output;
+    end.usage->output_text = after.output - speech.Total()->output;
+    Q4T_CHECK(f.output.Finish(end).ok());
+    const auto* usage = f.events.back().Find("response")->Find("usage");
+    Q4T_CHECK(usage && usage->GetInt("total_tokens") == 165 &&
+              usage->GetInt("output_tokens") == 53);
+    const auto* categories = usage->Find("output_token_details");
+    Q4T_CHECK(categories && categories->GetInt("audio_tokens") == 32 &&
+              categories->GetInt("text_tokens") == 21);
+    RealtimeSpeechView view;
+    Q4T_CHECK(f.speech.Get(f.tickets.at(f.AudioId()), &view));
+    Q4T_CHECK(view.interrupted && !view.complete);
+  }
   return true;
 }
 

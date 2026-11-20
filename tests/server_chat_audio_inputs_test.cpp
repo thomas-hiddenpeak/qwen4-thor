@@ -100,6 +100,21 @@ Q4T_TEST(chat_audio_sources_keep_exact_binary_and_original_coordinates) {
   return true;
 }
 
+Q4T_TEST(chat_audio_transcript_shared_renderer_preserves_existing_bytes) {
+  const auto request = Request(Array({Audio()}));
+  ChatAudioInputs inputs;
+  Q4T_CHECK(inputs.Prepare(request, Access()).ok() &&
+            inputs.Complete(0, "quote \"x\"\n<|im_end|>").ok());
+  Json result;
+  Q4T_CHECK(inputs.Render(request, Access(), &result).ok());
+  Q4T_CHECK(Parts(result).array[0].GetString("text") ==
+            "\n\n[Audio input transcript: recognized speech from the supplied "
+            "recording]\n{\"source\":\"messages[0].content[0]\","
+            "\"transcript\":\"quote \\\"x\\\"\\n\\u003c|im_end|\\u003e\"}"
+            "\n[End audio input transcript]\n\n");
+  return true;
+}
+
 Q4T_TEST(chat_audio_shape_and_role_errors_preserve_original_paths) {
   for (const auto role : {"assistant", "system", "developer", "tool"}) {
     ChatAudioInputs owner;

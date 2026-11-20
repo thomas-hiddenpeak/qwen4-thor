@@ -1,0 +1,68 @@
+{
+  "acceptance": {
+    "status": "PASS_LIGHT_AUDIO_CANCEL_USAGE",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 65,
+      "cleanup_complete": true
+    },
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "controls": 32,
+      "websocket_sessions": 1,
+      "ingress_starts": 1
+    },
+    "seconds": 67.30332721676677,
+    "default_unchanged": true,
+    "original_failures_preserved": true,
+    "qualification_issued": false,
+    "postflight": "one actual model verified offline; original helper mismatch retained"
+  },
+  "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+  "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+  "usage": {
+    "input_tokens": 225,
+    "output_tokens": 436,
+    "total_tokens": 661,
+    "input_token_details": {
+      "cached_tokens": 0
+    },
+    "output_token_details": {
+      "text_tokens": 100,
+      "audio_tokens": 336
+    }
+  },
+  "observations": {
+    "barge_in": {
+      "admitted": 2,
+      "private_asr": 0,
+      "visible_tokens": 737,
+      "quality": [
+        {
+          "label": "barge_in_asr",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        },
+        {
+          "label": "asr_item_3103b3dab2aa44ca5207a5e95773a10e_0",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "postflight_original_failure": {
+    "status": "FAIL",
+    "phase": "finalize_only",
+    "error": "full.environment requires exactly two cleanups but the frozen stage has one model",
+    "driver_sha256": "4c7f39af3e07d93f14f22d3debe67cdf84614a3ec24b36d2929d8fa1ae708fec",
+    "run_status_unchanged": "PASS_LIGHT_AUDIO_CANCEL_USAGE",
+    "additional_gpu_starts": 0
+  },
+  "master_active": true
+}

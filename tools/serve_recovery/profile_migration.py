@@ -366,6 +366,12 @@ def realtime_prompt_capabilities(value):
     if not profile_evidence.conversation_enabled(value):
         return
     chat = value['realtime']['conversation']
+    audio = chat.get('input_audio')
+    if audio is not None and audio['configured']:
+        # The validated total comprises the unchanged base plus this feature's
+        # explicit reservation. Keep that increment in input_audio so neither
+        # automatic fallback nor a capability extension can hide its cost.
+        chat['session_host_reservation_bytes'] -= audio['additional_host_reservation_bytes']
     chat['profile'] = 'q4t-native-realtime-chat-v1'
     # A reviewed output implementation replaces only its old pending label.
     # Keep speech_output and audio modality: automatic fallback still needs

@@ -1,0 +1,52 @@
+{
+  "status": "PASS_CREDENTIAL_ONLY_REISSUE_DELIVERED",
+  "revision": 396,
+  "state": "STOPPED",
+  "current": {
+    "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+    "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+    "generation_sha256": "d0879bb84c1207b9d39712cb905a653dda014dbd58c8fe170f8c2be3006c045a",
+    "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+    "service_acceptance_sha256": "1f7c5ac2f829f015c8b98e01a204ff59dd765b85aa87b67f14034ee2370d08a3",
+    "service_release_sha256": "3a9600e8f3d8480be94760bc8d39800acbc6d20b61ac7149bf9cbe30a7bd8ca7"
+  },
+  "roots": {
+    "candidate": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+      "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9"
+    },
+    "retained": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/retained/bundle",
+      "manifest_sha256": "d98f1fa0fa7dbfc9566846ad8760db77a1a78e0d3b174fcd88808b8a37f8521f"
+    }
+  },
+  "original_revision": 386,
+  "tests": 5,
+  "cpu_seconds": 0.14326225500553846,
+  "actual_managed_generations_checked": 6,
+  "original_seed_never_used_by_observed_managed_models": true,
+  "historical_git_disclosure_not_erased": true,
+  "public_private_configurations_removed": 2,
+  "candidate_and_retained_bootstrap_replaced": true,
+  "external_client_keys_unchanged": true,
+  "engine_binary_unchanged": true,
+  "protocol_source_unchanged": true,
+  "model_assets_and_settings_unchanged": true,
+  "actual_business_reused_by_explicit_source_identity": true,
+  "new_payload_gpu_runs": 0,
+  "new_model_starts": 0,
+  "successful_management_commands": 19,
+  "management_seconds": 402.7873247154057,
+  "profile_history_unchanged": true,
+  "client_usage_unchanged": true,
+  "outer_budget_unchanged": true,
+  "retired_intents": 8,
+  "deleted_files": 0,
+  "model_quality_status": "FAIL",
+  "original_failures_preserved": true,
+  "public_artifact_credential_matches": 0,
+  "all_master_tasks_active": true,
+  "main_integration_pending": true,
+  "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+}

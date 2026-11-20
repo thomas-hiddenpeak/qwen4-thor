@@ -260,6 +260,9 @@ Q4T_TEST(realtime_native_speech_requires_prepared_pcm_and_borrowed_owner) {
   NativeChatSpeech speech{
       [](auto) { return ObjectReply{}; },
       [](auto, const auto&, const auto&) { return ObjectReply{}; }};
+  ActualUsageCounter usage;
+  usage.Enable();
+  speech.usage = &usage;
   auto sink = [](const ResponseDelta&) { return ObjectReply{}; };
   Q4T_CHECK(
       !NativeChatGeneration(request, sink, 1024, {nullptr, nullptr, &speech})
@@ -270,6 +273,11 @@ Q4T_TEST(realtime_native_speech_requires_prepared_pcm_and_borrowed_owner) {
   Q4T_CHECK(
       !NativeChatGeneration(request, sink, 1024, {&plan, nullptr}).Valid());
   plan.audio_output.speech.format = SpeechFormat::kMp3;
+  Q4T_CHECK(
+      !NativeChatGeneration(request, sink, 1024, {&plan, nullptr, &speech})
+           .Valid());
+  plan.audio_output.speech.format = SpeechFormat::kPcm;
+  speech.usage = nullptr;
   Q4T_CHECK(
       !NativeChatGeneration(request, sink, 1024, {&plan, nullptr, &speech})
            .Valid());

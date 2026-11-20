@@ -1,0 +1,166 @@
+{
+  "records": [
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in-after-0.http.json",
+      "bytes": 247,
+      "sha256": "cb712e9db3f49797fd510eda2de2549ba9fc46e2ceafff20277def63168a4baa"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in.events.jsonl",
+      "bytes": 784605,
+      "sha256": "8a0b885011e5cef4315992044f2519dfeac77ee6f746dbeea2f3227e69393e7e"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-entry-cleanup.json",
+      "bytes": 64,
+      "sha256": "52610d15f75625f8480dc6b65039ac501fd00dca0061a9dab5f9d92f7cbfca55"
+    },
+    {
+      "path": "cancel-usage-business-01/light-config.http.json",
+      "bytes": 238,
+      "sha256": "8c9e8dd82374ce4dae215a1dbfb7782ffea28cf6630174ef6eabcc0c17edb465"
+    },
+    {
+      "path": "cancel-usage-business-01/acceptance.json",
+      "bytes": 545,
+      "sha256": "6a5214e1534ad7782972d0d0d3707e81561f2745ee80565a5b435550506eaf67"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in.sdk.json",
+      "bytes": 382477,
+      "sha256": "5518040b9b733dbb266b4da42830060a7262632c086fb303ec1b424c70ec9961"
+    },
+    {
+      "path": "cancel-usage-business-01/postflight-original-failure.json",
+      "bytes": 323,
+      "sha256": "a9c8270cef9c8426b025161b6c09b731d61759d3195144545b06acd02b3200e6"
+    },
+    {
+      "path": "cancel-usage-business-01/result.json",
+      "bytes": 292,
+      "sha256": "1ca4e812e4118d559f8375e1a9ccc55615c024a2eec22bd85fbfa1e39f0b3ccb"
+    },
+    {
+      "path": "cancel-usage-business-01/light-config.json",
+      "bytes": 20883,
+      "sha256": "9e66af4a1261efd372c74dcb67b07e771ba99e8b7337d411301a22e86d4a1ee1"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in-before.wire",
+      "bytes": 33632,
+      "sha256": "fc850a4da6de113a1d9f26ccdf0a6e5cabbd63c24c738464775f5bb5b2fb58d6"
+    },
+    {
+      "path": "cancel-usage-business-01/counts.json",
+      "bytes": 100,
+      "sha256": "ef1f5d1915085be1a744693eaf9bff0a68da74682cebe44d0620ddaf9912fc31"
+    },
+    {
+      "path": "cancel-usage-business-01/plan.json",
+      "bytes": 1156245,
+      "sha256": "3e03718961f222f08bd78c7c79515b501a274de5b01394dac74897d97ae8deb8"
+    },
+    {
+      "path": "cancel-usage-business-01/light-command.json",
+      "bytes": 2889,
+      "sha256": "dc1b4b2f9764da3d7debd8bef949e6b9e9a16901923efadde7014da1aa6a7237"
+    },
+    {
+      "path": "cancel-usage-business-01/light-config.wire",
+      "bytes": 16016,
+      "sha256": "5c58aaf2006eba410bfe262b21edceabcf005619ce2555167fd822d0d04d6cf1"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-sessions-observed.json",
+      "bytes": 386814,
+      "sha256": "ec69fa14a7f575e1b3afd6c9da3f4d1fd183c1198acd7db302cb5ba83fdb7372"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in-before.http.json",
+      "bytes": 247,
+      "sha256": "e074b679ea81cb6e813d4c4267639ec027c3a44d3280cc778475d76378485ef3"
+    },
+    {
+      "path": "cancel-usage-business-01/light-identity.json",
+      "bytes": 3328,
+      "sha256": "6b7f047eca184dd2a2b6f25bce7378f546201a333fdb29781f913caba8bf64b8"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in-drain.metrics.json",
+      "bytes": 23244,
+      "sha256": "81677e3a82f42a65083bed15dae7e4d34c28f8226e7008ab7727f467f4132cf2"
+    },
+    {
+      "path": "cancel-usage-business-01/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "72481e165764088d66cf12d88833b5c712d848cee2df5b23369bddc5f592d13a"
+    },
+    {
+      "path": "cancel-usage-business-01/cleanup.json",
+      "bytes": 4418,
+      "sha256": "7ca8d28047df1211cc7385ed5518bbafa45095ea7f1c46e2e865e0beb5f770f5"
+    },
+    {
+      "path": "cancel-usage-business-01/light-capabilities.http.json",
+      "bytes": 239,
+      "sha256": "fe188bb49ee9a1714af48217b068d9f6ae2f5276355a9cfe112b560d94f27704"
+    },
+    {
+      "path": "cancel-usage-business-01/light-duplex-barge_in-after-0.wire",
+      "bytes": 33665,
+      "sha256": "226dad09eeac8e664d143502403610b9b3bea4d996e9dfc3f9892bc05e5ffc80"
+    },
+    {
+      "path": "cancel-usage-business-01/light-capabilities.wire",
+      "bytes": 46235,
+      "sha256": "c9dc7a8722ec7cfb7a83c3b3e27e24bdef8fc8a73df32b3a6bf5f1549a93f73d"
+    },
+    {
+      "path": "cancel-usage-business-01/light-model.log",
+      "bytes": 9420,
+      "sha256": "7968fed538ba56386ebd16dbc997312ed1e1ccc650b2379bf41cb4f1ebce6fa2"
+    },
+    {
+      "path": "cancel-usage-business-01/observations.json",
+      "bytes": 723,
+      "sha256": "e0174e32a4921f64a91070086d1992137df0bc9dadd5f54e0e9cdad3cdc64098"
+    },
+    {
+      "path": "cancel-usage-business-01/lease/nvml-queries.jsonl",
+      "bytes": 155079,
+      "sha256": "39bbabc9d1e693084918800022af1288ee99e312133c5bbf831487c3747a04f1"
+    },
+    {
+      "path": "cancel-usage-business-01/lease/events.jsonl",
+      "bytes": 12624,
+      "sha256": "e787f1c5bee9172145789a3e30ee46143beaa4e58127c55a6803f8a1824dce18"
+    },
+    {
+      "path": "cancel-usage-business-01/lease/exit.json",
+      "bytes": 746,
+      "sha256": "d7626e8a2e9ec71b88f2d91c9c5a1249583dc9cc4dbca04df4644b7b254e441f"
+    },
+    {
+      "path": "cancel_usage_business_01.py",
+      "bytes": 8130,
+      "sha256": "4c7f39af3e07d93f14f22d3debe67cdf84614a3ec24b36d2929d8fa1ae708fec"
+    },
+    {
+      "path": "finalize_cancel_usage_02.py",
+      "bytes": 3683,
+      "sha256": "ef2cfc2ec37a9ada27ff1927f3e5a0ccd33d3d7b766b6798470409d9e9b40b2d"
+    },
+    {
+      "path": "archive_cancel_usage_business_01.py",
+      "bytes": 4935,
+      "sha256": "8884f572c57c619d7f3c295bd8094225f321363e9a18e2c68e16c8c7b30b2655"
+    }
+  ],
+  "omitted": [],
+  "archive_sha256": "e58a35befb53fb5d0569d89b9904d91bf34d139b522d837cd8c3a6c2168f79f9"
+}

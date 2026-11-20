@@ -103,7 +103,25 @@ std::string ChatCapabilitiesJson(
          R"(,"history_bytes":)" +
          std::to_string(RealtimeConversation::kMaximumBytes) +
          R"(,"session_host_reservation_bytes":)" +
-         std::to_string(kRealtimeConversationHostBytes) +
+         std::to_string(
+             kRealtimeConversationHostBytes +
+             (native_asr ? kRealtimeConversationInputHostBytes : 0)) +
+         R"(,"input_audio":{"implemented":true,"configured":)" +
+         (native_asr ? "true" : "false") +
+         R"(,"profile":"q4t-realtime-input-v1","backend":"native_asr",)"
+         R"("same_conversation":true,"default_turn":"manual",)"
+         R"("public_transcription":"opt_in","wait_for_owned_asr":true,)"
+         R"("vad_create_response":true,"vad_interrupt_response":true,)"
+         R"("idle_timeout_ms_min":5000,"idle_timeout_ms_max":30000,)"
+         R"("idle_clock":"response_done_plus_audio_playback",)"
+         R"("pipeline_recovery":{"cooldown_ms":5000,)"
+         R"("attempts_per_fixed_minute":2,"model_restart":false},)"
+         R"("delete":true,"retrieve":true,"automatic_replay":false,)"
+         R"("direct_audio_items":true,"mixed_content":true,)"
+         R"("response_input_audio":true,"transcript_reference_is_model_input":false,)"
+         R"("admission":"serialized_native_workers_per_session",)"
+         R"("additional_host_reservation_bytes":)" +
+         std::to_string(kRealtimeConversationInputHostBytes) + R"(})" +
          R"(,"prompt":{"profile":"q4t-realtime-prompt-v1",)"
          R"("registry":"/v1/prompts","definition_api":"realtime",)"
          R"("scope":"authenticated_client","snapshot":"immutable_version",)"
@@ -122,7 +140,7 @@ std::string ChatCapabilitiesJson(
          R"("speed_min":0.25,"speed_max":1.5,"rpm":"once_per_response",)"
          R"("voice_lock":"first_audio","retrieve":true,"truncate":true,)"
          R"("audio_history_bytes":134217728,"silent_eviction":false},)"
-         R"("pending_execution":["audio_input","mcp","tracing"]},)"
+         R"("pending_execution":["mcp","tracing"]},)"
          R"("pending_execution":["conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +

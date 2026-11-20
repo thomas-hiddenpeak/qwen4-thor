@@ -1,0 +1,285 @@
+{
+  "status": "LIGHT_ORIGINAL_FAILED_AUDIO_BOUNDARY_REPAIR_CPU_PASS",
+  "original_result": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 295, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_duplex_light_resume.py\", line 108, in business\n    self.profile_business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_duplex_followup_targeted.py\", line 146, in profile_business\n    business['realtime_duplex']=profile_duplex.run(self)\n                                ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_duplex.py\", line 51, in run\n    sessions=run_sessions(stage, ('manual','vad'))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_duplex.py\", line 97, in run_sessions\n    require(process.returncode==0 and out.stat().st_size<=4<<20,'actual duplex SDK failure')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: actual duplex SDK failure\n",
+    "counts": {
+      "starts": 1,
+      "chats": 16,
+      "controls": 37,
+      "websocket_sessions": 4,
+      "ingress_starts": 3
+    },
+    "seconds": 99.9161187261343,
+    "binary_sha256": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c"
+  },
+  "original_nvml_queries": 95,
+  "original_cleanup": {
+    "owned": {
+      "980710": {
+        "state": "R",
+        "ppid": 980684,
+        "pgid": 980684,
+        "start_ticks": 334407858,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18538",
+          "--no-mtp",
+          "--max-seq",
+          "1",
+          "--max-len",
+          "8192",
+          "--max-prefill",
+          "2048",
+          "--max-tokens",
+          "256",
+          "--mtp-k",
+          "3",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "3",
+          "--min-available-memory-mib",
+          "2048",
+          "--memory-recovery-margin-mib",
+          "512",
+          "--startup-memory-headroom-mib",
+          "2048",
+          "--request-deadline-ms",
+          "1200000",
+          "--allow-media",
+          "--client-policy-file",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/profiles-03/client-policy.json",
+          "--operations-port",
+          "18539",
+          "--embedding-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets",
+          "--asr-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+          "--asr-max-audio-seconds",
+          "30",
+          "--asr-max-context-tokens",
+          "4096",
+          "--asr-max-output-tokens",
+          "1024",
+          "--asr-workspace-mib",
+          "1024",
+          "--aligner-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/assets-01",
+          "--aligner-max-audio-seconds",
+          "30",
+          "--aligner-max-context-tokens",
+          "4096",
+          "--aligner-max-words",
+          "512",
+          "--aligner-workspace-mib",
+          "1024",
+          "--vad-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-aligner-20261117/vad-01",
+          "--vad-max-chunks",
+          "64",
+          "--speaker-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-diarization-20261118/native-assets-01",
+          "--speaker-window-ms",
+          "3000",
+          "--speaker-step-ms",
+          "750",
+          "--speaker-max-windows",
+          "8",
+          "--speaker-max-speakers",
+          "16",
+          "--speaker-workspace-mib",
+          "128",
+          "--separator-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-overlap-20261118/native-assets-01",
+          "--separator-max-audio-seconds",
+          "30",
+          "--separator-workspace-mib",
+          "2048",
+          "--tts-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+          "--tts-base-model-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-voices-20261118/base-service-assets-01",
+          "--tts-max-text-tokens",
+          "512",
+          "--tts-max-prefill-tokens",
+          "512",
+          "--tts-max-frames",
+          "200",
+          "--tts-workspace-mib",
+          "2048",
+          "--tts-max-output-mib",
+          "16",
+          "--object-store-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/profiles-03/application-objects",
+          "--object-max-object-mib",
+          "16",
+          "--object-max-client-mib",
+          "64",
+          "--object-max-total-mib",
+          "256",
+          "--object-max-client-objects",
+          "1000",
+          "--object-max-total-objects",
+          "10000",
+          "--object-io-timeout-ms",
+          "2000"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+      },
+      "981523": {
+        "state": "S",
+        "ppid": 980684,
+        "pgid": 980684,
+        "start_ticks": 334410766,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/profiles-03/light-realtime/ingress.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+      },
+      "981558": {
+        "state": "S",
+        "ppid": 980684,
+        "pgid": 980684,
+        "start_ticks": 334411334,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/profiles-03/light-semantic/ingress.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+      },
+      "981627": {
+        "state": "S",
+        "ppid": 980684,
+        "pgid": 980684,
+        "start_ticks": 334412989,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+          "--config",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/profiles-03/light-duplex/ingress.json"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+      }
+    },
+    "remaining": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "lease_continuously_held": true
+  },
+  "original_started_responses": 5,
+  "original_public_asr_completions": 4,
+  "original_private_asr": 1,
+  "original_total_completed_native_jobs": 15,
+  "original_reserved_budget_units": 16,
+  "roundtrip_repeats_actual_generated_speech": true,
+  "prompt_review": {
+    "status": "PASS_PRODUCTION_PROMPT_RECONSTRUCTION",
+    "records": {
+      "mixed": {
+        "response_id": "resp_0a00fb40ae18db4fb435f14424e885f6",
+        "prompt_sha256": "55e83fc9dbad94dfc3e60665b6e57eb217baeeb5640abd313ec303ee2851e3e1",
+        "input_tokens": 168,
+        "actual": "此句存在性暗示或依恋关系不恰当，因无法区分其两义性，无法进行格式化输出。",
+        "private_transcript_needed": false,
+        "not_live_capture": true,
+        "inline_selector_resolved": false
+      },
+      "inline_audio": {
+        "response_id": "resp_56340e486ed8db404330c37afee8532e",
+        "prompt_sha256": "f99e75a040f111aa2eb61e33ce0dd5c6f8b1285470105b7e88724ab9b0dd455c",
+        "input_tokens": 164,
+        "actual": "不好，没有问题",
+        "private_transcript_needed": false,
+        "not_live_capture": true,
+        "inline_selector_resolved": true
+      },
+      "roundtrip": {
+        "response_id": "resp_c6cdc1f66334eeede16f2ff0b9f3f91e",
+        "prompt_sha256": "cb55f23f3c073d94bb8ab76423f9b70a09dd9c5c81770d7750cd8a524ae51c24",
+        "input_tokens": 147,
+        "actual": "不好，没有问题。",
+        "private_transcript_needed": false,
+        "not_live_capture": true,
+        "inline_selector_resolved": true
+      }
+    },
+    "sources": {
+      ".q4t-work/serve-realtime-duplex-20261120/profiles-03/light-duplex-manual.sdk.json": "452ce40c880e64773688a574e070bbc2f9cc668d460392f413b2221904a30bfa",
+      ".q4t-work/serve-realtime-duplex-20261120/profiles-03/light-duplex-manual.events.jsonl": "8efff52e00811222a7c0d984510206b6f47a57e5c5b1e3db8a9662f5fa907e1e",
+      ".q4t-work/serve-realtime-duplex-20261120/profile-prompt-01/probe": "23f6284f7134a8e3b77f3c404d6c02bf0ac47354f3007e84a756f4b5c5e88eb7"
+    },
+    "gpu_starts": 0,
+    "tool_prompt_exact_reconstruction": false,
+    "tool_reason": "private ASR text is not publicly observable; not guessed from expected text",
+    "model_quality_failures_preserved": true
+  },
+  "cpu": {
+    "status": "PASS",
+    "commands": [
+      {
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+          "--required-list",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/audio-boundary-cpu-01/required.txt"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_sdk.mjs"
+        ],
+        "returncode": 0
+      }
+    ],
+    "seconds": 0.5235053300857544,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 35.1561653050594,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "764201bfa1ab8efb082119fd49056fe7c6bf7bf5b915e7dae4c9539cd479cca9",
+    "free_bytes_after": 3056967680
+  },
+  "model_quality_fixed": false,
+  "runtime_and_gpu_followup": "runtime built; actual business pending",
+  "default_unchanged": true,
+  "master_active": true,
+  "runtime_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 24.984901760239154,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb",
+    "free_bytes_after": 3019309056
+  },
+  "candidate_protocol": "4cbfc8b3998463b7d3487da34de2f831b989ea883511ec14beded0dd65c97f92"
+}

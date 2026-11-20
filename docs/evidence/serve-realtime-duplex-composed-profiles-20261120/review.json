@@ -1,0 +1,184 @@
+{
+  "acceptance": {
+    "status": "ACCEPT_COMPOSED_DUPLEX_PRIMARY_LIGHT",
+    "registry_sha256": "3c1e823a6c5c847da6a072c3d593a5c164f6cee1985492020f8b099faeb737ab",
+    "source_composition_sha256": "a1f659eab3a44bea6d9eeae29131f690a9844d3439c7f46c33041ec737d1d1e8",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 526,
+      "lease_result_sha256": "34681f02da3b41f5f70f6362abcc5b6e0f0e6f754400e395a2f8a2b0123ac28e",
+      "cleanup_complete": true
+    },
+    "new_gpu_starts": 0,
+    "original_failures_preserved": true,
+    "original_model_quality_status": "FAIL",
+    "model_quality_repaired": false,
+    "default_unchanged": true,
+    "managed_recovery_accepted": false,
+    "full_matrix": false,
+    "master_active": true,
+    "profile_bytes": {
+      "primary": 5618996,
+      "light": 8325651
+    }
+  },
+  "cpu": {
+    "status": "PASS",
+    "test_counts": [
+      12,
+      6
+    ],
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_recovery.test_profile_duplex_composed"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_v23_seals_speech_dependencies_and_preserves_v22",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_v24_duplex_validator_closure_is_sealed",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v24_imports_actual_duplex_validators_without_repository",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+          "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v23_can_import_speech_evidence_without_repository"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "seconds": 1.9993715691380203,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "source": {
+    "review": {
+      "candidate_binary": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+      "candidate_protocol": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+      "previous_registry_sha256": "d28ba7ac49169a0a4bd411ecd7e4f99cebe217b18cf7fd9e1c920e7c531f8b4f",
+      "original_duplex_source_review": "a2c7bab8cbbdbb3286ec91c161a475901cbde6e373b44d19ba416d62b97b007c",
+      "audio_boundary_source_review": "9592953cdbc5f15e6e8dc90bdba8c4375dad0d57cf1bb4b5e694d6ccafaf90d7",
+      "cancel_usage_source_review": "db9fdeddcfc453ad225243bad5b003ed6203ad37184ff7d3f0562abc81f99e92",
+      "cancel_usage_acceptance": "6a5214e1534ad7782972d0d0d3707e81561f2745ee80565a5b435550506eaf67",
+      "model_quality_repaired": false,
+      "old_failed_answers_preserved": true
+    },
+    "observed": {
+      "primary": {
+        "input_sha256": "ba8d80c62e914bcbe49f2049cae70ead3b0739d80c0d5471a1e89f25530e8970",
+        "duplex_digest": "84b74c16417c2974efedaa521fe0b3ac9207f57d2b275392feda4463116bb4f9",
+        "input_digests": {
+          "realtime": "ec595da0f491b798d5614c0247ed24a32b3823a4e0534de92ce7c590b0a61150",
+          "semantic_vad": "b5ce937c83b3c3fdd86816257656407424bfd0eb9bb31fea49a2660e27c407ae"
+        }
+      },
+      "light": {
+        "input_sha256": "e30781260dcc7b7353bfe4bd2339d2a2ff9193c9798f62ba1b2e82c25581d16c",
+        "duplex_digest": "a6ae3978c98d711f7e89ab56a03cf4bb9ffc55fc626b2b90d9b7699dbc9e9318",
+        "input_digests": {
+          "realtime": "7bbe23127c2f38d73daf173b0593aaca740270e3d3b43b65cbe4ad42b4ed25b5",
+          "semantic_vad": "aa1ba2307435330595a7456fa3bd5469975df7f7d1954e9fa132d1959290c76c"
+        }
+      }
+    },
+    "configuration_projection": {
+      "primary": {
+        "actual_stage": "audio-boundary-business-01",
+        "actual_binary": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb",
+        "actual_protocol": "4cbfc8b3998463b7d3487da34de2f831b989ea883511ec14beded0dd65c97f92",
+        "qualified_protocol": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+        "startup_memory_observed_on_candidate": false,
+        "configuration_projection": "protocol_source_sha256 only; unchanged backend/settings/startup planner",
+        "capabilities_sha256": "26a03053fa282e25380c0a291147bc6f49961e45b994bf9a604c10c70a545d2c",
+        "configuration_sha256": "99fb50e933125e4f77b84d211d41d47f722a5794305e77278661d183c0687abf"
+      },
+      "light": {
+        "actual_stage": "cancel-usage-business-01",
+        "actual_binary": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+        "actual_protocol": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+        "qualified_protocol": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+        "startup_memory_observed_on_candidate": true,
+        "configuration_projection": "protocol_source_sha256 only; unchanged backend/settings/startup planner",
+        "capabilities_sha256": "72481e165764088d66cf12d88833b5c712d848cee2df5b23369bddc5f592d13a",
+        "configuration_sha256": "9e66af4a1261efd372c74dcb67b07e771ba99e8b7337d411301a22e86d4a1ee1"
+      }
+    },
+    "raw_files": {
+      "profiles-01/plan.json": "ca7b0dbd0392727e5bd9483aff8aecf4ee88d33e9e7dc4c34b12cb870e8497a2",
+      "profiles-01/result.json": "113959f40dc7cfafb15857ed7dc3d5dc3ff6993ea2d6c4a6c54655508976edb0",
+      "profiles-01/cleanup.json": "de6724198417492df982a14da5e76e40cee696823c42193327b7a87783db9955",
+      "profiles-01/primary-realtime-entry-cleanup.json": "853a587c4e0a9908be0e32e293fe4c13be7dac6a6cae7283e5f055747cacdb5c",
+      "profiles-01/primary-semantic-entry-cleanup.json": "8ef3a6eced665c93cb43b0391de63fdd68ebb7d73c4be0afabaf342e903f4df5",
+      "profiles-01/primary-duplex-entry-cleanup.json": "dd12d8c88733573cc7da5196094bb23a734f9dbabc7ea50d68d8e77e176e4592",
+      "profiles-01/lease/exit.json": "3de9241de654db8d3580b2fa54b3de297f2f00fb56b0eedabfaac85100a1f196",
+      "profiles-01/lease/events.jsonl": "fbcb74d8f00f589c1c5f082a1ca34e5bc16f305cafffc3b8d20cc95861c9968d",
+      "profiles-01/lease/nvml-queries.jsonl": "1c4ffacd774fd347487c584fdbfdeb801f8627186ae161dc87ddb8b6dec4b925",
+      "profiles-03/plan.json": "a876d42cca2d271d866d2f822dbd6a6181f4ae8352fb6d14cd6935277436de97",
+      "profiles-03/result.json": "6de189c2e8d515e362ae79642430cb60255d042c9a6c950199f769d6f4f481c9",
+      "profiles-03/cleanup.json": "480d62366d2e21a42e16045d041cc5c73acd9b1fbc91736e3e236fd39bbe1a40",
+      "profiles-03/light-duplex-entry-cleanup.json": "1fbfbb95e849eade7e51c539ff4a56507ce52ec4f50f4746637943d9e3a18f1e",
+      "profiles-03/light-realtime-entry-cleanup.json": "fa60ae7cfedf4132f7f5cb78644ea30c8988e16e069510652f19a117c0b700cb",
+      "profiles-03/light-semantic-entry-cleanup.json": "98c091ae0d58ae4a8db0de31a032a4363db7d764f1e46066b899ee9f06401e95",
+      "profiles-03/lease/exit.json": "ab725f275680e21878121ecc26d32d50835f49c57a224662b138bbd6c0ffdeaf",
+      "profiles-03/lease/events.jsonl": "0be46b9a2a539628133a4b5654fe05baaa2a6d37086ddf344b3c7efe7c5cdc56",
+      "profiles-03/lease/nvml-queries.jsonl": "ef704b26d81389d8b7ca3d60400d5a5afc6495ca8827cfdc6811044df1d502ec",
+      "audio-boundary-business-01/plan.json": "55af6b6c52648cf6ad7810829aeb75b3e7a139c17cbec8740f825020bc2a867b",
+      "audio-boundary-business-01/result.json": "5ed99c09f409655efc982f27f56cbecf952456f1675a1ae139731d502a87ac1c",
+      "audio-boundary-business-01/cleanup.json": "09913d6f7686aca15cd0b6dfd4651cfd47ce30e587f6911d1b8a3374145f7485",
+      "audio-boundary-business-01/primary-cleanup.json": "0b76bcc58a37998cb442fb6f1494cbcf7036cdbe93bab9a8b1f8e50e1b4c636b",
+      "audio-boundary-business-01/light-duplex-entry-cleanup.json": "713ed1331f8efd09c8c9500e2cdafdd9eb5661ea74015d83c0506ac070499e8e",
+      "audio-boundary-business-01/primary-duplex-entry-cleanup.json": "ab5fe3faa4eed816fbc5999091ebf6587db7559c184eb8d9db4ad36fb75b6af1",
+      "audio-boundary-business-01/lease/exit.json": "db61156e1b9237753b30ce5365691f9e025f8aa84457810894400c7c7b5c3fb5",
+      "audio-boundary-business-01/lease/events.jsonl": "d3137b0289bf452f9330f5719ad516d3d8927785bc58cdf7df55d7484ae9db17",
+      "audio-boundary-business-01/lease/nvml-queries.jsonl": "e5a468a936ae8dac3c554359cb83db308a3140ef265b39efb4b0d4ba7af56c6e",
+      "task-scoped-business-01/plan.json": "319630021170b904a1a338582b27035bd92d6053181343798125fc364159d99d",
+      "task-scoped-business-01/result.json": "e0582092cdab67946933cf6edc6c166180cdb36e155672664c73726986fb3a38",
+      "task-scoped-business-01/cleanup.json": "871763a2f878bca03cc96d3f1a0da1cc636e0e90b6e952e6e83b2583b52593ca",
+      "task-scoped-business-01/light-duplex-entry-cleanup.json": "634a48bfe4f30ad7e6ef7787dd6eed90e9ff86859611086f3ccf0ffc615e9e4c",
+      "task-scoped-business-01/lease/exit.json": "5097a9d70335b627ff95e8b330d0b9227d6ef3a908084b39abf2eb5cbb81c8a4",
+      "task-scoped-business-01/lease/events.jsonl": "fd08e02bc429c52005aa3b06f8cc586dbfa5d0c72c4a23c0c2c93e577a74f450",
+      "task-scoped-business-01/lease/nvml-queries.jsonl": "e3180bc70e97b1827f67db563a7dba1b8c1529eaea4c88b81281db5717aecc58",
+      "cancel-usage-business-01/plan.json": "3e03718961f222f08bd78c7c79515b501a274de5b01394dac74897d97ae8deb8",
+      "cancel-usage-business-01/result.json": "1ca4e812e4118d559f8375e1a9ccc55615c024a2eec22bd85fbfa1e39f0b3ccb",
+      "cancel-usage-business-01/cleanup.json": "7ca8d28047df1211cc7385ed5518bbafa45095ea7f1c46e2e865e0beb5f770f5",
+      "cancel-usage-business-01/light-duplex-entry-cleanup.json": "52610d15f75625f8480dc6b65039ac501fd00dca0061a9dab5f9d92f7cbfca55",
+      "cancel-usage-business-01/lease/exit.json": "d7626e8a2e9ec71b88f2d91c9c5a1249583dc9cc4dbca04df4644b7b254e441f",
+      "cancel-usage-business-01/lease/events.jsonl": "e787f1c5bee9172145789a3e30ee46143beaa4e58127c55a6803f8a1824dce18",
+      "cancel-usage-business-01/lease/nvml-queries.jsonl": "39bbabc9d1e693084918800022af1288ee99e312133c5bbf831487c3747a04f1",
+      "audio-boundary-business-01/primary-capabilities.json": "26a03053fa282e25380c0a291147bc6f49961e45b994bf9a604c10c70a545d2c",
+      "audio-boundary-business-01/primary-config.json": "99fb50e933125e4f77b84d211d41d47f722a5794305e77278661d183c0687abf",
+      "cancel-usage-business-01/light-capabilities.json": "72481e165764088d66cf12d88833b5c712d848cee2df5b23369bddc5f592d13a",
+      "cancel-usage-business-01/light-config.json": "9e66af4a1261efd372c74dcb67b07e771ba99e8b7337d411301a22e86d4a1ee1"
+    },
+    "archives": {
+      "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-realtime-duplex-profile-quality-20261120/index.json": "179b2e043c6e75e330f92af10c43892fb539d45f851bcff8f94ac07f559e9fd2",
+      "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-realtime-duplex-audio-boundaries-20261120/index.json": "876518cd67a26f12db78155148dece0c636e214ccf9de1111654e83d1d6c578a",
+      "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-realtime-duplex-audio-boundary-http-20261120/index.json": "281c9bf57d9433a4ef5741ce9c1b1f8d0cf0d6bc55ea84c8c914b966fcaf055d",
+      "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-realtime-duplex-task-scoped-http-20261120/index.json": "de6ba854ce700493e7479f5542324696086ba8be919e2092ba4aa721e7b5d14f",
+      "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-realtime-duplex-cancel-usage-http-20261120/index.json": "591c61082c4159ac5fbb51f4178dc15e3548467ef89f0198579db2b8332e3d1b"
+    }
+  },
+  "master_active": true,
+  "managed_recovery_pending": true
+}

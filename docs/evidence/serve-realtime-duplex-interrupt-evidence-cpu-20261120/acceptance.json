@@ -1,0 +1,49 @@
+{
+  "status": "ACCEPT_TARGETED_INTERRUPTED_EVIDENCE_CPU",
+  "result": {
+    "status": "PASS",
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_acceptance.Checks.test_actor_timeout_retains_written_stdout_and_stderr",
+          "tools.serve_realtime.test_duplex_acceptance.Checks.test_journal_receipt_must_keep_all_original_events_and_attempts"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "node",
+          "--test",
+          "tools/serve_realtime/bounded_journal.test.mjs"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_sdk.mjs"
+        ],
+        "returncode": 0
+      }
+    ],
+    "seconds": 1.4145317869260907,
+    "new_python_cases": 2,
+    "new_node_cases": 4,
+    "original_python_cases_reused": 10,
+    "default_unchanged": true,
+    "gpu_starts": 0
+  },
+  "original_environment_abort_preserved": true,
+  "runtime_unchanged": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+  "nvml_root_cause": "unresolved",
+  "default_revision": 376,
+  "default_unchanged": true,
+  "real_business": "pending",
+  "master_active": true
+}

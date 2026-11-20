@@ -1,0 +1,26 @@
+{
+  "status": "ACCEPT_TARGETED_MIXED_AUDIO_HISTORY_CPU",
+  "unique_cases": 18,
+  "case_executions": 18,
+  "new_cases": 6,
+  "affected_cases": 12,
+  "seconds": 0.5147111918777227,
+  "source_counterexamples": 20,
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 43.258791075088084,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "b1207ef300e6d99b1a3d123678eb7976ff8d5bf0ea2db0dc4bee5df317aa0c03",
+    "free_bytes_after": 3825922048
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_direct_audio_execution": "pending",
+  "actual_duplex_business": "pending",
+  "master_active": true
+}

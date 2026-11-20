@@ -19,6 +19,9 @@ struct NativeChatSpeech {
   std::function<ObjectReply(std::string_view, const SpeechEncodingReceipt&,
                             const ActualUsage&)>
       complete;
+  // Actual synthesis work, independently of waveform delivery/EOF. Borrowed
+  // from the response owner; only categorical reporting, never a rate lease.
+  ActualUsageCounter* usage = nullptr;
 };
 // Borrowed native proofs. The execution owner keeps the prepared plan and
 // accounting alive through generation; no HTTP field may construct these.
@@ -50,7 +53,8 @@ class NativeChatGeneration {
     // Speech keeps the primary transcript for final message verification.
     const bool speech =
         inputs_.speech && inputs_.plan && inputs_.speech->append &&
-        inputs_.speech->complete && inputs_.plan->audio_output.enabled &&
+        inputs_.speech->complete && inputs_.speech->usage &&
+        inputs_.plan->audio_output.enabled &&
         inputs_.plan->audio_output.text &&
         inputs_.plan->audio_output.speech.format == SpeechFormat::kPcm;
     return (!inputs_.preparation || inputs_.plan) && sink_ && maximum_bytes_ &&

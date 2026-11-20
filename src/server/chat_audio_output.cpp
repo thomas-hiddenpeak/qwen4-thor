@@ -11,6 +11,22 @@
 #include "responses_json.h"
 
 namespace q4t::server {
+void ObserveChatSpeechUsage(const std::optional<ActualUsage>& before,
+                            const std::optional<ActualUsage>& after,
+                            ActualUsageCounter* speech) noexcept {
+  if (!speech) return;
+  if (!before || !after || !ValidActualUsage(*before) ||
+      !ValidActualUsage(*after) || after->input < before->input ||
+      after->output < before->output || after->cached != before->cached ||
+      after->reasoning != before->reasoning ||
+      after->cache_write != before->cache_write) {
+    speech->Merge(std::nullopt);
+    return;
+  }
+  speech->Merge(ActualUsage{after->input - before->input,
+                            after->output - before->output});
+}
+
 namespace {
 using namespace responses_detail;
 Status Invalid(ChatPlanError* error, std::string param, const char* message) {

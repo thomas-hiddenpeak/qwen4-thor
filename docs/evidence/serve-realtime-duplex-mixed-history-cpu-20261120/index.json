@@ -1,0 +1,115 @@
+{
+  "archive_sha256": "853f4fedf1534955b2a8e7fdd775b8db6cf3a2bc047a87c1f961b8a612e87877",
+  "records": [
+    {
+      "path": "mixed-history-plan-01.json",
+      "bytes": 3438,
+      "sha256": "eda312d2b1a2a9ac5085a0ecba4a5a56c8f7b1a28bad4fc725d4db23229d566b"
+    },
+    {
+      "path": "build_mixed_history_01.py",
+      "bytes": 2812,
+      "sha256": "f94fddac6cae5adccb8ed7148f4e5a9c724f0e0ef971ea192f63ba8d5dfd7059"
+    },
+    {
+      "path": "run_mixed_history_cpu_01.py",
+      "bytes": 2146,
+      "sha256": "3a2f8a9796b954e7f796cc7610f42f90e2140d9b6d8111021bb60f87cea9e4ec"
+    },
+    {
+      "path": "prepare_mixed_history_01.py",
+      "bytes": 4720,
+      "sha256": "013c949ef420d7ef319bb06d7e9969929d21602f89851680ac9da6f1c3bf30fe"
+    },
+    {
+      "path": "mixed-history-build-01/build.log",
+      "bytes": 4326,
+      "sha256": "d229296a37fc7a73939bbce7d7f68f35ed6c256ef10ec5d54a89bd36517185a5"
+    },
+    {
+      "path": "mixed-history-build-01/plan.json",
+      "bytes": 177288,
+      "sha256": "f7bfbe5ae92c8c8976835659406283014e8f2daced73bf496cabcc0a03d11aeb"
+    },
+    {
+      "path": "mixed-history-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "mixed-history-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "d2752febc666e444fbebcf973a1d6d3aef676c365535dbc2143b29697e9215a3"
+    },
+    {
+      "path": "mixed-history-build-01/result.json",
+      "bytes": 294,
+      "sha256": "3cc4219a208978e1106126ebce870228539ebe2d51872a5c50732cf399b3d721"
+    },
+    {
+      "path": "mixed-history-cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-history-cpu-01/command-0.stdout",
+      "bytes": 1314,
+      "sha256": "faf0b51e1d741d13b83037215963ea0b44db5628a81c797b2ae4b183b34c3810"
+    },
+    {
+      "path": "mixed-history-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "mixed-history-cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "04e63a3fd266ce6c5de1c3aa38c513028be085e4b535f9e5c396776fbb9cf72f"
+    },
+    {
+      "path": "mixed-history-cpu-01/new.txt",
+      "bytes": 1147,
+      "sha256": "14af32e68bf0dd3512c24b0958a400a2fcdc4e6c5394b4297c72d94af8a79c0f"
+    },
+    {
+      "path": "mixed-history-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "mixed-history-cpu-01/plan.json",
+      "bytes": 179010,
+      "sha256": "6cc4b7eb7b617aa73d3fe94c9eb04ab49f720906af1897cbb406c1a91803f058"
+    },
+    {
+      "path": "mixed-history-cpu-01/result.json",
+      "bytes": 610,
+      "sha256": "3642ba9b2c50023a4beaaad410e27dde9e4fc49d7a779966e7b93fcaf19a494f"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_conversation.h",
+      "bytes": 9019,
+      "sha256": "ea09f7a3e536fb0cfea9eab357ff0cdb0d34d3f1f4ad262bc5c441148f465637"
+    },
+    {
+      "path": "source/src/server/realtime_conversation.cpp",
+      "bytes": 30429,
+      "sha256": "72377490276c51eaf45928a33aced86b6cb9816235e7ead516be28558b345fdb"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_test.cpp",
+      "bytes": 51939,
+      "sha256": "99a22659a502b7e8dd9d1c59bdeddb3b60d8b2ad15f5cd8f3280c4f550aa0484"
+    },
+    {
+      "path": "source/tools/release/required_host_tests.txt",
+      "bytes": 30464,
+      "sha256": "31d2e006989fe5557f9a2b3f27ac5a98dd4f2d215ea7dde83da106731b9f4179"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 583859,
+      "sha256": "da3398dc381c13b49001d723045abab4e1974fb3b93735479a171f1fdd7c8108"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "records": [
+    {
+      "path": "build_mixed_entry_runtime_01.py",
+      "bytes": 2759,
+      "sha256": "c81dd51d8d27e3a978ae78f6c17282d255329024ea8a13ad5732f00011f462a9"
+    },
+    {
+      "path": "duplex-driver-plan-01.json",
+      "bytes": 366,
+      "sha256": "5ea5d0ad8c6b8787dc9f20adf9deea10540b645abee90621b2a707be6a06b224"
+    },
+    {
+      "path": "run_duplex_driver_cpu_01.py",
+      "bytes": 1658,
+      "sha256": "a2ed549b410f9ca195c5e2eb8b0523358b387d1520e1a62c337d0495087c756b"
+    },
+    {
+      "path": "mixed-entry-runtime-01/build.log",
+      "bytes": 7806,
+      "sha256": "4188d7146b2bbc536f03a42f358354fe970e591c9291c5549bc9ff431675645c"
+    },
+    {
+      "path": "mixed-entry-runtime-01/plan.json",
+      "bytes": 107633,
+      "sha256": "cfee0bd0e5a9ab5095d09cb7d0f354a3ba730aa189fd10aa5984a27d5c40c22c"
+    },
+    {
+      "path": "mixed-entry-runtime-01/previous-CMakeCache.txt",
+      "bytes": 54898,
+      "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+    },
+    {
+      "path": "mixed-entry-runtime-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "7d8a11fa3694db3d71a90f222d8a60ecb9e29e5a9672fec3e269c96424c05f3b"
+    },
+    {
+      "path": "mixed-entry-runtime-01/result.json",
+      "bytes": 292,
+      "sha256": "5aad0c6b08bde4e79f9be9fd9677c1d5836421f3b0257474cb14932212f58c2b"
+    },
+    {
+      "path": "duplex-driver-cpu-01/command-0.stderr",
+      "bytes": 1751,
+      "sha256": "34edc4b9f4ee0979dd674bee8b0d3f100b3ae3929182cd93c3d1606b288a428a"
+    },
+    {
+      "path": "duplex-driver-cpu-01/command-0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "duplex-driver-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "duplex-driver-cpu-01/command-1.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "duplex-driver-cpu-01/plan.json",
+      "bytes": 1934,
+      "sha256": "d1b93a87d218d6e011091a7e491d959beaa6984970bcc7131ad3e5d28703b52c"
+    },
+    {
+      "path": "duplex-driver-cpu-01/result.json",
+      "bytes": 467,
+      "sha256": "de0c5b15e339d5508370c9dc9758bb4cc39bac1eb12e04d2eed0f55912250aaf"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_acceptance.py",
+      "bytes": 9932,
+      "sha256": "e9bb70212140b5eca57bf18ae008d974688671a6016e63b254e8604e2c3b385d"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_checks.py",
+      "bytes": 9095,
+      "sha256": "7827733b9ad32cc351c9bfbbb247f9d57497504f1b003710270646e8544caa9e"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_sdk.mjs",
+      "bytes": 13281,
+      "sha256": "ea4097257423d14d0d5b1a73a594f3edd334e05df34b3fe8379b9e9d85ab49bd"
+    },
+    {
+      "path": "source/tools/serve_realtime/test_duplex_acceptance.py",
+      "bytes": 7650,
+      "sha256": "4f197eeb96382109d9cb33c1f7e5d7bdf5efeec6ffe1ace1b1ac9f03b2179b15"
+    },
+    {
+      "path": "source/.github/workflows/host-checks.yml",
+      "bytes": 15603,
+      "sha256": "875b43138e0c750b775e566bde81155918318880a907593f529ce4c8053c286f"
+    }
+  ],
+  "archive_sha256": "758f02a0d3720325795587626903342be2dfb291d922b4a2306adecf4ff7a7e7"
+}

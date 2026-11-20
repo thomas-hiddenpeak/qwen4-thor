@@ -1,0 +1,44 @@
+{
+  "status": "ACCEPT_TARGETED_CPU_RUNTIME_BUILD_READY",
+  "cpp_cases": 8,
+  "new_cpp_cases": 2,
+  "python_negative_cases": 4,
+  "source_counterexamples": 20,
+  "sdk_syntax": true,
+  "seconds": 0.7729820208624005,
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 28.295519575942308,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "9ccf3773c0c3002188b78661526b1410c4e10db7dee300892e557d12a81e5c25",
+    "free_bytes_after": 3448295424
+  },
+  "runtime_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 22.537270754110068,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+    "free_bytes_after": 3387404288
+  },
+  "reconstruction": {
+    "original_event_source": "business-02/run/vad.sdk.json",
+    "fixture_sha256": "8b1a0ceb8f92f870426828f8931cc00748400b9e1765b5430739d8d75a1a548f",
+    "before_prompt_sha256": "a7559072edd02e9a37fd2116cb9e11dd5c2722d7ff91c5349fca7186905c62a4",
+    "after_prompt_sha256": "80805bd535d876cdccc7028502a34bdbddfebf2e047cfaf9001a8b3d2fc7542b",
+    "difference": "native zero-sample idle fact only",
+    "live_capture": false
+  },
+  "gpu_actions": 0,
+  "default_unchanged": true,
+  "default_revision": 376,
+  "original_failures_preserved": true,
+  "master_active": true
+}

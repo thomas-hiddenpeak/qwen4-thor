@@ -19,7 +19,8 @@ struct RealtimeChatPlan {
 Status PlanRealtimeChat(const io::Json& settings, const io::Json& response,
                         const io::Json& items, const ChatPlanConfig& config,
                         RealtimeChatPlan* plan, ChatPlanError* error,
-                        const PromptSnapshot* prompt = nullptr);
+                        const PromptSnapshot* prompt = nullptr,
+                        bool native_input = false);
 // Complete an envelope using owned, resolved content. File preparation must
 // preserve the outer item ordering and count, so history indices remain valid.
 // The media proof is internal and never parsed from a client's JSON.

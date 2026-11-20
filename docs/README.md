@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+- [双向输入预留与上下文冻结CPU](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)
+- [双向输入生命周期组合CPU](evidence/serve-realtime-duplex-owner-cpu-20261120/README.md)
+
 - [原生 Realtime Chat CPU](evidence/serve-realtime-native-chat-cpu-20261119/README.md)
 
 - [共享 Realtime 消息泵 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)
@@ -681,3 +684,22 @@
 - [Realtime连续语音编码CPU](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：PCM全值、G.711相位/尾长与失败终态；实际音频接线继续。
 
 - [Realtime音频事件与历史CPU](evidence/serve-realtime-speech-output-cpu-20261120/README.md)：真实夹具字节、标准事件、截断与失败归属；会话/模型接线继续。
+
+- [Realtime双向输入计划](SERVE_REALTIME_DUPLEX_2026-11-20.md)：同一conversation、实际ASR/VAD、手动与自动轮次及有界交付。
+- [双向输入设置CPU](evidence/serve-realtime-duplex-settings-cpu-20261120/README.md)：独立控制、公开转写开关、空闲边界与原重复字段失败。
+- [统一音频输入历史CPU](evidence/serve-realtime-duplex-history-cpu-20261120/README.md)：原生票据、失败隔离、隐私、删除与执行快照。
+
+- [转写处理器配置事务CPU](evidence/serve-realtime-duplex-configure-cpu-20261120/README.md)：唯一会话确认、借用保护和既有转写路径。
+- [PR #54实际合main](evidence/serve-pr54-merged-20261120/README.md)：精确head两份CI通过与主线祖先确认。
+
+- [2026-11-20状态历史原件](HISTORY_STATUS_2026-11-20.md)：整理前逐字保留；当前事实以STATUS为准。
+
+- [同一会话输入事件组合CPU](evidence/serve-realtime-duplex-composition-cpu-20261120/README.md)：GA事件、转写隐私、真实音频检索/删除、上下文冻结及原失败；实际入口继续。
+
+- [实际Realtime会话输入与轮次CPU](evidence/serve-realtime-duplex-session-cpu-20261120/README.md)：待ASR回答、设置冻结、VAD与准入交接、借用故障隔离及严格引用入口修复。
+
+- [原生Realtime输入后端构建与CPU](evidence/serve-realtime-duplex-backend-cpu-20261120/README.md)：共享ASR/VAD、私有来源和组合预算，实际q4t已构建；真实业务继续。
+
+- [双向音频原生恢复](evidence/serve-realtime-duplex-managed-recovery-20261120/README.md)：入口/控制器/整包，错误回答独立保留。
+- [双向音频rev386交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)：STOPPED升级、回退、预算保持与可逆归档。
+- [初始凭据重新签发与rev396交付](evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)：公共证据更正、候选/回退凭据替换和来源复用。

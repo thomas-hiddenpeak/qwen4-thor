@@ -1,0 +1,48 @@
+{
+  "status": "RUNTIME_BUILD_AND_BUSINESS_DRIVER_CPU_READY",
+  "runtime_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 147.167845972348,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+    "free_bytes_after": 3621777408
+  },
+  "driver_cpu": {
+    "status": "PASS",
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_acceptance"
+        ],
+        "returncode": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_sdk.mjs"
+        ],
+        "returncode": 0
+      }
+    ],
+    "seconds": 0.26243093609809875,
+    "default_unchanged": true,
+    "gpu_starts": 0
+  },
+  "negative_cpu_cases": 10,
+  "sdk_syntax": true,
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_duplex_business": "pending",
+  "master_active": true
+}

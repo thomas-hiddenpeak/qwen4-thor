@@ -7,6 +7,8 @@
 #include "q4t/io/base64.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_audio_export.h"
 #include "q4t/server/realtime_asr_policy.h"
 
@@ -14,6 +16,10 @@ namespace q4t::server {
 namespace {
 using namespace object_detail;
 using Clock = std::chrono::steady_clock;
+bool Accepted(const ObjectReply& reply) {
+  return reply.ok() && !reply.commit_unknown && reply.http_status >= 200 &&
+         reply.http_status < 300;
+}
 Json Event(std::string type) {
   return Object({{"type", String(std::move(type))},
                  {"event_id", String(detail::NewRequestId("event_"))}});
@@ -32,11 +38,12 @@ Json Failure(const ObjectReply& reply) {
 RealtimeTranscriptionSession::RealtimeTranscriptionSession(
     std::string id, WebSocketOutput& output,
     RealtimeTranscriptionCallbacks callbacks, uint32_t max_audio_seconds,
-    size_t message_bytes)
+    size_t message_bytes, uint64_t lifetime_ticks)
     : id_(std::move(id)),
       output_(output),
       callbacks_(std::move(callbacks)),
       max_item_ticks_(uint64_t(max_audio_seconds) * kRealtimeTicksPerSecond),
+      lifetime_ticks_(lifetime_ticks),
       message_bytes_(message_bytes),
       history_(id_, 128, kRealtimeTranscriptHistoryBytes),
       audio_history_(id_) {}
@@ -53,8 +60,16 @@ void RealtimeTranscriptionSession::Release() noexcept {
   }
   control_.reset();
 }
+uint64_t RealtimeTranscriptionSession::AcceptedTicks() const {
+  auto ticks = std::max(cancelled_ticks_, queue_.AcceptedTicks());
+  for (const auto* processor : {noise_input_.get(), stream_processor_.get()})
+    if (processor) ticks = std::max(ticks, processor->AcceptedTicks());
+  return ticks;
+}
 void RealtimeTranscriptionSession::Cancel() noexcept {
   cancelled_ = true;
+  CancelIdleCapture();
+  cancelled_ticks_ = AcceptedTicks();
   if (control_) control_->Cancel(RequestControl::State::kDisconnect);
   queue_.Cancel(1);
   for (auto& job : jobs_) {
@@ -65,6 +80,189 @@ void RealtimeTranscriptionSession::Cancel() noexcept {
 void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
   Release();
+  for (auto& job : jobs_) {
+    if (cancelled_) {
+      // A completed/previously failed/deleted item is left as-is. A cancelled
+      // pending item must not block later ContextBefore forever after resume.
+      try {
+        if (!history_.Committed(job.transcript))
+          audio_history_.Erase(job.transcript);
+        history_.Fail(job.transcript);
+      } catch (...) {
+      }
+    }
+    DiscardJob(job);
+  }
+  if (cancelled_) {
+    jobs_.clear();
+    while (const auto* item = queue_.Front())
+      if (!queue_.Acknowledge(item->epoch, item->sequence)) break;
+    semantic_.reset();
+    live_input_.reset();
+    stream_processor_.reset();
+    stream_storage_ = 0;
+  }
+}
+bool RealtimeTranscriptionSession::TryJoinCancelled() noexcept {
+  if (!cancelled_ || (worker_.joinable() && !done_.load())) return false;
+  Join();
+  return true;
+}
+ObjectReply RealtimeTranscriptionSession::Recover(
+    RealtimeTranscriptionSettings next) {
+  if (!started_ || !cancelled_ ||
+      (callbacks_.interrupted && callbacks_.interrupted()))
+    return Error(409, "realtime_input_recovery_unavailable",
+                 "Input recovery requires a live cancelled owner");
+  if (!TryJoinCancelled())
+    return Error(409, "realtime_input_still_borrowed",
+                 "Cancelled input work has not exited");
+  // A copy of all new settings has already been allocated. Keep the stopped
+  // state unless the original configured backend confirms these settings.
+  auto reply = callbacks_.validate(next);
+  if (!Accepted(reply)) return reply;
+  const auto resumed = queue_.ResumeCancelled(1, cancelled_ticks_);
+  if (!resumed)
+    return Error(503, "realtime_input_recovery_invalid", resumed.message());
+  cancelled_ = false;
+  try {
+    stream_fault_ = false;
+    live_id_.clear();
+    terminal_.clear();
+    vad_events_.clear();
+    vad_event_bytes_ = 0;
+    // Force fresh recurrent/filter state even for identical settings. The
+    // audio index and its single shared budget survive this reset untouched.
+    vad_.reset();
+    noise_input_.reset();
+    reply = Configure(std::move(next));
+    if (Accepted(reply)) {
+      ResetNoise(queue_.AcceptedTicks());
+      ResetVad();
+      previous_id_ = history_.LastCommittedId();
+      return {};
+    }
+  } catch (...) {
+    reply = Error(503, "realtime_input_recovery_failed",
+                  "Local input pipeline could not be reset");
+  }
+  Cancel();
+  return reply;
+}
+ObjectReply RealtimeTranscriptionSession::ReserveJob(
+    RealtimeTranscriptionJob& job) {
+  if (!callbacks_.owner) return {};
+  if (input_owners_.size() >= kRealtimeQueuedItems ||
+      !input_owners_.emplace(job.id, InputOwnership{job.transcript, {}}).second)
+    return Error(503, "transcription_owner_capacity", "Input owners full");
+  ObjectReply result;
+  try {
+    result = callbacks_.owner->Reserve(job);
+  } catch (...) {
+    DiscardJob(job);
+    throw;
+  }
+  if (!Accepted(result)) DiscardJob(job);
+  if (!Accepted(result) && result.ok())
+    return Error(503, "transcription_owner_unknown",
+                 "Input reservation was not confirmed");
+  return result;
+}
+ObjectReply RealtimeTranscriptionSession::SubmitFinite(
+    std::span<const uint8_t> bytes, std::string_view item_id,
+    size_t content_index, RealtimeTranscriptTicket* output) {
+  if (!output || !started_ || cancelled_ || !callbacks_.owner ||
+      (callbacks_.interrupted && callbacks_.interrupted()))
+    return Error(409, "realtime_input_unavailable",
+                 "Finite input owner stopped");
+  if (!ValidRequestId(item_id) || item_id == "root" || content_index >= 128 ||
+      bytes.size() > kRealtimeAudioBytes)
+    return Error(400, "realtime_audio_item_invalid",
+                 "Invalid finite audio part");
+  const size_t width =
+      settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  const auto samples = bytes.size() / width;
+  const auto ticks =
+      samples * (kRealtimeTicksPerSecond / settings_.format.rate);
+  if (bytes.size() % width || ticks > max_item_ticks_ ||
+      LifetimeTicks() > lifetime_ticks_ ||
+      ticks > lifetime_ticks_ - LifetimeTicks())
+    return Error(400, "audio_duration_limit", "Finite audio exceeds its limit");
+  if (jobs_.size() == kRealtimeQueuedItems)
+    return Error(429, "input_audio_buffer_full", "Native input queue is full");
+  auto reply = callbacks_.validate(settings_);
+  if (!Accepted(reply)) return reply;
+  RealtimeTranscriptionJob job;
+  job.settings = settings_;
+  job.settings.delay.clear();  // Complete clip, not the live append producer.
+  job.id = detail::NewRequestId("asr_");
+  job.source_item_id = item_id;
+  job.content_index = content_index;
+  job.previous_id = previous_id_;
+  job.audio = {1, 1, 0, ticks, samples, bytes.size(), settings_.format};
+  if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript))
+    return Error(429, "conversation_capacity_exceeded",
+                 "Input history is full");
+  bool queued = false, accepted = false;
+  ScopeExit rollback([&] {
+    if (accepted) return;
+    auto& pending = queued ? jobs_.back() : job;
+    DiscardJob(pending);
+    history_.Erase(pending.transcript);
+    if (pending.processed_audio) audio_history_.Erase(pending.transcript);
+    if (queued) jobs_.pop_back();
+  });
+  using N = RealtimeTranscriptionSettings::Noise;
+  const auto noise = settings_.noise == N::kNone ? audio::NoiseReduction::kOff
+                     : settings_.noise == N::kNearField
+                         ? audio::NoiseReduction::kNearField
+                         : audio::NoiseReduction::kFarField;
+  auto status =
+      bytes.empty()
+          ? audio_history_.Empty(job.transcript, &job.processed_audio)
+          : audio_history_.DecodeFinite(
+                job.transcript, job.audio, bytes, noise, max_item_ticks_ / 3,
+                &job.processed_audio, callbacks_.interrupted);
+  if (!status)
+    return Error(400, "conversation_audio_unavailable", status.message());
+  reply = ReserveJob(job);
+  if (!Accepted(reply)) return reply;
+  auto ticket = job.transcript;
+  jobs_.push_back(std::move(job));
+  queued = true;
+  auto& last = jobs_.back();
+  reply = CommitJob(last, false);
+  if (!Accepted(reply)) return reply;
+  status = history_.Commit(last.transcript);
+  if (!status)
+    return Error(500, "realtime_input_commit_failed", status.message());
+  previous_id_ = last.id;
+  finite_ticks_ += ticks;
+  *output = std::move(ticket);
+  accepted = true;
+  return {};
+}
+ObjectReply RealtimeTranscriptionSession::CommitJob(
+    RealtimeTranscriptionJob& job, bool automatic) {
+  if (!callbacks_.owner) return {};
+  const auto found = input_owners_.find(job.id);
+  if (found == input_owners_.end() || found->second.ticket != job.transcript)
+    return Error(500, "transcription_owner_missing", "Input owner missing");
+  auto previous = job.previous_id;
+  auto result = callbacks_.owner->Commit(job, automatic, &previous);
+  if (Accepted(result)) found->second.previous_id = std::move(previous);
+  if (!Accepted(result) && result.ok())
+    return Error(503, "transcription_owner_unknown",
+                 "Input commit was not confirmed");
+  return result;
+}
+void RealtimeTranscriptionSession::DiscardJob(
+    RealtimeTranscriptionJob& job) noexcept {
+  const auto found = input_owners_.find(job.id);
+  if (found == input_owners_.end() || found->second.ticket != job.transcript)
+    return;
+  callbacks_.owner->Discard(job);
+  input_owners_.erase(found);
 }
 bool RealtimeTranscriptionSession::Emit(Json event, bool deferred) {
   return EmitText(OutputJson(event), deferred);
@@ -119,13 +317,76 @@ bool RealtimeTranscriptionSession::Start() {
   if (started_ || cancelled_ || !queue_.Valid() || !history_.Valid() ||
       !audio_history_.Valid() || id_.empty() || !output_.Valid() ||
       max_item_ticks_ == 0 || max_item_ticks_ > 600 * kRealtimeTicksPerSecond ||
+      !lifetime_ticks_ || lifetime_ticks_ > kRealtimeSessionTicks ||
       message_bytes_ == 0 || message_bytes_ > kWebSocketMessageLimit ||
       !callbacks_.validate || !callbacks_.acquire || !callbacks_.release ||
       !callbacks_.execute)
     return false;
-  if (!callbacks_.validate(settings_).ok()) return false;
+  const auto ready = callbacks_.validate(settings_);
+  if (!ready.ok() || ready.commit_unknown) return false;
   started_ = true;
   return SettingsEvent(false, true);
+}
+ObjectReply RealtimeTranscriptionSession::Configure(
+    RealtimeTranscriptionSettings next) {
+  if (cancelled_ || (callbacks_.interrupted && callbacks_.interrupted()))
+    return Error(409, "realtime_connection_closed", "Input owner stopped");
+  if (!callbacks_.validate)
+    return Error(503, "realtime_processor_unavailable",
+                 "Input processor validation unavailable");
+  auto reply = callbacks_.validate(next);
+  if (!reply.ok() || reply.commit_unknown) return reply;
+  if (!next.delay.empty() &&
+      (!RealtimeAsrDelayPolicy(next.delay).Valid() ||
+       next.turn != RealtimeTranscriptionSettings::Turn::kManual))
+    return Error(400, "realtime_delay_turn_conflict",
+                 "Continuous transcription uses explicit audio commits");
+  const auto& a = settings_.request.chunking;
+  const auto& b = next.request.chunking;
+  const bool semantic_changed =
+      (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad) !=
+      (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad);
+  const bool pipeline_changed =
+      semantic_changed || next.format != settings_.format ||
+      next.noise != settings_.noise || next.delay != settings_.delay;
+  const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
+                           next.eagerness != settings_.eagerness ||
+                           next.format != settings_.format ||
+                           a.threshold != b.threshold ||
+                           a.prefix_padding_ms != b.prefix_padding_ms ||
+                           a.silence_duration_ms != b.silence_duration_ms;
+  if (next.turn != RealtimeTranscriptionSettings::Turn::kManual &&
+      !callbacks_.vad_step)
+    return Error(400, "realtime_processor_unavailable",
+                 "VAD processor unavailable");
+  if (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+      !callbacks_.semantic_ready)
+    return Error(400, "realtime_processor_unavailable",
+                 "Semantic turn model unavailable");
+  const bool pending = live_input_ || stream_fault_ || queue_.PendingBytes() ||
+                       (noise_input_ && (noise_input_->PartialSample() ||
+                                         noise_input_->AcceptedTicks() !=
+                                             queue_.PendingBeginTicks()));
+  if (vad_changed && pending)
+    return Error(400, "input_audio_buffer_not_empty",
+                 "Clear or commit pending audio before changing turn policy");
+  if (pipeline_changed) {
+    if (!jobs_.empty())
+      return Error(400, "input_audio_buffer_not_empty",
+                   "Finish prior items before changing the audio pipeline");
+    const auto format =
+        next.noise == RealtimeTranscriptionSettings::Noise::kNone &&
+                next.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad
+            ? next.format
+            : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
+    const auto status = queue_.ChangeFormat(1, format);
+    if (!status)
+      return Error(400, "input_audio_buffer_not_empty", status.message());
+  }
+  settings_ = std::move(next);
+  if (pipeline_changed) ResetNoise(queue_.AcceptedTicks());
+  if (vad_changed) ResetVad();
+  return {};
 }
 bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                                            std::string_view message) {
@@ -147,64 +408,26 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
     RealtimeTranscriptionSettings next;
     reply = UpdateRealtimeTranscriptionSettings(command.session, command.legacy,
                                                 settings_, &next);
-    if (reply.ok()) reply = callbacks_.validate(next);
-    if (!reply.ok()) return ErrorEvent(std::move(reply), command.event_id);
-    if (!next.delay.empty() &&
-        (!RealtimeAsrDelayPolicy(next.delay).Valid() ||
-         next.turn != RealtimeTranscriptionSettings::Turn::kManual))
-      return fail("realtime_delay_turn_conflict",
-                  "Continuous transcription uses explicit audio commits");
-    const auto& a = settings_.request.chunking;
-    const auto& b = next.request.chunking;
-    const bool semantic_changed =
-        (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad) !=
-        (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad);
-    const bool pipeline_changed = semantic_changed ||
-                                  next.format != settings_.format ||
-                                  next.noise != settings_.noise ||
-                                  next.delay != settings_.delay;
-    const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
-                             next.eagerness != settings_.eagerness ||
-                             next.format != settings_.format ||
-                             a.threshold != b.threshold ||
-                             a.prefix_padding_ms != b.prefix_padding_ms ||
-                             a.silence_duration_ms != b.silence_duration_ms;
-    if (next.turn != RealtimeTranscriptionSettings::Turn::kManual &&
-        !callbacks_.vad_step)
-      return fail("realtime_processor_unavailable",
-                  "VAD processor unavailable");
-    if (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
-        !callbacks_.semantic_ready)
-      return fail("realtime_processor_unavailable",
-                  "Semantic turn model unavailable");
-    const bool pending =
-        live_input_ || stream_fault_ || queue_.PendingBytes() ||
-        (noise_input_ &&
-         (noise_input_->PartialSample() ||
-          noise_input_->AcceptedTicks() != queue_.PendingBeginTicks()));
-    if (vad_changed && pending)
-      return fail("input_audio_buffer_not_empty",
-                  "Clear or commit pending audio before changing turn policy");
-    if (pipeline_changed) {
-      if (!jobs_.empty())
-        return fail("input_audio_buffer_not_empty",
-                    "Finish prior items before changing the audio pipeline");
-      const auto format =
-          next.noise == RealtimeTranscriptionSettings::Noise::kNone &&
-                  next.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad
-              ? next.format
-              : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
-      const auto status = queue_.ChangeFormat(1, format);
-      if (!status)
-        return fail("input_audio_buffer_not_empty", status.message());
-    }
-    settings_ = std::move(next);
-    if (pipeline_changed) ResetNoise(queue_.AcceptedTicks());
-    if (vad_changed) ResetVad();
+    if (reply.ok() && !reply.commit_unknown) reply = Configure(std::move(next));
+    if (!reply.ok() || reply.commit_unknown)
+      return ErrorEvent(std::move(reply), command.event_id);
     return SettingsEvent(command.legacy);
   }
   if (command.kind == K::kDelete) return DeleteItem(command);
   if (command.kind == K::kRetrieve) return RetrieveItem(command);
+  if (command.kind == K::kAppend) {
+    const size_t width =
+        settings_.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+    const auto* processor =
+        !settings_.delay.empty() ? stream_processor_.get() : noise_input_.get();
+    const auto partial = processor ? size_t(processor->PartialSample())
+                                   : queue_.PendingBytes() % width;
+    const auto ticks = (command.audio.size() + partial) / width *
+                       (kRealtimeTicksPerSecond / settings_.format.rate);
+    if (LifetimeTicks() > lifetime_ticks_ ||
+        ticks > lifetime_ticks_ - LifetimeTicks())
+      return fail("audio_duration_limit", "Session audio duration exceeded");
+  }
   if (!settings_.delay.empty()) return StreamMessage(command);
   if (stream_fault_ && command.kind != K::kClear)
     return fail("input_audio_buffer_failed",
@@ -220,8 +443,7 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
           samples * (kRealtimeTicksPerSecond / settings_.format.rate);
       const auto begin = semantic_ ? jobs_.back().audio.begin_ticks
                                    : queue_.PendingBeginTicks();
-      if (noise_input_->AcceptedTicks() - begin + ticks >
-          max_item_ticks_)
+      if (noise_input_->AcceptedTicks() - begin + ticks > max_item_ticks_)
         return fail("audio_duration_limit",
                     "Uncommitted audio duration exceeded");
       const auto status = noise_input_->Append(
@@ -320,6 +542,7 @@ Status RealtimeTranscriptionSession::ProcessedAudio(
 }
 
 void RealtimeTranscriptionSession::ResetVad() {
+  vad_caught_up_ = false;
   if (semantic_) {
     semantic_->Close();
     if (live_input_) live_input_->Cancel(stream_epoch_);
@@ -345,6 +568,8 @@ void RealtimeTranscriptionSession::ResetVad() {
 }
 bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
                                                bool deferred) {
+  if (callbacks_.owner && !callbacks_.owner->Speech(started, speech_id_, ticks))
+    return false;
   auto event = Event(started ? "input_audio_buffer.speech_started"
                              : "input_audio_buffer.speech_stopped");
   Set(&event, "item_id", String(speech_id_));
@@ -362,14 +587,17 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
     // A classifier may return after more real silence was already borrowed
     // by ASR. Keep that exact waveform; never truncate an in-flight prefix.
     return FinishSemantic(std::max(decision.end_ticks, semantic_audio_end_),
-                           true);
+                          true);
   };
   if (!finish_semantic()) return false;
   RealtimeVadProgress progress;
   const auto status = vad_->Advance(queue_, &progress);
   if (!status) return false;
+  vad_caught_up_ =
+      !progress.frame && vad_->CursorTicks() == queue_.AcceptedTicks();
   if (!progress.frame) return true;
   if (progress.started) {
+    CancelIdleCapture();
     speech_id_ = detail::NewRequestId("item_");
     if (!SpeechEvent(true, progress.begin_ticks, true)) return false;
     if (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
@@ -383,14 +611,64 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
     return finish_semantic();
   }
   if (progress.stopped) return Commit(progress.end_ticks, {}, true);
-  return bool(queue_.TrimPendingBefore(1, progress.trim_before));
+  auto trim = progress.trim_before;
+  if (idle_begin_) {
+    // An accelerated sender cannot make an idle interval grow unbounded.
+    // Publish the actual retained extent, never claim discarded audio exists.
+    const auto bound = std::min(max_item_ticks_, 30 * kRealtimeTicksPerSecond);
+    auto tail = progress.analyzed_end_ticks -
+                std::min(progress.analyzed_end_ticks, bound);
+    const auto step = kRealtimeTicksPerSecond / queue_.Format().rate;
+    const auto begin = queue_.PendingBeginTicks();
+    tail = tail > begin ? begin + (tail - begin) / step * step : begin;
+    *idle_begin_ = std::max(*idle_begin_, tail);
+    trim = std::min(trim, *idle_begin_);
+  }
+  return bool(queue_.TrimPendingBefore(1, trim));
+}
+void RealtimeTranscriptionSession::BeginIdleCapture() {
+  if (!cancelled_ && vad_ &&
+      settings_.turn == RealtimeTranscriptionSettings::Turn::kServerVad)
+    idle_begin_ = queue_.AcceptedTicks();
+}
+bool RealtimeTranscriptionSession::IdleReady() const {
+  const size_t width =
+      queue_.Format().encoding == RealtimeAudioEncoding::kPcm16     ? 2
+      : queue_.Format().encoding == RealtimeAudioEncoding::kFloat32 ? 4
+                                                                    : 1;
+  return started_ && !cancelled_ && idle_begin_ && vad_ && !vad_->Active() &&
+         vad_caught_up_ && jobs_.empty() &&
+         queue_.PendingBytes() % width == 0 &&
+         (!noise_input_ || !noise_input_->PartialSample()) &&
+         vad_events_.empty() &&
+         settings_.turn == RealtimeTranscriptionSettings::Turn::kServerVad;
+}
+bool RealtimeTranscriptionSession::CommitIdle() {
+  if (!IdleReady()) return false;
+  // Flush only received filter/resampler tail. A partial wire sample waits for
+  // the sender; it must not be padded or charged as an actual ASR execution.
+  if (noise_input_ && noise_input_->FinalSamples()) {
+    const auto status = noise_input_->Finish(
+        [&](auto samples) { return ProcessedAudio(samples, false); });
+    if (!status) return false;
+  }
+  const auto begin = std::clamp(*idle_begin_, queue_.PendingBeginTicks(),
+                                queue_.AcceptedTicks());
+  if (!queue_.TrimPendingBefore(1, begin)) return false;
+  return Commit(queue_.AcceptedTicks(), {}, true, true);
 }
 bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
                                           std::string_view event_id,
-                                          bool automatic) {
+                                          bool automatic, bool idle_timeout) {
+  if (jobs_.size() >= kRealtimeQueuedItems) {
+    const bool sent = ErrorEvent(
+        Error(429, "input_audio_buffer_full", "Native input queue is full"),
+        event_id);
+    return sent && !automatic;
+  }
   // Allocate the snapshot and identities before mutating the committed queue.
   RealtimeTranscriptionJob job;
-  auto status = queue_.PreviewPrefix(1, end_ticks, &job.audio);
+  auto status = queue_.PreviewPrefix(1, end_ticks, &job.audio, idle_timeout);
   if (!status) {
     const bool sent = ErrorEvent(
         Error(400, "input_audio_buffer_commit_failed", status.message()),
@@ -398,6 +676,7 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     return sent && !automatic;
   }
   job.settings = settings_;
+  job.idle_timeout = idle_timeout;
   job.id = speech_id_.empty() ? detail::NewRequestId("item_") : speech_id_;
   job.previous_id = previous_id_;
   if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript)) {
@@ -410,9 +689,11 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
   auto bytes = queue_.PendingFrom(job.audio.begin_ticks);
   bytes[0] = bytes[0].first(std::min(bytes[0].size(), job.audio.bytes));
   bytes[1] = bytes[1].first(job.audio.bytes - bytes[0].size());
-  status = audio_history_.Decode(job.transcript, job.audio, bytes,
-                                 max_item_ticks_ / 3, &job.processed_audio,
-                                 callbacks_.interrupted);
+  status = idle_timeout && !job.audio.samples
+               ? audio_history_.Empty(job.transcript, &job.processed_audio)
+               : audio_history_.Decode(
+                     job.transcript, job.audio, bytes, max_item_ticks_ / 3,
+                     &job.processed_audio, callbacks_.interrupted);
   if (!status) {
     if (!history_.Fail(job.transcript)) return false;
     const bool sent = ErrorEvent(
@@ -420,10 +701,33 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
         event_id);
     return sent && !automatic;
   }
-  jobs_.push_back(std::move(job));
+  auto owned = ReserveJob(job);
+  if (!Accepted(owned)) {
+    if (!history_.Fail(job.transcript) || !audio_history_.Erase(job.transcript))
+      return false;
+    const bool sent = ErrorEvent(std::move(owned), event_id);
+    return sent && !automatic;
+  }
+  try {
+    jobs_.push_back(std::move(job));
+  } catch (...) {
+    DiscardJob(job);
+    throw;
+  }
   auto& last = jobs_.back();
-  status = queue_.CommitPrefix(1, end_ticks, &last.audio);
+  owned = CommitJob(last, automatic);
+  if (!Accepted(owned)) {
+    DiscardJob(last);
+    if (!history_.Fail(last.transcript) ||
+        !audio_history_.Erase(last.transcript))
+      return false;
+    jobs_.pop_back();
+    const bool sent = ErrorEvent(std::move(owned), event_id);
+    return sent && !automatic;
+  }
+  status = queue_.CommitPrefix(1, end_ticks, &last.audio, idle_timeout);
   if (!status) {
+    DiscardJob(last);
     if (!history_.Fail(last.transcript) ||
         !audio_history_.Erase(last.transcript))
       return false;
@@ -434,10 +738,11 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     return sent && !automatic;
   }
   if (!history_.Commit(last.transcript)) return false;
+  CancelIdleCapture();
   previous_id_ = last.id;
   if (!speech_id_.empty() && !SpeechEvent(false, end_ticks, automatic))
     return false;
-  if (automatic)
+  if (automatic && !idle_timeout)
     speech_id_.clear();
   else {
     if (noise_input_) {
@@ -451,14 +756,28 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
 }
 bool RealtimeTranscriptionSession::CommitEvents(
     const RealtimeTranscriptionJob& last, bool automatic) {
+  if (last.Finite()) return true;  // Mixed item publication belongs to caller.
+  if (last.idle_timeout) {
+    auto timeout = Event("input_audio_buffer.timeout_triggered");
+    Set(&timeout, "item_id", String(last.id));
+    Set(&timeout, "audio_start_ms", Number(last.audio.begin_ticks / 48));
+    Set(&timeout, "audio_end_ms", Number(last.audio.end_ticks / 48));
+    if (!Emit(std::move(timeout), automatic)) return false;
+  }
+  const auto found = input_owners_.find(last.id);
+  if (callbacks_.owner &&
+      (found == input_owners_.end() || found->second.ticket != last.transcript))
+    return false;
+  const auto& previous =
+      callbacks_.owner ? found->second.previous_id : last.previous_id;
   auto committed = Event("input_audio_buffer.committed");
   Set(&committed, "item_id", String(last.id));
   Set(&committed, "previous_item_id",
-      last.previous_id.empty() ? Json{} : String(last.previous_id));
+      previous.empty() ? Json{} : String(previous));
   if (!Emit(std::move(committed), automatic)) return false;
   auto created = Event("conversation.item.created");
   Set(&created, "previous_item_id",
-      last.previous_id.empty() ? Json{} : String(last.previous_id));
+      previous.empty() ? Json{} : String(previous));
   Set(&created, "item",
       Object({{"id", String(last.id)},
               {"object", String("realtime.item")},
@@ -473,11 +792,23 @@ bool RealtimeTranscriptionSession::CommitEvents(
 bool RealtimeTranscriptionSession::DeleteItem(
     const RealtimeTranscriptionCommand& command) {
   RealtimeTranscriptTicket ticket;
-  if (!history_.Find(command.item_id, &ticket) || !history_.Committed(ticket))
+  if (!history_.Find(command.item_id, &ticket))
     return ErrorEvent(
         Error(400, "item_not_found", "Conversation item not found"),
         command.event_id);
-  if (!history_.Erase(ticket) || !audio_history_.Erase(ticket)) return false;
+  auto reply = EraseInput(ticket);
+  if (!Accepted(reply)) return ErrorEvent(std::move(reply), command.event_id);
+  auto event = Event("conversation.item.deleted");
+  Set(&event, "item_id", String(command.item_id));
+  return Emit(std::move(event));
+}
+ObjectReply RealtimeTranscriptionSession::EraseInput(
+    const RealtimeTranscriptTicket& ticket) {
+  if (!history_.Committed(ticket))
+    return Error(400, "item_not_found", "Conversation item not found");
+  if (!history_.Erase(ticket) || !audio_history_.Erase(ticket))
+    return Error(500, "transcription_history_invalid",
+                 "Native input histories lost their shared owner");
   for (auto& job : jobs_) {
     if (job.transcript != ticket) continue;
     job.deleted = true;
@@ -489,9 +820,7 @@ bool RealtimeTranscriptionSession::DeleteItem(
   // Already running requests retain their independent context snapshots.
   // Queued/future requests resolve context only when they actually start.
   previous_id_ = history_.LastCommittedId();
-  auto event = Event("conversation.item.deleted");
-  Set(&event, "item_id", String(command.item_id));
-  return Emit(std::move(event));
+  return {};
 }
 
 bool RealtimeTranscriptionSession::RetrieveItem(
@@ -556,11 +885,13 @@ bool RealtimeTranscriptionSession::RetrieveItem(
 }
 
 bool RealtimeTranscriptionSession::DropFrontJob() {
-  const auto& job = jobs_.front();
+  auto& job = jobs_.front();
   if (job.stream)
     stream_storage_ -= job.stream->StorageBytes();
-  else if (!queue_.Acknowledge(job.audio.epoch, job.audio.sequence))
+  else if (!job.Finite() &&
+           !queue_.Acknowledge(job.audio.epoch, job.audio.sequence))
     return false;
+  DiscardJob(job);
   jobs_.pop_front();
   return true;
 }
@@ -647,7 +978,19 @@ bool RealtimeTranscriptionSession::StreamMessage(
       }
       auto input = job.processed_audio->Stream();
       job.stream = input;
-      jobs_.push_back(std::move(job));
+      auto owned = ReserveJob(job);
+      if (!Accepted(owned)) {
+        if (!history_.Fail(job.transcript) ||
+            !audio_history_.Erase(job.transcript))
+          return false;
+        return ErrorEvent(std::move(owned), command.event_id);
+      }
+      try {
+        jobs_.push_back(std::move(job));
+      } catch (...) {
+        DiscardJob(job);
+        throw;
+      }
       stream_storage_ += input->StorageBytes();
       stream_epoch_ = epoch;
       live_input_ = std::move(input);
@@ -682,8 +1025,10 @@ bool RealtimeTranscriptionSession::StreamMessage(
     return false;
   }
   // Queue both standard commit/item events before EOF permits final output.
-  if (jobs_.empty() || jobs_.back().id != live_id_ ||
-      !history_.Commit(jobs_.back().transcript) ||
+  if (jobs_.empty() || jobs_.back().id != live_id_) return false;
+  auto owned = CommitJob(jobs_.back(), false);
+  if (!Accepted(owned)) return ErrorEvent(std::move(owned), command.event_id);
+  if (!history_.Commit(jobs_.back().transcript) ||
       !CommitEvents(jobs_.back(), false) || !live_input_->Seal(stream_epoch_))
     return false;
   previous_id_ = live_id_;
@@ -719,7 +1064,10 @@ bool RealtimeTranscriptionSession::Tick() {
   if (!vad_events_.empty()) return true;
   if (control_ && done_.load(std::memory_order_acquire)) {
     if (worker_.joinable()) worker_.join();
-    const auto& job = jobs_.front();
+    auto& job = jobs_.front();
+    if (!Accepted(result_) && result_.ok())
+      result_ = Error(503, "transcription_result_unknown",
+                      "Transcription outcome was not confirmed");
     if (result_.ok() && job.stream && !job.stream->Drained())
       result_ = Error(502, "transcription_result_invalid",
                       "Streaming audio did not drain before completion");
@@ -754,11 +1102,22 @@ bool RealtimeTranscriptionSession::Tick() {
         speech_id_.clear();
       }
     }
+    if (const auto found = input_owners_.find(job.id);
+        found != input_owners_.end()) {
+      auto settled = callbacks_.owner->Finish(job, result_);
+      input_owners_.erase(found);
+      if (!Accepted(settled)) {
+        if (Accepted(result_)) result_ = std::move(settled);
+        if (result_.ok())
+          result_ = Error(503, "transcription_owner_unknown",
+                          "Input settlement was not confirmed");
+      }
+    }
     auto event =
         Event(std::string("conversation.item.input_audio_transcription.") +
               (result_.ok() ? "completed" : "failed"));
     Set(&event, "item_id", String(jobs_.front().id));
-    Set(&event, "content_index", Number(0));
+    Set(&event, "content_index", Number(job.content_index));
     if (result_.ok()) {
       Set(&event, "transcript", String(result_.value.GetString("text")));
       for (const auto key : {"usage", "logprobs", "q4t_semantic_vad"})
@@ -780,17 +1139,45 @@ bool RealtimeTranscriptionSession::Tick() {
     if (!DropFrontJob()) return false;
   }
   if (worker_.joinable() || jobs_.empty() || jobs_.front().deleted) return true;
-  if (!jobs_.front().stream) {
+  if (!jobs_.front().stream && !jobs_.front().Finite()) {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;
   }
-  control_ = callbacks_.acquire(jobs_.front().id);
-  if (!control_) return false;
-  // Preallocate the exception fallback before starting the worker. Exception
-  // handling inside the producer must not allocate during host exhaustion.
-  result_ =
-      Error(500, "transcription_failed", "Transcription execution failed");
-  done_.store(false, std::memory_order_relaxed);
+  if ((jobs_.front().idle_timeout || jobs_.front().Finite()) &&
+      !jobs_.front().audio.samples) {
+    // Zero received samples are not an ASR call or a transcript success event.
+    // Settle only the native empty-input fact, without admission/token usage.
+    auto& job = jobs_.front();
+    if (!history_.Complete(job.transcript, "")) return false;
+    if (const auto found = input_owners_.find(job.id);
+        found != input_owners_.end()) {
+      ObjectReply empty;
+      empty.value = Object({{"text", String("")}});
+      const auto settled = callbacks_.owner->Finish(job, empty);
+      input_owners_.erase(found);
+      if (!Accepted(settled)) return false;
+    }
+    return DropFrontJob();
+  }
+  if (!control_) {
+    control_ = callbacks_.acquire(jobs_.front().id);
+    if (!control_) return false;
+    if (control_->id() != jobs_.front().id) {
+      // Never cancel or release a request belonging to a different owner.
+      control_.reset();
+      return false;
+    }
+    // Preallocate the exception fallback before starting the worker.
+    result_ =
+        Error(500, "transcription_failed", "Transcription execution failed");
+    done_.store(false, std::memory_order_relaxed);
+  }
+  if (control_->Cancelled()) {
+    result_ = Error(409, control_->Reason(), "Transcription cancelled");
+    done_.store(true, std::memory_order_release);
+    return true;
+  }
+  if (callbacks_.owner && !callbacks_.owner->Ready(jobs_.front())) return true;
   auto& next = jobs_.front();
   if (!history_.ContextBefore(next.transcript, kAsrPromptBytes,
                               &next.settings.request.previous_transcript)) {
@@ -799,7 +1186,7 @@ bool RealtimeTranscriptionSession::Tick() {
     done_.store(true, std::memory_order_release);
     return true;
   }
-  const auto bytes = jobs_.front().stream
+  const auto bytes = jobs_.front().stream || jobs_.front().Finite()
                          ? std::array<std::span<const uint8_t>, 2>{}
                          : queue_.FrontBytes();
   const auto* borrowed_job = &jobs_.front();
@@ -809,7 +1196,7 @@ bool RealtimeTranscriptionSession::Tick() {
       const auto delta = [&](const Json& part) {
         auto event = Event("conversation.item.input_audio_transcription.delta");
         Set(&event, "item_id", String(job.id));
-        Set(&event, "content_index", Number(0));
+        Set(&event, "content_index", Number(job.content_index));
         Set(&event, "delta", String(part.GetString("delta")));
         if (const auto* p = part.Find("logprobs")) Set(&event, "logprobs", *p);
         return output_.Push(WebSocketOpcode::kText, OutputJson(event),

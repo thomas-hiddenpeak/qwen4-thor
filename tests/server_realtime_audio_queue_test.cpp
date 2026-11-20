@@ -301,3 +301,53 @@ Q4T_TEST(realtime_queue_invalid_limits_and_repeated_ring_cycles) {
   Q4T_CHECK(queue.UsedBytes() == 0 && queue.Items() == 0);
   return true;
 }
+
+Q4T_TEST(realtime_queue_resume_requires_ack_and_preserves_clock_sequence) {
+  RealtimeAudioQueue queue(7, {}, 12, 2, 20);
+  RealtimeAudioItem first, next;
+  Q4T_CHECK(queue.Append(7, Bytes("abcd")) && queue.Commit(7, &first));
+  const auto* borrowed = queue.FrontBytes()[0].data();
+  Q4T_CHECK(queue.Append(7, Bytes("ef")) && queue.Cancel(7));
+  Q4T_CHECK(!queue.ResumeCancelled(7, 8) && queue.AcceptedTicks() == 6 &&
+            queue.FrontBytes()[0].data() == borrowed && Front(queue) == "abcd");
+  Q4T_CHECK(queue.Acknowledge(7, first.sequence) &&
+            queue.ResumeCancelled(7, 8));
+  Q4T_CHECK(!queue.Cancelled() && queue.StorageBytes() == 12 &&
+            queue.AcceptedTicks() == 8);
+  Q4T_CHECK(queue.Append(7, Bytes("ghij")) && queue.Commit(7, &next));
+  Q4T_CHECK(next.sequence == first.sequence + 1 && next.begin_ticks == 8 &&
+            next.end_ticks == 12 && Front(queue) == "ghij");
+  Q4T_CHECK(!queue.Acknowledge(7, first.sequence));
+  return true;
+}
+
+Q4T_TEST(realtime_queue_resume_never_refunds_lifetime_duration_or_epoch) {
+  RealtimeAudioQueue queue(8, {}, 12, 2, 10);
+  Q4T_CHECK(!queue.ResumeCancelled(8, 0));
+  Q4T_CHECK(queue.Append(8, Bytes("abcd")) && queue.Cancel(8));
+  for (const auto ticks : {uint64_t{3}, uint64_t{11}, UINT64_MAX})
+    Q4T_CHECK(!queue.ResumeCancelled(8, ticks) && queue.Cancelled() &&
+              queue.AcceptedTicks() == 4);
+  Q4T_CHECK(!queue.ResumeCancelled(9, 4));
+  Q4T_CHECK(queue.ResumeCancelled(8, 8) && queue.Append(8, Bytes("ef")));
+  Q4T_CHECK(!queue.Append(8, Bytes("gh")) && queue.AcceptedTicks() == 10);
+  Q4T_CHECK(queue.Cancel(8) && queue.ResumeCancelled(8, 10));
+  Q4T_CHECK(!queue.Append(8, Bytes("ij")));
+  return true;
+}
+
+Q4T_TEST(realtime_queue_empty_idle_is_opt_in_and_preserves_real_sample_clock) {
+  RealtimeAudioQueue queue(19, {}, 12, 2);
+  RealtimeAudioItem empty, audio;
+  Q4T_CHECK(!queue.Commit(19, &empty) && !queue.PreviewPrefix(19, 0, &empty));
+  Q4T_CHECK(queue.CommitPrefix(19, 0, &empty, true));
+  Q4T_CHECK(empty.samples == 0 && empty.bytes == 0 && empty.sequence == 1 &&
+            queue.FrontBytes()[0].empty() && queue.StorageBytes() == 0);
+  Q4T_CHECK(queue.Append(19, Bytes("abcd")) && queue.Commit(19, &audio));
+  Q4T_CHECK(audio.begin_ticks == 0 && audio.end_ticks == 4 &&
+            audio.sequence == 2 && queue.UsedBytes() == 4);
+  Q4T_CHECK(queue.Acknowledge(19, 1) && Front(queue) == "abcd" &&
+            queue.Acknowledge(19, 2) && queue.AcceptedTicks() == 4);
+  Q4T_CHECK(!queue.Commit(19, &empty));
+  return true;
+}

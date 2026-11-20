@@ -1,0 +1,14 @@
+{
+  "status": "PASS_REALTIME_SPEECH_PR54_MERGED",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/54",
+  "accepted_head": "c4ed245743cb77a36b91389f8e0867f8cde5d14a",
+  "merge_commit": "105e5f0df45f823e85d8201abe06bf8518270d11",
+  "main_tip": "105e5f0df45f823e85d8201abe06bf8518270d11",
+  "exact_head_checks": 2,
+  "source_ancestry_confirmed": true,
+  "default_revision": 376,
+  "service_state": "STOPPED",
+  "gpu_actions": 0,
+  "local_duplex_not_in_this_merge": true,
+  "remaining_master_active": true
+}

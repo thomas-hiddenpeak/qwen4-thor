@@ -1,0 +1,26 @@
+{
+  "status": "ACCEPT_TARGETED_LOCAL_INPUT_RECOVERY_CPU",
+  "unique_cases": 18,
+  "case_executions": 18,
+  "new_cases": 6,
+  "affected_cases": 12,
+  "seconds": 0.6374492510221899,
+  "source_counterexamples": 20,
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 55.59698380390182,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "eaab2e88bf334640fcc4540d5a67a23e46d830ce86cf3ce48ad6b46f7cc41942",
+    "free_bytes_after": 3966599168
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_duplex_business": "pending",
+  "native_health_validation_runtime_build": "pending",
+  "master_active": true
+}

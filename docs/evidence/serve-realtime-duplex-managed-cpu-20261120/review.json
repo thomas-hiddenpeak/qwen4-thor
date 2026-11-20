@@ -1,0 +1,111 @@
+{
+  "cpu": {
+    "status": "PASS",
+    "tests": 12,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_realtime.test_duplex_service",
+          "tools.serve_realtime.test_duplex_recovery_sdk"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "--check",
+          "tools/serve_realtime/duplex_recovery_sdk.mjs"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "seconds": 3.1329046469181776,
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "native_build": {
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.7161946957930923,
+    "warnings": [],
+    "binaries": {
+      "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+      "q4t-cuda-probe": "c748d66936a03e0cee48892869897ee37d3971f5a32c5a73e3868fb5fdf84acc",
+      "q4t-ingress": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "sources_unchanged": true,
+    "engine_cache_protocol_default_unchanged": true,
+    "gpu_actions": 0
+  },
+  "scope": {
+    "scope": "Native same-conversation ASR and response across actual Guardian gateway/controller/whole-package recovery. Only exact owned test services are faulted. No production default mutation.",
+    "phase": "development_plan_actual_managed_execution_pending",
+    "planned_scenarios": {
+      "tool_retained": {
+        "starts": 1,
+        "native_work": 3,
+        "wss": 1,
+        "probes": 0,
+        "seconds": 300
+      },
+      "tls": {
+        "starts": 2,
+        "native_work": 9,
+        "wss": 3,
+        "probes": 0,
+        "seconds": 360
+      },
+      "tool_version": {
+        "starts": 2,
+        "native_work": 6,
+        "wss": 2,
+        "probes": 1,
+        "seconds": 540
+      }
+    },
+    "counts_include_startup_self_checks": true,
+    "actual_business": [
+      "same conversation actual PCM commit -> public native ASR -> model text response",
+      "retrieve processed real audio and clean final usage",
+      "TLS gateway fault during continuous ASR after real public delta, withholding commit to keep ownership",
+      "same healthy model after gateway recovery; old request cancelled and actual usage settled",
+      "explicit new connection, no reconnect or automatic request replay",
+      "controller restart waits complete original quota interval, new ASR response works",
+      "actual whole-payload fallback to qualified same-duplex-capability retained controller",
+      "all owned models, ingress, ports, lock and reservations cleaned"
+    ],
+    "validation": [
+      "targeted CPU actor/protocol/receipt/packaging counterexamples",
+      "each full GPU scenario holds one strict lease",
+      "use original accepted unchanged backend and recovery evidence by exact source identity",
+      "do not extend to full performance or model-quality matrices"
+    ],
+    "delivery": [
+      "default remains STOPPED through preparation",
+      "preserve alpha RPM30 TPM6000 output3457 and beta RPM1 TPM6000 output256",
+      "native bundle v24 must seal all duplex evidence dependencies; v23 remains readable",
+      "old no-input engine is not an automatic fallback for new declared capability",
+      "preserve model quality failures and user-deferred listening",
+      "reversible package/metadata/state publication after actual recovery acceptance",
+      "commit/push, PR merge and continue every remaining master task"
+    ]
+  },
+  "default_unchanged": true,
+  "actual_recovery_pending": true,
+  "master_active": true
+}

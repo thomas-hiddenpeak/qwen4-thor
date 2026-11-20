@@ -1,0 +1,36 @@
+{
+  "status": "ACCEPT_TARGETED_CONVERSATION_INPUT_AND_TURN_OWNER_CPU",
+  "unique_cases": 53,
+  "case_executions": 61,
+  "new_cases": 19,
+  "original_failed_executions": 8,
+  "original_failures_preserved": true,
+  "all_failed_cases_repaired": true,
+  "unchanged_passes_reused": 41,
+  "repaired_compiled_sources": [
+    "include/q4t/server/realtime_shape.h",
+    "src/server/realtime_wire_shape.cpp",
+    "tests/server_realtime_conversation_input_test.cpp",
+    "tests/server_realtime_conversation_session_test.cpp"
+  ],
+  "reuse_scope": "The only runtime behavior repair is the response.create WithReferencesParam validation fallback; its 2 direct new cases and 2 prior wire guards were checked. All other previously passing session/input runtime code stayed exact; tests corrected fractional threshold, actual-commit wait and validation-call baseline. Original SDK graph unchanged.",
+  "source_counterexamples": 20,
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 35.94839578215033,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "e3768696482282454f1df5a10eedb222a6e05ea17fe883eaab842cf4ee0f9901",
+    "free_bytes_after": 4199251968
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "http_native_backend_entry": "pending",
+  "idle_direct_audio_and_pipeline_recovery": "pending",
+  "real_wss_asr_tts": "pending",
+  "master_active": true
+}

@@ -602,6 +602,14 @@
         "recovery_delivery_pending": true,
         "duplex_input_pending": true,
         "master_complete": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -944,6 +952,14 @@
         "recovery_delivery_pending": true,
         "duplex_input_pending": true,
         "master_complete": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -2811,7 +2827,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement conversation duplex audio/VAD, MCP/tracing and Live, remaining multimodal backends and actual acceptance. Speech output is delivered; original numerical/model-quality failures and owner-deferred listening remain.",
+      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5115,6 +5131,40 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
+      },
+      "duplex_input_20261120": {
+        "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
+        "state": "settings_history_processing_configuration_cpu_accepted_entry_pending",
+        "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
+        "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
+        "unique_cpu_cases": 45,
+        "case_executions": 55,
+        "source_counterexamples_per_group": 20,
+        "gpu_actions": 0,
+        "runtime_entry_qualified": false,
+        "default_revision": 376,
+        "remaining": [
+          "native processing composition and transactional settings",
+          "manual/VAD/idle response scheduling and input deletion ownership",
+          "targeted real WSS/ASR/TTS and affected recovery/publication",
+          "all remaining Serve master tasks"
+        ],
+        "processing_configuration": {
+          "evidence": "docs/evidence/serve-realtime-duplex-configure-cpu-20261120/README.md",
+          "new_cases": 5,
+          "affected_existing_cases": 10,
+          "seconds": 0.5974072138778865,
+          "host_binary_sha256": "cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111",
+          "gpu_actions": 0
+        }
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -6582,6 +6632,14 @@
         "recovery_delivery_pending": true,
         "duplex_input_pending": true,
         "master_complete": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -7396,6 +7454,14 @@
         "revision": 366,
         "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
         "main_integration_pending": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -7573,6 +7639,14 @@
         "revision": 366,
         "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
         "main_integration_pending": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -8715,12 +8789,20 @@
         "recovery_delivery_pending": true,
         "duplex_input_pending": true,
         "master_complete": false
+      },
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev376_delivered_pr54_main_pending_remaining_master_active",
+      "state": "rev396_delivered_duplex_main_pending_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -8754,109 +8836,68 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "PASS_NATIVE_REALTIME_SPEECH_DELIVERED",
-        "revision": 376,
+        "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
+        "revision": 386,
         "state": "STOPPED",
         "current": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-02/bundle",
-          "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd"
+          "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+          "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+          "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
+          "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
+          "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
+          "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
         },
-        "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
-        "protocol_sha256": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+        "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+        "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
         "successful_commands": 19,
-        "seconds": 358.4579004631378,
+        "seconds": 349.2686820998788,
         "new_gpu_starts": 0,
         "outer_enabled": true,
         "outer_charged_total": 0,
-        "persistent_client_limits": "alpha RPM30/TPM6000/output3457; beta RPM1/TPM6000/output256",
+        "persistent_client_limits": {
+          "alpha": {
+            "requests_per_minute": 30,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 3457
+          },
+          "beta": {
+            "requests_per_minute": 1,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 256
+          }
+        },
         "usage_reset": false,
         "profile_history_and_cooldown_preserved": true,
         "version_cycles_preserved": true,
         "manual_root": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
-          "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
         },
         "automatic_payload": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
-          "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
         },
         "candidate_to_retained_automatic_fault_actually_tested": true,
         "reciprocal_automatic_fault_additionally_injected": false,
         "reciprocal_registration_and_stopped_rollback_verified": true,
-        "original_tls_cancel_statistics_failed": true,
+        "previous_rev376_preserved": true,
+        "retired_records_archived_per_pool": 4,
+        "deleted_files": 0,
+        "maintenance_seconds": 124.12811847496778,
+        "model_quality_status": "FAIL",
+        "model_quality_separate": true,
         "original_model_quality_failures_preserved": true,
+        "original_driver_failure_preserved": true,
         "listening_deferred_by_owner": true,
-        "previous_rev366_preserved": true,
-        "maintenance": {
-          "status": "PASS_REVERSIBLE_RETIRED_MAINTENANCE",
-          "commands": [
-            {
-              "label": "intents-plan",
-              "returncode": 0,
-              "seconds": 3.314549523871392
-            },
-            {
-              "label": "intents-apply",
-              "returncode": 0,
-              "seconds": 7.2860421147197485
-            },
-            {
-              "label": "generations-plan",
-              "returncode": 0,
-              "seconds": 12.362689020112157
-            },
-            {
-              "label": "generations-apply",
-              "returncode": 0,
-              "seconds": 19.672693768981844
-            },
-            {
-              "label": "versions-plan",
-              "returncode": 0,
-              "seconds": 61.791719417087734
-            },
-            {
-              "label": "versions-apply",
-              "returncode": 0,
-              "seconds": 111.09309763787314
-            },
-            {
-              "label": "status-after",
-              "returncode": 0,
-              "seconds": 140.41047054668888
-            }
-          ],
-          "seconds": 140.43661146983504,
-          "protected_unchanged": true,
-          "deleted_files": 0,
-          "gpu_starts": 0,
-          "before": {
-            "intents": 126,
-            "generations": 31,
-            "versions": 16
-          },
-          "after": {
-            "intents": 122,
-            "generations": 27,
-            "versions": 12
-          },
-          "restoration": "service maintenance-restore --state STATE --kind KIND --plan ARCHIVE/plan.json --plan-sha256 SHA from the original sealed plan"
-        },
-        "files": {
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/result.json": "f7d0ee1f1e38a6883435382eb813e6121ab69a7117667accf10f9d2b884dfd23",
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/review.json": "cad3ed8577708e91e19db443bb97faf7faddd2ad196758b09d0299f577517689",
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/candidate-decision.json": "cb4ab0fa80dd5a77ee959063f2c5439c6fca1df1a8b0f7c25d9c6221ea5b2178",
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/retained-decision.json": "ce823cb3fb9a43cccb096b4ec5c0fb67dd5b3b2842b641316c58601392515eec",
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/recovery-anchor.json": "b1a0fb4c9f325421584e1761f51662f41a919a25a2cfdecbbe708189fa3fe387",
-          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/publication-composition.json": "572218630eb13a6c724aad63a913bc91d7d36a37d19da7d0e2c7db8518a3d9b8"
-        },
         "main_integration_pending": true,
         "full_model_quality": false,
         "performance_claim": false,
         "long_stability_run": false,
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
-        "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
+        "secret_scan_matches": 0,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
       },
       "merged_foundation": {
         "pr": 22,
@@ -9023,7 +9064,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Realtime Prompt final-head CI and actual main merge",
+        "Realtime duplex final-head CI and actual main merge",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -9523,7 +9564,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "current_mainline_evidence": "evidence/serve-tts-mainline-20261118/README.md",
-      "current_candidate": "No unaccepted output candidate; repaired native Realtime speech delivered rev376. PR54 main integration pending; next duplex work has not changed the runtime.",
+      "current_candidate": "Qualified native duplex delivered rev396 after credential-only reissue; phase PR/main pending",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -9666,14 +9707,19 @@
         "merged": false
       },
       "latest_mainline_merge": {
-        "headRefOid": "74759c6540d4440066820b5bf1e4c685aac7d9f3",
-        "mergeCommit": {
-          "oid": "0c8d7a1076574010d9753f556fa22ae745cb68fc"
-        },
-        "mergedAt": "2026-11-19T17:51:43Z",
-        "state": "MERGED",
-        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/52",
-        "evidence": "evidence/serve-realtime-chat-main-20261120/README.md"
+        "status": "PASS_REALTIME_SPEECH_PR54_MERGED",
+        "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/54",
+        "accepted_head": "c4ed245743cb77a36b91389f8e0867f8cde5d14a",
+        "merge_commit": "105e5f0df45f823e85d8201abe06bf8518270d11",
+        "main_tip": "105e5f0df45f823e85d8201abe06bf8518270d11",
+        "exact_head_checks": 2,
+        "source_ancestry_confirmed": true,
+        "default_revision": 376,
+        "service_state": "STOPPED",
+        "gpu_actions": 0,
+        "local_duplex_not_in_this_merge": true,
+        "remaining_master_active": true,
+        "evidence": "docs/evidence/serve-pr54-merged-20261120/README.md"
       },
       "realtime_history_business_20261119": {
         "state": "business_qualified_recovery_delivery_pending",
@@ -9896,6 +9942,15 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
+      },
+      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+      "native_realtime_duplex_delivery_20261120": {
+        "revision": 386,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -10155,8 +10210,8 @@
       }
     }
   ],
-  "next_task": "PR54 exact-head checks and main merge; then native conversation duplex audio/VAD, MCP/tracing/Live and all remaining A/N/R/Q tasks. rev376 speech is delivered STOPPED with actual recovery and repaired cancellation.",
-  "next": "完成PR #54检查合入，继续同一conversation双向音频/VAD、MCP/追踪/Live及全部未完成任务；rev376语音已交付，不以阶段代替总目标。",
+  "next_task": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+  "next": "完成rev396双向音频PR检查合入，继续Realtime MCP/追踪/Live及全部计划；旧凭据按披露处理、当前和回退包已更换，原失败保留。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -11127,7 +11182,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_speech_output_delivered_rev376_duplex_and_remaining_master_active",
+    "state": "native_duplex_delivered_rev396_remaining_master_active",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -11135,7 +11190,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "PR54 exact-head checks and main merge; then native conversation duplex audio/VAD, MCP/tracing/Live and all remaining A/N/R/Q tasks. rev376 speech is delivered STOPPED with actual recovery and repaired cancellation.",
+    "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -12426,6 +12481,1870 @@
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
       "recovery_evidence": "evidence/serve-realtime-speech-recovery-20261120/README.md"
+    },
+    "duplex_input_20261120": {
+      "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
+      "state": "delivered_rev396_main_integration_pending",
+      "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
+      "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
+      "unique_cpu_cases": 229,
+      "case_executions": 381,
+      "source_counterexamples_per_group": 20,
+      "gpu_actions": 3,
+      "runtime_entry_qualified": true,
+      "default_revision": 396,
+      "remaining": [
+        "affected primary/light qualification and Guardian recovery with duplex capability preserved",
+        "reversible delivery and main merge",
+        "all master tasks"
+      ],
+      "processing_configuration": {
+        "evidence": "docs/evidence/serve-realtime-duplex-configure-cpu-20261120/README.md",
+        "new_cases": 5,
+        "affected_existing_cases": 10,
+        "seconds": 0.5974072138778865,
+        "host_binary_sha256": "cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111",
+        "gpu_actions": 0
+      },
+      "original_failed_executions": 20,
+      "reservation_and_capture": {
+        "evidence": "docs/evidence/serve-realtime-duplex-capture-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_RESERVATION_AND_CAPTURE_CPU",
+          "new_cases": 12,
+          "affected_existing_cases": 30,
+          "seconds": 0.4693547831848264,
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "returncode": 0,
+            "seconds": 17.558060814160854,
+            "warnings": 0,
+            "binary_sha256": "24a58a7c453da728f1ee4097a105a8d8015c85f67e35bca91b65e237da78b277",
+            "default_unchanged": true,
+            "gpu_actions": 0
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "native_conversation_entry": "pending",
+          "actual_duplex_business": "pending",
+          "remaining_master_active": true
+        }
+      },
+      "native_lifecycle": {
+        "evidence": "docs/evidence/serve-realtime-duplex-owner-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_LIFECYCLE_CPU",
+          "new_cases": 11,
+          "affected_existing_cases": 17,
+          "seconds": 0.8958885432220995,
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 42.65759042277932,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9b357f066366235185678cbd47b1869e42728b688b7c7a19e9b73930ae4de4ef",
+            "free_bytes_after": 138682368
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "native_conversation_entry": "pending",
+          "actual_duplex_business": "pending",
+          "remaining_master_active": true
+        }
+      },
+      "original_source_gate_failures": 1,
+      "cpu_count_correction": "Recount of raw case names: prior five groups 91, not 92; original published records retained.",
+      "event_composition": {
+        "evidence": "docs/evidence/serve-realtime-duplex-composition-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_EVENT_COMPOSITION_CPU",
+          "unique_cases": 33,
+          "case_executions": 34,
+          "new_cases": 14,
+          "original_cpu_failures": 1,
+          "original_source_gate_failures": 1,
+          "failed_case_repaired": true,
+          "unchanged_passes_reused": 31,
+          "changed_compiled_sources_for_repair": [
+            "tests/server_realtime_conversation_input_test.cpp"
+          ],
+          "source_counterexamples": 20,
+          "final_source_gate": "PASS",
+          "build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 9.211099139880389,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "33fb543b5f77de9a937c3a04caa4409ccf824a29ca1358baacb57a452bf9b1c2",
+            "free_bytes_after": 37982208
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_chat_entry": "pending",
+          "actual_duplex_business": "pending",
+          "remaining_master_active": true,
+          "maintenance": {
+            "status": "EXACT_HISTORICAL_HEADS_SHARED_READONLY",
+            "paths": 14,
+            "content_sha256": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+            "original_paths_and_bytes_preserved": true,
+            "permissions_changed_to_readonly": true,
+            "shared_links": 15,
+            "duplicate_allocated_bytes_released": 4362113024,
+            "free_before": 24113152,
+            "free_after": 4386205696,
+            "actual_independent_restore_and_rededup_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/artifact/head.bf16",
+            "original_metadata_in_plan": true,
+            "protected_unchanged": true,
+            "models_and_reference_untouched": true,
+            "gpu_actions": 0,
+            "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/dedup-historical-heads-06/restore.py"
+          }
+        }
+      },
+      "conversation_turn_owner": {
+        "evidence": "docs/evidence/serve-realtime-duplex-session-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_CONVERSATION_INPUT_AND_TURN_OWNER_CPU",
+          "unique_cases": 53,
+          "case_executions": 61,
+          "new_cases": 19,
+          "original_failed_executions": 8,
+          "original_failures_preserved": true,
+          "all_failed_cases_repaired": true,
+          "unchanged_passes_reused": 41,
+          "repaired_compiled_sources": [
+            "include/q4t/server/realtime_shape.h",
+            "src/server/realtime_wire_shape.cpp",
+            "tests/server_realtime_conversation_input_test.cpp",
+            "tests/server_realtime_conversation_session_test.cpp"
+          ],
+          "reuse_scope": "The only runtime behavior repair is the response.create WithReferencesParam validation fallback; its 2 direct new cases and 2 prior wire guards were checked. All other previously passing session/input runtime code stayed exact; tests corrected fractional threshold, actual-commit wait and validation-call baseline. Original SDK graph unchanged.",
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 35.94839578215033,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "e3768696482282454f1df5a10eedb222a6e05ea17fe883eaab842cf4ee0f9901",
+            "free_bytes_after": 4199251968
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "http_native_backend_entry": "pending",
+          "idle_direct_audio_and_pipeline_recovery": "pending",
+          "real_wss_asr_tts": "pending",
+          "master_active": true
+        }
+      },
+      "native_backend": {
+        "evidence": "docs/evidence/serve-realtime-duplex-backend-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_BACKEND_BUILD_AND_CPU",
+          "unique_cases": 16,
+          "case_executions": 18,
+          "new_cases": 4,
+          "original_failed_executions": 2,
+          "original_failures_preserved": true,
+          "unchanged_passes_reused": 14,
+          "repaired_compiled_sources": [
+            "tests/server_realtime_chat_plan_test.cpp"
+          ],
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 9.92781757330522,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "1c0f42e5bde7c95c60687fd820cf81458a2cdbbb134efa4992e0ddc7f9090e2c",
+            "free_bytes_after": 4071948288
+          },
+          "runtime_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 147.19619747297838,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "1f01ec621cd7a79ca037e3f5308325c0b3e10d9f00c66da04896ea03f6c5e577",
+            "free_bytes_after": 4041773056
+          },
+          "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/backend-runtime-01/q4t",
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_http_business": "pending",
+          "remaining": [
+            "idle response",
+            "direct mixed audio items",
+            "same-session input pipeline recovery",
+            "real WSS/native ASR/TTS and affected recovery/delivery",
+            "all master tasks"
+          ]
+        }
+      },
+      "local_input_recovery": {
+        "evidence": "docs/evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_LOCAL_INPUT_RECOVERY_CPU",
+          "unique_cases": 18,
+          "case_executions": 18,
+          "new_cases": 6,
+          "affected_cases": 12,
+          "seconds": 0.6374492510221899,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 55.59698380390182,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "eaab2e88bf334640fcc4540d5a67a23e46d830ce86cf3ce48ad6b46f7cc41942",
+            "free_bytes_after": 3966599168
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_duplex_business": "pending",
+          "native_health_validation_runtime_build": "pending",
+          "master_active": true
+        }
+      },
+      "idle_timeout": {
+        "evidence": "docs/evidence/serve-realtime-duplex-idle-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_REALTIME_IDLE_CPU",
+          "unique_cases": 26,
+          "case_executions": 26,
+          "new_cases": 10,
+          "affected_cases": 16,
+          "seconds": 0.6728908191435039,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 59.276533640921116,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "d0498c558130b1a0a8cde729dac127e3f514b25985ada896a361eab27ce09442",
+            "free_bytes_after": 3887837184
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_duplex_business": "pending",
+          "native_runtime_build": "pending",
+          "master_active": true
+        }
+      },
+      "mixed_audio_history": {
+        "evidence": "docs/evidence/serve-realtime-duplex-mixed-history-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_MIXED_AUDIO_HISTORY_CPU",
+          "unique_cases": 18,
+          "case_executions": 18,
+          "new_cases": 6,
+          "affected_cases": 12,
+          "seconds": 0.5147111918777227,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 43.258791075088084,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "b1207ef300e6d99b1a3d123678eb7976ff8d5bf0ea2db0dc4bee5df317aa0c03",
+            "free_bytes_after": 3825922048
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_direct_audio_execution": "pending",
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "finite_audio_queue": {
+        "evidence": "docs/evidence/serve-realtime-duplex-finite-input-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_FINITE_AUDIO_PREPARATION_AND_QUEUE_CPU",
+          "unique_cases": 22,
+          "case_executions": 22,
+          "new_cases": 10,
+          "affected_cases": 12,
+          "seconds": 0.684780091047287,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 38.454709478188306,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "53501b78b0d4c68cd34c3ce14caffed1cb523869526b89741a49e7fdb9673f53",
+            "free_bytes_after": 3760496640
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_direct_audio_execution": "pending",
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "direct_mixed_audio_entries": {
+        "evidence": "docs/evidence/serve-realtime-duplex-mixed-entry-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_MIXED_ITEM_AND_INLINE_AUDIO_CPU",
+          "unique_cases": 36,
+          "case_executions": 36,
+          "new_cases": 18,
+          "affected_cases": 18,
+          "seconds": 0.7477424456737936,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 49.67960415314883,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "83f8fe997fc00f08ea319f178c5bc43a624c69b8249865d5b45dad4e389be3e6",
+            "free_bytes_after": 3668398080
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_direct_audio_entry": "connected_cpu_accepted",
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "runtime_ready": {
+        "evidence": "docs/evidence/serve-realtime-duplex-runtime-ready-20261120/README.md",
+        "result": {
+          "status": "RUNTIME_BUILD_AND_BUSINESS_DRIVER_CPU_READY",
+          "runtime_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 147.167845972348,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+            "free_bytes_after": 3621777408
+          },
+          "driver_cpu": {
+            "status": "PASS",
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_realtime.test_duplex_acceptance"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--check",
+                  "tools/serve_realtime/duplex_sdk.mjs"
+                ],
+                "returncode": 0
+              }
+            ],
+            "seconds": 0.26243093609809875,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "negative_cpu_cases": 10,
+          "sdk_syntax": true,
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "business_first_attempt": {
+        "evidence": "docs/evidence/serve-realtime-duplex-env-abort-20261120/README.md",
+        "result": {
+          "status": "ENV_ABORT_NOT_BUSINESS_ACCEPTANCE",
+          "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "driver_status": "FAIL",
+          "lease_status": "ENV_ABORT",
+          "seconds": 90.48527272697538,
+          "model_starts": 1,
+          "pre_model_launch_failure": {
+            "status": "LAUNCH_CONFIGURATION_FAILED_BEFORE_MODEL",
+            "reason": "Initial wrapper invocation omitted --inherit-lease; existing driver requires Q4T_MANAGED_LEASE_FD during construction",
+            "model_starts": 0,
+            "http_requests": 0,
+            "websocket_sessions": 0,
+            "default_unchanged": true,
+            "repair": "Keep original failed lease; correct command by adding --inherit-lease; identical frozen plan and binary; no model attempt consumed"
+          },
+          "reserved_attempt_counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 1,
+            "responses": 6,
+            "audio_inputs": 5,
+            "chats": 1,
+            "controls": 31
+          },
+          "actual_ws_transcript_available": false,
+          "actual_generated_answer_quality": "unverified_missing_actor_receipt",
+          "core_before": "42",
+          "nvml": {
+            "OK": 59,
+            "CLEANUP_FAILED": 1
+          },
+          "last_query_api": "init",
+          "model_exit": -9,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "cooperative_lock_available": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "automatic_retry": false,
+          "master_active": true
+        }
+      },
+      "interrupted_evidence_repair": {
+        "evidence": "docs/evidence/serve-realtime-duplex-interrupt-evidence-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_INTERRUPTED_EVIDENCE_CPU",
+          "result": {
+            "status": "PASS",
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_realtime.test_duplex_acceptance.Checks.test_actor_timeout_retains_written_stdout_and_stderr",
+                  "tools.serve_realtime.test_duplex_acceptance.Checks.test_journal_receipt_must_keep_all_original_events_and_attempts"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--test",
+                  "tools/serve_realtime/bounded_journal.test.mjs"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--check",
+                  "tools/serve_realtime/duplex_sdk.mjs"
+                ],
+                "returncode": 0
+              }
+            ],
+            "seconds": 1.4145317869260907,
+            "new_python_cases": 2,
+            "new_node_cases": 4,
+            "original_python_cases_reused": 10,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "original_environment_abort_preserved": true,
+          "runtime_unchanged": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "nvml_root_cause": "unresolved",
+          "default_revision": 376,
+          "default_unchanged": true,
+          "real_business": "pending",
+          "master_active": true
+        }
+      },
+      "business_second_attempt": {
+        "evidence": "docs/evidence/serve-realtime-duplex-business-20261120/README.md",
+        "result": {
+          "status": "PROTOCOL_OBSERVED_IDLE_MODEL_QUALITY_FAIL",
+          "original_status": "FAIL",
+          "lease_status": "COMMAND_FAILED",
+          "source_commit": "eb539d797932beefc6ccd2c77f36444f864ec108",
+          "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "seconds": 88.25879859179258,
+          "counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 2,
+            "responses": 9,
+            "audio_inputs": 7,
+            "chats": 2,
+            "controls": 35
+          },
+          "nvml": {
+            "OK": 82
+          },
+          "quality": [
+            {
+              "label": "manual_private",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "mixed",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "inline_audio",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "roundtrip",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "tool_answer",
+              "actual": "rev376",
+              "expected": "rev376",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_mixed_input_1",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_mixed_input_3",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_temporary_audio_1",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_temporary_roundtrip_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "vad_auto",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "idle",
+              "actual": "我无法模拟音频交互或邀请用户继续。请通过文本窗口输入您的问题。",
+              "expected": "READY",
+              "status": "FAIL"
+            },
+            {
+              "label": "asr_item_eca335dc67c08f6509752eb8f9cbf71b_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_item_86f6531fe2dca735b79890f4f215a9bd_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            }
+          ],
+          "settlement": {
+            "manual": {
+              "actual_settled_tokens": 2711.0,
+              "visible_tokens": 2630,
+              "private_asr_counter_residual": 81.0,
+              "private_asr_exact_token_oracle": false,
+              "admitted": 11
+            },
+            "vad": {
+              "actual_settled_tokens": 661.0,
+              "visible_tokens": 661,
+              "private_asr_counter_residual": 0.0,
+              "private_asr_exact_token_oracle": null,
+              "admitted": 5
+            }
+          },
+          "model_exit": 0,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "guardian_recovery": false,
+          "master_active": true
+        }
+      },
+      "idle_fact_repair": {
+        "evidence": "docs/evidence/serve-realtime-idle-fact-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_CPU_RUNTIME_BUILD_READY",
+          "cpp_cases": 8,
+          "new_cpp_cases": 2,
+          "python_negative_cases": 4,
+          "source_counterexamples": 20,
+          "sdk_syntax": true,
+          "seconds": 0.7729820208624005,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 28.295519575942308,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9ccf3773c0c3002188b78661526b1410c4e10db7dee300892e557d12a81e5c25",
+            "free_bytes_after": 3448295424
+          },
+          "runtime_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 22.537270754110068,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+            "free_bytes_after": 3387404288
+          },
+          "reconstruction": {
+            "original_event_source": "business-02/run/vad.sdk.json",
+            "fixture_sha256": "8b1a0ceb8f92f870426828f8931cc00748400b9e1765b5430739d8d75a1a548f",
+            "before_prompt_sha256": "a7559072edd02e9a37fd2116cb9e11dd5c2722d7ff91c5349fca7186905c62a4",
+            "after_prompt_sha256": "80805bd535d876cdccc7028502a34bdbddfebf2e047cfaf9001a8b3d2fc7542b",
+            "difference": "native zero-sample idle fact only",
+            "live_capture": false
+          },
+          "gpu_actions": 0,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "original_failures_preserved": true,
+          "master_active": true
+        }
+      },
+      "idle_fact_http": {
+        "evidence": "docs/evidence/serve-realtime-idle-http-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_BOUNDED_IDLE_HTTP",
+          "source_commit": "5778dded52b3f28e1ba85efc3c0c36d14d7df13a",
+          "runtime_binary": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+          "seconds": 53.63195409718901,
+          "counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 1,
+            "responses": 2,
+            "audio_inputs": 1,
+            "chats": 6,
+            "controls": 33
+          },
+          "nvml": {
+            "OK": 52
+          },
+          "quality": [
+            {
+              "label": "vad_auto",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "idle",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_item_e7f718447aad377d24b31c81e17c8f5d_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            }
+          ],
+          "diagnostics": [
+            {
+              "label": "before-seed-41",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "after-seed-41",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "before-seed-42",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "after-seed-42",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            }
+          ],
+          "settlement": {
+            "actual_settled_tokens": 363.0,
+            "visible_tokens": 363,
+            "private_asr_counter_residual": 0.0,
+            "private_asr_exact_token_oracle": null,
+            "admitted": 3
+          },
+          "model_exit": 0,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "guardian_recovery": false,
+          "original_failures_preserved": true,
+          "quality_causation": "not established: before and after both passed seeds 41/42",
+          "master_active": true
+        }
+      },
+      "primary_light_contract": {
+        "evidence": "docs/evidence/serve-realtime-duplex-profile-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_DUPLEX_PROFILE_CONTRACT_CPU",
+          "python_cases": 16,
+          "new_cases": 12,
+          "affected_cases": 4,
+          "original_execution_seconds": 1.0164845478720963,
+          "source_correction": {
+            "status": "PASS",
+            "seconds": 0.46502656769007444,
+            "source_counterexamples": 20,
+            "reused_python_cases": 16,
+            "new_python_executions": 0,
+            "original_source_failure_preserved": true,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "source_review": {
+            "sha256": "a2c7bab8cbbdbb3286ec91c161a475901cbde6e373b44d19ba416d62b97b007c",
+            "changed": 24,
+            "added": 4,
+            "unchanged": 956,
+            "previous_binary": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+            "candidate_binary": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+            "candidate_protocol": "d55cb38d4b5c9251612fdacd8e20b403a1842e67d50f016f9f76bfc60c1f8310"
+          },
+          "new_actual_profiles": false,
+          "guardian_recovery": false,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "gpu_starts": 0,
+          "master_active": true
+        }
+      },
+      "primary_quality_review": {
+        "evidence": "docs/evidence/serve-realtime-duplex-profile-quality-20261120/README.md",
+        "result": {
+          "status": "PRIMARY_PROTOCOL_ACCEPTED_ORIGINAL_QUALITY_FAIL_FOLLOWUP_PENDING",
+          "original_counts": {
+            "starts": 1,
+            "chats": 21,
+            "controls": 45,
+            "websocket_sessions": 5,
+            "ingress_starts": 3
+          },
+          "original_seconds": 109.24024037318304,
+          "original_guard": "COMMAND_FAILED",
+          "original_nvml_ok": 103,
+          "original_cleanup_complete": true,
+          "original_quality_failures": [
+            {
+              "label": "mixed",
+              "actual": "甚至出现交易几乎停滞的情况。Second audio follows.甚至出现交易几乎停滞的情况。"
+            },
+            {
+              "label": "vad_auto",
+              "actual": "even in cases where trading nearly comes to a complete halt."
+            }
+          ],
+          "production_prompt_reconstruction": {
+            "status": "PASS_PRODUCTION_PROMPT_RECONSTRUCTION",
+            "records": {
+              "mixed": {
+                "raw_sha256": "1cda565c5c8dd957aa8908093cd1814ece56ef2e9e797a0a0b99d7560cfffc4a",
+                "response_id": "resp_ba1930b979855771bff58e0e4f09ff7d",
+                "actual": "甚至出现交易几乎停滞的情况。Second audio follows.甚至出现交易几乎停滞的情况。",
+                "prompt_sha256": {
+                  "before": "500b0fbb8f6dd0f7418e8f26b5e20bad5f356538800187009ff7754ecd8ce249",
+                  "after": "55e83fc9dbad94dfc3e60665b6e57eb217baeeb5640abd313ec303ee2851e3e1"
+                },
+                "only_caller_instructions_change": true,
+                "actual_asr_preserved": true,
+                "not_live_prompt_capture": true
+              },
+              "vad_auto": {
+                "raw_sha256": "b70c2d0cbf335f77c731b89db86457c82052a64234bab289c7179732bbe21e31",
+                "response_id": "resp_269fe09f3867e55f9c2897e75be2cc11",
+                "actual": "even in cases where trading nearly comes to a complete halt.",
+                "prompt_sha256": {
+                  "before": "15cb8e06aa6c883900a0b3cba5ee3b240d9816527ba12a5f810de17b82b9a577",
+                  "after": "7033e230deb65b7eb7b6a22c6af3de5ea308382cbfc5ff38bdc55e44728a240d"
+                },
+                "only_caller_instructions_change": true,
+                "actual_asr_preserved": true,
+                "not_live_prompt_capture": true
+              }
+            },
+            "seconds": 6.5290562361478806,
+            "gpu_starts": 0,
+            "model_quality_failure_preserved": true,
+            "policy": "逐字抄写本条用户消息中第一段语音的原始转写，仅输出其中第一个完整句子一次。保持原语言，不翻译，不包含前后的文字说明或第二段语音，不增加任何解释。如果收到的是原生空闲未检测到语音的提示，只输出 READY。"
+          },
+          "cpu": {
+            "status": "PASS",
+            "seconds": 0.4660690249875188,
+            "source_counterexamples": 20,
+            "ci_syntax": 0,
+            "reused_python_cases": 21,
+            "new_python_executions": 0,
+            "gpu_starts": 0,
+            "default_unchanged": true,
+            "original_gate_failure_preserved": true
+          },
+          "new_followup_limits": {
+            "starts": 2,
+            "native_admissions": 34,
+            "websocket_sessions": 7,
+            "tls_entries": 4,
+            "seconds": 1200
+          },
+          "model_or_default_sampling_changed": false,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "managed_recovery": false,
+          "master_active": true
+        }
+      },
+      "primary_assembly": {
+        "evidence": "docs/evidence/serve-realtime-duplex-primary-assembly-20261120/README.md",
+        "result": {
+          "status": "PRIMARY_ACTUAL_TASKS_ACCEPTED_LIGHT_AND_RECOVERY_PENDING",
+          "original_run_status": "FAILED",
+          "original_driver_failure": "2MiB metadata reader used for 2.6MiB audio receipt",
+          "counts": {
+            "starts": 1,
+            "chats": 13,
+            "controls": 45,
+            "websocket_sessions": 2,
+            "ingress_starts": 1
+          },
+          "seconds": 61.36377510940656,
+          "nvml_ok": 59,
+          "cleanup_complete": true,
+          "actual_wss_quality": "5/5 PASS",
+          "fixed_seed_http": "7/8 PASS",
+          "diagnostic_failure": {
+            "label": "vad_auto",
+            "variant": "after",
+            "seed": 41,
+            "actual": "甚至出现",
+            "expected": "甚至出现交易几乎停滞的情况。",
+            "status": "FAIL"
+          },
+          "model_quality_repaired": false,
+          "primary_assembly": {
+            "status": "PASS_PRIMARY_PROTOCOL_AND_ACTUAL_CLARIFIED_TASKS",
+            "record_sha256": "201ce75d10dc654edd36afe8d8a904bc2163380f8f918049b90baf5fe4dfdc11",
+            "record_bytes": 6738716,
+            "environment_pending_light": true,
+            "original_quality_status": "FAIL",
+            "diagnostic_quality_status": "FAIL",
+            "new_gpu_starts": 0
+          },
+          "cpu": {
+            "status": "PASS",
+            "tests": 5,
+            "seconds": 1.4318465390242636,
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_recovery.test_profile_duplex_resume",
+                  "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_diagnostic_failure_is_preserved_and_cannot_be_relabelled",
+                  "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_source_and_original_failure_cannot_be_replaced",
+                  "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_repaired_driver_uses_same_client_policy_with_exact_work_bounds"
+                ],
+                "exit_code": 0
+              },
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "tools/serve_audit/check_inventory.py",
+                  "--self-check"
+                ],
+                "exit_code": 0
+              }
+            ],
+            "gpu_starts": 0,
+            "default_unchanged": true
+          },
+          "light_pending": true,
+          "guardian_recovery_pending": true,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "master_active": true
+        }
+      },
+      "audio_boundary_review": {
+        "evidence": "docs/evidence/serve-realtime-duplex-audio-boundaries-20261120/README.md",
+        "status": "LIGHT_ORIGINAL_FAILED_AUDIO_BOUNDARY_REPAIR_CPU_PASS",
+        "model_quality_fixed": false
+      },
+      "audio_boundary_http": {
+        "evidence": "docs/evidence/serve-realtime-duplex-audio-boundary-http-20261120/README.md",
+        "status": "PRIMARY_DUPLEX_PASS_LIGHT_QUALITY_AND_INTERRUPTION_FAIL",
+        "qualification_issued": false
+      },
+      "fixed_sampling": {
+        "evidence": "docs/evidence/serve-realtime-duplex-fixed-sampling-20261120/README.md",
+        "result": {
+          "status": "PASS_DIAGNOSTIC_COLLECTION",
+          "environment": {
+            "status": "PASS",
+            "env_abort": false,
+            "all_queries_ok": true,
+            "nvml_queries": 92,
+            "cleanup_complete": true
+          },
+          "after_unrelated_request_exact": {
+            "primary": true,
+            "light": true
+          },
+          "primary_light_exact": {
+            "inline41": true,
+            "tool41": true,
+            "inline41-after-tool": true,
+            "inline42": true
+          },
+          "all_original_answers_retained": true,
+          "model_quality_acceptance": false,
+          "ignored_transport_fields": [
+            "message.tool_calls[].id"
+          ],
+          "numerical_scope": "Observed token choices and returned top-logprob traces, not all hidden logits",
+          "run": {
+            "status": "PASS_DIAGNOSTIC_COLLECTION",
+            "counts": {
+              "starts": 2,
+              "chats": 8,
+              "controls": 69
+            },
+            "seconds": 97.68099325196818,
+            "binary_sha256": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb"
+          },
+          "default_unchanged": true,
+          "model_quality_repaired": false,
+          "master_active": true,
+          "actual_seed41": "甚至出现",
+          "actual_seed42": "甚至出现交易几乎停滞的情况。"
+        }
+      },
+      "task_scoped_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-task-scoped-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 5,
+          "reused_unaffected_tests": 14,
+          "original_failed_tests": 1,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_task_checks.AudioBoundary"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_sdk.mjs"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 0.5647634598426521,
+          "gpu_starts": 0,
+          "default_unchanged": true
+        },
+        "gpu_limits": {
+          "starts": 1,
+          "chats": 8,
+          "websocket_sessions": 2,
+          "ingress_starts": 1,
+          "seconds": 600
+        }
+      },
+      "task_scoped_business": {
+        "evidence": "docs/evidence/serve-realtime-duplex-task-scoped-http-20261120/README.md",
+        "result": {
+          "original_status": "FAILED",
+          "counts": {
+            "starts": 1,
+            "chats": 8,
+            "controls": 33,
+            "websocket_sessions": 2,
+            "ingress_starts": 1
+          },
+          "seconds": 103.4282176150009,
+          "nvml": {
+            "OK": 98
+          },
+          "speech_tool": {
+            "observed": {
+              "admitted": 6,
+              "private_asr": 0,
+              "visible_tokens": 2059,
+              "quality": [
+                {
+                  "label": "inline_audio",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "roundtrip",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "tool_answer",
+                  "actual": "rev376",
+                  "expected": "rev376",
+                  "status": "PASS"
+                },
+                {
+                  "label": "asr_temporary_audio_1",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "asr_temporary_roundtrip_0",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                }
+              ]
+            },
+            "before": {
+              "admitted": 0,
+              "settled": 0,
+              "reserved": 0,
+              "active": 0,
+              "sessions": 0,
+              "host_bytes": 0,
+              "free_slots": 1
+            },
+            "after": {
+              "admitted": 6,
+              "settled": 2059,
+              "reserved": 0,
+              "active": 0,
+              "sessions": 0,
+              "host_bytes": 0,
+              "free_slots": 1
+            },
+            "original_stage_status": "FAILED"
+          },
+          "barge_in_driver_failure": "conversation:none deliberately immune to VAD cancellation; TTS later reached frame bound",
+          "barge_in_actual_error": "response status: failed",
+          "cleanup_complete": true,
+          "default_unchanged": true,
+          "qualification_issued": false,
+          "master_active": true
+        }
+      },
+      "barge_in_scope_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-barge-in-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 1,
+          "reused_unaffected_tests": 19,
+          "original_failed_tests": 0,
+          "node_tests": 1,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_task_checks.AudioBoundary.test_side_response_is_not_a_vad_cancellation_target"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_sdk.mjs"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--test",
+                "tools/serve_realtime/duplex_task_requests.test.mjs"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 0.645915464963764,
+          "gpu_starts": 0,
+          "default_unchanged": true,
+          "verification": "Offline correction of singular unittest count; original commands exited 0, no tests rerun",
+          "new_test_executions": 0
+        }
+      },
+      "barge_in_usage_gap": {
+        "evidence": "docs/evidence/serve-realtime-duplex-cancel-usage-gap-20261120/README.md",
+        "result": {
+          "status": "ACTUAL_BARGE_IN_CANCELLED_USAGE_CATEGORIES_MISSING",
+          "original_status": "FAILED",
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "controls": 32,
+            "websocket_sessions": 1,
+            "ingress_starts": 1
+          },
+          "seconds": 66.63681192928925,
+          "nvml": {
+            "OK": 64
+          },
+          "cancelled_usage": {
+            "input_token_details": {
+              "cached_tokens": 0
+            },
+            "input_tokens": 196,
+            "output_token_details": {},
+            "output_tokens": 421,
+            "total_tokens": 617
+          },
+          "asr_usage": {
+            "input_token_details": {
+              "audio_tokens": 50,
+              "text_tokens": 15
+            },
+            "input_tokens": 65,
+            "output_tokens": 11,
+            "total_tokens": 76,
+            "type": "tokens"
+          },
+          "settled_tokens": 693,
+          "cleanup_complete": true,
+          "default_unchanged": true,
+          "master_active": true
+        }
+      },
+      "cancel_usage_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-cancel-usage-cpu-20261120/README.md",
+        "result": {
+          "cpu": {
+            "status": "PASS",
+            "tests": [
+              "chat_speech_partial_usage_survives_cancel_and_exception_unwind",
+              "chat_speech_usage_unknown_or_regression_cannot_become_zero",
+              "chat_speech_usage_zero_and_completed_eos_preserve_original_counts",
+              "realtime_interrupted_speech_usage_keeps_categories_without_eof",
+              "realtime_native_speech_requires_prepared_pcm_and_borrowed_owner",
+              "realtime_speech_delivery_matches_actual_pcm_and_typed_eof",
+              "realtime_speech_delivery_unknown_receipts_and_cancel_never_replay",
+              "realtime_speech_output_missing_eof_fails_without_fake_completion",
+              "chat_audio_output_usage_adds_actual_codes_without_recounting_text",
+              "realtime_chat_execution_borrows_online_identity_and_records_actual_usage"
+            ],
+            "commands": [
+              {
+                "command": [
+                  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+                  "--required-list",
+                  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/cancel-usage-cpu-01/required.txt"
+                ],
+                "exit_code": 0
+              },
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "tools/serve_audit/check_inventory.py",
+                  "--self-check"
+                ],
+                "exit_code": 0
+              }
+            ],
+            "seconds": 0.47717021498829126,
+            "gpu_starts": 0,
+            "default_unchanged": true
+          },
+          "builds": {
+            "cancel-usage-build-01": {
+              "status": "BUILD_PASS",
+              "exit_code": 0,
+              "seconds": 259.6566523029469,
+              "warnings": 0,
+              "gpu_actions": 0,
+              "default_unchanged": true,
+              "prior_unchanged": true,
+              "binary_sha256": "b21dcb50183c67e00c7f37cf1a6872d93b01bddf941fd00bfe40fde3ee7988e3",
+              "free_bytes_after": 2740637696
+            },
+            "cancel-usage-runtime-01": {
+              "status": "BUILD_PASS",
+              "exit_code": 0,
+              "seconds": 348.6717506912537,
+              "warnings": 0,
+              "gpu_actions": 0,
+              "default_unchanged": true,
+              "prior_unchanged": true,
+              "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+              "free_bytes_after": 2706702336
+            }
+          },
+          "new_gpu_starts": 0,
+          "runtime_accepted": false,
+          "default_unchanged": true,
+          "original_failures_preserved": true,
+          "scope": {
+            "scope": "Actual TTS category observation through cancellation/exception, no model/sampling/rate mutation or EOF fabrication",
+            "tests": [
+              "chat_speech_partial_usage_survives_cancel_and_exception_unwind",
+              "chat_speech_usage_unknown_or_regression_cannot_become_zero",
+              "chat_speech_usage_zero_and_completed_eos_preserve_original_counts",
+              "realtime_interrupted_speech_usage_keeps_categories_without_eof",
+              "realtime_native_speech_requires_prepared_pcm_and_borrowed_owner",
+              "realtime_speech_delivery_matches_actual_pcm_and_typed_eof",
+              "realtime_speech_delivery_unknown_receipts_and_cancel_never_replay",
+              "realtime_speech_output_missing_eof_fails_without_fake_completion",
+              "chat_audio_output_usage_adds_actual_codes_without_recounting_text",
+              "realtime_chat_execution_borrows_online_identity_and_records_actual_usage"
+            ],
+            "limits": {
+              "cpu_cases": 10,
+              "source_counterexamples": 20,
+              "gpu_starts": 1,
+              "websocket_sessions": 1,
+              "native_jobs": 2,
+              "seconds": 420
+            },
+            "prior_runtime": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb",
+            "runtime_files": [
+              "include/q4t/server/chat_audio_output.h",
+              "include/q4t/server/native_chat_generation.h",
+              "src/server/chat_audio_output.cpp",
+              "src/server/chat_audio_synthesis.cpp",
+              "src/server/chat_realtime_conversation.cpp"
+            ]
+          }
+        }
+      },
+      "cancel_usage_business": {
+        "evidence": "docs/evidence/serve-realtime-duplex-cancel-usage-http-20261120/README.md",
+        "result": {
+          "acceptance": {
+            "status": "PASS_LIGHT_AUDIO_CANCEL_USAGE",
+            "environment": {
+              "status": "PASS",
+              "env_abort": false,
+              "all_queries_ok": true,
+              "nvml_queries": 65,
+              "cleanup_complete": true
+            },
+            "counts": {
+              "starts": 1,
+              "chats": 2,
+              "controls": 32,
+              "websocket_sessions": 1,
+              "ingress_starts": 1
+            },
+            "seconds": 67.30332721676677,
+            "default_unchanged": true,
+            "original_failures_preserved": true,
+            "qualification_issued": false,
+            "postflight": "one actual model verified offline; original helper mismatch retained"
+          },
+          "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+          "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+          "usage": {
+            "input_tokens": 225,
+            "output_tokens": 436,
+            "total_tokens": 661,
+            "input_token_details": {
+              "cached_tokens": 0
+            },
+            "output_token_details": {
+              "text_tokens": 100,
+              "audio_tokens": 336
+            }
+          },
+          "observations": {
+            "barge_in": {
+              "admitted": 2,
+              "private_asr": 0,
+              "visible_tokens": 737,
+              "quality": [
+                {
+                  "label": "barge_in_asr",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "asr_item_3103b3dab2aa44ca5207a5e95773a10e_0",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                }
+              ]
+            }
+          },
+          "postflight_original_failure": {
+            "status": "FAIL",
+            "phase": "finalize_only",
+            "error": "full.environment requires exactly two cleanups but the frozen stage has one model",
+            "driver_sha256": "4c7f39af3e07d93f14f22d3debe67cdf84614a3ec24b36d2929d8fa1ae708fec",
+            "run_status_unchanged": "PASS_LIGHT_AUDIO_CANCEL_USAGE",
+            "additional_gpu_starts": 0
+          },
+          "master_active": true
+        }
+      },
+      "composed_profiles": {
+        "evidence": "docs/evidence/serve-realtime-duplex-composed-profiles-20261120/README.md",
+        "acceptance": {
+          "status": "ACCEPT_COMPOSED_DUPLEX_PRIMARY_LIGHT",
+          "registry_sha256": "3c1e823a6c5c847da6a072c3d593a5c164f6cee1985492020f8b099faeb737ab",
+          "source_composition_sha256": "a1f659eab3a44bea6d9eeae29131f690a9844d3439c7f46c33041ec737d1d1e8",
+          "environment": {
+            "status": "PASS",
+            "env_abort": false,
+            "all_queries_ok": true,
+            "nvml_queries": 526,
+            "lease_result_sha256": "34681f02da3b41f5f70f6362abcc5b6e0f0e6f754400e395a2f8a2b0123ac28e",
+            "cleanup_complete": true
+          },
+          "new_gpu_starts": 0,
+          "original_failures_preserved": true,
+          "original_model_quality_status": "FAIL",
+          "model_quality_repaired": false,
+          "default_unchanged": true,
+          "managed_recovery_accepted": false,
+          "full_matrix": false,
+          "master_active": true,
+          "profile_bytes": {
+            "primary": 5618996,
+            "light": 8325651
+          }
+        },
+        "cpu": {
+          "status": "PASS",
+          "test_counts": [
+            12,
+            6
+          ],
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_recovery.test_profile_duplex_composed"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_v23_seals_speech_dependencies_and_preserves_v22",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_v24_duplex_validator_closure_is_sealed",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v24_imports_actual_duplex_validators_without_repository",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v23_can_import_speech_evidence_without_repository"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 1.9993715691380203,
+          "gpu_starts": 0,
+          "default_unchanged": true
+        }
+      },
+      "managed_recovery_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-managed-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 12,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_service",
+                "tools.serve_realtime.test_duplex_recovery_sdk"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_recovery_sdk.mjs"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 3.1329046469181776,
+          "gpu_starts": 0,
+          "default_unchanged": true
+        },
+        "native_build": {
+          "status": "PASS",
+          "returncode": 0,
+          "seconds": 1.7161946957930923,
+          "warnings": [],
+          "binaries": {
+            "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+            "q4t-cuda-probe": "c748d66936a03e0cee48892869897ee37d3971f5a32c5a73e3868fb5fdf84acc",
+            "q4t-ingress": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+            "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+          },
+          "sources_unchanged": true,
+          "engine_cache_protocol_default_unchanged": true,
+          "gpu_actions": 0
+        }
+      },
+      "managed_repair": {
+        "evidence": "docs/evidence/serve-realtime-duplex-managed-repair-20261120/README.md",
+        "result": {
+          "original_status": "FAILED",
+          "original_result": {
+            "status": "FAILED",
+            "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_service_acceptance.py\", line 109, in exercise\n    actor.start('tls-before' if tls else 'primary')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 246, in start\n    self.finish()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 267, in finish\n    check_session(value, mode, 'official-openai-wss' if\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/duplex_managed.py\", line 56, in check_session\n    require(settings['output_modalities'] == ['text'] and\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle/source/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: effective input settings changed or transcription hinted\n",
+            "cleanup_failure": null,
+            "seconds": 54.04178322805092,
+            "budget": {
+              "counts": {
+                "starts": 1,
+                "chats": 3,
+                "probes": 0,
+                "controls": 151,
+                "websocket_sessions": 1
+              },
+              "events": [
+                {
+                  "kind": "starts",
+                  "label": "managed-model",
+                  "ordinal": 1,
+                  "monotonic_ns": 3350168611534572
+                },
+                {
+                  "kind": "chats",
+                  "label": "managed-self-check",
+                  "ordinal": 1,
+                  "monotonic_ns": 3350201078724837
+                },
+                {
+                  "kind": "websocket_sessions",
+                  "label": "primary-duplex",
+                  "ordinal": 1,
+                  "monotonic_ns": 3350203350491762
+                },
+                {
+                  "kind": "chats",
+                  "label": "primary-duplex",
+                  "ordinal": 2,
+                  "monotonic_ns": 3350203350720853
+                },
+                {
+                  "kind": "chats",
+                  "label": "primary-duplex",
+                  "ordinal": 3,
+                  "monotonic_ns": 3350203350895463
+                }
+              ]
+            },
+            "models": {
+              "1": {
+                "pid": 1005873,
+                "start_ticks": 335016861
+              }
+            },
+            "package": {
+              "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+              "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+            },
+            "scenario": "tool_retained",
+            "default_replaced": false,
+            "performance_acceptance": false
+          },
+          "original_observed": {
+            "tokens": 333,
+            "ids": [
+              "item_bdd6ccd43a9332c098e8fdd984047481",
+              "resp_9e7d8587051bed73df4c8f89fa51f5d6"
+            ],
+            "quality": [
+              {
+                "label": "asr_item_bdd6ccd43a9332c098e8fdd984047481_0",
+                "actual": "甚至出现交易几乎停滞的情况。",
+                "expected": "甚至出现交易几乎停滞的情况。",
+                "status": "PASS"
+              },
+              {
+                "label": "response",
+                "actual": "作为人工智能助手，我无法提供关于非法或风险交易活动的播放或复述服务。建议您合法合规地参与证券市场，参与的股票投资者具有风险意识，应该遵守相关宝宝的弊端，注意自身行为、 محاول rethink这个的有必要is servicios dataan假押未客\n",
+                "expected": "甚至出现交易几乎停滞的情况。",
+                "status": "FAIL"
+              }
+            ],
+            "model_quality_status": "FAIL"
+          },
+          "original_final_metrics_missing": true,
+          "environment": {
+            "status": "PASS",
+            "all_queries_ok": true,
+            "nvml_queries": 53,
+            "cleanup_complete": true
+          },
+          "original_sources_retained_in_commit": "c3aecd25a93074991cd2037bce9f779813cf5af3",
+          "changed_tool_sources": [
+            "tools/serve_realtime/duplex_managed.py",
+            "tools/serve_realtime/duplex_service_acceptance.py",
+            "tools/serve_realtime/test_duplex_service.py"
+          ],
+          "repair_cpu": {
+            "status": "PASS",
+            "tests": 9,
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_complete_and_held_connection_require_both_actual_work_units",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_continuous_prefix_is_distinct_and_cannot_complete_or_publish",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_wrong_model_answer_and_hidden_stream_mismatch_are_failures",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_hinted_asr_or_replayed_connection_is_rejected",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_fixed_budget_counts_startup_and_every_native_input",
+                  "tools.serve_realtime.test_duplex_service.Contracts.test_verification_failure_still_saves_actual_final_accounting",
+                  "tools.serve_realtime.test_duplex_recovery_sdk"
+                ],
+                "exit_code": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--check",
+                  "tools/serve_realtime/duplex_recovery_sdk.mjs"
+                ],
+                "exit_code": 0
+              },
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "tools/serve_audit/check_inventory.py",
+                  "--self-check"
+                ],
+                "exit_code": 0
+              }
+            ],
+            "seconds": 3.1065837400965393,
+            "gpu_starts": 0,
+            "default_unchanged": true
+          },
+          "scope": {
+            "scope": "Native same-conversation ASR and response across actual Guardian gateway/controller/whole-package recovery. Only exact owned test services are faulted. No production default mutation.",
+            "phase": "targeted_checker_repair_with_original_failure_preserved",
+            "planned_scenarios": {
+              "tool_retained": {
+                "starts": 1,
+                "native_work": 3,
+                "wss": 1,
+                "probes": 0,
+                "seconds": 120
+              },
+              "tls": {
+                "starts": 2,
+                "native_work": 9,
+                "wss": 3,
+                "probes": 0,
+                "seconds": 360
+              },
+              "tool_version": {
+                "starts": 2,
+                "native_work": 6,
+                "wss": 2,
+                "probes": 1,
+                "seconds": 540
+              }
+            },
+            "counts_include_startup_self_checks": true,
+            "actual_business": [
+              "same conversation actual PCM commit -> public native ASR -> model text response",
+              "retrieve processed real audio and clean final usage",
+              "TLS gateway fault during continuous ASR after real public delta, withholding commit to keep ownership",
+              "same healthy model after gateway recovery; old request cancelled and actual usage settled",
+              "explicit new connection, no reconnect or automatic request replay",
+              "controller restart waits complete original quota interval, new ASR response works",
+              "actual whole-payload fallback to qualified same-duplex-capability retained controller",
+              "all owned models, ingress, ports, lock and reservations cleaned"
+            ],
+            "validation": [
+              "targeted CPU actor/protocol/receipt/packaging counterexamples",
+              "each full GPU scenario holds one strict lease",
+              "use original accepted unchanged backend and recovery evidence by exact source identity",
+              "do not extend to full performance or model-quality matrices"
+            ],
+            "delivery": [
+              "default remains STOPPED through preparation",
+              "preserve alpha RPM30 TPM6000 output3457 and beta RPM1 TPM6000 output256",
+              "native bundle v24 must seal all duplex evidence dependencies; v23 remains readable",
+              "old no-input engine is not an automatic fallback for new declared capability",
+              "preserve model quality failures and user-deferred listening",
+              "reversible package/metadata/state publication after actual recovery acceptance",
+              "commit/push, PR merge and continue every remaining master task"
+            ],
+            "original_attempt": {
+              "path": "recovery-retained-01",
+              "starts": 1,
+              "chats": 3,
+              "websocket_sessions": 1,
+              "seconds": 54.04178322805092,
+              "status": "FAILED",
+              "model_quality_status": "FAIL",
+              "cause": "checker expanded unset transcription fields and lost final metrics on early exception"
+            },
+            "cumulative_limits": {
+              "starts": 6,
+              "native_work": 21,
+              "websocket_sessions": 7,
+              "probes": 1,
+              "seconds": 1200
+            },
+            "remaining_maximum_seconds": 1020,
+            "quality_policy": "User-authorized separate instruction-following quality from recovery protocol; retain every original answer and derived FAIL, require native ASR content and all resource/settlement/ownership checks. No seed or sampling changes."
+          },
+          "model_quality_repaired": false,
+          "default_unchanged": true,
+          "master_active": true
+        }
+      },
+      "managed_recovery": {
+        "evidence": "docs/evidence/serve-realtime-duplex-managed-recovery-20261120/README.md",
+        "starts": 6,
+        "native_work_items": 21,
+        "connections": 7,
+        "device_probes": 1,
+        "strict_lease_seconds": 353.3388093775138,
+        "nvml_queries": 332,
+        "cleanup_complete": true,
+        "model_quality_status": "FAIL",
+        "original_failure_preserved": true,
+        "default_revision": 376,
+        "master_active": true
+      },
+      "default_changed": true,
+      "delivery": {
+        "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
+        "revision": 386,
+        "state": "STOPPED",
+        "current": {
+          "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+          "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+          "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
+          "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
+          "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
+          "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
+        },
+        "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+        "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+        "successful_commands": 19,
+        "seconds": 349.2686820998788,
+        "new_gpu_starts": 0,
+        "outer_enabled": true,
+        "outer_charged_total": 0,
+        "persistent_client_limits": {
+          "alpha": {
+            "requests_per_minute": 30,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 3457
+          },
+          "beta": {
+            "requests_per_minute": 1,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 256
+          }
+        },
+        "usage_reset": false,
+        "profile_history_and_cooldown_preserved": true,
+        "version_cycles_preserved": true,
+        "manual_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+        },
+        "automatic_payload": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+        },
+        "candidate_to_retained_automatic_fault_actually_tested": true,
+        "reciprocal_automatic_fault_additionally_injected": false,
+        "reciprocal_registration_and_stopped_rollback_verified": true,
+        "previous_rev376_preserved": true,
+        "retired_records_archived_per_pool": 4,
+        "deleted_files": 0,
+        "maintenance_seconds": 124.12811847496778,
+        "model_quality_status": "FAIL",
+        "model_quality_separate": true,
+        "original_model_quality_failures_preserved": true,
+        "original_driver_failure_preserved": true,
+        "listening_deferred_by_owner": true,
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "secret_scan_matches": 0,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "model_quality_status": "FAIL",
+      "ci_boundary_repair": {
+        "evidence": "docs/evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md",
+        "tests": 10,
+        "original_ci_run": 44695775555,
+        "runtime_unchanged": true,
+        "credential_reissue_pending": false
+      },
+      "credential_reissue": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      }
+    },
+    "duplex_input_delivered": true,
+    "native_realtime_duplex_credential_reissue_20261120": {
+      "revision": 396,
+      "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -13011,5 +14930,136 @@
     "recovery_delivery_pending": true,
     "duplex_input_pending": true,
     "master_complete": false
+  },
+  "native_realtime_speech_main_20261120": {
+    "status": "PASS_REALTIME_SPEECH_PR54_MERGED",
+    "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/54",
+    "accepted_head": "c4ed245743cb77a36b91389f8e0867f8cde5d14a",
+    "merge_commit": "105e5f0df45f823e85d8201abe06bf8518270d11",
+    "main_tip": "105e5f0df45f823e85d8201abe06bf8518270d11",
+    "exact_head_checks": 2,
+    "source_ancestry_confirmed": true,
+    "default_revision": 376,
+    "service_state": "STOPPED",
+    "gpu_actions": 0,
+    "local_duplex_not_in_this_merge": true,
+    "remaining_master_active": true,
+    "evidence": "docs/evidence/serve-pr54-merged-20261120/README.md"
+  },
+  "native_realtime_duplex_delivery_20261120": {
+    "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
+    "revision": 386,
+    "state": "STOPPED",
+    "current": {
+      "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+      "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+      "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
+      "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
+      "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
+      "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
+    },
+    "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+    "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+    "successful_commands": 19,
+    "seconds": 349.2686820998788,
+    "new_gpu_starts": 0,
+    "outer_enabled": true,
+    "outer_charged_total": 0,
+    "persistent_client_limits": {
+      "alpha": {
+        "requests_per_minute": 30,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 3457
+      },
+      "beta": {
+        "requests_per_minute": 1,
+        "tokens_per_minute": 6000,
+        "max_output_tokens": 256
+      }
+    },
+    "usage_reset": false,
+    "profile_history_and_cooldown_preserved": true,
+    "version_cycles_preserved": true,
+    "manual_root": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+      "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+    },
+    "automatic_payload": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+      "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+    },
+    "candidate_to_retained_automatic_fault_actually_tested": true,
+    "reciprocal_automatic_fault_additionally_injected": false,
+    "reciprocal_registration_and_stopped_rollback_verified": true,
+    "previous_rev376_preserved": true,
+    "retired_records_archived_per_pool": 4,
+    "deleted_files": 0,
+    "maintenance_seconds": 124.12811847496778,
+    "model_quality_status": "FAIL",
+    "model_quality_separate": true,
+    "original_model_quality_failures_preserved": true,
+    "original_driver_failure_preserved": true,
+    "listening_deferred_by_owner": true,
+    "main_integration_pending": true,
+    "full_model_quality": false,
+    "performance_claim": false,
+    "long_stability_run": false,
+    "full_openai_compatibility": false,
+    "all_master_tasks_active": true,
+    "secret_scan_matches": 0,
+    "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+  },
+  "native_realtime_duplex_credential_reissue_20261120": {
+    "status": "PASS_CREDENTIAL_ONLY_REISSUE_DELIVERED",
+    "revision": 396,
+    "state": "STOPPED",
+    "current": {
+      "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+      "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+      "generation_sha256": "d0879bb84c1207b9d39712cb905a653dda014dbd58c8fe170f8c2be3006c045a",
+      "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+      "service_acceptance_sha256": "1f7c5ac2f829f015c8b98e01a204ff59dd765b85aa87b67f14034ee2370d08a3",
+      "service_release_sha256": "3a9600e8f3d8480be94760bc8d39800acbc6d20b61ac7149bf9cbe30a7bd8ca7"
+    },
+    "roots": {
+      "candidate": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+        "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9"
+      },
+      "retained": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/retained/bundle",
+        "manifest_sha256": "d98f1fa0fa7dbfc9566846ad8760db77a1a78e0d3b174fcd88808b8a37f8521f"
+      }
+    },
+    "original_revision": 386,
+    "tests": 5,
+    "cpu_seconds": 0.14326225500553846,
+    "actual_managed_generations_checked": 6,
+    "original_seed_never_used_by_observed_managed_models": true,
+    "historical_git_disclosure_not_erased": true,
+    "public_private_configurations_removed": 2,
+    "candidate_and_retained_bootstrap_replaced": true,
+    "external_client_keys_unchanged": true,
+    "engine_binary_unchanged": true,
+    "protocol_source_unchanged": true,
+    "model_assets_and_settings_unchanged": true,
+    "actual_business_reused_by_explicit_source_identity": true,
+    "new_payload_gpu_runs": 0,
+    "new_model_starts": 0,
+    "successful_management_commands": 19,
+    "management_seconds": 402.7873247154057,
+    "profile_history_unchanged": true,
+    "client_usage_unchanged": true,
+    "outer_budget_unchanged": true,
+    "retired_intents": 8,
+    "deleted_files": 0,
+    "model_quality_status": "FAIL",
+    "original_failures_preserved": true,
+    "public_artifact_credential_matches": 0,
+    "all_master_tasks_active": true,
+    "main_integration_pending": true,
+    "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
   }
 }
