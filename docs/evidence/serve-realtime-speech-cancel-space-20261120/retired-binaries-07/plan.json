@@ -1,0 +1,213 @@
+{
+  "scope": "Reversible old ASR/Chat audio validation binaries; no live/default/package assets.",
+  "files": [
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-01"
+      ],
+      "sha256": "c1cabddd487ccd564294983599a1e07fb5381a2d416b48c45e97c635234c6217",
+      "bytes": 26060744,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794906093728939282,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-0.gz",
+      "archive_sha256": "2cf1c9ecc805944b4fa882f7b6fdf3336e0e4a817376bd633a3d0f740dae17b1",
+      "archive_bytes": 10732085
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-03"
+      ],
+      "sha256": "9401541172832c9f340be1dc77907823bcd2ddf6b76a142b82e95bd216f31976",
+      "bytes": 26060864,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794908340689133869,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-1.gz",
+      "archive_sha256": "bb70eabb279d901142a384e5162e3014b823b4cca2ef9a9ce6b41b0d1c66d78b",
+      "archive_bytes": 10731714
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-transport-host-01"
+      ],
+      "sha256": "7535ddc205dd9cd3c25f41eb3cf12dc4b5606d9b761d90e120b4ef33aeca0620",
+      "bytes": 35526872,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794908080142640413,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-2.gz",
+      "archive_sha256": "ecb3a9e39e888602975acbf3fadd48b61318788e930718b28f85cb928d021c22",
+      "archive_bytes": 15111112
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-package-host-01"
+      ],
+      "sha256": "79dc672beaae8fdabeba400f76ce86ae850da5063b2205a39edf8481508bd0d2",
+      "bytes": 35527688,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794909614217123763,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-3.gz",
+      "archive_sha256": "8a5d98fef340926e628cfdbb388463acad9bf07484028aa5466c21b5239f891b",
+      "archive_bytes": 15111692
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_audio_codec-cpu-01"
+      ],
+      "sha256": "abc309dae78b7ddf1e97f37d9957858244e2f9d418cd14516b15cda917ec9ac2",
+      "bytes": 35245512,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794899339541175848,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-4.gz",
+      "archive_sha256": "2bfbeb69525f46a64b4c5637037dad1e4fb74d3752162aec3c082a1533497750",
+      "archive_bytes": 14995838
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-04"
+      ],
+      "sha256": "b02d7f25891fb8d43e2d4eefbe6aaef95721ec2332b45ebdab0b46f55a75cec7",
+      "bytes": 26061008,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794909607181155216,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-5.gz",
+      "archive_sha256": "f1ded350f3ce268a95b3dff7bfc84ad03b3ac6d1fd3f49f70cfe447975824527",
+      "archive_bytes": 10733201
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_asr_service-host-01"
+      ],
+      "sha256": "6f55f963f6d076d228b7c50db5de3af81f63c1f709abbcb21b3f4e57c57e3ede",
+      "bytes": 35458360,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794905901658106151,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-6.gz",
+      "archive_sha256": "9f0a489557ee56409b74d176f90edff4a155810d80269d1d4ae117f4dbaabfeb",
+      "archive_bytes": 15102861
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t-asr-service-engine-02"
+      ],
+      "sha256": "3c0a090d813bac204fd6db8ab815c6a05924c381984de88cb5587785466692ed",
+      "bytes": 26061312,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794908046334834821,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-7.gz",
+      "archive_sha256": "cb2916d0adf08e9ff9567d8ccb781b278c61e1e377be239c3c12f8eb8d3e10b4",
+      "archive_bytes": 10731677
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validated-binaries/q4t_audio_codec-cpu-final"
+      ],
+      "sha256": "0d6350dd2bad99238ac4e5c4a576b06109cd8c6e8d60586fb78c9bd6a7a18172",
+      "bytes": 35245000,
+      "mode": 365,
+      "atime_ns": 1795136436741128295,
+      "mtime_ns": 1794900759349363400,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-8.gz",
+      "archive_sha256": "0bff9f31aaf990d7e977c8dc569e2ffdcfe7217765bf581913a20ef797b82ab2",
+      "archive_bytes": 15000349
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-build-09/q4t-5b28-retained"
+      ],
+      "sha256": "5b28801be5a58afe3a86728c19f428793ddc0a6defabca34ee4948df6b8b9928",
+      "bytes": 27296752,
+      "mode": 509,
+      "atime_ns": 1795136436745128294,
+      "mtime_ns": 1794956424240566640,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-9.gz",
+      "archive_sha256": "98b4dda234a3620aa67da10fcab49cbb3a40d1179415228f4587b3602e4a2d8a",
+      "archive_bytes": 11223915
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-build-07/q4t-2c51-retained"
+      ],
+      "sha256": "2c51b503de253a148a8d131a3e554d5629513f3b45431d2693ca76ff60130282",
+      "bytes": 27296984,
+      "mode": 509,
+      "atime_ns": 1795136436745128294,
+      "mtime_ns": 1794955189501366774,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-10.gz",
+      "archive_sha256": "88307047e905cadf9731dc1c28829d3d4010ea46914902514ed5321c8c8a5281",
+      "archive_bytes": 11223645
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-build-05/q4t-e740-retained"
+      ],
+      "sha256": "e7404779d14a88c4273ccfb9fab46a7a8728360dd68772011b0d9d930ced662d",
+      "bytes": 27296984,
+      "mode": 509,
+      "atime_ns": 1795136436749128293,
+      "mtime_ns": 1794954604420025232,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-11.gz",
+      "archive_sha256": "e6a8627e7a1ddda59a9f0edd45c84f007e277b0e15468558d039a269485fa231",
+      "archive_bytes": 11223101
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-build-02/host-ca02-retained"
+      ],
+      "sha256": "012f484c31e3c2cd16ba04dff2935ac46ce7f20eec14faa580413d901a3c9fe3",
+      "bytes": 36730936,
+      "mode": 509,
+      "atime_ns": 1795136436749128293,
+      "mtime_ns": 1794953189096388134,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-12.gz",
+      "archive_sha256": "0f3748c3de5ed425317a131a651b333ec1cb2226bfbfbe02c5386f60c65d9117",
+      "archive_bytes": 15679059
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-audio-20261118/runtime-build-08/q4t-0f3e-retained"
+      ],
+      "sha256": "0f3e5cf5aae420abd26aa8caa77aaf6a6b1304325bbaeb2e51cbf22c68d4a078",
+      "bytes": 27296680,
+      "mode": 509,
+      "atime_ns": 1795136436753128292,
+      "mtime_ns": 1794955800873834937,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-07/binary-13.gz",
+      "archive_sha256": "29a0b28db751dc34f7b8e0e3a78ed50ccacf2e4b01c02ca72522273084b382be",
+      "archive_bytes": 11223948
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-01/bundle/manifest.json": "cf2c81d75a26dc7ae801d7e651b75909fcd20bf2783a6e38a7dc11a1c4e010f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle/manifest.json": "ca36e5e399506cc7105af0f8c05c73cab77614c6313620688d256d78260d889a"
+  },
+  "free_before": 24883200
+}

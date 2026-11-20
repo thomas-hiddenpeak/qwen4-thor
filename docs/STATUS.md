@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[取消补验因磁盘下限停止](evidence/serve-realtime-speech-cancel-space-20261120/README.md)：
+新候选 b156d976 构建零警告；实际 1 模型/1连接/2响应在结算采集前
+触发32 MiB保留量，原FAIL保留并完成清理。14旧验证程序可逆归档
+释放248341499字节；至少256 MiB余量后仅重试原1模型/3响应短验。
+累计含旧失败和整包待验上限8模型/20生成/10连接/1探测/1200秒；
+默认rev366保持，未完成项继续。
+
 [取消补验驱动CPU通过](evidence/serve-realtime-speech-cancel-driver-cpu-20261120/README.md)：
 5项/0.625秒及JS通过；原误分类、未计实际工作或核心重启均拒绝。
 继续冻结单模型直接补验，原FAILED和默认rev366不变。
