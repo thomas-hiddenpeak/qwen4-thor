@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "native_execution_cleanup_and_auxiliary_failure_cpu_accepted_session_integration_next",
+      "state": "async_call_owner_cpu_accepted_public_session_integration_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14756,7 +14756,25 @@
         "service_state": "STOPPED",
         "all_master_tasks_active": true
       },
-      "cleanup_evidence": "evidence/serve-realtime-mcp-cleanup-cpu-20261120/README.md"
+      "cleanup_evidence": "evidence/serve-realtime-mcp-cleanup-cpu-20261120/README.md",
+      "async_calls_cpu": {
+        "status": "PASS_REALTIME_MCP_ASYNC_CALL_OWNER_CPU",
+        "distinct_cases": 20,
+        "case_executions": 20,
+        "cpu_seconds": 0.3143642689101398,
+        "native_http_compositions": 3,
+        "builds_zero_warnings": 2,
+        "original_18_case_build_not_executed": true,
+        "binary_sha256": "c28f8d8e568c56d3fe915cc9806217ab2f13ba549b886610abc0a5ffe7c7fd11",
+        "runtime_connected": false,
+        "gpu_actions": 0,
+        "llm_requests": 0,
+        "default_revision": 396,
+        "default_unchanged": true,
+        "service_state": "STOPPED",
+        "master_goal_active": true
+      },
+      "async_calls_evidence": "evidence/serve-realtime-mcp-calls-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

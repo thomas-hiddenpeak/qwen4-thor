@@ -35,6 +35,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [清理与辅助会话存储10项CPU](evidence/serve-realtime-mcp-cleanup-cpu-20261120/README.md)
 完成：8项首轮通过、2项夹具修正后通过，原失败保留。失路由仍可
 否决审批；旧连接不能取消新执行者，会话存储冲突保留已落盘终态。
+[异步调用所有者20项CPU](evidence/serve-realtime-mcp-calls-cpu-20261120/README.md)
+全部通过，含3项实际原生MCP HTTP组合。两次构建零警告；首构建
+未运行CPU，审查修复未发布审批的取消关联后首次20项通过。
+公开会话尚未连接，默认保持。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

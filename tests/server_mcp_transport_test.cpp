@@ -31,6 +31,7 @@
 #include "q4t/server/realtime_mcp_catalog.h"
 #include "q4t/server/realtime_mcp_execution.h"
 #include "q4t/server/realtime_mcp_item.h"
+#include "q4t/server/realtime_mcp_calls.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_jobs.h"
@@ -5968,5 +5969,130 @@ Q4T_TEST(realtime_mcp_native_session_save_conflict_preserves_durable_outcome) {
   Q4T_CHECK(ExecutionOk(durable) &&
             OutputJson(durable.value) == OutputJson(result.item));
   Q4T_CHECK(!f.Execute(proposed.value, &result).ok() && f.server.calls == 1);
+  return true;
+}
+
+namespace {
+bool RealtimeActualCalls(bool approval_required,
+                        bool cancel_unpublished = false) {
+  RealtimeNativeFixture f;
+  if (!f.Import(approval_required ? "always" : "never")) return false;
+  RealtimeConversation history("sess_actual_calls");
+  std::vector<Json> events;
+  size_t next_id = 0;
+  std::atomic<bool> proposal_ready{false};
+  Json original_approval;
+  RealtimeMcpCallCallbacks callbacks;
+  callbacks.new_id = [&](std::string_view prefix) {
+    return std::string(prefix) + std::to_string(++next_id);
+  };
+  callbacks.emit = [&](const Json& event) {
+    events.push_back(event);
+    return ObjectReply{};
+  };
+  callbacks.run = [&](const RealtimeMcpCallJob& job, Clock::time_point deadline,
+                      const std::function<bool()>& cancelled,
+                      RealtimeMcpExecution* result) {
+    auto access = ExecutionAccess();
+    access.deadline = deadline;
+    access.cancelled = cancelled;
+    switch (job.action) {
+      case RealtimeMcpAction::kPropose: {
+        auto reply = ProposeRealtimeMcpCall(f.objects, f.config, job.catalog,
+                                           job.generated, job.response_id,
+                                           access);
+        if (cancel_unpublished) {
+          original_approval = reply.value;
+          proposal_ready = true;
+          while (!cancelled() && Clock::now() < deadline)
+            std::this_thread::sleep_for(1ms);
+        }
+        return reply;
+      }
+      case RealtimeMcpAction::kDecide:
+        return DecideRealtimeMcpCall(f.objects, f.config,
+                                     job.catalog.definition, job.generated,
+                                     job.decision, job.response_id, access);
+      case RealtimeMcpAction::kExecute:
+        return ExecuteRealtimeMcpCall(f.objects, f.config,
+                                      job.catalog.definition, job.native_call,
+                                      job.response_id, access, result);
+      case RealtimeMcpAction::kAbandon:
+        return AbandonRealtimeMcpCall(f.objects, f.config,
+                                      job.catalog.definition, job.generated,
+                                      job.response_id, access);
+    }
+    return Error(500, "fixture_invalid", "Unknown fixture action");
+  };
+  RealtimeMcpCalls calls(history, std::move(callbacks));
+  RealtimeItemTicket ticket;
+  const auto generated = RealtimeGeneratedCall();
+  if (!history.BeginOutput(generated, "unused", true, 8192, &ticket) ||
+      !ExecutionOk(calls.Begin(ticket, {generated, 0, 0}, f.catalog,
+                               "resp_realtime", true)))
+    return false;
+  bool decided = false;
+  bool cancelled = false;
+  const auto deadline = Clock::now() + 3s;
+  while (calls.Pending() || calls.Workers()) {
+    if (cancel_unpublished && proposal_ready && !cancelled) {
+      if (!calls.CancelResponse("resp_realtime")) return false;
+      cancelled = true;
+    }
+    if (Clock::now() >= deadline || !ExecutionOk(calls.Tick())) return false;
+    if (approval_required && !cancel_unpublished && !decided) {
+      Json proposal;
+      for (const auto& event : events) {
+        const auto* item = event.Find("item");
+        if (event.GetString("type") == "conversation.item.done" && item &&
+            item->GetString("type") == "mcp_approval_request")
+          proposal = *item;
+      }
+      if (!proposal.IsNull()) {
+        if (f.server.calls != 0 ||
+            !ExecutionOk(calls.Decide(RealtimeDecision(proposal, true))))
+          return false;
+        decided = true;
+      }
+    }
+    std::this_thread::sleep_for(1ms);
+  }
+  ChatPlanError error;
+  for (const auto& event : events)
+    if (!ValidateRealtimeShape(event, RealtimeShape::kServerEvent, &error))
+      return false;
+  Json actual;
+  if (cancel_unpublished) {
+    if (!cancelled || !history.Get(ticket, &actual) ||
+        actual.GetString("approval_request_id") !=
+            original_approval.GetString("id") ||
+        !actual.Find("error") ||
+        OutputJson(*actual.Find("error")).find("Tool approval denied") ==
+            std::string::npos || f.server.calls != 0)
+      return false;
+    return std::ranges::none_of(events, [](const auto& event) {
+      const auto* item = event.Find("item");
+      return item && item->GetString("type") == "mcp_approval_request";
+    });
+  }
+  if (!history.Get(ticket, &actual) ||
+      actual.GetString("output").find("document result") == std::string::npos ||
+      !actual.Find("error") || !actual.Find("error")->IsNull())
+    return false;
+  RealtimeConversationSnapshot snapshot;
+  return history.Snapshot(nullptr, &snapshot) && f.server.calls == 1 &&
+         decided == approval_required && calls.CleanupFailures() == 0;
+}
+}  // namespace
+Q4T_TEST(realtime_mcp_calls_actual_native_http_and_history_completion) {
+  Q4T_CHECK(RealtimeActualCalls(false));
+  return true;
+}
+Q4T_TEST(realtime_mcp_calls_actual_native_approval_http_and_sdk_events) {
+  Q4T_CHECK(RealtimeActualCalls(true));
+  return true;
+}
+Q4T_TEST(realtime_mcp_calls_actual_native_unpublished_approval_cancel) {
+  Q4T_CHECK(RealtimeActualCalls(true, true));
   return true;
 }
