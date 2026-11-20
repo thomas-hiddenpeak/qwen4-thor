@@ -1,0 +1,86 @@
+{
+  "status": "PASS_LIVE_CLOSE_TAIL_CPU",
+  "native_cpu": {
+    "status": "PASS",
+    "returncode": 0,
+    "build_seconds": 98.60728688305244,
+    "cpu_seconds": 0.5141817010007799,
+    "tests": 18,
+    "commands": [
+      {
+        "command": 0,
+        "returncode": 0
+      },
+      {
+        "command": 1,
+        "returncode": 0
+      }
+    ],
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-20261121/close-tail-plan-01/required-01.txt"
+    ],
+    "binary_sha256": "121f0356b4eaaf8070d1dc2e79ae886819776a363be5332ef3aecea90fc8c654",
+    "sources_unchanged": true,
+    "protected_unchanged": true,
+    "gpu_actions": 0
+  },
+  "driver_cpu": {
+    "status": "PASS",
+    "commands": [
+      {
+        "index": 0,
+        "returncode": 0
+      },
+      {
+        "index": 1,
+        "returncode": 0
+      }
+    ],
+    "seconds": 0.6286288909614086,
+    "sources": {
+      "tools/serve_live/checks.py": "30c47981d8088999c0cd846be014995932ef8065592e6df76adea87d55112a86",
+      "tools/serve_live/client_acceptance.py": "c1dd73304c11a9b7d9601f5120d7024333ac11d531ea75b80cda3cf1098873fe",
+      "tools/serve_live/client_sdk.mjs": "c48fddeea184786f0cd8bce5e4a8b8336a536304a731d49c889bb2237c561781",
+      "tools/serve_live/client_wait.mjs": "874d3d58e72e391aced1dfd79acad1c9f9eaa67c9e3b0730bbbab7a32097ba52",
+      "tools/serve_live/test_checks.py": "1d2903fcb5908c8353a8d69575aecfe555ad1142bfcd1ad873f0c13b88eb12a9",
+      "tools/serve_live/test_client_wait.mjs": "e03b5f71ce4e5157cb1aa922faa3e5cbeedc08e271a914c1cd284a652001a2ad",
+      "tools/serve_live/test_retained_query.py": "cc1e2685cde82368da553debdd1f1360734cb898235795deab40c926a9ba7cd3"
+    },
+    "sources_unchanged": true,
+    "tests": 5,
+    "reused_node_tests": 4,
+    "reused_observation_tests": 5,
+    "gpu_actions": 0
+  },
+  "native_build": {
+    "status": "BUILD_PASS",
+    "commands": [
+      {
+        "index": 0,
+        "returncode": 0,
+        "warnings": 0
+      },
+      {
+        "index": 1,
+        "returncode": 0,
+        "warnings": 0
+      }
+    ],
+    "seconds": 146.5195384263061,
+    "default_unchanged": true,
+    "sources_unchanged": true,
+    "new_gpu_starts": 0,
+    "binary_sha256": "68bcc25eef0422ed68057bcdb84d0ad3e7a30947ed642007ae31eca5c4bed908",
+    "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
+  },
+  "reviewed_sources": 6,
+  "inventory_mutation_checks": 28,
+  "new_gpu_starts": 0,
+  "default_changed": false,
+  "original_business_failure_retained": true,
+  "real_business_followup_pending": true,
+  "master_active": true,
+  "archive_sha256": "8414ab27712ccbce0465fefb51b63fe2d0b14fcc3f1458115dec5b866c403f42"
+}

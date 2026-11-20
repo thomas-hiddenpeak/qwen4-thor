@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live关闭尾部修复18项CPU](evidence/serve-live-close-tail-cpu-20261121/README.md)
+通过；另5项录音复用校验通过，6来源语义复核/28项反例通过。实际
+引擎构建零警告，已判静音不多做ASR，未知/有声保留，显式commit
+不改。接着按原RPM3、原录音补1启动/4实际工作/600秒短验；默认不变。
+
 [Live第二轮真实关闭缺陷](evidence/serve-live-close-tail-failed-20261121/README.md)：
 明确查询录音的ASR、真实委派/资料读取/回填及语音rev426均通过；
 关闭把剩余静音再提交ASR，触发RPM拒绝，整轮仍FAIL。77.921秒/

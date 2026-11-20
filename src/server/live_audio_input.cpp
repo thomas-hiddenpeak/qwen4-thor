@@ -230,12 +230,17 @@ ObjectReply LiveAudioInput::Mute(bool muted, std::string_view event_id) {
 }
 ObjectReply LiveAudioInput::Tick() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
-  return input_.Tick() && !input_.Failed() ? ObjectReply{} : Fail();
+  if (!input_.Tick() || input_.Failed()) return Fail();
+  return closing_ ? FinishTail() : ObjectReply{};
 }
 ObjectReply LiveAudioInput::Close() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   if (closing_) return {};
   if (partial_) return Invalid("Input ended within a PCM sample");
+  closing_ = true;
+  return FinishTail();
+}
+ObjectReply LiveAudioInput::FinishTail() {
   if (input_.UncommittedBytes()) {
     const size_t width =
         format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
@@ -244,12 +249,17 @@ ObjectReply LiveAudioInput::Close() {
     // it cannot pad an ASR waveform or invent a successful transcription.
     const bool fractional =
         uint64_t(input_.UncommittedBytes() / width) * 16000 / format_.rate == 0;
+    const auto tail = input_.UncommittedTail();
+    if (!fractional && tail == RealtimeInputTail::kAnalyzing) return {};
+    const bool clear = fractional || tail == RealtimeInputTail::kSilence;
     auto reply = Command(
-        Object({{"type", String(fractional ? "input_audio_buffer.clear"
-                                           : "input_audio_buffer.commit")}}));
-    if (!Accepted(reply)) return reply;
+        Object({{"type", String(clear ? "input_audio_buffer.clear"
+                                     : "input_audio_buffer.commit")}}));
+    if (!Accepted(reply)) {
+      failed_ = true;
+      return reply;
+    }
   }
-  closing_ = true;
   return {};
 }
 bool LiveAudioInput::Drained() const {

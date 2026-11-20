@@ -1,15 +1,14 @@
-"""One native model, one official Live TLS connection, five actual work items.
+"""One native model, one official Live TLS connection, four actual work items.
 
-An explicitly synthetic query is produced by actual native TTS, then ASR
-receives only its audio to trigger client delegation; the client reads the real
-project record and supplies it as context, then receives native speech. One
-ordinary Chat after drain protects healthy core service. No automatic replay,
-model restart, performance claim or production default change.
+Reuse the exact native-TTS query recording from the retained failed close-tail
+attempt; its synthesis and transcription passed, but the original session did
+not close successfully. ASR still receives only audio. Client delegation reads
+the actual project record and receives native speech; one ordinary Chat after
+drain protects healthy core service. No replay, restart or default change.
 """
 import argparse
 import fcntl
 import hashlib
-import http.client
 import json
 import os
 from pathlib import Path
@@ -30,24 +29,63 @@ from tools.serve_service.package import read, require, save, sha
 
 WORK = ROOT/'.q4t-work/serve-live-20261121'
 LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=1,
-              speech_fixture=1, audio_inputs=1, responses=2, chats=1, controls=2000, seconds=600)
-FORMAT = 'q4t-live-client-query-business-v2'
+              audio_inputs=1, responses=2, chats=1, controls=2000, seconds=600)
+FORMAT = 'q4t-live-client-query-business-v3'
 QUERY = '请查询当前项目版本号。'
+
+
+def retained_query(directory=None):
+    source=directory or WORK/'client-business-02'
+    names=('query-fixture.json','query-speech.http.json','query-speech.wire',
+           'query-speech.request.json','fixture-before.json','fixture-drained.json',
+           'client.events.jsonl','result.json','query.pcm')
+    fixture=read(source/'query-fixture.json');path=source/'query.pcm'
+    require(fixture['sha256']==sha(path)==
+            'b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483'
+            and sha(source/'query-speech.wire')==sha(path),
+            'exact retained synthesized waveform')
+    require(fixture['bytes']==path.stat().st_size==138240 and
+            fixture['rate']==24000 and not fixture['transcript_supplied_to_asr']
+            and fixture['expected_transcript']==QUERY,
+            'retained input audio provenance')
+    http=read(source/'query-speech.http.json')
+    require(http['status']==200 and http['headers']['Content-Type']=='audio/pcm'
+            and http['bytes']==fixture['bytes'],'actual source synthesis HTTP')
+    request=read(source/'query-speech.request.json')
+    require(request['input']==QUERY and request['response_format']=='pcm',
+            'explicit source query synthesis')
+    before=read(source/'fixture-before.json');after=read(source/'fixture-drained.json')
+    key=lambda n:n+'{client="beta"}'
+    require(after[key('q4t_client_rate_admitted_total')]-before[key('q4t_client_rate_admitted_total')]==1
+            and after[key('q4t_client_rate_settled_tokens_total')]>before[key('q4t_client_rate_settled_tokens_total')]
+            and after[key('q4t_client_rate_reserved_tokens')]==0,
+            'actual source synthesis settlement')
+    journal=[json.loads(line) for line in (source/'client.events.jsonl').read_text().splitlines()]
+    transcript=''.join(row['event']['delta'] for row in journal
+        if row['direction']=='server' and row['event']['type']=='session.input_transcript.delta')
+    require(transcript==QUERY and read(source/'result.json')['status']=='FAIL',
+            'original successful transcription and failed phase preserved')
+    return dict(path=str(path),sha256=sha(path),bytes=fixture['bytes'],rate=24000,
+        expected_transcript=QUERY,transcript_supplied_to_asr=False,
+        source_files={str(source/n):sha(source/n) for n in names},
+        original_phase_status='FAIL',synthesis_and_transcription='PASS')
 
 
 def prepare(out):
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
             'commit reviewed source and verifier before GPU')
-    built = read(WORK/'native-build-01/result.json')
+    built = read(WORK/'native-build-02/result.json')
     require(built['status']=='BUILD_PASS' and built['sources_unchanged'] and
             all(r['returncode']==r['warnings']==0 for r in built['commands']),
             'formal warning-free runtime build')
-    for n,h in read(WORK/'native-build-01/plan.json')['sources'].items():
+    for n,h in read(WORK/'native-build-02/plan.json')['sources'].items():
         require(sha(ROOT/n)==h,'built native source drift')
-    cpu=read(WORK/'client-driver-cpu-03/result.json')
+    cpu=read(WORK/'client-driver-cpu-05/result.json')
     require(cpu['status']=='PASS','driver negative checks missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'driver source drift')
     require(read(WORK/'binding-cpu-01/result.json')['status']=='PASS','binding CPU')
+    require(read(WORK/'close-tail-cpu-01/result.json')['status']=='PASS','close-tail CPU')
+    clip=retained_query()
     previous=base.WORK/'transcription-business-04/run'
     require(read(previous/'result.json')['status']=='PASS','retained source audio qualification')
     plan=read(previous/'plan.json');out.mkdir(mode=0o700,parents=True)
@@ -83,10 +121,12 @@ def prepare(out):
         client_policy_sha256=sha(out/'client-policy.json'),tls=tls,
         tls_files={tls[n]:sha(tls[n]) for n in ('certificate','key')},reused_core_before={},
         record=dict(path='docs/STATUS.md',sha256=sha(record),version='rev'+version[1]),
-        synthetic_query=dict(model='qwen3-tts-12hz-1.7b-customvoice',voice='vivian',
-            input=QUERY,response_format='pcm',stream_format='audio',speed=1),
-        prior_attempt=dict(directory=str(WORK/'client-business-01'),status='FAIL',
+        retained_query=clip,
+        prior_attempts=[dict(directory=str(WORK/'client-business-01'),status='FAIL',
             starts=1,actual_work=2,seconds=113.32063404517248,original_answer='明白。'),
+            dict(directory=str(WORK/'client-business-02'),status='FAIL',starts=1,
+                 actual_work=4,seconds=77.92148964898661,
+                 failure='close submitted silence and exhausted frozen RPM3')],
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save(out/'plan.json',plan)
     print(json.dumps(dict(plan=str(out/'plan.json'),limits=LIMITS)),flush=True)
@@ -109,33 +149,12 @@ class Stage(base.Stage):
         return args
 
     def query_audio(self):
-        before=self.snapshot('fixture-before');self.budget('speech_fixture')
-        body=self.plan['synthetic_query']
-        require(body['input']==QUERY and body['response_format']=='pcm',
-                'frozen explicit query fixture')
-        save(self.out/'query-speech.request.json',body)
-        conn=http.client.HTTPConnection('127.0.0.1',self.plan['port'],timeout=150)
-        try:
-            conn.request('POST','/v1/audio/speech',json.dumps(body,ensure_ascii=False).encode(),
-                {'Content-Type':'application/json','X-Q4T-Client-Id':'beta',
-                 'X-Q4T-Gateway-Token':self.token})
-            response=conn.getresponse();raw=response.read((1<<20)+1)
-            (self.out/'query-speech.wire').write_bytes(raw)
-            save(self.out/'query-speech.http.json',dict(status=response.status,
-                headers=dict(response.getheaders()),bytes=len(raw)))
-            require(response.status==200 and response.getheader('Content-Type')=='audio/pcm'
-                    and 0<len(raw)<=1<<20 and len(raw)%2==0 and any(raw),
-                    'actual complete PCM query synthesis')
-        finally:conn.close()
-        path=self.out/'query.pcm';path.write_bytes(raw)
-        after=self.snapshot('fixture-drained')
-        key=lambda name:name+'{client="beta"}'
-        require(after[key('q4t_client_rate_admitted_total')]-before[key('q4t_client_rate_admitted_total')]==1
-                and after[key('q4t_client_rate_settled_tokens_total')]>before[key('q4t_client_rate_settled_tokens_total')]
-                and after[key('q4t_client_rate_reserved_tokens')]==0,'actual query synthesis settlement')
-        save(self.out/'query-fixture.json',dict(path=str(path),sha256=sha(path),bytes=len(raw),
-            origin='actual_native_tts_synthetic_query',expected_transcript=QUERY,
-            transcript_supplied_to_asr=False,rate=24000))
+        clip=retained_query()
+        require(clip==self.plan['retained_query'],'retained audio/proof drift')
+        path=self.out/'query.pcm';shutil.copyfile(clip['path'],path)
+        require(sha(path)==clip['sha256'],'exact retained waveform')
+        save(self.out/'query-fixture.json',dict(clip,path=str(path),
+            reused=True,new_synthesis_work=0,original_phase_status='FAIL'))
         return dict(path=str(path),sha256=sha(path))
 
     def business(self):

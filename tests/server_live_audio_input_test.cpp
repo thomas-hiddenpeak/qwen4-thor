@@ -1,6 +1,7 @@
 #include "q4t/server/live_audio_input.h"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <thread>
@@ -14,6 +15,25 @@ using namespace q4t::server;
 using namespace q4t::server::object_detail;
 using namespace std::chrono_literals;
 using Clock = std::chrono::steady_clock;
+constexpr std::array<RealtimeAudioFormat, 4> kTailFormats{{
+    {RealtimeAudioEncoding::kPcm16, 16000},
+    {RealtimeAudioEncoding::kPcm16, 24000},
+    {RealtimeAudioEncoding::kMuLaw, 8000},
+    {RealtimeAudioEncoding::kALaw, 8000},
+}};
+std::string Quiet(RealtimeAudioFormat format, size_t samples) {
+  const auto encoding = format.encoding;
+  const auto width = encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  const auto byte = encoding == RealtimeAudioEncoding::kPcm16 ? char(0)
+                    : encoding == RealtimeAudioEncoding::kMuLaw ? char(0xff)
+                                                               : char(0xd5);
+  return std::string(samples * width, byte);
+}
+std::string SpeechThenQuiet(RealtimeAudioFormat format) {
+  auto raw = Quiet(format, format.rate / 2);
+  std::fill_n(raw.begin(), raw.size() / 4, '\x15');
+  return raw;
+}
 std::string Base64(std::string_view bytes) {
   std::string result;
   if (!q4t::io::EncodeBase64(bytes, kWebSocketMessageLimit, &result))
@@ -127,6 +147,86 @@ struct Fixture {
   }
 };
 }  // namespace
+
+Q4T_TEST(live_audio_input_close_after_vad_silence_avoids_second_asr) {
+  for (auto format : kTailFormats) {
+    Fixture f;
+    f.voiced = true;
+    Q4T_CHECK(f.Start(format).ok());
+    Q4T_CHECK(f.input->Append(Base64(SpeechThenQuiet(format))).ok());
+    Q4T_CHECK(f.Wait([&] { return f.releases == 1; }));
+    Q4T_CHECK(f.input->AudioBytes() > 0 && f.calls == 1);
+    Q4T_CHECK(f.Finish() && f.calls == 1 && f.releases == 1);
+    Q4T_CHECK(f.commits.size() == 1 && f.commits[0].automatic);
+    Q4T_CHECK(f.input->AudioBytes() == 0 &&
+              f.input->AcceptedTicks() == 24000 && !f.Count("error"));
+  }
+  return true;
+}
+
+Q4T_TEST(live_audio_input_close_pending_vad_is_nonblocking_and_drains_once) {
+  for (auto format : kTailFormats) {
+    Fixture f;
+    f.voiced = true;
+    f.hold = true;
+    Q4T_CHECK(f.Start(format).ok());
+    Q4T_CHECK(f.input->Append(Base64(SpeechThenQuiet(format))).ok());
+    Q4T_CHECK(f.input->Close().ok() && f.frames == 0 && f.calls == 0);
+    Q4T_CHECK(!f.input->Drained() && f.input->AudioBytes() > 0);
+    Q4T_CHECK(f.Wait([&] { return f.calls == 1; }));
+    Q4T_CHECK(!f.input->Drained() && f.releases == 0);
+    f.hold = false;
+    Q4T_CHECK(f.Wait([&] { return f.input->Drained(); }));
+    Q4T_CHECK(f.calls == 1 && f.releases == 1 && f.commits.size() == 1);
+    Q4T_CHECK(f.input->AcceptedTicks() == 24000 && !f.Count("error"));
+  }
+  return true;
+}
+
+Q4T_TEST(live_audio_input_close_quiet_input_never_starts_asr) {
+  for (auto format : kTailFormats) {
+    Fixture f;
+    Q4T_CHECK(f.Start(format).ok());
+    Q4T_CHECK(f.input->Append(Base64(Quiet(format, format.rate / 2))).ok());
+    Q4T_CHECK(f.Finish() && f.frames > 0 && f.calls == 0);
+    Q4T_CHECK(f.commits.empty() && f.input->AudioBytes() == 0);
+    Q4T_CHECK(f.input->AcceptedTicks() == 24000 && f.events.empty());
+  }
+  return true;
+}
+
+Q4T_TEST(live_audio_input_close_unscored_signal_preserves_exact_waveform) {
+  for (auto format : kTailFormats) {
+    Fixture f;
+    auto raw = Quiet(format, format.rate * 64 / 1000);
+    const auto width = format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+    raw.append(width, '\x15');
+    Q4T_CHECK(f.Start(format).ok() && f.input->Append(Base64(raw)).ok());
+    Q4T_CHECK(f.Finish() && f.frames > 0 && f.calls == 1);
+    Q4T_CHECK(f.audio == std::vector<std::string>({raw}));
+    Q4T_CHECK(f.commits.size() == 1 && !f.commits[0].automatic);
+    Q4T_CHECK(f.input->AcceptedTicks() == 3072 + 48000 / format.rate);
+  }
+  return true;
+}
+
+Q4T_TEST(live_audio_input_close_active_speech_never_pads_or_drops_samples) {
+  for (auto format : kTailFormats) {
+    Fixture f;
+    f.native.vad_step = [](auto, auto*, float* probability) {
+      *probability = 1;
+      return q4t::Status{};
+    };
+    auto raw = Quiet(format, format.rate / 10);
+    std::fill(raw.begin(), raw.end(), '\x15');
+    Q4T_CHECK(f.Start(format).ok() && f.input->Append(Base64(raw)).ok());
+    Q4T_CHECK(f.Finish() && f.calls == 1 && f.releases == 1);
+    Q4T_CHECK(f.audio == std::vector<std::string>({raw}));
+    Q4T_CHECK(f.commits.size() == 1 && !f.commits[0].automatic);
+    Q4T_CHECK(f.input->AcceptedTicks() == 4800 && !f.Count("error"));
+  }
+  return true;
+}
 
 Q4T_TEST(live_audio_input_pcm_formats_preserve_native_vad_ranges_and_context) {
   for (uint32_t rate : {16000, 24000}) {

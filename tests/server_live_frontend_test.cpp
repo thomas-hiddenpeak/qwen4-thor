@@ -542,6 +542,29 @@ Q4T_TEST(live_native_concrete_session_runs_input_speech_mute_and_close) {
   return true;
 }
 
+Q4T_TEST(live_native_close_quiet_tail_has_no_extra_work_or_transcript) {
+  NativeFixture f;
+  f.f.native.input.vad_step = [](auto samples, auto*, float* probability) {
+    *probability = std::ranges::any_of(samples, [](float sample) {
+      return sample > .01f || sample < -.01f;
+    }) ? 1.f : 0.f;
+    return q4t::Status{};
+  };
+  Q4T_CHECK(f.Start());
+  std::string raw(6000, '\x15');
+  raw.append(18000, '\0');
+  Q4T_CHECK(f.Send(Object({{"type", String("session.input_audio.append")},
+                           {"audio", String(Base64(raw))}})));
+  Q4T_CHECK(f.Wait([&] { return f.f.model_released == 1; }));
+  Q4T_CHECK(f.Close() && f.Count("session.closed") == 1);
+  Q4T_CHECK(f.f.asr == 1 && f.f.asr_released == 1 && f.f.models == 1);
+  Q4T_CHECK(f.Count("session.input_transcript.delta") == 1);
+  Q4T_CHECK(f.Count("session.output_transcript.delta") == 1);
+  Q4T_CHECK(!f.Count("error") && !f.f.overlap && !f.f.early_release);
+  Q4T_CHECK(!f.f.model_alive && !f.f.asr_alive);
+  return true;
+}
+
 Q4T_TEST(live_native_update_keeps_appended_instructions_and_snapshot_context) {
   NativeFixture f;
   Q4T_CHECK(f.Start());

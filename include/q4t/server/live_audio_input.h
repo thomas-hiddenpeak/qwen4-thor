@@ -39,6 +39,7 @@ class LiveAudioInput {
   ObjectReply Forward(const io::Json& event);
   ObjectReply Transcript(const io::Json& event, const RealtimeAudioItem& audio);
   ObjectReply Command(io::Json event);
+  ObjectReply FinishTail();
   ObjectReply ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   ObjectReply Fail();
   const LiveAudioInputCallbacks callbacks_;

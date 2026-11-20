@@ -89,6 +89,8 @@ struct RealtimeTranscriptionCallbacks {
   IRealtimeTranscriptionOwner* owner = nullptr;
 };
 
+enum class RealtimeInputTail { kAnalyzing, kSilence, kMayContainSpeech };
+
 class RealtimeTranscriptionSession {
  public:
   RealtimeTranscriptionSession(std::string id, WebSocketOutput& output,
@@ -127,6 +129,10 @@ class RealtimeTranscriptionSession {
   // Typed composition only. A caller that has stopped appending must drain
   // both actual borrowers and protocol output, not only observe an idle worker.
   size_t UncommittedBytes() const { return queue_.PendingBytes(); }
+  // Same-owner inspection only, without changing explicit wire commits.
+  // Silence requires caught-up, inactive server VAD and a digital-quiet
+  // unscored suffix. Unknown/short signals retain their real ASR waveform.
+  RealtimeInputTail UncommittedTail() const;
   bool PendingOutput() const {
     return !vad_events_.empty() || !terminal_.empty() || output_.Bytes() != 0;
   }

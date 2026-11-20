@@ -2582,7 +2582,7 @@
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa",
     "include/q4t/server/realtime_conversation.h": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745",
-    "include/q4t/server/realtime_conversation_input.h": "a48d8f4371a2d9f22cae1268c98d92457937418cf09ab555fa9882c2059b76e5",
+    "include/q4t/server/realtime_conversation_input.h": "da4b6ac7cd647961250092ee762ad5956702e417a3de916fe3b65ffcde7547ad",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
     "include/q4t/server/realtime_conversation_session.h": "b0f4703230da703d7c43d5f1dc001ff505188f17de8ce2db005e64ec1344f89d",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
@@ -2614,8 +2614,8 @@
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "e6cfb3324c8f6b4b30f568a6494a45ca5b27173f3f6496809ec0fa09a8c86725",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
-    "include/q4t/server/realtime_transcription_session.h": "2859aee45d90f01efc77dae29413c080b50cf279fde5b68aafcaeb95068cf436",
-    "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
+    "include/q4t/server/realtime_transcription_session.h": "537e756186f2223b7e1282f0fbb03b97575da1e32686732383a0eed1d17136a1",
+    "include/q4t/server/realtime_vad.h": "25c45f7f3a4194f61dbe0024c2991a1078e2e857a50ae79a1596e8e586e38ba8",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
@@ -3093,7 +3093,7 @@
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
     "src/server/realtime_transcription_protocol.cpp": "936d9e12ca45edd46b87e67c890ea89b6e33526e107f8a57d63f1035fba2be0c",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
-    "src/server/realtime_transcription_session.cpp": "53cfcc58b5115ea297a9b1cb1557e369b98228f354241810dd5162d10ce0ac59",
+    "src/server/realtime_transcription_session.cpp": "53c572fdc51b0292445c0937c10726775994c90a335563ea067a6c472e798946",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
     "src/server/realtime_wire_shape.cpp": "badc3acee93b71e43c36d78400a882b32177de5cba27daead37655b7b8fd6ce0",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
@@ -3476,8 +3476,8 @@
     "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
     "src/server/live_session.cpp": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
     "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
-    "include/q4t/server/live_audio_input.h": "cbcce2f28830dc57105f4186644299bc0208608d03ae0910533aaea53327d60e",
-    "src/server/live_audio_input.cpp": "85160c396eb146030fd2473a72cb430c68bc0dcac6ba46745209e744d6ae779f",
+    "include/q4t/server/live_audio_input.h": "afef86260a235b6cc0743063f9c074b1444f276cf2a85929fe8b3f1400541eda",
+    "src/server/live_audio_input.cpp": "6dc6997abff7d819caf3a9a69392a2609404cad938310569d3976ac1beef64fe",
     "include/q4t/server/live_audio_output.h": "4be98b9b2438526058af26111373c127909fe85fe58c5b30d4f2821352b89a28",
     "include/q4t/server/live_frontend_work.h": "dce523c4b969a43db09489a287d145019803849054e028c008788e5884a98ca0",
     "src/server/live_audio_output.cpp": "534f8fb669d57a01c3aa1b3d051699ee673430a161ec53228310653028ed0a01",
@@ -9643,5 +9643,19 @@
     "evidence": "docs/evidence/serve-live-binding-cpu-20261121/README.md",
     "status": "Concrete native binding CPU preparation, actual model HTTP pending; default unchanged",
     "real_business_accepted": false
+  },
+  "live_close_tail_review_20261121": {
+    "sources": [
+      "include/q4t/server/live_audio_input.h",
+      "include/q4t/server/realtime_conversation_input.h",
+      "include/q4t/server/realtime_transcription_session.h",
+      "include/q4t/server/realtime_vad.h",
+      "src/server/live_audio_input.cpp",
+      "src/server/realtime_transcription_session.cpp"
+    ],
+    "cpu_tests": 18,
+    "evidence": "docs/evidence/serve-live-close-tail-cpu-20261121/README.md",
+    "status": "Targeted native CPU passed, actual close-tail HTTP followup pending; original failure retained",
+    "default_changed": false
   }
 }

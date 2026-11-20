@@ -76,6 +76,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   size_t RetainedAudioBytes() const { return processor_.RetainedAudioBytes(); }
   uint64_t AcceptedTicks() const { return processor_.AcceptedTicks(); }
   size_t UncommittedBytes() const { return processor_.UncommittedBytes(); }
+  RealtimeInputTail UncommittedTail() const {
+    return processor_.UncommittedTail();
+  }
   bool Drained() const {
     return !failed_ && !processor_.QueuedItems() && !processor_.Executing() &&
            !processor_.UncommittedBytes() && !processor_.PendingOutput();

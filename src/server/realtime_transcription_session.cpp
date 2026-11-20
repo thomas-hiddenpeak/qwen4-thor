@@ -566,6 +566,37 @@ void RealtimeTranscriptionSession::ResetVad() {
                          silence},
       callbacks_.vad_step);
 }
+RealtimeInputTail RealtimeTranscriptionSession::UncommittedTail() const {
+  using Tail = RealtimeInputTail;
+  if (!queue_.PendingBytes()) return Tail::kSilence;
+  if (!vad_ || noise_input_ || semantic_ || cancelled_ ||
+      settings_.turn != RealtimeTranscriptionSettings::Turn::kServerVad)
+    return Tail::kMayContainSpeech;
+  if (!vad_caught_up_ || vad_->CursorTicks() != queue_.AcceptedTicks())
+    return Tail::kAnalyzing;
+  if (vad_->Active() || !vad_->HasAnalyzedFrame())
+    return Tail::kMayContainSpeech;
+  const auto format = queue_.Format();
+  using Encoding = RealtimeAudioEncoding;
+  if (format.encoding == Encoding::kFloat32) return Tail::kMayContainSpeech;
+  const auto step = kRealtimeTicksPerSecond / format.rate;
+  const auto begin = queue_.PendingBeginTicks();
+  const auto analyzed = std::max(begin, vad_->AnalyzedTicks());
+  const auto suffix = std::min(queue_.AcceptedTicks(),
+                              begin + (analyzed - begin) / step * step);
+  // Only the bounded, unscored remainder is inspected here. Do not classify
+  // arbitrary sound as silence merely because no complete VAD frame remains.
+  for (auto bytes : queue_.PendingFrom(suffix)) {
+    for (const auto byte : bytes) {
+      const bool quiet = format.encoding == Encoding::kPcm16 ? byte == 0
+                         : format.encoding == Encoding::kMuLaw
+                             ? (byte == 0xff || byte == 0x7f)
+                             : (byte == 0xd5 || byte == 0x55);
+      if (!quiet) return Tail::kMayContainSpeech;
+    }
+  }
+  return Tail::kSilence;
+}
 bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
                                                bool deferred) {
   if (callbacks_.owner && !callbacks_.owner->Speech(started, speech_id_, ticks))

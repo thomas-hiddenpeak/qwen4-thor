@@ -29,6 +29,12 @@ class RealtimeVad {
   Status Advance(const RealtimeAudioQueue& queue, RealtimeVadProgress* out);
   bool Active() const { return active_; }
   uint64_t CursorTicks() const;
+  // Consumed input may include a partial, unscored frame. Keep its extent
+  // separate from the input cursor when deciding whether a tail is quiet.
+  uint64_t AnalyzedTicks() const {
+    return origin_ + frames_ * audio::kVadFrameSamples * 3;
+  }
+  bool HasAnalyzedFrame() const { return frames_ != 0; }
 
  private:
   const RealtimeAudioFormat format_;
