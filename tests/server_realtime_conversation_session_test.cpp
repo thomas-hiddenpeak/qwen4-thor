@@ -421,6 +421,79 @@ Q4T_TEST(realtime_session_item_order_retrieve_delete_and_sdk_events) {
   return true;
 }
 
+Q4T_TEST(realtime_session_public_identity_is_stable_and_not_client_settings) {
+  Fixture f;
+  Q4T_CHECK(f.Start());
+  const auto created = *f.Last("session.created").Find("session");
+  Q4T_CHECK(created.GetString("id") == "sess_fixture" &&
+            created.GetString("object") == "realtime.session");
+  auto settings = Object({{"type", String("realtime")},
+                          {"instructions", String("updated")}});
+  Q4T_CHECK(f.Send(Object({{"type", String("session.update")},
+                           {"session", settings}})));
+  const auto updated = *f.Last("session.updated").Find("session");
+  Q4T_CHECK(updated.GetString("id") == created.GetString("id") &&
+            updated.GetString("object") == created.GetString("object") &&
+            updated.GetString("instructions") == "updated");
+  for (const auto* field : {"id", "object"}) {
+    auto forged = settings;
+    Set(&forged, field, *created.Find(field));
+    Q4T_CHECK(f.Send(Object({{"type", String("session.update")},
+                             {"session", forged}})));
+  }
+  Q4T_CHECK(f.Count("session.updated") == 1 && f.Count("error") == 2);
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(!f.Snapshot(0).settings.Has("id") &&
+            !f.Snapshot(0).settings.Has("object"));
+  return true;
+}
+
+Q4T_TEST(realtime_wire_session_identity_rejects_malformed_or_duplicated_fields) {
+  for (const auto* session_type : {"realtime", "transcription"}) {
+    auto session = Object(
+        {{"type", String(session_type)}, {"id", String("sess_fixture")},
+         {"object", String(std::string("realtime") == session_type
+                                ? "realtime.session"
+                                : "realtime.transcription_session")}});
+    for (const auto* event_type : {"session.created", "session.updated"}) {
+      auto event = Object({{"type", String(event_type)},
+                           {"event_id", String("event_fixture")},
+                           {"session", session}});
+      const auto original = OutputJson(event);
+      ChatPlanError error;
+      Q4T_CHECK(ValidateRealtimeWireShape(
+          event, RealtimeShape::kServerEvent, &error));
+      Q4T_CHECK(OutputJson(event) == original);
+      for (int mutation = 0; mutation < 8; ++mutation) {
+        auto bad = event;
+        auto& settings = Field(bad, "session");
+        if (mutation < 2) {
+          const auto key = mutation ? "object" : "id";
+          std::erase_if(settings.object,
+                        [&](const auto& e) { return e.first == key; });
+        } else if (mutation == 2) {
+          Set(&settings, "id", Number(1));
+        } else if (mutation == 3) {
+          Set(&settings, "id", String("sess_../foreign"));
+        } else if (mutation == 4) {
+          Set(&settings, "object", String("other.object"));
+        } else if (mutation == 5) {
+          settings.object.push_back({"id", String("sess_other")});
+        } else if (mutation == 6) {
+          settings.object.push_back({"object", *session.Find("object")});
+        } else {
+          Set(&settings, "unknown", Boolean(true));
+        }
+        const auto before = OutputJson(bad);
+        Q4T_CHECK(!ValidateRealtimeWireShape(
+            bad, RealtimeShape::kServerEvent, &error));
+        Q4T_CHECK(OutputJson(bad) == before);
+      }
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(realtime_session_function_result_returns_to_actual_history_snapshot) {
   Fixture f;
   f.mode = 1;
@@ -716,6 +789,10 @@ Q4T_TEST(realtime_wire_documented_null_clears_preserve_exact_sdk_discrepancy) {
     const auto shape = std::string_view(type) == "session.update"
                            ? RealtimeShape::kClientEvent
                            : RealtimeShape::kServerEvent;
+    if (shape == RealtimeShape::kServerEvent) {
+      Set(&Field(event, "session"), "id", String("sess_fixture"));
+      Set(&Field(event, "session"), "object", String("realtime.session"));
+    }
     const auto original = OutputJson(event);
     Q4T_CHECK(!ValidateRealtimeShape(event, shape, &error));
     Q4T_CHECK(ValidateRealtimeWireShape(event, shape, &error));
@@ -2388,6 +2465,9 @@ Q4T_TEST(realtime_session_trace_observes_function_generation_without_payloads) {
   Set(&f.settings, "tracing", String("auto"));
   f.mode = 1;
   Q4T_CHECK(f.Start());
+  const auto public_session = *f.Last("session.created").Find("session");
+  Q4T_CHECK(public_session.GetString("id") == "sess_fixture" &&
+            public_session.GetString("object") == "realtime.session");
   Q4T_CHECK(f.Add(User("user_one", "PRIVATE_REQUEST_CONTENT")));
   Q4T_CHECK(f.Create() && f.Finish());
   ObjectReply record;
@@ -2399,6 +2479,8 @@ Q4T_TEST(realtime_session_trace_observes_function_generation_without_payloads) {
                "completed";
   }));
   Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1);
+  Q4T_CHECK(record.value.GetString("session_id") ==
+            public_session.GetString("id"));
   const auto* spans = record.value.GetArray("spans");
   Q4T_CHECK(std::ranges::any_of(spans->array, [](const auto& span) {
     return span.GetString("kind") == "function_arguments";

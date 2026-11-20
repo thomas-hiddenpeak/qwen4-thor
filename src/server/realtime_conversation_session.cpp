@@ -386,6 +386,8 @@ ObjectReply RealtimeConversationSession::SelectMcp(
 }
 Json RealtimeConversationSession::PublicSettings() const {
   auto value = settings_.Current().settings;
+  Set(&value, "id", String(id_));
+  Set(&value, "object", String("realtime.session"));
   if (mcp_current_) Set(&value, "tools", mcp_current_->tools);
   return value;
 }

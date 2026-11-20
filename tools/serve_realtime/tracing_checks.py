@@ -98,6 +98,12 @@ def observe(receipt, journal, remote, source, before, after):
         receipt['connections'] == 1 and receipt['close_code'] == 1000 and
         receipt['automatic_replay'] is False and receipt['events'] == journal and
         not any(e['type'] == 'error' for e in journal), 'actual SDK journal/connection')
+    sessions = [e['session'] for e in journal if e['type'] in
+                ('session.created', 'session.updated')]
+    require(sum(e['type'] == 'session.created' for e in journal) == 1 and
+        len(sessions) >= 2 and all(s.get('id') == receipt['session_id'] and
+        s.get('object') == 'realtime.session' for s in sessions),
+        'stable public session identity must bind the actual trace query')
     responses = receipt['responses']
     require(len(responses) == len({r['id'] for r in responses}) == 3 and
         all(r['status'] == 'completed' for r in responses) and

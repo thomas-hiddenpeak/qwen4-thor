@@ -21,7 +21,8 @@ def fixture(mode='primary'):
     ordinary=response('resp_math',message('42'))
     tool=response('resp_tool',call);answer=response('resp_answer',message('Title [docs/MODEL.md:L1-L3]'))
     responses=[ordinary,tool,answer] if mode=='primary' else [tool,answer,ordinary]
-    events=[]
+    events=[dict(type=kind,session=dict(id=session,object='realtime.session'))
+            for kind in ('session.created','session.updated')]
     for r in responses:
         events.append(dict(type='response.created',response=dict(id=r['id'])))
         if r is tool:
@@ -85,6 +86,13 @@ class TraceEvidence(unittest.TestCase):
         for mode in ('primary','light'):
             self.assertEqual(c.observe(*fixture(mode))['settled_tokens'],42)
 
+    def test_missing_or_changed_public_session_identity_rejected(self):
+        for field,value in [('id',None),('id','sess_foreign'),('object','other')]:
+            sample=fixture();sample[0]['events'][0]['session'][field]=value
+            self.reject(sample)
+        sample=fixture();sample[0]['events'][1]['session']['id']='sess_changed'
+        self.reject(sample)
+
     def test_trace_requires_confirmed_storage_and_revision(self):
         for key,value in [('state','queued'),('snapshot_revision',3),('capture_interrupted',True)]:
             sample=fixture();sample[0]['snapshot']['persistence'][key]=value;self.reject(sample)
@@ -132,14 +140,16 @@ class TraceEvidence(unittest.TestCase):
             sample=fixture();sample[5][key]+=1;self.reject(sample)
 
     def test_stream_terminal_or_tool_order_mismatch_rejected(self):
-        sample=fixture();sample[0]['events'][1]['delta']='wrong';self.reject(sample)
+        sample=fixture();next(e for e in sample[0]['events'] if
+            e['type']=='response.output_text.delta')['delta']='wrong';self.reject(sample)
         sample=fixture();events=sample[0]['events'];event=next(e for e in events if
             e['type']=='response.output_item.done');events.remove(event);events.insert(0,event);self.reject(sample)
 
     def test_quality_failure_preserved_without_fabricating_protocol_failure(self):
         sample=fixture();receipt=sample[0]
         receipt['responses'][0]['output'][0]['content'][0]['text']='wrong'
-        receipt['events'][1]['delta']='wrong';sample[1]=copy.deepcopy(receipt['events'])
+        next(e for e in receipt['events'] if e['type']=='response.output_text.delta')['delta']='wrong'
+        sample[1]=copy.deepcopy(receipt['events'])
         receipt['quality'][0].update(answer='wrong',status='FAIL');receipt['status']='QUALITY_FAIL'
         self.assertEqual(c.observe(*sample)['quality'][0]['status'],'FAIL')
 

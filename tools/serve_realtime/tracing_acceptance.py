@@ -60,7 +60,7 @@ def check_plan(plan):
         plan['requests'] == {} and plan['automatic_retries'] is False and
         plan['planned'] == {k:v for k,v in LIMITS.items() if k not in ('seconds','controls')},
         'frozen tracing scope differs')
-    built = read(WORK/'native-runtime-03/result.json')
+    built = read(WORK/'native-runtime-04/result.json')
     require(built['status'] == 'BUILD_PASS' and
         all(r['warnings'] == r['returncode'] == 0 for r in built['commands']) and
         plan['binary_sha256'] == built['binary_sha256'] and
@@ -77,19 +77,24 @@ def check_plan(plan):
 def prepare(out):
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
             'commit reviewed implementation and verifier before GPU')
-    cpu = read(WORK/'sdk-cpu-03/result.json')
+    cpu = read(WORK/'sdk-cpu-04/result.json')
     require(cpu['status']=='PASS','targeted driver/checker CPU missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'verified source drift')
-    require(read(WORK/'native-integration-cpu-01/result.json')['status']=='PASS',
-            'native session/storage integration CPU missing')
+    require(all(read(WORK/n/'result.json')['status']=='PASS' for n in
+        ('native-integration-cpu-01','session-identity-cpu-02')),
+        'native integration and session identity CPU missing')
     out.mkdir(mode=0o700,parents=True)
     plan=read(REFERENCE);build=ROOT/'.q4t-work/serve-custom-tools-20261108/engine-build'
     base,binding=full.candidate_build_base(plan['base'],build/'q4t',build)
-    reviewed=read(WORK/'native-runtime-03/plan.json')['sources']
+    reviewed=read(WORK/'native-runtime-04/plan.json')['sources']
     reviewed.update(read(build/'generated/q4t/server/chat_protocol_sources.json'))
     plan.update(format=FORMAT,limits=LIMITS,output=str(out),port=18638,
         operations_port=18639,public_port=18640,private_peer_port=18641,
-        scope=__doc__,binary=str(build/'q4t'),binary_sha256=sha(build/'q4t'),
+        scope=__doc__,prior_attempts=dict(starts=1,actual_generations=0,
+            failed_record=str(WORK/'sdk-business-04/result.json'),
+            reason='Fix missing native session identity; actual business did not start',
+            cumulative_model_start_limit=3,cumulative_actual_generation_limit=6),
+        binary=str(build/'q4t'),binary_sha256=sha(build/'q4t'),
         base=base,candidate_identity=binding,reviewed_sources=reviewed,
         identity=dict(plan['identity'],binary_sha256=sha(build/'q4t'),protocol_sha256=base['protocol_sha256']),
         planned={k:v for k,v in LIMITS.items() if k not in ('seconds','controls')},
@@ -103,9 +108,9 @@ def prepare(out):
         'tools/evalscope','tools/release','docs/MODEL.md'],cwd=ROOT,text=True).splitlines()
     plan['sources']={n:sha(ROOT/n) for n in paths}
     for p in [REFERENCE,Path(plan['ingress']),Path(plan['tls']['certificate']),
-        Path(plan['tls']['key']),WORK/'native-runtime-03/result.json',
-        WORK/'native-runtime-03/plan.json',WORK/'native-integration-cpu-01/result.json',
-        WORK/'sdk-cpu-03/result.json']:
+        Path(plan['tls']['key']),WORK/'native-runtime-04/result.json',
+        WORK/'native-runtime-04/plan.json',WORK/'native-integration-cpu-01/result.json',
+        WORK/'sdk-cpu-04/result.json',WORK/'session-identity-cpu-02/result.json']:
         plan['sources'][str(p)]=sha(p)
     plan['protected']={str(ROOT/n):sha(ROOT/n) for n in ('build/q4t','build/q4t.release.json',
         'build/service/manifest.json','build/service.release.json','build/service-native-state/ledger.json')}

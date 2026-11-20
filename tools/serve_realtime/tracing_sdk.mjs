@@ -142,6 +142,8 @@ try {
   await until(() => events.some((e) => e.type === 'session.created') &&
     events.some((e) => e.type === 'conversation.created'));
   sessionId = events.find((e) => e.type === 'session.created').session.id;
+  check(typeof sessionId === 'string' && /^sess_[A-Za-z0-9_-]+$/.test(sessionId),
+    'session.created must expose its native session ID');
   traceId = 'trace_' + crypto.createHash('sha256').update(sessionId).digest('hex');
   if (args.mode === 'light') {
     retained = await http('prior-engine-record', '/realtime/traces/' + args.retained_trace_id);

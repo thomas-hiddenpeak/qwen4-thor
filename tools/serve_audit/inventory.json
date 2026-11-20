@@ -2593,7 +2593,7 @@
     "include/q4t/server/realtime_semantic_turn.h": "29b50168cb363f3e84af1754f25b93680b328e962973c2cf0fe12cdec6515871",
     "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
     "include/q4t/server/realtime_session_pump.h": "503f251af1509b870abecfae2236f3c25f2aca17a76dd9353f2f8e53a76f2ad3",
-    "include/q4t/server/realtime_shape.h": "63c0eafb1ad1fd66e5328a83cc5748ab642e868eb346f3d12216e4a453d673d2",
+    "include/q4t/server/realtime_shape.h": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309",
     "include/q4t/server/realtime_speech_encoder.h": "44c81c5252df13aa5609f2de8dd4341c2bcf6a67294913afd3be62009728fec8",
     "include/q4t/server/realtime_speech_execution.h": "ca7a4fe46fa9b58ac38d43fa524973fc6753a74b803926ee8649c4fadcb6d929",
     "include/q4t/server/realtime_speech_history.h": "3dd99a69429f0f69fd82753327631af36cd7946e93123353ea68de1bf98de9ba",
@@ -3052,7 +3052,7 @@
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
     "src/server/realtime_conversation_input.cpp": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
-    "src/server/realtime_conversation_session.cpp": "3e7d34beac15a6018775d4b943eec6c10e7e004580520d07490c09d48e074212",
+    "src/server/realtime_conversation_session.cpp": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "src/server/realtime_mcp_calls.cpp": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39",
@@ -3085,7 +3085,7 @@
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
     "src/server/realtime_transcription_session.cpp": "53cfcc58b5115ea297a9b1cb1557e369b98228f354241810dd5162d10ce0ac59",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
-    "src/server/realtime_wire_shape.cpp": "b9e6fbf82af7818dfac582f5218492a4240596d2ca54a41a4498fe87581d89d6",
+    "src/server/realtime_wire_shape.cpp": "badc3acee93b71e43c36d78400a882b32177de5cba27daead37655b7b8fd6ce0",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
@@ -9436,5 +9436,28 @@
     "runtime_verified": false,
     "semantics_certified": false,
     "default_revision": 416
+  },
+  "native_realtime_session_identity_review_20261121": {
+    "reason": "Actual tracing SDK stopped because session.created omitted native identity. PublicSettings now publishes id/object; request settings cannot set them. Strict documented GA response projection validates id/object before applying the unchanged SDK type oracle. No generation/sampling change.",
+    "sources": {
+      "src/server/realtime_conversation_session.cpp": {
+        "before": "3e7d34beac15a6018775d4b943eec6c10e7e004580520d07490c09d48e074212",
+        "after": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d"
+      },
+      "src/server/realtime_wire_shape.cpp": {
+        "before": "b9e6fbf82af7818dfac582f5218492a4240596d2ca54a41a4498fe87581d89d6",
+        "after": "badc3acee93b71e43c36d78400a882b32177de5cba27daead37655b7b8fd6ce0"
+      },
+      "include/q4t/server/realtime_shape.h": {
+        "before": "63c0eafb1ad1fd66e5328a83cc5748ab642e868eb346f3d12216e4a453d673d2",
+        "after": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309"
+      }
+    },
+    "official_reference": "https://developers.openai.com/api/reference/resources/realtime/server-events",
+    "evidence": [
+      "docs/SERVE_REALTIME_TRACING_2026-11-20.md"
+    ],
+    "runtime_verified": false,
+    "semantics_certified": false
   }
 }
