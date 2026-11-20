@@ -10451,7 +10451,7 @@
       }
     }
   ],
-  "next_task": "Bind native Live ASR/LLM/TTS and original admission/accounting, then L03-L06 and all Serve master tasks. Lifecycle and transport CPU verified, route/model business not yet accepted; rev426 unchanged STOPPED.",
+  "next_task": "Compose native Live frontend LLM/TTS and delegation backends with original admission/accounting, then native route/real bounded business, L03-L06 and all Serve master tasks. Input/lifecycle/transport CPU preparations are not real model acceptance; rev426 unchanged STOPPED.",
   "next": "PR #57已合main；Live合同/配置/16k PCM 27项CPU，继续实际会话、模型和全部总任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -16216,7 +16216,7 @@
     }
   },
   "native_live_20261121": {
-    "state": "lifecycle_transport_cpu_pass_native_backend_in_progress",
+    "state": "native_audio_input_cpu_pass_llm_tts_backend_in_progress",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
@@ -16226,7 +16226,7 @@
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 58,
+    "distinct_native_cpu_tests": 73,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16236,7 +16236,7 @@
       },
       {
         "id": "L02",
-        "state": "lifecycle_transport_cpu_verified_actual_backend_in_progress",
+        "state": "lifecycle_transport_input_cpu_verified_llm_tts_binding_in_progress",
         "title": "主WSS与持续语音业务"
       },
       {
@@ -16271,6 +16271,10 @@
     "lifecycle_private_evidence": ".q4t-work/serve-live-20261121/lifecycle-cpu-01/result.json",
     "transport_tests": 24,
     "lifecycle_transport_distinct_tests": 31,
-    "lifecycle_transport_evidence": "evidence/serve-live-lifecycle-transport-cpu-20261121/README.md"
+    "lifecycle_transport_evidence": "evidence/serve-live-lifecycle-transport-cpu-20261121/README.md",
+    "input_tests": 15,
+    "input_original_failures": 4,
+    "input_repair_tests": 8,
+    "input_evidence": "evidence/serve-live-input-cpu-20261121/README.md"
   }
 }

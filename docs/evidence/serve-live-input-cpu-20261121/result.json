@@ -1,0 +1,25 @@
+{
+  "status": "PASS_NATIVE_LIVE_INPUT_TARGETED_REPAIR",
+  "original_tests": 14,
+  "original_pass": 10,
+  "original_fail": 4,
+  "repaired_targeted_tests": 8,
+  "distinct_tests": 15,
+  "original_failure_and_source_preserved": true,
+  "changed_since_original": [
+    "src/server/live_audio_input.cpp",
+    "tests/server_live_audio_input_test.cpp"
+  ],
+  "original_cpu_seconds": 0.11373270396143198,
+  "repair_cpu_seconds": 0.11376190092414618,
+  "host_binary_sha256": "a04c79ae9a79cbd566402db7defdaf8b0f5ba1e92cc01474402dca43604ed878",
+  "typed_native_audio_history_and_worker": true,
+  "controlled_asr_vad_callbacks": true,
+  "real_model_business_accepted": false,
+  "inventory_mutation_checks": 22,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_active": true,
+  "archive_sha256": "d25cf2526f88eb8cf558bc5de9820351e00531345a40b0f9f7c68120b1cb6284"
+}

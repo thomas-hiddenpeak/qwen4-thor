@@ -50,3 +50,8 @@ L01源码已接入工作树；6项针对性原生CPU通过，Live 808与Realtime
 正常传输24项CPU通过，与生命周期去重31项，见[确切来源和日志](evidence/serve-live-lifecycle-transport-cpu-20261121/README.md)。
 真实socketpair验证完整终态后1000关闭，慢读/EOF/撤权不误报成功；
 默认与模型均未启动，继续实际后端接入。
+
+[原生连续输入15项CPU](evidence/serve-live-input-cpu-20261121/README.md)闭合：
+复用实际音频队列/借用者/历史，评分与识别为CPU夹具。首轮四个
+极短输入失败保持；不足一个ASR样本的关闭尾部清理不补样或伪造
+转录，8项针对性补验通过。实际LLM/TTS、ASR资产和原生路由继续。

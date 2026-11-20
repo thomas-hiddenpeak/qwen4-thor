@@ -114,6 +114,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_configuration_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session_pump.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_audio_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_audio_input_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_session_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_session_pump_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_response_output_test.cpp

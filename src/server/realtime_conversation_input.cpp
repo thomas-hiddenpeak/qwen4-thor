@@ -30,8 +30,7 @@ bool CaptureBounded(const RealtimeInputCommit& notice) {
       RealtimeTranscriptionSettingsJson(notice.settings.processing, false);
   std::vector<const Json*> values{&notice.context.items, &processing};
   if (notice.response) {
-    if (notice.response->mcp)
-      total += notice.response->mcp->retained_bytes;
+    if (notice.response->mcp) total += notice.response->mcp->retained_bytes;
     values.push_back(&notice.response->settings);
     if (notice.response->prompt) {
       values.push_back(&notice.response->prompt->reference);
@@ -390,6 +389,7 @@ ObjectReply RealtimeConversationInput::Reserve(
                  "Native input owner is unavailable");
   Binding binding;
   binding.input = job.transcript;
+  binding.input_audio = job.audio;
   binding.audio = job.processed_audio;
   binding.settings = settings_;
   binding.finite = job.Finite();
@@ -419,6 +419,7 @@ ObjectReply RealtimeConversationInput::Commit(
       found->second.committed || !previous_id)
     return Missing();
   auto& binding = found->second;
+  binding.input_audio = job.audio;
   if (binding.finite) {
     if (!creating_direct_ || *creating_direct_ != binding.conversation)
       return Missing();
@@ -427,6 +428,7 @@ ObjectReply RealtimeConversationInput::Commit(
   }
   RealtimeInputCommit notice;
   notice.ticket = binding.conversation;
+  notice.audio = job.audio;
   notice.settings = binding.settings;
   notice.automatic = automatic;
   auto previous = history_.LastId();
@@ -468,6 +470,7 @@ ObjectReply RealtimeConversationInput::Finish(
       found->second.settled)
     return Missing();
   auto& binding = found->second;
+  binding.input_audio = job.audio;
   auto status =
       binding.finite
           ? (Accepted(result) ? history_.CompleteAudioPart(
@@ -582,6 +585,9 @@ bool RealtimeConversationInput::Forward(Json event) {
     const bool failed = type.ends_with(".failed");
     const bool terminal = failed || type.ends_with(".completed");
     bool sent = true;
+    if (callbacks_.transcript &&
+        !Accepted(callbacks_.transcript(event, binding.input_audio)))
+      return false;
     if (binding.settings.transcript_events)
       sent = Accepted(callbacks_.emit(event));
     else if (failed) {

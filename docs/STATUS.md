@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live连续输入CPU](evidence/serve-live-input-cpu-20261121/README.md)已闭合15项
+不同场景：复用原生音频队列、VAD/ASR线程和历史，任务时间范围、
+静音/半样本、冻结上下文及真实排空均验证。首轮10过/4失败保留；
+补齐不足一个ASR样本的关闭清理后8项针对性通过，构建零警告。
+VAD/ASR仍为CPU回调，真实模型绑定/路由继续；没有把局部准备当业务通过。
+
 [Live生命周期/传输CPU](evidence/serve-live-lifecycle-transport-cpu-20261121/README.md)
 通过：10项生命周期与24项传输组合去重31项，正式构建零警告。
 后端真实排空后才发布session.closed；全部事件写出后发1000关闭，

@@ -37,7 +37,7 @@ struct RealtimeTranscriptionJob {
   std::shared_ptr<RealtimeAudioRecord> processed_audio;
   std::shared_ptr<RealtimeSemanticTurn> semantic;
   RealtimeTranscriptTicket transcript;
-  bool idle_timeout = false;  // Native timer provenance, never client JSON.
+  bool idle_timeout = false;   // Native timer provenance, never client JSON.
   std::string source_item_id;  // Finite part; empty for the input buffer.
   size_t content_index = 0;
   bool Finite() const { return !source_item_id.empty(); }
@@ -124,6 +124,12 @@ class RealtimeTranscriptionSession {
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
   size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
   uint64_t AcceptedTicks() const;
+  // Typed composition only. A caller that has stopped appending must drain
+  // both actual borrowers and protocol output, not only observe an idle worker.
+  size_t UncommittedBytes() const { return queue_.PendingBytes(); }
+  bool PendingOutput() const {
+    return !vad_events_.empty() || !terminal_.empty() || output_.Bytes() != 0;
+  }
   // Owner-only idle capture. Silence stays in the existing bounded ring;
   // speech and ordinary commits cancel it. No invented input samples.
   void BeginIdleCapture();

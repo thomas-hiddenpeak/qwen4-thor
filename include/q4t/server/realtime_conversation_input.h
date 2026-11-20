@@ -11,6 +11,7 @@
 namespace q4t::server {
 struct RealtimeInputCommit {
   RealtimeItemTicket ticket;
+  RealtimeAudioItem audio;
   RealtimeDuplexInput settings;
   bool automatic = false;
   // Frozen at actual commit, before later client events or output changes.
@@ -31,6 +32,11 @@ struct RealtimeConversationInputCallbacks {
   // Same-owner bounded copy at actual commit, before deferred public events.
   std::function<ObjectReply(RealtimePromptSelection*)> capture_response;
   std::function<std::chrono::steady_clock::time_point()> now;
+  // Optional native transcript observer with processor-owned sample ranges.
+  // Runs on the same owner before the ordinary public callback. No new wire
+  // fields; a client cannot forge these ranges through event JSON.
+  std::function<ObjectReply(const io::Json&, const RealtimeAudioItem&)>
+      transcript;
 };
 // At most four response captures, each <=96MiB including history, effective
 // settings and pinned prompt. Metadata/settings retain the input queue bound.
@@ -69,6 +75,11 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   size_t AudioBytes() const { return processor_.AudioBytes(); }
   size_t RetainedAudioBytes() const { return processor_.RetainedAudioBytes(); }
   uint64_t AcceptedTicks() const { return processor_.AcceptedTicks(); }
+  size_t UncommittedBytes() const { return processor_.UncommittedBytes(); }
+  bool Drained() const {
+    return !failed_ && !processor_.QueuedItems() && !processor_.Executing() &&
+           !processor_.UncommittedBytes() && !processor_.PendingOutput();
+  }
   // Default-conversation output only. Playback is actual emitted sample time.
   void ResponseFinished(uint64_t playback_ticks);
   void CancelIdle() noexcept;
@@ -76,6 +87,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
  private:
   struct Binding {
     RealtimeTranscriptTicket input;
+    RealtimeAudioItem input_audio;
     RealtimeItemTicket conversation;
     std::shared_ptr<RealtimeAudioRecord> audio;
     RealtimeDuplexInput settings;

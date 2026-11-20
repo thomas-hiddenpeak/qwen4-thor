@@ -2358,8 +2358,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "3cedb8159f350a9b792502d15dd2527b5ed4b243f4d2d11e83487a7c2f1ab4cf",
-    "cmake/ChatProtocolIdentity.cmake": "8322ee0c65149efab0dad7e0ed58282dbfe2e9ca8cdcf54d479c1d18ac715594",
+    "CMakeLists.txt": "479e9a1ba484617a02d208431920d3c0864582323a4c3864e9a2496391a71e1d",
+    "cmake/ChatProtocolIdentity.cmake": "b24f53c549128f0eb2f28813f26715f0842fc04770b61f17443e6c06bbcb387d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2572,7 +2572,7 @@
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa",
     "include/q4t/server/realtime_conversation.h": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745",
-    "include/q4t/server/realtime_conversation_input.h": "90465cda2d721a41c3bf749b950cee3be2c8612ccb1acef2480fa9089a93c158",
+    "include/q4t/server/realtime_conversation_input.h": "a48d8f4371a2d9f22cae1268c98d92457937418cf09ab555fa9882c2059b76e5",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
     "include/q4t/server/realtime_conversation_session.h": "b0f4703230da703d7c43d5f1dc001ff505188f17de8ce2db005e64ec1344f89d",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
@@ -2604,7 +2604,7 @@
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "e6cfb3324c8f6b4b30f568a6494a45ca5b27173f3f6496809ec0fa09a8c86725",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
-    "include/q4t/server/realtime_transcription_session.h": "01aa92a01e85efed75efdc7e5333c9729bcdbf0fa8ad0430f88c3d0e486ddf0e",
+    "include/q4t/server/realtime_transcription_session.h": "2859aee45d90f01efc77dae29413c080b50cf279fde5b68aafcaeb95068cf436",
     "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
@@ -3050,7 +3050,7 @@
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "08c7e69f2dee04d63268dc20a9dab523743ec2625542d6ba05f5c5751e139ce9",
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
-    "src/server/realtime_conversation_input.cpp": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d",
+    "src/server/realtime_conversation_input.cpp": "b85d897424c33bea1899e810293486bfc636770d44816411f52087fac07dbfa3",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
@@ -3465,7 +3465,9 @@
     "include/q4t/server/live_session.h": "0f81caf3594acc2d67459e4c314a7178de99ac189e1f3a9166330e810b547711",
     "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
     "src/server/live_session.cpp": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
-    "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71"
+    "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
+    "include/q4t/server/live_audio_input.h": "4b5b2459cbca13e68dab55c6ef0c01d19ecaacc9143879027d4ab751a547d706",
+    "src/server/live_audio_input.cpp": "85160c396eb146030fd2473a72cb430c68bc0dcac6ba46745209e744d6ae779f"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9551,6 +9553,20 @@
     ],
     "evidence": "docs/evidence/serve-live-lifecycle-transport-cpu-20261121/README.md",
     "status": "CPU verified owner and socket composition; real model and route pending",
+    "no_route_accepted": true
+  },
+  "live_audio_input_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_audio_input.h",
+      "include/q4t/server/realtime_conversation_input.h",
+      "include/q4t/server/realtime_transcription_session.h",
+      "src/server/live_audio_input.cpp",
+      "src/server/realtime_conversation_input.cpp"
+    ],
+    "evidence": "docs/evidence/serve-live-input-cpu-20261121/README.md",
+    "status": "CPU verified native processor/history adapter; real VAD/ASR model and route binding pending",
     "no_route_accepted": true
   }
 }
