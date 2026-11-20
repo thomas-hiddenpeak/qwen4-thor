@@ -1,0 +1,115 @@
+{
+  "scope": "Reversible old synthetic CPU observer fixture executables; no live/default/package assets.",
+  "files": [
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-host-observation-20261104/cpu-fixtures/tmpimrs0bur/notify/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1794043110475563327,
+      "mtime_ns": 1794043110375563449,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-0.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-host-observation-20261104/cpu-fixtures/tmpdap2v2tp/notify/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793772994212527718,
+      "mtime_ns": 1793772994108528685,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-1.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-host-observation-20261104/cpu-fixtures/tmplw8gekkp/notify/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793761932570312351,
+      "mtime_ns": 1793761932450312944,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-2.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-host-observation-20261104/cpu-fixtures/tmp1acn8hxx/notify/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793756279413373315,
+      "mtime_ns": 1793756279309373982,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-3.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-2/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793761925078349350,
+      "mtime_ns": 1793761924978349844,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-4.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-3/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793761927250338626,
+      "mtime_ns": 1793761927150339120,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-5.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tls-observation-20261104/cpu-fixtures/tmp9aqqt077/notify-1/alertmanager"
+      ],
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7",
+      "bytes": 46914699,
+      "mode": 320,
+      "atime_ns": 1793761922814360526,
+      "mtime_ns": 1793761922710361040,
+      "original_links": 1,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-observers-08/binary-6.gz",
+      "archive_sha256": "3e457393544952dd9c765c1cd1d7954199a056276b30122b95bdabd880b0b8c8",
+      "archive_bytes": 22474592
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-01/bundle/manifest.json": "cf2c81d75a26dc7ae801d7e651b75909fcd20bf2783a6e38a7dc11a1c4e010f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle/manifest.json": "ca36e5e399506cc7105af0f8c05c73cab77614c6313620688d256d78260d889a"
+  },
+  "free_before": 236044288
+}

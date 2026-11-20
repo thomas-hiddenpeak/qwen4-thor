@@ -1,0 +1,91 @@
+{
+  "status": "PASS_NATIVE_REALTIME_SPEECH_CANCELLATION_ENGINE_PROFILE_BUSINESS",
+  "acceptance": "ACCEPT_NATIVE_REALTIME_SPEECH_CANCELLATION_ENGINE_PROFILE_BUSINESS",
+  "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "protocol_sha256": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+  "source_commit": "fd0738959a3851c521cf86b26a05b7d73149c741",
+  "source_bound_primary_light": {
+    "status": "ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT",
+    "registry_sha256": "d28ba7ac49169a0a4bd411ecd7e4f99cebe217b18cf7fd9e1c920e7c531f8b4f",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 63,
+      "cleanup_complete": true,
+      "lease_result_sha256": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc"
+    },
+    "original_environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "cleanup_complete": true,
+      "nvml_queries": 151,
+      "lease_result_sha256": "dda0d5ef909a05a3ec1a7778d8e51dd71e94850b4751bf3bfbfef154929c0310"
+    },
+    "actual_cancellation_acceptance_sha256": "3ad7e1d1d206624e31b5a40634e696d1bc295e24f27da06b8f9787b1c9ca0d29",
+    "original_registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+    "gpu_starts": 0,
+    "full_profile_rerun": false,
+    "managed_recovery_accepted": false,
+    "original_failures_preserved": true,
+    "default_unchanged": true,
+    "performance_claim": false,
+    "listening_deferred": true,
+    "seconds": 0.7395387678407133
+  },
+  "source_delta": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "cmake/HostTestSources.cmake",
+    "include/q4t/server/chat_audio_output.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/native_chat_generation.h",
+    "include/q4t/server/realtime_chat_plan.h",
+    "include/q4t/server/realtime_conversation.h",
+    "include/q4t/server/realtime_conversation_session.h",
+    "include/q4t/server/realtime_response_output.h",
+    "include/q4t/server/realtime_speech_encoder.h",
+    "include/q4t/server/realtime_speech_execution.h",
+    "include/q4t/server/realtime_speech_history.h",
+    "src/server/chat_audio_output.cpp",
+    "src/server/chat_audio_synthesis.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_realtime_conversation.cpp",
+    "src/server/realtime_chat_plan.cpp",
+    "src/server/realtime_conversation.cpp",
+    "src/server/realtime_conversation_session.cpp",
+    "src/server/realtime_response_output.cpp",
+    "src/server/realtime_speech_encoder.cpp",
+    "src/server/realtime_speech_execution.cpp",
+    "src/server/realtime_speech_history.cpp"
+  ],
+  "control_delta": [
+    "tools/serve_realtime/speech_checks.py",
+    "tools/serve_recovery/bundle.py",
+    "tools/serve_recovery/profile_evidence.py",
+    "tools/serve_recovery/profile_migration.py",
+    "tools/serve_recovery/profile_record.py",
+    "tools/serve_recovery/profile_speech_evidence.py",
+    "tools/serve_recovery/profile_speech_reuse.py",
+    "tools/serve_recovery/profile_speech_source.py"
+  ],
+  "native_delta": [
+    "CMakeLists.txt"
+  ],
+  "native_added": [],
+  "evidence": {
+    "serve-realtime-speech-profiles-20261120": "85f70f8c8b4eabb20b9dd3eea3f1a03518d3f136c7d82be9840829f95b5487a9",
+    "serve-realtime-speech-recovery-cpu-20261120": "3930134e2d54b33846ba61ccd9c4334243bff019a2a165903119a8d435ab7bea",
+    "serve-realtime-speech-content-20261120": "d87ce380872ca81f1e49c7d2a4f88cfe461e37e61c97b440da86512e5c8b4acb",
+    "serve-realtime-speech-cancel-http-20261120": "6fc362a3fc9f837fd78f6dc256603bd5e818f25711a964cc170d0a727ccb95d1",
+    "serve-realtime-speech-cancel-profile-cpu-20261120": "cb631927ec88737675f6c6608df4dadf39fa494644803ea40dfaf4b4b64c4638"
+  },
+  "scope": "Native Realtime continuous speech shares the existing Chat owner, rate admission and cancellation. Exact primary/light source qualification checks full waveforms, voice identity, permission isolation and usage; original checker failures remain. Speech PCM matches previously independently recognized source audio. Actual cancelled speech is counted once as aborted, settles 581 actual tokens, then the same core serves complete new speech. Exact old main/light observations are reused; no claim of rerunning unchanged backends. Native whole-package speech recovery remains pending. No full model, performance or long stability claim. Original quality failures and listening deferral remain; all Serve master tasks continue.",
+  "managed_composition_pending": true,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "default_changed": false,
+  "remaining_master_tasks_open": true
+}

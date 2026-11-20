@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[修复后资格与封包就绪](evidence/serve-realtime-speech-cancel-packages-20261120/README.md)：
+v19 registry d28ba7ac绑定原主轻和实际取消修复；新v23候选与保留包
+使用b156d976，后者只换精确旧控制器，尚待实际保留包及整包回退。
+冻结新增1模型/2生成保留包，随后原2模型/4生成回退；累计含所有
+失败9模型/22生成/11连接/1探测/1200秒。默认rev366保持，继续交付。
+
 [取消修复资格CPU通过](evidence/serve-realtime-speech-cancel-profile-cpu-20261120/README.md)：
 12项及20来源反例通过；原摘要续审拒绝保留，只补受影响来源检查。
 现有v23模块绑定原v19主轻与实际取消证据，不新增依赖。继续新资格
