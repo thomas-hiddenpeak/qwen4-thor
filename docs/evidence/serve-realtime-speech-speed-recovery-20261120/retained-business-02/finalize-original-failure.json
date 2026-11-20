@@ -1,0 +1,8 @@
+{
+  "status": "FAILED_EXACT_ARGV_CHECK",
+  "error": "strict managed environment not accepted",
+  "actual_business": "PASS_BOUNDED_FEATURE_SERVICE",
+  "guard": "COMPLETED",
+  "reason": "Observed argv used relative paths and python3 while frozen argv uses absolute paths; original records unchanged",
+  "new_gpu_starts": 0
+}

@@ -28,7 +28,9 @@ def fixture(mode='complete'):
     partial=None
     if mode=='hold_stream':
         partial=dict(response_id='pending',item_id='pending_item',delta=base64.b64encode(b'\x01\x02'*400).decode())
-        events.extend([dict(type='response.created',response=dict(id='pending')),
+        slow=copy.deepcopy(settings);slow['audio']['output']['speed']=.25
+        events.extend([dict(type='session.updated',session=slow),
+            dict(type='response.created',response=dict(id='pending')),
             dict(type='response.output_audio.delta',**partial)])
     for i,event in enumerate(events):event['event_id']='event_'+str(i)
     return dict(phase='result',status='PASS',mode=mode,transport='official-openai-wss',
@@ -77,6 +79,11 @@ assert not any(n == 'tools.serve_recovery' or n.startswith('tools.serve_recovery
         for change in [lambda v:v.update(partial=None),lambda v:v['partial'].update(delta=''),
             lambda v:v['events'].append(dict(type='response.done',event_id='bad',
                 response=dict(id='pending',status='completed')))]:self.reject(change,'hold_stream')
+
+    def test_slow_pending_speech_must_use_only_a_between_response_session_update(self):
+        for change in [lambda v:v['events'][-3]['session']['audio']['output'].update(speed=1),
+            lambda v:v['events'][-3]['session']['audio']['output'].update(voice='vivian'),
+            lambda v:v['events'].insert(3,v['events'].pop(-3))]:self.reject(change,'hold_stream')
 
     def test_replay_dropped_terminal_and_transport_fallback_fail(self):
         for change in [lambda v:v.update(automatic_replay=True),lambda v:v.update(connections=2),

@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语音恢复语速修正CPU通过](evidence/serve-realtime-speech-speed-recovery-20261120/README.md)：
+14项/4.640秒及JS/20来源反例通过，原非法请求FAIL保留。保留包
+实际接受，61.107秒/58次NVML正常；原命令断言有单独路径复核。
+仅补未完成TLS与整包回退，累计上限6模型/15生成/7连接/1200秒。
+
+语音保留包实际已通过并完成命令路径离线复核；原逐字argv拒绝保留。
+TLS首段完整语音成功，第二请求因驱动错用response级speed而400，
+故障尚未注入，原FAIL/COMMAND_FAILED保持。按固定SDK改用轮次间
+session.update；冻结14项CPU/20来源反例/180秒后仅补缺失TLS恢复。
+累计恢复预算含失败为6模型/15生成/7连接/1探测/1200秒；默认保持。
+
 [语音恢复冷入口修正通过](evidence/serve-realtime-speech-recovery-entry-20261120/README.md)：
 2项CPU/1.116秒及20来源反例通过；只在封包来源固定后导入。
 原COMMAND_FAILED和两个准备错误保留，0模型/0请求；继续原实际

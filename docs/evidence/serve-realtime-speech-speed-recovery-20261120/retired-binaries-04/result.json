@@ -1,0 +1,10 @@
+{
+  "status": "ARCHIVED_RETIRED_CPU_EXECUTABLES_REVERSIBLY",
+  "identities": 2,
+  "paths": 5,
+  "bytes_released": 47552886,
+  "free_after": 89128960,
+  "protected_unchanged": true,
+  "gpu_starts": 0,
+  "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-04/restore.py"
+}

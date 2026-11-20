@@ -38,7 +38,7 @@ class SpeechSdk(unittest.TestCase):
                     '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest()).decode()
                 self.wfile.write(('HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\n'
                     'Upgrade: websocket\r\nSec-WebSocket-Accept: '+accept+'\r\n\r\n').encode())
-                number=0;turn=0;data=fixture('hold_stream')
+                number=0;turn=0;data=fixture('hold_stream');settings={}
                 def emit(event):
                     nonlocal number
                     number+=1;event=dict(event,event_id='cpu-'+str(number))
@@ -53,12 +53,18 @@ class SpeechSdk(unittest.TestCase):
                             self.wfile.write(frame(payload,8));self.wfile.flush();return
                         event=json.loads(payload);owner.commands.append(event['type'])
                         if event['type']=='session.update':
-                            emit(dict(type='session.updated',session=event['session']))
+                            update=event['session']
+                            if settings:
+                                assert update==dict(type='realtime',audio=dict(output=dict(speed=.25)))
+                                settings['audio']['output']['speed']=.25
+                            else:settings=copy.deepcopy(update)
+                            emit(dict(type='session.updated',session=settings))
                         elif event['type']=='conversation.item.create':
                             emit(dict(type='conversation.item.done',item=event['item']))
                         elif event['type']=='response.create':
+                            assert 'speed' not in event['response'].get('audio',{}).get('output',{})
                             turn+=1
-                            for message in (data['events'][3:-2] if turn==1 else data['events'][-2:]):emit(message)
+                            for message in (data['events'][3:-3] if turn==1 else data['events'][-2:]):emit(message)
                         elif event['type']=='conversation.item.retrieve':
                             item=copy.deepcopy(data['retrievals'][0])
                             if owner.corrupt_retrieval:item['content'][0]['audio']='AAAA'
@@ -110,6 +116,7 @@ class SpeechSdk(unittest.TestCase):
         value=self.finish(process);self.check(value,'hold_stream')
         self.assertEqual(value['close_code'],1006);self.assertEqual(value['connections'],1)
         self.assertEqual(self.commands.count('response.create'),2)
+        self.assertEqual(self.commands.count('session.update'),2)
 
     def test_explicit_plain_connection_recovers_after_whole_transport_loss(self):
         old=self.front;old.close()

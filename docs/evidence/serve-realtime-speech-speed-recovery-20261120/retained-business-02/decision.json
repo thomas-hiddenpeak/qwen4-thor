@@ -1,0 +1,39 @@
+{
+  "status": "PASS_REALTIME_SPEECH_SERVICE_RETAINED",
+  "acceptance": "ACCEPT_REALTIME_SPEECH_SERVICE_RETAINED",
+  "manifest_sha256": "0360199b625edd1498531e9875494e20aaeeb96671aceaee952ea195c7198a8b",
+  "engine_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+  "actual_business": {
+    "status": "ACCEPT_REALTIME_SPEECH_SERVICE_RETAINED",
+    "strict_lease_seconds": 61.10698358574882,
+    "nvml_queries": 58,
+    "env_abort": false,
+    "command_identity_review": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-command-review-01/review.json",
+      "sha256": "cacb8b87a324259237043108fe62ddca738048ceaa4d21aed9fab0ad6c008e5d",
+      "original_exact_argv_passed": false,
+      "resolved_files_identical": true
+    },
+    "counts": {
+      "starts": 1,
+      "chats": 2,
+      "probes": 0,
+      "controls": 152,
+      "websocket_sessions": 1
+    },
+    "source_commit": "cb190962bed5f5722a0b07be6017e1c95132f4bd",
+    "plan_sha256": "392048a64f4d80e20e51e7b1cc23a6b276ce885ee5e51a2189f085d0a57bd886",
+    "result_sha256": "7dc5e73adeca039569a988c55d017b6713a1209168b622fa5f9cae7aa7ff5f3e",
+    "lease_result_sha256": "2c80e81d6919d636c5a236c2f99af0645374906bae7f9fbc267c6298056e03b1",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

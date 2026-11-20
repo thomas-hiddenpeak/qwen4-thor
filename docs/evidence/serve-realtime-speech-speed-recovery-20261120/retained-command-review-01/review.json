@@ -1,0 +1,37 @@
+{
+  "status": "PASS_EXACT_RESOLVED_ARGV_REVIEW",
+  "original_exact_argv_check": "FAILED",
+  "files": {
+    "plan.json": "392048a64f4d80e20e51e7b1cc23a6b276ce885ee5e51a2189f085d0a57bd886",
+    "lease/exit.json": "2c80e81d6919d636c5a236c2f99af0645374906bae7f9fbc267c6298056e03b1",
+    "execution/result.json": "7dc5e73adeca039569a988c55d017b6713a1209168b622fa5f9cae7aa7ff5f3e"
+  },
+  "actual_argv": [
+    "python3",
+    "-I",
+    "-B",
+    "tools/serve_realtime/speech_service_acceptance.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-realtime-audio-20261120/retained-business-02/plan.json"
+  ],
+  "frozen_argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_service_acceptance.py",
+    "run",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-business-02/plan.json"
+  ],
+  "working_directory": "/home/rm01/models/dev/qwen4-thor",
+  "python": {
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "script_sha256": "5287f5205c36e544e70a544efbe29d338b3d6a8d2fc333717bacc7925867ef89",
+  "scope": "One source-bound observed command differs only by interpreter PATH lookup and repository-relative script/plan paths. All original frozen business, monitor and cleanup checks remain. No original receipt is rewritten.",
+  "negative_cpu_cases": 7,
+  "cpu_seconds": 0.06865012692287564,
+  "new_gpu_starts": 0
+}

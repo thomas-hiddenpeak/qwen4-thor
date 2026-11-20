@@ -101,7 +101,6 @@ async function create(hold = false) {
   const at = events.length;
   const created = await action({ type: 'response.create', response: {
     output_modalities: ['audio'], tools: [], tool_choice: 'none', max_output_tokens: 3457,
-    ...(hold ? { audio: { output: { speed: .25 } } } : {}),
     metadata: { acceptance_case: hold ? 'recovery_interrupted_speech' : 'recovery_speech' },
   } }, 'response.created');
   const id = created.response.id;
@@ -143,6 +142,9 @@ try {
   await user('user_speech', 'Repeat exactly without adding words: ' + phrase);
   await create();
   if (args.mode === 'hold_stream') {
+    // The pinned API defines speed on the session, not response.create.audio.
+    await action({ type: 'session.update', session: { type: 'realtime',
+      audio: { output: { speed: .25 } } } }, 'session.updated');
     await user('user_interrupt', 'Read the following text aloud exactly: The service is ready. '+
       'We will read the project records carefully and explain the current status. '+
       'The first check confirms that every request belongs to the correct client. '+

@@ -38,10 +38,11 @@ def check_session(value, mode, transport):
         type(value['sent_events']) is int and 0 < value['sent_events'] <= 32 and
         not any(e['type'] == 'error' for e in events) and
         len({e['event_id'] for e in events}) == len(events), 'speech event bounds, error or replay')
+    updates=[e for e in events if e['type']=='session.updated']
     require(sum(e['type'] == 'session.created' for e in events) == 1 and
-        sum(e['type'] == 'session.updated' for e in events) == 1,
+        len(updates) == (2 if mode=='hold_stream' else 1),
         'speech session reconfigured or restarted')
-    settings = next(e['session'] for e in events if e['type'] == 'session.updated')
+    settings = updates[0]['session']
     require(settings['output_modalities'] == ['audio'] and settings['max_output_tokens'] == 3457 and
         settings['audio']['output']['voice'] == 'ryan' and settings['audio']['output']['speed'] == 1 and
         settings['audio']['output']['format'] == dict(type='audio/pcm',rate=24000),
@@ -63,6 +64,9 @@ def check_session(value, mode, transport):
         'actual whole speech differs from independently recognized waveform')
     partial=value['partial'];identifiers=[row['id']]
     if mode=='hold_stream':
+        slow=updates[1]['session']
+        require(slow==dict(settings,audio=dict(settings['audio'],output=dict(
+            settings['audio']['output'],speed=.25))), 'partial speech changed unrelated session settings')
         require(type(partial) is dict and partial.keys()=={'response_id','item_id','delta'} and
             all(type(v) is str and v for v in partial.values()) and
             partial['response_id'] != row['id'], 'real partial speech identity missing')
@@ -73,6 +77,10 @@ def check_session(value, mode, transport):
             len(speech_checks.decode64(partial['delta']))>0,
             'interrupted response had no actual audio')
         identifiers.append(partial['response_id'])
+        require(next(i for i,e in enumerate(events) if e['type']=='response.done') <
+            events.index(updates[1]) < next(i for i,e in enumerate(events) if
+                e['type']=='response.created' and e['response']['id']==partial['response_id']),
+            'speech speed changed while a response was still running')
     else:require(partial is None,'unexpected partial speech')
     created=[e['response']['id'] for e in events if e['type']=='response.created']
     require(created==identifiers and events.index(users[0])<next(i for i,e in enumerate(events)
