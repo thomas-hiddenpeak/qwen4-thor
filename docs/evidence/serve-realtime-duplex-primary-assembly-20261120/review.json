@@ -1,0 +1,72 @@
+{
+  "status": "PRIMARY_ACTUAL_TASKS_ACCEPTED_LIGHT_AND_RECOVERY_PENDING",
+  "original_run_status": "FAILED",
+  "original_driver_failure": "2MiB metadata reader used for 2.6MiB audio receipt",
+  "counts": {
+    "starts": 1,
+    "chats": 13,
+    "controls": 45,
+    "websocket_sessions": 2,
+    "ingress_starts": 1
+  },
+  "seconds": 61.36377510940656,
+  "nvml_ok": 59,
+  "cleanup_complete": true,
+  "actual_wss_quality": "5/5 PASS",
+  "fixed_seed_http": "7/8 PASS",
+  "diagnostic_failure": {
+    "label": "vad_auto",
+    "variant": "after",
+    "seed": 41,
+    "actual": "甚至出现",
+    "expected": "甚至出现交易几乎停滞的情况。",
+    "status": "FAIL"
+  },
+  "model_quality_repaired": false,
+  "primary_assembly": {
+    "status": "PASS_PRIMARY_PROTOCOL_AND_ACTUAL_CLARIFIED_TASKS",
+    "record_sha256": "201ce75d10dc654edd36afe8d8a904bc2163380f8f918049b90baf5fe4dfdc11",
+    "record_bytes": 6738716,
+    "environment_pending_light": true,
+    "original_quality_status": "FAIL",
+    "diagnostic_quality_status": "FAIL",
+    "new_gpu_starts": 0
+  },
+  "cpu": {
+    "status": "PASS",
+    "tests": 5,
+    "seconds": 1.4318465390242636,
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "-v",
+          "tools.serve_recovery.test_profile_duplex_resume",
+          "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_diagnostic_failure_is_preserved_and_cannot_be_relabelled",
+          "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_source_and_original_failure_cannot_be_replaced",
+          "tools.serve_recovery.test_profile_duplex_followup.SourceAndDiagnostics.test_repaired_driver_uses_same_client_policy_with_exact_work_bounds"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "tools/serve_audit/check_inventory.py",
+          "--self-check"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "gpu_starts": 0,
+    "default_unchanged": true
+  },
+  "light_pending": true,
+  "guardian_recovery_pending": true,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "master_active": true
+}

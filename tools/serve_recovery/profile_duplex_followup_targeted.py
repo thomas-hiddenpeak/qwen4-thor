@@ -135,7 +135,7 @@ class Stage(first.Stage):
                         diagnostics.append(self.diagnostic(label,variant,seed))
                         save(self.out/'primary-diagnostics.json',diagnostics)
             followup=profile_duplex.run_sessions(self,('mixed','vad_once'))
-            value=dict(format=evidence.FORMAT,original=read(original/'primary-duplex-observed.json'),
+            value=dict(format=evidence.FORMAT,original=profile_duplex.read_observed(original/'primary-duplex-observed.json'),
                 followup=followup,diagnostics=diagnostics,source_review=evidence.REVIEW)
             profile_duplex.save_observed(self.out/'primary-followup-observed.json',value)
             evidence.business(value)

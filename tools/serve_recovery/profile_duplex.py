@@ -41,6 +41,12 @@ def save_observed(path,value):
         output.write(raw);output.flush();os.fsync(output.fileno())
 
 
+def read_observed(path):
+    path=Path(path)
+    require(path.stat().st_size<=4<<20, 'duplex original receipt size limit')
+    return json.loads(path.read_text())
+
+
 def run(stage):
     sessions=run_sessions(stage, ('manual','vad'))
     value=dict(format=evidence.FORMAT,source=stage.plan['duplex']['source'],sessions=sessions)

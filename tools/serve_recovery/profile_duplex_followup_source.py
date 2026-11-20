@@ -112,3 +112,21 @@ REQUESTS = {'mixed': {'before': {'messages': [{'role': 'developer',
                         'tool_choice': 'auto',
                         'response_format': {'type': 'text'},
                         'enable_thinking': False}}}
+
+FOLLOWUP_REVIEW = {'cleanup.json': '31ab231e0892a11b373f37017909ec8bbc69188f65635d80b1d2788336af4329',
+ 'lease/events.jsonl': '24ddb1cc2d6de63945bd301f3a488900f7fdbe06a8385f6c1cc5e13dbee837a3',
+ 'lease/exit.json': '24fe4b5c1d05466ed720f3b5d534f6bd892902ced353edeb8bd5701bd23a3292',
+ 'lease/nvml-queries.jsonl': 'c1320afa650be840071feb84dc06062e276cb409584b94d4425ef305704d97e9',
+ 'plan.json': 'b07eab25372930aa02d15226ec35849bfc132e2ff3003387e4b3a3602e1f0723',
+ 'primary-capabilities.json': '52385b3ea3ed779b8ca73b54fc0af44f05ad0125f976a3a2bef1c10d87458443',
+ 'primary-config.json': '2d67b01e579302e3cdd923308323a37b4ba906d20da96d4544894f63d27779cf',
+ 'primary-diagnostics.json': 'dd2c6dd25358ba855201c00aa5b7b4f936d921f1dd4db1795af5dad535458460',
+ 'primary-duplex-entry-cleanup.json': '6bc23b5ef81181e35b0a4b9d3743edd149422c080c74fe648036dae446ddb5f8',
+ 'primary-duplex-mixed.events.jsonl': '793dd2c0ec7efdcafca23db1d57e56bf62818e25b7b43adc398de3184996c634',
+ 'primary-duplex-mixed.sdk.json': '4006386165756558d9d109d7f398af5fd6620ce69843b3fb9a30c4efc73234f9',
+ 'primary-duplex-sessions-observed.json': '8e2c0914b686f356c5ee6131b9c105c414fcd575b72d91c85ebbc668bf0aa32a',
+ 'primary-duplex-vad_once.events.jsonl': '15e9d176717236bd7d092b06937676559b0fdb2f426db811792f9154141f8c92',
+ 'primary-duplex-vad_once.sdk.json': '6ad2300f4e7adac4315370095e00a5eb9be2b61515c73a1e614b33c36cb96f36',
+ 'result.json': 'e68924861a4e365ddaaadfa0b8547794dfde0a0e83e17df0d5ca04ba6191035f'}
+
+DIAGNOSTICS = 'b98db5f1e677b9e9a59c6d5dd318b3a53a926d7ae3e2b6d9c0e285026085a351'

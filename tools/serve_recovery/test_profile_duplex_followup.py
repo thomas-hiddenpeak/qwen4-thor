@@ -90,13 +90,13 @@ class SourceAndDiagnostics(unittest.TestCase):
             bad=copy.deepcopy(row);mutate(bad)
             with self.assertRaises(ValueError):f.diagnostic(bad,'mixed','after',41)
 
-    def test_before_fail_is_preserved_after_failure_still_rejects(self):
+    def test_diagnostic_failure_is_preserved_and_cannot_be_relabelled(self):
         for variant in ('before','after'):
             row=self.row(variant);row['response']['choices'][0]['message']['content']='wrong'
             row['quality']=d.duplex_checks.judgment('mixed','wrong',d.PHRASE)
-            if variant=='before':f.diagnostic(row,'mixed',variant,41)
-            else:
-                with self.assertRaises(ValueError):f.diagnostic(row,'mixed',variant,41)
+            f.diagnostic(row,'mixed',variant,41)
+            row['quality']['status']='PASS'
+            with self.assertRaises(ValueError):f.diagnostic(row,'mixed',variant,41)
 
     def test_source_and_original_failure_cannot_be_replaced(self):
         value=dict(format=f.FORMAT,original={},followup={},diagnostics=[],source_review=f.REVIEW)

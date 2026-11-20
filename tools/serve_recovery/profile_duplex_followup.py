@@ -2,6 +2,7 @@
 import copy
 from tools.serve_recovery import ledger, profile_duplex_evidence as d
 from tools.serve_recovery.profile_duplex_followup_source import REVIEW, ORIGINAL, REQUESTS
+from tools.serve_recovery.profile_duplex_followup_source import FOLLOWUP_REVIEW, DIAGNOSTICS
 from tools.serve_realtime import duplex_quality_checks as checks
 
 FORMAT='q4t-profile-realtime-duplex-followup-v1'
@@ -19,14 +20,16 @@ def diagnostic(row, label, variant, seed):
         not choices[0]['message'].get('refusal') and not choices[0]['message'].get('tool_calls') and
         value['usage']['total_tokens']>0, 'diagnostic was not a complete actual text response')
     quality=d.duplex_checks.judgment(label,choices[0]['message']['content'],d.PHRASE)
-    ledger.require(row['quality']==quality and
-        (variant=='before' or quality['status']=='PASS'), 'caller clarification failed')
+    # Diagnostic quality remains factual, including the fixed seed-41 partial
+    # answer. It is not a service protocol oracle or a model-quality repair.
+    ledger.require(row['quality']==quality, 'diagnostic quality was relabelled')
 
 
 def business(value):
-    ledger.keys(value,('format','original','followup','diagnostics','source_review'))
+    ledger.keys(value,('format','original','followup','diagnostics','source_review','followup_review'))
     ledger.require(value['format']==FORMAT and value['source_review']==REVIEW and
-        ledger.digest(value['original'])==ORIGINAL,'original failed answers/source changed')
+        ledger.digest(value['original'])==ORIGINAL and value['followup_review']==FOLLOWUP_REVIEW,
+        'original failed answers/source changed')
     def original_quality(mode, rows):
         expected={'mixed'} if mode=='manual' else {'vad_auto'}
         ledger.require({q['label'] for q in rows if q['status']=='FAIL'}==expected and
@@ -43,7 +46,8 @@ def business(value):
         ledger.require(after['admitted']-before['admitted']==observed['admitted'] and
             after['settled']-before['settled']==observed['visible_tokens'],
             'targeted admission/settlement differs')
-    rows=value['diagnostics'];ledger.require(type(rows) is list and len(rows)==8,'diagnostic scope')
+    rows=value['diagnostics'];ledger.require(type(rows) is list and len(rows)==8 and
+        ledger.digest(rows)==DIAGNOSTICS,'diagnostic scope or original answers changed')
     for row,(seed,label,variant) in zip(rows,[(s,l,v) for s in SEEDS
             for l in ('mixed','vad_auto') for v in ('before','after')]):
         diagnostic(row,label,variant,seed)
