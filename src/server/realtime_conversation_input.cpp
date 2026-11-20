@@ -74,6 +74,7 @@ ObjectReply RealtimeConversationInput::Configure(RealtimeDuplexInput next) {
       return Error(400, "input_audio_buffer_not_empty",
                    "Commit or clear pending audio before disabling input");
     settings_ = std::move(next);
+    CancelIdle();
     return {};
   }
   if (failed_) return RecoverInput(std::move(next));
@@ -83,6 +84,8 @@ ObjectReply RealtimeConversationInput::Configure(RealtimeDuplexInput next) {
                  "Conversation input owner is not connected");
   auto reply = processor_.Configure(next.processing);
   if (!Accepted(reply)) return reply;
+  const bool idle_changed = next.idle_timeout_ms != settings_.idle_timeout_ms ||
+                            next.processing.turn != settings_.processing.turn;
   if (!started_) {
     if (!processor_.Start())
       return Error(503, "realtime_processor_unavailable",
@@ -91,6 +94,7 @@ ObjectReply RealtimeConversationInput::Configure(RealtimeDuplexInput next) {
   }
   retrieval_format_ = next.processing.format;
   settings_ = std::move(next);
+  if (idle_changed) ArmIdle();
   return {};
 }
 bool RealtimeConversationInput::ErrorEvent(ObjectReply reply,
@@ -128,6 +132,7 @@ bool RealtimeConversationInput::Message(std::string_view message) {
                             "Native audio input is not available"),
                       event_id);
   if (!Drain()) return false;
+  StartIdleCapture();
   const bool alive = processor_.Message(WebSocketOpcode::kText, message);
   if (!Drain()) return false;
   return alive || StopInput();
@@ -147,7 +152,47 @@ bool RealtimeConversationInput::Tick() {
   }
   if (!started_) return true;
   if (!Drain()) return false;
+  StartIdleCapture();
   const bool alive = processor_.Tick();
+  if (!Drain()) return false;
+  return alive ? TickIdle() : StopInput();
+}
+void RealtimeConversationInput::ResponseFinished(uint64_t playback_ticks) {
+  CancelIdle();
+  if (failed_ || cancelled_ || playback_ticks > kRealtimeSessionTicks) return;
+  playback_end_ = Now() + std::chrono::microseconds(
+                              (playback_ticks * 1000000 + 47999) / 48000);
+  ArmIdle();
+}
+void RealtimeConversationInput::ArmIdle() {
+  processor_.CancelIdleCapture();
+  idle_capturing_ = false;
+  idle_deadline_.reset();
+  if (!failed_ && !cancelled_ && settings_.enabled && playback_end_ &&
+      settings_.processing.turn ==
+          RealtimeTranscriptionSettings::Turn::kServerVad &&
+      settings_.idle_timeout_ms)
+    idle_deadline_ =
+        *playback_end_ + std::chrono::milliseconds(*settings_.idle_timeout_ms);
+}
+void RealtimeConversationInput::CancelIdle() noexcept {
+  playback_end_.reset();
+  idle_deadline_.reset();
+  idle_capturing_ = false;
+  processor_.CancelIdleCapture();
+}
+void RealtimeConversationInput::StartIdleCapture() {
+  if (idle_deadline_ && !idle_capturing_ && Now() >= *playback_end_) {
+    processor_.BeginIdleCapture();
+    idle_capturing_ = true;
+  }
+}
+bool RealtimeConversationInput::TickIdle() {
+  if (!idle_deadline_ || Now() < *idle_deadline_ || !processor_.IdleReady())
+    return true;
+  // Commit calls our owner and disarms this timer. The next output completion
+  // may arm a fresh interval; no periodic replay of the old response.
+  const bool alive = processor_.CommitIdle();
   if (!Drain()) return false;
   return alive || StopInput();
 }
@@ -165,6 +210,7 @@ void RealtimeConversationInput::FailPending() noexcept {
 }
 bool RealtimeConversationInput::StopInput() {
   failed_ = true;
+  CancelIdle();
   processor_.Cancel();
   FailPending();
   retry_after_ = Now() + AsrHealth::kRetryDelay;
@@ -211,6 +257,7 @@ ObjectReply RealtimeConversationInput::RecoverInput(RealtimeDuplexInput next) {
 }
 void RealtimeConversationInput::Cancel() noexcept {
   cancelled_ = true;
+  CancelIdle();
   processor_.Cancel();
   FailPending();
 }
@@ -255,6 +302,7 @@ ObjectReply RealtimeConversationInput::Commit(
   if (!status)
     return Error(400, "realtime_input_commit_failed", status.message());
   binding.committed = true;
+  CancelIdle();
   if (notice.settings.RespondOnCommit(automatic)) {
     const auto captured = history_.Capture(nullptr, &notice.context, true);
     if (!captured) {
@@ -290,7 +338,8 @@ ObjectReply RealtimeConversationInput::Finish(
   auto& binding = found->second;
   auto status = Accepted(result)
                     ? history_.CompleteAudioInput(
-                          binding.conversation, result.value.GetString("text"))
+                          binding.conversation, result.value.GetString("text"),
+                          job.idle_timeout)
                     : history_.FailAudioInput(binding.conversation);
   if (!status && Accepted(result))
     history_.FailAudioInput(binding.conversation);
@@ -315,6 +364,7 @@ void RealtimeConversationInput::Discard(
 }
 bool RealtimeConversationInput::Speech(bool started, std::string_view id,
                                        uint64_t ticks) {
+  if (started) CancelIdle();
   return callbacks_.speech(started, id, ticks,
                            started && settings_.InterruptOnSpeechStart());
 }
@@ -352,6 +402,7 @@ bool RealtimeConversationInput::Drain() {
 }
 bool RealtimeConversationInput::Forward(Json event) {
   const auto type = event.GetString("type");
+  if (type == "input_audio_buffer.cleared") CancelIdle();
   if (type == "session.created" || type == "session.updated") return true;
   if (type == "conversation.item.created") {
     const auto* item = event.Find("item");
@@ -409,8 +460,10 @@ ObjectReply RealtimeConversationInput::Retrieve(
   Json copy;
   if (!history_.Get(ticket, &copy)) return Missing();
   std::string encoded, base64;
-  auto status = EncodeRealtimeAudio(binding.audio->Samples(), retrieval_format_,
-                                    600ULL * 24000 * 2, &encoded, interrupted_);
+  Status status;
+  if (!binding.audio->Samples().empty())
+    status = EncodeRealtimeAudio(binding.audio->Samples(), retrieval_format_,
+                                 600ULL * 24000 * 2, &encoded, interrupted_);
   if (status)
     status = io::EncodeBase64(encoded, kWebSocketMaximumLimit, &base64);
   if (!status)

@@ -12461,17 +12461,16 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "local_pipeline_recovery_cpu_accepted_remaining_input_business_pending",
+      "state": "idle_and_recovery_cpu_accepted_direct_input_business_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 180,
-      "case_executions": 271,
+      "unique_cpu_cases": 190,
+      "case_executions": 297,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
-        "idle response",
         "direct mixed audio items",
         "real WSS/native ASR/TTS and affected recovery/delivery",
         "all master tasks"
@@ -12706,6 +12705,35 @@
           "default_unchanged": true,
           "actual_duplex_business": "pending",
           "native_health_validation_runtime_build": "pending",
+          "master_active": true
+        }
+      },
+      "idle_timeout": {
+        "evidence": "docs/evidence/serve-realtime-duplex-idle-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_REALTIME_IDLE_CPU",
+          "unique_cases": 26,
+          "case_executions": 26,
+          "new_cases": 10,
+          "affected_cases": 16,
+          "seconds": 0.6728908191435039,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 59.276533640921116,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "d0498c558130b1a0a8cde729dac127e3f514b25985ada896a361eab27ce09442",
+            "free_bytes_after": 3887837184
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_duplex_business": "pending",
+          "native_runtime_build": "pending",
           "master_active": true
         }
       }

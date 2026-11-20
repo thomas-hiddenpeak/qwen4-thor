@@ -352,8 +352,12 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
   Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) ==
                 "[\"text\",\"audio\"]" &&
             OutputJson(*chat->Find("pending_execution")) ==
-                "[\"direct_audio_items\",\"idle_timeout\","
-                "\"input_pipeline_recovery\",\"mcp\",\"tracing\"]");
+                "[\"direct_audio_items\",\"mcp\",\"tracing\"]");
+  Q4T_CHECK(chat->Find("input_audio")->GetInt("idle_timeout_ms_min") == 5000 &&
+            chat->Find("input_audio")->GetInt("idle_timeout_ms_max") == 30000 &&
+            !chat->Find("input_audio")
+                 ->Find("pipeline_recovery")
+                 ->GetBool("model_restart", true));
   const auto* prompt = chat->Find("prompt");
   Q4T_CHECK(prompt && prompt->IsObject() &&
             prompt->GetString("profile") == "q4t-realtime-prompt-v1" &&

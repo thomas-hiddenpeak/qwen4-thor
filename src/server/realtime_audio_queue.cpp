@@ -78,11 +78,13 @@ Status RealtimeAudioQueue::Commit(uint64_t epoch, RealtimeAudioItem* item) {
   return CommitPrefix(epoch, ticks_, item);
 }
 Status RealtimeAudioQueue::PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
-                                         RealtimeAudioItem* item) const {
+                                         RealtimeAudioItem* item,
+                                         bool allow_empty) const {
   if (!Owns(epoch)) return Status::Fail("realtime commit ownership differs");
   const auto step = kRealtimeTicksPerSecond / format_.rate;
-  if (!Owns(epoch) || sealed_ || !item || end_ticks <= pending_begin_ ||
-      end_ticks > ticks_ || (end_ticks - pending_begin_) % step)
+  if (!Owns(epoch) || sealed_ || !item || end_ticks < pending_begin_ ||
+      (end_ticks == pending_begin_ && !allow_empty) || end_ticks > ticks_ ||
+      (end_ticks - pending_begin_) % step)
     return Status::Fail("realtime commit requires an aligned pending prefix");
   if (item_count_ == item_limit_ ||
       sequence_ == std::numeric_limits<uint64_t>::max())
@@ -94,10 +96,11 @@ Status RealtimeAudioQueue::PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
   return {};
 }
 Status RealtimeAudioQueue::CommitPrefix(uint64_t epoch, uint64_t end_ticks,
-                                        RealtimeAudioItem* item) {
+                                        RealtimeAudioItem* item,
+                                        bool allow_empty) {
   if (!item) return Status::Fail("realtime commit output missing");
   RealtimeAudioItem value;
-  const auto status = PreviewPrefix(epoch, end_ticks, &value);
+  const auto status = PreviewPrefix(epoch, end_ticks, &value, allow_empty);
   if (!status) return status;
   const auto at = (item_head_ + item_count_) % kRealtimeQueuedItems;
   items_[at] = value;
@@ -171,7 +174,7 @@ const RealtimeAudioItem* RealtimeAudioQueue::Front() const {
   return item_count_ ? &items_[item_head_] : nullptr;
 }
 std::array<std::span<const uint8_t>, 2> RealtimeAudioQueue::FrontBytes() const {
-  if (!item_count_) return {};
+  if (!item_count_ || !items_[item_head_].bytes) return {};
   const auto bytes = items_[item_head_].bytes;
   const auto first = std::min(bytes, capacity_bytes_ - head_);
   return {{{storage_.get() + head_, first}, {storage_.get(), bytes - first}}};

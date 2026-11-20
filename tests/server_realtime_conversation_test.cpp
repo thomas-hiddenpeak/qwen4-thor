@@ -926,3 +926,32 @@ Q4T_TEST(realtime_conversation_mcp_nullable_identity_survives_output_updates) {
   Q4T_CHECK(result.GetString("output") == "actual result");
   return true;
 }
+
+Q4T_TEST(
+    realtime_idle_cue_requires_native_provenance_and_never_becomes_transcript) {
+  RealtimeConversation history("sess_idle");
+  Ticket input;
+  Q4T_CHECK(history.BeginAudioInput("idle", {}, true, 8192, &input));
+  RealtimeConversationSnapshot deferred;
+  Q4T_CHECK(history.Capture(nullptr, &deferred));
+  Q4T_CHECK(history.CompleteAudioInput(input, "", true));
+  Json public_item;
+  Q4T_CHECK(history.Get(input, &public_item));
+  Q4T_CHECK(public_item.GetArray("content")->array[0].GetString("transcript") ==
+            "");
+  bool ready = false;
+  Q4T_CHECK(history.Resolve(&deferred, &ready) && ready);
+  const auto cue =
+      deferred.items.array[0].GetArray("content")->array[0].GetString("text");
+  Q4T_CHECK(cue.find("No speech was detected") != std::string::npos);
+  RealtimeConversationSnapshot current;
+  Q4T_CHECK(history.Snapshot(nullptr, &current) &&
+            OutputJson(current.items) == OutputJson(deferred.items));
+  Q4T_CHECK(history.Erase(input));
+  Q4T_CHECK(history.Create(public_item, "idle", {}, &input));
+  Q4T_CHECK(history.Snapshot(nullptr, &current) &&
+            current.items.array[0].GetArray("content")->array[0].GetString(
+                "type") == "input_audio");
+  Q4T_CHECK(OutputJson(current.items).find(cue) == std::string::npos);
+  return true;
+}

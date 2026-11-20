@@ -1605,3 +1605,111 @@ Q4T_TEST(
                 "completed");
   return true;
 }
+
+namespace {
+void EnableIdle(Fixture& f) {
+  if (!f.settings.Has("audio")) Set(&f.settings, "audio", Object());
+  auto& audio = Field(f.settings, "audio");
+  if (!audio.Has("input")) Set(&audio, "input", Object());
+  Set(&Field(audio, "input"), "turn_detection",
+      Object({{"type", String("server_vad")},
+              {"threshold", SpeechNumber(.5)},
+              {"idle_timeout_ms", Number(5000)}}));
+}
+}  // namespace
+
+Q4T_TEST(realtime_session_idle_empty_turn_reaches_actual_chat_planner) {
+  InputFixture f;
+  auto now = Clock::now();
+  f.cb.now = [&] { return now; };
+  EnableIdle(f);
+  ChatPlanConfig config;
+  config.model = "q4t-test";
+  f.cb.prepare = [&](const RealtimeConversationJob& job) {
+    RealtimeChatPlan plan;
+    ChatPlanError error;
+    const auto status = PlanRealtimeChat(
+        job.settings, job.response, job.snapshot.items, config, &plan, &error,
+        job.prompt ? &*job.prompt : nullptr, job.native_input);
+    return status ? ObjectReply{}
+                  : object_detail::Error(400, error.code, status.message());
+  };
+  Q4T_CHECK(f.Start() && f.Create() && f.AllFinished());
+  now += 5s;
+  Q4T_CHECK(f.session->Tick() && f.Read() && f.AllFinished());
+  Q4T_CHECK(f.calls == 2 && f.asr_calls == 0 && f.asr_released == 0 &&
+            f.released == 2 && f.Count("error") == 0 &&
+            f.Count("input_audio_buffer.timeout_triggered") == 1);
+  const auto snapshot = f.Snapshot(1);
+  Q4T_CHECK(
+      snapshot.native_input &&
+      OutputJson(snapshot.snapshot.items).find("No speech was detected") !=
+          std::string::npos);
+  Q4T_CHECK(f.Count("session.created") == 1 && f.overlap == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_idle_uses_actual_output_playback_duration) {
+  SpeechFixture f;
+  auto now = Clock::now();
+  f.cb.now = [&] { return now; };
+  EnableIdle(f);
+  size_t asr_calls = 0;
+  RealtimeTranscriptionCallbacks native;
+  native.validate = [](const auto&) { return ObjectReply{}; };
+  native.acquire = f.cb.acquire;
+  native.release = f.cb.release;
+  native.vad_step = [](auto, auto*, float* probability) {
+    *probability = 0;
+    return q4t::Status{};
+  };
+  native.execute = [&](const auto&, const auto&, const auto&, const auto&) {
+    ++asr_calls;
+    return object_detail::Error(500, "unexpected_asr", "No samples were sent");
+  };
+  f.cb.input = std::move(native);
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.Count("response.output_audio.done") == 1 && f.calls == 1);
+  now += 5099ms;  // Real 2400 / 24000 = 100 ms playback + 5000 ms idle.
+  Q4T_CHECK(f.session->Tick() && f.Read() &&
+            f.Count("input_audio_buffer.timeout_triggered") == 0);
+  now += 1ms;
+  Q4T_CHECK(f.session->Tick() && f.Read() && f.Finish());
+  Q4T_CHECK(f.calls == 2 && asr_calls == 0 &&
+            f.Count("input_audio_buffer.timeout_triggered") == 1 &&
+            f.Count("response.output_audio.done") == 2 &&
+            f.Count("error") == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_idle_ignores_oob_failed_and_cancelled_output) {
+  for (int mode = 0; mode < 4; ++mode) {
+    InputFixture f;
+    auto now = Clock::now();
+    f.cb.now = [&] { return now; };
+    EnableIdle(f);
+    Q4T_CHECK(f.Start());
+    if (mode == 3) {
+      Q4T_CHECK(f.Create() && f.AllFinished());
+      now += 4s;
+    }
+    if (mode == 1) f.mode = 2;
+    if (mode == 2) f.hold = true;
+    Q4T_CHECK(f.Create(
+        mode == 0 || mode == 3
+            ? Object({{"conversation", String("none")}, {"input", Array()}})
+            : Object()));
+    if (mode == 2) {
+      Q4T_CHECK(f.Wait([&] { return f.calls == 1; }));
+      Q4T_CHECK(f.Send(Object({{"type", String("response.cancel")}})));
+      f.hold = false;
+    }
+    Q4T_CHECK(f.AllFinished());
+    now += mode == 3 ? 1s : 60s;
+    Q4T_CHECK(f.session->Tick() && f.Read() && f.AllFinished());
+    Q4T_CHECK(f.Count("input_audio_buffer.timeout_triggered") ==
+              (mode == 3 ? 1 : 0));
+    Q4T_CHECK(f.calls == (mode == 3 ? 3 : 1) && f.asr_calls == 0);
+  }
+  return true;
+}

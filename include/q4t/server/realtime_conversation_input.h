@@ -62,6 +62,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   size_t AudioBytes() const { return processor_.AudioBytes(); }
   size_t RetainedAudioBytes() const { return processor_.RetainedAudioBytes(); }
   uint64_t AcceptedTicks() const { return processor_.AcceptedTicks(); }
+  // Default-conversation output only. Playback is actual emitted sample time.
+  void ResponseFinished(uint64_t playback_ticks);
+  void CancelIdle() noexcept;
 
  private:
   struct Binding {
@@ -89,6 +92,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   bool StopInput();
   ObjectReply RecoverInput(RealtimeDuplexInput next);
   std::chrono::steady_clock::time_point Now() const;
+  void ArmIdle();
+  void StartIdleCapture();
+  bool TickIdle();
   void FailPending() noexcept;
   RealtimeConversation& history_;
   const RealtimeConversationInputCallbacks callbacks_;
@@ -100,6 +106,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   size_t captures_ = 0;
   std::chrono::steady_clock::time_point recovery_window_, retry_after_;
   unsigned recovery_attempts_ = 0;
+  std::optional<std::chrono::steady_clock::time_point> playback_end_;
+  std::optional<std::chrono::steady_clock::time_point> idle_deadline_;
+  bool idle_capturing_ = false;
   WebSocketOutput output_{kWebSocketOutputMaximumBytes, 64,
                           kWebSocketMaximumLimit};
   WebSocketDecoder decoder_{false, kWebSocketMaximumLimit};

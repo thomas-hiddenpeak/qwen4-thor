@@ -120,3 +120,12 @@ VAD需显式选择，不能把后端失效伪装为已执行。
 历史和时钟，5秒冷却及固定60秒窗口最多2次；不重放、不重载模型。
 真实设备健康仍保护。0GPU、默认rev376保持；真实WSS/ASR/TTS与新增
 ChatServer健康门的runtime构建仍待完成，全部master继续。
+
+## 空闲触发CPU结果
+
+[空闲CPU](evidence/serve-realtime-duplex-idle-cpu-20261120/README.md)
+26项和20来源反例通过，host零警告。回答终态加实际播放时长后计时，
+真实静音/漏检样本经ASR；零样本不伪造ASR成功，空闲提示仅在原生
+执行快照。旁路/失败不重置，清除/语音/故障/取消解除计时，恢复不
+重放。0GPU、默认rev376保持；继续直接混合输入、runtime与统一
+WSS/ASR/TTS短验、受影响恢复与交付，全部master继续。

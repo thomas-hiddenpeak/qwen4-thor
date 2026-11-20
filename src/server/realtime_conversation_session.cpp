@@ -636,6 +636,7 @@ bool RealtimeConversationSession::CreateResponse(
   // paths.
   work_.push_back(std::move(work));
   if (!Accepted(active->output->Begin())) return false;
+  if (input_ && active->job.in_conversation) input_->CancelIdle();
   AdvanceWork(*active);
   return true;
 }
@@ -869,6 +870,24 @@ bool RealtimeConversationSession::Tick() {
       if (!truncated)
         terminal = object_detail::Error(500, "realtime_context_commit_failed",
                                         truncated.message());
+    }
+    if (Accepted(terminal) && input_ && work.job.in_conversation &&
+        (end.state == RealtimeResponseEnd::State::kCompleted ||
+         end.state == RealtimeResponseEnd::State::kIncomplete) &&
+        std::ranges::none_of(work_, [&](const auto& other) {
+          return other.get() != &work && other->job.in_conversation;
+        })) {
+      uint64_t playback = 0;
+      for (const auto& [id, ticket] : work.tickets) {
+        (void)id;
+        RealtimeSpeechView view;
+        if (!speech_.Get(ticket, &view)) continue;
+        const size_t width =
+            view.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+        playback += view.bytes.size() / width *
+                    (kRealtimeTicksPerSecond / view.format.rate);
+      }
+      input_->ResponseFinished(playback);
     }
     Release(work);
     it = work_.erase(it);

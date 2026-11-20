@@ -1,0 +1,26 @@
+{
+  "status": "ACCEPT_TARGETED_REALTIME_IDLE_CPU",
+  "unique_cases": 26,
+  "case_executions": 26,
+  "new_cases": 10,
+  "affected_cases": 16,
+  "seconds": 0.6728908191435039,
+  "source_counterexamples": 20,
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 59.276533640921116,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "d0498c558130b1a0a8cde729dac127e3f514b25985ada896a361eab27ce09442",
+    "free_bytes_after": 3887837184
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_duplex_business": "pending",
+  "native_runtime_build": "pending",
+  "master_active": true
+}

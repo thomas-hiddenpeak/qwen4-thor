@@ -82,6 +82,16 @@ Status RealtimeAudioHistory::BeginStream(
   *output = std::move(record);
   return {};
 }
+Status RealtimeAudioHistory::Empty(
+    const RealtimeTranscriptTicket& ticket,
+    std::shared_ptr<RealtimeAudioRecord>* output) {
+  if (!output || !CanAdd(ticket)) return Invalid();
+  auto record =
+      std::shared_ptr<RealtimeAudioRecord>(new RealtimeAudioRecord(budget_));
+  entries_.push_back({ticket, record});
+  *output = std::move(record);
+  return {};
+}
 std::shared_ptr<RealtimeAudioRecord> RealtimeAudioHistory::Find(
     const RealtimeTranscriptTicket& ticket) const {
   if (valid_)

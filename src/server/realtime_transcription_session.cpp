@@ -65,6 +65,7 @@ uint64_t RealtimeTranscriptionSession::AcceptedTicks() const {
 }
 void RealtimeTranscriptionSession::Cancel() noexcept {
   cancelled_ = true;
+  CancelIdleCapture();
   cancelled_ticks_ = AcceptedTicks();
   if (control_) control_->Cancel(RequestControl::State::kDisconnect);
   queue_.Cancel(1);
@@ -450,6 +451,7 @@ Status RealtimeTranscriptionSession::ProcessedAudio(
 }
 
 void RealtimeTranscriptionSession::ResetVad() {
+  vad_caught_up_ = false;
   if (semantic_) {
     semantic_->Close();
     if (live_input_) live_input_->Cancel(stream_epoch_);
@@ -500,8 +502,11 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
   RealtimeVadProgress progress;
   const auto status = vad_->Advance(queue_, &progress);
   if (!status) return false;
+  vad_caught_up_ =
+      !progress.frame && vad_->CursorTicks() == queue_.AcceptedTicks();
   if (!progress.frame) return true;
   if (progress.started) {
+    CancelIdleCapture();
     speech_id_ = detail::NewRequestId("item_");
     if (!SpeechEvent(true, progress.begin_ticks, true)) return false;
     if (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
@@ -515,14 +520,58 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
     return finish_semantic();
   }
   if (progress.stopped) return Commit(progress.end_ticks, {}, true);
-  return bool(queue_.TrimPendingBefore(1, progress.trim_before));
+  auto trim = progress.trim_before;
+  if (idle_begin_) {
+    // An accelerated sender cannot make an idle interval grow unbounded.
+    // Publish the actual retained extent, never claim discarded audio exists.
+    const auto bound = std::min(max_item_ticks_, 30 * kRealtimeTicksPerSecond);
+    auto tail = progress.analyzed_end_ticks -
+                std::min(progress.analyzed_end_ticks, bound);
+    const auto step = kRealtimeTicksPerSecond / queue_.Format().rate;
+    const auto begin = queue_.PendingBeginTicks();
+    tail = tail > begin ? begin + (tail - begin) / step * step : begin;
+    *idle_begin_ = std::max(*idle_begin_, tail);
+    trim = std::min(trim, *idle_begin_);
+  }
+  return bool(queue_.TrimPendingBefore(1, trim));
+}
+void RealtimeTranscriptionSession::BeginIdleCapture() {
+  if (!cancelled_ && vad_ &&
+      settings_.turn == RealtimeTranscriptionSettings::Turn::kServerVad)
+    idle_begin_ = queue_.AcceptedTicks();
+}
+bool RealtimeTranscriptionSession::IdleReady() const {
+  const size_t width =
+      queue_.Format().encoding == RealtimeAudioEncoding::kPcm16     ? 2
+      : queue_.Format().encoding == RealtimeAudioEncoding::kFloat32 ? 4
+                                                                    : 1;
+  return started_ && !cancelled_ && idle_begin_ && vad_ && !vad_->Active() &&
+         vad_caught_up_ && jobs_.empty() &&
+         queue_.PendingBytes() % width == 0 &&
+         (!noise_input_ || !noise_input_->PartialSample()) &&
+         vad_events_.empty() &&
+         settings_.turn == RealtimeTranscriptionSettings::Turn::kServerVad;
+}
+bool RealtimeTranscriptionSession::CommitIdle() {
+  if (!IdleReady()) return false;
+  // Flush only received filter/resampler tail. A partial wire sample waits for
+  // the sender; it must not be padded or charged as an actual ASR execution.
+  if (noise_input_ && noise_input_->FinalSamples()) {
+    const auto status = noise_input_->Finish(
+        [&](auto samples) { return ProcessedAudio(samples, false); });
+    if (!status) return false;
+  }
+  const auto begin = std::clamp(*idle_begin_, queue_.PendingBeginTicks(),
+                                queue_.AcceptedTicks());
+  if (!queue_.TrimPendingBefore(1, begin)) return false;
+  return Commit(queue_.AcceptedTicks(), {}, true, true);
 }
 bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
                                           std::string_view event_id,
-                                          bool automatic) {
+                                          bool automatic, bool idle_timeout) {
   // Allocate the snapshot and identities before mutating the committed queue.
   RealtimeTranscriptionJob job;
-  auto status = queue_.PreviewPrefix(1, end_ticks, &job.audio);
+  auto status = queue_.PreviewPrefix(1, end_ticks, &job.audio, idle_timeout);
   if (!status) {
     const bool sent = ErrorEvent(
         Error(400, "input_audio_buffer_commit_failed", status.message()),
@@ -530,6 +579,7 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     return sent && !automatic;
   }
   job.settings = settings_;
+  job.idle_timeout = idle_timeout;
   job.id = speech_id_.empty() ? detail::NewRequestId("item_") : speech_id_;
   job.previous_id = previous_id_;
   if (!history_.Begin(job.id, kAsrTranscriptBytes, &job.transcript)) {
@@ -542,9 +592,11 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
   auto bytes = queue_.PendingFrom(job.audio.begin_ticks);
   bytes[0] = bytes[0].first(std::min(bytes[0].size(), job.audio.bytes));
   bytes[1] = bytes[1].first(job.audio.bytes - bytes[0].size());
-  status = audio_history_.Decode(job.transcript, job.audio, bytes,
-                                 max_item_ticks_ / 3, &job.processed_audio,
-                                 callbacks_.interrupted);
+  status = idle_timeout && !job.audio.samples
+               ? audio_history_.Empty(job.transcript, &job.processed_audio)
+               : audio_history_.Decode(
+                     job.transcript, job.audio, bytes, max_item_ticks_ / 3,
+                     &job.processed_audio, callbacks_.interrupted);
   if (!status) {
     if (!history_.Fail(job.transcript)) return false;
     const bool sent = ErrorEvent(
@@ -576,7 +628,7 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     const bool sent = ErrorEvent(std::move(owned), event_id);
     return sent && !automatic;
   }
-  status = queue_.CommitPrefix(1, end_ticks, &last.audio);
+  status = queue_.CommitPrefix(1, end_ticks, &last.audio, idle_timeout);
   if (!status) {
     DiscardJob(last);
     if (!history_.Fail(last.transcript) ||
@@ -589,10 +641,11 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
     return sent && !automatic;
   }
   if (!history_.Commit(last.transcript)) return false;
+  CancelIdleCapture();
   previous_id_ = last.id;
   if (!speech_id_.empty() && !SpeechEvent(false, end_ticks, automatic))
     return false;
-  if (automatic)
+  if (automatic && !idle_timeout)
     speech_id_.clear();
   else {
     if (noise_input_) {
@@ -606,6 +659,13 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
 }
 bool RealtimeTranscriptionSession::CommitEvents(
     const RealtimeTranscriptionJob& last, bool automatic) {
+  if (last.idle_timeout) {
+    auto timeout = Event("input_audio_buffer.timeout_triggered");
+    Set(&timeout, "item_id", String(last.id));
+    Set(&timeout, "audio_start_ms", Number(last.audio.begin_ticks / 48));
+    Set(&timeout, "audio_end_ms", Number(last.audio.end_ticks / 48));
+    if (!Emit(std::move(timeout), automatic)) return false;
+  }
   const auto found = input_owners_.find(last.id);
   if (callbacks_.owner &&
       (found == input_owners_.end() || found->second.ticket != last.transcript))
@@ -983,6 +1043,21 @@ bool RealtimeTranscriptionSession::Tick() {
   if (!jobs_.front().stream) {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;
+  }
+  if (jobs_.front().idle_timeout && !jobs_.front().audio.samples) {
+    // Zero received samples are not an ASR call or a transcript success event.
+    // Settle only the native empty-input fact, without admission/token usage.
+    auto& job = jobs_.front();
+    if (!history_.Complete(job.transcript, "")) return false;
+    if (const auto found = input_owners_.find(job.id);
+        found != input_owners_.end()) {
+      ObjectReply empty;
+      empty.value = Object({{"text", String("")}});
+      const auto settled = callbacks_.owner->Finish(job, empty);
+      input_owners_.erase(found);
+      if (!Accepted(settled)) return false;
+    }
+    return DropFrontJob();
   }
   if (!control_) {
     control_ = callbacks_.acquire(jobs_.front().id);

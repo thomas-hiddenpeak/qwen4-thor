@@ -547,3 +547,182 @@ Q4T_TEST(realtime_composed_input_stopped_transport_keeps_rollback_owned) {
             snapshot.items.array.empty());
   return true;
 }
+
+namespace {
+RealtimeDuplexInput IdleOptions() {
+  auto options = Options();
+  options.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+  options.processing.request.chunking.threshold = .5;
+  options.idle_timeout_ms = 5000;
+  return options;
+}
+void SilentVad(Fixture& f) {
+  f.native.vad_step = [](auto, auto*, float* probability) {
+    *probability = 0;
+    return q4t::Status{};
+  };
+}
+}  // namespace
+
+Q4T_TEST(realtime_input_idle_waits_playback_then_emits_one_empty_owned_turn) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  SilentVad(f);
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(IdleOptions()).ok());
+  now += 60s;
+  Q4T_CHECK(input.Tick() && f.events.empty());  // No prior response.
+  input.ResponseFinished(2 * kRealtimeTicksPerSecond);
+  now += 6999ms;
+  Q4T_CHECK(input.Tick() && f.events.empty());
+  now += 1ms;
+  Q4T_CHECK(input.Tick() && Finish(input));
+  Q4T_CHECK(f.Count("input_audio_buffer.timeout_triggered") == 1 &&
+            f.Count("input_audio_buffer.committed") == 1 &&
+            f.Count("conversation.item.done") == 1 && f.calls == 0 &&
+            f.released == 0 && input.AcceptedTicks() == 0);
+  Q4T_CHECK(f.events[0].GetString("type") ==
+                "input_audio_buffer.timeout_triggered" &&
+            f.events[0].GetInt("audio_start_ms") == 0 &&
+            f.events[0].GetInt("audio_end_ms") == 0 &&
+            f.events[0].GetString("item_id") == f.commits[0].ticket.id);
+  Q4T_CHECK(f.commits[0].automatic &&
+            f.commits[0].settings.RespondOnCommit(true));
+  for (const auto& event : f.events) {
+    ChatPlanError error;
+    Q4T_CHECK(
+        ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent, &error));
+    Q4T_CHECK(!event.GetString("type").starts_with(
+        "conversation.item.input_audio_transcription."));
+  }
+  Json item;
+  Q4T_CHECK(input.Retrieve(f.commits[0].ticket, &item).ok() &&
+            item.GetArray("content")->array[0].GetString("audio").empty());
+  now += 60s;
+  Q4T_CHECK(input.Tick() && f.commits.size() == 1 &&
+            input.Erase(f.commits[0].ticket).ok());
+  return true;
+}
+
+Q4T_TEST(realtime_input_idle_retains_actual_silent_audio_for_native_asr) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  SilentVad(f);
+  std::atomic<bool> actual_audio{false};
+  f.native.execute = [&](const auto& job, const auto& bytes, const auto&,
+                         const auto&) {
+    ++f.calls;
+    actual_audio = job.idle_timeout && job.audio.samples == 48000 &&
+                   bytes[0].size() + bytes[1].size() == 96000 &&
+                   job.processed_audio->Samples().size() == 32000;
+    return Complete("quiet speech missed by the CPU VAD fixture");
+  };
+  auto options = IdleOptions();
+  options.transcript_events = false;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(options).ok());
+  input.ResponseFinished(0);
+  Q4T_CHECK(input.Tick() && Audio(input, 48000));
+  for (int i = 0; i < 180; ++i) Q4T_CHECK(input.Tick());
+  Q4T_CHECK(f.calls == 0 && input.AudioBytes() == 96000);
+  now += 5000ms;
+  Q4T_CHECK(input.Tick() && Finish(input));
+  Q4T_CHECK(actual_audio && f.calls == 1 && f.released == 1 &&
+            f.Count("input_audio_buffer.timeout_triggered") == 1);
+  Q4T_CHECK(f.events[0].GetInt("audio_start_ms") == 0 &&
+            f.events[0].GetInt("audio_end_ms") == 2000);
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "quiet speech missed by the CPU VAD fixture");
+  Q4T_CHECK(f.Count("conversation.item.input_audio_transcription.completed") ==
+            0);
+  return true;
+}
+
+Q4T_TEST(realtime_input_idle_controls_and_null_timeout_do_not_auto_respond) {
+  for (bool disabled : {false, true}) {
+    Fixture f;
+    auto now = Clock::now();
+    f.callbacks.now = [&] { return now; };
+    SilentVad(f);
+    auto options = IdleOptions();
+    options.create_response = options.interrupt_response = false;
+    RealtimeConversationInput input("sess_asr", f.history, f.native,
+                                    f.callbacks, 30);
+    Q4T_CHECK(input.Configure(options).ok());
+    input.ResponseFinished(0);
+    if (disabled) {
+      options.idle_timeout_ms.reset();
+      Q4T_CHECK(input.Configure(options).ok());
+    }
+    now += 5s;
+    Q4T_CHECK(input.Tick() && Finish(input));
+    Q4T_CHECK(f.commits.size() == (disabled ? 0 : 1));
+    if (!disabled) Q4T_CHECK(!f.commits[0].settings.RespondOnCommit(true));
+    Q4T_CHECK(f.calls == 0 && f.interruptions == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_input_idle_clear_fault_and_disconnect_never_replay_timer) {
+  for (int mode = 0; mode < 3; ++mode) {
+    Fixture f;
+    auto now = Clock::now();
+    f.callbacks.now = [&] { return now; };
+    bool fault = mode == 1;
+    f.native.vad_step = [&](auto, auto*, float* probability) {
+      *probability = 0;
+      return fault ? q4t::Status::Fail("Idle VAD fixture fault")
+                   : q4t::Status{};
+    };
+    RealtimeConversationInput input("sess_asr", f.history, f.native,
+                                    f.callbacks, 30);
+    Q4T_CHECK(input.Configure(IdleOptions()).ok());
+    input.ResponseFinished(0);
+    Q4T_CHECK(input.Tick());
+    if (mode == 0) {
+      Q4T_CHECK(input.Message(kClear));
+    } else if (mode == 1) {
+      Q4T_CHECK(Audio(input, 768 + 48));
+      for (int i = 0; i < 10 && !input.Failed(); ++i) Q4T_CHECK(input.Tick());
+      Q4T_CHECK(input.Failed());
+      fault = false;
+    } else {
+      input.Cancel();
+      input.Join();
+    }
+    now += 60s;
+    Q4T_CHECK(input.Tick() == (mode != 2));
+    if (mode == 1) Q4T_CHECK(!input.Failed() && input.Tick());
+    Q4T_CHECK(f.Count("input_audio_buffer.timeout_triggered") == 0 &&
+              f.calls == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_input_idle_drains_vad_backlog_before_timeout) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  size_t frames = 0;
+  f.native.vad_step = [&](auto, auto*, float* probability) {
+    *probability = ++frames > 8 ? .9f : 0.f;
+    return q4t::Status{};
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(IdleOptions()).ok());
+  input.ResponseFinished(0);
+  Q4T_CHECK(input.Tick() && Audio(input, 10 * 768 + 48));
+  now += 5s;
+  for (int i = 0; i < 40; ++i) Q4T_CHECK(input.Tick());
+  Q4T_CHECK(frames >= 10 && f.speech_start == 1 &&
+            f.Count("input_audio_buffer.timeout_triggered") == 0 &&
+            f.calls == 0);
+  return true;
+}

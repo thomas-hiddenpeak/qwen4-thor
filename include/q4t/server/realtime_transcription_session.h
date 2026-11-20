@@ -37,6 +37,7 @@ struct RealtimeTranscriptionJob {
   std::shared_ptr<RealtimeAudioRecord> processed_audio;
   std::shared_ptr<RealtimeSemanticTurn> semantic;
   RealtimeTranscriptTicket transcript;
+  bool idle_timeout = false;  // Native timer provenance, never client JSON.
   bool deleted =
       false;  // Session owner only; worker cancellation uses control.
 };
@@ -119,6 +120,12 @@ class RealtimeTranscriptionSession {
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
   size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
   uint64_t AcceptedTicks() const;
+  // Owner-only idle capture. Silence stays in the existing bounded ring;
+  // speech and ordinary commits cancel it. No invented input samples.
+  void BeginIdleCapture();
+  void CancelIdleCapture() { idle_begin_.reset(); }
+  bool IdleReady() const;
+  bool CommitIdle();
 
  private:
   bool Emit(io::Json event, bool deferred = false);
@@ -126,7 +133,8 @@ class RealtimeTranscriptionSession {
   bool FlushVadEvents();
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   bool SettingsEvent(bool legacy, bool created = false);
-  bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
+  bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic,
+              bool idle_timeout = false);
   bool CommitEvents(const RealtimeTranscriptionJob& job, bool automatic);
   ObjectReply ReserveJob(RealtimeTranscriptionJob& job);
   ObjectReply CommitJob(RealtimeTranscriptionJob& job, bool automatic);
@@ -162,6 +170,8 @@ class RealtimeTranscriptionSession {
   uint64_t cancelled_ticks_ = 0;
   bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
+  std::optional<uint64_t> idle_begin_;
+  bool vad_caught_up_ = false;
   std::shared_ptr<RealtimeSemanticTurn> semantic_;
   uint64_t semantic_audio_end_ = 0;
   std::string speech_id_;

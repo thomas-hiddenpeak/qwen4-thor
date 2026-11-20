@@ -84,7 +84,8 @@ class RealtimeConversation {
   Status CommitAudioInput(const RealtimeItemTicket& ticket,
                           std::optional<std::string_view> previous = {});
   Status CompleteAudioInput(const RealtimeItemTicket& ticket,
-                            std::string_view transcript);
+                            std::string_view transcript,
+                            bool idle_timeout = false);
   Status FailAudioInput(const RealtimeItemTicket& ticket);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
                 bool terminal, bool grow = false);
@@ -125,6 +126,7 @@ class RealtimeConversation {
     bool in_conversation = true, pending = false, server_output = false;
     bool in_context = true;
     bool native_input = false, transcript_visible = false, input_failed = false;
+    bool idle_timeout = false;
     bool input_committed = false;
   };
   Status InsertAudioInput(std::string_view id,

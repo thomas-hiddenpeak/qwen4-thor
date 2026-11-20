@@ -335,3 +335,19 @@ Q4T_TEST(realtime_queue_resume_never_refunds_lifetime_duration_or_epoch) {
   Q4T_CHECK(!queue.Append(8, Bytes("ij")));
   return true;
 }
+
+Q4T_TEST(realtime_queue_empty_idle_is_opt_in_and_preserves_real_sample_clock) {
+  RealtimeAudioQueue queue(19, {}, 12, 2);
+  RealtimeAudioItem empty, audio;
+  Q4T_CHECK(!queue.Commit(19, &empty) && !queue.PreviewPrefix(19, 0, &empty));
+  Q4T_CHECK(queue.CommitPrefix(19, 0, &empty, true));
+  Q4T_CHECK(empty.samples == 0 && empty.bytes == 0 && empty.sequence == 1 &&
+            queue.FrontBytes()[0].empty() && queue.StorageBytes() == 0);
+  Q4T_CHECK(queue.Append(19, Bytes("abcd")) && queue.Commit(19, &audio));
+  Q4T_CHECK(audio.begin_ticks == 0 && audio.end_ticks == 4 &&
+            audio.sequence == 2 && queue.UsedBytes() == 4);
+  Q4T_CHECK(queue.Acknowledge(19, 1) && Front(queue) == "abcd" &&
+            queue.Acknowledge(19, 2) && queue.AcceptedTicks() == 4);
+  Q4T_CHECK(!queue.Commit(19, &empty));
+  return true;
+}

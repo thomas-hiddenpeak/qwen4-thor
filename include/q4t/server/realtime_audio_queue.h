@@ -63,10 +63,10 @@ class RealtimeAudioQueue {
   // Validate and describe the next commit without consuming identity/audio.
   // The sole owner may reserve/prepare immutable derived PCM before commit.
   Status PreviewPrefix(uint64_t epoch, uint64_t end_ticks,
-                       RealtimeAudioItem* item) const;
+                       RealtimeAudioItem* item, bool allow_empty = false) const;
   // Commit a complete-sample prefix, retaining future audio/partial bytes.
   Status CommitPrefix(uint64_t epoch, uint64_t end_ticks,
-                      RealtimeAudioItem* item);
+                      RealtimeAudioItem* item, bool allow_empty = false);
   // Discard analyzed silence only. Borrowed items never move; when an item is
   // in flight, discarded storage remains charged until that item is acked.
   Status TrimPendingBefore(uint64_t epoch, uint64_t begin_ticks);

@@ -93,7 +93,7 @@ bool SameIdentity(const Json& left, const Json& right) {
   }
   return true;
 }
-Status InputText(const Json& item, Json* copy) {
+Status InputText(const Json& item, Json* copy, bool idle_timeout = false) {
   const auto* content = item.GetArray("content");
   const auto* transcript = content && content->array.size() == 1
                                ? content->array[0].Find("transcript")
@@ -101,8 +101,13 @@ Status InputText(const Json& item, Json* copy) {
   if (!transcript || !transcript->IsString())
     return Invalid("native input has no completed ASR transcript");
   // Execution snapshot only. Client transcripts never receive this authority.
+  const auto text = idle_timeout && transcript->str.empty()
+                        ? String(
+                              "[No speech was detected during the idle "
+                              "interval. Invite the user to continue.]")
+                        : *transcript;
   Set(copy, "content",
-      Array({Object({{"type", String("input_text")}, {"text", *transcript}})}));
+      Array({Object({{"type", String("input_text")}, {"text", text}})}));
   return {};
 }
 }  // namespace
@@ -257,8 +262,11 @@ Status RealtimeConversation::CommitAudioInput(
   return {};
 }
 Status RealtimeConversation::CompleteAudioInput(
-    const RealtimeItemTicket& ticket, std::string_view transcript) {
-  return FinishAudioInput(ticket, transcript);
+    const RealtimeItemTicket& ticket, std::string_view transcript,
+    bool idle_timeout) {
+  const auto status = FinishAudioInput(ticket, transcript);
+  if (status) entries_[Position(ticket)].idle_timeout = idle_timeout;
+  return status;
 }
 Status RealtimeConversation::FailAudioInput(const RealtimeItemTicket& ticket) {
   return FinishAudioInput(ticket, std::nullopt);
@@ -414,7 +422,8 @@ Status RealtimeConversation::SnapshotImpl(
             entry.item.GetString("status") == "incomplete");
   };
   auto append = [&](const Json& item, bool pending, uint64_t generation = 0,
-                    bool native_input = false) -> Status {
+                    bool native_input = false,
+                    bool idle_timeout = false) -> Status {
     if (pending && (!allow_pending || (!native_input && !wait_for_output)))
       return Invalid("input or output item is still pending");
     if (snapshot.items.array.size() == maximum_items_)
@@ -422,7 +431,8 @@ Status RealtimeConversation::SnapshotImpl(
     auto status = Shape(item, remaining);
     if (!status) return status;
     auto copy = item;
-    if (native_input && !pending && !(status = InputText(item, &copy)))
+    if (native_input && !pending &&
+        !(status = InputText(item, &copy, idle_timeout)))
       return status;
     size_t bytes = 0;
     status = Measure(copy, remaining, &bytes);
@@ -440,7 +450,7 @@ Status RealtimeConversation::SnapshotImpl(
       if (!entry.in_conversation || !entry.in_context || unexecutable(entry))
         continue;
       auto status = append(entry.item, entry.pending, entry.generation,
-                           entry.native_input);
+                           entry.native_input, entry.idle_timeout);
       if (!status) return status;
     }
   } else {
@@ -457,7 +467,7 @@ Status RealtimeConversation::SnapshotImpl(
         if (unexecutable(entry))
           return Invalid("failed native input or incomplete tool context");
         status = append(entry.item, entry.pending, entry.generation,
-                        entry.native_input);
+                        entry.native_input, entry.idle_timeout);
       } else {
         status = append(item, false);
       }
@@ -526,7 +536,7 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       if (omit[i]) continue;
       if (waiting[i]) {
         const auto& entry = entries_[Position(copy.tickets[i])];
-        auto status = InputText(entry.item, &item);
+        auto status = InputText(entry.item, &item, entry.idle_timeout);
         if (!status) return status;
       }
       if (waiting_output[i]) item = entries_[Position(copy.tickets[i])].item;

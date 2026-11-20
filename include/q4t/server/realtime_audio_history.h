@@ -57,6 +57,9 @@ class RealtimeAudioHistory {
   Status BeginStream(const RealtimeTranscriptTicket& ticket, uint64_t epoch,
                      size_t maximum_samples, size_t chunk_samples,
                      std::shared_ptr<RealtimeAudioRecord>* output);
+  // A native idle timeout with no received samples; no synthesized waveform.
+  Status Empty(const RealtimeTranscriptTicket& ticket,
+               std::shared_ptr<RealtimeAudioRecord>* output);
   std::shared_ptr<RealtimeAudioRecord> Find(
       const RealtimeTranscriptTicket& ticket) const;
   Status Erase(const RealtimeTranscriptTicket& ticket);
