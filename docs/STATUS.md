@@ -27,8 +27,9 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 [rev386双向音频已可回退交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)，
 服务保持STOPPED。19条原生CLI完成升级、登记、整根回退和再前进，
 新增GPU启动0，客户配额、用量、profile历史与恢复预算保持。主线
-已有PR #54的rev376；本阶段等待最终PR检查与合入，随后继续MCP、
-追踪、Live及全部master任务。
+已包含[PR #55的完整双向音频与凭据更正](evidence/serve-pr55-merged-20261120/README.md)，
+合并提交`abf4dab67`；两条最终检查通过。继续MCP、追踪、Live及全部
+master任务。
 
 同一conversation已接通实际音频输入/ASR、手动commit、VAD自动回答
 和打断、空闲、混合及临时音频，组合语音输出、函数工具与持久Prompt。

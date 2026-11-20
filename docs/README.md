@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [双向音频及凭据更正PR #55合入主线](evidence/serve-pr55-merged-20261120/README.md)
+
 - [双向输入预留与上下文冻结CPU](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)
 - [双向输入生命周期组合CPU](evidence/serve-realtime-duplex-owner-cpu-20261120/README.md)
 

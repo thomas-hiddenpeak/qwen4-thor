@@ -172,3 +172,9 @@ STOPPED管理命令通过，最终rev396。实际六次模型加载使用各自�
 凭据，客户Key/配额/用量与运行时保持；原业务按确切来源复用，
 新封包新增GPU0。原失败不改写，旧值不得手动复用。更正、两向回退
 和归档扫描见[凭据交付](evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)。
+
+## main合入
+
+[PR #55已合并](evidence/serve-pr55-merged-20261120/README.md)，main
+`abf4dab67`包含接受head `6262f19c7`，两条最终检查SUCCESS。默认
+rev396 STOPPED保持，MCP两项组件提交独立；总计划继续。

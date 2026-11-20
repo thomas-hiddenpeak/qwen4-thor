@@ -1,0 +1,11 @@
+{
+  "first_read": "GitHub GET EOF before mutation",
+  "rest_attempt": "PUT EOF; subsequent read confirmed OPEN and no merge commit",
+  "graphql_attempt": "POST EOF; subsequent read confirmed OPEN",
+  "connector_attempt": "403 resource not accessible by integration; no mutation",
+  "final_transport": "existing authorized gh REST client with HTTP/2 disabled",
+  "cause_of_initial_network_failure": "not established",
+  "final_reconciled": "MERGED",
+  "new_tests": 0,
+  "gpu_actions": 0
+}

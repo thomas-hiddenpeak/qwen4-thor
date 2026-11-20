@@ -610,6 +610,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -960,6 +964,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -2827,7 +2835,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+      "next": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5165,6 +5173,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -6640,6 +6652,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -7462,6 +7478,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -7647,6 +7667,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -8797,12 +8821,16 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev396_delivered_duplex_main_pending_remaining_master_active",
+      "state": "rev396_delivered_duplex_main_merged_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9564,7 +9592,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "current_mainline_evidence": "evidence/serve-tts-mainline-20261118/README.md",
-      "current_candidate": "Qualified native duplex delivered rev396 after credential-only reissue; phase PR/main pending",
+      "current_candidate": "Qualified native duplex rev396, credential reissue and PR55 main merge complete; MCP runtime integration in progress",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -9943,7 +9971,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+      "next": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
@@ -9951,6 +9979,10 @@
       "native_realtime_duplex_credential_reissue_20261120": {
         "revision": 396,
         "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+      },
+      "native_realtime_duplex_main_20261120": {
+        "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+        "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       }
     },
     {
@@ -10210,8 +10242,8 @@
       }
     }
   ],
-  "next_task": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
-  "next": "完成rev396双向音频PR检查合入，继续Realtime MCP/追踪/Live及全部计划；旧凭据按披露处理、当前和回退包已更换，原失败保留。",
+  "next_task": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
+  "next": "PR #55已合入main；继续Realtime MCP异步目录、调用审批与真实闭环/恢复，再推进追踪、Live及全部计划。原质量失败保留。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -11182,7 +11214,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_duplex_delivered_rev396_remaining_master_active",
+    "state": "native_duplex_rev396_main_merged_mcp_session_integration_in_progress",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -11190,7 +11222,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+    "next": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -14414,6 +14446,24 @@
         "public_secret_scan_matches": 0
       },
       "catalog_evidence": "evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md"
+    },
+    "duplex_main": {
+      "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",
+      "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/55",
+      "accepted_head": "6262f19c7f971b979c10dbdc363be5895872b43e",
+      "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+      "main_tip": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+      "exact_head_checks": 2,
+      "source_ancestry_confirmed": true,
+      "default_revision": 396,
+      "service_state": "STOPPED",
+      "gpu_actions": 0,
+      "local_mcp_commits_not_in_this_merge": 2,
+      "local_head_before": "7f97908d7cffc3e674d842ab5ea2e1459286f903",
+      "local_head_after": "a1a441214a9cfd778c95aa963b66c214d25dd4a8",
+      "active_branch_retained_for_unique_mcp_work": true,
+      "remaining_master_active": true,
+      "evidence": "evidence/serve-pr55-merged-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {
@@ -15130,5 +15180,23 @@
     "all_master_tasks_active": true,
     "main_integration_pending": true,
     "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+  },
+  "native_realtime_duplex_main_20261120": {
+    "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",
+    "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/55",
+    "accepted_head": "6262f19c7f971b979c10dbdc363be5895872b43e",
+    "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+    "main_tip": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+    "exact_head_checks": 2,
+    "source_ancestry_confirmed": true,
+    "default_revision": 396,
+    "service_state": "STOPPED",
+    "gpu_actions": 0,
+    "local_mcp_commits_not_in_this_merge": 2,
+    "local_head_before": "7f97908d7cffc3e674d842ab5ea2e1459286f903",
+    "local_head_after": "a1a441214a9cfd778c95aa963b66c214d25dd4a8",
+    "active_branch_retained_for_unique_mcp_work": true,
+    "remaining_master_active": true,
+    "evidence": "evidence/serve-pr55-merged-20261120/README.md"
   }
 }

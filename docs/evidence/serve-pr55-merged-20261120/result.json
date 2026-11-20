@@ -1,0 +1,17 @@
+{
+  "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/55",
+  "accepted_head": "6262f19c7f971b979c10dbdc363be5895872b43e",
+  "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+  "main_tip": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
+  "exact_head_checks": 2,
+  "source_ancestry_confirmed": true,
+  "default_revision": 396,
+  "service_state": "STOPPED",
+  "gpu_actions": 0,
+  "local_mcp_commits_not_in_this_merge": 2,
+  "local_head_before": "7f97908d7cffc3e674d842ab5ea2e1459286f903",
+  "local_head_after": "a1a441214a9cfd778c95aa963b66c214d25dd4a8",
+  "active_branch_retained_for_unique_mcp_work": true,
+  "remaining_master_active": true
+}
