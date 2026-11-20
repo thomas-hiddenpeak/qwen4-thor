@@ -1,0 +1,315 @@
+{
+  "records": [
+    {
+      "path": "audio-boundary-business-01/primary-capabilities.http.json",
+      "bytes": 238,
+      "sha256": "fbb4c83bf0acac18eb366bea18188615cf9e5c5997ba5a20489604869c12bdfb"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual.sdk.json",
+      "bytes": 2551014,
+      "sha256": "c20a184408419b98629e10c582461a90859eef275546ba4ea241af9c51f6064b"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual-before.http.json",
+      "bytes": 247,
+      "sha256": "ae2053284a6c25d3504e96d8dd8f813b706e7716bf356cbe8ccb9e0009a66a07"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-entry-cleanup.json",
+      "bytes": 63,
+      "sha256": "713ed1331f8efd09c8c9500e2cdafdd9eb5661ea74015d83c0506ac070499e8e"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual-after-0.wire",
+      "bytes": 33690,
+      "sha256": "689a763a7626a44d55be55da59e21bb2c7ef8793aae4aa47383cca37dbf6f9a9"
+    },
+    {
+      "path": "audio-boundary-business-01/light-config.http.json",
+      "bytes": 238,
+      "sha256": "5fddbb593a6bb0904a9460b0c892da61a03c0de56ea1766d3a8de5d81bff7dad"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual-drain.metrics.json",
+      "bytes": 23275,
+      "sha256": "3dd941466648e39905507cfc8dea28843bca0d625795cb9ed0097dcdd7e0b105"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-config.wire",
+      "bytes": 16005,
+      "sha256": "a20c19c5377040eef5055421750af0773c72570811e57ca8c680be4973030b60"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual-drain.metrics.json",
+      "bytes": 23274,
+      "sha256": "dc3eaf24c16ceb6ce176457665ec27abb2aa25a8cf9deb4d9234019b05f0e5ac"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual-after-0.http.json",
+      "bytes": 247,
+      "sha256": "0fcb4980e20234a30b385b580f1ecd8b710472cbcd2e50a111509256a145edc6"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-config.http.json",
+      "bytes": 238,
+      "sha256": "5dc20eadeb027e64de319384a284fc1a493f22903f3f4cf61fbe2ebb6daf8293"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual.events.jsonl",
+      "bytes": 2838805,
+      "sha256": "2c8e3401ae3951b87b316c70a3ca2fcb926a9a4c4ae9450a3a3405cdaf304792"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad-after-0.wire",
+      "bytes": 33701,
+      "sha256": "e8533caefbd3ecd2e8e40cba9a11778aca8387b175acb4676b928606e9f1e574"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-capabilities.json",
+      "bytes": 59754,
+      "sha256": "26a03053fa282e25380c0a291147bc6f49961e45b994bf9a604c10c70a545d2c"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-business-01/result.json",
+      "bytes": 1483,
+      "sha256": "5ed99c09f409655efc982f27f56cbecf952456f1675a1ae139731d502a87ac1c"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual-after-0.wire",
+      "bytes": 33689,
+      "sha256": "192ad07a55565d50491c1701fe93eb441246a4f8b79883db555eeb3756dd1cb5"
+    },
+    {
+      "path": "audio-boundary-business-01/quality.json",
+      "bytes": 3819,
+      "sha256": "cf4170386aa7538583872bb363e9435da62101cda46cba010539188cdc1b053c"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual-before.wire",
+      "bytes": 33632,
+      "sha256": "17ac00327b8a2408e84d2ba753bfc554d4798e45e5bbbdd3f445a4d85c45b1d0"
+    },
+    {
+      "path": "audio-boundary-business-01/light-config.json",
+      "bytes": 20883,
+      "sha256": "75b2c49755bb0a46621015b51259e045b30fb1e8779f008d4390f8611d97c0af"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-command.json",
+      "bytes": 2890,
+      "sha256": "52245ae26d20789bb7c8a35d16beb43b131f1350ca515583328a008c8191d339"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-vad-before.wire",
+      "bytes": 33689,
+      "sha256": "63391b9bb481267738f65bc49c063e080c590eae0ebfbeef5825b6f7d7e21953"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-sessions-observed.json",
+      "bytes": 2580118,
+      "sha256": "f65c99c63be23daa6467341bbdbe8241e5dbb41ad1bf00d1be452d0991ae8b75"
+    },
+    {
+      "path": "audio-boundary-business-01/counts.json",
+      "bytes": 101,
+      "sha256": "f52d25ffaef8a51ab4eae0cdc453036ba76e04c7e5cb26a6946b19dd1b51cff3"
+    },
+    {
+      "path": "audio-boundary-business-01/plan.json",
+      "bytes": 1083780,
+      "sha256": "55af6b6c52648cf6ad7810829aeb75b3e7a139c17cbec8740f825020bc2a867b"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-vad.sdk.json",
+      "bytes": 20921,
+      "sha256": "8c1cab17ac6fa616ba065aa0bfc0898e99e8716e95ff9e5bc50827e52167d296"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-identity.json",
+      "bytes": 3326,
+      "sha256": "813029536148fd3a3a8e4fc595e3fd2c8182d9281bdff04e796984b4ac4453f5"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad-before.http.json",
+      "bytes": 247,
+      "sha256": "84c865c4848270ae06ab6eedbf4ec38c59c82203e406d2f321639f195cb6262e"
+    },
+    {
+      "path": "audio-boundary-business-01/light-command.json",
+      "bytes": 2893,
+      "sha256": "2687954daf2cfe86f286a3108420f60d9ac2b01cd5fccf895ff4520f82c17153"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad-drain.metrics.json",
+      "bytes": 23285,
+      "sha256": "e33cb8223f1dec62caed03f3765fdd2d606caeaa611412018c70d31192d90f26"
+    },
+    {
+      "path": "audio-boundary-business-01/light-config.wire",
+      "bytes": 16016,
+      "sha256": "628b013a94a6228c3482bcc60ac043cc2c638a72a1eb1a88e79fa696315ffc64"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad-before.wire",
+      "bytes": 33690,
+      "sha256": "3f9e6fc0a6b061daef9683e6b85569bf51bdc1d905a3b25711be30378306b5b0"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-observed.json",
+      "bytes": 2580303,
+      "sha256": "775815592ef322e91346a5d1265177aeddbfb4db29ab13c8c3ea613b0dbe0e3a"
+    },
+    {
+      "path": "audio-boundary-business-01/source-review.json",
+      "bytes": 107333,
+      "sha256": "9592953cdbc5f15e6e8dc90bdba8c4375dad0d57cf1bb4b5e694d6ccafaf90d7"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-entry-cleanup.json",
+      "bytes": 63,
+      "sha256": "ab5fe3faa4eed816fbc5999091ebf6587db7559c184eb8d9db4ad36fb75b6af1"
+    },
+    {
+      "path": "audio-boundary-business-01/light-identity.json",
+      "bytes": 3329,
+      "sha256": "377e481d8efee74b401d57cf066185e0ff93fbadaf7bab9fa41e97fb14134752"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-config.json",
+      "bytes": 20872,
+      "sha256": "99fb50e933125e4f77b84d211d41d47f722a5794305e77278661d183c0687abf"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-capabilities.wire",
+      "bytes": 46234,
+      "sha256": "f0cf8b511cfdb2d9321c3d978914c6d134a2e774605f117bba09e1b344f81e22"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-cleanup.json",
+      "bytes": 4417,
+      "sha256": "0b76bcc58a37998cb442fb6f1494cbcf7036cdbe93bab9a8b1f8e50e1b4c636b"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-model.log",
+      "bytes": 48596,
+      "sha256": "57f8fecd042272512b42202f2487cde82f2bb7ef3636c2c7515f5f62f4592e5f"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-vad-before.http.json",
+      "bytes": 247,
+      "sha256": "48057861dabcb5c8511cfb00c9e7a27b96ac40bb28d9184d1e2ead640e3d85d5"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-vad.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-business-01/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "b1758f2a987912ad1d36ddd89c41f682fe3a41cfc2f60ffe9dabcf9a8bb4efbb"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual-before.wire",
+      "bytes": 33632,
+      "sha256": "6c5dca8284416772391f7c63efed7b9f084341e255e1bb07678f03935a625dc5"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual-after-0.http.json",
+      "bytes": 247,
+      "sha256": "335cfa11b03f1a4fea9365bb4a8b42d64b42d972570cc612f6d181f6ebcb7a8c"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-vad.events.jsonl",
+      "bytes": 796295,
+      "sha256": "f8f7477d5d642bb1fc933172d89762383cdf347483afbbfcaa7b94a166566606"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad.sdk.json",
+      "bytes": 24811,
+      "sha256": "411a37cca4c6f4804f9ad2a54360240dbd992313a80deeb9721079f28001da47"
+    },
+    {
+      "path": "audio-boundary-business-01/cleanup.json",
+      "bytes": 8716,
+      "sha256": "09913d6f7686aca15cd0b6dfd4651cfd47ce30e587f6911d1b8a3374145f7485"
+    },
+    {
+      "path": "audio-boundary-business-01/light-capabilities.http.json",
+      "bytes": 238,
+      "sha256": "c75cd38d562020dd4e9d7e7ad172e1db1f5b9241d3bd9c005f2c549ba690e9c8"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad-after-0.http.json",
+      "bytes": 247,
+      "sha256": "32b0100a7fb44414939b81188792de0f4a1b77126d847e360c17f8d7ad56cf97"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual.sdk.json",
+      "bytes": 1961688,
+      "sha256": "4174cbc421cb45b2c58a8c4781fce9e1b3569f729ab8a32188feb6b113a8558f"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-vad.events.jsonl",
+      "bytes": 800162,
+      "sha256": "c083ddbbfcc0870c5e9d2f236f35267f17b1c1b1cb01697105ce637b100bc7b3"
+    },
+    {
+      "path": "audio-boundary-business-01/primary-duplex-manual.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual.events.jsonl",
+      "bytes": 2243860,
+      "sha256": "4c3095c6302c116bf12d80f6c36a543942a0620b19276738916ece6345276f55"
+    },
+    {
+      "path": "audio-boundary-business-01/light-duplex-manual-before.http.json",
+      "bytes": 247,
+      "sha256": "2b76dd6d8daeaeb4de772811d6b0180c2094ae12a71f2bcd510423de3e8894d2"
+    },
+    {
+      "path": "audio-boundary-business-01/light-capabilities.wire",
+      "bytes": 46235,
+      "sha256": "1c85d20baed4067c0272e395ed6fa7740be496666bd1d17a0f3e105cf7156727"
+    },
+    {
+      "path": "audio-boundary-business-01/light-model.log",
+      "bytes": 46547,
+      "sha256": "c47c883ac2c6f2c488b144340c8714698e448ad7369a2ded7f5e37b59c1da8f3"
+    },
+    {
+      "path": "audio-boundary-business-01/lease/nvml-queries.jsonl",
+      "bytes": 394612,
+      "sha256": "e5a468a936ae8dac3c554359cb83db308a3140ef265b39efb4b0d4ba7af56c6e"
+    },
+    {
+      "path": "audio-boundary-business-01/lease/events.jsonl",
+      "bytes": 31057,
+      "sha256": "d3137b0289bf452f9330f5719ad516d3d8927785bc58cdf7df55d7484ae9db17"
+    },
+    {
+      "path": "audio-boundary-business-01/lease/exit.json",
+      "bytes": 754,
+      "sha256": "db61156e1b9237753b30ce5365691f9e025f8aa84457810894400c7c7b5c3fb5"
+    },
+    {
+      "path": "audio_boundary_business_01.py",
+      "bytes": 8895,
+      "sha256": "4258555ec10560a9f23ce30732132485dfffe91150d47b17f1f236a7256e60ab"
+    }
+  ],
+  "archive_sha256": "a4e4a79bc7ae061398a65523f6487c656b5ad7a584f8734903d9504ba29bfb91"
+}

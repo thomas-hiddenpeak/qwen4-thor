@@ -162,6 +162,13 @@ mixed重复内容、vad_auto译成英文两条原答案FAIL，轻量未跑。生
 受影响双向短验，旧独立ASR/
 语义工作按未变来源复用，随后恢复/交付。默认rev376保持STOPPED。
 
+[音频边界实际短验](evidence/serve-realtime-duplex-audio-boundary-http-20261120/README.md)：
+2模型/4WSS/176.795秒，165NVML正常、两模型清理通过。主档全部
+双向业务通过；轻量混合和工具调用通过，但语音、往返和工具回填
+答案错误，计数回答早于speech_started结束，不能认定打断通过。
+原FAIL保持、未发资格。接着相同输入/固定seed/logprobs的有界两档
+诊断，区分执行状态和模型采样；不重复整组场景，不改默认rev376。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |

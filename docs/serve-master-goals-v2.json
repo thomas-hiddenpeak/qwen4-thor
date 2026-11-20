@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "light_failed_native_audio_boundary_repair_cpu_pass_runtime_pending",
+      "state": "audio_boundary_primary_pass_light_quality_and_interrupt_prerequisite_failed",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13429,6 +13429,11 @@
         "evidence": "docs/evidence/serve-realtime-duplex-audio-boundaries-20261120/README.md",
         "status": "LIGHT_ORIGINAL_FAILED_AUDIO_BOUNDARY_REPAIR_CPU_PASS",
         "model_quality_fixed": false
+      },
+      "audio_boundary_http": {
+        "evidence": "docs/evidence/serve-realtime-duplex-audio-boundary-http-20261120/README.md",
+        "status": "PRIMARY_DUPLEX_PASS_LIGHT_QUALITY_AND_INTERRUPTION_FAIL",
+        "qualification_issued": false
       }
     }
   },
