@@ -631,6 +631,10 @@ set(protocol_inputs
   include/q4t/server/live_shape.h
   include/q4t/server/live_configuration.h
   src/server/live_configuration.cpp
+  include/q4t/server/live_session.h
+  src/server/live_session.cpp
+  include/q4t/server/live_session_pump.h
+  src/server/live_session_pump.cpp
   src/server/contracts/openai_live_types_v1.json
   cmake/live_types.h.in
   src/server/grammar_worker.cpp

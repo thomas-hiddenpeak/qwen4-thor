@@ -10451,7 +10451,7 @@
       }
     }
   ],
-  "next_task": "Implement native Live session lifecycle and actual ASR/LLM/TTS composition, then L03-L06 and every remaining Serve master task. PR #57 merged as 22669a162; default rev426 STOPPED unchanged. Live contract/configuration/PCM CPU preparations are not business completion.",
+  "next_task": "Bind native Live ASR/LLM/TTS and original admission/accounting, then L03-L06 and all Serve master tasks. Lifecycle and transport CPU verified, route/model business not yet accepted; rev426 unchanged STOPPED.",
   "next": "PR #57已合main；Live合同/配置/16k PCM 27项CPU，继续实际会话、模型和全部总任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -16216,7 +16216,7 @@
     }
   },
   "native_live_20261121": {
-    "state": "contract_configuration_pcm_cpu_pass_runtime_pending",
+    "state": "lifecycle_transport_cpu_pass_native_backend_in_progress",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
@@ -16226,7 +16226,7 @@
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 27,
+    "distinct_native_cpu_tests": 58,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16236,7 +16236,7 @@
       },
       {
         "id": "L02",
-        "state": "configuration_pcm_cpu_verified_session_backend_in_progress",
+        "state": "lifecycle_transport_cpu_verified_actual_backend_in_progress",
         "title": "主WSS与持续语音业务"
       },
       {
@@ -16266,6 +16266,11 @@
     "generator_compatibility_pass": true,
     "configuration_pcm_evidence": "evidence/serve-live-configuration-pcm-cpu-20261121/README.md",
     "configuration_tests": 9,
-    "pcm_tests": 12
+    "pcm_tests": 12,
+    "lifecycle_tests": 10,
+    "lifecycle_private_evidence": ".q4t-work/serve-live-20261121/lifecycle-cpu-01/result.json",
+    "transport_tests": 24,
+    "lifecycle_transport_distinct_tests": 31,
+    "lifecycle_transport_evidence": "evidence/serve-live-lifecycle-transport-cpu-20261121/README.md"
   }
 }

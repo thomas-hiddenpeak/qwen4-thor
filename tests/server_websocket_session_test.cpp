@@ -134,14 +134,14 @@ Q4T_TEST(websocket_output_explicit_large_message_keeps_byte_and_frame_bounds) {
   output.Acknowledge();
   Q4T_CHECK(output.Bytes() == 0);
   Q4T_CHECK(!output.TryPush(WebSocketOpcode::kBinary,
-                           std::string((2ULL << 20) + 1, 'x')));
+                            std::string((2ULL << 20) + 1, 'x')));
   Q4T_CHECK(output.Bytes() == 0 && output.Front().empty());
   return true;
 }
 
 Q4T_TEST(websocket_output_explicit_limits_reject_without_allocating_queue) {
   WebSocketOutput full(kWebSocketOutputMaximumBytes, 64,
-                        kWebSocketMaximumLimit);
+                       kWebSocketMaximumLimit);
   Q4T_CHECK(full.Valid() && !full.Bytes());
   Q4T_CHECK(!WebSocketOutput(kWebSocketOutputMaximumBytes + 1).Valid());
   Q4T_CHECK(!WebSocketOutput(1024, 0, 1024).Valid());
@@ -151,8 +151,8 @@ Q4T_TEST(websocket_output_explicit_limits_reject_without_allocating_queue) {
   // A small mailbox may use the unchanged larger default message limit;
   // the actual encoded frame still must fit its own smaller byte budget.
   WebSocketOutput small(256);
-  Q4T_CHECK(small.Valid() && !small.TryPush(WebSocketOpcode::kBinary,
-                                          std::string(256, 'x')));
+  Q4T_CHECK(small.Valid() &&
+            !small.TryPush(WebSocketOpcode::kBinary, std::string(256, 'x')));
   Q4T_CHECK(!small.Bytes());
   return true;
 }
@@ -697,6 +697,110 @@ Q4T_TEST(
     Q4T_CHECK(Read(sockets.f[1],
                    Frame("ready", WebSocketOpcode::kText, false).size()) ==
               Frame("ready", WebSocketOpcode::kText, false));
+  }
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_drains_all_frames_before_normal_close) {
+  Sockets sockets;
+  sockets.Small();
+  WebSocketOutput output;
+  const std::string audio(128 * 1024, 'a');
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kBinary, audio));
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "session.closed"));
+  int calls = 0, cancels = 0;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto) {
+    ++calls;
+    return true;
+  };
+  cb.cancel = [&] { ++cancels; };
+  cb.completed = [] { return true; };
+  auto task = std::async(std::launch::async, [&] {
+    return RunWebSocketSession(sockets.f[0], Frame("too late"), output, cb,
+                               Limits());
+  });
+  const auto expected = Frame(audio, WebSocketOpcode::kBinary, false) +
+                        Frame("session.closed", WebSocketOpcode::kText, false) +
+                        Frame("\x03\xe8", WebSocketOpcode::kClose, false);
+  Q4T_CHECK(Read(sockets.f[1], expected.size()) == expected);
+  const auto result = task.get();
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kCompleted &&
+            result.close_code == 1000 && result.sent_bytes == expected.size());
+  Q4T_CHECK(calls == 0 && cancels == 1 && output.Closed() && !output.Bytes());
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_in_message_stops_same_batch_dispatch) {
+  Sockets sockets;
+  WebSocketOutput output;
+  bool completed = false;
+  int calls = 0;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto) {
+    ++calls;
+    completed = true;
+    return output.TryPush(WebSocketOpcode::kText, "session.closed");
+  };
+  cb.completed = [&] { return completed; };
+  const auto result = RunWebSocketSession(
+      sockets.f[0], Frame("close") + Frame("must not execute"), output, cb,
+      Limits());
+  const auto expected = Frame("session.closed", WebSocketOpcode::kText, false) +
+                        Frame("\x03\xe8", WebSocketOpcode::kClose, false);
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kCompleted && calls == 1);
+  Q4T_CHECK(Read(sockets.f[1], expected.size()) == expected);
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_does_not_override_failure_or_revocation) {
+  for (int kind = 0; kind < 4; ++kind) {
+    Sockets sockets;
+    WebSocketOutput output;
+    Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "must not leak"));
+    int cancels = 0;
+    WebSocketSessionCallbacks cb;
+    cb.message = [](auto, auto) { return true; };
+    cb.stopped = [=] { return kind == 0; };
+    cb.authorized = [=] { return kind != 1; };
+    cb.tick = [=] { return kind != 2; };
+    cb.completed = [=] {
+      if (kind == 3) throw std::runtime_error("completion fixture");
+      return true;
+    };
+    cb.cancel = [&] { ++cancels; };
+    const auto result =
+        RunWebSocketSession(sockets.f[0], {}, output, cb, Limits());
+    const auto expected = kind == 0   ? WebSocketSessionEnd::kShutdown
+                          : kind == 1 ? WebSocketSessionEnd::kRevoked
+                                      : WebSocketSessionEnd::kApplication;
+    Q4T_CHECK(result.end == expected && cancels == 1 && output.Closed());
+    Q4T_CHECK(result.sent_bytes <= 4 && !output.Bytes());
+  }
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_slow_reader_and_eof_are_not_success) {
+  for (bool eof : {false, true}) {
+    Sockets sockets;
+    sockets.Small();
+    WebSocketOutput output;
+    Q4T_CHECK(
+        output.TryPush(WebSocketOpcode::kBinary, std::string(1ULL << 20, 'a')));
+    Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "session.closed"));
+    WebSocketSessionCallbacks cb;
+    cb.message = [](auto, auto) { return true; };
+    cb.completed = [] { return true; };
+    auto limits = Limits();
+    limits.write = 60ms;
+    if (eof) Q4T_CHECK(shutdown(sockets.f[1], SHUT_WR) == 0);
+    const auto start = Clock::now();
+    const auto result =
+        RunWebSocketSession(sockets.f[0], {}, output, cb, limits);
+    Q4T_CHECK(result.end == (eof ? WebSocketSessionEnd::kPeerEof
+                                 : WebSocketSessionEnd::kWriteDeadline));
+    Q4T_CHECK(result.sent_bytes < (1ULL << 20) && Clock::now() - start < 1s);
+    Q4T_CHECK(output.Closed() && !output.Bytes());
   }
   return true;
 }

@@ -2358,8 +2358,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "8a1b944b8ad99c9cb927d3546dbbec8d6e8cb0ae6da15e93753f78b4d8b1c23f",
-    "cmake/ChatProtocolIdentity.cmake": "f5b2b9de313378c3d70919e2fa80511fcb8c8bda1b57cd0c61fe999a772f0cff",
+    "CMakeLists.txt": "3cedb8159f350a9b792502d15dd2527b5ed4b243f4d2d11e83487a7c2f1ab4cf",
+    "cmake/ChatProtocolIdentity.cmake": "8322ee0c65149efab0dad7e0ed58282dbfe2e9ca8cdcf54d479c1d18ac715594",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2692,7 +2692,7 @@
     "include/q4t/server/web_index.h": "d2432219578c7fd151ac72fc0bcf871de8741380a67f08c4759e6d22f6142219",
     "include/q4t/server/web_search.h": "0f89571559d249c120f2fb8e05608b7759545b52b24e8fb3820d54784ba90620",
     "include/q4t/server/websocket.h": "fc8e70cd77e5297ef32bfa77160a99318613f4ba73e50f8e2f303e96a71800b9",
-    "include/q4t/server/websocket_session.h": "02fa95c34363b938309ee45dfb01232869d584edfe1307c0bcf238ff1b19915a",
+    "include/q4t/server/websocket_session.h": "f15c00bcf11497023f805fbb334a512e77e09d80fbf260176cd7c76b374a6309",
     "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
     "include/q4t/service/device_admission.h": "3f13bf17b693d839f556f1495d4617a0ffe8fff15b611a086f0aac4391936ac9",
     "include/q4t/service/device_filter.h": "260b36b468198b9c2cc41a7125fdeeb37cc22f45dbe89e1a219dabfcef57b5b7",
@@ -3217,7 +3217,7 @@
     "src/server/web_search_fetch.cpp": "e477ebcc7abd243f437e9c2ad14cff2ce560702f424a8df74da65370c6ca5c55",
     "src/server/web_search_rank.cpp": "033f5498b89dec7fee33bf69c4012f4d43a916ad5a33e55f521ab991f6adde49",
     "src/server/websocket.cpp": "cca592c1479fe87f90a2df748d8077a2e1615d92793f624d7252f3f542ac1929",
-    "src/server/websocket_session.cpp": "98975ec0ad551ade164305082ff13210c96d40936fc77e699b5250440f0be5e1",
+    "src/server/websocket_session.cpp": "8d4e5664880c1dae3f49ccd9809401f771b2fb5d232435bcc09e6b50bb6f9793",
     "src/server/worker_io_broker.cpp": "bb7ead8d038868af5bdca8148bec08d313eeb685fefaf57c502ee97e0a29830a",
     "src/server/worker_io_broker.h": "9a0b353822159b61b40899c5fb78b2691f51a66283ae429d7916f83191b41387",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
@@ -3461,7 +3461,11 @@
     "include/q4t/server/live_shape.h": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "include/q4t/server/live_configuration.h": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
-    "src/server/live_configuration.cpp": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79"
+    "src/server/live_configuration.cpp": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79",
+    "include/q4t/server/live_session.h": "0f81caf3594acc2d67459e4c314a7178de99ac189e1f3a9166330e810b547711",
+    "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
+    "src/server/live_session.cpp": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
+    "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9533,5 +9537,20 @@
     "evidence": "docs/evidence/serve-live-configuration-pcm-cpu-20261121/README.md",
     "gpu_actions": 0,
     "full_live_compatibility": false
+  },
+  "live_lifecycle_transport_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_session.h",
+      "include/q4t/server/live_session_pump.h",
+      "include/q4t/server/websocket_session.h",
+      "src/server/live_session.cpp",
+      "src/server/live_session_pump.cpp",
+      "src/server/websocket_session.cpp"
+    ],
+    "evidence": "docs/evidence/serve-live-lifecycle-transport-cpu-20261121/README.md",
+    "status": "CPU verified owner and socket composition; real model and route pending",
+    "no_route_accepted": true
   }
 }

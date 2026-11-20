@@ -605,6 +605,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
   src/server/live_configuration.cpp
+  src/server/live_session.cpp
+  src/server/live_session_pump.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp
@@ -1048,6 +1050,8 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
   src/server/live_configuration.cpp
+  src/server/live_session.cpp
+  src/server/live_session_pump.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp

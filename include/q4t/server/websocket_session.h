@@ -55,6 +55,7 @@ class WebSocketOutput {
 };
 
 enum class WebSocketSessionEnd {
+  kCompleted,
   kPeerClose,
   kPeerEof,
   kProtocol,
@@ -93,6 +94,12 @@ struct WebSocketSessionCallbacks {
   // the decoder until accepted. Authorization/output/stop remain serviced;
   // a sustained wait has the same bounded duration as an output write.
   std::function<bool(size_t)> message_ready = {};
+  // True commits that the producer has finished and queued its terminal event.
+  // Stops accepting messages, drains all queued bytes, then sends close 1000.
+  // The whole drain is bounded by write; EOF/deadline is never completion.
+  // Authorization and shutdown still take precedence. Must remain true and
+  // prohibit further producer writes once observed.
+  std::function<bool()> completed = {};
 };
 
 // Borrowed plain backend socket, no fd flag changes and no ownership transfer.

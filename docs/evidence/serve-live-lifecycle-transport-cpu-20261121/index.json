@@ -1,0 +1,230 @@
+{
+  "accepted-lifecycle/CMakeLists.txt": {
+    "sha256": "7969d4b44f9de54a5f59a73e0c0d532eafa526a1d903d544c5ba7973b7034ad3",
+    "bytes": 63985
+  },
+  "accepted-lifecycle/cmake/ChatProtocolIdentity.cmake": {
+    "sha256": "441ce56e100d60da6134553a54f740bc56c893fec3d371546463a2b8b78306e4",
+    "bytes": 33055
+  },
+  "accepted-lifecycle/cmake/HostTestSources.cmake": {
+    "sha256": "1fb53d2a416972355e113761ee5d17eeb0b07c40c5a2ce204d27ce2cf853a3af",
+    "bytes": 41385
+  },
+  "accepted-lifecycle/cmake/live_types.h.in": {
+    "sha256": "2ca0174062e8336331c81a9dd4110bdd13ce29edd8e02cc9008aa2c3304c8667",
+    "bytes": 229
+  },
+  "accepted-lifecycle/include/q4t/server/live_configuration.h": {
+    "sha256": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
+    "bytes": 1895
+  },
+  "accepted-lifecycle/include/q4t/server/live_session.h": {
+    "sha256": "0f81caf3594acc2d67459e4c314a7178de99ac189e1f3a9166330e810b547711",
+    "bytes": 4113
+  },
+  "accepted-lifecycle/include/q4t/server/live_shape.h": {
+    "sha256": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
+    "bytes": 625
+  },
+  "accepted-lifecycle/src/server/contracts/openai_live_types_v1.json": {
+    "sha256": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
+    "bytes": 205679
+  },
+  "accepted-lifecycle/src/server/live_configuration.cpp": {
+    "sha256": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79",
+    "bytes": 9812
+  },
+  "accepted-lifecycle/src/server/live_session.cpp": {
+    "sha256": "0a98090dd880d1bd488ca77c85d841dc386f07750ebcf20ca93fad746f9dfe6e",
+    "bytes": 12895
+  },
+  "accepted-lifecycle/src/server/responses_item_shape.cpp": {
+    "sha256": "2b823dcb5c0043073444926674ed54d49ee6dc885a9543ff5c84914343fb82af",
+    "bytes": 10613
+  },
+  "accepted-lifecycle/tests/fixtures/live/sdk_vectors.json": {
+    "sha256": "0d000f2f124cfcfc1cb391362b99e85e2c275fe08915a53800e65c3443ef92d5",
+    "bytes": 497955
+  },
+  "accepted-lifecycle/tests/server_live_configuration_test.cpp": {
+    "sha256": "c1ca1694a6cb629f3cb3f9d85c4cff07aad0e1cbdc8b09af0726d079207605ef",
+    "bytes": 11491
+  },
+  "accepted-lifecycle/tests/server_live_session_test.cpp": {
+    "sha256": "f8f3fe1f9c27c7e7a49d6b320d884fac577c9b55f2b5df4b5bd565675bc6da89",
+    "bytes": 13832
+  },
+  "accepted-lifecycle/tests/server_live_shape_test.cpp": {
+    "sha256": "c09f1755f3d1ecf0db3fd135810bacf497f12d9e560a315b09a2f16328cb5ec5",
+    "bytes": 4532
+  },
+  "accepted-transport/CMakeLists.txt": {
+    "sha256": "3cedb8159f350a9b792502d15dd2527b5ed4b243f4d2d11e83487a7c2f1ab4cf",
+    "bytes": 64055
+  },
+  "accepted-transport/cmake/ChatProtocolIdentity.cmake": {
+    "sha256": "8322ee0c65149efab0dad7e0ed58282dbfe2e9ca8cdcf54d479c1d18ac715594",
+    "bytes": 33131
+  },
+  "accepted-transport/cmake/HostTestSources.cmake": {
+    "sha256": "7dd07411d9693d15ae1db567fd2c539da11f36ad4748beea73d7ead9c1f8c358",
+    "bytes": 41520
+  },
+  "accepted-transport/cmake/live_types.h.in": {
+    "sha256": "2ca0174062e8336331c81a9dd4110bdd13ce29edd8e02cc9008aa2c3304c8667",
+    "bytes": 229
+  },
+  "accepted-transport/include/q4t/server/live_configuration.h": {
+    "sha256": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
+    "bytes": 1895
+  },
+  "accepted-transport/include/q4t/server/live_session.h": {
+    "sha256": "0f81caf3594acc2d67459e4c314a7178de99ac189e1f3a9166330e810b547711",
+    "bytes": 4113
+  },
+  "accepted-transport/include/q4t/server/live_session_pump.h": {
+    "sha256": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
+    "bytes": 512
+  },
+  "accepted-transport/include/q4t/server/live_shape.h": {
+    "sha256": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
+    "bytes": 625
+  },
+  "accepted-transport/include/q4t/server/websocket_session.h": {
+    "sha256": "f15c00bcf11497023f805fbb334a512e77e09d80fbf260176cd7c76b374a6309",
+    "bytes": 4630
+  },
+  "accepted-transport/src/server/contracts/openai_live_types_v1.json": {
+    "sha256": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
+    "bytes": 205679
+  },
+  "accepted-transport/src/server/live_configuration.cpp": {
+    "sha256": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79",
+    "bytes": 9812
+  },
+  "accepted-transport/src/server/live_session.cpp": {
+    "sha256": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
+    "bytes": 13071
+  },
+  "accepted-transport/src/server/live_session_pump.cpp": {
+    "sha256": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
+    "bytes": 741
+  },
+  "accepted-transport/src/server/responses_item_shape.cpp": {
+    "sha256": "2b823dcb5c0043073444926674ed54d49ee6dc885a9543ff5c84914343fb82af",
+    "bytes": 10613
+  },
+  "accepted-transport/src/server/websocket_session.cpp": {
+    "sha256": "8d4e5664880c1dae3f49ccd9809401f771b2fb5d232435bcc09e6b50bb6f9793",
+    "bytes": 13059
+  },
+  "accepted-transport/tests/fixtures/live/sdk_vectors.json": {
+    "sha256": "0d000f2f124cfcfc1cb391362b99e85e2c275fe08915a53800e65c3443ef92d5",
+    "bytes": 497955
+  },
+  "accepted-transport/tests/server_live_configuration_test.cpp": {
+    "sha256": "c1ca1694a6cb629f3cb3f9d85c4cff07aad0e1cbdc8b09af0726d079207605ef",
+    "bytes": 11491
+  },
+  "accepted-transport/tests/server_live_session_pump_test.cpp": {
+    "sha256": "194370e581b371c96ef7f54521be7e95ba2fe7bdb75d6dd1e087eb35ca539084",
+    "bytes": 4656
+  },
+  "accepted-transport/tests/server_live_session_test.cpp": {
+    "sha256": "f8f3fe1f9c27c7e7a49d6b320d884fac577c9b55f2b5df4b5bd565675bc6da89",
+    "bytes": 13832
+  },
+  "accepted-transport/tests/server_live_shape_test.cpp": {
+    "sha256": "c09f1755f3d1ecf0db3fd135810bacf497f12d9e560a315b09a2f16328cb5ec5",
+    "bytes": 4532
+  },
+  "accepted-transport/tests/server_websocket_session_test.cpp": {
+    "sha256": "fd6204020ee49d43cc138a5901b355836c4a8964a4d509a2ec1d313bf2105377",
+    "bytes": 32002
+  },
+  "driver/archive_lifecycle_transport_01.py": {
+    "sha256": "5aa220f4888f5cc26a695e650a68f8433d342ede2437fa668635fc5250274a89",
+    "bytes": 4909
+  },
+  "driver/lifecycle-transport-inventory-before.json": {
+    "sha256": "2b3d2c65c8d11f5ca746d2a8180a5db006e2bcec8c42808d9bba7b106f73a81e",
+    "bytes": 684
+  },
+  "driver/lifecycle-transport-inventory-reviewed.json": {
+    "sha256": "bc06eecf206a4c6a694c4b18ae0387a6d3c16307351e53dbd7cbaa5e3319e63f",
+    "bytes": 223
+  },
+  "driver/lifecycle_cpu_01.py": {
+    "sha256": "795ec82a4b616b54178fb1067b0e6b35dfa9007b88f2c149afe68530f9671ad5",
+    "bytes": 3064
+  },
+  "driver/transport_cpu_01.py": {
+    "sha256": "b093c3b7ba565f7eba2094e402540032953a662711b61f78403e097971ce67e6",
+    "bytes": 3321
+  },
+  "lifecycle-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "lifecycle-cpu-01/1-build.log": {
+    "sha256": "c07b590b43a030046792ace17e5e1502d94161b59bb336e6239c268df3cdc5a3",
+    "bytes": 1437
+  },
+  "lifecycle-cpu-01/cpu.log": {
+    "sha256": "f9ba60f2bf131ee914881604383137fd3f9772f4e493d4023afe024544edca7d",
+    "bytes": 721
+  },
+  "lifecycle-cpu-01/plan.json": {
+    "sha256": "5a4597ee94c980ca773da4fc9aa1f643a7dd91e85dc53ea7556cdb4c1ea50df2",
+    "bytes": 2811
+  },
+  "lifecycle-cpu-01/result.json": {
+    "sha256": "2eacc71b9cd1f8b4ead0b3c5b6bf27f10dcd66d584c652132bc6a1be7e8b0112",
+    "bytes": 671
+  },
+  "lifecycle-plan-01/plan.json": {
+    "sha256": "e5ee2098a03dd57129d22e8ef1f2a9909b9ce97f8aeffb68f0b17a0364789156",
+    "bytes": 1816
+  },
+  "lifecycle-plan-01/required.txt": {
+    "sha256": "92b45d0c92df107051d3bed5f430eb1f31f8ec144b1591b694f5d296adf50ab2",
+    "bytes": 610
+  },
+  "lifecycle-plan-01/usage-decision.json": {
+    "sha256": "6510fb23f3bea06e08b38271b0eb52833efce67e6ed0eac6ae348ce262ed083f",
+    "bytes": 501
+  },
+  "lifecycle-plan-01/usage-source.json": {
+    "sha256": "36bff304fbf26b3eac74fc2c042d24e70773f6eaa7e386aaf6ec9afa1534099f",
+    "bytes": 285
+  },
+  "transport-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "transport-cpu-01/1-build.log": {
+    "sha256": "e637367a65e85d452431492fee6dcf6c2c913a5ecf872834b2db5af90e73c413",
+    "bytes": 3966
+  },
+  "transport-cpu-01/cpu.log": {
+    "sha256": "e87974034ff073a60e5679ff2724249ca802e4da7e09aff8e5de21ed5197010b",
+    "bytes": 1789
+  },
+  "transport-cpu-01/plan.json": {
+    "sha256": "d40037ad7b7973eeaad35429309de0b05d9368d6bd60109c58e396f6e804bc2b",
+    "bytes": 3494
+  },
+  "transport-cpu-01/result.json": {
+    "sha256": "a1378c8b8075aaf36e1113e5914010ac64a51dadf53b418cccda2dda54f5149a",
+    "bytes": 670
+  },
+  "transport-plan-01/plan.json": {
+    "sha256": "4ec704c5dffc4c4f46444e375fa6c55af07d00a99e7dd43154edeeb833108917",
+    "bytes": 673
+  },
+  "transport-plan-01/required.txt": {
+    "sha256": "7eb4f0e1c9d58713bec7c212ae7df0c6bdd30627456a8244e8ae961c68649974",
+    "bytes": 1580
+  }
+}

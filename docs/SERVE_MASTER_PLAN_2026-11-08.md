@@ -34,7 +34,8 @@
 恢复和资格已验，[rev426可回退交付](evidence/serve-realtime-tracing-delivery-20261121/README.md)
 完成19条管理命令，状态/预算保持，STOPPED。[PR #57已合main](evidence/serve-pr57-merged-20261121/README.md)，
 提交22669a162，最终两条检查通过。Live合同、配置与16k输出已有
-27项针对性CPU，实际会话/模型接续和全部剩余任务继续。
+27项针对性CPU；独立生命周期/正常传输又有31项去重CPU通过，
+实际模型绑定与全部剩余任务继续。
 以下原始审计及各阶段证据保留，不能替代当前逐项剩余状态。
 
 ## 本轮审计发现

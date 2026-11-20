@@ -13,7 +13,7 @@ c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6。
 | 子项 | 实现和出口 |
 |---|---|
 | L01 合同 | 复用C++有界类型校验器；完整主连接、sideband、fork、HTTP媒体/会话类型根；独立SDK编译器正反例；重复字段、深度/工作量和输出错误边界。还不宣称业务可用。 |
-| L02 主WSS | /v1/live/sessions原生握手、鉴权/会话槽；session.start/started和不可变设置；持续PCM16/24k与G.711输入、真实ASR/LLM/TTS、音频/转录增量、mute/unmute、正常排空/异常断开。累计音频秒与后端token分别计量。 |
+| L02 主WSS | /v1/live/sessions原生握手、鉴权/会话槽；session.start/started和不可变设置；持续PCM16/24k与G.711输入、真实ASR/LLM/TTS、音频/转录增量、mute/unmute、正常排空/异常断开。累计活动会话秒（含静音/等待）与后端token分别计量。 |
 | L03 任务与上下文 | frontend/back-end独立指令与上下文所有权；client/Responses/Decisions委派、响应包装、工具回填、触发器与取消；静默/可说上下文、提示追加、初始历史、确认延时和音频fixture。所有模型工作受现有RPM/TPM、公平准入和资源预算约束。 |
 | L04 存储与旁路 | 认证scope绑定的sideband、可选store、录音下载、完整历史fork及所有者切换；每连接权限和背压独立；辅助失败不得停止健康核心；不重放旧工具/请求，不伪造已关闭事件。 |
 | L05 媒体传输 | 原生WebRTC及SIP会话接入，create/accept/reject/hangup/refer、fork/sideband与控制权限；先审核已有必要系统传输/编解码能力，新增库需说明启用范围和失效影响，nginx/systemd及外部媒体服务不得成为核心强制依赖。真实本地对端短验，外部电信账户结果与本机合同分开。 |
@@ -40,3 +40,13 @@ L01源码已接入工作树；6项针对性原生CPU通过，Live 808与Realtime
 正式宿主构建与生成器一致性已通过，原始结果见[合同CPU证据](evidence/serve-live-contract-cpu-20261121/README.md)。下一组接入独立Live配置/生命周期及实际语音，不把现有Realtime的24k输出限制误用为Live的16k/24k合同。
 
 配置事务9项、16k转换与直接保护12项CPU通过，见[原始证据](evidence/serve-live-configuration-pcm-cpu-20261121/README.md)。真实计数/后端绑定仍在后续L02实现，不能用受控CPU回调宣称模型业务通过。默认原生声线将按实际名称公开，不能把vivian冒充marin等其他模型声线。独立会话关闭/排空、持续输入和真实工具链继续。
+
+独立生命周期10项CPU通过（0.031616秒，正式构建零警告），尚未接实际
+模型和路由。启动失败清理、更新事务、正常排空、异常断线、过期、
+输出背压及伪造终态均检查。正常WebSocket写出后关闭与工作线程
+组合继续。用量依据[官方说明](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live)，
+按活动单调时长累计，静音/等待不暂停，快照不求和；不代表云账单。
+
+正常传输24项CPU通过，与生命周期去重31项，见[确切来源和日志](evidence/serve-live-lifecycle-transport-cpu-20261121/README.md)。
+真实socketpair验证完整终态后1000关闭，慢读/EOF/撤权不误报成功；
+默认与模型均未启动，继续实际后端接入。
