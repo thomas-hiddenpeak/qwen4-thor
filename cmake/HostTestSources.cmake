@@ -474,6 +474,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_catalog.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_imports.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_item.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_prompt_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_file_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_chat_execution.cpp

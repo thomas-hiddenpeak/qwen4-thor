@@ -29,6 +29,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [结果投影与审批历史16项CPU](evidence/serve-realtime-mcp-item-cpu-20261120/README.md)
 全部通过，0.064秒，构建零警告；默认保持。继续原生审批/执行，
 公开会话仍待接线，不将本组当成真实工具闭环。
+[原生审批与调用16项CPU](evidence/serve-realtime-mcp-execution-cpu-20261120/README.md)
+通过，包含12项真实本机MCP网络夹具；0模型/GPU。缺声明头的首次
+构建失败保留；修复后零警告。继续会话所有者、公开接线及实际业务。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

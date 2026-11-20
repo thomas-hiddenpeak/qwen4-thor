@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "result_projection_and_approval_history_cpu_accepted_native_execution_integration_next",
+      "state": "native_proposal_approval_and_execution_cpu_accepted_session_integration_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14711,7 +14711,32 @@
         "service_state": "STOPPED",
         "all_master_tasks_active": true
       },
-      "item_evidence": "evidence/serve-realtime-mcp-item-cpu-20261120/README.md"
+      "item_evidence": "evidence/serve-realtime-mcp-item-cpu-20261120/README.md",
+      "execution_cpu": {
+        "status": "PASS_REALTIME_MCP_NATIVE_EXECUTION_CPU",
+        "cases": 16,
+        "passed": 16,
+        "failed": 0,
+        "new_localhost_mcp_cases": 12,
+        "cpu_seconds": 0.8651792039163411,
+        "build_seconds": 22.974034041166306,
+        "build_warnings": 0,
+        "original_build_failure": "Missing explicit InputValueIdentity declaration header; original source and compiler failure preserved",
+        "binary_sha256": "cbb257e6cc4fc2bf39d6c88af6708927a9940d2ba342fefcd719c1c91a05c932",
+        "runtime_connected": false,
+        "gpu_actions": 0,
+        "llm_requests": 0,
+        "default_revision": 396,
+        "default_unchanged": true,
+        "service_state": "STOPPED",
+        "all_master_tasks_active": true
+      },
+      "execution_evidence": "evidence/serve-realtime-mcp-execution-cpu-20261120/README.md",
+      "execution_remaining": [
+        "Connect asynchronous call ownership to public Realtime session and actual model bindings",
+        "Verify final session metadata persistence failure preserves the durable native tool outcome",
+        "Complete SDK, real model tool loop, recovery and usable delivery"
+      ]
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

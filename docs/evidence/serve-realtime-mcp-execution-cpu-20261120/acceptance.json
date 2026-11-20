@@ -1,0 +1,19 @@
+{
+  "status": "PASS_REALTIME_MCP_NATIVE_EXECUTION_CPU",
+  "cases": 16,
+  "passed": 16,
+  "failed": 0,
+  "new_localhost_mcp_cases": 12,
+  "cpu_seconds": 0.8651792039163411,
+  "build_seconds": 22.974034041166306,
+  "build_warnings": 0,
+  "original_build_failure": "Missing explicit InputValueIdentity declaration header; original source and compiler failure preserved",
+  "binary_sha256": "cbb257e6cc4fc2bf39d6c88af6708927a9940d2ba342fefcd719c1c91a05c932",
+  "runtime_connected": false,
+  "gpu_actions": 0,
+  "llm_requests": 0,
+  "default_revision": 396,
+  "default_unchanged": true,
+  "service_state": "STOPPED",
+  "all_master_tasks_active": true
+}

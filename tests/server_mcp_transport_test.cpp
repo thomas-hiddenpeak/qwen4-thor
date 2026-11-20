@@ -29,6 +29,8 @@
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/realtime_mcp_catalog.h"
+#include "q4t/server/realtime_mcp_execution.h"
+#include "q4t/server/realtime_mcp_item.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_jobs.h"
@@ -5431,5 +5433,377 @@ Q4T_TEST(realtime_mcp_native_import_cancel_identity_and_scope_preflight_no_io) {
                 .http_status == 403);
   Q4T_CHECK(imported.item.str == "unchanged" && server.Requests().empty() &&
             server.calls == 0);
+  return true;
+}
+
+namespace {
+Json RealtimeGeneratedCall() {
+  return Object({{"type", String("mcp_call")},
+                 {"id", String("mcp_realtime")},
+                 {"server_label", String("project")},
+                 {"name", String("read_project")},
+                 {"arguments", String(" { \"path\" : \"docs/MODEL.md\" } ")}});
+}
+Json RealtimeDecision(const Json& approval, bool approve) {
+  return Object({{"type", String("mcp_approval_response")},
+                 {"id", String("item_decision")},
+                 {"approval_request_id", *approval.Find("id")},
+                 {"approve", Boolean(approve)}});
+}
+Json RealtimeAwaitingCall(const Json& approval) {
+  auto call = RealtimeGeneratedCall();
+  Set(&call, "approval_request_id", *approval.Find("id"));
+  return call;
+}
+struct RealtimeNativeFixture {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects{fixture.options};
+  ChatPlanConfig config = ExecutionConfig(server);
+  RealtimeMcpCatalog catalog;
+  bool Import(std::string approval = "never") {
+    ResponsesMcpDefinition definition;
+    ChatPlanError error;
+    return PlanResponsesMcpDefinition(
+               ExecutionRequest(server, std::move(approval))
+                   .GetArray("tools")
+                   ->array[0],
+               &definition, &error) &&
+           ExecutionOk(ImportRealtimeMcpCatalog(objects, config, definition,
+                                                ExecutionAccess(),
+                                                "mcpl_realtime", &catalog)) &&
+           catalog.loaded;
+  }
+  ObjectReply Propose() {
+    return ProposeRealtimeMcpCall(objects, config, catalog,
+                                  RealtimeGeneratedCall(), "resp_realtime",
+                                  ExecutionAccess());
+  }
+  ObjectReply Execute(const Json& call, RealtimeMcpExecution* result,
+                      StateAccess access = ExecutionAccess()) {
+    return ExecuteRealtimeMcpCall(objects, config, catalog.definition, call,
+                                  "resp_realtime", access, result);
+  }
+};
+}  // namespace
+
+Q4T_TEST(realtime_mcp_native_execution_dispatches_actual_call_at_most_once) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed) &&
+            proposed.value.GetString("type") == "mcp_call" &&
+            f.server.calls == 0);
+  Q4T_CHECK(!f.Propose().ok());
+  RealtimeMcpExecution result;
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)));
+  Q4T_CHECK(result.call_permitted && !result.outcome_unknown &&
+            result.item.GetString("status") == "completed" &&
+            result.item.GetString("arguments") ==
+                RealtimeGeneratedCall().GetString("arguments") &&
+            result.item.GetString("output").find("document result") !=
+                std::string::npos &&
+            f.server.calls == 1);
+  const auto saved = OutputJson(result.item);
+  Q4T_CHECK(!f.Execute(proposed.value, &result).ok() &&
+            OutputJson(result.item) == saved && f.server.calls == 1);
+  ResponsesMcpState state(f.objects, f.config);
+  Q4T_CHECK(ExecutionOk(state.Authenticate(result.item, ExecutionAccess())));
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_approval_is_explicit_single_use_and_exact_call) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import("always"));
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed) &&
+            proposed.value.GetString("type") == "mcp_approval_request");
+  auto expected = RealtimeAwaitingCall(proposed.value);
+  auto premature = expected;
+  Set(&premature, "status", String("in_progress"));
+  RealtimeMcpExecution result;
+  Q4T_CHECK(!f.Execute(premature, &result).ok() && f.server.calls == 0);
+  const auto decision = RealtimeDecision(proposed.value, true);
+  auto forged = expected;
+  Set(&forged, "arguments", String("{}"));
+  Q4T_CHECK(!DecideRealtimeMcpCall(f.objects, f.config, f.catalog.definition,
+                                   forged, decision, "resp_realtime",
+                                   ExecutionAccess())
+                 .ok());
+  const auto decided =
+      DecideRealtimeMcpCall(f.objects, f.config, f.catalog.definition, expected,
+                            decision, "resp_realtime", ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(decided) && f.server.calls == 0);
+  Q4T_CHECK(!DecideRealtimeMcpCall(f.objects, f.config, f.catalog.definition,
+                                   expected, decision, "resp_realtime",
+                                   ExecutionAccess())
+                 .ok());
+  Q4T_CHECK(ExecutionOk(f.Execute(decided.value, &result)) &&
+            result.item.GetString("approval_request_id") ==
+                proposed.value.GetString("id") &&
+            f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_denial_is_durable_and_never_dispatches) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import("always"));
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  auto decision = RealtimeDecision(proposed.value, false);
+  Set(&decision, "reason", String("client declined"));
+  const auto denied =
+      DecideRealtimeMcpCall(f.objects, f.config, f.catalog.definition,
+                            RealtimeAwaitingCall(proposed.value), decision,
+                            "resp_realtime", ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(denied) &&
+            denied.value.GetString("status") == "failed");
+  RealtimeMcpExecution result;
+  Q4T_CHECK(!f.Execute(denied.value, &result).ok() && f.server.calls == 0);
+  ResponsesMcpState state(f.objects, f.config);
+  Q4T_CHECK(ExecutionOk(state.Authenticate(denied.value, ExecutionAccess())));
+  RealtimeMcpCallProjection projected;
+  ChatPlanError error;
+  Q4T_CHECK(ProjectRealtimeMcpCall(denied.value, &projected, &error) &&
+            projected.phase == RealtimeMcpCallProjection::Phase::kFailed);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_forged_call_scope_and_target_do_no_remote_io) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  const auto requests = f.server.Requests().size();
+  RealtimeMcpExecution result;
+  result.item = String("unchanged");
+  for (const auto field : {"name", "server_label", "arguments", "id"}) {
+    auto forged = proposed.value;
+    Set(&forged, field, String("different"));
+    Q4T_CHECK(!f.Execute(forged, &result).ok());
+  }
+  auto foreign = ExecutionAccess();
+  foreign.scope = "client:foreign";
+  Q4T_CHECK(!f.Execute(proposed.value, &result, foreign).ok());
+  auto changed = f.catalog.definition;
+  Set(&changed.declaration, "server_url", String("http://127.0.0.1:1/mcp"));
+  Q4T_CHECK(!ExecuteRealtimeMcpCall(f.objects, f.config, changed,
+                                    proposed.value, "resp_realtime",
+                                    ExecutionAccess(), &result)
+                 .ok());
+  Q4T_CHECK(result.item.str == "unchanged" && f.server.calls == 0 &&
+            f.server.Requests().size() == requests);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_execution_keeps_original_response_ownership) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  RealtimeMcpExecution result;
+  const auto requests = f.server.Requests().size();
+  const auto rejected = ExecuteRealtimeMcpCall(
+      f.objects, f.config, f.catalog.definition, proposed.value, "resp_other",
+      ExecutionAccess(), &result);
+  Q4T_CHECK(rejected.code == "realtime_mcp_owner_conflict" &&
+            f.server.Requests().size() == requests && f.server.calls == 0);
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)) &&
+            f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_mcp_native_missing_credentials_do_not_initialize_anonymously) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  auto anonymous = f.catalog.definition;
+  anonymous.credentials.authorization.clear();
+  anonymous.credentials.headers.clear();
+  const auto requests = f.server.Requests().size();
+  RealtimeMcpExecution result;
+  const auto rejected =
+      ExecuteRealtimeMcpCall(f.objects, f.config, anonymous, proposed.value,
+                             "resp_realtime", ExecutionAccess(), &result);
+  Q4T_CHECK(rejected.code == "mcp_credentials_required" &&
+            f.server.Requests().size() == requests);
+  f.catalog.definition.credentials.authorization = "replacement-fixture-key";
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)) &&
+            f.server.calls == 1);
+  size_t sent = 0;
+  for (const auto& request : f.server.Requests()) {
+    if (request.rpc.GetString("method") != "tools/call") continue;
+    ++sent;
+    Q4T_CHECK(request.headers.at("authorization") ==
+              "Bearer replacement-fixture-key");
+  }
+  Q4T_CHECK(sent == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_tightened_policy_blocks_before_remote_io) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  const auto requests = f.server.Requests().size();
+  RealtimeMcpExecution result;
+  auto changed = f.catalog.definition;
+  Set(&changed.declaration, "require_approval", String("always"));
+  Q4T_CHECK(ExecuteRealtimeMcpCall(f.objects, f.config, changed, proposed.value,
+                                   "resp_realtime", ExecutionAccess(), &result)
+                .code == "mcp_approval_required");
+  changed = f.catalog.definition;
+  Set(&changed.declaration, "allowed_tools", Array());
+  Q4T_CHECK(ExecuteRealtimeMcpCall(f.objects, f.config, changed, proposed.value,
+                                   "resp_realtime", ExecutionAccess(), &result)
+                .code == "mcp_tool_denied");
+  Q4T_CHECK(f.server.calls == 0 && f.server.Requests().size() == requests);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_cancel_and_expired_preflight_do_not_consume_call) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  auto access = ExecutionAccess();
+  access.cancelled = [] { return true; };
+  RealtimeMcpExecution result;
+  const auto requests = f.server.Requests().size();
+  Q4T_CHECK(f.Execute(proposed.value, &result, access).http_status == 499);
+  access = ExecutionAccess();
+  access.deadline = Clock::now();
+  Q4T_CHECK(f.Execute(proposed.value, &result, access).http_status == 408);
+  Q4T_CHECK(f.server.calls == 0 && f.server.Requests().size() == requests);
+  ResponsesMcpState state(f.objects, f.config);
+  const auto pending = state.Inspect("mcp_realtime", ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(pending) &&
+            pending.value.GetString("state") == "ready");
+  // Explicit owner action after the rejected attempts, never an automatic
+  // retry.
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)) &&
+            f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_protocol_failure_is_durable_not_success) {
+  RealtimeNativeFixture f;
+  f.server.handler = [&](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/call") return false;
+    ++f.server.calls;
+    Send(fd,
+         Http(200, OutputJson(Object(
+                       {{"jsonrpc", String("2.0")},
+                        {"id", *request.rpc.Find("id")},
+                        {"error",
+                         Object({{"code", Number(-32603)},
+                                 {"message", String("remote failure")}})}}))));
+    return true;
+  };
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  RealtimeMcpExecution result;
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)) &&
+            result.item.GetString("status") == "failed" &&
+            !result.outcome_unknown);
+  Q4T_CHECK(result.item.Find("error")->GetString("type") ==
+            "mcp_protocol_error");
+  Q4T_CHECK(!f.Execute(proposed.value, &result).ok() && f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_tool_error_preserves_actual_structured_result) {
+  RealtimeNativeFixture f;
+  const auto actual = Object(
+      {{"content", Array({Object({{"type", String("text")},
+                                  {"text", String("cannot read file")}})})},
+       {"structuredContent", Object({{"path", String("docs/MODEL.md")},
+                                     {"allowed", Boolean(false)}})},
+       {"isError", Boolean(true)}});
+  f.server.handler = [&](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/call") return false;
+    ++f.server.calls;
+    Send(fd, Http(200, OutputJson(Rpc(request, actual))));
+    return true;
+  };
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  RealtimeMcpExecution result;
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result)) &&
+            result.item.GetString("status") == "failed" &&
+            result.item.GetString("output") == OutputJson(actual));
+  RealtimeMcpCallProjection projected;
+  ChatPlanError error;
+  Q4T_CHECK(ProjectRealtimeMcpCall(result.item, &projected, &error) &&
+            projected.item.GetString("output") == OutputJson(actual) &&
+            projected.item.Find("error")->GetString("type") ==
+                "tool_execution_error" &&
+            f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_mcp_native_cancel_after_permission_is_unknown_without_replay) {
+  RealtimeNativeFixture f;
+  std::atomic<bool> cancelled{false};
+  f.server.handler = [&](const Request& request, int, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/call") return false;
+    ++f.server.calls;
+    cancelled = true;
+    return true;  // Remote work occurred, but no result is delivered.
+  };
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  auto access = ExecutionAccess();
+  access.cancelled = [&] { return cancelled.load(); };
+  RealtimeMcpExecution result;
+  Q4T_CHECK(ExecutionOk(f.Execute(proposed.value, &result, access)) &&
+            result.call_permitted && result.outcome_unknown &&
+            result.item.GetString("status") == "failed" && f.server.calls == 1);
+  ResponsesMcpState state(f.objects, f.config);
+  const auto durable = state.Inspect("mcp_realtime", ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(durable) &&
+            durable.value.GetString("state") == "unknown");
+  Q4T_CHECK(!f.Execute(proposed.value, &result).ok() && f.server.calls == 1);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_mcp_native_proposal_rejects_unowned_catalog_and_bad_arguments) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto requests = f.server.Requests().size();
+  for (const auto arguments : {"{", "[]", "{\"path\":1,\"path\":2}"}) {
+    auto call = RealtimeGeneratedCall();
+    Set(&call, "arguments", String(arguments));
+    Q4T_CHECK(!ProposeRealtimeMcpCall(f.objects, f.config, f.catalog, call,
+                                      "resp_realtime", ExecutionAccess())
+                   .ok());
+  }
+  auto forged = f.catalog;
+  Set(&forged.authority, "server_label", String("other"));
+  Q4T_CHECK(!ProposeRealtimeMcpCall(f.objects, f.config, forged,
+                                    RealtimeGeneratedCall(), "resp_realtime",
+                                    ExecutionAccess())
+                 .ok());
+  forged = f.catalog;
+  forged.loaded = false;
+  Q4T_CHECK(!ProposeRealtimeMcpCall(f.objects, f.config, forged,
+                                    RealtimeGeneratedCall(), "resp_realtime",
+                                    ExecutionAccess())
+                 .ok());
+  auto call = RealtimeGeneratedCall();
+  Set(&call, "approval_request_id", String("mcpr_forged"));
+  Q4T_CHECK(!ProposeRealtimeMcpCall(f.objects, f.config, f.catalog, call,
+                                    "resp_realtime", ExecutionAccess())
+                 .ok());
+  Q4T_CHECK(f.server.calls == 0 && f.server.Requests().size() == requests);
+  Q4T_CHECK(ExecutionOk(f.Propose()));
   return true;
 }
