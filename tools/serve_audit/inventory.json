@@ -2358,8 +2358,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "730865f47939eaf6e3c0e946c05388c2020f924599e7dc0571e05e8e5cd175ff",
-    "cmake/ChatProtocolIdentity.cmake": "24825fe8a6554e4a12661029b420a13efb9e4d2f11d083fd139fa2e71fc5c963",
+    "CMakeLists.txt": "ec515a247e0247efff998a15a313f67e39871c08d6237ae5266133807e88bdf8",
+    "cmake/ChatProtocolIdentity.cmake": "0bd3ef9bd4f68c37c7ff6a390c01c7d9ce20e4c206bab711840c7353c19f23a5",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3466,12 +3466,14 @@
     "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
     "src/server/live_session.cpp": "b5abced75ef00d9528d71f3b1bb5c54eb67a704d80d8ea0de4e6cc69341f7d4b",
     "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
-    "include/q4t/server/live_audio_input.h": "4b5b2459cbca13e68dab55c6ef0c01d19ecaacc9143879027d4ab751a547d706",
+    "include/q4t/server/live_audio_input.h": "cbcce2f28830dc57105f4186644299bc0208608d03ae0910533aaea53327d60e",
     "src/server/live_audio_input.cpp": "85160c396eb146030fd2473a72cb430c68bc0dcac6ba46745209e744d6ae779f",
     "include/q4t/server/live_audio_output.h": "4be98b9b2438526058af26111373c127909fe85fe58c5b30d4f2821352b89a28",
     "include/q4t/server/live_frontend_work.h": "dce523c4b969a43db09489a287d145019803849054e028c008788e5884a98ca0",
     "src/server/live_audio_output.cpp": "534f8fb669d57a01c3aa1b3d051699ee673430a161ec53228310653028ed0a01",
-    "src/server/live_frontend_work.cpp": "687184fbd311cf01cec2215d5b4fb8348d89ea019f10bb56683c93621b0895b4"
+    "src/server/live_frontend_work.cpp": "687184fbd311cf01cec2215d5b4fb8348d89ea019f10bb56683c93621b0895b4",
+    "include/q4t/server/live_frontend.h": "361564910bfcf1790079f8a162dace6ad64ffa7fe240f25bd84edf05287b7cb7",
+    "src/server/live_frontend.cpp": "8bd16b209b0061c66e3bdb1a9092da7eec7fd0500d5088d7a82108bc18ecfdaf"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9584,6 +9586,18 @@
     ],
     "evidence": "docs/evidence/serve-live-frontend-cpu-20261121/README.md",
     "status": "CPU verified worker/output preparation; actual model/handler not yet bound",
+    "no_route_accepted": true
+  },
+  "live_scheduler_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_audio_input.h",
+      "include/q4t/server/live_frontend.h",
+      "src/server/live_frontend.cpp"
+    ],
+    "evidence": "docs/evidence/serve-live-scheduler-cpu-20261121/README.md",
+    "status": "CPU verified native scheduler with controlled model callbacks; actual route/model binding pending",
     "no_route_accepted": true
   }
 }

@@ -1,0 +1,110 @@
+{
+  "accepted/CMakeLists.txt": {
+    "sha256": "ec515a247e0247efff998a15a313f67e39871c08d6237ae5266133807e88bdf8",
+    "bytes": 64327
+  },
+  "accepted/cmake/ChatProtocolIdentity.cmake": {
+    "sha256": "0bd3ef9bd4f68c37c7ff6a390c01c7d9ce20e4c206bab711840c7353c19f23a5",
+    "bytes": 33427
+  },
+  "accepted/cmake/HostTestSources.cmake": {
+    "sha256": "24ba6e5df98acc8fda53ae97f89a72e4766ded6fe1adf858a0638f68c348abdb",
+    "bytes": 41981
+  },
+  "accepted/include/q4t/server/live_audio_input.h": {
+    "sha256": "cbcce2f28830dc57105f4186644299bc0208608d03ae0910533aaea53327d60e",
+    "bytes": 2233
+  },
+  "accepted/include/q4t/server/live_frontend.h": {
+    "sha256": "361564910bfcf1790079f8a162dace6ad64ffa7fe240f25bd84edf05287b7cb7",
+    "bytes": 3784
+  },
+  "accepted/include/q4t/server/live_frontend_work.h": {
+    "sha256": "dce523c4b969a43db09489a287d145019803849054e028c008788e5884a98ca0",
+    "bytes": 2792
+  },
+  "accepted/include/q4t/server/request_control.h": {
+    "sha256": "0d67e522678ff38ad843f44334f31a259d092fd6499c59761356a88b97d1d25d",
+    "bytes": 5929
+  },
+  "accepted/src/server/live_audio_input.cpp": {
+    "sha256": "85160c396eb146030fd2473a72cb430c68bc0dcac6ba46745209e744d6ae779f",
+    "bytes": 10346
+  },
+  "accepted/src/server/live_audio_output.cpp": {
+    "sha256": "534f8fb669d57a01c3aa1b3d051699ee673430a161ec53228310653028ed0a01",
+    "bytes": 5484
+  },
+  "accepted/src/server/live_frontend.cpp": {
+    "sha256": "8bd16b209b0061c66e3bdb1a9092da7eec7fd0500d5088d7a82108bc18ecfdaf",
+    "bytes": 14492
+  },
+  "accepted/src/server/live_frontend_work.cpp": {
+    "sha256": "687184fbd311cf01cec2215d5b4fb8348d89ea019f10bb56683c93621b0895b4",
+    "bytes": 11612
+  },
+  "accepted/src/server/realtime_conversation.cpp": {
+    "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
+    "bytes": 33883
+  },
+  "accepted/src/server/realtime_conversation_input.cpp": {
+    "sha256": "b85d897424c33bea1899e810293486bfc636770d44816411f52087fac07dbfa3",
+    "bytes": 26792
+  },
+  "accepted/src/server/realtime_response_output.cpp": {
+    "sha256": "cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0",
+    "bytes": 27922
+  },
+  "accepted/src/server/realtime_transcription_session.cpp": {
+    "sha256": "53cfcc58b5115ea297a9b1cb1557e369b98228f354241810dd5162d10ce0ac59",
+    "bytes": 51621
+  },
+  "accepted/tests/server_live_frontend_test.cpp": {
+    "sha256": "36c3fc25b89d19d4f079d8eff119af693829ce232f2160a7fa9aaa2f91f10da7",
+    "bytes": 15882
+  },
+  "driver/archive_scheduler_01.py": {
+    "sha256": "2841289bed389de0a3880d0a7b00198a2f91ad03bad428862bba919baa57fc25",
+    "bytes": 3298
+  },
+  "driver/scheduler-inventory-before.json": {
+    "sha256": "1b571751d39146456cb6a708e938beef3ffd7412473ead0b01998ecdce9734df",
+    "bytes": 446
+  },
+  "driver/scheduler-inventory-reviewed.json": {
+    "sha256": "9bef4f713d9472a0a30ba789aea8184f53f107b2c9ecc6fec6effe3572c8b86c",
+    "bytes": 223
+  },
+  "driver/scheduler_cpu_01.py": {
+    "sha256": "684c5c6ff1482f01c119e80377c698cc7ce6ec6f30cdee3709b5fba9376077ba",
+    "bytes": 3120
+  },
+  "scheduler-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "scheduler-cpu-01/1-build.log": {
+    "sha256": "99ed30638cd6133188331534337aba14898361f5bb9bfb7af458c7c04ca0100b",
+    "bytes": 1692
+  },
+  "scheduler-cpu-01/cpu.log": {
+    "sha256": "93f9afbae9774b93c244421f06c50b0b203fe256313380e8a758e8534b48cdce",
+    "bytes": 689
+  },
+  "scheduler-cpu-01/plan.json": {
+    "sha256": "5dfe35f77d9f7e5cc88bc14f23acf0625fab0134f775bdca2ce1abd3ac57141c",
+    "bytes": 2970
+  },
+  "scheduler-cpu-01/result.json": {
+    "sha256": "9a332bfef1f993ab31262b2326c6c37b5be9971e86c1d8ad886c67b3311aef4c",
+    "bytes": 673
+  },
+  "scheduler-plan-01/plan.json": {
+    "sha256": "115ada671e713d9aed51d43475d7bd8fe626200a9863ab75d820725da625266a",
+    "bytes": 1619
+  },
+  "scheduler-plan-01/required-01.txt": {
+    "sha256": "ab333768efe0f7c868093082c4068fe6321d4bf13b8a6c6cfcd1f18a226e08cc",
+    "bytes": 578
+  }
+}

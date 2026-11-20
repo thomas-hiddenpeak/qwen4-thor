@@ -31,6 +31,8 @@ class LiveAudioInput {
   void Join() noexcept;
   uint64_t AcceptedTicks() const { return input_.AcceptedTicks(); }
   size_t AudioBytes() const { return input_.AudioBytes(); }
+  bool Executing() const { return input_.Executing(); }
+  size_t PendingItems() const { return input_.PendingItems(); }
 
  private:
   RealtimeConversationInputCallbacks Bind();

@@ -641,6 +641,8 @@ set(protocol_inputs
   src/server/live_audio_output.cpp
   include/q4t/server/live_frontend_work.h
   src/server/live_frontend_work.cpp
+  include/q4t/server/live_frontend.h
+  src/server/live_frontend.cpp
   src/server/contracts/openai_live_types_v1.json
   cmake/live_types.h.in
   src/server/grammar_worker.cpp

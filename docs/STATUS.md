@@ -7,6 +7,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live会话调度10项CPU](evidence/serve-live-scheduler-cpu-20261121/README.md)
+全部通过，正式构建零警告。已组合真实线程、输入历史及音频回执；
+插话等待旧生成Join后准入ASR，关闭丢弃未开始回答并排空接受输入，
+失败用量保留且新轮次可继续。5个来源语义复核/22项清单反例通过。
+累计93项不同CPU；模型回调受控，实际资产与路由绑定继续，不算业务
+验收。默认rev426保持STOPPED，GPU新增0。
+
 [Live输出与工作线程CPU](evidence/serve-live-frontend-cpu-20261121/README.md)
 闭合10项：原24k回执与有限消息校验、Live16k/G.711转换、取消/失败
 用量保持、真实借用者Join后释放和有界背压。首轮6过/4夹具失败保留，
