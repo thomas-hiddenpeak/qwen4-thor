@@ -1,0 +1,8 @@
+{
+  "completed_tokens": 1190,
+  "cancelled_actual_tokens": 581,
+  "aborted_requests": 1,
+  "request_errors": 0,
+  "automatic_replay": false,
+  "model_restarts": 0
+}

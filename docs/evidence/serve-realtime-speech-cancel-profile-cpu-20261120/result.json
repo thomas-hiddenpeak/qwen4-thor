@@ -1,0 +1,32 @@
+{
+  "status": "FAIL",
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tools.serve_recovery.test_profile_speech_cancel",
+        "tools.serve_recovery.test_profile_speech.SourceReuse.test_exact_compact_source_retains_witness_hashes_without_nested_record",
+        "tools.serve_recovery.test_profile_speech.SourceReuse.test_reused_business_must_match_each_exact_digest",
+        "tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_eight_mib_bound_only_for_explicit_reviewed_v19",
+        "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "returncode": 1
+    }
+  ],
+  "tests": 12,
+  "seconds": 1.330699776764959,
+  "gpu_starts": 0
+}

@@ -7,6 +7,17 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[取消修复资格CPU通过](evidence/serve-realtime-speech-cancel-profile-cpu-20261120/README.md)：
+12项及20来源反例通过；原摘要续审拒绝保留，只补受影响来源检查。
+现有v23模块绑定原v19主轻与实际取消证据，不新增依赖。继续新资格
+组装和整包回退，默认rev366保持，全部master继续。
+
+[取消修复真实短验通过](evidence/serve-realtime-speech-cancel-http-20261120/README.md)：
+新候选b156d976，1模型/2连接/3响应，67.013秒/63次NVML正常；
+abort=1/error=0、实际取消581 tokens、清理及原模型后续完整语音通过。
+原失败保持、默认rev366不变。继续在现有v23模块绑定精确旧主轻来源
+与新修复证据，CPU最多16项+20来源反例/120秒，再完成整包回退和发行。
+
 [取消补验因磁盘下限停止](evidence/serve-realtime-speech-cancel-space-20261120/README.md)：
 新候选 b156d976 构建零警告；实际 1 模型/1连接/2响应在结算采集前
 触发32 MiB保留量，原FAIL保留并完成清理。14旧验证程序可逆归档

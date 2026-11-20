@@ -1581,7 +1581,9 @@ def validate(value, registry, name, digest):
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
     if 'reused_business' in value:
-        if value['reused_business'].get('format') == 'q4t-speech-source-reuse-v1':
+        if value['reused_business'].get('format') in (
+                'q4t-speech-source-reuse-v1',
+                'q4t-speech-cancellation-source-reuse-v1'):
             from tools.serve_recovery import profile_speech_reuse as verifier
         elif value['reused_business'].get('format') in (
                 'q4t-prompt-refusal-source-reuse-v1',

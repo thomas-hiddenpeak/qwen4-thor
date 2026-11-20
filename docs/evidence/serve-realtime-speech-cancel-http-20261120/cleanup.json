@@ -1,0 +1,82 @@
+{
+  "owned": {
+    "928877": {
+      "state": "R",
+      "ppid": 928807,
+      "pgid": 928807,
+      "start_ticks": 332663902,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18328",
+        "--operations-port",
+        "18329",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "64",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "3",
+        "--asr-model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/assets-01",
+        "--asr-max-output-tokens",
+        "128",
+        "--client-policy-file",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-business-02/run/client-policy.json",
+        "--tts-model-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-tts-20261118/assets-1b7-01",
+        "--tts-max-text-tokens",
+        "512",
+        "--tts-max-prefill-tokens",
+        "512",
+        "--tts-max-frames",
+        "200",
+        "--tts-workspace-mib",
+        "2048",
+        "--tts-max-output-mib",
+        "16"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    },
+    "930023": {
+      "state": "S",
+      "ppid": 928807,
+      "pgid": 928807,
+      "start_ticks": 332667298,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-business-02/run/ingress/ingress.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+    },
+    "930295": {
+      "state": "S",
+      "ppid": 928807,
+      "pgid": 928807,
+      "start_ticks": 332669495,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-business-02/run/reopened-ingress/ingress.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t-ingress"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true
+}

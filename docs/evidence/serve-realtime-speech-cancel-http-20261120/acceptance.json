@@ -1,0 +1,49 @@
+{
+  "format": "q4t-speech-cancellation-witness-v1",
+  "status": "PASS",
+  "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "protocol_sha256": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+  "evidence": {
+    "run/plan.json": "ad78faa73d1bb6f44a2f1955d66bc9e50648cdc79208b2a43c4d802aad7b74c9",
+    "run/result.json": "f07620ad4eb0f069896c958bf211c224cae84012b6a5dee193e70067e75a4108",
+    "run/business.json": "655bcaeacbeec3fc4ccbbbe7d8a3947607bc15204b2e3a170fcf5a25895c5882",
+    "run/verified-business.json": "bcd98d8cc7dc2160b7db6ed62d808f4d28b4db912438a72eb4f01e789ef8b73d",
+    "run/cleanup.json": "11eadd046cc65c0f7fbf5bbbbb622e74006590554371414f7f884727ee0e416b",
+    "run/before-metrics.json": "d8a4ce8d480e2bbeeb06f477ab0ccf8f2561628987903af105120c1c231b7984",
+    "run/held-metrics.json": "ccd9e6fc52adfc18009f933a17fda841692b85f08c382a8d0b6958b1a54effb6",
+    "run/after-metrics.json": "3964e0b9d9b678186d0ebc56a335c3aa5ed752150eed1a78a4f61acf947e82eb",
+    "run/final-metrics.json": "cc1ff6551059fec8408da7245a502c32824aa12b1b160718038058b71ecc3915",
+    "lease/exit.json": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc",
+    "lease/events.jsonl": "ac33928fb6e6966bd51789b86317ccd4fd35c592b27377fb35d0e776784dcf6c",
+    "lease/nvml-queries.jsonl": "66cac504d4161e2be197e32d80c931c5591922f644fe7b88a1669ccfd505a111"
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 63,
+    "cleanup_complete": true,
+    "lease_result_sha256": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc"
+  },
+  "business": {
+    "completed_tokens": 1190,
+    "cancelled_actual_tokens": 581,
+    "aborted_requests": 1,
+    "request_errors": 0,
+    "automatic_replay": false,
+    "model_restarts": 0
+  },
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 2,
+    "websocket_sessions": 2,
+    "response_creates": 3,
+    "chats": 0,
+    "controls": 36
+  },
+  "lease_seconds": 67.01260170480236,
+  "default_unchanged": true,
+  "source_commit": "0734abfe490e35d9ebcea8ce5b1b7b3747252ecd",
+  "performance_acceptance": false,
+  "full_profile_rerun": false
+}

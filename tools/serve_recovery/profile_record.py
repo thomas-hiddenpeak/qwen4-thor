@@ -20,7 +20,9 @@ def shape(value, size):
                 'q4t-prompt-refusal-source-reuse-v1',
                 'q4t-prompt-refusal-source-assembly-v1')) or
              (value.get('format') == 'q4t-profile-business-v19' and
-              value['reused_business'].get('format') == 'q4t-speech-source-reuse-v1')),
+              value['reused_business'].get('format') in (
+                  'q4t-speech-source-reuse-v1',
+                  'q4t-speech-cancellation-source-reuse-v1'))),
             'only explicit reviewed source records have the larger evidence bound')
 
 
@@ -73,6 +75,8 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_TARGETED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-reuse-v1',
         'ACCEPT_REVIEWED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-assembly-v1',
         'ACCEPT_SPEECH_PRIMARY_LIGHT': 'q4t-speech-source-reuse-v1',
+        'ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT':
+            'q4t-speech-cancellation-source-reuse-v1',
     }
     status = accepted.get('status')
     ledger.require(status in formats and
