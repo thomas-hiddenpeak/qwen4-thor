@@ -1,0 +1,13 @@
+{
+  "status": "PASS_TARGETED_INVENTORY_REVIEW",
+  "source_anchors_changed": 39,
+  "route_descriptions_changed": 3,
+  "mutation_checks": 20,
+  "original_failure_preserved": true,
+  "seconds": 0.45412619272246957,
+  "runtime_changed": false,
+  "default_revision": 416,
+  "new_gpu_starts": 0,
+  "master_active": true,
+  "semantics_certified": false
+}

@@ -10436,7 +10436,7 @@
     }
   ],
   "next_task": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
-  "next": "PR #55已合入main；继续Realtime MCP异步目录、调用审批与真实闭环/恢复，再推进追踪、Live及全部计划。原质量失败保留。",
+  "next": "PR #56最终CI与main收尾；rev416已可回退交付，随后原生Realtime追踪、Live及全部剩余任务。原质量失败保留。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -14572,17 +14572,14 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "primary_light_mcp_profiles_qualified_preparing_managed_recovery",
+      "state": "native_mcp_and_binding_guard_delivered_main_checks_pending",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
       "runtime_connected": false,
-      "default_revision": 396,
+      "default_revision": 416,
       "remaining": [
-        "connect transactional session/response configuration to native async imports and immutable generation snapshots",
-        "owned invocation and approval lifecycle",
-        "actual SDK business and recovery",
-        "reversible delivery and main integration"
+        "Complete PR #56 final checks and main integration; continue tracing, Live and all remaining master tasks"
       ],
       "definition_cpu": {
         "status": "PASS_REALTIME_MCP_DEFINITION_TRANSACTIONS_CPU",
@@ -14736,10 +14733,7 @@
         "all_master_tasks_active": true
       },
       "execution_evidence": "evidence/serve-realtime-mcp-execution-cpu-20261120/README.md",
-      "execution_remaining": [
-        "Connect asynchronous call ownership to public Realtime session and actual model bindings",
-        "Complete SDK, real model tool loop, recovery and usable delivery"
-      ],
+      "execution_remaining": [],
       "cleanup_cpu": {
         "status": "PASS_REALTIME_MCP_CLEANUP_AND_AUXILIARY_SESSION_FAILURE_CPU",
         "distinct_cases": 10,
@@ -15877,7 +15871,7 @@
     "master_goal_active": true
   },
   "native_realtime_mcp_binding_guard_20261120": {
-    "state": "targeted_cpu_http_passed_qualification_delivery_pending",
+    "state": "qualified_reversibly_delivered_main_checks_pending",
     "cpu_evidence": "evidence/serve-realtime-mcp-ci-capacity-20261120/README.md",
     "http_evidence": "evidence/serve-realtime-mcp-binding-http-20261120/README.md",
     "qualification_evidence": "evidence/serve-realtime-mcp-binding-gate-20261120/README.md",
@@ -15886,8 +15880,89 @@
     "actual_generations": 5,
     "strict_lease_seconds": 159.3220474338159,
     "nvml_queries": 150,
-    "default_contains_fix": false,
+    "default_contains_fix": true,
     "original_failures_preserved": true,
-    "master_active": true
+    "master_active": true,
+    "default_revision": 416,
+    "delivery_evidence": "evidence/serve-realtime-mcp-binding-delivery-20261120/README.md",
+    "registry_sha256": "82be1c49a5cc21cbebadb1a7fffbc3ef60f58467937d9ae6de258392ee59a615",
+    "new_managed_fault_runs": 0,
+    "recovery_reused_with_original_identities": true
+  },
+  "native_realtime_mcp_binding_delivery_20261120": {
+    "status": "PASS_MCP_BINDING_GUARD_DELIVERED",
+    "revision": 416,
+    "state": "STOPPED",
+    "seconds": 350.68307900987566,
+    "commands": 19,
+    "new_gpu_starts": 0,
+    "new_managed_fault_runs": 0,
+    "candidate_manifest_sha256": "4ca02574aca05e98081f3db5fde79ca40ef5549f051c03af2684139df84a5568",
+    "retained_manifest_sha256": "2fc04b4767f7b3cc7750442af253c80147c323fe1fcdd9b2d953f75713db94d3",
+    "binary_sha256": "40359a27d7c59bf892a85aa239de3db81b9670305170849d6c9118088f99ec95",
+    "protocol_sha256": "98fa9452fce551cfaed7c344869fa599780d43cd0122e2f4013e0a59f0934001",
+    "registry_sha256": "82be1c49a5cc21cbebadb1a7fffbc3ef60f58467937d9ae6de258392ee59a615",
+    "customers_quotas_usage_core_outer_preserved": true,
+    "profile_history_clock_and_budgets_preserved": true,
+    "actual_stopped_root_rollback_and_forward": true,
+    "old_recovery_receipts_preserve_original_identities": true,
+    "original_model_quality_failures_preserved": true,
+    "original_model_quality_status": "FAIL",
+    "targeted_model_quality_status": "PASS",
+    "performance_acceptance": false,
+    "full_model_quality_accepted": false,
+    "long_stability_accepted": false,
+    "master_goal_active": true,
+    "reversible_metadata_maintenance": {
+      "commands": 7,
+      "deleted_files": 0,
+      "old_revision": 406,
+      "live_state_unchanged": true
+    },
+    "archive_sha256": "4031bb344853fff10ab426ed8389242cded0555eb080e65044f0bc4c890d230d",
+    "composed_qualification_files_retained_by_exact_sha256": {
+      "primary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-mcp-20261120/binding-qualified-01/qualified/primary.json",
+        "bytes": 5643954,
+        "sha256": "6735ce7b5da19365557f6e763010ca6ff742315387ef2f5ce1ad7e8a9a6d4927",
+        "construction_source": "source/qualify_binding_01.py",
+        "prior_public_archive": "docs/evidence/serve-realtime-mcp-qualified-profiles-20261120/records.tar.gz",
+        "prior_public_archive_sha256": "ff7edecb22232dd8123a7420c42f40a7bcd13b05eff657de1fb08d12625deeac",
+        "prior_member": "qualified-profiles-02/qualified/primary.json",
+        "actual_new_witness_archive": "docs/evidence/serve-realtime-mcp-binding-http-20261120/records.tar.gz",
+        "actual_new_witness_archive_sha256": "70ad8bcc3bc4bf028387065ae253acbf2ac49372a752fd1505d50341ff4e2d6b",
+        "witness_member": "binding-business-02/primary-binding-witness.json",
+        "stored_in_current_and_retained_packages": true
+      },
+      "light": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-mcp-20261120/binding-qualified-01/qualified/light.json",
+        "bytes": 8351587,
+        "sha256": "55f0a9b2ca23d08d7a55eec38615edd6ed298fe9b60fb371f2d9b30bbf53110c",
+        "construction_source": "source/qualify_binding_01.py",
+        "prior_public_archive": "docs/evidence/serve-realtime-mcp-qualified-profiles-20261120/records.tar.gz",
+        "prior_public_archive_sha256": "ff7edecb22232dd8123a7420c42f40a7bcd13b05eff657de1fb08d12625deeac",
+        "prior_member": "qualified-profiles-02/qualified/light.json",
+        "actual_new_witness_archive": "docs/evidence/serve-realtime-mcp-binding-http-20261120/records.tar.gz",
+        "actual_new_witness_archive_sha256": "70ad8bcc3bc4bf028387065ae253acbf2ac49372a752fd1505d50341ff4e2d6b",
+        "witness_member": "binding-business-02/light-binding-witness.json",
+        "stored_in_current_and_retained_packages": true
+      }
+    },
+    "original_full_public_draft_retained": "2c2ad852f35787516beaea77d665cf6eed81be578ab6f950dda53983fc6674c9",
+    "public_exact_reconstruction": {
+      "status": "PASS_EXACT_PUBLIC_RECONSTRUCTION",
+      "records": {
+        "primary": {
+          "sha256": "6735ce7b5da19365557f6e763010ca6ff742315387ef2f5ce1ad7e8a9a6d4927",
+          "bytes": 5643954
+        },
+        "light": {
+          "sha256": "55f0a9b2ca23d08d7a55eec38615edd6ed298fe9b60fb371f2d9b30bbf53110c",
+          "bytes": 8351587
+        }
+      },
+      "seconds": 0.9223068905994296,
+      "new_gpu_starts": 0
+    }
   }
 }

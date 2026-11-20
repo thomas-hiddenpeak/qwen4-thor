@@ -1,0 +1,38 @@
+{
+  "after.json": {
+    "bytes": 56,
+    "sha256": "d50f07280901bba18311a42d253c1d1f5ea1df36341a1e35618720d6489428dc"
+  },
+  "after.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "after.stdout": {
+    "bytes": 223,
+    "sha256": "26d852fdf1eae06fbeaa13d9e741fb63461159a70d6fd2f88bdeefe58c8e27ae"
+  },
+  "before-inventory.json": {
+    "bytes": 538990,
+    "sha256": "77ece2eb28e95bb4595ed3e7a0fe9c1cbada6408a84d4231ea2337574999833a"
+  },
+  "before.json": {
+    "bytes": 56,
+    "sha256": "587ba4fa0ab1f6fc10e4838964f1ead05a231b990995fa2f92e75a608502e90a"
+  },
+  "before.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "before.stdout": {
+    "bytes": 1921,
+    "sha256": "690177f8c7e162d013476d43f1a54db61340fb7fdfbd9c18de2b26ff9c51279d"
+  },
+  "changed-sources.json": {
+    "bytes": 7079,
+    "sha256": "9be7c6ae7d495ebe88ace57a2df2161012a7e3fd41952737670aef9743a9516c"
+  },
+  "ci-44747482957-failed.log": {
+    "bytes": 3670,
+    "sha256": "cbec2dd921f41ebd3144107c499c786e993426aede23073afbcf455c1fa5f019"
+  }
+}

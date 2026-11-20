@@ -27,7 +27,9 @@
 随后Realtime MCP已完成异步目录、调用审批、实际业务和恢复，
 [rev406可回退交付](evidence/serve-realtime-mcp-delivery-20261120/README.md)
 保持STOPPED；8启动/22工作实测、19条发布/回退管理命令通过，原模型
-质量失败保留。继续该阶段main收尾、追踪/Live及全部剩余任务。
+质量失败保留。随后修复CI发现的实际绑定容量遗漏，35项针对性CPU
+及主轻真实MCP短验通过，已[rev416可回退交付](evidence/serve-realtime-mcp-binding-delivery-20261120/README.md)。
+未变恢复行为复用原身份记录；继续main收尾、追踪/Live及全部剩余任务。
 以下原始审计及各阶段证据保留，不能替代当前逐项剩余状态。
 
 ## 本轮审计发现
