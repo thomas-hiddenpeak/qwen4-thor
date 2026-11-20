@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime MCP会话定义](evidence/serve-realtime-mcp-definitions-cpu-20261120/README.md)
+已通过18项针对性CPU（首次17通过/1失败，补原生函数校验后重验该项
+通过；原失败保留）。支持同连接标签复用、私有凭据/覆盖事务和数量/
+存储边界，0GPU；当前尚未连接公开运行时，继续[实际目录、审批/执行
+事件、真实闭环与恢复交付](SERVE_REALTIME_MCP_2026-11-20.md)。
+
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，
 运行时未改。代理误将内部网关初始凭据纳入公共恢复证据，当前公共

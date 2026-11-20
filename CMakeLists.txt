@@ -599,6 +599,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/realtime_mcp_definitions.cpp
   src/server/realtime_prompt_settings.cpp
   src/server/realtime_file_inputs.cpp
   src/server/realtime_chat_execution.cpp
@@ -878,6 +879,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_conversation_session_test.cpp
     tests/server_realtime_conversation_pump_test.cpp
     tests/server_realtime_chat_plan_test.cpp
+    tests/server_realtime_mcp_definitions_test.cpp
     tests/server_realtime_prompt_settings_test.cpp
     tests/server_realtime_file_inputs_test.cpp
     tests/server_realtime_chat_execution_test.cpp
@@ -1026,6 +1028,7 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/realtime_mcp_definitions.cpp
   src/server/realtime_prompt_settings.cpp
   src/server/realtime_file_inputs.cpp
   src/server/realtime_chat_execution.cpp

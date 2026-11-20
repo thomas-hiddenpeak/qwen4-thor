@@ -14345,6 +14345,47 @@
     "native_realtime_duplex_credential_reissue_20261120": {
       "revision": 396,
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+    },
+    "mcp_20261120": {
+      "state": "definition_transactions_cpu_accepted_catalog_implementation_next",
+      "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
+      "cpu_cases_frozen": 18,
+      "gpu_actions": 0,
+      "runtime_connected": false,
+      "default_revision": 396,
+      "remaining": [
+        "async actual catalog import",
+        "owned invocation and approval lifecycle",
+        "actual SDK business and recovery",
+        "reversible delivery and main integration"
+      ],
+      "definition_cpu": {
+        "status": "PASS_REALTIME_MCP_DEFINITION_TRANSACTIONS_CPU",
+        "distinct_cases": 18,
+        "case_executions": 19,
+        "initial_passed": 17,
+        "initial_failed": 1,
+        "affected_repair_passed": 1,
+        "reused_passed_cases": 17,
+        "cpu_seconds": 0.0636461335234344,
+        "source_builds_zero_warnings": 2,
+        "initial_relink_not_component_acceptance": true,
+        "original_failure_preserved": true,
+        "original_source_sha_verified": true,
+        "host_binary_sha256": "5a1f2cbf1bcfebada77a94b0044d52ddfd87ee78d2c34f76a0fdbd50cd004c03",
+        "runtime_connected": false,
+        "actual_mcp_network_tested": false,
+        "gpu_starts": 0,
+        "http_requests": 0,
+        "default_revision": 396,
+        "default_unchanged": true,
+        "service_state": "STOPPED",
+        "full_realtime_mcp_complete": false,
+        "all_master_tasks_active": true,
+        "public_secret_scan_matches": 0,
+        "source_identity": "58ffdc6b7d187081bdd1ed02fa08bf4c789d054b442eb257d462fbaa79064780"
+      },
+      "evidence": "evidence/serve-realtime-mcp-definitions-cpu-20261120/README.md"
     }
   },
   "semantic_vad_primary_light_20261119": {
