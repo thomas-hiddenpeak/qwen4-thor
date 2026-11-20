@@ -8,6 +8,7 @@
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/realtime_conversation.h"
+#include "q4t/server/realtime_duplex_input.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/request_limits.h"
@@ -110,7 +111,7 @@ Status ParseRealtimeChatTarget(std::string_view target,
 Status PlanRealtimeChat(const Json& settings, const Json& response,
                         const Json& items, const ChatPlanConfig& config,
                         RealtimeChatPlan* plan, ChatPlanError* error,
-                        const PromptSnapshot* prompt) {
+                        const PromptSnapshot* prompt, bool native_input) {
   if (!plan || !error) return Status::Fail("Missing Realtime plan owner");
   *error = {};
   auto status = ValidateRealtimeWireShape(
@@ -134,13 +135,17 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   if (const auto* metadata = response.Find("metadata");
       metadata && !RealtimeMetadataBounded(*metadata))
     return Invalid(error, "response.metadata", "Invalid response metadata");
-  // These processors are connected separately. Never acknowledge a setting
-  // here and silently drop its actual audio, trace or remote tool work.
-  if (const auto* audio = settings.Find("audio"))
-    if (const auto* input = audio->Find("input");
-        input && !input->IsNull() &&
-        (!input->IsObject() || !input->object.empty()))
-      return Processor(error, "audio.input");
+  // The same session owner processes audio before producing this resolved
+  // text snapshot. Only its private connection proof enables input settings;
+  // a raw client transcript still cannot bypass actual ASR below.
+  RealtimeDuplexInput input;
+  const auto input_plan = PlanRealtimeDuplexInput(settings, &input);
+  if (!input_plan.ok() || input_plan.commit_unknown) {
+    *error = {input_plan.code, input_plan.value.GetString("param"),
+              input_plan.http_status};
+    return Status::Fail(input_plan.ClientMessage());
+  }
+  if (input.enabled && !native_input) return Processor(error, "audio.input");
   const auto* reference = Option(settings, response, "prompt");
   if (reference && !reference->IsNull()) {
     if (!prompt) return Processor(error, "prompt");
@@ -157,7 +162,7 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   if (const auto* trace = settings.Find("tracing"); trace && !trace->IsNull())
     return Processor(error, "tracing");
   if (const auto* include = settings.GetArray("include");
-      include && !include->array.empty())
+      include && !include->array.empty() && !native_input)
     return Processor(error, "include");
   RealtimeSpeechOptions speech;
   status = PlanRealtimeSpeech(settings, response, &speech, error);

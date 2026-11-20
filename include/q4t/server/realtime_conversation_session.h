@@ -27,6 +27,8 @@ struct RealtimeConversationJob {
   RealtimeConversationSnapshot snapshot;
   bool in_conversation = true;
   std::optional<PromptSnapshot> prompt = {};
+  // Private proof from the connected session owner, never a JSON option.
+  bool native_input = false;
 };
 struct RealtimeGenerationResult {
   ObjectReply reply;

@@ -15,7 +15,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 正在按[双向音频计划](SERVE_REALTIME_DUPLEX_2026-11-20.md)连接同一个
 conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回答。
-当前已完成下列开发与CPU组件检查，**实际HTTP后端入口尚未接线/验收**：
+当前已完成下列开发与CPU组件检查，**实际HTTP后端已接线，真实业务尚未验收**：
 
 - [有效输入设置](evidence/serve-realtime-duplex-settings-cpu-20261120/README.md)：
   15个不同用例/17次执行，独立回答与打断开关、公开转写开关、输入
@@ -43,13 +43,19 @@ conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回�
   打断与自动回复、同会话准入交接、借用故障后继续文字已通过CPU。
   修复response.create引用被SDK旧外层拒绝的真实遗漏；原8失败保留。
 
-七组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
-测试名去重为159个不同用例/235次执行，保留18次原CPU失败与
+- [原生输入后端构建与CPU](evidence/serve-realtime-duplex-backend-cpu-20261120/README.md)：
+  16个不同用例/18次执行，14项按精确源码复用，原2夹具失败保留。
+  ChatServer接入共享原生ASR/VAD及组合内存预算；实际q4t构建零警告。
+
+八组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
+测试名去重为171个不同用例/253次执行，保留20次原CPU失败与
 1次来源门禁失败；之前前五组92的误计已纠正为91，原记录不改。
-最新host为`e3768696482282454f1df5a10eedb222a6e05ea17fe883eaab842cf4ee0f9901`，
-不是默认运行时程序。实际Realtime会话owner已接线，**ChatServer的
-原生ASR/VAD回调尚待接入**；随后继续空闲触发、直接混合音频及同会话
-输入管线恢复，真实WSS/ASR/TTS、受影响恢复与可回退交付。
+host为`1c0f42e5bde7c95c60687fd820cf81458a2cdbbb134efa4992e0ddc7f9090e2c`，
+已构建q4t候选为`1f01ec621cd7a79ca037e3f5308325c0b3e10d9f00c66da04896ea03f6c5e577`，
+保存在`.q4t-work/serve-realtime-duplex-20261120/backend-runtime-01/q4t`。
+两者都不是当前默认。实际HTTP后端已接线，**尚未执行真实双向业务**。
+继续空闲触发、直接混合音频及同会话输入管线恢复，然后统一WSS/
+ASR/TTS短验、受影响恢复与可回退交付。
 
 ## 当前实际默认
 

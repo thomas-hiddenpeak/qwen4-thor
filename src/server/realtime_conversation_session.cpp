@@ -563,6 +563,7 @@ bool RealtimeConversationSession::CreateResponse(
                {},
                in_conversation,
                std::move(selection.prompt)};
+  work->job.native_input = bool(input_);
   ChatPlanError speech_error;
   auto status = PlanRealtimeSpeech(work->job.settings, response, &work->speech,
                                    &speech_error);

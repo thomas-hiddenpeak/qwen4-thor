@@ -2,6 +2,8 @@
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/server/realtime_conversation_session.h"
 
+#include <algorithm>
+
 #include "../src/server/responses_json.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/test.h"
@@ -318,8 +320,18 @@ Q4T_TEST(realtime_chat_capabilities_do_not_require_transcription_backend) {
   const auto* chat = absent.Find("realtime")->Find("conversation");
   Q4T_CHECK(chat && chat->GetBool("implemented") &&
             !chat->GetBool("requires_asr", true));
-  Q4T_CHECK(OutputJson(*chat) ==
-            OutputJson(*present.Find("realtime")->Find("conversation")));
+  auto text_only = *chat;
+  auto with_asr = *present.Find("realtime")->Find("conversation");
+  Q4T_CHECK(!text_only.Find("input_audio")->GetBool("configured") &&
+            with_asr.Find("input_audio")->GetBool("configured") &&
+            with_asr.GetInt("session_host_reservation_bytes") >
+                text_only.GetInt("session_host_reservation_bytes"));
+  for (auto* value : {&text_only, &with_asr})
+    std::erase_if(value->object, [](const auto& field) {
+      return field.first == "input_audio" ||
+             field.first == "session_host_reservation_bytes";
+    });
+  Q4T_CHECK(OutputJson(text_only) == OutputJson(with_asr));
   Q4T_CHECK(chat->GetString("profile") == "q4t-native-realtime-chat-v2" &&
             chat->GetString("endpoint") == "/v1/realtime");
   Q4T_CHECK(chat->GetBool("function_calls") &&
@@ -340,7 +352,8 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
   Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) ==
                 "[\"text\",\"audio\"]" &&
             OutputJson(*chat->Find("pending_execution")) ==
-                "[\"audio_input\",\"mcp\",\"tracing\"]");
+                "[\"direct_audio_items\",\"idle_timeout\","
+                "\"input_pipeline_recovery\",\"mcp\",\"tracing\"]");
   const auto* prompt = chat->Find("prompt");
   Q4T_CHECK(prompt && prompt->IsObject() &&
             prompt->GetString("profile") == "q4t-realtime-prompt-v1" &&
@@ -471,5 +484,75 @@ Q4T_TEST(realtime_chat_audio_output_preserves_native_preparation_plan) {
   Set(&Field(raw.array[0], "content").array[0], "audio", String("AAAA"));
   Q4T_CHECK(!f.Build(Object(), raw));
   Q4T_CHECK(f.error.code == "realtime_processor_unavailable");
+  return true;
+}
+
+Q4T_TEST(realtime_chat_native_input_requires_private_owner_and_real_history) {
+  Fixture f;
+  Set(&Field(f.settings, "audio"), "input",
+      Parse(R"({"turn_detection":null,"transcription":null})"));
+  Q4T_CHECK(!f.Build() && f.error.param == "audio.input");
+  Q4T_CHECK(PlanRealtimeChat(f.settings, Object(),
+                             Array({Message("actual ASR")}), f.config, &f.plan,
+                             &f.error, nullptr, true));
+  const auto* content =
+      f.plan.generation.input.messages.array.back().GetArray("content");
+  Q4T_CHECK(content && content->array.size() == 1 &&
+            content->array[0].GetString("type") == "text" &&
+            content->array[0].GetString("text") == "actual ASR");
+  const auto raw = Parse(R"([{"type":"message","role":"user","content":[
+    {"type":"input_audio","audio":"AAAA","transcript":"forged"}]}])");
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), raw, f.config, &f.plan,
+                              &f.error, nullptr, true));
+  Q4T_CHECK(f.error.code == "realtime_processor_unavailable");
+  return true;
+}
+
+Q4T_TEST(realtime_chat_native_input_controls_keep_strict_processing_contract) {
+  Fixture f;
+  Set(&Field(f.settings, "audio"), "input", Parse(R"({
+    "transcription":{"model":"qwen3-asr-0.6b"},
+    "turn_detection":{"type":"server_vad","create_response":false,
+    "interrupt_response":true,"idle_timeout_ms":5000}})"));
+  Set(&f.settings, "include",
+      Array({String("item.input_audio_transcription.logprobs")}));
+  Q4T_CHECK(PlanRealtimeChat(f.settings, Object(), Array({Message()}), f.config,
+                             &f.plan, &f.error, nullptr, true));
+  // The generation request contains only resolved native text, never input
+  // processor knobs masquerading as model request options.
+  Q4T_CHECK(!f.plan.generation.generation_request.Has("audio") &&
+            !f.plan.generation.generation_request.Has("include"));
+  const auto original = f.settings;
+  Set(&Field(Field(Field(f.settings, "audio"), "input"), "turn_detection"),
+      "idle_timeout_ms", Number(4999));
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array({Message()}),
+                              f.config, &f.plan, &f.error, nullptr, true));
+  Q4T_CHECK(f.error.param ==
+            "session.audio.input.turn_detection.idle_timeout_ms");
+  f.settings = original;
+  Set(&f.settings, "include", Array({String("unknown")}));
+  Q4T_CHECK(!PlanRealtimeChat(f.settings, Object(), Array({Message()}),
+                              f.config, &f.plan, &f.error, nullptr, true));
+  return true;
+}
+
+Q4T_TEST(realtime_chat_native_input_capabilities_reserve_combined_storage) {
+  for (bool asr : {false, true}) {
+    const auto value = Parse(
+        ChatCapabilitiesJson("primary", false, false, 0, nullptr, false, asr));
+    const auto* conversation = value.Find("realtime")->Find("conversation");
+    const auto* input = conversation->Find("input_audio");
+    Q4T_CHECK(input && input->GetBool("implemented") &&
+              input->GetBool("configured") == asr &&
+              !input->GetBool("automatic_replay", true));
+    Q4T_CHECK(conversation->GetInt("session_host_reservation_bytes") ==
+              int64_t(kRealtimeConversationHostBytes +
+                      (asr ? kRealtimeConversationInputHostBytes : 0)));
+    Q4T_CHECK(input->GetInt("additional_host_reservation_bytes") ==
+              int64_t(kRealtimeConversationInputHostBytes));
+    Q4T_CHECK(input->GetString("default_turn") == "manual" &&
+              input->GetBool("same_conversation") &&
+              !conversation->GetBool("requires_asr", true));
+  }
   return true;
 }

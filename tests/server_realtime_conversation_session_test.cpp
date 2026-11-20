@@ -1525,3 +1525,46 @@ Q4T_TEST(realtime_wire_reference_projection_preserves_full_strict_envelope) {
   }
   return true;
 }
+
+Q4T_TEST(realtime_session_native_input_reaches_actual_chat_planner) {
+  for (bool automatic : {false, true}) {
+    InputFixture f;
+    ChatPlanConfig config;
+    config.model = "q4t-test";
+    config.max_len = 8192;
+    config.structured = true;
+    size_t prepared = 0, resolved = 0;
+    bool private_owner = true;
+    const auto prepare = [&](const Json& settings, const Json& response,
+                             const Json& input, bool connected) {
+      RealtimeChatPlan plan;
+      ChatPlanError error;
+      const auto status = PlanRealtimeChat(settings, response, input, config,
+                                           &plan, &error, nullptr, connected);
+      return status ? ObjectReply{}
+                    : object_detail::Error(error.http_status, error.code,
+                                           status.message());
+    };
+    f.cb.validate = [&](const Json& settings) {
+      return prepare(settings, Object(), Array(), true);
+    };
+    f.cb.prepare = [&](const RealtimeConversationJob& job) {
+      ++prepared;
+      private_owner &= job.native_input;
+      resolved += !job.snapshot.items.array.empty();
+      return prepare(job.settings, job.response, job.snapshot.items,
+                     job.native_input);
+    };
+    Q4T_CHECK(f.Start());
+    if (automatic) {
+      Q4T_CHECK(f.Vad() && f.Append(6 * 768 + 48));
+      Q4T_CHECK(f.Wait([&] { return f.Count("response.created") == 1; }));
+    } else {
+      Q4T_CHECK(f.Append() && f.Commit() && f.Create());
+    }
+    Q4T_CHECK(f.AllFinished() && f.Count("error") == 0 && f.calls == 1 &&
+              f.asr_calls == 1 && prepared == 2 && resolved == 1 &&
+              private_owner && f.overlap == 0);
+  }
+  return true;
+}

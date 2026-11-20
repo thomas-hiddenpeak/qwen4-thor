@@ -46,10 +46,13 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
   if (RejectUnhealthy(fd) ||
       !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
     return;
+  const bool native_input = !asr_model_dir_.empty();
+  const auto host_bytes =
+      kRealtimeConversationHostBytes +
+      (native_input ? kRealtimeConversationInputHostBytes : 0);
   HttpBodyLease memory(realtime_host_budget_);
-  if (!memory.Acquire(kRealtimeConversationHostBytes) ||
-      !runtime::ReadSystemMemory().CanAllocate(kRealtimeConversationHostBytes +
-                                               (512ULL << 20))) {
+  if (!memory.Acquire(host_bytes) ||
+      !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
     detail::SendError(fd, 503, "Realtime host memory unavailable", {},
                       "memory_pressure");
     return;
@@ -74,11 +77,23 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
     planning.client_limits = current.Limits();
     RealtimeChatPlan plan;
     ChatPlanError failure;
-    const auto status = PlanRealtimeChat(current_settings, response, items,
-                                         planning, &plan, &failure, prompt);
+    const auto status =
+        PlanRealtimeChat(current_settings, response, items, planning, &plan,
+                         &failure, prompt, native_input);
     return status ? ObjectReply{} : Failure(status, failure);
   };
   RealtimeConversationCallbacks callbacks;
+  if (native_input) {
+    callbacks.input = PrepareRealtimeInput(client);
+    callbacks.max_audio_seconds = asr_limits_.max_audio_seconds;
+    // Manual input is usable even if the optional VAD assets are unavailable.
+    // VAD is selected explicitly and validated by the actual shared backend.
+    Set(&Field(settings, "audio"), "input",
+        Object({{"format", Object({{"type", String("audio/pcm")},
+                                   {"rate", Number(24000)}})},
+                {"transcription", Json()},
+                {"turn_detection", Json()}}));
+  }
   callbacks.interrupted = [&] { return stop_requested_.load(); };
   callbacks.validate_prompt = [&](const RealtimePromptSelection& selected) {
     return prepare(selected.settings, Object(), Array(),
@@ -194,9 +209,9 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
   config.client_limits = client.Limits();
   RealtimeChatPlan plan;
   ChatPlanError error;
-  auto status =
-      PlanRealtimeChat(job.settings, job.response, job.snapshot.items, config,
-                       &plan, &error, job.prompt ? &*job.prompt : nullptr);
+  auto status = PlanRealtimeChat(
+      job.settings, job.response, job.snapshot.items, config, &plan, &error,
+      job.prompt ? &*job.prompt : nullptr, job.native_input);
   RequestDiagnostics diagnostic(stderr, control->id());
   diagnostic.Bind(control->id());
   diagnostic.Stage("context_prepare");

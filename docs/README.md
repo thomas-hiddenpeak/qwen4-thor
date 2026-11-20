@@ -697,3 +697,5 @@
 - [同一会话输入事件组合CPU](evidence/serve-realtime-duplex-composition-cpu-20261120/README.md)：GA事件、转写隐私、真实音频检索/删除、上下文冻结及原失败；实际入口继续。
 
 - [实际Realtime会话输入与轮次CPU](evidence/serve-realtime-duplex-session-cpu-20261120/README.md)：待ASR回答、设置冻结、VAD与准入交接、借用故障隔离及严格引用入口修复。
+
+- [原生Realtime输入后端构建与CPU](evidence/serve-realtime-duplex-backend-cpu-20261120/README.md)：共享ASR/VAD、私有来源和组合预算，实际q4t已构建；真实业务继续。

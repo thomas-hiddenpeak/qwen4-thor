@@ -1,0 +1,245 @@
+{
+  "archive_sha256": "8bac4992e3c8a93c4c04d6295f133a4feadb68a500ad2594df5d46cc7f65702a",
+  "records": [
+    {
+      "path": "backend-plan-01.json",
+      "bytes": 2848,
+      "sha256": "7e4ae0283681081e26c2f4cacfa70b0439c674469e9952e06d9ec0d00635c256"
+    },
+    {
+      "path": "backend-plan-02.json",
+      "bytes": 520,
+      "sha256": "d3ade38f983c40014a3490cca1a5ea2d2460eefffedc2b5b9104f1935ad3c86a"
+    },
+    {
+      "path": "build_backend_01.py",
+      "bytes": 2819,
+      "sha256": "1308170f70b5e74b90b094df6a55dbb1d8ac4d70158909d27eb6413d6160d669"
+    },
+    {
+      "path": "build_backend_02.py",
+      "bytes": 2819,
+      "sha256": "0c881d63a2608c596230697e14ba1a842e1617131e8953c64587cdb20815a2a2"
+    },
+    {
+      "path": "build_backend_runtime_01.py",
+      "bytes": 2713,
+      "sha256": "c184b0b06b42773234af690d6d7d021b273e55b0cddb73e3f0559352f15047e3"
+    },
+    {
+      "path": "run_backend_cpu_01.py",
+      "bytes": 3259,
+      "sha256": "88432d7be2397ffec3864872f0296f7bd3c6c3c624a8b7c10ba953df5c62a217"
+    },
+    {
+      "path": "run_backend_cpu_02.py",
+      "bytes": 3256,
+      "sha256": "70aa845997cd791640dd3e02ad67a5d8777e57dffd7aecdbcee4308cd828f36d"
+    },
+    {
+      "path": "backend-build-01/result.json",
+      "bytes": 293,
+      "sha256": "795be65fc6a98c9a1f531ddae3e04773c160f1efacb8df30aa1d59f4c7d892c4"
+    },
+    {
+      "path": "backend-build-01/plan.json",
+      "bytes": 177301,
+      "sha256": "74e38e45150f09bb1936e278e076e9685ccffd86584349367c908a0d8aa36a02"
+    },
+    {
+      "path": "backend-build-01/build.log",
+      "bytes": 3126,
+      "sha256": "0b4a0cfafea063df331121615d1177a77dfa1ac497d19df8791cd105096550e0"
+    },
+    {
+      "path": "backend-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "8f8eb8c91ec836266790e89c598bdf248c58cc6c7a6aa9bb4cbe7623c7f5e6f9"
+    },
+    {
+      "path": "backend-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "backend-build-02/result.json",
+      "bytes": 292,
+      "sha256": "cfd016bd0c7195b685e3f0d70768f9f0d84c2165d9559c53964301ccd7ed3ef1"
+    },
+    {
+      "path": "backend-build-02/plan.json",
+      "bytes": 177301,
+      "sha256": "507e07ee5c37354c6a9ee240c39929e1c710174964d5af3d0555981dbedb562c"
+    },
+    {
+      "path": "backend-build-02/build.log",
+      "bytes": 320,
+      "sha256": "81a55d44204994543ae7885bd44e374d01d40d5405a0b01d7065a996d8ab2a45"
+    },
+    {
+      "path": "backend-build-02/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "7d8a11fa3694db3d71a90f222d8a60ecb9e29e5a9672fec3e269c96424c05f3b"
+    },
+    {
+      "path": "backend-build-02/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "backend-runtime-01/result.json",
+      "bytes": 294,
+      "sha256": "6c77571cc93f37308625dd79901dd7d120ee66ce9c5e73a4b135f55c67936d7e"
+    },
+    {
+      "path": "backend-runtime-01/plan.json",
+      "bytes": 107591,
+      "sha256": "51899d056f466c5ff2a91a36f28109e645ce47fc4d0f58d131e78686529716ff"
+    },
+    {
+      "path": "backend-runtime-01/build.log",
+      "bytes": 7402,
+      "sha256": "2aef71f3b6929e0d9e6589a04a58f1db21c627b44252ed36eda543d0fd6dab41"
+    },
+    {
+      "path": "backend-runtime-01/previous-chat_protocol_sources.json",
+      "bytes": 85524,
+      "sha256": "df143cae8a1f7824fd3a03e794a220fe834d8c0f64adafaa06d8b131150dfb0c"
+    },
+    {
+      "path": "backend-runtime-01/previous-CMakeCache.txt",
+      "bytes": 54898,
+      "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+    },
+    {
+      "path": "backend-cpu-01/command-0.stdout",
+      "bytes": 1402,
+      "sha256": "2699f1d1cda448a6c9b108d74690e3be478c23604e5b206e649ebf479603e970"
+    },
+    {
+      "path": "backend-cpu-01/result.json",
+      "bytes": 440,
+      "sha256": "6a7da84c6553540e1263c205ff32f0c2c7b6c804b44d89488b938da9d3b223d4"
+    },
+    {
+      "path": "backend-cpu-01/plan.json",
+      "bytes": 5705,
+      "sha256": "3617845254c933b76f5e221c6d02caee861d31963d68533be196ed0795aee3c4"
+    },
+    {
+      "path": "backend-cpu-01/new.txt",
+      "bytes": 1030,
+      "sha256": "aa8deaee9c026da29dbeabddf8fae86e002bc0d49f9dc76ddefca9445d7d3f76"
+    },
+    {
+      "path": "backend-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "backend-cpu-01/command-0.stderr",
+      "bytes": 881,
+      "sha256": "14e5a959caa0c8364b4df0992cb27cd5567d8c060bda37527b0c494919842421"
+    },
+    {
+      "path": "backend-cpu-02/command-0.stdout",
+      "bytes": 184,
+      "sha256": "fcbac10f481f9a3ab15935b0a7dfbd212c2aa27c498ea49f933f8979256c9e86"
+    },
+    {
+      "path": "backend-cpu-02/result.json",
+      "bytes": 604,
+      "sha256": "f0cc2cbbf2eea221fff6387c0d4b09deaf1397127e6f89ad6d229c8f6d082635"
+    },
+    {
+      "path": "backend-cpu-02/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend-cpu-02/plan.json",
+      "bytes": 4707,
+      "sha256": "b332b9a17ce6b08096781c65c5fb2c3a546719d35a27b3d6cbc7abe621fb24bd"
+    },
+    {
+      "path": "backend-cpu-02/command-1.stdout",
+      "bytes": 223,
+      "sha256": "04e63a3fd266ce6c5de1c3aa38c513028be085e4b535f9e5c396776fbb9cf72f"
+    },
+    {
+      "path": "backend-cpu-02/new.txt",
+      "bytes": 131,
+      "sha256": "b4bcaccf5735f41f00379219d95c8b063aeb01e382ded2c7fc574d9a36a622fc"
+    },
+    {
+      "path": "backend-cpu-02/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "backend-cpu-02/command-0.stderr",
+      "bytes": 103,
+      "sha256": "f487a4f2638780fc6ff0ae7627465ca2ddbf5553151e751089425a2ab9a976fd"
+    },
+    {
+      "path": "source/include/q4t/server/chat_server.h",
+      "bytes": 39215,
+      "sha256": "8a5e1a370ac38a0759dfce5c9b718fd477dd5b07e06a853e6a10c0d133ce65c4"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_chat_plan.h",
+      "bytes": 2468,
+      "sha256": "60f0c427ca28dee60e9ba862b21161c3b1d8e101089dd34a6263e62de8346500"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_conversation_session.h",
+      "bytes": 5960,
+      "sha256": "b3095cf9135b53b29ef1eaecb03ddc05f9c09afeba84d608d41f03bf115311ac"
+    },
+    {
+      "path": "source/src/server/chat_capabilities.cpp",
+      "bytes": 60699,
+      "sha256": "9c8559d09e9d7bfa1a5ee1fb72756602e4ebcab5bac842738c848562ccaaed2d"
+    },
+    {
+      "path": "source/src/server/chat_realtime.cpp",
+      "bytes": 15070,
+      "sha256": "8651a008ce1165dccb48e9de808253294ccfa4714d78ed2832712446a0b8d6c5"
+    },
+    {
+      "path": "source/src/server/chat_realtime_conversation.cpp",
+      "bytes": 18477,
+      "sha256": "e8460f840b996bbdf3b5789251a92bebd91ad2a628a88f2cf85c3b20f26ffbfa"
+    },
+    {
+      "path": "source/src/server/realtime_chat_plan.cpp",
+      "bytes": 18542,
+      "sha256": "9c3f9704cc05cb58a9e32c651591c1ae72a0eb1282b0000dfbbab2b479ce5658"
+    },
+    {
+      "path": "source/src/server/realtime_conversation_session.cpp",
+      "bytes": 36858,
+      "sha256": "a472ba08710662a4ecd2621c06609ef96bdd6b3ad85d067846ec9ebdd2f051ca"
+    },
+    {
+      "path": "source/tests/server_realtime_chat_plan_test.cpp",
+      "bytes": 24830,
+      "sha256": "45e7f06b132529ed2bcd840928e84d7d7aedc34a21342ea97cfcf36feeb50843"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_session_test.cpp",
+      "bytes": 65796,
+      "sha256": "983688a4f68a4ae4caf9ad2fc660d408b5d98feb9211afdb5a8d90602cfed797"
+    },
+    {
+      "path": "source/tools/release/required_host_tests.txt",
+      "bytes": 29040,
+      "sha256": "237c61837a129866443a363bc9c89e80caf76ef24db67cf37c88908aa48b1151"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 580432,
+      "sha256": "8d842cd4465e5f7c668d24e809069dfc05010e4effc83648845515593cc3b063"
+    }
+  ]
+}

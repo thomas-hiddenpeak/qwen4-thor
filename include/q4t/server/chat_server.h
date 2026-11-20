@@ -340,6 +340,8 @@ class ChatServer {
       const std::array<std::span<const uint8_t>, 2>& bytes,
       const std::shared_ptr<RequestControl>& control,
       const RealtimeTranscriptSink& emit);
+  RealtimeTranscriptionCallbacks PrepareRealtimeInput(
+      const ClientIdentity& client);
   ObjectReply RunRealtimeAsrStream(
       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
       const std::shared_ptr<RequestControl>& control,

@@ -53,72 +53,11 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     return;
   }
   const auto client = http->Client();
-  // Optional CPU VAD preparation happens before 101, never inside the socket
-  // event loop. A failed optional backend still permits healthy manual ASR.
-  std::shared_ptr<const audio::SileroVad> vad;
-  auto vad_ready =
-      Error(503, "vad_not_configured", "Native VAD assets not configured");
-  if (!vad_model_dir_.empty()) {
-    BinaryAccess access;
-    access.scope = client.Id();
-    access.deadline = Clock::now() + std::chrono::seconds(3);
-    access.cancelled = [&] { return stop_requested_.load(); };
-    vad_ready = EnsureNativeVad(access, &vad);
-  }
   const size_t message_bytes =
       client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
-  RealtimeTranscriptionCallbacks callbacks;
-  callbacks.semantic_ready = PlanningConfig(fd).structured;
-  callbacks.interrupted = [&] { return stop_requested_.load(); };
-  callbacks.validate = [&](const RealtimeTranscriptionSettings& settings) {
-    if (settings.request.model != audio::AsrConfig::kModelId)
-      return Error(404, "model_not_found",
-                   "Transcription model is not configured");
-    for (const auto& code : settings.request.languages)
-      if (AsrLanguageName(code).empty())
-        return Error(400, "invalid_language",
-                     "Transcription language unavailable");
-    if (!settings.request.language.empty() &&
-        AsrLanguageName(settings.request.language).empty())
-      return Error(400, "invalid_language",
-                   "Transcription language unavailable");
-    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
-        !PlanningConfig(-1).structured)
-      return Error(400, "realtime_processor_unavailable",
-                   "Native semantic turn decoding is not configured");
-    if (!settings.delay.empty() &&
-        (!RealtimeAsrDelayPolicy(settings.delay).Valid() ||
-         settings.turn != RealtimeTranscriptionSettings::Turn::kManual))
-      return Error(400, "realtime_delay_turn_conflict",
-                   "Continuous transcription uses explicit audio commits");
-    if (settings.turn != RealtimeTranscriptionSettings::Turn::kManual &&
-        !vad_ready.ok())
-      return vad_ready;
-    return ObjectReply{};
-  };
-  if (vad) {
-    callbacks.vad_step = [&](auto samples, auto* state, auto* probability) {
-      const auto status = vad->Step(samples, state, probability,
-                                    [&] { return stop_requested_.load(); });
-      if (!status && !stop_requested_.load())
-        vad_health_.ComputeFailed(AsrFailure::kCompute, Clock::now());
-      else if (status)
-        vad_health_.ComputeSucceeded();
-      return status;
-    };
-  }
-  callbacks.acquire = [&](const std::string& id) {
-    return requests_.Register(
-        id, "", Clock::now() + std::chrono::milliseconds(request_deadline_ms_),
-        client.Id());
-  };
-  callbacks.release = [&](const auto& control) { requests_.Remove(control); };
-  callbacks.execute = [&](const auto& job, const auto& bytes,
-                          const auto& control, const auto& emit) {
-    return RunRealtimeTranscription(client, job, bytes, control, emit);
-  };
+  auto callbacks = PrepareRealtimeInput(client);
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeTranscriptionPump session(
@@ -160,6 +99,77 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
   // Queue spans, client context and host reservation outlive the actual worker.
   // GPU calls are cooperative; the existing progress guardian covers stalls.
   session.Join();
+}
+
+RealtimeTranscriptionCallbacks ChatServer::PrepareRealtimeInput(
+    const ClientIdentity& client) {
+  // Optional CPU VAD preparation happens before 101, never inside the socket
+  // event loop. A failed optional backend still permits healthy manual ASR.
+  std::shared_ptr<const audio::SileroVad> vad;
+  auto vad_ready =
+      Error(503, "vad_not_configured", "Native VAD assets not configured");
+  if (!vad_model_dir_.empty()) {
+    BinaryAccess access;
+    access.scope = client.Id();
+    access.deadline = Clock::now() + std::chrono::seconds(3);
+    access.cancelled = [this] { return stop_requested_.load(); };
+    vad_ready = EnsureNativeVad(access, &vad);
+  }
+  RealtimeTranscriptionCallbacks callbacks;
+  callbacks.semantic_ready = PlanningConfig(-1).structured;
+  callbacks.interrupted = [this] { return stop_requested_.load(); };
+  callbacks.validate = [this, vad_ready](
+                           const RealtimeTranscriptionSettings& settings) {
+    if (settings.request.model != audio::AsrConfig::kModelId)
+      return Error(404, "model_not_found",
+                   "Transcription model is not configured");
+    for (const auto& code : settings.request.languages)
+      if (AsrLanguageName(code).empty())
+        return Error(400, "invalid_language",
+                     "Transcription language unavailable");
+    if (!settings.request.language.empty() &&
+        AsrLanguageName(settings.request.language).empty())
+      return Error(400, "invalid_language",
+                   "Transcription language unavailable");
+    if (settings.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+        !PlanningConfig(-1).structured)
+      return Error(400, "realtime_processor_unavailable",
+                   "Native semantic turn decoding is not configured");
+    if (!settings.delay.empty() &&
+        (!RealtimeAsrDelayPolicy(settings.delay).Valid() ||
+         settings.turn != RealtimeTranscriptionSettings::Turn::kManual))
+      return Error(400, "realtime_delay_turn_conflict",
+                   "Continuous transcription uses explicit audio commits");
+    if (settings.turn != RealtimeTranscriptionSettings::Turn::kManual &&
+        !vad_ready.ok())
+      return vad_ready;
+    return ObjectReply{};
+  };
+  if (vad) {
+    callbacks.vad_step = [this, vad](auto samples, auto* state,
+                                     auto* probability) {
+      const auto status = vad->Step(samples, state, probability,
+                                    [&] { return stop_requested_.load(); });
+      if (!status && !stop_requested_.load())
+        vad_health_.ComputeFailed(AsrFailure::kCompute, Clock::now());
+      else if (status)
+        vad_health_.ComputeSucceeded();
+      return status;
+    };
+  }
+  callbacks.acquire = [this, client](const std::string& id) {
+    return requests_.Register(
+        id, "", Clock::now() + std::chrono::milliseconds(request_deadline_ms_),
+        client.Id());
+  };
+  callbacks.release = [this](const auto& control) {
+    requests_.Remove(control);
+  };
+  callbacks.execute = [this, client](const auto& job, const auto& bytes,
+                                     const auto& control, const auto& emit) {
+    return RunRealtimeTranscription(client, job, bytes, control, emit);
+  };
+  return callbacks;
 }
 
 ObjectReply ChatServer::RunRealtimeTranscription(

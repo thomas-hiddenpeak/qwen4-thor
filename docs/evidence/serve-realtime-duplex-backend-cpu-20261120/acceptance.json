@@ -1,0 +1,47 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_INPUT_BACKEND_BUILD_AND_CPU",
+  "unique_cases": 16,
+  "case_executions": 18,
+  "new_cases": 4,
+  "original_failed_executions": 2,
+  "original_failures_preserved": true,
+  "unchanged_passes_reused": 14,
+  "repaired_compiled_sources": [
+    "tests/server_realtime_chat_plan_test.cpp"
+  ],
+  "source_counterexamples": 20,
+  "host_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 9.92781757330522,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "1c0f42e5bde7c95c60687fd820cf81458a2cdbbb134efa4992e0ddc7f9090e2c",
+    "free_bytes_after": 4071948288
+  },
+  "runtime_build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 147.19619747297838,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "1f01ec621cd7a79ca037e3f5308325c0b3e10d9f00c66da04896ea03f6c5e577",
+    "free_bytes_after": 4041773056
+  },
+  "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/backend-runtime-01/q4t",
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "actual_http_business": "pending",
+  "remaining": [
+    "idle response",
+    "direct mixed audio items",
+    "same-session input pipeline recovery",
+    "real WSS/native ASR/TTS and affected recovery/delivery",
+    "all master tasks"
+  ]
+}
