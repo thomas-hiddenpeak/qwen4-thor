@@ -60,12 +60,16 @@ void RealtimeSessionTrace::Close(std::string_view reason,
 void RealtimeSessionTrace::Publish(RealtimeTraceTime now, bool force) noexcept {
   if (!collector_ || !store_ || (producer_ && producer_->Revoked()) ||
       (!force && now.monotonic_ns < next_publish_ns_) ||
-      collector_->Revision() == published_revision_)
+      (collector_->Revision() == published_revision_ &&
+       (!producer_ || !producer_->RetryNeeded(published_revision_))))
     return;
   constexpr auto maximum = std::numeric_limits<int64_t>::max();
-  next_publish_ns_ = now.monotonic_ns > maximum - 250000000
+  const int64_t interval = collector_->Revision() == published_revision_
+                               ? 1000000000
+                               : 250000000;
+  next_publish_ns_ = now.monotonic_ns > maximum - interval
                          ? maximum
-                         : now.monotonic_ns + 250000000;
+                         : now.monotonic_ns + interval;
   try {
     auto* store = store_();
     if (!store) return;

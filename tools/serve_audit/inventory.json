@@ -2600,7 +2600,7 @@
     "include/q4t/server/realtime_trace.h": "7e70111a950b9698f82f2594edb7b4e5928baa671899b7072b5f4fdc01499720",
     "include/q4t/server/realtime_trace_api.h": "6827e0485ea61ddbb5c7f67ed0a72d75ae289848fceaed1e148416bcd9d62e5c",
     "include/q4t/server/realtime_trace_session.h": "0e70216e48a10046d4f0584e33b4c65d492b9001c2943220415cc26a5e27d248",
-    "include/q4t/server/realtime_trace_store.h": "a628572f37524d50388271ed66e2b176066fee6767e3247e4eb90663e67f0026",
+    "include/q4t/server/realtime_trace_store.h": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b",
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "e6cfb3324c8f6b4b30f568a6494a45ca5b27173f3f6496809ec0fa09a8c86725",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
@@ -3078,8 +3078,8 @@
     "src/server/realtime_trace.cpp": "0bb1d2576e4f5121ffc14e323b08359cf1fc58d7603482490853225d98a96c7c",
     "src/server/realtime_trace_api.cpp": "9e23142b9fd7c013c0e648bf81b57dfb5a067527363e7861363b5c8ef8763c2c",
     "src/server/realtime_trace_events.cpp": "c42d30f27fadc4e39539ee380110dddb2c351571a487c59a99886f2b1170e5b0",
-    "src/server/realtime_trace_session.cpp": "d2f55826705a65c367ba0b366e67dd381c8251ef7ab133024033d6b60c8fe03b",
-    "src/server/realtime_trace_store.cpp": "bb0054cd567074ef852ceec6f89f6b404709eb0607b4d67cc7c5171019b0dfb8",
+    "src/server/realtime_trace_session.cpp": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac",
+    "src/server/realtime_trace_store.cpp": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1",
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
     "src/server/realtime_transcription_protocol.cpp": "936d9e12ca45edd46b87e67c890ea89b6e33526e107f8a57d63f1035fba2be0c",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
@@ -9459,5 +9459,29 @@
     ],
     "runtime_verified": false,
     "semantics_certified": false
+  },
+  "native_realtime_trace_idle_recovery_review_20261121": {
+    "reason": "A queue-accepted but failed snapshot previously waited for new lifecycle activity. Producer exposes failed revision; owner retries latest at bounded one-second ticks after failure. CAS save reconciles an unknown commit by GET first, same durable revision is not rewritten, older revisions and revoked producers cannot resume. Model admission and execution unchanged.",
+    "sources": {
+      "include/q4t/server/realtime_trace_store.h": {
+        "before": "a628572f37524d50388271ed66e2b176066fee6767e3247e4eb90663e67f0026",
+        "after": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b"
+      },
+      "src/server/realtime_trace_store.cpp": {
+        "before": "bb0054cd567074ef852ceec6f89f6b404709eb0607b4d67cc7c5171019b0dfb8",
+        "after": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1"
+      },
+      "src/server/realtime_trace_session.cpp": {
+        "before": "d2f55826705a65c367ba0b366e67dd381c8251ef7ab133024033d6b60c8fe03b",
+        "after": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac"
+      }
+    },
+    "evidence": [
+      "docs/SERVE_REALTIME_TRACING_2026-11-20.md"
+    ],
+    "native_cpu_cases": 24,
+    "runtime_verified": false,
+    "semantics_certified": false,
+    "idle_exporter_start": "Publish retries bounded Launch under the same nonblocking queue lock; a retained blocked exporter still owns its unique slot; existing producers do not require a query to recover first thread construction failure."
   }
 }

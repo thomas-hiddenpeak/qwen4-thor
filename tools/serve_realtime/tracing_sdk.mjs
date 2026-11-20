@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { check, terminal, usage, text, streamAgrees } from './conversation_checks.mjs';
+import { recoverTrace } from './tracing_poll.mjs';
 
 let input = '';
 for await (const part of process.stdin) {
@@ -69,7 +70,8 @@ async function http(label, route, method = 'get', expected = 200, other = false)
     value = { status: error.status, body: { error: error.error } };
   }
   operations.push({ label, route, method, scope: other ? 'other' : 'owner', ...value });
-  check(value.status === expected, `HTTP ${label}: ${value.status}`);
+  if (value.status !== expected)
+    throw Object.assign(new Error(`HTTP ${label}: ${value.status}`), { status: value.status });
   return value.body;
 }
 async function signal(name) {
@@ -80,12 +82,10 @@ async function signal(name) {
   signals.push(name);
 }
 async function query(label, predicate) {
-  for (let i = 0; i < 20; ++i) {
-    const page = await http(`${label}-${i}`, '/realtime/traces?session_id=' + sessionId);
-    if (page.data.length === 1 && predicate(page.data[0])) return page.data[0];
-    await pause(100);
-  }
-  throw new Error('durable snapshot not observed: ' + label);
+  // Storage recovery has a real 60-second rolling budget. Poll only reads,
+  // retaining each 503; never replay a model request or tool execution.
+  return recoverTrace((i) => http(`${label}-${i}`,
+    '/realtime/traces?session_id=' + sessionId), predicate);
 }
 async function create(label, response) {
   check(responses.length < 3, 'three actual jobs per profile');

@@ -23,6 +23,9 @@ class RealtimeTraceProducer {
  public:
   bool Revoked() const { return revoked_.load(); }
   const std::string& Id() const { return id_; }
+  bool RetryNeeded(uint64_t revision) const {
+    return revision && !Revoked() && failed_revision_.load() == revision;
+  }
 
  private:
   friend class RealtimeTraceStore;
@@ -30,6 +33,9 @@ class RealtimeTraceProducer {
                         std::string owner);
   const std::string scope_, session_, owner_, id_;
   std::atomic<bool> revoked_{false};
+  // A queued snapshot is not durable. The owner can offer the latest revision
+  // again after an observed failure; Save reconciles any unknown commit first.
+  std::atomic<uint64_t> failed_revision_{0};
   // Owned under the exporter's queue lock, never an HTTP user revision.
   int64_t accepted_revision_ = 0;
 };

@@ -214,6 +214,9 @@ struct RealtimeTraceStore::State {
     Set(&request.data, "trace", std::move(job.snapshot));
     auto reply = objects->Execute(request, deadline, cancelled);
     if (reply.ok()) Increment(&persisted);
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+    TestHook("after_save_commit");
+#endif
     return reply;
   }
   bool ProducerAlive(std::string_view scope, std::string_view id) const {
@@ -261,6 +264,7 @@ struct RealtimeTraceStore::State {
       queue.pop_front();
       active->started = true;
       const auto job = active;
+      const auto revision = job->producer ? job->snapshot.GetInt("revision") : 0;
       if (recovering) {
         recovering = false;
         ++controller_recoveries;
@@ -289,6 +293,8 @@ struct RealtimeTraceStore::State {
       }
       lock.lock();
       if (controller_failed) Failure();
+      if (job->producer && !job->reply.ok() && !job->producer->revoked_)
+        job->producer->failed_revision_ = revision;
       job->complete = true;
       queued_bytes -= job->bytes;
       active.reset();
@@ -382,8 +388,11 @@ bool RealtimeTraceStore::Publish(const Producer& producer,
     }
     bytes += sizeof(State::Job);
     std::unique_lock lock(state_->mutex, std::try_to_lock);
+    if (lock) state_->Launch(state_);
     if (!lock || state_->stop || !state_->running || producer->revoked_ ||
-        snapshot.GetInt("revision") <= producer->accepted_revision_) {
+        snapshot.GetInt("revision") < producer->accepted_revision_ ||
+        (snapshot.GetInt("revision") == producer->accepted_revision_ &&
+         !producer->RetryNeeded(producer->accepted_revision_))) {
       Increment(&state_->dropped);
       return false;
     }
@@ -414,6 +423,7 @@ bool RealtimeTraceStore::Publish(const Producer& producer,
       state_->queue.push_back(std::move(job));
     }
     producer->accepted_revision_ = revision;
+    producer->failed_revision_ = 0;
     state_->queued_bytes = retained + bytes;
     Increment(&state_->accepted);
     state_->changed.notify_all();

@@ -12,12 +12,13 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [40项不同CPU场景通过](evidence/serve-realtime-tracing-cpu-20261120/README.md)，
 其中接入组26项一次通过、构建零警告，原边界/夹具失败保留。
 [实际服务/入口已零警告构建](evidence/serve-realtime-tracing-build-driver-20261121/README.md)，
-22项驱动CPU和22项清单负控通过。三次前置失败未加载模型；
-随后真实短验暴露session.created缺少会话ID，累计1启动/0实际生成，
-原失败、0用量结算和正常清理保留。已补齐创建/更新的服务端id/object，
-[9项直接受影响CPU及原生重建通过](evidence/serve-realtime-session-identity-20261121/README.md)。
-修复后补验最多2启动/
-6生成/2 TLS SDK会话/900秒，累计启动上限3次。默认rev416未改。
+会话身份修复已有[针对性证据](evidence/serve-realtime-session-identity-20261121/README.md)。
+实际主档三次生成及工具资料回答通过、1746 tokens结算，追踪查询因
+恢复退避返回503而中断。已补齐失败快照的空闲自动恢复：23项受影响
+CPU闭合，原两项夹具失败保留；另4项针对性CPU验证线程创建失败
+也可由空闲会话恢复。3项只读轮询边界通过，[最终原生重建通过](evidence/serve-realtime-tracing-idle-recovery-20261121/README.md)。
+累计2模型启动/3实际生成，默认rev416未改。新补验最多2启动/6生成/
+900秒，累计上限4启动/9实际生成，原正确回答与失败记录同时保留。
 辅助采集初始化有界重试，取样缺失保持unknown，不进入核心readiness。
 
 PR #56的CI容量回归及旧版封包清单已修复，

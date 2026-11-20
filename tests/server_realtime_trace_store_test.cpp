@@ -297,6 +297,94 @@ Q4T_TEST(trace_store_io_failure_does_not_disable_application_store) {
   return true;
 }
 
+Q4T_TEST(trace_session_storage_repair_flushes_idle_latest_snapshot) {
+  Fixture f;
+  f.options.objects.restart_window_ms = 100;
+  f.options.objects.restart_backoff_ms = 10;
+  std::ofstream(f.options.objects.directory) << "owned storage outage";
+  RealtimeTraceStore store(f.options);
+  RealtimeSessionTrace trace("sess_idle", "conv_idle", [&] { return &store; },
+                             "client:a");
+  const auto started = RealtimeTraceNow();
+  trace.Configure(Object({{"tracing", String("auto")}}), started);
+  Q4T_CHECK(Wait([&] {
+    const auto health = store.Health();
+    return health.snapshot_available && health.pending == 0 &&
+           health.failures > 0;
+  }));
+  Q4T_CHECK(fs::remove(f.options.objects.directory));
+  Q4T_CHECK(fs::create_directory(f.options.objects.directory));
+  fs::permissions(f.options.objects.directory, fs::perms::owner_all);
+  ObjectReply saved;
+  const auto id = "trace_" + Digest("sess_idle");
+  // No new event, response or close creates another collector revision.
+  Q4T_CHECK(Wait([&] {
+    trace.Tick(RealtimeTraceNow());
+    saved = Read(store, id);
+    return saved.ok();
+  }));
+  Q4T_CHECK(saved.value.GetString("status") == "in_progress" &&
+            saved.value.GetInt("revision") == 1 &&
+            saved.value.GetInt("started_at_ms") == started.unix_ms &&
+            saved.value.GetArray("spans")->array.empty());
+  Q4T_CHECK(store.Health().persisted == 1 && store.Health().accepted >= 2);
+  return true;
+}
+
+Q4T_TEST(trace_store_failed_commit_retry_reads_original_without_rewrite) {
+  Fixture f;
+  RealtimeTraceStore store(f.options);
+  auto producer = Open(store, "client:a", "sess_test");
+  auto collector = Collector();
+  HookReset reset;
+  std::atomic<bool> fail{true};
+  RealtimeTraceExporterHookForTesting([&](std::string_view point) {
+    if (point == "after_save_commit" && fail.exchange(false))
+      throw std::runtime_error("confirmed write lost before completion");
+  });
+  Q4T_CHECK(producer && Submit(store, producer, collector));
+  Q4T_CHECK(Wait([&] { return producer->RetryNeeded(collector.Revision()); }));
+  const auto first = Read(store, producer->Id());
+  Q4T_CHECK(first.ok() &&
+            first.value.Find("persistence")->GetInt("object_revision") == 1);
+  Q4T_CHECK(Submit(store, producer, collector));
+  const auto second = Read(store, producer->Id());
+  Q4T_CHECK(second.ok() && OutputJson(first.value) == OutputJson(second.value));
+  Q4T_CHECK(!producer->RetryNeeded(collector.Revision()) &&
+            !store.Publish(producer, collector.Snapshot()));
+  Q4T_CHECK(store.Health().persisted == 1 && store.Health().accepted == 2);
+  return true;
+}
+
+Q4T_TEST(trace_store_failed_revision_cannot_replace_newer_or_deleted_owner) {
+  Fixture f;
+  RealtimeTraceStore store(f.options);
+  auto producer = Open(store, "client:a", "sess_test");
+  auto collector = Collector();
+  const auto old = collector.Snapshot();
+  HookReset reset;
+  std::atomic<bool> fail{true};
+  RealtimeTraceExporterHookForTesting([&](std::string_view point) {
+    if (point == "before_dispatch" && fail.exchange(false))
+      throw std::runtime_error("queued snapshot failed");
+  });
+  Q4T_CHECK(producer && Submit(store, producer, collector));
+  Q4T_CHECK(Wait([&] { return producer->RetryNeeded(collector.Revision()); }));
+  Advance(collector);
+  Q4T_CHECK(Submit(store, producer, collector));
+  Q4T_CHECK(!store.Publish(producer, old));
+  const auto saved = Read(store, producer->Id());
+  Q4T_CHECK(saved.ok() && saved.value.GetInt("revision") ==
+                             static_cast<int64_t>(collector.Revision()));
+  Q4T_CHECK(store.Execute(Request(ObjectOperation::kErase, producer->Id()),
+                          Clock::now() + 2s).ok());
+  Q4T_CHECK(producer->Revoked() &&
+            !producer->RetryNeeded(collector.Revision()) &&
+            !store.Publish(producer, collector.Snapshot()) &&
+            Read(store, producer->Id()).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(trace_store_exporter_exception_recovers_in_same_bounded_owner) {
   Fixture f;
   RealtimeTraceStore store(f.options);
@@ -334,6 +422,25 @@ Q4T_TEST(trace_store_thread_construction_failure_recovers_with_backoff) {
   return true;
 }
 
+Q4T_TEST(trace_session_exporter_start_recovers_on_idle_tick_without_query) {
+  Fixture f;
+  FailRealtimeTraceExporterStartForTesting();
+  RealtimeTraceStore store(f.options);
+  RealtimeSessionTrace trace("sess_start", "conv_start", [&] { return &store; },
+                             "client:a");
+  trace.Configure(Object({{"tracing", String("auto")}}), RealtimeTraceNow());
+  Q4T_CHECK(store.Health().controller_failures == 1);
+  Q4T_CHECK(Wait([&] {
+    trace.Tick(RealtimeTraceNow());
+    return store.Health().persisted == 1;
+  }));
+  const auto record = Read(store, "trace_" + Digest("sess_start"));
+  Q4T_CHECK(record.ok() && record.value.GetInt("revision") == 1);
+  Q4T_CHECK(store.Health().controller_recoveries == 1 &&
+            store.Health().accepted == 1);
+  return true;
+}
+
 Q4T_TEST(trace_store_uncertain_commit_is_read_back_without_blind_replay) {
   Fixture f;
   HookReset reset;
@@ -355,7 +462,7 @@ Q4T_TEST(trace_store_uncertain_commit_is_read_back_without_blind_replay) {
   Q4T_CHECK(record.value.Find("persistence")->GetInt("object_revision") == 1);
   Q4T_CHECK(record.value.GetInt("revision") ==
             static_cast<int64_t>(collector.Revision()));
-  Q4T_CHECK(!store.Publish(producer, collector.Snapshot()));
+  Q4T_CHECK(Submit(store, producer, collector));
   Q4T_CHECK(Read(store, producer->Id())
                 .value.Find("persistence")
                 ->GetInt("object_revision") == 1);
