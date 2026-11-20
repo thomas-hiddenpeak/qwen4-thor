@@ -2320,8 +2320,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6a710903f0d55aca5113a0437691e390a632165359cff257b9d35c62b5a6a2fd",
-    "cmake/ChatProtocolIdentity.cmake": "2132345cf6ce8ca095eb34f8d07d88560f855999797c96957ddf969e9fd5812a",
+    "CMakeLists.txt": "53cc07e777d7cee8c734ec396fb9cb0929937c4e37d723a7cf70546fa181f1a7",
+    "cmake/ChatProtocolIdentity.cmake": "964d44f0f2ce9c898932e64ecb418a7fb52c2630bc64be4289c1b90ec4942b6e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2783,7 +2783,7 @@
     "src/server/chat_asr_execution.cpp": "5ea3a522b3aada1d76bf906dc15e44049c4d3256151ec449fb418450bf3a4a52",
     "src/server/chat_audio_execution.cpp": "9a7ded7af79c0915ed9cc2179c1aed3bb41223677b11df681da52c76f3eedb4b",
     "src/server/chat_audio_history.cpp": "1fa4824f3e5580a872523ec1fa689694552dd5e40acd5b8316894bc59103ab4b",
-    "src/server/chat_audio_inputs.cpp": "a1802a1656583fcb6084baf15fa3ca21ff2be9a2ba42a722be15e4c00c767088",
+    "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "3186aeeadc4f7d21a195e606de150c700649414672b3ddceb26eeb6fa20b6bf0",
     "src/server/chat_audio_synthesis.cpp": "946e3a54442de4b05df6011696342355dae63f85946f09a4ae26889a61258ab3",
     "src/server/chat_capabilities.cpp": "e88fa4f2b0123b5a0a884d9ca90129412cdedb5635eb7816e25509fb2f2697c5",
@@ -2996,7 +2996,7 @@
     "src/server/realtime_audio_queue.cpp": "4e7b582330cd3d00c6568777b30e39706c084d1d39b95039126442eeec58b5ee",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "9c3f9704cc05cb58a9e32c651591c1ae72a0eb1282b0000dfbbab2b479ce5658",
-    "src/server/realtime_conversation.cpp": "6fabdb045164a939499429ad10467e1d30701bf5a3c0deb10f4c50f4381f1081",
+    "src/server/realtime_conversation.cpp": "d53b6c95559a8615bc0dfe8f6a1fe281336a7394ba6bbd3322e0207e2fcb3c90",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "4af78292fcc0c946695eda555c06bbc27fa88a6a3ad0815395b743eb37ce79dd",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
@@ -3382,7 +3382,9 @@
     "tools/serve_recovery/profile_duplex_followup.py": "211f14f729524e075be06051bf816ef05f767bf3acbcc246b49d4d7ba0b36eaa",
     "tools/serve_recovery/profile_duplex_followup_source.py": "247e90d8d1c142dc4b90ed77a7c05d6c8a64a2841dcad9319f5721835eff383d",
     "tools/serve_recovery/profile_duplex_followup_targeted.py": "f730a1385d46ce0689332b9e380c43d3fe7140c75154bd9aa0ead9b1b4a34756",
-    "tools/serve_recovery/profile_duplex_light_resume.py": "cb6a7b56fb8748a2cae8b57ee328547cdcb71d4eb4f9400850e41fce5e3f74cb"
+    "tools/serve_recovery/profile_duplex_light_resume.py": "cb6a7b56fb8748a2cae8b57ee328547cdcb71d4eb4f9400850e41fce5e3f74cb",
+    "include/q4t/server/audio_transcript.h": "f6e9756d2883949152b69613671ea67afabd4e5b9dd1e4d55bed8280beda80db",
+    "src/server/audio_transcript.cpp": "f1767cedd29fe01888671de6f7cb5b926203508345d47d882e2b7b55bff7a2a7"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

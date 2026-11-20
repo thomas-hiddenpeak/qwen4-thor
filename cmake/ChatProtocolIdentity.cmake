@@ -79,6 +79,8 @@ set(protocol_inputs
   src/server/vad_assets.cpp
   include/q4t/server/asr_request.h
   include/q4t/server/chat_audio_inputs.h
+  include/q4t/server/audio_transcript.h
+  src/server/audio_transcript.cpp
   src/server/chat_audio_inputs.cpp
   src/server/chat_audio_execution.cpp
   src/server/asr_request.cpp

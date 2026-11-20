@@ -190,6 +190,7 @@ try {
     check(version === args.expected_version, 'current release version');
     await add(user('query_release', [inputText('Call lookup_project_record for release.')]));
     const call = functionCall(await create('tool', { output_modalities: ['text'], max_output_tokens: 128,
+      instructions: 'Use lookup_project_record to read the release record requested in the latest user message.',
       tools: [{ type: 'function', name: 'lookup_project_record', parameters: { type: 'object',
         properties: { record_key: { type: 'string', enum: ['release'] } },
         required: ['record_key'], additionalProperties: false } }],

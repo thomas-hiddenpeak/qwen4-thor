@@ -366,6 +366,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_audio_history.cpp
   src/server/chat_audio_synthesis.cpp
   src/server/chat_audio_inputs.cpp
+  src/server/audio_transcript.cpp
   src/server/chat_audio_execution.cpp
   src/server/asr_response.cpp
   src/server/asr_stream_state.cpp

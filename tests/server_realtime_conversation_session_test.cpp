@@ -1,3 +1,4 @@
+#include "audio_transcript_test_util.h"
 #include "q4t/server/realtime_conversation_session.h"
 
 #include <algorithm>
@@ -1175,8 +1176,10 @@ Q4T_TEST(realtime_session_native_input_wait_freezes_manual_request) {
             job.settings.GetString("instructions") == "old");
   Q4T_CHECK(job.snapshot.items.array.size() == 2 &&
             job.snapshot.pending_inputs.empty());
-  Q4T_CHECK(job.snapshot.items.array[1].GetArray("content")->array[0].GetString(
-                "text") == "native fixture transcript");
+  Q4T_CHECK(
+      NativeTranscript(
+          job.snapshot.items.array[1].GetArray("content")->array[0].GetString(
+              "text")) == "native fixture transcript");
   Q4T_CHECK(f.Count("session.created") == 1 &&
             f.Count("conversation.created") == 1 &&
             f.Count("response.created") == 1 && f.Count("response.done") == 1);
@@ -1783,9 +1786,11 @@ Q4T_TEST(realtime_direct_session_mixed_item_reaches_actual_chat_planner) {
   const auto job = f.Snapshot(0);
   const auto& parts = job.snapshot.items.array[0].GetArray("content")->array;
   Q4T_CHECK(parts.size() == 4 && parts[0].GetString("text") == "before audio" &&
-            parts[1].GetString("text") == "native fixture transcript" &&
+            NativeTranscript(parts[1].GetString("text")) ==
+                "native fixture transcript" &&
             parts[2].GetString("text") == "between audio" &&
-            parts[3].GetString("text") == "native fixture transcript");
+            NativeTranscript(parts[3].GetString("text")) ==
+                "native fixture transcript");
   return true;
 }
 

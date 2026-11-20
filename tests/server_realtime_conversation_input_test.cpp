@@ -1,3 +1,4 @@
+#include "audio_transcript_test_util.h"
 #include "q4t/server/realtime_conversation_input.h"
 
 #include <algorithm>
@@ -767,9 +768,9 @@ Q4T_TEST(realtime_direct_input_orders_real_parts_and_public_transcription) {
             (indices == std::vector<size_t>{1, 3}));
   const auto& parts = snapshot.items.array[0].GetArray("content")->array;
   Q4T_CHECK(parts[0].GetString("text") == "before" &&
-            parts[1].GetString("text") == "part 1" &&
+            NativeTranscript(parts[1].GetString("text")) == "part 1" &&
             parts[2].GetString("text") == "after" &&
-            parts[3].GetString("text") == "part 3");
+            NativeTranscript(parts[3].GetString("text")) == "part 3");
   for (const auto& event : f.events) {
     ChatPlanError error;
     Q4T_CHECK(

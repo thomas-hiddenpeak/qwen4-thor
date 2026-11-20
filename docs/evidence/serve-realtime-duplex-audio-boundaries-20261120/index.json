@@ -1,0 +1,445 @@
+{
+  "records": [
+    {
+      "path": "profiles-03/light-duplex-entry-cleanup.json",
+      "bytes": 63,
+      "sha256": "1fbfbb95e849eade7e51c539ff4a56507ce52ec4f50f4746637943d9e3a18f1e"
+    },
+    {
+      "path": "profiles-03/light-config.http.json",
+      "bytes": 238,
+      "sha256": "fef2bdec07582fcfbad517ab4186f8854c39b0624d730117dbf9f5fbe25ded9d"
+    },
+    {
+      "path": "profiles-03/light-semantic-health.http.json",
+      "bytes": 20,
+      "sha256": "3ea32f08f51f1b1ab6943f4b29b3ebb7325616b680643c0d24d61ae76434cb9e"
+    },
+    {
+      "path": "profiles-03/light-realtime-before.http.json",
+      "bytes": 247,
+      "sha256": "bb336785db1e361137a9ec03fefb703db5c99fa2a88259bc3b2ba29bfd8171a5"
+    },
+    {
+      "path": "profiles-03/light-realtime-before.wire",
+      "bytes": 33632,
+      "sha256": "dab23d2c57d7cb69ed0bb38b9e29dc83ec49f1cab74b4a81d1d95f1dc8ac3d3a"
+    },
+    {
+      "path": "profiles-03/light-semantic-continuation-drain.metrics.json",
+      "bytes": 23248,
+      "sha256": "dcb9b11899646152011021b7087359ea7a3816b86890ab6acfae5ccbad1ebb2c"
+    },
+    {
+      "path": "profiles-03/light-semantic-health.wire",
+      "bytes": 16015,
+      "sha256": "740df8cd9991e3a212dd9c89d3be65ed4481a6410140621cb4095e7ddcc3c8e3"
+    },
+    {
+      "path": "profiles-03/light-semantic-continuation.sdk.json",
+      "bytes": 668718,
+      "sha256": "ca171e237b964aa3dcd4e532f4f6a012e98d46fcc382cd42aadb32cc9565fc9b"
+    },
+    {
+      "path": "profiles-03/light-semantic-complete-drain.metrics.json",
+      "bytes": 23245,
+      "sha256": "2030137d6c7168fd68f0f4856cbb9a7a0bb569b912c87fcb4b57133bf2008e45"
+    },
+    {
+      "path": "profiles-03/light-duplex-manual.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profiles-03/result.json",
+      "bytes": 1510,
+      "sha256": "6de189c2e8d515e362ae79642430cb60255d042c9a6c950199f769d6f4f481c9"
+    },
+    {
+      "path": "profiles-03/light-config.json",
+      "bytes": 20883,
+      "sha256": "42364d2ecb721f06788f117ff3bc82bb4ef9507dcf929020b9dd0294e615cc67"
+    },
+    {
+      "path": "profiles-03/light-semantic-before.wire",
+      "bytes": 33646,
+      "sha256": "6a22f0a8ffa0b745c7d79fa4d4fa9e5cd2f5c5e800878fb70a235bb8f79e1b79"
+    },
+    {
+      "path": "profiles-03/light-realtime-entry-cleanup.json",
+      "bytes": 94,
+      "sha256": "fa60ae7cfedf4132f7f5cb78644ea30c8988e16e069510652f19a117c0b700cb"
+    },
+    {
+      "path": "profiles-03/counts.json",
+      "bytes": 101,
+      "sha256": "78953387700423100615c8cbe31a78eb24ac438f3282c016e9da9ae877372421"
+    },
+    {
+      "path": "profiles-03/light-semantic-before.http.json",
+      "bytes": 246,
+      "sha256": "da2ec8e15a4739479fd424ead482a8a8aa0d372e637e9b33bb8438b36fa4f8a1"
+    },
+    {
+      "path": "profiles-03/plan.json",
+      "bytes": 975520,
+      "sha256": "a876d42cca2d271d866d2f822dbd6a6181f4ae8352fb6d14cd6935277436de97"
+    },
+    {
+      "path": "profiles-03/light-realtime.sdk.json",
+      "bytes": 1633825,
+      "sha256": "23c8e45ce9b5042655235da193454c0c96d89af22ce841ac73fdac10350e266e"
+    },
+    {
+      "path": "profiles-03/light-semantic-entry-cleanup.json",
+      "bytes": 94,
+      "sha256": "98c091ae0d58ae4a8db0de31a032a4363db7d764f1e46066b899ee9f06401e95"
+    },
+    {
+      "path": "profiles-03/light-command.json",
+      "bytes": 2863,
+      "sha256": "d609b444297c496a834d4a96b68fb2719a41949f6554bef346f59a28b0aaf0cb"
+    },
+    {
+      "path": "profiles-03/light-semantic-after-0.http.json",
+      "bytes": 247,
+      "sha256": "95b6a57bb6160868b7b2edf1e1da31499fc8425a9012275f5d614e74b2583a6a"
+    },
+    {
+      "path": "profiles-03/light-config.wire",
+      "bytes": 16016,
+      "sha256": "12b8913abfa9deabff322985e51ffeedcbb499308e31dd83d45fcfee4b961ef1"
+    },
+    {
+      "path": "profiles-03/primary-unqualified.json",
+      "bytes": 6738716,
+      "sha256": "201ce75d10dc654edd36afe8d8a904bc2163380f8f918049b90baf5fe4dfdc11"
+    },
+    {
+      "path": "profiles-03/light-identity.json",
+      "bytes": 3299,
+      "sha256": "61b6e779fc01810bc2ca2fe82df0f9fc49f3e8f562524bba5845e0b94ebdab51"
+    },
+    {
+      "path": "profiles-03/light-semantic-continuation.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profiles-03/light-realtime-drain.metrics.json",
+      "bytes": 23201,
+      "sha256": "5318ec3156166fbc78f3247f9c4f06b9f061fa31de4bfee8c049cd50224f6ee0"
+    },
+    {
+      "path": "profiles-03/light-realtime-after-0.wire",
+      "bytes": 33646,
+      "sha256": "566f384cc2d0ec5daa369802d2cbe80841c13bd2fa61e0a44e3e27d2b6c94f0e"
+    },
+    {
+      "path": "profiles-03/light-realtime.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profiles-03/light-realtime-business.json",
+      "bytes": 282844,
+      "sha256": "981ec19e607646fdf3cf8427446fea3d03bfd4aae26d806962e0f5ecac7c50f1"
+    },
+    {
+      "path": "profiles-03/light-realtime-after-0.http.json",
+      "bytes": 246,
+      "sha256": "03363368456602dfd1126374c35e8d20beb6d96b6561c5b7b7934cfa7c2c12fe"
+    },
+    {
+      "path": "profiles-03/light-semantic-business.json",
+      "bytes": 387329,
+      "sha256": "e295fca0bf57a4253d7383683071267f86f259c57c188db0feb3443b34d5de21"
+    },
+    {
+      "path": "profiles-03/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "e90062c4397efe326808c559a07ad5bfd1c1776d326f62f73a879318d64448e3"
+    },
+    {
+      "path": "profiles-03/light-duplex-manual-before.wire",
+      "bytes": 33670,
+      "sha256": "a6aa5f0a2a80d5646d28c66d4a739c8f01db30c64d9d5b0bcc47c0b76596e5bf"
+    },
+    {
+      "path": "profiles-03/light-semantic-complete.sdk.json",
+      "bytes": 668445,
+      "sha256": "86b12e682e11c6675c9310aeb18d0990b204890d341756bfbb45436c0d33e2a4"
+    },
+    {
+      "path": "profiles-03/cleanup.json",
+      "bytes": 5363,
+      "sha256": "480d62366d2e21a42e16045d041cc5c73acd9b1fbc91736e3e236fd39bbe1a40"
+    },
+    {
+      "path": "profiles-03/light-capabilities.http.json",
+      "bytes": 238,
+      "sha256": "7e8bb0b36606ad555e97fef80ec8b6362a7352c94aa100a99da27ac565057b28"
+    },
+    {
+      "path": "profiles-03/light-duplex-manual.sdk.json",
+      "bytes": 2124142,
+      "sha256": "452ce40c880e64773688a574e070bbc2f9cc668d460392f413b2221904a30bfa"
+    },
+    {
+      "path": "profiles-03/light-duplex-manual.events.jsonl",
+      "bytes": 2412174,
+      "sha256": "8efff52e00811222a7c0d984510206b6f47a57e5c5b1e3db8a9662f5fa907e1e"
+    },
+    {
+      "path": "profiles-03/light-duplex-manual-before.http.json",
+      "bytes": 247,
+      "sha256": "75e4bb96dc7e005c2e844ec699e16c843356c1eaf64187a13be2ddb1c1f33ab0"
+    },
+    {
+      "path": "profiles-03/light-semantic-complete.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profiles-03/light-semantic-after-0.wire",
+      "bytes": 33670,
+      "sha256": "a05424f222c14e2e723f80b89ebafdde81e2f0e32bd4833e734a3c23d93f1b68"
+    },
+    {
+      "path": "profiles-03/light-capabilities.wire",
+      "bytes": 46235,
+      "sha256": "fc6f162bc1b12fabd9532b241a6c0d231e8885dde6b9a5c892ccbad922d53051"
+    },
+    {
+      "path": "profiles-03/light-model.log",
+      "bytes": 65004,
+      "sha256": "263e7b7deef345ce7f537b59c8fd345e5c1a721e0359c69395b8e71e6d8ba7db"
+    },
+    {
+      "path": "profiles-03/lease/nvml-queries.jsonl",
+      "bytes": 227276,
+      "sha256": "ef704b26d81389d8b7ca3d60400d5a5afc6495ca8827cfdc6811044df1d502ec"
+    },
+    {
+      "path": "profiles-03/lease/events.jsonl",
+      "bytes": 18105,
+      "sha256": "0be46b9a2a539628133a4b5654fe05baaa2a6d37086ddf344b3c7efe7c5cdc56"
+    },
+    {
+      "path": "profiles-03/lease/exit.json",
+      "bytes": 720,
+      "sha256": "ab725f275680e21878121ecc26d32d50835f49c57a224662b138bbd6c0ffdeaf"
+    },
+    {
+      "path": "light-prompt-01/roundtrip.prompt",
+      "bytes": 702,
+      "sha256": "cb55f23f3c073d94bb8ab76423f9b70a09dd9c5c81770d7750cd8a524ae51c24"
+    },
+    {
+      "path": "light-prompt-01/mixed.fixture.json",
+      "bytes": 2410,
+      "sha256": "9ccabf08d2907a133def79a0cbe69668638f0aa0d48d211d601d65bcae156070"
+    },
+    {
+      "path": "light-prompt-01/roundtrip.fixture.json",
+      "bytes": 1838,
+      "sha256": "2e9944b99d3201c6cff456cbede226836b718ee265dc6d361f4b7c597f386af1"
+    },
+    {
+      "path": "light-prompt-01/inline_audio.json",
+      "bytes": 2186,
+      "sha256": "fd77e52e021e7aa1bbca5eaba30cc44384cd478a10412862fa51a79a5757de7d"
+    },
+    {
+      "path": "light-prompt-01/inline_audio.prompt",
+      "bytes": 741,
+      "sha256": "f99e75a040f111aa2eb61e33ce0dd5c6f8b1285470105b7e88724ab9b0dd455c"
+    },
+    {
+      "path": "light-prompt-01/mixed.prompt",
+      "bytes": 820,
+      "sha256": "55e83fc9dbad94dfc3e60665b6e57eb217baeeb5640abd313ec303ee2851e3e1"
+    },
+    {
+      "path": "light-prompt-01/review.json",
+      "bytes": 1926,
+      "sha256": "5959c6ef7354136f84263cd2595db095970d1b8a477d0525783dd6f09953f3dd"
+    },
+    {
+      "path": "light-prompt-01/inline_audio.fixture.json",
+      "bytes": 1908,
+      "sha256": "a1eb81e9df30cffb0a583fa5dc676799aedacb7262ea99de918416cd014f14d6"
+    },
+    {
+      "path": "light-prompt-01/mixed.json",
+      "bytes": 2718,
+      "sha256": "48b2d028baa65701cc8d052d054f4efee88a0c23635f7e97f87bba322f88ac03"
+    },
+    {
+      "path": "light-prompt-01/roundtrip.json",
+      "bytes": 1922,
+      "sha256": "a432a02c0ca9c1eba92ad450e4f3e5002cc212175612bd615b5d74faf1a8fcca"
+    },
+    {
+      "path": "audio-boundary-build-01/result.json",
+      "bytes": 292,
+      "sha256": "0e15f0cfeee73359a1197ab8c11657376ec2cc5c7c101cca954c49499c0740d6"
+    },
+    {
+      "path": "audio-boundary-build-01/plan.json",
+      "bytes": 177637,
+      "sha256": "2fb5ddc6404bf78bd068b6024bab026192db06f88168304fdcc9341d904a4c8a"
+    },
+    {
+      "path": "audio-boundary-build-01/build.log",
+      "bytes": 2844,
+      "sha256": "c1501f82c7fd91ca38c31abac2863a1dbc413aa5fe0246e726439dd5ac5e3bf2"
+    },
+    {
+      "path": "audio-boundary-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "4aabeedd339296b237e8243d8c5685484400a255f155b0aa0fd6c5a24019b5e1"
+    },
+    {
+      "path": "audio-boundary-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-0.stdout",
+      "bytes": 1962,
+      "sha256": "fe577c59e2fae05d20012da30c0ff9485322740fbc170add454ee281cb1141c7"
+    },
+    {
+      "path": "audio-boundary-cpu-01/result.json",
+      "bytes": 745,
+      "sha256": "ae14be00186474ecb896eea2c7f61e1517b4c51142248d3f2f16149490ba102a"
+    },
+    {
+      "path": "audio-boundary-cpu-01/plan.json",
+      "bytes": 180148,
+      "sha256": "bdf35b3976dae53ce7e84083f0a0879ef128fa830a52fdcdcbc39c38e4125375"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-1.stdout",
+      "bytes": 223,
+      "sha256": "35252903dc94d4240af5f5ac6bd8a3f5480fce707ee122cb94fc453695904da0"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-cpu-01/required.txt",
+      "bytes": 1732,
+      "sha256": "535f4679bdadeac6eab587af0aef19f49af51cadb80b57117c177af10bdc08da"
+    },
+    {
+      "path": "audio-boundary-cpu-01/check-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audio-boundary-scope-01.json",
+      "bytes": 1818,
+      "sha256": "db363d1ea106b27627ae6f94c1770eebcf55f589c991244c8edd271dfead9d0f"
+    },
+    {
+      "path": "build_audio_boundary_host_01.py",
+      "bytes": 2942,
+      "sha256": "ebab3ecdce0cd17c3961f533e1ee489c9f4b80fabd96b4c3870b68996b0931ba"
+    },
+    {
+      "path": "source/CMakeLists.txt",
+      "bytes": 62731,
+      "sha256": "53cc07e777d7cee8c734ec396fb9cb0929937c4e37d723a7cf70546fa181f1a7"
+    },
+    {
+      "path": "source/cmake/ChatProtocolIdentity.cmake",
+      "bytes": 31381,
+      "sha256": "964d44f0f2ce9c898932e64ecb418a7fb52c2630bc64be4289c1b90ec4942b6e"
+    },
+    {
+      "path": "source/cmake/HostTestSources.cmake",
+      "bytes": 39455,
+      "sha256": "6034fe024902b2d42e65e3d1354fad9a069ff5a87ffa1e2ea1c6ecdcfd770fb1"
+    },
+    {
+      "path": "source/include/q4t/server/audio_transcript.h",
+      "bytes": 457,
+      "sha256": "f6e9756d2883949152b69613671ea67afabd4e5b9dd1e4d55bed8280beda80db"
+    },
+    {
+      "path": "source/src/server/audio_transcript.cpp",
+      "bytes": 1169,
+      "sha256": "f1767cedd29fe01888671de6f7cb5b926203508345d47d882e2b7b55bff7a2a7"
+    },
+    {
+      "path": "source/src/server/chat_audio_inputs.cpp",
+      "bytes": 11851,
+      "sha256": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1"
+    },
+    {
+      "path": "source/src/server/realtime_conversation.cpp",
+      "bytes": 30925,
+      "sha256": "d53b6c95559a8615bc0dfe8f6a1fe281336a7394ba6bbd3322e0207e2fcb3c90"
+    },
+    {
+      "path": "source/tests/audio_transcript_test_util.h",
+      "bytes": 1031,
+      "sha256": "c09c2a81e3fa5ee34e0c9c69115f22020b22d84ea7bd62d2961c9ad69c6e3bd8"
+    },
+    {
+      "path": "source/tests/server_chat_audio_inputs_test.cpp",
+      "bytes": 24347,
+      "sha256": "c5739576d1fca864f113f81b86aaa0dda0fc5d4a6128a554c4b61d3e6a973d87"
+    },
+    {
+      "path": "source/tests/server_realtime_chat_plan_test.cpp",
+      "bytes": 28432,
+      "sha256": "288d8fad068857cccd457ff9b403cda7c21774d6b67f4ff19afd464927d8c705"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_input_test.cpp",
+      "bytes": 41803,
+      "sha256": "1d64458508a8231f356af39a6f0f7adea5cd7b620cabfcfd865ad12d0a8c8c01"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_session_test.cpp",
+      "bytes": 82019,
+      "sha256": "adcea7f7b49357db16e7fb709dd21c133fc8bc06c396033413542a2e58466b1a"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_test.cpp",
+      "bytes": 56038,
+      "sha256": "8dc7c54a42f414089df08a6c413900333d19cd0268509b531bbd2cf2d8e78ba5"
+    },
+    {
+      "path": "source/tests/server_realtime_transcription_test.cpp",
+      "bytes": 101722,
+      "sha256": "ede14d4cfea6df448df4ceeb41ba5b2fa625fad0a1332c85f9a13c37dd3bf131"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 595601,
+      "sha256": "7d4bd0a71c229370fa4d770bc53fdb70d278c670ec742be5ec40eb6d3f3eb6a1"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_sdk.mjs",
+      "bytes": 15615,
+      "sha256": "90580039e8e5c9fc1f5ac3a59d36a9b6a6ed934df841edae4a6334d88eb68889"
+    }
+  ],
+  "archive_sha256": "33859e379740563248bb236aa88f2cf21e9669ee7bbaca88ba11847bde4283dc"
+}

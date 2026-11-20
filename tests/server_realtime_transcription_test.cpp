@@ -1,3 +1,4 @@
+#include "audio_transcript_test_util.h"
 #include "q4t/server/realtime_transcription_session.h"
 
 #include <algorithm>
@@ -1952,8 +1953,9 @@ Q4T_TEST(realtime_input_owner_manual_commit_joins_actual_conversation) {
   Q4T_CHECK(owner.history.Resolve(&snapshot, &ready) && ready);
   Q4T_CHECK(snapshot.items.array.size() == 2 && owner.finished == 1 &&
             owner.discarded == 0 && f.calls == 1 && f.released == 1);
-  Q4T_CHECK(snapshot.items.array[1].GetArray("content")->array[0].GetString(
-                "text") == "real executor fixture");
+  Q4T_CHECK(NativeTranscript(
+                snapshot.items.array[1].GetArray("content")->array[0].GetString(
+                    "text")) == "real executor fixture");
   Q4T_CHECK(owner.correct_thread && s.AudioBytes() == 0);
   return true;
 }

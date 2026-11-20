@@ -5,6 +5,7 @@
 #include <limits>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/audio_transcript.h"
 #include "q4t/server/realtime_shape.h"
 #include "responses_json.h"
 
@@ -97,7 +98,8 @@ Status InputText(const Json& item, Json* copy, bool idle_timeout = false) {
   const auto* content = item.GetArray("content");
   if (!content) return Invalid("native input has no content");
   auto parts = *content;
-  for (auto& part : parts.array) {
+  for (size_t index = 0; index < parts.array.size(); ++index) {
+    auto& part = parts.array[index];
     if (part.GetString("type") != "input_audio") continue;
     const auto* transcript = part.Find("transcript");
     if (!transcript || !transcript->IsString())
@@ -109,7 +111,10 @@ Status InputText(const Json& item, Json* copy, bool idle_timeout = false) {
                           ? String(
                                 "[No speech was detected during the idle "
                                 "interval.]")
-                          : *transcript;
+                          : String(RenderAudioTranscript(
+                                "conversation.item[" + item.GetString("id") +
+                                    "].content[" + std::to_string(index) + ']',
+                                transcript->str));
     part = Object({{"type", String("input_text")}, {"text", text}});
   }
   Set(copy, "content", std::move(parts));
