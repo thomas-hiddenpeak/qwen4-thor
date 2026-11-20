@@ -7,6 +7,8 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_shape.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/responses_mcp_binding.h"
 
 namespace q4t::server {
 namespace {
@@ -166,6 +168,28 @@ ObjectReply RealtimeResponseOutput::Begin() {
                                          options_.maximum_audio_bytes)
                        .Valid()))
     return Fail("realtime_response_owner_invalid", "Invalid audio owner");
+  if (options_.mcp_bindings.size() > 128)
+    return Fail("realtime_mcp_binding_invalid",
+                "MCP output bindings exceed capacity");
+  for (size_t i = 0; i < options_.mcp_bindings.size(); ++i) {
+    const auto& binding = options_.mcp_bindings[i];
+    if (!ValidInputName(binding.model_name) || binding.server_label.empty() ||
+        binding.server_label.size() > 256 || binding.name.empty() ||
+        binding.name.size() > 256 || binding.model_name.capacity() > 1024 ||
+        binding.server_label.capacity() > 1024 ||
+        binding.name.capacity() > 1024 ||
+        binding.model_name !=
+            ResponsesMcpModelName(binding.server_label, binding.name))
+      return Fail("realtime_mcp_binding_invalid", "Invalid MCP output binding");
+    for (size_t j = 0; j < i; ++j) {
+      const auto& previous = options_.mcp_bindings[j];
+      if (binding.model_name == previous.model_name ||
+          (binding.server_label == previous.server_label &&
+           binding.name == previous.name))
+        return Fail("realtime_mcp_binding_invalid",
+                    "Duplicate MCP output binding");
+    }
+  }
   auto response = Response("in_progress");
   ChatPlanError shape;
   if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
@@ -248,20 +272,36 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
           !ValidInputName(delta.call.name))
         return Fail("realtime_tool_identity_invalid",
                     "Invalid function identity");
-      auto value = Object({{"id", String(ids_("item_"))},
-                           {"object", String("realtime.item")},
-                           {"type", String("function_call")},
-                           {"status", String("in_progress")},
-                           {"call_id", String(delta.call.id)},
-                           {"name", String(delta.call.name)},
-                           {"arguments", String("")}});
+      std::optional<size_t> mcp;
+      for (size_t i = 0; i < options_.mcp_bindings.size(); ++i)
+        if (options_.mcp_bindings[i].model_name == delta.call.name) mcp = i;
+      Json value;
+      if (mcp) {
+        const auto& binding = options_.mcp_bindings[*mcp];
+        value = Object({{"id", String(ids_("mcp_"))},
+                        {"type", String("mcp_call")},
+                        {"server_label", String(binding.server_label)},
+                        {"name", String(binding.name)},
+                        {"arguments", String("")}});
+      } else {
+        value = Object({{"id", String(ids_("item_"))},
+                        {"object", String("realtime.item")},
+                        {"type", String("function_call")},
+                        {"status", String("in_progress")},
+                        {"call_id", String(delta.call.id)},
+                        {"name", String(delta.call.name)},
+                        {"arguments", String("")}});
+      }
       auto reply = AddItem(std::move(value), delta.call.index, &index);
       if (!reply.ok()) return reply;
+      items_[index].mcp_binding = mcp;
+      items_[index].model_call_id = delta.call.id;
+      items_[index].model_name = delta.call.name;
     } else if (index == items_.size() ||
                (!delta.call.id.empty() &&
-                delta.call.id != items_[index].value.GetString("call_id")) ||
+                delta.call.id != items_[index].model_call_id) ||
                (!delta.call.name.empty() &&
-                delta.call.name != items_[index].value.GetString("name"))) {
+                delta.call.name != items_[index].model_name)) {
       return Fail("realtime_tool_identity_invalid",
                   "Unbound function fragment");
     }
@@ -289,9 +329,11 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
   bytes_ += piece.size();
   auto event = Position(index, !tool);
   Set(&event, "delta", String(piece));
-  if (tool)
+  const bool mcp = tool && items_[index].mcp_binding.has_value();
+  if (tool && !mcp)
     Set(&event, "call_id", String(items_[index].value.GetString("call_id")));
-  return Emit(tool                    ? "response.function_call_arguments.delta"
+  return Emit(mcp                     ? "response.mcp_call_arguments.delta"
+              : tool                  ? "response.function_call_arguments.delta"
               : options_.audio_format ? "response.output_audio_transcript.delta"
                                       : "response.output_text.delta",
               std::move(event));
@@ -374,8 +416,8 @@ bool RealtimeResponseOutput::Matches(const Json& message,
     const auto& actual = calls->array[call++];
     const auto* function = actual.Find("function");
     if (actual.GetString("type") != "function" || !function ||
-        actual.GetString("id") != item.value.GetString("call_id") ||
-        function->GetString("name") != item.value.GetString("name") ||
+        actual.GetString("id") != item.model_call_id ||
+        function->GetString("name") != item.model_name ||
         function->GetString("arguments") != item.value.GetString("arguments"))
       return false;
   }
@@ -407,6 +449,17 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
                 "Actual response does not match deltas");
   if (has_message && audio_index_ && (!audio_complete_ || audio_truncated_))
     return Fail("realtime_audio_incomplete", "Audio did not reach natural EOF");
+  if (end.state == RealtimeResponseEnd::State::kCompleted) {
+    for (const auto& item : items_) {
+      if (!item.mcp_binding || item.deleted) continue;
+      Json arguments;
+      if (!io::ParseJson(item.value.GetString("arguments"), &arguments, true,
+                         kSchemaJsonLimits) ||
+          !arguments.IsObject())
+        return Fail("realtime_mcp_arguments_invalid",
+                    "Invalid complete MCP arguments");
+    }
+  }
   auto response = Response(StateName(end.state));
   if (end.state != RealtimeResponseEnd::State::kCompleted) {
     auto details =
@@ -452,6 +505,12 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
                           : "incomplete";
   for (size_t i = 0; i < items_.size(); ++i) {
     auto& item = items_[i];
+    if (item.mcp_binding) {
+      auto reply = FinishMcpArguments(
+          i, end.state == RealtimeResponseEnd::State::kCompleted);
+      if (!reply.ok()) return reply;
+      continue;
+    }
     auto final = item.value;
     Set(&final, "status", String(status));
     const auto stored = item_(final, false, true);
@@ -501,5 +560,54 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
   Set(&response, "output", Output());
   terminal_ = true;
   return Emit("response.done", Object({{"response", std::move(response)}}));
+}
+
+ObjectReply RealtimeResponseOutput::FinishMcpArguments(size_t index,
+                                                       bool complete) {
+  auto& item = items_[index];
+  auto final = item.value;
+  if (!complete)
+    Set(&final, "error",
+        Object({{"type", String("protocol_error")},
+                {"code", Number(-32603)},
+                {"message",
+                 String("Generation did not complete; tool not executed")}}));
+  // Keep a successful generated call pending: response.done is not a remote
+  // tool completion. The new owner must finish the exact history ticket.
+  const auto stored = item_(final, false, !complete);
+  if (!AcceptSink(stored)) return error_;
+  item.deleted |= stored.value.GetBool("deleted");
+  item.value = std::move(final);
+  auto fields = Position(index, false);
+  Set(&fields, "arguments", *item.value.Find("arguments"));
+  auto reply = Emit("response.mcp_call_arguments.done", std::move(fields));
+  if (!reply.ok()) return reply;
+  if (complete) {
+    if (!item.deleted)
+      mcp_calls_.push_back({item.value, index, *item.mcp_binding});
+    return {};
+  }
+  reply = Emit("response.mcp_call.failed",
+               Object({{"item_id", *item.value.Find("id")},
+                       {"output_index", Number(index)}}));
+  if (!reply.ok()) return reply;
+  reply = Emit("response.output_item.done",
+               Object({{"response_id", String(options_.response_id)},
+                       {"output_index", Number(index)},
+                       {"item", item.value}}));
+  if (!reply.ok()) return reply;
+  if (options_.in_conversation && !item.deleted) {
+    auto event = Object({{"item", item.value}});
+    if (!item.previous.empty())
+      Set(&event, "previous_item_id", String(item.previous));
+    reply = Emit("conversation.item.done", std::move(event));
+  }
+  return reply;
+}
+std::vector<RealtimeMcpGeneratedCall> RealtimeResponseOutput::TakeMcpCalls() {
+  if (!terminal_ || sink_failed_ || !error_.ok()) return {};
+  auto result = std::move(mcp_calls_);
+  mcp_calls_.clear();
+  return result;
 }
 }  // namespace q4t::server

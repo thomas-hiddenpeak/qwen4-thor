@@ -18,6 +18,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [异步目录与历史隔离20项CPU](evidence/serve-realtime-mcp-imports-cpu-20261120/README.md)
 已通过，0GPU；删除/替换、迟到结果、线程/存储边界一并覆盖。公开
 运行时尚未连接，继续会话配置事务和调用审批。
+[MCP参数流与交接20项CPU](evidence/serve-realtime-mcp-output-cpu-20261120/README.md)
+完成：首轮19通过/1失败，容量夹具修正后暴露别名校验缺口，补精确
+映射后12项MCP通过，原8项复用。两次失败保留；后续原生结果、审批
+回填和历史关联继续，不能把生成完成当成工具完成。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

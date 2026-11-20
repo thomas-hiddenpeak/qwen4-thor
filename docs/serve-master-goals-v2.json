@@ -14379,7 +14379,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "definitions_native_catalog_and_async_ownership_cpu_accepted_session_integration_next",
+      "state": "definitions_catalog_import_ownership_and_argument_handoff_cpu_accepted_native_execution_integration_next",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14477,7 +14477,34 @@
         "service_state": "STOPPED",
         "all_master_tasks_active": true
       },
-      "imports_evidence": "evidence/serve-realtime-mcp-imports-cpu-20261120/README.md"
+      "imports_evidence": "evidence/serve-realtime-mcp-imports-cpu-20261120/README.md",
+      "output_cpu": {
+        "status": "PASS_REALTIME_MCP_ARGUMENTS_AND_HANDOFF_CPU",
+        "distinct_cases": 20,
+        "case_executions": 33,
+        "initial_passed": 19,
+        "initial_failed": 1,
+        "first_fixture_repair_failed": 1,
+        "affected_mcp_recheck_passed": 12,
+        "reused_ordinary_and_speech_passed": 8,
+        "cpu_seconds": 0.05515798134729266,
+        "builds_zero_warnings": 3,
+        "binary_sha256": "12212731720803f41387a545afdab057b4c817ee3a2286f94f3a8013ba5cb2f3",
+        "runtime_connected": false,
+        "complete_model_message_required": true,
+        "native_alias_must_match_public_server_tool": true,
+        "remote_completion_not_fabricated": true,
+        "handoff_at_most_once_after_accepted_response_done": true,
+        "original_failures_and_sources_preserved": true,
+        "first_capacity_only_diagnosis_was_incomplete": true,
+        "gpu_actions": 0,
+        "llm_requests": 0,
+        "default_revision": 396,
+        "default_unchanged": true,
+        "service_state": "STOPPED",
+        "all_master_tasks_active": true
+      },
+      "output_evidence": "evidence/serve-realtime-mcp-output-cpu-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

@@ -884,6 +884,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_mcp_definitions_test.cpp
     tests/server_realtime_mcp_catalog_test.cpp
     tests/server_realtime_mcp_imports_test.cpp
+    tests/server_realtime_mcp_output_test.cpp
     tests/server_realtime_prompt_settings_test.cpp
     tests/server_realtime_file_inputs_test.cpp
     tests/server_realtime_chat_execution_test.cpp

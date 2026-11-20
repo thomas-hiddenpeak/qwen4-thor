@@ -27,6 +27,15 @@ struct RealtimeResponseEnd {
   // Cancelled/failed execution has no invented successful final message.
   const io::Json* message = nullptr;
 };
+struct RealtimeMcpOutputBinding {
+  // Private model name from the actual imported catalog's tool adapter. This
+  // projection is not permission to dispatch; the native owner rechecks it.
+  std::string model_name, server_label, name;
+};
+struct RealtimeMcpGeneratedCall {
+  io::Json item;
+  size_t output_index = 0, binding_index = 0;
+};
 struct RealtimeResponseOutputOptions {
   std::string response_id, conversation_id;
   bool in_conversation = true;
@@ -34,6 +43,7 @@ struct RealtimeResponseOutputOptions {
   size_t maximum_bytes = 1ULL << 20, maximum_items = 128;
   std::optional<RealtimeAudioFormat> audio_format = {};
   size_t maximum_audio_bytes = kRealtimeAudioBytes;
+  std::vector<RealtimeMcpOutputBinding> mcp_bindings = {};
 };
 enum class RealtimeAudioCommit { kAppend, kComplete, kInterrupted };
 class RealtimeResponseOutput {
@@ -59,6 +69,11 @@ class RealtimeResponseOutput {
   // the request. Discard queued late output without resurrecting that history.
   ObjectReply TruncateAudio(std::string_view item_id);
   ObjectReply Finish(const RealtimeResponseEnd& end);
+  // One transfer after successful response.done publication. A complete model
+  // call remains pending in history until its separately owned native MCP
+  // execution/approval terminates. Cancelled, incomplete, deleted and failed
+  // calls never enter this handoff. No automatic model continuation here.
+  std::vector<RealtimeMcpGeneratedCall> TakeMcpCalls();
   bool Terminal() const { return terminal_; }
   bool UsageAvailable() const { return usage_available_; }
   const ObjectReply& Error() const { return error_; }
@@ -70,6 +85,8 @@ class RealtimeResponseOutput {
     std::string previous;
     std::optional<size_t> call_index;
     bool deleted = false;
+    std::optional<size_t> mcp_binding = {};
+    std::string model_call_id = {}, model_name = {};
   };
   ObjectReply Fail(std::string_view code, std::string_view message);
   bool AcceptSink(ObjectReply reply);
@@ -79,12 +96,14 @@ class RealtimeResponseOutput {
   io::Json Response(std::string_view status) const;
   io::Json Position(size_t index, bool content) const;
   bool Matches(const io::Json& message, bool truncated) const;
+  ObjectReply FinishMcpArguments(size_t index, bool complete);
   RealtimeResponseOutputOptions options_;
   EventSink emit_;
   ItemSink item_;
   IdFactory ids_;
   AudioSink audio_;
   std::vector<Item> items_;
+  std::vector<RealtimeMcpGeneratedCall> mcp_calls_;
   size_t bytes_ = 0;
   bool begun_ = false, terminal_ = false, sink_failed_ = false;
   bool usage_available_ = false;
