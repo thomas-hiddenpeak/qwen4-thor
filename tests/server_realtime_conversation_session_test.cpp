@@ -1568,3 +1568,40 @@ Q4T_TEST(realtime_session_native_input_reaches_actual_chat_planner) {
   }
   return true;
 }
+
+Q4T_TEST(
+    realtime_session_recovers_new_audio_after_borrowed_fault_without_replay) {
+  InputFixture f;
+  auto now = Clock::now();
+  f.cb.now = [&] { return now; };
+  Q4T_CHECK(f.Start() && f.Append(24) && f.Commit() && f.AllFinished());
+  Q4T_CHECK(f.asr_calls == 1 && f.calls == 0);
+  f.asr_hold = true;
+  Q4T_CHECK(f.Vad() && f.Append(6 * 768 + 48));
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 2; }));
+  f.vad_fail = true;
+  Q4T_CHECK(f.Append(768) && f.Wait([&] { return f.Count("error") > 0; }) &&
+            f.AllFinished());
+  Q4T_CHECK(f.calls == 0 && f.asr_released == 2 &&
+            f.Count("response.done") == 1);
+  Q4T_CHECK(f.Add(User("healthy", "text")) && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1);
+  f.vad_fail = false;
+  f.asr_hold = false;
+  now += 5s;
+  Q4T_CHECK(f.session->Tick() && f.Read() && f.asr_calls == 2 && f.calls == 1);
+  Q4T_CHECK(f.Send(Object(
+      {{"type", String("session.update")},
+       {"session",
+        Object({{"type", String("realtime")},
+                {"audio", Object({{"input", Object({{"turn_detection",
+                                                     Json()}})}})}})}})));
+  const auto errors = f.Count("error");
+  Q4T_CHECK(f.Append(24) && f.Commit() && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.Count("error") == errors && f.asr_calls == 3 && f.calls == 2 &&
+            f.asr_released == 3 && f.released == 3 && f.overlap == 0);
+  Q4T_CHECK(f.Count("session.created") == 1 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "completed");
+  return true;
+}

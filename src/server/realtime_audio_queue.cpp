@@ -203,4 +203,14 @@ Status RealtimeAudioQueue::Cancel(uint64_t epoch) {
   sealed_ = cancelled_ = true;
   return {};
 }
+Status RealtimeAudioQueue::ResumeCancelled(uint64_t epoch,
+                                           uint64_t consumed_ticks) {
+  if (!Owns(epoch) || !cancelled_ || !sealed_ || used_bytes_ || item_count_ ||
+      pending_bytes_ || consumed_ticks < ticks_ ||
+      consumed_ticks > duration_ticks_)
+    return Status::Fail("realtime recovery requires drained cancelled input");
+  ticks_ = pending_begin_ = consumed_ticks;
+  cancelled_ = sealed_ = false;
+  return {};
+}
 }  // namespace q4t::server

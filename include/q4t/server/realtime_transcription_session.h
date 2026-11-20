@@ -109,11 +109,16 @@ class RealtimeTranscriptionSession {
   void Join() noexcept;
   // Nonblocking reap after Cancel. Never detaches or releases a live borrower.
   bool TryJoinCancelled() noexcept;
+  // Resets only the cancelled local input pipeline after the actual join.
+  // Preserves transcript/audio history, budgets, IDs and the absolute clock;
+  // never reloads a model, replays audio, or repeats session.created.
+  ObjectReply Recover(RealtimeTranscriptionSettings settings);
   size_t QueuedItems() const { return jobs_.size(); }
   // Session-owner only; a completed worker still owns admission until join.
   bool Executing() const { return worker_.joinable(); }
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
   size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
+  uint64_t AcceptedTicks() const;
 
  private:
   bool Emit(io::Json event, bool deferred = false);
@@ -154,6 +159,7 @@ class RealtimeTranscriptionSession {
   std::string live_id_;
   size_t stream_storage_ = 0;
   uint64_t stream_epoch_ = 0;
+  uint64_t cancelled_ticks_ = 0;
   bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
   std::shared_ptr<RealtimeSemanticTurn> semantic_;

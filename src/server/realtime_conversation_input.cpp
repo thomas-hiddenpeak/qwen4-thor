@@ -76,9 +76,7 @@ ObjectReply RealtimeConversationInput::Configure(RealtimeDuplexInput next) {
     settings_ = std::move(next);
     return {};
   }
-  if (failed_)
-    return Error(503, "realtime_input_failed",
-                 "The input pipeline failed; reconnect for new audio");
+  if (failed_) return RecoverInput(std::move(next));
   if (!callbacks_.emit || !callbacks_.ready || !callbacks_.speech ||
       !callbacks_.committed || !history_.Valid())
     return Error(503, "realtime_processor_unavailable",
@@ -137,7 +135,14 @@ bool RealtimeConversationInput::Message(std::string_view message) {
 bool RealtimeConversationInput::Tick() {
   if (cancelled_) return false;
   if (failed_) {
-    processor_.TryJoinCancelled();
+    if (!processor_.TryJoinCancelled() || !settings_.enabled ||
+        Now() < retry_after_)
+      return true;
+    const auto recovered = RecoverInput(settings_);
+    // A circuit pause is not another failed execution. Actual failed recovery
+    // is reported once per bounded attempt; no input or model work is replayed.
+    if (!Accepted(recovered) && recovered.code != "realtime_input_cooldown")
+      return ErrorEvent(recovered);
     return true;
   }
   if (!started_) return true;
@@ -162,8 +167,47 @@ bool RealtimeConversationInput::StopInput() {
   failed_ = true;
   processor_.Cancel();
   FailPending();
+  retry_after_ = Now() + AsrHealth::kRetryDelay;
   return ErrorEvent(Error(503, "realtime_input_failed",
                           "Native audio input stopped; text remains usable"));
+}
+std::chrono::steady_clock::time_point RealtimeConversationInput::Now() const {
+  return callbacks_.now ? callbacks_.now() : std::chrono::steady_clock::now();
+}
+ObjectReply RealtimeConversationInput::RecoverInput(RealtimeDuplexInput next) {
+  if (!failed_ || cancelled_ || !processor_.TryJoinCancelled())
+    return Error(409, "realtime_input_still_borrowed",
+                 "Cancelled input work has not exited");
+  const auto now = Now();
+  if (now < retry_after_)
+    return Error(503, "realtime_input_cooldown",
+                 "Input recovery is cooling down");
+  if (now >= recovery_window_ + std::chrono::minutes(1)) {
+    recovery_window_ = now;
+    recovery_attempts_ = 0;
+  }
+  if (recovery_attempts_ >= 2) {
+    retry_after_ = recovery_window_ + std::chrono::minutes(1);
+    return Error(503, "realtime_input_cooldown",
+                 "Input recovery circuit is open");
+  }
+  ++recovery_attempts_;
+  retry_after_ = now + AsrHealth::kRetryDelay;
+  ObjectReply reply;
+  try {
+    reply = processor_.Recover(next.processing);
+  } catch (...) {
+    reply = Error(503, "realtime_input_recovery_failed",
+                  "Native input recovery did not confirm success");
+  }
+  if (!Accepted(reply)) return reply;
+  // The cancelled worker has joined. Discard only its unconsumed private
+  // mailbox; old failed turns stay failed/retrievable in the common history.
+  while (!output_.Front().empty()) output_.Acknowledge();
+  retrieval_format_ = next.processing.format;
+  settings_ = std::move(next);
+  failed_ = false;
+  return {};
 }
 void RealtimeConversationInput::Cancel() noexcept {
   cancelled_ = true;

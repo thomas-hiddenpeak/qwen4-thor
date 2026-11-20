@@ -112,3 +112,11 @@ VAD需显式选择，不能把后端失效伪装为已执行。
 
 实际双向WSS业务尚待统一短验；先补齐空闲触发、直接混合音频和
 同会话管线恢复，再受影响恢复/交付及全部master。0GPU，默认rev376不变。
+
+## 同会话本地输入恢复CPU结果
+
+[恢复CPU](evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md)
+18项和20来源反例通过，host零警告。实际join后复用同一处理器、预算、
+历史和时钟，5秒冷却及固定60秒窗口最多2次；不重放、不重载模型。
+真实设备健康仍保护。0GPU、默认rev376保持；真实WSS/ASR/TTS与新增
+ChatServer健康门的runtime构建仍待完成，全部master继续。

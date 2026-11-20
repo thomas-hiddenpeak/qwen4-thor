@@ -87,6 +87,9 @@ class RealtimeAudioQueue {
   // Normal drain requires the caller to explicitly commit/clear the tail first.
   Status FinishInput(uint64_t epoch);
   Status Cancel(uint64_t epoch);
+  // The caller must join all borrowers first. Reopens only a cancelled,
+  // acknowledged ring; neither sequence nor the lifetime sample clock resets.
+  Status ResumeCancelled(uint64_t epoch, uint64_t consumed_ticks);
   bool Cancelled() const { return cancelled_; }
   bool Drained() const { return sealed_ && used_bytes_ == 0; }
   size_t PendingBytes() const { return pending_bytes_; }

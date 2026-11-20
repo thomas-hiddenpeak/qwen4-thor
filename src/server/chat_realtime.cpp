@@ -120,6 +120,10 @@ RealtimeTranscriptionCallbacks ChatServer::PrepareRealtimeInput(
   callbacks.interrupted = [this] { return stop_requested_.load(); };
   callbacks.validate = [this, vad_ready](
                            const RealtimeTranscriptionSettings& settings) {
+    const auto health = ObserveHealth();
+    if (!health.Healthy())
+      return Error(503, health.ErrorCode(),
+                   "Native device or model is unhealthy");
     if (settings.request.model != audio::AsrConfig::kModelId)
       return Error(404, "model_not_found",
                    "Transcription model is not configured");

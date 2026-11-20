@@ -30,6 +30,7 @@ struct RealtimeConversationInputCallbacks {
   std::function<ObjectReply(RealtimeInputCommit)> committed;
   // Same-owner bounded copy at actual commit, before deferred public events.
   std::function<ObjectReply(RealtimePromptSelection*)> capture_response;
+  std::function<std::chrono::steady_clock::time_point()> now;
 };
 // At most four response captures, each <=96MiB including history, effective
 // settings and pinned prompt. Metadata/settings retain the input queue bound.
@@ -60,6 +61,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   bool Executing() const { return processor_.Executing(); }
   size_t AudioBytes() const { return processor_.AudioBytes(); }
   size_t RetainedAudioBytes() const { return processor_.RetainedAudioBytes(); }
+  uint64_t AcceptedTicks() const { return processor_.AcceptedTicks(); }
 
  private:
   struct Binding {
@@ -85,6 +87,8 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   bool Forward(io::Json event);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   bool StopInput();
+  ObjectReply RecoverInput(RealtimeDuplexInput next);
+  std::chrono::steady_clock::time_point Now() const;
   void FailPending() noexcept;
   RealtimeConversation& history_;
   const RealtimeConversationInputCallbacks callbacks_;
@@ -94,6 +98,8 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   RealtimeAudioFormat retrieval_format_;
   std::map<std::string, Binding> bindings_;
   size_t captures_ = 0;
+  std::chrono::steady_clock::time_point recovery_window_, retry_after_;
+  unsigned recovery_attempts_ = 0;
   WebSocketOutput output_{kWebSocketOutputMaximumBytes, 64,
                           kWebSocketMaximumLimit};
   WebSocketDecoder decoder_{false, kWebSocketMaximumLimit};

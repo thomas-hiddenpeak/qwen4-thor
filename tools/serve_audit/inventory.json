@@ -2529,12 +2529,12 @@
     "include/q4t/server/realtime_asr_policy.h": "40d0ab977a742cc03ca10b520fdf84365e543338e01d8692b2060197da5679e2",
     "include/q4t/server/realtime_audio_export.h": "4c1401c4178788d87daa0cce920c442f0633e2d7841858b69fb32b26db78f21f",
     "include/q4t/server/realtime_audio_history.h": "8a6148ba9787add7334c65482f7f4b375695e1b5d4c2bc5810c3ba904d22ffa9",
-    "include/q4t/server/realtime_audio_queue.h": "ac37b24170663e23ce04e57a861dcbd17048e3d6cf46bbf914f4fb247af03f16",
+    "include/q4t/server/realtime_audio_queue.h": "d642bc976705d5b0a9f09ac5d8626fef9901167e8afcf17b31006e9a79a0567f",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "60f0c427ca28dee60e9ba862b21161c3b1d8e101089dd34a6263e62de8346500",
     "include/q4t/server/realtime_conversation.h": "21c351ec2a513795a37a6aa3642dfc2afe24cf25f2cf3632590f7f30f62fc9bd",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
-    "include/q4t/server/realtime_conversation_session.h": "b3095cf9135b53b29ef1eaecb03ddc05f9c09afeba84d608d41f03bf115311ac",
+    "include/q4t/server/realtime_conversation_session.h": "3e0466e2b4ea61a262790e6a7e6acfd41a0673dd32956215f06d7599fc08a419",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
     "include/q4t/server/realtime_file_inputs.h": "847b0918693b37c2bc25b840a50e4a4b7c003d6d63109b80b13767f6c273e5c3",
     "include/q4t/server/realtime_noise_input.h": "b53079e7bb6441067ea0da9a6b48744fce42cfcad48cc4cf72270450eed0ad53",
@@ -2552,7 +2552,7 @@
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "4f3b71b06eda567b69efb84b48877627dea9b459eeccbda1ac1136b72a5b8c56",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
-    "include/q4t/server/realtime_transcription_session.h": "7747eab513d5c4affd78dd52f9b10b22f9fb45e59c017993475087515e164f18",
+    "include/q4t/server/realtime_transcription_session.h": "159d5678eed0ce17067bb169c20dbc50da12377c1298bfd6dfc37ee739096a22",
     "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
@@ -2807,7 +2807,7 @@
     "src/server/chat_plan.cpp": "b2927a8d44b51250a7360027410350d50ad3fb9058bc39b7c85309094c16ba04",
     "src/server/chat_preflight.cpp": "3295f77c00b078c24a342c7799025182a28040b641fea56ecae6fa58eb7bb2a8",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
-    "src/server/chat_realtime.cpp": "8651a008ce1165dccb48e9de808253294ccfa4714d78ed2832712446a0b8d6c5",
+    "src/server/chat_realtime.cpp": "a23978826758ff3ed673eb20f2be5ae65898ad40082fb99352190532bc3772c1",
     "src/server/chat_realtime_conversation.cpp": "e8460f840b996bbdf3b5789251a92bebd91ad2a628a88f2cf85c3b20f26ffbfa",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "bc3c258983acb8b8bfd59d4b381f59f41143d03377e220e27def068ee751cc20",
@@ -2993,12 +2993,12 @@
     "src/server/realtime_asr_policy.cpp": "162a502cf8fe07bec9a1656a8a1bef0d5a457b64fec04e74672f3759dc0c628a",
     "src/server/realtime_audio_export.cpp": "7a8f2c6f437452debd09f7e321374e136b1d3347213844d733c98c5b51e8cd95",
     "src/server/realtime_audio_history.cpp": "194b4db93486087c53710ba55560b6249f0edb94850fab72afa285e79b574232",
-    "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
+    "src/server/realtime_audio_queue.cpp": "f7048c05048866dd7d9a5604bc2ad5add07f05adda3cdced25cecd926c11a2a5",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "9c3f9704cc05cb58a9e32c651591c1ae72a0eb1282b0000dfbbab2b479ce5658",
     "src/server/realtime_conversation.cpp": "b90719e04bb5b373c22116d65ecd4194dfcb6fdcee02ded0345f3a93aeb5e111",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
-    "src/server/realtime_conversation_session.cpp": "a472ba08710662a4ecd2621c06609ef96bdd6b3ad85d067846ec9ebdd2f051ca",
+    "src/server/realtime_conversation_session.cpp": "a8789c224a067618402ba3ea28f8bde93a0828388ba8771c91f7716efc95fd87",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
@@ -3016,7 +3016,7 @@
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
     "src/server/realtime_transcription_protocol.cpp": "8956463f9d5ef83e99cc68005aeafa3f6846b6e4cbff99a999f8a24fad613a08",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
-    "src/server/realtime_transcription_session.cpp": "ba9ededee9130885c370f0206be29c518412214e51495b1c33726b8b373050e1",
+    "src/server/realtime_transcription_session.cpp": "1af02ce491ecbe7d5f2e6467512bb285f9628d50c5afcc2a23149458d7187eb8",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
     "src/server/realtime_wire_shape.cpp": "b9e6fbf82af7818dfac582f5218492a4240596d2ca54a41a4498fe87581d89d6",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
@@ -3372,8 +3372,8 @@
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "include/q4t/server/realtime_conversation_input.h": "6394cc5fc76fe241614fdc4eaf988d6f41b8833a377429c54c5f5e66d0ea6b88",
-    "src/server/realtime_conversation_input.cpp": "d9f609094f91a8dba203eb6066ba28fd437d1ed72c17037f23a1e47c9d3725df"
+    "include/q4t/server/realtime_conversation_input.h": "29984352e992a098b47dfb32d4a5aabf8faa9698e3d502a5474f96a99a8a1e3f",
+    "src/server/realtime_conversation_input.cpp": "634ed66e27122cfa849e185a23a7e2c5b9b8d02c969531c58bb608132c4d8ec5"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8700,5 +8700,24 @@
       "all master tasks"
     ],
     "gpu_actions": 0
+  },
+  "duplex_local_input_recovery_20261120": {
+    "state": "development_targeted_cpu_pending",
+    "scope": "Bounded recovery of cancelled local input pipeline only: actual worker join, retained single audio/history budget and native context, unchanged epoch/sequence/lifetime clock, 5-second cooldown and two attempts per minute; no model reload or input replay",
+    "tests": [
+      "realtime_queue_resume_requires_ack_and_preserves_clock_sequence",
+      "realtime_queue_resume_never_refunds_lifetime_duration_or_epoch",
+      "realtime_composed_input_recovery_preserves_audio_context_and_clock",
+      "realtime_composed_input_recovery_is_two_attempts_per_minute",
+      "realtime_composed_input_disconnect_never_recovers_or_replays",
+      "realtime_session_recovers_new_audio_after_borrowed_fault_without_replay"
+    ],
+    "limits": {
+      "cpu_cases": 18,
+      "source_counterexamples": 20,
+      "seconds": 120,
+      "gpu_starts": 0
+    },
+    "default_revision": 376
   }
 }

@@ -373,6 +373,127 @@ Q4T_TEST(realtime_composed_input_bad_capture_keeps_owned_input_without_retry) {
   return true;
 }
 
+Q4T_TEST(realtime_composed_input_recovery_preserves_audio_context_and_clock) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  bool fault = true;
+  std::vector<std::string> contexts;
+  const auto execute = f.native.execute;
+  f.native.execute = [&, execute](const auto& job, const auto& bytes,
+                                  const auto& control, const auto& emit) {
+    contexts.push_back(job.settings.request.previous_transcript);
+    return execute(job, bytes, control, emit);
+  };
+  f.native.vad_step = [&](auto, auto*, float* probability) {
+    *probability = 0;
+    return fault ? q4t::Status::Fail("Injected input fault") : q4t::Status{};
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(Options()).ok() && Audio(input, 24) &&
+            input.Message(kCommit) && Finish(input));
+  const auto original = f.commits.at(0).ticket;
+  Json audio_before;
+  Q4T_CHECK(input.Retrieve(original, &audio_before).ok());
+  auto vad = Options();
+  vad.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+  Q4T_CHECK(input.Configure(vad).ok() && Audio(input, 768 + 48));
+  Q4T_CHECK(input.Tick() && input.Failed());
+  const auto ticks = input.AcceptedTicks(), bytes = input.RetainedAudioBytes();
+  Q4T_CHECK(ticks == (24 + 768 + 48) * 2 && f.calls == 1);
+  fault = false;
+  now += 4999ms;
+  Q4T_CHECK(input.Tick() && input.Failed() && f.calls == 1);
+  now += 1ms;
+  Q4T_CHECK(input.Tick() && !input.Failed() && f.calls == 1 &&
+            input.AcceptedTicks() == ticks &&
+            input.RetainedAudioBytes() == bytes);
+  Json audio_after;
+  Q4T_CHECK(input.Retrieve(original, &audio_after).ok() &&
+            OutputJson(audio_after) == OutputJson(audio_before));
+  // New input starts only when new bytes arrive; no ASR call was replayed.
+  Q4T_CHECK(input.Configure(Options()).ok() && Audio(input, 24) &&
+            input.Message(kCommit) && Finish(input));
+  Q4T_CHECK(f.calls == 2 && f.commits.size() == 2 &&
+            f.commits[1].ticket.generation > original.generation &&
+            input.AcceptedTicks() == ticks + 48);
+  Q4T_CHECK(contexts.size() == 2 && contexts[0].empty() &&
+            contexts[1] == "actual CPU audio fixture" &&
+            input.RetainedAudioBytes() == 2 * bytes);
+  Q4T_CHECK(f.Count("session.created") == 0 && f.Count("session.updated") == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_composed_input_recovery_is_two_attempts_per_minute) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  bool unavailable = false;
+  int validations = 0;
+  f.native.validate = [&](const auto&) {
+    ++validations;
+    ObjectReply reply;
+    reply.commit_unknown = unavailable;
+    return reply;
+  };
+  f.native.vad_step = [](auto, auto*, float*) {
+    return q4t::Status::Fail("Injected input fault");
+  };
+  auto vad = Options();
+  vad.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(vad).ok() && Audio(input, 768 + 48) &&
+            input.Tick());
+  Q4T_CHECK(input.Failed());
+  unavailable = true;
+  const auto baseline = validations;
+  now += 5s;
+  Q4T_CHECK(input.Tick() && input.Failed() && validations == baseline + 1);
+  for (size_t n = 0; n < 100; ++n) Q4T_CHECK(input.Tick());
+  Q4T_CHECK(validations == baseline + 1);
+  now += 5s;
+  Q4T_CHECK(input.Tick() && input.Failed() && validations == baseline + 2);
+  now += 5s;
+  Q4T_CHECK(input.Tick() && input.Failed() && validations == baseline + 2);
+  Q4T_CHECK(input.Configure(vad).code == "realtime_input_cooldown" &&
+            validations == baseline + 2);
+  now += 50s;  // 60 seconds from the first actual recovery attempt.
+  unavailable = false;
+  Q4T_CHECK(input.Tick() && !input.Failed() && validations == baseline + 4 &&
+            f.calls == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_composed_input_disconnect_never_recovers_or_replays) {
+  Fixture f;
+  auto now = Clock::now();
+  f.callbacks.now = [&] { return now; };
+  int validations = 0;
+  f.native.validate = [&](const auto&) {
+    ++validations;
+    return ObjectReply{};
+  };
+  f.native.vad_step = [](auto, auto*, float*) {
+    return q4t::Status::Fail("Injected input fault");
+  };
+  auto vad = Options();
+  vad.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(vad).ok() && Audio(input, 768 + 48) &&
+            input.Tick());
+  Q4T_CHECK(input.Failed());
+  const auto baseline = validations;
+  input.Cancel();
+  input.Join();
+  now += 60s;
+  Q4T_CHECK(!input.Tick() && !input.Configure(vad).ok() &&
+            validations == baseline && f.calls == 0);
+  return true;
+}
+
 Q4T_TEST(realtime_composed_input_rejects_pipeline_changes_while_borrowed) {
   Fixture f;
   RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,

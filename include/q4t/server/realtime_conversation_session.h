@@ -64,6 +64,8 @@ struct RealtimeConversationCallbacks {
   // handler separately reserves kRealtimeConversationInputHostBytes.
   std::optional<RealtimeTranscriptionCallbacks> input;
   uint32_t max_audio_seconds = 600;
+  // Injectable monotonic clock for bounded protocol timers; no wire override.
+  std::function<std::chrono::steady_clock::time_point()> now;
 };
 
 class RealtimeConversationSession {

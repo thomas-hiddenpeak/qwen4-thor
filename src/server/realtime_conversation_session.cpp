@@ -126,6 +126,7 @@ RealtimeConversationSession::RealtimeConversationSession(
       speech_(id_) {
   if (callbacks_.input) {
     RealtimeConversationInputCallbacks input;
+    input.now = callbacks_.now;
     input.emit = [this](const Json& event) { return Emit(event); };
     input.ready = [this] { return InputReady(); };
     input.speech = [this](bool started, auto, auto, bool interrupt) {

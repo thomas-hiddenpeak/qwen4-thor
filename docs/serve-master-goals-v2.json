@@ -12461,11 +12461,11 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "native_backend_build_cpu_accepted_full_input_business_pending",
+      "state": "local_pipeline_recovery_cpu_accepted_remaining_input_business_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 171,
-      "case_executions": 253,
+      "unique_cpu_cases": 180,
+      "case_executions": 271,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
@@ -12473,7 +12473,6 @@
       "remaining": [
         "idle response",
         "direct mixed audio items",
-        "same-session input pipeline recovery",
         "real WSS/native ASR/TTS and affected recovery/delivery",
         "all master tasks"
       ],
@@ -12679,6 +12678,35 @@
             "real WSS/native ASR/TTS and affected recovery/delivery",
             "all master tasks"
           ]
+        }
+      },
+      "local_input_recovery": {
+        "evidence": "docs/evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_LOCAL_INPUT_RECOVERY_CPU",
+          "unique_cases": 18,
+          "case_executions": 18,
+          "new_cases": 6,
+          "affected_cases": 12,
+          "seconds": 0.6374492510221899,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 55.59698380390182,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "eaab2e88bf334640fcc4540d5a67a23e46d830ce86cf3ce48ad6b46f7cc41942",
+            "free_bytes_after": 3966599168
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_duplex_business": "pending",
+          "native_health_validation_runtime_build": "pending",
+          "master_active": true
         }
       }
     }

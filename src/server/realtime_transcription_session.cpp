@@ -57,8 +57,15 @@ void RealtimeTranscriptionSession::Release() noexcept {
   }
   control_.reset();
 }
+uint64_t RealtimeTranscriptionSession::AcceptedTicks() const {
+  auto ticks = std::max(cancelled_ticks_, queue_.AcceptedTicks());
+  for (const auto* processor : {noise_input_.get(), stream_processor_.get()})
+    if (processor) ticks = std::max(ticks, processor->AcceptedTicks());
+  return ticks;
+}
 void RealtimeTranscriptionSession::Cancel() noexcept {
   cancelled_ = true;
+  cancelled_ticks_ = AcceptedTicks();
   if (control_) control_->Cancel(RequestControl::State::kDisconnect);
   queue_.Cancel(1);
   for (auto& job : jobs_) {
@@ -69,7 +76,19 @@ void RealtimeTranscriptionSession::Cancel() noexcept {
 void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
   Release();
-  for (auto& job : jobs_) DiscardJob(job);
+  for (auto& job : jobs_) {
+    if (cancelled_) {
+      // A completed/previously failed/deleted item is left as-is. A cancelled
+      // pending item must not block later ContextBefore forever after resume.
+      try {
+        if (!history_.Committed(job.transcript))
+          audio_history_.Erase(job.transcript);
+        history_.Fail(job.transcript);
+      } catch (...) {
+      }
+    }
+    DiscardJob(job);
+  }
   if (cancelled_) {
     jobs_.clear();
     while (const auto* item = queue_.Front())
@@ -84,6 +103,47 @@ bool RealtimeTranscriptionSession::TryJoinCancelled() noexcept {
   if (!cancelled_ || (worker_.joinable() && !done_.load())) return false;
   Join();
   return true;
+}
+ObjectReply RealtimeTranscriptionSession::Recover(
+    RealtimeTranscriptionSettings next) {
+  if (!started_ || !cancelled_ ||
+      (callbacks_.interrupted && callbacks_.interrupted()))
+    return Error(409, "realtime_input_recovery_unavailable",
+                 "Input recovery requires a live cancelled owner");
+  if (!TryJoinCancelled())
+    return Error(409, "realtime_input_still_borrowed",
+                 "Cancelled input work has not exited");
+  // A copy of all new settings has already been allocated. Keep the stopped
+  // state unless the original configured backend confirms these settings.
+  auto reply = callbacks_.validate(next);
+  if (!Accepted(reply)) return reply;
+  const auto resumed = queue_.ResumeCancelled(1, cancelled_ticks_);
+  if (!resumed)
+    return Error(503, "realtime_input_recovery_invalid", resumed.message());
+  cancelled_ = false;
+  try {
+    stream_fault_ = false;
+    live_id_.clear();
+    terminal_.clear();
+    vad_events_.clear();
+    vad_event_bytes_ = 0;
+    // Force fresh recurrent/filter state even for identical settings. The
+    // audio index and its single shared budget survive this reset untouched.
+    vad_.reset();
+    noise_input_.reset();
+    reply = Configure(std::move(next));
+    if (Accepted(reply)) {
+      ResetNoise(queue_.AcceptedTicks());
+      ResetVad();
+      previous_id_ = history_.LastCommittedId();
+      return {};
+    }
+  } catch (...) {
+    reply = Error(503, "realtime_input_recovery_failed",
+                  "Local input pipeline could not be reset");
+  }
+  Cancel();
+  return reply;
 }
 ObjectReply RealtimeTranscriptionSession::ReserveJob(
     RealtimeTranscriptionJob& job) {
