@@ -1,0 +1,11 @@
+{
+  "status": "PASS_TARGETED_MCP_BINDING_CAPACITY_CPU",
+  "distinct_cases": 24,
+  "executions": 25,
+  "seconds": 0.8384328349493444,
+  "original_ci_and_local_failures_preserved": true,
+  "fixture_failure_preserved": true,
+  "runtime_changed": true,
+  "default_contains_fix": false,
+  "gpu_actions": 0
+}

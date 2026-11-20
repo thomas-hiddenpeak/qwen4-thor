@@ -255,7 +255,7 @@ class BundleTests(unittest.TestCase):
                ('profile_speech_evidence', 'profile_speech_reuse', 'profile_speech_source'))})
 
     def test_v24_duplex_validator_closure_is_sealed(self):
-        added = set(bundle.SOURCES) - set(bundle.V23_SOURCES)
+        added = set(bundle.V24_SOURCES) - set(bundle.V23_SOURCES)
         self.assertEqual(added, {
             *('tools/serve_realtime/'+n+'.py' for n in
               ('duplex_checks', 'duplex_quality_checks', 'duplex_task_checks')),
@@ -264,6 +264,23 @@ class BundleTests(unittest.TestCase):
                'profile_duplex_source', 'profile_duplex_followup',
                'profile_duplex_followup_source', 'profile_duplex_composed',
                'profile_duplex_composed_reuse', 'profile_duplex_composed_source'))})
+        receipt = self.prepare()
+        directory = Path(receipt['package'])
+        original = bundle.engine.read(directory/'manifest.json')
+        for name in added:
+            changed = dict(original, files=dict(original['files']))
+            del changed['files']['source/'+name]
+            bundle.engine.save(directory/'manifest.json', changed)
+            with self.assertRaisesRegex(ValueError, 'source inventory'):
+                bundle.verify(directory, bundle.engine.sha(directory/'manifest.json'))
+
+    def test_v25_mcp_validator_closure_is_sealed(self):
+        added = set(bundle.SOURCES) - set(bundle.V24_SOURCES)
+        self.assertEqual(added, {
+            'tools/serve_realtime/mcp_checks.py',
+            *('tools/serve_recovery/'+n+'.py' for n in
+              ('profile_mcp_reuse', 'profile_mcp_codec',
+               'profile_mcp_evidence', 'profile_mcp_source'))})
         receipt = self.prepare()
         directory = Path(receipt['package'])
         original = bundle.engine.read(directory/'manifest.json')

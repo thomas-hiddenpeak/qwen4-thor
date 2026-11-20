@@ -168,7 +168,8 @@ ObjectReply RealtimeResponseOutput::Begin() {
                                          options_.maximum_audio_bytes)
                        .Valid()))
     return Fail("realtime_response_owner_invalid", "Invalid audio owner");
-  auto binding = BindMcp(options_.mcp_bindings);
+  // Preserve owned allocations so validation sees their actual capacity.
+  auto binding = BindMcp(std::move(options_.mcp_bindings));
   if (!binding.ok()) return binding;
   auto response = Response("in_progress");
   ChatPlanError shape;
@@ -182,7 +183,7 @@ ObjectReply RealtimeResponseOutput::BindMcp(
   if (terminal_ || !items_.empty() || sink_failed_ || !error_.ok())
     return object_detail::Error(409, "realtime_mcp_binding_locked",
                                 "Output bindings can no longer change");
-  if (bindings.size() > 128)
+  if (bindings.size() > 128 || bindings.capacity() > 128)
     return Fail("realtime_mcp_binding_invalid",
                 "MCP output bindings exceed capacity");
   for (size_t i = 0; i < bindings.size(); ++i) {

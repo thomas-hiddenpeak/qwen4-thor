@@ -372,23 +372,72 @@ Q4T_TEST(realtime_mcp_output_invalid_bindings_rejected_before_any_event) {
   }
   // std::string copy may discard spare capacity. Move the actual oversized
   // allocation into the owner, rather than testing a smaller copied string.
-  auto options = Fixture::Options({Binding()}, true);
-  options.mcp_bindings[0].name.reserve(4096);
-  Q4T_CHECK(options.mcp_bindings[0].name.capacity() > 1024);
-  size_t callbacks = 0;
-  RealtimeResponseOutput output(
-      std::move(options),
-      [&](const Json&) {
-        ++callbacks;
-        return ObjectReply{};
-      },
-      [&](const Json&, bool, bool) {
-        ++callbacks;
-        return ObjectReply{};
-      },
-      [](std::string_view) { return "unused"; });
-  Q4T_CHECK(!output.Begin().ok() && callbacks == 0);
-  Q4T_CHECK(output.TakeMcpCalls().empty());
+  for (int test = 0; test < 4; ++test) {
+    auto options = Fixture::Options({Binding()}, true);
+    if (test == 3) {
+      options.mcp_bindings.reserve(256);
+      Q4T_CHECK(options.mcp_bindings.capacity() > 128);
+    } else {
+      auto& binding = options.mcp_bindings[0];
+      auto* field = &binding.name;
+      if (test == 1) field = &binding.server_label;
+      if (test == 2) field = &binding.model_name;
+      field->reserve(4096);
+      Q4T_CHECK(field->capacity() > 1024);
+    }
+    size_t callbacks = 0;
+    RealtimeResponseOutput output(
+        std::move(options),
+        [&](const Json&) {
+          ++callbacks;
+          return ObjectReply{};
+        },
+        [&](const Json&, bool, bool) {
+          ++callbacks;
+          return ObjectReply{};
+        },
+        [](std::string_view) { return "unused"; });
+    Q4T_CHECK(!output.Begin().ok() && callbacks == 0);
+    Q4T_CHECK(output.TakeMcpCalls().empty());
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_output_late_binding_preserves_capacity_guard) {
+  for (const bool vector_capacity : {false, true}) {
+    Fixture fixture(std::vector<RealtimeMcpOutputBinding>{});
+    Q4T_CHECK(fixture.output.Begin().ok());
+    auto bindings = std::vector<RealtimeMcpOutputBinding>{Binding()};
+    if (vector_capacity)
+      bindings.reserve(256);
+    else
+      bindings[0].name.reserve(4096);
+    const auto attempts = fixture.attempts;
+    const auto error = fixture.output.BindMcp(std::move(bindings));
+    Q4T_CHECK(!error.ok() && error.code == "realtime_mcp_binding_invalid");
+    Q4T_CHECK(fixture.attempts == attempts);
+    Q4T_CHECK(fixture.output.TakeMcpCalls().empty());
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_output_late_binding_accepts_limit_and_preserves_mapping) {
+  Fixture fixture(std::vector<RealtimeMcpOutputBinding>{});
+  Q4T_CHECK(fixture.output.Begin().ok());
+  std::vector<RealtimeMcpOutputBinding> bindings;
+  bindings.reserve(128);
+  for (size_t i = 0; i < 128; ++i)
+    bindings.push_back(Binding("project", "read_" + std::to_string(i)));
+  // The parser fixture adds its own local tool; select the exercised alias.
+  fixture.bindings = {bindings.back()};
+  Q4T_CHECK(fixture.output.BindMcp(std::move(bindings)).ok());
+  Json message;
+  Q4T_CHECK(fixture.Feed(Tool(fixture.bindings.back().model_name), &message));
+  Q4T_CHECK(fixture.output.Finish(Complete(message)).ok());
+  const auto calls = fixture.output.TakeMcpCalls();
+  Q4T_CHECK(calls.size() == 1);
+  Q4T_CHECK(calls[0].item.GetString("name") == "read_127");
+  Q4T_CHECK(calls[0].item.GetString("server_label") == "project");
   return true;
 }
 
