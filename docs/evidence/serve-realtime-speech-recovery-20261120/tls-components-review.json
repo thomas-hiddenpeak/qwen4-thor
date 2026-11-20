@@ -1,0 +1,153 @@
+{
+  "status": "ACCEPT_UNCHANGED_TLS_RECOVERY_COMPONENTS_WITH_SEPARATE_CANCEL_REPAIR",
+  "original_run_status": "FAILED",
+  "original_cancel_statistics_accepted": false,
+  "original_lease_status": "COMMAND_FAILED",
+  "original_manifest_sha256": "ca36e5e399506cc7105af0f8c05c73cab77614c6313620688d256d78260d889a",
+  "candidate_manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd",
+  "changed_qualification_sources": [
+    "source/tools/serve_recovery/profile_evidence.py",
+    "source/tools/serve_recovery/profile_record.py",
+    "source/tools/serve_recovery/profile_speech_reuse.py",
+    "source/tools/serve_recovery/profile_speech_source.py"
+  ],
+  "unchanged_recovery_executables": true,
+  "actual_repair": {
+    "format": "q4t-speech-cancellation-witness-v1",
+    "status": "PASS",
+    "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+    "protocol_sha256": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+    "evidence": {
+      "run/plan.json": "ad78faa73d1bb6f44a2f1955d66bc9e50648cdc79208b2a43c4d802aad7b74c9",
+      "run/result.json": "f07620ad4eb0f069896c958bf211c224cae84012b6a5dee193e70067e75a4108",
+      "run/business.json": "655bcaeacbeec3fc4ccbbbe7d8a3947607bc15204b2e3a170fcf5a25895c5882",
+      "run/verified-business.json": "bcd98d8cc7dc2160b7db6ed62d808f4d28b4db912438a72eb4f01e789ef8b73d",
+      "run/cleanup.json": "11eadd046cc65c0f7fbf5bbbbb622e74006590554371414f7f884727ee0e416b",
+      "run/before-metrics.json": "d8a4ce8d480e2bbeeb06f477ab0ccf8f2561628987903af105120c1c231b7984",
+      "run/held-metrics.json": "ccd9e6fc52adfc18009f933a17fda841692b85f08c382a8d0b6958b1a54effb6",
+      "run/after-metrics.json": "3964e0b9d9b678186d0ebc56a335c3aa5ed752150eed1a78a4f61acf947e82eb",
+      "run/final-metrics.json": "cc1ff6551059fec8408da7245a502c32824aa12b1b160718038058b71ecc3915",
+      "lease/exit.json": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc",
+      "lease/events.jsonl": "ac33928fb6e6966bd51789b86317ccd4fd35c592b27377fb35d0e776784dcf6c",
+      "lease/nvml-queries.jsonl": "66cac504d4161e2be197e32d80c931c5591922f644fe7b88a1669ccfd505a111"
+    },
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 63,
+      "cleanup_complete": true,
+      "lease_result_sha256": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc"
+    },
+    "business": {
+      "completed_tokens": 1190,
+      "cancelled_actual_tokens": 581,
+      "aborted_requests": 1,
+      "request_errors": 0,
+      "automatic_replay": false,
+      "model_restarts": 0
+    },
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 2,
+      "websocket_sessions": 2,
+      "response_creates": 3,
+      "chats": 0,
+      "controls": 36
+    },
+    "lease_seconds": 67.01260170480236,
+    "default_unchanged": true,
+    "source_commit": "0734abfe490e35d9ebcea8ce5b1b7b3747252ecd",
+    "performance_acceptance": false,
+    "full_profile_rerun": false
+  },
+  "sessions": {
+    "tls-before": {
+      "mode": "hold_stream",
+      "completed_tokens": 595,
+      "core_owner": {
+        "model_pid": 921333,
+        "model_start_ticks": 332516897,
+        "model_generation": 1,
+        "controller_pid": 921323,
+        "controller_start_ticks": 332516661
+      },
+      "original_cancel_statistics_accepted": false,
+      "actual_cancelled_tokens": 581
+    },
+    "tls-after": {
+      "mode": "complete",
+      "completed_tokens": 595,
+      "core_owner": {
+        "model_pid": 921333,
+        "model_start_ticks": 332516897,
+        "model_generation": 1,
+        "controller_pid": 921323,
+        "controller_start_ticks": 332516661
+      },
+      "actual_tokens": 595
+    },
+    "tls-controller": {
+      "mode": "complete",
+      "completed_tokens": 595,
+      "core_owner": {
+        "model_pid": 922388,
+        "model_start_ticks": 332524771,
+        "model_generation": 2,
+        "controller_pid": 922375,
+        "controller_start_ticks": 332524537
+      },
+      "actual_tokens": 595
+    }
+  },
+  "cold_controller_quota": {
+    "mode": "full_window_after_unsealed_controller_death",
+    "generation": 2,
+    "observed_deadline": 3325300.314621604,
+    "checked_at": 3325301.123452301
+  },
+  "nvml_queries": 147,
+  "strict_lease_seconds": 157.87846757937223,
+  "source_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/plan.json": "d02abdf86e1d8e207cf354c67f225dcc0603122cb7dde7e0bd08ad24811c1068",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/lease/exit.json": "7e4210c6da7cee524cd13e602c3c372c8330fa41548aaf6f60381f9065854037",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/lease/events.jsonl": "f281d149bb6dcd6fe480de961f0eaeebaae8f4df1e3737095f795470f295a544",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/lease/nvml-queries.jsonl": "509f6e4d3c6b9747396d846ef1980c8e6383285a02f28730c1b2bc525c7fd109",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/result.json": "44a6c0dedf64a7f6d81f7ba3c0f6db66de3b510b6ecb7b7b96e8c10fe18a6638",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/stopped-ledger.json": "71872ac466c0439fc4db4f22540110e2634c285341ec5d1462b8be284b38cb26",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/gateway-continuity.json": "5387826bf6846d5209fff2285365fc101a06d51080892471862d225d34d807d1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/controller-continuity.json": "da40a4efc62b208e172784b7930e580376409e56895a57a1f9b3a9eebe45289b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/controller-usage.json": "83bb48c4863795373ab7dae4a9aa95dec5a9b1f0352810fe7f8e99a6f4fc2e33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech.sdk.json": "9cf329e14960d04b22b778a0fa230a5d17939288955335987987fd5d20c5fbc0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech-after-metrics.json": "f0d0d9faabc6ab0951497d3712402fc0c75b557475975442044d3e06fca84e60",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-core-before.json": "2df4dc9c949bf1687b96f61fee9850256a78627104b83e0a18e059cb20efb180",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-before-metrics.json": "db509409e25fb0804750b94fc47b09fd8ba7d748dd96ff9588e487d1249a841c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/speech-gateway-exit-fault.json": "48b1606106ab774571e05290f0940569d567bf50071841726ba1ee74225dc00d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech-core-after.json": "d13258bb65b9645a91a190ff59f60693924cbd23d08d60e520e62df2b4a25bf4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech.sdk.json": "86dccb6ae05c04eb0049fcbbf82e1a9a435307b50e6b983c706d9ae087ae742d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech-core-before.json": "f7a42e204392094e3a690deed13d58d2a9b83801b1e84edce1db40dc8c080289",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech-before-metrics.json": "2fc46d219a1afa3f25680f3f5028782c617f4a6ed5310753e587b883a339040c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech-before-metrics.json": "f7090e7fbe0bc81c5fa02846916ef641ab2cb4c4fa74bb4b6942795b091b1277",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech-after-metrics.json": "517193b0c3914e14253af21c6c9331bfccff174d55ed002fc1de32f44a32533a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/speech-controller-exit-fault.json": "d17f70f24b13b75951f178ec2ad77db09ebe4a5a8f6b2c7e3d33a1a23267ffe1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-after-metrics.json": "74e514dcfcde372f68ba1bdd73cddcdf0cd04a311a0e151c9b42ebdb7f89f3b8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-core-after.json": "31d36ed5dcfdd59f83bc9b24ae064ddf5d898c508e18ba8853484e4cb7b47c60",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech-core-after.json": "e446ffd20c6c189ef6a941c9bdeae62038a86ce41459a1589653d8cd988c2bef",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-controller-speech-receipt.json": "4b499d01fc00b1d267f492900a21356aece3b2bd3035349d477d4496bb838255",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-core-held.json": "b7da3c3f06193b1c649605c9287dea6f41f43f50bff55c4839263558c3bc9dba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-receipt.json": "dc86e298dd1d0caad8a421c4271b384a768f55189e97ca886be89c2cca0569b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech.sdk.json": "3d2684d5104cb9d3853c896eb159bbb079be5de262a1b3da5501006fb38fbe78",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-held-metrics.json": "30d073401d617eeffc4dcfbbb47c121a76a8243da89e88b8b99a6c7d922b092d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech-receipt.json": "83d3445922e79938034dc1beaf41beb269221b2fb06ddb757d912e69a866dc40",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-after-speech-core-before.json": "ec6b221840f6f0e8c41f142f45a213023090dfc8c766f090b6a174b26aed41d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-business-02/execution/tls-before-speech-ready.json": "fa35606c0f92c977e1923f50f4611593693490307f9c6b41547aa7c1008b0004"
+  },
+  "original_files_not_rewritten": true,
+  "negative_cases": 4,
+  "original_review_failure_preserved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-components-review-01/result.json",
+  "gpu_starts": 0,
+  "performance_acceptance": false
+}

@@ -1,0 +1,10 @@
+{
+  "status": "FAILED",
+  "reason": "private reviewer incorrectly expected an empty active dict; the stopped ledger retains controller/gateway/model keys with null values",
+  "actual_active": {
+    "controller": null,
+    "gateway": null,
+    "model": null
+  },
+  "gpu_starts": 0
+}

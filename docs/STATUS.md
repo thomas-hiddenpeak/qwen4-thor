@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语音恢复与取消修复已验](evidence/serve-realtime-speech-recovery-20261120/README.md)：
+新保留包及自动整包回退通过，累计含原失败9模型/22生成/11连接/
+1探测/604.676秒，570次NVML正常并清理。原TLS错误统计FAILED保持，
+恢复组件按精确来源复用、修复另有真实补验；默认rev366仍STOPPED。
+继续归档已退役发布记录并执行可回退发行，随后PR #54及全部master。
+
 [修复后资格与封包就绪](evidence/serve-realtime-speech-cancel-packages-20261120/README.md)：
 v19 registry d28ba7ac绑定原主轻和实际取消修复；新v23候选与保留包
 使用b156d976，后者只换精确旧控制器，尚待实际保留包及整包回退。
